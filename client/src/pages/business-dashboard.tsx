@@ -20,6 +20,7 @@ import type { BusinessAccount, RecurringJob } from "@shared/schema";
 import { Scope3EsgReport } from "@/components/scope3-esg-report";
 import { ViolationSubmission } from "@/components/hoa/violation-submission";
 import { PropertyRoster } from "@/components/hoa/property-roster";
+import { HoaEsgDashboard } from "@/components/hoa/esg-dashboard";
 
 const businessTypes = [
   { id: "property_manager", label: "Property Manager" },
@@ -544,7 +545,11 @@ export default function BusinessDashboard() {
           )}
 
           <TabsContent value="esg" className="space-y-4">
-            <Scope3EsgReport businessAccountId={account.id} />
+            {account.businessType === "property_manager" ? (
+              <HoaEsgDashboard businessAccountId={account.id} />
+            ) : (
+              <Scope3EsgReport businessAccountId={account.id} />
+            )}
           </TabsContent>
 
           <TabsContent value="history">
