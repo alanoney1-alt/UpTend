@@ -501,7 +501,7 @@ export function FreshSpaceBooking({ onComplete, onBack }: FreshSpaceBookingProps
         </Button>
         <Button onClick={handleComplete} className="gap-2">
           <CheckCircle className="w-4 h-4" />
-          Book FreshSpace Clean
+          Book FreshSpace<sup>™</sup> Clean
         </Button>
       </div>
     </div>

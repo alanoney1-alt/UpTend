@@ -13,7 +13,7 @@ import { Footer } from "@/components/landing/footer";
 const services = [
   {
     id: "junk_removal",
-    name: "ClearOut (Material Recovery)",
+    name: <>ClearOut<sup>™</sup> (Material Recovery)</>,
     icon: Recycle,
     tagline: "Space Rejuvenation. Verified Material Recovery.",
     description: "Your unwanted items are resources. We recover your space, protect your property with a 360\u00B0 Video Manifest, and verify the environmental impact of every item through our circular economy system.",
@@ -24,7 +24,7 @@ const services = [
   },
   {
     id: "pressure_washing",
-    name: "FreshWash (Pressure Washing)",
+    name: <>FreshWash<sup>™</sup> (Pressure Washing)</>,
     icon: Droplets,
     tagline: "Curb appeal, restored in hours.",
     description: "Industrial-grade surface cleaning for driveways, patios, walkways, pool decks, and home exteriors. Chemical pre-treatment included on every job.",
@@ -33,7 +33,7 @@ const services = [
   },
   {
     id: "gutter_cleaning",
-    name: "GutterShield (Gutter Cleaning)",
+    name: <>GutterShield<sup>™</sup> (Gutter Cleaning)</>,
     icon: Home,
     tagline: "Prevent water damage before it starts.",
     description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
@@ -42,7 +42,7 @@ const services = [
   },
   {
     id: "moving_labor",
-    name: "LiftCrew (Moving Labor)",
+    name: <>LiftCrew<sup>™</sup> (Moving Labor)</>,
     icon: Users,
     tagline: "Your muscle on demand.",
     description: "Hourly labor for loading, unloading, and rearranging. You rent the truck or pod, we supply the manpower, dollies, and shrink wrap. Perfect for DIY moves.",
@@ -51,7 +51,7 @@ const services = [
   },
   {
     id: "light_demolition",
-    name: "TearDown (Demolition)",
+    name: <>TearDown<sup>™</sup> (Demolition)</>,
     icon: Hammer,
     tagline: "Tear it out. Haul it off.",
     description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. We demo it, clean it up, and haul the debris away in one visit.",
@@ -60,7 +60,7 @@ const services = [
   },
   {
     id: "garage_cleanout",
-    name: "GarageReset (Garage Cleanout)",
+    name: <>GarageReset<sup>™</sup> (Garage Cleanout)</>,
     icon: Sofa,
     tagline: "Reclaim your space.",
     description: "Complete garage cleanout from cluttered to clean. We sort, donate, recycle, and haul everything so you can actually park in your garage again.",
@@ -69,7 +69,7 @@ const services = [
   },
   {
     id: "truck_unloading",
-    name: "UnloadPro (Truck/U-Haul Unloading)",
+    name: <>UnloadPro<sup>™</sup> (Truck/U-Haul Unloading)</>,
     icon: Truck,
     tagline: "You drove it. We'll unload it.",
     description: "Professional unloading of your rental truck, pod, or trailer. Our Pros place everything exactly where you want it inside your new home. 1-hour minimum.",
@@ -78,7 +78,7 @@ const services = [
   },
   {
     id: "home_consultation",
-    name: "HomeScore (Home Audit)",
+    name: <>HomeScore<sup>™</sup> (Home Audit)</>,
     icon: ClipboardCheck,
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
     description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360\u00B0 video documentation, and a treatment plan with transparent pricing. The $49 fee is credited toward any booked service.",
@@ -89,7 +89,7 @@ const services = [
   },
   {
     id: "home_cleaning",
-    name: "FreshSpace (Home Cleaning)",
+    name: <>FreshSpace<sup>™</sup> (Home Cleaning)</>,
     icon: Home,
     tagline: "Spotless homes. Verified clean.",
     description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",

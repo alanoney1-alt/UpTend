@@ -7,7 +7,7 @@ import { Footer } from "@/components/landing/footer";
 const SERVICES = [
   {
     id: "junk_removal",
-    name: "ClearOut (Material Recovery)",
+    name: <>ClearOut<sup>™</sup> (Material Recovery)</>,
     price: "$99",
     unit: "starting (minimum load)",
     description: "Volume-based pricing by truck load. We load, haul, and dispose. Includes landfill fees. 1/8 truck: $179 | 1/4 truck: $279 | 1/2 truck: $379 | 3/4 truck: $449 | Full truck: $449",
@@ -18,7 +18,7 @@ const SERVICES = [
   },
   {
     id: "pressure_washing",
-    name: "FreshWash (Pressure Washing)",
+    name: <>FreshWash<sup>™</sup> (Pressure Washing)</>,
     price: "$120",
     unit: "starting (600 sqft min)",
     description: "Industrial grade surface cleaning for driveways & walkways.",
@@ -26,7 +26,7 @@ const SERVICES = [
   },
   {
     id: "gutter_cleaning",
-    name: "GutterShield (Gutter Cleaning)",
+    name: <>GutterShield<sup>™</sup> (Gutter Cleaning)</>,
     price: "$149",
     unit: "single story home",
     description: "Debris removal and downspout flushing.",
@@ -34,7 +34,7 @@ const SERVICES = [
   },
   {
     id: "moving_labor",
-    name: "LiftCrew (Moving Labor)",
+    name: <>LiftCrew<sup>™</sup> (Moving Labor)</>,
     price: "$80",
     unit: "per hour per Pro",
     description: "Muscle only. You rent the truck, we load it. Choose how many Pros you need: 1 Pro = $80/hr, 2 Pros = $160/hr, 3 Pros = $240/hr.",
@@ -42,7 +42,7 @@ const SERVICES = [
   },
   {
     id: "light_demolition",
-    name: "TearDown (Demolition)",
+    name: <>TearDown<sup>™</sup> (Demolition)</>,
     price: "$199",
     unit: "starting",
     description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. Demo, cleanup, and haul-away in one visit. Hourly rates available.",
@@ -50,7 +50,7 @@ const SERVICES = [
   },
   {
     id: "garage_cleanout",
-    name: "GarageReset (Garage Cleanout)",
+    name: <>GarageReset<sup>™</sup> (Garage Cleanout)</>,
     price: "$299",
     unit: "small garage",
     description: "Full sort, donate, recycle, and haul so you can actually park in your garage again. Medium: $499 | Large: $749 | XL: $999",
@@ -60,7 +60,7 @@ const SERVICES = [
   },
   {
     id: "truck_unloading",
-    name: "UnloadPro (Truck/U-Haul Unloading)",
+    name: <>UnloadPro<sup>™</sup> (Truck/U-Haul Unloading)</>,
     price: "$80",
     unit: "per hour per Pro",
     description: "Professional unloading of your rental truck, pod, or trailer. Placed exactly where you want it. 1-hour minimum. Choose how many Pros you need: 1 Pro = $80/hr, 2 Pros = $160/hr, 3 Pros = $240/hr.",
@@ -68,7 +68,7 @@ const SERVICES = [
   },
   {
     id: "home_consultation",
-    name: "HomeScore (Home Audit)",
+    name: <>HomeScore<sup>™</sup> (Home Audit)</>,
     price: "$49",
     unit: "flat rate",
     description: "Full digital inventory and maintenance check.",
@@ -76,7 +76,7 @@ const SERVICES = [
   },
   {
     id: "home_cleaning",
-    name: "FreshSpace (Home Cleaning)",
+    name: <>FreshSpace<sup>™</sup> (Home Cleaning)</>,
     price: "$99",
     unit: "starting (1-2 bed/1 bath)",
     description: "Professional home cleaning by trained Pros. Standard: $99/$149/$199/$249 by size | Deep: 1.5x | Move-In/Out: 2x | Recurring: save 10-15%",

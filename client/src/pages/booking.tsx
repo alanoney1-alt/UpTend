@@ -57,7 +57,7 @@ const serviceTypes = [
   { id: "moving_labor", label: "Moving Labor", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
   { id: "light_demolition", label: "Light Demolition", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
   { id: "home_consultation", label: "Home Consultation", icon: ClipboardCheck, description: "$49 on-site assessment, credited toward any booked job", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
-  { id: "home_cleaning", label: "FreshSpace (Home Cleaning)", icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
+  { id: "home_cleaning", label: <>FreshSpace<sup>™</sup> (Home Cleaning)</>, icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
 ];
 
 // Map shared garage packages to booking page format
