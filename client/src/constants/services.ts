@@ -14,10 +14,12 @@ export const SERVICES = {
     generic: 'Home Cleaning',
     display: 'PolishUp™ (Home Cleaning)',
     slug: '/polishup',
-    startingPrice: 99,
-    priceUnit: 'flat',
-    tagline: 'Your home, refreshed.',
-    description: 'Standard, deep, or move-in/move-out cleaning with before-and-after documentation.',
+    startingPrice: 99, // Still show "starting at $99" in marketing
+    priceUnit: 'dynamic', // Flag that this uses the pricing engine
+    pricingEngine: 'polishup_calculator',
+    tagline: 'From chaos to calm.',
+    description: 'Professional home cleaning — standard, deep, or move-out. Price based on your home size and clean type.',
+    cleanTypes: ['standard', 'deep', 'move_out'],
   },
   pressure_washing: {
     branded: 'FreshWash',
