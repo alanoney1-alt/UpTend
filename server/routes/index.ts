@@ -43,6 +43,7 @@ import { registerMarketplaceRoutes } from "./marketplace/marketplace.routes";
 import { registerHoaViolationRoutes } from "./hoa/violations.routes";
 import { registerHoaPropertyRoutes } from "./hoa/properties.routes";
 import { registerHoaEsgMetricsRoutes } from "./hoa/esg-metrics.routes";
+import { registerHoaReferralPaymentRoutes } from "./hoa/referral-payments.routes";
 
 // Referral routes
 import { registerReferralRoutes } from "./referrals/referral.routes";
@@ -121,6 +122,7 @@ export async function registerRoutes(
   registerHoaViolationRoutes(app);
   registerHoaPropertyRoutes(app);
   registerHoaEsgMetricsRoutes(app);
+  registerHoaReferralPaymentRoutes(app);
 
   // Register referral routes
   registerReferralRoutes(app);

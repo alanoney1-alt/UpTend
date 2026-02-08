@@ -14,13 +14,14 @@ import { apiRequest } from "@/lib/queryClient";
 import {
   Building2, CalendarClock, Truck, Plus, DollarSign,
   TrendingUp, ArrowLeft, Clock, MapPin, Repeat, BarChart3,
-  CheckCircle, AlertCircle, Leaf, AlertTriangle, Home
+  CheckCircle, AlertCircle, Leaf, AlertTriangle, Home, Gift
 } from "lucide-react";
 import type { BusinessAccount, RecurringJob } from "@shared/schema";
 import { Scope3EsgReport } from "@/components/scope3-esg-report";
 import { ViolationSubmission } from "@/components/hoa/violation-submission";
 import { PropertyRoster } from "@/components/hoa/property-roster";
 import { HoaEsgDashboard } from "@/components/hoa/esg-dashboard";
+import { HoaReferralPayments } from "@/components/hoa/referral-payments";
 
 const businessTypes = [
   { id: "property_manager", label: "Property Manager" },
@@ -377,6 +378,10 @@ export default function BusinessDashboard() {
                   <AlertTriangle className="h-4 w-4 mr-1" />
                   Violations
                 </TabsTrigger>
+                <TabsTrigger value="referrals" data-testid="tab-referrals">
+                  <Gift className="h-4 w-4 mr-1" />
+                  Referrals
+                </TabsTrigger>
               </>
             )}
             <TabsTrigger value="esg" data-testid="tab-esg-reports"><Leaf className="h-4 w-4 mr-1" />ESG Reports</TabsTrigger>
@@ -540,6 +545,10 @@ export default function BusinessDashboard() {
 
               <TabsContent value="violations" className="space-y-4">
                 <ViolationSubmission businessAccountId={account.id} />
+              </TabsContent>
+
+              <TabsContent value="referrals" className="space-y-4">
+                <HoaReferralPayments businessAccountId={account.id} />
               </TabsContent>
             </>
           )}
