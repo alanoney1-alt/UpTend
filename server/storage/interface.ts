@@ -66,6 +66,7 @@ import type {
   SmsMessage, InsertSmsMessage,
   CleaningChecklist, InsertCleaningChecklist,
   RecurringSubscription, InsertRecurringSubscription,
+  MarketplaceItem, InsertMarketplaceItem,
 } from "@shared/schema";
 
 export interface IStorage {
@@ -469,6 +470,28 @@ export interface IStorage {
   getCustomerSubscriptions(customerId: string): Promise<RecurringSubscription[]>;
   updateRecurringSubscription(id: string, updates: Partial<RecurringSubscription>): Promise<RecurringSubscription | undefined>;
   getActiveSubscriptionsDueForBooking(date: string): Promise<RecurringSubscription[]>;
+
+  // Pro Marketplace
+  createMarketplaceItem(item: InsertMarketplaceItem): Promise<MarketplaceItem>;
+  getMarketplaceItem(id: string): Promise<MarketplaceItem | undefined>;
+  getMarketplaceItems(filters?: {
+    category?: string;
+    condition?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    location?: string;
+    status?: string;
+  }): Promise<MarketplaceItem[]>;
+  getMarketplaceItemsByPro(proId: string): Promise<MarketplaceItem[]>;
+  updateMarketplaceItem(id: string, updates: Partial<MarketplaceItem>): Promise<MarketplaceItem | undefined>;
+  deleteMarketplaceItem(id: string): Promise<boolean>;
+  incrementMarketplaceItemViews(id: string): Promise<void>;
+  getProMarketplaceStats(proId: string): Promise<{
+    totalListings: number;
+    activeListings: number;
+    soldListings: number;
+    totalEarnings: number;
+  }>;
 
   seedInitialData(): Promise<void>;
 }

@@ -55,6 +55,7 @@ import Services from "@/pages/services";
 import HomeAudit from "@/pages/home-audit";
 import JunkRemoval from "@/pages/junk-removal";
 import ReferralLanding from "@/pages/referral-landing";
+import Marketplace from "@/pages/marketplace";
 import NotFound from "@/pages/not-found";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
@@ -121,6 +122,7 @@ function Router() {
       <Route path="/services/audit" component={HomeAudit} />
       <Route path="/services/material-recovery" component={JunkRemoval} />
       <Route path="/services/junk" component={JunkRemoval} />
+      <Route path="/marketplace" component={Marketplace} />
       <Route path="/pro/verify" component={ProVerification} />
       <Route path="/pro/sustainability-cert" component={ProSustainabilityCert} />
       <Route component={NotFound} />

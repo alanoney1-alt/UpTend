@@ -19,9 +19,7 @@ export function registerMarketplaceRoutes(app: Express) {
         return res.status(400).json({ error: "Title and price are required" });
       }
 
-      // TODO: Implement createMarketplaceItem in storage
-      const item = {
-        id: crypto.randomUUID(),
+      const item = await storage.createMarketplaceItem({
         proId: req.user.id,
         serviceRequestId,
         title,
@@ -31,10 +29,7 @@ export function registerMarketplaceRoutes(app: Express) {
         category,
         condition,
         location,
-        status: "available",
-        postedAt: new Date().toISOString(),
-        views: 0,
-      };
+      });
 
       res.json(item);
     } catch (error) {
@@ -48,24 +43,14 @@ export function registerMarketplaceRoutes(app: Express) {
     try {
       const { category, condition, minPrice, maxPrice, location } = req.query;
 
-      // TODO: Implement getMarketplaceItems with filters in storage
-      // For now, return mock data
-      const items = [
-        {
-          id: "1",
-          title: "Vintage Leather Couch - Great Condition",
-          description: "3-seater leather couch, minor wear on armrests",
-          price: 150,
-          photos: [],
-          category: "furniture",
-          condition: "good",
-          location: "Orlando, FL",
-          proName: "Mike's Hauling",
-          proRating: 4.8,
-          postedAt: "2024-01-10",
-          views: 45,
-        },
-      ];
+      const items = await storage.getMarketplaceItems({
+        category: category as string | undefined,
+        condition: condition as string | undefined,
+        minPrice: minPrice ? Number(minPrice) : undefined,
+        maxPrice: maxPrice ? Number(maxPrice) : undefined,
+        location: location as string | undefined,
+        status: "available",
+      });
 
       res.json(items);
     } catch (error) {
@@ -85,13 +70,12 @@ export function registerMarketplaceRoutes(app: Express) {
         return res.status(403).json({ error: "Unauthorized - not your listings" });
       }
 
-      // TODO: Implement getMarketplaceItemsByPro in storage
+      const items = await storage.getMarketplaceItemsByPro(req.params.proId);
+      const stats = await storage.getProMarketplaceStats(req.params.proId);
+
       res.json({
-        totalListings: 3,
-        activeListings: 2,
-        soldListings: 1,
-        totalEarnings: 250,
-        items: [],
+        ...stats,
+        items,
       });
     } catch (error) {
       console.error("Get Pro marketplace items error:", error);
@@ -108,7 +92,21 @@ export function registerMarketplaceRoutes(app: Express) {
 
       const { buyerId } = req.body;
 
-      // TODO: Implement updateMarketplaceItem in storage
+      const item = await storage.getMarketplaceItem(req.params.id);
+      if (!item) {
+        return res.status(404).json({ error: "Item not found" });
+      }
+
+      if (item.proId !== req.user.id) {
+        return res.status(403).json({ error: "Unauthorized - not your item" });
+      }
+
+      await storage.updateMarketplaceItem(req.params.id, {
+        status: "sold",
+        buyerId,
+        soldAt: new Date().toISOString(),
+      });
+
       res.json({
         success: true,
         message: "Item marked as sold. Earnings will appear in your dashboard.",
@@ -126,7 +124,16 @@ export function registerMarketplaceRoutes(app: Express) {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
-      // TODO: Implement deleteMarketplaceItem in storage
+      const item = await storage.getMarketplaceItem(req.params.id);
+      if (!item) {
+        return res.status(404).json({ error: "Item not found" });
+      }
+
+      if (item.proId !== req.user.id) {
+        return res.status(403).json({ error: "Unauthorized - not your item" });
+      }
+
+      await storage.deleteMarketplaceItem(req.params.id);
       res.json({ success: true, message: "Listing deleted" });
     } catch (error) {
       console.error("Delete marketplace item error:", error);
@@ -137,7 +144,7 @@ export function registerMarketplaceRoutes(app: Express) {
   // Track view (for analytics)
   app.post("/api/marketplace/items/:id/view", async (req, res) => {
     try {
-      // TODO: Implement incrementViews in storage
+      await storage.incrementMarketplaceItemViews(req.params.id);
       res.json({ success: true });
     } catch (error) {
       console.error("Track view error:", error);

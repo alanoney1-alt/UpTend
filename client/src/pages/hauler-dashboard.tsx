@@ -58,7 +58,8 @@ import { ComplianceVault } from "@/components/compliance-vault";
 import { VerificationGatesDisplay } from "@/components/verification-gates";
 import { EsgImpactDashboard } from "@/components/esg-impact-dashboard";
 import { ImpactWidget } from "@/components/dashboard/impact-widget";
-import { FileText, Route } from "lucide-react";
+import { FileText, Route, Store } from "lucide-react";
+import { ProMarketplace } from "@/components/marketplace/pro-marketplace";
 
 function maskPhone(phone: string): string {
   if (!phone || phone.length < 4) return "***-****";
@@ -75,6 +76,7 @@ const navItems = [
   { id: "route", label: "Route Optimizer", icon: Route },
   { id: "schedule", label: "Schedule", icon: Calendar },
   { id: "earnings", label: "Earnings", icon: DollarSign },
+  { id: "marketplace", label: "Marketplace", icon: Store },
   { id: "rebates", label: "Green Guarantee", icon: Flag },
   { id: "compliance", label: "Tax & Compliance", icon: FileText },
   { id: "profile", label: "Profile", icon: User },
@@ -2525,6 +2527,15 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         </Card>
 
         <ReferralEarningsCard haulerId={currentHauler?.id || ""} />
+      </div>
+    );
+  }
+
+  // Marketplace Section
+  if (activeTab === "marketplace") {
+    return (
+      <div className="p-6" data-testid="marketplace-section">
+        <ProMarketplace proId={currentHauler?.id || ""} />
       </div>
     );
   }

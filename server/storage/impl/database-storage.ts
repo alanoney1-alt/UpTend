@@ -93,6 +93,7 @@ import { HoaCarbonStorage } from "../domains/hoa-carbon/storage";
 import { JobVerificationStorage } from "../domains/job-verification/storage";
 import { SmsBotStorage } from "../domains/sms-bot/storage";
 import { PolishUpStorage } from "../domains/polishup/storage";
+import { MarketplaceStorage } from "../domains/marketplace/storage";
 
 /**
  * DatabaseStorage - Composition Layer for Storage Architecture
@@ -102,7 +103,7 @@ import { PolishUpStorage } from "../domains/polishup/storage";
  * entry point for all storage operations across the application.
  *
  * Architecture:
- * - 27 domain storage instances (one per feature domain)
+ * - 28 domain storage instances (one per feature domain)
  * - Each domain handles its own data access and business logic
  * - Cross-domain operations are composed at this layer
  *
@@ -147,6 +148,7 @@ export class DatabaseStorage implements IStorage {
   private jobVerification: JobVerificationStorage;
   private smsBot: SmsBotStorage;
   private freshSpace: PolishUpStorage;
+  private marketplace: MarketplaceStorage;
 
   constructor() {
     // Initialize all domain storage instances
@@ -182,6 +184,7 @@ export class DatabaseStorage implements IStorage {
     this.jobVerification = new JobVerificationStorage();
     this.smsBot = new SmsBotStorage();
     this.freshSpace = new PolishUpStorage();
+    this.marketplace = new MarketplaceStorage();
   }
 
   // ============================================================================
@@ -1509,6 +1512,49 @@ export class DatabaseStorage implements IStorage {
 
   async getActiveSubscriptionsDueForBooking(date: string) {
     return this.freshSpace.getActiveSubscriptionsDueForBooking(date);
+  }
+
+  // ============================================================================
+  // PRO MARKETPLACE DOMAIN
+  // ============================================================================
+
+  async createMarketplaceItem(item: any) {
+    return this.marketplace.createMarketplaceItem(item);
+  }
+
+  async getMarketplaceItem(id: string) {
+    return this.marketplace.getMarketplaceItem(id);
+  }
+
+  async getMarketplaceItems(filters?: {
+    category?: string;
+    condition?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    location?: string;
+    status?: string;
+  }) {
+    return this.marketplace.getMarketplaceItems(filters);
+  }
+
+  async getMarketplaceItemsByPro(proId: string) {
+    return this.marketplace.getMarketplaceItemsByPro(proId);
+  }
+
+  async updateMarketplaceItem(id: string, updates: any) {
+    return this.marketplace.updateMarketplaceItem(id, updates);
+  }
+
+  async deleteMarketplaceItem(id: string) {
+    return this.marketplace.deleteMarketplaceItem(id);
+  }
+
+  async incrementMarketplaceItemViews(id: string) {
+    return this.marketplace.incrementViews(id);
+  }
+
+  async getProMarketplaceStats(proId: string) {
+    return this.marketplace.getProMarketplaceStats(proId);
   }
 
   // ============================================================================
