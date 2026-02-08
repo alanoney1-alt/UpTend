@@ -53,6 +53,7 @@ import ProVerification from "@/pages/pro-verification";
 import ProSustainabilityCert from "@/pages/pro-sustainability-cert";
 import Services from "@/pages/services";
 import HomeAudit from "@/pages/home-audit";
+import HomeHealthAudit from "@/pages/home-health-audit";
 import JunkRemoval from "@/pages/junk-removal";
 import ReferralLanding from "@/pages/referral-landing";
 import Marketplace from "@/pages/marketplace";
@@ -120,6 +121,8 @@ function Router() {
       <Route path="/services" component={Services} />
       <Route path="/services/home-audit" component={HomeAudit} />
       <Route path="/services/audit" component={HomeAudit} />
+      <Route path="/home-health-audit" component={HomeHealthAudit} />
+      <Route path="/audit" component={HomeHealthAudit} />
       <Route path="/services/material-recovery" component={JunkRemoval} />
       <Route path="/services/junk" component={JunkRemoval} />
       <Route path="/marketplace" component={Marketplace} />
