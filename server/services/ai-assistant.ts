@@ -164,6 +164,48 @@ export const UPTEND_KNOWLEDGE = {
         "3-booking minimum for recurring plans",
       ],
     },
+
+    home_audit: {
+      name: "DwellScan (Home Audit)",
+      description: "Complete home health assessment with personalized maintenance report. Available in two tiers: Standard and Aerial.",
+      tiers: [
+        {
+          name: "DwellScan Standard",
+          price: "$49",
+          description: "Full interior and exterior ground-level walkthrough with maintenance report",
+          features: [
+            "Full interior walkthrough (room-by-room photos and notes)",
+            "Exterior ground-level assessment (foundation, driveway, walkways, landscaping)",
+            "Major systems check (AC age, water heater, electrical, plumbing)",
+            "Cleanliness rating per room (1-10)",
+            "Personalized maintenance report with one-tap booking for recommended services",
+          ],
+          dronRequired: false,
+        },
+        {
+          name: "DwellScan Aerial",
+          price: "$149",
+          description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan",
+          features: [
+            "Everything in Standard PLUS:",
+            "FAA Part 107 certified drone pilot flyover",
+            "Aerial roof condition scan (missing shingles, sagging, moss, flashing damage)",
+            "Gutter blockage assessment from above (percentage estimate)",
+            "Chimney and vent inspection",
+            "Tree overhang proximity to roof and power lines",
+            "Siding and paint condition from aerial angle",
+            "Pool enclosure / screen assessment (Florida-specific)",
+            "Property drainage overview from aerial perspective",
+            "Full before/after aerial photo set, timestamped and GPS-tagged",
+          ],
+          droneRequired: true,
+          valueComparison: "Comparable drone roof inspections cost $290-$350 elsewhere. You're getting it bundled for $149.",
+          recommended: true,
+        },
+      ],
+      creditPolicy: "The full amount ($49 or $149) is applied as a credit toward any job you book through UpTend. It's risk-free.",
+      when: "When customer asks about home inspection or audit, present both tier options and explain that Aerial includes drone scan that normally costs $290+ elsewhere.",
+    },
   },
 
   fees: {
