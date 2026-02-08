@@ -29,6 +29,7 @@ import { registerJobVerificationRoutes } from "./jobs/verification.routes";
 import { registerSubscriptionRoutes } from "./subscriptions.routes";
 import { registerCleaningChecklistRoutes } from "./cleaning-checklists.routes";
 import { registerSubscriptionCronRoutes } from "./admin/subscription-cron.routes";
+import { registerCarbonTrackingRoutes } from "./admin/carbon-tracking.routes";
 
 // Commerce routes
 import { registerPricingRoutes } from "./commerce/pricing-quotes.routes";
@@ -109,6 +110,7 @@ export async function registerRoutes(
   registerSubscriptionRoutes(app);
   registerCleaningChecklistRoutes(app);
   registerSubscriptionCronRoutes(app);
+  registerCarbonTrackingRoutes(app);
 
   // Register commerce routes
   registerPricingRoutes(app);

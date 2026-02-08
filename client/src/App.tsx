@@ -44,6 +44,7 @@ import ActiveJob from "@/pages/active-job";
 import CustomerDashboard from "@/pages/customer-dashboard";
 import CustomerSubscriptions from "@/pages/customer-subscriptions";
 import GodMode from "@/pages/admin/god-mode";
+import CarbonTracking from "@/pages/admin/carbon-tracking";
 import ProfileSettings from "@/pages/profile-settings";
 import EarningsPage from "@/pages/hauler/earnings";
 import PublicPricing from "@/pages/pricing";
@@ -102,6 +103,7 @@ function Router() {
       <Route path="/service-guarantee" component={ServiceGuarantee} />
       <Route path="/admin" component={Admin} />
       <Route path="/admin/agentic-brain" component={AgenticBrain} />
+      <Route path="/admin/carbon-tracking" component={CarbonTracking} />
       <Route path="/admin-login" component={AdminLogin} />
       <Route path="/contact" component={Contact} />
       <Route path="/quote" component={Quote} />
