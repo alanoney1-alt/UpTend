@@ -42,6 +42,7 @@ import HaulerLanding from "@/pages/hauler-landing";
 import PyckerAcademy from "@/pages/hauler-onboarding/academy";
 import ActiveJob from "@/pages/active-job";
 import CustomerDashboard from "@/pages/customer-dashboard";
+import CustomerSubscriptions from "@/pages/customer-subscriptions";
 import GodMode from "@/pages/admin/god-mode";
 import ProfileSettings from "@/pages/profile-settings";
 import EarningsPage from "@/pages/hauler/earnings";
@@ -108,6 +109,7 @@ function Router() {
       <Route path="/academy" component={PyckerAcademy} />
       <Route path="/job/:jobId/work" component={ActiveJob} />
       <Route path="/dashboard" component={CustomerDashboard} />
+      <Route path="/subscriptions" component={CustomerSubscriptions} />
       <Route path="/admin/god-mode" component={GodMode} />
       <Route path="/settings" component={ProfileSettings} />
       <Route path="/hauler/earnings" component={EarningsPage} />

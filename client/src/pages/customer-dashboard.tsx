@@ -332,6 +332,32 @@ export default function CustomerDashboard() {
           <ReferralWidget />
         </div>
 
+        <Card className="mb-6" data-testid="card-subscriptions">
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <CardTitle className="text-base">My Subscriptions</CardTitle>
+            </div>
+            <Link href="/subscriptions">
+              <Button variant="ghost" size="icon" data-testid="button-view-subscriptions">
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-4">
+              <p className="text-sm text-muted-foreground mb-3">
+                Manage your recurring FreshSpace<sup>™</sup> cleaning plans
+              </p>
+              <Link href="/subscriptions">
+                <Button variant="outline" size="sm">
+                  View All Subscriptions
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="mb-6" data-testid="card-digital-inventory">
           <CardHeader className="flex flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
