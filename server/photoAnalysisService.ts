@@ -24,6 +24,14 @@ export interface PhotoAnalysisResult {
   }[];
 }
 
+export interface CleanlinessScoreResult {
+  score: number; // 1-10 scale
+  confidence: number; // 0-1
+  reasoning: string;
+  areasOfConcern: string[];
+  highlights: string[];
+}
+
 // Pricing must match client/src/lib/bundle-pricing.ts loadSizePackages
 // Standard pickup truck bed = 8 cubic yards = 216 cubic feet
 const LOAD_SIZE_THRESHOLDS = {
@@ -211,6 +219,89 @@ Return JSON with: estimatedPrice (number matching above tiers), loadSize (small/
       loadSize: "medium",
       confidence: 0.5,
       breakdown: "Default estimate.",
+    };
+  }
+}
+
+/**
+ * Score cleanliness level from before/after photos for FreshSpace cleaning service
+ * Returns a 1-10 score with reasoning and specific observations
+ */
+export async function scoreCleanliness(photoUrls: string[]): Promise<CleanlinessScoreResult> {
+  const imageContents = photoUrls.map((url) => ({
+    type: "image_url" as const,
+    image_url: { url },
+  }));
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      {
+        role: "system",
+        content: `You are a professional home cleaning inspector with expertise in evaluating cleanliness standards.
+
+Analyze photos to score overall cleanliness on a 1-10 scale:
+
+1-2: Severely unclean - visible dirt, grime, clutter throughout, obvious neglect
+3-4: Poor - noticeable dirt on surfaces, stains, dust accumulation, needs deep cleaning
+5-6: Fair - Some visible dirt/dust, surfaces not fully cleaned, acceptable but could improve
+7-8: Good - Most surfaces clean, minor dust in corners, generally well-maintained
+9-10: Excellent - All surfaces spotless, no visible dirt/dust, professionally cleaned
+
+Evaluation criteria:
+- Surface cleanliness (counters, floors, appliances)
+- Dust levels on furniture and fixtures
+- Bathroom cleanliness (toilet, shower, sink, mirrors)
+- Kitchen cleanliness (stove, sink, counters, appliances)
+- Floor condition (swept, mopped, no debris)
+- Windows and mirrors (streaks, spots, clarity)
+- Organization and decluttering
+- Overall attention to detail
+
+Provide specific observations in:
+- areasOfConcern: List any areas needing improvement
+- highlights: List areas that were exceptionally clean
+
+Be objective and consistent in scoring. A score of 7-8 is typical for a good professional clean.
+9-10 should be reserved for truly exceptional, spotless results.
+
+Respond in JSON format only.`,
+      },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "Analyze these photos and score the cleanliness level. Return a JSON object with: score (1-10 integer), confidence (0-1 number), reasoning (detailed explanation of the score), areasOfConcern (array of strings listing problem areas), and highlights (array of strings listing exceptionally clean areas).",
+          },
+          ...imageContents,
+        ],
+      },
+    ],
+    max_completion_tokens: 1024,
+    response_format: { type: "json_object" },
+  });
+
+  const content = response.choices[0]?.message?.content || "{}";
+
+  try {
+    const parsed = JSON.parse(content);
+
+    return {
+      score: Math.min(Math.max(parsed.score || 5, 1), 10), // Clamp to 1-10
+      confidence: Math.min(Math.max(parsed.confidence || 0.8, 0), 1), // Clamp to 0-1
+      reasoning: parsed.reasoning || "Standard cleanliness assessment based on visual inspection.",
+      areasOfConcern: parsed.areasOfConcern || [],
+      highlights: parsed.highlights || [],
+    };
+  } catch (error) {
+    console.error("Failed to parse cleanliness scoring response:", error);
+    return {
+      score: 5,
+      confidence: 0.5,
+      reasoning: "Unable to analyze photos. Using default assessment.",
+      areasOfConcern: [],
+      highlights: [],
     };
   }
 }

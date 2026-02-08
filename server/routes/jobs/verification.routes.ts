@@ -1,6 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "../../storage";
 import { requireAuth, requireHauler } from "../../auth-middleware";
+import { scoreCleanliness } from "../../photoAnalysisService";
 import { z } from "zod";
 
 /**
@@ -527,6 +528,74 @@ export function registerJobVerificationRoutes(app: Express) {
     } catch (error) {
       console.error("Error confirming job:", error);
       res.status(500).json({ error: "Failed to confirm job" });
+    }
+  });
+
+  // ============================================================================
+  // FRESHSPACE: Score Cleanliness from Photos
+  // ============================================================================
+
+  app.post("/api/jobs/:jobId/verification/score-cleanliness", requireAuth, requireHauler, async (req: Request, res: Response) => {
+    try {
+      const { jobId } = req.params;
+      const { photos, phase } = req.body; // phase: "before" or "after"
+
+      // Validate input
+      const schema = z.object({
+        photos: z.array(z.string().url()).min(1, "At least 1 photo required"),
+        phase: z.enum(["before", "after"]),
+      });
+
+      const validated = schema.parse({ photos, phase });
+
+      // Check if job exists and is assigned to this hauler
+      const job = await storage.getServiceRequest(jobId);
+      if (!job) {
+        return res.status(404).json({ error: "Job not found" });
+      }
+
+      const userId = (req.user as any).id;
+      if (job.assignedHaulerId !== userId) {
+        return res.status(403).json({ error: "Not assigned to this job" });
+      }
+
+      // Score cleanliness using GPT-4o Vision
+      const cleanlinessScore = await scoreCleanliness(validated.photos);
+
+      // Get existing verification record
+      let verification = await storage.getJobVerification(jobId);
+
+      if (!verification) {
+        return res.status(404).json({ error: "Verification not started. Upload before photos first." });
+      }
+
+      // Update verification with cleanliness scores
+      const updates: any = {};
+      if (validated.phase === "before") {
+        updates.cleanlinessScoreBefore = cleanlinessScore.score;
+      } else {
+        updates.cleanlinessScoreAfter = cleanlinessScore.score;
+      }
+
+      verification = await storage.updateJobVerification(verification.id, updates);
+
+      res.json({
+        score: cleanlinessScore.score,
+        confidence: cleanlinessScore.confidence,
+        reasoning: cleanlinessScore.reasoning,
+        areasOfConcern: cleanlinessScore.areasOfConcern,
+        highlights: cleanlinessScore.highlights,
+        improvement: validated.phase === "after" && verification.cleanlinessScoreBefore
+          ? cleanlinessScore.score - verification.cleanlinessScoreBefore
+          : null,
+      });
+    } catch (error) {
+      console.error("Error scoring cleanliness:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ error: "Invalid input", details: error.errors });
+      } else {
+        res.status(500).json({ error: "Failed to score cleanliness" });
+      }
     }
   });
 }
