@@ -33,7 +33,7 @@ const services = [
   },
   {
     id: "gutter_cleaning",
-    name: "FlowGuard (Gutter Cleaning)",
+    name: "GutterShield (Gutter Cleaning)",
     icon: Home,
     tagline: "Prevent water damage before it starts.",
     description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",

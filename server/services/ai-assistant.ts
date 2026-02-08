@@ -91,7 +91,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     gutter_cleaning: {
-      name: "FlowGuard (Gutter Cleaning)",
+      name: "GutterShield (Gutter Cleaning)",
       description: "Professional gutter cleaning and debris removal to prevent water damage.",
       pricing: "Fixed pricing by home size",
       rates: [
@@ -184,7 +184,7 @@ export const UPTEND_KNOWLEDGE = {
   booking: {
     steps: [
       "1. Enter your address (we show instant property details)",
-      "2. Select service type (ClearOut, LiftCrew, FreshWash, FlowGuard, etc.)",
+      "2. Select service type (ClearOut, LiftCrew, FreshWash, GutterShield, etc.)",
       "3. Get instant quote: Upload photos OR enter details manually",
       "4. Review itemized quote with sustainability impact",
       "5. Create account (if new) → Book and pay",

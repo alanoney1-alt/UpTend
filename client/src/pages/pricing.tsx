@@ -26,7 +26,7 @@ const SERVICES = [
   },
   {
     id: "gutter_cleaning",
-    name: "FlowGuard (Gutter Cleaning)",
+    name: "GutterShield (Gutter Cleaning)",
     price: "$149",
     unit: "single story home",
     description: "Debris removal and downspout flushing.",
