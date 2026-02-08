@@ -114,6 +114,16 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
     extra_large: "Extra Large",
   };
 
+  // Volume-based truck tier labels for junk removal
+  const volumeTierLabels: Record<string, { label: string; volume: string; price: string }> = {
+    small: { label: "Minimum/1/8 Truck", volume: "0-27 cu ft", price: "$99-$149" },
+    medium: { label: "1/4 Truck", volume: "28-54 cu ft", price: "$199" },
+    large: { label: "1/2 Truck", volume: "55-108 cu ft", price: "$299" },
+    extra_large: { label: "3/4 Truck", volume: "109-162 cu ft", price: "$399" },
+    full: { label: "Full Truck", volume: "163+ cu ft", price: "$449+" },
+  };
+
+  const isJunkRemoval = request.serviceType === 'junk_removal' || request.serviceType === 'garage_cleanout' || request.serviceType === 'estate_cleanout';
   const isContactMasked = !request.acceptedAt;
   const customerName = request.customer ? `${request.customer.firstName || ''} ${request.customer.lastName || ''}`.trim() : 'Customer';
   const maskedName = (request.customer?.firstName || 'Customer').split(" ")[0] + " ***";
@@ -183,9 +193,20 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
           <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
           <span>{request.pickupAddress}, {request.pickupCity} {request.pickupZip}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm">
-          <Package className="w-4 h-4 text-muted-foreground shrink-0" />
-          <span>{loadLabels[request.loadEstimate] || request.loadEstimate}</span>
+        <div className="flex items-start gap-2 text-sm">
+          <Truck className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+          <div>
+            <div className="font-medium">
+              {isJunkRemoval && volumeTierLabels[request.loadEstimate]
+                ? volumeTierLabels[request.loadEstimate].label
+                : loadLabels[request.loadEstimate] || request.loadEstimate}
+            </div>
+            {isJunkRemoval && volumeTierLabels[request.loadEstimate] && (
+              <div className="text-xs text-muted-foreground">
+                {volumeTierLabels[request.loadEstimate].volume} • Base {volumeTierLabels[request.loadEstimate].price}
+              </div>
+            )}
+          </div>
         </div>
         {request.laborHours && request.laborHours > 0 && (
           <div className="flex items-center gap-2 text-sm">
