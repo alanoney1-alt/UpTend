@@ -208,6 +208,60 @@ const MODULES: AcademyModule[] = [
       },
     ],
   },
+  {
+    id: "home_cleaning",
+    skillType: "home_cleaning",
+    title: "Home Cleaning (FreshSpace™)",
+    icon: HomeIcon,
+    iconColor: "text-pink-600 dark:text-pink-400",
+    required: false,
+    description: "Professional cleaning standards, checklist completion, and before/after verification protocols.",
+    lessons: [
+      "Always follow the cleaning checklist in the app. Complete all tasks marked for the service type (standard/deep/move-in-out).",
+      "Take BEFORE photos when you arrive (every room, all surfaces). Take AFTER photos when done. Our AI verifies cleanliness quality.",
+      "Bring your own supplies if the customer selected that option. Use eco-friendly products when possible.",
+      "Work systematically: Start high (ceiling fans, light fixtures), then surfaces, then floors. Leave the room spotless.",
+      "Communicate delays or issues immediately. If you find additional cleaning needs beyond the scope, use 'Update Scope' in the app.",
+    ],
+    quiz: [
+      {
+        question: "You arrive at a home for a standard clean. What's your first step?",
+        options: [
+          "Start cleaning immediately to save time",
+          "Take before photos of all areas, then begin following the checklist",
+        ],
+        correct: 1,
+        explanation: "Before photos document the initial state and protect both you and the customer. They're also required for AI verification.",
+      },
+      {
+        question: "You're 80% through the checklist but running late. What do you do?",
+        options: [
+          "Skip the remaining tasks and mark the job complete",
+          "Notify the customer of the delay and complete all checklist items",
+        ],
+        correct: 1,
+        explanation: "Incomplete checklists result in payment disputes and lower ratings. Always communicate delays and finish the work.",
+      },
+      {
+        question: "What's the correct order for cleaning a room?",
+        options: [
+          "Floors first, then surfaces, then high areas",
+          "High areas first (ceiling, lights), then surfaces, then floors last",
+        ],
+        correct: 1,
+        explanation: "Cleaning top-to-bottom ensures dust and debris fall to lower areas that you'll clean afterward.",
+      },
+      {
+        question: "A customer asks you to clean inside the oven, but it's not on the checklist. What do you do?",
+        options: [
+          "Do it for free to be nice",
+          "Use the 'Update Scope' tool to add it as an add-on service",
+        ],
+        correct: 1,
+        explanation: "Extra work deserves extra pay. The app protects your earnings by documenting scope changes.",
+      },
+    ],
+  },
 ];
 
 function AcademyPublicLanding() {

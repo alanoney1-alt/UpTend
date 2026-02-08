@@ -13,6 +13,7 @@ import { registerAdminAuthRoutes } from "./auth/admin.routes";
 // Hauler routes
 import { registerHaulerProfileRoutes } from "./hauler/profile.routes";
 import { registerHaulerStatusRoutes } from "./hauler/status.routes";
+import { registerAcademyRoutes } from "./hauler/academy.routes";
 
 // Customer routes
 import { registerCustomerAccountRoutes } from "./customer/account.routes";
@@ -85,6 +86,7 @@ export async function registerRoutes(
   // Register hauler routes
   registerHaulerProfileRoutes(app);
   registerHaulerStatusRoutes(app);
+  registerAcademyRoutes(app);
 
   // Register customer routes
   registerCustomerAccountRoutes(app);
