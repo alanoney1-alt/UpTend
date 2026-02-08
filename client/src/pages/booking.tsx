@@ -56,7 +56,7 @@ const serviceTypes = [
   { id: "gutter_cleaning", label: "Gutter Cleaning", icon: Home, description: "Clean and flush gutters and downspouts", startingPrice: SERVICE_STARTING_PRICES.gutter_cleaning },
   { id: "moving_labor", label: "Moving Labor", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
   { id: "light_demolition", label: "Light Demolition", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
-  { id: "home_consultation", label: "Home Consultation", icon: ClipboardCheck, description: "$49 on-site assessment, credited toward any booked job", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
+  { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
   { id: "home_cleaning", label: <>PolishUp<sup>™</sup> (Home Cleaning)</>, icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
 ];
 
@@ -287,6 +287,7 @@ export default function Booking() {
     storyCount: 1,
     laborHours: 2,
     laborCrewSize: 2,
+    dwellscanTier: "standard" as "standard" | "aerial",
   });
   const [moveQuote, setMoveQuote] = useState<{
     distanceMiles: number;
@@ -401,7 +402,7 @@ export default function Booking() {
         return hrs * (formData.laborCrewSize || 2) * 80;
       }
       case "home_consultation":
-        return 49;
+        return formData.dwellscanTier === "aerial" ? 149 : 49;
       default:
         return 0;
     }
@@ -2043,39 +2044,91 @@ export default function Booking() {
                     </div>
                   )}
 
-                  {/* HOME CONSULTATION - $49 flat */}
+                  {/* DWELLSCAN - Two-tier pricing */}
                   {formData.serviceType === "home_consultation" && (
                     <div className="mt-8 pt-8 border-t">
                       <div className="flex items-center gap-2 mb-4">
                         <ClipboardCheck className="w-5 h-5 text-primary" />
-                        <h3 className="font-medium">Home Health Consultation</h3>
+                        <h3 className="font-medium">DwellScan™ - Select Your Tier</h3>
                       </div>
 
-                      <div className="p-6 rounded-lg border border-primary/20 bg-primary/5 text-center">
-                        <div className="text-3xl font-bold text-primary mb-2" data-testid="text-consult-price">$49</div>
-                        <p className="text-sm text-muted-foreground">On-site assessment by a Master-level Pro</p>
+                      <div className="grid md:grid-cols-2 gap-4 mb-6">
+                        {/* Standard Tier */}
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, dwellscanTier: "standard" })}
+                          className={`p-6 rounded-lg border-2 text-left transition-all ${
+                            (formData.dwellscanTier || "standard") === "standard"
+                              ? "border-primary bg-primary/5"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h4 className="font-semibold text-lg">DwellScan™ Standard</h4>
+                              <p className="text-3xl font-bold text-primary mt-1">$49</p>
+                            </div>
+                            {(formData.dwellscanTier || "standard") === "standard" && (
+                              <CheckCircle className="w-6 h-6 text-primary" />
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Full interior and exterior walkthrough with personalized maintenance report.
+                          </p>
+                          <ul className="text-xs text-muted-foreground space-y-1">
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Room-by-room interior photos</li>
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Exterior ground-level assessment</li>
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Major systems check</li>
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Personalized maintenance report</li>
+                          </ul>
+                        </button>
+
+                        {/* Aerial Tier */}
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, dwellscanTier: "aerial" })}
+                          className={`p-6 rounded-lg border-2 text-left transition-all relative ${
+                            formData.dwellscanTier === "aerial"
+                              ? "border-primary bg-primary/5"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          <Badge className="absolute top-3 right-3 bg-orange-500 text-white">Most Popular</Badge>
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h4 className="font-semibold text-lg">DwellScan™ Aerial</h4>
+                              <p className="text-3xl font-bold text-primary mt-1">$149</p>
+                            </div>
+                            {formData.dwellscanTier === "aerial" && (
+                              <CheckCircle className="w-6 h-6 text-primary" />
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Everything in Standard plus drone-powered roof and gutter scan.
+                          </p>
+                          <ul className="text-xs text-muted-foreground space-y-1">
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> <strong>Everything in Standard</strong></li>
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> FAA Part 107 drone pilot</li>
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Aerial roof condition scan</li>
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Gutter blockage assessment</li>
+                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> GPS-tagged aerial photos</li>
+                          </ul>
+                          <p className="text-xs text-blue-600 mt-2 font-medium">
+                            ⚡ Comparable drone inspections: $290-$350
+                          </p>
+                        </button>
                       </div>
 
-                      <div className="mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                      <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
                         <div className="flex items-start gap-3">
                           <Gift className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
                           <div>
-                            <p className="font-medium text-green-700 dark:text-green-400">$49 becomes a credit</p>
+                            <p className="font-medium text-green-700 dark:text-green-400">Your fee becomes a credit</p>
                             <p className="text-sm text-green-600/80 dark:text-green-400/80 mt-1">
-                              Your consultation fee is applied as a credit toward any job you book through UpTend. It&rsquo;s risk-free.
+                              The full amount is applied as a credit toward any job you book through UpTend. It's risk-free.
                             </p>
                           </div>
                         </div>
-                      </div>
-
-                      <div className="mt-4 space-y-2">
-                        <p className="text-sm font-medium">What you get:</p>
-                        <ul className="text-sm text-muted-foreground space-y-1.5">
-                          <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500 shrink-0" /> Full home walkthrough with a Master hauler</li>
-                          <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500 shrink-0" /> AI-generated treatment plan with priorities</li>
-                          <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500 shrink-0" /> Home Health Score calculation</li>
-                          <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500 shrink-0" /> Estimated costs for recommended services</li>
-                        </ul>
                       </div>
                     </div>
                   )}
