@@ -976,14 +976,17 @@ export default function Booking() {
     onSuccess: (data) => {
       setCreatedRequestId(data.id);
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests"] });
-      
+
+      // Store service type for cross-sell prompts
+      sessionStorage.setItem("lastBookedService", formData.serviceType);
+
       trackJobPosted("demo-customer", {
         serviceType: formData.serviceType,
         loadEstimate: formData.loadEstimate,
         scheduledFor: formData.scheduledFor,
         promoCode: formData.promoCode || undefined,
       });
-      
+
       setTimeout(() => {
         if (availableHaulers && availableHaulers.length > 0) {
           setSelectedHauler(availableHaulers[0]);

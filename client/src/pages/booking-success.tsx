@@ -2,12 +2,27 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Home, CalendarPlus, MapPin, TrendingUp, Sparkles } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { FreshSpaceCrossSell } from "@/components/cross-sell/freshspace-prompt";
 
 export default function BookingSuccess() {
+  const [, setLocation] = useLocation();
   const [phase, setPhase] = useState<"check" | "house">("check");
   const [fillPercent, setFillPercent] = useState(0);
   const [showContent, setShowContent] = useState(false);
+  const [showCrossSell, setShowCrossSell] = useState(true);
+
+  // Get service type from session storage (set during booking)
+  const bookedService = sessionStorage.getItem("lastBookedService") as
+    | "junk_removal"
+    | "garage_cleanout"
+    | "moving_labor"
+    | null;
+
+  const shouldShowCrossSell =
+    showCrossSell &&
+    bookedService &&
+    ["junk_removal", "garage_cleanout", "moving_labor"].includes(bookedService);
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("house"), 1200);
@@ -108,6 +123,20 @@ export default function BookingSuccess() {
             </div>
           </CardContent>
         </Card>
+
+        {/* FreshSpace Cross-Sell Prompt */}
+        {shouldShowCrossSell && (
+          <div className={`transition-opacity duration-700 ${showContent ? "opacity-100" : "opacity-0"}`}>
+            <FreshSpaceCrossSell
+              serviceJustBooked={bookedService!}
+              onDismiss={() => setShowCrossSell(false)}
+              onBook={() => {
+                sessionStorage.setItem("returningCustomerDiscount", "0.10");
+                setLocation("/book?service=home_cleaning");
+              }}
+            />
+          </div>
+        )}
 
         <div className={`flex flex-col gap-3 transition-opacity duration-700 ${showContent ? "opacity-100" : "opacity-0"}`}>
           <Button
