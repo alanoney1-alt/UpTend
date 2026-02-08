@@ -1,5 +1,5 @@
 /**
- * FreshSpace (Home Cleaning) Checklist Templates
+ * PolishUp (Home Cleaning) Checklist Templates
  *
  * Room-by-room task definitions for different clean types
  */
@@ -145,7 +145,7 @@ export interface GenerateChecklistOptions {
   addOns: string[]; // ["inside_oven", "inside_refrigerator", "interior_windows", "laundry", "organize_closet", "pet_hair_treatment"]
 }
 
-export function generateFreshSpaceChecklist(options: GenerateChecklistOptions): ChecklistTask[] {
+export function generatePolishUpChecklist(options: GenerateChecklistOptions): ChecklistTask[] {
   const { bedrooms, bathrooms, cleanType, addOns } = options;
 
   let checklist: ChecklistTask[] = [];
@@ -268,7 +268,7 @@ export function generateFreshSpaceChecklist(options: GenerateChecklistOptions): 
  * Get task count for a given configuration (for quoting/estimation)
  */
 export function getTaskCount(options: GenerateChecklistOptions): number {
-  return generateFreshSpaceChecklist(options).length;
+  return generatePolishUpChecklist(options).length;
 }
 
 /**

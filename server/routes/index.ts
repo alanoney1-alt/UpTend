@@ -25,7 +25,7 @@ import { registerServiceRequestRoutes } from "./jobs/service-requests.routes";
 import { registerJobManagementRoutes } from "./jobs/job-management.routes";
 import { registerJobVerificationRoutes } from "./jobs/verification.routes";
 
-// FreshSpace routes
+// PolishUp routes
 import { registerSubscriptionRoutes } from "./subscriptions.routes";
 import { registerCleaningChecklistRoutes } from "./cleaning-checklists.routes";
 import { registerSubscriptionCronRoutes } from "./admin/subscription-cron.routes";
@@ -98,7 +98,7 @@ export async function registerRoutes(
   registerJobManagementRoutes(app);
   registerJobVerificationRoutes(app);
 
-  // Register FreshSpace routes
+  // Register PolishUp routes
   registerSubscriptionRoutes(app);
   registerCleaningChecklistRoutes(app);
   registerSubscriptionCronRoutes(app);

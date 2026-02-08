@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
-import { HomeScoreWidget } from "@/components/home-score-widget";
+import { DwellScanWidget } from "@/components/dwellscan-widget";
 import { ImpactWidget } from "@/components/dashboard/impact-widget";
 import { ImpactTracker } from "@/components/dashboard/impact-tracker";
 import { ReferralWidget } from "@/components/dashboard/referral-widget";
@@ -321,7 +321,7 @@ export default function CustomerDashboard() {
             </div>
             <Badge variant="secondary" className="text-[10px]">BETA</Badge>
           </div>
-          <HomeScoreWidget />
+          <DwellScanWidget />
         </div>
 
         <div className="mb-6">
@@ -347,7 +347,7 @@ export default function CustomerDashboard() {
           <CardContent>
             <div className="text-center py-4">
               <p className="text-sm text-muted-foreground mb-3">
-                Manage your recurring FreshSpace<sup>™</sup> cleaning plans
+                Manage your recurring PolishUp<sup>™</sup> cleaning plans
               </p>
               <Link href="/subscriptions">
                 <Button variant="outline" size="sm">

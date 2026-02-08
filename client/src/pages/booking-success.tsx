@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Home, CalendarPlus, MapPin, TrendingUp, Sparkles } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { FreshSpaceCrossSell } from "@/components/cross-sell/freshspace-prompt";
+import { PolishUpCrossSell } from "@/components/cross-sell/polishup-prompt";
 
 export default function BookingSuccess() {
   const [, setLocation] = useLocation();
@@ -124,10 +124,10 @@ export default function BookingSuccess() {
           </CardContent>
         </Card>
 
-        {/* FreshSpace Cross-Sell Prompt */}
+        {/* PolishUp Cross-Sell Prompt */}
         {shouldShowCrossSell && (
           <div className={`transition-opacity duration-700 ${showContent ? "opacity-100" : "opacity-0"}`}>
-            <FreshSpaceCrossSell
+            <PolishUpCrossSell
               serviceJustBooked={bookedService!}
               onDismiss={() => setShowCrossSell(false)}
               onBook={() => {

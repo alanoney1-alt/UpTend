@@ -566,10 +566,10 @@ export async function sendLaunchNotificationConfirmation(email: string): Promise
 }
 
 /**
- * FreshSpace™ Subscription Confirmation
+ * PolishUp™ Subscription Confirmation
  * Sent when customer subscribes to recurring cleaning service
  */
-export async function sendFreshSpaceSubscriptionConfirmation(
+export async function sendPolishUpSubscriptionConfirmation(
   email: string,
   phone: string,
   subscriptionDetails: {
@@ -595,7 +595,7 @@ export async function sendFreshSpaceSubscriptionConfirmation(
   const [emailResult, smsResult] = await Promise.all([
     sendEmail({
       to: email,
-      subject: 'FreshSpace™ Subscription Active - Welcome!',
+      subject: 'PolishUp™ Subscription Active - Welcome!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -603,7 +603,7 @@ export async function sendFreshSpaceSubscriptionConfirmation(
             <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
           </div>
 
-          <h2 style="color: #333;">🏠 Welcome to FreshSpace™!</h2>
+          <h2 style="color: #333;">🏠 Welcome to PolishUp™!</h2>
           <p style="color: #666; font-size: 16px;">
             Your recurring cleaning subscription is now active. Say goodbye to cleaning stress!
           </p>
@@ -642,11 +642,11 @@ export async function sendFreshSpaceSubscriptionConfirmation(
           </p>
         </div>
       `,
-      text: `FreshSpace™ Subscription Active!\n\nFrequency: ${frequencyLabels[subscriptionDetails.frequency]}\nService: ${cleanTypeLabels[subscriptionDetails.cleanType]}\nPrice: $${subscriptionDetails.price} per visit\nNext Cleaning: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString()}\n\nYour Pro will be automatically scheduled. Manage at uptend.app/subscriptions`,
+      text: `PolishUp™ Subscription Active!\n\nFrequency: ${frequencyLabels[subscriptionDetails.frequency]}\nService: ${cleanTypeLabels[subscriptionDetails.cleanType]}\nPrice: $${subscriptionDetails.price} per visit\nNext Cleaning: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString()}\n\nYour Pro will be automatically scheduled. Manage at uptend.app/subscriptions`,
     }),
     sendSms({
       to: phone,
-      message: `Welcome to FreshSpace™! Your ${frequencyLabels[subscriptionDetails.frequency].toLowerCase()} cleaning is set up. Next visit: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. Manage at uptend.app/subscriptions`,
+      message: `Welcome to PolishUp™! Your ${frequencyLabels[subscriptionDetails.frequency].toLowerCase()} cleaning is set up. Next visit: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. Manage at uptend.app/subscriptions`,
     }),
   ]);
 
@@ -654,10 +654,10 @@ export async function sendFreshSpaceSubscriptionConfirmation(
 }
 
 /**
- * FreshSpace™ Cleaning Reminder
+ * PolishUp™ Cleaning Reminder
  * Sent 24 hours before scheduled cleaning
  */
-export async function sendFreshSpaceReminder(
+export async function sendPolishUpReminder(
   email: string,
   phone: string,
   cleaningDetails: {
@@ -676,7 +676,7 @@ export async function sendFreshSpaceReminder(
   const [emailResult, smsResult] = await Promise.all([
     sendEmail({
       to: email,
-      subject: 'FreshSpace™ Cleaning Tomorrow - Reminder',
+      subject: 'PolishUp™ Cleaning Tomorrow - Reminder',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -686,7 +686,7 @@ export async function sendFreshSpaceReminder(
 
           <h2 style="color: #333;">🧹 Cleaning Tomorrow!</h2>
           <p style="color: #666; font-size: 16px;">
-            Your FreshSpace™ cleaning is scheduled for tomorrow.
+            Your PolishUp™ cleaning is scheduled for tomorrow.
           </p>
 
           <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin: 20px 0;">
@@ -714,11 +714,11 @@ export async function sendFreshSpaceReminder(
           </p>
         </div>
       `,
-      text: `FreshSpace™ Reminder: Your ${cleanTypeLabels[cleaningDetails.cleanType]} is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Your Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
+      text: `PolishUp™ Reminder: Your ${cleanTypeLabels[cleaningDetails.cleanType]} is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Your Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
     }),
     sendSms({
       to: phone,
-      message: `🧹 FreshSpace™ reminder: Your cleaning is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
+      message: `🧹 PolishUp™ reminder: Your cleaning is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
     }),
   ]);
 
@@ -726,24 +726,24 @@ export async function sendFreshSpaceReminder(
 }
 
 /**
- * FreshSpace™ Pro En Route Notification
+ * PolishUp™ Pro En Route Notification
  */
-export async function sendFreshSpaceProEnRoute(
+export async function sendPolishUpProEnRoute(
   phone: string,
   proName: string,
   minutesAway: number
 ): Promise<{ success: boolean; error?: string }> {
   return sendSms({
     to: phone,
-    message: `Your FreshSpace™ Pro ${proName} is ${minutesAway} minute${minutesAway === 1 ? '' : 's'} away! 🧹`,
+    message: `Your PolishUp™ Pro ${proName} is ${minutesAway} minute${minutesAway === 1 ? '' : 's'} away! 🧹`,
   });
 }
 
 /**
- * FreshSpace™ Cleaning Complete Notification
+ * PolishUp™ Cleaning Complete Notification
  * Sent when Pro completes cleaning with before/after photos
  */
-export async function sendFreshSpaceCleaningComplete(
+export async function sendPolishUpCleaningComplete(
   email: string,
   phone: string,
   cleaningDetails: {
@@ -764,7 +764,7 @@ export async function sendFreshSpaceCleaningComplete(
   const [emailResult, smsResult] = await Promise.all([
     sendEmail({
       to: email,
-      subject: 'FreshSpace™ Cleaning Complete - See Your Results!',
+      subject: 'PolishUp™ Cleaning Complete - See Your Results!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -775,7 +775,7 @@ export async function sendFreshSpaceCleaningComplete(
           <h2 style="color: #333;">✨ Your Home Sparkles!</h2>
           <p style="color: #666; font-size: 16px;">
             ${cleaningDetails.proName} completed your ${cleanTypeLabels[cleaningDetails.cleanType].toLowerCase()}.
-            Your home is FreshSpace™ certified clean!
+            Your home is PolishUp™ certified clean!
           </p>
 
           <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0; color: white;">
@@ -814,11 +814,11 @@ export async function sendFreshSpaceCleaningComplete(
           </p>
         </div>
       `,
-      text: `FreshSpace™ Complete! ${cleaningDetails.proName} finished your cleaning. AI Score: ${cleaningDetails.cleanlinessScore}/10. Next cleaning: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString()}. Rate your Pro in the app!`,
+      text: `PolishUp™ Complete! ${cleaningDetails.proName} finished your cleaning. AI Score: ${cleaningDetails.cleanlinessScore}/10. Next cleaning: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString()}. Rate your Pro in the app!`,
     }),
     sendSms({
       to: phone,
-      message: `✨ Your FreshSpace™ cleaning is complete! AI score: ${cleaningDetails.cleanlinessScore}/10. See before/after photos in the app. Next visit: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}.`,
+      message: `✨ Your PolishUp™ cleaning is complete! AI score: ${cleaningDetails.cleanlinessScore}/10. See before/after photos in the app. Next visit: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}.`,
     }),
   ]);
 

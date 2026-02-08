@@ -224,7 +224,7 @@ Return JSON with: estimatedPrice (number matching above tiers), loadSize (small/
 }
 
 /**
- * Score cleanliness level from before/after photos for FreshSpace cleaning service
+ * Score cleanliness level from before/after photos for PolishUp cleaning service
  * Returns a 1-10 score with reasoning and specific observations
  */
 export async function scoreCleanliness(photoUrls: string[]): Promise<CleanlinessScoreResult> {

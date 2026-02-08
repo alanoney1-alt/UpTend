@@ -36,7 +36,7 @@ export const UPTEND_KNOWLEDGE = {
 
   services: {
     junk_removal: {
-      name: "ClearOut (Material Recovery)",
+      name: "BulkSnap (Material Recovery)",
       description: "Professional removal of unwanted items, furniture, appliances, yard waste, and debris. We recycle and donate whenever possible.",
       pricing: "Volume-based pricing by truck load",
       tiers: [
@@ -91,7 +91,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     gutter_cleaning: {
-      name: "GutterShield (Gutter Cleaning)",
+      name: "GutterFlush (Gutter Cleaning)",
       description: "Professional gutter cleaning and debris removal to prevent water damage.",
       pricing: "Fixed pricing by home size",
       rates: [
@@ -134,7 +134,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     home_cleaning: {
-      name: "FreshSpace (Home Cleaning)",
+      name: "PolishUp (Home Cleaning)",
       description: "Professional home cleaning service with room-by-room checklists and before/after photo verification.",
       pricing: "Standard: $99/$149/$199/$249 by size | Deep: 1.5x | Move-In/Out: 2x",
       tiers: [
@@ -184,7 +184,7 @@ export const UPTEND_KNOWLEDGE = {
   booking: {
     steps: [
       "1. Enter your address (we show instant property details)",
-      "2. Select service type (ClearOut, LiftCrew, FreshWash, GutterShield, etc.)",
+      "2. Select service type (BulkSnap, LiftCrew, FreshWash, GutterFlush, etc.)",
       "3. Get instant quote: Upload photos OR enter details manually",
       "4. Review itemized quote with sustainability impact",
       "5. Create account (if new) → Book and pay",
@@ -205,11 +205,11 @@ export const UPTEND_KNOWLEDGE = {
   },
 
   verification: {
-    forServices: ["ClearOut (Material Recovery)", "GarageReset (Garage Cleanout)", "TearDown (Demolition)", "FreshSpace (Home Cleaning)"],
+    forServices: ["BulkSnap (Material Recovery)", "GarageReset (Garage Cleanout)", "TearDown (Demolition)", "PolishUp (Home Cleaning)"],
     workflow: [
       "Before Photos: Pro takes GPS-tagged photos before starting work",
-      "Disposal Tracking (ClearOut/GarageReset/TearDown): Pro logs each item (recycle/donate/resale/landfill/e-waste)",
-      "Cleaning Checklist (FreshSpace): Room-by-room task completion with photo verification",
+      "Disposal Tracking (BulkSnap/GarageReset/TearDown): Pro logs each item (recycle/donate/resale/landfill/e-waste)",
+      "Cleaning Checklist (PolishUp): Room-by-room task completion with photo verification",
       "After Photos: Pro takes GPS-tagged photos after completion",
       "Sustainability Report: Auto-generated with carbon offset, diversion rate, environmental impact",
       "Customer Confirmation: Customer reviews and confirms (or 48-hour auto-approval)",
@@ -245,7 +245,7 @@ export const UPTEND_KNOWLEDGE = {
     },
     {
       q: "Can I book multiple Pros for a big job?",
-      a: "Yes! For LiftCrew (Moving Labor), you can request 2-3 Pro crews. For ClearOut (Material Recovery), the Pro can call for backup if needed after arriving.",
+      a: "Yes! For LiftCrew (Moving Labor), you can request 2-3 Pro crews. For BulkSnap (Material Recovery), the Pro can call for backup if needed after arriving.",
     },
     {
       q: "What if the quote is wrong?",

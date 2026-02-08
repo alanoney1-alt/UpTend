@@ -1,7 +1,7 @@
 /**
  * Cleaning Checklists API Routes
  *
- * Handles FreshSpace room-by-room task completion tracking
+ * Handles PolishUp room-by-room task completion tracking
  */
 
 import type { Express, Request, Response } from "express";

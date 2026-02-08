@@ -13,7 +13,7 @@ import { Footer } from "@/components/landing/footer";
 const services = [
   {
     id: "junk_removal",
-    name: <>ClearOut<sup>™</sup> (Material Recovery)</>,
+    name: <>BulkSnap<sup>™</sup> (Material Recovery)</>,
     icon: Recycle,
     tagline: "Space Rejuvenation. Verified Material Recovery.",
     description: "Your unwanted items are resources. We recover your space, protect your property with a 360\u00B0 Video Manifest, and verify the environmental impact of every item through our circular economy system.",
@@ -33,7 +33,7 @@ const services = [
   },
   {
     id: "gutter_cleaning",
-    name: <>GutterShield<sup>™</sup> (Gutter Cleaning)</>,
+    name: <>GutterFlush<sup>™</sup> (Gutter Cleaning)</>,
     icon: Home,
     tagline: "Prevent water damage before it starts.",
     description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
@@ -78,7 +78,7 @@ const services = [
   },
   {
     id: "home_consultation",
-    name: <>HomeScore<sup>™</sup> (Home Audit)</>,
+    name: <>DwellScan<sup>™</sup> (Home Audit)</>,
     icon: ClipboardCheck,
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
     description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360\u00B0 video documentation, and a treatment plan with transparent pricing. The $49 fee is credited toward any booked service.",
@@ -89,7 +89,7 @@ const services = [
   },
   {
     id: "home_cleaning",
-    name: <>FreshSpace<sup>™</sup> (Home Cleaning)</>,
+    name: <>PolishUp<sup>™</sup> (Home Cleaning)</>,
     icon: Home,
     tagline: "Spotless homes. Verified clean.",
     description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",

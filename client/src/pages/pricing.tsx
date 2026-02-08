@@ -7,7 +7,7 @@ import { Footer } from "@/components/landing/footer";
 const SERVICES = [
   {
     id: "junk_removal",
-    name: <>ClearOut<sup>™</sup> (Material Recovery)</>,
+    name: <>BulkSnap<sup>™</sup> (Material Recovery)</>,
     price: "$99",
     unit: "starting (minimum load)",
     description: "Volume-based pricing by truck load. We load, haul, and dispose. Includes landfill fees. 1/8 truck: $179 | 1/4 truck: $279 | 1/2 truck: $379 | 3/4 truck: $449 | Full truck: $449",
@@ -26,7 +26,7 @@ const SERVICES = [
   },
   {
     id: "gutter_cleaning",
-    name: <>GutterShield<sup>™</sup> (Gutter Cleaning)</>,
+    name: <>GutterFlush<sup>™</sup> (Gutter Cleaning)</>,
     price: "$149",
     unit: "single story home",
     description: "Debris removal and downspout flushing.",
@@ -68,7 +68,7 @@ const SERVICES = [
   },
   {
     id: "home_consultation",
-    name: <>HomeScore<sup>™</sup> (Home Audit)</>,
+    name: <>DwellScan<sup>™</sup> (Home Audit)</>,
     price: "$49",
     unit: "flat rate",
     description: "Full digital inventory and maintenance check.",
@@ -76,7 +76,7 @@ const SERVICES = [
   },
   {
     id: "home_cleaning",
-    name: <>FreshSpace<sup>™</sup> (Home Cleaning)</>,
+    name: <>PolishUp<sup>™</sup> (Home Cleaning)</>,
     price: "$99",
     unit: "starting (1-2 bed/1 bath)",
     description: "Professional home cleaning by trained Pros. Standard: $99/$149/$199/$249 by size | Deep: 1.5x | Move-In/Out: 2x | Recurring: save 10-15%",

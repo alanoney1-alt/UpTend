@@ -211,7 +211,7 @@ const MODULES: AcademyModule[] = [
   {
     id: "home_cleaning",
     skillType: "home_cleaning",
-    title: "Home Cleaning (FreshSpace™)",
+    title: "Home Cleaning (PolishUp™)",
     icon: HomeIcon,
     iconColor: "text-pink-600 dark:text-pink-400",
     required: false,

@@ -22,7 +22,7 @@ const POINT_VALUES: Record<string, { points: number; category: string }> = {
 
 const MAX_SCORE = 850;
 
-export async function updateHomeScore(
+export async function updateDwellScan(
   userId: string,
   jobType: string,
   jobId: string
@@ -76,7 +76,7 @@ export async function updateHomeScore(
   return newScore;
 }
 
-export async function getHomeScore(userId: string) {
+export async function getDwellScan(userId: string) {
   const score = await db.query.propertyScores.findFirst({
     where: eq(propertyScores.userId, userId),
   });

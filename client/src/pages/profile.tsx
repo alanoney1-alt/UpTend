@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { HomeScoreWidget } from "@/components/home-score-widget";
+import { DwellScanWidget } from "@/components/dwellscan-widget";
 import { MaintenancePlan } from "@/components/maintenance-plan";
 import { ImpactDashboard } from "@/components/impact-dashboard";
 import { 
@@ -674,7 +674,7 @@ export default function Profile() {
         </Card>
 
         <div className="mb-6">
-          <HomeScoreWidget />
+          <DwellScanWidget />
         </div>
 
         <div className="mb-6">

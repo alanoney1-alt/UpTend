@@ -92,7 +92,7 @@ import { JobCrewAssignmentsStorage } from "../domains/job-crew-assignments/stora
 import { HoaCarbonStorage } from "../domains/hoa-carbon/storage";
 import { JobVerificationStorage } from "../domains/job-verification/storage";
 import { SmsBotStorage } from "../domains/sms-bot/storage";
-import { FreshSpaceStorage } from "../domains/freshspace/storage";
+import { PolishUpStorage } from "../domains/polishup/storage";
 
 /**
  * DatabaseStorage - Composition Layer for Storage Architecture
@@ -146,7 +146,7 @@ export class DatabaseStorage implements IStorage {
   private hoaCarbon: HoaCarbonStorage;
   private jobVerification: JobVerificationStorage;
   private smsBot: SmsBotStorage;
-  private freshSpace: FreshSpaceStorage;
+  private freshSpace: PolishUpStorage;
 
   constructor() {
     // Initialize all domain storage instances
@@ -181,7 +181,7 @@ export class DatabaseStorage implements IStorage {
     this.hoaCarbon = new HoaCarbonStorage();
     this.jobVerification = new JobVerificationStorage();
     this.smsBot = new SmsBotStorage();
-    this.freshSpace = new FreshSpaceStorage();
+    this.freshSpace = new PolishUpStorage();
   }
 
   // ============================================================================

@@ -1,7 +1,7 @@
 /**
  * Customer Subscriptions Dashboard
  *
- * Manage FreshSpace recurring cleaning subscriptions
+ * Manage PolishUp recurring cleaning subscriptions
  */
 
 import { useState } from "react";
@@ -191,7 +191,7 @@ export default function CustomerSubscriptions() {
       <div className="pt-24 pb-16 px-6 max-w-5xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">My Subscriptions</h1>
-          <p className="text-muted-foreground">Manage your recurring FreshSpace<sup>™</sup> cleaning plans</p>
+          <p className="text-muted-foreground">Manage your recurring PolishUp<sup>™</sup> cleaning plans</p>
         </div>
 
         {subscriptions.length === 0 ? (
@@ -203,7 +203,7 @@ export default function CustomerSubscriptions() {
                 Set up a recurring clean and save 10-15% on every visit
               </p>
               <Button onClick={() => (window.location.href = "/book?service=home_cleaning")}>
-                Book FreshSpace<sup>™</sup> Clean
+                Book PolishUp<sup>™</sup> Clean
               </Button>
             </CardContent>
           </Card>

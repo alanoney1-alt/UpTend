@@ -671,7 +671,7 @@ export class StripeService {
   }
 
   /**
-   * Create a Stripe subscription for recurring services (FreshSpace)
+   * Create a Stripe subscription for recurring services (PolishUp)
    * @param customerId - Stripe customer ID
    * @param priceId - Stripe price ID for the subscription plan
    * @param metadata - Subscription metadata (subscriptionId, serviceType, etc.)

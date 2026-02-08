@@ -21,7 +21,7 @@ interface ScoreData {
   }>;
 }
 
-export function HomeScoreWidget() {
+export function DwellScanWidget() {
   const { data: scoreData, isLoading } = useQuery<ScoreData>({
     queryKey: ["/api/home-score"],
   });

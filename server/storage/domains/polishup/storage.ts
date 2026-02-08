@@ -1,7 +1,7 @@
 /**
- * FreshSpace Storage Domain
+ * PolishUp Storage Domain
  *
- * Database operations for FreshSpace home cleaning service:
+ * Database operations for PolishUp home cleaning service:
  * - Cleaning checklists (room-by-room task tracking)
  * - Recurring subscriptions (weekly/biweekly/monthly plans)
  */
@@ -17,7 +17,7 @@ import {
   type InsertRecurringSubscription,
 } from "@shared/schema";
 
-export interface IFreshSpaceStorage {
+export interface IPolishUpStorage {
   createCleaningChecklist(checklist: InsertCleaningChecklist): Promise<CleaningChecklist>;
   getCleaningChecklistsByRequest(serviceRequestId: string): Promise<CleaningChecklist[]>;
   updateCleaningChecklistTask(id: string, updates: Partial<CleaningChecklist>): Promise<CleaningChecklist | undefined>;
@@ -29,7 +29,7 @@ export interface IFreshSpaceStorage {
   getActiveSubscriptionsDueForBooking(date: string): Promise<RecurringSubscription[]>;
 }
 
-export class FreshSpaceStorage implements IFreshSpaceStorage {
+export class PolishUpStorage implements IPolishUpStorage {
   // Cleaning Checklists
 
   async createCleaningChecklist(checklist: InsertCleaningChecklist): Promise<CleaningChecklist> {

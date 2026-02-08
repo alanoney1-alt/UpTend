@@ -1,5 +1,5 @@
 /**
- * FreshSpace (Home Cleaning) Booking Flow
+ * PolishUp (Home Cleaning) Booking Flow
  *
  * Steps:
  * 1. Home size (bedrooms/bathrooms)
@@ -20,12 +20,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Home, Sparkles, Package, Calendar, Clock, CheckCircle, DollarSign } from "lucide-react";
 
-interface FreshSpaceBookingProps {
-  onComplete: (bookingDetails: FreshSpaceBookingDetails) => void;
+interface PolishUpBookingProps {
+  onComplete: (bookingDetails: PolishUpBookingDetails) => void;
   onBack?: () => void;
 }
 
-export interface FreshSpaceBookingDetails {
+export interface PolishUpBookingDetails {
   bedrooms: string;
   bathrooms: string;
   cleanType: "standard" | "deep" | "moveInOut";
@@ -82,7 +82,7 @@ const ADD_ONS = [
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-export function FreshSpaceBooking({ onComplete, onBack }: FreshSpaceBookingProps) {
+export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
   const [step, setStep] = useState(1);
   const [homeSize, setHomeSize] = useState<typeof HOME_SIZES[0] | null>(null);
   const [cleanType, setCleanType] = useState<typeof CLEAN_TYPES[0] | null>(null);
@@ -119,7 +119,7 @@ export function FreshSpaceBooking({ onComplete, onBack }: FreshSpaceBookingProps
   const handleComplete = () => {
     if (!homeSize || !cleanType) return;
 
-    const bookingDetails: FreshSpaceBookingDetails = {
+    const bookingDetails: PolishUpBookingDetails = {
       bedrooms: homeSize.bedrooms,
       bathrooms: homeSize.bathrooms,
       cleanType: cleanType.id as "standard" | "deep" | "moveInOut",
@@ -501,7 +501,7 @@ export function FreshSpaceBooking({ onComplete, onBack }: FreshSpaceBookingProps
         </Button>
         <Button onClick={handleComplete} className="gap-2">
           <CheckCircle className="w-4 h-4" />
-          Book FreshSpace<sup>™</sup> Clean
+          Book PolishUp<sup>™</sup> Clean
         </Button>
       </div>
     </div>

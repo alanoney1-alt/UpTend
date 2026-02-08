@@ -1,7 +1,7 @@
 /**
  * Recurring Subscriptions API Routes
  *
- * Handles FreshSpace recurring booking subscriptions
+ * Handles PolishUp recurring booking subscriptions
  */
 
 import type { Express, Request, Response } from "express";
@@ -125,7 +125,7 @@ export function registerSubscriptionRoutes(app: Express) {
       }
 
       // Create Stripe price and subscription
-      const productName = `FreshSpace ${data.homeDetails.cleanType} clean - ${data.homeDetails.bedrooms}/${data.homeDetails.bathrooms}`;
+      const productName = `PolishUp ${data.homeDetails.cleanType} clean - ${data.homeDetails.bedrooms}/${data.homeDetails.bathrooms}`;
       const stripePrice = await stripeService.createPrice(
         price,
         interval,

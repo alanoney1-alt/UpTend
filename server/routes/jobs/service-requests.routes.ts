@@ -4,7 +4,7 @@ import { requireAuth, requireCustomer, requireHauler, requireOwnership } from ".
 import { insertServiceRequestSchema } from "@shared/schema";
 import { z } from "zod";
 import { stripeService } from "../../stripeService";
-import { updateHomeScore } from "../../services/scoringService";
+import { updateDwellScan } from "../../services/scoringService";
 
 // WebSocket broadcast helper (imported from main routes)
 declare function broadcastToJob(jobId: string, message: object): void;
@@ -285,7 +285,7 @@ export function registerServiceRequestRoutes(app: Express) {
       }
 
       try {
-        await updateHomeScore(existingRequest.customerId, existingRequest.serviceType, req.params.id);
+        await updateDwellScan(existingRequest.customerId, existingRequest.serviceType, req.params.id);
       } catch (scoreErr) {
         console.error("Home score update failed (non-blocking):", scoreErr);
       }

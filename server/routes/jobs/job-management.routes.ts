@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { storage } from "../../storage";
 import { requireAuth, requireAdmin, requireHauler } from "../../auth-middleware";
 import { stripeService } from "../../stripeService";
-import { updateHomeScore } from "../../services/scoringService";
+import { updateDwellScan } from "../../services/scoringService";
 
 // WebSocket broadcast helper (imported from main routes)
 declare function broadcastToJob(jobId: string, message: object): void;
@@ -387,7 +387,7 @@ export function registerJobManagementRoutes(app: Express) {
       });
 
       try {
-        await updateHomeScore(job.customerId, job.serviceType, jobId);
+        await updateDwellScan(job.customerId, job.serviceType, jobId);
       } catch (scoreErr) {
         console.error("Home score update failed (non-blocking):", scoreErr);
       }

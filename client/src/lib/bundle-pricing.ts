@@ -11,7 +11,7 @@ export interface ServiceTypeConfig {
   startingPrice: number;
 }
 
-// Starting prices: ClearOut $99 (min load), GarageReset $299 (small), UnloadPro $80/hr per Pro, LiftCrew $80/hr per Pro
+// Starting prices: BulkSnap $99 (min load), GarageReset $299 (small), UnloadPro $80/hr per Pro, LiftCrew $80/hr per Pro
 export const SERVICE_STARTING_PRICES: Record<string, number> = {
   junk_removal: 99,
   garage_cleanout: 299,
@@ -52,7 +52,7 @@ export const SERVICE_TYPES: ServiceTypeConfig[] = [
   },
   {
     id: "junk_removal",
-    label: "ClearOut (Material Recovery)",
+    label: "BulkSnap (Material Recovery)",
     description: "Remove unwanted items and debris",
     icon: Trash2,
     pricingModel: "per_item",

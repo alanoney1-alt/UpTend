@@ -2504,7 +2504,7 @@ export const jobVerification = pgTable("job_verification", {
   carbonOffsetTons: real("carbon_offset_tons").default(0), // Total CO2e saved
   carbonCreditValue: real("carbon_credit_value").default(0), // USD value at current market rate
 
-  // Cleanliness Scores (for FreshSpace home cleaning)
+  // Cleanliness Scores (for PolishUp home cleaning)
   cleanlinessScoreBefore: real("cleanliness_score_before"), // AI-generated cleanliness score 1-10 before cleaning
   cleanlinessScoreAfter: real("cleanliness_score_after"), // AI-generated cleanliness score 1-10 after cleaning
 
@@ -2610,10 +2610,10 @@ export type InsertDisposalRecord = z.infer<typeof insertDisposalRecordSchema>;
 export type DisposalRecord = typeof disposalRecords.$inferSelect;
 
 // ==========================================
-// FreshSpace Home Cleaning System
+// PolishUp Home Cleaning System
 // ==========================================
 
-// Cleaning Checklists - Room-by-room task completion for FreshSpace jobs
+// Cleaning Checklists - Room-by-room task completion for PolishUp jobs
 export const cleaningChecklists = pgTable("cleaning_checklists", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   serviceRequestId: varchar("service_request_id").notNull(), // FK to serviceRequests
@@ -2637,11 +2637,11 @@ export const insertCleaningChecklistSchema = createInsertSchema(cleaningChecklis
 export type InsertCleaningChecklist = z.infer<typeof insertCleaningChecklistSchema>;
 export type CleaningChecklist = typeof cleaningChecklists.$inferSelect;
 
-// Recurring Subscriptions - For recurring FreshSpace bookings
+// Recurring Subscriptions - For recurring PolishUp bookings
 export const recurringSubscriptions = pgTable("recurring_subscriptions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   customerId: varchar("customer_id").notNull(), // FK to users
-  serviceType: text("service_type").notNull(), // "home_cleaning" for FreshSpace
+  serviceType: text("service_type").notNull(), // "home_cleaning" for PolishUp
   frequency: text("frequency").notNull(), // "weekly", "biweekly", "monthly"
   homeDetails: jsonb("home_details").notNull(), // {bedrooms: 3, bathrooms: 2, addOns: ["inside_oven"], cleanType: "standard"}
   preferredDay: text("preferred_day"), // "monday", "tuesday", etc.

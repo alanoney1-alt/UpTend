@@ -1,5 +1,5 @@
 /**
- * FreshSpace Cleaning Checklist Component
+ * PolishUp Cleaning Checklist Component
  *
  * Pro dashboard interface for completing room-by-room cleaning tasks
  * Real-time progress tracking and skip functionality with reasons
@@ -18,7 +18,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { CheckCircle, XCircle, Clock, AlertTriangle, Sparkles } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useMutation, useQueryClient } from "@tantml:parameter>
-import type { ChecklistTask } from "@shared/freshspace-checklists";
+import type { ChecklistTask } from "@shared/polishup-checklists";
 
 interface CleaningChecklistProps {
   serviceRequestId: string;
