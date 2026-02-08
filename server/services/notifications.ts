@@ -536,25 +536,25 @@ export async function sendLaunchNotificationConfirmation(email: string): Promise
           <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
           <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
         </div>
-        
+
         <h2 style="color: #333;">You're on the List!</h2>
         <p style="color: #666; font-size: 16px;">
           Thanks for signing up to be notified when UpTend launches in your area!
         </p>
-        
+
         <div style="background: linear-gradient(135deg, #3B1D5A 0%, #5a2d87 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
           <p style="color: white; font-size: 18px; margin: 0;">
             As an early subscriber, you'll get <strong style="color: #F47C20;">$25 OFF</strong> your first job!
           </p>
         </div>
-        
+
         <p style="color: #666; font-size: 14px;">
-          We're launching soon in the Orlando Metro area (Orange, Seminole, and Osceola counties). 
+          We're launching soon in the Orlando Metro area (Orange, Seminole, and Osceola counties).
           You'll be the first to know when we go live!
         </p>
-        
+
         <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-        
+
         <p style="color: #999; font-size: 12px; text-align: center;">
           UpTend - On-demand junk removal and moving services<br>
           Orlando Metro Area | (407) 338-3342
@@ -563,4 +563,264 @@ export async function sendLaunchNotificationConfirmation(email: string): Promise
     `,
     text: "Thanks for signing up to be notified when UpTend launches! As an early subscriber, you'll get $25 OFF your first job. We're launching soon in the Orlando Metro area.",
   });
+}
+
+/**
+ * FreshSpace™ Subscription Confirmation
+ * Sent when customer subscribes to recurring cleaning service
+ */
+export async function sendFreshSpaceSubscriptionConfirmation(
+  email: string,
+  phone: string,
+  subscriptionDetails: {
+    subscriptionId: string;
+    frequency: 'weekly' | 'biweekly' | 'monthly';
+    cleanType: string;
+    price: number;
+    nextCleaningDate: string;
+  }
+): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
+  const frequencyLabels = {
+    weekly: 'Weekly',
+    biweekly: 'Every 2 Weeks',
+    monthly: 'Monthly',
+  };
+
+  const cleanTypeLabels: Record<string, string> = {
+    standard: 'Standard Clean',
+    deep: 'Deep Clean',
+    moveInOut: 'Move-In/Move-Out Clean',
+  };
+
+  const [emailResult, smsResult] = await Promise.all([
+    sendEmail({
+      to: email,
+      subject: 'FreshSpace™ Subscription Active - Welcome!',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          </div>
+
+          <h2 style="color: #333;">🏠 Welcome to FreshSpace™!</h2>
+          <p style="color: #666; font-size: 16px;">
+            Your recurring cleaning subscription is now active. Say goodbye to cleaning stress!
+          </p>
+
+          <div style="background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%); border-radius: 12px; padding: 30px; color: white; margin: 30px 0;">
+            <h3 style="margin: 0 0 15px 0; font-size: 20px;">Your Plan</h3>
+            <p style="margin: 5px 0;"><strong>Frequency:</strong> ${frequencyLabels[subscriptionDetails.frequency]}</p>
+            <p style="margin: 5px 0;"><strong>Service:</strong> ${cleanTypeLabels[subscriptionDetails.cleanType] || subscriptionDetails.cleanType}</p>
+            <p style="margin: 5px 0;"><strong>Price:</strong> $${subscriptionDetails.price.toFixed(2)} per visit</p>
+            <p style="margin: 5px 0;"><strong>Next Cleaning:</strong> ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+          </div>
+
+          <div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0; color: #166534; font-size: 14px;">
+              <strong>✓ Auto-Booking Enabled:</strong> Your Pro will be automatically scheduled ${frequencyLabels[subscriptionDetails.frequency].toLowerCase()}. No action needed!
+            </p>
+          </div>
+
+          <h3 style="color: #333; margin-top: 30px;">What Happens Next?</h3>
+          <ul style="color: #666; font-size: 14px; line-height: 1.8;">
+            <li>You'll receive a reminder 24 hours before each cleaning</li>
+            <li>Your preferred Pro (when available) will be assigned automatically</li>
+            <li>Before/after photos will be sent after each visit</li>
+            <li>Payment processes automatically via your saved card</li>
+          </ul>
+
+          <p style="color: #666; font-size: 14px;">
+            Manage your subscription anytime at: <a href="https://uptend.app/subscriptions" style="color: #F47C20;">uptend.app/subscriptions</a>
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            UpTend - On-demand junk removal and moving services<br>
+            Orlando Metro Area | (407) 338-3342
+          </p>
+        </div>
+      `,
+      text: `FreshSpace™ Subscription Active!\n\nFrequency: ${frequencyLabels[subscriptionDetails.frequency]}\nService: ${cleanTypeLabels[subscriptionDetails.cleanType]}\nPrice: $${subscriptionDetails.price} per visit\nNext Cleaning: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString()}\n\nYour Pro will be automatically scheduled. Manage at uptend.app/subscriptions`,
+    }),
+    sendSms({
+      to: phone,
+      message: `Welcome to FreshSpace™! Your ${frequencyLabels[subscriptionDetails.frequency].toLowerCase()} cleaning is set up. Next visit: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. Manage at uptend.app/subscriptions`,
+    }),
+  ]);
+
+  return { email: emailResult, sms: smsResult };
+}
+
+/**
+ * FreshSpace™ Cleaning Reminder
+ * Sent 24 hours before scheduled cleaning
+ */
+export async function sendFreshSpaceReminder(
+  email: string,
+  phone: string,
+  cleaningDetails: {
+    cleanType: string;
+    scheduledDate: string;
+    scheduledTime: string;
+    proName?: string;
+  }
+): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
+  const cleanTypeLabels: Record<string, string> = {
+    standard: 'Standard Clean',
+    deep: 'Deep Clean',
+    moveInOut: 'Move-In/Move-Out Clean',
+  };
+
+  const [emailResult, smsResult] = await Promise.all([
+    sendEmail({
+      to: email,
+      subject: 'FreshSpace™ Cleaning Tomorrow - Reminder',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          </div>
+
+          <h2 style="color: #333;">🧹 Cleaning Tomorrow!</h2>
+          <p style="color: #666; font-size: 16px;">
+            Your FreshSpace™ cleaning is scheduled for tomorrow.
+          </p>
+
+          <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin: 20px 0;">
+            <p style="margin: 5px 0;"><strong>Service:</strong> ${cleanTypeLabels[cleaningDetails.cleanType] || cleaningDetails.cleanType}</p>
+            <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date(cleaningDetails.scheduledDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+            <p style="margin: 5px 0;"><strong>Time Window:</strong> ${cleaningDetails.scheduledTime}</p>
+            ${cleaningDetails.proName ? `<p style="margin: 5px 0;"><strong>Your Pro:</strong> ${cleaningDetails.proName}</p>` : ''}
+          </div>
+
+          <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0; color: #92400e; font-size: 14px;">
+              <strong>Reminder:</strong> Please ensure pets are secured and any fragile items are moved.
+            </p>
+          </div>
+
+          <p style="color: #666; font-size: 14px;">
+            Need to reschedule or cancel? Manage at: <a href="https://uptend.app/subscriptions" style="color: #F47C20;">uptend.app/subscriptions</a>
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            UpTend - On-demand junk removal and moving services<br>
+            Orlando Metro Area | (407) 338-3342
+          </p>
+        </div>
+      `,
+      text: `FreshSpace™ Reminder: Your ${cleanTypeLabels[cleaningDetails.cleanType]} is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Your Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
+    }),
+    sendSms({
+      to: phone,
+      message: `🧹 FreshSpace™ reminder: Your cleaning is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
+    }),
+  ]);
+
+  return { email: emailResult, sms: smsResult };
+}
+
+/**
+ * FreshSpace™ Pro En Route Notification
+ */
+export async function sendFreshSpaceProEnRoute(
+  phone: string,
+  proName: string,
+  minutesAway: number
+): Promise<{ success: boolean; error?: string }> {
+  return sendSms({
+    to: phone,
+    message: `Your FreshSpace™ Pro ${proName} is ${minutesAway} minute${minutesAway === 1 ? '' : 's'} away! 🧹`,
+  });
+}
+
+/**
+ * FreshSpace™ Cleaning Complete Notification
+ * Sent when Pro completes cleaning with before/after photos
+ */
+export async function sendFreshSpaceCleaningComplete(
+  email: string,
+  phone: string,
+  cleaningDetails: {
+    cleanType: string;
+    proName: string;
+    cleanlinessScore: number;
+    beforePhotosUrl: string;
+    afterPhotosUrl: string;
+    nextCleaningDate: string;
+  }
+): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
+  const cleanTypeLabels: Record<string, string> = {
+    standard: 'Standard Clean',
+    deep: 'Deep Clean',
+    moveInOut: 'Move-In/Move-Out Clean',
+  };
+
+  const [emailResult, smsResult] = await Promise.all([
+    sendEmail({
+      to: email,
+      subject: 'FreshSpace™ Cleaning Complete - See Your Results!',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          </div>
+
+          <h2 style="color: #333;">✨ Your Home Sparkles!</h2>
+          <p style="color: #666; font-size: 16px;">
+            ${cleaningDetails.proName} completed your ${cleanTypeLabels[cleaningDetails.cleanType].toLowerCase()}.
+            Your home is FreshSpace™ certified clean!
+          </p>
+
+          <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0; color: white;">
+            <p style="margin: 0 0 10px 0; font-size: 14px; opacity: 0.9;">AI Cleanliness Score</p>
+            <p style="margin: 0; font-size: 48px; font-weight: bold;">${cleaningDetails.cleanlinessScore}/10</p>
+            <p style="margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">
+              ${cleaningDetails.cleanlinessScore >= 9 ? 'Exceptional!' : cleaningDetails.cleanlinessScore >= 8 ? 'Excellent!' : cleaningDetails.cleanlinessScore >= 7 ? 'Great job!' : 'Good clean!'}
+            </p>
+          </div>
+
+          <h3 style="color: #333;">Before & After Photos</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
+            <a href="${cleaningDetails.beforePhotosUrl}" style="display: block; background: #f3f4f6; padding: 40px 20px; text-align: center; border-radius: 8px; text-decoration: none; color: #6b7280;">
+              <p style="margin: 0; font-size: 12px;">📷 Before</p>
+            </a>
+            <a href="${cleaningDetails.afterPhotosUrl}" style="display: block; background: #d1fae5; padding: 40px 20px; text-align: center; border-radius: 8px; text-decoration: none; color: #059669;">
+              <p style="margin: 0; font-size: 12px;">✨ After</p>
+            </a>
+          </div>
+
+          <div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0; color: #166534; font-size: 14px;">
+              <strong>Next Cleaning:</strong> ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+            </p>
+          </div>
+
+          <p style="color: #666; font-size: 14px;">
+            Please rate your Pro in the app. Your feedback helps us maintain quality service!
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            UpTend - On-demand junk removal and moving services<br>
+            Orlando Metro Area | (407) 338-3342
+          </p>
+        </div>
+      `,
+      text: `FreshSpace™ Complete! ${cleaningDetails.proName} finished your cleaning. AI Score: ${cleaningDetails.cleanlinessScore}/10. Next cleaning: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString()}. Rate your Pro in the app!`,
+    }),
+    sendSms({
+      to: phone,
+      message: `✨ Your FreshSpace™ cleaning is complete! AI score: ${cleaningDetails.cleanlinessScore}/10. See before/after photos in the app. Next visit: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}.`,
+    }),
+  ]);
+
+  return { email: emailResult, sms: smsResult };
 }
