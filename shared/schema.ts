@@ -14,8 +14,8 @@ export const userRoleEnum = z.enum(["customer", "hauler", "admin"]);
 export type UserRole = z.infer<typeof userRoleEnum>;
 
 export const serviceTypeEnum = z.enum([
-  "junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout", 
-  "truck_unloading", "hvac", "cleaning",
+  "junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout",
+  "truck_unloading", "hvac", "cleaning", "home_cleaning",
   "moving_labor", "pressure_washing", "gutter_cleaning", "light_demolition", "home_consultation"
 ]);
 export type ServiceType = z.infer<typeof serviceTypeEnum>;
@@ -2504,6 +2504,10 @@ export const jobVerification = pgTable("job_verification", {
   carbonOffsetTons: real("carbon_offset_tons").default(0), // Total CO2e saved
   carbonCreditValue: real("carbon_credit_value").default(0), // USD value at current market rate
 
+  // Cleanliness Scores (for FreshSpace home cleaning)
+  cleanlinessScoreBefore: real("cleanliness_score_before"), // AI-generated cleanliness score 1-10 before cleaning
+  cleanlinessScoreAfter: real("cleanliness_score_after"), // AI-generated cleanliness score 1-10 after cleaning
+
   // Customer Confirmation
   customerConfirmedAt: text("customer_confirmed_at"),
   customerFeedback: text("customer_feedback"),
@@ -2604,6 +2608,70 @@ export const disposalRecordsRelations = relations(disposalRecords, ({ one }) => 
 export const insertDisposalRecordSchema = createInsertSchema(disposalRecords).omit({ id: true });
 export type InsertDisposalRecord = z.infer<typeof insertDisposalRecordSchema>;
 export type DisposalRecord = typeof disposalRecords.$inferSelect;
+
+// ==========================================
+// FreshSpace Home Cleaning System
+// ==========================================
+
+// Cleaning Checklists - Room-by-room task completion for FreshSpace jobs
+export const cleaningChecklists = pgTable("cleaning_checklists", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id").notNull(), // FK to serviceRequests
+  roomType: text("room_type").notNull(), // "kitchen", "bathroom", "bedroom", "living_room", "dining_room", "office", "general"
+  taskName: text("task_name").notNull(), // e.g., "Countertops wiped and sanitized", "Toilet cleaned inside and out"
+  completed: boolean("completed").default(false),
+  skipped: boolean("skipped").default(false),
+  skipReason: text("skip_reason"), // If skipped, why? e.g., "Customer asked to skip", "Area inaccessible"
+  completedAt: text("completed_at"),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+});
+
+export const cleaningChecklistsRelations = relations(cleaningChecklists, ({ one }) => ({
+  serviceRequest: one(serviceRequests, {
+    fields: [cleaningChecklists.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertCleaningChecklistSchema = createInsertSchema(cleaningChecklists).omit({ id: true });
+export type InsertCleaningChecklist = z.infer<typeof insertCleaningChecklistSchema>;
+export type CleaningChecklist = typeof cleaningChecklists.$inferSelect;
+
+// Recurring Subscriptions - For recurring FreshSpace bookings
+export const recurringSubscriptions = pgTable("recurring_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(), // FK to users
+  serviceType: text("service_type").notNull(), // "home_cleaning" for FreshSpace
+  frequency: text("frequency").notNull(), // "weekly", "biweekly", "monthly"
+  homeDetails: jsonb("home_details").notNull(), // {bedrooms: 3, bathrooms: 2, addOns: ["inside_oven"], cleanType: "standard"}
+  preferredDay: text("preferred_day"), // "monday", "tuesday", etc.
+  preferredTimeWindow: text("preferred_time_window"), // "morning", "afternoon", "evening"
+  assignedProId: varchar("assigned_pro_id"), // FK to users - same Pro for consistency
+  stripeSubscriptionId: text("stripe_subscription_id"), // Stripe subscription ID for recurring billing
+  status: text("status").notNull().default("active"), // "active", "paused", "cancelled"
+  nextBookingDate: text("next_booking_date"), // ISO date string of next scheduled booking
+  bookingsCompleted: integer("bookings_completed").default(0), // Count of completed bookings
+  minimumBookingsCommitment: integer("minimum_bookings_commitment").default(3), // 3-booking minimum
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").notNull().default(sql`now()`),
+  cancelledAt: text("cancelled_at"),
+  cancellationReason: text("cancellation_reason"),
+});
+
+export const recurringSubscriptionsRelations = relations(recurringSubscriptions, ({ one }) => ({
+  customer: one(users, {
+    fields: [recurringSubscriptions.customerId],
+    references: [users.id],
+  }),
+  assignedPro: one(users, {
+    fields: [recurringSubscriptions.assignedProId],
+    references: [users.id],
+  }),
+}));
+
+export const insertRecurringSubscriptionSchema = createInsertSchema(recurringSubscriptions).omit({ id: true });
+export type InsertRecurringSubscription = z.infer<typeof insertRecurringSubscriptionSchema>;
+export type RecurringSubscription = typeof recurringSubscriptions.$inferSelect;
 
 // ==========================================
 // AI Assistant / SMS Bot System
