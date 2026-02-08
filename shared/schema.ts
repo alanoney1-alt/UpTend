@@ -110,6 +110,8 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   hasBusinessLicense: boolean("has_business_license").default(false),
   businessLicenseVerifiedAt: text("business_license_verified_at"),
   droneCertified: boolean("drone_certified").default(false), // FAA Part 107 certified for DwellScan Aerial
+  walkthroughQualified: boolean("walkthrough_qualified").default(true), // Can perform interior walkthroughs
+  canDoCombinedDwellscan: boolean("can_do_combined_dwellscan").default(false), // drone_certified AND walkthrough_qualified — opts in during onboarding
   payoutPercentage: real("payout_percentage").default(0.75), // 75% for independent, 80% for verified_pro
   isVerifiedLlc: boolean("is_verified_llc").default(false),
   fiveStarJobCount: real("five_star_job_count").default(0),
