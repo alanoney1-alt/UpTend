@@ -39,6 +39,9 @@ import { registerFacilitiesRebatesRoutes } from "./marketplace/facilities-rebate
 import { registerAnalyticsPromotionsRoutes } from "./marketplace/analytics-promotions.routes";
 import { registerMarketplaceRoutes } from "./marketplace/marketplace.routes";
 
+// HOA routes
+import { registerHoaViolationRoutes } from "./hoa/violations.routes";
+
 // Referral routes
 import { registerReferralRoutes } from "./referrals/referral.routes";
 
@@ -111,6 +114,9 @@ export async function registerRoutes(
   registerFacilitiesRebatesRoutes(app);
   registerAnalyticsPromotionsRoutes(app);
   registerMarketplaceRoutes(app);
+
+  // Register HOA routes
+  registerHoaViolationRoutes(app);
 
   // Register referral routes
   registerReferralRoutes(app);

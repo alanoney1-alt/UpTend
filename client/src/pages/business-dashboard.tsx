@@ -11,13 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiRequest } from "@/lib/queryClient";
-import { 
-  Building2, CalendarClock, Truck, Plus, DollarSign, 
+import {
+  Building2, CalendarClock, Truck, Plus, DollarSign,
   TrendingUp, ArrowLeft, Clock, MapPin, Repeat, BarChart3,
-  CheckCircle, AlertCircle, Leaf
+  CheckCircle, AlertCircle, Leaf, AlertTriangle
 } from "lucide-react";
 import type { BusinessAccount, RecurringJob } from "@shared/schema";
 import { Scope3EsgReport } from "@/components/scope3-esg-report";
+import { ViolationSubmission } from "@/components/hoa/violation-submission";
 
 const businessTypes = [
   { id: "property_manager", label: "Property Manager" },
@@ -364,6 +365,12 @@ export default function BusinessDashboard() {
         <Tabs defaultValue="recurring" className="space-y-6">
           <TabsList>
             <TabsTrigger value="recurring">Recurring Jobs</TabsTrigger>
+            {account.businessType === "property_manager" && (
+              <TabsTrigger value="violations" data-testid="tab-violations">
+                <AlertTriangle className="h-4 w-4 mr-1" />
+                Violations
+              </TabsTrigger>
+            )}
             <TabsTrigger value="esg" data-testid="tab-esg-reports"><Leaf className="h-4 w-4 mr-1" />ESG Reports</TabsTrigger>
             <TabsTrigger value="history">Job History</TabsTrigger>
             <TabsTrigger value="settings">Account Settings</TabsTrigger>
@@ -516,6 +523,12 @@ export default function BusinessDashboard() {
               </div>
             )}
           </TabsContent>
+
+          {account.businessType === "property_manager" && (
+            <TabsContent value="violations" className="space-y-4">
+              <ViolationSubmission businessAccountId={account.id} />
+            </TabsContent>
+          )}
 
           <TabsContent value="esg" className="space-y-4">
             <Scope3EsgReport businessAccountId={account.id} />
