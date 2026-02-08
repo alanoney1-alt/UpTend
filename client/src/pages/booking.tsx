@@ -36,13 +36,14 @@ import { MatchingFlow } from "@/components/matching";
 import { BundlingSuggestions } from "@/components/bundling-suggestions";
 import { VideoUpload } from "@/components/video-upload";
 import { Video, Info } from "lucide-react";
-import { 
-  GARAGE_CLEANOUT_PACKAGES, 
-  loadSizePackages, 
+import {
+  GARAGE_CLEANOUT_PACKAGES,
+  loadSizePackages,
   TRUCK_UNLOADING_SIZES,
   HOURLY_RATE_PER_PERSON,
   SERVICE_STARTING_PRICES
 } from "@/lib/bundle-pricing";
+import { FreshSpaceBooking, type FreshSpaceBookingDetails } from "@/components/booking/freshspace-booking";
 
 import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
@@ -56,6 +57,7 @@ const serviceTypes = [
   { id: "moving_labor", label: "Moving Labor", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
   { id: "light_demolition", label: "Light Demolition", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
   { id: "home_consultation", label: "Home Consultation", icon: ClipboardCheck, description: "$49 on-site assessment, credited toward any booked job", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
+  { id: "home_cleaning", label: "FreshSpace (Home Cleaning)", icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
 ];
 
 // Map shared garage packages to booking page format
@@ -336,7 +338,10 @@ export default function Booking() {
   
   // PYCKER tier preference (Verified Pro only filter)
   const [preferVerifiedPro, setPreferVerifiedPro] = useState(false);
-  
+
+  // FreshSpace (home cleaning) booking details
+  const [freshSpaceDetails, setFreshSpaceDetails] = useState<FreshSpaceBookingDetails | null>(null);
+
   // Initial quote data from quote page
   const [initialQuote, setInitialQuote] = useState<{
     price: number;
@@ -933,6 +938,23 @@ export default function Booking() {
         // This preserves the hourly rate selection for pricing consistency
       }
       
+      // Add FreshSpace (home_cleaning) specific fields
+      if (data.serviceType === "home_cleaning" && freshSpaceDetails) {
+        requestBody.freshSpaceDetails = JSON.stringify({
+          bedrooms: freshSpaceDetails.bedrooms,
+          bathrooms: freshSpaceDetails.bathrooms,
+          cleanType: freshSpaceDetails.cleanType,
+          addOns: freshSpaceDetails.addOns,
+          bookingType: freshSpaceDetails.bookingType,
+          recurringFrequency: freshSpaceDetails.recurringFrequency,
+          preferredDay: freshSpaceDetails.preferredDay,
+          preferredTimeWindow: freshSpaceDetails.preferredTimeWindow,
+          specialInstructions: freshSpaceDetails.specialInstructions,
+          bringsSupplies: freshSpaceDetails.bringsSupplies,
+        });
+        requestBody.livePrice = freshSpaceDetails.estimatedPrice;
+      }
+
       // Add customer's preferred language for matching
       if (data.preferredLanguage) {
         requestBody.preferredLanguage = data.preferredLanguage;
@@ -1039,6 +1061,30 @@ export default function Booking() {
             </Card>
           </div>
         </main>
+      </div>
+    );
+  }
+
+  // Route to FreshSpace booking flow if home_cleaning is selected
+  if (formData.serviceType === "home_cleaning" && !freshSpaceDetails) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <FreshSpaceBooking
+          onComplete={(details) => {
+            setFreshSpaceDetails(details);
+            // Set formData with FreshSpace details for service request creation
+            setFormData(prev => ({
+              ...prev,
+              description: `FreshSpace ${details.cleanType} clean - ${details.bedrooms} bed / ${details.bathrooms} bath${details.addOns.length > 0 ? ` with add-ons: ${details.addOns.join(", ")}` : ""}${details.specialInstructions ? ` - ${details.specialInstructions}` : ""}`,
+            }));
+            setStep(2); // Move to address/scheduling step
+          }}
+          onBack={() => {
+            setFormData(prev => ({ ...prev, serviceType: "" }));
+            setFreshSpaceDetails(null);
+          }}
+        />
       </div>
     );
   }
