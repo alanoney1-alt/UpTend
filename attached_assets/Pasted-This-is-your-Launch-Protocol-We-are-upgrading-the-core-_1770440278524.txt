@@ -1,0 +1,246 @@
+This is your Launch Protocol.
+
+We are upgrading the core of uPYCK from a "Junk App" to the "Orlando Home Operating System."
+
+Here are the 4 Critical Files you need to update in Replit right now to go live with the "Unlicensed 5" and the "Home Score."
+
+1. The Foundation: Database Schema
+File: shared/schema.ts Action: Replace your existing schema or append these new tables/columns. This enables the new verticals, the home score, and the inventory system.
+
+TypeScript
+import { pgTable, text, serial, integer, boolean, timestamp, uuid, varchar, jsonb, pgEnum } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
+// 1. THE EXPANDED SERVICE MENU (The "Unlicensed 5")
+export const serviceTypeEnum = pgEnum("service_type", [
+  'junk_removal',      // The Anchor
+  'moving_labor',      // Strong backs
+  'pressure_washing',  // High margin (HOA Compliance)
+  'gutter_cleaning',   // Recurring revenue
+  'light_demolition',  // Sheds/Carpet
+  'home_consultation'  // The $49 Gateway
+]);
+
+// 2. UPDATED USERS (Homeowners)
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull().unique(),
+  phone: varchar("phone"), // Masked in API
+  // ... auth fields ...
+});
+
+// 3. UPDATED HAULERS (The "Career Ladder")
+export const haulers = pgTable("haulers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  // ... basic fields ...
+  
+  // CAREER STATS
+  level: integer("level").default(1), // 1=Rookie, 2=Pro, 3=Consultant
+  xpPoints: integer("xp_points").default(0),
+  
+  // SKILLS & EQUIPMENT (Who can do what?)
+  supportedServices: jsonb("supported_services").default(["junk_removal"]),
+  hasPressureWasher: boolean("has_pressure_washer").default(false), // >3000 PSI
+  hasTallLadder: boolean("has_tall_ladder").default(false), // 20ft+
+  hasDemoTools: boolean("has_demo_tools").default(false),
+});
+
+// 4. THE JOB TICKET (Polymorphic)
+export const serviceRequests = pgTable("service_requests", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  customerId: varchar("customer_id").notNull(),
+  haulerId: varchar("hauler_id"),
+  
+  serviceType: serviceTypeEnum("service_type").default('junk_removal'),
+  status: varchar("status").default('pending'),
+  
+  // DYNAMIC PRICING FIELDS
+  squareFootage: integer("square_footage"), // Pressure Washing
+  storyCount: integer("story_count"),       // Gutters (1 vs 2)
+  laborHours: integer("labor_hours"),       // Moving
+  laborCrewSize: integer("labor_crew_size").default(1),
+  
+  // FINANCIALS
+  quotedPrice: integer("quoted_price").notNull(), // In Cents
+  finalPrice: integer("final_price"), // After on-site adjustments
+  isConsultationCreditApplied: boolean("is_consultation_credit_applied").default(false),
+});
+
+// 5. THE HOME SCORE (Data Moat)
+export const propertyScores = pgTable("property_scores", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").notNull(), // Owner
+  
+  totalScore: integer("total_score").default(450), // 0-850
+  safetyScore: integer("safety_score").default(50),
+  maintenanceScore: integer("maintenance_score").default(50),
+  lastUpdated: timestamp("last_updated").defaultNow()
+});
+
+// 6. THE INVENTORY (Digital Twin)
+export const homeInventory = pgTable("home_inventory", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").notNull(),
+  itemName: varchar("item_name").notNull(),
+  estimatedValue: integer("estimated_value"), // Cents
+  condition: varchar("condition"), 
+  verificationPhotoUrl: text("verification_photo_url"),
+});
+
+// 7. THE NUDGE ENGINE (Deferred Work)
+export const deferredJobs = pgTable("deferred_jobs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").notNull(),
+  title: varchar("title").notNull(), // "Driveway Cleaning"
+  estimatedPrice: integer("estimated_price"),
+  nudgeCount: integer("nudge_count").default(0),
+  nextNudgeDate: timestamp("next_nudge_date"),
+  status: varchar("status").default('pending')
+});
+2. The Pricing Brain
+File: server/services/pricing.ts Action: Create this file. This logic ensures you quote correctly for every vertical instantly.
+
+TypeScript
+// server/services/pricing.ts
+
+export const PRICING_CONSTANTS = {
+  PRESSURE_WASH_SQFT: 25, // $0.25 per sq ft
+  PRESSURE_WASH_MIN: 9900, // Minimum $99 visit
+  
+  GUTTER_1_STORY: 14900,  // $149.00 flat
+  GUTTER_2_STORY: 24900,  // $249.00 flat
+  
+  MOVER_HOURLY: 4500,     // $45.00/hr per mover
+  MOVER_MIN_HOURS: 2,     // Minimum 2 hours
+  
+  CONSULTATION_FEE: 4900, // $49.00
+};
+
+export function calculateServicePrice(type: string, data: any) {
+  let price = 0;
+
+  switch (type) {
+    case 'pressure_washing':
+      price = (data.squareFootage || 0) * PRICING_CONSTANTS.PRESSURE_WASH_SQFT;
+      if (price < PRICING_CONSTANTS.PRESSURE_WASH_MIN) price = PRICING_CONSTANTS.PRESSURE_WASH_MIN;
+      break;
+
+    case 'gutter_cleaning':
+      price = (data.storyCount === 2) 
+        ? PRICING_CONSTANTS.GUTTER_2_STORY 
+        : PRICING_CONSTANTS.GUTTER_1_STORY;
+      break;
+
+    case 'moving_labor':
+      const hours = Math.max(data.laborHours || 0, PRICING_CONSTANTS.MOVER_MIN_HOURS);
+      const crew = data.laborCrewSize || 1;
+      price = hours * crew * PRICING_CONSTANTS.MOVER_HOURLY;
+      break;
+      
+    case 'home_consultation':
+      price = PRICING_CONSTANTS.CONSULTATION_FEE;
+      break;
+
+    case 'junk_removal':
+    default:
+      return null; // Triggers AI Vision Quote flow
+  }
+
+  return price; // Returns Cents
+}
+3. The Gamification Engine (Home Score)
+File: server/services/scoring.ts Action: Create this file. This runs every time a job completes to update the score.
+
+TypeScript
+// server/services/scoring.ts
+import { db } from "../db";
+import { propertyScores } from "@shared/schema";
+import { eq } from "drizzle-orm";
+
+const POINTS_TABLE = {
+  junk_removal: 15,       // Safety/Clutter
+  pressure_washing: 10,   // Maintenance
+  gutter_cleaning: 20,    // Water Damage Prevention (High Value)
+  moving_labor: 5,
+  home_consultation: 50,  // Huge boost for getting audited
+};
+
+export async function updateHomeScore(userId: string, serviceType: string) {
+  // 1. Get current score
+  let score = await db.query.propertyScores.findFirst({
+    where: eq(propertyScores.userId, userId)
+  });
+
+  if (!score) {
+    [score] = await db.insert(propertyScores).values({ userId }).returning();
+  }
+
+  // 2. Add Points
+  const pointsToAdd = POINTS_TABLE[serviceType] || 5;
+  const newTotal = Math.min(850, (score.totalScore || 450) + pointsToAdd);
+
+  // 3. Save
+  await db.update(propertyScores)
+    .set({ 
+      totalScore: newTotal,
+      lastUpdated: new Date()
+    })
+    .where(eq(propertyScores.userId, userId));
+    
+  return newTotal;
+}
+4. The API Routes (Connecting it all)
+File: server/routes.ts Action: Update your booking and completion routes to use the new logic.
+
+TypeScript
+import { calculateServicePrice } from "./services/pricing";
+import { updateHomeScore } from "./services/scoring";
+
+// 1. BOOKING ENDPOINT (Updated)
+app.post("/api/book", async (req, res) => {
+  const { serviceType, details, customerId } = req.body;
+  
+  // Calculate Price instantly
+  const price = calculateServicePrice(serviceType, details);
+  
+  if (!price && serviceType !== 'junk_removal') {
+    return res.status(400).json({ error: "Could not calculate price" });
+  }
+
+  // Create Job
+  const job = await storage.createServiceRequest({
+    customerId,
+    serviceType,
+    quotedPrice: price || 0, // 0 means "Pending AI Quote"
+    ...details
+  });
+
+  res.json(job);
+});
+
+// 2. COMPLETION ENDPOINT (Updated)
+app.post("/api/jobs/:id/complete", async (req, res) => {
+  const job = await storage.getServiceRequest(req.params.id);
+  
+  // ... Process Payment ...
+
+  // TRIGGER: Update Home Score
+  await updateHomeScore(job.customerId, job.serviceType);
+  
+  // TRIGGER: Check for Upsells (The Flywheel)
+  // ... (Upsell logic from previous chat) ...
+
+  res.json({ success: true });
+});
+✅ Execution Checklist
+Stop the server.
+
+Paste the schema code into shared/schema.ts.
+
+Run npm run db:push (or your migration command) to update the database tables.
+
+Create the two new service files (pricing.ts, scoring.ts).
+
+Update routes.ts.
+
+Restart the server.

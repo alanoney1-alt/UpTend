@@ -1,0 +1,128 @@
+✂️ Step 1: Clean the Home Page (Customer View)
+Go to client/src/pages/landing-page.tsx. DELETE the entire <section> that starts with Your Business. Powered by Algorithms. (The dark mode section).
+
+Replace it with this simple, friendly "Join Us" banner at the very bottom (just before the footer):
+
+TypeScript
+{/* --- SIMPLE WORKER CTA (Customer Safe) --- */}
+<section className="py-20 bg-slate-900 text-white text-center">
+  <div className="container mx-auto px-6">
+    <h2 className="text-3xl font-bold mb-4">Earn Money with Your Truck or Skills</h2>
+    <p className="text-slate-400 mb-8 max-w-2xl mx-auto">
+      Join the network of verified Pyckers. We provide the jobs, the insurance, and the technology. You provide the hustle.
+    </p>
+    <Link href="/hauler/apply">
+      <Button variant="outline" size="lg" className="h-14 px-8 border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-slate-900">
+        Apply to be a Pycker
+      </Button>
+    </Link>
+  </div>
+</section>
+💉 Step 2: Supercharge the Worker Page (Pycker View)
+Now, take that high-tech "Dark Mode" section and put it where it will actually close deals: The Pycker Landing Page.
+
+Go to client/src/pages/hauler-landing.tsx. Insert this code right after the "Hero Section" (the top part) and before the Pay Table.
+
+Note: You will need to add these imports to the top of the file: import { HardHat, Smartphone, TrendingUp, ArrowRight } from "lucide-react";
+
+TypeScript
+{/* --- THE "AI CO-PILOT" SECTION (Transplanted Here) --- */}
+<section className="py-24 bg-slate-900 text-white overflow-hidden relative">
+  {/* Decoration */}
+  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-30" />
+  
+  <div className="container mx-auto px-6 relative z-10">
+    <div className="grid md:grid-cols-2 gap-16 items-center">
+      
+      <div>
+        <div className="inline-flex items-center gap-2 text-cyan-400 font-mono text-sm mb-6">
+          <HardHat className="w-4 h-4" />
+          <span>BUILT FOR EARNERS</span>
+        </div>
+        <h2 className="text-4xl font-bold mb-6">
+          Your Business. <br />
+          <span className="text-slate-400">Powered by Algorithms.</span>
+        </h2>
+        <p className="text-lg text-slate-300 mb-8 leading-relaxed">
+          The gig economy is broken. We fixed it. uPYCK Pro isn't just an app—it's an <strong>AI Co-Pilot</strong> that handles your marketing, logistics, and back-office.
+        </p>
+
+        <div className="space-y-6">
+          <div className="flex gap-4">
+            <Smartphone className="w-6 h-6 text-cyan-400 shrink-0" />
+            <div>
+              <h4 className="font-bold text-white">Automated Upselling</h4>
+              <p className="text-sm text-slate-400 mt-1">
+                Our app detects opportunities (like a dirty driveway) and sells them to the customer for you. You just click "Accept" and earn more.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <TrendingUp className="w-6 h-6 text-green-400 shrink-0" />
+            <div>
+              <h4 className="font-bold text-white">Algorithmic Career Path</h4>
+              <p className="text-sm text-slate-400 mt-1">
+                Start as a Rookie. Our data tracks your reliability, not just ratings. Unlock higher tiers, better pay, and lower fees automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10">
+          <Link href="/hauler/apply">
+            <Button className="bg-white text-slate-900 hover:bg-slate-200 font-bold px-8 h-14">
+              Download the OS <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Visual Representation of App */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-cyan-500 blur-[100px] opacity-20 rounded-full" />
+        <div className="relative bg-slate-800 border border-slate-700 rounded-3xl p-8 shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-500">
+          {/* Mock UI Code Snippet Style */}
+          <div className="font-mono text-xs text-green-400 mb-4 bg-slate-900 p-4 rounded-lg border border-slate-700">
+            &gt; System.scan(property_id: 1024) <br/>
+            &gt; Opportunity_Detected: Driveway_Clean <br/>
+            &gt; Est_Revenue: $150.00 <br/>
+            &gt; Status: <strong>APPROVED</strong>
+          </div>
+          
+          <div className="bg-slate-700 rounded-xl p-6 mb-4 border border-slate-600">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-white font-bold">New Job Alert</span>
+              <span className="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded">98% Match</span>
+            </div>
+            <p className="text-slate-300 text-sm">Pressure Washing - 2.1 miles away</p>
+            <div className="mt-4 flex gap-2">
+              <div className="h-2 w-full bg-slate-600 rounded-full overflow-hidden">
+                <div className="h-full bg-cyan-500 w-3/4" />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-end">
+            <div>
+               <p className="text-slate-400 text-xs">Projected Wk Earnings</p>
+               <p className="text-3xl font-bold text-white">$1,450.00</p>
+            </div>
+            <div className="text-cyan-400">
+              <TrendingUp className="w-8 h-8" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+🧠 Why this is better
+Now, when a potential worker lands on /hauler/apply, they see:
+
+"Turn Your Truck Into a Business" (The Hero).
+
+"Your Business Powered by Algorithms" (This new Tech section).
+
+"Find Your Perfect Role" (The Pay Table).

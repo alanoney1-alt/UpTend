@@ -1,0 +1,72 @@
+This is the "Proof of Impact" layer. By adding an ESG Ledger to your database, you aren't just storing data; you are building an auditable financial record.
+
+When a Property Manager asks, "Prove to me that you diverted 400 lbs from the landfill," or when you sell a carbon offset, this table is where the truth lives.
+
+🗄️ The ESG Ledger Schema (schema.ts update)
+Add this to your Drizzle schema in Replit. It links every job to a specific environmental impact.
+
+TypeScript
+import { pgTable, serial, integer, varchar, text, timestamp, decimal, boolean, uuid } from "drizzle-orm/pg-core";
+import { jobs, users } from "./schema"; // Assuming your existing tables
+
+// THE ESG LEDGER: Every gram of material and CO2 tracked
+export const esgLedger = pgTable("esg_ledger", {
+  id: serial("id").primaryKey(),
+  jobId: integer("job_id").references(() => jobs.id),
+  userId: integer("user_id").references(() => users.id), // Homeowner/Renter
+  proId: integer("pro_id").references(() => users.id),  // The Pro who verified it
+  
+  // MATERIAL DATA
+  materialType: varchar("material_type", { length: 50 }), // e.g., 'Metal', 'Cardboard', 'Electronic'
+  weightLbs: decimal("weight_lbs", { precision: 10, scale: 2 }),
+  action: varchar("action", { length: 20 }), // 'Recycled', 'Donated', 'Landfill'
+  
+  // CARBON CALCULATION
+  co2AvoidedKg: decimal("co2_avoided_kg", { precision: 10, scale: 2 }),
+  
+  // THE REVENUE LINK
+  carbonNeutralUpgrade: boolean("carbon_neutral_upgrade").default(false),
+  certificateUrl: text("certificate_url"), // Link to the generated PDF impact report
+  
+  // VERIFICATION
+  verificationSource: varchar("verification_source"), // e.g., 'Pro_Scan', 'Facility_Receipt'
+  facilityName: varchar("facility_name"), // The recycling center used
+  
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// PRO CREDENTIALS: Tracking Pro "Sustainability Points"
+export const proSustainabilityStats = pgTable("pro_sustainability_stats", {
+  proId: integer("pro_id").references(() => users.id).primaryKey(),
+  totalCo2Avoided: decimal("total_co2_avoided", { precision: 12, scale: 2 }).default("0"),
+  totalJobsVerified: integer("total_jobs_verified").default(0),
+  badgeLevel: varchar("badge_level").default("Steward"), // Steward -> Guardian -> Sentinel
+});
+💰 How this generates revenue (The Flow)
+The Pro App: When a Pro finishes a "Material Recovery" (Junk) job, they select the material types.
+
+The Logic: The backend calculates the co2AvoidedKg instantly (e.g., 1lb of Recycled Aluminum = 4kg CO2 saved).
+
+The Checkout: The user pays the $14.99 "Carbon Neutral" fee.
+
+The Ledger: A row is written to esg_ledger. The carbonNeutralUpgrade is set to true.
+
+The Dividend: The pro_sustainability_stats for that Pro is updated. This makes that Pro more "valuable" in your system, allowing them to see higher-paying Enterprise jobs first.
+
+📊 The "Impact Receipt" (What the customer sees)
+Instead of a boring email receipt, they get an Impact Summary that looks like this:
+
+UpTend Impact Report: Job #8829
+
+Space Rejuvenated: 400 sq. ft.
+
+Materials Recovered: 142 lbs (Recycled)
+
+Climate Action: 210 kg CO2 Avoided
+
+Status: 100% Carbon Neutral Verified
+
+This record has been added to your Home Playbook for insurance and resale value.
+
+🚀 Next Step: The "Sustainability Dashboard"
+Now that the database can hold this data, we can build the Homeowner Impact Dashboard. This will show them their "Lifetime Impact" and the "Total Protected Value" of their home.

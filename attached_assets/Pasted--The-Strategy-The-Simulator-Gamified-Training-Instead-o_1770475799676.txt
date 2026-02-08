@@ -1,0 +1,184 @@
+. The Strategy: "The Simulator" (Gamified Training)
+Instead of a quiz ("True/False: Should I take a photo?"), we build a Interactive Walkthrough.
+
+The Scenario: "You have a virtual job at 123 Mock Street."
+
+The Task: They must tap the buttons in the correct order.
+
+The "Why": Pop-up tooltips explain why they are doing it.
+
+Pop-up: "Taking this photo guarantees you get paid even if the customer cancels." (Motivation: Money).
+
+Pop-up: "This video protects you from false damage claims." (Motivation: Safety).
+
+2. The Curriculum: The "uPYCK Pro" Badge
+This is the First Badge they must earn. It unlocks the rest of the app.
+
+The "Commute" (GPS): Tapping "En Route" to trigger the customer SMS.
+
+The "Evidence" (Photos): Uploading a mock "Before" photo.
+
+The "Manifest" (Video): Recording a 5-second video of a "virtual" item.
+
+The "Close" (Signature): Signing a fake signature to finish.
+
+3. The Build: client/src/components/academy/app-simulator.tsx
+Action: Copy this into Replit. It creates a "Fake Job" environment.
+
+TypeScript
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { CheckCircle, Camera, MapPin, Video, PenTool } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+const STEPS = [
+  {
+    id: "accept",
+    title: "Accept the Job",
+    instruction: "A new job just popped up! Tap to claim it before someone else does.",
+    why: "Speed matters. The faster you accept, the higher your algorithm score.",
+    actionLabel: "Accept Job ($50)",
+    icon: CheckCircle
+  },
+  {
+    id: "en_route",
+    title: "Start Navigation",
+    instruction: "You are getting in the truck. Let the customer know you are coming.",
+    why: "This sends an automatic SMS to the customer so they don't call you asking 'Where are you?'",
+    actionLabel: "Slide to 'En Route'",
+    icon: MapPin
+  },
+  {
+    id: "arrive",
+    title: "The Arrival",
+    instruction: "You pulled into the driveway. Clock in.",
+    why: "This starts the 'On-Site Timer'. If the customer makes you wait, you get paid for wait time.",
+    actionLabel: "I've Arrived",
+    icon: MapPin
+  },
+  {
+    id: "evidence",
+    title: "Liability Protection",
+    instruction: "Before you touch ANYTHING, take a photo of the pile.",
+    why: "If the customer claims you scratched the wall behind the junk, this photo proves the scratch was already there.",
+    actionLabel: "[Mock] Upload Before Photo",
+    icon: Camera
+  },
+  {
+    id: "manifest",
+    title: "The Video Scan",
+    instruction: "Walk around the item and narrate any damage.",
+    why: "This builds the 'Virtual Warehouse' so we can resell items for you.",
+    actionLabel: "[Mock] Record 5s Video",
+    icon: Video
+  },
+  {
+    id: "sign",
+    title: "The Digital Handshake",
+    instruction: "Job done? Get the signature.",
+    why: "No Signature = No Payment. This stops chargebacks dead.",
+    actionLabel: "[Mock] Collect Signature",
+    icon: PenTool
+  }
+];
+
+export function AppSimulator({ onComplete }) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const { toast } = useToast();
+
+  const handleStep = () => {
+    // 1. Show the "Why" as a toast reinforcement
+    toast({
+      title: "✅ Correct!",
+      description: STEPS[currentStep].why,
+      duration: 3000,
+      className: "bg-green-50 border-green-200"
+    });
+
+    // 2. Advance or Finish
+    if (currentStep < STEPS.length - 1) {
+      setTimeout(() => setCurrentStep(c => c + 1), 1000); // Slight delay to let them read
+    } else {
+      onComplete(); // Pass the module
+    }
+  };
+
+  const step = STEPS[currentStep];
+  const Icon = step.icon;
+
+  return (
+    <Card className="max-w-md mx-auto border-2 border-blue-500 shadow-2xl overflow-hidden">
+      <div className="bg-blue-600 p-4 text-white flex justify-between items-center">
+        <span className="font-bold">TRAINING MODE</span>
+        <span className="text-xs bg-blue-800 px-2 py-1 rounded">
+          Step {currentStep + 1} of {STEPS.length}
+        </span>
+      </div>
+
+      <CardContent className="p-6 space-y-6">
+        
+        {/* The Lesson */}
+        <div className="text-center space-y-2">
+          <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon className="w-8 h-8" />
+          </div>
+          <h3 className="text-2xl font-bold text-slate-900">{step.title}</h3>
+          <p className="text-lg text-slate-600 font-medium">"{step.instruction}"</p>
+        </div>
+
+        {/* The "Why" Box (Crucial for Buy-In) */}
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded text-sm text-yellow-800">
+          <span className="font-bold block mb-1">💡 Why do we do this?</span>
+          {step.why}
+        </div>
+
+        {/* The Action Button */}
+        <Button 
+          size="lg" 
+          className="w-full h-14 text-lg font-bold bg-slate-900 hover:bg-slate-800 shadow-lg transform active:scale-95 transition-all"
+          onClick={handleStep}
+        >
+          {step.actionLabel}
+        </Button>
+
+      </CardContent>
+      
+      {/* Progress Bar */}
+      <div className="h-2 bg-slate-100 w-full">
+        <div 
+          className="h-full bg-green-500 transition-all duration-500"
+          style={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
+        />
+      </div>
+    </Card>
+  );
+}
+4. How to Integrate it
+You need to block the "Go Online" button until this is done.
+
+Update client/src/pages/hauler-dashboard.tsx:
+
+TypeScript
+// Inside the Dashboard component
+if (!user.certifications.includes('app_certification')) {
+  return (
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Welcome to uPYCK Pro!</h1>
+        <p className="text-slate-500">Complete the App Simulator to unlock your account.</p>
+      </div>
+      <AppSimulator onComplete={() => handleCertificationComplete('app_certification')} />
+    </div>
+  );
+}
+
+// ... otherwise show the real dashboard ...
+🧠 Why this works
+Muscle Memory: They aren't reading about buttons; they are pressing them.
+
+Instant Feedback: The "Why" box appears right when they take the action, connecting the behavior (Taking Photo) to the reward (Liability Protection).
+
+Gatekeeping: It ensures no one is representing your brand until they have proven they can use the tool.
+
+Add the Simulator. It turns your software into a game they have to beat.

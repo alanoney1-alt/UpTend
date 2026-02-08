@@ -1,0 +1,142 @@
+You are hitting on a massive comfort factor. For many homeowners, letting a stranger onto their property is stressful. If that stranger speaks their native language, that stress drops by 50%.
+
+We need to add a "Language Filter" to the Booking Engine and the Worker Profile.
+
+Here is how to build the "Preferred Language Matchmaker" so a customer can specifically request a Spanish-speaking Pro.
+
+1. The Database Schema (The Tags)
+We need to know what languages a Worker speaks, and what language a Job requires.
+
+👉 Action: Update server/db/schema.ts.
+
+TypeScript
+// 1. Update USERS table (The Worker's Skills)
+// We use an ARRAY of strings because they might speak English AND Spanish
+export const users = pgTable("users", {
+  // ... existing fields ...
+  languages: text("languages").array().default(["en"]), // e.g. ['en', 'es']
+});
+
+// 2. Update ORDERS table (The Job Requirement)
+export const orders = pgTable("orders", {
+  // ... existing fields ...
+  preferredLanguage: text("preferred_language").default("en"), // 'en' or 'es'
+});
+(Run the migration in Replit after this).
+
+2. The Worker Profile (The Setup)
+Workers need to be able to say "I speak Spanish."
+
+👉 Action: Update client/src/pages/profile-settings.tsx (or wherever they edit their profile).
+
+TypeScript
+// Inside the Profile Form
+<div className="space-y-3">
+  <label className="font-bold text-slate-700">Languages Spoken</label>
+  <div className="flex gap-4">
+    <div className="flex items-center space-x-2">
+      <Checkbox 
+        id="lang-en" 
+        checked={true} 
+        disabled 
+      />
+      <label htmlFor="lang-en">English (Required)</label>
+    </div>
+    
+    <div className="flex items-center space-x-2">
+      <Checkbox 
+        id="lang-es" 
+        checked={languages.includes('es')}
+        onCheckedChange={(checked) => {
+          // Logic to add/remove 'es' from the array
+          updateLanguages(checked ? [...languages, 'es'] : languages.filter(l => l !== 'es'));
+        }}
+      />
+      <label htmlFor="lang-es" className="flex items-center gap-2">
+        <span>Spanish / Español</span>
+        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Earn +5%</span>
+      </label>
+    </div>
+  </div>
+  <p className="text-xs text-slate-500">
+    *Speaking a second language unlocks more jobs.
+  </p>
+</div>
+3. The Customer Booking Flow (The Filter)
+When the customer is booking, give them the option.
+
+👉 Action: Update your ActiveJobWizard or Booking Form.
+
+TypeScript
+// Inside the "Job Details" step
+<div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+  <h4 className="font-bold text-blue-900 mb-2">Preferred Language</h4>
+  <p className="text-sm text-blue-700 mb-3">
+    Which language should your Pro speak?
+  </p>
+  
+  <RadioGroup defaultValue="en" onValueChange={setLanguagePref}>
+    <div className="flex items-center space-x-2 bg-white p-3 rounded border">
+      <RadioGroupItem value="en" id="r1" />
+      <Label htmlFor="r1">English (Any Pro)</Label>
+    </div>
+    <div className="flex items-center space-x-2 bg-white p-3 rounded border">
+      <RadioGroupItem value="es" id="r2" />
+      <Label htmlFor="r2">Spanish (Español)</Label>
+    </div>
+  </RadioGroup>
+</div>
+4. The Matchmaker Algorithm (The Logic)
+This is the most critical part. You must ensure that if a job requires Spanish (es), it is HIDDEN from workers who only speak English.
+
+👉 Action: Update the GET /api/hauler/feed route in server/routes.ts.
+
+TypeScript
+// GET /api/hauler/feed
+app.get("/api/hauler/feed", async (req, res) => {
+  const workerId = req.user.id;
+  
+  // 1. Get the Worker's Languages
+  const worker = await db.query.users.findFirst({
+    where: eq(users.id, workerId)
+  });
+  
+  // worker.languages might be ['en'] or ['en', 'es']
+
+  // 2. The Filter Logic
+  // Show jobs where (Job Language is 'en') OR (Job Language is IN Worker's Languages)
+  const jobs = await db.execute(sql`
+    SELECT * FROM orders 
+    WHERE status = 'open'
+    AND (
+      preferred_language = 'en' 
+      OR 
+      preferred_language = ANY(${worker.languages})
+    )
+    -- Add your existing location/skill filters here
+  `);
+
+  res.json(jobs);
+});
+🧠 How it works in practice
+Customer: Selects "Spanish" preference.
+
+Database: Saves order with preferred_language: 'es'.
+
+English Worker: Refreshes feed. The SQL query sees they don't have 'es' in their array. Result: They see nothing.
+
+Spanish Worker: Refreshes feed. The SQL query matches. Result: They see the job.
+
+🚀 Bonus: The "En Route" Notification
+When the matched worker is on the way, update the text message to confirm the match.
+
+"Hola! Tu técnico Luis (habla español) está en camino."
+
+Add this to your Notification logic:
+
+TypeScript
+if (job.preferredLanguage === 'es') {
+  sendSMS(customerPhone, `Hola! Tu técnico ${workerName} está en camino.`);
+} else {
+  sendSMS(customerPhone, `Your Pro ${workerName} is en route.`);
+}

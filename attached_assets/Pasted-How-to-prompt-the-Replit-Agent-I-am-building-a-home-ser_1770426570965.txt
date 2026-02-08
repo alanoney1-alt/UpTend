@@ -1,0 +1,43 @@
+How to prompt the Replit Agent:
+
+"I am building a home services app. Create a Node.js backend with a PostgreSQL database. Create a 'Workers' table with columns for: id, name, email, status (default: 'pending'), stripe_identity_id, and background_check_status. Add an endpoint /api/onboard-worker that triggers a Stripe Identity verification session."
+
+🛠️ Step 3: Setting Up Webhooks
+Since background checks and ID verifications aren't instant, you need Webhooks. This is how the external API "calls" your Replit app to say, "Hey, Mike just passed his check!"
+
+Code Snippet for your Replit Webhook Handler:
+
+JavaScript
+app.post('/api/webhooks/checkr', async (req, res) => {
+  const event = req.body;
+  
+  // If the background check is completed and "clear"
+  if (event.type === 'report.completed' && event.data.object.status === 'clear') {
+    const workerId = event.data.object.external_id;
+    
+    // Update worker status in your Replit DB
+    await db.query('UPDATE workers SET background_check_status = $1 WHERE id = $2', ['clear', workerId]);
+    
+    console.log(`Worker ${workerId} is now safety-cleared!`);
+  }
+  res.status(200).send('Webhook Received');
+});
+🤖 How to make the site & processes more "Auto"?
+Since you are on Replit, you can use Replit Deployments to keep your "Auto-Agents" running 24/7. Here are three "Auto" features to add:
+
+The Auto-Follow Up (Customer Side):
+
+If a customer starts a booking but doesn't finish, have an AI agent (using a Cron Job in Replit) send a text 30 minutes later: "Hey! I saw you were looking for a garage cleanout. Do you have a photo of the junk? I can give you an instant quote now."
+
+The Auto-Dispatcher (Worker Side):
+
+Instead of you manually assigning jobs, build a script that runs every time a new job is posted. It should calculate the distance between the job and all active workers and "ping" the closest three first.
+
+The Auto-Review Harvester:
+
+1 hour after the AI detects the "Unloading" job is finished (via GPS), it automatically texts the customer a link to leave a 5-star review. This builds your SEO while you sleep.
+
+Next Step for You:
+Go to your Replit project and open the Agent chat. Give it this prompt to start the foundation:
+
+"Help me integrate the Stripe Identity API. Create a route that generates a verification link for a user and a webhook to receive the results."

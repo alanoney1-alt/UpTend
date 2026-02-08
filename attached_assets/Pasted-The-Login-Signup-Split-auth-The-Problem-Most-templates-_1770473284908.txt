@@ -1,0 +1,82 @@
+The Login/Signup Split (/auth)
+The Problem: Most templates have a generic "Sign In" box. The Fix: You have two totally different users. The login page must acknowledge that.
+
+Customer Side: "Welcome back to your Health Monitor."
+
+Worker Side: "Login to Mission Control."
+
+👉 Replit Prompt:
+
+"Open client/src/pages/auth-page.tsx.
+
+Update the design to be a Split Screen (or Tabbed View) for 'Homeowners' vs 'Pyckers'.
+
+Homeowner Tab: Text should say 'Manage your asset. Track your health score.'
+
+Pycker Tab: Text should say 'Turn on your availability. Start earning.'
+
+Visuals: Use the new Navbar and a background image that fades from a nice home (left) to a pro truck (right)."
+
+2. The "Academy" Certification (/academy)
+The Problem: It currently tests for "Junk Removal." The Fix: It needs to certify for The Unlicensed 5. If a guy has a pressure washer but fails the "Chemical Safety" quiz, he shouldn't get washing jobs.
+
+👉 Replit Prompt:
+
+"Open client/src/pages/academy.tsx.
+
+Update the quiz logic to support Role-Based Certification.
+
+Core Module: 'Customer Safety' (Safety Codes, Uniforms) - Required for everyone.
+
+Module A: 'Junk Removal' (Lifting mechanics, Donation sorting).
+
+Module B: 'Pressure Washing' (PSI limits, Chemical safety).
+
+Module C: 'Gutter Cleaning' (Ladder safety, 2-story protocols).
+
+The Logic: If a user passes Module B, update their profile to skills: ['pressure_washing']. This unlocks those jobs in the dashboard."
+
+3. The Footer (components/layout/footer.tsx)
+The Problem: It likely links to "About," "Contact," and "Privacy." Boring. The Fix: It needs to be an SEO Map and a Recruiting Tool.
+
+👉 Replit Prompt:
+
+"Open client/src/components/layout/footer.tsx.
+
+Update the links to match our new sitemap:
+
+Column 1 (Services): Link to specific pre-filled booking URLs (e.g., 'Gutter Cleaning' -> /book?service=gutter).
+
+Column 2 (Technology): Links for 'The Home Score', 'Digital Inventory', 'The Green Promise'.
+
+Column 3 (For Pros): 'Apply to Drive', 'Pycker Academy', 'Pro Login'.
+
+Bottom Bar: Add '© 2026 uPYCK Home Health OS' and a badge saying 'Secured by Stripe'."
+
+4. The "Job Success" Screen (/success)
+The Problem: Standard apps just say "Order Confirmed. Order #123." The Fix: This is your Dopamine Moment. You need to sell the "Home Score" increase immediately.
+
+👉 Replit Prompt:
+
+"Create a new component client/src/components/booking/success-animation.tsx.
+
+When a booking is confirmed:
+
+Animation: Show a 'House Icon' filling up with green liquid (Health Bar increasing).
+
+Text: 'Maintenance Scheduled! Your Home Score is projected to increase by +15 points.'
+
+Action: 'Add to Calendar' and 'View My Digital Twin'."
+
+🚀 The "Hidden Gem": The Install Prompt
+Since this is a PWA, you need to nag them (politely) to install it.
+
+👉 Replit Prompt:
+
+"Create client/src/components/pwa/install-banner.tsx.
+
+Logic: Detect if the app is running in the browser (not installed). UI: Show a sticky bottom banner.
+
+For Customers: 'Install uPYCK to track your Pro via GPS. [Install]'
+
+For Workers: 'Install App to unlock Job Alerts & Navigation. [Install]'"

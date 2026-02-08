@@ -1,0 +1,599 @@
+# uPYCK Privacy Policy
+
+**Last Updated:** January 17, 2026
+
+## Introduction
+
+Welcome to uPYCK (“we,” “us,” “our,” or “uPYCK”). We are committed to protecting your privacy and being transparent about how we collect, use, and share your information.
+
+This Privacy Policy explains:
+
+- What information we collect
+- How we use your information
+- When we share your information
+- Your privacy rights and choices
+- How we protect your information
+
+**By using the uPYCK platform at www.upyck.com (the “Platform”), you agree to this Privacy Policy.**
+
+## 1. Information We Collect
+
+### 1.1 Information You Provide
+
+**Account Information:**
+
+- Name (first and last)
+- Email address
+- Phone number
+- Password (encrypted)
+- Profile photo (optional)
+- User role (customer, PYCKER, admin)
+
+**Customer Booking Information:**
+
+- Service address (pickup location)
+- Service details (items to remove, job description)
+- Photos of items
+- Preferred language
+- Payment information (processed by Stripe)
+- Special instructions or notes
+
+**PYCKER Information:**
+
+- Business name
+- Service area (ZIP codes)
+- Vehicle information (type, make, model, license plate, photos)
+- Driver’s license information
+- Insurance information (Verified Pro PYCKERs)
+- Business license information
+- Background check consent and results
+- Bank account information (for payouts via Stripe)
+- Tax information (W-9 for 1099 reporting)
+- Incident payment method (card on file for accountability)
+
+**Communications:**
+
+- Messages sent through the Platform
+- Customer service inquiries
+- Reviews and ratings
+- Feedback and survey responses
+
+### 1.2 Information Automatically Collected
+
+**Device and Usage Information:**
+
+- IP address
+- Device type (phone, tablet, computer)
+- Operating system (iOS, Android, Windows, etc.)
+- Browser type and version
+- Mobile device identifiers
+- Pages viewed and features used
+- Time and date of visits
+- Referring website or app
+- Crash reports and error logs
+
+**Location Information:**
+
+- **Customers:** ZIP code for service area verification
+- **PYCKERs:** Real-time GPS location during active jobs (for tracking and navigation)
+- **Both:** Approximate location based on IP address
+
+**Cookies and Similar Technologies:**
+
+- Session cookies (for login authentication)
+- Preference cookies (remember your settings)
+- Analytics cookies (understand Platform usage)
+- Advertising cookies (show relevant ads)
+
+See Section 8 for more information about cookies.
+
+### 1.3 Information from Third Parties
+
+**Background Check Providers:**
+
+- Criminal history
+- Sex offender registry status
+- Motor vehicle records (for PYCKERs)
+
+**Payment Processors (Stripe):**
+
+- Payment transaction details
+- Card type and last 4 digits (for display only)
+- Payment success/failure status
+
+**Social Media:**
+
+- If you sign in with Facebook or Google, we receive your basic profile information (name, email, photo)
+
+**Analytics Providers:**
+
+- Aggregated usage statistics
+- Performance metrics
+- Conversion tracking data
+
+## 2. How We Use Your Information
+
+### 2.1 To Provide Platform Services
+
+- Create and manage your account
+- Process bookings and payments
+- Match Customers with PYCKERs
+- Provide real-time GPS tracking
+- Send booking confirmations and updates
+- Enable communication between Customers and PYCKERs
+- Process Green Verified disposal rebates
+- Calculate loyalty points and rewards
+- Generate environmental impact certificates
+
+### 2.2 To Improve Our Services
+
+- Analyze Platform usage and user behavior
+- Develop new features and improvements
+- Conduct AI-powered photo analysis for load estimation
+- Optimize matching algorithms
+- Personalize your experience
+- Conduct research and analytics
+- Test new features (A/B testing)
+
+### 2.3 For Safety and Security
+
+- Verify identities and prevent fraud
+- Conduct background checks on PYCKERs
+- Detect and prevent abuse or violations
+- Enforce our Terms of Service
+- Protect against security threats
+- Investigate and resolve disputes
+- Comply with legal obligations
+
+### 2.4 For Communication
+
+- Send booking confirmations and receipts
+- Notify you of PYCKER arrival and job status
+- Send account-related notifications
+- Respond to customer support inquiries
+- Send marketing communications (with your consent)
+- Conduct surveys and request feedback
+- Send important updates about the Platform
+
+### 2.5 For Legal and Compliance
+
+- Comply with laws and regulations
+- Respond to legal requests and court orders
+- Protect our rights and property
+- Enforce our Terms of Service
+- Process tax reporting (1099s for PYCKERs)
+- Maintain records as required by law
+
+## 3. How We Share Your Information
+
+### 3.1 With PYCKERs (When You Book)
+
+When you book a service, we share with the matched PYCKER:
+
+- Your name and phone number (after they accept the job)
+- Service address
+- Job details and photos
+- Real-time location (if you enable tracking)
+- Your rating and review history (if applicable)
+
+**Note:** Phone numbers are masked until PYCKER accepts to prevent spam.
+
+### 3.2 With Customers (For PYCKERs)
+
+When a PYCKER accepts a job, we share with the Customer:
+
+- PYCKER name and company name
+- Phone number
+- Vehicle information
+- Photo and bio
+- Rating and reviews
+- Real-time GPS location during active job
+- PYCKER tier (Verified Pro or Independent)
+- Insurance status (for Verified Pros)
+
+### 3.3 With Service Providers
+
+We share information with third-party service providers who help us operate the Platform:
+
+**Stripe (Payment Processing):**
+
+- Name, email, payment information
+- Transaction amounts and dates
+- Bank account information (PYCKERs)
+
+**Twilio (SMS Notifications):**
+
+- Phone numbers
+- Message content (booking confirmations, alerts)
+
+**SendGrid (Email Communications):**
+
+- Email addresses
+- Name
+- Email content (confirmations, receipts, marketing)
+
+**Background Check Providers:**
+
+- Name, date of birth, Social Security number
+- Driver’s license information
+- Address history
+
+**Cloud Hosting (Replit/AWS):**
+
+- All data stored on Platform infrastructure
+
+**Analytics Providers (Google Analytics):**
+
+- Device and usage information
+- Aggregated, anonymized data
+
+**OpenAI (AI Services):**
+
+- Photos of items (for load estimation)
+- Photos of disposal receipts (for Green Verified validation)
+
+### 3.4 For Legal Reasons
+
+We may share your information:
+
+- To comply with laws, regulations, or legal process
+- To respond to government or law enforcement requests
+- To protect the rights, property, or safety of uPYCK, users, or the public
+- To enforce our Terms of Service
+- In connection with legal proceedings or investigations
+
+### 3.5 Business Transfers
+
+If uPYCK is involved in a merger, acquisition, sale of assets, or bankruptcy, your information may be transferred to the successor entity.
+
+### 3.6 With Your Consent
+
+We may share your information for other purposes with your explicit consent.
+
+### 3.7 Public Information
+
+The following information is publicly visible on the Platform:
+
+- PYCKER profiles (name, company, photo, bio, ratings)
+- Reviews and ratings you post
+- Environmental certificates (with job details anonymized)
+
+We never publicly share:
+
+- Email addresses
+- Phone numbers (until job acceptance)
+- Physical addresses
+- Payment information
+- Private messages
+
+## 4. Your Privacy Rights and Choices
+
+### 4.1 Access and Update
+
+You can access and update your information by:
+
+- Logging into your account settings
+- Contacting us at privacy@upyck.com
+
+### 4.2 Delete Your Account
+
+You can request account deletion by:
+
+- Emailing support@upyck.com
+- We will delete your personal information within 30 days, except:
+  - Transaction records (required for tax/legal compliance - 7 years)
+  - Aggregated, anonymized data
+  - Information needed for legal claims or compliance
+
+### 4.3 Marketing Communications
+
+You can opt out of marketing emails by:
+
+- Clicking “Unsubscribe” in any marketing email
+- Adjusting settings in your account
+- Emailing marketing@upyck.com
+
+**Note:** You will still receive transactional emails (booking confirmations, receipts, account notifications).
+
+### 4.4 SMS Notifications
+
+You can opt out of SMS notifications by:
+
+- Replying STOP to any SMS message
+- Adjusting settings in your account
+- Emailing support@upyck.com
+
+**Note:** Opting out may affect service delivery (e.g., PYCKER arrival notifications).
+
+### 4.5 Location Tracking
+
+**Customers:** Location is used only for ZIP code verification and is not tracked in real-time.
+
+**PYCKERs:** Real-time GPS tracking is required during active jobs. You can:
+
+- Disable tracking when not on a job
+- Stop accepting jobs if you don’t want to be tracked
+
+### 4.6 Cookie Preferences
+
+You can control cookies through:
+
+- Browser settings (block all cookies or third-party cookies)
+- Our cookie preference center (if available)
+
+**Note:** Disabling cookies may affect Platform functionality.
+
+### 4.7 Do Not Track
+
+Our Platform does not currently respond to Do Not Track (DNT) browser signals.
+
+## 5. State-Specific Privacy Rights
+
+### 5.1 California Residents (CCPA/CPRA)
+
+If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA):
+
+**Right to Know:**
+
+- Request what personal information we collect, use, and share
+- Request the categories of sources and purposes
+
+**Right to Delete:**
+
+- Request deletion of your personal information (with exceptions)
+
+**Right to Opt-Out:**
+
+- Opt out of “sale” or “sharing” of personal information
+- Note: We do not sell personal information in the traditional sense
+
+**Right to Non-Discrimination:**
+
+- We will not discriminate against you for exercising your privacy rights
+
+**Right to Correct:**
+
+- Request correction of inaccurate personal information
+
+**To Exercise Your Rights:**
+
+- Email: privacy@upyck.com
+- Phone: [Your privacy hotline]
+- Verify your identity (we may ask for confirming information)
+- Response within 45 days (may extend 45 more days if needed)
+
+**Authorized Agents:**
+
+- You may designate an authorized agent to make requests on your behalf
+- We require written proof of authorization
+
+**Personal Information We Collect:**
+Categories: Identifiers, commercial information, internet activity, geolocation, professional information, inferences
+
+**Sources:** Directly from you, automatically from device, from third parties (background checks, Stripe)
+
+**Business Purposes:** Provide services, improve Platform, safety and security, marketing, legal compliance
+
+**Third Parties We Share With:** Service providers (Stripe, Twilio, SendGrid, background check providers), analytics providers, legal authorities
+
+**Sale of Personal Information:**
+We do not “sell” personal information in exchange for monetary compensation. However, sharing data with analytics providers may be considered a “sale” or “sharing” under CCPA. You can opt out by emailing privacy@upyck.com.
+
+### 5.2 Virginia Residents (VCDPA)
+
+Virginia residents have similar rights under the Virginia Consumer Data Protection Act:
+
+- Right to access personal data
+- Right to correct inaccuracies
+- Right to delete personal data
+- Right to data portability
+- Right to opt out of targeted advertising and profiling
+
+### 5.3 Colorado Residents (CPA)
+
+Colorado residents have rights under the Colorado Privacy Act similar to CCPA/VCDPA.
+
+### 5.4 Connecticut Residents (CTDPA)
+
+Connecticut residents have rights under the Connecticut Data Privacy Act similar to CCPA/VCDPA.
+
+### 5.5 Utah Residents (UCPA)
+
+Utah residents have rights under the Utah Consumer Privacy Act similar to CCPA/VCDPA.
+
+**To Exercise State Privacy Rights:**
+Email: privacy@upyck.com with “State Privacy Request” in the subject line.
+
+## 6. Children’s Privacy
+
+uPYCK is not intended for children under 18. We do not knowingly collect information from children under 18.
+
+If we learn we have collected information from a child under 18, we will delete it immediately.
+
+If you believe a child has provided us with personal information, contact us at privacy@upyck.com.
+
+## 7. Data Security
+
+We implement reasonable security measures to protect your information:
+
+**Technical Safeguards:**
+
+- Encryption in transit (HTTPS/TLS)
+- Encryption at rest for sensitive data
+- Secure password hashing (bcrypt)
+- Payment data handled by PCI-compliant Stripe
+- Regular security audits and updates
+
+**Organizational Safeguards:**
+
+- Access controls (role-based access)
+- Employee training on privacy and security
+- Confidentiality agreements
+- Incident response procedures
+
+**However:**
+
+- No system is 100% secure
+- You are responsible for protecting your password
+- Use strong, unique passwords
+- Enable two-factor authentication if available
+- Report suspicious activity immediately
+
+## 8. Cookies and Tracking Technologies
+
+### 8.1 Types of Cookies We Use
+
+**Essential Cookies:**
+
+- Required for Platform functionality
+- Enable login and authentication
+- Cannot be disabled
+
+**Preference Cookies:**
+
+- Remember your settings and choices
+- Improve user experience
+- Can be disabled
+
+**Analytics Cookies:**
+
+- Track usage and performance
+- Help us improve the Platform
+- Can be disabled (affects our ability to improve)
+
+**Advertising Cookies:**
+
+- Show relevant ads on other sites
+- Track ad performance
+- Can be disabled
+
+### 8.2 Third-Party Cookies
+
+We use third-party services that set cookies:
+
+- Google Analytics (usage tracking)
+- Facebook Pixel (ad targeting)
+- Stripe (payment processing)
+
+### 8.3 Managing Cookies
+
+**Browser Settings:**
+
+- Chrome: Settings > Privacy and Security > Cookies
+- Firefox: Preferences > Privacy & Security
+- Safari: Preferences > Privacy
+- Edge: Settings > Privacy, search, and services
+
+**Opt-Out Tools:**
+
+- Google Analytics Opt-out: https://tools.google.com/dlpage/gaoptout
+- Network Advertising Initiative: http://optout.networkadvertising.org/
+- Digital Advertising Alliance: http://optout.aboutads.info/
+
+## 9. International Data Transfers
+
+uPYCK is based in the United States. If you are outside the U.S., your information will be transferred to and processed in the U.S.
+
+U.S. privacy laws may differ from your country’s laws. By using the Platform, you consent to the transfer of your information to the U.S.
+
+## 10. Data Retention
+
+We retain your information for as long as necessary to:
+
+- Provide Platform services
+- Comply with legal obligations
+- Resolve disputes
+- Enforce our Terms
+
+**Retention Periods:**
+
+- Active accounts: Until you delete your account
+- Deleted accounts: 30 days (then permanently deleted)
+- Transaction records: 7 years (tax/legal compliance)
+- Customer support records: 3 years
+- Background checks: 7 years
+- Aggregated analytics: Indefinitely (anonymized)
+
+## 11. Changes to This Privacy Policy
+
+We may update this Privacy Policy from time to time. We will notify you of material changes by:
+
+- Email notification
+- Platform notification
+- Updating the “Last Updated” date
+
+Your continued use after changes constitutes acceptance of the updated Privacy Policy.
+
+## 12. Contact Us
+
+For privacy questions or to exercise your privacy rights:
+
+**Email:** privacy@upyck.com
+**Support:** support@upyck.com
+**Mail:**
+uPYCK Privacy Team
+Orlando, Florida
+
+**Response Time:** We aim to respond within 5 business days.
+
+## 13. Complaint Process
+
+If you have a privacy concern:
+
+1. **Contact Us First:** Email privacy@upyck.com
+1. **State Authorities:** File a complaint with your state attorney general
+1. **FTC:** File a complaint at ftc.gov/complaint
+1. **EU Residents:** Contact your local data protection authority
+
+-----
+
+## Summary of Key Privacy Practices
+
+**What We Collect:**
+
+- Account info (name, email, phone)
+- Booking details and photos
+- Location (ZIP for customers, GPS for PYCKERs during jobs)
+- Payment info (via Stripe)
+- Usage data and cookies
+
+**How We Use It:**
+
+- Provide services and process bookings
+- Match Customers with PYCKERs
+- Improve the Platform
+- Communicate with you
+- Ensure safety and security
+
+**Who We Share With:**
+
+- PYCKERs and Customers (to complete services)
+- Service providers (Stripe, Twilio, SendGrid, etc.)
+- Legal authorities (when required)
+
+**Your Rights:**
+
+- Access, update, and delete your information
+- Opt out of marketing
+- Control cookies
+- State-specific privacy rights (CA, VA, CO, CT, UT)
+
+**Security:**
+
+- Encryption, secure servers, access controls
+- But no system is 100% secure
+
+**Children:**
+
+- Not for under 18 years old
+
+**Changes:**
+
+- We may update this policy (we’ll notify you)
+
+-----
+
+**BY USING uPYCK, YOU ACKNOWLEDGE YOU HAVE READ AND UNDERSTOOD THIS PRIVACY POLICY.**
+
+**Last Updated:** January 17, 2026
+**Version:** 1.0

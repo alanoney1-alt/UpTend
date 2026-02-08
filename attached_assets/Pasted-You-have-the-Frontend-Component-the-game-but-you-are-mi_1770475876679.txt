@@ -1,0 +1,70 @@
+You have the Frontend Component (the game), but you are missing the Backend Memory (the scorecard).Right now, if a user finishes the simulator, the app forgets they did it as soon as they refresh the page. They will be stuck in "Training Mode" forever.Here are the 3 Missing Pieces to make the Simulator actually "unlock" the account permanently.1. The Database Update (The "Badge")We need to add a specific badge called app_certification to your database. This is different from "Junk Removal" or "Moving." This is the "I Know How To Use The Phone" badge.👉 Action: Open server/db/schema.ts and add 'app_certification' to the skillEnum list.TypeScript// Inside server/db/schema.ts
+export const skillEnum = pgEnum('skill_type', [
+  'app_certification', // <-- ADD THIS (The Simulator Badge)
+  'core_safety',
+  'junk_removal',
+  'pressure_washing',
+  'gutter_cleaning',
+  'moving_labor',
+  'home_audit'
+]);
+Note: If you already ran a migration, you might need to run a "Push" command in Replit shell to update this.2. The "Save Progress" Logic (The Connection)The simulator component I gave you has a placeholder onComplete. We need to replace that with a Real API Call that tells the server: "User #42 passed the Simulator. Unlock their dashboard."👉 Action: Update client/src/pages/hauler-dashboard.tsx.Replace the handleCertificationComplete function with this real code:TypeScriptconst handleSimulatorPass = async () => {
+  try {
+    // 1. Tell the Server
+    const res = await fetch("/api/academy/certify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: user.id,
+        skillType: "app_certification", // The badge we just added
+        quizScore: 100 // Automatic 100% for finishing
+      }),
+    });
+
+    if (res.ok) {
+      // 2. Celebration!
+      toast({
+        title: "🎓 PRO STATUS UNLOCKED",
+        description: "You are now active. Jobs will appear here.",
+        className: "bg-green-600 text-white border-none"
+      });
+      
+      // 3. Force Refresh to load the Real Dashboard
+      setTimeout(() => window.location.reload(), 1500); 
+    }
+  } catch (err) {
+    toast({ variant: "destructive", title: "Error saving progress." });
+  }
+};
+3. The "Celebration" Screen (The Reward)When they finish the last step, don't just dump them into a cold dashboard. Give them a "You're Hired!" moment.👉 Action: Add this SuccessCard inside your AppSimulator component (at the very end).TypeScript// Inside app-simulator.tsx
+
+if (isComplete) {
+  return (
+    <Card className="text-center p-8 bg-green-50 border-2 border-green-500 animate-in zoom-in-95">
+      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <CheckCircle className="w-10 h-10 text-green-600" />
+      </div>
+      <h2 className="text-3xl font-bold text-green-900 mb-2">You're Hired!</h2>
+      <p className="text-green-700 mb-6">
+        You have mastered the uPYCK OS. Your account is now <strong>Active</strong>.
+      </p>
+      
+      <div className="bg-white p-4 rounded-lg shadow-sm border border-green-200 mb-6 text-left">
+        <p className="font-bold text-sm text-slate-500 uppercase">Your Starting Stats:</p>
+        <div className="flex justify-between mt-2">
+          <span>🛡️ Safety Rating</span>
+          <span className="font-bold text-green-600">5.0 ★</span>
+        </div>
+        <div className="flex justify-between mt-1">
+          <span>⚡ Algorithm Score</span>
+          <span className="font-bold text-green-600">ROOKIE</span>
+        </div>
+      </div>
+
+      <Button onClick={onComplete} className="w-full h-14 text-lg font-bold bg-green-600 hover:bg-green-700 text-white">
+        Go to Mission Control
+      </Button>
+    </Card>
+  );
+}
+🧠 The User Flow Now:New Worker Logs In $\rightarrow$ Sees "Locked" Dashboard.Starts Simulator $\rightarrow$ Clicks through the fake job steps.Finishes $\rightarrow$ Sees "You're Hired!" Celebration.Clicks "Go" $\rightarrow$ API saves the badge to Database.Page Refreshes $\rightarrow$ Real Dashboard Loads.Do step 1 first. If the database doesn't know what app_certification is, the API will crash.

@@ -1,0 +1,143 @@
+You are hitting the classic "Conversion Wall." If a customer has to give you their email just to see if you are affordable, 80% of them will leave.We need to move the "Login Gate" one step back.Current Flow (Bad): Click Pricing $\rightarrow$ Login Wall $\rightarrow$ See Prices.New Flow (Good): Click Pricing $\rightarrow$ See "Base Prices" $\rightarrow$ Click "Book" $\rightarrow$ Login Wall.Here is how to build the Public Pricing Page that hooks them with transparency and then lands the login when they are ready to buy.1. The Strategy: "Base Price vs. Your Price"You can't show an exact price without their address (distance fees, etc.). So, we show the "National Average" or "Starting At" price.The Hook: "Junk Removal starts at $99."The Nudge: "Enter your zip code to see your exact rate." (This is the Login trigger).2. The Build: client/src/pages/public-pricing.tsxAction: Create this file. It is a beautiful, grid-based menu of your services.TypeScriptimport { Link, useLocation } from "wouter";
+import { CheckCircle, ArrowRight, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const SERVICES = [
+  {
+    id: "junk",
+    name: "Junk Removal",
+    price: "$99",
+    unit: "per pickup truck volume",
+    description: "We load, haul, and dispose. Includes landfill fees.",
+    features: ["Heavy lifting included", "Eco-friendly disposal", "Before/After photos"],
+    popular: true
+  },
+  {
+    id: "wash",
+    name: "Pressure Washing",
+    price: "$150",
+    unit: "per driveway (avg)",
+    description: "Industrial grade surface cleaning for driveways & walkways.",
+    features: ["Chemical pre-treatment", "Surface sealing available", "Gum removal"]
+  },
+  {
+    id: "gutter",
+    name: "Gutter Cleaning",
+    price: "$120",
+    unit: "single story home",
+    description: "Debris removal and downspout flushing.",
+    features: ["Roof air-blown", "Downspouts tested", "Debris bagged"]
+  },
+  {
+    id: "move",
+    name: "Moving Labor",
+    price: "$80",
+    unit: "per hour (2 Pros)",
+    description: "Muscle only. You rent the truck, we load it.",
+    features: ["2 Strong Pyckers", "Dollies included", "Shrink wrap service"]
+  },
+  {
+    id: "audit",
+    name: "Home Audit",
+    price: "$49",
+    unit: "flat rate",
+    description: "Full digital inventory and maintenance check.",
+    features: ["Video catalog of assets", "Safety hazard check", "Insurance report"]
+  }
+];
+
+export function PublicPricing() {
+  const [location, setLocation] = useLocation();
+
+  const handleBook = (serviceId) => {
+    // MAGICAL REDIRECT: Send them to Login, but remember where they wanted to go!
+    // We append ?returnUrl=/book/serviceId
+    setLocation(`/auth?returnUrl=/book/${serviceId}`);
+  };
+
+  return (
+    <div className="bg-slate-50 min-h-screen py-24">
+      {/* HEADER */}
+      <div className="text-center max-w-3xl mx-auto px-6 mb-16">
+        <h1 className="text-4xl font-bold text-slate-900 mb-4">Transparent Pricing. No Surprises.</h1>
+        <p className="text-lg text-slate-600">
+          See our national base rates below. <span className="text-blue-600 font-bold">Log in to see exact pricing</span> for your zip code.
+        </p>
+      </div>
+
+      {/* PRICING GRID */}
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {SERVICES.map((service) => (
+          <div 
+            key={service.id} 
+            className={`relative bg-white rounded-2xl shadow-sm border p-8 flex flex-col transition-all hover:shadow-xl hover:-translate-y-1 ${service.popular ? 'border-blue-500 ring-4 ring-blue-500/10' : 'border-slate-200'}`}
+          >
+            {service.popular && (
+              <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">
+                MOST POPULAR
+              </div>
+            )}
+
+            <h3 className="text-xl font-bold text-slate-900">{service.name}</h3>
+            <p className="text-sm text-slate-500 mt-2 h-10">{service.description}</p>
+            
+            <div className="my-6">
+              <span className="text-4xl font-bold text-slate-900">{service.price}</span>
+              <span className="text-slate-500 text-sm ml-2">/ {service.unit}</span>
+            </div>
+
+            <ul className="space-y-3 mb-8 flex-1">
+              {service.features.map((feature) => (
+                <li key={feature} className="flex items-start gap-3 text-sm text-slate-700">
+                  <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <Button 
+              onClick={() => handleBook(service.id)}
+              className="w-full h-12 text-lg font-bold bg-slate-900 hover:bg-slate-800"
+            >
+              Check Availability <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+            
+            <p className="text-xs text-center text-slate-400 mt-3">
+              <ShieldCheck className="w-3 h-3 inline mr-1" /> Liability Insured
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* THE "WHY LOGIN?" SECTION */}
+      <div className="max-w-4xl mx-auto mt-24 bg-blue-600 rounded-3xl p-12 text-center text-white relative overflow-hidden">
+        <div className="relative z-10">
+          <h2 className="text-3xl font-bold mb-4">Why is the final price different?</h2>
+          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+            Our algorithm adjusts for local disposal fees, travel time, and demand in your specific neighborhood.
+          </p>
+          <Button 
+            variant="outline" 
+            className="bg-white text-blue-600 hover:bg-blue-50 border-none font-bold h-12 px-8"
+            onClick={() => setLocation('/auth')}
+          >
+            Get My Exact Price
+          </Button>
+        </div>
+        
+        {/* Decorative Circles */}
+        <div className="absolute top-0 left-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-cyan-500 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 opacity-50" />
+      </div>
+    </div>
+  );
+}
+3. The Router Fix (client/src/App.tsx)You must tell the router that /pricing does NOT require a user to be logged in.Find your Router switch and add this line:TypeScript// Inside your Switch/Router
+<Route path="/pricing" component={PublicPricing} /> 
+4. The Navbar Fix (client/src/components/layout/navbar.tsx)Update the link to point to this new page instead of the login-walled dashboard.TypeScript// Find the "Pricing" Link
+<Link href="/pricing">
+  <span className="text-sm font-semibold leading-6 text-slate-300 hover:text-white cursor-pointer transition-colors">
+    Pricing
+  </span>
+</Link>
+🧠 Why this solves the problemZero Friction: They click "Pricing" and immediately see numbers ($99). Their anxiety ("Is this expensive?") is resolved.The "Soft Gate": When they click "Check Availability," we redirect them to /auth. But now, they are motivated to log in because they have already decided they like the price.The Upsell: The bottom section explains why they need to log in (Local adjustments), making the friction feel like a feature, not a bug.Add the PublicPricing page now. It is the bridge between "Browsing" and "Booking."

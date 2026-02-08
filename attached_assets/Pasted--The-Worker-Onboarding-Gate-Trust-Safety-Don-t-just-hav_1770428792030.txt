@@ -1,0 +1,65 @@
+. The "Worker Onboarding" Gate (Trust & Safety)
+Don't just have a signup form. Build a multi-step state machine. This ensures no worker gets a job without being verified.
+
+Replit Task: Create a middleware/auth.js that checks for a verification_status.
+
+JavaScript
+// Example logic for your debugger to refine
+const ensureVerified = (req, res, next) => {
+  const { status, background_check } = req.user;
+  if (status === 'active' && background_check === 'cleared') {
+    return next();
+  }
+  return res.status(403).json({ error: "Onboarding incomplete. Check your dashboard." });
+};
+Tell Replit Agent: > "Create an onboarding flow for workers. Step 1: Profile Info. Step 2: ID Upload (Stripe Identity). Step 3: Background Check (Checkr). Only move the worker's status to 'active' in the DB when all three are marked 'complete' via webhooks."
+
+2. The "Job Command Center" (Worker Dashboard)
+Your debugger needs to see how the data flows during a live job. Build the Status Toggle now.
+
+The Logic:
+
+Pending: Job is on the marketplace.
+
+Accepted: Job disappears from the market; Worker & Customer are linked.
+
+In Transit: Worker is driving (Trigger GPS tracking).
+
+Arrived: Worker at the site (Trigger "Before" photo prompt).
+
+Complete: Worker finished (Trigger "After" photo + Green Receipt).
+
+Tell Replit Agent: > "Update the worker dashboard to be a 'Single Job View.' When a job is active, show one big button that changes based on the job state: [Start Trip] -> [I Have Arrived] -> [Submit Work Photos] -> [Complete Job]."
+
+3. The "AI Visual Audit" (The Proof of Work)
+This is where you beat the big guys. Use Gemini 1.5 Flash to verify that the garage is actually clean.
+
+Replit Code to add now: Create a route /api/jobs/verify-completion.
+
+JavaScript
+// Tell your debugger to connect this to the Gemini API
+app.post('/api/jobs/verify-completion', async (req, res) => {
+  const { jobId, afterPhoto } = req.body;
+  // AI Logic: Compare 'before' vs 'after'
+  // If 'Empty' -> Set Job to 'Paid'
+  // If 'Messy' -> Notify Worker: "Area still has debris. Please clean to finish."
+});
+4. The Stripe Connect "Payout Pipeline"
+Workers stay for the money. You need to automate the Instant Payout.
+
+The Setup:
+
+Use Stripe Connect Express. It handles all the 1099 tax forms for you.
+
+The Logic: When the AI verifies the job is complete, the server triggers a transfer from your Stripe platform to the Worker’s connected account.
+
+Tell Replit Agent: > "Set up a Stripe Connect Express onboarding route. When a job is marked 'Complete' and verified by AI, trigger a Stripe Transfer to the worker's account minus our 20% platform fee."
+
+🛠️ Final "Debugger-Ready" Checklist
+To make sure your person tomorrow doesn't waste time, ensure these are in your Replit:
+
+Environment Variables: Have STRIPE_KEY, TWILIO_KEY, and GEMINI_KEY placeholders in the "Secrets" tab.
+
+Database Seed: Create a seed.sql file with one "Test Customer" and one "Test Worker" so they can test the login instantly.
+
+Documentation: Leave a README.md that says: "The goal is to test the 'Job Acceptance' race condition—can two workers accept the same job at once? Fix this using SQL Transactions."

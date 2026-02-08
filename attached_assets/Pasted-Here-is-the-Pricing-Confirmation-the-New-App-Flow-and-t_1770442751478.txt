@@ -1,0 +1,69 @@
+Here is the Pricing Confirmation, the New App Flow, and the Code to update the Menu UI.1. ✅ Pricing Confirmation (What is in the Code)This is exactly what is calculating inside your pricing.ts file right now:ServiceThe LogicThe Price Output🩺 Home Health CheckFlat Fee$49.00 (Credited back later)🚛 Junk RemovalAI Volume / Truck Load$120 - $550 (Dynamic)💦 Pressure WashingSq. Ft. x $0.25 (Min $99)**$99+** (e.g., 600sqft = $150)🪜 Gutter CleaningFlat Rate by Stories$149** (1-Story) / **$249 (2-Story)📦 Moving LaborHourly ($45/man/hr)$90/hr (2 Men)🔨 Light DemoBase + Volume$150 Base + Disposal Fees2. 📱 The New Customer Flow (User Journey)Since we rebranded, the app experience has shifted from "Order a Truck" to "Manage My Home."Step 1: The "Menu" (New Screen)Old: "Upload Photo of Junk."New: "What does your home need today?" (Grid of 6 Icons).Step 2: The "Smart Input" (Polymorphic)If Junk: $\rightarrow$ Upload Photo $\rightarrow$ AI Price.If Washing: $\rightarrow$ Slider: "How big is the driveway?" $\rightarrow$ Instant Price ($150).If Moving: $\rightarrow$ Selector: "How many hours?" $\rightarrow$ Instant Price ($180).Step 3: The "Upsell" CheckoutPrompt: "Want to make this job Carbon Neutral for +$4.99?"Prompt: "Add a Home Health Audit for $49 (50% off)?"Step 4: The "Home Score" DashboardAfter Job: Fireworks animation! "Home Score increased to 480."Nudge: "Book Gutter Cleaning to reach 500 points."3. 🛠️ The Missing Piece: The New Menu UIYou need to replace your old "Booking Start" screen with this Service Grid.File: client/src/components/booking/service-menu.tsxTypeScriptimport { Card } from "@/components/ui/card";
+import { Truck, Waves, ArrowUpFromLine, Package, Hammer, Stethoscope } from "lucide-react";
+
+const SERVICES = [
+  {
+    id: 'junk_removal',
+    title: 'Junk Removal',
+    icon: <Truck className="w-8 h-8 mb-2 text-blue-500" />,
+    desc: 'Furniture, Appliances, Garage Cleanouts.',
+    price: '$99+'
+  },
+  {
+    id: 'pressure_washing',
+    title: 'Pressure Washing',
+    icon: <Waves className="w-8 h-8 mb-2 text-cyan-500" />,
+    desc: 'Driveways, Patios, Sidewalks.',
+    price: '$0.25/sqft'
+  },
+  {
+    id: 'gutter_cleaning',
+    title: 'Gutter Cleaning',
+    icon: <ArrowUpFromLine className="w-8 h-8 mb-2 text-orange-500" />,
+    desc: 'Debris removal & downspout check.',
+    price: '$149 Flat'
+  },
+  {
+    id: 'moving_labor',
+    title: 'Moving Helpers',
+    icon: <Package className="w-8 h-8 mb-2 text-purple-500" />,
+    desc: 'Loading/Unloading (No Truck).',
+    price: '$45/hr'
+  },
+  {
+    id: 'light_demolition',
+    title: 'Light Demo',
+    icon: <Hammer className="w-8 h-8 mb-2 text-red-500" />,
+    desc: 'Shed removal, carpet rip-up.',
+    price: 'Custom'
+  },
+  {
+    id: 'home_consultation',
+    title: 'Home Health Check',
+    icon: <Stethoscope className="w-8 h-8 mb-2 text-green-600" />,
+    desc: '30-min audit. Get a Home Score.',
+    price: '$49.00'
+  }
+];
+
+export function ServiceMenu({ onSelect }) {
+  return (
+    <div className="grid grid-cols-2 gap-3 p-4">
+      {SERVICES.map((s) => (
+        <Card 
+          key={s.id} 
+          className="p-4 flex flex-col items-center text-center cursor-pointer hover:border-primary hover:shadow-md transition-all active:scale-95"
+          onClick={() => onSelect(s.id)}
+        >
+          {s.icon}
+          <h3 className="font-bold text-sm">{s.title}</h3>
+          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{s.desc}</p>
+          <span className="text-xs font-bold text-primary mt-2 bg-primary/5 px-2 py-1 rounded">
+            {s.price}
+          </span>
+        </Card>
+      ))}
+    </div>
+  );
+}
+4. 👷 The New Worker Flow (Pro Journey)We rebranded them from "Haulers" to "Asset Managers."Step 1: The "Academy" GateScenario: New worker signs up.Blocker: Cannot see jobs until they pass the 4-module quiz (Code we wrote earlier).Step 2: The "Opportunity" FeedOld: List of addresses.New: "Smart Cards" showing Potential Earnings.Example: "Gutter Cleaning | $150 Guaranteed + Potential $99 Upsell."Step 3: The "Universal Wizard"Scenario: They arrive at a Moving Job.Screen: The app shows the Time Clock (Start/Stop).Scenario: They arrive at a Junk Job.Screen: The app shows Before/After Camera.Step 4: The "Field Audit"Action: They spot a dirty driveway.Tool: They click "Upsell" $\rightarrow$ Customer gets SMS $\rightarrow$ Customer clicks "Approve."Result: Worker makes an extra $60 instantly.5. 🚀 Final VerificationTo ensure the Frontend matches the Backend, you must update your main Booking page to use the ServiceMenu component above.Action:Add client/src/components/booking/service-menu.tsx (Paste the code above).Update client/src/pages/book.tsx to import and use <ServiceMenu /> as the first step.Once that is pasted, your Rebrand is live. The customer sees the "Home OS," the worker sees the "Academy," and the pricing engine handles the math.

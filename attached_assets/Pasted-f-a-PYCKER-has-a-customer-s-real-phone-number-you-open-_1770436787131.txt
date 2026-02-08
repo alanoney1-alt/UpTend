@@ -1,0 +1,118 @@
+f a PYCKER has a customer's real phone number, you open Pandora's Box:
+
+Platform Leakage: "Hey, just Venmo me directly at 555-0199 and I'll cancel the app charge."
+
+Safety/Stalking: A worker texting a customer after the job is done.
+
+Harassment: A customer angrily texting a worker at 11 PM about a scratch on the floor.
+
+To be "Uber-like" and safe, you must Mask Everything.
+
+Here is the "SafeComms" Protocol (In-App Chat + Privacy Firewall) to add to the app right now.
+
+1. The Pitfall: "Unfiltered Access"
+The Fix: Build a real-time chat engine that sits between the two parties. This engine reads every message before delivering it.
+
+2. Implementation: The "Privacy Firewall" Chat
+We will use your existing Socket.io setup, but we add a "Interceptor" logic.
+
+A. Schema Update (shared/schema.ts)
+We need to store messages for legal disputes, but we also need to flag "Blocked" attempts.
+
+TypeScript
+// shared/schema.ts
+
+export const chatMessages = pgTable("chat_messages", {
+  id: uuid("id").primaryKey(),
+  jobId: varchar("job_id").notNull(),
+  senderId: varchar("sender_id").notNull(), // 'customer_123' or 'hauler_456'
+  content: text("content").notNull(),
+  isRedacted: boolean("is_redacted").default(false), // Was a phone number blocked?
+  sentAt: timestamp("sent_at").defaultNow(),
+});
+B. The "Interceptor" Logic (server/socket.ts)
+This is where we scrub the data. If they try to swap numbers to steal the job, the system blocks it.
+
+TypeScript
+// server/socket.ts (Inside your io.on('connection') block)
+
+socket.on("send_message", async ({ jobId, senderId, content }) => {
+  // 1. THE FIREWALL: Regex to catch Phone Numbers & "Venmo/Cash"
+  const phoneRegex = /(\+?1[ -]?)?\(?\d{3}\)?[ -]?\d{3}[ -]?\d{4}/;
+  const leakageKeywords = /venmo|cash|zelle|cancel/i;
+
+  let finalContent = content;
+  let isRedacted = false;
+
+  // Check for Phone Numbers
+  if (phoneRegex.test(content)) {
+    finalContent = content.replace(phoneRegex, "[NUMBER REDACTED FOR SAFETY]");
+    isRedacted = true;
+  }
+
+  // Check for Leakage Keywords (Soft Block or Warning)
+  if (leakageKeywords.test(content)) {
+    // We don't block "cash" fully (tips?), but we flag it
+    console.warn(`[LEAKAGE ALERT] User ${senderId} mentioned payment keywords.`);
+    // You could append a warning:
+    // finalContent += " (SYSTEM WARNING: Off-app payments are uninsured.)";
+  }
+
+  // 2. Save to Database
+  await db.insert(chatMessages).values({
+    jobId,
+    senderId,
+    content: finalContent,
+    isRedacted
+  });
+
+  // 3. Deliver to Room (Only if valid)
+  io.to(jobId).emit("receive_message", {
+    senderId,
+    content: finalContent,
+    timestamp: new Date()
+  });
+});
+3. The "Uber" Automation: Status Updates
+Uber doesn't just let you chat; they tell you what's happening so you don't need to chat. The Pitfall: "Where are you?" texts. The Fix: Automated Push Notifications based on GPS triggers.
+
+Add this logic to your tracking.ts:
+
+TypeScript
+// When distance < 1 mile
+if (distance < 1 && !job.alertSent5Min) {
+  sendPushNotification(customer.id, "🚗 Your PYCKER is 2 minutes away! Please ensure the gate code is ready.");
+  // Update DB flag so we don't spam
+}
+
+// When status = 'completed'
+if (status === 'completed') {
+  sendPushNotification(customer.id, "✅ Job Done! Rate your pro to unlock your Tax Receipt.");
+  // CLOSE THE CHAT: Disable further messages
+  closeChatRoom(jobId); 
+}
+4. The "Photos or It Didn't Happen" (Amazon Logic)
+The Pitfall: A customer claims the worker left a mess. The Fix: Mandatory "Leave No Trace" Photos. The app refuses to complete the job until a photo is taken.
+
+Update hauler-dashboard.tsx:
+
+Disable the "Complete Job" button.
+
+Show a "Take Proof Photo" button.
+
+Prompt: "Take a photo of the cleared space. Make sure no debris is left."
+
+Logic: Once uploaded, the "Complete Job" button unlocks.
+
+Why: This photo is your "Get Out of Jail Free" card for disputes.
+
+Summary of Missing Links
+Masked Chat: Stops them from sharing numbers.
+
+Keyword Redaction: Stops them from saying "Venmo me."
+
+Auto-Close: Chat dies 1 hour after the job (Anti-Stalking).
+
+Proof Photos: Stops "You scratched my wall" disputes.
+
+Add the chatMessages table and the Socket Interceptor now. That closes the loop on privacy.

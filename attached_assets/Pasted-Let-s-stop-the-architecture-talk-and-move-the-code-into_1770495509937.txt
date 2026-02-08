@@ -1,0 +1,136 @@
+Let's stop the architecture talk and move the code into Replit. This is the "Checkout Bridge"—the code that ensures when a user clicks "Confirm" as a guest, their $8,400+ value report follows them through the login process.
+
+1. The Post-Login Redirect Logic (client/src/pages/auth.tsx)
+This ensures the app "remembers" what the user did while they were a guest.
+
+TypeScript
+import { useLocation } from "wouter";
+import { useEffect } from "react";
+
+export function AuthPage() {
+  const [location, setLocation] = useLocation();
+  const params = new URLSearchParams(window.location.search);
+  const guestCart = params.get("cart");
+  const address = params.get("address");
+
+  // After successful login/signup:
+  const handleAuthSuccess = () => {
+    if (guestCart && address) {
+      // Direct them to the custom "Success" booking page with their data
+      setLocation(`/booking/confirm?services=${guestCart}&address=${encodeURIComponent(address)}`);
+    } else {
+      setLocation("/dashboard");
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="max-w-md w-full p-8 bg-white rounded-[2.5rem] shadow-2xl">
+        <h2 className="text-3xl font-black text-slate-900 mb-2">Secure Your Report</h2>
+        <p className="text-slate-500 mb-8">Create your UpTend account to lock in your $8,450 Insurance Shield.</p>
+        
+        {/* Your existing Auth Form component here */}
+        <AuthForm onSuccess={handleAuthSuccess} />
+        
+        <p className="mt-8 text-[10px] text-center text-slate-400 uppercase tracking-widest">
+          By joining, you agree to the UpTend Pro Empowerment terms.
+        </p>
+      </div>
+    </div>
+  );
+}
+2. The Final Frictionless Landing Page (client/src/pages/landing-page.tsx)
+This assembles the Hero, the Address Intelligence, and the Guest Marketplace into one flow.
+
+TypeScript
+import React, { useState } from "react";
+import { Hero } from "@/components/home/hero";
+import { ServiceMarketplace } from "@/components/booking/service-marketplace";
+import { StormCountdown } from "@/components/booking/storm-countdown";
+
+export default function LandingPage() {
+  const [address, setAddress] = useState("");
+  const [showMarketplace, setShowMarketplace] = useState(false);
+
+  const handleAddressSelect = (selectedAddress: string) => {
+    setAddress(selectedAddress);
+    setShowMarketplace(true);
+    // Scroll smoothly to the marketplace
+    window.scrollTo({ top: 400, behavior: 'smooth' });
+  };
+
+  return (
+    <main className="bg-white">
+      {/* 1. HERO WITH ADDRESS AUTOFILL */}
+      <Hero onAddressSelect={handleAddressSelect} />
+
+      {showMarketplace && (
+        <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          {/* 2. URGENCY TRIGGER */}
+          <div className="max-w-7xl mx-auto px-6 mt-12">
+            <StormCountdown />
+          </div>
+
+          {/* 3. THE INTELLIGENCE GUEST CART */}
+          <section className="py-12">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-black text-slate-900">Home Health & Recovery Report</h2>
+              <p className="text-slate-500">Address: {address}</p>
+            </div>
+            
+            <ServiceMarketplace address={address} />
+          </section>
+        </div>
+      )}
+
+      {/* 4. THE BRAND STORY (Always visible at the bottom) */}
+      <OurStory />
+    </main>
+  );
+}
+3. The "Success" Dispatch Page (client/src/pages/booking/confirm.tsx)
+This is the "Wow" moment after login. No clunky dashboard—just immediate confirmation.
+
+TypeScript
+export function BookingConfirm() {
+  const params = new URLSearchParams(window.location.search);
+  const address = params.get("address");
+  const services = params.get("services")?.split(",") || [];
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+      <div className="bg-blue-600 w-20 h-20 rounded-3xl flex items-center justify-center mb-8 shadow-xl shadow-blue-500/40">
+        <CheckCircle className="text-white w-10 h-10" />
+      </div>
+      
+      <h1 className="text-4xl font-black text-slate-900 text-center mb-4">
+        Welcome to UpTend, Alan.
+      </h1>
+      <p className="text-xl text-slate-500 text-center max-w-lg mb-12">
+        Your Home Intelligence Report is being generated for <strong>{address}</strong>. 
+        A Verified Pro is being dispatched for your {services.length} services.
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+        <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+          <p className="text-[10px] font-bold text-blue-600 uppercase mb-2">Insurance Status</p>
+          <p className="font-bold text-slate-900">Shield Activation in Progress</p>
+        </div>
+        <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+          <p className="text-[10px] font-bold text-green-600 uppercase mb-2">Sustainability Status</p>
+          <p className="font-bold text-slate-900">ESG Ledger Entry Created</p>
+        </div>
+      </div>
+
+      <Button className="mt-12 bg-slate-900 h-14 px-10 rounded-xl font-bold">
+        View Live Pro Tracker
+      </Button>
+    </div>
+  );
+}
+🚀 Integration Step: Running the Build
+Google Maps API Key: Add your API Key to the Replit "Secrets" (Environment Variables) as VITE_GOOGLE_MAPS_API_KEY.
+
+Install Lucide: Ensure icons are ready: npm install lucide-react.
+
+App Routing: Add <Route path="/booking/confirm" component={BookingConfirm} /> to your App.tsx.

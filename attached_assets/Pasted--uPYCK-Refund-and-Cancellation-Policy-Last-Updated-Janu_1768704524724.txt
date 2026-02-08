@@ -1,0 +1,274 @@
+# uPYCK Refund and Cancellation Policy
+
+**Last Updated:** January 17, 2026
+
+## Overview
+
+This Refund and Cancellation Policy explains how refunds and cancellations work on the uPYCK platform. This policy is part of our Terms of Service.
+
+## Customer Cancellations
+
+### Before PYCKER Accepts
+
+**Free Cancellation**
+
+- You may cancel for free anytime before a PYCKER accepts your job
+- Payment authorization will be released immediately
+- No charges to your card
+
+### After PYCKER Accepts (But Before Arrival)
+
+**$25 Cancellation Fee**
+
+- Once a PYCKER accepts and is en route, a $25 cancellation fee applies
+- This compensates the PYCKER for time and fuel
+- Remaining authorized amount released to you
+
+### PYCKER Has Arrived
+
+**$50 Cancellation Fee**
+
+- If PYCKER arrives at your location and you cancel, a $50 fee applies
+- This covers the PYCKER’s time, fuel, and lost opportunity
+- Remaining authorized amount released to you
+
+### After Service Begins
+
+**Full Charge**
+
+- Once service has begun (loading has started), full job charge applies
+- No refund for partially completed work
+- You are responsible for full payment
+
+## PYCKER Cancellations
+
+### PYCKER Cancels Before Arrival
+
+**Full Refund**
+
+- If PYCKER cancels for any reason, you receive a full refund
+- Payment authorization released immediately
+- PYCKER charged $25 penalty (credited to you if service rebooked)
+
+### PYCKER No-Show
+
+**Full Refund + Priority Rebooking**
+
+- If PYCKER doesn’t arrive within 30 minutes of scheduled window
+- Full refund issued
+- PYCKER charged $25 penalty
+- You receive priority matching for next booking
+
+## No-Show Situations
+
+### Customer No-Show
+
+**Full Charge**
+
+- If you are not available at scheduled time
+- PYCKER waits 15 minutes and attempts contact
+- Full job charge applies if you don’t respond
+- No refund issued
+
+### PYCKER Late Arrival
+
+**Partial Refund or Discount**
+
+- PYCKER more than 30 minutes late: 10% discount
+- PYCKER more than 60 minutes late: 25% discount
+- PYCKER no-show (2+ hours late): Full refund
+
+## Service Quality Issues
+
+### Incomplete or Poor Service
+
+If you are unsatisfied with service quality:
+
+**Report Within 24 Hours:**
+
+- Email support@upyck.com
+- Provide photos or video evidence
+- Describe the issue in detail
+
+**Resolution Options:**
+
+1. **Partial Refund:** For partially completed work
+1. **Full Refund:** For work not done as promised
+1. **Rescheduled Service:** Free return visit to complete job
+1. **Credit:** Platform credit for future bookings
+
+**Not Eligible for Refund:**
+
+- Change of mind after service completion
+- Items you wanted kept were disposed of (without PYCKER being informed)
+- Normal wear and tear on property during service
+- Difficulty accessing items (unless misrepresented by you)
+
+### Property Damage
+
+**PYCKER Caused Damage:**
+
+- Report immediately (within 24 hours)
+- Provide photo evidence
+- For Verified Pro PYCKERs: File claim with their insurance
+- For Independent PYCKERs: Work with PYCKER directly (uPYCK facilitates but is not responsible)
+- uPYCK mediates disputes but does not guarantee resolution
+
+**Pre-existing Damage:**
+
+- Not covered
+- Report any pre-existing damage to PYCKER before service begins
+
+## Price Adjustments
+
+### On-Site Price Changes
+
+**Acceptable Changes:**
+
+- Additional items found on-site (you agree to add them)
+- Heavier load than estimated
+- Stairs not disclosed in booking
+- Access difficulties not mentioned
+
+**Unacceptable Changes:**
+
+- Arbitrary price increases
+- Pressure to pay more than quoted
+- Hidden fees not disclosed upfront
+
+**Your Rights:**
+
+- Accept the new price and proceed
+- Decline additional services
+- Cancel (subject to cancellation fees)
+- Dispute the charge (we’ll investigate)
+
+### Quote Accuracy
+
+**AI Estimates:**
+
+- Photo-based estimates are close but not guaranteed exact
+- Final price based on actual volume
+- If significantly different (20%+), we’ll investigate
+- Refund difference if estimate was unreasonably inaccurate
+
+## Refund Processing
+
+### Timeline
+
+**Payment Authorization Release:** Immediate (within minutes)
+**Refund to Card:** 5-10 business days (depends on your bank)
+**Platform Credits:** Immediate (applied to your account instantly)
+
+### Refund Method
+
+Refunds issued to original payment method:
+
+- Credit/debit card: Refunded to card
+- Platform credit: Applied to account balance
+- Cash payments: Not accepted (N/A)
+
+## Tips
+
+**Tips Are Non-Refundable**
+
+- Tips are paid directly to PYCKERs (100%, no platform fee)
+- Tips cannot be refunded once paid
+- If service quality was poor, request refund of base fare, not tip
+
+**Exception:**
+If PYCKER no-shows or cancels, any tip paid is refunded.
+
+## Disputes
+
+### Dispute Process
+
+1. **Contact Support:** Email support@upyck.com within 24 hours
+1. **Provide Details:** Photos, description, booking ID
+1. **Investigation:** We review within 1-3 business days
+1. **Resolution:** Refund, credit, rescheduled service, or denied
+
+### Chargeback Policy
+
+**Before Filing Chargeback:**
+Contact us first at support@upyck.com. Most issues are resolved quickly.
+
+**If You File Chargeback:**
+
+- Your account may be suspended pending investigation
+- Abuse of chargebacks may result in permanent ban
+- Legitimate chargebacks will be honored
+
+## Green Verified Rebates
+
+**PYCKER Rebates Only:**
+
+- Green Verified rebates are for PYCKERs, not customers
+- Customers benefit indirectly through verified eco-friendly disposal
+- Rebates paid to PYCKERs within 7 days of approval
+
+## Special Circumstances
+
+### Weather or Emergencies
+
+**Severe Weather:**
+
+- Free rescheduling if unsafe to travel
+- Applies to both customers and PYCKERs
+- No cancellation fees
+
+**Emergencies:**
+
+- Medical emergencies, family emergencies: free cancellation
+- Contact us immediately
+- We may request documentation
+
+### Recurring Jobs
+
+**Business Account Cancellations:**
+
+- Cancel recurring job with 48 hours notice: no fee
+- Less than 48 hours notice: one job charge
+- Cancel account: no penalty after current billing cycle
+
+## Contact for Refunds
+
+**Email:** support@upyck.com
+**Subject Line:** “Refund Request - [Booking ID]”
+
+**Include:**
+
+- Your name and account email
+- Booking ID
+- Reason for refund request
+- Any supporting documentation (photos, screenshots)
+
+**Response Time:** Within 24-48 hours (business days)
+
+-----
+
+## Quick Reference
+
+|Situation                   |Fee/Refund                        |
+|----------------------------|----------------------------------|
+|Cancel before PYCKER accepts|FREE (Full refund)                |
+|Cancel after PYCKER accepts |$25 fee                           |
+|Cancel after PYCKER arrives |$50 fee                           |
+|Cancel after service starts |Full charge (No refund)           |
+|PYCKER cancels              |Full refund + PYCKER penalty      |
+|PYCKER no-show              |Full refund + priority rebooking  |
+|Customer no-show            |Full charge                       |
+|PYCKER late (30-60 min)     |10% discount                      |
+|PYCKER late (60+ min)       |25% discount                      |
+|PYCKER late (2+ hours)      |Full refund                       |
+|Poor service quality        |Partial/full refund (case by case)|
+|Weather cancellation        |Free reschedule                   |
+
+-----
+
+**This policy is designed to be fair to both customers and PYCKERs while maintaining platform integrity.**
+
+For questions, contact support@upyck.com.
+
+**Last Updated:** January 17, 2026
+**Version:** 1.0

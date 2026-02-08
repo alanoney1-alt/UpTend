@@ -1,0 +1,103 @@
+The "Eyes": Photo Upload & Storage
+The Gap: You have buttons that say "Take Photo," but currently, they probably do nothing or try to save to a local folder (which vanishes on Replit). The Fix: You need a cloud storage connection. For Replit, Cloudinary is the easiest/fastest free option.
+
+👉 Replit Prompt (The Infrastructure):
+
+"I need to handle image uploads for 'Before/After' job photos.
+
+Backend: In server/index.ts, set up a route POST /api/upload.
+
+Use multer to handle the file stream.
+
+Upload the file to Cloudinary (I will provide API keys later).
+
+Return the secure URL string.
+
+Frontend: Create a generic component client/src/components/ui/image-uploader.tsx.
+
+UI: A big dashed box that says 'Tap to Camera'.
+
+Logic: When a file is selected, auto-upload it to the endpoint.
+
+Feedback: Show a spinner while uploading, then the image preview with a 'Checkmark' when done.
+
+Output: Pass the URL back to the parent form."
+
+2. The "Compass": Real-Time GPS Logic
+The Gap: The "En Route" screen is static. It doesn't actually tell the server where the worker is. The Fix: You need a Geolocation Heartbeat.
+
+👉 Replit Prompt (The Tracking Engine):
+
+"Open client/src/hooks/use-location-tracker.ts.
+
+Create a React Hook that tracks the worker's position.
+
+Logic:
+
+Wake Lock: Use navigator.wakeLock to keep the screen on while driving.
+
+Watcher: Use navigator.geolocation.watchPosition with high accuracy.
+
+Throttling: Only send an update to the server every 30 seconds (to save battery/data) OR if the user moves more than 100 meters.
+
+Endpoint: Send data to POST /api/hauler/location with { lat, lng, jobId }.
+
+Error Handling: If GPS signal is lost, show a 'Searching for Satellites...' toast notification."
+
+3. The "Wallet": Stripe Payment Intent
+The Gap: You have pricing math, but no way to actually capture the card. The Fix: You need the Payment Intent handshake.
+
+👉 Replit Prompt (The Money):
+
+"Open server/routes.ts and client/src/pages/booking-payment.tsx.
+
+I need to implement the Stripe Payment Flow.
+
+Backend:
+
+Create POST /api/create-payment-intent.
+
+Calculate the exact amount server-side (do not trust the client).
+
+Return the clientSecret.
+
+Frontend:
+
+Wrap the payment form in <Elements stripe={stripePromise}>.
+
+Use the PaymentElement component (it handles Apple Pay/Cards automatically).
+
+Crucial: On success, do NOT just redirect. Call POST /api/jobs/create to actually save the order in the database after payment is confirmed."
+
+🚀 The "invisible" piece: The Wake Lock
+Context: If a worker is driving and their phone screen turns off, the GPS stops. This ruins the "Uber-like" experience for the customer.
+
+Add this specific code to your ActiveJobWizard.tsx:
+
+TypeScript
+// Inside the "En Route" Component
+useEffect(() => {
+  let wakeLock = null;
+
+  const requestWakeLock = async () => {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLock = await navigator.wakeLock.request('screen');
+        console.log('Screen Wake Lock active: Keeping GPS alive.');
+      }
+    } catch (err) {
+      console.log('Wake Lock error:', err);
+    }
+  };
+
+  requestWakeLock();
+
+  // Re-acquire lock if they switch apps and come back
+  document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+      requestWakeLock();
+    }
+  });
+
+  return () => wakeLock?.release();
+}, []);

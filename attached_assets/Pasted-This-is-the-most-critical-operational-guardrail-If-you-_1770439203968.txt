@@ -1,0 +1,119 @@
+This is the most critical operational guardrail. If you treat these "Consultants" like employees (training them, giving them uniforms, setting their schedule), the IRS will reclassify them as W-2, and you will owe millions in back taxes.
+
+To keep them as 1099 Independent Contractors, you must structure the relationship around "Results," not "Control."
+
+Here is the "Safe Harbor" Protocol for hiring and dispatching Home Consultants.
+
+1. The Role: "Field Data Collector" (Not "Inspector")
+Do not hire "Home Inspectors." That implies a licensed, regulated employee role. Hire "Field Data Collectors" or "estimators."
+
+The Deal: "We pay you $25 to go to this address, capture a video scan, and fill out a checklist. How you get there and what tools you use are up to you."
+
+The Deliverable: You are buying a Data Packet (The Video + The List). You are not buying their time.
+
+2. The "3-Point" Legal Shield
+To pass the IRS test, build these rules into the app:
+
+Rule 1: No Equipment Provided (Financial Control).
+
+They must use their own smartphone.
+
+They must use their own vehicle.
+
+Why: If you give them an iPad and a company car, they are employees.
+
+Rule 2: The "Right to Reject" (Behavioral Control).
+
+They must be able to see a consultation request and decline it without being fired.
+
+App Logic: Show it as an "Opportunity," not an "Assignment."
+
+Rule 3: Paid on "Output," Not "Hour" (Relationship).
+
+Never pay hourly for this.
+
+Pay Structure: Flat Fee ($25 per completed Report).
+
+Why: If they take 2 hours to do a 30-minute job, that's their problem. If they do it in 15 minutes, they win. This is the definition of a contractor.
+
+🛠️ Technical Implementation: The "Certification" Gate
+You can't just let any junk hauler do this. They need to be "qualified." But you can't "train" them (training = employee). The Loophole: You offer a "Voluntary Certification Badge."
+
+1. Schema Update (shared/schema.ts)
+We need to track who has "unlocked" the ability to see these high-paying gigs.
+
+TypeScript
+// shared/schema.ts
+
+export const haulerCertifications = pgTable("hauler_certifications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  haulerId: varchar("hauler_id").notNull(),
+  
+  // The Badge
+  type: varchar("type").default('home_estimator'), // 'home_estimator', 'heavy_machinery'
+  isActive: boolean("is_active").default(true),
+  earnedAt: timestamp("earned_at").defaultNow(),
+  
+  // Quality Score specific to this role
+  accuracyRating: integer("accuracy_rating").default(100), // 0-100
+});
+2. The "University" Screen (Worker App)
+Instead of "Training," call it "Earn Your Badge."
+
+Video: "How to take a perfect 360-degree room scan."
+
+Quiz: "What do you do if you see a pile of tires?"
+
+Result: If they pass, they unlock the "Consultation" job type in their feed.
+
+3. The "Gig Offer" Logic (server/services/dispatch.ts)
+When a customer books a $49 Consult, the algorithm only sends it to workers with the home_estimator badge.
+
+TypeScript
+// server/services/dispatch.ts
+
+export async function dispatchConsultation(consultId: string, lat: number, lng: number) {
+  // 1. Find qualified 1099 contractors nearby
+  const qualifiedHaulers = await db.select().from(haulers)
+    .innerJoin(haulerCertifications, eq(haulers.id, haulerCertifications.haulerId))
+    .where(and(
+      eq(haulerCertifications.type, 'home_estimator'), // MUST have badge
+      eq(haulerCertifications.isActive, true),
+      // ... geo logic ...
+    ));
+
+  // 2. Broadcast the "Gig"
+  for (const hauler of qualifiedHaulers) {
+    sendPushNotification(hauler.id, {
+      title: "New Assessment Gig: $25.00",
+      body: "30-min data collection. Located 5 miles away.",
+      action: "accept_gig",
+      payout: 2500 // $25.00
+    });
+  }
+}
+4. The "Uniform" Loophole
+You want them to look professional, but you can't force them to wear a uniform (that's an employee trait).
+
+The Solution: "Merch Store."
+
+Logic: Sell them a "uPYCK Pro" polo shirt for $15.
+
+The Nudge: "Pros who wear branded gear get 20% higher tips and better ratings."
+
+Result: They choose to buy and wear it. You stay legal.
+
+Summary of the "Consultant" Economics
+Customer Pays: $49.00
+
+Worker Pays (Cost of Goods): $0.00 (Uses own phone).
+
+Worker Gets: $25.00 (Flat Fee).
+
+uPYCK Gross Margin: $24.00 (50% Margin).
+
+Upside: If they sell a $500 junk job during the consult, give them a **10% Commission ($50)**.
+
+This incentivizes them to be "Salespeople" without you managing them.
+
+Add the haulerCertifications table now. This allows you to filter your workforce and only send these delicate jobs to your "Top 10%" rated workers.

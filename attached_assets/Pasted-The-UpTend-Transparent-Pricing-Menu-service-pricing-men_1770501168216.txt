@@ -1,0 +1,124 @@
+The UpTend Transparent Pricing Menu (service-pricing-menu.tsx)
+This component takes the user's address and displays the actual costs for each service. It’s clean, professional, and removes the "crazy" numbers in favor of actionable pricing.
+
+TypeScript
+import React from "react";
+import { ShieldCheck, Trash2, Waves, Droplets, Truck, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export function ServicePricingMenu({ address }) {
+  const services = [
+    {
+      id: "health-audit",
+      name: "Home Health Audit",
+      price: "$99",
+      description: "Comprehensive 360° Video Manifest & Insurance Asset Log.",
+      benefit: "Shields your property value for future claims.",
+      icon: <ShieldCheck className="text-blue-600 w-6 h-6" />,
+      featured: true
+    },
+    {
+      id: "material-recovery",
+      name: "Material Recovery",
+      price: "From $149",
+      description: "Professional debris removal with verified ESG tracking.",
+      benefit: "Clears yard hazards & storm-risk missiles.",
+      icon: <Trash2 className="text-green-600 w-6 h-6" />
+    },
+    {
+      id: "gutter-flush",
+      name: "Gutter Protection",
+      price: "$125",
+      description: "Flow testing and debris clearing for all perimeters.",
+      benefit: "Prevents foundation erosion and water damage.",
+      icon: <Waves className="text-cyan-600 w-6 h-6" />
+    },
+    {
+      id: "surface-wash",
+      name: "Surface Rejuvenation",
+      price: "From $199",
+      description: "Eco-friendly pressure washing for siding and driveways.",
+      benefit: "Reflects heat and identifies structural cracks early.",
+      icon: <Droplets className="text-blue-400 w-6 h-6" />
+    },
+    {
+      id: "staging-labor",
+      name: "Staging & Moving",
+      price: "$85/hr",
+      description: "Professional labor for heavy lifting or storm staging.",
+      benefit: "Protects your furniture and high-value interior assets.",
+      icon: <Truck className="text-purple-600 w-6 h-6" />
+    }
+  ];
+
+  return (
+    <div className="max-w-4xl mx-auto px-6 py-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-black text-slate-900 mb-2">Available Services for your Property</h2>
+        <p className="text-slate-500 font-medium">{address}</p>
+      </div>
+
+      <div className="space-y-4">
+        {services.map((service) => (
+          <div 
+            key={service.id} 
+            className={`p-6 rounded-3xl border transition-all flex flex-col md:flex-row items-center justify-between gap-6 ${
+              service.featured 
+              ? 'bg-blue-600 text-white border-blue-700 shadow-xl' 
+              : 'bg-white border-slate-100 hover:border-blue-200'
+            }`}
+          >
+            <div className="flex items-center gap-5 flex-1">
+              <div className={`p-4 rounded-2xl ${service.featured ? 'bg-white' : 'bg-slate-50'}`}>
+                {service.icon}
+              </div>
+              <div className="text-left">
+                <h4 className="font-black text-lg">{service.name}</h4>
+                <p className={`text-sm ${service.featured ? 'text-blue-100' : 'text-slate-500'}`}>
+                  {service.description}
+                </p>
+                <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${service.featured ? 'text-white' : 'text-blue-600'}`}>
+                  {service.benefit}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6 w-full md:w-auto border-t md:border-t-0 border-white/20 pt-4 md:pt-0">
+              <div className="text-center md:text-right">
+                <span className="block text-[10px] font-bold uppercase opacity-60">Investment</span>
+                <span className="text-2xl font-black">{service.price}</span>
+              </div>
+              <Button 
+                onClick={() => window.location.href = `/auth?service=${service.id}&address=${encodeURIComponent(address)}`}
+                className={`h-12 px-8 rounded-xl font-bold flex-1 md:flex-none ${
+                  service.featured 
+                  ? 'bg-white text-blue-600 hover:bg-slate-100' 
+                  : 'bg-slate-900 text-white'
+                }`}
+              >
+                Book Now <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-8 text-center text-[10px] text-slate-400 uppercase font-bold tracking-[0.2em]">
+        Verified UpTend Pro dispatch within 24-48 hours.
+      </p>
+    </div>
+  );
+}
+🛡️ Why this fits the UpTend Brand Guide better:
+Transparency: No "black box" math. The customer sees a price, a service, and a clear benefit.
+
+Home Health First: The $99 Audit is featured as the anchor service, reinforcing your primary value prop.
+
+Frictionless: After seeing the price list, the "Book Now" button is what finally takes them to the login screen. It feels earned, not forced.
+
+Action-Oriented: We use your specific pillar language: Shield, Audit, Recovery, and Intelligence.
+
+🚀 Implementation Steps in Replit:
+Replace the results page: Swap out your old "Calculated Impact" component with this <ServicePricingMenu />.
+
+Pass the Address: Ensure the address string from the Hero is passed directly into this component.

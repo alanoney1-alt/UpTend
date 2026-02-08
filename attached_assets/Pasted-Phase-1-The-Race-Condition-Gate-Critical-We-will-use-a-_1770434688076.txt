@@ -1,0 +1,201 @@
+Phase 1: The Race Condition Gate (Critical)
+We will use a transaction with SELECT FOR UPDATE to lock the job row. This ensures that if two workers try to accept the same job at the exact same millisecond, the database will force them to queue. The first one gets the lock and updates the job; the second one sees the updated status and fails.
+
+File: server/routes.ts
+
+TypeScript
+// server/routes.ts
+
+// ... imports
+import { eq, and, sql } from "drizzle-orm";
+import { db } from "./db";
+import { serviceRequests } from "@shared/schema";
+
+// ... inside the routes function
+
+  // RACE CONDITION GATE: Job Acceptance
+  app.post("/api/service-requests/:id/accept", async (req, res) => {
+    if (!req.isAuthenticated() || req.user.role !== "hauler") {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    const jobId = req.params.id;
+    const haulerId = req.user.id;
+
+    try {
+      // Start a transaction to lock the row
+      const result = await db.transaction(async (tx) => {
+        // 1. LOCK the row: "SELECT FOR UPDATE"
+        // This prevents any other transaction from reading this row until we commit
+        const [job] = await tx
+          .select()
+          .from(serviceRequests)
+          .where(eq(serviceRequests.id, jobId))
+          .for('update'); // <--- THE MAGIC KEY
+
+        // 2. CHECK if it's still available
+        if (!job) {
+          throw new Error("Job not found");
+        }
+        if (job.status !== "requested" && job.status !== "matching") {
+          throw new Error("Job already taken");
+        }
+
+        // 3. UPDATE the job to 'assigned'
+        const [updatedJob] = await tx
+          .update(serviceRequests)
+          .set({
+            status: "assigned",
+            haulerId: haulerId,
+            acceptedAt: new Date(),
+          })
+          .where(eq(serviceRequests.id, jobId))
+          .returning();
+
+        return updatedJob;
+      });
+
+      // 4. Success!
+      // Notify customer via Socket.io (implementation in next phase)
+      res.json(result);
+
+    } catch (error: any) {
+      console.error("Race condition prevented:", error.message);
+      if (error.message === "Job already taken") {
+        return res.status(409).json({ error: "This job was just accepted by another runner." });
+      }
+      res.status(500).json({ error: "Failed to accept job" });
+    }
+  });
+Phase 2: The Two-Tier Revenue Engine (Financial Logic)
+This logic goes into your Stripe service. We need to separate the "Charge" (money in) from the "Transfer" (money out) so we can control exactly how much the worker gets.
+
+File: server/services/stripeService.ts
+
+TypeScript
+// server/services/stripeService.ts
+
+import Stripe from "stripe";
+
+// ... initialization
+
+export async function processJobPayout(
+  paymentIntentId: string, 
+  amountTotalCents: number, 
+  haulerStripeAccountId: string,
+  isVerifiedPro: boolean // Passed from the user profile
+) {
+  try {
+    // 1. Calculate the Split
+    let platformFeePercent = 0.25; // Default: 25%
+    let insuranceFeeCents = 2500; // Default: $25.00
+    
+    // GRADUATION LOGIC: If they are a Pro, fee drops and insurance is waived
+    if (isVerifiedPro) {
+      platformFeePercent = 0.20; // 20%
+      insuranceFeeCents = 0; // $0.00
+    }
+
+    const platformFeeAmount = Math.round(amountTotalCents * platformFeePercent);
+    const workerPayout = amountTotalCents - platformFeeAmount - insuranceFeeCents;
+
+    // Sanity Check: Ensure we don't transfer negative money
+    if (workerPayout <= 0) {
+      throw new Error("Payout calculation error: Result is negative");
+    }
+
+    // 2. Execute the Transfer
+    // We use "Separate Charges and Transfers" pattern
+    const transfer = await stripe.transfers.create({
+      amount: workerPayout,
+      currency: "usd",
+      destination: haulerStripeAccountId,
+      transfer_group: paymentIntentId, // Link it to the original charge
+      metadata: {
+        type: "job_payout",
+        insurance_deducted: (!isVerifiedPro).toString(),
+        platform_fee_percent: platformFeePercent.toString()
+      }
+    });
+
+    return {
+      success: true,
+      workerPayout: workerPayout,
+      platformRevenue: platformFeeAmount + insuranceFeeCents,
+      transferId: transfer.id
+    };
+
+  } catch (error) {
+    console.error("Stripe Payout Error:", error);
+    throw error;
+  }
+}
+Phase 3: AI Triage & Verification (The "Green Receipt")
+This service validates the receipt to release the $20 bonus. It handles blurry photos and duplicates.
+
+File: server/services/rebate-ai-validation.ts
+
+TypeScript
+// server/services/rebate-ai-validation.ts
+
+// ... imports (OpenAI)
+
+export async function validateReceiptWithAI(
+  imageUrl: string, 
+  claimedFacility: string,
+  claimedWeight: number
+) {
+  const prompt = `
+    Analyze this waste disposal receipt. 
+    I need to verify if it matches the following claim:
+    - Facility: "${claimedFacility}"
+    - Weight: ${claimedWeight} lbs
+    
+    Return a JSON object with:
+    {
+      "isReadable": boolean,
+      "facilityMatch": boolean (true if the name on receipt is similar to claimed facility),
+      "weightMatch": boolean (true if weight on receipt is within 10% of ${claimedWeight}),
+      "extractedDate": string (YYYY-MM-DD),
+      "extractedWeight": number,
+      "extractedFacility": string,
+      "confidence": number (0-100),
+      "rejectionReason": string (null if valid)
+    }
+  `;
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: "You are a receipt verification auditor." },
+      { 
+        role: "user", 
+        content: [
+          { type: "text", text: prompt },
+          { type: "image_url", image_url: { url: imageUrl } }
+        ]
+      }
+    ],
+    response_format: { type: "json_object" }
+  });
+
+  const result = JSON.parse(response.choices[0].message.content);
+
+  // LOGIC GATE: Auto-Approve vs. Manual Review
+  let status = "pending_review";
+  
+  if (result.isReadable && result.facilityMatch && result.weightMatch && result.confidence > 90) {
+    status = "approved";
+  } else if (!result.isReadable) {
+    status = "rejected"; 
+    result.rejectionReason = "Image too blurry or not a receipt";
+  }
+
+  return { ...result, status };
+}
+🚀 Implementation Order for Debugger
+Add Phase 1 code to routes.ts -> This stops the "double booking" bug immediately.
+
+Add Phase 2 code to stripeService.ts -> This ensures your revenue model works before you take the first payment.
+
+Add Phase 3 code to rebate-ai-validation.ts -> This enables the "Green Guarantee" feature.

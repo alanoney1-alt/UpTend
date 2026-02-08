@@ -1,0 +1,157 @@
+Yes, you absolutely need specific workflows.If you send a worker to do a $49 Consultation and the app asks them to "Take a Before Photo of the Junk," they will be confused.If you send a worker to do Moving Labor (Hourly) and there is no "Time Clock," you will get into payment disputes.We need to upgrade the app to be "Polymorphic." This means the screen changes based on the Service Type.Here is the 3-Mode Operating System you need to build.1. The 3 App Modes (Workflows)You don't need 5 different apps. You just need 3 distinct "Flows" inside the Job Wizard.Mode A: The "Visual Proof" FlowUsed For: Junk Removal, Pressure Washing, Gutter Cleaning, Light Demo.The Logic: "It was dirty $\rightarrow$ Now it is clean."The Steps:Arrive.Photo: The Mess (Dirty Driveway / Full Gutter).Work: Do the job.Upsell: "Add Extra Services" button.Photo: The Result (Clean Concrete / Empty Gutter).Complete.Mode B: The "Time Clock" FlowUsed For: Moving Labor, General Help.The Logic: "I worked for X hours."The Steps:Arrive.Start Timer: (Geofenced - must be at location).Work: (Phone stays in pocket).Pause/Resume: (For lunch breaks).Stop Timer: Shows final hours (e.g., 2 hrs 15 mins).Customer Signature: Customer signs screen to verify hours.Mode C: The "Audit" Flow (The $49 Consult)Used For: Home Health Checkup.The Logic: "Data Collection."The Steps:Arrive.Zone List: App shows "Garage," "Exterior," "Living Room."Input: Worker clicks "Garage" $\rightarrow$ Selects "Cluttered" $\rightarrow$ App suggests "Quote: $250."Video Scan: "Walk through living room for Inventory."Generate Plan: App compiles the "Treatment Plan."Complete.2. The Code: UniversalJobWizard.tsxWe are going to upgrade the previous component to handle these 3 modes automatically.Replace your ActiveJobWizard with this:TypeScriptimport { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Camera, Clock, CheckSquare, Play, Square } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+// SUB-COMPONENT: The Visual Flow (Junk, Washing, Gutters)
+function VisualFlow({ onComplete }) {
+  const [step, setStep] = useState("before");
+  
+  if (step === "before") {
+    return (
+      <div className="text-center mt-10 p-6">
+        <Camera className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
+        <h2 className="text-2xl font-bold">Step 1: The Evidence</h2>
+        <p className="mb-8 text-slate-600">Take a photo of the area BEFORE you start.</p>
+        <Button className="w-full h-16 text-xl" onClick={() => setStep("working")}>
+          📸 Snap 'Before' Photo
+        </Button>
+      </div>
+    );
+  }
+  
+  if (step === "working") {
+    return (
+      <div className="p-6">
+        <div className="bg-green-100 p-6 rounded-xl mb-6 text-center">
+          <h2 className="text-xl font-bold text-green-800 animate-pulse">Work in Progress</h2>
+        </div>
+        <Button className="w-full h-16 mb-4 bg-slate-800" onClick={() => setStep("after")}>
+          ✅ I'm Finished
+        </Button>
+        <Button variant="outline" className="w-full h-12">➕ Add Upsell (Dirty Driveway?)</Button>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="text-center mt-10 p-6">
+      <CheckSquare className="w-16 h-16 mx-auto mb-4 text-green-500" />
+      <h2 className="text-2xl font-bold">Step 2: The Proof</h2>
+      <p className="mb-8 text-slate-600">Take a photo of the CLEAN space.</p>
+      <Button className="w-full h-16 text-xl bg-green-600" onClick={onComplete}>
+        📸 Snap 'After' Photo & Pay
+      </Button>
+    </div>
+  );
+}
+
+// SUB-COMPONENT: The Time Clock Flow (Moving)
+function TimeFlow({ onComplete }) {
+  const [working, setWorking] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  
+  // (In real app, use a useEffect interval here)
+
+  if (!working) {
+    return (
+      <div className="text-center mt-10 p-6">
+        <Clock className="w-16 h-16 mx-auto mb-4 text-blue-500" />
+        <h2 className="text-2xl font-bold">Moving Labor</h2>
+        <p className="mb-8 text-slate-600">Clock in when you start lifting.</p>
+        <Button className="w-full h-16 text-xl bg-blue-600" onClick={() => setWorking(true)}>
+          <Play className="mr-2 fill-current" /> Start Timer
+        </Button>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="text-center mt-10 p-6 bg-slate-900 text-white h-screen">
+      <div className="text-6xl font-mono font-bold mb-4">00:42:15</div>
+      <p className="mb-10 opacity-70">Time Elapsed</p>
+      
+      <Button className="w-full h-20 text-xl bg-red-600 hover:bg-red-700" onClick={onComplete}>
+        <Square className="mr-2 fill-current" /> Stop & Complete
+      </Button>
+    </div>
+  );
+}
+
+// SUB-COMPONENT: The Audit Flow (Consultation)
+function AuditFlow({ onComplete }) {
+  const [zones, setZones] = useState([
+    { name: "Garage", status: "pending" },
+    { name: "Driveway", status: "pending" },
+    { name: "Gutters", status: "pending" }
+  ]);
+  
+  const checkZone = (index) => {
+    const newZones = [...zones];
+    newZones[index].status = "checked";
+    setZones(newZones);
+  };
+
+  const allDone = zones.every(z => z.status === "checked");
+
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-6">🏡 Home Health Check</h2>
+      
+      <div className="space-y-4 mb-8">
+        {zones.map((zone, i) => (
+          <div key={i} className="flex justify-between items-center p-4 bg-white border rounded-lg shadow-sm">
+            <span className="font-bold text-lg">{zone.name}</span>
+            {zone.status === "checked" ? (
+              <span className="text-green-600 font-bold">✓ Done</span>
+            ) : (
+              <Button size="sm" onClick={() => checkZone(i)}>Inspect</Button>
+            )}
+          </div>
+        ))}
+      </div>
+      
+      <Button 
+        className="w-full h-16 text-xl" 
+        disabled={!allDone}
+        onClick={onComplete}
+      >
+        {allDone ? "📄 Generate Report" : "Complete All Zones First"}
+      </Button>
+    </div>
+  );
+}
+
+// MAIN COMPONENT: The Router
+export function UniversalJobWizard({ job, onComplete }) {
+  // 1. Determine the Flow based on Service Type
+  const getFlow = () => {
+    switch (job.serviceType) {
+      case 'moving_labor':
+        return <TimeFlow onComplete={onComplete} />;
+        
+      case 'home_consultation':
+        return <AuditFlow onComplete={onComplete} />;
+        
+      case 'junk_removal':
+      case 'pressure_washing':
+      case 'gutter_cleaning':
+      default:
+        return <VisualFlow onComplete={onComplete} />;
+    }
+  };
+
+  return (
+    <div className="h-full bg-slate-50">
+      {/* Universal Header */}
+      <div className="p-4 border-b bg-white flex justify-between items-center">
+        <span className="font-bold text-sm text-slate-500 uppercase">{job.serviceType.replace('_', ' ')}</span>
+        <span className="bg-slate-100 px-2 py-1 rounded text-xs">{job.customerName}</span>
+      </div>
+      
+      {/* The Specific Flow */}
+      {getFlow()}
+    </div>
+  );
+}
+3. The "Just-in-Time" Onboarding (Specific Verticals)You cannot make everyone watch 5 hours of video.Use "Gatekeeper Logic."The Rule: A worker sees a job in the feed, but the "Accept" button is LOCKED (Grayed out) if they don't have the badge.The Workflow:Feed: Worker sees: " gutter_cleaning ($150) - 2 miles away."Action: They tap "Accept."Pop-up: "🔒 You need the Ladder Safety Badge to accept Gutter jobs."Offer: "Take the 3-minute quiz now to unlock?"Quiz:Q1: "What is the 4-to-1 rule for ladders?"Q2: "Do you ever stand on the top rung?"Success: "Badge Unlocked! You can now accept this job."Why this works:It's relevant. They are motivated to learn right now because there is $150 waiting for them.It keeps your "Junk Guys" away from "Gutter Jobs" until they verify they have a ladder.Summary of what to build:Universal Job Wizard: Copy the code above. It handles the 3 distinct workflows automatically.Badge Logic: Add a simple check in your acceptJob function: if (job.type == 'gutter' && !user.badges.includes('gutter')) return showQuiz().

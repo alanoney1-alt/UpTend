@@ -1,0 +1,138 @@
+You have built the Dashboard (Frontend) and the Sensors (GPS/Camera components), but you are missing the Nervous System that connects them.
+
+Right now, if a Pycker clicks "I've Arrived," the button changes color on their phone, but nothing happens on the server. The customer doesn't get a text, the time isn't logged, and the status doesn't actually save.
+
+Here are the 4 Critical Backend Systems you need to implement immediately to make the app "live."
+
+1. The "State Machine" (Job Status Logic)
+The Gap: You need a single API route that handles the progression of a job. It shouldn't just update a string; it needs to trigger specific actions at each step.
+
+👉 Action: Update server/routes.ts with this "Master Switch" route.
+
+TypeScript
+// POST /api/jobs/:id/status
+app.post("/api/jobs/:id/status", async (req, res) => {
+  const { status, lat, lng } = req.body; // e.g., 'en_route', 'arrived', 'completed'
+  const jobId = parseInt(req.params.id);
+
+  // 1. Update the Database
+  await db.update(orders)
+    .set({ 
+      status: status,
+      updatedAt: new Date(),
+      // If completed, set finishedAt timestamp
+      ...(status === 'completed' ? { finishedAt: new Date() } : {})
+    })
+    .where(eq(orders.id, jobId));
+
+  // 2. TRIGGER THE SIDE EFFECTS (The "Home OS" Magic)
+  switch (status) {
+    case 'en_route':
+      // Send SMS: "Mike is on the way! Track here: upyck.com/track/..."
+      await sendSMS(customerPhone, "Your Pro is en route!"); 
+      break;
+      
+    case 'arrived':
+      // Send Push: "Mike has arrived. Please unlock gate."
+      break;
+      
+    case 'in_progress':
+      // Start the "Labor Timer" for billing
+      break;
+      
+    case 'completed':
+      // 1. Charge the Card (Capture Stripe Hold)
+      // 2. Increment Home Score (See Section 3 below)
+      // 3. Send Receipt Email
+      break;
+  }
+
+  res.json({ success: true, status });
+});
+2. The "Evidence Locker" (Schema Update)
+The Gap: You built the Photo Uploader and Signature Pad, but your database currently has nowhere to put those URLs. You are throwing the evidence into the void.
+
+👉 Action: Open server/db/schema.ts and add these columns to the orders table.
+
+TypeScript
+export const orders = pgTable("orders", {
+  // ... existing fields ...
+  
+  // THE EVIDENCE LOCKER
+  beforePhotoUrl: text("before_photo_url"),
+  afterPhotoUrl: text("after_photo_url"),
+  customerSignatureUrl: text("customer_signature_url"),
+  
+  // THE METADATA
+  arrivedAt: timestamp("arrived_at"),
+  finishedAt: timestamp("finished_at"),
+  
+  // THE FINANCIALS
+  finalPrice: integer("final_price"), // Cents
+  tipAmount: integer("tip_amount").default(0),
+});
+Run the migration (push) in Replit after adding this.
+
+3. The "Home Score" Algorithm (The Math)
+The Gap: You promised the customer their "Home Score" would go up. Right now, that number is static. You need a function that actually calculates it based on completed jobs.
+
+👉 Action: Add this helper function in server/utils.ts (create if needed) and call it when a job completes.
+
+TypeScript
+// Logic: Calculate Home Score based on recent maintenance
+export async function updateHomeScore(userId: number) {
+  // 1. Get all completed jobs for this user
+  const jobs = await db.select().from(orders).where(and(eq(orders.userId, userId), eq(orders.status, 'completed')));
+  
+  // 2. Base Score (Zillow Data or default)
+  let score = 50; 
+  
+  // 3. Add points for maintenance
+  jobs.forEach(job => {
+    if (job.serviceType === 'pressure_washing') score += 10;
+    if (job.serviceType === 'gutter_cleaning') score += 15; // Higher value
+    if (job.serviceType === 'junk_removal') score += 5;
+  });
+
+  // 4. Decay Logic (Optional: Lose points if job was > 1 year ago)
+  // ...
+
+  // 5. Cap at 100
+  if (score > 100) score = 100;
+
+  // 6. Save to User Profile
+  await db.update(users).set({ homeScore: score }).where(eq(users.id, userId));
+}
+4. The "GPS Heartbeat" Listener
+The Gap: Your frontend sends GPS points every 30 seconds (POST /api/hauler/location), but your backend needs to receive them and broadcast them to the customer (if they are watching the screen).
+
+👉 Action: Update server/routes.ts.
+
+TypeScript
+// POST /api/hauler/location
+app.post("/api/hauler/location", async (req, res) => {
+  const { lat, lng, jobId } = req.body;
+  
+  // 1. Update the Job Record (Last Known Location)
+  // This lets us show "Last seen 2 mins ago" if connection dies
+  await db.update(orders)
+    .set({ 
+      currentLat: lat.toString(), 
+      currentLng: lng.toString() 
+    })
+    .where(eq(orders.id, jobId));
+
+  // 2. (Advanced) Real-time Socket Emit
+  // If you add Socket.io later, this is where you say:
+  // io.to(`room_${jobId}`).emit('location_update', { lat, lng });
+
+  res.json({ success: true });
+});
+📝 Summary: The Missing Backend Links
+Job Status Route: The logic that moves the job from A to B.
+
+Schema Columns: The storage slots for Photos and Signatures.
+
+Score Logic: The math that increases the customer's asset value.
+
+GPS Listener: The endpoint that catches the location pings.

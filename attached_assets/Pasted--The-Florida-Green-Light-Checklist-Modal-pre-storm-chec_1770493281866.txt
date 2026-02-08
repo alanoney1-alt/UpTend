@@ -1,0 +1,100 @@
+📋 The Florida "Green-Light" Checklist Modal (pre-storm-checklist.tsx)
+This modal should appear 3 seconds after the FloridaEstimator reveals the results.
+
+TypeScript
+import React from "react";
+import { CheckCircle2, Circle, AlertCircle, ShieldCheck, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export function PreStormChecklist({ address }) {
+  const checklistItems = [
+    { service: "Home Audit", task: "360° Video Manifest & Asset Log", status: "Missing", priority: "High" },
+    { service: "Gutter Care", task: "Clear debris & downspout flow test", status: "Unverified", priority: "High" },
+    { service: "Junk Recovery", task: "Remove potential wind-borne missiles", status: "Unverified", priority: "Medium" },
+    { service: "Pressure Wash", task: "Seal check & surface heat reflection", status: "Unverified", priority: "Low" },
+    { service: "Moving Labor", task: "Furniture anchors & sandbag staging", status: "Planned", priority: "Emergency Only" },
+  ];
+
+  return (
+    <div className="bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden max-w-lg mx-auto">
+      {/* HEADER */}
+      <div className="bg-blue-600 p-6 text-white text-center">
+        <ShieldCheck className="w-10 h-10 mx-auto mb-3" />
+        <h3 className="text-xl font-black uppercase tracking-tight">Property Green-Light Status</h3>
+        <p className="text-blue-100 text-xs mt-1">Address: {address}</p>
+      </div>
+
+      {/* CHECKLIST BODY */}
+      <div className="p-6 space-y-4">
+        <div className="flex justify-between items-center mb-6">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mandatory Intelligence Tasks</span>
+          <span className="bg-red-100 text-red-600 text-[10px] font-black px-2 py-1 rounded-md uppercase">Action Required</span>
+        </div>
+
+        {checklistItems.map((item, idx) => (
+          <div key={idx} className="flex items-center justify-between group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors">
+            <div className="flex items-center gap-3">
+              {item.status === "Missing" ? (
+                <AlertCircle className="text-red-500 w-5 h-5" />
+              ) : (
+                <Circle className="text-slate-200 w-5 h-5" />
+              )}
+              <div>
+                <p className="text-sm font-bold text-slate-900">{item.service}</p>
+                <p className="text-[10px] text-slate-500">{item.task}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className={`text-[10px] font-bold ${item.priority === 'High' ? 'text-red-400' : 'text-slate-300'}`}>
+                {item.priority}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* CTA FOOTER */}
+      <div className="p-6 bg-slate-50 border-t border-slate-100">
+        <div className="mb-4 flex items-center gap-3 p-3 bg-blue-100 rounded-xl">
+           <div className="w-2 h-2 bg-blue-600 rounded-full animate-ping" />
+           <p className="text-[10px] font-bold text-blue-800 leading-tight">
+             Verified Pros are currently nearby in Lake Nona. Instant-dispatch available.
+           </p>
+        </div>
+        
+        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-14 rounded-xl shadow-lg shadow-blue-500/20">
+          Green-Light My Property <ArrowRight className="ml-2 w-4 h-4" />
+        </Button>
+        <p className="text-center text-[10px] text-slate-400 mt-4 uppercase font-bold tracking-widest">
+          Secures your $8,400+ Insurance Shield
+        </p>
+      </div>
+    </div>
+  );
+}
+🧠 The Logic of the Checklist
+High-Contrast Status: Using AlertCircle in red for the "Home Audit" (the missing insurance shield) creates immediate urgency.
+
+Professional Jargon: We don't say "clean gutters"; we say "Downspout Flow Test." This makes the service feel technical and "Certified."
+
+Proximity Social Proof: The footer mentions "Pros are currently nearby." In Florida, everyone knows that when a storm is coming, contractors disappear. Mentioning availability now is a massive relief.
+
+Value Re-statement: The final button reminds them exactly what they are buying: the $8,400+ Insurance Shield.
+
+🚀 Integration in the Replit Flow
+The Trigger: In florida-estimator.tsx, once the user clicks "Scan Property," you set a timeout.
+
+The Persistence: After the user clicks "Green-Light My Property," you pass all the "Red" items into the booking_intent table in your database.
+
+The "Bundle" Effect: By showing all 5 items, you encourage them to book a "Storm Prep Bundle" rather than just a one-off junk haul. This increases your average order value (AOV).
+
+🏆 Final Brand Check
+Does this match the UpTend Brand Messaging Guide?
+
+Protect? Yes, it’s about the Insurance Shield.
+
+Connect? Yes, it mentions local vetted Pros nearby.
+
+Sustain? Yes, by framing the cleanup as "Material Recovery" and "Resilience."
+
+Intelligent but approachable? Yes, the data is complex but the UI is simple.

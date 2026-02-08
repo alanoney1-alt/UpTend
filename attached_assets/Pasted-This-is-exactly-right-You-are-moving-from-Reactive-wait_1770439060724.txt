@@ -1,0 +1,158 @@
+This is exactly right. You are moving from "Reactive" (waiting for the phone to ring) to "Proactive" (telling them when to book).
+
+In the industry, this is called the "Deferred Work" Pipeline.
+
+During the consultation, the customer might say "Yes" to the Garage Cleanout but "No" to the Gutter Cleaning because of budget.
+
+Old Way: The worker leaves, and that revenue is lost forever.
+
+uPYCK Way: We log the Gutters as "Deferred Maintenance."
+
+Here is how we build the "Automated Account Manager" to turn that list into cash 3, 6, and 12 months later.
+
+1. The Strategy: "The Nudge Engine"
+We don't send generic spam. We send hyper-personalized reminders based on the data we collected during the $49 consult.
+
+The Scenario:
+
+Consult Date: Feb 1st.
+
+Findings: Garage is full ($250), AC Filter dirty ($75), Pile of wood in backyard ($150).
+
+Customer Buys: Just the Garage Cleanout.
+
+The Automation:
+
+March 1st (30 Days later): "Hey! You still have that wood pile in the backyard. Since we are in your neighborhood tomorrow, want us to grab it for $135 ($15 off)?"
+
+May 1st (90 Days later): "Time to change that AC filter we noted! A clean filter lowers your electric bill by 15%."
+
+2. Implementation: The "Deferred Jobs" Queue
+A. Database Schema (shared/schema.ts)
+We need a place to store jobs that were identified but not booked.
+
+TypeScript
+// shared/schema.ts
+
+export const deferredJobs = pgTable("deferred_jobs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").notNull(),
+  consultationId: uuid("consultation_id"), // Linked to the audit
+  
+  // What is the job?
+  title: varchar("title").notNull(), // "Backyard Wood Removal"
+  estimatedPrice: integer("estimated_price"), // Locked price from consult
+  reasonForDeferral: varchar("reason"), // 'budget', 'timing', 'not_ready'
+  
+  // The Nudge Strategy
+  nudgeCount: integer("nudge_count").default(0), // How many times have we emailed?
+  nextNudgeDate: timestamp("next_nudge_date"), // When to ask again
+  
+  // Status
+  status: varchar("status").default('pending'), // 'pending', 'converted', 'dismissed'
+  photoUrl: text("photo_url"), // The photo of the mess (Visual guilt!)
+});
+B. The "Nudge" Logic (Backend Cron Job)
+This script runs every morning. It finds "due" reminders and sends a push notification or email.
+
+File: server/services/marketing-automation.ts
+
+TypeScript
+// server/services/marketing-automation.ts
+import { db } from "../db";
+import { deferredJobs } from "@shared/schema";
+import { eq, lte, and } from "drizzle-orm";
+import { sendPushNotification } from "./notifications"; 
+
+export async function runDailyNudge() {
+  const today = new Date();
+  
+  // 1. Find jobs that need a nudge today
+  const dueJobs = await db.select().from(deferredJobs)
+    .where(and(
+      lte(deferredJobs.nextNudgeDate, today), // Date is today or past
+      eq(deferredJobs.status, 'pending')
+    ));
+
+  for (const job of dueJobs) {
+    // 2. Craft the Message (Personalized)
+    const message = `
+      👋 Hey! Quick reminder about the ${job.title}. 
+      We can clear it for the locked price of $${job.estimatedPrice / 100}.
+      Tap to book instantly.
+    `;
+    
+    // 3. Send the Notification
+    await sendPushNotification(job.userId, message, {
+      type: 'deferred_job_offer',
+      jobId: job.id,
+      action: 'open_booking_screen'
+    });
+
+    // 4. Schedule the NEXT nudge (Decay logic: 7 days, then 30 days, then 90 days)
+    const nextDate = new Date();
+    nextDate.setDate(nextDate.getDate() + (job.nudgeCount === 0 ? 7 : 30));
+    
+    await db.update(deferredJobs).set({
+      nudgeCount: job.nudgeCount + 1,
+      nextNudgeDate: nextDate
+    }).where(eq(deferredJobs.id, job.id));
+    
+    console.log(`[MARKETING] Nudged user ${job.userId} about ${job.title}`);
+  }
+}
+3. The Customer View: "My Maintenance Plan"
+Instead of hiding this in an email, we put it right on their dashboard. It looks like a "To-Do List" for their house.
+
+File: client/src/components/maintenance-plan.tsx
+
+TypeScript
+import { Card, Button } from "@/components/ui/button";
+import { CalendarClock, ArrowRight } from "lucide-react";
+
+export function MaintenancePlan({ jobs }) {
+  if (!jobs || jobs.length === 0) return null;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-lg">🔧 Recommended Action Plan</h3>
+        <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+          {jobs.length} Pending Actions
+        </span>
+      </div>
+
+      <div className="grid gap-3">
+        {jobs.map((job) => (
+          <Card key={job.id} className="p-4 flex gap-4 border-l-4 border-l-orange-400">
+            {/* The "Evidence" Photo */}
+            <div className="w-16 h-16 bg-gray-200 rounded shrink-0 overflow-hidden">
+              {job.photoUrl && <img src={job.photoUrl} className="object-cover w-full h-full" />}
+            </div>
+
+            <div className="flex-1">
+              <h4 className="font-bold text-sm">{job.title}</h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                Identified during Consult on Feb 1st.
+              </p>
+              
+              <div className="flex items-center justify-between mt-3">
+                <span className="font-bold text-green-700">${job.estimatedPrice / 100}</span>
+                
+                <Button size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90">
+                  Book This <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+4. Why this creates "Infinite Revenue"
+Visual Guilt: By showing the photo of the mess right next to the "Book" button, you trigger a psychological need to clean it up.
+
+Zero Friction: They don't need a new quote. The price is already locked. They just click "Book."
+
+Context: You aren't a spammer. You are "Following up on the plan we agreed on."

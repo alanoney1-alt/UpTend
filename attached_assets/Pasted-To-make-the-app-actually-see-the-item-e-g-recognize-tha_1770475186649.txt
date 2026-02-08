@@ -1,0 +1,64 @@
+To make the app actually "see" the item (e.g., recognize that a blurry photo is a "Mid-Century Modern Dresser"), we need to connect that button to OpenAI's Vision API.We cannot do this in the browser (Frontend) because it would expose your API key. We must build a Backend Route that acts as the "Brain."Here is the 2-step implementation to make it real.Step 1: The "Brain" (Backend Route)This code goes into server/routes.ts. It receives the photo URL, sends it to GPT-4o, and asks it to act like a professional reseller.Action: Add this block to your server/routes.ts file.TypeScriptimport OpenAI from "openai";
+
+// Initialize OpenAI (Make sure OPENAI_API_KEY is in your Secrets!)
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+app.post("/api/ai/generate-listing", async (req, res) => {
+  try {
+    const { photoUrl } = req.body;
+
+    if (!photoUrl) {
+      return res.status(400).json({ message: "No photo provided" });
+    }
+
+    // THE PROMPT: This is where we teach the AI to be a Reseller
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // The "Vision" model
+      messages: [
+        {
+          role: "system",
+          content: `You are an expert reseller on Facebook Marketplace. 
+          Analyze the image provided. Identify the main item.
+          Generate a JSON response with:
+          - title: A catchy, SEO-friendly title (max 50 chars).
+          - price: A realistic used price estimate (integer).
+          - description: A persuasive description highlighting condition and features (max 300 chars).
+          - tags: A list of 5 hashtags.`
+        },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: "Create a sales listing for this item." },
+            { type: "image_url", image_url: { url: photoUrl } },
+          ],
+        },
+      ],
+      response_format: { type: "json_object" }, // Forces clean JSON we can use in code
+    });
+
+    // Parse the result
+    const listingData = JSON.parse(response.choices[0].message.content);
+
+    // Send it back to the app
+    res.json(listingData);
+
+  } catch (error) {
+    console.error("AI Error:", error);
+    res.status(500).json({ message: "Failed to generate listing" });
+  }
+});
+Step 2: The "Connection" (Frontend Update)Now update the component we built earlier (client/src/components/tools/resale-generator.tsx) to actually call this new route instead of faking it.Action: Replace the generateListing function at the top of the file with this:TypeScript// REAL API CALL
+const generateListing = async (photoUrl) => {
+  const response = await fetch("/api/ai/generate-listing", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ photoUrl }),
+  });
+
+  if (!response.ok) {
+    throw new Error("AI Failed");
+  }
+
+  return await response.json();
+};
+🧠 How it works in real lifePycker: Takes a photo of a dusty lamp.App: Sends that photo to your server $\rightarrow$ OpenAI.OpenAI: "Sees" the lamp. It notices it's a "Tiffany Style Stained Glass Lamp." It searches its database for recent pricing.OpenAI: Writes: "Vintage Stained Glass Table Lamp - $85. Beautiful colors, heavy base. Perfect for reading nook."App: Pops up that text on the Pycker's phone.Pycker: Clicks "Copy" $\rightarrow$ Pastes to Facebook Marketplace $\rightarrow$ Earns $85.⚠️ PrerequisiteYou must add your OpenAI Key to the Replit Secrets for this to work.Key: OPENAI_API_KEYValue: sk-proj-.... (Get this from platform.openai.com)

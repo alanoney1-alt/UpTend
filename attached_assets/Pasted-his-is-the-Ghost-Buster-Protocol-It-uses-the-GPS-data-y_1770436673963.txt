@@ -1,0 +1,120 @@
+his is the "Ghost Buster" Protocol. It uses the GPS data you are already collecting to detect when a worker tries to take a transaction off-platform.
+
+Here is the code to implement immediately.
+
+1. Schema Update (shared/schema.ts)
+We need to track Arrival Times and Suspicious Flags to build a case against a cheater.
+
+TypeScript
+// shared/schema.ts
+
+// 1. Update serviceRequests
+export const serviceRequests = pgTable("service_requests", {
+  // ... existing columns ...
+  arrivedAt: timestamp("arrived_at"), // Time they entered the geofence
+  isGhostFlagged: boolean("is_ghost_flagged").default(false), // The "Red Flag"
+});
+
+// 2. Add a new table for Risk Tracking
+export const haulerRiskProfile = pgTable("hauler_risk_profile", {
+  id: uuid("id").primaryKey(),
+  haulerId: varchar("hauler_id").notNull(),
+  ghost incidents: integer("ghost_incidents").default(0), // Count of suspicious cancellations
+  keywordsDetected: integer("keywords_detected").default(0), // Count of "Venmo/Cash" in chat
+  riskScore: integer("risk_score").default(0), // 0-100 (100 = Ban)
+  lastIncidentAt: timestamp("last_incident_at"),
+});
+2. The "Ghost Detection" Logic (server/routes.ts)
+This code runs every time a job is cancelled. It checks: "Was the worker already there?"
+
+If the answer is YES, it assumes they stole the job and flags them.
+
+TypeScript
+// server/routes.ts
+
+// GHOST BUSTER: The Anti-Leakage Logic
+app.patch("/api/service-requests/:id/cancel", async (req, res) => {
+  const jobId = req.params.id;
+  const { reason } = req.body;
+  
+  try {
+    // 1. Get the Job State
+    const job = await storage.getServiceRequest(jobId);
+    
+    // 2. THE TRAP: Did they cancel AFTER arriving?
+    // If status was 'arrived' OR they arrived > 5 mins ago
+    const isSuspicious = job.status === 'arrived' || job.arrivedAt !== null;
+
+    if (isSuspicious) {
+      console.warn(`[GHOST DETECTED] Job ${jobId} cancelled while worker on-site.`);
+      
+      // 3. Mark the Job as Flagged
+      await db.update(serviceRequests)
+        .set({ isGhostFlagged: true })
+        .where(eq(serviceRequests.id, jobId));
+
+      // 4. Update the Worker's Risk Profile
+      // We increment their "Ghost Incidents" count
+      await db.execute(sql`
+        INSERT INTO hauler_risk_profile (hauler_id, ghost_incidents, risk_score, last_incident_at)
+        VALUES (${job.haulerId}, 1, 30, NOW())
+        ON CONFLICT (hauler_id) 
+        DO UPDATE SET 
+          ghost_incidents = hauler_risk_profile.ghost_incidents + 1,
+          risk_score = hauler_risk_profile.risk_score + 30,
+          last_incident_at = NOW();
+      `);
+
+      // 5. AUTO-BAN Logic (Optional)
+      // If risk score > 90, automatically suspend account
+      /* const riskProfile = await ...
+      if (riskProfile.riskScore > 90) {
+        await suspendWorker(job.haulerId);
+      }
+      */
+    }
+
+    // Process the actual cancellation
+    const updatedJob = await storage.updateServiceRequest(jobId, {
+      status: "cancelled",
+      cancellationReason: reason || "Cancelled by user"
+    });
+
+    res.json(updatedJob);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to cancel job" });
+  }
+});
+3. The "Arrival" Trigger (server/routes.ts)
+For this to work, we must accurately stamp the arrivedAt time when the worker enters the radius.
+
+TypeScript
+// Update location update logic
+app.post("/api/tracking/update", async (req, res) => {
+  const { lat, lng, jobId } = req.body;
+  
+  const job = await storage.getServiceRequest(jobId);
+  
+  // Calculate distance to pickup
+  const distance = calculateDistance(lat, lng, job.pickupLat, job.pickupLng);
+  
+  // TRIGGER: If within 0.1 miles (approx 500ft) and not yet "arrived"
+  if (distance < 0.1 && !job.arrivedAt) {
+    await db.update(serviceRequests)
+      .set({ 
+        status: 'arrived',
+        arrivedAt: new Date() // <--- The Trap is Set
+      })
+      .where(eq(serviceRequests.id, jobId));
+      
+    // Notify Customer: "Worker has arrived!"
+  }
+  
+  res.json({ success: true });
+});
+Why this stops them cold:
+They don't know it's happening. The worker thinks they just cancelled a job.
+
+The "Three Strike" Rule. The first time, maybe it was an accident. The second time, their Risk Score hits 60. The third time (Score 90), they are Auto-Banned.
+
+Irrefutable Proof. If they appeal, you show them the logs: "You arrived at 2:00 PM. You cancelled at 2:15 PM. You did this 3 times this week. You're fired."

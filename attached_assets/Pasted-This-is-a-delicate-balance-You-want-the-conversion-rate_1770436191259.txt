@@ -1,0 +1,104 @@
+This is a delicate balance. You want the conversion rate of a "Fixed Price" but the protection of an "Estimate."
+
+The secret is to frame the Field Analysis not as a way to charge more, but as a way to ensure Accuracy & Fairness. You are protecting the worker from surprise stairs, and the customer from overpaying for empty space.
+
+Here is the 3-Step "Trust Script" to implement in the app's UX and copy.
+
+1. The "Base Price" Guarantee (At Booking)
+Don't call it an "Estimate." Call it a "Visual Quote."
+
+The Copy: "Based on your photos, your Visual Quote is $145. This price is Guaranteed for the items visible in the picture."
+
+The "What If" Link: Add a small link: "What could change this price?"
+
+Popup: "Our workers are happy to do extra work! Common add-ons include: Stairs ($15), Disassembly ($20), or carrying items over 50ft."
+
+Why it works: It tells them: "If you didn't lie in the photo, this price is real." It puts the responsibility on them to be honest, not on you to guess.
+
+2. The "Pre-Arrival" Nudge (SMS/Push)
+When the worker is 5 minutes away, send a notification that sets the stage for the audit.
+
+The Notification:
+
+"🚗 Your PYCKER is arriving! They will do a quick 2-minute Site Verification to confirm the items and access (stairs/gate). Once you approve the final scope, the work begins!"
+
+Why it works: It normalizes the "Audit." It’s not a "surprise inspection"; it’s a standard part of the process, like a pilot checking the plane before takeoff.
+
+3. The "Digital Handshake" (The Moment of Truth)
+This is the most critical part. Do not let the worker just say "It's gonna be $50 more." That feels like a scam. Instead, make the App be the "Bad Guy."
+
+The Workflow:
+
+Worker adds "2 Flights of Stairs" in their app.
+
+Customer's Phone Buzzes: "Scope Update Request."
+
+Customer Sees:
+
+Base Quote: $145.00
+
+Adjustment: +$30.00 (2x Stairs)
+
+Reason: "3rd Floor Walk-up"
+
+New Total: $175.00
+
+Action: A big green button: "Approve & Start" (or "Decline Job").
+
+Why it works: It feels professional. It’s an invoice, not a haggle. The customer isn't arguing with the guy in front of them; they are interacting with the "System."
+
+🛠️ Implementation: The "Transparency Modal"
+Add this simple component to your booking screen so there is zero confusion.
+
+File: client/src/components/pricing-transparency-modal.tsx
+
+TypeScript
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Info } from "lucide-react";
+
+export function PricingTransparencyModal() {
+  return (
+    <Dialog>
+      <DialogTrigger className="flex items-center text-xs text-muted-foreground hover:text-primary underline">
+        <Info className="w-3 h-3 mr-1" />
+        Is this price final?
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>🛡️ The uPYCK Price Promise</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 text-sm">
+          <p>
+            The price you see is <strong>locked</strong> for the items in your photos.
+            We don't believe in hidden fees.
+          </p>
+          
+          <div className="bg-muted p-3 rounded-md">
+            <p className="font-semibold mb-2">The only reasons your price might change on-site:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li><strong>Access:</strong> Stairs ($15/flight) or Long Carries (>50ft).</li>
+              <li><strong>Labor:</strong> Disassembling furniture to fit through doors.</li>
+              <li><strong>Volume:</strong> Adding extra items that weren't in the photo.</li>
+            </ul>
+          </div>
+          
+          <p className="text-xs text-muted-foreground">
+            *Your PYCKER will always ask for your digital approval before adding any charges. You are in control.
+          </p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+Summary for the CEO
+Don't say "Estimate." Say "Visual Quote."
+
+Don't say "Extra Fees." Say "Scope Adjustments."
+
+The App is the Authority. The worker inputs the data; the App presents the price. This removes the "used car salesman" feeling from the interaction.

@@ -1,0 +1,465 @@
+# uPYCK Terms of Service
+
+**Last Updated:** January 17, 2026
+
+## 1. Agreement to Terms
+
+Welcome to uPYCK (“we,” “us,” or “our”). By accessing or using the uPYCK platform at www.upyck.com (the “Platform”), you agree to be bound by these Terms of Service (“Terms”). If you do not agree to these Terms, do not use the Platform.
+
+uPYCK operates as a technology platform that connects customers seeking junk removal, moving, and hauling services with independent service providers (“PYCKERs”). **uPYCK does not provide junk removal or hauling services directly.**
+
+## 2. Definitions
+
+- **“Customer”** means any individual or business using the Platform to request services.
+- **“PYCKER”** means an independent contractor who provides junk removal, moving, or hauling services through the Platform.
+- **“Services”** means the junk removal, moving, hauling, and related services provided by PYCKERs.
+- **“Platform”** means the uPYCK website, mobile application, and related technology services.
+- **“Verified Pro PYCKER”** means a PYCKER who has provided proof of commercial general liability insurance, business license, and passed background checks.
+- **“Independent PYCKER”** means a PYCKER who has passed background checks but operates without commercial insurance.
+
+## 3. Eligibility
+
+You must be at least 18 years old to use the Platform. By using the Platform, you represent and warrant that you meet this age requirement and have the legal capacity to enter into these Terms.
+
+## 4. Platform Services
+
+### 4.1 Technology Platform
+
+uPYCK provides a technology platform that:
+
+- Connects Customers with PYCKERs
+- Facilitates booking and scheduling
+- Processes payments
+- Provides real-time GPS tracking
+- Offers AI-powered quote estimation
+- Manages ratings and reviews
+
+### 4.2 Not a Service Provider
+
+**IMPORTANT:** uPYCK is a technology platform only. We do not:
+
+- Provide junk removal, moving, or hauling services
+- Employ PYCKERs (they are independent contractors)
+- Control how PYCKERs perform their work
+- Guarantee the quality, safety, or legality of Services
+- Assume liability for PYCKERs’ actions or omissions
+
+### 4.3 PYCKER Classification
+
+The Platform offers two tiers of PYCKERs:
+
+**Verified Pro PYCKERs:**
+
+- Maintain commercial general liability insurance ($1M minimum coverage)
+- Hold valid business licenses
+- Have passed background checks
+- Receive 80% of the job payment
+- Are displayed with a “Verified Pro” badge
+
+**Independent PYCKERs:**
+
+- Have passed background checks
+- Operate without commercial insurance (disclosed to Customers)
+- Receive 75% of the job payment
+- Are displayed with a standard badge
+- **Customer Acknowledgment:** When booking with an Independent PYCKER, you acknowledge that they may not carry commercial insurance and you assume additional risk.
+
+Customers may filter to show only Verified Pro PYCKERs during booking.
+
+## 5. Customer Terms
+
+### 5.1 Booking Services
+
+When you book a service:
+
+- You provide accurate information about the job
+- You authorize payment hold (not charged until PYCKER accepts)
+- You agree to be available at the scheduled time
+- You grant PYCKERs access to the items for removal
+
+### 5.2 Pricing
+
+Prices are calculated based on:
+
+- Service type (junk removal, moving, etc.)
+- Load size and volume
+- Distance to disposal facility
+- Additional factors (stairs, heavy items, etc.)
+
+**Prices shown are estimates.** Final prices may vary based on:
+
+- Actual volume of items
+- Additional services requested on-site
+- Access difficulties
+- Disposal fees
+
+### 5.3 Payment
+
+- Payment is authorized when you book
+- Payment is charged when a PYCKER accepts your job
+- The Platform charges a 20% fee for Verified Pro PYCKERs (PYCKER receives 80%)
+- The Platform charges a 25% fee for Independent PYCKERs (PYCKER receives 75%)
+- Tips are optional and go 100% to the PYCKER (no platform fee)
+- You authorize charges for additional services agreed upon with the PYCKER
+
+### 5.4 Cancellations and Refunds
+
+**Customer Cancellations:**
+
+- Free cancellation before PYCKER accepts
+- $25 cancellation fee if cancelled after PYCKER is en route
+- $50 fee if PYCKER arrives and customer is not available
+- Full job charge if service begins and customer refuses completion
+
+**PYCKER Cancellations:**
+
+- Full refund if PYCKER cancels
+- PYCKER charged $25 penalty (credited to you)
+- We will attempt to match you with another PYCKER
+
+**No-Shows:**
+
+- If you are not available at scheduled time, full job charge applies
+- If PYCKER doesn’t show within 30 minutes of window, full refund
+
+**Service Disputes:**
+
+- Issues must be reported within 24 hours
+- Refunds evaluated case-by-case
+- Photo/video evidence may be required
+
+### 5.5 Your Responsibilities
+
+You are responsible for:
+
+- Providing accurate job descriptions and photos
+- Ensuring items are accessible
+- Removing hazardous materials before service
+- Being present or having authorized representative present
+- Paying for services rendered
+- Treating PYCKERs with respect
+
+### 5.6 Prohibited Items
+
+PYCKERs cannot remove:
+
+- Hazardous materials (chemicals, asbestos, medical waste)
+- Illegal substances or items
+- Live animals
+- Items you don’t own or have authority to dispose of
+- Loaded firearms or explosives
+
+## 6. PYCKER Terms
+
+### 6.1 Independent Contractor Status
+
+**PYCKERs are independent contractors, not employees of uPYCK.** This means:
+
+- You control how you perform services
+- You provide your own vehicle and equipment
+- You pay your own taxes (1099 contractor)
+- You maintain your own insurance (Verified Pros only)
+- You set your own schedule
+- uPYCK does not withhold taxes or provide benefits
+
+### 6.2 PYCKER Requirements
+
+All PYCKERs must:
+
+- Be at least 18 years old
+- Pass background checks
+- Have valid driver’s license
+- Maintain reliable transportation
+- Have smartphone with GPS
+- Follow all applicable laws and regulations
+- Maintain card on file for accountability
+
+**Additional Requirements for Verified Pro Status:**
+
+- Commercial general liability insurance ($1M minimum)
+- Business license
+- Proof of vehicle insurance
+- Workers compensation (if employing helpers)
+
+### 6.3 PYCKER Obligations
+
+When you accept a job, you agree to:
+
+- Call customer within 5 minutes of acceptance
+- Arrive within scheduled time window
+- Provide professional, courteous service
+- Complete the job as described
+- Dispose of items legally and responsibly
+- Clean up the area after removal
+- Not solicit customers for off-platform services
+
+### 6.4 Green Verified Disposal Program
+
+PYCKERs may participate in the Green Verified program:
+
+- Submit disposal receipts within 48 hours
+- Receipts must show: facility name, date, weight, fee
+- Weight must match estimate ±20%
+- Approved disposal facilities only
+- Earn 10% rebate on dump fees (max $25 per job)
+- AI validation with admin final approval
+- No duplicate receipts allowed
+
+### 6.5 Compensation
+
+- Verified Pro PYCKERs receive 80% of job payment
+- Independent PYCKERs receive 75% of job payment
+- Tips are paid 100% to PYCKER (no platform fee)
+- Payouts processed via Stripe Connect
+- Instant payout attempted (may take 1-3 business days)
+- Green Verified rebates paid within 7 days of approval
+
+### 6.6 PYCKER Accountability
+
+PYCKERs are subject to:
+
+- $25 penalty for cancellations after acceptance
+- $25 penalty for no-shows
+- $25 penalty for incomplete jobs
+- Account suspension for violations
+- Permanent ban for serious violations (theft, damage, harassment)
+
+Payment method on file will be charged for penalties.
+
+### 6.7 Prohibited Conduct
+
+PYCKERs may not:
+
+- Contact customers outside the Platform
+- Request cash payments
+- Solicit reviews in exchange for discounts
+- Dump items illegally
+- Misrepresent disposal methods
+- Submit fraudulent receipts
+- Discriminate based on protected characteristics
+- Engage in harassment or inappropriate behavior
+
+## 7. Ratings and Reviews
+
+### 7.1 Review System
+
+Both Customers and PYCKERs may rate and review each other after service completion.
+
+**Reviews must be:**
+
+- Based on actual experience
+- Honest and factual
+- Respectful (no profanity, harassment, or threats)
+- Relevant to the service
+
+**We reserve the right to remove reviews that:**
+
+- Violate these Terms
+- Contain false information
+- Include personal attacks
+- Contain promotional content
+- Violate privacy
+
+### 7.2 Impact of Ratings
+
+- Low-rated PYCKERs may be suspended or removed
+- Low-rated Customers may have booking restrictions
+- Ratings affect matching algorithm priority
+
+## 8. Intellectual Property
+
+### 8.1 Platform Content
+
+The Platform and its content (text, graphics, logos, images, software) are owned by uPYCK and protected by copyright, trademark, and other intellectual property laws.
+
+You may not:
+
+- Copy, modify, or distribute Platform content
+- Use our trademarks without permission
+- Reverse engineer the Platform
+- Create derivative works
+
+### 8.2 User Content
+
+You retain ownership of content you submit (photos, reviews, descriptions) but grant uPYCK a worldwide, non-exclusive, royalty-free license to use, display, and distribute such content in connection with the Platform.
+
+## 9. Privacy and Data
+
+Your use of the Platform is subject to our Privacy Policy, which is incorporated into these Terms by reference. By using the Platform, you consent to our collection, use, and sharing of your information as described in the Privacy Policy.
+
+## 10. Disclaimers and Limitation of Liability
+
+### 10.1 Platform “As Is”
+
+THE PLATFORM IS PROVIDED “AS IS” AND “AS AVAILABLE” WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+### 10.2 No Guarantee of Services
+
+uPYCK DOES NOT GUARANTEE:
+
+- Availability of PYCKERs in your area
+- Quality, safety, or legality of Services
+- That PYCKERs will complete jobs satisfactorily
+- Accuracy of estimates or pricing
+- That Services will meet your expectations
+
+### 10.3 Independent Contractor Disclaimer
+
+**IMPORTANT:** PYCKERs are independent contractors, not employees or agents of uPYCK. uPYCK:
+
+- Does not control how PYCKERs perform services
+- Does not guarantee PYCKERs’ qualifications, licenses, or insurance
+- Is not responsible for PYCKERs’ actions, omissions, or negligence
+- Does not assume liability for property damage, personal injury, or other harm caused by PYCKERs
+
+**Verified Pro vs Independent PYCKER:**
+
+- Verified Pro PYCKERs maintain their own insurance
+- Independent PYCKERs may not have commercial insurance
+- You are informed of PYCKER tier before booking
+- You assume risk when booking Independent PYCKERs
+
+### 10.4 Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, uPYCK AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR:
+
+- Any indirect, incidental, special, consequential, or punitive damages
+- Loss of profits, revenue, data, or business opportunities
+- Property damage or personal injury caused by PYCKERs
+- Any damages exceeding the amount you paid for the specific service
+
+Some jurisdictions do not allow limitation of liability for personal injury, so this may not apply to you.
+
+### 10.5 Insurance Disclaimer
+
+**Verified Pro PYCKERs:**
+
+- Maintain their own commercial general liability insurance
+- Insurance claims must be filed directly with PYCKER’s insurer
+- uPYCK is not responsible for insurance coverage disputes
+- Verify coverage details with PYCKER before service
+
+**Independent PYCKERs:**
+
+- May not carry commercial insurance
+- You are notified before booking
+- You assume risk of no insurance coverage
+- uPYCK has no obligation to cover damages
+
+**Platform Insurance:**
+
+- uPYCK does not provide insurance coverage for services
+- uPYCK is not responsible for property damage or injury
+- You should maintain your own insurance coverage
+
+## 11. Indemnification
+
+You agree to indemnify, defend, and hold harmless uPYCK and its officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including attorney fees) arising from:
+
+- Your use of the Platform
+- Your violation of these Terms
+- Your violation of any law or regulation
+- Content you submit to the Platform
+- Services provided by or to you
+
+## 12. Dispute Resolution
+
+### 12.1 Informal Resolution
+
+Before filing a legal claim, you agree to contact us at support@upyck.com to attempt to resolve the dispute informally.
+
+### 12.2 Arbitration Agreement
+
+**PLEASE READ THIS SECTION CAREFULLY – IT AFFECTS YOUR LEGAL RIGHTS**
+
+Any dispute, claim, or controversy arising out of or relating to these Terms or the Platform shall be resolved by binding arbitration, rather than in court, except that:
+
+- You may assert claims in small claims court if they qualify
+- Either party may seek injunctive relief in court for intellectual property infringement
+
+**Arbitration Rules:**
+
+- Conducted by the American Arbitration Association (AAA)
+- AAA Consumer Arbitration Rules apply
+- Single arbitrator selected per AAA rules
+- Arbitration in Orlando, Florida (or your county of residence)
+- Each party pays their own attorney fees unless arbitrator awards fees
+
+**No Class Actions:**
+You and uPYCK agree that disputes will be resolved on an individual basis only. You may not participate in a class action, class arbitration, or representative action.
+
+**Opt-Out:**
+You may opt out of this arbitration agreement by sending written notice to support@upyck.com within 30 days of first using the Platform.
+
+### 12.3 Governing Law
+
+These Terms are governed by the laws of the State of Florida, without regard to conflict of law principles.
+
+## 13. General Provisions
+
+### 13.1 Modifications to Terms
+
+We may modify these Terms at any time. We will notify you of material changes via email or Platform notification. Your continued use after changes constitutes acceptance of the new Terms.
+
+### 13.2 Account Termination
+
+We may suspend or terminate your account at any time for:
+
+- Violation of these Terms
+- Fraudulent activity
+- Abusive or harassing behavior
+- Repeated cancellations or no-shows
+- Illegal activity
+- Any reason, with or without notice
+
+You may terminate your account at any time by contacting support@upyck.com.
+
+### 13.3 Entire Agreement
+
+These Terms, together with our Privacy Policy, constitute the entire agreement between you and uPYCK regarding use of the Platform.
+
+### 13.4 Severability
+
+If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force and effect.
+
+### 13.5 Waiver
+
+Our failure to enforce any provision of these Terms does not waive our right to enforce it later.
+
+### 13.6 Assignment
+
+You may not assign or transfer these Terms or your account. We may assign these Terms without restriction.
+
+### 13.7 Force Majeure
+
+We are not liable for delays or failures in performance resulting from causes beyond our reasonable control, including natural disasters, war, terrorism, riots, embargoes, acts of civil or military authorities, fire, floods, accidents, pandemics, strikes, or shortages.
+
+## 14. Contact Information
+
+For questions about these Terms, contact us at:
+
+**uPYCK**
+Email: support@upyck.com
+Website: www.upyck.com
+Address: Orlando, Florida
+
+## 15. Specific State Provisions
+
+### 15.1 California Residents
+
+Under California Civil Code Section 1789.3, California users are entitled to the following specific consumer rights notice:
+
+The Complaint Assistance Unit of the Division of Consumer Services of the California Department of Consumer Affairs may be contacted in writing at 1625 North Market Blvd., Suite N 112, Sacramento, CA 95834, or by telephone at (916) 445-1254 or (800) 952-5210.
+
+### 15.2 Florida Residents
+
+Services are provided by independent contractors who are responsible for complying with all Florida licensing and insurance requirements for their respective services.
+
+-----
+
+## Acknowledgment
+
+BY USING THE uPYCK PLATFORM, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY THESE TERMS OF SERVICE.
+
+**Last Updated:** January 17, 2026
+**Version:** 1.0

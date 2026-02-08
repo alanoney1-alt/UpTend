@@ -1,0 +1,48 @@
+o legally tie your "Pyckers" (workers) and customers into your communication ecosystem, you need to update your Independent Contractor Agreement (ICA) and your Terms of Service.
+
+Since you are using Replit, you should store the "Consent Version" in your database so you can prove which version of the terms a user agreed to at the time of signup.
+
+1. For Pyckers: The "Communication & Technology" Clause
+Because your workers are Independent Contractors, you need to be careful not to "control" them like employees, but you can make the use of the app and its communications a "Condition of Contract."
+
+Add this to your Independent Contractor Agreement:
+
+Section X: Communication and Platform Usage
+
+Required Technology: Contractor agrees that the use of the Upyck Mobile Application, including the receipt of SMS text messages and automated phone calls, is a functional requirement for the performance of Services under this Agreement. Contractor shall provide their own smartphone and data plan at their own expense.
+
+Consent to Contact: Contractor expressly consents to receive recurring transactional and informational communications (including SMS, MMS, and automated voice calls) from Upyck regarding available Job Leads, schedule changes, payout updates, and safety alerts.
+
+Data Costs: Contractor acknowledges that standard message and data rates from their carrier may apply and that Upyck is not responsible for any costs incurred.
+
+Opt-Out Impact: Contractor may opt-out of SMS by texting "STOP," but acknowledges that doing so may result in the inability to receive new Job Leads or perform Services effectively on the Platform.
+
+2. For Customers: The "Service Notifications" Clause
+Customers need to know that the "Uber-like" experience depends on these notifications.
+
+Add this to your Customer Terms of Service:
+
+Section Y: Consent to Electronic Communications By creating an account, you agree that Upyck may contact you by telephone or SMS messages (including by an automatic telephone dialing system) at any of the phone numbers provided by you. These communications are essential for providing the Services, including but not limited to: worker arrival tracking, instant AI quotes, and "Green Impact" reports. You may opt-out at any time, though this may impact your experience and ability to receive real-time updates on your service.
+
+3. Building it into the Replit Signup Process
+To make this "bulletproof," the sign-up button itself should be the trigger for consent.
+
+The Frontend (HTML/React): Place this text directly above your "Create Account" button:
+
+"By clicking 'Sign Up,' you agree to our [Terms of Service] and [Privacy Policy] and consent to receive automated texts and calls from Upyck for service updates. Msg & data rates may apply."
+
+The Backend (Database Update): Ensure your users and workers tables track the specific legal version they signed.
+
+SQL
+-- Add these to your PostgreSQL tables in Replit
+ALTER TABLE users ADD COLUMN accepted_terms_version VARCHAR(10);
+ALTER TABLE users ADD COLUMN phone_consent_given BOOLEAN DEFAULT TRUE;
+4. Long-Term "Auto" Strategy: The "Consent Auditor"
+As you expand to all home services, regulations (like the TCPA) might change.
+
+The Automation: Build a script in Replit that checks your accepted_terms_version.
+
+The Action: If you update your legal terms, the next time a Pycker logs in, the AI agent blocks their dashboard and says: "Hey Mike! We've updated our Green-Safety terms. Quick tap here to agree so you can keep picking up jobs."
+
+Why this is better than the "Big Guys":
+Traditional companies often have "hidden" terms that are hard to enforce. By making this Explicit and Integrated into your Replit code, you are building a "Compliance-First" platform that protects you from lawsuits while keeping your communication lines 100% open.

@@ -36,15 +36,16 @@ export const UPTEND_KNOWLEDGE = {
 
   services: {
     junk_removal: {
-      name: "Material Recovery (Junk Removal)",
+      name: "ClearOut (Material Recovery)",
       description: "Professional removal of unwanted items, furniture, appliances, yard waste, and debris. We recycle and donate whenever possible.",
       pricing: "Volume-based pricing by truck load",
       tiers: [
         { size: "Minimum (1-2 items)", price: "$99", capacity: "~25 cubic ft", example: "Sofa, mattress, or appliance" },
-        { size: "Quarter Load", price: "$149", capacity: "~50 cubic ft", example: "3-4 furniture pieces" },
-        { size: "Half Load", price: "$229", capacity: "~100 cubic ft", example: "10-12 furniture pieces, garage corner" },
-        { size: "Three-Quarter Load", price: "$329", capacity: "~150 cubic ft", example: "Full bedroom set, 15-20 items" },
-        { size: "Full Load", price: "$429", capacity: "~200 cubic ft", example: "Full garage, multiple rooms" },
+        { size: "1/8 Truck", price: "$179", capacity: "~27 cubic ft", example: "Mattress + small table OR 2 chairs + boxes" },
+        { size: "1/4 Truck", price: "$279", capacity: "~54 cubic ft", example: "Couch + small desk OR Dresser + chairs" },
+        { size: "1/2 Truck", price: "$379", capacity: "~108 cubic ft", example: "Bedroom set OR Living room furniture" },
+        { size: "3/4 Truck", price: "$449", capacity: "~162 cubic ft", example: "Full apartment OR Large garage cleanout" },
+        { size: "Full Truck", price: "$449", capacity: "~216 cubic ft", example: "Multiple rooms, estate cleanout" },
       ],
       features: [
         "Before/after photos with GPS verification",
@@ -58,30 +59,30 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     moving_labor: {
-      name: "Moving Labor / Loading Help",
+      name: "LiftCrew (Moving Labor)",
       description: "Professional movers to help load/unload trucks, rearrange furniture, or provide labor-only moving assistance.",
-      pricing: "$40/hour per Pro (2-hour minimum)",
+      pricing: "$80/hour per Pro (1-hour minimum)",
       features: [
-        "Multi-Pro crews available (2-3 workers)",
+        "Multi-Pro crews available (1-3 workers)",
         "Truck unloading specialists",
         "Furniture assembly/disassembly",
         "Heavy lifting and positioning",
         "Real-time crew coordination",
       ],
       crewPricing: [
-        { crew: "1 Pro", rate: "$40/hour", best: "Light tasks, rearranging" },
-        { crew: "2 Pros", rate: "$80/hour", best: "Standard moves, truck loading" },
-        { crew: "3 Pros", rate: "$120/hour", best: "Large moves, heavy items" },
+        { crew: "1 Pro", rate: "$80/hour", best: "Light tasks, rearranging" },
+        { crew: "2 Pros", rate: "$160/hour", best: "Standard moves, truck loading" },
+        { crew: "3 Pros", rate: "$240/hour", best: "Large moves, heavy items" },
       ],
     },
 
     pressure_washing: {
-      name: "Pressure Washing",
+      name: "FreshWash (Pressure Washing)",
       description: "Professional pressure washing for driveways, siding, decks, patios, and more.",
-      pricing: "$0.25 per square foot (minimum $150)",
-      aiQuote: "Upload photos and our AI calculates exact square footage",
+      pricing: "$0.25 per square foot (minimum $120 for 480 sqft)",
+      aiQuote: "Upload photos and get instant square footage calculation",
       features: [
-        "AI-powered square footage calculation from photos",
+        "Instant square footage calculation from photos",
         "Commercial-grade 3000 PSI equipment",
         "Eco-friendly cleaning solutions",
         "Before/after photo verification",
@@ -90,12 +91,12 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     gutter_cleaning: {
-      name: "Gutter Cleaning",
+      name: "FlowGuard (Gutter Cleaning)",
       description: "Professional gutter cleaning and debris removal to prevent water damage.",
       pricing: "Fixed pricing by home size",
       rates: [
-        { type: "1-Story Home", price: "$120", includes: "Full perimeter cleaning + flow test" },
-        { type: "2-Story Home", price: "$199", includes: "Full perimeter cleaning + flow test" },
+        { type: "1-Story Home", price: "$149", includes: "Full perimeter cleaning + flow test" },
+        { type: "2-Story Home", price: "$249", includes: "Full perimeter cleaning + flow test" },
       ],
       features: [
         "Debris removal from gutters and downspouts",
@@ -106,23 +107,23 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     light_demolition: {
-      name: "Light Demolition",
+      name: "TearDown (Demolition)",
       description: "Tear out old structures, fencing, sheds, decking, and non-structural interior demolition.",
-      pricing: "Custom quote based on scope",
+      pricing: "Starting at $199, custom quotes for larger projects",
       features: [
         "Fence removal",
         "Deck teardown",
         "Shed demolition",
         "Interior demo (non-loadbearing walls)",
         "Debris removal included",
-        "AI verification with before/after photos",
+        "Before/after photo verification",
       ],
     },
 
     garage_cleanout: {
-      name: "Garage Cleanout",
+      name: "GarageReset (Garage Cleanout)",
       description: "Complete garage clearing with sorting, donation coordination, and disposal.",
-      pricing: "Volume-based (same as Material Recovery)",
+      pricing: "Small: $299 | Medium: $499 | Large: $749 | XL: $999",
       features: [
         "Full garage clearing",
         "Sort into keep/donate/trash",
@@ -131,12 +132,44 @@ export const UPTEND_KNOWLEDGE = {
         "Sustainability reporting",
       ],
     },
+
+    home_cleaning: {
+      name: "FreshSpace (Home Cleaning)",
+      description: "Professional home cleaning service with room-by-room checklists and before/after photo verification.",
+      pricing: "Standard: $99/$149/$199/$249 by size | Deep: 1.5x | Move-In/Out: 2x",
+      tiers: [
+        { size: "1-2 bed / 1 bath", standard: "$99", deep: "$149", moveInOut: "$198" },
+        { size: "3 bed / 2 bath", standard: "$149", deep: "$224", moveInOut: "$298" },
+        { size: "4 bed / 2-3 bath", standard: "$199", deep: "$299", moveInOut: "$398" },
+        { size: "5+ bed / 3+ bath", standard: "$249", deep: "$374", moveInOut: "$498" },
+      ],
+      recurring: {
+        weekly: "15% discount off standard pricing",
+        biweekly: "10% discount off standard pricing",
+        monthly: "5% discount off standard pricing",
+      },
+      addOns: [
+        { name: "Inside oven", price: "$35" },
+        { name: "Inside refrigerator", price: "$35" },
+        { name: "Interior windows", price: "$5 per window" },
+        { name: "Laundry (2 loads)", price: "$30" },
+        { name: "Organize closet", price: "$40" },
+        { name: "Pet hair treatment", price: "$25" },
+      ],
+      features: [
+        "Room-by-room checklist completion",
+        "Before/after photos required",
+        "Cleaning supplies included",
+        "Same Pro for recurring bookings",
+        "3-booking minimum for recurring plans",
+      ],
+    },
   },
 
   fees: {
     protectionFee: {
       name: "7% Protection Fee",
-      description: "Covers $1M liability insurance, platform support, GPS tracking, and sustainability reporting. Charged to customer, NOT deducted from Pro payout.",
+      description: "Covers $1M liability insurance, UpTend support, GPS tracking, and sustainability reporting. Charged to customer, NOT deducted from Pro payout.",
       calculation: "7% of base service price",
       example: "$229 job → $16.03 protection fee → $245.03 total to customer",
     },
@@ -151,8 +184,8 @@ export const UPTEND_KNOWLEDGE = {
   booking: {
     steps: [
       "1. Enter your address (we show instant property details)",
-      "2. Select service type (Material Recovery, Moving Labor, etc.)",
-      "3. Get AI quote: Upload photos OR enter details manually",
+      "2. Select service type (ClearOut, LiftCrew, FreshWash, FlowGuard, etc.)",
+      "3. Get instant quote: Upload photos OR enter details manually",
       "4. Review itemized quote with sustainability impact",
       "5. Create account (if new) → Book and pay",
       "6. Pro assigned within 60 seconds → Track live",
@@ -164,18 +197,19 @@ export const UPTEND_KNOWLEDGE = {
     },
   },
 
-  aiQuotes: {
-    howItWorks: "Upload photos of items to remove → Our AI analyzes and identifies everything → Get instant itemized quote with weight estimates and pricing",
-    confidence: "AI provides confidence score (higher = more accurate)",
+  smartQuotes: {
+    howItWorks: "Upload photos of items to remove → We analyze and identify everything instantly → Get instant itemized quote with weight estimates and pricing",
+    confidence: "Confidence score provided (higher = more accurate)",
     videoOption: "Record 30-60 second walkthrough video for +5% accuracy boost (better for garages, yards, large areas)",
     manual: "Prefer not to upload photos? Enter items manually for preliminary estimate",
   },
 
   verification: {
-    forServices: ["Material Recovery", "Garage Cleanout", "Light Demolition"],
+    forServices: ["ClearOut (Material Recovery)", "GarageReset (Garage Cleanout)", "TearDown (Demolition)", "FreshSpace (Home Cleaning)"],
     workflow: [
       "Before Photos: Pro takes GPS-tagged photos before starting work",
-      "Disposal Tracking: Pro logs each item (recycle/donate/resale/landfill/e-waste)",
+      "Disposal Tracking (ClearOut/GarageReset/TearDown): Pro logs each item (recycle/donate/resale/landfill/e-waste)",
+      "Cleaning Checklist (FreshSpace): Room-by-room task completion with photo verification",
       "After Photos: Pro takes GPS-tagged photos after completion",
       "Sustainability Report: Auto-generated with carbon offset, diversion rate, environmental impact",
       "Customer Confirmation: Customer reviews and confirms (or 48-hour auto-approval)",
@@ -199,7 +233,7 @@ export const UPTEND_KNOWLEDGE = {
     },
     {
       q: "What if I don't know exactly what I have?",
-      a: "No problem! Upload photos and our AI will identify and estimate everything. Or just describe what you have and we'll provide a preliminary estimate - the Pro will confirm the final price on-site.",
+      a: "No problem! Upload photos and we'll identify and estimate everything instantly. Or just describe what you have and we'll provide a preliminary estimate - the Pro will confirm the final price on-site.",
     },
     {
       q: "Do you recycle and donate?",
@@ -211,7 +245,7 @@ export const UPTEND_KNOWLEDGE = {
     },
     {
       q: "Can I book multiple Pros for a big job?",
-      a: "Yes! For Moving Labor, you can request 2-3 Pro crews. For Material Recovery, the Pro can call for backup if needed after arriving.",
+      a: "Yes! For LiftCrew (Moving Labor), you can request 2-3 Pro crews. For ClearOut (Material Recovery), the Pro can call for backup if needed after arriving.",
     },
     {
       q: "What if the quote is wrong?",

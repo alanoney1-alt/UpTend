@@ -1,0 +1,85 @@
+We need to architect the app so it can handle either scenario. If Plan A fails, we just flip a switch to Plan B.
+
+1. Schema Update (shared/schema.ts) We need a place to store the "External Policy ID" if we go with Plan B.
+
+TypeScript
+// shared/schema.ts
+
+export const serviceRequests = pgTable("service_requests", {
+  // ... existing columns ...
+  
+  // INSURANCE FLEXIBILITY
+  insuranceProvider: varchar("insurance_provider").default('uPYCK_Blanket'), // 'uPYCK_Blanket' or 'Thimble_API'
+  externalPolicyId: varchar("external_policy_id"), // If Plan B, store the Thimble Policy #
+  insuranceCost: integer("insurance_cost"), // What was actually paid
+});
+2. The "Insurance Gate" Logic (server/services/insuranceService.ts) Create a placeholder service that can swap between "Auto-Approve" (Plan A) and "Require Purchase" (Plan B).
+
+TypeScript
+// server/services/insuranceService.ts
+
+export async function verifyInsuranceForJob(jobId: string, haulerId: string) {
+  // CONFIG: Toggle this based on your actual insurance deal
+  const INSURANCE_MODE = process.env.INSURANCE_MODE || 'BLANKET_ARBITRAGE'; // or 'EXTERNAL_PURCHASE'
+
+  if (INSURANCE_MODE === 'BLANKET_ARBITRAGE') {
+    // PLAN A: We cover it.
+    // Logic: Just log that we are withholding $25 later.
+    return { 
+      covered: true, 
+      provider: 'uPYCK', 
+      feeToWorker: 2500, // $25.00
+      actionRequired: false 
+    };
+  } 
+  
+  else if (INSURANCE_MODE === 'EXTERNAL_PURCHASE') {
+    // PLAN B: Check if they bought a policy for this specific time window
+    const validPolicy = await checkThimbleAPI(haulerId, jobId); // Mock function
+    
+    if (!validPolicy) {
+      return { 
+        covered: false, 
+        actionRequired: true, 
+        purchaseLink: `https://thimble.com/buy?partner=upyck&job=${jobId}` 
+      };
+    }
+    
+    return { covered: true, provider: 'Thimble', feeToWorker: 0, actionRequired: false };
+  }
+}
+3. The UI "Stop Gap" (client/src/components/insurance-gate.tsx) If Plan B is active, the worker sees a "Buy Insurance" button instead of a "Start Job" button.
+
+TypeScript
+// client/src/components/insurance-gate.tsx
+
+export function InsuranceGate({ job, onPolicyVerified }) {
+  // If Plan B is active and no policy found:
+  return (
+    <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+      <h3 className="font-bold text-orange-800">🛡️ Insurance Required</h3>
+      <p className="text-sm mb-4">
+        This job requires liability coverage. You are not currently covered.
+      </p>
+      
+      <Button 
+        className="w-full bg-blue-600 hover:bg-blue-700"
+        onClick={() => window.open(job.insurancePurchaseLink, '_blank')}
+      >
+        Buy Coverage (~$14) via Thimble
+      </Button>
+      
+      <p className="text-xs text-center mt-2 text-muted-foreground">
+        Instant verification. Policy covers you for 2 hours.
+      </p>
+    </div>
+  );
+}
+Strategic Advice for Monday
+Don't panic. This model has been proven by companies like Thumbtack and TaskRabbit. The insurance exists.
+
+Start with Plan A. Contact Tint.ai or Bunker immediately. Tell them: "We are a gig marketplace for moving/junk. We need usage-based GL."
+
+Keep Plan B in your pocket. If they quote you an insane price ($50/job), you switch to Plan B (Thimble Integration). You lose the revenue margin, but you launch with zero risk.
+
+You are fine. The tech we built supports both. Plan A is just more profitable. Plan B is safer. We can launch with either.

@@ -1,0 +1,139 @@
+You have built the fancy features (AI, Video, GPS). Now you need the Plumbing.
+
+Right now, if a Pycker clicks "Go Online," nothing happens. If they take a photo, it stays on their phone. If a customer pays, the database doesn't know.
+
+Here are the final 4 Backend Connections to make the buttons on the frontend actually do work on the server.
+
+1. The "Go Online" Switch (Availability Toggle)
+The Frontend: A toggle switch on the Dashboard (Go Online / Offline). The Backend Gap: The server needs to filter the "Job Feed" based on who is actually working right now.
+
+👉 Action: Add to server/routes.ts.
+
+TypeScript
+// POST /api/hauler/availability
+// The "Clock In/Out" Button
+app.post("/api/hauler/availability", async (req, res) => {
+  const { isActive, lat, lng } = req.body;
+  const userId = req.user.id;
+
+  await db.update(users)
+    .set({ 
+      isActive: isActive,
+      lastActiveAt: new Date(),
+      currentLat: lat, // Update position when they clock in
+      currentLng: lng
+    })
+    .where(eq(users.id, userId));
+
+  res.json({ success: true, status: isActive ? 'online' : 'offline' });
+});
+2. The "Pipe" (File Upload Handler)
+The Frontend: The ImageUploader and ManifestScanner components. The Backend Gap: You need middleware to catch the file stream and send it to Cloudinary. Without this, your app crashes on every photo upload.
+
+👉 Action: Create server/upload.ts (or add to routes).
+
+TypeScript
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+
+// 1. Configure Cloudinary (Make sure keys are in Replit Secrets!)
+cloudinary.config({
+  cloud_name: process.env.VITE_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// 2. Configure Storage Engine
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'upyck_evidence',
+    allowed_formats: ['jpg', 'png', 'webm', 'mp4'], // Allow video for Manifest!
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// 3. The Route
+// POST /api/upload
+// Usage: const formData = new FormData(); formData.append('file', file);
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  if (!req.file) return res.status(400).json({ message: "Upload failed" });
+  
+  // Return the secure URL so the frontend can save it to the form
+  res.json({ url: req.file.path });
+});
+3. The "Listener" (Stripe Webhooks)
+The Frontend: The Payment Form succeeds, but the database doesn't know the money is in the bank. The Backend Gap: You need a Webhook that listens for Stripe's secret signal. This is how you confirm payment securely.
+
+👉 Action: Add this before your body parsers in server/index.ts (Crucial!).
+
+TypeScript
+// Webhook must be raw!
+app.post('/api/webhooks/stripe', express.raw({type: 'application/json'}), async (request, response) => {
+  const sig = request.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(request.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    return response.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  if (event.type === 'payment_intent.succeeded') {
+    const paymentIntent = event.data.object;
+    
+    // Find the order linked to this payment and mark as PAID
+    // Metadata is set when you create the PaymentIntent
+    const orderId = paymentIntent.metadata.orderId; 
+    
+    await db.update(orders)
+      .set({ paymentStatus: 'paid' })
+      .where(eq(orders.id, orderId));
+      
+    console.log(`💰 Order ${orderId} has been paid!`);
+  }
+
+  response.send();
+});
+4. The "Memory" (Job History)
+The Frontend: The "My Jobs" tab needs to show a list. The Backend Gap: A simple GET route that filters by user ID.
+
+👉 Action: Add to server/routes.ts.
+
+TypeScript
+// GET /api/jobs/history
+app.get("/api/jobs/history", async (req, res) => {
+  const userId = req.user.id;
+  const role = req.user.role; // 'customer' or 'hauler'
+
+  let jobs;
+  
+  if (role === 'hauler') {
+    // Show jobs they DID
+    jobs = await db.select().from(orders)
+      .where(eq(orders.haulerId, userId))
+      .orderBy(desc(orders.createdAt));
+  } else {
+    // Show jobs they ORDERED
+    jobs = await db.select().from(orders)
+      .where(eq(orders.userId, userId))
+      .orderBy(desc(orders.createdAt));
+  }
+
+  res.json(jobs);
+});
+🚀 The Final "End-to-End" Test
+Once these are in, you can run the full cycle:
+
+Worker: Clicks "Go Online" (Hits Route #1).
+
+Customer: Books Job & Pays (Hits Route #3 via Stripe).
+
+Worker: Accepts Job & Uploads Photo (Hits Route #2).
+
+System: Saves URL to DB & Updates History (Hits Route #4).
+
+Deploy these 4 routes. Now your buttons work.

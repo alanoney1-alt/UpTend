@@ -1,0 +1,102 @@
+This is where the soul of the brand comes in. By acknowledging the broken system for workers, you aren't just a "service app"—you're a market reformer.
+
+Homeowners get a better experience because the Pros are treated better. That is the UpTend virtuous cycle.
+
+1. The Rebranded Footer (footer.tsx)
+This code reflects the shift to Stewardship, includes the Home Audit, and updates your contact info.
+
+TypeScript
+import { Link } from "wouter";
+import { Logo } from "@/components/ui/logo"; // Using our new UpTend Logo
+import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter } from "lucide-react";
+
+export function Footer() {
+  return (
+    <footer className="bg-slate-950 text-slate-400 border-t border-slate-900">
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          
+          {/* COLUMN 1: THE MISSION */}
+          <div className="space-y-6">
+            <Logo className="w-10 h-10" textClassName="text-2xl text-white" />
+            <h3 className="text-white font-bold text-lg">UpTend Stewardship</h3>
+            <p className="text-sm leading-relaxed">
+              Put your home on autopilot. We handle the chores, you handle the living. 
+              Built to protect your space and the people who care for it.
+            </p>
+            <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
+              <Mail className="w-4 h-4 text-cyan-500" />
+              <a href="mailto:alan@uptend.com">alan@uptend.com</a>
+            </div>
+          </div>
+
+          {/* COLUMN 2: THE ESSENTIAL 5 */}
+          <div>
+            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">The Essential 5</h4>
+            <ul className="space-y-4 text-sm">
+              <li><Link href="/services/junk"><span className="hover:text-cyan-400 cursor-pointer">Junk Removal</span></Link></li>
+              <li><Link href="/services/wash"><span className="hover:text-cyan-400 cursor-pointer">Pressure Washing</span></Link></li>
+              <li><Link href="/services/gutter"><span className="hover:text-cyan-400 cursor-pointer">Gutter Cleaning</span></Link></li>
+              <li><Link href="/services/moving"><span className="hover:text-cyan-400 cursor-pointer">Moving Labor</span></Link></li>
+              <li><Link href="/services/audit"><span className="hover:text-cyan-400 font-semibold text-white cursor-pointer">Home Audit + Inventory</span></Link></li>
+            </ul>
+          </div>
+
+          {/* COLUMN 3: THE PRO PATH */}
+          <div>
+            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">For Pros</h4>
+            <ul className="space-y-4 text-sm">
+              <li><Link href="/become-pro"><span className="hover:text-cyan-400 cursor-pointer">Join the Network</span></Link></li>
+              <li><Link href="/academy"><span className="hover:text-cyan-400 cursor-pointer">UpTend Academy</span></Link></li>
+              <li><Link href="/pro-benefits"><span className="hover:text-cyan-400 cursor-pointer">Why We Don't Charge Lead Fees</span></Link></li>
+            </ul>
+          </div>
+
+          {/* COLUMN 4: CONNECT */}
+          <div>
+            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Connect</h4>
+            <div className="flex gap-4 mb-6">
+              <Instagram className="w-5 h-5 hover:text-white cursor-pointer" />
+              <Linkedin className="w-5 h-5 hover:text-white cursor-pointer" />
+              <Twitter className="w-5 h-5 hover:text-white cursor-pointer" />
+            </div>
+            <p className="text-xs text-slate-500">
+              Proudly serving the Orlando Metro area and expanding.
+            </p>
+          </div>
+        </div>
+
+        <div className="border-t border-slate-900 mt-16 pt-8 text-xs flex flex-col md:flex-row justify-between gap-4">
+          <p>© 2026 UpTend. A brand of uPYCK Inc.</p>
+          <div className="flex gap-6">
+            <Link href="/terms"><span className="hover:text-white cursor-pointer">Terms</span></Link>
+            <Link href="/privacy"><span className="hover:text-white cursor-pointer">Privacy</span></Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+2. The Personal Narrative (For the "About" or "Why" Page)
+To make it personal, you need to call out the "Two-Sided Pain."
+
+The Vision:
+
+"I didn't just build UpTend for the person sitting on the couch; I built it for the person behind the wheel of the truck.
+
+For too long, the 'gig economy' has treated home services like a race to the bottom. Pros are forced to pay for 'leads' that never call back, and homeowners are left guessing if the person at their door is actually qualified.
+
+I saw a broken system where the worker gets squeezed and the homeowner gets worried. UpTend changes the playbook. > We cut out the lead-chasing nightmares for our Pros and replace them with a Professional Academy and Instant Payouts. In return, our Pros provide you with something no one else does: Full Video Transparency.
+
+When the person caring for your home is treated like a professional, they perform like one. That's how we keep your home—and our community—trending up." — Alan, Founder
+
+3. Key Upgrades for the "Worker Side"
+To show you mean it, we should add these "Stewardship for Pros" points to the Become a Pro page:
+
+No Lead Fees: You never pay to talk to a customer. If the job is in your feed, it's yours.
+
+Video Protection: Our 360° video scan doesn't just protect the owner; it protects you against false claims.
+
+Skill Up-leveling: Use the UpTend Academy to go from "Guy with a truck" to "Certified Home Steward."
+
+Language-First: Fully bilingual interface because the best Pros often speak two languages.

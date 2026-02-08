@@ -1,0 +1,380 @@
+This combines the "Uber-style" urgency (Live Map, ETA, Dispatch Widget) with the "Home Asset" value proposition (Home Score, Digital Inventory).
+
+Action: Copy and paste this directly into client/src/pages/landing-page.tsx.
+
+TypeScript
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { 
+  MapPin, Clock, Star, ShieldCheck, Zap, 
+  Leaf, ScanFace, TrendingUp, ChevronRight, Truck,
+  Waves, ArrowUpFromLine, Package, Search, BrainCircuit
+} from "lucide-react";
+
+export default function LandingPage() {
+  const [location, setLocation] = useLocation();
+  const [selectedService, setSelectedService] = useState("");
+  const [eta, setEta] = useState("");
+
+  // 1. Simulate "Live Dispatch" ETA (Always ~45-60 mins away to create urgency)
+  useEffect(() => {
+    const calculateEta = () => {
+      const time = new Date();
+      time.setMinutes(time.getMinutes() + 58); 
+      return time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    };
+    setEta(calculateEta());
+    
+    // Update ETA every minute to keep it "Live"
+    const interval = setInterval(() => setEta(calculateEta()), 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleSearch = () => {
+    // Redirects to booking with the pre-selected service
+    setLocation(selectedService ? `/book?service=${selectedService}` : '/book');
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+      
+      {/* =========================================
+          HERO SECTION: THE "COMMAND CENTER"
+      ========================================= */}
+      <section className="relative pt-24 pb-32 overflow-hidden bg-slate-900">
+        
+        {/* Background: The "Active Map" Vibe */}
+        <div className="absolute inset-0 opacity-20 bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/OpenStreetMap_Logo_2016.svg/1200px-OpenStreetMap_Logo_2016.svg.png')] bg-cover bg-center grayscale mix-blend-overlay pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent" />
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            
+            {/* LEFT COLUMN: The Hook */}
+            <div className="flex-1 text-center lg:text-left">
+              
+              {/* The "Active Pulse" Badge */}
+              <div className="inline-flex items-center gap-3 bg-green-500/10 border border-green-500/30 px-4 py-2 rounded-full mb-8 backdrop-blur-md">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+                <span className="text-sm font-bold text-green-400 tracking-wide uppercase">
+                  54 Pyckers Active in Orlando
+                </span>
+              </div>
+
+              <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                Maintain Your Asset. <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                  Reclaim Your Weekend.
+                </span>
+              </h1>
+              
+              <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Book the <strong>"Essential 5"</strong> services instantly. We handle the labor, the liability, and the data log—so your home value never drops.
+              </p>
+
+              {/* Trust Signals */}
+              <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+                 <div className="flex items-center gap-2 text-sm text-slate-400 font-medium">
+                    <ShieldCheck className="w-5 h-5 text-cyan-400" /> Insured ($1M)
+                 </div>
+                 <div className="flex items-center gap-2 text-sm text-slate-400 font-medium">
+                    <MapPin className="w-5 h-5 text-cyan-400" /> GPS Tracked
+                 </div>
+                 <div className="flex items-center gap-2 text-sm text-slate-400 font-medium">
+                    <Star className="w-5 h-5 text-cyan-400" /> AI Verified
+                 </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: The "Live Dispatch" Widget */}
+            <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 relative">
+              {/* Widget Header */}
+              <div className="bg-slate-50 p-5 border-b border-slate-100 flex justify-between items-center">
+                <span className="font-bold text-slate-700 flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-green-600" /> Available Now
+                </span>
+                <span className="text-xs font-mono text-slate-400 tracking-wider">ORLANDO_METRO_AREA</span>
+              </div>
+              
+              <div className="p-6 space-y-5">
+                {/* 1. The Dropdown */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">My home needs...</label>
+                  <Select onValueChange={setSelectedService}>
+                    <SelectTrigger className="h-16 text-lg bg-white border-slate-200 shadow-sm focus:ring-cyan-500">
+                      <SelectValue placeholder="Select a Service..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="junk_removal">🚛 Junk Removal</SelectItem>
+                      <SelectItem value="pressure_washing">💦 Pressure Washing</SelectItem>
+                      <SelectItem value="gutter_cleaning">🪜 Gutter Cleaning</SelectItem>
+                      <SelectItem value="moving_labor">📦 Moving Labor</SelectItem>
+                      <SelectItem value="home_consultation">🩺 Home Health Audit ($49)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* 2. The Live ETA Box */}
+                <div className="bg-blue-50/80 border border-blue-100 p-4 rounded-xl flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-blue-600 font-bold uppercase mb-1">Earliest Arrival</p>
+                    <p className="text-2xl font-bold text-slate-900">{eta}</p>
+                  </div>
+                  <div className="bg-white p-2 rounded-full shadow-sm">
+                    <Truck className="w-6 h-6 text-blue-500" />
+                  </div>
+                </div>
+
+                {/* 3. The Action Button */}
+                <Button 
+                  size="lg" 
+                  className="w-full h-16 text-xl bg-slate-900 hover:bg-slate-800 shadow-lg font-bold transition-all transform active:scale-95"
+                  onClick={handleSearch}
+                >
+                  Get AI Price <ChevronRight className="ml-2" />
+                </Button>
+                
+                <p className="text-xs text-center text-slate-400">
+                  *Instant quote generated by Computer Vision.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+
+      {/* =========================================
+          THE BRIDGE: "TECH + HUMAN"
+      ========================================= */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6 text-center max-w-4xl">
+          <div className="inline-flex items-center justify-center p-3 bg-cyan-50 rounded-2xl mb-8">
+            <BrainCircuit className="w-8 h-8 text-cyan-600 mr-3" />
+            <h2 className="text-2xl font-bold text-slate-900">Powered by Pyckers. Verified by AI.</h2>
+          </div>
+          
+          <p className="text-xl text-slate-600 leading-relaxed mb-12">
+            <strong>Pyckers</strong> are our elite, background-checked specialists. They bring the muscle. 
+            <br className="hidden md:block" />
+            Our <strong>AI</strong> brings the memory—logging every job to prove your home is well-maintained.
+          </p>
+        </div>
+
+        {/* INTERACTIVE CARDS (The "Why") */}
+        <div className="container mx-auto px-6 grid md:grid-cols-3 gap-8">
+            
+            {/* CARD 1: THE SCORE */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Card className="cursor-pointer border-slate-200 hover:border-blue-500 hover:shadow-xl transition-all group text-left h-full">
+                  <CardContent className="p-8 flex flex-col h-full">
+                    <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                      <TrendingUp className="w-7 h-7 text-blue-600 group-hover:text-white" />
+                    </div>
+                    <h3 className="font-bold text-xl mb-3">The Home Score™</h3>
+                    <p className="text-slate-600 leading-relaxed flex-grow">
+                      Don't let maintenance vanish. We log every job to prove your home's value to buyers & insurers.
+                    </p>
+                    <span className="text-sm font-bold text-blue-600 mt-6 flex items-center uppercase tracking-wide">
+                      How it works <ChevronRight className="w-4 h-4 ml-1" />
+                    </span>
+                  </CardContent>
+                </Card>
+              </DialogTrigger>
+              <DialogContent className="max-w-xl">
+                <DialogHeader><DialogTitle className="text-2xl font-bold">The Home Score Explained</DialogTitle></DialogHeader>
+                <div className="space-y-4 pt-4 text-slate-600">
+                  <p className="text-lg">Think of it like a <strong>Carfax for your House.</strong></p>
+                  <p>Every time a Pycker completes a job (like cleaning gutters), verified photos and timestamps are added to your property timeline.</p>
+                  <ul className="list-disc pl-5 space-y-2 mt-4 bg-slate-50 p-4 rounded-lg">
+                    <li><strong>Insurance:</strong> Fight claim denials with proof of maintenance.</li>
+                    <li><strong>Resale:</strong> Hand buyers a certified report to justify price.</li>
+                    <li><strong>HOA:</strong> Auto-resolve violation letters with one click.</li>
+                  </ul>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* CARD 2: THE INVENTORY */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Card className="cursor-pointer border-slate-200 hover:border-purple-500 hover:shadow-xl transition-all group text-left h-full">
+                  <CardContent className="p-8 flex flex-col h-full">
+                    <div className="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                      <ScanFace className="w-7 h-7 text-purple-600 group-hover:text-white" />
+                    </div>
+                    <h3 className="font-bold text-xl mb-3">Digital Inventory</h3>
+                    <p className="text-slate-600 leading-relaxed flex-grow">
+                      While working, Pyckers scan your high-value assets. You get a cloud catalog of everything you own.
+                    </p>
+                    <span className="text-sm font-bold text-purple-600 mt-6 flex items-center uppercase tracking-wide">
+                      See the Tech <ChevronRight className="w-4 h-4 ml-1" />
+                    </span>
+                  </CardContent>
+                </Card>
+              </DialogTrigger>
+              <DialogContent className="max-w-xl">
+                <DialogHeader><DialogTitle className="text-2xl font-bold">Digital Twin Technology</DialogTitle></DialogHeader>
+                <div className="space-y-4 pt-4 text-slate-600">
+                  <p className="text-lg">Stop guessing what you own.</p>
+                  <p>Our AI identifies TVs, appliances, and furniture from video scans taken during the job. This creates a secure "Digital Twin" of your contents.</p>
+                  <div className="bg-purple-50 p-4 rounded-lg border border-purple-100 text-purple-800 font-medium">
+                    Essential for Fire & Flood insurance claims.
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* CARD 3: THE GREEN PROMISE */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Card className="cursor-pointer border-slate-200 hover:border-green-500 hover:shadow-xl transition-all group text-left h-full">
+                  <CardContent className="p-8 flex flex-col h-full">
+                    <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-green-600 group-hover:text-white transition-colors">
+                      <Leaf className="w-7 h-7 text-green-600 group-hover:text-white" />
+                    </div>
+                    <h3 className="font-bold text-xl mb-3">Tax-Deductible Junk</h3>
+                    <p className="text-slate-600 leading-relaxed flex-grow">
+                      We donate your junk. You get the IRS tax write-off delivered to your dashboard instantly.
+                    </p>
+                    <span className="text-sm font-bold text-green-600 mt-6 flex items-center uppercase tracking-wide">
+                      Learn More <ChevronRight className="w-4 h-4 ml-1" />
+                    </span>
+                  </CardContent>
+                </Card>
+              </DialogTrigger>
+              <DialogContent className="max-w-xl">
+                <DialogHeader><DialogTitle className="text-2xl font-bold">The Green Promise</DialogTitle></DialogHeader>
+                <div className="space-y-4 pt-4 text-slate-600">
+                  <p className="text-lg">We divert <strong>70%</strong> of items from landfills.</p>
+                  <p>By partnering with local Orlando charities (Goodwill, Habitat for Humanity), we donate your usable items instead of dumping them.</p>
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+                    <p className="font-bold text-green-800">The Financial Win:</p>
+                    <p className="text-green-700 text-sm">Many customers save more on their taxes via our donation receipts than the cost of the junk removal service itself.</p>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+        </div>
+      </section>
+
+      {/* =========================================
+          THE "WHY" SECTION
+      ========================================= */}
+      <section className="py-24 bg-slate-50 border-t border-slate-200">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="flex-1">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">Why we built uPYCK.</h2>
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
+                <p>
+                  Your home is your biggest investment, but it didn't come with an instruction manual.
+                </p>
+                <p>
+                  We built the <strong>Operating System</strong> that tracks maintenance for you, so you never have to worry about HOA fines, invisible rot, or lost value again.
+                </p>
+                <p>
+                  When you use uPYCK, you aren't just cleaning a driveway. You are certifying the health of your asset.
+                </p>
+              </div>
+              
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-slate-200 overflow-hidden">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Founder" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">The uPYCK Promise</p>
+                    <p className="text-sm text-slate-500">100% Satisfaction or we pay for the fix.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Visual Services Grid */}
+            <div className="flex-1 w-full">
+              <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+                <h3 className="font-bold text-slate-400 uppercase text-xs tracking-wider mb-6">The Unlicensed 5 Essentials</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 hover:bg-blue-50 transition-colors cursor-pointer group" onClick={() => setLocation('/book?service=junk_removal')}>
+                     <div className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
+                       <Truck className="w-5 h-5" />
+                     </div>
+                     <div>
+                       <p className="font-bold text-slate-900">Junk Removal</p>
+                       <p className="text-xs text-slate-500">From $99</p>
+                     </div>
+                   </div>
+
+                   <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 hover:bg-cyan-50 transition-colors cursor-pointer group" onClick={() => setLocation('/book?service=pressure_washing')}>
+                     <div className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-cyan-500 group-hover:scale-110 transition-transform">
+                       <Waves className="w-5 h-5" />
+                     </div>
+                     <div>
+                       <p className="font-bold text-slate-900">Pressure Wash</p>
+                       <p className="text-xs text-slate-500">$0.25 / sqft</p>
+                     </div>
+                   </div>
+
+                   <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 hover:bg-orange-50 transition-colors cursor-pointer group" onClick={() => setLocation('/book?service=gutter_cleaning')}>
+                     <div className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
+                       <ArrowUpFromLine className="w-5 h-5" />
+                     </div>
+                     <div>
+                       <p className="font-bold text-slate-900">Gutter Clean</p>
+                       <p className="text-xs text-slate-500">$149 Flat</p>
+                     </div>
+                   </div>
+
+                   <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 hover:bg-purple-50 transition-colors cursor-pointer group" onClick={() => setLocation('/book?service=moving_labor')}>
+                     <div className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-purple-500 group-hover:scale-110 transition-transform">
+                       <Package className="w-5 h-5" />
+                     </div>
+                     <div>
+                       <p className="font-bold text-slate-900">Moving Help</p>
+                       <p className="text-xs text-slate-500">$90 / hour</p>
+                     </div>
+                   </div>
+                </div>
+                
+                <div className="mt-4 p-4 bg-green-50 rounded-xl border border-green-100 flex items-center justify-between cursor-pointer hover:bg-green-100 transition-colors" onClick={() => setLocation('/book?service=home_consultation')}>
+                   <div className="flex items-center gap-3">
+                     <div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center text-green-700">
+                       <Search className="w-4 h-4" />
+                     </div>
+                     <span className="font-bold text-green-900">Home Health Audit</span>
+                   </div>
+                   <span className="font-bold text-green-700">$49.00</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  );
+}

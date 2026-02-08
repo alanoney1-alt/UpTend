@@ -1,0 +1,132 @@
+This is a smart move. In the world of Home Intelligence, the first thing a user wants is data, not a password prompt. By providing an estimate first, you demonstrate the Protect pillar (Value Monitoring) before asking for a commitment.
+
+We’ll call this the "Instant Home Scan." Here is how we build this frictionless flow:
+
+1. The "No-Login" Flow Strategy
+The Hero Input: A simple box: "Enter your address for a free Home Intelligence report & estimate."
+
+The Calculation Page: A breakdown of the "Essential 5" services for that specific property.
+
+The Soft Gate: "This estimate is locked in. Sign up to secure your Pro and document this value in your Home Playbook."
+
+2. The Instant Estimator Component (instant-estimator.tsx)
+This component uses a "wizard" style to keep it fast and engaging.
+
+TypeScript
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, MapPin, ArrowRight, ShieldCheck, Leaf } from "lucide-react";
+import { useLocation } from "wouter";
+
+export function InstantEstimator() {
+  const [address, setAddress] = useState("");
+  const [step, setStep] = useState(1); // 1: Address, 2: Result
+  const [, setLocation] = useLocation();
+
+  // Mock calculation logic - in production, this would hit a pricing API
+  const getEstimates = (addr: string) => ({
+    junkRemoval: "$149 - $299",
+    pressureWash: "$199 - $350",
+    homeAudit: "$99 (Essential)",
+    totalImpact: "+$2,400 in protected value"
+  });
+
+  const estimates = getEstimates(address);
+
+  if (step === 1) {
+    return (
+      <div className="w-full max-w-2xl mx-auto bg-white p-2 rounded-2xl shadow-2xl flex items-center border border-slate-200">
+        <div className="flex-1 flex items-center px-4 gap-3">
+          <MapPin className="text-blue-500 w-5 h-5" />
+          <Input 
+            placeholder="Enter your property address..." 
+            className="border-none shadow-none focus-visible:ring-0 text-lg"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+        </div>
+        <Button 
+          onClick={() => address.length > 5 && setStep(2)}
+          className="bg-blue-600 hover:bg-blue-500 h-12 px-8 rounded-xl font-bold"
+        >
+          Get Estimate
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-3xl mx-auto bg-white rounded-[2.5rem] p-8 shadow-2xl border border-blue-50 overflow-hidden animate-in fade-in zoom-in duration-300">
+      <div className="flex justify-between items-start mb-8">
+        <div>
+          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Preliminary Report For</h3>
+          <p className="text-lg font-bold text-slate-900">{address}</p>
+        </div>
+        <Button variant="ghost" size="sm" onClick={() => setStep(1)} className="text-blue-600 font-bold">Edit</Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* ESTIMATION CARDS */}
+        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+          <p className="text-xs font-bold text-slate-400 mb-2 uppercase">Space Rejuvenation</p>
+          <div className="flex justify-between items-end">
+            <span className="text-slate-900 font-black text-xl">{estimates.junkRemoval}</span>
+            <span className="text-[10px] text-green-600 font-bold">~40lbs Material Recovery</span>
+          </div>
+        </div>
+
+        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+          <p className="text-xs font-bold text-slate-400 mb-2 uppercase">Asset Protection (Audit)</p>
+          <div className="flex justify-between items-end">
+            <span className="text-slate-900 font-black text-xl">{estimates.homeAudit}</span>
+            <span className="text-[10px] text-blue-600 font-bold">Insurance Shield Included</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-blue-600 rounded-2xl p-6 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-bold opacity-80 uppercase tracking-tighter">Estimated Impact</p>
+            <p className="text-2xl font-black">{estimates.totalImpact}</p>
+          </div>
+        </div>
+        
+        <Button 
+          onClick={() => setLocation("/auth?redirect=booking&address=" + encodeURIComponent(address))}
+          className="bg-white text-blue-600 hover:bg-slate-100 h-12 px-8 rounded-xl font-bold w-full md:w-auto"
+        >
+          Secure this Price <ArrowRight className="ml-2 w-4 h-4" />
+        </Button>
+      </div>
+      
+      <p className="mt-4 text-[10px] text-center text-slate-400 uppercase tracking-widest">
+        Estimates are based on average property data for your zip code. Verified Pro scan required for final quote.
+      </p>
+    </div>
+  );
+}
+3. Why this solves the "Clunky Login" problem:
+Value Provided Immediately: The user feels like they got something (the estimate and the "impact" calculation) without giving up their email first.
+
+Psychology of Sunk Cost: Once they see that they have $2,400 in protected value waiting for them, the barrier to "Sign Up" feels much lower.
+
+Data Persistence: In the onClick for the "Secure this Price" button, we are passing the address in the URL. After they sign up, the app will remember their address and their estimate.
+
+4. Integration into the Landing Page
+We should place this right in the Hero section. Instead of a "Book Now" button, we put the Address Input.
+
+Updated Hero Logic:
+
+"Your Home Intelligence Report starts here." Enter your address to see your space rejuvenation estimate and protected value potential.
+
+🚀 Implementation Steps in Replit:
+Create the File: client/src/components/booking/instant-estimator.tsx.
+
+Update the Landing Page: Place the <InstantEstimator /> component inside the Hero div.
+
+Update the Auth Logic: Ensure your /auth page checks for a redirect and address param so it can send the user straight to the booking screen after they join.

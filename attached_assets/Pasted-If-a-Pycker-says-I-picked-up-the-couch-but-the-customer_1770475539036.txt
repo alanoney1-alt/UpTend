@@ -1,0 +1,196 @@
+If a Pycker says, "I picked up the couch," but the customer says, "They scratched my wall," who wins? Without video, you lose money.
+
+We need to build the "Chain of Custody" Video Tool for the Pycker.
+
+This isn't just about scanning junk; it's about Liability Protection and Asset Verification.
+
+Here is the build for the Pycker Video Manifest.
+
+1. The Strategy: "Scan to Load"
+Instead of just checking a box that says "Couch," the Pycker must record a 5-second video of the item as they load it.
+
+AI Analysis: The AI watches the video and tags: "Beige Sofa, Good Condition, Minor Scratch on Left Arm."
+
+The Repository: This video is saved to the Job ID. If a dispute happens, you have proof.
+
+The Resale: If the item is flagged "Good Condition," it automatically goes into your "Virtual Warehouse" for resale.
+
+2. The Code: client/src/components/hauler/manifest-scanner.tsx
+Action: Create this file. This is the tool the driver uses at the pickup site.
+
+TypeScript
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2, Video, ShieldCheck, AlertTriangle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+export function ManifestScanner({ jobId, onComplete }) {
+  const [isRecording, setIsRecording] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const videoRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  const { toast } = useToast();
+
+  const startScan = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "environment" }, 
+        audio: true // Audio is key for Pycker commentary ("Screen is cracked here")
+      });
+      videoRef.current.srcObject = stream;
+      videoRef.current.play();
+
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+    } catch (err) {
+      toast({ variant: "destructive", title: "Camera Error", description: "Allow camera access to verify items." });
+    }
+  };
+
+  const stopScan = async () => {
+    mediaRecorderRef.current.stop();
+    setIsRecording(false);
+    
+    // Stop stream
+    videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+
+    // Upload & Analyze
+    setUploading(true);
+    const blob = new Blob(chunksRef.current, { type: "video/webm" });
+    const formData = new FormData();
+    formData.append("video", blob);
+    formData.append("jobId", jobId);
+
+    try {
+      // 1. Upload to Cloudinary (Evidence)
+      // 2. Send to AI (Inventory Tagging)
+      const res = await fetch("/api/hauler/scan-manifest", {
+        method: "POST",
+        body: formData,
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        toast({ 
+          title: "Manifest Updated", 
+          description: `Logged ${data.itemCount} items. Liability Protection Active.` 
+        });
+        onComplete(data.inventory);
+      }
+    } catch (err) {
+      toast({ variant: "destructive", title: "Upload Failed", description: "Check connection." });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <Card className="border-blue-500 bg-slate-900 text-white">
+      <div className="bg-blue-600 p-3 flex justify-between items-center">
+        <span className="font-bold flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5" /> Liability & Inventory Scan
+        </span>
+        <span className="text-xs bg-blue-800 px-2 py-1 rounded">REQ-01</span>
+      </div>
+
+      <div className="aspect-video bg-black relative">
+        <video 
+          ref={videoRef} 
+          className="w-full h-full object-cover" 
+          muted 
+          playsInline 
+        />
+        
+        {/* Recording UI */}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+          {!isRecording && !uploading && (
+             <Button 
+               size="lg" 
+               onClick={startScan}
+               className="rounded-full w-16 h-16 bg-red-600 hover:bg-red-700 shadow-lg border-4 border-white"
+             >
+               <Video className="w-6 h-6" />
+             </Button>
+          )}
+
+          {isRecording && (
+             <Button 
+               size="lg" 
+               onClick={stopScan}
+               className="rounded-full w-16 h-16 bg-white hover:bg-slate-200 text-red-600 shadow-lg animate-pulse"
+             >
+               <div className="w-6 h-6 bg-red-600 rounded-sm" />
+             </Button>
+          )}
+        </div>
+
+        {/* Overlay Instructions */}
+        {!isRecording && !uploading && (
+          <div className="absolute top-4 left-4 right-4 bg-black/60 p-3 rounded text-sm text-center">
+            Walk around the items. Call out any pre-existing damage.
+          </div>
+        )}
+
+        {/* Uploading State */}
+        {uploading && (
+          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center">
+            <Loader2 className="w-12 h-12 text-blue-500 animate-spin mb-4" />
+            <p className="font-bold">Securing Evidence...</p>
+            <p className="text-xs text-slate-400">Analyzing content for resale...</p>
+          </div>
+        )}
+      </div>
+      
+      <CardContent className="p-4 bg-slate-800">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-yellow-500 shrink-0" />
+          <p className="text-xs text-slate-300">
+            <strong>Pro Tip:</strong> Narrate the video. "Loading Sofa, left leg is already scratched." This audio protects your rating.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+3. The Backend "Tagger" (server/routes.ts)
+This is the code that receives the video and processes it.
+
+TypeScript
+// api/hauler/scan-manifest
+app.post("/api/hauler/scan-manifest", upload.single('video'), async (req, res) => {
+  // 1. Upload Video to Cloudinary (Permanent Record)
+  // const cloudRes = await cloudinary.uploader.upload(req.file.path, { resource_type: "video" });
+  
+  // 2. MOCK AI ANALYSIS (Replace with OpenAI Call)
+  // We simulate the AI detecting items for the inventory
+  const mockInventory = [
+    { name: "Sofa", condition: "Fair", resale_potential: true },
+    { name: "Bookshelf", condition: "Poor", resale_potential: false }
+  ];
+
+  // 3. Save to Database
+  // await db.insert(job_evidence).values({ jobId, videoUrl: cloudRes.url, tags: mockInventory });
+
+  res.json({ 
+    success: true, 
+    itemCount: 2, 
+    inventory: mockInventory,
+    message: "Evidence Secured" 
+  });
+});
+🧠 Why this is different
+This isn't just a camera.
+
+Audio Narrative: We explicitly tell the Pycker to talk. "Scratch on the left leg." This audio is gold in a dispute.
+
+Repository Building: This video populates your "Virtual Warehouse." You now know exactly what inventory is sitting in your Pycker's truck before they even get back to the yard.
+
+Add this component to the ActiveJobWizard in the "Loading" phase. It forces the Pycker to verify the load before they can swipe "Job Complete."

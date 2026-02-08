@@ -1,0 +1,395 @@
+.quick-match-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.quick-match-header {
+  margin-bottom: 24px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #4CAF50;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 0;
+  margin-bottom: 12px;
+  transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #45a049;
+}
+
+.header-content h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.header-content p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.match-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+.badge-icon {
+  font-size: 18px;
+}
+
+/* Recommended Pyckers */
+.recommended-pyckers {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.pycker-card-detailed {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.pycker-card-detailed:hover {
+  border-color: #4CAF50;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.pycker-card-detailed.selected {
+  border-color: #4CAF50;
+  background: #f1f8f4;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.2);
+}
+
+.best-match-ribbon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #1a1a1a;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.pycker-photo-container {
+  position: relative;
+}
+
+.pycker-photo-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4CAF50;
+}
+
+.verified-checkmark {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #4CAF50;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  border: 3px solid white;
+}
+
+.pycker-info h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.rating-large {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-large .stars {
+  font-size: 18px;
+  color: #ffa726;
+  font-weight: 600;
+}
+
+.rating-large .reviews {
+  font-size: 15px;
+  color: #666;
+}
+
+/* Card Body */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.stat-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.stat-icon {
+  font-size: 24px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 16px;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Badges */
+.badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge-chip {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Bio */
+.bio-section {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #4CAF50;
+}
+
+.bio-section p {
+  margin: 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Why Recommended */
+.why-recommended {
+  background: #fff8e1;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #ffa726;
+}
+
+.why-recommended h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+}
+
+.why-recommended ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.why-recommended li {
+  position: relative;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.why-recommended li::before {
+  content: '✓';
+  position: absolute;
+  left: -20px;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+/* Select Button */
+.select-pycker-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 16px;
+  border: 2px solid #4CAF50;
+  background: white;
+  color: #4CAF50;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select-pycker-btn:hover {
+  background: #4CAF50;
+  color: white;
+}
+
+.select-pycker-btn.selected {
+  background: #4CAF50;
+  color: white;
+}
+
+/* Action Section */
+.action-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.select-prompt {
+  font-size: 15px;
+  color: #666;
+  font-style: italic;
+}
+
+.confirm-btn {
+  width: 100%;
+  max-width: 400px;
+  padding: 16px 32px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.confirm-btn:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+}
+
+.browse-all-btn {
+  padding: 12px 24px;
+  background: white;
+  color: #666;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.browse-all-btn:hover {
+  background: #f8f9fa;
+  border-color: #bbb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .best-match-ribbon {
+    top: 12px;
+    right: 12px;
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .quick-match-container {
+    padding: 16px;
+  }
+
+  .header-content h2 {
+    font-size: 24px;
+  }
+
+  .pycker-card-detailed {
+    padding: 16px;
+  }
+
+  .pycker-photo-large {
+    width: 80px;
+    height: 80px;
+  }
+
+  .pycker-info h3 {
+    font-size: 20px;
+  }
+}

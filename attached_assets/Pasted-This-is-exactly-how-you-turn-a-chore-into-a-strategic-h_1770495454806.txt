@@ -1,0 +1,172 @@
+This is exactly how you turn a "chore" into a "strategic home investment." By showing the Protected Value increase with every service added, the user feels like they are building a shield around their home, not just spending money.
+
+Here is the "Guest Cart & Impact Meter" logic to be built in Replit.
+
+1. The Dynamic Impact Meter (impact-meter.tsx)
+This is a "sticky" component that follows the user as they scroll through the services. It shows their "Home Intelligence Score" and "Protected Value" climbing in real-time.
+
+TypeScript
+import { ShieldCheck, ArrowUpRight, Lock } from "lucide-react";
+
+export function ImpactMeter({ selectedServices }) {
+  // Logic based on Florida property data
+  const calculateTotalValue = () => {
+    let total = 0;
+    if (selectedServices.includes("audit")) total += 8450; // Insurance Shield
+    if (selectedServices.includes("junk")) total += 1200;  // Storm Risk
+    if (selectedServices.includes("gutters")) total += 950; // Water Damage
+    if (selectedServices.includes("wash")) total += 450;   // Siding/Roof Life
+    return total.toLocaleString();
+  };
+
+  return (
+    <div className="sticky top-6 z-50 bg-slate-900 text-white p-6 rounded-[2.5rem] shadow-2xl border border-white/10 mb-8 animate-in fade-in slide-in-from-top-4">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-4">
+          <div className="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-500/40">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Estimated Protected Value</p>
+            <h3 className="text-3xl font-black">${calculateTotalValue()}</h3>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-6">
+          <div className="text-right hidden sm:block">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Home Intelligence Score</p>
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-32 bg-white/10 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-green-400 transition-all duration-700" 
+                  style={{ width: `${(selectedServices.length / 5) * 100}%` }}
+                />
+              </div>
+              <span className="text-xs font-bold text-green-400">{Math.round((selectedServices.length / 5) * 100)}%</span>
+            </div>
+          </div>
+          
+          <button 
+            onClick={() => window.location.href = '/auth'}
+            className="bg-white text-slate-900 px-8 py-3 rounded-xl font-black text-sm flex items-center gap-2 hover:bg-blue-50 transition-colors"
+          >
+            <Lock className="w-4 h-4" /> Secure My Report
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+2. The Integrated "Home Health" Marketplace (service-marketplace.tsx)
+This is where the user "shops" as a guest. Notice how Home Health Audit is first and looks like a "Verified" report, while the others are "Action" items.
+
+TypeScript
+import React, { useState } from "react";
+import { ShieldCheck, Leaf, Waves, Trash2, Truck } from "lucide-react";
+
+export function ServiceMarketplace() {
+  const [cart, setCart] = useState(["audit"]); // Default to Audit for "Home Health First"
+
+  const toggleService = (id) => {
+    setCart(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+  };
+
+  const services = [
+    {
+      id: "audit",
+      name: "Home Health Audit",
+      tagline: "Essential Protection Pillar",
+      price: "$99",
+      impact: "+$8,450 Protected Value",
+      desc: "Full 360° Video Manifest & Insurance Claim Shield. The backbone of your Home Playbook.",
+      icon: <ShieldCheck className="text-blue-500" />,
+      featured: true
+    },
+    {
+      id: "junk",
+      name: "Material Recovery",
+      tagline: "Storm-Risk Mitigation",
+      price: "From $149",
+      impact: "+$1,200 Protected Value",
+      desc: "Remove wind-borne missiles and yard debris. Includes verified ESG tracking and carbon credits.",
+      icon: <Trash2 className="text-green-500" />
+    },
+    {
+      id: "gutters",
+      name: "Gutter Protection",
+      tagline: "Water Management",
+      price: "From $125",
+      impact: "+$950 Protected Value",
+      desc: "Flow testing and debris removal to prevent perimeter flooding and foundation erosion.",
+      icon: <Waves className="text-cyan-500" />
+    }
+  ];
+
+  return (
+    <div className="max-w-7xl mx-auto px-6">
+      <ImpactMeter selectedServices={cart} />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {services.map((s) => (
+          <div 
+            key={s.id}
+            onClick={() => toggleService(s.id)}
+            className={`cursor-pointer group relative p-8 rounded-[2.5rem] border-2 transition-all ${
+              cart.includes(s.id) 
+              ? 'bg-white border-blue-600 shadow-2xl scale-[1.02]' 
+              : 'bg-slate-50 border-transparent hover:border-slate-200'
+            }`}
+          >
+            <div className="flex justify-between items-start mb-6">
+              <div className="p-4 bg-white rounded-2xl shadow-sm group-hover:shadow-md transition-shadow">
+                {s.icon}
+              </div>
+              {cart.includes(s.id) && (
+                <span className="bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">Selected</span>
+              )}
+            </div>
+            
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{s.tagline}</p>
+            <h4 className="text-2xl font-black text-slate-900 mb-2">{s.name}</h4>
+            <p className="text-sm text-slate-500 mb-6 leading-relaxed">{s.desc}</p>
+            
+            <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+               <span className="text-xl font-black text-slate-900">{s.price}</span>
+               <span className="text-xs font-bold text-blue-600 uppercase tracking-tighter">{s.impact}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* FINAL BOOKING ACTION */}
+      <div className="mt-16 text-center pb-24">
+        <button 
+          onClick={() => window.location.href = `/auth?cart=${cart.join(',')}`}
+          className="bg-blue-600 hover:bg-blue-500 text-white h-20 px-16 rounded-[2rem] text-2xl font-black shadow-2xl shadow-blue-500/40 transition-transform active:scale-95"
+        >
+          Confirm & Dispatch Pros
+        </button>
+        <p className="mt-6 text-slate-400 font-bold uppercase text-xs tracking-widest">
+          Secure your {cart.length} service bundle & lock in your Protected Value.
+        </p>
+      </div>
+    </div>
+  );
+}
+3. Address Autocomplete Strategy
+To get the "Instant Address" feel without breaking the build:
+
+In Replit, install the package: npm install @react-google-maps/api
+
+Use the Autocomplete component in your Hero.
+
+As soon as an address is selected, the Service Marketplace above slides in, replacing the Hero.
+
+🧠 Why this works for UpTend:
+Intelligence: The "Impact Meter" is the "Intelligence" pillar in action. It calculates data as the user interacts.
+
+Accessibility: No login required. They are "playing with their home value" like a game.
+
+Frictionless: By moving login to the very end, the user has already committed to the $8,450 value. They won't let a login screen stop them now.
+
+The "Bundle" Effect: Users are likely to click "Material Recovery" or "Gutter Care" once they see the audit has already started their "Shield."

@@ -1,0 +1,58 @@
+We need a dedicated, immutable log of every critical action. This is what the auditor (or Vanta) will look for.
+
+Action for Debugger: Add this to schema.ts.
+
+TypeScript
+// schema.ts
+
+export const auditLogs = pgTable("audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  actorId: varchar("actor_id").notNull(), // User who did the action
+  actorRole: varchar("actor_role").notNull(), // 'admin', 'hauler', 'customer'
+  actionType: varchar("action_type").notNull(), // 'LOGIN', 'VIEW_PII', 'EXPORT_DATA', 'UPDATE_STATUS'
+  resourceTarget: varchar("resource_target").notNull(), // 'job_123', 'pycker_profile_456'
+  ipAddress: varchar("ip_address"), // Critical for security audits
+  userAgent: varchar("user_agent"),
+  metadata: jsonb("metadata"), // Store 'before' and 'after' values here
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+2. The "Middleware Spy" (Automatic Logging)
+Instead of writing log code everywhere, we create a middleware that automatically logs sensitive actions.
+
+Action for Debugger: Create server/middleware/audit.ts.
+
+Logic:
+
+Intercepts every request to /api/admin/*, /api/payments/*, and /api/pycker/files/*.
+
+Logs the userId, method, url, and ip to the auditLogs table.
+
+Why? If a property manager asks, "Who downloaded the tenant list?", you run one SQL query and give them the exact name and time.
+
+3. "Privacy Mode" for the Dashboard
+Property Managers (B2B) panic if they see full credit card info or tenant phone numbers on a screen that anyone can see.
+
+Action for Debugger: Update hauler-dashboard.tsx.
+
+Masking Logic:
+
+Phone Numbers: Display as (407) ***-1234 until the "Call" button is actively clicked (and log that click!).
+
+Gate Codes: Hide behind a "Reveal" button.
+
+Click-to-Log: When a user clicks "Reveal Gate Code," fire an event to auditLogs.
+
+Why? This is "Least Privilege Access." You prove that data is only seen when necessary, not by default.
+
+4. The "Vanta/Drata" Integration Hook
+Eventually, you will use an automated compliance tool like Vanta. They need an endpoint to "read" your security status.
+
+Action for Debugger: Create a read-only endpoint /api/compliance/health.
+
+What it returns:
+
+db_backup_status: "Last backup 1 hour ago" (Prove you won't lose data).
+
+admin_mfa_enabled: true (Prove admins use 2-Factor).
+
+encryption_status: "AES-256" (Prove data is scrambled).

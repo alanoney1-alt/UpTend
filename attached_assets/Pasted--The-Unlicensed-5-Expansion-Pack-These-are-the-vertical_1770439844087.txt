@@ -1,0 +1,123 @@
+🚀 The "Unlicensed 5" Expansion Pack
+These are the verticals you should add right now. They require NO new legal licenses, just the insurance you already have.
+
+Junk Removal (The Anchor).
+
+Small Moves & Labor (Moving a couch upstairs, unloading a U-Haul).
+
+Pressure Washing (Driveways/Patios). High Margin, fits the "Home Score".
+
+Gutter Cleaning (Recurring Revenue). Fits the "Maintenance" aspect.
+
+Demolition (Light) (Shed removal, carpet rip-up). Perfect for junk guys.
+
+🧠 Why this works (The "Labor Arbitrage")
+Your "Junk Guys" already have the truck. They already have the muscles. They often already own a pressure washer.
+
+For the Worker: You aren't just giving them trash jobs. You are filling their schedule with clean, high-paying labor jobs.
+
+For the Customer: "uPYCK is my General Labor Army." I don't call a plumber for a leak, but I call uPYCK for everything else that requires sweat.
+
+🛠️ How to Add This to Replit NOW
+We don't need to rebuild the app. We just need to expand the Menu.
+
+1. Schema Update (shared/schema.ts)
+We add a serviceCategory enum to handle the new types.
+
+TypeScript
+// shared/schema.ts
+
+// The Expanded Menu
+export const serviceTypes = [
+  'junk_removal', 
+  'moving_labor', 
+  'pressure_washing', 
+  'gutter_cleaning', 
+  'light_demolition'
+] as const;
+
+export const serviceRequests = pgTable("service_requests", {
+  // ... existing columns ...
+  serviceType: varchar("service_type").default('junk_removal'), 
+  
+  // Specifics for new verticals
+  squareFootage: integer("square_footage"), // For Pressure Washing
+  storyCount: integer("story_count"), // For Gutters (1 vs 2 story)
+  laborHours: integer("labor_hours"), // For Moving Help
+});
+2. The "Smart Pricing" Engine (server/services/pricing.ts)
+Junk is priced by volume. Pressure washing is priced by square footage. Gutters are priced by linear feet (or story count).
+
+We need a "Polymorphic Pricing" function.
+
+TypeScript
+// server/services/pricing.ts
+
+export function calculateBasePrice(job: any) {
+  switch (job.serviceType) {
+    case 'junk_removal':
+      return calculateVolumePrice(job.items); // Your existing AI logic
+
+    case 'pressure_washing':
+      // Market Rate: ~$0.20 - $0.30 per sq ft
+      const sqFtRate = 25; // $0.25
+      return job.squareFootage * sqFtRate;
+
+    case 'gutter_cleaning':
+      // Flat Rate: $150 (1 story) vs $250 (2 story)
+      return job.storyCount === 1 ? 15000 : 25000;
+
+    case 'moving_labor':
+      // Hourly Rate: $50/hr per mover
+      return job.laborHours * 5000 * 2; // (Assuming 2 movers)
+
+    case 'light_demolition':
+      // Custom AI Quote required (Use Vision Vault)
+      return null; // Triggers "Get Custom Quote" flow
+  }
+}
+3. The "Worker Skills" Filter
+Not every Junk Hauler wants to clean gutters (fear of heights). We need to let workers toggle their capabilities.
+
+Update haulers table:
+
+TypeScript
+export const haulers = pgTable("haulers", {
+  // ...
+  supportedServices: jsonb("supported_services").default(["junk_removal"]), 
+});
+Update HaulerProfile.tsx (Frontend):
+
+Add checkboxes:
+
+[x] I have a Truck (Junk/Moving)
+
+[ ] I have a Pressure Washer (3000+ PSI)
+
+[ ] I have a 20ft Ladder (Gutters)
+
+[ ] I have Sledgehammers (Demo)
+
+📈 The Marketing "Super-Flywheel"
+This is where the Home Health Score explodes.
+
+The Scenario:
+
+Customer books Junk Removal ($150) to clear the garage.
+
+Worker finishes. App prompts worker: "Is the driveway dirty?"
+
+Worker snaps photo.
+
+App Notification to Customer:
+
+"Your garage is clear! 🎉 Observation: Your driveway has oil stains. Offer: We can pressure wash it right now for $99 (usually $150) since the truck is already here. [Yes, Do It]"
+
+This is zero-cost customer acquisition. You just turned a $150 job into a $250 job without spending a dime on ads.
+
+💡 My Advice
+Do it. But restrict it to these 5 "Labor" verticals.
+
+Do NOT add Plumbing/Electrical yet. That brings in "Permits" and "Licensing Boards" and creates friction.
+
+Stick to "Sweat Equity." If it requires a permit, we don't do it. If it requires sweat and a truck, we own it.

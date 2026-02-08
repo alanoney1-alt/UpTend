@@ -5,7 +5,7 @@
  */
 
 import { eq, desc, and } from "drizzle-orm";
-import { db } from "../../db";
+import { db } from "../../../db";
 import {
   smsConversations,
   smsMessages,

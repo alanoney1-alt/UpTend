@@ -1,0 +1,231 @@
+This is the Implementation Blueprint for the uPYCK Home Score.
+
+We are building a Gamified Asset Logic that rewards the user for spending money with you.
+
+📋 Phase 1: The Database Schema
+We need a table to track the score and a table to log the "points history" (so they can see why it went up).
+
+File: shared/schema.ts (Add this to your existing schema file)
+
+TypeScript
+// shared/schema.ts
+
+// 1. The Scorecard (Current State)
+export const propertyScores = pgTable("property_scores", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  propertyId: uuid("property_id").references(() => properties.id), // Link to the Address
+  userId: varchar("user_id").notNull(), // Link to current owner
+  
+  totalScore: integer("total_score").default(500), // Start at "Average" (Like FICO)
+  
+  // Sub-metrics
+  maintenanceHealth: integer("maintenance_health").default(50), // 0-100
+  documentationHealth: integer("documentation_health").default(50), // 0-100
+  safetyHealth: integer("safety_health").default(50), // 0-100
+  
+  lastUpdated: timestamp("last_updated").defaultNow()
+});
+
+// 2. The Ledger (History of Points)
+export const scoreHistory = pgTable("score_history", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  scoreId: uuid("score_id").references(() => propertyScores.id),
+  serviceRequestId: varchar("service_request_id"), // The job that caused the change
+  
+  pointsChanged: integer("points_changed"), // e.g., +25 or -5
+  reason: text("reason"), // e.g., "Verified Junk Removal", "6-Month Inactivity Decay"
+  category: varchar("category"), // 'maintenance', 'safety', 'doc'
+  
+  createdAt: timestamp("created_at").defaultNow()
+});
+🧠 Phase 2: The Scoring Algorithm
+This is the "Brain." It decides how many points a job is worth.
+
+File: server/services/scoringService.ts (Create this new file)
+
+TypeScript
+// server/services/scoringService.ts
+import { db } from "../db";
+import { propertyScores, scoreHistory, properties } from "@shared/schema";
+import { eq } from "drizzle-orm";
+
+const POINT_VALUES = {
+  junk_removal: { points: 15, category: 'safety' },
+  moving: { points: 25, category: 'documentation' }, // Documenting items moved
+  labor_help: { points: 10, category: 'maintenance' },
+  donation_receipt: { points: 30, category: 'documentation' } // High value for tax docs
+};
+
+export async function updateHomeScore(userId: string, jobType: string, jobId: string) {
+  // 1. Get current score (or create if new)
+  let scoreRecord = await db.query.propertyScores.findFirst({
+    where: eq(propertyScores.userId, userId)
+  });
+
+  if (!scoreRecord) {
+    // Initialize new scorecard
+    [scoreRecord] = await db.insert(propertyScores).values({
+      userId,
+      totalScore: 500, // Baseline
+      propertyId: 'placeholder_until_address_linked' // You'll link this to actual property ID
+    }).returning();
+  }
+
+  // 2. Calculate Points
+  const impact = POINT_VALUES[jobType] || { points: 5, category: 'maintenance' };
+  
+  // 3. Update the Total (Cap at 850 like FICO)
+  const newScore = Math.min(850, (scoreRecord.totalScore || 500) + impact.points);
+
+  // 4. Write to DB
+  await db.transaction(async (tx) => {
+    // Update Score
+    await tx.update(propertyScores)
+      .set({ 
+        totalScore: newScore,
+        lastUpdated: new Date()
+      })
+      .where(eq(propertyScores.id, scoreRecord.id));
+
+    // Log History
+    await tx.insert(scoreHistory).values({
+      scoreId: scoreRecord.id,
+      serviceRequestId: jobId,
+      pointsChanged: impact.points,
+      reason: `Completed ${jobType.replace('_', ' ')}`,
+      category: impact.category
+    });
+  });
+
+  return newScore;
+}
+🔌 Phase 3: The Trigger
+We hook this into the job completion route. When a job is marked "Done," the score goes up instantly.
+
+File: server/routes.ts (Update the job completion route)
+
+TypeScript
+// server/routes.ts
+import { updateHomeScore } from "./services/scoringService";
+
+// ... inside your 'complete job' route ...
+app.post("/api/service-requests/:id/complete", async (req, res) => {
+  // ... existing completion logic ...
+
+  // TRIGGER: Update Home Score
+  const job = await storage.getServiceRequest(req.params.id);
+  
+  try {
+    const newScore = await updateHomeScore(
+      job.customerId, 
+      job.serviceType, // 'junk_removal', 'moving', etc.
+      job.id
+    );
+    
+    console.log(`[GAMIFICATION] User ${job.customerId} score increased to ${newScore}`);
+    
+    // Optional: Socket emit to show "Level Up" confetti on frontend
+    // io.to(job.customerId).emit('score_update', { newScore, pointsAdded: 15 });
+    
+  } catch (err) {
+    console.error("Failed to update home score:", err);
+    // Don't fail the request, just log error
+  }
+
+  res.json({ success: true });
+});
+🎨 Phase 4: The Frontend Widget
+This is what the user sees. It looks like a Credit Score gauge.
+
+File: client/src/components/home-score-widget.tsx (Create this new component)
+
+TypeScript
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { ArrowUp, ShieldCheck, FileText, Wrench } from "lucide-react";
+
+export function HomeScoreWidget({ score = 500, history = [] }) {
+  // Color logic based on score
+  const getScoreColor = (s: number) => {
+    if (s >= 750) return "text-green-600";
+    if (s >= 650) return "text-blue-600";
+    return "text-orange-500";
+  };
+
+  return (
+    <Card className="border-2 shadow-sm">
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            uPYCK Property Score™
+          </CardTitle>
+          <ShieldCheck className="h-4 w-4 text-primary" />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="text-center py-4">
+          <div className={`text-5xl font-bold ${getScoreColor(score)}`}>
+            {score}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Good Condition • Top 35% of Orlando
+          </p>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="w-full bg-secondary h-2 rounded-full mb-4 overflow-hidden">
+          <div 
+            className="bg-primary h-full transition-all duration-1000" 
+            style={{ width: `${(score / 850) * 100}%` }}
+          />
+        </div>
+
+        {/* Factors */}
+        <div className="grid grid-cols-3 gap-2 text-center text-xs mt-4">
+          <div className="p-2 bg-muted rounded">
+            <Wrench className="w-4 h-4 mx-auto mb-1 text-blue-500" />
+            <span>Maint.</span>
+          </div>
+          <div className="p-2 bg-muted rounded">
+            <FileText className="w-4 h-4 mx-auto mb-1 text-green-500" />
+            <span>Docs</span>
+          </div>
+          <div className="p-2 bg-muted rounded">
+            <ShieldCheck className="w-4 h-4 mx-auto mb-1 text-purple-500" />
+            <span>Safety</span>
+          </div>
+        </div>
+
+        {/* Recent Impact */}
+        {history.length > 0 && (
+          <div className="mt-4 pt-4 border-t">
+            <p className="text-xs font-semibold mb-2">Recent Impacts</p>
+            {history.slice(0, 2).map((item: any) => (
+              <div key={item.id} className="flex justify-between text-xs py-1">
+                <span>{item.reason}</span>
+                <span className="text-green-600 font-bold flex items-center">
+                  <ArrowUp className="w-3 h-3 mr-1" />
+                  {item.pointsChanged}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        <div className="mt-4">
+          <button className="w-full py-2 bg-primary/10 text-primary text-xs rounded font-bold hover:bg-primary/20 transition">
+            Boost Score (+15 Pts)
+          </button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+🚀 How to Launch It
+Drop the Schema code into shared/schema.ts.
+
+Drop the Service code into server/services/scoringService.ts.
+
+Add the Trigger to server/routes.ts.
+
+Import the Widget onto the Customer Dashboard page.

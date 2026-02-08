@@ -1,0 +1,59 @@
+1. The Logo Component (client/src/components/ui/logo.tsx)I have custom-coded this SVG for you. It uses a gradient and a specific geometric path that looks like a checkmark turning into a rocket.👉 Action: Create this file.TypeScriptimport React from "react";
+
+export function Logo({ className = "w-8 h-8", textClassName = "text-2xl" }: { className?: string, textClassName?: string }) {
+  return (
+    <div className="flex items-center gap-2 group cursor-pointer">
+      
+      {/* THE ICON: The "Kinetic Check" */}
+      <div className={`relative ${className} shrink-0`}>
+        {/* The Glow Effect (Behind) */}
+        <div className="absolute inset-0 bg-cyan-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+        
+        {/* The Container shape */}
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-lg">
+          {/* Background: Deep Tech Blue */}
+          <rect width="100" height="100" rx="24" fill="#0f172a" /> {/* slate-900 */}
+          
+          {/* The Symbol: Checkmark morphing into Up Arrow */}
+          <path 
+            d="M30 55 L45 70 L75 25" 
+            stroke="url(#logo_gradient)" 
+            strokeWidth="14" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          />
+          
+          {/* The "Data Point" Dot (The OS Concept) */}
+          <circle cx="75" cy="25" r="6" fill="#22d3ee" /> {/* cyan-400 */}
+          
+          {/* Gradient Definition */}
+          <defs>
+            <linearGradient id="logo_gradient" x1="30" y1="70" x2="75" y2="25" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#22d3ee" /> {/* cyan-400 */}
+              <stop offset="1" stopColor="#3b82f6" /> {/* blue-500 */}
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      {/* THE TEXT: Hidden on small screens if needed, but critical for Brand */}
+      <div className={`font-bold tracking-tight ${textClassName}`}>
+        <span className="text-slate-900 dark:text-white">u</span>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">PYCK</span>
+      </div>
+    </div>
+  );
+}
+2. How to use it in your Header & FooterNow, replace the old code in your Navbar and Footer with this clean component.In navbar.tsx:TypeScriptimport { Logo } from "@/components/ui/logo";
+
+// Inside the return...
+<Link href="/">
+  <Logo className="w-10 h-10" textClassName="text-2xl hidden md:block" />
+</Link>
+In footer.tsx:TypeScriptimport { Logo } from "@/components/ui/logo";
+
+// Inside the return...
+<div className="mb-4">
+  <Logo className="w-12 h-12" textClassName="text-3xl text-white" />
+</div>
+3. The PWA Icon (For the Phone Home Screen)This is the most important part. To make it look amazing on an iPhone, you need to save the SVG as a PNG image and put it in your public folder.Since I cannot generate a PNG file for you, here is how you "fake it" perfectly:Take a Screenshot: Render the Logo component on a blank white page in your app. Zoom in so it's huge.Crop it: Crop specifically the Square Icon part (ignore the text "uPYCK").Save it: Save as icon-512.png and icon-192.png.Upload: Drag these into your Replit client/public/ folder.Why this design wins on a phone:The Contrast: The bright Cyan checkmark against the dark Slate background pops on both "Dark Mode" and "Light Mode" phones.The Dot: The little dot at the top right of the checkmark implies "Precision" or "Online Status." It triggers the brain's desire to check notifications.No Text: Good app icons never use text. The symbol is the brand.4. The "App Store" PitchWhen you eventually submit this to the App Store, your icon explains the value proposition without words:"I click this button $\rightarrow$ My list gets checked off $\rightarrow$ My home value goes up."Add the logo.tsx file now. It will instantly upgrade the look of the entire site.

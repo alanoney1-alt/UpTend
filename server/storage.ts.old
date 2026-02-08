@@ -1,0 +1,2732 @@
+import { 
+  users, haulerProfiles, serviceRequests, matchAttempts, locationHistory, pricingRates, surgeModifiers, aiEstimates, haulerReviews, haulerPenalties, referrals,
+  businessAccounts, recurringJobs, loyaltyAccounts, loyaltyTransactions, loyaltyRewards,
+  promotions, appPrioritySlots, analyticsEvents, promoCodes, promoCodeUsage, pyckerVehicles, rebateClaims, approvedFacilities, environmentalCertificates, emailVerificationCodes,
+  jobAdjustments, jobCompletions, customerAddresses, pyckerOnlineStatus,
+  type User, type UpsertUser, type CustomerAddress, type InsertCustomerAddress, 
+  type HaulerProfile, type InsertHaulerProfile,
+  type PyckerOnlineStatus, type InsertPyckerOnlineStatus,
+  type ServiceRequest, type InsertServiceRequest,
+  type MatchAttempt, type InsertMatchAttempt,
+  type LocationHistory, type InsertLocationHistory,
+  type PricingRate, type InsertPricingRate,
+  type SurgeModifier, type InsertSurgeModifier,
+  type AiEstimate, type InsertAiEstimate,
+  type HaulerReview, type InsertHaulerReview, type HaulerReviewWithCustomer,
+  type HaulerPenalty, type InsertHaulerPenalty,
+  type Referral, type InsertReferral,
+  type BusinessAccount, type InsertBusinessAccount,
+  type RecurringJob, type InsertRecurringJob,
+  type LoyaltyAccount, type InsertLoyaltyAccount,
+  type LoyaltyTransaction, type InsertLoyaltyTransaction,
+  type LoyaltyReward, type InsertLoyaltyReward,
+  type Promotion, type InsertPromotion,
+  type AppPrioritySlot, type InsertAppPrioritySlot,
+  type AnalyticsEvent, type InsertAnalyticsEvent,
+  type PromoCode, type InsertPromoCode,
+  type PromoCodeUsage, type InsertPromoCodeUsage,
+  type PyckerVehicle, type InsertPyckerVehicle,
+  type RebateClaim, type InsertRebateClaim,
+  type ApprovedFacility, type InsertApprovedFacility,
+  type EnvironmentalCertificate, type InsertEnvironmentalCertificate,
+  type JobAdjustment, type InsertJobAdjustment,
+  type JobCompletion, type InsertJobCompletion,
+  type HaulerWithProfile, type HaulerWithProfileAndVehicle, type ServiceRequestWithDetails,
+  type PriceQuote, type QuoteRequest,
+  esgImpactLogs, disputes, workerSkills, aiSafetyAlerts, bundlingSuggestions, demandHeatmapData, taxCreditClaims,
+  dispatchBatches, disposalRecommendations, complianceReceipts, mileageLogs, esgReports,
+  type EsgImpactLog, type InsertEsgImpactLog,
+  type Dispute, type InsertDispute,
+  type WorkerSkill, type InsertWorkerSkill,
+  type AiSafetyAlert, type InsertAiSafetyAlert,
+  type BundlingSuggestion, type InsertBundlingSuggestion,
+  type DemandHeatmapData, type InsertDemandHeatmapData,
+  type TaxCreditClaim, type InsertTaxCreditClaim,
+  type DispatchBatch, type InsertDispatchBatch,
+  type DisposalRecommendation, type InsertDisposalRecommendation,
+  type ComplianceReceipt, type InsertComplianceReceipt,
+  type MileageLog, type InsertMileageLog,
+  type EsgReport, type InsertEsgReport,
+  platformSustainabilityStats, type PlatformSustainabilityStats,
+  aiTriageReports, dispatchRecommendations, sentimentFlags, conflictShieldReports,
+  type AiTriageReport, type InsertAiTriageReport,
+  type DispatchRecommendation, type InsertDispatchRecommendation,
+  type SentimentFlag, type InsertSentimentFlag,
+  type ConflictShieldReport, type InsertConflictShieldReport,
+  disposalReceipts, type DisposalReceipt, type InsertDisposalReceipt,
+  homeInventory, type HomeInventory, type InsertHomeInventory,
+  auditLogs, type AuditLog, type InsertAuditLog,
+  propertyScores, type PropertyScore, type InsertPropertyScore,
+  scoreHistory, type ScoreHistory, type InsertScoreHistory,
+  consultations, type Consultation, type InsertConsultation,
+  deferredJobs, type DeferredJob, type InsertDeferredJob,
+  haulerCertifications, type HaulerCertification, type InsertHaulerCertification,
+  LOYALTY_TIER_CONFIG, POINTS_PER_DOLLAR, FIRST_JOB_DISCOUNT_AMOUNT, APP_PRIORITY_HOLD_HOURS
+} from "@shared/schema";
+import { db } from "./db";
+import { eq, and, or, desc, sql, inArray } from "drizzle-orm";
+
+export interface IStorage {
+  getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: Partial<User>): Promise<User>;
+  updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
+  updateUserLocation(id: string, lat: number, lng: number): Promise<User | undefined>;
+  getUsers(): Promise<User[]>;
+  
+  getHaulerProfile(userId: string): Promise<HaulerProfile | undefined>;
+  getHaulerProfileById(id: string): Promise<HaulerProfile | undefined>;
+  getAllHaulerProfiles(): Promise<HaulerProfile[]>;
+  createHaulerProfile(profile: InsertHaulerProfile): Promise<HaulerProfile>;
+  updateHaulerProfile(id: string, updates: Partial<HaulerProfile>): Promise<HaulerProfile | undefined>;
+  getAvailableHaulers(): Promise<HaulerWithProfile[]>;
+  getAvailableHaulersWithVehicles(): Promise<HaulerWithProfileAndVehicle[]>;
+  getAllHaulers(): Promise<HaulerWithProfile[]>;
+  
+  getServiceRequest(id: string): Promise<ServiceRequest | undefined>;
+  getServiceRequestWithDetails(id: string): Promise<ServiceRequestWithDetails | undefined>;
+  getServiceRequestsByCustomer(customerId: string): Promise<ServiceRequest[]>;
+  getServiceRequestsByHauler(haulerId: string): Promise<ServiceRequest[]>;
+  getPendingRequests(): Promise<ServiceRequestWithDetails[]>;
+  getActiveJobsForHauler(haulerId: string): Promise<ServiceRequest[]>;
+  createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest>;
+  updateServiceRequest(id: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined>;
+  acceptServiceRequest(id: string, haulerId: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined>;
+  
+  getMatchAttempt(id: string): Promise<MatchAttempt | undefined>;
+  getMatchAttemptsByRequest(requestId: string): Promise<MatchAttempt[]>;
+  getMatchAttemptsByHauler(haulerId: string): Promise<MatchAttempt[]>;
+  getPendingMatchesForHauler(haulerId: string): Promise<(MatchAttempt & { request: ServiceRequest })[]>;
+  createMatchAttempt(match: InsertMatchAttempt): Promise<MatchAttempt>;
+  updateMatchAttempt(id: string, updates: Partial<MatchAttempt>): Promise<MatchAttempt | undefined>;
+  
+  addLocationHistory(location: InsertLocationHistory): Promise<LocationHistory>;
+  getLocationHistory(userId: string, jobId?: string): Promise<LocationHistory[]>;
+  getLatestLocation(userId: string): Promise<LocationHistory | undefined>;
+  
+  getPricingRate(serviceType: string, loadSize: string, vehicleType?: string): Promise<PricingRate | undefined>;
+  getAllPricingRates(): Promise<PricingRate[]>;
+  createPricingRate(rate: InsertPricingRate): Promise<PricingRate>;
+  
+  getCurrentSurgeMultiplier(): Promise<number>;
+  getSurgeModifiers(): Promise<SurgeModifier[]>;
+  createSurgeModifier(modifier: InsertSurgeModifier): Promise<SurgeModifier>;
+  updateSurgeModifier(id: string, updates: Partial<SurgeModifier>): Promise<SurgeModifier | undefined>;
+  deleteSurgeModifier(id: string): Promise<void>;
+  getHaulerActiveJobs(haulerId: string): Promise<ServiceRequest[]>;
+  
+  calculateQuote(request: QuoteRequest): Promise<PriceQuote>;
+  
+  createAiEstimate(estimate: InsertAiEstimate): Promise<AiEstimate>;
+  getAiEstimateByRequest(requestId: string): Promise<AiEstimate | undefined>;
+  
+  createReview(review: InsertHaulerReview): Promise<HaulerReview>;
+  getReviewsByHauler(haulerId: string): Promise<HaulerReviewWithCustomer[]>;
+  getReviewByServiceRequest(serviceRequestId: string): Promise<HaulerReview | undefined>;
+  updateHaulerRating(haulerId: string): Promise<void>;
+  
+  getAvailableHaulersByServiceType(serviceType: string): Promise<HaulerWithProfile[]>;
+  searchHaulers(filters: {
+    serviceType?: string;
+    capability?: string;
+    laborOnly?: boolean;
+    availableOnly?: boolean;
+  }): Promise<{ matches: HaulerWithProfile[]; suggestions: HaulerWithProfile[] }>;
+  
+  createHaulerPenalty(penalty: InsertHaulerPenalty): Promise<HaulerPenalty>;
+  getPenaltiesByHauler(haulerId: string): Promise<HaulerPenalty[]>;
+  updateHaulerPenalty(id: string, updates: Partial<HaulerPenalty>): Promise<HaulerPenalty | undefined>;
+  
+  createReferral(referral: InsertReferral): Promise<Referral>;
+  getReferralByCode(code: string): Promise<Referral | undefined>;
+  getReferralsByReferrer(referrerId: string): Promise<Referral[]>;
+  updateReferral(id: string, updates: Partial<Referral>): Promise<Referral | undefined>;
+  
+  createBusinessAccount(account: InsertBusinessAccount): Promise<BusinessAccount>;
+  getBusinessAccountByUser(userId: string): Promise<BusinessAccount | undefined>;
+  updateBusinessAccount(id: string, updates: Partial<BusinessAccount>): Promise<BusinessAccount | undefined>;
+  
+  createRecurringJob(job: InsertRecurringJob): Promise<RecurringJob>;
+  getRecurringJobsByBusinessAccount(businessAccountId: string): Promise<RecurringJob[]>;
+  updateRecurringJob(id: string, updates: Partial<RecurringJob>): Promise<RecurringJob | undefined>;
+  getActiveRecurringJobs(): Promise<RecurringJob[]>;
+  
+  getLoyaltyAccount(userId: string): Promise<LoyaltyAccount | undefined>;
+  createLoyaltyAccount(account: InsertLoyaltyAccount): Promise<LoyaltyAccount>;
+  updateLoyaltyAccount(id: string, updates: Partial<LoyaltyAccount>): Promise<LoyaltyAccount | undefined>;
+  addLoyaltyPoints(userId: string, points: number, description: string, serviceRequestId?: string): Promise<LoyaltyTransaction>;
+  redeemLoyaltyPoints(userId: string, points: number, description: string): Promise<LoyaltyTransaction | undefined>;
+  getLoyaltyTransactions(userId: string): Promise<LoyaltyTransaction[]>;
+  
+  getLoyaltyRewards(): Promise<LoyaltyReward[]>;
+  getLoyaltyReward(id: string): Promise<LoyaltyReward | undefined>;
+  createLoyaltyReward(reward: InsertLoyaltyReward): Promise<LoyaltyReward>;
+  
+  getSmartMatchedHaulers(request: {
+    serviceType: string;
+    loadSize: string;
+    pickupLat?: number;
+    pickupLng?: number;
+    isPriority?: boolean;
+    preferVerifiedPro?: boolean;
+  }): Promise<HaulerWithProfile[]>;
+  
+  // Promotions
+  hasUsedFirstJobDiscount(userId: string): Promise<boolean>;
+  createPromotion(promotion: InsertPromotion): Promise<Promotion>;
+  getPromotionsByUser(userId: string): Promise<Promotion[]>;
+  
+  // Green Guarantee Approved Facilities
+  getApprovedFacilities(): Promise<ApprovedFacility[]>;
+  getApprovedFacility(id: string): Promise<ApprovedFacility | undefined>;
+  findFacilityByName(name: string): Promise<ApprovedFacility | undefined>;
+  createApprovedFacility(facility: InsertApprovedFacility): Promise<ApprovedFacility>;
+  updateApprovedFacility(id: string, updates: Partial<ApprovedFacility>): Promise<ApprovedFacility | undefined>;
+  
+  // Green Guarantee Rebate Claims
+  createRebateClaim(claim: InsertRebateClaim): Promise<RebateClaim>;
+  getRebateClaimsByHauler(haulerId: string): Promise<RebateClaim[]>;
+  getRebateClaimsByStatus(status: string): Promise<RebateClaim[]>;
+  getRebateClaim(id: string): Promise<RebateClaim | undefined>;
+  updateRebateClaim(id: string, updates: Partial<RebateClaim>): Promise<RebateClaim | undefined>;
+  updateRebateClaimAIValidation(id: string, updates: { 
+    aiValidationStatus: string; 
+    aiValidationResult?: string; 
+    aiValidationNotes?: string; 
+    aiValidatedAt: string; 
+    aiConfidenceScore?: number; 
+  }): Promise<RebateClaim | undefined>;
+  approveRebateClaim(id: string, reviewerId: string): Promise<RebateClaim | undefined>;
+  denyRebateClaim(id: string, reviewerId: string, reason: string): Promise<RebateClaim | undefined>;
+  addRebateToBalance(haulerId: string, amount: number): Promise<HaulerProfile | undefined>;
+  validateRebateClaim(claim: Partial<InsertRebateClaim>, jobCompletedAt: string, estimatedWeight: number): Promise<{ flags: string[]; withinVariance: boolean; within48Hours: boolean; facilityApproved: boolean; isDuplicate: boolean }>;
+  
+  // App priority slots
+  isSlotAvailableForApp(slotDate: string, slotTime: string): Promise<boolean>;
+  reserveSlotForApp(slotDate: string, slotTime: string, userId: string): Promise<AppPrioritySlot>;
+  getAvailablePrioritySlots(date: string): Promise<AppPrioritySlot[]>;
+  
+  // Check if user is first-time customer
+  isFirstTimeCustomer(userId: string): Promise<boolean>;
+  
+  // Calculate quote with promotions
+  calculateQuoteWithPromotions(request: QuoteRequest & { userId?: string; bookingSource?: string }): Promise<PriceQuote & { firstJobDiscount?: number; hasPriorityAccess?: boolean }>;
+  
+  // Pycker vehicles
+  createPyckerVehicle(vehicle: InsertPyckerVehicle): Promise<PyckerVehicle>;
+  getPyckerVehicles(haulerProfileId: string): Promise<PyckerVehicle[]>;
+  getPyckerVehicle(id: string): Promise<PyckerVehicle | undefined>;
+  updatePyckerVehicle(id: string, updates: Partial<PyckerVehicle>): Promise<PyckerVehicle | undefined>;
+  deletePyckerVehicle(id: string): Promise<boolean>;
+  
+  // Environmental Certificates
+  createEnvironmentalCertificate(certificate: InsertEnvironmentalCertificate): Promise<EnvironmentalCertificate>;
+  getEnvironmentalCertificate(id: string): Promise<EnvironmentalCertificate | undefined>;
+  getEnvironmentalCertificateByServiceRequest(serviceRequestId: string): Promise<EnvironmentalCertificate | undefined>;
+  generateEnvironmentalCertificate(serviceRequestId: string): Promise<EnvironmentalCertificate>;
+  
+  // Email verification codes
+  createEmailVerificationCode(email: string, code: string, expiresAt: Date): Promise<void>;
+  getEmailVerificationCode(email: string): Promise<{ code: string; expiresAt: Date; verified: boolean } | undefined>;
+  markEmailVerified(email: string): Promise<void>;
+  deleteEmailVerificationCode(email: string): Promise<void>;
+  
+  // Job Adjustments - for extra items/charges added during a job
+  createJobAdjustment(adjustment: InsertJobAdjustment): Promise<JobAdjustment>;
+  getJobAdjustmentsByRequest(serviceRequestId: string): Promise<JobAdjustment[]>;
+  updateJobAdjustment(id: string, updates: Partial<JobAdjustment>): Promise<JobAdjustment | undefined>;
+  approveJobAdjustment(id: string): Promise<JobAdjustment | undefined>;
+  declineJobAdjustment(id: string): Promise<JobAdjustment | undefined>;
+  
+  // Job Completions - verification and payment capture
+  createJobCompletion(completion: InsertJobCompletion): Promise<JobCompletion>;
+  getJobCompletion(serviceRequestId: string): Promise<JobCompletion | undefined>;
+  updateJobCompletion(id: string, updates: Partial<JobCompletion>): Promise<JobCompletion | undefined>;
+  getAllJobsWithDetails(): Promise<any[]>;
+  
+  // Customer Address Management
+  getCustomerAddresses(userId: string): Promise<CustomerAddress[]>;
+  createCustomerAddress(data: InsertCustomerAddress): Promise<CustomerAddress>;
+  updateCustomerAddress(id: string, userId: string, updates: Partial<CustomerAddress>): Promise<CustomerAddress | undefined>;
+  deleteCustomerAddress(id: string, userId: string): Promise<void>;
+  setDefaultCustomerAddress(id: string, userId: string): Promise<void>;
+  
+  // PYCKER Online Status & GPS Tracking
+  getPyckerOnlineStatus(pyckerId: string): Promise<PyckerOnlineStatus | undefined>;
+  updatePyckerLocation(data: InsertPyckerOnlineStatus): Promise<PyckerOnlineStatus>;
+  setPyckerOffline(pyckerId: string): Promise<void>;
+  getOnlinePyckersNearby(lat: number, lng: number, radiusMiles: number): Promise<(PyckerOnlineStatus & { haulerProfile: HaulerProfile; distance: number })[]>;
+  cleanupExpiredPyckerLocations(): Promise<number>;
+  
+  // ESG Impact Logs
+  createEsgImpactLog(log: InsertEsgImpactLog): Promise<EsgImpactLog>;
+  getEsgImpactLogByRequest(serviceRequestId: string): Promise<EsgImpactLog | undefined>;
+  getEsgImpactLogsByCustomer(customerId: string): Promise<EsgImpactLog[]>;
+  getEsgImpactLogsByHauler(haulerId: string): Promise<EsgImpactLog[]>;
+  getEsgSummary(): Promise<{ totalJobs: number; totalCarbonLbs: number; totalDivertedLbs: number; avgDiversionRate: number }>;
+
+  // Disputes
+  createDispute(dispute: InsertDispute): Promise<Dispute>;
+  getDispute(id: string): Promise<Dispute | undefined>;
+  getDisputesByCustomer(customerId: string): Promise<Dispute[]>;
+  getDisputesByStatus(status: string): Promise<Dispute[]>;
+  updateDispute(id: string, updates: Partial<Dispute>): Promise<Dispute | undefined>;
+
+  // Worker Skills
+  getWorkerSkills(haulerProfileId: string): Promise<WorkerSkill[]>;
+  upsertWorkerSkill(skill: InsertWorkerSkill): Promise<WorkerSkill>;
+
+  // AI Safety Alerts
+  createSafetyAlert(alert: InsertAiSafetyAlert): Promise<AiSafetyAlert>;
+  getSafetyAlertsByRequest(serviceRequestId: string): Promise<AiSafetyAlert[]>;
+  acknowledgeSafetyAlert(id: string): Promise<AiSafetyAlert | undefined>;
+
+  // Bundling Suggestions
+  createBundlingSuggestion(suggestion: InsertBundlingSuggestion): Promise<BundlingSuggestion>;
+  getBundlingSuggestionsByRequest(serviceRequestId: string): Promise<BundlingSuggestion[]>;
+  updateBundlingSuggestion(id: string, updates: Partial<BundlingSuggestion>): Promise<BundlingSuggestion | undefined>;
+
+  // Demand Heatmap
+  getDemandHeatmapData(dayOfWeek: number, hourOfDay: number): Promise<DemandHeatmapData[]>;
+  upsertDemandHeatmapData(data: InsertDemandHeatmapData): Promise<DemandHeatmapData>;
+
+  // Carbon-Intelligent Dispatch Batches
+  createDispatchBatch(batch: InsertDispatchBatch): Promise<DispatchBatch>;
+  getDispatchBatchesByDate(date: string): Promise<DispatchBatch[]>;
+  getDispatchBatchesByHauler(haulerId: string): Promise<DispatchBatch[]>;
+  updateDispatchBatch(id: string, updates: Partial<DispatchBatch>): Promise<DispatchBatch | undefined>;
+
+  // Circular Economy - Disposal Recommendations
+  createDisposalRecommendation(rec: InsertDisposalRecommendation): Promise<DisposalRecommendation>;
+  getDisposalRecommendationsByRequest(serviceRequestId: string): Promise<DisposalRecommendation[]>;
+  updateDisposalRecommendation(id: string, updates: Partial<DisposalRecommendation>): Promise<DisposalRecommendation | undefined>;
+
+  // Compliance Vault - Receipts
+  createComplianceReceipt(receipt: InsertComplianceReceipt): Promise<ComplianceReceipt>;
+  getComplianceReceiptsByHauler(haulerId: string): Promise<ComplianceReceipt[]>;
+  getComplianceReceiptSummary(haulerId: string, year: number): Promise<{ totalExpenses: number; totalDeductible: number; byCategory: Record<string, number> }>;
+
+  // Compliance Vault - Mileage
+  createMileageLog(log: InsertMileageLog): Promise<MileageLog>;
+  getMileageLogsByHauler(haulerId: string): Promise<MileageLog[]>;
+  getMileageSummary(haulerId: string, year: number): Promise<{ totalMiles: number; businessMiles: number; totalDeduction: number }>;
+
+  // B2B ESG Reports
+  createEsgReport(report: InsertEsgReport): Promise<EsgReport>;
+  getEsgReportsByBusiness(businessAccountId: string): Promise<EsgReport[]>;
+  getEsgReport(id: string): Promise<EsgReport | undefined>;
+
+  // Platform Sustainability Stats
+  getPlatformSustainabilityStats(): Promise<PlatformSustainabilityStats | undefined>;
+  upsertPlatformSustainabilityStats(stats: Partial<PlatformSustainabilityStats>): Promise<PlatformSustainabilityStats>;
+
+  // Agentic Brain - AI Triage
+  createAiTriageReport(report: InsertAiTriageReport): Promise<AiTriageReport>;
+  getAiTriageReport(id: string): Promise<AiTriageReport | undefined>;
+  getAiTriageReportByRequest(serviceRequestId: string): Promise<AiTriageReport | undefined>;
+  getRecentAiTriageReports(limit?: number): Promise<AiTriageReport[]>;
+
+  // Agentic Brain - Smart Dispatch Recommendations
+  createDispatchRecommendation(rec: InsertDispatchRecommendation): Promise<DispatchRecommendation>;
+  getDispatchRecommendation(id: string): Promise<DispatchRecommendation | undefined>;
+  getDispatchRecommendationByRequest(serviceRequestId: string): Promise<DispatchRecommendation | undefined>;
+
+  // Agentic Brain - Revenue Protector (Sentiment)
+  createSentimentFlag(flag: InsertSentimentFlag): Promise<SentimentFlag>;
+  getSentimentFlag(id: string): Promise<SentimentFlag | undefined>;
+  getRecentSentimentFlags(limit?: number): Promise<SentimentFlag[]>;
+  getSentimentFlagsByRisk(riskLevel: string): Promise<SentimentFlag[]>;
+  updateSentimentFlag(id: string, updates: Partial<SentimentFlag>): Promise<SentimentFlag | undefined>;
+
+  // Agentic Brain - Conflict Shield
+  createConflictShieldReport(report: InsertConflictShieldReport): Promise<ConflictShieldReport>;
+  getConflictShieldReport(id: string): Promise<ConflictShieldReport | undefined>;
+  getConflictShieldReportByRequest(serviceRequestId: string): Promise<ConflictShieldReport | undefined>;
+  getRecentConflictShieldReports(limit?: number): Promise<ConflictShieldReport[]>;
+
+  // Home Inventory (Insurance Vault + Reseller)
+  createHomeInventoryItem(item: InsertHomeInventory): Promise<HomeInventory>;
+  getHomeInventoryByCustomer(customerId: string): Promise<HomeInventory[]>;
+  getHomeInventoryByServiceRequest(serviceRequestId: string): Promise<HomeInventory[]>;
+  updateHomeInventoryItem(id: string, updates: Partial<HomeInventory>): Promise<HomeInventory | undefined>;
+
+  // Audit Logs
+  createAuditLog(log: InsertAuditLog): Promise<AuditLog>;
+  getAuditLogs(limit?: number): Promise<AuditLog[]>;
+
+  // Property Scores (Gamified Home Score)
+  getPropertyScore(userId: string): Promise<PropertyScore | undefined>;
+  getScoreHistory(scoreId: string, limit?: number): Promise<ScoreHistory[]>;
+
+  // Consultations ($49 Commitment Credit)
+  createConsultation(consultation: InsertConsultation): Promise<Consultation>;
+  getConsultation(id: string): Promise<Consultation | undefined>;
+  getConsultationsByCustomer(customerId: string): Promise<Consultation[]>;
+  updateConsultation(id: string, updates: Partial<Consultation>): Promise<Consultation | undefined>;
+  getUnusedConsultationCredit(customerId: string): Promise<Consultation | undefined>;
+
+  // Deferred Jobs (Nudge Engine)
+  createDeferredJob(job: InsertDeferredJob): Promise<DeferredJob>;
+  getDeferredJobsByUser(userId: string): Promise<DeferredJob[]>;
+  updateDeferredJob(id: string, updates: Partial<DeferredJob>): Promise<DeferredJob | undefined>;
+
+  // Hauler Certifications
+  createHaulerCertification(cert: InsertHaulerCertification): Promise<HaulerCertification>;
+  getHaulerCertifications(haulerId: string): Promise<HaulerCertification[]>;
+  getHaulerCareerStats(haulerId: string): Promise<any>;
+
+  seedInitialData(): Promise<void>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(userData: Partial<User>): Promise<User> {
+    const [user] = await db.insert(users).values(userData as any).returning();
+    return user;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    const [user] = await db.update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async updateUserLocation(id: string, lat: number, lng: number): Promise<User | undefined> {
+    const [user] = await db.update(users)
+      .set({ currentLat: lat, currentLng: lng, lastLocationUpdate: new Date().toISOString() })
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async getUsers(): Promise<User[]> {
+    return db.select().from(users);
+  }
+
+  async getHaulerProfile(userId: string): Promise<HaulerProfile | undefined> {
+    const [profile] = await db.select().from(haulerProfiles).where(eq(haulerProfiles.userId, userId));
+    return profile || undefined;
+  }
+
+  async getHaulerProfileById(id: string): Promise<HaulerProfile | undefined> {
+    const [profile] = await db.select().from(haulerProfiles).where(eq(haulerProfiles.id, id));
+    return profile || undefined;
+  }
+
+  async getAllHaulerProfiles(): Promise<HaulerProfile[]> {
+    return db.select().from(haulerProfiles);
+  }
+
+  async createHaulerProfile(profile: InsertHaulerProfile): Promise<HaulerProfile> {
+    const [newProfile] = await db.insert(haulerProfiles).values(profile).returning();
+    return newProfile;
+  }
+
+  async updateHaulerProfile(id: string, updates: Partial<HaulerProfile>): Promise<HaulerProfile | undefined> {
+    const [profile] = await db.update(haulerProfiles)
+      .set(updates)
+      .where(eq(haulerProfiles.id, id))
+      .returning();
+    return profile || undefined;
+  }
+
+  async getAvailableHaulers(): Promise<HaulerWithProfile[]> {
+    const profiles = await db.select().from(haulerProfiles).where(eq(haulerProfiles.isAvailable, true));
+    const results: HaulerWithProfile[] = [];
+    for (const profile of profiles) {
+      const user = await this.getUser(profile.userId);
+      if (user) {
+        results.push({ ...user, profile });
+      }
+    }
+    return results;
+  }
+
+  async getAvailableHaulersWithVehicles(): Promise<HaulerWithProfileAndVehicle[]> {
+    const profiles = await db.select().from(haulerProfiles).where(eq(haulerProfiles.isAvailable, true));
+    const results: HaulerWithProfileAndVehicle[] = [];
+    for (const profile of profiles) {
+      const user = await this.getUser(profile.userId);
+      if (user) {
+        let activeVehicle: PyckerVehicle | undefined = undefined;
+        if (profile.activeVehicleId) {
+          const [vehicle] = await db.select().from(pyckerVehicles).where(eq(pyckerVehicles.id, profile.activeVehicleId));
+          activeVehicle = vehicle || undefined;
+        }
+        results.push({ ...user, profile, activeVehicle });
+      }
+    }
+    return results;
+  }
+
+  async checkInHauler(profileId: string, lat?: number, lng?: number): Promise<HaulerProfile | undefined> {
+    const [profile] = await db.update(haulerProfiles)
+      .set({
+        isAvailable: true,
+        lastCheckedIn: new Date().toISOString(),
+        ...(lat !== undefined && { currentLat: lat }),
+        ...(lng !== undefined && { currentLng: lng }),
+      })
+      .where(eq(haulerProfiles.id, profileId))
+      .returning();
+    return profile || undefined;
+  }
+
+  async checkOutHauler(profileId: string): Promise<HaulerProfile | undefined> {
+    const [profile] = await db.update(haulerProfiles)
+      .set({ isAvailable: false })
+      .where(eq(haulerProfiles.id, profileId))
+      .returning();
+    return profile || undefined;
+  }
+
+  async getAllHaulers(): Promise<HaulerWithProfile[]> {
+    const profiles = await db.select().from(haulerProfiles);
+    const results: HaulerWithProfile[] = [];
+    for (const profile of profiles) {
+      const user = await this.getUser(profile.userId);
+      if (user) {
+        results.push({ ...user, profile });
+      }
+    }
+    return results;
+  }
+
+  async getServiceRequest(id: string): Promise<ServiceRequest | undefined> {
+    const [request] = await db.select().from(serviceRequests).where(eq(serviceRequests.id, id));
+    return request || undefined;
+  }
+
+  async getServiceRequestWithDetails(id: string): Promise<ServiceRequestWithDetails | undefined> {
+    const request = await this.getServiceRequest(id);
+    if (!request) return undefined;
+    
+    const customer = await this.getUser(request.customerId);
+    const matches = await this.getMatchAttemptsByRequest(id);
+    
+    let hauler: HaulerWithProfileAndVehicle | undefined;
+    if (request.assignedHaulerId) {
+      const haulerUser = await this.getUser(request.assignedHaulerId);
+      const haulerProfile = await this.getHaulerProfile(request.assignedHaulerId);
+      if (haulerUser && haulerProfile) {
+        let activeVehicle: PyckerVehicle | undefined;
+        if (haulerProfile.activeVehicleId) {
+          activeVehicle = await this.getPyckerVehicle(haulerProfile.activeVehicleId);
+        }
+        hauler = { ...haulerUser, profile: haulerProfile, activeVehicle };
+      }
+    }
+    
+    return { ...request, customer, hauler, matches };
+  }
+
+  async getServiceRequestsByCustomer(customerId: string): Promise<ServiceRequest[]> {
+    return db.select().from(serviceRequests).where(eq(serviceRequests.customerId, customerId));
+  }
+
+  async getServiceRequestsByHauler(haulerId: string): Promise<ServiceRequest[]> {
+    return db.select().from(serviceRequests).where(eq(serviceRequests.assignedHaulerId, haulerId));
+  }
+
+  async getPendingRequests(): Promise<ServiceRequestWithDetails[]> {
+    const requests = await db.select().from(serviceRequests)
+      .where(or(eq(serviceRequests.status, "requested"), eq(serviceRequests.status, "matching")));
+    
+    const results: ServiceRequestWithDetails[] = [];
+    for (const r of requests) {
+      const customer = await this.getUser(r.customerId);
+      const matches = await this.getMatchAttemptsByRequest(r.id);
+      results.push({ ...r, customer, matches });
+    }
+    return results;
+  }
+
+  async getActiveJobsForHauler(haulerId: string): Promise<ServiceRequest[]> {
+    return db.select().from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.assignedHaulerId, haulerId),
+        or(eq(serviceRequests.status, "assigned"), eq(serviceRequests.status, "in_progress"))
+      ));
+  }
+
+  async createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest> {
+    const [newRequest] = await db.insert(serviceRequests).values(request).returning();
+    return newRequest;
+  }
+
+  async updateServiceRequest(id: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined> {
+    const [request] = await db.update(serviceRequests)
+      .set(updates)
+      .where(eq(serviceRequests.id, id))
+      .returning();
+    return request || undefined;
+  }
+
+  async acceptServiceRequest(id: string, haulerId: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined> {
+    return await db.transaction(async (tx) => {
+      const [locked] = await tx
+        .select()
+        .from(serviceRequests)
+        .where(eq(serviceRequests.id, id))
+        .for("update");
+
+      if (!locked) return undefined;
+      if (locked.acceptedAt) return undefined;
+      if (locked.cancelledAt) return undefined;
+      if (!["pending", "requested", "matched", "matching"].includes(locked.status)) return undefined;
+
+      const [updated] = await tx
+        .update(serviceRequests)
+        .set(updates)
+        .where(eq(serviceRequests.id, id))
+        .returning();
+
+      return updated || undefined;
+    });
+  }
+
+  async getMatchAttempt(id: string): Promise<MatchAttempt | undefined> {
+    const [match] = await db.select().from(matchAttempts).where(eq(matchAttempts.id, id));
+    return match || undefined;
+  }
+
+  async getMatchAttemptsByRequest(requestId: string): Promise<MatchAttempt[]> {
+    return db.select().from(matchAttempts).where(eq(matchAttempts.requestId, requestId));
+  }
+
+  async getMatchAttemptsByHauler(haulerId: string): Promise<MatchAttempt[]> {
+    return db.select().from(matchAttempts).where(eq(matchAttempts.haulerId, haulerId));
+  }
+
+  async getPendingMatchesForHauler(haulerId: string): Promise<(MatchAttempt & { request: ServiceRequest })[]> {
+    const matches = await db.select().from(matchAttempts)
+      .where(and(eq(matchAttempts.haulerId, haulerId), eq(matchAttempts.status, "pending")));
+    
+    const results: (MatchAttempt & { request: ServiceRequest })[] = [];
+    for (const m of matches) {
+      const request = await this.getServiceRequest(m.requestId);
+      if (request) {
+        results.push({ ...m, request });
+      }
+    }
+    return results;
+  }
+
+  async createMatchAttempt(match: InsertMatchAttempt): Promise<MatchAttempt> {
+    const [newMatch] = await db.insert(matchAttempts).values(match).returning();
+    return newMatch;
+  }
+
+  async updateMatchAttempt(id: string, updates: Partial<MatchAttempt>): Promise<MatchAttempt | undefined> {
+    const [match] = await db.update(matchAttempts)
+      .set(updates)
+      .where(eq(matchAttempts.id, id))
+      .returning();
+    return match || undefined;
+  }
+
+  async addLocationHistory(location: InsertLocationHistory): Promise<LocationHistory> {
+    const [newLocation] = await db.insert(locationHistory).values(location).returning();
+    
+    if (location.userId) {
+      await this.updateUserLocation(location.userId, location.lat, location.lng);
+    }
+    
+    return newLocation;
+  }
+
+  async getLocationHistory(userId: string, jobId?: string): Promise<LocationHistory[]> {
+    if (jobId) {
+      return db.select().from(locationHistory)
+        .where(and(eq(locationHistory.userId, userId), eq(locationHistory.jobId, jobId)))
+        .orderBy(desc(locationHistory.recordedAt));
+    }
+    return db.select().from(locationHistory)
+      .where(eq(locationHistory.userId, userId))
+      .orderBy(desc(locationHistory.recordedAt));
+  }
+
+  async getLatestLocation(userId: string): Promise<LocationHistory | undefined> {
+    const [location] = await db.select().from(locationHistory)
+      .where(eq(locationHistory.userId, userId))
+      .orderBy(desc(locationHistory.recordedAt))
+      .limit(1);
+    return location || undefined;
+  }
+
+  async getPricingRate(serviceType: string, loadSize: string, vehicleType?: string): Promise<PricingRate | undefined> {
+    let query = db.select().from(pricingRates)
+      .where(and(
+        eq(pricingRates.serviceType, serviceType),
+        eq(pricingRates.loadSize, loadSize),
+        eq(pricingRates.isActive, true)
+      ));
+    
+    const [rate] = await query;
+    return rate || undefined;
+  }
+
+  async getAllPricingRates(): Promise<PricingRate[]> {
+    return db.select().from(pricingRates).where(eq(pricingRates.isActive, true));
+  }
+
+  async createPricingRate(rate: InsertPricingRate): Promise<PricingRate> {
+    const [newRate] = await db.insert(pricingRates).values(rate).returning();
+    return newRate;
+  }
+
+  async getCurrentSurgeMultiplier(): Promise<number> {
+    // Surge pricing is disabled - always return 1.0 for consistent, transparent pricing
+    return 1.0;
+  }
+
+  async getSurgeModifiers(): Promise<SurgeModifier[]> {
+    return db.select().from(surgeModifiers).where(eq(surgeModifiers.isActive, true));
+  }
+
+  async createSurgeModifier(modifier: InsertSurgeModifier): Promise<SurgeModifier> {
+    const [newModifier] = await db.insert(surgeModifiers).values(modifier).returning();
+    return newModifier;
+  }
+
+  async updateSurgeModifier(id: string, updates: Partial<SurgeModifier>): Promise<SurgeModifier | undefined> {
+    const [updated] = await db.update(surgeModifiers).set(updates).where(eq(surgeModifiers.id, id)).returning();
+    return updated;
+  }
+
+  async deleteSurgeModifier(id: string): Promise<void> {
+    await db.delete(surgeModifiers).where(eq(surgeModifiers.id, id));
+  }
+
+  async getHaulerActiveJobs(haulerId: string): Promise<ServiceRequest[]> {
+    return db.select().from(serviceRequests).where(
+      and(
+        eq(serviceRequests.assignedHaulerId, haulerId),
+        inArray(serviceRequests.status, ["assigned", "in_progress"])
+      )
+    );
+  }
+
+  private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const R = 3959;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  async calculateQuote(request: QuoteRequest): Promise<PriceQuote> {
+    const loadSizeMultipliers: Record<string, number> = {
+      small: 1.0,
+      medium: 1.5,
+      large: 2.0,
+      extra_large: 3.0,
+    };
+
+    const vehicleSurcharges: Record<string, number> = {
+      pickup_truck: 0,
+      cargo_van: 15,
+      box_truck: 35,
+      flatbed: 50,
+    };
+
+    const baseRates: Record<string, number> = {
+      junk_removal: 75,
+      furniture_moving: 95,
+      garage_cleanout: 179,
+      estate_cleanout: 150,
+    };
+
+    // Services that require disposal (junk goes to dump)
+    const disposalServices = ['junk_removal', 'garage_cleanout', 'estate_cleanout'];
+    const isDisposalService = disposalServices.includes(request.serviceType);
+    const DISPOSAL_FEE = 15; // Flat $15 disposal fee for junk services
+
+    // Services that charge mileage (moving from point A to point B)
+    const mileageServices = ['furniture_moving'];
+    const isMileageService = mileageServices.includes(request.serviceType);
+
+    const rate = await this.getPricingRate(request.serviceType, request.loadSize, request.vehicleType);
+    const basePrice = rate?.baseRate || baseRates[request.serviceType] || 75;
+    const perMileRate = rate?.perMileRate || 1.0;
+    
+    let distanceMiles = 0;
+    // Only calculate distance for moving services
+    if (isMileageService && request.pickupLat && request.pickupLng && request.destinationLat && request.destinationLng) {
+      distanceMiles = this.calculateDistance(
+        request.pickupLat, request.pickupLng,
+        request.destinationLat, request.destinationLng
+      );
+    }
+    
+    // Distance charge only applies to moving services
+    const distanceCharge = isMileageService ? (distanceMiles * perMileRate) : 0;
+    const loadMultiplier = loadSizeMultipliers[request.loadSize] || 1.0;
+    const vehicleSurcharge = request.vehicleType ? (vehicleSurcharges[request.vehicleType] || 0) : 0;
+    const surgeMultiplier = await this.getCurrentSurgeMultiplier();
+    
+    // Disposal fee is a flat fee (not multiplied by load size)
+    const disposalFee = isDisposalService ? DISPOSAL_FEE : 0;
+    
+    // Calculate subtotal: base + distance + vehicle are multiplied by load; disposal is added flat
+    const loadAdjustedSubtotal = (basePrice + distanceCharge + vehicleSurcharge) * loadMultiplier;
+    const subtotal = loadAdjustedSubtotal + disposalFee;
+    const totalPrice = Math.round(subtotal * surgeMultiplier * 100) / 100;
+    
+    const breakdown = [
+      { label: "Base rate", amount: basePrice },
+    ];
+    
+    // Show distance charge for moving services
+    if (distanceCharge > 0) {
+      breakdown.push({ label: `Distance (${distanceMiles.toFixed(1)} mi @ $${perMileRate}/mi)`, amount: Math.round(distanceCharge * 100) / 100 });
+    }
+    
+    // Show disposal fee for junk services
+    if (disposalFee > 0) {
+      breakdown.push({ label: "Disposal fee", amount: disposalFee });
+    }
+    
+    if (vehicleSurcharge > 0) {
+      breakdown.push({ label: "Vehicle surcharge", amount: vehicleSurcharge });
+    }
+    
+    if (loadMultiplier > 1) {
+      breakdown.push({ label: `Load size (${request.loadSize})`, amount: Math.round((loadAdjustedSubtotal - basePrice - distanceCharge - vehicleSurcharge) * 100) / 100 });
+    }
+    
+    if (surgeMultiplier > 1) {
+      breakdown.push({ label: `Surge pricing (${surgeMultiplier}x)`, amount: Math.round((totalPrice - subtotal) * 100) / 100 });
+    }
+    
+    const confidenceVariance = 0.15;
+    const priceMin = Math.round(totalPrice * (1 - confidenceVariance) * 100) / 100;
+    const priceMax = Math.round(totalPrice * (1 + confidenceVariance) * 100) / 100;
+
+    return {
+      basePrice,
+      distanceCharge: Math.round(distanceCharge * 100) / 100,
+      loadSizeMultiplier: loadMultiplier,
+      vehicleSurcharge,
+      surgeMultiplier,
+      totalPrice,
+      priceMin,
+      priceMax,
+      confidence: 0.85,
+      breakdown,
+    };
+  }
+
+  async createAiEstimate(estimate: InsertAiEstimate): Promise<AiEstimate> {
+    const [newEstimate] = await db.insert(aiEstimates).values(estimate).returning();
+    return newEstimate;
+  }
+
+  async getAiEstimateByRequest(requestId: string): Promise<AiEstimate | undefined> {
+    const [estimate] = await db.select().from(aiEstimates)
+      .where(eq(aiEstimates.requestId, requestId))
+      .orderBy(desc(aiEstimates.createdAt))
+      .limit(1);
+    return estimate || undefined;
+  }
+
+  async createReview(review: InsertHaulerReview): Promise<HaulerReview> {
+    const [newReview] = await db.insert(haulerReviews).values(review).returning();
+    await this.updateHaulerRating(review.haulerId);
+    return newReview;
+  }
+
+  async getReviewsByHauler(haulerId: string): Promise<HaulerReviewWithCustomer[]> {
+    const reviews = await db.select().from(haulerReviews)
+      .where(eq(haulerReviews.haulerId, haulerId))
+      .orderBy(desc(haulerReviews.createdAt));
+    
+    const results: HaulerReviewWithCustomer[] = [];
+    for (const review of reviews) {
+      const customer = await this.getUser(review.customerId);
+      results.push({ ...review, customer });
+    }
+    return results;
+  }
+
+  async getReviewByServiceRequest(serviceRequestId: string): Promise<HaulerReview | undefined> {
+    const [review] = await db.select().from(haulerReviews)
+      .where(eq(haulerReviews.serviceRequestId, serviceRequestId));
+    return review || undefined;
+  }
+
+  async updateHaulerRating(haulerId: string): Promise<void> {
+    const reviews = await db.select().from(haulerReviews)
+      .where(eq(haulerReviews.haulerId, haulerId));
+    
+    if (reviews.length === 0) return;
+    
+    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    await db.update(haulerProfiles)
+      .set({ rating: Math.round(avgRating * 10) / 10, reviewCount: reviews.length })
+      .where(eq(haulerProfiles.id, haulerId));
+  }
+
+  async getAvailableHaulersByServiceType(serviceType: string): Promise<HaulerWithProfile[]> {
+    const profiles = await db.select().from(haulerProfiles)
+      .where(eq(haulerProfiles.isAvailable, true));
+    
+    const results: HaulerWithProfile[] = [];
+    for (const profile of profiles) {
+      const serviceTypes = profile.serviceTypes || [];
+      if (serviceTypes.includes(serviceType)) {
+        const user = await this.getUser(profile.userId);
+        if (user) {
+          results.push({ ...user, profile });
+        }
+      }
+    }
+    return results;
+  }
+
+  async searchHaulers(filters: {
+    serviceType?: string;
+    capability?: string;
+    laborOnly?: boolean;
+    availableOnly?: boolean;
+  }): Promise<{ matches: HaulerWithProfile[]; suggestions: HaulerWithProfile[] }> {
+    const allProfiles = await db.select().from(haulerProfiles);
+    const matches: HaulerWithProfile[] = [];
+    const suggestions: HaulerWithProfile[] = [];
+
+    for (const profile of allProfiles) {
+      const user = await this.getUser(profile.userId);
+      if (!user) continue;
+
+      const haulerWithProfile = { ...user, profile };
+      const serviceTypes = profile.serviceTypes || [];
+      const capabilities = profile.capabilities || [];
+
+      let matchesFilter = true;
+
+      if (filters.availableOnly && !profile.isAvailable) {
+        matchesFilter = false;
+      }
+      if (filters.serviceType && !serviceTypes.includes(filters.serviceType)) {
+        matchesFilter = false;
+      }
+      if (filters.capability && !capabilities.includes(filters.capability)) {
+        matchesFilter = false;
+      }
+      if (filters.laborOnly && !profile.offersLaborOnly) {
+        matchesFilter = false;
+      }
+
+      if (matchesFilter) {
+        matches.push(haulerWithProfile);
+      } else if (profile.isAvailable) {
+        suggestions.push(haulerWithProfile);
+      }
+    }
+
+    matches.sort((a, b) => (b.profile.rating || 0) - (a.profile.rating || 0));
+    suggestions.sort((a, b) => (b.profile.rating || 0) - (a.profile.rating || 0));
+
+    return { matches, suggestions: suggestions.slice(0, 5) };
+  }
+
+  async createHaulerPenalty(penalty: InsertHaulerPenalty): Promise<HaulerPenalty> {
+    const [created] = await db.insert(haulerPenalties).values(penalty).returning();
+    return created;
+  }
+
+  async getPenaltiesByHauler(haulerId: string): Promise<HaulerPenalty[]> {
+    return await db.select().from(haulerPenalties)
+      .where(eq(haulerPenalties.haulerId, haulerId))
+      .orderBy(desc(haulerPenalties.createdAt));
+  }
+
+  async updateHaulerPenalty(id: string, updates: Partial<HaulerPenalty>): Promise<HaulerPenalty | undefined> {
+    const [updated] = await db.update(haulerPenalties)
+      .set(updates)
+      .where(eq(haulerPenalties.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  async createReferral(referral: InsertReferral): Promise<Referral> {
+    const [created] = await db.insert(referrals).values(referral).returning();
+    return created;
+  }
+
+  async getReferralByCode(code: string): Promise<Referral | undefined> {
+    const [referral] = await db.select().from(referrals).where(eq(referrals.referralCode, code));
+    return referral || undefined;
+  }
+
+  async getReferralsByReferrer(referrerId: string): Promise<Referral[]> {
+    return await db.select().from(referrals)
+      .where(eq(referrals.referrerId, referrerId))
+      .orderBy(desc(referrals.createdAt));
+  }
+
+  async updateReferral(id: string, updates: Partial<Referral>): Promise<Referral | undefined> {
+    const [updated] = await db.update(referrals)
+      .set(updates)
+      .where(eq(referrals.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  async createHomeInventoryItem(item: InsertHomeInventory): Promise<HomeInventory> {
+    const [newItem] = await db.insert(homeInventory).values(item).returning();
+    return newItem;
+  }
+
+  async getHomeInventoryByCustomer(customerId: string): Promise<HomeInventory[]> {
+    return await db.select().from(homeInventory).where(eq(homeInventory.customerId, customerId));
+  }
+
+  async getHomeInventoryByServiceRequest(serviceRequestId: string): Promise<HomeInventory[]> {
+    return await db.select().from(homeInventory).where(eq(homeInventory.serviceRequestId, serviceRequestId));
+  }
+
+  async updateHomeInventoryItem(id: string, updates: Partial<HomeInventory>): Promise<HomeInventory | undefined> {
+    const [updated] = await db.update(homeInventory).set(updates).where(eq(homeInventory.id, id)).returning();
+    return updated || undefined;
+  }
+
+  async createAuditLog(log: InsertAuditLog): Promise<AuditLog> {
+    const [newLog] = await db.insert(auditLogs).values(log).returning();
+    return newLog;
+  }
+
+  async getAuditLogs(limit: number = 100): Promise<AuditLog[]> {
+    return await db.select().from(auditLogs).orderBy(desc(auditLogs.timestamp)).limit(limit);
+  }
+
+  async seedInitialData(): Promise<void> {
+    const existingUsers = await db.select().from(users).limit(1);
+    if (existingUsers.length > 0) {
+      return;
+    }
+
+    const haulerData = [
+      { email: "mike@mikeshauling.example.com", firstName: "Mike", lastName: "Johnson", phone: "(555) 123-4567", profileImageUrl: "/api/placeholder/avatar/1" },
+      { email: "quick@quickmovepros.example.com", firstName: "Alex", lastName: "Chen", phone: "(555) 234-5678", profileImageUrl: "/api/placeholder/avatar/2" },
+      { email: "clean@cleanslateremoval.example.com", firstName: "Sarah", lastName: "Williams", phone: "(555) 345-6789", profileImageUrl: "/api/placeholder/avatar/3" },
+      { email: "strong@strongarmsmoving.example.com", firstName: "David", lastName: "Martinez", phone: "(555) 456-7890", profileImageUrl: "/api/placeholder/avatar/4" },
+      { email: "trailer@trailerproservices.example.com", firstName: "Chris", lastName: "Taylor", phone: "(555) 567-8901", profileImageUrl: "/api/placeholder/avatar/5" },
+    ];
+
+    const profileData = [
+      { companyName: "Mike's Hauling Co", bio: "Family-owned business with 15 years of experience in junk removal and furniture moving.", vehicleType: "box_truck", capacity: "Large (up to 800 cubic ft)", serviceRadius: 30, rating: 4.9, reviewCount: 247, jobsCompleted: 1523, yearsInBusiness: 15, isAvailable: true, currentLat: 37.7749, currentLng: -122.4194, hourlyRate: 85, verified: true, phone: "(415) 555-0123", website: "https://mikeshauling.example.com", facebookUrl: "https://facebook.com/mikeshauling", instagramUrl: "https://instagram.com/mikeshauling", yelpUrl: "https://yelp.com/biz/mikes-hauling", capabilities: ["box_truck", "furniture_assembly"], offersLaborOnly: false },
+      { companyName: "Quick Move Pros", bio: "Fast, reliable, and affordable moving services for all your needs.", vehicleType: "cargo_van", capacity: "Medium (up to 400 cubic ft)", serviceRadius: 25, rating: 4.7, reviewCount: 189, jobsCompleted: 892, yearsInBusiness: 8, isAvailable: true, currentLat: 37.7849, currentLng: -122.4094, hourlyRate: 65, verified: true, phone: "(415) 555-0456", website: "https://quickmovepros.example.com", instagramUrl: "https://instagram.com/quickmovepros", twitterUrl: "https://twitter.com/quickmovepros", capabilities: ["cargo_van", "uhaul_unload"], offersLaborOnly: true },
+      { companyName: "Clean Slate Removal", bio: "Specializing in estate cleanouts and large-scale junk removal.", vehicleType: "flatbed", capacity: "Extra Large (up to 1200 cubic ft)", serviceRadius: 40, rating: 4.8, reviewCount: 156, jobsCompleted: 634, yearsInBusiness: 12, isAvailable: false, currentLat: 37.7649, currentLng: -122.4294, hourlyRate: 95, verified: true, phone: "(415) 555-0789", website: "https://cleanslateremoval.example.com", facebookUrl: "https://facebook.com/cleanslateremoval", yelpUrl: "https://yelp.com/biz/clean-slate-removal", capabilities: ["flatbed", "box_truck"], offersLaborOnly: false },
+      { companyName: "Strong Arms Moving", bio: "Professional movers ready to help you load and unload. No vehicle needed - we bring the muscle!", vehicleType: "none", capacity: "Labor only", serviceRadius: 15, rating: 4.6, reviewCount: 98, jobsCompleted: 412, yearsInBusiness: 3, isAvailable: true, currentLat: 37.7550, currentLng: -122.4150, hourlyRate: 45, verified: true, phone: "(415) 555-1234", capabilities: ["labor_only", "uhaul_unload", "furniture_assembly"], offersLaborOnly: true },
+      { companyName: "Trailer Pro Services", bio: "Got a trailer? We have the trucks to tow it. Specialized in trailer hauling and heavy loads.", vehicleType: "pickup_truck", capacity: "Large with trailer (up to 1000 cubic ft)", serviceRadius: 50, rating: 4.5, reviewCount: 67, jobsCompleted: 289, yearsInBusiness: 5, isAvailable: true, currentLat: 37.7950, currentLng: -122.3900, hourlyRate: 75, verified: true, phone: "(415) 555-5678", capabilities: ["pickup_truck", "trailer", "flatbed"], offersLaborOnly: false },
+    ];
+
+    for (let i = 0; i < haulerData.length; i++) {
+      const [user] = await db.insert(users).values({
+        email: haulerData[i].email,
+        firstName: haulerData[i].firstName,
+        lastName: haulerData[i].lastName,
+        role: "hauler",
+        phone: haulerData[i].phone,
+        profileImageUrl: haulerData[i].profileImageUrl,
+      }).returning();
+
+      await db.insert(haulerProfiles).values({
+        userId: user.id,
+        ...profileData[i],
+        insuranceCoverage: "$1M",
+      });
+    }
+
+    await db.insert(users).values({
+      email: "john@example.com",
+      firstName: "John",
+      lastName: "Smith",
+      role: "customer",
+      phone: "(555) 999-8888",
+    });
+
+    const serviceTypes = ["junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout"];
+    const loadSizes = ["small", "medium", "large", "extra_large"];
+    const baseRates: Record<string, number> = {
+      junk_removal: 75,
+      furniture_moving: 95,
+      garage_cleanout: 179,
+      estate_cleanout: 150,
+    };
+
+    for (const serviceType of serviceTypes) {
+      for (const loadSize of loadSizes) {
+        const multiplier = loadSize === "small" ? 1 : loadSize === "medium" ? 1.3 : loadSize === "large" ? 1.7 : 2.2;
+        await db.insert(pricingRates).values({
+          serviceType,
+          loadSize,
+          baseRate: Math.round(baseRates[serviceType] * multiplier),
+          perMileRate: 1.0,
+          minPrice: 75,
+        });
+      }
+    }
+
+    await db.insert(surgeModifiers).values([
+      { startHour: 17, endHour: 20, multiplier: 1.25, reason: "Peak evening hours" },
+      { startHour: 8, endHour: 10, multiplier: 1.15, reason: "Morning rush" },
+      { dayOfWeek: 0, startHour: 0, endHour: 24, multiplier: 1.1, reason: "Sunday premium" },
+      { dayOfWeek: 6, startHour: 0, endHour: 24, multiplier: 1.1, reason: "Saturday premium" },
+    ]);
+
+    await db.insert(loyaltyRewards).values([
+      { name: "$10 Off Your Next Job", description: "Get $10 off your next service", pointsCost: 100, rewardType: "discount_fixed", discountAmount: 10, minimumTier: "bronze" },
+      { name: "15% Off Any Service", description: "Get 15% off any service type", pointsCost: 250, rewardType: "discount_percent", discountPercent: 15, minimumTier: "silver" },
+      { name: "Free Priority Booking", description: "Get matched first with top-rated IQ Pros", pointsCost: 150, rewardType: "priority_booking", minimumTier: "bronze" },
+      { name: "$50 Off Large Jobs", description: "Get $50 off large or extra-large loads", pointsCost: 400, rewardType: "discount_fixed", discountAmount: 50, minimumTier: "gold" },
+    ]);
+
+    await db.insert(promoCodes).values({
+      code: "ORLANDO25",
+      description: "$25 off first order for Orlando app users",
+      discountType: "fixed",
+      discountAmount: 25,
+      minOrderAmount: 50,
+      appOnly: true,
+      firstTimeOnly: true,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    }).onConflictDoNothing();
+  }
+
+  async createBusinessAccount(account: InsertBusinessAccount): Promise<BusinessAccount> {
+    const [result] = await db.insert(businessAccounts).values(account).returning();
+    return result;
+  }
+
+  async getBusinessAccountByUser(userId: string): Promise<BusinessAccount | undefined> {
+    const [result] = await db.select().from(businessAccounts).where(eq(businessAccounts.userId, userId));
+    return result || undefined;
+  }
+
+  async updateBusinessAccount(id: string, updates: Partial<BusinessAccount>): Promise<BusinessAccount | undefined> {
+    const [result] = await db.update(businessAccounts).set(updates).where(eq(businessAccounts.id, id)).returning();
+    return result || undefined;
+  }
+
+  async createRecurringJob(job: InsertRecurringJob): Promise<RecurringJob> {
+    const [result] = await db.insert(recurringJobs).values(job).returning();
+    return result;
+  }
+
+  async getRecurringJobsByBusinessAccount(businessAccountId: string): Promise<RecurringJob[]> {
+    return db.select().from(recurringJobs).where(eq(recurringJobs.businessAccountId, businessAccountId));
+  }
+
+  async updateRecurringJob(id: string, updates: Partial<RecurringJob>): Promise<RecurringJob | undefined> {
+    const [result] = await db.update(recurringJobs).set(updates).where(eq(recurringJobs.id, id)).returning();
+    return result || undefined;
+  }
+
+  async getActiveRecurringJobs(): Promise<RecurringJob[]> {
+    return db.select().from(recurringJobs).where(eq(recurringJobs.isActive, true));
+  }
+
+  async getLoyaltyAccount(userId: string): Promise<LoyaltyAccount | undefined> {
+    const [result] = await db.select().from(loyaltyAccounts).where(eq(loyaltyAccounts.userId, userId));
+    return result || undefined;
+  }
+
+  async createLoyaltyAccount(account: InsertLoyaltyAccount): Promise<LoyaltyAccount> {
+    const [result] = await db.insert(loyaltyAccounts).values(account).returning();
+    return result;
+  }
+
+  async updateLoyaltyAccount(id: string, updates: Partial<LoyaltyAccount>): Promise<LoyaltyAccount | undefined> {
+    const [result] = await db.update(loyaltyAccounts).set(updates).where(eq(loyaltyAccounts.id, id)).returning();
+    return result || undefined;
+  }
+
+  async addLoyaltyPoints(userId: string, points: number, description: string, serviceRequestId?: string): Promise<LoyaltyTransaction> {
+    let account = await this.getLoyaltyAccount(userId);
+    if (!account) {
+      account = await this.createLoyaltyAccount({
+        userId,
+        currentPoints: 0,
+        lifetimePoints: 0,
+        currentTier: "bronze",
+        createdAt: new Date().toISOString(),
+      });
+    }
+
+    const newCurrentPoints = (account.currentPoints || 0) + points;
+    const newLifetimePoints = (account.lifetimePoints || 0) + points;
+
+    let newTier = account.currentTier;
+    for (const [tier, config] of Object.entries(LOYALTY_TIER_CONFIG).reverse()) {
+      if (newLifetimePoints >= config.minPoints) {
+        newTier = tier;
+        break;
+      }
+    }
+
+    await this.updateLoyaltyAccount(account.id, {
+      currentPoints: newCurrentPoints,
+      lifetimePoints: newLifetimePoints,
+      currentTier: newTier,
+      lastPointsEarnedAt: new Date().toISOString(),
+    });
+
+    const [transaction] = await db.insert(loyaltyTransactions).values({
+      loyaltyAccountId: account.id,
+      type: "earned",
+      points,
+      description,
+      serviceRequestId,
+      createdAt: new Date().toISOString(),
+    }).returning();
+
+    return transaction;
+  }
+
+  async redeemLoyaltyPoints(userId: string, points: number, description: string): Promise<LoyaltyTransaction | undefined> {
+    const account = await this.getLoyaltyAccount(userId);
+    if (!account || (account.currentPoints || 0) < points) {
+      return undefined;
+    }
+
+    await this.updateLoyaltyAccount(account.id, {
+      currentPoints: (account.currentPoints || 0) - points,
+    });
+
+    const [transaction] = await db.insert(loyaltyTransactions).values({
+      loyaltyAccountId: account.id,
+      type: "redeemed",
+      points: -points,
+      description,
+      createdAt: new Date().toISOString(),
+    }).returning();
+
+    return transaction;
+  }
+
+  async getLoyaltyTransactions(userId: string): Promise<LoyaltyTransaction[]> {
+    const account = await this.getLoyaltyAccount(userId);
+    if (!account) return [];
+    return db.select().from(loyaltyTransactions)
+      .where(eq(loyaltyTransactions.loyaltyAccountId, account.id))
+      .orderBy(desc(loyaltyTransactions.createdAt));
+  }
+
+  async getLoyaltyRewards(): Promise<LoyaltyReward[]> {
+    return db.select().from(loyaltyRewards).where(eq(loyaltyRewards.isActive, true));
+  }
+
+  async getLoyaltyReward(id: string): Promise<LoyaltyReward | undefined> {
+    const [result] = await db.select().from(loyaltyRewards).where(eq(loyaltyRewards.id, id));
+    return result || undefined;
+  }
+
+  async createLoyaltyReward(reward: InsertLoyaltyReward): Promise<LoyaltyReward> {
+    const [result] = await db.insert(loyaltyRewards).values(reward).returning();
+    return result;
+  }
+
+  async getSmartMatchedHaulers(request: {
+    serviceType: string;
+    loadSize: string;
+    pickupLat?: number;
+    pickupLng?: number;
+    isPriority?: boolean;
+    preferVerifiedPro?: boolean;
+    preferredLanguage?: string;
+  }): Promise<HaulerWithProfile[]> {
+    let allHaulers = await this.getAvailableHaulers();
+    
+    // Filter to only Verified Pro PYCKERs if customer prefers
+    if (request.preferVerifiedPro) {
+      allHaulers = allHaulers.filter(h => h.profile.pyckerTier === "verified_pro");
+    }
+    
+    const scored = allHaulers
+      .filter(h => {
+        const serviceTypes = h.profile.serviceTypes || [];
+        return serviceTypes.includes(request.serviceType);
+      })
+      .map(hauler => {
+        let score = 0;
+        
+        score += (hauler.profile.rating || 4.0) * 20;
+        
+        const completionRate = (hauler.profile.jobsCompleted || 0) / Math.max(1, (hauler.profile.reviewCount || 1));
+        score += Math.min(completionRate * 10, 50);
+        
+        if (hauler.profile.verified) score += 15;
+        
+        if (request.pickupLat && request.pickupLng && hauler.profile.currentLat && hauler.profile.currentLng) {
+          const distance = this.calculateDistance(
+            request.pickupLat, request.pickupLng,
+            hauler.profile.currentLat, hauler.profile.currentLng
+          );
+          score += Math.max(0, 30 - distance);
+        }
+        
+        const vehicleCapacity: Record<string, number> = {
+          pickup_truck: 1,
+          cargo_van: 2,
+          box_truck: 3,
+          flatbed: 4,
+          trailer: 5,
+        };
+        const loadSizeReq: Record<string, number> = {
+          small: 1,
+          medium: 2,
+          large: 3,
+          extra_large: 4,
+        };
+        const haulerCap = vehicleCapacity[hauler.profile.vehicleType] || 2;
+        const requiredCap = loadSizeReq[request.loadSize] || 2;
+        if (haulerCap >= requiredCap) {
+          score += 10;
+        }
+        
+        if (request.preferredLanguage) {
+          const haulerLanguages = hauler.profile.languagesSpoken || ["en"];
+          if (haulerLanguages.includes(request.preferredLanguage)) {
+            score += 25;
+          }
+        }
+        
+        if (hauler.profile.loyaltyPriorityBoost) {
+          score += 20;
+        }
+        
+        return { hauler, score };
+      })
+      .sort((a, b) => b.score - a.score);
+
+    if (request.isPriority) {
+      return scored.slice(0, 5).map(s => s.hauler);
+    }
+
+    return scored.map(s => s.hauler);
+  }
+
+  // Promotion methods
+  async hasUsedFirstJobDiscount(userId: string): Promise<boolean> {
+    const [existing] = await db.select().from(promotions)
+      .where(and(
+        eq(promotions.userId, userId),
+        eq(promotions.promotionType, "first_job_discount")
+      ));
+    return !!existing;
+  }
+
+  async createPromotion(promotion: InsertPromotion): Promise<Promotion> {
+    const [result] = await db.insert(promotions).values(promotion).returning();
+    return result;
+  }
+
+  async getPromotionsByUser(userId: string): Promise<Promotion[]> {
+    return db.select().from(promotions)
+      .where(eq(promotions.userId, userId))
+      .orderBy(desc(promotions.createdAt));
+  }
+
+  // Green Guarantee Approved Facilities
+  async getApprovedFacilities(): Promise<ApprovedFacility[]> {
+    return db.select().from(approvedFacilities)
+      .where(and(
+        eq(approvedFacilities.isActive, true),
+        eq(approvedFacilities.isBlocked, false)
+      ))
+      .orderBy(approvedFacilities.name);
+  }
+
+  async getApprovedFacility(id: string): Promise<ApprovedFacility | undefined> {
+    const [result] = await db.select().from(approvedFacilities)
+      .where(eq(approvedFacilities.id, id));
+    return result;
+  }
+
+  async findFacilityByName(name: string): Promise<ApprovedFacility | undefined> {
+    // Case-insensitive partial match
+    const facilities = await db.select().from(approvedFacilities)
+      .where(and(
+        eq(approvedFacilities.isActive, true),
+        eq(approvedFacilities.isBlocked, false)
+      ));
+    
+    const normalizedSearch = name.toLowerCase().trim();
+    return facilities.find(f => 
+      f.name.toLowerCase().includes(normalizedSearch) ||
+      normalizedSearch.includes(f.name.toLowerCase())
+    );
+  }
+
+  async createApprovedFacility(facility: InsertApprovedFacility): Promise<ApprovedFacility> {
+    const [result] = await db.insert(approvedFacilities).values(facility).returning();
+    return result;
+  }
+
+  async updateApprovedFacility(id: string, updates: Partial<ApprovedFacility>): Promise<ApprovedFacility | undefined> {
+    const [result] = await db.update(approvedFacilities)
+      .set({ ...updates, updatedAt: new Date().toISOString() })
+      .where(eq(approvedFacilities.id, id))
+      .returning();
+    return result;
+  }
+
+  // Validate rebate claim against business rules
+  async validateRebateClaim(
+    claim: Partial<InsertRebateClaim>,
+    jobCompletedAt: string,
+    estimatedWeight: number
+  ): Promise<{ flags: string[]; withinVariance: boolean; within48Hours: boolean; facilityApproved: boolean; isDuplicate: boolean }> {
+    const flags: string[] = [];
+    
+    // 1. Check 48-hour rule (receipt date must be within 48 hours of job completion)
+    const jobDate = new Date(jobCompletedAt);
+    const receiptDate = claim.receiptDate ? new Date(claim.receiptDate) : new Date();
+    const hoursDiff = (receiptDate.getTime() - jobDate.getTime()) / (1000 * 60 * 60);
+    const within48Hours = hoursDiff >= 0 && hoursDiff <= 48;
+    if (!within48Hours) {
+      flags.push('LATE_RECEIPT');
+    }
+
+    // 2. Check weight variance (20% tolerance)
+    const receiptWeight = claim.receiptWeight || 0;
+    const variance = estimatedWeight > 0 
+      ? Math.abs(receiptWeight - estimatedWeight) / estimatedWeight * 100 
+      : 100;
+    const withinVariance = variance <= 20;
+    
+    if (!withinVariance) {
+      flags.push('WEIGHT_MISMATCH');
+    }
+
+    // 3. Check facility approval
+    let facilityApproved = false;
+    if (claim.facilityName) {
+      const matchedFacility = await this.findFacilityByName(claim.facilityName);
+      if (matchedFacility) {
+        facilityApproved = true;
+      } else {
+        flags.push('UNAPPROVED_FACILITY');
+      }
+    } else {
+      flags.push('UNAPPROVED_FACILITY');
+    }
+
+    // 4. Check for duplicate receipt number
+    let isDuplicate = false;
+    if (claim.receiptNumber) {
+      const existingClaims = await db.select().from(rebateClaims)
+        .where(eq(rebateClaims.receiptNumber, claim.receiptNumber));
+      if (existingClaims.length > 0) {
+        isDuplicate = true;
+        flags.push('DUPLICATE_RECEIPT');
+      }
+    }
+
+    return { flags, withinVariance, within48Hours, facilityApproved, isDuplicate };
+  }
+
+  // Green Guarantee Rebate Claims
+  async createRebateClaim(claim: InsertRebateClaim): Promise<RebateClaim> {
+    const [result] = await db.insert(rebateClaims).values(claim).returning();
+    return result;
+  }
+
+  async getRebateClaimsByHauler(haulerId: string): Promise<RebateClaim[]> {
+    return db.select().from(rebateClaims)
+      .where(eq(rebateClaims.haulerId, haulerId))
+      .orderBy(desc(rebateClaims.submittedAt));
+  }
+
+  async getRebateClaimsByStatus(status: string): Promise<RebateClaim[]> {
+    return db.select().from(rebateClaims)
+      .where(eq(rebateClaims.status, status))
+      .orderBy(desc(rebateClaims.submittedAt));
+  }
+
+  async getRebateClaim(id: string): Promise<RebateClaim | undefined> {
+    const [result] = await db.select().from(rebateClaims)
+      .where(eq(rebateClaims.id, id));
+    return result;
+  }
+
+  async updateRebateClaim(id: string, updates: Partial<RebateClaim>): Promise<RebateClaim | undefined> {
+    const [result] = await db.update(rebateClaims)
+      .set(updates)
+      .where(eq(rebateClaims.id, id))
+      .returning();
+    return result;
+  }
+
+  async updateRebateClaimAIValidation(id: string, updates: { 
+    aiValidationStatus: string; 
+    aiValidationResult?: string; 
+    aiValidationNotes?: string; 
+    aiValidatedAt: string; 
+    aiConfidenceScore?: number; 
+  }): Promise<RebateClaim | undefined> {
+    const [result] = await db.update(rebateClaims)
+      .set({
+        aiValidationStatus: updates.aiValidationStatus,
+        aiValidationResult: updates.aiValidationResult,
+        aiValidationNotes: updates.aiValidationNotes,
+        aiValidatedAt: updates.aiValidatedAt,
+        aiConfidenceScore: updates.aiConfidenceScore,
+      })
+      .where(eq(rebateClaims.id, id))
+      .returning();
+    return result;
+  }
+
+  async approveRebateClaim(id: string, reviewerId: string): Promise<RebateClaim | undefined> {
+    const claim = await this.getRebateClaim(id);
+    if (!claim) return undefined;
+
+    const [result] = await db.update(rebateClaims)
+      .set({
+        status: "approved",
+        reviewedBy: reviewerId,
+        reviewedAt: new Date().toISOString(),
+      })
+      .where(eq(rebateClaims.id, id))
+      .returning();
+
+    // Add rebate to hauler's balance
+    if (result && result.rebateAmount) {
+      await this.addRebateToBalance(result.haulerId, result.rebateAmount);
+    }
+
+    return result;
+  }
+
+  async denyRebateClaim(id: string, reviewerId: string, reason: string): Promise<RebateClaim | undefined> {
+    const [result] = await db.update(rebateClaims)
+      .set({
+        status: "denied",
+        reviewedBy: reviewerId,
+        reviewedAt: new Date().toISOString(),
+        denialReason: reason,
+      })
+      .where(eq(rebateClaims.id, id))
+      .returning();
+    return result;
+  }
+
+  async addRebateToBalance(haulerId: string, amount: number): Promise<HaulerProfile | undefined> {
+    const profile = await this.getHaulerProfileById(haulerId);
+    if (!profile) return undefined;
+
+    const currentBalance = profile.rebateBalance || 0;
+    const [result] = await db.update(haulerProfiles)
+      .set({ rebateBalance: currentBalance + amount })
+      .where(eq(haulerProfiles.id, haulerId))
+      .returning();
+    return result;
+  }
+
+  async isFirstTimeCustomer(userId: string): Promise<boolean> {
+    const completedJobs = await db.select().from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.customerId, userId),
+        eq(serviceRequests.status, "completed")
+      ));
+    return completedJobs.length === 0;
+  }
+
+  // App priority slot methods
+  async isSlotAvailableForApp(slotDate: string, slotTime: string): Promise<boolean> {
+    const today = new Date();
+    const slotDateObj = new Date(slotDate);
+    const dayOfWeek = slotDateObj.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const isSameDay = slotDateObj.toDateString() === today.toDateString();
+    
+    // Same-day and weekend slots are reserved for app bookings
+    return isSameDay || isWeekend;
+  }
+
+  async reserveSlotForApp(slotDate: string, slotTime: string, userId: string): Promise<AppPrioritySlot> {
+    const today = new Date();
+    const slotDateObj = new Date(slotDate);
+    const dayOfWeek = slotDateObj.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const isSameDay = slotDateObj.toDateString() === today.toDateString();
+    
+    const holdUntil = new Date();
+    holdUntil.setHours(holdUntil.getHours() + APP_PRIORITY_HOLD_HOURS);
+
+    const [slot] = await db.insert(appPrioritySlots).values({
+      slotDate,
+      slotTime,
+      isSameDay,
+      isWeekend,
+      reservedForAppUntil: holdUntil.toISOString(),
+      bookedBy: userId,
+      bookingSource: "app",
+      createdAt: new Date().toISOString(),
+    }).returning();
+    return slot;
+  }
+
+  async getAvailablePrioritySlots(date: string): Promise<AppPrioritySlot[]> {
+    const slotDateObj = new Date(date);
+    const dayOfWeek = slotDateObj.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const today = new Date();
+    const isSameDay = slotDateObj.toDateString() === today.toDateString();
+    
+    if (!isSameDay && !isWeekend) {
+      return []; // No priority slots on regular weekdays
+    }
+    
+    // Return available priority slots
+    return db.select().from(appPrioritySlots)
+      .where(eq(appPrioritySlots.slotDate, date));
+  }
+
+  async calculateQuoteWithPromotions(request: QuoteRequest & { userId?: string; bookingSource?: string; promoCode?: string }): Promise<PriceQuote & { firstJobDiscount?: number; hasPriorityAccess?: boolean; promoDiscount?: number; promoCodeApplied?: string; loyaltyDiscount?: number; loyaltyTier?: string }> {
+    const baseQuote = await this.calculateQuote(request);
+    
+    let firstJobDiscount = 0;
+    let hasPriorityAccess = false;
+    let promoDiscount = 0;
+    let promoCodeApplied: string | undefined;
+    let loyaltyDiscount = 0;
+    let loyaltyTier: string | undefined;
+    
+    if (request.userId && request.bookingSource === "app") {
+      const isFirstTime = await this.isFirstTimeCustomer(request.userId);
+      const hasUsedDiscount = await this.hasUsedFirstJobDiscount(request.userId);
+      
+      if (isFirstTime && !hasUsedDiscount) {
+        firstJobDiscount = FIRST_JOB_DISCOUNT_AMOUNT;
+      }
+    }
+    
+    if (request.userId) {
+      const user = await this.getUser(request.userId);
+      if (user) {
+        const completedJobs = user.totalJobsCompleted || 0;
+        if (completedJobs >= 3) {
+          loyaltyDiscount = Math.round(baseQuote.totalPrice * 0.02 * 100) / 100;
+          loyaltyTier = completedJobs >= 10 ? 'gold' : completedJobs >= 5 ? 'silver' : 'bronze';
+        }
+      }
+    }
+    
+    if (request.promoCode && request.userId) {
+      const promoResult = await this.validateAndApplyPromoCode(request.promoCode, request.userId, baseQuote.totalPrice, request.bookingSource === "app");
+      if (promoResult.valid) {
+        promoDiscount = promoResult.discount;
+        promoCodeApplied = request.promoCode;
+      }
+    }
+    
+    if (request.bookingSource === "app" && request.scheduledFor) {
+      hasPriorityAccess = await this.isSlotAvailableForApp(request.scheduledFor, request.scheduledFor);
+    }
+    
+    const totalDiscount = firstJobDiscount + promoDiscount + loyaltyDiscount;
+    const discountedTotal = Math.max(0, baseQuote.totalPrice - totalDiscount);
+    
+    return {
+      ...baseQuote,
+      totalPrice: discountedTotal,
+      firstJobDiscount: firstJobDiscount > 0 ? firstJobDiscount : undefined,
+      promoDiscount: promoDiscount > 0 ? promoDiscount : undefined,
+      promoCodeApplied,
+      hasPriorityAccess,
+      loyaltyDiscount: loyaltyDiscount > 0 ? loyaltyDiscount : undefined,
+      loyaltyTier,
+    };
+  }
+
+  async incrementCustomerJobCount(userId: string): Promise<void> {
+    await db.update(users)
+      .set({ totalJobsCompleted: sql`COALESCE(total_jobs_completed, 0) + 1` })
+      .where(eq(users.id, userId));
+  }
+
+  async incrementWorkerFiveStarCount(haulerId: string): Promise<HaulerProfile | undefined> {
+    const [profile] = await db.update(haulerProfiles)
+      .set({ fiveStarJobCount: sql`COALESCE(five_star_job_count, 0) + 1` })
+      .where(eq(haulerProfiles.userId, haulerId))
+      .returning();
+    
+    if (profile && (profile.fiveStarJobCount || 0) >= 10 && !profile.loyaltyPriorityBoost) {
+      const [updated] = await db.update(haulerProfiles)
+        .set({ loyaltyPriorityBoost: true })
+        .where(eq(haulerProfiles.userId, haulerId))
+        .returning();
+      return updated;
+    }
+    return profile;
+  }
+
+  async getPayoutBreakdown(haulerId: string, amount: number): Promise<{ platformFeePercent: number; platformFee: number; insuranceFee: number; haulerPayout: number; isVerifiedLlc: boolean; pyckerTier: string }> {
+    const profile = await this.getHaulerProfile(haulerId);
+    const isVerifiedLlc = profile?.isVerifiedLlc || false;
+    const pyckerTier = profile?.pyckerTier || 'independent';
+    
+    const feePercent = isVerifiedLlc ? 20 : 25;
+    const platformFee = Math.round(amount * (feePercent / 100) * 100) / 100;
+    const insuranceFee = isVerifiedLlc ? 0 : 25;
+    const haulerPayout = Math.max(0, Math.round((amount - platformFee - insuranceFee) * 100) / 100);
+
+    return { platformFeePercent: feePercent, platformFee, insuranceFee, haulerPayout, isVerifiedLlc, pyckerTier };
+  }
+
+  // Analytics event tracking
+  async trackEvent(event: InsertAnalyticsEvent): Promise<AnalyticsEvent> {
+    const [tracked] = await db.insert(analyticsEvents).values({
+      ...event,
+      createdAt: new Date().toISOString(),
+    }).returning();
+    return tracked;
+  }
+
+  async getEventsByUser(userId: string): Promise<AnalyticsEvent[]> {
+    return db.select().from(analyticsEvents)
+      .where(eq(analyticsEvents.userId, userId))
+      .orderBy(desc(analyticsEvents.createdAt));
+  }
+
+  async getEventsBySession(sessionId: string): Promise<AnalyticsEvent[]> {
+    return db.select().from(analyticsEvents)
+      .where(eq(analyticsEvents.sessionId, sessionId))
+      .orderBy(analyticsEvents.createdAt);
+  }
+
+  async getFunnelStats(startDate?: string, endDate?: string): Promise<{ eventType: string; count: number }[]> {
+    // Get counts of each event type for funnel analysis
+    const allEvents = await db.select().from(analyticsEvents);
+    const counts: { [key: string]: number } = {};
+    for (const event of allEvents) {
+      counts[event.eventType] = (counts[event.eventType] || 0) + 1;
+    }
+    return Object.entries(counts).map(([eventType, count]) => ({ eventType, count }));
+  }
+
+  // Promo code management
+  async createPromoCode(code: InsertPromoCode): Promise<PromoCode> {
+    const [promo] = await db.insert(promoCodes).values({
+      ...code,
+      createdAt: new Date().toISOString(),
+    }).returning();
+    return promo;
+  }
+
+  async getPromoCodeByCode(code: string): Promise<PromoCode | undefined> {
+    const [promo] = await db.select().from(promoCodes)
+      .where(eq(promoCodes.code, code.toUpperCase()));
+    return promo;
+  }
+
+  async getAllPromoCodes(): Promise<PromoCode[]> {
+    return db.select().from(promoCodes).orderBy(desc(promoCodes.createdAt));
+  }
+
+  async validateAndApplyPromoCode(code: string, userId: string, orderAmount: number, isApp: boolean): Promise<{ valid: boolean; discount: number; error?: string }> {
+    const promo = await this.getPromoCodeByCode(code.toUpperCase());
+    
+    if (!promo) {
+      return { valid: false, discount: 0, error: "Invalid promo code" };
+    }
+    
+    if (!promo.isActive) {
+      return { valid: false, discount: 0, error: "Promo code is no longer active" };
+    }
+    
+    if (promo.appOnly && !isApp) {
+      return { valid: false, discount: 0, error: "This promo code is only valid in the app" };
+    }
+    
+    if (promo.validFrom && new Date(promo.validFrom) > new Date()) {
+      return { valid: false, discount: 0, error: "Promo code is not yet valid" };
+    }
+    
+    if (promo.validUntil && new Date(promo.validUntil) < new Date()) {
+      return { valid: false, discount: 0, error: "Promo code has expired" };
+    }
+    
+    if (promo.maxUses && promo.currentUses && promo.currentUses >= promo.maxUses) {
+      return { valid: false, discount: 0, error: "Promo code has reached its usage limit" };
+    }
+    
+    if (promo.minOrderAmount && orderAmount < promo.minOrderAmount) {
+      return { valid: false, discount: 0, error: `Minimum order amount is $${promo.minOrderAmount}` };
+    }
+    
+    // Check if user has already used this code
+    const [existingUsage] = await db.select().from(promoCodeUsage)
+      .where(and(
+        eq(promoCodeUsage.promoCodeId, promo.id),
+        eq(promoCodeUsage.userId, userId)
+      ));
+    
+    if (existingUsage) {
+      return { valid: false, discount: 0, error: "You have already used this promo code" };
+    }
+    
+    // Check first-time only restriction
+    if (promo.firstTimeOnly) {
+      const isFirstTime = await this.isFirstTimeCustomer(userId);
+      if (!isFirstTime) {
+        return { valid: false, discount: 0, error: "This promo code is only for first-time customers" };
+      }
+    }
+    
+    // Calculate discount
+    let discount = 0;
+    if (promo.discountType === "fixed") {
+      discount = Math.min(promo.discountAmount, orderAmount);
+    } else if (promo.discountType === "percent") {
+      discount = orderAmount * (promo.discountAmount / 100);
+    }
+    
+    return { valid: true, discount };
+  }
+
+  async recordPromoCodeUsage(promoCodeId: string, userId: string, serviceRequestId: string, discountApplied: number): Promise<PromoCodeUsage> {
+    // Record the usage
+    const [usage] = await db.insert(promoCodeUsage).values({
+      promoCodeId,
+      userId,
+      serviceRequestId,
+      discountApplied,
+      usedAt: new Date().toISOString(),
+    }).returning();
+    
+    // Increment the usage count on the promo code
+    const promo = await this.getPromoCodeByCode(promoCodeId);
+    if (promo) {
+      await db.update(promoCodes)
+        .set({ currentUses: (promo.currentUses || 0) + 1 })
+        .where(eq(promoCodes.id, promo.id));
+    }
+    
+    return usage;
+  }
+
+  async seedOrlando25PromoCode(): Promise<PromoCode> {
+    // Check if ORLANDO25 already exists
+    const existing = await this.getPromoCodeByCode("ORLANDO25");
+    if (existing) return existing;
+    
+    // Create the ORLANDO25 promo code
+    return this.createPromoCode({
+      code: "ORLANDO25",
+      description: "$25 off first order for Orlando app users",
+      discountType: "fixed",
+      discountAmount: 25,
+      minOrderAmount: 50,
+      appOnly: true,
+      firstTimeOnly: true,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    });
+  }
+
+  async createPyckerVehicle(vehicle: InsertPyckerVehicle): Promise<PyckerVehicle> {
+    const [newVehicle] = await db.insert(pyckerVehicles).values(vehicle).returning();
+    return newVehicle;
+  }
+
+  async getPyckerVehicles(haulerProfileId: string): Promise<PyckerVehicle[]> {
+    return db.select().from(pyckerVehicles)
+      .where(eq(pyckerVehicles.haulerProfileId, haulerProfileId));
+  }
+
+  async getPyckerVehicle(id: string): Promise<PyckerVehicle | undefined> {
+    const [vehicle] = await db.select().from(pyckerVehicles)
+      .where(eq(pyckerVehicles.id, id));
+    return vehicle || undefined;
+  }
+
+  async updatePyckerVehicle(id: string, updates: Partial<PyckerVehicle>): Promise<PyckerVehicle | undefined> {
+    const [vehicle] = await db.update(pyckerVehicles)
+      .set(updates)
+      .where(eq(pyckerVehicles.id, id))
+      .returning();
+    return vehicle || undefined;
+  }
+
+  async deletePyckerVehicle(id: string): Promise<boolean> {
+    const result = await db.delete(pyckerVehicles)
+      .where(eq(pyckerVehicles.id, id));
+    return true;
+  }
+
+  // Environmental Certificate methods
+  async createEnvironmentalCertificate(certificate: InsertEnvironmentalCertificate): Promise<EnvironmentalCertificate> {
+    const [newCert] = await db.insert(environmentalCertificates).values(certificate).returning();
+    return newCert;
+  }
+
+  async getEnvironmentalCertificate(id: string): Promise<EnvironmentalCertificate | undefined> {
+    const [cert] = await db.select().from(environmentalCertificates)
+      .where(eq(environmentalCertificates.id, id));
+    return cert || undefined;
+  }
+
+  async getEnvironmentalCertificateByServiceRequest(serviceRequestId: string): Promise<EnvironmentalCertificate | undefined> {
+    const [cert] = await db.select().from(environmentalCertificates)
+      .where(eq(environmentalCertificates.serviceRequestId, serviceRequestId));
+    return cert || undefined;
+  }
+
+  async generateEnvironmentalCertificate(serviceRequestId: string): Promise<EnvironmentalCertificate> {
+    // Get the service request
+    const request = await this.getServiceRequest(serviceRequestId);
+    if (!request) {
+      throw new Error("Service request not found");
+    }
+    if (request.status !== "completed") {
+      throw new Error("Cannot generate certificate for incomplete job");
+    }
+
+    // Check if certificate already exists
+    const existing = await this.getEnvironmentalCertificateByServiceRequest(serviceRequestId);
+    if (existing) {
+      return existing;
+    }
+
+    // Calculate disposal breakdown based on service type and facilities
+    // For junk removal, we estimate based on typical Orlando recycling rates
+    let recycledPercent = 0;
+    let donatedPercent = 0;
+    let landfilledPercent = 0;
+
+    // Simulate realistic disposal breakdown
+    if (request.serviceType === "junk_removal") {
+      recycledPercent = 55 + Math.floor(Math.random() * 20); // 55-75%
+      donatedPercent = 15 + Math.floor(Math.random() * 15); // 15-30%
+      landfilledPercent = 100 - recycledPercent - donatedPercent;
+    } else if (request.serviceType === "furniture_moving") {
+      // Moving typically has no disposal
+      recycledPercent = 0;
+      donatedPercent = 0;
+      landfilledPercent = 0;
+    } else if (request.serviceType === "estate_cleanout") {
+      recycledPercent = 45 + Math.floor(Math.random() * 15); // 45-60%
+      donatedPercent = 25 + Math.floor(Math.random() * 15); // 25-40%
+      landfilledPercent = 100 - recycledPercent - donatedPercent;
+    } else {
+      recycledPercent = 40 + Math.floor(Math.random() * 20); // 40-60%
+      donatedPercent = 10 + Math.floor(Math.random() * 15); // 10-25%
+      landfilledPercent = 100 - recycledPercent - donatedPercent;
+    }
+
+    // Estimate weight based on load size
+    const loadWeights: Record<string, number> = {
+      small: 200,
+      medium: 500,
+      large: 1000,
+      extra_large: 2000
+    };
+    const totalWeight = loadWeights[request.loadEstimate] || 500;
+
+    // Calculate carbon footprint (approximately 0.9 lbs CO2 per mile for a cargo truck)
+    const distance = request.distanceMiles || 10;
+    const carbonFootprintLbs = distance * 0.9;
+    const carbonOffsetCost = carbonFootprintLbs * 0.02; // ~$0.02 per lb to offset
+
+    // Generate certificate number
+    const certNumber = `UPYCK-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+    // Get disposal facilities from approved facilities (handle empty case)
+    const allFacilities = await this.getApprovedFacilities();
+    const facilitiesCount = Math.min(3, allFacilities.length);
+    const usedFacilities = facilitiesCount > 0 
+      ? allFacilities.slice(0, facilitiesCount).map(f => f.name)
+      : ["Orange County Landfill"]; // Default facility
+    const facilityTypes = facilitiesCount > 0 
+      ? allFacilities.slice(0, facilitiesCount).map(f => f.facilityType)
+      : ["landfill"];
+
+    const certificate: InsertEnvironmentalCertificate = {
+      serviceRequestId,
+      customerId: request.customerId,
+      certificateNumber: certNumber,
+      recycledPercent,
+      donatedPercent,
+      landfilledPercent,
+      facilities: usedFacilities,
+      facilityTypes: facilityTypes,
+      totalWeightLbs: totalWeight,
+      recycledWeightLbs: totalWeight * (recycledPercent / 100),
+      donatedWeightLbs: totalWeight * (donatedPercent / 100),
+      landfilledWeightLbs: totalWeight * (landfilledPercent / 100),
+      haulDistanceMiles: distance,
+      carbonFootprintLbs,
+      carbonOffsetPurchased: true,
+      carbonOffsetCost,
+      issuedAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
+      createdAt: new Date().toISOString(),
+    };
+
+    const [newCert] = await db.insert(environmentalCertificates).values(certificate).returning();
+
+    // Update service request with certificate info
+    await this.updateServiceRequest(serviceRequestId, {
+      environmentalCertificateId: newCert.id,
+      disposalRecycledPercent: recycledPercent,
+      disposalDonatedPercent: donatedPercent,
+      disposalLandfilledPercent: landfilledPercent,
+      carbonFootprintLbs,
+      carbonOffsetPurchased: true,
+      disposalFacilities: usedFacilities,
+      environmentalReportGeneratedAt: new Date().toISOString(),
+    });
+
+    return newCert;
+  }
+
+  // Email verification code methods
+  async createEmailVerificationCode(email: string, code: string, expiresAt: Date): Promise<void> {
+    // Delete any existing codes for this email first
+    await db.delete(emailVerificationCodes).where(eq(emailVerificationCodes.email, email));
+    
+    // Insert new code
+    await db.insert(emailVerificationCodes).values({
+      email,
+      code,
+      expiresAt,
+      verified: false,
+    });
+  }
+
+  async getEmailVerificationCode(email: string): Promise<{ code: string; expiresAt: Date; verified: boolean } | undefined> {
+    const [record] = await db.select().from(emailVerificationCodes)
+      .where(eq(emailVerificationCodes.email, email))
+      .orderBy(desc(emailVerificationCodes.createdAt))
+      .limit(1);
+    
+    if (!record) return undefined;
+    
+    return {
+      code: record.code,
+      expiresAt: record.expiresAt,
+      verified: record.verified || false,
+    };
+  }
+
+  async markEmailVerified(email: string): Promise<void> {
+    await db.update(emailVerificationCodes)
+      .set({ verified: true })
+      .where(eq(emailVerificationCodes.email, email));
+  }
+
+  async deleteEmailVerificationCode(email: string): Promise<void> {
+    await db.delete(emailVerificationCodes).where(eq(emailVerificationCodes.email, email));
+  }
+
+  // Job Adjustments methods
+  async createJobAdjustment(adjustment: InsertJobAdjustment): Promise<JobAdjustment> {
+    const [newAdjustment] = await db.insert(jobAdjustments).values(adjustment).returning();
+    return newAdjustment;
+  }
+
+  async getJobAdjustmentsByRequest(serviceRequestId: string): Promise<JobAdjustment[]> {
+    return db.select().from(jobAdjustments).where(eq(jobAdjustments.serviceRequestId, serviceRequestId));
+  }
+
+  async updateJobAdjustment(id: string, updates: Partial<JobAdjustment>): Promise<JobAdjustment | undefined> {
+    const [updated] = await db.update(jobAdjustments)
+      .set(updates)
+      .where(eq(jobAdjustments.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  async approveJobAdjustment(id: string): Promise<JobAdjustment | undefined> {
+    const [updated] = await db.update(jobAdjustments)
+      .set({ status: "approved", customerApprovedAt: new Date().toISOString() })
+      .where(eq(jobAdjustments.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  async declineJobAdjustment(id: string): Promise<JobAdjustment | undefined> {
+    const [updated] = await db.update(jobAdjustments)
+      .set({ status: "declined", customerDeclinedAt: new Date().toISOString() })
+      .where(eq(jobAdjustments.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  // Job Completions methods
+  async createJobCompletion(completion: InsertJobCompletion): Promise<JobCompletion> {
+    const [newCompletion] = await db.insert(jobCompletions).values(completion).returning();
+    return newCompletion;
+  }
+
+  async getJobCompletion(serviceRequestId: string): Promise<JobCompletion | undefined> {
+    const [completion] = await db.select().from(jobCompletions)
+      .where(eq(jobCompletions.serviceRequestId, serviceRequestId));
+    return completion || undefined;
+  }
+
+  async updateJobCompletion(id: string, updates: Partial<JobCompletion>): Promise<JobCompletion | undefined> {
+    const [updated] = await db.update(jobCompletions)
+      .set({ ...updates, updatedAt: new Date().toISOString() })
+      .where(eq(jobCompletions.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  async getAllJobsWithDetails(): Promise<any[]> {
+    const jobs = await db.select().from(serviceRequests)
+      .where(or(
+        eq(serviceRequests.status, "in_progress"),
+        eq(serviceRequests.status, "accepted"),
+        eq(serviceRequests.status, "completed")
+      ))
+      .orderBy(desc(serviceRequests.createdAt));
+    
+    const jobsWithDetails = await Promise.all(jobs.map(async (job) => {
+      const customer = await this.getUser(job.customerId);
+      const hauler = job.assignedHaulerId ? await this.getUser(job.assignedHaulerId) : null;
+      const haulerProfile = job.assignedHaulerId ? await this.getHaulerProfile(job.assignedHaulerId) : null;
+      const adjustments = await this.getJobAdjustmentsByRequest(job.id);
+      const completion = await this.getJobCompletion(job.id);
+      
+      return {
+        ...job,
+        customer,
+        hauler,
+        haulerProfile,
+        adjustments,
+        completion,
+      };
+    }));
+    
+    return jobsWithDetails;
+  }
+
+  // Customer Address Management
+  async getCustomerAddresses(userId: string): Promise<CustomerAddress[]> {
+    return await db.select().from(customerAddresses)
+      .where(eq(customerAddresses.userId, userId))
+      .orderBy(desc(customerAddresses.isDefault), desc(customerAddresses.createdAt));
+  }
+
+  async createCustomerAddress(data: InsertCustomerAddress): Promise<CustomerAddress> {
+    const [address] = await db.insert(customerAddresses).values(data).returning();
+    return address;
+  }
+
+  async updateCustomerAddress(id: string, userId: string, updates: Partial<CustomerAddress>): Promise<CustomerAddress | undefined> {
+    const [address] = await db.update(customerAddresses)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(and(eq(customerAddresses.id, id), eq(customerAddresses.userId, userId)))
+      .returning();
+    return address || undefined;
+  }
+
+  async deleteCustomerAddress(id: string, userId: string): Promise<void> {
+    await db.delete(customerAddresses)
+      .where(and(eq(customerAddresses.id, id), eq(customerAddresses.userId, userId)));
+  }
+
+  async setDefaultCustomerAddress(id: string, userId: string): Promise<void> {
+    // First, unset all defaults for this user
+    await db.update(customerAddresses)
+      .set({ isDefault: false })
+      .where(eq(customerAddresses.userId, userId));
+    // Then set the selected address as default
+    await db.update(customerAddresses)
+      .set({ isDefault: true })
+      .where(and(eq(customerAddresses.id, id), eq(customerAddresses.userId, userId)));
+  }
+
+  // PYCKER Online Status & GPS Tracking
+  async getPyckerOnlineStatus(pyckerId: string): Promise<PyckerOnlineStatus | undefined> {
+    const [status] = await db.select()
+      .from(pyckerOnlineStatus)
+      .where(eq(pyckerOnlineStatus.pyckerId, pyckerId));
+    return status || undefined;
+  }
+
+  async updatePyckerLocation(data: InsertPyckerOnlineStatus): Promise<PyckerOnlineStatus> {
+    // Upsert - update if exists, insert if not
+    const existing = await this.getPyckerOnlineStatus(data.pyckerId);
+    
+    if (existing) {
+      const [updated] = await db.update(pyckerOnlineStatus)
+        .set({
+          latitude: data.latitude,
+          longitude: data.longitude,
+          accuracy: data.accuracy,
+          status: data.status,
+          currentJobId: data.currentJobId,
+          lastUpdated: data.lastUpdated,
+          expiresAt: data.expiresAt,
+          locationConsentGiven: data.locationConsentGiven,
+          consentGivenAt: data.consentGivenAt,
+        })
+        .where(eq(pyckerOnlineStatus.pyckerId, data.pyckerId))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(pyckerOnlineStatus)
+        .values(data)
+        .returning();
+      return created;
+    }
+  }
+
+  async setPyckerOffline(pyckerId: string): Promise<void> {
+    await db.delete(pyckerOnlineStatus)
+      .where(eq(pyckerOnlineStatus.pyckerId, pyckerId));
+  }
+
+  async getOnlinePyckersNearby(lat: number, lng: number, radiusMiles: number): Promise<(PyckerOnlineStatus & { haulerProfile: HaulerProfile; distance: number })[]> {
+    // Use Haversine formula to calculate distance
+    // 3959 is the radius of Earth in miles
+    const now = new Date().toISOString();
+    
+    const results = await db.execute(sql`
+      SELECT 
+        pos.pycker_id,
+        pos.latitude,
+        pos.longitude,
+        pos.status,
+        hp.id as profile_id,
+        hp.company_name,
+        hp.vehicle_type,
+        hp.capabilities,
+        hp.offers_labor_only,
+        hp.capacity,
+        hp.rating,
+        hp.jobs_completed,
+        hp.pycker_tier,
+        hp.hourly_rate,
+        hp.review_count,
+        hp.is_available,
+        u.first_name,
+        u.last_name,
+        u.profile_image_url,
+        (3959 * acos(
+          cos(radians(${lat})) * cos(radians(pos.latitude)) *
+          cos(radians(pos.longitude) - radians(${lng})) +
+          sin(radians(${lat})) * sin(radians(pos.latitude))
+        )) AS distance
+      FROM pycker_online_status pos
+      JOIN hauler_profiles hp ON pos.pycker_id = hp.id
+      JOIN users u ON hp.user_id = u.id
+      WHERE pos.status = 'available'
+        AND pos.expires_at > ${now}
+        AND (3959 * acos(
+          cos(radians(${lat})) * cos(radians(pos.latitude)) *
+          cos(radians(pos.longitude) - radians(${lng})) +
+          sin(radians(${lat})) * sin(radians(pos.latitude))
+        )) <= ${radiusMiles}
+      ORDER BY distance ASC
+    `);
+    
+    return (results.rows || []) as any;
+  }
+
+  async cleanupExpiredPyckerLocations(): Promise<number> {
+    const now = new Date().toISOString();
+    const result = await db.delete(pyckerOnlineStatus)
+      .where(sql`${pyckerOnlineStatus.expiresAt} < ${now}`);
+    return result.rowCount || 0;
+  }
+
+  // ESG Impact Logs
+  async createEsgImpactLog(log: InsertEsgImpactLog): Promise<EsgImpactLog> {
+    const [result] = await db.insert(esgImpactLogs).values(log).returning();
+    return result;
+  }
+
+  async getEsgImpactLogByRequest(serviceRequestId: string): Promise<EsgImpactLog | undefined> {
+    const [result] = await db.select().from(esgImpactLogs).where(eq(esgImpactLogs.serviceRequestId, serviceRequestId));
+    return result || undefined;
+  }
+
+  async getEsgImpactLogsByCustomer(customerId: string): Promise<EsgImpactLog[]> {
+    return db.select().from(esgImpactLogs).where(eq(esgImpactLogs.customerId, customerId)).orderBy(desc(esgImpactLogs.createdAt));
+  }
+
+  async getEsgImpactLogsByHauler(haulerId: string): Promise<EsgImpactLog[]> {
+    return db.select().from(esgImpactLogs).where(eq(esgImpactLogs.haulerId, haulerId)).orderBy(desc(esgImpactLogs.createdAt));
+  }
+
+  async getEsgSummary(): Promise<{ totalJobs: number; totalCarbonLbs: number; totalDivertedLbs: number; avgDiversionRate: number }> {
+    const results = await db.select({
+      totalJobs: sql<number>`count(*)::int`,
+      totalCarbonLbs: sql<number>`coalesce(sum(${esgImpactLogs.carbonFootprintLbs}), 0)`,
+      totalDivertedLbs: sql<number>`coalesce(sum(${esgImpactLogs.recycledWeightLbs} + ${esgImpactLogs.donatedWeightLbs}), 0)`,
+      avgDiversionRate: sql<number>`coalesce(avg(${esgImpactLogs.diversionRate}), 0)`,
+    }).from(esgImpactLogs);
+    return results[0] || { totalJobs: 0, totalCarbonLbs: 0, totalDivertedLbs: 0, avgDiversionRate: 0 };
+  }
+
+  // Disputes
+  async createDispute(dispute: InsertDispute): Promise<Dispute> {
+    const [result] = await db.insert(disputes).values(dispute).returning();
+    return result;
+  }
+
+  async getDispute(id: string): Promise<Dispute | undefined> {
+    const [result] = await db.select().from(disputes).where(eq(disputes.id, id));
+    return result || undefined;
+  }
+
+  async getDisputesByCustomer(customerId: string): Promise<Dispute[]> {
+    return db.select().from(disputes).where(eq(disputes.customerId, customerId)).orderBy(desc(disputes.createdAt));
+  }
+
+  async getDisputesByStatus(status: string): Promise<Dispute[]> {
+    return db.select().from(disputes).where(eq(disputes.status, status)).orderBy(desc(disputes.createdAt));
+  }
+
+  async updateDispute(id: string, updates: Partial<Dispute>): Promise<Dispute | undefined> {
+    const [result] = await db.update(disputes).set(updates).where(eq(disputes.id, id)).returning();
+    return result || undefined;
+  }
+
+  // Worker Skills
+  async getWorkerSkills(haulerProfileId: string): Promise<WorkerSkill[]> {
+    return db.select().from(workerSkills).where(eq(workerSkills.haulerProfileId, haulerProfileId));
+  }
+
+  async upsertWorkerSkill(skill: InsertWorkerSkill): Promise<WorkerSkill> {
+    const existing = await db.select().from(workerSkills)
+      .where(and(eq(workerSkills.haulerProfileId, skill.haulerProfileId), eq(workerSkills.skillType, skill.skillType)));
+    if (existing.length > 0) {
+      const [result] = await db.update(workerSkills)
+        .set({ rating: skill.rating, jobsCompleted: (existing[0].jobsCompleted || 0) + 1, lastUsedAt: new Date().toISOString() })
+        .where(eq(workerSkills.id, existing[0].id))
+        .returning();
+      return result;
+    }
+    const [result] = await db.insert(workerSkills).values(skill).returning();
+    return result;
+  }
+
+  // AI Safety Alerts
+  async createSafetyAlert(alert: InsertAiSafetyAlert): Promise<AiSafetyAlert> {
+    const [result] = await db.insert(aiSafetyAlerts).values(alert).returning();
+    return result;
+  }
+
+  async getSafetyAlertsByRequest(serviceRequestId: string): Promise<AiSafetyAlert[]> {
+    return db.select().from(aiSafetyAlerts).where(eq(aiSafetyAlerts.serviceRequestId, serviceRequestId)).orderBy(desc(aiSafetyAlerts.createdAt));
+  }
+
+  async acknowledgeSafetyAlert(id: string): Promise<AiSafetyAlert | undefined> {
+    const [result] = await db.update(aiSafetyAlerts)
+      .set({ acknowledged: true, acknowledgedAt: new Date().toISOString() })
+      .where(eq(aiSafetyAlerts.id, id))
+      .returning();
+    return result || undefined;
+  }
+
+  // Bundling Suggestions
+  async createBundlingSuggestion(suggestion: InsertBundlingSuggestion): Promise<BundlingSuggestion> {
+    const [result] = await db.insert(bundlingSuggestions).values(suggestion).returning();
+    return result;
+  }
+
+  async getBundlingSuggestionsByRequest(serviceRequestId: string): Promise<BundlingSuggestion[]> {
+    return db.select().from(bundlingSuggestions).where(eq(bundlingSuggestions.serviceRequestId, serviceRequestId));
+  }
+
+  async updateBundlingSuggestion(id: string, updates: Partial<BundlingSuggestion>): Promise<BundlingSuggestion | undefined> {
+    const [result] = await db.update(bundlingSuggestions).set(updates).where(eq(bundlingSuggestions.id, id)).returning();
+    return result || undefined;
+  }
+
+  // Demand Heatmap
+  async getDemandHeatmapData(dayOfWeek: number, hourOfDay: number): Promise<DemandHeatmapData[]> {
+    return db.select().from(demandHeatmapData)
+      .where(and(eq(demandHeatmapData.dayOfWeek, dayOfWeek), eq(demandHeatmapData.hourOfDay, hourOfDay)))
+      .orderBy(desc(demandHeatmapData.demandScore));
+  }
+
+  async upsertDemandHeatmapData(data: InsertDemandHeatmapData): Promise<DemandHeatmapData> {
+    const [result] = await db.insert(demandHeatmapData).values(data).returning();
+    return result;
+  }
+
+  // Carbon-Intelligent Dispatch Batches
+  async createDispatchBatch(batch: InsertDispatchBatch): Promise<DispatchBatch> {
+    const [result] = await db.insert(dispatchBatches).values(batch).returning();
+    return result;
+  }
+
+  async getDispatchBatchesByDate(date: string): Promise<DispatchBatch[]> {
+    return db.select().from(dispatchBatches).where(eq(dispatchBatches.batchDate, date)).orderBy(desc(dispatchBatches.createdAt));
+  }
+
+  async getDispatchBatchesByHauler(haulerId: string): Promise<DispatchBatch[]> {
+    return db.select().from(dispatchBatches).where(eq(dispatchBatches.haulerId, haulerId)).orderBy(desc(dispatchBatches.createdAt));
+  }
+
+  async updateDispatchBatch(id: string, updates: Partial<DispatchBatch>): Promise<DispatchBatch | undefined> {
+    const [result] = await db.update(dispatchBatches).set(updates).where(eq(dispatchBatches.id, id)).returning();
+    return result || undefined;
+  }
+
+  // Circular Economy - Disposal Recommendations
+  async createDisposalRecommendation(rec: InsertDisposalRecommendation): Promise<DisposalRecommendation> {
+    const [result] = await db.insert(disposalRecommendations).values(rec).returning();
+    return result;
+  }
+
+  async getDisposalRecommendationsByRequest(serviceRequestId: string): Promise<DisposalRecommendation[]> {
+    return db.select().from(disposalRecommendations).where(eq(disposalRecommendations.serviceRequestId, serviceRequestId)).orderBy(desc(disposalRecommendations.createdAt));
+  }
+
+  async updateDisposalRecommendation(id: string, updates: Partial<DisposalRecommendation>): Promise<DisposalRecommendation | undefined> {
+    const [result] = await db.update(disposalRecommendations).set(updates).where(eq(disposalRecommendations.id, id)).returning();
+    return result || undefined;
+  }
+
+  // Compliance Vault - Receipts
+  async createComplianceReceipt(receipt: InsertComplianceReceipt): Promise<ComplianceReceipt> {
+    const [result] = await db.insert(complianceReceipts).values(receipt).returning();
+    return result;
+  }
+
+  async getComplianceReceiptsByHauler(haulerId: string): Promise<ComplianceReceipt[]> {
+    return db.select().from(complianceReceipts).where(eq(complianceReceipts.haulerId, haulerId)).orderBy(desc(complianceReceipts.createdAt));
+  }
+
+  async getComplianceReceiptSummary(haulerId: string, year: number): Promise<{ totalExpenses: number; totalDeductible: number; byCategory: Record<string, number> }> {
+    const receipts = await db.select().from(complianceReceipts)
+      .where(and(eq(complianceReceipts.haulerId, haulerId)));
+    const yearReceipts = receipts.filter(r => r.receiptDate.startsWith(String(year)));
+    const totalExpenses = yearReceipts.reduce((sum, r) => sum + (r.amount || 0), 0);
+    const totalDeductible = yearReceipts.filter(r => r.taxDeductible).reduce((sum, r) => sum + (r.amount || 0), 0);
+    const byCategory: Record<string, number> = {};
+    yearReceipts.forEach(r => {
+      const cat = r.category || r.receiptType || "other";
+      byCategory[cat] = (byCategory[cat] || 0) + (r.amount || 0);
+    });
+    return { totalExpenses, totalDeductible, byCategory };
+  }
+
+  // Compliance Vault - Mileage
+  async createMileageLog(log: InsertMileageLog): Promise<MileageLog> {
+    const deduction = (log.distanceMiles * (log.irsRateCentsPerMile || 67)) / 100;
+    const [result] = await db.insert(mileageLogs).values({ ...log, deductionAmount: deduction }).returning();
+    return result;
+  }
+
+  async getMileageLogsByHauler(haulerId: string): Promise<MileageLog[]> {
+    return db.select().from(mileageLogs).where(eq(mileageLogs.haulerId, haulerId)).orderBy(desc(mileageLogs.createdAt));
+  }
+
+  async getMileageSummary(haulerId: string, year: number): Promise<{ totalMiles: number; businessMiles: number; totalDeduction: number }> {
+    const logs = await db.select().from(mileageLogs).where(eq(mileageLogs.haulerId, haulerId));
+    const yearLogs = logs.filter(l => l.tripDate.startsWith(String(year)));
+    const totalMiles = yearLogs.reduce((sum, l) => sum + (l.distanceMiles || 0), 0);
+    const businessMiles = yearLogs.filter(l => l.purpose === "business").reduce((sum, l) => sum + (l.distanceMiles || 0), 0);
+    const totalDeduction = yearLogs.filter(l => l.purpose === "business").reduce((sum, l) => sum + (l.deductionAmount || 0), 0);
+    return { totalMiles, businessMiles, totalDeduction };
+  }
+
+  // B2B ESG Reports
+  async createEsgReport(report: InsertEsgReport): Promise<EsgReport> {
+    const [result] = await db.insert(esgReports).values(report).returning();
+    return result;
+  }
+
+  async getEsgReportsByBusiness(businessAccountId: string): Promise<EsgReport[]> {
+    return db.select().from(esgReports).where(eq(esgReports.businessAccountId, businessAccountId)).orderBy(desc(esgReports.createdAt));
+  }
+
+  async getEsgReport(id: string): Promise<EsgReport | undefined> {
+    const [result] = await db.select().from(esgReports).where(eq(esgReports.id, id));
+    return result || undefined;
+  }
+
+  async getPlatformSustainabilityStats(): Promise<PlatformSustainabilityStats | undefined> {
+    const [result] = await db.select().from(platformSustainabilityStats).limit(1);
+    return result || undefined;
+  }
+
+  async upsertPlatformSustainabilityStats(stats: Partial<PlatformSustainabilityStats>): Promise<PlatformSustainabilityStats> {
+    const existing = await this.getPlatformSustainabilityStats();
+    if (existing) {
+      const [result] = await db.update(platformSustainabilityStats)
+        .set({ ...stats, updatedAt: new Date().toISOString() })
+        .where(eq(platformSustainabilityStats.id, existing.id))
+        .returning();
+      return result;
+    }
+    const [result] = await db.insert(platformSustainabilityStats)
+      .values({ ...stats, updatedAt: new Date().toISOString() } as any)
+      .returning();
+    return result;
+  }
+
+  // Agentic Brain - AI Triage Reports
+  async createAiTriageReport(report: InsertAiTriageReport): Promise<AiTriageReport> {
+    const [result] = await db.insert(aiTriageReports).values(report).returning();
+    return result;
+  }
+
+  async getAiTriageReport(id: string): Promise<AiTriageReport | undefined> {
+    const [result] = await db.select().from(aiTriageReports).where(eq(aiTriageReports.id, id));
+    return result || undefined;
+  }
+
+  async getAiTriageReportByRequest(serviceRequestId: string): Promise<AiTriageReport | undefined> {
+    const [result] = await db.select().from(aiTriageReports)
+      .where(eq(aiTriageReports.serviceRequestId, serviceRequestId))
+      .orderBy(desc(aiTriageReports.createdAt));
+    return result || undefined;
+  }
+
+  async getRecentAiTriageReports(limit: number = 20): Promise<AiTriageReport[]> {
+    return db.select().from(aiTriageReports).orderBy(desc(aiTriageReports.createdAt)).limit(limit);
+  }
+
+  // Agentic Brain - Smart Dispatch Recommendations
+  async createDispatchRecommendation(rec: InsertDispatchRecommendation): Promise<DispatchRecommendation> {
+    const [result] = await db.insert(dispatchRecommendations).values(rec).returning();
+    return result;
+  }
+
+  async getDispatchRecommendation(id: string): Promise<DispatchRecommendation | undefined> {
+    const [result] = await db.select().from(dispatchRecommendations).where(eq(dispatchRecommendations.id, id));
+    return result || undefined;
+  }
+
+  async getDispatchRecommendationByRequest(serviceRequestId: string): Promise<DispatchRecommendation | undefined> {
+    const [result] = await db.select().from(dispatchRecommendations)
+      .where(eq(dispatchRecommendations.serviceRequestId, serviceRequestId))
+      .orderBy(desc(dispatchRecommendations.createdAt));
+    return result || undefined;
+  }
+
+  // Agentic Brain - Revenue Protector (Sentiment Flags)
+  async createSentimentFlag(flag: InsertSentimentFlag): Promise<SentimentFlag> {
+    const [result] = await db.insert(sentimentFlags).values(flag).returning();
+    return result;
+  }
+
+  async getSentimentFlag(id: string): Promise<SentimentFlag | undefined> {
+    const [result] = await db.select().from(sentimentFlags).where(eq(sentimentFlags.id, id));
+    return result || undefined;
+  }
+
+  async getRecentSentimentFlags(limit: number = 20): Promise<SentimentFlag[]> {
+    return db.select().from(sentimentFlags).orderBy(desc(sentimentFlags.createdAt)).limit(limit);
+  }
+
+  async getSentimentFlagsByRisk(riskLevel: string): Promise<SentimentFlag[]> {
+    return db.select().from(sentimentFlags)
+      .where(eq(sentimentFlags.riskLevel, riskLevel))
+      .orderBy(desc(sentimentFlags.createdAt));
+  }
+
+  async updateSentimentFlag(id: string, updates: Partial<SentimentFlag>): Promise<SentimentFlag | undefined> {
+    const [result] = await db.update(sentimentFlags).set(updates).where(eq(sentimentFlags.id, id)).returning();
+    return result || undefined;
+  }
+
+  // Agentic Brain - Conflict Shield Reports
+  async createConflictShieldReport(report: InsertConflictShieldReport): Promise<ConflictShieldReport> {
+    const [result] = await db.insert(conflictShieldReports).values(report).returning();
+    return result;
+  }
+
+  async getConflictShieldReport(id: string): Promise<ConflictShieldReport | undefined> {
+    const [result] = await db.select().from(conflictShieldReports).where(eq(conflictShieldReports.id, id));
+    return result || undefined;
+  }
+
+  async getConflictShieldReportByRequest(serviceRequestId: string): Promise<ConflictShieldReport | undefined> {
+    const [result] = await db.select().from(conflictShieldReports)
+      .where(eq(conflictShieldReports.serviceRequestId, serviceRequestId))
+      .orderBy(desc(conflictShieldReports.createdAt));
+    return result || undefined;
+  }
+
+  async getRecentConflictShieldReports(limit: number = 20): Promise<ConflictShieldReport[]> {
+    return db.select().from(conflictShieldReports).orderBy(desc(conflictShieldReports.createdAt)).limit(limit);
+  }
+
+  async createDisposalReceipt(receipt: InsertDisposalReceipt): Promise<DisposalReceipt> {
+    const [result] = await db.insert(disposalReceipts).values(receipt).returning();
+    return result;
+  }
+
+  async getDisposalReceiptsByHauler(haulerId: string): Promise<DisposalReceipt[]> {
+    return db.select().from(disposalReceipts)
+      .where(eq(disposalReceipts.haulerId, haulerId))
+      .orderBy(desc(disposalReceipts.createdAt));
+  }
+
+  async canClaimDailyBonus(haulerId: string): Promise<{ canClaim: boolean; approvedToday: number; reason?: string }> {
+    const today = new Date().toISOString().slice(0, 10);
+    const todaysReceipts = await db.select().from(disposalReceipts)
+      .where(and(
+        eq(disposalReceipts.haulerId, haulerId),
+        eq(disposalReceipts.bonusStatus, "approved"),
+        sql`${disposalReceipts.createdAt}::date = ${today}::date`
+      ));
+    const approvedToday = todaysReceipts.length;
+    if (approvedToday >= 1) {
+      return { canClaim: false, approvedToday, reason: "Daily $20 bonus already claimed today" };
+    }
+    return { canClaim: true, approvedToday };
+  }
+
+  async checkDuplicateReceipt(receiptHash: string): Promise<boolean> {
+    if (!receiptHash) return false;
+    const existing = await db.select().from(disposalReceipts)
+      .where(eq(disposalReceipts.receiptHash, receiptHash))
+      .limit(1);
+    return existing.length > 0;
+  }
+
+  async approveDisposalReceipt(receiptId: string): Promise<DisposalReceipt | undefined> {
+    const [result] = await db.update(disposalReceipts)
+      .set({ bonusStatus: "approved", aiVerified: true })
+      .where(eq(disposalReceipts.id, receiptId))
+      .returning();
+    return result || undefined;
+  }
+
+  async rejectDisposalReceipt(receiptId: string, reason: string): Promise<DisposalReceipt | undefined> {
+    const [result] = await db.update(disposalReceipts)
+      .set({ bonusStatus: "rejected", rejectionReason: reason })
+      .where(eq(disposalReceipts.id, receiptId))
+      .returning();
+    return result || undefined;
+  }
+
+  async getDisposalReceiptStats(haulerId: string): Promise<{ totalBonusEarned: number; totalReceipts: number; approvedReceipts: number; pendingReceipts: number }> {
+    const all = await db.select().from(disposalReceipts)
+      .where(eq(disposalReceipts.haulerId, haulerId));
+    const approved = all.filter(r => r.bonusStatus === "approved");
+    const pending = all.filter(r => r.bonusStatus === "pending");
+    return {
+      totalBonusEarned: approved.reduce((sum, r) => sum + (r.bonusAmount || 20), 0),
+      totalReceipts: all.length,
+      approvedReceipts: approved.length,
+      pendingReceipts: pending.length,
+    };
+  }
+
+  async getPropertyScore(userId: string): Promise<PropertyScore | undefined> {
+    const [score] = await db.select().from(propertyScores).where(eq(propertyScores.userId, userId));
+    return score || undefined;
+  }
+
+  async getScoreHistory(scoreId: string, limit: number = 10): Promise<ScoreHistory[]> {
+    return db.select().from(scoreHistory)
+      .where(eq(scoreHistory.scoreId, scoreId))
+      .orderBy(desc(scoreHistory.createdAt))
+      .limit(limit);
+  }
+
+  async createConsultation(consultation: InsertConsultation): Promise<Consultation> {
+    const [result] = await db.insert(consultations).values(consultation).returning();
+    return result;
+  }
+
+  async getConsultation(id: string): Promise<Consultation | undefined> {
+    const [result] = await db.select().from(consultations).where(eq(consultations.id, id));
+    return result || undefined;
+  }
+
+  async getConsultationsByCustomer(customerId: string): Promise<Consultation[]> {
+    return db.select().from(consultations)
+      .where(eq(consultations.customerId, customerId))
+      .orderBy(desc(consultations.createdAt));
+  }
+
+  async updateConsultation(id: string, updates: Partial<Consultation>): Promise<Consultation | undefined> {
+    const [result] = await db.update(consultations).set(updates).where(eq(consultations.id, id)).returning();
+    return result || undefined;
+  }
+
+  async getUnusedConsultationCredit(customerId: string): Promise<Consultation | undefined> {
+    const [result] = await db.select().from(consultations)
+      .where(and(
+        eq(consultations.customerId, customerId),
+        eq(consultations.status, "completed"),
+        eq(consultations.isCreditUsed, false)
+      ))
+      .limit(1);
+    return result || undefined;
+  }
+
+  async createDeferredJob(job: InsertDeferredJob): Promise<DeferredJob> {
+    const [result] = await db.insert(deferredJobs).values(job).returning();
+    return result;
+  }
+
+  async getDeferredJobsByUser(userId: string): Promise<DeferredJob[]> {
+    return db.select().from(deferredJobs)
+      .where(eq(deferredJobs.userId, userId))
+      .orderBy(desc(deferredJobs.createdAt));
+  }
+
+  async updateDeferredJob(id: string, updates: Partial<DeferredJob>): Promise<DeferredJob | undefined> {
+    const [result] = await db.update(deferredJobs).set(updates).where(eq(deferredJobs.id, id)).returning();
+    return result || undefined;
+  }
+
+  async createHaulerCertification(cert: InsertHaulerCertification): Promise<HaulerCertification> {
+    const [result] = await db.insert(haulerCertifications).values(cert).returning();
+    return result;
+  }
+
+  async getHaulerCertifications(haulerId: string): Promise<HaulerCertification[]> {
+    return db.select().from(haulerCertifications)
+      .where(eq(haulerCertifications.haulerId, haulerId));
+  }
+
+  async getHaulerCareerStats(haulerId: string): Promise<any> {
+    const profile = await db.query.haulerProfiles.findFirst({
+      where: eq(haulerProfiles.id, haulerId),
+    });
+    const certs = await this.getHaulerCertifications(haulerId);
+    return {
+      level: profile?.level || 1,
+      xpPoints: profile?.xpPoints || 0,
+      jobsCompleted: profile?.jobsCompleted || 0,
+      fiveStarRatingCount: profile?.fiveStarRatingCount || 0,
+      rating: profile?.rating || 5.0,
+      isConsultantEligible: profile?.isConsultantEligible || false,
+      commissionRate: profile?.commissionRate || 0,
+      payoutPercentage: profile?.payoutPercentage || 0.75,
+      certifications: certs,
+    };
+  }
+}
+
+export const storage = new DatabaseStorage();

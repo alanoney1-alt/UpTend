@@ -1,0 +1,95 @@
+Every time a truck pulls up to a house, you aren't just removing junk; you are verifying the asset's condition.
+
+Here is the full roadmap for the uPYCK Property Score ecosystem.
+
+1. The Algorithm: How Services = Points
+You need a scoring model (0–850, like FICO) that rewards responsible ownership. Every uPYCK service triggers a point increase.
+
+The Scorecard (Examples):
+Junk Removal (Decluttering): +15 Points.
+
+Why? A hoarded home has structural risks, mold, and pests. Verified removal proves the home is "Clean & Clear."
+
+Moving (Move-In Clean): +25 Points.
+
+Why? A "Deep Clean" upon move-in establishes a baseline of hygiene for the next 7 years.
+
+HVAC Filter Change (Labor): +10 Points (Recurring).
+
+Why? This is the #1 predictor of AC longevity. Verified change = Extended asset life.
+
+Garage Cleanout: +20 Points.
+
+Why? Access to the electrical panel/water heater is often blocked by junk. Clearance proves safety compliance.
+
+2. The "Verified Event" Ledger (Blockchain-Lite)
+We stop calling them "Receipts." We call them "Verified Events." When a worker completes a job, the App generates a digital certificate that attaches to the address.
+
+The Certificate: "Verified Garage Clearance - Feb 2026."
+
+The Data: Includes "Before" (Messy) and "After" (Clean) photos.
+
+The Value: When selling, the homeowner proves: "This garage didn't have oil leaks or termites as of Feb 2026. Here is the photo proof stamped by uPYCK."
+
+3. The "Home Warranty" Integration
+This is where you make money without lifting a finger.
+
+The Problem: Home Warranties (American Home Shield) deny claims constantly because they say, "You didn't maintain it."
+
+The uPYCK Fix: "Warranty-Ready."
+
+Strategy: You partner with a warranty company.
+
+The Offer: "If you use uPYCK for your annual maintenance (labor), your Warranty Claim is Pre-Approved."
+
+Why: You have the photo proof that the filter was changed. The warranty company trusts your data over the homeowner's word.
+
+4. The "Renovation ROI" Tracker
+Junk removal is often the first step of a renovation.
+
+The Feature: When a user books "Demo/Debris Removal," the app asks: "Are you upgrading this Kitchen?"
+
+The Calculation:
+
+User: "Yes, new cabinets."
+
+uPYCK: Logs the event. "Kitchen Demo Completed. Ready for Upgrades."
+
+Result: The Home Score updates to reflect "Modernized Kitchen in Progress."
+
+The Sell: You track the value added to the home, not just the cost of the junk.
+
+5. Implementation: The "Property Profile" (Add this to Replit)
+We need a new view for the customer: My Home's Resume.
+
+A. Schema Update (shared/schema.ts):
+
+TypeScript
+export const propertyScore = pgTable("property_score", {
+  id: uuid("id").primaryKey(),
+  propertyId: uuid("property_id").references(() => properties.id),
+  totalScore: integer("total_score").default(450), // Start at average
+  safetyScore: integer("safety_score"), // Clutter/Hazards
+  maintenanceScore: integer("maintenance_score"), // Recurring services
+  efficiencyScore: integer("efficiency_score"), // Green/Eco
+  lastUpdated: timestamp("last_updated").defaultNow()
+});
+B. The "Score Booster" Nudge (client/src/components/score-booster.tsx): A widget on the dashboard that says:
+
+📉 Your Home Score dropped 5 points. Reason: No Water Heater Flush detected in 12 months. Action: Book a Pro ($89) to restore your score.
+
+6. The "Insurance Discount" (The Holy Grail)
+This is the ultimate end-state.
+
+The Pitch to State Farm/Allstate: "Homes with a uPYCK Score of 700+ have 40% fewer fire/water claims because they are decluttered and maintained."
+
+The Result: uPYCK users get a 5-10% discount on Homeowners Insurance.
+
+The Lock-in: The customer cannot cancel uPYCK or hire a random guy, or their insurance rate goes up.
+
+Summary
+Stop selling "Junk Removal." Start selling "Asset Verification."
+
+Gamify Maintenance. Give them a score. People hate losing points.
+
+Prove the Value. Give them the "Resale Certificate" PDF.

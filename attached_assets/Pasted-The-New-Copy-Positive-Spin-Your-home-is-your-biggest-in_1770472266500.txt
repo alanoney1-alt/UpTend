@@ -1,0 +1,32 @@
+The New Copy (Positive Spin)"Your home is your biggest investment, but it didn't come with an instruction manual.We built the Health Monitor that tracks maintenance for you, ensuring your property value keeps climbing.Ready for a refresh or a big move?Whether it's a seasonal scrub or a new chapter—a verified Pycker is already in your neighborhood, ready to help you level up today."💻 The Code UpdateReplace the text block in client/src/pages/landing-page.tsx with this version. It feels lighter, faster, and more optimistic.TypeScript<div className="space-y-6 text-lg text-slate-600 leading-relaxed">
+  <p>
+    Your home is your biggest investment, but it didn't come with an instruction manual.
+  </p>
+  
+  <div className="bg-blue-50/50 p-6 rounded-xl border-l-4 border-blue-500 shadow-sm">
+    <p className="mb-4">
+      We built the <strong>Health Monitor</strong> that tracks maintenance for you, ensuring your property value keeps climbing year after year.
+    </p>
+    
+    {/* The Positive Hook */}
+    <div className="pt-2 border-t border-blue-100 mt-4">
+      <p className="text-sm font-bold text-slate-900 mb-2">
+        Ready for a refresh or a big move?
+      </p>
+      <div className="flex items-center gap-3">
+        <span className="relative flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+        </span>
+        <p className="text-sm text-slate-700">
+          A verified Pycker is <span className="font-bold text-green-700">active in your area right now</span> to help you level up.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    When you use uPYCK, you aren't just booking a service. You are investing in your asset.
+  </p>
+</div>
+🧠 Why this feels better"Property value keeps climbing" $\rightarrow$ Positive growth, not "avoiding rot" (fear)."Refresh or a Big Move" $\rightarrow$ Frames the service as an improvement or an adventure."Level Up" $\rightarrow$ Gamifies the home ownership experience.

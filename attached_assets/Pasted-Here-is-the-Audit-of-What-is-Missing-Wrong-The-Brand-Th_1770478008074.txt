@@ -1,0 +1,132 @@
+Here is the Audit of What is Missing/Wrong:
+
+The Brand: The Logo is wrong. It needs to say uPYCK.
+
+The Contact: The email is generic (support@). It needs to be alan@upyck.com.
+
+The "Essential 5": The Services list is missing "Home Audit".
+
+The Legal Layer: You are missing Terms of Service and Privacy Policy. You cannot process credit cards or background checks without these links visible.
+
+The Copyright: It needs a dynamic year (2026).
+
+Here is the corrected code for client/src/components/layout/footer.tsx.
+
+💻 The Fix: client/src/components/layout/footer.tsx
+TypeScript
+import { Link } from "wouter";
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+
+export function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800">
+      <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          
+          {/* COLUMN 1: BRANDING & CONTACT */}
+          <div className="space-y-6">
+            {/* BRAND FIX: Matching the Header Logo */}
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                uP
+              </div>
+              <span className="text-2xl font-bold text-white tracking-tight">uPYCK</span>
+            </div>
+            
+            <p className="text-sm text-slate-400 leading-relaxed">
+              The Operating System for your home. We handle the labor, the liability, and the data log—so you can handle the living.
+            </p>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
+                <Phone className="w-4 h-4 text-cyan-500" />
+                <span>(407) 338-3342</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
+                <Mail className="w-4 h-4 text-cyan-500" />
+                <a href="mailto:alan@upyck.com">alan@upyck.com</a>
+              </div>
+              <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
+                <MapPin className="w-4 h-4 text-cyan-500" />
+                <span>Orlando Metro Area</span>
+              </div>
+            </div>
+          </div>
+
+          {/* COLUMN 2: SERVICES (The Essential 5) */}
+          <div>
+            <h3 className="text-white font-bold mb-6">The Essential 5</h3>
+            <ul className="space-y-4 text-sm">
+              <li><Link href="/services/junk"><span className="hover:text-cyan-400 cursor-pointer">Junk Removal</span></Link></li>
+              <li><Link href="/services/pressure-wash"><span className="hover:text-cyan-400 cursor-pointer">Pressure Washing</span></Link></li>
+              <li><Link href="/services/gutter"><span className="hover:text-cyan-400 cursor-pointer">Gutter Cleaning</span></Link></li>
+              <li><Link href="/services/moving"><span className="hover:text-cyan-400 cursor-pointer">Moving Labor</span></Link></li>
+              <li><Link href="/services/audit"><span className="hover:text-cyan-400 cursor-pointer font-semibold text-cyan-200">Home Audit + Inventory</span></Link></li>
+            </ul>
+          </div>
+
+          {/* COLUMN 3: FOR PROS & TECH */}
+          <div>
+            <h3 className="text-white font-bold mb-6">For Partners</h3>
+            <ul className="space-y-4 text-sm">
+              <li><Link href="/become-a-pycker"><span className="hover:text-cyan-400 cursor-pointer">Become a Pycker</span></Link></li>
+              <li><Link href="/academy"><span className="hover:text-cyan-400 cursor-pointer">The Pycker Academy</span></Link></li>
+              <li><Link href="/auth"><span className="hover:text-cyan-400 cursor-pointer">Pro Login</span></Link></li>
+              <li className="pt-4 font-bold text-white">Technology</li>
+              <li><Link href="/home-score"><span className="hover:text-cyan-400 cursor-pointer">Home Score Explained</span></Link></li>
+              <li><Link href="/green-promise"><span className="hover:text-cyan-400 cursor-pointer">The Green Promise</span></Link></li>
+            </ul>
+          </div>
+
+          {/* COLUMN 4: NEWSLETTER & SOCIAL */}
+          <div>
+            <h3 className="text-white font-bold mb-6">Stay Connected</h3>
+            <p className="text-xs text-slate-500 mb-4">
+              Get home maintenance tips and exclusive discounts.
+            </p>
+            <div className="flex gap-2 mb-8">
+              <input 
+                type="email" 
+                placeholder="Enter your email" 
+                className="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm w-full focus:outline-none focus:border-cyan-500"
+              />
+              <button className="bg-cyan-600 hover:bg-cyan-500 text-white rounded px-4 py-2 font-bold transition-colors">
+                →
+              </button>
+            </div>
+            
+            {/* SOCIAL ICONS */}
+            <div className="flex gap-4">
+              <a href="#" className="bg-slate-900 p-2 rounded hover:bg-slate-800 transition-colors"><Facebook className="w-5 h-5 text-slate-400" /></a>
+              <a href="#" className="bg-slate-900 p-2 rounded hover:bg-slate-800 transition-colors"><Instagram className="w-5 h-5 text-slate-400" /></a>
+              <a href="#" className="bg-slate-900 p-2 rounded hover:bg-slate-800 transition-colors"><Linkedin className="w-5 h-5 text-slate-400" /></a>
+              <a href="#" className="bg-slate-900 p-2 rounded hover:bg-slate-800 transition-colors"><Twitter className="w-5 h-5 text-slate-400" /></a>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM BAR: LEGAL & COPYRIGHT */}
+        <div className="border-t border-slate-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+          <p>© {currentYear} uPYCK Inc. All rights reserved.</p>
+          <div className="flex gap-6">
+            <Link href="/privacy"><span className="hover:text-white cursor-pointer">Privacy Policy</span></Link>
+            <Link href="/terms"><span className="hover:text-white cursor-pointer">Terms of Service</span></Link>
+            <Link href="/cookies"><span className="hover:text-white cursor-pointer">Cookie Settings</span></Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+🔑 Key Changes Made:
+Replaced Logo: I manually built the "uP" square logo using CSS (bg-blue-600) so it matches the header perfectly without needing an image file.
+
+Updated Email: Swapped the support email for alan@upyck.com as requested.
+
+Added "Home Audit": I added the 5th service to the list so the "Essential 5" messaging holds up.
+
+Added Legal Bar: The bottom section now includes Privacy Policy and Terms. This is mandatory for Stripe verification.
+
+Refined Copy: Changed "Home Health OS" to match your new tagline: "The Operating System for your home."

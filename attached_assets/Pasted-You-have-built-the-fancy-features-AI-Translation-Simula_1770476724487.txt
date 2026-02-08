@@ -1,0 +1,74 @@
+You have built the "fancy" features (AI, Translation, Simulator). Now you need to finish the "Boring but Critical" operational tools.
+
+If a Pycker works all week but can't see how much money they made, they will quit. If they take the training but don't actually watch the videos, they will break something.
+
+Here are the 3 Final Systems to finish the Worker Experience (Pycker Side).
+
+1. The "Paycheck" (Earnings & History Log)
+The Gap: The Dashboard currently shows "Available Jobs." It needs a tab for "My Money." The Fix: A chart showing Weekly Earnings and a list of past jobs with the specific payout breakdown.
+
+👉 Replit Action: Create client/src/pages/hauler/earnings.tsx.
+
+TypeScript
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DollarSign, Calendar, TrendingUp } from "lucide-react";
+
+export function EarningsView() {
+  const [earnings, setEarnings] = useState({ total: 0, weekly: 0, history: [] });
+
+  useEffect(() => {
+    // Fetch from API (We built the '/api/payouts' table earlier!)
+    fetch('/api/hauler/earnings').then(res => res.json()).then(setEarnings);
+  }, []);
+
+  return (
+    <div className="space-y-6 animate-in fade-in">
+      {/* 1. THE BIG NUMBER */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="bg-green-600 text-white border-none shadow-lg">
+          <CardContent className="p-6">
+            <p className="text-green-100 text-sm font-medium uppercase">This Week</p>
+            <h2 className="text-4xl font-bold mt-1">${earnings.weekly}</h2>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-slate-500 text-sm font-medium uppercase">Lifetime</p>
+            <h2 className="text-4xl font-bold text-slate-900 mt-1">${earnings.total}</h2>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 2. THE LOG (History) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-slate-500" /> Recent Payouts
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="divide-y divide-slate-100">
+            {earnings.history.map((job) => (
+              <div key={job.id} className="py-4 flex justify-between items-center">
+                <div>
+                  <p className="font-bold text-slate-800">{job.serviceType} - {job.address}</p>
+                  <p className="text-xs text-slate-400">{new Date(job.date).toLocaleDateString()}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-green-600">+${job.amount}</p>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                    {job.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {earnings.history.length === 0 && (
+              <p className="text-center text-slate-400 py-4">No completed jobs yet. Go get 'em!</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

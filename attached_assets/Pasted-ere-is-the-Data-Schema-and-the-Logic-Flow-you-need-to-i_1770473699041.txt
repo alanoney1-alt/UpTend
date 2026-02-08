@@ -1,0 +1,94 @@
+ere is the Data Schema and the Logic Flow you need to implement in Replit to make the Academy "real."
+
+1. The Visual Model
+Before we write code, look at how the data flows. The "Gatekeeper" checks the worker's badge before dispatching the job.
+
+2. The Database Schema (server/db/schema.ts)
+We are moving beyond a simple "User" table. We are adding a certifications table that acts as the permanent record of their skills.
+
+👉 Copy/Paste this Prompt into Replit:
+
+"Open server/db/schema.ts.
+
+I need to upgrade the database to support the Pycker Academy.
+
+1. Update the users table:
+
+Add xp_points (integer, default 0).
+
+Add current_tier (string, default 'rookie').
+
+Add is_active (boolean, default false) - They can't work until they pass Core.
+
+2. Create a new certifications table:
+
+id: Serial Primary Key.
+
+user_id: Integer (References users.id).
+
+skill_type: String (Enum: 'core_safety', 'junk_removal', 'pressure_washing', 'gutter_cleaning', 'moving_labor').
+
+status: String (Enum: 'active', 'expired', 'revoked').
+
+issued_at: Timestamp.
+
+expires_at: Timestamp (Safety certs expire yearly).
+
+quiz_score: Integer.
+
+3. Update the services (jobs) table:
+
+Add required_certification: String (Matches the skill_type above).
+
+Goal: We need to be able to query: 'Show me all active drivers who have the Gutter Cleaning badge.'"
+
+3. The "Gatekeeper" Logic (The API)
+Now, we need the brain. This is the code that runs when a user submits a quiz. It doesn't just say "Good job," it unlocks their earning potential.
+
+👉 Copy/Paste this Prompt into Replit:
+
+"Open server/routes.ts.
+
+Create a new endpoint POST /api/academy/certify.
+
+The Logic:
+
+Receive { userId, skillType, quizScore }.
+
+Verify Score: If score < 80%, return error: 'Certification Failed. Retake Quiz.'
+
+If Passed:
+
+Insert a new record into the certifications table.
+
+Update users.xp_points (+50 XP).
+
+The Tier Up: If they now have 3+ certifications, update users.current_tier to 'Pro'.
+
+The Unlock: Return the new list of available job types for the frontend to display."
+
+4. The "Matchmaker" Logic (The Algorithm)
+This is where the magic happens. When a customer books a job, we don't want to show it to unqualified workers.
+
+👉 Copy/Paste this Prompt into Replit:
+
+"Update the GET /api/jobs endpoint in server/routes.ts.
+
+Current Logic: It returns all open jobs. New Logic (The Filter):
+
+Get the current user's active certifications from the DB.
+
+Filter the jobs list.
+
+Example: If User has only 'junk_removal' cert, HIDE all 'gutter_cleaning' jobs.
+
+Why: We cannot show a Gutter Job to a user who hasn't passed the ladder safety module. It is a liability risk."
+
+🧠 Why this Data matters
+By building it this way, you create three massive value assets:
+
+The "Safety moat": When you pitch to insurance companies, you don't say "We train them." You show them the SQL query: "We physically block uncertified users from seeing hazardous jobs." (This lowers your premiums).
+
+The "Gamification": You can now send push notifications: "Mike, you are 1 badge away from unlocking $150 Gutter Jobs. Take the quiz now."
+
+The "Expiration": Next year, you can auto-expire their badges and force a 5-minute "Safety Refresher" to keep them active.

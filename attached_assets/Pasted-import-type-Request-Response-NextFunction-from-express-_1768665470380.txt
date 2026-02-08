@@ -1,0 +1,163 @@
+import type { Request, Response, NextFunction } from "express";
+
+// Extended Express Request type to include user from Replit Auth
+interface AuthRequest extends Request {
+  user?: {
+    id: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+    [key: string]: any;
+  };
+}
+
+/**
+ * Require user to be authenticated (logged in)
+ * This middleware should already exist from Replit Auth
+ * If not, use this implementation
+ */
+export function requireAuth(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ 
+      error: "Authentication required",
+      message: "You must be logged in to access this resource"
+    });
+  }
+  next();
+}
+
+/**
+ * Require user to have admin role
+ */
+export function requireAdmin(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ 
+      error: "Authentication required",
+      message: "You must be logged in to access this resource"
+    });
+  }
+  
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ 
+      error: "Admin access required",
+      message: "You do not have permission to access this resource"
+    });
+  }
+  
+  next();
+}
+
+/**
+ * Require user to have hauler role
+ */
+export function requireHauler(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ 
+      error: "Authentication required",
+      message: "You must be logged in to access this resource"
+    });
+  }
+  
+  if (req.user.role !== "hauler" && req.user.role !== "admin") {
+    return res.status(403).json({ 
+      error: "Hauler access required",
+      message: "You must be a PYCKER to access this resource"
+    });
+  }
+  
+  next();
+}
+
+/**
+ * Require user to have customer role
+ */
+export function requireCustomer(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ 
+      error: "Authentication required",
+      message: "You must be logged in to access this resource"
+    });
+  }
+  
+  if (req.user.role !== "customer" && req.user.role !== "admin") {
+    return res.status(403).json({ 
+      error: "Customer access required",
+      message: "You must be a customer to access this resource"
+    });
+  }
+  
+  next();
+}
+
+/**
+ * Require user to own the resource or be admin
+ * Usage: requireOwnership("userId") or requireOwnership("customerId")
+ */
+export function requireOwnership(paramName: string) {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({ 
+        error: "Authentication required",
+        message: "You must be logged in to access this resource"
+      });
+    }
+    
+    const resourceUserId = req.params[paramName];
+    
+    // Admin can access anything
+    if (req.user.role === "admin") {
+      return next();
+    }
+    
+    // User must own the resource
+    if (req.user.id !== resourceUserId) {
+      return res.status(403).json({ 
+        error: "Access denied",
+        message: "You can only access your own resources"
+      });
+    }
+    
+    next();
+  };
+}
+
+/**
+ * Require user to own the hauler profile or be admin
+ * This checks the haulerProfile's userId against the logged-in user
+ */
+export function requireHaulerOwnership(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ 
+      error: "Authentication required",
+      message: "You must be logged in to access this resource"
+    });
+  }
+  
+  // Admin can access anything
+  if (req.user.role === "admin") {
+    return next();
+  }
+  
+  // Must be a hauler
+  if (req.user.role !== "hauler") {
+    return res.status(403).json({ 
+      error: "Hauler access required",
+      message: "You must be a PYCKER to access this resource"
+    });
+  }
+  
+  // Store profileId in request for downstream handlers to verify ownership
+  // The actual ownership check will happen in the route handler when fetching from DB
+  next();
+}
+
+/**
+ * Optional auth - adds user to request if logged in, but doesn't require it
+ * Useful for routes that work differently for logged in vs anonymous users
+ */
+export function optionalAuth(req: AuthRequest, res: Response, next: NextFunction) {
+  // User is already attached by Replit Auth if logged in
+  // Just continue regardless
+  next();
+}

@@ -1,0 +1,114 @@
+Spark 1: The "Heartbeat" (CRON Jobs)
+The Problem: Who expires a badge at midnight? Who sends the "Your job is in 1 hour" text? Currently, no one. The Fix: You need a scheduled task runner that wakes up every minute to check the health of the system.
+
+👉 Action: Create server/cron.ts.
+
+TypeScript
+import cron from "node-cron";
+import { db } from "./db";
+import { notify } from "./notifications";
+
+export function startHeartbeat() {
+  console.log("🫀 SYSTEM HEARTBEAT ACTIVE");
+
+  // 1. THE REMINDER (Every 15 minutes)
+  // Checks for jobs starting in 1 hour and texts the customer/worker
+  cron.schedule("*/15 * * * *", async () => {
+    const upcomingJobs = await db.query.orders.findMany({
+      where: { 
+        status: 'assigned',
+        scheduledAt: { 
+          gt: new Date(), 
+          lt: new Date(Date.now() + 60 * 60 * 1000) // Next 1 hour
+        },
+        reminderSent: false
+      }
+    });
+
+    for (const job of upcomingJobs) {
+      await notify(job.userId, "reminder", "Your Pro arrives in 1 hour!");
+      await notify(job.haulerId, "reminder", "Head to job #" + job.id);
+      
+      // Mark as sent so we don't spam them
+      await db.update(orders).set({ reminderSent: true }).where(eq(orders.id, job.id));
+    }
+  });
+
+  // 2. THE CLEANER (Every Midnight)
+  // Expired Badges & Unpaid Holds
+  cron.schedule("0 0 * * *", async () => {
+    console.log("🧹 Running Midnight Cleanup...");
+    
+    // Auto-expire certifications older than 1 year
+    await db.execute(sql`
+      UPDATE certifications 
+      SET status = 'expired' 
+      WHERE expires_at < NOW() AND status = 'active'
+    `);
+  });
+}
+👉 Action: Import and run this in server/index.ts: import { startHeartbeat } from "./cron"; startHeartbeat();
+
+Spark 2: The "Genesis" (Seed Script)
+The Problem: You launch the app, and it's empty. No services, no prices, no test users. You can't even test the flow. The Fix: You need a "Big Bang" script that populates your universe with the "Essential 5" services and a default Admin.
+
+👉 Action: Create server/seed.ts and run it once.
+
+TypeScript
+import { db } from "./db";
+import { services, users } from "./db/schema";
+
+async function runSeed() {
+  // 1. CREATE THE ESSENTIAL 5 SERVICES
+  await db.insert(services).values([
+    { name: "Junk Removal", slug: "junk", basePrice: 9900, priceUnit: "volume" },
+    { name: "Pressure Washing", slug: "wash", basePrice: 15000, priceUnit: "sqft" },
+    { name: "Gutter Cleaning", slug: "gutter", basePrice: 12000, priceUnit: "linear_ft" },
+    { name: "Moving Labor", slug: "move", basePrice: 8000, priceUnit: "hour" },
+    { name: "Home Audit", slug: "audit", basePrice: 4900, priceUnit: "flat" },
+  ]);
+
+  // 2. CREATE THE GOD MODE ADMIN
+  await db.insert(users).values({
+    username: "admin",
+    password: "hashed_password_here", // Use a real hash in production
+    role: "admin",
+    isVerified: true
+  });
+
+  console.log("🌱 Database Populated!");
+}
+
+runSeed();
+Spark 3: The "Reflex" (Webhooks)
+The Problem: When Stripe collects money, your app doesn't know until it "asks." That's too slow. The Fix: You need to open a "Listener" port. This is the Reflex. When an event happens in the real world (Money sent, Background Check cleared), your app reacts instantly.
+
+👉 Action: Ensure your server/routes.ts has these listeners open:
+
+POST /api/webhooks/stripe (Money)
+
+POST /api/webhooks/checkr (Safety)
+
+POST /api/webhooks/twilio (SMS Replies)
+
+Without these, your app is deaf.
+
+Spark 4: The "Keep-Alive" (Deployment)
+The Problem: Replit puts your app to sleep if no one uses it for 30 minutes. Your "Heartbeat" (Cron Job) will die. The Fix: You cannot run a "Home OS" on a free/sleeping server.
+
+Replit Deploy: You must click the "Deploy" button (top right) and choose "Autoscale" or "Reserved VM". This keeps the server running 24/7 so your Cron Jobs actually fire at midnight.
+
+Uptime Monitor: (Optional) Use a service like UptimeRobot to ping your URL every 5 minutes to force it to stay awake if you are on a budget.
+
+🚀 The Final "Wake Up" Sequence
+Do this right now to breathe life into the code:
+
+Run the Seed: npm run seed (or npx tsx server/seed.ts). Now your database has services.
+
+Start the Heartbeat: Add the Cron Job to index.ts. Now your app has a sense of time.
+
+Open the Ears: Verify your Webhook routes are defined. Now your app can hear Stripe.
+
+Keep it Awake: Deploy the project. Now it never sleeps.
+
+Once these 4 are done, uPYCK is alive.

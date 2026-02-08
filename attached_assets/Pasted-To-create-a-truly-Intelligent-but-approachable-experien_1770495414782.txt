@@ -1,0 +1,53 @@
+To create a truly "Intelligent but approachable" experience, we need to remove the login wall and replace it with a high-value data flow. Here is the plan to move from "clunky" to "frictionless." 1. Address Intelligence (Autofill)To provide that "Home Intelligence" feel, we’ll use the Google Places Autocomplete API. As the user types their Florida address, the system will suggest real locations. This ensures the data is accurate before they hit "Scan Property" and makes the experience feel "Instant." 2. The "Frictionless" User FlowWe are pushing the login screen to the very end of the funnel. The user will move through these stages as a Guest: Stage 1: Hero Section – Enter address with autofill. Stage 2: Estimation Report – See the $8,400+ Insurance Shield potential and ESG impact for their specific property. Stage 3: Service Menu – View all services, with "Home Health Audit" featured first as the primary option to "Protect" their value. Stage 4: The Booking Gate – Only after they click "Confirm & Book" do we ask for a login to "Secure this Pro." 3. Integrated "Quick Booking" vs. "Intelligence"To ensure we don't deter people who just want a fast job, we will provide a Dual-Path Results Page. Path A: Home Intelligence Path B: Instant Booking Primary Focus: Long-term value & protection. Primary Focus: Immediate task completion. Top Feature: The "Home Health Audit." Top Feature: On-demand "Material Recovery." The Hook: Build your "Verified Green Track Record." The Hook: "Uber-like access" to vetted pros. 🚀 Implementation Strategy for ReplitWe will update the FloridaEstimator component to handle this "Guest Mode" and service selection. TypeScript// This grid appears immediately after the "Scan Property" action
+export function ServiceSelection({ address, estimates }) {
+  return (
+    <div className="space-y-8 animate-in fade-in duration-700 text-left">
+      <h3 className="text-2xl font-black text-slate-900">Available for your Property</h3>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* OPTION 1: HOME HEALTH (Featured) */}
+        <div className="p-6 bg-blue-600 text-white rounded-[2rem] shadow-xl hover:scale-[1.02] transition-transform cursor-pointer">
+           <div className="flex justify-between items-start mb-4">
+              <ShieldCheck className="w-8 h-8" />
+              <span className="bg-white/20 text-[10px] font-bold px-2 py-1 rounded uppercase">Essential Pillar: Protect</span> [cite: 19]
+           </div>
+           <h4 className="text-xl font-bold">Home Health Audit</h4>
+           <p className="text-sm opacity-80 mt-2 mb-4">
+             AI-powered intelligence that tracks property value and shields you during insurance claims. [cite: 19, 30]
+           </p>
+           <div className="flex justify-between items-center">
+              <span className="font-black text-2xl">$99</span>
+              <Button size="sm" className="bg-white text-blue-600 font-bold">Select Service</Button>
+           </div>
+        </div>
+
+        {/* OPTION 2: MATERIAL RECOVERY (Junk) */}
+        <div className="p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+           <Leaf className="text-green-600 w-8 h-8 mb-4" />
+           <h4 className="text-xl font-bold text-slate-900">Material Recovery</h4>
+           <p className="text-sm text-slate-500 mt-2 mb-4">
+             On-demand service with verified, auditable green impact and ESG tracking. 
+           </p>
+           <div className="flex justify-between items-center">
+              <span className="font-black text-2xl text-slate-900">{estimates.junkRemoval}</span>
+              <Button size="sm" variant="outline" className="border-slate-200">Select Service</Button>
+           </div>
+        </div>
+      </div>
+
+      {/* FINAL INTEGRATED ACTION */}
+      <div className="text-center p-10 bg-slate-900 rounded-[2.5rem] text-white">
+        <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Home Intelligence. Instant Service. [cite: 8]</p>
+        <h4 className="text-2xl font-bold mb-6">Ready to secure your home in Orlando?</h4> [cite: 19]
+        <Button 
+          onClick={() => window.location.href = '/auth'}
+          className="bg-blue-600 hover:bg-blue-500 h-14 px-12 rounded-xl text-lg font-black shadow-lg"
+        >
+          Confirm & Dispatch Pro 
+        </Button>
+        <p className="mt-4 text-[10px] text-slate-500 uppercase tracking-widest">Login required to finalize vetted booking</p> [cite: 45]
+      </div>
+    </div>
+  );
+}
+🧠 Why this aligns with the UpTend Brand Guide:Sustainability as Action: We aren't just talking green; we’re letting them see the "Verified" impact before they even join. Human Voice: We use terms like "Home Health" and "Dispatch Pro" instead of jargon. Value Protection: The Home Health Audit is the hero, reinforcing the "Protect" pillar. 

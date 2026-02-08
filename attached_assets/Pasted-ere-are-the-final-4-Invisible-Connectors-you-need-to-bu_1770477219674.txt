@@ -1,0 +1,109 @@
+ere are the final 4 Invisible Connectors you need to build to make the frontend and backend talk to each other in real-time.
+
+1. The "Pulse" (Real-Time Status Updates)
+The Problem: The Customer is staring at "Searching for Pro..." The Pycker accepts it. The Customer still sees "Searching..." because the browser doesn't know the database changed. The Fix: You need Polling. (WebSockets are too complex for an MVP; Polling is bulletproof).
+
+👉 Action: Create a React Hook client/src/hooks/use-job-status.ts.
+
+TypeScript
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query'; // Ensure you have react-query installed
+
+export function useJobStatus(jobId) {
+  // Poll the server every 5 seconds to check status
+  const { data, error } = useQuery({
+    queryKey: ['jobStatus', jobId],
+    queryFn: async () => {
+      const res = await fetch(`/api/jobs/${jobId}/status`);
+      return res.json();
+    },
+    refetchInterval: 5000, // The "Heartbeat" (5 seconds)
+  });
+
+  return data?.status || 'loading';
+}
+How to use it: In your ActiveJobWizard.tsx:
+
+TypeScript
+const status = useJobStatus(currentJob.id);
+
+useEffect(() => {
+  if (status === 'en_route') {
+    // Trigger the "Driver Found!" animation automatically
+    setShowDriverFoundModal(true);
+  }
+}, [status]);
+2. The "Face" (Profile Photo Sync)
+The Problem: We built the camera for Jobs (Trash piles), but we forgot the camera for People. The Gap: Trust is visual. A customer will cancel if the "Driver is En Route" but there is no photo of his face. The Fix: Connect the ImageUploader to the User table, not just the Order table.
+
+👉 Action: Backend Route (server/routes.ts):
+
+TypeScript
+// PATCH /api/user/profile-image
+app.patch("/api/user/profile-image", async (req, res) => {
+  const { imageUrl, type } = req.body; // type = 'avatar' or 'vehicle'
+  const userId = req.user.id;
+
+  const field = type === 'vehicle' ? 'vehiclePhotoUrl' : 'profilePhotoUrl';
+
+  await db.update(users)
+    .set({ [field]: imageUrl })
+    .where(eq(users.id, userId));
+
+  res.json({ success: true });
+});
+3. The "Formatter" (Phone Number Sanitizer)
+The Problem: Users type phone numbers weirdly: (555) 123-4567 or 555.123.4567. The Crash: Twilio (SMS) will fail if you don't send +15551234567 (E.164 format). The Fix: A "Sanitizer" middleware before the data hits the database.
+
+👉 Action: Add this utility in server/utils.ts.
+
+TypeScript
+export function sanitizePhone(phone: string) {
+  // 1. Remove non-digits
+  const cleaned = phone.replace(/\D/g, '');
+  
+  // 2. Add Country Code if missing (Assume US for now)
+  if (cleaned.length === 10) {
+    return `+1${cleaned}`;
+  } else if (cleaned.length === 11 && cleaned.startsWith('1')) {
+    return `+${cleaned}`;
+  }
+  
+  // 3. Return null if invalid (Frontend should block this)
+  return null;
+}
+👉 Action: Apply it in your Signup Route:
+
+TypeScript
+// Inside POST /api/register
+const cleanPhone = sanitizePhone(req.body.phone);
+if (!cleanPhone) return res.status(400).json({ message: "Invalid Phone Number" });
+4. The "Translator" (Error Handling)
+The Problem: The Backend sends cryptic errors: Error: foreign key constraint violation. The Frontend: Shows the user: Error: foreign key... (This looks unprofessional and scary). The Fix: A Global Error Interceptor that translates "Geek Speak" into "Human Speak."
+
+👉 Action: Update your API client (or App.tsx global error boundary).
+
+TypeScript
+// In your fetch wrapper or axios interceptor
+const handleApiError = (error) => {
+  // Translate SQL errors to Spanish/English
+  if (error.message.includes("constraint")) {
+    return "This email is already registered."; 
+  }
+  if (error.message.includes("stripe")) {
+    return "Payment declined. Please check your card.";
+  }
+  return "Something went wrong. Please try again.";
+};
+🚀 The Final "Go Live" Checklist
+You are ready.
+
+Polling: Add useJobStatus so the screen updates automatically.
+
+Photos: Add the Profile Upload route so workers have faces.
+
+Phones: Add the Sanitizer so SMS actually sends.
+
+Errors: Add the Translator so users don't see code.
+
+Start with #1 (Polling). That is the difference between a "Website" and an "App."

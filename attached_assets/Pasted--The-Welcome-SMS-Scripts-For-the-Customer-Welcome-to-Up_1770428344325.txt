@@ -1,0 +1,67 @@
+. The "Welcome SMS" Scripts
+For the Customer:
+
+"Welcome to Upyck! 🏠 Your account is active. We’ll text you when your Pro is on the way and send your 'Green Receipt' after the job. Reply STOP to opt out."
+
+For the Pycker (Worker):
+
+"Welcome to the Upyck Pro Team! 🚚 You’re now eligible for jobs. We’ll text you the moment a new request hits your area. Reply STOP to opt out."
+
+2. How to Tell the Replit Agent to Build It
+Open the Replit Agent chat and paste this exact prompt:
+
+"I need to add a TCPA-compliant 'Welcome SMS' flow to my signup process.
+
+Use the Twilio SDK for Node.js.
+
+Create a new file called services/sms.js with a function sendWelcomeSMS(phone, role).
+
+In the signup route, after a user is saved to the PostgreSQL database, trigger this function.
+
+Ensure the signup form has a mandatory checkbox for 'Consent to receive automated texts and calls' and save the ip_address and timestamp of this consent to the user's record."
+
+3. The Replit "Secrets" (Manual Step)
+The Agent can't see your private Twilio keys, so you must add them manually:
+
+Go to the Tools section on the left sidebar in Replit.
+
+Click on Secrets (the lock icon).
+
+Add these three keys:
+
+TWILIO_ACCOUNT_SID
+
+TWILIO_AUTH_TOKEN
+
+TWILIO_PHONE_NUMBER (The number you bought on Twilio).
+
+4. The Backend Logic (What the Agent will write)
+The code the Agent generates will look something like this. It ensures that the Welcome Text is the very first thing they receive, serving as their "Confirmation of Opt-In."
+
+JavaScript
+// services/sms.js
+const twilio = require('twilio');
+const client = new twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+async function sendWelcomeSMS(phone, role) {
+  const message = role === 'pycker' 
+    ? "Welcome to Upyck Pro! 🚚 You're ready for jobs. We'll text you new requests. Reply STOP to opt out."
+    : "Welcome to Upyck! 🏠 We'll text you when your Pro is on the way. Reply STOP to opt out.";
+
+  try {
+    await client.messages.create({
+      body: message,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: phone
+    });
+    console.log(`Welcome SMS sent to ${phone}`);
+  } catch (error) {
+    console.error("SMS Error:", error);
+  }
+}
+5. Why this beats the "Big Companies"
+Most big companies have a delay between signup and their first communication. By using Replit to trigger this instantly, you are:
+
+Legally Protected: You have a timestamped record of their consent and the confirmation text sent.
+
+Psychologically Engaging: The customer/worker gets a "ping" the moment they join, making Upyck feel "Live" and "Immediate" (the Uber effect).

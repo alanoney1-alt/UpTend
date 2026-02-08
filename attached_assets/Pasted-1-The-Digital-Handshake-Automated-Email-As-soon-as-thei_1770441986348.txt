@@ -1,0 +1,223 @@
+1. The "Digital Handshake" (Automated Email)
+As soon as their background check clears, they get this email. It sets the tone: You are a business owner, here is your manual.
+
+Subject: Welcome to uPYCK Pro: Unlock Your Account 🔓
+
+Body:
+
+"Welcome to the Network.
+
+You have passed the background check. To activate your account and start receiving jobs, you must complete the uPYCK Protocol Certification (15 minutes).
+
+Why Certify?
+
+Unlock The App: You cannot see jobs until you pass.
+
+Earn More: Certified Pros get access to the "Unlicensed 5" (Pressure Washing, Moving, etc.).
+
+Get Paid Faster: Learn how to trigger instant payouts.
+
+[ CLICK HERE TO START CERTIFICATION ]"
+
+2. The In-App "Pycker Academy" (The Screen)
+We don't send them to a boring YouTube playlist. We build the "course" right inside the app. They swipe through cards and answer questions.
+
+The Curriculum (4 Modules):
+
+The "White Glove" Standard:
+
+Lesson: We are not "Junk Guys." We are "Asset Managers."
+
+Rule: Clean uniform (or uPYCK shirt). No smoking on site.
+
+Quiz: "What do you do if a customer asks to remove extra items?"
+
+A) Do it for free.
+
+B) Use the 'Update Scope' tool in the app to get paid. (Correct)
+
+The App Mechanics:
+
+Lesson: How the "Ghost Buster" GPS works. Why you must take "Before & After" photos.
+
+Rule: If you don't upload a photo, the payout is locked.
+
+Quiz: "When does the insurance policy kick in?"
+
+A) When I wake up.
+
+B) When I slide 'Start Job' in the app. (Correct)
+
+The "Upsell" (Making Money):
+
+Lesson: How to spot a dirty driveway or full gutters.
+
+Script: "I noticed your driveway is slippery. Since I'm here, I can wash it for $99. Want me to add that?"
+
+Quiz: "You finish a junk job and see a shed. What do you do?"
+
+A) Leave.
+
+B) Offer a demo quote via the app. (Correct)
+
+The "Golden Rules" (Zero Tolerance):
+
+Lesson: No cash deals. No harassment. No dumping illegally.
+
+Consequence: One strike = Permanent Ban.
+
+3. The Tech: Build the "Academy" Component
+Here is the React code for the onboarding flow. Add this to your replit.
+
+File: client/src/pages/hauler-onboarding/academy.tsx
+
+TypeScript
+import { useState } from "react";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { CheckCircle, AlertTriangle, DollarSign } from "lucide-react";
+import { useLocation } from "wouter";
+
+const MODULES = [
+  {
+    id: 1,
+    title: "The uPYCK Standard",
+    content: "We are not just hauling junk. We are protecting home value. Always wear a collared shirt or uPYCK gear. Introduce yourself by name.",
+    question: "How should you greet the customer?",
+    options: ["'Yo, where's the trash?'", "'Hi, I'm [Name] with uPYCK. I'm here to help.'"],
+    correct: 1
+  },
+  {
+    id: 2,
+    title: "Get Paid Correctly",
+    content: "Never negotiate cash. If the customer adds items, use the 'Adjust Scope' button. The customer approves the new price on their phone instantly.",
+    question: "The customer adds a sofa. What do you do?",
+    options: ["Take cash", "Update the App Scope"],
+    correct: 1
+  },
+  {
+    id: 3,
+    title: "The Upsell",
+    content: "Look for dirty driveways or full gutters. You earn 100% of the upsell labor. Turn a $150 job into a $300 job in seconds.",
+    question: "You see a dirty driveway. You should:",
+    options: ["Ignore it", "Offer a $99 Pressure Wash via the App"],
+    correct: 1
+  }
+];
+
+export default function PyckerAcademy() {
+  const [step, setStep] = useState(0);
+  const [score, setScore] = useState(0);
+  const [location, setLocation] = useLocation();
+
+  const currentModule = MODULES[step];
+
+  const handleAnswer = (index: number) => {
+    if (index === currentModule.correct) {
+      if (step < MODULES.length - 1) {
+        setStep(step + 1);
+        setScore(score + 1);
+      } else {
+        // Certified!
+        completeCertification();
+      }
+    } else {
+      alert("Incorrect. Review the standard and try again.");
+    }
+  };
+
+  const completeCertification = async () => {
+    // API Call to backend to mark user as verified
+    // await api.post('/hauler/certify');
+    setLocation("/hauler/dashboard"); // Redirect to work
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-4 flex items-center justify-center">
+      <Card className="w-full max-w-md">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-bold text-xl">🎓 Pycker Academy</h2>
+            <span className="text-sm text-muted-foreground">Step {step + 1}/{MODULES.length}</span>
+          </div>
+          <Progress value={((step) / MODULES.length) * 100} className="mb-6" />
+
+          <div className="mb-6">
+            <h3 className="text-lg font-bold mb-2 flex items-center">
+              {step === 0 && <CheckCircle className="mr-2 text-green-600" />}
+              {step === 1 && <DollarSign className="mr-2 text-green-600" />}
+              {step === 2 && <TrendingUp className="mr-2 text-green-600" />}
+              {currentModule.title}
+            </h3>
+            <p className="text-slate-600 leading-relaxed">
+              {currentModule.content}
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <p className="font-semibold text-sm">Pop Quiz:</p>
+            <p className="text-sm italic mb-4">{currentModule.question}</p>
+            
+            {currentModule.options.map((opt, i) => (
+              <Button 
+                key={i} 
+                variant="outline" 
+                className="w-full justify-start text-left h-auto py-3 whitespace-normal"
+                onClick={() => handleAnswer(i)}
+              >
+                {opt}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+4. The "Field Guide" (The PDF Cheat Sheet)
+Once they pass, email them a simple 1-page PDF they can keep in their truck.
+
+Title: The uPYCK Pro Field Guide
+
+The 5 Commandments:
+
+Arrive on Time: The app tracks GPS. Being late hurts your algorithm score.
+
+Photos or No Pay: You must upload a "Clean Space" photo to unlock payment.
+
+Upsell Everything: Dirty driveway? Full gutters? Offer to fix it.
+
+Recycle First: Donate what you can. Upload the receipt for a tax bonus.
+
+Stay in the App: Cash deals = Instant Ban + No Insurance.
+
+5. The "First Job" Protocol (Quality Control)
+You are nervous about the first job. You should be.
+
+The Feature: "Rookie Mode"
+
+Logic: For a worker's first 3 jobs, the app automatically flags them for "Manual Review."
+
+Process:
+
+Worker uploads "After" photo.
+
+Payout is paused for 1 hour.
+
+Admin (You) gets a notification: "Rookie completed Job #1. Check photos."
+
+You look at the photo. If it's good, you click "Approve Payout."
+
+Worker gets a notification: "Great job! Payment released."
+
+Why this works: It catches bad apples immediately before they ruin your reputation. After 3 good jobs, the system switches them to "Auto-Pay."
+
+Summary
+Don't hold seminars. Build the "Pycker Academy" into the app.
+
+Don't guess. Force them to pass the Quiz.
+
+Don't trust blindly. Use "Rookie Mode" to manually check their first 3 jobs.
+
+Add the PyckerAcademy component to your app now. It is the automated gatekeeper for your quality.

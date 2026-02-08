@@ -1,0 +1,44 @@
+1. For the Customer: "Zero-Effort" Booking
+Large companies want a 30-minute phone call; Upyck should want 30 seconds of video.
+
+Multi-Modal "Walkthrough" Quoting:
+
+The Simplicity: The customer walks through their garage or house with their phone. The AI doesn't just "see" items; it converts the video into a Visual Bill of Lading (inventory list) automatically.
+
+The "Win": You provide a Guaranteed Fixed Price in seconds. Big companies usually give "Estimates" that change on move day; Upyck uses AI to ensure the price is final.
+
+AI "Conflict Shield":
+
+The Simplicity: The AI automatically scans the "Before" video for existing damage (scratches on a fridge, dents in a wall).
+
+The "Win": If a customer tries to claim a worker caused pre-existing damage, the AI flags it instantly. This keeps insurance costs low and protects your brand's reputation without human mediation.
+
+2. For the Worker: "Hands-Free" Logistics
+Big companies have dispatchers breathing down a worker's neck. Upyck should give them an AI "Co-Pilot."
+
+Voice-Only Workflow:
+
+The Simplicity: Workers shouldn't have to type on a screen with sweaty hands. They talk to the app: "Hey Upyck, I'm starting the unload," or "I found some hazardous paint cans, what's the eco-disposal site nearby?"
+
+The "Win": The AI updates the customer and the database in real-time. This increases worker safety and reduces administrative errors.
+
+The "Instant Payout" Engine:
+
+The Simplicity: As soon as the AI verifies the "After" photo (proving the garage is empty and clean), it triggers an instant payout to the worker's wallet.
+
+The "Win": High-quality workers will leave big companies to work for Upyck because they get paid the same day, not next Friday.
+
+3. Beating the "Big Guys" at the ESG Game
+Big companies "Greenwash" with marketing; Upyck provides "Hard Math" via your ProofGreen logic.
+
+Automated "Green Rebates":
+
+The Strategy: Large companies have massive fuel costs. Use your AI to find the most "Fuel-Efficient" workers (those with EVs or newer trucks) and give them a Priority Badge.
+
+The Customer Benefit: The AI tells the customer: "Choosing Mike's crew saved 15kg of CO2 today."
+
+B2B "Audit-Ready" Portals:
+
+The Strategy: Large corporate clients (like Real Estate offices) must report their carbon footprint.
+
+The "Win": Upyck provides a dashboard that shows them: "This year, your office move and cleanouts via Upyck saved 5 tons of landfill waste." A big company would take weeks to generate that report; you do it in real-time.

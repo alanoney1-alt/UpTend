@@ -1,0 +1,165 @@
+You have the Eyes (Video), the Hands (Signature), and the Legs (GPS).
+
+But you are missing the Heart and the Voice.
+
+Right now, if a customer books a job, it sits in a database database in silence. No one gets notified, and if two workers try to claim it at the same time, the system will crash (race condition). Also, you have no way to actually pay the worker their cut.
+
+Here are the final 4 Backend Pillars to make this a functioning business.
+
+1. The "Air Traffic Controller" (Dispatch & Locking)
+The Problem: Customer books a job. 50 Pyckers are online. Who sees it? If Mike and Steve both click "Accept" at the exact same second, who gets it? The Fix: You need a Geospatial Query and a Database Lock.
+
+👉 Action: Update server/routes.ts with the "Job Feed" logic.
+
+TypeScript
+// GET /api/hauler/feed
+// Returns jobs within 20 miles of the worker
+app.get("/api/hauler/feed", async (req, res) => {
+  const { lat, lng, radius = 20 } = req.query;
+  const workerId = req.user.id;
+  
+  // 1. Get Worker Skills (Don't show Gutter jobs to a Mover)
+  const skills = await db.query.certifications.findMany({ where: eq(userId, workerId) });
+  const skillList = skills.map(s => s.skillType);
+
+  // 2. The Geo-Query (Simplified for SQL)
+  // Find jobs where status = 'open' AND distance < 20 miles
+  // AND required_certification IN skillList
+  const jobs = await db.execute(sql`
+    SELECT * FROM orders 
+    WHERE status = 'open'
+    AND required_certification = ANY(${skillList})
+    AND (
+      6371 * acos(
+        cos(radians(${lat})) * cos(radians(lat)) * cos(radians(lng) - radians(${lng})) + 
+        sin(radians(${lat})) * sin(radians(lat))
+      )
+    ) < ${radius}
+  `);
+
+  res.json(jobs);
+});
+
+// POST /api/jobs/:id/accept
+// The "Race Condition" Preventer
+app.post("/api/jobs/:id/accept", async (req, res) => {
+  const jobId = req.params.id;
+  const workerId = req.user.id;
+
+  // TRANSACTION: Lock this row so no one else can grab it
+  await db.transaction(async (tx) => {
+    const job = await tx.query.orders.findFirst({ where: eq(orders.id, jobId) });
+    
+    if (job.status !== 'open') {
+      return res.status(409).json({ message: "Too slow! Job already taken." });
+    }
+
+    await tx.update(orders)
+      .set({ status: 'assigned', haulerId: workerId })
+      .where(eq(orders.id, jobId));
+  });
+
+  res.json({ success: true });
+});
+2. The "Ledger" (Payout Logic)
+The Problem: You charged the customer $150. You owe the worker $90 (60%). If you don't track this exactly, you will mess up taxes and payroll. The Fix: You need a payouts table and a calculation trigger.
+
+👉 Action: Open server/db/schema.ts and add a Payouts table.
+
+TypeScript
+export const payouts = pgTable("payouts", {
+  id: serial("id").primaryKey(),
+  haulerId: integer("hauler_id").references(() => users.id),
+  jobId: integer("job_id").references(() => orders.id),
+  amountCents: integer("amount_cents"), // The worker's cut
+  status: text("status").default("pending"), // pending, paid, failed
+  createdAt: timestamp("created_at").defaultNow(),
+});
+👉 Action: Update the "Job Complete" logic in server/routes.ts:
+
+TypeScript
+// Inside the 'completed' status switch case:
+const jobValue = 15000; // $150.00
+const platformFee = 0.40; // You keep 40%
+const workerCut = jobValue * (1 - platformFee);
+
+await db.insert(payouts).values({
+  haulerId: job.haulerId,
+  jobId: job.id,
+  amountCents: workerCut,
+  status: 'pending' // You pay them weekly
+});
+3. The "Reputation Engine" (Reviews)
+The Problem: A Pycker can be verified, but are they good? You need a feedback loop to ban bad actors and reward good ones. The Fix: A reviews table and a "Score Calculator."
+
+👉 Action: Schema Update (server/db/schema.ts):
+
+TypeScript
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  jobId: integer("job_id").references(() => orders.id),
+  rating: integer("rating"), // 1-5
+  comment: text("comment"),
+  type: text("type"), // 'customer_rated_worker' or 'worker_rated_customer'
+});
+👉 Action: Backend Route (server/routes.ts):
+
+TypeScript
+app.post("/api/reviews", async (req, res) => {
+  const { jobId, rating, comment } = req.body;
+  
+  // 1. Save Review
+  await db.insert(reviews).values({ ... });
+
+  // 2. Recalculate Worker's Average
+  const allReviews = await db.select().from(reviews).where(...);
+  const newAverage = calculateAverage(allReviews);
+
+  // 3. Ban Hammer (Safety)
+  if (newAverage < 4.2) {
+    // Flag for manual review
+    await sendAdminAlert(`Worker ${workerId} dropped below 4.2 stars.`);
+  }
+
+  await db.update(users).set({ rating: newAverage }).where(...);
+});
+4. The "Notification Center" (Webhooks)
+The Problem: Apps don't just "know" when to send an email. You need a trigger system. The Fix: A centralized notify() helper function.
+
+👉 Action: Create server/notifications.ts.
+
+TypeScript
+// The Central Hub for all noise
+export async function notify(userId: number, type: string, payload: any) {
+  const user = await getUser(userId);
+
+  // 1. Database Notification (The Bell Icon)
+  await db.insert(notifications).values({ userId, type, message: payload.message });
+
+  // 2. External Comms (The Real World)
+  switch (type) {
+    case 'job_assigned':
+      // SMS: "You got the job! Go to 123 Main St."
+      await twilioClient.messages.create({ to: user.phone, body: ... });
+      break;
+      
+    case 'job_receipt':
+      // Email: "Here is your receipt."
+      await sendgrid.send({ to: user.email, subject: "Receipt", ... });
+      break;
+      
+    case 'payout_sent':
+      // Push Notification
+      break;
+  }
+}
+📋 Checklist to "Go Live"
+Dispatch: Add the Geo-Query so workers only see local jobs.
+
+Locking: Add the Transaction logic so two people can't book the same gig.
+
+Ledger: Add the Payouts table so you know who you owe money to.
+
+Notifications: Set up the function that actually sends the texts.
+
+Start with "Dispatch" (#1). Without that, your Pyckers will see an empty screen.

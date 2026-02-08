@@ -1,0 +1,566 @@
+import sgMail from '@sendgrid/mail';
+import twilio from 'twilio';
+import { sanitizePhone } from '../utils/phone';
+
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
+
+const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@uptend.app';
+
+if (SENDGRID_API_KEY) {
+  sgMail.setApiKey(SENDGRID_API_KEY);
+}
+
+const twilioClient = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN 
+  ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+  : null;
+
+export function generateCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+interface EmailOptions {
+  to: string;
+  subject: string;
+  text?: string;
+  html?: string;
+}
+
+interface SmsOptions {
+  to: string;
+  message: string;
+}
+
+export async function sendEmail(options: EmailOptions): Promise<{ success: boolean; error?: string }> {
+  if (!SENDGRID_API_KEY) {
+    console.warn('SendGrid API key not configured - email not sent');
+    return { success: false, error: 'SendGrid API key not configured' };
+  }
+
+  try {
+    await sgMail.send({
+      to: options.to,
+      from: FROM_EMAIL,
+      subject: options.subject,
+      text: options.text || '',
+      html: options.html || '',
+    });
+    console.log(`Email sent to ${options.to}`);
+    return { success: true };
+  } catch (error: any) {
+    console.error('SendGrid error:', error.response?.body || error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function sendSms(options: SmsOptions): Promise<{ success: boolean; error?: string; sid?: string; status?: string }> {
+  if (!twilioClient || !TWILIO_PHONE_NUMBER) {
+    console.warn('Twilio not configured - SMS not sent');
+    return { success: false, error: 'Twilio not configured' };
+  }
+
+  const cleanTo = sanitizePhone(options.to);
+  if (!cleanTo) {
+    console.warn(`Invalid phone number: ${options.to}`);
+    return { success: false, error: 'Invalid phone number format' };
+  }
+
+  try {
+    const message = await twilioClient.messages.create({
+      body: options.message,
+      from: TWILIO_PHONE_NUMBER,
+      to: cleanTo,
+    });
+    console.log(`SMS sent to ${options.to} - SID: ${message.sid}, Status: ${message.status}`);
+    return { success: true, sid: message.sid, status: message.status };
+  } catch (error: any) {
+    console.error('Twilio error:', error.message, error.code, error.moreInfo);
+    return { success: false, error: `${error.message} (Code: ${error.code})` };
+  }
+}
+
+export async function sendVerificationEmail(email: string, code: string): Promise<{ success: boolean; error?: string }> {
+  return sendEmail({
+    to: email,
+    subject: 'UpTend - Your Verification Code',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+        </div>
+        
+        <h2 style="color: #333;">Verify Your Email</h2>
+        <p style="color: #666; font-size: 16px;">
+          Welcome to UpTend! Use the verification code below to complete your Pro registration:
+        </p>
+        
+        <div style="background: linear-gradient(135deg, #3B1D5A 0%, #5a2d87 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
+          <span style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #F47C20;">${code}</span>
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">
+          This code expires in <strong>10 minutes</strong>. If you didn't request this code, you can safely ignore this email.
+        </p>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+        
+        <p style="color: #999; font-size: 12px; text-align: center;">
+          UpTend - On-demand junk removal and moving services<br>
+          Orlando Metro Area | (407) 338-3342
+        </p>
+      </div>
+    `,
+    text: `Your UpTend verification code is: ${code}\n\nThis code expires in 10 minutes.`,
+  });
+}
+
+export async function sendVerificationSms(phone: string, code: string): Promise<{ success: boolean; error?: string }> {
+  return sendSms({
+    to: phone,
+    message: `Your UpTend verification code is: ${code}. This code expires in 10 minutes.`,
+  });
+}
+
+export async function sendPasswordResetEmail(email: string, resetLink: string): Promise<{ success: boolean; error?: string }> {
+  return sendEmail({
+    to: email,
+    subject: 'UpTend - Reset Your Password',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+        </div>
+        
+        <h2 style="color: #333;">Reset Your Password</h2>
+        <p style="color: #666; font-size: 16px;">
+          We received a request to reset your password. Click the button below to create a new password:
+        </p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${resetLink}" style="display: inline-block; background: linear-gradient(135deg, #F47C20 0%, #e06b15 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Reset Password</a>
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">
+          This link expires in <strong>1 hour</strong>. If you didn't request a password reset, you can safely ignore this email.
+        </p>
+        
+        <p style="color: #999; font-size: 12px; margin-top: 20px;">
+          If the button doesn't work, copy and paste this link into your browser:<br>
+          <a href="${resetLink}" style="color: #F47C20; word-break: break-all;">${resetLink}</a>
+        </p>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+        
+        <p style="color: #999; font-size: 12px; text-align: center;">
+          UpTend - On-demand junk removal and moving services<br>
+          Orlando Metro Area | (407) 338-3342
+        </p>
+      </div>
+    `,
+    text: `Reset your UpTend password by visiting: ${resetLink}\n\nThis link expires in 1 hour. If you didn't request this, please ignore this email.`,
+  });
+}
+
+export async function sendVerificationCode(
+  phone: string,
+  code: string
+): Promise<{ success: boolean; error?: string }> {
+  return sendSms({
+    to: phone,
+    message: `Your UpTend code is: ${code}. Expires in 10 min.`,
+  });
+}
+
+export async function sendJobNotification(phone: string, jobDetails: { 
+  customerName: string; 
+  address: string; 
+  serviceType: string;
+  estimatedPayout: number;
+}): Promise<{ success: boolean; error?: string }> {
+  return sendSms({
+    to: phone,
+    message: `New UpTend Job Available!\n${jobDetails.serviceType} at ${jobDetails.address}\nEstimated payout: $${jobDetails.estimatedPayout}\nOpen the app to accept.`,
+  });
+}
+
+export async function sendBookingConfirmation(
+  email: string,
+  phone: string,
+  jobId: string,
+  serviceType: string,
+  total: number
+): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
+  const serviceNames: Record<string, string> = {
+    junk_removal: "Junk Removal",
+    moving: "Moving",
+    truck_unloading: "U-Haul/Truck Unloading",
+  };
+
+  const serviceName = serviceNames[serviceType] || serviceType;
+
+  const [emailResult, smsResult] = await Promise.all([
+    sendEmail({
+      to: email,
+      subject: `UpTend Booking Confirmed - ${serviceName}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          </div>
+          
+          <h2 style="color: #333;">Booking Confirmed!</h2>
+          <p style="color: #666; font-size: 16px;">
+            Your ${serviceName} service has been booked successfully.
+          </p>
+          
+          <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin: 20px 0;">
+            <p style="margin: 5px 0;"><strong>Job ID:</strong> ${jobId}</p>
+            <p style="margin: 5px 0;"><strong>Service:</strong> ${serviceName}</p>
+            <p style="margin: 5px 0;"><strong>Total:</strong> $${total.toFixed(2)}</p>
+          </div>
+          
+          <p style="color: #666; font-size: 14px;">
+            A Pro will be assigned to your job shortly. You'll receive updates via SMS.
+          </p>
+          
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            UpTend - On-demand junk removal and moving services<br>
+            Orlando Metro Area | (407) 338-3342
+          </p>
+        </div>
+      `,
+      text: `UpTend Booking Confirmed!\n\nService: ${serviceName}\nJob ID: ${jobId}\nTotal: $${total.toFixed(2)}\n\nA Pro will be assigned shortly.`,
+    }),
+    sendSms({
+      to: phone,
+      message: `UpTend Booking Confirmed! Your ${serviceName} job #${jobId.slice(-6)} is booked for $${total.toFixed(2)}. A Pro will contact you soon.`,
+    }),
+  ]);
+
+  return { email: emailResult, sms: smsResult };
+}
+
+export async function sendPYCKERArrivingSoon(
+  phone: string,
+  pyckerName: string,
+  minutesAway: number
+): Promise<{ success: boolean; error?: string }> {
+  return sendSms({
+    to: phone,
+    message: `Your Pro ${pyckerName} is ${minutesAway} minute${minutesAway === 1 ? '' : 's'} away! Please be ready. - UpTend`,
+  });
+}
+
+export async function sendPYCKERArrived(
+  phone: string,
+  pyckerName: string
+): Promise<{ success: boolean; error?: string }> {
+  return sendSms({
+    to: phone,
+    message: `Your Pro ${pyckerName} has arrived! They're ready to help. - UpTend`,
+  });
+}
+
+export async function sendJobCompleted(
+  email: string,
+  phone: string,
+  jobId: string,
+  pyckerName: string,
+  total: number
+): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
+  const [emailResult, smsResult] = await Promise.all([
+    sendEmail({
+      to: email,
+      subject: `UpTend Job Complete - Thank You!`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          </div>
+          
+          <h2 style="color: #333;">Job Complete!</h2>
+          <p style="color: #666; font-size: 16px;">
+            Your job with ${pyckerName} has been completed successfully.
+          </p>
+          
+          <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin: 20px 0;">
+            <p style="margin: 5px 0;"><strong>Job ID:</strong> ${jobId}</p>
+            <p style="margin: 5px 0;"><strong>Pro:</strong> ${pyckerName}</p>
+            <p style="margin: 5px 0;"><strong>Total Charged:</strong> $${total.toFixed(2)}</p>
+          </div>
+          
+          <p style="color: #666; font-size: 14px;">
+            Please take a moment to rate your Pro in the app. Your feedback helps us maintain quality service!
+          </p>
+          
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            UpTend - On-demand junk removal and moving services<br>
+            Orlando Metro Area | (407) 338-3342
+          </p>
+        </div>
+      `,
+      text: `UpTend Job Complete!\n\nYour job with ${pyckerName} is done.\nJob ID: ${jobId}\nTotal: $${total.toFixed(2)}\n\nPlease rate your Pro in the app!`,
+    }),
+    sendSms({
+      to: phone,
+      message: `Your UpTend job is complete! ${pyckerName} finished your job. Total: $${total.toFixed(2)}. Please rate your experience in the app!`,
+    }),
+  ]);
+
+  return { email: emailResult, sms: smsResult };
+}
+
+export async function sendPYCKERJobAccepted(
+  customerPhone: string,
+  pyckerName: string,
+  pyckerPhone: string,
+  eta: string
+): Promise<{ success: boolean; error?: string }> {
+  return sendSms({
+    to: customerPhone,
+    message: `Great news! ${pyckerName} accepted your job and will arrive ${eta}. They'll call you shortly. - UpTend`,
+  });
+}
+
+export function isEmailConfigured(): boolean {
+  return !!SENDGRID_API_KEY;
+}
+
+export function isSmsConfigured(): boolean {
+  return !!(twilioClient && TWILIO_PHONE_NUMBER);
+}
+
+// Admin alert for jobs that need manual matching (after 60-second timeout)
+export async function sendManualMatchAlert(
+  adminEmail: string,
+  adminPhone: string,
+  jobDetails: {
+    jobId: string;
+    customerName: string;
+    customerPhone: string;
+    serviceType: string;
+    pickupAddress: string;
+    priceEstimate: number;
+  }
+): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
+  const serviceNames: Record<string, string> = {
+    junk_removal: "Junk Removal",
+    moving: "Moving",
+    truck_unloading: "U-Haul/Truck Unloading",
+  };
+  const serviceName = serviceNames[jobDetails.serviceType] || jobDetails.serviceType;
+
+  const [emailResult, smsResult] = await Promise.all([
+    sendEmail({
+      to: adminEmail,
+      subject: `URGENT: Manual Pro Match Needed - Job #${jobDetails.jobId.slice(-6)}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: #dc2626; color: white; padding: 15px; border-radius: 8px 8px 0 0; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px;">⚠️ URGENT: Manual Match Required</h1>
+          </div>
+          
+          <div style="background: #fef2f2; padding: 20px; border: 1px solid #dc2626; border-top: none;">
+            <p style="color: #dc2626; font-weight: bold; margin-top: 0;">
+              No Pro accepted this job within 60 seconds. Manual matching required within 5 minutes!
+            </p>
+            
+            <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0;">
+              <h3 style="color: #3B1D5A; margin-top: 0;">Job Details</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Job ID:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${jobDetails.jobId}</td></tr>
+                <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Service:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${serviceName}</td></tr>
+                <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Customer:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${jobDetails.customerName}</td></tr>
+                <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Phone:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><a href="tel:${jobDetails.customerPhone}">${jobDetails.customerPhone}</a></td></tr>
+                <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Pickup:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${jobDetails.pickupAddress}</td></tr>
+                <tr><td style="padding: 8px 0;"><strong>Price:</strong></td><td style="padding: 8px 0;">$${jobDetails.priceEstimate.toFixed(2)}</td></tr>
+              </table>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-bottom: 0;">
+              Customer has been notified they will be connected to a Pro within 5 minutes. Please assign a Pro immediately.
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 0 0 8px 8px;">
+            <p style="color: #999; font-size: 12px; margin: 0;">
+              UpTend Admin Alert System
+            </p>
+          </div>
+        </div>
+      `,
+      text: `URGENT: Manual Pro Match Needed!\n\nNo Pro accepted job #${jobDetails.jobId.slice(-6)} within 60 seconds.\n\nJob Details:\n- Service: ${serviceName}\n- Customer: ${jobDetails.customerName}\n- Phone: ${jobDetails.customerPhone}\n- Pickup: ${jobDetails.pickupAddress}\n- Price: $${jobDetails.priceEstimate.toFixed(2)}\n\nPlease assign a Pro within 5 minutes.`,
+    }),
+    sendSms({
+      to: adminPhone,
+      message: `URGENT UpTend: Job #${jobDetails.jobId.slice(-6)} needs manual match! ${jobDetails.customerName} at ${jobDetails.pickupAddress}. $${jobDetails.priceEstimate.toFixed(2)} ${serviceName}. Call customer: ${jobDetails.customerPhone}`,
+    }),
+  ]);
+
+  return { email: emailResult, sms: smsResult };
+}
+
+// Notify customer that manual matching is in progress
+export async function sendManualMatchNotification(
+  customerPhone: string,
+  customerEmail: string | null
+): Promise<{ sms: { success: boolean; error?: string }; email?: { success: boolean; error?: string } }> {
+  // Only send SMS if phone is provided
+  let smsResult: { success: boolean; error?: string } = { success: false, error: "No phone number provided" };
+  if (customerPhone) {
+    smsResult = await sendSms({
+      to: customerPhone,
+      message: `UpTend Update: We're personally connecting you with a Pro. Expect a call within 5 minutes. Thank you for your patience! - UpTend Team`,
+    });
+  }
+
+  let emailResult;
+  if (customerEmail) {
+    emailResult = await sendEmail({
+      to: customerEmail,
+      subject: 'UpTend - Connecting You With a Pro',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          </div>
+          
+          <h2 style="color: #333;">We're Connecting You Personally</h2>
+          <p style="color: #666; font-size: 16px;">
+            Our team is personally matching you with the best available Pro for your job. 
+            You'll receive a call within the next <strong>5 minutes</strong>.
+          </p>
+          
+          <div style="background: linear-gradient(135deg, #F47C20 0%, #e06b15 100%); border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0;">
+            <p style="color: white; font-size: 18px; margin: 0;">
+              Thank you for your patience!
+            </p>
+          </div>
+          
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            UpTend - On-demand junk removal and moving services<br>
+            Orlando Metro Area | (407) 338-3342
+          </p>
+        </div>
+      `,
+      text: 'We\'re personally connecting you with a Pro. Expect a call within 5 minutes. Thank you for your patience! - UpTend Team',
+    });
+  }
+
+  return { sms: smsResult, email: emailResult };
+}
+
+export async function sendPropertyTransferEmail(
+  toEmail: string,
+  fromName: string,
+  address: string,
+  claimToken: string,
+  maintenanceScore: number
+): Promise<{ success: boolean; error?: string }> {
+  const baseUrl = process.env.REPLIT_DEV_DOMAIN 
+    ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+    : process.env.REPL_SLUG 
+      ? `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`
+      : 'https://uptend.app';
+  const claimUrl = `${baseUrl}/claim/${claimToken}`;
+
+  return sendEmail({
+    to: toEmail,
+    subject: `Claim the verified maintenance history for ${address}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+        </div>
+        
+        <h2 style="color: #333;">Your New Home Has a Maintenance History</h2>
+        <p style="color: #666; font-size: 16px;">
+          <strong>${fromName}</strong> has transferred the verified maintenance history 
+          for <strong>${address}</strong> to you.
+        </p>
+        
+        <div style="background: linear-gradient(135deg, #3B1D5A 0%, #5a2d87 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
+          <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin: 0 0 8px 0;">Maintenance Score</p>
+          <span style="font-size: 48px; font-weight: bold; color: #F47C20;">${maintenanceScore}</span>
+          <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 8px 0 0 0;">out of 100</p>
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">
+          This property has a verified record of professional maintenance services, 
+          including documented before/after photos and service certificates. 
+          Claim this history to maintain the home's score and unlock insurance benefits.
+        </p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${claimUrl}" style="display: inline-block; background: linear-gradient(135deg, #F47C20 0%, #e06b15 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Claim Home History</a>
+        </div>
+        
+        <p style="color: #999; font-size: 12px;">
+          This link is valid for 30 days. Once claimed, you'll be able to view the full 
+          maintenance timeline and continue building your home's score with UpTend services.
+        </p>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+        
+        <p style="color: #999; font-size: 12px; text-align: center;">
+          UpTend - On-demand junk removal and moving services<br>
+          Orlando Metro Area | (407) 338-3342
+        </p>
+      </div>
+    `,
+    text: `${fromName} has transferred the verified maintenance history for ${address} to you. Maintenance Score: ${maintenanceScore}/100. Claim it here: ${claimUrl}`,
+  });
+}
+
+export async function sendLaunchNotificationConfirmation(email: string): Promise<{ success: boolean; error?: string }> {
+  return sendEmail({
+    to: email,
+    subject: "You're on the UpTend Launch List!",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
+          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+        </div>
+        
+        <h2 style="color: #333;">You're on the List!</h2>
+        <p style="color: #666; font-size: 16px;">
+          Thanks for signing up to be notified when UpTend launches in your area!
+        </p>
+        
+        <div style="background: linear-gradient(135deg, #3B1D5A 0%, #5a2d87 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
+          <p style="color: white; font-size: 18px; margin: 0;">
+            As an early subscriber, you'll get <strong style="color: #F47C20;">$25 OFF</strong> your first job!
+          </p>
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">
+          We're launching soon in the Orlando Metro area (Orange, Seminole, and Osceola counties). 
+          You'll be the first to know when we go live!
+        </p>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+        
+        <p style="color: #999; font-size: 12px; text-align: center;">
+          UpTend - On-demand junk removal and moving services<br>
+          Orlando Metro Area | (407) 338-3342
+        </p>
+      </div>
+    `,
+    text: "Thanks for signing up to be notified when UpTend launches! As an early subscriber, you'll get $25 OFF your first job. We're launching soon in the Orlando Metro area.",
+  });
+}

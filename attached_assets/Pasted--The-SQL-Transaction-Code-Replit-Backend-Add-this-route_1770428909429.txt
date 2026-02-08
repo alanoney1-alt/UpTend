@@ -1,0 +1,64 @@
+🛠️ The SQL Transaction Code (Replit Backend)
+Add this route to your Express server. It ensures that the job status is checked and updated as a single, atomic unit of work.
+
+JavaScript
+app.post('/api/jobs/:id/accept', async (req, res) => {
+  const jobId = req.params.id;
+  const workerId = req.user.id; // From your auth middleware
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // 1. Lock the row for update. This stops other workers from reading it.
+    const jobQuery = await client.query(
+      "SELECT status FROM jobs WHERE id = $1 FOR UPDATE",
+      [jobId]
+    );
+
+    const job = jobQuery.rows[0];
+
+    // 2. Check if the job is still available
+    if (!job || job.status !== 'pending') {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: "Sorry, this job was just taken by someone else!" });
+    }
+
+    // 3. Update the job with the winning worker's ID
+    await client.query(
+      "UPDATE jobs SET worker_id = $1, status = 'accepted', accepted_at = NOW() WHERE id = $2",
+      [workerId, jobId]
+    );
+
+    await client.query('COMMIT');
+
+    // 4. Trigger Real-time Alerts (Socket.io + Twilio)
+    io.to(jobId).emit('jobAccepted', { workerId });
+    sendArrivalTextToCustomer(jobId);
+
+    res.json({ success: true, message: "Job accepted! Head to the customer now." });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error("Race Condition Error:", error);
+    res.status(500).json({ error: "System error. Please try again." });
+  } finally {
+    client.release();
+  }
+});
+🛡️ Why This Works
+Atomicity: The BEGIN and COMMIT wrap the whole process. If the server crashes halfway through, nothing is saved.
+
+Row Locking: FOR UPDATE tells Postgres: "I am working on this specific job. If anyone else tries to look at it, make them wait until I'm done."
+
+Validation: We re-check job.status !== 'pending' after the lock is acquired. This is the secret to stopping duplicates.
+
+🚀 Setting Up Your Debugger for Success
+Tomorrow morning, give your developer this checklist to verify the build:
+
+Race Condition Test: Open two browser windows, log in as two different workers, and click "Accept" on the same job at the exact same time. One should succeed; one should get the "taken" error.
+
+GPS Simulation: Use the "Sensors" tab in Chrome DevTools to spoof a moving location. Verify the customer's map marker glides smoothly.
+
+Webhook Verification: Manually trigger a Stripe or Checkr webhook using a tool like Postman to ensure the worker's status flips to active.

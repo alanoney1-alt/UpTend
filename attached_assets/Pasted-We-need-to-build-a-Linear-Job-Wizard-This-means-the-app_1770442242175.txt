@@ -1,0 +1,183 @@
+We need to build a "Linear Job Wizard."This means the app changes its face based on the stage of the job. The worker sees ONLY ONE BUTTON at a time. They cannot mess it up because they literally cannot proceed until they do the one thing required (e.g., "Take Photo").Here is the "Uber-Style" Execution Flow we will build.📱 The "Linear Flow" (The Worker Experience)Imagine the screen changes like slides in a presentation.Stage 1: The Commute $\rightarrow$ Button: [ 🚗 I'm on My Way ]Action: Sends SMS to customer: "Your Pro, Mike, is en route."Hidden Tech: Activates GPS tracking.Stage 2: Arrival $\rightarrow$ Button: [ 📍 I've Arrived ]Action: Checks Geofence (Are they actually at the house?). Unlocks the "Gate Code" if hidden.Stage 3: The Audit (Critical) $\rightarrow$ Action: [ 📸 Take "Before" Photo ]Guidance: "Take a wide photo of the junk pile. This protects you from disputes."Constraint: Cannot start work until photo uploads.Stage 4: The Hustle (Working) $\rightarrow$ Button: [ ➕ Add Extra Items ] OR [ ✅ Job Complete ]Scenario: Customer adds a mattress? Click "Add Extra Items."Scenario: Driveway dirty? Click "Upsell: Pressure Wash."Stage 5: The Proof $\rightarrow$ Action: [ 📸 Take "After" Photo ]Guidance: "Show the clean space. No debris left behind."Stage 6: The Payday $\rightarrow$ Screen: [ 💰 $142.50 Paid ]Action: Shows the money hitting their wallet instantly.🛠️ The Code: ActiveJobWizard.tsxThis component replaces the Dashboard whenever they have a live job. It handles the logic so they don't have to.Create File: client/src/components/hauler/active-job-wizard.tsxTypeScriptimport { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Camera, MapPin, Navigation, CheckCircle, Upload, DollarSign } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+// The Stages of a Job
+type JobStage = 'accepted' | 'en_route' | 'arrived' | 'working' | 'completing' | 'paid';
+
+export function ActiveJobWizard({ job, onUpdateStatus }) {
+  const [stage, setStage] = useState<JobStage>(job.status || 'accepted');
+  const [uploading, setUploading] = useState(false);
+  const { toast } = useToast();
+
+  // STAGE 1: ON MY WAY
+  if (stage === 'accepted') {
+    return (
+      <div className="h-full flex flex-col justify-between p-6 bg-slate-50">
+        <div className="text-center mt-10">
+          <h2 className="text-2xl font-bold mb-2">Ready to Roll?</h2>
+          <p className="text-slate-600">Customer: {job.customerName}</p>
+          <p className="text-slate-500">{job.address}</p>
+        </div>
+        <Button 
+          className="h-16 text-xl bg-blue-600 hover:bg-blue-700 animate-pulse"
+          onClick={() => {
+            setStage('en_route');
+            onUpdateStatus('en_route'); // SMS Trigger
+          }}
+        >
+          <Navigation className="mr-2 w-6 h-6" /> I'm En Route
+        </Button>
+      </div>
+    );
+  }
+
+  // STAGE 2: ARRIVAL (GPS Check)
+  if (stage === 'en_route') {
+    return (
+      <div className="h-full flex flex-col justify-between p-6 bg-slate-50">
+        <div className="bg-white p-4 rounded-xl shadow-sm">
+          <h3 className="font-bold text-lg mb-2">Navigate to Job</h3>
+          <p className="text-2xl font-mono mb-4">{job.address}</p>
+          <Button variant="outline" className="w-full" onClick={() => window.open(`maps://?q=${job.address}`)}>
+            Open Maps
+          </Button>
+        </div>
+        <Button 
+          className="h-16 text-xl bg-green-600 hover:bg-green-700"
+          onClick={() => {
+            // In real app: Check navigator.geolocation here
+            setStage('arrived');
+            onUpdateStatus('arrived');
+          }}
+        >
+          <MapPin className="mr-2 w-6 h-6" /> I've Arrived
+        </Button>
+      </div>
+    );
+  }
+
+  // STAGE 3: THE "BEFORE" PHOTO (Mandatory)
+  if (stage === 'arrived') {
+    return (
+      <div className="h-full flex flex-col p-6 bg-slate-900 text-white">
+        <div className="mt-10 text-center">
+          <Camera className="w-16 h-16 mx-auto mb-4 text-yellow-400" />
+          <h2 className="text-2xl font-bold mb-2">Proof of Condition</h2>
+          <p className="opacity-80 mb-8">
+            Take a clear photo of the items BEFORE you touch them.
+            This protects you from liability.
+          </p>
+          
+          <Input 
+            type="file" 
+            accept="image/*" 
+            capture="environment" // Forces back camera on mobile
+            className="hidden" 
+            id="before-photo"
+            onChange={(e) => {
+              setUploading(true);
+              setTimeout(() => { // Simulate upload
+                setUploading(false);
+                setStage('working');
+                onUpdateStatus('working'); // Logs timestamp
+              }, 1500);
+            }} 
+          />
+          <label htmlFor="before-photo">
+            <div className="bg-yellow-500 text-black font-bold h-16 rounded-xl flex items-center justify-center cursor-pointer hover:bg-yellow-400">
+              {uploading ? "Uploading..." : "📸 Take 'Before' Photo"}
+            </div>
+          </label>
+        </div>
+      </div>
+    );
+  }
+
+  // STAGE 4: WORKING (The Hub)
+  if (stage === 'working') {
+    return (
+      <div className="h-full p-4 space-y-4">
+        <Card className="bg-green-50 border-green-200">
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="h-3 w-3 bg-green-500 rounded-full animate-ping" />
+            <span className="font-bold text-green-700">Job In Progress</span>
+          </CardContent>
+        </Card>
+
+        {/* The "Scope Creep" Button */}
+        <Button variant="outline" className="w-full h-12 justify-start border-2 border-dashed">
+          <DollarSign className="mr-2 w-4 h-4 text-green-600" /> 
+          Customer Added Items? (+$$$)
+        </Button>
+
+        {/* The "Upsell" Button */}
+        <Button variant="outline" className="w-full h-12 justify-start border-2 border-dashed">
+          <Upload className="mr-2 w-4 h-4 text-blue-600" /> 
+          Upsell: Dirty Driveway / Gutters
+        </Button>
+
+        <div className="fixed bottom-4 left-4 right-4">
+          <Button 
+            className="w-full h-16 text-xl bg-black hover:bg-gray-800"
+            onClick={() => setStage('completing')}
+          >
+            ✅ Finish Job
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // STAGE 5: THE "AFTER" PHOTO (Mandatory)
+  if (stage === 'completing') {
+    return (
+      <div className="h-full flex flex-col p-6 bg-slate-900 text-white">
+        <div className="mt-10 text-center">
+          <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-400" />
+          <h2 className="text-2xl font-bold mb-2">Leave No Trace</h2>
+          <p className="opacity-80 mb-8">
+            Take a photo of the CLEAN space. 
+            Ensure no debris is left behind.
+          </p>
+          
+          <Input 
+            type="file" 
+            accept="image/*" 
+            capture="environment"
+            className="hidden" 
+            id="after-photo"
+            onChange={(e) => {
+              setUploading(true);
+              setTimeout(() => {
+                setUploading(false);
+                setStage('paid');
+                toast({ title: "Payout Released", description: "$142.50 sent to Stripe." });
+              }, 2000);
+            }} 
+          />
+          <label htmlFor="after-photo">
+            <div className="bg-green-500 text-white font-bold h-16 rounded-xl flex items-center justify-center cursor-pointer hover:bg-green-600">
+              {uploading ? "Verifying..." : "📸 Take 'After' Photo"}
+            </div>
+          </label>
+        </div>
+      </div>
+    );
+  }
+
+  // STAGE 6: SUCCESS
+  return (
+    <div className="h-full flex flex-col items-center justify-center p-6 bg-green-500 text-white">
+      <h1 className="text-4xl font-bold mb-2">$142.50</h1>
+      <p className="text-lg opacity-90">Deposited to your Wallet</p>
+      <Button variant="secondary" className="mt-8" onClick={() => window.location.reload()}>
+        Find Next Job
+      </Button>
+    </div>
+  );
+}
+🧠 Why this prevents "Quitting"No Decisions: They don't have to decide "Should I take a photo?" The app forces them to take a photo to see the next button.Big Buttons: Notice the h-16 (height) on buttons. They are massive. Easy to tap with gloves on.Positive Reinforcement: The final screen is green and shows MONEY. It triggers a dopamine hit.📝 The "Cheat Sheet" for the WorkerWhen they ask "How does the app work?", you don't send a manual. You send this 3-Step Image:Step 1: Tap "On My Way"(This tells the customer you are coming).Step 2: Snap the "Before" Photo(The app won't let you start until you do. This protects you).Step 3: Snap the "After" Photo(As soon as this uploads, you get paid).Add this component to your Replit project. It effectively acts as a "Supervisor in their pocket."

@@ -1,0 +1,83 @@
+1. The "Master Controller" (Job State Machine)File: server/routes.tsWhat it does: This is the heartbeat. It listens for status changes and automatically triggers the SMS, the Payment, and the Database update.👉 Logic to Add:TypeScript// POST /api/jobs/:id/status
+app.post("/api/jobs/:id/status", async (req, res) => {
+  const { status, lat, lng } = req.body; // e.g., 'en_route', 'arrived', 'completed'
+  const jobId = parseInt(req.params.id);
+
+  // 1. UPDATE DATABASE
+  const job = await db.update(orders)
+    .set({ 
+      status: status,
+      updatedAt: new Date(),
+      currentLat: lat, 
+      currentLng: lng
+    })
+    .where(eq(orders.id, jobId))
+    .returning();
+
+  // 2. TRIGGER REAL-WORLD ACTIONS
+  const customer = await db.query.users.findFirst({ where: eq(users.id, job[0].userId) });
+  
+  switch (status) {
+    case 'en_route':
+      // SEND SMS: "Mike is 5 mins away!"
+      await sendSMS(customer.phone, t('sms.en_route', customer.language)); 
+      break;
+
+    case 'arrived':
+      // SEND PUSH: "Mike is outside."
+      break;
+
+    case 'completed':
+      // CAPTURE PAYMENT (Stripe)
+      await stripe.paymentIntents.capture(job[0].paymentIntentId);
+      // CALCULATE PYCKER PAYOUT (Ledger)
+      await calculatePayout(job[0]);
+      break;
+  }
+
+  res.json({ success: true });
+});
+2. The "Eyes & Ears" (AI & Hardware Integrations)File: server/routes.ts + client/src/components/...What it does: Allows the app to See (Vision), Speak (Translation), and Verify (Video).FeatureFrontend FileBackend Route NeededBilingual Chatclient/src/components/chat.tsxPOST /api/chat/translate (Uses OpenAI to auto-translate texts)Resale Valueclient/src/components/tools/resale.tsxPOST /api/ai/estimate (Uses GPT-4o Vision to price items)Video Manifestclient/src/components/tools/video-scan.tsxPOST /api/upload/video (Uploads to Cloudinary)GPS Trackingclient/src/hooks/use-location.tsxPOST /api/hauler/ping (Updates lat/lng in DB)👉 Key Backend Logic for Translation:TypeScript// POST /api/chat/translate
+app.post("/api/chat/translate", async (req, res) => {
+  const { text, targetLang } = req.body;
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: `Translate to ${targetLang}. Keep it casual.` },
+      { role: "user", content: text }
+    ]
+  });
+  res.json({ translated: response.choices[0].message.content });
+});
+3. The "Memory" (Database Schema Updates)File: server/db/schema.tsWhat it does: You cannot save a "Signature" or a "Video" if there is no column for it.👉 Columns to Add to orders Table:TypeScriptexport const orders = pgTable("orders", {
+  // ... existing columns ...
+  
+  // EVIDENCE (The "Liability Shield")
+  beforePhotoUrl: text("before_photo_url"),
+  afterPhotoUrl: text("after_photo_url"),
+  manifestVideoUrl: text("manifest_video_url"),
+  customerSignatureUrl: text("customer_signature_url"),
+  
+  // LOGISTICS
+  arrivedAt: timestamp("arrived_at"),
+  finishedAt: timestamp("finished_at"),
+  preferredLanguage: text("preferred_language").default("en"), // 'en' or 'es'
+  
+  // MONEY
+  finalPriceCents: integer("final_price_cents"),
+  payoutStatus: text("payout_status").default("pending"), // 'pending', 'paid'
+});
+(Don't forget to run npm run db:push in the Shell after adding this!)4. The "Academy" (Training & Verification)File: client/src/pages/academy/...What it does: Forces the worker to prove they know the job before they can "Go Online."The Simulator: client/src/components/academy/app-simulator.tsx (The game).The Gatekeeper: In server/routes.ts, update the "Go Online" route:TypeScriptapp.post("/api/hauler/go-online", async (req, res) => {
+  const user = await db.query.users.findFirst({ where: eq(users.id, req.user.id) });
+
+  // BLOCK IF NOT TRAINED
+  if (!user.certifications.includes('academy_grad')) {
+    return res.status(403).json({ 
+      message: "You must complete the Academy Simulator first." 
+    });
+  }
+
+  // ALLOW ONLINE
+  await db.update(users).set({ isActive: true })...
+});
+5. The "Business Logic" (Money & Trust)File: server/utils.ts (Create this file)What it does: Handles the math so you don't lose money.👉 Logic to Add:Payout Calculator: (Job Price - Stripe Fee) * 0.60 = Worker Pay.Cancellation Fee: If hoursUntilJob < 24, charge $25.Trust Score: (Completed Jobs * 5) + (Review Score * 10) = Worker Rank.🚀 Implementation Order (Do this in Replit NOW)Update Schema: Paste the new columns into schema.ts and run the migration. (Critical)Add Secrets: Put your OpenAI, Stripe, and Cloudinary keys in the Replit Secrets tab.Build the "Master Controller": Paste the State Machine logic into routes.ts.Connect the Frontend: Go to your buttons ("Accept Job", "Arrived") and make them call the API routes you just built.Once Step 3 is done, your app effectively "wakes up."

@@ -1,0 +1,77 @@
+1. The Logic: How "Junk" becomes "Credits"
+You don't buy generic credits from a forest in another country. You generate "Hyper-Local Credits" based on the work done at the customer's house.
+
+Step A (The Work): A Pro removes 500 lbs of metal and 200 lbs of cardboard.
+
+Step B (The Verification): The 360° Video Manifest and the weight slip from the recycling center act as the "Proof of Diversion."
+
+Step C (The Calculation): Every 1,000 lbs of diverted material = ~1.5 Metric Tons of CO2 avoided.
+
+Step D (The Sale): You sell that "Offset" back to the customer (to make their whole house carbon neutral for the month) or to Enterprise Partners (Property Managers) who need ESG credits.
+
+2. The Revenue UI: The "Carbon Neutral" Toggle (checkout-carbon.tsx)
+This lives in the booking checkout. It’s a "one-click" upsell that generates pure margin for you.
+
+TypeScript
+import { Leaf, Info } from "lucide-react";
+import { Switch } from "@/components/ui/switch"; // Assuming Shadcn UI
+
+export function CarbonUpsell({ estimatedImpact }) {
+  const creditPrice = 14.99; // Pure high-margin revenue
+
+  return (
+    <div className="bg-green-50 border border-green-100 p-6 rounded-3xl mt-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="bg-green-500 p-2 rounded-lg">
+            <Leaf className="text-white w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="font-bold text-slate-900">Carbon Neutral Guarantee</h4>
+            <p className="text-[10px] text-green-700 font-bold uppercase tracking-widest">Powered by UpTend Sustain</p>
+          </div>
+        </div>
+        <Switch />
+      </div>
+
+      <p className="text-sm text-slate-600 leading-relaxed mb-4">
+        Your current service avoids **{estimatedImpact}kg of CO2**. For an additional **${creditPrice}**, 
+        we will purchase and retire local Florida carbon credits to make your entire residence 100% Carbon Neutral for 30 days.
+      </p>
+
+      <div className="flex items-center gap-2 text-[10px] text-slate-400">
+        <Info className="w-3 h-3" />
+        <span>Verified by UpTend ESG Ledger. Certificate added to your Home Playbook.</span>
+      </div>
+    </div>
+  );
+}
+3. The Revenue Split (The "UpTend Take")
+This is how the money moves:
+
+Customer Pays: $14.99 for the "Carbon Neutral Upgrade."
+
+Wholesale Credit Cost: ~$4.00 (Purchased from verified local carbon sinks or offsets).
+
+Pro Incentive: $2.00 (Paid to the Pro for ensuring 100% recycling compliance and uploading the weight slip).
+
+UpTend Profit: $8.99 (Pure Margin).
+
+4. The Product: The "Impact Certificate"
+When they buy this, they don't just get a "thank you." They get a Verified Asset Document that adds value to their home.
+
+For Homeowners: "This home was 100% Carbon Neutral in 2026." (Great for high-end resale).
+
+For Renters: "Your security deposit is protected by a verified sustainability record."
+
+For Property Managers: An ESG Compliance Report they can show to their board of directors.
+
+5. Why this is "Enough Thinking" and Ready for Code:
+Low Overhead: You don't need to own the recycling centers; you just need to verify the data they provide.
+
+Market Differentiation: No other "junk app" or "home service" app in Florida does this. You are effectively the "Aspiration" or "Patagonia" of home services.
+
+High Margin: While moving a couch has labor costs, selling a digital certificate of carbon avoidance has zero marginal cost after the first verification.
+
+🚀 Integration Step
+Do you want me to add the "ESG Ledger" table to your database schema? This will track every kg of carbon avoided so you have an auditable trail when it comes time to sell these credits to bigger companies.

@@ -1,0 +1,55 @@
+1. The Sign-Up Flow (The "Must-Haves")
+You cannot simply hide this in the Terms & Conditions. To be legally compliant in 2026, the consent must be "clear and conspicuous."
+
+For Customers: Under the phone number field, you need a checkbox (or a very clear statement) that they agree to receive service updates, arrival alerts, and "Green Receipts."
+
+For Pyckers: Since they are contractors, they must opt-in to calls/texts to receive jobs. You should make this a mandatory part of their profile completion.
+
+2. The Legal "Opt-In" Language
+Add this specific text to your Sign-Up page right above the "Submit" or "Create Account" button:
+
+For Customers: "By clicking 'Sign Up,' I consent to receive recurring automated text messages and phone calls from Upyck regarding my service requests, worker arrivals, and account updates at the phone number provided. Consent is not a condition of purchase. Msg & data rates may apply. Reply STOP to cancel at any time. I also agree to the [Terms of Service] and [Privacy Policy]."
+
+For Pyckers: "By joining the Upyck Pro team, I expressly consent to receive automated calls and text messages regarding available jobs, schedule changes, and payout updates. I understand that receiving these communications is essential to performing services on the Upyck platform. Msg & data rates may apply. I agree to the [Independent Contractor Agreement] and [Privacy Policy]."
+
+3. Implementation in Replit (Code Logic)
+You need to save this "Consent State" in your PostgreSQL database so you have a legal record of when and how they opted in.
+
+Updated Database Schema (Add these columns):
+
+SQL
+ALTER TABLE users ADD COLUMN sms_opt_in BOOLEAN DEFAULT FALSE;
+ALTER TABLE users ADD COLUMN sms_opt_in_timestamp TIMESTAMP;
+ALTER TABLE users ADD COLUMN sms_opt_in_ip VARCHAR(45);
+Replit Backend Logic (Node.js/Express): When the user clicks "Sign Up," capture their IP address and the timestamp to create a "Consent Trail."
+
+JavaScript
+app.post('/api/register', async (req, res) => {
+  const { email, phone, password, consent_accepted } = req.body;
+  const user_ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+  if (!consent_accepted) {
+    return res.status(400).send("You must accept the terms to continue.");
+  }
+
+  const newUser = await db.query(
+    "INSERT INTO users (email, phone, sms_opt_in, sms_opt_in_timestamp, sms_opt_in_ip) VALUES ($1, $2, $3, NOW(), $4) RETURNING *",
+    [email, phone, true, user_ip]
+  );
+
+  res.json({ message: "Welcome to Upyck! You are now opted-in for service updates." });
+});
+4. Terms & Conditions Clauses
+You should also have a dedicated "SMS and Communications" section in your full Terms of Service. Here is the template for Upyck:
+
+Section X: Communications and SMS Messaging
+
+Program Description: Upyck and its service providers may send transactional and informational messages via SMS or automated phone calls. This includes service quotes, worker arrival times, job completion alerts, and "Green Impact" reports.
+
+Frequency: Message frequency varies based on your activity on the platform.
+
+Opt-Out: You may opt out of SMS communications at any time by texting STOP to our number. You will receive one final confirmation text. Note that opting out may impact our ability to provide certain time-sensitive services.
+
+Support: Text HELP for assistance or contact support@upyck.com.
+
+Cost: Standard message and data rates from your carrier may apply.

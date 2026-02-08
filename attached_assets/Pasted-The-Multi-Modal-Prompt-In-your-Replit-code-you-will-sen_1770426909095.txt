@@ -1,0 +1,68 @@
+The Multi-Modal Prompt
+In your Replit code, you will send the user’s photo(s) along with this System Instruction. This prompt ensures the AI outputs structured data (JSON) that your database can actually use.
+
+The Prompt:
+
+"You are the Upyck AI Logistics Agent. Analyze the provided image(s) for a home service request.
+
+Task 1: Identify the Service (Categorize as: Moving, Junk Removal, Garage Cleanout, HVAC, Plumbing, or Electrical). Task 2: Estimate Volume/Labor (For moving/junk, estimate total cubic feet and number of 'man-hours' required. For trade services, identify the likely issue or equipment brand). Task 3: ESG & Diversion (Identify items that can be diverted from a landfill: wood, metal, electronics, or donations). Task 4: Tax Credit Check (Identify if any equipment qualifies for 2026 IRA tax credits).
+
+Output ONLY a JSON object in this format: { 'category': 'string', 'confidence_score': 0.0-1.0, 'estimate': { 'cubic_feet': number, 'labor_hours': number, 'complexity': 'Low/Med/High' }, 'esg_metrics': { 'recyclable_materials': [], 'donation_potential': boolean }, 'hazmat_warning': 'string or null', 'tax_credit_eligible': boolean }"
+
+2. How to set this up in Replit (Node.js)
+Install the Library: In the Replit shell, run: npm install @google/generative-ai
+
+Add your API Key: Put your GEMINI_API_KEY in the Replit Secrets tool.
+
+The Logic: Use the following code to handle the image intake.
+
+JavaScript
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+// Initialize the API
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+async function processServiceIntake(imageBuffer, mimeType) {
+  // Use 1.5 Flash for speed and cost-efficiency
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  const prompt = "Analyze this home service request and output the JSON data for category, volume, and ESG potential.";
+
+  const imagePart = {
+    inlineData: {
+      data: imageBuffer.toString("base64"),
+      mimeType
+    },
+  };
+
+  const result = await model.generateContent([prompt, imagePart]);
+  const response = await result.response;
+  
+  // Parse the JSON from the AI's text response
+  return JSON.parse(response.text());
+}
+3. The Long-Term "ProofGreen" Roadmap
+To make Upyck "all the way built out" as you scale to all home services, you need these three pillars in your Replit project:
+
+Pillar A: The "Green" Database (PostgreSQL)
+Don't just store "Jobs." Store "Impact." Add these columns to your Jobs table in Replit:
+
+carbon_footprint: (Calculated via distance + truck type).
+
+landfill_diversion_rate: (Percentage of junk that wasn't thrown away).
+
+tax_credit_id: (Linked to the specific IRA credit the AI identified).
+
+Pillar B: The Worker "Auto-Pro" Dashboard
+As you move into HVAC/Plumbing, the AI should do the "Paperwork" for the worker:
+
+The "Parts Agent": The AI looks at the photo of a broken pipe, finds the part on a nearby supplier's website (like Ferguson or Grainger), and asks the worker: "Should I pre-order this part for pickup on your way?"
+
+Pillar C: The Customer "Home Vault"
+This is the "Uber for Home Services" end-game.
+
+Every time a Upyck pro visits, the AI updates the customer's "Home Health Score."
+
+It stores the model numbers of their water heater, furnace, and electrical panel.
+
+The Auto-Play: When a tax credit for "Heat Pumps" increases in 2027, Upyck automatically notifies the customer: "Your current 2018 HVAC unit is eligible for a $2,000 swap. Click here to book."

@@ -1,0 +1,87 @@
+Action. No more theory.
+
+I have converted those 5 "Hell Yes" features into a Technical Implementation Spec for your debugger. This is the "Growth Engine" Roadmap that you hand over tomorrow morning along with the core audit.
+
+These are the code changes required to make them real.
+
+🚀 The "Growth Engine" Implementation Spec
+1. Bounty Hunter Mode (Surge Pricing)
+The Logic: If a job sits in matching status for >10 minutes, automatically add $5 to the payout (from uPYCK’s cut, or upsell later).
+
+Schema Change (schema.ts):
+
+TypeScript
+// Add to serviceRequests table
+bountyAmount: integer("bounty_amount").default(0),
+lastBountyUpdate: timestamp("last_bounty_update"),
+Backend Logic (matching-timer.ts):
+
+Update the cron job to check createdAt.
+
+IF (now - createdAt > 10 mins) AND (status === 'matching') THEN update bountyAmount += 5.
+
+Frontend: Display a 🔥 icon and the +$5 badge on the Hauler Dashboard.
+
+2. The Insurance Vault (Visual Inventory)
+The Logic: Use the existing GPT-5.1 analysis to not just price the job, but catalog the items for the customer's insurance.
+
+Schema Change (schema.ts):
+
+TypeScript
+export const homeInventory = pgTable("home_inventory", {
+  id: uuid("id").primaryKey(),
+  customerId: varchar("customer_id"),
+  serviceRequestId: varchar("service_request_id"),
+  itemName: varchar("item_name"),
+  estimatedValue: integer("estimated_value"), // AI Estimate
+  brandDetected: varchar("brand_detected"),
+  condition: varchar("condition"), // 'Like New', 'Good', 'Scrap'
+  photoUrl: text("photo_url"),
+  generatedAt: timestamp("generated_at").defaultNow()
+});
+AI Service (ai-analysis.ts):
+
+Modify the prompt: "Identify high-value items (TVs, Furniture, Gym Equipment) and extract Brand, Model, and Condition for insurance documentation."
+
+3. Reseller Marketplace (The "eBay" Button)
+The Logic: Allow a PYCKER to take an item they picked up and "claim" it for resale instead of disposal.
+
+Schema Change:
+
+TypeScript
+// Add to homeInventory table
+resaleStatus: varchar("resale_status").default('disposal'), // 'claimed_for_resale', 'donated', 'disposed'
+resaleListingUrl: text("resale_listing_url"), // Link to FB Marketplace/OfferUp
+Frontend (hauler-dashboard.tsx):
+
+Add a "Claim for Resale" button on the job completion screen.
+
+If clicked, the App generates a "Copy/Paste Description" for them: "Selling a [Brand] [Item]. Condition: [Good]. Picked up today. $X."
+
+4. Smart Lock Integration (B2B Access)
+The Logic: Store a temporary access code that is encrypted and only visible to the assigned PYCKER 30 mins before arrival.
+
+Schema Change (schema.ts):
+
+TypeScript
+// Add to serviceRequests
+accessType: varchar("access_type").default('person'), // 'smart_lock', 'lockbox', 'person'
+encryptedAccessCode: text("encrypted_access_code"), 
+accessWindowStart: timestamp("access_window_start"),
+accessWindowEnd: timestamp("access_window_end")
+Security: Ensure the code is never sent to the frontend until jobStatus === 'en_route' AND distance < 1 mile.
+
+5. Carbon Offset Upsell (Free Revenue)
+The Logic: A simple checkout checkbox to "Greenify" the job.
+
+Schema Change:
+
+TypeScript
+// Add to serviceRequests
+carbonOffsetOptIn: boolean("carbon_offset_opt_in").default(false),
+carbonOffsetFee: integer("carbon_offset_fee").default(0), // e.g., 499 cents ($4.99)
+Stripe Logic (stripeService.ts):
+
+If carbonOffsetOptIn === true, add a line item for $4.99 to the Payment Intent.
+
+Note: This goes 100% to uPYCK's account (minus the cost of the actual carbon credit, usually $0.50).

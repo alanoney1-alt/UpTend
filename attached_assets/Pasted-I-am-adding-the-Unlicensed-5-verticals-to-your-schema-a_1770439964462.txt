@@ -1,0 +1,146 @@
+I am adding the "Unlicensed 5" verticals to your schema and pricing logic right now.
+
+This turns uPYCK from a "Junk App" into a "General Labor Army."
+
+1. The Schema Update (shared/schema.ts)
+We need to tell the database that a job isn't just "items." It could be "hours" (Moving) or "square footage" (washing).
+
+TypeScript
+// shared/schema.ts
+
+// The 5 Pillars of Sweat Equity
+export const serviceTypes = pgEnum("service_type", [
+  'junk_removal',      // The Anchor
+  'moving_labor',      // Strong backs (No truck required sometimes)
+  'pressure_washing',  // High margin
+  'gutter_cleaning',   // Recurring maintenance
+  'light_demolition'   // Sheds/Carpet (Fun!)
+]);
+
+export const serviceRequests = pgTable("service_requests", {
+  // ... existing columns ...
+
+  // SERVICE TYPE
+  serviceType: serviceTypes("service_type").default('junk_removal').notNull(),
+  
+  // DYNAMIC PRICING FACTORS
+  squareFootage: integer("square_footage"), // For Pressure Washing
+  storyCount: integer("story_count"),       // For Gutters (1 vs 2 story)
+  laborHours: integer("labor_hours"),       // For Moving Help (2 guys x 2 hours)
+  laborCrewSize: integer("labor_crew_size").default(1),
+  
+  // SPECIFIC FOR DEMO
+  demoDebrisType: varchar("demo_debris_type"), // 'wood', 'concrete', 'drywall'
+});
+
+// WORKER SKILLS (Who can do what?)
+export const haulers = pgTable("haulers", {
+  // ... existing columns ...
+  
+  // JSON Array: ["junk_removal", "pressure_washing"]
+  supportedServices: jsonb("supported_services").default(["junk_removal"]),
+  
+  // Equipment Check (Liability Shield)
+  hasPressureWasher: boolean("has_pressure_washer").default(false),
+  hasTallLadder: boolean("has_tall_ladder").default(false), // 20ft+
+  hasDemoTools: boolean("has_demo_tools").default(false), // Sledge, Prybar
+});
+2. The "Polymorphic" Pricing Engine (server/services/pricing.ts)
+This is the brain. It calculates price differently based on what the job is.
+
+Create/Update server/services/pricing.ts:
+
+TypeScript
+// server/services/pricing.ts
+
+export const PRICING_CONSTANTS = {
+  PRESSURE_WASH_SQFT: 25, // $0.25 per sq ft
+  GUTTER_1_STORY: 14900,  // $149.00 flat
+  GUTTER_2_STORY: 24900,  // $249.00 flat
+  MOVER_HOURLY: 4500,     // $45.00/hr per mover
+  MOVER_MIN_HOURS: 2,     // Minimum 2 hours
+  DEMO_BASE_RATE: 15000,  // Start at $150
+};
+
+export function calculateServicePrice(type: string, data: any) {
+  let price = 0;
+
+  switch (type) {
+    case 'pressure_washing':
+      // Formula: SqFt * Rate (Min $99)
+      price = (data.squareFootage || 0) * PRICING_CONSTANTS.PRESSURE_WASH_SQFT;
+      if (price < 9900) price = 9900;
+      break;
+
+    case 'gutter_cleaning':
+      // Formula: Flat Rate based on Height
+      price = (data.storyCount === 2) 
+        ? PRICING_CONSTANTS.GUTTER_2_STORY 
+        : PRICING_CONSTANTS.GUTTER_1_STORY;
+      break;
+
+    case 'moving_labor':
+      // Formula: (Rate * Crew * Hours)
+      const hours = Math.max(data.laborHours || 0, PRICING_CONSTANTS.MOVER_MIN_HOURS);
+      const crew = data.laborCrewSize || 1;
+      price = hours * crew * PRICING_CONSTANTS.MOVER_HOURLY;
+      break;
+
+    case 'light_demolition':
+      // AI Quote Required usually, but base floor:
+      price = PRICING_CONSTANTS.DEMO_BASE_RATE; 
+      // + Add volume logic from Vision Vault here
+      break;
+
+    case 'junk_removal':
+    default:
+      // Fallback to existing AI Volume logic
+      return null; // Triggers "Use Vision API"
+  }
+
+  return price; // Returns in Cents
+}
+3. The "Upsell Trigger" (server/routes.ts)
+This is the Super-Flywheel. When a worker finishes a Job A, we check if they can do Job B.
+
+Add this to your complete route:
+
+TypeScript
+// server/routes.ts
+
+app.post("/api/service-requests/:id/upsell-check", async (req, res) => {
+  const { haulerId, serviceType } = req.body; // The job just finished
+  
+  // 1. Get the worker's skills
+  const hauler = await db.query.haulers.findFirst({ where: eq(haulers.id, haulerId) });
+  
+  const opportunities = [];
+
+  // 2. Logic: If they just did Junk, check if they have a Pressure Washer
+  if (serviceType === 'junk_removal' && hauler.hasPressureWasher) {
+    opportunities.push({
+      type: 'pressure_washing',
+      pitch: "Driveway looking dirty? Since we're here, we can wash it for $99 (Save $50).",
+      quickPrice: 9900
+    });
+  }
+
+  // 3. Logic: If they just did Gutters, check for Junk
+  if (serviceType === 'gutter_cleaning') {
+    opportunities.push({
+      type: 'junk_removal',
+      pitch: "Have any bags of leaves or debris to haul away? We can take them for $49.",
+      quickPrice: 4900
+    });
+  }
+
+  res.json({ opportunities });
+});
+🚀 Why this is safer than Plumbing/Electric
+Pressure Washing: It's water and a machine. No code violations.
+
+Moving Labor: It's lifting boxes. No "Carrier Authority" needed if you aren't driving the truck (just loading/unloading).
+
+Gutters: It's a ladder and a bucket.
+
+Demolition: It's a sledgehammer.

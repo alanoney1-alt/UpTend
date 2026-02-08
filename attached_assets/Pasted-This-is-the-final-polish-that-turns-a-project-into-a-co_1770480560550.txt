@@ -1,0 +1,106 @@
+This is the final polish that turns a "project" into a "company."1. The Naming Decision: "Pyckers" vs. "Tenders"Do NOT use "Tenders."While it matches the name "UpTend," in English, "Tender" has too many meanings (Chicken Tenders, Legal Tender, sore/bruised). Saying "My Tender is in the backyard" sounds awkward.The Upgrade: Call them "Pros."Why: You are building a "Home OS." You want homeowners to respect these people. "Pycker" sounds like a gig worker. "Tender" sounds like a nurse. "Pro" sounds like an expert.The Brand: "Book an UpTend Pro."The Vibe: Dignified, Skilled, Trustworthy.2. The Rebrand Execution (File by File)Here is the code to scrub "uPYCK" from existence and install "UpTend" everywhere.A. The Browser Title (client/index.html)This is what shows up in Google and the browser tab.HTML<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>UpTend | The Home Value OS</title>
+    <meta name="description" content="The operating system for home maintenance. Junk removal, pressure washing, and asset protection." />
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#06b6d4"> </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+B. The App Icon Name (client/public/manifest.json)This is what they see when they install it on their iPhone/Android.JSON{
+  "short_name": "UpTend",
+  "name": "UpTend Home OS",
+  "icons": [ ... ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#06b6d4",
+  "background_color": "#0f172a"
+}
+C. The Landing Page (client/src/pages/landing-page.tsx)We need to update the copy to reflect the new "Trending Up" mission.TypeScript// Inside LandingPage component return:
+
+{/* HERO SECTION */}
+<div className="text-center">
+  <div className="flex justify-center mb-6">
+    <span className="rounded-full bg-cyan-500/10 px-3 py-1 text-sm font-semibold leading-6 text-cyan-400 ring-1 ring-inset ring-cyan-500/20">
+      New: The Home Value Algorithm
+    </span>
+  </div>
+  
+  <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+    Don't Just Maintain It. <br />
+    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+      Tend To It.
+    </span>
+  </h1>
+  
+  <p className="mt-6 text-lg leading-8 text-slate-300 max-w-2xl mx-auto">
+    UpTend is the Operating System for your home. We handle the <strong>Essential 5</strong> services, log the data, and ensure your asset value always trends up.
+  </p>
+
+  <div className="mt-10 flex items-center justify-center gap-x-6">
+    <Link href="/book">
+      <Button size="lg" className="bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold px-8 h-12 text-lg">
+        Find a Pro
+      </Button>
+    </Link>
+    <Link href="/how-it-works" className="text-sm font-semibold leading-6 text-white">
+      See How It Works <span aria-hidden="true">→</span>
+    </Link>
+  </div>
+</div>
+
+{/* TRUST SECTION (Formerly "Why uPYCK") */}
+<div className="py-24 bg-slate-900">
+  <div className="max-w-7xl mx-auto px-6">
+    <div className="text-center mb-16">
+      <h2 className="text-3xl font-bold text-white">The UpTend Standard</h2>
+      <p className="text-slate-400 mt-4">Why smart homeowners trust their asset to us.</p>
+    </div>
+    {/* ... (Rest of your trust grid, replacing "Pycker" with "Pro") ... */}
+  </div>
+</div>
+D. The Navbar (client/src/components/layout/navbar.tsx)Make sure the button says "Become a Pro," not "Become a Pycker."TypeScript// Inside Navbar return:
+<div className="hidden lg:flex lg:flex-1 lg:justify-end gap-4">
+  <Link href="/become-pro">
+    <span className="text-sm font-semibold leading-6 text-white bg-slate-800 px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer border border-slate-700">
+      Become a Pro
+    </span>
+  </Link>
+  <Link href="/auth">
+    <span className="text-sm font-semibold leading-6 text-white bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-500 transition-colors cursor-pointer shadow-lg shadow-blue-500/20">
+      Log in <span aria-hidden="true">&rarr;</span>
+    </span>
+  </Link>
+</div>
+E. The Footer (client/src/components/layout/footer.tsx)Update the branding and the contact email logic.TypeScript// Inside Footer return:
+<div className="space-y-6">
+  {/* NEW LOGO INTEGRATION */}
+  <div className="flex items-center gap-2">
+    <Logo className="w-8 h-8" textClassName="text-2xl text-white" />
+  </div>
+  
+  <p className="text-sm text-slate-400 leading-relaxed">
+    UpTend Labs Inc.<br/>
+    The Home Value Operating System.
+  </p>
+  
+  {/* Update Links */}
+  <ul className="space-y-4 text-sm mt-6">
+    <li>
+      <Link href="/become-pro">
+        <span className="hover:text-cyan-400 cursor-pointer">Join as a Pro</span>
+      </Link>
+    </li>
+    <li>
+      <Link href="/academy">
+        <span className="hover:text-cyan-400 cursor-pointer">UpTend Academy</span>
+      </Link>
+    </li>
+  </ul>
+</div>
+3. The "Find & Replace" ChecklistOpen your code editor (CMD+Shift+F) and run these specific replacements to ensure no "Junk App" vibes remain.Find ThisReplace With ThisWhy?uPYCKUpTendThe new company name.PyckerProDignity and authority.HaulerProYou do more than haul now.Junk AppHome OSRe-framing the category.TrashMaterialsSounds more professional.DriverTechnicianElevates the role.🚀 SummaryBy changing the name to UpTend and the workers to Pros, you have successfully pivoted from a "Trash App" to a "Property Tech Company."Deploy these text changes now. The difference in perception will be immediate.

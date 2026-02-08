@@ -1,0 +1,164 @@
+The Strategy: The "$49 Commitment Credit"
+Do not do free consultations. You will get lonely people who just want to chat. Do not charge $150. That is for "Designers."
+
+The uPYCK Offer:
+
+Price: $49.00
+
+The Hook: "This $49 is instantly credited back to you if you book any service (Junk Removal, Moving, Handyman) within 7 days."
+
+The Value:
+
+30-Minute On-Site Assessment.
+
+Official Home Score Baseline (Instant +50 Points).
+
+The "Treatment Plan" (A line-item quote for everything: Garage, Gutters, AC Filter).
+
+🛠️ Implementation Guide
+1. Schema Update (shared/schema.ts)
+We need to track the consultation and the resulting "Treatment Plan" (the potential jobs).
+
+TypeScript
+// shared/schema.ts
+
+export const consultations = pgTable("consultations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  customerId: varchar("customer_id").notNull(),
+  haulerId: varchar("hauler_id"), // The Pro doing the consult
+  
+  status: varchar("status").default('scheduled'), // scheduled, completed, converted
+  price: integer("price").default(4900), // $49.00
+  isCreditUsed: boolean("is_credit_used").default(false),
+  
+  // The Output
+  generatedTreatmentPlan: jsonb("generated_treatment_plan"), // Array of potential jobs found
+  homeScoreImpact: integer("home_score_impact").default(50),
+  
+  scheduledAt: timestamp("scheduled_at"),
+  completedAt: timestamp("completed_at"),
+});
+
+// Update Service Requests to link back
+export const serviceRequests = pgTable("service_requests", {
+  // ... existing columns ...
+  linkedConsultationId: uuid("linked_consultation_id"), // If booked from a consult
+});
+2. The "Treatment Plan" Builder (Worker App)
+This is a new screen for the worker. They don't just "give a price." They build a shopping list.
+
+File: client/src/components/consultation-mode.tsx
+
+TypeScript
+import { useState } from "react";
+import { Card, Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+
+export function ConsultationMode({ customerId, onComplete }) {
+  const [recommendations, setRecommendations] = useState([]);
+
+  // The Menu of Services
+  const commonIssues = [
+    { id: 'garage', label: 'Garage Cleanout', avgPrice: 250 },
+    { id: 'gutters', label: 'Gutter Cleaning', avgPrice: 150 },
+    { id: 'filters', label: 'Replace HVAC Filters', avgPrice: 75 },
+    { id: 'donation', label: 'Furniture Donation Run', avgPrice: 120 },
+    { id: 'safety', label: 'Remove Fire Hazards (Chemicals)', avgPrice: 99 },
+  ];
+
+  const toggleIssue = (issue) => {
+    if (recommendations.find(r => r.id === issue.id)) {
+      setRecommendations(recommendations.filter(r => r.id !== issue.id));
+    } else {
+      setRecommendations([...recommendations, { ...issue, notedPrice: issue.avgPrice }]);
+    }
+  };
+
+  const calculateTotal = () => recommendations.reduce((sum, r) => sum + r.notedPrice, 0);
+
+  return (
+    <div className="space-y-4 p-4">
+      <h2 className="text-xl font-bold">🩺 Home Health Checkup</h2>
+      <p className="text-muted-foreground text-sm">Select issues found during walkthrough.</p>
+
+      <div className="grid gap-3">
+        {commonIssues.map((issue) => (
+          <Card key={issue.id} 
+            className={`p-3 flex justify-between items-center cursor-pointer border-2 ${
+              recommendations.find(r => r.id === issue.id) ? 'border-primary bg-primary/5' : 'border-transparent'
+            }`}
+            onClick={() => toggleIssue(issue)}
+          >
+            <span className="font-medium">{issue.label}</span>
+            <span className="text-sm font-bold">${issue.avgPrice}+</span>
+          </Card>
+        ))}
+      </div>
+
+      <div className="bg-slate-100 p-4 rounded-lg mt-4">
+        <div className="flex justify-between font-bold text-lg mb-2">
+          <span>Potential Value Add:</span>
+          <span className="text-green-600">+${calculateTotal()}</span>
+        </div>
+        <div className="flex justify-between text-sm text-muted-foreground">
+          <span>Consultation Credit:</span>
+          <span className="text-red-500">-$49.00</span>
+        </div>
+      </div>
+
+      <Button className="w-full h-12 text-lg" onClick={() => onComplete(recommendations)}>
+        Generate Treatment Plan
+      </Button>
+    </div>
+  );
+}
+3. The Backend Logic (server/routes.ts)
+When the consultation is done, we update the Home Score and create the "Draft Jobs."
+
+TypeScript
+// server/routes.ts
+
+app.post("/api/consultations/:id/complete", async (req, res) => {
+  const { recommendations } = req.body;
+  const consultId = req.params.id;
+
+  // 1. Mark Consult Complete
+  const consult = await db.update(consultations)
+    .set({ 
+      status: 'completed',
+      completedAt: new Date(),
+      generatedTreatmentPlan: recommendations
+    })
+    .where(eq(consultations.id, consultId))
+    .returning();
+
+  // 2. TRIGGER: Update Home Score (+50 Points)
+  await updateHomeScore(consult[0].customerId, 'home_consultation', consultId);
+
+  // 3. Create "Draft" Opportunities
+  // (In a real app, you'd save these as 'pending_approval' jobs)
+
+  res.json({ success: true, message: "Plan Generated" });
+});
+4. The "Credit" Logic (Stripe)
+When they go to book one of those jobs later, we apply the coupon.
+
+Logic in stripeService.ts:
+
+Check consultations table for customerId.
+
+If status === 'completed' AND isCreditUsed === false.
+
+Apply -$49.00 discount to the Payment Intent.
+
+Mark isCreditUsed = true after successful payment.
+
+Why this works
+Low Friction: $49 is cheap enough to impulse buy, but high enough to filter out time-wasters.
+
+Sunk Cost Fallacy: Once they pay $49, they will book a job to "get their money back."
+
+Data Goldmine: Even if they don't book immediately, you now have a verified list of exactly what their house needs (e.g., "Needs Gutter Cleaning"). You can email them in 2 weeks: "It's raining! $20 off Gutter Cleaning."
+
+Add the consultations table to your schema now. This is your best lead generation tool.

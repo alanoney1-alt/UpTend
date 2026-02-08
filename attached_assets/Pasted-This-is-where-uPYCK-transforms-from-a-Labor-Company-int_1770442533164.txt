@@ -1,0 +1,87 @@
+This is where uPYCK transforms from a "Labor Company" into a "Home Management Platform."You are creating a Referral Engine.If your worker identifies that the customer needs a New Roof ($15,000), you do not ignore it.You sell that lead to a Roofing Partner for $200 - $500.Here is the Exact Checklist, the App Workflow, and the Referral Monetization Strategy.1. The Checklist: "The Big 10" (30 Minutes)The worker is not a licensed inspector. They are a "Data Collector."Their job is to spot visible red flags and document them.ZoneItemWhat to Look For (The "Trigger")Potential RevenueExterior1. RoofMissing shingles, moss, sagging.$300 Referral Fee (Roofer)2. GuttersPlants growing out of them, sagging.$150 Job (uPYCK)3. SidingGreen algae/mold.$250 Pressure Wash (uPYCK)4. TreesBranches touching the roof/house.$100 Referral Fee (Arborist)Garage5. JunkCan you park a car inside?$300 Junk Job (uPYCK)6. Water HeaterRust at the bottom?$50 Referral Fee (Plumber)Interior7. HVAC FilterIs it grey/clogged? (Pull it out).$75 Filter Change (uPYCK)8. Smoke DetectorsYellow/old? Test button.$99 Battery/Unit Swap (uPYCK)9. Attic AccessAny visible water stains on ceiling?$300 Referral Fee (Restoration)10. AssetsTV, Couch, Antiques (Video Scan).Inventory Value (Data)2. The App Workflow: "Consultation Mode"The worker opens the app. They see a list of these 10 items.They have 3 buttons for each item:🟢 Good (Nothing to do).🟡 Attention (Needs cleaning/fixing $\rightarrow$ uPYCK Job).🔴 Critical (Needs professional repair $\rightarrow$ Referral).The Script (In-App Prompt)Worker marks "Roof" as Critical.App Prompt: "Take a photo of the missing shingles."Worker: Snaps photo.App Prompt: "Tell the customer: 'I noticed some shingles are missing. We have a certified roofing partner who can give you a free drone estimate. Want me to have them call you?'"Action: Worker clicks [ Send Lead ].3. The Backend: "The Lead Broker"You do not do roofs. You do not do HVAC. You broker them.How to monetize this tomorrow:The "Partner Network":Find ONE reputable Roofer, ONE HVAC company, and ONE Tree Service in Orlando.The Deal: "I will send you verified leads with photos. You pay me $50 per lead or 5% of the closed job."(Note: Start with a flat fee per lead. It's easier to track).The "Automatic Handoff":When the worker clicks "Send Lead" in the app:System: Emails the Roofer with the customer's name, address, and the Photo of the Damage.Customer: Gets an SMS: "Thanks! We've notified 'Best Orlando Roofing' to reach out about your shingles."4. Implementation: The Code (ConsultationWizard.tsx)This is the code for the worker's checklist. It separates "Our Jobs" from "Referral Jobs."File: client/src/components/consultation/consultation-wizard.tsxTypeScriptimport { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Camera, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
+
+const CHECKLIST = [
+  { id: 'roof', label: 'Roof Condition', type: 'referral', partner: 'Roofer' },
+  { id: 'gutters', label: 'Gutters', type: 'upyck', price: 150 },
+  { id: 'driveway', label: 'Driveway (Algae)', type: 'upyck', price: 99 },
+  { id: 'hvac', label: 'HVAC Unit (Rust/Age)', type: 'referral', partner: 'HVAC Pro' },
+  { id: 'garage', label: 'Garage Clutter', type: 'upyck', price: 250 },
+  { id: 'trees', label: 'Overhanging Trees', type: 'referral', partner: 'Arborist' },
+];
+
+export function ConsultationWizard({ onComplete }) {
+  const [results, setResults] = useState({});
+  const [step, setStep] = useState(0);
+
+  const currentItem = CHECKLIST[step];
+
+  const handleRating = (status) => {
+    setResults({ ...results, [currentItem.id]: status });
+    if (step < CHECKLIST.length - 1) {
+      setStep(step + 1);
+    } else {
+      finishConsultation();
+    }
+  };
+
+  const finishConsultation = () => {
+    // Separate into "uPYCK Jobs" and "Referrals"
+    const upyckJobs = CHECKLIST.filter(i => results[i.id] === 'attention' && i.type === 'upyck');
+    const referrals = CHECKLIST.filter(i => results[i.id] === 'critical' && i.type === 'referral');
+    
+    onComplete({ upyckJobs, referrals });
+  };
+
+  return (
+    <div className="p-4 h-full bg-slate-50 flex flex-col justify-between">
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold">Health Check</h2>
+          <span className="bg-slate-200 px-3 py-1 rounded-full text-sm">
+            {step + 1} / {CHECKLIST.length}
+          </span>
+        </div>
+
+        <Card className="p-8 text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">{currentItem.label}</h1>
+          <p className="text-slate-500">
+            {currentItem.type === 'upyck' ? "Look for dirt/clutter." : "Look for visible damage."}
+          </p>
+        </Card>
+
+        <div className="grid gap-4">
+          <Button 
+            className="h-16 bg-green-100 text-green-800 hover:bg-green-200 border border-green-300"
+            onClick={() => handleRating('good')}
+          >
+            <CheckCircle className="mr-2" /> Looks Good
+          </Button>
+
+          {currentItem.type === 'upyck' ? (
+            <Button 
+              className="h-16 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border border-yellow-300"
+              onClick={() => handleRating('attention')}
+            >
+              <AlertTriangle className="mr-2" /> Needs Cleaning (${currentItem.price})
+            </Button>
+          ) : (
+             <Button 
+              className="h-16 bg-red-100 text-red-800 hover:bg-red-200 border border-red-300"
+              onClick={() => handleRating('critical')}
+            >
+              <XCircle className="mr-2" /> Needs Repair (Referral)
+            </Button>
+          )}
+        </div>
+      </div>
+      
+      <p className="text-center text-xs text-slate-400 mt-4">
+        Take photos for any "Needs Cleaning" or "Repair" items.
+      </p>
+    </div>
+  );
+}
+5. The "Referral Engine" LogicWhen onComplete runs, the app should split the data:uPYCK Jobs: These go into the "My Maintenance Plan" on the user's dashboard (as discussed earlier).Referrals: These trigger an Admin Alert to you (The Broker).The Email You Receive:New Lead Alert:Customer: John DoeIssue: Roof Shingles Missing (Critical)Photo: [Link]Action: Forward this to "Bob's Roofing" and invoice Bob $50.💸 Summary: The "Home Health" P&LFor a single $49 visit, your revenue stack looks like this:Consult Fee: $49 (Covered by worker cost).uPYCK Jobs: $250 Garage + $150 Gutters = **$400 GMV** ($100 Net).Referrals: Roof Lead ($50) + Tree Lead ($30) = $80 Net Profit.Total Net Profit per Visit: ~$180 (Without lifting a finger).Add the ConsultationWizard to your Replit project. This is how you monetize "Out of Scope" work.

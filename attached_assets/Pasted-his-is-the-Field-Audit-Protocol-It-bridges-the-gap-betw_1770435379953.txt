@@ -1,0 +1,189 @@
+his is the "Field Audit" Protocol. It bridges the gap between the AI's best guess and physical reality.
+
+To implement this, we need to introduce a specific state between "Arrived" and "In Progress" called "Assessing".
+
+Here is the exact implementation to add to Replit right now.
+
+1. Database Schema (shared/schema.ts)
+We need to store the difference between the AI quote and the Human locked price, plus the specific "Line Items" the worker added.
+
+TypeScript
+// shared/schema.ts
+
+// Update serviceRequests table
+export const serviceRequests = pgTable("service_requests", {
+  // ... existing columns ...
+  
+  // THE FIELD AUDIT FIELDS
+  originalAiPrice: integer("original_ai_price"), // Preserves the AI's initial guess
+  finalLockedPrice: integer("final_locked_price"), // The price the worker sets
+  
+  // What changed?
+  adjustmentReason: text("adjustment_reason"), // e.g., "Extra stairs", "More items than photos"
+  addedLineItems: jsonb("added_line_items"), // Array of { name: "Disassembly", cost: 2500 }
+  
+  // The Customer "Handshake"
+  customerSignatureUrl: text("customer_signature_url"), // Optional: Digital signature approving new price
+  isPriceLocked: boolean("is_price_locked").default(false),
+});
+2. The "Lock Price" API Endpoint (server/routes.ts)
+This route allows the worker to override the price. It creates a paper trail so you can audit them if they abuse it.
+
+TypeScript
+// server/routes.ts
+
+// FIELD AUDIT: Worker updates price before starting
+app.post("/api/service-requests/:id/lock-price", async (req, res) => {
+  if (!req.isAuthenticated() || req.user.role !== "hauler") {
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+
+  const { newPrice, reason, lineItems } = req.body;
+  const jobId = req.params.id;
+
+  try {
+    // 1. Get current job
+    const job = await storage.getServiceRequest(jobId);
+    
+    // 2. Validate logic (Prevent gouging? Optional cap could go here)
+    if (newPrice > job.priceEstimate * 2) {
+      // Flag for admin review if price doubles?
+      console.warn(`[PriceAlert] Worker doubled price on job ${jobId}`);
+    }
+
+    // 3. Update and Lock
+    const updatedJob = await db
+      .update(serviceRequests)
+      .set({
+        finalLockedPrice: newPrice,
+        originalAiPrice: job.priceEstimate, // Save the old price for data training
+        adjustmentReason: reason,
+        addedLineItems: lineItems, // Store JSON of extras
+        isPriceLocked: true,
+        status: "in_progress" // NOW the work begins
+      })
+      .where(eq(serviceRequests.id, jobId))
+      .returning();
+
+    // 4. Notify Customer via Socket (Price Updated)
+    // socket.to(job.customerId).emit('price_update', { newPrice });
+
+    res.json(updatedJob[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to lock price" });
+  }
+});
+3. The Worker UI Component (client/src/components/field-audit-form.tsx)
+Create this new component. It appears on the Hauler Dashboard only when status === 'arrived'.
+
+TypeScript
+// client/src/components/field-audit-form.tsx
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Plus, Trash2, Lock } from "lucide-react";
+
+export function FieldAuditForm({ job, onLockPrice }) {
+  const [basePrice] = useState(job.priceEstimate);
+  const [extras, setExtras] = useState([]);
+  const [reason, setReason] = useState("");
+
+  const commonExtras = [
+    { name: "Stairs (Per Flight)", cost: 15 },
+    { name: "Long Carry (>50ft)", cost: 25 },
+    { name: "Disassembly Labor", cost: 40 },
+    { name: "Extra Volume (1/4 Truck)", cost: 100 },
+  ];
+
+  const addExtra = (item) => {
+    setExtras([...extras, { ...item, id: Date.now() }]);
+  };
+
+  const removeExtra = (id) => {
+    setExtras(extras.filter(e => e.id !== id));
+  };
+
+  const currentTotal = basePrice + extras.reduce((sum, item) => sum + item.cost, 0);
+
+  return (
+    <Card className="p-4 space-y-4 border-2 border-primary">
+      <h3 className="font-bold text-lg">👷 Field Audit</h3>
+      <p className="text-sm text-muted-foreground">
+        Verify the job scope before starting.
+      </p>
+
+      {/* Base Price */}
+      <div className="flex justify-between p-2 bg-muted rounded">
+        <span>Initial Quote</span>
+        <span className="font-mono">${basePrice}</span>
+      </div>
+
+      {/* Added Extras */}
+      <div className="space-y-2">
+        {extras.map((item) => (
+          <div key={item.id} className="flex justify-between items-center text-sm">
+            <span>{item.name}</span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-green-600">+${item.cost}</span>
+              <Button variant="ghost" size="sm" onClick={() => removeExtra(item.id)}>
+                <Trash2 className="w-4 h-4 text-red-500" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Quick Add Buttons */}
+      <div className="grid grid-cols-2 gap-2 mt-2">
+        {commonExtras.map((extra) => (
+          <Button 
+            key={extra.name} 
+            variant="outline" 
+            size="sm" 
+            onClick={() => addExtra(extra)}
+            className="text-xs"
+          >
+            <Plus className="w-3 h-3 mr-1" /> {extra.name}
+          </Button>
+        ))}
+      </div>
+
+      {/* Reason for Change */}
+      {extras.length > 0 && (
+        <Input 
+          placeholder="Reason for adjustment (e.g., 'No elevator')" 
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
+      )}
+
+      {/* Total & Lock */}
+      <div className="pt-4 border-t">
+        <div className="flex justify-between items-end mb-4">
+          <span className="font-bold">Final Price</span>
+          <span className="text-2xl font-bold text-primary">${currentTotal}</span>
+        </div>
+        
+        <Button 
+          className="w-full" 
+          size="lg"
+          onClick={() => onLockPrice({ newPrice: currentTotal, lineItems: extras, reason })}
+        >
+          <Lock className="w-4 h-4 mr-2" />
+          Lock Price & Start Job
+        </Button>
+        <p className="text-xs text-center mt-2 text-muted-foreground">
+          By clicking lock, you confirm the customer agreed to this price.
+        </p>
+      </div>
+    </Card>
+  );
+}
+Why this is brilliant for you:
+Trust: The customer sees exactly why the price went up (e.g., "Stairs"), not just a random number.
+
+Data Training: This creates a feedback loop. If the AI sees that jobs with "Apartment" in the address constantly get a "+$15 Stairs" charge, GPT-5.1 will learn to ask "Is there an elevator?" in the future.
+
+Revenue Protection: You capture the revenue for the hard work (stairs, disassembly) that usually gets done for free.

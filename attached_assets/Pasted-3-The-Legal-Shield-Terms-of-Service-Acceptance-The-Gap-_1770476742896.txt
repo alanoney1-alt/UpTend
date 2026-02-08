@@ -1,0 +1,48 @@
+3. The "Legal Shield" (Terms of Service Acceptance)
+The Gap: The user signs up, but they never legally agreed to your "Independent Contractor Agreement" or "Background Check Consent." The Fix: A forced modal that appears on their first login. They cannot close it until they scroll to the bottom and click "I Agree."
+
+👉 Replit Action: Create client/src/components/auth/legal-modal.tsx.
+
+TypeScript
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+export function LegalModal({ isOpen, onAccept }) {
+  const [canAccept, setCanAccept] = useState(false);
+
+  // Detect when they scroll to the bottom
+  const handleScroll = (e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom) setCanAccept(true);
+  };
+
+  return (
+    <Dialog open={isOpen}>
+      <DialogContent className="sm:max-w-md" hideCloseButton>
+        <DialogHeader>
+          <DialogTitle>Contractor Agreement</DialogTitle>
+        </DialogHeader>
+        
+        <ScrollArea className="h-[300px] w-full rounded-md border p-4 bg-slate-50" onScroll={handleScroll}>
+          <div className="text-sm text-slate-600 space-y-4">
+            <p><strong>1. Independent Contractor Status.</strong> You act as an independent business...</p>
+            <p><strong>2. Safety & Liability.</strong> You are responsible for any damage...</p>
+            <p><strong>3. Background Check.</strong> You consent to a Checkr screening...</p>
+            {/* ... Paste your real legal text here ... */}
+            <p className="text-slate-400 italic">-- End of Agreement --</p>
+          </div>
+        </ScrollArea>
+
+        <Button 
+          onClick={onAccept} 
+          disabled={!canAccept} // Disabled until scrolled!
+          className="w-full mt-4"
+        >
+          {canAccept ? "I Agree & Accept" : "Read to the bottom to accept"}
+        </Button>
+      </DialogContent>
+    </Dialog>
+  );
+}

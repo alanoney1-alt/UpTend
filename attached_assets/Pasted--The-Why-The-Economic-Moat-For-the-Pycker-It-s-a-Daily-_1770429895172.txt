@@ -1,0 +1,57 @@
+. The "Why" (The Economic Moat)
+For the Pycker: It’s a "Daily Gas Bonus." If they hit the proper facility, they get a $20 bump. Over a month, that’s ~$500—essentially covering their truck insurance or a chunk of their fuel.
+
+For the Customer: "Audit-Level Trust." When a customer sees the receipt upload on their end, they have 100% peace of mind that their old couch isn't in a ditch. This justifies the 25% fee.
+
+For Upyck: You are collecting Data Gold. You now have a verified paper trail of every pound of waste. This is what you sell to corporate ESG auditors.
+
+🛠️ How to Load This into Replit (Tonight)
+You need three things: a Receipt Table, a Daily Bonus Logic, and an AI Verification Hook.
+
+Step A: The Database Update
+Tell the Replit Agent to add a table for these receipts.
+
+SQL
+CREATE TABLE disposal_receipts (
+  id SERIAL PRIMARY KEY,
+  worker_id INTEGER REFERENCES workers(id),
+  job_id INTEGER REFERENCES jobs(id),
+  receipt_image_url TEXT,
+  amount_paid DECIMAL,
+  facility_name TEXT,
+  bonus_status VARCHAR(20) DEFAULT 'pending', -- 'pending', 'approved', 'paid'
+  created_at TIMESTAMP DEFAULT NOW()
+);
+Step B: The "Daily Limit" Logic
+You want to cap this at $20/day to prevent fraud. Tell the Replit Agent to add this "Check" to your payout script:
+
+JavaScript
+// Logic to check if worker already got their $20 today
+async function canClaimDailyBonus(workerId) {
+  const today = new Date().toISOString().slice(0, 10);
+  const result = await db.query(
+    "SELECT COUNT(*) FROM disposal_receipts WHERE worker_id = $1 AND created_at::date = $2 AND bonus_status = 'approved'",
+    [workerId, today]
+  );
+  return parseInt(result.rows[0].count) === 0; // Only 1 bonus per day
+}
+Step C: The AI Verification (Gemini 1.5 Flash)
+This is the "Full Build" part. Use the AI to read the receipt so you don't have to. Prompt for Replit Agent:
+
+"Create a function verifyReceiptWithAI(imageBuffer). Use Gemini 1.5 Flash to:
+
+Confirm it is a waste disposal receipt.
+
+Extract the Facility Name and Date.
+
+Verify it matches today's date and the worker's current job area.
+
+If it passes, automatically set bonus_status to 'approved' and add $20 to the worker's wallet."
+
+📈 The "Why" Summary for the Debugger
+Tell your debugger tomorrow:
+
+"We’ve implemented an Eco-Incentive Loop. The worker uploads a receipt -> AI validates it -> System checks if they've hit their daily $20 cap -> Instant payout triggers. This needs to be bulletproof so people don't upload the same receipt twice."
+
+Final Thought before Sign-off
+By adding this, you've solved the "Last Mile of Trust." Most junk companies disappear once the truck pulls away. Upyck follows the junk all the way to its grave (or its new home/recycler).

@@ -1,0 +1,59 @@
+o "push" all of this to Replit tonight means moving from a plan to a working, hosted environment that your debugger can access tomorrow.
+
+Here is your Final Sprint Checklist to ensure Upyck is "live" and ready for your debugger.
+
+1. The Environment Setup (The Foundation)
+You need to make sure your Replit Workspace has all the "organs" it needs to function.
+
+Secrets (Environment Variables):
+
+Open the Tools menu on the left and select Secrets (padlock icon).
+
+Add placeholders (or real keys if you have them) for:
+
+DATABASE_URL (Auto-filled if using Replit PostgreSQL)
+
+GEMINI_API_KEY (For the Greenproof Agent)
+
+STRIPE_SECRET_KEY (For payouts)
+
+TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN (For SMS)
+
+Replit PostgreSQL:
+
+Go to Tools > PostgreSQL. Click Setup Database.
+
+This will give you a live DB. Your debugger will love that they don't have to set up a local database.
+
+2. The "Agent Push" (Executing the Build)
+Since you want this "all the way built out," give the Replit Agent a massive, final instruction. Paste this into the Agent chat:
+
+"Assemble the Upyck Core tonight. I need the following structure:
+
+Database Schema: Initialize the users, workers, jobs, and esg_impact_logs tables we discussed.
+
+Auth & Safety Gate: Create a middleware that requires workers to be 'active' before accepting jobs.
+
+The Race Condition Logic: Implement the /api/jobs/accept route using a SQL transaction and FOR UPDATE lock.
+
+Uber-Style Tracking: Set up a Socket.io server to handle updateLocation from workers and workerLocation to customers.
+
+Greenproof Engine: Create a service that calculates CO2 savings and landfill diversion for every completed job.
+
+Dashboard Scaffolding: Create a 'Worker Command Center' with status toggles and a 'Customer Tracking View' with a placeholder map."
+
+3. The "Debugger Handover" (Documentation)
+To make sure the person you hired tomorrow doesn't waste time, create a file in the root directory called README_DEBUGGER.md. Put this inside:
+
+Markdown
+# Upyck Debugger Notes - Feb 7, 2026
+**Current Status:** Architecture and Core Logic Pushed.
+**Key Areas to Verify:**
+1. **SMS Webhooks:** Test the Twilio 'Reply 1 to Accept' logic in `/api/sms/incoming`.
+2. **Race Condition:** Verify only one worker can accept a job using the SQL Lock.
+3. **Socket.io Flow:** Ensure worker GPS updates are successfully broadcasting to the customer's room.
+4. **ESG Logic:** Test the CO2 calculator for a 20-mile move with a 'large' truck.
+4. How to "Save" Your Work (Git)
+Even if you aren't using GitHub yet, use Replit's built-in Git Tool (the branch icon) to save a "Checkpoint." * Commit Message: "Final pre-debug build: Upyck Core + Greenproof Agent logic."
+
+This allows you to "Roll Back" if the debugger accidentally breaks something tomorrow.

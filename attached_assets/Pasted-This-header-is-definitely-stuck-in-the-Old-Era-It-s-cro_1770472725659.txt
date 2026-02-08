@@ -1,0 +1,185 @@
+This header is definitely stuck in the "Old Era." It’s crowded, the logo is wrapping weirdly, and the orange buttons clash with our new "High-Tech Home OS" vibe.
+
+We need a header that says "Tech Company," not "Local Moving Company."
+
+Here is the complete code for a modern, responsive Navigation Bar.
+
+🛠️ The Upgrade Plan
+Brand Fix: Replaced "Pick, We Haul" with a clean, bold uPYCK wordmark.
+
+De-Clutter: Moved the phone number to the footer (where it belongs). Consolidated logins.
+
+Mobile Ready: Added a "Hamburger Menu" so it looks great on phones.
+
+Visuals: switched to the new Slate/Cyan/White palette to match the Landing Page.
+
+💻 The Code: client/src/components/layout/navbar.tsx
+Action: Create (or overwrite) this file.
+
+TypeScript
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { 
+  Menu, X, Truck, ChevronDown, 
+  LayoutGrid, UserCircle, ShieldCheck 
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+export function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [location] = useLocation();
+
+  // Helper to close mobile menu when clicking a link
+  const closeMenu = () => setIsOpen(false);
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 text-white">
+      <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+        
+        {/* --- 1. LOGO --- */}
+        <Link href="/">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={closeMenu}>
+            {/* Simple Tech Logo */}
+            <div className="w-10 h-10 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <span className="font-bold text-white text-xl tracking-tighter">uP</span>
+            </div>
+            <span className="text-2xl font-bold tracking-tight text-white">
+              uPYCK
+            </span>
+          </div>
+        </Link>
+
+        {/* --- 2. DESKTOP MENU (Center) --- */}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+          
+          <Link href="/book">
+            <span className="hover:text-white transition-colors cursor-pointer">Services</span>
+          </Link>
+          
+          <Link href="/#pricing">
+            <span className="hover:text-white transition-colors cursor-pointer">Pricing</span>
+          </Link>
+
+          <Link href="/academy">
+             <span className="hover:text-white transition-colors cursor-pointer">The Academy</span>
+          </Link>
+
+        </div>
+
+        {/* --- 3. DESKTOP ACTIONS (Right) --- */}
+        <div className="hidden md:flex items-center gap-4">
+          
+          {/* Pro Link */}
+          <Link href="/hauler/apply">
+            <span className="text-sm font-bold text-cyan-400 hover:text-cyan-300 cursor-pointer flex items-center gap-2 mr-2">
+              <Truck className="w-4 h-4" /> Become a Pycker
+            </span>
+          </Link>
+
+          {/* Login Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-white/10">
+                Log In <ChevronDown className="ml-1 w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-slate-900 border-slate-800 text-slate-200 w-56">
+              <Link href="/auth">
+                <DropdownMenuItem className="cursor-pointer hover:bg-slate-800 focus:bg-slate-800 p-3">
+                  <UserCircle className="mr-2 w-4 h-4 text-blue-500" /> Customer Login
+                </DropdownMenuItem>
+              </Link>
+              <Link href="/hauler/login">
+                <DropdownMenuItem className="cursor-pointer hover:bg-slate-800 focus:bg-slate-800 p-3">
+                  <Truck className="mr-2 w-4 h-4 text-green-500" /> Pycker (Pro) Login
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* CTA Button */}
+          <Link href="/book">
+            <Button className="bg-white text-slate-900 hover:bg-slate-100 font-bold px-6 shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all">
+              Book Now
+            </Button>
+          </Link>
+        </div>
+
+        {/* --- 4. MOBILE HAMBURGER --- */}
+        <div className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)} className="text-white p-2">
+            {isOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+          </button>
+        </div>
+      </div>
+
+      {/* --- MOBILE DRAWER --- */}
+      {isOpen && (
+        <div className="md:hidden bg-slate-900 border-t border-slate-800 absolute top-20 left-0 w-full p-6 flex flex-col gap-6 shadow-2xl animate-in slide-in-from-top-5">
+          
+          <div className="flex flex-col gap-4 text-lg font-medium text-slate-300">
+            <Link href="/book" onClick={closeMenu}>
+              <span className="block p-2 hover:text-white">Services & Pricing</span>
+            </Link>
+            <Link href="/academy" onClick={closeMenu}>
+              <span className="block p-2 hover:text-white">Academy</span>
+            </Link>
+            <Link href="/hauler/apply" onClick={closeMenu}>
+              <span className="block p-2 text-cyan-400 font-bold flex items-center gap-2">
+                <Truck className="w-5 h-5" /> Become a Pycker
+              </span>
+            </Link>
+          </div>
+
+          <hr className="border-slate-800" />
+
+          <div className="grid grid-cols-2 gap-4">
+            <Link href="/auth" onClick={closeMenu}>
+              <Button variant="outline" className="w-full border-slate-600 text-slate-300 hover:bg-slate-800">
+                Log In
+              </Button>
+            </Link>
+            <Link href="/book" onClick={closeMenu}>
+              <Button className="w-full bg-cyan-500 text-slate-900 hover:bg-cyan-400 font-bold">
+                Book Now
+              </Button>
+            </Link>
+          </div>
+
+        </div>
+      )}
+    </nav>
+  );
+}
+🧠 Integration Check
+Make sure your client/src/App.tsx (or your main layout file) actually uses this component!
+
+It should look like this:
+
+TypeScript
+// Inside App.tsx or Layout.tsx
+import { Navbar } from "@/components/layout/navbar";
+
+function App() {
+  return (
+    <div className="min-h-screen pt-20"> {/* pt-20 pushes content below fixed header */}
+      <Navbar />
+      <Switch>
+        {/* ... routes ... */}
+      </Switch>
+    </div>
+  );
+}
+Why this fixes it:
+
+Cleaner: The "Log In" dropdown hides the complexity of "Customer vs. Pycker" until you need it.
+
+Professional: The gradient logo (uP) looks like a Silicon Valley app, not a clip-art flyer.
+
+Sticky: The fixed top-0 class keeps it visible as users scroll down your new long landing page.

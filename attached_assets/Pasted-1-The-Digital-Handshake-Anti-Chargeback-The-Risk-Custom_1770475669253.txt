@@ -1,0 +1,113 @@
+1. The "Digital Handshake" (Anti-Chargeback)
+The Risk: Customer pays $300. Two weeks later, they tell their bank "Service not received." Stripe refunds them. You lose $300 + $15 fee. The Fix: You need a Digital Signature on the Pycker’s phone before they leave the driveway. This is your "FedEx Proof of Delivery."
+
+👉 Action: Create client/src/components/tools/signature-pad.tsx.
+
+TypeScript
+import { useRef } from "react";
+import SignatureCanvas from "react-signature-canvas"; // Run: npm install react-signature-canvas
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+export function JobSignOff({ onSign }) {
+  const sigPad = useRef({});
+
+  const clear = () => sigPad.current.clear();
+  
+  const save = () => {
+    if (sigPad.current.isEmpty()) return alert("Please sign first.");
+    const dataUrl = sigPad.current.getTrimmedCanvas().toDataURL("image/png");
+    onSign(dataUrl);
+  };
+
+  return (
+    <Card className="p-4 bg-white space-y-4">
+      <div className="text-center space-y-1">
+        <h3 className="font-bold text-lg">Customer Sign-Off</h3>
+        <p className="text-xs text-slate-500">
+          I certify the job is complete and no damage occurred.
+        </p>
+      </div>
+
+      <div className="border-2 border-dashed border-slate-300 rounded bg-slate-50">
+        <SignatureCanvas 
+          penColor="black"
+          canvasProps={{width: 300, height: 150, className: 'sigCanvas mx-auto'}}
+          ref={sigPad}
+        />
+      </div>
+
+      <div className="flex gap-2">
+        <Button variant="outline" onClick={clear} className="flex-1">Clear</Button>
+        <Button onClick={save} className="flex-1 bg-green-600 hover:bg-green-700">
+          Accept & Close Job
+        </Button>
+      </div>
+    </Card>
+  );
+}
+Where it goes: In the ActiveJobWizard, this is the final step. The app literally will not let the worker "Complete Job" until this signature exists.
+
+2. The "Oops" Button (Damage Control)
+The Risk: A Pycker bumps a mailbox. They are scared, so they drive away. The customer calls you furious. You get sued. The Fix: An "Incident Report" flow that frames accidents as "Insurance Events" rather than "Firable Offenses."
+
+Psychology: If the button says "Report Damage (Insured)," the worker feels safe reporting it immediately.
+
+👉 Action: Add an "Emergency / Issue" button in the Job Wizard that opens this modal:
+
+Report an Incident
+
+[ ] Property Damage (Wall/Floor)
+
+[ ] Vehicle Issue (Truck broken)
+
+[ ] Injury
+
+Upload Photo of Damage: [ Camera ]
+
+Action: This instantly sends an SMS to You (The Admin) so you can call the customer before the Pycker leaves.
+
+"We caught it early" is the difference between a $100 repair and a 1-star review.
+
+3. The "Ghost" Fee (Cancellation Logic)
+The Risk: A competitor (or jerk) books 5 jobs to waste your drivers' time/fuel. The Fix: A coded Cancellation Policy.
+
+👉 Action: Update your Backend Logic (server/routes.ts).
+
+TypeScript
+// Logic to run when User clicks "Cancel Job"
+app.post("/api/jobs/cancel", async (req, res) => {
+  const { jobId } = req.body;
+  const job = await db.query.orders.findFirst({ where: eq(orders.id, jobId) });
+  
+  const hoursUntilJob = (new Date(job.scheduledAt) - new Date()) / 36e5;
+  
+  let fee = 0;
+  
+  // 1. If Pycker is already "En Route" -> Charge $50
+  if (job.status === 'en_route') {
+    fee = 5000; // $50.00
+  } 
+  // 2. If < 24 hours notice -> Charge $25
+  else if (hoursUntilJob < 24) {
+    fee = 2500; // $25.00
+  }
+
+  if (fee > 0) {
+    // Call Stripe to capture the "Hold" for the fee amount
+    await stripe.paymentIntents.capture(job.paymentIntentId, { amount_to_capture: fee });
+  } else {
+    // Cancel the hold (Full Refund)
+    await stripe.paymentIntents.cancel(job.paymentIntentId);
+  }
+
+  // Update DB status to 'cancelled'
+});
+🛡️ Summary of Your Defense
+The Signature: Stops the bank from taking your money back.
+
+The "Oops" Button: Stops small accidents from becoming lawsuits.
+
+The Ghost Fee: Stops people from wasting your fuel.
+
+Build the Signature Pad first. It is the most common issue you will face.

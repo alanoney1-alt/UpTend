@@ -1,0 +1,164 @@
+Here is the completed code for the story, followed by the Replit Integration Guide.
+
+1. Complete "Our Story" Component (client/src/components/layout/about-alan.tsx)
+TypeScript
+import { ShieldCheck, Zap, Leaf, Quote } from "lucide-react";
+
+export function OurStory() {
+  return (
+    <div className="bg-white">
+      {/* PERSONAL HERO SECTION */}
+      <section className="pt-24 pb-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-4">Our Story</h2>
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-8 leading-tight">
+            I built UpTend because the <br className="hidden md:block"/>
+            <span className="text-slate-400 underline decoration-blue-500 decoration-4 underline-offset-8 italic">system was broken.</span>
+          </h1>
+          
+          <div className="flex flex-col md:flex-row gap-12 items-start mt-12">
+            <div className="w-full md:w-1/3 shrink-0">
+              <div className="sticky top-24">
+                <div className="aspect-[3/4] bg-slate-100 rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white rotate-2">
+                  <div className="w-full h-full flex items-center justify-center bg-slate-200">
+                    <span className="text-slate-400 text-xs">Alan's Photo</span>
+                  </div>
+                </div>
+                <p className="mt-6 text-center font-bold text-slate-900">Alan</p>
+                <p className="text-center text-xs text-slate-400 uppercase tracking-widest">Founder, UpTend Labs Inc.</p>
+              </div>
+            </div>
+
+            <div className="flex-1 space-y-6 text-lg text-slate-600 leading-relaxed text-left">
+              <p>
+                A few years ago, I looked at the home services industry and saw a massive gap between the 
+                promises made and the results delivered. Whether you were a homeowner, a renter, or a pro in a truck, 
+                everybody was losing.
+              </p>
+              <p>
+                I saw homeowners struggling to prove the value of their property to insurance companies. 
+                I saw renters losing security deposits over things they didn't do. And I saw high-quality pros 
+                getting squeezed by "gig" apps that treated them like commodities.
+              </p>
+              <p className="font-bold text-slate-900">
+                I knew there had to be a way to build intelligence and accountability into the process. 
+                That’s how our Three Pillars were born.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* THE THREE PILLARS ORIGIN STORY */}
+      <section className="py-24 bg-slate-50 px-6">
+        <div className="max-w-5xl mx-auto space-y-24">
+          
+          {/* PROTECT */}
+          <div className="flex flex-col md:flex-row gap-12 items-start">
+            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
+              <ShieldCheck className="text-white w-8 h-8" />
+            </div>
+            <div className="text-left">
+              <h3 className="text-2xl font-black text-slate-900 mb-4 uppercase italic tracking-tighter">01. PROTECT</h3>
+              <p className="text-slate-600 leading-relaxed">
+                "I realized that a home is usually a person’s largest asset, yet it has the worst 'paper trail.' 
+                We created the <strong>360° Video Manifest</strong> and the <strong>Home Audit</strong> to give 
+                owners and renters an Insurance Shield. Every job on UpTend is tracked to ensure you never 
+                settle for less than your space is worth."
+              </p>
+            </div>
+          </div>
+
+          {/* CONNECT */}
+          <div className="flex flex-col md:flex-row gap-12 items-start">
+            <div className="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/20">
+              <Zap className="text-white w-8 h-8" />
+            </div>
+            <div className="text-left">
+              <h3 className="text-2xl font-black text-slate-900 mb-4 uppercase italic tracking-tighter">02. CONNECT</h3>
+              <p className="text-slate-600 leading-relaxed">
+                "I hated seeing Pros pay for 'leads' that didn't exist. We built a platform that treats 
+                pros like the experts they are. By connecting homeowners directly with <strong>Verified Pros</strong>, 
+                we removed the middlemen and the hidden fees. No lead-chasing, just real jobs with instant payouts."
+              </p>
+            </div>
+          </div>
+
+          {/* SUSTAIN */}
+          <div className="flex flex-col md:flex-row gap-12 items-start">
+            <div className="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-green-500/20">
+              <Leaf className="text-white w-8 h-8" />
+            </div>
+            <div className="text-left">
+              <h3 className="text-2xl font-black text-slate-900 mb-4 uppercase italic tracking-tighter">03. SUSTAIN</h3>
+              <p className="text-slate-600 leading-relaxed">
+                "We don't just talk green; we track it. Every haul and every repair on UpTend is logged 
+                as <strong>Verified Material Recovery</strong>. We’re building a circular economy where 
+                sustainability is a documented fact, not just a buzzword."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL MANTRA */}
+      <section className="py-24 text-center px-6">
+        <Quote className="w-12 h-12 text-slate-200 mx-auto mb-8" />
+        <h2 className="text-3xl font-black text-slate-900 mb-6">Home Protection. Pro Empowerment. Proven Impact.</h2>
+        <p className="text-slate-500 max-w-xl mx-auto mb-10">
+          That is the UpTend mission. We’re not just an app; we’re a new standard for home intelligence.
+        </p>
+        <div className="flex justify-center gap-4">
+          <button className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-500/20">Get Started</button>
+        </div>
+      </section>
+    </div>
+  );
+}
+2. Replit Implementation Checklist
+To make sure these changes stick and don't conflict, follow this order:
+
+Step 1: Replace the Logo Globaly
+Open client/src/components/ui/logo.tsx. Delete the old uPYCK code and paste the UpTend Logo code (the one with the Blue/Cyan gradient and the Arrow-U). This will fix the header, footer, and login screens instantly.
+
+Step 2: Update the Main App Entry (client/src/App.tsx)
+Ensure your router knows about the new pages. Your Switch should look like this:
+
+TypeScript
+<Switch>
+  <Route path="/" component={LandingPage} />
+  <Route path="/about" component={OurStory} />
+  <Route path="/become-pro" component={BecomePro} />
+  <Route path="/academy" component={AcademySyllabus} />
+  <Route path="/services/audit" component={HomeAudit} />
+  <Route path="/services/junk" component={JunkRemoval} />
+  {/* ... other routes ... */}
+</Switch>
+Step 3: Rebuild the Landing Page (client/src/pages/landing-page.tsx)
+This is the "Face" of the company. It should import the new components you just made:
+
+TypeScript
+import { Hero } from "@/components/home/hero"; // Update with new tagline
+import { HowItWorksPillars } from "@/components/home/how-it-works-pillars";
+import { ImpactWidget } from "@/components/dashboard/impact-widget";
+// ... imports
+
+export default function LandingPage() {
+  return (
+    <main>
+      <Hero /> {/* Ensure hero uses: "Home intelligence. Instant service. Proven sustainability." */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+         <ImpactWidget /> {/* Shows the live sustainability/value stats */}
+      </div>
+      <HowItWorksPillars /> {/* The Protect/Connect/Sustain grid */}
+      {/* ... rest of page */}
+    </main>
+  );
+}
+Step 4: Final Metadata Check (client/index.html)
+Change the <title> from uPYCK to UpTend | Home Intelligence & Protection. This is what people see in their browser tabs.
+
+🚀 Why this works for Replit
+Replit's HMR (Hot Module Replacement) will pick up these changes immediately. By splitting the logic into Pillars, Story, and Impact, you’ve created a "clean" codebase that looks like a professional SaaS startup rather than a basic gig-app.
+
+One final reminder: In the Footer, ensure you have the line "UpTend is a registered trade name of uPYCK Inc." This keeps your legal corporation (uPYCK Inc.) safe while you market the beautiful UpTend brand.

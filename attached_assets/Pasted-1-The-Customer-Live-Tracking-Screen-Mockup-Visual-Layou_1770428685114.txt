@@ -1,0 +1,68 @@
+1. The Customer "Live Tracking" Screen Mockup
+Visual Layout:
+
+The Header: A persistent status bar. “Mike is 8 minutes away” (Updated in real-time).
+
+The Map (Middle 60%): A full-bleed map using a clean, "light mode" style.
+
+Icon A (Worker): A small truck or "U" logo icon that moves smoothly across the streets.
+
+Icon B (Home): A fixed house icon representing the customer's location.
+
+The Route: A thin, blue line connecting the two points.
+
+The Footer (Bottom 30%): An expandable card with:
+
+Worker Bio: Photo, name, and "Green Rating" (e.g., ⭐ 4.9 | 🍃 Eco-Certified).
+
+The "Call/Text" Buttons: Large, easy-to-tap buttons for instant communication.
+
+The ESG Tracker: A small live counter: "This route optimization has already saved 1.2kg of CO2."
+
+2. How to Build the "Live Marker" in Replit
+The secret to the "Uber" feel is smooth movement. You don't want the icon to "jump"; you want it to glide.
+
+The Frontend Logic (Leaflet.js):
+
+JavaScript
+// Initialize the map
+const map = L.map('map').setView([customerLat, customerLng], 15);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// Add the customer's house
+L.marker([customerLat, customerLng], {icon: houseIcon}).addTo(map);
+
+// Add the worker's moving marker
+let workerMarker = L.marker([workerLat, workerLng], {icon: truckIcon}).addTo(map);
+
+// Listen for Socket.io updates
+socket.on('workerLocation', (data) => {
+  // Use a plugin like Leaflet.Marker.SlideTo for smooth gliding
+  workerMarker.slideTo([data.lat, data.lng], {
+    duration: 2000,
+    keepAtCenter: false
+  });
+  
+  // Update the ETA and Distance text
+  updateETADisplay(data.distance, data.duration);
+});
+3. Customer Safety & Professionalism Features
+To beat the "Big Guys," you need to add the safety features they often skip:
+
+The "Safety Code": Display a 4-digit code on the customer's screen. The worker must ask for this code before starting the job. This ensures the customer is letting the right person into their home.
+
+Live ETA Ticker: Instead of "10:00 AM," show "Arriving in 7 minutes." This creates a sense of urgency and professionalism.
+
+The "Proximity Alert": When the worker is 2 blocks away, the screen should pulse or change color with a message: "Mike is almost there! Please clear any obstacles from the driveway."
+
+4. Why this fits the "Upyck + Greenproof" Vision
+By showing the live map, you aren't just showing a truck—you are showing Efficiency in Motion. * If the worker takes a detour, the customer sees it.
+
+If the AI reroutes the worker to avoid traffic (saving fuel), the customer sees the "Green Savings" counter go up.
+
+Long Term: When you have all home services, this same screen works for the Plumber, the Electrician, and the Cleaner.
+
+Final Task for Tonight:
+Go to your Replit project and ask the Agent:
+
+"Create a basic Leaflet.js map view for my customer tracking page. Use Socket.io to listen for 'workerLocation' events and move a marker on the map."

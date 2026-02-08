@@ -1,0 +1,159 @@
+We discussed the concept (turning junk into cash), but we have not written the code for it yet.
+
+Currently, the app only has two buttons at the end of a job: "Dump" (Landfill) or "Donate" (Charity Receipt).
+
+We need to add the third button: "Sell" (The Pycker keeps the item).
+
+Here is the code for the AI Resale Generator. This tool takes the photo of the "junk" item, uses AI to write a sales description, and prices it for them instantly.
+
+💎 The Feature: "One-Click List"
+The Workflow: Pycker spots a decent dresser in the junk pile -> Snaps Photo -> App writes a Craigslist/FB Marketplace ad for them.
+
+The Value: The Pycker makes $50 on top of their hourly wage. They get addicted to your app.
+
+💻 The Code: client/src/components/tools/resale-generator.tsx
+Action: Create this file in your Replit project.
+
+TypeScript
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2, Copy, DollarSign, Tag, Sparkles } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+// MOCK: This would actually call your backend /api/ai/generate-listing
+const generateListing = async (photoUrl) => {
+  // Simulate AI delay
+  await new Promise(r => setTimeout(r, 1500));
+  
+  return {
+    title: "Vintage Mid-Century Modern Dresser - Solid Wood",
+    price: 150,
+    description: "Solid wood dresser in great structural condition. 6 drawers, smooth sliders. Minimal scratches on top. Dimensions: 60x20x30. Pick up only.",
+    platform: "Facebook Marketplace"
+  };
+};
+
+export function ResaleGenerator({ photoUrl, onComplete }) {
+  const [loading, setLoading] = useState(false);
+  const [listing, setListing] = useState(null);
+  const { toast } = useToast();
+
+  const handleGenerate = async () => {
+    setLoading(true);
+    try {
+      const data = await generateListing(photoUrl);
+      setListing(data);
+    } catch (e) {
+      toast({ title: "AI Error", description: "Could not identify item." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast({ title: "Copied!", description: "Paste this into Facebook Marketplace." });
+  };
+
+  if (!listing) {
+    return (
+      <Card className="border-dashed border-2 border-yellow-400 bg-yellow-50/50">
+        <CardContent className="p-6 text-center space-y-4">
+          <div className="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto">
+            <Sparkles className="w-6 h-6 text-yellow-600" />
+          </div>
+          <div>
+            <h3 className="font-bold text-yellow-900">Spot a Treasure?</h3>
+            <p className="text-sm text-yellow-700">
+              Don't dump it! Keep it and sell it. Our AI will write the ad for you.
+            </p>
+          </div>
+          <Button 
+            onClick={handleGenerate} 
+            disabled={loading}
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold"
+          >
+            {loading ? <Loader2 className="animate-spin mr-2" /> : <Tag className="mr-2 w-4 h-4" />}
+            Generate Listing
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="border-green-200 bg-white shadow-lg overflow-hidden animate-in zoom-in-95">
+      <div className="bg-green-500 p-3 text-white text-center font-bold flex items-center justify-center gap-2">
+        <DollarSign className="w-5 h-5" /> Potential Profit: ${listing.price}
+      </div>
+      <CardContent className="p-4 space-y-4">
+        
+        {/* Title */}
+        <div className="space-y-1">
+          <label className="text-xs font-bold text-slate-400 uppercase">Title</label>
+          <div className="flex gap-2">
+            <input 
+              readOnly 
+              value={listing.title} 
+              className="flex-1 bg-slate-50 border p-2 rounded text-sm font-medium"
+            />
+            <Button size="icon" variant="outline" onClick={() => copyToClipboard(listing.title)}>
+              <Copy className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="space-y-1">
+          <label className="text-xs font-bold text-slate-400 uppercase">Description</label>
+          <div className="relative">
+            <textarea 
+              readOnly 
+              value={listing.description} 
+              className="w-full h-24 bg-slate-50 border p-2 rounded text-sm resize-none"
+            />
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="absolute bottom-2 right-2 h-6 text-xs bg-white shadow-sm border"
+              onClick={() => copyToClipboard(listing.description)}
+            >
+              <Copy className="w-3 h-3 mr-1" /> Copy
+            </Button>
+          </div>
+        </div>
+
+        <Button onClick={onComplete} className="w-full bg-slate-900 text-white">
+          I've Listed It (Claim Item)
+        </Button>
+        
+        <p className="text-xs text-center text-slate-400">
+          *You are responsible for storage and sale. uPYCK takes 0% commission.
+        </p>
+
+      </CardContent>
+    </Card>
+  );
+}
+🧠 Where to put this?
+You inject this into the Job Completion Wizard (ActiveJobWizard.tsx) right before they click "Finish Job."
+
+The Logic Flow:
+
+Pycker uploads "After Photo."
+
+App asks: "What happened to the items?"
+
+Option A: Dumped (Upload Receipt).
+
+Option B: Donated (Upload Receipt).
+
+Option C: Kept for Resale (Triggers this AI Tool).
+
+🚀 Why this is genius
+For You: You save money on dump fees (which are expensive!).
+
+For Pycker: They see "gold" in the trash. A $20 job becomes a $120 payday.
+
+The Partnership: You are essentially partnering with OpenAI (to write the ad) and Facebook Marketplace (as the venue), without needing a formal contract with Facebook.

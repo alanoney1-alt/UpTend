@@ -1,0 +1,106 @@
+You are right—if you ask a hauler in the Florida heat about "Carbon Sequestration," they’re going to hang up.
+
+To make this work, we translate ESG into "The Green Bonus." We don't teach them environmental science; we teach them the UpTend Verification Standard. Here is how we bake this into the Pro Academy Certification so they can do it in their sleep.
+
+1. The Translation (No Jargon)
+In the Pro App, we never use the words "Carbon Credits." We use "Material Recovery."
+
+Jargon: Carbon Offset ➡️ Pro Language: Landfill Diversion.
+
+Jargon: ESG Compliance ➡️ Pro Language: Verified Recycling Proof.
+
+Jargon: Sustainability Badge ➡️ Pro Language: Enterprise-Ready Badge (The "Big Jobs" Badge).
+
+2. The 60-Second "Green-Light" Certification
+This is a single screen in the Pro Academy. If they pass this, they get the badge that allows them to see the higher-paying "Carbon Neutral" jobs.
+
+The "Cheat Sheet" Quiz (Bilingual):
+
+What is a "Verified Recovery"?
+
+[ ] Talking to the customer about the weather.
+
+[X] Snapping a photo of the recycling receipt or the empty, clean space.
+
+Why do we log weights?
+
+[ ] Because we like math.
+
+[X] To give the homeowner their "Insurance Shield" and "Green Record."
+
+What happens when you hit "Sentinel" status?
+
+[X] You get first access to high-value Property Management contracts.
+
+3. The "Snap & Select" Certification UI (pro-academy-sustain.tsx)
+This is the interactive training module they have to complete before their first job.
+
+TypeScript
+import { Camera, Scale, CheckCircle2, Award } from "lucide-react";
+
+export function ProSustainCert() {
+  return (
+    <div className="max-w-md mx-auto bg-white min-h-screen p-6">
+      <div className="text-center mb-8">
+        <Award className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+        <h1 className="text-2xl font-black text-slate-900">Sustainability Certification</h1>
+        <p className="text-slate-500 text-sm">Unlock high-value Enterprise & ESG jobs.</p>
+      </div>
+
+      <div className="space-y-6">
+        <section className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <span className="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px]">1</span>
+            The "Money" Shot
+          </h3>
+          <p className="text-xs text-slate-600 mb-4">
+            Before leaving the site, you MUST snap a photo of the empty space and your recycling receipt. This is the <strong>Proof of Impact</strong> that generates the homeowner’s credit.
+          </p>
+          <div className="bg-slate-200 aspect-video rounded-2xl flex items-center justify-center border-2 border-dashed border-slate-300">
+            <Camera className="text-slate-400" />
+          </div>
+        </section>
+
+        <section className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <span className="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px]">2</span>
+            Log the Weight
+          </h3>
+          <p className="text-xs text-slate-600 mb-4">
+            Guessing is fine, but receipts are better. Every 100 lbs you recycle earns you <strong>Sustainability Points</strong>.
+          </p>
+          <div className="flex gap-2">
+            <div className="bg-white p-3 rounded-xl border border-slate-200 text-[10px] font-bold">Metal: 150 lbs</div>
+            <div className="bg-white p-3 rounded-xl border border-slate-200 text-[10px] font-bold">Wood: 40 lbs</div>
+          </div>
+        </section>
+
+        <button className="w-full bg-slate-900 text-white h-16 rounded-2xl font-black text-lg shadow-xl">
+          I Understand. Unlock Jobs.
+        </button>
+      </div>
+    </div>
+  );
+}
+4. The Incentive: Why should they care?
+We build a "Sustainability Tiers" system. It’s a game to them, but a revenue engine for you.
+
+Level 1: Steward (Newbie) - Standard rates.
+
+Level 2: Guardian (10 Verified Hauls) - 5% bonus on Carbon Neutral jobs.
+
+Level 3: Sentinel (50 Verified Hauls) - Priority Dispatch. They get the "Enterprise" pings (Property Managers) 5 minutes before anyone else.
+
+5. Implementation in Replit (The "No Thinking" Way)
+To get this live, you just need to update the Pro Onboarding Flow:
+
+Add a "Certification" tab to the Pro Dashboard.
+
+Lock the "Material Recovery" service until they click through the 3-slide "Academy" module.
+
+Auto-Calculate: In the backend, don't ask the Pro for CO2. Just ask for weight. You handle the "thinking" in the code.
+
+Logic: const co2Saved = weight * materialMultiplier; (Aluminum = high multiplier, Couch = medium, Trash = 0).
+
+🚀 Ready to Deploy
+This keeps the Pros focused on the physical work while your app handles the "Carbon Fintech" in the background.

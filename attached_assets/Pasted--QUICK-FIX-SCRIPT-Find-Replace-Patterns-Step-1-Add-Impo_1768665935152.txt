@@ -1,0 +1,382 @@
+# QUICK FIX SCRIPT - Find & Replace Patterns
+
+## Step 1: Add Import (Top of routes.ts)
+
+**Find this line:**
+```typescript
+import { setupAuth, registerAuthRoutes, isAuthenticated } from "./replit_integrations/auth";
+```
+
+**Replace with:**
+```typescript
+import { setupAuth, registerAuthRoutes, isAuthenticated } from "./replit_integrations/auth";
+import { requireAuth, requireAdmin, requireHauler, requireCustomer, requireOwnership } from "./auth-middleware";
+```
+
+---
+
+## Step 2: Replace Admin Routes
+
+### Find:
+```typescript
+app.get("/api/admin/pyckers/pending", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/admin/pyckers/pending", requireAuth, requireAdmin, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/admin/pyckers/:profileId/approve", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/admin/pyckers/:profileId/approve", requireAuth, requireAdmin, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/admin/pyckers/:profileId/reject", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/admin/pyckers/:profileId/reject", requireAuth, requireAdmin, async (req, res) => {
+```
+
+---
+
+## Step 3: Replace Hauler Action Routes
+
+### Find:
+```typescript
+app.patch("/api/haulers/:profileId/availability", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.patch("/api/haulers/:profileId/availability", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/haulers/:profileId/check-in", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/haulers/:profileId/check-in", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/haulers/:profileId/check-out", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/haulers/:profileId/check-out", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/haulers/:profileId/go-online", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/haulers/:profileId/go-online", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/haulers/:profileId/go-offline", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/haulers/:profileId/go-offline", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.patch("/api/haulers/:profileId/profile", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.patch("/api/haulers/:profileId/profile", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.get("/api/haulers/:haulerId/jobs/active", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/haulers/:haulerId/jobs/active", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.get("/api/haulers/:haulerId/jobs", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/haulers/:haulerId/jobs", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.get("/api/haulers/:haulerId/matches", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/haulers/:haulerId/matches", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/haulers/:profileId/vehicles", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/haulers/:profileId/vehicles", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.patch("/api/vehicles/:vehicleId", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.patch("/api/vehicles/:vehicleId", requireAuth, requireHauler, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.delete("/api/vehicles/:vehicleId", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.delete("/api/vehicles/:vehicleId", requireAuth, requireHauler, async (req, res) => {
+```
+
+---
+
+## Step 4: Replace Customer Routes
+
+### Find:
+```typescript
+app.post("/api/service-requests", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/service-requests", requireAuth, requireCustomer, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.get("/api/customers/:customerId/requests", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/customers/:customerId/requests", requireAuth, requireOwnership("customerId"), async (req, res) => {
+```
+
+---
+
+## Step 5: Replace Authenticated (Any Role) Routes
+
+### Find:
+```typescript
+app.get("/api/service-requests/:id", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/service-requests/:id", requireAuth, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.patch("/api/service-requests/:id", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.patch("/api/service-requests/:id", requireAuth, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/service-requests/:id/start", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/service-requests/:id/start", requireAuth, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/service-requests/:id/complete", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/service-requests/:id/complete", requireAuth, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/jobs/upload-photos", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/jobs/upload-photos", requireAuth, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/jobs/:jobId/report-issue", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/jobs/:jobId/report-issue", requireAuth, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.patch("/api/matches/:id", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.patch("/api/matches/:id", requireAuth, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.post("/api/reviews", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.post("/api/reviews", requireAuth, async (req, res) => {
+```
+
+### Find:
+```typescript
+app.get("/api/promotions/eligibility/:userId", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/promotions/eligibility/:userId", requireAuth, requireOwnership("userId"), async (req, res) => {
+```
+
+### Find:
+```typescript
+app.get("/api/promotions/:userId", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/promotions/:userId", requireAuth, requireOwnership("userId"), async (req, res) => {
+```
+
+### Find:
+```typescript
+app.get("/api/analytics/user/:userId", async (req, res) => {
+```
+
+### Replace with:
+```typescript
+app.get("/api/analytics/user/:userId", requireAuth, requireOwnership("userId"), async (req, res) => {
+```
+
+---
+
+## Step 6: Leave These PUBLIC (Don't Change)
+
+**DO NOT add auth to these routes - they should stay public:**
+
+```typescript
+app.get("/api/haulers", async (req, res) => { // ✅ Stay public
+app.get("/api/haulers/available", async (req, res) => { // ✅ Stay public
+app.get("/api/haulers/available/with-vehicles", async (req, res) => { // ✅ Stay public
+app.get("/api/haulers/search", async (req, res) => { // ✅ Stay public
+app.get("/api/haulers/:userId/profile", async (req, res) => { // ✅ Stay public
+app.get("/api/haulers/:profileId/vehicles", async (req, res) => { // ✅ Stay public
+app.get("/api/haulers/:haulerId/reviews", async (req, res) => { // ✅ Stay public
+app.get("/api/haulers/filter/:serviceType", async (req, res) => { // ✅ Stay public
+app.post("/api/pricing/quote", async (req, res) => { // ✅ Stay public
+app.post("/api/pricing/move-quote", async (req, res) => { // ✅ Stay public
+app.get("/api/pricing/supported-zips", async (req, res) => { // ✅ Stay public
+app.get("/api/pricing/dump-distance/:zip", async (req, res) => { // ✅ Stay public
+app.post("/api/promo-codes/validate", async (req, res) => { // ✅ Stay public
+app.get("/api/promo-codes/:code", async (req, res) => { // ✅ Stay public
+app.get("/api/facilities", async (req, res) => { // ✅ Stay public
+app.get("/api/facilities/approved", async (req, res) => { // ✅ Stay public
+app.post("/api/haulers/register", async (req, res) => { // ✅ Stay public (PYCKER signup)
+app.post("/api/analytics/track", async (req, res) => { // ✅ Stay public
+app.get("/api/analytics/funnel", async (req, res) => { // ✅ Stay public
+app.get("/api/service-requests/pending", async (req, res) => { // ✅ Stay public
+```
+
+---
+
+## VERIFICATION CHECKLIST
+
+After making all changes:
+
+- [ ] File compiles without TypeScript errors
+- [ ] All admin routes have `requireAuth, requireAdmin`
+- [ ] All hauler action routes have `requireAuth, requireHauler`
+- [ ] Customer booking route has `requireAuth, requireCustomer`
+- [ ] Shared routes have `requireAuth`
+- [ ] Public routes have NO auth middleware
+- [ ] Import statement added at top
+
+---
+
+## AUTOMATED TESTING COMMANDS
+
+Once deployed, test with curl:
+
+```bash
+# Test 1: Public route (should work)
+curl https://your-app.replit.app/api/pricing/quote -X POST -d '{"serviceType":"junk_removal"}' -H "Content-Type: application/json"
+
+# Test 2: Protected route without auth (should fail with 401)
+curl https://your-app.replit.app/api/admin/pyckers/pending
+
+# Test 3: After logging in, admin route (should work for admin)
+curl https://your-app.replit.app/api/admin/pyckers/pending -H "Cookie: connect.sid=YOUR_SESSION_COOKIE"
+```
+
+---
+
+## TIME ESTIMATE
+
+Using Find & Replace in your editor:
+- **10-15 minutes** to make all changes
+- **5 minutes** to verify compilation
+- **10 minutes** to test
+- **TOTAL: ~30 minutes** 
+
+Then DEPLOY and LAUNCH! 🚀
