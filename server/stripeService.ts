@@ -669,6 +669,200 @@ export class StripeService {
       throw error; // Re-throw to be handled by route
     }
   }
+
+  /**
+   * Create a Stripe subscription for recurring services (FreshSpace)
+   * @param customerId - Stripe customer ID
+   * @param priceId - Stripe price ID for the subscription plan
+   * @param metadata - Subscription metadata (subscriptionId, serviceType, etc.)
+   */
+  async createSubscription(
+    customerId: string,
+    priceId: string,
+    metadata: Record<string, string>
+  ) {
+    const stripe = await getUncachableStripeClient();
+
+    try {
+      return await stripe.subscriptions.create({
+        customer: customerId,
+        items: [{ price: priceId }],
+        metadata,
+        payment_behavior: 'default_incomplete',
+        payment_settings: { save_default_payment_method: 'on_subscription' },
+        expand: ['latest_invoice.payment_intent'],
+      });
+    } catch (error: any) {
+      console.error('Stripe API error in createSubscription:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create a Stripe price for a recurring subscription
+   * Used for creating custom pricing based on home size and frequency
+   */
+  async createPrice(
+    unitAmount: number,
+    interval: 'week' | 'month',
+    intervalCount: number,
+    productName: string,
+    metadata: Record<string, string>
+  ) {
+    const stripe = await getUncachableStripeClient();
+
+    try {
+      // First, ensure we have a product (or create one)
+      const product = await stripe.products.create({
+        name: productName,
+        metadata,
+      });
+
+      // Then create the price
+      return await stripe.prices.create({
+        unit_amount: Math.round(unitAmount * 100), // Convert to cents
+        currency: 'usd',
+        recurring: {
+          interval,
+          interval_count: intervalCount,
+        },
+        product: product.id,
+        metadata,
+      });
+    } catch (error: any) {
+      console.error('Stripe API error in createPrice:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update a Stripe subscription
+   * Can modify price, pause, or update metadata
+   */
+  async updateSubscription(
+    subscriptionId: string,
+    updates: {
+      priceId?: string;
+      pauseCollection?: { behavior: 'void' | 'keep_as_draft' | 'mark_uncollectible' };
+      metadata?: Record<string, string>;
+    }
+  ) {
+    const stripe = await getUncachableStripeClient();
+
+    try {
+      const updateData: any = {};
+
+      if (updates.metadata) {
+        updateData.metadata = updates.metadata;
+      }
+
+      if (updates.pauseCollection) {
+        updateData.pause_collection = updates.pauseCollection;
+      }
+
+      if (updates.priceId) {
+        // Get current subscription to update items
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        updateData.items = [
+          {
+            id: subscription.items.data[0].id,
+            price: updates.priceId,
+          },
+        ];
+      }
+
+      return await stripe.subscriptions.update(subscriptionId, updateData);
+    } catch (error: any) {
+      console.error('Stripe API error in updateSubscription:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Resume a paused subscription
+   */
+  async resumeSubscription(subscriptionId: string) {
+    const stripe = await getUncachableStripeClient();
+
+    try {
+      return await stripe.subscriptions.update(subscriptionId, {
+        pause_collection: null as any, // Remove pause
+      });
+    } catch (error: any) {
+      console.error('Stripe API error in resumeSubscription:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cancel a Stripe subscription
+   * @param subscriptionId - Stripe subscription ID
+   * @param immediately - If true, cancel immediately. If false, cancel at period end.
+   */
+  async cancelSubscription(subscriptionId: string, immediately: boolean = false) {
+    const stripe = await getUncachableStripeClient();
+
+    try {
+      if (immediately) {
+        return await stripe.subscriptions.cancel(subscriptionId);
+      } else {
+        return await stripe.subscriptions.update(subscriptionId, {
+          cancel_at_period_end: true,
+        });
+      }
+    } catch (error: any) {
+      console.error('Stripe API error in cancelSubscription:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieve subscription details from Stripe
+   */
+  async getSubscription(subscriptionId: string) {
+    const stripe = await getUncachableStripeClient();
+
+    try {
+      return await stripe.subscriptions.retrieve(subscriptionId);
+    } catch (error: any) {
+      console.error('Stripe API error in getSubscription:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Skip next payment cycle for a subscription
+   * Achieved by creating a billing cycle anchor in the future
+   */
+  async skipNextCycle(subscriptionId: string) {
+    const stripe = await getUncachableStripeClient();
+
+    try {
+      // Get current subscription
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+      // Calculate next billing date after skipping one cycle
+      const currentPeriodEnd = subscription.current_period_end;
+      const interval = subscription.items.data[0].price.recurring?.interval;
+      const intervalCount = subscription.items.data[0].price.recurring?.interval_count || 1;
+
+      // Add one more interval to skip
+      let skipToDate = currentPeriodEnd;
+      if (interval === 'week') {
+        skipToDate += intervalCount * 7 * 24 * 60 * 60; // Add weeks in seconds
+      } else if (interval === 'month') {
+        skipToDate += intervalCount * 30 * 24 * 60 * 60; // Approximate month as 30 days
+      }
+
+      return await stripe.subscriptions.update(subscriptionId, {
+        billing_cycle_anchor: skipToDate,
+        proration_behavior: 'none',
+      });
+    } catch (error: any) {
+      console.error('Stripe API error in skipNextCycle:', error);
+      throw error;
+    }
+  }
 }
 
 export const stripeService = new StripeService();
