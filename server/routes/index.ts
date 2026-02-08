@@ -27,6 +27,7 @@ import { registerJobVerificationRoutes } from "./jobs/verification.routes";
 // FreshSpace routes
 import { registerSubscriptionRoutes } from "./subscriptions.routes";
 import { registerCleaningChecklistRoutes } from "./cleaning-checklists.routes";
+import { registerSubscriptionCronRoutes } from "./admin/subscription-cron.routes";
 
 // Commerce routes
 import { registerPricingRoutes } from "./commerce/pricing-quotes.routes";
@@ -98,6 +99,7 @@ export async function registerRoutes(
   // Register FreshSpace routes
   registerSubscriptionRoutes(app);
   registerCleaningChecklistRoutes(app);
+  registerSubscriptionCronRoutes(app);
 
   // Register commerce routes
   registerPricingRoutes(app);
