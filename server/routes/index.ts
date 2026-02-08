@@ -24,6 +24,10 @@ import { registerServiceRequestRoutes } from "./jobs/service-requests.routes";
 import { registerJobManagementRoutes } from "./jobs/job-management.routes";
 import { registerJobVerificationRoutes } from "./jobs/verification.routes";
 
+// FreshSpace routes
+import { registerSubscriptionRoutes } from "./subscriptions.routes";
+import { registerCleaningChecklistRoutes } from "./cleaning-checklists.routes";
+
 // Commerce routes
 import { registerPricingRoutes } from "./commerce/pricing-quotes.routes";
 import { registerPaymentRoutes } from "./commerce/payments.routes";
@@ -90,6 +94,10 @@ export async function registerRoutes(
   registerServiceRequestRoutes(app);
   registerJobManagementRoutes(app);
   registerJobVerificationRoutes(app);
+
+  // Register FreshSpace routes
+  registerSubscriptionRoutes(app);
+  registerCleaningChecklistRoutes(app);
 
   // Register commerce routes
   registerPricingRoutes(app);

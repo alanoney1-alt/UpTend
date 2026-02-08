@@ -64,6 +64,8 @@ import type {
   DisposalRecord, InsertDisposalRecord,
   SmsConversation, InsertSmsConversation,
   SmsMessage, InsertSmsMessage,
+  CleaningChecklist, InsertCleaningChecklist,
+  RecurringSubscription, InsertRecurringSubscription,
 } from "@shared/schema";
 
 export interface IStorage {
@@ -454,6 +456,19 @@ export interface IStorage {
   getSmsMessagesByConversation(conversationId: string, limit?: number): Promise<SmsMessage[]>;
   updateSmsMessage(id: string, updates: Partial<SmsMessage>): Promise<SmsMessage | undefined>;
   updateSmsMessageByTwilioSid(twilioMessageSid: string, updates: Partial<SmsMessage>): Promise<SmsMessage | undefined>;
+
+  // FreshSpace Cleaning Checklists
+  createCleaningChecklist(checklist: InsertCleaningChecklist): Promise<CleaningChecklist>;
+  getCleaningChecklistsByRequest(serviceRequestId: string): Promise<CleaningChecklist[]>;
+  updateCleaningChecklistTask(id: string, updates: Partial<CleaningChecklist>): Promise<CleaningChecklist | undefined>;
+  bulkCreateCleaningChecklists(checklists: InsertCleaningChecklist[]): Promise<CleaningChecklist[]>;
+
+  // FreshSpace Recurring Subscriptions
+  createRecurringSubscription(subscription: InsertRecurringSubscription): Promise<RecurringSubscription>;
+  getRecurringSubscription(id: string): Promise<RecurringSubscription | undefined>;
+  getCustomerSubscriptions(customerId: string): Promise<RecurringSubscription[]>;
+  updateRecurringSubscription(id: string, updates: Partial<RecurringSubscription>): Promise<RecurringSubscription | undefined>;
+  getActiveSubscriptionsDueForBooking(date: string): Promise<RecurringSubscription[]>;
 
   seedInitialData(): Promise<void>;
 }

@@ -92,6 +92,7 @@ import { JobCrewAssignmentsStorage } from "../domains/job-crew-assignments/stora
 import { HoaCarbonStorage } from "../domains/hoa-carbon/storage";
 import { JobVerificationStorage } from "../domains/job-verification/storage";
 import { SmsBotStorage } from "../domains/sms-bot/storage";
+import { FreshSpaceStorage } from "../domains/freshspace/storage";
 
 /**
  * DatabaseStorage - Composition Layer for Storage Architecture
@@ -145,6 +146,7 @@ export class DatabaseStorage implements IStorage {
   private hoaCarbon: HoaCarbonStorage;
   private jobVerification: JobVerificationStorage;
   private smsBot: SmsBotStorage;
+  private freshSpace: FreshSpaceStorage;
 
   constructor() {
     // Initialize all domain storage instances
@@ -179,6 +181,7 @@ export class DatabaseStorage implements IStorage {
     this.hoaCarbon = new HoaCarbonStorage();
     this.jobVerification = new JobVerificationStorage();
     this.smsBot = new SmsBotStorage();
+    this.freshSpace = new FreshSpaceStorage();
   }
 
   // ============================================================================
@@ -1466,6 +1469,46 @@ export class DatabaseStorage implements IStorage {
 
   async updateSmsMessageByTwilioSid(twilioMessageSid: string, updates: any) {
     return this.smsBot.updateSmsMessageByTwilioSid(twilioMessageSid, updates);
+  }
+
+  // ============================================================================
+  // FRESHSPACE HOME CLEANING DOMAIN
+  // ============================================================================
+
+  async createCleaningChecklist(checklist: any) {
+    return this.freshSpace.createCleaningChecklist(checklist);
+  }
+
+  async getCleaningChecklistsByRequest(serviceRequestId: string) {
+    return this.freshSpace.getCleaningChecklistsByRequest(serviceRequestId);
+  }
+
+  async updateCleaningChecklistTask(id: string, updates: any) {
+    return this.freshSpace.updateCleaningChecklistTask(id, updates);
+  }
+
+  async bulkCreateCleaningChecklists(checklists: any[]) {
+    return this.freshSpace.bulkCreateCleaningChecklists(checklists);
+  }
+
+  async createRecurringSubscription(subscription: any) {
+    return this.freshSpace.createRecurringSubscription(subscription);
+  }
+
+  async getRecurringSubscription(id: string) {
+    return this.freshSpace.getRecurringSubscription(id);
+  }
+
+  async getCustomerSubscriptions(customerId: string) {
+    return this.freshSpace.getCustomerSubscriptions(customerId);
+  }
+
+  async updateRecurringSubscription(id: string, updates: any) {
+    return this.freshSpace.updateRecurringSubscription(id, updates);
+  }
+
+  async getActiveSubscriptionsDueForBooking(date: string) {
+    return this.freshSpace.getActiveSubscriptionsDueForBooking(date);
   }
 
   // ============================================================================
