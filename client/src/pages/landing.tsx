@@ -31,6 +31,7 @@ export default function Landing() {
       <StormCountdown />
       <main>
         <NewHeroSection />
+        <WhatDoesUpTendMeanSection />
         <HowItWorks />
         <InteractiveFeatures />
         <SafetyShieldSection />
@@ -113,6 +114,21 @@ function NewHeroSection() {
             {t("hero.hero_footnote")}
           </p>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function WhatDoesUpTendMeanSection() {
+  return (
+    <section className="py-16 md:py-20 bg-slate-50 dark:bg-slate-900/50" data-testid="section-uptend-meaning">
+      <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
+          What does UpTend mean?
+        </h2>
+        <p className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300">
+          <strong>UpTend</strong> <em>(verb):</em> to elevate the care of your home. We believe maintaining your home shouldn't mean juggling phone calls, chasing quotes, or hoping the person who shows up is insured. UpTend is one app for everything your home needs — verified Pros, instant pricing, and full documentation on every job. It's home care, elevated.
+        </p>
       </div>
     </section>
   );
