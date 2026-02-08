@@ -10,7 +10,7 @@
  * 6. Special instructions
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Home, Sparkles, Package, Calendar, Clock, CheckCircle, DollarSign } from "lucide-react";
+import {
+  calculatePolishUpPrice,
+  type PolishUpPricingInput
+} from "@/lib/polishup-pricing";
 
 interface PolishUpBookingProps {
   onComplete: (bookingDetails: PolishUpBookingDetails) => void;
@@ -26,9 +30,13 @@ interface PolishUpBookingProps {
 }
 
 export interface PolishUpBookingDetails {
-  bedrooms: string;
-  bathrooms: string;
-  cleanType: "standard" | "deep" | "moveInOut";
+  bedrooms: number;
+  bathrooms: number;
+  stories: number;
+  sqft?: number;
+  hasPets: boolean;
+  lastCleaned: '30_days' | '1_6_months' | '6_plus_months' | 'never';
+  cleanType: "standard" | "deep" | "move_out";
   addOns: string[];
   bookingType: "onetime" | "recurring";
   recurringFrequency?: "weekly" | "biweekly" | "monthly";
@@ -40,32 +48,33 @@ export interface PolishUpBookingDetails {
 }
 
 const HOME_SIZES = [
-  { bedrooms: "1-2", bathrooms: "1", price: 99, label: "1-2 Bed / 1 Bath" },
-  { bedrooms: "3", bathrooms: "2", price: 149, label: "3 Bed / 2 Bath" },
-  { bedrooms: "4", bathrooms: "2-3", price: 199, label: "4 Bed / 2-3 Bath" },
-  { bedrooms: "5+", bathrooms: "3+", price: 249, label: "5+ Bed / 3+ Bath" },
+  { bedrooms: 1, bathrooms: 1, label: "1 Bed / 1 Bath" },
+  { bedrooms: 2, bathrooms: 1, label: "2 Bed / 1 Bath" },
+  { bedrooms: 2, bathrooms: 2, label: "2 Bed / 2 Bath" },
+  { bedrooms: 3, bathrooms: 2, label: "3 Bed / 2 Bath" },
+  { bedrooms: 3, bathrooms: 3, label: "3 Bed / 3 Bath" },
+  { bedrooms: 4, bathrooms: 2, label: "4 Bed / 2 Bath" },
+  { bedrooms: 4, bathrooms: 3, label: "4 Bed / 3 Bath" },
+  { bedrooms: 5, bathrooms: 3, label: "5+ Bed / 3 Bath" },
 ];
 
 const CLEAN_TYPES = [
   {
-    id: "standard",
+    id: "standard" as const,
     name: "Standard Clean",
     description: "Regular cleaning for maintained homes",
-    multiplier: 1,
     includes: ["Dust all surfaces", "Vacuum/mop floors", "Clean bathrooms", "Clean kitchen", "Empty trash"],
   },
   {
-    id: "deep",
+    id: "deep" as const,
     name: "Deep Clean",
     description: "Thorough cleaning including often-missed areas",
-    multiplier: 1.5,
     includes: ["Everything in Standard", "Inside appliances", "Baseboards", "Ceiling fans", "Window sills", "Inside cabinets"],
   },
   {
-    id: "moveInOut",
-    name: "Move-In/Move-Out",
+    id: "move_out" as const,
+    name: "Move-Out Clean",
     description: "Comprehensive cleaning for empty homes",
-    multiplier: 2,
     includes: ["Everything in Deep Clean", "Inside closets", "Garage sweep", "All fixtures detailed", "Interior windows"],
     badge: "Cross-sell after LiftCrew",
   },
@@ -86,6 +95,11 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
   const [step, setStep] = useState(1);
   const [homeSize, setHomeSize] = useState<typeof HOME_SIZES[0] | null>(null);
   const [cleanType, setCleanType] = useState<typeof CLEAN_TYPES[0] | null>(null);
+  const [stories, setStories] = useState<1 | 2 | 3>(1);
+  const [sqft, setSqft] = useState<number | undefined>(undefined);
+  const [hasPets, setHasPets] = useState(false);
+  const [lastCleaned, setLastCleaned] = useState<'30_days' | '1_6_months' | '6_plus_months' | 'never'>('1_6_months');
+  const [sameDayBooking, setSameDayBooking] = useState(false);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [bookingType, setBookingType] = useState<"onetime" | "recurring">("onetime");
   const [recurringFrequency, setRecurringFrequency] = useState<"weekly" | "biweekly" | "monthly">("biweekly");
@@ -93,11 +107,29 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
   const [preferredTimeWindow, setPreferredTimeWindow] = useState<"morning" | "afternoon" | "evening">("morning");
   const [specialInstructions, setSpecialInstructions] = useState("");
   const [bringsSupplies, setBringsSupplies] = useState(true);
+  const [basePrice, setBasePrice] = useState(0);
+
+  // Calculate price using the new dynamic pricing engine
+  useEffect(() => {
+    if (!homeSize || !cleanType) return;
+
+    const pricingInput: PolishUpPricingInput = {
+      cleanType: cleanType.id,
+      bedrooms: homeSize.bedrooms as 0 | 1 | 2 | 3 | 4 | 5,
+      bathrooms: homeSize.bathrooms as 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4,
+      stories,
+      sqft,
+      hasPets,
+      lastCleaned,
+      sameDayBooking,
+    };
+
+    const quote = calculatePolishUpPrice(pricingInput);
+    setBasePrice(quote.finalPrice);
+  }, [homeSize, cleanType, stories, sqft, hasPets, lastCleaned, sameDayBooking]);
 
   const calculatePrice = () => {
-    if (!homeSize || !cleanType) return 0;
-
-    let basePrice = homeSize.price * cleanType.multiplier;
+    let total = basePrice;
 
     // Add-ons
     const addOnsTotal = selectedAddOns.reduce((sum, addonId) => {
@@ -105,7 +137,7 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
       return sum + (addon?.price || 0);
     }, 0);
 
-    let total = basePrice + addOnsTotal;
+    total += addOnsTotal;
 
     // Recurring discount
     if (bookingType === "recurring") {
@@ -122,7 +154,11 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
     const bookingDetails: PolishUpBookingDetails = {
       bedrooms: homeSize.bedrooms,
       bathrooms: homeSize.bathrooms,
-      cleanType: cleanType.id as "standard" | "deep" | "moveInOut",
+      stories,
+      sqft,
+      hasPets,
+      lastCleaned,
+      cleanType: cleanType.id,
       addOns: selectedAddOns,
       bookingType,
       recurringFrequency: bookingType === "recurring" ? recurringFrequency : undefined,
@@ -140,30 +176,71 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
     <div className="space-y-6">
       <div>
         <h3 className="text-xl font-bold mb-2">What's your home size?</h3>
-        <p className="text-sm text-muted-foreground mb-4">Select the number of bedrooms and bathrooms</p>
+        <p className="text-sm text-muted-foreground mb-4">Select bedrooms, bathrooms, and property details</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {HOME_SIZES.map((size) => (
-          <Card
-            key={size.label}
-            className={`cursor-pointer transition-all hover:border-primary ${
-              homeSize?.label === size.label ? "border-primary ring-4 ring-primary/10" : ""
-            }`}
-            onClick={() => setHomeSize(size)}
-          >
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>{size.label}</span>
-                {homeSize?.label === size.label && <CheckCircle className="w-5 h-5 text-primary" />}
-              </CardTitle>
-              <CardDescription className="text-2xl font-bold text-foreground">
-                ${size.price}
-                <span className="text-sm text-muted-foreground ml-1">starting</span>
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        ))}
+      <div className="space-y-4">
+        <div>
+          <Label className="mb-2 block">Bedrooms & Bathrooms</Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {HOME_SIZES.map((size) => (
+              <Card
+                key={size.label}
+                className={`cursor-pointer transition-all hover:border-primary ${
+                  homeSize?.label === size.label ? "border-primary ring-2 ring-primary/20" : ""
+                }`}
+                onClick={() => setHomeSize(size)}
+              >
+                <CardHeader className="p-4">
+                  <CardTitle className="flex items-center justify-between text-base">
+                    <span>{size.label}</span>
+                    {homeSize?.label === size.label && <CheckCircle className="w-5 h-5 text-primary" />}
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Label className="mb-2 block">Stories</Label>
+            <RadioGroup value={String(stories)} onValueChange={(value) => setStories(parseInt(value) as 1 | 2 | 3)}>
+              <div className="flex gap-3">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="1" id="1-story" />
+                  <Label htmlFor="1-story" className="cursor-pointer">1-Story</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="2" id="2-story" />
+                  <Label htmlFor="2-story" className="cursor-pointer">2-Story</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="3" id="3-story" />
+                  <Label htmlFor="3-story" className="cursor-pointer">3-Story</Label>
+                </div>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <div>
+            <Label htmlFor="sqft" className="mb-2 block">Square Footage (Optional)</Label>
+            <select
+              id="sqft"
+              className="w-full p-2 border rounded"
+              value={sqft || "unknown"}
+              onChange={(e) => setSqft(e.target.value === "unknown" ? undefined : parseInt(e.target.value))}
+            >
+              <option value="unknown">Not sure</option>
+              <option value="750">Under 1,000 sqft</option>
+              <option value="1250">1,000-1,500 sqft</option>
+              <option value="1750">1,500-2,000 sqft</option>
+              <option value="2250">2,000-2,500 sqft</option>
+              <option value="2750">2,500-3,000 sqft</option>
+              <option value="3500">3,000+ sqft</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div className="flex justify-end gap-3">
@@ -182,11 +259,13 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
   const renderStep2 = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-bold mb-2">What type of clean?</h3>
-        <p className="text-sm text-muted-foreground mb-4">Choose the level of cleaning you need</p>
+        <h3 className="text-xl font-bold mb-2">Clean type & additional details</h3>
+        <p className="text-sm text-muted-foreground mb-4">Choose your clean type and property details</p>
       </div>
 
+      {/* Clean Type Selection */}
       <div className="space-y-4">
+        <Label>Clean Type</Label>
         {CLEAN_TYPES.map((type) => (
           <Card
             key={type.id}
@@ -204,11 +283,6 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
                     {cleanType?.id === type.id && <CheckCircle className="w-5 h-5 text-primary ml-auto" />}
                   </CardTitle>
                   <CardDescription className="mt-1">{type.description}</CardDescription>
-                  {homeSize && (
-                    <p className="text-lg font-bold mt-2">
-                      ${Math.round(homeSize.price * type.multiplier)}
-                    </p>
-                  )}
                 </div>
               </div>
             </CardHeader>
@@ -225,6 +299,81 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
           </Card>
         ))}
       </div>
+
+      {/* Additional Details */}
+      <div className="space-y-4">
+        <div>
+          <Label className="mb-2 block">When was it last professionally cleaned?</Label>
+          <RadioGroup value={lastCleaned} onValueChange={(value) => setLastCleaned(value as typeof lastCleaned)}>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="30_days" id="30_days" />
+                <Label htmlFor="30_days" className="cursor-pointer">Within 30 days</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="1_6_months" id="1_6_months" />
+                <Label htmlFor="1_6_months" className="cursor-pointer">1-6 months ago</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="6_plus_months" id="6_plus_months" />
+                <Label htmlFor="6_plus_months" className="cursor-pointer flex items-center gap-2">
+                  6+ months ago
+                  {lastCleaned === '6_plus_months' && <Badge variant="secondary">+20% deep cleaning surcharge</Badge>}
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="never" id="never" />
+                <Label htmlFor="never" className="cursor-pointer flex items-center gap-2">
+                  Never professionally cleaned
+                  {lastCleaned === 'never' && <Badge variant="secondary">+20% deep cleaning surcharge</Badge>}
+                </Label>
+              </div>
+            </div>
+          </RadioGroup>
+        </div>
+
+        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+          <div className="flex-1">
+            <Label htmlFor="pets" className="font-medium cursor-pointer">Do you have pets?</Label>
+            <p className="text-sm text-muted-foreground">Pet hair removal treatment</p>
+          </div>
+          <div className="flex items-center gap-3">
+            {hasPets && <Badge variant="secondary">+$25</Badge>}
+            <Checkbox
+              id="pets"
+              checked={hasPets}
+              onCheckedChange={(checked) => setHasPets(!!checked)}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+          <div className="flex-1">
+            <Label htmlFor="sameDay" className="font-medium cursor-pointer">Same-day booking?</Label>
+            <p className="text-sm text-muted-foreground">Service within 24 hours</p>
+          </div>
+          <div className="flex items-center gap-3">
+            {sameDayBooking && <Badge variant="secondary">+$30</Badge>}
+            <Checkbox
+              id="sameDay"
+              checked={sameDayBooking}
+              onCheckedChange={(checked) => setSameDayBooking(!!checked)}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Live Price Display */}
+      {basePrice > 0 && (
+        <Card className="bg-primary/5 border-primary/20">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-2">Estimated Price</p>
+              <p className="text-4xl font-bold text-primary">${basePrice}</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={() => setStep(1)}>
@@ -461,12 +610,15 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
         <CardContent>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span>Base Price ({homeSize?.label})</span>
-              <span>${homeSize?.price}</span>
+              <span>PolishUp™ {cleanType?.name}</span>
+              <span>${basePrice}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Clean Type ({cleanType?.name})</span>
-              <span>{cleanType?.multiplier}x</span>
+            <div className="text-xs text-muted-foreground">
+              • {homeSize?.label}
+              {stories > 1 && `, ${stories}-story`}
+              {sqft && `, ~${sqft} sqft`}
+              {hasPets && ", pet-friendly"}
+              {sameDayBooking && ", same-day"}
             </div>
             {selectedAddOns.length > 0 && (
               <div className="flex justify-between">

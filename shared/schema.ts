@@ -365,6 +365,27 @@ export const serviceRequests = pgTable("service_requests", {
   laborCrewSize: integer("labor_crew_size").default(1),
   demoDebrisType: varchar("demo_debris_type"),
   isConsultationCreditApplied: boolean("is_consultation_credit_applied").default(false),
+  // Price Verification (10% Wiggle Room Rule)
+  priceVerified: boolean("price_verified").default(false),
+  verifiedPrice: real("verified_price"),
+  priceAdjustment: real("price_adjustment"), // Difference from original quote
+  priceVerificationData: text("price_verification_data"), // JSON with full verification details
+  verificationPhotos: text("verification_photos").array(),
+  priceApprovalPending: boolean("price_approval_pending").default(false),
+  priceApprovalRequestedAt: text("price_approval_requested_at"),
+  priceApprovalRespondedAt: text("price_approval_responded_at"),
+  customerApprovedPriceAdjustment: boolean("customer_approved_price_adjustment"),
+  customerNotes: text("customer_notes"), // Customer's notes when approving/rejecting price
+  // Discount Tracking
+  discountsApplied: text("discounts_applied"), // JSON array of applied discounts
+  dwellScanCreditUsed: real("dwellscan_credit_used"), // Amount of DwellScan credit applied
+  dwellScanCreditId: varchar("dwellscan_credit_id"), // Reference to dwellscan_credits table
+  multiServiceDiscountPercent: real("multi_service_discount_percent"), // 0.10 for 10%, 0.15 for 15%
+  pmTierDiscountPercent: real("pm_tier_discount_percent"), // Property Manager discount if applied
+  promoCodeUsed: varchar("promo_code_used"),
+  promoCodeDiscountAmount: real("promo_code_discount_amount"),
+  totalDiscountAmount: real("total_discount_amount"), // Sum of all discounts
+  priceBeforeDiscounts: real("price_before_discounts"), // Original subtotal
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
@@ -562,6 +583,38 @@ export const environmentalCertificatesRelations = relations(environmentalCertifi
 export const insertEnvironmentalCertificateSchema = createInsertSchema(environmentalCertificates).omit({ id: true });
 export type InsertEnvironmentalCertificate = z.infer<typeof insertEnvironmentalCertificateSchema>;
 export type EnvironmentalCertificate = typeof environmentalCertificates.$inferSelect;
+
+// DwellScan Credits - $49 credit toward next service
+export const dwellScanCredits = pgTable("dwellscan_credits", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  dwellScanJobId: varchar("dwellscan_job_id").notNull(), // The DwellScan service request that earned this credit
+  creditAmount: integer("credit_amount").notNull().default(49), // In dollars
+  used: boolean("used").default(false),
+  usedOnBookingId: varchar("used_on_booking_id"), // Service request where credit was applied
+  usedAt: text("used_at"),
+  createdAt: text("created_at").notNull(),
+  expiresAt: text("expires_at").notNull(), // 90 days from creation
+});
+
+export const dwellScanCreditsRelations = relations(dwellScanCredits, ({ one }) => ({
+  customer: one(users, {
+    fields: [dwellScanCredits.customerId],
+    references: [users.id],
+  }),
+  dwellScanJob: one(serviceRequests, {
+    fields: [dwellScanCredits.dwellScanJobId],
+    references: [serviceRequests.id],
+  }),
+  usedOnBooking: one(serviceRequests, {
+    fields: [dwellScanCredits.usedOnBookingId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertDwellScanCreditSchema = createInsertSchema(dwellScanCredits).omit({ id: true, createdAt: true });
+export type InsertDwellScanCredit = z.infer<typeof insertDwellScanCreditSchema>;
+export type DwellScanCredit = typeof dwellScanCredits.$inferSelect;
 
 export const pricingRates = pgTable("pricing_rates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
