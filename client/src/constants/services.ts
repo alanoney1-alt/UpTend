@@ -87,7 +87,20 @@ export const SERVICES = {
     startingPrice: 49,
     priceUnit: 'flat',
     tagline: 'Know your home inside out.',
-    description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap.',
+    description: 'A complete home health check. Full interior walkthrough and personalized maintenance report. Upgrade to DwellScan Aerial for $149 and add a drone-powered roof and gutter scan.',
+    tiers: {
+      standard: {
+        name: 'DwellScan™ Standard',
+        price: 49,
+        description: 'Interior + exterior ground-level walkthrough with maintenance report',
+      },
+      aerial: {
+        name: 'DwellScan™ Aerial',
+        price: 149,
+        description: 'Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan',
+        popular: true,
+      },
+    },
   },
 } as const;
 

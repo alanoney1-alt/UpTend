@@ -21,8 +21,72 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   gutter_cleaning: 149,
   moving_labor: 80,
   light_demolition: 199,
-  home_consultation: 49,
+  home_consultation: 49, // DwellScan Standard base price
+  home_consultation_aerial: 149, // DwellScan Aerial with drone
   home_cleaning: 99,
+};
+
+// DwellScan service configuration with two tiers
+export interface DwellScanTier {
+  id: string;
+  name: string;
+  brandedName: string;
+  price: number;
+  description: string;
+  features: string[];
+  requiresDrone?: boolean;
+  popular?: boolean;
+}
+
+export const DWELLSCAN_TIERS: DwellScanTier[] = [
+  {
+    id: "standard",
+    name: "Standard",
+    brandedName: "DwellScan™ Standard",
+    price: 49,
+    description: "Full interior and exterior walkthrough with personalized maintenance report.",
+    features: [
+      "Full interior walkthrough (room-by-room photos and notes)",
+      "Exterior ground-level assessment (foundation, driveway, walkways, landscaping)",
+      "Major systems check (AC age, water heater, electrical, plumbing)",
+      "Cleanliness rating per room (1-10)",
+      "Personalized maintenance report with one-tap booking for recommended services",
+    ],
+    requiresDrone: false,
+  },
+  {
+    id: "aerial",
+    name: "Aerial",
+    brandedName: "DwellScan™ Aerial",
+    price: 149,
+    description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan.",
+    features: [
+      "Everything in Standard PLUS:",
+      "FAA Part 107 certified drone pilot flyover",
+      "Aerial roof condition scan (missing shingles, sagging, moss, flashing damage)",
+      "Gutter blockage assessment from above (percentage estimate)",
+      "Chimney and vent inspection",
+      "Tree overhang proximity to roof and power lines",
+      "Siding and paint condition from aerial angle",
+      "Pool enclosure / screen assessment (Florida-specific)",
+      "Property drainage overview from aerial perspective",
+      "Full before/after aerial photo set, timestamped and GPS-tagged",
+    ],
+    requiresDrone: true,
+    popular: true, // Most Popular badge
+  },
+];
+
+export const DWELLSCAN_SERVICE = {
+  branded: "DwellScan",
+  generic: "Home Audit",
+  display: "DwellScan™ (Home Audit)",
+  slug: "/dwellscan",
+  startingPrice: 49,
+  priceUnit: "flat",
+  tagline: "Know your home inside out.",
+  description: "A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $149.",
+  tiers: DWELLSCAN_TIERS,
 };
 
 export const SERVICE_TYPES: ServiceTypeConfig[] = [
