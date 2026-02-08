@@ -14,11 +14,12 @@ import { apiRequest } from "@/lib/queryClient";
 import {
   Building2, CalendarClock, Truck, Plus, DollarSign,
   TrendingUp, ArrowLeft, Clock, MapPin, Repeat, BarChart3,
-  CheckCircle, AlertCircle, Leaf, AlertTriangle
+  CheckCircle, AlertCircle, Leaf, AlertTriangle, Home
 } from "lucide-react";
 import type { BusinessAccount, RecurringJob } from "@shared/schema";
 import { Scope3EsgReport } from "@/components/scope3-esg-report";
 import { ViolationSubmission } from "@/components/hoa/violation-submission";
+import { PropertyRoster } from "@/components/hoa/property-roster";
 
 const businessTypes = [
   { id: "property_manager", label: "Property Manager" },
@@ -366,10 +367,16 @@ export default function BusinessDashboard() {
           <TabsList>
             <TabsTrigger value="recurring">Recurring Jobs</TabsTrigger>
             {account.businessType === "property_manager" && (
-              <TabsTrigger value="violations" data-testid="tab-violations">
-                <AlertTriangle className="h-4 w-4 mr-1" />
-                Violations
-              </TabsTrigger>
+              <>
+                <TabsTrigger value="properties" data-testid="tab-properties">
+                  <Home className="h-4 w-4 mr-1" />
+                  Properties
+                </TabsTrigger>
+                <TabsTrigger value="violations" data-testid="tab-violations">
+                  <AlertTriangle className="h-4 w-4 mr-1" />
+                  Violations
+                </TabsTrigger>
+              </>
             )}
             <TabsTrigger value="esg" data-testid="tab-esg-reports"><Leaf className="h-4 w-4 mr-1" />ESG Reports</TabsTrigger>
             <TabsTrigger value="history">Job History</TabsTrigger>
@@ -525,9 +532,15 @@ export default function BusinessDashboard() {
           </TabsContent>
 
           {account.businessType === "property_manager" && (
-            <TabsContent value="violations" className="space-y-4">
-              <ViolationSubmission businessAccountId={account.id} />
-            </TabsContent>
+            <>
+              <TabsContent value="properties" className="space-y-4">
+                <PropertyRoster businessAccountId={account.id} />
+              </TabsContent>
+
+              <TabsContent value="violations" className="space-y-4">
+                <ViolationSubmission businessAccountId={account.id} />
+              </TabsContent>
+            </>
           )}
 
           <TabsContent value="esg" className="space-y-4">
