@@ -109,6 +109,7 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   insuranceVerifiedAt: text("insurance_verified_at"),
   hasBusinessLicense: boolean("has_business_license").default(false),
   businessLicenseVerifiedAt: text("business_license_verified_at"),
+  droneCertified: boolean("drone_certified").default(false), // FAA Part 107 certified for DwellScan Aerial
   payoutPercentage: real("payout_percentage").default(0.75), // 75% for independent, 80% for verified_pro
   isVerifiedLlc: boolean("is_verified_llc").default(false),
   fiveStarJobCount: real("five_star_job_count").default(0),
