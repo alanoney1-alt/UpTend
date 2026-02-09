@@ -814,7 +814,9 @@ export default function Booking() {
           promoCode: promoValidation?.valid ? formData.promoCode : undefined,
         }),
       });
-      return res.json();
+      const data = await res.json();
+      if (data.error || !data.totalPrice) return null;
+      return data;
     },
     enabled: !!formData.serviceType && !!formData.loadEstimate,
   });
@@ -3222,7 +3224,7 @@ export default function Booking() {
                   <div className="flex items-center justify-center py-8">
                     <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   </div>
-                ) : priceQuote ? (
+                ) : priceQuote && priceQuote.totalPrice !== undefined && !priceQuote.error ? (
                   <div>
                     <div className="text-3xl font-bold text-primary mb-1" data-testid="text-price-range">
                       ${(priceQuote.priceMin ? priceQuote.priceMin + itemsTotal : (priceQuote.totalPrice + itemsTotal) * 0.85).toFixed(0)} - ${(priceQuote.priceMax ? priceQuote.priceMax + itemsTotal : (priceQuote.totalPrice + itemsTotal) * 1.15).toFixed(0)}
