@@ -12,7 +12,6 @@ const SERVICES = [
     unit: "starting (minimum load)",
     description: "Volume-based pricing by truck load. We load, haul, and dispose. Includes landfill fees. 1/8 truck: $179 | 1/4 truck: $279 | 1/2 truck: $379 | 3/4 truck: $449 | Full truck: $549",
     features: ["Heavy lifting included", "Eco-friendly disposal", "Before/After photos"],
-    popular: true,
     bnplAvailable: true,
     bnplStartingPrice: 199,
   },
@@ -114,18 +113,9 @@ export default function PublicPricing() {
           {SERVICES.map((service) => (
             <div
               key={service.id}
-              className={`relative bg-card rounded-2xl shadow-sm border p-8 flex flex-col hover-elevate ${
-                service.popular
-                  ? "border-primary ring-4 ring-primary/10"
-                  : "border-border"
-              }`}
+              className="relative bg-card rounded-2xl shadow-sm border border-border p-8 flex flex-col hover-elevate"
               data-testid={`card-pricing-${service.id}`}
             >
-              {service.popular && (
-                <div className="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-2xl">
-                  MOST POPULAR
-                </div>
-              )}
 
               <h3 className="text-xl font-bold" data-testid={`text-pricing-name-${service.id}`}>
                 {service.name}

@@ -71,7 +71,7 @@ const garageCleanoutPackages = GARAGE_CLEANOUT_PACKAGES.map(pkg => ({
   description: pkg.description,
   items: pkg.itemsEstimate,
   time: pkg.duration,
-  featured: pkg.popular || false,
+  featured: false,
 }));
 
 // Map shared load size packages to junk removal format
@@ -1733,7 +1733,6 @@ export default function Booking() {
                               <div className="min-w-0">
                                 <div className="flex items-center gap-2">
                                   <span className="font-medium">{pkg.label}</span>
-                                  {pkg.featured && <Badge variant="secondary" className="text-xs">Popular</Badge>}
                                 </div>
                                 <div className="text-sm text-muted-foreground">{pkg.description}</div>
                                 <div className="text-xs text-muted-foreground mt-0.5">{pkg.items} | {pkg.time}</div>

@@ -38,7 +38,6 @@ export interface DwellScanTier {
   description: string;
   features: string[];
   requiresDrone?: boolean;
-  popular?: boolean;
 }
 
 export const DWELLSCAN_TIERS: DwellScanTier[] = [
@@ -76,7 +75,6 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
       "Full before/after aerial photo set, timestamped and GPS-tagged",
     ],
     requiresDrone: true,
-    popular: true, // Most Popular badge
   },
 ];
 
@@ -165,7 +163,6 @@ export interface GarageCleanoutPackage {
   description: string;
   itemsEstimate: string;
   duration: string;
-  popular?: boolean;
 }
 
 export const GARAGE_CLEANOUT_PACKAGES: GarageCleanoutPackage[] = [
@@ -184,7 +181,6 @@ export const GARAGE_CLEANOUT_PACKAGES: GarageCleanoutPackage[] = [
     description: "Typical single-car",
     itemsEstimate: "~25-35 items",
     duration: "2-3 hours",
-    popular: true,
   },
   {
     id: "large",

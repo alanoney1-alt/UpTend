@@ -15,7 +15,6 @@ const loadSizePricing = loadSizePackages.map(pkg => ({
   price: pkg.price,
   monthly: Math.round(pkg.price / 4),
   description: pkg.fits.split(",")[0],
-  featured: pkg.id === "full",
 }));
 
 // Min/max prices from shared pricing constants
@@ -141,16 +140,11 @@ export function PricingCalculator() {
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 max-w-4xl mx-auto mb-8">
           {loadSizePricing.map((load) => (
-            <Card 
+            <Card
               key={load.id}
-              className={`p-4 text-center relative ${load.featured ? 'ring-2 ring-primary shadow-lg' : ''}`}
+              className="p-4 text-center relative"
               data-testid={`card-load-${load.id}`}
             >
-              {load.featured && (
-                <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary text-white text-xs">
-                  Most Popular
-                </Badge>
-              )}
               <p className="text-sm font-medium text-muted-foreground mb-1">{load.label}</p>
               <p className="text-2xl md:text-3xl font-bold">${load.price}</p>
               <div className="mt-2 pt-2 border-t">

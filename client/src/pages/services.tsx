@@ -20,7 +20,6 @@ const services = [
     description: "Your unwanted items are resources. We recover your space, protect your property with a 360\u00B0 Video Manifest, and verify the environmental impact of every item through our circular economy system.",
     price: "From $99",
     includes: ["360\u00B0 Video Manifest", "Verified Impact Report", "Circular economy sorting", "ESG compliance documentation"],
-    popular: true,
     link: "/services/material-recovery",
   },
   {
@@ -105,7 +104,6 @@ const services = [
     description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
     price: "From $99",
     includes: ["Room-by-room checklist", "Before/After photos", "Supplies included", "Recurring options available"],
-    popular: true,
     link: "/services/home-cleaning",
   },
   {
@@ -205,13 +203,6 @@ export default function Services() {
               className={`relative overflow-visible flex flex-col ${svc.featured ? "ring-2 ring-primary/30" : ""}`}
               data-testid={`card-service-${svc.id}`}
             >
-              {svc.popular && (
-                <div className="absolute -top-3 left-6" data-testid={`badge-popular-${svc.id}`}>
-                  <Badge variant="default" data-testid={`text-popular-${svc.id}`}>
-                    Most Popular
-                  </Badge>
-                </div>
-              )}
               {svc.featured && (
                 <div className="absolute -top-3 left-6" data-testid={`badge-featured-${svc.id}`}>
                   <Badge variant="default" data-testid={`text-featured-${svc.id}`}>

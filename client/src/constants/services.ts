@@ -130,7 +130,6 @@ export const SERVICES = {
         ],
         estimatedDuration: '45 minutes (15 min drone + 30 min walkthrough)',
         prosNeeded: { default: 2, ifCombined: 1 },
-        popular: true,
       },
     },
     credit: {

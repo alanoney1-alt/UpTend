@@ -33,13 +33,10 @@ import {
 
 interface PackageSelectorProps {
   onSelectPackage: (packageId: string, selectedServices: string[]) => void;
-  showPopularOnly?: boolean;
 }
 
-export function PackageSelector({ onSelectPackage, showPopularOnly = false }: PackageSelectorProps) {
-  const allPackages = showPopularOnly
-    ? getAllPackages().filter(pkg => pkg.popular)
-    : getAllPackages();
+export function PackageSelector({ onSelectPackage }: PackageSelectorProps) {
+  const allPackages = getAllPackages();
 
   const [selectedPackage, setSelectedPackage] = useState<NamedPackage | null>(null);
   const [isCustomizing, setIsCustomizing] = useState(false);
@@ -83,15 +80,6 @@ export function PackageSelector({ onSelectPackage, showPopularOnly = false }: Pa
             className="relative cursor-pointer transition-all hover:shadow-lg hover:border-primary"
             onClick={() => handleSelectPackage(pkg)}
           >
-            {pkg.popular && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <Badge className="bg-primary text-primary-foreground">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  Most Popular
-                </Badge>
-              </div>
-            )}
-
             {pkg.seasonalBadge && (
               <div className="absolute top-3 right-3">
                 <Badge variant="secondary">{pkg.seasonalBadge}</Badge>
@@ -171,7 +159,7 @@ export function PackageSelector({ onSelectPackage, showPopularOnly = false }: Pa
                 </div>
               </div>
 
-              <Button className="w-full" variant={pkg.popular ? "default" : "outline"}>
+              <Button className="w-full" variant="default">
                 Select Package
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Button>

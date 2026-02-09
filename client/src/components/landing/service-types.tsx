@@ -19,7 +19,6 @@ const services = [
     icon: Sofa,
     image: furnitureImage,
     startingPrice: SERVICE_STARTING_PRICES.furniture_moving,
-    popular: true,
   },
   {
     id: "truck_unloading",
@@ -28,7 +27,6 @@ const services = [
     icon: Home,
     image: estateImage,
     startingPrice: SERVICE_STARTING_PRICES.truck_unloading,
-    popular: false,
   },
   {
     id: "garage_cleanout",
@@ -37,7 +35,6 @@ const services = [
     icon: Home,
     image: emptyGarageImage,
     startingPrice: SERVICE_STARTING_PRICES.garage_cleanout,
-    popular: false,
   },
   {
     id: "junk_removal",
@@ -46,7 +43,6 @@ const services = [
     icon: Trash2,
     image: junkImage,
     startingPrice: SERVICE_STARTING_PRICES.junk_removal,
-    popular: false,
   },
 ];
 
@@ -78,11 +74,6 @@ export function ServiceTypes() {
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                {service.popular && (
-                  <Badge className="absolute top-3 right-3 bg-primary">
-                    Most Popular
-                  </Badge>
-                )}
                 <div className="absolute bottom-3 left-3">
                   <service.icon className="w-8 h-8 text-white" />
                 </div>

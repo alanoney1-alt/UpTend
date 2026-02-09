@@ -788,12 +788,6 @@ export function BundlePricingCalculator() {
                       }`}
                       data-testid={`garage-package-${pkg.id}`}
                     >
-                      {pkg.popular && (
-                        <Badge className="absolute -top-2 right-3 bg-amber-500 text-white border-amber-400">
-                          <Star className="w-3 h-3 mr-1 fill-current" />
-                          MOST POPULAR
-                        </Badge>
-                      )}
                       <div className="flex items-baseline gap-2 mb-2">
                         <span className="text-xl font-bold">{pkg.name}</span>
                         <span className="text-2xl font-bold text-primary">${pkg.price}</span>

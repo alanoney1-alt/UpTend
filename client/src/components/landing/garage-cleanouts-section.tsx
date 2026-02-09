@@ -25,7 +25,7 @@ const garagePackages = GARAGE_CLEANOUT_PACKAGES.map(pkg => ({
   description: pkg.description,
   items: pkg.itemsEstimate,
   time: pkg.duration,
-  featured: pkg.popular || false,
+  featured: false,
 }));
 
 const howItWorks = [
@@ -100,13 +100,6 @@ export function GarageCleanoutsSection() {
               }`}
               data-testid={`card-garage-package-${pkg.id}`}
             >
-              {pkg.featured && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white">
-                  <Star className="w-3 h-3 mr-1" />
-                  MOST POPULAR
-                </Badge>
-              )}
-              
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-2">

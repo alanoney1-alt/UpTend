@@ -26,7 +26,6 @@ export interface NamedPackage {
     to: number;
   };
   savingsMessage: string;
-  popular?: boolean;
   seasonalBadge?: string; // "Spring Special", "Holiday Season", etc.
 }
 
@@ -66,7 +65,6 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       to: 549,
     },
     savingsMessage: '10% off when bundled',
-    popular: true,
   },
 
   the_curb_appeal: {
@@ -143,7 +141,6 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       to: 899,
     },
     savingsMessage: '10-15% off - save up to $130',
-    popular: true,
   },
 
   the_full_reset: {
@@ -358,14 +355,10 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
 };
 
 /**
- * Get all packages sorted by popularity
+ * Get all packages
  */
 export function getAllPackages(): NamedPackage[] {
-  return Object.values(NAMED_PACKAGES).sort((a, b) => {
-    if (a.popular && !b.popular) return -1;
-    if (!a.popular && b.popular) return 1;
-    return 0;
-  });
+  return Object.values(NAMED_PACKAGES);
 }
 
 /**
