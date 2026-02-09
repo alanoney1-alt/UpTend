@@ -61,6 +61,10 @@ import type {
   JobVerification, InsertJobVerification,
   DisposalRecord, InsertDisposalRecord,
   ViolationCommunication, InsertViolationCommunication,
+  CarbonCredit, InsertCarbonCredit,
+  HoaProperty, InsertHoaProperty,
+  HoaViolation, InsertHoaViolation,
+  HoaReferralPayment, InsertHoaReferralPayment,
 } from "@shared/schema";
 
 // Import all 27 domain storage classes
