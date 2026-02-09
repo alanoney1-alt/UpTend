@@ -71,17 +71,17 @@ export function ManualQuoteForm({
           price += item.basePrice * quantity;
         }
       });
-      // Apply minimum
+      // Apply minimum ($99)
       price = Math.max(price, 99);
     } else if (isPressureWashing) {
       const sqftNum = parseInt(sqft) || 0;
-      price = Math.max(sqftNum * 0.25, 150);
+      price = Math.max(sqftNum * 0.25, 120); // FreshWash minimum $120
     } else if (isGutterCleaning) {
-      price = stories === "1" ? 120 : 199;
+      price = stories === "1" ? 149 : 199; // GutterFlush: single story $149, two story $199
     } else if (isMovingLabor) {
       const hoursNum = parseInt(hours) || 2;
       const crewNum = parseInt(crewSize) || 2;
-      price = hoursNum * crewNum * 40;
+      price = hoursNum * crewNum * 80; // LiftCrew: $80/hr per Pro
     }
 
     setEstimatedPrice(Math.round(price));
