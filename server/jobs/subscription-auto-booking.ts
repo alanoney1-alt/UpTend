@@ -82,6 +82,9 @@ async function createAutoBooking(subscription: RecurringSubscription): Promise<S
     status: "pending",
     scheduledFor: new Date().toISOString(), // Today
     pickupAddress: "", // Will be fetched from customer profile
+    pickupCity: "", // Will be fetched from customer profile
+    pickupZip: "", // Will be fetched from customer profile
+    loadEstimate: "medium", // Default load estimate for recurring subscriptions
     description: `Recurring ${homeDetails.cleanType} clean - ${homeDetails.bedrooms} bed / ${homeDetails.bathrooms} bath`,
     priceEstimate: price,
     livePrice: price,

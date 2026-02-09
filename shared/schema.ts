@@ -2408,6 +2408,7 @@ export const hoaViolations = pgTable("hoa_violations", {
   title: text("title").notNull(), // e.g., "Dead tree removal required"
   description: text("description").notNull(), // Full violation details
   dueDate: text("due_date"), // Deadline for compliance
+  deadline: text("deadline"), // Alias for dueDate
   documentUrl: text("document_url"), // Scanned violation letter
   photos: text("photos").array(), // Array of photo URLs
   status: text("status").notNull().default("submitted"), // submitted, contacted_owner, owner_responded, scheduled, job_completed, resolved, expired

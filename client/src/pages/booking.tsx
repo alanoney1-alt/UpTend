@@ -2910,7 +2910,10 @@ export default function Booking() {
                         };
                       })}
                       jobDetails={{
-                        serviceType: serviceTypes.find(s => s.id === formData.serviceType)?.label || formData.serviceType,
+                        serviceType: (() => {
+                          const label = serviceTypes.find(s => s.id === formData.serviceType)?.label;
+                          return typeof label === 'string' ? label : formData.serviceType;
+                        })(),
                         address: formData.pickupAddress,
                         scheduledDate: formData.scheduledFor || 'ASAP',
                         estimatedPrice: priceQuote?.totalPrice || itemsTotal || 149
@@ -3225,7 +3228,7 @@ export default function Booking() {
                   <div className="flex items-center justify-center py-8">
                     <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   </div>
-                ) : priceQuote && priceQuote.totalPrice !== undefined && !priceQuote.error ? (
+                ) : priceQuote && priceQuote.totalPrice !== undefined ? (
                   <div>
                     <div className="text-3xl font-bold text-primary mb-1" data-testid="text-price-range">
                       ${(priceQuote.priceMin ? priceQuote.priceMin + itemsTotal : (priceQuote.totalPrice + itemsTotal) * 0.85).toFixed(0)} - ${(priceQuote.priceMax ? priceQuote.priceMax + itemsTotal : (priceQuote.totalPrice + itemsTotal) * 1.15).toFixed(0)}

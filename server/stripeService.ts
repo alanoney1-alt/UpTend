@@ -839,7 +839,7 @@ export class StripeService {
 
     try {
       // Get current subscription
-      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
 
       // Calculate next billing date after skipping one cycle
       const currentPeriodEnd = subscription.current_period_end;

@@ -208,9 +208,9 @@ export function registerSmsBotRoutes(app: Express): void {
             identifiedItems: analysisResult.identifiedItems,
             estimatedVolumeCubicFt: analysisResult.estimatedVolumeCubicFt,
             recommendedLoadSize: analysisResult.recommendedLoadSize,
-            suggestedPrice: analysisResult.suggestedPrice,
-            suggestedPriceMin: analysisResult.suggestedPriceMin,
-            suggestedPriceMax: analysisResult.suggestedPriceMax,
+            suggestedPrice: analysisResult.suggestedPrice || 0,
+            suggestedPriceMin: analysisResult.suggestedPriceMin || 0,
+            suggestedPriceMax: analysisResult.suggestedPriceMax || 0,
             confidence: analysisResult.confidence,
             reasoning: analysisResult.reasoning,
           };
@@ -219,7 +219,7 @@ export function registerSmsBotRoutes(app: Express): void {
           await storage.updateSmsMessage(inboundMessage.id, {
             aiAnalysisResult: aiAnalysisResult as any,
             quoteGenerated: true,
-            quotedPrice: aiAnalysisResult.suggestedPrice,
+            quotedPrice: aiAnalysisResult?.suggestedPrice || 0,
           });
         } catch (error: any) {
           console.error("Photo analysis error in SMS bot:", error);

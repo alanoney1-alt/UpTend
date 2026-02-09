@@ -58,9 +58,9 @@ export function registerChatbotRoutes(app: Express): void {
             identifiedItems: analysisResult.identifiedItems,
             estimatedVolumeCubicFt: analysisResult.estimatedVolumeCubicFt,
             recommendedLoadSize: analysisResult.recommendedLoadSize,
-            suggestedPrice: analysisResult.suggestedPrice,
-            suggestedPriceMin: analysisResult.suggestedPriceMin,
-            suggestedPriceMax: analysisResult.suggestedPriceMax,
+            suggestedPrice: analysisResult.suggestedPrice || 0,
+            suggestedPriceMin: analysisResult.suggestedPriceMin || 0,
+            suggestedPriceMax: analysisResult.suggestedPriceMax || 0,
             confidence: analysisResult.confidence,
             reasoning: analysisResult.reasoning,
           };

@@ -81,7 +81,8 @@ export async function calculateCarbonCreditsForJob(
   serviceRequestId: string
 ): Promise<CarbonCreditCalculation> {
   // Get the ESG impact log for this job
-  const esgLogs = await storage.getEsgImpactLogsByRequest(serviceRequestId);
+  const esgLog = await storage.getEsgImpactLogByRequest(serviceRequestId);
+  const esgLogs = esgLog ? [esgLog] : [];
 
   if (esgLogs.length === 0) {
     // No ESG data, use conservative default estimation
@@ -95,19 +96,20 @@ export async function calculateCarbonCreditsForJob(
 
   // Calculate credits for each material type
   for (const log of esgLogs) {
-    const weightLbs = log.recyclePoundsReported || 0 +
-                     (log.donatePoundsReported || 0) +
-                     (log.landfillPoundsReported || 0);
+    const weightLbs = (log.recycledWeightLbs || 0) +
+                     (log.donatedWeightLbs || 0) +
+                     (log.landfilledWeightLbs || 0);
 
-    const divertedLbs = (log.recyclePoundsReported || 0) +
-                        (log.donatePoundsReported || 0);
+    const divertedLbs = (log.recycledWeightLbs || 0) +
+                        (log.donatedWeightLbs || 0);
 
     totalWeightLbs += weightLbs;
     totalDivertedLbs += divertedLbs;
 
     if (divertedLbs > 0) {
       // Determine material type and CO2e factor
-      const materialType = determineMaterialType(log.disposalCategory);
+      // Note: disposalCategory doesn't exist in schema, use null to get default "mixed_waste"
+      const materialType = determineMaterialType(null);
       const co2eFactor = MATERIAL_CO2E_FACTORS[materialType] || MATERIAL_CO2E_FACTORS.mixed_waste;
 
       // Convert pounds to metric tons (1 ton = 2204.62 lbs)

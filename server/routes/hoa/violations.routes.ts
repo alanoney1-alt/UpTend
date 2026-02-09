@@ -40,6 +40,7 @@ export function registerHoaViolationRoutes(app: Express) {
         propertyId: data.propertyId,
         businessAccountId: property.businessAccountId,
         violationType: data.violationType,
+        title: data.violationType.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()), // Format violation type as title
         description: data.description,
         severity: data.severity,
         photos: data.photos || [],

@@ -202,6 +202,10 @@ export class DatabaseStorage implements IStorage {
     return this.users.getUser(id);
   }
 
+  async getCustomer(id: string): Promise<User | undefined> {
+    return this.users.getUser(id);
+  }
+
   async getUserByEmail(email: string): Promise<User | undefined> {
     return this.users.getUserByEmail(email);
   }
@@ -547,6 +551,10 @@ export class DatabaseStorage implements IStorage {
 
   async getReferralsByReferrer(referrerId: string): Promise<Referral[]> {
     return this.penaltiesReferrals.getReferralsByReferrer(referrerId);
+  }
+
+  async getReferral(id: string): Promise<Referral | undefined> {
+    return this.penaltiesReferrals.getReferral(id);
   }
 
   async updateReferral(id: string, updates: Partial<Referral>): Promise<Referral | undefined> {

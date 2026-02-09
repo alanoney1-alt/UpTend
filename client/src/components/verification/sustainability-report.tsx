@@ -51,8 +51,9 @@ export function SustainabilityReport({ jobId, onComplete, onCancel }: Sustainabi
   const [report, setReport] = useState<SustainabilityReportData | null>(null);
 
   const generateMutation = useMutation<GenerateReportResponse>({
-    mutationFn: async () => {
-      return apiRequest("POST", `/api/jobs/${jobId}/verification/generate-report`, {});
+    mutationFn: async (): Promise<GenerateReportResponse> => {
+      const response = await apiRequest("POST", `/api/jobs/${jobId}/verification/generate-report`, {});
+      return await response.json();
     },
     onSuccess: (data) => {
       setReport(data.report);

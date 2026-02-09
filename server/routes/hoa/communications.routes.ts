@@ -71,6 +71,8 @@ export function registerHoaCommunicationRoutes(app: Express) {
           businessAccountId,
           communicationType: data.messageType,
           method: data.sendVia,
+          channel: data.sendVia, // Required: same as method
+          recipient: property.ownerEmail || property.ownerPhone || "unknown", // Required: contact info
           subject: personalizedSubject,
           message: personalizedMessage,
           sentBy: req.user!.id,

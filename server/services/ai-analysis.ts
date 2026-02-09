@@ -14,6 +14,10 @@ export interface AiAnalysisResult {
   confidence: number;
   reasoning: string;
   rawResponse: string;
+  // Price estimates
+  suggestedPrice?: number;
+  suggestedPriceMin?: number;
+  suggestedPriceMax?: number;
   // Pressure washing specific fields
   totalSqft?: number;
   surfaces?: Array<{
