@@ -2440,12 +2440,16 @@ export type HoaViolation = typeof hoaViolations.$inferSelect;
 // Violation Communications - Track emails/SMS/calls to homeowners
 export const violationCommunications = pgTable("violation_communications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  violationId: varchar("violation_id").notNull(), // FK to hoaViolations
+  violationId: varchar("violation_id"), // FK to hoaViolations (optional for general communications)
+  propertyId: varchar("property_id"), // FK to hoaProperties (optional)
+  communicationType: text("communication_type"), // Type of communication
+  method: text("method"), // Method used (alias for channel)
   channel: text("channel").notNull(), // "email", "sms", "call"
   recipient: text("recipient").notNull(), // Email or phone number
   subject: text("subject"), // For emails
   message: text("message").notNull(), // Content sent
   sentAt: text("sent_at").notNull().default(sql`now()`),
+  createdAt: text("created_at").default(sql`now()`), // Creation timestamp
   opened: boolean("opened").default(false), // Email opened tracking
   openedAt: text("opened_at"),
   clicked: boolean("clicked").default(false), // Link clicked
