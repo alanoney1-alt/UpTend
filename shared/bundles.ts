@@ -28,12 +28,21 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
   },
   curb_appeal: {
     id: "curb_appeal",
-    name: "The Curb Appeal",
-    description: "Complete exterior refresh package",
+    name: "Curb Appeal",
+    description: "Exterior refresh package",
     services: ["pressure_washing", "gutter_cleaning"],
     bundlePrice: 239,
     alacartePrice: 269, // $120 (FreshWash small) + $149 (GutterFlush single story)
     savings: 30,
+  },
+  curb_appeal_plus: {
+    id: "curb_appeal_plus",
+    name: "Curb Appeal+",
+    description: "Full exterior with lawn maintenance",
+    services: ["pressure_washing", "gutter_cleaning", "landscaping"],
+    bundlePrice: 294,
+    alacartePrice: 334, // $120 (FreshWash) + $149 (GutterFlush) + $35 (FreshCut) + 10% = $269.60 → $294
+    savings: 40,
   },
   move_out: {
     id: "move_out",
@@ -51,6 +60,16 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     ],
     requiresMultiplePros: true,
   },
+  move_out_plus: {
+    id: "move_out_plus",
+    name: "Move-Out+",
+    description: "Tenant turnover with carpet cleaning",
+    services: ["home_cleaning", "junk_removal", "carpet_cleaning"],
+    bundlePrice: 540,
+    alacartePrice: 635, // $149 (PolishUp deep) + $99 (BulkSnap 1/4) + $119 (DeepFiber 3 rooms) × 85% = $540
+    savings: 95,
+    badge: "PM Favorite",
+  },
   full_reset: {
     id: "full_reset",
     name: "The Full Reset",
@@ -66,6 +85,54 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
       "$49 DwellScan credit applies automatically",
     ],
     requiresMultiplePros: true,
+  },
+  full_reset_plus: {
+    id: "full_reset_plus",
+    name: "Full Reset+",
+    description: "Complete PM turnover with all services",
+    services: ["home_cleaning", "junk_removal", "pressure_washing", "landscaping", "carpet_cleaning"],
+    bundlePrice: 820,
+    alacartePrice: 1000, // $149 (PolishUp deep) + $149 (BulkSnap 1/2) + $120 (FreshWash) + $35 (FreshCut) + $119 (DeepFiber 3 rooms) × 82% = $820
+    savings: 180,
+    badge: "Complete Package",
+    requiresMultiplePros: true,
+  },
+  splash_ready: {
+    id: "splash_ready",
+    name: "Splash Ready",
+    description: "Pool cleaning and patio pressure wash",
+    services: ["pool_cleaning", "pressure_washing"],
+    bundlePrice: 224,
+    alacartePrice: 249, // $69 (PoolSpark deep) + $120 (FreshWash patio) + 10% off
+    savings: 25,
+  },
+  fresh_start: {
+    id: "fresh_start",
+    name: "Fresh Start",
+    description: "New move-in cleaning package",
+    services: ["home_cleaning", "carpet_cleaning"],
+    bundlePrice: 196,
+    alacartePrice: 218, // $99 (PolishUp standard) + $119 (DeepFiber 3 rooms) × 90% = $196
+    savings: 22,
+  },
+  hoa_blitz: {
+    id: "hoa_blitz",
+    name: "HOA Blitz",
+    description: "HOA compliance package",
+    services: ["landscaping", "pressure_washing", "gutter_cleaning", "home_consultation"],
+    bundlePrice: 302,
+    alacartePrice: 355, // $35 (FreshCut) + $120 (FreshWash) + $149 (GutterFlush) + $49 (DwellScan) × 85% = $302
+    savings: 53,
+    badge: "HOA Approved",
+  },
+  seasonal_reset: {
+    id: "seasonal_reset",
+    name: "Seasonal Reset",
+    description: "Seasonal prep for pool and exterior",
+    services: ["landscaping", "pool_cleaning", "pressure_washing"],
+    bundlePrice: 539,
+    alacartePrice: 612, // $89 (FreshCut premium) + $149 (PoolSpark deep) + $250 (FreshWash house) × 88% = $539
+    savings: 73,
   },
 } as const;
 

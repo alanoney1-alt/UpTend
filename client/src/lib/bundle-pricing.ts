@@ -24,6 +24,9 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   home_consultation: 49, // DwellScan Standard base price
   home_consultation_aerial: 149, // DwellScan Aerial with drone
   home_cleaning: 99,
+  pool_cleaning: 69, // PoolSpark monthly
+  landscaping: 35, // FreshCut 1/4 acre mow
+  carpet_cleaning: 49, // DeepFiber 1 room
 };
 
 // DwellScan service configuration with two tiers
