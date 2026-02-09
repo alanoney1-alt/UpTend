@@ -3,6 +3,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Trash2,
   Sofa,
@@ -15,7 +21,11 @@ import {
   Sparkles,
   Leaf,
   Waves,
+  ChevronDown,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
+import { getEquipmentForService } from "@shared/equipment-requirements";
 
 export interface Service {
   id: string;
@@ -125,6 +135,8 @@ export function ServicesSelector({
   onSelectionChange,
   showEquipmentInfo = true,
 }: ServicesSelectorProps) {
+  const [expandedService, setExpandedService] = useState<string | null>(null);
+
   const handleToggle = (serviceId: string) => {
     if (selectedServices.includes(serviceId)) {
       onSelectionChange(selectedServices.filter((id) => id !== serviceId));
@@ -147,28 +159,28 @@ export function ServicesSelector({
         {ALL_SERVICES.map((service) => {
           const isSelected = selectedServices.includes(service.id);
           const Icon = service.icon;
+          const equipmentDetails = getEquipmentForService(service.id);
+          const hasEquipmentDetails = equipmentDetails && showEquipmentInfo;
 
           return (
             <Card
               key={service.id}
-              className={`cursor-pointer transition-all ${
+              className={`transition-all ${
                 isSelected
                   ? "border-primary ring-2 ring-primary"
                   : "hover:border-primary/50"
               }`}
-              onClick={() => handleToggle(service.id)}
             >
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <Checkbox
                     checked={isSelected}
                     onCheckedChange={() => handleToggle(service.id)}
-                    onClick={(e) => e.stopPropagation()}
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <Icon className="w-4 h-4 text-primary" />
-                      <Label className="font-semibold cursor-pointer">
+                      <Label className="font-semibold cursor-pointer" onClick={() => handleToggle(service.id)}>
                         {service.label}
                       </Label>
                       {service.requiresCertification && (
@@ -180,11 +192,88 @@ export function ServicesSelector({
                     <p className="text-sm text-muted-foreground mb-2">
                       {service.description}
                     </p>
-                    {showEquipmentInfo && service.requiresEquipment && (
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <span className="font-medium">Equipment needed:</span>
-                        <span>{service.requiresEquipment.join(", ")}</span>
-                      </div>
+
+                    {hasEquipmentDetails && (
+                      <Collapsible
+                        open={expandedService === service.id}
+                        onOpenChange={(open) => setExpandedService(open ? service.id : null)}
+                      >
+                        <CollapsibleTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-auto p-0 text-xs text-primary hover:text-primary/80"
+                          >
+                            <AlertCircle className="w-3 h-3 mr-1" />
+                            View equipment requirements
+                            <ChevronDown className={`w-3 h-3 ml-1 transition-transform ${expandedService === service.id ? "rotate-180" : ""}`} />
+                          </Button>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-3 space-y-3">
+                          {/* Minimum Equipment */}
+                          <div className="p-3 bg-muted rounded-lg">
+                            <p className="text-xs font-semibold mb-2">Minimum Equipment Required:</p>
+                            <ul className="space-y-1.5">
+                              {equipmentDetails.minimumEquipment.map((item) => (
+                                <li key={item.id} className="flex items-start gap-2 text-xs">
+                                  <CheckCircle2 className="w-3 h-3 text-green-600 mt-0.5 shrink-0" />
+                                  <div>
+                                    <span className="font-medium">{item.label}</span>
+                                    {item.description && (
+                                      <span className="text-muted-foreground"> - {item.description}</span>
+                                    )}
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {/* Recommended Equipment */}
+                          {equipmentDetails.recommendedEquipment && equipmentDetails.recommendedEquipment.length > 0 && (
+                            <div className="p-3 bg-muted/50 rounded-lg">
+                              <p className="text-xs font-semibold mb-2">Recommended (Optional):</p>
+                              <ul className="space-y-1.5">
+                                {equipmentDetails.recommendedEquipment.map((item) => (
+                                  <li key={item.id} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                    <span className="mt-0.5">•</span>
+                                    <span>{item.label}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Certifications */}
+                          {equipmentDetails.certifications && equipmentDetails.certifications.length > 0 && (
+                            <div className="flex items-start gap-2 text-xs">
+                              <Badge variant="secondary" className="text-xs">Certifications</Badge>
+                              <span className="text-muted-foreground">
+                                {equipmentDetails.certifications.join(", ")}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Insurance */}
+                          {equipmentDetails.insuranceRequired && (
+                            <div className="flex items-start gap-2 text-xs">
+                              <Badge variant="outline" className="text-xs">Insurance</Badge>
+                              <span className="text-muted-foreground">
+                                {equipmentDetails.insuranceRequired}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Vehicle Requirements */}
+                          {equipmentDetails.vehicleRequirements && equipmentDetails.vehicleRequirements.length > 0 && (
+                            <div className="flex items-start gap-2 text-xs">
+                              <Badge variant="outline" className="text-xs">Vehicle</Badge>
+                              <span className="text-muted-foreground">
+                                {equipmentDetails.vehicleRequirements.join(", ")}
+                              </span>
+                            </div>
+                          )}
+                        </CollapsibleContent>
+                      </Collapsible>
                     )}
                   </div>
                 </div>
