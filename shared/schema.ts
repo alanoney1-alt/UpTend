@@ -2462,9 +2462,14 @@ export const hoaReferralPayments = pgTable("hoa_referral_payments", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   businessAccountId: varchar("business_account_id").notNull(), // FK to businessAccounts
   serviceRequestId: varchar("service_request_id").notNull(), // FK to serviceRequests
+  propertyId: varchar("property_id"), // FK to hoaProperties (optional)
+  serviceType: text("service_type"), // Type of service performed
   jobTotal: real("job_total").notNull(), // Total job amount
+  jobAmount: real("job_amount"), // Alias for jobTotal
   referralRate: real("referral_rate").notNull(), // Usually 0.10 (10%)
+  commissionRate: real("commission_rate"), // Alias for referralRate
   referralAmount: real("referral_amount").notNull(), // Amount owed to HOA
+  commissionAmount: real("commission_amount"), // Alias for referralAmount
   status: text("status").default("pending"), // pending, paid, voided
   paidAt: text("paid_at"),
   stripeTransferId: text("stripe_transfer_id"), // Stripe Connect transfer ID
