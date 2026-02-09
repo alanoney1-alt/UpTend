@@ -21,13 +21,35 @@ interface CustomerConfirmationProps {
   jobId: string;
 }
 
+interface VerificationStatusResponse {
+  canComplete: boolean;
+  canReleasePayment: boolean;
+  missingSteps: string[];
+  verification: {
+    id: string;
+    serviceRequestId: string;
+    beforePhotos: string[] | null;
+    afterPhotos: string[] | null;
+    verificationStatus: string;
+    customerConfirmedAt: string | null;
+    totalWeightLbs: number | null;
+    totalRecycledLbs: number | null;
+    diversionRate: number | null;
+    carbonOffsetTons: number | null;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+  autoApprovalEligible: boolean;
+  message: string;
+}
+
 export function CustomerConfirmation({ jobId }: CustomerConfirmationProps) {
   const { toast } = useToast();
   const [showBeforePhotos, setShowBeforePhotos] = useState(false);
   const [showAfterPhotos, setShowAfterPhotos] = useState(false);
 
   // Fetch verification status
-  const { data: verification, isLoading } = useQuery({
+  const { data: verification, isLoading } = useQuery<VerificationStatusResponse>({
     queryKey: [`/api/jobs/${jobId}/verification/status`],
   });
 

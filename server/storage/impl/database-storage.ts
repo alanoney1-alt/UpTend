@@ -58,6 +58,9 @@ import type {
   HaulerCertification, InsertHaulerCertification,
   SmsConversation, InsertSmsConversation,
   SmsMessage, InsertSmsMessage,
+  JobVerification, InsertJobVerification,
+  DisposalRecord, InsertDisposalRecord,
+  ViolationCommunication, InsertViolationCommunication,
 } from "@shared/schema";
 
 // Import all 27 domain storage classes
