@@ -12,65 +12,103 @@ export function registerPropertyValuationRoutes(app: Express) {
         return res.status(400).json({ error: "Address is required" });
       }
 
-      // === Try Home Listing US API first (if configured) ===
+      // === Try Your Home Value Estimator API first (if configured) ===
       const rapidApiKey = process.env.RAPIDAPI_KEY;
       if (rapidApiKey) {
         try {
-          // Home Listing US API endpoint
-          const searchUrl = `https://home-listing-us.p.rapidapi.com/property`;
+          // Your Home Value Estimator API endpoint
+          const searchUrl = `https://your-home-value-estimator.p.rapidapi.com/search`;
           const searchParams = new URLSearchParams({
-            address: address,
+            query: address,
           });
 
-          console.log(`[Property] Calling Home Listing US API: ${searchUrl}?${searchParams}`);
+          console.log(`[Property] Calling Your Home Value Estimator API: ${searchUrl}?${searchParams}`);
 
           const homeListingRes = await fetch(`${searchUrl}?${searchParams}`, {
             headers: {
-              'X-RapidAPI-Key': rapidApiKey,
-              'X-RapidAPI-Host': 'home-listing-us.p.rapidapi.com'
+              'x-rapidapi-key': rapidApiKey,
+              'x-rapidapi-host': 'your-home-value-estimator.p.rapidapi.com'
             }
           });
 
-          console.log(`[Property] Home Listing US API response status: ${homeListingRes.status}`);
+          console.log(`[Property] Your Home Value Estimator API response status: ${homeListingRes.status}`);
 
           if (homeListingRes.ok) {
-            const data = await homeListingRes.json();
-            console.log(`[Property] Home Listing US API full response:`, JSON.stringify(data, null, 2));
+            const searchData = await homeListingRes.json();
+            console.log(`[Property] Search API response:`, JSON.stringify(searchData, null, 2));
 
-            // Home Listing US returns property data directly
-            if (data && (data.property || data.address)) {
-              const prop = data.property || data;
+            // Step 1: Extract ZPID from search results
+            if (searchData.success && searchData.results && searchData.results.length > 0) {
+              const result = searchData.results[0];
+              const zpid = result.metaData?.zpid;
 
-              console.log(`[Property] ✅ Using Home Listing US data for: ${address}`);
-              console.log(`[Property] Parsed values - Price: ${prop.price || prop.estimatedValue || prop.zestimate}, Beds: ${prop.bedrooms || prop.beds}, Baths: ${prop.bathrooms || prop.baths}, SqFt: ${prop.livingArea || prop.squareFeet || prop.sqft}`);
+              if (!zpid) {
+                console.log(`[Property] ⚠️ No ZPID found in search results`);
+              } else {
+                console.log(`[Property] ✅ Found ZPID: ${zpid}, fetching property details...`);
 
-              return res.json({
-                found: true,
-                property: {
-                  zpid: prop.zpid || prop.propertyId || null,
-                  address: prop.address || prop.fullAddress || address,
-                  zestimate: prop.price || prop.estimatedValue || prop.zestimate || null,
-                  rentZestimate: prop.rentEstimate || prop.rentalValue || null,
-                  bedrooms: prop.bedrooms || prop.beds || null,
-                  bathrooms: prop.bathrooms || prop.baths || null,
-                  livingArea: prop.livingArea || prop.squareFeet || prop.sqft || null,
-                  lotAreaValue: prop.lotSize || prop.lotSqft || null,
-                  lotAreaUnit: "sqft",
-                  yearBuilt: prop.yearBuilt || null,
-                  homeType: prop.propertyType || prop.homeType || "SINGLE_FAMILY",
-                  homeStatus: prop.status || prop.homeStatus || null,
-                  imgSrc: prop.image || prop.imageUrl || prop.photo || null,
-                  latitude: prop.latitude || prop.lat || null,
-                  longitude: prop.longitude || prop.lng || prop.lon || null,
-                  source: "home_listing_us",
-                  county: prop.county || null,
-                  state: prop.state || null,
-                },
-              });
+                // Step 2: Get property details and zestimate in parallel
+                const [propertyRes, zestimateRes] = await Promise.all([
+                  fetch(`https://your-home-value-estimator.p.rapidapi.com/get-property?zpid=${zpid}`, {
+                    headers: {
+                      'x-rapidapi-key': rapidApiKey,
+                      'x-rapidapi-host': 'your-home-value-estimator.p.rapidapi.com'
+                    }
+                  }),
+                  fetch(`https://your-home-value-estimator.p.rapidapi.com/zestimate?zpid=${zpid}&includeRentZestimate=true&includeZpid=true`, {
+                    headers: {
+                      'x-rapidapi-key': rapidApiKey,
+                      'x-rapidapi-host': 'your-home-value-estimator.p.rapidapi.com'
+                    }
+                  })
+                ]);
+
+                const propertyData = propertyRes.ok ? await propertyRes.json() : null;
+                const zestimateData = zestimateRes.ok ? await zestimateRes.json() : null;
+
+                console.log(`[Property] Property details:`, JSON.stringify(propertyData, null, 2));
+                console.log(`[Property] Zestimate data:`, JSON.stringify(zestimateData, null, 2));
+
+                // Extract property from nested structure
+                const prop = propertyData?.property || {};
+                const zest = zestimateData || {};
+                const meta = result.metaData || {};
+
+                // Use price from property data if zestimate unavailable
+                const homeValue = zest.zestimate || prop.price || null;
+                const rentValue = zest.rentZestimate || prop.rentZestimate || null;
+
+                console.log(`[Property] ✅ Using Your Home Value Estimator data for: ${address}`);
+                console.log(`[Property] Parsed values - Price: ${homeValue || 'N/A'}, Beds: ${prop.bedrooms || 'N/A'}, Baths: ${prop.bathrooms || 'N/A'}, Year: ${prop.yearBuilt || 'N/A'}`);
+
+                return res.json({
+                  found: true,
+                  property: {
+                    zpid: zpid,
+                    address: result.display || address,
+                    zestimate: homeValue,
+                    rentZestimate: rentValue,
+                    bedrooms: prop.bedrooms || null,
+                    bathrooms: prop.bathrooms || null,
+                    livingArea: prop.livingArea || null,
+                    lotAreaValue: prop.lotAreaValue || null,
+                    lotAreaUnit: prop.lotAreaUnit || "sqft",
+                    yearBuilt: prop.yearBuilt || null,
+                    homeType: prop.homeType || "SINGLE_FAMILY",
+                    homeStatus: prop.homeStatus || null,
+                    imgSrc: prop.imgSrc || prop.hiResImageLink || null,
+                    latitude: meta.lat || null,
+                    longitude: meta.lng || null,
+                    source: "your_home_value_estimator",
+                    county: prop.county || null,
+                    state: meta.state || null,
+                  },
+                });
+              }
             }
           }
         } catch (apiErr: any) {
-          console.error("[Property] ❌ Home Listing US API error, falling back to Census:", apiErr.message);
+          console.error("[Property] ❌ Your Home Value Estimator API error, falling back to Census:", apiErr.message);
           console.error("[Property] API Error details:", apiErr);
         }
       } else {
