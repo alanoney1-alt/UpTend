@@ -12,18 +12,49 @@ export function registerPricingRoutes(app: Express) {
       const quoteRequest = quoteRequestSchema.parse(req.body);
       const { userId, bookingSource } = req.body;
 
-      // Use the new promotion-aware quote calculation if userId is provided
-      if (userId && bookingSource === "app") {
-        const quoteWithPromos = await storage.calculateQuoteWithPromotions({
-          ...quoteRequest,
-          userId,
-          bookingSource,
-        });
-        return res.json(quoteWithPromos);
-      }
+      try {
+        // Try database-backed quote first
+        if (userId && bookingSource === "app") {
+          const quoteWithPromos = await storage.calculateQuoteWithPromotions({
+            ...quoteRequest,
+            userId,
+            bookingSource,
+          });
+          return res.json(quoteWithPromos);
+        }
+        const quote = await storage.calculateQuote(quoteRequest);
+        return res.json(quote);
+      } catch (dbError) {
+        // Fallback: calculate price from load size tiers when DB is unavailable
+        console.warn("Database quote failed, using fallback pricing:", dbError);
 
-      const quote = await storage.calculateQuote(quoteRequest);
-      res.json(quote);
+        const loadSizePrices: Record<string, number> = {
+          minimum: 99,
+          "1/8": 179,
+          "1/4": 279,
+          "1/2": 379,
+          "3/4": 449,
+          full: 549,
+          small: 299,
+          medium: 499,
+          large: 749,
+          xl: 999,
+        };
+
+        const basePrice = loadSizePrices[quoteRequest.loadSize] || 199;
+
+        return res.json({
+          totalPrice: basePrice,
+          priceMin: Math.round(basePrice * 0.85),
+          priceMax: Math.round(basePrice * 1.15),
+          surgeMultiplier: 1,
+          breakdown: [
+            { label: "Base service price", amount: basePrice },
+          ],
+          promoDiscount: 0,
+          promoCodeApplied: null,
+        });
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid quote request", details: error.errors });

@@ -49,7 +49,7 @@ import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
   { id: "junk_removal", label: "BulkSnap™ (Junk Removal)", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
-  { id: "furniture_moving", label: "Furniture Moving", icon: Sofa, description: "Move furniture to new location", startingPrice: SERVICE_STARTING_PRICES.furniture_moving },
+  { id: "furniture_moving", label: "LiftCrew™ (Furniture Moving)", icon: Sofa, description: "Move furniture to new location", startingPrice: SERVICE_STARTING_PRICES.furniture_moving },
   { id: "garage_cleanout", label: "GarageReset™ (Garage Cleanout)", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
   { id: "truck_unloading", label: "UnloadPro™ (Truck Unloading)", icon: Truck, description: "Unload your rental truck or moving trailer", startingPrice: SERVICE_STARTING_PRICES.truck_unloading },
   { id: "pressure_washing", label: "FreshWash™ (Pressure Washing)", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
@@ -177,7 +177,7 @@ const loadPricing = [
   { id: "quarter", label: "Quarter Load", description: "1-2 large items or 5-6 bags", price: 99, cubicYards: "~4 cu yd", examples: "Couch + chair, small bedroom cleanout" },
   { id: "half", label: "Half Load", description: "Bedroom cleanout, small office", price: 179, cubicYards: "~8 cu yd", examples: "Bedroom set, 2-3 appliances, small garage corner" },
   { id: "three_quarter", label: "3/4 Load", description: "Garage cleanout, estate items", price: 299, cubicYards: "~12 cu yd", examples: "Full garage, 2-3 rooms of furniture" },
-  { id: "full", label: "Full Load", description: "Whole home, large estate", price: 449, cubicYards: "~16 cu yd", examples: "Whole apartment, large estate cleanout" },
+  { id: "full", label: "Full Load", description: "Whole home, large estate", price: 549, cubicYards: "~16 cu yd", examples: "Whole apartment, large estate cleanout" },
 ];
 
 const timeSlots = [
@@ -425,7 +425,7 @@ export default function Booking() {
 
     switch (formData.serviceType) {
       case "junk_removal":
-        return !!selectedJunkLoadTier && (uploadedPhotoCount > 0 || hasVideoFrames);
+        return !!selectedJunkLoadTier; // Photos encouraged but not required
       case "garage_cleanout":
         return !!selectedGaragePackage;
       case "truck_unloading":

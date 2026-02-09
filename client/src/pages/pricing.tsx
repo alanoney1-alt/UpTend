@@ -10,7 +10,7 @@ const SERVICES = [
     name: <>BulkSnap<sup>™</sup> (Material Recovery)</>,
     price: "$99",
     unit: "starting (minimum load)",
-    description: "Volume-based pricing by truck load. We load, haul, and dispose. Includes landfill fees. 1/8 truck: $179 | 1/4 truck: $279 | 1/2 truck: $379 | 3/4 truck: $449 | Full truck: $449",
+    description: "Volume-based pricing by truck load. We load, haul, and dispose. Includes landfill fees. 1/8 truck: $179 | 1/4 truck: $279 | 1/2 truck: $379 | 3/4 truck: $449 | Full truck: $549",
     features: ["Heavy lifting included", "Eco-friendly disposal", "Before/After photos"],
     popular: true,
     bnplAvailable: true,

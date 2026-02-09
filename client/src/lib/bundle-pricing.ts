@@ -548,10 +548,10 @@ export const loadSizePackages: LoadSizePackage[] = [
     id: "full",
     name: "Full Truck",
     description: "Full truck load",
-    price: 449,
+    price: 549,
     fits: "Entire truckload, ~216 cu ft",
     example: "Multiple rooms, estate cleanout",
-    competitorPrice: 649,
+    competitorPrice: 749,
     cubicFeet: 216, // Standard pickup truck bed = 8 cu yd
   },
 ];

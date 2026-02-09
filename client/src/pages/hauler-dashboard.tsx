@@ -134,7 +134,7 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
     medium: { label: "1/4 Truck", volume: "28-54 cu ft", price: "$199" },
     large: { label: "1/2 Truck", volume: "55-108 cu ft", price: "$299" },
     extra_large: { label: "3/4 Truck", volume: "109-162 cu ft", price: "$399" },
-    full: { label: "Full Truck", volume: "163+ cu ft", price: "$449+" },
+    full: { label: "Full Truck", volume: "163+ cu ft", price: "$549+" },
   };
 
   const isJunkRemoval = request.serviceType === 'junk_removal' || request.serviceType === 'garage_cleanout' || request.serviceType === 'estate_cleanout';
