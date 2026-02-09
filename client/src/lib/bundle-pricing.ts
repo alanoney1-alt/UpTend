@@ -100,7 +100,7 @@ export const SERVICE_TYPES: ServiceTypeConfig[] = [
   },
   {
     id: "garage_cleanout",
-    label: "GarageReset (Garage Cleanout)",
+    label: "GarageReset™ (Garage Cleanout)",
     description: "Complete garage cleanout service",
     icon: Home,
     pricingModel: "per_item",

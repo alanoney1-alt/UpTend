@@ -136,7 +136,7 @@ export function registerAcademyRoutes(app: Express) {
       res.json({
         name: "John Doe",
         status: "Active",
-        specialty: "Junk Removal, Pressure Washing",
+        specialty: "BulkSnap™ (Junk Removal), FreshWash™ (Pressure Washing)",
         verified: true,
       });
     } catch (error) {

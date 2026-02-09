@@ -59,7 +59,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     moving_labor: {
-      name: "LiftCrew (Moving Labor)",
+      name: "LiftCrew™ (Moving Labor)",
       description: "Professional movers to help load/unload trucks, rearrange furniture, or provide labor-only moving assistance.",
       pricing: "$80/hour per Pro (1-hour minimum)",
       features: [
@@ -77,7 +77,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     pressure_washing: {
-      name: "FreshWash (Pressure Washing)",
+      name: "FreshWash™ (Pressure Washing)",
       description: "Professional pressure washing for driveways, siding, decks, patios, and more.",
       pricing: "$0.25 per square foot (minimum $120 for 480 sqft)",
       aiQuote: "Upload photos and get instant square footage calculation",
@@ -91,7 +91,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     gutter_cleaning: {
-      name: "GutterFlush (Gutter Cleaning)",
+      name: "GutterFlush™ (Gutter Cleaning)",
       description: "Professional gutter cleaning and debris removal to prevent water damage.",
       pricing: "Fixed pricing by home size",
       rates: [
@@ -121,7 +121,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     garage_cleanout: {
-      name: "GarageReset (Garage Cleanout)",
+      name: "GarageReset™ (Garage Cleanout)",
       description: "Complete garage clearing with sorting, donation coordination, and disposal.",
       pricing: "Small: $299 | Medium: $499 | Large: $749 | XL: $999",
       features: [
@@ -247,7 +247,7 @@ export const UPTEND_KNOWLEDGE = {
   },
 
   verification: {
-    forServices: ["BulkSnap (Material Recovery)", "GarageReset (Garage Cleanout)", "TearDown (Demolition)", "PolishUp (Home Cleaning)"],
+    forServices: ["BulkSnap™ (Material Recovery)", "GarageReset™ (Garage Cleanout)", "TearDown™ (Demolition)", "PolishUp™ (Home Cleaning)"],
     workflow: [
       "Before Photos: Pro takes GPS-tagged photos before starting work",
       "Disposal Tracking (BulkSnap/GarageReset/TearDown): Pro logs each item (recycle/donate/resale/landfill/e-waste)",
@@ -287,7 +287,7 @@ export const UPTEND_KNOWLEDGE = {
     },
     {
       q: "Can I book multiple Pros for a big job?",
-      a: "Yes! For LiftCrew (Moving Labor), you can request 2-3 Pro crews. For BulkSnap (Material Recovery), the Pro can call for backup if needed after arriving.",
+      a: "Yes! For LiftCrew™ (Moving Labor), you can request 2-3 Pro crews. For BulkSnap™ (Material Recovery), the Pro can call for backup if needed after arriving.",
     },
     {
       q: "What if the quote is wrong?",

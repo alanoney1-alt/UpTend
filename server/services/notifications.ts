@@ -195,9 +195,16 @@ export async function sendBookingConfirmation(
   total: number
 ): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
   const serviceNames: Record<string, string> = {
-    junk_removal: "Junk Removal",
+    junk_removal: "BulkSnap™ (Junk Removal)",
     moving: "Moving",
-    truck_unloading: "U-Haul/Truck Unloading",
+    truck_unloading: "UnloadPro™ (Truck Unloading)",
+    garage_cleanout: "GarageReset™ (Garage Cleanout)",
+    pressure_washing: "FreshWash™ (Pressure Washing)",
+    gutter_cleaning: "GutterFlush™ (Gutter Cleaning)",
+    moving_labor: "LiftCrew™ (Moving Labor)",
+    light_demolition: "TearDown™ (Light Demolition)",
+    home_consultation: "DwellScan™ (Home Audit)",
+    home_cleaning: "PolishUp™ (Home Cleaning)",
   };
 
   const serviceName = serviceNames[serviceType] || serviceType;
@@ -354,9 +361,16 @@ export async function sendManualMatchAlert(
   }
 ): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
   const serviceNames: Record<string, string> = {
-    junk_removal: "Junk Removal",
+    junk_removal: "BulkSnap™ (Junk Removal)",
     moving: "Moving",
-    truck_unloading: "U-Haul/Truck Unloading",
+    truck_unloading: "UnloadPro™ (Truck Unloading)",
+    garage_cleanout: "GarageReset™ (Garage Cleanout)",
+    pressure_washing: "FreshWash™ (Pressure Washing)",
+    gutter_cleaning: "GutterFlush™ (Gutter Cleaning)",
+    moving_labor: "LiftCrew™ (Moving Labor)",
+    light_demolition: "TearDown™ (Light Demolition)",
+    home_consultation: "DwellScan™ (Home Audit)",
+    home_cleaning: "PolishUp™ (Home Cleaning)",
   };
   const serviceName = serviceNames[jobDetails.serviceType] || jobDetails.serviceType;
 

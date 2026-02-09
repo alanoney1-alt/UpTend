@@ -53,18 +53,18 @@ export function calculateServicePrice(type: string, data: any): number | null {
 
 export function getServiceLabel(type: string): string {
   const labels: Record<string, string> = {
-    junk_removal: "Junk Removal",
+    junk_removal: "BulkSnap™ (Junk Removal)",
     furniture_moving: "Furniture Moving",
-    garage_cleanout: "Garage Cleanout",
+    garage_cleanout: "GarageReset™ (Garage Cleanout)",
     estate_cleanout: "Estate Cleanout",
-    truck_unloading: "Truck Unloading",
+    truck_unloading: "UnloadPro™ (Truck Unloading)",
     hvac: "HVAC",
     cleaning: "Cleaning",
-    moving_labor: "Moving Labor",
-    pressure_washing: "Pressure Washing",
-    gutter_cleaning: "Gutter Cleaning",
-    light_demolition: "Light Demolition",
-    home_consultation: "Home Consultation",
+    moving_labor: "LiftCrew™ (Moving Labor)",
+    pressure_washing: "FreshWash™ (Pressure Washing)",
+    gutter_cleaning: "GutterFlush™ (Gutter Cleaning)",
+    light_demolition: "TearDown™ (Light Demolition)",
+    home_consultation: "DwellScan™ (Home Consultation)",
   };
   return labels[type] || type.replace(/_/g, " ");
 }

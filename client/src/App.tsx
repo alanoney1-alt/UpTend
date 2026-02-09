@@ -123,6 +123,8 @@ function Router() {
       <Route path="/services" component={Services} />
       <Route path="/services/home-audit" component={HomeAudit} />
       <Route path="/services/audit" component={HomeAudit} />
+      <Route path="/home-audit" component={HomeAudit} />
+      <Route path="/dwellscan" component={HomeAudit} />
       <Route path="/home-health-audit" component={HomeHealthAudit} />
       <Route path="/audit" component={HomeHealthAudit} />
       <Route path="/services/material-recovery" component={JunkRemoval} />

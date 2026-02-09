@@ -32,7 +32,7 @@ const services = [
   },
   {
     id: "garage_cleanout",
-    title: "Garage Cleanout",
+    title: "GarageReset™ (Garage Cleanout)",
     description: "Complete garage cleanout service. Clear all clutter, tools, and junk in one visit.",
     icon: Home,
     image: emptyGarageImage,
@@ -41,7 +41,7 @@ const services = [
   },
   {
     id: "junk_removal",
-    title: "Junk Removal",
+    title: "BulkSnap™ (Junk Removal)",
     description: "Clear out unwanted items, debris, and clutter from your home or office.",
     icon: Trash2,
     image: junkImage,

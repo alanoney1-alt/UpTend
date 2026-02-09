@@ -48,14 +48,14 @@ import { PolishUpBooking, type PolishUpBookingDetails } from "@/components/booki
 import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
-  { id: "junk_removal", label: "BulkSnap™ (Junk Removal)", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
+  { id: "junk_removal", label: "Junk Removal", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
   { id: "furniture_moving", label: "Furniture Moving", icon: Sofa, description: "Move furniture to new location", startingPrice: SERVICE_STARTING_PRICES.furniture_moving },
-  { id: "garage_cleanout", label: "GarageReset™ (Garage Cleanout)", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
-  { id: "truck_unloading", label: "UnloadPro™ (Truck Unloading)", icon: Truck, description: "Unload your rental truck or moving trailer", startingPrice: SERVICE_STARTING_PRICES.truck_unloading },
-  { id: "pressure_washing", label: "FreshWash™ (Pressure Washing)", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
-  { id: "gutter_cleaning", label: "GutterFlush™ (Gutter Cleaning)", icon: Home, description: "Clean and flush gutters and downspouts", startingPrice: SERVICE_STARTING_PRICES.gutter_cleaning },
-  { id: "moving_labor", label: "LiftCrew™ (Moving Labor)", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
-  { id: "light_demolition", label: "TearDown™ (Light Demolition)", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
+  { id: "garage_cleanout", label: "Garage Cleanout", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
+  { id: "truck_unloading", label: "U-Haul/Truck Unloading", icon: Truck, description: "Unload your rental truck or moving trailer", startingPrice: SERVICE_STARTING_PRICES.truck_unloading },
+  { id: "pressure_washing", label: "Pressure Washing", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
+  { id: "gutter_cleaning", label: "Gutter Cleaning", icon: Home, description: "Clean and flush gutters and downspouts", startingPrice: SERVICE_STARTING_PRICES.gutter_cleaning },
+  { id: "moving_labor", label: "Moving Labor", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
+  { id: "light_demolition", label: "Light Demolition", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
   { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
   { id: "home_cleaning", label: <>PolishUp<sup>™</sup> (Home Cleaning)</>, icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
 ];
@@ -2342,7 +2342,7 @@ export default function Booking() {
                               </span>
                             </div>
                             <div className="space-y-1 text-sm">
-                              {(moveQuote.breakdown ?? []).map((item, idx) => (
+                              {moveQuote.breakdown.map((item, idx) => (
                                 <div key={idx} className="flex justify-between">
                                   <span className={item.amount < 0 ? "text-green-600" : "text-muted-foreground"}>{item.label}</span>
                                   <span className={item.amount < 0 ? "text-green-600" : ""}>
@@ -2785,14 +2785,14 @@ export default function Booking() {
                             <div className="mb-3">
                               <p className="text-sm text-muted-foreground mb-1">Items detected:</p>
                               <div className="flex flex-wrap gap-1">
-                                {(aiSuggestion.identifiedItems ?? []).slice(0, 6).map((item, i) => (
+                                {aiSuggestion.identifiedItems.slice(0, 6).map((item, i) => (
                                   <Badge key={i} variant="outline" className="text-xs">
                                     {item}
                                   </Badge>
                                 ))}
-                                {(aiSuggestion.identifiedItems?.length ?? 0) > 6 && (
+                                {aiSuggestion.identifiedItems.length > 6 && (
                                   <Badge variant="outline" className="text-xs">
-                                    +{(aiSuggestion.identifiedItems?.length ?? 0) - 6} more
+                                    +{aiSuggestion.identifiedItems.length - 6} more
                                   </Badge>
                                 )}
                               </div>
@@ -2813,7 +2813,7 @@ export default function Booking() {
                           {aiSuggestion.priceBreakdown && aiSuggestion.priceBreakdown.length > 0 && (
                             <div className="mb-3 p-3 bg-background/50 rounded-md">
                               <p className="text-sm font-medium mb-2">Price breakdown:</p>
-                              {(aiSuggestion.priceBreakdown ?? []).map((item, i) => (
+                              {aiSuggestion.priceBreakdown.map((item, i) => (
                                 <div key={i} className="flex justify-between text-sm">
                                   <span className="text-muted-foreground">{item.label}</span>
                                   <span>${item.amount}</span>
@@ -3251,7 +3251,7 @@ export default function Booking() {
                     )}
 
                     <div className="space-y-2 text-sm">
-                      {(priceQuote.breakdown ?? []).map((item, i) => (
+                      {priceQuote.breakdown.map((item, i) => (
                         <div key={i} className="flex justify-between">
                           <span className="text-muted-foreground">{item.label}</span>
                           <span className="font-medium">${item.amount.toFixed(0)}</span>
@@ -3369,3 +3369,5 @@ export default function Booking() {
     </div>
   );
 }
+sed -i '' 's/import { Video, Info } from "lucide-react";/import { Video } from "lucide-react";/' /Users/ao/uptend/client/src/pages/booking.tsx
+

@@ -88,9 +88,9 @@ Analyze the provided video walkthrough to identify ALL service needs across mult
 Your analysis should cover:
 
 **UpTend Services (we can handle these):**
-1. Material Recovery / Junk Removal - Debris, old items, clutter that needs removal
-2. Pressure Washing - Driveways, siding, decks, patios that need cleaning
-3. Gutter Cleaning - Clogged or overflowing gutters
+1. BulkSnap™ (Material Recovery / Junk Removal) - Debris, old items, clutter that needs removal
+2. FreshWash™ (Pressure Washing) - Driveways, siding, decks, patios that need cleaning
+3. GutterFlush™ (Gutter Cleaning) - Clogged or overflowing gutters
 
 **Referral Partner Services (outside our scope):**
 1. Landscaping - Overgrown plants, dead vegetation, drainage issues, yard maintenance
