@@ -38,30 +38,70 @@ export function Footer() {
 
           <div>
             <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs" data-testid="text-footer-services">{t("footer.footer_essential_5")}</h4>
-            <ul className="space-y-4 text-sm">
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link href="/services/home-audit" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-home-audit">
+                  DwellScan™ (Home Audit)
+                </Link>
+              </li>
               <li>
                 <Link href="/services/material-recovery" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-junk-removal">
-                  {t("footer.footer_material_recovery")}
+                  BulkSnap™ (Junk Removal)
+                </Link>
+              </li>
+              <li>
+                <Link href="/book/freshcut" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-landscaping">
+                  FreshCut™ (Landscaping)
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/home-cleaning" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-home-cleaning">
+                  PolishUp™ (Home Cleaning)
+                </Link>
+              </li>
+              <li>
+                <Link href="/book/deepfiber" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-carpet-cleaning">
+                  DeepFiber™ (Carpet Cleaning)
                 </Link>
               </li>
               <li>
                 <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pressure-washing">
-                  {t("footer.footer_pressure_washing")}
+                  FreshWash™ (Pressure Washing)
                 </Link>
               </li>
               <li>
                 <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-gutter-cleaning">
-                  {t("footer.footer_gutter_cleaning")}
+                  GutterFlush™ (Gutter Cleaning)
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pool-cleaning">
+                  PoolSpark™ (Pool Cleaning)
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-furniture-moving">
+                  LiftCrew™ (Furniture Moving)
                 </Link>
               </li>
               <li>
                 <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-moving-labor">
-                  {t("footer.footer_moving_labor")}
+                  LiftCrew™ (Moving Labor)
                 </Link>
               </li>
               <li>
-                <Link href="/services/home-audit" className="hover:text-primary font-semibold text-white cursor-pointer" data-testid="link-footer-home-audit">
-                  {t("footer.footer_home_audit")}
+                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-truck-unloading">
+                  UnloadPro™ (Truck Unloading)
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-garage-cleanout">
+                  GarageReset™ (Garage Cleanout)
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-demolition">
+                  TearDown™ (Demolition)
                 </Link>
               </li>
             </ul>
