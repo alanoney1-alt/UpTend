@@ -171,8 +171,17 @@ export default function PaymentSetup() {
   });
 
   useEffect(() => {
-    getStripe().then(setStripeInstance);
-  }, []);
+    getStripe()
+      .then(setStripeInstance)
+      .catch(error => {
+        console.error('Failed to load Stripe:', error);
+        toast({
+          title: 'Payment Error',
+          description: 'Failed to load payment system. Please refresh the page.',
+          variant: 'destructive',
+        });
+      });
+  }, [toast]);
 
   const setupQuery = useQuery({
     queryKey: ["/api/customers/setup-payment"],

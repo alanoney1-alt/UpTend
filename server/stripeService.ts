@@ -1,5 +1,6 @@
 import { getUncachableStripeClient, getStripePublishableKey } from './stripeClient';
 import { storage } from './storage';
+import { logError } from './utils/logger';
 
 const LLC_PLATFORM_FEE_PERCENT = 20;
 const NON_LLC_PLATFORM_FEE_PERCENT = 25;
@@ -47,7 +48,12 @@ export class StripeService {
         metadata: { userId },
       });
     } catch (error: any) {
-      console.error('Stripe API error in createCustomer:', error);
+      logError(error, 'Stripe API error in createCustomer', {
+        email,
+        userId,
+        stripeErrorType: error.type,
+        stripeErrorCode: error.code,
+      });
       if (error.type === 'StripeCardError') {
         // Card was declined
       } else if (error.type === 'StripeInvalidRequestError') {
@@ -86,7 +92,15 @@ export class StripeService {
         },
       });
     } catch (error: any) {
-      console.error('Stripe API error in createPaymentIntent:', error);
+      logError(error, 'Stripe API error in createPaymentIntent', {
+        amount,
+        customerId,
+        jobId,
+        pyckerTier,
+        platformFeePercent,
+        stripeErrorType: error.type,
+        stripeErrorCode: error.code,
+      });
       if (error.type === 'StripeCardError') {
         // Card was declined
       } else if (error.type === 'StripeInvalidRequestError') {

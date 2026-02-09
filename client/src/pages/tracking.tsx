@@ -370,14 +370,19 @@ export default function Tracking() {
           icon: '/favicon.ico',
         });
       } else if ('Notification' in window && Notification.permission !== 'denied') {
-        Notification.requestPermission().then(permission => {
-          if (permission === 'granted') {
-            new Notification('UpTend - Pro Nearby!', {
-              body: `Your Pro will arrive in about ${etaMinutes} minute${etaMinutes !== 1 ? 's' : ''}`,
-              icon: '/favicon.ico',
-            });
-          }
-        });
+        Notification.requestPermission()
+          .then(permission => {
+            if (permission === 'granted') {
+              new Notification('UpTend - Pro Nearby!', {
+                body: `Your Pro will arrive in about ${etaMinutes} minute${etaMinutes !== 1 ? 's' : ''}`,
+                icon: '/favicon.ico',
+              });
+            }
+          })
+          .catch(error => {
+            console.warn('Failed to request notification permission:', error);
+            // Silently fail - not critical to user experience
+          });
       }
     }
   }, [liveLocation, trackingData?.pickup, notifiedNearby, calculateDistance, toast]);
