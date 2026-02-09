@@ -955,27 +955,27 @@ export function FloridaEstimator() {
           </Card>
         )}
 
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {pricingServices.map((service) => (
             <div
               key={service.id}
-              className={`p-5 md:p-6 rounded-md border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6 ${
+              className={`p-4 md:p-5 rounded-md border transition-all flex flex-col items-start justify-between gap-3 ${
                 service.featured
                   ? "bg-[#3B1D5A] text-white border-[#3B1D5A]/80 shadow-xl"
                   : "bg-card border-border"
               }`}
               data-testid={`card-service-${service.id}`}
             >
-              <div className="flex items-start gap-4 flex-1">
-                <div className={`p-3 rounded-md shrink-0 ${service.featured ? "bg-white/10" : "bg-muted"}`}>
-                  <service.icon className={`w-5 h-5 ${service.featured ? "text-primary" : "text-primary"}`} />
+              <div className="flex items-start gap-3 flex-1">
+                <div className={`p-2 rounded-md shrink-0 ${service.featured ? "bg-white/10" : "bg-muted"}`}>
+                  <service.icon className={`w-4 h-4 ${service.featured ? "text-primary" : "text-primary"}`} />
                 </div>
                 <div className="text-left min-w-0">
-                  <h4 className="font-black text-base md:text-lg" data-testid={`text-service-name-${service.id}`}>{service.name}</h4>
-                  <p className={`text-sm mt-0.5 ${service.featured ? "text-slate-300" : "text-muted-foreground"}`}>
+                  <h4 className="font-black text-sm md:text-base" data-testid={`text-service-name-${service.id}`}>{service.name}</h4>
+                  <p className={`text-xs mt-0.5 ${service.featured ? "text-slate-300" : "text-muted-foreground"}`}>
                     {service.description}
                   </p>
-                  <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${
+                  <p className={`text-[9px] font-bold uppercase tracking-widest mt-1 ${
                     service.featured ? "text-primary" : "text-primary"
                   }`}>
                     {service.benefit}
@@ -983,16 +983,17 @@ export function FloridaEstimator() {
                 </div>
               </div>
 
-              <div className={`flex items-center gap-4 md:gap-6 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 ${service.featured ? "border-white/20" : "border-border"}`}>
-                <div className="text-left md:text-right">
+              <div className={`flex items-center justify-between gap-3 w-full border-t pt-3 ${service.featured ? "border-white/20" : "border-border"}`}>
+                <div className="text-left">
                   <span className={`block text-[10px] font-bold uppercase ${service.featured ? "opacity-60" : "text-muted-foreground"}`}>
                     {t("estimator.investment")}
                   </span>
-                  <span className="text-2xl font-black" data-testid={`text-service-price-${service.id}`}>{service.price}</span>
+                  <span className="text-xl md:text-2xl font-black" data-testid={`text-service-price-${service.id}`}>{service.price}</span>
                 </div>
                 <Button
                   onClick={() => handleServiceSelect(service.id)}
-                  className={`flex-1 md:flex-none font-bold ${
+                  size="sm"
+                  className={`font-bold ${
                     service.featured
                       ? "bg-primary text-primary-foreground"
                       : ""
