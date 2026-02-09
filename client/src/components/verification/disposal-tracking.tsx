@@ -33,6 +33,16 @@ interface DisposalRecord {
   receiptPhotoUrl?: string;
 }
 
+interface DisposalStatusResponse {
+  success: boolean;
+  verification: any;
+  disposalRecords: DisposalRecord[];
+  categoriesUsed: string[];
+  missingReceipts: number;
+  isComplete: boolean;
+  nextStep: string;
+}
+
 export function DisposalTracking({ jobId, onComplete, onCancel }: DisposalTrackingProps) {
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
@@ -52,7 +62,7 @@ export function DisposalTracking({ jobId, onComplete, onCancel }: DisposalTracki
   const [specialtyDisposalType, setSpecialtyDisposalType] = useState("");
 
   // Fetch existing records
-  const { data: disposalStatus, isLoading } = useQuery({
+  const { data: disposalStatus, isLoading } = useQuery<DisposalStatusResponse>({
     queryKey: [`/api/jobs/${jobId}/verification/disposal-status`],
   });
 

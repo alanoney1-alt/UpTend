@@ -35,7 +35,7 @@ import { getAllItemsFlat, getItemPrice } from "@shared/itemCatalog";
 import { MatchingFlow } from "@/components/matching";
 import { BundlingSuggestions } from "@/components/bundling-suggestions";
 import { VideoUpload } from "@/components/video-upload";
-import { Video, Info } from "lucide-react";
+import { Video } from "lucide-react";
 import {
   GARAGE_CLEANOUT_PACKAGES,
   loadSizePackages,

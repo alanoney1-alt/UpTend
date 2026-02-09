@@ -14,11 +14,43 @@ interface SustainabilityReportProps {
   onCancel: () => void;
 }
 
+interface SustainabilityReportData {
+  summary: {
+    totalWeightLbs: number;
+    diversionRate: string;
+    carbonOffsetTons: string;
+    divertedWeightLbs: number;
+  };
+  environmentalImpact: {
+    co2AvoidedLbs: string;
+    treesEquivalent: string;
+    waterSavedGallons: string;
+  };
+  breakdown: {
+    recycled: number;
+    donated: number;
+    resold: number;
+    landfilled: number;
+    specialty: number;
+  };
+  disposalRecords: Array<{
+    item: string;
+    weight: number;
+    category: string;
+  }>;
+}
+
+interface GenerateReportResponse {
+  success: boolean;
+  report: SustainabilityReportData;
+  message: string;
+}
+
 export function SustainabilityReport({ jobId, onComplete, onCancel }: SustainabilityReportProps) {
   const { toast } = useToast();
-  const [report, setReport] = useState<any>(null);
+  const [report, setReport] = useState<SustainabilityReportData | null>(null);
 
-  const generateMutation = useMutation({
+  const generateMutation = useMutation<GenerateReportResponse>({
     mutationFn: async () => {
       return apiRequest("POST", `/api/jobs/${jobId}/verification/generate-report`, {});
     },

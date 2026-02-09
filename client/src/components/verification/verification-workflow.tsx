@@ -27,18 +27,50 @@ interface VerificationWorkflowProps {
   serviceType: string;
 }
 
+interface VerificationStatusResponse {
+  canReleasePayment: boolean;
+  canComplete: boolean;
+  missingSteps: string[];
+  verification: {
+    id: string;
+    serviceRequestId: string;
+    verificationStatus: string;
+    stepsCompleted: {
+      step1: boolean;
+      step2: boolean;
+      step3: boolean;
+      step4: boolean;
+      step5: boolean;
+    };
+    customerConfirmedAt: string | null;
+  } | null;
+  autoApprovalEligible: boolean;
+  hoursRemaining: number;
+  message: string;
+}
+
+interface DisposalStatusResponse {
+  success: boolean;
+  verification: any;
+  disposalRecords: any[];
+  categoriesUsed: string[];
+  missingReceipts: number;
+  isComplete: boolean;
+  nextStep: string;
+}
+
 export function VerificationWorkflow({ jobId, serviceType }: VerificationWorkflowProps) {
   const { toast } = useToast();
   const [activeStep, setActiveStep] = useState<number | null>(null);
 
   // Fetch verification status
-  const { data: verification, isLoading } = useQuery({
+  const { data: verification, isLoading } = useQuery<VerificationStatusResponse>({
     queryKey: [`/api/jobs/${jobId}/verification/status`],
     refetchInterval: 5000, // Poll every 5 seconds
   });
 
   // Fetch disposal records for step 2
-  const { data: disposalStatus } = useQuery({
+  const { data: disposalStatus } = useQuery<DisposalStatusResponse>({
     queryKey: [`/api/jobs/${jobId}/verification/disposal-status`],
     enabled: verification?.verification?.verificationStatus !== "step_1_before_photos",
   });
@@ -155,7 +187,7 @@ export function VerificationWorkflow({ jobId, serviceType }: VerificationWorkflo
           <Progress value={progress} className="h-2" />
 
           {/* Blocking Warning */}
-          {!verification?.canComplete && verification?.missingSteps?.length > 0 && (
+          {!verification?.canComplete && (verification?.missingSteps?.length || 0) > 0 && (
             <div className="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
               <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
               <div className="flex-1">
