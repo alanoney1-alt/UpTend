@@ -678,10 +678,16 @@ export const insertHaulerPenaltySchema = createInsertSchema(haulerPenalties).omi
 export type InsertHaulerPenalty = z.infer<typeof insertHaulerPenaltySchema>;
 export type HaulerPenalty = typeof haulerPenalties.$inferSelect;
 
-export type HaulerWithProfile = User & { profile: HaulerProfile };
-export type HaulerWithProfileAndVehicle = User & { 
+export type HaulerWithProfile = User & {
+  profile: HaulerProfile;
+  haulerInfo?: HaulerProfile; // Alias for profile
+  name?: string; // Computed from firstName/lastName or username
+};
+export type HaulerWithProfileAndVehicle = User & {
   profile: HaulerProfile;
   activeVehicle?: PyckerVehicle;
+  haulerInfo?: HaulerProfile; // Alias for profile
+  name?: string; // Computed from firstName/lastName or username
 };
 export type ServiceRequestWithDetails = ServiceRequest & { 
   customer?: User;
@@ -1388,9 +1394,14 @@ export const esgImpactLogs = pgTable("esg_impact_logs", {
   disposalBreakdown: text("disposal_breakdown"), // JSON: { landfill: 30, recycling: 40, donation: 20, e_waste: 10 }
   aiCategorization: text("ai_categorization"), // JSON: AI-generated item-by-item disposal categories
   recycledWeightLbs: real("recycled_weight_lbs").default(0),
+  recycledLbs: real("recycled_lbs").default(0), // Alias for recycledWeightLbs
   donatedWeightLbs: real("donated_weight_lbs").default(0),
+  donatedLbs: real("donated_lbs").default(0), // Alias for donatedWeightLbs
   landfilledWeightLbs: real("landfilled_weight_lbs").default(0),
+  landfilledLbs: real("landfilled_lbs").default(0), // Alias for landfilledWeightLbs
   eWasteWeightLbs: real("e_waste_weight_lbs").default(0),
+  ewastedLbs: real("ewasted_lbs").default(0), // Alias for eWasteWeightLbs
+  carbonSavedLbs: real("carbon_saved_lbs").default(0), // Carbon emissions avoided
   diversionRate: real("diversion_rate").default(0),
   treesEquivalent: real("trees_equivalent").default(0),
   waterSavedGallons: real("water_saved_gallons").default(0),
