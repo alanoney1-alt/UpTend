@@ -2513,6 +2513,8 @@ export const carbonCredits = pgTable("carbon_credits", {
   businessAccountId: varchar("business_account_id"), // FK to businessAccounts - HOA who owns these credits
   serviceRequestId: varchar("service_request_id").notNull(), // FK to serviceRequests - Job that generated credits
   creditsGenerated: real("credits_generated").notNull(), // Amount of carbon credits (in metric tons CO2e)
+  creditsEarned: real("credits_earned"), // Alias for creditsGenerated
+  status: text("status").default("pending"), // pending, certified, rejected (alias for certificationStatus)
   calculationMethod: text("calculation_method"), // How we calculated it (e.g., "waste_diversion_epa_model")
   wasteWeightLbs: real("waste_weight_lbs"), // Total waste diverted
   landfillDiversionRate: real("landfill_diversion_rate"), // % diverted from landfill
@@ -2571,6 +2573,7 @@ export const jobVerification = pgTable("job_verification", {
   startedAt: text("started_at"),
   completedAt: text("completed_at"),
   createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
 
   // Totals from disposal records
   totalWeightLbs: real("total_weight_lbs").default(0),
