@@ -1238,14 +1238,14 @@ export default function Booking() {
                     {serviceTypes.map((service) => (
                       <label
                         key={service.id}
-                        className={`flex items-start gap-4 p-4 rounded-lg border cursor-pointer transition-all hover-elevate ${
+                        className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all hover-elevate ${
                           formData.serviceType === service.id
                             ? "border-primary bg-primary/5"
                             : "border-border"
                         }`}
                         data-testid={`radio-service-${service.id}`}
                       >
-                        <RadioGroupItem value={service.id} className="mt-1" />
+                        <RadioGroupItem value={service.id} className="shrink-0" />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <service.icon className="w-5 h-5 text-primary" />
