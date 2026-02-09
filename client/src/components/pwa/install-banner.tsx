@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { X, Plus } from "lucide-react";
 import { isPWAInstalled, BeforeInstallPromptEvent } from "@/lib/pwa";
-import upyckLogo from "@assets/upyck-logo.png";
+import { Logo } from "@/components/ui/logo";
 
 export function InstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
@@ -50,7 +50,7 @@ export function InstallBanner() {
       data-testid="install-banner"
     >
       <div className="max-w-lg mx-auto flex items-center gap-3">
-        <img src={upyckLogo} alt="UpTend" className="w-8 h-8 flex-shrink-0" data-testid="img-install-logo" />
+        <Logo className="w-8 h-8" textClassName="hidden" />
         <p className="flex-1 text-sm" data-testid="text-install-message">
           Install UpTend for Real-Time GPS Tracking &amp; Job Alerts.
         </p>

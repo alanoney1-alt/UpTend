@@ -40,7 +40,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import upyckLogo from "@assets/upyck-logo.png";
+import { Logo } from "@/components/ui/logo";
 
 interface PendingPycker {
   profileId: string;
@@ -298,7 +298,7 @@ export default function Admin() {
               </Button>
             </Link>
             <Link href="/" className="flex items-center gap-3">
-              <img src={upyckLogo} alt="UpTend" className="h-10 w-auto" />
+              <Logo className="w-10 h-10" textClassName="text-xl" />
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-primary" />
                 <span className="text-lg font-semibold">Admin Dashboard</span>

@@ -19,7 +19,7 @@ import {
   TrendingUp,
   Wrench,
 } from "lucide-react";
-import upyckLogo from "@assets/upyck-logo.png";
+import { Logo } from "@/components/ui/logo";
 
 interface ClaimData {
   address: string;
@@ -133,7 +133,7 @@ export default function ClaimProperty() {
 
       <main className="max-w-lg mx-auto px-4 pb-12">
         <div className="flex justify-center mb-6">
-          <img src={upyckLogo} alt="UpTend" className="h-10 w-auto" />
+          <Logo className="w-10 h-10" textClassName="text-xl" />
         </div>
 
         <h1 className="text-2xl font-bold text-white text-center mb-2">

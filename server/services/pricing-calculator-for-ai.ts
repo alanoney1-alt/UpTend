@@ -282,7 +282,7 @@ export function calculateGutterFlushPriceForAI(params: {
   }
 
   return {
-    price: 249,
+    price: 199,
     description: 'GutterFlush™ 2-Story - Full perimeter cleaning + flow test',
   };
 }

@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2, Eye, EyeOff } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
-import upyckLogo from "@assets/upyck-logo.png";
+import { Logo } from "@/components/ui/logo";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -91,7 +91,7 @@ export default function CustomerLogin() {
         <Card className="w-full max-w-md p-8" data-testid="card-customer-login">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <img src={upyckLogo} alt="UpTend" className="h-10 w-auto" />
+              <Logo className="w-10 h-10" textClassName="text-xl" />
             </div>
             <h1 className="text-2xl font-bold mb-2">Welcome Back</h1>
             <p className="text-muted-foreground">
