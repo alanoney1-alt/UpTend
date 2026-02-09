@@ -631,8 +631,8 @@ export default function Booking() {
     const addressParam = params.get("address");
 
     if (quoteIdParam) {
-      // Fetch AI estimate
-      fetch(`/api/ai-estimates/${quoteIdParam}`, { credentials: "include" })
+      // Fetch AI estimate from frictionless quote flow
+      fetch(`/api/ai-estimates/quote/${quoteIdParam}`, { credentials: "include" })
         .then(res => res.json())
         .then(estimate => {
           setAiSuggestion({
