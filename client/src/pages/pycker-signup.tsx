@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { PhotoUpload, MultiPhotoUpload } from "@/components/photo-upload";
+import { ServicesSelector } from "@/components/services-selector";
 
 const vehicleSchema = z.object({
   vehicleType: z.string().min(1, "Vehicle type required"),
@@ -151,7 +152,10 @@ export default function PyckerSignup() {
   const [idPhotoUrl, setIdPhotoUrl] = useState<string | null>(null);
   const [generalLiabilityDocUrl, setGeneralLiabilityDocUrl] = useState<string | null>(null);
   const [vehicleInsuranceDocUrl, setVehicleInsuranceDocUrl] = useState<string | null>(null);
-  
+
+  // Services selection state
+  const [selectedServices, setSelectedServices] = useState<string[]>(["junk_removal", "furniture_moving"]);
+
   // Email verification state
   const [emailVerified, setEmailVerified] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
@@ -303,12 +307,14 @@ export default function PyckerSignup() {
 
   const signupMutation = useMutation({
     mutationFn: async (data: SignupForm) => {
-      // Include vehicles array and photo URLs in the payload
+      // Include vehicles array, photo URLs, and selected services in the payload
       const payload = {
         ...data,
         vehicles: vehicles.filter(v => v.vehicleType), // Only include vehicles with a type selected
         profilePhotoUrl: profilePhotoUrl || undefined,
         driversLicensePhotoUrl: driversLicensePhotoUrl || undefined,
+        serviceTypes: selectedServices,
+        supportedServices: selectedServices,
       };
       const response = await fetch("/api/haulers/register", {
         method: "POST",
@@ -372,13 +378,23 @@ export default function PyckerSignup() {
       fieldsToValidate = ["firstName", "lastName", "phone", "companyName", "streetAddress", "city", "state", "zipCode"];
     } else if (currentStep === 3) {
       fieldsToValidate = ["vehicleType"];
-      
+
       // Check if primary vehicle has required info
       const primaryVehicle = vehicles[0];
       if (!primaryVehicle || !primaryVehicle.vehicleType) {
         toast({
           title: "Vehicle Info Required",
           description: "Please select a vehicle type for your primary vehicle",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      // Check if at least one service is selected
+      if (selectedServices.length === 0) {
+        toast({
+          title: "Services Required",
+          description: "Please select at least one service you can provide",
           variant: "destructive",
         });
         return false;
@@ -998,6 +1014,14 @@ export default function PyckerSignup() {
                       Commercial vehicle recommended but not required
                     </li>
                   </ul>
+                </div>
+
+                <div className="mb-8 border-t pt-6">
+                  <ServicesSelector
+                    selectedServices={selectedServices}
+                    onSelectionChange={setSelectedServices}
+                    showEquipmentInfo={true}
+                  />
                 </div>
 
                 <div className="flex justify-between mt-8">

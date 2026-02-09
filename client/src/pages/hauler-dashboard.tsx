@@ -60,6 +60,7 @@ import { EsgImpactDashboard } from "@/components/esg-impact-dashboard";
 import { ImpactWidget } from "@/components/dashboard/impact-widget";
 import { FileText, Route, Store } from "lucide-react";
 import { ProMarketplace } from "@/components/marketplace/pro-marketplace";
+import { ServicesSelector } from "@/components/services-selector";
 
 function maskPhone(phone: string): string {
   if (!phone || phone.length < 4) return "***-****";
@@ -2677,6 +2678,41 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                 Speaking a second language unlocks more jobs and earns bonus pay.
               </p>
             </div>
+          </Card>
+
+          <Card className="p-5 lg:col-span-2" data-testid="card-services">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <ClipboardList className="w-5 h-5" />
+              Services You Provide
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Select the services you're equipped to provide. You'll only receive job requests for services you've selected.
+            </p>
+            <ServicesSelector
+              selectedServices={currentHauler?.profile?.serviceTypes || []}
+              onSelectionChange={(services) => {
+                // Update services via API
+                apiRequest("PATCH", `/api/haulers/${currentHauler?.id}/profile`, {
+                  serviceTypes: services,
+                  supportedServices: services,
+                })
+                  .then(() => {
+                    queryClient.invalidateQueries({ queryKey: ["/api/haulers/me"] });
+                    toast({
+                      title: "Services Updated",
+                      description: "Your service offerings have been updated successfully",
+                    });
+                  })
+                  .catch((error) => {
+                    toast({
+                      title: "Update Failed",
+                      description: "Failed to update services. Please try again.",
+                      variant: "destructive",
+                    });
+                  });
+              }}
+              showEquipmentInfo={true}
+            />
           </Card>
 
           <Card className="p-5 lg:col-span-2" data-testid="card-account-security">

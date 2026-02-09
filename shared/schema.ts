@@ -71,7 +71,7 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   bio: text("bio"),
   vehicleType: text("vehicle_type").notNull(),
   capacity: text("capacity").notNull(),
-  serviceTypes: text("service_types").array().default(sql`ARRAY['junk_removal', 'furniture_moving', 'garage_cleanout', 'estate_cleanout']::text[]`),
+  serviceTypes: text("service_types").array().default(sql`ARRAY['junk_removal', 'furniture_moving', 'garage_cleanout', 'estate_cleanout', 'pressure_washing', 'gutter_cleaning', 'moving_labor', 'light_demolition', 'home_consultation', 'home_cleaning', 'pool_cleaning', 'landscaping', 'carpet_cleaning']::text[]`),
   capabilities: text("capabilities").array().default(sql`ARRAY[]::text[]`),
   offersLaborOnly: boolean("offers_labor_only").default(false),
   serviceRadius: integer("service_radius").notNull().default(25),
@@ -152,7 +152,7 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   isConsultantEligible: boolean("is_consultant_eligible").default(false),
   commissionRate: integer("commission_rate").default(0),
   // Unlicensed 5 Equipment & Skills
-  supportedServices: jsonb("supported_services").default(["junk_removal"]),
+  supportedServices: jsonb("supported_services").default('["junk_removal"]'::jsonb),
   hasPressureWasher: boolean("has_pressure_washer").default(false),
   hasTallLadder: boolean("has_tall_ladder").default(false),
   hasDemoTools: boolean("has_demo_tools").default(false),
