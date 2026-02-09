@@ -29,112 +29,47 @@ interface ServicePricing {
 
 const pricingServices: ServicePricing[] = [
   {
-    id: "home_consultation",
-    name: "DwellScan™ (Home Audit)",
-    price: "$49 / $99",
-    description: "Complete home documentation: Standard ($49) interior walkthrough or Aerial ($99) with drone footage. 100% reimbursed on your first service booking.",
-    benefit: "Protects property value • Insurance-ready documentation • Free with first booking",
-    icon: ClipboardCheck,
+    id: "health-audit",
+    name: "Home Health Audit",
+    price: "$49",
+    description: "Comprehensive 360\u00B0 Video Manifest & Insurance Asset Log.",
+    benefit: "Shields your property value for future claims.",
+    icon: ShieldCheck,
     featured: true,
   },
   {
-    id: "junk_removal",
-    name: "BulkSnap™ (Junk Removal)",
+    id: "material-recovery",
+    name: "Material Recovery",
     price: "From $99",
-    description: "Professional debris removal with verified ESG tracking and sustainability reporting.",
-    benefit: "Clears yard hazards & storm-risk items • Eco-friendly disposal",
+    description: "Professional debris removal with verified ESG tracking.",
+    benefit: "Clears yard hazards & storm-risk missiles.",
     icon: Truck,
   },
   {
-    id: "landscaping",
-    name: "FreshCut™ (Landscaping)",
-    price: "From $35",
-    description: "Professional lawn care, trimming, edging, and yard maintenance services.",
-    benefit: "Maintains curb appeal • Prevents code violations",
-    icon: Trees,
-  },
-  {
-    id: "home_cleaning",
-    name: "PolishUp™ (Home Cleaning)",
-    price: "From $99",
-    description: "Deep cleaning services for your entire home with eco-friendly products.",
-    benefit: "Maintains home health • Move-in/out ready",
-    icon: Sparkles,
-  },
-  {
-    id: "carpet_cleaning",
-    name: "DeepFiber™ (Carpet Cleaning)",
-    price: "From $49",
-    description: "Professional carpet and upholstery cleaning with advanced extraction methods.",
-    benefit: "Removes allergens • Extends carpet life",
-    icon: Home,
-  },
-  {
-    id: "pressure_washing",
-    name: "FreshWash™ (Pressure Washing)",
+    id: "gutter-flush",
+    name: "Gutter Protection",
     price: "From $120",
-    description: "Eco-friendly pressure washing for driveways, siding, decks, and patios.",
-    benefit: "Prevents mold & mildew • Identifies structural issues early",
-    icon: Droplets,
-  },
-  {
-    id: "gutter_cleaning",
-    name: "GutterFlush™ (Gutter Cleaning)",
-    price: "From $120",
-    description: "Complete gutter cleaning with flow testing and debris removal for all perimeters.",
-    benefit: "Prevents foundation erosion • Protects against water damage",
+    description: "Flow testing and debris clearing for all perimeters.",
+    benefit: "Prevents foundation erosion and water damage.",
     icon: Waves,
   },
   {
-    id: "pool_cleaning",
-    name: "PoolSpark™ (Pool Cleaning)",
-    price: "From $69",
-    description: "Full pool maintenance including skimming, chemical balancing, and equipment check.",
-    benefit: "Crystal clear water • Equipment longevity",
+    id: "surface-wash",
+    name: "Surface Rejuvenation",
+    price: "From $150",
+    description: "Eco-friendly pressure washing for siding and driveways.",
+    benefit: "Reflects heat and identifies structural cracks early.",
     icon: Droplets,
   },
   {
-    id: "furniture_moving",
-    name: "LiftCrew™ (Furniture Moving)",
-    price: "From $99",
-    description: "Professional furniture moving and staging within your home or property.",
-    benefit: "Protects valuable furniture • Storm preparation ready",
+    id: "staging-labor",
+    name: "Staging & Moving",
+    price: "From $80/hr",
+    description: "Professional labor for heavy lifting or storm staging.",
+    benefit: "Protects your furniture and high-value interior assets.",
     icon: Package,
-  },
-  {
-    id: "moving_labor",
-    name: "LiftCrew™ (Moving Labor)",
-    price: "$80/hr",
-    description: "Hourly labor for loading, unloading, packing, and heavy lifting assistance.",
-    benefit: "Flexible hourly rates • Professional muscle when needed",
-    icon: Package,
-  },
-  {
-    id: "truck_unloading",
-    name: "UnloadPro™ (Truck Unloading)",
-    price: "$80/hr",
-    description: "Fast and efficient truck unloading with professional handling of your items.",
-    benefit: "Quick turnaround • Prevents damage during moves",
-    icon: Truck,
-  },
-  {
-    id: "garage_cleanout",
-    name: "GarageReset™ (Garage Cleanout)",
-    price: "From $299",
-    description: "Complete garage cleanout with sorting, hauling, and organization assistance.",
-    benefit: "Reclaim valuable space • Prepare for sale or storage",
-    icon: Home,
-  },
-  {
-    id: "light_demolition",
-    name: "TearDown™ (Demolition)",
-    price: "From $199",
-    description: "Light demolition services for sheds, decks, fencing, and small structures.",
-    benefit: "Safe removal • Permits handled • Debris hauled",
-    icon: Truck,
   },
 ];
-
 
 interface ZillowProperty {
   zpid: number;
@@ -176,6 +111,27 @@ export function FloridaEstimator() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
+  const serviceNameKey: Record<string, string> = {
+    "health-audit": "services.service_health_audit",
+    "material-recovery": "services.service_material_recovery",
+    "gutter-flush": "services.service_gutter",
+    "surface-wash": "services.service_surface",
+    "staging-labor": "services.service_staging",
+  };
+  const serviceDescKey: Record<string, string> = {
+    "health-audit": "services.service_health_audit_desc",
+    "material-recovery": "services.service_material_recovery_desc",
+    "gutter-flush": "services.service_gutter_desc",
+    "surface-wash": "services.service_surface_desc",
+    "staging-labor": "services.service_staging_desc",
+  };
+  const serviceBenefitKey: Record<string, string> = {
+    "health-audit": "services.service_health_audit_benefit",
+    "material-recovery": "services.service_material_recovery_benefit",
+    "gutter-flush": "services.service_gutter_benefit",
+    "surface-wash": "services.service_surface_benefit",
+    "staging-labor": "services.service_staging_benefit",
+  };
 
   const fetchPropertyValue = async (addr: string) => {
     setPropertyLoading(true);
@@ -564,14 +520,14 @@ export function FloridaEstimator() {
                   <service.icon className={`w-5 h-5 ${service.featured ? "text-primary" : "text-primary"}`} />
                 </div>
                 <div className="text-left min-w-0">
-                  <h4 className="font-black text-base md:text-lg" data-testid={`text-service-name-${service.id}`}>{service.name}</h4>
+                  <h4 className="font-black text-base md:text-lg" data-testid={`text-service-name-${service.id}`}>{t(serviceNameKey[service.id])}</h4>
                   <p className={`text-sm mt-0.5 ${service.featured ? "text-slate-300" : "text-muted-foreground"}`}>
-                    {service.description}
+                    {t(serviceDescKey[service.id])}
                   </p>
                   <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${
                     service.featured ? "text-primary" : "text-primary"
                   }`}>
-                    {service.benefit}
+                    {t(serviceBenefitKey[service.id])}
                   </p>
                 </div>
               </div>
