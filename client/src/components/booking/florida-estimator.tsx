@@ -189,7 +189,7 @@ export function FloridaEstimator() {
       }
 
       const quoteData = await response.json();
-      setAiQuote({ ...quoteData, id: crypto.randomUUID() });
+      setAiQuote(quoteData); // Use backend-generated ID, don't overwrite it
     } catch (error) {
       console.error("AI analysis error:", error);
       setAnalysisError("Failed to analyze photos. Please try again or use manual entry.");

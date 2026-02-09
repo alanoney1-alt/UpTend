@@ -155,7 +155,22 @@ export function registerAiAnalysisRoutes(app: Express) {
         loadSize: loadSize as "small" | "medium" | "large" | "extra_large",
       });
 
+      // Store estimate with temporary ID (will link to request later on booking)
+      const estimate = await storage.createAiEstimate({
+        requestId: null, // Will be linked when user books
+        photoUrls: [], // Video frames not stored as URLs
+        identifiedItems: analysis.identifiedItems,
+        estimatedVolumeCubicFt: analysis.estimatedVolumeCubicFt,
+        recommendedLoadSize: analysis.recommendedLoadSize,
+        confidence: analysis.confidence * 1.05, // +5% confidence boost for video
+        suggestedPrice: quote.totalPrice,
+        reasoning: analysis.reasoning,
+        rawResponse: analysis.rawResponse,
+        createdAt: new Date().toISOString(),
+      });
+
       res.json({
+        id: estimate.id, // Return the ID so frontend can reference it
         ...analysis,
         suggestedPrice: quote.totalPrice,
         suggestedPriceMin: quote.priceMin,
