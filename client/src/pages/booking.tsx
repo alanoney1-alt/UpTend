@@ -48,6 +48,7 @@ import { PolishUpBooking, type PolishUpBookingDetails } from "@/components/booki
 import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
+  { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
   { id: "junk_removal", label: "BulkSnap™ (Junk Removal)", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
   { id: "furniture_moving", label: "LiftCrew™ (Furniture Moving)", icon: Sofa, description: "Move furniture to new location", startingPrice: SERVICE_STARTING_PRICES.furniture_moving },
   { id: "garage_cleanout", label: "GarageReset™ (Garage Cleanout)", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
@@ -56,7 +57,6 @@ const serviceTypes = [
   { id: "gutter_cleaning", label: "GutterFlush™ (Gutter Cleaning)", icon: Home, description: "Clean and flush gutters and downspouts", startingPrice: SERVICE_STARTING_PRICES.gutter_cleaning },
   { id: "moving_labor", label: "LiftCrew™ (Moving Labor)", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
   { id: "light_demolition", label: "TearDown™ (Light Demolition)", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
-  { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
   { id: "home_cleaning", label: <>PolishUp<sup>™</sup> (Home Cleaning)</>, icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
   { id: "pool_cleaning", label: <>PoolSpark<sup>™</sup> (Pool Cleaning)</>, icon: Droplets, description: "Weekly pool maintenance and chemical balancing", startingPrice: SERVICE_STARTING_PRICES.pool_cleaning },
   { id: "landscaping", label: <>FreshCut<sup>™</sup> (Landscaping)</>, icon: Leaf, description: "Professional lawn care and landscaping", startingPrice: SERVICE_STARTING_PRICES.landscaping },
@@ -2108,10 +2108,10 @@ export default function Booking() {
                             Full interior and exterior walkthrough with personalized maintenance report.
                           </p>
                           <ul className="text-xs text-muted-foreground space-y-1">
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Room-by-room interior photos</li>
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Exterior ground-level assessment</li>
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Major systems check</li>
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Personalized maintenance report</li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> Room-by-room interior photos</li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> Exterior ground-level assessment</li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> Major systems check</li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> Personalized maintenance report</li>
                           </ul>
                         </button>
 
@@ -2139,11 +2139,11 @@ export default function Booking() {
                             Everything in Standard plus drone-powered roof and gutter scan.
                           </p>
                           <ul className="text-xs text-muted-foreground space-y-1">
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> <strong>Everything in Standard</strong></li>
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> FAA Part 107 drone pilot</li>
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Aerial roof condition scan</li>
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> Gutter blockage assessment</li>
-                            <li className="flex items-start gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0 mt-0.5" /> GPS-tagged aerial photos</li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> <strong>Everything in Standard</strong></li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> FAA Part 107 drone pilot</li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> Aerial roof condition scan</li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> Gutter blockage assessment</li>
+                            <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> GPS-tagged aerial photos</li>
                           </ul>
                           <p className="text-xs text-blue-600 mt-2 font-medium">
                             ⚡ Comparable drone inspections: $290-$350
