@@ -106,7 +106,7 @@ export function CustomerConfirmation({ jobId }: CustomerConfirmationProps) {
   }
 
   // If not ready for confirmation
-  if (!verification?.canComplete) {
+  if (!verification?.canComplete || !verification?.verification) {
     return (
       <Card>
         <CardHeader>
@@ -186,11 +186,6 @@ export function CustomerConfirmation({ jobId }: CustomerConfirmationProps) {
                   </div>
                 ))}
               </div>
-              {verificationData.beforePhotosGps && (
-                <p className="text-xs text-muted-foreground mt-3">
-                  📍 Location: {verificationData.beforePhotosGps}
-                </p>
-              )}
             </CardContent>
           )}
         </Card>
@@ -228,18 +223,13 @@ export function CustomerConfirmation({ jobId }: CustomerConfirmationProps) {
                   </div>
                 ))}
               </div>
-              {verificationData.afterPhotosGps && (
-                <p className="text-xs text-muted-foreground mt-3">
-                  📍 Location: {verificationData.afterPhotosGps}
-                </p>
-              )}
             </CardContent>
           )}
         </Card>
       )}
 
       {/* Sustainability Report Summary */}
-      {verificationData.totalWeightLbs > 0 && (
+      {verificationData.totalWeightLbs && verificationData.totalWeightLbs > 0 && (
         <Card className="border-green-500 bg-gradient-to-br from-green-50 to-white dark:from-green-950 dark:to-background">
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -257,16 +247,16 @@ export function CustomerConfirmation({ jobId }: CustomerConfirmationProps) {
               <div className="text-center p-3 bg-white dark:bg-background border rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Diversion Rate</p>
                 <p className="text-xl font-bold text-green-600">
-                  {(verificationData.diversionRate * 100).toFixed(0)}%
+                  {((verificationData.diversionRate || 0) * 100).toFixed(0)}%
                 </p>
               </div>
               <div className="text-center p-3 bg-white dark:bg-background border rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Carbon Offset</p>
-                <p className="text-xl font-bold">{verificationData.carbonOffsetTons.toFixed(2)} tons</p>
+                <p className="text-xl font-bold">{(verificationData.carbonOffsetTons || 0).toFixed(2)} tons</p>
               </div>
               <div className="text-center p-3 bg-white dark:bg-background border rounded-lg">
                 <TreePine className="w-6 h-6 text-green-600 mx-auto mb-1" />
-                <p className="text-xl font-bold">{(verificationData.carbonOffsetTons * 16.5).toFixed(1)}</p>
+                <p className="text-xl font-bold">{((verificationData.carbonOffsetTons || 0) * 16.5).toFixed(1)}</p>
                 <p className="text-xs text-muted-foreground">Trees Worth</p>
               </div>
             </div>
@@ -277,10 +267,10 @@ export function CustomerConfirmation({ jobId }: CustomerConfirmationProps) {
                 <div>
                   <p className="font-semibold text-sm mb-2">Environmental Impact</p>
                   <ul className="text-sm space-y-1">
-                    <li>♻️ {verificationData.totalRecycledLbs.toFixed(0)} lbs recycled</li>
-                    <li>🌳 Equivalent to {(verificationData.carbonOffsetTons * 16.5).toFixed(1)} trees planted</li>
-                    <li>💧 ~{(verificationData.totalWeightLbs * 0.5).toFixed(0)} gallons water saved</li>
-                    <li>🌍 {verificationData.carbonOffsetTons.toFixed(2)} metric tons CO2 avoided</li>
+                    <li>♻️ {(verificationData.totalRecycledLbs || 0).toFixed(0)} lbs recycled</li>
+                    <li>🌳 Equivalent to {((verificationData.carbonOffsetTons || 0) * 16.5).toFixed(1)} trees planted</li>
+                    <li>💧 ~{((verificationData.totalWeightLbs || 0) * 0.5).toFixed(0)} gallons water saved</li>
+                    <li>🌍 {(verificationData.carbonOffsetTons || 0).toFixed(2)} metric tons CO2 avoided</li>
                   </ul>
                 </div>
               </div>
