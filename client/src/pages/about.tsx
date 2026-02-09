@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
+import founderPhoto from "@assets/stock_images/professional_male_wo_4cd11950.jpg";
 
 const values = [
   {
@@ -60,7 +61,7 @@ export default function About() {
               <div className="sticky top-24 z-10">
                 <div className="aspect-[3/4] bg-muted rounded-md overflow-hidden shadow-2xl border-4 border-background">
                   <img
-                    src="/images/alan-founder.jpeg"
+                    src={founderPhoto}
                     alt="Alan, Founder of UpTend"
                     className="w-full h-full object-cover"
                   />
