@@ -55,7 +55,7 @@ interface PaymentMethod {
 export default function ProfileSettings() {
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
 
   const isHauler = user?.role === "hauler" || user?.role === "worker";
 
@@ -83,7 +83,7 @@ export default function ProfileSettings() {
       return apiRequest("DELETE", `/api/customers/addresses/${id}`, {});
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
       toast({ title: "Address removed" });
     },
   });
@@ -93,7 +93,7 @@ export default function ProfileSettings() {
       return apiRequest("POST", `/api/customers/addresses/${id}/set-default`, {});
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
       toast({ title: "Default address updated" });
     },
   });
@@ -440,7 +440,7 @@ function PyckerSettings({ profile }: { profile: any }) {
                         await apiRequest("PUT", "/api/hauler/profile", {
                           hasOwnLiabilityInsurance: checked,
                         });
-                        qc.invalidateQueries({ queryKey: ["/api/hauler/profile"] });
+                        queryClient.invalidateQueries({ queryKey: ["/api/hauler/profile"] });
                         toast({
                           title: checked ? "Insurance enabled" : "Insurance disabled",
                           description: checked
@@ -476,7 +476,7 @@ function PyckerSettings({ profile }: { profile: any }) {
                               liabilityInsuranceCertificateUrl: result.url,
                               liabilityInsuranceVerifiedAt: new Date().toISOString(),
                             });
-                            qc.invalidateQueries({ queryKey: ["/api/hauler/profile"] });
+                            queryClient.invalidateQueries({ queryKey: ["/api/hauler/profile"] });
                             toast({
                               title: "Certificate uploaded",
                               description: "$10/job surcharge waived!",

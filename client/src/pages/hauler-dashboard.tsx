@@ -90,8 +90,20 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
   canAcceptJobs?: boolean;
   isAccepting?: boolean;
 }) {
+  interface CrewStatusResponse {
+    isFull: boolean;
+    acceptedCount: number;
+    crewSize: number;
+    remainingSlots: number;
+    crewMembers: Array<{
+      haulerId: string;
+      name: string;
+      status: string;
+    }>;
+  }
+
   // Fetch crew status for multi-Pro jobs
-  const { data: crewStatus } = useQuery({
+  const { data: crewStatus } = useQuery<CrewStatusResponse>({
     queryKey: [`/api/jobs/${request.id}/crew-status`],
     enabled: !!(request.laborCrewSize && request.laborCrewSize > 1),
   });
