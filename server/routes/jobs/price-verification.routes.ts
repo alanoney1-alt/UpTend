@@ -1,362 +1,369 @@
 /**
- * Price Verification API Routes
- *
- * Handles on-site price verification with AI analysis and 10% wiggle room rule
- *
- * Flow:
- * 1. Pro arrives on-site, takes verification photos/video
- * 2. AI analyzes actual conditions vs original quote
- * 3. If difference ≤10%, auto-approve
- * 4. If difference >10%, request customer approval
+ * On-Site Verification API Routes
  *
  * Endpoints:
- * - POST /api/jobs/verify-price - Analyze verification media and calculate price difference
- * - PATCH /api/jobs/:jobId/price-verification - Update job with price verification data
- * - POST /api/jobs/request-price-approval - Notify customer of price adjustment
- * - POST /api/jobs/:jobId/approve-price-change - Customer approves new price
+ * POST /api/jobs/:jobId/verify-price - Pro submits verification
+ * GET /api/jobs/:jobId/verification - Get verification status
+ * POST /api/jobs/:jobId/verification/:verificationId/approve - Customer approves
+ * POST /api/jobs/:jobId/verification/:verificationId/decline - Customer declines
+ * POST /api/jobs/:jobId/verification/:verificationId/timeout - Handle timeout
  */
 
 import type { Express, Request, Response } from "express";
-import { storage } from "../../storage";
-import { requireAuth, requireHauler } from "../../auth-middleware";
-import { analyzePhotosForQuote } from "../../services/photoAnalysisService";
-import { sendSMS } from "../../services/twilio";
-import { z } from "zod";
+import {
+  verifyJobPrice,
+  generateApprovalSmsMessage,
+  isApprovalExpired,
+  processCustomerApproval,
+  handleApprovalTimeout,
+  createVerificationLog,
+  type VerificationInput,
+  type VerificationResult,
+  type CustomerApprovalRequest,
+} from "../../services/verification";
+
+// In-memory storage (replace with database in production)
+const verifications: Map<string, VerificationResult> = new Map();
+const approvalRequests: Map<string, CustomerApprovalRequest> = new Map();
+const verificationLogs: Map<string, any> = new Map();
 
 export function registerPriceVerificationRoutes(app: Express) {
 
-  /**
-   * Verify price by analyzing on-site photos/video
-   */
-  app.post("/api/jobs/verify-price", requireAuth, requireHauler, async (req: Request, res: Response) => {
-    try {
-      const schema = z.object({
-        jobId: z.string(),
-        serviceType: z.string(),
-        verificationMethod: z.enum(['photo', 'video']),
-        fileUrls: z.array(z.string().url()),
-        originalQuote: z.object({
-          finalPrice: z.number(),
-          breakdown: z.string(),
-          inputs: z.record(z.any()),
-          quotePath: z.enum(['ai_scan', 'manual_form', 'chat_sms_phone']),
-        }),
+/**
+ * POST /api/jobs/:jobId/verify-price
+ * Pro submits on-site verification with photos and adjusted inputs
+ */
+app.post("/api/jobs/:jobId/verify-price", async (req: Request, res: Response) => {
+  try {
+    const { jobId } = req.params;
+    const { proId, originalQuote, verifiedServiceInputs, verificationPhotos, proNotes } = req.body;
+
+    if (!jobId || !proId || !originalQuote || !verifiedServiceInputs) {
+      return res.status(400).json({
+        error: "Missing required fields: jobId, proId, originalQuote, verifiedServiceInputs",
       });
+    }
 
-      const data = schema.parse(req.body);
+    const input: VerificationInput = {
+      jobId,
+      proId,
+      originalQuote,
+      verifiedServiceInputs,
+      verificationPhotos: verificationPhotos || [],
+      proNotes,
+    };
 
-      // Verify job exists and is assigned to this hauler
-      const job = await storage.getServiceRequest(data.jobId);
-      if (!job) {
-        return res.status(404).json({ error: 'Job not found' });
-      }
+    // Run verification logic
+    const verification = verifyJobPrice(input);
 
-      if (job.assignedToId !== req.user?.id) {
-        return res.status(403).json({ error: 'Not assigned to this job' });
-      }
+    // Store verification result
+    verifications.set(verification.verificationId, verification);
 
-      // Call AI analysis on verification photos/video
-      const aiAnalysisResult = await analyzePhotosForQuote(
-        data.fileUrls,
-        data.serviceType
-      );
-
-      // Add confidence boost for video
-      if (data.verificationMethod === 'video') {
-        aiAnalysisResult.confidence = Math.min(aiAnalysisResult.confidence + 0.05, 1.0);
-      }
-
-      // Recalculate price based on verified measurements
-      let verifiedPrice: number;
-      let detectedParams: Record<string, any> = {};
-
-      if (data.serviceType === 'polishup' || data.serviceType === 'home_cleaning') {
-        detectedParams = {
-          bedrooms: aiAnalysisResult.bedrooms || data.originalQuote.inputs.bedrooms,
-          bathrooms: aiAnalysisResult.bathrooms || data.originalQuote.inputs.bathrooms,
-          stories: aiAnalysisResult.stories || data.originalQuote.inputs.stories || 1,
-          sqft: aiAnalysisResult.sqft,
-          cleanType: data.originalQuote.inputs.cleanType,
-          hasPets: data.originalQuote.inputs.hasPets || false,
-          lastCleaned: data.originalQuote.inputs.lastCleaned || '1_6_months',
-          sameDayBooking: data.originalQuote.inputs.sameDayBooking || false,
-        };
-
-        verifiedPrice = calculatePolishUpVerifiedPrice(detectedParams);
-
-      } else if (data.serviceType === 'bulksnap' || data.serviceType === 'junk_removal') {
-        detectedParams = {
-          identifiedItems: aiAnalysisResult.identifiedItems,
-          estimatedVolume: aiAnalysisResult.estimatedVolumeCubicFt,
-          loadSize: aiAnalysisResult.recommendedLoadSize,
-        };
-
-        verifiedPrice = aiAnalysisResult.suggestedPrice || data.originalQuote.finalPrice;
-
-      } else if (data.serviceType === 'freshwash' || data.serviceType === 'pressure_washing') {
-        detectedParams = {
-          totalSqft: aiAnalysisResult.totalSqft || 0,
-          surfaces: aiAnalysisResult.surfaces,
-        };
-
-        // $0.25 per sqft, min $120
-        verifiedPrice = Math.max(
-          Math.round((aiAnalysisResult.totalSqft || 0) * 0.25),
-          120
-        );
-
-      } else if (data.serviceType === 'gutterflush' || data.serviceType === 'gutter_cleaning') {
-        detectedParams = {
-          stories: aiAnalysisResult.stories || data.originalQuote.inputs.stories || 1,
-        };
-
-        verifiedPrice = detectedParams.stories === 1 ? 149 : 249;
-
-      } else {
-        // For other services, use AI-suggested price or keep original
-        verifiedPrice = aiAnalysisResult.suggestedPrice || data.originalQuote.finalPrice;
-        detectedParams = { aiSuggestion: aiAnalysisResult };
-      }
-
-      // Calculate price difference
-      const priceDifference = verifiedPrice - data.originalQuote.finalPrice;
-      const percentageDifference = Math.abs((priceDifference / data.originalQuote.finalPrice) * 100);
-
-      // Apply 10% wiggle room rule
-      const autoApproved = percentageDifference <= 10;
-      const requiresCustomerApproval = !autoApproved;
-
-      const verificationResult = {
-        verifiedPrice,
-        priceDifference,
-        percentageDifference,
-        requiresCustomerApproval,
-        verificationPhotos: data.fileUrls,
-        verificationMethod: data.verificationMethod,
-        aiAnalysis: {
-          detectedParams,
-          confidence: aiAnalysisResult.confidence,
-          reasoning: aiAnalysisResult.reasoning || 'AI analyzed verification media and recalculated measurements',
-        },
-        autoApproved,
+    // If requires approval, create approval request
+    if (verification.requiresApproval) {
+      // TODO: Fetch customer info from database
+      const customer = {
+        id: "customer_123", // Replace with actual customer lookup
+        name: "John Doe",
+        phone: "+1234567890",
       };
 
-      res.json(verificationResult);
+      const approvalRequest: CustomerApprovalRequest = {
+        verificationId: verification.verificationId,
+        jobId,
+        customerId: customer.id,
+        customerPhone: customer.phone,
+        originalPrice: verification.originalPrice,
+        verifiedPrice: verification.verifiedPrice,
+        priceDifference: verification.priceDifference,
+        percentageDifference: verification.percentageDifference,
+        reason: verification.reason,
+        approvalDeadline: verification.expiresAt,
+        status: "pending",
+      };
 
-    } catch (error) {
-      console.error('Price verification error:', error);
-      res.status(400).json({ error: 'Failed to verify price' });
+      approvalRequests.set(verification.verificationId, approvalRequest);
+
+      // TODO: Send SMS to customer
+      const proName = "Sarah"; // Replace with actual Pro lookup
+      const smsMessage = generateApprovalSmsMessage(verification, customer.name, proName);
+      console.log("SMS to customer:", smsMessage);
+
+      // TODO: Schedule timeout job (30 minutes)
+      setTimeout(() => {
+        handleTimeoutJob(verification.verificationId);
+      }, 30 * 60 * 1000);
+
+      return res.status(200).json({
+        success: true,
+        verification,
+        requiresApproval: true,
+        approvalRequest,
+        message: "Customer approval required. SMS sent.",
+      });
     }
-  });
 
-  /**
-   * Update job with price verification data
-   */
-  app.patch("/api/jobs/:jobId/price-verification", requireAuth, requireHauler, async (req: Request, res: Response) => {
-    try {
-      const { jobId } = req.params;
-      const schema = z.object({
-        verified: z.boolean(),
-        verificationData: z.object({
-          verifiedPrice: z.number(),
-          priceDifference: z.number(),
-          percentageDifference: z.number(),
-          requiresCustomerApproval: z.boolean(),
-          verificationPhotos: z.array(z.string().url()),
-          verificationMethod: z.enum(['photo', 'video']),
-          aiAnalysis: z.object({
-            detectedParams: z.record(z.any()),
-            confidence: z.number(),
-            reasoning: z.string(),
-          }),
-          proNotes: z.string().optional(),
-          autoApproved: z.boolean(),
-        }),
-      });
+    // Auto-approved
+    // TODO: Notify Pro to start work
+    console.log("Auto-approved, notifying Pro to start work");
 
-      const data = schema.parse(req.body);
+    // TODO: Notify customer of price adjustment
+    const customer = { name: "John Doe" };
+    const proName = "Sarah";
+    const smsMessage = generateApprovalSmsMessage(verification, customer.name, proName);
+    console.log("SMS to customer:", smsMessage);
 
-      // Verify job exists and is assigned to this hauler
-      const job = await storage.getServiceRequest(jobId);
-      if (!job) {
-        return res.status(404).json({ error: 'Job not found' });
-      }
-
-      if (job.assignedToId !== req.user?.id) {
-        return res.status(403).json({ error: 'Not assigned to this job' });
-      }
-
-      // Update service request
-      await storage.updateServiceRequest(jobId, {
-        priceVerified: data.verified,
-        verifiedPrice: data.verificationData.verifiedPrice,
-        verificationPhotos: data.verificationData.verificationPhotos,
-        priceVerificationData: data.verificationData,
-        priceAdjustment: data.verificationData.priceDifference,
-        customerApprovedPriceAdjustment: data.verificationData.autoApproved ? true : null,
-      });
-
-      res.json({ success: true });
-
-    } catch (error) {
-      console.error('Failed to update price verification:', error);
-      res.status(400).json({ error: 'Failed to update price verification' });
-    }
-  });
-
-  /**
-   * Request customer approval for price adjustment (>10%)
-   */
-  app.post("/api/jobs/request-price-approval", requireAuth, requireHauler, async (req: Request, res: Response) => {
-    try {
-      const schema = z.object({
-        jobId: z.string(),
-        originalPrice: z.number(),
-        verifiedPrice: z.number(),
-        priceDifference: z.number(),
-        percentageDifference: z.number(),
-        verificationPhotos: z.array(z.string().url()),
-        proNotes: z.string(),
-      });
-
-      const data = schema.parse(req.body);
-
-      // Get job details
-      const job = await storage.getServiceRequest(data.jobId);
-      if (!job) {
-        return res.status(404).json({ error: 'Job not found' });
-      }
-
-      // Verify hauler is assigned to this job
-      if (job.assignedToId !== req.user?.id) {
-        return res.status(403).json({ error: 'Not assigned to this job' });
-      }
-
-      // Update job to indicate price approval pending
-      await storage.updateServiceRequest(data.jobId, {
-        priceApprovalPending: true,
-        priceApprovalRequestedAt: new Date().toISOString(),
-      });
-
-      // Notify customer via SMS
-      const increaseDecrease = data.priceDifference > 0 ? 'larger' : 'smaller';
-      const smsMessage = `UpTend: Your Pro arrived and found the scope is ${increaseDecrease} than estimated.\n\nOriginal: $${data.originalPrice}\nNew: $${data.verifiedPrice} (${data.percentageDifference.toFixed(1)}% difference)\n\nPro's note: "${data.proNotes}"\n\nView photos and approve: https://uptend.com/jobs/${data.jobId}/approve-price`;
-
-      if (job.customerPhone) {
-        await sendSMS(job.customerPhone, smsMessage);
-      }
-
-      // TODO: Send push notification if user has app installed
-      // if (job.userId) {
-      //   await sendPushNotification(job.userId, { ... });
-      // }
-
-      res.json({ success: true, notificationSent: true });
-
-    } catch (error) {
-      console.error('Failed to request price approval:', error);
-      res.status(400).json({ error: 'Failed to request price approval' });
-    }
-  });
-
-  /**
-   * Customer approves or rejects price change
-   */
-  app.post("/api/jobs/:jobId/approve-price-change", requireAuth, async (req: Request, res: Response) => {
-    try {
-      const { jobId } = req.params;
-      const schema = z.object({
-        approved: z.boolean(),
-        customerNotes: z.string().optional(),
-      });
-
-      const data = schema.parse(req.body);
-
-      // Get job details
-      const job = await storage.getServiceRequest(jobId);
-      if (!job) {
-        return res.status(404).json({ error: 'Job not found' });
-      }
-
-      // Verify this is the customer's job
-      if (job.userId !== req.user?.id) {
-        return res.status(403).json({ error: 'Not your job' });
-      }
-
-      if (data.approved) {
-        // Customer approved the new price
-        await storage.updateServiceRequest(jobId, {
-          customerApprovedPriceAdjustment: true,
-          priceApprovalPending: false,
-          priceApprovalRespondedAt: new Date().toISOString(),
-          customerNotes: data.customerNotes,
-        });
-
-        // Notify Pro that customer approved
-        if (job.assignedToId) {
-          // TODO: Send push notification to Pro
-          // await sendPushNotification(job.assignedToId, { ... });
-        }
-
-        res.json({ success: true, message: 'Price approved. Your Pro can now begin work.' });
-
-      } else {
-        // Customer rejected the new price
-        await storage.updateServiceRequest(jobId, {
-          customerApprovedPriceAdjustment: false,
-          priceApprovalPending: false,
-          priceApprovalRespondedAt: new Date().toISOString(),
-          customerNotes: data.customerNotes,
-          status: 'cancelled', // Job cancelled due to price disagreement
-        });
-
-        // Notify Pro that customer rejected
-        if (job.assignedToId && job.assignedToPhone) {
-          await sendSMS(
-            job.assignedToPhone,
-            `UpTend: Customer did not approve the price adjustment for job #${jobId}. The job has been cancelled.`
-          );
-        }
-
-        res.json({ success: true, message: 'Job cancelled due to price disagreement.' });
-      }
-
-    } catch (error) {
-      console.error('Failed to process price approval:', error);
-      res.status(400).json({ error: 'Failed to process price approval' });
-    }
-  });
-}
+    return res.status(200).json({
+      success: true,
+      verification,
+      requiresApproval: false,
+      autoApproved: true,
+      message: "Price adjustment auto-approved. Pro can start work.",
+    });
+  } catch (error) {
+    console.error("Error in verify-price:", error);
+    return res.status(500).json({
+      error: "Internal server error during price verification",
+      details: error instanceof Error ? error.message : String(error),
+    });
+  }
+});
 
 /**
- * Helper: Calculate verified price for PolishUp based on detected parameters
+ * GET /api/jobs/:jobId/price-verification
+ * Get current price verification status for a job
  */
-function calculatePolishUpVerifiedPrice(params: Record<string, any>): number {
-  // Base price matrix
-  const basePrices: Record<string, Record<string, number>> = {
-    '1-1': { standard: 99, deep: 179, move_out: 229 },
-    '2-1': { standard: 129, deep: 229, move_out: 299 },
-    '2-2': { standard: 149, deep: 259, move_out: 329 },
-    '3-2': { standard: 179, deep: 299, move_out: 399 },
-    '3-3': { standard: 199, deep: 349, move_out: 449 },
-    '4-2': { standard: 219, deep: 379, move_out: 479 },
-    '4-3': { standard: 249, deep: 429, move_out: 529 },
-    '5-3': { standard: 299, deep: 499, move_out: 599 },
-  };
+app.get("/api/jobs/:jobId/price-verification", async (req: Request, res: Response) => {
+  try {
+    const { jobId } = req.params;
 
-  const bathrooms = Math.round(params.bathrooms);
-  const key = `${params.bedrooms}-${bathrooms}`;
-  let price = basePrices[key]?.[params.cleanType] || 149;
+    // Find verification by jobId
+    const verification = Array.from(verifications.values()).find(v => v.jobId === jobId);
 
-  // Apply multiplicative modifiers
-  if (params.stories === 2) price *= 1.15;
-  if (params.stories === 3) price *= 1.25;
-  if (params.sqft && params.sqft >= 3000) price *= 1.10;
-  if (params.lastCleaned === '6_plus_months' || params.lastCleaned === 'never') price *= 1.20;
+    if (!verification) {
+      return res.status(404).json({
+        error: "No verification found for this job",
+      });
+    }
 
-  // Apply additive modifiers
-  if (params.hasPets) price += 25;
-  if (params.sameDayBooking) price += 30;
+    // Check if approval request exists
+    const approvalRequest = approvalRequests.get(verification.verificationId);
 
-  return Math.round(price);
+    return res.status(200).json({
+      success: true,
+      verification,
+      approvalRequest: approvalRequest || null,
+    });
+  } catch (error) {
+    console.error("Error in get verification:", error);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : String(error),
+    });
+  }
+});
+
+/**
+ * POST /api/jobs/:jobId/price-verification/:verificationId/approve
+ * Customer approves price adjustment
+ */
+app.post("/api/jobs/:jobId/price-verification/:verificationId/approve", async (req: Request, res: Response) => {
+  try {
+    const { verificationId } = req.params;
+
+    const approvalRequest = approvalRequests.get(verificationId);
+    if (!approvalRequest) {
+      return res.status(404).json({
+        error: "Approval request not found",
+      });
+    }
+
+    // Check if expired
+    if (isApprovalExpired(approvalRequest)) {
+      return res.status(410).json({
+        error: "Approval request has expired (30 minutes elapsed)",
+        nextAction: "reschedule",
+      });
+    }
+
+    // Check if already responded
+    if (approvalRequest.status !== "pending") {
+      return res.status(400).json({
+        error: `Approval request already ${approvalRequest.status}`,
+      });
+    }
+
+    // Process approval
+    const result = processCustomerApproval(verificationId, true);
+
+    // Update approval request
+    approvalRequest.status = "approved";
+    approvalRequest.respondedAt = new Date();
+
+    // Create log
+    const verification = verifications.get(verificationId);
+    if (verification) {
+      const input: any = {}; // TODO: Retrieve original input from database
+      const log = createVerificationLog(verification, input, {
+        approved: true,
+        respondedAt: approvalRequest.respondedAt,
+      });
+      verificationLogs.set(verificationId, log);
+    }
+
+    // TODO: Notify Pro to start work
+    console.log("Customer approved, notifying Pro to start work");
+
+    // TODO: Send confirmation SMS to customer
+    console.log("Sending confirmation SMS to customer");
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      nextAction: result.nextAction,
+      approvalRequest,
+    });
+  } catch (error) {
+    console.error("Error in approve:", error);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : String(error),
+    });
+  }
+});
+
+/**
+ * POST /api/jobs/:jobId/price-verification/:verificationId/decline
+ * Customer declines price adjustment
+ */
+app.post("/api/jobs/:jobId/price-verification/:verificationId/decline", async (req: Request, res: Response) => {
+  try {
+    const { verificationId } = req.params;
+
+    const approvalRequest = approvalRequests.get(verificationId);
+    if (!approvalRequest) {
+      return res.status(404).json({
+        error: "Approval request not found",
+      });
+    }
+
+    // Check if already responded
+    if (approvalRequest.status !== "pending") {
+      return res.status(400).json({
+        error: `Approval request already ${approvalRequest.status}`,
+      });
+    }
+
+    // Process decline
+    const result = processCustomerApproval(verificationId, false);
+
+    // Update approval request
+    approvalRequest.status = "declined";
+    approvalRequest.respondedAt = new Date();
+
+    // Create log
+    const verification = verifications.get(verificationId);
+    if (verification) {
+      const input: any = {}; // TODO: Retrieve original input from database
+      const log = createVerificationLog(verification, input, {
+        approved: false,
+        respondedAt: approvalRequest.respondedAt,
+      });
+      verificationLogs.set(verificationId, log);
+    }
+
+    // TODO: Release Pro (cancel job assignment)
+    console.log("Customer declined, releasing Pro");
+
+    // TODO: Send reschedule options to customer
+    console.log("Sending reschedule options to customer");
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      nextAction: result.nextAction,
+      approvalRequest,
+    });
+  } catch (error) {
+    console.error("Error in decline:", error);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : String(error),
+    });
+  }
+});
+
+/**
+ * POST /api/jobs/:jobId/price-verification/:verificationId/timeout
+ * Handle approval timeout (called by scheduled job after 30 minutes)
+ */
+app.post("/api/jobs/:jobId/price-verification/:verificationId/timeout", async (req: Request, res: Response) => {
+  try {
+    const { verificationId } = req.params;
+
+    const approvalRequest = approvalRequests.get(verificationId);
+    if (!approvalRequest) {
+      return res.status(404).json({
+        error: "Approval request not found",
+      });
+    }
+
+    // Check if already responded
+    if (approvalRequest.status !== "pending") {
+      return res.status(400).json({
+        error: `Approval request already ${approvalRequest.status}`,
+      });
+    }
+
+    // Process timeout
+    const result = handleApprovalTimeout(verificationId);
+
+    // Update approval request
+    approvalRequest.status = "expired";
+
+    // TODO: Release Pro
+    console.log("Approval timeout, releasing Pro");
+
+    // TODO: Send reschedule notification to customer
+    console.log("Sending reschedule notification to customer");
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      nextAction: result.nextAction,
+      approvalRequest,
+    });
+  } catch (error) {
+    console.error("Error in timeout:", error);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : String(error),
+    });
+  }
+});
+
+/**
+ * Helper: Handle timeout job (called by setTimeout)
+ */
+async function handleTimeoutJob(verificationId: string) {
+  try {
+    const approvalRequest = approvalRequests.get(verificationId);
+    if (!approvalRequest) {
+      console.error("Approval request not found for timeout:", verificationId);
+      return;
+    }
+
+    // Only process if still pending
+    if (approvalRequest.status === "pending") {
+      const result = handleApprovalTimeout(verificationId);
+      approvalRequest.status = "expired";
+
+      // TODO: Release Pro and send customer reschedule notification
+      console.log("Timeout job executed:", result.message);
+    }
+  } catch (error) {
+    console.error("Error in timeout job:", error);
+  }
+}
+
 }

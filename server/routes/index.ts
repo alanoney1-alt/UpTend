@@ -24,6 +24,7 @@ import { registerCustomerImpactRoutes } from "./customer/impact.routes";
 import { registerServiceRequestRoutes } from "./jobs/service-requests.routes";
 import { registerJobManagementRoutes } from "./jobs/job-management.routes";
 import { registerJobVerificationRoutes } from "./jobs/verification.routes";
+import { registerPriceVerificationRoutes } from "./jobs/price-verification.routes";
 
 // PolishUp routes
 import { registerSubscriptionRoutes } from "./subscriptions.routes";
@@ -105,6 +106,7 @@ export async function registerRoutes(
   registerServiceRequestRoutes(app);
   registerJobManagementRoutes(app);
   registerJobVerificationRoutes(app);
+  registerPriceVerificationRoutes(app);
 
   // Register PolishUp routes
   registerSubscriptionRoutes(app);
