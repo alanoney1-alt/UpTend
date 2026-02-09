@@ -234,8 +234,8 @@ export function registerPaymentRoutes(app: Express) {
 
       const amount = job.livePrice || job.priceEstimate || 0;
 
-      // BNPL only available for orders $250+
-      const BNPL_THRESHOLD = 250;
+      // BNPL only available for orders $199+ (matches frontend threshold)
+      const BNPL_THRESHOLD = 199;
       if (amount < BNPL_THRESHOLD) {
         return res.status(400).json({
           error: `BNPL is only available for orders $${BNPL_THRESHOLD} or more`
