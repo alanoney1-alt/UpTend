@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Check,
   Home,
-  Drone,
+  Plane,
   Camera,
   ClipboardCheck,
   Shield,
@@ -67,7 +67,7 @@ export default function DwellScanLanding() {
               className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
               onClick={() => handleBookTier('aerial')}
             >
-              <Drone className="w-5 h-5 mr-2" />
+              <Plane className="w-5 h-5 mr-2" />
               Book Aerial ($149)
             </Button>
           </div>
@@ -138,7 +138,7 @@ export default function DwellScanLanding() {
               <CardContent className="pt-6">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
-                    <Drone className="w-8 h-8 text-white" />
+                    <Plane className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold mb-2">DwellScan™ Aerial</h3>
                   <p className="text-4xl font-black text-blue-600 mb-2">$149</p>
@@ -187,7 +187,7 @@ export default function DwellScanLanding() {
                   size="lg"
                   onClick={() => handleBookTier('aerial')}
                 >
-                  <Drone className="w-5 h-5 mr-2" />
+                  <Plane className="w-5 h-5 mr-2" />
                   Book Aerial - $149
                 </Button>
               </CardContent>
@@ -313,7 +313,7 @@ export default function DwellScanLanding() {
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 border-2 border-white"
               onClick={() => handleBookTier('aerial')}
             >
-              <Drone className="w-5 h-5 mr-2" />
+              <Plane className="w-5 h-5 mr-2" />
               Book Aerial - $149
             </Button>
           </div>

@@ -154,7 +154,7 @@ export function VideoUpload({
       uploadFile(file);
 
       const frames = await extractFrames(file);
-      onFramesExtracted(frames);
+      onFramesExtracted?.(frames);
     } catch (err) {
       console.error("Frame extraction failed:", err);
     } finally {
@@ -240,7 +240,7 @@ export function VideoUpload({
     setVideoDuration(0);
     setVideoUploaded(false);
     setUploadProgress(null);
-    onFramesExtracted([]);
+    onFramesExtracted?.([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }

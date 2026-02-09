@@ -318,6 +318,7 @@ export default function Booking() {
     confidence: number;
     reasoning: string;
     priceBreakdown: { label: string; amount: number }[];
+    estimatedVolumeCubicFt?: number;
   } | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);

@@ -33,6 +33,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Timer,
+  Sparkles,
 } from "lucide-react";
 
 const SERVICE_TYPE_LABELS: Record<string, string> = {
