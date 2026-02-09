@@ -40,7 +40,7 @@ import {
   GARAGE_CLEANOUT_PACKAGES,
   loadSizePackages,
   TRUCK_UNLOADING_SIZES,
-  HOURLY_RATE_PER_PERSON,
+  HOURLY_RATE_PER_PRO,
   SERVICE_STARTING_PRICES
 } from "@/lib/bundle-pricing";
 import { PolishUpBooking, type PolishUpBookingDetails } from "@/components/booking/polishup-booking";

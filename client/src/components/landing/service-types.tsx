@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Trash2, Sofa, Refrigerator, Home } from "lucide-react";
-import { SERVICE_STARTING_PRICES, HOURLY_RATE_PER_PERSON } from "@/lib/bundle-pricing";
+import { SERVICE_STARTING_PRICES, HOURLY_RATE_PER_PRO } from "@/lib/bundle-pricing";
 import { MILEAGE_RATE } from "@/lib/distance-utils";
 
 import junkImage from "@assets/stock_images/junk_removal_pile,_o_405748d1.jpg";
@@ -24,7 +24,7 @@ const services = [
   {
     id: "truck_unloading",
     title: "Truck Unloading",
-    description: `U-Haul or rental truck? We'll unload it for you. Labor-only pricing at $${HOURLY_RATE_PER_PERSON}/hour.`,
+    description: `U-Haul or rental truck? We'll unload it for you. Labor-only pricing at $${HOURLY_RATE_PER_PRO}/hour.`,
     icon: Home,
     image: estateImage,
     startingPrice: SERVICE_STARTING_PRICES.truck_unloading,

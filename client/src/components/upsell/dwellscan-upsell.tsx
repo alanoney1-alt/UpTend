@@ -12,7 +12,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Drone, Home, ArrowRight, Gift } from "lucide-react";
+import { Plane, Home, ArrowRight, Gift } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface DwellScanUpsellProps {
@@ -35,7 +35,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <Drone className="w-6 h-6 text-white" />
+                <Plane className="w-6 h-6 text-white" />
               </div>
               <div>
                 <CardTitle className="text-xl">Want to See Your Roof?</CardTitle>
@@ -69,19 +69,19 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
             <p className="text-sm font-semibold">What you'll get:</p>
             <ul className="space-y-1 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
-                <Drone className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                <Plane className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                 <span>FAA-certified drone flyover of your roof</span>
               </li>
               <li className="flex items-start gap-2">
-                <Drone className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                <Plane className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                 <span>Aerial gutter blockage assessment</span>
               </li>
               <li className="flex items-start gap-2">
-                <Drone className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                <Plane className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                 <span>Tree overhang & drainage analysis</span>
               </li>
               <li className="flex items-start gap-2">
-                <Drone className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                <Plane className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                 <span>Full aerial photo set (GPS-tagged)</span>
               </li>
             </ul>
@@ -167,7 +167,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               RECOMMENDED
             </Badge>
             <div className="flex items-center gap-2 mb-2">
-              <Drone className="w-5 h-5 text-blue-600" />
+              <Plane className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="font-semibold">DwellScan™ Aerial</p>
                 <p className="text-2xl font-bold text-blue-600">$149</p>

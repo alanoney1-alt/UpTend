@@ -11,7 +11,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Drone, Home } from "lucide-react";
+import { Check, Plane, Home } from "lucide-react";
 import { SERVICES } from "@/constants/services";
 import { useState } from "react";
 
@@ -117,7 +117,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <Drone className="w-6 h-6 text-white" />
+                  <Plane className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <CardTitle className="text-xl">DwellScan™ Aerial</CardTitle>

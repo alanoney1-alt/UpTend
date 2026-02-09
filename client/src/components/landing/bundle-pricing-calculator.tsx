@@ -39,7 +39,7 @@ import {
   getItemsForService,
   TRUCK_UNLOADING_SIZES,
     CREW_SIZE_OPTIONS,
-  HOURLY_RATE_PER_PERSON,
+  HOURLY_RATE_PER_PRO,
   DEFAULT_HOURS,
   MAX_HOURS,
   calculateTruckUnloadingPrice,
@@ -355,7 +355,7 @@ export function BundlePricingCalculator() {
                   <Users className={`w-6 h-6 mx-auto mb-2 ${crewSize === option.id ? "text-primary" : "text-muted-foreground"}`} />
                   <span className="font-semibold block">{option.label}</span>
                   <p className="text-xs text-muted-foreground mt-1">{option.description}</p>
-                  <p className="text-sm font-medium text-primary mt-2">${HOURLY_RATE_PER_PERSON * option.id}/hr</p>
+                  <p className="text-sm font-medium text-primary mt-2">${HOURLY_RATE_PER_PRO * option.id}/hr</p>
                 </Card>
               ))}
             </div>
@@ -442,7 +442,7 @@ export function BundlePricingCalculator() {
                       <span className="text-muted-foreground">
                         {crewSize} {crewSize === 1 ? "person" : "people"} x {hours} hr{hours > 1 ? "s" : ""}
                       </span>
-                      <span>${HOURLY_RATE_PER_PERSON * crewSize * hours}</span>
+                      <span>${HOURLY_RATE_PER_PRO * crewSize * hours}</span>
                     </div>
                   </>
                 )}
