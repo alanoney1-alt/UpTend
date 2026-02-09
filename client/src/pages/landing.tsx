@@ -39,7 +39,6 @@ export default function Landing() {
         <WhySection />
         <FortyNineWalkthrough />
         <WorkerCTA />
-        <FAQSection />
       </main>
       <Footer />
       <BookingChatbot />
@@ -549,58 +548,6 @@ function WorkerCTA() {
             {t("worker.worker_apply")}
           </Button>
         </Link>
-      </div>
-    </section>
-  );
-}
-
-function FAQSection() {
-  const { t } = useTranslation();
-
-  const faqs = [
-    {
-      q: t("faq.faq_q1"),
-      a: t("faq.faq_a1"),
-    },
-    {
-      q: t("faq.faq_q2"),
-      a: t("faq.faq_a2"),
-    },
-    {
-      q: t("faq.faq_q3"),
-      a: t("faq.faq_a3"),
-    },
-  ];
-
-  return (
-    <section className="py-20 bg-background" data-testid="section-faq">
-      <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold mb-10 text-center" data-testid="text-faq-headline">
-          {t("faq.faq_headline")}
-        </h2>
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <Card key={i} data-testid={`card-faq-${i}`}>
-              <details className="group">
-                <summary className="flex justify-between items-center gap-4 font-bold cursor-pointer list-none p-6" data-testid={`button-faq-${i}`}>
-                  <span>{faq.q}</span>
-                  <span className="transition group-open:rotate-180 text-muted-foreground ml-4 shrink-0">&or;</span>
-                </summary>
-                <CardContent className="pt-0 pb-6 px-6">
-                  <p className="text-muted-foreground">{faq.a}</p>
-                </CardContent>
-              </details>
-            </Card>
-          ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <Link href="/book">
-            <Button size="lg" className="gap-2" data-testid="button-faq-cta">
-              {t("faq.faq_cta")} <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
-        </div>
       </div>
     </section>
   );
