@@ -438,174 +438,6 @@ export function FloridaEstimator() {
     );
   }
 
-  const formatCurrency = (val: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(val);
-
-  return (
-    <>
-      <div
-        className="w-full max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700"
-        data-testid="widget-estimate-results"
-      >
-        <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
-          <div className="text-center flex-1">
-            <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2" data-testid="text-report-label">
-              {t("estimator.available_services")}
-            </h2>
-            <p className="text-muted-foreground font-medium" data-testid="text-report-address">{address}</p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => { setStep(1); setPropertyData(null); }}
-            data-testid="button-edit-address"
-          >
-            <Pencil className="w-3 h-3 mr-1" /> {t("estimator.edit")}
-          </Button>
-        </div>
-
-        {propertyLoading && (
-          <div className="flex items-center justify-center gap-3 py-6 mb-6 bg-muted/30 rounded-md" data-testid="loading-property">
-            <Loader2 className="w-5 h-5 animate-spin text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">{t("estimator.fetching_property")}</span>
-          </div>
-        )}
-
-        {propertyData && (
-          <Card className="mb-6" data-testid="card-home-value">
-            <CardContent className="p-5">
-              <div className="flex flex-col sm:flex-row items-start gap-4">
-                {propertyData.imgSrc && (
-                  <img
-                    src={propertyData.imgSrc}
-                    alt="Property"
-                    className="w-full sm:w-32 h-24 object-cover rounded-md shrink-0"
-                    data-testid="img-property"
-                  />
-                )}
-                <div className="flex-1">
-                  {/* Show home value for single-family homes and townhouses (homeowners) */}
-                  {propertyData.zestimate &&
-                   (propertyData.homeType === "SINGLE_FAMILY" ||
-                    propertyData.homeType === "TOWNHOUSE" ||
-                    propertyData.homeType === "SINGLE FAMILY" ||
-                    !propertyData.homeType) && (
-                    <>
-                      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">{t("estimator.estimated_home_value")}</p>
-                      <p className="text-3xl md:text-4xl font-black text-primary" data-testid="text-home-value">
-                        {formatCurrency(propertyData.zestimate)}
-                      </p>
-                      <p className="text-xs text-green-600 dark:text-green-400 font-medium mt-1">
-                        Protect your asset with verified maintenance
-                      </p>
-                    </>
-                  )}
-
-                  {/* For apartments/condos, show property details without emphasizing value */}
-                  {(propertyData.homeType === "APARTMENT" ||
-                    propertyData.homeType === "CONDO" ||
-                    propertyData.homeType === "CONDOMINIUM") && (
-                    <p className="text-lg font-bold text-foreground mb-2">Property Details</p>
-                  )}
-                  {propertyData.rentZestimate && (
-                    <p className="text-xs text-muted-foreground mt-1" data-testid="text-rent-estimate">
-                      {t("estimator.rent_estimate")}: {formatCurrency(propertyData.rentZestimate)}/mo
-                    </p>
-                  )}
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
-                    {propertyData.bedrooms && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-bedrooms">
-                        <BedDouble className="w-3 h-3" /> {propertyData.bedrooms} {t("estimator.bed")}
-                      </span>
-                    )}
-                    {propertyData.bathrooms && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-bathrooms">
-                        <Bath className="w-3 h-3" /> {propertyData.bathrooms} {t("estimator.bath")}
-                      </span>
-                    )}
-                    {propertyData.livingArea && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-sqft">
-                        <Ruler className="w-3 h-3" /> {propertyData.livingArea.toLocaleString()} {t("estimator.sqft")}
-                      </span>
-                    )}
-                    {propertyData.yearBuilt && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-year-built">
-                        <Calendar className="w-3 h-3" /> {t("estimator.built")} {propertyData.yearBuilt}
-                      </span>
-                    )}
-                    {propertyData.homeType && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-home-type">
-                        <Home className="w-3 h-3" /> {propertyData.homeType.replace(/_/g, " ")}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <p className="text-[10px] text-muted-foreground mt-3 text-right">
-                {(propertyData as any)?.source === "census_estimate" ? t("estimator.based_on_local") : t("estimator.property_estimate")}
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="space-y-4">
-          {pricingServices.map((service) => (
-            <div
-              key={service.id}
-              className={`p-5 md:p-6 rounded-md border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6 ${
-                service.featured
-                  ? "bg-[#3B1D5A] text-white border-[#3B1D5A]/80 shadow-xl"
-                  : "bg-card border-border"
-              }`}
-              data-testid={`card-service-${service.id}`}
-            >
-              <div className="flex items-start gap-4 flex-1">
-                <div className={`p-3 rounded-md shrink-0 ${service.featured ? "bg-white/10" : "bg-muted"}`}>
-                  <service.icon className={`w-5 h-5 ${service.featured ? "text-primary" : "text-primary"}`} />
-                </div>
-                <div className="text-left min-w-0">
-                  <h4 className="font-black text-base md:text-lg" data-testid={`text-service-name-${service.id}`}>{service.name}</h4>
-                  <p className={`text-sm mt-0.5 ${service.featured ? "text-slate-300" : "text-muted-foreground"}`}>
-                    {service.description}
-                  </p>
-                  <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${
-                    service.featured ? "text-primary" : "text-primary"
-                  }`}>
-                    {service.benefit}
-                  </p>
-                </div>
-              </div>
-
-              <div className={`flex items-center gap-4 md:gap-6 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 ${service.featured ? "border-white/20" : "border-border"}`}>
-                <div className="text-left md:text-right">
-                  <span className={`block text-[10px] font-bold uppercase ${service.featured ? "opacity-60" : "text-muted-foreground"}`}>
-                    {t("estimator.investment")}
-                  </span>
-                  <span className="text-2xl font-black" data-testid={`text-service-price-${service.id}`}>{service.price}</span>
-                </div>
-                <Button
-                  onClick={() => handleServiceSelect(service.id)}
-                  className={`flex-1 md:flex-none font-bold ${
-                    service.featured
-                      ? "bg-primary text-primary-foreground"
-                      : ""
-                  }`}
-                  data-testid={`button-book-${service.id}`}
-                >
-                  {t("common.get_quote")} <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <p className="mt-8 text-center text-[10px] text-muted-foreground uppercase font-bold tracking-[0.2em]" data-testid="text-dispatch-notice">
-          {t("estimator.dispatch_notice")}
-        </p>
-      </div>
-    </>
-  );
-
   // Step 3: Quote Method Selection
   if (step === 3) {
     return (
@@ -1028,4 +860,172 @@ export function FloridaEstimator() {
       </div>
     );
   }
+
+  const formatCurrency = (val: number) =>
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(val);
+
+  return (
+    <>
+      <div
+        className="w-full max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700"
+        data-testid="widget-estimate-results"
+      >
+        <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
+          <div className="text-center flex-1">
+            <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2" data-testid="text-report-label">
+              {t("estimator.available_services")}
+            </h2>
+            <p className="text-muted-foreground font-medium" data-testid="text-report-address">{address}</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => { setStep(1); setPropertyData(null); }}
+            data-testid="button-edit-address"
+          >
+            <Pencil className="w-3 h-3 mr-1" /> {t("estimator.edit")}
+          </Button>
+        </div>
+
+        {propertyLoading && (
+          <div className="flex items-center justify-center gap-3 py-6 mb-6 bg-muted/30 rounded-md" data-testid="loading-property">
+            <Loader2 className="w-5 h-5 animate-spin text-primary" />
+            <span className="text-sm font-medium text-muted-foreground">{t("estimator.fetching_property")}</span>
+          </div>
+        )}
+
+        {propertyData && (
+          <Card className="mb-6" data-testid="card-home-value">
+            <CardContent className="p-5">
+              <div className="flex flex-col sm:flex-row items-start gap-4">
+                {propertyData.imgSrc && (
+                  <img
+                    src={propertyData.imgSrc}
+                    alt="Property"
+                    className="w-full sm:w-32 h-24 object-cover rounded-md shrink-0"
+                    data-testid="img-property"
+                  />
+                )}
+                <div className="flex-1">
+                  {/* Show home value for single-family homes and townhouses (homeowners) */}
+                  {propertyData.zestimate &&
+                   (propertyData.homeType === "SINGLE_FAMILY" ||
+                    propertyData.homeType === "TOWNHOUSE" ||
+                    propertyData.homeType === "SINGLE FAMILY" ||
+                    !propertyData.homeType) && (
+                    <>
+                      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">{t("estimator.estimated_home_value")}</p>
+                      <p className="text-3xl md:text-4xl font-black text-primary" data-testid="text-home-value">
+                        {formatCurrency(propertyData.zestimate)}
+                      </p>
+                      <p className="text-xs text-green-600 dark:text-green-400 font-medium mt-1">
+                        Protect your asset with verified maintenance
+                      </p>
+                    </>
+                  )}
+
+                  {/* For apartments/condos, show property details without emphasizing value */}
+                  {(propertyData.homeType === "APARTMENT" ||
+                    propertyData.homeType === "CONDO" ||
+                    propertyData.homeType === "CONDOMINIUM") && (
+                    <p className="text-lg font-bold text-foreground mb-2">Property Details</p>
+                  )}
+                  {propertyData.rentZestimate && (
+                    <p className="text-xs text-muted-foreground mt-1" data-testid="text-rent-estimate">
+                      {t("estimator.rent_estimate")}: {formatCurrency(propertyData.rentZestimate)}/mo
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
+                    {propertyData.bedrooms && (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-bedrooms">
+                        <BedDouble className="w-3 h-3" /> {propertyData.bedrooms} {t("estimator.bed")}
+                      </span>
+                    )}
+                    {propertyData.bathrooms && (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-bathrooms">
+                        <Bath className="w-3 h-3" /> {propertyData.bathrooms} {t("estimator.bath")}
+                      </span>
+                    )}
+                    {propertyData.livingArea && (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-sqft">
+                        <Ruler className="w-3 h-3" /> {propertyData.livingArea.toLocaleString()} {t("estimator.sqft")}
+                      </span>
+                    )}
+                    {propertyData.yearBuilt && (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-year-built">
+                        <Calendar className="w-3 h-3" /> {t("estimator.built")} {propertyData.yearBuilt}
+                      </span>
+                    )}
+                    {propertyData.homeType && (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-home-type">
+                        <Home className="w-3 h-3" /> {propertyData.homeType.replace(/_/g, " ")}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <p className="text-[10px] text-muted-foreground mt-3 text-right">
+                {(propertyData as any)?.source === "census_estimate" ? t("estimator.based_on_local") : t("estimator.property_estimate")}
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        <div className="space-y-4">
+          {pricingServices.map((service) => (
+            <div
+              key={service.id}
+              className={`p-5 md:p-6 rounded-md border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6 ${
+                service.featured
+                  ? "bg-[#3B1D5A] text-white border-[#3B1D5A]/80 shadow-xl"
+                  : "bg-card border-border"
+              }`}
+              data-testid={`card-service-${service.id}`}
+            >
+              <div className="flex items-start gap-4 flex-1">
+                <div className={`p-3 rounded-md shrink-0 ${service.featured ? "bg-white/10" : "bg-muted"}`}>
+                  <service.icon className={`w-5 h-5 ${service.featured ? "text-primary" : "text-primary"}`} />
+                </div>
+                <div className="text-left min-w-0">
+                  <h4 className="font-black text-base md:text-lg" data-testid={`text-service-name-${service.id}`}>{service.name}</h4>
+                  <p className={`text-sm mt-0.5 ${service.featured ? "text-slate-300" : "text-muted-foreground"}`}>
+                    {service.description}
+                  </p>
+                  <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${
+                    service.featured ? "text-primary" : "text-primary"
+                  }`}>
+                    {service.benefit}
+                  </p>
+                </div>
+              </div>
+
+              <div className={`flex items-center gap-4 md:gap-6 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 ${service.featured ? "border-white/20" : "border-border"}`}>
+                <div className="text-left md:text-right">
+                  <span className={`block text-[10px] font-bold uppercase ${service.featured ? "opacity-60" : "text-muted-foreground"}`}>
+                    {t("estimator.investment")}
+                  </span>
+                  <span className="text-2xl font-black" data-testid={`text-service-price-${service.id}`}>{service.price}</span>
+                </div>
+                <Button
+                  onClick={() => handleServiceSelect(service.id)}
+                  className={`flex-1 md:flex-none font-bold ${
+                    service.featured
+                      ? "bg-primary text-primary-foreground"
+                      : ""
+                  }`}
+                  data-testid={`button-book-${service.id}`}
+                >
+                  {t("common.get_quote")} <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-8 text-center text-[10px] text-muted-foreground uppercase font-bold tracking-[0.2em]" data-testid="text-dispatch-notice">
+          {t("estimator.dispatch_notice")}
+        </p>
+      </div>
+    </>
+  );
 }
