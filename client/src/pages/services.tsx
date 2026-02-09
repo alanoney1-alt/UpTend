@@ -103,6 +103,11 @@ const services = [
 const proStandards = [
   {
     icon: ShieldCheck,
+    title: "Fully Insured",
+    desc: "Every Pro carries $1M liability insurance. Your property is fully protected on every job.",
+  },
+  {
+    icon: ShieldCheck,
     title: "Background Checked",
     desc: "Every Pro passes a national criminal background screening before their first job.",
   },
@@ -126,11 +131,6 @@ const proStandards = [
     title: "Instant Payouts",
     desc: "Pros are paid same-day. Happy Pros deliver better work. That's the UpTend difference.",
   },
-  {
-    icon: Star,
-    title: "Rated & Reviewed",
-    desc: "Every Pro has a public rating. Top performers earn Verified Pro status with priority job access.",
-  },
 ];
 
 export default function Services() {
@@ -152,8 +152,8 @@ export default function Services() {
             </span>
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto" data-testid="text-services-subhead">
-            From junk removal to full home audits, every service is performed by background-checked,
-            academy-trained Pros with $1M liability coverage and full video documentation.
+            From junk removal to full home audits, every service is performed by fully insured,
+            background-checked, academy-trained Pros with $1M liability coverage and full video documentation.
           </p>
         </div>
       </section>
@@ -163,7 +163,7 @@ export default function Services() {
           {services.map((svc) => (
             <Card
               key={svc.id}
-              className={`relative overflow-visible ${svc.featured ? "ring-2 ring-primary/30" : ""}`}
+              className={`relative overflow-visible flex flex-col ${svc.featured ? "ring-2 ring-primary/30" : ""}`}
               data-testid={`card-service-${svc.id}`}
             >
               {svc.popular && (
@@ -180,17 +180,17 @@ export default function Services() {
                   </Badge>
                 </div>
               )}
-              <CardContent className="p-8">
+              <CardContent className="p-8 flex flex-col flex-1">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0" data-testid={`icon-service-${svc.id}`}>
                     <svc.icon className="w-6 h-6 text-primary dark:text-orange-400" />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
-                      <h3 className="text-xl font-bold" data-testid={`text-service-name-${svc.id}`}>{svc.name}</h3>
-                      <span className="text-lg font-bold text-primary dark:text-orange-400" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl font-bold mb-1" data-testid={`text-service-name-${svc.id}`}>{svc.name}</h3>
+                    <p className="text-sm font-medium text-muted-foreground" data-testid={`text-service-tagline-${svc.id}`}>{svc.tagline}</p>
+                    <div className="mt-2">
+                      <span className="text-2xl font-black text-primary dark:text-orange-400" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
                     </div>
-                    <p className="text-sm font-medium text-muted-foreground mt-1" data-testid={`text-service-tagline-${svc.id}`}>{svc.tagline}</p>
                   </div>
                 </div>
 
@@ -198,7 +198,7 @@ export default function Services() {
                   {svc.description}
                 </p>
 
-                <ul className="space-y-2 mb-6" data-testid={`list-service-includes-${svc.id}`}>
+                <ul className="space-y-2 mb-6 flex-1" data-testid={`list-service-includes-${svc.id}`}>
                   {svc.includes.map((item, idx) => (
                     <li key={item} className="flex items-start gap-2 text-sm" data-testid={`text-include-${svc.id}-${idx}`}>
                       <CheckCircle className="w-4 h-4 text-primary dark:text-orange-400 shrink-0 mt-0.5" />
@@ -208,7 +208,7 @@ export default function Services() {
                 </ul>
 
                 <Button
-                  className="w-full"
+                  className="w-full mt-auto"
                   onClick={() => setLocation("link" in svc && svc.link ? svc.link : `/book?service=${svc.id}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >

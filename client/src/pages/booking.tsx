@@ -338,8 +338,8 @@ export default function Booking() {
   const [pricingMode, setPricingMode] = useState<'items' | 'load'>('items');
   const [selectedLoadTier, setSelectedLoadTier] = useState<string | null>(null);
   
-  // PYCKER tier preference (Verified Pro only filter)
-  const [preferVerifiedPro, setPreferVerifiedPro] = useState(false);
+  // All Pros are verified and insured by default
+  const preferVerifiedPro = true; // Always true - all pros are verified
 
   // PolishUp (home cleaning) booking details
   const [freshSpaceDetails, setPolishUpDetails] = useState<PolishUpBookingDetails | null>(null);
@@ -2856,25 +2856,18 @@ export default function Booking() {
                       </div>
                     )}
 
-                    {/* Pro Tier Preference */}
+                    {/* All Pros are Verified & Insured */}
                     <div className="pt-6 border-t">
-                      <div className="flex items-start justify-between gap-4 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+                      <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800 rounded-lg">
+                        <ShieldCheck className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <PyckerTierBadge tier="verified_pro" size="sm" />
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Only match me with licensed, insured Pros who have passed a background check.
+                          <p className="text-sm font-semibold text-green-900 dark:text-green-100 mb-1">
+                            All UpTend Pros are Verified & Fully Insured
                           </p>
-                          <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                            Verified Pros may have slightly longer wait times but provide maximum protection.
+                          <p className="text-xs text-green-700 dark:text-green-300">
+                            Every Pro carries $1M liability insurance, passes background checks, and is academy-trained. Your property is protected on every job.
                           </p>
                         </div>
-                        <Switch
-                          checked={preferVerifiedPro}
-                          onCheckedChange={setPreferVerifiedPro}
-                          data-testid="switch-verified-pro"
-                        />
                       </div>
                     </div>
                   </div>

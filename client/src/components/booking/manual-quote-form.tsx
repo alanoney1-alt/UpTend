@@ -17,6 +17,11 @@ interface ManualQuoteFormProps {
   serviceType: string;
   onComplete: (estimate: any) => void;
   className?: string;
+  propertyData?: {
+    bedrooms?: number | null;
+    bathrooms?: number | null;
+    livingArea?: number | null;
+  };
 }
 
 // Simple item checklist for junk removal (simplified from quote.tsx)
@@ -39,15 +44,18 @@ export function ManualQuoteForm({
   serviceType,
   onComplete,
   className,
+  propertyData,
 }: ManualQuoteFormProps) {
   const [selectedItems, setSelectedItems] = useState<
     Record<string, number>
   >({});
-  const [sqft, setSqft] = useState<string>("");
+  const [sqft, setSqft] = useState<string>(propertyData?.livingArea?.toString() || "");
   const [stories, setStories] = useState<string>("1");
   const [hours, setHours] = useState<string>("2");
   const [crewSize, setCrewSize] = useState<string>("2");
   const [estimatedPrice, setEstimatedPrice] = useState<number>(0);
+  const [bedrooms, setBedrooms] = useState<string>(propertyData?.bedrooms?.toString() || "2");
+  const [bathrooms, setBathrooms] = useState<string>(propertyData?.bathrooms?.toString() || "2");
 
   const isJunkRemoval =
     serviceType === "material-recovery" || serviceType === "junk_removal";
@@ -55,10 +63,11 @@ export function ManualQuoteForm({
     serviceType === "surface-wash" || serviceType === "pressure_washing";
   const isGutterCleaning = serviceType === "gutter-flush";
   const isMovingLabor = serviceType === "staging-labor";
+  const isHomeCleaning = serviceType === "home_cleaning" || serviceType === "polishup";
 
   useEffect(() => {
     calculatePrice();
-  }, [selectedItems, sqft, stories, hours, crewSize, serviceType]);
+  }, [selectedItems, sqft, stories, hours, crewSize, serviceType, bedrooms, bathrooms]);
 
   const calculatePrice = () => {
     let price = 0;
@@ -82,6 +91,16 @@ export function ManualQuoteForm({
       const hoursNum = parseInt(hours) || 2;
       const crewNum = parseInt(crewSize) || 2;
       price = hoursNum * crewNum * 80; // LiftCrew: $80/hr per Pro
+    } else if (isHomeCleaning) {
+      // PolishUp pricing based on bedrooms/bathrooms (simplified matrix)
+      const bed = parseInt(bedrooms) || 2;
+      const bath = parseInt(bathrooms) || 2;
+      const key = `${bed}-${Math.floor(bath)}`;
+      const priceMatrix: Record<string, number> = {
+        '1-1': 99, '2-1': 129, '2-2': 149, '3-2': 179,
+        '3-3': 209, '4-2': 229, '4-3': 259, '5-3': 299, '5-4': 299,
+      };
+      price = priceMatrix[key] || 149; // Default to 2BR/2BA
     }
 
     setEstimatedPrice(Math.round(price));
@@ -119,6 +138,9 @@ export function ManualQuoteForm({
         stories: isGutterCleaning ? parseInt(stories) : undefined,
         hours: isMovingLabor ? parseInt(hours) : undefined,
         crewSize: isMovingLabor ? parseInt(crewSize) : undefined,
+        bedrooms: isHomeCleaning ? parseInt(bedrooms) : undefined,
+        bathrooms: isHomeCleaning ? parseInt(bathrooms) : undefined,
+        livingArea: isHomeCleaning ? propertyData?.livingArea : undefined,
       },
       requiresHitlValidation: true,
     };
@@ -309,6 +331,64 @@ export function ManualQuoteForm({
                   <SelectItem value="3">3 people - $120/hr</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+          )}
+
+          {/* Home Cleaning - Bedrooms & Bathrooms */}
+          {isHomeCleaning && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="bedrooms" className="text-base font-bold">
+                  How many bedrooms?
+                </Label>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Used to calculate cleaning time and price
+                </p>
+              </div>
+
+              <Select value={bedrooms} onValueChange={setBedrooms}>
+                <SelectTrigger className="text-lg">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 Bedroom</SelectItem>
+                  <SelectItem value="2">2 Bedrooms</SelectItem>
+                  <SelectItem value="3">3 Bedrooms</SelectItem>
+                  <SelectItem value="4">4 Bedrooms</SelectItem>
+                  <SelectItem value="5">5 Bedrooms</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <div>
+                <Label htmlFor="bathrooms" className="text-base font-bold">
+                  How many bathrooms?
+                </Label>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Full and half baths combined
+                </p>
+              </div>
+
+              <Select value={bathrooms} onValueChange={setBathrooms}>
+                <SelectTrigger className="text-lg">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 Bathroom</SelectItem>
+                  <SelectItem value="2">2 Bathrooms</SelectItem>
+                  <SelectItem value="3">3 Bathrooms</SelectItem>
+                  <SelectItem value="4">4 Bathrooms</SelectItem>
+                  <SelectItem value="5">5+ Bathrooms</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {propertyData?.livingArea && (
+                <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <p className="text-xs text-blue-900 dark:text-blue-100">
+                    <strong>Note:</strong> We detected your home is approximately {propertyData.livingArea.toLocaleString()} sqft.
+                    This will be used for a more accurate quote.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 

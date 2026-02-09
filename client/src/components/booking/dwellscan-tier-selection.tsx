@@ -35,7 +35,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold mb-2">Choose Your DwellScan™</h2>
         <p className="text-muted-foreground">
-          Both options include a $49 credit toward your next UpTend service
+          Both tiers include the same <strong>$49 credit</strong> toward any future UpTend service
         </p>
       </div>
 
@@ -138,7 +138,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
             </p>
 
             <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg text-sm text-blue-900 dark:text-blue-100">
-              💡 <strong>Value:</strong> Comparable drone inspections cost $290–$350 alone
+              💡 <strong>Value:</strong> Comparable drone inspections cost $290–$350 alone. <strong>$49 credit included</strong> (same $49 credit as Standard tier, not the full $149).
             </div>
 
             <div className="space-y-2">

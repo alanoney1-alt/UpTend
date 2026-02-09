@@ -90,17 +90,9 @@ export function Footer() {
 
           <div>
             <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">{t("footer.footer_connect")}</h4>
-            <div className="flex gap-4 mb-6">
-              <a href="#" className="hover:text-white transition-colors" data-testid="link-instagram">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-white transition-colors" data-testid="link-linkedin">
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-white transition-colors" data-testid="link-twitter">
-                <Twitter className="w-5 h-5" />
-              </a>
-            </div>
+            <p className="text-sm text-slate-400 mb-4">
+              Questions? Call us at <a href="tel:407-338-3342" className="text-white hover:text-primary transition-colors">(407) 338-3342</a>
+            </p>
             <p className="text-xs text-slate-500" data-testid="text-footer-serving">
               {t("footer.footer_serving")}
             </p>

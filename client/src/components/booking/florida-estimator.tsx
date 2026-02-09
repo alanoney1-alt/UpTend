@@ -654,6 +654,11 @@ export function FloridaEstimator() {
 
           <ManualQuoteForm
             serviceType={selectedService || ""}
+            propertyData={propertyData ? {
+              bedrooms: propertyData.bedrooms,
+              bathrooms: propertyData.bathrooms,
+              livingArea: propertyData.livingArea,
+            } : undefined}
             onComplete={(estimate) => {
               setManualEstimate(estimate);
               setStep(5);
