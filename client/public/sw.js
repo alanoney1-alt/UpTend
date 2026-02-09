@@ -1,4 +1,4 @@
-const CACHE_NAME = 'upyck-v3'; // Bumped version to invalidate old cache
+const CACHE_NAME = 'uptend-v4'; // Bumped version for UpTend rebrand
 const CACHE_DURATION = 1000 * 60 * 60; // 1 hour cache duration
 const STATIC_ASSETS = [
   '/manifest.json',
@@ -104,14 +104,14 @@ self.addEventListener('fetch', (event) => {
 
 self.addEventListener('push', (event) => {
   const data = event.data?.json() ?? {};
-  const title = data.title || 'uPYCK';
+  const title = data.title || 'UpTend';
   const options = {
     body: data.body || 'You have a new notification',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-72x72.png',
     vibrate: [100, 50, 100],
     data: data.data || {},
-    tag: data.tag || 'upyck-notification'
+    tag: data.tag || 'uptend-notification'
   };
   
   event.waitUntil(

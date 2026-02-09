@@ -187,7 +187,7 @@ const resources = {
       "footer.footer_connect": "Connect",
       "footer.footer_serving": "Proudly serving the Orlando Metro area and expanding.",
       "footer.footer_copyright": "UpTend. All rights reserved.",
-      "footer.footer_legal_entity": "UpTend is a brand of uPYCK Inc.",
+      "footer.footer_legal_entity": "UpTend, LLC. All rights reserved.",
       "footer.footer_terms": "Terms",
       "footer.footer_privacy": "Privacy",
 
@@ -505,7 +505,7 @@ const resources = {
       "footer.footer_connect": "Conectar",
       "footer.footer_serving": "Sirviendo con orgullo el área metropolitana de Orlando y expandiéndonos.",
       "footer.footer_copyright": "UpTend. Todos los derechos reservados.",
-      "footer.footer_legal_entity": "UpTend es una marca de uPYCK Inc.",
+      "footer.footer_legal_entity": "UpTend, LLC. Todos los derechos reservados.",
       "footer.footer_terms": "Términos",
       "footer.footer_privacy": "Privacidad",
 

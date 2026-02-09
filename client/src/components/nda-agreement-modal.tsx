@@ -85,7 +85,7 @@ export function NdaAgreementModal({ open, onOpenChange, pyckerName, onSuccess }:
             </div>
 
             <p className="font-medium">
-              This Non-Solicitation and Confidentiality Agreement ("Agreement") is entered into between uPYCK, LLC ("Company") and the undersigned independent contractor ("Pro").
+              This Non-Solicitation and Confidentiality Agreement ("Agreement") is entered into between UpTend, LLC ("Company") and the undersigned independent contractor ("Pro").
             </p>
 
             <div className="space-y-3">
