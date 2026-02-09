@@ -6,6 +6,7 @@ import {
   Recycle, Droplets, Home, Users, Hammer, ClipboardCheck,
   Sofa, Truck, CheckCircle, ArrowRight, ShieldCheck, Star,
   GraduationCap, Video, Globe, DollarSign, ChevronRight,
+  Leaf, Sparkles,
 } from "lucide-react";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
@@ -90,13 +91,33 @@ const services = [
   {
     id: "home_cleaning",
     name: <>PolishUp<sup>™</sup> (Home Cleaning)</>,
-    icon: Home,
+    icon: Sparkles,
     tagline: "Spotless homes. Verified clean.",
     description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
     price: "From $99",
     includes: ["Room-by-room checklist", "Before/After photos", "Supplies included", "Recurring options available"],
     popular: true,
     link: "/services/home-cleaning",
+  },
+  {
+    id: "landscaping",
+    name: <>FreshCut<sup>™</sup> (Landscaping)</>,
+    icon: Leaf,
+    tagline: "Professional lawn care. Your curb appeal, maintained.",
+    description: "Complete lawn maintenance from basic mowing to premium care packages. One-time services or recurring plans with weekly/bi-weekly scheduling. Includes mowing, edging, blowing, and optional add-ons.",
+    price: "From $35",
+    includes: ["Professional mowing & edging", "Lawn debris removal", "Recurring discounts available", "Same-day service options"],
+    link: "/book/freshcut",
+  },
+  {
+    id: "carpet_cleaning",
+    name: <>DeepFiber<sup>™</sup> (Carpet Cleaning)</>,
+    icon: Home,
+    tagline: "Deep clean carpets. Certified methods.",
+    description: "Professional carpet and upholstery cleaning using industry-certified methods. Hot Water Extraction, Encapsulation, Bonnet, or Dry Compound. Pet odor treatment and Scotchgard protection available.",
+    price: "From $49",
+    includes: ["IICRC-certified methods", "Pet odor treatment options", "Scotchgard protection available", "Fast dry times"],
+    link: "/book/deepfiber",
   },
 ];
 

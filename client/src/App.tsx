@@ -58,6 +58,8 @@ import HomeHealthAudit from "@/pages/home-health-audit";
 import JunkRemoval from "@/pages/junk-removal";
 import ReferralLanding from "@/pages/referral-landing";
 import Marketplace from "@/pages/marketplace";
+import BookFreshCut from "@/pages/book-freshcut";
+import BookDeepFiber from "@/pages/book-deepfiber";
 import NotFound from "@/pages/not-found";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
@@ -129,6 +131,12 @@ function Router() {
       <Route path="/audit" component={HomeHealthAudit} />
       <Route path="/services/material-recovery" component={JunkRemoval} />
       <Route path="/services/junk" component={JunkRemoval} />
+      <Route path="/services/freshcut" component={BookFreshCut} />
+      <Route path="/services/landscaping" component={BookFreshCut} />
+      <Route path="/book/freshcut" component={BookFreshCut} />
+      <Route path="/services/deepfiber" component={BookDeepFiber} />
+      <Route path="/services/carpet-cleaning" component={BookDeepFiber} />
+      <Route path="/book/deepfiber" component={BookDeepFiber} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/pro/verify" component={ProVerification} />
       <Route path="/pro/sustainability-cert" component={ProSustainabilityCert} />

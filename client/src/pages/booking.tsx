@@ -58,6 +58,8 @@ const serviceTypes = [
   { id: "light_demolition", label: "TearDown™ (Light Demolition)", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
   { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
   { id: "home_cleaning", label: <>PolishUp<sup>™</sup> (Home Cleaning)</>, icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
+  { id: "landscaping", label: <>FreshCut<sup>™</sup> (Landscaping)</>, icon: Leaf, description: "Professional lawn care and landscaping", startingPrice: SERVICE_STARTING_PRICES.landscaping },
+  { id: "carpet_cleaning", label: <>DeepFiber<sup>™</sup> (Carpet Cleaning)</>, icon: Sparkles, description: "Deep carpet and upholstery cleaning", startingPrice: SERVICE_STARTING_PRICES.carpet_cleaning },
 ];
 
 // Map shared garage packages to booking page format

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
 import { Header } from "@/components/landing/header";
 import {
   ArrowLeft,
@@ -20,8 +22,11 @@ import {
   Sparkles,
   Minus,
   Plus,
+  Loader2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { apiRequest } from "@/lib/queryClient";
 import {
   DEEPFIBER_PER_ROOM,
   DEEPFIBER_METHODS,
@@ -32,6 +37,8 @@ import {
 export default function BookDeepFiber() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState<"service" | "details" | "schedule" | "review">("service");
   const [serviceTab, setServiceTab] = useState<"rooms" | "upholstery">("rooms");
 
@@ -53,6 +60,9 @@ export default function BookDeepFiber() {
   const [specialInstructions, setSpecialInstructions] = useState("");
   const [hasPets, setHasPets] = useState(false);
   const [hasStains, setHasStains] = useState(false);
+
+  // Schedule state
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const formatPrice = (cents: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -139,6 +149,59 @@ export default function BookDeepFiber() {
     });
   };
 
+  const createBookingMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) {
+        throw new Error("Must be logged in to book");
+      }
+
+      const method = DEEPFIBER_METHODS.find((m) => m.id === cleaningMethod);
+
+      const requestBody: Record<string, unknown> = {
+        customerId: user.id,
+        serviceType: "carpet_cleaning",
+        status: "matching",
+        pickupAddress: address,
+        pickupCity: "", // Could parse from address
+        pickupZip: "", // Could parse from address
+        description: `DeepFiber™ Carpet Cleaning - ${serviceTab === "rooms" ? `${roomCount} rooms` : "Upholstery"} - ${method?.label}`,
+        accessNotes: specialInstructions || null,
+        scheduledFor: selectedDate?.toISOString(),
+        createdAt: new Date().toISOString(),
+        metadata: {
+          serviceTab,
+          roomCount: serviceTab === "rooms" ? roomCount : undefined,
+          hallways,
+          closets,
+          cleaningMethod,
+          upholsteryItems: serviceTab === "upholstery" ? upholsteryItems : undefined,
+          addons: selectedAddons,
+          recurringPlan,
+          hasPets,
+          hasStains,
+        },
+      };
+
+      const response = await apiRequest("POST", "/api/service-requests", requestBody);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/service-requests"] });
+      toast({
+        title: "Booking created!",
+        description: "Your DeepFiber service has been scheduled",
+      });
+      setLocation(`/track/${data.id}`);
+    },
+    onError: (error) => {
+      toast({
+        title: "Booking failed",
+        description: error instanceof Error ? error.message : "Please try again",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleContinue = () => {
     if (step === "service") {
       if (serviceTab === "rooms" && roomCount === 0) {
@@ -161,13 +224,22 @@ export default function BookDeepFiber() {
       }
       setStep("schedule");
     } else if (step === "schedule") {
+      if (!selectedDate) {
+        toast({
+          title: "Date required",
+          description: "Please select a service date",
+          variant: "destructive",
+        });
+        return;
+      }
       setStep("review");
     } else if (step === "review") {
-      toast({
-        title: "Booking created!",
-        description: "Your DeepFiber service has been scheduled",
-      });
-      setLocation("/dashboard");
+      if (!user) {
+        // Redirect to auth with return URL
+        setLocation(`/auth?redirect=/book/deepfiber`);
+        return;
+      }
+      createBookingMutation.mutate();
     }
   };
 
@@ -540,18 +612,29 @@ export default function BookDeepFiber() {
           </Card>
         )}
 
-        {/* Step 3: Schedule (placeholder) */}
+        {/* Step 3: Schedule */}
         {step === "schedule" && (
           <Card>
             <CardContent className="p-6 space-y-6">
               <div>
                 <h3 className="font-semibold mb-4">Choose Date & Time</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Select your preferred service date
+                  Select your preferred service date. We'll match you with an available Pro.
                 </p>
-                <div className="p-8 border-2 border-dashed rounded-lg text-center text-muted-foreground">
-                  <p>Date picker coming soon</p>
+                <div className="flex justify-center">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    disabled={(date) => date < new Date() || date < new Date(new Date().setHours(0, 0, 0, 0))}
+                    className="rounded-md border"
+                  />
                 </div>
+                {selectedDate && (
+                  <p className="text-center mt-4 text-sm">
+                    Selected: <span className="font-semibold">{selectedDate.toLocaleDateString()}</span>
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-between pt-6 border-t">
@@ -589,12 +672,21 @@ export default function BookDeepFiber() {
               </div>
 
               <div className="flex justify-between pt-6 border-t">
-                <Button variant="outline" onClick={() => setStep("schedule")}>
+                <Button variant="outline" onClick={() => setStep("schedule")} disabled={createBookingMutation.isPending}>
                   Back
                 </Button>
-                <Button onClick={handleContinue}>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Confirm Booking
+                <Button onClick={handleContinue} disabled={createBookingMutation.isPending}>
+                  {createBookingMutation.isPending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Creating Booking...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Confirm Booking
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>
