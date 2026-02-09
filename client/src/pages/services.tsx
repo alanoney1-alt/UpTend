@@ -6,7 +6,7 @@ import {
   Recycle, Droplets, Home, Users, Hammer, ClipboardCheck,
   Sofa, Truck, CheckCircle, ArrowRight, ShieldCheck, Star,
   GraduationCap, Video, Globe, DollarSign, ChevronRight,
-  Leaf, Sparkles,
+  Leaf, Sparkles, Waves,
 } from "lucide-react";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
@@ -22,6 +22,15 @@ const services = [
     includes: ["360\u00B0 Video Manifest", "Verified Impact Report", "Circular economy sorting", "ESG compliance documentation"],
     popular: true,
     link: "/services/material-recovery",
+  },
+  {
+    id: "furniture_moving",
+    name: <>LiftCrew<sup>™</sup> (Furniture Moving)</>,
+    icon: Sofa,
+    tagline: "Your furniture, moved with care.",
+    description: "Professional furniture moving service with experienced Pros. Safe transport to your new location with proper equipment, blankets, and straps. Perfect for in-state moves.",
+    price: "From $99",
+    includes: ["Professional moving blankets", "Furniture dollies & straps", "Safe loading/unloading", "$1/mile transport rate"],
   },
   {
     id: "pressure_washing",
@@ -98,6 +107,15 @@ const services = [
     includes: ["Room-by-room checklist", "Before/After photos", "Supplies included", "Recurring options available"],
     popular: true,
     link: "/services/home-cleaning",
+  },
+  {
+    id: "pool_cleaning",
+    name: <>PoolSpark<sup>™</sup> (Pool Cleaning)</>,
+    icon: Waves,
+    tagline: "Crystal clear pools, maintained weekly.",
+    description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
+    price: "From $69",
+    includes: ["Weekly skimming & vacuuming", "Chemical testing & balancing", "Filter cleaning", "Equipment inspection"],
   },
   {
     id: "landscaping",
