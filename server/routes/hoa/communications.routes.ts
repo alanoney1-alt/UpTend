@@ -126,7 +126,7 @@ export function registerHoaCommunicationRoutes(app: Express) {
       for (const property of properties) {
         const propComms = await storage.getViolationCommunicationsByViolation(property.id);
         propComms.forEach(comm => {
-          const prop = propertyMap.get(comm.propertyId);
+          const prop = propertyMap.get(comm.propertyId || "");
           communications.push({
             id: comm.id,
             propertyId: comm.propertyId,

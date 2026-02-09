@@ -391,6 +391,7 @@ export const serviceRequests = pgTable("service_requests", {
   estimatedPrice: real("estimated_price"), // Original estimated price from quote
   // Service-specific details
   freshSpaceDetails: jsonb("fresh_space_details"), // Details for home cleaning service
+  recurringSubscriptionId: varchar("recurring_subscription_id"), // FK to recurring subscriptions
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
@@ -2408,6 +2409,7 @@ export const hoaViolations = pgTable("hoa_violations", {
   description: text("description").notNull(), // Full violation details
   dueDate: text("due_date"), // Deadline for compliance
   documentUrl: text("document_url"), // Scanned violation letter
+  photos: text("photos").array(), // Array of photo URLs
   status: text("status").notNull().default("submitted"), // submitted, contacted_owner, owner_responded, scheduled, job_completed, resolved, expired
   serviceRequestId: varchar("service_request_id"), // FK to serviceRequests when job is created
   submittedBy: varchar("submitted_by"), // HOA admin who submitted
@@ -2449,6 +2451,7 @@ export const violationCommunications = pgTable("violation_communications", {
   businessAccountId: varchar("business_account_id"), // FK to businessAccounts (optional)
   communicationType: text("communication_type"), // Type of communication
   method: text("method"), // Method used (alias for channel)
+  sentBy: varchar("sent_by"), // User ID who sent the communication
   channel: text("channel").notNull(), // "email", "sms", "call"
   recipient: text("recipient").notNull(), // Email or phone number
   subject: text("subject"), // For emails

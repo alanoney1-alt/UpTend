@@ -73,7 +73,7 @@ async function createAutoBooking(subscription: RecurringSubscription): Promise<S
     : subscription.homeDetails;
 
   // Calculate price based on subscription details
-  const price = calculateSubscriptionPrice(homeDetails, subscription.frequency);
+  const price = calculateSubscriptionPrice(homeDetails, subscription.frequency as "weekly" | "biweekly" | "monthly");
 
   // Create service request
   const serviceRequest = await storage.createServiceRequest({
@@ -92,7 +92,7 @@ async function createAutoBooking(subscription: RecurringSubscription): Promise<S
   });
 
   // Update subscription: increment bookings completed, calculate next booking date
-  const nextDate = calculateNextBookingDate(subscription.frequency);
+  const nextDate = calculateNextBookingDate(subscription.frequency as "weekly" | "biweekly" | "monthly");
   await storage.updateRecurringSubscription(subscription.id, {
     bookingsCompleted: (subscription.bookingsCompleted || 0) + 1,
     nextBookingDate: nextDate,
