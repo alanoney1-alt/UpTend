@@ -611,6 +611,7 @@ export default function Booking() {
     const serviceParam = params.get("service");
     const addressParam = params.get("address");
     const manualEstimateParam = params.get("manualEstimate");
+    const schedulingDataParam = params.get("schedulingData");
 
     if (quoteIdParam) {
       // Fetch AI estimate from frictionless quote flow
@@ -627,11 +628,33 @@ export default function Booking() {
             priceBreakdown: estimate.priceBreakdown || [],
           });
 
+          // Process scheduling data if present
+          let schedulingUpdate = {};
+          if (schedulingDataParam) {
+            try {
+              const schedulingData = JSON.parse(decodeURIComponent(schedulingDataParam));
+              if (schedulingData.type === "asap") {
+                schedulingUpdate = { scheduledFor: "asap" };
+              } else if (schedulingData.type === "scheduled") {
+                schedulingUpdate = {
+                  scheduledFor: schedulingData.timeSlot || "morning",
+                };
+              } else if (schedulingData.type === "recurring") {
+                schedulingUpdate = {
+                  scheduledFor: schedulingData.timeSlot || "morning",
+                };
+              }
+            } catch (e) {
+              console.error("Failed to parse scheduling data:", e);
+            }
+          }
+
           setFormData(prev => ({
             ...prev,
             serviceType: serviceParam || estimate.serviceType || "",
             pickupAddress: addressParam || "",
             loadEstimate: estimate.recommendedLoadSize,
+            ...schedulingUpdate,
           }));
 
           setInitialQuote({
@@ -665,10 +688,32 @@ export default function Booking() {
       try {
         const manualEstimate = JSON.parse(decodeURIComponent(manualEstimateParam));
 
+        // Process scheduling data if present
+        let schedulingUpdate = {};
+        if (schedulingDataParam) {
+          try {
+            const schedulingData = JSON.parse(decodeURIComponent(schedulingDataParam));
+            if (schedulingData.type === "asap") {
+              schedulingUpdate = { scheduledFor: "asap" };
+            } else if (schedulingData.type === "scheduled") {
+              schedulingUpdate = {
+                scheduledFor: schedulingData.timeSlot || "morning",
+              };
+            } else if (schedulingData.type === "recurring") {
+              schedulingUpdate = {
+                scheduledFor: schedulingData.timeSlot || "morning",
+              };
+            }
+          } catch (e) {
+            console.error("Failed to parse scheduling data:", e);
+          }
+        }
+
         setFormData(prev => ({
           ...prev,
           serviceType: serviceParam || manualEstimate.serviceType || "",
           pickupAddress: addressParam || "",
+          ...schedulingUpdate,
         }));
 
         setInitialQuote({

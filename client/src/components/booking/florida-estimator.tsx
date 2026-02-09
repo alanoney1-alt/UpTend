@@ -6,6 +6,7 @@ import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { MultiPhotoUpload } from "@/components/photo-upload";
 import { AIQuoteDisplay } from "./ai-quote-display";
 import { ManualQuoteForm } from "./manual-quote-form";
+import { ServiceScheduling, type SchedulingData } from "./service-scheduling";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowRight, ShieldCheck, Leaf, Sparkles, Pencil,
@@ -142,7 +143,7 @@ export function FloridaEstimator() {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [address, setAddress] = useState("");
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
   const [propertyData, setPropertyData] = useState<ZillowProperty | null>(null);
   const [propertyLoading, setPropertyLoading] = useState(false);
   const [, setLocation] = useLocation();
@@ -150,6 +151,7 @@ export function FloridaEstimator() {
 
   // New state for quote flow
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [schedulingData, setSchedulingData] = useState<SchedulingData | null>(null);
   const [quoteMethod, setQuoteMethod] = useState<"ai" | "manual" | null>(null);
   const [uploadMethod, setUploadMethod] = useState<"photos" | "video">("photos");
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
@@ -365,6 +367,9 @@ export function FloridaEstimator() {
     if (manualEstimate) {
       params.set("manualEstimate", encodeURIComponent(JSON.stringify(manualEstimate)));
     }
+    if (schedulingData) {
+      params.set("schedulingData", encodeURIComponent(JSON.stringify(schedulingData)));
+    }
     setLocation("/auth?" + params.toString());
   };
 
@@ -422,18 +427,34 @@ export function FloridaEstimator() {
     );
   }
 
-  // Step 3: Quote Method Selection
+  // Step 3: Service Scheduling
   if (step === 3) {
+    const selectedServiceName = pricingServices.find(s => s.id === selectedService)?.name || "Service";
+
+    return (
+      <ServiceScheduling
+        serviceName={selectedServiceName}
+        onComplete={(data) => {
+          setSchedulingData(data);
+          setStep(4);
+        }}
+        onBack={() => setStep(2)}
+      />
+    );
+  }
+
+  // Step 4: Quote Method Selection
+  if (step === 4) {
     return (
       <div className="w-full max-w-2xl mx-auto" data-testid="widget-quote-method-selection">
         <div className="text-center mb-6">
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setStep(2)}
+            onClick={() => setStep(3)}
             className="mb-4"
           >
-            ← Back to services
+            ← Back to scheduling
           </Button>
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
             How would you like your quote?
@@ -449,7 +470,7 @@ export function FloridaEstimator() {
             className="cursor-pointer hover:border-primary transition-all p-6"
             onClick={() => {
               setQuoteMethod("ai");
-              setStep(4);
+              setStep(5);
             }}
             data-testid="card-ai-quote"
           >
@@ -488,7 +509,7 @@ export function FloridaEstimator() {
             className="cursor-pointer hover:border-primary transition-all p-6"
             onClick={() => {
               setQuoteMethod("manual");
-              setStep(4);
+              setStep(5);
             }}
             data-testid="card-manual-quote"
           >
@@ -525,8 +546,8 @@ export function FloridaEstimator() {
     );
   }
 
-  // Step 4: Quote Generation (AI or Manual)
-  if (step === 4) {
+  // Step 5: Quote Generation (AI or Manual)
+  if (step === 5) {
     if (quoteMethod === "ai" && !aiQuote) {
       return (
         <div className="w-full max-w-2xl mx-auto" data-testid="widget-ai-quote-upload">
@@ -534,7 +555,7 @@ export function FloridaEstimator() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
               className="mb-4"
             >
               ← Back to quote method
@@ -725,7 +746,7 @@ export function FloridaEstimator() {
           <AIQuoteDisplay
             quote={aiQuote}
             serviceType={selectedService || ""}
-            onBook={() => setStep(5)}
+            onBook={() => setStep(6)}
           />
         </div>
       );
@@ -738,7 +759,7 @@ export function FloridaEstimator() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
               className="mb-4"
             >
               ← Back to quote method
@@ -757,7 +778,7 @@ export function FloridaEstimator() {
             } : undefined}
             onComplete={(estimate) => {
               setManualEstimate(estimate);
-              setStep(5);
+              setStep(6);
             }}
           />
         </div>
@@ -765,8 +786,8 @@ export function FloridaEstimator() {
     }
   }
 
-  // Step 5: Auth Gate
-  if (step === 5) {
+  // Step 6: Auth Gate
+  if (step === 6) {
     return (
       <div className="w-full max-w-2xl mx-auto" data-testid="widget-auth-gate">
         <div className="text-center mb-6">

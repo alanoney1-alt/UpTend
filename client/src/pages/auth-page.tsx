@@ -66,6 +66,7 @@ export default function AuthPage() {
   const quoteIdParam = urlParams.get("quoteId");
   const photosParam = urlParams.get("photos");
   const manualEstimateParam = urlParams.get("manualEstimate");
+  const schedulingDataParam = urlParams.get("schedulingData");
 
   const config = TAB_CONFIG[activeTab];
   const Icon = config.icon;
@@ -101,6 +102,7 @@ export default function AuthPage() {
           if (quoteIdParam) params.set("quoteId", quoteIdParam);
           if (photosParam) params.set("photos", photosParam);
           if (manualEstimateParam) params.set("manualEstimate", manualEstimateParam);
+          if (schedulingDataParam) params.set("schedulingData", schedulingDataParam);
           setLocation(`/book?${params.toString()}`);
         } else if (!data.hasPaymentMethod) {
           setLocation("/payment-setup");
