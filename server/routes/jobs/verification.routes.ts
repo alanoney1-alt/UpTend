@@ -158,7 +158,7 @@ export function registerJobVerificationRoutes(app: Express) {
 
       // Create disposal record
       const record = await storage.createDisposalRecord({
-        verificationId: verification.id,
+        jobVerificationId: verification.id,
         serviceRequestId: jobId,
         itemDescription: validated.itemDescription,
         itemPhotoUrl: validated.itemPhotoUrl || null,
@@ -585,7 +585,7 @@ export function registerJobVerificationRoutes(app: Express) {
         reasoning: cleanlinessScore.reasoning,
         areasOfConcern: cleanlinessScore.areasOfConcern,
         highlights: cleanlinessScore.highlights,
-        improvement: validated.phase === "after" && verification.cleanlinessScoreBefore
+        improvement: validated.phase === "after" && verification?.cleanlinessScoreBefore
           ? cleanlinessScore.score - verification.cleanlinessScoreBefore
           : null,
       });

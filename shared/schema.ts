@@ -389,6 +389,8 @@ export const serviceRequests = pgTable("service_requests", {
   // Quote method tracking
   quoteMethod: varchar("quote_method").default("manual"), // 'ai', 'manual', 'home_health_audit'
   estimatedPrice: real("estimated_price"), // Original estimated price from quote
+  // Service-specific details
+  freshSpaceDetails: jsonb("fresh_space_details"), // Details for home cleaning service
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
@@ -2378,6 +2380,7 @@ export const hoaProperties = pgTable("hoa_properties", {
   consentMethod: text("consent_method"), // "hoa_agreement", "email_optin", "sms_reply", etc.
   moveInDate: text("move_in_date"), // Track new move-ins for home health check offer
   status: text("status").default("active"), // active, vacant, pending_sale, etc.
+  isActive: boolean("is_active").default(true), // Whether property is actively managed
   notes: text("notes"), // Internal notes about property
   createdAt: text("created_at").notNull().default(sql`now()`),
   updatedAt: text("updated_at"),
@@ -2415,6 +2418,7 @@ export const hoaViolations = pgTable("hoa_violations", {
   resolvedAt: text("resolved_at"), // When violation was marked resolved
   notes: text("notes"), // Internal notes
   urgency: text("urgency").default("normal"), // low, normal, high, critical
+  severity: text("severity"), // Alias for urgency
 });
 
 export const hoaViolationsRelations = relations(hoaViolations, ({ one, many }) => ({
@@ -2442,6 +2446,7 @@ export const violationCommunications = pgTable("violation_communications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   violationId: varchar("violation_id"), // FK to hoaViolations (optional for general communications)
   propertyId: varchar("property_id"), // FK to hoaProperties (optional)
+  businessAccountId: varchar("business_account_id"), // FK to businessAccounts (optional)
   communicationType: text("communication_type"), // Type of communication
   method: text("method"), // Method used (alias for channel)
   channel: text("channel").notNull(), // "email", "sms", "call"

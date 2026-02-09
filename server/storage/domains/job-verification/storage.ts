@@ -56,7 +56,7 @@ export class JobVerificationStorage implements IJobVerificationStorage {
     return db
       .select()
       .from(disposalRecords)
-      .where(eq(disposalRecords.verificationId, verificationId));
+      .where(eq(disposalRecords.jobVerificationId, verificationId));
   }
 
   async getDisposalRecordsByServiceRequest(serviceRequestId: string): Promise<DisposalRecord[]> {
