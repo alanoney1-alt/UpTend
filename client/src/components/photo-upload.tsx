@@ -132,13 +132,14 @@ export function PhotoUpload({
 }
 
 interface MultiPhotoUploadProps {
-  label: string;
+  label?: string;
   description?: string;
   onPhotosChange: (urls: string[]) => void;
   maxPhotos?: number;
   accept?: string;
   className?: string;
   testId?: string;
+  photos?: string[];
 }
 
 export function MultiPhotoUpload({

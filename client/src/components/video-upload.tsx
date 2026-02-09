@@ -10,6 +10,10 @@ interface VideoUploadProps {
   onVideoUploaded?: (videoUrl: string) => void;
   maxDurationSeconds?: number;
   className?: string;
+  label?: string;
+  description?: string;
+  onVideoUpload?: (url: string | null) => void;
+  maxDuration?: number;
 }
 
 export function VideoUpload({
