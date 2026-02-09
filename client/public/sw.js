@@ -1,6 +1,6 @@
-const CACHE_NAME = 'upyck-v2';
+const CACHE_NAME = 'upyck-v3'; // Bumped version to invalidate old cache
+const CACHE_DURATION = 1000 * 60 * 60; // 1 hour cache duration
 const STATIC_ASSETS = [
-  '/',
   '/manifest.json',
   '/app-icon.png',
   '/favicon.png'
@@ -30,9 +30,10 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  
+
   const url = new URL(event.request.url);
-  
+
+  // Network-only for API calls (no caching)
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(event.request).catch(() => {
@@ -45,19 +46,46 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        fetch(event.request).then((response) => {
-          if (response.ok) {
+  // Network-first strategy for HTML pages (always get fresh content)
+  if (event.request.destination === 'document' ||
+      event.request.headers.get('accept')?.includes('text/html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Cache the fresh response
+          if (response.ok && url.origin === self.location.origin) {
+            const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, response.clone());
+              cache.put(event.request, responseClone);
             });
           }
-        });
-        return cachedResponse;
+          return response;
+        })
+        .catch(() => {
+          // Fallback to cache if offline
+          return caches.match(event.request).then((cachedResponse) => {
+            return cachedResponse || caches.match('/') || new Response('Offline', { status: 503 });
+          });
+        })
+    );
+    return;
+  }
+
+  // Cache-first with expiration for static assets (images, fonts, CSS, JS)
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      // Check if cached response is still fresh
+      if (cachedResponse) {
+        const cachedDate = new Date(cachedResponse.headers.get('date') || 0);
+        const now = Date.now();
+        const isFresh = (now - cachedDate.getTime()) < CACHE_DURATION;
+
+        if (isFresh) {
+          return cachedResponse;
+        }
       }
-      
+
+      // Fetch fresh copy
       return fetch(event.request).then((response) => {
         if (response.ok && url.origin === self.location.origin) {
           const responseClone = response.clone();
@@ -67,10 +95,8 @@ self.addEventListener('fetch', (event) => {
         }
         return response;
       }).catch(() => {
-        if (event.request.destination === 'document') {
-          return caches.match('/');
-        }
-        return new Response('Offline', { status: 503 });
+        // Return stale cache if network fails
+        return cachedResponse || new Response('Offline', { status: 503 });
       });
     })
   );
