@@ -152,7 +152,7 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   isConsultantEligible: boolean("is_consultant_eligible").default(false),
   commissionRate: integer("commission_rate").default(0),
   // Unlicensed 5 Equipment & Skills
-  supportedServices: jsonb("supported_services").default('["junk_removal"]'::jsonb),
+  supportedServices: jsonb("supported_services").$type<string[]>().default(sql`'["junk_removal"]'::jsonb`),
   hasPressureWasher: boolean("has_pressure_washer").default(false),
   hasTallLadder: boolean("has_tall_ladder").default(false),
   hasDemoTools: boolean("has_demo_tools").default(false),
