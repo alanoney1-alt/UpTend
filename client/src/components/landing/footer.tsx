@@ -80,18 +80,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-furniture-moving">
-                  LiftCrew™ (Furniture Moving)
-                </Link>
-              </li>
-              <li>
                 <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-moving-labor">
                   LiftCrew™ (Moving Labor)
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-truck-unloading">
-                  UnloadPro™ (Truck Unloading)
                 </Link>
               </li>
               <li>

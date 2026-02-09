@@ -50,9 +50,7 @@ import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 const serviceTypes = [
   { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
   { id: "junk_removal", label: "BulkSnap™ (Junk Removal)", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
-  { id: "furniture_moving", label: "LiftCrew™ (Furniture Moving)", icon: Sofa, description: "Move furniture to new location", startingPrice: SERVICE_STARTING_PRICES.furniture_moving },
   { id: "garage_cleanout", label: "GarageReset™ (Garage Cleanout)", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
-  { id: "truck_unloading", label: "UnloadPro™ (Truck Unloading)", icon: Truck, description: "Unload your rental truck or moving trailer", startingPrice: SERVICE_STARTING_PRICES.truck_unloading },
   { id: "pressure_washing", label: "FreshWash™ (Pressure Washing)", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
   { id: "gutter_cleaning", label: "GutterFlush™ (Gutter Cleaning)", icon: Home, description: "Clean and flush gutters and downspouts", startingPrice: SERVICE_STARTING_PRICES.gutter_cleaning },
   { id: "moving_labor", label: "LiftCrew™ (Moving Labor)", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
@@ -385,12 +383,6 @@ export default function Booking() {
         return junkRemovalLoadTiers.find(t => t.id === selectedJunkLoadTier)?.price || 0;
       case "garage_cleanout":
         return garageCleanoutPackages.find(p => p.id === selectedGaragePackage)?.price || 0;
-      case "truck_unloading": {
-        const hrs = Math.max(formData.laborHours || 1, 1);
-        return hrs * (formData.laborCrewSize || 2) * 80;
-      }
-      case "furniture_moving":
-        return itemsTotal;
       case "pressure_washing": {
         const raw = Math.round(formData.squareFootage * 0.25);
         return Math.max(raw, 150);
@@ -431,10 +423,6 @@ export default function Booking() {
         return !!selectedJunkLoadTier; // Photos encouraged but not required
       case "garage_cleanout":
         return !!selectedGaragePackage;
-      case "truck_unloading":
-        return formData.laborHours >= 1 && formData.laborCrewSize >= 1;
-      case "furniture_moving":
-        return totalItemCount > 0;
       case "pressure_washing":
         return formData.squareFootage >= 100;
       case "gutter_cleaning":
@@ -477,16 +465,6 @@ export default function Booking() {
         break;
       case "garage_cleanout":
         loadEstimate = selectedGaragePackage || "";
-        break;
-      case "truck_unloading":
-        // For truck unloading, combine truck size and hours for full context
-        if (formData.truckSize && selectedUnloadingHours) {
-          loadEstimate = `${formData.truckSize}_${selectedUnloadingHours}`;
-        }
-        break;
-      case "furniture_moving":
-        // For items-only, use the item count as an approximation
-        loadEstimate = totalItemCount > 0 ? "items" : "";
         break;
     }
     if (loadEstimate && loadEstimate !== formData.loadEstimate) {
