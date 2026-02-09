@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useUpload } from "@/hooks/use-upload";
 
 interface VideoUploadProps {
-  onFramesExtracted: (frames: string[]) => void;
+  onFramesExtracted?: (frames: string[]) => void;
   onVideoUploaded?: (videoUrl: string) => void;
   maxDurationSeconds?: number;
   className?: string;

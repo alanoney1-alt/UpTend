@@ -386,6 +386,9 @@ export const serviceRequests = pgTable("service_requests", {
   promoCodeDiscountAmount: real("promo_code_discount_amount"),
   totalDiscountAmount: real("total_discount_amount"), // Sum of all discounts
   priceBeforeDiscounts: real("price_before_discounts"), // Original subtotal
+  // Quote method tracking
+  quoteMethod: varchar("quote_method").default("manual"), // 'ai', 'manual', 'home_health_audit'
+  estimatedPrice: real("estimated_price"), // Original estimated price from quote
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
