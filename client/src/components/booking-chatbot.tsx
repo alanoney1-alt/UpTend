@@ -103,8 +103,8 @@ export function BookingChatbot() {
 
     try {
       const uploadPromises = Array.from(files).map(async (file) => {
-        const result = await uploadToObjectStorage(file);
-        return result.url;
+        const url = await uploadToObjectStorage(file);
+        return url;
       });
 
       const urls = await Promise.all(uploadPromises);
