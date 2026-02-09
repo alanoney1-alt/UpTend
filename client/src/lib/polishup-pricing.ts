@@ -41,24 +41,30 @@ export interface PolishUpQuote {
  * Columns: Clean type (standard/deep/move-out)
  */
 const BASE_PRICE_MATRIX: Record<string, { standard: number; deep: number; move_out: number }> = {
-  // Studio/1BR
-  '0-1': { standard: 99, deep: 179, move_out: 229 },
-  '1-1': { standard: 99, deep: 179, move_out: 229 },
+  // 1 Bed / 1 Bath
+  '1-1': { standard: 99, deep: 149, move_out: 179 },
 
-  // 2BR
-  '2-1': { standard: 129, deep: 229, move_out: 299 },
-  '2-2': { standard: 149, deep: 259, move_out: 329 },
+  // 2 Bed / 1 Bath
+  '2-1': { standard: 129, deep: 189, move_out: 229 },
 
-  // 3BR
-  '3-2': { standard: 179, deep: 299, move_out: 399 },
-  '3-3': { standard: 199, deep: 349, move_out: 449 },
+  // 2 Bed / 2 Bath
+  '2-2': { standard: 149, deep: 219, move_out: 259 },
 
-  // 4BR
-  '4-2': { standard: 219, deep: 379, move_out: 479 },
-  '4-3': { standard: 249, deep: 429, move_out: 529 },
+  // 3 Bed / 2 Bath
+  '3-2': { standard: 179, deep: 269, move_out: 319 },
 
-  // 5BR
-  '5-3': { standard: 299, deep: 499, move_out: 599 },
+  // 3 Bed / 3 Bath
+  '3-3': { standard: 209, deep: 309, move_out: 369 },
+
+  // 4 Bed / 2 Bath
+  '4-2': { standard: 229, deep: 339, move_out: 399 },
+
+  // 4 Bed / 3 Bath
+  '4-3': { standard: 259, deep: 389, move_out: 459 },
+
+  // 5+ Bed / 3+ Bath
+  '5-3': { standard: 299, deep: 449, move_out: 529 },
+  '5-4': { standard: 299, deep: 449, move_out: 529 },
 };
 
 /**

@@ -81,12 +81,13 @@ const CLEAN_TYPES = [
 ];
 
 const ADD_ONS = [
-  { id: "inside_oven", name: "Inside Oven", price: 35 },
-  { id: "inside_refrigerator", name: "Inside Refrigerator", price: 35 },
+  { id: "oven_cleaning", name: "Inside Oven", price: 35 },
+  { id: "fridge_cleaning", name: "Inside Refrigerator", price: 35 },
   { id: "interior_windows", name: "Interior Windows", price: 5, unit: "per window" },
-  { id: "laundry", name: "Laundry (2 loads)", price: 30 },
-  { id: "organize_closet", name: "Organize One Closet", price: 40 },
-  { id: "pet_hair_treatment", name: "Pet Hair Deep Treatment", price: 25 },
+  { id: "laundry_wash_fold", name: "Laundry (Wash/Dry/Fold)", price: 25, unit: "per load" },
+  { id: "inside_cabinets", name: "Inside Cabinets", price: 45 },
+  { id: "baseboards", name: "Baseboards", price: 25 },
+  { id: "garage_sweep", name: "Garage Sweep", price: 30 },
 ];
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];

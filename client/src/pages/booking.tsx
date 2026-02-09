@@ -2096,7 +2096,7 @@ export default function Booking() {
                               : "border-gray-200 hover:border-gray-300"
                           }`}
                         >
-                          <Badge className="absolute top-3 right-3 bg-orange-500 text-white">Most Popular</Badge>
+                          <Badge className="absolute top-3 right-3 bg-orange-500 text-white">Best Value</Badge>
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <h4 className="font-semibold text-lg">DwellScan™ Aerial</h4>
@@ -2126,9 +2126,9 @@ export default function Booking() {
                         <div className="flex items-start gap-3">
                           <Gift className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
                           <div>
-                            <p className="font-medium text-green-700 dark:text-green-400">Your fee becomes a credit</p>
+                            <p className="font-medium text-green-700 dark:text-green-400">$49 credit toward first booked service</p>
                             <p className="text-sm text-green-600/80 dark:text-green-400/80 mt-1">
-                              The full amount is applied as a credit toward any job you book through UpTend. It's risk-free.
+                              Get $49 off your first service booked from the DwellScan report recommendations. It's risk-free.
                             </p>
                           </div>
                         </div>
