@@ -46,7 +46,7 @@ const resources = {
       "estimator.sqft": "sqft",
       "estimator.built": "Built",
       "estimator.investment": "Investment",
-      "estimator.dispatch_notice": "Verified UpTend Pro dispatch within 24-48 hours.",
+      "estimator.dispatch_notice": "Same-day Pro dispatch available • Schedule for later • Set up recurring services",
       "estimator.based_on_local": "Based on local market data",
       "estimator.property_estimate": "Property estimate",
 
@@ -364,7 +364,7 @@ const resources = {
       "estimator.sqft": "pies²",
       "estimator.built": "Construido",
       "estimator.investment": "Inversión",
-      "estimator.dispatch_notice": "Despacho de Pro verificado de UpTend en 24-48 horas.",
+      "estimator.dispatch_notice": "Despacho de Pro el mismo día disponible • Programar para después • Configurar servicios recurrentes",
       "estimator.based_on_local": "Basado en datos del mercado local",
       "estimator.property_estimate": "Estimación de propiedad",
 
