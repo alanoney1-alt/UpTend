@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { CheckCircle, XCircle, Clock, AlertTriangle, Sparkles } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
-import { useMutation, useQueryClient } from "@tantml:parameter>
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ChecklistTask } from "@shared/polishup-checklists";
 
 interface CleaningChecklistProps {
