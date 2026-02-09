@@ -1,16 +1,16 @@
 export const PRICING_CONSTANTS = {
   PRESSURE_WASH_SQFT: 25,
-  PRESSURE_WASH_MIN: 15000,
+  PRESSURE_WASH_MIN: 12000, // $120 minimum (small job)
 
-  GUTTER_1_STORY: 12000,
-  GUTTER_2_STORY: 19900,
+  GUTTER_1_STORY: 14900, // $149 single story
+  GUTTER_2_STORY: 19900, // $199 two story
 
-  MOVER_HOURLY: 4000,
+  MOVER_HOURLY: 8000, // $80/hr per Pro (LiftCrew™)
   MOVER_MIN_HOURS: 1,
 
-  DEMO_BASE_RATE: 15000,
+  DEMO_BASE_RATE: 19900, // $199 starting (TearDown™)
 
-  CONSULTATION_FEE: 4900,
+  CONSULTATION_FEE: 4900, // $49 (DwellScan™ Standard)
 };
 
 export function calculateServicePrice(type: string, data: any): number | null {

@@ -32,7 +32,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Complete exterior refresh package",
     services: ["pressure_washing", "gutter_cleaning"],
     bundlePrice: 239,
-    alacartePrice: 269, // $150 (pressure washing) + $119 (gutter cleaning)
+    alacartePrice: 269, // $120 (FreshWash small) + $149 (GutterFlush single story)
     savings: 30,
   },
   move_out: {
@@ -41,7 +41,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Complete home inspection, cleanout, deep clean, and exterior wash",
     services: ["home_consultation", "junk_removal", "home_cleaning", "pressure_washing"],
     bundlePrice: 449,
-    alacartePrice: 517, // $149 (DwellScan Aerial) + $99 (junk) + $149 (deep clean) + $120 (pressure washing)
+    alacartePrice: 517, // $149 (DwellScan Aerial) + $99 (BulkSnap min) + $149 (PolishUp deep 1BR/1BA) + $120 (FreshWash small)
     savings: 68,
     badge: "PM Anchor Offer",
     notes: [
@@ -57,7 +57,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Complete home transformation - inspection, cleanout, deep clean, pressure wash, and gutters",
     services: ["home_consultation", "junk_removal", "home_cleaning", "pressure_washing", "gutter_cleaning"],
     bundlePrice: 569,
-    alacartePrice: 666, // $149 (DwellScan Aerial) + $99 (junk) + $149 (deep clean) + $150 (pressure washing) + $119 (gutter cleaning)
+    alacartePrice: 666, // $149 (DwellScan Aerial) + $99 (BulkSnap min) + $149 (PolishUp deep 1BR/1BA) + $120 (FreshWash small) + $149 (GutterFlush single story)
     savings: 97,
     badge: "Best Value",
     notes: [

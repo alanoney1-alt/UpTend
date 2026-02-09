@@ -37,14 +37,15 @@ export function calculatePolishUpPriceForAI(params: {
    * Columns: Clean type
    */
   const basePrices: Record<string, { standard: number; deep: number; move_out: number }> = {
-    '1-1': { standard: 99, deep: 179, move_out: 229 },
-    '2-1': { standard: 129, deep: 229, move_out: 299 },
-    '2-2': { standard: 149, deep: 259, move_out: 329 },
-    '3-2': { standard: 179, deep: 299, move_out: 399 },
-    '3-3': { standard: 199, deep: 349, move_out: 449 },
-    '4-2': { standard: 219, deep: 379, move_out: 479 },
-    '4-3': { standard: 249, deep: 429, move_out: 529 },
-    '5-3': { standard: 299, deep: 499, move_out: 599 },
+    '1-1': { standard: 99, deep: 149, move_out: 179 },
+    '2-1': { standard: 129, deep: 189, move_out: 229 },
+    '2-2': { standard: 149, deep: 219, move_out: 259 },
+    '3-2': { standard: 179, deep: 269, move_out: 319 },
+    '3-3': { standard: 209, deep: 309, move_out: 369 },
+    '4-2': { standard: 229, deep: 339, move_out: 399 },
+    '4-3': { standard: 259, deep: 389, move_out: 459 },
+    '5-3': { standard: 299, deep: 449, move_out: 529 },
+    '5-4': { standard: 299, deep: 449, move_out: 529 },
   };
 
   // Find closest base price
