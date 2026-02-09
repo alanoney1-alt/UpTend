@@ -35,11 +35,14 @@ export function registerPropertyValuationRoutes(app: Express) {
 
           if (homeListingRes.ok) {
             const data = await homeListingRes.json();
-            console.log(`[Property] Home Listing US API data:`, JSON.stringify(data).substring(0, 200));
+            console.log(`[Property] Home Listing US API full response:`, JSON.stringify(data, null, 2));
 
             // Home Listing US returns property data directly
             if (data && (data.property || data.address)) {
               const prop = data.property || data;
+
+              console.log(`[Property] ✅ Using Home Listing US data for: ${address}`);
+              console.log(`[Property] Parsed values - Price: ${prop.price || prop.estimatedValue || prop.zestimate}, Beds: ${prop.bedrooms || prop.beds}, Baths: ${prop.bathrooms || prop.baths}, SqFt: ${prop.livingArea || prop.squareFeet || prop.sqft}`);
 
               return res.json({
                 found: true,
@@ -67,10 +70,11 @@ export function registerPropertyValuationRoutes(app: Express) {
             }
           }
         } catch (apiErr: any) {
-          console.log("[Property] Home Listing US API error, falling back to Census:", apiErr.message);
+          console.error("[Property] ❌ Home Listing US API error, falling back to Census:", apiErr.message);
+          console.error("[Property] API Error details:", apiErr);
         }
       } else {
-        console.log("[Property] RAPIDAPI_KEY not configured, using Census fallback");
+        console.warn("[Property] ⚠️ RAPIDAPI_KEY not configured in .env file - using Census fallback with estimated values");
       }
 
       // === FALLBACK: Census Bureau geocoder for property estimation ===
@@ -129,6 +133,9 @@ export function registerPropertyValuationRoutes(app: Express) {
             estimatedValue = Math.round(estimatedValue / 1000) * 1000;
 
             const rentEstimate = Math.round(estimatedValue * 0.006);
+
+            console.log(`[Property] ⚠️ Using Census fallback for: ${address}`);
+            console.log(`[Property] County: ${countyName}, Estimated Value: $${estimatedValue}, Beds/Baths: 3/2 (generic), SqFt: ${Math.round(estimatedValue / 220)} (estimated)`);
 
             return res.json({
               found: true,
