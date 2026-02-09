@@ -210,6 +210,9 @@ export function FloridaEstimator() {
     if (uploadedPhotos.length > 0) {
       params.set("photos", encodeURIComponent(JSON.stringify(uploadedPhotos)));
     }
+    if (manualEstimate) {
+      params.set("manualEstimate", encodeURIComponent(JSON.stringify(manualEstimate)));
+    }
     setLocation("/auth?" + params.toString());
   };
 

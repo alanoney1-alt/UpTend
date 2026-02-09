@@ -629,6 +629,7 @@ export default function Booking() {
     const photosParam = params.get("photos");
     const serviceParam = params.get("service");
     const addressParam = params.get("address");
+    const manualEstimateParam = params.get("manualEstimate");
 
     if (quoteIdParam) {
       // Fetch AI estimate from frictionless quote flow
@@ -672,6 +673,32 @@ export default function Booking() {
         } catch (e) {
           console.error("Failed to parse photos param:", e);
         }
+      }
+
+      // Skip rest of URL param parsing
+      return;
+    }
+
+    // Check for manual estimate from Florida Estimator flow
+    if (manualEstimateParam) {
+      try {
+        const manualEstimate = JSON.parse(decodeURIComponent(manualEstimateParam));
+
+        setFormData(prev => ({
+          ...prev,
+          serviceType: serviceParam || manualEstimate.serviceType || "",
+          pickupAddress: addressParam || "",
+        }));
+
+        setInitialQuote({
+          price: manualEstimate.estimatedPrice,
+          items: [],
+          notes: `Manual estimate: ${JSON.stringify(manualEstimate.userInputs)}`,
+          method: "manual",
+          truckSize: "cargo_van",
+        });
+      } catch (e) {
+        console.error("Failed to parse manual estimate param:", e);
       }
 
       // Skip rest of URL param parsing
