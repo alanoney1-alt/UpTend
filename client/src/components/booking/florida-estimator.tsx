@@ -6,6 +6,7 @@ import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { MultiPhotoUpload } from "@/components/photo-upload";
 import { AIQuoteDisplay } from "./ai-quote-display";
 import { ManualQuoteForm } from "./manual-quote-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowRight, ShieldCheck, Leaf, Sparkles, Pencil,
   Truck, Waves, ArrowUpFromLine, Package, Search, TrendingUp,
@@ -101,8 +102,10 @@ export function FloridaEstimator() {
   // New state for quote flow
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [quoteMethod, setQuoteMethod] = useState<"ai" | "manual" | null>(null);
+  const [uploadMethod, setUploadMethod] = useState<"photos" | "video">("photos");
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
-  const [uploadedVideo, setUploadedVideo] = useState<string | null>(null);
+  const [uploadedVideo, setUploadedVideo] = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [aiQuote, setAiQuote] = useState<any | null>(null);
   const [manualEstimate, setManualEstimate] = useState<any | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -159,6 +162,127 @@ export function FloridaEstimator() {
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId);
     setStep(3);
+  };
+
+  const extractVideoFrames = async (videoFile: File, maxFrames = 12): Promise<string[]> => {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const frames: string[] = [];
+
+      video.preload = 'metadata';
+      video.src = URL.createObjectURL(videoFile);
+
+      video.onloadedmetadata = () => {
+        const duration = video.duration;
+        const interval = duration / maxFrames;
+        let currentTime = 0;
+
+        const captureFrame = () => {
+          if (currentTime >= duration || frames.length >= maxFrames) {
+            URL.revokeObjectURL(video.src);
+            resolve(frames);
+            return;
+          }
+
+          video.currentTime = currentTime;
+        };
+
+        video.onseeked = () => {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx?.drawImage(video, 0, 0);
+          frames.push(canvas.toDataURL('image/jpeg', 0.8));
+          currentTime += interval;
+          captureFrame();
+        };
+
+        captureFrame();
+      };
+
+      video.onerror = () => {
+        URL.revokeObjectURL(video.src);
+        reject(new Error('Failed to load video'));
+      };
+    });
+  };
+
+  const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('video/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a video file (MP4, MOV, etc.)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 100MB)
+    if (file.size > 100 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Video must be under 100MB. Try recording a shorter video.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadedVideo(file);
+    setVideoPreview(URL.createObjectURL(file));
+  };
+
+  const handleAnalyzeVideo = async () => {
+    if (!uploadedVideo) {
+      toast({
+        title: "No video uploaded",
+        description: "Please upload a video to analyze.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setAnalysisError(null);
+
+    try {
+      // Extract frames from video
+      const frames = await extractVideoFrames(uploadedVideo);
+
+      if (frames.length === 0) {
+        throw new Error("No frames could be extracted from video");
+      }
+
+      const response = await fetch("/api/ai/analyze-video", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          frames,
+          serviceType: selectedService === "material-recovery" ? "junk_removal" : selectedService,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to analyze video");
+      }
+
+      const quoteData = await response.json();
+      setAiQuote(quoteData); // Backend returns ID for video too
+    } catch (error) {
+      console.error("AI video analysis error:", error);
+      setAnalysisError("Failed to analyze video. Please try again or use photos instead.");
+      toast({
+        title: "Analysis failed",
+        description: "Unable to analyze video. Please try photos or manual entry.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleAnalyzePhotos = async () => {
@@ -565,14 +689,140 @@ export function FloridaEstimator() {
 
           <Card className="p-6">
             <CardContent className="p-0 space-y-6">
-              <MultiPhotoUpload
-                label="Upload up to 5 photos"
-                description="Take photos of items to be removed. Our AI will analyze them and provide an itemized quote."
-                onPhotosChange={setUploadedPhotos}
-                maxPhotos={5}
-                accept="image/*"
-                testId="photo-upload-ai-quote"
-              />
+              <Tabs value={uploadMethod} onValueChange={(v) => setUploadMethod(v as "photos" | "video")} className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="photos" className="gap-2">
+                    <Camera className="w-4 h-4" />
+                    Photos
+                  </TabsTrigger>
+                  <TabsTrigger value="video" className="gap-2">
+                    <Video className="w-4 h-4" />
+                    Video ⭐
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="photos" className="space-y-4 mt-6">
+                  <div className="space-y-2">
+                    <h3 className="font-semibold">Upload Photos</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Take photos of items to be removed. Best for individual items or specific areas.
+                    </p>
+                  </div>
+
+                  <MultiPhotoUpload
+                    label="Upload up to 5 photos"
+                    description="Our AI will analyze them and provide an itemized quote."
+                    onPhotosChange={setUploadedPhotos}
+                    maxPhotos={5}
+                    accept="image/*"
+                    testId="photo-upload-ai-quote"
+                  />
+
+                  {uploadedPhotos.length > 0 && (
+                    <Button
+                      onClick={handleAnalyzePhotos}
+                      disabled={isAnalyzing}
+                      className="w-full"
+                      size="lg"
+                    >
+                      {isAnalyzing ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Analyzing photos...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Analyze Photos & Get Quote
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="video" className="space-y-4 mt-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold">Video Walkthrough</h3>
+                      <Badge className="bg-primary">Recommended</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Record a 30-60 second walkthrough. Better for large spaces, shows scale, gives +5% confidence boost.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                    <h4 className="font-medium text-sm flex items-center gap-2">
+                      <Video className="w-4 h-4" />
+                      Recording Tips:
+                    </h4>
+                    <ul className="text-xs text-muted-foreground space-y-1 list-disc pl-5">
+                      <li>Walk through the space slowly, panning across all items</li>
+                      <li>Show the full area (garage, yard, room)</li>
+                      <li>Include a person or doorway for scale reference</li>
+                      <li>Narrate if helpful: "This pile is about 6 feet tall"</li>
+                      <li>Max 60 seconds, under 100MB</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-3">
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoUpload}
+                      className="hidden"
+                      id="video-upload"
+                    />
+                    <label htmlFor="video-upload">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full"
+                        size="lg"
+                        onClick={() => document.getElementById('video-upload')?.click()}
+                      >
+                        <Video className="w-4 h-4 mr-2" />
+                        {uploadedVideo ? "Change Video" : "Select Video"}
+                      </Button>
+                    </label>
+
+                    {videoPreview && (
+                      <div className="space-y-3">
+                        <video
+                          src={videoPreview}
+                          controls
+                          className="w-full rounded-lg border"
+                          style={{ maxHeight: "300px" }}
+                        />
+                        <p className="text-xs text-muted-foreground text-center">
+                          Preview • {uploadedVideo?.name}
+                        </p>
+                      </div>
+                    )}
+
+                    {uploadedVideo && (
+                      <Button
+                        onClick={handleAnalyzeVideo}
+                        disabled={isAnalyzing}
+                        className="w-full"
+                        size="lg"
+                      >
+                        {isAnalyzing ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Analyzing video...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Analyze Video & Get Quote
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
 
               {analysisError && (
                 <div className="p-4 bg-destructive/10 border border-destructive rounded-lg text-sm text-destructive">
@@ -580,34 +830,17 @@ export function FloridaEstimator() {
                 </div>
               )}
 
-              {uploadedPhotos.length > 0 && (
-                <Button
-                  onClick={handleAnalyzePhotos}
-                  disabled={isAnalyzing}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Analyzing photos...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      Analyze Photos & Get Quote
-                    </>
-                  )}
-                </Button>
-              )}
-
               {isAnalyzing && (
                 <div className="text-center space-y-2">
                   <p className="text-sm text-muted-foreground">
-                    Our AI is analyzing your photos...
+                    {uploadMethod === "video"
+                      ? "Our AI is extracting frames and analyzing your video..."
+                      : "Our AI is analyzing your photos..."}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Identifying items • Calculating volume • Estimating price
+                    {uploadMethod === "video"
+                      ? "Extracting frames • De-duplicating items • Calculating volume • Estimating price"
+                      : "Identifying items • Calculating volume • Estimating price"}
                   </p>
                 </div>
               )}
