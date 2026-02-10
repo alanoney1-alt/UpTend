@@ -1947,7 +1947,7 @@ export default function Booking() {
                       </div>
 
                       <p className="text-sm text-muted-foreground mb-6">
-                        Professional handyman services for repairs, assembly, mounting, and more. $49/hr, 1-hour minimum. Billed by the minute after first hour.
+                        Professional handyman services for repairs, assembly, mounting, and more. From $49/hr, 1-hour minimum. Billed by the minute after first hour.
                       </p>
 
                       <div className="space-y-6">
