@@ -16,6 +16,7 @@ const services = [
   {
     id: "home_consultation",
     name: <>DwellScan<sup>™</sup> (Home Audit)</>,
+    jumpToLabel: "Home Audit",
     icon: ClipboardCheck,
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
     description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° video documentation, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($199). Fee is credited toward any booked service.",
@@ -29,6 +30,7 @@ const services = [
   {
     id: "handyman",
     name: "Handyman Services",
+    jumpToLabel: "Handyman",
     icon: Wrench,
     tagline: "No task too small.",
     description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
@@ -41,6 +43,7 @@ const services = [
   {
     id: "home_cleaning",
     name: "Home Cleaning",
+    jumpToLabel: "Home Cleaning",
     icon: Sparkles,
     tagline: "Spotless homes. Verified clean.",
     description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
@@ -52,6 +55,7 @@ const services = [
   {
     id: "landscaping",
     name: "Landscaping",
+    jumpToLabel: "Landscaping",
     icon: Leaf,
     tagline: "Professional lawn care. Your curb appeal, maintained.",
     description: "Complete lawn maintenance from basic mowing to premium care packages. One-time services or recurring plans with weekly/bi-weekly scheduling. Includes mowing, edging, blowing, and optional add-ons.",
@@ -63,6 +67,7 @@ const services = [
   {
     id: "pool_cleaning",
     name: "Pool Cleaning",
+    jumpToLabel: "Pool Cleaning",
     icon: Waves,
     tagline: "Crystal clear pools, maintained weekly.",
     description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
@@ -73,6 +78,7 @@ const services = [
   {
     id: "carpet_cleaning",
     name: "Carpet Cleaning",
+    jumpToLabel: "Carpet Cleaning",
     icon: Home,
     tagline: "Deep clean carpets. Certified methods.",
     description: "Professional carpet and upholstery cleaning using industry-certified methods. Hot Water Extraction, Encapsulation, Bonnet, or Dry Compound. Pet odor treatment and Scotchgard protection available.",
@@ -85,6 +91,7 @@ const services = [
   {
     id: "pressure_washing",
     name: "Pressure Washing",
+    jumpToLabel: "Pressure Washing",
     icon: Droplets,
     tagline: "Curb appeal, restored in hours.",
     description: "Industrial-grade surface cleaning for driveways, patios, walkways, pool decks, and home exteriors. Chemical pre-treatment included on every job.",
@@ -95,6 +102,7 @@ const services = [
   {
     id: "gutter_cleaning",
     name: "Gutter Cleaning",
+    jumpToLabel: "Gutter Cleaning",
     icon: Home,
     tagline: "Prevent water damage before it starts.",
     description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
@@ -107,6 +115,7 @@ const services = [
   {
     id: "junk_removal",
     name: "Junk Removal",
+    jumpToLabel: "Junk Removal",
     icon: Recycle,
     tagline: "Space Rejuvenation. Verified Material Recovery.",
     description: "Your unwanted items are resources. We recover your space, protect your property with a 360° Video Manifest, and verify the environmental impact of every item through our circular economy system.",
@@ -118,6 +127,7 @@ const services = [
   {
     id: "furniture_moving",
     name: "Furniture Moving",
+    jumpToLabel: "Furniture Moving",
     icon: Sofa,
     tagline: "Your furniture, moved with care.",
     description: "Professional furniture moving service with experienced Pros. Safe transport to your new location with proper equipment, blankets, and straps. Perfect for in-state moves.",
@@ -127,6 +137,7 @@ const services = [
   {
     id: "moving_labor",
     name: "Moving Labor",
+    jumpToLabel: "Moving Labor",
     icon: Users,
     tagline: "Your muscle on demand.",
     description: "Hourly labor for loading, unloading, and rearranging. You rent the truck or pod, we supply the manpower, dollies, and shrink wrap. Perfect for DIY moves.",
@@ -136,6 +147,7 @@ const services = [
   {
     id: "truck_unloading",
     name: "Truck Unloading",
+    jumpToLabel: "Truck Unloading",
     icon: Truck,
     tagline: "You drove it. We'll unload it.",
     description: "Professional unloading of your rental truck, pod, or trailer. Our Pros place everything exactly where you want it inside your new home. 1-hour minimum.",
@@ -147,6 +159,7 @@ const services = [
   {
     id: "light_demolition",
     name: "Light Demolition",
+    jumpToLabel: "Demolition",
     icon: Hammer,
     tagline: "Tear it out. Haul it off.",
     description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. We demo it, clean it up, and haul the debris away in one visit.",
@@ -156,6 +169,7 @@ const services = [
   {
     id: "garage_cleanout",
     name: "Garage Cleanout",
+    jumpToLabel: "Garage Cleanout",
     icon: Sofa,
     tagline: "Reclaim your space.",
     description: "Complete garage cleanout from cluttered to clean. We sort, donate, recycle, and haul everything so you can actually park in your garage again.",
@@ -241,22 +255,7 @@ export default function Services() {
                 }`}
               >
                 <svc.icon className="w-4 h-4 shrink-0" />
-                <span className="hidden sm:inline">
-                  {svc.id === 'home_consultation' && 'Home Audit'}
-                  {svc.id === 'junk_removal' && 'Junk Removal'}
-                  {svc.id === 'home_cleaning' && 'Home Cleaning'}
-                  {svc.id === 'pressure_washing' && 'Pressure Washing'}
-                  {svc.id === 'gutter_cleaning' && 'Gutter Cleaning'}
-                  {svc.id === 'moving_labor' && 'Moving Labor'}
-                  {svc.id === 'handyman' && 'Handyman'}
-                  {svc.id === 'light_demolition' && 'Demolition'}
-                  {svc.id === 'garage_cleanout' && 'Garage Cleanout'}
-                  {svc.id === 'furniture_moving' && 'Furniture Moving'}
-                  {svc.id === 'truck_unloading' && 'Truck Unloading'}
-                  {svc.id === 'landscaping' && 'Landscaping'}
-                  {svc.id === 'pool_cleaning' && 'Pool Cleaning'}
-                  {svc.id === 'carpet_cleaning' && 'Carpet Cleaning'}
-                </span>
+                <span>{svc.jumpToLabel}</span>
               </button>
             ))}
           </div>

@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { storage } from "../../storage";
 import { z } from "zod";
 import { requireAuth } from "../../middleware/auth";
-import { requireBusinessTeamAccess } from "../../auth-middleware";
+import { requireBusinessTeamAccess, verifyTeamAccess } from "../../auth-middleware";
 
 const createViolationSchema = z.object({
   propertyId: z.string().uuid(),
@@ -30,20 +30,12 @@ export function registerHoaViolationRoutes(app: Express) {
         return res.status(404).json({ error: "Property not found" });
       }
 
-      // Verify team access (any team member can create violations)
-      const teamMembers = await storage.getTeamMembersByBusiness(property.businessAccountId);
-      const businessAccount = await storage.getBusinessAccount(property.businessAccountId);
-
-      const isOwner = businessAccount && businessAccount.userId === req.user!.id;
-      const isTeamMember = teamMembers.some(m =>
-        m.userId === req.user!.id &&
-        m.isActive &&
-        m.invitationStatus === "accepted"
-      );
-      const isAdmin = req.user!.role === "admin";
-
-      if (!isOwner && !isTeamMember && !isAdmin) {
-        return res.status(403).json({ error: "Unauthorized - not a member of this business account" });
+      // Verify team access (any team member can create violations) - admin bypass
+      if (req.user!.role !== "admin") {
+        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId);
+        if (!access.authorized) {
+          return res.status(403).json({ error: access.message || "Unauthorized - not a member of this business account" });
+        }
       }
 
       // Create violation
@@ -98,20 +90,12 @@ export function registerHoaViolationRoutes(app: Express) {
         return res.status(404).json({ error: "Property not found" });
       }
 
-      // Verify team access
-      const teamMembers = await storage.getTeamMembersByBusiness(property.businessAccountId);
-      const businessAccount = await storage.getBusinessAccount(property.businessAccountId);
-
-      const isOwner = businessAccount && businessAccount.userId === req.user!.id;
-      const isTeamMember = teamMembers.some(m =>
-        m.userId === req.user!.id &&
-        m.isActive &&
-        m.invitationStatus === "accepted"
-      );
-      const isAdmin = req.user!.role === "admin";
-
-      if (!isOwner && !isTeamMember && !isAdmin) {
-        return res.status(403).json({ error: "Unauthorized" });
+      // Verify team access - admin bypass
+      if (req.user!.role !== "admin") {
+        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId);
+        if (!access.authorized) {
+          return res.status(403).json({ error: access.message || "Unauthorized" });
+        }
       }
 
       const violations = await storage.getHoaViolationsByProperty(propertyId);
@@ -130,20 +114,12 @@ export function registerHoaViolationRoutes(app: Express) {
         return res.status(404).json({ error: "Violation not found" });
       }
 
-      // Verify team access
-      const teamMembers = await storage.getTeamMembersByBusiness(violation.businessAccountId);
-      const businessAccount = await storage.getBusinessAccount(violation.businessAccountId);
-
-      const isOwner = businessAccount && businessAccount.userId === req.user!.id;
-      const isTeamMember = teamMembers.some(m =>
-        m.userId === req.user!.id &&
-        m.isActive &&
-        m.invitationStatus === "accepted"
-      );
-      const isAdmin = req.user!.role === "admin";
-
-      if (!isOwner && !isTeamMember && !isAdmin) {
-        return res.status(403).json({ error: "Unauthorized" });
+      // Verify team access - admin bypass
+      if (req.user!.role !== "admin") {
+        const access = await verifyTeamAccess(req.user!.id, violation.businessAccountId);
+        if (!access.authorized) {
+          return res.status(403).json({ error: access.message || "Unauthorized" });
+        }
       }
 
       res.json(violation);
@@ -161,20 +137,12 @@ export function registerHoaViolationRoutes(app: Express) {
         return res.status(404).json({ error: "Violation not found" });
       }
 
-      // Verify team access
-      const teamMembers = await storage.getTeamMembersByBusiness(violation.businessAccountId);
-      const businessAccount = await storage.getBusinessAccount(violation.businessAccountId);
-
-      const isOwner = businessAccount && businessAccount.userId === req.user!.id;
-      const isTeamMember = teamMembers.some(m =>
-        m.userId === req.user!.id &&
-        m.isActive &&
-        m.invitationStatus === "accepted"
-      );
-      const isAdmin = req.user!.role === "admin";
-
-      if (!isOwner && !isTeamMember && !isAdmin) {
-        return res.status(403).json({ error: "Unauthorized" });
+      // Verify team access - admin bypass
+      if (req.user!.role !== "admin") {
+        const access = await verifyTeamAccess(req.user!.id, violation.businessAccountId);
+        if (!access.authorized) {
+          return res.status(403).json({ error: access.message || "Unauthorized" });
+        }
       }
 
       const updates: any = {};

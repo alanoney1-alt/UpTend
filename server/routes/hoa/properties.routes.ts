@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { storage } from "../../storage";
 import { z } from "zod";
 import { requireAuth } from "../../middleware/auth";
-import { requireBusinessTeamAccess } from "../../auth-middleware";
+import { requireBusinessTeamAccess, verifyTeamAccess } from "../../auth-middleware";
 
 const createPropertySchema = z.object({
   businessAccountId: z.string().uuid(),
@@ -82,20 +82,12 @@ export function registerHoaPropertyRoutes(app: Express) {
         return res.status(404).json({ error: "Property not found" });
       }
 
-      // Verify team access using the property's business account ID
-      const teamMembers = await storage.getTeamMembersByBusiness(property.businessAccountId);
-      const businessAccount = await storage.getBusinessAccount(property.businessAccountId);
-
-      const isOwner = businessAccount && businessAccount.userId === req.user!.id;
-      const isTeamMember = teamMembers.some(m =>
-        m.userId === req.user!.id &&
-        m.isActive &&
-        m.invitationStatus === "accepted"
-      );
-      const isAdmin = req.user!.role === "admin";
-
-      if (!isOwner && !isTeamMember && !isAdmin) {
-        return res.status(403).json({ error: "Unauthorized" });
+      // Verify team access - admin bypass
+      if (req.user!.role !== "admin") {
+        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId);
+        if (!access.authorized) {
+          return res.status(403).json({ error: access.message || "Unauthorized" });
+        }
       }
 
       res.json(property);
@@ -113,21 +105,12 @@ export function registerHoaPropertyRoutes(app: Express) {
         return res.status(404).json({ error: "Property not found" });
       }
 
-      // Verify team access with canManageProperties permission
-      const teamMembers = await storage.getTeamMembersByBusiness(property.businessAccountId);
-      const businessAccount = await storage.getBusinessAccount(property.businessAccountId);
-
-      const isOwner = businessAccount && businessAccount.userId === req.user!.id;
-      const teamMember = teamMembers.find(m =>
-        m.userId === req.user!.id &&
-        m.isActive &&
-        m.invitationStatus === "accepted"
-      );
-      const hasPermission = teamMember?.canManageProperties || false;
-      const isAdmin = req.user!.role === "admin";
-
-      if (!isOwner && !hasPermission && !isAdmin) {
-        return res.status(403).json({ error: "Unauthorized - requires canManageProperties permission" });
+      // Verify team access with canManageProperties permission - admin bypass
+      if (req.user!.role !== "admin") {
+        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId, "canManageProperties");
+        if (!access.authorized) {
+          return res.status(403).json({ error: access.message || "Unauthorized - requires canManageProperties permission" });
+        }
       }
 
       const updates = updatePropertySchema.parse(req.body);
@@ -151,21 +134,12 @@ export function registerHoaPropertyRoutes(app: Express) {
         return res.status(404).json({ error: "Property not found" });
       }
 
-      // Verify team access with canManageProperties permission
-      const teamMembers = await storage.getTeamMembersByBusiness(property.businessAccountId);
-      const businessAccount = await storage.getBusinessAccount(property.businessAccountId);
-
-      const isOwner = businessAccount && businessAccount.userId === req.user!.id;
-      const teamMember = teamMembers.find(m =>
-        m.userId === req.user!.id &&
-        m.isActive &&
-        m.invitationStatus === "accepted"
-      );
-      const hasPermission = teamMember?.canManageProperties || false;
-      const isAdmin = req.user!.role === "admin";
-
-      if (!isOwner && !hasPermission && !isAdmin) {
-        return res.status(403).json({ error: "Unauthorized - requires canManageProperties permission" });
+      // Verify team access with canManageProperties permission - admin bypass
+      if (req.user!.role !== "admin") {
+        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId, "canManageProperties");
+        if (!access.authorized) {
+          return res.status(403).json({ error: access.message || "Unauthorized - requires canManageProperties permission" });
+        }
       }
 
       // TODO: Check if property has active violations before deleting

@@ -238,3 +238,87 @@ export function requireBusinessTeamAccess(permission?: keyof {
     }
   };
 }
+
+/**
+ * Helper function to verify team access for a business account
+ * Use this for inline checks when businessAccountId needs to be fetched from a resource
+ *
+ * @param userId - ID of the user to check
+ * @param businessAccountId - ID of the business account
+ * @param permission - Optional specific permission to require
+ * @returns Object with authorized boolean and optional teamMember
+ *
+ * @example
+ * const property = await storage.getHoaProperty(propertyId);
+ * const access = await verifyTeamAccess(req.user!.id, property.businessAccountId, "canManageProperties");
+ * if (!access.authorized) {
+ *   return res.status(403).json({ error: access.message });
+ * }
+ */
+export async function verifyTeamAccess(
+  userId: string,
+  businessAccountId: string,
+  permission?: keyof {
+    canViewFinancials: boolean;
+    canManageTeam: boolean;
+    canCreateJobs: boolean;
+    canApprovePayments: boolean;
+    canAccessEsgReports: boolean;
+    canManageProperties: boolean;
+  }
+): Promise<{ authorized: boolean; message?: string; teamMember?: any }> {
+  try {
+    const { storage } = await import("./storage");
+
+    // Get business account
+    const businessAccount = await storage.getBusinessAccount(businessAccountId);
+    if (!businessAccount) {
+      return { authorized: false, message: "Business account not found" };
+    }
+
+    // Check if user is the owner (backward compatibility)
+    if (businessAccount.userId === userId) {
+      return {
+        authorized: true,
+        teamMember: {
+          id: "owner",
+          businessAccountId: businessAccount.id,
+          userId,
+          role: "owner",
+          canViewFinancials: true,
+          canManageTeam: true,
+          canCreateJobs: true,
+          canApprovePayments: true,
+          canAccessEsgReports: true,
+          canManageProperties: true,
+          isActive: true,
+        }
+      };
+    }
+
+    // Check team membership
+    const teamMembers = await storage.getTeamMembersByBusiness(businessAccountId);
+    const teamMember = teamMembers.find(m =>
+      m.userId === userId &&
+      m.isActive &&
+      m.invitationStatus === "accepted"
+    );
+
+    if (!teamMember) {
+      return { authorized: false, message: "You are not a member of this business account" };
+    }
+
+    // Check specific permission if required
+    if (permission && !teamMember[permission]) {
+      return {
+        authorized: false,
+        message: `You do not have the required permission: ${permission}`
+      };
+    }
+
+    return { authorized: true, teamMember };
+  } catch (error) {
+    console.error("Team access verification error:", error);
+    return { authorized: false, message: "Failed to verify team access" };
+  }
+}
