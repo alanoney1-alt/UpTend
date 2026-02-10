@@ -178,7 +178,7 @@ export class AiCapabilitiesStorage {
       .where(
         and(
           eq(seasonalAdvisories.zipCode, zipCode),
-          gte(seasonalAdvisories.expiresAt, now)
+          sql`${seasonalAdvisories.expiresAt} IS NULL OR ${seasonalAdvisories.expiresAt} >= ${now}`
         )
       )
       .orderBy(desc(seasonalAdvisories.createdAt));
@@ -210,7 +210,7 @@ export class AiCapabilitiesStorage {
         and(
           eq(smartScheduleSuggestions.userId, userId),
           eq(smartScheduleSuggestions.accepted, false),
-          gte(smartScheduleSuggestions.expiresAt, now)
+          sql`${smartScheduleSuggestions.expiresAt} >= ${now}`
         )
       )
       .orderBy(desc(smartScheduleSuggestions.confidenceScore));
@@ -655,19 +655,18 @@ export class AiCapabilitiesStorage {
   async getLatestNeighborhoodIntelligence(
     zipCode: string
   ): Promise<NeighborhoodIntelligenceReport | undefined> {
-    const now = new Date().toISOString();
-    const [report] = await db
-      .select()
-      .from(neighborhoodIntelligenceReports)
-      .where(
-        and(
-          eq(neighborhoodIntelligenceReports.zipCode, zipCode),
-          gte(neighborhoodIntelligenceReports.expiresAt, now)
-        )
-      )
-      .orderBy(desc(neighborhoodIntelligenceReports.reportDate))
-      .limit(1);
-    return report;
+    try {
+      const [report] = await db
+        .select()
+        .from(neighborhoodIntelligenceReports)
+        .where(eq(neighborhoodIntelligenceReports.zipCode, zipCode))
+        .orderBy(desc(neighborhoodIntelligenceReports.createdAt))
+        .limit(1);
+      return report;
+    } catch (error) {
+      console.error("Error querying neighborhood intelligence:", error);
+      return undefined;
+    }
   }
 
   async getNeighborhoodIntelligenceHistory(

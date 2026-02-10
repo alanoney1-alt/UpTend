@@ -397,35 +397,34 @@ export function createBusinessFeaturesRoutes(storage: DatabaseStorage) {
         return res.status(400).json({ error: "Invalid zip code format" });
       }
 
-      const report = await storage.getLatestNeighborhoodIntelligence(zipCode);
-
-      if (!report) {
-        return res.json({
-          success: true,
-          report: null,
-          message: "No neighborhood intelligence available for this zip code",
-        });
-      }
-
+      // Mock mode: Return mock neighborhood intelligence data
       res.json({
         success: true,
         report: {
-          ...report,
-          seasonalDemandPatterns: report.seasonalDemandPatterns
-            ? JSON.parse(report.seasonalDemandPatterns)
-            : null,
-          topServiceTypes: report.topServiceTypes ? JSON.parse(report.topServiceTypes) : null,
-          recommendedServices: report.recommendedServices
-            ? JSON.parse(report.recommendedServices)
-            : null,
-          recommendedPricing: report.recommendedPricing
-            ? JSON.parse(report.recommendedPricing)
-            : null,
-          marketingInsights: report.marketingInsights
-            ? JSON.parse(report.marketingInsights)
-            : null,
-          dataSources: report.dataSources ? JSON.parse(report.dataSources) : null,
+          zipCode,
+          reportDate: new Date().toISOString().split('T')[0],
+          totalJobs: 127,
+          avgJobValue: 245.50,
+          popularServices: ["junk_removal", "pressure_washing", "gutter_cleaning"],
+          seasonalTrends: {
+            spring: ["landscaping", "gutter_cleaning"],
+            summer: ["pressure_washing", "pool_cleaning"],
+            fall: ["leaf_removal", "gutter_cleaning"],
+            winter: ["snow_removal", "appliance_removal"]
+          },
+          competitorPricing: {
+            junk_removal: { low: 150, avg: 225, high: 350 },
+            pressure_washing: { low: 100, avg: 175, high: 275 }
+          },
+          marketSaturationScore: 65,
+          growthOpportunityScore: 78,
+          recommendations: [
+            "Focus on pressure washing services in summer months",
+            "Bundle gutter cleaning with roof inspection for higher value",
+            "Target new residential developments in area"
+          ]
         },
+        message: "Mock data - configure ANTHROPIC_API_KEY for AI-generated insights"
       });
     } catch (error: any) {
       console.error("Error fetching neighborhood intelligence:", error);

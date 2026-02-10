@@ -4098,7 +4098,8 @@ export const seasonalAdvisories = pgTable("seasonal_advisories", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   propertyId: varchar("property_id").notNull(),
   userId: varchar("user_id").notNull(),
-  
+  zipCode: text("zip_code"),
+
   triggerType: text("trigger_type").notNull(),
   triggerData: jsonb("trigger_data"),
   
