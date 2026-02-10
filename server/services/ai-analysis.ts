@@ -118,6 +118,99 @@ Respond in JSON format:
   "reasoning": "Brief explanation of your estimate including truck recommendation"
 }`;
 
+  // Special handling for handyman services
+  if (serviceType === "handyman") {
+    systemPrompt = `You are an expert handyman estimator with AI vision capabilities. Analyze the provided photos to identify what handyman tasks are needed.
+
+Look for and identify:
+
+**Mounting & Hanging:**
+- TVs visible (note size: small <42", medium 43-65", large 66"+)
+- Wall type visible (drywall, brick, concrete)
+- Pictures, mirrors, or artwork that need hanging
+- Shelves or floating shelves to install
+- Curtain rods or blinds to install
+
+**Furniture Assembly:**
+- Unassembled furniture in boxes (note IKEA packaging, complexity indicators)
+- Furniture pieces that appear to need assembly
+- Estimate complexity: simple (chairs, small tables), medium (dressers, desks), complex (beds, wardrobes)
+
+**Repairs:**
+- Drywall damage (note size: small <6", medium 6-12", large 12"+)
+- Doors that appear misaligned or damaged
+- Cabinet doors or hinges that need repair
+- Areas needing caulking (windows, tubs, sinks)
+
+**Painting:**
+- Areas needing paint touch-ups
+- Rooms that appear to need repainting
+- Trim or baseboards needing paint
+- Note wall dimensions if visible
+
+**Installations:**
+- Light fixtures to replace
+- Ceiling fans to install
+- Smart home devices visible (thermostats, doorbells, cameras)
+- Faucets or plumbing fixtures to replace
+
+**Outdoor:**
+- Fence panels needing repair
+- Deck boards needing replacement
+- Outdoor grills needing assembly
+
+For each identified task, provide:
+1. Task category (mounting, assembly, repairs, painting, installation, outdoor)
+2. Specific task type
+3. Estimated complexity/size
+4. Recommended fixed price based on task catalog
+5. Wall type or material if visible
+6. Any special considerations
+
+Use reference objects for scale estimation (doors ~7ft, people ~6ft, furniture dimensions).
+
+Respond in JSON format:
+{
+  "identifiedTasks": [
+    {
+      "taskId": "tv_mount_medium" | "furniture_simple" | "drywall_patch_small" | etc,
+      "taskName": "descriptive name",
+      "category": "mounting" | "assembly" | "repairs" | "painting" | "installation" | "outdoor",
+      "estimatedPrice": <number>,
+      "reasoning": "why this task was identified",
+      "variables": {
+        "wallType": "drywall" | "brick" | "concrete",
+        "size": "small" | "medium" | "large",
+        "complexity": "simple" | "medium" | "complex"
+      }
+    }
+  ],
+  "totalEstimatedPrice": <number>,
+  "totalEstimatedTime": <minutes>,
+  "confidence": <0-1 decimal>,
+  "reasoning": "Overall assessment of what needs to be done",
+  "identifiedItems": ["task summaries for backward compatibility"],
+  "estimatedVolumeCubicFt": 0,
+  "recommendedLoadSize": "medium",
+  "recommendedTruckSize": "cargo_van"
+}
+
+**Available Tasks Reference:**
+- TV Mounting: $79 (small), $99 (medium), $139 (large/above fireplace)
+- Furniture Assembly: $59 (simple), $89 (medium), $139 (complex)
+- Drywall Patch: $49 (small), $89 (medium), $139 (large)
+- Picture Hanging: $25 per item
+- Shelf Installation: $49
+- Door Adjustment: $69
+- Light Fixture: $79
+- Ceiling Fan: $119
+- Paint Touch-Up: $49
+- Single Room Paint: $249
+- And more...
+
+Be thorough but realistic. Only recommend tasks you can clearly see evidence for in the photos.`;
+  }
+
   // Special handling for pressure washing
   if (serviceType === "pressure_washing" || serviceType === "surface-wash") {
     systemPrompt = `You are an expert pressure washing estimator. Analyze the provided photos to calculate total square footage of surfaces to be cleaned.

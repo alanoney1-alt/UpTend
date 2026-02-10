@@ -6,6 +6,7 @@ import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { MultiPhotoUpload } from "@/components/photo-upload";
 import { AIQuoteDisplay } from "./ai-quote-display";
 import { ManualQuoteForm } from "./manual-quote-form";
+import { HandymanTaskSelector } from "./handyman-task-selector";
 import { ServiceScheduling, type SchedulingData } from "./service-scheduling";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -773,22 +774,41 @@ export function FloridaEstimator() {
               ← Back to quote method
             </Button>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              Describe What You Need
+              {selectedService === "handyman" ? "What needs fixing?" : "Describe What You Need"}
             </h2>
           </div>
 
-          <ManualQuoteForm
-            serviceType={selectedService || ""}
-            propertyData={propertyData ? {
-              bedrooms: propertyData.bedrooms,
-              bathrooms: propertyData.bathrooms,
-              livingArea: propertyData.livingArea,
-            } : undefined}
-            onComplete={(estimate) => {
-              setManualEstimate(estimate);
-              setStep(6);
-            }}
-          />
+          {selectedService === "handyman" ? (
+            <HandymanTaskSelector
+              onComplete={(data) => {
+                setManualEstimate({
+                  quoteMethod: "manual",
+                  serviceType: selectedService,
+                  estimatedPrice: data.total,
+                  userInputs: {
+                    selectedTasks: data.selectedTasks,
+                    estimatedTime: data.estimatedTime,
+                  },
+                  requiresHitlValidation: false, // Fixed-price tasks don't need validation
+                });
+                setStep(6);
+              }}
+              onBack={() => setStep(4)}
+            />
+          ) : (
+            <ManualQuoteForm
+              serviceType={selectedService || ""}
+              propertyData={propertyData ? {
+                bedrooms: propertyData.bedrooms,
+                bathrooms: propertyData.bathrooms,
+                livingArea: propertyData.livingArea,
+              } : undefined}
+              onComplete={(estimate) => {
+                setManualEstimate(estimate);
+                setStep(6);
+              }}
+            />
+          )}
         </div>
       );
     }
