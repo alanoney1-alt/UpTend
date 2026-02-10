@@ -132,19 +132,11 @@ router.get("/reports/pdf", async (req, res) => {
       endDate
     );
 
-    // Get metrics (simplified)
-    const metrics = [
-      {
-        serviceType: "pressure_washing",
-        totalCo2SavedLbs: 15.2,
-        totalCo2EmittedLbs: 1.6,
-        netCo2ImpactLbs: 13.6,
-        waterSavedGallons: 192,
-        energySavedKwh: 0,
-        esgScore: 87,
-        calculationMethod: "EPA WaterSense",
-      },
-    ];
+    // Get all service metrics for the period
+    const metrics = await storage.getAllServiceEsgMetrics({
+      startDate,
+      endDate,
+    });
 
     const pdfData = esgReportGenerator.generatePdfReportData(
       businessAccount,
