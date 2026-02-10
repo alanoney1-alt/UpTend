@@ -341,17 +341,17 @@ function WhySection() {
   };
 
   const services = [
-    { key: "junk_removal", label: "BulkSnap™ (Junk Removal)", price: "From $99", icon: Truck, color: "text-primary dark:text-orange-400" },
-    { key: "pressure_washing", label: "FreshWash™ (Pressure Washing)", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "gutter_cleaning", label: "GutterFlush™ (Gutter Cleaning)", price: "From $149", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
-    { key: "moving_labor", label: "LiftCrew™ (Moving Labor)", price: "$80/hr", icon: Package, color: "text-secondary dark:text-secondary" },
-    { key: "handyman", label: "FixIt™ (Handyman Services)", price: "From $49/hr", icon: Wrench, color: "text-blue-500 dark:text-blue-400" },
-    { key: "light_demolition", label: "TearDown™ (Demolition)", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
-    { key: "garage_cleanout", label: "GarageReset™ (Garage Cleanout)", price: "From $299", icon: Home, color: "text-primary dark:text-orange-400" },
-    { key: "home_cleaning", label: "PolishUp™ (Home Cleaning)", price: "From $99", icon: Sparkles, color: "text-primary dark:text-orange-400" },
-    { key: "pool_cleaning", label: "PoolSpark™ (Pool Cleaning)", price: "From $69", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "landscaping", label: "FreshCut™ (Landscaping)", price: "From $35", icon: Trees, color: "text-green-500 dark:text-green-400" },
-    { key: "carpet_cleaning", label: "DeepFiber™ (Carpet Cleaning)", price: "From $49", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck, color: "text-primary dark:text-orange-400" },
+    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $149", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
+    { key: "moving_labor", label: "Moving Labor", price: "$80/hr", icon: Package, color: "text-secondary dark:text-secondary" },
+    { key: "handyman", label: "Handyman Services", price: "From $49/hr", icon: Wrench, color: "text-blue-500 dark:text-blue-400" },
+    { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
+    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $299", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, color: "text-primary dark:text-orange-400" },
+    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $69", icon: Waves, color: "text-primary dark:text-orange-400" },
+    { key: "landscaping", label: "Landscaping", price: "From $35", icon: Trees, color: "text-green-500 dark:text-green-400" },
+    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $49", icon: Home, color: "text-primary dark:text-orange-400" },
   ];
 
   return (

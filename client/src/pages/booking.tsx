@@ -49,17 +49,17 @@ import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
   { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
-  { id: "junk_removal", label: "BulkSnap™ (Junk Removal)", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
-  { id: "garage_cleanout", label: "GarageReset™ (Garage Cleanout)", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
-  { id: "pressure_washing", label: "FreshWash™ (Pressure Washing)", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
-  { id: "gutter_cleaning", label: "GutterFlush™ (Gutter Cleaning)", icon: Home, description: "Clean and flush gutters and downspouts", startingPrice: SERVICE_STARTING_PRICES.gutter_cleaning },
-  { id: "handyman", label: "FixIt™ (Handyman Services)", icon: Wrench, description: "Assembly, mounting, repairs, and installations", startingPrice: SERVICE_STARTING_PRICES.handyman },
-  { id: "moving_labor", label: "LiftCrew™ (Moving Labor)", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
-  { id: "light_demolition", label: "TearDown™ (Light Demolition)", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
-  { id: "home_cleaning", label: <>PolishUp<sup>™</sup> (Home Cleaning)</>, icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
-  { id: "pool_cleaning", label: <>PoolSpark<sup>™</sup> (Pool Cleaning)</>, icon: Droplets, description: "Weekly pool maintenance and chemical balancing", startingPrice: SERVICE_STARTING_PRICES.pool_cleaning },
-  { id: "landscaping", label: <>FreshCut<sup>™</sup> (Landscaping)</>, icon: Leaf, description: "Professional lawn care and landscaping", startingPrice: SERVICE_STARTING_PRICES.landscaping },
-  { id: "carpet_cleaning", label: <>DeepFiber<sup>™</sup> (Carpet Cleaning)</>, icon: Sparkles, description: "Deep carpet and upholstery cleaning", startingPrice: SERVICE_STARTING_PRICES.carpet_cleaning },
+  { id: "junk_removal", label: "Junk Removal", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
+  { id: "garage_cleanout", label: "Garage Cleanout", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
+  { id: "pressure_washing", label: "Pressure Washing", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
+  { id: "gutter_cleaning", label: "Gutter Cleaning", icon: Home, description: "Clean and flush gutters and downspouts", startingPrice: SERVICE_STARTING_PRICES.gutter_cleaning },
+  { id: "handyman", label: "Handyman Services", icon: Wrench, description: "Assembly, mounting, repairs, and installations", startingPrice: SERVICE_STARTING_PRICES.handyman },
+  { id: "moving_labor", label: "Moving Labor", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
+  { id: "light_demolition", label: "Light Demolition", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
+  { id: "home_cleaning", label: "Home Cleaning", icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
+  { id: "pool_cleaning", label: "Pool Cleaning", icon: Droplets, description: "Weekly pool maintenance and chemical balancing", startingPrice: SERVICE_STARTING_PRICES.pool_cleaning },
+  { id: "landscaping", label: "Landscaping", icon: Leaf, description: "Professional lawn care and landscaping", startingPrice: SERVICE_STARTING_PRICES.landscaping },
+  { id: "carpet_cleaning", label: "Carpet Cleaning", icon: Sparkles, description: "Deep carpet and upholstery cleaning", startingPrice: SERVICE_STARTING_PRICES.carpet_cleaning },
 ];
 
 // Map shared garage packages to booking page format
