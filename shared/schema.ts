@@ -3246,6 +3246,108 @@ export const insertPropertyApplianceSchema = createInsertSchema(propertyApplianc
 export type InsertPropertyAppliance = z.infer<typeof insertPropertyApplianceSchema>;
 export type PropertyAppliance = typeof propertyAppliances.$inferSelect;
 
+// Appliance Scans - AI-powered appliance scanning
+export const applianceScans = pgTable("appliance_scans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  scanSessionId: varchar("scan_session_id"),
+
+  // Scan Details
+  photoUrls: text("photo_urls").array(),
+  location: text("location"), // "Kitchen", "Garage", etc.
+  scanMethod: text("scan_method").notNull(), // "customer_scan", "pro_scan", "dwellscan"
+  scannedBy: varchar("scanned_by"), // User ID or Pro ID
+  scannedAt: text("scanned_at").notNull().default(sql`now()`),
+  scanSessionSequence: integer("scan_session_sequence"), // Order within session
+
+  // AI Processing
+  aiProcessingStatus: text("ai_processing_status").notNull().default("uploaded"), // "uploaded", "queued", "processing", "completed", "failed"
+  aiProcessingStartedAt: text("ai_processing_started_at"),
+  aiProcessingCompletedAt: text("ai_processing_completed_at"),
+  aiProcessingDurationMs: integer("ai_processing_duration_ms"),
+  aiProcessingError: text("ai_processing_error"),
+
+  // AI Extraction Results
+  extractedBrand: text("extracted_brand"),
+  extractedModel: text("extracted_model"),
+  extractedSerialNumber: text("extracted_serial_number"),
+  extractedCategory: text("extracted_category"),
+  confidenceScore: real("confidence_score"), // 0-1
+  confidenceBreakdown: jsonb("confidence_breakdown"), // { brand: 0.9, model: 0.85, serialNumber: 0.95 }
+
+  // Validation & Confirmation
+  needsReview: boolean("needs_review").default(false),
+  reviewedBy: varchar("reviewed_by"),
+  reviewedAt: text("reviewed_at"),
+  userConfirmed: boolean("user_confirmed").default(false),
+  userRejected: boolean("user_rejected").default(false),
+  autoConfirmed: boolean("auto_confirmed").default(false),
+
+  // Appliance Creation
+  applianceCreated: boolean("appliance_created").default(false),
+  applianceId: varchar("appliance_id"), // FK to property_appliances if created
+
+  // Pro Bonus Tracking
+  proScanBonus: boolean("pro_scan_bonus").default(false),
+  proBonusEarned: boolean("pro_bonus_earned").default(false),
+  proBonusAmount: real("pro_bonus_amount").default(1.0),
+
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const applianceScansRelations = relations(applianceScans, ({ one }) => ({
+  property: one(properties, {
+    fields: [applianceScans.propertyId],
+    references: [properties.id],
+  }),
+  session: one(applianceScanSessions, {
+    fields: [applianceScans.scanSessionId],
+    references: [applianceScanSessions.id],
+  }),
+}));
+
+export const insertApplianceScanSchema = createInsertSchema(applianceScans).omit({ id: true });
+export type InsertApplianceScan = z.infer<typeof insertApplianceScanSchema>;
+export type ApplianceScan = typeof applianceScans.$inferSelect;
+
+// Appliance Scan Sessions - Batch scanning sessions
+export const applianceScanSessions = pgTable("appliance_scan_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  scannedBy: varchar("scanned_by").notNull(), // User ID or Pro ID
+  scanMethod: text("scan_method").notNull(), // "customer_scan", "pro_scan", "dwellscan"
+
+  // Session Tracking
+  status: text("status").default("active"), // "active", "processing", "completed"
+  startedAt: text("started_at").notNull().default(sql`now()`),
+  completedAt: text("completed_at"),
+  durationSeconds: integer("duration_seconds"),
+
+  // Counts
+  totalScans: integer("total_scans").default(0),
+  scansProcessed: integer("scans_processed").default(0),
+  appliancesCreated: integer("appliances_created").default(0),
+  scansNeedingReview: integer("scans_needing_review").default(0),
+
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const applianceScanSessionsRelations = relations(applianceScanSessions, ({ one, many }) => ({
+  property: one(properties, {
+    fields: [applianceScanSessions.propertyId],
+    references: [properties.id],
+  }),
+  scans: many(applianceScans),
+}));
+
+export const insertApplianceScanSessionSchema = createInsertSchema(applianceScanSessions).omit({ id: true });
+export type InsertApplianceScanSession = z.infer<typeof insertApplianceScanSessionSchema>;
+export type ApplianceScanSession = typeof applianceScanSessions.$inferSelect;
+
 // Property Warranties - Comprehensive warranty tracking
 export const propertyWarranties = pgTable("property_warranties", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

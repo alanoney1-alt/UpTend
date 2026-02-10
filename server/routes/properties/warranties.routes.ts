@@ -1,5 +1,5 @@
 import express from "express";
-import { auth } from "../../middleware/auth";
+import { requireAuth as auth } from "../../middleware/auth";
 import {
   createWarranty,
   getWarrantyById,
