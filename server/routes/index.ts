@@ -9,6 +9,7 @@ import { storage } from "../storage";
 import { registerHaulerAuthRoutes } from "./auth/hauler.routes";
 import { registerCustomerAuthRoutes } from "./auth/customer.routes";
 import { registerAdminAuthRoutes } from "./auth/admin.routes";
+import { registerBusinessAuthRoutes } from "./auth/business.routes";
 
 // Hauler routes
 import { registerHaulerProfileRoutes } from "./hauler/profile.routes";
@@ -48,6 +49,12 @@ import { registerHoaEsgMetricsRoutes } from "./hoa/esg-metrics.routes";
 import { registerHoaReferralPaymentRoutes } from "./hoa/referral-payments.routes";
 import { registerHoaCommunicationRoutes } from "./hoa/communications.routes";
 
+// ESG routes
+import { registerEsgRoutes } from "./esg/index";
+
+// Business routes
+import { registerBusinessTeamRoutes } from "./business/index";
+
 // Referral routes
 import { registerReferralRoutes } from "./referrals/referral.routes";
 
@@ -62,6 +69,9 @@ import { registerGoogleApiRoutes } from "./google-api.routes";
 
 // Property routes
 import { registerPropertyValuationRoutes } from "./property/valuation.routes";
+
+// Property Intelligence routes
+import { registerPropertyIntelligenceRoutes } from "./properties/index";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -91,6 +101,7 @@ export async function registerRoutes(
   await registerHaulerAuthRoutes(app);
   await registerCustomerAuthRoutes(app);
   await registerAdminAuthRoutes(app);
+  await registerBusinessAuthRoutes(app);
 
   // Register hauler routes
   registerHaulerProfileRoutes(app);
@@ -130,6 +141,12 @@ export async function registerRoutes(
   registerHoaReferralPaymentRoutes(app);
   registerHoaCommunicationRoutes(app);
 
+  // Register ESG routes
+  registerEsgRoutes(app);
+
+  // Register Business team routes
+  registerBusinessTeamRoutes(app);
+
   // Register referral routes
   registerReferralRoutes(app);
 
@@ -144,6 +161,9 @@ export async function registerRoutes(
 
   // Register Property valuation routes
   registerPropertyValuationRoutes(app);
+
+  // Register Property Intelligence routes
+  registerPropertyIntelligenceRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

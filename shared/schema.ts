@@ -10,7 +10,7 @@ export * from "./models/auth";
 // Import users for relations and User type for composite types
 import { users, type User } from "./models/auth";
 
-export const userRoleEnum = z.enum(["customer", "hauler", "admin"]);
+export const userRoleEnum = z.enum(["customer", "hauler", "admin", "business_user"]);
 export type UserRole = z.infer<typeof userRoleEnum>;
 
 export const serviceTypeEnum = z.enum([
@@ -919,11 +919,58 @@ export const businessAccountsRelations = relations(businessAccounts, ({ one, man
   violations: many(hoaViolations),
   referralPayments: many(hoaReferralPayments),
   carbonCredits: many(carbonCredits),
+  teamMembers: many(businessTeamMembers),
 }));
 
 export const insertBusinessAccountSchema = createInsertSchema(businessAccounts).omit({ id: true });
 export type InsertBusinessAccount = z.infer<typeof insertBusinessAccountSchema>;
 export type BusinessAccount = typeof businessAccounts.$inferSelect;
+
+// ==========================================
+// Business Team Members (Multi-User B2B)
+// ==========================================
+export const businessTeamMembers = pgTable("business_team_members", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  role: text("role").notNull().default("member"), // "owner", "admin", "member"
+
+  // Permissions
+  canViewFinancials: boolean("can_view_financials").default(false),
+  canManageTeam: boolean("can_manage_team").default(false),
+  canCreateJobs: boolean("can_create_jobs").default(true),
+  canApprovePayments: boolean("can_approve_payments").default(false),
+  canAccessEsgReports: boolean("can_access_esg_reports").default(true),
+  canManageProperties: boolean("can_manage_properties").default(false),
+
+  // Invitation
+  invitedBy: varchar("invited_by"),
+  invitationToken: text("invitation_token"),
+  invitationStatus: text("invitation_status").default("pending"), // "pending", "accepted", "declined"
+
+  isActive: boolean("is_active").default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const businessTeamMembersRelations = relations(businessTeamMembers, ({ one }) => ({
+  businessAccount: one(businessAccounts, {
+    fields: [businessTeamMembers.businessAccountId],
+    references: [businessAccounts.id],
+  }),
+  user: one(users, {
+    fields: [businessTeamMembers.userId],
+    references: [users.id],
+  }),
+  inviter: one(users, {
+    fields: [businessTeamMembers.invitedBy],
+    references: [users.id],
+  }),
+}));
+
+export const insertBusinessTeamMemberSchema = createInsertSchema(businessTeamMembers).omit({ id: true });
+export type InsertBusinessTeamMember = z.infer<typeof insertBusinessTeamMemberSchema>;
+export type BusinessTeamMember = typeof businessTeamMembers.$inferSelect;
 
 export const recurringFrequencyEnum = z.enum(["daily", "weekly", "biweekly", "monthly", "quarterly"]);
 export type RecurringFrequency = z.infer<typeof recurringFrequencyEnum>;
@@ -1448,6 +1495,61 @@ export const esgImpactLogsRelations = relations(esgImpactLogs, ({ one }) => ({
 export const insertEsgImpactLogSchema = createInsertSchema(esgImpactLogs).omit({ id: true });
 export type InsertEsgImpactLog = z.infer<typeof insertEsgImpactLogSchema>;
 export type EsgImpactLog = typeof esgImpactLogs.$inferSelect;
+
+// ==========================================
+// Service-Specific ESG Metrics (Multi-Service)
+// ==========================================
+export const serviceEsgMetrics = pgTable("service_esg_metrics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id").notNull(),
+  serviceType: text("service_type").notNull(),
+
+  // Universal metrics
+  waterUsedGallons: real("water_used_gallons").default(0),
+  waterSavedGallons: real("water_saved_gallons").default(0),
+  waterEfficiencyPct: real("water_efficiency_pct").default(0),
+  energyUsedKwh: real("energy_used_kwh").default(0),
+  energySavedKwh: real("energy_saved_kwh").default(0),
+
+  // Chemical metrics
+  chemicalUsedOz: real("chemical_used_oz").default(0),
+  chemicalType: text("chemical_type"),
+  chemicalCo2ePerOz: real("chemical_co2e_per_oz").default(0),
+
+  // Material metrics
+  materialsSalvagedLbs: real("materials_salvaged_lbs").default(0),
+  salvageRate: real("salvage_rate").default(0),
+
+  // Service-specific
+  preventionValue: real("prevention_value").default(0), // Gutter/pool preventative maintenance
+  repairVsReplaceSavings: real("repair_vs_replace_savings").default(0), // Handyman
+  routeOptimizationSavings: real("route_optimization_savings").default(0), // Moving/furniture
+  carbonSequestered: real("carbon_sequestered").default(0), // Landscaping
+
+  // Aggregated impact
+  totalCo2SavedLbs: real("total_co2_saved_lbs").default(0),
+  totalCo2EmittedLbs: real("total_co2_emitted_lbs").default(0),
+  netCo2ImpactLbs: real("net_co2_impact_lbs").default(0),
+  esgScore: real("esg_score").default(0), // 0-100
+
+  // Metadata
+  calculationMethod: text("calculation_method").notNull(),
+  verificationStatus: text("verification_status").default("pending"), // "pending", "verified", "audited"
+  calculationDetails: text("calculation_details"), // JSON with breakdown details
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const serviceEsgMetricsRelations = relations(serviceEsgMetrics, ({ one }) => ({
+  serviceRequest: one(serviceRequests, {
+    fields: [serviceEsgMetrics.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertServiceEsgMetricsSchema = createInsertSchema(serviceEsgMetrics).omit({ id: true });
+export type InsertServiceEsgMetrics = z.infer<typeof insertServiceEsgMetricsSchema>;
+export type ServiceEsgMetrics = typeof serviceEsgMetrics.$inferSelect;
 
 // ==========================================
 // Tax Credit Claims for ESG compliance
@@ -2054,19 +2156,96 @@ export type ChatMessage = typeof chatMessages.$inferSelect;
 // ==========================================
 export const properties = pgTable("properties", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  // Original fields (backward compatible)
   addressHash: varchar("address_hash").unique(),
   fullAddress: text("full_address"),
   ownerId: varchar("owner_id"),
   maintenanceScore: integer("maintenance_score").default(0),
   lastAssessmentDate: text("last_assessment_date"),
   estimatedValueIncrease: integer("estimated_value_increase").default(0),
+
+  // Property Intelligence Layer - Address details
+  unit: text("unit"),
+  city: text("city"),
+  state: text("state"),
+  zipCode: text("zip_code"),
+  county: text("county"),
+  latitude: real("latitude"),
+  longitude: real("longitude"),
+
+  // Property details
+  propertyType: text("property_type").default("single_family"),
+  yearBuilt: integer("year_built"),
+  sqft: integer("sqft"),
+  lotSizeSqft: integer("lot_size_sqft"),
+  bedrooms: integer("bedrooms"),
+  bathrooms: real("bathrooms"),
+  stories: integer("stories"),
+  garageType: text("garage_type"),
+  hasPool: boolean("has_pool").default(false),
+  poolType: text("pool_type"),
+  roofType: text("roof_type"),
+  roofAgeYears: integer("roof_age_years"),
+  exteriorType: text("exterior_type"),
+  hvacType: text("hvac_type"),
+  hvacAgeYears: integer("hvac_age_years"),
+
+  // Property Health Score (the "credit score for homes")
+  propertyHealthScore: real("property_health_score"),
+  healthScoreUpdatedAt: text("health_score_updated_at"),
+  healthScoreHistory: jsonb("health_score_history"),
+  healthScoreRoof: real("health_score_roof"),
+  healthScoreHvac: real("health_score_hvac"),
+  healthScoreExterior: real("health_score_exterior"),
+  healthScoreInterior: real("health_score_interior"),
+  healthScoreLandscape: real("health_score_landscape"),
+  healthScorePool: real("health_score_pool"),
+  healthScoreAppliances: real("health_score_appliances"),
+  healthScoreMaintenance: real("health_score_maintenance"),
+
+  // DwellScan linkage
+  initialScanId: varchar("initial_scan_id"),
+  lastScanId: varchar("last_scan_id"),
+  totalScans: integer("total_scans").default(0),
+
+  // Aggregated stats
+  totalJobsCompleted: integer("total_jobs_completed").default(0),
+  totalSpent: real("total_spent").default(0),
+  lastServiceDate: text("last_service_date"),
+  activeWarrantyCount: integer("active_warranty_count").default(0),
+  expiringWarrantyCount: integer("expiring_warranty_count").default(0),
+
+  // Acquisition source
+  source: text("source").default("organic"),
+  builderPartnershipId: varchar("builder_partnership_id"),
+  realtorReferralCode: varchar("realtor_referral_code"),
+
+  // Homeowner info
+  moveInDate: text("move_in_date"),
+  isPrimaryResidence: boolean("is_primary_residence").default(true),
+
+  // Status
+  status: text("status").default("active"),
+  onboardingCompleted: boolean("onboarding_completed").default(false),
+  onboardingCompletedAt: text("onboarding_completed_at"),
+  onboardingStep: integer("onboarding_step").default(0),
+
+  // Timestamps
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
 });
 
-export const propertiesRelations = relations(properties, ({ one }) => ({
+export const propertiesRelations = relations(properties, ({ one, many }) => ({
   owner: one(users, {
     fields: [properties.ownerId],
     references: [users.id],
   }),
+  appliances: many(propertyAppliances),
+  warranties: many(propertyWarranties),
+  insurancePolicies: many(propertyInsurance),
+  healthEvents: many(propertyHealthEvents),
+  maintenanceSchedule: many(propertyMaintenanceSchedule),
+  documents: many(propertyDocuments),
 }));
 
 export const insertPropertySchema = createInsertSchema(properties).omit({ id: true });
@@ -2859,3 +3038,817 @@ export const smsMessagesRelations = relations(smsMessages, ({ one }) => ({
 export const insertSmsMessageSchema = createInsertSchema(smsMessages).omit({ id: true });
 export type InsertSmsMessage = z.infer<typeof insertSmsMessageSchema>;
 export type SmsMessage = typeof smsMessages.$inferSelect;
+
+// ==========================================
+// Property Intelligence Layer - Enums
+// ==========================================
+
+export const propertyTypeEnum = z.enum([
+  "single_family", "townhouse", "condo", "duplex", "triplex",
+  "mobile_home", "villa", "apartment", "other"
+]);
+
+export const applianceCategoryEnum = z.enum([
+  "hvac", "water_heater", "refrigerator", "dishwasher", "oven_range",
+  "microwave", "washer", "dryer", "garbage_disposal", "garage_door_opener",
+  "pool_pump", "pool_heater", "irrigation_system", "smoke_detector",
+  "security_system", "ceiling_fan", "light_fixture", "thermostat",
+  "water_softener", "air_purifier", "generator", "other"
+]);
+
+export const warrantyTypeEnum = z.enum([
+  "builder_structural", "builder_systems", "builder_workmanship",
+  "home_warranty_plan", "manufacturer", "extended", "service_contract"
+]);
+
+export const insuranceTypeEnum = z.enum([
+  "homeowners", "flood", "windstorm", "umbrella", "rental_dwelling", "condo_ho6"
+]);
+
+export const healthEventTypeEnum = z.enum([
+  // DwellScan Events
+  "dwellscan_baseline", "dwellscan_rescan",
+
+  // General Service Events
+  "service_completed", "maintenance_reminder", "photo_documentation", "builder_handoff",
+
+  // Warranty Events
+  "warranty_registered", "warranty_expiring", "warranty_expired", "warranty_claimed",
+
+  // Insurance Events
+  "insurance_claim",
+
+  // Appliance Events
+  "appliance_added", "appliance_replaced", "appliance_service", "appliance_repair",
+
+  // Structural Events
+  "foundation_inspection", "foundation_repair", "foundation_waterproofing",
+
+  // Roof Events
+  "roof_inspection", "roof_repair", "roof_replacement", "roof_cleaning", "gutter_service",
+
+  // HVAC Events
+  "hvac_inspection", "hvac_service", "hvac_repair", "hvac_replacement", "hvac_filter_change", "hvac_duct_cleaning",
+
+  // Plumbing Events
+  "plumbing_inspection", "plumbing_repair", "plumbing_replacement", "water_heater_service", "water_heater_replacement",
+  "leak_repair", "pipe_replacement", "sewer_line_service",
+
+  // Electrical Events
+  "electrical_inspection", "electrical_repair", "electrical_upgrade", "panel_upgrade", "generator_installation",
+  "generator_service",
+
+  // Exterior Events
+  "exterior_painting", "siding_repair", "siding_replacement", "window_replacement", "door_replacement",
+  "pressure_washing", "soffit_fascia_repair",
+
+  // Interior Events
+  "interior_painting", "flooring_installation", "flooring_repair", "carpet_cleaning", "carpet_replacement",
+  "drywall_repair", "cabinet_installation", "countertop_installation",
+
+  // Garage Events
+  "garage_door_service", "garage_door_replacement", "garage_door_opener_service", "garage_door_opener_installation",
+
+  // Landscape Events
+  "landscape_installation", "landscape_service", "irrigation_installation", "irrigation_repair", "tree_removal",
+  "tree_trimming", "sod_installation", "mulch_installation",
+
+  // Pool Events
+  "pool_inspection", "pool_service", "pool_repair", "pool_equipment_replacement", "pool_resurfacing",
+  "pool_deck_repair",
+
+  // Pest Control Events
+  "pest_inspection", "pest_treatment", "termite_inspection", "termite_treatment",
+
+  // Other
+  "condition_change", "general_repair", "emergency_repair", "preventive_maintenance"
+]);
+
+export const notificationTypeEnum = z.enum([
+  "warranty_expiring_90d", "warranty_expiring_60d", "warranty_expiring_30d",
+  "warranty_expired", "maintenance_due", "maintenance_overdue",
+  "insurance_renewal", "health_score_change", "dwellscan_recommendation",
+  "builder_welcome", "appliance_recall", "seasonal_reminder"
+]);
+
+export const documentTypeEnum = z.enum([
+  // Legal & Ownership
+  "deed", "title", "survey", "hoa_docs", "property_disclosure",
+
+  // Inspections & Reports
+  "home_inspection_report", "foundation_inspection", "roof_inspection", "hvac_inspection",
+  "plumbing_inspection", "electrical_inspection", "pest_inspection", "termite_inspection",
+  "mold_inspection", "radon_test", "water_quality_test", "septic_inspection",
+
+  // Warranties
+  "builder_warranty", "home_warranty_policy", "appliance_warranty", "roof_warranty",
+  "hvac_warranty", "pool_warranty", "manufacturer_warranty",
+
+  // Insurance
+  "insurance_policy", "insurance_claim_docs", "insurance_declaration_page",
+
+  // Contractor Work & Receipts
+  "contractor_receipt", "service_receipt", "purchase_receipt", "invoice",
+  "work_order", "estimate", "contract", "permit",
+
+  // Before/After Documentation
+  "before_photos", "after_photos", "before_after_video", "progress_photos",
+  "damage_documentation", "repair_documentation",
+
+  // DwellScan & Media
+  "dwellscan_report", "property_health_report", "video_walkthrough", "drone_aerial",
+  "360_video", "room_photos", "exterior_photos",
+
+  // Appliance & Equipment
+  "appliance_manual", "equipment_manual", "model_plate_photo", "serial_number_photo",
+
+  // Maintenance Records
+  "maintenance_log", "service_history", "filter_change_record", "seasonal_maintenance",
+
+  // Financial
+  "tax_assessment", "appraisal", "closing_documents", "mortgage_docs",
+
+  // Transferable Reports (for resale)
+  "transferable_health_report", "transferable_maintenance_history", "carfax_for_homes_report",
+
+  // Other
+  "floor_plan", "blueprint", "manual", "other"
+]);
+
+// ==========================================
+// Property Intelligence Layer - Tables
+// ==========================================
+
+// Property Appliances - Complete appliance registry
+export const propertyAppliances = pgTable("property_appliances", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  
+  // Appliance Details
+  category: text("category").notNull(), // From applianceCategoryEnum
+  brand: text("brand"),
+  modelNumber: text("model_number"),
+  serialNumber: text("serial_number"),
+  installDate: text("install_date"),
+  purchaseDate: text("purchase_date"),
+  purchasePrice: real("purchase_price"),
+  
+  // Location & Specs
+  location: text("location"), // "Kitchen", "Garage", "Basement", etc.
+  capacity: text("capacity"), // "5000 BTU", "50 gallon", etc.
+  energyRating: text("energy_rating"), // Energy Star rating
+  specifications: jsonb("specifications"), // Flexible specs storage
+  
+  // Lifecycle Tracking
+  estimatedLifespanYears: integer("estimated_lifespan_years"),
+  ageYears: integer("age_years"),
+  conditionScore: real("condition_score"), // 0-100
+  lastServiceDate: text("last_service_date"),
+  nextServiceDue: text("next_service_due"),
+  serviceHistory: jsonb("service_history"), // Array of service records
+  
+  // Warranty & Insurance
+  warrantyId: varchar("warranty_id"), // FK to property_warranties
+  underInsurance: boolean("under_insurance").default(false),
+  insurancePolicyId: varchar("insurance_policy_id"),
+  
+  // Documentation
+  manualUrl: text("manual_url"),
+  receiptUrl: text("receipt_url"),
+  photoUrls: text("photo_urls").array(),
+  
+  // Alerts & Reminders
+  hasActiveWarranty: boolean("has_active_warranty").default(false),
+  warrantyExpiresAt: text("warranty_expires_at"),
+  maintenanceAlertEnabled: boolean("maintenance_alert_enabled").default(true),
+  
+  // Status
+  status: text("status").default("active"), // "active", "replaced", "removed", "broken"
+  replacedBy: varchar("replaced_by"), // FK to new appliance
+  notes: text("notes"),
+  
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const propertyAppliancesRelations = relations(propertyAppliances, ({ one }) => ({
+  property: one(properties, {
+    fields: [propertyAppliances.propertyId],
+    references: [properties.id],
+  }),
+  warranty: one(propertyWarranties, {
+    fields: [propertyAppliances.warrantyId],
+    references: [propertyWarranties.id],
+  }),
+}));
+
+export const insertPropertyApplianceSchema = createInsertSchema(propertyAppliances).omit({ id: true });
+export type InsertPropertyAppliance = z.infer<typeof insertPropertyApplianceSchema>;
+export type PropertyAppliance = typeof propertyAppliances.$inferSelect;
+
+// Property Warranties - Comprehensive warranty tracking
+export const propertyWarranties = pgTable("property_warranties", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  
+  // Warranty Details
+  warrantyType: text("warranty_type").notNull(), // From warrantyTypeEnum
+  provider: text("provider").notNull(), // Company name
+  policyNumber: text("policy_number"),
+  description: text("description"),
+  
+  // Coverage
+  coverageItems: text("coverage_items").array(), // What's covered
+  coverageAmount: real("coverage_amount"),
+  deductible: real("deductible"),
+  exclusions: text("exclusions").array(),
+  
+  // Dates & Duration
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date").notNull(),
+  durationYears: integer("duration_years"),
+  autoRenew: boolean("auto_renew").default(false),
+  
+  // Alert Tracking (30/60/90 day alerts)
+  alert90DaySent: boolean("alert_90_day_sent").default(false),
+  alert90DaySentAt: text("alert_90_day_sent_at"),
+  alert60DaySent: boolean("alert_60_day_sent").default(false),
+  alert60DaySentAt: text("alert_60_day_sent_at"),
+  alert30DaySent: boolean("alert_30_day_sent").default(false),
+  alert30DaySentAt: text("alert_30_day_sent_at"),
+  expirationAlertSent: boolean("expiration_alert_sent").default(false),
+  
+  // Contact & Claims
+  providerPhone: text("provider_phone"),
+  providerEmail: text("provider_email"),
+  providerWebsite: text("provider_website"),
+  claimInstructions: text("claim_instructions"),
+  totalClaimsMade: integer("total_claims_made").default(0),
+  lastClaimDate: text("last_claim_date"),
+  
+  // Documentation
+  documentUrls: text("document_urls").array(),
+  policyDocumentUrl: text("policy_document_url"),
+  
+  // Cost
+  annualCost: real("annual_cost"),
+  totalCostPaid: real("total_cost_paid").default(0),
+  
+  // Status
+  status: text("status").default("active"), // "active", "expired", "cancelled", "claimed"
+  notes: text("notes"),
+  
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const propertyWarrantiesRelations = relations(propertyWarranties, ({ one, many }) => ({
+  property: one(properties, {
+    fields: [propertyWarranties.propertyId],
+    references: [properties.id],
+  }),
+  appliances: many(propertyAppliances),
+}));
+
+export const insertPropertyWarrantySchema = createInsertSchema(propertyWarranties).omit({ id: true });
+export type InsertPropertyWarranty = z.infer<typeof insertPropertyWarrantySchema>;
+export type PropertyWarranty = typeof propertyWarranties.$inferSelect;
+
+// Property Insurance - Insurance policy tracking
+export const propertyInsurance = pgTable("property_insurance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  
+  // Policy Details
+  insuranceType: text("insurance_type").notNull(), // From insuranceTypeEnum
+  carrier: text("carrier").notNull(),
+  policyNumber: text("policy_number").notNull(),
+  agentName: text("agent_name"),
+  agentPhone: text("agent_phone"),
+  agentEmail: text("agent_email"),
+  
+  // Coverage & Costs
+  coverageAmount: real("coverage_amount").notNull(),
+  deductible: real("deductible"),
+  annualPremium: real("annual_premium"),
+  monthlyPremium: real("monthly_premium"),
+  
+  // Coverage Details
+  dwellingCoverage: real("dwelling_coverage"),
+  personalPropertyCoverage: real("personal_property_coverage"),
+  liabilityCoverage: real("liability_coverage"),
+  additionalCoverages: text("additional_coverages").array(),
+  
+  // Dates
+  effectiveDate: text("effective_date").notNull(),
+  expirationDate: text("expiration_date").notNull(),
+  renewalDate: text("renewal_date"),
+  
+  // Discount Tracking
+  discounts: jsonb("discounts"), // { "security_system": 5, "multiple_policy": 10 }
+  totalDiscountPct: real("total_discount_pct").default(0),
+  
+  // Claims History
+  totalClaimsMade: integer("total_claims_made").default(0),
+  lastClaimDate: text("last_claim_date"),
+  claimsHistory: jsonb("claims_history"), // Array of claim records
+  
+  // Partner Integration
+  insurancePartnerId: varchar("insurance_partner_id"), // FK to insurance_partners
+  discountEligible: boolean("discount_eligible").default(false),
+  
+  // Alerts
+  renewalAlertSent: boolean("renewal_alert_sent").default(false),
+  renewalAlertSentAt: text("renewal_alert_sent_at"),
+  
+  // Documentation
+  policyDocumentUrl: text("policy_document_url"),
+  documentUrls: text("document_urls").array(),
+  
+  // Status
+  status: text("status").default("active"), // "active", "expired", "cancelled"
+  notes: text("notes"),
+  
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const propertyInsuranceRelations = relations(propertyInsurance, ({ one }) => ({
+  property: one(properties, {
+    fields: [propertyInsurance.propertyId],
+    references: [properties.id],
+  }),
+  partner: one(insurancePartners, {
+    fields: [propertyInsurance.insurancePartnerId],
+    references: [insurancePartners.id],
+  }),
+}));
+
+export const insertPropertyInsuranceSchema = createInsertSchema(propertyInsurance).omit({ id: true });
+export type InsertPropertyInsurance = z.infer<typeof insertPropertyInsuranceSchema>;
+export type PropertyInsurance = typeof propertyInsurance.$inferSelect;
+
+// Property Health Events - Complete timeline/Carfax for homes
+export const propertyHealthEvents = pgTable("property_health_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  
+  // Event Details
+  eventType: text("event_type").notNull(), // From healthEventTypeEnum
+  title: text("title").notNull(),
+  description: text("description"),
+  
+  // Associated Records
+  serviceRequestId: varchar("service_request_id"), // FK to serviceRequests
+  applianceId: varchar("appliance_id"), // FK to propertyAppliances
+  warrantyId: varchar("warranty_id"), // FK to propertyWarranties
+  insurancePolicyId: varchar("insurance_policy_id"), // FK to propertyInsurance
+  dwellscanId: varchar("dwellscan_id"), // FK to DwellScan results
+  
+  // Impact on Property Health
+  healthScoreImpact: real("health_score_impact"), // -10 to +10
+  categoryImpacted: text("category_impacted"), // "roof", "hvac", etc.
+  previousScore: real("previous_score"),
+  newScore: real("new_score"),
+  
+  // Financial Impact
+  costAmount: real("cost_amount"),
+  valueSaved: real("value_saved"),
+  preventiveValue: real("preventive_value"),
+  
+  // Documentation
+  photoUrls: text("photo_urls").array(),
+  documentUrls: text("document_urls").array(),
+  receiptUrl: text("receipt_url"),
+  
+  // Metadata
+  performedBy: text("performed_by"), // Pro/contractor name
+  verifiedBy: text("verified_by"), // Admin/system
+  isVerified: boolean("is_verified").default(false),
+  verifiedAt: text("verified_at"),
+  
+  // Timeline
+  eventDate: text("event_date").notNull(),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+  
+  // Tags & Search
+  tags: text("tags").array(),
+  isPublic: boolean("is_public").default(true), // Visible to realtors/buyers
+  notes: text("notes"),
+});
+
+export const propertyHealthEventsRelations = relations(propertyHealthEvents, ({ one }) => ({
+  property: one(properties, {
+    fields: [propertyHealthEvents.propertyId],
+    references: [properties.id],
+  }),
+  serviceRequest: one(serviceRequests, {
+    fields: [propertyHealthEvents.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+  appliance: one(propertyAppliances, {
+    fields: [propertyHealthEvents.applianceId],
+    references: [propertyAppliances.id],
+  }),
+  warranty: one(propertyWarranties, {
+    fields: [propertyHealthEvents.warrantyId],
+    references: [propertyWarranties.id],
+  }),
+}));
+
+export const insertPropertyHealthEventSchema = createInsertSchema(propertyHealthEvents).omit({ id: true });
+export type InsertPropertyHealthEvent = z.infer<typeof insertPropertyHealthEventSchema>;
+export type PropertyHealthEvent = typeof propertyHealthEvents.$inferSelect;
+
+// Property Maintenance Schedule - AI-generated maintenance cadence
+export const propertyMaintenanceSchedule = pgTable("property_maintenance_schedule", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  
+  // Task Details
+  taskName: text("task_name").notNull(),
+  taskDescription: text("task_description"),
+  taskCategory: text("task_category"), // "hvac", "roof", "landscape", etc.
+  serviceType: text("service_type"), // Maps to serviceTypeEnum
+  
+  // Scheduling
+  frequency: text("frequency").notNull(), // "monthly", "quarterly", "semi_annual", "annual", "biennial"
+  frequencyDays: integer("frequency_days"), // Days between occurrences
+  nextDueDate: text("next_due_date").notNull(),
+  lastCompletedDate: text("last_completed_date"),
+  
+  // Priority & Urgency
+  priority: text("priority").default("medium"), // "low", "medium", "high", "critical"
+  isOverdue: boolean("is_overdue").default(false),
+  overdueBy: integer("overdue_by"), // Days overdue
+  
+  // AI Generation
+  aiGenerated: boolean("ai_generated").default(false),
+  aiConfidence: real("ai_confidence"), // 0-100
+  generatedFrom: text("generated_from"), // "dwellscan", "age", "seasonal", "manual"
+  
+  // Cost Estimates
+  estimatedCost: real("estimated_cost"),
+  estimatedDurationHours: real("estimated_duration_hours"),
+  
+  // Completion Tracking
+  totalCompletions: integer("total_completions").default(0),
+  averageCost: real("average_cost"),
+  lastServiceRequestId: varchar("last_service_request_id"),
+  
+  // Reminders
+  reminderEnabled: boolean("reminder_enabled").default(true),
+  reminderDaysBefore: integer("reminder_days_before").default(7),
+  lastReminderSent: text("last_reminder_sent"),
+  
+  // Linked Records
+  applianceId: varchar("appliance_id"), // If appliance-specific
+  warrantyId: varchar("warranty_id"), // If warranty-required
+  
+  // Status
+  status: text("status").default("active"), // "active", "completed", "skipped", "cancelled"
+  notes: text("notes"),
+  
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const propertyMaintenanceScheduleRelations = relations(propertyMaintenanceSchedule, ({ one }) => ({
+  property: one(properties, {
+    fields: [propertyMaintenanceSchedule.propertyId],
+    references: [properties.id],
+  }),
+  appliance: one(propertyAppliances, {
+    fields: [propertyMaintenanceSchedule.applianceId],
+    references: [propertyAppliances.id],
+  }),
+  lastServiceRequest: one(serviceRequests, {
+    fields: [propertyMaintenanceSchedule.lastServiceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertPropertyMaintenanceScheduleSchema = createInsertSchema(propertyMaintenanceSchedule).omit({ id: true });
+export type InsertPropertyMaintenanceSchedule = z.infer<typeof insertPropertyMaintenanceScheduleSchema>;
+export type PropertyMaintenanceSchedule = typeof propertyMaintenanceSchedule.$inferSelect;
+
+// Builder Partnerships - Builder/developer partnership platform
+export const builderPartnerships = pgTable("builder_partnerships", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Builder Details
+  builderName: text("builder_name").notNull(),
+  builderCompany: text("builder_company").notNull(),
+  builderLicense: text("builder_license"),
+  contactName: text("contact_name"),
+  contactEmail: text("contact_email").notNull(),
+  contactPhone: text("contact_phone"),
+  
+  // Service Areas
+  serviceStates: text("service_states").array(),
+  serviceCities: text("service_cities").array(),
+  serviceZipCodes: text("service_zip_codes").array(),
+  
+  // Partnership Terms
+  partnershipTier: text("partnership_tier").default("basic"), // "basic", "preferred", "exclusive"
+  commissionRate: real("commission_rate"), // Percentage
+  referralFee: real("referral_fee"), // Flat fee per referral
+  
+  // Offerings
+  offersDwellScan: boolean("offers_dwellscan").default(false),
+  offersWarrantyPackage: boolean("offers_warranty_package").default(false),
+  offersMaintenancePlan: boolean("offers_maintenance_plan").default(false),
+  customPackages: jsonb("custom_packages"), // Custom offerings
+  
+  // Stats & Performance
+  totalProperties: integer("total_properties").default(0),
+  totalHomeowners: integer("total_homeowners").default(0),
+  totalRevenue: real("total_revenue").default(0),
+  averageHomeValue: real("average_home_value"),
+  
+  // Closing Workflow
+  closingWorkflowEnabled: boolean("closing_workflow_enabled").default(false),
+  closingDayHandoffProtocol: text("closing_day_handoff_protocol"),
+  digitalWelcomePacket: boolean("digital_welcome_packet").default(false),
+  
+  // Contract & Legal
+  contractStartDate: text("contract_start_date"),
+  contractEndDate: text("contract_end_date"),
+  contractDocumentUrl: text("contract_document_url"),
+  insuranceCertificateUrl: text("insurance_certificate_url"),
+  
+  // Branding
+  logoUrl: text("logo_url"),
+  websiteUrl: text("website_url"),
+  marketingMaterials: text("marketing_materials").array(),
+  
+  // Status
+  status: text("status").default("active"), // "active", "inactive", "suspended"
+  isVerified: boolean("is_verified").default(false),
+  verifiedAt: text("verified_at"),
+  notes: text("notes"),
+  
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const builderPartnershipsRelations = relations(builderPartnerships, ({ many }) => ({
+  properties: many(properties),
+}));
+
+export const insertBuilderPartnershipSchema = createInsertSchema(builderPartnerships).omit({ id: true });
+export type InsertBuilderPartnership = z.infer<typeof insertBuilderPartnershipSchema>;
+export type BuilderPartnership = typeof builderPartnerships.$inferSelect;
+
+// Insurance Partners - Insurance carrier partnership platform
+export const insurancePartners = pgTable("insurance_partners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Carrier Details
+  carrierName: text("carrier_name").notNull(),
+  carrierCode: text("carrier_code").unique(), // NAIC code
+  amBestRating: text("am_best_rating"), // A++, A+, A, etc.
+  contactName: text("contact_name"),
+  contactEmail: text("contact_email").notNull(),
+  contactPhone: text("contact_phone"),
+  
+  // Service Areas
+  licensedStates: text("licensed_states").array().notNull(),
+  serviceZipCodes: text("service_zip_codes").array(),
+  
+  // Policy Types Offered
+  offersHomeowners: boolean("offers_homeowners").default(true),
+  offersFlood: boolean("offers_flood").default(false),
+  offersWindstorm: boolean("offers_windstorm").default(false),
+  offersUmbrella: boolean("offers_umbrella").default(false),
+  
+  // Discount Programs
+  maintenanceDiscount: boolean("maintenance_discount").default(false),
+  maintenanceDiscountPct: real("maintenance_discount_pct"),
+  dwellscanDiscount: boolean("dwellscan_discount").default(false),
+  dwellscanDiscountPct: real("dwellscan_discount_pct"),
+  warrantyDiscount: boolean("warranty_discount").default(false),
+  warrantyDiscountPct: real("warranty_discount_pct"),
+  
+  // Integration Details
+  apiEnabled: boolean("api_enabled").default(false),
+  apiEndpoint: text("api_endpoint"),
+  apiKey: text("api_key"), // Encrypted
+  webhookUrl: text("webhook_url"),
+  
+  // Performance
+  totalPolicies: integer("total_policies").default(0),
+  totalPremiumVolume: real("total_premium_volume").default(0),
+  averageDiscount: real("average_discount"),
+  claimApprovalRate: real("claim_approval_rate"),
+  
+  // Commission & Revenue
+  commissionRate: real("commission_rate"),
+  referralFee: real("referral_fee"),
+  totalRevenue: real("total_revenue").default(0),
+  
+  // Partnership Terms
+  partnershipTier: text("partnership_tier").default("standard"), // "standard", "preferred", "exclusive"
+  contractStartDate: text("contract_start_date"),
+  contractEndDate: text("contract_end_date"),
+  contractDocumentUrl: text("contract_document_url"),
+  
+  // Branding
+  logoUrl: text("logo_url"),
+  websiteUrl: text("website_url"),
+  quoteUrl: text("quote_url"), // Direct link to get quote
+  
+  // Status
+  status: text("status").default("active"), // "active", "inactive", "suspended"
+  isVerified: boolean("is_verified").default(false),
+  verifiedAt: text("verified_at"),
+  notes: text("notes"),
+  
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const insurancePartnersRelations = relations(insurancePartners, ({ many }) => ({
+  policies: many(propertyInsurance),
+}));
+
+export const insertInsurancePartnerSchema = createInsertSchema(insurancePartners).omit({ id: true });
+export type InsertInsurancePartner = z.infer<typeof insertInsurancePartnerSchema>;
+export type InsurancePartner = typeof insurancePartners.$inferSelect;
+
+// Property Documents - Centralized document storage
+export const propertyDocuments = pgTable("property_documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  
+  // Document Details
+  documentName: text("document_name").notNull(),
+  documentType: text("document_type").notNull(), // See documentTypeEnum for all supported types
+  description: text("description"),
+  
+  // File Details
+  fileUrl: text("file_url").notNull(),
+  fileSize: integer("file_size"), // Bytes
+  fileType: text("file_type"), // "application/pdf", "image/jpeg", etc.
+  thumbnailUrl: text("thumbnail_url"),
+  
+  // Categorization
+  category: text("category"), // "legal", "maintenance", "financial", "warranty", "insurance"
+  tags: text("tags").array(),
+  
+  // Associated Records
+  applianceId: varchar("appliance_id"), // If appliance-related
+  warrantyId: varchar("warranty_id"), // If warranty document
+  insurancePolicyId: varchar("insurance_policy_id"), // If insurance document
+  serviceRequestId: varchar("service_request_id"), // If service receipt
+  
+  // Document Metadata
+  documentDate: text("document_date"), // Date of the document (not upload date)
+  expirationDate: text("expiration_date"), // If applicable
+  issuer: text("issuer"), // Who issued the document
+  
+  // Access Control
+  isPublic: boolean("is_public").default(false), // Share with realtors/buyers
+  sharedWith: text("shared_with").array(), // User IDs with access
+  
+  // OCR & AI Analysis
+  ocrText: text("ocr_text"), // Extracted text for search
+  aiSummary: text("ai_summary"), // AI-generated summary
+  aiExtractedData: jsonb("ai_extracted_data"), // Structured data extracted
+  
+  // Version Control
+  version: integer("version").default(1),
+  previousVersionId: varchar("previous_version_id"), // FK to earlier version
+  
+  // Upload Details
+  uploadedBy: varchar("uploaded_by"), // User ID
+  uploadSource: text("upload_source"), // "web", "mobile", "email", "dwellscan"
+  
+  // Status
+  status: text("status").default("active"), // "active", "archived", "deleted"
+  notes: text("notes"),
+  
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const propertyDocumentsRelations = relations(propertyDocuments, ({ one }) => ({
+  property: one(properties, {
+    fields: [propertyDocuments.propertyId],
+    references: [properties.id],
+  }),
+  appliance: one(propertyAppliances, {
+    fields: [propertyDocuments.applianceId],
+    references: [propertyAppliances.id],
+  }),
+  warranty: one(propertyWarranties, {
+    fields: [propertyDocuments.warrantyId],
+    references: [propertyWarranties.id],
+  }),
+  insurancePolicy: one(propertyInsurance, {
+    fields: [propertyDocuments.insurancePolicyId],
+    references: [propertyInsurance.id],
+  }),
+  serviceRequest: one(serviceRequests, {
+    fields: [propertyDocuments.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertPropertyDocumentSchema = createInsertSchema(propertyDocuments).omit({ id: true });
+export type InsertPropertyDocument = z.infer<typeof insertPropertyDocumentSchema>;
+export type PropertyDocument = typeof propertyDocuments.$inferSelect;
+
+// Notification Queue - Push/Email/SMS notification engine
+export const notificationQueue = pgTable("notification_queue", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Recipient
+  userId: varchar("user_id").notNull(),
+  propertyId: varchar("property_id"), // If property-specific
+  
+  // Notification Details
+  notificationType: text("notification_type").notNull(), // From notificationTypeEnum
+  channel: text("channel").notNull(), // "push", "email", "sms", "all"
+  priority: text("priority").default("normal"), // "low", "normal", "high", "urgent"
+  
+  // Content
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  actionText: text("action_text"), // Button text
+  actionUrl: text("action_url"), // Deep link or URL
+  
+  // Related Records
+  warrantyId: varchar("warranty_id"),
+  insurancePolicyId: varchar("insurance_policy_id"),
+  maintenanceTaskId: varchar("maintenance_task_id"),
+  applianceId: varchar("appliance_id"),
+  healthEventId: varchar("health_event_id"),
+  
+  // Metadata
+  metadata: jsonb("metadata"), // Additional contextual data
+  
+  // Scheduling
+  scheduledFor: text("scheduled_for"), // When to send (null = send now)
+  expiresAt: text("expires_at"), // After this, don't send
+  
+  // Status Tracking
+  status: text("status").default("pending"), // "pending", "sent", "delivered", "failed", "cancelled"
+  sentAt: text("sent_at"),
+  deliveredAt: text("delivered_at"),
+  openedAt: text("opened_at"),
+  clickedAt: text("clicked_at"),
+  
+  // Channel-Specific IDs
+  pushNotificationId: text("push_notification_id"),
+  emailMessageId: text("email_message_id"),
+  smsMessageId: text("sms_message_id"),
+  
+  // Error Handling
+  failureReason: text("failure_reason"),
+  retryCount: integer("retry_count").default(0),
+  maxRetries: integer("max_retries").default(3),
+  
+  // Analytics
+  isRead: boolean("is_read").default(false),
+  isClicked: boolean("is_clicked").default(false),
+  
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").default(sql`now()`),
+});
+
+export const notificationQueueRelations = relations(notificationQueue, ({ one }) => ({
+  user: one(users, {
+    fields: [notificationQueue.userId],
+    references: [users.id],
+  }),
+  property: one(properties, {
+    fields: [notificationQueue.propertyId],
+    references: [properties.id],
+  }),
+  warranty: one(propertyWarranties, {
+    fields: [notificationQueue.warrantyId],
+    references: [propertyWarranties.id],
+  }),
+  insurancePolicy: one(propertyInsurance, {
+    fields: [notificationQueue.insurancePolicyId],
+    references: [propertyInsurance.id],
+  }),
+  maintenanceTask: one(propertyMaintenanceSchedule, {
+    fields: [notificationQueue.maintenanceTaskId],
+    references: [propertyMaintenanceSchedule.id],
+  }),
+  appliance: one(propertyAppliances, {
+    fields: [notificationQueue.applianceId],
+    references: [propertyAppliances.id],
+  }),
+  healthEvent: one(propertyHealthEvents, {
+    fields: [notificationQueue.healthEventId],
+    references: [propertyHealthEvents.id],
+  }),
+}));
+
+export const insertNotificationQueueSchema = createInsertSchema(notificationQueue).omit({ id: true });
+export type InsertNotificationQueue = z.infer<typeof insertNotificationQueueSchema>;
+export type NotificationQueue = typeof notificationQueue.$inferSelect;

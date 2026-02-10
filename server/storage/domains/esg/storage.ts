@@ -1,14 +1,17 @@
 import { db } from "../../../db";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, desc, sql, inArray } from "drizzle-orm";
 import {
   esgImpactLogs,
   esgReports,
   platformSustainabilityStats,
+  serviceEsgMetrics,
   type EsgImpactLog,
   type InsertEsgImpactLog,
   type EsgReport,
   type InsertEsgReport,
   type PlatformSustainabilityStats,
+  type ServiceEsgMetrics,
+  type InsertServiceEsgMetrics,
 } from "@shared/schema";
 
 export class EsgStorage {
@@ -75,5 +78,68 @@ export class EsgStorage {
       .values({ ...stats, updatedAt: new Date().toISOString() } as any)
       .returning();
     return result;
+  }
+
+  // Service-Specific ESG Metrics
+  async createServiceEsgMetrics(metrics: InsertServiceEsgMetrics): Promise<ServiceEsgMetrics> {
+    const [result] = await db.insert(serviceEsgMetrics).values(metrics).returning();
+    return result;
+  }
+
+  async getServiceEsgMetricsByRequest(serviceRequestId: string): Promise<ServiceEsgMetrics | undefined> {
+    const [result] = await db.select().from(serviceEsgMetrics).where(eq(serviceEsgMetrics.serviceRequestId, serviceRequestId));
+    return result || undefined;
+  }
+
+  async getServiceEsgMetricsByType(
+    serviceType: string,
+    filters?: {
+      startDate?: string;
+      endDate?: string;
+      verificationStatus?: string;
+    }
+  ): Promise<ServiceEsgMetrics[]> {
+    let conditions = [eq(serviceEsgMetrics.serviceType, serviceType)];
+
+    if (filters?.startDate) {
+      conditions.push(sql`${serviceEsgMetrics.createdAt} >= ${filters.startDate}`);
+    }
+    if (filters?.endDate) {
+      conditions.push(sql`${serviceEsgMetrics.createdAt} <= ${filters.endDate}`);
+    }
+    if (filters?.verificationStatus) {
+      conditions.push(eq(serviceEsgMetrics.verificationStatus, filters.verificationStatus));
+    }
+
+    return db.select().from(serviceEsgMetrics).where(and(...conditions)).orderBy(desc(serviceEsgMetrics.createdAt));
+  }
+
+  async getServiceEsgMetricsByRequestIds(serviceRequestIds: string[]): Promise<ServiceEsgMetrics[]> {
+    if (serviceRequestIds.length === 0) return [];
+    return db.select().from(serviceEsgMetrics).where(inArray(serviceEsgMetrics.serviceRequestId, serviceRequestIds));
+  }
+
+  async updateServiceEsgMetrics(id: string, updates: Partial<ServiceEsgMetrics>): Promise<ServiceEsgMetrics | undefined> {
+    const [result] = await db.update(serviceEsgMetrics)
+      .set({ ...updates, updatedAt: new Date().toISOString() })
+      .where(eq(serviceEsgMetrics.id, id))
+      .returning();
+    return result || undefined;
+  }
+
+  async getServiceEsgAggregateByType(serviceType: string): Promise<{
+    totalJobs: number;
+    totalCo2SavedLbs: number;
+    totalWaterSavedGallons: number;
+    avgEsgScore: number;
+  }> {
+    const results = await db.select({
+      totalJobs: sql<number>`count(*)::int`,
+      totalCo2SavedLbs: sql<number>`coalesce(sum(${serviceEsgMetrics.totalCo2SavedLbs}), 0)`,
+      totalWaterSavedGallons: sql<number>`coalesce(sum(${serviceEsgMetrics.waterSavedGallons}), 0)`,
+      avgEsgScore: sql<number>`coalesce(avg(${serviceEsgMetrics.esgScore}), 0)`,
+    }).from(serviceEsgMetrics).where(eq(serviceEsgMetrics.serviceType, serviceType));
+
+    return results[0] || { totalJobs: 0, totalCo2SavedLbs: 0, totalWaterSavedGallons: 0, avgEsgScore: 0 };
   }
 }

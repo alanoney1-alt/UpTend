@@ -60,6 +60,8 @@ import ReferralLanding from "@/pages/referral-landing";
 import Marketplace from "@/pages/marketplace";
 import BookFreshCut from "@/pages/book-freshcut";
 import BookDeepFiber from "@/pages/book-deepfiber";
+import Properties from "@/pages/properties";
+import PropertyDashboard from "@/pages/property-dashboard";
 import NotFound from "@/pages/not-found";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
@@ -140,6 +142,8 @@ function Router() {
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/pro/verify" component={ProVerification} />
       <Route path="/pro/sustainability-cert" component={ProSustainabilityCert} />
+      <Route path="/properties" component={Properties} />
+      <Route path="/properties/:propertyId" component={PropertyDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
