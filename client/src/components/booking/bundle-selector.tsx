@@ -16,6 +16,11 @@ const SERVICE_ICONS: Record<string, string> = {
   pressure_washing: "💧",
   gutter_cleaning: "🏠",
   home_consultation: "📋",
+  handyman: "🔧",
+  moving_labor: "💪",
+  landscaping: "🌳",
+  pool_cleaning: "🏊",
+  carpet_cleaning: "🧹",
 };
 
 const SERVICE_NAMES: Record<string, string> = {
@@ -24,6 +29,11 @@ const SERVICE_NAMES: Record<string, string> = {
   pressure_washing: "FreshWash™ Pressure Washing",
   gutter_cleaning: "GutterFlush™ Gutter Cleaning",
   home_consultation: "DwellScan™ Aerial Inspection",
+  handyman: "FixIt™ Handyman",
+  moving_labor: "LiftCrew™ Moving Labor",
+  landscaping: "FreshCut™ Landscaping",
+  pool_cleaning: "PoolSpark™ Pool Cleaning",
+  carpet_cleaning: "DeepFiber™ Carpet Cleaning",
 };
 
 export function BundleSelector({ selectedBundle, onSelectBundle, onSkip }: BundleSelectorProps) {

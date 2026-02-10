@@ -1,6 +1,6 @@
-import { Sofa, Tv, Refrigerator, Bed, Package, Home, Armchair, Table2, Lamp, Monitor, Dumbbell, Trees, Trash2, Box, Camera, Truck, Clock, Users, LucideIcon } from "lucide-react";
+import { Sofa, Tv, Refrigerator, Bed, Package, Home, Armchair, Table2, Lamp, Monitor, Dumbbell, Trees, Trash2, Box, Camera, Truck, Clock, Users, Wrench, LucideIcon } from "lucide-react";
 
-export type ServiceType = "furniture_moving" | "garage_cleanout" | "truck_unloading" | "junk_removal";
+export type ServiceType = "furniture_moving" | "garage_cleanout" | "truck_unloading" | "junk_removal" | "handyman";
 
 export interface ServiceTypeConfig {
   id: ServiceType;
@@ -17,6 +17,7 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   garage_cleanout: 299,
   truck_unloading: 80,
   furniture_moving: 99,
+  handyman: 49, // FixIt $49/hr, 1hr minimum
   pressure_washing: 120,
   gutter_cleaning: 149,
   moving_labor: 80,
@@ -122,6 +123,14 @@ export const SERVICE_TYPES: ServiceTypeConfig[] = [
     icon: Trash2,
     pricingModel: "per_item",
     startingPrice: SERVICE_STARTING_PRICES.junk_removal,
+  },
+  {
+    id: "handyman",
+    label: "FixIt™ (Handyman Services)",
+    description: "Assembly, mounting, repairs, and installations",
+    icon: Wrench,
+    pricingModel: "hourly",
+    startingPrice: SERVICE_STARTING_PRICES.handyman,
   },
 ];
 
