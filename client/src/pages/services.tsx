@@ -238,9 +238,9 @@ export default function Services() {
 
       {/* Quick Navigation */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-            <span className="text-sm font-medium text-muted-foreground shrink-0">Jump to:</span>
+        <div className="max-w-7xl mx-auto px-6 py-3">
+          <div className="flex items-start gap-2 flex-wrap">
+            <span className="text-xs font-medium text-muted-foreground shrink-0 py-1.5">Jump to:</span>
             {services.map((svc) => (
               <button
                 key={svc.id}
@@ -248,13 +248,13 @@ export default function Services() {
                   const element = document.getElementById(`service-${svc.id}`);
                   element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
                   svc.featured
                     ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                     : 'hover:bg-muted'
                 }`}
               >
-                <svc.icon className="w-4 h-4 shrink-0" />
+                <svc.icon className="w-3.5 h-3.5 shrink-0" />
                 <span>{svc.jumpToLabel}</span>
               </button>
             ))}
