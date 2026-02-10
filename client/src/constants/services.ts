@@ -51,6 +51,16 @@ export const SERVICES = {
     tagline: 'Your crew, your schedule.',
     description: 'Loading, unloading, rearranging. Book the crew size you need.',
   },
+  handyman: {
+    branded: 'FixIt',
+    generic: 'Handyman Services',
+    display: 'FixIt™ (Handyman Services)',
+    slug: '/fixit',
+    startingPrice: 49,
+    priceUnit: 'hourly',
+    tagline: 'No task too small.',
+    description: 'Assembly, mounting, repairs, painting, installations. Verified pros, 1-hour minimum, billed by the minute after.',
+  },
   light_demolition: {
     branded: 'TearDown',
     generic: 'Light Demolition',

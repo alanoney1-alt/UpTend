@@ -134,6 +134,66 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     alacartePrice: 612, // $89 (FreshCut premium) + $149 (PoolSpark deep) + $250 (FreshWash house) × 88% = $539
     savings: 73,
   },
+  home_ready: {
+    id: "home_ready",
+    name: "HomeReady",
+    description: "Move-in package with setup and cleaning",
+    services: ["handyman", "home_cleaning"],
+    bundlePrice: 138,
+    alacartePrice: 148, // $49 (FixIt 1hr) + $99 (PolishUp standard) × 93% = $138
+    savings: 10,
+    notes: [
+      "Perfect for new move-ins",
+      "Pro handles furniture assembly, TV mounting, and setup",
+      "Then deep cleans the entire home",
+    ],
+  },
+  quick_fix: {
+    id: "quick_fix",
+    name: "QuickFix",
+    description: "Handyman + junk removal combo",
+    services: ["handyman", "junk_removal"],
+    bundlePrice: 138,
+    alacartePrice: 148, // $49 (FixIt 1hr) + $99 (BulkSnap min) × 93% = $138
+    savings: 10,
+    notes: [
+      "Fix what you can, haul what you can't",
+      "Great for rental turnovers",
+      "Minor repairs + debris removal in one visit",
+    ],
+  },
+  setup_crew: {
+    id: "setup_crew",
+    name: "SetUp Crew",
+    description: "Moving labor + handyman for full setup",
+    services: ["moving_labor", "handyman"],
+    bundlePrice: 249,
+    alacartePrice: 280, // $160 (LiftCrew 2hrs × 2 workers) + $98 (FixIt 2hrs) × 89% = $249
+    savings: 31,
+    badge: "Move-In Special",
+    notes: [
+      "Crew unloads your truck (2 workers × 2 hours)",
+      "Then handyman assembles furniture and mounts TVs (2 hours)",
+      "Move in ready, same day",
+    ],
+    requiresMultiplePros: true,
+  },
+  fix_and_shine: {
+    id: "fix_and_shine",
+    name: "Fix & Shine",
+    description: "Repairs, cleaning, and exterior refresh",
+    services: ["handyman", "home_cleaning", "pressure_washing"],
+    bundlePrice: 248,
+    alacartePrice: 268, // $49 (FixIt 1hr) + $99 (PolishUp) + $120 (FreshWash) × 93% = $248
+    savings: 20,
+    badge: "Property Manager Favorite",
+    notes: [
+      "Fix minor issues",
+      "Deep clean interior",
+      "Pressure wash exterior",
+      "Rental turnover in one day",
+    ],
+  },
 } as const;
 
 export type BundleId = keyof typeof NAMED_BUNDLES;

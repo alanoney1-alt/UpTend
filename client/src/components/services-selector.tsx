@@ -24,6 +24,7 @@ import {
   ChevronDown,
   CheckCircle2,
   AlertCircle,
+  Wrench,
 } from "lucide-react";
 import { getEquipmentForService } from "@shared/equipment-requirements";
 
@@ -80,6 +81,13 @@ const ALL_SERVICES: Service[] = [
     label: "LiftCrew™ (Moving Labor)",
     icon: Users,
     description: "Hourly help for loading and unloading",
+  },
+  {
+    id: "handyman",
+    label: "FixIt™ (Handyman Services)",
+    icon: Wrench,
+    description: "Assembly, mounting, repairs, painting, installations",
+    requiresEquipment: ["basic_tools"],
   },
   {
     id: "light_demolition",

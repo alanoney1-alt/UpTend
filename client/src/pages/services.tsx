@@ -6,7 +6,7 @@ import {
   Recycle, Droplets, Home, Users, Hammer, ClipboardCheck,
   Sofa, Truck, CheckCircle, ArrowRight, ShieldCheck, Star,
   GraduationCap, Video, Globe, DollarSign, ChevronRight,
-  Leaf, Sparkles, Waves,
+  Leaf, Sparkles, Waves, Wrench,
 } from "lucide-react";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
@@ -57,6 +57,15 @@ const services = [
     description: "Hourly labor for loading, unloading, and rearranging. You rent the truck or pod, we supply the manpower, dollies, and shrink wrap. Perfect for DIY moves.",
     price: "$80/hr per Pro",
     includes: ["Experienced Pros", "Dollies & hand trucks included", "Shrink wrap service", "Furniture assembly/disassembly"],
+  },
+  {
+    id: "handyman",
+    name: <>FixIt<sup>™</sup> (Handyman Services)</>,
+    icon: Wrench,
+    tagline: "No task too small.",
+    description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
+    price: "$49/hr",
+    includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
   },
   {
     id: "light_demolition",

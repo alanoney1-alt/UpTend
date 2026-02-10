@@ -238,6 +238,28 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
     insuranceRequired: "$1M general liability",
   },
   {
+    serviceId: "handyman",
+    serviceName: "FixIt™ (Handyman Services)",
+    minimumEquipment: [
+      { id: "drill", label: "Cordless drill/driver set", required: true },
+      { id: "hammer", label: "Hammer", required: true },
+      { id: "screwdrivers", label: "Screwdriver set (Phillips and flathead)", required: true },
+      { id: "level", label: "Level (2-ft and/or torpedo)", required: true },
+      { id: "tape_measure", label: "Tape measure (25 ft)", required: true },
+      { id: "pliers", label: "Pliers set (needle-nose, channel locks)", required: true },
+      { id: "utility_knife", label: "Utility knife", required: true },
+    ],
+    recommendedEquipment: [
+      { id: "stud_finder", label: "Stud finder", required: false },
+      { id: "saw", label: "Hand saw or circular saw", required: false },
+      { id: "paint_supplies", label: "Paint brushes, rollers, trays", required: false },
+      { id: "ladder", label: "6-ft step ladder", required: false },
+      { id: "allen_keys", label: "Allen key/hex wrench set", required: false },
+      { id: "adjustable_wrench", label: "Adjustable wrench", required: false },
+    ],
+    insuranceRequired: "$1M general liability",
+  },
+  {
     serviceId: "garage_cleanout",
     serviceName: "GarageReset™ (Garage Cleanout)",
     minimumEquipment: [
