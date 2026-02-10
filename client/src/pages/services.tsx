@@ -222,10 +222,51 @@ export default function Services() {
         </div>
       </section>
 
+      {/* Quick Navigation */}
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+            <span className="text-sm font-medium text-muted-foreground shrink-0">Jump to:</span>
+            {services.map((svc) => (
+              <button
+                key={svc.id}
+                onClick={() => {
+                  const element = document.getElementById(`service-${svc.id}`);
+                  element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                  svc.featured
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    : 'hover:bg-muted'
+                }`}
+              >
+                <svc.icon className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {svc.id === 'home_consultation' ? 'DwellScan' :
+                   svc.id === 'junk_removal' ? 'BulkSnap' :
+                   svc.id === 'home_cleaning' ? 'PolishUp' :
+                   svc.id === 'pressure_washing' ? 'FreshWash' :
+                   svc.id === 'gutter_cleaning' ? 'GutterFlush' :
+                   svc.id === 'moving_labor' ? 'LiftCrew' :
+                   svc.id === 'handyman' ? 'FixIt' :
+                   svc.id === 'light_demolition' ? 'TearDown' :
+                   svc.id === 'garage_cleanout' ? 'GarageReset' :
+                   svc.id === 'furniture_moving' ? 'LiftCrew' :
+                   svc.id === 'truck_unloading' ? 'UnloadPro' :
+                   svc.id === 'landscaping' ? 'FreshCut' :
+                   svc.id === 'pool_cleaning' ? 'PoolSpark' :
+                   svc.id === 'carpet_cleaning' ? 'DeepFiber' : svc.id}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <section className="py-20 max-w-7xl mx-auto px-6" data-testid="section-services-grid">
         {/* Featured: DwellScan - Separated at top */}
         {services.filter(s => s.featured).map((svc) => (
-          <div key={svc.id} className="mb-8">
+          <div key={svc.id} id={`service-${svc.id}`} className="mb-8">
             <Card
               className="shadow-xl border-2 border-primary overflow-visible"
               data-testid={`card-service-${svc.id}`}
@@ -297,7 +338,8 @@ export default function Services() {
           {services.filter(s => !s.featured).map((svc) => (
             <Card
               key={svc.id}
-              className="relative overflow-visible flex flex-col"
+              id={`service-${svc.id}`}
+              className="relative overflow-visible flex flex-col scroll-mt-24"
               data-testid={`card-service-${svc.id}`}
             >
               <CardContent className="p-8 flex flex-col flex-1">
