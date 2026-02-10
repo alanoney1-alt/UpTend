@@ -25,6 +25,18 @@ const services = [
     link: "/services/home-audit",
   },
 
+  // === REPAIRS & PROJECTS ===
+  {
+    id: "handyman",
+    name: <>FixIt<sup>™</sup> (Handyman Services)</>,
+    icon: Wrench,
+    tagline: "No task too small.",
+    description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
+    price: "From $49/hr",
+    includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
+    esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
+  },
+
   // === ESSENTIAL HOME MAINTENANCE ===
   {
     id: "home_cleaning",
@@ -133,16 +145,6 @@ const services = [
 
   // === REPAIRS & PROJECTS ===
   {
-    id: "handyman",
-    name: <>FixIt<sup>™</sup> (Handyman Services)</>,
-    icon: Wrench,
-    tagline: "No task too small.",
-    description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
-    price: "$49/hr",
-    includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
-    esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
-  },
-  {
     id: "light_demolition",
     name: <>TearDown<sup>™</sup> (Demolition)</>,
     icon: Hammer,
@@ -230,7 +232,7 @@ export default function Services() {
             >
               <CardContent className="p-8 bg-gradient-to-br from-primary/10 to-primary/5">
                 <Badge className="mb-4 bg-primary text-primary-foreground" data-testid={`badge-featured-${svc.id}`}>
-                  Featured - Our Moat
+                  Featured
                 </Badge>
 
                 <div className="flex items-start gap-6 mb-6">
