@@ -285,7 +285,7 @@ export default function Services() {
                     <div className="flex items-baseline gap-3">
                       <span className="text-3xl font-black text-primary" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
                       <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                        Credited to Any Service
+                        $49 Credited to Any Service
                       </Badge>
                     </div>
                   </div>
