@@ -404,6 +404,14 @@ export default function Booking() {
       }
       case "home_consultation":
         return formData.dwellscanTier === "aerial" ? 149 : 49;
+      case "pool_cleaning":
+        return 89; // Starting price for pool cleaning
+      case "landscaping":
+        return 59; // Starting price for lawn care
+      case "carpet_cleaning":
+        return 99; // Starting price per room
+      case "home_cleaning":
+        return freshSpaceDetails?.estimatedPrice || 149; // Default if no details yet
       default:
         return 0;
     }
@@ -440,6 +448,18 @@ export default function Booking() {
         return formData.laborHours >= 2 && formData.laborCrewSize >= 1;
       case "home_consultation":
         return true;
+      case "pool_cleaning":
+        // Basic pool cleaning - requires service confirmation
+        return true;
+      case "landscaping":
+        // Lawn care - redirects to dedicated booking page
+        return false; // Never reached as we redirect
+      case "carpet_cleaning":
+        // Carpet cleaning - redirects to dedicated booking page
+        return false; // Never reached as we redirect
+      case "home_cleaning":
+        // Home cleaning routes to PolishUpBooking component
+        return !!freshSpaceDetails;
       default:
         return false;
     }
@@ -1244,6 +1264,16 @@ export default function Booking() {
                   <RadioGroup
                     value={formData.serviceType}
                     onValueChange={(val) => {
+                      // Redirect to dedicated booking pages for certain services
+                      if (val === "carpet_cleaning") {
+                        navigate("/services/carpet-cleaning");
+                        return;
+                      }
+                      if (val === "landscaping") {
+                        navigate("/services/landscaping");
+                        return;
+                      }
+
                       setFormData(prev => ({
                         ...prev,
                         serviceType: val,

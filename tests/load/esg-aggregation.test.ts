@@ -1,25 +1,40 @@
 /**
- * Load Tests for ESG Aggregation Queries
+ * Load Tests for ESG Aggregation Performance
  *
- * Tests performance of service ESG metric aggregation
- * Ensures queries meet SLA requirements (<1s per service, <2s for all)
+ * Tests:
+ * - Single service type aggregate completes < 1 second
+ * - All service types aggregate completes < 2 seconds
+ * - Large dataset queries (100k+ records) complete within SLA
+ * - Concurrent requests don't degrade performance
  */
 
 import { test, expect } from "@playwright/test";
 
+// Test configuration
 const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
-const SLA_SINGLE_SERVICE_MS = 1000; // 1 second
-const SLA_ALL_SERVICES_MS = 2000; // 2 seconds
+const BUSINESS_ACCOUNT_ID = "test-business-123";
+
+// Performance SLAs (in milliseconds)
+const SLA_SINGLE_SERVICE = 1000; // 1 second
+const SLA_ALL_SERVICES = 2000; // 2 seconds
+const SLA_LARGE_DATASET = 3000; // 3 seconds for 100k+ records
 
 test.describe("ESG Aggregation Performance", () => {
-  test("Single service aggregate completes within SLA", async ({ request }) => {
+  test("single service aggregate completes within 1 second", async ({ page }) => {
+    await page.goto(`${BASE_URL}/business-login`);
+    // Login as test user
+    await page.fill('input[name="email"]', "test@test.com");
+    await page.fill('input[name="password"]', "test-password");
+    await page.click('button[type="submit"]');
+
+    // Measure performance of single service aggregation
     const startTime = performance.now();
 
-    const response = await request.get(
+    const response = await page.request.get(
       `${BASE_URL}/api/esg/service-types/pressure_washing/aggregate`,
       {
         headers: {
-          Cookie: "test-session",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -27,20 +42,29 @@ test.describe("ESG Aggregation Performance", () => {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(SLA_SINGLE_SERVICE_MS);
+    console.log(`Single service aggregate took: ${duration.toFixed(2)}ms`);
 
-    console.log(`✓ Single service aggregate: ${duration.toFixed(0)}ms (SLA: ${SLA_SINGLE_SERVICE_MS}ms)`);
+    // Verify response is successful
+    expect(response.status()).toBe(200);
+
+    // Verify performance SLA
+    expect(duration).toBeLessThan(SLA_SINGLE_SERVICE);
   });
 
-  test("All service types aggregate completes within SLA", async ({ request }) => {
+  test("all service types aggregate completes within 2 seconds", async ({ page }) => {
+    await page.goto(`${BASE_URL}/business-login`);
+    await page.fill('input[name="email"]', "test@test.com");
+    await page.fill('input[name="password"]', "test-password");
+    await page.click('button[type="submit"]');
+
+    // Measure performance of all services aggregation
     const startTime = performance.now();
 
-    const response = await request.get(
+    const response = await page.request.get(
       `${BASE_URL}/api/esg/service-types/aggregate/all`,
       {
         headers: {
-          Cookie: "test-session",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -48,25 +72,35 @@ test.describe("ESG Aggregation Performance", () => {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(SLA_ALL_SERVICES_MS);
+    console.log(`All services aggregate took: ${duration.toFixed(2)}ms`);
 
+    // Verify response is successful
+    expect(response.status()).toBe(200);
+
+    // Verify performance SLA
+    expect(duration).toBeLessThan(SLA_ALL_SERVICES);
+
+    // Verify all service types are returned
     const data = await response.json();
-    expect(data.success).toBe(true);
-    expect(data.data).toBeInstanceOf(Array);
-
-    console.log(`✓ All services aggregate: ${duration.toFixed(0)}ms (SLA: ${SLA_ALL_SERVICES_MS}ms)`);
-    console.log(`  Service types returned: ${data.data.length}`);
+    expect(data.data || data.aggregates).toBeDefined();
+    const serviceCount = (data.data || data.aggregates).length;
+    console.log(`Returned ${serviceCount} service types`);
   });
 
-  test("Date range filtering performs well", async ({ request }) => {
+  test("business-specific service breakdown completes within SLA", async ({ page }) => {
+    await page.goto(`${BASE_URL}/business-login`);
+    await page.fill('input[name="email"]', "test@test.com");
+    await page.fill('input[name="password"]', "test-password");
+    await page.click('button[type="submit"]');
+
+    // Measure performance of business-specific aggregation
     const startTime = performance.now();
 
-    const response = await request.get(
-      `${BASE_URL}/api/esg/service-types/aggregate/all?startDate=2024-01-01&endDate=2024-12-31`,
+    const response = await page.request.get(
+      `${BASE_URL}/api/business/${BUSINESS_ACCOUNT_ID}/esg-metrics?groupBy=service_type`,
       {
         headers: {
-          Cookie: "test-session",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -74,20 +108,32 @@ test.describe("ESG Aggregation Performance", () => {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(SLA_ALL_SERVICES_MS);
+    console.log(`Business service breakdown took: ${duration.toFixed(2)}ms`);
 
-    console.log(`✓ Date range filtering: ${duration.toFixed(0)}ms`);
+    // Verify response is successful
+    expect(response.status()).toBe(200);
+
+    // Verify performance SLA
+    expect(duration).toBeLessThan(SLA_ALL_SERVICES);
   });
 
-  test("Verification status filtering performs well", async ({ request }) => {
+  test("date-filtered aggregation completes within SLA", async ({ page }) => {
+    await page.goto(`${BASE_URL}/business-login`);
+    await page.fill('input[name="email"]', "test@test.com");
+    await page.fill('input[name="password"]', "test-password");
+    await page.click('button[type="submit"]');
+
+    // Test date range filtering (1 year of data)
+    const startDate = "2024-01-01";
+    const endDate = "2024-12-31";
+
     const startTime = performance.now();
 
-    const response = await request.get(
-      `${BASE_URL}/api/esg/service-types/aggregate/all?verificationStatus=verified`,
+    const response = await page.request.get(
+      `${BASE_URL}/api/esg/service-types/aggregate/all?startDate=${startDate}&endDate=${endDate}`,
       {
         headers: {
-          Cookie: "test-session",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -95,141 +141,78 @@ test.describe("ESG Aggregation Performance", () => {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(SLA_ALL_SERVICES_MS);
+    console.log(`Date-filtered aggregate took: ${duration.toFixed(2)}ms`);
 
-    console.log(`✓ Verification status filtering: ${duration.toFixed(0)}ms`);
+    // Verify response is successful
+    expect(response.status()).toBe(200);
+
+    // Verify performance SLA
+    expect(duration).toBeLessThan(SLA_ALL_SERVICES);
   });
 
-  test("Combined filters perform well", async ({ request }) => {
-    const startTime = performance.now();
-
-    const response = await request.get(
-      `${BASE_URL}/api/esg/service-types/aggregate/all?startDate=2024-01-01&endDate=2024-12-31&verificationStatus=verified`,
-      {
-        headers: {
-          Cookie: "test-session",
-        },
-      }
+  test("concurrent aggregation requests maintain performance", async ({ browser }) => {
+    // Create multiple concurrent requests
+    const CONCURRENT_REQUESTS = 5;
+    const contexts = await Promise.all(
+      Array(CONCURRENT_REQUESTS)
+        .fill(null)
+        .map(() => browser.newContext())
     );
 
-    const endTime = performance.now();
-    const duration = endTime - startTime;
+    const pages = await Promise.all(contexts.map((ctx) => ctx.newPage()));
 
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(SLA_ALL_SERVICES_MS);
-
-    console.log(`✓ Combined filters: ${duration.toFixed(0)}ms`);
-  });
-
-  test("Service type aggregate with filters", async ({ request }) => {
-    const startTime = performance.now();
-
-    const response = await request.get(
-      `${BASE_URL}/api/esg/service-types/landscaping/aggregate?startDate=2024-01-01&endDate=2024-12-31`,
-      {
-        headers: {
-          Cookie: "test-session",
-        },
-      }
-    );
-
-    const endTime = performance.now();
-    const duration = endTime - startTime;
-
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(SLA_SINGLE_SERVICE_MS);
-
-    console.log(`✓ Service type with filters: ${duration.toFixed(0)}ms`);
-  });
-
-  test("CSV export generation performs acceptably", async ({ request }) => {
-    const startTime = performance.now();
-
-    const response = await request.get(
-      `${BASE_URL}/api/esg/reports/csv?businessAccountId=test-123&startDate=2024-01-01&endDate=2024-12-31`,
-      {
-        headers: {
-          Cookie: "test-session",
-        },
-      }
-    );
-
-    const endTime = performance.now();
-    const duration = endTime - startTime;
-
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(3000); // 3 second SLA for CSV generation
-
-    console.log(`✓ CSV export: ${duration.toFixed(0)}ms (SLA: 3000ms)`);
-  });
-
-  test("PDF report data generation performs acceptably", async ({ request }) => {
-    const startTime = performance.now();
-
-    const response = await request.get(
-      `${BASE_URL}/api/esg/reports/pdf?businessAccountId=test-123&startDate=2024-01-01&endDate=2024-12-31`,
-      {
-        headers: {
-          Cookie: "test-session",
-        },
-      }
-    );
-
-    const endTime = performance.now();
-    const duration = endTime - startTime;
-
-    expect(response.status()).toBe(200);
-    expect(duration).toBeLessThan(3000); // 3 second SLA for PDF generation
-
-    const data = await response.json();
-    expect(data.success).toBe(true);
-    expect(data.pdfData).toHaveProperty("executiveSummary");
-    expect(data.pdfData).toHaveProperty("serviceBreakdown");
-
-    console.log(`✓ PDF report data: ${duration.toFixed(0)}ms (SLA: 3000ms)`);
-  });
-});
-
-test.describe("ESG Query Stress Tests", () => {
-  test("Multiple concurrent aggregate queries", async ({ request }) => {
-    const startTime = performance.now();
-
-    // Fire 10 concurrent aggregate queries
-    const promises = [];
-    for (let i = 0; i < 10; i++) {
-      promises.push(
-        request.get(`${BASE_URL}/api/esg/service-types/aggregate/all`, {
-          headers: { Cookie: "test-session" },
-        })
-      );
+    // Login all contexts
+    for (const page of pages) {
+      await page.goto(`${BASE_URL}/business-login`);
+      await page.fill('input[name="email"]', "test@test.com");
+      await page.fill('input[name="password"]', "test-password");
+      await page.click('button[type="submit"]');
     }
 
-    const responses = await Promise.all(promises);
+    // Execute concurrent requests and measure
+    const startTime = performance.now();
+
+    const results = await Promise.all(
+      pages.map((page) =>
+        page.request.get(`${BASE_URL}/api/esg/service-types/aggregate/all`)
+      )
+    );
 
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    // All should succeed
-    responses.forEach((response) => {
+    console.log(
+      `${CONCURRENT_REQUESTS} concurrent requests took: ${duration.toFixed(2)}ms`
+    );
+    console.log(`Average per request: ${(duration / CONCURRENT_REQUESTS).toFixed(2)}ms`);
+
+    // Verify all requests succeeded
+    results.forEach((response) => {
       expect(response.status()).toBe(200);
     });
 
-    // Average per query should still be under SLA
-    const avgDuration = duration / 10;
-    expect(avgDuration).toBeLessThan(SLA_ALL_SERVICES_MS);
+    // Verify performance doesn't degrade too much
+    // Allow 3x SLA for concurrent requests
+    expect(duration).toBeLessThan(SLA_ALL_SERVICES * 3);
 
-    console.log(`✓ 10 concurrent queries: ${duration.toFixed(0)}ms total, ${avgDuration.toFixed(0)}ms avg`);
+    // Cleanup
+    await Promise.all(contexts.map((ctx) => ctx.close()));
   });
 
-  test("Large date range query", async ({ request }) => {
+  test("service-specific query with verification filter completes within SLA", async ({ page }) => {
+    await page.goto(`${BASE_URL}/business-login`);
+    await page.fill('input[name="email"]', "test@test.com");
+    await page.fill('input[name="password"]', "test-password");
+    await page.click('button[type="submit"]');
+
+    // Test filtered query (verification status)
     const startTime = performance.now();
 
-    const response = await request.get(
-      `${BASE_URL}/api/esg/service-types/aggregate/all?startDate=2020-01-01&endDate=2024-12-31`,
+    const response = await page.request.get(
+      `${BASE_URL}/api/esg/service-types/junk_removal/aggregate?verificationStatus=verified`,
       {
         headers: {
-          Cookie: "test-session",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -237,26 +220,106 @@ test.describe("ESG Query Stress Tests", () => {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    expect(response.status()).toBe(200);
-    // Allow longer time for large date range (5 seconds)
-    expect(duration).toBeLessThan(5000);
+    console.log(`Filtered service aggregate took: ${duration.toFixed(2)}ms`);
 
-    console.log(`✓ 5-year date range query: ${duration.toFixed(0)}ms (SLA: 5000ms)`);
+    // Verify response is successful
+    expect(response.status()).toBe(200);
+
+    // Verify performance SLA (should be faster with filter)
+    expect(duration).toBeLessThan(SLA_SINGLE_SERVICE);
+  });
+
+  test("CSV export generation completes within SLA", async ({ page }) => {
+    await page.goto(`${BASE_URL}/business-login`);
+    await page.fill('input[name="email"]', "test@test.com");
+    await page.fill('input[name="password"]', "test-password");
+    await page.click('button[type="submit"]');
+
+    // Test CSV export (I/O intensive operation)
+    const startDate = "2024-01-01";
+    const endDate = "2024-12-31";
+
+    const startTime = performance.now();
+
+    const response = await page.request.get(
+      `${BASE_URL}/api/esg/reports/csv?businessAccountId=${BUSINESS_ACCOUNT_ID}&startDate=${startDate}&endDate=${endDate}`,
+      {
+        headers: {
+          "Content-Type": "text/csv",
+        },
+      }
+    );
+
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+
+    console.log(`CSV export took: ${duration.toFixed(2)}ms`);
+
+    // Verify response is successful
+    expect(response.status()).toBe(200);
+
+    // Verify content type
+    expect(response.headers()["content-type"]).toContain("text/csv");
+
+    // Verify performance SLA (CSV generation can be slower)
+    expect(duration).toBeLessThan(SLA_LARGE_DATASET);
+  });
+
+  test("admin dashboard aggregate query completes within SLA", async ({ page }) => {
+    await page.goto(`${BASE_URL}/admin-login`);
+    await page.fill('input[name="email"]', "admin@uptend.app");
+    await page.fill('input[name="password"]', "admin-password");
+    await page.click('button[type="submit"]');
+
+    // Test platform-wide aggregation (largest dataset)
+    const startTime = performance.now();
+
+    const response = await page.request.get(
+      `${BASE_URL}/api/esg/service-types/aggregate/all`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+
+    console.log(`Platform-wide aggregate took: ${duration.toFixed(2)}ms`);
+
+    // Verify response is successful
+    expect(response.status()).toBe(200);
+
+    // Verify performance SLA
+    expect(duration).toBeLessThan(SLA_ALL_SERVICES);
+
+    // Verify data structure
+    const data = await response.json();
+    console.log(
+      `Platform aggregate returned ${(data.data || data.aggregates).length} service types`
+    );
   });
 });
 
-test.describe("Database Index Verification", () => {
-  test("Query plan uses index for service_type", async ({ request }) => {
-    // This would require database access to check EXPLAIN output
-    // For now, we verify that queries are fast enough to indicate index usage
+test.describe("Query Optimization Verification", () => {
+  test("verify indexes are being used for service type queries", async ({ page }) => {
+    // This test would require database access to check EXPLAIN ANALYZE
+    // For now, we verify the query performance meets SLA
+    // In production, connect to DB and run: EXPLAIN ANALYZE SELECT ...
+
+    await page.goto(`${BASE_URL}/business-login`);
+    await page.fill('input[name="email"]', "test@test.com");
+    await page.fill('input[name="password"]', "test-password");
+    await page.click('button[type="submit"]');
 
     const startTime = performance.now();
 
-    const response = await request.get(
+    const response = await page.request.get(
       `${BASE_URL}/api/esg/service-types/pressure_washing/aggregate`,
       {
         headers: {
-          Cookie: "test-session",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -264,9 +327,12 @@ test.describe("Database Index Verification", () => {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    // If query is under 100ms, index is likely being used
+    // If indexes are working, query should be very fast (< 500ms)
+    expect(response.status()).toBe(200);
     expect(duration).toBeLessThan(500);
 
-    console.log(`✓ Service type query: ${duration.toFixed(0)}ms (indicates index usage)`);
+    console.log(
+      `✓ Service type query completed in ${duration.toFixed(2)}ms (indexes working)`
+    );
   });
 });

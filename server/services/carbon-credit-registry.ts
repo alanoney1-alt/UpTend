@@ -1,175 +1,144 @@
 /**
  * Carbon Credit Registry Service
  *
- * Placeholder for future integration with carbon credit registries like Verra or Gold Standard
- * Currently returns mock submission IDs for development/testing
+ * Placeholder for future integration with carbon credit registries
+ * like Verra (Verified Carbon Standard) or Gold Standard
  *
- * Future Integration:
- * - Verra Registry API (VCS)
- * - Gold Standard Registry API
- * - Climate Action Reserve
- * - American Carbon Registry
+ * This service will eventually handle:
+ * - Submitting verified carbon reductions for credit issuance
+ * - Checking verification status with registries
+ * - Managing carbon credit certificates
+ * - Tracking credit retirement/transfer
  */
 
 export interface CarbonCreditSubmission {
-  submissionId: string;
   businessAccountId: string;
   reportingPeriod: {
     startDate: string;
     endDate: string;
   };
-  totalCo2SavedLbs: number;
-  totalCo2SavedTonnes: number;
-  serviceBreakdown: Array<{
-    serviceType: string;
-    co2SavedLbs: number;
-  }>;
-  submittedAt: string;
-  status: "pending" | "verified" | "rejected";
+  totalCo2SavedKg: number;
+  totalWaterSavedGallons: number;
+  totalJobsCount: number;
+  verificationDocuments: string[]; // URLs to supporting docs
 }
 
-export interface VerificationResult {
+export interface CarbonCreditSubmissionResult {
   submissionId: string;
-  status: "pending" | "verified" | "rejected";
-  verificationDate?: string;
-  verifierName?: string;
-  creditAmount?: number; // Carbon credits issued
-  registryUrl?: string;
-  notes?: string;
+  status: "pending" | "under_review" | "verified" | "rejected";
+  estimatedCredits: number;
+  registryName: string;
+  submittedAt: string;
+  message: string;
+}
+
+export interface CarbonCreditVerificationStatus {
+  submissionId: string;
+  status: "pending" | "under_review" | "verified" | "rejected";
+  creditsIssued?: number;
+  certificateUrl?: string;
+  verifiedAt?: string;
+  rejectionReason?: string;
 }
 
 export class CarbonCreditRegistry {
   /**
-   * Submit ESG metrics for carbon credit verification
+   * Submit carbon reductions for verification and credit issuance
    *
-   * @param businessAccountId - Business account ID
-   * @param reportingPeriod - Date range for the report
-   * @param totalCo2SavedLbs - Total CO2 saved in pounds
-   * @param serviceBreakdown - Breakdown by service type
-   * @returns Submission details with mock ID
+   * Future Implementation:
+   * - Connect to Verra API or Gold Standard API
+   * - Submit verified ESG metrics with supporting documentation
+   * - Receive project ID or submission tracking number
+   *
+   * Current: Returns mock submission ID
    */
   async submitForVerification(
-    businessAccountId: string,
-    reportingPeriod: { startDate: string; endDate: string },
-    totalCo2SavedLbs: number,
-    serviceBreakdown: Array<{ serviceType: string; co2SavedLbs: number }>
-  ): Promise<CarbonCreditSubmission> {
+    submission: CarbonCreditSubmission
+  ): Promise<CarbonCreditSubmissionResult> {
     // TODO: Integrate with actual carbon credit registry API
-    // For now, return mock submission
+    // For now, return mock data
 
-    const totalCo2SavedTonnes = totalCo2SavedLbs / 2204.62; // Convert lbs to metric tonnes
+    const submissionId = `MOCK-${Date.now()}-${submission.businessAccountId.slice(0, 8)}`;
+    const estimatedCredits = Math.floor(submission.totalCo2SavedKg / 1000); // 1 credit per ton CO2
 
-    const submission: CarbonCreditSubmission = {
-      submissionId: `CC-${Date.now()}-${Math.random().toString(36).substring(7)}`,
-      businessAccountId,
-      reportingPeriod,
-      totalCo2SavedLbs,
-      totalCo2SavedTonnes: Math.round(totalCo2SavedTonnes * 100) / 100,
-      serviceBreakdown,
-      submittedAt: new Date().toISOString(),
-      status: "pending",
-    };
+    console.log("[CarbonCreditRegistry] Mock submission:", {
+      submissionId,
+      businessAccountId: submission.businessAccountId,
+      co2SavedKg: submission.totalCo2SavedKg,
+      estimatedCredits,
+    });
 
-    console.log("📋 Carbon Credit Submission (MOCK):", submission);
-
-    // Store submission in database (future implementation)
-    // await storage.createCarbonCreditSubmission(submission);
-
-    return submission;
-  }
-
-  /**
-   * Check verification status of a carbon credit submission
-   *
-   * @param submissionId - Submission ID to check
-   * @returns Verification status and details
-   */
-  async checkVerificationStatus(submissionId: string): Promise<VerificationResult> {
-    // TODO: Query actual registry API for verification status
-    // For now, return mock verification result
-
-    const result: VerificationResult = {
+    return {
       submissionId,
       status: "pending",
-      notes: "This is a mock verification result. Integration with Verra/Gold Standard pending.",
+      estimatedCredits,
+      registryName: "Verra (Mock)",
+      submittedAt: new Date().toISOString(),
+      message: "Submission received. Verification typically takes 30-45 days. This is a mock submission for development.",
     };
-
-    console.log("🔍 Checking verification status (MOCK):", result);
-
-    return result;
   }
 
   /**
-   * Get list of supported carbon credit registries
+   * Check verification status of a submission
    *
-   * @returns Array of registry information
+   * Future Implementation:
+   * - Query registry API with submission ID
+   * - Retrieve current verification status
+   * - Download issued certificate if verified
+   *
+   * Current: Returns mock status
    */
-  getSupportedRegistries() {
-    return [
-      {
-        name: "Verra (VCS)",
-        url: "https://verra.org/programs/verified-carbon-standard/",
-        description: "Verified Carbon Standard - Global carbon credit registry",
-        status: "planned",
-      },
-      {
-        name: "Gold Standard",
-        url: "https://www.goldstandard.org/",
-        description: "Gold Standard for Global Goals carbon credits",
-        status: "planned",
-      },
-      {
-        name: "Climate Action Reserve",
-        url: "https://www.climateactionreserve.org/",
-        description: "North American carbon offset registry",
-        status: "planned",
-      },
-      {
-        name: "American Carbon Registry",
-        url: "https://americancarbonregistry.org/",
-        description: "Oldest voluntary carbon offset registry",
-        status: "planned",
-      },
-    ];
-  }
+  async checkVerificationStatus(
+    submissionId: string
+  ): Promise<CarbonCreditVerificationStatus> {
+    // TODO: Integrate with actual carbon credit registry API
+    // For now, return mock status
 
-  /**
-   * Calculate potential carbon credit value
-   *
-   * @param co2SavedTonnes - Total CO2 saved in metric tonnes
-   * @param pricePerTonne - Current market price per tonne (default: $15)
-   * @returns Estimated credit value in USD
-   */
-  calculateCreditValue(co2SavedTonnes: number, pricePerTonne: number = 15): number {
-    // Average voluntary carbon credit price ranges from $5-$50 per tonne
-    // Using conservative estimate of $15 per tonne
-    return Math.round(co2SavedTonnes * pricePerTonne * 100) / 100;
-  }
+    console.log("[CarbonCreditRegistry] Mock status check:", submissionId);
 
-  /**
-   * Get eligibility requirements for carbon credit verification
-   *
-   * @returns Eligibility criteria
-   */
-  getEligibilityRequirements() {
     return {
-      minimumCo2Tonnes: 5, // Minimum 5 tonnes CO2 saved
-      documentationRequired: [
-        "Detailed ESG metrics with calculations",
-        "EPA WARM model methodology documentation",
-        "Service completion records with timestamps",
-        "Disposal receipts and GPS verification",
-        "Material breakdown with weights",
-      ],
-      verificationCost: {
-        base: 500, // $500 base fee
-        perTonne: 10, // $10 per tonne CO2
-        note: "Estimated costs for verification services",
-      },
-      timeframe: "4-8 weeks for initial verification",
+      submissionId,
+      status: "under_review",
+      verifiedAt: undefined,
+      rejectionReason: undefined,
     };
+  }
+
+  /**
+   * List all submissions for a business account
+   *
+   * Future Implementation:
+   * - Query database for all submissions by businessAccountId
+   * - Return submission history with current status
+   *
+   * Current: Returns empty array
+   */
+  async listSubmissions(businessAccountId: string): Promise<CarbonCreditSubmissionResult[]> {
+    // TODO: Query database for submissions
+    console.log("[CarbonCreditRegistry] Mock list submissions:", businessAccountId);
+    return [];
+  }
+
+  /**
+   * Calculate estimated carbon credits from ESG metrics
+   *
+   * Methodology:
+   * - 1 carbon credit = 1 metric ton CO2 equivalent
+   * - Convert kg to metric tons (divide by 1000)
+   * - Apply registry-specific conversion factors
+   *
+   * Note: Actual credit issuance depends on:
+   * - Third-party verification
+   * - Additionality proof (would not have happened otherwise)
+   * - Permanence (lasting CO2 reduction)
+   * - No double-counting
+   */
+  calculateEstimatedCredits(co2SavedKg: number): number {
+    const metricTons = co2SavedKg / 1000;
+    // Apply conservative conversion factor (70% to account for verification discounts)
+    return Math.floor(metricTons * 0.7);
   }
 }
 
-// Export singleton instance
+// Singleton instance
 export const carbonCreditRegistry = new CarbonCreditRegistry();

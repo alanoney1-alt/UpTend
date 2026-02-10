@@ -132,10 +132,11 @@ router.get("/reports/pdf", async (req, res) => {
       endDate
     );
 
-    // Get all service metrics for the period
+    // Get actual service ESG metrics
     const metrics = await storage.getAllServiceEsgMetrics({
       startDate,
       endDate,
+      verificationStatus: "verified", // Only verified metrics in reports
     });
 
     const pdfData = esgReportGenerator.generatePdfReportData(

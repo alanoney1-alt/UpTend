@@ -1,11 +1,10 @@
 /**
  * BusinessContextSwitcher Component
  *
- * Dropdown for switching between business accounts user is a member of
- *
+ * Allows users to switch between multiple business accounts
  * Props:
- * - currentBusinessId?: Currently selected business
- * - onBusinessChange: Callback when business is changed
+ * - currentBusinessId?: string
+ * - onBusinessChange: (businessId: string) => void
  */
 
 import { useQuery } from "@tanstack/react-query";
@@ -17,100 +16,80 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Crown, Shield, User } from "lucide-react";
-
-interface BusinessMembership {
-  id: string;
-  businessAccountId: string;
-  userId: string;
-  role: "owner" | "admin" | "member";
-  businessAccount: {
-    id: string;
-    businessName: string;
-    accountType: string;
-    isActive: boolean;
-  } | null;
-}
+import { Building2, Loader2 } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 interface BusinessContextSwitcherProps {
   currentBusinessId?: string;
   onBusinessChange: (businessId: string) => void;
 }
 
+interface BusinessMembership {
+  id: string;
+  businessAccountId: string;
+  businessName: string;
+  role: string;
+  canViewFinancials: boolean;
+  canManageTeam: boolean;
+  canCreateJobs: boolean;
+  canApprovePayments: boolean;
+  canAccessEsgReports: boolean;
+  canManageProperties: boolean;
+}
+
 export function BusinessContextSwitcher({
   currentBusinessId,
   onBusinessChange,
 }: BusinessContextSwitcherProps) {
-  const { data, isLoading } = useQuery<{ success: boolean; memberships: BusinessMembership[] }>({
-    queryKey: ["business-memberships"],
+  const { data: memberships, isLoading } = useQuery<BusinessMembership[]>({
+    queryKey: ["/api/business/my-memberships"],
     queryFn: async () => {
-      const response = await fetch("/api/business/my-memberships", {
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch business memberships");
-      }
-
+      const response = await apiRequest("GET", "/api/business/my-memberships");
       return response.json();
     },
   });
 
-  const memberships = data?.memberships || [];
-
-  // Hide switcher if user only has 1 business
-  if (!isLoading && memberships.length <= 1) {
+  // Hide switcher if user has only 1 business
+  if (!isLoading && memberships && memberships.length <= 1) {
     return null;
   }
 
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case "owner":
-        return <Crown className="h-3 w-3" />;
-      case "admin":
-        return <Shield className="h-3 w-3" />;
-      default:
-        return <User className="h-3 w-3" />;
-    }
-  };
-
-  const getRoleBadgeVariant = (role: string) => {
-    switch (role) {
-      case "owner":
-        return "default";
-      case "admin":
-        return "secondary";
-      default:
-        return "outline";
-    }
+  const getRoleBadgeColor = (role: string) => {
+    if (role === "owner") return "bg-purple-600 text-white";
+    if (role === "admin") return "bg-blue-600 text-white";
+    return "bg-gray-600 text-white";
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2">
-        <Building2 className="h-4 w-4 text-gray-400" />
-        <span className="text-sm text-gray-500">Loading businesses...</span>
+      <div className="flex items-center gap-2 p-2">
+        <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+        <span className="text-sm text-muted-foreground">Loading businesses...</span>
       </div>
     );
   }
 
+  if (!memberships || memberships.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="flex items-center gap-2">
-      <Building2 className="h-4 w-4 text-gray-600" />
+    <div className="flex items-center gap-3">
+      <Building2 className="w-5 h-5 text-muted-foreground" />
       <Select value={currentBusinessId} onValueChange={onBusinessChange}>
-        <SelectTrigger className="w-[300px]">
-          <SelectValue placeholder="Select a business account" />
+        <SelectTrigger className="w-[280px]">
+          <SelectValue placeholder="Select business account" />
         </SelectTrigger>
         <SelectContent>
           {memberships.map((membership) => (
-            <SelectItem key={membership.id} value={membership.businessAccountId}>
-              <div className="flex items-center justify-between gap-3 w-full">
-                <span className="font-medium">
-                  {membership.businessAccount?.businessName || "Unknown Business"}
-                </span>
-                <Badge variant={getRoleBadgeVariant(membership.role)} className="flex items-center gap-1">
-                  {getRoleIcon(membership.role)}
-                  <span className="capitalize">{membership.role}</span>
+            <SelectItem
+              key={membership.businessAccountId}
+              value={membership.businessAccountId}
+            >
+              <div className="flex items-center gap-2">
+                <span className="font-medium">{membership.businessName}</span>
+                <Badge className={getRoleBadgeColor(membership.role)}>
+                  {membership.role}
                 </Badge>
               </div>
             </SelectItem>

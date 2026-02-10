@@ -17,9 +17,10 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Leaf, TrendingUp, Recycle, Droplets, TreeDeciduous,
-  Award, BarChart3, MapPin, Home, Calendar
+  Award, BarChart3, MapPin, Home, Calendar, Layers
 } from "lucide-react";
 import type { HoaProperty } from "@shared/schema";
+import { ServiceBreakdownChart, ServiceBreakdownData } from "@/components/esg/service-breakdown-chart";
 
 interface EsgMetrics {
   totalJobsCompleted: number;
@@ -59,6 +60,22 @@ export function HoaEsgDashboard({ businessAccountId }: HoaEsgDashboardProps) {
   // Fetch properties for reference
   const { data: properties } = useQuery<HoaProperty[]>({
     queryKey: [`/api/business/${businessAccountId}/properties`],
+  });
+
+  // Fetch service breakdown data
+  const { data: serviceBreakdown } = useQuery<{ success: boolean; data: ServiceBreakdownData[] }>({
+    queryKey: [`/api/business/${businessAccountId}/esg-metrics/by-service`],
+    queryFn: async () => {
+      const response = await fetch(`/api/business/${businessAccountId}/esg-metrics?groupBy=service_type`, {
+        credentials: "include",
+      });
+      if (!response.ok) return { success: false, data: [] };
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.serviceTypeBreakdown || []
+      };
+    },
   });
 
   if (isLoading) {
@@ -211,6 +228,10 @@ export function HoaEsgDashboard({ businessAccountId }: HoaEsgDashboardProps) {
                 <Home className="w-4 h-4 mr-1" />
                 By Property
               </TabsTrigger>
+              <TabsTrigger value="services">
+                <Layers className="w-4 h-4 mr-1" />
+                By Service
+              </TabsTrigger>
               <TabsTrigger value="trends">
                 <BarChart3 className="w-4 h-4 mr-1" />
                 Trends
@@ -291,6 +312,23 @@ export function HoaEsgDashboard({ businessAccountId }: HoaEsgDashboardProps) {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Service Type Breakdown */}
+            <TabsContent value="services" className="space-y-4">
+              {serviceBreakdown?.data && serviceBreakdown.data.length > 0 ? (
+                <ServiceBreakdownChart data={serviceBreakdown.data} metric="co2" />
+              ) : (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <Layers className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold mb-2">No Service Data Yet</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Service-specific ESG metrics will appear here once jobs are completed
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             {/* Monthly Trends */}

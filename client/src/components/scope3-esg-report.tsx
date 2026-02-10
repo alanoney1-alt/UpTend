@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiRequest } from "@/lib/queryClient";
 import { FileBarChart, Leaf, Droplets, DollarSign, Recycle, Download, Shield, TrendingUp, Scale } from "lucide-react";
+import { ServiceBreakdownChart, ServiceBreakdownData } from "@/components/esg/service-breakdown-chart";
 
 interface EsgReport {
   id: string;
@@ -42,6 +43,22 @@ export function Scope3EsgReport({ businessAccountId }: Scope3EsgReportProps) {
   const { data: reports = [], isLoading } = useQuery<EsgReport[]>({
     queryKey: ["/api/esg/reports", businessAccountId],
     queryFn: () => fetch(`/api/esg/reports/${businessAccountId}`, { credentials: "include" }).then(r => r.json()),
+  });
+
+  // Fetch service breakdown data
+  const { data: serviceBreakdown } = useQuery<{ success: boolean; data: ServiceBreakdownData[] }>({
+    queryKey: [`/api/business/${businessAccountId}/esg-metrics/by-service`],
+    queryFn: async () => {
+      const response = await fetch(`/api/business/${businessAccountId}/esg-metrics?groupBy=service_type`, {
+        credentials: "include",
+      });
+      if (!response.ok) return { success: false, data: [] };
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.serviceTypeBreakdown || []
+      };
+    },
   });
 
   const generateMutation = useMutation({
@@ -144,6 +161,21 @@ export function Scope3EsgReport({ businessAccountId }: Scope3EsgReportProps) {
 {JSON.stringify(generateMutation.data.ledger, null, 2)}
               </pre>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Service Breakdown Chart */}
+      {serviceBreakdown?.data && serviceBreakdown.data.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              Service Type Breakdown
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ServiceBreakdownChart data={serviceBreakdown.data} metric="co2" />
           </CardContent>
         </Card>
       )}

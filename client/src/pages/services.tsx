@@ -15,13 +15,13 @@ const services = [
   // === FEATURED SERVICE ===
   {
     id: "home_consultation",
-    name: <>DwellScan<sup>™</sup> (Home Audit)</>,
-    jumpToLabel: "Home Audit",
+    name: "AI Home Audit",
+    jumpToLabel: "AI Home Audit",
     icon: ClipboardCheck,
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
-    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° video documentation, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($199). Fee is credited toward any booked service.",
+    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° video documentation, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($199). $49 credited toward any booked service.",
     price: "From $99",
-    includes: ["Smart room-by-room inventory", "360° video walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$100)"],
+    includes: ["Smart room-by-room inventory", "360° video walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$100)", "$49 credited toward any booked service"],
     featured: true,
     link: "/services/home-audit",
   },
