@@ -12,7 +12,7 @@ import {
   ArrowRight, ShieldCheck, Leaf, Sparkles, Pencil,
   Truck, Waves, ArrowUpFromLine, Package, Search, TrendingUp,
   Loader2, Home, BedDouble, Bath, Ruler, Calendar, Droplets,
-  Camera, CheckCircle, Video, ClipboardCheck, Trees,
+  Camera, CheckCircle, Video, ClipboardCheck, Trees, Wrench,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
@@ -101,6 +101,14 @@ const pricingServices: ServicePricing[] = [
     description: "Hourly labor for loading, unloading, packing, and heavy lifting assistance.",
     benefit: "Flexible hourly rates • Professional muscle when needed",
     icon: Package,
+  },
+  {
+    id: "handyman",
+    name: "FixIt™ (Handyman Services)",
+    price: "$49/hr • 1hr min",
+    description: "Verified local handyman for repairs, assembly, mounting, painting, and home improvements. Billed by the minute after first hour.",
+    benefit: "No task too small • Same-day available • Background checked pros",
+    icon: Wrench,
   },
   {
     id: "garage_cleanout",

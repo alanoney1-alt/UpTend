@@ -21,7 +21,7 @@ import {
   MapPin, Clock, Package, CheckCircle, Star, Truck,
   Phone, MessageCircle, Timer, DollarSign, TrendingUp, Zap, Navigation,
   Camera, X, Upload, Loader2, ImageIcon, Gift, CalendarCheck, Users, Shield, CreditCard, LogIn,
-  Lock, KeyRound, Leaf, Droplets, Hammer, ClipboardCheck, Minus, Plus, Info, Trophy, Crown, Sparkles
+  Lock, KeyRound, Leaf, Droplets, Hammer, ClipboardCheck, Minus, Plus, Info, Trophy, Crown, Sparkles, Wrench
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useUpload } from "@/hooks/use-upload";
@@ -393,6 +393,10 @@ export default function Booking() {
         const hrs = Math.max(formData.laborHours, 1);
         return hrs * formData.laborCrewSize * 80;
       }
+      case "handyman": {
+        const hrs = Math.max(formData.laborHours, 1);
+        return hrs * 49;
+      }
       case "light_demolition": {
         const hrs = Math.max(formData.laborHours || 2, 2);
         return hrs * (formData.laborCrewSize || 2) * 80;
@@ -429,6 +433,8 @@ export default function Booking() {
         return formData.storyCount === 1 || formData.storyCount === 2;
       case "moving_labor":
         return formData.laborHours >= 2 && formData.laborCrewSize >= 1;
+      case "handyman":
+        return formData.laborHours >= 1;
       case "light_demolition":
         return formData.laborHours >= 2 && formData.laborCrewSize >= 1;
       case "home_consultation":
@@ -1890,6 +1896,72 @@ export default function Booking() {
                       <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
                         <p className="text-sm text-amber-700 dark:text-amber-400">
                           Includes full gutter cleanout, downspout flush, and debris removal.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* HANDYMAN - Hours counter */}
+                  {formData.serviceType === "handyman" && (
+                    <div className="mt-8 pt-8 border-t">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Wrench className="w-5 h-5 text-primary" />
+                        <h3 className="font-medium">Handyman Service Details</h3>
+                      </div>
+
+                      <p className="text-sm text-muted-foreground mb-6">
+                        Professional handyman services for repairs, assembly, mounting, and more. $49/hr, 1-hour minimum. Billed by the minute after first hour.
+                      </p>
+
+                      <div className="space-y-6">
+                        <div>
+                          <div className="flex justify-between items-end mb-3 gap-4 flex-wrap">
+                            <Label>Hours Needed</Label>
+                            <span className="text-lg font-bold text-primary" data-testid="text-handyman-hours">{formData.laborHours} hr{formData.laborHours !== 1 ? "s" : ""}</span>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="outline"
+                              onClick={() => setFormData(prev => ({ ...prev, laborHours: Math.max(1, prev.laborHours - 1) }))}
+                              disabled={formData.laborHours <= 1}
+                              data-testid="button-handyman-hours-minus"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </Button>
+                            <Slider
+                              value={[formData.laborHours]}
+                              onValueChange={(val) => setFormData(prev => ({ ...prev, laborHours: val[0] }))}
+                              min={1}
+                              max={8}
+                              step={0.5}
+                              className="flex-1"
+                              data-testid="slider-handyman-hours"
+                            />
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="outline"
+                              onClick={() => setFormData(prev => ({ ...prev, laborHours: Math.min(8, prev.laborHours + 0.5) }))}
+                              disabled={formData.laborHours >= 8}
+                              data-testid="button-handyman-hours-plus"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </Button>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Estimate hours needed. Final time billed by the minute after first hour.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                        <p className="text-sm text-blue-700 dark:text-blue-400 font-medium mb-1">
+                          Common Tasks:
+                        </p>
+                        <p className="text-xs text-blue-600 dark:text-blue-500">
+                          • Furniture assembly (1-2 hrs) • TV mounting (1 hr) • Picture hanging (0.5-1 hr) • Minor drywall repair (1-2 hrs) • Door adjustments (1 hr) • Light fixture installation (1-2 hrs)
                         </p>
                       </div>
                     </div>

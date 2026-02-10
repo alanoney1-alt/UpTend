@@ -85,6 +85,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-handyman">
+                  FixIt™ (Handyman Services)
+                </Link>
+              </li>
+              <li>
                 <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-garage-cleanout">
                   GarageReset™ (Garage Cleanout)
                 </Link>
