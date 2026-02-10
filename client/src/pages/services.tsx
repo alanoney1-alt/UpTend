@@ -12,15 +12,96 @@ import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 
 const services = [
+  // === FEATURED SERVICE ===
+  {
+    id: "home_consultation",
+    name: <>DwellScan<sup>™</sup> (Home Audit)</>,
+    icon: ClipboardCheck,
+    tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
+    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° video documentation, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($199). Fee is credited toward any booked service.",
+    price: "From $99",
+    includes: ["Smart room-by-room inventory", "360° video walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$100)"],
+    featured: true,
+    link: "/services/home-audit",
+  },
+
+  // === ESSENTIAL HOME MAINTENANCE ===
+  {
+    id: "home_cleaning",
+    name: <>PolishUp<sup>™</sup> (Home Cleaning)</>,
+    icon: Sparkles,
+    tagline: "Spotless homes. Verified clean.",
+    description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
+    price: "From $99",
+    includes: ["Room-by-room checklist", "Before/After photos", "Supplies included", "Recurring options available"],
+    link: "/services/home-cleaning",
+    esgImpact: "Eco-friendly products reduce CO2 emissions",
+  },
+  {
+    id: "landscaping",
+    name: <>FreshCut<sup>™</sup> (Landscaping)</>,
+    icon: Leaf,
+    tagline: "Professional lawn care. Your curb appeal, maintained.",
+    description: "Complete lawn maintenance from basic mowing to premium care packages. One-time services or recurring plans with weekly/bi-weekly scheduling. Includes mowing, edging, blowing, and optional add-ons.",
+    price: "From $35",
+    includes: ["Professional mowing & edging", "Lawn debris removal", "Recurring discounts available", "Same-day service options"],
+    link: "/book/freshcut",
+    esgImpact: "Lawn care sequesters carbon and improves air quality",
+  },
+  {
+    id: "pool_cleaning",
+    name: <>PoolSpark<sup>™</sup> (Pool Cleaning)</>,
+    icon: Waves,
+    tagline: "Crystal clear pools, maintained weekly.",
+    description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
+    price: "From $69",
+    includes: ["Weekly skimming & vacuuming", "Chemical testing & balancing", "Filter cleaning", "Equipment inspection"],
+    esgImpact: "Chemical optimization saves water and reduces emissions",
+  },
+  {
+    id: "carpet_cleaning",
+    name: <>DeepFiber<sup>™</sup> (Carpet Cleaning)</>,
+    icon: Home,
+    tagline: "Deep clean carpets. Certified methods.",
+    description: "Professional carpet and upholstery cleaning using industry-certified methods. Hot Water Extraction, Encapsulation, Bonnet, or Dry Compound. Pet odor treatment and Scotchgard protection available.",
+    price: "From $49",
+    includes: ["IICRC-certified methods", "Pet odor treatment options", "Scotchgard protection available", "Fast dry times"],
+    link: "/book/deepfiber",
+  },
+
+  // === OUTDOOR & EXTERIOR ===
+  {
+    id: "pressure_washing",
+    name: <>FreshWash<sup>™</sup> (Pressure Washing)</>,
+    icon: Droplets,
+    tagline: "Curb appeal, restored in hours.",
+    description: "Industrial-grade surface cleaning for driveways, patios, walkways, pool decks, and home exteriors. Chemical pre-treatment included on every job.",
+    price: "From $120",
+    includes: ["Chemical pre-treatment", "Surface sealing available", "Gum removal", "Before/After photos"],
+    esgImpact: "Saves 200+ gallons of water per job with low-flow equipment",
+  },
+  {
+    id: "gutter_cleaning",
+    name: <>GutterFlush<sup>™</sup> (Gutter Cleaning)</>,
+    icon: Home,
+    tagline: "Prevent water damage before it starts.",
+    description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
+    price: "From $149",
+    includes: ["Full debris removal", "Downspout flushing", "Roof line air-blow", "Debris bagged & hauled"],
+    esgImpact: "Prevents 50+ lbs CO2 from water damage repairs",
+  },
+
+  // === MOVING & HAULING ===
   {
     id: "junk_removal",
     name: <>BulkSnap<sup>™</sup> (Material Recovery)</>,
     icon: Recycle,
     tagline: "Space Rejuvenation. Verified Material Recovery.",
-    description: "Your unwanted items are resources. We recover your space, protect your property with a 360\u00B0 Video Manifest, and verify the environmental impact of every item through our circular economy system.",
+    description: "Your unwanted items are resources. We recover your space, protect your property with a 360° Video Manifest, and verify the environmental impact of every item through our circular economy system.",
     price: "From $99",
-    includes: ["360\u00B0 Video Manifest", "Verified Impact Report", "Circular economy sorting", "ESG compliance documentation"],
+    includes: ["360° Video Manifest", "Verified Impact Report", "Circular economy sorting", "ESG compliance documentation"],
     link: "/services/material-recovery",
+    esgImpact: "Avg 600 lbs CO2 saved per job through recycling & donation",
   },
   {
     id: "furniture_moving",
@@ -32,24 +113,6 @@ const services = [
     includes: ["Professional moving blankets", "Furniture dollies & straps", "Safe loading/unloading", "$1/mile transport rate"],
   },
   {
-    id: "pressure_washing",
-    name: <>FreshWash<sup>™</sup> (Pressure Washing)</>,
-    icon: Droplets,
-    tagline: "Curb appeal, restored in hours.",
-    description: "Industrial-grade surface cleaning for driveways, patios, walkways, pool decks, and home exteriors. Chemical pre-treatment included on every job.",
-    price: "From $120",
-    includes: ["Chemical pre-treatment", "Surface sealing available", "Gum removal", "Before/After photos"],
-  },
-  {
-    id: "gutter_cleaning",
-    name: <>GutterFlush<sup>™</sup> (Gutter Cleaning)</>,
-    icon: Home,
-    tagline: "Prevent water damage before it starts.",
-    description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
-    price: "From $149",
-    includes: ["Full debris removal", "Downspout flushing", "Roof line air-blow", "Debris bagged & hauled"],
-  },
-  {
     id: "moving_labor",
     name: <>LiftCrew<sup>™</sup> (Moving Labor)</>,
     icon: Users,
@@ -59,6 +122,17 @@ const services = [
     includes: ["Experienced Pros", "Dollies & hand trucks included", "Shrink wrap service", "Furniture assembly/disassembly"],
   },
   {
+    id: "truck_unloading",
+    name: <>UnloadPro<sup>™</sup> (Truck/U-Haul Unloading)</>,
+    icon: Truck,
+    tagline: "You drove it. We'll unload it.",
+    description: "Professional unloading of your rental truck, pod, or trailer. Our Pros place everything exactly where you want it inside your new home. 1-hour minimum.",
+    price: "$80/hr per Pro",
+    includes: ["Experienced Pros", "Furniture placement", "Shrink wrap removal", "Box stacking by room"],
+  },
+
+  // === REPAIRS & PROJECTS ===
+  {
     id: "handyman",
     name: <>FixIt<sup>™</sup> (Handyman Services)</>,
     icon: Wrench,
@@ -66,6 +140,7 @@ const services = [
     description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
     price: "$49/hr",
     includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
+    esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
   },
   {
     id: "light_demolition",
@@ -84,65 +159,6 @@ const services = [
     description: "Complete garage cleanout from cluttered to clean. We sort, donate, recycle, and haul everything so you can actually park in your garage again.",
     price: "From $299",
     includes: ["Full sort & organize", "Donation coordination", "Sweep & clean after", "Digital inventory of kept items"],
-  },
-  {
-    id: "truck_unloading",
-    name: <>UnloadPro<sup>™</sup> (Truck/U-Haul Unloading)</>,
-    icon: Truck,
-    tagline: "You drove it. We'll unload it.",
-    description: "Professional unloading of your rental truck, pod, or trailer. Our Pros place everything exactly where you want it inside your new home. 1-hour minimum.",
-    price: "$80/hr per Pro",
-    includes: ["Experienced Pros", "Furniture placement", "Shrink wrap removal", "Box stacking by room"],
-  },
-  {
-    id: "home_consultation",
-    name: <>DwellScan<sup>™</sup> (Home Audit)</>,
-    icon: ClipboardCheck,
-    tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
-    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360\u00B0 video documentation, and a treatment plan with transparent pricing. The $49 fee is credited toward any booked service.",
-    price: "$49 flat",
-    includes: ["Smart room-by-room inventory", "360\u00B0 video walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing"],
-    featured: true,
-    link: "/services/home-audit",
-  },
-  {
-    id: "home_cleaning",
-    name: <>PolishUp<sup>™</sup> (Home Cleaning)</>,
-    icon: Sparkles,
-    tagline: "Spotless homes. Verified clean.",
-    description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
-    price: "From $99",
-    includes: ["Room-by-room checklist", "Before/After photos", "Supplies included", "Recurring options available"],
-    link: "/services/home-cleaning",
-  },
-  {
-    id: "pool_cleaning",
-    name: <>PoolSpark<sup>™</sup> (Pool Cleaning)</>,
-    icon: Waves,
-    tagline: "Crystal clear pools, maintained weekly.",
-    description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
-    price: "From $69",
-    includes: ["Weekly skimming & vacuuming", "Chemical testing & balancing", "Filter cleaning", "Equipment inspection"],
-  },
-  {
-    id: "landscaping",
-    name: <>FreshCut<sup>™</sup> (Landscaping)</>,
-    icon: Leaf,
-    tagline: "Professional lawn care. Your curb appeal, maintained.",
-    description: "Complete lawn maintenance from basic mowing to premium care packages. One-time services or recurring plans with weekly/bi-weekly scheduling. Includes mowing, edging, blowing, and optional add-ons.",
-    price: "From $35",
-    includes: ["Professional mowing & edging", "Lawn debris removal", "Recurring discounts available", "Same-day service options"],
-    link: "/book/freshcut",
-  },
-  {
-    id: "carpet_cleaning",
-    name: <>DeepFiber<sup>™</sup> (Carpet Cleaning)</>,
-    icon: Home,
-    tagline: "Deep clean carpets. Certified methods.",
-    description: "Professional carpet and upholstery cleaning using industry-certified methods. Hot Water Extraction, Encapsulation, Bonnet, or Dry Compound. Pet odor treatment and Scotchgard protection available.",
-    price: "From $49",
-    includes: ["IICRC-certified methods", "Pet odor treatment options", "Scotchgard protection available", "Fast dry times"],
-    link: "/book/deepfiber",
   },
 ];
 
@@ -233,9 +249,15 @@ export default function Services() {
                   </div>
                 </div>
 
-                <p className="text-foreground text-base leading-relaxed mb-6" data-testid={`text-service-desc-${svc.id}`}>
+                <p className="text-foreground text-base leading-relaxed mb-4" data-testid={`text-service-desc-${svc.id}`}>
                   {svc.description}
                 </p>
+
+                {"esgImpact" in svc && (
+                  <Badge variant="secondary" className="mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                    🌱 {svc.esgImpact}
+                  </Badge>
+                )}
 
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6" data-testid={`list-service-includes-${svc.id}`}>
                   {svc.includes.map((item, idx) => (
@@ -290,9 +312,15 @@ export default function Services() {
                   </div>
                 </div>
 
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6" data-testid={`text-service-desc-${svc.id}`}>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4" data-testid={`text-service-desc-${svc.id}`}>
                   {svc.description}
                 </p>
+
+                {"esgImpact" in svc && (
+                  <Badge variant="secondary" className="mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                    🌱 {svc.esgImpact}
+                  </Badge>
+                )}
 
                 <ul className="space-y-2 mb-6 flex-1" data-testid={`list-service-includes-${svc.id}`}>
                   {svc.includes.map((item, idx) => (

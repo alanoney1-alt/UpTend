@@ -5,6 +5,7 @@ import { insertServiceRequestSchema } from "@shared/schema";
 import { z } from "zod";
 import { stripeService } from "../../stripeService";
 import { updateDwellScan } from "../../services/scoringService";
+import { processEsgForCompletedJob } from "../../services/job-completion-esg-integration";
 
 // WebSocket broadcast helper (imported from main routes)
 declare function broadcastToJob(jobId: string, message: object): void;
@@ -288,6 +289,18 @@ export function registerServiceRequestRoutes(app: Express) {
         await updateDwellScan(existingRequest.customerId, existingRequest.serviceType, req.params.id);
       } catch (scoreErr) {
         console.error("Home score update failed (non-blocking):", scoreErr);
+      }
+
+      // Calculate and store ESG metrics (non-blocking)
+      try {
+        const esgResult = await processEsgForCompletedJob(request, req.body);
+        if (esgResult.success) {
+          console.log(`[ESG] ✅ Metrics saved for job ${req.params.id}: ${esgResult.esgMetrics?.esgScore}/100 score`);
+        } else {
+          console.log(`[ESG] ⚠️  No ESG metrics for job ${req.params.id}: ${esgResult.error}`);
+        }
+      } catch (esgErr) {
+        console.error("[ESG] ESG calculation failed (non-blocking):", esgErr);
       }
 
       broadcastToJob(req.params.id, {

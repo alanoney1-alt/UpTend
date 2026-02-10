@@ -313,6 +313,188 @@ export function calculateLiftCrewPriceForAI(params: {
 }
 
 /**
+ * Calculate FixIt (handyman) price from task selection
+ *
+ * TaskRabbit-style model: per-task pricing OR hourly with 1-hour minimum
+ */
+export function calculateFixItPriceForAI(params: {
+  tasks: Array<{
+    taskId: string;
+    quantity?: number;
+  }>;
+  hourlyBooking?: boolean;
+  estimatedHours?: number;
+}): {
+  price: number;
+  priceRange?: { min: number; max: number };
+  breakdown: string;
+  estimatedDuration: string;
+  pricingModel: 'per_task' | 'hourly';
+} {
+  const HOURLY_RATE = 65;
+  const MINIMUM_HOURS = 1;
+
+  // FixIt Task Catalog — TaskRabbit-inspired
+  const FIXIT_TASKS: Record<string, { name: string; price: number; duration: number; category: string }> = {
+    // MOUNTING & INSTALLATION
+    tv_mount: { name: 'TV Mounting', price: 89, duration: 45, category: 'mounting' },
+    tv_mount_large: { name: 'Large TV Mounting (65"+)', price: 129, duration: 60, category: 'mounting' },
+    shelf_mount: { name: 'Shelf/Floating Shelf Install', price: 45, duration: 30, category: 'mounting' },
+    curtain_rod: { name: 'Curtain Rod Install', price: 39, duration: 20, category: 'mounting' },
+    mirror_mount: { name: 'Mirror Mounting', price: 69, duration: 30, category: 'mounting' },
+    picture_hanging: { name: 'Picture Hanging (per 5 items)', price: 35, duration: 20, category: 'mounting' },
+
+    // FURNITURE ASSEMBLY
+    ikea_simple: { name: 'Simple Furniture Assembly (chair, table)', price: 49, duration: 30, category: 'assembly' },
+    ikea_medium: { name: 'Medium Furniture Assembly (dresser, desk)', price: 89, duration: 60, category: 'assembly' },
+    ikea_complex: { name: 'Complex Furniture Assembly (bed, wardrobe)', price: 129, duration: 90, category: 'assembly' },
+
+    // MINOR PLUMBING
+    faucet_replacement: { name: 'Faucet Replacement', price: 109, duration: 60, category: 'plumbing' },
+    toilet_repair: { name: 'Toilet Repair (flapper, fill valve)', price: 79, duration: 45, category: 'plumbing' },
+    toilet_installation: { name: 'Toilet Installation', price: 179, duration: 90, category: 'plumbing' },
+    drain_clearing: { name: 'Drain Clearing (sink/tub)', price: 89, duration: 45, category: 'plumbing' },
+    garbage_disposal: { name: 'Garbage Disposal Install', price: 129, duration: 60, category: 'plumbing' },
+
+    // MINOR ELECTRICAL
+    outlet_switch: { name: 'Outlet/Switch Replacement', price: 59, duration: 30, category: 'electrical' },
+    ceiling_fan: { name: 'Ceiling Fan Install', price: 139, duration: 90, category: 'electrical' },
+    light_fixture: { name: 'Light Fixture Install', price: 89, duration: 45, category: 'electrical' },
+    doorbell_install: { name: 'Doorbell/Smart Doorbell Install', price: 79, duration: 45, category: 'electrical' },
+
+    // DOORS & LOCKS
+    door_hardware: { name: 'Door Hardware Replacement (handle, knob)', price: 69, duration: 30, category: 'doors' },
+    deadbolt_install: { name: 'Deadbolt Install', price: 89, duration: 45, category: 'doors' },
+    door_adjustment: { name: 'Door Adjustment (sticking, alignment)', price: 79, duration: 45, category: 'doors' },
+    smart_lock: { name: 'Smart Lock Install', price: 99, duration: 60, category: 'doors' },
+
+    // DRYWALL & PAINTING
+    drywall_small: { name: 'Small Drywall Repair (<6")', price: 69, duration: 60, category: 'drywall' },
+    drywall_medium: { name: 'Medium Drywall Repair (6-12")', price: 99, duration: 90, category: 'drywall' },
+    drywall_large: { name: 'Large Drywall Repair (12"+)', price: 149, duration: 120, category: 'drywall' },
+    paint_touchup: { name: 'Paint Touch-Up (per room)', price: 79, duration: 60, category: 'painting' },
+    paint_room: { name: 'Paint Single Room', price: 249, duration: 240, category: 'painting' },
+
+    // GENERAL REPAIRS
+    caulking: { name: 'Caulking (bathroom, kitchen, windows)', price: 59, duration: 45, category: 'repairs' },
+    weatherstripping: { name: 'Weatherstripping (door/window)', price: 49, duration: 30, category: 'repairs' },
+    window_screen: { name: 'Window Screen Repair', price: 39, duration: 20, category: 'repairs' },
+    baseboard_install: { name: 'Baseboard Install (per room)', price: 129, duration: 120, category: 'carpentry' },
+    trim_repair: { name: 'Trim/Molding Repair', price: 89, duration: 60, category: 'carpentry' },
+
+    // OUTDOOR
+    mailbox_install: { name: 'Mailbox Install', price: 79, duration: 45, category: 'outdoor' },
+    gutter_repair: { name: 'Minor Gutter Repair', price: 99, duration: 60, category: 'outdoor' },
+    fence_repair: { name: 'Fence Repair (per section)', price: 129, duration: 90, category: 'outdoor' },
+  };
+
+  if (params.hourlyBooking) {
+    // Hourly booking model
+    const hours = Math.max(params.estimatedHours || MINIMUM_HOURS, MINIMUM_HOURS);
+    const totalPrice = HOURLY_RATE * hours;
+
+    return {
+      price: totalPrice,
+      breakdown: `${hours} hour${hours > 1 ? 's' : ''} × $${HOURLY_RATE}/hr = $${totalPrice} (1-hour minimum)`,
+      estimatedDuration: `${hours} hour${hours > 1 ? 's' : ''}`,
+      pricingModel: 'hourly',
+    };
+  } else {
+    // Per-task pricing
+    let totalPrice = 0;
+    let totalDuration = 0;
+    const taskDetails: string[] = [];
+
+    for (const task of params.tasks) {
+      const taskInfo = FIXIT_TASKS[task.taskId];
+      if (taskInfo) {
+        const quantity = task.quantity || 1;
+        const taskPrice = taskInfo.price * quantity;
+        totalPrice += taskPrice;
+        totalDuration += taskInfo.duration * quantity;
+
+        if (quantity > 1) {
+          taskDetails.push(`${taskInfo.name} (×${quantity}): $${taskPrice}`);
+        } else {
+          taskDetails.push(`${taskInfo.name}: $${taskInfo.price}`);
+        }
+      }
+    }
+
+    // Multi-task discount (book 3+ tasks, save 10%)
+    if (params.tasks.length >= 3) {
+      const discount = totalPrice * 0.10;
+      totalPrice -= discount;
+      taskDetails.push(`Multi-task discount (-10%): -$${Math.round(discount)}`);
+    }
+
+    totalPrice = Math.round(totalPrice);
+    const durationHours = Math.ceil(totalDuration / 60);
+
+    return {
+      price: totalPrice,
+      breakdown: taskDetails.join('\n'),
+      estimatedDuration: `${Math.floor(totalDuration / 60)}h ${totalDuration % 60}m`,
+      pricingModel: 'per_task',
+    };
+  }
+}
+
+/**
+ * Get FixIt task catalog for AI assistant
+ */
+export function getFixItTaskCatalog(): Array<{
+  taskId: string;
+  name: string;
+  price: number;
+  duration: number;
+  category: string;
+}> {
+  const FIXIT_TASKS = {
+    tv_mount: { name: 'TV Mounting', price: 89, duration: 45, category: 'mounting' },
+    tv_mount_large: { name: 'Large TV Mounting (65"+)', price: 129, duration: 60, category: 'mounting' },
+    shelf_mount: { name: 'Shelf/Floating Shelf Install', price: 45, duration: 30, category: 'mounting' },
+    curtain_rod: { name: 'Curtain Rod Install', price: 39, duration: 20, category: 'mounting' },
+    mirror_mount: { name: 'Mirror Mounting', price: 69, duration: 30, category: 'mounting' },
+    picture_hanging: { name: 'Picture Hanging (per 5 items)', price: 35, duration: 20, category: 'mounting' },
+    ikea_simple: { name: 'Simple Furniture Assembly', price: 49, duration: 30, category: 'assembly' },
+    ikea_medium: { name: 'Medium Furniture Assembly', price: 89, duration: 60, category: 'assembly' },
+    ikea_complex: { name: 'Complex Furniture Assembly', price: 129, duration: 90, category: 'assembly' },
+    faucet_replacement: { name: 'Faucet Replacement', price: 109, duration: 60, category: 'plumbing' },
+    toilet_repair: { name: 'Toilet Repair', price: 79, duration: 45, category: 'plumbing' },
+    toilet_installation: { name: 'Toilet Installation', price: 179, duration: 90, category: 'plumbing' },
+    drain_clearing: { name: 'Drain Clearing', price: 89, duration: 45, category: 'plumbing' },
+    garbage_disposal: { name: 'Garbage Disposal Install', price: 129, duration: 60, category: 'plumbing' },
+    outlet_switch: { name: 'Outlet/Switch Replacement', price: 59, duration: 30, category: 'electrical' },
+    ceiling_fan: { name: 'Ceiling Fan Install', price: 139, duration: 90, category: 'electrical' },
+    light_fixture: { name: 'Light Fixture Install', price: 89, duration: 45, category: 'electrical' },
+    doorbell_install: { name: 'Doorbell Install', price: 79, duration: 45, category: 'electrical' },
+    door_hardware: { name: 'Door Hardware Replacement', price: 69, duration: 30, category: 'doors' },
+    deadbolt_install: { name: 'Deadbolt Install', price: 89, duration: 45, category: 'doors' },
+    door_adjustment: { name: 'Door Adjustment', price: 79, duration: 45, category: 'doors' },
+    smart_lock: { name: 'Smart Lock Install', price: 99, duration: 60, category: 'doors' },
+    drywall_small: { name: 'Small Drywall Repair', price: 69, duration: 60, category: 'drywall' },
+    drywall_medium: { name: 'Medium Drywall Repair', price: 99, duration: 90, category: 'drywall' },
+    drywall_large: { name: 'Large Drywall Repair', price: 149, duration: 120, category: 'drywall' },
+    paint_touchup: { name: 'Paint Touch-Up', price: 79, duration: 60, category: 'painting' },
+    paint_room: { name: 'Paint Single Room', price: 249, duration: 240, category: 'painting' },
+    caulking: { name: 'Caulking', price: 59, duration: 45, category: 'repairs' },
+    weatherstripping: { name: 'Weatherstripping', price: 49, duration: 30, category: 'repairs' },
+    window_screen: { name: 'Window Screen Repair', price: 39, duration: 20, category: 'repairs' },
+    baseboard_install: { name: 'Baseboard Install', price: 129, duration: 120, category: 'carpentry' },
+    trim_repair: { name: 'Trim/Molding Repair', price: 89, duration: 60, category: 'carpentry' },
+    mailbox_install: { name: 'Mailbox Install', price: 79, duration: 45, category: 'outdoor' },
+    gutter_repair: { name: 'Minor Gutter Repair', price: 99, duration: 60, category: 'outdoor' },
+    fence_repair: { name: 'Fence Repair', price: 129, duration: 90, category: 'outdoor' },
+  };
+
+  return Object.entries(FIXIT_TASKS).map(([taskId, info]) => ({
+    taskId,
+    ...info,
+  }));
+}
+
+/**
  * Format price for conversational response
  */
 export function formatPriceForConversation(price: number): string {
@@ -354,5 +536,86 @@ export function getFollowUpQuestions(serviceType: string, currentParams: any): s
     return questions;
   }
 
+  if (serviceType === 'fixit' || serviceType === 'handyman') {
+    const questions = [];
+    if (!currentParams.tasks || currentParams.tasks.length === 0) {
+      questions.push("What do you need fixed or installed?");
+      questions.push("I can show you our task list with prices, or you can describe what you need and I'll recommend the right tasks.");
+    }
+    return questions;
+  }
+
   return [];
+}
+
+/**
+ * Estimate environmental impact for a quote (before job completion)
+ *
+ * Provides customers with expected ESG benefits during the quoting process.
+ * Shows the positive environmental impact they'll have by booking with UpTend.
+ */
+export function estimateEnvironmentalImpact(serviceType: string, params: any): {
+  estimatedCo2SavedLbs: number;
+  estimatedWaterSavedGallons?: number;
+  message: string;
+} | null {
+  switch (serviceType) {
+    case 'freshwash':
+    case 'pressure_washing':
+      if (params.totalSqft) {
+        // Estimate: Eco-friendly methods save ~0.01 lbs CO2 per sqft
+        // Plus ~0.2 gallons water per sqft vs traditional methods
+        const co2Saved = params.totalSqft * 0.01;
+        const waterSaved = params.totalSqft * 0.2;
+        return {
+          estimatedCo2SavedLbs: co2Saved,
+          estimatedWaterSavedGallons: waterSaved,
+          message: `🌱 This job will save approximately ${Math.round(waterSaved)} gallons of water and reduce CO2 by ${Math.round(co2Saved)} lbs!`,
+        };
+      }
+      break;
+
+    case 'gutterflush':
+    case 'gutter_cleaning':
+      // Gutter cleaning prevents water damage (50 lbs CO2 credit)
+      return {
+        estimatedCo2SavedLbs: 50,
+        message: `🌱 Preventative maintenance like this helps avoid water damage repairs, saving approximately 50 lbs of CO2 emissions!`,
+      };
+
+    case 'bulksnap':
+    case 'junk_removal':
+      // Estimate based on typical diversion rates: 60% recycled/donated = ~2 lbs CO2 saved per lb diverted
+      const estimatedWeight = params.itemCount ? params.itemCount * 50 : 500; // ~50 lbs per item average
+      const co2Saved = estimatedWeight * 0.6 * 2; // 60% diversion × 2 lbs CO2e per lb
+      return {
+        estimatedCo2SavedLbs: co2Saved,
+        message: `♻️ We'll divert as much as possible from landfills. Expected CO2 reduction: ${Math.round(co2Saved)} lbs through recycling and donation!`,
+      };
+
+    case 'polishup':
+    case 'home_cleaning':
+      // Eco-friendly products save ~0.05 lbs CO2 per sqft
+      if (params.sqft || params.bedrooms) {
+        const sqft = params.sqft || (params.bedrooms * 200); // Estimate if only bedrooms given
+        const co2Saved = sqft * 0.05;
+        return {
+          estimatedCo2SavedLbs: co2Saved,
+          message: `🌱 Using eco-friendly cleaning products will reduce CO2 by approximately ${Math.round(co2Saved)} lbs!`,
+        };
+      }
+      break;
+
+    case 'fixit':
+    case 'handyman':
+      // Repair vs replace credit: ~100 lbs CO2 saved per repair
+      const repairs = params.itemsRepaired || params.tasks?.length || 1;
+      const co2Saved = repairs * 100;
+      return {
+        estimatedCo2SavedLbs: co2Saved,
+        message: `♻️ Repairing instead of replacing saves approximately ${Math.round(co2Saved)} lbs of CO2 by extending product life!`,
+      };
+  }
+
+  return null;
 }
