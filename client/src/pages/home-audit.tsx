@@ -112,7 +112,7 @@ export default function HomeAudit() {
       </section>
 
       {/* THE INSURANCE SHIELD SECTION */}
-      <section className="py-24 max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center" data-testid="section-insurance-shield">
+      <section className="py-24 pb-32 max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center" data-testid="section-insurance-shield">
         <div>
           <Badge variant="outline" className="mb-4" data-testid="badge-value-insurance-shield">Insurance Shield</Badge>
           <h2 className="text-3xl font-black mb-6" data-testid="text-shield-headline">Never settle for less than your home is worth.</h2>
@@ -144,7 +144,7 @@ export default function HomeAudit() {
           </div>
         </div>
 
-        <div className="relative">
+        <div className="relative mb-12 md:mb-0">
           <Card className="p-8">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
@@ -161,7 +161,7 @@ export default function HomeAudit() {
               </div>
             </div>
           </Card>
-          <div className="absolute -bottom-6 -left-6 bg-slate-900 text-white p-6 rounded-2xl shadow-2xl max-w-xs">
+          <div className="absolute -bottom-6 -left-6 md:-bottom-6 md:-left-6 left-0 bg-slate-900 text-white p-6 rounded-2xl shadow-2xl max-w-xs z-10">
             <p className="text-xs font-bold uppercase tracking-widest text-orange-400 mb-2">Claim Success Rate</p>
             <p className="text-2xl font-black">+40%</p>
             <p className="text-[10px] text-slate-400 mt-1">Users with UpTend Audits recover significantly more in insurance disputes.</p>
