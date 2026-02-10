@@ -28,7 +28,7 @@ const services = [
   // === REPAIRS & PROJECTS ===
   {
     id: "handyman",
-    name: <>FixIt<sup>™</sup> (Handyman Services)</>,
+    name: "Handyman Services",
     icon: Wrench,
     tagline: "No task too small.",
     description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
@@ -40,7 +40,7 @@ const services = [
   // === ESSENTIAL HOME MAINTENANCE ===
   {
     id: "home_cleaning",
-    name: <>PolishUp<sup>™</sup> (Home Cleaning)</>,
+    name: "Home Cleaning",
     icon: Sparkles,
     tagline: "Spotless homes. Verified clean.",
     description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
@@ -51,7 +51,7 @@ const services = [
   },
   {
     id: "landscaping",
-    name: <>FreshCut<sup>™</sup> (Landscaping)</>,
+    name: "Landscaping",
     icon: Leaf,
     tagline: "Professional lawn care. Your curb appeal, maintained.",
     description: "Complete lawn maintenance from basic mowing to premium care packages. One-time services or recurring plans with weekly/bi-weekly scheduling. Includes mowing, edging, blowing, and optional add-ons.",
@@ -62,7 +62,7 @@ const services = [
   },
   {
     id: "pool_cleaning",
-    name: <>PoolSpark<sup>™</sup> (Pool Cleaning)</>,
+    name: "Pool Cleaning",
     icon: Waves,
     tagline: "Crystal clear pools, maintained weekly.",
     description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
@@ -72,7 +72,7 @@ const services = [
   },
   {
     id: "carpet_cleaning",
-    name: <>DeepFiber<sup>™</sup> (Carpet Cleaning)</>,
+    name: "Carpet Cleaning",
     icon: Home,
     tagline: "Deep clean carpets. Certified methods.",
     description: "Professional carpet and upholstery cleaning using industry-certified methods. Hot Water Extraction, Encapsulation, Bonnet, or Dry Compound. Pet odor treatment and Scotchgard protection available.",
@@ -84,7 +84,7 @@ const services = [
   // === OUTDOOR & EXTERIOR ===
   {
     id: "pressure_washing",
-    name: <>FreshWash<sup>™</sup> (Pressure Washing)</>,
+    name: "Pressure Washing",
     icon: Droplets,
     tagline: "Curb appeal, restored in hours.",
     description: "Industrial-grade surface cleaning for driveways, patios, walkways, pool decks, and home exteriors. Chemical pre-treatment included on every job.",
@@ -94,7 +94,7 @@ const services = [
   },
   {
     id: "gutter_cleaning",
-    name: <>GutterFlush<sup>™</sup> (Gutter Cleaning)</>,
+    name: "Gutter Cleaning",
     icon: Home,
     tagline: "Prevent water damage before it starts.",
     description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
@@ -106,7 +106,7 @@ const services = [
   // === MOVING & HAULING ===
   {
     id: "junk_removal",
-    name: <>BulkSnap<sup>™</sup> (Material Recovery)</>,
+    name: "Junk Removal",
     icon: Recycle,
     tagline: "Space Rejuvenation. Verified Material Recovery.",
     description: "Your unwanted items are resources. We recover your space, protect your property with a 360° Video Manifest, and verify the environmental impact of every item through our circular economy system.",
@@ -117,7 +117,7 @@ const services = [
   },
   {
     id: "furniture_moving",
-    name: <>LiftCrew<sup>™</sup> (Furniture Moving)</>,
+    name: "Furniture Moving",
     icon: Sofa,
     tagline: "Your furniture, moved with care.",
     description: "Professional furniture moving service with experienced Pros. Safe transport to your new location with proper equipment, blankets, and straps. Perfect for in-state moves.",
@@ -126,7 +126,7 @@ const services = [
   },
   {
     id: "moving_labor",
-    name: <>LiftCrew<sup>™</sup> (Moving Labor)</>,
+    name: "Moving Labor",
     icon: Users,
     tagline: "Your muscle on demand.",
     description: "Hourly labor for loading, unloading, and rearranging. You rent the truck or pod, we supply the manpower, dollies, and shrink wrap. Perfect for DIY moves.",
@@ -135,7 +135,7 @@ const services = [
   },
   {
     id: "truck_unloading",
-    name: <>UnloadPro<sup>™</sup> (Truck/U-Haul Unloading)</>,
+    name: "Truck Unloading",
     icon: Truck,
     tagline: "You drove it. We'll unload it.",
     description: "Professional unloading of your rental truck, pod, or trailer. Our Pros place everything exactly where you want it inside your new home. 1-hour minimum.",
@@ -146,7 +146,7 @@ const services = [
   // === REPAIRS & PROJECTS ===
   {
     id: "light_demolition",
-    name: <>TearDown<sup>™</sup> (Demolition)</>,
+    name: "Light Demolition",
     icon: Hammer,
     tagline: "Tear it out. Haul it off.",
     description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. We demo it, clean it up, and haul the debris away in one visit.",
@@ -155,7 +155,7 @@ const services = [
   },
   {
     id: "garage_cleanout",
-    name: <>GarageReset<sup>™</sup> (Garage Cleanout)</>,
+    name: "Garage Cleanout",
     icon: Sofa,
     tagline: "Reclaim your space.",
     description: "Complete garage cleanout from cluttered to clean. We sort, donate, recycle, and haul everything so you can actually park in your garage again.",
