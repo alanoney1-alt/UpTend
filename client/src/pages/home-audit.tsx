@@ -144,7 +144,7 @@ export default function HomeAudit() {
           </div>
         </div>
 
-        <div className="relative mb-12 md:mb-0">
+        <div className="space-y-6">
           <Card className="p-8">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
@@ -161,7 +161,7 @@ export default function HomeAudit() {
               </div>
             </div>
           </Card>
-          <div className="absolute -bottom-6 -left-6 md:-bottom-6 md:-left-6 left-0 bg-slate-900 text-white p-6 rounded-2xl shadow-2xl max-w-xs z-10">
+          <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-2xl max-w-xs md:ml-8">
             <p className="text-xs font-bold uppercase tracking-widest text-orange-400 mb-2">Claim Success Rate</p>
             <p className="text-2xl font-black">+40%</p>
             <p className="text-[10px] text-slate-400 mt-1">Users with UpTend Audits recover significantly more in insurance disputes.</p>
