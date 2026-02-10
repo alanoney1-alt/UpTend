@@ -240,22 +240,22 @@ export default function Services() {
                     : 'hover:bg-muted'
                 }`}
               >
-                <svc.icon className="w-4 h-4" />
+                <svc.icon className="w-4 h-4 shrink-0" />
                 <span className="hidden sm:inline">
-                  {svc.id === 'home_consultation' ? 'DwellScan' :
-                   svc.id === 'junk_removal' ? 'BulkSnap' :
-                   svc.id === 'home_cleaning' ? 'PolishUp' :
-                   svc.id === 'pressure_washing' ? 'FreshWash' :
-                   svc.id === 'gutter_cleaning' ? 'GutterFlush' :
-                   svc.id === 'moving_labor' ? 'LiftCrew' :
-                   svc.id === 'handyman' ? 'FixIt' :
-                   svc.id === 'light_demolition' ? 'TearDown' :
-                   svc.id === 'garage_cleanout' ? 'GarageReset' :
-                   svc.id === 'furniture_moving' ? 'LiftCrew' :
-                   svc.id === 'truck_unloading' ? 'UnloadPro' :
-                   svc.id === 'landscaping' ? 'FreshCut' :
-                   svc.id === 'pool_cleaning' ? 'PoolSpark' :
-                   svc.id === 'carpet_cleaning' ? 'DeepFiber' : svc.id}
+                  {svc.id === 'home_consultation' && 'Home Audit'}
+                  {svc.id === 'junk_removal' && 'Junk Removal'}
+                  {svc.id === 'home_cleaning' && 'Home Cleaning'}
+                  {svc.id === 'pressure_washing' && 'Pressure Washing'}
+                  {svc.id === 'gutter_cleaning' && 'Gutter Cleaning'}
+                  {svc.id === 'moving_labor' && 'Moving Labor'}
+                  {svc.id === 'handyman' && 'Handyman'}
+                  {svc.id === 'light_demolition' && 'Demolition'}
+                  {svc.id === 'garage_cleanout' && 'Garage Cleanout'}
+                  {svc.id === 'furniture_moving' && 'Furniture Moving'}
+                  {svc.id === 'truck_unloading' && 'Truck Unloading'}
+                  {svc.id === 'landscaping' && 'Landscaping'}
+                  {svc.id === 'pool_cleaning' && 'Pool Cleaning'}
+                  {svc.id === 'carpet_cleaning' && 'Carpet Cleaning'}
                 </span>
               </button>
             ))}
