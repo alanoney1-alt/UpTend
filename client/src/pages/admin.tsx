@@ -41,6 +41,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { ServiceEsgAdminView } from "@/components/admin/service-esg-admin-view";
 
 interface PendingPycker {
   profileId: string;
@@ -325,8 +326,15 @@ export default function Admin() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+        <Tabs defaultValue="pyckers" className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto mb-8 grid-cols-2">
+            <TabsTrigger value="pyckers">Pro Applications</TabsTrigger>
+            <TabsTrigger value="service-esg">Service ESG</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="pyckers">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
             <Card>
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -855,7 +863,7 @@ export default function Admin() {
             )}
           </CardContent>
         </Card>
-        
+
         {/* Active Jobs Supervision Section */}
         <Card className="mt-8">
           <CardHeader>
@@ -1056,6 +1064,12 @@ export default function Admin() {
             )}
           </CardContent>
         </Card>
+        </TabsContent>
+
+        <TabsContent value="service-esg">
+          <ServiceEsgAdminView />
+        </TabsContent>
+      </Tabs>
       </main>
 
       {/* Deny Rebate Dialog */}

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { Leaf, Droplet, TreePine, Recycle, Download, Share2, TrendingUp, Sparkles, Award } from "lucide-react";
+import { ServiceBreakdownChart, ServiceBreakdownData } from "@/components/esg/service-breakdown-chart";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 
@@ -67,6 +68,16 @@ export function ImpactTracker() {
     queryFn: async () => {
       const response = await fetch("/api/my-impact", { credentials: "include" });
       if (!response.ok) return null;
+      return response.json();
+    },
+  });
+
+  // Fetch service breakdown data
+  const { data: serviceBreakdown } = useQuery<{ success: boolean; data: ServiceBreakdownData[] }>({
+    queryKey: ["/api/my-impact/by-service"],
+    queryFn: async () => {
+      const response = await fetch("/api/my-impact/by-service", { credentials: "include" });
+      if (!response.ok) return { success: false, data: [] };
       return response.json();
     },
   });
@@ -268,6 +279,13 @@ export function ImpactTracker() {
               />
             </div>
           </div>
+
+          {/* Service Breakdown Chart */}
+          {serviceBreakdown?.data && serviceBreakdown.data.length > 0 && (
+            <div className="mb-6">
+              <ServiceBreakdownChart data={serviceBreakdown.data} metric="co2" />
+            </div>
+          )}
 
           {/* CTA - Make sharing irresistible */}
           <div className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-lg p-4 mb-4 border border-green-500/30">

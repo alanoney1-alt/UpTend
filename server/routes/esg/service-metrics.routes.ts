@@ -156,4 +156,91 @@ router.get("/service-types/:serviceType/aggregate", async (req, res) => {
   }
 });
 
+// ==========================================
+// PUT /api/esg/service-metrics/:id
+// Update ESG metrics (e.g., verification status, recalculation)
+// ==========================================
+const updateServiceMetricsSchema = z.object({
+  verificationStatus: z.enum(["pending", "verified", "audited"]).optional(),
+  recalculate: z.boolean().optional(),
+  calculationParams: z.record(z.any()).optional(),
+});
+
+router.put("/service-metrics/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const validated = updateServiceMetricsSchema.parse(req.body);
+
+    // Get existing metrics
+    const existing = await esgStorage.getServiceEsgMetricsByRequest(id);
+    if (!existing) {
+      return res.status(404).json({ error: "ESG metrics not found" });
+    }
+
+    let updates: any = {};
+
+    // Update verification status
+    if (validated.verificationStatus) {
+      updates.verificationStatus = validated.verificationStatus;
+    }
+
+    // Recalculate if requested
+    if (validated.recalculate && validated.calculationParams) {
+      const calculation = await calculateServiceEsg(
+        existing.serviceType,
+        validated.calculationParams
+      );
+
+      updates = {
+        ...updates,
+        totalCo2SavedLbs: calculation.totalCo2SavedLbs,
+        totalCo2EmittedLbs: calculation.totalCo2EmittedLbs,
+        netCo2ImpactLbs: calculation.netCo2ImpactLbs,
+        esgScore: calculation.esgScore,
+        calculationMethod: calculation.calculationMethod,
+        calculationDetails: JSON.stringify(calculation.breakdown),
+      };
+    }
+
+    const updatedMetrics = await esgStorage.updateServiceEsgMetrics(id, updates);
+
+    res.json({
+      success: true,
+      metrics: updatedMetrics,
+    });
+  } catch (error: any) {
+    console.error("Error updating service ESG metrics:", error);
+    res.status(400).json({
+      error: error.message || "Failed to update service ESG metrics",
+    });
+  }
+});
+
+// ==========================================
+// GET /api/esg/service-types/aggregate/all
+// Get aggregated ESG metrics for all service types
+// ==========================================
+router.get("/service-types/aggregate/all", async (req, res) => {
+  try {
+    const query = aggregateQuerySchema.parse(req.query);
+
+    // Get aggregate for all service types
+    const aggregates = await esgStorage.getServiceEsgAggregateAll({
+      startDate: query.startDate,
+      endDate: query.endDate,
+      verificationStatus: query.verificationStatus,
+    });
+
+    res.json({
+      success: true,
+      data: aggregates,
+    });
+  } catch (error: any) {
+    console.error("Error fetching all service type aggregates:", error);
+    res.status(500).json({
+      error: error.message || "Failed to fetch all service type aggregates",
+    });
+  }
+});
+
 export default router;

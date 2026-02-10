@@ -103,6 +103,49 @@ router.post("/:id/team/invite", async (req, res) => {
 });
 
 // ==========================================
+// GET /api/business/my-memberships
+// Get all business accounts user is a member of
+// ==========================================
+router.get("/my-memberships", async (req, res) => {
+  try {
+    // @ts-ignore
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Get all business memberships for this user
+    const memberships = await businessStorage.getBusinessMembershipsForUser(userId);
+
+    // Get business account details for each membership
+    const businessAccounts = await Promise.all(
+      memberships.map(async (m) => {
+        const account = await businessStorage.getBusinessAccount(m.businessAccountId);
+        return {
+          ...m,
+          businessAccount: account ? {
+            id: account.id,
+            businessName: account.businessName,
+            accountType: account.accountType,
+            isActive: account.isActive,
+          } : null,
+        };
+      })
+    );
+
+    res.json({
+      success: true,
+      memberships: businessAccounts,
+    });
+  } catch (error: any) {
+    console.error("Error fetching business memberships:", error);
+    res.status(500).json({
+      error: error.message || "Failed to fetch business memberships",
+    });
+  }
+});
+
+// ==========================================
 // GET /api/business/:id/team
 // List all team members
 // ==========================================

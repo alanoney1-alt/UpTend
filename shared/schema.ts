@@ -3954,3 +3954,789 @@ export const notificationQueueRelations = relations(notificationQueue, ({ one })
 export const insertNotificationQueueSchema = createInsertSchema(notificationQueue).omit({ id: true });
 export type InsertNotificationQueue = z.infer<typeof insertNotificationQueueSchema>;
 export type NotificationQueue = typeof notificationQueue.$inferSelect;
+// ==========================================
+// AI EXPANSION SCHEMA — 13 New AI Capabilities
+// ==========================================
+// Features #9-15, #17-18, #20, #22-25 from the UpTend AI Platform Map
+
+// ==========================================
+// #9 — AI Concierge / Chat Assistant
+// ==========================================
+export const aiConversations = pgTable("ai_conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  propertyId: varchar("property_id"),
+
+  title: text("title"),
+  channel: text("channel").notNull().default("in_app"),
+  status: text("status").notNull().default("active"),
+  
+  contextType: text("context_type"),
+  referencedApplianceId: varchar("referenced_appliance_id"),
+  referencedWarrantyId: varchar("referenced_warranty_id"),
+  referencedServiceRequestId: varchar("referenced_service_request_id"),
+  
+  resultedInBooking: boolean("resulted_in_booking").default(false),
+  resultedInWarrantyClaim: boolean("resulted_in_warranty_claim").default(false),
+  resultedInEscalation: boolean("resulted_in_escalation").default(false),
+  bookingServiceRequestId: varchar("booking_service_request_id"),
+  
+  customerRating: integer("customer_rating"),
+  messageCount: integer("message_count").default(0),
+  aiModelUsed: text("ai_model_used").default("claude-sonnet"),
+  totalTokensUsed: integer("total_tokens_used").default(0),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  resolvedAt: text("resolved_at"),
+});
+
+export const aiConversationsRelations = relations(aiConversations, ({ one, many }) => ({
+  user: one(users, {
+    fields: [aiConversations.userId],
+    references: [users.id],
+  }),
+  property: one(properties, {
+    fields: [aiConversations.propertyId],
+    references: [properties.id],
+  }),
+  messages: many(aiConversationMessages),
+}));
+
+export const insertAiConversationSchema = createInsertSchema(aiConversations).omit({ id: true });
+export type InsertAiConversation = z.infer<typeof insertAiConversationSchema>;
+export type AiConversation = typeof aiConversations.$inferSelect;
+
+export const aiConversationMessages = pgTable("ai_conversation_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationId: varchar("conversation_id").notNull(),
+  
+  role: text("role").notNull(),
+  content: text("content").notNull(),
+  
+  mediaUrls: text("media_urls").array(),
+  mediaContentTypes: text("media_content_types").array(),
+  
+  detectedIntent: text("detected_intent"),
+  detectedService: text("detected_service"),
+  detectedUrgency: text("detected_urgency"),
+  suggestedActions: jsonb("suggested_actions"),
+  
+  propertyContextSnapshot: jsonb("property_context_snapshot"),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const aiConversationMessagesRelations = relations(aiConversationMessages, ({ one }) => ({
+  conversation: one(aiConversations, {
+    fields: [aiConversationMessages.conversationId],
+    references: [aiConversations.id],
+  }),
+}));
+
+export const insertAiConversationMessageSchema = createInsertSchema(aiConversationMessages).omit({ id: true });
+export type InsertAiConversationMessage = z.infer<typeof insertAiConversationMessageSchema>;
+export type AiConversationMessage = typeof aiConversationMessages.$inferSelect;
+
+// ==========================================
+// #10 — AI Photo-to-Quote
+// ==========================================
+export const photoQuoteRequests = pgTable("photo_quote_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  propertyId: varchar("property_id"),
+  
+  photoUrls: text("photo_urls").array().notNull(),
+  photoContentTypes: text("photo_content_types").array(),
+  
+  aiClassifiedService: text("ai_classified_service"),
+  aiClassifiedCategory: text("ai_classified_category"),
+  aiConfidence: real("ai_confidence"),
+  aiDescription: text("ai_description"),
+  
+  estimatedPriceMin: real("estimated_price_min"),
+  estimatedPriceMax: real("estimated_price_max"),
+  estimatedScope: text("estimated_scope"),
+  estimatedDuration: text("estimated_duration"),
+  
+  additionalServices: jsonb("additional_services"),
+  
+  status: text("status").notNull().default("pending"),
+  convertedToServiceRequestId: varchar("converted_to_service_request_id"),
+  convertedAt: text("converted_at"),
+  
+  source: text("source").default("in_app"),
+  
+  aiModelUsed: text("ai_model_used"),
+  processingTimeMs: integer("processing_time_ms"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const photoQuoteRequestsRelations = relations(photoQuoteRequests, ({ one }) => ({
+  user: one(users, {
+    fields: [photoQuoteRequests.userId],
+    references: [users.id],
+  }),
+  property: one(properties, {
+    fields: [photoQuoteRequests.propertyId],
+    references: [properties.id],
+  }),
+  convertedServiceRequest: one(serviceRequests, {
+    fields: [photoQuoteRequests.convertedToServiceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertPhotoQuoteRequestSchema = createInsertSchema(photoQuoteRequests).omit({ id: true });
+export type InsertPhotoQuoteRequest = z.infer<typeof insertPhotoQuoteRequestSchema>;
+export type PhotoQuoteRequest = typeof photoQuoteRequests.$inferSelect;
+
+// ==========================================
+// #11 — AI Seasonal Home Advisor
+// ==========================================
+export const seasonalAdvisories = pgTable("seasonal_advisories", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  
+  triggerType: text("trigger_type").notNull(),
+  triggerData: jsonb("trigger_data"),
+  
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  urgency: text("urgency").notNull().default("medium"),
+  category: text("category"),
+  
+  recommendedServices: jsonb("recommended_services"),
+  bundleOffer: jsonb("bundle_offer"),
+  estimatedSavings: real("estimated_savings"),
+  
+  propertyHealthScoreAtTime: real("property_health_score_at_time"),
+  relevantApplianceData: jsonb("relevant_appliance_data"),
+  lastServiceDates: jsonb("last_service_dates"),
+  
+  deliveryChannel: text("delivery_channel").default("push"),
+  deliveredAt: text("delivered_at"),
+  openedAt: text("opened_at"),
+  clickedAt: text("clicked_at"),
+  dismissedAt: text("dismissed_at"),
+  
+  status: text("status").notNull().default("pending"),
+  resultedInBooking: boolean("resulted_in_booking").default(false),
+  bookingServiceRequestIds: text("booking_service_request_ids").array(),
+  bookingTotalValue: real("booking_total_value"),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  expiresAt: text("expires_at"),
+});
+
+export const seasonalAdvisoriesRelations = relations(seasonalAdvisories, ({ one }) => ({
+  property: one(properties, {
+    fields: [seasonalAdvisories.propertyId],
+    references: [properties.id],
+  }),
+  user: one(users, {
+    fields: [seasonalAdvisories.userId],
+    references: [users.id],
+  }),
+}));
+
+export const insertSeasonalAdvisorySchema = createInsertSchema(seasonalAdvisories).omit({ id: true });
+export type InsertSeasonalAdvisory = z.infer<typeof insertSeasonalAdvisorySchema>;
+export type SeasonalAdvisory = typeof seasonalAdvisories.$inferSelect;
+
+// ==========================================
+// #12 — AI Smart Scheduling
+// ==========================================
+export const smartScheduleSuggestions = pgTable("smart_schedule_suggestions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  propertyId: varchar("property_id"),
+  
+  serviceTypes: text("service_types").array().notNull(),
+  
+  suggestedSlots: jsonb("suggested_slots"),
+  schedulingReason: text("scheduling_reason"),
+  
+  weatherForecast: jsonb("weather_forecast"),
+  customerPatterns: jsonb("customer_patterns"),
+  proAvailability: jsonb("pro_availability"),
+  serviceOrderLogic: text("service_order_logic"),
+  
+  status: text("status").notNull().default("suggested"),
+  acceptedAt: text("accepted_at"),
+  modifiedSchedule: jsonb("modified_schedule"),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const smartScheduleSuggestionsRelations = relations(smartScheduleSuggestions, ({ one }) => ({
+  user: one(users, {
+    fields: [smartScheduleSuggestions.userId],
+    references: [users.id],
+  }),
+  property: one(properties, {
+    fields: [smartScheduleSuggestions.propertyId],
+    references: [properties.id],
+  }),
+}));
+
+export const insertSmartScheduleSuggestionSchema = createInsertSchema(smartScheduleSuggestions).omit({ id: true });
+export type InsertSmartScheduleSuggestion = z.infer<typeof insertSmartScheduleSuggestionSchema>;
+export type SmartScheduleSuggestion = typeof smartScheduleSuggestions.$inferSelect;
+
+// ==========================================
+// #13 — AI Move-In Wizard
+// ==========================================
+export const moveInPlans = pgTable("move_in_plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  propertyId: varchar("property_id").notNull(),
+  
+  source: text("source").notNull().default("self_reported"),
+  builderPartnershipId: varchar("builder_partnership_id"),
+  moveInDate: text("move_in_date"),
+  
+  propertyType: text("property_type"),
+  sqft: integer("sqft"),
+  yearBuilt: integer("year_built"),
+  hasPool: boolean("has_pool").default(false),
+  hasLawn: boolean("has_lawn").default(true),
+  climateZone: text("climate_zone"),
+  lotSizeSqft: integer("lot_size_sqft"),
+  
+  planTitle: text("plan_title"),
+  planSummary: text("plan_summary"),
+  
+  week1Tasks: jsonb("week1_tasks"),
+  month1Tasks: jsonb("month1_tasks"),
+  month2Tasks: jsonb("month2_tasks"),
+  month3Tasks: jsonb("month3_tasks"),
+  ongoingRecurring: jsonb("ongoing_recurring"),
+  
+  recommendedBundles: jsonb("recommended_bundles"),
+  totalEstimatedCost90Days: real("total_estimated_cost_90_days"),
+  totalEstimatedSavings: real("total_estimated_savings"),
+  
+  tasksCompleted: integer("tasks_completed").default(0),
+  totalTasks: integer("total_tasks").default(0),
+  completionPercentage: real("completion_percentage").default(0),
+  totalBooked: real("total_booked").default(0),
+  
+  status: text("status").notNull().default("active"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const moveInPlansRelations = relations(moveInPlans, ({ one }) => ({
+  user: one(users, {
+    fields: [moveInPlans.userId],
+    references: [users.id],
+  }),
+  property: one(properties, {
+    fields: [moveInPlans.propertyId],
+    references: [properties.id],
+  }),
+}));
+
+export const insertMoveInPlanSchema = createInsertSchema(moveInPlans).omit({ id: true });
+export type InsertMoveInPlan = z.infer<typeof insertMoveInPlanSchema>;
+export type MoveInPlan = typeof moveInPlans.$inferSelect;
+
+// ==========================================
+// #14 — AI Receipt & Document Scanner
+// ==========================================
+export const documentScans = pgTable("document_scans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  propertyId: varchar("property_id"),
+  
+  documentUrl: text("document_url").notNull(),
+  documentContentType: text("document_content_type"),
+  originalFilename: text("original_filename"),
+  
+  documentType: text("document_type"),
+  aiConfidence: real("ai_confidence"),
+  
+  extractedData: jsonb("extracted_data"),
+  
+  linkedWarrantyId: varchar("linked_warranty_id"),
+  linkedInsuranceId: varchar("linked_insurance_id"),
+  linkedHealthEventId: varchar("linked_health_event_id"),
+  linkedApplianceId: varchar("linked_appliance_id"),
+  
+  processingStatus: text("processing_status").notNull().default("uploaded"),
+  aiModelUsed: text("ai_model_used"),
+  processingTimeMs: integer("processing_time_ms"),
+  errorMessage: text("error_message"),
+  
+  userVerified: boolean("user_verified").default(false),
+  userCorrectedData: jsonb("user_corrected_data"),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  processedAt: text("processed_at"),
+});
+
+export const documentScansRelations = relations(documentScans, ({ one }) => ({
+  user: one(users, {
+    fields: [documentScans.userId],
+    references: [users.id],
+  }),
+  property: one(properties, {
+    fields: [documentScans.propertyId],
+    references: [properties.id],
+  }),
+  linkedWarranty: one(propertyWarranties, {
+    fields: [documentScans.linkedWarrantyId],
+    references: [propertyWarranties.id],
+  }),
+  linkedAppliance: one(propertyAppliances, {
+    fields: [documentScans.linkedApplianceId],
+    references: [propertyAppliances.id],
+  }),
+  linkedHealthEvent: one(propertyHealthEvents, {
+    fields: [documentScans.linkedHealthEventId],
+    references: [propertyHealthEvents.id],
+  }),
+}));
+
+export const insertDocumentScanSchema = createInsertSchema(documentScans).omit({ id: true });
+export type InsertDocumentScan = z.infer<typeof insertDocumentScanSchema>;
+export type DocumentScan = typeof documentScans.$inferSelect;
+
+// ==========================================
+// #15 — AI Route Optimizer (Pro-Facing)
+// ==========================================
+export const proRouteOptimizations = pgTable("pro_route_optimizations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proUserId: varchar("pro_user_id").notNull(),
+  
+  routeDate: text("route_date").notNull(),
+  assignedJobIds: text("assigned_job_ids").array().notNull(),
+  
+  originalOrder: jsonb("original_order"),
+  optimizedOrder: jsonb("optimized_order"),
+  
+  originalTotalMiles: real("original_total_miles"),
+  optimizedTotalMiles: real("optimized_total_miles"),
+  milesSaved: real("miles_saved"),
+  estimatedTimeSavedMinutes: integer("estimated_time_saved_minutes"),
+  co2Saved: real("co2_saved"),
+  
+  nearbyUpsellOpportunities: jsonb("nearby_upsell_opportunities"),
+  upsellsSent: integer("upsells_sent").default(0),
+  upsellsConverted: integer("upsells_converted").default(0),
+  upsellRevenue: real("upsell_revenue").default(0),
+  
+  proAccepted: boolean("pro_accepted"),
+  proFeedback: text("pro_feedback"),
+  
+  status: text("status").notNull().default("generated"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const proRouteOptimizationsRelations = relations(proRouteOptimizations, ({ one }) => ({
+  pro: one(users, {
+    fields: [proRouteOptimizations.proUserId],
+    references: [users.id],
+  }),
+}));
+
+export const insertProRouteOptimizationSchema = createInsertSchema(proRouteOptimizations).omit({ id: true });
+export type InsertProRouteOptimization = z.infer<typeof insertProRouteOptimizationSchema>;
+export type ProRouteOptimization = typeof proRouteOptimizations.$inferSelect;
+
+// ==========================================
+// #17 — AI Training & Quality Scoring
+// ==========================================
+export const proQualityScores = pgTable("pro_quality_scores", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proUserId: varchar("pro_user_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  
+  totalJobsScored: integer("total_jobs_scored").default(0),
+  averageQualityScore: real("average_quality_score"),
+  averageCustomerRating: real("average_customer_rating"),
+  qualityTrend: text("quality_trend"),
+  trendChangeDate: text("trend_change_date"),
+  
+  cleanlinessScore: real("cleanliness_score"),
+  thoroughnessScore: real("thoroughness_score"),
+  beforeAfterImprovementScore: real("before_after_improvement_score"),
+  
+  flaggedIssues: jsonb("flagged_issues"),
+  
+  recommendedTraining: jsonb("recommended_training"),
+  trainingCompletedModules: text("training_completed_modules").array(),
+  
+  qualityBoost: real("quality_boost").default(0),
+  
+  lastUpdated: text("last_updated").notNull().default(sql`CURRENT_TIMESTAMP`),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const proQualityScoresRelations = relations(proQualityScores, ({ one }) => ({
+  pro: one(users, {
+    fields: [proQualityScores.proUserId],
+    references: [users.id],
+  }),
+}));
+
+export const insertProQualityScoreSchema = createInsertSchema(proQualityScores).omit({ id: true });
+export type InsertProQualityScore = z.infer<typeof insertProQualityScoreSchema>;
+export type ProQualityScore = typeof proQualityScores.$inferSelect;
+
+export const jobQualityAssessments = pgTable("job_quality_assessments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id").notNull(),
+  proUserId: varchar("pro_user_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  
+  beforePhotoUrls: text("before_photo_urls").array(),
+  afterPhotoUrls: text("after_photo_urls").array(),
+  aiQualityScore: real("ai_quality_score"),
+  aiAnalysis: text("ai_analysis"),
+  
+  issuesDetected: jsonb("issues_detected"),
+  checklistComplianceRate: real("checklist_compliance_rate"),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const jobQualityAssessmentsRelations = relations(jobQualityAssessments, ({ one }) => ({
+  serviceRequest: one(serviceRequests, {
+    fields: [jobQualityAssessments.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+  pro: one(users, {
+    fields: [jobQualityAssessments.proUserId],
+    references: [users.id],
+  }),
+}));
+
+export const insertJobQualityAssessmentSchema = createInsertSchema(jobQualityAssessments).omit({ id: true });
+export type InsertJobQualityAssessment = z.infer<typeof insertJobQualityAssessmentSchema>;
+export type JobQualityAssessment = typeof jobQualityAssessments.$inferSelect;
+
+// ==========================================
+// #18 — AI Inventory Estimator
+// ==========================================
+export const inventoryEstimates = pgTable("inventory_estimates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id"),
+  userId: varchar("user_id").notNull(),
+  initiatedBy: text("initiated_by").notNull(),
+  serviceType: text("service_type").notNull(),
+  
+  videoUrl: text("video_url"),
+  frameUrls: text("frame_urls").array(),
+  photoUrls: text("photo_urls").array(),
+  
+  roomInventories: jsonb("room_inventories"),
+  
+  totalItems: integer("total_items"),
+  totalEstimatedWeight: real("total_estimated_weight"),
+  estimatedTruckPercentage: real("estimated_truck_percentage"),
+  estimatedTruckLoads: real("estimated_truck_loads"),
+  estimatedProsNeeded: integer("estimated_pros_needed"),
+  estimatedHours: real("estimated_hours"),
+  
+  generatedPriceMin: real("generated_price_min"),
+  generatedPriceMax: real("generated_price_max"),
+  priceBreakdown: jsonb("price_breakdown"),
+  
+  junkCategorization: jsonb("junk_categorization"),
+  
+  aiModelUsed: text("ai_model_used"),
+  processingTimeMs: integer("processing_time_ms"),
+  totalFramesAnalyzed: integer("total_frames_analyzed"),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const inventoryEstimatesRelations = relations(inventoryEstimates, ({ one }) => ({
+  user: one(users, {
+    fields: [inventoryEstimates.userId],
+    references: [users.id],
+  }),
+  serviceRequest: one(serviceRequests, {
+    fields: [inventoryEstimates.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertInventoryEstimateSchema = createInsertSchema(inventoryEstimates).omit({ id: true });
+export type InsertInventoryEstimate = z.infer<typeof insertInventoryEstimateSchema>;
+export type InventoryEstimate = typeof inventoryEstimates.$inferSelect;
+
+// ==========================================
+// #20 — AI Property Manager Portfolio Dashboard
+// ==========================================
+export const portfolioHealthReports = pgTable("portfolio_health_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  generatedByUserId: varchar("generated_by_user_id"),
+  
+  propertyIds: text("property_ids").array().notNull(),
+  totalProperties: integer("total_properties").notNull(),
+  
+  portfolioHealthScore: real("portfolio_health_score"),
+  lowestScoringPropertyId: varchar("lowest_scoring_property_id"),
+  highestScoringPropertyId: varchar("highest_scoring_property_id"),
+  scoreDistribution: jsonb("score_distribution"),
+  
+  overdueMaintenanceItems: jsonb("overdue_maintenance_items"),
+  agingApplianceAlerts: jsonb("aging_appliance_alerts"),
+  missingDwellScans: jsonb("missing_dwellscans"),
+  
+  actionPlan: jsonb("action_plan"),
+  totalRecommendedSpend: real("total_recommended_spend"),
+  projectedHealthScoreAfterActions: real("projected_health_score_after_actions"),
+  
+  portfolioEsgSummary: jsonb("portfolio_esg_summary"),
+  
+  reportPdfUrl: text("report_pdf_url"),
+  status: text("status").notNull().default("generating"),
+  deliveredAt: text("delivered_at"),
+  
+  actionsBooked: integer("actions_booked").default(0),
+  totalBookedValue: real("total_booked_value").default(0),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  reportPeriod: text("report_period"),
+});
+
+export const portfolioHealthReportsRelations = relations(portfolioHealthReports, ({ one }) => ({
+  businessAccount: one(businessAccounts, {
+    fields: [portfolioHealthReports.businessAccountId],
+    references: [businessAccounts.id],
+  }),
+  generatedBy: one(users, {
+    fields: [portfolioHealthReports.generatedByUserId],
+    references: [users.id],
+  }),
+}));
+
+export const insertPortfolioHealthReportSchema = createInsertSchema(portfolioHealthReports).omit({ id: true });
+export type InsertPortfolioHealthReport = z.infer<typeof insertPortfolioHealthReportSchema>;
+export type PortfolioHealthReport = typeof portfolioHealthReports.$inferSelect;
+
+// ==========================================
+// #22 — AI Fraud & Quality Detection
+// ==========================================
+export const fraudAlerts = pgTable("fraud_alerts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id"),
+  proUserId: varchar("pro_user_id").notNull(),
+  
+  alertType: text("alert_type").notNull(),
+  severity: text("severity").notNull(),
+  
+  evidence: jsonb("evidence"),
+  aiConfidence: real("ai_confidence"),
+  aiExplanation: text("ai_explanation"),
+  
+  status: text("status").notNull().default("pending"),
+  reviewedBy: varchar("reviewed_by"),
+  reviewedAt: text("reviewed_at"),
+  reviewNotes: text("review_notes"),
+  actionTaken: text("action_taken"),
+  
+  affectedCustomerIds: text("affected_customer_ids").array(),
+  refundIssued: boolean("refund_issued").default(false),
+  refundAmount: real("refund_amount"),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const fraudAlertsRelations = relations(fraudAlerts, ({ one }) => ({
+  serviceRequest: one(serviceRequests, {
+    fields: [fraudAlerts.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+  pro: one(users, {
+    fields: [fraudAlerts.proUserId],
+    references: [users.id],
+  }),
+  reviewer: one(users, {
+    fields: [fraudAlerts.reviewedBy],
+    references: [users.id],
+  }),
+}));
+
+export const insertFraudAlertSchema = createInsertSchema(fraudAlerts).omit({ id: true });
+export type InsertFraudAlert = z.infer<typeof insertFraudAlertSchema>;
+export type FraudAlert = typeof fraudAlerts.$inferSelect;
+
+// ==========================================
+// #23 — AI-Generated Marketing Content
+// ==========================================
+export const aiMarketingContent = pgTable("ai_marketing_content", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  proUserId: varchar("pro_user_id"),
+  customerId: varchar("customer_id"),
+  
+  beforePhotoUrl: text("before_photo_url"),
+  afterPhotoUrl: text("after_photo_url"),
+  transformationScore: real("transformation_score"),
+  
+  postCaption: text("post_caption"),
+  postHashtags: text("post_hashtags").array(),
+  targetPlatforms: text("target_platforms").array(),
+  
+  neighborhood: text("neighborhood"),
+  zipCode: text("zip_code"),
+  city: text("city"),
+  
+  customerShareLink: text("customer_share_link"),
+  customerShareCredit: real("customer_share_credit").default(10),
+  customerSharedAt: text("customer_shared_at"),
+  customerSharePlatform: text("customer_share_platform"),
+  
+  status: text("status").notNull().default("draft"),
+  publishedAt: text("published_at"),
+  publishedPlatforms: text("published_platforms").array(),
+  
+  impressions: integer("impressions").default(0),
+  engagements: integer("engagements").default(0),
+  clickThroughs: integer("click_throughs").default(0),
+  bookingsFromPost: integer("bookings_from_post").default(0),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const aiMarketingContentRelations = relations(aiMarketingContent, ({ one }) => ({
+  serviceRequest: one(serviceRequests, {
+    fields: [aiMarketingContent.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+  pro: one(users, {
+    fields: [aiMarketingContent.proUserId],
+    references: [users.id],
+  }),
+  customer: one(users, {
+    fields: [aiMarketingContent.customerId],
+    references: [users.id],
+  }),
+}));
+
+export const insertAiMarketingContentSchema = createInsertSchema(aiMarketingContent).omit({ id: true });
+export type InsertAiMarketingContent = z.infer<typeof insertAiMarketingContentSchema>;
+export type AiMarketingContent = typeof aiMarketingContent.$inferSelect;
+
+// ==========================================
+// #24 — AI Voice Assistant for Booking
+// ==========================================
+export const voiceBookingSessions = pgTable("voice_booking_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  callerPhone: text("caller_phone").notNull(),
+  userId: varchar("user_id"),
+  propertyId: varchar("property_id"),
+  
+  callDirection: text("call_direction").notNull().default("inbound"),
+  callDurationSeconds: integer("call_duration_seconds"),
+  callStartedAt: text("call_started_at").notNull(),
+  callEndedAt: text("call_ended_at"),
+  
+  transcriptUrl: text("transcript_url"),
+  transcriptText: text("transcript_text"),
+  detectedLanguage: text("detected_language").default("en"),
+  detectedIntent: text("detected_intent"),
+  detectedService: text("detected_service"),
+  
+  sttProvider: text("stt_provider"),
+  ttsProvider: text("tts_provider"),
+  aiModelUsed: text("ai_model_used"),
+  
+  status: text("status").notNull().default("in_progress"),
+  outcome: text("outcome"),
+  
+  serviceRequestId: varchar("service_request_id"),
+  quotedPrice: real("quoted_price"),
+  scheduledDate: text("scheduled_date"),
+  
+  escalatedToHuman: boolean("escalated_to_human").default(false),
+  escalationReason: text("escalation_reason"),
+  humanAgentId: varchar("human_agent_id"),
+  
+  customerSatisfaction: integer("customer_satisfaction"),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const voiceBookingSessionsRelations = relations(voiceBookingSessions, ({ one }) => ({
+  user: one(users, {
+    fields: [voiceBookingSessions.userId],
+    references: [users.id],
+  }),
+  property: one(properties, {
+    fields: [voiceBookingSessions.propertyId],
+    references: [properties.id],
+  }),
+  serviceRequest: one(serviceRequests, {
+    fields: [voiceBookingSessions.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+  humanAgent: one(users, {
+    fields: [voiceBookingSessions.humanAgentId],
+    references: [users.id],
+  }),
+}));
+
+export const insertVoiceBookingSessionSchema = createInsertSchema(voiceBookingSessions).omit({ id: true });
+export type InsertVoiceBookingSession = z.infer<typeof insertVoiceBookingSessionSchema>;
+export type VoiceBookingSession = typeof voiceBookingSessions.$inferSelect;
+
+// ==========================================
+// #25 — AI Neighborhood Intelligence
+// ==========================================
+export const neighborhoodIntelligenceReports = pgTable("neighborhood_intelligence_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  zipCode: text("zip_code").notNull(),
+  neighborhood: text("neighborhood"),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  
+  reportPeriod: text("report_period").notNull(),
+  periodStart: text("period_start").notNull(),
+  periodEnd: text("period_end").notNull(),
+  
+  totalPropertiesAnalyzed: integer("total_properties_analyzed").notNull(),
+  totalJobsAnalyzed: integer("total_jobs_analyzed").notNull(),
+  totalAppliancesAnalyzed: integer("total_appliances_analyzed").default(0),
+  
+  averageHealthScore: real("average_health_score"),
+  healthScoreDistribution: jsonb("health_score_distribution"),
+  topMaintenanceIssues: jsonb("top_maintenance_issues"),
+  
+  applianceAgeProfiles: jsonb("appliance_age_profiles"),
+  failureRateInsights: jsonb("failure_rate_insights"),
+  warrantyGapAnalysis: jsonb("warranty_gap_analysis"),
+  
+  serviceDemandByType: jsonb("service_demand_by_type"),
+  seasonalPatterns: jsonb("seasonal_patterns"),
+  averageSpendPerHome: real("average_spend_per_home"),
+  
+  buildYearDistribution: jsonb("build_year_distribution"),
+  builderQualityIndicators: jsonb("builder_quality_indicators"),
+  
+  avgDiversionRate: real("avg_diversion_rate"),
+  avgCo2SavedPerJob: real("avg_co2_saved_per_job"),
+  sustainabilityTrend: text("sustainability_trend"),
+  
+  reportPdfUrl: text("report_pdf_url"),
+  isPublic: boolean("is_public").default(false),
+  
+  licensedToPartners: text("licensed_to_partners").array(),
+  
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertNeighborhoodIntelligenceReportSchema = createInsertSchema(neighborhoodIntelligenceReports).omit({ id: true });
+export type InsertNeighborhoodIntelligenceReport = z.infer<typeof insertNeighborhoodIntelligenceReportSchema>;
+export type NeighborhoodIntelligenceReport = typeof neighborhoodIntelligenceReports.$inferSelect;

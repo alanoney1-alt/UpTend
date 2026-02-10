@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { storage } from "../../storage";
 import { requireAuth } from "../../middleware/auth";
+import { requireBusinessTeamAccess } from "../../auth-middleware";
 
 export function registerHoaReferralPaymentRoutes(app: Express) {
   // ==========================================
@@ -8,15 +9,11 @@ export function registerHoaReferralPaymentRoutes(app: Express) {
   // ==========================================
 
   // Get referral payment summary for HOA
-  app.get("/api/business/:businessAccountId/referral-payments", requireAuth, async (req, res) => {
+  app.get("/api/business/:businessAccountId/referral-payments", requireAuth, requireBusinessTeamAccess("canViewFinancials"), async (req, res) => {
     try {
       const { businessAccountId } = req.params;
 
-      // Verify user owns this business account
-      const businessAccount = await storage.getBusinessAccount(businessAccountId);
-      if (!businessAccount || businessAccount.userId !== req.user!.id) {
-        return res.status(403).json({ error: "Unauthorized" });
-      }
+      // Team access already verified by middleware
 
       // Get all properties for this business account
       const properties = await storage.getHoaPropertiesByBusinessAccount(businessAccountId);

@@ -63,6 +63,7 @@ import { registerAiAnalysisRoutes } from "./ai/analysis.routes";
 import { registerAgenticRoutes } from "./ai/agentic.routes";
 import { registerChatbotRoutes } from "./ai/chatbot.routes";
 import { registerSmsBotRoutes } from "./ai/sms-bot.routes";
+import { registerAiCapabilityRoutes } from "./ai/index";
 
 // Google API routes
 import { registerGoogleApiRoutes } from "./google-api.routes";
@@ -155,6 +156,7 @@ export async function registerRoutes(
   registerAgenticRoutes(app);
   registerChatbotRoutes(app);
   registerSmsBotRoutes(app);
+  registerAiCapabilityRoutes(app); // New AI capabilities
 
   // Register Google API routes
   registerGoogleApiRoutes(app);

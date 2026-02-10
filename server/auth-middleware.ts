@@ -130,3 +130,111 @@ export const requireHaulerOwnership: RequestHandler = (req: Request, res: Respon
 export const optionalAuth: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
+
+/**
+ * Middleware to verify user has access to a business account via team membership
+ * Supports optional permission-based authorization
+ *
+ * @param permission - Optional specific permission to check (e.g., "canManageTeam")
+ * @returns RequestHandler that checks team membership and permissions
+ *
+ * @example
+ * // Check team membership only
+ * app.get("/api/business/:id/properties", requireAuth, requireBusinessTeamAccess(), handler);
+ *
+ * // Check specific permission
+ * app.post("/api/business/:id/team/invite", requireAuth, requireBusinessTeamAccess("canManageTeam"), handler);
+ */
+export function requireBusinessTeamAccess(permission?: keyof {
+  canViewFinancials: boolean;
+  canManageTeam: boolean;
+  canCreateJobs: boolean;
+  canApprovePayments: boolean;
+  canAccessEsgReports: boolean;
+  canManageProperties: boolean;
+}): RequestHandler {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as AuthUser | undefined;
+    if (!user) {
+      return res.status(401).json({
+        error: "Authentication required",
+        message: "You must be logged in to access this resource"
+      });
+    }
+
+    // Admin bypass
+    if (user.role === "admin") {
+      return next();
+    }
+
+    // Get businessAccountId from params or body
+    const businessAccountId = req.params.id || req.params.businessAccountId || req.body.businessAccountId;
+    if (!businessAccountId) {
+      return res.status(400).json({
+        error: "Bad request",
+        message: "Business account ID is required"
+      });
+    }
+
+    try {
+      // Check if user is the owner of the business account (backward compatibility)
+      const { storage } = await import("./storage");
+      const businessAccount = await storage.getBusinessAccount(businessAccountId);
+
+      if (!businessAccount) {
+        return res.status(404).json({
+          error: "Not found",
+          message: "Business account not found"
+        });
+      }
+
+      // Allow direct owner access (backward compatibility)
+      if (businessAccount.userId === user.id) {
+        // Attach team member info for downstream use (owner has all permissions)
+        (req as any).teamMember = {
+          id: "owner",
+          businessAccountId: businessAccount.id,
+          userId: user.id,
+          role: "owner",
+          canViewFinancials: true,
+          canManageTeam: true,
+          canCreateJobs: true,
+          canApprovePayments: true,
+          canAccessEsgReports: true,
+          canManageProperties: true,
+          isActive: true,
+        };
+        return next();
+      }
+
+      // Check team membership
+      const teamMembers = await storage.getTeamMembersByBusiness(businessAccountId);
+      const teamMember = teamMembers.find(m => m.userId === user.id && m.isActive && m.invitationStatus === "accepted");
+
+      if (!teamMember) {
+        return res.status(403).json({
+          error: "Access denied",
+          message: "You are not a member of this business account"
+        });
+      }
+
+      // Check specific permission if required
+      if (permission && !teamMember[permission]) {
+        return res.status(403).json({
+          error: "Permission denied",
+          message: `You do not have the required permission: ${permission}`
+        });
+      }
+
+      // Attach team member info for downstream use
+      (req as any).teamMember = teamMember;
+      next();
+    } catch (error) {
+      console.error("Team access check error:", error);
+      return res.status(500).json({
+        error: "Internal server error",
+        message: "Failed to verify team access"
+      });
+    }
+  };
+}

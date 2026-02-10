@@ -15,6 +15,7 @@ import type {
   Referral, InsertReferral,
   BusinessAccount, InsertBusinessAccount,
   RecurringJob, InsertRecurringJob,
+  BusinessTeamMember, InsertBusinessTeamMember,
   LoyaltyAccount, InsertLoyaltyAccount,
   LoyaltyTransaction, InsertLoyaltyTransaction,
   LoyaltyReward, InsertLoyaltyReward,
@@ -32,6 +33,7 @@ import type {
   HaulerWithProfile, HaulerWithProfileAndVehicle, ServiceRequestWithDetails,
   PriceQuote, QuoteRequest,
   EsgImpactLog, InsertEsgImpactLog,
+  ServiceEsgMetrics, InsertServiceEsgMetrics,
   Dispute, InsertDispute,
   WorkerSkill, InsertWorkerSkill,
   AiSafetyAlert, InsertAiSafetyAlert,
@@ -101,6 +103,7 @@ import { JobVerificationStorage } from "../domains/job-verification/storage";
 import { SmsBotStorage } from "../domains/sms-bot/storage";
 import { PolishUpStorage } from "../domains/polishup/storage";
 import { MarketplaceStorage } from "../domains/marketplace/storage";
+import { AiCapabilitiesStorage } from "../domains/ai-capabilities/storage";
 
 /**
  * DatabaseStorage - Composition Layer for Storage Architecture
@@ -110,7 +113,7 @@ import { MarketplaceStorage } from "../domains/marketplace/storage";
  * entry point for all storage operations across the application.
  *
  * Architecture:
- * - 28 domain storage instances (one per feature domain)
+ * - 29 domain storage instances (one per feature domain)
  * - Each domain handles its own data access and business logic
  * - Cross-domain operations are composed at this layer
  *
@@ -156,6 +159,7 @@ export class DatabaseStorage implements IStorage {
   private smsBot: SmsBotStorage;
   private freshSpace: PolishUpStorage;
   private marketplace: MarketplaceStorage;
+  private aiCapabilities: AiCapabilitiesStorage;
 
   constructor() {
     // Initialize all domain storage instances
@@ -192,6 +196,7 @@ export class DatabaseStorage implements IStorage {
     this.smsBot = new SmsBotStorage();
     this.freshSpace = new PolishUpStorage();
     this.marketplace = new MarketplaceStorage();
+    this.aiCapabilities = new AiCapabilitiesStorage();
   }
 
   // ============================================================================
@@ -579,6 +584,42 @@ export class DatabaseStorage implements IStorage {
 
   async updateBusinessAccount(id: string, updates: Partial<BusinessAccount>): Promise<BusinessAccount | undefined> {
     return this.businessAccounts.updateBusinessAccount(id, updates);
+  }
+
+  // ============================================================================
+  // BUSINESS TEAM MEMBERS DOMAIN
+  // ============================================================================
+
+  async createTeamMember(member: InsertBusinessTeamMember): Promise<BusinessTeamMember> {
+    return this.businessAccounts.createTeamMember(member);
+  }
+
+  async getTeamMembersByBusiness(businessAccountId: string): Promise<BusinessTeamMember[]> {
+    return this.businessAccounts.getTeamMembersByBusiness(businessAccountId);
+  }
+
+  async getBusinessMembershipsForUser(userId: string): Promise<BusinessTeamMember[]> {
+    return this.businessAccounts.getBusinessMembershipsForUser(userId);
+  }
+
+  async getTeamMemberById(id: string): Promise<BusinessTeamMember | undefined> {
+    return this.businessAccounts.getTeamMemberById(id);
+  }
+
+  async getTeamMemberByToken(invitationToken: string): Promise<BusinessTeamMember | undefined> {
+    return this.businessAccounts.getTeamMemberByToken(invitationToken);
+  }
+
+  async getTeamMemberByUserAndBusiness(userId: string, businessAccountId: string): Promise<BusinessTeamMember | undefined> {
+    return this.businessAccounts.getTeamMemberByUserAndBusiness(userId, businessAccountId);
+  }
+
+  async updateTeamMember(id: string, updates: Partial<BusinessTeamMember>): Promise<BusinessTeamMember | undefined> {
+    return this.businessAccounts.updateTeamMember(id, updates);
+  }
+
+  async deleteTeamMember(id: string): Promise<void> {
+    return this.businessAccounts.deleteTeamMember(id);
   }
 
   // ============================================================================
@@ -1121,6 +1162,66 @@ export class DatabaseStorage implements IStorage {
     return this.esg.upsertPlatformSustainabilityStats(stats);
   }
 
+  // Service-Specific ESG Metrics
+  async createServiceEsgMetrics(metrics: InsertServiceEsgMetrics): Promise<ServiceEsgMetrics> {
+    return this.esg.createServiceEsgMetrics(metrics);
+  }
+
+  async getServiceEsgMetricsByRequest(serviceRequestId: string): Promise<ServiceEsgMetrics | undefined> {
+    return this.esg.getServiceEsgMetricsByRequest(serviceRequestId);
+  }
+
+  async getServiceEsgMetricsByType(
+    serviceType: string,
+    filters?: {
+      startDate?: string;
+      endDate?: string;
+      verificationStatus?: string;
+    }
+  ): Promise<ServiceEsgMetrics[]> {
+    return this.esg.getServiceEsgMetricsByType(serviceType, filters);
+  }
+
+  async getServiceEsgMetricsByRequestIds(serviceRequestIds: string[]): Promise<ServiceEsgMetrics[]> {
+    return this.esg.getServiceEsgMetricsByRequestIds(serviceRequestIds);
+  }
+
+  async updateServiceEsgMetrics(id: string, updates: Partial<ServiceEsgMetrics>): Promise<ServiceEsgMetrics | undefined> {
+    return this.esg.updateServiceEsgMetrics(id, updates);
+  }
+
+  async getServiceEsgAggregateByType(serviceType: string): Promise<{
+    totalJobs: number;
+    totalCo2SavedLbs: number;
+    totalWaterSavedGallons: number;
+    avgEsgScore: number;
+  }> {
+    return this.esg.getServiceEsgAggregateByType(serviceType);
+  }
+
+  async getAllServiceEsgMetrics(filters?: {
+    startDate?: string;
+    endDate?: string;
+    verificationStatus?: string;
+    serviceTypes?: string[];
+  }): Promise<ServiceEsgMetrics[]> {
+    return this.esg.getAllServiceEsgMetrics(filters);
+  }
+
+  async getServiceEsgAggregateAll(filters?: {
+    startDate?: string;
+    endDate?: string;
+    verificationStatus?: string;
+  }): Promise<Array<{
+    serviceType: string;
+    totalJobs: number;
+    totalCo2SavedLbs: number;
+    totalWaterSavedGallons: number;
+    avgEsgScore: number;
+  }>> {
+    return this.esg.getServiceEsgAggregateAll(filters);
+  }
+
   // ============================================================================
   // DISPUTES DOMAIN
   // ============================================================================
@@ -1570,6 +1671,260 @@ export class DatabaseStorage implements IStorage {
 
   async getProMarketplaceStats(proId: string) {
     return this.marketplace.getProMarketplaceStats(proId);
+  }
+
+  // ============================================================================
+  // AI CAPABILITIES DOMAIN
+  // ============================================================================
+
+  // AI Concierge & Chat Assistant
+  async createAiConversation(data: any) {
+    return this.aiCapabilities.createConversation(data);
+  }
+
+  async getAiConversation(id: string) {
+    return this.aiCapabilities.getConversation(id);
+  }
+
+  async getActiveAiConversationsByUser(userId: string) {
+    return this.aiCapabilities.getActiveConversationsByUser(userId);
+  }
+
+  async updateAiConversation(id: string, updates: any) {
+    return this.aiCapabilities.updateConversation(id, updates);
+  }
+
+  async createAiConversationMessage(data: any) {
+    return this.aiCapabilities.createMessage(data);
+  }
+
+  async getAiMessagesByConversation(conversationId: string) {
+    return this.aiCapabilities.getMessagesByConversation(conversationId);
+  }
+
+  // AI Photo-to-Quote
+  async createPhotoQuoteRequest(data: any) {
+    return this.aiCapabilities.createPhotoQuoteRequest(data);
+  }
+
+  async getPhotoQuoteRequest(id: string) {
+    return this.aiCapabilities.getPhotoQuoteRequest(id);
+  }
+
+  async getPhotoQuoteRequestsByUser(userId: string) {
+    return this.aiCapabilities.getPhotoQuoteRequestsByUser(userId);
+  }
+
+  async updatePhotoQuoteRequest(id: string, updates: any) {
+    return this.aiCapabilities.updatePhotoQuoteRequest(id, updates);
+  }
+
+  // AI Seasonal Home Advisor
+  async createSeasonalAdvisory(data: any) {
+    return this.aiCapabilities.createSeasonalAdvisory(data);
+  }
+
+  async getActiveAdvisoriesByZip(zipCode: string) {
+    return this.aiCapabilities.getActiveAdvisoriesByZip(zipCode);
+  }
+
+  async getSeasonalAdvisoriesByUser(userId: string) {
+    return this.aiCapabilities.getAdvisoriesByUser(userId);
+  }
+
+  // AI Smart Scheduling
+  async createSmartScheduleSuggestion(data: any) {
+    return this.aiCapabilities.createScheduleSuggestion(data);
+  }
+
+  async getActiveScheduleSuggestionsByUser(userId: string) {
+    return this.aiCapabilities.getActiveSuggestionsByUser(userId);
+  }
+
+  async updateSmartScheduleSuggestion(id: string, updates: any) {
+    return this.aiCapabilities.updateScheduleSuggestion(id, updates);
+  }
+
+  // AI Move-In Wizard
+  async createMoveInPlan(data: any) {
+    return this.aiCapabilities.createMoveInPlan(data);
+  }
+
+  async getMoveInPlan(id: string) {
+    return this.aiCapabilities.getMoveInPlan(id);
+  }
+
+  async getMoveInPlansByUser(userId: string) {
+    return this.aiCapabilities.getMoveInPlansByUser(userId);
+  }
+
+  async updateMoveInPlan(id: string, updates: any) {
+    return this.aiCapabilities.updateMoveInPlan(id, updates);
+  }
+
+  // AI Receipt & Document Scanner
+  async createDocumentScan(data: any) {
+    return this.aiCapabilities.createDocumentScan(data);
+  }
+
+  async getDocumentScan(id: string) {
+    return this.aiCapabilities.getDocumentScan(id);
+  }
+
+  async getDocumentScansByUser(userId: string) {
+    return this.aiCapabilities.getDocumentScansByUser(userId);
+  }
+
+  async getDocumentScansByServiceRequest(serviceRequestId: string) {
+    return this.aiCapabilities.getDocumentScansByServiceRequest(serviceRequestId);
+  }
+
+  async updateDocumentScan(id: string, updates: any) {
+    return this.aiCapabilities.updateDocumentScan(id, updates);
+  }
+
+  // AI Route Optimizer
+  async createRouteOptimization(data: any) {
+    return this.aiCapabilities.createRouteOptimization(data);
+  }
+
+  async getRouteOptimization(id: string) {
+    return this.aiCapabilities.getRouteOptimization(id);
+  }
+
+  async getRouteOptimizationsByHauler(haulerId: string, startDate?: string, endDate?: string) {
+    return this.aiCapabilities.getRouteOptimizationsByHauler(haulerId, startDate, endDate);
+  }
+
+  async updateRouteOptimization(id: string, updates: any) {
+    return this.aiCapabilities.updateRouteOptimization(id, updates);
+  }
+
+  async getRouteOptimizationStats(haulerId: string) {
+    return this.aiCapabilities.getRouteOptimizationStats(haulerId);
+  }
+
+  // AI Training & Quality Scoring
+  async createProQualityScore(data: any) {
+    return this.aiCapabilities.createQualityScore(data);
+  }
+
+  async getLatestProQualityScore(haulerId: string) {
+    return this.aiCapabilities.getLatestQualityScore(haulerId);
+  }
+
+  async getProQualityScoreHistory(haulerId: string, limit?: number) {
+    return this.aiCapabilities.getQualityScoreHistory(haulerId, limit);
+  }
+
+  async createJobQualityAssessment(data: any) {
+    return this.aiCapabilities.createJobQualityAssessment(data);
+  }
+
+  async getJobQualityAssessment(serviceRequestId: string) {
+    return this.aiCapabilities.getJobQualityAssessment(serviceRequestId);
+  }
+
+  async getJobQualityAssessmentsByHauler(haulerId: string) {
+    return this.aiCapabilities.getJobQualityAssessmentsByHauler(haulerId);
+  }
+
+  // AI Inventory Estimator
+  async createInventoryEstimate(data: any) {
+    return this.aiCapabilities.createInventoryEstimate(data);
+  }
+
+  async getInventoryEstimate(id: string) {
+    return this.aiCapabilities.getInventoryEstimate(id);
+  }
+
+  async getInventoryEstimateByServiceRequest(serviceRequestId: string) {
+    return this.aiCapabilities.getInventoryEstimateByServiceRequest(serviceRequestId);
+  }
+
+  async updateInventoryEstimate(id: string, updates: any) {
+    return this.aiCapabilities.updateInventoryEstimate(id, updates);
+  }
+
+  // AI Property Manager Portfolio Dashboard
+  async createPortfolioHealthReport(data: any) {
+    return this.aiCapabilities.createPortfolioHealthReport(data);
+  }
+
+  async getLatestPortfolioHealthReport(businessAccountId: string) {
+    return this.aiCapabilities.getLatestPortfolioHealthReport(businessAccountId);
+  }
+
+  async getPortfolioHealthReportHistory(businessAccountId: string, limit?: number) {
+    return this.aiCapabilities.getPortfolioHealthReportHistory(businessAccountId, limit);
+  }
+
+  // AI Fraud & Quality Detection
+  async createFraudAlert(data: any) {
+    return this.aiCapabilities.createFraudAlert(data);
+  }
+
+  async getFraudAlert(id: string) {
+    return this.aiCapabilities.getFraudAlert(id);
+  }
+
+  async getPendingFraudAlerts() {
+    return this.aiCapabilities.getPendingFraudAlerts();
+  }
+
+  async getFraudAlertsByHauler(haulerId: string) {
+    return this.aiCapabilities.getFraudAlertsByHauler(haulerId);
+  }
+
+  async updateFraudAlert(id: string, updates: any) {
+    return this.aiCapabilities.updateFraudAlert(id, updates);
+  }
+
+  // AI-Generated Marketing Content
+  async createAiMarketingContent(data: any) {
+    return this.aiCapabilities.createMarketingContent(data);
+  }
+
+  async getAiMarketingContent(id: string) {
+    return this.aiCapabilities.getMarketingContent(id);
+  }
+
+  async getAiMarketingContentByType(contentType: string, status?: string) {
+    return this.aiCapabilities.getMarketingContentByType(contentType, status);
+  }
+
+  async updateAiMarketingContent(id: string, updates: any) {
+    return this.aiCapabilities.updateMarketingContent(id, updates);
+  }
+
+  // AI Voice Assistant for Booking
+  async createVoiceBookingSession(data: any) {
+    return this.aiCapabilities.createVoiceBookingSession(data);
+  }
+
+  async getVoiceBookingSession(id: string) {
+    return this.aiCapabilities.getVoiceBookingSession(id);
+  }
+
+  async getVoiceBookingSessionsByUser(userId: string) {
+    return this.aiCapabilities.getVoiceBookingSessionsByUser(userId);
+  }
+
+  async updateVoiceBookingSession(id: string, updates: any) {
+    return this.aiCapabilities.updateVoiceBookingSession(id, updates);
+  }
+
+  // AI Neighborhood Intelligence
+  async createNeighborhoodIntelligence(data: any) {
+    return this.aiCapabilities.createNeighborhoodIntelligence(data);
+  }
+
+  async getLatestNeighborhoodIntelligence(zipCode: string) {
+    return this.aiCapabilities.getLatestNeighborhoodIntelligence(zipCode);
+  }
+
+  async getNeighborhoodIntelligenceHistory(zipCode: string, limit?: number) {
+    return this.aiCapabilities.getNeighborhoodIntelligenceHistory(zipCode, limit);
   }
 
   // ============================================================================

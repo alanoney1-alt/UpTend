@@ -8,6 +8,7 @@ import { startMatchingTimer } from './services/matching-timer';
 import { startLocationCleanupService } from './services/location-cleanup';
 import { startEsgAuditor } from './services/esg-auditor';
 import './services/property-cron-jobs'; // Auto-starts Property Intelligence background jobs
+import './services/ai-cron-jobs'; // Auto-starts AI capability background jobs
 import { getUncachableStripeClient } from './stripeClient';
 
 const app = express();

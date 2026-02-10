@@ -61,6 +61,7 @@ import { ImpactWidget } from "@/components/dashboard/impact-widget";
 import { FileText, Route, Store } from "lucide-react";
 import { ProMarketplace } from "@/components/marketplace/pro-marketplace";
 import { ServicesSelector } from "@/components/services-selector";
+import { ServiceEsgBadge } from "@/components/esg/service-esg-badge";
 
 function maskPhone(phone: string): string {
   if (!phone || phone.length < 4) return "***-****";
@@ -892,18 +893,18 @@ function ActiveJobCard({
 }
 
 // Completed Job Card with Receipt Upload Prompt
-function CompletedJobCard({ 
-  job, 
+function CompletedJobCard({
+  job,
   hasExistingClaim,
-  onUploadReceipt 
-}: { 
+  onUploadReceipt
+}: {
   job: ServiceRequestWithDetails;
   hasExistingClaim: boolean;
   onUploadReceipt: (jobId: string) => void;
 }) {
   const earnings = Math.round((job.livePrice || 0) * 0.8);
   const potentialRebate = Math.min((job.livePrice || 0) * 0.10, 25);
-  
+
   const serviceLabels: Record<string, string> = {
     junk_removal: "Junk Removal",
     furniture_moving: "Furniture Moving",
@@ -916,6 +917,19 @@ function CompletedJobCard({
   const hoursSinceCompletion = Math.floor((Date.now() - completedAt.getTime()) / (1000 * 60 * 60));
   const hoursRemaining = Math.max(0, 48 - hoursSinceCompletion);
 
+  // Fetch ESG metrics for this job
+  const { data: esgMetrics } = useQuery({
+    queryKey: ["service-esg-metrics", job.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/esg/service-metrics/${job.id}`, {
+        credentials: "include",
+      });
+      if (!response.ok) return null;
+      const result = await response.json();
+      return result.metrics;
+    },
+  });
+
   return (
     <Card className="p-5 border-green-500/30" data-testid={`card-completed-job-${job.id}`}>
       <div className="flex items-center justify-between mb-3">
@@ -927,6 +941,18 @@ function CompletedJobCard({
           </Badge>
         </div>
       </div>
+
+      {/* ESG Badge */}
+      {esgMetrics && (
+        <div className="mb-3">
+          <ServiceEsgBadge
+            serviceType={job.serviceType || "junk_removal"}
+            esgScore={esgMetrics.esgScore || 0}
+            co2SavedLbs={esgMetrics.totalCo2SavedLbs}
+            waterSavedGallons={esgMetrics.waterSavedGallons}
+          />
+        </div>
+      )}
       
       <div className="border-t border-b py-3 my-3">
         <div className="flex justify-between items-center">

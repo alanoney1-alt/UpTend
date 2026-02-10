@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { storage } from "../../storage";
 import { requireAuth } from "../../middleware/auth";
+import { requireBusinessTeamAccess } from "../../auth-middleware";
 
 export function registerHoaEsgMetricsRoutes(app: Express) {
   // ==========================================
@@ -8,15 +9,11 @@ export function registerHoaEsgMetricsRoutes(app: Express) {
   // ==========================================
 
   // Get aggregated ESG metrics for all properties in HOA portfolio
-  app.get("/api/business/:businessAccountId/esg-metrics", requireAuth, async (req, res) => {
+  app.get("/api/business/:businessAccountId/esg-metrics", requireAuth, requireBusinessTeamAccess("canAccessEsgReports"), async (req, res) => {
     try {
       const { businessAccountId } = req.params;
 
-      // Verify user owns this business account
-      const businessAccount = await storage.getBusinessAccount(businessAccountId);
-      if (!businessAccount || businessAccount.userId !== req.user!.id) {
-        return res.status(403).json({ error: "Unauthorized" });
-      }
+      // Team access already verified by middleware
 
       // Get all properties for this business account
       const properties = await storage.getHoaPropertiesByBusinessAccount(businessAccountId);
@@ -151,15 +148,11 @@ export function registerHoaEsgMetricsRoutes(app: Express) {
   });
 
   // Get carbon credits for HOA (detailed breakdown)
-  app.get("/api/business/:businessAccountId/carbon-credits", requireAuth, async (req, res) => {
+  app.get("/api/business/:businessAccountId/carbon-credits", requireAuth, requireBusinessTeamAccess("canAccessEsgReports"), async (req, res) => {
     try {
       const { businessAccountId } = req.params;
 
-      // Verify user owns this business account
-      const businessAccount = await storage.getBusinessAccount(businessAccountId);
-      if (!businessAccount || businessAccount.userId !== req.user!.id) {
-        return res.status(403).json({ error: "Unauthorized" });
-      }
+      // Team access already verified by middleware
 
       // Get carbon credits for this business account
       const carbonCredits = await storage.getCarbonCreditsByBusinessAccount(businessAccountId);

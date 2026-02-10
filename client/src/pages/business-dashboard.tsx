@@ -23,6 +23,9 @@ import { PropertyRoster } from "@/components/hoa/property-roster";
 import { HoaEsgDashboard } from "@/components/hoa/esg-dashboard";
 import { HoaReferralPayments } from "@/components/hoa/referral-payments";
 import { HoaCommunicationCenter } from "@/components/hoa/communication-center";
+import { BusinessContextSwitcher } from "@/components/business/business-context-switcher";
+import { TeamManagementTable } from "@/components/business/team-management-table";
+import { ServiceBreakdownChart } from "@/components/esg/service-breakdown-chart";
 
 const businessTypes = [
   { id: "property_manager", label: "Property Manager" },
@@ -315,6 +318,15 @@ export default function BusinessDashboard() {
             </div>
             <Badge variant="secondary">{businessTypes.find(t => t.id === account.businessType)?.label}</Badge>
           </div>
+          <div className="flex items-center gap-4">
+            <BusinessContextSwitcher
+              currentBusinessId={account.id}
+              onBusinessChange={(businessId) => {
+                // Reload dashboard with new business context
+                queryClient.invalidateQueries({ queryKey: ["/api/business-accounts"] });
+              }}
+            />
+          </div>
         </div>
       </header>
 
@@ -389,6 +401,10 @@ export default function BusinessDashboard() {
                 </TabsTrigger>
               </>
             )}
+            <TabsTrigger value="team" data-testid="tab-team">
+              <Building2 className="h-4 w-4 mr-1" />
+              Team
+            </TabsTrigger>
             <TabsTrigger value="esg" data-testid="tab-esg-reports"><Leaf className="h-4 w-4 mr-1" />ESG Reports</TabsTrigger>
             <TabsTrigger value="history">Job History</TabsTrigger>
             <TabsTrigger value="settings">Account Settings</TabsTrigger>
@@ -561,6 +577,17 @@ export default function BusinessDashboard() {
               </TabsContent>
             </>
           )}
+
+          <TabsContent value="team" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Team Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TeamManagementTable businessAccountId={account.id} />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="esg" className="space-y-4">
             {account.businessType === "property_manager" ? (

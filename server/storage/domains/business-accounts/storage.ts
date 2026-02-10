@@ -24,6 +24,11 @@ export class BusinessAccountsStorage {
     return result || undefined;
   }
 
+  async getBusinessAccount(id: string): Promise<BusinessAccount | undefined> {
+    const [result] = await db.select().from(businessAccounts).where(eq(businessAccounts.id, id));
+    return result || undefined;
+  }
+
   async updateBusinessAccount(id: string, updates: Partial<BusinessAccount>): Promise<BusinessAccount | undefined> {
     const [result] = await db.update(businessAccounts).set(updates).where(eq(businessAccounts.id, id)).returning();
     return result || undefined;

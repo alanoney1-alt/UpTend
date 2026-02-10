@@ -142,4 +142,72 @@ export class EsgStorage {
 
     return results[0] || { totalJobs: 0, totalCo2SavedLbs: 0, totalWaterSavedGallons: 0, avgEsgScore: 0 };
   }
+
+  async getAllServiceEsgMetrics(filters?: {
+    startDate?: string;
+    endDate?: string;
+    verificationStatus?: string;
+    serviceTypes?: string[];
+  }): Promise<ServiceEsgMetrics[]> {
+    let conditions = [];
+
+    if (filters?.startDate) {
+      conditions.push(sql`${serviceEsgMetrics.createdAt} >= ${filters.startDate}`);
+    }
+    if (filters?.endDate) {
+      conditions.push(sql`${serviceEsgMetrics.createdAt} <= ${filters.endDate}`);
+    }
+    if (filters?.verificationStatus) {
+      conditions.push(eq(serviceEsgMetrics.verificationStatus, filters.verificationStatus));
+    }
+    if (filters?.serviceTypes && filters.serviceTypes.length > 0) {
+      conditions.push(inArray(serviceEsgMetrics.serviceType, filters.serviceTypes));
+    }
+
+    if (conditions.length === 0) {
+      return db.select().from(serviceEsgMetrics).orderBy(desc(serviceEsgMetrics.createdAt));
+    }
+
+    return db.select().from(serviceEsgMetrics).where(and(...conditions)).orderBy(desc(serviceEsgMetrics.createdAt));
+  }
+
+  async getServiceEsgAggregateAll(filters?: {
+    startDate?: string;
+    endDate?: string;
+    verificationStatus?: string;
+  }): Promise<Array<{
+    serviceType: string;
+    totalJobs: number;
+    totalCo2SavedLbs: number;
+    totalWaterSavedGallons: number;
+    avgEsgScore: number;
+  }>> {
+    let conditions = [];
+
+    if (filters?.startDate) {
+      conditions.push(sql`${serviceEsgMetrics.createdAt} >= ${filters.startDate}`);
+    }
+    if (filters?.endDate) {
+      conditions.push(sql`${serviceEsgMetrics.createdAt} <= ${filters.endDate}`);
+    }
+    if (filters?.verificationStatus) {
+      conditions.push(eq(serviceEsgMetrics.verificationStatus, filters.verificationStatus));
+    }
+
+    const query = db
+      .select({
+        serviceType: serviceEsgMetrics.serviceType,
+        totalJobs: sql<number>`count(*)::int`,
+        totalCo2SavedLbs: sql<number>`coalesce(sum(${serviceEsgMetrics.totalCo2SavedLbs}), 0)`,
+        totalWaterSavedGallons: sql<number>`coalesce(sum(${serviceEsgMetrics.waterSavedGallons}), 0)`,
+        avgEsgScore: sql<number>`coalesce(avg(${serviceEsgMetrics.esgScore}), 0)`,
+      })
+      .from(serviceEsgMetrics);
+
+    if (conditions.length > 0) {
+      return query.where(and(...conditions)).groupBy(serviceEsgMetrics.serviceType);
+    }
+
+    return query.groupBy(serviceEsgMetrics.serviceType);
+  }
 }

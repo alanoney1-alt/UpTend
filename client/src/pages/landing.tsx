@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   ShieldCheck,
+  ClipboardCheck,
   ScanFace, TrendingUp, ChevronRight, Truck,
   Waves, ArrowUpFromLine, Package, Search, BrainCircuit,
   ArrowRight, Activity, Globe, Heart, Leaf,

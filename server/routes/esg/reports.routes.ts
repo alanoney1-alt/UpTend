@@ -55,9 +55,16 @@ router.get("/reports/scope3", async (req, res) => {
 // GET /api/esg/reports/csv
 // Download CSV export of ESG metrics
 // ==========================================
+const csvExportSchema = z.object({
+  businessAccountId: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  serviceType: z.string().optional(),
+});
+
 router.get("/reports/csv", async (req, res) => {
   try {
-    const { businessAccountId, startDate, endDate } = scope3Schema.parse(req.query);
+    const { businessAccountId, startDate, endDate, serviceType } = csvExportSchema.parse(req.query);
 
     // Verify access
     // @ts-ignore
@@ -67,26 +74,26 @@ router.get("/reports/csv", async (req, res) => {
       return res.status(403).json({ error: "Insufficient permissions to access ESG reports" });
     }
 
-    // Fetch all ESG metrics for the business (simplified - would need proper query)
-    // For now, return sample data
-    const metrics = [
-      {
-        serviceType: "pressure_washing",
-        createdAt: "2024-01-15",
-        totalCo2SavedLbs: 15.2,
-        totalCo2EmittedLbs: 1.6,
-        netCo2ImpactLbs: 13.6,
-        waterSavedGallons: 192,
-        energySavedKwh: 0,
-        esgScore: 87,
-        calculationMethod: "EPA WaterSense + EPA Wastewater Treatment Emissions",
-      },
-    ];
+    // Fetch ESG metrics with optional service type filter
+    const filters: any = {
+      startDate,
+      endDate,
+    };
+
+    if (serviceType) {
+      filters.serviceTypes = [serviceType];
+    }
+
+    const metrics = await storage.getAllServiceEsgMetrics(filters);
 
     const csv = esgReportGenerator.generateCsvExport(metrics);
 
+    const filename = serviceType
+      ? `esg-report-${businessAccountId}-${serviceType}.csv`
+      : `esg-report-${businessAccountId}.csv`;
+
     res.setHeader("Content-Type", "text/csv");
-    res.setHeader("Content-Disposition", `attachment; filename=esg-report-${businessAccountId}.csv`);
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
     res.send(csv);
   } catch (error: any) {
     console.error("Error generating CSV export:", error);
