@@ -48,11 +48,12 @@ import { PolishUpBooking, type PolishUpBookingDetails } from "@/components/booki
 import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
-  { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation },
+  { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
   { id: "junk_removal", label: "BulkSnap™ (Junk Removal)", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
   { id: "garage_cleanout", label: "GarageReset™ (Garage Cleanout)", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
   { id: "pressure_washing", label: "FreshWash™ (Pressure Washing)", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
   { id: "gutter_cleaning", label: "GutterFlush™ (Gutter Cleaning)", icon: Home, description: "Clean and flush gutters and downspouts", startingPrice: SERVICE_STARTING_PRICES.gutter_cleaning },
+  { id: "handyman", label: "FixIt™ (Handyman Services)", icon: Wrench, description: "Assembly, mounting, repairs, and installations", startingPrice: SERVICE_STARTING_PRICES.handyman },
   { id: "moving_labor", label: "LiftCrew™ (Moving Labor)", icon: Users, description: "Hourly help for loading, unloading, and rearranging", startingPrice: SERVICE_STARTING_PRICES.moving_labor },
   { id: "light_demolition", label: "TearDown™ (Light Demolition)", icon: Hammer, description: "Tear out cabinets, sheds, fencing, decks", startingPrice: SERVICE_STARTING_PRICES.light_demolition },
   { id: "home_cleaning", label: <>PolishUp<sup>™</sup> (Home Cleaning)</>, icon: Sparkles, description: "Professional home cleaning with room-by-room checklists", startingPrice: SERVICE_STARTING_PRICES.home_cleaning },
@@ -1240,8 +1241,8 @@ export default function Booking() {
                   <h2 className="text-xl font-semibold mb-2">Select Service Type</h2>
                   <p className="text-muted-foreground mb-6">What do you need help with today?</p>
 
-                  <RadioGroup 
-                    value={formData.serviceType} 
+                  <RadioGroup
+                    value={formData.serviceType}
                     onValueChange={(val) => {
                       setFormData(prev => ({
                         ...prev,
@@ -1262,29 +1263,65 @@ export default function Booking() {
                       setMediaMode("photo");
                       setAiSuggestion(null);
                     }}
-                    className="grid sm:grid-cols-2 md:grid-cols-3 gap-4"
+                    className="space-y-6"
                   >
-                    {serviceTypes.map((service) => (
+                    {/* Featured: DwellScan */}
+                    {serviceTypes.filter(s => s.featured).map((service) => (
                       <label
                         key={service.id}
-                        className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all hover-elevate ${
+                        className={`flex items-center gap-4 p-5 rounded-lg border-2 cursor-pointer transition-all hover-elevate bg-gradient-to-br from-primary/10 to-primary/5 ${
                           formData.serviceType === service.id
-                            ? "border-primary bg-primary/5"
-                            : "border-border"
+                            ? "border-primary ring-2 ring-primary/20"
+                            : "border-primary/50"
                         }`}
                         data-testid={`radio-service-${service.id}`}
                       >
                         <RadioGroupItem value={service.id} className="shrink-0" />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <Badge className="bg-primary text-primary-foreground text-xs">Featured - Our Moat</Badge>
+                          </div>
+                          <div className="flex items-center gap-2 mb-1 mt-2 flex-wrap">
                             <service.icon className="w-5 h-5 text-primary" />
-                            <span className="font-medium">{service.label}</span>
+                            <span className="font-semibold">{service.label}</span>
                           </div>
                           <p className="text-sm text-muted-foreground">{service.description}</p>
                           <p className="text-xs text-primary font-medium mt-1">From ${service.startingPrice}</p>
                         </div>
                       </label>
                     ))}
+
+                    {/* Separator */}
+                    <div className="flex items-center gap-3 py-2">
+                      <div className="h-px bg-border flex-1"></div>
+                      <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">All Services</span>
+                      <div className="h-px bg-border flex-1"></div>
+                    </div>
+
+                    {/* All Other Services */}
+                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                      {serviceTypes.filter(s => !s.featured).map((service) => (
+                        <label
+                          key={service.id}
+                          className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all hover-elevate ${
+                            formData.serviceType === service.id
+                              ? "border-primary bg-primary/5"
+                              : "border-border"
+                          }`}
+                          data-testid={`radio-service-${service.id}`}
+                        >
+                          <RadioGroupItem value={service.id} className="shrink-0" />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                              <service.icon className="w-5 h-5 text-primary" />
+                              <span className="font-medium">{service.label}</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{service.description}</p>
+                            <p className="text-xs text-primary font-medium mt-1">From ${service.startingPrice}</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
                   </RadioGroup>
 
                   {formData.serviceType === "truck_unloading" && (

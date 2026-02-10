@@ -1004,49 +1004,81 @@ export function FloridaEstimator() {
           </Card>
         )}
 
+        {/* Featured: DwellScan - Separated at top */}
+        {pricingServices.filter(s => s.featured).map((service) => (
+          <div
+            key={service.id}
+            className="mb-6 p-6 rounded-lg border-2 border-primary bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl"
+            data-testid={`card-service-${service.id}`}
+          >
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-lg bg-primary/20">
+                <service.icon className="w-8 h-8 text-primary" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div>
+                    <Badge className="mb-2 bg-primary">Featured - Our Moat</Badge>
+                    <h3 className="text-xl font-bold">{service.name}</h3>
+                    <p className="text-lg font-semibold text-primary mt-1">{service.price}</p>
+                  </div>
+                </div>
+                <p className="text-sm mb-2 text-muted-foreground">{service.description}</p>
+                <p className="text-xs text-primary font-medium">✓ {service.benefit}</p>
+                <Button
+                  onClick={() => handleServiceSelect(service.id)}
+                  className="mt-4 w-full"
+                  size="lg"
+                >
+                  Select DwellScan™ <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        <div className="mb-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="h-px flex-1 bg-border"></div>
+            <span className="text-sm text-muted-foreground font-medium">All Services</span>
+            <div className="h-px flex-1 bg-border"></div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {pricingServices.map((service) => (
+          {pricingServices.filter(s => !s.featured).map((service) => (
             <div
               key={service.id}
-              className={`p-4 md:p-5 rounded-md border transition-all flex flex-col items-start justify-between gap-3 ${
-                service.featured
-                  ? "bg-[#3B1D5A] text-white border-[#3B1D5A]/80 shadow-xl"
-                  : "bg-card border-border"
-              }`}
+              className="p-4 md:p-5 rounded-md border transition-all flex flex-col items-start justify-between gap-3 bg-card border-border hover:border-primary cursor-pointer"
               data-testid={`card-service-${service.id}`}
+              onClick={() => handleServiceSelect(service.id)}
             >
               <div className="flex items-start gap-3 flex-1">
-                <div className={`p-2 rounded-md shrink-0 ${service.featured ? "bg-white/10" : "bg-muted"}`}>
-                  <service.icon className={`w-4 h-4 ${service.featured ? "text-primary" : "text-primary"}`} />
+                <div className="p-2 rounded-md shrink-0 bg-muted">
+                  <service.icon className="w-4 h-4 text-primary" />
                 </div>
                 <div className="text-left min-w-0">
                   <h4 className="font-black text-sm md:text-base" data-testid={`text-service-name-${service.id}`}>{service.name}</h4>
-                  <p className={`text-xs mt-0.5 ${service.featured ? "text-slate-300" : "text-muted-foreground"}`}>
+                  <p className="text-xs mt-0.5 text-muted-foreground">
                     {service.description}
                   </p>
-                  <p className={`text-[9px] font-bold uppercase tracking-widest mt-1 ${
-                    service.featured ? "text-primary" : "text-primary"
-                  }`}>
+                  <p className="text-[9px] font-bold uppercase tracking-widest mt-1 text-primary">
                     {service.benefit}
                   </p>
                 </div>
               </div>
 
-              <div className={`flex items-center justify-between gap-3 w-full border-t pt-3 ${service.featured ? "border-white/20" : "border-border"}`}>
+              <div className="flex items-center justify-between gap-3 w-full border-t pt-3 border-border">
                 <div className="text-left">
-                  <span className={`block text-[10px] font-bold uppercase ${service.featured ? "opacity-60" : "text-muted-foreground"}`}>
+                  <span className="block text-[10px] font-bold uppercase text-muted-foreground">
                     {t("estimator.investment")}
                   </span>
                   <span className="text-xl md:text-2xl font-black" data-testid={`text-service-price-${service.id}`}>{service.price}</span>
                 </div>
                 <Button
-                  onClick={() => handleServiceSelect(service.id)}
+                  onClick={(e) => { e.stopPropagation(); handleServiceSelect(service.id); }}
                   size="sm"
-                  className={`font-bold ${
-                    service.featured
-                      ? "bg-primary text-primary-foreground"
-                      : ""
-                  }`}
+                  className="font-bold"
                   data-testid={`button-book-${service.id}`}
                 >
                   {t("common.get_quote")} <ArrowRight className="ml-2 w-4 h-4" />

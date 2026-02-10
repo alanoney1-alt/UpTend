@@ -330,6 +330,15 @@ function WhySection() {
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
 
+  const featuredService = {
+    key: "home_consultation",
+    label: "DwellScan™ (Home Audit)",
+    price: "$49 / $149",
+    icon: ClipboardCheck,
+    color: "text-primary dark:text-primary",
+    description: "Complete home documentation: Standard ($49) interior walkthrough or Aerial ($149) with drone footage. $49 reimbursed on your first service booking."
+  };
+
   const services = [
     { key: "junk_removal", label: "BulkSnap™ (Junk Removal)", price: "From $99", icon: Truck, color: "text-primary dark:text-orange-400" },
     { key: "pressure_washing", label: "FreshWash™ (Pressure Washing)", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
@@ -400,11 +409,32 @@ function WhySection() {
 
           </div>
 
-          <div className="flex-1 w-full">
+          <div className="flex-1 w-full space-y-6">
+            {/* Featured: DwellScan */}
+            <Card className="shadow-xl border-2 border-primary">
+              <CardContent className="p-6 bg-gradient-to-br from-primary/10 to-primary/5">
+                <Badge className="mb-3 bg-primary">Featured - Our Moat</Badge>
+                <div
+                  className="flex items-start gap-4 cursor-pointer"
+                  onClick={() => setLocation(`/book?service=${featuredService.key}`)}
+                  data-testid={`service-${featuredService.key}`}
+                >
+                  <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center shrink-0">
+                    <featuredService.icon className={`w-6 h-6 ${featuredService.color}`} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-lg mb-1">{featuredService.label}</p>
+                    <p className="text-sm text-muted-foreground mb-2">{featuredService.description}</p>
+                    <p className="text-primary font-bold">{featuredService.price}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="shadow-lg" data-testid="card-services-grid">
               <CardContent className="p-8">
                 <h3 className="font-bold text-muted-foreground uppercase text-xs tracking-wider mb-6">
-                  {t("why.why_essential_5")}
+                  All Services
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {services.map((svc) => (
@@ -423,20 +453,6 @@ function WhySection() {
                       </div>
                     </div>
                   ))}
-                </div>
-
-                <div
-                  className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800 flex items-center justify-between gap-4 cursor-pointer hover-elevate"
-                  onClick={() => setLocation("/book?service=home_consultation")}
-                  data-testid="service-home_consultation"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-200 dark:bg-green-800 rounded-full flex items-center justify-center">
-                      <Search className="w-4 h-4 text-green-700 dark:text-green-300" />
-                    </div>
-                    <span className="font-bold text-green-900 dark:text-green-200">{t("why.why_home_health_audit")}</span>
-                  </div>
-                  <span className="font-bold text-green-700 dark:text-green-300">$49.00</span>
                 </div>
               </CardContent>
             </Card>

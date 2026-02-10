@@ -205,20 +205,77 @@ export default function Services() {
       </section>
 
       <section className="py-20 max-w-7xl mx-auto px-6" data-testid="section-services-grid">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {services.map((svc) => (
+        {/* Featured: DwellScan - Separated at top */}
+        {services.filter(s => s.featured).map((svc) => (
+          <div key={svc.id} className="mb-8">
             <Card
-              key={svc.id}
-              className={`relative overflow-visible flex flex-col ${svc.featured ? "ring-2 ring-primary/30" : ""}`}
+              className="shadow-xl border-2 border-primary overflow-visible"
               data-testid={`card-service-${svc.id}`}
             >
-              {svc.featured && (
-                <div className="absolute -top-3 left-6" data-testid={`badge-featured-${svc.id}`}>
-                  <Badge variant="default" data-testid={`text-featured-${svc.id}`}>
-                    $49 Credited to Any Service
-                  </Badge>
+              <CardContent className="p-8 bg-gradient-to-br from-primary/10 to-primary/5">
+                <Badge className="mb-4 bg-primary text-primary-foreground" data-testid={`badge-featured-${svc.id}`}>
+                  Featured - Our Moat
+                </Badge>
+
+                <div className="flex items-start gap-6 mb-6">
+                  <div className="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center shrink-0" data-testid={`icon-service-${svc.id}`}>
+                    <svc.icon className="w-8 h-8 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl font-bold mb-2" data-testid={`text-service-name-${svc.id}`}>{svc.name}</h3>
+                    <p className="text-base font-semibold text-muted-foreground mb-2" data-testid={`text-service-tagline-${svc.id}`}>{svc.tagline}</p>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-3xl font-black text-primary" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
+                      <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                        Credited to Any Service
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
-              )}
+
+                <p className="text-foreground text-base leading-relaxed mb-6" data-testid={`text-service-desc-${svc.id}`}>
+                  {svc.description}
+                </p>
+
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6" data-testid={`list-service-includes-${svc.id}`}>
+                  {svc.includes.map((item, idx) => (
+                    <li key={item} className="flex items-start gap-2 text-sm" data-testid={`text-include-${svc.id}-${idx}`}>
+                      <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <span className="font-medium">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Button
+                  size="lg"
+                  className="w-full md:w-auto"
+                  onClick={() => setLocation("link" in svc && svc.link ? svc.link : `/book?service=${svc.id}`)}
+                  data-testid={`button-book-service-${svc.id}`}
+                >
+                  {"link" in svc && svc.link ? "Learn More" : "Get a Quote"} <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+
+        {/* Separator */}
+        <div className="mb-6 mt-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-px bg-border flex-1"></div>
+            <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">All Services</span>
+            <div className="h-px bg-border flex-1"></div>
+          </div>
+        </div>
+
+        {/* All Other Services */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {services.filter(s => !s.featured).map((svc) => (
+            <Card
+              key={svc.id}
+              className="relative overflow-visible flex flex-col"
+              data-testid={`card-service-${svc.id}`}
+            >
               <CardContent className="p-8 flex flex-col flex-1">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0" data-testid={`icon-service-${svc.id}`}>
