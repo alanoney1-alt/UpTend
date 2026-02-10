@@ -444,15 +444,16 @@ export default function PyckerSignup() {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
-              <Truck className="w-6 h-6" />
-            </div>
-            <span className="text-xl font-bold">UpTend</span>
+            <img
+              src="/uptend-logo.svg"
+              alt="UpTend Logo"
+              className="h-8 w-auto"
+            />
           </Link>
-          <Link href="/drive">
+          <Link href="/">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Drive
+              Back to Home
             </Button>
           </Link>
         </div>
