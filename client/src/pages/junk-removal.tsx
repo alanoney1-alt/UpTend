@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "What about liability for property damage?",
-    a: "Every job starts with a 360\u00B0 Video Manifest documenting your space before we touch anything. All Pros carry $1M liability coverage, and the video record protects both parties.",
+    a: "Every job starts with a 360\u00B0 Video Documentation documenting your space before we touch anything. All Pros carry $1M liability coverage, and the video record protects both parties.",
   },
   {
     q: "Do you handle hazardous materials?",
@@ -80,7 +80,7 @@ export default function JunkRemoval() {
             </div>
             <div className="flex items-center gap-2">
               <Video className="w-4 h-4 text-green-400" />
-              <span>360\u00B0 Video Manifest</span>
+              <span>360\u00B0 Video Documentation</span>
             </div>
             <div className="flex items-center gap-2">
               <Recycle className="w-4 h-4 text-green-400" />
@@ -109,7 +109,7 @@ export default function JunkRemoval() {
             </div>
             <h3 className="text-xl font-bold mb-3">Protect Your Space</h3>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Clutter devalues your home. Our Pros perform a <strong className="text-foreground">360\u00B0 Video Manifest</strong> before
+              Clutter devalues your home. Our Pros perform a <strong className="text-foreground">360\u00B0 Video Documentation</strong> before
               touching a single item, ensuring your walls and floors are shielded from liability.
             </p>
           </Card>
@@ -206,7 +206,7 @@ export default function JunkRemoval() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { icon: Video, text: "360\u00B0 Video Manifest before loading begins" },
+              { icon: Video, text: "360\u00B0 Video Documentation before loading begins" },
               { icon: Truck, text: "Heavy lifting included \u2014 we do all the work" },
               { icon: Recycle, text: "Circular economy sorting: donate, recycle, dispose" },
               { icon: Leaf, text: "Verified Impact Report with material diversion data" },
