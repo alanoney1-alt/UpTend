@@ -128,7 +128,7 @@ export default function HomeAudit() {
                 <Video className="text-primary dark:text-orange-400 w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-bold" data-testid="text-feature-video-manifest">360\u00B0 Video Manifest</h4>
+                <h4 className="font-bold" data-testid="text-feature-video-manifest">360\u00B0 Video Documentation</h4>
                 <p className="text-sm text-muted-foreground">A high-definition visual record of every room, serial number, and finish.</p>
               </div>
             </div>
