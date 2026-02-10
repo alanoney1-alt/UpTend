@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
+import { Logo } from "@/components/ui/logo";
 import {
   Select,
   SelectContent,
@@ -443,12 +444,8 @@ export default function PyckerSignup() {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <img
-              src="/uptend-logo.svg"
-              alt="UpTend Logo"
-              className="h-8 w-auto"
-            />
+          <Link href="/">
+            <Logo className="w-8 h-8" textClassName="text-xl" />
           </Link>
           <Link href="/">
             <Button variant="ghost" size="sm">
