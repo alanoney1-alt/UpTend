@@ -103,7 +103,7 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
         // Validate that this is a customer account
         const fullUser = await storage.getUser(user.userId);
         if (fullUser?.role !== "customer") {
-          return res.status(401).json({ error: "Please use the PYCKER login portal" });
+          return res.status(401).json({ error: "Please use the Pro login portal" });
         }
 
         req.login(user, (loginErr) => {
