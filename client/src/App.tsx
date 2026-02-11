@@ -79,11 +79,20 @@ function Router() {
       <Route path="/pros" component={HaulerLanding} />
       <Route path="/tracking" component={TrackingLookup} />
       <Route path="/track/:jobId" component={Tracking} />
+      {/* Pro routes (new terminology) */}
+      <Route path="/pro/dashboard" component={HaulerDashboard} />
+      <Route path="/pro/earnings" component={EarningsPage} />
+      {/* Legacy hauler routes for backward compatibility */}
       <Route path="/hauler/dashboard" component={HaulerDashboard} />
+      <Route path="/hauler/earnings" component={EarningsPage} />
       <Route path="/business" component={BusinessDashboard} />
       <Route path="/rewards" component={Loyalty} />
       <Route path="/loyalty" component={Loyalty} />
       <Route path="/ref/:code" component={ReferralLanding} />
+      {/* Pro signup/login routes (new terminology) */}
+      <Route path="/pro/signup" component={PyckerSignup} />
+      <Route path="/pro/login" component={AuthPage} />
+      {/* Legacy pycker routes for backward compatibility */}
       <Route path="/pycker/signup" component={PyckerSignup} />
       <Route path="/pycker-signup" component={PyckerSignup} />
       <Route path="/become-a-pycker" component={PyckerSignup} />
@@ -120,7 +129,6 @@ function Router() {
       <Route path="/subscriptions" component={CustomerSubscriptions} />
       <Route path="/admin/god-mode" component={GodMode} />
       <Route path="/settings" component={ProfileSettings} />
-      <Route path="/hauler/earnings" component={EarningsPage} />
       <Route path="/pricing" component={PublicPricing} />
       <Route path="/become-pro" component={BecomePro} />
       <Route path="/academy-syllabus" component={AcademySyllabus} />

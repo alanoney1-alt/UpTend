@@ -87,7 +87,7 @@ export function Header() {
           ) : isAuthenticated && user ? (
             <div className="flex items-center gap-2">
               {user.role === "hauler" && (
-                <Link href="/hauler/dashboard">
+                <Link href="/pro/dashboard">
                   <Button variant="ghost" className="text-slate-300" data-testid="button-dashboard">
                     {t("nav.dashboard")}
                   </Button>
@@ -208,7 +208,7 @@ export function Header() {
                   </div>
                 </Link>
                 {user.role === "hauler" && (
-                  <Link href="/hauler/dashboard" onClick={closeMenu}>
+                  <Link href="/pro/dashboard" onClick={closeMenu}>
                     <Button variant="outline" className="w-full border-slate-600 text-slate-300" data-testid="button-dashboard-mobile">
                       {t("nav.dashboard")}
                     </Button>

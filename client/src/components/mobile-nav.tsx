@@ -18,7 +18,7 @@ const customerNavItems: NavItem[] = [
 
 const pyckerNavItems: NavItem[] = [
   { path: "/", label: "Home", icon: Home },
-  { path: "/hauler/dashboard", label: "Dashboard", icon: Truck },
+  { path: "/pro/dashboard", label: "Dashboard", icon: Truck },
   { path: "/profile", label: "Profile", icon: User },
 ];
 

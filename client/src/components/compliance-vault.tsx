@@ -46,7 +46,7 @@ interface TaxSummary {
 }
 
 interface ComplianceVaultProps {
-  haulerId: string;
+  proId: string;
 }
 
 const receiptTypes = [
@@ -58,7 +58,7 @@ const receiptTypes = [
   { value: "other", label: "Other" },
 ];
 
-export function ComplianceVault({ haulerId }: ComplianceVaultProps) {
+export function ComplianceVault({ proId }: ComplianceVaultProps) {
   const queryClient = useQueryClient();
   const currentYear = new Date().getFullYear();
   const [showReceiptForm, setShowReceiptForm] = useState(false);
@@ -78,24 +78,24 @@ export function ComplianceVault({ haulerId }: ComplianceVaultProps) {
   });
 
   const { data: receipts = [], isLoading: loadingReceipts } = useQuery<ComplianceReceipt[]>({
-    queryKey: ["/api/compliance/receipts", haulerId],
-    queryFn: () => fetch(`/api/compliance/receipts/${haulerId}`, { credentials: "include" }).then(r => r.json()),
+    queryKey: ["/api/compliance/receipts", proId],
+    queryFn: () => fetch(`/api/compliance/receipts/${proId}`, { credentials: "include" }).then(r => r.json()),
   });
 
   const { data: mileageLogs = [], isLoading: loadingMileage } = useQuery<MileageLog[]>({
-    queryKey: ["/api/compliance/mileage", haulerId],
-    queryFn: () => fetch(`/api/compliance/mileage/${haulerId}`, { credentials: "include" }).then(r => r.json()),
+    queryKey: ["/api/compliance/mileage", proId],
+    queryFn: () => fetch(`/api/compliance/mileage/${proId}`, { credentials: "include" }).then(r => r.json()),
   });
 
   const { data: taxSummary } = useQuery<TaxSummary>({
-    queryKey: ["/api/compliance/tax-summary", haulerId, currentYear],
-    queryFn: () => fetch(`/api/compliance/tax-summary/${haulerId}?year=${currentYear}`, { credentials: "include" }).then(r => r.json()),
+    queryKey: ["/api/compliance/tax-summary", proId, currentYear],
+    queryFn: () => fetch(`/api/compliance/tax-summary/${proId}?year=${currentYear}`, { credentials: "include" }).then(r => r.json()),
   });
 
   const addReceiptMutation = useMutation({
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/compliance/receipts", {
-        haulerId,
+        proId,
         receiptType: receiptForm.receiptType,
         vendorName: receiptForm.vendorName,
         amount: parseFloat(receiptForm.amount),
@@ -104,8 +104,8 @@ export function ComplianceVault({ haulerId }: ComplianceVaultProps) {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/compliance/receipts", haulerId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/compliance/tax-summary", haulerId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/receipts", proId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/tax-summary", proId] });
       setShowReceiptForm(false);
       setReceiptForm({ receiptType: "fuel", vendorName: "", amount: "", receiptDate: new Date().toISOString().split("T")[0] });
     },
@@ -114,7 +114,7 @@ export function ComplianceVault({ haulerId }: ComplianceVaultProps) {
   const addMileageMutation = useMutation({
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/compliance/mileage", {
-        haulerId,
+        proId,
         startAddress: mileageForm.startAddress,
         endAddress: mileageForm.endAddress,
         distanceMiles: parseFloat(mileageForm.distanceMiles),
@@ -124,8 +124,8 @@ export function ComplianceVault({ haulerId }: ComplianceVaultProps) {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/compliance/mileage", haulerId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/compliance/tax-summary", haulerId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/mileage", proId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/tax-summary", proId] });
       setShowMileageForm(false);
       setMileageForm({ startAddress: "", endAddress: "", distanceMiles: "", purpose: "business", tripDate: new Date().toISOString().split("T")[0] });
     },

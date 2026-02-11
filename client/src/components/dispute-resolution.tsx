@@ -27,13 +27,13 @@ interface Dispute {
 interface DisputeFormProps {
   serviceRequestId: string;
   customerId: string;
-  haulerId: string;
+  proId: string;
   photosBefore?: string[];
   photosAfter?: string[];
   onDisputeCreated?: (dispute: Dispute) => void;
 }
 
-export function DisputeForm({ serviceRequestId, customerId, haulerId, photosBefore, photosAfter, onDisputeCreated }: DisputeFormProps) {
+export function DisputeForm({ serviceRequestId, customerId, proId, photosBefore, photosAfter, onDisputeCreated }: DisputeFormProps) {
   const [reason, setReason] = useState("");
   const [description, setDescription] = useState("");
 
@@ -41,7 +41,7 @@ export function DisputeForm({ serviceRequestId, customerId, haulerId, photosBefo
     mutationFn: () => apiRequest("POST", "/api/disputes", {
       serviceRequestId,
       customerId,
-      haulerId,
+      proId,
       reason,
       description,
       photosBefore: photosBefore || [],
@@ -153,7 +153,7 @@ export function DisputeDetail({ disputeId, isAdmin }: DisputeDetailProps) {
 
   const recommendationLabels: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
     customer_favor: { label: "Customer Likely Right", icon: <ThumbsUp className="h-4 w-4" />, color: "text-green-400" },
-    pycker_favor: { label: "Pro Likely Right", icon: <ThumbsDown className="h-4 w-4" />, color: "text-blue-400" },
+    pro_favor: { label: "Pro Likely Right", icon: <ThumbsDown className="h-4 w-4" />, color: "text-blue-400" },
     needs_review: { label: "Needs Manual Review", icon: <Scale className="h-4 w-4" />, color: "text-yellow-400" },
   };
 

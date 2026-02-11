@@ -2,12 +2,12 @@ import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PyckerSwiper } from "./pycker-swiper";
+import { ProSwiper } from "./pycker-swiper";
 import { QuickMatch } from "./quick-match";
 import { ShortlistReview } from "./shortlist-review";
-import { PyckerMap } from "@/components/pycker-map";
-import { 
-  Zap, 
+import { ProMap } from "@/components/pycker-map";
+import {
+  Zap,
   Search,
   X,
   MapPin,
@@ -16,7 +16,7 @@ import {
   Map
 } from "lucide-react";
 
-interface Pycker {
+interface Pro {
   id: string;
   profileId?: string;
   name: string;
@@ -39,6 +39,9 @@ interface Pycker {
   eta?: number;
 }
 
+// Legacy type alias for backward compatibility
+type Pycker = Pro;
+
 interface JobDetails {
   serviceType?: string;
   address?: string;
@@ -47,27 +50,27 @@ interface JobDetails {
 }
 
 interface MatchingFlowProps {
-  availablePyckers: Pycker[];
+  availablePros: Pro[];
   jobDetails: JobDetails;
-  onPyckerSelected: (pycker: Pycker) => void;
+  onProSelected: (pro: Pro) => void;
   onCancel?: () => void;
   customerLocation?: { lat: number; lng: number } | null;
 }
 
 type MatchingStep = "choice" | "quickmatch" | "browse" | "shortlist" | "mapview";
 
-export function MatchingFlow({ 
-  availablePyckers, 
-  jobDetails, 
-  onPyckerSelected, 
+export function MatchingFlow({
+  availablePros,
+  jobDetails,
+  onProSelected,
   onCancel,
   customerLocation
 }: MatchingFlowProps) {
   const [currentStep, setCurrentStep] = useState<MatchingStep>("choice");
-  const [shortlist, setShortlist] = useState<Pycker[]>([]);
+  const [shortlist, setShortlist] = useState<Pro[]>([]);
 
-  const mapPyckers = useMemo(() => {
-    return availablePyckers
+  const mapPros = useMemo(() => {
+    return availablePros
       .filter(p => p.location)
       .map(p => ({
         id: p.profileId || p.id,
@@ -83,19 +86,19 @@ export function MatchingFlow({
         isVerifiedPro: p.verified,
         userId: p.id,
       }));
-  }, [availablePyckers]);
+  }, [availablePros]);
 
-  const handleMapPyckerSelect = (mapPycker: any) => {
-    const pycker = availablePyckers.find(p => (p.profileId || p.id) === mapPycker.id || p.id === mapPycker.userId);
-    if (pycker) {
-      onPyckerSelected(pycker);
+  const handleMapProSelect = (mapPro: any) => {
+    const pro = availablePros.find(p => (p.profileId || p.id) === mapPro.id || p.id === mapPro.userId);
+    if (pro) {
+      onProSelected(pro);
     }
   };
 
-  const getRecommendedPyckers = useMemo(() => {
-    return [...availablePyckers]
+  const getRecommendedPros = useMemo(() => {
+    return [...availablePros]
       .sort((a, b) => {
-        // Prioritize available pyckers
+        // Prioritize available pros
         if (a.available !== b.available) return a.available ? -1 : 1;
         // Then verified
         if (a.verified !== b.verified) return a.verified ? -1 : 1;
@@ -105,15 +108,15 @@ export function MatchingFlow({
         return a.distance - b.distance;
       })
       .slice(0, 3);
-  }, [availablePyckers]);
+  }, [availablePros]);
 
-  const handleSwipeComplete = (swiped: Pycker[]) => {
+  const handleSwipeComplete = (swiped: Pro[]) => {
     setShortlist(swiped);
     setCurrentStep("shortlist");
   };
 
-  const handleSelectPycker = (pycker: Pycker) => {
-    onPyckerSelected(pycker);
+  const handleSelectPro = (pro: Pro) => {
+    onProSelected(pro);
   };
 
   return (
@@ -123,9 +126,9 @@ export function MatchingFlow({
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg">Find Your Pro</CardTitle>
             {onCancel && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={onCancel}
                 data-testid="button-cancel-matching"
               >
@@ -133,7 +136,7 @@ export function MatchingFlow({
               </Button>
             )}
           </div>
-          
+
           {jobDetails && (
             <div className="flex flex-wrap gap-2 mt-2">
               {jobDetails.serviceType && (
@@ -164,7 +167,7 @@ export function MatchingFlow({
         </CardHeader>
 
         <CardContent className="pt-4">
-          {availablePyckers.length === 0 ? (
+          {availablePros.length === 0 ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-muted-foreground" />
@@ -184,12 +187,12 @@ export function MatchingFlow({
               <div className="text-center py-4">
                 <h2 className="text-xl font-semibold mb-2">How would you like to find a Pro?</h2>
                 <p className="text-muted-foreground text-sm">
-                  {availablePyckers.length} Pro{availablePyckers.length !== 1 ? "s" : ""} available for your job
+                  {availablePros.length} Pro{availablePros.length !== 1 ? "s" : ""} available for your job
                 </p>
               </div>
 
               <div className="grid gap-4">
-                <Card 
+                <Card
                   className="cursor-pointer transition-all border-2 border-primary/50 bg-primary/5"
                   onClick={() => setCurrentStep("quickmatch")}
                   data-testid="card-choose-quickmatch"
@@ -210,7 +213,7 @@ export function MatchingFlow({
                   </CardContent>
                 </Card>
 
-                <Card 
+                <Card
                   className="cursor-pointer transition-all border-2 border-secondary/30"
                   onClick={() => setCurrentStep("browse")}
                   data-testid="card-choose-browse"
@@ -230,8 +233,8 @@ export function MatchingFlow({
                   </CardContent>
                 </Card>
 
-                {customerLocation && mapPyckers.length > 0 && (
-                  <Card 
+                {customerLocation && mapPros.length > 0 && (
+                  <Card
                     className="cursor-pointer transition-all border-2 border-green-500/30"
                     onClick={() => setCurrentStep("mapview")}
                     data-testid="card-choose-mapview"
@@ -260,16 +263,16 @@ export function MatchingFlow({
 
           {currentStep === "quickmatch" && (
             <QuickMatch
-              recommendedPyckers={getRecommendedPyckers}
-              onSelectPycker={handleSelectPycker}
+              recommendedPros={getRecommendedPros}
+              onSelectPro={handleSelectPro}
               onBrowseAll={() => setCurrentStep("browse")}
               onBack={() => setCurrentStep("choice")}
             />
           )}
 
           {currentStep === "browse" && (
-            <PyckerSwiper
-              availablePyckers={availablePyckers}
+            <ProSwiper
+              availablePros={availablePros}
               onComplete={handleSwipeComplete}
               onSkip={() => setCurrentStep("quickmatch")}
             />
@@ -278,7 +281,7 @@ export function MatchingFlow({
           {currentStep === "shortlist" && (
             <ShortlistReview
               shortlist={shortlist}
-              onSelectPycker={handleSelectPycker}
+              onSelectPro={handleSelectPro}
               onBack={() => setCurrentStep("browse")}
             />
           )}
@@ -286,8 +289,8 @@ export function MatchingFlow({
           {currentStep === "mapview" && customerLocation && (
             <div className="space-y-4" data-testid="matching-mapview">
               <div className="flex items-center justify-between">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   onClick={() => setCurrentStep("choice")}
                   data-testid="button-back-from-map"
@@ -295,18 +298,18 @@ export function MatchingFlow({
                   Back to options
                 </Button>
                 <Badge variant="secondary">
-                  {mapPyckers.length} Pro{mapPyckers.length !== 1 ? "s" : ""} visible
+                  {mapPros.length} Pro{mapPros.length !== 1 ? "s" : ""} visible
                 </Badge>
               </div>
-              
-              <PyckerMap
+
+              <ProMap
                 customerLocation={customerLocation}
-                pyckers={mapPyckers}
-                onPyckerSelect={handleMapPyckerSelect}
+                pros={mapPros}
+                onProSelect={handleMapProSelect}
                 height="400px"
                 radiusMiles={25}
               />
-              
+
               <p className="text-sm text-muted-foreground text-center">
                 Tap a Pro on the map to select them
               </p>
@@ -318,4 +321,7 @@ export function MatchingFlow({
   );
 }
 
-export { PyckerSwiper, QuickMatch, ShortlistReview };
+export { ProSwiper, QuickMatch, ShortlistReview };
+
+// Legacy export aliases for backward compatibility
+export const PyckerSwiper = ProSwiper;

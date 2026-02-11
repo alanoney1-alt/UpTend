@@ -2,17 +2,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Star, 
-  MapPin, 
-  Shield, 
+import {
+  Star,
+  MapPin,
+  Shield,
   Zap,
   ChevronRight,
   Sparkles,
   Truck
 } from "lucide-react";
 
-interface Pycker {
+interface Pro {
   id: string;
   name: string;
   photo?: string;
@@ -28,14 +28,17 @@ interface Pycker {
   vehicleType?: string;
 }
 
+// Legacy type alias for backward compatibility
+type Pycker = Pro;
+
 interface QuickMatchProps {
-  recommendedPyckers: Pycker[];
-  onSelectPycker: (pycker: Pycker) => void;
+  recommendedPros: Pro[];
+  onSelectPro: (pro: Pro) => void;
   onBrowseAll: () => void;
   onBack: () => void;
 }
 
-export function QuickMatch({ recommendedPyckers, onSelectPycker, onBrowseAll, onBack }: QuickMatchProps) {
+export function QuickMatch({ recommendedPros, onSelectPro, onBrowseAll, onBack }: QuickMatchProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -49,20 +52,20 @@ export function QuickMatch({ recommendedPyckers, onSelectPycker, onBrowseAll, on
       </div>
 
       <div className="space-y-3">
-        {recommendedPyckers.map((pycker, index) => (
-          <Card 
-            key={pycker.id}
+        {recommendedPros.map((pro, index) => (
+          <Card
+            key={pro.id}
             className="overflow-hidden cursor-pointer transition-all border-muted-foreground/20"
-            onClick={() => onSelectPycker(pycker)}
-            data-testid={`card-quickmatch-pycker-${pycker.id}`}
+            onClick={() => onSelectPro(pro)}
+            data-testid={`card-quickmatch-pycker-${pro.id}`}
           >
             <CardContent className="p-4">
               <div className="flex items-start gap-4">
                 <div className="relative">
                   <Avatar className="w-16 h-16 border-2 border-primary">
-                    <AvatarImage src={pycker.photo} alt={pycker.name} />
+                    <AvatarImage src={pro.photo} alt={pro.name} />
                     <AvatarFallback className="bg-primary text-primary-foreground text-lg">
-                      {pycker.name.split(" ").map((n) => n[0]).join("")}
+                      {pro.name.split(" ").map((n) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div className="absolute -top-1 -left-1 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
@@ -72,8 +75,8 @@ export function QuickMatch({ recommendedPyckers, onSelectPycker, onBrowseAll, on
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold truncate">{pycker.name}</h3>
-                    {pycker.verified && (
+                    <h3 className="font-semibold truncate">{pro.name}</h3>
+                    {pro.verified && (
                       <Badge variant="secondary" className="text-xs shrink-0">
                         <Shield className="w-3 h-3 mr-0.5" />
                         Pro
@@ -84,35 +87,35 @@ export function QuickMatch({ recommendedPyckers, onSelectPycker, onBrowseAll, on
                   <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
                     <div className="flex items-center">
                       <Star className="w-4 h-4 text-yellow-500 mr-0.5" />
-                      {pycker.rating.toFixed(1)}
+                      {pro.rating.toFixed(1)}
                     </div>
-                    <span>{pycker.completedJobs} jobs</span>
+                    <span>{pro.completedJobs} jobs</span>
                     <div className="flex items-center">
                       <MapPin className="w-3 h-3 mr-0.5" />
-                      {pycker.distance} mi
+                      {pro.distance} mi
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 flex-wrap">
-                    {pycker.available && (
+                    {pro.available && (
                       <Badge className="bg-primary text-xs">
                         <Zap className="w-3 h-3 mr-0.5" />
                         Available Now
                       </Badge>
                     )}
-                    {pycker.vehicleType && (
+                    {pro.vehicleType && (
                       <Badge variant="outline" className="text-xs">
                         <Truck className="w-3 h-3 mr-0.5" />
-                        {pycker.vehicleType}
+                        {pro.vehicleType}
                       </Badge>
                     )}
                   </div>
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
-                  {pycker.hourlyRate && (
+                  {pro.hourlyRate && (
                     <span className="text-lg font-bold text-primary">
-                      ${pycker.hourlyRate}/hr
+                      ${pro.hourlyRate}/hr
                     </span>
                   )}
                   <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -124,8 +127,8 @@ export function QuickMatch({ recommendedPyckers, onSelectPycker, onBrowseAll, on
       </div>
 
       <div className="flex flex-col gap-3">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="w-full"
           onClick={onBrowseAll}
           data-testid="button-browse-all-pyckers"
@@ -133,9 +136,9 @@ export function QuickMatch({ recommendedPyckers, onSelectPycker, onBrowseAll, on
           Browse All Pros
           <ChevronRight className="w-4 h-4 ml-1" />
         </Button>
-        
-        <Button 
-          variant="ghost" 
+
+        <Button
+          variant="ghost"
           className="w-full"
           onClick={onBack}
           data-testid="button-back-from-quickmatch"

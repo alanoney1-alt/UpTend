@@ -17,18 +17,18 @@ interface Job {
   routeOrder: number;
 }
 
-interface PyckerRouteOptimizerProps {
-  haulerId: string;
+interface ProRouteOptimizerProps {
+  proId: string;
 }
 
-export function PyckerRouteOptimizer({ haulerId }: PyckerRouteOptimizerProps) {
+export function ProRouteOptimizer({ proId }: ProRouteOptimizerProps) {
   const { data, isLoading, refetch } = useQuery<{
     jobs: Job[];
     optimized: boolean;
     totalJobs: number;
     message?: string;
   }>({
-    queryKey: [`/api/haulers/${haulerId}/optimized-route`],
+    queryKey: [`/api/pros/${proId}/optimized-route`],
   });
 
   if (isLoading) {
@@ -117,3 +117,6 @@ export function PyckerRouteOptimizer({ haulerId }: PyckerRouteOptimizerProps) {
     </Card>
   );
 }
+
+// Legacy export alias for backward compatibility
+export const PyckerRouteOptimizer = ProRouteOptimizer;

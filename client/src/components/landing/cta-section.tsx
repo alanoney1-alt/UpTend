@@ -49,9 +49,9 @@ export function CTASection() {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
-              <Link href="/hauler/dashboard">
-                <Button 
-                  size="lg" 
+              <Link href="/pro/dashboard">
+                <Button
+                  size="lg"
                   variant="outline"
                   className="border-white/30 text-white hover:bg-white/10 bg-white/5 backdrop-blur-sm"
                   data-testid="button-cta-become-hauler"

@@ -2,10 +2,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Star, 
-  MapPin, 
-  Shield, 
+import {
+  Star,
+  MapPin,
+  Shield,
   Zap,
   Heart,
   ChevronLeft,
@@ -13,7 +13,7 @@ import {
   Truck
 } from "lucide-react";
 
-interface Pycker {
+interface Pro {
   id: string;
   name: string;
   photo?: string;
@@ -29,13 +29,16 @@ interface Pycker {
   vehicleType?: string;
 }
 
+// Legacy type alias for backward compatibility
+type Pycker = Pro;
+
 interface ShortlistReviewProps {
-  shortlist: Pycker[];
-  onSelectPycker: (pycker: Pycker) => void;
+  shortlist: Pro[];
+  onSelectPro: (pro: Pro) => void;
   onBack: () => void;
 }
 
-export function ShortlistReview({ shortlist, onSelectPycker, onBack }: ShortlistReviewProps) {
+export function ShortlistReview({ shortlist, onSelectPro, onBack }: ShortlistReviewProps) {
   if (shortlist.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-6">
@@ -62,26 +65,26 @@ export function ShortlistReview({ shortlist, onSelectPycker, onBack }: Shortlist
         </div>
         <h2 className="text-2xl font-bold mb-2">Your Shortlist</h2>
         <p className="text-muted-foreground">
-          You've liked {shortlist.length} Pro{shortlist.length > 1 ? "s" : ""}. 
+          You've liked {shortlist.length} Pro{shortlist.length > 1 ? "s" : ""}.
           Select one to continue with your booking.
         </p>
       </div>
 
       <div className="space-y-3">
-        {shortlist.map((pycker) => (
-          <Card 
-            key={pycker.id}
+        {shortlist.map((pro) => (
+          <Card
+            key={pro.id}
             className="overflow-hidden cursor-pointer transition-all border-primary/30"
-            onClick={() => onSelectPycker(pycker)}
-            data-testid={`card-shortlist-pycker-${pycker.id}`}
+            onClick={() => onSelectPro(pro)}
+            data-testid={`card-shortlist-pycker-${pro.id}`}
           >
             <CardContent className="p-4">
               <div className="flex items-start gap-4">
                 <div className="relative">
                   <Avatar className="w-16 h-16 border-2 border-primary">
-                    <AvatarImage src={pycker.photo} alt={pycker.name} />
+                    <AvatarImage src={pro.photo} alt={pro.name} />
                     <AvatarFallback className="bg-primary text-primary-foreground text-lg">
-                      {pycker.name.split(" ").map((n) => n[0]).join("")}
+                      {pro.name.split(" ").map((n) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
@@ -91,8 +94,8 @@ export function ShortlistReview({ shortlist, onSelectPycker, onBack }: Shortlist
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold truncate">{pycker.name}</h3>
-                    {pycker.verified && (
+                    <h3 className="font-semibold truncate">{pro.name}</h3>
+                    {pro.verified && (
                       <Badge variant="secondary" className="text-xs shrink-0">
                         <Shield className="w-3 h-3 mr-0.5" />
                         Pro
@@ -103,38 +106,38 @@ export function ShortlistReview({ shortlist, onSelectPycker, onBack }: Shortlist
                   <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
                     <div className="flex items-center">
                       <Star className="w-4 h-4 text-yellow-500 mr-0.5" />
-                      {pycker.rating.toFixed(1)}
+                      {pro.rating.toFixed(1)}
                     </div>
-                    <span>{pycker.completedJobs} jobs</span>
+                    <span>{pro.completedJobs} jobs</span>
                     <div className="flex items-center">
                       <MapPin className="w-3 h-3 mr-0.5" />
-                      {pycker.distance} mi
+                      {pro.distance} mi
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 flex-wrap">
-                    {pycker.available && (
+                    {pro.available && (
                       <Badge className="bg-primary text-xs">
                         <Zap className="w-3 h-3 mr-0.5" />
                         Available Now
                       </Badge>
                     )}
-                    {pycker.vehicleType && (
+                    {pro.vehicleType && (
                       <Badge variant="outline" className="text-xs">
                         <Truck className="w-3 h-3 mr-0.5" />
-                        {pycker.vehicleType}
+                        {pro.vehicleType}
                       </Badge>
                     )}
                   </div>
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
-                  {pycker.hourlyRate && (
+                  {pro.hourlyRate && (
                     <span className="text-lg font-bold text-primary">
-                      ${pycker.hourlyRate}/hr
+                      ${pro.hourlyRate}/hr
                     </span>
                   )}
-                  <Button size="sm" className="bg-primary" data-testid={`button-select-${pycker.id}`}>
+                  <Button size="sm" className="bg-primary" data-testid={`button-select-${pro.id}`}>
                     <CheckCircle className="w-4 h-4 mr-1" />
                     Select
                   </Button>
@@ -145,8 +148,8 @@ export function ShortlistReview({ shortlist, onSelectPycker, onBack }: Shortlist
         ))}
       </div>
 
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         className="w-full"
         onClick={onBack}
         data-testid="button-back-from-shortlist"

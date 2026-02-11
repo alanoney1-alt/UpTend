@@ -15,11 +15,11 @@ const NDA_VERSION = "1.0";
 interface NdaAgreementModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  pyckerName: string;
+  proName: string;
   onSuccess?: () => void;
 }
 
-export function NdaAgreementModal({ open, onOpenChange, pyckerName, onSuccess }: NdaAgreementModalProps) {
+export function NdaAgreementModal({ open, onOpenChange, proName, onSuccess }: NdaAgreementModalProps) {
   const [signature, setSignature] = useState("");
   const [hasReadAgreement, setHasReadAgreement] = useState(false);
   const [agreesToTerms, setAgreesToTerms] = useState(false);
@@ -28,7 +28,7 @@ export function NdaAgreementModal({ open, onOpenChange, pyckerName, onSuccess }:
 
   const acceptNdaMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch("/api/haulers/accept-nda", {
+      const response = await fetch("/api/pros/accept-nda", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -48,7 +48,7 @@ export function NdaAgreementModal({ open, onOpenChange, pyckerName, onSuccess }:
         title: "Agreement Accepted",
         description: "You have successfully signed the Non-Solicitation Agreement.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/hauler/profile"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pro/profile"] });
       onOpenChange(false);
       onSuccess?.();
     },
@@ -62,7 +62,7 @@ export function NdaAgreementModal({ open, onOpenChange, pyckerName, onSuccess }:
   });
 
   const canSubmit = signature.trim().length > 0 && hasReadAgreement && agreesToTerms;
-  const signatureMatches = signature.trim().toLowerCase() === pyckerName.trim().toLowerCase();
+  const signatureMatches = signature.trim().toLowerCase() === proName.trim().toLowerCase();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -177,7 +177,7 @@ export function NdaAgreementModal({ open, onOpenChange, pyckerName, onSuccess }:
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="signature">Digital Signature (Type your full name exactly as shown: "{pyckerName}")</Label>
+            <Label htmlFor="signature">Digital Signature (Type your full name exactly as shown: "{proName}")</Label>
             <Input
               id="signature"
               placeholder="Type your full legal name"

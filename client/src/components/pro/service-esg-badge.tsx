@@ -107,8 +107,8 @@ export function ServiceEsgBadge({ serviceType, esgScore, metrics = {} }: Service
   );
 }
 
-export function ServiceEsgSummary({ haulerId }: { haulerId: string }) {
-  // This would fetch aggregate ESG data for the hauler across all services
+export function ServiceEsgSummary({ proId }: { proId: string }) {
+  // This would fetch aggregate ESG data for the Pro across all services
   // For now, placeholder
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

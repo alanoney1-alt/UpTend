@@ -92,7 +92,7 @@ export function CareerLadder() {
         </div>
 
         <div className="mt-10 text-center">
-          <Link href="/pycker/signup">
+          <Link href="/pro/signup">
             <Button size="lg" data-testid="button-start-rookie">
               Start as a Rookie Today
             </Button>

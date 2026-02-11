@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-interface NearbyPycker {
+interface NearbyPro {
   id: string | number;
   firstName: string;
   lastName: string;
@@ -33,19 +33,25 @@ interface NearbyPycker {
   isVerifiedPro?: boolean;
 }
 
-interface PyckerMapProps {
+// Legacy type alias for backward compatibility
+type NearbyPycker = NearbyPro;
+
+interface ProMapProps {
   customerLocation: { lat: number; lng: number } | null;
-  pyckers?: NearbyPycker[];
-  selectedPyckerId?: string | number | null;
-  onPyckerSelect?: (pycker: NearbyPycker) => void;
+  pros?: NearbyPro[];
+  selectedProId?: string | number | null;
+  onProSelect?: (pro: NearbyPro) => void;
   showRadius?: boolean;
   radiusMiles?: number;
   height?: string;
   isLoading?: boolean;
   trackingMode?: boolean;
-  pyckerLocation?: { lat: number; lng: number } | null;
+  proLocation?: { lat: number; lng: number } | null;
   destinationLocation?: { lat: number; lng: number } | null;
 }
+
+// Legacy interface alias for backward compatibility
+type PyckerMapProps = ProMapProps;
 
 const customerIcon = new L.Icon({
   iconUrl: "data:image/svg+xml;base64," + btoa(`
@@ -59,7 +65,7 @@ const customerIcon = new L.Icon({
   popupAnchor: [0, -16],
 });
 
-const pyckerIcon = new L.Icon({
+const proIcon = new L.Icon({
   iconUrl: "data:image/svg+xml;base64," + btoa(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="40" height="40">
       <circle cx="16" cy="16" r="14" fill="#F47C20" stroke="white" stroke-width="2"/>
@@ -72,7 +78,10 @@ const pyckerIcon = new L.Icon({
   popupAnchor: [0, -20],
 });
 
-const selectedPyckerIcon = new L.Icon({
+// Legacy alias for backward compatibility
+const pyckerIcon = proIcon;
+
+const selectedProIcon = new L.Icon({
   iconUrl: "data:image/svg+xml;base64," + btoa(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="48" height="48">
       <circle cx="16" cy="16" r="14" fill="#22c55e" stroke="white" stroke-width="3"/>
@@ -84,6 +93,9 @@ const selectedPyckerIcon = new L.Icon({
   iconAnchor: [24, 24],
   popupAnchor: [0, -24],
 });
+
+// Legacy alias for backward compatibility
+const selectedPyckerIcon = selectedProIcon;
 
 const destinationIcon = new L.Icon({
   iconUrl: "data:image/svg+xml;base64," + btoa(`
@@ -115,19 +127,19 @@ function FitBounds({ bounds }: { bounds: L.LatLngBoundsExpression | null }) {
   return null;
 }
 
-export function PyckerMap({
+export function ProMap({
   customerLocation,
-  pyckers = [],
-  selectedPyckerId,
-  onPyckerSelect,
+  pros = [],
+  selectedProId,
+  onProSelect,
   showRadius = true,
   radiusMiles = 25,
   height = "400px",
   isLoading = false,
   trackingMode = false,
-  pyckerLocation,
+  proLocation,
   destinationLocation,
-}: PyckerMapProps) {
+}: ProMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([25.7617, -80.1918]);
   const [mapZoom, setMapZoom] = useState(12);
@@ -163,10 +175,10 @@ export function PyckerMap({
   }
 
   const computeBounds = () => {
-    if (!trackingMode || !pyckerLocation || !customerLocation) return null;
+    if (!trackingMode || !proLocation || !customerLocation) return null;
     const bounds = L.latLngBounds([
       [customerLocation.lat, customerLocation.lng],
-      [pyckerLocation.lat, pyckerLocation.lng],
+      [proLocation.lat, proLocation.lng],
     ]);
     if (destinationLocation) {
       bounds.extend([destinationLocation.lat, destinationLocation.lng]);
@@ -216,8 +228,8 @@ export function PyckerMap({
           </>
         )}
 
-        {trackingMode && pyckerLocation && (
-          <Marker position={[pyckerLocation.lat, pyckerLocation.lng]} icon={selectedPyckerIcon}>
+        {trackingMode && proLocation && (
+          <Marker position={[proLocation.lat, proLocation.lng]} icon={selectedProIcon}>
             <Popup>
               <div className="text-center">
                 <p className="font-semibold text-green-600">Your Pro</p>
@@ -237,25 +249,25 @@ export function PyckerMap({
           </Marker>
         )}
 
-        {!trackingMode && pyckers.map((pycker) => (
+        {!trackingMode && pros.map((pro) => (
           <Marker
-            key={pycker.id}
-            position={[pycker.location.latitude, pycker.location.longitude]}
-            icon={selectedPyckerId === pycker.id ? selectedPyckerIcon : pyckerIcon}
+            key={pro.id}
+            position={[pro.location.latitude, pro.location.longitude]}
+            icon={selectedProId === pro.id ? selectedProIcon : proIcon}
             eventHandlers={{
-              click: () => onPyckerSelect?.(pycker),
+              click: () => onProSelect?.(pro),
             }}
           >
             <Popup>
-              <div className="min-w-[200px]" data-testid={`map-popup-pycker-${pycker.id}`}>
+              <div className="min-w-[200px]" data-testid={`map-popup-pycker-${pro.id}`}>
                 <div className="flex items-center gap-3 mb-2">
                   <Avatar className="w-10 h-10">
-                    <AvatarImage src={pycker.profilePhotoUrl || hauler1} alt={pycker.firstName} />
-                    <AvatarFallback>{pycker.firstName[0]}</AvatarFallback>
+                    <AvatarImage src={pro.profilePhotoUrl || hauler1} alt={pro.firstName} />
+                    <AvatarFallback>{pro.firstName[0]}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold">{pycker.firstName} {pycker.lastName?.[0]}.</p>
-                    {pycker.isVerifiedPro && (
+                    <p className="font-semibold">{pro.firstName} {pro.lastName?.[0]}.</p>
+                    {pro.isVerifiedPro && (
                       <Badge variant="secondary" className="text-xs">Verified Pro</Badge>
                     )}
                   </div>
@@ -263,23 +275,23 @@ export function PyckerMap({
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center gap-2">
                     <Star className="w-4 h-4 text-yellow-500" />
-                    <span>{pycker.rating?.toFixed(1) || "New"} ({pycker.jobsCompleted} jobs)</span>
+                    <span>{pro.rating?.toFixed(1) || "New"} ({pro.jobsCompleted} jobs)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Navigation className="w-4 h-4 text-primary" />
-                    <span>{pycker.distance.toFixed(1)} miles away</span>
+                    <span>{pro.distance.toFixed(1)} miles away</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-muted-foreground" />
-                    <span>~{pycker.eta} min ETA</span>
+                    <span>~{pro.eta} min ETA</span>
                   </div>
                 </div>
-                {onPyckerSelect && (
-                  <Button 
-                    size="sm" 
+                {onProSelect && (
+                  <Button
+                    size="sm"
                     className="w-full mt-3"
-                    onClick={() => onPyckerSelect(pycker)}
-                    data-testid={`button-select-pycker-${pycker.id}`}
+                    onClick={() => onProSelect(pro)}
+                    data-testid={`button-select-pycker-${pro.id}`}
                   >
                     Select Pro
                   </Button>
@@ -290,7 +302,7 @@ export function PyckerMap({
         ))}
       </MapContainer>
 
-      {!trackingMode && pyckers.length === 0 && (
+      {!trackingMode && pros.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/80 pointer-events-none">
           <div className="text-center p-6">
             <Truck className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
@@ -302,14 +314,14 @@ export function PyckerMap({
         </div>
       )}
 
-      {!trackingMode && pyckers.length > 0 && (
+      {!trackingMode && pros.length > 0 && (
         <div className="absolute bottom-4 left-4 right-4 z-[1000]">
           <Card className="p-3 bg-background/95 backdrop-blur">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
                 <span className="text-sm font-medium">
-                  {pyckers.length} Pro{pyckers.length !== 1 ? "s" : ""} nearby
+                  {pros.length} Pro{pros.length !== 1 ? "s" : ""} nearby
                 </span>
               </div>
               <Badge variant="outline" className="text-xs">
@@ -325,40 +337,40 @@ export function PyckerMap({
 
 export function LiveTrackingMap({
   customerLocation,
-  pyckerLocation,
+  proLocation,
   destinationLocation,
-  pyckerName,
+  proName,
   eta,
   distance,
   height = "300px",
 }: {
   customerLocation: { lat: number; lng: number } | null;
-  pyckerLocation: { lat: number; lng: number } | null;
+  proLocation: { lat: number; lng: number } | null;
   destinationLocation?: { lat: number; lng: number } | null;
-  pyckerName?: string;
+  proName?: string;
   eta?: number;
   distance?: number;
   height?: string;
 }) {
   return (
     <div className="relative" data-testid="live-tracking-map">
-      <PyckerMap
+      <ProMap
         customerLocation={customerLocation}
         trackingMode={true}
-        pyckerLocation={pyckerLocation}
+        proLocation={proLocation}
         destinationLocation={destinationLocation}
         height={height}
         showRadius={false}
       />
-      
-      {pyckerLocation && (
+
+      {proLocation && (
         <div className="absolute top-4 left-4 right-4 z-[1000]">
           <Card className="p-3 bg-background/95 backdrop-blur">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
                 <span className="text-sm font-medium">
-                  {pyckerName || "Pro"} is on the way
+                  {proName || "Pro"} is on the way
                 </span>
               </div>
               {eta && distance && (
@@ -374,3 +386,6 @@ export function LiveTrackingMap({
     </div>
   );
 }
+
+// Legacy export aliases for backward compatibility
+export const PyckerMap = ProMap;

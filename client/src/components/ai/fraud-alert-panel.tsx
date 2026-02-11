@@ -39,7 +39,7 @@ interface FraudAlert {
   evidenceData: Record<string, any>;
   confidenceScore: number;
   serviceRequestId?: string;
-  haulerId?: string;
+  proId?: string;
   createdAt: string;
 }
 

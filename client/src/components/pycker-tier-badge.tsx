@@ -1,15 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import { Shield, User, Check, AlertTriangle } from "lucide-react";
 
-interface PyckerTierBadgeProps {
+interface ProTierBadgeProps {
   tier: string;
   showDisclaimer?: boolean;
   size?: "sm" | "md" | "lg";
 }
 
-export function PyckerTierBadge({ tier, showDisclaimer = false, size = "md" }: PyckerTierBadgeProps) {
+export function ProTierBadge({ tier, showDisclaimer = false, size = "md" }: ProTierBadgeProps) {
   const isVerifiedPro = tier === "verified_pro";
-  
+
   const sizeClasses = {
     sm: "text-xs px-2 py-0.5",
     md: "text-sm px-3 py-1",
@@ -19,7 +19,7 @@ export function PyckerTierBadge({ tier, showDisclaimer = false, size = "md" }: P
   if (isVerifiedPro) {
     return (
       <div className="flex flex-col gap-1">
-        <Badge 
+        <Badge
           className={`bg-gradient-to-r from-amber-500 to-yellow-400 text-white border-0 ${sizeClasses[size]}`}
           data-testid="badge-verified-pro"
         >
@@ -37,24 +37,24 @@ export function PyckerTierBadge({ tier, showDisclaimer = false, size = "md" }: P
 
   return (
     <div className="flex flex-col gap-1">
-      <Badge 
+      <Badge
         variant="secondary"
         className={sizeClasses[size]}
         data-testid="badge-independent"
       >
         <User className="w-3 h-3 mr-1" />
-        Independent Hauler
+        Independent Pro
       </Badge>
       {showDisclaimer && (
         <p className="text-xs text-muted-foreground" data-testid="text-independent-disclaimer">
-          This hauler operates independently. Background checked with card on file for your protection.
+          This Pro operates independently. Background checked with card on file for your protection.
         </p>
       )}
     </div>
   );
 }
 
-export function PyckerTierInfo({ tier }: { tier: string }) {
+export function ProTierInfo({ tier }: { tier: string }) {
   const isVerifiedPro = tier === "verified_pro";
 
   if (isVerifiedPro) {
@@ -77,7 +77,7 @@ export function PyckerTierInfo({ tier }: { tier: string }) {
     <div className="bg-muted/50 border border-border rounded-lg p-4" data-testid="card-independent-info">
       <div className="flex items-center gap-2 mb-2">
         <User className="w-5 h-5 text-muted-foreground" />
-        <span className="font-semibold">Independent Hauler</span>
+        <span className="font-semibold">Independent Pro</span>
       </div>
       <p className="text-sm text-muted-foreground mb-2">
         This service provider operates as an independent contractor and is not employed by UpTend.
@@ -88,10 +88,14 @@ export function PyckerTierInfo({ tier }: { tier: string }) {
         <li className="flex items-center gap-1"><Check className="w-4 h-4 text-green-600" /> Card on file for accountability</li>
       </ul>
       <p className="text-xs text-muted-foreground mt-3 italic">
-        UpTend provides a platform connecting you with independent service providers. 
-        You agree that UpTend is not liable for any damages, losses, or injuries 
-        that may occur during the service provided by independent haulers.
+        UpTend provides a platform connecting you with independent service providers.
+        You agree that UpTend is not liable for any damages, losses, or injuries
+        that may occur during the service provided by independent Pros.
       </p>
     </div>
   );
 }
+
+// Legacy export aliases for backward compatibility
+export const PyckerTierBadge = ProTierBadge;
+export const PyckerTierInfo = ProTierInfo;

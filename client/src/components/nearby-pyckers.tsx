@@ -4,10 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Clock, Truck, Star, Loader2 } from "lucide-react";
-import { PyckerTierBadge } from "./pycker-tier-badge";
+import { ProTierBadge } from "./pycker-tier-badge";
 
-interface NearbyPycker {
-  pycker_id: string;
+interface NearbyPro {
+  pro_id: string;
   latitude: number;
   longitude: number;
   status: string;
@@ -19,17 +19,23 @@ interface NearbyPycker {
   profile_photo?: string;
   rating?: number;
   total_jobs?: number;
-  pycker_tier?: string;
+  pro_tier?: string;
   vehicle_type?: string;
 }
 
-interface NearbyPyckersResponse {
-  pyckers: NearbyPycker[];
+// Legacy type alias for backward compatibility
+type NearbyPycker = NearbyPro;
+
+interface NearbyProsResponse {
+  pros: NearbyPro[];
   customerLocation: { lat: number; lng: number };
   searchRadiusMiles: number;
 }
 
-interface NearbyPyckersProps {
+// Legacy type alias for backward compatibility
+type NearbyPyckersResponse = NearbyProsResponse;
+
+interface NearbyProsProps {
   customerLat?: number | null;
   customerLng?: number | null;
   radiusMiles?: number;
@@ -37,18 +43,18 @@ interface NearbyPyckersProps {
   showIfEmpty?: boolean;
 }
 
-export function NearbyPyckers({ 
-  customerLat, 
-  customerLng, 
+export function NearbyPros({
+  customerLat,
+  customerLng,
   radiusMiles = 25,
   maxDisplay = 5,
   showIfEmpty = false,
-}: NearbyPyckersProps) {
+}: NearbyProsProps) {
   const hasLocation = customerLat != null && customerLng != null;
 
-  const queryUrl = `/api/pyckers/nearby?lat=${customerLat}&lng=${customerLng}&radius=${radiusMiles}`;
-  
-  const { data, isLoading, error } = useQuery<NearbyPyckersResponse>({
+  const queryUrl = `/api/pros/nearby?lat=${customerLat}&lng=${customerLng}&radius=${radiusMiles}`;
+
+  const { data, isLoading, error } = useQuery<NearbyProsResponse>({
     queryKey: [queryUrl],
     enabled: hasLocation,
     refetchInterval: 30000,
@@ -85,10 +91,10 @@ export function NearbyPyckers({
     return null;
   }
 
-  const pyckers = data?.pyckers || [];
-  const displayPyckers = pyckers.slice(0, maxDisplay);
+  const pros = data?.pros || [];
+  const displayPros = pros.slice(0, maxDisplay);
 
-  if (displayPyckers.length === 0) {
+  if (displayPros.length === 0) {
     if (!showIfEmpty) return null;
     return (
       <Card className="p-4" data-testid="card-nearby-pyckers-empty">
@@ -108,45 +114,45 @@ export function NearbyPyckers({
           Pros Nearby
         </h3>
         <Badge variant="secondary" className="text-xs">
-          {pyckers.length} available
+          {pros.length} available
         </Badge>
       </div>
 
       <div className="space-y-3">
-        {displayPyckers.map((pycker, index) => (
-          <div 
-            key={pycker.pycker_id} 
+        {displayPros.map((pro, index) => (
+          <div
+            key={pro.pro_id}
             className="flex items-center gap-3 p-2 rounded-lg bg-muted/50"
             data-testid={`card-nearby-pycker-${index}`}
           >
             <Avatar className="w-10 h-10 border-2 border-background">
-              <AvatarImage src={pycker.profile_photo || undefined} />
+              <AvatarImage src={pro.profile_photo || undefined} />
               <AvatarFallback className="text-xs">
-                {pycker.first_name?.[0] || pycker.company_name?.[0] || "P"}
+                {pro.first_name?.[0] || pro.company_name?.[0] || "P"}
               </AvatarFallback>
             </Avatar>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <span className="font-medium truncate">
-                  {pycker.company_name || `${pycker.first_name || "Pro"}`}
+                  {pro.company_name || `${pro.first_name || "Pro"}`}
                 </span>
-                {pycker.pycker_tier && (
-                  <PyckerTierBadge tier={pycker.pycker_tier as "verified_pro" | "independent"} size="sm" />
+                {pro.pro_tier && (
+                  <ProTierBadge tier={pro.pro_tier as "verified_pro" | "independent"} size="sm" />
                 )}
               </div>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                {pycker.rating && (
+                {pro.rating && (
                   <span className="flex items-center gap-1">
                     <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                    {pycker.rating.toFixed(1)}
+                    {pro.rating.toFixed(1)}
                   </span>
                 )}
-                {pycker.total_jobs && (
-                  <span>{pycker.total_jobs} jobs</span>
+                {pro.total_jobs && (
+                  <span>{pro.total_jobs} jobs</span>
                 )}
-                {pycker.vehicle_type && (
-                  <span className="capitalize">{pycker.vehicle_type}</span>
+                {pro.vehicle_type && (
+                  <span className="capitalize">{pro.vehicle_type}</span>
                 )}
               </div>
             </div>
@@ -154,22 +160,25 @@ export function NearbyPyckers({
             <div className="text-right shrink-0">
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <MapPin className="w-3 h-3" />
-                <span>{pycker.distance.toFixed(1)} mi</span>
+                <span>{pro.distance.toFixed(1)} mi</span>
               </div>
               <div className="flex items-center gap-1 text-sm text-green-600 dark:text-green-400 font-medium">
                 <Clock className="w-3 h-3" />
-                <span>~{pycker.etaMinutes} min</span>
+                <span>~{pro.etaMinutes} min</span>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {pyckers.length > maxDisplay && (
+      {pros.length > maxDisplay && (
         <p className="text-xs text-center text-muted-foreground mt-3">
-          +{pyckers.length - maxDisplay} more Pros available
+          +{pros.length - maxDisplay} more Pros available
         </p>
       )}
     </Card>
   );
 }
+
+// Legacy export alias for backward compatibility
+export const NearbyPyckers = NearbyPros;

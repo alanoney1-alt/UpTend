@@ -72,7 +72,7 @@ export function ManifestScanner({ jobId, onComplete }: ManifestScannerProps) {
     formData.append("jobId", String(jobId));
 
     try {
-      const res = await fetch("/api/hauler/scan-manifest", {
+      const res = await fetch("/api/pro/scan-manifest", {
         method: "POST",
         body: formData,
         credentials: "include",

@@ -238,6 +238,17 @@ const resources = {
       "status.status_working": "Working",
       "status.status_completed": "Completed",
 
+      // Pro terminology (new standard)
+      "pro.go_online": "Go Online",
+      "pro.go_offline": "Go Offline",
+      "pro.accept_job": "Accept Job",
+      "pro.earnings": "Earnings",
+      "pro.this_week": "This Week",
+      "pro.lifetime": "Lifetime",
+      "pro.recent_payouts": "Recent Payouts",
+      "pro.no_jobs_yet": "No completed jobs yet. Go get 'em!",
+
+      // Legacy hauler keys (backward compatibility aliases)
       "hauler.go_online": "Go Online",
       "hauler.go_offline": "Go Offline",
       "hauler.accept_job": "Accept Job",
@@ -556,6 +567,17 @@ const resources = {
       "status.status_working": "Trabajando",
       "status.status_completed": "Completado",
 
+      // Pro terminology (new standard)
+      "pro.go_online": "Conectarse",
+      "pro.go_offline": "Desconectarse",
+      "pro.accept_job": "Aceptar Trabajo",
+      "pro.earnings": "Ganancias",
+      "pro.this_week": "Esta Semana",
+      "pro.lifetime": "Total",
+      "pro.recent_payouts": "Pagos Recientes",
+      "pro.no_jobs_yet": "¡Aún sin trabajos completados. A por ellos!",
+
+      // Legacy hauler keys (backward compatibility aliases)
       "hauler.go_online": "Conectarse",
       "hauler.go_offline": "Desconectarse",
       "hauler.accept_job": "Aceptar Trabajo",

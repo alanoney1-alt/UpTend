@@ -15,7 +15,7 @@ interface CustomerItem {
   price: number;
 }
 
-interface PyckerPriceVerificationProps {
+interface ProPriceVerificationProps {
   jobId: string;
   aiPriceMin?: number;
   aiPriceMax?: number;
@@ -29,7 +29,10 @@ interface PyckerPriceVerificationProps {
   onVerified: () => void;
 }
 
-export function PyckerPriceVerification({
+// Legacy type alias for backward compatibility
+type PyckerPriceVerificationProps = ProPriceVerificationProps;
+
+export function ProPriceVerification({
   jobId,
   aiPriceMin,
   aiPriceMax,
@@ -41,7 +44,7 @@ export function PyckerPriceVerification({
   loadEstimate,
   serviceType,
   onVerified,
-}: PyckerPriceVerificationProps) {
+}: ProPriceVerificationProps) {
   const hasAiEstimate = aiPriceMin != null && aiPriceMax != null && aiConfidence != null;
   const hasManualItems = customerItems.length > 0;
 
@@ -289,3 +292,6 @@ export function PyckerPriceVerification({
     </Card>
   );
 }
+
+// Legacy export alias for backward compatibility
+export const PyckerPriceVerification = ProPriceVerification;

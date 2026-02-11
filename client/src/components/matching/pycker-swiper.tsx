@@ -4,19 +4,19 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Star, 
-  MapPin, 
-  Truck, 
-  Shield, 
-  X, 
-  Heart, 
+import {
+  Star,
+  MapPin,
+  Truck,
+  Shield,
+  X,
+  Heart,
   RotateCcw,
   ChevronLeft,
   Zap
 } from "lucide-react";
 
-interface Pycker {
+interface Pro {
   id: string;
   name: string;
   photo?: string;
@@ -33,26 +33,29 @@ interface Pycker {
   languages?: string[];
 }
 
-interface PyckerSwiperProps {
-  availablePyckers: Pycker[];
-  onComplete: (shortlist: Pycker[]) => void;
+// Legacy type alias for backward compatibility
+type Pycker = Pro;
+
+interface ProSwiperProps {
+  availablePros: Pro[];
+  onComplete: (shortlist: Pro[]) => void;
   onSkip: () => void;
 }
 
 type Direction = "left" | "right" | "up" | "down";
 
-export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwiperProps) {
-  const [currentIndex, setCurrentIndex] = useState(availablePyckers.length - 1);
-  const [shortlist, setShortlist] = useState<Pycker[]>([]);
+export function ProSwiper({ availablePros, onComplete, onSkip }: ProSwiperProps) {
+  const [currentIndex, setCurrentIndex] = useState(availablePros.length - 1);
+  const [shortlist, setShortlist] = useState<Pro[]>([]);
   const [lastDirection, setLastDirection] = useState<Direction | null>(null);
   const currentIndexRef = useRef(currentIndex);
 
   const childRefs = useMemo(
     () =>
-      Array(availablePyckers.length)
+      Array(availablePros.length)
         .fill(0)
         .map(() => useRef<any>(null)),
-    [availablePyckers.length]
+    [availablePros.length]
   );
 
   const updateCurrentIndex = (val: number) => {
@@ -61,14 +64,14 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
   };
 
   const canSwipe = currentIndex >= 0;
-  const canGoBack = currentIndex < availablePyckers.length - 1;
+  const canGoBack = currentIndex < availablePros.length - 1;
 
-  const swiped = (direction: Direction, pycker: Pycker, index: number) => {
+  const swiped = (direction: Direction, pro: Pro, index: number) => {
     setLastDirection(direction);
     updateCurrentIndex(index - 1);
-    
+
     if (direction === "right") {
-      setShortlist((prev) => [...prev, pycker]);
+      setShortlist((prev) => [...prev, pro]);
     }
   };
 
@@ -88,11 +91,11 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
     if (!canGoBack) return;
     const newIndex = currentIndex + 1;
     updateCurrentIndex(newIndex);
-    
+
     // Remove from shortlist if it was there
-    const pyckerToRemove = availablePyckers[newIndex];
-    setShortlist((prev) => prev.filter((p) => p.id !== pyckerToRemove.id));
-    
+    const proToRemove = availablePros[newIndex];
+    setShortlist((prev) => prev.filter((p) => p.id !== proToRemove.id));
+
     if (childRefs[newIndex]?.current) {
       await childRefs[newIndex].current.restoreCard();
     }
@@ -138,7 +141,7 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
           Quick Match
         </Button>
         <Badge variant="secondary">
-          {currentIndex + 1} of {availablePyckers.length}
+          {currentIndex + 1} of {availablePros.length}
         </Badge>
         {shortlist.length > 0 && (
           <Badge variant="default" className="bg-primary">
@@ -149,33 +152,33 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
       </div>
 
       <div className="relative w-full max-w-sm h-[450px] mb-6">
-        {availablePyckers.map((pycker, index) => (
+        {availablePros.map((pro, index) => (
           <TinderCard
             ref={childRefs[index]}
-            key={pycker.id}
-            onSwipe={(dir) => swiped(dir as Direction, pycker, index)}
-            onCardLeftScreen={() => outOfFrame(pycker.name, index)}
+            key={pro.id}
+            onSwipe={(dir) => swiped(dir as Direction, pro, index)}
+            onCardLeftScreen={() => outOfFrame(pro.name, index)}
             preventSwipe={["up", "down"]}
             className="absolute w-full"
           >
-            <Card 
+            <Card
               className="w-full h-[450px] overflow-hidden cursor-grab active:cursor-grabbing select-none"
-              data-testid={`card-pycker-${pycker.id}`}
+              data-testid={`card-pycker-${pro.id}`}
             >
               <div className="relative h-48 bg-gradient-to-b from-secondary/30 to-background">
                 <Avatar className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-24 h-24 border-4 border-background">
-                  <AvatarImage src={pycker.photo} alt={pycker.name} />
+                  <AvatarImage src={pro.photo} alt={pro.name} />
                   <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
-                    {pycker.name.split(" ").map((n) => n[0]).join("")}
+                    {pro.name.split(" ").map((n) => n[0]).join("")}
                   </AvatarFallback>
                 </Avatar>
-                {pycker.verified && (
+                {pro.verified && (
                   <Badge className="absolute top-3 right-3 bg-secondary">
                     <Shield className="w-3 h-3 mr-1" />
                     Verified Pro
                   </Badge>
                 )}
-                {pycker.available && (
+                {pro.available && (
                   <Badge className="absolute top-3 left-3 bg-primary">
                     <Zap className="w-3 h-3 mr-1" />
                     Available Now
@@ -184,32 +187,32 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
               </div>
 
               <div className="pt-14 px-4 pb-4 text-center">
-                <h3 className="text-xl font-bold mb-1">{pycker.name}</h3>
-                
+                <h3 className="text-xl font-bold mb-1">{pro.name}</h3>
+
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-3">
                   <div className="flex items-center">
                     <Star className="w-4 h-4 text-yellow-500 mr-1" />
-                    {pycker.rating.toFixed(1)}
+                    {pro.rating.toFixed(1)}
                   </div>
                   <span className="text-muted-foreground/50">|</span>
-                  <span>{pycker.completedJobs} jobs</span>
+                  <span>{pro.completedJobs} jobs</span>
                   <span className="text-muted-foreground/50">|</span>
                   <div className="flex items-center">
                     <MapPin className="w-4 h-4 mr-1" />
-                    {pycker.distance} mi
+                    {pro.distance} mi
                   </div>
                 </div>
 
-                {pycker.vehicleType && (
+                {pro.vehicleType && (
                   <div className="flex items-center justify-center gap-1 text-sm mb-3">
                     <Truck className="w-4 h-4 text-primary" />
-                    <span>{pycker.vehicleType}</span>
+                    <span>{pro.vehicleType}</span>
                   </div>
                 )}
 
-                {pycker.badges && pycker.badges.length > 0 && (
+                {pro.badges && pro.badges.length > 0 && (
                   <div className="flex flex-wrap justify-center gap-1 mb-3">
-                    {pycker.badges.slice(0, 3).map((badge, i) => (
+                    {pro.badges.slice(0, 3).map((badge, i) => (
                       <Badge key={i} variant="secondary" className="text-xs">
                         {badge}
                       </Badge>
@@ -217,15 +220,15 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
                   </div>
                 )}
 
-                {pycker.bio && (
+                {pro.bio && (
                   <p className="text-sm text-muted-foreground line-clamp-2">
-                    {pycker.bio}
+                    {pro.bio}
                   </p>
                 )}
 
-                {pycker.hourlyRate && (
+                {pro.hourlyRate && (
                   <div className="mt-3 text-lg font-semibold text-primary">
-                    ${pycker.hourlyRate}/hr
+                    ${pro.hourlyRate}/hr
                   </div>
                 )}
               </div>
@@ -245,7 +248,7 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
           <RotateCcw className="w-4 h-4 mr-1" />
           Undo
         </Button>
-        
+
         <Button
           variant="outline"
           size="default"
@@ -257,7 +260,7 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
           <X className="w-4 h-4 mr-1" />
           Pass
         </Button>
-        
+
         <Button
           size="default"
           className="bg-primary text-primary-foreground"
@@ -287,3 +290,6 @@ export function PyckerSwiper({ availablePyckers, onComplete, onSkip }: PyckerSwi
     </div>
   );
 }
+
+// Legacy export alias for backward compatibility
+export const PyckerSwiper = ProSwiper;
