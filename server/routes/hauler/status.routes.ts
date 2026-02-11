@@ -226,4 +226,64 @@ export function registerHaulerStatusRoutes(app: Express) {
       res.status(500).json({ error: "Failed to get online status" });
     }
   });
+
+  // Get nearby available Pros (for booking page)
+  app.get("/api/pyckers/nearby", async (req, res) => {
+    try {
+      const { lat, lng, radius = 25 } = req.query;
+
+      if (!lat || !lng) {
+        return res.status(400).json({ error: "Latitude and longitude are required" });
+      }
+
+      const latitude = parseFloat(lat as string);
+      const longitude = parseFloat(lng as string);
+      const radiusMiles = parseFloat(radius as string);
+
+      if (isNaN(latitude) || isNaN(longitude) || isNaN(radiusMiles)) {
+        return res.status(400).json({ error: "Invalid coordinates or radius" });
+      }
+
+      // Get all available hauler profiles
+      const allProfiles = await storage.getAllHaulerProfiles();
+      const availableProfiles = allProfiles.filter(p => p.isAvailable && p.currentLat && p.currentLng);
+
+      // Calculate distance for each and filter by radius
+      const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+        const R = 3959; // Earth's radius in miles
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      };
+
+      const nearbyPros = availableProfiles
+        .map(profile => {
+          const distance = calculateDistance(latitude, longitude, profile.currentLat!, profile.currentLng!);
+          return { profile, distance };
+        })
+        .filter(({ distance }) => distance <= radiusMiles)
+        .sort((a, b) => a.distance - b.distance)
+        .map(({ profile, distance }) => ({
+          id: profile.id,
+          companyName: profile.companyName,
+          rating: profile.rating,
+          reviewCount: profile.reviewCount,
+          distance: Math.round(distance * 10) / 10, // Round to 1 decimal
+          serviceTypes: profile.serviceTypes,
+          verified: profile.verified,
+        }));
+
+      res.json({
+        count: nearbyPros.length,
+        pros: nearbyPros,
+      });
+    } catch (error) {
+      console.error("Get nearby pros error:", error);
+      res.status(500).json({ error: "Failed to get nearby pros" });
+    }
+  });
 }

@@ -20,6 +20,7 @@ import { registerAcademyRoutes } from "./hauler/academy.routes";
 import { registerCustomerAccountRoutes } from "./customer/account.routes";
 import { registerCustomerReferralRoutes } from "./customer/referrals.routes";
 import { registerCustomerImpactRoutes } from "./customer/impact.routes";
+import { registerLoyaltyRoutes } from "./customer/loyalty.routes";
 
 // Job routes
 import { registerServiceRequestRoutes } from "./jobs/service-requests.routes";
@@ -113,6 +114,7 @@ export async function registerRoutes(
   registerCustomerAccountRoutes(app);
   registerCustomerReferralRoutes(app);
   registerCustomerImpactRoutes(app);
+  registerLoyaltyRoutes(app);
 
   // Register job routes
   registerServiceRequestRoutes(app);
