@@ -201,17 +201,17 @@ export function MaintenanceCalendar({ propertyId }: MaintenanceCalendarProps) {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      {getTaskIcon(task.priority)}
+                      {getTaskIcon(task.priority || undefined)}
                       <div>
                         <h3 className="font-semibold">{task.taskName}</h3>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {task.category?.replace(/_/g, " ")}
+                          {task.taskCategory?.replace(/_/g, " ")}
                         </p>
                       </div>
                     </div>
 
-                    {task.description && (
-                      <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
+                    {task.taskDescription && (
+                      <p className="text-sm text-muted-foreground mb-3">{task.taskDescription}</p>
                     )}
 
                     <div className="flex flex-wrap items-center gap-3 text-sm">
@@ -247,16 +247,16 @@ export function MaintenanceCalendar({ propertyId }: MaintenanceCalendarProps) {
                           </span>
                         </div>
                       )}
-                      {task.isOverdue && task.overdueDays && (
+                      {task.isOverdue && task.overdueBy && (
                         <div className="text-red-600 font-medium">
-                          {task.overdueDays} days overdue
+                          {task.overdueBy} days overdue
                         </div>
                       )}
                     </div>
 
-                    {task.seasonalRecommendation && (
+                    {task.generatedFrom === "seasonal" && task.notes && (
                       <div className="mt-3 p-2 bg-blue-50 rounded text-xs text-blue-800">
-                        💡 Best Season: {task.seasonalRecommendation}
+                        💡 {task.notes}
                       </div>
                     )}
                   </div>

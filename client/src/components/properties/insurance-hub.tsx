@@ -131,9 +131,9 @@ export function InsuranceHub({ propertyId }: InsuranceHubProps) {
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h3 className="font-semibold text-lg">{policy.provider}</h3>
+                        <h3 className="font-semibold text-lg">{policy.carrier}</h3>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {policy.policyType?.replace(/_/g, " ")}
+                          {policy.insuranceType?.replace(/_/g, " ")}
                         </p>
                       </div>
                       <Badge variant="secondary">
@@ -208,10 +208,10 @@ export function InsuranceHub({ propertyId }: InsuranceHubProps) {
                       </div>
                     )}
 
-                    {policy.documentUrl && (
+                    {policy.policyDocumentUrl && (
                       <div className="mt-3">
                         <a
-                          href={policy.documentUrl}
+                          href={policy.policyDocumentUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-primary hover:underline"
@@ -222,23 +222,19 @@ export function InsuranceHub({ propertyId }: InsuranceHubProps) {
                     )}
 
                     {/* Claims History */}
-                    {policy.totalClaimsFiled && policy.totalClaimsFiled > 0 && (
+                    {policy.totalClaimsMade && policy.totalClaimsMade > 0 && (
                       <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-xs text-muted-foreground">Claims Filed</p>
-                            <p className="font-bold">{policy.totalClaimsFiled}</p>
+                            <p className="text-xs text-muted-foreground">Claims Made</p>
+                            <p className="font-bold">{policy.totalClaimsMade}</p>
                           </div>
-                          {policy.totalClaimsApproved !== undefined && (
+                          {policy.lastClaimDate && (
                             <div>
-                              <p className="text-xs text-muted-foreground">Approved</p>
-                              <p className="font-bold text-green-600">{policy.totalClaimsApproved}</p>
-                            </div>
-                          )}
-                          {policy.totalClaimsDenied !== undefined && (
-                            <div>
-                              <p className="text-xs text-muted-foreground">Denied</p>
-                              <p className="font-bold text-red-600">{policy.totalClaimsDenied}</p>
+                              <p className="text-xs text-muted-foreground">Last Claim</p>
+                              <p className="font-bold text-gray-600">
+                                {new Date(policy.lastClaimDate).toLocaleDateString()}
+                              </p>
                             </div>
                           )}
                         </div>

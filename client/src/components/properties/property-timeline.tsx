@@ -135,9 +135,18 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
     return <CheckCircle className="h-4 w-4 text-green-600" />;
   }
 
+  // Helper to compute severity from healthScoreImpact
+  function computeSeverity(event: PropertyHealthEvent): string {
+    const impact = event.healthScoreImpact;
+    if (impact === null || impact === undefined) return "info";
+    if (impact <= -5) return "critical";
+    if (impact < 0) return "warning";
+    return "info";
+  }
+
   const filteredEvents = events.filter((event) => {
-    const matchesCategory = filterCategory === "all" || event.category === filterCategory;
-    const matchesSeverity = filterSeverity === "all" || event.severity === filterSeverity;
+    const matchesCategory = filterCategory === "all" || event.categoryImpacted === filterCategory;
+    const matchesSeverity = filterSeverity === "all" || computeSeverity(event) === filterSeverity;
     return matchesCategory && matchesSeverity;
   });
 
@@ -224,18 +233,18 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
                 <div
                   className={cn(
                     "absolute left-6 top-6 w-5 h-5 rounded-full border-2 bg-white flex items-center justify-center",
-                    getEventColor(event.category, event.severity)
+                    getEventColor(event.categoryImpacted || undefined, computeSeverity(event))
                   )}
                 >
                   <div className="w-2 h-2 rounded-full bg-current" />
                 </div>
 
                 {/* Event Card */}
-                <Card className={cn("border-l-4", getEventColor(event.category, event.severity))}>
+                <Card className={cn("border-l-4", getEventColor(event.categoryImpacted || undefined, computeSeverity(event)))}>
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-3">
-                        <div className={cn("p-2 rounded-lg", getEventColor(event.category))}>
+                        <div className={cn("p-2 rounded-lg", getEventColor(event.categoryImpacted || undefined))}>
                           {getEventIcon(event.eventType)}
                         </div>
                         <div>
@@ -250,14 +259,14 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {event.severity && (
+                        {computeSeverity(event) && (
                           <div className="flex items-center gap-1">
-                            {getSeverityIcon(event.severity)}
+                            {getSeverityIcon(computeSeverity(event))}
                           </div>
                         )}
-                        {event.category && (
+                        {event.categoryImpacted && (
                           <Badge variant="secondary" className="capitalize">
-                            {event.category}
+                            {event.categoryImpacted}
                           </Badge>
                         )}
                       </div>
@@ -267,11 +276,11 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
                       <p className="text-sm text-muted-foreground mb-3">{event.description}</p>
                     )}
 
-                    {event.cost !== null && event.cost > 0 && (
+                    {event.costAmount !== null && event.costAmount !== undefined && event.costAmount > 0 && (
                       <div className="flex items-center gap-4 text-sm">
                         <div>
                           <span className="text-muted-foreground">Cost:</span>{" "}
-                          <span className="font-semibold">${event.cost.toLocaleString()}</span>
+                          <span className="font-semibold">${event.costAmount.toLocaleString()}</span>
                         </div>
                       </div>
                     )}

@@ -81,7 +81,7 @@ export function DocumentVault({ propertyId }: DocumentVaultProps) {
   const filteredDocuments = documents.filter((doc) => {
     const matchesSearch =
       searchQuery === "" ||
-      doc.fileName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doc.documentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       doc.documentType?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = filterType === "all" || doc.documentType === filterType;
     return matchesSearch && matchesType;
@@ -198,7 +198,7 @@ export function DocumentVault({ propertyId }: DocumentVaultProps) {
             <div className="text-center">
               <p className="text-3xl font-bold">
                 {formatFileSize(
-                  documents.reduce((sum, doc) => sum + (doc.fileSizeBytes || 0), 0)
+                  documents.reduce((sum, doc) => sum + (doc.fileSize || 0), 0)
                 )}
               </p>
               <p className="text-sm text-muted-foreground">Total Size</p>
@@ -251,13 +251,13 @@ export function DocumentVault({ propertyId }: DocumentVaultProps) {
                       className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg border"
                     >
                       <div className="flex items-center gap-3 flex-1">
-                        {getFileIcon(doc.fileType)}
+                        {getFileIcon(doc.fileType || undefined)}
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{doc.fileName}</p>
+                          <p className="font-medium truncate">{doc.documentName}</p>
                           <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                            <span>{formatFileSize(doc.fileSizeBytes)}</span>
+                            <span>{formatFileSize(doc.fileSize || undefined)}</span>
                             <span>•</span>
-                            <span>{new Date(doc.uploadedAt).toLocaleDateString()}</span>
+                            <span>{new Date(doc.createdAt).toLocaleDateString()}</span>
                             {doc.description && (
                               <>
                                 <span>•</span>
@@ -311,7 +311,7 @@ function UploadDocumentForm({
 }) {
   const [formData, setFormData] = useState({
     documentType: "",
-    fileName: "",
+    documentName: "",
     description: "",
   });
   const [file, setFile] = useState<File | null>(null);
@@ -337,12 +337,11 @@ function UploadDocumentForm({
           id: crypto.randomUUID(),
           propertyId,
           documentType: formData.documentType,
-          fileName: formData.fileName || file.name,
+          documentName: formData.documentName || file.name,
           fileType: file.type,
-          fileSizeBytes: file.size,
+          fileSize: file.size,
           fileUrl,
           description: formData.description,
-          uploadedAt: new Date().toISOString(),
           createdAt: new Date().toISOString(),
         }),
       });
@@ -371,8 +370,8 @@ function UploadDocumentForm({
             const selectedFile = e.target.files?.[0];
             if (selectedFile) {
               setFile(selectedFile);
-              if (!formData.fileName) {
-                setFormData({ ...formData, fileName: selectedFile.name });
+              if (!formData.documentName) {
+                setFormData({ ...formData, documentName: selectedFile.name });
               }
             }
           }}
@@ -413,11 +412,11 @@ function UploadDocumentForm({
       </div>
 
       <div>
-        <Label htmlFor="fileName">Display Name</Label>
+        <Label htmlFor="documentName">Display Name</Label>
         <Input
-          id="fileName"
-          value={formData.fileName}
-          onChange={(e) => setFormData({ ...formData, fileName: e.target.value })}
+          id="documentName"
+          value={formData.documentName}
+          onChange={(e) => setFormData({ ...formData, documentName: e.target.value })}
           placeholder={file?.name}
         />
       </div>

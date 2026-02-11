@@ -54,14 +54,14 @@ export async function getPropertyById(id: string): Promise<Property | undefined>
 }
 
 export async function getPropertiesByUserId(userId: string): Promise<Property[]> {
-  return db.select().from(properties).where(eq(properties.userId, userId)).orderBy(desc(properties.createdAt));
+  return db.select().from(properties).where(eq(properties.ownerId, userId)).orderBy(desc(properties.createdAt));
 }
 
 export async function getPropertyByAddress(userId: string, address: string): Promise<Property | undefined> {
   const [property] = await db
     .select()
     .from(properties)
-    .where(and(eq(properties.userId, userId), eq(properties.address, address)));
+    .where(and(eq(properties.ownerId, userId), eq(properties.fullAddress, address)));
   return property;
 }
 
@@ -175,12 +175,10 @@ export async function updatePropertyWarrantyCounts(id: string): Promise<Property
 export async function createAppliance(appliance: InsertPropertyAppliance): Promise<PropertyAppliance> {
   const [created] = await db.insert(propertyAppliances).values(appliance).returning();
 
-  // Increment property appliance count
+  // Update property timestamp
   await db
     .update(properties)
     .set({
-      totalAppliancesRegistered: sql`${properties.totalAppliancesRegistered} + 1`,
-      lastApplianceScanAt: sql`now()`,
       updatedAt: sql`now()`,
     })
     .where(eq(properties.id, appliance.propertyId));
@@ -197,7 +195,7 @@ export async function getAppliancesByProperty(propertyId: string): Promise<Prope
   return db
     .select()
     .from(propertyAppliances)
-    .where(and(eq(propertyAppliances.propertyId, propertyId), eq(propertyAppliances.isActive, true)))
+    .where(and(eq(propertyAppliances.propertyId, propertyId), eq(propertyAppliances.status, "active")))
     .orderBy(asc(propertyAppliances.location), asc(propertyAppliances.category));
 }
 
@@ -209,10 +207,10 @@ export async function getAppliancesByCategory(propertyId: string, category: stri
       and(
         eq(propertyAppliances.propertyId, propertyId),
         eq(propertyAppliances.category, category),
-        eq(propertyAppliances.isActive, true)
+        eq(propertyAppliances.status, "active")
       )
     )
-    .orderBy(asc(propertyAppliances.customName));
+    .orderBy(asc(propertyAppliances.brand));
 }
 
 export async function getAppliancesByLocation(propertyId: string, location: string): Promise<PropertyAppliance[]> {
@@ -223,7 +221,7 @@ export async function getAppliancesByLocation(propertyId: string, location: stri
       and(
         eq(propertyAppliances.propertyId, propertyId),
         eq(propertyAppliances.location, location),
-        eq(propertyAppliances.isActive, true)
+        eq(propertyAppliances.status, "active")
       )
     )
     .orderBy(asc(propertyAppliances.category));
@@ -235,12 +233,12 @@ export async function findDuplicateAppliance(
   model: string,
   serialNumber?: string
 ): Promise<PropertyAppliance | undefined> {
-  const conditions = [eq(propertyAppliances.propertyId, propertyId), eq(propertyAppliances.isActive, true)];
+  const conditions = [eq(propertyAppliances.propertyId, propertyId), eq(propertyAppliances.status, "active")];
 
   if (serialNumber) {
     conditions.push(eq(propertyAppliances.serialNumber, serialNumber));
   } else {
-    conditions.push(eq(propertyAppliances.brand, brand), eq(propertyAppliances.model, model));
+    conditions.push(eq(propertyAppliances.brand, brand), eq(propertyAppliances.modelNumber, model));
   }
 
   const [appliance] = await db.select().from(propertyAppliances).where(and(...conditions));
@@ -264,8 +262,7 @@ export async function replaceAppliance(
   await db
     .update(propertyAppliances)
     .set({
-      isActive: false,
-      replacedAt: sql`now()`,
+      status: "replaced",
       updatedAt: sql`now()`,
     })
     .where(eq(propertyAppliances.id, oldApplianceId));
@@ -275,14 +272,13 @@ export async function replaceAppliance(
     .insert(propertyAppliances)
     .values({
       ...newAppliance,
-      replacedById: oldApplianceId,
     })
     .returning();
 
   // Update old appliance to point to new one
   await db
     .update(propertyAppliances)
-    .set({ replacedById: created.id })
+    .set({ replacedBy: created.id })
     .where(eq(propertyAppliances.id, oldApplianceId));
 
   return created;
@@ -295,8 +291,7 @@ export async function getAppliancesNeedingReview(propertyId: string): Promise<Pr
     .where(
       and(
         eq(propertyAppliances.propertyId, propertyId),
-        eq(propertyAppliances.needsReview, true),
-        eq(propertyAppliances.isActive, true)
+        eq(propertyAppliances.status, "active")
       )
     )
     .orderBy(desc(propertyAppliances.createdAt));
@@ -387,14 +382,12 @@ export async function markScanAsCompleted(
       aiProcessingStatus: "completed",
       aiProcessingCompletedAt: sql`now()`,
       aiProcessingDurationMs: duration,
-      aiExtractedBrand: results.brand,
-      aiExtractedModel: results.model,
-      aiExtractedSerial: results.serial,
-      aiExtractedCategory: results.category,
-      aiOverallConfidence: results.confidence,
-      warrantyLookupResult: results.warrantyInfo,
-      specsLookupResult: results.specsInfo,
-      status: results.confidence >= 0.85 ? "auto_confirmed" : results.confidence >= 0.5 ? "needs_review" : "low_confidence",
+      extractedBrand: results.brand,
+      extractedModel: results.model,
+      extractedSerialNumber: results.serial,
+      extractedCategory: results.category,
+      confidenceScore: results.confidence,
+      needsReview: results.confidence < 0.85,
       autoConfirmed: results.confidence >= 0.85,
       updatedAt: sql`now()`,
     })
@@ -527,17 +520,11 @@ export async function recordWarrantyClaim(
   const warranty = await getWarrantyById(warrantyId);
   if (!warranty) return undefined;
 
-  const claims = (warranty.claimsHistory as any[]) || [];
-  claims.push(claimDetails);
-
   const [updated] = await db
     .update(propertyWarranties)
     .set({
-      claimsHistory: claims,
-      totalClaimsFiled: (warranty.totalClaimsFiled || 0) + 1,
-      totalClaimsApproved:
-        (warranty.totalClaimsApproved || 0) + (claimDetails.outcome === "approved" ? 1 : 0),
-      totalClaimsPaidOut: (warranty.totalClaimsPaidOut || 0) + (claimDetails.amount || 0),
+      totalClaimsMade: (warranty.totalClaimsMade || 0) + 1,
+      lastClaimDate: claimDetails.date,
       updatedAt: sql`now()`,
     })
     .where(eq(propertyWarranties.id, warrantyId))
@@ -610,7 +597,7 @@ export async function recordInsuranceClaim(
     .update(propertyInsurance)
     .set({
       claimsHistory: claims,
-      totalClaimsFiled: (insurance.totalClaimsFiled || 0) + 1,
+      totalClaimsMade: (insurance.totalClaimsMade || 0) + 1,
       updatedAt: sql`now()`,
     })
     .where(eq(propertyInsurance.id, insuranceId))
@@ -685,7 +672,7 @@ export async function getMaintenanceTasksByProperty(propertyId: string): Promise
   return db
     .select()
     .from(propertyMaintenanceSchedule)
-    .where(and(eq(propertyMaintenanceSchedule.propertyId, propertyId), eq(propertyMaintenanceSchedule.isActive, true)))
+    .where(and(eq(propertyMaintenanceSchedule.propertyId, propertyId), eq(propertyMaintenanceSchedule.status, "active")))
     .orderBy(asc(propertyMaintenanceSchedule.nextDueDate));
 }
 
@@ -696,7 +683,7 @@ export async function getOverdueMaintenanceTasks(): Promise<PropertyMaintenanceS
     .from(propertyMaintenanceSchedule)
     .where(
       and(
-        eq(propertyMaintenanceSchedule.isActive, true),
+        eq(propertyMaintenanceSchedule.status, "active"),
         lte(propertyMaintenanceSchedule.nextDueDate, now),
         eq(propertyMaintenanceSchedule.isOverdue, false)
       )
@@ -724,7 +711,7 @@ export async function markMaintenanceCompleted(
   if (!task) return undefined;
 
   const now = new Date();
-  const nextDue = new Date(now.getTime() + (task.frequencyMonths || 6) * 30 * 24 * 60 * 60 * 1000);
+  const nextDue = new Date(now.getTime() + (task.frequencyDays || 180) * 24 * 60 * 60 * 1000);
 
   const [updated] = await db
     .update(propertyMaintenanceSchedule)
@@ -733,7 +720,7 @@ export async function markMaintenanceCompleted(
       lastServiceRequestId: serviceRequestId,
       nextDueDate: nextDue.toISOString(),
       isOverdue: false,
-      overdueDays: 0,
+      overdueBy: 0,
       updatedAt: sql`now()`,
     })
     .where(eq(propertyMaintenanceSchedule.id, id))

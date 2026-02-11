@@ -68,7 +68,15 @@ export function WarrantyTracker({ propertyId }: WarrantyTrackerProps) {
     return "bg-gray-100 text-gray-800 border-gray-300";
   }
 
-  const filteredWarranties = warranties.filter((w) => {
+  // Compute days until expiration for each warranty
+  const warrantiesWithDays = warranties.map(w => {
+    const daysUntilExpiration = w.endDate
+      ? Math.ceil((new Date(w.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+      : 0;
+    return { ...w, daysUntilExpiration };
+  });
+
+  const filteredWarranties = warrantiesWithDays.filter((w) => {
     if (filter === "all") return true;
     if (filter === "active") return w.status === "active";
     if (filter === "expiring") return w.status === "expiring_soon";
@@ -213,17 +221,19 @@ export function WarrantyTracker({ propertyId }: WarrantyTrackerProps) {
             <Card key={warranty.id}>
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
-                  <div className="mt-1">{getStatusIcon(warranty.status)}</div>
+                  <div className="mt-1">{getStatusIcon(warranty.status || "active")}</div>
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <h3 className="font-semibold text-lg">{warranty.itemCovered}</h3>
+                        <h3 className="font-semibold text-lg">
+                          {warranty.coverageItems?.[0] || warranty.description || "Warranty"}
+                        </h3>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {warranty.warrantyType?.replace(/_/g, " ")}
+                          {warranty.warrantyType ? warranty.warrantyType.replace(/_/g, " ") : "N/A"}
                         </p>
                       </div>
-                      <Badge className={cn("text-xs", getStatusColor(warranty.status))}>
-                        {warranty.status?.replace(/_/g, " ")}
+                      <Badge className={cn("text-xs", getStatusColor(warranty.status || "active"))}>
+                        {warranty.status ? warranty.status.replace(/_/g, " ") : "active"}
                       </Badge>
                     </div>
 
@@ -241,7 +251,7 @@ export function WarrantyTracker({ propertyId }: WarrantyTrackerProps) {
                       <div>
                         <p className="text-xs text-muted-foreground">Expiration</p>
                         <p className="font-medium">
-                          {new Date(warranty.expirationDate).toLocaleDateString()}
+                          {warranty.endDate ? new Date(warranty.endDate).toLocaleDateString() : "N/A"}
                         </p>
                       </div>
                       <div>
@@ -249,26 +259,26 @@ export function WarrantyTracker({ propertyId }: WarrantyTrackerProps) {
                         <p
                           className={cn(
                             "font-bold",
-                            warranty.daysUntilExpiration! > 90 && "text-green-600",
-                            warranty.daysUntilExpiration! <= 90 &&
-                              warranty.daysUntilExpiration! > 30 &&
+                            warranty.daysUntilExpiration > 90 && "text-green-600",
+                            warranty.daysUntilExpiration <= 90 &&
+                              warranty.daysUntilExpiration > 30 &&
                               "text-orange-600",
-                            warranty.daysUntilExpiration! <= 30 && "text-red-600"
+                            warranty.daysUntilExpiration <= 30 && "text-red-600"
                           )}
                         >
-                          {warranty.daysUntilExpiration || 0}
+                          {warranty.daysUntilExpiration}
                         </p>
                       </div>
                     </div>
 
-                    {warranty.coverageDetails && (
+                    {(warranty.description || warranty.notes) && (
                       <div className="mt-4 p-3 bg-gray-50 rounded">
                         <p className="text-xs text-muted-foreground mb-1">Coverage Details</p>
-                        <p className="text-sm">{warranty.coverageDetails}</p>
+                        <p className="text-sm">{warranty.description || warranty.notes}</p>
                       </div>
                     )}
 
-                    {warranty.daysUntilExpiration! <= 90 && warranty.daysUntilExpiration! > 0 && (
+                    {warranty.daysUntilExpiration <= 90 && warranty.daysUntilExpiration > 0 && (
                       <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
                         <div className="flex items-center gap-2">
                           <AlertCircle className="h-4 w-4 text-orange-600" />
@@ -282,10 +292,10 @@ export function WarrantyTracker({ propertyId }: WarrantyTrackerProps) {
                       </div>
                     )}
 
-                    {warranty.documentUrl && (
+                    {warranty.policyDocumentUrl && (
                       <div className="mt-4">
                         <a
-                          href={warranty.documentUrl}
+                          href={warranty.policyDocumentUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-primary hover:underline"

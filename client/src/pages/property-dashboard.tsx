@@ -68,7 +68,7 @@ export default function PropertyDashboard() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Home className="h-6 w-6 text-primary" />
-              <h1 className="text-3xl font-bold">{property.address}</h1>
+              <h1 className="text-3xl font-bold">{property.fullAddress || "Property"}</h1>
             </div>
             <p className="text-lg text-muted-foreground">
               {property.city}, {property.state} {property.zipCode}
@@ -80,8 +80,8 @@ export default function PropertyDashboard() {
               {property.yearBuilt && (
                 <Badge variant="outline">Built {property.yearBuilt}</Badge>
               )}
-              {property.squareFootage && (
-                <Badge variant="outline">{property.squareFootage.toLocaleString()} sq ft</Badge>
+              {property.sqft && (
+                <Badge variant="outline">{property.sqft.toLocaleString()} sq ft</Badge>
               )}
             </div>
           </div>
@@ -105,7 +105,7 @@ export default function PropertyDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Appliances</p>
-                <p className="text-2xl font-bold">{property.totalAppliancesRegistered || 0}</p>
+                <p className="text-2xl font-bold">0</p>
               </div>
               <TrendingUp className="h-8 w-8 text-blue-500" />
             </div>
@@ -117,7 +117,7 @@ export default function PropertyDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active Warranties</p>
-                <p className="text-2xl font-bold">{property.totalWarrantiesActive || 0}</p>
+                <p className="text-2xl font-bold">{property.activeWarrantyCount || 0}</p>
               </div>
               <Shield className="h-8 w-8 text-green-500" />
             </div>
@@ -129,7 +129,7 @@ export default function PropertyDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Documents</p>
-                <p className="text-2xl font-bold">{property.totalDocuments || 0}</p>
+                <p className="text-2xl font-bold">0</p>
               </div>
               <FileText className="h-8 w-8 text-purple-500" />
             </div>
@@ -141,7 +141,7 @@ export default function PropertyDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Maintenance Due</p>
-                <p className="text-2xl font-bold">{property.totalMaintenanceOverdue || 0}</p>
+                <p className="text-2xl font-bold">0</p>
               </div>
               <AlertCircle className="h-8 w-8 text-orange-500" />
             </div>
@@ -178,7 +178,7 @@ export default function PropertyDashboard() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Square Footage</p>
-                  <p className="font-medium">{property.squareFootage?.toLocaleString() || "Unknown"}</p>
+                  <p className="font-medium">{property.sqft?.toLocaleString() || "Unknown"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Bedrooms / Bathrooms</p>
@@ -186,10 +186,10 @@ export default function PropertyDashboard() {
                     {property.bedrooms || "?"} bed / {property.bathrooms || "?"} bath
                   </p>
                 </div>
-                {property.lotSizeAcres && (
+                {property.lotSizeSqft && (
                   <div>
                     <p className="text-sm text-muted-foreground">Lot Size</p>
-                    <p className="font-medium">{property.lotSizeAcres} acres</p>
+                    <p className="font-medium">{(property.lotSizeSqft / 43560).toFixed(2)} acres</p>
                   </div>
                 )}
                 {property.roofAgeYears !== null && (

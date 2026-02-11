@@ -99,7 +99,7 @@ export function ProQualityScore() {
                 <span className="capitalize">
                   {key.replace(/([A-Z])/g, " $1").trim()}
                 </span>
-                <span className="font-medium">{value}%</span>
+                <span className="font-medium">{String(value)}%</span>
               </div>
               <Progress
                 value={value as number}

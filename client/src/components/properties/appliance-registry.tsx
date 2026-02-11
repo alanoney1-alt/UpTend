@@ -186,7 +186,7 @@ export function ApplianceRegistry({ propertyId }: ApplianceRegistryProps) {
                   <div className="text-4xl">{getApplianceIcon(appliance.category)}</div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold truncate">
-                      {appliance.brand} {appliance.model}
+                      {appliance.brand} {appliance.modelNumber}
                     </h3>
                     <p className="text-sm text-muted-foreground capitalize">
                       {appliance.category?.replace(/_/g, " ")}
@@ -221,46 +221,52 @@ export function ApplianceRegistry({ propertyId }: ApplianceRegistryProps) {
                 </div>
 
                 {/* Warranty Status */}
-                {appliance.warrantyStatus && (
-                  <div className="mt-4 pt-4 border-t">
-                    <div className="flex items-center gap-2">
-                      {appliance.warrantyStatus === "active" && (
-                        <CheckCircle className="h-4 w-4 text-green-600" />
-                      )}
-                      {appliance.warrantyStatus === "expiring_soon" && (
-                        <AlertCircle className="h-4 w-4 text-orange-600" />
-                      )}
-                      {appliance.warrantyStatus === "expired" && (
-                        <AlertCircle className="h-4 w-4 text-red-600" />
-                      )}
-                      <span
-                        className={cn(
-                          "text-sm font-medium capitalize",
-                          getWarrantyStatusColor(appliance.warrantyStatus)
-                        )}
-                      >
-                        {appliance.warrantyStatus?.replace(/_/g, " ")}
-                      </span>
-                    </div>
-                    {appliance.warrantyExpirationDate && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Expires: {new Date(appliance.warrantyExpirationDate).toLocaleDateString()}
-                      </p>
-                    )}
-                  </div>
-                )}
+                {(appliance.hasActiveWarranty || appliance.warrantyExpiresAt) && (() => {
+                  // Compute warranty status from existing fields
+                  const getWarrantyStatus = () => {
+                    if (!appliance.hasActiveWarranty) return "expired";
+                    if (!appliance.warrantyExpiresAt) return "active";
 
-                {/* Scan Method Badge */}
-                {appliance.scanMethod && (
-                  <div className="mt-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {appliance.scanMethod === "customer_scan" && "Self-Scanned"}
-                      {appliance.scanMethod === "pro_scan" && "Pro Scanned"}
-                      {appliance.scanMethod === "dwellscan" && "DwellScan"}
-                      {appliance.scanMethod === "manual" && "Manual Entry"}
-                    </Badge>
-                  </div>
-                )}
+                    const expiryDate = new Date(appliance.warrantyExpiresAt);
+                    const now = new Date();
+                    const daysUntilExpiry = Math.floor((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+                    if (daysUntilExpiry < 0) return "expired";
+                    if (daysUntilExpiry <= 30) return "expiring_soon";
+                    return "active";
+                  };
+
+                  const warrantyStatus = getWarrantyStatus();
+
+                  return (
+                    <div className="mt-4 pt-4 border-t">
+                      <div className="flex items-center gap-2">
+                        {warrantyStatus === "active" && (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        )}
+                        {warrantyStatus === "expiring_soon" && (
+                          <AlertCircle className="h-4 w-4 text-orange-600" />
+                        )}
+                        {warrantyStatus === "expired" && (
+                          <AlertCircle className="h-4 w-4 text-red-600" />
+                        )}
+                        <span
+                          className={cn(
+                            "text-sm font-medium capitalize",
+                            getWarrantyStatusColor(warrantyStatus)
+                          )}
+                        >
+                          {warrantyStatus?.replace(/_/g, " ")}
+                        </span>
+                      </div>
+                      {appliance.warrantyExpiresAt && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Expires: {new Date(appliance.warrantyExpiresAt).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           ))}

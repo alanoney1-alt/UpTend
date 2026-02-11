@@ -126,7 +126,7 @@ export default function Properties() {
             <CardContent className="pt-6">
               <div className="text-center">
                 <p className="text-3xl font-bold">
-                  {properties.reduce((sum, p) => sum + (p.totalAppliancesRegistered || 0), 0)}
+                  {properties.reduce((sum, p) => sum + 0, 0)}
                 </p>
                 <p className="text-sm text-muted-foreground">Total Appliances</p>
               </div>
@@ -136,7 +136,7 @@ export default function Properties() {
             <CardContent className="pt-6">
               <div className="text-center">
                 <p className="text-3xl font-bold">
-                  {properties.reduce((sum, p) => sum + (p.totalWarrantiesActive || 0), 0)}
+                  {properties.reduce((sum, p) => sum + (p.activeWarrantyCount || 0), 0)}
                 </p>
                 <p className="text-sm text-muted-foreground">Active Warranties</p>
               </div>
@@ -146,7 +146,7 @@ export default function Properties() {
             <CardContent className="pt-6">
               <div className="text-center">
                 <p className="text-3xl font-bold text-orange-600">
-                  {properties.reduce((sum, p) => sum + (p.totalMaintenanceOverdue || 0), 0)}
+                  {properties.reduce((sum, p) => sum + 0, 0)}
                 </p>
                 <p className="text-sm text-muted-foreground">Maintenance Due</p>
               </div>
@@ -181,7 +181,7 @@ export default function Properties() {
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-1">{property.address}</h3>
+                      <h3 className="text-xl font-bold mb-1">{property.fullAddress || "Property"}</h3>
                       <p className="text-muted-foreground">
                         {property.city}, {property.state} {property.zipCode}
                       </p>
@@ -232,42 +232,31 @@ export default function Properties() {
                   <div className="grid grid-cols-3 gap-3">
                     <div className="text-center p-3 bg-blue-50 rounded">
                       <p className="text-2xl font-bold text-blue-600">
-                        {property.totalAppliancesRegistered || 0}
+                        0
                       </p>
                       <p className="text-xs text-muted-foreground">Appliances</p>
                     </div>
                     <div className="text-center p-3 bg-green-50 rounded">
                       <p className="text-2xl font-bold text-green-600">
-                        {property.totalWarrantiesActive || 0}
+                        {property.activeWarrantyCount || 0}
                       </p>
                       <p className="text-xs text-muted-foreground">Warranties</p>
                     </div>
                     <div className="text-center p-3 bg-purple-50 rounded">
                       <p className="text-2xl font-bold text-purple-600">
-                        {property.totalDocuments || 0}
+                        0
                       </p>
                       <p className="text-xs text-muted-foreground">Documents</p>
                     </div>
                   </div>
 
                   {/* Alerts */}
-                  {(property.totalWarrantiesExpiring || 0) > 0 && (
+                  {(property.expiringWarrantyCount || 0) > 0 && (
                     <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
                       <div className="flex items-center gap-2">
                         <AlertCircle className="h-4 w-4 text-orange-600" />
                         <p className="text-sm text-orange-800 font-medium">
-                          {property.totalWarrantiesExpiring} warranty expiring soon
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {(property.totalMaintenanceOverdue || 0) > 0 && (
-                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4 text-red-600" />
-                        <p className="text-sm text-red-800 font-medium">
-                          {property.totalMaintenanceOverdue} maintenance task(s) overdue
+                          {property.expiringWarrantyCount} warranty expiring soon
                         </p>
                       </div>
                     </div>
