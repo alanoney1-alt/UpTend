@@ -226,7 +226,7 @@ export default function PyckerSignup() {
 
     setSendingVerification(true);
     try {
-      const response = await fetch("/api/haulers/send-verification", {
+      const response = await fetch("/api/pros/send-verification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -279,7 +279,7 @@ export default function PyckerSignup() {
 
     setVerifyingEmail(true);
     try {
-      const response = await fetch("/api/haulers/verify-email", {
+      const response = await fetch("/api/pros/verify-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code: verificationCode }),
@@ -317,7 +317,7 @@ export default function PyckerSignup() {
         serviceTypes: selectedServices,
         supportedServices: selectedServices,
       };
-      const response = await fetch("/api/haulers/register", {
+      const response = await fetch("/api/pros/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -491,7 +491,7 @@ export default function PyckerSignup() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             {currentStep === 1 && (
-              <Card className="p-6" data-testid="card-step-account">
+              <Card className="p-6" data-testid="card-step-account-pro">
                 <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                   <Lock className="w-5 h-5" />
                   Create Your Account
@@ -637,7 +637,7 @@ export default function PyckerSignup() {
             )}
 
             {currentStep === 2 && (
-              <Card className="p-6" data-testid="card-step-personal">
+              <Card className="p-6" data-testid="card-step-personal-pro">
                 <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                   <User className="w-5 h-5" />
                   Personal & Business Information
@@ -693,7 +693,7 @@ export default function PyckerSignup() {
                     <FormItem className="mb-6">
                       <FormLabel>Company / Business Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Smith Hauling LLC" {...field} data-testid="input-company-name" />
+                        <Input placeholder="Smith Moving LLC" {...field} data-testid="input-company-name" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -776,7 +776,7 @@ export default function PyckerSignup() {
             )}
 
             {currentStep === 3 && (
-              <Card className="p-6" data-testid="card-step-vehicle">
+              <Card className="p-6" data-testid="card-step-vehicle-pro">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-xl font-semibold flex items-center gap-2">
                     <Car className="w-5 h-5" />
@@ -1036,7 +1036,7 @@ export default function PyckerSignup() {
             )}
 
             {currentStep === 4 && (
-              <Card className="p-6" data-testid="card-step-verification">
+              <Card className="p-6" data-testid="card-step-verification-pro">
                 <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                   <Shield className="w-5 h-5" />
                   Verification & Background Check
@@ -1356,7 +1356,7 @@ export default function PyckerSignup() {
             )}
 
             {currentStep === 5 && (
-              <Card className="p-8 text-center" data-testid="card-step-complete">
+              <Card className="p-8 text-center" data-testid="card-step-complete-pro">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-green-500" />
                 </div>

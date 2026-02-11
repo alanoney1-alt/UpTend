@@ -21,7 +21,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-type UserType = "homeowner" | "pycker";
+type UserType = "homeowner" | "pro";
 
 const TAB_CONFIG: Record<UserType, {
   headline: string;
@@ -39,13 +39,13 @@ const TAB_CONFIG: Record<UserType, {
     signupLabel: "Create a free account",
     endpoint: "/api/customers/login",
   },
-  pycker: {
+  pro: {
     headline: "Mission Control.",
     subtext: "Turn on availability, accept jobs, and get paid instantly.",
     icon: Truck,
-    signupLink: "/pycker-signup",
+    signupLink: "/pro-signup",
     signupLabel: "Apply to become a Pro",
-    endpoint: "/api/haulers/login",
+    endpoint: "/api/pros/login",
   },
 };
 
@@ -54,8 +54,8 @@ export default function AuthPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
-  const isPyckerRoute = location.includes("pycker");
-  const [activeTab, setActiveTab] = useState<UserType>(isPyckerRoute ? "pycker" : "homeowner");
+  const isProRoute = location.includes("pycker") || location.includes("pro");
+  const [activeTab, setActiveTab] = useState<UserType>(isProRoute ? "pro" : "homeowner");
 
   // Read URL parameters for redirect and address persistence
   const urlParams = new URLSearchParams(window.location.search);
@@ -110,7 +110,7 @@ export default function AuthPage() {
           setLocation("/dashboard");
         }
       } else {
-        setLocation("/hauler/dashboard");
+        setLocation("/pro/dashboard");
       }
     },
     onError: (error: any) => {
@@ -156,7 +156,7 @@ export default function AuthPage() {
                 <Home className="w-4 h-4" />
                 Homeowner
               </TabsTrigger>
-              <TabsTrigger value="pycker" className="gap-2" data-testid="tab-pycker">
+              <TabsTrigger value="pro" className="gap-2" data-testid="tab-pro">
                 <Truck className="w-4 h-4" />
                 Pro
               </TabsTrigger>

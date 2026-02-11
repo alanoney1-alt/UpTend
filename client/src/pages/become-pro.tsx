@@ -74,7 +74,7 @@ export default function BecomePro() {
           Become the first choice for homeowners and property managers who care about sustainability.
         </p>
         <div className="flex justify-center gap-4 flex-wrap">
-          <Link href="/pycker/signup">
+          <Link href="/pro/signup">
             <Button size="lg" className="font-bold text-lg" data-testid="button-apply-hero">
               Apply to Join
             </Button>
@@ -173,7 +173,7 @@ export default function BecomePro() {
         </div>
 
         <div className="mt-12">
-          <Link href="/pycker/signup">
+          <Link href="/pro/signup">
             <Button size="lg" className="font-bold text-lg" data-testid="button-apply-bottom">
               Apply Now
             </Button>

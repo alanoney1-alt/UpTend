@@ -36,7 +36,7 @@ export default function PyckerLogin() {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
-      const response = await apiRequest("POST", "/api/haulers/login", data);
+      const response = await apiRequest("POST", "/api/pros/login", data);
       return response.json();
     },
     onSuccess: () => {
@@ -46,7 +46,7 @@ export default function PyckerLogin() {
         description: "Welcome back! Redirecting to your dashboard...",
       });
       setTimeout(() => {
-        setLocation("/hauler/dashboard");
+        setLocation("/pro/dashboard");
       }, 1000);
     },
     onError: (error: any) => {
@@ -72,7 +72,7 @@ export default function PyckerLogin() {
       </header>
 
       <main className="flex-1 flex items-center justify-center px-4 py-8">
-        <Card className="w-full max-w-md p-8" data-testid="card-pycker-login">
+        <Card className="w-full max-w-md p-8" data-testid="card-pro-login">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <Logo className="w-10 h-10" textClassName="text-xl" />
@@ -169,7 +169,7 @@ export default function PyckerLogin() {
           <div className="mt-6 text-center space-y-4">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link href="/pycker-signup" className="text-primary hover:underline">
+              <Link href="/pro-signup" className="text-primary hover:underline">
                 Apply to become a Pro
               </Link>
             </p>

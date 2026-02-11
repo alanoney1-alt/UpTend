@@ -22,7 +22,7 @@ interface EarningsData {
 
 export default function EarningsPage() {
   const { data: earnings, isLoading } = useQuery<EarningsData>({
-    queryKey: ["/api/hauler/earnings"],
+    queryKey: ["/api/pro/earnings"],
   });
 
   if (isLoading) {
@@ -48,7 +48,7 @@ export default function EarningsPage() {
     <div className="min-h-screen bg-background" data-testid="page-earnings">
       <div className="max-w-2xl mx-auto p-4 space-y-6">
         <div className="flex items-center gap-3">
-          <Link href="/hauler/dashboard" data-testid="link-earnings-back">
+          <Link href="/pro/dashboard" data-testid="link-earnings-back">
             <Button variant="ghost" size="icon" data-testid="button-earnings-back">
               <ArrowLeft className="w-5 h-5" />
             </Button>

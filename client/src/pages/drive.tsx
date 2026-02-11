@@ -112,7 +112,7 @@ export default function Drive() {
               that makes you the first choice for homeowners who care.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/pycker/signup">
+              <Link href="/pro/signup">
                 <Button size="lg" className="gap-2" data-testid="button-apply-now">
                   Start Earning Today <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -331,7 +331,7 @@ export default function Drive() {
             <p className="text-muted-foreground mb-8">
               Join the growing community of verified Pros in Orlando. Fair pay, proven impact, full accountability.
             </p>
-            <Link href="/pycker/signup">
+            <Link href="/pro/signup">
               <Button size="lg" className="gap-2" data-testid="button-apply-bottom">
                 Apply Now <ChevronRight className="w-4 h-4" />
               </Button>
@@ -356,7 +356,7 @@ export default function Drive() {
                   Customer Site
                 </span>
               </Link>
-              <Link href="/hauler/dashboard">
+              <Link href="/pro/dashboard">
                 <span className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
                   Pro Portal
                 </span>

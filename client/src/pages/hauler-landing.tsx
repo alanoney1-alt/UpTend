@@ -27,7 +27,7 @@ const safetyPromises = [
 
 export default function HaulerLanding() {
   return (
-    <div className="min-h-screen bg-background" data-testid="page-hauler-landing">
+    <div className="min-h-screen bg-background" data-testid="page-pro-landing">
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-4">
@@ -35,13 +35,13 @@ export default function HaulerLanding() {
               <Logo className="w-10 h-10" textClassName="text-xl" />
             </Link>
             <div className="flex items-center gap-3">
-              <Link href="/pycker-login">
-                <Button variant="ghost" data-testid="button-pycker-login">
+              <Link href="/pro-login">
+                <Button variant="ghost" data-testid="button-pro-login">
                   Log In
                 </Button>
               </Link>
-              <Link href="/pycker/signup">
-                <Button data-testid="button-pycker-signup-header">
+              <Link href="/pro-signup">
+                <Button data-testid="button-pro-signup-header">
                   Apply Now
                 </Button>
               </Link>
@@ -51,24 +51,24 @@ export default function HaulerLanding() {
       </header>
 
       <main>
-        <section className="bg-slate-900 dark:bg-slate-950 text-white pt-24 pb-32" data-testid="section-hauler-hero">
+        <section className="bg-slate-900 dark:bg-slate-950 text-white pt-24 pb-32" data-testid="section-pro-hero">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" data-testid="text-hauler-headline">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" data-testid="text-pro-headline">
               Real Jobs. Fair Pay. <br />Verified Impact.
             </h1>
-            <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4" data-testid="text-hauler-subheadline">
+            <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4" data-testid="text-pro-subheadline">
               UpTend matches you with real jobs, pays you fairly, and automatically builds your verified green track record.
               5 service verticals. One transparent platform.
             </p>
-            <p className="text-sm font-semibold text-orange-400 mb-10" data-testid="text-hauler-hook">
+            <p className="text-sm font-semibold text-orange-400 mb-10" data-testid="text-pro-hook">
               Avg. Orlando Pro Earns $1,200/Week.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 flex-wrap">
-              <Link href="/pycker/signup">
+              <Link href="/pro-signup">
                 <Button
                   size="lg"
                   className="gap-2 text-lg bg-green-500 border-green-500 text-slate-900 font-bold"
-                  data-testid="button-hauler-apply"
+                  data-testid="button-pro-apply"
                 >
                   Start Earning (Apply) <ArrowRight className="w-5 h-5" />
                 </Button>
@@ -117,7 +117,7 @@ export default function HaulerLanding() {
                 </div>
 
                 <div className="mt-10">
-                  <Link href="/pycker/signup">
+                  <Link href="/pro-signup">
                     <Button
                       className="bg-white border-white text-slate-900 font-bold gap-2"
                       size="lg"
@@ -186,10 +186,10 @@ export default function HaulerLanding() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-muted">
-                      <tr data-testid="row-role-hauler">
+                      <tr data-testid="row-role-pro">
                         <td className="p-4 font-bold">
                           <span className="flex items-center gap-2">
-                            <Truck className="w-5 h-5 text-primary" /> Hauler
+                            <Truck className="w-5 h-5 text-primary" /> Junk Removal Pro
                           </span>
                         </td>
                         <td className="p-4 text-muted-foreground">Pickup Truck / Trailer</td>
@@ -244,7 +244,7 @@ export default function HaulerLanding() {
           </div>
         </section>
 
-        <section className="py-20 text-center" data-testid="section-hauler-perks">
+        <section className="py-20 text-center" data-testid="section-pro-perks">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <h2 className="text-3xl font-bold mb-10">Why Pros Choose UpTend</h2>
             <div className="grid md:grid-cols-3 gap-8">
@@ -271,7 +271,7 @@ export default function HaulerLanding() {
 
         <CareerLadder />
 
-        <section className="py-16 md:py-24 bg-muted/30" data-testid="section-hauler-safety">
+        <section className="py-16 md:py-24 bg-muted/30" data-testid="section-pro-safety">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div className="text-center mb-12">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
@@ -298,27 +298,27 @@ export default function HaulerLanding() {
           </div>
         </section>
 
-        <section className="py-16 md:py-24 bg-primary text-primary-foreground" data-testid="section-hauler-referral">
+        <section className="py-16 md:py-24 bg-primary text-primary-foreground" data-testid="section-pro-referral">
           <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold mb-4">Refer Friends, Earn $50 Each</h2>
             <p className="text-lg opacity-90 mb-8">
               Know someone who&rsquo;d be a great Pro? Refer them and you both earn $50
               after they complete their first job.
             </p>
-            <Button size="lg" variant="secondary" className="gap-2" data-testid="button-hauler-refer">
+            <Button size="lg" variant="secondary" className="gap-2" data-testid="button-pro-refer">
               <Gift className="w-4 h-4" /> Start Referring
             </Button>
           </div>
         </section>
 
-        <section className="py-20" data-testid="section-hauler-final-cta">
+        <section className="py-20" data-testid="section-pro-final-cta">
           <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Start Earning?</h2>
             <p className="text-muted-foreground mb-8">
               Join the growing community of verified UpTend Pros in Orlando. Fair pay, proven impact, full accountability.
             </p>
-            <Link href="/pycker/signup">
-              <Button size="lg" className="gap-2" data-testid="button-hauler-apply-bottom">
+            <Link href="/pro-signup">
+              <Button size="lg" className="gap-2" data-testid="button-pro-apply-bottom">
                 Apply Now <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>

@@ -79,9 +79,9 @@ function ReviewsDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const { data: reviews, isLoading } = useQuery<HaulerReviewWithCustomer[]>({
-    queryKey: ["/api/haulers", haulerId, "reviews"],
+    queryKey: ["/api/pros", haulerId, "reviews"],
     queryFn: async () => {
-      const res = await fetch(`/api/haulers/${haulerId}/reviews`);
+      const res = await fetch(`/api/pros/${haulerId}/reviews`);
       if (!res.ok) return [];
       return res.json();
     },
@@ -199,18 +199,18 @@ function HaulerCard({
 
   return (
     <>
-      <Card className="p-5 hover-elevate" data-testid={`card-hauler-${hauler.id}`}>
+      <Card className="p-5 hover-elevate" data-testid={`card-pro-${hauler.id}`}>
         <div className="flex items-start gap-4 mb-4">
           <Avatar className="w-16 h-16">
             <AvatarImage src={hauler.profileImageUrl || undefined} />
             <AvatarFallback className="text-lg">
-              {profile?.companyName?.charAt(0) || hauler.firstName?.charAt(0) || "H"}
+              {profile?.companyName?.charAt(0) || hauler.firstName?.charAt(0) || "P"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <h3 className="font-semibold text-lg">{profile?.companyName || `${hauler.firstName || ''} ${hauler.lastName || ''}`.trim() || 'Hauler'}</h3>
+                <h3 className="font-semibold text-lg">{profile?.companyName || `${hauler.firstName || ''} ${hauler.lastName || ''}`.trim() || 'Pro'}</h3>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                   {profile?.verified && (
                     <Badge variant="secondary">
@@ -353,7 +353,7 @@ function HaulerCard({
 
       <ReviewsDialog
         haulerId={profile?.id || ""}
-        companyName={profile?.companyName || `${hauler.firstName || ''} ${hauler.lastName || ''}`.trim() || "Hauler"}
+        companyName={profile?.companyName || `${hauler.firstName || ''} ${hauler.lastName || ''}`.trim() || "Pro"}
         open={showReviews}
         onOpenChange={setShowReviews}
       />
@@ -389,15 +389,15 @@ export default function Haulers() {
   }, []);
 
   const { data: searchResult, isLoading } = useQuery<SearchResult>({
-    queryKey: ["/api/haulers/search", selectedServiceType, selectedCapability, laborOnly],
+    queryKey: ["/api/pros/search", selectedServiceType, selectedCapability, laborOnly],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedServiceType !== "all") params.set("serviceType", selectedServiceType);
       if (selectedCapability !== "all") params.set("capability", selectedCapability);
       if (laborOnly) params.set("laborOnly", "true");
       params.set("availableOnly", "true");
-      
-      const res = await fetch(`/api/haulers/search?${params.toString()}`);
+
+      const res = await fetch(`/api/pros/search?${params.toString()}`);
       if (!res.ok) return { matches: [], suggestions: [] };
       return res.json();
     },
@@ -415,7 +415,7 @@ export default function Haulers() {
   };
 
   return (
-    <div className="min-h-screen bg-background" data-testid="page-haulers">
+    <div className="min-h-screen bg-background" data-testid="page-pros">
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">

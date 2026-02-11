@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { PyckerTierBadge } from "@/components/pycker-tier-badge";
+import { ProTierBadge } from "@/components/pycker-tier-badge";
 import { PricingTransparencyModal } from "@/components/pricing-transparency-modal";
 import { ImpactMeter } from "@/components/booking/impact-meter";
 import { Header } from "@/components/landing/header";
@@ -27,7 +27,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useUpload } from "@/hooks/use-upload";
 import { useAuth } from "@/hooks/use-auth";
 import { useGeoLocation } from "@/hooks/use-geolocation";
-import type { HaulerWithProfile, HaulerWithProfileAndVehicle, PriceQuote } from "@shared/schema";
+import type { ProWithProfile, ProWithProfileAndVehicle, PriceQuote } from "@shared/schema";
 import { LOYALTY_TIER_CONFIG } from "@shared/schema";
 import { PaymentForm } from "@/components/payment-form";
 import { trackJobPosted, trackJobBooked, trackPromoApplied } from "@/lib/analytics";
@@ -45,7 +45,7 @@ import {
 } from "@/lib/bundle-pricing";
 import { PolishUpBooking, type PolishUpBookingDetails } from "@/components/booking/polishup-booking";
 
-import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
+import pro1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
   { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
@@ -192,7 +192,7 @@ const timeSlots = [
   { id: "next_week", label: "Next Week", sublabel: "Flexible scheduling" },
 ];
 
-interface NearbyPycker {
+interface NearbyPro {
   id: number;
   firstName: string;
   lastName: string;
@@ -221,22 +221,22 @@ export default function Booking() {
     ? { lat: geoLocation.lat, lng: geoLocation.lng }
     : null;
 
-  const { data: nearbyPyckersData } = useQuery<{ pyckers: NearbyPycker[] }>({
-    queryKey: ["/api/pyckers/nearby", customerLocation?.lat, customerLocation?.lng],
+  const { data: nearbyProsData } = useQuery<{ pros: NearbyPro[] }>({
+    queryKey: ["/api/pros/nearby", customerLocation?.lat, customerLocation?.lng],
     queryFn: async () => {
-      if (!customerLocation) return { pyckers: [] };
+      if (!customerLocation) return { pros: [] };
       const response = await fetch(
-        `/api/pyckers/nearby?lat=${customerLocation.lat}&lng=${customerLocation.lng}&radius=25`,
+        `/api/pros/nearby?lat=${customerLocation.lat}&lng=${customerLocation.lng}&radius=25`,
         { credentials: "include" }
       );
-      if (!response.ok) return { pyckers: [] };
+      if (!response.ok) return { pros: [] };
       return response.json();
     },
     enabled: !!customerLocation,
     refetchInterval: 30000,
   });
 
-  const nearbyPyckers = nearbyPyckersData?.pyckers || [];
+  const nearbyPros = nearbyProsData?.pros || [];
   
   const paymentStatusQuery = useQuery({
     queryKey: ["/api/customers/payment-status"],
@@ -302,12 +302,12 @@ export default function Booking() {
     breakdown: { label: string; amount: number }[];
   } | null>(null);
   const [moveQuoteError, setMoveQuoteError] = useState<string | null>(null);
-  const [selectedHauler, setSelectedHauler] = useState<HaulerWithProfileAndVehicle | null>(null);
+  const [selectedPro, setSelectedPro] = useState<ProWithProfileAndVehicle | null>(null);
   const [promoValidation, setPromoValidation] = useState<{ valid: boolean; discount: number; error?: string } | null>(null);
   const [isValidatingPromo, setIsValidatingPromo] = useState(false);
   const [matchingComplete, setMatchingComplete] = useState(false);
   const [countdown, setCountdown] = useState(120);
-  const [showPyckerSwiper, setShowPyckerSwiper] = useState(false);
+  const [showProSwiper, setShowProSwiper] = useState(false);
   const [createdRequestId, setCreatedRequestId] = useState<string | null>(null);
   const [uploadedPhotos, setUploadedPhotos] = useState<Array<{ path: string; previewUrl: string }>>([]);
   const [showPayment, setShowPayment] = useState(false);
@@ -924,12 +924,12 @@ export default function Booking() {
     return isWeekend;
   };
 
-  const { data: availableHaulers } = useQuery<HaulerWithProfileAndVehicle[]>({
-    queryKey: ["/api/haulers/available/with-vehicles", preferVerifiedPro],
+  const { data: availablePros } = useQuery<ProWithProfileAndVehicle[]>({
+    queryKey: ["/api/pros/available/with-vehicles", preferVerifiedPro],
     queryFn: async () => {
-      const url = `/api/haulers/available/with-vehicles?preferVerifiedPro=${preferVerifiedPro}`;
+      const url = `/api/pros/available/with-vehicles?preferVerifiedPro=${preferVerifiedPro}`;
       const response = await fetch(url, { credentials: "include" });
-      if (!response.ok) throw new Error("Failed to fetch haulers");
+      if (!response.ok) throw new Error("Failed to fetch pros");
       return response.json();
     },
     enabled: step === 3,
@@ -1074,11 +1074,11 @@ export default function Booking() {
       });
 
       setTimeout(() => {
-        if (availableHaulers && availableHaulers.length > 0) {
-          setSelectedHauler(availableHaulers[0]);
+        if (availablePros && availablePros.length > 0) {
+          setSelectedPro(availablePros[0]);
           trackJobBooked("demo-customer", {
             serviceRequestId: data.id,
-            haulerId: availableHaulers[0].id,
+            proId: availablePros[0].id,
             promoCode: formData.promoCode || undefined,
           });
         }
@@ -2596,7 +2596,7 @@ export default function Booking() {
                                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                               </span>
                               <span className="font-semibold text-green-600 dark:text-green-400">
-                                {availableHaulers?.length || 0} Pros live
+                                {availablePros?.length || 0} Pros live
                               </span>
                             </div>
                             <div className="text-xs text-muted-foreground">Ready to help now</div>
@@ -3069,27 +3069,27 @@ export default function Booking() {
 
               {step === 3 && (
                 <Card className="p-6 md:p-8" data-testid="step-3-matching">
-                  {showPyckerSwiper ? (
+                  {showProSwiper ? (
                     <MatchingFlow
                       customerLocation={customerLocation}
-                      availablePyckers={(availableHaulers || []).map(h => {
+                      availablePros={(availablePros || []).map(h => {
                         const profileId = h.profile?.id;
-                        const nearbyInfo = nearbyPyckers.find((np: any) => String(np.pyckerId) === String(profileId));
+                        const nearbyInfo = nearbyPros.find((np: any) => String(np.proId) === String(profileId));
                         return {
                           id: String(h.id),
                           profileId: String(profileId),
                           name: h.profile.companyName || `${h.firstName || ''} ${h.lastName || ''}`.trim() || 'Pro',
-                          photo: hauler1,
+                          photo: pro1,
                           rating: h.profile.rating || 4.5,
                           completedJobs: h.profile.reviewCount || 0,
-                          specialty: h.profile.bio?.slice(0, 50) || 'Professional hauling services',
+                          specialty: h.profile.bio?.slice(0, 50) || 'Professional services',
                           distance: nearbyInfo?.distance || 2.5,
                           eta: nearbyInfo?.eta,
                           hourlyRate: 75,
                           available: h.profile.isAvailable || false,
                           verified: h.profile.pyckerTier === 'verified_pro',
                           badges: h.profile.pyckerTier === 'verified_pro' ? ['Verified Pro', 'Insured'] : [],
-                          bio: h.profile.bio || 'Ready to help with your hauling needs!',
+                          bio: h.profile.bio || 'Ready to help with your service needs!',
                           vehicleType: h.activeVehicle?.vehicleType?.replace(/_/g, ' ') || h.profile.vehicleType?.replace(/_/g, ' ') || 'Truck',
                           languages: ['English'],
                           location: nearbyInfo?.location,
@@ -3104,14 +3104,14 @@ export default function Booking() {
                         scheduledDate: formData.scheduledFor || 'ASAP',
                         estimatedPrice: priceQuote?.totalPrice || itemsTotal || 149
                       }}
-                      onPyckerSelected={(pycker) => {
-                        const hauler = availableHaulers?.find(h => String(h.id) === pycker.id);
-                        if (hauler) {
-                          setSelectedHauler(hauler);
-                          setShowPyckerSwiper(false);
+                      onProSelected={(pro) => {
+                        const foundPro = availablePros?.find(h => String(h.id) === pro.id);
+                        if (foundPro) {
+                          setSelectedPro(foundPro);
+                          setShowProSwiper(false);
                         }
                       }}
-                      onCancel={() => setShowPyckerSwiper(false)}
+                      onCancel={() => setShowProSwiper(false)}
                     />
                   ) : !matchingComplete ? (
                     <div className="text-center py-12">
@@ -3128,18 +3128,18 @@ export default function Booking() {
                         <Timer className="w-4 h-4" />
                         <span>Estimated wait: {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, '0')}</span>
                       </div>
-                      {availableHaulers && availableHaulers.length >= 1 && (
-                        <Button 
-                          variant="outline" 
-                          onClick={() => setShowPyckerSwiper(true)}
-                          data-testid="button-browse-pyckers-during-matching"
+                      {availablePros && availablePros.length >= 1 && (
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowProSwiper(true)}
+                          data-testid="button-browse-pros-during-matching"
                         >
                           <Users className="w-4 h-4 mr-2" />
-                          Browse {availableHaulers.length} Available Pro{availableHaulers.length > 1 ? 's' : ''}
+                          Browse {availablePros.length} Available Pro{availablePros.length > 1 ? 's' : ''}
                         </Button>
                       )}
                     </div>
-                  ) : selectedHauler ? (
+                  ) : selectedPro ? (
                     <div>
                       <div className="flex items-center gap-2 text-green-600 dark:text-green-400 mb-6">
                         <CheckCircle className="w-5 h-5" />
@@ -3148,42 +3148,42 @@ export default function Booking() {
 
                       <div className="flex items-start gap-4 p-4 bg-muted/50 rounded-xl mb-6">
                         <Avatar className="w-16 h-16 border-2 border-background">
-                          <AvatarImage src={hauler1} alt={selectedHauler.profile.companyName} />
-                          <AvatarFallback>{selectedHauler.firstName?.charAt(0) || selectedHauler.profile.companyName?.charAt(0) || 'P'}</AvatarFallback>
+                          <AvatarImage src={pro1} alt={selectedPro.profile.companyName} />
+                          <AvatarFallback>{selectedPro.firstName?.charAt(0) || selectedPro.profile.companyName?.charAt(0) || 'P'}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <h3 className="font-semibold">{selectedHauler.profile.companyName}</h3>
-                            <PyckerTierBadge tier={selectedHauler.profile.pyckerTier || 'independent'} size="sm" />
+                            <h3 className="font-semibold">{selectedPro.profile.companyName}</h3>
+                            <ProTierBadge tier={selectedPro.profile.pyckerTier || 'independent'} size="sm" />
                           </div>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                             <div className="flex items-center gap-1">
                               <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                              <span className="font-medium text-foreground">{selectedHauler.profile.rating}</span>
-                              <span>({selectedHauler.profile.reviewCount} reviews)</span>
+                              <span className="font-medium text-foreground">{selectedPro.profile.rating}</span>
+                              <span>({selectedPro.profile.reviewCount} reviews)</span>
                             </div>
                           </div>
-                          {(selectedHauler.activeVehicle || selectedHauler.profile.vehicleType) && (
+                          {(selectedPro.activeVehicle || selectedPro.profile.vehicleType) && (
                             <div className="flex items-center gap-2 mb-2">
                               <Badge variant="secondary" className="gap-1">
                                 <Truck className="w-3 h-3" />
-                                {selectedHauler.activeVehicle 
-                                  ? `${selectedHauler.activeVehicle.year || ""} ${selectedHauler.activeVehicle.make || ""} ${selectedHauler.activeVehicle.model || ""}`.trim() || selectedHauler.activeVehicle.vehicleType.replace(/_/g, " ")
-                                  : selectedHauler.profile.vehicleType.replace(/_/g, " ")}
+                                {selectedPro.activeVehicle 
+                                  ? `${selectedPro.activeVehicle.year || ""} ${selectedPro.activeVehicle.make || ""} ${selectedPro.activeVehicle.model || ""}`.trim() || selectedPro.activeVehicle.vehicleType.replace(/_/g, " ")
+                                  : selectedPro.profile.vehicleType.replace(/_/g, " ")}
                               </Badge>
-                              {selectedHauler.activeVehicle?.capacity && (
+                              {selectedPro.activeVehicle?.capacity && (
                                 <Badge variant="outline" className="text-xs">
-                                  {selectedHauler.activeVehicle.capacity}
+                                  {selectedPro.activeVehicle.capacity}
                                 </Badge>
                               )}
-                              {selectedHauler.activeVehicle?.isEnclosed && (
+                              {selectedPro.activeVehicle?.isEnclosed && (
                                 <Badge variant="outline" className="text-xs">
                                   Enclosed
                                 </Badge>
                               )}
                             </div>
                           )}
-                          <p className="text-sm text-muted-foreground">{selectedHauler.profile.bio}</p>
+                          <p className="text-sm text-muted-foreground">{selectedPro.profile.bio}</p>
                         </div>
                       </div>
 
@@ -3207,7 +3207,7 @@ export default function Booking() {
 
                       {!showPayment ? (
                         <div className="flex gap-3">
-                          <Button variant="outline" className="flex-1" onClick={() => setShowPyckerSwiper(true)} data-testid="button-browse-pyckers">
+                          <Button variant="outline" className="flex-1" onClick={() => setShowProSwiper(true)} data-testid="button-browse-pros">
                             Browse Pros
                           </Button>
                           <Button className="flex-1" onClick={() => setShowPayment(true)} data-testid="button-accept-match">
@@ -3268,7 +3268,7 @@ export default function Booking() {
                                 amount={((priceQuote?.totalPrice || 149) * 1.07)}
                                 jobId={createdRequestId}
                                 customerId="demo-customer"
-                                assignedHaulerId={selectedHauler?.id}
+                                assignedHaulerId={selectedPro?.id}
                                 onSuccess={() => {
                                   setPaymentAuthorized(true);
                                   setPaymentError(null);
@@ -3316,18 +3316,18 @@ export default function Booking() {
                     </p>
                   </div>
 
-                  {selectedHauler && (
+                  {selectedPro && (
                     <div className="bg-muted/50 rounded-xl p-4 mb-6">
                       <div className="flex items-center gap-4 mb-4">
                         <Avatar className="w-14 h-14">
-                          <AvatarImage src={hauler1} alt={selectedHauler.profile.companyName} />
-                          <AvatarFallback>{selectedHauler.firstName?.charAt(0) || selectedHauler.profile.companyName?.charAt(0) || 'P'}</AvatarFallback>
+                          <AvatarImage src={pro1} alt={selectedPro.profile.companyName} />
+                          <AvatarFallback>{selectedPro.firstName?.charAt(0) || selectedPro.profile.companyName?.charAt(0) || 'P'}</AvatarFallback>
                         </Avatar>
                         <div>
-                          <h3 className="font-semibold">{selectedHauler.profile.companyName}</h3>
+                          <h3 className="font-semibold">{selectedPro.profile.companyName}</h3>
                           <div className="flex items-center gap-1 text-sm text-muted-foreground">
                             <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                            <span>{selectedHauler.profile.rating}</span>
+                            <span>{selectedPro.profile.rating}</span>
                           </div>
                         </div>
                         <div className="ml-auto flex gap-2">
@@ -3348,12 +3348,12 @@ export default function Booking() {
                         <div>
                           <span className="text-muted-foreground">Vehicle</span>
                           <p className="font-medium">
-                            {selectedHauler.activeVehicle 
-                              ? `${selectedHauler.activeVehicle.year || ""} ${selectedHauler.activeVehicle.make || ""} ${selectedHauler.activeVehicle.model || ""}`.trim() || selectedHauler.activeVehicle.vehicleType.replace(/_/g, " ")
-                              : selectedHauler.profile.vehicleType.replace(/_/g, " ")}
+                            {selectedPro.activeVehicle 
+                              ? `${selectedPro.activeVehicle.year || ""} ${selectedPro.activeVehicle.make || ""} ${selectedPro.activeVehicle.model || ""}`.trim() || selectedPro.activeVehicle.vehicleType.replace(/_/g, " ")
+                              : selectedPro.profile.vehicleType.replace(/_/g, " ")}
                           </p>
-                          {selectedHauler.activeVehicle?.capacity && (
-                            <p className="text-xs text-muted-foreground">{selectedHauler.activeVehicle.capacity}</p>
+                          {selectedPro.activeVehicle?.capacity && (
+                            <p className="text-xs text-muted-foreground">{selectedPro.activeVehicle.capacity}</p>
                           )}
                         </div>
                       </div>

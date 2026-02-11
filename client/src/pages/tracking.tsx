@@ -466,9 +466,9 @@ export default function Tracking() {
             {currentLocation || (pickup.lat && pickup.lng) ? (
               <LiveTrackingMap
                 customerLocation={pickup.lat && pickup.lng ? { lat: pickup.lat, lng: pickup.lng } : null}
-                pyckerLocation={currentLocation}
+                proLocation={currentLocation}
                 destinationLocation={destination?.lat && destination?.lng ? { lat: destination.lat, lng: destination.lng } : null}
-                pyckerName={job.hauler?.profile?.companyName || job.hauler?.firstName || "Pro"}
+                proName={job.hauler?.profile?.companyName || job.hauler?.firstName || "Pro"}
                 eta={currentLocation && pickup.lat && pickup.lng ? Math.round(calculateDistance(currentLocation.lat, currentLocation.lng, pickup.lat, pickup.lng) / 0.5) : undefined}
                 distance={currentLocation && pickup.lat && pickup.lng ? calculateDistance(currentLocation.lat, currentLocation.lng, pickup.lat, pickup.lng) : undefined}
                 height="300px"
@@ -756,7 +756,7 @@ export default function Tracking() {
                   <DisputeForm
                     serviceRequestId={job.id}
                     customerId={job.customerId}
-                    haulerId={job.hauler.profile.id}
+                    proId={job.hauler.profile.id}
                     photosBefore={job.photoUrls || []}
                   />
                 </>

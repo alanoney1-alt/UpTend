@@ -310,7 +310,7 @@ function AcademyPublicLanding() {
                 Book a Certified Pro
               </Button>
             </Link>
-            <Link href="/pros">
+            <Link href="/pro-signup">
               <Button variant="outline" size="lg" className="text-lg border-slate-600 text-slate-300" data-testid="button-academy-apply">
                 Apply to Become a Pro
               </Button>
@@ -402,15 +402,15 @@ function AcademyPublicLanding() {
 
 export default function PyckerAcademy() {
   const { user, isAuthenticated } = useAuth();
-  
-  if (isAuthenticated && user?.role === "hauler") {
-    return <PyckerAcademyDashboard />;
+
+  if (isAuthenticated && (user?.role === "hauler" || user?.role === "pro")) {
+    return <ProAcademyDashboard />;
   }
 
   return <AcademyPublicLanding />;
 }
 
-function PyckerAcademyDashboard() {
+function ProAcademyDashboard() {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [phase, setPhase] = useState<"lesson" | "quiz">("lesson");
@@ -511,10 +511,10 @@ function PyckerAcademyDashboard() {
         skills,
         scores: moduleScores,
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/hauler/career"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/hauler/certifications"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pro/career"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pro/certifications"] });
       toast({ title: "Certification Complete", description: "Your badges are active. You can now receive matching jobs." });
-      setLocation("/hauler/dashboard");
+      setLocation("/pro/dashboard");
     } catch {
       toast({ title: "Error", description: "Could not complete certification. Try again.", variant: "destructive" });
     } finally {

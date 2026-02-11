@@ -57,7 +57,7 @@ export default function ProfileSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const isHauler = user?.role === "hauler" || user?.role === "worker";
+  const isPro = user?.role === "hauler" || user?.role === "pro" || user?.role === "worker";
 
   const [notifSms, setNotifSms] = useState(true);
   const [notifEmail, setNotifEmail] = useState(true);
@@ -65,17 +65,17 @@ export default function ProfileSettings() {
 
   const addressesQuery = useQuery<CustomerAddress[]>({
     queryKey: ["/api/customers/addresses"],
-    enabled: !!user && !isHauler,
+    enabled: !!user && !isPro,
   });
 
   const paymentMethodsQuery = useQuery<PaymentMethod[]>({
     queryKey: ["/api/customers/payment-methods"],
-    enabled: !!user && !isHauler,
+    enabled: !!user && !isPro,
   });
 
-  const haulerProfileQuery = useQuery<any>({
-    queryKey: ["/api/hauler/profile"],
-    enabled: !!user && isHauler,
+  const proProfileQuery = useQuery<any>({
+    queryKey: ["/api/pro/profile"],
+    enabled: !!user && isPro,
   });
 
   const deleteAddressMutation = useMutation({
@@ -134,7 +134,7 @@ export default function ProfileSettings() {
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {isHauler ? <PyckerSettings profile={haulerProfileQuery.data} /> : (
+        {isPro ? <ProSettings profile={proProfileQuery.data} /> : (
           <HomeownerSettings
             addresses={addressesQuery.data || []}
             addressesLoading={addressesQuery.isLoading}
@@ -336,16 +336,16 @@ function HomeownerSettings({
   );
 }
 
-function PyckerSettings({ profile }: { profile: any }) {
+function ProSettings({ profile }: { profile: any }) {
   const { toast } = useToast();
   const [serviceRadius, setServiceRadius] = useState([profile?.serviceRadius || 20]);
 
   const updateRadiusMutation = useMutation({
     mutationFn: async (radius: number) => {
-      return apiRequest("PATCH", "/api/hauler/profile", { serviceRadius: radius });
+      return apiRequest("PATCH", "/api/pro/profile", { serviceRadius: radius });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/hauler/profile"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pro/profile"] });
       toast({ title: "Service radius updated" });
     },
     onError: () => {
@@ -354,7 +354,7 @@ function PyckerSettings({ profile }: { profile: any }) {
   });
 
   return (
-    <Tabs defaultValue="deposit" data-testid="tabs-pycker-settings">
+    <Tabs defaultValue="deposit" data-testid="tabs-pro-settings">
       <TabsList className="w-full">
         <TabsTrigger value="deposit" className="flex-1" data-testid="tab-deposit">
           <Wallet className="w-4 h-4 mr-1" />
@@ -437,10 +437,10 @@ function PyckerSettings({ profile }: { profile: any }) {
                     checked={profile?.hasOwnLiabilityInsurance || false}
                     onCheckedChange={async (checked) => {
                       try {
-                        await apiRequest("PUT", "/api/hauler/profile", {
+                        await apiRequest("PUT", "/api/pro/profile", {
                           hasOwnLiabilityInsurance: checked,
                         });
-                        queryClient.invalidateQueries({ queryKey: ["/api/hauler/profile"] });
+                        queryClient.invalidateQueries({ queryKey: ["/api/pro/profile"] });
                         toast({
                           title: checked ? "Insurance enabled" : "Insurance disabled",
                           description: checked
@@ -472,11 +472,11 @@ function PyckerSettings({ profile }: { profile: any }) {
                           formData.append("file", file);
                           try {
                             const result = await apiRequest("POST", "/api/object-storage/upload", formData);
-                            await apiRequest("PUT", "/api/hauler/profile", {
+                            await apiRequest("PUT", "/api/pro/profile", {
                               liabilityInsuranceCertificateUrl: result.url,
                               liabilityInsuranceVerifiedAt: new Date().toISOString(),
                             });
-                            queryClient.invalidateQueries({ queryKey: ["/api/hauler/profile"] });
+                            queryClient.invalidateQueries({ queryKey: ["/api/pro/profile"] });
                             toast({
                               title: "Certificate uploaded",
                               description: "$10/job surcharge waived!",

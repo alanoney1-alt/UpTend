@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { PyckerVehicle } from "@shared/schema";
+import type { ProVehicle } from "@shared/schema";
 import {
   SidebarProvider,
   Sidebar,
@@ -43,15 +43,15 @@ import { FieldAuditForm } from "@/components/field-audit-form";
 import { Input } from "@/components/ui/input";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { ServiceRequestWithDetails, HaulerWithProfile } from "@shared/schema";
+import type { ServiceRequestWithDetails, ProWithProfile } from "@shared/schema";
 
-import hauler1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
+import pro1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 import { Logo } from "@/components/ui/logo";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { VerificationWorkflow } from "@/components/verification/verification-workflow";
 import { NdaAgreementModal } from "@/components/nda-agreement-modal";
-import { PyckerRouteOptimizer } from "@/components/pycker-route-optimizer";
-import { PyckerPriceVerification } from "@/components/pycker-price-verification";
+import { ProRouteOptimizer } from "@/components/pycker-route-optimizer";
+import { ProPriceVerification } from "@/components/pycker-price-verification";
 import { SafetyCopilot } from "@/components/safety-copilot";
 import { CarbonDispatcher } from "@/components/carbon-dispatcher";
 import { ComplianceVault } from "@/components/compliance-vault";
@@ -98,7 +98,7 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
     crewSize: number;
     remainingSlots: number;
     crewMembers: Array<{
-      haulerId: string;
+      proId: string;
       name: string;
       status: string;
     }>;
@@ -197,7 +197,7 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
           {crewStatus && crewStatus.crewMembers && crewStatus.crewMembers.length > 0 && (
             <div className="mt-2 ml-6 space-y-1">
               {crewStatus.crewMembers.map((member: any) => (
-                <div key={member.haulerId} className="flex items-center gap-2 text-xs text-purple-600/70 dark:text-purple-400/70">
+                <div key={member.proId} className="flex items-center gap-2 text-xs text-purple-600/70 dark:text-purple-400/70">
                   <CheckCircle className="w-3 h-3" />
                   <span>{member.name}</span>
                   {member.isVerifiedPro && <Badge variant="outline" className="text-[10px] px-1 py-0">Verified</Badge>}
@@ -729,7 +729,7 @@ function ActiveJobCard({
                       : "Call customer within"}
                   </p>
                   {!callDeadlineExpired && (
-                    <span className="text-lg font-bold font-mono text-amber-600" data-testid="text-pycker-call-countdown">
+                    <span className="text-lg font-bold font-mono text-amber-600" data-testid="text-pro-call-countdown">
                       {callMinutes}:{callSeconds.toString().padStart(2, '0')}
                     </span>
                   )}
@@ -1016,7 +1016,7 @@ function CompletedJobCard({
 }
 
 // Green Guarantee Rebate Section Component
-function GreenGuaranteeSection({ haulerId, rebateBalance }: { haulerId: string; rebateBalance: number }) {
+function GreenGuaranteeSection({ proId, rebateBalance }: { proId: string; rebateBalance: number }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [selectedJob, setSelectedJob] = useState<string>("");
@@ -1037,21 +1037,21 @@ function GreenGuaranteeSection({ haulerId, rebateBalance }: { haulerId: string; 
     queryKey: ["/api/facilities"],
   });
 
-  // Get completed jobs for this hauler
+  // Get completed jobs for this Pro
   const { data: completedJobs } = useQuery<ServiceRequestWithDetails[]>({
-    queryKey: ["/api/service-requests/hauler", haulerId],
-    enabled: !!haulerId,
+    queryKey: ["/api/service-requests/pro", proId],
+    enabled: !!proId,
   });
 
   // Get existing rebate claims
   const { data: rebateClaims, isLoading: claimsLoading } = useQuery<any[]>({
-    queryKey: ["/api/rebates/hauler", haulerId],
+    queryKey: ["/api/rebates/pro", proId],
     queryFn: async () => {
-      const res = await fetch(`/api/rebates/hauler/${haulerId}`, { credentials: "include" });
+      const res = await fetch(`/api/rebates/pro/${proId}`, { credentials: "include" });
       if (!res.ok) return [];
       return res.json();
     },
-    enabled: !!haulerId,
+    enabled: !!proId,
   });
 
   // Handle facility selection from approved list
@@ -1108,7 +1108,7 @@ function GreenGuaranteeSection({ haulerId, rebateBalance }: { haulerId: string; 
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/rebates/claim", {
         serviceRequestId: selectedJob,
-        haulerId,
+        proId,
         receiptUrl,
         facilityName,
         facilityAddress: facilityAddress || null,
@@ -1121,7 +1121,7 @@ function GreenGuaranteeSection({ haulerId, rebateBalance }: { haulerId: string; 
       return res.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/rebates/hauler", haulerId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/rebates/pro", proId] });
       setSelectedJob("");
       setReceiptUrl("");
       setFacilityName("");
@@ -1543,7 +1543,7 @@ function GreenGuaranteeSection({ haulerId, rebateBalance }: { haulerId: string; 
 }
 
 // Referral Earnings Card Component
-function ReferralEarningsCard({ haulerId }: { haulerId: string }) {
+function ReferralEarningsCard({ proId }: { proId: string }) {
   const { data: referralData, isLoading } = useQuery<{
     totalEarnings: number;
     pendingCommissions: number;
@@ -1557,13 +1557,13 @@ function ReferralEarningsCard({ haulerId }: { haulerId: string }) {
       completedAt: string;
     }>;
   }>({
-    queryKey: ["/api/partner-referrals/pro", haulerId],
+    queryKey: ["/api/partner-referrals/pro", proId],
     queryFn: async () => {
-      const res = await fetch(`/api/partner-referrals/pro/${haulerId}`, { credentials: "include" });
+      const res = await fetch(`/api/partner-referrals/pro/${proId}`, { credentials: "include" });
       if (!res.ok) return { totalEarnings: 0, pendingCommissions: 0, paidCommissions: 0, referrals: [] };
       return res.json();
     },
-    enabled: !!haulerId,
+    enabled: !!proId,
   });
 
   if (isLoading) {
@@ -1678,26 +1678,26 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   const [isConfirmingCall, setIsConfirmingCall] = useState(false);
   const { toast } = useToast();
 
-  // Fetch hauler data first (needed for other queries)
-  const { data: haulers } = useQuery<HaulerWithProfile[]>({
-    queryKey: ["/api/haulers"],
+  // Fetch Pro data first (needed for other queries)
+  const { data: pros } = useQuery<ProWithProfile[]>({
+    queryKey: ["/api/pros"],
   });
 
-  const currentHauler = haulers?.[0];
-  
-  // Fetch active jobs for this hauler
+  const currentPro = pros?.[0];
+
+  // Fetch active jobs for this Pro
   const { data: activeJobs, isLoading: activeJobsLoading, refetch: refetchActiveJobs } = useQuery<ServiceRequestWithDetails[]>({
-    queryKey: ["/api/haulers", "active-jobs"],
+    queryKey: ["/api/pros", "active-jobs"],
     queryFn: async () => {
-      const res = await fetch(`/api/haulers/${currentHauler?.id}/jobs/active`, { credentials: "include" });
+      const res = await fetch(`/api/pros/${currentPro?.id}/jobs/active`, { credentials: "include" });
       if (!res.ok) return [];
       return res.json();
     },
-    enabled: !!currentHauler?.id,
+    enabled: !!currentPro?.id,
     refetchInterval: 30000, // Refresh every 30 seconds
   });
-  
-  // Get the first active job (most PYCKERs work on one job at a time)
+
+  // Get the first active job (most Pros work on one job at a time)
   const currentActiveJob = activeJobs?.[0];
   
   // Transform to ActiveJob format for compatibility
@@ -1833,7 +1833,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     setIsConfirmingCall(true);
     try {
       await apiRequest("POST", `/api/service-requests/${activeJob.id}/confirm-call`, {
-        haulerId: currentHauler?.id,
+        proId: currentPro?.id,
       });
       refetchActiveJobs();
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests"] });
@@ -1866,21 +1866,21 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     queryKey: ["/api/service-requests/pending"],
   });
 
-  // Get completed jobs for this hauler
+  // Get completed jobs for this Pro
   const { data: completedJobs } = useQuery<ServiceRequestWithDetails[]>({
-    queryKey: ["/api/service-requests/hauler", currentHauler?.profile?.id],
-    enabled: !!currentHauler?.profile?.id,
+    queryKey: ["/api/service-requests/pro", currentPro?.profile?.id],
+    enabled: !!currentPro?.profile?.id,
   });
 
   // Get existing rebate claims to check which jobs have claims
   const { data: rebateClaims } = useQuery<any[]>({
-    queryKey: ["/api/rebates/hauler", currentHauler?.profile?.id],
+    queryKey: ["/api/rebates/pro", currentPro?.profile?.id],
     queryFn: async () => {
-      const res = await fetch(`/api/rebates/hauler/${currentHauler?.profile?.id}`, { credentials: "include" });
+      const res = await fetch(`/api/rebates/pro/${currentPro?.profile?.id}`, { credentials: "include" });
       if (!res.ok) return [];
       return res.json();
     },
-    enabled: !!currentHauler?.profile?.id,
+    enabled: !!currentPro?.profile?.id,
   });
 
   // Get recent completed jobs eligible for receipt upload (within 48 hours)
@@ -1896,14 +1896,14 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     setActiveTab("rebates");
     // The GreenGuaranteeSection will handle the job selection
   };
-  const isAvailable = currentHauler?.profile?.isAvailable ?? false;
+  const isAvailable = currentPro?.profile?.isAvailable ?? false;
 
   const geoLocation = useGeoLocation(isAvailable, {
     enableHighAccuracy: true,
   });
 
   useEffect(() => {
-    if (!isAvailable || !currentHauler?.id) {
+    if (!isAvailable || !currentPro?.id) {
       if (wsRef.current) {
         wsRef.current.close();
         wsRef.current = null;
@@ -1912,13 +1912,13 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     }
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws?userId=${currentHauler.id}&role=hauler`;
-    
+    const wsUrl = `${protocol}//${window.location.host}/ws?userId=${currentPro.id}&role=pro`;
+
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("PYCKER location WebSocket connected");
+      console.log("Pro location WebSocket connected");
     };
 
     ws.onerror = (error) => {
@@ -1926,14 +1926,14 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     };
 
     ws.onclose = () => {
-      console.log("PYCKER location WebSocket disconnected");
+      console.log("Pro location WebSocket disconnected");
     };
 
     return () => {
       ws.close();
       wsRef.current = null;
     };
-  }, [isAvailable, currentHauler?.id]);
+  }, [isAvailable, currentPro?.id]);
 
   useEffect(() => {
     if (!geoLocation.lat || !geoLocation.lng || !isAvailable) return;
@@ -1958,21 +1958,21 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       }));
     }
 
-    apiRequest("POST", "/api/haulers/update-location", {
+    apiRequest("POST", "/api/pros/update-location", {
       latitude: geoLocation.lat,
       longitude: geoLocation.lng,
       accuracy: geoLocation.accuracy,
     }).catch(err => console.error("Failed to update location:", err));
   }, [geoLocation.lat, geoLocation.lng, geoLocation.timestamp, isAvailable, currentActiveJob]);
 
-  const { data: vehicles } = useQuery<PyckerVehicle[]>({
-    queryKey: [`/api/haulers/${currentHauler?.profile?.id}/vehicles`],
-    enabled: !!currentHauler?.profile?.id,
+  const { data: vehicles } = useQuery<ProVehicle[]>({
+    queryKey: [`/api/pros/${currentPro?.profile?.id}/vehicles`],
+    enabled: !!currentPro?.profile?.id,
   });
 
   const goOnlineMutation = useMutation({
     mutationFn: async () => {
-      if (!currentHauler?.profile?.id) throw new Error("No profile");
+      if (!currentPro?.profile?.id) throw new Error("No profile");
       
       // Location consent is required per Florida labor law
       if (!locationConsent) {
@@ -1994,7 +1994,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         }));
       
       // First call the new GPS tracking endpoint (requires location consent)
-      await apiRequest("POST", "/api/haulers/go-online", {
+      await apiRequest("POST", "/api/pros/go-online", {
         latitude: position.latitude,
         longitude: position.longitude,
         accuracy: position.accuracy,
@@ -2002,7 +2002,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       });
       
       // Then call the legacy endpoint to set vehicle and travel radius
-      return apiRequest("POST", `/api/haulers/${currentHauler.profile.id}/go-online`, {
+      return apiRequest("POST", `/api/pros/${currentPro.profile.id}/go-online`, {
         vehicleId: selectedVehicleId,
         travelRadius,
       });
@@ -2010,8 +2010,8 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     onSuccess: () => {
       setShowGoOnlineDialog(false);
       setLocationConsent(false); // Reset for next time
-      queryClient.invalidateQueries({ queryKey: ["/api/haulers"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/haulers/available"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pros"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pros/available"] });
       toast({
         title: "You're Online",
         description: "You are now visible to customers and can receive job requests.",
@@ -2028,17 +2028,17 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
 
   const goOfflineMutation = useMutation({
     mutationFn: async () => {
-      if (!currentHauler?.profile?.id) throw new Error("No profile");
+      if (!currentPro?.profile?.id) throw new Error("No profile");
       
       // Call the new GPS tracking endpoint to stop location tracking
-      await apiRequest("POST", "/api/haulers/go-offline", {});
+      await apiRequest("POST", "/api/pros/go-offline", {});
       
       // Then call the legacy endpoint
-      return apiRequest("POST", `/api/haulers/${currentHauler.profile.id}/go-offline`, {});
+      return apiRequest("POST", `/api/pros/${currentPro.profile.id}/go-offline`, {});
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/haulers"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/haulers/available"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pros"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pros/available"] });
       toast({
         title: "You're Offline",
         description: "Location tracking has stopped. You will not receive new job requests.",
@@ -2050,7 +2050,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     if (checked) {
       if (vehicles && vehicles.length > 0) {
         setSelectedVehicleId(vehicles[0].id);
-        setTravelRadius(currentHauler?.profile?.activeTravelRadius || 25);
+        setTravelRadius(currentPro?.profile?.activeTravelRadius || 25);
         setShowGoOnlineDialog(true);
       } else {
         goOnlineMutation.mutate();
@@ -2060,7 +2060,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     }
   };
 
-  const getVehicleLabel = (vehicle: PyckerVehicle) => {
+  const getVehicleLabel = (vehicle: ProVehicle) => {
     const parts = [];
     if (vehicle.vehicleName) parts.push(vehicle.vehicleName);
     else {
@@ -2077,7 +2077,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     mutationFn: async (requestId: string) => {
       return apiRequest("PATCH", `/api/service-requests/${requestId}`, {
         status: "assigned",
-        assignedHaulerId: currentHauler?.id,
+        assignedProId: currentPro?.id,
       });
     },
     onSuccess: () => {
@@ -2102,19 +2102,19 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     chargesEnabled?: boolean;
     payoutsEnabled?: boolean;
   }>({
-    queryKey: ["/api/haulers", currentHauler?.profile?.id, "stripe-status"],
+    queryKey: ["/api/pros", currentPro?.profile?.id, "stripe-status"],
     queryFn: async () => {
-      if (!currentHauler?.profile?.id) return { hasAccount: false, onboardingComplete: false };
-      const res = await fetch(`/api/haulers/${currentHauler.profile.id}/stripe-status`);
+      if (!currentPro?.profile?.id) return { hasAccount: false, onboardingComplete: false };
+      const res = await fetch(`/api/pros/${currentPro.profile.id}/stripe-status`);
       return res.json();
     },
-    enabled: !!currentHauler?.profile?.id,
+    enabled: !!currentPro?.profile?.id,
   });
 
   const stripeOnboardMutation = useMutation({
     mutationFn: async () => {
-      if (!currentHauler?.profile?.id) throw new Error("No profile");
-      const res = await apiRequest("POST", `/api/haulers/${currentHauler.profile.id}/stripe-onboard`, {});
+      if (!currentPro?.profile?.id) throw new Error("No profile");
+      const res = await apiRequest("POST", `/api/pros/${currentPro.profile.id}/stripe-onboard`, {});
       return res.json();
     },
     onSuccess: (data) => {
@@ -2135,9 +2135,9 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     ndaAcceptedAt: string | null;
     ndaVersion: string | null;
   }>({
-    queryKey: ["/api/haulers", currentHauler?.profile?.id, "compliance"],
+    queryKey: ["/api/pros", currentPro?.profile?.id, "compliance"],
     queryFn: async () => {
-      if (!currentHauler?.profile?.id) return {
+      if (!currentPro?.profile?.id) return {
         hasCardOnFile: false,
         backgroundCheckStatus: "pending",
         stripeOnboardingComplete: false,
@@ -2148,28 +2148,28 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         ndaAcceptedAt: null,
         ndaVersion: null,
       };
-      const res = await fetch(`/api/haulers/${currentHauler.profile.id}/compliance`);
+      const res = await fetch(`/api/pros/${currentPro.profile.id}/compliance`);
       return res.json();
     },
-    enabled: !!currentHauler?.profile?.id,
+    enabled: !!currentPro?.profile?.id,
   });
 
   const setupCardMutation = useMutation({
     mutationFn: async () => {
-      if (!currentHauler?.profile?.id) throw new Error("No profile");
-      const res = await apiRequest("POST", `/api/haulers/${currentHauler.profile.id}/setup-card`, {});
+      if (!currentPro?.profile?.id) throw new Error("No profile");
+      const res = await apiRequest("POST", `/api/pros/${currentPro.profile.id}/setup-card`, {});
       return res.json();
     },
   });
 
   const backgroundCheckMutation = useMutation({
     mutationFn: async () => {
-      if (!currentHauler?.profile?.id) throw new Error("No profile");
-      const res = await apiRequest("POST", `/api/haulers/${currentHauler.profile.id}/request-background-check`, {});
+      if (!currentPro?.profile?.id) throw new Error("No profile");
+      const res = await apiRequest("POST", `/api/pros/${currentPro.profile.id}/request-background-check`, {});
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/haulers", currentHauler?.profile?.id, "compliance"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pros", currentPro?.profile?.id, "compliance"] });
     },
   });
 
@@ -2177,15 +2177,15 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   
   const acceptJobMutation = useMutation({
     mutationFn: async (requestId: string) => {
-      if (!currentHauler?.id) throw new Error("No hauler");
+      if (!currentPro?.id) throw new Error("No Pro");
       const res = await apiRequest("POST", `/api/service-requests/${requestId}/accept`, {
-        haulerId: currentHauler.id,
+        proId: currentPro.id,
       });
       return { res, requestId };
     },
     onSuccess: ({ requestId }) => {
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests/pending"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/haulers", "active-jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pros", "active-jobs"] });
       toast({
         title: "Job accepted",
         description: "Routing you to the job wizard...",
@@ -2229,18 +2229,18 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   ];
   
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
-    currentHauler?.profile?.languagesSpoken || ["en"]
+    currentPro?.profile?.languagesSpoken || ["en"]
   );
   
   const updateLanguagesMutation = useMutation({
     mutationFn: async (languages: string[]) => {
-      if (!currentHauler?.profile?.id) throw new Error("No profile");
-      return apiRequest("PATCH", `/api/haulers/${currentHauler.profile.id}/profile`, {
+      if (!currentPro?.profile?.id) throw new Error("No profile");
+      return apiRequest("PATCH", `/api/pros/${currentPro.profile.id}/profile`, {
         languagesSpoken: languages,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/haulers"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/pros"] });
       toast({
         title: "Languages updated",
         description: "Your spoken languages have been saved.",
@@ -2287,13 +2287,13 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
           <Card className="p-5">
             <div className="flex items-center gap-3 mb-4">
               <Avatar className="w-16 h-16">
-                <AvatarImage src={hauler1} alt={currentHauler?.profile?.companyName || 'Pro'} />
-                <AvatarFallback className="text-xl">{currentHauler?.firstName?.charAt(0) || "P"}</AvatarFallback>
+                <AvatarImage src={pro1} alt={currentPro?.profile?.companyName || 'Pro'} />
+                <AvatarFallback className="text-xl">{currentPro?.firstName?.charAt(0) || "P"}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-xl font-bold">{currentHauler?.profile?.companyName || "Your Company"}</h2>
-                <Badge variant={currentHauler?.profile?.pyckerTier === "verified_pro" ? "default" : "secondary"}>
-                  {currentHauler?.profile?.pyckerTier === "verified_pro" ? "Verified Pro" : "Independent Pro"}
+                <h2 className="text-xl font-bold">{currentPro?.profile?.companyName || "Your Company"}</h2>
+                <Badge variant={currentPro?.profile?.pyckerTier === "verified_pro" ? "default" : "secondary"}>
+                  {currentPro?.profile?.pyckerTier === "verified_pro" ? "Verified Pro" : "Independent Pro"}
                 </Badge>
               </div>
             </div>
@@ -2303,16 +2303,16 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                 <span className="text-muted-foreground">Rating</span>
                 <span className="font-medium flex items-center gap-1">
                   <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                  {currentHauler?.profile?.rating || 5.0} ({currentHauler?.profile?.reviewCount || 0} reviews)
+                  {currentPro?.profile?.rating || 5.0} ({currentPro?.profile?.reviewCount || 0} reviews)
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Jobs Completed</span>
-                <span className="font-medium">{currentHauler?.profile?.jobsCompleted || 0}</span>
+                <span className="font-medium">{currentPro?.profile?.jobsCompleted || 0}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Payout Rate</span>
-                <span className="font-medium">{(currentHauler?.profile?.payoutPercentage || 0.75) * 100}%</span>
+                <span className="font-medium">{(currentPro?.profile?.payoutPercentage || 0.75) * 100}%</span>
               </div>
             </div>
           </Card>
@@ -2356,8 +2356,8 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
             )}
           </Card>
           
-          {currentHauler?.profile?.id && (
-            <VerificationGatesDisplay haulerId={currentHauler.profile.id} />
+          {currentPro?.profile?.id && (
+            <VerificationGatesDisplay haulerId={currentPro.profile.id} />
           )}
           
           <Card className="p-5 lg:col-span-2">
@@ -2370,7 +2370,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
             </p>
             
             <div className="flex flex-wrap gap-2">
-              {(currentHauler?.profile?.serviceTypes || ["junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout"]).map((service) => (
+              {(currentPro?.profile?.serviceTypes || ["junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout"]).map((service) => (
                 <Badge key={service} variant="secondary" className="text-sm">
                   {{
                     junk_removal: "Junk Removal",
@@ -2392,8 +2392,8 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   if (activeTab === "rebates") {
     return (
       <GreenGuaranteeSection 
-        haulerId={currentHauler?.profile?.id || ""} 
-        rebateBalance={currentHauler?.profile?.rebateBalance || 0}
+        proId={currentPro?.profile?.id || ""} 
+        rebateBalance={currentPro?.profile?.rebateBalance || 0}
       />
     );
   }
@@ -2401,7 +2401,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   if (activeTab === "compliance") {
     return (
       <div className="p-6 space-y-6" data-testid="compliance-section">
-        <ComplianceVault haulerId={currentHauler?.profile?.userId || (currentHauler as any)?.userId || ""} />
+        <ComplianceVault proId={currentPro?.profile?.userId || (currentPro as any)?.userId || ""} />
       </div>
     );
   }
@@ -2410,7 +2410,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     return (
       <div className="p-6 space-y-6" data-testid="route-section">
         <CarbonDispatcher />
-        <PyckerRouteOptimizer haulerId={currentHauler?.profile?.id || ""} />
+        <ProRouteOptimizer proId={currentPro?.profile?.id || ""} />
       </div>
     );
   }
@@ -2481,12 +2481,12 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <Separator />
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">This Week</span>
-                <span className="font-semibold">{currentHauler?.profile?.jobsCompleted || 0}</span>
+                <span className="font-semibold">{currentPro?.profile?.jobsCompleted || 0}</span>
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Completion Rate</span>
-                <span className="font-semibold">{(((currentHauler?.profile as any)?.completionRate || 1) * 100).toFixed(0)}%</span>
+                <span className="font-semibold">{(((currentPro?.profile as any)?.completionRate || 1) * 100).toFixed(0)}%</span>
               </div>
             </div>
           </Card>
@@ -2569,7 +2569,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
           </div>
         </Card>
 
-        <ReferralEarningsCard haulerId={currentHauler?.id || ""} />
+        <ReferralEarningsCard proId={currentPro?.id || ""} />
       </div>
     );
   }
@@ -2578,7 +2578,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   if (activeTab === "marketplace") {
     return (
       <div className="p-6" data-testid="marketplace-section">
-        <ProMarketplace proId={currentHauler?.id || ""} />
+        <ProMarketplace proId={currentPro?.id || ""} />
       </div>
     );
   }
@@ -2647,7 +2647,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <Separator />
               <div>
                 <Label className="text-muted-foreground">Commission Rate</Label>
-                <p className="font-medium" data-testid="text-commission-rate">{(1 - (currentHauler?.profile?.payoutPercentage || 0.75)) * 100}% platform fee</p>
+                <p className="font-medium" data-testid="text-commission-rate">{(1 - (currentPro?.profile?.payoutPercentage || 0.75)) * 100}% platform fee</p>
               </div>
             </div>
           </Card>
@@ -2674,7 +2674,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                 { code: "vi", label: "Vietnamese / Ti\u1ebfng Vi\u1ec7t", bonus: "+3%" },
                 { code: "zh", label: "Chinese / \u4e2d\u6587", bonus: "+3%" },
               ].map((lang) => {
-                const langs = currentHauler?.profile?.languagesSpoken || ["en"];
+                const langs = currentPro?.profile?.languagesSpoken || ["en"];
                 const isActive = langs.includes(lang.code);
                 return (
                   <div key={lang.code}>
@@ -2693,8 +2693,8 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                             ? [...langs.filter(l => l !== lang.code), lang.code]
                             : langs.filter(l => l !== lang.code);
                           try {
-                            await apiRequest("PATCH", "/api/hauler/profile", { languagesSpoken: newLangs });
-                            queryClient.invalidateQueries({ queryKey: ["/api/hauler/me"] });
+                            await apiRequest("PATCH", "/api/pro/profile", { languagesSpoken: newLangs });
+                            queryClient.invalidateQueries({ queryKey: ["/api/pro/me"] });
                           } catch {}
                         }}
                         data-testid={`switch-lang-${lang.code}`}
@@ -2719,15 +2719,15 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               Select the services you're equipped to provide. You'll only receive job requests for services you've selected.
             </p>
             <ServicesSelector
-              selectedServices={currentHauler?.profile?.serviceTypes || []}
+              selectedServices={currentPro?.profile?.serviceTypes || []}
               onSelectionChange={(services) => {
                 // Update services via API
-                apiRequest("PATCH", `/api/haulers/${currentHauler?.id}/profile`, {
+                apiRequest("PATCH", `/api/pros/${currentPro?.id}/profile`, {
                   serviceTypes: services,
                   supportedServices: services,
                 })
                   .then(() => {
-                    queryClient.invalidateQueries({ queryKey: ["/api/haulers/me"] });
+                    queryClient.invalidateQueries({ queryKey: ["/api/pros/me"] });
                     toast({
                       title: "Services Updated",
                       description: "Your service offerings have been updated successfully",
@@ -2754,7 +2754,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">Email</p>
-                  <p className="text-sm text-muted-foreground">{currentHauler?.email || "Not set"}</p>
+                  <p className="text-sm text-muted-foreground">{currentPro?.email || "Not set"}</p>
                 </div>
                 <Button variant="outline" size="sm" data-testid="button-change-email">Change</Button>
               </div>
@@ -2833,37 +2833,37 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   }
 
   const levelLabel = (() => {
-    const l = currentHauler?.profile?.level || 1;
+    const l = currentPro?.profile?.level || 1;
     if (l >= 3) return "Master Consultant";
     if (l >= 2) return "Verified Pro";
     return "Rookie";
   })();
   const levelColor = (() => {
-    const l = currentHauler?.profile?.level || 1;
+    const l = currentPro?.profile?.level || 1;
     if (l >= 3) return "text-amber-500";
     if (l >= 2) return "text-primary";
     return "text-muted-foreground";
   })();
-  const xp = currentHauler?.profile?.xpPoints || 0;
+  const xp = currentPro?.profile?.xpPoints || 0;
   const nextLevelXp = (() => {
-    const l = currentHauler?.profile?.level || 1;
+    const l = currentPro?.profile?.level || 1;
     if (l >= 3) return xp;
     if (l >= 2) return 5000;
     return 1000;
   })();
   const xpProgress = Math.min(100, Math.round((xp / Math.max(nextLevelXp, 1)) * 100));
-  const payoutPct = (currentHauler?.profile?.payoutPercentage || 0.75) * 100;
-  const nextPayout = activeJob ? Math.round(((activeJob as any).livePrice || activeJob.priceEstimate || 0) * (currentHauler?.profile?.payoutPercentage || 0.75)) : 0;
-  const safetyCode = currentHauler?.profile?.safetyCode;
+  const payoutPct = (currentPro?.profile?.payoutPercentage || 0.75) * 100;
+  const nextPayout = activeJob ? Math.round(((activeJob as any).livePrice || activeJob.priceEstimate || 0) * (currentPro?.profile?.payoutPercentage || 0.75)) : 0;
+  const safetyCode = currentPro?.profile?.safetyCode;
 
-  const haulerServiceTypes = currentHauler?.profile?.serviceTypes || ["junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout"];
-  const hasPressureWasher = currentHauler?.profile?.hasPressureWasher ?? false;
-  const hasTallLadder = currentHauler?.profile?.hasTallLadder ?? false;
-  const hasDemoTools = currentHauler?.profile?.hasDemoTools ?? false;
+  const proServiceTypes = currentPro?.profile?.serviceTypes || ["junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout"];
+  const hasPressureWasher = currentPro?.profile?.hasPressureWasher ?? false;
+  const hasTallLadder = currentPro?.profile?.hasTallLadder ?? false;
+  const hasDemoTools = currentPro?.profile?.hasDemoTools ?? false;
 
   const matchedJobs = (pendingRequests || []).filter((req) => {
     const sType = req.serviceType;
-    if (!haulerServiceTypes.includes(sType)) return false;
+    if (!proServiceTypes.includes(sType)) return false;
     if (sType === "pressure_washing" && !hasPressureWasher) return false;
     if (sType === "gutter_cleaning" && !hasTallLadder) return false;
     if (sType === "light_demolition" && !hasDemoTools) return false;
@@ -2887,12 +2887,12 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     <div className="p-6">
       <OnboardingChecklist
         user={{
-          firstName: currentHauler?.profile?.companyName?.split(" ")[0] || "Pro",
-          profileImageUrl: currentHauler?.profile?.profilePhotoUrl || null,
-          isVerified: currentHauler?.profile?.verified || false,
-          certifications: currentHauler?.profile?.isCertified ? ["app_certification"] : [],
-          payoutSetup: !!currentHauler?.profile?.stripeAccountId,
-          profileCompleted: !!(currentHauler?.profile?.companyName && currentHauler?.profile?.serviceTypes?.length),
+          firstName: currentPro?.profile?.companyName?.split(" ")[0] || "Pro",
+          profileImageUrl: currentPro?.profile?.profilePhotoUrl || null,
+          isVerified: currentPro?.profile?.verified || false,
+          certifications: currentPro?.profile?.isCertified ? ["app_certification"] : [],
+          payoutSetup: !!currentPro?.profile?.stripeAccountId,
+          profileCompleted: !!(currentPro?.profile?.companyName && currentPro?.profile?.serviceTypes?.length),
         }}
       />
 
@@ -2901,12 +2901,12 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Avatar className="w-14 h-14 border-2 border-primary/30">
-              <AvatarImage src={hauler1} alt={currentHauler?.profile?.companyName || "Pro"} />
-              <AvatarFallback className="text-lg">{currentHauler?.firstName?.charAt(0) || "P"}</AvatarFallback>
+              <AvatarImage src={pro1} alt={currentPro?.profile?.companyName || "Pro"} />
+              <AvatarFallback className="text-lg">{currentPro?.firstName?.charAt(0) || "P"}</AvatarFallback>
             </Avatar>
             <div>
               <h1 className="text-xl font-bold flex items-center gap-2 flex-wrap" data-testid="text-mission-control-name">
-                {currentHauler?.profile?.companyName || "Pro"}
+                {currentPro?.profile?.companyName || "Pro"}
                 <Badge variant="secondary" className={`${levelColor} text-xs`} data-testid="badge-level">
                   <Award className="w-3 h-3 mr-1" />
                   {levelLabel}
@@ -2925,8 +2925,8 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                 <p className="text-xs text-muted-foreground">
                   {isAvailable ? (
                     <>
-                      {vehicles?.find(v => v.id === currentHauler?.profile?.activeVehicleId)?.vehicleType || "Available"}
-                      {currentHauler?.profile?.activeTravelRadius && ` | ${currentHauler.profile.activeTravelRadius} mi`}
+                      {vehicles?.find(v => v.id === currentPro?.profile?.activeVehicleId)?.vehicleType || "Available"}
+                      {currentPro?.profile?.activeTravelRadius && ` | ${currentPro.profile.activeTravelRadius} mi`}
                       {geoLocation.isTracking && <span className="ml-1 text-green-600 dark:text-green-400">| GPS</span>}
                     </>
                   ) : "Go online to receive jobs"}
@@ -2996,7 +2996,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                {(currentHauler?.profile?.level || 1) >= 3 ? "Max level reached" : `${nextLevelXp - xp} XP to next level`}
+                {(currentPro?.profile?.level || 1) >= 3 ? "Max level reached" : `${nextLevelXp - xp} XP to next level`}
               </p>
             </div>
           </Card>
@@ -3020,11 +3020,11 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <Star className="w-4 h-4 text-yellow-500" />
             </div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl font-bold">{currentHauler?.profile?.rating || 5.0}</span>
-              <span className="text-xs text-muted-foreground">({currentHauler?.profile?.reviewCount || 0})</span>
+              <span className="text-2xl font-bold">{currentPro?.profile?.rating || 5.0}</span>
+              <span className="text-xs text-muted-foreground">({currentPro?.profile?.reviewCount || 0})</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              {currentHauler?.profile?.fiveStarRatingCount || 0} five-star reviews
+              {currentPro?.profile?.fiveStarRatingCount || 0} five-star reviews
             </p>
           </Card>
 
@@ -3033,7 +3033,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <span className="text-xs text-muted-foreground">Jobs Done</span>
               <Target className="w-4 h-4 text-primary" />
             </div>
-            <span className="text-2xl font-bold" data-testid="text-jobs-completed">{currentHauler?.profile?.jobsCompleted || 0}</span>
+            <span className="text-2xl font-bold" data-testid="text-jobs-completed">{currentPro?.profile?.jobsCompleted || 0}</span>
             <p className="text-xs text-muted-foreground mt-1">
               {matchedJobs.length} job{matchedJobs.length !== 1 ? "s" : ""} matching your skills
             </p>
@@ -3092,7 +3092,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                       <div className="text-right">
                         <p className="text-2xl font-bold">${activeJob.priceEstimate}</p>
                         <p className="text-xs text-muted-foreground">
-                          Estimated earnings: ${Math.round(activeJob.priceEstimate * (currentHauler?.profile?.payoutPercentage || 0.75))}
+                          Estimated earnings: ${Math.round(activeJob.priceEstimate * (currentPro?.profile?.payoutPercentage || 0.75))}
                         </p>
                       </div>
                     </div>
@@ -3144,7 +3144,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                     onLockPrice={async (data) => {
                       try {
                         await apiRequest("POST", `/api/service-requests/${activeJob.id}/lock-price`, data);
-                        queryClient.invalidateQueries({ queryKey: ["/api/haulers", "active-jobs"] });
+                        queryClient.invalidateQueries({ queryKey: ["/api/pros", "active-jobs"] });
                         toast({ title: "Price Locked", description: `Job started at $${data.newPrice}` });
                       } catch (error) {
                         toast({ title: "Error", description: "Failed to lock price", variant: "destructive" });
@@ -3157,7 +3157,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                 )}
               </div>
               <div className="space-y-4">
-                <PyckerPriceVerification
+                <ProPriceVerification
                   jobId={currentActiveJob?.id || ""}
                   aiPriceMin={currentActiveJob?.aiPriceMin ?? undefined}
                   aiPriceMax={currentActiveJob?.aiPriceMax ?? undefined}
@@ -3173,12 +3173,12 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                   loadEstimate={currentActiveJob?.loadEstimate}
                   serviceType={currentActiveJob?.serviceType}
                   onVerified={() => {
-                    queryClient.invalidateQueries({ queryKey: ["/api/haulers"] });
+                    queryClient.invalidateQueries({ queryKey: ["/api/pros"] });
                   }}
                 />
                 <SafetyCopilot
                   serviceRequestId={currentActiveJob?.id || ""}
-                  haulerId={currentHauler?.profile?.id || ""}
+                  haulerId={currentPro?.profile?.id || ""}
                   photoUrls={currentActiveJob?.photoUrls || []}
                   serviceType={currentActiveJob?.serviceType || "junk_removal"}
                 />
@@ -3291,7 +3291,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               Your Skills
             </h3>
             <div className="flex flex-wrap gap-1.5">
-              {haulerServiceTypes.map((s) => (
+              {proServiceTypes.map((s) => (
                 <Badge key={s} variant="secondary" className="text-xs" data-testid={`badge-skill-${s}`}>
                   {allServiceLabels[s] || s}
                 </Badge>
@@ -3482,11 +3482,11 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       <NdaAgreementModal
         open={showNdaModal}
         onOpenChange={setShowNdaModal}
-        pyckerName={currentHauler?.firstName && currentHauler?.lastName 
-          ? `${currentHauler.firstName} ${currentHauler.lastName}`
-          : currentHauler?.email || "Pro"}
+        proName={currentPro?.firstName && currentPro?.lastName
+          ? `${currentPro.firstName} ${currentPro.lastName}`
+          : currentPro?.email || "Pro"}
         onSuccess={() => {
-          queryClient.invalidateQueries({ queryKey: ["/api/haulers", currentHauler?.profile?.id, "compliance"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/pros", currentPro?.profile?.id, "compliance"] });
         }}
       />
     </div>
@@ -3556,16 +3556,16 @@ function AccessCodeReveal({ jobId, status, accessType }: { jobId: string; status
   );
 }
 
-export default function HaulerDashboard() {
+export default function ProDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [, setLocation] = useLocation();
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
 
-  const { data: haulers } = useQuery<HaulerWithProfile[]>({
-    queryKey: ["/api/haulers"],
+  const { data: pros } = useQuery<ProWithProfile[]>({
+    queryKey: ["/api/pros"],
   });
 
-  const currentHauler = haulers?.[0];
+  const currentPro = pros?.[0];
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -3595,7 +3595,7 @@ export default function HaulerDashboard() {
 
   return (
     <SidebarProvider style={sidebarStyle as React.CSSProperties}>
-      <div className="flex h-screen w-full" data-testid="page-hauler-dashboard">
+      <div className="flex h-screen w-full" data-testid="page-pro-dashboard">
         <Sidebar>
           <SidebarHeader className="p-4">
             <Link href="/" className="flex items-center gap-2">
@@ -3634,12 +3634,12 @@ export default function HaulerDashboard() {
           <SidebarFooter className="p-4">
             <div className="flex items-center gap-3 p-3 bg-sidebar-accent rounded-lg">
               <Avatar>
-                <AvatarImage src={hauler1} alt={currentHauler?.firstName || 'Hauler'} />
-                <AvatarFallback>{currentHauler?.firstName?.charAt(0) || "H"}</AvatarFallback>
+                <AvatarImage src={pro1} alt={currentPro?.firstName || 'Pro'} />
+                <AvatarFallback>{currentPro?.firstName?.charAt(0) || "P"}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm truncate">
-                  {currentHauler?.profile?.companyName || "Hauler"}
+                  {currentPro?.profile?.companyName || "Pro"}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-status-online" />
