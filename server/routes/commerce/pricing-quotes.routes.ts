@@ -6,23 +6,50 @@ import { calculateDistance, geocodeZip, isZipCodeSupported, calculateMovePricing
 import { z } from "zod";
 
 export function registerPricingRoutes(app: Express) {
+  // Map frontend load size IDs to backend-compatible IDs
+  const normalizeLoadSize = (frontendLoadSize: string): string => {
+    const mapping: Record<string, string> = {
+      "minimum": "small",
+      "eighth": "small",
+      "1/8": "small",
+      "quarter": "medium",
+      "1/4": "medium",
+      "half": "large",
+      "1/2": "large",
+      "three_quarter": "large",
+      "3/4": "large",
+      "full": "extra_large",
+      "xl": "extra_large",
+      "items": "small",
+    };
+
+    // Return mapped value if it exists, otherwise pass through (already normalized)
+    return mapping[frontendLoadSize.toLowerCase()] || frontendLoadSize;
+  };
+
   // Calculate service quote
   app.post("/api/pricing/quote", async (req, res) => {
     try {
       const quoteRequest = quoteRequestSchema.parse(req.body);
       const { userId, bookingSource } = req.body;
 
+      // Normalize load size to backend-compatible format
+      const normalizedRequest = {
+        ...quoteRequest,
+        loadSize: normalizeLoadSize(quoteRequest.loadSize),
+      };
+
       try {
         // Try database-backed quote first
         if (userId && bookingSource === "app") {
           const quoteWithPromos = await storage.calculateQuoteWithPromotions({
-            ...quoteRequest,
+            ...normalizedRequest,
             userId,
             bookingSource,
           });
           return res.json(quoteWithPromos);
         }
-        const quote = await storage.calculateQuote(quoteRequest);
+        const quote = await storage.calculateQuote(normalizedRequest);
         return res.json(quote);
       } catch (dbError) {
         // Fallback: calculate price from load size tiers when DB is unavailable
