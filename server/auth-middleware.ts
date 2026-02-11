@@ -39,24 +39,27 @@ export const requireAdmin: RequestHandler = (req: Request, res: Response, next: 
   next();
 };
 
-export const requireHauler: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+export const requirePro: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as AuthUser | undefined;
   if (!user) {
-    return res.status(401).json({ 
+    return res.status(401).json({
       error: "Authentication required",
       message: "You must be logged in to access this resource"
     });
   }
-  
-  if (user.role !== "hauler" && user.role !== "admin") {
-    return res.status(403).json({ 
-      error: "Hauler access required",
-      message: "You must be a PYCKER to access this resource"
+
+  if (user.role !== "pro" && user.role !== "hauler" && user.role !== "admin") {
+    return res.status(403).json({
+      error: "Pro access required",
+      message: "You must be a Pro to access this resource"
     });
   }
-  
+
   next();
 };
+
+// Legacy alias for backward compatibility
+export const requireHauler = requirePro;
 
 export const requireCustomer: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as AuthUser | undefined;
@@ -104,28 +107,31 @@ export function requireOwnership(paramName: string): RequestHandler {
   };
 }
 
-export const requireHaulerOwnership: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+export const requireProOwnership: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as AuthUser | undefined;
   if (!user) {
-    return res.status(401).json({ 
+    return res.status(401).json({
       error: "Authentication required",
       message: "You must be logged in to access this resource"
     });
   }
-  
+
   if (user.role === "admin") {
     return next();
   }
-  
-  if (user.role !== "hauler") {
-    return res.status(403).json({ 
-      error: "Hauler access required",
-      message: "You must be a PYCKER to access this resource"
+
+  if (user.role !== "pro" && user.role !== "hauler") {
+    return res.status(403).json({
+      error: "Pro access required",
+      message: "You must be a Pro to access this resource"
     });
   }
-  
+
   next();
 };
+
+// Legacy alias for backward compatibility
+export const requireHaulerOwnership = requireProOwnership;
 
 export const optionalAuth: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   next();
