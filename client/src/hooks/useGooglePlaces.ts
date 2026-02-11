@@ -114,6 +114,9 @@ export function useGooglePlaces(
   }, [scriptLoaded]);
 
   // Fetch predictions when query changes
+  // Stringify options to prevent infinite loop from object reference changes
+  const optionsString = JSON.stringify(options);
+
   useEffect(() => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
@@ -171,7 +174,8 @@ export function useGooglePlaces(
         clearTimeout(debounceRef.current);
       }
     };
-  }, [query, options]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, optionsString]); // Use stringified options to prevent infinite loop
 
   const clearSuggestions = useCallback(() => {
     setSuggestions([]);
