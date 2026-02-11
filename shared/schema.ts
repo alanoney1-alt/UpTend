@@ -698,7 +698,13 @@ export type HaulerWithProfileAndVehicle = User & {
   haulerInfo?: HaulerProfile; // Alias for profile
   name?: string; // Computed from firstName/lastName or username
 };
-export type ServiceRequestWithDetails = ServiceRequest & { 
+
+// Type aliases for Pro terminology (backwards compatibility)
+export type ProWithProfile = HaulerWithProfile;
+export type ProWithProfileAndVehicle = HaulerWithProfileAndVehicle;
+export type ProVehicle = PyckerVehicle;
+
+export type ServiceRequestWithDetails = ServiceRequest & {
   customer?: User;
   hauler?: HaulerWithProfileAndVehicle;
   matches?: MatchAttempt[];

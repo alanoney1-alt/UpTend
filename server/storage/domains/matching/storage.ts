@@ -21,13 +21,13 @@ export class MatchingStorage {
   }
 
   /**
-   * EXTREMELY COMPLEX MATCHING ALGORITHM - getSmartMatchedHaulers
+   * EXTREMELY COMPLEX MATCHING ALGORITHM - getSmartMatchedPros
    *
    * This is the most sophisticated method in the entire codebase, implementing
    * a multi-factor scoring algorithm to rank haulers for a service request.
    *
    * OVERVIEW:
-   * Takes a service request and returns a ranked list of haulers using a
+   * Takes a service request and returns a ranked list of Pros using a
    * composite scoring system with 7 different factors.
    *
    * INPUT PARAMETERS:
@@ -47,53 +47,53 @@ export class MatchingStorage {
    *
    * 2. COMPLETION RATE (0-50 points):
    *    - Formula: (jobsCompleted / reviewCount) × 10, capped at 50
-   *    - Rewards haulers with high completion-to-review ratio
+   *    - Rewards Pros with high completion-to-review ratio
    *    - Example: 50 jobs / 10 reviews = 5.0 ratio = 50 points
    *
    * 3. VERIFICATION BONUS (+15 points):
    *    - Awarded if profile.verified = true
-   *    - Incentivizes verified haulers
+   *    - Incentivizes verified Pros
    *
    * 4. PROXIMITY SCORE (0-30 points):
    *    - Formula: max(0, 30 - distance_in_miles)
-   *    - Only calculated if both hauler and pickup have coordinates
+   *    - Only calculated if both Pro and pickup have coordinates
    *    - Example: 5 miles away = 25 points, 30+ miles = 0 points
-   *    - Prioritizes nearby haulers
+   *    - Prioritizes nearby Pros
    *
    * 5. VEHICLE CAPACITY MATCH (+10 points):
    *    - Vehicle capacity mapping:
    *      pickup_truck: 1, cargo_van: 2, box_truck: 3, flatbed: 4, trailer: 5
    *    - Load size requirements:
    *      small: 1, medium: 2, large: 3, extra_large: 4
-   *    - Bonus awarded if hauler's vehicle can handle the load
+   *    - Bonus awarded if Pro's vehicle can handle the load
    *
    * 6. LANGUAGE MATCH (+25 points):
-   *    - Awarded if hauler speaks the preferred language
+   *    - Awarded if Pro speaks the preferred language
    *    - Checks profile.languagesSpoken array
    *    - Default: ["en"] if not specified
    *    - High value to prioritize communication
    *
    * 7. LOYALTY PRIORITY BOOST (+20 points):
    *    - Awarded if profile.loyaltyPriorityBoost = true
-   *    - Rewards haulers who have earned loyalty status
+   *    - Rewards Pros who have earned loyalty status
    *    - Typically earned after 10+ five-star jobs
    *
    * FILTERING:
-   * - Pre-filters to only available haulers (if preferVerifiedPro, only "verified_pro")
+   * - Pre-filters to only available Pros (if preferVerifiedPro, only "verified_pro")
    * - Must have serviceType in their serviceTypes array
-   * - Excludes haulers without matching service capability
+   * - Excludes Pros without matching service capability
    *
    * SORTING & OUTPUT:
-   * - All matching haulers are scored and sorted by total score (highest first)
+   * - All matching Pros are scored and sorted by total score (highest first)
    * - If isPriority = true, returns only top 5 matches
    * - Otherwise returns all scored matches
    *
    * CROSS-DOMAIN DEPENDENCIES:
-   * - Requires hauler profiles (local)
+   * - Requires Pro profiles (local)
    * - Requires users data for HaulerWithProfile composition
    *
    * EXAMPLE SCORING:
-   * Hauler with:
+   * Pro with:
    * - 4.8 rating = 96 pts
    * - 100% completion = 50 pts
    * - Verified = 15 pts
@@ -104,8 +104,8 @@ export class MatchingStorage {
    * TOTAL: 236 points (excellent match)
    */
   // TODO: CROSS-DOMAIN COMPOSITION REQUIRED
-  // This method requires access to the users domain and hauler profiles
-  async getSmartMatchedHaulers(request: {
+  // This method requires access to the users domain and Pro profiles
+  async getSmartMatchedPros(request: {
     serviceType: string;
     loadSize: string;
     pickupLat?: number;
@@ -114,49 +114,49 @@ export class MatchingStorage {
     preferVerifiedPro?: boolean;
     preferredLanguage?: string;
   }): Promise<HaulerWithProfile[]> {
-    // Fetch all available haulers
-    // TEMPORARY: Direct DB access - should use injected hauler-profiles storage
+    // Fetch all available Pros
+    // TEMPORARY: Direct DB access - should use injected pro-profiles storage
     const allProfiles = await db.select().from(haulerProfiles)
       .where(eq(haulerProfiles.isAvailable, true));
-    let allHaulers: HaulerWithProfile[] = [];
+    let allPros: HaulerWithProfile[] = [];
 
     for (const profile of allProfiles) {
       // TEMPORARY: Direct DB access - should use injected users storage
       const [user] = await db.select().from(users).where(eq(users.id, profile.userId));
       if (user) {
-        allHaulers.push({ ...user, profile });
+        allPros.push({ ...user, profile });
       }
     }
 
-    // Filter to only Verified Pro PYCKERs if customer prefers
+    // Filter to only Verified Pros if customer prefers
     if (request.preferVerifiedPro) {
-      allHaulers = allHaulers.filter(h => h.profile.pyckerTier === "verified_pro");
+      allPros = allPros.filter(p => p.profile.pyckerTier === "verified_pro");
     }
 
     // Filter by service type and calculate scores
-    const scored = allHaulers
-      .filter(h => {
-        const serviceTypes = h.profile.serviceTypes || [];
+    const scored = allPros
+      .filter(p => {
+        const serviceTypes = p.profile.serviceTypes || [];
         return serviceTypes.includes(request.serviceType);
       })
-      .map(hauler => {
+      .map(pro => {
         let score = 0;
 
         // 1. RATING SCORE (0-100 points): Rating × 20
-        score += (hauler.profile.rating || 4.0) * 20;
+        score += (pro.profile.rating || 4.0) * 20;
 
         // 2. COMPLETION RATE (0-50 points): (jobs / reviews) × 10, capped at 50
-        const completionRate = (hauler.profile.jobsCompleted || 0) / Math.max(1, (hauler.profile.reviewCount || 1));
+        const completionRate = (pro.profile.jobsCompleted || 0) / Math.max(1, (pro.profile.reviewCount || 1));
         score += Math.min(completionRate * 10, 50);
 
         // 3. VERIFICATION BONUS (+15 points)
-        if (hauler.profile.verified) score += 15;
+        if (pro.profile.verified) score += 15;
 
         // 4. PROXIMITY SCORE (0-30 points): max(0, 30 - distance)
-        if (request.pickupLat && request.pickupLng && hauler.profile.currentLat && hauler.profile.currentLng) {
+        if (request.pickupLat && request.pickupLng && pro.profile.currentLat && pro.profile.currentLng) {
           const distance = this.calculateDistance(
             request.pickupLat, request.pickupLng,
-            hauler.profile.currentLat, hauler.profile.currentLng
+            pro.profile.currentLat, pro.profile.currentLng
           );
           score += Math.max(0, 30 - distance);
         }
@@ -175,34 +175,37 @@ export class MatchingStorage {
           large: 3,
           extra_large: 4,
         };
-        const haulerCap = vehicleCapacity[hauler.profile.vehicleType] || 2;
+        const proCap = vehicleCapacity[pro.profile.vehicleType] || 2;
         const requiredCap = loadSizeReq[request.loadSize] || 2;
-        if (haulerCap >= requiredCap) {
+        if (proCap >= requiredCap) {
           score += 10;
         }
 
         // 6. LANGUAGE MATCH (+25 points)
         if (request.preferredLanguage) {
-          const haulerLanguages = hauler.profile.languagesSpoken || ["en"];
-          if (haulerLanguages.includes(request.preferredLanguage)) {
+          const proLanguages = pro.profile.languagesSpoken || ["en"];
+          if (proLanguages.includes(request.preferredLanguage)) {
             score += 25;
           }
         }
 
         // 7. LOYALTY PRIORITY BOOST (+20 points)
-        if (hauler.profile.loyaltyPriorityBoost) {
+        if (pro.profile.loyaltyPriorityBoost) {
           score += 20;
         }
 
-        return { hauler, score };
+        return { pro, score };
       })
       .sort((a, b) => b.score - a.score);
 
     // Return top 5 for priority requests, all matches otherwise
     if (request.isPriority) {
-      return scored.slice(0, 5).map(s => s.hauler);
+      return scored.slice(0, 5).map(s => s.pro);
     }
 
-    return scored.map(s => s.hauler);
+    return scored.map(s => s.pro);
   }
+
+  // Legacy alias for backward compatibility
+  getSmartMatchedHaulers = this.getSmartMatchedPros;
 }

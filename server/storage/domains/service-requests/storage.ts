@@ -14,18 +14,18 @@ export interface IServiceRequestsStorage {
   getServiceRequest(id: string): Promise<ServiceRequest | undefined>;
   getServiceRequestWithDetails(id: string): Promise<ServiceRequestWithDetails | undefined>;
   getServiceRequestsByCustomer(customerId: string): Promise<ServiceRequest[]>;
-  getServiceRequestsByHauler(haulerId: string): Promise<ServiceRequest[]>;
+  getServiceRequestsByPro(proId: string): Promise<ServiceRequest[]>;
   getPendingRequests(): Promise<ServiceRequestWithDetails[]>;
   getPendingRequestsBasic(): Promise<ServiceRequest[]>;
-  getActiveJobsForHauler(haulerId: string): Promise<ServiceRequest[]>;
+  getActiveJobsForPro(proId: string): Promise<ServiceRequest[]>;
   createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest>;
   updateServiceRequest(id: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined>;
-  acceptServiceRequest(id: string, haulerId: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined>;
+  acceptServiceRequest(id: string, proId: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined>;
 
   getMatchAttempt(id: string): Promise<MatchAttempt | undefined>;
   getMatchAttemptsByRequest(requestId: string): Promise<MatchAttempt[]>;
-  getMatchAttemptsByHauler(haulerId: string): Promise<MatchAttempt[]>;
-  getPendingMatchesForHauler(haulerId: string): Promise<(MatchAttempt & { request: ServiceRequest })[]>;
+  getMatchAttemptsByPro(proId: string): Promise<MatchAttempt[]>;
+  getPendingMatchesForPro(proId: string): Promise<(MatchAttempt & { request: ServiceRequest })[]>;
   createMatchAttempt(match: InsertMatchAttempt): Promise<MatchAttempt>;
   updateMatchAttempt(id: string, updates: Partial<MatchAttempt>): Promise<MatchAttempt | undefined>;
 }
@@ -38,7 +38,7 @@ export class ServiceRequestsStorage implements IServiceRequestsStorage {
 
   // NOTE: This method has cross-domain dependencies:
   // - getUser from users domain
-  // - getHaulerProfile from hauler-profiles domain
+  // - getProProfile from pro-profiles domain
   // - getPyckerVehicle from vehicles domain
   // - getMatchAttemptsByRequest (from this domain)
   // These should be handled at the composition layer (DatabaseStorage)
@@ -51,9 +51,12 @@ export class ServiceRequestsStorage implements IServiceRequestsStorage {
     return db.select().from(serviceRequests).where(eq(serviceRequests.customerId, customerId));
   }
 
-  async getServiceRequestsByHauler(haulerId: string): Promise<ServiceRequest[]> {
-    return db.select().from(serviceRequests).where(eq(serviceRequests.assignedHaulerId, haulerId));
+  async getServiceRequestsByPro(proId: string): Promise<ServiceRequest[]> {
+    return db.select().from(serviceRequests).where(eq(serviceRequests.assignedHaulerId, proId));
   }
+
+  // Legacy alias for backward compatibility
+  getServiceRequestsByHauler = this.getServiceRequestsByPro;
 
   // Returns basic pending requests without enrichment
   async getPendingRequestsBasic(): Promise<ServiceRequest[]> {
@@ -73,13 +76,16 @@ export class ServiceRequestsStorage implements IServiceRequestsStorage {
     throw new Error("getPendingRequests requires composition - use DatabaseStorage class");
   }
 
-  async getActiveJobsForHauler(haulerId: string): Promise<ServiceRequest[]> {
+  async getActiveJobsForPro(proId: string): Promise<ServiceRequest[]> {
     return db.select().from(serviceRequests)
       .where(and(
-        eq(serviceRequests.assignedHaulerId, haulerId),
+        eq(serviceRequests.assignedHaulerId, proId),
         or(eq(serviceRequests.status, "assigned"), eq(serviceRequests.status, "in_progress"))
       ));
   }
+
+  // Legacy alias for backward compatibility
+  getActiveJobsForHauler = this.getActiveJobsForPro;
 
   async createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest> {
     const [newRequest] = await db.insert(serviceRequests).values(request).returning();
@@ -95,7 +101,7 @@ export class ServiceRequestsStorage implements IServiceRequestsStorage {
   }
 
   // Complex transaction with row-level locking to prevent race conditions
-  async acceptServiceRequest(id: string, haulerId: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined> {
+  async acceptServiceRequest(id: string, proId: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined> {
     return await db.transaction(async (tx) => {
       // Lock the row to prevent concurrent accepts
       const [locked] = await tx
@@ -128,14 +134,17 @@ export class ServiceRequestsStorage implements IServiceRequestsStorage {
     return db.select().from(matchAttempts).where(eq(matchAttempts.requestId, requestId));
   }
 
-  async getMatchAttemptsByHauler(haulerId: string): Promise<MatchAttempt[]> {
-    return db.select().from(matchAttempts).where(eq(matchAttempts.haulerId, haulerId));
+  async getMatchAttemptsByPro(proId: string): Promise<MatchAttempt[]> {
+    return db.select().from(matchAttempts).where(eq(matchAttempts.haulerId, proId));
   }
 
+  // Legacy alias for backward compatibility
+  getMatchAttemptsByHauler = this.getMatchAttemptsByPro;
+
   // Complex join-like operation that requires fetching related service requests
-  async getPendingMatchesForHauler(haulerId: string): Promise<(MatchAttempt & { request: ServiceRequest })[]> {
+  async getPendingMatchesForPro(proId: string): Promise<(MatchAttempt & { request: ServiceRequest })[]> {
     const matches = await db.select().from(matchAttempts)
-      .where(and(eq(matchAttempts.haulerId, haulerId), eq(matchAttempts.status, "pending")));
+      .where(and(eq(matchAttempts.haulerId, proId), eq(matchAttempts.status, "pending")));
 
     const results: (MatchAttempt & { request: ServiceRequest })[] = [];
     for (const m of matches) {
@@ -146,6 +155,9 @@ export class ServiceRequestsStorage implements IServiceRequestsStorage {
     }
     return results;
   }
+
+  // Legacy alias for backward compatibility
+  getPendingMatchesForHauler = this.getPendingMatchesForPro;
 
   async createMatchAttempt(match: InsertMatchAttempt): Promise<MatchAttempt> {
     const [newMatch] = await db.insert(matchAttempts).values(match).returning();

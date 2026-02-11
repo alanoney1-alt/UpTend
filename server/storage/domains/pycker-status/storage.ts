@@ -9,17 +9,17 @@ import {
   type HaulerProfile,
 } from "@shared/schema";
 
-export class PyckerStatusStorage {
-  async getPyckerOnlineStatus(pyckerId: string): Promise<PyckerOnlineStatus | undefined> {
+export class ProStatusStorage {
+  async getProOnlineStatus(proId: string): Promise<PyckerOnlineStatus | undefined> {
     const [status] = await db.select()
       .from(pyckerOnlineStatus)
-      .where(eq(pyckerOnlineStatus.pyckerId, pyckerId));
+      .where(eq(pyckerOnlineStatus.pyckerId, proId));
     return status || undefined;
   }
 
-  async updatePyckerLocation(data: InsertPyckerOnlineStatus): Promise<PyckerOnlineStatus> {
+  async updateProLocation(data: InsertPyckerOnlineStatus): Promise<PyckerOnlineStatus> {
     // Upsert - update if exists, insert if not
-    const existing = await this.getPyckerOnlineStatus(data.pyckerId);
+    const existing = await this.getProOnlineStatus(data.pyckerId);
 
     if (existing) {
       const [updated] = await db.update(pyckerOnlineStatus)
@@ -45,12 +45,12 @@ export class PyckerStatusStorage {
     }
   }
 
-  async setPyckerOffline(pyckerId: string): Promise<void> {
+  async setProOffline(proId: string): Promise<void> {
     await db.delete(pyckerOnlineStatus)
-      .where(eq(pyckerOnlineStatus.pyckerId, pyckerId));
+      .where(eq(pyckerOnlineStatus.pyckerId, proId));
   }
 
-  async getOnlinePyckersNearby(lat: number, lng: number, radiusMiles: number): Promise<(PyckerOnlineStatus & { haulerProfile: HaulerProfile; distance: number })[]> {
+  async getOnlineProsNearby(lat: number, lng: number, radiusMiles: number): Promise<(PyckerOnlineStatus & { haulerProfile: HaulerProfile; distance: number })[]> {
     // Use Haversine formula to calculate distance
     // 3959 is the radius of Earth in miles
     const now = new Date().toISOString();
@@ -97,10 +97,17 @@ export class PyckerStatusStorage {
     return (results.rows || []) as (PyckerOnlineStatus & { haulerProfile: HaulerProfile; distance: number })[];
   }
 
-  async cleanupExpiredPyckerLocations(): Promise<number> {
+  async cleanupExpiredProLocations(): Promise<number> {
     const now = new Date().toISOString();
     const result = await db.delete(pyckerOnlineStatus)
       .where(sql`${pyckerOnlineStatus.expiresAt} < ${now}`);
     return result.rowCount || 0;
   }
+
+  // Legacy aliases for backward compatibility
+  getPyckerOnlineStatus = this.getProOnlineStatus;
+  updatePyckerLocation = this.updateProLocation;
+  setPyckerOffline = this.setProOffline;
+  getOnlinePyckersNearby = this.getOnlineProsNearby;
+  cleanupExpiredPyckerLocations = this.cleanupExpiredProLocations;
 }

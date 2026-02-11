@@ -12,7 +12,7 @@ import { eq, desc } from "drizzle-orm";
 export interface IDispatchStorage {
   createDispatchBatch(batch: InsertDispatchBatch): Promise<DispatchBatch>;
   getDispatchBatchesByDate(date: string): Promise<DispatchBatch[]>;
-  getDispatchBatchesByHauler(haulerId: string): Promise<DispatchBatch[]>;
+  getDispatchBatchesByPro(proId: string): Promise<DispatchBatch[]>;
   updateDispatchBatch(id: string, updates: Partial<DispatchBatch>): Promise<DispatchBatch | undefined>;
   createDisposalRecommendation(rec: InsertDisposalRecommendation): Promise<DisposalRecommendation>;
   getDisposalRecommendationsByRequest(serviceRequestId: string): Promise<DisposalRecommendation[]>;
@@ -29,9 +29,12 @@ export class DispatchStorage implements IDispatchStorage {
     return db.select().from(dispatchBatches).where(eq(dispatchBatches.batchDate, date)).orderBy(desc(dispatchBatches.createdAt));
   }
 
-  async getDispatchBatchesByHauler(haulerId: string): Promise<DispatchBatch[]> {
-    return db.select().from(dispatchBatches).where(eq(dispatchBatches.haulerId, haulerId)).orderBy(desc(dispatchBatches.createdAt));
+  async getDispatchBatchesByPro(proId: string): Promise<DispatchBatch[]> {
+    return db.select().from(dispatchBatches).where(eq(dispatchBatches.haulerId, proId)).orderBy(desc(dispatchBatches.createdAt));
   }
+
+  // Legacy alias for backward compatibility
+  getDispatchBatchesByHauler = this.getDispatchBatchesByPro;
 
   async updateDispatchBatch(id: string, updates: Partial<DispatchBatch>): Promise<DispatchBatch | undefined> {
     const [result] = await db.update(dispatchBatches).set(updates).where(eq(dispatchBatches.id, id)).returning();

@@ -84,14 +84,14 @@ import { PenaltiesReferralsStorage } from "../domains/penalties-referrals/storag
 import { BusinessAccountsStorage } from "../domains/business-accounts/storage";
 import { EsgStorage } from "../domains/esg/storage";
 import { EnvironmentalStorage } from "../domains/environmental/storage";
-import { PyckerStatusStorage } from "../domains/pycker-status/storage";
+import { ProStatusStorage } from "../domains/pycker-status/storage";
 import { JobManagementStorage } from "../domains/job-management/storage";
 import { CertificationsStorage } from "../domains/certifications/storage";
 import { LoyaltyStorage } from "../domains/loyalty/storage";
 import { PromotionsStorage } from "../domains/promotions/storage";
 import { AgenticStorage } from "../domains/agentic/storage";
 import { ServiceRequestsStorage } from "../domains/service-requests/storage";
-import { HaulerProfilesStorage } from "../domains/hauler-profiles/storage";
+import { ProProfilesStorage } from "../domains/hauler-profiles/storage";
 import { PricingSurgeStorage } from "../domains/pricing-surge/storage";
 import { AiEstimatesReviewsStorage } from "../domains/ai-estimates-reviews/storage";
 import { MatchingStorage } from "../domains/matching/storage";
@@ -140,14 +140,14 @@ export class DatabaseStorage implements IStorage {
   private businessAccounts: BusinessAccountsStorage;
   private esg: EsgStorage;
   private environmental: EnvironmentalStorage;
-  private pyckerStatus: PyckerStatusStorage;
+  private proStatus: ProStatusStorage;
   private jobManagement: JobManagementStorage;
   private certifications: CertificationsStorage;
   private loyalty: LoyaltyStorage;
   private promotions: PromotionsStorage;
   private agentic: AgenticStorage;
   private serviceRequests: ServiceRequestsStorage;
-  private haulerProfiles: HaulerProfilesStorage;
+  private proProfiles: ProProfilesStorage;
   private pricingSurge: PricingSurgeStorage;
   private aiEstimatesReviews: AiEstimatesReviewsStorage;
   private matching: MatchingStorage;
@@ -177,14 +177,14 @@ export class DatabaseStorage implements IStorage {
     this.businessAccounts = new BusinessAccountsStorage();
     this.esg = new EsgStorage();
     this.environmental = new EnvironmentalStorage();
-    this.pyckerStatus = new PyckerStatusStorage();
+    this.proStatus = new ProStatusStorage();
     this.jobManagement = new JobManagementStorage();
     this.certifications = new CertificationsStorage();
     this.loyalty = new LoyaltyStorage();
     this.promotions = new PromotionsStorage();
     this.agentic = new AgenticStorage();
     this.serviceRequests = new ServiceRequestsStorage();
-    this.haulerProfiles = new HaulerProfilesStorage();
+    this.proProfiles = new ProProfilesStorage();
     this.pricingSurge = new PricingSurgeStorage();
     this.aiEstimatesReviews = new AiEstimatesReviewsStorage();
     this.matching = new MatchingStorage();
@@ -236,47 +236,47 @@ export class DatabaseStorage implements IStorage {
   }
 
   // ============================================================================
-  // HAULER PROFILES DOMAIN
+  // PRO PROFILES DOMAIN
   // ============================================================================
 
   async getHaulerProfile(userId: string): Promise<HaulerProfile | undefined> {
-    return this.haulerProfiles.getHaulerProfile(userId);
+    return this.proProfiles.getProProfile(userId);
   }
 
   async getHaulerProfileById(id: string): Promise<HaulerProfile | undefined> {
-    return this.haulerProfiles.getHaulerProfileById(id);
+    return this.proProfiles.getProProfileById(id);
   }
 
   async getAllHaulerProfiles(): Promise<HaulerProfile[]> {
-    return this.haulerProfiles.getAllHaulerProfiles();
+    return this.proProfiles.getAllProProfiles();
   }
 
   async createHaulerProfile(profile: InsertHaulerProfile): Promise<HaulerProfile> {
-    return this.haulerProfiles.createHaulerProfile(profile);
+    return this.proProfiles.createProProfile(profile);
   }
 
   async updateHaulerProfile(id: string, updates: Partial<HaulerProfile>): Promise<HaulerProfile | undefined> {
-    return this.haulerProfiles.updateHaulerProfile(id, updates);
+    return this.proProfiles.updateProProfile(id, updates);
   }
 
   async getAvailableHaulers(): Promise<HaulerWithProfile[]> {
-    return this.haulerProfiles.getAvailableHaulers();
+    return this.proProfiles.getAvailablePros();
   }
 
   async getAvailableHaulersWithVehicles(): Promise<HaulerWithProfileAndVehicle[]> {
-    return this.haulerProfiles.getAvailableHaulersWithVehicles();
+    return this.proProfiles.getAvailableProsWithVehicles();
   }
 
   async getAllHaulers(): Promise<HaulerWithProfile[]> {
-    return this.haulerProfiles.getAllHaulers();
+    return this.proProfiles.getAllPros();
   }
 
   async checkInHauler(profileId: string, lat?: number, lng?: number): Promise<HaulerProfile | undefined> {
-    return this.haulerProfiles.checkInHauler(profileId, lat, lng);
+    return this.proProfiles.checkInPro(profileId, lat, lng);
   }
 
   async checkOutHauler(profileId: string): Promise<HaulerProfile | undefined> {
-    return this.haulerProfiles.checkOutHauler(profileId);
+    return this.proProfiles.checkOutPro(profileId);
   }
 
   // ============================================================================
@@ -302,7 +302,7 @@ export class DatabaseStorage implements IStorage {
     if (request.assignedHaulerId) {
       hauler = await this.users.getUser(request.assignedHaulerId);
       if (hauler) {
-        haulerProfile = await this.haulerProfiles.getHaulerProfile(hauler.id);
+        haulerProfile = await this.proProfiles.getProProfile(hauler.id);
         if (haulerProfile?.activeVehicleId) {
           activeVehicle = await this.vehicles.getPyckerVehicle(haulerProfile.activeVehicleId);
         }
@@ -324,7 +324,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getServiceRequestsByHauler(haulerId: string): Promise<ServiceRequest[]> {
-    return this.serviceRequests.getServiceRequestsByHauler(haulerId);
+    return this.serviceRequests.getServiceRequestsByPro(haulerId);
   }
 
   async getPendingRequests(): Promise<ServiceRequestWithDetails[]> {
@@ -347,7 +347,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getActiveJobsForHauler(haulerId: string): Promise<ServiceRequest[]> {
-    return this.serviceRequests.getActiveJobsForHauler(haulerId);
+    return this.serviceRequests.getActiveJobsForPro(haulerId);
   }
 
   async createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest> {
@@ -375,11 +375,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getMatchAttemptsByHauler(haulerId: string): Promise<MatchAttempt[]> {
-    return this.serviceRequests.getMatchAttemptsByHauler(haulerId);
+    return this.serviceRequests.getMatchAttemptsByPro(haulerId);
   }
 
   async getPendingMatchesForHauler(haulerId: string): Promise<(MatchAttempt & { request: ServiceRequest })[]> {
-    return this.serviceRequests.getPendingMatchesForHauler(haulerId);
+    return this.serviceRequests.getPendingMatchesForPro(haulerId);
   }
 
   async createMatchAttempt(match: InsertMatchAttempt): Promise<MatchAttempt> {
@@ -398,7 +398,7 @@ export class DatabaseStorage implements IStorage {
     isPriority?: boolean;
     preferVerifiedPro?: boolean;
   }): Promise<HaulerWithProfile[]> {
-    return this.matching.getSmartMatchedHaulers(request);
+    return this.matching.getSmartMatchedPros(request);
   }
 
   async searchHaulers(filters: {
@@ -491,7 +491,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getHaulerActiveJobs(haulerId: string): Promise<ServiceRequest[]> {
-    return this.serviceRequests.getActiveJobsForHauler(haulerId);
+    return this.serviceRequests.getActiveJobsForPro(haulerId);
   }
 
   async calculateQuote(request: QuoteRequest): Promise<PriceQuote> {
@@ -1095,27 +1095,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   // ============================================================================
-  // PYCKER STATUS DOMAIN (GPS Tracking)
+  // PRO STATUS DOMAIN (GPS Tracking)
   // ============================================================================
 
   async getPyckerOnlineStatus(pyckerId: string): Promise<PyckerOnlineStatus | undefined> {
-    return this.pyckerStatus.getPyckerOnlineStatus(pyckerId);
+    return this.proStatus.getProOnlineStatus(pyckerId);
   }
 
   async updatePyckerLocation(data: InsertPyckerOnlineStatus): Promise<PyckerOnlineStatus> {
-    return this.pyckerStatus.updatePyckerLocation(data);
+    return this.proStatus.updateProLocation(data);
   }
 
   async setPyckerOffline(pyckerId: string): Promise<void> {
-    return this.pyckerStatus.setPyckerOffline(pyckerId);
+    return this.proStatus.setProOffline(pyckerId);
   }
 
   async getOnlinePyckersNearby(lat: number, lng: number, radiusMiles: number): Promise<(PyckerOnlineStatus & { haulerProfile: HaulerProfile; distance: number })[]> {
-    return this.pyckerStatus.getOnlinePyckersNearby(lat, lng, radiusMiles);
+    return this.proStatus.getOnlineProsNearby(lat, lng, radiusMiles);
   }
 
   async cleanupExpiredPyckerLocations(): Promise<number> {
-    return this.pyckerStatus.cleanupExpiredPyckerLocations();
+    return this.proStatus.cleanupExpiredProLocations();
   }
 
   // ============================================================================
@@ -1307,7 +1307,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDispatchBatchesByHauler(haulerId: string): Promise<DispatchBatch[]> {
-    return this.dispatch.getDispatchBatchesByHauler(haulerId);
+    return this.dispatch.getDispatchBatchesByPro(haulerId);
   }
 
   async updateDispatchBatch(id: string, updates: Partial<DispatchBatch>): Promise<DispatchBatch | undefined> {

@@ -10,27 +10,27 @@ import type {
   User,
 } from "@shared/schema";
 
-export class HaulerProfilesStorage {
-  async getHaulerProfile(userId: string): Promise<HaulerProfile | undefined> {
+export class ProProfilesStorage {
+  async getProProfile(userId: string): Promise<HaulerProfile | undefined> {
     const [profile] = await db.select().from(haulerProfiles).where(eq(haulerProfiles.userId, userId));
     return profile || undefined;
   }
 
-  async getHaulerProfileById(id: string): Promise<HaulerProfile | undefined> {
+  async getProProfileById(id: string): Promise<HaulerProfile | undefined> {
     const [profile] = await db.select().from(haulerProfiles).where(eq(haulerProfiles.id, id));
     return profile || undefined;
   }
 
-  async getAllHaulerProfiles(): Promise<HaulerProfile[]> {
+  async getAllProProfiles(): Promise<HaulerProfile[]> {
     return db.select().from(haulerProfiles);
   }
 
-  async createHaulerProfile(profile: InsertHaulerProfile): Promise<HaulerProfile> {
+  async createProProfile(profile: InsertHaulerProfile): Promise<HaulerProfile> {
     const [newProfile] = await db.insert(haulerProfiles).values(profile).returning();
     return newProfile;
   }
 
-  async updateHaulerProfile(id: string, updates: Partial<HaulerProfile>): Promise<HaulerProfile | undefined> {
+  async updateProProfile(id: string, updates: Partial<HaulerProfile>): Promise<HaulerProfile | undefined> {
     const [profile] = await db.update(haulerProfiles)
       .set(updates)
       .where(eq(haulerProfiles.id, id))
@@ -41,7 +41,7 @@ export class HaulerProfilesStorage {
   // TODO: CROSS-DOMAIN COMPOSITION REQUIRED
   // This method requires access to the users domain to fetch user data
   // When implementing the composition layer, inject a getUser method or users storage instance
-  async getAvailableHaulers(): Promise<HaulerWithProfile[]> {
+  async getAvailablePros(): Promise<HaulerWithProfile[]> {
     const profiles = await db.select().from(haulerProfiles).where(eq(haulerProfiles.isAvailable, true));
     const results: HaulerWithProfile[] = [];
     for (const profile of profiles) {
@@ -56,8 +56,8 @@ export class HaulerProfilesStorage {
 
   // TODO: CROSS-DOMAIN COMPOSITION REQUIRED
   // This method requires access to both users and vehicles domains
-  // Complex composition: users + hauler profiles + vehicles
-  async getAvailableHaulersWithVehicles(): Promise<HaulerWithProfileAndVehicle[]> {
+  // Complex composition: users + Pro profiles + vehicles
+  async getAvailableProsWithVehicles(): Promise<HaulerWithProfileAndVehicle[]> {
     const profiles = await db.select().from(haulerProfiles).where(eq(haulerProfiles.isAvailable, true));
     const results: HaulerWithProfileAndVehicle[] = [];
     for (const profile of profiles) {
@@ -75,7 +75,7 @@ export class HaulerProfilesStorage {
     return results;
   }
 
-  async checkInHauler(profileId: string, lat?: number, lng?: number): Promise<HaulerProfile | undefined> {
+  async checkInPro(profileId: string, lat?: number, lng?: number): Promise<HaulerProfile | undefined> {
     const [profile] = await db.update(haulerProfiles)
       .set({
         isAvailable: true,
@@ -88,7 +88,7 @@ export class HaulerProfilesStorage {
     return profile || undefined;
   }
 
-  async checkOutHauler(profileId: string): Promise<HaulerProfile | undefined> {
+  async checkOutPro(profileId: string): Promise<HaulerProfile | undefined> {
     const [profile] = await db.update(haulerProfiles)
       .set({ isAvailable: false })
       .where(eq(haulerProfiles.id, profileId))
@@ -98,7 +98,7 @@ export class HaulerProfilesStorage {
 
   // TODO: CROSS-DOMAIN COMPOSITION REQUIRED
   // This method requires access to the users domain
-  async getAllHaulers(): Promise<HaulerWithProfile[]> {
+  async getAllPros(): Promise<HaulerWithProfile[]> {
     const profiles = await db.select().from(haulerProfiles);
     const results: HaulerWithProfile[] = [];
     for (const profile of profiles) {
@@ -110,4 +110,16 @@ export class HaulerProfilesStorage {
     }
     return results;
   }
+
+  // Legacy aliases for backward compatibility
+  getHaulerProfile = this.getProProfile;
+  getHaulerProfileById = this.getProProfileById;
+  getAllHaulerProfiles = this.getAllProProfiles;
+  createHaulerProfile = this.createProProfile;
+  updateHaulerProfile = this.updateProProfile;
+  getAvailableHaulers = this.getAvailablePros;
+  getAvailableHaulersWithVehicles = this.getAvailableProsWithVehicles;
+  checkInHauler = this.checkInPro;
+  checkOutHauler = this.checkOutPro;
+  getAllHaulers = this.getAllPros;
 }
