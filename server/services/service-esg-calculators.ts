@@ -647,7 +647,7 @@ export interface LightDemolitionParams {
   metalSalvagedLbs: number;
   concreteSalvagedLbs: number;
   method: "deconstruction" | "standard_demolition";
-  hazmatProperly Disposed?: boolean;
+  hazmatProperlyDisposed?: boolean;
 }
 
 /**

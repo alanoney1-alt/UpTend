@@ -93,7 +93,7 @@ router.get("/reports/csv", async (req, res) => {
       : `esg-report-${businessAccountId}.csv`;
 
     res.setHeader("Content-Type", "text/csv");
-    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.send(csv);
   } catch (error: any) {
     console.error("Error generating CSV export:", error);

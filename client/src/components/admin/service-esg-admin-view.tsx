@@ -43,9 +43,9 @@ export function ServiceEsgAdminView() {
   const serviceData = data?.data || [];
 
   // Calculate totals
-  const totalJobs = serviceData.reduce((sum, s) => sum + s.totalJobs, 0);
-  const totalCo2Saved = serviceData.reduce((sum, s) => sum + s.totalCo2SavedLbs, 0);
-  const totalWaterSaved = serviceData.reduce((sum, s) => sum + s.totalWaterSavedGallons, 0);
+  const totalJobs = serviceData.reduce((sum, s) => sum + s.jobs, 0);
+  const totalCo2Saved = serviceData.reduce((sum, s) => sum + s.co2SavedLbs, 0);
+  const totalWaterSaved = serviceData.reduce((sum, s) => sum + s.waterSavedGallons, 0);
   const avgEsgScore =
     serviceData.length > 0
       ? serviceData.reduce((sum, s) => sum + s.avgEsgScore, 0) / serviceData.length
@@ -137,18 +137,18 @@ export function ServiceEsgAdminView() {
               </thead>
               <tbody>
                 {serviceData
-                  .sort((a, b) => b.totalCo2SavedLbs - a.totalCo2SavedLbs)
+                  .sort((a, b) => b.co2SavedLbs - a.co2SavedLbs)
                   .map((service) => (
                     <tr key={service.serviceType} className="border-b hover:bg-gray-50">
                       <td className="py-2 px-4 font-medium capitalize">
                         {service.serviceType.replace(/_/g, " ")}
                       </td>
-                      <td className="text-right py-2 px-4">{service.totalJobs}</td>
+                      <td className="text-right py-2 px-4">{service.jobs}</td>
                       <td className="text-right py-2 px-4 text-green-600">
-                        {service.totalCo2SavedLbs.toFixed(1)}
+                        {service.co2SavedLbs.toFixed(1)}
                       </td>
                       <td className="text-right py-2 px-4 text-blue-600">
-                        {service.totalWaterSavedGallons.toFixed(0)}
+                        {service.waterSavedGallons.toFixed(0)}
                       </td>
                       <td className="text-right py-2 px-4 text-purple-600">
                         {service.avgEsgScore.toFixed(1)}

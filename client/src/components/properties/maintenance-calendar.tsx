@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, CheckCircle, Clock, AlertCircle, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PropertyMaintenanceSchedule } from "@db/schema";
+import type { PropertyMaintenanceSchedule } from "@shared/schema";
 
 interface MaintenanceCalendarProps {
   propertyId: string;

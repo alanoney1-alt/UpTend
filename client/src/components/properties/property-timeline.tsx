@@ -23,7 +23,7 @@ import {
   Filter,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PropertyHealthEvent } from "@db/schema";
+import type { PropertyHealthEvent } from "@shared/schema";
 
 interface PropertyTimelineProps {
   propertyId: string;

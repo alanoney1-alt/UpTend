@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Shield, Plus, Calendar, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PropertyWarranty } from "@db/schema";
+import type { PropertyWarranty } from "@shared/schema";
 
 interface WarrantyTrackerProps {
   propertyId: string;

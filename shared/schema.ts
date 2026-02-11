@@ -1501,7 +1501,7 @@ export type EsgImpactLog = typeof esgImpactLogs.$inferSelect;
 // ==========================================
 export const serviceEsgMetrics = pgTable("service_esg_metrics", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  serviceRequestId: varchar("service_request_id").notNull(),
+  serviceRequestId: varchar("service_request_id").notNull().references(() => serviceRequests.id),
   serviceType: text("service_type").notNull(),
 
   // Universal metrics

@@ -13,7 +13,7 @@ interface Scope3Report {
     co2AvoidedLbs: number;
     diversionRate: number;
   };
-  category3_upstream Transportation: {
+  category3_upstreamTransportation: {
     totalMiles: number;
     totalCo2Lbs: number;
     vehicleTypes: Record<string, { miles: number; co2Lbs: number }>;

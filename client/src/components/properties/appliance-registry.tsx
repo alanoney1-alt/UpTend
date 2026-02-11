@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Zap, Plus, Camera, Upload, Search, AlertCircle, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PropertyAppliance } from "@db/schema";
+import type { PropertyAppliance } from "@shared/schema";
 
 interface ApplianceRegistryProps {
   propertyId: string;

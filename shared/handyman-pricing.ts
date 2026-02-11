@@ -452,7 +452,7 @@ export function getRecommendedHandymanTasks(context: {
   tvSize?: 'small' | 'medium' | 'large';
   hasUnassembledFurniture?: boolean;
   furnitureComplexity?: 'simple' | 'medium' | 'complex';
-  hasDrywall Damage?: boolean;
+  hasDrywallDamage?: boolean;
   damageSize?: 'small' | 'medium' | 'large';
   needsPainting?: boolean;
   wallType?: 'drywall' | 'brick' | 'concrete';

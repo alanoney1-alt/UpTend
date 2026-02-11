@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Home, Plus, TrendingUp, AlertCircle, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Property } from "@db/schema";
+import type { Property } from "@shared/schema";
 
 export default function Properties() {
   const [properties, setProperties] = useState<Property[]>([]);

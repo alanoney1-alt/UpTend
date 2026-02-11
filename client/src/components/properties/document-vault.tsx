@@ -30,7 +30,7 @@ import {
   Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PropertyDocument } from "@db/schema";
+import type { PropertyDocument } from "@shared/schema";
 
 interface DocumentVaultProps {
   propertyId: string;

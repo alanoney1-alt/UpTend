@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Shield, Plus, FileText, DollarSign, Calendar, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PropertyInsurance } from "@db/schema";
+import type { PropertyInsurance } from "@shared/schema";
 
 interface InsuranceHubProps {
   propertyId: string;

@@ -12,7 +12,7 @@ import { DocumentVault } from "@/components/properties/document-vault";
 import { PropertyTimeline } from "@/components/properties/property-timeline";
 import { MaintenanceCalendar } from "@/components/properties/maintenance-calendar";
 import { Home, AlertCircle, TrendingUp, Calendar, FileText, Shield } from "lucide-react";
-import type { Property } from "@db/schema";
+import type { Property } from "@shared/schema";
 
 export default function PropertyDashboard() {
   const { propertyId } = useParams();

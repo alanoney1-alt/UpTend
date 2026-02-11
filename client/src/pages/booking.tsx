@@ -20,7 +20,7 @@ import {
   ArrowLeft, ArrowRight, Trash2, Sofa, Refrigerator, Home,
   MapPin, Clock, Package, CheckCircle, Star, Truck,
   Phone, MessageCircle, Timer, DollarSign, TrendingUp, Zap, Navigation,
-  Camera, X, Upload, Loader2, ImageIcon, Gift, CalendarCheck, Users, Shield, CreditCard, LogIn,
+  Camera, X, Upload, Loader2, ImageIcon, Gift, CalendarCheck, Users, Shield, ShieldCheck, CreditCard, LogIn,
   Lock, KeyRound, Leaf, Droplets, Hammer, ClipboardCheck, Minus, Plus, Info, Trophy, Crown, Sparkles, Wrench
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
