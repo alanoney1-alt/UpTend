@@ -7,7 +7,7 @@ import { users } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
-// Contact masking helper - masks customer/hauler contact info until payment is received
+// Contact masking helper - masks customer/Pro contact info until payment is received
 interface MaskableRequest {
   paymentStatus: string | null;
   customerPhone?: string | null;
@@ -32,7 +32,7 @@ function maskContactInfoForRole<T extends MaskableRequest>(
 
   const result = { ...request };
 
-  // Customers can't see PYCKER contact info until payment
+  // Customers can't see Pro contact info until payment
   if (role === 'customer' && result.assignedHauler) {
     result.assignedHauler = {
       ...result.assignedHauler,
@@ -41,7 +41,7 @@ function maskContactInfoForRole<T extends MaskableRequest>(
     };
   }
 
-  // PYCKERs can't see customer contact info until payment
+  // Pros can't see customer contact info until payment
   if (role === 'hauler') {
     result.customerPhone = null;
     result.customerEmail = null;
@@ -50,7 +50,7 @@ function maskContactInfoForRole<T extends MaskableRequest>(
   return result;
 }
 
-const pyckerRegistrationSchema = z.object({
+const proRegistrationSchema = z.object({
   // Account credentials
   password: z.string().min(8, "Password must be at least 8 characters"),
   emailVerified: z.boolean().optional(), // Flag indicating email was verified
@@ -80,34 +80,54 @@ const pyckerRegistrationSchema = z.object({
   driversLicensePhotoUrl: z.string().url().optional(),
 });
 
-export function registerHaulerProfileRoutes(app: Express) {
-  // Get hauler profile by userId
-  app.get("/api/haulers/:userId/profile", async (req, res) => {
+export function registerProProfileRoutes(app: Express) {
+  // Get Pro profile by userId
+  app.get("/api/pros/:userId/profile", async (req, res) => {
     try {
       const profile = await storage.getHaulerProfile(req.params.userId);
       if (!profile) {
-        return res.status(404).json({ error: "Hauler profile not found" });
+        return res.status(404).json({ error: "Pro profile not found" });
       }
       res.json(profile);
     } catch (error) {
-      console.error("Error fetching hauler profile:", error);
+      console.error("Error fetching Pro profile:", error);
 
       const dbError = error as any;
       if (dbError.code === 'ECONNREFUSED') {
         return res.status(503).json({ error: "Database connection failed" });
       }
 
-      res.status(500).json({ error: "Failed to fetch hauler profile" });
+      res.status(500).json({ error: "Failed to fetch Pro profile" });
     }
   });
 
-  // Update hauler profile
-  app.patch("/api/hauler/profile", requireAuth, requireHauler, async (req: any, res) => {
+  // Legacy hauler endpoint (backward compatibility)
+  app.get("/api/haulers/:userId/profile", async (req, res) => {
+    try {
+      const profile = await storage.getHaulerProfile(req.params.userId);
+      if (!profile) {
+        return res.status(404).json({ error: "Pro profile not found" });
+      }
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching Pro profile:", error);
+
+      const dbError = error as any;
+      if (dbError.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: "Database connection failed" });
+      }
+
+      res.status(500).json({ error: "Failed to fetch Pro profile" });
+    }
+  });
+
+  // Update Pro profile
+  app.patch("/api/pro/profile", requireAuth, requireHauler, async (req: any, res) => {
     try {
       const userId = req.user?.id;
       if (!userId) return res.status(401).json({ error: "Not authenticated" });
       const profile = await storage.getHaulerProfile(userId);
-      if (!profile) return res.status(404).json({ error: "Hauler profile not found" });
+      if (!profile) return res.status(404).json({ error: "Pro profile not found" });
 
       const allowedFields: Record<string, any> = {};
       if (req.body.languagesSpoken && Array.isArray(req.body.languagesSpoken)) {
@@ -124,7 +144,44 @@ export function registerHaulerProfileRoutes(app: Express) {
       const updated = await storage.updateHaulerProfile(profile.id, allowedFields);
       res.json(updated);
     } catch (error) {
-      console.error("Error updating hauler profile:", error);
+      console.error("Error updating Pro profile:", error);
+
+      const dbError = error as any;
+      if (dbError.code === '23505') {
+        return res.status(409).json({ error: "Duplicate entry" });
+      }
+      if (dbError.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: "Database connection failed" });
+      }
+
+      res.status(500).json({ error: "Failed to update profile" });
+    }
+  });
+
+  // Legacy hauler endpoint (backward compatibility)
+  app.patch("/api/hauler/profile", requireAuth, requireHauler, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Not authenticated" });
+      const profile = await storage.getHaulerProfile(userId);
+      if (!profile) return res.status(404).json({ error: "Pro profile not found" });
+
+      const allowedFields: Record<string, any> = {};
+      if (req.body.languagesSpoken && Array.isArray(req.body.languagesSpoken)) {
+        const validLangs = ["en", "es", "pt", "fr", "ht", "vi", "zh"];
+        allowedFields.languagesSpoken = req.body.languagesSpoken.filter((l: string) => validLangs.includes(l));
+        if (!allowedFields.languagesSpoken.includes("en")) {
+          allowedFields.languagesSpoken.unshift("en");
+        }
+      }
+      if (req.body.profilePhotoUrl !== undefined) allowedFields.profilePhotoUrl = req.body.profilePhotoUrl;
+      if (req.body.bio !== undefined) allowedFields.bio = req.body.bio;
+      if (req.body.funFact !== undefined) allowedFields.funFact = req.body.funFact;
+
+      const updated = await storage.updateHaulerProfile(profile.id, allowedFields);
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating Pro profile:", error);
 
       const dbError = error as any;
       if (dbError.code === '23505') {
@@ -167,13 +224,13 @@ export function registerHaulerProfileRoutes(app: Express) {
     }
   });
 
-  // Update hauler availability
-  app.patch("/api/haulers/:profileId/availability", requireAuth, requireHauler, async (req, res) => {
+  // Update Pro availability
+  app.patch("/api/pros/:profileId/availability", requireAuth, requireHauler, async (req, res) => {
     try {
       const { isAvailable } = req.body;
       const profile = await storage.updateHaulerProfile(req.params.profileId, { isAvailable });
       if (!profile) {
-        return res.status(404).json({ error: "Hauler profile not found" });
+        return res.status(404).json({ error: "Pro profile not found" });
       }
       res.json(profile);
     } catch (error) {
@@ -188,7 +245,53 @@ export function registerHaulerProfileRoutes(app: Express) {
     }
   });
 
-  // Hauler check-in with location
+  // Legacy hauler endpoint (backward compatibility)
+  app.patch("/api/haulers/:profileId/availability", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const { isAvailable } = req.body;
+      const profile = await storage.updateHaulerProfile(req.params.profileId, { isAvailable });
+      if (!profile) {
+        return res.status(404).json({ error: "Pro profile not found" });
+      }
+      res.json(profile);
+    } catch (error) {
+      console.error("Error updating availability:", error);
+
+      const dbError = error as any;
+      if (dbError.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: "Database connection failed" });
+      }
+
+      res.status(500).json({ error: "Failed to update availability" });
+    }
+  });
+
+  // Pro check-in with location
+  app.post("/api/pros/:profileId/check-in", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const parsed = haulerCheckInSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid request body", details: parsed.error.issues });
+      }
+      const { lat, lng } = parsed.data;
+      const profile = await storage.checkInHauler(req.params.profileId, lat, lng);
+      if (!profile) {
+        return res.status(404).json({ error: "Pro profile not found" });
+      }
+      res.json(profile);
+    } catch (error) {
+      console.error("Error checking in:", error);
+
+      const dbError = error as any;
+      if (dbError.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: "Database connection failed" });
+      }
+
+      res.status(500).json({ error: "Failed to check in" });
+    }
+  });
+
+  // Legacy hauler check-in endpoint (backward compatibility)
   app.post("/api/haulers/:profileId/check-in", requireAuth, requireHauler, async (req, res) => {
     try {
       const parsed = haulerCheckInSchema.safeParse(req.body);
@@ -198,7 +301,7 @@ export function registerHaulerProfileRoutes(app: Express) {
       const { lat, lng } = parsed.data;
       const profile = await storage.checkInHauler(req.params.profileId, lat, lng);
       if (!profile) {
-        return res.status(404).json({ error: "Hauler profile not found" });
+        return res.status(404).json({ error: "Pro profile not found" });
       }
       res.json(profile);
     } catch (error) {
@@ -218,7 +321,7 @@ export function registerHaulerProfileRoutes(app: Express) {
     try {
       const profile = await storage.checkOutHauler(req.params.profileId);
       if (!profile) {
-        return res.status(404).json({ error: "Hauler profile not found" });
+        return res.status(404).json({ error: "Pro profile not found" });
       }
       res.json(profile);
     } catch (error) {
@@ -395,7 +498,7 @@ export function registerHaulerProfileRoutes(app: Express) {
       }
       const profile = await storage.updateHaulerProfile(req.params.profileId, parsed.data);
       if (!profile) {
-        return res.status(404).json({ error: "Hauler profile not found" });
+        return res.status(404).json({ error: "Pro profile not found" });
       }
       res.json(profile);
     } catch (error) {
@@ -436,7 +539,17 @@ export function registerHaulerProfileRoutes(app: Express) {
     }
   });
 
-  // Get reviews for hauler
+  // Get reviews for Pro
+  app.get("/api/pros/:proId/reviews", async (req, res) => {
+    try {
+      const reviews = await storage.getReviewsByHauler(req.params.proId);
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+
+  // Legacy hauler endpoint (backward compatibility)
   app.get("/api/haulers/:haulerId/reviews", async (req, res) => {
     try {
       const reviews = await storage.getReviewsByHauler(req.params.haulerId);
@@ -446,3 +559,6 @@ export function registerHaulerProfileRoutes(app: Express) {
     }
   });
 }
+
+// Legacy export for backward compatibility
+export const registerHaulerProfileRoutes = registerProProfileRoutes;

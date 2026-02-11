@@ -217,24 +217,24 @@ export function registerPricingRoutes(app: Express) {
     }
   });
 
-  // Check upsell opportunities based on job and hauler capabilities
+  // Check upsell opportunities based on job and Pro capabilities
   app.post("/api/service-requests/:id/upsell-check", requireAuth, async (req: any, res) => {
     try {
       const job = await storage.getServiceRequest(req.params.id);
       if (!job) return res.status(404).json({ error: "Job not found" });
 
-      const haulerId = job.assignedHaulerId;
-      if (!haulerId) return res.json({ opportunities: [] });
+      const proId = job.assignedHaulerId;
+      if (!proId) return res.json({ opportunities: [] });
 
-      const haulerProfile = await storage.getHaulerProfile(haulerId);
-      if (!haulerProfile) return res.json({ opportunities: [] });
+      const proProfile = await storage.getHaulerProfile(proId);
+      if (!proProfile) return res.json({ opportunities: [] });
 
       const { getUpsellOpportunities } = await import("../../services/pricing");
       const opportunities = getUpsellOpportunities(job.serviceType, {
-        hasPressureWasher: haulerProfile.hasPressureWasher || false,
-        hasTallLadder: haulerProfile.hasTallLadder || false,
-        hasDemoTools: haulerProfile.hasDemoTools || false,
-        supportedServices: (haulerProfile.supportedServices as string[]) || ["junk_removal"],
+        hasPressureWasher: proProfile.hasPressureWasher || false,
+        hasTallLadder: proProfile.hasTallLadder || false,
+        hasDemoTools: proProfile.hasDemoTools || false,
+        supportedServices: (proProfile.supportedServices as string[]) || ["junk_removal"],
       });
 
       res.json({ opportunities });

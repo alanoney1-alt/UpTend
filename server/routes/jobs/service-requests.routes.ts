@@ -391,7 +391,24 @@ export function registerServiceRequestRoutes(app: Express) {
     }
   });
 
-  // Get hauler's pending matches
+  // Get Pro's pending matches
+  app.get("/api/pros/:proId/matches", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const matches = await storage.getPendingMatchesForHauler(req.params.proId);
+      res.json(matches);
+    } catch (error) {
+      console.error("Error fetching matches:", error);
+
+      const dbError = error as any;
+      if (dbError.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: "Database connection failed" });
+      }
+
+      res.status(500).json({ error: "Failed to fetch matches" });
+    }
+  });
+
+  // Legacy hauler endpoint (backward compatibility)
   app.get("/api/haulers/:haulerId/matches", requireAuth, requireHauler, async (req, res) => {
     try {
       const matches = await storage.getPendingMatchesForHauler(req.params.haulerId);

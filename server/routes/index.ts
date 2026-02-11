@@ -6,15 +6,15 @@ import { auditMiddleware } from "../middleware/audit";
 import { storage } from "../storage";
 
 // Auth routes
-import { registerHaulerAuthRoutes } from "./auth/hauler.routes";
+import { registerProAuthRoutes, registerHaulerAuthRoutes } from "./auth/hauler.routes";
 import { registerCustomerAuthRoutes } from "./auth/customer.routes";
 import { registerAdminAuthRoutes } from "./auth/admin.routes";
 import { registerBusinessAuthRoutes } from "./auth/business.routes";
 
-// Hauler routes
-import { registerHaulerProfileRoutes } from "./hauler/profile.routes";
-import { registerHaulerStatusRoutes } from "./hauler/status.routes";
-import { registerAcademyRoutes } from "./hauler/academy.routes";
+// Pro routes (formerly Hauler routes)
+import { registerProProfileRoutes, registerHaulerProfileRoutes } from "./hauler/profile.routes";
+import { registerProStatusRoutes, registerHaulerStatusRoutes } from "./hauler/status.routes";
+import { registerProAcademyRoutes, registerAcademyRoutes } from "./hauler/academy.routes";
 
 // Customer routes
 import { registerCustomerAccountRoutes } from "./customer/account.routes";
@@ -100,15 +100,15 @@ export async function registerRoutes(
   await storage.seedOrlando25PromoCode();
 
   // Register authentication routes
-  await registerHaulerAuthRoutes(app);
+  await registerProAuthRoutes(app);
   await registerCustomerAuthRoutes(app);
   await registerAdminAuthRoutes(app);
   await registerBusinessAuthRoutes(app);
 
-  // Register hauler routes
-  registerHaulerProfileRoutes(app);
-  registerHaulerStatusRoutes(app);
-  registerAcademyRoutes(app);
+  // Register Pro routes
+  registerProProfileRoutes(app);
+  registerProStatusRoutes(app);
+  registerProAcademyRoutes(app);
 
   // Register customer routes
   registerCustomerAccountRoutes(app);

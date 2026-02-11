@@ -13,7 +13,7 @@ const certifySchema = z.object({
   scores: z.record(z.string(), z.number()),
 });
 
-export function registerAcademyRoutes(app: Express) {
+export function registerProAcademyRoutes(app: Express) {
   /**
    * POST /api/academy/certify
    * Award certifications for completed academy modules
@@ -21,7 +21,7 @@ export function registerAcademyRoutes(app: Express) {
   app.post("/api/academy/certify", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
       const { skills, scores } = certifySchema.parse(req.body);
-      const haulerId = (req.user as any).id;
+      const proId = (req.user as any).id;
 
       // Award certifications for each completed skill
       const certifications = [];
@@ -30,7 +30,7 @@ export function registerAcademyRoutes(app: Express) {
 
         // Create certification record
         const cert = await storage.createHaulerCertification({
-          haulerId,
+          haulerId: proId,
           type: "skill_badge",
           skillType,
           status: "active",
@@ -46,7 +46,7 @@ export function registerAcademyRoutes(app: Express) {
       if (skills.includes("core_safety")) {
         // This enables the Pro to see and accept jobs
         const appCert = await storage.createHaulerCertification({
-          haulerId,
+          haulerId: proId,
           type: "app_certification",
           skillType: "core_safety",
           status: "active",
@@ -56,7 +56,7 @@ export function registerAcademyRoutes(app: Express) {
         });
 
         // Also enable job acceptance in the profile
-        await storage.updateHaulerProfile(haulerId, {
+        await storage.updateHaulerProfile(proId, {
           canAcceptJobs: true,
         });
 
@@ -78,13 +78,29 @@ export function registerAcademyRoutes(app: Express) {
   });
 
   /**
-   * GET /api/hauler/certifications
+   * GET /api/pro/certifications
    * Retrieve all certifications for the authenticated Pro
    */
+  app.get("/api/pro/certifications", requireAuth, requireHauler, async (req: Request, res: Response) => {
+    try {
+      const proId = (req.user as any).id;
+      const certifications = await storage.getHaulerCertifications(proId);
+
+      res.json({
+        certifications,
+        badges: certifications.map(c => c.skillType),
+      });
+    } catch (error) {
+      console.error("[Academy] Failed to fetch certifications:", error);
+      res.status(500).json({ error: "Failed to retrieve certifications" });
+    }
+  });
+
+  // Legacy hauler endpoint (backward compatibility)
   app.get("/api/hauler/certifications", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
-      const haulerId = (req.user as any).id;
-      const certifications = await storage.getHaulerCertifications(haulerId);
+      const proId = (req.user as any).id;
+      const certifications = await storage.getHaulerCertifications(proId);
 
       res.json({
         certifications,
@@ -97,13 +113,26 @@ export function registerAcademyRoutes(app: Express) {
   });
 
   /**
-   * GET /api/hauler/career
+   * GET /api/pro/career
    * Retrieve Pro career stats including certifications, level, XP
    */
+  app.get("/api/pro/career", requireAuth, requireHauler, async (req: Request, res: Response) => {
+    try {
+      const proId = (req.user as any).id;
+      const stats = await storage.getHaulerCareerStats(proId);
+
+      res.json(stats);
+    } catch (error) {
+      console.error("[Academy] Failed to fetch career stats:", error);
+      res.status(500).json({ error: "Failed to retrieve career stats" });
+    }
+  });
+
+  // Legacy hauler endpoint (backward compatibility)
   app.get("/api/hauler/career", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
-      const haulerId = (req.user as any).id;
-      const stats = await storage.getHaulerCareerStats(haulerId);
+      const proId = (req.user as any).id;
+      const stats = await storage.getHaulerCareerStats(proId);
 
       res.json(stats);
     } catch (error) {
@@ -115,21 +144,21 @@ export function registerAcademyRoutes(app: Express) {
   /**
    * GET /api/verify-badge/:badgeId
    * Public endpoint for customers to verify Pro badges
-   * Badge ID format: PYCK-XXX (first 4 of hauler ID)
+   * Badge ID format: PRO-XXX (first 4 of Pro ID)
    */
   app.get("/api/verify-badge/:badgeId", async (req: Request, res: Response) => {
     try {
       const { badgeId } = req.params;
 
-      // Badge format: PYCK-{first4OfHaulerId}
-      // Example: PYCK-492a would match hauler ID starting with 492a
-      const idPrefix = badgeId.replace(/^PYCK-/i, "").toLowerCase();
+      // Badge format: PRO-{first4OfProId} (legacy: PYCK-{first4OfProId})
+      // Example: PRO-492a would match Pro ID starting with 492a
+      const idPrefix = badgeId.replace(/^(PRO|PYCK)-/i, "").toLowerCase();
 
       if (idPrefix.length < 3) {
         return res.status(400).json({ error: "Invalid badge ID format" });
       }
 
-      // Find hauler by ID prefix (simplified - in production, store badge IDs explicitly)
+      // Find Pro by ID prefix (simplified - in production, store badge IDs explicitly)
       // For now, we'll return a mock response since we need proper badge ID storage
       // TODO: Add proper badge ID generation and storage
 
@@ -145,3 +174,6 @@ export function registerAcademyRoutes(app: Express) {
     }
   });
 }
+
+// Legacy export for backward compatibility
+export const registerAcademyRoutes = registerProAcademyRoutes;

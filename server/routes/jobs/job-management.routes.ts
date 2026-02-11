@@ -8,7 +8,7 @@ import { updateDwellScan } from "../../services/scoringService";
 declare function broadcastToJob(jobId: string, message: object): void;
 
 export function registerJobManagementRoutes(app: Express) {
-  // PYCKER starts a job (marks as in_progress)
+  // Pro starts a job (marks as in_progress)
   app.post("/api/jobs/:jobId/start", requireAuth, requireHauler, async (req, res) => {
     try {
       const { jobId } = req.params;
@@ -66,7 +66,7 @@ export function registerJobManagementRoutes(app: Express) {
     }
   });
 
-  // PYCKER adds extra items/adjustments
+  // Pro adds extra items/adjustments
   app.post("/api/jobs/:jobId/adjustments", requireAuth, requireHauler, async (req, res) => {
     try {
       const { jobId } = req.params;
@@ -177,7 +177,7 @@ export function registerJobManagementRoutes(app: Express) {
         return res.status(404).json({ error: "Adjustment not found" });
       }
 
-      // Broadcast to PYCKER
+      // Broadcast to Pro
       broadcastToJob(jobId, { type: "adjustment_updated", adjustment });
 
       res.json({ success: true, adjustment });
@@ -196,7 +196,7 @@ export function registerJobManagementRoutes(app: Express) {
     }
   });
 
-  // PYCKER updates job completion checklist
+  // Pro updates job completion checklist
   app.patch("/api/jobs/:jobId/completion", requireAuth, requireHauler, async (req, res) => {
     try {
       const { jobId } = req.params;

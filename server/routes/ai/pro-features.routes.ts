@@ -34,13 +34,13 @@ export function createProFeaturesRoutes(storage: DatabaseStorage) {
       }
 
       const validated = optimizeRouteSchema.parse(req.body);
-      const haulerId = req.user!.id;
+      const proId = req.user!.id;
 
       // TODO: Call route optimization algorithm (TSP solver)
       // For now, return mock optimization
       const mockOptimization = {
         id: nanoid(),
-        haulerId,
+        haulerId: proId,
         optimizationDate: validated.date,
         jobIds: JSON.stringify(validated.jobIds),
         originalRoute: JSON.stringify(validated.jobIds),
@@ -85,11 +85,11 @@ export function createProFeaturesRoutes(storage: DatabaseStorage) {
         return res.status(403).json({ error: "Pro access required" });
       }
 
-      const haulerId = req.user!.id;
+      const proId = req.user!.id;
       const { startDate, endDate } = req.query;
 
       const optimizations = await storage.getRouteOptimizationsByHauler(
-        haulerId,
+        proId,
         startDate as string,
         endDate as string
       );
@@ -118,8 +118,8 @@ export function createProFeaturesRoutes(storage: DatabaseStorage) {
         return res.status(403).json({ error: "Pro access required" });
       }
 
-      const haulerId = req.user!.id;
-      const stats = await storage.getRouteOptimizationStats(haulerId);
+      const proId = req.user!.id;
+      const stats = await storage.getRouteOptimizationStats(proId);
 
       res.json({
         success: true,
@@ -144,8 +144,8 @@ export function createProFeaturesRoutes(storage: DatabaseStorage) {
         return res.status(403).json({ error: "Pro access required" });
       }
 
-      const haulerId = req.user!.id;
-      const score = await storage.getLatestProQualityScore(haulerId);
+      const proId = req.user!.id;
+      const score = await storage.getLatestProQualityScore(proId);
 
       if (!score) {
         return res.json({
@@ -181,10 +181,10 @@ export function createProFeaturesRoutes(storage: DatabaseStorage) {
         return res.status(403).json({ error: "Pro access required" });
       }
 
-      const haulerId = req.user!.id;
+      const proId = req.user!.id;
       const limit = parseInt((req.query.limit as string) || "12");
 
-      const history = await storage.getProQualityScoreHistory(haulerId, limit);
+      const history = await storage.getProQualityScoreHistory(proId, limit);
 
       res.json({
         success: true,
@@ -215,7 +215,7 @@ export function createProFeaturesRoutes(storage: DatabaseStorage) {
         return res.status(404).json({ error: "Assessment not found" });
       }
 
-      // Only allow pro or admin to view
+      // Only allow Pro or admin to view
       if (assessment.haulerId !== req.user!.id && req.user!.role !== "admin") {
         return res.status(403).json({ error: "Access denied" });
       }

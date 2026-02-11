@@ -45,7 +45,7 @@ export function registerJobVerificationRoutes(app: Express) {
 
       const validated = schema.parse({ photos, gpsCoordinates, aiAnalysis });
 
-      // Check if job exists and is assigned to this hauler
+      // Check if job exists and is assigned to this Pro
       const job = await storage.getServiceRequest(jobId);
       if (!job) {
         return res.status(404).json({ error: "Job not found" });
@@ -136,7 +136,7 @@ export function registerJobVerificationRoutes(app: Express) {
 
       const validated = schema.parse(req.body);
 
-      // Check if job exists and is assigned to this hauler
+      // Check if job exists and is assigned to this Pro
       const job = await storage.getServiceRequest(jobId);
       if (!job) {
         return res.status(404).json({ error: "Job not found" });
@@ -212,7 +212,7 @@ export function registerJobVerificationRoutes(app: Express) {
 
       const validated = schema.parse({ photos, gpsCoordinates });
 
-      // Check if job exists and is assigned to this hauler
+      // Check if job exists and is assigned to this Pro
       const job = await storage.getServiceRequest(jobId);
       if (!job) {
         return res.status(404).json({ error: "Job not found" });
@@ -260,7 +260,7 @@ export function registerJobVerificationRoutes(app: Express) {
     try {
       const { jobId } = req.params;
 
-      // Check if job exists and is assigned to this hauler
+      // Check if job exists and is assigned to this Pro
       const job = await storage.getServiceRequest(jobId);
       if (!job) {
         return res.status(404).json({ error: "Job not found" });
@@ -308,7 +308,7 @@ export function registerJobVerificationRoutes(app: Express) {
     try {
       const { jobId } = req.params;
 
-      // Check if job exists and is assigned to this hauler
+      // Check if job exists and is assigned to this Pro
       const job = await storage.getServiceRequest(jobId);
       if (!job) {
         return res.status(404).json({ error: "Job not found" });
@@ -548,7 +548,7 @@ export function registerJobVerificationRoutes(app: Express) {
 
       const validated = schema.parse({ photos, phase });
 
-      // Check if job exists and is assigned to this hauler
+      // Check if job exists and is assigned to this Pro
       const job = await storage.getServiceRequest(jobId);
       if (!job) {
         return res.status(404).json({ error: "Job not found" });
