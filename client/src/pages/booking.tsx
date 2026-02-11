@@ -216,8 +216,9 @@ export default function Booking() {
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   
   const geoLocation = useGeoLocation(true, { enableHighAccuracy: true });
-  const customerLocation = geoLocation.lat && geoLocation.lng 
-    ? { lat: geoLocation.lat, lng: geoLocation.lng } 
+  const customerLocation = (geoLocation.lat !== null && geoLocation.lat !== undefined &&
+                            geoLocation.lng !== null && geoLocation.lng !== undefined)
+    ? { lat: geoLocation.lat, lng: geoLocation.lng }
     : null;
 
   const { data: nearbyPyckersData } = useQuery<{ pyckers: NearbyPycker[] }>({
@@ -250,7 +251,8 @@ export default function Booking() {
   const loyaltyQuery = useQuery({
     queryKey: ["/api/loyalty", user?.id],
     queryFn: async () => {
-      const response = await fetch(`/api/loyalty/${user?.id}`);
+      if (!user?.id) return null;
+      const response = await fetch(`/api/loyalty/${user.id}`);
       if (!response.ok) return null;
       return response.json();
     },

@@ -107,6 +107,10 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
   // Fetch crew status for multi-Pro jobs
   const { data: crewStatus } = useQuery<CrewStatusResponse>({
     queryKey: [`/api/jobs/${request.id}/crew-status`],
+    queryFn: async () => {
+      const response = await apiRequest("GET", `/api/jobs/${request.id}/crew-status`);
+      return response.json();
+    },
     enabled: !!(request.laborCrewSize && request.laborCrewSize > 1),
   });
 
