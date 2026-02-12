@@ -9,6 +9,7 @@ import {
   getAppliancesByLocation,
   getAppliancesNeedingReview,
   updateAppliance,
+  getApplianceScanById,
   replaceAppliance,
   createApplianceScan,
   getScansByProperty,
@@ -212,12 +213,11 @@ router.post("/appliances/:id/replace", auth, async (req, res) => {
 
     // Create health event
     await createHealthEvent({
-      id: crypto.randomUUID(),
       propertyId: oldAppliance.propertyId,
       eventType: "appliance_replaced",
       eventDate: new Date().toISOString(),
       title: `${newAppliance.brand || ""} ${newAppliance.category} replaced`,
-      description: `Replaced ${oldAppliance.brand || ""} ${oldAppliance.category} with ${newAppliance.brand || ""} ${newAppliance.model || ""}`,
+      description: `Replaced ${oldAppliance.brand || ""} ${oldAppliance.category} with ${newAppliance.brand || ""} ${newAppliance.modelNumber || ""}`,
       applianceId: newAppliance.id,
       createdAt: new Date().toISOString(),
     });
@@ -245,11 +245,9 @@ router.post("/:propertyId/appliances/scan", auth, async (req, res) => {
     }
 
     const scanData: InsertApplianceScan = {
-      id: crypto.randomUUID(),
       propertyId: req.params.propertyId,
-      scanMethod: "customer_self_scan",
-      scannedByUserId: (req.user as any).userId || (req.user as any).id,
-      scannedByRole: "customer",
+      scanMethod: "customer_scan",
+      scannedBy: (req.user as any).userId || (req.user as any).id,
       ...req.body,
       scannedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
@@ -281,13 +279,10 @@ router.post("/:propertyId/appliances/scan-session/start", auth, async (req, res)
     }
 
     const sessionData: InsertApplianceScanSession = {
-      id: crypto.randomUUID(),
       propertyId: req.params.propertyId,
-      initiatedBy: "customer",
-      initiatedByUserId: (req.user as any).userId || (req.user as any).id,
-      sessionType: req.body.sessionType || "full_home_scan",
-      guidedFlow: req.body.guidedFlow !== false,
-      status: "in_progress",
+      scannedBy: (req.user as any).userId || (req.user as any).id,
+      scanMethod: "customer_scan",
+      status: "active",
       startedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
     };
@@ -325,13 +320,11 @@ router.post("/appliance-scan-sessions/:sessionId/photo", auth, async (req, res) 
     const sequence = sessionScans.length + 1;
 
     const scanData: InsertApplianceScan = {
-      id: crypto.randomUUID(),
       propertyId: session.propertyId,
       scanSessionId: req.params.sessionId,
       scanSessionSequence: sequence,
-      scanMethod: "customer_self_scan",
-      scannedByUserId: (req.user as any).userId || (req.user as any).id,
-      scannedByRole: "customer",
+      scanMethod: "customer_scan",
+      scannedBy: (req.user as any).userId || (req.user as any).id,
       ...req.body,
       scannedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
@@ -420,16 +413,14 @@ router.post("/appliance-scans/:scanId/confirm", auth, async (req, res) => {
 
     const updated = await updateApplianceScan(req.params.scanId, {
       userConfirmed: true,
-      userReviewedAt: new Date().toISOString(),
-      status: "confirmed",
+      reviewedAt: new Date().toISOString(),
+      aiProcessingStatus: "completed",
     });
 
-    // If appliance was created, mark as user-verified
+    // If appliance was created, mark as user-confirmed
     if (scan.applianceId) {
       await updateAppliance(scan.applianceId, {
-        userVerified: true,
-        userVerifiedAt: new Date().toISOString(),
-        needsReview: false,
+        conditionScore: 100,
       });
     }
 
@@ -460,28 +451,24 @@ router.post("/appliance-scans/:scanId/edit", auth, async (req, res) => {
 
     // Track edits
     const edits: Record<string, any> = {};
-    if (brand !== scan.aiExtractedBrand) edits.brand = { from: scan.aiExtractedBrand, to: brand };
-    if (model !== scan.aiExtractedModel) edits.model = { from: scan.aiExtractedModel, to: model };
-    if (serialNumber !== scan.aiExtractedSerial) edits.serialNumber = { from: scan.aiExtractedSerial, to: serialNumber };
-    if (category !== scan.aiExtractedCategory) edits.category = { from: scan.aiExtractedCategory, to: category };
+    if (brand !== scan.extractedBrand) edits.brand = { from: scan.extractedBrand, to: brand };
+    if (model !== scan.extractedModel) edits.model = { from: scan.extractedModel, to: model };
+    if (serialNumber !== scan.extractedSerialNumber) edits.serialNumber = { from: scan.extractedSerialNumber, to: serialNumber };
+    if (category !== scan.extractedCategory) edits.category = { from: scan.extractedCategory, to: category };
 
     const updated = await updateApplianceScan(req.params.scanId, {
       userConfirmed: true,
-      userReviewedAt: new Date().toISOString(),
-      userEdits: edits,
-      status: "confirmed",
+      reviewedAt: new Date().toISOString(),
+      aiProcessingStatus: "completed",
     });
 
     // Update appliance if exists
     if (scan.applianceId) {
       await updateAppliance(scan.applianceId, {
         brand,
-        model,
+        modelNumber: model,
         serialNumber,
         category,
-        userVerified: true,
-        userVerifiedAt: new Date().toISOString(),
-        needsReview: false,
       });
     }
 

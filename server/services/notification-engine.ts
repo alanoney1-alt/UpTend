@@ -179,16 +179,14 @@ export async function sendImmediateNotification(
   const { createNotification } = await import("../storage/domains/properties/storage");
 
   const notification = await createNotification({
-    id: crypto.randomUUID(),
     userId,
     propertyId: propertyId || undefined,
     notificationType: type as any,
     channel,
     title,
-    body,
-    deepLink,
-    ctaText,
-    ctaLink,
+    message: body || "",
+    actionUrl: deepLink,
+    actionText: ctaText,
     scheduledFor: new Date().toISOString(),
     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     status: "pending",

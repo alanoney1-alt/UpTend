@@ -106,7 +106,7 @@ function calculateHvacScore(property: Property, appliances: PropertyAppliance[],
   const hvac = appliances.find((a) => a.category === "hvac");
 
   if (hvac) {
-    const age = hvac.estimatedAgeYears || property.hvacAgeYears || 10;
+    const age = hvac.ageYears || property.hvacAgeYears || 10;
 
     if (age >= 20) {
       score -= 40;
@@ -125,10 +125,10 @@ function calculateHvacScore(property: Property, appliances: PropertyAppliance[],
     }
 
     // Condition factor
-    if (hvac.condition === "excellent") {
+    if (hvac.conditionScore && hvac.conditionScore >= 80) {
       score += 5;
       factors.push("HVAC condition: excellent");
-    } else if (hvac.condition === "poor" || hvac.condition === "needs_replacement") {
+    } else if (hvac.conditionScore && hvac.conditionScore < 30) {
       score -= 15;
       factors.push("HVAC condition: poor");
     }
@@ -326,9 +326,9 @@ function calculateApplianceScore(appliances: PropertyAppliance[], warranties: Pr
   }
 
   // Average appliance age
-  const appliancesWithAge = appliances.filter((a) => a.estimatedAgeYears);
+  const appliancesWithAge = appliances.filter((a) => a.ageYears);
   if (appliancesWithAge.length > 0) {
-    const avgAge = appliancesWithAge.reduce((sum, a) => sum + (a.estimatedAgeYears || 0), 0) / appliancesWithAge.length;
+    const avgAge = appliancesWithAge.reduce((sum, a) => sum + (a.ageYears || 0), 0) / appliancesWithAge.length;
 
     if (avgAge < 5) {
       score += 10;
@@ -344,7 +344,7 @@ function calculateApplianceScore(appliances: PropertyAppliance[], warranties: Pr
 
   // Appliances with active warranties
   const appliancesWithWarranty = appliances.filter((a) =>
-    warranties.some((w) => w.applianceId === a.id && w.status === "active")
+    a.warrantyId && warranties.some((w) => w.id === a.warrantyId && w.status === "active")
   );
   const warrantyRate = appliancesWithWarranty.length / appliances.length;
 
@@ -357,7 +357,7 @@ function calculateApplianceScore(appliances: PropertyAppliance[], warranties: Pr
   }
 
   // Appliances needing replacement
-  const needsReplacement = appliances.filter((a) => a.condition === "needs_replacement");
+  const needsReplacement = appliances.filter((a) => a.conditionScore !== null && a.conditionScore < 20);
   if (needsReplacement.length > 0) {
     score -= 15 * needsReplacement.length;
     factors.push(`${needsReplacement.length} appliance(s) need replacement`);
@@ -377,7 +377,7 @@ function calculateMaintenanceScore(
   let score = 100;
   const factors: string[] = [];
 
-  const activeTasks = maintenanceTasks.filter((t) => t.isActive);
+  const activeTasks = maintenanceTasks.filter((t) => t.status === "active");
 
   if (activeTasks.length === 0) {
     score = 50;

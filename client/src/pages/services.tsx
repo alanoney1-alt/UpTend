@@ -231,7 +231,7 @@ export default function Services() {
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto" data-testid="text-services-subhead">
             From junk removal to full home scans, every service is performed by fully insured,
-            background-checked, academy-trained Pros with $1M liability coverage and full video documentation.
+            background-checked, academy-trained Pros with $1M liability coverage and full photo documentation.
           </p>
         </div>
       </section>

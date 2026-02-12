@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import DOMPurify from "dompurify";
 import { Send, Loader2, Mic, MicOff, Paperclip, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -48,10 +49,11 @@ function resetSession() {
 }
 
 function renderContent(text: string) {
-  return text
+  const html = text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
     .replace(/\n/g, "<br/>");
+  return DOMPurify.sanitize(html);
 }
 
 // ─── Rich Cards (reused from guide) ─────────────────────────────────────────

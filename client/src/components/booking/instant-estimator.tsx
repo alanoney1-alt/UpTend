@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
@@ -18,9 +18,9 @@ interface EstimateData {
 function getEstimates(_addr: string): EstimateData {
   return {
     homeRefresh: "$149 – $299",
-    pressureWash: "$199 – $350",
+    pressureWash: "$120 – $350",
     homeAudit: "$99 / $199 (Standard / Aerial)",
-    gutterCare: "$120 – $180",
+    gutterCare: "$149 – $199",
     totalImpact: "Verified & Insured Pros",
     materialRecovery: "~40 lbs verified recovery",
   };
@@ -32,12 +32,19 @@ export function InstantEstimator() {
   const [showChecklist, setShowChecklist] = useState(false);
   const [, setLocation] = useLocation();
 
+  const checklistTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => {
+    return () => {
+      if (checklistTimerRef.current) clearTimeout(checklistTimerRef.current);
+    };
+  }, []);
+
   const estimates = getEstimates(address);
 
   const handleScan = () => {
     if (address.trim().length > 5) {
       setStep(2);
-      setTimeout(() => setShowChecklist(true), 3000);
+      checklistTimerRef.current = setTimeout(() => setShowChecklist(true), 3000);
     }
   };
 

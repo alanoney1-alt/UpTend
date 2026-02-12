@@ -110,9 +110,20 @@ app.post(
   }
 );
 
+// Higher limit only for photo/AI analysis endpoints
+app.use(
+  "/api/ai/",
+  express.json({
+    limit: "25mb",
+    verify: (req, _res, buf) => {
+      req.rawBody = buf;
+    },
+  }),
+);
+
 app.use(
   express.json({
-    limit: "50mb",
+    limit: "5mb",
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },

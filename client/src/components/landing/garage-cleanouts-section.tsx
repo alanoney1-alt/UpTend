@@ -32,7 +32,7 @@ const howItWorks = [
   {
     step: 1,
     title: "Book Online",
-    subtitle: "60 seconds",
+    subtitle: "Quick & easy",
     icon: Timer,
   },
   {

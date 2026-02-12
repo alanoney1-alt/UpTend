@@ -11,7 +11,7 @@
  * Video gets +5% confidence boost over photos
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -152,6 +152,17 @@ export function AIPhotoQuote({
     [uploadMethod, files, toast]
   );
 
+  // Track active upload intervals for cleanup
+  const uploadIntervalsRef = useRef<Map<string, ReturnType<typeof setInterval>>>(new Map());
+
+  // Cleanup upload intervals on unmount
+  useEffect(() => {
+    return () => {
+      uploadIntervalsRef.current.forEach((interval) => clearInterval(interval));
+      uploadIntervalsRef.current.clear();
+    };
+  }, []);
+
   // Simulate upload progress (in real app, this would be actual upload)
   const simulateUpload = (fileId: string) => {
     let progress = 0;
@@ -167,11 +178,13 @@ export function AIPhotoQuote({
 
       if (progress >= 100) {
         clearInterval(interval);
+        uploadIntervalsRef.current.delete(fileId);
         setFiles((prev) =>
           prev.map((f) => (f.id === fileId ? { ...f, uploaded: true } : f))
         );
       }
     }, 200);
+    uploadIntervalsRef.current.set(fileId, interval);
   };
 
   // Remove file

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import DOMPurify from "dompurify";
 import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { usePageContext } from "@/hooks/use-page-context";
@@ -50,10 +51,11 @@ function getSessionId() {
 }
 
 function renderContent(text: string) {
-  return text
+  const html = text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
     .replace(/\n/g, "<br/>");
+  return DOMPurify.sanitize(html);
 }
 
 // ─── Page-Aware Welcome & Quick Actions ──────────────────────────────────────

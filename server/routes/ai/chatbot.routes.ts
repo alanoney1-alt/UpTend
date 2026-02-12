@@ -5,9 +5,18 @@
  */
 
 import type { Express } from "express";
+import rateLimit from "express-rate-limit";
 import { storage } from "../../storage";
 import { generateChatResponse, type ChatMessage, type AIAnalysisResult } from "../../services/ai-assistant";
 import { analyzePhotosForQuote } from "../../services/ai-analysis";
+
+const chatLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 60, // 60 messages per 15 min per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many chat requests, please try again later" },
+});
 
 /**
  * Register chatbot routes
@@ -24,7 +33,7 @@ export function registerChatbotRoutes(app: Express): void {
    * - photoUrls?: string[] (optional photo uploads for AI analysis)
    * - serviceType?: string (if photo analysis is requested)
    */
-  app.post("/api/chatbot/message", async (req, res) => {
+  app.post("/api/chatbot/message", chatLimiter, async (req, res) => {
     try {
       const { message, context, photoUrls, serviceType } = req.body;
 

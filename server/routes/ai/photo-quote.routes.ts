@@ -35,20 +35,11 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
 
       // Create photo quote request
       const request = await storage.createPhotoQuoteRequest({
-        id: nanoid(),
         userId,
-        serviceType: validated.serviceType,
-        photoUrls: JSON.stringify(validated.photoUrls),
-        aiAnalysis: null,
-        detectedItems: null,
-        estimatedScope: null,
-        estimatedPriceMin: null,
-        estimatedPriceMax: null,
-        confidenceScore: null,
-        proQuotesSent: 0,
-        status: "analyzing",
+        photoUrls: validated.photoUrls,
+        aiClassifiedService: validated.serviceType,
+        status: "pending",
         createdAt: new Date().toISOString(),
-        analyzedAt: null,
       });
 
       // Call AI vision service to analyze photos
@@ -126,26 +117,22 @@ Consider: safety risk, tools required, skill level, physical difficulty, and cod
 
       // Update with analysis results
       const updatedRequest = await storage.updatePhotoQuoteRequest(request.id, {
-        aiAnalysis: JSON.stringify(mockAnalysis),
-        detectedItems: JSON.stringify(mockAnalysis.detectedItems),
+        aiDescription: JSON.stringify(mockAnalysis),
+        additionalServices: mockAnalysis.detectedItems,
         estimatedScope: mockAnalysis.estimatedVolume,
         estimatedPriceMin: mockAnalysis.priceRange.min,
         estimatedPriceMax: mockAnalysis.priceRange.max,
-        confidenceScore: mockAnalysis.confidenceScore,
+        aiConfidence: mockAnalysis.confidenceScore,
         status: "analyzed",
-        analyzedAt: new Date().toISOString(),
       });
-
-      const parsedPhotoUrls = (() => { try { const v = JSON.parse(updatedRequest.photoUrls); return Array.isArray(v) ? v : []; } catch { return []; } })();
-      const parsedDetectedItems = (() => { try { const v = updatedRequest.detectedItems ? JSON.parse(updatedRequest.detectedItems) : null; return Array.isArray(v) ? v : null; } catch { return null; } })();
 
       res.json({
         success: true,
         request: {
           ...updatedRequest,
-          photoUrls: parsedPhotoUrls,
-          aiAnalysis: updatedRequest.aiAnalysis ? JSON.parse(updatedRequest.aiAnalysis) : null,
-          detectedItems: parsedDetectedItems,
+          photoUrls: updatedRequest.photoUrls,
+          aiAnalysis: updatedRequest.aiDescription ? JSON.parse(updatedRequest.aiDescription) : null,
+          detectedItems: updatedRequest.additionalServices,
         },
       });
     } catch (error: any) {
@@ -179,9 +166,9 @@ Consider: safety risk, tools required, skill level, physical difficulty, and cod
         success: true,
         request: {
           ...request,
-          photoUrls: JSON.parse(request.photoUrls),
-          aiAnalysis: request.aiAnalysis ? JSON.parse(request.aiAnalysis) : null,
-          detectedItems: request.detectedItems ? JSON.parse(request.detectedItems) : null,
+          photoUrls: request.photoUrls,
+          aiAnalysis: request.aiDescription ? JSON.parse(request.aiDescription) : null,
+          detectedItems: request.additionalServices,
         },
       });
     } catch (error: any) {
@@ -212,9 +199,9 @@ Consider: safety risk, tools required, skill level, physical difficulty, and cod
         success: true,
         requests: requestList.map((r) => ({
           ...r,
-          photoUrls: JSON.parse(r.photoUrls),
-          aiAnalysis: r.aiAnalysis ? JSON.parse(r.aiAnalysis) : null,
-          detectedItems: r.detectedItems ? JSON.parse(r.detectedItems) : null,
+          photoUrls: r.photoUrls,
+          aiAnalysis: r.aiDescription ? JSON.parse(r.aiDescription) : null,
+          detectedItems: r.additionalServices,
         })),
       });
     } catch (error: any) {

@@ -3,93 +3,105 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect } from "react";
-import Landing from "@/pages/landing";
-import Booking from "@/pages/booking";
-import BookingSuccess from "@/pages/booking-success";
-import Tracking from "@/pages/tracking";
-import TrackingLookup from "@/pages/tracking-lookup";
-import HaulerDashboard from "@/pages/hauler-dashboard";
-import Haulers from "@/pages/haulers";
-import Drive from "@/pages/drive";
-import BusinessDashboard from "@/pages/business-dashboard";
-import Loyalty from "@/pages/loyalty";
-import PyckerSignup from "@/pages/pycker-signup";
-import PyckerLogin from "@/pages/pycker-login";
-import CustomerSignup from "@/pages/customer-signup";
-import CustomerLogin from "@/pages/customer-login";
-import AuthPage from "@/pages/auth-page";
-import PaymentSetup from "@/pages/payment-setup";
-import Profile from "@/pages/profile";
-import About from "@/pages/about";
-import FAQ from "@/pages/faq";
-import Terms from "@/pages/terms";
-import Privacy from "@/pages/privacy";
-import RefundPolicy from "@/pages/refund-policy";
-import CancellationPolicy from "@/pages/cancellation-policy";
-import ServiceGuarantee from "@/pages/service-guarantee";
-import Admin from "@/pages/admin";
-import AdminLogin from "@/pages/admin-login";
-import ForgotPassword from "@/pages/forgot-password";
-import ResetPassword from "@/pages/reset-password";
-import Contact from "@/pages/contact";
-import Quote from "@/pages/quote";
-import AgenticBrain from "@/pages/agentic-brain";
-import ClaimProperty from "@/pages/claim-property";
-import MyHomeInventory from "@/pages/my-home-inventory";
-import CareerDashboard from "@/pages/career-dashboard";
-import HaulerLanding from "@/pages/hauler-landing";
-import PyckerAcademy from "@/pages/hauler-onboarding/academy";
-import ActiveJob from "@/pages/active-job";
-import CustomerDashboard from "@/pages/customer-dashboard";
-import CustomerSubscriptions from "@/pages/customer-subscriptions";
-import GodMode from "@/pages/admin/god-mode";
-import CarbonTracking from "@/pages/admin/carbon-tracking";
-import AdminProMap from "@/pages/admin/pro-map";
-import ProfileSettings from "@/pages/profile-settings";
-import EarningsPage from "@/pages/hauler/earnings";
-import PublicPricing from "@/pages/pricing";
-import BecomePro from "@/pages/become-pro";
-import AcademySyllabus from "@/pages/academy-syllabus";
-import ProVerification from "@/pages/pro-verification";
-import ProSustainabilityCert from "@/pages/pro-sustainability-cert";
-import Services from "@/pages/services";
-import HomeAudit from "@/pages/home-audit";
-import HomeHealthAudit from "@/pages/home-health-audit";
-import JunkRemoval from "@/pages/junk-removal";
-import ReferralLanding from "@/pages/referral-landing";
-import Marketplace from "@/pages/marketplace";
-import BookFreshCut from "@/pages/book-freshcut";
-import BookDeepFiber from "@/pages/book-deepfiber";
-import Properties from "@/pages/properties";
-import PropertyDashboard from "@/pages/property-dashboard";
-import AIFeaturesHub from "@/pages/ai/index";
-import PhotoToQuote from "@/pages/ai/photo-quote";
-import DocumentScanner from "@/pages/ai/document-scanner";
-import MyJobs from "@/pages/my-jobs";
-import ServiceDetail from "@/pages/service-detail";
-import Sustainability from "@/pages/sustainability";
-import Emergency from "@/pages/emergency";
-import Neighborhood from "@/pages/neighborhood";
-import Insurance from "@/pages/insurance";
-import SubscriptionPlans from "@/pages/subscription-plans";
-import CostGuidesHub from "@/pages/cost-guides/index";
-import CostGuide from "@/pages/cost-guides/guide";
-import NotFound from "@/pages/not-found";
-import PartnersLanding from "@/pages/partners/index";
-import PartnerRegister from "@/pages/partners/register";
-import PartnerDashboard from "@/pages/partners/dashboard";
-import HomeProfilePage from "@/pages/home-profile";
+import { useEffect, lazy, Suspense } from "react";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
 import { CookieConsent } from "@/components/cookie-consent";
-// SupportWidget removed — Bud handles all support
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
 import { ErrorBoundary } from "@/components/error-boundary";
 
+// Eagerly load critical path pages
+import Landing from "@/pages/landing";
+import AuthPage from "@/pages/auth-page";
+import NotFound from "@/pages/not-found";
+
+// Lazy load everything else
+const Booking = lazy(() => import("@/pages/booking"));
+const BookingSuccess = lazy(() => import("@/pages/booking-success"));
+const Tracking = lazy(() => import("@/pages/tracking"));
+const TrackingLookup = lazy(() => import("@/pages/tracking-lookup"));
+const HaulerDashboard = lazy(() => import("@/pages/hauler-dashboard"));
+const Haulers = lazy(() => import("@/pages/haulers"));
+const Drive = lazy(() => import("@/pages/drive"));
+const BusinessDashboard = lazy(() => import("@/pages/business-dashboard"));
+const Loyalty = lazy(() => import("@/pages/loyalty"));
+const PyckerSignup = lazy(() => import("@/pages/pycker-signup"));
+const PyckerLogin = lazy(() => import("@/pages/pycker-login"));
+const CustomerSignup = lazy(() => import("@/pages/customer-signup"));
+const CustomerLogin = lazy(() => import("@/pages/customer-login"));
+const PaymentSetup = lazy(() => import("@/pages/payment-setup"));
+const Profile = lazy(() => import("@/pages/profile"));
+const About = lazy(() => import("@/pages/about"));
+const FAQ = lazy(() => import("@/pages/faq"));
+const Terms = lazy(() => import("@/pages/terms"));
+const Privacy = lazy(() => import("@/pages/privacy"));
+const RefundPolicy = lazy(() => import("@/pages/refund-policy"));
+const CancellationPolicy = lazy(() => import("@/pages/cancellation-policy"));
+const ServiceGuarantee = lazy(() => import("@/pages/service-guarantee"));
+const Admin = lazy(() => import("@/pages/admin"));
+const AdminLogin = lazy(() => import("@/pages/admin-login"));
+const ForgotPassword = lazy(() => import("@/pages/forgot-password"));
+const ResetPassword = lazy(() => import("@/pages/reset-password"));
+const Contact = lazy(() => import("@/pages/contact"));
+const Quote = lazy(() => import("@/pages/quote"));
+const AgenticBrain = lazy(() => import("@/pages/agentic-brain"));
+const ClaimProperty = lazy(() => import("@/pages/claim-property"));
+const MyHomeInventory = lazy(() => import("@/pages/my-home-inventory"));
+const CareerDashboard = lazy(() => import("@/pages/career-dashboard"));
+const HaulerLanding = lazy(() => import("@/pages/hauler-landing"));
+const PyckerAcademy = lazy(() => import("@/pages/hauler-onboarding/academy"));
+const ActiveJob = lazy(() => import("@/pages/active-job"));
+const CustomerDashboard = lazy(() => import("@/pages/customer-dashboard"));
+const CustomerSubscriptions = lazy(() => import("@/pages/customer-subscriptions"));
+const GodMode = lazy(() => import("@/pages/admin/god-mode"));
+const CarbonTracking = lazy(() => import("@/pages/admin/carbon-tracking"));
+const AdminProMap = lazy(() => import("@/pages/admin/pro-map"));
+const ProfileSettings = lazy(() => import("@/pages/profile-settings"));
+const EarningsPage = lazy(() => import("@/pages/hauler/earnings"));
+const PublicPricing = lazy(() => import("@/pages/pricing"));
+const BecomePro = lazy(() => import("@/pages/become-pro"));
+const AcademySyllabus = lazy(() => import("@/pages/academy-syllabus"));
+const ProVerification = lazy(() => import("@/pages/pro-verification"));
+const ProSustainabilityCert = lazy(() => import("@/pages/pro-sustainability-cert"));
+const Services = lazy(() => import("@/pages/services"));
+const HomeAudit = lazy(() => import("@/pages/home-audit"));
+const HomeHealthAudit = lazy(() => import("@/pages/home-health-audit"));
+const JunkRemoval = lazy(() => import("@/pages/junk-removal"));
+const ReferralLanding = lazy(() => import("@/pages/referral-landing"));
+const Marketplace = lazy(() => import("@/pages/marketplace"));
+const BookFreshCut = lazy(() => import("@/pages/book-freshcut"));
+const BookDeepFiber = lazy(() => import("@/pages/book-deepfiber"));
+const Properties = lazy(() => import("@/pages/properties"));
+const PropertyDashboard = lazy(() => import("@/pages/property-dashboard"));
+const AIFeaturesHub = lazy(() => import("@/pages/ai/index"));
+const PhotoToQuote = lazy(() => import("@/pages/ai/photo-quote"));
+const DocumentScanner = lazy(() => import("@/pages/ai/document-scanner"));
+const MyJobs = lazy(() => import("@/pages/my-jobs"));
+const ServiceDetail = lazy(() => import("@/pages/service-detail"));
+const Sustainability = lazy(() => import("@/pages/sustainability"));
+const Emergency = lazy(() => import("@/pages/emergency"));
+const Neighborhood = lazy(() => import("@/pages/neighborhood"));
+const Insurance = lazy(() => import("@/pages/insurance"));
+const SubscriptionPlans = lazy(() => import("@/pages/subscription-plans"));
+const CostGuidesHub = lazy(() => import("@/pages/cost-guides/index"));
+const CostGuide = lazy(() => import("@/pages/cost-guides/guide"));
+const PartnersLanding = lazy(() => import("@/pages/partners/index"));
+const PartnerRegister = lazy(() => import("@/pages/partners/register"));
+const PartnerDashboard = lazy(() => import("@/pages/partners/dashboard"));
+const HomeProfilePage = lazy(() => import("@/pages/home-profile"));
+
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+    </div>
+  );
+}
+
 function Router() {
   return (
+    <Suspense fallback={<PageLoader />}>
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/book" component={Booking} />
@@ -192,6 +204,7 @@ function Router() {
       <Route path="/my-home-profile" component={HomeProfilePage} />
       <Route component={NotFound} />
     </Switch>
+    </Suspense>
   );
 }
 

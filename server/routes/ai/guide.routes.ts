@@ -7,7 +7,16 @@
  */
 
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import { createChatCompletion, analyzeImage } from "../../services/ai/anthropic-client";
+
+const guideChatLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+});
 import { storage } from "../../storage";
 import { pool } from "../../db";
 import { getPropertyData, getPropertyDataAsync, formatPropertySummary, type PropertyData } from "../../services/ai/property-scan-service";
@@ -643,7 +652,7 @@ export default function createGuideRoutes(_storage: any) {
 
   // ─── Main Chat Endpoint ──────────────────────────────────────────────────
 
-  router.post("/guide/chat", async (req, res) => {
+  router.post("/guide/chat", guideChatLimiter, async (req, res) => {
     try {
       await init();
       const { message, sessionId, context, photoUrl, photoAnalysis } = req.body;

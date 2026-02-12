@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,21 +13,30 @@ interface VisualFlowProps {
 export function VisualFlow({ onComplete, onUpsell, serviceLabel }: VisualFlowProps) {
   const [step, setStep] = useState<"before" | "working" | "after">("before");
   const [uploading, setUploading] = useState(false);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+    };
+  }, []);
 
   const handleBeforePhoto = () => {
     setUploading(true);
-    setTimeout(() => {
+    const t = setTimeout(() => {
       setUploading(false);
       setStep("working");
     }, 1500);
+    timersRef.current.push(t);
   };
 
   const handleAfterPhoto = () => {
     setUploading(true);
-    setTimeout(() => {
+    const t = setTimeout(() => {
       setUploading(false);
       onComplete();
     }, 2000);
+    timersRef.current.push(t);
   };
 
   if (step === "before") {

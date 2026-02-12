@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,7 +18,7 @@ function formatTime(dateStr?: string) {
 
 function renderMarkdown(text: string) {
   // Simple markdown: bold, headers, lists
-  return text
+  const html = text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/^### (.+)$/gm, '<h4 class="font-semibold text-sm mt-2 mb-1">$1</h4>')
     .replace(/^## (.+)$/gm, '<h3 class="font-semibold text-base mt-2 mb-1">$1</h3>')
@@ -25,6 +26,7 @@ function renderMarkdown(text: string) {
     .replace(/^[-•] (.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
     .replace(/^(\d+)\. (.+)$/gm, '<li class="ml-4 list-decimal">$2</li>')
     .replace(/\n/g, "<br/>");
+  return DOMPurify.sanitize(html);
 }
 
 function MessageBubble({ msg }: { msg: ChatMessage }) {

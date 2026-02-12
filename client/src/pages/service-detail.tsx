@@ -105,7 +105,7 @@ const serviceData: Record<string, ServiceData> = {
       "Prevents water damage that costs thousands to repair",
       "Saves 50+ lbs CO2 from avoided water damage repairs",
       "Academy-trained Pros with safety certification",
-      "Full video documentation of completed work",
+      "Full photo documentation of completed work",
     ],
     esgImpact: "Prevents 50+ lbs CO2 from water damage repairs",
   },
@@ -178,7 +178,7 @@ const serviceData: Record<string, ServiceData> = {
       "Non-load-bearing wall removal",
       "Full debris haul-away included",
       "Materials sorted for recycling",
-      "Before/after video documentation",
+      "Before/after photo documentation",
       "Same-day estimates available",
     ],
     whyUpTend: [

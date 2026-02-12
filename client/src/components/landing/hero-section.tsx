@@ -37,7 +37,7 @@ export function HeroSection() {
           </p>
 
           <p className="text-sm font-medium text-white/60 mb-8" data-testid="text-hero-hook">
-            Book in 60 seconds. No app download required.
+            Real-Time Matching. No app download required.
           </p>
 
           <div className="flex flex-wrap gap-4 mb-10">

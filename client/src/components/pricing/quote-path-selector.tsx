@@ -181,7 +181,7 @@ export function QuotePathSelector({ serviceType, onQuoteGenerated, onBack }: Quo
             {serviceType === 'polishup' ? (
               <div className="pt-3 border-t">
                 <p className="text-xs text-muted-foreground">
-                  <strong>For PolishUp:</strong> Enter bedrooms, bathrooms, and home details
+                  <strong>For Home Cleaning:</strong> Enter bedrooms, bathrooms, and home details
                 </p>
               </div>
             ) : (

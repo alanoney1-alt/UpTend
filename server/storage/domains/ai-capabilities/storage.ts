@@ -285,11 +285,11 @@ export class AiCapabilitiesStorage {
       .orderBy(desc(documentScans.createdAt));
   }
 
-  async getDocumentScansByServiceRequest(serviceRequestId: string): Promise<DocumentScan[]> {
+  async getDocumentScansByProperty(propertyId: string): Promise<DocumentScan[]> {
     return db
       .select()
       .from(documentScans)
-      .where(eq(documentScans.serviceRequestId, serviceRequestId))
+      .where(eq(documentScans.propertyId, propertyId))
       .orderBy(desc(documentScans.createdAt));
   }
 
@@ -324,22 +324,18 @@ export class AiCapabilitiesStorage {
     startDate?: string,
     endDate?: string
   ): Promise<ProRouteOptimization[]> {
-    let query = db
-      .select()
-      .from(proRouteOptimizations)
-      .where(eq(proRouteOptimizations.haulerId, haulerId));
+    const conditions = [eq(proRouteOptimizations.proUserId, haulerId)];
 
     if (startDate && endDate) {
-      query = query.where(
-        and(
-          eq(proRouteOptimizations.haulerId, haulerId),
-          gte(proRouteOptimizations.optimizationDate, startDate),
-          lte(proRouteOptimizations.optimizationDate, endDate)
-        )
-      );
+      conditions.push(gte(proRouteOptimizations.routeDate, startDate));
+      conditions.push(lte(proRouteOptimizations.routeDate, endDate));
     }
 
-    return query.orderBy(desc(proRouteOptimizations.createdAt));
+    return db
+      .select()
+      .from(proRouteOptimizations)
+      .where(and(...conditions))
+      .orderBy(desc(proRouteOptimizations.createdAt));
   }
 
   async updateRouteOptimization(
@@ -364,16 +360,16 @@ export class AiCapabilitiesStorage {
     const [stats] = await db
       .select({
         totalOptimizations: sql<number>`count(*)`,
-        totalDistanceSaved: sql<number>`sum(${proRouteOptimizations.distanceSavedMiles})`,
-        totalTimeSaved: sql<number>`sum(${proRouteOptimizations.timeSavedMinutes})`,
-        totalFuelSaved: sql<number>`sum(${proRouteOptimizations.fuelSavedGallons})`,
-        totalCo2Saved: sql<number>`sum(${proRouteOptimizations.co2SavedLbs})`,
+        totalDistanceSaved: sql<number>`sum(${proRouteOptimizations.milesSaved})`,
+        totalTimeSaved: sql<number>`sum(${proRouteOptimizations.estimatedTimeSavedMinutes})`,
+        totalFuelSaved: sql<number>`0`,
+        totalCo2Saved: sql<number>`sum(${proRouteOptimizations.co2Saved})`,
       })
       .from(proRouteOptimizations)
       .where(
         and(
-          eq(proRouteOptimizations.haulerId, haulerId),
-          eq(proRouteOptimizations.accepted, true)
+          eq(proRouteOptimizations.proUserId, haulerId),
+          eq(proRouteOptimizations.proAccepted, true)
         )
       );
 
@@ -399,8 +395,8 @@ export class AiCapabilitiesStorage {
     const [score] = await db
       .select()
       .from(proQualityScores)
-      .where(eq(proQualityScores.haulerId, haulerId))
-      .orderBy(desc(proQualityScores.scoreDate))
+      .where(eq(proQualityScores.proUserId, haulerId))
+      .orderBy(desc(proQualityScores.lastUpdated))
       .limit(1);
     return score;
   }
@@ -412,8 +408,8 @@ export class AiCapabilitiesStorage {
     return db
       .select()
       .from(proQualityScores)
-      .where(eq(proQualityScores.haulerId, haulerId))
-      .orderBy(desc(proQualityScores.scoreDate))
+      .where(eq(proQualityScores.proUserId, haulerId))
+      .orderBy(desc(proQualityScores.lastUpdated))
       .limit(limit);
   }
 
@@ -434,7 +430,7 @@ export class AiCapabilitiesStorage {
     return db
       .select()
       .from(jobQualityAssessments)
-      .where(eq(jobQualityAssessments.haulerId, haulerId))
+      .where(eq(jobQualityAssessments.proUserId, haulerId))
       .orderBy(desc(jobQualityAssessments.createdAt));
   }
 
@@ -493,7 +489,7 @@ export class AiCapabilitiesStorage {
       .select()
       .from(portfolioHealthReports)
       .where(eq(portfolioHealthReports.businessAccountId, businessAccountId))
-      .orderBy(desc(portfolioHealthReports.reportDate))
+      .orderBy(desc(portfolioHealthReports.createdAt))
       .limit(1);
     return report;
   }
@@ -506,7 +502,7 @@ export class AiCapabilitiesStorage {
       .select()
       .from(portfolioHealthReports)
       .where(eq(portfolioHealthReports.businessAccountId, businessAccountId))
-      .orderBy(desc(portfolioHealthReports.reportDate))
+      .orderBy(desc(portfolioHealthReports.createdAt))
       .limit(limit);
   }
 
@@ -573,21 +569,16 @@ export class AiCapabilitiesStorage {
     contentType: string,
     status?: string
   ): Promise<AiMarketingContent[]> {
-    let query = db
-      .select()
-      .from(aiMarketingContent)
-      .where(eq(aiMarketingContent.contentType, contentType));
-
+    const conditions = [eq(aiMarketingContent.serviceType, contentType)];
     if (status) {
-      query = query.where(
-        and(
-          eq(aiMarketingContent.contentType, contentType),
-          eq(aiMarketingContent.status, status)
-        )
-      );
+      conditions.push(eq(aiMarketingContent.status, status));
     }
 
-    return query.orderBy(desc(aiMarketingContent.createdAt));
+    return db
+      .select()
+      .from(aiMarketingContent)
+      .where(and(...conditions))
+      .orderBy(desc(aiMarketingContent.createdAt));
   }
 
   async updateMarketingContent(

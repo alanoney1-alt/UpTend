@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -64,6 +64,13 @@ export function AppSimulator({ onComplete }: AppSimulatorProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const { toast } = useToast();
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+    };
+  }, []);
 
   const handleStep = () => {
     toast({
@@ -73,9 +80,9 @@ export function AppSimulator({ onComplete }: AppSimulatorProps) {
     });
 
     if (currentStep < STEPS.length - 1) {
-      setTimeout(() => setCurrentStep((c) => c + 1), 1000);
+      timersRef.current.push(setTimeout(() => setCurrentStep((c) => c + 1), 1000));
     } else {
-      setTimeout(() => setIsComplete(true), 1000);
+      timersRef.current.push(setTimeout(() => setIsComplete(true), 1000));
     }
   };
 
