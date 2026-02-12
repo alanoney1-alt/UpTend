@@ -116,6 +116,10 @@ import { registerHomeProfileRoutes } from "./home-profile.routes";
 // Scope Change / Guaranteed Price Ceiling routes
 import { registerScopeChangeRoutes } from "./scope-change.routes";
 
+// Pro map routes
+import { registerActiveNearbyRoutes } from "./hauler/active-nearby.routes";
+import { registerAdminProMapRoutes } from "./admin/pro-map.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -250,6 +254,10 @@ export async function registerRoutes(
 
   // Register Scope Change / Guaranteed Price Ceiling routes
   registerScopeChangeRoutes(app);
+
+  // Pro map routes (public + admin)
+  registerActiveNearbyRoutes(app);
+  registerAdminProMapRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

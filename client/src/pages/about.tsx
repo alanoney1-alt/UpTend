@@ -105,7 +105,7 @@ export default function About() {
             <div className="text-left">
               <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tighter" data-testid="text-pillar-protect">01. PROTECT</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Your home is probably your biggest investment. You should have proof of everything that's ever been done to it. That's why we built the <strong className="text-foreground">360\u00B0 Video Documentation</strong> and the <strong className="text-foreground">Home Scan</strong>—to give you an actual record. Not for us. For you. For your insurance company. For your next landlord or mortgage broker. Every job gets documented, timestamped, and verified. You never have to say "trust me" again. You have proof.
+                Your home is probably your biggest investment. You should have proof of everything that's ever been done to it. That's why we built the <strong className="text-foreground">360° Home Scan</strong>—to give you an actual record. Not for us. For you. For your insurance company. For your next landlord or mortgage broker. Every job gets documented, timestamped, and verified. You never have to say "trust me" again. You have proof.
               </p>
             </div>
           </div>

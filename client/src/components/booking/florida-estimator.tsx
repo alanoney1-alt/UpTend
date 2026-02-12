@@ -963,11 +963,7 @@ export function FloridaEstimator() {
                     propertyData.homeType === "CONDOMINIUM") && (
                     <p className="text-lg font-bold text-foreground mb-2">Property Details</p>
                   )}
-                  {propertyData.rentZestimate && (
-                    <p className="text-xs text-muted-foreground mt-1" data-testid="text-rent-estimate">
-                      {t("estimator.rent_estimate")}: {formatCurrency(propertyData.rentZestimate)}/mo
-                    </p>
-                  )}
+                  {/* Rent estimate removed — not relevant for home services */}
                   <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
                     {propertyData.bedrooms && (
                       <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-bedrooms">

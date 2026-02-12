@@ -22,6 +22,7 @@ import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { BookingChatbot } from "@/components/booking-chatbot";
+import { ProsNearYou } from "@/components/landing/pros-near-you";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { StormCountdown } from "@/components/booking/storm-countdown";
 import { useTranslation } from "react-i18next";
@@ -36,6 +37,7 @@ export default function Landing() {
         <WhatDoesUpTendMeanSection />
         <HowItWorks />
         <InteractiveFeatures />
+        <ProsNearYou />
         <SafetyShieldSection />
         <WhySection />
         <FortyNineWalkthrough />

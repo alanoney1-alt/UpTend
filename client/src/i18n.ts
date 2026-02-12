@@ -53,7 +53,7 @@ const resources = {
       "estimator.property_estimate": "Property estimate",
 
       "services.service_health_audit": "Home Health Audit",
-      "services.service_health_audit_desc": "Comprehensive 360° Video Manifest & Insurance Asset Log.",
+      "services.service_health_audit_desc": "Comprehensive 360° Home Scan & Insurance Asset Log.",
       "services.service_health_audit_benefit": "Shields your property value for future claims.",
       "services.service_material_recovery": "Material Recovery",
       "services.service_material_recovery_desc": "Professional debris removal with verified ESG tracking.",
@@ -73,7 +73,7 @@ const resources = {
       "how.how_subhead": "Home intelligence isn't just about doing chores. It's built-in accountability for your wallet, your home, and the environment.",
       "how.how_protect_title": "The Intelligence Phase",
       "how.how_protect_desc": "Our AI monitors your home value and tracks market shifts. Your journey starts with a 360° Home Scan that creates a digital shield, protecting you during insurance claims and resale.",
-      "how.how_protect_b1": "360° Video Manifest",
+      "how.how_protect_b1": "360° Home Scan",
       "how.how_protect_b2": "Insurance Claim Shield",
       "how.how_protect_b3": "Market Value Monitoring",
       "how.how_connect_title": "The Action Phase",

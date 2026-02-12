@@ -45,6 +45,7 @@ import CustomerDashboard from "@/pages/customer-dashboard";
 import CustomerSubscriptions from "@/pages/customer-subscriptions";
 import GodMode from "@/pages/admin/god-mode";
 import CarbonTracking from "@/pages/admin/carbon-tracking";
+import AdminProMap from "@/pages/admin/pro-map";
 import ProfileSettings from "@/pages/profile-settings";
 import EarningsPage from "@/pages/hauler/earnings";
 import PublicPricing from "@/pages/pricing";
@@ -149,6 +150,7 @@ function Router() {
       <Route path="/dashboard" component={CustomerDashboard} />
       <Route path="/subscriptions" component={CustomerSubscriptions} />
       <Route path="/plans" component={SubscriptionPlans} />
+      <Route path="/admin/pro-map" component={AdminProMap} />
       <Route path="/admin/god-mode" component={GodMode} />
       <Route path="/settings" component={ProfileSettings} />
       <Route path="/pricing" component={PublicPricing} />

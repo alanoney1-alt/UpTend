@@ -303,30 +303,24 @@ export async function getPropertyDataAsync(address: string): Promise<PropertyDat
     };
   }
 
-  // Try area comps for estimation
-  const comps = await getAreaComps(address);
-  if (comps && comps.count >= 3) {
-    return {
-      address,
-      homeValueEstimate: comps.medianValue,
-      sqFootage: comps.medianSqft,
-      lotSizeAcres: 0.2,
-      hasPool: "uncertain",
-      yearBuilt: 0,
-      bedrooms: comps.medianBeds,
-      bathrooms: comps.medianBaths,
-      roofType: "Unknown",
-      hasGarage: true,
-      garageSize: "Unknown",
-      stories: comps.medianSqft > 2500 ? 2 : 1,
-      exteriorType: "Unknown",
-      propertyType: "Single Family",
-      dataSource: "estimated",
-    };
-  }
-
-  // Last resort: use the old estimation method
-  return getPropertyDataFallback(address);
+  // No exact match found — return address-only result and let Bud ask for details
+  return {
+    address,
+    homeValueEstimate: 0,
+    sqFootage: 0,
+    lotSizeAcres: 0,
+    hasPool: "uncertain",
+    yearBuilt: 0,
+    bedrooms: 0,
+    bathrooms: 0,
+    roofType: "Unknown",
+    hasGarage: false,
+    garageSize: "Unknown",
+    stories: 0,
+    exteriorType: "Unknown",
+    propertyType: "Unknown",
+    dataSource: "address_only",
+  };
 }
 
 /**
@@ -384,17 +378,23 @@ export function formatPropertySummary(data: PropertyData): string {
       ? "Pool status: uncertain (ask customer)"
       : "No pool";
 
+  if (data.dataSource === "address_only") {
+    return [
+      `Address: ${data.address}`,
+      `⚠️ No property details found in public records — ASK the customer for: bedrooms, bathrooms, approximate square footage, whether they have a pool, and home type. Be natural about it: "I found your address but I don't have the details on file — can you tell me a bit about your place?"`,
+    ].join("\n");
+  }
+
   const source = data.dataSource === "zillow" ? "📊 Zillow data" : "📐 Estimated";
 
   return [
     `Address: ${data.address}`,
-    `Market Value: $${data.homeValueEstimate.toLocaleString()} (${source})`,
-    `Size: ${data.sqFootage.toLocaleString()} sqft, ${data.bedrooms} bed / ${data.bathrooms} bath`,
-    `Lot: ${data.lotSizeAcres} acres`,
+    data.homeValueEstimate ? `Market Value: $${data.homeValueEstimate.toLocaleString()} (${source})` : null,
+    data.sqFootage ? `Size: ${data.sqFootage.toLocaleString()} sqft, ${data.bedrooms} bed / ${data.bathrooms} bath` : null,
+    data.lotSizeAcres ? `Lot: ${data.lotSizeAcres} acres` : null,
     data.yearBuilt ? `Built: ${data.yearBuilt}` : null,
-    `Type: ${data.propertyType}`,
+    data.propertyType && data.propertyType !== "Unknown" ? `Type: ${data.propertyType}` : null,
     poolText,
-    data.rentEstimate ? `Rent Estimate: $${data.rentEstimate}/mo` : null,
     data.taxAssessedValue ? `Tax Assessed: $${data.taxAssessedValue.toLocaleString()}` : null,
   ].filter(Boolean).join("\n");
 }

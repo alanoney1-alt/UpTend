@@ -221,8 +221,8 @@
 - ✅ Impact Stats
 
 **Bug Fixed:**
-- ❌ **Was:** "360° Video Manifest"
-- ✅ **Now:** "360° Video Documentation"
+- ❌ **Was:** "360° Home Scan"
+- ✅ **Now:** "360° Home Scan"
 - **Commit:** 3378a09
 
 ---

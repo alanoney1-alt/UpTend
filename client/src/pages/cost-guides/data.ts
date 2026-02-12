@@ -34,7 +34,7 @@ export const costGuides: CostGuide[] = [
       "All labor for loading and hauling",
       "Truck and fuel costs",
       "Responsible disposal, recycling, and donation sorting",
-      "360° video documentation of the job",
+      "360° Home Scan of the job",
       "Verified Impact Report showing where items went",
     ],
     tips: [

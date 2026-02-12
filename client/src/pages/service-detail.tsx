@@ -32,12 +32,12 @@ const serviceData: Record<string, ServiceData> = {
     serviceType: "junk_removal",
     tagline: "Space Rejuvenation. Verified Material Recovery.",
     description:
-      "Your unwanted items are resources. We recover your space, protect your property with 360° video documentation, and verify the environmental impact of every item through our circular economy system. Every pickup includes a verified Impact Report showing exactly where your items went — donated, recycled, or responsibly disposed.",
+      "Your unwanted items are resources. We recover your space, protect your property with 360° Home Scan, and verify the environmental impact of every item through our circular economy system. Every pickup includes a verified Impact Report showing exactly where your items went — donated, recycled, or responsibly disposed.",
     price: "From $99",
     icon: Recycle,
     heroGradient: "from-green-600 to-emerald-500",
     features: [
-      "360° video documentation before work begins",
+      "360° Home Scan before work begins",
       "Verified Impact Report for every job",
       "Circular economy sorting — donate, recycle, dispose",
       "ESG compliance documentation for property managers",

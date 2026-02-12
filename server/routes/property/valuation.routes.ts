@@ -37,13 +37,17 @@ export function registerPropertyValuationRoutes(app: Express) {
             const searchData = await homeListingRes.json();
             console.log(`[Property] Search API response:`, JSON.stringify(searchData, null, 2));
 
-            // Step 1: Extract ZPID from search results
+            // Step 1: Extract ZPID from search results — only use exact address matches
             if (searchData.success && searchData.results && searchData.results.length > 0) {
-              const result = searchData.results[0];
+              // Only use results that are actual addresses (not regions/cities/zips)
+              const addressResult = searchData.results.find((r: any) => 
+                r.metaData?.zpid && r.resultType !== "Region"
+              );
+              const result = addressResult || searchData.results[0];
               const zpid = result.metaData?.zpid;
 
               if (!zpid) {
-                console.log(`[Property] ⚠️ No ZPID found in search results`);
+                console.log(`[Property] ⚠️ No ZPID found in search results (resultType: ${result.resultType})`);
               } else {
                 console.log(`[Property] ✅ Found ZPID: ${zpid}, fetching property details...`);
 
@@ -170,32 +174,33 @@ export function registerPropertyValuationRoutes(app: Express) {
 
             estimatedValue = Math.round(estimatedValue / 1000) * 1000;
 
-            const rentEstimate = Math.round(estimatedValue * 0.006);
-
             console.log(`[Property] ⚠️ Using Census fallback for: ${address}`);
-            console.log(`[Property] County: ${countyName}, Estimated Value: $${estimatedValue}, Beds/Baths: 3/2 (generic), SqFt: ${Math.round(estimatedValue / 220)} (estimated)`);
+            console.log(`[Property] County: ${countyName}, address matched: ${match.matchedAddress}`);
 
+            // Census only gives us location — we don't have real property details
+            // Return what we know honestly and let the frontend handle editable fields
             return res.json({
               found: true,
               property: {
                 zpid: null,
                 address: match.matchedAddress || address,
-                zestimate: estimatedValue,
-                rentZestimate: rentEstimate,
-                bedrooms: 3,
-                bathrooms: 2,
-                livingArea: Math.round(estimatedValue / 220),
+                zestimate: null,
+                rentZestimate: null,
+                bedrooms: null,
+                bathrooms: null,
+                livingArea: null,
                 lotAreaValue: null,
                 lotAreaUnit: null,
                 yearBuilt: null,
-                homeType: "SINGLE_FAMILY",
+                homeType: null,
                 homeStatus: null,
                 imgSrc: null,
                 latitude: match.coordinates?.y || null,
                 longitude: match.coordinates?.x || null,
-                source: "census_estimate",
+                source: "census_geocode",
                 county: countyName,
                 state: state,
+                editable: true,
               },
             });
           }

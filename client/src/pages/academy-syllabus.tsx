@@ -29,7 +29,7 @@ const modules = [
     title: "Module 3: The 360\u00B0 Evidence Scan",
     icon: <Video className="text-purple-500 dark:text-purple-400" />,
     lessons: [
-      "Mastering the 360\u00B0 Manifest Video",
+      "Mastering the 360° Home Scan Video",
       "Pre-Work Documentation: Protecting Yourself from Liability",
       "Post-Work Verification: The 'Done Right' Guarantee",
     ],
