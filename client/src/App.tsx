@@ -7,7 +7,7 @@ import { useEffect, lazy, Suspense } from "react";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
 import { CookieConsent } from "@/components/cookie-consent";
-import { UpTendGuide } from "@/components/ai/uptend-guide";
+// import { UpTendGuide } from "@/components/ai/uptend-guide"; // Disabled — Bud coming back in future state
 import { MobileNav } from "@/components/mobile-nav";
 import { ErrorBoundary } from "@/components/error-boundary";
 
@@ -232,7 +232,7 @@ function App() {
             <Toaster />
             <Router />
             <MobileNav />
-            <UpTendGuide />
+            {/* <UpTendGuide /> — Bud disabled, coming back in future state */}
             <InstallBanner />
             <CookieConsent />
           </ThemeProvider>
