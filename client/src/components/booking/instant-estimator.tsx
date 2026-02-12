@@ -21,7 +21,7 @@ function getEstimates(_addr: string): EstimateData {
     pressureWash: "$199 – $350",
     homeAudit: "$49 (Essential)",
     gutterCare: "$120 – $180",
-    totalImpact: "+$8,400 in protected value",
+    totalImpact: "Verified & Insured Pros",
     materialRecovery: "~40 lbs verified recovery",
   };
 }

@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { ProTierBadge } from "@/components/pycker-tier-badge";
 import { PricingTransparencyModal } from "@/components/pricing-transparency-modal";
-import { ImpactMeter } from "@/components/booking/impact-meter";
+// ImpactMeter removed — "Estimated Protected Value" not useful for customers
 import { Header } from "@/components/landing/header";
 import {
   ArrowLeft, ArrowRight, Trash2, Sofa, Refrigerator, Home,
@@ -1236,10 +1236,6 @@ export default function Booking() {
                 </div>
               </div>
             </Card>
-          )}
-
-          {formData.serviceType && step <= 2 && (
-            <ImpactMeter selectedServices={[formData.serviceType]} address={formData.pickupAddress} />
           )}
 
           <div className="grid lg:grid-cols-3 gap-6">
