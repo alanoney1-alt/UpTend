@@ -114,11 +114,8 @@ router.post("/:propertyId/appliances", auth, async (req, res) => {
     }
 
     const applianceData: InsertPropertyAppliance = {
-      id: crypto.randomUUID(),
       propertyId: req.params.propertyId,
       ...req.body,
-      addedBy: "manual",
-      addedByUserId: (req.user as any).userId || (req.user as any).id,
       createdAt: new Date().toISOString(),
     };
 
@@ -126,12 +123,11 @@ router.post("/:propertyId/appliances", auth, async (req, res) => {
 
     // Create health event
     await createHealthEvent({
-      id: crypto.randomUUID(),
       propertyId: req.params.propertyId,
       eventType: "appliance_added",
       eventDate: new Date().toISOString(),
       title: `${appliance.brand || ""} ${appliance.category} added`,
-      description: `Manually added ${appliance.brand || ""} ${appliance.model || ""} ${appliance.category}`,
+      description: `Manually added ${appliance.brand || ""} ${appliance.modelNumber || ""} ${appliance.category}`,
       applianceId: appliance.id,
       createdAt: new Date().toISOString(),
     });
@@ -207,11 +203,8 @@ router.post("/appliances/:id/replace", auth, async (req, res) => {
     }
 
     const newApplianceData: InsertPropertyAppliance = {
-      id: crypto.randomUUID(),
       propertyId: oldAppliance.propertyId,
       ...req.body,
-      addedBy: "manual",
-      addedByUserId: (req.user as any).userId || (req.user as any).id,
       createdAt: new Date().toISOString(),
     };
 

@@ -229,7 +229,7 @@ function BundleCard({ data }: { data: any }) {
       ))}
       <div className="border-t border-purple-200/30 pt-1 space-y-0.5">
         <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span>${data.subtotal}</span></div>
-        <div className="flex justify-between text-green-600 font-medium"><span>Bundle Discount (10%)</span><span>-${data.discount}</span></div>
+        <div className="flex justify-between text-green-600 font-medium"><span>Bundle Discount ({data.discountPercent || 10}%)</span><span>-${data.discount}</span></div>
         <div className="flex justify-between font-bold text-xs"><span>Total</span><span>${data.total}</span></div>
       </div>
     </div>
@@ -319,7 +319,7 @@ export function UpTendGuide() {
   // Voice auto-send
   useEffect(() => {
     if (!speech.isListening && speech.transcript) sendMessage(speech.transcript);
-  }, [speech.isListening, speech.transcript]);
+  }, [speech.isListening, speech.transcript, sendMessage]);
 
   // ─── Open Handler ──────────────────────────────────────────────────────
 

@@ -14,14 +14,14 @@ export function registerAdminProMapRoutes(app: Express) {
         SELECT 
           u.id, u.first_name, u.last_name, u.phone,
           hp.rating, hp.jobs_completed, hp.service_types,
-          hp.current_latitude, hp.current_longitude,
+          hp.current_lat, hp.current_lng,
           hp.is_available, hp.company_name,
           (SELECT COUNT(*) FROM service_requests sr 
            WHERE sr.assigned_hauler_id = u.id 
            AND sr.status IN ('in_progress', 'en_route')) as active_jobs
         FROM users u
         JOIN hauler_profiles hp ON u.id = hp.user_id
-        WHERE hp.current_latitude IS NOT NULL
+        WHERE hp.current_lat IS NOT NULL
         ORDER BY hp.is_available DESC, hp.rating DESC NULLS LAST
       `);
 
@@ -35,8 +35,8 @@ export function registerAdminProMapRoutes(app: Express) {
         jobsCompleted: row.jobs_completed || 0,
         serviceTypes: row.service_types || [],
         location: {
-          latitude: parseFloat(row.current_latitude),
-          longitude: parseFloat(row.current_longitude),
+          latitude: parseFloat(row.current_lat),
+          longitude: parseFloat(row.current_lng),
         },
         isAvailable: row.is_available,
         activeJobs: parseInt(row.active_jobs) || 0,

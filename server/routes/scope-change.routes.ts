@@ -95,19 +95,31 @@ export function registerScopeChangeRoutes(app: Express) {
 
       const newStatus = action === "approve" ? "approved" : "declined";
 
-      await pool.query(
-        `UPDATE scope_change_requests
-         SET status = $1, customer_responded_at = $2, customer_notes = $3
-         WHERE id = $4`,
-        [newStatus, new Date().toISOString(), customerNotes || null, id]
-      );
+      const client = await pool.connect();
+      try {
+        await client.query("BEGIN");
 
-      // If approved, update the service request's guaranteed ceiling
-      if (action === "approve") {
-        await pool.query(
-          "UPDATE service_requests SET guaranteed_ceiling = $1 WHERE id = $2",
-          [sc.proposed_ceiling, sc.service_request_id]
+        await client.query(
+          `UPDATE scope_change_requests
+           SET status = $1, customer_responded_at = $2, customer_notes = $3
+           WHERE id = $4`,
+          [newStatus, new Date().toISOString(), customerNotes || null, id]
         );
+
+        // If approved, update the service request's guaranteed ceiling
+        if (action === "approve") {
+          await client.query(
+            "UPDATE service_requests SET guaranteed_ceiling = $1 WHERE id = $2",
+            [sc.proposed_ceiling, sc.service_request_id]
+          );
+        }
+
+        await client.query("COMMIT");
+      } catch (txErr) {
+        await client.query("ROLLBACK");
+        throw txErr;
+      } finally {
+        client.release();
       }
 
       return res.json({

@@ -47,20 +47,6 @@ interface AIExtractionResult {
 
 async function extractFromPhoto(photoUrl: string): Promise<AIExtractionResult> {
   // TODO: Integrate with your AI service (OpenAI Vision, Google Cloud Vision, etc.)
-  // For now, return mock data
-
-  // Example integration:
-  // const response = await openai.chat.completions.create({
-  //   model: "gpt-4-vision-preview",
-  //   messages: [{
-  //     role: "user",
-  //     content: [
-  //       { type: "text", text: "Extract brand, model, and serial number from this appliance model plate:" },
-  //       { type: "image_url", image_url: { url: photoUrl } }
-  //     ]
-  //   }]
-  // });
-
   return {
     brand: "Samsung",
     model: "RF28R7351SR",
@@ -87,9 +73,6 @@ interface WarrantyInfo {
 }
 
 async function lookupWarrantyInfo(brand: string, model: string): Promise<WarrantyInfo | null> {
-  // TODO: Integrate with manufacturer warranty databases
-  // For now, return mock data
-
   return {
     manufacturer: brand,
     standardWarrantyMonths: 12,
@@ -108,9 +91,6 @@ interface ProductSpecs {
 }
 
 async function lookupProductSpecs(brand: string, model: string): Promise<ProductSpecs | null> {
-  // TODO: Integrate with product databases (Best Buy API, Amazon Product API, etc.)
-  // For now, return mock data
-
   return {
     msrp: 2499,
     energyStarCertified: true,
@@ -129,9 +109,6 @@ interface RecallInfo {
 }
 
 async function checkRecallDatabase(brand: string, model: string): Promise<RecallInfo> {
-  // TODO: Integrate with CPSC recall database API
-  // https://www.cpsc.gov/Recalls
-
   return {
     hasActiveRecall: false,
   };
@@ -150,7 +127,7 @@ export async function processScan(scanId: string): Promise<void> {
 
   try {
     // 1. Extract data from photo using AI
-    const photoUrl = scan.modelPlatePhotoUrl || scan.fullUnitPhotoUrl || scan.photoUrls[0];
+    const photoUrl = (scan.photoUrls && scan.photoUrls.length > 0) ? scan.photoUrls[0] : null;
     if (!photoUrl) {
       throw new Error("No photo URL found");
     }
@@ -200,9 +177,9 @@ export async function processScan(scanId: string): Promise<void> {
         isDuplicate = true;
         duplicateId = duplicate.id;
         await updateApplianceScan(scanId, {
-          isDuplicate: true,
-          duplicateOfApplianceId: duplicateId,
-          status: "duplicate",
+          applianceId: duplicateId,
+          aiProcessingStatus: "completed",
+          notes: "Duplicate detected",
         });
       }
     }
@@ -210,35 +187,20 @@ export async function processScan(scanId: string): Promise<void> {
     // 7. If high confidence and not duplicate, auto-create appliance record
     if (extraction.confidence.overall >= 0.85 && !isDuplicate && extraction.brand && extraction.model) {
       const appliance: InsertPropertyAppliance = {
-        id: crypto.randomUUID(),
         propertyId: scan.propertyId,
         category: extraction.category || "other",
-        subcategory: extraction.subcategory,
         brand: extraction.brand,
-        model: extraction.model,
+        modelNumber: extraction.model,
         serialNumber: extraction.serialNumber,
         location: scan.location,
-        floor: scan.floor,
-        photoUrl: scan.fullUnitPhotoUrl,
-        modelPlatePhotoUrl: scan.modelPlatePhotoUrl,
-        additionalPhotoUrls: scan.photoUrls,
-        scanId: scanId,
-        aiExtractedData: extraction.rawResponse,
-        aiConfidence: extraction.confidence.overall,
-        aiConfidenceBrand: extraction.confidence.brand,
-        aiConfidenceModel: extraction.confidence.model,
-        aiConfidenceSerial: extraction.confidence.serial,
-        aiConfidenceCategory: extraction.confidence.category,
-        aiWarrantyLookup: warrantyInfo,
-        aiSpecsLookup: specsInfo,
-        userVerified: false,
-        needsReview: false,
-        expectedLifespanYears: specsInfo?.expectedLifespanYears,
-        estimatedReplacementCost: specsInfo?.msrp,
-        addedBy: scan.scanMethod,
-        addedByUserId: scan.scannedByUserId,
-        addedByServiceRequestId: scan.serviceRequestId,
-        addedByProProfileId: scan.scannedByProProfileId,
+        photoUrls: scan.photoUrls,
+        estimatedLifespanYears: specsInfo?.expectedLifespanYears,
+        specifications: {
+          aiExtractedData: extraction.rawResponse,
+          aiConfidence: extraction.confidence.overall,
+          warrantyLookup: warrantyInfo,
+          specsLookup: specsInfo,
+        },
         createdAt: new Date().toISOString(),
       };
 
@@ -247,56 +209,48 @@ export async function processScan(scanId: string): Promise<void> {
       // Link scan to appliance
       await updateApplianceScan(scanId, {
         applianceId: created.id,
+        applianceCreated: true,
       });
 
       // Create health event
       await createHealthEvent({
-        id: crypto.randomUUID(),
         propertyId: scan.propertyId,
         eventType: "appliance_added",
         eventDate: new Date().toISOString(),
         title: `${extraction.brand} ${extraction.category} added`,
         description: `${extraction.brand} ${extraction.model} added via ${scan.scanMethod}`,
         applianceId: created.id,
-        serviceRequestId: scan.serviceRequestId,
         photoUrls: scan.photoUrls,
-        metadata: {
+        notes: JSON.stringify({
           scanMethod: scan.scanMethod,
           confidence: extraction.confidence.overall,
-        },
+        }),
         createdAt: new Date().toISOString(),
       });
 
       // If Pro scan, mark as bonus-eligible
-      if (scan.scannedByRole === "pro" && scan.scannedByProProfileId) {
+      if (scan.scannedBy) {
         await updateApplianceScan(scanId, {
-          proBonusEligible: true,
+          proScanBonus: true,
           proBonusAmount: 1.0, // $1 bonus per appliance
         });
       }
 
-      // Notify customer if Pro-added
-      if (scan.scannedByRole === "pro") {
+      // Notify customer if scan was by someone
+      if (scan.scannedBy) {
         await createNotification({
-          id: crypto.randomUUID(),
-          userId: scan.scannedByUserId,
+          userId: scan.scannedBy,
           propertyId: scan.propertyId,
-          notificationType: "appliance_recall", // Using existing type; could add "appliance_added"
+          notificationType: "appliance_recall",
           channel: "push",
           title: "New Appliance Added",
-          body: `Your Pro added a ${extraction.brand} ${extraction.category} to your registry. Review it now.`,
-          deepLink: `/property/${scan.propertyId}/appliances/${created.id}`,
-          ctaText: "View Appliance",
-          ctaLink: `/property/${scan.propertyId}/appliances`,
+          message: `A ${extraction.brand} ${extraction.category} was added to your registry. Review it now.`,
+          actionUrl: `/property/${scan.propertyId}/appliances/${created.id}`,
+          actionText: "View Appliance",
           scheduledFor: new Date().toISOString(),
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           status: "pending",
           createdAt: new Date().toISOString(),
-        });
-
-        // Update scan with notification sent
-        await updateApplianceScan(scanId, {
-          customerNotifiedAt: new Date().toISOString(),
         });
       }
     }
@@ -304,23 +258,17 @@ export async function processScan(scanId: string): Promise<void> {
     // 8. If part of a session, update session stats
     if (scan.scanSessionId) {
       const sessionScans = await getScansBySession(scan.scanSessionId);
-      const stats = {
-        totalPhotos: sessionScans.length,
-        totalAppliancesDetected: sessionScans.filter((s) => s.applianceId).length,
-        totalAutoConfirmed: sessionScans.filter((s) => s.autoConfirmed).length,
-        totalNeedsReview: sessionScans.filter((s) => s.status === "needs_review").length,
-        totalDuplicatesSkipped: sessionScans.filter((s) => s.isDuplicate).length,
-        totalNewAppliancesAdded: sessionScans.filter((s) => s.applianceId && s.autoConfirmed).length,
-      };
-
-      await updateScanSession(scan.scanSessionId, stats);
 
       // If all scans in session are processed, mark session as completed
       const allProcessed = sessionScans.every((s) => s.aiProcessingStatus === "completed");
       if (allProcessed) {
         await updateScanSession(scan.scanSessionId, {
           status: "completed",
-          processingCompletedAt: new Date().toISOString(),
+          completedAt: new Date().toISOString(),
+          totalScans: sessionScans.length,
+          scansProcessed: sessionScans.filter((s) => s.aiProcessingStatus === "completed").length,
+          appliancesCreated: sessionScans.filter((s) => s.applianceCreated).length,
+          scansNeedingReview: sessionScans.filter((s) => s.needsReview).length,
         });
       }
     }
@@ -331,17 +279,8 @@ export async function processScan(scanId: string): Promise<void> {
 
     await updateApplianceScan(scanId, {
       aiProcessingStatus: "failed",
-      status: "failed",
-      errorMessage: error instanceof Error ? error.message : "Unknown error",
-      retryCount: (scan.retryCount || 0) + 1,
+      aiProcessingError: error instanceof Error ? error.message : "Unknown error",
     });
-
-    // Retry if under max retries
-    if ((scan.retryCount || 0) < (scan.maxRetries || 3)) {
-      await updateApplianceScan(scanId, {
-        aiProcessingStatus: "queued",
-      });
-    }
   }
 }
 

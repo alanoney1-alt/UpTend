@@ -73,6 +73,7 @@ export function JobVerification({
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
   const [proNotes, setProNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -163,6 +164,7 @@ export function JobVerification({
 
   const confirmVerification = async () => {
     if (!verificationResult) return;
+    setIsConfirming(true);
 
     try {
       // Add pro notes to verification result
@@ -208,6 +210,8 @@ export function JobVerification({
     } catch (err) {
       console.error('Failed to confirm verification:', err);
       setError('Failed to save verification. Please try again.');
+    } finally {
+      setIsConfirming(false);
     }
   };
 
@@ -482,9 +486,14 @@ export function JobVerification({
                 onClick={confirmVerification}
                 className="w-full"
                 size="lg"
-                disabled={verificationResult.requiresCustomerApproval && !proNotes}
+                disabled={(verificationResult.requiresCustomerApproval && !proNotes) || isConfirming}
               >
-                {verificationResult.requiresCustomerApproval ? (
+                {isConfirming ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : verificationResult.requiresCustomerApproval ? (
                   <>
                     Request Customer Approval
                     <ArrowRight className="w-4 h-4 ml-2" />

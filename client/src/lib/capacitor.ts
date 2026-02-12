@@ -65,7 +65,8 @@ export async function requestPushPermissions(): Promise<boolean> {
       await PushNotifications.register();
       
       PushNotifications.addListener('registration', (token) => {
-        console.log('Push registration token:', token.value);
+        // Token registered — send to backend for push delivery
+        // Do not log token value in production
       });
       
       PushNotifications.addListener('registrationError', (error) => {

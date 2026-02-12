@@ -119,6 +119,7 @@ export function Header() {
                 size="icon"
                 className="text-slate-400"
                 onClick={() => logout()}
+                aria-label="Log out"
                 data-testid="button-logout"
               >
                 <LogOut className="w-4 h-4" />
@@ -164,6 +165,7 @@ export function Header() {
             size="icon"
             className="text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             data-testid="button-mobile-menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

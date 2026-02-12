@@ -76,27 +76,12 @@ export function registerReferralRoutes(app: Express) {
     try {
       const { category } = req.query;
 
-      // TODO: Implement getPartnerPartners in storage
-      // For now, return mock data
-      const partners = [
-        {
-          id: "1",
-          businessName: "Green Thumb Landscaping",
-          category: "landscaping",
-          rating: 4.8,
-          phone: "(407) 555-0123",
-        },
-        {
-          id: "2",
-          businessName: "Apex Roofing Solutions",
-          category: "roofing",
-          rating: 4.9,
-          phone: "(407) 555-0456",
-        },
-      ];
+      // TODO: Implement getReferralPartners in storage
+      // Return empty until partner directory is built out
+      const partners: Array<{ id: string; businessName: string; category: string; rating: number; phone: string }> = [];
 
       const filtered = category
-        ? partners.filter((p) => p.category === category)
+        ? partners.filter((p) => p.category === String(category))
         : partners;
 
       res.json(filtered);

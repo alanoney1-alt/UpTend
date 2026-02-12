@@ -46,6 +46,9 @@ export default function NeighborhoodPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/neighborhoods/mine"] });
       toast({ title: "Welcome!", description: "You've joined your neighborhood network." });
     },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to join neighborhood. Please try again.", variant: "destructive" });
+    },
   });
 
   const recommendMutation = useMutation({
@@ -58,6 +61,9 @@ export default function NeighborhoodPage() {
       setShowRecommendForm(false);
       setRecForm({ haulerId: "", serviceType: "", rating: 5, review: "" });
       toast({ title: "Thanks!", description: "Your recommendation helps your neighbors." });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to submit recommendation. Please try again.", variant: "destructive" });
     },
   });
 

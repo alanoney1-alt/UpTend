@@ -30,14 +30,28 @@ interface GuideSession {
 
 // ─── Session Store ───────────────────────────────────────────────────────────
 
-const sessions = new Map<string, GuideSession>();
-setInterval(() => { if (sessions.size > 1000) sessions.clear(); }, 30 * 60 * 1000);
+const sessions = new Map<string, GuideSession & { _lastAccess?: number }>();
+setInterval(() => {
+  if (sessions.size > 1000) {
+    // Evict oldest half instead of clearing everything
+    const entries = [...sessions.entries()].sort((a, b) => (a[1]._lastAccess || 0) - (b[1]._lastAccess || 0));
+    const toRemove = entries.slice(0, Math.floor(entries.length / 2));
+    for (const [key] of toRemove) sessions.delete(key);
+  }
+  // Also evict sessions older than 2 hours
+  const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000;
+  for (const [key, val] of sessions) {
+    if ((val._lastAccess || 0) < twoHoursAgo) sessions.delete(key);
+  }
+}, 30 * 60 * 1000);
 
 function getSession(sid: string): GuideSession {
   if (!sessions.has(sid)) {
-    sessions.set(sid, { history: [] });
+    sessions.set(sid, { history: [], _lastAccess: Date.now() } as any);
   }
-  return sessions.get(sid)!;
+  const session = sessions.get(sid)!;
+  (session as any)._lastAccess = Date.now();
+  return session;
 }
 
 // ─── DB Table Init ───────────────────────────────────────────────────────────
@@ -1004,14 +1018,15 @@ Return ONLY valid JSON.`,
         }
       }
 
-      const discount = Math.round(subtotal * 0.10);
+      const discountPct = services.length >= 6 ? 0.15 : 0.10;
+      const discount = Math.round(subtotal * discountPct);
       const total = subtotal - discount;
 
       return res.json({
         success: true,
         breakdown,
         subtotal,
-        discountPercent: 10,
+        discountPercent: Math.round(discountPct * 100),
         discount,
         total,
         savings: `You save $${discount} with the bundle!`,
@@ -1109,7 +1124,10 @@ async function processAction(action: any, session: GuideSession, userId: string 
   try {
     switch (action.type) {
       case "property_scan": {
-        const propertyData = await getPropertyDataAsync(action.address);
+        if (!action.address || typeof action.address !== "string" || action.address.trim().length < 3) {
+          return { type: "property_scan", data: null, error: "Invalid or missing address" };
+        }
+        const propertyData = await getPropertyDataAsync(action.address.trim());
         session.propertyData = propertyData;
         session.onboardingState = propertyData.hasPool === "uncertain" ? "pool_check" : "property_confirmed";
 
@@ -1128,6 +1146,9 @@ async function processAction(action: any, session: GuideSession, userId: string 
       }
 
       case "price_match": {
+        if (!action.claimed_price || typeof action.claimed_price !== "number" || action.claimed_price <= 0) {
+          return { type: "price_match", data: null, error: "Invalid claimed price" };
+        }
         const result = calculatePriceMatch(action.service, action.claimed_price);
         if (result) {
           if (!session.priceMatches) session.priceMatches = [];
@@ -1137,6 +1158,12 @@ async function processAction(action: any, session: GuideSession, userId: string 
       }
 
       case "lock_quote": {
+        if (!action.price || typeof action.price !== "number" || action.price <= 0) {
+          return { type: "lock_quote", data: null, error: "Invalid price" };
+        }
+        if (!action.service || typeof action.service !== "string") {
+          return { type: "lock_quote", data: null, error: "Invalid service" };
+        }
         const quoteId = nanoid(10);
         const shareToken = nanoid(16);
         const validUntil = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
@@ -1159,15 +1186,16 @@ async function processAction(action: any, session: GuideSession, userId: string 
       }
 
       case "bundle": {
-        if (!action.services || action.services.length < 2) return null;
+        if (!action.services || !Array.isArray(action.services) || action.services.length < 2) return null;
         const breakdown: any[] = [];
         let subtotal = 0;
         for (const svc of action.services) {
           const rate = STANDARD_RATES[svc];
           if (rate) { breakdown.push({ service: rate.service, rate: rate.rate, frequency: rate.frequency }); subtotal += rate.rate; }
         }
-        const discount = Math.round(subtotal * 0.10);
-        return { type: "bundle", data: { breakdown, subtotal, discount, total: subtotal - discount } };
+        const discountPct = action.services.length >= 6 ? 0.15 : 0.10;
+        const discount = Math.round(subtotal * discountPct);
+        return { type: "bundle", data: { breakdown, subtotal, discountPercent: Math.round(discountPct * 100), discount, total: subtotal - discount } };
       }
 
       case "book": {

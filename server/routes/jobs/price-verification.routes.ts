@@ -61,11 +61,11 @@ app.post("/api/jobs/:jobId/verify-price", async (req: Request, res: Response) =>
 
     // If requires approval, create approval request
     if (verification.requiresApproval) {
-      // TODO: Fetch customer info from database
+      // TODO: Fetch customer info from database using jobId
       const customer = {
-        id: "customer_123", // Replace with actual customer lookup
-        name: "John Doe",
-        phone: "+1234567890",
+        id: req.body.customerId || "unknown",
+        name: req.body.customerName || "Customer",
+        phone: req.body.customerPhone || "",
       };
 
       const approvalRequest: CustomerApprovalRequest = {
@@ -85,7 +85,7 @@ app.post("/api/jobs/:jobId/verify-price", async (req: Request, res: Response) =>
       approvalRequests.set(verification.verificationId, approvalRequest);
 
       // TODO: Send SMS to customer
-      const proName = "Sarah"; // Replace with actual Pro lookup
+      const proName = req.body.proName || "Your Pro"; // TODO: fetch from DB
       const smsMessage = generateApprovalSmsMessage(verification, customer.name, proName);
       console.log("SMS to customer:", smsMessage);
 
@@ -108,8 +108,8 @@ app.post("/api/jobs/:jobId/verify-price", async (req: Request, res: Response) =>
     console.log("Auto-approved, notifying Pro to start work");
 
     // TODO: Notify customer of price adjustment
-    const customer = { name: "John Doe" };
-    const proName = "Sarah";
+    const customer = { name: req.body.customerName || "Customer" };
+    const proName = req.body.proName || "Your Pro"; // TODO: fetch from DB
     const smsMessage = generateApprovalSmsMessage(verification, customer.name, proName);
     console.log("SMS to customer:", smsMessage);
 

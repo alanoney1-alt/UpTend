@@ -4,6 +4,7 @@
  * Displays service-specific sustainability badges for pros
  */
 
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -108,23 +109,39 @@ export function ServiceEsgBadge({ serviceType, esgScore, metrics = {} }: Service
 }
 
 export function ServiceEsgSummary({ proId }: { proId: string }) {
-  // This would fetch aggregate ESG data for the Pro across all services
-  // For now, placeholder
+  // TODO: Fetch aggregate ESG data for the Pro from /api/pros/:proId/esg-summary
+  const [stats, setStats] = useState<{ gallonsSaved: number; co2Saved: number; avgEsgScore: number } | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/pros/${proId}/esg-summary`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => data && setStats(data))
+      .catch(() => {});
+  }, [proId]);
+
+  if (!stats) {
+    return (
+      <div className="text-center p-6 text-muted-foreground text-sm">
+        ESG impact data will appear here as jobs are completed.
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       <div className="text-center p-4 bg-blue-50 rounded-lg">
         <div className="text-3xl mb-1">💧</div>
-        <div className="text-2xl font-bold">2,450</div>
+        <div className="text-2xl font-bold">{stats.gallonsSaved.toLocaleString()}</div>
         <div className="text-sm text-gray-600">Gallons Saved</div>
       </div>
       <div className="text-center p-4 bg-green-50 rounded-lg">
         <div className="text-3xl mb-1">🌱</div>
-        <div className="text-2xl font-bold">1,250</div>
+        <div className="text-2xl font-bold">{stats.co2Saved.toLocaleString()}</div>
         <div className="text-sm text-gray-600">lbs CO₂ Saved</div>
       </div>
       <div className="text-center p-4 bg-purple-50 rounded-lg">
         <div className="text-3xl mb-1">⭐</div>
-        <div className="text-2xl font-bold">85</div>
+        <div className="text-2xl font-bold">{stats.avgEsgScore}</div>
         <div className="text-sm text-gray-600">Avg ESG Score</div>
       </div>
     </div>
