@@ -75,21 +75,21 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (page === "/book" || page.startsWith("/book")) {
     return {
-      welcome: `Hey! 👋 I'm Bud — your personal home services guide.\n\nYou're on UpTend because you're tired of the runaround. No more calling 5 companies for quotes, no more "we'll get back to you," no more surprise charges. Here, every pro is verified with $1M insurance, every quote has a **Guaranteed Price Ceiling**, and if the job costs less — you pay less.\n\nType your address and what you need — or snap a photo 📷 and I'll quote it instantly. Like "321 Elm St, Winter Park — need the garage cleaned out." I'll handle the rest 👇`,
+      welcome: `Hey! 👋 I'm Bud — your personal home services guide.\n\nYou're on UpTend because you're tired of the runaround. No more calling 5 companies for quotes, no more "we'll get back to you," no more surprise charges. Here, every pro is verified with $1M insurance, every quote has a **Guaranteed Price Ceiling**, and if the job costs less — you pay less.\n\nGot questions about any of our services, pricing, or how things work? I'm here — just ask 👇`,
       quickActions: [],
     };
   }
 
   if (page === "/services" || page.startsWith("/services/")) {
     return {
-      welcome: `Hey! 👋 I'm Bud. You're browsing our services — good. Let me save you some time.\n\nEvery single service here comes with the same guarantees: verified pros, $1M insurance, real-time tracking, and a **Guaranteed Price Ceiling** — meaning the price you're quoted is the MAX you'll pay. If the job costs less, you pay less. No other platform does that.\n\nType your address and the service you're looking at — like "456 Pine Ave, Kissimmee — gutter cleaning" — and I'll give you a real price and walk you through what's included 👇`,
+      welcome: `Hey! 👋 I'm Bud. You're browsing our services — good.\n\nEvery single service here comes with the same guarantees: verified pros, $1M insurance, real-time tracking, and a **Guaranteed Price Ceiling** — meaning the price you're quoted is the MAX you'll pay. If the job costs less, you pay less. No other platform does that.\n\nWant to know more about any service? Just ask — I know what's included, what it costs, and how long it takes 👇`,
       quickActions: [],
     };
   }
 
   if (page === "/pricing") {
     return {
-      welcome: `Hey! 👋 I'm Bud. Those prices you see? They're starting points — every home is different.\n\nHere's what makes UpTend different from every other quote you've gotten: we give you a **Guaranteed Price Ceiling**. That means the number I quote you is the absolute MAX. If the job turns out simpler, you pay less. If the pro finds something unexpected, they have to send you photos and get your OK before anything changes. You're always in control.\n\nType your address and the service you need — like "789 Lake Dr, Orlando — pressure washing" — and I'll give you a real number, not a range that doubles when the pro shows up 👇`,
+      welcome: `Hey! 👋 I'm Bud. Those prices you see? They're starting points — every home is different.\n\nHere's what makes UpTend different: we give you a **Guaranteed Price Ceiling**. The number you're quoted is the absolute MAX. If the job turns out simpler, you pay less. If the pro finds something unexpected, they have to send you photos and get your OK before anything changes. You're always in control.\n\nCurious about how pricing works or what's included in a service? Ask away 👇`,
       quickActions: [],
     };
   }
@@ -119,13 +119,13 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   const isFirstVisit = !localStorage.getItem(LS_GREETED);
   if (isFirstVisit) {
     return {
-      welcome: `Hey there 👋 I'm Bud — welcome to UpTend.\n\nLet me be real with you for a sec. Home services are broken. You call someone off Google, they show up whenever they feel like it, charge whatever they want, and if something goes wrong? Good luck. No accountability, no transparency, no protection.\n\nThat's why UpTend exists. We built this because homeowners deserve better:\n\n🏠 **Every pro is background-checked with $1M insurance** — not just a promise, it's verified\n🔒 **Guaranteed Price Ceiling** — your quoted max is your max. Period. If a pro finds extra work, they have to submit photos and get YOUR approval before the price changes\n📍 **Real-time tracking** — you always know where your pro is and when they'll arrive\n📷 **Instant photo quotes** — snap a pic of what you need done and I'll price it right here\n💰 **If the job costs less, you pay less** — we don't pocket the difference\n\nI'm not a chatbot reading a script. I'm your personal guide to getting things done around your home — and I'm here as long as you need me. Hit the X whenever you want me gone, no hard feelings 😊\n\nTo get started, type your address and the service you're interested in below — like "123 Oak St, Orlando — junk removal" — and I'll take it from there with pricing, what's included, and scheduling.\n\nOr just describe what's going on and I'll figure out which service fits 👇`,
+      welcome: `Hey there 👋 I'm Bud — welcome to UpTend.\n\nLet me be real with you for a sec. Home services are broken. You call someone off Google, they show up whenever they feel like it, charge whatever they want, and if something goes wrong? Good luck. No accountability, no transparency, no protection.\n\nThat's why UpTend exists. We built this because homeowners deserve better:\n\n🏠 **Every pro is background-checked with $1M insurance** — not just a promise, it's verified\n🔒 **Guaranteed Price Ceiling** — your quoted max is your max. Period. If a pro finds extra work, they have to submit photos and get YOUR approval before the price changes\n📍 **Real-time tracking** — you always know where your pro is and when they'll arrive\n💰 **If the job costs less, you pay less** — we don't pocket the difference\n\nI'm not a chatbot reading a script — I actually know home services. Ask me anything about how UpTend works, what services we offer, what things cost, or what to expect. I'm here as long as you need me. Hit the X whenever you want me gone, no hard feelings 😊\n\nWhen you're ready to book, head to the Book page and pick your service 👇`,
       quickActions: [],
     };
   }
 
   return {
-    welcome: `Hey! 👋 Good to see you again. I remember our last chat and I've got your info pulled up.\n\nTo get started, just type your address and the service you're interested in below — like "123 Oak St, Orlando — pressure washing" — and I'll walk you through everything from there: pricing, what's included, scheduling, all of it.\n\nOr ask me anything — I'm not going anywhere 👇`,
+    welcome: `Hey! 👋 Good to see you again.\n\nGot questions about our services, pricing, or how things work? I'm here to help. When you're ready to book, head to the Book page.\n\nAsk me anything 👇`,
     quickActions: [],
   };
 }
@@ -637,15 +637,6 @@ export function UpTendGuide() {
           />
 
           <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex items-center gap-1">
-            <button
-              type="button"
-              className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading || isUploading}
-              title="Upload photo"
-            >
-              <Paperclip className="w-3.5 h-3.5" />
-            </button>
             <input
               ref={inputRef}
               value={input}
