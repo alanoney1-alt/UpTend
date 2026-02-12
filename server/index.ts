@@ -26,7 +26,7 @@ app.use(helmet({
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://uptend.app', 'https://www.uptend.app']
+    ? ['https://uptend.app', 'https://www.uptend.app', 'https://uptendapp.com', 'https://www.uptendapp.com']
     : true, // Allow all in development
   credentials: true,
 }));
