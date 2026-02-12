@@ -75,21 +75,21 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (page === "/book" || page.startsWith("/book")) {
     return {
-      welcome: `Hey! 👋 I'm Bud — your personal home services guide.\n\nYou're on UpTend because you're tired of the runaround. No more calling 5 companies for quotes, no more "we'll get back to you," no more surprise charges. Here, every pro is verified with $1M insurance, every quote has a **Guaranteed Price Ceiling**, and if the job costs less — you pay less.\n\nGot questions about any of our services, pricing, or how things work? I'm here — just ask 👇`,
+      welcome: `Hey there! 😊 I'm Bud — welcome!\n\nYou're looking at a specific service — awesome! I'd love to help you figure out if it's the right fit. All our pros are verified, background-checked, and genuinely good at what they do.\n\nGot any questions? I'm here — fire away! 👇`,
       quickActions: [],
     };
   }
 
   if (page === "/services" || page.startsWith("/services/")) {
     return {
-      welcome: `Hey! 👋 I'm Bud. You're browsing our services — good.\n\nEvery single service here comes with the same guarantees: verified pros, $1M insurance, real-time tracking, and a **Guaranteed Price Ceiling** — meaning the price you're quoted is the MAX you'll pay. If the job costs less, you pay less. No other platform does that.\n\nWant to know more about any service? Just ask — I know what's included, what it costs, and how long it takes 👇`,
+      welcome: `Hey! 😊 I'm Bud — glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full home scans — and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine — just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! 👇`,
       quickActions: [],
     };
   }
 
   if (page === "/pricing") {
     return {
-      welcome: `Hey! 👋 I'm Bud. Those prices you see? They're starting points — every home is different.\n\nHere's what makes UpTend different: we give you a **Guaranteed Price Ceiling**. The number you're quoted is the absolute MAX. If the job turns out simpler, you pay less. If the pro finds something unexpected, they have to send you photos and get your OK before anything changes. You're always in control.\n\nCurious about how pricing works or what's included in a service? Ask away 👇`,
+      welcome: `Hey! 😊 I'm Bud — thanks for checking us out!\n\nI see you're looking at pricing — great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works — I'm right here.\n\nNo pressure at all, just ask whatever's on your mind 👇`,
       quickActions: [],
     };
   }
@@ -110,7 +110,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (userRole === "customer") {
     return {
-      welcome: `Hey${name}! 👋 Good to see you. I've got your info pulled up — I know your place, your past bookings, and your preferences.\n\nNeed a new service? Want to check on a job? Curious what your pro is up to? I'm here and I'm not going anywhere until you tell me to. What do you need? 👇`,
+      welcome: `Hey${name}! 😊 So good to see you!\n\nI'm here whenever you need me — whether it's a question about a service, checking on something, or just figuring out what you need next. Happy to help with anything!\n\nWhat's up? 👇`,
       quickActions: [],
     };
   }
@@ -119,13 +119,13 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   const isFirstVisit = !localStorage.getItem(LS_GREETED);
   if (isFirstVisit) {
     return {
-      welcome: `Hey there 👋 I'm Bud — welcome to UpTend.\n\nLet me be real with you for a sec. Home services are broken. You call someone off Google, they show up whenever they feel like it, charge whatever they want, and if something goes wrong? Good luck. No accountability, no transparency, no protection.\n\nThat's why UpTend exists. We built this because homeowners deserve better:\n\n🏠 **Every pro is background-checked with $1M insurance** — not just a promise, it's verified\n🔒 **Guaranteed Price Ceiling** — your quoted max is your max. Period. If a pro finds extra work, they have to submit photos and get YOUR approval before the price changes\n📍 **Real-time tracking** — you always know where your pro is and when they'll arrive\n💰 **If the job costs less, you pay less** — we don't pocket the difference\n\nI'm not a chatbot reading a script — I actually know home services. Ask me anything about how UpTend works, what services we offer, what things cost, or what to expect. I'm here as long as you need me. Hit the X whenever you want me gone, no hard feelings 😊\n\nWhen you're ready to book, head to the Book page and pick your service 👇`,
+      welcome: `Hey! 😊 I'm Bud — so glad you stopped by!\n\nWelcome to UpTend — on-demand home services with verified pros who care about doing things right. Whether it's junk removal, pressure washing, a deep clean, or something else entirely — we match you with trusted, background-checked professionals who show up on time and treat your home like their own. Oh, and we're sustainability-focused too 🌱 because taking care of your home shouldn't mean trashing the planet.\n\nI'm here if you have ANY questions — about what we do, how it works, what services might be right for you, anything at all. Seriously, no question is too small. I love chatting 😄\n\nWhat's on your mind? 👇`,
       quickActions: [],
     };
   }
 
   return {
-    welcome: `Hey! 👋 Good to see you again.\n\nGot questions about our services, pricing, or how things work? I'm here to help. When you're ready to book, head to the Book page.\n\nAsk me anything 👇`,
+    welcome: `Hey, welcome back! 😊 So happy to see you again.\n\nI'm right here if you need anything — questions about services, how something works, or just figuring out what you need. I'm all ears!\n\nWhat can I help with today? 👇`,
     quickActions: [],
   };
 }
