@@ -367,6 +367,26 @@ export function registerJobManagementRoutes(app: Express) {
       const adjustmentsTotal = approvedAdjustments.reduce((sum, a) => sum + (a.priceChange || 0), 0);
       const finalAmount = baseAmount + adjustmentsTotal;
 
+      // Guaranteed Price Ceiling guard: block if final exceeds ceiling without approved scope change
+      if (job.guaranteedCeiling && finalAmount > job.guaranteedCeiling) {
+        // Check for approved scope changes that raised the ceiling
+        const { pool: dbPool } = await import("../../db");
+        const scResult = await dbPool.query(
+          "SELECT SUM(additional_amount) as total_approved FROM scope_change_requests WHERE service_request_id = $1 AND status = 'approved'",
+          [jobId]
+        );
+        const approvedScopeTotal = parseFloat(scResult.rows[0]?.total_approved) || 0;
+        const effectiveCeiling = job.guaranteedCeiling + approvedScopeTotal;
+        if (finalAmount > effectiveCeiling) {
+          return res.status(400).json({
+            error: "Final price exceeds the Guaranteed Price Ceiling",
+            finalAmount,
+            guaranteedCeiling: effectiveCeiling,
+            message: "Submit a scope change request for customer approval before completing at this price.",
+          });
+        }
+      }
+
       // Calculate base service price for Pro payout (excludes 7% UpTend Protection Fee)
       // Pro gets 80% of baseServicePrice, not the total customer payment
       const baseServicePrice = job.baseServicePrice || (baseAmount / 1.07);

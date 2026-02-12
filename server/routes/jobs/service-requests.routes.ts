@@ -145,6 +145,9 @@ export function registerServiceRequestRoutes(app: Express) {
         customerEmail: user?.email || validatedData.customerEmail,
         stripePaymentIntentId,
         paymentStatus,
+        // Guaranteed Price Ceiling — lock in the max price at booking time
+        guaranteedCeiling: quote.totalPrice,
+        ceilingLockedAt: new Date().toISOString(),
       });
 
       // Use smart matching with language preference

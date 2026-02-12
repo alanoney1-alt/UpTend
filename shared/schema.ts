@@ -401,6 +401,12 @@ export const serviceRequests = pgTable("service_requests", {
   // Service-specific details
   freshSpaceDetails: jsonb("fresh_space_details"), // Details for home cleaning service
   recurringSubscriptionId: varchar("recurring_subscription_id"), // FK to recurring subscriptions
+  // Guaranteed Price Ceiling
+  guaranteedCeiling: real("guaranteed_ceiling"),
+  finalCustomerPrice: real("final_customer_price"),
+  ceilingOutcome: text("ceiling_outcome"), // 'under_ceiling' | 'at_ceiling' | 'scope_change'
+  customerSavings: real("customer_savings"),
+  ceilingLockedAt: text("ceiling_locked_at"),
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
@@ -5032,3 +5038,75 @@ export const homeAppliances = pgTable("home_appliances", {
 export const insertHomeApplianceSchema = createInsertSchema(homeAppliances).omit({ id: true });
 export type InsertHomeAppliance = z.infer<typeof insertHomeApplianceSchema>;
 export type HomeAppliance = typeof homeAppliances.$inferSelect;
+
+// Scope Change Requests (Guaranteed Price Ceiling)
+export const scopeChangeRequests = pgTable("scope_change_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id").notNull(),
+  proId: varchar("pro_id").notNull(),
+  customerId: varchar("customer_id").notNull(),
+  originalCeiling: real("original_ceiling").notNull(),
+  proposedCeiling: real("proposed_ceiling").notNull(),
+  additionalAmount: real("additional_amount").notNull(),
+  reason: text("reason").notNull(),
+  changeType: text("change_type").notNull(), // 'additional_items' | 'access_difficulty' | 'hazardous_materials' | 'larger_scope' | 'other'
+  evidencePhotos: text("evidence_photos").array().notNull(),
+  evidenceDescription: text("evidence_description"),
+  aiValidated: boolean("ai_validated").default(false),
+  aiConfidenceScore: real("ai_confidence_score"),
+  aiAnalysis: text("ai_analysis"),
+  status: text("status").notNull().default("pending"), // 'pending' | 'approved' | 'declined' | 'expired'
+  customerNotifiedAt: text("customer_notified_at"),
+  customerRespondedAt: text("customer_responded_at"),
+  customerNotes: text("customer_notes"),
+  expiresAt: text("expires_at"),
+  flaggedForReview: boolean("flagged_for_review").default(false),
+  adminReviewedAt: text("admin_reviewed_at"),
+  adminReviewedBy: varchar("admin_reviewed_by"),
+  adminNotes: text("admin_notes"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const scopeChangeRequestsRelations = relations(scopeChangeRequests, ({ one }) => ({
+  serviceRequest: one(serviceRequests, {
+    fields: [scopeChangeRequests.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertScopeChangeRequestSchema = createInsertSchema(scopeChangeRequests).omit({ id: true, createdAt: true });
+export type InsertScopeChangeRequest = z.infer<typeof insertScopeChangeRequestSchema>;
+export type ScopeChangeRequest = typeof scopeChangeRequests.$inferSelect;
+
+// Ceiling Analytics
+export const ceilingAnalytics = pgTable("ceiling_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  periodStart: text("period_start").notNull(),
+  periodEnd: text("period_end").notNull(),
+  periodType: text("period_type").notNull(), // 'daily' | 'weekly' | 'monthly'
+  totalJobsCompleted: integer("total_jobs_completed").notNull().default(0),
+  totalJobsWithCeiling: integer("total_jobs_with_ceiling").notNull().default(0),
+  jobsUnderCeiling: integer("jobs_under_ceiling").notNull().default(0),
+  jobsAtCeiling: integer("jobs_at_ceiling").notNull().default(0),
+  jobsScopeChanged: integer("jobs_scope_changed").notNull().default(0),
+  pctUnderCeiling: real("pct_under_ceiling"),
+  pctAtCeiling: real("pct_at_ceiling"),
+  pctScopeChanged: real("pct_scope_changed"),
+  totalCustomerSavings: real("total_customer_savings").default(0),
+  avgCustomerSavings: real("avg_customer_savings").default(0),
+  avgSavingsPct: real("avg_savings_pct").default(0),
+  scopeChangeRequestsCount: integer("scope_change_requests_count").default(0),
+  scopeChangesApproved: integer("scope_changes_approved").default(0),
+  scopeChangesDeclined: integer("scope_changes_declined").default(0),
+  scopeChangesExpired: integer("scope_changes_expired").default(0),
+  scopeChangeApprovalRate: real("scope_change_approval_rate"),
+  avgScopeChangeAmount: real("avg_scope_change_amount"),
+  avgAiConfidence: real("avg_ai_confidence"),
+  avgCeilingAccuracy: real("avg_ceiling_accuracy"),
+  byServiceType: text("by_service_type"), // JSON string
+  createdAt: text("created_at").notNull(),
+});
+
+export const insertCeilingAnalyticsSchema = createInsertSchema(ceilingAnalytics).omit({ id: true, createdAt: true });
+export type InsertCeilingAnalytics = z.infer<typeof insertCeilingAnalyticsSchema>;
+export type CeilingAnalytics = typeof ceilingAnalytics.$inferSelect;

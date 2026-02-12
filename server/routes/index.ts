@@ -113,6 +113,9 @@ import { registerPartnerRoutes } from "./partners.routes";
 // Home CRM routes
 import { registerHomeProfileRoutes } from "./home-profile.routes";
 
+// Scope Change / Guaranteed Price Ceiling routes
+import { registerScopeChangeRoutes } from "./scope-change.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -244,6 +247,9 @@ export async function registerRoutes(
 
   // Register Home CRM routes
   registerHomeProfileRoutes(app);
+
+  // Register Scope Change / Guaranteed Price Ceiling routes
+  registerScopeChangeRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
