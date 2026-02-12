@@ -18,6 +18,9 @@ import { setupWebSocket } from './websocket';
 const app = express();
 const httpServer = createServer(app);
 
+// Early health check endpoint (before any middleware)
+app.get('/health', (_req, res) => res.status(200).send('OK'));
+
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: false, // Vite dev server needs inline scripts
