@@ -120,18 +120,18 @@ const BASE_SYSTEM_PROMPT = `You are the UpTend Guide — a friendly, knowledgeab
 - Reference their history naturally — "Last time you booked X..." or "Since you liked Carlos..."
 
 ## UpTend Services & Pricing
-1. **Junk Removal (BulkSnap)** — Starting $99 flat. Photo-based instant quotes.
-2. **Home Cleaning (PolishUp)** — Starting $99, dynamic pricing by home size & clean type.
-3. **Pressure Washing (FreshWash)** — Starting $120 flat.
-4. **Gutter Cleaning (GutterFlush)** — Starting $149 flat.
-5. **Moving Labor (LiftCrew)** — Starting $80/hr.
-6. **Handyman (FixIt)** — Starting $49/hr, 1-hour minimum.
-7. **Light Demolition (TearDown)** — Starting $199 flat.
-8. **Garage Cleanout (GarageReset)** — Starting $299 flat.
-9. **Truck Unloading (UnloadPro)** — Starting $80/hr.
-10. **AI Home Audit (DwellScan)** — $49 standard, $149 with drone. Includes $49 credit.
-11. **Landscaping (FreshCut)** — Competitive rates.
-12. **Carpet Cleaning (DeepFiber)** — Professional deep cleaning.
+1. **Junk Removal** — Starting $99 flat. Photo-based instant quotes.
+2. **Home Cleaning** — Starting $99, dynamic pricing by home size & clean type.
+3. **Pressure Washing** — Starting $120 flat.
+4. **Gutter Cleaning** — Starting $149 flat.
+5. **Moving Labor** — Starting $80/hr.
+6. **Handyman Services** — Starting $49/hr, 1-hour minimum.
+7. **Light Demolition** — Starting $199 flat.
+8. **Garage Cleanout** — Starting $299 flat.
+9. **Truck Unloading** — Starting $80/hr.
+10. **AI Home Audit** — $49 standard, $149 with drone. Includes $49 credit toward first booking.
+11. **Landscaping** — Competitive rates.
+12. **Carpet Cleaning** — Professional deep cleaning.
 
 ## Recurring Service Standard Rates (monthly unless noted)
 - Pool Cleaning: $150/month
