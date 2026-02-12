@@ -3788,6 +3788,20 @@ export const insertInsurancePartnerSchema = createInsertSchema(insurancePartners
 export type InsertInsurancePartner = z.infer<typeof insertInsurancePartnerSchema>;
 export type InsurancePartner = typeof insurancePartners.$inferSelect;
 
+export const customerInsurance = pgTable("customer_insurance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  insurancePartnerId: varchar("insurance_partner_id").notNull(),
+  policyNumber: text("policy_number").notNull(),
+  coverageType: text("coverage_type").notNull(),
+  expiresAt: text("expires_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertCustomerInsuranceSchema = createInsertSchema(customerInsurance).omit({ id: true, createdAt: true });
+export type InsertCustomerInsurance = z.infer<typeof insertCustomerInsuranceSchema>;
+export type CustomerInsurance = typeof customerInsurance.$inferSelect;
+
 // Property Documents - Centralized document storage
 export const propertyDocuments = pgTable("property_documents", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
