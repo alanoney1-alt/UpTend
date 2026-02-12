@@ -64,7 +64,7 @@ export default function LiveMapScreen({ navigation }: any) {
 
   const handleHire = useCallback((pro: ProLocation) => {
     closeSheet();
-    navigation.navigate('Guide', {
+    navigation.navigate('Bud', {
       prefill: `I'd like to hire ${pro.firstName} ${pro.lastInitial}. for ${pro.services[0]?.name ?? 'a service'}`,
     });
   }, [navigation]);

@@ -6,7 +6,7 @@ export type MessageType = 'text' | 'photo' | 'quote' | 'property' | 'bundle' | '
 
 export interface ChatMessage {
   id: string;
-  sender: 'user' | 'guide';
+  sender: 'user' | 'guide' | 'bud';
   type: MessageType;
   text?: string;
   imageUri?: string;
@@ -20,6 +20,7 @@ interface Props {
 
 export default function ChatBubble({ message }: Props) {
   const isUser = message.sender === 'user';
+  // 'bud' and 'guide' both render as assistant bubble
 
   if (message.type === 'typing') {
     return (

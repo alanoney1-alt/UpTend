@@ -21,7 +21,11 @@ async function getCredentials() {
     const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
 
     if (!secretKey || !publishableKey) {
-      throw new Error('STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY must be set in .env for local development');
+      console.warn('WARNING: STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY not set. Stripe features disabled.');
+      return {
+        publishableKey: publishableKey || '',
+        secretKey: secretKey || '',
+      };
     }
 
     console.log('Using direct Stripe API keys from .env (local development mode)');

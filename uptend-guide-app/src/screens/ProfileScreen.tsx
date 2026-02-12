@@ -69,15 +69,27 @@ export default function ProfileScreen() {
         </View>
 
         <Section title="Account">
+          <Row icon="✏️" label="Edit Profile" />
           <Row icon="🏠" label="Property Info" />
           <Row icon="💳" label="Payment Methods" />
           <Row icon="📍" label="Service Address" />
+          <Row icon="🛡️" label="Linked Insurance" />
         </Section>
 
         <Section title="Preferences">
           <ToggleRow icon="🔔" label="Push Notifications" value={notificationsEnabled} onToggle={setNotificationsEnabled} />
-          <ToggleRow icon="🗣" label="Voice Guide" value={voiceEnabled} onToggle={setVoiceEnabled} />
+          <ToggleRow icon="🗣" label="Voice Bud" value={voiceEnabled} onToggle={setVoiceEnabled} />
         </Section>
+
+        {/* Referral */}
+        <View style={styles.referralCard}>
+          <Text style={styles.referralEmoji}>🎁</Text>
+          <Text style={styles.referralTitle}>Refer & Earn $25</Text>
+          <Text style={styles.referralDesc}>Refer your pro — when they complete 3 jobs, you get $25 credit!</Text>
+          <TouchableOpacity style={styles.referralBtn} activeOpacity={0.8}>
+            <Text style={styles.referralBtnText}>Share Referral Link</Text>
+          </TouchableOpacity>
+        </View>
 
         <Section title="Support">
           <Row icon="❓" label="Help & FAQ" />
@@ -89,7 +101,7 @@ export default function ProfileScreen() {
           <Text style={styles.logoutText}>Sign Out</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>UpTend Guide v1.0.0</Text>
+        <Text style={styles.version}>UpTend v1.0.0</Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -186,4 +198,13 @@ const styles = StyleSheet.create({
   },
   logoutText: { color: Colors.error, fontSize: 16, fontWeight: '600' },
   version: { textAlign: 'center', fontSize: 12, color: Colors.textLight, marginTop: 20 },
+  referralCard: {
+    backgroundColor: '#FFF7ED', borderRadius: 18, padding: 20, alignItems: 'center', marginBottom: 24,
+    borderWidth: 2, borderColor: '#FDBA74',
+  },
+  referralEmoji: { fontSize: 36, marginBottom: 8 },
+  referralTitle: { fontSize: 20, fontWeight: '800', color: '#EA580C', marginBottom: 4 },
+  referralDesc: { fontSize: 14, color: '#9A3412', textAlign: 'center', lineHeight: 20, marginBottom: 14 },
+  referralBtn: { backgroundColor: '#F97316', borderRadius: 12, paddingVertical: 12, paddingHorizontal: 32 },
+  referralBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
 });

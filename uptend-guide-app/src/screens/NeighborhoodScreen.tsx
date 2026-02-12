@@ -101,6 +101,41 @@ export default function NeighborhoodScreen() {
           );
         })}
 
+        {/* Local Pro Recommendations */}
+        <Text style={styles.sectionTitle}>Top Local Pros</Text>
+        {[
+          { name: 'Maria S.', service: 'House Cleaning', rating: 4.9, jobs: 215, icon: '🧹' },
+          { name: 'Marcus J.', service: 'Junk Removal', rating: 4.8, jobs: 342, icon: '🗑️' },
+          { name: 'Jake R.', service: 'Pressure Washing', rating: 4.9, jobs: 178, icon: '💦' },
+        ].map((pro, i) => (
+          <View key={i} style={styles.proCard}>
+            <Text style={{ fontSize: 28 }}>{pro.icon}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.dealService}>{pro.name}</Text>
+              <Text style={styles.dealCount}>{pro.service} · ⭐ {pro.rating} · {pro.jobs} jobs</Text>
+            </View>
+            <TouchableOpacity style={styles.bookBtn}>
+              <Text style={styles.bookBtnText}>Book</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+
+        {/* Activity Feed */}
+        <Text style={styles.sectionTitle}>Recent Activity</Text>
+        {[
+          { text: 'A neighbor booked pressure washing', time: '2h ago', icon: '💦' },
+          { text: 'Group deal unlocked for lawn care!', time: '5h ago', icon: '🎉' },
+          { text: '3 neighbors got gutter cleaning', time: '1d ago', icon: '🏠' },
+        ].map((item, i) => (
+          <View key={i} style={styles.activityItem}>
+            <Text style={{ fontSize: 20 }}>{item.icon}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.dealService}>{item.text}</Text>
+              <Text style={styles.dealCount}>{item.time}</Text>
+            </View>
+          </View>
+        ))}
+
         {/* Invite */}
         <TouchableOpacity style={styles.inviteBtn}>
           <Text style={styles.inviteBtnText}>📨 Invite Your Neighbors</Text>
@@ -154,4 +189,8 @@ const styles = StyleSheet.create({
   privacyNote: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: '#F0F0F0', borderRadius: 10, padding: 12, marginTop: 4 },
   privacyIcon: { fontSize: 16 },
   privacyText: { fontSize: 12, color: Colors.textSecondary, flex: 1, lineHeight: 16 },
+  proCard: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#fff', borderRadius: 12, padding: 14, marginBottom: 10, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } },
+  bookBtn: { backgroundColor: Colors.primary, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 8 },
+  bookBtnText: { color: '#fff', fontWeight: '700', fontSize: 13 },
+  activityItem: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#fff', borderRadius: 12, padding: 14, marginBottom: 8 },
 });

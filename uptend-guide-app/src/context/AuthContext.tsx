@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
-import { getUser, customerLogin, proLogin, businessLogin, setToken, clearToken } from '../api/client';
+import * as authService from '../services/auth';
 
 type Role = 'customer' | 'pro' | 'business' | null;
 
@@ -28,6 +28,7 @@ interface AuthState {
   login: (email: string, password: string, role: 'customer' | 'pro' | 'business') => Promise<void>;
   signup: (data: { name: string; email: string; password: string; role: 'customer' | 'pro' | 'business'; companyName?: string; propertyCount?: number }) => Promise<void>;
   logout: () => Promise<void>;
+  loginWithGoogle: (idToken: string) => Promise<void>;
   setPendingAction: (action: PendingAction | null) => void;
   requireAuth: (action: PendingAction) => boolean;
 }
@@ -46,6 +47,7 @@ const AuthContext = createContext<AuthState>({
   login: async () => {},
   signup: async () => {},
   logout: async () => {},
+  loginWithGoogle: async () => {},
   setPendingAction: () => {},
   requireAuth: () => false,
 });
@@ -64,45 +66,84 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     (async () => {
       try {
-        const u = await getUser();
-        if (u) {
-          setUser(u);
-          setRole(u.role || 'customer');
+        const token = await authService.getToken();
+        if (token) {
+          const u = await authService.getUser();
+          if (u) {
+            setUser({
+              id: u.id || u._id,
+              name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : u.name || u.email,
+              email: u.email,
+              role: u.role || 'customer',
+              ...u,
+            });
+            setRole(u.role || 'customer');
+          }
         }
-      } catch {}
+      } catch {
+        // Token expired or invalid — stay in guest mode
+        await authService.clearToken();
+      }
       setLoading(false);
     })();
   }, []);
 
   const login = async (email: string, password: string, r: 'customer' | 'pro' | 'business') => {
-    const fn = r === 'pro' ? proLogin : r === 'business' ? businessLogin : customerLogin;
+    const fn = r === 'pro' ? authService.proLogin : r === 'business' ? authService.businessLogin : authService.customerLogin;
     const res = await fn(email, password);
-    await setToken(res.token);
-    setUser(res.user);
+    await authService.setToken(res.token);
+    const u = res.user;
+    setUser({
+      id: u.id || (u as any)._id,
+      name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u as any).name || u.email,
+      email: u.email,
+      role: r,
+      ...u,
+    });
     setRole(r);
   };
 
   const signup = async (data: { name: string; email: string; password: string; role: 'customer' | 'pro' | 'business'; companyName?: string; propertyCount?: number }) => {
-    // Stub: in production this calls a signup endpoint
-    const mockUser: User = {
-      id: Date.now().toString(),
-      name: data.name,
+    const [firstName, ...lastParts] = data.name.split(' ');
+    const lastName = lastParts.join(' ');
+    const res = await authService.customerRegister({
       email: data.email,
+      password: data.password,
+      firstName,
+      lastName,
+    });
+    await authService.setToken(res.token);
+    const u = res.user;
+    setUser({
+      id: u.id || (u as any)._id,
+      name: data.name,
+      email: u.email,
       role: data.role,
-      companyName: data.companyName,
-      propertyCount: data.propertyCount,
-    };
-    setUser(mockUser);
+      ...u,
+    });
     setRole(data.role);
   };
 
+  const loginWithGoogle = async (idToken: string) => {
+    const res = await authService.googleOAuthMobile(idToken);
+    await authService.setToken(res.token);
+    const u = res.user;
+    setUser({
+      id: u.id || (u as any)._id,
+      name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u as any).name || u.email,
+      email: u.email,
+      role: 'customer',
+      ...u,
+    });
+    setRole('customer');
+  };
+
   const logout = async () => {
-    await clearToken();
+    await authService.logout();
     setUser(null);
     setRole(null);
   };
 
-  // Returns true if auth is required (user is guest). Caller should show SignUpModal.
   const requireAuth = useCallback((action: PendingAction): boolean => {
     if (guestMode) {
       setPendingAction(action);
@@ -112,7 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [guestMode]);
 
   return (
-    <AuthContext.Provider value={{ user, role, loading, guestMode, guestSessionId, pendingAction, login, signup, logout, setPendingAction, requireAuth }}>
+    <AuthContext.Provider value={{ user, role, loading, guestMode, guestSessionId, pendingAction, login, signup, logout, loginWithGoogle, setPendingAction, requireAuth }}>
       {children}
     </AuthContext.Provider>
   );

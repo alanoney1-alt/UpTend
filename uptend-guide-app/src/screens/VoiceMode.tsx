@@ -64,7 +64,7 @@ export default function VoiceMode({ navigation }: any) {
     }
   };
 
-  const stateLabel = { idle: 'Tap to Talk', listening: 'Listening...', processing: 'Thinking...', speaking: 'Guide is speaking...' }[state];
+  const stateLabel = { idle: 'Tap to Talk', listening: 'Listening...', processing: 'Thinking...', speaking: 'Bud is speaking...' }[state];
   const stateColor = { idle: Colors.primary, listening: Colors.error, processing: Colors.purple, speaking: Colors.success }[state];
 
   return (
@@ -104,7 +104,7 @@ export default function VoiceMode({ navigation }: any) {
         {/* Response */}
         {response ? (
           <View style={styles.responseBox}>
-            <Text style={styles.responseLabel}>🤖 Guide:</Text>
+            <Text style={styles.responseLabel}>🤖 Bud:</Text>
             <Text style={styles.responseText}>{response}</Text>
           </View>
         ) : null}
@@ -128,7 +128,7 @@ export default function VoiceMode({ navigation }: any) {
           </Animated.View>
         </TouchableOpacity>
         <Text style={styles.hint}>
-          {state === 'idle' ? '"Hey Guide, what services do I need?"' : state === 'listening' ? 'Tap again to stop' : ''}
+          {state === 'idle' ? '"Hey Bud, what services do I need?"' : state === 'listening' ? 'Tap again to stop' : ''}
         </Text>
       </View>
     </View>

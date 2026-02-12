@@ -80,7 +80,7 @@ export default function ARCameraScreen({ navigation }: any) {
   };
 
   const handleTagPress = (tag: ServiceTag) => {
-    navigation.navigate('Guide', { prefill: `Get a quote for ${tag.label}` });
+    navigation.navigate('Bud', { prefill: `Get a quote for ${tag.label}` });
   };
 
   return (

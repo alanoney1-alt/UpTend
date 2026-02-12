@@ -1,19 +1,35 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, TextInput, Alert } from 'react-native';
 import { Colors } from '../theme/colors';
+import { createEmergencyRequest, getEmergencyStatus } from '../services/emergency';
 
 type SOSState = 'idle' | 'countdown' | 'dispatched';
 
 export default function EmergencyScreen({ navigation }: any) {
   const [state, setState] = useState<SOSState>('idle');
   const [countdown, setCountdown] = useState(5);
+  const [emergencyId, setEmergencyId] = useState<string | null>(null);
+  const [eta, setEta] = useState<string | null>(null);
+  const [emergencyDescription, setEmergencyDescription] = useState('');
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (state === 'countdown') {
       const timer = setInterval(() => {
         setCountdown(prev => {
-          if (prev <= 1) { clearInterval(timer); setState('dispatched'); return 0; }
+          if (prev <= 1) {
+            clearInterval(timer);
+            // Fire the API request
+            createEmergencyRequest({
+              emergencyType: 'sos',
+              description: emergencyDescription || 'Emergency SOS triggered',
+              address: 'GPS location shared',
+            }).then((res: any) => {
+              setEmergencyId(res?.id || res?._id || null);
+            }).catch(() => {});
+            setState('dispatched');
+            return 0;
+          }
           return prev - 1;
         });
       }, 1000);
@@ -25,6 +41,23 @@ export default function EmergencyScreen({ navigation }: any) {
     }
   }, [state]);
 
+  // Poll for status when dispatched
+  useEffect(() => {
+    if (state !== 'dispatched' || !emergencyId) return;
+    const poll = setInterval(async () => {
+      try {
+        const status = await getEmergencyStatus(emergencyId);
+        if (status?.eta) setEta(status.eta);
+        if (status?.status === 'resolved') {
+          clearInterval(poll);
+          Alert.alert('Resolved', 'Your emergency has been resolved.');
+          setState('idle');
+        }
+      } catch {}
+    }, 5000);
+    return () => clearInterval(poll);
+  }, [state, emergencyId]);
+
   const triggerSOS = () => { setState('countdown'); setCountdown(5); };
   const cancelSOS = () => { setState('idle'); setCountdown(5); pulseAnim.setValue(1); };
 
@@ -34,6 +67,7 @@ export default function EmergencyScreen({ navigation }: any) {
         <Text style={styles.dispatchedIcon}>🚨</Text>
         <Text style={styles.dispatchedTitle}>Help is on the way</Text>
         <Text style={styles.dispatchedSub}>UpTend dispatch has been alerted{'\n'}Your GPS location is being shared</Text>
+        {eta && <Text style={[styles.dispatchedSub, { fontWeight: '700', marginTop: 8 }]}>ETA: {eta}</Text>}
         <View style={styles.dispatchedActions}>
           <TouchableOpacity style={styles.call911Btn}><Text style={styles.call911Text}>📞 Call 911</Text></TouchableOpacity>
           <TouchableOpacity style={styles.cancelBtn} onPress={cancelSOS}><Text style={styles.cancelBtnText}>Cancel Alert</Text></TouchableOpacity>
@@ -72,7 +106,7 @@ export default function EmergencyScreen({ navigation }: any) {
             <View style={styles.triggerInfo}>
               <Text style={styles.triggerTitle}>Other ways to trigger:</Text>
               <Text style={styles.triggerItem}>📳 Shake phone 3 times quickly</Text>
-              <Text style={styles.triggerItem}>🎙️ Say "Guide, emergency"</Text>
+              <Text style={styles.triggerItem}>🎙️ Say "Bud, emergency"</Text>
               <Text style={styles.triggerItem}>🔴 Press this SOS button</Text>
             </View>
           </>

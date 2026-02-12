@@ -1,5 +1,5 @@
 export const Colors = {
-  primary: '#F47C20',
+  primary: '#F97316',
   primaryLight: '#FF9A4D',
   primaryDark: '#D46A15',
   purple: '#3B1D5A',
@@ -17,7 +17,7 @@ export const Colors = {
   error: '#EF4444',
   info: '#3B82F6',
   guideBubble: '#F3F4F6',
-  userBubble: '#F47C20',
+  userBubble: '#F97316',
   inputBackground: '#F9FAFB',
   shadow: 'rgba(0, 0, 0, 0.08)',
 };

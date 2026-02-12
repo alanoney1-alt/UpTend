@@ -1,6 +1,8 @@
 [build]
-builder = "dockerfile"
-dockerfilePath = "Dockerfile"
+builder = "nixpacks"
+
+[build.nixpacks]
+buildCmd = "npm ci && npm run build"
 
 [deploy]
 startCommand = "node dist/index.cjs"
@@ -8,6 +10,3 @@ healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 5
-
-[[services]]
-name = "uptend-web"

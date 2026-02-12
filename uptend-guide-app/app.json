@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "uptend-guide-app",
-    "slug": "uptend-guide-app",
+    "name": "UpTend",
+    "slug": "uptend-app",
+    "scheme": "uptend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +11,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F97316"
     },
     "ios": {
       "supportsTablet": true

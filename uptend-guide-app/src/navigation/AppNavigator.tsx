@@ -12,10 +12,12 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 
 // Shared screens
-import GuideChatScreen from '../screens/GuideChatScreen';
+import BudChatScreen from '../screens/BudChatScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import VoiceMode from '../screens/VoiceMode';
 import VerifyProScreen from '../screens/VerifyProScreen';
+import BookingScreen from '../screens/BookingScreen';
+import EmergencyScreen from '../screens/EmergencyScreen';
 
 // Customer screens
 import CustomerDashboardScreen from '../screens/CustomerDashboardScreen';
@@ -45,7 +47,6 @@ import SkillUpScreen from '../screens/SkillUpScreen';
 import CustomerCRMScreen from '../screens/CustomerCRMScreen';
 import ProSchedulerScreen from '../screens/ProSchedulerScreen';
 import InsuranceClaimScreen from '../screens/InsuranceClaimScreen';
-import EmergencyScreen from '../screens/EmergencyScreen';
 import IdentityVerifyScreen from '../screens/IdentityVerifyScreen';
 
 // Engagement screens
@@ -63,14 +64,13 @@ import B2BDashboardScreen from '../screens/B2BDashboardScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const CustomerStack = createNativeStackNavigator();
-const ProStack = createNativeStackNavigator();
 
 // --- Customer nested stacks ---
 
-function CustomerGuideStack() {
+function CustomerBudStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="GuideChat" component={GuideChatScreen} />
+      <CustomerStack.Screen name="BudChat" component={BudChatScreen} />
       <CustomerStack.Screen name="ARCamera" component={ARCameraScreen} options={{ presentation: 'fullScreenModal' }} />
       <CustomerStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
       <CustomerStack.Screen name="Calendar" component={CalendarScreen} />
@@ -78,20 +78,18 @@ function CustomerGuideStack() {
   );
 }
 
-function CustomerMapStack() {
+function CustomerBookingStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="LiveMap" component={LiveMapScreen} />
+      <CustomerStack.Screen name="BookingHome" component={BookingScreen} />
     </CustomerStack.Navigator>
   );
 }
 
-function CustomerFeedStack() {
+function CustomerEmergencyStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="TransformationFeed" component={TransformationFeedScreen} />
-      <CustomerStack.Screen name="TimelineHome" component={PhotoTimelineScreen} />
-      <CustomerStack.Screen name="NeighborhoodActivity" component={NeighborhoodActivityScreen} options={{ headerShown: true, headerTitle: 'Your Neighborhood' }} />
+      <CustomerStack.Screen name="EmergencyHome" component={EmergencyScreen} />
     </CustomerStack.Navigator>
   );
 }
@@ -99,8 +97,8 @@ function CustomerFeedStack() {
 function CustomerDashboardStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="HomeHealth" component={HomeHealthScreen} />
       <CustomerStack.Screen name="DashboardHome" component={CustomerDashboardScreen} />
+      <CustomerStack.Screen name="HomeHealth" component={HomeHealthScreen} />
       <CustomerStack.Screen name="SmartHome" component={SmartHomeScreen} />
       <CustomerStack.Screen name="VerifyPro" component={VerifyProScreen} />
       <CustomerStack.Screen name="FlashDeals" component={FlashDealsScreen} options={{ headerShown: true, headerTitle: 'Flash Deals' }} />
@@ -123,20 +121,21 @@ function CustomerProfileStack() {
 
 // --- Pro nested stacks ---
 
+const ProStack = createNativeStackNavigator();
 const ProJobsStack = createNativeStackNavigator();
 const ProRoutesStack = createNativeStackNavigator();
 const ProEarningsStack = createNativeStackNavigator();
 const ProProfileStack = createNativeStackNavigator();
-const ProGuideStack = createNativeStackNavigator();
+const ProBudStack = createNativeStackNavigator();
 
-function ProGuideStackScreen() {
+function ProBudStackScreen() {
   return (
-    <ProGuideStack.Navigator screenOptions={{ headerShown: false }}>
-      <ProGuideStack.Screen name="GuideChat" component={GuideChatScreen} />
-      <ProGuideStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
-      <ProGuideStack.Screen name="ScopeMeasure" component={ScopeMeasureScreen} />
-      <ProGuideStack.Screen name="MaterialList" component={MaterialListScreen} />
-    </ProGuideStack.Navigator>
+    <ProBudStack.Navigator screenOptions={{ headerShown: false }}>
+      <ProBudStack.Screen name="BudChat" component={BudChatScreen} />
+      <ProBudStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
+      <ProBudStack.Screen name="ScopeMeasure" component={ScopeMeasureScreen} />
+      <ProBudStack.Screen name="MaterialList" component={MaterialListScreen} />
+    </ProBudStack.Navigator>
   );
 }
 
@@ -193,15 +192,15 @@ function ProProfileStackScreen() {
 // --- B2B nested stacks ---
 const B2BPropertiesStack = createNativeStackNavigator();
 const B2BAnalyticsStack = createNativeStackNavigator();
-const B2BGuideStack = createNativeStackNavigator();
+const B2BBudStack = createNativeStackNavigator();
 const B2BProfileStack = createNativeStackNavigator();
 
-function B2BGuideStackScreen() {
+function B2BBudStackScreen() {
   return (
-    <B2BGuideStack.Navigator screenOptions={{ headerShown: false }}>
-      <B2BGuideStack.Screen name="GuideChat" component={GuideChatScreen} />
-      <B2BGuideStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
-    </B2BGuideStack.Navigator>
+    <B2BBudStack.Navigator screenOptions={{ headerShown: false }}>
+      <B2BBudStack.Screen name="BudChat" component={BudChatScreen} />
+      <B2BBudStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
+    </B2BBudStack.Navigator>
   );
 }
 
@@ -248,24 +247,24 @@ function CustomerTabs() {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
-        name="Guide"
-        component={CustomerGuideStack}
-        options={{ tabBarLabel: 'Guide', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
-      />
-      <Tab.Screen
-        name="Map"
-        component={CustomerMapStack}
-        options={{ tabBarLabel: 'Map', tabBarIcon: () => <TabIcon emoji="🗺️" />, headerShown: false }}
-      />
-      <Tab.Screen
-        name="Feed"
-        component={CustomerFeedStack}
-        options={{ tabBarLabel: 'Feed', tabBarIcon: () => <TabIcon emoji="📸" />, headerShown: false }}
-      />
-      <Tab.Screen
         name="Home"
         component={CustomerDashboardStack}
-        options={{ tabBarLabel: 'Home', tabBarIcon: () => <TabIcon emoji="📊" />, headerShown: false }}
+        options={{ tabBarLabel: 'Home', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
+      />
+      <Tab.Screen
+        name="Bud"
+        component={CustomerBudStack}
+        options={{ tabBarLabel: 'Bud', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+      />
+      <Tab.Screen
+        name="Book"
+        component={CustomerBookingStack}
+        options={{ tabBarLabel: 'Book', tabBarIcon: () => <TabIcon emoji="📅" />, headerShown: false }}
+      />
+      <Tab.Screen
+        name="Emergency"
+        component={CustomerEmergencyStack}
+        options={{ tabBarLabel: 'Emergency', tabBarIcon: () => <TabIcon emoji="🚨" />, headerShown: false }}
       />
       <Tab.Screen
         name="Profile"
@@ -280,9 +279,9 @@ function ProTabs() {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
-        name="Guide"
-        component={ProGuideStackScreen}
-        options={{ tabBarLabel: 'Guide', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        name="Bud"
+        component={ProBudStackScreen}
+        options={{ tabBarLabel: 'Bud', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
       />
       <Tab.Screen
         name="Jobs"
@@ -312,9 +311,9 @@ function B2BTabs() {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
-        name="Guide"
-        component={B2BGuideStackScreen}
-        options={{ tabBarLabel: 'Guide', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        name="Bud"
+        component={B2BBudStackScreen}
+        options={{ tabBarLabel: 'Bud', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
       />
       <Tab.Screen
         name="Properties"
@@ -335,12 +334,15 @@ function B2BTabs() {
   );
 }
 
-// --- Onboarding Stack (shown once, before guest enters main app) ---
+// --- Onboarding Stack ---
 const OnboardingStack = createNativeStackNavigator();
 
 function OnboardingNavigator({ onComplete }: { onComplete: () => void }) {
   return (
     <OnboardingStack.Navigator screenOptions={{ headerShown: false }}>
+      <OnboardingStack.Screen name="Onboarding">
+        {() => <OnboardingScreen onComplete={onComplete} />}
+      </OnboardingStack.Screen>
       <OnboardingStack.Screen name="Welcome">
         {(props) => <WelcomeScreen {...props} onComplete={onComplete} />}
       </OnboardingStack.Screen>
@@ -350,14 +352,12 @@ function OnboardingNavigator({ onComplete }: { onComplete: () => void }) {
 }
 
 // --- Root Navigator ---
-// App ALWAYS opens to main tabs (guest mode). No auth gate.
 
 export default function AppNavigator() {
   const { user, role, loading, guestMode, pendingAction, setPendingAction } = useAuth();
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [hasOnboarded, setHasOnboarded] = useState(false);
 
-  // Show signup modal when a pending action is set (guest tried to book)
   React.useEffect(() => {
     if (pendingAction && guestMode) {
       setShowSignUpModal(true);
@@ -372,14 +372,12 @@ export default function AppNavigator() {
     );
   }
 
-  // Determine which tabs to show
   const getMainTabs = () => {
     if (role === 'pro') return <ProTabs />;
     if (role === 'business') return <B2BTabs />;
-    return <CustomerTabs />; // Both logged-in customers AND guests
+    return <CustomerTabs />;
   };
 
-  // Show onboarding for first-time guests (no user, hasn't completed onboarding)
   if (guestMode && !hasOnboarded) {
     return (
       <NavigationContainer>

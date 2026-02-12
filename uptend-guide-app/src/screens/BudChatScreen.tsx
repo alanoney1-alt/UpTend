@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView,
   Platform, StyleSheet, ActivityIndicator,
@@ -11,14 +11,14 @@ import PropertyCard from '../components/PropertyCard';
 import QuickActions from '../components/QuickActions';
 import VoiceInput from '../components/VoiceInput';
 import { showPhotoOptions } from '../components/PhotoCapture';
-import { guideChat } from '../api/client';
+import { sendBudMessage } from '../services/chat';
 import { Colors } from '../theme/colors';
 
 const WELCOME: ChatMessage = {
   id: 'welcome',
-  sender: 'guide',
+  sender: 'bud',
   type: 'text',
-  text: "Welcome to UpTend! 👋 I'm Bud, your AI home helper. What's your address?",
+  text: "Hey! I'm Bud, your home helper. What can I do for you today? 👋",
   timestamp: new Date(),
 };
 
@@ -30,7 +30,7 @@ const QUICK_ACTIONS = [
   '🔧 Handyman service',
 ];
 
-export default function GuideChatScreen() {
+export default function BudChatScreen() {
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -56,22 +56,21 @@ export default function GuideChatScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     try {
-      const res = await guideChat(text.trim());
-      const guideMsg: ChatMessage = {
+      const res = await sendBudMessage(text.trim());
+      const budMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        sender: 'guide',
-        type: res.type || 'text',
+        sender: 'bud',
+        type: (res.type as ChatMessage['type']) || 'text',
         text: res.message || res.text,
         data: res.data,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, guideMsg]);
+      setMessages((prev) => [...prev, budMsg]);
 
-      // If response includes a quote, add a quote card
       if (res.quote) {
         const quoteMsg: ChatMessage = {
           id: (Date.now() + 2).toString(),
-          sender: 'guide',
+          sender: 'bud',
           type: 'quote',
           data: res.quote,
           timestamp: new Date(),
@@ -79,23 +78,22 @@ export default function GuideChatScreen() {
         setMessages((prev) => [...prev, quoteMsg]);
       }
 
-      // If response includes property data, add property card
       if (res.property) {
         const propMsg: ChatMessage = {
           id: (Date.now() + 3).toString(),
-          sender: 'guide',
+          sender: 'bud',
           type: 'property',
           data: res.property,
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, propMsg]);
       }
-    } catch (err: any) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
-          sender: 'guide',
+          sender: 'bud',
           type: 'text',
           text: "Sorry, I'm having trouble connecting right now. Please try again.",
           timestamp: new Date(),
@@ -118,11 +116,9 @@ export default function GuideChatScreen() {
     };
     setMessages((prev) => [...prev, photoMsg]);
     scrollToEnd();
-    // TODO: call guidePhotoAnalyze
   };
 
-  const handleVoiceRecording = (uri: string) => {
-    // TODO: send to speech-to-text then to guide
+  const handleVoiceRecording = (_uri: string) => {
     sendMessage('[Voice message recorded]');
   };
 
@@ -172,7 +168,7 @@ export default function GuideChatScreen() {
             isTyping ? (
               <View style={styles.typingRow}>
                 <ActivityIndicator size="small" color={Colors.primary} />
-                <Text style={styles.typingText}>Guide is typing...</Text>
+                <Text style={styles.typingText}>Bud is typing...</Text>
               </View>
             ) : null
           }
@@ -190,7 +186,7 @@ export default function GuideChatScreen() {
             style={styles.input}
             value={input}
             onChangeText={setInput}
-            placeholder="Ask your guide anything..."
+            placeholder="Ask Bud anything..."
             placeholderTextColor={Colors.textLight}
             multiline
             maxLength={2000}

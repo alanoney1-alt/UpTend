@@ -80,7 +80,7 @@ class LocationIntelligenceService {
       deferredUpdatesInterval: 5 * 60 * 1000,
       showsBackgroundLocationIndicator: false,
       foregroundService: {
-        notificationTitle: 'UpTend Guide',
+        notificationTitle: 'UpTend Bud',
         notificationBody: 'Watching for service opportunities nearby',
         notificationColor: '#F47C20',
       },

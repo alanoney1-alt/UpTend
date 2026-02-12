@@ -75,7 +75,7 @@ export default function VoiceMode({ visible, onClose }: Props) {
       const simulatedText = 'How much does pressure washing cost?';
       setTranscript(simulatedText);
 
-      // Send to Guide AI
+      // Send to Bud AI
       const res = await guideChat(simulatedText, { voiceMode: true });
       const guideResponse = res.message || res.text || "I'd be happy to help with that!";
       setResponse(guideResponse);
@@ -165,7 +165,7 @@ export default function VoiceMode({ visible, onClose }: Props) {
         )}
 
         <Text style={styles.hint}>
-          {state === 'idle' ? '"Hey Guide, what services do I need?"' : ''}
+          {state === 'idle' ? '"Hey Bud, what services do I need?"' : ''}
         </Text>
       </View>
     </Modal>

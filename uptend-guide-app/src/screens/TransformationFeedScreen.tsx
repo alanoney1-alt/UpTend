@@ -28,7 +28,7 @@ export default function TransformationFeedScreen() {
   }, []);
 
   const handleGetThisDone = (serviceType: string) => {
-    navigation.navigate('Guide', { prefill: `I'd like to book ${serviceType}` });
+    navigation.navigate('Bud', { prefill: `I'd like to book ${serviceType}` });
   };
 
   const renderItem = ({ item }: { item: Transformation }) => (
