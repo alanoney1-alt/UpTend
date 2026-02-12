@@ -219,7 +219,7 @@ function validateEnvironment() {
     await initStripe();
     await registerRoutes(httpServer, app);
 
-    // Start the 60-second matching timer background service
+    // Start the Real-Time Matching timer background service
     startMatchingTimer();
 
     // Start hourly cleanup of expired PYCKER location data (privacy compliance)

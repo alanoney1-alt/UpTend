@@ -49,7 +49,7 @@ function getStatusIndex(status: string): number {
   return statusSteps.findIndex(s => s.id === status);
 }
 
-// Countdown component for 60-second PYCKER matching
+// Countdown component for Real-Time Matching
 function MatchingCountdown({ 
   matchingExpiresAt,
   needsManualMatch
@@ -481,7 +481,7 @@ export default function Tracking() {
             )}
           </Card>
 
-          {/* 60-second matching countdown */}
+          {/* Real-Time Matching countdown */}
           {job.status === "matching" && (
             <MatchingCountdown 
               matchingExpiresAt={job.matchingExpiresAt || null}

@@ -347,7 +347,7 @@ export function isSmsConfigured(): boolean {
   return !!(twilioClient && TWILIO_PHONE_NUMBER);
 }
 
-// Admin alert for jobs that need manual matching (after 60-second timeout)
+// Admin alert for jobs that need manual matching (after Real-Time Matching window expires)
 export async function sendManualMatchAlert(
   adminEmail: string,
   adminPhone: string,
@@ -386,7 +386,7 @@ export async function sendManualMatchAlert(
           
           <div style="background: #fef2f2; padding: 20px; border: 1px solid #dc2626; border-top: none;">
             <p style="color: #dc2626; font-weight: bold; margin-top: 0;">
-              No Pro accepted this job within 60 seconds. Manual matching required within 5 minutes!
+              No Pro accepted this job via Real-Time Matching. Manual matching required within 5 minutes!
             </p>
             
             <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0;">
@@ -413,7 +413,7 @@ export async function sendManualMatchAlert(
           </div>
         </div>
       `,
-      text: `URGENT: Manual Pro Match Needed!\n\nNo Pro accepted job #${jobDetails.jobId.slice(-6)} within 60 seconds.\n\nJob Details:\n- Service: ${serviceName}\n- Customer: ${jobDetails.customerName}\n- Phone: ${jobDetails.customerPhone}\n- Pickup: ${jobDetails.pickupAddress}\n- Price: $${jobDetails.priceEstimate.toFixed(2)}\n\nPlease assign a Pro within 5 minutes.`,
+      text: `URGENT: Manual Pro Match Needed!\n\nNo Pro accepted job #${jobDetails.jobId.slice(-6)} via Real-Time Matching.\n\nJob Details:\n- Service: ${serviceName}\n- Customer: ${jobDetails.customerName}\n- Phone: ${jobDetails.customerPhone}\n- Pickup: ${jobDetails.pickupAddress}\n- Price: $${jobDetails.priceEstimate.toFixed(2)}\n\nPlease assign a Pro within 5 minutes.`,
     }),
     sendSms({
       to: adminPhone,

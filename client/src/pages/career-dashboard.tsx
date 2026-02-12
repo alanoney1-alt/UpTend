@@ -237,7 +237,7 @@ export default function CareerDashboard() {
               <div>
                 <h3 className="font-bold">Consultation Mode Unlocked</h3>
                 <p className="text-sm text-muted-foreground">
-                  You can perform $49 Home Assessments and earn {careerData.commissionRate}% commission.
+                  You can perform $99 Home Assessments and earn {careerData.commissionRate}% commission.
                 </p>
               </div>
             </div>

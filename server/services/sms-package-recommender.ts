@@ -123,10 +123,10 @@ export function recommendPackageFromIntent(
 export function getDwellScanSmsMessage(includeAerialUpsell: boolean = true): string {
   if (includeAerialUpsell) {
     return (
-      '🏡 DwellScan Home Scan:\n\n' +
-      '📋 STANDARD - $49\n' +
+      '🏡 AI Home Scan:\n\n' +
+      '📋 STANDARD - $99\n' +
       'Full walkthrough + maintenance report\n\n' +
-      '🚁 AERIAL - $149 ⭐ RECOMMENDED\n' +
+      '🚁 AERIAL - $199 ⭐ RECOMMENDED\n' +
       'Everything in Standard + drone roof scan\n' +
       '(Drone inspections alone cost $290+ elsewhere)\n\n' +
       'Both include $49 credit toward next service!\n\n' +
@@ -135,7 +135,7 @@ export function getDwellScanSmsMessage(includeAerialUpsell: boolean = true): str
   }
 
   return (
-    '🏡 DwellScan Home Scan - $49\n\n' +
+    '🏡 AI Home Scan - $99\n\n' +
     '✅ Full interior walkthrough\n' +
     '✅ Exterior assessment\n' +
     '✅ Maintenance report\n' +

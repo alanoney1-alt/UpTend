@@ -67,7 +67,7 @@ const faqs: FAQ[] = [
   {
     category: "customers",
     question: "Can I bundle multiple services together?",
-    answer: "Yes! Bundling services often saves you money. For example, book AI Home Scan + Gutter Cleaning + Pressure Washing together and receive 10-20% off the total. Our smart booking system will suggest relevant bundle deals based on your property and season."
+    answer: "Yes! Bundling services often saves you money. For example, book AI Home Scan + Gutter Cleaning + Pressure Washing together and receive 10-15% off the total. Our smart booking system will suggest relevant bundle deals based on your property and season."
   },
   {
     category: "customers",
@@ -184,7 +184,7 @@ const faqs: FAQ[] = [
   {
     category: "b2b",
     question: "How do you handle tenant turnover services?",
-    answer: "We specialize in turnover! Services include: junk removal of abandoned items, deep cleaning, carpet cleaning, minor repairs, yard restoration, and AI Home Scan documentation. Book as a bundle for 20% off. Average turnover time: 1-3 days depending on property condition. Perfect for property managers with tight timelines."
+    answer: "We specialize in turnover! Services include: junk removal of abandoned items, deep cleaning, carpet cleaning, minor repairs, yard restoration, and AI Home Scan documentation. Book as a bundle for 15% off. Average turnover time: 1-3 days depending on property condition. Perfect for property managers with tight timelines."
   },
   {
     category: "b2b",
@@ -219,7 +219,7 @@ const faqs: FAQ[] = [
   {
     category: "b2b",
     question: "What is your business account onboarding process?",
-    answer: "Quick and easy! 1) Request business account at business@uptend.app, 2) We'll schedule a 30-minute call to understand your needs, 3) Set up your multi-property account with custom settings, 4) Add users/managers with different permission levels, 5) Receive onboarding training for your team. Most accounts are live within 48 hours. First month receives 20% new client discount."
+    answer: "Quick and easy! 1) Request business account at business@uptend.app, 2) We'll schedule a 30-minute call to understand your needs, 3) Set up your multi-property account with custom settings, 4) Add users/managers with different permission levels, 5) Receive onboarding training for your team. Most accounts are live within 48 hours. First month receives 15% new client discount."
   },
 
   // === PRICING ===

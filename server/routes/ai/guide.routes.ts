@@ -300,7 +300,7 @@ When customer wants to book:
 - Then offer to lock: "Want me to lock in a firm price? Based on what you've described, I can lock $195, valid for 7 days."
 
 ## BUNDLE DISCOUNTS
-- 2+ services = 10% bundle discount
+- 3-5 services = 10% bundle discount, 6+ services = 15% (capped at 15%)
 - Show breakdown of each + savings
 
 ## REPEAT BOOKING

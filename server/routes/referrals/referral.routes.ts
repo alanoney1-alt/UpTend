@@ -32,7 +32,7 @@ export function registerReferralRoutes(app: Express) {
         referralRecommendations: JSON.stringify(analysis.referralNeeds),
         priorityLevel: analysis.propertyCondition.urgentIssues.length > 0 ? "urgent" : "recommended",
         confidence: analysis.confidence,
-        suggestedPrice: 49, // $49 for home health audit
+        suggestedPrice: 99, // $99 for home health audit
         createdAt: new Date().toISOString(),
       });
 

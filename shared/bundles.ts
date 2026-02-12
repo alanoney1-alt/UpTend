@@ -32,7 +32,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Exterior refresh package",
     services: ["pressure_washing", "gutter_cleaning"],
     bundlePrice: 239,
-    alacartePrice: 269, // $120 (FreshWash small) + $149 (GutterFlush single story)
+    alacartePrice: 269, // $120 (Pressure Washing small) + $149 (Gutter Cleaning single story)
     savings: 30,
   },
   curb_appeal_plus: {
@@ -41,7 +41,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Full exterior with lawn maintenance",
     services: ["pressure_washing", "gutter_cleaning", "landscaping"],
     bundlePrice: 294,
-    alacartePrice: 334, // $120 (FreshWash) + $149 (GutterFlush) + $35 (FreshCut) + 10% = $269.60 → $294
+    alacartePrice: 334, // $120 (Pressure Washing) + $149 (Gutter Cleaning) + $35 (Landscaping) + 10% = $269.60 → $294
     savings: 40,
   },
   move_out: {
@@ -50,13 +50,13 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Complete home inspection, cleanout, deep clean, and exterior wash",
     services: ["home_consultation", "junk_removal", "home_cleaning", "pressure_washing"],
     bundlePrice: 449,
-    alacartePrice: 517, // $149 (DwellScan Aerial) + $99 (BulkSnap min) + $149 (PolishUp deep 1BR/1BA) + $120 (FreshWash small)
+    alacartePrice: 517, // $199 (AI Home Scan Aerial) + $99 (Junk Removal min) + $149 (Home Cleaning deep 1BR/1BA) + $120 (Pressure Washing small)
     savings: 68,
     badge: "PM Anchor Offer",
     notes: [
-      "Includes AI Home Scan Aerial ($149 value)",
+      "Includes AI Home Scan Aerial ($199 value)",
       "Multiple Pros may work on this project",
-      "$49 DwellScan credit applies automatically",
+      "$49 Home Scan credit applies automatically",
     ],
     requiresMultiplePros: true,
   },
@@ -66,7 +66,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Tenant turnover with carpet cleaning",
     services: ["home_cleaning", "junk_removal", "carpet_cleaning"],
     bundlePrice: 540,
-    alacartePrice: 635, // $149 (PolishUp deep) + $99 (BulkSnap 1/4) + $119 (DeepFiber 3 rooms) × 85% = $540
+    alacartePrice: 635, // $149 (Home Cleaning deep) + $99 (Junk Removal 1/4) + $119 (Carpet Cleaning 3 rooms) × 85% = $540
     savings: 95,
     badge: "PM Favorite",
   },
@@ -76,13 +76,13 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Complete home transformation - inspection, cleanout, deep clean, pressure wash, and gutters",
     services: ["home_consultation", "junk_removal", "home_cleaning", "pressure_washing", "gutter_cleaning"],
     bundlePrice: 569,
-    alacartePrice: 666, // $149 (DwellScan Aerial) + $99 (BulkSnap min) + $149 (PolishUp deep 1BR/1BA) + $120 (FreshWash small) + $149 (GutterFlush single story)
+    alacartePrice: 666, // $199 (AI Home Scan Aerial) + $99 (Junk Removal min) + $149 (Home Cleaning deep 1BR/1BA) + $120 (Pressure Washing small) + $149 (Gutter Cleaning single story)
     savings: 97,
     badge: "Best Value",
     notes: [
-      "Includes AI Home Scan Aerial ($149 value)",
+      "Includes AI Home Scan Aerial ($199 value)",
       "Multiple Pros may work on this project",
-      "$49 DwellScan credit applies automatically",
+      "$49 Home Scan credit applies automatically",
     ],
     requiresMultiplePros: true,
   },
@@ -92,7 +92,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Complete PM turnover with all services",
     services: ["home_cleaning", "junk_removal", "pressure_washing", "landscaping", "carpet_cleaning"],
     bundlePrice: 820,
-    alacartePrice: 1000, // $149 (PolishUp deep) + $149 (BulkSnap 1/2) + $120 (FreshWash) + $35 (FreshCut) + $119 (DeepFiber 3 rooms) × 82% = $820
+    alacartePrice: 1000, // $149 (Home Cleaning deep) + $149 (Junk Removal 1/2) + $120 (Pressure Washing) + $35 (Landscaping) + $119 (Carpet Cleaning 3 rooms) × 82% = $820
     savings: 180,
     badge: "Complete Package",
     requiresMultiplePros: true,
@@ -103,7 +103,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Pool cleaning and patio pressure wash",
     services: ["pool_cleaning", "pressure_washing"],
     bundlePrice: 224,
-    alacartePrice: 249, // $69 (PoolSpark deep) + $120 (FreshWash patio) + 10% off
+    alacartePrice: 249, // $69 (Pool Cleaning deep) + $120 (Pressure Washing patio) + 10% off
     savings: 25,
   },
   fresh_start: {
@@ -112,7 +112,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "New move-in cleaning package",
     services: ["home_cleaning", "carpet_cleaning"],
     bundlePrice: 196,
-    alacartePrice: 218, // $99 (PolishUp standard) + $119 (DeepFiber 3 rooms) × 90% = $196
+    alacartePrice: 218, // $99 (Home Cleaning standard) + $119 (Carpet Cleaning 3 rooms) × 90% = $196
     savings: 22,
   },
   hoa_blitz: {
@@ -121,7 +121,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "HOA compliance package",
     services: ["landscaping", "pressure_washing", "gutter_cleaning", "home_consultation"],
     bundlePrice: 302,
-    alacartePrice: 355, // $35 (FreshCut) + $120 (FreshWash) + $149 (GutterFlush) + $49 (DwellScan) × 85% = $302
+    alacartePrice: 355, // $35 (Landscaping) + $120 (Pressure Washing) + $149 (Gutter Cleaning) + $99 (AI Home Scan) × 85% = $302
     savings: 53,
     badge: "HOA Approved",
   },
@@ -131,7 +131,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Seasonal prep for pool and exterior",
     services: ["landscaping", "pool_cleaning", "pressure_washing"],
     bundlePrice: 539,
-    alacartePrice: 612, // $89 (FreshCut premium) + $149 (PoolSpark deep) + $250 (FreshWash house) × 88% = $539
+    alacartePrice: 612, // $89 (Landscaping premium) + $149 (Pool Cleaning deep) + $250 (Pressure Washing house) × 88% = $539
     savings: 73,
   },
   home_ready: {
@@ -140,7 +140,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Move-in package with setup and cleaning",
     services: ["handyman", "home_cleaning"],
     bundlePrice: 138,
-    alacartePrice: 148, // $49 (FixIt 1hr) + $99 (PolishUp standard) × 93% = $138
+    alacartePrice: 148, // $49 (Handyman 1hr) + $99 (Home Cleaning standard) × 93% = $138
     savings: 10,
     notes: [
       "Perfect for new move-ins",
@@ -154,7 +154,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Handyman + junk removal combo",
     services: ["handyman", "junk_removal"],
     bundlePrice: 138,
-    alacartePrice: 148, // $49 (FixIt 1hr) + $99 (BulkSnap min) × 93% = $138
+    alacartePrice: 148, // $49 (Handyman 1hr) + $99 (Junk Removal min) × 93% = $138
     savings: 10,
     notes: [
       "Fix what you can, haul what you can't",
@@ -168,7 +168,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Moving labor + handyman for full setup",
     services: ["moving_labor", "handyman"],
     bundlePrice: 249,
-    alacartePrice: 280, // $160 (LiftCrew 2hrs × 2 workers) + $98 (FixIt 2hrs) × 89% = $249
+    alacartePrice: 280, // $160 (Moving Labor 2hrs × 2 workers) + $98 (Handyman 2hrs) × 89% = $249
     savings: 31,
     badge: "Move-In Special",
     notes: [
@@ -184,7 +184,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Repairs, cleaning, and exterior refresh",
     services: ["handyman", "home_cleaning", "pressure_washing"],
     bundlePrice: 248,
-    alacartePrice: 268, // $49 (FixIt 1hr) + $99 (PolishUp) + $120 (FreshWash) × 93% = $248
+    alacartePrice: 268, // $49 (Handyman 1hr) + $99 (Home Cleaning) + $120 (Pressure Washing) × 93% = $248
     savings: 20,
     badge: "Property Manager Favorite",
     notes: [

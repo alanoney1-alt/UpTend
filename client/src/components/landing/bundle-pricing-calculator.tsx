@@ -763,7 +763,7 @@ export function BundlePricingCalculator() {
                   No Disposal Fees
                 </Badge>
                 <Badge className="bg-primary/10 text-primary border-primary/30 text-sm px-3 py-1.5" data-testid="badge-volume-savings">
-                  Save 10-20% on 3+ Items
+                  Save 10-15% on 3+ Items
                 </Badge>
                 <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30 text-sm px-3 py-1.5" data-testid="badge-competitor">
                   25-35% Cheaper than Competitors

@@ -120,7 +120,7 @@ export function QuotePathSelector({ serviceType, onQuoteGenerated, onBack }: Quo
             {serviceType === 'polishup' && (
               <div className="pt-3 border-t">
                 <p className="text-xs text-muted-foreground">
-                  <strong>For PolishUp:</strong> AI detects room count, square footage, and condition from your photos
+                  <strong>For Home Cleaning:</strong> AI detects room count, square footage, and condition from your photos
                 </p>
               </div>
             )}
@@ -128,7 +128,7 @@ export function QuotePathSelector({ serviceType, onQuoteGenerated, onBack }: Quo
             {serviceType === 'bulksnap' && (
               <div className="pt-3 border-t">
                 <p className="text-xs text-muted-foreground">
-                  <strong>For BulkSnap:</strong> AI identifies all items and estimates volume automatically
+                  <strong>For Junk Removal:</strong> AI identifies all items and estimates volume automatically
                 </p>
               </div>
             )}
@@ -136,7 +136,7 @@ export function QuotePathSelector({ serviceType, onQuoteGenerated, onBack }: Quo
             {serviceType === 'freshwash' && (
               <div className="pt-3 border-t">
                 <p className="text-xs text-muted-foreground">
-                  <strong>For FreshWash:</strong> AI calculates square footage from your surface photos
+                  <strong>For Pressure Washing:</strong> AI calculates square footage from your surface photos
                 </p>
               </div>
             )}

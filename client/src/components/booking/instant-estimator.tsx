@@ -7,7 +7,7 @@ import { useLocation } from "wouter";
 import { PreStormChecklist } from "./pre-storm-checklist";
 
 interface EstimateData {
-  spaceRejuvenation: string;
+  homeRefresh: string;
   pressureWash: string;
   homeAudit: string;
   gutterCare: string;
@@ -17,9 +17,9 @@ interface EstimateData {
 
 function getEstimates(_addr: string): EstimateData {
   return {
-    spaceRejuvenation: "$149 – $299",
+    homeRefresh: "$149 – $299",
     pressureWash: "$199 – $350",
-    homeAudit: "$99 (Essential)",
+    homeAudit: "$99 / $199 (Standard / Aerial)",
     gutterCare: "$120 – $180",
     totalImpact: "Verified & Insured Pros",
     materialRecovery: "~40 lbs verified recovery",
@@ -100,9 +100,9 @@ export function InstantEstimator() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="p-4 bg-muted/50 rounded-md" data-testid="card-estimate-rejuvenation">
-              <p className="text-xs font-bold text-muted-foreground mb-2 uppercase">Space Rejuvenation</p>
+              <p className="text-xs font-bold text-muted-foreground mb-2 uppercase">Home Refresh</p>
               <div className="flex flex-wrap justify-between items-end gap-2">
-                <span className="font-black text-xl">{estimates.spaceRejuvenation}</span>
+                <span className="font-black text-xl">{estimates.homeRefresh}</span>
                 <span className="text-[10px] text-green-600 dark:text-green-400 font-bold">{estimates.materialRecovery}</span>
               </div>
             </div>

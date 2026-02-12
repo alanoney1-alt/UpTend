@@ -10,7 +10,7 @@ export const PRICING_CONSTANTS = {
 
   DEMO_BASE_RATE: 19900, // $199 starting (Light Demolition)
 
-  CONSULTATION_FEE: 4900, // $49 (AI Home Scan Standard)
+  CONSULTATION_FEE: 9900, // $99 (AI Home Scan Standard)
 };
 
 export function calculateServicePrice(type: string, data: any): number | null {

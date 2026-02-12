@@ -405,7 +405,7 @@ export default function Booking() {
         return hrs * (formData.laborCrewSize || 2) * 80;
       }
       case "home_consultation":
-        return formData.dwellscanTier === "aerial" ? 149 : 49;
+        return formData.dwellscanTier === "aerial" ? 199 : 99;
       case "pool_cleaning":
         return 89; // Starting price for pool cleaning
       case "landscaping":
@@ -1186,7 +1186,7 @@ export default function Booking() {
             // Set formData with PolishUp details for service request creation
             setFormData(prev => ({
               ...prev,
-              description: `PolishUp ${details.cleanType} clean - ${details.bedrooms} bed / ${details.bathrooms} bath${details.addOns.length > 0 ? ` with add-ons: ${details.addOns.join(", ")}` : ""}${details.specialInstructions ? ` - ${details.specialInstructions}` : ""}`,
+              description: `Home Cleaning ${details.cleanType} - ${details.bedrooms} bed / ${details.bathrooms} bath${details.addOns.length > 0 ? ` with add-ons: ${details.addOns.join(", ")}` : ""}${details.specialInstructions ? ` - ${details.specialInstructions}` : ""}`,
             }));
             setStep(2); // Move to address/scheduling step
           }}
@@ -1885,7 +1885,7 @@ export default function Booking() {
                       </div>
 
                       <p className="text-sm text-muted-foreground mb-6">
-                        Estimate the total square footage. We price at $0.25/sq ft with a $150 minimum.
+                        Estimate the total square footage. We price at $0.25/sq ft with a $120 minimum.
                       </p>
 
                       <div className="space-y-6">
@@ -2338,7 +2338,7 @@ export default function Booking() {
                           <div>
                             <p className="font-medium text-green-700 dark:text-green-400">$49 credit toward first booked service</p>
                             <p className="text-sm text-green-600/80 dark:text-green-400/80 mt-1">
-                              Get $49 off your first service booked from the DwellScan report recommendations. It's risk-free.
+                              Get $49 off your first service booked from the Home Scan report recommendations. It's risk-free.
                             </p>
                           </div>
                         </div>

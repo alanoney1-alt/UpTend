@@ -32,7 +32,7 @@ export const UPTEND_KNOWLEDGE = {
 
   services: {
     junk_removal: {
-      name: "BulkSnap (Material Recovery)",
+      name: "Junk Removal",
       description: "Professional removal of unwanted items, furniture, appliances, yard waste, and debris. We recycle and donate whenever possible.",
       pricing: "Volume-based pricing by truck load",
       tiers: [
@@ -103,7 +103,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     light_demolition: {
-      name: "TearDown (Demolition)",
+      name: "Light Demolition",
       description: "Tear out old structures, fencing, sheds, decking, and non-structural interior demolition.",
       pricing: "Starting at $199, custom quotes for larger projects",
       features: [
@@ -130,7 +130,7 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     home_cleaning: {
-      name: "PolishUp (Home Cleaning)",
+      name: "Home Cleaning",
       description: "Professional home cleaning service with room-by-room checklists and before/after photo verification.",
       pricing: "Standard: $99/$149/$199/$249 by size | Deep: 1.5x | Move-In/Out: 2x",
       tiers: [
@@ -162,12 +162,12 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     home_scan: {
-      name: "DwellScan (Home Scan)",
+      name: "AI Home Scan",
       description: "Complete home health assessment with personalized maintenance report. Available in two tiers: Standard and Aerial.",
       tiers: [
         {
-          name: "DwellScan Standard",
-          price: "$49",
+          name: "AI Home Scan Standard",
+          price: "$99",
           description: "Full interior and exterior ground-level walkthrough with maintenance report",
           features: [
             "Full interior walkthrough (room-by-room photos and notes)",
@@ -179,8 +179,8 @@ export const UPTEND_KNOWLEDGE = {
           dronRequired: false,
         },
         {
-          name: "DwellScan Aerial",
-          price: "$149",
+          name: "AI Home Scan Aerial",
+          price: "$199",
           description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan",
           features: [
             "Everything in Standard PLUS:",
@@ -195,11 +195,11 @@ export const UPTEND_KNOWLEDGE = {
             "Full before/after aerial photo set, timestamped and GPS-tagged",
           ],
           droneRequired: true,
-          valueComparison: "Comparable drone roof inspections cost $290-$350 elsewhere. You're getting it bundled for $149.",
+          valueComparison: "Comparable drone roof inspections cost $290-$350 elsewhere. You're getting it bundled for $199.",
           recommended: true,
         },
       ],
-      creditPolicy: "The full amount ($49 or $149) is applied as a credit toward any job you book through UpTend. It's risk-free.",
+      creditPolicy: "$49 credit toward any job you book through UpTend on either the $99 or $199 scan. It's risk-free.",
       when: "When customer asks about home inspection or audit, present both tier options and explain that Aerial includes drone scan that normally costs $290+ elsewhere.",
     },
   },
@@ -222,11 +222,11 @@ export const UPTEND_KNOWLEDGE = {
   booking: {
     steps: [
       "1. Enter your address (we show instant property details)",
-      "2. Select service type (BulkSnap, LiftCrew, FreshWash, GutterFlush, etc.)",
+      "2. Select service type (Junk Removal, Moving Labor, Pressure Washing, Gutter Cleaning, etc.)",
       "3. Get instant quote: Upload photos OR enter details manually",
       "4. Review itemized quote with sustainability impact",
       "5. Create account (if new) → Book and pay",
-      "6. Pro assigned within 60 seconds → Track live",
+      "6. Pro assigned via Real-Time Matching → Track live",
     ],
     payment: {
       methods: ["Credit/Debit Card", "Afterpay (for $199+)", "Klarna (for $199+)"],
@@ -246,8 +246,8 @@ export const UPTEND_KNOWLEDGE = {
     forServices: ["Junk Removal", "Garage Cleanout", "Light Demolition", "Home Cleaning"],
     workflow: [
       "Before Photos: Pro takes GPS-tagged photos before starting work",
-      "Disposal Tracking (BulkSnap/GarageReset/TearDown): Pro logs each item (recycle/donate/resale/landfill/e-waste)",
-      "Cleaning Checklist (PolishUp): Room-by-room task completion with photo verification",
+      "Disposal Tracking (Junk Removal/Garage Cleanout/Light Demolition): Pro logs each item (recycle/donate/resale/landfill/e-waste)",
+      "Cleaning Checklist (Home Cleaning): Room-by-room task completion with photo verification",
       "After Photos: Pro takes GPS-tagged photos after completion",
       "Sustainability Report: Auto-generated with carbon offset, diversion rate, environmental impact",
       "Customer Confirmation: Customer reviews and confirms (or 48-hour auto-approval)",
@@ -267,7 +267,7 @@ export const UPTEND_KNOWLEDGE = {
   faqs: [
     {
       q: "How fast can a Pro arrive?",
-      a: "Same-day service is often available! After booking, a Pro is typically assigned within 60 seconds. Arrival depends on their current location, but many jobs start within 1-4 hours of booking.",
+      a: "Same-day service is often available! After booking, a Pro is typically assigned via Real-Time Matching. Arrival depends on their current location, but many jobs start within 1-4 hours of booking.",
     },
     {
       q: "What if I don't know exactly what I have?",

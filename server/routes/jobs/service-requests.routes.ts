@@ -105,7 +105,7 @@ export function registerServiceRequestRoutes(app: Express) {
         destinationLng: validatedData.destinationLng || undefined,
       });
 
-      // Set up 60-second matching timer
+      // Set up Real-Time Matching timer
       const matchingStartedAt = new Date().toISOString();
       const matchingExpiresAt = new Date(Date.now() + 60 * 1000).toISOString();
 

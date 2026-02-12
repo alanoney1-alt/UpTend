@@ -189,7 +189,7 @@ export default function BookDeepFiber() {
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests"] });
       toast({
         title: "Booking created!",
-        description: "Your DeepFiber service has been scheduled",
+        description: "Your Carpet Cleaning service has been scheduled",
       });
       setLocation(`/track/${data.id}`);
     },

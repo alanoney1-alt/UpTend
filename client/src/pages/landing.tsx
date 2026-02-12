@@ -348,9 +348,9 @@ function WhySection() {
     { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
     { key: "garage_cleanout", label: "Garage Cleanout", price: "From $299", icon: Home, color: "text-primary dark:text-orange-400" },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, color: "text-primary dark:text-orange-400" },
-    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $69", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "landscaping", label: "Landscaping", price: "From $35", icon: Trees, color: "text-green-500 dark:text-green-400" },
-    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $49", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "pool_cleaning", label: "Pool Cleaning", price: "$150/month", icon: Waves, color: "text-primary dark:text-orange-400" },
+    { key: "landscaping", label: "Landscaping", price: "Competitive rates", icon: Trees, color: "text-green-500 dark:text-green-400" },
+    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "Professional deep cleaning", icon: Home, color: "text-primary dark:text-orange-400" },
   ];
 
   return (

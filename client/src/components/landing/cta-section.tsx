@@ -85,7 +85,7 @@ export function CTASection() {
                       </div>
                       <div className="bg-muted rounded-lg p-3">
                         <div className="text-xs text-muted-foreground mb-1">Estimated Cost</div>
-                        <div className="font-bold text-primary text-lg">$129 - $159</div>
+                        <div className="font-bold text-primary text-lg">$149 - $199</div>
                       </div>
                       <div className="mt-auto">
                         <div className="bg-primary text-primary-foreground text-center py-3 rounded-lg font-medium text-sm">

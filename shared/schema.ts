@@ -306,9 +306,9 @@ export const serviceRequests = pgTable("service_requests", {
   estimatedHours: real("estimated_hours"), // Estimated labor hours
   // Customer language preference
   preferredLanguage: text("preferred_language").default("en"), // 'en', 'es', 'pt', etc.
-  // 60-second matching timer fields
+  // Real-Time Matching window fields
   matchingStartedAt: text("matching_started_at"), // When matching countdown began
-  matchingExpiresAt: text("matching_expires_at"), // When the 60 seconds expire
+  matchingExpiresAt: text("matching_expires_at"), // When the Real-Time Matching window expires
   needsManualMatch: boolean("needs_manual_match").default(false), // True if no PYCKER matched in time
   manualMatchAlertSentAt: text("manual_match_alert_sent_at"), // When admin was alerted
   // Customer contact info for booking confirmations

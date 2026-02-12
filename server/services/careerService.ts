@@ -45,7 +45,7 @@ export async function checkPromotion(haulerId: string): Promise<{
     (hauler.fiveStarRatingCount || 0) >= 40
   ) {
     newLevel = 3;
-    message = "You are now a Master Consultant! You can accept $49 Consults and earn sales commission.";
+    message = "You are now a Master Consultant! You can accept $99 Consults and earn sales commission.";
 
     await db.insert(haulerCertifications).values({
       haulerId,

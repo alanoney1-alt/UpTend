@@ -18,7 +18,7 @@ const included = [
   { icon: Home, text: "Digital asset catalog with estimated valuations" },
   { icon: FileText, text: "Treatment plan with transparent pricing for any issues found" },
   { icon: Leaf, text: "Sustainability baseline assessment" },
-  { icon: DollarSign, text: "$99 fee credited toward any booked service" },
+  { icon: DollarSign, text: "$49 back on your next booking" },
 ];
 
 const faqs = [

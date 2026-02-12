@@ -233,7 +233,7 @@ export default function HaulerLanding() {
                           </span>
                         </td>
                         <td className="p-4 text-muted-foreground">Smartphone + Certification</td>
-                        <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">$49 / visit + Commission</td>
+                        <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">$99 / visit + Commission</td>
                         <td className="p-4"><Badge variant="secondary">Easy</Badge></td>
                       </tr>
                     </tbody>

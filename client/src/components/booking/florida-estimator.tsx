@@ -50,7 +50,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "landscaping",
     name: "Landscaping",
-    price: "From $35",
+    price: "Competitive rates",
     description: "Professional lawn care, trimming, edging, and yard maintenance services.",
     benefit: "Maintains curb appeal • Prevents code violations",
     icon: Trees,
@@ -66,7 +66,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "carpet_cleaning",
     name: "Carpet Cleaning",
-    price: "From $49",
+    price: "Professional deep cleaning",
     description: "Professional carpet and upholstery cleaning with advanced extraction methods.",
     benefit: "Removes allergens • Extends carpet life",
     icon: Home,
@@ -82,7 +82,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "gutter_cleaning",
     name: "Gutter Cleaning",
-    price: "From $120",
+    price: "From $149",
     description: "Complete gutter cleaning with flow testing and debris removal for all perimeters.",
     benefit: "Prevents foundation erosion • Protects against water damage",
     icon: Waves,
@@ -90,7 +90,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "pool_cleaning",
     name: "Pool Cleaning",
-    price: "From $69",
+    price: "$150/month",
     description: "Full pool maintenance including skimming, chemical balancing, and equipment check.",
     benefit: "Crystal clear water • Equipment longevity",
     icon: Droplets,
