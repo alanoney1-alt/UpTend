@@ -315,6 +315,17 @@ export function UpTendGuide() {
   const speech = useSpeechRecognition();
   const synth = useSpeechSynthesis();
 
+  const sendFeedback = useCallback(async (messageId: string, feedbackType: string) => {
+    try {
+      await fetch("/api/ai/guide/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ sessionId: getSessionId(), messageId, feedbackType }),
+      });
+    } catch { /* silent */ }
+  }, []);
+
   // Auto-greet on first visit — open after a short delay so page loads first
   useEffect(() => {
     if (isDisabled) return;
@@ -571,7 +582,7 @@ export function UpTendGuide() {
         {/* Messages */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2.5 space-y-2">
           {messages.map((msg) => (
-            <div key={msg.id} className={cn("flex flex-col", msg.role === "user" ? "items-end" : "items-start")}>
+            <div key={msg.id} className={cn("flex flex-col group", msg.role === "user" ? "items-end" : "items-start")}>
               <div className={cn("max-w-[88%] space-y-1.5")}>
                 {msg.photoUrl && (
                   <div className="rounded-xl overflow-hidden border border-black/5">
@@ -603,6 +614,20 @@ export function UpTendGuide() {
                         <ChevronRight className="w-2.5 h-2.5 opacity-50" />
                       </button>
                     ))}
+                  </div>
+                )}
+                {msg.role === "assistant" && msg.id !== "welcome" && (
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={() => sendFeedback(msg.id, "helpful")}
+                      className="text-[11px] text-muted-foreground/50 hover:text-green-500 transition-colors p-0.5"
+                      title="Helpful"
+                    >👍</button>
+                    <button
+                      onClick={() => sendFeedback(msg.id, "not_helpful")}
+                      className="text-[11px] text-muted-foreground/50 hover:text-red-400 transition-colors p-0.5"
+                      title="Not helpful"
+                    >👎</button>
                   </div>
                 )}
               </div>

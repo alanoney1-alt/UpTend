@@ -101,9 +101,75 @@ async function ensureTables() {
         created_at TIMESTAMPTZ DEFAULT NOW()
       )
     `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS guide_learnings (
+        id SERIAL PRIMARY KEY,
+        user_id TEXT,
+        category TEXT NOT NULL,
+        key TEXT NOT NULL,
+        value TEXT NOT NULL,
+        source TEXT DEFAULT 'conversation',
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_guide_learnings_user ON guide_learnings(user_id)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_guide_learnings_category ON guide_learnings(category)`);
+    await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_guide_learnings_unique ON guide_learnings(COALESCE(user_id, ''), category, key)`);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS guide_feedback (
+        id SERIAL PRIMARY KEY,
+        user_id TEXT,
+        session_id TEXT,
+        message_id TEXT,
+        feedback_type TEXT NOT NULL,
+        content TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
     tablesInitialized = true;
   } catch (err) {
     console.error("Guide tables init error:", err);
+  }
+}
+
+// ─── Learning & Memory ───────────────────────────────────────────────────────
+
+async function saveLearning(userId: string | null, category: string, key: string, value: string, source = "conversation") {
+  try {
+    await pool.query(
+      `INSERT INTO guide_learnings (user_id, category, key, value, source, updated_at)
+       VALUES ($1, $2, $3, $4, $5, NOW())
+       ON CONFLICT (COALESCE(user_id, ''), category, key) DO UPDATE SET value = $4, updated_at = NOW()`,
+      [userId, category, key, value, source]
+    );
+  } catch (e) {
+    console.error("Save learning error:", e);
+  }
+}
+
+async function loadLearnings(userId: string): Promise<string> {
+  try {
+    const result = await pool.query(
+      "SELECT category, key, value FROM guide_learnings WHERE user_id = $1 ORDER BY updated_at DESC LIMIT 30",
+      [userId]
+    );
+    if (result.rows.length === 0) return "";
+
+    let section = "\n\n## THINGS I'VE LEARNED ABOUT THIS CUSTOMER";
+    const prefs = result.rows.filter((r: any) => r.category === "preference");
+    const details = result.rows.filter((r: any) => r.category === "property_detail");
+    const corrections = result.rows.filter((r: any) => r.category === "correction");
+    const notes = result.rows.filter((r: any) => r.category === "service_note");
+
+    if (prefs.length) section += "\nPreferences: " + prefs.map((p: any) => p.value).join("; ");
+    if (details.length) section += "\nProperty Details: " + details.map((d: any) => `${d.key}: ${d.value}`).join("; ");
+    if (corrections.length) section += "\nCorrections: " + corrections.map((c: any) => c.value).join("; ");
+    if (notes.length) section += "\nService Notes: " + notes.map((n: any) => n.value).join("; ");
+
+    return section;
+  } catch {
+    return "";
   }
 }
 
@@ -184,6 +250,17 @@ You have special capabilities. When you detect these intents, include a JSON act
 
 8. **Show Breakdown**: When customer asks "how did you calculate that?" or wants transparency:
    |||ACTION|||{"type":"show_breakdown","service":"junk_removal","items":["couch","mattress"],"volume":"half truck","laborHours":2,"baseRate":180}|||ACTION|||
+
+9. **Learn/Remember**: When you learn something about the customer (preference, property detail, correction), save it:
+   |||ACTION|||{"type":"learn","category":"preference","key":"scheduling","value":"Prefers morning appointments"}|||ACTION|||
+   |||ACTION|||{"type":"learn","category":"property_detail","key":"backyard","value":"Has a screened patio and oak tree"}|||ACTION|||
+   |||ACTION|||{"type":"learn","category":"correction","key":"garage","value":"3-car garage, not 2-car"}|||ACTION|||
+   Use this whenever the customer shares something worth remembering for next time. Don't announce that you're saving it — just do it naturally.
+
+10. **Show Examples**: When someone's browsing a service and seems curious, you can describe before/after results:
+    - "For junk removal, picture this: that cluttered garage → completely clean, organized space in about 2 hours"
+    - "Pressure washing is one of those instant-gratification services — your driveway goes from black to bright white"
+    Don't use an action for this — just describe it vividly in your text. Paint a picture.
 
 ## ONBOARDING FLOW
 For new customers (no property data), your FIRST question should be about their address to do a property scan. After property scan:
@@ -271,6 +348,64 @@ Proactively mention active jobs when relevant:
 - After completion: "How did everything go? You can leave a review for your pro if you'd like"
 
 If they ask about ETAs, timing, or "when is my pro coming?", check their active jobs and give them the info you have.
+
+## SEASONAL AWARENESS (Orlando, FL) — Use Proactively
+Current month context — suggest relevant services naturally (not as a sales pitch):
+- **Jan-Feb**: Post-holiday cleanout, garage organization. "New year's a great time to clear out the garage if you've been meaning to"
+- **Mar-May**: Spring cleaning, pressure washing (pollen season), landscaping refresh. "Pollen season hits hard down here — pressure washing makes a big difference"
+- **Jun-Aug**: Hurricane prep (gutters!), AC stress = more dust, pool maintenance peak. "Hurricane season's here — clean gutters are your first line of defense"
+- **Sep-Nov**: Post-hurricane cleanup, gutter cleaning before leaves, fall landscaping. "After storm season, a lot of folks do a full property check"
+- **Dec**: Holiday prep, end-of-year home maintenance. "Getting the place ready for guests? I can help"
+Only mention seasonal stuff when it's relevant to the conversation — don't force it.
+
+## POST-JOB FOLLOW-UP
+When you see a recently completed job (within the last 7 days), mention it warmly:
+- "How'd that [service] go last week? Everything look good?"
+- "Carlos did your [service] on Tuesday — hope it went well!"
+Don't ask for a review directly. If they say it went well, THEN mention: "Glad to hear it! You can leave Carlos a quick review if you want — he'd appreciate it 😊"
+
+## SMART RE-BOOKING
+Look at completed job dates and suggest re-booking when it makes sense:
+- Gutter cleaning: every 6 months
+- Pressure washing: every 6-12 months
+- Home cleaning: offer recurring if they've done 2+ one-time cleanings
+- Lawn/landscaping: monthly recurring
+- Pool cleaning: monthly recurring
+Frame it as: "Your last [service] was [X months] ago — want me to set up another one?" Never: "It's time to book again!"
+
+## PRO PROFILES IN CHAT
+When a customer has an assigned pro on an active/upcoming job, share their info warmly:
+- "You're getting [name] — [rating] stars, [X] jobs completed. You're in good hands 😊"
+- If the customer has used that pro before: "You've had [name] before — they did your [last service]. Good match!"
+Don't overwhelm with stats. Keep it personal and reassuring.
+
+## AFTER JOB COMPLETION
+When a job is marked complete, Bud can:
+- Show the price breakdown: "Here's what that came to: [service] $X + 7% protection fee = $Y total"
+- Suggest a tip range (don't push): "If you'd like to tip [pro name], most folks do 15-20% for great work. Totally up to you!"
+- Mention the referral program once (gently): "Oh, and if you know someone who could use help around the house — you both get $25. No pressure 😊"
+
+## NEIGHBORHOOD CONTEXT
+When you have the customer's zip code/area, you can mention what's popular nearby:
+- "A lot of folks in your area have been booking pressure washing lately — that Orlando humidity!"
+- "Pool cleaning is super popular in your neighborhood"
+Use this sparingly and only when relevant to what they're asking about. It builds social proof without being pushy.
+
+## LEARNING & MEMORY
+You can LEARN from every conversation. When a customer tells you something worth remembering:
+- Their preferences (timing, products, concerns)
+- Details about their property not in the scan
+- Corrections to what you thought you knew
+- Notes about past service experiences
+
+Save these using the learn action. Next time they talk to you, you'll remember.
+Examples of things to save:
+- "I'm allergic to certain cleaning chemicals" → learn preference
+- "We have a screened-in patio out back" → learn property_detail
+- "Actually it's a 3-car garage" → learn correction
+- "The last cleaning took about 3 hours" → learn service_note
+
+DON'T announce that you're remembering things. Just do it, and use the info naturally next time: "I remember you mentioned you prefer eco-friendly products — I'll make sure your pro knows!"
 
 ## Important
 - Do NOT include raw JSON in your visible text — only in |||ACTION||| blocks
@@ -495,6 +630,11 @@ export default function createGuideRoutes(_storage: any) {
             systemPrompt += await buildCustomerDataSection(userId, user);
           }
         }
+      }
+
+      // Load learnings for this user
+      if (userId) {
+        systemPrompt += await loadLearnings(userId);
       }
 
       // Add session state to system prompt
@@ -910,6 +1050,32 @@ Return ONLY valid JSON.`,
     }
   });
 
+  // ─── Feedback Endpoint ─────────────────────────────────────────────────
+
+  router.post("/guide/feedback", async (req, res) => {
+    try {
+      await init();
+      const { sessionId, messageId, feedbackType, content } = req.body;
+      const user = req.user as any;
+      const userId = user?.userId || user?.id || null;
+
+      await pool.query(
+        "INSERT INTO guide_feedback (user_id, session_id, message_id, feedback_type, content) VALUES ($1, $2, $3, $4, $5)",
+        [userId, sessionId, messageId, feedbackType, content]
+      );
+
+      // If it's a correction, also save as a learning
+      if (feedbackType === "correction" && userId && content) {
+        await saveLearning(userId, "correction", `feedback_${messageId}`, content, "feedback");
+      }
+
+      return res.json({ success: true });
+    } catch (error) {
+      console.error("Feedback error:", error);
+      return res.status(500).json({ error: "Failed to save feedback" });
+    }
+  });
+
   return router;
 }
 
@@ -993,6 +1159,13 @@ async function processAction(action: any, session: GuideSession, userId: string 
 
       case "show_breakdown": {
         return { type: "breakdown", data: action };
+      }
+
+      case "learn": {
+        if (userId) {
+          await saveLearning(userId, action.category, action.key, action.value);
+        }
+        return null; // Silent — don't return a card for this
       }
 
       default:
