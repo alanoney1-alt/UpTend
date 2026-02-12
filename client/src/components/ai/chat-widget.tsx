@@ -99,7 +99,7 @@ export function AiChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-0 right-0 sm:bottom-4 sm:right-4 z-50 w-full sm:w-[380px] h-full sm:h-[560px] sm:max-h-[80vh] flex flex-col bg-white dark:bg-gray-900 sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-20 right-4 z-50 w-[340px] h-[440px] flex flex-col bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
       {/* Header */}
       <div className="bg-[#F47C20] px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
@@ -107,8 +107,8 @@ export function AiChatWidget() {
             <Bot className="h-4.5 w-4.5 text-white" />
           </div>
           <div>
-            <h3 className="text-white font-semibold text-sm">UpTend Concierge</h3>
-            <p className="text-white/70 text-[11px]">AI-powered assistant</p>
+            <h3 className="text-white font-semibold text-sm">Bud</h3>
+            <p className="text-white/70 text-[11px]">Your home helper</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -140,10 +140,10 @@ export function AiChatWidget() {
               <Bot className="h-8 w-8 text-[#F47C20]" />
             </div>
             <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
-              Hi{user?.firstName ? `, ${user.firstName}` : ""}! 👋
+              Hey{user?.firstName ? ` ${user.firstName}` : ""}! I'm Bud 👋
             </h4>
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[260px]">
-              I'm your UpTend Concierge. Ask me about bookings, services, scheduling, or anything else!
+              Need a pro for your home? I can get you a quote, book a service, or answer any questions. Just ask!
             </p>
           </div>
         )}
@@ -195,7 +195,7 @@ export function AiChatWidget() {
             )}
           </Button>
         </form>
-        <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by AI · UpTend Concierge</p>
+        <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by Bud AI</p>
       </div>
     </div>
   );

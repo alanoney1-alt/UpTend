@@ -26,7 +26,7 @@ export function BookingChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{
     id: "initial",
-    text: "👋 Hi! I'm your UpTend AI assistant. I can help you:\n\n• Get instant quotes from photos\n• Learn about our services & pricing\n• Book a job\n• Answer any questions\n\nHow can I help you today?",
+    text: "👋 Hey! I'm Bud, your home helper. I can:\n\n• Get you an instant quote (even from a photo!)\n• Help you book a verified pro\n• Answer questions about pricing & services\n\nWhat do you need help with?",
     role: "assistant",
     timestamp: Date.now(),
   }]);
@@ -158,7 +158,7 @@ export function BookingChatbot() {
                   <MessageCircle className="w-4 h-4" />
                 </div>
                 <div>
-                  <span className="font-semibold">UpTend AI Assistant</span>
+                  <span className="font-semibold">Bud</span>
                   <p className="text-xs text-primary-foreground/80">Powered by GPT-4</p>
                 </div>
               </div>
