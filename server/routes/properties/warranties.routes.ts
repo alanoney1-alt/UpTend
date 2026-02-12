@@ -17,7 +17,7 @@ const router = express.Router();
 router.get("/:propertyId/warranties", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const warranties = await getWarrantiesByProperty(req.params.propertyId);
@@ -30,7 +30,7 @@ router.get("/:propertyId/warranties", auth, async (req, res) => {
 router.get("/:propertyId/warranties/active", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const warranties = await getActiveWarranties(req.params.propertyId);
@@ -43,7 +43,7 @@ router.get("/:propertyId/warranties/active", auth, async (req, res) => {
 router.post("/:propertyId/warranties", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const warrantyData: InsertPropertyWarranty = {
@@ -64,7 +64,7 @@ router.get("/warranties/:id", auth, async (req, res) => {
     const warranty = await getWarrantyById(req.params.id);
     if (!warranty) return res.status(404).json({ error: "Warranty not found" });
     const property = await getPropertyById(warranty.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     res.json(warranty);
@@ -78,7 +78,7 @@ router.patch("/warranties/:id", auth, async (req, res) => {
     const warranty = await getWarrantyById(req.params.id);
     if (!warranty) return res.status(404).json({ error: "Warranty not found" });
     const property = await getPropertyById(warranty.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const updated = await updateWarranty(req.params.id, req.body);
@@ -93,7 +93,7 @@ router.post("/warranties/:id/claim", auth, async (req, res) => {
     const warranty = await getWarrantyById(req.params.id);
     if (!warranty) return res.status(404).json({ error: "Warranty not found" });
     const property = await getPropertyById(warranty.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const updated = await recordWarrantyClaim(req.params.id, req.body);

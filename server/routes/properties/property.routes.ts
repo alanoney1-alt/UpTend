@@ -36,7 +36,7 @@ router.post("/", auth, async (req, res) => {
   try {
     const propertyData: InsertProperty = {
       id: crypto.randomUUID(),
-      userId: req.user!.id,
+      ownerId: req.user!.id,
       ...req.body,
       createdAt: new Date().toISOString(),
     };
@@ -62,7 +62,7 @@ router.get("/:id", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.userId !== req.user!.id) {
+    if (property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -86,7 +86,7 @@ router.patch("/:id", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.userId !== req.user!.id) {
+    if (property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -111,7 +111,7 @@ router.get("/:id/health-score", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.userId !== req.user!.id) {
+    if (property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -136,7 +136,7 @@ router.post("/:id/health-score/update", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.userId !== req.user!.id) {
+    if (property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -162,7 +162,7 @@ router.get("/:id/timeline", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.userId !== req.user!.id) {
+    if (property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -187,7 +187,7 @@ router.get("/:id/maintenance-schedule", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.userId !== req.user!.id) {
+    if (property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 

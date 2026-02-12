@@ -30,9 +30,9 @@ export function registerInsuranceRoutes(app: Express) {
     try {
       const partners = await db.select({
         id: insurancePartners.id,
-        name: insurancePartners.name,
-        type: insurancePartners.type,
-        discountPercent: insurancePartners.discountPercent,
+        name: insurancePartners.carrierName,
+        partnershipTier: insurancePartners.partnershipTier,
+        maintenanceDiscountPct: insurancePartners.maintenanceDiscountPct,
         status: insurancePartners.status,
       }).from(insurancePartners)
         .where(eq(insurancePartners.status, "active"));
@@ -114,16 +114,16 @@ export function registerInsuranceRoutes(app: Express) {
         if (policy.expiresAt && new Date(policy.expiresAt) < new Date()) continue;
 
         // Check coverage map
-        const coveredServices = COVERAGE_MAP[partner.type] || [];
+        const coveredServices = COVERAGE_MAP[partner.partnershipTier || "standard"] || [];
         const isCovered = coveredServices.includes(serviceType as string);
 
         if (isCovered) {
           coverageResults.push({
-            partnerName: partner.name,
-            partnerType: partner.type,
+            partnerName: partner.carrierName,
+            partnerType: partner.partnershipTier || "standard",
             policyNumber: policy.policyNumber,
             coverageType: policy.coverageType,
-            discountPercent: partner.discountPercent || 0,
+            discountPercent: partner.maintenanceDiscountPct || 0,
           });
         }
       }
@@ -158,9 +158,9 @@ export function registerInsuranceRoutes(app: Express) {
           .where(eq(insurancePartners.id, policy.insurancePartnerId));
         enriched.push({
           ...policy,
-          partnerName: partner?.name || "Unknown",
-          partnerType: partner?.type || "unknown",
-          discountPercent: partner?.discountPercent || 0,
+          partnerName: partner?.carrierName || "Unknown",
+          partnerType: partner?.partnershipTier || "unknown",
+          discountPercent: partner?.maintenanceDiscountPct || 0,
           isExpired: policy.expiresAt ? new Date(policy.expiresAt) < new Date() : false,
         });
       }

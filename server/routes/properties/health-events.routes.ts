@@ -17,7 +17,7 @@ const router = express.Router();
 router.get("/:propertyId/health-events", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const events = await getHealthEventsByProperty(req.params.propertyId);
@@ -30,7 +30,7 @@ router.get("/:propertyId/health-events", auth, async (req, res) => {
 router.post("/:propertyId/health-events", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const eventData: InsertPropertyHealthEvent = {

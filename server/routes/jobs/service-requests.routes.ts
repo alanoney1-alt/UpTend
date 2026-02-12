@@ -368,7 +368,7 @@ export function registerServiceRequestRoutes(app: Express) {
 
       // Calculate and store ESG metrics (non-blocking)
       try {
-        const esgResult = await processEsgForCompletedJob(request, req.body);
+        const esgResult = await processEsgForCompletedJob(request!, req.body);
         if (esgResult.success) {
           console.log(`[ESG] ✅ Metrics saved for job ${req.params.id}: ${esgResult.esgMetrics?.esgScore}/100 score`);
         } else {

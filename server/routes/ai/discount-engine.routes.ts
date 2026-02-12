@@ -113,7 +113,7 @@ ${validated.previousServices?.length ? `Previous services: ${validated.previousS
           maxTokens: 1024,
         });
 
-        const parsed = JSON.parse(aiResponse);
+        const parsed = JSON.parse(aiResponse.content);
         return res.json({ success: true, ...parsed, generatedAt: new Date().toISOString() });
       } catch {
         // Fallback: find a matching popular bundle
@@ -174,7 +174,7 @@ Return: { "discountPercent": <number 5-20>, "reasoning": "<brief>" }`;
           maxTokens: 256,
         });
 
-        const parsed = JSON.parse(aiResponse);
+        const parsed = JSON.parse(aiResponse.content);
         const discountPct = Math.min(20, Math.max(5, parsed.discountPercent));
         const discountAmount = Math.round(totalIndividual * discountPct / 100);
         const bundlePrice = totalIndividual - discountAmount;

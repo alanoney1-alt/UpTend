@@ -17,7 +17,7 @@ const router = express.Router();
 router.get("/:propertyId/insurance", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const policies = await getInsuranceByProperty(req.params.propertyId);
@@ -30,7 +30,7 @@ router.get("/:propertyId/insurance", auth, async (req, res) => {
 router.post("/:propertyId/insurance", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const insuranceData: InsertPropertyInsurance = {
@@ -51,7 +51,7 @@ router.patch("/insurance/:id", auth, async (req, res) => {
     const insurance = await getInsuranceById(req.params.id);
     if (!insurance) return res.status(404).json({ error: "Insurance not found" });
     const property = await getPropertyById(insurance.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const updated = await updateInsurance(req.params.id, req.body);
@@ -66,7 +66,7 @@ router.post("/insurance/:id/claim", auth, async (req, res) => {
     const insurance = await getInsuranceById(req.params.id);
     if (!insurance) return res.status(404).json({ error: "Insurance not found" });
     const property = await getPropertyById(insurance.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
     const updated = await recordInsuranceClaim(req.params.id, req.body);

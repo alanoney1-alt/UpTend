@@ -16,7 +16,7 @@ import { Colors } from '../theme/colors';
 
 const WELCOME: ChatMessage = {
   id: 'welcome',
-  sender: 'guide',
+  sender: 'bud',
   type: 'text',
   text: "Welcome to UpTend! 👋 I'm Bud, your AI home helper. What's your address?",
   timestamp: new Date(),
@@ -59,7 +59,7 @@ export default function GuideChatScreen() {
       const res = await guideChat(text.trim());
       const guideMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        sender: 'guide',
+        sender: 'bud',
         type: res.type || 'text',
         text: res.message || res.text,
         data: res.data,
@@ -71,7 +71,7 @@ export default function GuideChatScreen() {
       if (res.quote) {
         const quoteMsg: ChatMessage = {
           id: (Date.now() + 2).toString(),
-          sender: 'guide',
+          sender: 'bud',
           type: 'quote',
           data: res.quote,
           timestamp: new Date(),
@@ -83,7 +83,7 @@ export default function GuideChatScreen() {
       if (res.property) {
         const propMsg: ChatMessage = {
           id: (Date.now() + 3).toString(),
-          sender: 'guide',
+          sender: 'bud',
           type: 'property',
           data: res.property,
           timestamp: new Date(),
@@ -95,7 +95,7 @@ export default function GuideChatScreen() {
         ...prev,
         {
           id: (Date.now() + 1).toString(),
-          sender: 'guide',
+          sender: 'bud',
           type: 'text',
           text: "Sorry, I'm having trouble connecting right now. Please try again.",
           timestamp: new Date(),
@@ -118,7 +118,7 @@ export default function GuideChatScreen() {
     };
     setMessages((prev) => [...prev, photoMsg]);
     scrollToEnd();
-    // TODO: call guidePhotoAnalyze
+    // TODO: call budPhotoAnalyze
   };
 
   const handleVoiceRecording = (uri: string) => {
@@ -172,7 +172,7 @@ export default function GuideChatScreen() {
             isTyping ? (
               <View style={styles.typingRow}>
                 <ActivityIndicator size="small" color={Colors.primary} />
-                <Text style={styles.typingText}>Guide is typing...</Text>
+                <Text style={styles.typingText}>Bud is typing...</Text>
               </View>
             ) : null
           }
@@ -190,7 +190,7 @@ export default function GuideChatScreen() {
             style={styles.input}
             value={input}
             onChangeText={setInput}
-            placeholder="Ask your guide anything..."
+            placeholder="Ask Bud anything..."
             placeholderTextColor={Colors.textLight}
             multiline
             maxLength={2000}

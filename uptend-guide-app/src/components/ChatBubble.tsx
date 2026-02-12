@@ -24,7 +24,7 @@ export default function ChatBubble({ message }: Props) {
 
   if (message.type === 'typing') {
     return (
-      <View style={[styles.bubble, styles.guideBubble, { paddingHorizontal: 20 }]}>  
+      <View style={[styles.bubble, styles.budBubble, { paddingHorizontal: 20 }]}>  
         <Text style={styles.typingDots}>● ● ●</Text>
       </View>
     );
@@ -33,7 +33,7 @@ export default function ChatBubble({ message }: Props) {
   if (message.type === 'photo' && message.imageUri) {
     return (
       <View style={[styles.row, isUser && styles.rowUser]}>
-        <View style={[styles.bubble, isUser ? styles.userBubble : styles.guideBubble]}>
+        <View style={[styles.bubble, isUser ? styles.userBubble : styles.budBubble]}>
           <Image source={{ uri: message.imageUri }} style={styles.photo} resizeMode="cover" />
           {message.text ? (
             <Text style={[styles.text, isUser && styles.textUser]}>{message.text}</Text>
@@ -45,7 +45,7 @@ export default function ChatBubble({ message }: Props) {
 
   return (
     <View style={[styles.row, isUser && styles.rowUser]}>
-      <View style={[styles.bubble, isUser ? styles.userBubble : styles.guideBubble, { maxWidth: '80%' }]}>
+      <View style={[styles.bubble, isUser ? styles.userBubble : styles.budBubble, { maxWidth: '80%' }]}>
         <Text style={[styles.text, isUser && styles.textUser]}>{message.text}</Text>
       </View>
     </View>
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.userBubble,
     borderBottomRightRadius: 4,
   },
-  guideBubble: {
-    backgroundColor: Colors.guideBubble,
+  budBubble: {
+    backgroundColor: Colors.budBubble,
     borderBottomLeftRadius: 4,
   },
   text: { fontSize: 16, lineHeight: 22, color: Colors.text },

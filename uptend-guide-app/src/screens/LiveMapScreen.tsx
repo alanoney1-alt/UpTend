@@ -2,7 +2,17 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, Animated, Dimensions, StyleSheet, StatusBar, Platform,
 } from 'react-native';
-import MapView, { Marker, Region, PROVIDER_DEFAULT } from 'react-native-maps';
+// react-native-maps is native-only; lazy-load to avoid web bundle errors
+let MapView: any;
+let Marker: any;
+let PROVIDER_DEFAULT: any;
+type Region = { latitude: number; longitude: number; latitudeDelta: number; longitudeDelta: number };
+if (Platform.OS !== 'web') {
+  const Maps = require('react-native-maps');
+  MapView = Maps.default;
+  Marker = Maps.Marker;
+  PROVIDER_DEFAULT = Maps.PROVIDER_DEFAULT;
+}
 import { Colors } from '../theme/colors';
 import { ProLocation, getAvailableProsNearby } from '../services/ProAvailabilityAPI';
 import { liveProTracking, ProUpdateEvent } from '../services/LiveProTracking';
@@ -91,7 +101,12 @@ export default function LiveMapScreen({ navigation }: any) {
       <StatusBar barStyle="dark-content" />
 
       {/* Map */}
-      <MapView
+      {Platform.OS === 'web' ? (
+        <View style={[StyleSheet.absoluteFillObject, { backgroundColor: Colors.background, justifyContent: 'center', alignItems: 'center' }]}>
+          <Text style={{ fontSize: 48 }}>🗺️</Text>
+          <Text style={{ marginTop: 12, color: Colors.textSecondary }}>Map view is available on mobile</Text>
+        </View>
+      ) : <MapView
         ref={mapRef}
         style={StyleSheet.absoluteFillObject}
         provider={PROVIDER_DEFAULT}
@@ -114,7 +129,7 @@ export default function LiveMapScreen({ navigation }: any) {
             />
           </Marker>
         ))}
-      </MapView>
+      </MapView>}
 
       {/* Top banner */}
       <View style={styles.topBanner}>

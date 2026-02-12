@@ -33,7 +33,7 @@ const router = express.Router();
 router.get("/:propertyId/appliances", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -52,7 +52,7 @@ router.get("/:propertyId/appliances", auth, async (req, res) => {
 router.get("/:propertyId/appliances/category/:category", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -71,7 +71,7 @@ router.get("/:propertyId/appliances/category/:category", auth, async (req, res) 
 router.get("/:propertyId/appliances/location/:location", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -90,7 +90,7 @@ router.get("/:propertyId/appliances/location/:location", auth, async (req, res) 
 router.get("/:propertyId/appliances/needs-review", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -109,7 +109,7 @@ router.get("/:propertyId/appliances/needs-review", auth, async (req, res) => {
 router.post("/:propertyId/appliances", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -155,7 +155,7 @@ router.get("/appliances/:id", auth, async (req, res) => {
     }
 
     const property = await getPropertyById(appliance.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -178,7 +178,7 @@ router.patch("/appliances/:id", auth, async (req, res) => {
     }
 
     const property = await getPropertyById(appliance.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -202,7 +202,7 @@ router.post("/appliances/:id/replace", auth, async (req, res) => {
     }
 
     const property = await getPropertyById(oldAppliance.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -247,7 +247,7 @@ router.post("/appliances/:id/replace", auth, async (req, res) => {
 router.post("/:propertyId/appliances/scan", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -283,7 +283,7 @@ router.post("/:propertyId/appliances/scan", auth, async (req, res) => {
 router.post("/:propertyId/appliances/scan-session/start", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -319,7 +319,7 @@ router.post("/appliance-scan-sessions/:sessionId/photo", auth, async (req, res) 
     }
 
     const property = await getPropertyById(session.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -370,7 +370,7 @@ router.post("/appliance-scan-sessions/:sessionId/complete", auth, async (req, re
     }
 
     const property = await getPropertyById(session.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -394,7 +394,7 @@ router.get("/appliance-scan-sessions/:sessionId/results", auth, async (req, res)
     }
 
     const property = await getPropertyById(session.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -421,7 +421,7 @@ router.post("/appliance-scans/:scanId/confirm", auth, async (req, res) => {
     }
 
     const property = await getPropertyById(scan.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -459,7 +459,7 @@ router.post("/appliance-scans/:scanId/edit", auth, async (req, res) => {
     }
 
     const property = await getPropertyById(scan.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -506,7 +506,7 @@ router.post("/appliance-scans/:scanId/edit", auth, async (req, res) => {
 router.get("/:propertyId/appliance-scans", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.userId !== req.user!.id) {
+    if (!property || property.ownerId !== req.user!.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 

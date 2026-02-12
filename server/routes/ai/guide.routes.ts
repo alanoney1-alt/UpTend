@@ -409,11 +409,13 @@ export default function createGuideRoutes(_storage: any) {
       let userId: string | null = null;
 
       if (user) {
-        userId = user.userId || user.id;
-        if (user.role === "hauler") {
-          systemPrompt += await buildProDataSection(userId, user);
-        } else {
-          systemPrompt += await buildCustomerDataSection(userId, user);
+        userId = user.userId || user.id || null;
+        if (userId) {
+          if (user.role === "hauler") {
+            systemPrompt += await buildProDataSection(userId, user);
+          } else {
+            systemPrompt += await buildCustomerDataSection(userId, user);
+          }
         }
       }
 

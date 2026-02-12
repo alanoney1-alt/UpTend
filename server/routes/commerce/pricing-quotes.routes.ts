@@ -36,7 +36,7 @@ export function registerPricingRoutes(app: Express) {
       // Normalize load size to backend-compatible format
       const normalizedRequest = {
         ...quoteRequest,
-        loadSize: normalizeLoadSize(quoteRequest.loadSize),
+        loadSize: normalizeLoadSize(quoteRequest.loadSize) as typeof quoteRequest.loadSize,
       };
 
       try {

@@ -155,8 +155,8 @@ Return ONLY valid JSON:
         success: true,
         scan: {
           ...scan,
-          extractedData: scan.extractedData ? JSON.parse(scan.extractedData) : null,
-          userCorrectedData: scan.userCorrectedData ? JSON.parse(scan.userCorrectedData) : null,
+          extractedData: scan.extractedData || null,
+          userCorrectedData: scan.userCorrectedData || null,
         },
       });
     } catch (error: any) {

@@ -115,7 +115,7 @@ Return this exact JSON structure:
           maxTokens: 1024,
         });
 
-        const parsed = JSON.parse(aiResponse);
+        const parsed = JSON.parse(aiResponse.content);
         return res.json({
           success: true,
           pricing: parsed,
@@ -173,7 +173,7 @@ Return this exact JSON structure:
           maxTokens: 512,
         });
 
-        const parsed = JSON.parse(aiResponse);
+        const parsed = JSON.parse(aiResponse.content);
         return res.json({ success: true, factors: parsed, generatedAt: now.toISOString() });
       } catch {
         return res.json({

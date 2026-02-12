@@ -159,7 +159,7 @@ function getWelcomeMessage(page: string, userRole: string, userName: string | nu
   if (userRole === "customer") {
     return {
       id: "welcome", role: "assistant",
-      content: `Hey${userName ? `, ${userName}` : ""}! 👋 I'm your UpTend Guide. I can help you get quotes, book services, or answer questions.\n\nWhat's your home address? I'll personalize my recommendations for you! 🏠`,
+      content: `Hey${userName ? `, ${userName}` : ""}! 👋 I'm Bud, your UpTend assistant. I can help you get quotes, book services, or answer questions.\n\nWhat's your home address? I'll personalize my recommendations for you! 🏠`,
       quickActions: [
         { label: "📷 Photo Quote", action: "message:I want to send a photo for a quote" },
         { label: "Book a Service", action: "navigate:/book" },
@@ -533,10 +533,10 @@ export function UpTendGuide() {
           onClick={handleOpen}
           className="fixed right-0 top-1/2 -translate-y-1/2 z-50 bg-primary text-primary-foreground px-3 py-4 rounded-l-xl shadow-lg hover:pr-5 transition-all duration-200 flex items-center gap-2 text-sm font-medium"
           style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-          aria-label="Open UpTend Guide"
+          aria-label="Open Bud"
         >
           <MessageCircle className="w-4 h-4 rotate-90" />
-          <span>UpTend Guide</span>
+          <span>Bud</span>
         </button>
       )}
 
@@ -561,7 +561,7 @@ export function UpTendGuide() {
               <Bot className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold text-sm">UpTend Guide</h3>
+              <h3 className="font-semibold text-sm">Bud</h3>
               <p className="text-xs text-muted-foreground">Always here to help</p>
             </div>
           </div>
@@ -593,7 +593,7 @@ export function UpTendGuide() {
         {/* Disable confirmation */}
         {showDisableConfirm && (
           <div className="px-4 py-3 bg-destructive/5 border-b text-sm space-y-2 shrink-0">
-            <p>Turn off the UpTend Guide?</p>
+            <p>Turn off Bud?</p>
             <p className="text-xs text-muted-foreground">Re-enable anytime from profile settings.</p>
             <div className="flex gap-2">
               <Button size="sm" variant="destructive" onClick={confirmDisable}>Turn Off</Button>

@@ -88,7 +88,7 @@ export default function CustomerDashboardScreen({ navigation }: any) {
               activeOpacity={0.7}
               onPress={() => {
                 if (action.label.includes('Bud')) navigation?.navigate('Bud');
-                else if (action.label.includes('Find')) navigation?.navigate('Map');
+                else if (action.label.includes('Find')) navigation?.navigate('LiveMap');
                 else if (action.label.includes('Photo')) navigation?.navigate('Bud');
                 else handleBook(action.label);
               }}

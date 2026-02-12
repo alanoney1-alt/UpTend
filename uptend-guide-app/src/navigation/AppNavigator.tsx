@@ -8,6 +8,7 @@ import { Colors } from '../theme/colors';
 import SignUpModal from '../components/SignUpModal';
 
 // Auth screens
+import OnboardingScreen from '../screens/OnboardingScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 
@@ -98,6 +99,10 @@ function CustomerDashboardStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
       <CustomerStack.Screen name="DashboardHome" component={CustomerDashboardScreen} />
+      <CustomerStack.Screen name="LiveMap" component={LiveMapScreen} />
+      <CustomerStack.Screen name="PhotoTimeline" component={PhotoTimelineScreen} />
+      <CustomerStack.Screen name="Neighborhood" component={NeighborhoodScreen} />
+      <CustomerStack.Screen name="TransformationFeed" component={TransformationFeedScreen} />
       <CustomerStack.Screen name="HomeHealth" component={HomeHealthScreen} />
       <CustomerStack.Screen name="SmartHome" component={SmartHomeScreen} />
       <CustomerStack.Screen name="VerifyPro" component={VerifyProScreen} />

@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { guidePhotoAnalyze } from '../api/client';
+import { budPhotoAnalyze } from '../api/client';
 import { Colors } from '../theme/colors';
 
 const { width, height } = Dimensions.get('window');
@@ -58,7 +58,7 @@ export default function ARCameraScreen({ navigation }: any) {
       formData.append('mode', 'ar_overlay');
 
       try {
-        const result = await guidePhotoAnalyze(formData);
+        const result = await budPhotoAnalyze(formData);
         if (result.tags) {
           setTags(result.tags);
         } else {

@@ -27,7 +27,12 @@ export const customerLogin = (email: string, password: string): Promise<LoginRes
   request('POST', '/api/customers/login', { email, password });
 
 export const customerRegister = (data: RegisterData): Promise<LoginResponse> =>
-  request('POST', '/api/customers/register', data);
+  request('POST', '/api/customers/register', {
+    email: data.email,
+    password: data.password,
+    name: `${data.firstName} ${data.lastName}`.trim(),
+    phone: data.phone,
+  });
 
 export const proLogin = (email: string, password: string): Promise<LoginResponse> =>
   request('POST', '/api/haulers/login', { email, password });

@@ -87,6 +87,13 @@ const navItems = [
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
+function formatScheduledDate(val: string) {
+  if (!val || val === "asap") return "ASAP";
+  const d = new Date(val);
+  if (isNaN(d.getTime())) return val;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
 function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, isAccepting = false }: {
   request: ServiceRequestWithDetails;
   onAccept: () => void;
@@ -133,13 +140,6 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
     landscaping: "Landscaping",
     handyman: "Handyman Services",
     demolition: "Light Demolition",
-  };
-
-  const formatScheduledDate = (val: string) => {
-    if (!val || val === "asap") return "ASAP";
-    const d = new Date(val);
-    if (isNaN(d.getTime())) return val;
-    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
   };
 
   const loadLabels: Record<string, string> = {

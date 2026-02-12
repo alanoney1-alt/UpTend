@@ -83,8 +83,8 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
         context: {
           conversationType: validated.conversationType || "general",
           userId,
-          userName: user?.fullName || undefined,
-          userLocation: user?.city || "Orlando",
+          userName: user?.firstName || user?.username || undefined,
+          userLocation: "Orlando",
         },
       });
 

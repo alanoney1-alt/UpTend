@@ -62,7 +62,6 @@ export async function registerBusinessAuthRoutes(app: Express) {
         primaryContactEmail: validated.email,
         primaryContactPhone: validated.phone || "",
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       });
 
       // Create owner team member entry
@@ -137,7 +136,7 @@ export async function registerBusinessAuthRoutes(app: Express) {
       }
 
       // Verify password
-      const validPassword = await bcrypt.compare(validated.password, user.password);
+      const validPassword = await bcrypt.compare(validated.password, user.password || "");
       if (!validPassword) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
