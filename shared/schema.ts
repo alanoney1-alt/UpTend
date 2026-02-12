@@ -5110,3 +5110,6 @@ export const ceilingAnalytics = pgTable("ceiling_analytics", {
 export const insertCeilingAnalyticsSchema = createInsertSchema(ceilingAnalytics).omit({ id: true, createdAt: true });
 export type InsertCeilingAnalytics = z.infer<typeof insertCeilingAnalyticsSchema>;
 export type CeilingAnalytics = typeof ceilingAnalytics.$inferSelect;
+
+// ESG Service Details (per-service environmental data)
+export * from "./esg-service-details";
