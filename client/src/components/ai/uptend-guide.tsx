@@ -320,9 +320,7 @@ export function UpTendGuide() {
     const visited = localStorage.getItem(LS_VISITED);
     if (!visited) {
       localStorage.setItem(LS_VISITED, "true");
-      setIsOpen(true);
-      setMessages([getWelcomeMessage(pageContext.page, pageContext.userRole, pageContext.userName)]);
-      hasInitRef.current = true;
+      // Don't auto-open — let users click the button when they want help
     }
   }, [isDisabled, pageContext.page]);
 
@@ -527,31 +525,24 @@ export function UpTendGuide() {
 
   return (
     <>
-      {/* Minimized pill */}
+      {/* Floating button */}
       {!isOpen && (
         <button
           onClick={handleOpen}
-          className="fixed right-0 top-1/2 -translate-y-1/2 z-50 bg-primary text-primary-foreground px-3 py-4 rounded-l-xl shadow-lg hover:pr-5 transition-all duration-200 flex items-center gap-2 text-sm font-medium"
-          style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+          className="fixed bottom-6 right-6 z-50 bg-primary text-primary-foreground w-14 h-14 rounded-full shadow-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center"
           aria-label="Open Bud"
         >
-          <MessageCircle className="w-4 h-4 rotate-90" />
-          <span>Bud</span>
+          <MessageCircle className="w-6 h-6" />
         </button>
-      )}
-
-      {/* Mobile backdrop */}
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/30 z-40 md:hidden" onClick={() => setIsOpen(false)} />
       )}
 
       {/* Panel */}
       <div
         className={cn(
-          "fixed z-50 bg-background border-l shadow-2xl flex flex-col transition-transform duration-300 ease-in-out",
-          "md:top-0 md:right-0 md:h-full md:w-[380px]",
-          "top-auto bottom-0 left-0 right-0 h-[85vh] md:h-full rounded-t-2xl md:rounded-none",
-          isOpen ? "translate-x-0 md:translate-x-0 translate-y-0" : "translate-x-full md:translate-x-full translate-y-full md:translate-y-0"
+          "fixed z-50 bg-background border shadow-2xl flex flex-col transition-all duration-300 ease-in-out rounded-2xl",
+          "bottom-24 right-6 w-[360px] max-w-[calc(100vw-2rem)]",
+          "h-[min(520px,70vh)]",
+          isOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
         )}
       >
         {/* Header */}
