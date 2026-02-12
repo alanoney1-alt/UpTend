@@ -158,7 +158,7 @@ async function testAllCalculators() {
       woodSalvagedLbs: 500,
       metalSalvagedLbs: 200,
       concreteSalvagedLbs: 300,
-      method: "selective_deconstruction",
+      method: "deconstruction",
       hazmatProperlyDisposed: true,
     });
     console.assert(result.esgScore >= 0 && result.esgScore <= 100);

@@ -26,6 +26,13 @@ export async function apiRequest(
   return res;
 }
 
+/** Safe fetch that throws on non-OK responses. Use in custom queryFn instead of raw .then(r => r.json()) */
+export async function safeFetchJson<T = any>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, { credentials: "include", ...init });
+  await throwIfResNotOk(res);
+  return res.json();
+}
+
 type UnauthorizedBehavior = "returnNull" | "throw";
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;

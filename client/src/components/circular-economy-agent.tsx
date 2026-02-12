@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,7 +55,7 @@ export function CircularEconomyAgent({ serviceRequestId, photoUrls = [], existin
 
   const { data: existingRecs = [], isLoading } = useQuery<DisposalRecommendation[]>({
     queryKey: ["/api/circular-economy/recommendations", serviceRequestId],
-    queryFn: () => fetch(`/api/circular-economy/recommendations/${serviceRequestId}`).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/circular-economy/recommendations/${serviceRequestId}`),
   });
 
   const classifyMutation = useMutation({

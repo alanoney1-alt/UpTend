@@ -120,7 +120,7 @@ export async function uploadPhoto(options: {
     const writeStream = fs.createWriteStream(localPath);
     //@ts-ignore
     file.pipe(writeStream);
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       writeStream.on("finish", resolve);
       writeStream.on("error", reject);
     });

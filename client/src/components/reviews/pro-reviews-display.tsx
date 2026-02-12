@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import { Star } from "lucide-react";
 
@@ -9,7 +10,7 @@ interface ProReviewsDisplayProps {
 export function ProReviewsDisplay({ proId, compact = false }: ProReviewsDisplayProps) {
   const { data } = useQuery({
     queryKey: ["/api/pros", proId, "reviews"],
-    queryFn: () => fetch(`/api/pros/${proId}/reviews`).then((r) => r.json()),
+    queryFn: () => safeFetchJson(`/api/pros/${proId}/reviews`),
     enabled: !!proId,
   });
 

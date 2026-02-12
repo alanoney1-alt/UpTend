@@ -594,27 +594,29 @@ export function estimateEnvironmentalImpact(serviceType: string, params: any): {
       };
 
     case 'polishup':
-    case 'home_cleaning':
+    case 'home_cleaning': {
       // Eco-friendly products save ~0.05 lbs CO2 per sqft
       if (params.sqft || params.bedrooms) {
-        const sqft = params.sqft || (params.bedrooms * 200); // Estimate if only bedrooms given
-        const co2Saved = sqft * 0.05;
+        const sqft = params.sqft || (params.bedrooms * 200);
+        const co2SavedCleaning = sqft * 0.05;
         return {
-          estimatedCo2SavedLbs: co2Saved,
-          message: `🌱 Using eco-friendly cleaning products will reduce CO2 by approximately ${Math.round(co2Saved)} lbs!`,
+          estimatedCo2SavedLbs: co2SavedCleaning,
+          message: `🌱 Using eco-friendly cleaning products will reduce CO2 by approximately ${Math.round(co2SavedCleaning)} lbs!`,
         };
       }
       break;
+    }
 
     case 'fixit':
-    case 'handyman':
+    case 'handyman': {
       // Repair vs replace credit: ~100 lbs CO2 saved per repair
       const repairs = params.itemsRepaired || params.tasks?.length || 1;
-      const co2Saved = repairs * 100;
+      const co2SavedRepair = repairs * 100;
       return {
-        estimatedCo2SavedLbs: co2Saved,
-        message: `♻️ Repairing instead of replacing saves approximately ${Math.round(co2Saved)} lbs of CO2 by extending product life!`,
+        estimatedCo2SavedLbs: co2SavedRepair,
+        message: `♻️ Repairing instead of replacing saves approximately ${Math.round(co2SavedRepair)} lbs of CO2 by extending product life!`,
       };
+    }
   }
 
   return null;

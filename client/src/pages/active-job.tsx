@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { UniversalJobWizard } from "@/components/job-wizard/universal-job-wizard";
@@ -14,7 +15,7 @@ export default function ActiveJob() {
 
   const { data: job, isLoading } = useQuery<ServiceRequest>({
     queryKey: ["/api/service-requests", jobId],
-    queryFn: () => fetch(`/api/service-requests/${jobId}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/service-requests/${jobId}`),
     enabled: !!jobId,
     refetchInterval: 5000,
   });

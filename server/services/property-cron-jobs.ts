@@ -76,10 +76,10 @@ export function startPropertyCronJobs() {
         const tasks = await getOverdueMaintenanceTasks();
         for (const task of tasks) {
           const dueDate = new Date(task.nextDueDate!);
-          const overdueDays = Math.floor((now.getTime() - dueDate.getTime()) / (24 * 60 * 60 * 1000));
+          const overdueBy = Math.floor((now.getTime() - dueDate.getTime()) / (24 * 60 * 60 * 1000));
           await updateMaintenanceTask(task.id, {
             isOverdue: true,
-            overdueDays,
+            overdueBy,
           });
         }
         console.log(`[PropertyCRON] Scanned ${tasks.length} overdue maintenance tasks`);

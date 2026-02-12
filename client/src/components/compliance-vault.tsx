@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -79,17 +80,17 @@ export function ComplianceVault({ proId }: ComplianceVaultProps) {
 
   const { data: receipts = [], isLoading: loadingReceipts } = useQuery<ComplianceReceipt[]>({
     queryKey: ["/api/compliance/receipts", proId],
-    queryFn: () => fetch(`/api/compliance/receipts/${proId}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/compliance/receipts/${proId}`),
   });
 
   const { data: mileageLogs = [], isLoading: loadingMileage } = useQuery<MileageLog[]>({
     queryKey: ["/api/compliance/mileage", proId],
-    queryFn: () => fetch(`/api/compliance/mileage/${proId}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/compliance/mileage/${proId}`),
   });
 
   const { data: taxSummary } = useQuery<TaxSummary>({
     queryKey: ["/api/compliance/tax-summary", proId, currentYear],
-    queryFn: () => fetch(`/api/compliance/tax-summary/${proId}?year=${currentYear}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/compliance/tax-summary/${proId}?year=${currentYear}`),
   });
 
   const addReceiptMutation = useMutation({

@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -125,7 +126,7 @@ export function DisputeDetail({ disputeId, isAdmin }: DisputeDetailProps) {
 
   const { data: dispute, isLoading } = useQuery<Dispute>({
     queryKey: ["/api/disputes", disputeId],
-    queryFn: () => fetch(`/api/disputes/${disputeId}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/disputes/${disputeId}`),
     enabled: !!disputeId,
   });
 

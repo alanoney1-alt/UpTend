@@ -62,12 +62,28 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void; onError: 
     if (error) {
       onError(error.message || "Payment failed");
       setIsProcessing(false);
-    } else if (paymentIntent && paymentIntent.status === "requires_capture") {
-      setPaymentComplete(true);
-      onSuccess();
-    } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      setPaymentComplete(true);
-      onSuccess();
+    } else if (paymentIntent) {
+      switch (paymentIntent.status) {
+        case "requires_capture":
+        case "succeeded":
+          setPaymentComplete(true);
+          onSuccess();
+          break;
+        case "requires_action":
+          // 3D Secure or additional authentication — Stripe.js handles the redirect
+          // If we get here with redirect: "if_required", it means the action couldn't be handled
+          onError("Additional authentication required. Please try again or use a different card.");
+          setIsProcessing(false);
+          break;
+        case "canceled":
+          onError("This payment was canceled. Please try again.");
+          setIsProcessing(false);
+          break;
+        default:
+          onError(`Unexpected payment status: ${paymentIntent.status}. Please try again.`);
+          setIsProcessing(false);
+          break;
+      }
     }
   };
 
@@ -304,6 +320,8 @@ export function PaymentForm({ amount, jobId, customerId, assignedHaulerId, onSuc
   const showBnplOptions = amount >= BNPL_THRESHOLD;
 
   useEffect(() => {
+    let cancelled = false;
+
     async function initPayment() {
       try {
         const [stripe, response] = await Promise.all([
@@ -313,29 +331,34 @@ export function PaymentForm({ amount, jobId, customerId, assignedHaulerId, onSuc
             customerId,
             amount,
             assignedHaulerId,
-            paymentMethod: selectedMethod,
           }),
         ]);
 
+        if (cancelled) return;
         const stripeResult = await stripe;
         setStripeInstance(stripeResult);
         const data = await response.json();
         setClientSecret(data.clientSecret);
       } catch (err: any) {
-        onError(err.message || "Failed to initialize payment");
+        if (!cancelled) {
+          onError(err.message || "Failed to initialize payment");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
 
     initPayment();
-  }, [jobId, customerId, amount, assignedHaulerId, selectedMethod, onError]);
+
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jobId, customerId, amount, assignedHaulerId]);
 
   const handleMethodChange = (method: PaymentMethod) => {
     setSelectedMethod(method);
     setBnplBackupComplete(false);
-    setLoading(true);
-    setClientSecret(null);
   };
 
   if (loading) {

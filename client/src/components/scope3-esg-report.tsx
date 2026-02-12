@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,7 +43,7 @@ export function Scope3EsgReport({ businessAccountId }: Scope3EsgReportProps) {
 
   const { data: reports = [], isLoading } = useQuery<EsgReport[]>({
     queryKey: ["/api/esg/reports", businessAccountId],
-    queryFn: () => fetch(`/api/esg/reports/${businessAccountId}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/esg/reports/${businessAccountId}`),
   });
 
   // Fetch service breakdown data

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import { toFile } from "openai";
 import { Buffer } from "node:buffer";
 import { openai } from "../../openaiClient";
+export { openai };
 
 /**
  * Generate an image and return as Buffer.

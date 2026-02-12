@@ -24,6 +24,24 @@ export function registerPaymentRoutes(app: Express) {
         return res.status(400).json({ error: "jobId and amount are required" });
       }
 
+      if (typeof amount !== 'number' || amount < 1 || amount > 50000) {
+        return res.status(400).json({ error: "Amount must be between $1 and $50,000" });
+      }
+
+      // Prevent double-create: if job already has a PaymentIntent, return existing
+      const existingJob = await storage.getServiceRequest(jobId);
+      if (existingJob?.stripePaymentIntentId && existingJob?.paymentStatus === 'authorized') {
+        // Return existing client secret by retrieving the PI
+        const stripe = await (await import('../../stripeClient')).getUncachableStripeClient();
+        const existingPI = await stripe.paymentIntents.retrieve(existingJob.stripePaymentIntentId);
+        if (existingPI.status !== 'canceled' && existingPI.status !== 'succeeded') {
+          return res.json({
+            clientSecret: existingPI.client_secret,
+            paymentIntentId: existingPI.id,
+          });
+        }
+      }
+
       let user = customerId ? await storage.getUser(customerId) : null;
 
       if (!user) {
@@ -151,6 +169,11 @@ export function registerPaymentRoutes(app: Express) {
 
       if (job.paymentStatus === "captured") {
         return res.status(400).json({ error: "Payment already captured" });
+      }
+
+      // Verify job is actually completed before capturing payment
+      if (job.status !== "completed") {
+        return res.status(400).json({ error: "Cannot capture payment — job is not completed", jobStatus: job.status });
       }
 
       let haulerStripeAccountId = null;
@@ -536,7 +559,7 @@ export function registerPaymentRoutes(app: Express) {
       }
 
       const backgroundStatus = profile.backgroundCheckStatus || "pending";
-      const hasCard = !!profile.backupCardId;
+      const hasCard = !!profile.hasCardOnFile;
       const ndaAccepted = !!profile.ndaAcceptedAt;
 
       res.json({
@@ -604,17 +627,17 @@ export function registerPaymentRoutes(app: Express) {
       }
 
       const totalAmount = job.livePrice || 0;
-      const platformFeePercent = stripeService.getPlatformFeePercent(pyckerTier, isVerifiedLlc);
-      const haulerPayoutPercent = stripeService.getHaulerPayoutPercent(pyckerTier, isVerifiedLlc);
-      const platformFee = stripeService.calculatePlatformFee(totalAmount, pyckerTier, isVerifiedLlc);
-      const haulerPayout = stripeService.calculateHaulerPayout(totalAmount, pyckerTier, isVerifiedLlc);
+      // Use calculatePayoutBreakdown for consistency with actual capture logic
+      const breakdown = stripeService.calculatePayoutBreakdown(totalAmount, pyckerTier, isVerifiedLlc);
 
       res.json({
-        totalAmount,
-        platformFee,
-        haulerPayout,
-        platformFeePercent,
-        haulerPayoutPercent,
+        totalAmount: breakdown.totalAmount,
+        platformFee: breakdown.platformFee,
+        haulerPayout: breakdown.haulerPayout,
+        insuranceFee: breakdown.insuranceFee,
+        platformFeePercent: breakdown.platformFeePercent,
+        haulerPayoutPercent: stripeService.getHaulerPayoutPercent(pyckerTier, isVerifiedLlc),
+        isVerifiedLlc: breakdown.isVerifiedLlc,
         pyckerTier,
       });
     } catch (error) {

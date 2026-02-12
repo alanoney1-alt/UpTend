@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,7 +39,7 @@ export function CarbonDispatcher() {
   const today = new Date().toISOString().split("T")[0];
   const { data: batches = [], isLoading } = useQuery<DispatchBatch[]>({
     queryKey: ["/api/dispatch/batches", today],
-    queryFn: () => fetch(`/api/dispatch/batches?date=${today}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/dispatch/batches?date=${today}`),
   });
 
   const optimizeMutation = useMutation({

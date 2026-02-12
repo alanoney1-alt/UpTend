@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -52,7 +53,7 @@ export function EsgImpactDashboard({ customerId, serviceRequestId }: EsgImpactDa
 
   const { data: customerLogs = [] } = useQuery<EsgImpactLog[]>({
     queryKey: ["/api/esg/customer", customerId],
-    queryFn: () => fetch(`/api/esg/customer/${customerId}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/esg/customer/${customerId}`),
     enabled: !!customerId,
   });
 

@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +46,7 @@ interface VerificationGatesDisplayProps {
 export function VerificationGatesDisplay({ haulerId, compact }: VerificationGatesDisplayProps) {
   const { data: gates, isLoading } = useQuery<VerificationGates>({
     queryKey: ["/api/verification-gates", haulerId],
-    queryFn: () => fetch(`/api/verification-gates/${haulerId}`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/verification-gates/${haulerId}`),
     enabled: !!haulerId,
   });
 

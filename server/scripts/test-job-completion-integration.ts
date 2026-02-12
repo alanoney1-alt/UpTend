@@ -37,7 +37,7 @@ async function testJobCompletionIntegration() {
     // Clean up
     const { EsgStorage } = await import("../storage/domains/esg/storage");
     const esgStorage = new EsgStorage();
-    await esgStorage.deleteServiceEsgMetrics(result.esgMetrics.id);
+    // TODO: cleanup - delete method not yet implemented
   } catch (e) {
     console.error("❌ Pressure Washing Job failed:", e);
     failed++;
@@ -69,7 +69,7 @@ async function testJobCompletionIntegration() {
     // Clean up
     const { EsgStorage } = await import("../storage/domains/esg/storage");
     const esgStorage = new EsgStorage();
-    await esgStorage.deleteServiceEsgMetrics(result.esgMetrics.id);
+    // TODO: cleanup - delete method not yet implemented
   } catch (e) {
     console.error("❌ Gutter Cleaning Job failed:", e);
     failed++;
@@ -102,7 +102,7 @@ async function testJobCompletionIntegration() {
     // Clean up
     const { EsgStorage } = await import("../storage/domains/esg/storage");
     const esgStorage = new EsgStorage();
-    await esgStorage.deleteServiceEsgMetrics(result.esgMetrics.id);
+    // TODO: cleanup - delete method not yet implemented
   } catch (e) {
     console.error("❌ Handyman Job failed:", e);
     failed++;

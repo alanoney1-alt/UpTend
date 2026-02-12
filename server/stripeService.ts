@@ -90,6 +90,8 @@ export class StripeService {
           pyckerTier,
           platformFeePercent: platformFeePercent.toString(),
         },
+      }, {
+        idempotencyKey: `pi_create_${jobId}_${amountCents}`,
       });
     } catch (error: any) {
       logError(error, 'Stripe API error in createPaymentIntent', {

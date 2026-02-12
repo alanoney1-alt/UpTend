@@ -36,22 +36,22 @@ export async function checkForFraud(
   // Run appropriate fraud check
   switch (checkType) {
     case "price_manipulation":
-      return checkPriceManipulation(data);
+      return checkPriceManipulation(data as any);
 
     case "disposal_receipt":
-      return checkDisposalReceipt(data);
+      return checkDisposalReceipt(data as any);
 
     case "gps_integrity":
-      return checkGpsIntegrity(data);
+      return checkGpsIntegrity(data as any);
 
     case "photo_authenticity":
-      return checkPhotoAuthenticity(data);
+      return checkPhotoAuthenticity(data as any);
 
     case "review_manipulation":
-      return checkReviewManipulation(data);
+      return checkReviewManipulation(data as any);
 
     case "booking_pattern":
-      return checkBookingPattern(data);
+      return checkBookingPattern(data as any);
 
     default:
       return null;

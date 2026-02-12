@@ -1,3 +1,4 @@
+import { safeFetchJson } from "@/lib/queryClient";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -30,7 +31,7 @@ export function SafetyCopilot({ serviceRequestId, haulerId, photoUrls, serviceTy
 
   const { data: alerts = [], isLoading: loadingAlerts } = useQuery<SafetyAlert[]>({
     queryKey: ["/api/jobs", serviceRequestId, "safety-alerts"],
-    queryFn: () => fetch(`/api/jobs/${serviceRequestId}/safety-alerts`, { credentials: "include" }).then(r => r.json()),
+    queryFn: () => safeFetchJson(`/api/jobs/${serviceRequestId}/safety-alerts`),
     enabled: !!serviceRequestId,
   });
 

@@ -1787,8 +1787,8 @@ export class DatabaseStorage implements IStorage {
     return this.aiCapabilities.getDocumentScansByUser(userId);
   }
 
-  async getDocumentScansByServiceRequest(serviceRequestId: string) {
-    return this.aiCapabilities.getDocumentScansByServiceRequest(serviceRequestId);
+  async getDocumentScansByProperty(propertyId: string) {
+    return this.aiCapabilities.getDocumentScansByProperty(propertyId);
   }
 
   async updateDocumentScan(id: string, updates: any) {

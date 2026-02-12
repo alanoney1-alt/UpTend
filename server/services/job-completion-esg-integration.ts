@@ -133,10 +133,8 @@ function mapJobDataToCalculatorParams(
   serviceRequest: ServiceRequest,
   completionData: Record<string, any>
 ): Record<string, any> | null {
-  // Parse completion data (may be stored as JSON string)
-  const details = typeof serviceRequest.details === "string"
-    ? JSON.parse(serviceRequest.details || "{}")
-    : serviceRequest.details || {};
+  // Use completion data for service-specific details
+  const details = completionData || {};
 
   switch (serviceType) {
     case "pressure_washing":
