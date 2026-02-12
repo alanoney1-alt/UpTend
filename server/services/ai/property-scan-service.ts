@@ -1,6 +1,7 @@
 /**
- * Property Scan Service - Mock property data based on address
- * Returns realistic property data for personalization
+ * Property Scan Service
+ * Uses Zillow data via RapidAPI for real market values
+ * Falls back to estimated data when API unavailable
  */
 
 export interface PropertyData {
@@ -18,14 +19,225 @@ export interface PropertyData {
   stories: number;
   exteriorType: string;
   propertyType: string;
+  rentEstimate?: number;
+  taxAssessedValue?: number;
+  dataSource: "zillow" | "estimated";
+  zillowUrl?: string;
+  imgSrc?: string;
+}
+
+// ─── Zillow API via RapidAPI ─────────────────────────────────────────────────
+
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || "d8b4031b0cmsh0fff73bec93f734p1d1ef8jsnc985291799d6";
+const RAPIDAPI_HOST = "real-estate101.p.rapidapi.com";
+
+interface ZillowResult {
+  id: string;
+  price: string;
+  unformattedPrice: number;
+  beds: number;
+  baths: number;
+  area: number;
+  livingArea: number;
+  homeType: string;
+  rentZestimate: number;
+  taxAssessedValue: number;
+  lotAreaValue: number;
+  lotAreaUnit: string;
+  address: { street: string; city: string; state: string; zipcode: string };
+  latLong: { latitude: number; longitude: number };
+  detailUrl: string;
+  imgSrc: string;
+  zestimate: number;
+  daysOnZillow: number;
+}
+
+// Simple in-memory cache (5 min TTL)
+const cache = new Map<string, { data: ZillowResult[]; ts: number }>();
+const CACHE_TTL = 5 * 60 * 1000;
+
+async function searchZillow(location: string): Promise<ZillowResult[]> {
+  const cacheKey = location.toLowerCase().trim();
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.data;
+
+  try {
+    const url = `https://${RAPIDAPI_HOST}/api/search?location=${encodeURIComponent(location)}&status=any`;
+    const res = await fetch(url, {
+      headers: {
+        "x-rapidapi-host": RAPIDAPI_HOST,
+        "x-rapidapi-key": RAPIDAPI_KEY,
+      },
+    });
+
+    if (!res.ok) {
+      console.error(`Zillow API error: ${res.status}`);
+      return [];
+    }
+
+    const data = await res.json();
+    if (!data.success || !data.results) return [];
+
+    cache.set(cacheKey, { data: data.results, ts: Date.now() });
+    return data.results;
+  } catch (err) {
+    console.error("Zillow API fetch error:", err);
+    return [];
+  }
+}
+
+function normalizeStreet(street: string): string {
+  return street.toLowerCase()
+    .replace(/\b(st|street|ave|avenue|blvd|boulevard|dr|drive|ln|lane|ct|court|rd|road|pl|place|way|cir|circle)\b/g, "")
+    .replace(/[^a-z0-9]/g, "");
 }
 
 /**
- * Generate realistic mock property data based on address string.
- * Uses simple hash of address for deterministic but varied results.
+ * Try to find a specific property by address from Zillow search results
+ */
+async function findPropertyByAddress(address: string): Promise<ZillowResult | null> {
+  // Parse city/state/zip from address
+  const parts = address.split(",").map(s => s.trim());
+  let location: string;
+
+  if (parts.length >= 2) {
+    // "123 Main St, Orlando, FL 32801" or "123 Main St, Orlando FL"
+    location = parts.slice(1).join(", ").trim();
+  } else {
+    // Try to extract city/state from the single string
+    const match = address.match(/([A-Za-z\s]+),?\s*(FL|Florida)\s*(\d{5})?/i);
+    location = match ? `${match[1].trim()}, FL` : "Orlando, FL";
+  }
+
+  const results = await searchZillow(location);
+  if (results.length === 0) return null;
+
+  // Try exact street match
+  const inputStreet = normalizeStreet(address.split(",")[0]);
+  const exactMatch = results.find(r => normalizeStreet(r.address.street) === inputStreet);
+  if (exactMatch) return exactMatch;
+
+  // Try partial match (street number + first word)
+  const inputWords = address.split(",")[0].toLowerCase().split(/\s+/);
+  const streetNum = inputWords[0];
+  if (streetNum && /^\d+$/.test(streetNum)) {
+    const partial = results.find(r => {
+      const rStreet = r.address.street.toLowerCase();
+      return rStreet.startsWith(streetNum + " ");
+    });
+    if (partial) return partial;
+  }
+
+  return null;
+}
+
+/**
+ * Get nearby comps to estimate value for an address not found in listings
+ */
+async function getAreaComps(address: string): Promise<{ medianValue: number; medianSqft: number; medianBeds: number; medianBaths: number; count: number } | null> {
+  const parts = address.split(",").map(s => s.trim());
+  let location: string;
+
+  if (parts.length >= 2) {
+    location = parts.slice(1).join(", ").trim();
+  } else {
+    const match = address.match(/([A-Za-z\s]+),?\s*(FL|Florida)/i);
+    location = match ? `${match[1].trim()}, FL` : "Orlando, FL";
+  }
+
+  const results = await searchZillow(location);
+  if (results.length === 0) return null;
+
+  // Use zestimates from results as comps
+  const withZestimate = results.filter(r => r.zestimate && r.zestimate > 0);
+  if (withZestimate.length === 0) return null;
+
+  const values = withZestimate.map(r => r.zestimate).sort((a, b) => a - b);
+  const sqfts = withZestimate.map(r => r.area || r.livingArea).filter(Boolean).sort((a, b) => a - b);
+  const beds = withZestimate.map(r => r.beds).filter(Boolean).sort((a, b) => a - b);
+  const baths = withZestimate.map(r => r.baths).filter(Boolean).sort((a, b) => a - b);
+
+  const median = (arr: number[]) => arr.length ? arr[Math.floor(arr.length / 2)] : 0;
+
+  return {
+    medianValue: median(values),
+    medianSqft: median(sqfts),
+    medianBeds: median(beds),
+    medianBaths: median(baths),
+    count: withZestimate.length,
+  };
+}
+
+// ─── Main Export ─────────────────────────────────────────────────────────────
+
+/**
+ * Get property data — tries Zillow first, falls back to estimation
+ */
+export async function getPropertyDataAsync(address: string): Promise<PropertyData> {
+  // Try exact match from Zillow
+  const match = await findPropertyByAddress(address);
+  if (match) {
+    const lotAcres = match.lotAreaUnit === "acres"
+      ? match.lotAreaValue
+      : (match.lotAreaValue || 0) / 43560;
+
+    return {
+      address: `${match.address.street}, ${match.address.city}, ${match.address.state} ${match.address.zipcode}`,
+      homeValueEstimate: match.zestimate || match.unformattedPrice,
+      sqFootage: match.area || match.livingArea,
+      lotSizeAcres: +lotAcres.toFixed(2),
+      hasPool: "uncertain", // Zillow doesn't reliably report pools in search results
+      yearBuilt: 0, // Not in search results
+      bedrooms: match.beds,
+      bathrooms: match.baths,
+      roofType: "Unknown",
+      hasGarage: true,
+      garageSize: "Unknown",
+      stories: match.area > 2500 ? 2 : 1,
+      exteriorType: "Unknown",
+      propertyType: match.homeType === "SINGLE_FAMILY" ? "Single Family" : match.homeType?.replace(/_/g, " ") || "Residential",
+      rentEstimate: match.rentZestimate,
+      taxAssessedValue: match.taxAssessedValue,
+      dataSource: "zillow",
+      zillowUrl: match.detailUrl,
+      imgSrc: match.imgSrc,
+    };
+  }
+
+  // Try area comps for estimation
+  const comps = await getAreaComps(address);
+  if (comps && comps.count >= 3) {
+    return {
+      address,
+      homeValueEstimate: comps.medianValue,
+      sqFootage: comps.medianSqft,
+      lotSizeAcres: 0.2,
+      hasPool: "uncertain",
+      yearBuilt: 0,
+      bedrooms: comps.medianBeds,
+      bathrooms: comps.medianBaths,
+      roofType: "Unknown",
+      hasGarage: true,
+      garageSize: "Unknown",
+      stories: comps.medianSqft > 2500 ? 2 : 1,
+      exteriorType: "Unknown",
+      propertyType: "Single Family",
+      dataSource: "estimated",
+    };
+  }
+
+  // Last resort: use the old estimation method
+  return getPropertyDataFallback(address);
+}
+
+/**
+ * Synchronous fallback — deterministic estimation based on address hash
  */
 export function getPropertyData(address: string): PropertyData {
-  // Simple hash for deterministic variation
+  return getPropertyDataFallback(address);
+}
+
+function getPropertyDataFallback(address: string): PropertyData {
   let hash = 0;
   for (let i = 0; i < address.length; i++) {
     hash = ((hash << 5) - hash + address.charCodeAt(i)) | 0;
@@ -33,32 +245,24 @@ export function getPropertyData(address: string): PropertyData {
   const h = Math.abs(hash);
 
   const isOrlando = /orlando|fl|florida|kissimmee|sanford|winter park|altamonte|oviedo|lake mary|apopka|clermont|seminole|osceola|orange/i.test(address);
-
-  // Generate values based on hash for variation
-  const sqFootage = 1200 + (h % 2800); // 1200-4000
-  const yearBuilt = 1970 + (h % 54); // 1970-2024
-  const bedrooms = 2 + (h % 4); // 2-5
-  const bathrooms = Math.max(1, bedrooms - (h % 2)); // 1-5
-  const lotSizeAcres = +(0.15 + (h % 100) / 100).toFixed(2); // 0.15-1.15
+  const sqFootage = 1200 + (h % 2800);
+  const bedrooms = 2 + (h % 4);
+  const bathrooms = Math.max(1, bedrooms - (h % 2));
   const homeValue = Math.round((sqFootage * (isOrlando ? 220 : 250)) / 1000) * 1000;
-
-  // Pool: ~40% have pool in Orlando area, uncertain 15%
   const poolRoll = h % 100;
   const hasPool: boolean | "uncertain" = poolRoll < 40 ? true : poolRoll < 55 ? "uncertain" : false;
-
   const roofTypes = ["Shingle", "Tile", "Metal", "Flat"];
   const exteriorTypes = ["Stucco", "Vinyl Siding", "Brick", "Concrete Block"];
   const garageOptions = [{ has: true, size: "1-car" }, { has: true, size: "2-car" }, { has: true, size: "3-car" }, { has: false, size: "none" }];
-
   const garage = garageOptions[h % garageOptions.length];
 
   return {
     address,
     homeValueEstimate: homeValue,
     sqFootage,
-    lotSizeAcres,
+    lotSizeAcres: +(0.15 + (h % 100) / 100).toFixed(2),
     hasPool,
-    yearBuilt,
+    yearBuilt: 1970 + (h % 54),
     bedrooms,
     bathrooms,
     roofType: roofTypes[h % roofTypes.length],
@@ -67,6 +271,7 @@ export function getPropertyData(address: string): PropertyData {
     stories: sqFootage > 2500 ? 2 : 1,
     exteriorType: exteriorTypes[h % exteriorTypes.length],
     propertyType: "Single Family",
+    dataSource: "estimated",
   };
 }
 
@@ -78,16 +283,19 @@ export function formatPropertySummary(data: PropertyData): string {
     ? "Has a pool ✓"
     : data.hasPool === "uncertain"
       ? "Pool status: uncertain (ask customer)"
-      : "No pool detected";
+      : "No pool";
 
-  return `Property: ${data.address}
-- Est. Value: $${data.homeValueEstimate.toLocaleString()}
-- ${data.sqFootage.toLocaleString()} sq ft, ${data.stories}-story ${data.propertyType}
-- ${data.bedrooms} bed / ${data.bathrooms} bath
-- Lot: ${data.lotSizeAcres} acres
-- Built: ${data.yearBuilt}
-- Roof: ${data.roofType}
-- Exterior: ${data.exteriorType}
-- Garage: ${data.hasGarage ? data.garageSize : "None"}
-- ${poolText}`;
+  const source = data.dataSource === "zillow" ? "📊 Zillow data" : "📐 Estimated";
+
+  return [
+    `Address: ${data.address}`,
+    `Market Value: $${data.homeValueEstimate.toLocaleString()} (${source})`,
+    `Size: ${data.sqFootage.toLocaleString()} sqft, ${data.bedrooms} bed / ${data.bathrooms} bath`,
+    `Lot: ${data.lotSizeAcres} acres`,
+    data.yearBuilt ? `Built: ${data.yearBuilt}` : null,
+    `Type: ${data.propertyType}`,
+    poolText,
+    data.rentEstimate ? `Rent Estimate: $${data.rentEstimate}/mo` : null,
+    data.taxAssessedValue ? `Tax Assessed: $${data.taxAssessedValue.toLocaleString()}` : null,
+  ].filter(Boolean).join("\n");
 }

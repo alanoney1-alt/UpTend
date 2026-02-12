@@ -10,7 +10,7 @@ import { Router } from "express";
 import { createChatCompletion, analyzeImage } from "../../services/ai/anthropic-client";
 import { storage } from "../../storage";
 import { pool } from "../../db";
-import { getPropertyData, formatPropertySummary, type PropertyData } from "../../services/ai/property-scan-service";
+import { getPropertyData, getPropertyDataAsync, formatPropertySummary, type PropertyData } from "../../services/ai/property-scan-service";
 import { calculatePriceMatch, STANDARD_RATES, type PriceMatchResult } from "../../services/ai/price-match-service";
 import { nanoid } from "nanoid";
 
@@ -645,7 +645,7 @@ Return ONLY valid JSON.`,
         return res.status(400).json({ error: "Address is required" });
       }
 
-      const propertyData = getPropertyData(address);
+      const propertyData = await getPropertyDataAsync(address);
 
       // Store in session
       if (sessionId) {
@@ -841,7 +841,7 @@ async function processAction(action: any, session: GuideSession, userId: string 
   try {
     switch (action.type) {
       case "property_scan": {
-        const propertyData = getPropertyData(action.address);
+        const propertyData = await getPropertyDataAsync(action.address);
         session.propertyData = propertyData;
         session.onboardingState = propertyData.hasPool === "uncertain" ? "pool_check" : "property_confirmed";
 
