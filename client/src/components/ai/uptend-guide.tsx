@@ -326,11 +326,10 @@ export function UpTendGuide() {
     } catch { /* silent */ }
   }, []);
 
-  // Auto-greet on first visit — open after a short delay so page loads first
+  // Auto-greet EVERY visit — open after a short delay so page loads first
   useEffect(() => {
     if (isDisabled) return;
-    const alreadyGreeted = localStorage.getItem(LS_GREETED);
-    if (!alreadyGreeted && !hasInitRef.current) {
+    if (!hasInitRef.current) {
       const timer = setTimeout(() => {
         handleOpen();
         localStorage.setItem(LS_GREETED, "true");
@@ -544,7 +543,7 @@ export function UpTendGuide() {
           aria-label="Chat with Bud"
         >
           <span className="text-base leading-none">🏠</span>
-          <span>Need a hand? 👋</span>
+          <span>Need a hand from Bud? 👋</span>
         </button>
       )}
 
