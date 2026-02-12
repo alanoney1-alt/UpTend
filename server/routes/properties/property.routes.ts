@@ -20,7 +20,7 @@ const router = express.Router();
  */
 router.get("/", auth, async (req, res) => {
   try {
-    const properties = await getPropertiesByUserId(req.user!.id);
+    const properties = await getPropertiesByUserId((req.user as any).userId || (req.user as any).id);
     res.json(properties);
   } catch (error) {
     console.error("Error fetching properties:", error);
@@ -36,7 +36,7 @@ router.post("/", auth, async (req, res) => {
   try {
     const propertyData: InsertProperty = {
       id: crypto.randomUUID(),
-      ownerId: req.user!.id,
+      ownerId: (req.user as any).userId || (req.user as any).id,
       ...req.body,
       createdAt: new Date().toISOString(),
     };
@@ -62,7 +62,7 @@ router.get("/:id", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== req.user!.id) {
+    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -86,7 +86,7 @@ router.patch("/:id", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== req.user!.id) {
+    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -111,7 +111,7 @@ router.get("/:id/health-score", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== req.user!.id) {
+    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -136,7 +136,7 @@ router.post("/:id/health-score/update", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== req.user!.id) {
+    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -162,7 +162,7 @@ router.get("/:id/timeline", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== req.user!.id) {
+    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -187,7 +187,7 @@ router.get("/:id/maintenance-schedule", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== req.user!.id) {
+    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
       return res.status(403).json({ error: "Access denied" });
     }
 

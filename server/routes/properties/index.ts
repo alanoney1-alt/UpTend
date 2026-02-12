@@ -11,10 +11,10 @@ import healthEventsRoutes from "./health-events.routes";
  * All routes for properties, appliances, warranties, insurance, documents, and health events
  */
 export function registerPropertyIntelligenceRoutes(app: Express): void {
-  app.use("/api", propertyRoutes);
-  app.use("/api", appliancesRoutes);
-  app.use("/api", warrantiesRoutes);
-  app.use("/api", insuranceRoutes);
-  app.use("/api", documentsRoutes);
-  app.use("/api", healthEventsRoutes);
+  app.use("/api/properties", propertyRoutes);
+  app.use("/api/appliances", appliancesRoutes);
+  app.use("/api/warranties", warrantiesRoutes);
+  app.use("/api/insurance", insuranceRoutes);
+  app.use("/api/documents", documentsRoutes);
+  app.use("/api/health-events", healthEventsRoutes);
 }

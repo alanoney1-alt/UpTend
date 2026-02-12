@@ -32,7 +32,7 @@ export function registerHoaViolationRoutes(app: Express) {
 
       // Verify team access (any team member can create violations) - admin bypass
       if (req.user!.role !== "admin") {
-        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId);
+        const access = await verifyTeamAccess((req.user as any).userId || (req.user as any).id, property.businessAccountId);
         if (!access.authorized) {
           return res.status(403).json({ error: access.message || "Unauthorized - not a member of this business account" });
         }
@@ -92,7 +92,7 @@ export function registerHoaViolationRoutes(app: Express) {
 
       // Verify team access - admin bypass
       if (req.user!.role !== "admin") {
-        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId);
+        const access = await verifyTeamAccess((req.user as any).userId || (req.user as any).id, property.businessAccountId);
         if (!access.authorized) {
           return res.status(403).json({ error: access.message || "Unauthorized" });
         }
@@ -116,7 +116,7 @@ export function registerHoaViolationRoutes(app: Express) {
 
       // Verify team access - admin bypass
       if (req.user!.role !== "admin") {
-        const access = await verifyTeamAccess(req.user!.id, violation.businessAccountId);
+        const access = await verifyTeamAccess((req.user as any).userId || (req.user as any).id, violation.businessAccountId);
         if (!access.authorized) {
           return res.status(403).json({ error: access.message || "Unauthorized" });
         }
@@ -139,7 +139,7 @@ export function registerHoaViolationRoutes(app: Express) {
 
       // Verify team access - admin bypass
       if (req.user!.role !== "admin") {
-        const access = await verifyTeamAccess(req.user!.id, violation.businessAccountId);
+        const access = await verifyTeamAccess((req.user as any).userId || (req.user as any).id, violation.businessAccountId);
         if (!access.authorized) {
           return res.status(403).json({ error: access.message || "Unauthorized" });
         }

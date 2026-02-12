@@ -20,7 +20,7 @@ export function registerCustomerReferralRoutes(app: Express) {
       }
 
       // Check if user already has a referral code
-      const existingReferrals = await storage.getReferralsByReferrer(req.user.id);
+      const existingReferrals = await storage.getReferralsByReferrer((req.user as any).userId || (req.user as any).id);
       let referralCode = existingReferrals[0]?.referralCode;
 
       // Generate code if they don't have one (first time)
@@ -51,7 +51,7 @@ export function registerCustomerReferralRoutes(app: Express) {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
-      const referrals = await storage.getReferralsByReferrer(req.user.id);
+      const referrals = await storage.getReferralsByReferrer((req.user as any).userId || (req.user as any).id);
 
       const stats = {
         totalReferrals: referrals.length,

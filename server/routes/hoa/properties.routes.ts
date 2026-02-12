@@ -84,7 +84,7 @@ export function registerHoaPropertyRoutes(app: Express) {
 
       // Verify team access - admin bypass
       if (req.user!.role !== "admin") {
-        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId);
+        const access = await verifyTeamAccess((req.user as any).userId || (req.user as any).id, property.businessAccountId);
         if (!access.authorized) {
           return res.status(403).json({ error: access.message || "Unauthorized" });
         }
@@ -107,7 +107,7 @@ export function registerHoaPropertyRoutes(app: Express) {
 
       // Verify team access with canManageProperties permission - admin bypass
       if (req.user!.role !== "admin") {
-        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId, "canManageProperties");
+        const access = await verifyTeamAccess((req.user as any).userId || (req.user as any).id, property.businessAccountId, "canManageProperties");
         if (!access.authorized) {
           return res.status(403).json({ error: access.message || "Unauthorized - requires canManageProperties permission" });
         }
@@ -136,7 +136,7 @@ export function registerHoaPropertyRoutes(app: Express) {
 
       // Verify team access with canManageProperties permission - admin bypass
       if (req.user!.role !== "admin") {
-        const access = await verifyTeamAccess(req.user!.id, property.businessAccountId, "canManageProperties");
+        const access = await verifyTeamAccess((req.user as any).userId || (req.user as any).id, property.businessAccountId, "canManageProperties");
         if (!access.authorized) {
           return res.status(403).json({ error: access.message || "Unauthorized - requires canManageProperties permission" });
         }

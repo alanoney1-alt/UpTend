@@ -209,7 +209,7 @@ export async function registerBusinessAuthRoutes(app: Express) {
   // ==========================================
   app.get("/api/auth/business/context", requireAuth, async (req, res) => {
     try {
-      const userId = req.user!.id;
+      const userId = (req.user as any).userId || (req.user as any).id;
 
       // Get all business memberships
       const memberships = await storage.getBusinessMembershipsForUser(userId);
@@ -255,7 +255,7 @@ export async function registerBusinessAuthRoutes(app: Express) {
 
   app.post("/api/auth/business/switch-context", requireAuth, async (req, res) => {
     try {
-      const userId = req.user!.id;
+      const userId = (req.user as any).userId || (req.user as any).id;
       const { businessAccountId } = switchContextSchema.parse(req.body);
 
       // Verify user is a member of this business
