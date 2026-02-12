@@ -144,7 +144,7 @@ export function InstantEstimator() {
             </div>
 
             <Button
-              onClick={() => setLocation("/auth?redirect=booking&address=" + encodeURIComponent(address))}
+              onClick={() => setLocation("/book?address=" + encodeURIComponent(address))}
               variant="outline"
               size="lg"
               className="border-white/30 text-white backdrop-blur-sm w-full md:w-auto font-bold"
@@ -171,7 +171,7 @@ export function InstantEstimator() {
           onClose={() => setShowChecklist(false)}
           onGreenLight={() => {
             setShowChecklist(false);
-            setLocation("/auth?redirect=booking&address=" + encodeURIComponent(address) + "&bundle=storm-prep");
+            setLocation("/book?address=" + encodeURIComponent(address) + "&bundle=storm-prep");
           }}
         />
       )}

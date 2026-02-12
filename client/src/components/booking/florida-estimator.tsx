@@ -379,7 +379,7 @@ export function FloridaEstimator() {
     if (schedulingData) {
       params.set("schedulingData", encodeURIComponent(JSON.stringify(schedulingData)));
     }
-    setLocation("/auth?" + params.toString());
+    setLocation("/book?" + params.toString());
   };
 
   if (step === 1) {

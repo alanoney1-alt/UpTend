@@ -89,7 +89,7 @@ export default function PublicPricing() {
   const [, setLocation] = useLocation();
 
   const handleBook = (serviceId: string) => {
-    setLocation(`/auth?returnUrl=/book?service=${serviceId}`);
+    setLocation(`/book?service=${serviceId}`);
   };
 
   return (
@@ -173,7 +173,7 @@ export default function PublicPricing() {
             <Button
               size="lg"
               className="font-bold px-8"
-              onClick={() => setLocation("/auth")}
+              onClick={() => setLocation("/book")}
               data-testid="button-pricing-get-exact"
             >
               Get My Exact Price

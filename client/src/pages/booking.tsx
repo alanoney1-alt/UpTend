@@ -1097,7 +1097,13 @@ export default function Booking() {
   }, [step, matchingComplete, countdown]);
 
   const handleNext = () => {
-    if (step === 2) {
+    if (step === 3) {
+      // Only create the booking at the final step — prompt login if needed
+      if (!isAuthenticated) {
+        const returnUrl = `/book?service=${formData.serviceType}`;
+        navigate(`/customer-login?returnUrl=${encodeURIComponent(returnUrl)}`);
+        return;
+      }
       createRequestMutation.mutate(formData);
     }
     setStep(prev => Math.min(prev + 1, 4));
