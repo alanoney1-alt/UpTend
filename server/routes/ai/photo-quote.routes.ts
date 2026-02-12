@@ -63,8 +63,22 @@ Return ONLY valid JSON with these fields:
   "confidenceScore": 0.0-1.0,
   "scopeDescription": "One sentence describing what you see",
   "priceRange": { "min": number, "max": number },
-  "additionalNotes": "any safety concerns or special equipment needed"
-}`;
+  "additionalNotes": "any safety concerns or special equipment needed",
+  "diyScore": 0-100,
+  "diyGuide": {
+    "feasibility": "You could probably handle this yourself" | "Some DIY experience needed" | "Best left to a pro",
+    "steps": ["step 1", "step 2", ...],
+    "toolsNeeded": ["tool1", "tool2", ...],
+    "estimatedTime": "time estimate for DIY",
+    "safetyWarnings": ["warning1", ...]
+  }
+}
+
+For diyScore: 0-100 where higher = more feasible for DIY.
+- >70: homeowner can likely do it themselves
+- 40-70: needs some DIY experience
+- <40: professional recommended (heavy equipment, safety risk, licensing needed)
+Consider: safety risk, tools required, skill level, physical difficulty, and code/permit requirements.`;
 
       let analysis;
       try {
@@ -83,6 +97,14 @@ Return ONLY valid JSON with these fields:
           confidenceScore: 0.5,
           priceRange: { min: 99, max: 299 },
           scopeDescription: "Photo received — a Pro will verify on-site for exact pricing.",
+          diyScore: 30,
+          diyGuide: {
+            feasibility: "Best left to a pro",
+            steps: [],
+            toolsNeeded: [],
+            estimatedTime: "Varies",
+            safetyWarnings: ["Professional assessment recommended"],
+          },
         };
       }
 
@@ -92,6 +114,14 @@ Return ONLY valid JSON with these fields:
         estimatedVolume: analysis.estimatedVolume || "standard scope",
         confidenceScore: analysis.confidenceScore || 0.7,
         priceRange: analysis.priceRange || { min: 99, max: 299 },
+        diyScore: typeof analysis.diyScore === "number" ? analysis.diyScore : 30,
+        diyGuide: analysis.diyGuide || {
+          feasibility: "Best left to a pro",
+          steps: [],
+          toolsNeeded: [],
+          estimatedTime: "Varies",
+          safetyWarnings: ["Professional assessment recommended"],
+        },
       };
 
       // Update with analysis results

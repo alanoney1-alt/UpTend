@@ -169,6 +169,9 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   // Carpet Cleaning Service
   carpetCertified: boolean("carpet_certified").default(false),
   hasTruckMount: boolean("has_truck_mount").default(false), // Required for HWE (Hot Water Extraction) method
+  // Same-Day Service
+  sameDayAvailable: boolean("same_day_available").default(false), // Opt-in to same-day jobs
+  sameDayRadius: integer("same_day_radius").default(15), // Miles radius for same-day availability
 });
 
 export const haulerProfilesRelations = relations(haulerProfiles, ({ one, many }) => ({
@@ -4747,3 +4750,271 @@ export const neighborhoodIntelligenceReports = pgTable("neighborhood_intelligenc
 export const insertNeighborhoodIntelligenceReportSchema = createInsertSchema(neighborhoodIntelligenceReports).omit({ id: true });
 export type InsertNeighborhoodIntelligenceReport = z.infer<typeof insertNeighborhoodIntelligenceReportSchema>;
 export type NeighborhoodIntelligenceReport = typeof neighborhoodIntelligenceReports.$inferSelect;
+
+// ============ Satisfaction Guarantee Claims ============
+
+export const guaranteeClaimStatusEnum = z.enum(["pending", "approved", "denied", "refunded"]);
+export type GuaranteeClaimStatus = z.infer<typeof guaranteeClaimStatusEnum>;
+
+export const guaranteeClaims = pgTable("guarantee_claims", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id").notNull(),
+  customerId: varchar("customer_id").notNull(),
+  reason: text("reason").notNull(),
+  status: text("status").notNull().default("pending"),
+  amount: real("amount"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  resolvedAt: text("resolved_at"),
+  resolvedBy: varchar("resolved_by"),
+  notes: text("notes"),
+});
+
+export const insertGuaranteeClaimSchema = createInsertSchema(guaranteeClaims).omit({ id: true, createdAt: true });
+export type InsertGuaranteeClaim = z.infer<typeof insertGuaranteeClaimSchema>;
+export type GuaranteeClaim = typeof guaranteeClaims.$inferSelect;
+
+// ============ Service Contracts / Pre-Work Authorization ============
+
+export const contractStatusEnum = z.enum(["draft", "pending_customer", "pending_pro", "signed", "voided"]);
+export type ContractStatus = z.infer<typeof contractStatusEnum>;
+
+export const serviceContracts = pgTable("service_contracts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id").notNull(),
+  customerId: varchar("customer_id").notNull(),
+  haulerId: varchar("hauler_id").notNull(),
+  scopeOfWork: text("scope_of_work").notNull(),
+  agreedPrice: real("agreed_price").notNull(),
+  customerSignature: text("customer_signature"),
+  customerSignedAt: text("customer_signed_at"),
+  proSignature: text("pro_signature"),
+  proSignedAt: text("pro_signed_at"),
+  status: text("status").notNull().default("draft"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertServiceContractSchema = createInsertSchema(serviceContracts).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertServiceContract = z.infer<typeof insertServiceContractSchema>;
+export type ServiceContract = typeof serviceContracts.$inferSelect;
+
+// ==========================================
+// Emergency Dispatch
+// ==========================================
+export const emergencyServiceTypeEnum = z.enum([
+  "water_damage", "fire_damage", "lockout", "broken_pipe",
+  "electrical_emergency", "gas_leak", "storm_damage"
+]);
+export type EmergencyServiceType = z.infer<typeof emergencyServiceTypeEnum>;
+
+export const emergencyStatusEnum = z.enum([
+  "pending", "searching", "accepted", "en_route", "in_progress", "completed", "cancelled"
+]);
+export type EmergencyStatus = z.infer<typeof emergencyStatusEnum>;
+
+export const emergencyRequests = pgTable("emergency_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  emergencyType: text("emergency_type").notNull(),
+  description: text("description"),
+  photoUrls: text("photo_urls").array(),
+  addressLine1: text("address_line1").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zipCode: text("zip_code").notNull(),
+  lat: real("lat"),
+  lng: real("lng"),
+  status: text("status").notNull().default("searching"),
+  assignedHaulerId: varchar("assigned_hauler_id"),
+  pricingMultiplier: real("pricing_multiplier").notNull().default(2.0),
+  estimatedPrice: real("estimated_price"),
+  etaMinutes: integer("eta_minutes"),
+  acceptedAt: text("accepted_at"),
+  completedAt: text("completed_at"),
+  serviceRequestId: varchar("service_request_id"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertEmergencyRequestSchema = createInsertSchema(emergencyRequests).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertEmergencyRequest = z.infer<typeof insertEmergencyRequestSchema>;
+export type EmergencyRequest = typeof emergencyRequests.$inferSelect;
+
+// ==========================================
+// Neighbor Networks
+// ==========================================
+export const neighborhoods = pgTable("neighborhoods", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  zipCode: text("zip_code").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  memberCount: integer("member_count").notNull().default(0),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertNeighborhoodSchema = createInsertSchema(neighborhoods).omit({ id: true, createdAt: true });
+export type InsertNeighborhood = z.infer<typeof insertNeighborhoodSchema>;
+export type Neighborhood = typeof neighborhoods.$inferSelect;
+
+export const neighborhoodMembers = pgTable("neighborhood_members", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  neighborhoodId: varchar("neighborhood_id").notNull(),
+  customerId: varchar("customer_id").notNull(),
+  joinedAt: text("joined_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertNeighborhoodMemberSchema = createInsertSchema(neighborhoodMembers).omit({ id: true, joinedAt: true });
+export type InsertNeighborhoodMember = z.infer<typeof insertNeighborhoodMemberSchema>;
+export type NeighborhoodMember = typeof neighborhoodMembers.$inferSelect;
+
+export const neighborhoodRecommendations = pgTable("neighborhood_recommendations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  neighborhoodId: varchar("neighborhood_id").notNull(),
+  customerId: varchar("customer_id").notNull(),
+  haulerId: varchar("hauler_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  rating: integer("rating").notNull(),
+  review: text("review"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertNeighborhoodRecommendationSchema = createInsertSchema(neighborhoodRecommendations).omit({ id: true, createdAt: true });
+export type InsertNeighborhoodRecommendation = z.infer<typeof insertNeighborhoodRecommendationSchema>;
+export type NeighborhoodRecommendation = typeof neighborhoodRecommendations.$inferSelect;
+
+// ==========================================
+// Service Subscriptions (Recurring Plans)
+// ==========================================
+export const subscriptionFrequencyEnum = z.enum(["weekly", "biweekly", "monthly"]);
+export type SubscriptionFrequency = z.infer<typeof subscriptionFrequencyEnum>;
+
+export const subscriptionStatusEnum = z.enum(["active", "paused", "cancelled"]);
+export type SubscriptionStatus = z.infer<typeof subscriptionStatusEnum>;
+
+export const serviceSubscriptions = pgTable("service_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  serviceType: text("service_type").notNull(), // home_cleaning, pool_cleaning, landscaping, carpet_cleaning, gutter_cleaning, pressure_washing
+  frequency: text("frequency").notNull(), // weekly, biweekly, monthly
+  preferredDay: text("preferred_day"), // monday, tuesday, etc.
+  preferredTime: text("preferred_time"), // morning, afternoon, evening
+  addressLine1: text("address_line1"),
+  addressLine2: text("address_line2"),
+  city: text("city"),
+  state: text("state"),
+  zip: text("zip"),
+  notes: text("notes"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  status: text("status").notNull().default("active"), // active, paused, cancelled
+  nextServiceDate: text("next_service_date"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertServiceSubscriptionSchema = createInsertSchema(serviceSubscriptions).omit({ id: true, createdAt: true });
+export type InsertServiceSubscription = z.infer<typeof insertServiceSubscriptionSchema>;
+export type ServiceSubscription = typeof serviceSubscriptions.$inferSelect;
+
+// ==========================================
+// B2B Partner Portal
+// ==========================================
+export const partners = pgTable("partners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyName: text("company_name").notNull(),
+  contactName: text("contact_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  passwordHash: text("password_hash"),
+  type: text("type").notNull().default("other"), // property_manager | airbnb_host | real_estate | other
+  apiKey: text("api_key"),
+  status: text("status").notNull().default("pending"), // pending | active | suspended
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertPartnerSchema = createInsertSchema(partners).omit({ id: true });
+export type InsertPartner = z.infer<typeof insertPartnerSchema>;
+export type Partner = typeof partners.$inferSelect;
+
+export const partnerBookings = pgTable("partner_bookings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  partnerId: varchar("partner_id").notNull(),
+  serviceRequestId: varchar("service_request_id"),
+  serviceType: text("service_type").notNull(),
+  clientName: text("client_name").notNull(),
+  clientPhone: text("client_phone"),
+  clientEmail: text("client_email"),
+  address: text("address").notNull(),
+  city: text("city"),
+  state: text("state"),
+  zip: text("zip"),
+  preferredDate: text("preferred_date"),
+  originalAmount: text("original_amount"),
+  discountAmount: text("discount_amount"),
+  finalAmount: text("final_amount"),
+  commissionRate: text("commission_rate"),
+  notes: text("notes"),
+  status: text("status").notNull().default("pending"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertPartnerBookingSchema = createInsertSchema(partnerBookings).omit({ id: true });
+export type InsertPartnerBooking = z.infer<typeof insertPartnerBookingSchema>;
+export type PartnerBooking = typeof partnerBookings.$inferSelect;
+
+// ==========================================
+// Home CRM / Home Profile
+// ==========================================
+export const homeProfiles = pgTable("home_profiles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zip: text("zip").notNull(),
+  homeType: text("home_type").notNull().default("single_family"),
+  squareFootage: text("square_footage"),
+  yearBuilt: text("year_built"),
+  bedrooms: text("bedrooms"),
+  bathrooms: text("bathrooms"),
+  lotSize: text("lot_size"),
+  photoUrl: text("photo_url"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertHomeProfileSchema = createInsertSchema(homeProfiles).omit({ id: true });
+export type InsertHomeProfile = z.infer<typeof insertHomeProfileSchema>;
+export type HomeProfile = typeof homeProfiles.$inferSelect;
+
+export const homeServiceHistory = pgTable("home_service_history", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  homeProfileId: varchar("home_profile_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  provider: text("provider"),
+  date: text("date").notNull(),
+  cost: text("cost"),
+  notes: text("notes"),
+  receiptUrl: text("receipt_url"),
+  warrantyExpiry: text("warranty_expiry"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertHomeServiceHistorySchema = createInsertSchema(homeServiceHistory).omit({ id: true });
+export type InsertHomeServiceHistory = z.infer<typeof insertHomeServiceHistorySchema>;
+export type HomeServiceHistoryRecord = typeof homeServiceHistory.$inferSelect;
+
+export const homeAppliances = pgTable("home_appliances", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  homeProfileId: varchar("home_profile_id").notNull(),
+  name: text("name").notNull(),
+  brand: text("brand"),
+  model: text("model"),
+  purchaseDate: text("purchase_date"),
+  warrantyExpiry: text("warranty_expiry"),
+  lastServiceDate: text("last_service_date"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertHomeApplianceSchema = createInsertSchema(homeAppliances).omit({ id: true });
+export type InsertHomeAppliance = z.infer<typeof insertHomeApplianceSchema>;
+export type HomeAppliance = typeof homeAppliances.$inferSelect;

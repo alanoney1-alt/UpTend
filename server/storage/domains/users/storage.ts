@@ -6,8 +6,10 @@ export interface IUsersStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
   createUser(userData: Partial<User>): Promise<User>;
   updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
+  updateUserGoogleId(userId: string, googleId: string): Promise<User | undefined>;
   updateUserLocation(id: string, lat: number, lng: number): Promise<User | undefined>;
   getUsers(): Promise<User[]>;
 }
@@ -20,6 +22,11 @@ export class UsersStorage implements IUsersStorage {
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.googleId, googleId));
     return user || undefined;
   }
 
@@ -37,6 +44,14 @@ export class UsersStorage implements IUsersStorage {
     const [user] = await db.update(users)
       .set(updates)
       .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async updateUserGoogleId(userId: string, googleId: string): Promise<User | undefined> {
+    const [user] = await db.update(users)
+      .set({ googleId })
+      .where(eq(users.id, userId))
       .returning();
     return user || undefined;
   }

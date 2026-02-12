@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Eye, EyeOff, Home, Truck } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/landing/header";
+import { GoogleLoginButton, GoogleDivider } from "@/components/auth/google-login-button";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -189,6 +190,9 @@ export default function AuthPage() {
                 {config.subtext}
               </p>
             </div>
+
+            <GoogleLoginButton role={activeTab === "pro" ? "pro" : "customer"} />
+            <GoogleDivider />
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">

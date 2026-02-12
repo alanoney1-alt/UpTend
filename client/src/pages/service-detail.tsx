@@ -10,6 +10,7 @@ import {
   Sparkles, Truck,
 } from "lucide-react";
 import NotFound from "@/pages/not-found";
+import { GuaranteeBadge } from "@/components/guarantee-badge";
 
 interface ServiceData {
   name: string;
@@ -337,6 +338,9 @@ export default function ServiceDetail() {
               Book Now <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
+          <div className="flex justify-center mt-4">
+            <GuaranteeBadge compact />
+          </div>
         </div>
       </section>
 

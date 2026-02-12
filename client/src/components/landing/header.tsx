@@ -72,6 +72,11 @@ export function Header() {
 
         {/* Right: Actions */}
         <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+          <Link href="/emergency">
+            <span className="text-sm font-bold text-red-400 hover:text-red-300 transition-colors cursor-pointer flex items-center gap-1.5" data-testid="link-emergency">
+              🚨 Emergency
+            </span>
+          </Link>
           <LanguageToggle />
           <Link href="/become-pro">
             <span

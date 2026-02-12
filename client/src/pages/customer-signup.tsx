@@ -13,6 +13,7 @@ import { ArrowLeft, Loader2, Eye, EyeOff, CreditCard, Shield, CheckCircle2, Mess
 import { Checkbox } from "@/components/ui/checkbox";
 import { apiRequest } from "@/lib/queryClient";
 import { Logo } from "@/components/ui/logo";
+import { GoogleLoginButton, GoogleDivider } from "@/components/auth/google-login-button";
 
 const signupSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -116,6 +117,9 @@ export default function CustomerSignup() {
                 <span>See your final price before securing a Pro</span>
               </div>
             </div>
+
+            <GoogleLoginButton role="customer" />
+            <GoogleDivider />
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

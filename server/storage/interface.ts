@@ -73,8 +73,10 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
   createUser(user: Partial<User>): Promise<User>;
   updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
+  updateUserGoogleId(userId: string, googleId: string): Promise<User | undefined>;
   updateUserLocation(id: string, lat: number, lng: number): Promise<User | undefined>;
   getUsers(): Promise<User[]>;
 

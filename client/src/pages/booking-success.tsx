@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Home, CalendarPlus, MapPin, TrendingUp, Sparkles } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { PolishUpCrossSell } from "@/components/cross-sell/polishup-prompt";
+import { GuaranteeBadge } from "@/components/guarantee-badge";
 
 export default function BookingSuccess() {
   const [, setLocation] = useLocation();
@@ -123,6 +124,10 @@ export default function BookingSuccess() {
             </div>
           </CardContent>
         </Card>
+
+        <div className={`transition-opacity duration-700 ${showContent ? "opacity-100" : "opacity-0"}`}>
+          <GuaranteeBadge />
+        </div>
 
         {/* PolishUp Cross-Sell Prompt */}
         {shouldShowCrossSell && (

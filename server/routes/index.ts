@@ -10,6 +10,7 @@ import { registerProAuthRoutes, registerHaulerAuthRoutes } from "./auth/hauler.r
 import { registerCustomerAuthRoutes } from "./auth/customer.routes";
 import { registerAdminAuthRoutes } from "./auth/admin.routes";
 import { registerBusinessAuthRoutes } from "./auth/business.routes";
+import { registerGoogleAuthRoutes } from "./auth/google.routes";
 
 // Pro routes (formerly Hauler routes)
 import { registerProProfileRoutes, registerHaulerProfileRoutes } from "./hauler/profile.routes";
@@ -34,6 +35,12 @@ import { registerSubscriptionRoutes } from "./subscriptions.routes";
 import { registerCleaningChecklistRoutes } from "./cleaning-checklists.routes";
 import { registerSubscriptionCronRoutes } from "./admin/subscription-cron.routes";
 import { registerCarbonTrackingRoutes } from "./admin/carbon-tracking.routes";
+
+// Subscription Plans (multi-service recurring)
+import { registerSubscriptionPlansRoutes } from "./subscriptions-plans.routes";
+
+// Same-Day Service
+import { registerSameDayRoutes } from "./same-day.routes";
 
 // Commerce routes
 import { registerPricingRoutes } from "./commerce/pricing-quotes.routes";
@@ -70,6 +77,12 @@ import { registerAiCapabilityRoutes } from "./ai/index";
 // Review routes
 import { registerReviewRoutes } from "./reviews/reviews.routes";
 
+// Guarantee routes
+import { registerGuaranteeRoutes } from "./guarantee.routes";
+
+// Contract routes
+import { registerContractRoutes } from "./contracts.routes";
+
 // Contact routes
 import { registerContactRoutes } from "./contact.routes";
 
@@ -81,6 +94,24 @@ import { registerPropertyValuationRoutes } from "./property/valuation.routes";
 
 // Property Intelligence routes
 import { registerPropertyIntelligenceRoutes } from "./properties/index";
+
+// Emergency routes
+import { registerEmergencyRoutes } from "./emergency.routes";
+
+// Neighborhood routes
+import { registerNeighborhoodRoutes } from "./neighborhoods.routes";
+
+// Insurance routes
+import { registerInsuranceRoutes } from "./insurance.routes";
+
+// Voice AI routes
+import { registerVoiceRoutes } from "./voice.routes";
+
+// Partner Portal routes
+import { registerPartnerRoutes } from "./partners.routes";
+
+// Home CRM routes
+import { registerHomeProfileRoutes } from "./home-profile.routes";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -111,6 +142,7 @@ export async function registerRoutes(
   await registerCustomerAuthRoutes(app);
   await registerAdminAuthRoutes(app);
   await registerBusinessAuthRoutes(app);
+  await registerGoogleAuthRoutes(app);
 
   // Register Pro routes
   registerProProfileRoutes(app);
@@ -135,6 +167,12 @@ export async function registerRoutes(
   registerCleaningChecklistRoutes(app);
   registerSubscriptionCronRoutes(app);
   registerCarbonTrackingRoutes(app);
+
+  // Register Subscription Plans (multi-service recurring)
+  registerSubscriptionPlansRoutes(app);
+
+  // Register Same-Day Service routes
+  registerSameDayRoutes(app);
 
   // Register commerce routes
   registerPricingRoutes(app);
@@ -171,6 +209,12 @@ export async function registerRoutes(
   // Register Review routes
   registerReviewRoutes(app);
 
+  // Register Guarantee routes
+  registerGuaranteeRoutes(app);
+
+  // Register Contract routes
+  registerContractRoutes(app);
+
   // Register Contact routes
   registerContactRoutes(app);
 
@@ -182,6 +226,24 @@ export async function registerRoutes(
 
   // Register Property Intelligence routes
   registerPropertyIntelligenceRoutes(app);
+
+  // Register Emergency routes
+  registerEmergencyRoutes(app);
+
+  // Register Neighborhood routes
+  registerNeighborhoodRoutes(app);
+
+  // Register Insurance routes
+  registerInsuranceRoutes(app);
+
+  // Register Voice AI routes
+  registerVoiceRoutes(app);
+
+  // Register Partner Portal routes
+  registerPartnerRoutes(app);
+
+  // Register Home CRM routes
+  registerHomeProfileRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

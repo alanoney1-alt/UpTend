@@ -21,6 +21,14 @@ import {
   Clock,
 } from "lucide-react";
 
+interface DiyGuide {
+  feasibility: string;
+  steps: string[];
+  toolsNeeded: string[];
+  estimatedTime: string;
+  safetyWarnings: string[];
+}
+
 interface QuoteResult {
   serviceType: string;
   scope: string;
@@ -29,6 +37,8 @@ interface QuoteResult {
   estimatedDuration: string;
   confidence: number;
   details: string;
+  diyScore?: number;
+  diyGuide?: DiyGuide;
 }
 
 export default function PhotoToQuote() {
@@ -293,12 +303,83 @@ export default function PhotoToQuote() {
                 {result.details}
               </p>
 
+              {/* DIY Triage Section */}
+              {typeof result.diyScore === "number" && (
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      DIY Feasibility
+                    </span>
+                    <span className={`text-sm font-semibold ${
+                      result.diyScore > 70 ? "text-green-600" :
+                      result.diyScore >= 40 ? "text-yellow-600" : "text-red-600"
+                    }`}>
+                      {result.diyScore}/100
+                    </span>
+                  </div>
+                  {/* Meter bar */}
+                  <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-3">
+                    <div
+                      className={`h-full rounded-full transition-all ${
+                        result.diyScore > 70 ? "bg-green-500" :
+                        result.diyScore >= 40 ? "bg-yellow-500" : "bg-red-500"
+                      }`}
+                      style={{ width: `${result.diyScore}%` }}
+                    />
+                  </div>
+                  <p className={`text-sm font-medium mb-2 ${
+                    result.diyScore > 70 ? "text-green-700 dark:text-green-400" :
+                    result.diyScore >= 40 ? "text-yellow-700 dark:text-yellow-400" :
+                    "text-red-700 dark:text-red-400"
+                  }`}>
+                    {result.diyGuide?.feasibility || (
+                      result.diyScore > 70 ? "You could probably handle this yourself" :
+                      result.diyScore >= 40 ? "Some DIY experience needed" :
+                      "Best left to a pro"
+                    )}
+                  </p>
+
+                  {/* DIY Steps (show when score >= 40) */}
+                  {result.diyScore >= 40 && result.diyGuide?.steps && result.diyGuide.steps.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Quick DIY Steps</p>
+                      <ol className="list-decimal list-inside space-y-1">
+                        {result.diyGuide.steps.map((step, i) => (
+                          <li key={i} className="text-sm text-gray-600 dark:text-gray-400">{step}</li>
+                        ))}
+                      </ol>
+                      {result.diyGuide.toolsNeeded && result.diyGuide.toolsNeeded.length > 0 && (
+                        <p className="text-xs text-gray-500 mt-2">
+                          🔧 Tools: {result.diyGuide.toolsNeeded.join(", ")}
+                        </p>
+                      )}
+                      {result.diyGuide.estimatedTime && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          ⏱️ Estimated time: {result.diyGuide.estimatedTime}
+                        </p>
+                      )}
+                      {result.diyGuide.safetyWarnings && result.diyGuide.safetyWarnings.length > 0 && (
+                        <div className="mt-2">
+                          {result.diyGuide.safetyWarnings.map((w, i) => (
+                            <p key={i} className="text-xs text-red-600 dark:text-red-400">⚠️ {w}</p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Book a Pro CTA — always visible */}
               <div className="flex gap-3">
                 <Button
                   className="flex-1 bg-[#F47C20] hover:bg-[#e06b10] text-white"
                   onClick={handleBookNow}
                 >
-                  Book Now <ArrowRight className="w-4 h-4 ml-2" />
+                  {result.diyScore && result.diyScore > 70
+                    ? <>Or Book a Pro — ${result.priceRange.min}+ <ArrowRight className="w-4 h-4 ml-2" /></>
+                    : <>Book a Pro <ArrowRight className="w-4 h-4 ml-2" /></>
+                  }
                 </Button>
                 <Button
                   variant="outline"

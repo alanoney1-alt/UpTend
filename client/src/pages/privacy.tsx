@@ -439,13 +439,23 @@ export default function Privacy() {
             <li>Report suspicious activity immediately</li>
           </ul>
 
-          <h2>8. Data Retention</h2>
+          <h2>8. Cookies and Tracking Technologies</h2>
+          <p>We use cookies and similar tracking technologies to enhance your experience on our platform:</p>
+          <ul>
+            <li><strong>Essential Cookies:</strong> Required for the site to function properly, including session management and authentication.</li>
+            <li><strong>Analytics Cookies:</strong> Help us understand how visitors interact with our platform, allowing us to improve our services. These collect anonymized usage data.</li>
+            <li><strong>Marketing Cookies:</strong> Used to deliver relevant advertisements and track campaign performance across platforms.</li>
+          </ul>
+          <p>You can manage your cookie preferences at any time using the cookie consent banner on our site. Essential cookies cannot be disabled as they are necessary for the platform to function. Disabling analytics or marketing cookies will not affect your ability to use our services.</p>
+          <p>We may also use web beacons, pixel tags, and similar technologies to collect information about your interactions with our emails and platform.</p>
+
+          <h2>9. Data Retention</h2>
           <p>We retain your personal information for as long as your account is active or as needed to provide services. We may retain certain information for legal compliance, dispute resolution, and enforcement of our agreements.</p>
 
-          <h2>9. Changes to This Policy</h2>
+          <h2>10. Changes to This Policy</h2>
           <p>We may update this Privacy Policy from time to time. We will notify you of significant changes by posting the new policy on our platform and updating the "Last updated" date.</p>
 
-          <h2>10. Contact Us</h2>
+          <h2>11. Contact Us</h2>
           <p>If you have questions or concerns about this Privacy Policy, please contact us:</p>
           <ul>
             <li>Email: privacy@uptend.app</li>

@@ -30,6 +30,7 @@ export const users = pgTable("users", {
   currentLat: real("current_lat"),
   currentLng: real("current_lng"),
   lastLocationUpdate: text("last_location_update"),
+  googleId: text("google_id"),
   stripeCustomerId: text("stripe_customer_id"),
   totalJobsCompleted: real("total_jobs_completed").default(0),
   createdAt: timestamp("created_at").defaultNow(),

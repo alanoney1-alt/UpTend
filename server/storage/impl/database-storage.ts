@@ -219,12 +219,20 @@ export class DatabaseStorage implements IStorage {
     return this.users.getUserByUsername(username);
   }
 
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    return this.users.getUserByGoogleId(googleId);
+  }
+
   async createUser(user: Partial<User>): Promise<User> {
     return this.users.createUser(user);
   }
 
   async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
     return this.users.updateUser(id, updates);
+  }
+
+  async updateUserGoogleId(userId: string, googleId: string): Promise<User | undefined> {
+    return this.users.updateUserGoogleId(userId, googleId);
   }
 
   async updateUserLocation(id: string, lat: number, lng: number): Promise<User | undefined> {

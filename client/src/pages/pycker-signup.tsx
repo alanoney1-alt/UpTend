@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { Logo } from "@/components/ui/logo";
+import { GoogleLoginButton, GoogleDivider } from "@/components/auth/google-login-button";
 import {
   Select,
   SelectContent,
@@ -499,6 +500,9 @@ export default function PyckerSignup() {
                 <p className="text-muted-foreground mb-6">
                   First, let's set up your Pro account with your email and password.
                 </p>
+
+                <GoogleLoginButton role="pro" />
+                <GoogleDivider />
 
                 <div className="grid md:grid-cols-2 gap-4 mb-6">
                   <FormField

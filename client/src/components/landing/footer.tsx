@@ -145,6 +145,9 @@ export function Footer() {
             <Link href="/privacy" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-privacy">
               {t("footer.footer_privacy")}
             </Link>
+            <Link href="/cost-guides" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-cost-guides">
+              Cost Guides
+            </Link>
           </div>
         </div>
       </div>

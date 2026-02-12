@@ -68,9 +68,20 @@ import DocumentScanner from "@/pages/ai/document-scanner";
 import MyJobs from "@/pages/my-jobs";
 import ServiceDetail from "@/pages/service-detail";
 import Sustainability from "@/pages/sustainability";
+import Emergency from "@/pages/emergency";
+import Neighborhood from "@/pages/neighborhood";
+import Insurance from "@/pages/insurance";
+import SubscriptionPlans from "@/pages/subscription-plans";
+import CostGuidesHub from "@/pages/cost-guides/index";
+import CostGuide from "@/pages/cost-guides/guide";
 import NotFound from "@/pages/not-found";
+import PartnersLanding from "@/pages/partners/index";
+import PartnerRegister from "@/pages/partners/register";
+import PartnerDashboard from "@/pages/partners/dashboard";
+import HomeProfilePage from "@/pages/home-profile";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
+import { CookieConsent } from "@/components/cookie-consent";
 import { SupportWidget } from "@/components/support-widget";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
@@ -137,6 +148,7 @@ function Router() {
       <Route path="/job/:jobId/work" component={ActiveJob} />
       <Route path="/dashboard" component={CustomerDashboard} />
       <Route path="/subscriptions" component={CustomerSubscriptions} />
+      <Route path="/plans" component={SubscriptionPlans} />
       <Route path="/admin/god-mode" component={GodMode} />
       <Route path="/settings" component={ProfileSettings} />
       <Route path="/pricing" component={PublicPricing} />
@@ -157,6 +169,8 @@ function Router() {
       <Route path="/services/deepfiber" component={BookDeepFiber} />
       <Route path="/services/carpet-cleaning" component={BookDeepFiber} />
       <Route path="/book/deepfiber" component={BookDeepFiber} />
+      <Route path="/cost-guides" component={CostGuidesHub} />
+      <Route path="/cost-guides/:slug" component={CostGuide} />
       <Route path="/services/:slug" component={ServiceDetail} />
       <Route path="/sustainability" component={Sustainability} />
       <Route path="/marketplace" component={Marketplace} />
@@ -164,9 +178,16 @@ function Router() {
       <Route path="/pro/sustainability-cert" component={ProSustainabilityCert} />
       <Route path="/properties" component={Properties} />
       <Route path="/properties/:propertyId" component={PropertyDashboard} />
+      <Route path="/emergency" component={Emergency} />
+      <Route path="/neighborhood" component={Neighborhood} />
+      <Route path="/insurance" component={Insurance} />
       <Route path="/ai" component={AIFeaturesHub} />
       <Route path="/ai/photo-quote" component={PhotoToQuote} />
       <Route path="/ai/documents" component={DocumentScanner} />
+      <Route path="/partners" component={PartnersLanding} />
+      <Route path="/partners/register" component={PartnerRegister} />
+      <Route path="/partners/dashboard" component={PartnerDashboard} />
+      <Route path="/my-home-profile" component={HomeProfilePage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -199,6 +220,7 @@ function App() {
             <SupportWidget />
             <UpTendGuide />
             <InstallBanner />
+            <CookieConsent />
           </ThemeProvider>
         </TooltipProvider>
       </QueryClientProvider>
