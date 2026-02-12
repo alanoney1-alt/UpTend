@@ -1,13 +1,9 @@
 [build]
-builder = "nixpacks"
-
-[build.nixpacks]
-nodejs = "20"
-buildCmd = "npm ci && npm run build"
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "node dist/index.cjs"
 healthcheckPath = "/"
-healthcheckTimeout = 300
+healthcheckTimeout = 600
 restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 5
+restartPolicyMaxRetries = 10
