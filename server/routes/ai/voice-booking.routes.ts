@@ -47,12 +47,13 @@ export function createVoiceBookingRoutes(storage: DatabaseStorage) {
       const validated = inboundSchema.parse(req.body);
 
       // Look up user by phone (search through users — future: add phone index)
-      const user = null as { id: string } | null; // TODO: add getUserByPhone to storage
+      // TODO: add getUserByPhone to storage
+      const user = null as ({ id: string } | null);
 
       const session = await storage.createVoiceBookingSession({
         id: nanoid(),
         callerPhone: validated.callerPhone,
-        userId: user?.id || null,
+        userId: user?.id ?? null,
         propertyId: null,
         callDirection: validated.callDirection,
         callDurationSeconds: null,
