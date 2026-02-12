@@ -13,7 +13,7 @@ export function DwellScanTierSelector({ selectedTier, onSelectTier }: DwellScanT
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold mb-2">Choose Your AI Home Audit Package</h3>
+        <h3 className="text-lg font-semibold mb-2">Choose Your AI Home Scan Package</h3>
         <p className="text-sm text-muted-foreground mb-4">
           Select the inspection level that's right for your home
         </p>

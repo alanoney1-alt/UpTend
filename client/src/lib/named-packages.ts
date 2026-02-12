@@ -147,12 +147,12 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     id: 'the_full_reset',
     name: 'The Full Reset',
     tagline: 'Complete Property Overhaul',
-    description: 'Ultimate package: home audit, deep cleaning, junk removal, pressure washing, and gutter cleaning',
+    description: 'Ultimate package: home scan, deep cleaning, junk removal, pressure washing, and gutter cleaning',
     icon: '🔄',
     services: [
       {
-        serviceType: 'home_audit',
-        serviceBranded: 'AI Home Audit',
+        serviceType: 'home_scan',
+        serviceBranded: 'AI Home Scan',
         required: true,
         defaultOptions: {
           tier: 'aerial', // Premium tier
@@ -192,7 +192,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       from: 799,
       to: 1499,
     },
-    savingsMessage: '15% off + $49 AI Home Audit credit - save up to $270',
+    savingsMessage: '15% off + $49 AI Home Scan credit - save up to $270',
   },
 
   the_movers_bundle: {
@@ -407,7 +407,7 @@ export function packageToCartServices(
       serviceType: svc.serviceType,
       serviceBranded: svc.serviceBranded,
       price: 0, // Placeholder - actual price calculated by pricing engines
-      isDwellScan: svc.serviceType === 'home_audit',
+      isDwellScan: svc.serviceType === 'home_scan',
     }));
 }
 

@@ -22,15 +22,15 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   gutter_cleaning: 149,
   moving_labor: 80,
   light_demolition: 199,
-  home_consultation: 49, // AI Home Audit Standard base price
-  home_consultation_aerial: 149, // AI Home Audit Aerial with drone
+  home_consultation: 49, // AI Home Scan Standard base price
+  home_consultation_aerial: 149, // AI Home Scan Aerial with drone
   home_cleaning: 99,
   pool_cleaning: 69, // PoolSpark monthly
   landscaping: 35, // Landscaping 1/4 acre mow
   carpet_cleaning: 49, // Carpet Cleaning 1 room
 };
 
-// AI Home Audit service configuration with two tiers
+// AI Home Scan service configuration with two tiers
 export interface DwellScanTier {
   id: string;
   name: string;
@@ -45,7 +45,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
   {
     id: "standard",
     name: "Standard",
-    brandedName: "AI Home Audit Standard",
+    brandedName: "AI Home Scan Standard",
     price: 49,
     description: "Full interior and exterior walkthrough with personalized maintenance report.",
     features: [
@@ -60,7 +60,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
   {
     id: "aerial",
     name: "Aerial",
-    brandedName: "AI Home Audit Aerial",
+    brandedName: "AI Home Scan Aerial",
     price: 149,
     description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan.",
     features: [
@@ -80,9 +80,9 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
 ];
 
 export const DWELLSCAN_SERVICE = {
-  branded: "AI Home Audit",
-  generic: "Home Audit",
-  display: "AI Home Audit",
+  branded: "AI Home Scan",
+  generic: "Home Scan",
+  display: "AI Home Scan",
   slug: "/dwellscan",
   startingPrice: 49,
   priceUnit: "flat",

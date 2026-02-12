@@ -40,7 +40,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <div>
                 <CardTitle className="text-xl">Want to See Your Roof?</CardTitle>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Upgrade to AI Home Audit Aerial
+                  Upgrade to AI Home Scan Aerial
                 </p>
               </div>
             </div>
@@ -125,7 +125,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
             <div>
               <CardTitle className="text-xl">Not Sure What Your Home Needs Next?</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                Get a complete AI home audit
+                Get a complete AI home scan
               </p>
             </div>
           </div>
@@ -144,7 +144,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
             <div className="flex items-center gap-2 mb-2">
               <Home className="w-5 h-5 text-primary" />
               <div>
-                <p className="font-semibold">AI Home Audit Standard</p>
+                <p className="font-semibold">AI Home Scan Standard</p>
                 <p className="text-2xl font-bold text-primary">$49</p>
               </div>
             </div>
@@ -169,7 +169,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
             <div className="flex items-center gap-2 mb-2">
               <Plane className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="font-semibold">AI Home Audit Aerial</p>
+                <p className="font-semibold">AI Home Scan Aerial</p>
                 <p className="text-2xl font-bold text-blue-600">$149</p>
               </div>
             </div>

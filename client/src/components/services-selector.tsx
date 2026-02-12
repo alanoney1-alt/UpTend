@@ -98,7 +98,7 @@ const ALL_SERVICES: Service[] = [
   },
   {
     id: "home_consultation",
-    label: "AI Home Audit",
+    label: "AI Home Scan",
     icon: ClipboardCheck,
     description: "Home walkthrough and consultation",
     requiresCertification: true,

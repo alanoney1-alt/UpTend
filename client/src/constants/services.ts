@@ -91,10 +91,10 @@ export const SERVICES = {
     tagline: 'We handle the heavy lifting.',
     description: 'Moving truck, storage pod, delivery — your crew handles the heavy lifting.',
   },
-  home_audit: {
-    branded: 'AI Home Audit',
-    generic: 'Home Audit',
-    display: 'AI Home Audit',
+  home_scan: {
+    branded: 'AI Home Scan',
+    generic: 'Home Scan',
+    display: 'AI Home Scan',
     slug: '/dwellscan',
     startingPrice: 49,
     priceUnit: 'flat',
@@ -102,7 +102,7 @@ export const SERVICES = {
     description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $149.',
     tiers: {
       standard: {
-        name: 'AI Home Audit Standard',
+        name: 'AI Home Scan Standard',
         price: 49,
         proPayout: 25,
         description: 'Interior + exterior ground-level walkthrough with maintenance report',
@@ -119,7 +119,7 @@ export const SERVICES = {
         prosNeeded: 1,
       },
       aerial: {
-        name: 'AI Home Audit Aerial',
+        name: 'AI Home Scan Aerial',
         price: 149,
         proPayoutModels: {
           twoPro: { walkthrough: 25, drone: 55, uptendKeeps: 69 },
@@ -127,7 +127,7 @@ export const SERVICES = {
         },
         description: 'Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan',
         includes: [
-          'Everything in AI Home Audit Standard',
+          'Everything in AI Home Scan Standard',
           'FAA Part 107 certified drone flyover',
           'Aerial roof condition scan (missing shingles, sagging, moss, flashing damage)',
           'Gutter blockage percentage estimate from above',

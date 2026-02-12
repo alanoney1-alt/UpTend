@@ -54,7 +54,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     savings: 68,
     badge: "PM Anchor Offer",
     notes: [
-      "Includes AI Home Audit Aerial ($149 value)",
+      "Includes AI Home Scan Aerial ($149 value)",
       "Multiple Pros may work on this project",
       "$49 DwellScan credit applies automatically",
     ],
@@ -80,7 +80,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     savings: 97,
     badge: "Best Value",
     notes: [
-      "Includes AI Home Audit Aerial ($149 value)",
+      "Includes AI Home Scan Aerial ($149 value)",
       "Multiple Pros may work on this project",
       "$49 DwellScan credit applies automatically",
     ],

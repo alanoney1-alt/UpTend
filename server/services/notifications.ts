@@ -203,7 +203,7 @@ export async function sendBookingConfirmation(
     gutter_cleaning: "Gutter Cleaning",
     moving_labor: "Moving Labor",
     light_demolition: "Light Demolition",
-    home_consultation: "AI Home Audit",
+    home_consultation: "AI Home Scan",
     home_cleaning: "Home Cleaning",
   };
 
@@ -369,7 +369,7 @@ export async function sendManualMatchAlert(
     gutter_cleaning: "Gutter Cleaning",
     moving_labor: "Moving Labor",
     light_demolition: "Light Demolition",
-    home_consultation: "AI Home Audit",
+    home_consultation: "AI Home Scan",
     home_cleaning: "Home Cleaning",
   };
   const serviceName = serviceNames[jobDetails.serviceType] || jobDetails.serviceType;

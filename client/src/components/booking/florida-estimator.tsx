@@ -32,7 +32,7 @@ interface ServicePricing {
 const pricingServices: ServicePricing[] = [
   {
     id: "home_consultation",
-    name: "AI Home Audit",
+    name: "AI Home Scan",
     price: "$49 / $149",
     description: "Complete home documentation: Standard ($49) interior walkthrough or Aerial ($149) with drone footage. $49 reimbursed on your first service booking.",
     benefit: "Protects property value • Insurance-ready documentation • $49 credit with first booking",
@@ -1030,7 +1030,7 @@ export function FloridaEstimator() {
                   className="mt-4 w-full"
                   size="lg"
                 >
-                  Select AI Home Audit <ArrowRight className="ml-2 w-4 h-4" />
+                  Select AI Home Scan <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </div>
             </div>

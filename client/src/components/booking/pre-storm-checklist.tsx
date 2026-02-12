@@ -16,7 +16,7 @@ interface PreStormChecklistProps {
 }
 
 const checklistItems = [
-  { service: "Home Audit", task: "360\u00B0 Video Manifest & Asset Log", status: "Missing" as const, priority: "High" as const },
+  { service: "Home Scan", task: "360\u00B0 Video Manifest & Asset Log", status: "Missing" as const, priority: "High" as const },
   { service: "Gutter Care", task: "Clear debris & downspout flow test", status: "Unverified" as const, priority: "High" as const },
   { service: "Material Recovery", task: "Remove potential wind-borne hazards", status: "Unverified" as const, priority: "Medium" as const },
   { service: "Pressure Wash", task: "Seal check & surface heat reflection", status: "Unverified" as const, priority: "Low" as const },

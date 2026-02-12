@@ -41,7 +41,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/services/home-audit" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-home-audit">
-                  {t("footer.footer_ai_home_audit")}
+                  {t("footer.footer_ai_home_scan")}
                 </Link>
               </li>
               <li>

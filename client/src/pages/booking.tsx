@@ -48,7 +48,7 @@ import { PolishUpBooking, type PolishUpBookingDetails } from "@/components/booki
 import pro1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
-  { id: "home_consultation", label: "AI Home Audit", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
+  { id: "home_consultation", label: "AI Home Scan", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
   { id: "junk_removal", label: "Junk Removal", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
   { id: "garage_cleanout", label: "Garage Cleanout", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
   { id: "pressure_washing", label: "Pressure Washing", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
@@ -2262,7 +2262,7 @@ export default function Booking() {
                     <div className="mt-8 pt-8 border-t">
                       <div className="flex items-center gap-2 mb-4">
                         <ClipboardCheck className="w-5 h-5 text-primary" />
-                        <h3 className="font-medium">AI Home Audit - Select Your Tier</h3>
+                        <h3 className="font-medium">AI Home Scan - Select Your Tier</h3>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -2278,7 +2278,7 @@ export default function Booking() {
                         >
                           <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h4 className="font-semibold text-lg">AI Home Audit Standard</h4>
+                              <h4 className="font-semibold text-lg">AI Home Scan Standard</h4>
                               <p className="text-3xl font-bold text-primary mt-1">$49</p>
                             </div>
                             {(formData.dwellscanTier || "standard") === "standard" && (
@@ -2309,7 +2309,7 @@ export default function Booking() {
                           <Badge className="absolute top-3 right-3 bg-orange-500 text-white">Best Value</Badge>
                           <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h4 className="font-semibold text-lg">AI Home Audit Aerial</h4>
+                              <h4 className="font-semibold text-lg">AI Home Scan Aerial</h4>
                               <p className="text-3xl font-bold text-primary mt-1">$149</p>
                             </div>
                             {formData.dwellscanTier === "aerial" && (

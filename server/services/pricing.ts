@@ -10,7 +10,7 @@ export const PRICING_CONSTANTS = {
 
   DEMO_BASE_RATE: 19900, // $199 starting (Light Demolition)
 
-  CONSULTATION_FEE: 4900, // $49 (AI Home Audit Standard)
+  CONSULTATION_FEE: 4900, // $49 (AI Home Scan Standard)
 };
 
 export function calculateServicePrice(type: string, data: any): number | null {
@@ -64,7 +64,7 @@ export function getServiceLabel(type: string): string {
     pressure_washing: "Pressure Washing",
     gutter_cleaning: "Gutter Cleaning",
     light_demolition: "Light Demolition",
-    home_consultation: "AI Home Audit",
+    home_consultation: "AI Home Scan",
   };
   return labels[type] || type.replace(/_/g, " ");
 }

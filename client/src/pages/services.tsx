@@ -15,8 +15,8 @@ const services = [
   // === FEATURED SERVICE ===
   {
     id: "home_consultation",
-    name: "AI Home Audit",
-    jumpToLabel: "AI Home Audit",
+    name: "AI Home Scan",
+    jumpToLabel: "AI Home Scan",
     icon: ClipboardCheck,
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
     description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° video documentation, and a treatment plan with transparent pricing. Choose Standard ($49) or Aerial with drone scan ($149). $49 credited toward any booked service.",
@@ -230,7 +230,7 @@ export default function Services() {
             </span>
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto" data-testid="text-services-subhead">
-            From junk removal to full home audits, every service is performed by fully insured,
+            From junk removal to full home scans, every service is performed by fully insured,
             background-checked, academy-trained Pros with $1M liability coverage and full video documentation.
           </p>
         </div>

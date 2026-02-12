@@ -1,6 +1,6 @@
 /**
  * Property Scan Service
- * Uses Zillow data via RapidAPI for real market values
+ * Uses Realty in US (Realtor.com) data via RapidAPI for real market values
  * Falls back to estimated data when API unavailable
  */
 
@@ -26,11 +26,48 @@ export interface PropertyData {
   imgSrc?: string;
 }
 
-// ─── Zillow API via RapidAPI ─────────────────────────────────────────────────
+// ─── Realty in US API via RapidAPI ────────────────────────────────────────────
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || "d8b4031b0cmsh0fff73bec93f734p1d1ef8jsnc985291799d6";
-const RAPIDAPI_HOST = "real-estate101.p.rapidapi.com";
+const RAPIDAPI_HOST = "realty-in-us.p.rapidapi.com";
 
+interface RealtyResult {
+  property_id: string;
+  status: string;
+  location: {
+    address: {
+      line: string;
+      city: string;
+      state_code: string;
+      state: string;
+      postal_code: string;
+      street_name: string;
+      street_number: string;
+      coordinate: { lat: number; lon: number } | null;
+    };
+    street_view_url?: string;
+  };
+  description: {
+    type: string;
+    sub_type: string | null;
+    beds: number;
+    baths: number;
+    sqft: number;
+    lot_sqft: number;
+    baths_full: number | null;
+    baths_half: number | null;
+  };
+  list_price?: number;
+  estimate?: { estimate: number };
+  tax_record?: { public_record_doctype?: string; list?: Array<{ amount?: number; year?: number }> };
+  photos?: Array<{ href: string }>;
+  flags?: {
+    is_new_construction: boolean | null;
+    is_foreclosure: boolean | null;
+  };
+}
+
+// Normalized internal result to keep downstream code consistent
 interface ZillowResult {
   id: string;
   price: string;
@@ -52,6 +89,44 @@ interface ZillowResult {
   daysOnZillow: number;
 }
 
+function realtyToZillow(r: RealtyResult): ZillowResult {
+  const addr = r.location?.address || {} as any;
+  const desc = r.description || {} as any;
+  const price = r.list_price || 0;
+  const estimate = r.estimate?.estimate || price;
+  const taxAmount = r.tax_record?.list?.[0]?.amount || 0;
+  const photo = (r as any).primary_photo?.href || r.photos?.[0]?.href || "";
+
+  return {
+    id: r.property_id,
+    price: `$${price.toLocaleString()}`,
+    unformattedPrice: price,
+    beds: desc.beds || 0,
+    baths: desc.baths || 0,
+    area: desc.sqft || 0,
+    livingArea: desc.sqft || 0,
+    homeType: desc.type?.toUpperCase()?.replace(/\s+/g, "_") || "RESIDENTIAL",
+    rentZestimate: 0, // Not in this API
+    taxAssessedValue: taxAmount,
+    lotAreaValue: desc.lot_sqft || 0,
+    lotAreaUnit: "sqft",
+    address: {
+      street: addr.line || `${addr.street_number || ""} ${addr.street_name || ""}`.trim(),
+      city: addr.city || "",
+      state: addr.state_code || addr.state || "",
+      zipcode: addr.postal_code || "",
+    },
+    latLong: {
+      latitude: addr.coordinate?.lat || 0,
+      longitude: addr.coordinate?.lon || 0,
+    },
+    detailUrl: `https://www.realtor.com/realestateandhomes-detail/${r.property_id}`,
+    imgSrc: photo,
+    zestimate: estimate,
+    daysOnZillow: 0,
+  };
+}
+
 // Simple in-memory cache (5 min TTL)
 const cache = new Map<string, { data: ZillowResult[]; ts: number }>();
 const CACHE_TTL = 5 * 60 * 1000;
@@ -62,26 +137,50 @@ async function searchZillow(location: string): Promise<ZillowResult[]> {
   if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.data;
 
   try {
-    const url = `https://${RAPIDAPI_HOST}/api/search?location=${encodeURIComponent(location)}&status=any`;
-    const res = await fetch(url, {
+    // Extract postal code if present
+    const zipMatch = location.match(/\b(\d{5})\b/);
+    const body: any = {
+      limit: 200,
+      offset: 0,
+      status: ["for_sale", "sold", "ready_to_build"],
+      sort: { direction: "desc", field: "list_date" },
+    };
+
+    if (zipMatch) {
+      body.postal_code = zipMatch[1];
+    } else {
+      // Parse "City, ST" format
+      const parts = location.split(",").map(s => s.trim());
+      const city = parts[0];
+      const stateMatch = (parts[1] || "").match(/([A-Z]{2})/i);
+      body.city = city;
+      if (stateMatch) body.state_code = stateMatch[1].toUpperCase();
+    }
+
+    const res = await fetch(`https://${RAPIDAPI_HOST}/properties/v3/list`, {
+      method: "POST",
       headers: {
+        "Content-Type": "application/json",
         "x-rapidapi-host": RAPIDAPI_HOST,
         "x-rapidapi-key": RAPIDAPI_KEY,
       },
+      body: JSON.stringify(body),
     });
 
     if (!res.ok) {
-      console.error(`Zillow API error: ${res.status}`);
+      console.error(`Realty API error: ${res.status}`);
       return [];
     }
 
     const data = await res.json();
-    if (!data.success || !data.results) return [];
+    const results: RealtyResult[] = data?.data?.home_search?.results || [];
+    if (results.length === 0) return [];
 
-    cache.set(cacheKey, { data: data.results, ts: Date.now() });
-    return data.results;
+    const normalized = results.map(realtyToZillow);
+    cache.set(cacheKey, { data: normalized, ts: Date.now() });
+    return normalized;
   } catch (err) {
-    console.error("Zillow API fetch error:", err);
+    console.error("Realty API fetch error:", err);
     return [];
   }
 }

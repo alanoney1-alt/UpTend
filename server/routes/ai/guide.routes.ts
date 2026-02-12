@@ -129,7 +129,7 @@ const BASE_SYSTEM_PROMPT = `You are the UpTend Guide — a friendly, knowledgeab
 7. **Light Demolition** — Starting $199 flat.
 8. **Garage Cleanout** — Starting $299 flat.
 9. **Truck Unloading** — Starting $80/hr.
-10. **AI Home Audit** — $49 standard, $149 with drone. Includes $49 credit toward first booking.
+10. **AI Home Scan** — $49 standard, $149 with drone. Includes $49 credit toward first booking.
 11. **Landscaping** — Competitive rates.
 12. **Carpet Cleaning** — Professional deep cleaning.
 
@@ -363,7 +363,7 @@ function formatServiceType(type: string): string {
     junk_removal: "Junk Removal", home_cleaning: "Home Cleaning", pressure_washing: "Pressure Washing",
     gutter_cleaning: "Gutter Cleaning", moving_labor: "Moving Labor", handyman: "Handyman",
     light_demolition: "Light Demolition", garage_cleanout: "Garage Cleanout", truck_unloading: "Truck Unloading",
-    home_consultation: "AI Home Audit", pool_cleaning: "Pool Cleaning", landscaping: "Landscaping",
+    home_consultation: "AI Home Scan", pool_cleaning: "Pool Cleaning", landscaping: "Landscaping",
     carpet_cleaning: "Carpet Cleaning", lawn_landscaping: "Lawn/Landscaping", house_cleaning: "House Cleaning",
   };
   return map[type] || type.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());

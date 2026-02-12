@@ -107,7 +107,7 @@ export async function processWarrantyAlerts(): Promise<number> {
         }
 
         // Determine service type based on warranty type
-        let serviceType = "home_audit"; // Default
+        let serviceType = "home_scan"; // Default
         let deepLink = `/property/${warranty.propertyId}/warranties/${warranty.id}`;
 
         if (warranty.warrantyType.includes("hvac") || warranty.applianceId) {

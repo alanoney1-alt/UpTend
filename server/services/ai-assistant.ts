@@ -161,8 +161,8 @@ export const UPTEND_KNOWLEDGE = {
       ],
     },
 
-    home_audit: {
-      name: "DwellScan (Home Audit)",
+    home_scan: {
+      name: "DwellScan (Home Scan)",
       description: "Complete home health assessment with personalized maintenance report. Available in two tiers: Standard and Aerial.",
       tiers: [
         {

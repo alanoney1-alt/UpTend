@@ -22,7 +22,7 @@ const modules = [
       "Pressure Washing: Surface Safety & Chemicals",
       "Gutter Cleaning: Ladder Safety & Downspout Testing",
       "Moving Labor: Protecting Property & Personnel",
-      "Home Audit: Performing the 360\u00B0 Asset Inventory",
+      "Home Scan: Performing the 360\u00B0 Asset Inventory",
     ],
   },
   {

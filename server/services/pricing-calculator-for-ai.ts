@@ -158,7 +158,7 @@ export function calculateDwellScanPriceForAI(params: {
     return {
       customerPrice: 49,
       proPayout: 25,
-      description: 'AI Home Audit Standard - Full interior + exterior ground-level walkthrough with maintenance report',
+      description: 'AI Home Scan Standard - Full interior + exterior ground-level walkthrough with maintenance report',
     };
   }
 
@@ -167,7 +167,7 @@ export function calculateDwellScanPriceForAI(params: {
     return {
       customerPrice: 149,
       proPayout: { combined: 80 },
-      description: 'AI Home Audit Aerial - Combined walkthrough + drone (single Pro, saves $69)',
+      description: 'AI Home Scan Aerial - Combined walkthrough + drone (single Pro, saves $69)',
     };
   }
 
@@ -175,7 +175,7 @@ export function calculateDwellScanPriceForAI(params: {
   return {
     customerPrice: 149,
     proPayout: { walkthrough: 25, drone: 55 },
-    description: 'AI Home Audit Aerial - Full walkthrough + drone flyover (two Pros)',
+    description: 'AI Home Scan Aerial - Full walkthrough + drone flyover (two Pros)',
   };
 }
 

@@ -46,8 +46,8 @@ const faqs: FAQ[] = [
   },
   {
     category: "customers",
-    question: "What is the AI Home Audit and how does it work?",
-    answer: "The AI Home Audit is our comprehensive home audit service starting at $49. A certified inspector conducts a room-by-room walkthrough documenting your home's condition with photos and detailed notes. The Aerial tier ($149) includes drone footage for roof, gutters, and property perimeter. You receive a digital report perfect for insurance, pre-sale documentation, or rental property management."
+    question: "What is the AI Home Scan and how does it work?",
+    answer: "The AI Home Scan is our comprehensive home scan service starting at $49. A certified inspector conducts a room-by-room walkthrough documenting your home's condition with photos and detailed notes. The Aerial tier ($149) includes drone footage for roof, gutters, and property perimeter. You receive a digital report perfect for insurance, pre-sale documentation, or rental property management."
   },
   {
     category: "customers",
@@ -67,7 +67,7 @@ const faqs: FAQ[] = [
   {
     category: "customers",
     question: "Can I bundle multiple services together?",
-    answer: "Yes! Bundling services often saves you money. For example, book AI Home Audit + Gutter Cleaning + Pressure Washing together and receive 10-20% off the total. Our smart booking system will suggest relevant bundle deals based on your property and season."
+    answer: "Yes! Bundling services often saves you money. For example, book AI Home Scan + Gutter Cleaning + Pressure Washing together and receive 10-20% off the total. Our smart booking system will suggest relevant bundle deals based on your property and season."
   },
   {
     category: "customers",
@@ -77,7 +77,7 @@ const faqs: FAQ[] = [
   {
     category: "customers",
     question: "How long does each service typically take?",
-    answer: "Times vary by service: Junk removal (1-3 hours), Home Cleaning (2-4 hours), Landscaping (1-2 hours), Pressure Washing (2-5 hours), Gutter Cleaning (1-2 hours), Pool Cleaning (45-90 min), Carpet Cleaning (2-4 hours), AI Home Audit Standard (45-90 min), AI Home Audit Aerial (90-120 min). Your Pro provides an estimated completion time upon arrival."
+    answer: "Times vary by service: Junk removal (1-3 hours), Home Cleaning (2-4 hours), Landscaping (1-2 hours), Pressure Washing (2-5 hours), Gutter Cleaning (1-2 hours), Pool Cleaning (45-90 min), Carpet Cleaning (2-4 hours), AI Home Scan Standard (45-90 min), AI Home Scan Aerial (90-120 min). Your Pro provides an estimated completion time upon arrival."
   },
   {
     category: "customers",
@@ -92,7 +92,7 @@ const faqs: FAQ[] = [
   {
     category: "customers",
     question: "Do you provide before and after photos?",
-    answer: "Yes! Pros document all work with timestamped before/after photos uploaded to your job record. This provides proof of completion, quality verification, and a visual record for your files. Photos are especially valuable for AI Home Audit, pressure washing, and junk removal services."
+    answer: "Yes! Pros document all work with timestamped before/after photos uploaded to your job record. This provides proof of completion, quality verification, and a visual record for your files. Photos are especially valuable for AI Home Scan, pressure washing, and junk removal services."
   },
   {
     category: "customers",
@@ -184,7 +184,7 @@ const faqs: FAQ[] = [
   {
     category: "b2b",
     question: "How do you handle tenant turnover services?",
-    answer: "We specialize in turnover! Services include: junk removal of abandoned items, deep cleaning, carpet cleaning, minor repairs, yard restoration, and AI Home Audit documentation. Book as a bundle for 20% off. Average turnover time: 1-3 days depending on property condition. Perfect for property managers with tight timelines."
+    answer: "We specialize in turnover! Services include: junk removal of abandoned items, deep cleaning, carpet cleaning, minor repairs, yard restoration, and AI Home Scan documentation. Book as a bundle for 20% off. Average turnover time: 1-3 days depending on property condition. Perfect for property managers with tight timelines."
   },
   {
     category: "b2b",
@@ -255,8 +255,8 @@ const faqs: FAQ[] = [
   },
   {
     category: "pricing",
-    question: "What is your pricing for the AI Home Audit?",
-    answer: "AI Home Audit Standard (interior only) is $49 flat rate. AI Home Audit Aerial (interior + drone exterior) is $149 flat rate. Both include comprehensive photo documentation, detailed inspection notes, and digital report delivery within 24 hours. Add-ons available: rush delivery (3-hour report) +$25, extra property photos +$20."
+    question: "What is your pricing for the AI Home Scan?",
+    answer: "AI Home Scan Standard (interior only) is $49 flat rate. AI Home Scan Aerial (interior + drone exterior) is $149 flat rate. Both include comprehensive photo documentation, detailed inspection notes, and digital report delivery within 24 hours. Add-ons available: rush delivery (3-hour report) +$25, extra property photos +$20."
   },
   {
     category: "pricing",

@@ -332,7 +332,7 @@ function WhySection() {
 
   const featuredService = {
     key: "home_consultation",
-    label: "AI Home Audit",
+    label: "AI Home Scan",
     price: "$49 / $149",
     icon: ClipboardCheck,
     color: "text-primary dark:text-primary",

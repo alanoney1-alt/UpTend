@@ -205,7 +205,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "home_consultation",
-    serviceName: "AI Home Audit",
+    serviceName: "AI Home Scan",
     minimumEquipment: [
       { id: "camera", label: "4K camera OR smartphone with 4K video", required: true },
       { id: "tablet", label: "Tablet or laptop (for digital forms)", required: true },

@@ -1,13 +1,13 @@
 /**
- * AI Home Audit Service Tiers
+ * AI Home Scan Service Tiers
  * Two-tier home inspection service with optional drone aerial scan
  */
 
 export const DWELLSCAN_TIERS = {
   standard: {
     id: "standard",
-    name: "AI Home Audit Standard",
-    price: 49,
+    name: "AI Home Scan Standard",
+    price: 99,
     description: "Full interior and exterior walkthrough with personalized maintenance report.",
     features: [
       "Full interior room-by-room walkthrough",
@@ -17,16 +17,16 @@ export const DWELLSCAN_TIERS = {
       "Personalized maintenance report",
       "One-tap booking from report recommendations",
     ],
-    proPayout: 25, // Fixed payout (loss leader)
+    proPayout: 50, // Fixed payout (loss leader)
     recommended: false,
   },
   aerial: {
     id: "aerial",
-    name: "AI Home Audit Aerial",
-    price: 149,
+    name: "AI Home Scan Aerial",
+    price: 199,
     badge: "Best Value",
     description: "Everything in Standard plus drone-powered roof, gutter, and exterior scan.",
-    subtext: "Comparable drone inspections cost $290-$350. Bundled here for $149.",
+    subtext: "Comparable drone inspections cost $290-$350. Bundled here for $199.",
     features: [
       "Everything in Standard PLUS:",
       "FAA Part 107 certified drone flyover",
@@ -37,9 +37,9 @@ export const DWELLSCAN_TIERS = {
       "Full aerial photo set, GPS-tagged",
     ],
     proPayout: {
-      singlePro: 80, // If one Pro does both walkthrough + drone
-      walkthrough: 25, // If separate walkthrough Pro
-      drone: 55, // If separate drone-certified Pro
+      singlePro: 110, // If one Pro does both walkthrough + drone
+      walkthrough: 50, // If separate walkthrough Pro
+      drone: 75, // If separate drone-certified Pro
     },
     recommended: true,
     requiresDroneCertified: true,
@@ -48,7 +48,7 @@ export const DWELLSCAN_TIERS = {
 
 export type DwellScanTier = keyof typeof DWELLSCAN_TIERS;
 
-export const DWELLSCAN_SERVICE_CREDIT = 49; // $49 credit toward first booked service from report
+export const DWELLSCAN_SERVICE_CREDIT = 49; // $49 back to customer on their next booking
 
 /**
  * Get DwellScan pricing details

@@ -22,7 +22,7 @@ interface DwellScanTierSelectionProps {
 
 export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' }: DwellScanTierSelectionProps) {
   const [selectedTier, setSelectedTier] = useState<'standard' | 'aerial'>(defaultTier);
-  const dwellScanService = SERVICES.home_audit;
+  const dwellScanService = SERVICES.home_scan;
 
   const handleSelectTier = (tier: 'standard' | 'aerial') => {
     setSelectedTier(tier);
@@ -33,7 +33,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold mb-2">Choose Your AI Home Audit</h2>
+        <h2 className="text-3xl font-bold mb-2">Choose Your AI Home Scan</h2>
         <p className="text-muted-foreground">
           Both tiers include the same <strong>$49 credit</strong> toward any future UpTend service
         </p>
@@ -52,7 +52,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                   <Home className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl">AI Home Audit Standard</CardTitle>
+                  <CardTitle className="text-xl">AI Home Scan Standard</CardTitle>
                   <p className="text-2xl font-bold text-primary mt-1">$49</p>
                 </div>
               </div>
@@ -120,7 +120,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                   <Plane className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl">AI Home Audit Aerial</CardTitle>
+                  <CardTitle className="text-xl">AI Home Scan Aerial</CardTitle>
                   <p className="text-2xl font-bold text-primary mt-1">$149</p>
                 </div>
               </div>

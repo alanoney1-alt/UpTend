@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     q: "How is this different from a home inspection?",
-    a: "A home inspection is a one-time pass/fail. The UpTend Home Audit creates a living, data-backed asset record that grows with every service. It\u2019s Intelligence, not just an inspection.",
+    a: "A home inspection is a one-time pass/fail. The UpTend Home Scan creates a living, data-backed asset record that grows with every service. It\u2019s Intelligence, not just an inspection.",
   },
   {
     q: "Can I transfer my report to a new owner?",
@@ -66,7 +66,7 @@ export default function HomeAudit() {
             </span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-10 leading-relaxed" data-testid="text-audit-subhead">
-            Every job on UpTend is tracked, every Pro is valued, and every impact is measured. Our Home Audit provides
+            Every job on UpTend is tracked, every Pro is valued, and every impact is measured. Our Home Scan provides
             <strong className="text-foreground"> built-in accountability</strong> for your wallet, your home, and the environment.
           </p>
           <p className="text-sm font-semibold text-primary dark:text-orange-400 mb-10" data-testid="text-audit-price-hook">
@@ -237,7 +237,7 @@ export default function HomeAudit() {
             <Badge variant="outline" className="mb-4 border-green-600 text-green-400" data-testid="badge-value-sustainability-baseline">Sustainability Baseline</Badge>
             <h2 className="text-3xl font-black mb-6 uppercase">Proven Sustainability.</h2>
             <p className="text-slate-400 mb-8">
-              We don&rsquo;t just talk green. We track it. Our Home Audit identifies efficiency leaks and disposal
+              We don&rsquo;t just talk green. We track it. Our Home Scan identifies efficiency leaks and disposal
               opportunities, turning your residence into a verified participant in the circular economy.
               Pros build their <strong className="text-white">sustainability credentials</strong> while you build equity.
             </p>
@@ -346,7 +346,7 @@ export default function HomeAudit() {
           <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/book?service=home_consultation">
               <Button size="lg" className="font-bold text-lg" data-testid="button-audit-book-bottom">
-                Book Your Home Audit <ArrowRight className="w-5 h-5 ml-2" />
+                Book Your Home Scan <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
             <Link href="/services">

@@ -28,7 +28,7 @@ const SERVICE_NAMES: Record<string, string> = {
   home_cleaning: "Home Cleaning",
   pressure_washing: "Pressure Washing",
   gutter_cleaning: "Gutter Cleaning",
-  home_consultation: "AI Home Audit",
+  home_consultation: "AI Home Scan",
   handyman: "Handyman Services",
   moving_labor: "Moving Labor",
   landscaping: "Landscaping",
