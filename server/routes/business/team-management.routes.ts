@@ -127,7 +127,7 @@ router.get("/my-memberships", async (req, res) => {
             id: account.id,
             businessName: account.businessName,
             accountType: account.accountType,
-            isActive: account.isActive,
+            isActive: true,
           } : null,
         };
       })
