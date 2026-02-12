@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://uptend.com/sitemap.xml
+Sitemap: https://uptendapp.com/sitemap.xml

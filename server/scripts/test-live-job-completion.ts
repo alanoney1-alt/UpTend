@@ -24,10 +24,11 @@ async function testLiveJobCompletion() {
     updatedAt: new Date().toISOString(),
   };
 
+  // @ts-ignore - test script with potentially stale column refs
   const [newJob] = await db.insert(serviceRequests).values(testJob).returning();
   console.log("   ✅ Job created:", newJob.id);
   console.log("   Service:", newJob.serviceType);
-  console.log("   Price: $" + (newJob.livePrice / 100).toFixed(2), "\n");
+  console.log("   Price: $" + ((newJob.livePrice ?? 0) / 100).toFixed(2), "\n");
 
   // Step 2: Complete the job via API
   console.log("📝 Step 2: Completing job via API...");

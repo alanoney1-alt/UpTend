@@ -717,6 +717,8 @@ export type ServiceRequestWithDetails = ServiceRequest & {
   customer?: User;
   hauler?: HaulerWithProfileAndVehicle;
   matches?: MatchAttempt[];
+  distance?: number;
+  estimatedMinutes?: number;
 };
 
 export type PriceQuote = {

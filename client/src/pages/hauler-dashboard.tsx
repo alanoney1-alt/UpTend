@@ -73,7 +73,7 @@ function maskPhone(phone: string): string {
   return `***-${phone.slice(-4)}`;
 }
 
-const navItems = [
+const navItems: Array<{ id: string; label: string; icon: typeof LayoutDashboard; badge?: string | number }> = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "requests", label: "Job Requests", icon: ClipboardList },
   { id: "route", label: "Route Optimizer", icon: Route },

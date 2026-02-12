@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import { toFile } from "openai";
 import { Buffer } from "node:buffer";
-import { openai } from "../../openaiClient";
-export { openai };
+import { openai as _openai } from "../../openaiClient";
+export const openai = _openai;
 
 /**
  * Generate an image and return as Buffer.

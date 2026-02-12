@@ -318,10 +318,11 @@ export function UpTendGuide() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isLoading]);
 
-  // Voice auto-send
+  // Voice auto-send (uses ref to avoid hoisting issue)
+  const sendMessageRef = useRef<(msg?: string) => void>();
   useEffect(() => {
-    if (!speech.isListening && speech.transcript) sendMessage(speech.transcript);
-  }, [speech.isListening, speech.transcript, sendMessage]);
+    if (!speech.isListening && speech.transcript) sendMessageRef.current?.(speech.transcript);
+  }, [speech.isListening, speech.transcript]);
 
   // ─── Open Handler ──────────────────────────────────────────────────────
 
@@ -348,7 +349,7 @@ export function UpTendGuide() {
     } else if (action.startsWith("message:")) {
       const msg = action.replace("message:", "");
       setInput(msg);
-      setTimeout(() => sendMessage(msg), 100);
+      setTimeout(() => sendMessageRef.current?.(msg), 100);
     }
   }, [navigate]);
 
@@ -479,6 +480,9 @@ export function UpTendGuide() {
       setIsLoading(false);
     }
   }, [input, isLoading, pageContext, voiceOutputEnabled, synth]);
+
+  // Keep ref in sync for voice auto-send
+  useEffect(() => { sendMessageRef.current = sendMessage; }, [sendMessage]);
 
   // Don't show on login/signup pages or if disabled
   if (isDisabled) return null;
