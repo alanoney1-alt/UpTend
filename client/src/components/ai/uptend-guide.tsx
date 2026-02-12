@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePageContext } from "@/hooks/use-page-context";
 import {
-  Send, X, Minus, Loader2, Bot, User, ChevronRight,
-  Mic, MicOff, Volume2, VolumeX, Paperclip, HelpCircle,
+  Send, X, Loader2, ChevronRight,
+  Mic, MicOff, Volume2, VolumeX, Paperclip,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +33,7 @@ interface Message {
 const LS_DISABLED = "uptend-guide-disabled";
 const LS_SESSION = "uptend-guide-session";
 const LS_VOICE_OUT = "uptend-guide-voice-output";
+const LS_GREETED = "uptend-guide-greeted";
 
 const PRO_SIGNUP_PAGES = ["/pro/signup", "/pycker/signup", "/become-pro", "/pycker-signup", "/become-a-pycker"];
 const NO_WIDGET_PAGES = ["/customer-login", "/customer-signup", "/pro-login", "/pro-signup", "/register", "/admin"];
@@ -66,7 +66,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (PRO_SIGNUP_PAGES.some(p => page.startsWith(p))) {
     return {
-      welcome: `Hey${name}! 👋 Thinking about joining UpTend? I can answer any questions — earnings, how it works, what makes us different.`,
+      welcome: `Thinking about joining the crew? Happy to answer any questions — no pressure 😊`,
       quickActions: [
         { label: "What do Pros earn?", action: "message:How much do pros earn on UpTend?" },
         { label: "Why no lead fees?", action: "message:Why doesn't UpTend charge lead fees?" },
@@ -77,18 +77,18 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (page === "/book" || page.startsWith("/book")) {
     return {
-      welcome: `Need help picking the right service or figuring out pricing? I can give you an instant estimate from a photo too 📷`,
+      welcome: `Putting something together? I can help with pricing or figuring out what you need — no rush at all 😊`,
       quickActions: [
         { label: "📷 Photo quote", action: "message:I want to send a photo for a quote" },
         { label: "Help me choose", action: "message:I'm not sure which service I need" },
-        { label: "How pricing works", action: "message:How does UpTend pricing work?" },
+        { label: "How does this work?", action: "message:How does UpTend pricing work?" },
       ],
     };
   }
 
   if (page === "/services" || page.startsWith("/services/")) {
     return {
-      welcome: `Browsing services? I can help you compare options or get a quick price estimate.`,
+      welcome: `Browsing the options? Nice — let me know if anything catches your eye or if you want help comparing`,
       quickActions: [
         { label: "What's best for me?", action: "message:Help me figure out which service I need" },
         { label: "Bundle & save", action: "message:Can I bundle multiple services for a discount?" },
@@ -99,9 +99,9 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (page === "/pricing") {
     return {
-      welcome: `These are starting prices — your final quote depends on your specific job. I can give you a personalized estimate!`,
+      welcome: `These are starting estimates — every home's a little different. Want me to get you a more accurate number?`,
       quickActions: [
-        { label: "Get my exact price", action: "message:I need an exact price for my job" },
+        { label: "Get a closer estimate", action: "message:I need an exact price for my job" },
         { label: "📷 Photo quote", action: "message:Can I send a photo for an estimate?" },
         { label: "Price match?", action: "message:Do you price match other providers?" },
       ],
@@ -110,7 +110,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (page === "/emergency") {
     return {
-      welcome: `Emergency? I can help you get a Pro dispatched ASAP. What's going on?`,
+      welcome: `Oh no — let's get you some help. What's going on?`,
       quickActions: [
         { label: "Water damage", action: "message:I have water damage, need help now" },
         { label: "Broken pipe", action: "message:I have a broken pipe" },
@@ -121,7 +121,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (userRole === "hauler" || userRole === "pro") {
     return {
-      welcome: `Hey${name}! Need help with your dashboard, jobs, or earnings?`,
+      welcome: `Hey${name}! How's it going? Need help with anything on your end?`,
       quickActions: [
         { label: "My jobs", action: "navigate:/pro/dashboard" },
         { label: "Earnings", action: "navigate:/pro/earnings" },
@@ -132,22 +132,35 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (userRole === "customer") {
     return {
-      welcome: `Hey${name}! 👋 I'm Bud — I can book services, get you quotes, or answer any questions.`,
+      welcome: `Hey${name}! 👋 Good to see you. What can I help with today?`,
       quickActions: [
         { label: "📷 Photo quote", action: "message:I want to send a photo for a quote" },
-        { label: "Book a service", action: "navigate:/book" },
+        { label: "Find what you need", action: "navigate:/book" },
         { label: "My dashboard", action: "navigate:/dashboard" },
       ],
     };
   }
 
   // Default — guest on any page
+  const isFirstVisit = !localStorage.getItem(LS_GREETED);
+  if (isFirstVisit) {
+    return {
+      welcome: `Hey there 👋 I'm Bud — your friendly neighborhood home expert. I'm here to help you find the right service, get fair pricing, and walk you through anything on the site.\n\nYou can ask me about any of our services, get a quick quote (even from a photo!), or just chat about what your home needs. I'll explain pricing, help you compare options, and keep you updated on your jobs in real time.\n\nAnd if you ever want me to go away — no hard feelings! Just hit the X and I'll disappear. I'm here whenever you need me, not a second before 😊`,
+      quickActions: [
+        { label: "What services do you offer?", action: "message:What services does UpTend offer?" },
+        { label: "How does pricing work?", action: "message:How does UpTend pricing work and why do prices vary?" },
+        { label: "📷 Get a quote from a photo", action: "message:I want to send a photo for a quote" },
+        { label: "Show me around the site", action: "message:Can you walk me through the site?" },
+      ],
+    };
+  }
+
   return {
-    welcome: `Hey! 👋 I'm Bud, your UpTend assistant. I can help you find services, get quotes, or answer questions. What do you need?`,
+    welcome: `Hey there 👋 Good to see you again! Need a hand with anything?`,
     quickActions: [
       { label: "📷 Photo quote", action: "message:I want to send a photo for a quote" },
-      { label: "Browse services", action: "navigate:/services" },
-      { label: "How it works", action: "message:How does UpTend work?" },
+      { label: "See what we offer", action: "navigate:/services" },
+      { label: "How does this work?", action: "message:How does UpTend work?" },
     ],
   };
 }
@@ -218,9 +231,9 @@ function useSpeechSynthesis() {
 
 function PropertyCard({ data }: { data: any }) {
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-green-50 dark:from-blue-950/30 dark:to-green-950/30 rounded-xl p-3 text-xs space-y-2 border border-blue-200/50">
-      <div className="font-semibold text-sm">🏠 Property Scan</div>
-      <div className="grid grid-cols-2 gap-1.5">
+    <div className="bg-gradient-to-br from-amber-50/80 to-orange-50/80 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-2.5 text-[11px] space-y-1.5 border border-amber-200/40 backdrop-blur-sm">
+      <div className="font-semibold text-xs">🏠 Property Scan</div>
+      <div className="grid grid-cols-2 gap-1">
         {data.homeValueEstimate && <div><span className="text-muted-foreground">Value:</span> ${data.homeValueEstimate?.toLocaleString()}</div>}
         {data.sqFootage && <div><span className="text-muted-foreground">Size:</span> {data.sqFootage?.toLocaleString()} sqft</div>}
         {data.bedrooms && <div><span className="text-muted-foreground">Beds/Bath:</span> {data.bedrooms}/{data.bathrooms}</div>}
@@ -234,9 +247,9 @@ function PropertyCard({ data }: { data: any }) {
 
 function QuoteCard({ data }: { data: any }) {
   return (
-    <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl p-3 text-xs space-y-2 border border-green-200/50">
-      <div className="font-semibold text-sm">💰 Locked Quote</div>
-      <div className="text-lg font-bold text-green-700 dark:text-green-400">${data.price}</div>
+    <div className="bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-2.5 text-[11px] space-y-1.5 border border-green-200/40 backdrop-blur-sm">
+      <div className="font-semibold text-xs">✨ Locked Quote</div>
+      <div className="text-base font-bold text-green-700 dark:text-green-400">${data.price}</div>
       <div><span className="text-muted-foreground">Service:</span> {data.service}</div>
       {data.address && <div><span className="text-muted-foreground">Address:</span> {data.address}</div>}
       <div><span className="text-muted-foreground">Valid until:</span> {new Date(data.validUntil).toLocaleDateString()}</div>
@@ -246,15 +259,15 @@ function QuoteCard({ data }: { data: any }) {
 
 function BundleCard({ data }: { data: any }) {
   return (
-    <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-xl p-3 text-xs space-y-2 border border-purple-200/50">
-      <div className="font-semibold text-sm">📦 Bundle Estimate</div>
+    <div className="bg-gradient-to-br from-purple-50/80 to-pink-50/80 dark:from-purple-950/20 dark:to-pink-950/20 rounded-xl p-2.5 text-[11px] space-y-1.5 border border-purple-200/40 backdrop-blur-sm">
+      <div className="font-semibold text-xs">📦 Bundle Estimate</div>
       {data.breakdown?.map((item: any, i: number) => (
         <div key={i} className="flex justify-between"><span>{item.service}</span><span>${item.rate}/{item.frequency}</span></div>
       ))}
-      <div className="border-t border-purple-200/50 pt-1 space-y-0.5">
+      <div className="border-t border-purple-200/30 pt-1 space-y-0.5">
         <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span>${data.subtotal}</span></div>
         <div className="flex justify-between text-green-600 font-medium"><span>Bundle Discount (10%)</span><span>-${data.discount}</span></div>
-        <div className="flex justify-between font-bold text-sm"><span>Total</span><span>${data.total}</span></div>
+        <div className="flex justify-between font-bold text-xs"><span>Total</span><span>${data.total}</span></div>
       </div>
     </div>
   );
@@ -262,8 +275,8 @@ function BundleCard({ data }: { data: any }) {
 
 function BreakdownCard({ data }: { data: any }) {
   return (
-    <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 rounded-xl p-3 text-xs space-y-2 border border-amber-200/50">
-      <div className="font-semibold text-sm">📊 Price Breakdown</div>
+    <div className="bg-gradient-to-br from-amber-50/80 to-orange-50/80 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-2.5 text-[11px] space-y-1.5 border border-amber-200/40 backdrop-blur-sm">
+      <div className="font-semibold text-xs">📊 Price Breakdown</div>
       {data.items && <div><span className="text-muted-foreground">Items:</span> {data.items.join(", ")}</div>}
       {data.volume && <div><span className="text-muted-foreground">Volume:</span> {data.volume}</div>}
       {data.laborHours && <div><span className="text-muted-foreground">Labor:</span> ~{data.laborHours} hours</div>}
@@ -271,6 +284,15 @@ function BreakdownCard({ data }: { data: any }) {
     </div>
   );
 }
+
+// ─── Pulse Animation CSS ─────────────────────────────────────────────────────
+
+const pulseKeyframes = `
+@keyframes gentlePulse {
+  0%, 100% { box-shadow: 0 2px 12px rgba(245, 158, 11, 0.15); }
+  50% { box-shadow: 0 2px 20px rgba(245, 158, 11, 0.35); }
+}
+`;
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
@@ -282,9 +304,9 @@ export function UpTendGuide() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showDisableConfirm, setShowDisableConfirm] = useState(false);
   const [voiceOutputEnabled, setVoiceOutputEnabled] = useState(() => localStorage.getItem(LS_VOICE_OUT) === "true");
   const [isUploading, setIsUploading] = useState(false);
+  const [shouldPulse, setShouldPulse] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -292,6 +314,29 @@ export function UpTendGuide() {
 
   const speech = useSpeechRecognition();
   const synth = useSpeechSynthesis();
+
+  // Auto-greet on first visit — open after a short delay so page loads first
+  useEffect(() => {
+    if (isDisabled) return;
+    const alreadyGreeted = localStorage.getItem(LS_GREETED);
+    if (!alreadyGreeted && !hasInitRef.current) {
+      const timer = setTimeout(() => {
+        handleOpen();
+        localStorage.setItem(LS_GREETED, "true");
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Gentle pulse every 30 seconds
+  useEffect(() => {
+    if (isOpen) return;
+    const interval = setInterval(() => {
+      setShouldPulse(true);
+      setTimeout(() => setShouldPulse(false), 2000);
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -461,117 +506,84 @@ export function UpTendGuide() {
     }
   }, [input, isLoading, pageContext, voiceOutputEnabled, synth]);
 
-  // ─── Disable ───────────────────────────────────────────────────────────
-
-  const confirmDisable = () => {
-    localStorage.setItem(LS_DISABLED, "true");
-    setIsDisabled(true);
-    setIsOpen(false);
-    setShowDisableConfirm(false);
-    synth.cancel();
-  };
-
   // Don't show on login/signup pages or if disabled
   if (isDisabled) return null;
   if (NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p))) return null;
 
   return (
     <>
-      {/* ─── Floating Button ─────────────────────────────────────────── */}
+      <style>{pulseKeyframes}</style>
+
+      {/* ─── Floating Pill (closed state) ────────────────────────────── */}
       {!isOpen && (
         <button
           onClick={handleOpen}
-          className="fixed bottom-5 right-5 z-50 w-12 h-12 bg-primary text-primary-foreground rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center"
+          className={cn(
+            "fixed bottom-4 right-4 z-50 flex items-center gap-2 px-4 py-2.5",
+            "bg-amber-500/90 hover:bg-amber-500 text-white",
+            "rounded-full shadow-lg hover:shadow-xl",
+            "transition-all duration-300 ease-out",
+            "backdrop-blur-sm",
+            "text-[13px] font-medium",
+          )}
+          style={{
+            animation: shouldPulse ? "gentlePulse 2s ease-in-out" : "none",
+            maxWidth: "200px",
+          }}
           aria-label="Chat with Bud"
-          title="Chat with Bud"
         >
-          <HelpCircle className="w-5 h-5" />
+          <span className="text-base leading-none">🏠</span>
+          <span>Need a hand? 👋</span>
         </button>
       )}
 
-      {/* ─── Chat Panel ──────────────────────────────────────────────── */}
+      {/* ─── Chat Card ───────────────────────────────────────────────── */}
       <div
         className={cn(
-          "fixed z-50 bg-background border shadow-2xl flex flex-col transition-all duration-200 ease-out",
-          // Desktop: floating window bottom-right
-          "bottom-6 right-6 w-[380px] max-w-[calc(100vw-1.5rem)] rounded-2xl",
-          // Height
-          "h-[min(540px,calc(100vh-6rem))]",
-          // Mobile: full-width bottom sheet
-          "max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-2xl max-md:h-[80vh]",
+          "fixed z-50 flex flex-col transition-all duration-300 ease-out",
+          // Glass effect
+          "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl",
+          "border border-white/40 dark:border-zinc-700/40",
+          "shadow-[0_8px_40px_rgba(0,0,0,0.08)]",
+          // Desktop: compact card bottom-right
+          "bottom-4 right-4 w-[320px] max-w-[calc(100vw-2rem)] rounded-2xl",
+          "h-[min(420px,calc(100vh-2rem))]",
+          // Mobile: bottom sheet
+          "max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-2xl max-md:h-[60vh]",
           // Visibility
-          isOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
+          isOpen
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-3 pointer-events-none"
         )}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <Bot className="w-4 h-4 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-sm leading-tight">Bud</h3>
-              <p className="text-[11px] text-muted-foreground leading-tight">UpTend Assistant</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-0.5">
-            {synth.isSupported && (
-              <Button
-                variant="ghost" size="icon"
-                className={cn("h-8 w-8", voiceOutputEnabled && "text-primary")}
-                onClick={() => { const next = !voiceOutputEnabled; setVoiceOutputEnabled(next); localStorage.setItem(LS_VOICE_OUT, String(next)); if (!next) synth.cancel(); }}
-                title={voiceOutputEnabled ? "Mute voice" : "Enable voice"}
-              >
-                {voiceOutputEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-              </Button>
-            )}
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setIsOpen(false); synth.cancel(); }} title="Minimize">
-              <Minus className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost" size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-destructive"
-              onClick={() => setShowDisableConfirm(true)}
-              title="Turn off Bud"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
+        {/* Header — minimal */}
+        <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-black/5 dark:border-white/5 shrink-0">
+          <span className="font-semibold text-sm">Bud 🏠</span>
+          <button
+            onClick={() => { setIsOpen(false); synth.cancel(); }}
+            className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+            aria-label="Close"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
 
-        {/* Disable confirmation */}
-        {showDisableConfirm && (
-          <div className="px-4 py-3 bg-destructive/5 border-b text-sm space-y-2 shrink-0">
-            <p className="font-medium">Turn off Bud?</p>
-            <p className="text-xs text-muted-foreground">You can re-enable from your profile settings anytime.</p>
-            <div className="flex gap-2">
-              <Button size="sm" variant="destructive" onClick={confirmDisable}>Turn Off</Button>
-              <Button size="sm" variant="outline" onClick={() => setShowDisableConfirm(false)}>Keep</Button>
-            </div>
-          </div>
-        )}
-
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2.5 space-y-2">
           {messages.map((msg) => (
-            <div key={msg.id} className={cn("flex gap-2", msg.role === "user" ? "justify-end" : "justify-start")}>
-              {msg.role === "assistant" && (
-                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">
-                  <Bot className="w-3 h-3 text-primary" />
-                </div>
-              )}
-              <div className={cn("max-w-[85%] space-y-2", msg.role === "user" ? "order-first" : "")}>
+            <div key={msg.id} className={cn("flex flex-col", msg.role === "user" ? "items-end" : "items-start")}>
+              <div className={cn("max-w-[88%] space-y-1.5")}>
                 {msg.photoUrl && (
-                  <div className="rounded-xl overflow-hidden border">
-                    <img src={msg.photoUrl} alt="Uploaded" className="w-full max-h-40 object-cover" />
+                  <div className="rounded-xl overflow-hidden border border-black/5">
+                    <img src={msg.photoUrl} alt="Uploaded" className="w-full max-h-32 object-cover" />
                   </div>
                 )}
                 <div
                   className={cn(
-                    "rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed",
+                    "rounded-2xl px-3 py-2 text-[12px] leading-[1.5]",
                     msg.role === "user"
-                      ? "bg-primary text-primary-foreground rounded-br-sm"
-                      : "bg-muted rounded-bl-sm"
+                      ? "bg-amber-500 text-white rounded-br-md"
+                      : "bg-black/[0.04] dark:bg-white/[0.06] rounded-bl-md"
                   )}
                   dangerouslySetInnerHTML={{ __html: renderContent(msg.content) }}
                 />
@@ -580,41 +592,34 @@ export function UpTendGuide() {
                 {msg.bundleData && <BundleCard data={msg.bundleData} />}
                 {msg.breakdown && <BreakdownCard data={msg.breakdown} />}
                 {msg.quickActions && msg.quickActions.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1 pt-0.5">
                     {msg.quickActions.map((qa, i) => (
                       <button
                         key={i}
                         onClick={() => handleAction(qa.action)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                        className="inline-flex items-center gap-0.5 px-2 py-1 rounded-full text-[11px] font-medium bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950/50 transition-colors border border-amber-200/40 dark:border-amber-700/30"
                       >
                         {qa.label}
-                        <ChevronRight className="w-3 h-3" />
+                        <ChevronRight className="w-2.5 h-2.5 opacity-50" />
                       </button>
                     ))}
                   </div>
                 )}
               </div>
-              {msg.role === "user" && (
-                <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center shrink-0 mt-1">
-                  <User className="w-3 h-3" />
-                </div>
-              )}
             </div>
           ))}
 
+          {/* Typing indicator — subtle dots */}
           {(isLoading || isUploading) && (
-            <div className="flex gap-2 items-start">
-              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <Bot className="w-3 h-3 text-primary" />
-              </div>
-              <div className="bg-muted rounded-2xl rounded-bl-sm px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-bounce" style={{ animationDelay: "300ms" }} />
+            <div className="flex items-start">
+              <div className="bg-black/[0.04] dark:bg-white/[0.06] rounded-2xl rounded-bl-md px-3 py-2">
+                <div className="flex items-center gap-1.5">
+                  <div className="flex gap-[3px]">
+                    <div className="w-[5px] h-[5px] rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: "0ms", animationDuration: "0.8s" }} />
+                    <div className="w-[5px] h-[5px] rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: "150ms", animationDuration: "0.8s" }} />
+                    <div className="w-[5px] h-[5px] rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: "300ms", animationDuration: "0.8s" }} />
                   </div>
-                  {isUploading && <span className="text-xs text-muted-foreground">Analyzing photo...</span>}
+                  {isUploading && <span className="text-[10px] text-muted-foreground ml-1">Analyzing photo…</span>}
                 </div>
               </div>
             </div>
@@ -622,11 +627,11 @@ export function UpTendGuide() {
         </div>
 
         {/* Input */}
-        <div className="px-3 py-3 border-t shrink-0">
+        <div className="px-2.5 py-2 border-t border-black/5 dark:border-white/5 shrink-0">
           {speech.isListening && (
-            <div className="flex items-center gap-2 mb-2 text-xs text-primary px-1">
-              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              Listening... {speech.transcript || "speak now"}
+            <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-amber-600 px-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              Listening… {speech.transcript || "speak now"}
             </div>
           )}
 
@@ -639,40 +644,68 @@ export function UpTendGuide() {
             onChange={(e) => { const file = e.target.files?.[0]; if (file) handlePhotoUpload(file); e.target.value = ""; }}
           />
 
-          <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex gap-1.5">
-            <Button
-              type="button" size="icon" variant="ghost"
-              className="rounded-full shrink-0 h-9 w-9"
+          <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex items-center gap-1">
+            <button
+              type="button"
+              className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               onClick={() => fileInputRef.current?.click()}
               disabled={isLoading || isUploading}
               title="Upload photo"
             >
-              <Paperclip className="w-4 h-4" />
-            </Button>
-            <Input
+              <Paperclip className="w-3.5 h-3.5" />
+            </button>
+            <input
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask anything..."
-              className="flex-1 rounded-full text-sm h-9"
+              placeholder="Ask anything…"
+              className="flex-1 bg-transparent text-[12px] h-7 px-2 rounded-full border border-black/10 dark:border-white/10 focus:outline-none focus:border-amber-400/50 transition-colors placeholder:text-muted-foreground/60"
               disabled={isLoading || speech.isListening || isUploading}
             />
             {speech.isSupported && (
-              <Button
-                type="button" size="icon"
-                variant={speech.isListening ? "destructive" : "ghost"}
-                className="rounded-full shrink-0 h-9 w-9"
+              <button
+                type="button"
+                className={cn(
+                  "shrink-0 w-7 h-7 flex items-center justify-center rounded-full transition-colors",
+                  speech.isListening
+                    ? "bg-red-500 text-white"
+                    : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10"
+                )}
                 onClick={speech.isListening ? speech.stopListening : speech.startListening}
                 disabled={isLoading || isUploading}
                 title={speech.isListening ? "Stop" : "Voice input"}
               >
-                {speech.isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-              </Button>
+                {speech.isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+              </button>
             )}
-            <Button type="submit" size="icon" className="rounded-full shrink-0 h-9 w-9" disabled={!input.trim() || isLoading || isUploading}>
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            </Button>
+            {synth.isSupported && (
+              <button
+                type="button"
+                className={cn(
+                  "shrink-0 w-7 h-7 flex items-center justify-center rounded-full transition-colors",
+                  voiceOutputEnabled
+                    ? "text-amber-500"
+                    : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10"
+                )}
+                onClick={() => { const next = !voiceOutputEnabled; setVoiceOutputEnabled(next); localStorage.setItem(LS_VOICE_OUT, String(next)); if (!next) synth.cancel(); }}
+                title={voiceOutputEnabled ? "Mute voice" : "Enable voice"}
+              >
+                {voiceOutputEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              </button>
+            )}
+            <button
+              type="submit"
+              className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-amber-500 text-white hover:bg-amber-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              disabled={!input.trim() || isLoading || isUploading}
+            >
+              {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+            </button>
           </form>
+
+          {/* Powered by */}
+          <div className="text-center mt-1">
+            <span className="text-[9px] text-muted-foreground/40">powered by UpTend</span>
+          </div>
         </div>
       </div>
     </>
