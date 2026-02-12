@@ -64,7 +64,7 @@ const services = [
     title: "AI Home Scan",
     shortTitle: "AI Home Scan",
     tagline: "Know your home inside out.",
-    spin: "Full interior walkthrough and personalized maintenance report. Upgrade to AI Home Scan Aerial for $149 and add a drone-powered roof and gutter scan.",
+    spin: "Full interior walkthrough and personalized maintenance report. Upgrade to AI Home Scan Aerial for $199 and add a drone-powered roof and gutter scan.",
     price: "Starting at $99",
     color: "text-green-600 dark:text-green-400",
     bgColor: "bg-green-500/10",

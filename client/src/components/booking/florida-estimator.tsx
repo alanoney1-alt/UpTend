@@ -33,8 +33,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "home_consultation",
     name: "AI Home Scan",
-    price: "$49 / $149",
-    description: "Complete home documentation: Standard ($49) interior walkthrough or Aerial ($149) with drone footage. $49 reimbursed on your first service booking.",
+    price: "$99 / $199",
+    description: "Complete home documentation: Standard ($99) interior walkthrough or Aerial ($199) with drone footage. $49 back on your next booking.",
     benefit: "Protects property value • Insurance-ready documentation • $49 credit with first booking",
     icon: ClipboardCheck,
     featured: true,

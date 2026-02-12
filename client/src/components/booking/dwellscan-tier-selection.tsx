@@ -2,8 +2,8 @@
  * DwellScan Tier Selection Component
  *
  * Allows customers to choose between:
- * - DwellScan Standard ($49)
- * - DwellScan Aerial ($149) - RECOMMENDED
+ * - DwellScan Standard ($99)
+ * - DwellScan Aerial ($199) - RECOMMENDED
  *
  * Both include $49 credit toward next service
  */
@@ -53,7 +53,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                 </div>
                 <div>
                   <CardTitle className="text-xl">AI Home Scan Standard</CardTitle>
-                  <p className="text-2xl font-bold text-primary mt-1">$49</p>
+                  <p className="text-2xl font-bold text-primary mt-1">$99</p>
                 </div>
               </div>
               {selectedTier === 'standard' && (
@@ -121,7 +121,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                 </div>
                 <div>
                   <CardTitle className="text-xl">AI Home Scan Aerial</CardTitle>
-                  <p className="text-2xl font-bold text-primary mt-1">$149</p>
+                  <p className="text-2xl font-bold text-primary mt-1">$199</p>
                 </div>
               </div>
               {selectedTier === 'aerial' && (
@@ -138,7 +138,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
             </p>
 
             <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg text-sm text-blue-900 dark:text-blue-100">
-              💡 <strong>Value:</strong> Comparable drone inspections cost $290–$350 alone. <strong>$49 credit included</strong> (same $49 credit as Standard tier, not the full $149).
+              💡 <strong>Value:</strong> Comparable drone inspections cost $290–$350 alone. <strong>$49 back on your next booking</strong>.
             </div>
 
             <div className="space-y-2">

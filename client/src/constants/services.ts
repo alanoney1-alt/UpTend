@@ -96,14 +96,14 @@ export const SERVICES = {
     generic: 'Home Scan',
     display: 'AI Home Scan',
     slug: '/dwellscan',
-    startingPrice: 49,
+    startingPrice: 99,
     priceUnit: 'flat',
     tagline: 'Know your home inside out.',
-    description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $149.',
+    description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $199.',
     tiers: {
       standard: {
         name: 'AI Home Scan Standard',
-        price: 49,
+        price: 99,
         proPayout: 25,
         description: 'Interior + exterior ground-level walkthrough with maintenance report',
         includes: [
@@ -120,7 +120,7 @@ export const SERVICES = {
       },
       aerial: {
         name: 'AI Home Scan Aerial',
-        price: 149,
+        price: 199,
         proPayoutModels: {
           twoPro: { walkthrough: 25, drone: 55, uptendKeeps: 69 },
           onePro: { combined: 80, uptendKeeps: 69 },

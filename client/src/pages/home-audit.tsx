@@ -18,7 +18,7 @@ const included = [
   { icon: Home, text: "Digital asset catalog with estimated valuations" },
   { icon: FileText, text: "Treatment plan with transparent pricing for any issues found" },
   { icon: Leaf, text: "Sustainability baseline assessment" },
-  { icon: DollarSign, text: "$49 fee credited toward any booked service" },
+  { icon: DollarSign, text: "$99 fee credited toward any booked service" },
 ];
 
 const faqs = [
@@ -27,8 +27,8 @@ const faqs = [
     a: "No preparation needed. Just ensure access to all rooms. The Pro handles everything with their own equipment.",
   },
   {
-    q: "Is the $49 really credited if I book a service?",
-    a: "Yes. 100% of the audit fee is applied as a credit toward any follow-up service you book within 90 days.",
+    q: "Is the $99 really credited if I book a service?",
+    a: "Yes. You get a $49 credit toward any follow-up service you book within 90 days.",
   },
   {
     q: "What happens to my data?",
@@ -70,7 +70,7 @@ export default function HomeAudit() {
             <strong className="text-foreground"> built-in accountability</strong> for your wallet, your home, and the environment.
           </p>
           <p className="text-sm font-semibold text-primary dark:text-orange-400 mb-10" data-testid="text-audit-price-hook">
-            $49 flat &middot; Credited toward any follow-up service
+            $99 flat &middot; $49 back on your next booking
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/book?service=home_consultation">
@@ -258,7 +258,7 @@ export default function HomeAudit() {
               What&rsquo;s Included in Every Audit
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              $49 flat fee. No upsells during the visit. Just verified data and transparent recommendations.
+              $99 flat fee. No upsells during the visit. Just verified data and transparent recommendations.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -338,10 +338,10 @@ export default function HomeAudit() {
             Get the Intelligence Today.
           </h2>
           <p className="text-slate-400 text-lg mb-4">
-            30 minutes. $49. Full accountability. Your home becomes a verified, data-backed asset.
+            30 minutes. $99. Full accountability. Your home becomes a verified, data-backed asset.
           </p>
           <p className="text-sm text-orange-400 font-semibold mb-10">
-            $49 is credited toward any service you book within 90 days.
+            $49 back on your next booking within 90 days.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/book?service=home_consultation">

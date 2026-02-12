@@ -61,7 +61,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <p className="text-2xl font-bold text-primary">Just $100 more</p>
             </div>
             <p className="text-sm text-muted-foreground">
-              (Regular price $149 — save $49 since you already have Standard)
+              (Regular price $199 — upgrade for just $100 more since you already have Standard)
             </p>
           </div>
 
@@ -145,7 +145,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <Home className="w-5 h-5 text-primary" />
               <div>
                 <p className="font-semibold">AI Home Scan Standard</p>
-                <p className="text-2xl font-bold text-primary">$49</p>
+                <p className="text-2xl font-bold text-primary">$99</p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground mb-3">
@@ -170,7 +170,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <Plane className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="font-semibold">AI Home Scan Aerial</p>
-                <p className="text-2xl font-bold text-blue-600">$149</p>
+                <p className="text-2xl font-bold text-blue-600">$199</p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground mb-3">

@@ -333,10 +333,10 @@ function WhySection() {
   const featuredService = {
     key: "home_consultation",
     label: "AI Home Scan",
-    price: "$49 / $149",
+    price: "$99 / $199",
     icon: ClipboardCheck,
     color: "text-primary dark:text-primary",
-    description: "Complete home documentation: Standard ($49) interior walkthrough or Aerial ($149) with drone footage. Both include $49 credit toward your first or next booking."
+    description: "Complete home documentation: Standard ($99) interior walkthrough or Aerial ($199) with drone footage. Both include $49 credit toward your first or next booking."
   };
 
   const services = [

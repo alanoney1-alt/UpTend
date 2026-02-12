@@ -140,7 +140,7 @@ const resources = {
       "why.why_moving_help": "Moving Help",
       "why.why_home_health_audit": "Home Health Audit",
 
-      "walk.walk_headline": "What do I get for $49?",
+      "walk.walk_headline": "What do I get for $99?",
       "walk.walk_intro": "The Home Health Check is a 30-minute audit by a verified Pro. Both Standard and Aerial packages include a $49 credit toward your first or next booking.",
       "walk.walk_step1_title": "1. The Exterior Scan",
       "walk.walk_step1_desc": "Visual check of Roof, Gutters, and Siding for algae or damage.",
@@ -158,7 +158,7 @@ const resources = {
       "walk.walk_garage": "Garage Clutter",
       "walk.walk_good": "GOOD",
       "walk.walk_total_value": "Total Value of Audit: $250",
-      "walk.walk_book_audit": "Book Audit ($49)",
+      "walk.walk_book_audit": "Book Scan ($99)",
 
       "worker.worker_headline": "Build a Verified Green Track Record.",
       "worker.worker_body": "UpTend matches you with real jobs, pays you fairly, and automatically builds your verified green track record. Become the first choice for homeowners and property managers who care about sustainability.",
@@ -170,7 +170,7 @@ const resources = {
       "faq.faq_q2": "How accurate is the AI Pricing?",
       "faq.faq_a2": "Extremely. Our computer vision analyzes the volume of junk or the square footage of concrete. If the Pro arrives and the job is significantly different, you get a Scope Adjustment notification to approve before any work starts. No surprises.",
       "faq.faq_q3": "How does the $49 credit work?",
-      "faq.faq_a3": "Both the Standard ($49) and Aerial ($149) packages include a $49 credit toward your first or next UpTend service booking. The credit is automatically applied when you book a service from your audit report.",
+      "faq.faq_a3": "Both the Standard ($99) and Aerial ($199) packages include a $49 credit toward your first or next UpTend service booking. The credit is automatically applied when you book a service from your audit report.",
       "faq.faq_cta": "Get Started with UpTend",
 
       "footer.footer_home_value_os": "Home Intelligence & Protection",
@@ -480,7 +480,7 @@ const resources = {
       "why.why_moving_help": "Ayuda de Mudanza",
       "why.why_home_health_audit": "Auditoría de Salud del Hogar",
 
-      "walk.walk_headline": "¿Qué obtengo por $49?",
+      "walk.walk_headline": "¿Qué obtengo por $99?",
       "walk.walk_intro": "El Chequeo de Salud del Hogar es una auditoría de 30 minutos por un Consultor Nivel 3. Se acredita 100% si reserva cualquier servicio.",
       "walk.walk_step1_title": "1. El Escaneo Exterior",
       "walk.walk_step1_desc": "Inspección visual del techo, canaletas y revestimiento por algas o daños.",
@@ -498,7 +498,7 @@ const resources = {
       "walk.walk_garage": "Desorden del Garaje",
       "walk.walk_good": "BUENO",
       "walk.walk_total_value": "Valor Total de la Auditoría: $250",
-      "walk.walk_book_audit": "Reservar Auditoría ($49)",
+      "walk.walk_book_audit": "Reservar Auditoría ($99)",
 
       "worker.worker_headline": "Construya un Historial Verde Verificado.",
       "worker.worker_body": "UpTend lo conecta con trabajos reales, le paga justamente y automáticamente construye su historial verde verificado. Conviértase en la primera opción para propietarios y administradores de propiedades que se preocupan por la sostenibilidad.",
@@ -510,7 +510,7 @@ const resources = {
       "faq.faq_q2": "¿Qué tan preciso es el Precio con IA?",
       "faq.faq_a2": "Extremadamente. Nuestra visión por computadora analiza el volumen de basura o los pies cuadrados de concreto. Si el Pro llega y el trabajo es significativamente diferente, recibe una notificación de Ajuste de Alcance para aprobar antes de que comience cualquier trabajo. Sin sorpresas.",
       "faq.faq_q3": "¿Cómo funciona el crédito de $49?",
-      "faq.faq_a3": "Tanto el paquete Estándar ($49) como el Aéreo ($149) incluyen un crédito de $49 hacia su primera reserva o próxima reserva de servicio UpTend. El crédito se aplica automáticamente cuando reserva un servicio desde su informe de auditoría.",
+      "faq.faq_a3": "Tanto el paquete Estándar ($99) como el Aéreo ($199) incluyen un crédito de $49 hacia su primera reserva o próxima reserva de servicio UpTend. El crédito se aplica automáticamente cuando reserva un servicio desde su informe de auditoría.",
       "faq.faq_cta": "Comience con UpTend",
 
       "footer.footer_home_value_os": "Inteligencia y Protección del Hogar",

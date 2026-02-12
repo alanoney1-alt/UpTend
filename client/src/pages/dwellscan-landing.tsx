@@ -54,11 +54,11 @@ export default function DwellScanLanding() {
             report. Add drone aerial scan for roof & gutter inspection.
           </p>
           <p className="text-lg font-semibold mb-8">
-            Starting at just $49 • Includes $49 credit toward your next service
+            Starting at just $99 • Includes $49 credit toward your next service
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" onClick={() => handleBookTier('standard')}>
-              Book Standard ($49)
+              Book Standard ($99)
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button
@@ -68,7 +68,7 @@ export default function DwellScanLanding() {
               onClick={() => handleBookTier('aerial')}
             >
               <Plane className="w-5 h-5 mr-2" />
-              Book Aerial ($149)
+              Book Aerial ($199)
             </Button>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function DwellScanLanding() {
                     <Home className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="text-2xl font-bold mb-2">AI Home Scan Standard</h3>
-                  <p className="text-4xl font-black text-primary mb-2">$49</p>
+                  <p className="text-4xl font-black text-primary mb-2">$99</p>
                   <p className="text-sm text-muted-foreground">
                     {dwellScan.tiers.standard.description}
                   </p>
@@ -125,7 +125,7 @@ export default function DwellScanLanding() {
                   size="lg"
                   onClick={() => handleBookTier('standard')}
                 >
-                  Book Standard - $49
+                  Book Standard - $99
                 </Button>
               </CardContent>
             </Card>
@@ -141,7 +141,7 @@ export default function DwellScanLanding() {
                     <Plane className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold mb-2">AI Home Scan Aerial</h3>
-                  <p className="text-4xl font-black text-blue-600 mb-2">$149</p>
+                  <p className="text-4xl font-black text-blue-600 mb-2">$199</p>
                   <p className="text-sm text-muted-foreground">
                     {dwellScan.tiers.aerial.description}
                   </p>
@@ -153,7 +153,7 @@ export default function DwellScanLanding() {
                   </p>
                   <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
                     Comparable drone roof inspections cost $290-$350 alone. You're getting it
-                    bundled with a full interior walkthrough for just $149.
+                    bundled with a full interior walkthrough for just $199.
                   </p>
                 </div>
 
@@ -188,7 +188,7 @@ export default function DwellScanLanding() {
                   onClick={() => handleBookTier('aerial')}
                 >
                   <Plane className="w-5 h-5 mr-2" />
-                  Book Aerial - $149
+                  Book Aerial - $199
                 </Button>
               </CardContent>
             </Card>
@@ -306,7 +306,7 @@ export default function DwellScanLanding() {
               variant="secondary"
               onClick={() => handleBookTier('standard')}
             >
-              Book Standard - $49
+              Book Standard - $99
             </Button>
             <Button
               size="lg"
@@ -314,7 +314,7 @@ export default function DwellScanLanding() {
               onClick={() => handleBookTier('aerial')}
             >
               <Plane className="w-5 h-5 mr-2" />
-              Book Aerial - $149
+              Book Aerial - $199
             </Button>
           </div>
           <p className="text-sm mt-6 opacity-75">
@@ -336,7 +336,7 @@ export default function DwellScanLanding() {
 
           <h3>What is included in AI Home Scan Standard?</h3>
           <p>
-            AI Home Scan Standard ($49) includes a complete interior and exterior ground-level
+            AI Home Scan Standard ($99) includes a complete interior and exterior ground-level
             walkthrough of your property. Our verified Pro will photograph and document every room,
             assess major systems (HVAC, water heater, electrical panel, plumbing), check your
             foundation and exterior for visible issues, and provide a personalized maintenance
@@ -345,7 +345,7 @@ export default function DwellScanLanding() {
 
           <h3>What makes AI Home Scan Aerial different?</h3>
           <p>
-            AI Home Scan Aerial ($149) adds a FAA Part 107 certified drone flyover to capture aerial
+            AI Home Scan Aerial ($199) adds a FAA Part 107 certified drone flyover to capture aerial
             roof condition scans, gutter blockage estimates, chimney and vent inspections, tree
             overhang proximity assessments, and property drainage overviews. Standalone drone roof
             inspections typically cost $290-$350 in the Orlando market, making Aerial an incredible

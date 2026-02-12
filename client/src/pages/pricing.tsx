@@ -68,7 +68,7 @@ const SERVICES = [
   {
     id: "home_consultation",
     name: <>AI Home Scan</>,
-    price: "$49",
+    price: "$99",
     unit: "flat rate",
     description: "Full digital inventory and maintenance check.",
     features: ["Video catalog of assets", "Safety hazard check", "Insurance report"],

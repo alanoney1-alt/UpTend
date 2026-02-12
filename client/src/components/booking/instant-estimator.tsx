@@ -19,7 +19,7 @@ function getEstimates(_addr: string): EstimateData {
   return {
     spaceRejuvenation: "$149 – $299",
     pressureWash: "$199 – $350",
-    homeAudit: "$49 (Essential)",
+    homeAudit: "$99 (Essential)",
     gutterCare: "$120 – $180",
     totalImpact: "Verified & Insured Pros",
     materialRecovery: "~40 lbs verified recovery",
