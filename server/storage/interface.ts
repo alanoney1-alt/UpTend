@@ -95,6 +95,7 @@ export interface IStorage {
   getServiceRequestsByHauler(haulerId: string): Promise<ServiceRequest[]>;
   getPendingRequests(): Promise<ServiceRequestWithDetails[]>;
   getActiveJobsForHauler(haulerId: string): Promise<ServiceRequest[]>;
+  getCompletedJobsForHauler(haulerId: string): Promise<ServiceRequest[]>;
   createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest>;
   updateServiceRequest(id: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined>;
   acceptServiceRequest(id: string, haulerId: string, updates: Partial<ServiceRequest>): Promise<ServiceRequest | undefined>;

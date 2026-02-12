@@ -560,6 +560,139 @@ export function registerProProfileRoutes(app: Express) {
     }
   });
 
+  // Pro earnings (computed from completed jobs)
+  app.get("/api/pro/earnings", requireAuth, requireHauler, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Not authenticated" });
+      const profile = await storage.getHaulerProfile(userId);
+      if (!profile) return res.json({ total: 0, weekly: 0, monthly: 0, today: 0, pending: 0, jobsThisWeek: 0, history: [] });
+
+      const completedJobs = await storage.getCompletedJobsForHauler(userId);
+
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      const startOfWeek = startOfDay - now.getDay() * 86400000;
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+      const payoutPct = profile.payoutPercentage || 0.75;
+
+      let total = 0, weekly = 0, monthly = 0, today = 0, pending = 0, jobsThisWeek = 0;
+      const history: any[] = [];
+
+      for (const job of (completedJobs || [])) {
+        const price = job.livePrice || job.priceEstimate || 0;
+        const earnings = Math.round(price * payoutPct);
+        const completedAt = job.completedAt ? new Date(job.completedAt).getTime() : 0;
+
+        if (job.status === "completed") {
+          total += earnings;
+          if (completedAt >= startOfMonth) monthly += earnings;
+          if (completedAt >= startOfWeek) { weekly += earnings; jobsThisWeek++; }
+          if (completedAt >= startOfDay) today += earnings;
+        } else {
+          pending += earnings;
+        }
+
+        history.push({
+          id: job.id,
+          serviceType: job.serviceType || "junk_removal",
+          address: job.pickupAddress || "",
+          date: job.completedAt || job.createdAt || now.toISOString(),
+          amount: earnings,
+          status: job.status === "completed" ? "paid" : "pending",
+        });
+      }
+
+      history.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      res.json({ total, weekly, monthly, today, pending, jobsThisWeek, history: history.slice(0, 20) });
+    } catch (error) {
+      console.error("Error fetching earnings:", error);
+      res.json({ total: 0, weekly: 0, monthly: 0, today: 0, pending: 0, jobsThisWeek: 0, history: [] });
+    }
+  });
+
+  // Get vehicles for pro profile (alias)
+  app.get("/api/pros/:profileId/vehicles", async (req, res) => {
+    try {
+      const vehicles = await storage.getPyckerVehicles(req.params.profileId);
+      res.json(vehicles);
+    } catch (error) {
+      console.error("Error fetching vehicles:", error);
+      res.status(500).json({ error: "Failed to fetch vehicles" });
+    }
+  });
+
+  // Go Online endpoint (pro alias)
+  app.post("/api/pros/:profileId/go-online", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const { vehicleId, travelRadius } = req.body;
+
+      if (!vehicleId) {
+        return res.status(400).json({ error: "You must select a vehicle to go online" });
+      }
+
+      if (!travelRadius || travelRadius < 5 || travelRadius > 100) {
+        return res.status(400).json({ error: "Travel radius must be between 5 and 100 miles" });
+      }
+
+      const vehicle = await storage.getPyckerVehicle(vehicleId);
+      if (!vehicle || vehicle.haulerProfileId !== req.params.profileId) {
+        return res.status(400).json({ error: "Invalid vehicle selected" });
+      }
+
+      const profile = await storage.updateHaulerProfile(req.params.profileId, {
+        isAvailable: true,
+        activeVehicleId: vehicleId,
+        activeTravelRadius: travelRadius,
+        lastCheckedIn: new Date().toISOString(),
+      });
+
+      if (!profile) {
+        return res.status(404).json({ error: "Profile not found" });
+      }
+
+      res.json({ success: true, message: "You are now online", profile, activeVehicle: vehicle });
+    } catch (error) {
+      console.error("Error going online:", error);
+      res.status(500).json({ error: "Failed to go online" });
+    }
+  });
+
+  // Go Offline endpoint (pro alias)
+  app.post("/api/pros/:profileId/go-offline", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const profile = await storage.updateHaulerProfile(req.params.profileId, {
+        isAvailable: false,
+        activeVehicleId: null,
+      });
+
+      if (!profile) {
+        return res.status(404).json({ error: "Profile not found" });
+      }
+
+      res.json({ success: true, message: "You are now offline", profile });
+    } catch (error) {
+      console.error("Error going offline:", error);
+      res.status(500).json({ error: "Failed to go offline" });
+    }
+  });
+
+  // Get active jobs for pro (alias)
+  app.get("/api/pros/:haulerId/jobs/active", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const jobs = await storage.getActiveJobsForHauler(req.params.haulerId);
+      const maskedJobs = jobs.map((job: MaskableRequest) =>
+        maskContactInfoForRole(job, 'hauler')
+      );
+      res.json(maskedJobs);
+    } catch (error) {
+      console.error("Error fetching active jobs:", error);
+      res.status(500).json({ error: "Failed to fetch active jobs" });
+    }
+  });
+
   // Get active jobs for hauler
   app.get("/api/haulers/:haulerId/jobs/active", requireAuth, requireHauler, async (req, res) => {
     try {

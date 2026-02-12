@@ -161,10 +161,24 @@ function BookingConfirmation({
     setIsSubmitting(true);
     setError(null);
     try {
+      // Parse address into components for the schema
+      const addrParts = (quote.address || "").split(",").map((s: string) => s.trim());
+      const street = addrParts[0] || "Address pending";
+      const city = addrParts[1] || "Orlando";
+      const stateZip = addrParts[2] || "FL 32801";
+      const zipMatch = stateZip.match(/(\d{5})/);
+      const zip = zipMatch ? zipMatch[1] : "32801";
+
       const res = await apiRequest("POST", "/api/service-requests", {
         serviceType: service.id,
         description: quote.description || `${service.label} service`,
-        address: quote.address || "",
+        pickupAddress: street,
+        pickupCity: city,
+        pickupZip: zip,
+        loadEstimate: "standard",
+        scheduledFor: quote.date || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date().toISOString(),
+        priceEstimate: quote.price,
         estimatedPrice: quote.price,
         guaranteedCeiling: Math.ceil(quote.price * 1.15), // 15% ceiling
         status: "pending_payment",

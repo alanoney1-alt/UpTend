@@ -66,7 +66,7 @@ export function registerMarketplaceRoutes(app: Express) {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
-      if ((req.user as any).userId || (req.user as any).id !== req.params.proId) {
+      if (((req.user as any).userId || (req.user as any).id) !== req.params.proId) {
         return res.status(403).json({ error: "Unauthorized - not your listings" });
       }
 
@@ -97,7 +97,7 @@ export function registerMarketplaceRoutes(app: Express) {
         return res.status(404).json({ error: "Item not found" });
       }
 
-      if (item.proId !== (req.user as any).userId || (req.user as any).id) {
+      if (item.proId !== ((req.user as any).userId || (req.user as any).id)) {
         return res.status(403).json({ error: "Unauthorized - not your item" });
       }
 
@@ -129,7 +129,7 @@ export function registerMarketplaceRoutes(app: Express) {
         return res.status(404).json({ error: "Item not found" });
       }
 
-      if (item.proId !== (req.user as any).userId || (req.user as any).id) {
+      if (item.proId !== ((req.user as any).userId || (req.user as any).id)) {
         return res.status(403).json({ error: "Unauthorized - not your item" });
       }
 

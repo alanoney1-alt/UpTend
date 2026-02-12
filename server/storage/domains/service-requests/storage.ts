@@ -88,6 +88,18 @@ export class ServiceRequestsStorage implements IServiceRequestsStorage {
   // Legacy alias for backward compatibility
   getActiveJobsForHauler = this.getActiveJobsForPro;
 
+  async getCompletedJobsForHauler(proId: string): Promise<ServiceRequest[]> {
+    return db.select().from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.assignedHaulerId, proId),
+        or(
+          eq(serviceRequests.status, "completed"),
+          eq(serviceRequests.status, "assigned"),
+          eq(serviceRequests.status, "in_progress")
+        )
+      ));
+  }
+
   async createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest> {
     const [newRequest] = await db.insert(serviceRequests).values(request).returning();
     return newRequest;

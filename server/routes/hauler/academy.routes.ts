@@ -158,15 +158,21 @@ export function registerProAcademyRoutes(app: Express) {
         return res.status(400).json({ error: "Invalid badge ID format" });
       }
 
-      // Find Pro by ID prefix (simplified - in production, store badge IDs explicitly)
-      // For now, we'll return a mock response since we need proper badge ID storage
-      // TODO: Add proper badge ID generation and storage
+      // Find Pro by ID prefix
+      const allProfiles = await storage.getAllHaulerProfiles();
+      const matchedProfile = allProfiles.find(p => p.id.toLowerCase().startsWith(idPrefix));
+
+      if (!matchedProfile) {
+        return res.status(404).json({ error: "Badge not found" });
+      }
 
       res.json({
-        name: "John Doe",
-        status: "Active",
-        specialty: "Junk Removal, Pressure Washing",
-        verified: true,
+        name: matchedProfile.companyName || "Pro",
+        status: matchedProfile.isAvailable ? "Active" : "Inactive",
+        specialty: (matchedProfile.serviceTypes || []).join(", "),
+        verified: matchedProfile.verified || false,
+        rating: matchedProfile.rating,
+        jobsCompleted: matchedProfile.jobsCompleted,
       });
     } catch (error) {
       console.error("[Academy] Badge verification failed:", error);

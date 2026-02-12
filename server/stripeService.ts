@@ -318,13 +318,13 @@ export class StripeService {
     return await getStripePublishableKey();
   }
 
-  calculatePlatformFee(amount: number, pyckerTier: string = 'independent') {
-    const platformFeePercent = this.getPlatformFeePercent(pyckerTier);
+  calculatePlatformFee(amount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false) {
+    const platformFeePercent = this.getPlatformFeePercent(pyckerTier, isVerifiedLlc);
     return Math.round(amount * (platformFeePercent / 100) * 100) / 100;
   }
 
-  calculateHaulerPayout(amount: number, pyckerTier: string = 'independent') {
-    const platformFee = this.calculatePlatformFee(amount, pyckerTier);
+  calculateHaulerPayout(amount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false) {
+    const platformFee = this.calculatePlatformFee(amount, pyckerTier, isVerifiedLlc);
     return Math.round((amount - platformFee) * 100) / 100;
   }
 

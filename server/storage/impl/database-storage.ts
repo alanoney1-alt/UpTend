@@ -358,6 +358,10 @@ export class DatabaseStorage implements IStorage {
     return this.serviceRequests.getActiveJobsForPro(haulerId);
   }
 
+  async getCompletedJobsForHauler(haulerId: string): Promise<ServiceRequest[]> {
+    return this.serviceRequests.getCompletedJobsForHauler(haulerId);
+  }
+
   async createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest> {
     return this.serviceRequests.createServiceRequest(request);
   }

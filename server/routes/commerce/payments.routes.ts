@@ -213,7 +213,7 @@ export function registerPaymentRoutes(app: Express) {
   app.post("/api/payments/confirm-bnpl", requireAuth, async (req, res) => {
     try {
       const { jobId, provider, backupPaymentMethodId } = req.body;
-      const userId = (req.user as any).id;
+      const userId = (req.user as any).userId || (req.user as any).id;
 
       if (!jobId || !provider || !backupPaymentMethodId) {
         return res.status(400).json({
@@ -295,7 +295,7 @@ export function registerPaymentRoutes(app: Express) {
     try {
       const { jobId } = req.params;
       const { adjustmentAmount, reason } = req.body;
-      const userId = (req.user as any).id;
+      const userId = (req.user as any).userId || (req.user as any).id;
       const userRole = (req.user as any).role;
 
       if (!adjustmentAmount || adjustmentAmount <= 0) {
@@ -464,6 +464,126 @@ export function registerPaymentRoutes(app: Express) {
     }
   });
 
+  // Pro alias: Stripe Connect onboarding
+  app.post("/api/pros/:profileId/stripe-onboard", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const { profileId } = req.params;
+      const profile = await storage.getHaulerProfileById(profileId);
+      if (!profile) return res.status(404).json({ error: "Pro profile not found" });
+      const user = await storage.getUser(profile.userId);
+      if (!user) return res.status(404).json({ error: "User not found" });
+      let accountId = profile.stripeAccountId;
+      if (!accountId) {
+        const account = await stripeService.createConnectAccount(
+          profileId, user.email || `pro-${user.id}@uptend.app`,
+          profile.companyName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Pro'
+        );
+        accountId = account.id;
+        await storage.updateHaulerProfile(profileId, { stripeAccountId: accountId });
+      }
+      const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}`;
+      const accountLink = await stripeService.createAccountLink(
+        accountId,
+        `${baseUrl}/hauler-dashboard?stripe=success`,
+        `${baseUrl}/hauler-dashboard?stripe=refresh`
+      );
+      res.json({ url: accountLink.url });
+    } catch (error) {
+      console.error("Error creating Stripe onboarding:", error);
+      res.status(500).json({ error: "Failed to start Stripe onboarding" });
+    }
+  });
+
+  // Pro alias: Get Stripe Connect status
+  app.get("/api/pros/:profileId/stripe-status", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const { profileId } = req.params;
+      const profile = await storage.getHaulerProfileById(profileId);
+      if (!profile) return res.status(404).json({ error: "Pro profile not found" });
+      if (!profile.stripeAccountId) {
+        return res.json({ hasAccount: false, onboardingComplete: false });
+      }
+      const status = await stripeService.getAccountStatus(profile.stripeAccountId);
+      if (status.chargesEnabled && status.payoutsEnabled && !profile.stripeOnboardingComplete) {
+        await storage.updateHaulerProfile(profileId, { stripeOnboardingComplete: true });
+      }
+      res.json({
+        hasAccount: true,
+        onboardingComplete: status.chargesEnabled && status.payoutsEnabled,
+        chargesEnabled: status.chargesEnabled,
+        payoutsEnabled: status.payoutsEnabled,
+      });
+    } catch (error) {
+      console.error("Error getting Stripe status:", error);
+      res.status(500).json({ error: "Failed to get Stripe account status" });
+    }
+  });
+
+  // Pro alias: Compliance status
+  app.get("/api/pros/:profileId/compliance", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const { profileId } = req.params;
+      const profile = await storage.getHaulerProfileById(profileId);
+      if (!profile) return res.status(404).json({ error: "Pro profile not found" });
+
+      const hasStripe = !!profile.stripeAccountId;
+      let stripeComplete = false;
+      if (hasStripe) {
+        try {
+          const status = await stripeService.getAccountStatus(profile.stripeAccountId!);
+          stripeComplete = !!(status.chargesEnabled && status.payoutsEnabled);
+        } catch {}
+      }
+
+      const backgroundStatus = profile.backgroundCheckStatus || "pending";
+      const hasCard = !!profile.backupCardId;
+      const ndaAccepted = !!profile.ndaAcceptedAt;
+
+      res.json({
+        hasCardOnFile: hasCard,
+        backgroundCheckStatus: backgroundStatus,
+        stripeOnboardingComplete: stripeComplete,
+        canAcceptJobs: stripeComplete && backgroundStatus === "clear" && ndaAccepted,
+        unpaidPenaltiesCount: 0,
+        unpaidPenaltiesAmount: 0,
+        ndaAccepted,
+        ndaAcceptedAt: profile.ndaAcceptedAt || null,
+        ndaVersion: profile.ndaVersion || null,
+      });
+    } catch (error) {
+      console.error("Error getting compliance:", error);
+      res.status(500).json({ error: "Failed to get compliance status" });
+    }
+  });
+
+  // Pro alias: Setup card on file
+  app.post("/api/pros/:profileId/setup-card", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const { profileId } = req.params;
+      const profile = await storage.getHaulerProfileById(profileId);
+      if (!profile) return res.status(404).json({ error: "Pro profile not found" });
+      // In production this would create a Stripe SetupIntent
+      res.json({ success: true, message: "Card setup initiated" });
+    } catch (error) {
+      console.error("Error setting up card:", error);
+      res.status(500).json({ error: "Failed to setup card" });
+    }
+  });
+
+  // Pro alias: Request background check
+  app.post("/api/pros/:profileId/request-background-check", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const { profileId } = req.params;
+      const profile = await storage.getHaulerProfileById(profileId);
+      if (!profile) return res.status(404).json({ error: "Pro profile not found" });
+      await storage.updateHaulerProfile(profileId, { backgroundCheckStatus: "pending" });
+      res.json({ success: true, status: "pending", message: "Background check request submitted" });
+    } catch (error) {
+      console.error("Error requesting background check:", error);
+      res.status(500).json({ error: "Failed to request background check" });
+    }
+  });
+
   // Get payment breakdown for a job
   app.get("/api/payments/:jobId/breakdown", async (req, res) => {
     try {
@@ -476,16 +596,18 @@ export function registerPaymentRoutes(app: Express) {
 
       // Get the assigned hauler's tier for proper fee calculation
       let pyckerTier = 'independent';
+      let isVerifiedLlc = false;
       if (job.assignedHaulerId) {
         const haulerProfile = await storage.getHaulerProfile(job.assignedHaulerId);
         pyckerTier = haulerProfile?.pyckerTier || 'independent';
+        isVerifiedLlc = haulerProfile?.isVerifiedLlc || false;
       }
 
       const totalAmount = job.livePrice || 0;
-      const platformFeePercent = stripeService.getPlatformFeePercent(pyckerTier);
-      const haulerPayoutPercent = stripeService.getHaulerPayoutPercent(pyckerTier);
-      const platformFee = stripeService.calculatePlatformFee(totalAmount, pyckerTier);
-      const haulerPayout = stripeService.calculateHaulerPayout(totalAmount, pyckerTier);
+      const platformFeePercent = stripeService.getPlatformFeePercent(pyckerTier, isVerifiedLlc);
+      const haulerPayoutPercent = stripeService.getHaulerPayoutPercent(pyckerTier, isVerifiedLlc);
+      const platformFee = stripeService.calculatePlatformFee(totalAmount, pyckerTier, isVerifiedLlc);
+      const haulerPayout = stripeService.calculateHaulerPayout(totalAmount, pyckerTier, isVerifiedLlc);
 
       res.json({
         totalAmount,

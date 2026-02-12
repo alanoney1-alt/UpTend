@@ -21,7 +21,7 @@ export interface PropertyData {
   propertyType: string;
   rentEstimate?: number;
   taxAssessedValue?: number;
-  dataSource: "zillow" | "estimated";
+  dataSource: "zillow" | "estimated" | "address_only";
   zillowUrl?: string;
   imgSrc?: string;
 }

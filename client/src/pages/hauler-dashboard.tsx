@@ -75,7 +75,7 @@ function maskPhone(phone: string): string {
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "requests", label: "Job Requests", icon: ClipboardList, badge: 3 },
+  { id: "requests", label: "Job Requests", icon: ClipboardList },
   { id: "route", label: "Route Optimizer", icon: Route },
   { id: "schedule", label: "Schedule", icon: Calendar },
   { id: "earnings", label: "Earnings", icon: DollarSign },
@@ -263,14 +263,18 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
 
       <div className="flex items-center justify-between pt-4 border-t">
         <div className="flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-1">
-            <Navigation className="w-4 h-4 text-muted-foreground" />
-            <span>3.2 mi</span>
-          </div>
-          <div className="flex items-center gap-1 text-status-online">
-            <Timer className="w-4 h-4" />
-            <span>12 min</span>
-          </div>
+          {request.distance != null && (
+            <div className="flex items-center gap-1">
+              <Navigation className="w-4 h-4 text-muted-foreground" />
+              <span>{request.distance.toFixed(1)} mi</span>
+            </div>
+          )}
+          {request.estimatedMinutes != null && (
+            <div className="flex items-center gap-1 text-status-online">
+              <Timer className="w-4 h-4" />
+              <span>{request.estimatedMinutes} min</span>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           {(request.bountyAmount || 0) > 0 && (
@@ -279,7 +283,7 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
               +${((request.bountyAmount || 0) / 100).toFixed(0)}
             </Badge>
           )}
-          <div className="font-bold text-lg">${request.priceEstimate || 129}</div>
+          <div className="font-bold text-lg">${request.priceEstimate || "—"}</div>
         </div>
       </div>
 
@@ -641,7 +645,7 @@ function ActiveJobCard({
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold">${job.priceEstimate}</p>
-            <p className="text-xs text-muted-foreground">Estimated earnings: ${Math.round(job.priceEstimate * 0.8)}</p>
+            <p className="text-xs text-muted-foreground">Estimated earnings: ${Math.round(job.priceEstimate * 0.75)}</p>
           </div>
         </div>
 
@@ -1831,6 +1835,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       const response = await fetch("/api/jobs/upload-photos", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -2541,6 +2546,45 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
 
   // Earnings Section  
   if (activeTab === "earnings") {
+    const { data: earningsData, isLoading: earningsLoading } = useQuery<{
+      total: number;
+      weekly: number;
+      monthly: number;
+      today: number;
+      pending: number;
+      jobsThisWeek: number;
+      history: Array<{ id: string; serviceType: string; address: string; date: string; amount: number; status: string }>;
+    }>({
+      queryKey: ["/api/pro/earnings"],
+    });
+
+    const payoutPctEarnings = currentPro?.profile?.payoutPercentage || 0.75;
+    const todayEarnings = earningsData?.today ?? 0;
+    const weekEarnings = earningsData?.weekly ?? 0;
+    const monthEarnings = earningsData?.monthly ?? 0;
+    const pendingEarnings = earningsData?.pending ?? 0;
+    const jobsThisWeek = earningsData?.jobsThisWeek ?? 0;
+    const recentHistory = earningsData?.history ?? [];
+
+    const serviceLabelsEarnings: Record<string, string> = {
+      junk_removal: "Junk Removal",
+      furniture_moving: "Furniture Moving",
+      garage_cleanout: "Garage Cleanout",
+      estate_cleanout: "Estate Cleanout",
+      pressure_washing: "Pressure Washing",
+      gutter_cleaning: "Gutter Cleaning",
+      moving_labor: "Moving Labor",
+      light_demolition: "Light Demolition",
+      home_consultation: "Home Consultation",
+      home_cleaning: "Home Cleaning",
+      pool_cleaning: "Pool Cleaning",
+      carpet_cleaning: "Carpet Cleaning",
+      landscaping: "Landscaping",
+      handyman: "Handyman Services",
+      demolition: "Light Demolition",
+      truck_unloading: "U-Haul/Truck Unloading",
+    };
+
     return (
       <div className="p-6" data-testid="earnings-section">
         <div className="mb-6">
@@ -2554,31 +2598,37 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <span className="text-sm text-muted-foreground">Today</span>
               <DollarSign className="w-4 h-4 text-muted-foreground" />
             </div>
-            <p className="text-2xl font-bold" data-testid="text-earnings-today">$347</p>
-            <p className="text-xs text-status-online">+$89 from yesterday</p>
+            <p className="text-2xl font-bold" data-testid="text-earnings-today">
+              {earningsLoading ? <Skeleton className="h-8 w-20" /> : `$${(todayEarnings / 100).toFixed(0)}`}
+            </p>
           </Card>
           <Card className="p-5" data-testid="card-earnings-week">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">This Week</span>
               <DollarSign className="w-4 h-4 text-muted-foreground" />
             </div>
-            <p className="text-2xl font-bold" data-testid="text-earnings-week">$1,247</p>
-            <p className="text-xs text-muted-foreground">12 jobs completed</p>
+            <p className="text-2xl font-bold" data-testid="text-earnings-week">
+              {earningsLoading ? <Skeleton className="h-8 w-20" /> : `$${(weekEarnings / 100).toFixed(0)}`}
+            </p>
+            <p className="text-xs text-muted-foreground">{jobsThisWeek} jobs completed</p>
           </Card>
           <Card className="p-5" data-testid="card-earnings-month">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">This Month</span>
               <DollarSign className="w-4 h-4 text-muted-foreground" />
             </div>
-            <p className="text-2xl font-bold" data-testid="text-earnings-month">$4,892</p>
-            <p className="text-xs text-status-online">+18% vs last month</p>
+            <p className="text-2xl font-bold" data-testid="text-earnings-month">
+              {earningsLoading ? <Skeleton className="h-8 w-20" /> : `$${(monthEarnings / 100).toFixed(0)}`}
+            </p>
           </Card>
           <Card className="p-5" data-testid="card-earnings-pending">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">Pending</span>
               <Clock className="w-4 h-4 text-muted-foreground" />
             </div>
-            <p className="text-2xl font-bold" data-testid="text-earnings-pending">$129</p>
+            <p className="text-2xl font-bold" data-testid="text-earnings-pending">
+              {earningsLoading ? <Skeleton className="h-8 w-20" /> : `$${(pendingEarnings / 100).toFixed(0)}`}
+            </p>
             <p className="text-xs text-muted-foreground">Pending payout</p>
           </Card>
         </div>
@@ -2589,27 +2639,27 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
             Recent Transactions
           </h3>
           <div className="space-y-3" data-testid="list-transactions">
-            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-testid="row-transaction-1">
-              <div>
-                <p className="font-medium">Junk Removal - Downtown</p>
-                <p className="text-sm text-muted-foreground">Today, 2:30 PM</p>
+            {earningsLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full" />
+              ))
+            ) : recentHistory.length > 0 ? (
+              recentHistory.map((tx) => (
+                <div key={tx.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-testid={`row-transaction-${tx.id}`}>
+                  <div>
+                    <p className="font-medium">{serviceLabelsEarnings[tx.serviceType] || tx.serviceType}</p>
+                    <p className="text-sm text-muted-foreground">{tx.address ? `${tx.address} · ` : ""}{new Date(tx.date).toLocaleDateString()}</p>
+                  </div>
+                  <span className="font-semibold text-status-online">+${(tx.amount / 100).toFixed(0)}</span>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <DollarSign className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+                <p className="text-muted-foreground">No earnings yet</p>
+                <p className="text-xs text-muted-foreground mt-1">Complete jobs to start earning!</p>
               </div>
-              <span className="font-semibold text-status-online">+$149</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-testid="row-transaction-2">
-              <div>
-                <p className="font-medium">Furniture Moving - Suburbs</p>
-                <p className="text-sm text-muted-foreground">Today, 10:15 AM</p>
-              </div>
-              <span className="font-semibold text-status-online">+$198</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-testid="row-transaction-3">
-              <div>
-                <p className="font-medium">Garage Cleanout</p>
-                <p className="text-sm text-muted-foreground">Yesterday, 4:00 PM</p>
-              </div>
-              <span className="font-semibold text-status-online">+$329</span>
-            </div>
+            )}
           </div>
         </Card>
 
