@@ -14,6 +14,7 @@ import { z } from "zod";
 import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
+import { generateConciergeResponse } from "../../services/ai/concierge-service";
 
 export function createConciergeRoutes(storage: DatabaseStorage) {
   const router = Router();
@@ -33,7 +34,7 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
   router.post("/chat", requireAuth, async (req, res) => {
     try {
       const validated = chatSchema.parse(req.body);
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       // Get or create conversation
       let conversation;
@@ -45,48 +46,64 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
       } else {
         // Create new conversation
         conversation = await storage.createAiConversation({
-          id: nanoid(),
           userId,
-          sessionId: validated.sessionId || nanoid(),
-          conversationType: validated.conversationType,
-          contextData: validated.contextData ? JSON.stringify(validated.contextData) : null,
-          startedAt: new Date().toISOString(),
-          lastMessageAt: new Date().toISOString(),
-          isActive: true,
-          rating: null,
-          feedbackText: null,
-        });
+          title: validated.message.slice(0, 100),
+          channel: "in_app",
+          status: "active",
+          contextType: validated.conversationType || "general",
+          messageCount: 0,
+          aiModelUsed: "claude-sonnet",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        } as any);
       }
 
       // Save user message
       await storage.createAiConversationMessage({
-        id: nanoid(),
         conversationId: conversation.id,
         role: "user",
         content: validated.message,
-        functionCall: null,
-        functionResponse: null,
         createdAt: new Date().toISOString(),
+      } as any);
+
+      // Fetch conversation history for context
+      const existingMessages = conversation.id ? await storage.getAiMessagesByConversation(conversation.id) : [];
+      const conversationHistory = existingMessages.map((m: any) => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
+
+      // Get user info for context
+      const user = await storage.getUser(userId);
+
+      // Call real AI concierge service
+      const aiResult = await generateConciergeResponse({
+        userMessage: validated.message,
+        conversationHistory,
+        context: {
+          conversationType: validated.conversationType || "general",
+          userId,
+          userName: user?.fullName || undefined,
+          userLocation: user?.city || "Orlando",
+        },
       });
 
-      // TODO: Call AI service to get response
-      // For now, return a placeholder response
-      const aiResponse = `I received your message: "${validated.message}". AI integration is ready to be connected!`;
+      const aiResponse = aiResult.response;
 
       // Save AI response
       const aiMessage = await storage.createAiConversationMessage({
-        id: nanoid(),
         conversationId: conversation.id,
         role: "assistant",
         content: aiResponse,
-        functionCall: null,
-        functionResponse: null,
+        detectedIntent: aiResult.intent || null,
+        suggestedActions: aiResult.suggestedActions || null,
         createdAt: new Date().toISOString(),
-      });
+      } as any);
 
-      // Update conversation last message time
+      // Update conversation
       await storage.updateAiConversation(conversation.id, {
-        lastMessageAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        messageCount: (conversation.messageCount || 0) + 2,
       });
 
       res.json({
@@ -113,14 +130,13 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
   // ==========================================
   router.get("/conversations", requireAuth, async (req, res) => {
     try {
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
       const conversations = await storage.getActiveAiConversationsByUser(userId);
 
       res.json({
         success: true,
         conversations: conversations.map((conv) => ({
           ...conv,
-          contextData: conv.contextData ? JSON.parse(conv.contextData) : null,
         })),
       });
     } catch (error: any) {
@@ -138,7 +154,7 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
   router.get("/conversations/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       const conversation = await storage.getAiConversation(id);
       if (!conversation || conversation.userId !== userId) {
@@ -151,13 +167,8 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
         success: true,
         conversation: {
           ...conversation,
-          contextData: conversation.contextData ? JSON.parse(conversation.contextData) : null,
         },
-        messages: messages.map((msg) => ({
-          ...msg,
-          functionCall: msg.functionCall ? JSON.parse(msg.functionCall) : null,
-          functionResponse: msg.functionResponse ? JSON.parse(msg.functionResponse) : null,
-        })),
+        messages,
       });
     } catch (error: any) {
       console.error("Error fetching conversation:", error);
@@ -179,7 +190,7 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
   router.post("/conversations/:id/rate", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
       const validated = ratingSchema.parse(req.body);
 
       const conversation = await storage.getAiConversation(id);
@@ -188,9 +199,9 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
       }
 
       await storage.updateAiConversation(id, {
-        rating: validated.rating,
-        feedbackText: validated.feedbackText || null,
-        isActive: false,
+        customerRating: validated.rating,
+        status: "resolved",
+        resolvedAt: new Date().toISOString(),
       });
 
       res.json({ success: true });
@@ -209,14 +220,14 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
   router.delete("/conversations/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       const conversation = await storage.getAiConversation(id);
       if (!conversation || conversation.userId !== userId) {
         return res.status(404).json({ error: "Conversation not found" });
       }
 
-      await storage.updateAiConversation(id, { isActive: false });
+      await storage.updateAiConversation(id, { status: "archived" });
 
       res.json({ success: true });
     } catch (error: any) {

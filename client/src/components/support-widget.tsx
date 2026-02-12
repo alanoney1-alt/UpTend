@@ -53,7 +53,7 @@ export function SupportWidget() {
 
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-50" data-testid="support-widget">
+      <div className="fixed bottom-5 right-4 z-50" data-testid="support-widget">
         {isOpen && !isActiveJob && (
           <Card className="absolute bottom-16 right-0 w-80 shadow-lg animate-in slide-in-from-bottom-2 fade-in duration-200">
             <div className="p-4 border-b bg-primary text-primary-foreground rounded-t-lg">

@@ -27,15 +27,34 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    toast({
-      title: "Message Sent!",
-      description: "We'll get back to you within 24 hours.",
-    });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formState),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      setIsSubmitted(true);
+      toast({
+        title: "Message Sent!",
+        description: "We'll get back to you within 24 hours.",
+      });
+    } catch (error) {
+      // Fallback: open email client
+      const subject = encodeURIComponent(`Contact Form: ${formState.subject || "General Inquiry"}`);
+      const body = encodeURIComponent(`Name: ${formState.name}\nEmail: ${formState.email}\nPhone: ${formState.phone || "N/A"}\n\n${formState.message}`);
+      window.location.href = `mailto:support@uptend.app?subject=${subject}&body=${body}`;
+      toast({
+        title: "Opening Email Client",
+        description: "If the form didn't work, please send your message via email.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo } from "react";
+import { ProReviewsDisplay } from "@/components/reviews/pro-reviews-display";
 import TinderCard from "react-tinder-card";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -231,6 +232,10 @@ export function ProSwiper({ availablePros, onComplete, onSkip }: ProSwiperProps)
                     ${pro.hourlyRate}/hr
                   </div>
                 )}
+
+                <div className="mt-3">
+                  <ProReviewsDisplay proId={pro.id} compact />
+                </div>
               </div>
             </Card>
           </TinderCard>

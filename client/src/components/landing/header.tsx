@@ -133,7 +133,7 @@ export function Header() {
                       <UserCircle className="mr-2 w-4 h-4 text-primary" /> {t("nav.member_login")}
                     </DropdownMenuItem>
                   </Link>
-                  <Link href="/pycker-login">
+                  <Link href="/login">
                     <DropdownMenuItem className="cursor-pointer p-3" data-testid="link-pycker-login">
                       <ShieldCheck className="mr-2 w-4 h-4 text-green-500" /> {t("nav.pro_login")}
                     </DropdownMenuItem>

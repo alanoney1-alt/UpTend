@@ -1,8 +1,8 @@
 export const SERVICES = {
   junk_removal: {
-    branded: 'BulkSnap',
+    branded: 'Junk Removal',
     generic: 'Junk Removal',
-    display: 'BulkSnap™ (Junk Removal)',
+    display: 'Junk Removal',
     slug: '/bulksnap',
     startingPrice: 99,
     priceUnit: 'flat',
@@ -10,9 +10,9 @@ export const SERVICES = {
     description: 'One item or a full truckload. We sort, haul, and track where everything goes.',
   },
   home_cleaning: {
-    branded: 'PolishUp',
+    branded: 'Home Cleaning',
     generic: 'Home Cleaning',
-    display: 'PolishUp™ (Home Cleaning)',
+    display: 'Home Cleaning',
     slug: '/polishup',
     startingPrice: 99, // Still show "starting at $99" in marketing
     priceUnit: 'dynamic', // Flag that this uses the pricing engine
@@ -22,9 +22,9 @@ export const SERVICES = {
     cleanTypes: ['standard', 'deep', 'move_out'],
   },
   pressure_washing: {
-    branded: 'FreshWash',
+    branded: 'Pressure Washing',
     generic: 'Pressure Washing',
-    display: 'FreshWash™ (Pressure Washing)',
+    display: 'Pressure Washing',
     slug: '/freshwash',
     startingPrice: 120,
     priceUnit: 'flat',
@@ -32,9 +32,9 @@ export const SERVICES = {
     description: 'Driveways, walkways, house exteriors. See the difference in your before-and-after report.',
   },
   gutter_cleaning: {
-    branded: 'GutterFlush',
+    branded: 'Gutter Cleaning',
     generic: 'Gutter Cleaning',
-    display: 'GutterFlush™ (Gutter Cleaning)',
+    display: 'Gutter Cleaning',
     slug: '/gutterflush',
     startingPrice: 149,
     priceUnit: 'flat',
@@ -42,9 +42,9 @@ export const SERVICES = {
     description: 'Single-story to multi-story. Inspected, cleaned, documented.',
   },
   moving_labor: {
-    branded: 'LiftCrew',
+    branded: 'Moving Labor',
     generic: 'Moving Labor',
-    display: 'LiftCrew™ (Moving Labor)',
+    display: 'Moving Labor',
     slug: '/liftcrew',
     startingPrice: 80,
     priceUnit: 'hourly',
@@ -52,9 +52,9 @@ export const SERVICES = {
     description: 'Loading, unloading, rearranging. Book the crew size you need.',
   },
   handyman: {
-    branded: 'FixIt',
+    branded: 'Handyman Services',
     generic: 'Handyman Services',
-    display: 'FixIt™ (Handyman Services)',
+    display: 'Handyman Services',
     slug: '/fixit',
     startingPrice: 49,
     priceUnit: 'hourly',
@@ -62,9 +62,9 @@ export const SERVICES = {
     description: 'Assembly, mounting, repairs, painting, installations. Verified pros, 1-hour minimum, billed by the minute after.',
   },
   light_demolition: {
-    branded: 'TearDown',
+    branded: 'Light Demolition',
     generic: 'Light Demolition',
-    display: 'TearDown™ (Light Demolition)',
+    display: 'Light Demolition',
     slug: '/teardown',
     startingPrice: 199,
     priceUnit: 'flat',
@@ -72,9 +72,9 @@ export const SERVICES = {
     description: 'Sheds, decks, interior tear-outs. Permitted, tracked, disposed properly.',
   },
   garage_cleanout: {
-    branded: 'GarageReset',
+    branded: 'Garage Cleanout',
     generic: 'Garage Cleanout',
-    display: 'GarageReset™ (Garage Cleanout)',
+    display: 'Garage Cleanout',
     slug: '/garagereset',
     startingPrice: 299,
     priceUnit: 'flat',
@@ -82,9 +82,9 @@ export const SERVICES = {
     description: 'Full sort, organize, donate coordination, and haul-away.',
   },
   truck_unloading: {
-    branded: 'UnloadPro',
+    branded: 'Truck Unloading',
     generic: 'Truck Unloading',
-    display: 'UnloadPro™ (Truck Unloading)',
+    display: 'Truck Unloading',
     slug: '/unloadpro',
     startingPrice: 80,
     priceUnit: 'hourly',
@@ -92,9 +92,9 @@ export const SERVICES = {
     description: 'Moving truck, storage pod, delivery — your crew handles the heavy lifting.',
   },
   home_audit: {
-    branded: 'DwellScan',
+    branded: 'AI Home Audit',
     generic: 'Home Audit',
-    display: 'DwellScan™ (Home Audit)',
+    display: 'AI Home Audit',
     slug: '/dwellscan',
     startingPrice: 49,
     priceUnit: 'flat',
@@ -102,7 +102,7 @@ export const SERVICES = {
     description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $149.',
     tiers: {
       standard: {
-        name: 'DwellScan™ Standard',
+        name: 'AI Home Audit Standard',
         price: 49,
         proPayout: 25,
         description: 'Interior + exterior ground-level walkthrough with maintenance report',
@@ -119,7 +119,7 @@ export const SERVICES = {
         prosNeeded: 1,
       },
       aerial: {
-        name: 'DwellScan™ Aerial',
+        name: 'AI Home Audit Aerial',
         price: 149,
         proPayoutModels: {
           twoPro: { walkthrough: 25, drone: 55, uptendKeeps: 69 },
@@ -127,7 +127,7 @@ export const SERVICES = {
         },
         description: 'Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan',
         includes: [
-          'Everything in DwellScan Standard',
+          'Everything in AI Home Audit Standard',
           'FAA Part 107 certified drone flyover',
           'Aerial roof condition scan (missing shingles, sagging, moss, flashing damage)',
           'Gutter blockage percentage estimate from above',
@@ -154,8 +154,8 @@ export const SERVICES = {
   },
 } as const;
 
-// Helper to get display name with TM on first use
-export const getServiceDisplay = (key: keyof typeof SERVICES, withTM = true) => {
+// Helper to get display name
+export const getServiceDisplay = (key: keyof typeof SERVICES) => {
   const svc = SERVICES[key];
-  return withTM ? `${svc.branded}™ (${svc.generic})` : `${svc.branded} (${svc.generic})`;
+  return svc.display;
 };

@@ -63,7 +63,8 @@ export class ServiceRequestsStorage implements IServiceRequestsStorage {
     return db.select().from(serviceRequests)
       .where(or(
         eq(serviceRequests.status, "pending"),
-        eq(serviceRequests.status, "requested")
+        eq(serviceRequests.status, "requested"),
+        eq(serviceRequests.status, "matching")
       ));
   }
 

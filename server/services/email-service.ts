@@ -1,305 +1,159 @@
-/**
- * Email Service using SendGrid
- *
- * Sends email notifications for:
- * - Fraud alerts to admins
- * - Quality score updates to pros
- * - Seasonal advisories to customers
- * - Portfolio health reports to business accounts
- */
+import nodemailer from "nodemailer";
 
-import sgMail from "@sendgrid/mail";
+// ─── Transport Setup ───────────────────────────────────────────────
+let transporter: nodemailer.Transporter;
 
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "";
-const SENDGRID_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "noreply@uptend.com";
-
-if (!SENDGRID_API_KEY) {
-  console.warn("⚠️  SENDGRID_API_KEY not set. Email notifications disabled.");
+if (process.env.SENDGRID_API_KEY) {
+  transporter = nodemailer.createTransport({
+    host: "smtp.sendgrid.net",
+    port: 587,
+    auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY },
+  });
+} else if (process.env.SMTP_HOST) {
+  transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || "587"),
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
 } else {
-  sgMail.setApiKey(SENDGRID_API_KEY);
-  console.log("✅ SendGrid email service initialized");
+  // Dev fallback — log to console
+  transporter = nodemailer.createTransport({ jsonTransport: true });
 }
 
-/**
- * Send fraud alert email to admins
- */
-export async function sendFraudAlertEmail(alert: {
-  id: string;
-  alertType: string;
-  severity: string;
-  description: string;
-  evidenceData: any;
-}) {
-  if (!SENDGRID_API_KEY) {
-    console.log("📧 [Mock] Would send fraud alert email:", alert.alertType);
-    return;
+const FROM = process.env.EMAIL_FROM || "UpTend <noreply@uptend.com>";
+const isDev = !process.env.SENDGRID_API_KEY && !process.env.SMTP_HOST;
+
+// ─── Helpers ───────────────────────────────────────────────────────
+function wrap(title: string, body: string): string {
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:24px 0">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+<tr><td style="background:#F47C20;padding:24px 32px">
+  <h1 style="margin:0;color:#fff;font-size:24px;font-weight:700">🏠 UpTend</h1>
+</td></tr>
+<tr><td style="padding:32px">
+  <h2 style="margin:0 0 16px;color:#222;font-size:20px">${title}</h2>
+  ${body}
+</td></tr>
+<tr><td style="padding:16px 32px;background:#fafafa;color:#999;font-size:12px;text-align:center">
+  © ${new Date().getFullYear()} UpTend — Home services, simplified.
+</td></tr>
+</table></td></tr></table></body></html>`;
+}
+
+function money(cents: number | string | null | undefined): string {
+  const n = Number(cents) || 0;
+  return "$" + (n / 100).toFixed(2);
+}
+
+async function send(to: string, subject: string, html: string, text: string) {
+  const info = await transporter.sendMail({ from: FROM, to, subject, html, text });
+  if (isDev) {
+    const parsed = JSON.parse(info.message);
+    console.log(`[EMAIL] → ${parsed.to} | ${parsed.subject}`);
+    console.log(`[EMAIL] Text: ${text.slice(0, 200)}...`);
   }
+  return info;
+}
 
-  const severityEmoji = {
-    critical: "🚨",
-    high: "⚠️",
-    medium: "⚡",
-    low: "ℹ️",
-  }[alert.severity] || "⚠️";
+// ─── Email Functions ───────────────────────────────────────────────
+export async function sendBookingConfirmation(to: string, booking: any) {
+  const html = wrap("Booking Confirmed! ✅", `
+    <p style="color:#555;line-height:1.6">Your service request has been submitted and we're matching you with a pro.</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 0;color:#888;width:140px">Service</td><td style="padding:8px 0;font-weight:600">${booking.serviceType || "General"}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Address</td><td style="padding:8px 0">${booking.pickupAddress || booking.address || "On file"}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Load Size</td><td style="padding:8px 0">${booking.loadEstimate || "Standard"}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Est. Price</td><td style="padding:8px 0;font-weight:600;color:#F47C20">${money(booking.priceEstimate || booking.livePrice)}</td></tr>
+    </table>
+    <p style="color:#555">We'll notify you as soon as a pro accepts your job.</p>
+  `);
+  const text = `Booking confirmed! Service: ${booking.serviceType}, Est. Price: ${money(booking.priceEstimate)}. We're matching you with a pro now.`;
+  return send(to, "Your UpTend Booking is Confirmed!", html, text);
+}
 
-  const msg = {
-    to: "admin@uptend.com", // TODO: Get from admin user settings
-    from: SENDGRID_FROM_EMAIL,
-    subject: `${severityEmoji} Fraud Alert: ${alert.alertType.replace(/_/g, " ")}`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #dc2626;">${severityEmoji} Fraud Alert Detected</h2>
-        <div style="background: #fee; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0;">
-          <p><strong>Alert Type:</strong> ${alert.alertType.replace(/_/g, " ")}</p>
-          <p><strong>Severity:</strong> ${alert.severity.toUpperCase()}</p>
-          <p><strong>Description:</strong> ${alert.description}</p>
-        </div>
-        <p>Review this alert immediately in the admin dashboard:</p>
-        <a href="https://uptend.com/admin/fraud/${alert.id}"
-           style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0;">
-          Review Alert →
-        </a>
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
-          <p>This is an automated alert from UpTend's AI fraud detection system.</p>
-        </div>
+export async function sendJobAccepted(to: string, booking: any, pro: any) {
+  const photoHtml = pro.profilePhoto
+    ? `<img src="${pro.profilePhoto}" style="width:60px;height:60px;border-radius:50%;margin-right:12px" alt="">`
+    : "";
+  const html = wrap("A Pro Accepted Your Job! 🎉", `
+    <p style="color:#555;line-height:1.6">Great news — a pro is on the way.</p>
+    <div style="display:flex;align-items:center;margin:16px 0;padding:16px;background:#f9f9f9;border-radius:8px">
+      ${photoHtml}
+      <div>
+        <div style="font-weight:600;font-size:16px">${pro.firstName || pro.name || "Your Pro"}</div>
+        <div style="color:#888">ETA: ~${pro.etaMinutes || 30} minutes</div>
       </div>
-    `,
-  };
-
-  try {
-    await sgMail.send(msg);
-    console.log(`✅ Sent fraud alert email for ${alert.id}`);
-  } catch (error: any) {
-    console.error(`❌ Failed to send fraud alert email:`, error.message);
-  }
+    </div>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 0;color:#888;width:140px">Service</td><td style="padding:8px 0">${booking.serviceType || "General"}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Address</td><td style="padding:8px 0">${booking.pickupAddress || "On file"}</td></tr>
+    </table>
+  `);
+  const text = `Your job was accepted by ${pro.firstName || "a pro"}! ETA: ~${pro.etaMinutes || 30} min.`;
+  return send(to, "Your UpTend Pro is On the Way!", html, text);
 }
 
-/**
- * Send quality score update to pro
- */
-export async function sendQualityScoreEmail(pro: {
-  id: string;
-  email: string;
-  name: string;
-  score: {
-    overallScore: number;
-    tier: string;
-    previousTier?: string;
-  };
-}) {
-  if (!SENDGRID_API_KEY) {
-    console.log("📧 [Mock] Would send quality score email to:", pro.email);
-    return;
-  }
-
-  const tierEmoji = {
-    platinum: "💎",
-    gold: "🥇",
-    silver: "🥈",
-    bronze: "🥉",
-  }[pro.score.tier] || "⭐";
-
-  const tierChanged = pro.score.previousTier && pro.score.previousTier !== pro.score.tier;
-
-  const msg = {
-    to: pro.email,
-    from: SENDGRID_FROM_EMAIL,
-    subject: tierChanged
-      ? `${tierEmoji} Congratulations! You've reached ${pro.score.tier} tier!`
-      : `Your Monthly Quality Score: ${pro.score.overallScore}/100`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Hi ${pro.name}! ${tierEmoji}</h2>
-
-        ${tierChanged ? `
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; margin: 20px 0;">
-            <h1 style="margin: 0; font-size: 36px;">🎉 Tier Upgrade!</h1>
-            <p style="font-size: 24px; margin: 10px 0;">You've reached ${pro.score.tier.toUpperCase()} tier!</p>
-          </div>
-        ` : ""}
-
-        <div style="background: #f3f4f6; padding: 20px; border-radius: 10px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Your Quality Score</h3>
-          <div style="font-size: 48px; font-weight: bold; color: #2563eb;">${pro.score.overallScore}<span style="font-size: 24px; color: #666;">/100</span></div>
-          <p style="color: #666; margin-bottom: 0;">${tierEmoji} ${pro.score.tier.toUpperCase()} Tier</p>
-        </div>
-
-        <p>View your detailed performance breakdown and training recommendations:</p>
-        <a href="https://uptend.com/hauler-dashboard?tab=quality"
-           style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0;">
-          View Full Report →
-        </a>
-
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
-          <p>Keep up the great work! Higher tiers earn priority job assignments and customer trust.</p>
-        </div>
-      </div>
-    `,
-  };
-
-  try {
-    await sgMail.send(msg);
-    console.log(`✅ Sent quality score email to ${pro.email}`);
-  } catch (error: any) {
-    console.error(`❌ Failed to send quality score email:`, error.message);
-  }
+export async function sendJobStarted(to: string, booking: any) {
+  const html = wrap("Job In Progress 🔧", `
+    <p style="color:#555;line-height:1.6">Your pro has started working on your ${booking.serviceType || "service"} request.</p>
+    <p style="color:#555">You'll receive a notification when the job is complete.</p>
+  `);
+  const text = `Your ${booking.serviceType || "service"} job is now in progress!`;
+  return send(to, "Your UpTend Job Has Started!", html, text);
 }
 
-/**
- * Send seasonal advisory to customer
- */
-export async function sendSeasonalAdvisoryEmail(customer: {
-  email: string;
-  name: string;
-  advisory: {
-    title: string;
-    description: string;
-    recommendedServices: string[];
-    priority: string;
-  };
-}) {
-  if (!SENDGRID_API_KEY) {
-    console.log("📧 [Mock] Would send seasonal advisory to:", customer.email);
-    return;
-  }
+export async function sendJobCompleted(to: string, booking: any, receipt: any) {
+  const serviceCost = Number(receipt.finalPrice || receipt.livePrice || 0);
+  const platformFee = Number(receipt.platformFee || Math.round(serviceCost * 0.15));
+  const total = serviceCost;
 
-  const priorityEmoji = {
-    critical: "🚨",
-    high: "⚠️",
-    medium: "📋",
-    low: "💡",
-  }[customer.advisory.priority] || "📋";
-
-  const msg = {
-    to: customer.email,
-    from: SENDGRID_FROM_EMAIL,
-    subject: `${priorityEmoji} ${customer.advisory.title}`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Hi ${customer.name}! 👋</h2>
-
-        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #92400e;">${priorityEmoji} ${customer.advisory.title}</h3>
-          <p style="color: #78350f;">${customer.advisory.description}</p>
-        </div>
-
-        <h4>Recommended Services:</h4>
-        <ul style="list-style: none; padding: 0;">
-          ${customer.advisory.recommendedServices
-            .map(
-              (service) => `
-            <li style="background: #f3f4f6; padding: 10px; margin: 5px 0; border-radius: 5px;">
-              ✓ ${service.replace(/_/g, " ")}
-            </li>
-          `
-            )
-            .join("")}
-        </ul>
-
-        <a href="https://uptend.com/customer-dashboard?action=book"
-           style="display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0;">
-          Book Services Now →
-        </a>
-
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
-          <p>This personalized advisory is based on your location and the current season.</p>
-        </div>
-      </div>
-    `,
-  };
-
-  try {
-    await sgMail.send(msg);
-    console.log(`✅ Sent seasonal advisory email to ${customer.email}`);
-  } catch (error: any) {
-    console.error(`❌ Failed to send seasonal advisory email:`, error.message);
-  }
+  const html = wrap("Job Complete — Receipt 🧾", `
+    <p style="color:#555;line-height:1.6">Your job has been completed. Here's your receipt:</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 0;color:#888">Service</td><td style="padding:8px 0;text-align:right">${booking.serviceType || "General"}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Load Size</td><td style="padding:8px 0;text-align:right">${booking.loadEstimate || "Standard"}</td></tr>
+      <tr style="border-top:1px solid #eee"><td style="padding:8px 0;color:#888">Service Cost</td><td style="padding:8px 0;text-align:right">${money(serviceCost - platformFee)}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Platform Fee</td><td style="padding:8px 0;text-align:right">${money(platformFee)}</td></tr>
+      <tr style="border-top:2px solid #F47C20"><td style="padding:12px 0;font-weight:700;font-size:16px">Total</td><td style="padding:12px 0;text-align:right;font-weight:700;font-size:16px;color:#F47C20">${money(total)}</td></tr>
+    </table>
+    <p style="color:#555">Thank you for using UpTend! We'd love your feedback.</p>
+  `);
+  const text = `Job complete! Total: ${money(total)}. Service: ${booking.serviceType}. Thanks for using UpTend!`;
+  return send(to, "Your UpTend Receipt", html, text);
 }
 
-/**
- * Send portfolio health report to business account
- */
-export async function sendPortfolioHealthEmail(business: {
-  email: string;
-  name: string;
-  report: {
-    propertiesAnalyzed: number;
-    totalServiceRequests: number;
-    costPerUnitAvg: number;
-    riskProperties: string[];
-    costSavingOpportunities: string[];
-  };
-}) {
-  if (!SENDGRID_API_KEY) {
-    console.log("📧 [Mock] Would send portfolio health report to:", business.email);
-    return;
-  }
-
-  const msg = {
-    to: business.email,
-    from: SENDGRID_FROM_EMAIL,
-    subject: `📊 Your Weekly Portfolio Health Report`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Hi ${business.name}!</h2>
-        <p>Here's your weekly portfolio health summary:</p>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-          <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 32px; font-weight: bold; color: #2563eb;">${business.report.propertiesAnalyzed}</div>
-            <div style="color: #666; font-size: 14px;">Properties</div>
-          </div>
-          <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 32px; font-weight: bold; color: #2563eb;">${business.report.totalServiceRequests}</div>
-            <div style="color: #666; font-size: 14px;">Service Requests</div>
-          </div>
-        </div>
-
-        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <strong>💰 Average Cost Per Unit:</strong> $${business.report.costPerUnitAvg.toFixed(2)}
-        </div>
-
-        ${business.report.riskProperties.length > 0 ? `
-          <div style="background: #fee; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0;">
-            <h4 style="margin-top: 0; color: #dc2626;">⚠️ Properties Needing Attention</h4>
-            <ul style="margin: 0;">
-              ${business.report.riskProperties.map(p => `<li>${p}</li>`).join('')}
-            </ul>
-          </div>
-        ` : ''}
-
-        ${business.report.costSavingOpportunities.length > 0 ? `
-          <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0;">
-            <h4 style="margin-top: 0; color: #065f46;">💡 Cost Saving Opportunities</h4>
-            <ul style="margin: 0;">
-              ${business.report.costSavingOpportunities.map(o => `<li>${o}</li>`).join('')}
-            </ul>
-          </div>
-        ` : ''}
-
-        <a href="https://uptend.com/business-dashboard?tab=portfolio"
-           style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0;">
-          View Full Report →
-        </a>
-
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
-          <p>This automated report is generated weekly by UpTend's AI Portfolio Intelligence system.</p>
-        </div>
-      </div>
-    `,
-  };
-
-  try {
-    await sgMail.send(msg);
-    console.log(`✅ Sent portfolio health email to ${business.email}`);
-  } catch (error: any) {
-    console.error(`❌ Failed to send portfolio health email:`, error.message);
-  }
+export async function sendProNewJob(to: string, job: any) {
+  const html = wrap("New Job Available! 💰", `
+    <p style="color:#555;line-height:1.6">A new job matching your profile is available.</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 0;color:#888;width:140px">Service</td><td style="padding:8px 0;font-weight:600">${job.serviceType || "General"}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Load Size</td><td style="padding:8px 0">${job.loadEstimate || "Standard"}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Location</td><td style="padding:8px 0">${job.pickupAddress || "See app"}</td></tr>
+      <tr><td style="padding:8px 0;color:#888">Est. Payout</td><td style="padding:8px 0;font-weight:600;color:#F47C20">${money(job.priceEstimate || job.livePrice)}</td></tr>
+    </table>
+    <p style="color:#555">Open the UpTend app to accept this job before it's taken!</p>
+  `);
+  const text = `New ${job.serviceType} job available! Est. payout: ${money(job.priceEstimate)}. Open UpTend to accept.`;
+  return send(to, "New UpTend Job Available!", html, text);
 }
 
-export default {
-  sendFraudAlertEmail,
-  sendQualityScoreEmail,
-  sendSeasonalAdvisoryEmail,
-  sendPortfolioHealthEmail,
-};
+export async function sendWelcomeEmail(to: string, user: any) {
+  const html = wrap("Welcome to UpTend! 👋", `
+    <p style="color:#555;line-height:1.6">Hi ${user.firstName || "there"},</p>
+    <p style="color:#555;line-height:1.6">Welcome to UpTend — home services, simplified. Here's how to get started:</p>
+    <ol style="color:#555;line-height:2">
+      <li><strong>Add a payment method</strong> — You won't be charged until you confirm a booking</li>
+      <li><strong>Book a service</strong> — Junk removal, moving help, cleaning & more</li>
+      <li><strong>Get matched</strong> — We'll connect you with a vetted local pro</li>
+      <li><strong>Relax</strong> — Track your job in real-time</li>
+    </ol>
+    <div style="text-align:center;margin:24px 0">
+      <a href="${process.env.APP_URL || 'https://uptend.com'}" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">Book Your First Service</a>
+    </div>
+  `);
+  const text = `Welcome to UpTend, ${user.firstName || "there"}! Add a payment method, book a service, and get matched with a local pro. Visit uptend.com to get started.`;
+  return send(to, "Welcome to UpTend! 🏠", html, text);
+}

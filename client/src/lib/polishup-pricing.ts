@@ -281,7 +281,7 @@ function buildBreakdown(
   const bedroomLabel = input.bedrooms === 0 ? 'Studio' : `${input.bedrooms}BR`;
   const bathroomLabel = `${input.bathrooms}BA`;
 
-  let breakdown = `PolishUp™ ${cleanTypeLabel} - ${bedroomLabel}/${bathroomLabel}`;
+  let breakdown = `Home Cleaning ${cleanTypeLabel} - ${bedroomLabel}/${bathroomLabel}`;
 
   if (input.stories > 1) {
     breakdown += `, ${input.stories}-story`;

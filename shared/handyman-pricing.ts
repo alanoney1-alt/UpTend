@@ -1,5 +1,5 @@
 /**
- * FixIt™ (Handyman Services) Pricing Catalog
+ * Handyman Services Pricing Catalog
  * Task-based pricing with AI photo estimation support
  */
 

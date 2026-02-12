@@ -1,5 +1,5 @@
 /**
- * PolishUp™ (Home Cleaning) Dynamic Pricing Engine
+ * Home Cleaning Dynamic Pricing Engine
  *
  * Based on Orlando market rates:
  * - Deep clean: $150-$500

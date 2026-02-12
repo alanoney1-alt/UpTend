@@ -200,7 +200,7 @@ export default function PaymentSetup() {
     setSetupComplete(true);
     toast({
       title: "Payment Method Saved!",
-      description: "You're all set to book hauling services.",
+      description: "You're all set to book home services.",
     });
   };
 
@@ -222,7 +222,7 @@ export default function PaymentSetup() {
             </div>
             <h1 className="text-2xl font-bold mb-2">You're All Set!</h1>
             <p className="text-muted-foreground mb-6">
-              Your payment method has been saved. You can now book hauling services instantly.
+              Your payment method has been saved. You can now book home services instantly.
             </p>
             <div className="bg-muted/50 rounded-lg p-4 mb-6 text-sm text-left space-y-2">
               <div className="flex items-center gap-2">

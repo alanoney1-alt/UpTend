@@ -18,7 +18,7 @@ import { z } from "zod";
  * BLOCKING RULES:
  * - Jobs CANNOT be marked complete without steps 1-4
  * - Payment CANNOT be released without step 6 (or 48-hour auto-approval)
- * - Applies to: BulkSnap™ (Junk Removal), GarageReset™ (Garage Cleanout), TearDown™ (Light Demolition)
+ * - Applies to: Junk Removal, Garage Cleanout, Light Demolition
  */
 
 export function registerJobVerificationRoutes(app: Express) {

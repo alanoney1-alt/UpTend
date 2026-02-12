@@ -1,12 +1,12 @@
 /**
- * DwellScan™ Service Tiers
+ * AI Home Audit Service Tiers
  * Two-tier home inspection service with optional drone aerial scan
  */
 
 export const DWELLSCAN_TIERS = {
   standard: {
     id: "standard",
-    name: "DwellScan™ Standard",
+    name: "AI Home Audit Standard",
     price: 49,
     description: "Full interior and exterior walkthrough with personalized maintenance report.",
     features: [
@@ -22,7 +22,7 @@ export const DWELLSCAN_TIERS = {
   },
   aerial: {
     id: "aerial",
-    name: "DwellScan™ Aerial",
+    name: "AI Home Audit Aerial",
     price: 149,
     badge: "Best Value",
     description: "Everything in Standard plus drone-powered roof, gutter, and exterior scan.",

@@ -61,6 +61,7 @@ import { ImpactWidget } from "@/components/dashboard/impact-widget";
 import { FileText, Route, Store } from "lucide-react";
 import { ProMarketplace } from "@/components/marketplace/pro-marketplace";
 import { ServicesSelector } from "@/components/services-selector";
+import { ProAiDashboard } from "@/components/ai/pro-ai-dashboard";
 import { ServiceEsgBadge } from "@/components/esg/service-esg-badge";
 
 function maskPhone(phone: string): string {
@@ -79,6 +80,7 @@ const navItems = [
   { id: "schedule", label: "Schedule", icon: Calendar },
   { id: "earnings", label: "Earnings", icon: DollarSign },
   { id: "marketplace", label: "Marketplace", icon: Store },
+  { id: "ai-insights", label: "AI Insights", icon: Zap },
   { id: "rebates", label: "Green Guarantee", icon: Flag },
   { id: "compliance", label: "Tax & Compliance", icon: FileText },
   { id: "profile", label: "Profile", icon: User },
@@ -125,6 +127,19 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
     moving_labor: "Moving Labor",
     light_demolition: "Light Demolition",
     home_consultation: "Home Consultation",
+    home_cleaning: "Home Cleaning",
+    pool_cleaning: "Pool Cleaning",
+    carpet_cleaning: "Carpet Cleaning",
+    landscaping: "Landscaping",
+    handyman: "Handyman Services",
+    demolition: "Light Demolition",
+  };
+
+  const formatScheduledDate = (val: string) => {
+    if (!val || val === "asap") return "ASAP";
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return val;
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
   };
 
   const loadLabels: Record<string, string> = {
@@ -132,6 +147,11 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
     medium: "Medium Load",
     large: "Large Load",
     extra_large: "Extra Large",
+    minimum_load: "Minimum Load",
+    half_truck: "Half Truck",
+    full_truck: "Full Truck",
+    quarter_truck: "Quarter Truck",
+    three_quarter_truck: "3/4 Truck",
   };
 
   // Volume-based truck tier labels for junk removal
@@ -164,7 +184,7 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
         </div>
         <Badge variant="secondary" className="shrink-0">
           <Clock className="w-3 h-3 mr-1" />
-          {request.scheduledFor === "asap" ? "ASAP" : request.scheduledFor}
+          {formatScheduledDate(request.scheduledFor)}
         </Badge>
       </div>
 
@@ -558,6 +578,18 @@ function ActiveJobCard({
     furniture_moving: "Furniture Moving",
     garage_cleanout: "Garage Cleanout",
     estate_cleanout: "Estate Cleanout",
+    pressure_washing: "Pressure Washing",
+    gutter_cleaning: "Gutter Cleaning",
+    moving_labor: "Moving Labor",
+    light_demolition: "Light Demolition",
+    home_consultation: "Home Consultation",
+    home_cleaning: "Home Cleaning",
+    pool_cleaning: "Pool Cleaning",
+    carpet_cleaning: "Carpet Cleaning",
+    landscaping: "Landscaping",
+    handyman: "Handyman Services",
+    demolition: "Light Demolition",
+    truck_unloading: "U-Haul/Truck Unloading",
   };
 
   const handleCallCustomer = () => {
@@ -914,6 +946,18 @@ function CompletedJobCard({
     furniture_moving: "Furniture Moving",
     garage_cleanout: "Garage Cleanout",
     estate_cleanout: "Estate Cleanout",
+    pressure_washing: "Pressure Washing",
+    gutter_cleaning: "Gutter Cleaning",
+    moving_labor: "Moving Labor",
+    light_demolition: "Light Demolition",
+    home_consultation: "Home Consultation",
+    home_cleaning: "Home Cleaning",
+    pool_cleaning: "Pool Cleaning",
+    carpet_cleaning: "Carpet Cleaning",
+    landscaping: "Landscaping",
+    handyman: "Handyman Services",
+    demolition: "Light Demolition",
+    truck_unloading: "U-Haul/Truck Unloading",
   };
 
   // Calculate time since completion
@@ -2440,7 +2484,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                           <Package className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                          <p className="font-medium" data-testid={`text-job-type-${job.id}`}>{job.serviceType === "junk_removal" ? "Junk Removal" : job.serviceType === "furniture_moving" ? "Furniture Moving" : job.serviceType === "garage_cleanout" ? "Garage Cleanout" : "Truck Unloading"}</p>
+                          <p className="font-medium" data-testid={`text-job-type-${job.id}`}>{job.serviceType.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}</p>
                           <p className="text-sm text-muted-foreground">{job.pickupAddress}, {job.pickupCity}</p>
                         </div>
                       </div>
@@ -2454,7 +2498,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                           )}
                           <p className="font-semibold" data-testid={`text-job-price-${job.id}`}>${job.livePrice || job.priceEstimate}</p>
                         </div>
-                        <Badge variant="secondary">{job.scheduledFor === "asap" ? "ASAP" : job.scheduledFor}</Badge>
+                        <Badge variant="secondary">{formatScheduledDate(job.scheduledFor)}</Badge>
                       </div>
                     </div>
                   ))}
@@ -2581,6 +2625,11 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         <ProMarketplace proId={currentPro?.id || ""} />
       </div>
     );
+  }
+
+  // AI Insights Section
+  if (activeTab === "ai-insights") {
+    return <ProAiDashboard />;
   }
 
   // Settings Section
@@ -2881,6 +2930,12 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     moving_labor: "Moving Labor",
     light_demolition: "Light Demolition",
     home_consultation: "Home Consultation",
+    home_cleaning: "Home Cleaning",
+    pool_cleaning: "Pool Cleaning",
+    carpet_cleaning: "Carpet Cleaning",
+    landscaping: "Landscaping",
+    handyman: "Handyman Services",
+    demolition: "Light Demolition",
   };
 
   return (
@@ -3569,7 +3624,7 @@ export default function ProDashboard() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      window.location.href = "/api/login";
+      window.location.href = "/login";
     }
   }, [authLoading, isAuthenticated]);
 

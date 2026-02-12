@@ -164,7 +164,7 @@ export default function BookDeepFiber() {
         pickupAddress: address,
         pickupCity: "", // Could parse from address
         pickupZip: "", // Could parse from address
-        description: `DeepFiber™ Carpet Cleaning - ${serviceTab === "rooms" ? `${roomCount} rooms` : "Upholstery"} - ${method?.label}`,
+        description: `Carpet Cleaning - ${serviceTab === "rooms" ? `${roomCount} rooms` : "Upholstery"} - ${method?.label}`,
         accessNotes: specialInstructions || null,
         scheduledFor: selectedDate?.toISOString(),
         createdAt: new Date().toISOString(),
@@ -271,7 +271,7 @@ export default function BookDeepFiber() {
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <Sparkles className="w-8 h-8 text-primary" />
-              DeepFiber™ Carpet Cleaning
+              Carpet Cleaning
             </h1>
             <p className="text-muted-foreground">
               Professional carpet and upholstery cleaning

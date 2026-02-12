@@ -13,7 +13,7 @@ export function DwellScanTierSelector({ selectedTier, onSelectTier }: DwellScanT
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold mb-2">Choose Your DwellScan™ Package</h3>
+        <h3 className="text-lg font-semibold mb-2">Choose Your AI Home Audit Package</h3>
         <p className="text-sm text-muted-foreground mb-4">
           Select the inspection level that's right for your home
         </p>
@@ -141,7 +141,7 @@ export function DwellScanTierSelector({ selectedTier, onSelectTier }: DwellScanT
       {/* Service Credit Notice */}
       <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
         <p className="text-sm text-green-800 font-medium">
-          🎁 Special Offer: Get $49 credit toward your first booked service from the DwellScan report!
+          🎁 Special Offer: Both packages include a $49 credit toward your first or next booking!
         </p>
       </div>
     </div>

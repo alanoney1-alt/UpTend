@@ -254,7 +254,7 @@ export function calculatePoolCleaningEsg(params: PoolCleaningParams): ServiceEsg
 }
 
 // ==========================================
-// HOME CLEANING (PolishUp™)
+// HOME CLEANING (Home Cleaning)
 // ==========================================
 
 export interface HomeCleaningParams {
@@ -330,7 +330,7 @@ export function calculateHomeCleaningEsg(params: HomeCleaningParams): ServiceEsg
 }
 
 // ==========================================
-// LANDSCAPING (FreshCut™)
+// LANDSCAPING (Landscaping)
 // ==========================================
 
 export interface LandscapingParams {
@@ -415,7 +415,7 @@ export function calculateLandscapingEsg(params: LandscapingParams): ServiceEsgCa
 }
 
 // ==========================================
-// HANDYMAN (FixIt™)
+// HANDYMAN (Handyman)
 // ==========================================
 
 export interface HandymanParams {
@@ -560,7 +560,7 @@ export function calculateMovingEsg(params: MovingParams): ServiceEsgCalculation 
 }
 
 // ==========================================
-// CARPET CLEANING (DeepFiber™)
+// CARPET CLEANING (Carpet Cleaning)
 // ==========================================
 
 export interface CarpetCleaningParams {
@@ -638,7 +638,7 @@ export function calculateCarpetCleaningEsg(params: CarpetCleaningParams): Servic
 }
 
 // ==========================================
-// LIGHT DEMOLITION (TearDown™)
+// LIGHT DEMOLITION (Light Demolition)
 // ==========================================
 
 export interface LightDemolitionParams {

@@ -20,17 +20,17 @@ interface PolishUpCrossSellProps {
 const SERVICE_TO_PITCH = {
   junk_removal: {
     headline: "Space cleared. Now keep it spotless.",
-    description: "You just freed up space with BulkSnap™. Now keep your home looking its best with PolishUp™ recurring cleaning.",
+    description: "You just freed up space. Now keep your home looking its best with recurring cleaning.",
     benefit: "Perfect timing to establish a cleaning routine in your refreshed space.",
   },
   garage_cleanout: {
     headline: "Garage reset. Home next?",
-    description: "Your garage is pristine thanks to GarageReset™. Extend that clean feeling to your entire home with PolishUp™.",
+    description: "Your garage is pristine. Extend that clean feeling to your entire home.",
     benefit: "Maintain the momentum—clean garage, clean house.",
   },
   moving_labor: {
     headline: "Moved in. Time to settle.",
-    description: "LiftCrew™ got you unpacked. Now let PolishUp™ make your new place feel like home with a deep clean.",
+    description: "We got you unpacked. Now let us make your new place feel like home with a deep clean.",
     benefit: "Start fresh in your new space with a professional clean.",
   },
 };
@@ -100,7 +100,7 @@ export function PolishUpCrossSell({ serviceJustBooked, onDismiss, onBook }: Poli
         <div className="flex gap-2 pt-2">
           <Button onClick={handleBook} className="flex-1">
             <Home className="w-4 h-4 mr-2" />
-            Book PolishUp<sup>™</sup> Clean
+            Book Home Cleaning
           </Button>
           <Button variant="outline" onClick={handleDismiss}>
             Maybe Later

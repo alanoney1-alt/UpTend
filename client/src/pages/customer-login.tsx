@@ -95,7 +95,7 @@ export default function CustomerLogin() {
             </div>
             <h1 className="text-2xl font-bold mb-2">Welcome Back</h1>
             <p className="text-muted-foreground">
-              Sign in to book your next hauling service
+              Sign in to book your next home service
             </p>
           </div>
 
@@ -188,7 +188,7 @@ export default function CustomerLogin() {
             </p>
             <p className="text-xs text-muted-foreground">
               Are you a Pro?{" "}
-              <Link href="/pycker-login" className="text-primary hover:underline">
+              <Link href="/login" className="text-primary hover:underline">
                 Pro Login
               </Link>
             </p>

@@ -42,7 +42,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'home_cleaning',
-        serviceBranded: 'PolishUp™',
+        serviceBranded: 'Home Cleaning',
         required: true,
         defaultOptions: {
           cleanType: 'standard',
@@ -50,7 +50,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       },
       {
         serviceType: 'pressure_washing',
-        serviceBranded: 'FreshWash™',
+        serviceBranded: 'Pressure Washing',
         required: true,
       },
     ],
@@ -76,17 +76,17 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'pressure_washing',
-        serviceBranded: 'FreshWash™',
+        serviceBranded: 'Pressure Washing',
         required: true,
       },
       {
         serviceType: 'gutter_cleaning',
-        serviceBranded: 'GutterFlush™',
+        serviceBranded: 'Gutter Cleaning',
         required: true,
       },
       {
         serviceType: 'lawn_care',
-        serviceBranded: 'YardPro™',
+        serviceBranded: 'Landscaping',
         required: false, // Optional add-on
       },
     ],
@@ -113,7 +113,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'home_cleaning',
-        serviceBranded: 'PolishUp™',
+        serviceBranded: 'Home Cleaning',
         required: true,
         defaultOptions: {
           cleanType: 'move_out',
@@ -121,12 +121,12 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       },
       {
         serviceType: 'junk_removal',
-        serviceBranded: 'BulkSnap™',
+        serviceBranded: 'Junk Removal',
         required: true,
       },
       {
         serviceType: 'pressure_washing',
-        serviceBranded: 'FreshWash™',
+        serviceBranded: 'Pressure Washing',
         required: false, // Optional add-on
       },
     ],
@@ -152,7 +152,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'home_audit',
-        serviceBranded: 'DwellScan™',
+        serviceBranded: 'AI Home Audit',
         required: true,
         defaultOptions: {
           tier: 'aerial', // Premium tier
@@ -160,7 +160,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       },
       {
         serviceType: 'home_cleaning',
-        serviceBranded: 'PolishUp™',
+        serviceBranded: 'Home Cleaning',
         required: true,
         defaultOptions: {
           cleanType: 'deep',
@@ -168,17 +168,17 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       },
       {
         serviceType: 'junk_removal',
-        serviceBranded: 'BulkSnap™',
+        serviceBranded: 'Junk Removal',
         required: false,
       },
       {
         serviceType: 'pressure_washing',
-        serviceBranded: 'FreshWash™',
+        serviceBranded: 'Pressure Washing',
         required: false,
       },
       {
         serviceType: 'gutter_cleaning',
-        serviceBranded: 'GutterFlush™',
+        serviceBranded: 'Gutter Cleaning',
         required: false,
       },
     ],
@@ -192,7 +192,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       from: 799,
       to: 1499,
     },
-    savingsMessage: '15% off + $49 DwellScan credit - save up to $270',
+    savingsMessage: '15% off + $49 AI Home Audit credit - save up to $270',
   },
 
   the_movers_bundle: {
@@ -204,7 +204,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'moving_labor',
-        serviceBranded: 'LiftCrew™',
+        serviceBranded: 'Moving Labor',
         required: true,
         defaultOptions: {
           crewSize: 2,
@@ -213,12 +213,12 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       },
       {
         serviceType: 'junk_removal',
-        serviceBranded: 'BulkSnap™',
+        serviceBranded: 'Junk Removal',
         required: false,
       },
       {
         serviceType: 'home_cleaning',
-        serviceBranded: 'PolishUp™',
+        serviceBranded: 'Home Cleaning',
         required: false,
         defaultOptions: {
           cleanType: 'standard',
@@ -247,7 +247,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'home_cleaning',
-        serviceBranded: 'PolishUp™',
+        serviceBranded: 'Home Cleaning',
         required: true,
         defaultOptions: {
           cleanType: 'move_out',
@@ -255,12 +255,12 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       },
       {
         serviceType: 'junk_removal',
-        serviceBranded: 'BulkSnap™',
+        serviceBranded: 'Junk Removal',
         required: true,
       },
       {
         serviceType: 'handyman',
-        serviceBranded: 'FixIt™',
+        serviceBranded: 'Handyman Services',
         required: false,
       },
     ],
@@ -286,17 +286,17 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'gutter_cleaning',
-        serviceBranded: 'GutterFlush™',
+        serviceBranded: 'Gutter Cleaning',
         required: true,
       },
       {
         serviceType: 'pressure_washing',
-        serviceBranded: 'FreshWash™',
+        serviceBranded: 'Pressure Washing',
         required: true,
       },
       {
         serviceType: 'hvac_service',
-        serviceBranded: 'AirCare™',
+        serviceBranded: 'Air Care',
         required: false,
       },
     ],
@@ -323,7 +323,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'home_cleaning',
-        serviceBranded: 'PolishUp™',
+        serviceBranded: 'Home Cleaning',
         required: true,
         defaultOptions: {
           cleanType: 'deep',
@@ -331,12 +331,12 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       },
       {
         serviceType: 'pressure_washing',
-        serviceBranded: 'FreshWash™',
+        serviceBranded: 'Pressure Washing',
         required: false,
       },
       {
         serviceType: 'junk_removal',
-        serviceBranded: 'BulkSnap™',
+        serviceBranded: 'Junk Removal',
         required: false,
       },
     ],

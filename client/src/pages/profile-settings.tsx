@@ -330,6 +330,27 @@ function HomeownerSettings({
             </div>
             <Switch checked={notifEmail} onCheckedChange={onNotifEmailChange} data-testid="switch-email" />
           </div>
+          <div className="flex items-center justify-between gap-4 p-4">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-5 h-5 text-muted-foreground" />
+              <div>
+                <p className="font-medium text-sm">UpTend Guide</p>
+                <p className="text-xs text-muted-foreground">AI assistant sidebar that helps you navigate and book</p>
+              </div>
+            </div>
+            <Switch
+              checked={localStorage.getItem("uptend-guide-disabled") !== "true"}
+              onCheckedChange={(checked) => {
+                if (checked) {
+                  localStorage.removeItem("uptend-guide-disabled");
+                } else {
+                  localStorage.setItem("uptend-guide-disabled", "true");
+                }
+                window.location.reload();
+              }}
+              data-testid="switch-guide"
+            />
+          </div>
         </Card>
       </TabsContent>
     </Tabs>

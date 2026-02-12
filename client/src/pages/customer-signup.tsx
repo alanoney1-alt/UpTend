@@ -98,7 +98,7 @@ export default function CustomerSignup() {
               </div>
               <h1 className="text-2xl font-bold mb-2">Create Your Account</h1>
               <p className="text-muted-foreground">
-                Join UpTend to book hauling services instantly
+                Join UpTend to book home services instantly
               </p>
             </div>
 

@@ -174,7 +174,7 @@ export default function About() {
             <div>
               <h2 className="text-2xl font-bold mb-4">About UpTend</h2>
               <p className="text-muted-foreground mb-4">
-                Founded in Orlando, Florida, UpTend is a registered trade name of uPYCK Inc. The name reflects
+                Founded in Orlando, Florida, UpTend is a registered trade name of UpTend LLC. The name reflects
                 our mission: to help homeowners <strong className="text-foreground">tend to</strong> their most important asset with intelligence,
                 accountability, and verified impact.
               </p>

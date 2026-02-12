@@ -48,7 +48,7 @@ import { PolishUpBooking, type PolishUpBookingDetails } from "@/components/booki
 import pro1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
-  { id: "home_consultation", label: "DwellScan™ (Home Audit)", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
+  { id: "home_consultation", label: "AI Home Audit", icon: ClipboardCheck, description: "Starting at $49 - Full home walkthrough with optional drone aerial scan", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
   { id: "junk_removal", label: "Junk Removal", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
   { id: "garage_cleanout", label: "Garage Cleanout", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
   { id: "pressure_washing", label: "Pressure Washing", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
@@ -892,7 +892,7 @@ export default function Booking() {
         body: JSON.stringify({
           serviceType: formData.serviceType,
           loadSize: formData.loadEstimate,
-          userId: "demo-customer", // In production, use actual user ID
+          userId: user?.id || "guest",
           bookingSource: "app",
           promoCode: promoValidation?.valid ? formData.promoCode : undefined,
         }),
@@ -956,7 +956,7 @@ export default function Booking() {
       }
       
       const requestBody: Record<string, unknown> = {
-        customerId: "demo-customer",
+        customerId: user?.id || "guest",
         serviceType: data.serviceType,
         status: "matching",
         pickupAddress: data.pickupAddress,
@@ -1066,7 +1066,7 @@ export default function Booking() {
       // Store service type for cross-sell prompts
       sessionStorage.setItem("lastBookedService", formData.serviceType);
 
-      trackJobPosted("demo-customer", {
+      trackJobPosted(user?.id || "guest", {
         serviceType: formData.serviceType,
         loadEstimate: formData.loadEstimate,
         scheduledFor: formData.scheduledFor,
@@ -1076,7 +1076,7 @@ export default function Booking() {
       setTimeout(() => {
         if (availablePros && availablePros.length > 0) {
           setSelectedPro(availablePros[0]);
-          trackJobBooked("demo-customer", {
+          trackJobBooked(user?.id || "guest", {
             serviceRequestId: data.id,
             proId: availablePros[0].id,
             promoCode: formData.promoCode || undefined,
@@ -1112,8 +1112,12 @@ export default function Booking() {
   // REMOVED: Auth gate now happens at payment step (step 3) instead of entry
   // This allows users to see quotes and configure their service before authenticating
 
+  // Dev mode payment bypass state
+  const [devPaymentBypass, setDevPaymentBypass] = useState(false);
+  const isDevMode = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+
   // Show payment setup prompt if authenticated but no payment method
-  if (!authLoading && isAuthenticated && paymentStatusQuery.isSuccess && !paymentStatusQuery.data?.hasPaymentMethod) {
+  if (!authLoading && isAuthenticated && paymentStatusQuery.isSuccess && !paymentStatusQuery.data?.hasPaymentMethod && !devPaymentBypass) {
     return (
       <div className="min-h-screen bg-background" data-testid="page-booking-payment">
         <Header />
@@ -1147,6 +1151,17 @@ export default function Booking() {
                   Add Payment Method
                 </Button>
               </Link>
+              
+              {isDevMode && (
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-3 border-orange-500 text-orange-600 hover:bg-orange-50"
+                  onClick={() => setDevPaymentBypass(true)}
+                  data-testid="button-dev-skip-payment"
+                >
+                  ⚡ Dev Mode: Skip Payment
+                </Button>
+              )}
             </Card>
           </div>
         </main>
@@ -1311,7 +1326,7 @@ export default function Booking() {
                         <RadioGroupItem value={service.id} className="shrink-0" />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <Badge className="bg-primary text-primary-foreground text-xs">Featured - Our Moat</Badge>
+                            <Badge className="bg-primary text-primary-foreground text-xs">Featured</Badge>
                           </div>
                           <div className="flex items-center gap-2 mb-1 mt-2 flex-wrap">
                             <service.icon className="w-5 h-5 text-primary" />
@@ -2245,7 +2260,7 @@ export default function Booking() {
                     <div className="mt-8 pt-8 border-t">
                       <div className="flex items-center gap-2 mb-4">
                         <ClipboardCheck className="w-5 h-5 text-primary" />
-                        <h3 className="font-medium">DwellScan™ - Select Your Tier</h3>
+                        <h3 className="font-medium">AI Home Audit - Select Your Tier</h3>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -2261,7 +2276,7 @@ export default function Booking() {
                         >
                           <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h4 className="font-semibold text-lg">DwellScan™ Standard</h4>
+                              <h4 className="font-semibold text-lg">AI Home Audit Standard</h4>
                               <p className="text-3xl font-bold text-primary mt-1">$49</p>
                             </div>
                             {(formData.dwellscanTier || "standard") === "standard" && (
@@ -2292,7 +2307,7 @@ export default function Booking() {
                           <Badge className="absolute top-3 right-3 bg-orange-500 text-white">Best Value</Badge>
                           <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h4 className="font-semibold text-lg">DwellScan™ Aerial</h4>
+                              <h4 className="font-semibold text-lg">AI Home Audit Aerial</h4>
                               <p className="text-3xl font-bold text-primary mt-1">$149</p>
                             </div>
                             {formData.dwellscanTier === "aerial" && (
@@ -2357,7 +2372,7 @@ export default function Booking() {
                         <Label htmlFor="city">City</Label>
                         <Input 
                           id="city"
-                          placeholder="San Francisco" 
+                          placeholder="Orlando" 
                           className="mt-2"
                           value={formData.pickupCity}
                           onChange={(e) => setFormData(prev => ({ ...prev, pickupCity: e.target.value }))}
@@ -3264,17 +3279,31 @@ export default function Booking() {
                                   </div>
                                 </div>
                               </div>
-                              <PaymentForm
-                                amount={((priceQuote?.totalPrice || 149) * 1.07)}
-                                jobId={createdRequestId}
-                                customerId="demo-customer"
-                                assignedHaulerId={selectedPro?.id}
-                                onSuccess={() => {
-                                  setPaymentAuthorized(true);
-                                  setPaymentError(null);
-                                }}
-                                onError={(error) => setPaymentError(error)}
-                              />
+                              {isDevMode ? (
+                                <Button 
+                                  className="w-full border-orange-500 text-orange-600 hover:bg-orange-50"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setPaymentAuthorized(true);
+                                    setPaymentError(null);
+                                  }}
+                                  data-testid="button-dev-authorize-payment"
+                                >
+                                  ⚡ Dev Mode: Authorize Payment
+                                </Button>
+                              ) : (
+                                <PaymentForm
+                                  amount={((priceQuote?.totalPrice || 149) * 1.07)}
+                                  jobId={createdRequestId}
+                                  customerId={user?.id || "guest"}
+                                  assignedHaulerId={selectedPro?.id}
+                                  onSuccess={() => {
+                                    setPaymentAuthorized(true);
+                                    setPaymentError(null);
+                                  }}
+                                  onError={(error) => setPaymentError(error)}
+                                />
+                              )}
                             </>
                           ) : (
                             <div className="text-center text-muted-foreground">
@@ -3486,14 +3515,14 @@ export default function Booking() {
                             try {
                               const res = await apiRequest("POST", "/api/promo-codes/validate", {
                                 code: formData.promoCode,
-                                userId: "demo-customer",
+                                userId: user?.id || "guest",
                                 orderAmount: priceQuote.totalPrice,
                                 isApp: true,
                               });
                               const result = await res.json();
                               setPromoValidation(result);
                               if (result.valid) {
-                                trackPromoApplied("demo-customer", formData.promoCode, result.discount);
+                                trackPromoApplied(user?.id || "guest", formData.promoCode, result.discount);
                               }
                             } catch {
                               setPromoValidation({ valid: false, discount: 0, error: "Failed to validate" });
@@ -3547,7 +3576,8 @@ export default function Booking() {
                 onClick={handleNext}
                 disabled={
                   (step === 1 && !isStep1Complete()) ||
-                  (step === 2 && (!formData.pickupAddress || !formData.pickupCity || !formData.pickupZip))
+                  (step === 2 && (!formData.pickupAddress || !formData.pickupCity || !formData.pickupZip)) ||
+                  (step === 2 && formData.serviceType === "furniture_moving" && !formData.destinationAddress)
                 }
                 data-testid="button-next"
               >

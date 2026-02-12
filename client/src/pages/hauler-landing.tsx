@@ -35,12 +35,12 @@ export default function HaulerLanding() {
               <Logo className="w-10 h-10" textClassName="text-xl" />
             </Link>
             <div className="flex items-center gap-3">
-              <Link href="/pro-login">
+              <Link href="/pro/login">
                 <Button variant="ghost" data-testid="button-pro-login">
                   Log In
                 </Button>
               </Link>
-              <Link href="/pro-signup">
+              <Link href="/pro/signup">
                 <Button data-testid="button-pro-signup-header">
                   Apply Now
                 </Button>
@@ -64,7 +64,7 @@ export default function HaulerLanding() {
               Avg. Orlando Pro Earns $1,200/Week.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 flex-wrap">
-              <Link href="/pro-signup">
+              <Link href="/pro/signup">
                 <Button
                   size="lg"
                   className="gap-2 text-lg bg-green-500 border-green-500 text-slate-900 font-bold"
@@ -117,7 +117,7 @@ export default function HaulerLanding() {
                 </div>
 
                 <div className="mt-10">
-                  <Link href="/pro-signup">
+                  <Link href="/pro/signup">
                     <Button
                       className="bg-white border-white text-slate-900 font-bold gap-2"
                       size="lg"
@@ -317,7 +317,7 @@ export default function HaulerLanding() {
             <p className="text-muted-foreground mb-8">
               Join the growing community of verified UpTend Pros in Orlando. Fair pay, proven impact, full accountability.
             </p>
-            <Link href="/pro-signup">
+            <Link href="/pro/signup">
               <Button size="lg" className="gap-2" data-testid="button-pro-apply-bottom">
                 Apply Now <ArrowRight className="w-4 h-4" />
               </Button>

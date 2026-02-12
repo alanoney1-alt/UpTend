@@ -611,7 +611,7 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
         <CardContent>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span>PolishUp™ {cleanType?.name}</span>
+              <span>Home Cleaning {cleanType?.name}</span>
               <span>${basePrice}</span>
             </div>
             <div className="text-xs text-muted-foreground">
@@ -654,7 +654,7 @@ export function PolishUpBooking({ onComplete, onBack }: PolishUpBookingProps) {
         </Button>
         <Button onClick={handleComplete} className="gap-2">
           <CheckCircle className="w-4 h-4" />
-          Book PolishUp<sup>™</sup> Clean
+          Book Home Cleaning
         </Button>
       </div>
     </div>

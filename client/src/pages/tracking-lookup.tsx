@@ -66,7 +66,7 @@ export default function TrackingLookup() {
             </div>
             <h1 className="text-3xl font-bold mb-2">Track Your Order</h1>
             <p className="text-muted-foreground">
-              Enter your job ID or email to see real-time updates on your hauling service.
+              Enter your job ID or email to see real-time updates on your service.
             </p>
           </div>
 

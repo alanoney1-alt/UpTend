@@ -1,5 +1,8 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
+import helmet from "helmet";
+import cors from "cors";
+import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
@@ -10,9 +13,47 @@ import { startEsgAuditor } from './services/esg-auditor';
 import './services/property-cron-jobs'; // Auto-starts Property Intelligence background jobs
 import './services/ai-cron-jobs'; // Auto-starts AI capability background jobs
 import { getUncachableStripeClient } from './stripeClient';
+import { setupWebSocket } from './websocket';
 
 const app = express();
 const httpServer = createServer(app);
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Vite dev server needs inline scripts
+  crossOriginEmbedderPolicy: false,
+}));
+
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://uptend.app', 'https://www.uptend.app']
+    : true, // Allow all in development
+  credentials: true,
+}));
+
+// Rate limiting for API endpoints
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'production' ? 200 : 10000, // generous in dev
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => !req.path.startsWith('/api/'), // Only limit API routes
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Stricter limit for auth endpoints
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/', apiLimiter);
+app.use('/api/customers/login', authLimiter);
+app.use('/api/customers/register', authLimiter);
+app.use('/api/haulers/login', authLimiter);
+app.use('/api/haulers/register', authLimiter);
+app.use('/api/pros/login', authLimiter);
+app.use('/api/pros/register', authLimiter);
 
 declare module "http" {
   interface IncomingMessage {
@@ -191,6 +232,9 @@ function validateEnvironment() {
       res.status(status).json({ message });
       throw err;
     });
+
+    // Initialize WebSocket server BEFORE Vite (so our upgrade handler fires first)
+    setupWebSocket(httpServer);
 
     // importantly only setup vite in development and after
     // setting up all the other routes so the catch-all route

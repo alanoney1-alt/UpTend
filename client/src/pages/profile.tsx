@@ -707,7 +707,7 @@ export default function Profile() {
                 </div>
                 <div>
                   <p className="font-bold text-sm">Career Dashboard</p>
-                  <p className="text-xs text-muted-foreground">Track your hauler progression</p>
+                  <p className="text-xs text-muted-foreground">Track your Pro progression</p>
                 </div>
               </div>
             </Card>

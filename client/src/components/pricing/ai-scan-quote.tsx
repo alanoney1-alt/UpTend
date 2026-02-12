@@ -193,7 +193,7 @@ export function AIScanQuote({ serviceType, onQuoteGenerated, onBack }: AIScanQuo
 
       quote = createPricingQuote(
         'polishup',
-        'PolishUp™',
+        'Home Cleaning',
         pricingInput,
         'ai_scan',
         polishUpQuote.basePrice,
@@ -224,10 +224,10 @@ export function AIScanQuote({ serviceType, onQuoteGenerated, onBack }: AIScanQuo
 
   const getServiceBrandedName = (service: string): string => {
     const names = {
-      polishup: 'PolishUp™',
-      bulksnap: 'BulkSnap™',
-      freshwash: 'FreshWash™',
-      gutterflush: 'GutterFlush™',
+      polishup: 'Home Cleaning',
+      bulksnap: 'Junk Removal',
+      freshwash: 'Pressure Washing',
+      gutterflush: 'Gutter Cleaning',
     };
     return names[service as keyof typeof names] || service;
   };

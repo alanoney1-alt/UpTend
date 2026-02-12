@@ -169,12 +169,12 @@ export default function PyckerLogin() {
           <div className="mt-6 text-center space-y-4">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link href="/pro-signup" className="text-primary hover:underline">
+              <Link href="/pro/signup" className="text-primary hover:underline">
                 Apply to become a Pro
               </Link>
             </p>
             <p className="text-xs text-muted-foreground">
-              Customer? <a href="/api/login" className="text-primary hover:underline">Log in here</a>
+              Customer? <a href="/login" className="text-primary hover:underline">Log in here</a>
             </p>
           </div>
         </Card>

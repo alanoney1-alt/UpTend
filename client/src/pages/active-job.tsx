@@ -1,6 +1,7 @@
 import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { UniversalJobWizard } from "@/components/job-wizard/universal-job-wizard";
+import { JobPhotos } from "@/components/pro/job-photos";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
 import type { ServiceRequest, HaulerProfile } from "@shared/schema";
@@ -67,8 +68,17 @@ export default function ActiveJob() {
     accessType: job.accessType || undefined,
   };
 
+  const showBeforePhotos = ["en_route", "arrived"].includes(job.status);
+  const showAfterPhotos = ["working", "in_progress"].includes(job.status);
+
   return (
     <div className="min-h-screen flex flex-col bg-background" data-testid="page-active-job">
+      {(showBeforePhotos || showAfterPhotos) && (
+        <div className="p-4 space-y-3">
+          {showBeforePhotos && <JobPhotos jobId={job.id} type="before" />}
+          {showAfterPhotos && <JobPhotos jobId={job.id} type="after" />}
+        </div>
+      )}
       <UniversalJobWizard
         job={wizardJob}
         onUpdateStatus={(status, data) => {

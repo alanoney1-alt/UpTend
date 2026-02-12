@@ -187,7 +187,7 @@ export default function BusinessDashboard() {
             <Building2 className="w-16 h-16 mx-auto mb-6 text-primary" />
             <h1 className="text-3xl font-bold mb-4">Business Accounts</h1>
             <p className="text-muted-foreground mb-8">
-              Set up recurring pickups, get volume discounts, and manage all your hauling needs in one place.
+              Set up recurring services, get volume discounts, and manage all your home service needs in one place.
               Perfect for property managers, contractors, and businesses with regular junk removal needs.
             </p>
             <div className="grid sm:grid-cols-3 gap-4 mb-8">

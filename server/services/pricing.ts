@@ -5,12 +5,12 @@ export const PRICING_CONSTANTS = {
   GUTTER_1_STORY: 14900, // $149 single story
   GUTTER_2_STORY: 19900, // $199 two story
 
-  MOVER_HOURLY: 8000, // $80/hr per Pro (LiftCrew™)
+  MOVER_HOURLY: 8000, // $80/hr per Pro (Moving Labor)
   MOVER_MIN_HOURS: 1,
 
-  DEMO_BASE_RATE: 19900, // $199 starting (TearDown™)
+  DEMO_BASE_RATE: 19900, // $199 starting (Light Demolition)
 
-  CONSULTATION_FEE: 4900, // $49 (DwellScan™ Standard)
+  CONSULTATION_FEE: 4900, // $49 (AI Home Audit Standard)
 };
 
 export function calculateServicePrice(type: string, data: any): number | null {
@@ -53,18 +53,18 @@ export function calculateServicePrice(type: string, data: any): number | null {
 
 export function getServiceLabel(type: string): string {
   const labels: Record<string, string> = {
-    junk_removal: "BulkSnap™ (Junk Removal)",
+    junk_removal: "Junk Removal",
     furniture_moving: "Furniture Moving",
-    garage_cleanout: "GarageReset™ (Garage Cleanout)",
+    garage_cleanout: "Garage Cleanout",
     estate_cleanout: "Estate Cleanout",
-    truck_unloading: "UnloadPro™ (Truck Unloading)",
+    truck_unloading: "Truck Unloading",
     hvac: "HVAC",
     cleaning: "Cleaning",
-    moving_labor: "LiftCrew™ (Moving Labor)",
-    pressure_washing: "FreshWash™ (Pressure Washing)",
-    gutter_cleaning: "GutterFlush™ (Gutter Cleaning)",
-    light_demolition: "TearDown™ (Light Demolition)",
-    home_consultation: "DwellScan™ (Home Consultation)",
+    moving_labor: "Moving Labor",
+    pressure_washing: "Pressure Washing",
+    gutter_cleaning: "Gutter Cleaning",
+    light_demolition: "Light Demolition",
+    home_consultation: "AI Home Audit",
   };
   return labels[type] || type.replace(/_/g, " ");
 }

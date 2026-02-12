@@ -11,26 +11,26 @@ export interface ServiceTypeConfig {
   startingPrice: number;
 }
 
-// Starting prices: BulkSnap $99 (min load), GarageReset $299 (small), UnloadPro $80/hr per Pro, LiftCrew $80/hr per Pro
+// Starting prices: Junk Removal $99 (min load), Garage Cleanout $299 (small), Truck Unloading $80/hr per Pro, Moving Labor $80/hr per Pro
 export const SERVICE_STARTING_PRICES: Record<string, number> = {
   junk_removal: 99,
   garage_cleanout: 299,
   truck_unloading: 80,
   furniture_moving: 99,
-  handyman: 49, // FixIt $49/hr, 1hr minimum
+  handyman: 49, // Handyman Services $49/hr, 1hr minimum
   pressure_washing: 120,
   gutter_cleaning: 149,
   moving_labor: 80,
   light_demolition: 199,
-  home_consultation: 49, // DwellScan Standard base price
-  home_consultation_aerial: 149, // DwellScan Aerial with drone
+  home_consultation: 49, // AI Home Audit Standard base price
+  home_consultation_aerial: 149, // AI Home Audit Aerial with drone
   home_cleaning: 99,
   pool_cleaning: 69, // PoolSpark monthly
-  landscaping: 35, // FreshCut 1/4 acre mow
-  carpet_cleaning: 49, // DeepFiber 1 room
+  landscaping: 35, // Landscaping 1/4 acre mow
+  carpet_cleaning: 49, // Carpet Cleaning 1 room
 };
 
-// DwellScan service configuration with two tiers
+// AI Home Audit service configuration with two tiers
 export interface DwellScanTier {
   id: string;
   name: string;
@@ -45,7 +45,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
   {
     id: "standard",
     name: "Standard",
-    brandedName: "DwellScan™ Standard",
+    brandedName: "AI Home Audit Standard",
     price: 49,
     description: "Full interior and exterior walkthrough with personalized maintenance report.",
     features: [
@@ -60,7 +60,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
   {
     id: "aerial",
     name: "Aerial",
-    brandedName: "DwellScan™ Aerial",
+    brandedName: "AI Home Audit Aerial",
     price: 149,
     description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan.",
     features: [
@@ -80,9 +80,9 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
 ];
 
 export const DWELLSCAN_SERVICE = {
-  branded: "DwellScan",
+  branded: "AI Home Audit",
   generic: "Home Audit",
-  display: "DwellScan™ (Home Audit)",
+  display: "AI Home Audit",
   slug: "/dwellscan",
   startingPrice: 49,
   priceUnit: "flat",
@@ -94,7 +94,7 @@ export const DWELLSCAN_SERVICE = {
 export const SERVICE_TYPES: ServiceTypeConfig[] = [
   {
     id: "furniture_moving",
-    label: "LiftCrew (Furniture Moving)",
+    label: "Moving Labor (Furniture Moving)",
     description: "Move furniture within or between locations",
     icon: Sofa,
     pricingModel: "per_item",
@@ -102,7 +102,7 @@ export const SERVICE_TYPES: ServiceTypeConfig[] = [
   },
   {
     id: "garage_cleanout",
-    label: "GarageReset™ (Garage Cleanout)",
+    label: "Garage Cleanout",
     description: "Complete garage cleanout service",
     icon: Home,
     pricingModel: "per_item",
@@ -118,7 +118,7 @@ export const SERVICE_TYPES: ServiceTypeConfig[] = [
   },
   {
     id: "junk_removal",
-    label: "BulkSnap (Material Recovery)",
+    label: "Junk Removal",
     description: "Remove unwanted items and debris",
     icon: Trash2,
     pricingModel: "per_item",
@@ -126,7 +126,7 @@ export const SERVICE_TYPES: ServiceTypeConfig[] = [
   },
   {
     id: "handyman",
-    label: "FixIt™ (Handyman Services)",
+    label: "Handyman Services",
     description: "Assembly, mounting, repairs, and installations",
     icon: Wrench,
     pricingModel: "hourly",

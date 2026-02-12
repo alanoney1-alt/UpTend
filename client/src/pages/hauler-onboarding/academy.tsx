@@ -211,7 +211,7 @@ const MODULES: AcademyModule[] = [
   {
     id: "home_cleaning",
     skillType: "home_cleaning",
-    title: "Home Cleaning (PolishUp™)",
+    title: "Home Cleaning",
     icon: HomeIcon,
     iconColor: "text-pink-600 dark:text-pink-400",
     required: false,
@@ -310,7 +310,7 @@ function AcademyPublicLanding() {
                 Book a Certified Pro
               </Button>
             </Link>
-            <Link href="/pro-signup">
+            <Link href="/pro/signup">
               <Button variant="outline" size="lg" className="text-lg border-slate-600 text-slate-300" data-testid="button-academy-apply">
                 Apply to Become a Pro
               </Button>
@@ -373,7 +373,7 @@ function AcademyPublicLanding() {
           </p>
           <div className="flex gap-2">
             <Input
-              placeholder="e.g. PYCK-492"
+              placeholder="e.g. PRO-492"
               value={badgeId}
               onChange={(e) => setBadgeId(e.target.value)}
               className="bg-slate-700 border-slate-600 text-white"

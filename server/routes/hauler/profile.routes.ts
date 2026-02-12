@@ -81,6 +81,50 @@ const proRegistrationSchema = z.object({
 });
 
 export function registerProProfileRoutes(app: Express) {
+  // Get current authenticated Pro with profile (used by Pro dashboard)
+  app.get("/api/pros", requireAuth, requireHauler, async (req: any, res) => {
+    try {
+      const user = req.user;
+      const profile = await storage.getHaulerProfile(user.id);
+      if (!profile) {
+        return res.json([]);
+      }
+      const proWithProfile = {
+        ...user,
+        profile,
+        haulerInfo: profile,
+        name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
+      };
+      res.json([proWithProfile]);
+    } catch (error) {
+      console.error("Error fetching current Pro:", error);
+      res.status(500).json({ error: "Failed to fetch Pro data" });
+    }
+  });
+
+  // Get available pros with vehicles (for booking flow pro selection)
+  app.get("/api/pros/available/with-vehicles", async (req, res) => {
+    try {
+      const allProfiles = await db.select().from(users).where(eq(users.role, "hauler"));
+      const prosWithProfiles = [];
+      for (const user of allProfiles.slice(0, 20)) {
+        const profile = await storage.getHaulerProfile(user.id);
+        if (profile) {
+          prosWithProfiles.push({
+            ...user,
+            profile,
+            haulerInfo: profile,
+            name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
+          });
+        }
+      }
+      res.json(prosWithProfiles);
+    } catch (error) {
+      console.error("Error fetching available pros:", error);
+      res.status(500).json({ error: "Failed to fetch available pros" });
+    }
+  });
+
   // Get Pro profile by userId
   app.get("/api/pros/:userId/profile", async (req, res) => {
     try {
@@ -543,7 +587,12 @@ export function registerProProfileRoutes(app: Express) {
   app.get("/api/pros/:proId/reviews", async (req, res) => {
     try {
       const reviews = await storage.getReviewsByHauler(req.params.proId);
-      res.json(reviews);
+      // Calculate summary stats
+      const totalReviews = reviews.length;
+      const averageRating = totalReviews > 0
+        ? Math.round((reviews.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / totalReviews) * 10) / 10
+        : 0;
+      res.json({ reviews, averageRating, totalReviews });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch reviews" });
     }

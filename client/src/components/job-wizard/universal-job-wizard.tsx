@@ -108,7 +108,7 @@ export function UniversalJobWizard({ job, onUpdateStatus, isUpdating }: Props) {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/hauler-dashboard")}
+            onClick={() => navigate("/pro/dashboard")}
             data-testid="button-back-dashboard"
           >
             <ArrowLeft className="w-5 h-5" />

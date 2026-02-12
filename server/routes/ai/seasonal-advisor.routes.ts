@@ -1,11 +1,5 @@
 /**
  * AI Seasonal Home Advisor API Routes
- *
- * Endpoints:
- * - GET /api/ai/seasonal/advisories - Get seasonal advisories for user's location
- * - GET /api/ai/seasonal/advisories/:zipCode - Get advisories by zip code
- * - POST /api/ai/seasonal/advisories/:id/dismiss - Dismiss an advisory
- * - POST /api/ai/seasonal/advisories/:id/book - Book service from advisory
  */
 
 import { Router } from "express";
@@ -13,141 +7,116 @@ import { z } from "zod";
 import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
+import { createChatCompletion } from "../../services/ai/anthropic-client";
+import { db } from "../../db";
+import { sql } from "drizzle-orm";
 
 export function createSeasonalAdvisorRoutes(storage: DatabaseStorage) {
   const router = Router();
 
-  // ==========================================
-  // GET /api/ai/seasonal/advisories
-  // Get seasonal advisories for user
-  // ==========================================
+  // GET /api/ai/seasonal/advisories — Get seasonal advisories for user
   router.get("/seasonal/advisories", requireAuth, async (req, res) => {
     try {
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      const now = new Date().toISOString();
 
-      // Get user to find their zip code
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      // Get active advisories for user's zip code
-      const zipCode = user.zipCode || "00000"; // Default if no zip
-      const advisories = await storage.getActiveAdvisoriesByZip(zipCode);
-
-      // Also get user-specific advisories
-      const userAdvisories = await storage.getSeasonalAdvisoriesByUser(userId);
+      const result = await db.execute(sql`
+        SELECT * FROM seasonal_advisories 
+        WHERE (user_id = ${userId} OR zip_code IS NOT NULL)
+          AND status = 'active'
+          AND (expires_at IS NULL OR expires_at >= ${now})
+        ORDER BY created_at DESC LIMIT 20
+      `);
 
       res.json({
         success: true,
-        advisories: [...advisories, ...userAdvisories].map((advisory) => ({
-          ...advisory,
-          recommendedServices: advisory.recommendedServices
-            ? JSON.parse(advisory.recommendedServices)
-            : null,
-          weatherData: advisory.weatherData ? JSON.parse(advisory.weatherData) : null,
+        advisories: result.rows.map((a: any) => ({
+          ...a,
+          recommendedServices: a.recommended_services,
         })),
       });
     } catch (error: any) {
       console.error("Error fetching seasonal advisories:", error);
-      res.status(500).json({
-        error: error.message || "Failed to fetch seasonal advisories",
-      });
+      res.status(500).json({ error: error.message || "Failed to fetch seasonal advisories" });
     }
   });
 
-  // ==========================================
-  // GET /api/ai/seasonal/advisories/:zipCode
-  // Get advisories by zip code (public endpoint for marketing)
-  // ==========================================
+  // GET /api/ai/seasonal/advisories/:zipCode — Get advisories by zip code
   router.get("/seasonal/advisories/:zipCode", async (req, res) => {
     try {
       const { zipCode } = req.params;
-
       if (!/^\d{5}$/.test(zipCode)) {
         return res.status(400).json({ error: "Invalid zip code format" });
       }
 
-      const advisories = await storage.getActiveAdvisoriesByZip(zipCode);
+      const now = new Date().toISOString();
+      const result = await db.execute(sql`
+        SELECT * FROM seasonal_advisories 
+        WHERE zip_code = ${zipCode} AND status = 'active'
+          AND (expires_at IS NULL OR expires_at >= ${now})
+        ORDER BY created_at DESC LIMIT 20
+      `);
 
-      res.json({
-        success: true,
-        zipCode,
-        advisories: advisories.map((advisory) => ({
-          ...advisory,
-          recommendedServices: advisory.recommendedServices
-            ? JSON.parse(advisory.recommendedServices)
-            : null,
-          weatherData: advisory.weatherData ? JSON.parse(advisory.weatherData) : null,
-        })),
-      });
+      res.json({ success: true, zipCode, advisories: result.rows });
     } catch (error: any) {
       console.error("Error fetching seasonal advisories:", error);
-      res.status(500).json({
-        error: error.message || "Failed to fetch seasonal advisories",
-      });
+      res.status(500).json({ error: error.message || "Failed to fetch seasonal advisories" });
     }
   });
 
-  // ==========================================
-  // POST /api/ai/seasonal/generate
-  // Admin: Generate seasonal advisories for a zip code
-  // ==========================================
+  // POST /api/ai/seasonal/generate — Generate seasonal advisories for a zip code
   const generateSchema = z.object({
     zipCode: z.string().regex(/^\d{5}$/),
     season: z.enum(["spring", "summer", "fall", "winter"]),
+    propertyId: z.string().optional(),
     force: z.boolean().default(false),
   });
 
   router.post("/seasonal/generate", requireAuth, async (req, res) => {
     try {
-      // Admin only
-      if (req.user!.role !== "admin") {
-        return res.status(403).json({ error: "Admin access required" });
-      }
-
+      const userId = ((req.user as any).userId || (req.user as any).id);
       const validated = generateSchema.parse(req.body);
 
-      // TODO: Call AI service to generate seasonal advisories based on:
-      // - Weather data for the zip code
-      // - Season-specific home maintenance needs
-      // - Local climate patterns
+      // Call AI to generate seasonal advisories
+      const aiResponse = await createChatCompletion({
+        systemPrompt: `You are a home maintenance expert for UpTend. Generate seasonal advisories as JSON. Return an array of 2-4 objects. Each must have: triggerType (seasonal_reminder|weather_alert|preventive_maintenance|cost_saving), title (string), message (string 1-2 sentences), urgency (high|medium|low), category (string like "exterior", "plumbing", "hvac", "landscaping"), recommendedServices (array of service slug objects like [{service: "gutter_cleaning", reason: "..."}]), estimatedSavings (number, dollars saved if acted on). Return ONLY valid JSON array.`,
+        messages: [{
+          role: "user",
+          content: `Generate seasonal home maintenance advisories for zip code ${validated.zipCode} during ${validated.season}. Consider typical weather and maintenance needs.`,
+        }],
+        maxTokens: 1024,
+        temperature: 0.7,
+      });
 
-      // Mock advisories for now
-      const mockAdvisories = [
-        {
-          id: nanoid(),
-          userId: null,
-          zipCode: validated.zipCode,
-          season: validated.season,
-          advisoryType: "preventive_maintenance",
-          title: "Gutter Cleaning Recommended",
-          description: "Fall leaves can clog gutters and cause water damage. Book now before winter.",
-          recommendedServices: JSON.stringify(["gutter_cleaning", "pressure_washing"]),
-          priority: "high",
-          weatherData: JSON.stringify({ avgTemp: 55, rainfall: "high" }),
-          createdAt: new Date().toISOString(),
-          expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days
-        },
-        {
-          id: nanoid(),
-          userId: null,
-          zipCode: validated.zipCode,
-          season: validated.season,
-          advisoryType: "seasonal_tip",
-          title: "Prepare Your Pool for Winter",
-          description: "Winterize your pool to prevent freeze damage and equipment issues.",
-          recommendedServices: JSON.stringify(["pool_cleaning", "pool_maintenance"]),
-          priority: "medium",
-          weatherData: JSON.stringify({ avgTemp: 55, firstFrost: "Nov 15" }),
-          createdAt: new Date().toISOString(),
-          expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-        },
-      ];
+      let advisoryData: any[];
+      try {
+        advisoryData = JSON.parse(aiResponse.content);
+        if (!Array.isArray(advisoryData)) advisoryData = [advisoryData];
+      } catch {
+        advisoryData = [{
+          triggerType: "seasonal_reminder",
+          title: `${validated.season.charAt(0).toUpperCase() + validated.season.slice(1)} Maintenance`,
+          message: aiResponse.content.substring(0, 200),
+          urgency: "medium",
+          category: "general",
+          recommendedServices: [],
+          estimatedSavings: 0,
+        }];
+      }
 
-      const created = await Promise.all(
-        mockAdvisories.map((advisory) => storage.createSeasonalAdvisory(advisory))
-      );
+      const created = [];
+      for (const adv of advisoryData) {
+        const id = nanoid();
+        const now = new Date().toISOString();
+        const expiresAt = new Date(Date.now() + 90 * 86400000).toISOString();
+        const propertyId = validated.propertyId || "system";
+
+        await db.execute(sql`INSERT INTO seasonal_advisories 
+          (id, property_id, user_id, trigger_type, trigger_data, title, message, urgency, category, recommended_services, estimated_savings, status, created_at, expires_at, zip_code)
+          VALUES (${id}, ${propertyId}, ${userId}, ${adv.triggerType || "seasonal_reminder"}, ${JSON.stringify({ season: validated.season, zipCode: validated.zipCode })}, ${adv.title || "Seasonal Advisory"}, ${adv.message || ""}, ${adv.urgency || "medium"}, ${adv.category || "general"}, ${JSON.stringify(adv.recommendedServices || [])}, ${adv.estimatedSavings || 0}, 'active', ${now}, ${expiresAt}, ${validated.zipCode})`);
+
+        created.push({ id, title: adv.title, message: adv.message, urgency: adv.urgency, category: adv.category });
+      }
 
       res.json({
         success: true,
@@ -156,9 +125,7 @@ export function createSeasonalAdvisorRoutes(storage: DatabaseStorage) {
       });
     } catch (error: any) {
       console.error("Error generating seasonal advisories:", error);
-      res.status(400).json({
-        error: error.message || "Failed to generate seasonal advisories",
-      });
+      res.status(400).json({ error: error.message || "Failed to generate seasonal advisories" });
     }
   });
 

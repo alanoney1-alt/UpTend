@@ -20,6 +20,7 @@ import { registerProAcademyRoutes, registerAcademyRoutes } from "./hauler/academ
 import { registerCustomerAccountRoutes } from "./customer/account.routes";
 import { registerCustomerReferralRoutes } from "./customer/referrals.routes";
 import { registerCustomerImpactRoutes } from "./customer/impact.routes";
+import { registerDashboardWidgetRoutes } from "./customer/dashboard-widgets.routes";
 import { registerLoyaltyRoutes } from "./customer/loyalty.routes";
 
 // Job routes
@@ -65,6 +66,12 @@ import { registerAgenticRoutes } from "./ai/agentic.routes";
 import { registerChatbotRoutes } from "./ai/chatbot.routes";
 import { registerSmsBotRoutes } from "./ai/sms-bot.routes";
 import { registerAiCapabilityRoutes } from "./ai/index";
+
+// Review routes
+import { registerReviewRoutes } from "./reviews/reviews.routes";
+
+// Contact routes
+import { registerContactRoutes } from "./contact.routes";
 
 // Google API routes
 import { registerGoogleApiRoutes } from "./google-api.routes";
@@ -114,6 +121,7 @@ export async function registerRoutes(
   registerCustomerAccountRoutes(app);
   registerCustomerReferralRoutes(app);
   registerCustomerImpactRoutes(app);
+  registerDashboardWidgetRoutes(app);
   registerLoyaltyRoutes(app);
 
   // Register job routes
@@ -159,6 +167,12 @@ export async function registerRoutes(
   registerChatbotRoutes(app);
   registerSmsBotRoutes(app);
   registerAiCapabilityRoutes(app); // New AI capabilities
+
+  // Register Review routes
+  registerReviewRoutes(app);
+
+  // Register Contact routes
+  registerContactRoutes(app);
 
   // Register Google API routes
   registerGoogleApiRoutes(app);

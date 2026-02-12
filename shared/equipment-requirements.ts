@@ -24,7 +24,7 @@ export interface ServiceEquipmentRequirements {
 export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   {
     serviceId: "junk_removal",
-    serviceName: "BulkSnap™ (Junk Removal)",
+    serviceName: "Junk Removal",
     minimumEquipment: [
       { id: "vehicle", label: "Pickup truck, cargo van, or box truck", required: true },
       { id: "dolly", label: "Hand truck / dolly", required: true },
@@ -39,7 +39,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "furniture_moving",
-    serviceName: "LiftCrew™ (Furniture Moving)",
+    serviceName: "Furniture Moving",
     minimumEquipment: [
       { id: "vehicle", label: "Pickup truck or enclosed trailer", required: true },
       { id: "dolly", label: "Furniture dolly", required: true },
@@ -56,7 +56,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "pressure_washing",
-    serviceName: "FreshWash™ (Pressure Washing)",
+    serviceName: "Pressure Washing",
     minimumEquipment: [
       {
         id: "pressure_washer",
@@ -80,7 +80,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "gutter_cleaning",
-    serviceName: "GutterFlush™ (Gutter Cleaning)",
+    serviceName: "Gutter Cleaning",
     minimumEquipment: [
       { id: "ladder", label: "Extension ladder (24-32 ft, commercial grade)", required: true },
       { id: "scoop", label: "Gutter scoop", required: true },
@@ -97,7 +97,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "light_demolition",
-    serviceName: "TearDown™ (Light Demolition)",
+    serviceName: "Light Demolition",
     minimumEquipment: [
       { id: "reciprocating_saw", label: "Reciprocating saw (Sawzall)", required: true },
       { id: "sledgehammer", label: "Sledgehammer", required: true },
@@ -117,7 +117,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "landscaping",
-    serviceName: "FreshCut™ (Landscaping)",
+    serviceName: "Landscaping",
     minimumEquipment: [
       {
         id: "mower",
@@ -143,7 +143,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "carpet_cleaning",
-    serviceName: "DeepFiber™ (Carpet Cleaning)",
+    serviceName: "Carpet Cleaning",
     minimumEquipment: [
       {
         id: "extractor",
@@ -170,7 +170,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "pool_cleaning",
-    serviceName: "PoolSpark™ (Pool Cleaning)",
+    serviceName: "Pool Cleaning",
     minimumEquipment: [
       { id: "skimmer", label: "Pool skimmer net (leaf and fine mesh)", required: true },
       { id: "brush", label: "Pool brush (wall and floor)", required: true },
@@ -188,7 +188,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "home_cleaning",
-    serviceName: "PolishUp™ (Home Cleaning)",
+    serviceName: "Home Cleaning",
     minimumEquipment: [
       { id: "vacuum", label: "Commercial vacuum (HEPA filter preferred)", required: true },
       { id: "mop", label: "Mop and bucket OR steam mop", required: true },
@@ -205,7 +205,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "home_consultation",
-    serviceName: "DwellScan™ (Home Audit)",
+    serviceName: "AI Home Audit",
     minimumEquipment: [
       { id: "camera", label: "4K camera OR smartphone with 4K video", required: true },
       { id: "tablet", label: "Tablet or laptop (for digital forms)", required: true },
@@ -225,7 +225,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "moving_labor",
-    serviceName: "LiftCrew™ (Moving Labor)",
+    serviceName: "Moving Labor",
     minimumEquipment: [
       { id: "dolly", label: "Hand truck / appliance dolly", required: true },
       { id: "straps", label: "Moving straps", required: true },
@@ -239,7 +239,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "handyman",
-    serviceName: "FixIt™ (Handyman Services)",
+    serviceName: "Handyman Services",
     minimumEquipment: [
       { id: "drill", label: "Cordless drill/driver set", required: true },
       { id: "hammer", label: "Hammer", required: true },
@@ -261,7 +261,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "garage_cleanout",
-    serviceName: "GarageReset™ (Garage Cleanout)",
+    serviceName: "Garage Cleanout",
     minimumEquipment: [
       { id: "vehicle", label: "Truck or trailer", required: true },
       { id: "broom", label: "Broom and dustpan", required: true },
@@ -276,7 +276,7 @@ export const EQUIPMENT_REQUIREMENTS: ServiceEquipmentRequirements[] = [
   },
   {
     serviceId: "truck_unloading",
-    serviceName: "UnloadPro™ (Truck/U-Haul Unloading)",
+    serviceName: "Truck Unloading",
     minimumEquipment: [
       { id: "dolly", label: "Hand truck / appliance dolly", required: true },
       { id: "straps", label: "Moving straps or lifting straps", required: true },

@@ -163,10 +163,10 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   funFact: text("fun_fact"),
   videoIntroUrl: text("video_intro_url"),
   safetyCode: text("safety_code"),
-  // FreshCut™ (Landscaping) Service
+  // Landscaping Service
   landscapingCertified: boolean("landscaping_certified").default(false),
   lawnEquipment: jsonb("lawn_equipment").default({}), // { "mower": "commercial_zero_turn" | "commercial_walk_behind", "edger": true, "blower": true, "trimmer": true, "type": "gas" | "electric" | "manual" }
-  // DeepFiber™ (Carpet Cleaning) Service
+  // Carpet Cleaning Service
   carpetCertified: boolean("carpet_certified").default(false),
   hasTruckMount: boolean("has_truck_mount").default(false), // Required for HWE (Hot Water Extraction) method
 });
@@ -359,7 +359,7 @@ export const serviceRequests = pgTable("service_requests", {
   arrivedAt: text("arrived_at"),
   isGhostFlagged: boolean("is_ghost_flagged").default(false),
   // Insurance Flexibility
-  insuranceProvider: text("insurance_provider").default("uPYCK_Blanket"),
+  insuranceProvider: text("insurance_provider").default("UpTend_Blanket"),
   externalPolicyId: text("external_policy_id"),
   insuranceCost: integer("insurance_cost"),
   // Agent Booking

@@ -133,7 +133,7 @@ export function calculatePolishUpPriceForAI(params: {
     move_out: 'Move-Out Clean',
   }[params.cleanType];
 
-  const breakdown = `PolishUp™ ${cleanTypeLabel} - ${params.bedrooms}BR/${params.bathrooms}BA${stories > 1 ? `, ${stories}-story` : ''}${modifiers.length > 0 ? ` with ${modifiers.join(', ')}` : ''}`;
+  const breakdown = `Home Cleaning ${cleanTypeLabel} - ${params.bedrooms}BR/${params.bathrooms}BA${stories > 1 ? `, ${stories}-story` : ''}${modifiers.length > 0 ? ` with ${modifiers.join(', ')}` : ''}`;
 
   return {
     price: finalPrice,
@@ -158,7 +158,7 @@ export function calculateDwellScanPriceForAI(params: {
     return {
       customerPrice: 49,
       proPayout: 25,
-      description: 'DwellScan™ Standard - Full interior + exterior ground-level walkthrough with maintenance report',
+      description: 'AI Home Audit Standard - Full interior + exterior ground-level walkthrough with maintenance report',
     };
   }
 
@@ -167,7 +167,7 @@ export function calculateDwellScanPriceForAI(params: {
     return {
       customerPrice: 149,
       proPayout: { combined: 80 },
-      description: 'DwellScan™ Aerial - Combined walkthrough + drone (single Pro, saves $69)',
+      description: 'AI Home Audit Aerial - Combined walkthrough + drone (single Pro, saves $69)',
     };
   }
 
@@ -175,7 +175,7 @@ export function calculateDwellScanPriceForAI(params: {
   return {
     customerPrice: 149,
     proPayout: { walkthrough: 25, drone: 55 },
-    description: 'DwellScan™ Aerial - Full walkthrough + drone flyover (two Pros)',
+    description: 'AI Home Audit Aerial - Full walkthrough + drone flyover (two Pros)',
   };
 }
 
@@ -277,13 +277,13 @@ export function calculateGutterFlushPriceForAI(params: {
   if (params.stories === 1) {
     return {
       price: 149,
-      description: 'GutterFlush™ 1-Story - Full perimeter cleaning + flow test',
+      description: 'Gutter Cleaning 1-Story - Full perimeter cleaning + flow test',
     };
   }
 
   return {
     price: 199,
-    description: 'GutterFlush™ 2-Story - Full perimeter cleaning + flow test',
+    description: 'Gutter Cleaning 2-Story - Full perimeter cleaning + flow test',
   };
 }
 

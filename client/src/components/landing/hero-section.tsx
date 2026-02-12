@@ -13,7 +13,7 @@ export function HeroSection() {
       <div className="absolute inset-0 z-0">
         <img
           src={heroImage}
-          alt="Professional hauling truck"
+          alt="Professional home services"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/50" />

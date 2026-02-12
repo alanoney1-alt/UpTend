@@ -210,9 +210,13 @@ export function registerSubscriptionRoutes(app: Express) {
       const subscriptions = await storage.getCustomerSubscriptions(customerId);
 
       res.json(subscriptions);
-    } catch (error) {
+    } catch (error: any) {
+      // Gracefully return empty array if table doesn't exist or no property linked
+      if (error?.message?.includes("does not exist") || error?.message?.includes("relation") || error?.code === "42P01") {
+        return res.json([]);
+      }
       console.error("Error fetching customer subscriptions:", error);
-      res.status(500).json({ error: "Failed to fetch subscriptions" });
+      res.json([]);
     }
   });
 

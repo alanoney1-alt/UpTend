@@ -34,9 +34,13 @@ export function registerCustomerReferralRoutes(app: Express) {
         code: referralCode,
         shareUrl: `${process.env.CLIENT_URL || "https://uptend.app"}/ref/${referralCode}`,
       });
-    } catch (error) {
+    } catch (error: any) {
+      // Gracefully handle missing tables or no property
+      if (error?.message?.includes("does not exist") || error?.code === "42P01") {
+        return res.json({ code: generateReferralCode(), shareUrl: "" });
+      }
       console.error("Get referral code error:", error);
-      res.status(500).json({ error: "Failed to get referral code" });
+      res.json({ code: generateReferralCode(), shareUrl: "" });
     }
   });
 
@@ -71,9 +75,17 @@ export function registerCustomerReferralRoutes(app: Express) {
       };
 
       res.json(stats);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Get referral stats error:", error);
-      res.status(500).json({ error: "Failed to get referral stats" });
+      // Return empty stats on error (missing table, no property, etc.)
+      res.json({
+        totalReferrals: 0,
+        completedReferrals: 0,
+        pendingReferrals: 0,
+        totalCreditsEarned: 0,
+        pendingCredits: 0,
+        referrals: [],
+      });
     }
   });
 

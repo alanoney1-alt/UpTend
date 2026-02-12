@@ -30,7 +30,7 @@ export function Logo({ className = "w-8 h-8", textClassName = "text-2xl" }: { cl
         </svg>
       </div>
       <div className={cn("font-bold tracking-tight", textClassName)}>
-        <span className="text-slate-900 dark:text-white">Up</span>
+        <span className="text-white">Up</span>
         <span className="text-primary">Tend</span>
       </div>
     </div>

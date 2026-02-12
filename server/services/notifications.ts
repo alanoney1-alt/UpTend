@@ -195,16 +195,16 @@ export async function sendBookingConfirmation(
   total: number
 ): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
   const serviceNames: Record<string, string> = {
-    junk_removal: "BulkSnap™ (Junk Removal)",
+    junk_removal: "Junk Removal",
     moving: "Moving",
-    truck_unloading: "UnloadPro™ (Truck Unloading)",
-    garage_cleanout: "GarageReset™ (Garage Cleanout)",
-    pressure_washing: "FreshWash™ (Pressure Washing)",
-    gutter_cleaning: "GutterFlush™ (Gutter Cleaning)",
-    moving_labor: "LiftCrew™ (Moving Labor)",
-    light_demolition: "TearDown™ (Light Demolition)",
-    home_consultation: "DwellScan™ (Home Audit)",
-    home_cleaning: "PolishUp™ (Home Cleaning)",
+    truck_unloading: "Truck Unloading",
+    garage_cleanout: "Garage Cleanout",
+    pressure_washing: "Pressure Washing",
+    gutter_cleaning: "Gutter Cleaning",
+    moving_labor: "Moving Labor",
+    light_demolition: "Light Demolition",
+    home_consultation: "AI Home Audit",
+    home_cleaning: "Home Cleaning",
   };
 
   const serviceName = serviceNames[serviceType] || serviceType;
@@ -361,16 +361,16 @@ export async function sendManualMatchAlert(
   }
 ): Promise<{ email: { success: boolean; error?: string }; sms: { success: boolean; error?: string } }> {
   const serviceNames: Record<string, string> = {
-    junk_removal: "BulkSnap™ (Junk Removal)",
+    junk_removal: "Junk Removal",
     moving: "Moving",
-    truck_unloading: "UnloadPro™ (Truck Unloading)",
-    garage_cleanout: "GarageReset™ (Garage Cleanout)",
-    pressure_washing: "FreshWash™ (Pressure Washing)",
-    gutter_cleaning: "GutterFlush™ (Gutter Cleaning)",
-    moving_labor: "LiftCrew™ (Moving Labor)",
-    light_demolition: "TearDown™ (Light Demolition)",
-    home_consultation: "DwellScan™ (Home Audit)",
-    home_cleaning: "PolishUp™ (Home Cleaning)",
+    truck_unloading: "Truck Unloading",
+    garage_cleanout: "Garage Cleanout",
+    pressure_washing: "Pressure Washing",
+    gutter_cleaning: "Gutter Cleaning",
+    moving_labor: "Moving Labor",
+    light_demolition: "Light Demolition",
+    home_consultation: "AI Home Audit",
+    home_cleaning: "Home Cleaning",
   };
   const serviceName = serviceNames[jobDetails.serviceType] || jobDetails.serviceType;
 
@@ -580,7 +580,7 @@ export async function sendLaunchNotificationConfirmation(email: string): Promise
 }
 
 /**
- * PolishUp™ Subscription Confirmation
+ * Home Cleaning Subscription Confirmation
  * Sent when customer subscribes to recurring cleaning service
  */
 export async function sendPolishUpSubscriptionConfirmation(
@@ -609,7 +609,7 @@ export async function sendPolishUpSubscriptionConfirmation(
   const [emailResult, smsResult] = await Promise.all([
     sendEmail({
       to: email,
-      subject: 'PolishUp™ Subscription Active - Welcome!',
+      subject: 'Home Cleaning Subscription Active - Welcome!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -617,7 +617,7 @@ export async function sendPolishUpSubscriptionConfirmation(
             <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
           </div>
 
-          <h2 style="color: #333;">🏠 Welcome to PolishUp™!</h2>
+          <h2 style="color: #333;">🏠 Welcome to Home Cleaning!</h2>
           <p style="color: #666; font-size: 16px;">
             Your recurring cleaning subscription is now active. Say goodbye to cleaning stress!
           </p>
@@ -656,11 +656,11 @@ export async function sendPolishUpSubscriptionConfirmation(
           </p>
         </div>
       `,
-      text: `PolishUp™ Subscription Active!\n\nFrequency: ${frequencyLabels[subscriptionDetails.frequency]}\nService: ${cleanTypeLabels[subscriptionDetails.cleanType]}\nPrice: $${subscriptionDetails.price} per visit\nNext Cleaning: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString()}\n\nYour Pro will be automatically scheduled. Manage at uptend.app/subscriptions`,
+      text: `Home Cleaning Subscription Active!\n\nFrequency: ${frequencyLabels[subscriptionDetails.frequency]}\nService: ${cleanTypeLabels[subscriptionDetails.cleanType]}\nPrice: $${subscriptionDetails.price} per visit\nNext Cleaning: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString()}\n\nYour Pro will be automatically scheduled. Manage at uptend.app/subscriptions`,
     }),
     sendSms({
       to: phone,
-      message: `Welcome to PolishUp™! Your ${frequencyLabels[subscriptionDetails.frequency].toLowerCase()} cleaning is set up. Next visit: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. Manage at uptend.app/subscriptions`,
+      message: `Welcome to Home Cleaning! Your ${frequencyLabels[subscriptionDetails.frequency].toLowerCase()} cleaning is set up. Next visit: ${new Date(subscriptionDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. Manage at uptend.app/subscriptions`,
     }),
   ]);
 
@@ -668,7 +668,7 @@ export async function sendPolishUpSubscriptionConfirmation(
 }
 
 /**
- * PolishUp™ Cleaning Reminder
+ * Home Cleaning Cleaning Reminder
  * Sent 24 hours before scheduled cleaning
  */
 export async function sendPolishUpReminder(
@@ -690,7 +690,7 @@ export async function sendPolishUpReminder(
   const [emailResult, smsResult] = await Promise.all([
     sendEmail({
       to: email,
-      subject: 'PolishUp™ Cleaning Tomorrow - Reminder',
+      subject: 'Home Cleaning Cleaning Tomorrow - Reminder',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -700,7 +700,7 @@ export async function sendPolishUpReminder(
 
           <h2 style="color: #333;">🧹 Cleaning Tomorrow!</h2>
           <p style="color: #666; font-size: 16px;">
-            Your PolishUp™ cleaning is scheduled for tomorrow.
+            Your Home Cleaning cleaning is scheduled for tomorrow.
           </p>
 
           <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin: 20px 0;">
@@ -728,11 +728,11 @@ export async function sendPolishUpReminder(
           </p>
         </div>
       `,
-      text: `PolishUp™ Reminder: Your ${cleanTypeLabels[cleaningDetails.cleanType]} is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Your Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
+      text: `Home Cleaning Reminder: Your ${cleanTypeLabels[cleaningDetails.cleanType]} is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Your Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
     }),
     sendSms({
       to: phone,
-      message: `🧹 PolishUp™ reminder: Your cleaning is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
+      message: `🧹 Home Cleaning reminder: Your cleaning is tomorrow ${cleaningDetails.scheduledTime}. ${cleaningDetails.proName ? `Pro: ${cleaningDetails.proName}.` : ''} Reschedule at uptend.app/subscriptions`,
     }),
   ]);
 
@@ -740,7 +740,7 @@ export async function sendPolishUpReminder(
 }
 
 /**
- * PolishUp™ Pro En Route Notification
+ * Home Cleaning Pro En Route Notification
  */
 export async function sendPolishUpProEnRoute(
   phone: string,
@@ -749,12 +749,12 @@ export async function sendPolishUpProEnRoute(
 ): Promise<{ success: boolean; error?: string }> {
   return sendSms({
     to: phone,
-    message: `Your PolishUp™ Pro ${proName} is ${minutesAway} minute${minutesAway === 1 ? '' : 's'} away! 🧹`,
+    message: `Your Home Cleaning Pro ${proName} is ${minutesAway} minute${minutesAway === 1 ? '' : 's'} away! 🧹`,
   });
 }
 
 /**
- * PolishUp™ Cleaning Complete Notification
+ * Home Cleaning Cleaning Complete Notification
  * Sent when Pro completes cleaning with before/after photos
  */
 export async function sendPolishUpCleaningComplete(
@@ -778,7 +778,7 @@ export async function sendPolishUpCleaningComplete(
   const [emailResult, smsResult] = await Promise.all([
     sendEmail({
       to: email,
-      subject: 'PolishUp™ Cleaning Complete - See Your Results!',
+      subject: 'Home Cleaning Cleaning Complete - See Your Results!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
@@ -789,7 +789,7 @@ export async function sendPolishUpCleaningComplete(
           <h2 style="color: #333;">✨ Your Home Sparkles!</h2>
           <p style="color: #666; font-size: 16px;">
             ${cleaningDetails.proName} completed your ${cleanTypeLabels[cleaningDetails.cleanType].toLowerCase()}.
-            Your home is PolishUp™ certified clean!
+            Your home is Home Cleaning certified clean!
           </p>
 
           <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0; color: white;">
@@ -828,11 +828,11 @@ export async function sendPolishUpCleaningComplete(
           </p>
         </div>
       `,
-      text: `PolishUp™ Complete! ${cleaningDetails.proName} finished your cleaning. AI Score: ${cleaningDetails.cleanlinessScore}/10. Next cleaning: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString()}. Rate your Pro in the app!`,
+      text: `Home Cleaning Complete! ${cleaningDetails.proName} finished your cleaning. AI Score: ${cleaningDetails.cleanlinessScore}/10. Next cleaning: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString()}. Rate your Pro in the app!`,
     }),
     sendSms({
       to: phone,
-      message: `✨ Your PolishUp™ cleaning is complete! AI score: ${cleaningDetails.cleanlinessScore}/10. See before/after photos in the app. Next visit: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}.`,
+      message: `✨ Your Home Cleaning cleaning is complete! AI score: ${cleaningDetails.cleanlinessScore}/10. See before/after photos in the app. Next visit: ${new Date(cleaningDetails.nextCleaningDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}.`,
     }),
   ]);
 

@@ -62,10 +62,17 @@ import BookFreshCut from "@/pages/book-freshcut";
 import BookDeepFiber from "@/pages/book-deepfiber";
 import Properties from "@/pages/properties";
 import PropertyDashboard from "@/pages/property-dashboard";
+import AIFeaturesHub from "@/pages/ai/index";
+import PhotoToQuote from "@/pages/ai/photo-quote";
+import DocumentScanner from "@/pages/ai/document-scanner";
+import MyJobs from "@/pages/my-jobs";
+import ServiceDetail from "@/pages/service-detail";
+import Sustainability from "@/pages/sustainability";
 import NotFound from "@/pages/not-found";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
 import { SupportWidget } from "@/components/support-widget";
+import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
 
 function Router() {
@@ -79,6 +86,7 @@ function Router() {
       <Route path="/pros" component={HaulerLanding} />
       <Route path="/tracking" component={TrackingLookup} />
       <Route path="/track/:jobId" component={Tracking} />
+      <Route path="/my-jobs" component={MyJobs} />
       {/* Pro routes (new terminology) */}
       <Route path="/pro/dashboard" component={HaulerDashboard} />
       <Route path="/pro/earnings" component={EarningsPage} />
@@ -102,6 +110,7 @@ function Router() {
       <Route path="/signup" component={CustomerSignup} />
       <Route path="/customer-signup" component={CustomerSignup} />
       <Route path="/login" component={AuthPage} />
+      <Route path="/register" component={CustomerSignup} />
       <Route path="/customer-login" component={AuthPage} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
@@ -147,11 +156,16 @@ function Router() {
       <Route path="/services/deepfiber" component={BookDeepFiber} />
       <Route path="/services/carpet-cleaning" component={BookDeepFiber} />
       <Route path="/book/deepfiber" component={BookDeepFiber} />
+      <Route path="/services/:slug" component={ServiceDetail} />
+      <Route path="/sustainability" component={Sustainability} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/pro/verify" component={ProVerification} />
       <Route path="/pro/sustainability-cert" component={ProSustainabilityCert} />
       <Route path="/properties" component={Properties} />
       <Route path="/properties/:propertyId" component={PropertyDashboard} />
+      <Route path="/ai" component={AIFeaturesHub} />
+      <Route path="/ai/photo-quote" component={PhotoToQuote} />
+      <Route path="/ai/documents" component={DocumentScanner} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -181,6 +195,7 @@ function App() {
           <Router />
           <MobileNav />
           <SupportWidget />
+          <UpTendGuide />
           <InstallBanner />
         </ThemeProvider>
       </TooltipProvider>

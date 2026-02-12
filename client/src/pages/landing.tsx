@@ -42,7 +42,7 @@ export default function Landing() {
         <WorkerCTA />
       </main>
       <Footer />
-      <BookingChatbot />
+      {/* BookingChatbot removed — AI Chat Widget (global) handles this */}
     </div>
   );
 }
@@ -121,15 +121,14 @@ function NewHeroSection() {
 }
 
 function WhatDoesUpTendMeanSection() {
+  const { t } = useTranslation();
   return (
     <section className="py-16 md:py-20 bg-slate-50 dark:bg-slate-900/50" data-testid="section-uptend-meaning">
       <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8 text-center">
         <h2 className="text-2xl md:text-3xl font-bold mb-6 text-slate-900 dark:text-white">
-          What does UpTend mean?
+          {t("landing.uptend_meaning_title")}
         </h2>
-        <p className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300">
-          <strong>UpTend</strong> <em>(verb):</em> to elevate the care of your home. We believe maintaining your home shouldn't mean juggling phone calls, chasing quotes, or hoping the person who shows up is insured. UpTend is one app for everything your home needs — verified Pros, instant pricing, and full documentation on every job. It's home care, elevated.
-        </p>
+        <p className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: t("landing.uptend_meaning_body") }} />
       </div>
     </section>
   );
@@ -333,11 +332,11 @@ function WhySection() {
 
   const featuredService = {
     key: "home_consultation",
-    label: "DwellScan™ (Home Audit)",
+    label: "AI Home Audit",
     price: "$49 / $149",
     icon: ClipboardCheck,
     color: "text-primary dark:text-primary",
-    description: "Complete home documentation: Standard ($49) interior walkthrough or Aerial ($149) with drone footage. $49 reimbursed on your first service booking."
+    description: "Complete home documentation: Standard ($49) interior walkthrough or Aerial ($149) with drone footage. Both include $49 credit toward your first or next booking."
   };
 
   const services = [
@@ -414,7 +413,7 @@ function WhySection() {
             {/* Featured: DwellScan */}
             <Card className="shadow-xl border-2 border-primary">
               <CardContent className="p-6 bg-gradient-to-br from-primary/10 to-primary/5">
-                <Badge className="mb-3 bg-primary">Featured - Our Moat</Badge>
+                <Badge className="mb-3 bg-primary">Featured</Badge>
                 <div
                   className="flex items-start gap-4 cursor-pointer"
                   onClick={() => setLocation(`/book?service=${featuredService.key}`)}

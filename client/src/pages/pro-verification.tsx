@@ -41,7 +41,7 @@ export default function ProVerification() {
         <p className="text-xs text-muted-foreground text-center mb-8">
           The homeowner has been notified. Your Sustainability Badge has been updated.
         </p>
-        <Link href="/hauler-dashboard">
+        <Link href="/pro/dashboard">
           <Button className="w-full" data-testid="button-back-to-dashboard">
             Back to Dashboard
           </Button>
@@ -54,7 +54,7 @@ export default function ProVerification() {
     <div className="max-w-md mx-auto bg-background min-h-screen pb-20" data-testid="page-pro-verification">
       <div className="bg-card-foreground dark:bg-slate-900 text-card dark:text-white p-6 rounded-b-2xl shadow-xl">
         <div className="flex justify-between items-center mb-4">
-          <Link href="/hauler-dashboard">
+          <Link href="/pro/dashboard">
             <Button variant="ghost" size="sm" className="text-white/70 gap-1" data-testid="button-back">
               <ArrowLeft className="w-4 h-4" />
               Back

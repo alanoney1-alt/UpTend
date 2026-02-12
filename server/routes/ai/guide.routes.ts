@@ -1,0 +1,1032 @@
+/**
+ * UpTend Guide API Routes
+ * Context-aware, fully personalized AI assistant endpoint
+ * 
+ * Enhanced with: property scan, price match, photo analysis,
+ * booking, conversation persistence, quotes, bundles
+ */
+
+import { Router } from "express";
+import { createChatCompletion, analyzeImage } from "../../services/ai/anthropic-client";
+import { storage } from "../../storage";
+import { pool } from "../../db";
+import { getPropertyData, formatPropertySummary, type PropertyData } from "../../services/ai/property-scan-service";
+import { calculatePriceMatch, STANDARD_RATES, type PriceMatchResult } from "../../services/ai/price-match-service";
+import { nanoid } from "nanoid";
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+interface GuideSession {
+  history: Array<{ role: "user" | "assistant"; content: string }>;
+  propertyData?: PropertyData;
+  onboardingState?: "address" | "property_confirmed" | "pool_check" | "services_questionnaire" | "complete";
+  recurringServices?: Record<string, { hasService: boolean; provider?: string; price?: number }>;
+  photoEstimates?: Array<{ photoUrl: string; items: string[]; estimate: { min: number; max: number }; description: string }>;
+  currentServiceType?: string;
+  lockedQuotes?: Array<{ id: string; service: string; price: number; validUntil: string; address: string }>;
+  priceMatches?: PriceMatchResult[];
+  pendingBooking?: any;
+}
+
+// ─── Session Store ───────────────────────────────────────────────────────────
+
+const sessions = new Map<string, GuideSession>();
+setInterval(() => { if (sessions.size > 1000) sessions.clear(); }, 30 * 60 * 1000);
+
+function getSession(sid: string): GuideSession {
+  if (!sessions.has(sid)) {
+    sessions.set(sid, { history: [] });
+  }
+  return sessions.get(sid)!;
+}
+
+// ─── DB Table Init ───────────────────────────────────────────────────────────
+
+let tablesInitialized = false;
+async function ensureTables() {
+  if (tablesInitialized) return;
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS guide_conversations (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        session_id TEXT NOT NULL,
+        messages JSONB NOT NULL DEFAULT '[]',
+        property_data JSONB,
+        recurring_services JSONB,
+        photo_estimates JSONB,
+        locked_quotes JSONB,
+        price_matches JSONB,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS guide_property_profiles (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL UNIQUE,
+        address TEXT NOT NULL,
+        property_data JSONB NOT NULL,
+        pool_confirmed BOOLEAN,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS guide_price_matches (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        service_key TEXT NOT NULL,
+        claimed_price NUMERIC,
+        matched_price NUMERIC,
+        standard_rate NUMERIC,
+        receipt_url TEXT,
+        receipt_verified BOOLEAN DEFAULT FALSE,
+        provider_name TEXT,
+        provider_contact TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS guide_locked_quotes (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        service_type TEXT NOT NULL,
+        price NUMERIC NOT NULL,
+        address TEXT,
+        details JSONB,
+        valid_until TIMESTAMPTZ NOT NULL,
+        status TEXT DEFAULT 'active',
+        share_token TEXT UNIQUE,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    tablesInitialized = true;
+  } catch (err) {
+    console.error("Guide tables init error:", err);
+  }
+}
+
+// ─── System Prompt ───────────────────────────────────────────────────────────
+
+const BASE_SYSTEM_PROMPT = `You are the UpTend Guide — a friendly, knowledgeable assistant embedded in the UpTend website. You help customers find services, book jobs, get quotes, and answer questions. For pros (haulers), you help with onboarding, accepting jobs, and getting paid.
+
+## Your Personality
+- Warm, clear, and helpful — like a knowledgeable friend who works at UpTend
+- Not robotic, not overly casual
+- Use emoji sparingly (1-2 per message max)
+- Keep responses concise (2-4 sentences unless detail is needed)
+- ALWAYS greet returning users by their first name
+- Reference their history naturally — "Last time you booked X..." or "Since you liked Carlos..."
+
+## UpTend Services & Pricing
+1. **Junk Removal (BulkSnap)** — Starting $99 flat. Photo-based instant quotes.
+2. **Home Cleaning (PolishUp)** — Starting $99, dynamic pricing by home size & clean type.
+3. **Pressure Washing (FreshWash)** — Starting $120 flat.
+4. **Gutter Cleaning (GutterFlush)** — Starting $149 flat.
+5. **Moving Labor (LiftCrew)** — Starting $80/hr.
+6. **Handyman (FixIt)** — Starting $49/hr, 1-hour minimum.
+7. **Light Demolition (TearDown)** — Starting $199 flat.
+8. **Garage Cleanout (GarageReset)** — Starting $299 flat.
+9. **Truck Unloading (UnloadPro)** — Starting $80/hr.
+10. **AI Home Audit (DwellScan)** — $49 standard, $149 with drone. Includes $49 credit.
+11. **Landscaping (FreshCut)** — Competitive rates.
+12. **Carpet Cleaning (DeepFiber)** — Professional deep cleaning.
+
+## Recurring Service Standard Rates (monthly unless noted)
+- Pool Cleaning: $150/month
+- Lawn/Landscaping: $120/month
+- House Cleaning: $160/month
+- Gutter Cleaning: $80/quarter
+- Pressure Washing: $200/annual
+
+## Key Info
+- Service area: Orlando Metro (Orange, Seminole, Osceola counties), Florida
+- All pros verified, background-checked, $1M liability insurance
+- 7% Protection Fee covers insurance — no hidden fees
+- Buy Now Pay Later for jobs $199+
+- Same-day/next-day available
+- AI Photo-to-Quote: upload photo → instant estimate
+- Real-time GPS tracking on every job
+- 70%+ landfill diversion rate
+
+## GUIDE CAPABILITIES - IMPORTANT
+You have special capabilities. When you detect these intents, include a JSON action block at the END of your message (after your natural text), wrapped in |||ACTION||| markers:
+
+1. **Property Scan**: When customer provides an address, respond naturally about looking it up, then:
+   |||ACTION|||{"type":"property_scan","address":"the full address"}|||ACTION|||
+
+2. **Price Match**: When customer mentions what they pay for a recurring service:
+   |||ACTION|||{"type":"price_match","service":"pool_cleaning","claimed_price":120}|||ACTION|||
+
+3. **Receipt Upload Request**: After price match, ask them to upload a receipt for verification. They can use the 📎 button.
+
+4. **Lock Quote**: When customer confirms they want a firm price (after a range estimate):
+   |||ACTION|||{"type":"lock_quote","service":"junk_removal","price":195,"address":"123 Main St"}|||ACTION|||
+
+5. **Book It**: When customer says "book it", "schedule it", "let's do it":
+   |||ACTION|||{"type":"book","service":"junk_removal","address":"123 Main St","price":195,"date":"2024-03-15","time":"morning"}|||ACTION|||
+   Only include fields you know. Ask for missing info (especially date/time) before booking.
+
+6. **Bundle Estimate**: When customer asks for multiple services:
+   |||ACTION|||{"type":"bundle","services":["pressure_washing","gutter_cleaning","landscaping"]}|||ACTION|||
+
+7. **Share Quote**: When customer wants to share a quote:
+   |||ACTION|||{"type":"share_quote","quoteId":"xxx"}|||ACTION|||
+
+8. **Show Breakdown**: When customer asks "how did you calculate that?" or wants transparency:
+   |||ACTION|||{"type":"show_breakdown","service":"junk_removal","items":["couch","mattress"],"volume":"half truck","laborHours":2,"baseRate":180}|||ACTION|||
+
+## ONBOARDING FLOW
+For new customers (no property data), your FIRST question should be about their address to do a property scan. After property scan:
+1. Confirm property details, ask about pool if uncertain
+2. Ask about existing recurring services (pool if has pool, lawn, cleaning, gutters, pressure washing)
+3. For each YES: ask who their provider is and what they pay
+4. Offer price match if their price is within range
+
+## PHOTO ANALYSIS
+When a customer uploads a photo, you'll receive the AI analysis inline. Respond naturally:
+- Describe what you see
+- Give a price range estimate
+- Track cumulative items across multiple photos
+- When they've sent multiple photos, give a COMBINED estimate
+
+## BOOKING FLOW
+When customer wants to book:
+1. Confirm service type, address, estimated price
+2. Ask for preferred date/time if not provided
+3. Confirm everything before creating: "I'll book [service] for [address] on [date]. Sound good?"
+4. Only trigger the book action after confirmation
+
+## PRICE RANGE → LOCKED QUOTE
+- First give a range: "$180-$220"
+- Ask clarifying questions if needed
+- Then offer to lock: "Want me to lock in a firm price? Based on what you've described, I can lock $195, valid for 7 days."
+
+## BUNDLE DISCOUNTS
+- 2+ services = 10% bundle discount
+- Show breakdown of each + savings
+
+## REPEAT BOOKING
+If customer says "same as last time", reference their past bookings and offer to rebook.
+
+## Seasonal Awareness (Orlando, FL)
+- Hurricane season (June 1 – Nov 30): gutters, pressure washing, tree trimming
+- Summer rainy season (June–Sept): mold/algae, pressure washing
+- Spring (March–May): spring cleaning, garage cleanout
+- Fall (Sept–Nov): gutter cleaning before leaves
+
+## Important
+- Do NOT include raw JSON in your visible text — only in |||ACTION||| blocks
+- Keep text responses natural and conversational
+- Quick actions are handled separately
+- Be genuinely helpful and reference customer data naturally`;
+
+// ─── Data Building (same as before) ─────────────────────────────────────────
+
+async function buildCustomerDataSection(userId: string, user: any): Promise<string> {
+  try {
+    const [jobs, esgLogs, loyalty, referrals] = await Promise.all([
+      storage.getServiceRequestsByCustomer(userId).catch(() => []),
+      storage.getEsgImpactLogsByCustomer(userId).catch(() => []),
+      storage.getLoyaltyAccount(userId).catch(() => null),
+      storage.getReferralsByReferrer(userId).catch(() => []),
+    ]);
+
+    const completedJobs = jobs.filter((j: any) => j.status === "completed");
+    const activeJobs = jobs.filter((j: any) => ["accepted", "in_progress", "en_route", "confirmed", "pending"].includes(j.status));
+    const upcomingJobs = jobs.filter((j: any) => {
+      if (!["accepted", "confirmed", "pending"].includes(j.status)) return false;
+      return new Date(j.scheduledFor) > new Date();
+    });
+
+    const proMap = new Map<string, { name: string; jobs: number; lastService: string; lastDate: string }>();
+    for (const job of completedJobs) {
+      if (!job.assignedHaulerId) continue;
+      const existing = proMap.get(job.assignedHaulerId);
+      if (existing) {
+        existing.jobs++;
+        if (new Date(job.completedAt || job.createdAt) > new Date(existing.lastDate)) {
+          existing.lastService = job.serviceType;
+          existing.lastDate = job.completedAt || job.createdAt;
+        }
+      } else {
+        try {
+          const profile = await storage.getHaulerProfile(job.assignedHaulerId);
+          proMap.set(job.assignedHaulerId, { name: profile?.companyName || "A Pro", jobs: 1, lastService: job.serviceType, lastDate: job.completedAt || job.createdAt });
+        } catch {
+          proMap.set(job.assignedHaulerId, { name: "A Pro", jobs: 1, lastService: job.serviceType, lastDate: job.completedAt || job.createdAt });
+        }
+      }
+    }
+
+    const serviceCount = new Map<string, number>();
+    for (const job of completedJobs) {
+      serviceCount.set(job.serviceType, (serviceCount.get(job.serviceType) || 0) + 1);
+    }
+
+    const totalSpent = completedJobs.reduce((sum: number, j: any) => sum + (j.finalPrice || j.priceEstimate || 0), 0);
+    const lastJob = completedJobs.sort((a: any, b: any) => new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime())[0];
+
+    let totalDivertedLbs = 0;
+    for (const log of esgLogs) totalDivertedLbs += (log as any).divertedLbs || 0;
+
+    const favPros = [...proMap.entries()].sort((a, b) => b[1].jobs - a[1].jobs).slice(0, 3).map(([_, p]) => `${p.name} (${p.jobs} jobs, last: ${formatServiceType(p.lastService)})`);
+
+    let section = `\n\n## CUSTOMER DATA`;
+    section += `\nName: ${user.firstName || user.username || "Friend"}`;
+    section += `\nTotal Jobs: ${completedJobs.length} completed, ${activeJobs.length} active`;
+    section += `\nTotal Spent: $${totalSpent.toFixed(0)}`;
+    if (lastJob) section += `\nLast Service: ${formatServiceType(lastJob.serviceType)} on ${formatDate(lastJob.completedAt || lastJob.createdAt)}`;
+    if (favPros.length > 0) section += `\nFavorite Pros: ${favPros.join("; ")}`;
+    if (serviceCount.size > 0) section += `\nService History: ${[...serviceCount.entries()].map(([k, v]) => `${formatServiceType(k)} (${v}x)`).join(", ")}`;
+    if (loyalty) section += `\nLoyalty Points: ${(loyalty as any).points || 0}`;
+    section += `\nReferrals: ${referrals.length}`;
+
+    // Load saved property data
+    try {
+      const propResult = await pool.query("SELECT property_data, pool_confirmed FROM guide_property_profiles WHERE user_id = $1", [userId]);
+      if (propResult.rows.length > 0) {
+        const propData = propResult.rows[0].property_data;
+        section += `\n\n## PROPERTY DATA (already scanned)\n${formatPropertySummary(propData)}`;
+        if (propResult.rows[0].pool_confirmed !== null) {
+          section += `\nPool confirmed: ${propResult.rows[0].pool_confirmed ? "Yes" : "No"}`;
+        }
+      } else {
+        section += `\n\n## PROPERTY: Not yet scanned — ask for their address!`;
+      }
+    } catch { /* tables may not exist yet */ }
+
+    // Load previous conversations for memory
+    try {
+      const convResult = await pool.query(
+        "SELECT messages, created_at FROM guide_conversations WHERE user_id = $1 ORDER BY updated_at DESC LIMIT 1",
+        [userId]
+      );
+      if (convResult.rows.length > 0) {
+        const lastConv = convResult.rows[0];
+        const msgs = lastConv.messages || [];
+        if (msgs.length > 0) {
+          const summary = msgs.slice(-6).map((m: any) => `${m.role}: ${m.content.substring(0, 100)}`).join("\n");
+          section += `\n\n## LAST CONVERSATION (${formatDate(lastConv.created_at)})\n${summary}`;
+        }
+      }
+    } catch { /* ok */ }
+
+    return section;
+  } catch (error) {
+    console.error("Error building customer data:", error);
+    return `\n\n## CUSTOMER DATA\nName: ${user?.firstName || user?.username || "Friend"}\n(Unable to load full history)`;
+  }
+}
+
+async function buildProDataSection(userId: string, user: any): Promise<string> {
+  try {
+    const [profile, jobs] = await Promise.all([
+      storage.getHaulerProfile(userId).catch(() => null),
+      storage.getServiceRequestsByHauler(userId).catch(() => []),
+    ]);
+
+    if (!profile) return `\n\n## PRO DATA\nName: ${user.firstName || user.username}\nStatus: No profile — guide through onboarding`;
+
+    const completedJobs = jobs.filter((j: any) => j.status === "completed");
+    const now = new Date();
+    const thisMonthJobs = completedJobs.filter((j: any) => {
+      const d = new Date(j.completedAt || j.createdAt);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const monthlyEarnings = thisMonthJobs.reduce((sum: number, j: any) => sum + (j.haulerPayout || 0), 0);
+
+    let section = `\n\n## PRO DATA`;
+    section += `\nName: ${profile.companyName || user.firstName}`;
+    section += `\nRating: ${profile.rating?.toFixed(1) || "5.0"} (${profile.reviewCount || 0} reviews)`;
+    section += `\nJobs: ${profile.jobsCompleted || completedJobs.length} completed`;
+    section += `\nThis Month: ${thisMonthJobs.length} jobs, $${monthlyEarnings.toFixed(0)}`;
+    section += `\nServices: ${(profile.serviceTypes || []).map(formatServiceType).join(", ")}`;
+    section += `\nAvailable: ${profile.isAvailable ? "Yes" : "No"}`;
+    return section;
+  } catch (error) {
+    console.error("Error building pro data:", error);
+    return `\n\n## PRO DATA\nName: ${user?.firstName || "Pro"}`;
+  }
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function formatDate(dateStr: string): string {
+  try { return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
+  catch { return dateStr; }
+}
+
+function formatServiceType(type: string): string {
+  const map: Record<string, string> = {
+    junk_removal: "Junk Removal", home_cleaning: "Home Cleaning", pressure_washing: "Pressure Washing",
+    gutter_cleaning: "Gutter Cleaning", moving_labor: "Moving Labor", handyman: "Handyman",
+    light_demolition: "Light Demolition", garage_cleanout: "Garage Cleanout", truck_unloading: "Truck Unloading",
+    home_consultation: "AI Home Audit", pool_cleaning: "Pool Cleaning", landscaping: "Landscaping",
+    carpet_cleaning: "Carpet Cleaning", lawn_landscaping: "Lawn/Landscaping", house_cleaning: "House Cleaning",
+  };
+  return map[type] || type.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function extractActions(text: string): { cleanText: string; actions: any[] } {
+  const actions: any[] = [];
+  const cleanText = text.replace(/\|\|\|ACTION\|\|\|(.*?)\|\|\|ACTION\|\|\|/gs, (_, json) => {
+    try { actions.push(JSON.parse(json.trim())); } catch { }
+    return "";
+  }).trim();
+  return { cleanText, actions };
+}
+
+// ─── Route Handler ───────────────────────────────────────────────────────────
+
+export default function createGuideRoutes(_storage: any) {
+  const router = Router();
+
+  // Ensure DB tables exist on first request
+  let initPromise: Promise<void> | null = null;
+  function init() {
+    if (!initPromise) initPromise = ensureTables();
+    return initPromise;
+  }
+
+  // ─── Main Chat Endpoint ──────────────────────────────────────────────────
+
+  router.post("/guide/chat", async (req, res) => {
+    try {
+      await init();
+      const { message, sessionId, context, photoUrl, photoAnalysis } = req.body;
+
+      if (!message && !photoUrl) {
+        return res.status(400).json({ error: "Message or photo is required" });
+      }
+
+      const sid = sessionId || `anon-${Date.now()}`;
+      const session = getSession(sid);
+
+      let systemPrompt = BASE_SYSTEM_PROMPT;
+      const user = req.user as any;
+      let userId: string | null = null;
+
+      if (user) {
+        userId = user.userId || user.id;
+        if (user.role === "hauler") {
+          systemPrompt += await buildProDataSection(userId, user);
+        } else {
+          systemPrompt += await buildCustomerDataSection(userId, user);
+        }
+      }
+
+      // Add session state to system prompt
+      if (session.propertyData) {
+        systemPrompt += `\n\n## CURRENT SESSION - PROPERTY\n${formatPropertySummary(session.propertyData)}`;
+      }
+      if (session.photoEstimates && session.photoEstimates.length > 0) {
+        systemPrompt += `\n\n## CURRENT SESSION - PHOTO ESTIMATES`;
+        session.photoEstimates.forEach((pe, i) => {
+          systemPrompt += `\nPhoto ${i + 1}: ${pe.description} — Items: ${pe.items.join(", ")} — Est: $${pe.estimate.min}-$${pe.estimate.max}`;
+        });
+        const totalMin = session.photoEstimates.reduce((s, p) => s + p.estimate.min, 0);
+        const totalMax = session.photoEstimates.reduce((s, p) => s + p.estimate.max, 0);
+        systemPrompt += `\nCOMBINED TOTAL: $${totalMin}-$${totalMax}`;
+      }
+      if (session.lockedQuotes && session.lockedQuotes.length > 0) {
+        systemPrompt += `\n\n## LOCKED QUOTES`;
+        session.lockedQuotes.forEach(q => {
+          systemPrompt += `\n- ${q.service}: $${q.price} at ${q.address} (valid until ${q.validUntil}) ID: ${q.id}`;
+        });
+      }
+      if (session.priceMatches && session.priceMatches.length > 0) {
+        systemPrompt += `\n\n## PRICE MATCHES`;
+        session.priceMatches.forEach(pm => {
+          systemPrompt += `\n- ${pm.serviceName}: claimed $${pm.claimedPrice}, matched $${pm.matchedPrice} (standard: $${pm.standardRate})`;
+        });
+      }
+
+      if (context) {
+        systemPrompt += `\n\n## CURRENT CONTEXT\nPage: ${context.page}\nRole: ${context.userRole}`;
+        if (context.userName) systemPrompt += `\nName: ${context.userName}`;
+      }
+
+      // Build user message content
+      let userContent = message || "";
+      if (photoAnalysis) {
+        userContent += `\n\n[Customer uploaded a photo. AI analysis: ${JSON.stringify(photoAnalysis)}]`;
+      }
+
+      session.history.push({ role: "user", content: userContent });
+      const trimmedHistory = session.history.slice(-20);
+
+      const response = await createChatCompletion({
+        systemPrompt,
+        messages: trimmedHistory,
+        model: "claude-sonnet-4-20250514",
+        maxTokens: 800,
+      });
+
+      const rawContent = typeof response === "string" ? response : (response as any)?.content || "Sorry, I couldn't process that!";
+      const { cleanText, actions } = extractActions(rawContent);
+
+      session.history.push({ role: "assistant", content: cleanText });
+      if (session.history.length > 20) session.history = session.history.slice(-20);
+
+      // Process actions
+      const actionResults: any[] = [];
+      for (const action of actions) {
+        const result = await processAction(action, session, userId);
+        if (result) actionResults.push(result);
+      }
+
+      // Save conversation to DB if user is authenticated
+      if (userId) {
+        saveConversation(userId, sid, session).catch(err => console.error("Save conversation error:", err));
+      }
+
+      const quickActions = getQuickActions(context, user, session);
+
+      return res.json({
+        reply: cleanText,
+        sessionId: sid,
+        quickActions,
+        actions: actionResults.length > 0 ? actionResults : undefined,
+      });
+    } catch (error: any) {
+      console.error("Guide chat error:", error);
+      return res.status(500).json({
+        error: "Failed to process message",
+        reply: "Sorry, I'm having a moment. Try again in a sec! 😅",
+      });
+    }
+  });
+
+  // ─── Photo Analysis Endpoint ─────────────────────────────────────────────
+
+  router.post("/guide/photo-analyze", async (req, res) => {
+    try {
+      await init();
+      const { photoUrl, sessionId, serviceType } = req.body;
+
+      if (!photoUrl) {
+        return res.status(400).json({ error: "photoUrl is required" });
+      }
+
+      const prompt = `Analyze this image for a home services quote. The customer may need: ${(serviceType || "junk removal").replace(/_/g, " ")}.
+
+Return ONLY valid JSON:
+{
+  "detectedItems": ["item1", "item2"],
+  "estimatedVolume": "description (e.g. 'half truck load', '500 sq ft')",
+  "difficulty": "easy" | "medium" | "hard",
+  "confidenceScore": 0.0-1.0,
+  "scopeDescription": "Natural description of what you see",
+  "priceRange": { "min": number, "max": number },
+  "additionalNotes": "safety or equipment notes"
+}`;
+
+      let analysis;
+      try {
+        const aiResult = await analyzeImage({ imageUrl: photoUrl, prompt, maxTokens: 1024 });
+        analysis = typeof aiResult === "string" ? JSON.parse(aiResult) : aiResult;
+      } catch {
+        analysis = {
+          detectedItems: ["items detected"],
+          estimatedVolume: "standard scope",
+          confidenceScore: 0.5,
+          scopeDescription: "Photo received — I can see some items that need service.",
+          priceRange: { min: 99, max: 299 },
+        };
+      }
+
+      // Store in session
+      if (sessionId) {
+        const session = getSession(sessionId);
+        if (!session.photoEstimates) session.photoEstimates = [];
+        session.photoEstimates.push({
+          photoUrl,
+          items: analysis.detectedItems || [],
+          estimate: analysis.priceRange || { min: 99, max: 299 },
+          description: analysis.scopeDescription || "Items detected",
+        });
+      }
+
+      return res.json({ success: true, analysis });
+    } catch (error: any) {
+      console.error("Photo analysis error:", error);
+      return res.status(500).json({ error: "Failed to analyze photo" });
+    }
+  });
+
+  // ─── Receipt Verification Endpoint ───────────────────────────────────────
+
+  router.post("/guide/verify-receipt", async (req, res) => {
+    try {
+      await init();
+      const { receiptUrl, serviceKey, claimedPrice, sessionId } = req.body;
+
+      if (!receiptUrl) {
+        return res.status(400).json({ error: "receiptUrl is required" });
+      }
+
+      // Analyze receipt with AI
+      let extractedPrice: number | null = null;
+      let receiptData: any = {};
+
+      try {
+        const aiResult = await analyzeImage({
+          imageUrl: receiptUrl,
+          prompt: `Analyze this receipt/invoice. Extract:
+{
+  "vendor": "company name",
+  "date": "date on receipt",
+  "totalAmount": number,
+  "lineItems": [{"item": "description", "cost": number}],
+  "serviceType": "what service this is for",
+  "frequency": "monthly/quarterly/annual/one-time"
+}
+Return ONLY valid JSON.`,
+          maxTokens: 1024,
+        });
+        receiptData = typeof aiResult === "string" ? JSON.parse(aiResult) : aiResult;
+        extractedPrice = receiptData.totalAmount || null;
+      } catch {
+        receiptData = { error: "Could not analyze receipt" };
+      }
+
+      // Calculate price match
+      let priceMatchResult: PriceMatchResult | null = null;
+      const priceToMatch = extractedPrice || claimedPrice;
+      if (serviceKey && priceToMatch) {
+        priceMatchResult = calculatePriceMatch(serviceKey, priceToMatch);
+
+        // Store in session
+        if (sessionId) {
+          const session = getSession(sessionId);
+          if (!session.priceMatches) session.priceMatches = [];
+          if (priceMatchResult) session.priceMatches.push(priceMatchResult);
+        }
+
+        // Store in DB
+        const user = req.user as any;
+        if (user) {
+          const userId = user.userId || user.id;
+          try {
+            await pool.query(
+              `INSERT INTO guide_price_matches (id, user_id, service_key, claimed_price, matched_price, standard_rate, receipt_url, receipt_verified)
+               VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+              [nanoid(), userId, serviceKey, claimedPrice, priceMatchResult?.matchedPrice, priceMatchResult?.standardRate, receiptUrl, !!extractedPrice]
+            );
+          } catch { /* ok */ }
+        }
+      }
+
+      return res.json({
+        success: true,
+        receiptData,
+        extractedPrice,
+        priceMatch: priceMatchResult,
+        verified: !!extractedPrice,
+      });
+    } catch (error: any) {
+      console.error("Receipt verification error:", error);
+      return res.status(500).json({ error: "Failed to verify receipt" });
+    }
+  });
+
+  // ─── Property Scan Endpoint ──────────────────────────────────────────────
+
+  router.post("/guide/property-scan", async (req, res) => {
+    try {
+      await init();
+      const { address, sessionId } = req.body;
+
+      if (!address) {
+        return res.status(400).json({ error: "Address is required" });
+      }
+
+      const propertyData = getPropertyData(address);
+
+      // Store in session
+      if (sessionId) {
+        const session = getSession(sessionId);
+        session.propertyData = propertyData;
+        session.onboardingState = propertyData.hasPool === "uncertain" ? "pool_check" : "property_confirmed";
+      }
+
+      // Store in DB
+      const user = req.user as any;
+      if (user) {
+        const userId = user.userId || user.id;
+        try {
+          await pool.query(
+            `INSERT INTO guide_property_profiles (id, user_id, address, property_data)
+             VALUES ($1, $2, $3, $4)
+             ON CONFLICT (user_id) DO UPDATE SET address = $3, property_data = $4, updated_at = NOW()`,
+            [nanoid(), userId, address, JSON.stringify(propertyData)]
+          );
+        } catch (err) { console.error("Property save error:", err); }
+      }
+
+      return res.json({ success: true, property: propertyData });
+    } catch (error: any) {
+      console.error("Property scan error:", error);
+      return res.status(500).json({ error: "Failed to scan property" });
+    }
+  });
+
+  // ─── Lock Quote Endpoint ─────────────────────────────────────────────────
+
+  router.post("/guide/lock-quote", async (req, res) => {
+    try {
+      await init();
+      const { service, price, address, details, sessionId } = req.body;
+
+      const quoteId = nanoid(10);
+      const shareToken = nanoid(16);
+      const validUntil = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      const quote = { id: quoteId, service, price, address: address || "", validUntil, shareToken };
+
+      // Store in session
+      if (sessionId) {
+        const session = getSession(sessionId);
+        if (!session.lockedQuotes) session.lockedQuotes = [];
+        session.lockedQuotes.push(quote);
+      }
+
+      // Store in DB
+      const user = req.user as any;
+      if (user) {
+        const userId = user.userId || user.id;
+        try {
+          await pool.query(
+            `INSERT INTO guide_locked_quotes (id, user_id, service_type, price, address, details, valid_until, share_token)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            [quoteId, userId, service, price, address || "", JSON.stringify(details || {}), validUntil, shareToken]
+          );
+        } catch { /* ok */ }
+      }
+
+      return res.json({ success: true, quote: { ...quote, shareUrl: `/quote/shared/${shareToken}` } });
+    } catch (error: any) {
+      console.error("Lock quote error:", error);
+      return res.status(500).json({ error: "Failed to lock quote" });
+    }
+  });
+
+  // ─── Shared Quote View ───────────────────────────────────────────────────
+
+  router.get("/guide/quote/:shareToken", async (req, res) => {
+    try {
+      await init();
+      const result = await pool.query(
+        "SELECT * FROM guide_locked_quotes WHERE share_token = $1 AND status = 'active'",
+        [req.params.shareToken]
+      );
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Quote not found or expired" });
+      }
+      const quote = result.rows[0];
+      const expired = new Date(quote.valid_until) < new Date();
+      return res.json({
+        service: formatServiceType(quote.service_type),
+        price: quote.price,
+        address: quote.address,
+        validUntil: quote.valid_until,
+        expired,
+        shareToken: quote.share_token,
+      });
+    } catch (error: any) {
+      return res.status(500).json({ error: "Failed to load quote" });
+    }
+  });
+
+  // ─── Bundle Estimate Endpoint ────────────────────────────────────────────
+
+  router.post("/guide/bundle-estimate", async (req, res) => {
+    try {
+      const { services } = req.body;
+      if (!services || !Array.isArray(services) || services.length < 2) {
+        return res.status(400).json({ error: "At least 2 services required for a bundle" });
+      }
+
+      const breakdown: Array<{ service: string; rate: number; frequency: string }> = [];
+      let subtotal = 0;
+
+      for (const svc of services) {
+        const rate = STANDARD_RATES[svc];
+        if (rate) {
+          breakdown.push({ service: rate.service, rate: rate.rate, frequency: rate.frequency });
+          subtotal += rate.rate;
+        }
+      }
+
+      const discount = Math.round(subtotal * 0.10);
+      const total = subtotal - discount;
+
+      return res.json({
+        success: true,
+        breakdown,
+        subtotal,
+        discountPercent: 10,
+        discount,
+        total,
+        savings: `You save $${discount} with the bundle!`,
+      });
+    } catch (error: any) {
+      return res.status(500).json({ error: "Failed to calculate bundle" });
+    }
+  });
+
+  // ─── Load Conversation History ───────────────────────────────────────────
+
+  router.get("/guide/history", async (req, res) => {
+    try {
+      await init();
+      const user = req.user as any;
+      if (!user) return res.json({ conversations: [] });
+
+      const userId = user.userId || user.id;
+      const result = await pool.query(
+        "SELECT id, session_id, messages, property_data, created_at, updated_at FROM guide_conversations WHERE user_id = $1 ORDER BY updated_at DESC LIMIT 5",
+        [userId]
+      );
+
+      return res.json({ conversations: result.rows });
+    } catch (error: any) {
+      console.error("Load history error:", error);
+      return res.json({ conversations: [] });
+    }
+  });
+
+  // ─── Pool Confirmation ───────────────────────────────────────────────────
+
+  router.post("/guide/confirm-pool", async (req, res) => {
+    try {
+      await init();
+      const { hasPool, sessionId } = req.body;
+      const user = req.user as any;
+
+      if (sessionId) {
+        const session = getSession(sessionId);
+        if (session.propertyData) {
+          session.propertyData.hasPool = hasPool;
+          session.onboardingState = "property_confirmed";
+        }
+      }
+
+      if (user) {
+        const userId = user.userId || user.id;
+        try {
+          await pool.query(
+            "UPDATE guide_property_profiles SET pool_confirmed = $1, updated_at = NOW() WHERE user_id = $2",
+            [hasPool, userId]
+          );
+        } catch { /* ok */ }
+      }
+
+      return res.json({ success: true });
+    } catch (error: any) {
+      return res.status(500).json({ error: "Failed to confirm pool" });
+    }
+  });
+
+  return router;
+}
+
+// ─── Action Processor ────────────────────────────────────────────────────────
+
+async function processAction(action: any, session: GuideSession, userId: string | null): Promise<any> {
+  try {
+    switch (action.type) {
+      case "property_scan": {
+        const propertyData = getPropertyData(action.address);
+        session.propertyData = propertyData;
+        session.onboardingState = propertyData.hasPool === "uncertain" ? "pool_check" : "property_confirmed";
+
+        if (userId) {
+          try {
+            await pool.query(
+              `INSERT INTO guide_property_profiles (id, user_id, address, property_data)
+               VALUES ($1, $2, $3, $4)
+               ON CONFLICT (user_id) DO UPDATE SET address = $3, property_data = $4, updated_at = NOW()`,
+              [nanoid(), userId, action.address, JSON.stringify(propertyData)]
+            );
+          } catch { /* ok */ }
+        }
+
+        return { type: "property_scan", data: propertyData };
+      }
+
+      case "price_match": {
+        const result = calculatePriceMatch(action.service, action.claimed_price);
+        if (result) {
+          if (!session.priceMatches) session.priceMatches = [];
+          session.priceMatches.push(result);
+        }
+        return { type: "price_match", data: result };
+      }
+
+      case "lock_quote": {
+        const quoteId = nanoid(10);
+        const shareToken = nanoid(16);
+        const validUntil = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+        const quote = { id: quoteId, service: action.service, price: action.price, address: action.address || "", validUntil, shareToken };
+
+        if (!session.lockedQuotes) session.lockedQuotes = [];
+        session.lockedQuotes.push(quote);
+
+        if (userId) {
+          try {
+            await pool.query(
+              `INSERT INTO guide_locked_quotes (id, user_id, service_type, price, address, details, valid_until, share_token)
+               VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+              [quoteId, userId, action.service, action.price, action.address || "", "{}", validUntil, shareToken]
+            );
+          } catch { /* ok */ }
+        }
+
+        return { type: "lock_quote", data: { ...quote, shareUrl: `/quote/shared/${shareToken}` } };
+      }
+
+      case "bundle": {
+        if (!action.services || action.services.length < 2) return null;
+        const breakdown: any[] = [];
+        let subtotal = 0;
+        for (const svc of action.services) {
+          const rate = STANDARD_RATES[svc];
+          if (rate) { breakdown.push({ service: rate.service, rate: rate.rate, frequency: rate.frequency }); subtotal += rate.rate; }
+        }
+        const discount = Math.round(subtotal * 0.10);
+        return { type: "bundle", data: { breakdown, subtotal, discount, total: subtotal - discount } };
+      }
+
+      case "book": {
+        session.pendingBooking = action;
+        return { type: "booking_pending", data: action };
+      }
+
+      case "share_quote": {
+        const quote = session.lockedQuotes?.find(q => q.id === action.quoteId);
+        if (quote) return { type: "share_quote", data: { shareUrl: `/quote/shared/${(quote as any).shareToken || quote.id}` } };
+        return null;
+      }
+
+      case "show_breakdown": {
+        return { type: "breakdown", data: action };
+      }
+
+      default:
+        return null;
+    }
+  } catch (err) {
+    console.error("Action processing error:", err);
+    return null;
+  }
+}
+
+// ─── Conversation Persistence ────────────────────────────────────────────────
+
+async function saveConversation(userId: string, sessionId: string, session: GuideSession) {
+  try {
+    const existing = await pool.query(
+      "SELECT id FROM guide_conversations WHERE user_id = $1 AND session_id = $2",
+      [userId, sessionId]
+    );
+
+    if (existing.rows.length > 0) {
+      await pool.query(
+        `UPDATE guide_conversations SET messages = $1, property_data = $2, recurring_services = $3, photo_estimates = $4, locked_quotes = $5, price_matches = $6, updated_at = NOW()
+         WHERE id = $7`,
+        [
+          JSON.stringify(session.history),
+          session.propertyData ? JSON.stringify(session.propertyData) : null,
+          session.recurringServices ? JSON.stringify(session.recurringServices) : null,
+          session.photoEstimates ? JSON.stringify(session.photoEstimates) : null,
+          session.lockedQuotes ? JSON.stringify(session.lockedQuotes) : null,
+          session.priceMatches ? JSON.stringify(session.priceMatches) : null,
+          existing.rows[0].id,
+        ]
+      );
+    } else {
+      await pool.query(
+        `INSERT INTO guide_conversations (id, user_id, session_id, messages, property_data, recurring_services, photo_estimates, locked_quotes, price_matches)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [
+          nanoid(),
+          userId,
+          sessionId,
+          JSON.stringify(session.history),
+          session.propertyData ? JSON.stringify(session.propertyData) : null,
+          session.recurringServices ? JSON.stringify(session.recurringServices) : null,
+          session.photoEstimates ? JSON.stringify(session.photoEstimates) : null,
+          session.lockedQuotes ? JSON.stringify(session.lockedQuotes) : null,
+          session.priceMatches ? JSON.stringify(session.priceMatches) : null,
+        ]
+      );
+    }
+  } catch (err) {
+    console.error("Save conversation error:", err);
+  }
+}
+
+// ─── Quick Actions ───────────────────────────────────────────────────────────
+
+function getQuickActions(
+  context: { page?: string; userRole?: string } | undefined,
+  user: any,
+  session?: GuideSession,
+): Array<{ label: string; action: string }> {
+  if (!context) return [];
+  const { page = "/", userRole = "visitor" } = context;
+
+  // If we have photo estimates, offer booking
+  if (session?.photoEstimates && session.photoEstimates.length > 0) {
+    return [
+      { label: "📷 Add another photo", action: "message:I want to add another photo" },
+      { label: "💰 Lock this price", action: "message:Lock in this quote for me" },
+      { label: "📅 Book it!", action: "message:Let's book it!" },
+      { label: "📊 See breakdown", action: "message:How did you calculate that?" },
+    ];
+  }
+
+  // If property is scanned, offer services
+  if (session?.propertyData && !session.lockedQuotes?.length) {
+    const actions: Array<{ label: string; action: string }> = [
+      { label: "📷 Send a photo for quote", action: "message:I want to send a photo for a quote" },
+      { label: "🏠 What services do I need?", action: "message:Based on my home, what services do you recommend?" },
+    ];
+    if (session.propertyData.hasPool) {
+      actions.push({ label: "🏊 Pool cleaning", action: "message:Tell me about pool cleaning" });
+    }
+    return actions;
+  }
+
+  // Pro signup pages
+  if (page.startsWith("/pro/signup") || page.startsWith("/pycker/signup") || page.startsWith("/become-pro") || page.startsWith("/pycker-signup") || page.startsWith("/become-a-pycker")) {
+    return [
+      { label: "Why UpTend?", action: "message:What makes UpTend different?" },
+      { label: "How much can I earn?", action: "message:How much do pros earn?" },
+    ];
+  }
+
+  if (userRole === "pro") {
+    return [
+      { label: "My Dashboard", action: "navigate:/pro/dashboard" },
+      { label: "View Earnings", action: "navigate:/pro/earnings" },
+    ];
+  }
+
+  if (userRole === "customer") {
+    return [
+      { label: "Book a Service", action: "navigate:/book" },
+      { label: "📷 Photo Quote", action: "message:I want to send a photo for a quote" },
+      { label: "My Dashboard", action: "navigate:/dashboard" },
+    ];
+  }
+
+  return [
+    { label: "Browse Services", action: "navigate:/services" },
+    { label: "Get a Quote", action: "navigate:/quote" },
+    { label: "I'm a Pro", action: "navigate:/pros" },
+  ];
+}

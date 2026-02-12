@@ -160,7 +160,7 @@ export default function MyHomeInventory() {
                   Use the Video Scan tab to record a room, or book a $49 Home Assessment.
                 </p>
                 <div className="flex gap-3 justify-center flex-wrap">
-                  <Link href="/booking">
+                  <Link href="/book?service=home_consultation">
                     <Button variant="outline" data-testid="button-book-assessment">
                       Book Assessment
                       <ArrowRight className="w-4 h-4 ml-1" />

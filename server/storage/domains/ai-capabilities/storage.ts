@@ -96,10 +96,10 @@ export class AiCapabilitiesStorage {
       .where(
         and(
           eq(aiConversations.userId, userId),
-          eq(aiConversations.isActive, true)
+          eq(aiConversations.status, "active")
         )
       )
-      .orderBy(desc(aiConversations.lastMessageAt));
+      .orderBy(desc(aiConversations.updatedAt));
   }
 
   async updateConversation(id: string, updates: Partial<AiConversation>): Promise<AiConversation> {
@@ -202,18 +202,16 @@ export class AiCapabilitiesStorage {
   }
 
   async getActiveSuggestionsByUser(userId: string): Promise<SmartScheduleSuggestion[]> {
-    const now = new Date().toISOString();
     return db
       .select()
       .from(smartScheduleSuggestions)
       .where(
         and(
           eq(smartScheduleSuggestions.userId, userId),
-          eq(smartScheduleSuggestions.accepted, false),
-          sql`${smartScheduleSuggestions.expiresAt} >= ${now}`
+          eq(smartScheduleSuggestions.status, "suggested")
         )
       )
-      .orderBy(desc(smartScheduleSuggestions.confidenceScore));
+      .orderBy(desc(smartScheduleSuggestions.createdAt));
   }
 
   async updateScheduleSuggestion(
@@ -533,15 +531,15 @@ export class AiCapabilitiesStorage {
     return db
       .select()
       .from(fraudAlerts)
-      .where(eq(fraudAlerts.reviewStatus, "pending"))
-      .orderBy(desc(fraudAlerts.severity), desc(fraudAlerts.createdAt));
+      .where(eq(fraudAlerts.status, "pending"))
+      .orderBy(desc(fraudAlerts.createdAt));
   }
 
   async getFraudAlertsByHauler(haulerId: string): Promise<FraudAlert[]> {
     return db
       .select()
       .from(fraudAlerts)
-      .where(eq(fraudAlerts.haulerId, haulerId))
+      .where(eq(fraudAlerts.proUserId, haulerId))
       .orderBy(desc(fraudAlerts.createdAt));
   }
 
@@ -677,7 +675,7 @@ export class AiCapabilitiesStorage {
       .select()
       .from(neighborhoodIntelligenceReports)
       .where(eq(neighborhoodIntelligenceReports.zipCode, zipCode))
-      .orderBy(desc(neighborhoodIntelligenceReports.reportDate))
+      .orderBy(desc(neighborhoodIntelligenceReports.createdAt))
       .limit(limit);
   }
 }

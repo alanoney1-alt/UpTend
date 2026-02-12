@@ -32,7 +32,7 @@ interface ServicePricing {
 const pricingServices: ServicePricing[] = [
   {
     id: "home_consultation",
-    name: "DwellScan™ (Home Audit)",
+    name: "AI Home Audit",
     price: "$49 / $149",
     description: "Complete home documentation: Standard ($49) interior walkthrough or Aerial ($149) with drone footage. $49 reimbursed on your first service booking.",
     benefit: "Protects property value • Insurance-ready documentation • $49 credit with first booking",
@@ -41,7 +41,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "junk_removal",
-    name: "BulkSnap™ (Junk Removal)",
+    name: "Junk Removal",
     price: "From $99",
     description: "Professional debris removal with verified ESG tracking and sustainability reporting.",
     benefit: "Clears yard hazards & storm-risk items • Eco-friendly disposal",
@@ -49,7 +49,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "landscaping",
-    name: "FreshCut™ (Landscaping)",
+    name: "Landscaping",
     price: "From $35",
     description: "Professional lawn care, trimming, edging, and yard maintenance services.",
     benefit: "Maintains curb appeal • Prevents code violations",
@@ -57,7 +57,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "home_cleaning",
-    name: "PolishUp™ (Home Cleaning)",
+    name: "Home Cleaning",
     price: "From $99",
     description: "Deep cleaning services for your entire home with eco-friendly products.",
     benefit: "Maintains home health • Move-in/out ready",
@@ -65,7 +65,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "carpet_cleaning",
-    name: "DeepFiber™ (Carpet Cleaning)",
+    name: "Carpet Cleaning",
     price: "From $49",
     description: "Professional carpet and upholstery cleaning with advanced extraction methods.",
     benefit: "Removes allergens • Extends carpet life",
@@ -73,7 +73,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "pressure_washing",
-    name: "FreshWash™ (Pressure Washing)",
+    name: "Pressure Washing",
     price: "From $120",
     description: "Eco-friendly pressure washing for driveways, siding, decks, and patios.",
     benefit: "Prevents mold & mildew • Identifies structural issues early",
@@ -81,7 +81,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "gutter_cleaning",
-    name: "GutterFlush™ (Gutter Cleaning)",
+    name: "Gutter Cleaning",
     price: "From $120",
     description: "Complete gutter cleaning with flow testing and debris removal for all perimeters.",
     benefit: "Prevents foundation erosion • Protects against water damage",
@@ -89,7 +89,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "pool_cleaning",
-    name: "PoolSpark™ (Pool Cleaning)",
+    name: "Pool Cleaning",
     price: "From $69",
     description: "Full pool maintenance including skimming, chemical balancing, and equipment check.",
     benefit: "Crystal clear water • Equipment longevity",
@@ -97,7 +97,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "moving_labor",
-    name: "LiftCrew™ (Moving Labor)",
+    name: "Moving Labor",
     price: "$80/hr",
     description: "Hourly labor for loading, unloading, packing, and heavy lifting assistance.",
     benefit: "Flexible hourly rates • Professional muscle when needed",
@@ -105,7 +105,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "handyman",
-    name: "FixIt™ (Handyman Services)",
+    name: "Handyman Services",
     price: "$49/hr • 1hr min",
     description: "Verified local handyman for repairs, assembly, mounting, painting, and home improvements. Billed by the minute after first hour.",
     benefit: "No task too small • Same-day available • Background checked pros",
@@ -113,7 +113,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "garage_cleanout",
-    name: "GarageReset™ (Garage Cleanout)",
+    name: "Garage Cleanout",
     price: "From $299",
     description: "Complete garage cleanout with sorting, hauling, and organization assistance.",
     benefit: "Reclaim valuable space • Prepare for sale or storage",
@@ -121,7 +121,7 @@ const pricingServices: ServicePricing[] = [
   },
   {
     id: "light_demolition",
-    name: "TearDown™ (Demolition)",
+    name: "Light Demolition",
     price: "From $199",
     description: "Light demolition services for sheds, decks, fencing, and small structures.",
     benefit: "Safe removal • Permits handled • Debris hauled",
@@ -1018,7 +1018,7 @@ export function FloridaEstimator() {
               <div className="flex-1">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div>
-                    <Badge className="mb-2 bg-primary">Featured - Our Moat</Badge>
+                    <Badge className="mb-2 bg-primary">Featured</Badge>
                     <h3 className="text-xl font-bold">{service.name}</h3>
                     <p className="text-lg font-semibold text-primary mt-1">{service.price}</p>
                   </div>
@@ -1030,7 +1030,7 @@ export function FloridaEstimator() {
                   className="mt-4 w-full"
                   size="lg"
                 >
-                  Select DwellScan™ <ArrowRight className="ml-2 w-4 h-4" />
+                  Select AI Home Audit <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </div>
             </div>

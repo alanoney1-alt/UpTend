@@ -351,7 +351,16 @@ export async function processScan(scanId: string): Promise<void> {
 
 export async function processQueuedScans(): Promise<number> {
   const { getScansPendingProcessing } = await import("../storage/domains/properties/storage");
-  const scans = await getScansPendingProcessing();
+  let scans;
+  try {
+    scans = await getScansPendingProcessing();
+  } catch (error: any) {
+    // Gracefully handle missing table (e.g., appliance_scans not created yet)
+    if (error?.code === '42P01') {
+      return 0;
+    }
+    throw error;
+  }
 
   console.log(`[ApplianceScan] Processing ${scans.length} queued scans...`);
 

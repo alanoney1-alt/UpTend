@@ -13,6 +13,7 @@ import { z } from "zod";
 import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
+import { analyzeImage } from "../../services/ai/anthropic-client";
 
 export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
   const router = Router();
@@ -30,7 +31,7 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
   router.post("/photo-quote", requireAuth, async (req, res) => {
     try {
       const validated = photoQuoteSchema.parse(req.body);
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       // Create photo quote request
       const request = await storage.createPhotoQuoteRequest({
@@ -50,14 +51,47 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
         analyzedAt: null,
       });
 
-      // TODO: Call AI vision service to analyze photos
-      // For now, return placeholder analysis
+      // Call AI vision service to analyze photos
+      const photoAnalysisPrompt = `Analyze this image for a home services quote. The customer wants: ${validated.serviceType.replace(/_/g, ' ')}.
+
+Return ONLY valid JSON with these fields:
+{
+  "detectedItems": ["item1", "item2", ...],
+  "estimatedVolume": "description of scope (e.g. '2 truck loads', '500 sq ft', '3 rooms')",
+  "estimatedWeight": "weight estimate if applicable",
+  "difficulty": "easy" | "medium" | "hard",
+  "confidenceScore": 0.0-1.0,
+  "scopeDescription": "One sentence describing what you see",
+  "priceRange": { "min": number, "max": number },
+  "additionalNotes": "any safety concerns or special equipment needed"
+}`;
+
+      let analysis;
+      try {
+        const aiResult = await analyzeImage({
+          imageUrl: validated.photoUrls[0],
+          prompt: photoAnalysisPrompt,
+          maxTokens: 1024,
+        });
+        analysis = typeof aiResult === 'string' ? JSON.parse(aiResult) : aiResult;
+      } catch (aiErr: any) {
+        console.warn("AI photo analysis failed, using fallback:", aiErr.message);
+        analysis = {
+          detectedItems: ["items detected"],
+          estimatedVolume: "standard scope",
+          estimatedWeight: "estimated on-site",
+          confidenceScore: 0.5,
+          priceRange: { min: 99, max: 299 },
+          scopeDescription: "Photo received — a Pro will verify on-site for exact pricing.",
+        };
+      }
+
       const mockAnalysis = {
-        detectedItems: ["furniture", "boxes", "appliances"],
-        estimatedVolume: "2 truck loads",
-        estimatedWeight: "500-700 lbs",
-        confidenceScore: 0.85,
-        priceRange: { min: 250, max: 400 },
+        ...analysis,
+        detectedItems: Array.isArray(analysis.detectedItems) ? analysis.detectedItems : ["items detected"],
+        estimatedVolume: analysis.estimatedVolume || "standard scope",
+        confidenceScore: analysis.confidenceScore || 0.7,
+        priceRange: analysis.priceRange || { min: 99, max: 299 },
       };
 
       // Update with analysis results
@@ -72,13 +106,16 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
         analyzedAt: new Date().toISOString(),
       });
 
+      const parsedPhotoUrls = (() => { try { const v = JSON.parse(updatedRequest.photoUrls); return Array.isArray(v) ? v : []; } catch { return []; } })();
+      const parsedDetectedItems = (() => { try { const v = updatedRequest.detectedItems ? JSON.parse(updatedRequest.detectedItems) : null; return Array.isArray(v) ? v : null; } catch { return null; } })();
+
       res.json({
         success: true,
         request: {
           ...updatedRequest,
-          photoUrls: JSON.parse(updatedRequest.photoUrls),
+          photoUrls: parsedPhotoUrls,
           aiAnalysis: updatedRequest.aiAnalysis ? JSON.parse(updatedRequest.aiAnalysis) : null,
-          detectedItems: updatedRequest.detectedItems ? JSON.parse(updatedRequest.detectedItems) : null,
+          detectedItems: parsedDetectedItems,
         },
       });
     } catch (error: any) {
@@ -96,7 +133,7 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
   router.get("/photo-quote/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       const request = await storage.getPhotoQuoteRequest(id);
       if (!request) {
@@ -134,15 +171,16 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
       const { userId } = req.params;
 
       // Only allow users to view their own quotes or admins
-      if (userId !== req.user!.id && req.user!.role !== "admin") {
+      if (userId !== ((req.user as any).userId || (req.user as any).id) && req.user!.role !== "admin") {
         return res.status(403).json({ error: "Access denied" });
       }
 
       const requests = await storage.getPhotoQuoteRequestsByUser(userId);
+      const requestList = Array.isArray(requests) ? requests : [];
 
       res.json({
         success: true,
-        requests: requests.map((r) => ({
+        requests: requestList.map((r) => ({
           ...r,
           photoUrls: JSON.parse(r.photoUrls),
           aiAnalysis: r.aiAnalysis ? JSON.parse(r.aiAnalysis) : null,
@@ -164,7 +202,7 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
   router.post("/photo-quote/:id/convert", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user!.id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       const request = await storage.getPhotoQuoteRequest(id);
       if (!request || request.userId !== userId) {

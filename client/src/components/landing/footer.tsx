@@ -41,62 +41,62 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/services/home-audit" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-home-audit">
-                  DwellScan™ (Home Audit)
+                  {t("footer.footer_ai_home_audit")}
                 </Link>
               </li>
               <li>
                 <Link href="/services/material-recovery" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-junk-removal">
-                  BulkSnap™ (Junk Removal)
+                  {t("footer.footer_junk_removal")}
                 </Link>
               </li>
               <li>
-                <Link href="/book/freshcut" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-landscaping">
-                  FreshCut™ (Landscaping)
+                <Link href="/services/landscaping" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-landscaping">
+                  {t("footer.footer_landscaping")}
                 </Link>
               </li>
               <li>
                 <Link href="/services/home-cleaning" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-home-cleaning">
-                  PolishUp™ (Home Cleaning)
+                  {t("footer.footer_home_cleaning")}
                 </Link>
               </li>
               <li>
-                <Link href="/book/deepfiber" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-carpet-cleaning">
-                  DeepFiber™ (Carpet Cleaning)
+                <Link href="/services/carpet-cleaning" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-carpet-cleaning">
+                  {t("footer.footer_carpet_cleaning")}
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pressure-washing">
-                  FreshWash™ (Pressure Washing)
+                <Link href="/services/pressure-washing" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pressure-washing">
+                  {t("footer.footer_pressure_washing")}
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-gutter-cleaning">
-                  GutterFlush™ (Gutter Cleaning)
+                <Link href="/services/gutter-cleaning" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-gutter-cleaning">
+                  {t("footer.footer_gutter_cleaning")}
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pool-cleaning">
-                  PoolSpark™ (Pool Cleaning)
+                <Link href="/services/pool-cleaning" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pool-cleaning">
+                  {t("footer.footer_pool_cleaning")}
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-moving-labor">
-                  LiftCrew™ (Moving Labor)
+                <Link href="/services/moving-labor" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-moving-labor">
+                  {t("footer.footer_moving_labor")}
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-handyman">
-                  FixIt™ (Handyman Services)
+                <Link href="/services/handyman" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-handyman">
+                  {t("footer.footer_handyman")}
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-garage-cleanout">
-                  GarageReset™ (Garage Cleanout)
+                <Link href="/services/garage-cleanout" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-garage-cleanout">
+                  {t("footer.footer_garage_cleanout")}
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-demolition">
-                  TearDown™ (Demolition)
+                <Link href="/services/demolition" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-demolition">
+                  {t("footer.footer_light_demolition")}
                 </Link>
               </li>
             </ul>
@@ -137,7 +137,6 @@ export function Footer() {
         <div className="border-t border-slate-900 mt-16 pt-8 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <p data-testid="text-copyright">&copy; {currentYear} {t("footer.footer_copyright")}</p>
-            <p className="mt-1 text-slate-500" data-testid="text-legal-entity">{t("footer.footer_legal_entity")}</p>
           </div>
           <div className="flex gap-6 flex-wrap">
             <Link href="/terms" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-terms">

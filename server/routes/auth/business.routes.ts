@@ -48,8 +48,8 @@ export async function registerBusinessAuthRoutes(app: Express) {
         lastName: validated.lastName,
         phone: validated.phone || "",
         role: "business_user",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
 
       // Create business account

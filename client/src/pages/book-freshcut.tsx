@@ -115,7 +115,7 @@ export default function BookFreshCut() {
         pickupAddress: address,
         pickupCity: "", // Could parse from address
         pickupZip: "", // Could parse from address
-        description: `FreshCut™ Landscaping - ${serviceTab === "onetime" ? "One-time" : "Recurring"} service`,
+        description: `Landscaping - ${serviceTab === "onetime" ? "One-time" : "Recurring"} service`,
         accessNotes: gateCode ? `Gate Code: ${gateCode}${specialInstructions ? ` | ${specialInstructions}` : ""}` : (specialInstructions || null),
         scheduledFor: selectedDate?.toISOString(),
         createdAt: new Date().toISOString(),
@@ -209,7 +209,7 @@ export default function BookFreshCut() {
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <Leaf className="w-8 h-8 text-green-600" />
-              FreshCut™ Landscaping
+              Landscaping
             </h1>
             <p className="text-muted-foreground">
               Professional lawn care and landscaping services

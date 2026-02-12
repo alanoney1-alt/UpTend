@@ -20,8 +20,8 @@ import { apiRequest } from "@/lib/queryClient";
 
 export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
-  const [conditionFilter, setConditionFilter] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [conditionFilter, setConditionFilter] = useState<string>("all");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [selectedItem, setSelectedItem] = useState<MarketplaceItem | null>(null);
 
@@ -30,8 +30,8 @@ export default function MarketplacePage() {
     queryKey: ["/api/marketplace/items", { category: categoryFilter, condition: conditionFilter, maxPrice }],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (categoryFilter) params.set("category", categoryFilter);
-      if (conditionFilter) params.set("condition", conditionFilter);
+      if (categoryFilter && categoryFilter !== "all") params.set("category", categoryFilter);
+      if (conditionFilter && conditionFilter !== "all") params.set("condition", conditionFilter);
       if (maxPrice) params.set("maxPrice", maxPrice);
 
       const res = await fetch(`/api/marketplace/items?${params.toString()}`, {
@@ -127,7 +127,7 @@ export default function MarketplacePage() {
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
                     <SelectItem value="furniture">Furniture</SelectItem>
                     <SelectItem value="appliances">Appliances</SelectItem>
                     <SelectItem value="electronics">Electronics</SelectItem>
@@ -145,7 +145,7 @@ export default function MarketplacePage() {
                     <SelectValue placeholder="Condition" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any Condition</SelectItem>
+                    <SelectItem value="all">Any Condition</SelectItem>
                     <SelectItem value="excellent">Excellent</SelectItem>
                     <SelectItem value="good">Good</SelectItem>
                     <SelectItem value="fair">Fair</SelectItem>
@@ -170,17 +170,17 @@ export default function MarketplacePage() {
               <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-lg font-semibold mb-2">No items found</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                {searchQuery || categoryFilter || conditionFilter
+                {searchQuery || (categoryFilter && categoryFilter !== "all") || (conditionFilter && conditionFilter !== "all")
                   ? "Try adjusting your filters"
                   : "Check back soon for new listings"}
               </p>
-              {(searchQuery || categoryFilter || conditionFilter) && (
+              {(searchQuery || (categoryFilter && categoryFilter !== "all") || (conditionFilter && conditionFilter !== "all")) && (
                 <Button
                   variant="outline"
                   onClick={() => {
                     setSearchQuery("");
-                    setCategoryFilter("");
-                    setConditionFilter("");
+                    setCategoryFilter("all");
+                    setConditionFilter("all");
                     setMaxPrice("");
                   }}
                 >

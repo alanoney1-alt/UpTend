@@ -1,6 +1,6 @@
 /**
  * UpTend Pricing Constants - Services 11 & 12
- * DeepFiber™ (Carpet Cleaning) & FreshCut™ (Landscaping)
+ * Carpet Cleaning & Landscaping
  * Orlando market competitive pricing
  */
 
@@ -14,7 +14,7 @@ export interface PricingTier {
 }
 
 // ════════════════════════════════════════════════════════════
-// SERVICE 11: FRESHCUT™ (LANDSCAPING & LAWN CARE)
+// SERVICE 11: LANDSCAPING (LANDSCAPING & LAWN CARE)
 // Orlando market: Mow $38-$52/visit (1/4 acre), $152-$208/mo
 // UpTend target: 10-35% under market
 // ════════════════════════════════════════════════════════════
@@ -70,7 +70,7 @@ export const FRESHCUT_ADDONS: PricingTier[] = [
 ];
 
 // ════════════════════════════════════════════════════════════
-// SERVICE 12: DEEPFIBER™ (CARPET & UPHOLSTERY CLEANING)
+// SERVICE 12: CARPET CLEANING (CARPET & UPHOLSTERY CLEANING)
 // Orlando market: $40-$90/room, SS $60-$80, Oxi $40-$60
 // UpTend target: 15-40% under Stanley Steemer
 // ════════════════════════════════════════════════════════════

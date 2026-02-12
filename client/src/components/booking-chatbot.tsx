@@ -148,7 +148,7 @@ export function BookingChatbot() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50" data-testid="container-chat-widget">
+    <div className="fixed bottom-[5.5rem] right-4 z-50" data-testid="container-chat-widget">
       {isOpen && (
         <Card className="absolute bottom-16 right-0 w-[380px] max-w-[calc(100vw-2rem)] max-h-[600px] shadow-lg animate-in slide-in-from-bottom-2 fade-in duration-200 flex flex-col overflow-hidden">
           <div className="p-4 border-b bg-primary text-primary-foreground">

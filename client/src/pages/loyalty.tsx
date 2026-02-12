@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/use-auth";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -39,7 +40,8 @@ const tierBgColors: Record<string, string> = {
 export default function Loyalty() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const demoUserId = "demo-customer";
+  const { user } = useAuth();
+  const demoUserId = user?.id || "guest";
 
   const { data, isLoading } = useQuery<{ 
     account: LoyaltyAccount; 
@@ -320,7 +322,7 @@ export default function Loyalty() {
                 <p className="text-muted-foreground">
                   Complete your first job to start earning points!
                 </p>
-                <Link href="/booking">
+                <Link href="/book">
                   <Button className="mt-4">Book Now</Button>
                 </Link>
               </Card>

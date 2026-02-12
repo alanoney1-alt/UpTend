@@ -2,14 +2,14 @@
  * Multi-Service Discount Engine
  *
  * Handles all discount calculations with proper stacking rules:
- * 1. DwellScan $49 credit (applied BEFORE percentage discounts)
+ * 1. AI Home Audit $49 credit (applied BEFORE percentage discounts)
  * 2. Multi-service cart discounts (3+ services: 10%, 5+ services: 15%)
  * 3. Property Manager volume pricing tiers
  * 4. First-time customer discount
  * 5. Promotional codes
  *
  * DISCOUNT STACKING RULES:
- * - DwellScan credit: Applied to subtotal BEFORE percentages
+ * - AI Home Audit credit: Applied to subtotal BEFORE percentages
  * - Multi-service discount: Applies to post-credit subtotal
  * - PM tier discount: Replaces multi-service if higher
  * - First-time discount: Cannot stack with multi-service/PM
@@ -60,16 +60,16 @@ export function calculateDiscounts(context: DiscountContext): DiscountBreakdown 
 
   let runningTotal = subtotal;
 
-  // STEP 1: Apply DwellScan $49 credit (if available)
+  // STEP 1: Apply AI Home Audit $49 credit (if available)
   // This is applied BEFORE percentage discounts
   if (context.hasDwellScanCredit && context.dwellScanCreditAmount > 0) {
     const creditAmount = Math.min(context.dwellScanCreditAmount, runningTotal);
 
     discountsApplied.push({
-      name: 'DwellScan™ Credit',
+      name: 'AI Home Audit Credit',
       type: 'credit',
       amount: creditAmount,
-      description: `$${creditAmount} credit from your DwellScan home audit`,
+      description: `$${creditAmount} credit from your AI Home Audit`,
     });
 
     runningTotal -= creditAmount;
@@ -257,14 +257,14 @@ export function calculatePMTier(propertyCount: number): 'bronze' | 'silver' | 'g
 }
 
 /**
- * Check if customer has active DwellScan credit
+ * Check if customer has active AI Home Audit credit
  */
 export async function checkDwellScanCredit(customerId: string): Promise<{
   hasCredit: boolean;
   creditAmount: number;
   expiresAt: Date | null;
 }> {
-  // This would query the database for DwellScan credits
+  // This would query the database for AI Home Audit credits
   // For now, return a mock response
 
   // Query: SELECT * FROM dwellscan_credits WHERE customer_id = ? AND used = false AND expires_at > NOW()
@@ -277,7 +277,7 @@ export async function checkDwellScanCredit(customerId: string): Promise<{
 }
 
 /**
- * Apply DwellScan credit to a booking
+ * Apply AI Home Audit credit to a booking
  */
 export async function applyDwellScanCredit(
   customerId: string,
@@ -305,10 +305,10 @@ export function getAvailableDiscounts(context: {
 }> {
   const discounts = [];
 
-  // DwellScan Credit
+  // AI Home Audit Credit
   if (context.hasDwellScanCredit) {
     discounts.push({
-      name: 'DwellScan™ Credit',
+      name: 'AI Home Audit Credit',
       discount: '$49',
       description: 'Credit from your home audit',
       isActive: true,
@@ -404,11 +404,11 @@ export function getUpsellSuggestions(context: {
     });
   }
 
-  // Suggest DwellScan if not in cart
+  // Suggest AI Home Audit if not in cart
   const hasDwellScan = context.services.some(s => s.isDwellScan);
   if (!hasDwellScan && context.services.length >= 1) {
     suggestions.push({
-      suggestion: 'Add DwellScan™ Home Audit',
+      suggestion: 'Add AI Home Audit',
       savings: 49,
       description: 'Get $49 credit back toward your next service (pays for itself!)',
     });

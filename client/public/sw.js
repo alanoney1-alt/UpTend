@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uptend-v4'; // Bumped version for UpTend rebrand
+const CACHE_NAME = 'uptend-v5'; // Bumped version for UpTend rebrand
 const CACHE_DURATION = 1000 * 60 * 60; // 1 hour cache duration
 const STATIC_ASSETS = [
   '/manifest.json',

@@ -12,6 +12,7 @@ import { ReferralWidget } from "@/components/dashboard/referral-widget";
 import { WorkerIdCard } from "@/components/safety/worker-id-card";
 import { Header } from "@/components/landing/header";
 import { CustomerConfirmation } from "@/components/verification/customer-confirmation";
+import { ReviewForm } from "@/components/reviews/review-form";
 import type { ServiceRequest, HomeInventory } from "@shared/schema";
 import {
   ArrowLeft,
@@ -49,6 +50,12 @@ const SERVICE_TYPE_LABELS: Record<string, string> = {
   home_consultation: "Home Consultation",
   hvac: "HVAC",
   cleaning: "Cleaning",
+  home_cleaning: "Home Cleaning",
+  pool_cleaning: "Pool Cleaning",
+  carpet_cleaning: "Carpet Cleaning",
+  landscaping: "Landscaping",
+  handyman: "Handyman Services",
+  demolition: "Light Demolition",
 };
 
 const STATUS_CONFIG: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof CheckCircle2 }> = {
@@ -82,9 +89,14 @@ interface HaulerProfileData {
 }
 
 function formatDate(dateStr: string | null | undefined): string {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  if (!dateStr || dateStr === "asap" || dateStr === "ASAP") return "";
+  try {
+    const d = new Date(dateStr);
+    if (!d || isNaN(d.getTime()) || d.toString() === "Invalid Date") return "";
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  } catch {
+    return "";
+  }
 }
 
 function InventoryItemCard({ item }: { item: HomeInventory }) {
@@ -333,6 +345,40 @@ export default function CustomerDashboard() {
           <ReferralWidget />
         </div>
 
+        {/* AI Features Quick Access */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-bold text-white">AI Tools</h2>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <Link href="/ai/photo-quote">
+              <Card className="p-3 text-center hover:border-primary/50 transition-colors cursor-pointer">
+                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Package className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-xs font-medium">Photo Quote</p>
+              </Card>
+            </Link>
+            <Link href="/ai/documents">
+              <Card className="p-3 text-center hover:border-primary/50 transition-colors cursor-pointer">
+                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-xs font-medium">Doc Scanner</p>
+              </Card>
+            </Link>
+            <Link href="/ai">
+              <Card className="p-3 text-center hover:border-primary/50 transition-colors cursor-pointer">
+                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-xs font-medium">All AI</p>
+              </Card>
+            </Link>
+          </div>
+        </div>
+
         <Card className="mb-6" data-testid="card-subscriptions">
           <CardHeader className="flex flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -348,7 +394,7 @@ export default function CustomerDashboard() {
           <CardContent>
             <div className="text-center py-4">
               <p className="text-sm text-muted-foreground mb-3">
-                Manage your recurring PolishUp<sup>™</sup> cleaning plans
+                Manage your recurring cleaning plans
               </p>
               <Link href="/subscriptions">
                 <Button variant="outline" size="sm">
@@ -464,7 +510,12 @@ export default function CustomerDashboard() {
               {filteredJobs
                 .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 .map((job) => (
-                  <JobHistoryRow key={job.id} job={job} />
+                  <div key={job.id} className="space-y-2">
+                    <JobHistoryRow job={job} />
+                    {job.status === "completed" && (
+                      <ReviewForm serviceRequestId={job.id} />
+                    )}
+                  </div>
                 ))}
             </div>
           ) : (

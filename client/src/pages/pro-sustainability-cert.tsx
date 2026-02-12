@@ -101,7 +101,7 @@ export default function ProSustainabilityCert() {
           </CardContent>
         </Card>
 
-        <Link href="/hauler-dashboard">
+        <Link href="/pro/dashboard">
           <Button className="w-full" data-testid="button-unlock-jobs">
             Unlock Material Recovery Jobs
           </Button>

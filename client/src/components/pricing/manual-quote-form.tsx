@@ -55,7 +55,7 @@ export function ManualQuoteForm({ serviceType, onQuoteGenerated }: ManualQuoteFo
 
     const pricingQuote = createPricingQuote(
       'polishup',
-      'PolishUp™',
+      'Home Cleaning',
       { ...formData, specialRequests },
       'manual_form',
       quote.basePrice,

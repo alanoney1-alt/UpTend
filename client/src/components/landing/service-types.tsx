@@ -30,7 +30,7 @@ const services = [
   },
   {
     id: "garage_cleanout",
-    title: "GarageReset™ (Garage Cleanout)",
+    title: "Garage Cleanout",
     description: "Complete garage cleanout service. Clear all clutter, tools, and junk in one visit.",
     icon: Home,
     image: emptyGarageImage,
@@ -38,7 +38,7 @@ const services = [
   },
   {
     id: "junk_removal",
-    title: "BulkSnap™ (Junk Removal)",
+    title: "Junk Removal",
     description: "Clear out unwanted items, debris, and clutter from your home or office.",
     icon: Trash2,
     image: junkImage,
@@ -53,7 +53,7 @@ export function ServiceTypes() {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From single items to full property cleanouts, we've got you covered with reliable hauling services.
+            From single items to full property cleanouts, we've got you covered with reliable home services.
           </p>
           <p className="text-sm text-primary font-medium mt-2">
             Moving services include $1/mile - no hidden fees!
