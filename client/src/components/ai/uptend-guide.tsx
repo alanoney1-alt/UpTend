@@ -66,78 +66,50 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (PRO_SIGNUP_PAGES.some(p => page.startsWith(p))) {
     return {
-      welcome: `Thinking about joining the crew? Happy to answer any questions — no pressure 😊`,
-      quickActions: [
-        { label: "What do Pros earn?", action: "message:How much do pros earn on UpTend?" },
-        { label: "Why no lead fees?", action: "message:Why doesn't UpTend charge lead fees?" },
-        { label: "Sign me up", action: "message:Walk me through the signup process" },
-      ],
+      welcome: `Hey there 👋 I'm Bud. If you're thinking about joining UpTend as a Pro — you picked a good time. We don't charge lead fees. You keep what you earn. We handle the customers, the scheduling, the payments — you just do great work.\n\nI can answer anything — earnings, how jobs work, what makes this different from the other guys. Just type your question below 👇`,
+      quickActions: [],
     };
   }
 
   if (page === "/book" || page.startsWith("/book")) {
     return {
-      welcome: `Putting something together? I can help with pricing or figuring out what you need — no rush at all 😊`,
-      quickActions: [
-        { label: "📷 Photo quote", action: "message:I want to send a photo for a quote" },
-        { label: "Help me choose", action: "message:I'm not sure which service I need" },
-        { label: "How does this work?", action: "message:How does UpTend pricing work?" },
-      ],
+      welcome: `Hey! 👋 I'm Bud — I'm here to make sure you get exactly the right service at a fair price. No guesswork.\n\nTell me what's going on — describe your situation in your own words and I'll figure out the best option, give you a price range, and walk you through it. You can also snap a photo and I'll quote it instantly 📷\n\nJust type below — "I need help with..." 👇`,
+      quickActions: [],
     };
   }
 
   if (page === "/services" || page.startsWith("/services/")) {
     return {
-      welcome: `Browsing the options? Nice — let me know if anything catches your eye or if you want help comparing`,
-      quickActions: [
-        { label: "What's best for me?", action: "message:Help me figure out which service I need" },
-        { label: "Bundle & save", action: "message:Can I bundle multiple services for a discount?" },
-        { label: "📷 Photo quote", action: "message:I want to send a photo for a quote" },
-      ],
+      welcome: `Hey! 👋 I'm Bud — your personal home services guide. We've got 12 services from junk removal to pressure washing to full home scans — and every one comes with verified pros, $1M insurance coverage, and a Guaranteed Price Ceiling so you never pay more than quoted.\n\nNot sure what you need? Just describe what's going on at your place and I'll point you to the right service. Type below 👇`,
+      quickActions: [],
     };
   }
 
   if (page === "/pricing") {
     return {
-      welcome: `These are starting estimates — every home's a little different. Want me to get you a more accurate number?`,
-      quickActions: [
-        { label: "Get a closer estimate", action: "message:I need an exact price for my job" },
-        { label: "📷 Photo quote", action: "message:Can I send a photo for an estimate?" },
-        { label: "Price match?", action: "message:Do you price match other providers?" },
-      ],
+      welcome: `Hey! 👋 I'm Bud. These prices are starting points — every home is different, and your actual price depends on what YOU need. That's why we don't do one-size-fits-all.\n\nThe good news? Every quote comes with a Guaranteed Price Ceiling — you'll never pay a penny more than what we quote. And if the job costs less, you pay less.\n\nTell me what service you're looking at and I'll get you a real number. Just type below 👇`,
+      quickActions: [],
     };
   }
 
   if (page === "/emergency") {
     return {
-      welcome: `Oh no — let's get you some help. What's going on?`,
-      quickActions: [
-        { label: "Water damage", action: "message:I have water damage, need help now" },
-        { label: "Broken pipe", action: "message:I have a broken pipe" },
-        { label: "Storm damage", action: "message:Storm damage to my property" },
-      ],
+      welcome: `I'm here — tell me what's happening and I'll get you help fast. Type below 👇`,
+      quickActions: [],
     };
   }
 
   if (userRole === "hauler" || userRole === "pro") {
     return {
-      welcome: `Hey${name}! How's it going? Need help with anything on your end?`,
-      quickActions: [
-        { label: "My jobs", action: "navigate:/pro/dashboard" },
-        { label: "Earnings", action: "navigate:/pro/earnings" },
-        { label: "Grow my business", action: "message:How can I get more jobs?" },
-      ],
+      welcome: `Hey${name}! 👋 I'm Bud — your UpTend assistant. Need help with jobs, earnings, scheduling, or growing your business? I've got your back.\n\nJust tell me what you need 👇`,
+      quickActions: [],
     };
   }
 
   if (userRole === "customer") {
     return {
-      welcome: `Hey${name}! 👋 Good to see you. What can I help with today?`,
-      quickActions: [
-        { label: "📷 Photo quote", action: "message:I want to send a photo for a quote" },
-        { label: "Find what you need", action: "navigate:/book" },
-        { label: "My dashboard", action: "navigate:/dashboard" },
-      ],
+      welcome: `Hey${name}! 👋 Good to see you. I'm Bud — I can book services, get you quotes, check on your jobs, show you what your pro is up to, or help with anything else.\n\nWhat's on your mind? Just type below 👇`,
+      quickActions: [],
     };
   }
 
@@ -145,23 +117,14 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   const isFirstVisit = !localStorage.getItem(LS_GREETED);
   if (isFirstVisit) {
     return {
-      welcome: `Hey there 👋 I'm Bud — your friendly neighborhood home expert. I'm here to help you find the right service, get fair pricing, and walk you through anything on the site.\n\nYou can ask me about any of our services, get a quick quote (even from a photo!), or just chat about what your home needs. I'll explain pricing, help you compare options, and keep you updated on your jobs in real time.\n\nAnd if you ever want me to go away — no hard feelings! Just hit the X and I'll disappear. I'm here whenever you need me, not a second before 😊`,
-      quickActions: [
-        { label: "What services do you offer?", action: "message:What services does UpTend offer?" },
-        { label: "How does pricing work?", action: "message:How does UpTend pricing work and why do prices vary?" },
-        { label: "📷 Get a quote from a photo", action: "message:I want to send a photo for a quote" },
-        { label: "Show me around the site", action: "message:Can you walk me through the site?" },
-      ],
+      welcome: `Hey there 👋 I'm Bud — your personal home services assistant. Welcome to UpTend.\n\nYou just found the only home services platform where:\n• Every pro is background-checked and carries $1M insurance\n• You get a **Guaranteed Price Ceiling** — you'll never pay more than quoted\n• You can get an instant quote from a photo 📷\n• Real-time tracking on every job — you always know where your pro is\n• No hidden fees. No surprises. If the job costs less, you pay less.\n\nI'm not a chatbot reading a script — I actually know home services. Tell me what's going on at your place, ask me anything about how this works, or just say hi. I'm here as long as you need me, and if you want me to go away, just hit the X.\n\nWhat can I help you with? Type below 👇`,
+      quickActions: [],
     };
   }
 
   return {
-    welcome: `Hey there 👋 Good to see you again! Need a hand with anything?`,
-    quickActions: [
-      { label: "📷 Photo quote", action: "message:I want to send a photo for a quote" },
-      { label: "See what we offer", action: "navigate:/services" },
-      { label: "How does this work?", action: "message:How does UpTend work?" },
-    ],
+    welcome: `Hey there 👋 I'm Bud — good to see you back. I remember where we left off.\n\nWhat do you need today? Just type below — whether it's a new service, a question, checking on a job, or getting a quote. I'm here 👇`,
+    quickActions: [],
   };
 }
 
