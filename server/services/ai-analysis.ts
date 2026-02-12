@@ -1,10 +1,5 @@
-import OpenAI from "openai";
+import { openai } from "../openaiClient";
 
-const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  timeout: 60000, // 60 seconds
-});
 
 export interface AiAnalysisResult {
   identifiedItems: string[];

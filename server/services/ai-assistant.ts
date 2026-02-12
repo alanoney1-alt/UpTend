@@ -5,11 +5,7 @@
  * Contains complete UpTend product knowledge, pricing, and customer service responses.
  */
 
-import { OpenAI } from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { openai } from "../openaiClient";
 
 /**
  * UpTend Knowledge Base
