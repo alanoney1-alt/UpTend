@@ -2,6 +2,7 @@
 builder = "nixpacks"
 
 [build.nixpacks]
+nodejs = "20"
 buildCmd = "npm ci && npm run build"
 
 [deploy]
