@@ -74,6 +74,7 @@ import { InstallBanner } from "@/components/pwa/install-banner";
 import { SupportWidget } from "@/components/support-widget";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 function Router() {
   return (
@@ -188,18 +189,20 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ThemeProvider>
-          <Toaster />
-          <Router />
-          <MobileNav />
-          <SupportWidget />
-          <UpTendGuide />
-          <InstallBanner />
-        </ThemeProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <ThemeProvider>
+            <Toaster />
+            <Router />
+            <MobileNav />
+            <SupportWidget />
+            <UpTendGuide />
+            <InstallBanner />
+          </ThemeProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

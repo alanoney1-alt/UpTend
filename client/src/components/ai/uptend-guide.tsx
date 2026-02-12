@@ -39,6 +39,8 @@ const LS_VOICE_OUT = "uptend-guide-voice-output";
 
 const PRO_SIGNUP_PAGES = ["/pro/signup", "/pycker/signup", "/become-pro", "/pycker-signup", "/become-a-pycker"];
 
+const NO_AUTO_OPEN_PAGES = ["/customer-login", "/customer-signup", "/pro-login", "/pro-signup", "/register", "/admin"];
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function getSessionId() {
@@ -52,6 +54,10 @@ function getSessionId() {
 
 function isProSignupPage(page: string): boolean {
   return PRO_SIGNUP_PAGES.some(p => page.startsWith(p));
+}
+
+function isNoAutoOpenPage(page: string): boolean {
+  return NO_AUTO_OPEN_PAGES.some(p => page.startsWith(p));
 }
 
 function renderContent(text: string) {
@@ -296,9 +302,11 @@ export function UpTendGuide() {
     if (!next) synth.cancel();
   };
 
-  // Auto-open on first visit or pro signup pages
+  // Auto-open on first visit or pro signup pages (but NOT on form/auth pages)
   useEffect(() => {
     if (isDisabled) return;
+    // Never auto-open on login/signup/register/admin pages
+    if (isNoAutoOpenPage(pageContext.page)) return;
     if (isProSignupPage(pageContext.page)) {
       if (!isOpen) {
         setIsOpen(true);

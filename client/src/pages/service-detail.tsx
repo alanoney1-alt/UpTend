@@ -273,7 +273,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Professional Cleaning. Trusted Pros.",
     description:
       "Book professional home cleaning services with verified, background-checked pros. From standard cleanings to deep cleans, we handle every room with care and documented results.",
-    price: "From $89",
+    price: "From $99",
     icon: Sparkles,
     heroGradient: "from-cyan-600 to-blue-500",
     features: [
