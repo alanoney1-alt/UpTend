@@ -481,11 +481,11 @@ export function UpTendGuide() {
       {!isOpen && (
         <button
           onClick={handleOpen}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-primary text-primary-foreground pl-4 pr-5 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 group"
+          className="fixed bottom-5 right-5 z-50 w-12 h-12 bg-primary text-primary-foreground rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center"
           aria-label="Chat with Bud"
+          title="Chat with Bud"
         >
           <HelpCircle className="w-5 h-5" />
-          <span className="text-sm font-semibold">Need help?</span>
         </button>
       )}
 

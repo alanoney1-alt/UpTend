@@ -82,7 +82,7 @@ import HomeProfilePage from "@/pages/home-profile";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
 import { CookieConsent } from "@/components/cookie-consent";
-import { SupportWidget } from "@/components/support-widget";
+// SupportWidget removed — Bud handles all support
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
 import { ErrorBoundary } from "@/components/error-boundary";
@@ -217,7 +217,6 @@ function App() {
             <Toaster />
             <Router />
             <MobileNav />
-            <SupportWidget />
             <UpTendGuide />
             <InstallBanner />
             <CookieConsent />
