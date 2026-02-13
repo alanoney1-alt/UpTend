@@ -148,7 +148,11 @@ interface ZillowProperty {
   longitude: number | null;
 }
 
-export function FloridaEstimator() {
+interface FloridaEstimatorProps {
+  preselectedService?: string;
+}
+
+export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps = {}) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [address, setAddress] = useState("");
@@ -159,7 +163,7 @@ export function FloridaEstimator() {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // New state for quote flow
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedService, setSelectedService] = useState<string | null>(preselectedService ?? null);
   const [schedulingData, setSchedulingData] = useState<SchedulingData | null>(null);
   const [quoteMethod, setQuoteMethod] = useState<"ai" | "manual" | null>(null);
   const [uploadMethod, setUploadMethod] = useState<"photos" | "video">("photos");

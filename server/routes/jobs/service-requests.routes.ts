@@ -55,7 +55,10 @@ export function registerServiceRequestRoutes(app: Express) {
       const user = await storage.getUser(userId);
       const isDevMode = process.env.NODE_ENV !== 'production' || !process.env.REPL_SLUG;
       
-      if (!isDevMode) {
+      // Payment method check removed — service requests are created with status
+      // "pending_payment" and payment is collected after booking via PaymentForm.
+      // The old check blocked new users who haven't added a payment method yet.
+      if (false && !isDevMode) {
         if (!user?.stripeCustomerId) {
           return res.status(400).json({
             error: "Payment method required",
