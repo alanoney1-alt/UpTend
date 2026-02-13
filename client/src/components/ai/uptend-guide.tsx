@@ -37,7 +37,7 @@ const LS_VOICE_OUT = "uptend-guide-voice-output";
 const LS_GREETED = "uptend-guide-greeted";
 
 const PRO_SIGNUP_PAGES = ["/pro/signup", "/pycker/signup", "/become-pro", "/pycker-signup", "/become-a-pycker"];
-const NO_WIDGET_PAGES = ["/customer-login", "/customer-signup", "/pro-login", "/pro-signup", "/register", "/admin"];
+const NO_WIDGET_PAGES = ["/login", "/customer-login", "/customer-signup", "/pro-login", "/pro-signup", "/pro/login", "/pro/signup", "/pycker/login", "/pycker/signup", "/pycker-login", "/pycker-signup", "/register", "/admin", "/admin-login", "/forgot-password"];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
