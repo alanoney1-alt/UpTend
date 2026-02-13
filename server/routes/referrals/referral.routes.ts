@@ -1,6 +1,45 @@
 import type { Express } from "express";
 import { storage } from "../../storage";
 import { analyzeHomeHealthAudit } from "../../services/home-health-audit";
+import { pool } from "../../db";
+
+let tablesEnsured = false;
+
+async function ensureTables() {
+  if (tablesEnsured) return;
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS referral_partners (
+      id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      business_name TEXT NOT NULL,
+      category TEXT NOT NULL,
+      contact_name TEXT,
+      phone TEXT,
+      email TEXT,
+      website TEXT,
+      rating NUMERIC DEFAULT 0,
+      description TEXT,
+      service_area TEXT,
+      is_active BOOLEAN DEFAULT true,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS partner_referrals (
+      id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      home_health_audit_id TEXT,
+      partner_id TEXT,
+      customer_id TEXT NOT NULL,
+      pro_id TEXT,
+      category TEXT NOT NULL,
+      description TEXT,
+      estimated_value NUMERIC,
+      referral_amount NUMERIC,
+      commission_amount NUMERIC,
+      status TEXT DEFAULT 'pending',
+      completed_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+  `);
+  tablesEnsured = true;
+}
 
 export function registerReferralRoutes(app: Express) {
   // ==========================================
@@ -75,16 +114,21 @@ export function registerReferralRoutes(app: Express) {
   app.get("/api/referral-partners", async (req, res) => {
     try {
       const { category } = req.query;
+      await ensureTables();
 
-      // TODO: Implement getReferralPartners in storage
-      // Return empty until partner directory is built out
-      const partners: Array<{ id: string; businessName: string; category: string; rating: number; phone: string }> = [];
+      let result;
+      if (category) {
+        result = await pool.query(
+          `SELECT * FROM referral_partners WHERE is_active = true AND category = $1 ORDER BY rating DESC`,
+          [String(category)]
+        );
+      } else {
+        result = await pool.query(
+          `SELECT * FROM referral_partners WHERE is_active = true ORDER BY rating DESC`
+        );
+      }
 
-      const filtered = category
-        ? partners.filter((p) => p.category === String(category))
-        : partners;
-
-      res.json(filtered);
+      res.json(result.rows);
     } catch (error) {
       console.error("Get referral partners error:", error);
       res.status(500).json({ error: "Failed to fetch referral partners" });
@@ -110,10 +154,18 @@ export function registerReferralRoutes(app: Express) {
         return res.status(404).json({ error: "Home health audit not found" });
       }
 
-      // TODO: Implement createPartnerReferral in storage
-      // For now, return mock success
+      await ensureTables();
+
+      const result = await pool.query(
+        `INSERT INTO partner_referrals (home_health_audit_id, partner_id, customer_id, pro_id, category, description, estimated_value)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING *`,
+        [homeHealthAuditId, partnerId, req.user.id, audit.proId || null, category, description, estimatedValue]
+      );
+
       res.json({
         success: true,
+        referral: result.rows[0],
         message: "Referral created. Partner will contact you within 24 hours.",
       });
     } catch (error) {
@@ -129,22 +181,26 @@ export function registerReferralRoutes(app: Express) {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
-      // TODO: Implement getPartnerReferralsByPro in storage
-      // For now, return mock data
+      await ensureTables();
+
+      const result = await pool.query(
+        `SELECT * FROM partner_referrals WHERE pro_id = $1 ORDER BY created_at DESC`,
+        [req.params.proId]
+      );
+
+      const referrals = result.rows;
+      const totalEarnings = referrals
+        .filter((r: any) => r.status === "completed")
+        .reduce((sum: number, r: any) => sum + (Number(r.commission_amount) || 0), 0);
+      const pendingCommissions = referrals
+        .filter((r: any) => r.status === "pending")
+        .reduce((sum: number, r: any) => sum + (Number(r.commission_amount) || 0), 0);
+
       res.json({
-        totalEarnings: 150,
-        pendingCommissions: 75,
-        paidCommissions: 75,
-        referrals: [
-          {
-            id: "1",
-            category: "landscaping",
-            status: "completed",
-            referralAmount: 750,
-            commissionAmount: 75,
-            completedAt: "2024-01-15",
-          },
-        ],
+        totalEarnings,
+        pendingCommissions,
+        paidCommissions: totalEarnings,
+        referrals,
       });
     } catch (error) {
       console.error("Get Pro partner referrals error:", error);
@@ -157,12 +213,25 @@ export function registerReferralRoutes(app: Express) {
     try {
       const { referralAmount } = req.body;
 
-      // TODO: Implement updatePartnerReferral in storage
-      // Calculate 10% commission to Pro
+      await ensureTables();
+
       const commissionAmount = Math.round(referralAmount * 0.1);
+
+      const result = await pool.query(
+        `UPDATE partner_referrals
+         SET status = 'completed', referral_amount = $1, commission_amount = $2, completed_at = NOW()
+         WHERE id = $3
+         RETURNING *`,
+        [referralAmount, commissionAmount, req.params.id]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Referral not found" });
+      }
 
       res.json({
         success: true,
+        referral: result.rows[0],
         commissionAmount,
         message: "Referral marked as completed. Pro will receive 10% commission.",
       });

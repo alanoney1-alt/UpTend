@@ -109,7 +109,6 @@ export function ServiceEsgBadge({ serviceType, esgScore, metrics = {} }: Service
 }
 
 export function ServiceEsgSummary({ proId }: { proId: string }) {
-  // TODO: Fetch aggregate ESG data for the Pro from /api/pros/:proId/esg-summary
   const [stats, setStats] = useState<{ gallonsSaved: number; co2Saved: number; avgEsgScore: number } | null>(null);
 
   useEffect(() => {

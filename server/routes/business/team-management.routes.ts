@@ -15,6 +15,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { BusinessAccountsStorage } from "../../storage/domains/business-accounts/storage";
 import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 const router = Router();
 const businessStorage = new BusinessAccountsStorage();
@@ -87,8 +88,30 @@ router.post("/:id/team/invite", async (req, res) => {
       updatedAt: new Date().toISOString(),
     });
 
-    // TODO: Send invitation email with invitationToken
-    // For now, return the token for testing
+    // Send invitation email
+    try {
+      const baseUrl = process.env.BASE_URL || "https://uptendapp.com";
+      const inviteUrl = `${baseUrl}/business/team/accept?token=${invitationToken}`;
+      const emailHtml = `
+        <p>You've been invited to join a team on UpTend!</p>
+        <p>Role: <strong>${validated.role}</strong></p>
+        <p><a href="${inviteUrl}" style="display:inline-block;padding:12px 24px;background:#F47C20;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Accept Invitation</a></p>
+        <p>Or copy this link: ${inviteUrl}</p>
+      `;
+      const transport = nodemailer.createTransport(
+        process.env.SENDGRID_API_KEY
+          ? { host: "smtp.sendgrid.net", port: 587, auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY } }
+          : { jsonTransport: true }
+      );
+      await transport.sendMail({
+        from: process.env.FROM_EMAIL || "UpTend <noreply@uptend.app>",
+        to: validated.email,
+        subject: "You're invited to join a team on UpTend",
+        html: emailHtml,
+      });
+      console.log(`📧 Team invitation sent to ${validated.email}`);
+    } catch (emailErr) { console.warn("Failed to send team invitation email:", emailErr); }
+
     res.json({
       success: true,
       teamMember,

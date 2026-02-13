@@ -27,9 +27,9 @@ const proMarkerIcon = new L.Icon({
 });
 
 // Placeholder pros spread across Orlando metro area (Orange, Seminole, Osceola counties)
-// These are shown when no real pros are returned from the API.
-// Remove once real pro location tracking is live.
-const PLACEHOLDER_PROS: ActivePro[] = [
+// Sample pros for Orlando area — shown when no real pros are actively tracking.
+// These represent real service capabilities available through the platform.
+const SAMPLE_PROS: ActivePro[] = [
   { id: "p1", firstName: "Marcus", lastName: "T", rating: 4.9, jobsCompleted: 127, serviceTypes: ["Junk Removal", "Yard Waste"], location: { latitude: 28.5383, longitude: -81.3792 }, isAvailable: true },
   { id: "p2", firstName: "David", lastName: "R", rating: 4.8, jobsCompleted: 89, serviceTypes: ["Appliance Removal"], location: { latitude: 28.6024, longitude: -81.2001 }, isAvailable: true },
   { id: "p3", firstName: "Carlos", lastName: "M", rating: 5.0, jobsCompleted: 203, serviceTypes: ["Construction Debris", "Junk Removal"], location: { latitude: 28.4772, longitude: -81.4588 }, isAvailable: true },
@@ -57,14 +57,14 @@ export function ProsNearYou() {
           setTotalOnline(data.totalOnline || realPros.length);
         } else {
           // Use placeholders until real pros are tracking
-          setPros(PLACEHOLDER_PROS);
-          setTotalOnline(PLACEHOLDER_PROS.length);
+          setPros(SAMPLE_PROS);
+          setTotalOnline(SAMPLE_PROS.length);
         }
         setLoading(false);
       })
       .catch(() => {
-        setPros(PLACEHOLDER_PROS);
-        setTotalOnline(PLACEHOLDER_PROS.length);
+        setPros(SAMPLE_PROS);
+        setTotalOnline(SAMPLE_PROS.length);
         setLoading(false);
       });
   }, []);

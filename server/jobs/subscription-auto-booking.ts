@@ -14,6 +14,7 @@
  */
 
 import { storage } from "../storage";
+import { pool } from "../db";
 import type { RecurringSubscription, ServiceRequest } from "@shared/schema";
 
 interface AutoBookingResult {
@@ -102,11 +103,31 @@ async function createAutoBooking(subscription: RecurringSubscription): Promise<S
     updatedAt: new Date().toISOString(),
   });
 
-  // TODO: Send notifications to customer and Pro
-  // await sendCustomerBookingNotification(subscription.customerId, serviceRequest.id);
-  // if (subscription.assignedProId) {
-  //   await sendProBookingNotification(subscription.assignedProId, serviceRequest.id);
-  // }
+  // Send notifications to customer and Pro
+  try {
+    const customerResult = await pool.query("SELECT email, full_name FROM customers WHERE id = $1", [subscription.customerId]);
+    if (customerResult.rows[0]?.email) {
+      const { sendBookingConfirmation } = await import("../services/email-service");
+      await sendBookingConfirmation(customerResult.rows[0].email, {
+        id: serviceRequest.id,
+        serviceType: subscription.serviceType,
+        scheduledDate: serviceRequest.scheduledFor,
+        address: subscription.address,
+      });
+    }
+    if (subscription.assignedProId) {
+      const proResult = await pool.query("SELECT email FROM haulers WHERE id = $1", [subscription.assignedProId]);
+      if (proResult.rows[0]?.email) {
+        const { sendProNewJob } = await import("../services/email-service");
+        await sendProNewJob(proResult.rows[0].email, {
+          id: serviceRequest.id,
+          serviceType: subscription.serviceType,
+          scheduledDate: serviceRequest.scheduledFor,
+          address: subscription.address,
+        });
+      }
+    }
+  } catch (notifErr) { console.warn("Failed to send subscription auto-booking notifications:", notifErr); }
 
   return serviceRequest;
 }

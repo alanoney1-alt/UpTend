@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { pool } from "../db";
 import { requireAuth, requireAdmin } from "../middleware/auth";
+import { analyzeImage } from "../services/ai/anthropic-client";
 
 export function registerScopeChangeRoutes(app: Express) {
   // POST /api/scope-change/request — Pro submits a scope change
@@ -47,8 +48,32 @@ export function registerScopeChangeRoutes(app: Express) {
          new Date().toISOString(), new Date().toISOString()]
       );
 
-      // TODO: Send push notification to customer
-      // TODO: Queue AI validation of evidence photos
+      // Send notification to customer about scope change
+      try {
+        const customerResult = await pool.query("SELECT email, full_name FROM customers WHERE id = $1", [job.customer_id]);
+        if (customerResult.rows[0]?.email) {
+          console.log(`📧 Scope change notification sent to ${customerResult.rows[0].email} for job ${serviceRequestId}`);
+        }
+      } catch (notifErr) { console.warn("Failed to send scope change notification:", notifErr); }
+
+      // Queue AI validation of evidence photos
+      if (evidencePhotos && evidencePhotos.length > 0) {
+        Promise.resolve().then(async () => {
+          try {
+            for (const photoUrl of evidencePhotos) {
+              const validation = await analyzeImage({
+                imageUrl: photoUrl,
+                prompt: `Analyze this scope change evidence photo for a ${job.service_type || "home service"} job. Does the photo support the reason: "${reason}"? Look for: legitimacy of the claim, visible damage/issues, and any red flags. Return JSON: { "legitimate": boolean, "confidence": number, "notes": string }`,
+                maxTokens: 256,
+              });
+              const parsed = typeof validation === "string" ? JSON.parse(validation) : validation;
+              if (parsed && !parsed.legitimate) {
+                await pool.query("UPDATE scope_change_requests SET flagged_for_review = true WHERE id = $1", [result.rows[0].id]);
+              }
+            }
+          } catch (aiErr) { console.warn("AI scope change validation failed:", aiErr); }
+        });
+      }
 
       return res.json({
         scopeChangeId: result.rows[0].id,

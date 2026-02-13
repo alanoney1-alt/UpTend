@@ -80,8 +80,26 @@ export function registerHoaCommunicationRoutes(app: Express) {
           status: "sent",
         });
 
-        // TODO: Actually send email/SMS using notification service
-        // For now, we're just logging the communication
+        // Send email/SMS using notification service
+        try {
+          if (property.ownerEmail) {
+            const nodemailer = await import("nodemailer");
+            const transport = nodemailer.default.createTransport(
+              (process.env.SENDGRID_API_KEY
+                ? { host: "smtp.sendgrid.net", port: 587, auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY } }
+                : { jsonTransport: true }) as any
+            );
+            await transport.sendMail({
+              from: process.env.FROM_EMAIL || "UpTend <noreply@uptend.app>",
+              to: property.ownerEmail,
+              subject: personalizedSubject,
+              html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+                <h2 style="color:#F47C20;">${personalizedSubject}</h2>
+                <div>${personalizedMessage.replace(/\n/g, "<br>")}</div>
+              </div>`,
+            });
+          }
+        } catch (sendErr) { console.warn("Failed to send HOA communication:", sendErr); }
 
         sentMessages.push({
           communicationId: communication.id,

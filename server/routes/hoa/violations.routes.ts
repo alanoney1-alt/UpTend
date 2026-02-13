@@ -52,8 +52,30 @@ export function registerHoaViolationRoutes(app: Express) {
         deadline: data.deadline,
       });
 
-      // TODO: Send notification to homeowner if notifyHomeowner is true
-      // This would use the notifications service to send email + SMS
+      // Send notification to homeowner
+      try {
+        const ownerResult = await storage.getHoaProperty(data.propertyId);
+        if (data.notifyHomeowner && ownerResult?.ownerEmail) {
+          const nodemailer = await import("nodemailer");
+          const transport = nodemailer.default.createTransport(
+            (process.env.SENDGRID_API_KEY
+              ? { host: "smtp.sendgrid.net", port: 587, auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY } }
+              : { jsonTransport: true }) as any
+          );
+          await transport.sendMail({
+            from: process.env.FROM_EMAIL || "UpTend <noreply@uptend.app>",
+            to: ownerResult.ownerEmail,
+            subject: `HOA Violation Notice: ${violation.title}`,
+            html: `<p>Dear ${ownerResult.ownerName || "Homeowner"},</p>
+              <p>A violation has been reported on your property:</p>
+              <p><strong>${violation.title}</strong></p>
+              <p>${violation.description}</p>
+              ${violation.deadline ? `<p>Deadline: ${new Date(violation.deadline).toLocaleDateString()}</p>` : ""}
+              <p>Please log in to your UpTend account to view details and resolve this violation.</p>`,
+          });
+          console.log(`📧 Violation notification sent to ${ownerResult.ownerEmail}`);
+        }
+      } catch (notifErr) { console.warn("Failed to send violation notification:", notifErr); }
 
       res.json(violation);
     } catch (error) {

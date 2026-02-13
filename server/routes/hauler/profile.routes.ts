@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { storage } from "../../storage";
 import { haulerCheckInSchema, haulerProfileUpdateSchema } from "@shared/schema";
 import { requireAuth, requireHauler } from "../../auth-middleware";
-import { db } from "../../db";
+import { db, pool } from "../../db";
 import { users } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -738,6 +738,32 @@ export function registerProProfileRoutes(app: Express) {
       res.json(reviews);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+  // Pro ESG Impact Summary
+  app.get("/api/pros/:proId/esg-summary", async (req, res) => {
+    try {
+      const { proId } = req.params;
+      const result = await pool.query(`
+        SELECT 
+          COALESCE(SUM(water_saved_gallons), 0) as gallons_saved,
+          COALESCE(SUM(co2_saved_kg), 0) as co2_saved,
+          COALESCE(AVG(esg_score), 0) as avg_esg_score,
+          COUNT(*) as total_jobs
+        FROM esg_impact_logs 
+        WHERE hauler_id = $1
+      `, [proId]);
+
+      const row = result.rows[0];
+      res.json({
+        gallonsSaved: parseFloat(row.gallons_saved) || 0,
+        co2Saved: parseFloat(row.co2_saved) || 0,
+        avgEsgScore: Math.round(parseFloat(row.avg_esg_score) || 0),
+        totalJobs: parseInt(row.total_jobs) || 0,
+      });
+    } catch (error) {
+      console.error("ESG summary error:", error);
+      res.json({ gallonsSaved: 0, co2Saved: 0, avgEsgScore: 0, totalJobs: 0 });
     }
   });
 }

@@ -9,6 +9,24 @@ import { processEsgForCompletedJob } from "../../services/job-completion-esg-int
 import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobCompleted, sendProNewJob } from "../../services/email-service";
 
 import { broadcastToJob } from "../../websocket";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+const uploadDir = path.join(process.cwd(), "uploads", "job-photos");
+fs.mkdirSync(uploadDir, { recursive: true });
+
+const photoUpload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, uploadDir),
+    filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) cb(null, true);
+    else cb(new Error("Only image files allowed"));
+  },
+});
 
 export function registerServiceRequestRoutes(app: Express) {
   // Get pending service requests
@@ -413,27 +431,24 @@ export function registerServiceRequestRoutes(app: Express) {
   });
 
   // Photo upload for job proof of completion
-  app.post("/api/jobs/upload-photos", requireAuth, async (req, res) => {
+  app.post("/api/jobs/upload-photos", requireAuth, photoUpload.array("photos", 10), async (req, res) => {
     try {
-      const { jobId } = req.body;
+      const { jobId, photoType } = req.body; // photoType: "before" | "after"
+      const files = req.files as Express.Multer.File[];
 
-      // In production, photos would be uploaded to object storage
-      // For now, we'll simulate with placeholder URLs
-      const uploadedUrls: string[] = [];
+      if (!files || files.length === 0) {
+        return res.status(400).json({ error: "No photos uploaded" });
+      }
 
-      // If files were uploaded via multipart form data, they'd be processed here
-      // For demo purposes, return success with placeholder
-      const timestamp = Date.now();
-      uploadedUrls.push(
-        `/api/photos/${jobId}/${timestamp}_before.jpg`,
-        `/api/photos/${jobId}/${timestamp}_after.jpg`
-      );
+      const uploadedUrls = files.map(f => `/uploads/job-photos/${f.filename}`);
 
-      res.json({
-        success: true,
-        urls: uploadedUrls,
-        message: "Photos uploaded successfully"
+      // Store photo references in database
+      const column = photoType === "after" ? "after_photos" : "before_photos";
+      await storage.updateServiceRequest(jobId, {
+        [column]: uploadedUrls,
       });
+
+      res.json({ success: true, urls: uploadedUrls, count: files.length });
     } catch (error) {
       console.error("Photo upload error:", error);
       res.status(500).json({ error: "Failed to upload photos" });
