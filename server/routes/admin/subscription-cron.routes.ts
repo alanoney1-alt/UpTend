@@ -5,7 +5,7 @@
  */
 
 import type { Express, Request, Response } from "express";
-import { requireAuth } from "../../auth-middleware";
+import { requireAuth, requireAdmin } from "../../middleware/auth";
 import { processSubscriptionAutoBookings, triggerManualAutoBooking } from "../../jobs/subscription-auto-booking";
 
 export function registerSubscriptionCronRoutes(app: Express) {
@@ -16,13 +16,8 @@ export function registerSubscriptionCronRoutes(app: Express) {
    * Requires admin authentication
    * Use for testing or manual execution
    */
-  app.post("/api/admin/subscriptions/trigger-auto-booking", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/admin/subscriptions/trigger-auto-booking", requireAuth, requireAdmin, async (req: Request, res: Response) => {
     try {
-      // TODO: Add admin role check
-      // const user = req.user as any;
-      // if (user.role !== 'admin') {
-      //   return res.status(403).json({ error: "Admin access required" });
-      // }
 
       console.log("[Admin] Manual auto-booking triggered");
       const result = await triggerManualAutoBooking();
@@ -50,7 +45,7 @@ export function registerSubscriptionCronRoutes(app: Express) {
    * Get subscription auto-booking schedule info
    * GET /api/admin/subscriptions/auto-booking-status
    */
-  app.get("/api/admin/subscriptions/auto-booking-status", requireAuth, async (req: Request, res: Response) => {
+  app.get("/api/admin/subscriptions/auto-booking-status", requireAuth, requireAdmin, async (req: Request, res: Response) => {
     try {
       const today = new Date().toISOString().split('T')[0];
 

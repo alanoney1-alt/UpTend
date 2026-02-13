@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { pool } from "../db";
+import { requireAuth, requireAdmin } from "../middleware/auth";
 
 export function registerScopeChangeRoutes(app: Express) {
   // POST /api/scope-change/request — Pro submits a scope change
@@ -152,10 +153,8 @@ export function registerScopeChangeRoutes(app: Express) {
   });
 
   // GET /api/admin/ceiling-analytics — Admin KPIs
-  app.get("/api/admin/ceiling-analytics", async (req, res) => {
+  app.get("/api/admin/ceiling-analytics", requireAuth, requireAdmin, async (req, res) => {
     try {
-      const user = req.user as any;
-      if (!user || (user as any).role !== "admin") return res.status(403).json({ error: "Admin only" });
 
       const { periodType, startDate, endDate } = req.query;
 

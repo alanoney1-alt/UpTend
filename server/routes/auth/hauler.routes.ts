@@ -27,8 +27,23 @@ const proRegistrationSchema = z.object({
   vehicleModel: z.string().optional(),
   licensePlate: z.string().optional(),
   driversLicense: z.string().min(5),
-  insuranceProvider: z.string().min(2),
-  insurancePolicyNumber: z.string().min(5),
+  // Insurance fields (optional - higher commission without insurance)
+  insuranceProvider: z.string().optional(),
+  insurancePolicyNumber: z.string().optional(),
+  generalLiabilityProvider: z.string().optional(),
+  generalLiabilityPolicyNumber: z.string().optional(),
+  generalLiabilityExpiration: z.string().optional(),
+  vehicleInsuranceProvider: z.string().optional(),
+  vehicleInsurancePolicyNumber: z.string().optional(),
+  vehicleInsuranceExpiration: z.string().optional(),
+  // Services
+  serviceTypes: z.array(z.string()).optional(),
+  supportedServices: z.array(z.string()).optional(),
+  // Additional photo uploads
+  selfiePhotoUrl: z.string().optional(),
+  idPhotoUrl: z.string().optional(),
+  generalLiabilityDocUrl: z.string().optional(),
+  vehicleInsuranceDocUrl: z.string().optional(),
   aboutYou: z.string().optional(),
   agreeTerms: z.boolean(),
   agreeBackgroundCheck: z.boolean(),
@@ -284,6 +299,9 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
       const vehicleCapacity = data.vehicleType === "pickup" || data.vehicleType === "cargo_van" ? "medium" :
                               data.vehicleType === "box_truck_small" ? "large" : "extra_large";
 
+      // Determine if pro has insurance docs
+      const hasInsurance = !!(data.generalLiabilityProvider || data.insuranceProvider);
+
       const registrationDetails = JSON.stringify({
         streetAddress: data.streetAddress,
         city: data.city,
@@ -294,8 +312,14 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         vehicleModel: data.vehicleModel,
         licensePlate: data.licensePlate,
         driversLicense: data.driversLicense,
-        insuranceProvider: data.insuranceProvider,
-        insurancePolicyNumber: data.insurancePolicyNumber,
+        insuranceProvider: data.insuranceProvider || data.generalLiabilityProvider,
+        insurancePolicyNumber: data.insurancePolicyNumber || data.generalLiabilityPolicyNumber,
+        generalLiabilityProvider: data.generalLiabilityProvider,
+        generalLiabilityPolicyNumber: data.generalLiabilityPolicyNumber,
+        generalLiabilityExpiration: data.generalLiabilityExpiration,
+        vehicleInsuranceProvider: data.vehicleInsuranceProvider,
+        vehicleInsurancePolicyNumber: data.vehicleInsurancePolicyNumber,
+        vehicleInsuranceExpiration: data.vehicleInsuranceExpiration,
         aboutYou: data.aboutYou,
         submittedAt: new Date().toISOString(),
       });
@@ -315,6 +339,8 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         canAcceptJobs: false,
         profilePhotoUrl: data.profilePhotoUrl || null,
         driversLicensePhotoUrl: data.driversLicensePhotoUrl || null,
+        serviceTypes: data.serviceTypes || data.supportedServices || [],
+        hasOwnLiabilityInsurance: hasInsurance,
       });
 
       // Create vehicles from registration data
@@ -433,6 +459,8 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
       const vehicleCapacity = data.vehicleType === "pickup" || data.vehicleType === "cargo_van" ? "medium" :
                               data.vehicleType === "box_truck_small" ? "large" : "extra_large";
 
+      const hasInsurance = !!(data.generalLiabilityProvider || data.insuranceProvider);
+
       const registrationDetails = JSON.stringify({
         streetAddress: data.streetAddress,
         city: data.city,
@@ -443,8 +471,14 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         vehicleModel: data.vehicleModel,
         licensePlate: data.licensePlate,
         driversLicense: data.driversLicense,
-        insuranceProvider: data.insuranceProvider,
-        insurancePolicyNumber: data.insurancePolicyNumber,
+        insuranceProvider: data.insuranceProvider || data.generalLiabilityProvider,
+        insurancePolicyNumber: data.insurancePolicyNumber || data.generalLiabilityPolicyNumber,
+        generalLiabilityProvider: data.generalLiabilityProvider,
+        generalLiabilityPolicyNumber: data.generalLiabilityPolicyNumber,
+        generalLiabilityExpiration: data.generalLiabilityExpiration,
+        vehicleInsuranceProvider: data.vehicleInsuranceProvider,
+        vehicleInsurancePolicyNumber: data.vehicleInsurancePolicyNumber,
+        vehicleInsuranceExpiration: data.vehicleInsuranceExpiration,
         aboutYou: data.aboutYou,
         submittedAt: new Date().toISOString(),
       });
@@ -464,6 +498,8 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         canAcceptJobs: false,
         profilePhotoUrl: data.profilePhotoUrl || null,
         driversLicensePhotoUrl: data.driversLicensePhotoUrl || null,
+        serviceTypes: data.serviceTypes || data.supportedServices || [],
+        hasOwnLiabilityInsurance: hasInsurance,
       });
 
       // Create vehicles from registration data

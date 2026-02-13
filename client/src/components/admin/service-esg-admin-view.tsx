@@ -24,10 +24,17 @@ export function ServiceEsgAdminView() {
 
       const result = await response.json();
       
-      // Transform data if needed
+      // Transform API field names to ServiceBreakdownData field names
+      const rawData = result.data || result.aggregates || [];
       return {
         success: true,
-        data: result.data || result.aggregates || [],
+        data: rawData.map((item: any) => ({
+          serviceType: item.serviceType,
+          jobs: item.jobs ?? item.totalJobs ?? 0,
+          co2SavedLbs: item.co2SavedLbs ?? item.totalCo2SavedLbs ?? 0,
+          waterSavedGallons: item.waterSavedGallons ?? item.totalWaterSavedGallons ?? 0,
+          avgEsgScore: item.avgEsgScore ?? 0,
+        })),
       };
     },
   });

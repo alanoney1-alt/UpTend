@@ -43,9 +43,9 @@ function wrap(title: string, body: string): string {
 </table></td></tr></table></body></html>`;
 }
 
-function money(cents: number | string | null | undefined): string {
-  const n = Number(cents) || 0;
-  return "$" + (n / 100).toFixed(2);
+function money(dollars: number | string | null | undefined): string {
+  const n = Number(dollars) || 0;
+  return "$" + n.toFixed(2);
 }
 
 async function send(to: string, subject: string, html: string, text: string) {

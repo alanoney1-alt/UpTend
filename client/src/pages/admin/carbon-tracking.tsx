@@ -288,50 +288,58 @@ export default function CarbonTrackingDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-green-500 rounded"></div>
-                      <span className="text-sm">Recycled</span>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        {overview.totalRecycledLbs.toLocaleString()} lbs
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {((overview.totalRecycledLbs / (overview.totalRecycledLbs + overview.totalDonatedLbs + overview.totalLandfilledLbs)) * 100).toFixed(1)}%
-                      </p>
-                    </div>
-                  </div>
+                  {(() => {
+                    const totalWaste = overview.totalRecycledLbs + overview.totalDonatedLbs + overview.totalLandfilledLbs;
+                    const pct = (val: number) => totalWaste > 0 ? ((val / totalWaste) * 100).toFixed(1) : "0.0";
+                    return (
+                      <>
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 bg-green-500 rounded"></div>
+                            <span className="text-sm">Recycled</span>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold">
+                              {overview.totalRecycledLbs.toLocaleString()} lbs
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {pct(overview.totalRecycledLbs)}%
+                            </p>
+                          </div>
+                        </div>
 
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                      <span className="text-sm">Donated</span>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        {overview.totalDonatedLbs.toLocaleString()} lbs
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {((overview.totalDonatedLbs / (overview.totalRecycledLbs + overview.totalDonatedLbs + overview.totalLandfilledLbs)) * 100).toFixed(1)}%
-                      </p>
-                    </div>
-                  </div>
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                            <span className="text-sm">Donated</span>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold">
+                              {overview.totalDonatedLbs.toLocaleString()} lbs
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {pct(overview.totalDonatedLbs)}%
+                            </p>
+                          </div>
+                        </div>
 
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-gray-400 rounded"></div>
-                      <span className="text-sm">Landfilled</span>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        {overview.totalLandfilledLbs.toLocaleString()} lbs
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {((overview.totalLandfilledLbs / (overview.totalRecycledLbs + overview.totalDonatedLbs + overview.totalLandfilledLbs)) * 100).toFixed(1)}%
-                      </p>
-                    </div>
-                  </div>
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 bg-gray-400 rounded"></div>
+                            <span className="text-sm">Landfilled</span>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold">
+                              {overview.totalLandfilledLbs.toLocaleString()} lbs
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {pct(overview.totalLandfilledLbs)}%
+                            </p>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
 
                   <div className="pt-4 border-t">
                     <div className="flex justify-between">

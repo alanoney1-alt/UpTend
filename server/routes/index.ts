@@ -66,6 +66,7 @@ import { registerBusinessTeamRoutes } from "./business/index";
 
 // Referral routes
 import { registerReferralRoutes } from "./referrals/referral.routes";
+import { registerCustomerReferralRoutes } from "./customer/referrals.routes";
 
 // AI routes
 import { registerAiAnalysisRoutes } from "./ai/analysis.routes";
@@ -104,6 +105,9 @@ import { registerNeighborhoodRoutes } from "./neighborhoods.routes";
 // Insurance routes
 import { registerInsuranceRoutes } from "./insurance.routes";
 
+// Launch notifications
+import { registerLaunchNotificationRoutes } from "./launch-notifications.routes";
+
 // Voice AI routes
 import { registerVoiceRoutes } from "./voice.routes";
 
@@ -119,6 +123,7 @@ import { registerScopeChangeRoutes } from "./scope-change.routes";
 // Pro map routes
 import { registerActiveNearbyRoutes } from "./hauler/active-nearby.routes";
 import { registerAdminProMapRoutes } from "./admin/pro-map.routes";
+import { registerAdminManagementRoutes } from "./admin/admin-management.routes";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -205,6 +210,7 @@ export async function registerRoutes(
 
   // Register referral routes
   registerReferralRoutes(app);
+  registerCustomerReferralRoutes(app);
 
   // Register AI routes
   registerAiAnalysisRoutes(app);
@@ -242,6 +248,7 @@ export async function registerRoutes(
 
   // Register Insurance routes
   registerInsuranceRoutes(app);
+  registerLaunchNotificationRoutes(app);
 
   // Register Voice AI routes
   registerVoiceRoutes(app);
@@ -258,6 +265,9 @@ export async function registerRoutes(
   // Pro map routes (public + admin)
   registerActiveNearbyRoutes(app);
   registerAdminProMapRoutes(app);
+
+  // Admin management routes (pyckers, users, surge, active jobs)
+  registerAdminManagementRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

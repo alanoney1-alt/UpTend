@@ -243,4 +243,135 @@ router.get("/service-types/aggregate/all", async (req, res) => {
   }
 });
 
+// ==========================================
+// GET /api/esg/summary
+// Get platform-wide ESG summary (used by esg-impact-dashboard)
+// ==========================================
+router.get("/summary", async (_req, res) => {
+  try {
+    const summary = await esgStorage.getEsgSummary();
+    res.json(summary);
+  } catch (error: any) {
+    console.error("Error fetching ESG summary:", error);
+    res.status(500).json({ error: error.message || "Failed to fetch ESG summary" });
+  }
+});
+
+// ==========================================
+// GET /api/esg/impact/:serviceRequestId
+// Get ESG impact log for a specific service request
+// ==========================================
+router.get("/impact/:serviceRequestId", async (req, res) => {
+  try {
+    const { serviceRequestId } = req.params;
+    const log = await esgStorage.getEsgImpactLogByRequest(serviceRequestId);
+    if (!log) {
+      return res.status(404).json({ error: "ESG impact log not found" });
+    }
+    res.json(log);
+  } catch (error: any) {
+    console.error("Error fetching ESG impact log:", error);
+    res.status(500).json({ error: error.message || "Failed to fetch ESG impact log" });
+  }
+});
+
+// ==========================================
+// GET /api/esg/customer/:customerId
+// Get all ESG impact logs for a customer
+// ==========================================
+router.get("/customer/:customerId", async (req, res) => {
+  try {
+    const { customerId } = req.params;
+    const logs = await esgStorage.getEsgImpactLogsByCustomer(customerId);
+    res.json(logs);
+  } catch (error: any) {
+    console.error("Error fetching customer ESG logs:", error);
+    res.status(500).json({ error: error.message || "Failed to fetch customer ESG logs" });
+  }
+});
+
+// ==========================================
+// GET /api/esg/reports/:businessAccountId
+// Get ESG reports for a business account
+// ==========================================
+router.get("/reports/:businessAccountId", async (req, res) => {
+  try {
+    const { businessAccountId } = req.params;
+    const reports = await esgStorage.getEsgReportsByBusiness(businessAccountId);
+    res.json(reports);
+  } catch (error: any) {
+    console.error("Error fetching ESG reports:", error);
+    res.status(500).json({ error: error.message || "Failed to fetch ESG reports" });
+  }
+});
+
+// ==========================================
+// POST /api/esg/generate-report
+// Generate a new ESG report for a business account
+// ==========================================
+const generateReportSchema = z.object({
+  businessAccountId: z.string(),
+  month: z.number().min(1).max(12),
+  year: z.number(),
+});
+
+router.post("/generate-report", async (req, res) => {
+  try {
+    const { businessAccountId, month, year } = generateReportSchema.parse(req.body);
+
+    // Get metrics for the specified month
+    const startDate = new Date(year, month - 1, 1).toISOString();
+    const endDate = new Date(year, month, 0, 23, 59, 59).toISOString();
+
+    const metrics = await esgStorage.getAllServiceEsgMetrics({
+      startDate,
+      endDate,
+    });
+
+    const totalCo2SavedLbs = metrics.reduce((sum, m) => sum + (m.totalCo2SavedLbs || 0), 0);
+    const totalWaterSaved = metrics.reduce((sum, m) => sum + (m.waterSavedGallons || 0), 0);
+    const totalEnergySaved = metrics.reduce((sum, m) => sum + (m.energySavedKwh || 0), 0);
+    const co2SavedKg = totalCo2SavedLbs * 0.453592;
+
+    // Create the report
+    const report = await esgStorage.createEsgReport({
+      businessAccountId,
+      reportMonth: month,
+      reportYear: year,
+      totalJobsCount: metrics.length,
+      co2SavedKg: parseFloat(co2SavedKg.toFixed(2)),
+      landfillDiversionLbs: 0,
+      taxCreditsUnlockedUsd: parseFloat((co2SavedKg * 0.05).toFixed(2)),
+      waterSavedGallons: parseFloat(totalWaterSaved.toFixed(2)),
+      energySavedKwh: parseFloat(totalEnergySaved.toFixed(2)),
+      totalCarbonFootprintLbs: metrics.reduce((sum, m) => sum + (m.totalCo2EmittedLbs || 0), 0),
+      deadheadMilesSaved: 0,
+      circularEconomyLbs: 0,
+      auditReady: true,
+      reportData: JSON.stringify({ metrics: metrics.length }),
+      generatedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+    });
+
+    // Build the ledger response the frontend expects
+    const ledger = {
+      co2_saved_kg: co2SavedKg,
+      landfill_diversion_lbs: 0,
+      tax_credits_unlocked_usd: co2SavedKg * 0.05,
+      water_saved_gallons: totalWaterSaved,
+      energy_saved_kwh: totalEnergySaved,
+      total_jobs: metrics.length,
+    };
+
+    res.json({
+      success: true,
+      report,
+      ledger,
+    });
+  } catch (error: any) {
+    console.error("Error generating ESG report:", error);
+    res.status(400).json({ error: error.message || "Failed to generate ESG report" });
+  }
+});
+
 export default router;

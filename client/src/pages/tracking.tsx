@@ -788,24 +788,20 @@ function ReviewForm({
   const [submitted, setSubmitted] = useState(false);
 
   const { data: existingReview } = useQuery<HaulerReview | null>({
-    queryKey: ["/api/reviews", serviceRequestId],
+    queryKey: ["/api/service-requests", serviceRequestId, "review"],
     queryFn: async () => {
-      const res = await fetch(`/api/haulers/${haulerId}/reviews`);
+      const res = await fetch(`/api/service-requests/${serviceRequestId}/review`, { credentials: "include" });
+      if (res.status === 404) return null;
       if (!res.ok) return null;
-      const reviews = await res.json();
-      return reviews.find((r: HaulerReview) => r.serviceRequestId === serviceRequestId) || null;
+      return res.json();
     },
-    enabled: !!haulerId && !!serviceRequestId,
+    enabled: !!serviceRequestId,
   });
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("POST", "/api/reviews", {
-        haulerId,
-        customerId,
-        serviceRequestId,
+      return apiRequest("POST", `/api/service-requests/${serviceRequestId}/review`, {
         rating,
-        title: title || undefined,
         comment: comment || undefined,
       });
     },

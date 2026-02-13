@@ -13,7 +13,8 @@ import { startEsgAuditor } from './services/esg-auditor';
 import './services/property-cron-jobs'; // Auto-starts Property Intelligence background jobs
 import './services/ai-cron-jobs'; // Auto-starts AI capability background jobs
 import { getUncachableStripeClient } from './stripeClient';
-import { setupWebSocket } from './websocket';
+// WebSocket is now unified in server/routes/websocket/handlers.ts
+// and registered via registerRoutes() → registerWebSocketHandlers()
 
 const app = express();
 const httpServer = createServer(app);
@@ -247,8 +248,8 @@ function validateEnvironment() {
       throw err;
     });
 
-    // Initialize WebSocket server BEFORE Vite (so our upgrade handler fires first)
-    setupWebSocket(httpServer);
+    // WebSocket is initialized inside registerRoutes() via registerWebSocketHandlers()
+    // which uses noServer + monkey-patched upgrade to survive Vite HMR.
 
     // importantly only setup vite in development and after
     // setting up all the other routes so the catch-all route

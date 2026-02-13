@@ -10,12 +10,12 @@ import calculationsRoutes from "./calculations.routes";
 import reportsRoutes from "./reports.routes";
 
 export function registerEsgRoutes(app: Express) {
-  // Service-specific ESG metrics routes
-  app.use("/api/esg", requireAuth, serviceMetricsRoutes);
+  // ESG reporting endpoints (must be before service-metrics to avoid /:businessAccountId catching /scope3 etc)
+  app.use("/api/esg", requireAuth, reportsRoutes);
 
   // ESG calculation endpoints
   app.use("/api/esg", requireAuth, calculationsRoutes);
 
-  // ESG reporting endpoints
-  app.use("/api/esg", requireAuth, reportsRoutes);
+  // Service-specific ESG metrics routes
+  app.use("/api/esg", requireAuth, serviceMetricsRoutes);
 }
