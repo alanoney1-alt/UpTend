@@ -1,7 +1,7 @@
 {
-  "name": "UpTend Home OS",
+  "name": "UpTend",
   "short_name": "UpTend",
-  "description": "The operating system for home maintenance. Junk removal, pressure washing, and asset protection.",
+  "description": "On-demand home services with verified, background-checked pros. Sustainability-focused.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
@@ -74,7 +74,11 @@
       "label": "UpTend Home Screen"
     }
   ],
-  "categories": ["utilities", "lifestyle", "productivity"],
+  "categories": [
+    "utilities",
+    "lifestyle",
+    "productivity"
+  ],
   "prefer_related_applications": false,
   "shortcuts": [
     {
@@ -82,14 +86,24 @@
       "short_name": "Book",
       "description": "Start booking a home service",
       "url": "/book",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "My Jobs",
       "short_name": "Jobs",
       "description": "View your service requests",
       "url": "/customer-dashboard",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
   "related_applications": [],
