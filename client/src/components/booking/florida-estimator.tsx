@@ -33,8 +33,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "home_consultation",
     name: "AI Home Scan",
-    price: "$99 / $199",
-    description: "Complete home documentation: Standard ($99) interior walkthrough or Aerial ($199) with drone footage. $49 back on your next booking.",
+    price: "$99 / $249",
+    description: "Complete home documentation: Standard ($99) interior walkthrough or Aerial ($249) with drone footage. $49 back on your next booking.",
     benefit: "Protects property value • Insurance-ready documentation • $49 credit with first booking",
     icon: ClipboardCheck,
     featured: true,
@@ -82,7 +82,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "gutter_cleaning",
     name: "Gutter Cleaning",
-    price: "From $149",
+    price: "From $129",
     description: "Complete gutter cleaning with flow testing and debris removal for all perimeters.",
     benefit: "Prevents foundation erosion • Protects against water damage",
     icon: Waves,
@@ -90,8 +90,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "pool_cleaning",
     name: "Pool Cleaning",
-    price: "$150/month",
-    description: "Full pool maintenance including skimming, chemical balancing, and equipment check.",
+    price: "From $99/mo",
+    description: "Basic ($99/mo) or Full ($150/mo) pool maintenance including skimming, chemical balancing, and equipment check.",
     benefit: "Crystal clear water • Equipment longevity",
     icon: Droplets,
   },
@@ -106,7 +106,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "handyman",
     name: "Handyman Services",
-    price: "$49/hr • 1hr min",
+    price: "$65/hr • 1hr min",
     description: "Verified local handyman for repairs, assembly, mounting, painting, and home improvements. Billed by the minute after first hour.",
     benefit: "No task too small • Same-day available • Background checked pros",
     icon: Wrench,

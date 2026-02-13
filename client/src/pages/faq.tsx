@@ -47,7 +47,7 @@ const faqs: FAQ[] = [
   {
     category: "customers",
     question: "What is the AI Home Scan and how does it work?",
-    answer: "The AI Home Scan is our comprehensive home scan service starting at $99. A certified inspector conducts a room-by-room walkthrough documenting your home's condition with photos and detailed notes. The Aerial tier ($199) includes drone footage for roof, gutters, and property perimeter. You receive a digital report perfect for insurance, pre-sale documentation, or rental property management."
+    answer: "The AI Home Scan is our comprehensive home scan service starting at $99. A certified inspector conducts a room-by-room walkthrough documenting your home's condition with photos and detailed notes. The Aerial tier ($249) includes drone footage for roof, gutters, and property perimeter. You receive a digital report perfect for insurance, pre-sale documentation, or rental property management."
   },
   {
     category: "customers",
@@ -256,7 +256,7 @@ const faqs: FAQ[] = [
   {
     category: "pricing",
     question: "What is your pricing for the AI Home Scan?",
-    answer: "AI Home Scan Standard (interior only) is $99 flat rate. AI Home Scan Aerial (interior + drone exterior) is $199 flat rate. Both include comprehensive photo documentation, detailed inspection notes, and digital report delivery within 24 hours. Add-ons available: rush delivery (3-hour report) +$25, extra property photos +$20."
+    answer: "AI Home Scan Standard (interior only) is $99 flat rate. AI Home Scan Aerial (interior + drone exterior) is $249 flat rate. Both include comprehensive photo documentation, detailed inspection notes, and digital report delivery within 24 hours. Add-ons available: rush delivery (3-hour report) +$25, extra property photos +$20."
   },
   {
     category: "pricing",

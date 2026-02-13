@@ -51,7 +51,7 @@ export function TrustSafety() {
               <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10">
                 <feature.icon className="w-8 h-8 text-primary" />
               </div>
-              <div className="text-4xl font-bold text-primary mb-2">{feature.stat}</div>
+              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{feature.stat}</div>
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.description}</p>
             </Card>

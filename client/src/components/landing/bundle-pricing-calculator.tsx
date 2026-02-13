@@ -690,7 +690,7 @@ export function BundlePricingCalculator() {
               Junk Removal & Moving
             </p>
             
-            <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-none mb-6 tracking-tight">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-none mb-6 tracking-tight">
               <span className="text-primary">60</span> Seconds
             </h1>
             

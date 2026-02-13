@@ -170,7 +170,7 @@ const resources = {
       "faq.faq_q2": "How accurate is the AI Pricing?",
       "faq.faq_a2": "Extremely. Our computer vision analyzes the volume of junk or the square footage of concrete. If the Pro arrives and the job is significantly different, you get a Scope Adjustment notification to approve before any work starts. No surprises.",
       "faq.faq_q3": "How does the $49 credit work?",
-      "faq.faq_a3": "Both the Standard ($99) and Aerial ($199) packages include a $49 credit toward your first or next UpTend service booking. The credit is automatically applied when you book a service from your audit report.",
+      "faq.faq_a3": "Both the Standard ($99) and Aerial ($249) packages include a $49 credit toward your first or next UpTend service booking. The credit is automatically applied when you book a service from your audit report.",
       "faq.faq_cta": "Get Started with UpTend",
 
       "footer.footer_home_value_os": "Home Intelligence & Protection",
@@ -510,7 +510,7 @@ const resources = {
       "faq.faq_q2": "¿Qué tan preciso es el Precio con IA?",
       "faq.faq_a2": "Extremadamente. Nuestra visión por computadora analiza el volumen de basura o los pies cuadrados de concreto. Si el Pro llega y el trabajo es significativamente diferente, recibe una notificación de Ajuste de Alcance para aprobar antes de que comience cualquier trabajo. Sin sorpresas.",
       "faq.faq_q3": "¿Cómo funciona el crédito de $49?",
-      "faq.faq_a3": "Tanto el paquete Estándar ($99) como el Aéreo ($199) incluyen un crédito de $49 hacia su primera reserva o próxima reserva de servicio UpTend. El crédito se aplica automáticamente cuando reserva un servicio desde su informe de auditoría.",
+      "faq.faq_a3": "Tanto el paquete Estándar ($99) como el Aéreo ($249) incluyen un crédito de $49 hacia su primera reserva o próxima reserva de servicio UpTend. El crédito se aplica automáticamente cuando reserva un servicio desde su informe de auditoría.",
       "faq.faq_cta": "Comience con UpTend",
 
       "footer.footer_home_value_os": "Inteligencia y Protección del Hogar",

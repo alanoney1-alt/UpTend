@@ -62,7 +62,7 @@ export default function BecomePro() {
     <div className="min-h-screen bg-background" data-testid="page-become-pro">
       <Header />
 
-      <section className="bg-slate-950 pt-28 pb-24 px-6 text-center" data-testid="section-pro-hero">
+      <section className="bg-slate-950 pt-28 pb-24 px-4 md:px-6 text-center" data-testid="section-pro-hero">
         <h1 className="text-4xl md:text-6xl font-black text-white mb-6" data-testid="text-pro-headline">
           Build a Verified <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400">
@@ -121,7 +121,7 @@ export default function BecomePro() {
         </div>
       </section>
 
-      <section className="py-24 max-w-7xl mx-auto px-6" data-testid="section-pro-pillars" id="benefits">
+      <section className="py-16 md:py-24 max-w-7xl mx-auto px-4 md:px-6" data-testid="section-pro-pillars" id="benefits">
         <h2 className="text-3xl font-bold text-center mb-4" data-testid="text-pillars-title">The UpTend Pro Advantage</h2>
         <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
           Transparent tools, verified protection, and a track record of real impact.
@@ -139,7 +139,7 @@ export default function BecomePro() {
         </div>
       </section>
 
-      <section className="bg-muted/50 py-24 px-6" data-testid="section-alan-promise">
+      <section className="bg-muted/50 py-16 md:py-24 px-4 md:px-6" data-testid="section-alan-promise">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-12 items-center">
           <div className="shrink-0">
             <div className="w-32 h-32 bg-primary rounded-full border-4 border-background shadow-xl flex items-center justify-center">
@@ -160,9 +160,9 @@ export default function BecomePro() {
         </div>
       </section>
 
-      <section className="py-24 max-w-5xl mx-auto px-6 text-center" data-testid="section-pro-steps">
+      <section className="py-16 md:py-24 max-w-5xl mx-auto px-4 md:px-6 text-center" data-testid="section-pro-steps">
         <h2 className="text-3xl font-bold mb-12" data-testid="text-steps-title">How to become a Verified Green Pro</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {steps.map((step) => (
             <div key={step.num} className="p-6 bg-card border border-border rounded-xl" data-testid={`step-pro-${step.num}`}>
               <span className="text-primary dark:text-orange-400 font-black text-2xl">{step.num}</span>

@@ -17,15 +17,15 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   garage_cleanout: 299,
   truck_unloading: 80,
   furniture_moving: 99,
-  handyman: 49, // Handyman Services $49/hr, 1hr minimum
+  handyman: 65, // Handyman Services $65/hr, 1hr minimum
   pressure_washing: 120,
-  gutter_cleaning: 149,
+  gutter_cleaning: 129,
   moving_labor: 80,
   light_demolition: 199,
   home_consultation: 49, // AI Home Scan Standard base price
-  home_consultation_aerial: 149, // AI Home Scan Aerial with drone
+  home_consultation_aerial: 249, // AI Home Scan Aerial with drone
   home_cleaning: 99,
-  pool_cleaning: 69, // PoolSpark monthly
+  pool_cleaning: 99, // PoolSpark monthly (basic tier)
   landscaping: 35, // Landscaping 1/4 acre mow
   carpet_cleaning: 49, // Carpet Cleaning 1 room
 };
@@ -61,7 +61,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
     id: "aerial",
     name: "Aerial",
     brandedName: "AI Home Scan Aerial",
-    price: 149,
+    price: 249,
     description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan.",
     features: [
       "Everything in Standard PLUS:",
@@ -87,7 +87,7 @@ export const DWELLSCAN_SERVICE = {
   startingPrice: 99,
   priceUnit: "flat",
   tagline: "Know your home inside out.",
-  description: "A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $199.",
+  description: "A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $249.",
   tiers: DWELLSCAN_TIERS,
 };
 

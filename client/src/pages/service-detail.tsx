@@ -88,7 +88,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Prevent Water Damage Before It Starts.",
     description:
       "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning. All debris is bagged and hauled away — your property is left spotless.",
-    price: "From $149",
+    price: "From $129",
     icon: Home,
     heroGradient: "from-amber-600 to-orange-500",
     features: [
@@ -141,7 +141,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "No Task Too Small.",
     description:
       "Professional handyman services for all your home repairs and odd jobs. From TV mounting and furniture assembly to minor repairs, painting touch-ups, and light fixture installation. 1-hour minimum, billed by the minute after. Same-day availability.",
-    price: "From $49/hr",
+    price: "From $65/hr",
     icon: Wrench,
     heroGradient: "from-orange-600 to-red-500",
     features: [
@@ -168,7 +168,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Tear It Out. Haul It Off.",
     description:
       "Cabinets, sheds, fencing, decks, and non-load-bearing walls — we demo it, clean it up, and haul the debris away in one visit. Perfect for renovation prep or clearing out outdated structures. All materials sorted for recycling where possible.",
-    price: "From $199",
+    price: "From $249",
     icon: Hammer,
     heroGradient: "from-red-600 to-rose-500",
     features: [
@@ -220,7 +220,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Crystal Clear Pools, Maintained Weekly.",
     description:
       "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing walls, chemical testing, and balancing. Keep your pool sparkling clean and safe year-round with a dedicated Pro who knows your pool.",
-    price: "From $69",
+    price: "From $99/mo",
     icon: Waves,
     heroGradient: "from-sky-600 to-blue-500",
     features: [

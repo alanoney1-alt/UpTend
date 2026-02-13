@@ -100,16 +100,16 @@ export function GarageCleanoutsSection() {
               }`}
               data-testid={`card-garage-package-${pkg.id}`}
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4">
                 <div>
                   <div className="flex items-center gap-2">
                     <Home className="w-5 h-5 text-primary" />
-                    <h3 className="text-xl font-bold">{pkg.name}</h3>
+                    <h3 className="text-lg md:text-xl font-bold">{pkg.name}</h3>
                   </div>
-                  <p className="text-muted-foreground mt-1">{pkg.description}</p>
+                  <p className="text-muted-foreground mt-1 text-sm">{pkg.description}</p>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold">${pkg.price}</div>
+                <div className="sm:text-right flex-shrink-0">
+                  <div className="text-2xl md:text-3xl font-bold">${pkg.price}</div>
                   <div className="text-sm text-muted-foreground">
                     or ${pkg.monthly}/mo
                   </div>

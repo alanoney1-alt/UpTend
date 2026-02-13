@@ -36,7 +36,7 @@ export const SERVICES = {
     generic: 'Gutter Cleaning',
     display: 'Gutter Cleaning',
     slug: '/gutterflush',
-    startingPrice: 149,
+    startingPrice: 129,
     priceUnit: 'flat',
     tagline: 'Clear gutters. Clear mind.',
     description: 'Single-story to multi-story. Inspected, cleaned, documented.',
@@ -56,7 +56,7 @@ export const SERVICES = {
     generic: 'Handyman Services',
     display: 'Handyman Services',
     slug: '/fixit',
-    startingPrice: 49,
+    startingPrice: 65,
     priceUnit: 'hourly',
     tagline: 'No task too small.',
     description: 'Assembly, mounting, repairs, painting, installations. Verified pros, 1-hour minimum, billed by the minute after.',
@@ -99,7 +99,7 @@ export const SERVICES = {
     startingPrice: 99,
     priceUnit: 'flat',
     tagline: 'Know your home inside out.',
-    description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $199.',
+    description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $249.',
     tiers: {
       standard: {
         name: 'AI Home Scan Standard',
@@ -120,7 +120,7 @@ export const SERVICES = {
       },
       aerial: {
         name: 'AI Home Scan Aerial',
-        price: 199,
+        price: 249,
         proPayoutModels: {
           twoPro: { walkthrough: 25, drone: 55, uptendKeeps: 69 },
           onePro: { combined: 80, uptendKeeps: 69 },

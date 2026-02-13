@@ -58,10 +58,10 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <Badge variant="secondary" className="bg-blue-600 text-white">
                 Special Upgrade Price
               </Badge>
-              <p className="text-2xl font-bold text-primary">Just $100 more</p>
+              <p className="text-2xl font-bold text-primary">Just $150 more</p>
             </div>
             <p className="text-sm text-muted-foreground">
-              (Regular price $199 — upgrade for just $100 more since you already have Standard)
+              (Regular price $249 — upgrade for just $150 more since you already have Standard)
             </p>
           </div>
 
@@ -170,7 +170,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <Plane className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="font-semibold">AI Home Scan Aerial</p>
-                <p className="text-2xl font-bold text-blue-600">$199</p>
+                <p className="text-2xl font-bold text-blue-600">$249</p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground mb-3">

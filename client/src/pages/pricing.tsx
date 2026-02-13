@@ -97,7 +97,7 @@ export default function PublicPricing() {
       <Header />
       <div className="pt-24 pb-16">
         <div className="text-center max-w-3xl mx-auto px-6 mb-16">
-          <h1 className="text-4xl font-bold mb-4" data-testid="text-pricing-headline">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4" data-testid="text-pricing-headline">
             Transparent Pricing. No Surprises.
           </h1>
           <p className="text-lg text-muted-foreground" data-testid="text-pricing-subhead">
@@ -113,7 +113,7 @@ export default function PublicPricing() {
           {SERVICES.map((service) => (
             <div
               key={service.id}
-              className="relative bg-card rounded-2xl shadow-sm border border-border p-8 flex flex-col hover-elevate"
+              className="relative bg-card rounded-2xl shadow-sm border border-border p-5 md:p-8 flex flex-col hover-elevate"
               data-testid={`card-pricing-${service.id}`}
             >
 
@@ -125,7 +125,7 @@ export default function PublicPricing() {
               </p>
 
               <div className="my-6">
-                <span className="text-4xl font-bold" data-testid={`text-pricing-price-${service.id}`}>
+                <span className="text-3xl md:text-4xl font-bold" data-testid={`text-pricing-price-${service.id}`}>
                   {service.price}
                 </span>
                 <span className="text-muted-foreground text-sm ml-2">/ {service.unit}</span>
@@ -161,9 +161,9 @@ export default function PublicPricing() {
           ))}
         </div>
 
-        <div className="max-w-4xl mx-auto mt-24 bg-slate-900 rounded-2xl p-12 text-center text-white relative overflow-hidden mx-6">
+        <div className="max-w-4xl mx-auto mt-24 bg-slate-900 rounded-2xl p-6 md:p-12 text-center text-white relative overflow-hidden">
           <div className="relative z-10">
-            <h2 className="text-3xl font-bold mb-4" data-testid="text-pricing-why-login">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4" data-testid="text-pricing-why-login">
               Why is the final price different?
             </h2>
             <p className="text-slate-300 text-lg mb-8 max-w-2xl mx-auto">

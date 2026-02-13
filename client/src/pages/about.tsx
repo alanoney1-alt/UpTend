@@ -48,7 +48,7 @@ export default function About() {
       <Header />
 
       {/* PERSONAL HERO SECTION */}
-      <section className="pt-28 pb-16 px-6" data-testid="section-about-hero">
+      <section className="pt-28 pb-16 px-4 md:px-6" data-testid="section-about-hero">
         <div className="max-w-4xl mx-auto">
           <span className="text-primary font-bold uppercase tracking-widest text-sm mb-4 block" data-testid="text-our-story-label">Our Story</span>
           <h1 className="text-4xl md:text-6xl font-black mb-8 leading-tight" data-testid="text-about-headline">
@@ -96,7 +96,7 @@ export default function About() {
       </section>
 
       {/* THE THREE PILLARS ORIGIN STORY */}
-      <section className="py-24 bg-muted/50 px-6" data-testid="section-pillars-origin">
+      <section className="py-16 md:py-24 bg-muted/50 px-4 md:px-6" data-testid="section-pillars-origin">
         <div className="max-w-5xl mx-auto space-y-24">
           <div className="flex flex-col md:flex-row gap-12 items-start" data-testid="section-pillar-protect">
             <div className="w-16 h-16 bg-primary rounded-md flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
@@ -137,7 +137,7 @@ export default function About() {
       </section>
 
       {/* OUR VALUES */}
-      <section className="py-24 max-w-5xl mx-auto px-6" data-testid="section-about-values">
+      <section className="py-16 md:py-24 max-w-5xl mx-auto px-4 md:px-6" data-testid="section-about-values">
         <h2 className="text-2xl font-bold mb-8 text-center" data-testid="text-values-heading">Our Values</h2>
         <div className="grid md:grid-cols-2 gap-6">
           {values.map((value) => (
@@ -157,7 +157,7 @@ export default function About() {
       </section>
 
       {/* OUR MISSION */}
-      <section className="py-24 bg-muted/50 px-6" data-testid="section-about-mission">
+      <section className="py-16 md:py-24 bg-muted/50 px-4 md:px-6" data-testid="section-about-mission">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <Card className="p-8 bg-primary/5 border-primary/20" data-testid="card-mission">
@@ -189,7 +189,7 @@ export default function About() {
       </section>
 
       {/* JOURNEY TIMELINE */}
-      <section className="py-24 max-w-5xl mx-auto px-6" data-testid="section-about-journey">
+      <section className="py-16 md:py-24 max-w-5xl mx-auto px-4 md:px-6" data-testid="section-about-journey">
         <h2 className="text-2xl font-bold mb-8 text-center" data-testid="text-journey-heading">Our Journey</h2>
         <div className="relative">
           <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-border" />
@@ -217,11 +217,11 @@ export default function About() {
       </section>
 
       {/* PROVEN IMPACT STATS */}
-      <section className="py-24 bg-muted/50 px-6" data-testid="section-about-stats">
+      <section className="py-16 md:py-24 bg-muted/50 px-4 md:px-6" data-testid="section-about-stats">
         <div className="max-w-5xl mx-auto">
           <Card className="p-8 text-center bg-primary/5 border-primary/20" data-testid="card-stats">
             <h2 className="text-2xl font-bold mb-4">Proven Impact</h2>
-            <div className="grid md:grid-cols-4 gap-6 mt-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
               <div data-testid="stat-jobs">
                 <div className="text-3xl font-bold text-primary mb-1">10K+</div>
                 <p className="text-sm text-muted-foreground">Jobs Completed</p>
@@ -244,7 +244,7 @@ export default function About() {
       </section>
 
       {/* FINAL MANTRA */}
-      <section className="py-24 text-center px-6" data-testid="section-about-mantra">
+      <section className="py-16 md:py-24 text-center px-4 md:px-6" data-testid="section-about-mantra">
         <Quote className="w-12 h-12 text-muted-foreground/20 mx-auto mb-8" />
         <h2 className="text-3xl font-black mb-6" data-testid="text-about-mantra">This is just the beginning.</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto mb-10 text-lg leading-relaxed">

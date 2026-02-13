@@ -19,7 +19,7 @@ const services = [
     jumpToLabel: "AI Home Scan",
     icon: ClipboardCheck,
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
-    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° Home Scan, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($199). $49 back on your next booking.",
+    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° Home Scan, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($249). $49 back on your next booking.",
     price: "From $99",
     includes: ["Smart room-by-room inventory", "360° Home Scan walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$100)", "$49 credited toward any booked service"],
     featured: true,
@@ -34,7 +34,7 @@ const services = [
     icon: Wrench,
     tagline: "No task too small.",
     description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
-    price: "From $49/hr",
+    price: "From $65/hr",
     includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
     esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
   },
@@ -71,7 +71,7 @@ const services = [
     icon: Waves,
     tagline: "Crystal clear pools, maintained weekly.",
     description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
-    price: "$150/month",
+    price: "From $99/mo",
     includes: ["Weekly skimming & vacuuming", "Chemical testing & balancing", "Filter cleaning", "Equipment inspection"],
     esgImpact: "Chemical optimization saves water and reduces emissions",
   },
@@ -106,7 +106,7 @@ const services = [
     icon: Home,
     tagline: "Prevent water damage before it starts.",
     description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
-    price: "From $149",
+    price: "From $129",
     includes: ["Full debris removal", "Downspout flushing", "Roof line air-blow", "Debris bagged & hauled"],
     esgImpact: "Prevents 50+ lbs CO2 from water damage repairs",
   },
@@ -218,7 +218,7 @@ export default function Services() {
     <div className="min-h-screen bg-background" data-testid="page-services">
       <Header />
 
-      <section className="bg-slate-900 dark:bg-slate-950 pt-28 pb-20 px-6" data-testid="section-services-hero">
+      <section className="bg-slate-900 dark:bg-slate-950 pt-28 pb-20 px-4 md:px-6" data-testid="section-services-hero">
         <div className="max-w-4xl mx-auto text-center">
           <Badge variant="secondary" className="mb-6" data-testid="badge-services-label">
             The Essential Services
@@ -238,7 +238,7 @@ export default function Services() {
 
       {/* Quick Navigation */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="max-w-7xl mx-auto px-6 py-3">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3">
           <div className="flex items-start gap-2 flex-wrap">
             <span className="text-xs font-medium text-muted-foreground shrink-0 py-1.5">Jump to:</span>
             {services.map((svc) => (
@@ -262,7 +262,7 @@ export default function Services() {
         </div>
       </div>
 
-      <section className="py-20 max-w-7xl mx-auto px-6" data-testid="section-services-grid">
+      <section className="py-12 md:py-20 max-w-7xl mx-auto px-4 md:px-6" data-testid="section-services-grid">
         {/* Featured: DwellScan - Separated at top */}
         {services.filter(s => s.featured).map((svc) => (
           <div key={svc.id} id={`service-${svc.id}`} className="mb-8">
@@ -270,12 +270,12 @@ export default function Services() {
               className="shadow-xl border-2 border-primary overflow-visible"
               data-testid={`card-service-${svc.id}`}
             >
-              <CardContent className="p-8 bg-gradient-to-br from-primary/10 to-primary/5">
+              <CardContent className="p-5 md:p-8 bg-gradient-to-br from-primary/10 to-primary/5">
                 <Badge className="mb-4 bg-primary text-primary-foreground" data-testid={`badge-featured-${svc.id}`}>
                   Featured
                 </Badge>
 
-                <div className="flex items-start gap-6 mb-6">
+                <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6">
                   <div className="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center shrink-0" data-testid={`icon-service-${svc.id}`}>
                     <svc.icon className="w-8 h-8 text-primary" />
                   </div>
@@ -283,7 +283,7 @@ export default function Services() {
                     <h3 className="text-2xl font-bold mb-2" data-testid={`text-service-name-${svc.id}`}>{svc.name}</h3>
                     <p className="text-base font-semibold text-muted-foreground mb-2" data-testid={`text-service-tagline-${svc.id}`}>{svc.tagline}</p>
                     <div className="flex items-baseline gap-3">
-                      <span className="text-3xl font-black text-primary" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
+                      <span className="text-2xl md:text-3xl font-black text-primary" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
                       <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
                         $49 Credited to Any Service
                       </Badge>
@@ -341,7 +341,7 @@ export default function Services() {
               className="relative overflow-visible flex flex-col scroll-mt-24"
               data-testid={`card-service-${svc.id}`}
             >
-              <CardContent className="p-8 flex flex-col flex-1">
+              <CardContent className="p-5 md:p-8 flex flex-col flex-1">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0" data-testid={`icon-service-${svc.id}`}>
                     <svc.icon className="w-6 h-6 text-primary dark:text-orange-400" />

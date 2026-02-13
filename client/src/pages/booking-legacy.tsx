@@ -391,23 +391,23 @@ export default function Booking() {
         return Math.max(raw, 150);
       }
       case "gutter_cleaning":
-        return formData.storyCount === 2 ? 199 : 120;
+        return formData.storyCount === 2 ? 199 : 129;
       case "moving_labor": {
         const hrs = Math.max(formData.laborHours, 1);
         return hrs * formData.laborCrewSize * 80;
       }
       case "handyman": {
         const hrs = Math.max(formData.laborHours, 1);
-        return hrs * 49;
+        return hrs * 65;
       }
       case "light_demolition": {
         const hrs = Math.max(formData.laborHours || 2, 2);
         return hrs * (formData.laborCrewSize || 2) * 80;
       }
       case "home_consultation":
-        return formData.dwellscanTier === "aerial" ? 199 : 99;
+        return formData.dwellscanTier === "aerial" ? 249 : 99;
       case "pool_cleaning":
-        return 89; // Starting price for pool cleaning
+        return 99; // Starting price for pool cleaning
       case "landscaping":
         return 59; // Starting price for lawn care
       case "carpet_cleaning":
@@ -1996,7 +1996,7 @@ export default function Booking() {
                       </div>
 
                       <p className="text-sm text-muted-foreground mb-6">
-                        Professional handyman services for repairs, assembly, mounting, and more. From $49/hr, 1-hour minimum. Billed by the minute after first hour.
+                        Professional handyman services for repairs, assembly, mounting, and more. From $65/hr, 1-hour minimum. Billed by the minute after first hour.
                       </p>
 
                       <div className="space-y-6">
