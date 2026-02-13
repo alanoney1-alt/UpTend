@@ -291,9 +291,12 @@ export function UpTendGuide() {
     } catch { /* silent */ }
   }, []);
 
+  // Should this page hide the widget entirely?
+  const isHiddenPage = NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p));
+
   // Auto-greet EVERY visit — open after a short delay so page loads first
   useEffect(() => {
-    if (isDisabled) return;
+    if (isDisabled || isHiddenPage) return;
     if (!hasInitRef.current) {
       const timer = setTimeout(() => {
         handleOpen();
@@ -301,7 +304,7 @@ export function UpTendGuide() {
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isHiddenPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Gentle pulse every 30 seconds
   useEffect(() => {
@@ -486,7 +489,7 @@ export function UpTendGuide() {
 
   // Don't show on login/signup pages or if disabled
   if (isDisabled) return null;
-  if (NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p))) return null;
+  if (isHiddenPage) return null;
 
   return (
     <>

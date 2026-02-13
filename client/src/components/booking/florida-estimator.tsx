@@ -371,19 +371,9 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
   };
 
   const goToAuthGate = () => {
-    const params = new URLSearchParams({ redirect: "booking", address });
+    const params = new URLSearchParams({ redirect: "/book" });
     if (selectedService) params.set("service", selectedService);
-    if (aiQuote?.id) params.set("quoteId", aiQuote.id);
-    if (uploadedPhotos.length > 0) {
-      params.set("photos", encodeURIComponent(JSON.stringify(uploadedPhotos)));
-    }
-    if (manualEstimate) {
-      params.set("manualEstimate", encodeURIComponent(JSON.stringify(manualEstimate)));
-    }
-    if (schedulingData) {
-      params.set("schedulingData", encodeURIComponent(JSON.stringify(schedulingData)));
-    }
-    setLocation("/book?" + params.toString());
+    setLocation("/customer-signup?" + params.toString());
   };
 
   if (step === 1) {
@@ -890,7 +880,10 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
             </Button>
 
             <p className="text-xs text-center text-muted-foreground">
-              Already have an account? You'll be able to sign in on the next page.
+              Already have an account?{" "}
+              <a href={`/customer-login?redirect=/book${selectedService ? `&service=${selectedService}` : ""}`} className="text-primary underline hover:text-primary/80">
+                Sign in here
+              </a>
             </p>
           </CardContent>
         </Card>

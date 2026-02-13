@@ -80,26 +80,28 @@ Consider: safety risk, tools required, skill level, physical difficulty, and cod
         });
         analysis = typeof aiResult === 'string' ? JSON.parse(aiResult) : aiResult;
       } catch (aiErr: any) {
-        console.warn("AI photo analysis failed, using fallback:", aiErr.message);
+        console.error("AI photo analysis failed:", aiErr.message);
+        // Return a clear "pending review" response instead of fake data
         analysis = {
-          detectedItems: ["items detected"],
-          estimatedVolume: "standard scope",
-          estimatedWeight: "estimated on-site",
-          confidenceScore: 0.5,
-          priceRange: { min: 99, max: 299 },
-          scopeDescription: "Photo received — a Pro will verify on-site for exact pricing.",
-          diyScore: 30,
+          detectedItems: [],
+          estimatedVolume: "pending review",
+          estimatedWeight: "pending review",
+          confidenceScore: 0,
+          priceRange: { min: 0, max: 0 },
+          scopeDescription: "We couldn't analyze your photo automatically. A Pro will review it and provide a quote shortly.",
+          diyScore: 0,
           diyGuide: {
-            feasibility: "Best left to a pro",
+            feasibility: "Pending professional review",
             steps: [],
             toolsNeeded: [],
-            estimatedTime: "Varies",
-            safetyWarnings: ["Professional assessment recommended"],
+            estimatedTime: "Pending review",
+            safetyWarnings: [],
           },
+          pendingHumanReview: true,
         };
       }
 
-      const mockAnalysis = {
+      const normalizedAnalysis = {
         ...analysis,
         detectedItems: Array.isArray(analysis.detectedItems) ? analysis.detectedItems : ["items detected"],
         estimatedVolume: analysis.estimatedVolume || "standard scope",
@@ -118,11 +120,11 @@ Consider: safety risk, tools required, skill level, physical difficulty, and cod
       // Update with analysis results
       const updatedRequest = await storage.updatePhotoQuoteRequest(request.id, {
         aiDescription: JSON.stringify(mockAnalysis),
-        additionalServices: mockAnalysis.detectedItems,
-        estimatedScope: mockAnalysis.estimatedVolume,
-        estimatedPriceMin: mockAnalysis.priceRange.min,
-        estimatedPriceMax: mockAnalysis.priceRange.max,
-        aiConfidence: mockAnalysis.confidenceScore,
+        additionalServices: normalizedAnalysis.detectedItems,
+        estimatedScope: normalizedAnalysis.estimatedVolume,
+        estimatedPriceMin: normalizedAnalysis.priceRange.min,
+        estimatedPriceMax: normalizedAnalysis.priceRange.max,
+        aiConfidence: normalizedAnalysis.confidenceScore,
         status: "analyzed",
       });
 
