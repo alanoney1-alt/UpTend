@@ -248,6 +248,12 @@ function validateEnvironment() {
       throw err;
     });
 
+    // API 404 catch-all: MUST come after all real API routes but BEFORE
+    // the SPA/static file wildcard so unknown API routes return JSON, not HTML.
+    app.all('/api/*', (_req: Request, res: Response) => {
+      res.status(404).json({ error: 'Not found' });
+    });
+
     // WebSocket is initialized inside registerRoutes() via registerWebSocketHandlers()
     // which uses noServer + monkey-patched upgrade to survive Vite HMR.
 
