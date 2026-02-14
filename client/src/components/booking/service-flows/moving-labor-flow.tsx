@@ -9,9 +9,9 @@ import { RunningTotal } from "./running-total";
 import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 
 const PRO_OPTIONS = [
-  { count: 1, rate: 80, label: "1 Pro", description: "Small moves, loading/unloading" },
-  { count: 2, rate: 160, label: "2 Pros", description: "Standard moves, apartments" },
-  { count: 3, rate: 240, label: "3 Pros", description: "Large moves, heavy items" },
+  { count: 2, rate: 130, label: "2 Pros", description: "Standard moves, apartments" },
+  { count: 3, rate: 195, label: "3 Pros", description: "Large moves, heavy items" },
+  { count: 4, rate: 260, label: "4 Pros", description: "Full home moves, heavy furniture" },
 ];
 
 const EXTRAS = [
@@ -40,6 +40,7 @@ const MOVE_ITEMS = [
 
 export function MovingLaborFlow({ onComplete, onBack }: ServiceFlowProps) {
   const [pros, setPros] = useState(2);
+  const PER_MOVER_RATE = 65;
   const [hours, setHours] = useState(3);
   const [extras, setExtras] = useState<Record<string, number>>({});
   const [items, setItems] = useState<Set<string>>(new Set());
@@ -53,7 +54,7 @@ export function MovingLaborFlow({ onComplete, onBack }: ServiceFlowProps) {
   const total = laborCost + extrasCost;
 
   const lineItems = [
-    { label: `${proOption.label} × ${hours} hours @ $${proOption.rate}/hr`, price: laborCost },
+    { label: `${proOption.label} × ${hours} hours @ $${PER_MOVER_RATE}/hr each`, price: laborCost },
     ...Object.entries(extras)
       .filter(([, qty]) => qty > 0)
       .map(([id, qty]) => {
@@ -82,6 +83,7 @@ export function MovingLaborFlow({ onComplete, onBack }: ServiceFlowProps) {
           <h4 className="font-bold text-sm flex items-center gap-2">
             <Users className="w-4 h-4" /> Number of Pros
           </h4>
+          <p className="text-xs text-muted-foreground">$65/hr per mover — 2-mover minimum</p>
           <div className="grid grid-cols-3 gap-3">
             {PRO_OPTIONS.map((p) => (
               <Button

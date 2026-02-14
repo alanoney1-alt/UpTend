@@ -15,8 +15,8 @@ const BASE_PRICES: Record<string, number> = {
 
 const CLEAN_TYPES = [
   { id: "standard", label: "Standard Clean", multiplier: 1, description: "Regular cleaning — dusting, vacuuming, mopping, bathrooms, kitchen" },
-  { id: "deep", label: "Deep Clean", multiplier: 1.5, description: "Standard + baseboards, inside cabinets, appliances, detailed scrub", badge: "Popular" },
-  { id: "move_out", label: "Move-In/Out Clean", multiplier: 2, description: "Top-to-bottom deep clean, inside every cabinet, oven, fridge, windows" },
+  { id: "deep", label: "Deep Clean", multiplier: 1.61, description: "Standard + baseboards, inside cabinets, appliances, detailed scrub", badge: "Popular" },
+  { id: "move_out", label: "Move-In/Out Clean", multiplier: 2.01, description: "Top-to-bottom deep clean, inside every cabinet, oven, fridge, windows" },
 ];
 
 const ADDONS = [

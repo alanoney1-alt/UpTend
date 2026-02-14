@@ -8,6 +8,15 @@ import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 
 const TIERS = [
   {
+    id: "mini",
+    name: "Mini",
+    price: 150,
+    description: "Quick cleanout — minimal items",
+    items: "~5-10 items",
+    duration: "1-2 hours",
+    details: "Basic declutter and haul-away. Great for a quick refresh.",
+  },
+  {
     id: "small",
     name: "Small",
     price: 299,

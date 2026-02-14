@@ -8,12 +8,12 @@ import { AiScanToggle } from "./ai-scan-toggle";
 import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 
 const SCOPES = [
-  { id: "bathroom", label: "Bathroom Demo", prices: { small: 200, medium: 350, large: 500 }, description: "Tile, vanity, fixtures removal" },
-  { id: "kitchen_cabinets", label: "Kitchen Cabinet Removal", prices: { small: 300, medium: 550, large: 800 }, description: "Cabinet tear-out, countertop removal" },
-  { id: "shed", label: "Shed Demolition", prices: { small: 500, medium: 1000, large: 1500 }, description: "Complete tear-down and haul-away" },
-  { id: "deck", label: "Deck Removal", prices: { small: 300, medium: 650, large: 1000 }, description: "Deck boards, railing, framing" },
-  { id: "wall", label: "Interior Wall (non-load-bearing)", prices: { small: 300, medium: 550, large: 800 }, description: "Drywall, framing, cleanup" },
-  { id: "fence", label: "Fencing Removal", prices: { small: 200, medium: 400, large: 600 }, description: "Panels, posts, and disposal" },
+  { id: "shed", label: "Shed Demolition", prices: { small: 299, medium: 499, large: 799 }, description: "Complete tear-down and haul-away" },
+  { id: "deck", label: "Deck Removal", prices: { small: 199, medium: 399, large: 699 }, description: "Deck boards, railing, framing" },
+  { id: "fence", label: "Fencing Removal", prices: { small: 149, medium: 299, large: 499 }, description: "Panels, posts, and disposal" },
+  { id: "wall", label: "Interior Wall (non-load-bearing)", prices: { small: 399, medium: 599, large: 899 }, description: "Drywall, framing, cleanup" },
+  { id: "bathroom", label: "Bathroom Demo", prices: { small: 249, medium: 399, large: 599 }, description: "Tile, vanity, fixtures removal" },
+  { id: "kitchen_cabinets", label: "Kitchen Cabinet Removal", prices: { small: 349, medium: 549, large: 799 }, description: "Cabinet tear-out, countertop removal" },
   { id: "custom", label: "Custom / Other", prices: { small: 0, medium: 0, large: 0 }, description: "Request a custom quote", isCustom: true },
 ];
 

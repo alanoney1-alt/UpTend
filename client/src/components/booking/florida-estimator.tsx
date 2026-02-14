@@ -59,7 +59,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "garage_cleanout",
     name: "Garage Cleanout",
-    price: "From $299",
+    price: "From $150",
     description: "Complete garage cleanout with sorting, hauling, and organization assistance.",
     benefit: "Reclaim valuable space • Prepare for sale or storage",
     icon: Home,
@@ -67,8 +67,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "moving_labor",
     name: "Moving Labor",
-    price: "$80/hr",
-    description: "Hourly labor for loading, unloading, packing, and heavy lifting assistance.",
+    price: "$65/hr per mover",
+    description: "Hourly labor for loading, unloading, packing, and heavy lifting (2-mover minimum).",
     benefit: "Flexible hourly rates • Professional muscle when needed",
     icon: Package,
   },
@@ -83,16 +83,16 @@ const pricingServices: ServicePricing[] = [
   {
     id: "carpet_cleaning",
     name: "Carpet Cleaning",
-    price: "Professional deep cleaning",
-    description: "Professional carpet and upholstery cleaning with advanced extraction methods.",
+    price: "From $39/room",
+    description: "Professional carpet and upholstery cleaning with advanced extraction methods. $99 minimum.",
     benefit: "Removes allergens • Extends carpet life",
     icon: Home,
   },
   {
     id: "landscaping",
     name: "Landscaping",
-    price: "Competitive rates",
-    description: "Professional lawn care, trimming, edging, and yard maintenance services.",
+    price: "From $49",
+    description: "One-time mow from $49. Recurring plans from $99/mo. Full Service $159/mo. Premium $249/mo.",
     benefit: "Maintains curb appeal • Prevents code violations",
     icon: Trees,
   },
@@ -123,8 +123,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "light_demolition",
     name: "Light Demolition",
-    price: "From $199",
-    description: "Light demolition services for sheds, decks, fencing, and small structures.",
+    price: "From $149",
+    description: "Light demolition services for sheds ($299), decks ($199), fencing ($149), and walls ($399).",
     benefit: "Safe removal • Permits handled • Debris hauled",
     icon: Truck,
   },
@@ -199,6 +199,8 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
         if (state.bathrooms) setBathrooms(state.bathrooms);
         if (state.sqft) setSqft(state.sqft);
         if (state.stories) setStories(state.stories);
+        if (state.schedulingData) setSchedulingData(state.schedulingData);
+        if (state.quoteMethod) setQuoteMethod(state.quoteMethod);
         setStep(6);
         sessionStorage.removeItem('pendingBooking');
       } catch (e) {

@@ -37,9 +37,9 @@ const SURFACES: Surface[] = [
     id: "house_1",
     label: "House Exterior (1-Story)",
     sizes: [
-      { id: "sm", label: "Small home", price: 200 },
-      { id: "md", label: "Medium home", price: 275 },
-      { id: "lg", label: "Large home", price: 350 },
+      { id: "sm", label: "Small home", price: 250 },
+      { id: "md", label: "Medium home", price: 325 },
+      { id: "lg", label: "Large home", price: 400 },
     ],
   },
   {
@@ -55,9 +55,9 @@ const SURFACES: Surface[] = [
     id: "patio",
     label: "Patio / Deck",
     sizes: [
-      { id: "sm", label: "Small (≤200 sqft)", price: 100 },
-      { id: "md", label: "Medium (200-400 sqft)", price: 150 },
-      { id: "lg", label: "Large (400+ sqft)", price: 200 },
+      { id: "sm", label: "Small (≤200 sqft)", price: 89 },
+      { id: "md", label: "Medium (200-400 sqft)", price: 139 },
+      { id: "lg", label: "Large (400+ sqft)", price: 189 },
     ],
   },
   {

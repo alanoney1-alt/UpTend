@@ -7,8 +7,9 @@ import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import {
   CheckCircle, ArrowRight, ShieldCheck, MapPin, Recycle,
-  Droplets, Home, Users, Hammer, Sofa, Wrench, Waves,
+  Droplets, Users, Hammer, Warehouse, Wrench, Waves,
   Sparkles, Leaf, Clock, Calendar, CalendarCheck, Repeat,
+  CloudRain, SprayCan,
 } from "lucide-react";
 import NotFound from "@/pages/not-found";
 import { GuaranteeBadge } from "@/components/guarantee-badge";
@@ -119,8 +120,8 @@ const serviceData: Record<string, ServiceData> = {
     name: "Garage Cleanout",
     serviceType: "garage_cleanout",
     tagline: "Reclaim Your Space",
-    icon: Sofa,
-    heroGradient: "from-teal-600 to-emerald-500",
+    icon: Warehouse,
+    heroGradient: "from-teal-600 to-cyan-500",
     whatWeDo: [
       "A full garage cleanout is more than just hauling—it's a complete transformation from cluttered to clean. Our Pros work with you to sort everything in your garage into keep, donate, recycle, or haul categories. We handle the heavy lifting, coordinate donations with local charities, and ensure recyclable materials are properly processed.",
       "After removal, we sweep the garage clean and provide a digital inventory of items you're keeping, making it easy to find what you need later. Whether you're preparing for a move, reclaiming space to actually park your car, or just tired of the clutter, we handle the entire process in a single visit."
@@ -153,7 +154,8 @@ const serviceData: Record<string, ServiceData> = {
       "Verified Impact Report proves environmental responsibility",
       "Donation receipts maximize your tax benefits",
       "Eco-friendly disposal—nothing goes to landfill unnecessarily"
-    ]
+    ],
+    esgImpact: "Avg 400 lbs diverted from landfills per cleanout"
   },
   "moving-labor": {
     name: "Moving Labor",
@@ -193,7 +195,8 @@ const serviceData: Record<string, ServiceData> = {
       "Transparent hourly billing—no hidden fees or estimates",
       "Same-day payouts for Pros mean motivated, professional service",
       "Flexible scheduling—book labor only when you need it"
-    ]
+    ],
+    esgImpact: "Reusable equipment & no-truck-rental option cuts moving emissions"
   },
   "home-cleaning": {
     name: "Home Cleaning",
@@ -234,13 +237,14 @@ const serviceData: Record<string, ServiceData> = {
       "Recurring plans save money and give you a dedicated Pro",
       "Eco-friendly products reduce chemical exposure in your home",
       "Flexible scheduling including same-day availability"
-    ]
+    ],
+    esgImpact: "Eco-friendly products reduce chemical waste by 80%"
   },
   "carpet-cleaning": {
     name: "Carpet Cleaning",
     serviceType: "carpet_cleaning",
     tagline: "Deep Clean Carpets. Certified Methods.",
-    icon: Sparkles,
+    icon: SprayCan,
     heroGradient: "from-pink-600 to-fuchsia-500",
     whatWeDo: [
       "Professional carpet and upholstery cleaning using IICRC-certified methods. We use hot water extraction (steam cleaning) as our primary method, which deep-cleans fibers, removes embedded dirt and allergens, and sanitizes your carpets without harsh chemicals. For commercial spaces or low-moisture needs, we also offer encapsulation cleaning.",
@@ -275,7 +279,8 @@ const serviceData: Record<string, ServiceData> = {
       "Certified technicians with professional equipment",
       "Transparent per-room pricing—no surprises",
       "Extends carpet life, reducing landfill waste and saving money"
-    ]
+    ],
+    esgImpact: "Extends carpet life 5+ years, keeping 500+ lbs out of landfills"
   },
   "landscaping": {
     name: "Landscaping",
@@ -321,8 +326,8 @@ const serviceData: Record<string, ServiceData> = {
     name: "Gutter Cleaning",
     serviceType: "gutter_cleaning",
     tagline: "Prevent Water Damage Before It Starts",
-    icon: Home,
-    heroGradient: "from-amber-600 to-orange-500",
+    icon: CloudRain,
+    heroGradient: "from-amber-600 to-yellow-500",
     whatWeDo: [
       "Complete gutter and downspout cleaning that prevents water damage before it starts. In Central Florida, debris from oak trees, pine needles, and seasonal storms can clog gutters fast, leading to overflow, foundation erosion, and costly water intrusion. Our Pros remove all debris from your gutters, flush every downspout to ensure proper flow, and air-blow your roof line to prevent immediate re-clogging.",
       "After cleaning, we bag and haul all debris, leaving your property spotless. We also inspect gutter guards (if installed) and provide recommendations for any repairs or improvements needed. Regular gutter maintenance is one of the most cost-effective ways to protect your home's foundation, siding, and landscaping from water damage."
@@ -415,6 +420,7 @@ const serviceData: Record<string, ServiceData> = {
     ],
     availability: {
       sameDay: true,
+      nextDay: true,
       scheduled: true,
       recurring: true,
     },
@@ -474,7 +480,8 @@ const serviceData: Record<string, ServiceData> = {
       "One-visit service—demo and haul in the same trip",
       "Fully insured with $1M coverage protects your property",
       "Clean site guaranteed—we leave your property ready for the next step"
-    ]
+    ],
+    esgImpact: "Materials sorted for recycling—avg 60% diverted from landfills"
   },
 };
 
