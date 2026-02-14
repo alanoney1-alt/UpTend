@@ -442,6 +442,8 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
       bathrooms,
       sqft,
       stories,
+      schedulingData,
+      quoteMethod,
     };
     sessionStorage.setItem('pendingBooking', JSON.stringify(bookingState));
   };
