@@ -7,7 +7,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Setup payment method for customer
   app.post("/api/customers/setup-payment", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -46,7 +46,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Check if customer has payment method on file
   app.get("/api/customers/payment-status", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -79,7 +79,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Confirm payment setup completed
   app.post("/api/customers/confirm-payment-setup", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -109,7 +109,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Update customer profile
   app.patch("/api/customers/profile", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -127,7 +127,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Get customer addresses
   app.get("/api/customers/addresses", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -143,7 +143,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Add customer address
   app.post("/api/customers/addresses", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -170,7 +170,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Update customer address
   app.patch("/api/customers/addresses/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -198,7 +198,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Delete customer address
   app.delete("/api/customers/addresses/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -216,7 +216,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Set default address
   app.post("/api/customers/addresses/:id/set-default", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -234,7 +234,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Get customer payment methods
   app.get("/api/customers/payment-methods", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -266,7 +266,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Delete payment method
   app.delete("/api/customers/payment-methods/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -297,7 +297,7 @@ export function registerCustomerAccountRoutes(app: Express) {
   // Set default payment method
   app.post("/api/customers/payment-methods/:id/set-default", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }

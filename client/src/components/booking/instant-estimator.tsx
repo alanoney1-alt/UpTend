@@ -17,7 +17,7 @@ interface EstimateData {
 
 function getEstimates(_addr: string): EstimateData {
   return {
-    homeRefresh: "$149 – $299",
+    homeRefresh: "$129 – $299",
     pressureWash: "$120 – $350",
     homeAudit: "$99 / $249 (Standard / Aerial)",
     gutterCare: "$129 – $199",

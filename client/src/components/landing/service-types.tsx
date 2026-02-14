@@ -8,25 +8,16 @@ import { MILEAGE_RATE } from "@/lib/distance-utils";
 
 import junkImage from "@assets/stock_images/junk_removal_pile,_o_405748d1.jpg";
 import furnitureImage from "@assets/stock_images/sofa_couch_furniture_a076eb82.jpg";
-import estateImage from "@assets/stock_images/estate_cleanout_scen_3e9cd8d5.jpg";
 import emptyGarageImage from "@assets/generated_images/clean_empty_garage_interior.png";
 
 const services = [
   {
-    id: "furniture_moving",
-    title: "Furniture Moving",
-    description: `Same-day in-state moving. Safe transport of furniture to your new location at just $${MILEAGE_RATE}/mile.`,
-    icon: Sofa,
-    image: furnitureImage,
-    startingPrice: SERVICE_STARTING_PRICES.furniture_moving,
-  },
-  {
-    id: "truck_unloading",
-    title: "Truck Unloading",
-    description: `U-Haul or rental truck? We'll unload it for you. Labor-only pricing at $${HOURLY_RATE_PER_PRO}/hour.`,
-    icon: Home,
-    image: estateImage,
-    startingPrice: SERVICE_STARTING_PRICES.truck_unloading,
+    id: "junk_removal",
+    title: "Junk Removal",
+    description: "Clear out unwanted items, debris, and clutter from your home or office.",
+    icon: Trash2,
+    image: junkImage,
+    startingPrice: SERVICE_STARTING_PRICES.junk_removal,
   },
   {
     id: "garage_cleanout",
@@ -37,12 +28,12 @@ const services = [
     startingPrice: SERVICE_STARTING_PRICES.garage_cleanout,
   },
   {
-    id: "junk_removal",
-    title: "Junk Removal",
-    description: "Clear out unwanted items, debris, and clutter from your home or office.",
-    icon: Trash2,
-    image: junkImage,
-    startingPrice: SERVICE_STARTING_PRICES.junk_removal,
+    id: "moving_labor",
+    title: "Moving Labor",
+    description: `Furniture moving, truck unloading, or general labor — all $${HOURLY_RATE_PER_PRO}/hr per Pro. You pick the task.`,
+    icon: Sofa,
+    image: furnitureImage,
+    startingPrice: SERVICE_STARTING_PRICES.moving_labor || 80,
   },
 ];
 

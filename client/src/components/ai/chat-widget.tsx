@@ -91,7 +91,7 @@ export function AiChatWidget() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-[5.5rem] right-4 z-50 h-14 w-14 rounded-full bg-[#F47C20] text-white shadow-lg hover:bg-[#e06d15] transition-all hover:scale-105 flex items-center justify-center group"
+        className="fixed bottom-24 md:bottom-6 right-4 z-50 h-14 w-14 rounded-full bg-[#F47C20] text-white shadow-lg hover:bg-[#e06d15] transition-all hover:scale-105 flex items-center justify-center group"
         aria-label="Open AI Assistant"
       >
         <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
@@ -101,7 +101,7 @@ export function AiChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-20 right-4 z-50 w-[340px] h-[440px] flex flex-col bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-[7.5rem] md:bottom-6 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] h-[440px] max-h-[60vh] md:max-h-[600px] flex flex-col bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
       {/* Header */}
       <div className="bg-[#F47C20] px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
@@ -128,8 +128,9 @@ export function AiChatWidget() {
             size="icon"
             className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20"
             onClick={() => setIsOpen(false)}
+            title="Close"
           >
-            <Minimize2 className="h-4 w-4" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
       </div>

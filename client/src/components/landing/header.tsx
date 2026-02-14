@@ -91,6 +91,13 @@ export function Header() {
             <div className="w-8 h-8 rounded-full bg-slate-700 animate-pulse" />
           ) : isAuthenticated && user ? (
             <div className="flex items-center gap-2">
+              {user.role === "customer" && (
+                <Link href="/dashboard">
+                  <Button variant="ghost" className="text-slate-300" data-testid="button-customer-dashboard">
+                    {t("nav.dashboard")}
+                  </Button>
+                </Link>
+              )}
               {user.role === "hauler" && (
                 <Link href="/pro/dashboard">
                   <Button variant="ghost" className="text-slate-300" data-testid="button-dashboard">
@@ -214,6 +221,13 @@ export function Header() {
                     <span className="text-sm font-medium text-slate-200">{user.firstName} {user.lastName}</span>
                   </div>
                 </Link>
+                {user.role === "customer" && (
+                  <Link href="/dashboard" onClick={closeMenu}>
+                    <Button variant="outline" className="w-full border-slate-600 text-slate-300" data-testid="button-customer-dashboard-mobile">
+                      {t("nav.dashboard")}
+                    </Button>
+                  </Link>
+                )}
                 {user.role === "hauler" && (
                   <Link href="/pro/dashboard" onClick={closeMenu}>
                     <Button variant="outline" className="w-full border-slate-600 text-slate-300" data-testid="button-dashboard-mobile">

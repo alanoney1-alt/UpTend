@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -91,6 +91,14 @@ const PartnerRegister = lazy(() => import("@/pages/partners/register"));
 const PartnerDashboard = lazy(() => import("@/pages/partners/dashboard"));
 const HomeProfilePage = lazy(() => import("@/pages/home-profile"));
 
+function ScrollToTop() {
+  const [location] = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+  return null;
+}
+
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -101,6 +109,8 @@ function PageLoader() {
 
 function Router() {
   return (
+    <>
+    <ScrollToTop />
     <Suspense fallback={<PageLoader />}>
     <Switch>
       <Route path="/" component={Landing} />
@@ -172,7 +182,8 @@ function Router() {
       <Route path="/services/home-audit" component={HomeAudit} />
       <Route path="/services/audit" component={HomeAudit} />
       <Route path="/home-audit" component={HomeAudit} />
-      <Route path="/dwellscan" component={HomeAudit} />
+      <Route path="/home-scan" component={HomeAudit} />
+      <Route path="/dwellscan" component={HomeAudit} />{/* Legacy redirect */}
       <Route path="/home-health-audit" component={HomeHealthAudit} />
       <Route path="/audit" component={HomeHealthAudit} />
       <Route path="/services/material-recovery" component={JunkRemoval} />
@@ -205,6 +216,7 @@ function Router() {
       <Route component={NotFound} />
     </Switch>
     </Suspense>
+    </>
   );
 }
 

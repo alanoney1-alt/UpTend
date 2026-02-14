@@ -71,6 +71,7 @@ export default function CustomerLogin() {
         title: "Login Failed",
         description: errorMessage,
         variant: "destructive",
+        duration: 6000,
       });
     },
   });

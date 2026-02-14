@@ -89,10 +89,18 @@ export const UPTEND_KNOWLEDGE = {
     gutter_cleaning: {
       name: "Gutter Cleaning",
       description: "Professional gutter cleaning and debris removal to prevent water damage.",
-      pricing: "Fixed pricing by home size",
+      pricing: "Tiered pricing by home size and linear footage",
       rates: [
-        { type: "1-Story Home", price: "$149", includes: "Full perimeter cleaning + flow test" },
-        { type: "2-Story Home", price: "$249", includes: "Full perimeter cleaning + flow test" },
+        { type: "1-Story (up to 150 linear ft)", price: "$129", includes: "Full perimeter cleaning + flow test" },
+        { type: "1-Story Large (150-250 linear ft)", price: "$169", includes: "Full perimeter cleaning + flow test" },
+        { type: "2-Story (up to 150 linear ft)", price: "$199", includes: "Full perimeter cleaning + flow test" },
+        { type: "2-Story Large (150-250 linear ft)", price: "$249", includes: "Full perimeter cleaning + flow test" },
+        { type: "3-Story", price: "$299+", includes: "Full perimeter cleaning + flow test" },
+      ],
+      addOns: [
+        { type: "Gutter guard install", price: "$4-6/linear ft" },
+        { type: "Downspout flush", price: "$15/each" },
+        { type: "Gutter repair (minor)", price: "$75" },
       ],
       features: [
         "Debris removal from gutters and downspouts",
@@ -180,7 +188,7 @@ export const UPTEND_KNOWLEDGE = {
         },
         {
           name: "AI Home Scan Aerial",
-          price: "$199",
+          price: "$249",
           description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan",
           features: [
             "Everything in Standard PLUS:",
@@ -195,11 +203,11 @@ export const UPTEND_KNOWLEDGE = {
             "Full before/after aerial photo set, timestamped and GPS-tagged",
           ],
           droneRequired: true,
-          valueComparison: "Comparable drone roof inspections cost $290-$350 elsewhere. You're getting it bundled for $199.",
+          valueComparison: "Comparable drone roof inspections cost $290-$350 elsewhere. You're getting it bundled for $249.",
           recommended: true,
         },
       ],
-      creditPolicy: "$49 credit toward any job you book through UpTend on either the $99 or $199 scan. It's risk-free.",
+      creditPolicy: "$49 credit toward any job you book through UpTend on either the $99 or $249 scan. It's risk-free.",
       when: "When customer asks about home inspection or audit, present both tier options and explain that Aerial includes drone scan that normally costs $290+ elsewhere.",
     },
   },

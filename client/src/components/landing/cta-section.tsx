@@ -77,7 +77,7 @@ export function CTASection() {
                     <div className="flex-1 p-4 space-y-4">
                       <div className="bg-muted rounded-lg p-3">
                         <div className="text-xs text-muted-foreground mb-1">Service</div>
-                        <div className="font-medium text-foreground text-sm">Furniture Moving</div>
+                        <div className="font-medium text-foreground text-sm">Moving Labor</div>
                       </div>
                       <div className="bg-muted rounded-lg p-3">
                         <div className="text-xs text-muted-foreground mb-1">Location</div>
@@ -85,7 +85,7 @@ export function CTASection() {
                       </div>
                       <div className="bg-muted rounded-lg p-3">
                         <div className="text-xs text-muted-foreground mb-1">Estimated Cost</div>
-                        <div className="font-bold text-primary text-lg">$149 - $199</div>
+                        <div className="font-bold text-primary text-lg">$129 - $199</div>
                       </div>
                       <div className="mt-auto">
                         <div className="bg-primary text-primary-foreground text-center py-3 rounded-lg font-medium text-sm">

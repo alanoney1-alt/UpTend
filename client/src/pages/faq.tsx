@@ -261,7 +261,7 @@ const faqs: FAQ[] = [
   {
     category: "pricing",
     question: "How much does recurring service cost?",
-    answer: "Recurring services receive automatic discounts: weekly service (15% off), bi-weekly (10% off), monthly (5% off). For example, weekly landscaping normally $75 becomes $63.75/visit. Discounts apply automatically when you set up recurring schedule. Cancel anytime with no penalties or commitments."
+    answer: "Recurring services receive automatic discounts: weekly service (15% off), bi-weekly (10% off), monthly (5% off). For example, Mow & Go landscaping is $99/mo for weekly service on lots ≤¼ acre. Discounts apply automatically when you set up recurring schedule. Cancel anytime with no penalties or commitments."
   },
   {
     category: "pricing",

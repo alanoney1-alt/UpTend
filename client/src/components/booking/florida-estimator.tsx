@@ -7,6 +7,7 @@ import { MultiPhotoUpload } from "@/components/photo-upload";
 import { AIQuoteDisplay } from "./ai-quote-display";
 import { ManualQuoteForm } from "./manual-quote-form";
 import { HandymanTaskSelector } from "./handyman-task-selector";
+import { ServiceFlowRouter, type ServiceFlowResult } from "./service-flows";
 import { ServiceScheduling, type SchedulingData } from "./service-scheduling";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -40,6 +41,14 @@ const pricingServices: ServicePricing[] = [
     featured: true,
   },
   {
+    id: "handyman",
+    name: "Handyman Services",
+    price: "$75/hr • 1hr min",
+    description: "Verified local handyman for repairs, assembly, mounting, painting, and home improvements. Billed by the minute after first hour.",
+    benefit: "No task too small • Same-day available • Background checked pros",
+    icon: Wrench,
+  },
+  {
     id: "junk_removal",
     name: "Junk Removal",
     price: "From $99",
@@ -48,12 +57,20 @@ const pricingServices: ServicePricing[] = [
     icon: Truck,
   },
   {
-    id: "landscaping",
-    name: "Landscaping",
-    price: "Competitive rates",
-    description: "Professional lawn care, trimming, edging, and yard maintenance services.",
-    benefit: "Maintains curb appeal • Prevents code violations",
-    icon: Trees,
+    id: "garage_cleanout",
+    name: "Garage Cleanout",
+    price: "From $299",
+    description: "Complete garage cleanout with sorting, hauling, and organization assistance.",
+    benefit: "Reclaim valuable space • Prepare for sale or storage",
+    icon: Home,
+  },
+  {
+    id: "moving_labor",
+    name: "Moving Labor",
+    price: "$80/hr",
+    description: "Hourly labor for loading, unloading, packing, and heavy lifting assistance.",
+    benefit: "Flexible hourly rates • Professional muscle when needed",
+    icon: Package,
   },
   {
     id: "home_cleaning",
@@ -72,12 +89,12 @@ const pricingServices: ServicePricing[] = [
     icon: Home,
   },
   {
-    id: "pressure_washing",
-    name: "Pressure Washing",
-    price: "From $120",
-    description: "Eco-friendly pressure washing for driveways, siding, decks, and patios.",
-    benefit: "Prevents mold & mildew • Identifies structural issues early",
-    icon: Droplets,
+    id: "landscaping",
+    name: "Landscaping",
+    price: "Competitive rates",
+    description: "Professional lawn care, trimming, edging, and yard maintenance services.",
+    benefit: "Maintains curb appeal • Prevents code violations",
+    icon: Trees,
   },
   {
     id: "gutter_cleaning",
@@ -88,36 +105,20 @@ const pricingServices: ServicePricing[] = [
     icon: Waves,
   },
   {
-    id: "pool_cleaning",
-    name: "Pool Cleaning",
-    price: "From $99/mo",
-    description: "Basic ($99/mo) or Full ($150/mo) pool maintenance including skimming, chemical balancing, and equipment check.",
-    benefit: "Crystal clear water • Equipment longevity",
+    id: "pressure_washing",
+    name: "Pressure Washing",
+    price: "From $120",
+    description: "Eco-friendly pressure washing for driveways, siding, decks, and patios.",
+    benefit: "Prevents mold & mildew • Identifies structural issues early",
     icon: Droplets,
   },
   {
-    id: "moving_labor",
-    name: "Moving Labor",
-    price: "$80/hr",
-    description: "Hourly labor for loading, unloading, packing, and heavy lifting assistance.",
-    benefit: "Flexible hourly rates • Professional muscle when needed",
-    icon: Package,
-  },
-  {
-    id: "handyman",
-    name: "Handyman Services",
-    price: "$75/hr • 1hr min",
-    description: "Verified local handyman for repairs, assembly, mounting, painting, and home improvements. Billed by the minute after first hour.",
-    benefit: "No task too small • Same-day available • Background checked pros",
-    icon: Wrench,
-  },
-  {
-    id: "garage_cleanout",
-    name: "Garage Cleanout",
-    price: "From $299",
-    description: "Complete garage cleanout with sorting, hauling, and organization assistance.",
-    benefit: "Reclaim valuable space • Prepare for sale or storage",
-    icon: Home,
+    id: "pool_cleaning",
+    name: "Pool Cleaning",
+    price: "From $89/mo",
+    description: "Basic ($89/mo), Standard ($129/mo), Full Service ($169/mo), or One-Time Deep Clean ($199).",
+    benefit: "Crystal clear water • Equipment longevity",
+    icon: Droplets,
   },
   {
     id: "light_demolition",
@@ -162,6 +163,12 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
   const [, setLocation] = useLocation();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  // Property details (user-entered)
+  const [bedrooms, setBedrooms] = useState("");
+  const [bathrooms, setBathrooms] = useState("");
+  const [sqft, setSqft] = useState("");
+  const [stories, setStories] = useState("");
+
   // New state for quote flow
   const [selectedService, setSelectedService] = useState<string | null>(preselectedService ?? null);
   const [schedulingData, setSchedulingData] = useState<SchedulingData | null>(null);
@@ -176,6 +183,14 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
 
+  // Scroll to top on step change — immediate jump, no smooth scroll
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Also reset any scrollable containers
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [step]);
+
   const fetchPropertyValue = async (addr: string) => {
     setPropertyLoading(true);
     try {
@@ -185,6 +200,23 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
         const data = await res.json();
         if (data.found && data.property) {
           setPropertyData(data.property);
+          // Auto-fill property details from Zillow data
+          const p = data.property as ZillowProperty;
+          if (p.bedrooms && !bedrooms) {
+            setBedrooms(p.bedrooms >= 5 ? "5+" : String(p.bedrooms));
+          }
+          if (p.bathrooms && !bathrooms) {
+            setBathrooms(p.bathrooms >= 4 ? "4+" : String(p.bathrooms));
+          }
+          if (p.livingArea && !sqft) {
+            const area = p.livingArea;
+            if (area < 1000) setSqft("<1000");
+            else if (area < 1500) setSqft("1000-1500");
+            else if (area < 2000) setSqft("1500-2000");
+            else if (area < 2500) setSqft("2000-2500");
+            else if (area < 3000) setSqft("2500-3000");
+            else setSqft("3000+");
+          }
         }
       }
     } catch (err) {
@@ -196,6 +228,7 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
 
   const handleScan = () => {
     if (address.trim().length > 5) {
+      window.scrollTo(0, 0);
       setStep(2);
       fetchPropertyValue(address);
     }
@@ -204,6 +237,7 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
 
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId);
+    window.scrollTo(0, 0);
     setStep(3);
   };
 
@@ -738,6 +772,14 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
       return (
         <div className="w-full max-w-2xl mx-auto" data-testid="widget-ai-quote-display">
           <div className="text-center mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setAiQuote(null)}
+              className="mb-4"
+            >
+              ← Back to upload
+            </Button>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
               Your AI-Powered Quote
             </h2>
@@ -756,6 +798,7 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
     }
 
     if (quoteMethod === "manual") {
+      const serviceName = pricingServices.find(s => s.id === selectedService)?.name || "Service";
       return (
         <div className="w-full max-w-2xl mx-auto" data-testid="widget-manual-quote">
           <div className="text-center mb-6">
@@ -768,41 +811,35 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
               ← Back to quote method
             </Button>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              {selectedService === "handyman" ? "What needs fixing?" : "Describe What You Need"}
+              Build Your {serviceName} Quote
             </h2>
           </div>
 
-          {selectedService === "handyman" ? (
-            <HandymanTaskSelector
-              onComplete={(data) => {
-                setManualEstimate({
-                  quoteMethod: "manual",
-                  serviceType: selectedService,
-                  estimatedPrice: data.total,
-                  userInputs: {
-                    selectedTasks: data.selectedTasks,
-                    estimatedTime: data.estimatedTime,
-                  },
-                  requiresHitlValidation: false, // Fixed-price tasks don't need validation
-                });
-                setStep(6);
-              }}
-              onBack={() => setStep(4)}
-            />
-          ) : (
-            <ManualQuoteForm
-              serviceType={selectedService || ""}
-              propertyData={propertyData ? {
-                bedrooms: propertyData.bedrooms,
-                bathrooms: propertyData.bathrooms,
-                livingArea: propertyData.livingArea,
-              } : undefined}
-              onComplete={(estimate) => {
-                setManualEstimate(estimate);
-                setStep(6);
-              }}
-            />
-          )}
+          <ServiceFlowRouter
+            serviceId={selectedService || ""}
+            propertyData={{
+              bedrooms: bedrooms ? (bedrooms === '5+' ? 5 : Number(bedrooms)) : propertyData?.bedrooms ?? null,
+              bathrooms: bathrooms ? (bathrooms === '4+' ? 4 : Number(bathrooms)) : propertyData?.bathrooms ?? null,
+              livingArea: sqft ? null : propertyData?.livingArea ?? null,
+              sqftRange: sqft || undefined,
+              stories: stories || undefined,
+            }}
+            onComplete={(result: ServiceFlowResult) => {
+              setManualEstimate({
+                quoteMethod: "manual",
+                serviceType: selectedService,
+                estimatedPrice: result.estimatedPrice,
+                monthlyPrice: result.monthlyPrice,
+                isRecurring: result.isRecurring,
+                userInputs: result.userInputs,
+                lineItems: result.lineItems,
+                discounts: result.discounts,
+                requiresHitlValidation: result.requiresHitlValidation,
+              });
+              setStep(6);
+            }}
+            onBack={() => setStep(4)}
+          />
         </div>
       );
     }
@@ -813,6 +850,15 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
     return (
       <div className="w-full max-w-2xl mx-auto" data-testid="widget-auth-gate">
         <div className="text-center mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setStep(5)}
+            className="mb-4 text-slate-300 hover:text-white"
+            data-testid="button-back-edit-selections"
+          >
+            ← Edit Selections
+          </Button>
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
             Ready to Book Your Service
           </h2>
@@ -838,11 +884,27 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
 
             {manualEstimate && (
               <div className="text-center p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">Your Preliminary Estimate</p>
-                <p className="text-3xl font-bold text-primary">
-                  ${manualEstimate.estimatedPrice}
+                <p className="text-sm text-muted-foreground mb-1">
+                  {manualEstimate.isRecurring ? "Your Monthly Quote" : "Your Preliminary Estimate"}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-3xl font-bold text-primary">
+                  ${manualEstimate.monthlyPrice || manualEstimate.estimatedPrice}
+                  {manualEstimate.isRecurring && <span className="text-sm font-normal">/mo</span>}
+                </p>
+                {manualEstimate.lineItems?.length > 0 && (
+                  <div className="text-left mt-3 space-y-1 border-t pt-2">
+                    {manualEstimate.lineItems.slice(0, 5).map((item: any, i: number) => (
+                      <div key={i} className="flex justify-between text-xs text-muted-foreground">
+                        <span>{item.label}</span>
+                        {item.price > 0 && <span>${item.price * (item.quantity || 1)}</span>}
+                      </div>
+                    ))}
+                    {manualEstimate.lineItems.length > 5 && (
+                      <p className="text-xs text-muted-foreground">+{manualEstimate.lineItems.length - 5} more items</p>
+                    )}
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground mt-2">
                   Pro will confirm final price on-site
                 </p>
               </div>
@@ -917,87 +979,83 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
           </Button>
         </div>
 
-        {propertyLoading && (
-          <div className="flex items-center justify-center gap-3 py-6 mb-6 bg-muted/30 rounded-md" data-testid="loading-property">
-            <Loader2 className="w-5 h-5 animate-spin text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">{t("estimator.fetching_property")}</span>
-          </div>
-        )}
-
-        {propertyData && (
-          <Card className="mb-6" data-testid="card-home-value">
-            <CardContent className="p-5">
-              <div className="flex flex-col sm:flex-row items-start gap-4">
-                {propertyData.imgSrc && (
-                  <img
-                    src={propertyData.imgSrc}
-                    alt="Property"
-                    className="w-full sm:w-32 h-24 object-cover rounded-md shrink-0"
-                    data-testid="img-property"
-                  />
-                )}
-                <div className="flex-1">
-                  {/* Show home value for single-family homes and townhouses (homeowners) */}
-                  {propertyData.zestimate &&
-                   (propertyData.homeType === "SINGLE_FAMILY" ||
-                    propertyData.homeType === "TOWNHOUSE" ||
-                    propertyData.homeType === "SINGLE FAMILY" ||
-                    !propertyData.homeType) && (
-                    <>
-                      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">{t("estimator.estimated_home_value")}</p>
-                      <p className="text-3xl md:text-4xl font-black text-primary" data-testid="text-home-value">
-                        {formatCurrency(propertyData.zestimate)}
-                      </p>
-                      <p className="text-xs text-green-600 dark:text-green-400 font-medium mt-1">
-                        Protect your asset with verified maintenance
-                      </p>
-                    </>
-                  )}
-
-                  {/* For apartments/condos, show property details without emphasizing value */}
-                  {(propertyData.homeType === "APARTMENT" ||
-                    propertyData.homeType === "CONDO" ||
-                    propertyData.homeType === "CONDOMINIUM") && (
-                    <p className="text-lg font-bold text-foreground mb-2">Property Details</p>
-                  )}
-                  {/* Rent estimate removed — not relevant for home services */}
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
-                    {propertyData.bedrooms && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-bedrooms">
-                        <BedDouble className="w-3 h-3" /> {propertyData.bedrooms} {t("estimator.bed")}
-                      </span>
-                    )}
-                    {propertyData.bathrooms && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-bathrooms">
-                        <Bath className="w-3 h-3" /> {propertyData.bathrooms} {t("estimator.bath")}
-                      </span>
-                    )}
-                    {propertyData.livingArea && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-sqft">
-                        <Ruler className="w-3 h-3" /> {propertyData.livingArea.toLocaleString()} {t("estimator.sqft")}
-                      </span>
-                    )}
-                    {propertyData.yearBuilt && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-year-built">
-                        <Calendar className="w-3 h-3" /> {t("estimator.built")} {propertyData.yearBuilt}
-                      </span>
-                    )}
-                    {propertyData.homeType && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground" data-testid="text-home-type">
-                        <Home className="w-3 h-3" /> {propertyData.homeType.replace(/_/g, " ")}
-                      </span>
-                    )}
-                  </div>
-                </div>
+        {/* Property Details Form */}
+        <Card className="mb-6" data-testid="card-property-details">
+          <CardContent className="p-5">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
+              <Home className="w-4 h-4" /> Property Details
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Bedrooms</label>
+                <select
+                  value={bedrooms}
+                  onChange={(e) => setBedrooms(e.target.value)}
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
+                  data-testid="select-bedrooms"
+                >
+                  <option value="">Select</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5+">5+</option>
+                </select>
               </div>
-              <p className="text-[10px] text-muted-foreground mt-3 text-right">
-                {(propertyData as any)?.source === "census_estimate" ? t("estimator.based_on_local") : t("estimator.property_estimate")}
-              </p>
-            </CardContent>
-          </Card>
-        )}
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Bathrooms</label>
+                <select
+                  value={bathrooms}
+                  onChange={(e) => setBathrooms(e.target.value)}
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
+                  data-testid="select-bathrooms"
+                >
+                  <option value="">Select</option>
+                  <option value="1">1</option>
+                  <option value="1.5">1.5</option>
+                  <option value="2">2</option>
+                  <option value="2.5">2.5</option>
+                  <option value="3">3</option>
+                  <option value="3.5">3.5</option>
+                  <option value="4+">4+</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Approx. Sq Ft</label>
+                <select
+                  value={sqft}
+                  onChange={(e) => setSqft(e.target.value)}
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
+                  data-testid="select-sqft"
+                >
+                  <option value="">Select</option>
+                  <option value="<1000">&lt;1,000</option>
+                  <option value="1000-1500">1,000–1,500</option>
+                  <option value="1500-2000">1,500–2,000</option>
+                  <option value="2000-2500">2,000–2,500</option>
+                  <option value="2500-3000">2,500–3,000</option>
+                  <option value="3000+">3,000+</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-1">Stories</label>
+                <select
+                  value={stories}
+                  onChange={(e) => setStories(e.target.value)}
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
+                  data-testid="select-stories"
+                >
+                  <option value="">Select</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3+">3+</option>
+                </select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Featured: DwellScan - Separated at top */}
+        {/* Featured: AI Home Scan */}
         {pricingServices.filter(s => s.featured).map((service) => (
           <div
             key={service.id}
@@ -1071,7 +1129,7 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
                 <Button
                   onClick={(e) => { e.stopPropagation(); handleServiceSelect(service.id); }}
                   size="sm"
-                  className="font-bold"
+                  className="font-bold min-h-[44px]"
                   data-testid={`button-book-${service.id}`}
                 >
                   {t("common.get_quote")} <ArrowRight className="ml-2 w-4 h-4" />

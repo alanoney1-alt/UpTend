@@ -101,7 +101,7 @@ function NewHeroSection() {
               <Globe className="w-4 h-4 text-[#F47C20]" />
               {i18n.language === "en" ? (
                 <span className="text-sm text-slate-400">
-                  {t("hero.speak_spanish")} <span className="font-semibold text-[#F47C20]">{t("hero.switch_lang")} &rarr;</span>
+                  ¿Español? <span className="font-semibold text-[#F47C20]">Cambiar &rarr;</span>
                 </span>
               ) : (
                 <span className="text-sm text-slate-400">
@@ -342,17 +342,17 @@ function WhySection() {
   };
 
   const services = [
-    { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck, color: "text-primary dark:text-orange-400" },
-    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
-    { key: "moving_labor", label: "Moving Labor", price: "$80/hr", icon: Package, color: "text-secondary dark:text-secondary" },
     { key: "handyman", label: "Handyman Services", price: "From $75/hr", icon: Wrench, color: "text-blue-500 dark:text-blue-400" },
-    { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
+    { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck, color: "text-primary dark:text-orange-400" },
     { key: "garage_cleanout", label: "Garage Cleanout", price: "From $299", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "moving_labor", label: "Moving Labor", price: "$80/hr", icon: Package, color: "text-secondary dark:text-secondary" },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, color: "text-primary dark:text-orange-400" },
-    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $99/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "landscaping", label: "Landscaping", price: "Competitive rates", icon: Trees, color: "text-green-500 dark:text-green-400" },
-    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "Professional deep cleaning", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $39/room", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "landscaping", label: "Landscaping", price: "From $49", icon: Trees, color: "text-green-500 dark:text-green-400" },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
+    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
+    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $89/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
+    { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
   ];
 
   return (
@@ -412,7 +412,7 @@ function WhySection() {
           </div>
 
           <div className="flex-1 w-full space-y-6">
-            {/* Featured: DwellScan */}
+            {/* Featured: AI Home Scan */}
             <Card className="shadow-xl border-2 border-primary">
               <CardContent className="p-6 bg-gradient-to-br from-primary/10 to-primary/5">
                 <Badge className="mb-3 bg-primary">Featured</Badge>

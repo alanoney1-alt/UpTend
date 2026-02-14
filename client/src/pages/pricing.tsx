@@ -3,8 +3,25 @@ import { CheckCircle, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
+import { useAuth } from "@/hooks/use-auth";
 
 const SERVICES = [
+  {
+    id: "home_consultation",
+    name: <>AI Home Scan</>,
+    price: "$99",
+    unit: "flat rate",
+    description: "Full digital inventory and maintenance check.",
+    features: ["Video catalog of assets", "Safety hazard check", "Insurance report"],
+  },
+  {
+    id: "handyman",
+    name: <>Handyman Services</>,
+    price: "$75",
+    unit: "per hour (1hr minimum)",
+    description: "General repairs, installations, and fixes around the home. 1-hour minimum per visit.",
+    features: ["Drywall & painting", "Furniture assembly", "Minor plumbing & electrical"],
+  },
   {
     id: "junk_removal",
     name: <>Junk Removal</>,
@@ -14,38 +31,6 @@ const SERVICES = [
     features: ["Heavy lifting included", "Eco-friendly disposal", "Before/After photos"],
     bnplAvailable: true,
     bnplStartingPrice: 199,
-  },
-  {
-    id: "pressure_washing",
-    name: <>Pressure Washing</>,
-    price: "$120",
-    unit: "starting (600 sqft min)",
-    description: "Industrial grade surface cleaning for driveways & walkways.",
-    features: ["Chemical pre-treatment", "Surface sealing available", "Gum removal"],
-  },
-  {
-    id: "gutter_cleaning",
-    name: <>Gutter Cleaning</>,
-    price: "$149",
-    unit: "single story home",
-    description: "Debris removal and downspout flushing.",
-    features: ["Roof air-blown", "Downspouts tested", "Debris bagged"],
-  },
-  {
-    id: "moving_labor",
-    name: <>Moving Labor</>,
-    price: "$80",
-    unit: "per hour per Pro",
-    description: "Muscle only. You rent the truck, we load it. Choose how many Pros you need: 1 Pro = $80/hr, 2 Pros = $160/hr, 3 Pros = $240/hr.",
-    features: ["Strong Pros", "Dollies included", "Shrink wrap service"],
-  },
-  {
-    id: "light_demolition",
-    name: <>Light Demolition</>,
-    price: "$199",
-    unit: "starting",
-    description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. Demo, cleanup, and haul-away in one visit. Hourly rates available.",
-    features: ["Cabinet & countertop removal", "Fence & deck tear-down", "Full debris haul-away"],
   },
   {
     id: "garage_cleanout",
@@ -58,20 +43,12 @@ const SERVICES = [
     bnplPrice: 299,
   },
   {
-    id: "truck_unloading",
-    name: <>Truck Unloading</>,
+    id: "moving_labor",
+    name: <>Moving Labor</>,
     price: "$80",
     unit: "per hour per Pro",
-    description: "Professional unloading of your rental truck, pod, or trailer. Placed exactly where you want it. 1-hour minimum. Choose how many Pros you need: 1 Pro = $80/hr, 2 Pros = $160/hr, 3 Pros = $240/hr.",
-    features: ["Furniture placement", "Shrink wrap removal", "Box stacking by room"],
-  },
-  {
-    id: "home_consultation",
-    name: <>AI Home Scan</>,
-    price: "$99",
-    unit: "flat rate",
-    description: "Full digital inventory and maintenance check.",
-    features: ["Video catalog of assets", "Safety hazard check", "Insurance report"],
+    description: "Furniture moving, truck/pod unloading, or general labor. You pick the task, we supply the muscle. 1 Pro = $80/hr, 2 Pros = $160/hr, 3 Pros = $240/hr.",
+    features: ["Furniture Moving — $80/hr per Pro", "Truck/Pod Unloading — $80/hr per Pro", "General Labor — $80/hr per Pro", "Dollies & shrink wrap included"],
   },
   {
     id: "home_cleaning",
@@ -83,10 +60,78 @@ const SERVICES = [
     bnplAvailable: true,
     bnplStartingPrice: 199,
   },
+  {
+    id: "carpet_cleaning",
+    name: <>Carpet Cleaning</>,
+    price: "$39",
+    unit: "per room",
+    description: "Professional carpet cleaning. $99 minimum (covers up to 2 rooms standard).",
+    features: [
+      "Standard Steam Clean: $39/room — extraction, pre-treatment, vacuum",
+      "Deep Clean: $59/room — + enzyme treatment, heavy soil agitation, slow dry pass",
+      "Pet Treatment: $69/room — + pet odor enzyme + sanitizer",
+      "Hallway: $25 each | Stairs: $25/flight",
+      "Scotchgard/Protectant: $20/room add-on",
+      "3BR/2BA Package: $149 | 4-5BR Package: $199 (all rooms + hallways)",
+    ],
+  },
+  {
+    id: "landscaping",
+    name: <>Landscaping</>,
+    price: "$49",
+    unit: "one-time mow",
+    description: "Professional lawn care — one-time or recurring monthly service.",
+    features: [
+      "One-Time Mow: $49 (≤¼ acre) | $79 (≤½ acre)",
+      "Yard Cleanup: $149–$299 (overgrown lot, debris, trimming)",
+      "— Recurring Monthly (weekly service) —",
+      "Mow & Go: $99/mo (≤¼ acre) | $149/mo (≤½ acre) — mow + blow + edging",
+      "Full Service: $159/mo (≤¼ acre) | $219/mo (≤½ acre) — + trim, weed beds, hedge trim",
+      "Premium: $249/mo (≤¼ acre) | $329/mo (≤½ acre) — + seasonal flowers, mulch, irrigation",
+    ],
+  },
+  {
+    id: "gutter_cleaning",
+    name: <>Gutter Cleaning</>,
+    price: "$129",
+    unit: "starting (1-story, up to 150 linear ft)",
+    description: "Debris removal and downspout flushing. Tiers: 1-Story $129 | 1-Story Large $169 | 2-Story $199 | 2-Story Large $249 | 3-Story $299+. Add-ons: gutter guards ($4-6/ft), downspout flush ($15/ea), minor repair ($75).",
+    features: ["Roof air-blown", "Downspouts tested", "Debris bagged", "5 tiers by size"],
+  },
+  {
+    id: "pressure_washing",
+    name: <>Pressure Washing</>,
+    price: "$120",
+    unit: "starting (600 sqft min)",
+    description: "Industrial grade surface cleaning for driveways & walkways.",
+    features: ["Chemical pre-treatment", "Surface sealing available", "Gum removal"],
+  },
+  {
+    id: "pool_cleaning",
+    name: <>Pool Cleaning</>,
+    price: "$89",
+    unit: "per month",
+    description: "Regular pool maintenance to keep your water crystal clear.",
+    features: [
+      "Basic: $89/mo — Weekly chemicals, skim surface, empty baskets",
+      "Standard: $129/mo — + brush walls, vacuum, filter check",
+      "Full Service: $169/mo — + tile cleaning, equipment monitoring, filter cleaning",
+      "One-Time Deep Clean: $199 — Deep clean for neglected/green pools",
+    ],
+  },
+  {
+    id: "light_demolition",
+    name: <>Light Demolition</>,
+    price: "$199",
+    unit: "starting",
+    description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. Demo, cleanup, and haul-away in one visit. Hourly rates available.",
+    features: ["Cabinet & countertop removal", "Fence & deck tear-down", "Full debris haul-away"],
+  },
 ];
 
 export default function PublicPricing() {
   const [, setLocation] = useLocation();
+  const { user, isAuthenticated } = useAuth();
 
   const handleBook = (serviceId: string) => {
     setLocation(`/book?service=${serviceId}`);
@@ -101,11 +146,17 @@ export default function PublicPricing() {
             Transparent Pricing. No Surprises.
           </h1>
           <p className="text-lg text-muted-foreground" data-testid="text-pricing-subhead">
-            See our national base rates below.{" "}
-            <span className="text-foreground font-bold">
-              Log in to see exact pricing
-            </span>{" "}
-            for your zip code.
+            {isAuthenticated ? (
+              "Transparent Pricing. No Surprises."
+            ) : (
+              <>
+                See our national base rates below.{" "}
+                <span className="text-foreground font-bold">
+                  Log in to see exact pricing
+                </span>{" "}
+                for your zip code.
+              </>
+            )}
           </p>
         </div>
 

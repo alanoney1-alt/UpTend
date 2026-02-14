@@ -151,31 +151,22 @@ export function calculateDwellScanPriceForAI(params: {
   proModel?: 'two_pro' | 'one_pro'; // Only for aerial
 }): {
   customerPrice: number;
-  proPayout: number | { walkthrough: number; drone: number } | { combined: number };
+  proPayout: number; // $50 FLAT for all AI Home Scan tiers
   description: string;
 } {
   if (params.tier === 'standard') {
     return {
-      customerPrice: 49,
-      proPayout: 25,
+      customerPrice: 99,
+      proPayout: 50, // $50 FLAT payout for ALL AI Home Scan tiers
       description: 'AI Home Scan Standard - Full interior + exterior ground-level walkthrough with maintenance report',
     };
   }
 
-  // Aerial tier
-  if (params.proModel === 'one_pro') {
-    return {
-      customerPrice: 149,
-      proPayout: { combined: 80 },
-      description: 'AI Home Scan Aerial - Combined walkthrough + drone (single Pro, saves $69)',
-    };
-  }
-
-  // Default: two-pro model
+  // Aerial tier - $50 FLAT payout regardless of pro model
   return {
-    customerPrice: 149,
-    proPayout: { walkthrough: 25, drone: 55 },
-    description: 'AI Home Scan Aerial - Full walkthrough + drone flyover (two Pros)',
+    customerPrice: 249,
+    proPayout: 50, // $50 FLAT payout for ALL AI Home Scan tiers
+    description: 'AI Home Scan Aerial - Full walkthrough + drone flyover',
   };
 }
 
@@ -269,22 +260,31 @@ export function calculateFreshWashPriceForAI(params: {
  * Calculate GutterFlush (gutter cleaning) price from stories
  */
 export function calculateGutterFlushPriceForAI(params: {
-  stories: 1 | 2;
+  stories: 1 | 2 | 3;
+  linearFeet?: number;
 }): {
   price: number;
   description: string;
+  tier: string;
 } {
+  const ft = params.linearFeet || 150; // default to standard size
+
   if (params.stories === 1) {
-    return {
-      price: 149,
-      description: 'Gutter Cleaning 1-Story - Full perimeter cleaning + flow test',
-    };
+    if (ft <= 150) {
+      return { price: 129, description: 'Gutter Cleaning 1-Story (up to 150 linear ft)', tier: '1_story' };
+    }
+    return { price: 169, description: 'Gutter Cleaning 1-Story Large (150-250 linear ft)', tier: '1_story_large' };
   }
 
-  return {
-    price: 199,
-    description: 'Gutter Cleaning 2-Story - Full perimeter cleaning + flow test',
-  };
+  if (params.stories === 2) {
+    if (ft <= 150) {
+      return { price: 199, description: 'Gutter Cleaning 2-Story (up to 150 linear ft)', tier: '2_story' };
+    }
+    return { price: 249, description: 'Gutter Cleaning 2-Story Large (150-250 linear ft)', tier: '2_story_large' };
+  }
+
+  // 3-story
+  return { price: 299, description: 'Gutter Cleaning 3-Story (custom quote for larger)', tier: '3_story' };
 }
 
 /**

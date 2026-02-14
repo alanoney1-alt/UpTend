@@ -246,8 +246,8 @@ const serviceData: Record<string, ServiceData> = {
     serviceType: "carpet_cleaning",
     tagline: "Deep Clean Carpets. Certified Methods.",
     description:
-      "Professional carpet and upholstery cleaning using IICRC-certified methods. Choose from Hot Water Extraction, Encapsulation, Bonnet, or Dry Compound based on your carpet type and needs. Pet odor treatment and Scotchgard protection available.",
-    price: "From $49",
+      "Professional carpet and upholstery cleaning using IICRC-certified methods. Standard Steam Clean $39/room, Deep Clean $59/room, Pet Treatment $69/room. Scotchgard protection and whole house packages available. $99 minimum.",
+    price: "From $39/room",
     icon: Sparkles,
     heroGradient: "from-pink-600 to-fuchsia-500",
     features: [

@@ -131,6 +131,7 @@ export default function AuthPage() {
         title: "Login Failed",
         description: errorMessage,
         variant: "destructive",
+        duration: 6000,
       });
     },
   });

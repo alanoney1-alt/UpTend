@@ -1314,7 +1314,7 @@ export default function Booking() {
                     }}
                     className="space-y-6"
                   >
-                    {/* Featured: DwellScan */}
+                    {/* Featured: AI Home Scan */}
                     {serviceTypes.filter(s => s.featured).map((service) => (
                       <label
                         key={service.id}
@@ -2257,7 +2257,7 @@ export default function Booking() {
                     </div>
                   )}
 
-                  {/* DWELLSCAN - Two-tier pricing */}
+                  {/* AI HOME SCAN - Two-tier pricing */}
                   {formData.serviceType === "home_consultation" && (
                     <div className="mt-8 pt-8 border-t">
                       <div className="flex items-center gap-2 mb-4">
@@ -2310,7 +2310,7 @@ export default function Booking() {
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <h4 className="font-semibold text-lg">AI Home Scan Aerial</h4>
-                              <p className="text-3xl font-bold text-primary mt-1">$199</p>
+                              <p className="text-3xl font-bold text-primary mt-1">$249</p>
                             </div>
                             {formData.dwellscanTier === "aerial" && (
                               <CheckCircle className="w-6 h-6 text-primary" />

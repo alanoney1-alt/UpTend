@@ -50,10 +50,23 @@ export default function PyckerLogin() {
       }, 1000);
     },
     onError: (error: any) => {
+      let errorMessage = "Invalid email or password. Please try again.";
+      if (error?.message) {
+        try {
+          const jsonMatch = error.message.match(/\{.*\}/);
+          if (jsonMatch) {
+            const parsed = JSON.parse(jsonMatch[0]);
+            errorMessage = parsed.error || errorMessage;
+          }
+        } catch {
+          errorMessage = error.message;
+        }
+      }
       toast({
         title: "Login Failed",
-        description: error.message || "Invalid email or password",
+        description: errorMessage,
         variant: "destructive",
+        duration: 6000,
       });
     },
   });

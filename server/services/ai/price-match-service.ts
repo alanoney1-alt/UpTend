@@ -10,7 +10,7 @@ export interface StandardRate {
 }
 
 export const STANDARD_RATES: Record<string, StandardRate> = {
-  pool_cleaning: { service: "Pool Cleaning", rate: 150, frequency: "monthly" },
+  pool_cleaning: { service: "Pool Cleaning", rate: 89, frequency: "monthly" }, // Basic tier $89, Standard $129, Full $169
   lawn_landscaping: { service: "Lawn/Landscaping", rate: 120, frequency: "monthly" },
   house_cleaning: { service: "House Cleaning", rate: 160, frequency: "monthly" },
   gutter_cleaning: { service: "Gutter Cleaning", rate: 80, frequency: "quarterly" },

@@ -685,7 +685,7 @@ export default function Profile() {
           <ImpactDashboard />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+        <div className={`grid grid-cols-1 ${user?.role === 'hauler' ? 'sm:grid-cols-2' : ''} gap-3 mb-6`}>
           <Link href="/my-home">
             <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-my-home-inventory">
               <div className="flex items-center gap-3">
@@ -699,19 +699,21 @@ export default function Profile() {
               </div>
             </Card>
           </Link>
-          <Link href="/career">
-            <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-career-dashboard">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                  <TrendingUp className="w-5 h-5 text-primary" />
+          {user?.role === 'hauler' && (
+            <Link href="/career">
+              <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-career-dashboard">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                    <TrendingUp className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm">Career Dashboard</p>
+                    <p className="text-xs text-muted-foreground">Track your Pro progression</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-sm">Career Dashboard</p>
-                  <p className="text-xs text-muted-foreground">Track your Pro progression</p>
-                </div>
-              </div>
-            </Card>
-          </Link>
+              </Card>
+            </Link>
+          )}
         </div>
 
         <Card className="p-6 mb-6" data-testid="card-home-history">

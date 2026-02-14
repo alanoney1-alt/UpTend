@@ -239,19 +239,19 @@ You know this platform inside and out. When someone asks a question, give them a
 1. **Junk Removal** — Starting $99 flat. Photo-based instant quotes.
 2. **Home Cleaning** — Starting $99, dynamic pricing by home size & clean type.
 3. **Pressure Washing** — Starting $120 flat.
-4. **Gutter Cleaning** — Starting $149 flat.
+4. **Gutter Cleaning** — Starting $129 flat.
 5. **Moving Labor** — Starting $80/hr.
-6. **Handyman Services** — Starting $49/hr, 1-hour minimum.
+6. **Handyman Services** — Starting $75/hr, 1-hour minimum.
 7. **Light Demolition** — Starting $199 flat.
 8. **Garage Cleanout** — Starting $299 flat.
 9. **Truck Unloading** — Starting $80/hr.
-10. **AI Home Scan** — $99 standard, $199 with drone. Includes $49 back on your next booking.
-11. **Landscaping** — Competitive rates.
-12. **Carpet Cleaning** — Professional deep cleaning.
+10. **AI Home Scan** — $99 standard, $249 with drone. Includes $49 credit toward your next booking.
+11. **Landscaping** — One-time mow from $49 (≤¼ acre) or $79 (≤½ acre). Yard cleanup $149–$299. Recurring: Mow & Go $99/mo (≤¼ acre), $149/mo (≤½ acre). Full Service $159–$219/mo. Premium $249–$329/mo.
+12. **Carpet Cleaning** — Standard Steam Clean $39/room, Deep Clean $59/room, Pet Treatment $69/room. Hallway $25, Stairs $25/flight. Scotchgard $20/room add-on. Whole house: 3BR/2BA $149, 4-5BR $199. $99 minimum charge.
 
 ## Recurring Service Standard Rates (monthly unless noted)
-- Pool Cleaning: $150/month
-- Lawn/Landscaping: $120/month
+- Pool Cleaning: Basic $89/mo, Standard $129/mo, Full Service $169/mo, One-Time Deep Clean $199
+- Lawn/Landscaping: Mow & Go $99/mo (≤¼ acre), $149/mo (≤½ acre) | Full Service $159/mo (≤¼ acre), $219/mo (≤½ acre) | Premium $249/mo (≤¼ acre), $329/mo (≤½ acre)
 - House Cleaning: $160/month
 - Gutter Cleaning: $80/quarter
 - Pressure Washing: $200/annual

@@ -6,7 +6,7 @@ export function registerProStatusRoutes(app: Express) {
   // Go online with location tracking
   app.post("/api/pros/go-online", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -71,7 +71,7 @@ export function registerProStatusRoutes(app: Express) {
   // Legacy hauler endpoint (backward compatibility)
   app.post("/api/haulers/go-online", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -136,7 +136,7 @@ export function registerProStatusRoutes(app: Express) {
   // Update location (called every 30 seconds while online)
   app.post("/api/pros/update-location", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -193,7 +193,7 @@ export function registerProStatusRoutes(app: Express) {
   // Legacy hauler endpoint (backward compatibility)
   app.post("/api/haulers/update-location", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -250,7 +250,7 @@ export function registerProStatusRoutes(app: Express) {
   // Go offline - stops GPS tracking
   app.post("/api/pros/go-offline", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -279,7 +279,7 @@ export function registerProStatusRoutes(app: Express) {
   // Legacy hauler endpoint (backward compatibility)
   app.post("/api/haulers/go-offline", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -308,7 +308,7 @@ export function registerProStatusRoutes(app: Express) {
   // Accept NDA / Non-Solicitation Agreement
   app.post("/api/pros/accept-nda", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -351,7 +351,7 @@ export function registerProStatusRoutes(app: Express) {
   // Legacy hauler endpoint (backward compatibility)
   app.post("/api/haulers/accept-nda", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -394,7 +394,7 @@ export function registerProStatusRoutes(app: Express) {
   // Get Pro's current online status
   app.get("/api/pros/online-status", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -424,7 +424,7 @@ export function registerProStatusRoutes(app: Express) {
   // Legacy hauler endpoint (backward compatibility)
   app.get("/api/haulers/online-status", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Not authenticated" });
       }

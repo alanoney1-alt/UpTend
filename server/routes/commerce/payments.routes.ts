@@ -16,7 +16,7 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Create payment intent for a job
-  app.post("/api/payments/create-intent", async (req, res) => {
+  app.post("/api/payments/create-intent", requireAuth, async (req, res) => {
     try {
       const { jobId, customerId, amount, assignedHaulerId } = req.body;
 
@@ -154,7 +154,7 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Capture payment for a completed job
-  app.post("/api/payments/:jobId/capture", async (req, res) => {
+  app.post("/api/payments/:jobId/capture", requireAuth, async (req, res) => {
     try {
       const { jobId } = req.params;
 
@@ -189,12 +189,16 @@ export function registerPaymentRoutes(app: Express) {
       }
 
       const totalAmount = job.livePrice || 0;
+      // Use base service price (excluding 7% customer protection fee) for payout calculation
+      // If baseServicePrice was stored at create-intent time, use it; otherwise derive it
+      const baseServicePrice = job.baseServicePrice || (totalAmount / 1.07);
       const result = await stripeService.capturePaymentAndPayHauler(
         job.stripePaymentIntentId,
         haulerStripeAccountId,
-        totalAmount,
+        baseServicePrice,
         pyckerTier,
-        isVerifiedLlc
+        isVerifiedLlc,
+        job.serviceType // Pass serviceType for $50 minimum payout floor exemption on recurring services
       );
 
       await storage.updateServiceRequest(jobId, {
@@ -608,7 +612,7 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Get payment breakdown for a job
-  app.get("/api/payments/:jobId/breakdown", async (req, res) => {
+  app.get("/api/payments/:jobId/breakdown", requireAuth, async (req, res) => {
     try {
       const { jobId } = req.params;
 
@@ -627,8 +631,10 @@ export function registerPaymentRoutes(app: Express) {
       }
 
       const totalAmount = job.livePrice || 0;
+      // Use base service price (excluding 7% customer protection fee) for payout calculation
+      const baseServicePrice = job.baseServicePrice || (totalAmount / 1.07);
       // Use calculatePayoutBreakdown for consistency with actual capture logic
-      const breakdown = stripeService.calculatePayoutBreakdown(totalAmount, pyckerTier, isVerifiedLlc);
+      const breakdown = stripeService.calculatePayoutBreakdown(baseServicePrice, pyckerTier, isVerifiedLlc, job.serviceType);
 
       res.json({
         totalAmount: breakdown.totalAmount,
@@ -653,7 +659,7 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Tip endpoints
-  app.post("/api/jobs/:jobId/tip", async (req, res) => {
+  app.post("/api/jobs/:jobId/tip", requireAuth, async (req, res) => {
     try {
       const { jobId } = req.params;
       const { tipAmount, customerId } = req.body;
@@ -712,7 +718,7 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Confirm tip payment
-  app.post("/api/jobs/:jobId/tip/confirm", async (req, res) => {
+  app.post("/api/jobs/:jobId/tip/confirm", requireAuth, async (req, res) => {
     try {
       const { jobId } = req.params;
       const { paymentIntentId, tipAmount } = req.body;

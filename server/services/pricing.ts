@@ -2,8 +2,11 @@ export const PRICING_CONSTANTS = {
   PRESSURE_WASH_SQFT: 25,
   PRESSURE_WASH_MIN: 12000, // $120 minimum (small job)
 
-  GUTTER_1_STORY: 14900, // $149 single story
-  GUTTER_2_STORY: 19900, // $199 two story
+  GUTTER_1_STORY: 12900, // $129 — 1-Story (up to 150 linear ft)
+  GUTTER_1_STORY_LARGE: 16900, // $169 — 1-Story Large (150-250 linear ft)
+  GUTTER_2_STORY: 19900, // $199 — 2-Story (up to 150 linear ft)
+  GUTTER_2_STORY_LARGE: 24900, // $249 — 2-Story Large (150-250 linear ft)
+  GUTTER_3_STORY: 29900, // $299+ — 3-Story
 
   MOVER_HOURLY: 8000, // $80/hr per Pro (Moving Labor)
   MOVER_MIN_HOURS: 1,
@@ -11,6 +14,35 @@ export const PRICING_CONSTANTS = {
   DEMO_BASE_RATE: 19900, // $199 starting (Light Demolition)
 
   CONSULTATION_FEE: 9900, // $99 (AI Home Scan Standard)
+
+  // Pool Cleaning (PoolSpark) tiers
+  POOL_BASIC: 8900,       // $89/mo — Weekly chemicals + skim surface + empty baskets
+  POOL_STANDARD: 12900,   // $129/mo — Basic + brush walls + vacuum + filter check
+  POOL_FULL_SERVICE: 16900, // $169/mo — Standard + tile cleaning + equipment monitoring + filter cleaning
+  POOL_DEEP_CLEAN: 19900, // $199 one-time — Deep clean for neglected/green pools
+
+  // Carpet Cleaning tiers (per room)
+  CARPET_STANDARD: 3900,    // $39/room — Steam/hot water extraction, pre-treatment, vacuum
+  CARPET_DEEP: 5900,        // $59/room — Standard + enzyme treatment, heavy soil agitation, slow dry pass
+  CARPET_PET: 6900,         // $69/room — Deep clean + pet odor enzyme + sanitizer
+  CARPET_HALLWAY: 2500,     // $25 each
+  CARPET_STAIRS: 2500,      // $25 per flight
+  CARPET_SCOTCHGARD: 2000,  // $20/room add-on
+  CARPET_PKG_3BR: 14900,    // $149 — 3BR/2BA standard package (all rooms + hallway)
+  CARPET_PKG_4_5BR: 19900,  // $199 — 4-5BR standard package (all rooms + hallways)
+  CARPET_MINIMUM: 9900,     // $99 minimum charge
+
+  // Landscaping tiers
+  LANDSCAPE_MOW_QUARTER: 4900,   // $49 one-time mow ≤1/4 acre
+  LANDSCAPE_MOW_HALF: 7900,      // $79 one-time mow ≤1/2 acre
+  LANDSCAPE_CLEANUP_MIN: 14900,  // $149 yard cleanup minimum
+  LANDSCAPE_CLEANUP_MAX: 29900,  // $299 yard cleanup maximum
+  LANDSCAPE_MOW_GO_QUARTER: 9900,    // $99/mo Mow & Go ≤1/4 acre
+  LANDSCAPE_MOW_GO_HALF: 14900,      // $149/mo Mow & Go ≤1/2 acre
+  LANDSCAPE_FULL_QUARTER: 15900,     // $159/mo Full Service ≤1/4 acre
+  LANDSCAPE_FULL_HALF: 21900,        // $219/mo Full Service ≤1/2 acre
+  LANDSCAPE_PREMIUM_QUARTER: 24900,  // $249/mo Premium ≤1/4 acre
+  LANDSCAPE_PREMIUM_HALF: 32900,     // $329/mo Premium ≤1/2 acre
 };
 
 export function calculateServicePrice(type: string, data: any): number | null {
@@ -22,12 +54,18 @@ export function calculateServicePrice(type: string, data: any): number | null {
       if (price < PRICING_CONSTANTS.PRESSURE_WASH_MIN) price = PRICING_CONSTANTS.PRESSURE_WASH_MIN;
       break;
 
-    case "gutter_cleaning":
-      price =
-        data.storyCount === 2
-          ? PRICING_CONSTANTS.GUTTER_2_STORY
-          : PRICING_CONSTANTS.GUTTER_1_STORY;
+    case "gutter_cleaning": {
+      const stories = data.storyCount || 1;
+      const linearFt = data.linearFeet || 150;
+      if (stories >= 3) {
+        price = PRICING_CONSTANTS.GUTTER_3_STORY;
+      } else if (stories === 2) {
+        price = linearFt > 150 ? PRICING_CONSTANTS.GUTTER_2_STORY_LARGE : PRICING_CONSTANTS.GUTTER_2_STORY;
+      } else {
+        price = linearFt > 150 ? PRICING_CONSTANTS.GUTTER_1_STORY_LARGE : PRICING_CONSTANTS.GUTTER_1_STORY;
+      }
       break;
+    }
 
     case "moving_labor":
       const hours = Math.max(data.laborHours || 0, PRICING_CONSTANTS.MOVER_MIN_HOURS);
@@ -42,6 +80,61 @@ export function calculateServicePrice(type: string, data: any): number | null {
     case "home_consultation":
       price = PRICING_CONSTANTS.CONSULTATION_FEE;
       break;
+
+    case "pool_cleaning": {
+      const tier = data.tier || "basic";
+      if (tier === "deep_clean") price = PRICING_CONSTANTS.POOL_DEEP_CLEAN;
+      else if (tier === "full_service") price = PRICING_CONSTANTS.POOL_FULL_SERVICE;
+      else if (tier === "standard") price = PRICING_CONSTANTS.POOL_STANDARD;
+      else price = PRICING_CONSTANTS.POOL_BASIC; // default to basic
+      break;
+    }
+
+    case "carpet_cleaning": {
+      const carpetTier = data.tier || "standard";
+      const rooms = data.rooms || 0;
+      const hallways = data.hallways || 0;
+      const stairFlights = data.stairFlights || 0;
+      const scotchgardRooms = data.scotchgardRooms || 0;
+
+      // Check for whole-house packages first
+      if (data.package === "3br") {
+        price = PRICING_CONSTANTS.CARPET_PKG_3BR;
+      } else if (data.package === "4_5br") {
+        price = PRICING_CONSTANTS.CARPET_PKG_4_5BR;
+      } else {
+        const perRoom = carpetTier === "pet" ? PRICING_CONSTANTS.CARPET_PET
+          : carpetTier === "deep" ? PRICING_CONSTANTS.CARPET_DEEP
+          : PRICING_CONSTANTS.CARPET_STANDARD;
+        price = rooms * perRoom;
+        price += hallways * PRICING_CONSTANTS.CARPET_HALLWAY;
+        price += stairFlights * PRICING_CONSTANTS.CARPET_STAIRS;
+      }
+      price += scotchgardRooms * PRICING_CONSTANTS.CARPET_SCOTCHGARD;
+
+      // Enforce minimum
+      if (price < PRICING_CONSTANTS.CARPET_MINIMUM) price = PRICING_CONSTANTS.CARPET_MINIMUM;
+      break;
+    }
+
+    case "landscaping": {
+      const lotSize = data.lotSize || "quarter"; // "quarter" or "half"
+      const planType = data.planType || "one_time_mow"; // one_time_mow, cleanup, mow_go, full_service, premium
+
+      if (planType === "cleanup") {
+        price = PRICING_CONSTANTS.LANDSCAPE_CLEANUP_MIN; // $149-$299, start at min
+      } else if (planType === "mow_go") {
+        price = lotSize === "half" ? PRICING_CONSTANTS.LANDSCAPE_MOW_GO_HALF : PRICING_CONSTANTS.LANDSCAPE_MOW_GO_QUARTER;
+      } else if (planType === "full_service") {
+        price = lotSize === "half" ? PRICING_CONSTANTS.LANDSCAPE_FULL_HALF : PRICING_CONSTANTS.LANDSCAPE_FULL_QUARTER;
+      } else if (planType === "premium") {
+        price = lotSize === "half" ? PRICING_CONSTANTS.LANDSCAPE_PREMIUM_HALF : PRICING_CONSTANTS.LANDSCAPE_PREMIUM_QUARTER;
+      } else {
+        // one_time_mow default
+        price = lotSize === "half" ? PRICING_CONSTANTS.LANDSCAPE_MOW_HALF : PRICING_CONSTANTS.LANDSCAPE_MOW_QUARTER;
+      }
+      break;
+    }
 
     case "junk_removal":
     default:
@@ -65,6 +158,9 @@ export function getServiceLabel(type: string): string {
     gutter_cleaning: "Gutter Cleaning",
     light_demolition: "Light Demolition",
     home_consultation: "AI Home Scan",
+    pool_cleaning: "Pool Cleaning",
+    landscaping: "Landscaping",
+    carpet_cleaning: "Carpet Cleaning",
   };
   return labels[type] || type.replace(/_/g, " ");
 }
@@ -111,8 +207,8 @@ export function getUpsellOpportunities(
   ) {
     opportunities.push({
       type: "gutter_cleaning",
-      pitch: "While we're here, want us to check and clean your gutters? Starting at $120.",
-      quickPrice: 12000,
+      pitch: "While we're here, want us to check and clean your gutters? Starting at $129.",
+      quickPrice: 12900,
     });
   }
 

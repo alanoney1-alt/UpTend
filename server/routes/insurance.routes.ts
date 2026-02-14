@@ -47,7 +47,7 @@ export function registerInsuranceRoutes(app: Express) {
   // POST /api/insurance/link — customer links insurance
   app.post("/api/insurance/link", requireAuth, requireCustomer, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const parsed = linkInsuranceSchema.safeParse(req.body);
@@ -88,7 +88,7 @@ export function registerInsuranceRoutes(app: Express) {
   // GET /api/insurance/check-coverage?serviceType=X
   app.get("/api/insurance/check-coverage", requireAuth, requireCustomer, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const { serviceType } = req.query;
@@ -145,7 +145,7 @@ export function registerInsuranceRoutes(app: Express) {
   // GET /api/insurance/my-policies — list customer's linked insurance
   app.get("/api/insurance/my-policies", requireAuth, requireCustomer, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const policies = await db.select().from(customerInsurance)
@@ -175,7 +175,7 @@ export function registerInsuranceRoutes(app: Express) {
   // DELETE /api/insurance/:id — unlink insurance
   app.delete("/api/insurance/:id", requireAuth, requireCustomer, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const [deleted] = await db.delete(customerInsurance)

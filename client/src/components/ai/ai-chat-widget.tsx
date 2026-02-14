@@ -86,7 +86,7 @@ export function AiChatWidget() {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
+          className="fixed bottom-24 md:bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
           size="icon"
         >
           <MessageCircle className="h-6 w-6" />
@@ -95,7 +95,7 @@ export function AiChatWidget() {
 
       {/* Chat Widget */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-96 h-[600px] shadow-xl z-50 flex flex-col">
+        <Card className="fixed bottom-[7.5rem] md:bottom-6 right-6 w-96 max-w-[calc(100vw-2rem)] h-[600px] max-h-[60vh] md:max-h-[600px] shadow-xl z-50 flex flex-col">
           <CardHeader className="pb-3 border-b">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

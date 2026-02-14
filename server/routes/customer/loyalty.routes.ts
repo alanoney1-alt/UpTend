@@ -49,7 +49,7 @@ export function registerLoyaltyRoutes(app: Express) {
       const { rewardId } = req.body;
 
       // Verify authenticated user matches the userId
-      const authUserId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const authUserId = (req.user as any).userId || (req.user as any).id;
       if (authUserId !== userId) {
         return res.status(403).json({ error: "Not authorized to redeem rewards for this user" });
       }

@@ -1,10 +1,10 @@
 /**
- * DwellScan Upsell Component
+ * AI Home Scan Upsell Component
  *
- * Shows after service completion to encourage customers to book DwellScan
+ * Shows after service completion to encourage customers to book AI Home Scan
  * Two variants:
- * 1. After DwellScan Standard - upgrade to Aerial
- * 2. After any other service - book DwellScan
+ * 1. After AI Home Scan Standard - upgrade to Aerial
+ * 2. After any other service - book AI Home Scan
  *
  * Highlights the $49 credit benefit
  */

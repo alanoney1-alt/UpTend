@@ -442,7 +442,8 @@ export function registerJobManagementRoutes(app: Express) {
             haulerStripeAccountId,
             payoutAmount,
             pyckerTier,
-            isVerifiedLlc
+            isVerifiedLlc,
+            job.serviceType // Pass serviceType for $50 minimum payout floor exemption on recurring services
           );
 
           await storage.updateServiceRequest(jobId, {

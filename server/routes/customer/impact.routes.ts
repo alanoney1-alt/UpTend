@@ -2,6 +2,20 @@ import type { Express } from "express";
 import { storage } from "../../storage";
 
 export function registerCustomerImpactRoutes(app: Express) {
+  // Get customer's impact broken down by service type
+  app.get("/api/my-impact/by-service", async (req, res) => {
+    try {
+      if (!req.user || req.user.role !== "customer") {
+        return res.status(403).json({ error: "Unauthorized" });
+      }
+      // Return empty data structure for now
+      res.json({ success: true, data: [] });
+    } catch (error) {
+      console.error("Get customer impact by service error:", error);
+      res.json({ success: true, data: [] });
+    }
+  });
+
   // Get customer's aggregated environmental impact
   app.get("/api/my-impact", async (req, res) => {
     try {

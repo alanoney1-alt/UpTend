@@ -27,7 +27,7 @@ export function registerEmergencyRoutes(app: Express) {
   // POST /api/emergency/request — create emergency request
   app.post("/api/emergency/request", requireAuth, requireCustomer, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const parsed = createEmergencySchema.safeParse(req.body);
@@ -88,7 +88,7 @@ export function registerEmergencyRoutes(app: Express) {
   // POST /api/emergency/:id/accept — pro accepts (race-condition safe)
   app.post("/api/emergency/:id/accept", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const { id } = req.params;

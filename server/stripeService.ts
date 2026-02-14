@@ -24,18 +24,32 @@ export class StripeService {
     return isVerifiedLlc ? 80 : 75;
   }
 
-  calculatePayoutBreakdown(totalAmount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false): PayoutBreakdown {
+  // Recurring/subscription services exempt from $50 minimum payout floor
+  static readonly RECURRING_SERVICES = ['pool_cleaning', 'landscaping'];
+  static readonly MIN_PAYOUT_FLOOR = 50;
+
+  calculatePayoutBreakdown(totalAmount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, serviceType?: string): PayoutBreakdown {
     const platformFeePercent = this.getPlatformFeePercent(pyckerTier, isVerifiedLlc);
     const platformFee = Math.round(totalAmount * (platformFeePercent / 100) * 100) / 100;
     const insuranceFee = isVerifiedLlc ? 0 : NON_LLC_INSURANCE_FEE;
-    const haulerPayout = Math.round((totalAmount - platformFee - insuranceFee) * 100) / 100;
+    let haulerPayout = Math.round((totalAmount - platformFee - insuranceFee) * 100) / 100;
+    haulerPayout = Math.max(0, haulerPayout);
+
+    // $50 minimum payout floor for non-LLC pros on one-time jobs only.
+    // Recurring services (pool_cleaning, landscaping) are exempt.
+    // This ensures fair compensation on small one-time jobs where platform fees + insurance
+    // would otherwise leave the pro with less than minimum viable earnings.
+    const isRecurringService = serviceType ? StripeService.RECURRING_SERVICES.includes(serviceType) : false;
+    if (!isVerifiedLlc && !isRecurringService && haulerPayout < StripeService.MIN_PAYOUT_FLOOR) {
+      haulerPayout = StripeService.MIN_PAYOUT_FLOOR;
+    }
 
     return {
       totalAmount,
       platformFeePercent,
       platformFee,
       insuranceFee,
-      haulerPayout: Math.max(0, haulerPayout),
+      haulerPayout,
       isVerifiedLlc,
     };
   }
@@ -121,11 +135,12 @@ export class StripeService {
     haulerStripeAccountId: string | null,
     totalAmount: number,
     pyckerTier: string = 'independent',
-    isVerifiedLlc: boolean = false
+    isVerifiedLlc: boolean = false,
+    serviceType?: string
   ) {
     const stripe = await getUncachableStripeClient();
 
-    const breakdown = this.calculatePayoutBreakdown(totalAmount, pyckerTier, isVerifiedLlc);
+    const breakdown = this.calculatePayoutBreakdown(totalAmount, pyckerTier, isVerifiedLlc, serviceType);
 
     try {
       await stripe.paymentIntents.capture(paymentIntentId);

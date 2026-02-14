@@ -65,7 +65,7 @@ export function registerServiceRequestRoutes(app: Express) {
   app.post("/api/service-requests", requireAuth, requireCustomer, async (req: any, res) => {
     try {
       // Verify customer has payment method on file
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) {
         return res.status(401).json({ error: "Authentication required" });
       }
@@ -357,7 +357,8 @@ export function registerServiceRequestRoutes(app: Express) {
             haulerStripeAccountId,
             totalAmount,
             pyckerTier,
-            isVerifiedLlc
+            isVerifiedLlc,
+            existingRequest.serviceType // Pass serviceType for $50 minimum payout floor exemption on recurring services
           );
           paymentStatus = "captured";
           capturedPayment = true;
@@ -368,7 +369,7 @@ export function registerServiceRequestRoutes(app: Express) {
       }
 
       // Always calculate platform fee breakdown (even without Stripe)
-      const breakdown = paymentResult || stripeService.calculatePayoutBreakdown(totalAmount);
+      const breakdown = paymentResult || stripeService.calculatePayoutBreakdown(totalAmount, 'independent', false, existingRequest.serviceType);
 
       const request = await storage.updateServiceRequest(req.params.id, {
         status: "completed",

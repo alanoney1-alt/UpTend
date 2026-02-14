@@ -15,6 +15,27 @@ import type { InsertProperty } from "../../../shared/schema";
 const router = express.Router();
 
 /**
+ * GET /api/properties/my-properties
+ * Get all properties for authenticated user with transfer info
+ */
+router.get("/my-properties", auth, async (req, res) => {
+  try {
+    const userId = (req.user as any).userId || (req.user as any).id;
+    const properties = await getPropertiesByUserId(userId);
+    // Return properties with empty transfers array for compatibility
+    const result = properties.map((p: any) => ({
+      ...p,
+      transfers: [],
+    }));
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching my-properties:", error);
+    // Return empty array instead of 500 if feature isn't ready
+    res.json([]);
+  }
+});
+
+/**
  * GET /api/properties
  * Get all properties for authenticated user
  */

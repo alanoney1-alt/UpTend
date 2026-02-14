@@ -203,10 +203,10 @@ export const BUNDLES: Bundle[] = [
   {
     id: 'hoa_blitz',
     name: 'HOA Blitz',
-    services: ['freshcut', 'freshwash', 'gutterflush', 'dwellscan'],
+    services: ['freshcut', 'freshwash', 'gutterflush', 'home_scan'],
     discountPct: 0.15,
     target: 'HOA compliance',
-    description: 'FreshCut + FreshWash + GutterFlush + DwellScan audit',
+    description: 'FreshCut + FreshWash + GutterFlush + AI Home Scan audit',
   },
   {
     id: 'seasonal_reset',
@@ -220,6 +220,22 @@ export const BUNDLES: Bundle[] = [
 
 // ════════════════════════════════════════════════════════════
 // MULTI-SERVICE & PM DISCOUNTS
+// ════════════════════════════════════════════════════════════
+// SERVICE 13: POOL CLEANING (POOLSPARK)
+// Orlando market: $80–$200/month for weekly service
+// UpTend tiers: Basic $89, Standard $129, Full Service $169, Deep Clean $199
+// ════════════════════════════════════════════════════════════
+
+export const POOLSPARK_RECURRING: PricingTier[] = [
+  { id: 'ps_basic', label: 'Basic Pool Cleaning', description: 'Weekly chemicals + skim surface + empty baskets', basePrice: 8900, unit: 'monthly' },
+  { id: 'ps_standard', label: 'Standard Pool Cleaning', description: 'Basic + brush walls + vacuum + filter check', basePrice: 12900, unit: 'monthly' },
+  { id: 'ps_full', label: 'Full Service Pool Cleaning', description: 'Standard + tile cleaning + equipment monitoring + filter cleaning', basePrice: 16900, unit: 'monthly' },
+];
+
+export const POOLSPARK_ONE_TIME: PricingTier[] = [
+  { id: 'ps_deep_clean', label: 'One-Time Deep Clean', description: 'Deep clean for neglected/green pools', basePrice: 19900, unit: 'flat' },
+];
+
 // ════════════════════════════════════════════════════════════
 
 export const MULTI_SERVICE_DISCOUNTS = [

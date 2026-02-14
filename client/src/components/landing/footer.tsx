@@ -45,13 +45,23 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/services/handyman" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-handyman">
+                  {t("footer.footer_handyman")}
+                </Link>
+              </li>
+              <li>
                 <Link href="/services/material-recovery" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-junk-removal">
                   {t("footer.footer_junk_removal")}
                 </Link>
               </li>
               <li>
-                <Link href="/services/landscaping" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-landscaping">
-                  {t("footer.footer_landscaping")}
+                <Link href="/services/garage-cleanout" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-garage-cleanout">
+                  {t("footer.footer_garage_cleanout")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/moving-labor" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-moving-labor">
+                  {t("footer.footer_moving_labor")}
                 </Link>
               </li>
               <li>
@@ -65,8 +75,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/services/pressure-washing" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pressure-washing">
-                  {t("footer.footer_pressure_washing")}
+                <Link href="/services/landscaping" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-landscaping">
+                  {t("footer.footer_landscaping")}
                 </Link>
               </li>
               <li>
@@ -75,23 +85,13 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/services/pressure-washing" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pressure-washing">
+                  {t("footer.footer_pressure_washing")}
+                </Link>
+              </li>
+              <li>
                 <Link href="/services/pool-cleaning" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-pool-cleaning">
                   {t("footer.footer_pool_cleaning")}
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/moving-labor" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-moving-labor">
-                  {t("footer.footer_moving_labor")}
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/handyman" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-handyman">
-                  {t("footer.footer_handyman")}
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/garage-cleanout" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-garage-cleanout">
-                  {t("footer.footer_garage_cleanout")}
                 </Link>
               </li>
               <li>

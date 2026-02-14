@@ -23,7 +23,7 @@ export function registerNeighborhoodRoutes(app: Express) {
   // GET /api/neighborhoods/mine — find neighborhood by user zip
   app.get("/api/neighborhoods/mine", requireAuth, requireCustomer, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const [user] = await db.select().from(users).where(eq(users.id, userId));
@@ -65,7 +65,7 @@ export function registerNeighborhoodRoutes(app: Express) {
   // POST /api/neighborhoods/join
   app.post("/api/neighborhoods/join", requireAuth, requireCustomer, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const { neighborhoodId } = req.body;
@@ -147,7 +147,7 @@ export function registerNeighborhoodRoutes(app: Express) {
   // POST /api/neighborhoods/:id/recommend
   app.post("/api/neighborhoods/:id/recommend", requireAuth, requireCustomer, async (req: any, res) => {
     try {
-      const userId = req.user.localAuth ? req.user.userId : req.user.claims?.sub;
+      const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
       const { id } = req.params;

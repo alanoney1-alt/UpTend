@@ -21,7 +21,7 @@ const services = [
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
     description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° Home Scan, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($249). $49 back on your next booking.",
     price: "From $99",
-    includes: ["Smart room-by-room inventory", "360° Home Scan walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$100)", "$49 credited toward any booked service"],
+    includes: ["Smart room-by-room inventory", "360° Home Scan walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$100)", "$49 credit toward your next booking"],
     featured: true,
     link: "/services/home-audit",
   },
@@ -58,9 +58,9 @@ const services = [
     jumpToLabel: "Landscaping",
     icon: Leaf,
     tagline: "Professional lawn care. Your curb appeal, maintained.",
-    description: "Complete lawn maintenance from basic mowing to premium care packages. One-time services or recurring plans with weekly/bi-weekly scheduling. Includes mowing, edging, blowing, and optional add-ons.",
-    price: "Competitive rates",
-    includes: ["Professional mowing & edging", "Lawn debris removal", "Recurring discounts available", "Same-day service options"],
+    description: "One-time mow from $49 or recurring monthly plans from $99/mo. Mow & Go, Full Service, and Premium tiers available for lots up to ½ acre.",
+    price: "From $49",
+    includes: ["One-time mow from $49", "Recurring Mow & Go from $99/mo", "Full Service from $159/mo", "Premium with flowers & mulch from $249/mo"],
     link: "/book/freshcut",
     esgImpact: "Lawn care sequesters carbon and improves air quality",
   },
@@ -81,8 +81,8 @@ const services = [
     jumpToLabel: "Carpet Cleaning",
     icon: Home,
     tagline: "Deep clean carpets. Certified methods.",
-    description: "Professional carpet and upholstery cleaning using industry-certified methods. Hot Water Extraction, Encapsulation, Bonnet, or Dry Compound. Pet odor treatment and Scotchgard protection available.",
-    price: "Professional deep cleaning",
+    description: "Standard Steam Clean $39/room, Deep Clean $59/room, Pet Treatment $69/room. Whole house packages: 3BR/2BA $149, 4-5BR $199. $99 minimum charge.",
+    price: "From $39/room",
     includes: ["IICRC-certified methods", "Pet odor treatment options", "Scotchgard protection available", "Fast dry times"],
     link: "/book/deepfiber",
   },
@@ -125,34 +125,14 @@ const services = [
     esgImpact: "Avg 600 lbs CO2 saved per job through recycling & donation",
   },
   {
-    id: "furniture_moving",
-    name: "Furniture Moving",
-    jumpToLabel: "Furniture Moving",
-    icon: Sofa,
-    tagline: "Your furniture, moved with care.",
-    description: "Professional furniture moving service with experienced Pros. Safe transport to your new location with proper equipment, blankets, and straps. Perfect for in-state moves.",
-    price: "From $99",
-    includes: ["Professional moving blankets", "Furniture dollies & straps", "Safe loading/unloading", "$1/mile transport rate"],
-  },
-  {
     id: "moving_labor",
     name: "Moving Labor",
     jumpToLabel: "Moving Labor",
     icon: Users,
     tagline: "Your muscle on demand.",
-    description: "Hourly labor for loading, unloading, and rearranging. You rent the truck or pod, we supply the manpower, dollies, and shrink wrap. Perfect for DIY moves.",
+    description: "Furniture moving, truck/pod unloading, or general labor — all $80/hr per Pro. You pick the task, we supply the muscle, dollies, and shrink wrap.",
     price: "$80/hr per Pro",
-    includes: ["Experienced Pros", "Dollies & hand trucks included", "Shrink wrap service", "Furniture assembly/disassembly"],
-  },
-  {
-    id: "truck_unloading",
-    name: "Truck Unloading",
-    jumpToLabel: "Truck Unloading",
-    icon: Truck,
-    tagline: "You drove it. We'll unload it.",
-    description: "Professional unloading of your rental truck, pod, or trailer. Our Pros place everything exactly where you want it inside your new home. 1-hour minimum.",
-    price: "$80/hr per Pro",
-    includes: ["Experienced Pros", "Furniture placement", "Shrink wrap removal", "Box stacking by room"],
+    includes: ["Furniture Moving — $80/hr per Pro", "Truck/Pod Unloading — $80/hr per Pro", "General Labor — $80/hr per Pro", "Dollies, hand trucks & shrink wrap included"],
   },
 
   // === REPAIRS & PROJECTS ===
@@ -263,7 +243,7 @@ export default function Services() {
       </div>
 
       <section className="py-12 md:py-20 max-w-7xl mx-auto px-4 md:px-6" data-testid="section-services-grid">
-        {/* Featured: DwellScan - Separated at top */}
+        {/* Featured: AI Home Scan */}
         {services.filter(s => s.featured).map((svc) => (
           <div key={svc.id} id={`service-${svc.id}`} className="mb-8">
             <Card
@@ -285,7 +265,7 @@ export default function Services() {
                     <div className="flex items-baseline gap-3">
                       <span className="text-2xl md:text-3xl font-black text-primary" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
                       <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                        $49 Credited to Any Service
+                        $49 Credit Toward Next Booking
                       </Badge>
                     </div>
                   </div>

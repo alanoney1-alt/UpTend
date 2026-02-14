@@ -1,9 +1,9 @@
 /**
- * DwellScan Tier Selection Component
+ * AI Home Scan Tier Selection Component
  *
  * Allows customers to choose between:
- * - DwellScan Standard ($99)
- * - DwellScan Aerial ($199) - RECOMMENDED
+ * - AI Home Scan Standard ($99)
+ * - AI Home Scan Aerial ($249) - RECOMMENDED
  *
  * Both include $49 credit toward next service
  */
@@ -121,7 +121,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                 </div>
                 <div>
                   <CardTitle className="text-xl">AI Home Scan Aerial</CardTitle>
-                  <p className="text-2xl font-bold text-primary mt-1">$199</p>
+                  <p className="text-2xl font-bold text-primary mt-1">$249</p>
                 </div>
               </div>
               {selectedTier === 'aerial' && (

@@ -17,16 +17,16 @@ export const DWELLSCAN_TIERS = {
       "Personalized maintenance report",
       "One-tap booking from report recommendations",
     ],
-    proPayout: 50, // Fixed payout (loss leader)
+    proPayout: 50, // $50 FLAT payout for ALL AI Home Scan tiers
     recommended: false,
   },
   aerial: {
     id: "aerial",
     name: "AI Home Scan Aerial",
-    price: 199,
+    price: 249,
     badge: "Best Value",
     description: "Everything in Standard plus drone-powered roof, gutter, and exterior scan.",
-    subtext: "Comparable drone inspections cost $290-$350. Bundled here for $199.",
+    subtext: "Comparable drone inspections cost $290-$350. Bundled here for $249.",
     features: [
       "Everything in Standard PLUS:",
       "FAA Part 107 certified drone flyover",
@@ -36,11 +36,8 @@ export const DWELLSCAN_TIERS = {
       "Tree overhang proximity to roof",
       "Full aerial photo set, GPS-tagged",
     ],
-    proPayout: {
-      singlePro: 110, // If one Pro does both walkthrough + drone
-      walkthrough: 50, // If separate walkthrough Pro
-      drone: 75, // If separate drone-certified Pro
-    },
+    // $50 FLAT payout for ALL AI Home Scan tiers (standard AND aerial)
+    proPayout: 50,
     recommended: true,
     requiresDroneCertified: true,
   },
@@ -70,25 +67,11 @@ export function getDwellScanNetCost(tier: DwellScanTier, hasBookedService: boole
  */
 export function getDwellScanProPayout(
   tier: DwellScanTier,
-  proConfig?: {
-    singlePro?: boolean; // One Pro does both walkthrough + drone
+  _proConfig?: {
+    singlePro?: boolean;
     isDroneCertified?: boolean;
   }
 ): number {
-  if (tier === "standard") {
-    return DWELLSCAN_TIERS.standard.proPayout;
-  }
-
-  const aerialPayout = DWELLSCAN_TIERS.aerial.proPayout;
-
-  if (proConfig?.singlePro) {
-    return aerialPayout.singlePro;
-  }
-
-  // Separate Pros
-  if (proConfig?.isDroneCertified) {
-    return aerialPayout.drone;
-  }
-
-  return aerialPayout.walkthrough;
+  // $50 FLAT payout for ALL AI Home Scan tiers (standard AND aerial)
+  return 50;
 }

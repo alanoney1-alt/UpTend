@@ -13,21 +13,21 @@ export interface ServiceTypeConfig {
 
 // Starting prices: Junk Removal $99 (min load), Garage Cleanout $299 (small), Truck Unloading $80/hr per Pro, Moving Labor $80/hr per Pro
 export const SERVICE_STARTING_PRICES: Record<string, number> = {
+  home_consultation: 99, // AI Home Scan Standard base price
+  home_consultation_aerial: 249, // AI Home Scan Aerial with drone
+  handyman: 75, // Handyman Services $75/hr, 1hr minimum
   junk_removal: 99,
   garage_cleanout: 299,
-  truck_unloading: 80,
-  furniture_moving: 99,
-  handyman: 75, // Handyman Services $75/hr, 1hr minimum
-  pressure_washing: 120,
-  gutter_cleaning: 129,
   moving_labor: 80,
-  light_demolition: 199,
-  home_consultation: 49, // AI Home Scan Standard base price
-  home_consultation_aerial: 249, // AI Home Scan Aerial with drone
   home_cleaning: 99,
-  pool_cleaning: 99, // PoolSpark monthly (basic tier)
-  landscaping: 35, // Landscaping 1/4 acre mow
-  carpet_cleaning: 49, // Carpet Cleaning 1 room
+  carpet_cleaning: 39, // Carpet Cleaning standard steam clean per room ($99 minimum)
+  landscaping: 49, // Landscaping one-time mow ≤1/4 acre ($99/mo recurring)
+  gutter_cleaning: 129,
+  pressure_washing: 120,
+  pool_cleaning: 89, // PoolSpark monthly (Basic tier: $89 | Standard: $129 | Full: $169 | Deep Clean: $199)
+  light_demolition: 199,
+  truck_unloading: 80,
+  furniture_moving: 80,
 };
 
 // AI Home Scan service configuration with two tiers
@@ -46,7 +46,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
     id: "standard",
     name: "Standard",
     brandedName: "AI Home Scan Standard",
-    price: 49,
+    price: 99,
     description: "Full interior and exterior walkthrough with personalized maintenance report.",
     features: [
       "Full interior walkthrough (room-by-room photos and notes)",
@@ -83,7 +83,7 @@ export const DWELLSCAN_SERVICE = {
   branded: "AI Home Scan",
   generic: "Home Scan",
   display: "AI Home Scan",
-  slug: "/dwellscan",
+  slug: "/home-scan",
   startingPrice: 99,
   priceUnit: "flat",
   tagline: "Know your home inside out.",
@@ -92,30 +92,6 @@ export const DWELLSCAN_SERVICE = {
 };
 
 export const SERVICE_TYPES: ServiceTypeConfig[] = [
-  {
-    id: "furniture_moving",
-    label: "Moving Labor (Furniture Moving)",
-    description: "Move furniture within or between locations",
-    icon: Sofa,
-    pricingModel: "per_item",
-    startingPrice: SERVICE_STARTING_PRICES.furniture_moving,
-  },
-  {
-    id: "garage_cleanout",
-    label: "Garage Cleanout",
-    description: "Complete garage cleanout service",
-    icon: Home,
-    pricingModel: "per_item",
-    startingPrice: SERVICE_STARTING_PRICES.garage_cleanout,
-  },
-  {
-    id: "truck_unloading",
-    label: "UnloadPro (Truck/U-Haul Unloading)",
-    description: "Labor to unload your rental truck",
-    icon: Truck,
-    pricingModel: "hourly",
-    startingPrice: SERVICE_STARTING_PRICES.truck_unloading,
-  },
   {
     id: "junk_removal",
     label: "Junk Removal",
@@ -131,6 +107,22 @@ export const SERVICE_TYPES: ServiceTypeConfig[] = [
     icon: Wrench,
     pricingModel: "hourly",
     startingPrice: SERVICE_STARTING_PRICES.handyman,
+  },
+  {
+    id: "garage_cleanout",
+    label: "Garage Cleanout",
+    description: "Complete garage cleanout service",
+    icon: Home,
+    pricingModel: "per_item",
+    startingPrice: SERVICE_STARTING_PRICES.garage_cleanout,
+  },
+  {
+    id: "moving_labor",
+    label: "Moving Labor",
+    description: "Furniture moving, truck unloading, or general labor",
+    icon: Sofa,
+    pricingModel: "hourly",
+    startingPrice: SERVICE_STARTING_PRICES.moving_labor,
   },
 ];
 
