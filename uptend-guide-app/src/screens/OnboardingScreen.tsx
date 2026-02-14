@@ -19,31 +19,31 @@ interface Slide {
 const SLIDES: Slide[] = [
   {
     id: '1',
-    emoji: '🤖',
+    emoji: '🏠✨',
     title: 'Meet George',
-    subtitle: 'Your AI home helper. Just chat to get instant quotes, book pros, and manage your home — all in one place.',
-    bgColor: '#FFF7ED',
+    subtitle: 'Your AI-powered home concierge. Just chat to get instant quotes, book pros, and manage your entire home.',
+    bgColor: '#1A1A2E',
   },
   {
     id: '2',
-    emoji: '🛠️',
-    title: 'Book Services',
-    subtitle: 'Junk removal, cleaning, landscaping, pressure washing, and 10+ more services. Same-day available.',
-    bgColor: '#F0FDF4',
+    emoji: '🔧',
+    title: '12 Services, One App',
+    subtitle: 'From junk removal to lawn care, cleaning to handyman — 12 essential home services at your fingertips.',
+    bgColor: '#2D2640',
   },
   {
     id: '3',
     emoji: '📍',
-    title: 'Track in Real-Time',
-    subtitle: 'Uber-like tracking for every job. See your pro en route, watch progress, and get notified when done.',
-    bgColor: '#EFF6FF',
+    title: 'Real-Time Tracking',
+    subtitle: 'Uber-like tracking for every job. See your pro en route, watch progress live, and get instant updates.',
+    bgColor: '#3B1D5A',
   },
   {
     id: '4',
     emoji: '🛡️',
-    title: 'You\'re Protected',
-    subtitle: '$500 satisfaction guarantee on every job. All pros are background-checked and verified.',
-    bgColor: '#FDF2F8',
+    title: 'You Are Protected',
+    subtitle: '$1M liability coverage on every job. All pros are background-checked, verified, and insured.',
+    bgColor: '#1F2937',
   },
 ];
 
@@ -73,7 +73,9 @@ export default function OnboardingScreen({ onComplete }: { onComplete: () => voi
 
   const renderSlide = ({ item }: { item: Slide }) => (
     <View style={[styles.slide, { width, backgroundColor: item.bgColor }]}>
-      <Text style={styles.emoji}>{item.emoji}</Text>
+      <View style={styles.emojiContainer}>
+        <Text style={styles.emoji}>{item.emoji}</Text>
+      </View>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.subtitle}>{item.subtitle}</Text>
     </View>
@@ -139,11 +141,22 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.white },
   header: { flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: Spacing.xl, paddingTop: Spacing.sm },
   skipBtn: { padding: Spacing.sm },
-  skipText: { ...Typography.bodyBold, color: Colors.textSecondary },
+  skipText: { ...Typography.bodyBold, color: 'rgba(255,255,255,0.7)' },
   slide: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 40 },
-  emoji: { fontSize: 80, marginBottom: Spacing.xxl },
-  title: { ...Typography.h1, fontSize: 32, textAlign: 'center', marginBottom: Spacing.md },
-  subtitle: { ...Typography.body, color: Colors.textSecondary, textAlign: 'center', lineHeight: 26, fontSize: 17 },
+  emojiContainer: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: 'rgba(249,115,22,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: Spacing.xxl,
+    borderWidth: 2,
+    borderColor: 'rgba(249,115,22,0.3)',
+  },
+  emoji: { fontSize: 64 },
+  title: { ...Typography.h1, fontSize: 32, textAlign: 'center', marginBottom: Spacing.md, color: Colors.white, fontWeight: '800' },
+  subtitle: { ...Typography.body, color: 'rgba(255,255,255,0.85)', textAlign: 'center', lineHeight: 26, fontSize: 17, paddingHorizontal: 8 },
   dotsRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8, paddingVertical: Spacing.xl },
   dot: { height: 8, borderRadius: 4 },
   footer: { paddingHorizontal: Spacing.xl, paddingBottom: Spacing.lg },
@@ -154,8 +167,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
   },
   nextBtnText: { ...Typography.button, color: Colors.white },
 });

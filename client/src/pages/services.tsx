@@ -296,7 +296,7 @@ export default function Services() {
                 <Button
                   size="lg"
                   className="w-full md:w-auto"
-                  onClick={() => setLocation("link" in svc && svc.link ? svc.link : `/book?service=${svc.id}`)}
+                  onClick={() => setLocation(svc.id === "home_consultation" ? "/services/home-audit" : `/book?service=${svc.id}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
                   {svc.id === "home_consultation" ? "Learn More" : "Get a Quote"} <ArrowRight className="w-5 h-5 ml-2" />
@@ -359,7 +359,7 @@ export default function Services() {
 
                 <Button
                   className="w-full mt-auto"
-                  onClick={() => setLocation("link" in svc && svc.link ? svc.link : `/book?service=${svc.id}`)}
+                  onClick={() => setLocation(svc.id === "home_consultation" ? "/services/home-audit" : `/book?service=${svc.id}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
                   {svc.id === "home_consultation" ? "Learn More" : "Get a Quote"} <ArrowRight className="w-4 h-4 ml-2" />

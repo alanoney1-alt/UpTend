@@ -61,6 +61,14 @@ export default function CustomerDashboardScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* UpTend Header */}
+      <View style={styles.brandHeader}>
+        <View style={styles.brandLogo}>
+          <Text style={styles.brandIcon}>🏠</Text>
+        </View>
+        <Text style={styles.brandName}>UpTend</Text>
+      </View>
+
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
 
         {/* Top Section: Greeting + Health Score + Streak */}
@@ -217,6 +225,34 @@ export default function CustomerDashboardScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  brandHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+    gap: 10,
+  },
+  brandLogo: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  brandIcon: {
+    fontSize: 18,
+  },
+  brandName: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: Colors.text,
+    letterSpacing: -0.5,
+  },
   scroll: { padding: 20, paddingBottom: 40 },
 
   // Top section
@@ -229,8 +265,8 @@ const styles = StyleSheet.create({
   streakText: { fontSize: 13, fontWeight: '600', color: '#EA580C' },
   healthScoreCircle: {
     width: 64, height: 64, borderRadius: 32,
-    backgroundColor: Colors.purple, justifyContent: 'center', alignItems: 'center',
-    shadowColor: Colors.purple, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8,
+    backgroundColor: Colors.primary, justifyContent: 'center', alignItems: 'center',
+    shadowColor: Colors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8,
   },
   healthScoreValue: { color: Colors.white, fontSize: 22, fontWeight: '800' },
   healthScoreLabel: { color: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: '600' },
@@ -243,6 +279,8 @@ const styles = StyleSheet.create({
     width: 56, height: 56, borderRadius: 16, backgroundColor: Colors.white,
     justifyContent: 'center', alignItems: 'center', marginBottom: 6,
     shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, elevation: 2,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
   quickActionEmoji: { fontSize: 24 },
   quickActionLabel: { fontSize: 11, fontWeight: '600', color: Colors.textSecondary, textAlign: 'center', lineHeight: 14 },

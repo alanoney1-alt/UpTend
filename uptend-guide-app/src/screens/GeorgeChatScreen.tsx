@@ -144,7 +144,15 @@ export default function GeorgeChatScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>George 🏠</Text>
+          <Text style={styles.headerSubtitle}>AI Home Concierge</Text>
+        </View>
+      </View>
+
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -160,7 +168,11 @@ export default function GeorgeChatScreen() {
           ListFooterComponent={
             isTyping ? (
               <View style={styles.typingRow}>
-                <ActivityIndicator size="small" color="#F97316" />
+                <View style={styles.typingDots}>
+                  <View style={[styles.typingDot, styles.typingDot1]} />
+                  <View style={[styles.typingDot, styles.typingDot2]} />
+                  <View style={[styles.typingDot, styles.typingDot3]} />
+                </View>
                 <Text style={styles.typingText}>George is typing...</Text>
               </View>
             ) : null
@@ -203,9 +215,41 @@ export default function GeorgeChatScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  header: {
+    backgroundColor: '#2D2640',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 3,
+    borderBottomColor: Colors.primary,
+  },
+  headerContent: {
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: Colors.white,
+    letterSpacing: 0.5,
+  },
+  headerSubtitle: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.7)',
+    fontWeight: '600',
+    marginTop: 2,
+  },
   flex: { flex: 1 },
   listContent: { paddingTop: 12, paddingBottom: 8 },
   typingRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8 },
+  typingDots: { flexDirection: 'row', gap: 4 },
+  typingDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: Colors.primary,
+  },
+  typingDot1: { animationDelay: '0s' },
+  typingDot2: { animationDelay: '0.2s' },
+  typingDot3: { animationDelay: '0.4s' },
   typingText: { fontSize: 13, color: Colors.textLight, marginLeft: 8 },
   inputBar: {
     flexDirection: 'row',
@@ -233,10 +277,15 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F97316',
+    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 4,
   },
-  sendBtnDisabled: { backgroundColor: Colors.border },
+  sendBtnDisabled: { backgroundColor: Colors.border, shadowOpacity: 0 },
   sendIcon: { color: Colors.white, fontSize: 20, fontWeight: '700' },
 });
