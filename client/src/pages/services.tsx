@@ -299,7 +299,7 @@ export default function Services() {
                   onClick={() => setLocation("link" in svc && svc.link ? svc.link : `/book?service=${svc.id}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
-                  {"link" in svc && svc.link ? "Learn More" : "Get a Quote"} <ArrowRight className="w-5 h-5 ml-2" />
+                  {svc.id === "home_consultation" ? "Learn More" : "Get a Quote"} <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </CardContent>
             </Card>
@@ -362,7 +362,7 @@ export default function Services() {
                   onClick={() => setLocation("link" in svc && svc.link ? svc.link : `/book?service=${svc.id}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
-                  {"link" in svc && svc.link ? "Learn More" : "Get a Quote"} <ArrowRight className="w-4 h-4 ml-2" />
+                  {svc.id === "home_consultation" ? "Learn More" : "Get a Quote"} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </CardContent>
             </Card>
