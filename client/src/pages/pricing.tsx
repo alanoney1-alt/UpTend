@@ -149,7 +149,7 @@ export default function PublicPricing() {
           </h1>
           <p className="text-lg text-muted-foreground" data-testid="text-pricing-subhead">
             {isAuthenticated ? (
-              "Transparent Pricing. No Surprises."
+              "Flat rates, no hidden fees. What you see is what you pay."
             ) : (
               <>
                 See our national base rates below.{" "}

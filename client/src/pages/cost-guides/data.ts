@@ -206,8 +206,8 @@ export const costGuides: CostGuide[] = [
     metaTitle: "Garage Cleanout Cost Orlando 2026 | Pricing Guide | UpTend",
     metaDescription: "Garage cleanout in Orlando costs $299–$500. See what's included and book with UpTend pros.",
     serviceType: "garage_cleanout",
-    avgCostLow: 299,
-    avgCostHigh: 500,
+    avgCostLow: 150,
+    avgCostHigh: 999,
     costUnit: "per cleanout",
     factors: [
       "Garage size (1-car, 2-car, 3-car)",

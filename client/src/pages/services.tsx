@@ -151,7 +151,7 @@ const services = [
   {
     id: "light_demolition",
     name: "Light Demolition",
-    jumpToLabel: "Demolition",
+    jumpToLabel: "Light Demo",
     icon: Hammer,
     tagline: "Tear it out. Haul it off.",
     description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. We demo it, clean it up, and haul the debris away in one visit.",
