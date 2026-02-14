@@ -12,7 +12,7 @@ interface NavItem {
 const customerNavItems: NavItem[] = [
   { path: "/", label: "Home", icon: Home },
   { path: "/book", label: "Book", icon: Truck },
-  { path: "/profile", label: "My Jobs", icon: Menu },
+  { path: "/my-jobs", label: "My Jobs", icon: Menu },
   { path: "/profile", label: "Profile", icon: User },
 ];
 

@@ -1944,7 +1944,41 @@ export class DatabaseStorage implements IStorage {
   // ============================================================================
 
   async seedInitialData(): Promise<void> {
-    // Seed initial data would be implemented here
-    // For now, this is a placeholder that can be expanded as needed
+    const bcrypt = await import("bcrypt");
+
+    // Seed test pro user: testpro@uptend.app / TestPass123!
+    const existingUser = await this.users.getUserByEmail("testpro@uptend.app");
+    if (!existingUser) {
+      const hashedPassword = await bcrypt.hash("TestPass123!", 10);
+      const user = await this.users.createUser({
+        username: "testpro",
+        email: "testpro@uptend.app",
+        password: hashedPassword,
+        firstName: "Test",
+        lastName: "Pro",
+        role: "hauler",
+        phone: "4075551234",
+        currentLat: 28.5383,
+        currentLng: -81.3792,
+      });
+      // Create hauler profile
+      await this.createHaulerProfile({
+        userId: user.id,
+        companyName: "Test Pro Services LLC",
+        bio: "Test pro account for QA and demo purposes.",
+        vehicleType: "pickup_truck",
+        capacity: "large",
+        serviceRadius: 30,
+        isAvailable: true,
+        verified: true,
+        isVerifiedLlc: true,
+        currentLat: 28.5383,
+        currentLng: -81.3792,
+        hourlyRate: 75,
+        canAcceptJobs: true,
+        backgroundCheckStatus: "approved",
+      } as any);
+      console.log("Seeded test pro user: testpro@uptend.app");
+    }
   }
 }

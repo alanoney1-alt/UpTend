@@ -148,6 +148,7 @@ export async function registerRoutes(
 
   // Seed initial data
   await storage.seedOrlando25PromoCode();
+  await storage.seedInitialData();
 
   // Register authentication routes
   await registerProAuthRoutes(app);
