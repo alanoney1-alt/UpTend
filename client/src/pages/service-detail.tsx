@@ -141,7 +141,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "No Task Too Small.",
     description:
       "Professional handyman services for all your home repairs and odd jobs. From TV mounting and furniture assembly to minor repairs, painting touch-ups, and light fixture installation. 1-hour minimum, billed by the minute after. Same-day availability.",
-    price: "From $65/hr",
+    price: "From $75/hr",
     icon: Wrench,
     heroGradient: "from-orange-600 to-red-500",
     features: [

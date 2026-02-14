@@ -2952,7 +2952,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   })();
   const xpProgress = Math.min(100, Math.round((xp / Math.max(nextLevelXp, 1)) * 100));
   const payoutPct = (currentPro?.profile?.payoutPercentage || 0.75) * 100;
-  const nextPayout = activeJob ? Math.max(75, Math.round(((activeJob as any).livePrice || activeJob.priceEstimate || 0) * (currentPro?.profile?.payoutPercentage || 0.75))) : 0;
+  const nextPayout = activeJob ? Math.max(50, Math.round(((activeJob as any).livePrice || activeJob.priceEstimate || 0) * (currentPro?.profile?.payoutPercentage || 0.75))) : 0;
   const safetyCode = currentPro?.profile?.safetyCode;
 
   const proServiceTypes = currentPro?.profile?.serviceTypes || ["junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout"];
@@ -3115,7 +3115,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               {nextPayout > 0 ? `$${nextPayout}` : "--"}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              {payoutPct}% of active job ($75 minimum){!activeJob && " (no active job)"}
+              {payoutPct}% of active job ($50 minimum){!activeJob && " (no active job)"}
             </p>
           </Card>
 
@@ -3197,7 +3197,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                       <div className="text-right">
                         <p className="text-2xl font-bold">${activeJob.priceEstimate}</p>
                         <p className="text-xs text-muted-foreground">
-                          Estimated earnings: ${Math.max(75, Math.round(activeJob.priceEstimate * (currentPro?.profile?.payoutPercentage || 0.75)))}
+                          Estimated earnings: ${Math.max(50, Math.round(activeJob.priceEstimate * (currentPro?.profile?.payoutPercentage || 0.75)))}
                         </p>
                       </div>
                     </div>

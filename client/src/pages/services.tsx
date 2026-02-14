@@ -34,7 +34,7 @@ const services = [
     icon: Wrench,
     tagline: "No task too small.",
     description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
-    price: "From $65/hr",
+    price: "From $75/hr",
     includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
     esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
   },

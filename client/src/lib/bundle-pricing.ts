@@ -17,7 +17,7 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   garage_cleanout: 299,
   truck_unloading: 80,
   furniture_moving: 99,
-  handyman: 65, // Handyman Services $65/hr, 1hr minimum
+  handyman: 75, // Handyman Services $75/hr, 1hr minimum
   pressure_washing: 120,
   gutter_cleaning: 129,
   moving_labor: 80,

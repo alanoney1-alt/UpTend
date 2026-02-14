@@ -106,7 +106,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "handyman",
     name: "Handyman Services",
-    price: "$65/hr • 1hr min",
+    price: "$75/hr • 1hr min",
     description: "Verified local handyman for repairs, assembly, mounting, painting, and home improvements. Billed by the minute after first hour.",
     benefit: "No task too small • Same-day available • Background checked pros",
     icon: Wrench,

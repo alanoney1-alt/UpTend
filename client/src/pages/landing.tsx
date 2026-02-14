@@ -346,7 +346,7 @@ function WhySection() {
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
     { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
     { key: "moving_labor", label: "Moving Labor", price: "$80/hr", icon: Package, color: "text-secondary dark:text-secondary" },
-    { key: "handyman", label: "Handyman Services", price: "From $65/hr", icon: Wrench, color: "text-blue-500 dark:text-blue-400" },
+    { key: "handyman", label: "Handyman Services", price: "From $75/hr", icon: Wrench, color: "text-blue-500 dark:text-blue-400" },
     { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
     { key: "garage_cleanout", label: "Garage Cleanout", price: "From $299", icon: Home, color: "text-primary dark:text-orange-400" },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, color: "text-primary dark:text-orange-400" },
