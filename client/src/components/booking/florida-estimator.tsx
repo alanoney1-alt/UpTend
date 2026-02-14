@@ -432,6 +432,12 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
               onChange={setAddress}
               onSelectAddress={(selectedAddress) => {
                 setAddress(selectedAddress);
+                // Auto-advance to step 2 after address selection
+                if (selectedAddress.trim().length > 5) {
+                  window.scrollTo(0, 0);
+                  setStep(2);
+                  fetchPropertyValue(selectedAddress);
+                }
               }}
               placeholder={t("estimator.enter_address")}
               inputClassName="border-none shadow-none focus-visible:ring-0 text-lg bg-transparent h-12"

@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
@@ -3667,6 +3668,7 @@ function AccessCodeReveal({ jobId, status, accessType }: { jobId: string; status
 }
 
 export default function ProDashboard() {
+  usePageTitle("Pro Dashboard | UpTend");
   const [activeTab, setActiveTab] = useState("dashboard");
   const [, setLocation] = useLocation();
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();

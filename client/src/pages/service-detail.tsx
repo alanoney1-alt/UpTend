@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useParams, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -220,7 +221,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Crystal Clear Pools, Maintained Weekly.",
     description:
       "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing walls, chemical testing, and balancing. Keep your pool sparkling clean and safe year-round with a dedicated Pro who knows your pool.",
-    price: "From $99/mo",
+    price: "From $89/mo",
     icon: Waves,
     heroGradient: "from-sky-600 to-blue-500",
     features: [
@@ -300,6 +301,8 @@ export default function ServiceDetail() {
   const params = useParams();
   const slug = (params as any).slug ?? (params as any)["0"];
   const service = slug ? serviceData[slug] : undefined;
+
+  usePageTitle(service ? `${service.name} | ${service.price} | UpTend Orlando` : "Service Not Found | UpTend");
 
   if (!service) {
     return <NotFound />;

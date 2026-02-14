@@ -64,7 +64,8 @@ export default function AuthPage() {
     staleTime: 1000 * 60 * 5,
   });
   const [showPassword, setShowPassword] = useState(false);
-  const isProRoute = location.includes("pycker") || location.includes("pro");
+  const urlTabParam = new URLSearchParams(window.location.search).get("tab");
+  const isProRoute = location.includes("pycker") || location.includes("pro") || urlTabParam === "pro";
   const [activeTab, setActiveTab] = useState<UserType>(isProRoute ? "pro" : "homeowner");
 
   // Read URL parameters for redirect and address persistence

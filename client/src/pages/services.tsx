@@ -13,7 +13,7 @@ import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 
 const services = [
-  // === FEATURED SERVICE ===
+  // 1. AI Home Scan (Featured)
   {
     id: "home_consultation",
     name: "AI Home Scan",
@@ -26,8 +26,7 @@ const services = [
     featured: true,
     link: "/services/home-audit",
   },
-
-  // === REPAIRS & PROJECTS ===
+  // 2. Handyman
   {
     id: "handyman",
     name: "Handyman Services",
@@ -39,80 +38,7 @@ const services = [
     includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
     esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
   },
-
-  // === ESSENTIAL HOME MAINTENANCE ===
-  {
-    id: "home_cleaning",
-    name: "Home Cleaning",
-    jumpToLabel: "Home Cleaning",
-    icon: Sparkles,
-    tagline: "Spotless homes. Verified clean.",
-    description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
-    price: "From $99",
-    includes: ["Room-by-room checklist", "Before/After photos", "Supplies included", "Recurring options available"],
-    link: "/services/home-cleaning",
-    esgImpact: "Eco-friendly products reduce CO2 emissions",
-  },
-  {
-    id: "landscaping",
-    name: "Landscaping",
-    jumpToLabel: "Landscaping",
-    icon: Leaf,
-    tagline: "Professional lawn care. Your curb appeal, maintained.",
-    description: "One-time mow from $49 or recurring monthly plans from $99/mo. Mow & Go, Full Service, and Premium tiers available for lots up to ½ acre.",
-    price: "From $49",
-    includes: ["One-time mow from $49", "Recurring Mow & Go from $99/mo", "Full Service from $159/mo", "Premium with flowers & mulch from $249/mo"],
-    link: "/book/freshcut",
-    esgImpact: "Lawn care sequesters carbon and improves air quality",
-  },
-  {
-    id: "pool_cleaning",
-    name: "Pool Cleaning",
-    jumpToLabel: "Pool Cleaning",
-    icon: Waves,
-    tagline: "Crystal clear pools, maintained weekly.",
-    description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
-    price: "From $99/mo",
-    includes: ["Weekly skimming & vacuuming", "Chemical testing & balancing", "Filter cleaning", "Equipment inspection"],
-    esgImpact: "Chemical optimization saves water and reduces emissions",
-  },
-  {
-    id: "carpet_cleaning",
-    name: "Carpet Cleaning",
-    jumpToLabel: "Carpet Cleaning",
-    icon: Home,
-    tagline: "Deep clean carpets. Certified methods.",
-    description: "Standard Steam Clean $39/room, Deep Clean $59/room, Pet Treatment $69/room. Whole house packages: 3BR/2BA $149, 4-5BR $199. $99 minimum charge.",
-    price: "From $39/room",
-    includes: ["IICRC-certified methods", "Pet odor treatment options", "Scotchgard protection available", "Fast dry times"],
-    link: "/book/deepfiber",
-  },
-
-  // === OUTDOOR & EXTERIOR ===
-  {
-    id: "pressure_washing",
-    name: "Pressure Washing",
-    jumpToLabel: "Pressure Washing",
-    icon: Droplets,
-    tagline: "Curb appeal, restored in hours.",
-    description: "Industrial-grade surface cleaning for driveways, patios, walkways, pool decks, and home exteriors. Chemical pre-treatment included on every job.",
-    price: "From $120",
-    includes: ["Chemical pre-treatment", "Surface sealing available", "Gum removal", "Before/After photos"],
-    esgImpact: "Saves 200+ gallons of water per job with low-flow equipment",
-  },
-  {
-    id: "gutter_cleaning",
-    name: "Gutter Cleaning",
-    jumpToLabel: "Gutter Cleaning",
-    icon: Home,
-    tagline: "Prevent water damage before it starts.",
-    description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
-    price: "From $129",
-    includes: ["Full debris removal", "Downspout flushing", "Roof line air-blow", "Debris bagged & hauled"],
-    esgImpact: "Prevents 50+ lbs CO2 from water damage repairs",
-  },
-
-  // === MOVING & HAULING ===
+  // 3. Junk Removal
   {
     id: "junk_removal",
     name: "Junk Removal",
@@ -125,6 +51,18 @@ const services = [
     link: "/services/material-recovery",
     esgImpact: "Avg 600 lbs CO2 saved per job through recycling & donation",
   },
+  // 4. Garage Cleanout
+  {
+    id: "garage_cleanout",
+    name: "Garage Cleanout",
+    jumpToLabel: "Garage Cleanout",
+    icon: Sofa,
+    tagline: "Reclaim your space.",
+    description: "Complete garage cleanout from cluttered to clean. We sort, donate, recycle, and haul everything so you can actually park in your garage again.",
+    price: "From $299",
+    includes: ["Full sort & organize", "Donation coordination", "Sweep & clean after", "Digital inventory of kept items"],
+  },
+  // 5. Moving Labor
   {
     id: "moving_labor",
     name: "Moving Labor",
@@ -135,8 +73,81 @@ const services = [
     price: "$80/hr per Pro",
     includes: ["Furniture Moving — $80/hr per Pro", "Truck/Pod Unloading — $80/hr per Pro", "General Labor — $80/hr per Pro", "Dollies, hand trucks & shrink wrap included"],
   },
-
-  // === REPAIRS & PROJECTS ===
+  // 6. Home Cleaning
+  {
+    id: "home_cleaning",
+    name: "Home Cleaning",
+    jumpToLabel: "Home Cleaning",
+    icon: Sparkles,
+    tagline: "Spotless homes. Verified clean.",
+    description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
+    price: "From $99",
+    includes: ["Room-by-room checklist", "Before/After photos", "Supplies included", "Recurring options available"],
+    link: "/services/home-cleaning",
+    esgImpact: "Eco-friendly products reduce CO2 emissions",
+  },
+  // 7. Carpet Cleaning
+  {
+    id: "carpet_cleaning",
+    name: "Carpet Cleaning",
+    jumpToLabel: "Carpet Cleaning",
+    icon: Home,
+    tagline: "Deep clean carpets. Certified methods.",
+    description: "Standard Steam Clean $39/room, Deep Clean $59/room, Pet Treatment $69/room. Whole house packages: 3BR/2BA $149, 4-5BR $199. $99 minimum charge.",
+    price: "From $39/room",
+    includes: ["IICRC-certified methods", "Pet odor treatment options", "Scotchgard protection available", "Fast dry times"],
+    link: "/book/deepfiber",
+  },
+  // 8. Landscaping
+  {
+    id: "landscaping",
+    name: "Landscaping",
+    jumpToLabel: "Landscaping",
+    icon: Leaf,
+    tagline: "Professional lawn care. Your curb appeal, maintained.",
+    description: "One-time mow from $49 or recurring monthly plans from $99/mo. Mow & Go, Full Service, and Premium tiers available for lots up to ½ acre.",
+    price: "From $49",
+    includes: ["One-time mow from $49", "Recurring Mow & Go from $99/mo", "Full Service from $159/mo", "Premium with flowers & mulch from $249/mo"],
+    link: "/book/freshcut",
+    esgImpact: "Lawn care sequesters carbon and improves air quality",
+  },
+  // 9. Gutter Cleaning
+  {
+    id: "gutter_cleaning",
+    name: "Gutter Cleaning",
+    jumpToLabel: "Gutter Cleaning",
+    icon: Home,
+    tagline: "Prevent water damage before it starts.",
+    description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
+    price: "From $129",
+    includes: ["Full debris removal", "Downspout flushing", "Roof line air-blow", "Debris bagged & hauled"],
+    esgImpact: "Prevents 50+ lbs CO2 from water damage repairs",
+  },
+  // 10. Pressure Washing
+  {
+    id: "pressure_washing",
+    name: "Pressure Washing",
+    jumpToLabel: "Pressure Washing",
+    icon: Droplets,
+    tagline: "Curb appeal, restored in hours.",
+    description: "Industrial-grade surface cleaning for driveways, patios, walkways, pool decks, and home exteriors. Chemical pre-treatment included on every job.",
+    price: "From $120",
+    includes: ["Chemical pre-treatment", "Surface sealing available", "Gum removal", "Before/After photos"],
+    esgImpact: "Saves 200+ gallons of water per job with low-flow equipment",
+  },
+  // 11. Pool Cleaning
+  {
+    id: "pool_cleaning",
+    name: "Pool Cleaning",
+    jumpToLabel: "Pool Cleaning",
+    icon: Waves,
+    tagline: "Crystal clear pools, maintained weekly.",
+    description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
+    price: "From $89/mo",
+    includes: ["Weekly skimming & vacuuming", "Chemical testing & balancing", "Filter cleaning", "Equipment inspection"],
+    esgImpact: "Chemical optimization saves water and reduces emissions",
+  },
+  // 12. Light Demolition
   {
     id: "light_demolition",
     name: "Light Demolition",
@@ -146,16 +157,6 @@ const services = [
     description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. We demo it, clean it up, and haul the debris away in one visit.",
     price: "From $199",
     includes: ["Cabinet & countertop removal", "Fence & deck tear-down", "Shed demolition", "Full debris haul-away"],
-  },
-  {
-    id: "garage_cleanout",
-    name: "Garage Cleanout",
-    jumpToLabel: "Garage Cleanout",
-    icon: Sofa,
-    tagline: "Reclaim your space.",
-    description: "Complete garage cleanout from cluttered to clean. We sort, donate, recycle, and haul everything so you can actually park in your garage again.",
-    price: "From $299",
-    includes: ["Full sort & organize", "Donation coordination", "Sweep & clean after", "Digital inventory of kept items"],
   },
 ];
 
