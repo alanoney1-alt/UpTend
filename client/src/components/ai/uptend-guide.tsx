@@ -68,28 +68,28 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (PRO_SIGNUP_PAGES.some(p => page.startsWith(p))) {
     return {
-      welcome: `Hey there 👋 I'm Bud. If you're thinking about joining UpTend as a Pro — you picked a good time. We don't charge lead fees. You keep what you earn. We handle the customers, the scheduling, the payments — you just do great work.\n\nI can answer anything — earnings, how jobs work, what makes this different from the other guys. Just type your question below 👇`,
+      welcome: `Hey there 👋 I'm George. If you're thinking about joining UpTend as a Pro — you picked a good time. We don't charge lead fees. You keep what you earn. We handle the customers, the scheduling, the payments — you just do great work.\n\nI can answer anything — earnings, how jobs work, what makes this different from the other guys. Just type your question below 👇`,
       quickActions: [],
     };
   }
 
   if (page === "/book" || page.startsWith("/book")) {
     return {
-      welcome: `Hey there! 😊 I'm Bud — welcome!\n\nYou're looking at a specific service — awesome! I'd love to help you figure out if it's the right fit. All our pros are verified, background-checked, and genuinely good at what they do.\n\nGot any questions? I'm here — fire away! 👇`,
+      welcome: `Hey there! 😊 I'm George — welcome!\n\nYou're looking at a specific service — awesome! I'd love to help you figure out if it's the right fit. All our pros are verified, background-checked, and genuinely good at what they do.\n\nGot any questions? I'm here — fire away! 👇`,
       quickActions: [],
     };
   }
 
   if (page === "/services" || page.startsWith("/services/")) {
     return {
-      welcome: `Hey! 😊 I'm Bud — glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full home scans — and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine — just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! 👇`,
+      welcome: `Hey! 😊 I'm George — glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full home scans — and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine — just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! 👇`,
       quickActions: [],
     };
   }
 
   if (page === "/pricing") {
     return {
-      welcome: `Hey! 😊 I'm Bud — thanks for checking us out!\n\nI see you're looking at pricing — great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works — I'm right here.\n\nNo pressure at all, just ask whatever's on your mind 👇`,
+      welcome: `Hey! 😊 I'm George — thanks for checking us out!\n\nI see you're looking at pricing — great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works — I'm right here.\n\nNo pressure at all, just ask whatever's on your mind 👇`,
       quickActions: [],
     };
   }
@@ -103,7 +103,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (userRole === "hauler" || userRole === "pro") {
     return {
-      welcome: `Hey${name}! 👋 I'm Bud — your UpTend assistant. Need help with jobs, earnings, scheduling, or growing your business? I've got your back.\n\nJust tell me what you need 👇`,
+      welcome: `Hey${name}! 👋 I'm George — your UpTend assistant. Need help with jobs, earnings, scheduling, or growing your business? I've got your back.\n\nJust tell me what you need 👇`,
       quickActions: [],
     };
   }
@@ -119,7 +119,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   const isFirstVisit = !localStorage.getItem(LS_GREETED);
   if (isFirstVisit) {
     return {
-      welcome: `Hey! 😊 I'm Bud — so glad you stopped by!\n\nWelcome to UpTend — on-demand home services with verified pros who care about doing things right. Whether it's junk removal, pressure washing, a deep clean, or something else entirely — we match you with trusted, background-checked professionals who show up on time and treat your home like their own. Oh, and we're sustainability-focused too 🌱 because taking care of your home shouldn't mean trashing the planet.\n\nI'm here if you have ANY questions — about what we do, how it works, what services might be right for you, anything at all. Seriously, no question is too small. I love chatting 😄\n\nWhat's on your mind? 👇`,
+      welcome: `Hey! 😊 I'm George — so glad you stopped by!\n\nWelcome to UpTend — on-demand home services with verified pros who care about doing things right. Whether it's junk removal, pressure washing, a deep clean, or something else entirely — we match you with trusted, background-checked professionals who show up on time and treat your home like their own. Oh, and we're sustainability-focused too 🌱 because taking care of your home shouldn't mean trashing the planet.\n\nI'm here if you have ANY questions — about what we do, how it works, what services might be right for you, anything at all. Seriously, no question is too small. I love chatting 😄\n\nWhat's on your mind? 👇`,
       quickActions: [],
     };
   }
@@ -511,10 +511,10 @@ export function UpTendGuide() {
             animation: shouldPulse ? "gentlePulse 2s ease-in-out" : "none",
             maxWidth: "200px",
           }}
-          aria-label="Chat with Bud"
+          aria-label="Chat with George"
         >
           <span className="text-base leading-none">🏠</span>
-          <span>Need a hand from Bud? 👋</span>
+          <span>Need a hand from George? 👋</span>
         </button>
       )}
 
@@ -539,7 +539,7 @@ export function UpTendGuide() {
       >
         {/* Header — minimal */}
         <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-black/5 dark:border-white/5 shrink-0">
-          <span className="font-semibold text-sm">Bud 🏠</span>
+          <span className="font-semibold text-sm">George 🏠</span>
           <button
             onClick={() => { setIsOpen(false); synth.cancel(); }}
             className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"

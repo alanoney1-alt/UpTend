@@ -1,14 +1,14 @@
 /**
- * Voice AI Routes - Bud (Twilio Integration)
+ * Voice AI Routes - George (Twilio Integration)
  *
  * Endpoints:
- * - POST /api/voice/incoming  — handles incoming call, greets with Bud's voice
+ * - POST /api/voice/incoming  — handles incoming call, greets with George's voice
  * - POST /api/voice/process   — receives speech transcription, generates AI response
  * - POST /api/voice/status    — call status callback
  */
 
 import { Router, type Express } from "express";
-import { VoiceResponse, BUD_GREETING, BUD_FALLBACK, BUD_GOODBYE, sendAppLink } from "../services/voice-service";
+import { VoiceResponse, GEORGE_GREETING, BUD_FALLBACK, BUD_GOODBYE, sendAppLink } from "../services/voice-service";
 import { generateConciergeResponse } from "../services/ai/concierge-service";
 
 export function registerVoiceRoutes(app: Express) {
@@ -22,7 +22,7 @@ export function registerVoiceRoutes(app: Express) {
     try {
       const twiml = new VoiceResponse();
 
-      // Greet the caller with Bud's voice
+      // Greet the caller with George's voice
       const gather = twiml.gather({
         input: ["speech"],
         action: "/api/voice/process",
@@ -34,7 +34,7 @@ export function registerVoiceRoutes(app: Express) {
 
       gather.say(
         { voice: "Polly.Matthew", language: "en-US" },
-        BUD_GREETING
+        GEORGE_GREETING
       );
 
       // If no speech input, repeat

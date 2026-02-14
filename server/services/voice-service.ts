@@ -2,7 +2,7 @@
  * Voice Service - Twilio Client Setup
  * 
  * Handles Twilio client initialization and TwiML generation helpers
- * for the Bud Voice AI feature.
+ * for the George Voice AI feature.
  */
 
 import twilio from "twilio";
@@ -32,7 +32,7 @@ export function getTwilioPhoneNumber(): string {
 
 export const VoiceResponse = twilio.twiml.VoiceResponse;
 
-export const BUD_GREETING = "Hey there, this is Bud from UpTend! How can I help you with your home today?";
+export const GEORGE_GREETING = "Hey there, this is George from UpTend! How can I help you with your home today?";
 
 export const BUD_FALLBACK = "I'm not sure I can help with that over the phone. Let me text you a link to the UpTend app where you can get that sorted out. Is that okay?";
 
@@ -44,7 +44,7 @@ export const BUD_GOODBYE = "Thanks for calling UpTend! Have a great day, and rem
 export async function sendAppLink(toNumber: string): Promise<void> {
   const client = getTwilioClient();
   await client.messages.create({
-    body: "Hey! Bud from UpTend here 🏠 Here's your link to the app where you can book services, get quotes, and more: https://uptend.com",
+    body: "Hey! George from UpTend here 🏠 Here's your link to the app where you can book services, get quotes, and more: https://uptend.com",
     from: getTwilioPhoneNumber(),
     to: toNumber,
   });

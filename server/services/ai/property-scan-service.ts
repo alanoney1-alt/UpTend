@@ -303,7 +303,7 @@ export async function getPropertyDataAsync(address: string): Promise<PropertyDat
     };
   }
 
-  // No exact match found — return address-only result and let Bud ask for details
+  // No exact match found — return address-only result and let George ask for details
   return {
     address,
     homeValueEstimate: 0,

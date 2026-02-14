@@ -109,7 +109,7 @@ export function AiChatWidget() {
             <Bot className="h-4.5 w-4.5 text-white" />
           </div>
           <div>
-            <h3 className="text-white font-semibold text-sm">Bud</h3>
+            <h3 className="text-white font-semibold text-sm">George</h3>
             <p className="text-white/70 text-[11px]">Your home helper</p>
           </div>
         </div>
@@ -142,7 +142,7 @@ export function AiChatWidget() {
               <Bot className="h-8 w-8 text-[#F47C20]" />
             </div>
             <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
-              Hey{user?.firstName ? ` ${user.firstName}` : ""}! I'm Bud 👋
+              Hey{user?.firstName ? ` ${user.firstName}` : ""}! I'm George 👋
             </h4>
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[260px]">
               Need a pro for your home? I can get you a quote, book a service, or answer any questions. Just ask!
@@ -197,7 +197,7 @@ export function AiChatWidget() {
             )}
           </Button>
         </form>
-        <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by Bud AI</p>
+        <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by George AI</p>
       </div>
     </div>
   );
