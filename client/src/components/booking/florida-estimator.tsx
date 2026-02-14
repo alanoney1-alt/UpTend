@@ -151,9 +151,10 @@ interface ZillowProperty {
 
 interface FloridaEstimatorProps {
   preselectedService?: string;
+  preselectedTiming?: string;
 }
 
-export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps = {}) {
+export function FloridaEstimator({ preselectedService, preselectedTiming }: FloridaEstimatorProps = {}) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [address, setAddress] = useState("");
@@ -524,6 +525,7 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
     return (
       <ServiceScheduling
         serviceName={selectedServiceName}
+        defaultTiming={preselectedTiming}
         onComplete={(data) => {
           setSchedulingData(data);
           setStep(4);

@@ -13,6 +13,7 @@ interface ServiceSchedulingProps {
   onComplete: (schedulingData: SchedulingData) => void;
   onBack?: () => void;
   serviceName: string;
+  defaultTiming?: string;
 }
 
 export interface SchedulingData {
@@ -23,8 +24,14 @@ export interface SchedulingData {
   recurringStartDate?: Date;
 }
 
-export function ServiceScheduling({ onComplete, onBack, serviceName }: ServiceSchedulingProps) {
-  const [schedulingType, setSchedulingType] = useState<"asap" | "scheduled" | "recurring">("asap");
+export function ServiceScheduling({ onComplete, onBack, serviceName, defaultTiming }: ServiceSchedulingProps) {
+  const mapTiming = (t?: string): "asap" | "scheduled" | "recurring" => {
+    if (t === "same-day") return "asap";
+    if (t === "next-day" || t === "scheduled") return "scheduled";
+    if (t === "recurring") return "recurring";
+    return "asap";
+  };
+  const [schedulingType, setSchedulingType] = useState<"asap" | "scheduled" | "recurring">(mapTiming(defaultTiming));
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(addDays(new Date(), 1));
   const [timeSlot, setTimeSlot] = useState<"morning" | "afternoon" | "evening" | "flexible">("flexible");
   const [recurringFrequency, setRecurringFrequency] = useState<"weekly" | "biweekly" | "monthly">("weekly");

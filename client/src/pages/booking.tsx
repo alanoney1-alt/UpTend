@@ -9,6 +9,7 @@ export default function BookingPage() {
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
   const preselectedService = params.get("service");
+  const preselectedTiming = params.get("timing");
 
   // Scroll to top on mount — belt-and-suspenders with App-level ScrollToTop
   useEffect(() => {
@@ -21,7 +22,7 @@ export default function BookingPage() {
     <div className="min-h-screen bg-gradient-to-b from-amber-50/30 to-white dark:from-zinc-950 dark:to-zinc-900">
       <Header />
       <main className="container mx-auto px-4 py-8 md:py-12">
-        <FloridaEstimator preselectedService={preselectedService ?? undefined} />
+        <FloridaEstimator preselectedService={preselectedService ?? undefined} preselectedTiming={preselectedTiming ?? undefined} />
       </main>
     </div>
   );

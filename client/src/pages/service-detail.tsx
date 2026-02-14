@@ -549,24 +549,32 @@ export default function ServiceDetail() {
           <h2 className="text-3xl font-bold mb-6">Availability</h2>
           <div className="flex flex-wrap gap-3">
             {service.availability.sameDay && (
-              <Badge variant="secondary" className="text-base py-2 px-4 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100">
-                <Clock className="w-4 h-4 mr-2" /> Same Day
-              </Badge>
+              <Link href={`${bookUrl}&timing=same-day`}>
+                <Badge variant="secondary" className="text-base py-2 px-4 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100 cursor-pointer hover:bg-orange-200 dark:hover:bg-orange-800 transition-colors">
+                  <Clock className="w-4 h-4 mr-2" /> Same Day
+                </Badge>
+              </Link>
             )}
             {service.availability.nextDay && (
-              <Badge variant="secondary" className="text-base py-2 px-4 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
-                <Calendar className="w-4 h-4 mr-2" /> Next Day
-              </Badge>
+              <Link href={`${bookUrl}&timing=next-day`}>
+                <Badge variant="secondary" className="text-base py-2 px-4 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100 cursor-pointer hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors">
+                  <Calendar className="w-4 h-4 mr-2" /> Next Day
+                </Badge>
+              </Link>
             )}
             {service.availability.scheduled && (
-              <Badge variant="secondary" className="text-base py-2 px-4 bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100">
-                <CalendarCheck className="w-4 h-4 mr-2" /> Scheduled
-              </Badge>
+              <Link href={`${bookUrl}&timing=scheduled`}>
+                <Badge variant="secondary" className="text-base py-2 px-4 bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                  <CalendarCheck className="w-4 h-4 mr-2" /> Scheduled
+                </Badge>
+              </Link>
             )}
             {service.availability.recurring && (
-              <Badge variant="secondary" className="text-base py-2 px-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                <Repeat className="w-4 h-4 mr-2" /> Recurring
-              </Badge>
+              <Link href={`${bookUrl}&timing=recurring`}>
+                <Badge variant="secondary" className="text-base py-2 px-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 cursor-pointer hover:bg-green-200 dark:hover:bg-green-800 transition-colors">
+                  <Repeat className="w-4 h-4 mr-2" /> Recurring
+                </Badge>
+              </Link>
             )}
           </div>
         </div>
