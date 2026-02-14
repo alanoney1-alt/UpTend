@@ -11,26 +11,26 @@ import PropertyCard from '../components/PropertyCard';
 import QuickActions from '../components/QuickActions';
 import VoiceInput from '../components/VoiceInput';
 import { showPhotoOptions } from '../components/PhotoCapture';
-import { sendBudMessage } from '../services/chat';
+import { sendGeorgeMessage } from '../services/chat';
 import { Colors } from '../theme/colors';
 
 const WELCOME: ChatMessage = {
   id: 'welcome',
-  sender: 'bud',
+  sender: 'george',
   type: 'text',
-  text: "Hey! I'm Bud, your home helper. What can I do for you today? 👋",
+  text: "Hey! I'm George, your UpTend AI concierge. What can I help you with today? 👋",
   timestamp: new Date(),
 };
 
 const QUICK_ACTIONS = [
-  '🏠 Scan my property',
-  '🗑 Junk removal quote',
-  '🧹 Cleaning estimate',
-  '📦 Moving help',
-  '🔧 Handyman service',
+  '🏠 AI Home Scan',
+  '🗑 Junk Removal Quote',
+  '🧹 Home Cleaning',
+  '📦 Moving Help',
+  '🔧 Handyman Service',
 ];
 
-export default function BudChatScreen() {
+export default function GeorgeChatScreen() {
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -56,44 +56,37 @@ export default function BudChatScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     try {
-      const res = await sendBudMessage(text.trim());
-      const budMsg: ChatMessage = {
+      const res = await sendGeorgeMessage(text.trim());
+      const georgeMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        sender: 'bud',
-        type: (res.type as ChatMessage['type']) || 'text',
-        text: res.message || res.text,
-        data: res.data,
+        sender: 'george',
+        type: 'text',
+        text: res.response,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, budMsg]);
+      setMessages((prev) => [...prev, georgeMsg]);
 
-      if (res.quote) {
-        const quoteMsg: ChatMessage = {
-          id: (Date.now() + 2).toString(),
-          sender: 'bud',
-          type: 'quote',
-          data: res.quote,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, quoteMsg]);
+      // Handle tool results if present (e.g., pricing, bookings)
+      if (res.toolResults && res.toolResults.length > 0) {
+        res.toolResults.forEach((tool: any, idx: number) => {
+          if (tool.type === 'quote' || tool.pricing) {
+            const quoteMsg: ChatMessage = {
+              id: (Date.now() + idx + 2).toString(),
+              sender: 'george',
+              type: 'quote',
+              data: tool.pricing || tool,
+              timestamp: new Date(),
+            };
+            setMessages((prev) => [...prev, quoteMsg]);
+          }
+        });
       }
-
-      if (res.property) {
-        const propMsg: ChatMessage = {
-          id: (Date.now() + 3).toString(),
-          sender: 'bud',
-          type: 'property',
-          data: res.property,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, propMsg]);
-      }
-    } catch {
+    } catch (err: any) {
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
-          sender: 'bud',
+          sender: 'george',
           type: 'text',
           text: "Sorry, I'm having trouble connecting right now. Please try again.",
           timestamp: new Date(),
@@ -167,8 +160,8 @@ export default function BudChatScreen() {
           ListFooterComponent={
             isTyping ? (
               <View style={styles.typingRow}>
-                <ActivityIndicator size="small" color={Colors.primary} />
-                <Text style={styles.typingText}>Bud is typing...</Text>
+                <ActivityIndicator size="small" color="#F97316" />
+                <Text style={styles.typingText}>George is typing...</Text>
               </View>
             ) : null
           }
@@ -186,7 +179,7 @@ export default function BudChatScreen() {
             style={styles.input}
             value={input}
             onChangeText={setInput}
-            placeholder="Ask Bud anything..."
+            placeholder="Ask George anything..."
             placeholderTextColor={Colors.textLight}
             multiline
             maxLength={2000}
@@ -240,7 +233,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#F97316',
     justifyContent: 'center',
     alignItems: 'center',
   },

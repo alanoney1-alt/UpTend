@@ -106,7 +106,7 @@ export default function EmergencyScreen({ navigation }: any) {
             <View style={styles.triggerInfo}>
               <Text style={styles.triggerTitle}>Other ways to trigger:</Text>
               <Text style={styles.triggerItem}>📳 Shake phone 3 times quickly</Text>
-              <Text style={styles.triggerItem}>🎙️ Say "Bud, emergency"</Text>
+              <Text style={styles.triggerItem}>🎙️ Say "George, emergency"</Text>
               <Text style={styles.triggerItem}>🔴 Press this SOS button</Text>
             </View>
           </>

@@ -25,14 +25,13 @@ export async function request<T = any>(
   body?: any,
   isFormData = false,
 ): Promise<T> {
-  const token = await getToken();
   const headers: Record<string, string> = {};
-  if (token) headers['Authorization'] = `Bearer ${token}`;
   if (!isFormData) headers['Content-Type'] = 'application/json';
 
   const res = await fetch(`${config.API_BASE_URL}${path}`, {
     method,
     headers,
+    credentials: 'include', // Enable cookie-based auth
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,
   });
 

@@ -6,7 +6,7 @@ export type MessageType = 'text' | 'photo' | 'quote' | 'property' | 'bundle' | '
 
 export interface ChatMessage {
   id: string;
-  sender: 'user' | 'guide' | 'bud';
+  sender: 'user' | 'guide' | 'bud' | 'george';
   type: MessageType;
   text?: string;
   imageUri?: string;
@@ -20,11 +20,11 @@ interface Props {
 
 export default function ChatBubble({ message }: Props) {
   const isUser = message.sender === 'user';
-  // 'bud' and 'guide' both render as assistant bubble
+  // 'bud', 'george', and 'guide' all render as assistant bubble
 
   if (message.type === 'typing') {
     return (
-      <View style={[styles.bubble, styles.budBubble, { paddingHorizontal: 20 }]}>  
+      <View style={[styles.bubble, styles.georgeBubble, { paddingHorizontal: 20 }]}>  
         <Text style={styles.typingDots}>● ● ●</Text>
       </View>
     );
@@ -33,7 +33,7 @@ export default function ChatBubble({ message }: Props) {
   if (message.type === 'photo' && message.imageUri) {
     return (
       <View style={[styles.row, isUser && styles.rowUser]}>
-        <View style={[styles.bubble, isUser ? styles.userBubble : styles.budBubble]}>
+        <View style={[styles.bubble, isUser ? styles.userBubble : styles.georgeBubble]}>
           <Image source={{ uri: message.imageUri }} style={styles.photo} resizeMode="cover" />
           {message.text ? (
             <Text style={[styles.text, isUser && styles.textUser]}>{message.text}</Text>
@@ -45,7 +45,7 @@ export default function ChatBubble({ message }: Props) {
 
   return (
     <View style={[styles.row, isUser && styles.rowUser]}>
-      <View style={[styles.bubble, isUser ? styles.userBubble : styles.budBubble, { maxWidth: '80%' }]}>
+      <View style={[styles.bubble, isUser ? styles.userBubble : styles.georgeBubble, { maxWidth: '80%' }]}>
         <Text style={[styles.text, isUser && styles.textUser]}>{message.text}</Text>
       </View>
     </View>
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.userBubble,
     borderBottomRightRadius: 4,
   },
-  budBubble: {
-    backgroundColor: Colors.budBubble,
+  georgeBubble: {
+    backgroundColor: Colors.georgeBubble,
     borderBottomLeftRadius: 4,
   },
   text: { fontSize: 16, lineHeight: 22, color: Colors.text },

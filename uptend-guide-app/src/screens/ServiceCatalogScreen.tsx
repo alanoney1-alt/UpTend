@@ -34,8 +34,8 @@ const SERVICES: Service[] = [
 export default function ServiceCatalogScreen({ navigation }: any) {
   const handleServicePress = (service: Service) => {
     // Navigate to chat with pre-filled service context
-    navigation.navigate('Bud', {
-      screen: 'BudChat',
+    navigation.navigate('George', {
+      screen: 'GeorgeChat',
       params: { prefill: `I need ${service.name.toLowerCase()}` },
     });
   };
@@ -44,7 +44,7 @@ export default function ServiceCatalogScreen({ navigation }: any) {
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>All Services</Text>
-        <Text style={styles.subtitle}>Tap any service to get an instant quote from Bud</Text>
+        <Text style={styles.subtitle}>Tap any service to get an instant quote from George</Text>
 
         <View style={styles.grid}>
           {SERVICES.map((service) => (

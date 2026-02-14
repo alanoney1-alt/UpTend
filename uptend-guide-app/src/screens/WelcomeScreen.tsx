@@ -12,7 +12,7 @@ const TAGLINE = 'Snap a photo, hire a pro, get it fixed. Now.';
 
 const CAROUSEL_SLIDES = [
   { emoji: '📸', title: 'Snap a photo of anything', desc: 'Messy yard? Broken fence? Clogged gutter?\nJust take a picture.' },
-  { emoji: '🤖', title: 'AI quotes it instantly', desc: 'Bud analyzes the photo and gives you\na price in seconds.' },
+  { emoji: '🤖', title: 'AI quotes it instantly', desc: 'George analyzes the photo and gives you\na price in seconds.' },
   { emoji: '⚡', title: 'Pro arrives, gets it done', desc: 'Verified pros near you accept the job\nand show up ready to work.' },
 ];
 

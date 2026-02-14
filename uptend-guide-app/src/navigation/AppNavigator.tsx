@@ -13,7 +13,7 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 
 // Shared screens
-import BudChatScreen from '../screens/BudChatScreen';
+import GeorgeChatScreen from '../screens/GeorgeChatScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import VoiceMode from '../screens/VoiceMode';
 import VerifyProScreen from '../screens/VerifyProScreen';
@@ -68,10 +68,10 @@ const CustomerStack = createNativeStackNavigator();
 
 // --- Customer nested stacks ---
 
-function CustomerBudStack() {
+function CustomerGeorgeStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="BudChat" component={BudChatScreen} />
+      <CustomerStack.Screen name="GeorgeChat" component={GeorgeChatScreen} />
       <CustomerStack.Screen name="ARCamera" component={ARCameraScreen} options={{ presentation: 'fullScreenModal' }} />
       <CustomerStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
       <CustomerStack.Screen name="Calendar" component={CalendarScreen} />
@@ -131,16 +131,16 @@ const ProJobsStack = createNativeStackNavigator();
 const ProRoutesStack = createNativeStackNavigator();
 const ProEarningsStack = createNativeStackNavigator();
 const ProProfileStack = createNativeStackNavigator();
-const ProBudStack = createNativeStackNavigator();
+const ProGeorgeStack = createNativeStackNavigator();
 
-function ProBudStackScreen() {
+function ProGeorgeStackScreen() {
   return (
-    <ProBudStack.Navigator screenOptions={{ headerShown: false }}>
-      <ProBudStack.Screen name="BudChat" component={BudChatScreen} />
-      <ProBudStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
-      <ProBudStack.Screen name="ScopeMeasure" component={ScopeMeasureScreen} />
-      <ProBudStack.Screen name="MaterialList" component={MaterialListScreen} />
-    </ProBudStack.Navigator>
+    <ProGeorgeStack.Navigator screenOptions={{ headerShown: false }}>
+      <ProGeorgeStack.Screen name="GeorgeChat" component={GeorgeChatScreen} />
+      <ProGeorgeStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
+      <ProGeorgeStack.Screen name="ScopeMeasure" component={ScopeMeasureScreen} />
+      <ProGeorgeStack.Screen name="MaterialList" component={MaterialListScreen} />
+    </ProGeorgeStack.Navigator>
   );
 }
 
@@ -197,15 +197,15 @@ function ProProfileStackScreen() {
 // --- B2B nested stacks ---
 const B2BPropertiesStack = createNativeStackNavigator();
 const B2BAnalyticsStack = createNativeStackNavigator();
-const B2BBudStack = createNativeStackNavigator();
+const B2BGeorgeStack = createNativeStackNavigator();
 const B2BProfileStack = createNativeStackNavigator();
 
-function B2BBudStackScreen() {
+function B2BGeorgeStackScreen() {
   return (
-    <B2BBudStack.Navigator screenOptions={{ headerShown: false }}>
-      <B2BBudStack.Screen name="BudChat" component={BudChatScreen} />
-      <B2BBudStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
-    </B2BBudStack.Navigator>
+    <B2BGeorgeStack.Navigator screenOptions={{ headerShown: false }}>
+      <B2BGeorgeStack.Screen name="GeorgeChat" component={GeorgeChatScreen} />
+      <B2BGeorgeStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
+    </B2BGeorgeStack.Navigator>
   );
 }
 
@@ -257,9 +257,9 @@ function CustomerTabs() {
         options={{ tabBarLabel: 'Home', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
       />
       <Tab.Screen
-        name="Bud"
-        component={CustomerBudStack}
-        options={{ tabBarLabel: 'Bud', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        name="George"
+        component={CustomerGeorgeStack}
+        options={{ tabBarLabel: 'George', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
       />
       <Tab.Screen
         name="Book"
@@ -284,9 +284,9 @@ function ProTabs() {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
-        name="Bud"
-        component={ProBudStackScreen}
-        options={{ tabBarLabel: 'Bud', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        name="George"
+        component={ProGeorgeStackScreen}
+        options={{ tabBarLabel: 'George', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
       />
       <Tab.Screen
         name="Jobs"
@@ -316,9 +316,9 @@ function B2BTabs() {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
-        name="Bud"
-        component={B2BBudStackScreen}
-        options={{ tabBarLabel: 'Bud', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        name="George"
+        component={B2BGeorgeStackScreen}
+        options={{ tabBarLabel: 'George', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
       />
       <Tab.Screen
         name="Properties"

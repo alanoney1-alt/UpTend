@@ -1,60 +1,51 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet,
-  Alert, ActivityIndicator, Image,
+  Alert, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as ImagePicker from 'expo-image-picker';
 import { Colors } from '../theme/colors';
-import { createBooking } from '../services/bookings';
 import { useAuth } from '../context/AuthContext';
+import { request } from '../services/api';
 
-const SERVICE_TYPES = [
-  { key: 'lawn', label: 'Lawn Care', emoji: '🌱' },
-  { key: 'cleaning', label: 'Cleaning', emoji: '🧹' },
-  { key: 'junk', label: 'Junk Removal', emoji: '🗑' },
-  { key: 'handyman', label: 'Handyman', emoji: '🔧' },
-  { key: 'pressure_wash', label: 'Pressure Washing', emoji: '💦' },
-  { key: 'moving', label: 'Moving Help', emoji: '📦' },
-  { key: 'tree', label: 'Tree Service', emoji: '🌳' },
-  { key: 'gutter', label: 'Gutter Cleaning', emoji: '🏠' },
+const SERVICES = [
+  { key: 'ai_home_scan', label: 'AI Home Scan', emoji: '🏠', price: '$99 standard, $249 aerial' },
+  { key: 'handyman', label: 'Handyman', emoji: '🔧', price: '$75/hr' },
+  { key: 'junk_removal', label: 'Junk Removal', emoji: '🗑', price: 'From $99' },
+  { key: 'garage_cleanout', label: 'Garage Cleanout', emoji: '🚗', price: '$299-$999' },
+  { key: 'moving_labor', label: 'Moving Labor', emoji: '📦', price: '$80/hr per pro' },
+  { key: 'home_cleaning', label: 'Home Cleaning', emoji: '🧹', price: '$99-$299' },
+  { key: 'carpet_cleaning', label: 'Carpet Cleaning', emoji: '🛋️', price: '$39/room' },
+  { key: 'landscaping', label: 'Landscaping', emoji: '🌱', price: 'From $49' },
+  { key: 'gutter_cleaning', label: 'Gutter Cleaning', emoji: '🏠', price: '$129-$299' },
+  { key: 'pressure_washing', label: 'Pressure Washing', emoji: '💦', price: 'From $120' },
+  { key: 'pool_cleaning', label: 'Pool Cleaning', emoji: '🏊', price: '$89-$169/mo' },
+  { key: 'light_demolition', label: 'Light Demolition', emoji: '🔨', price: 'From $199' },
 ];
 
 export default function BookingScreen({ navigation }: any) {
-  const { requireAuth } = useAuth();
+  const { requireAuth, user } = useAuth();
   const [selectedService, setSelectedService] = useState('');
   const [description, setDescription] = useState('');
   const [address, setAddress] = useState('');
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
-  const pickPhoto = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      quality: 0.8,
-    });
-    if (!result.canceled && result.assets[0]) {
-      setPhotos((prev) => [...prev, result.assets[0].uri]);
-    }
-  };
-
   const handleSubmit = async () => {
     if (requireAuth({ type: 'book', payload: { service: selectedService } })) return;
-    if (!selectedService) { Alert.alert('Error', 'Please select a service type.'); return; }
+    if (!selectedService) { Alert.alert('Error', 'Please select a service.'); return; }
     if (!address.trim()) { Alert.alert('Error', 'Please enter your address.'); return; }
 
     setLoading(true);
     try {
-      await createBooking({
+      const selectedServiceObj = SERVICES.find(s => s.key === selectedService);
+      await request('POST', '/api/service-requests', {
         serviceType: selectedService,
-        description: description.trim(),
+        serviceName: selectedServiceObj?.label,
+        description: description.trim() || `${selectedServiceObj?.label} requested`,
         address: address.trim(),
-        scheduledDate: date.trim() || undefined,
-        scheduledTime: time.trim() || undefined,
-        photos: photos.length > 0 ? photos : undefined,
+        phone: phone.trim() || user?.phone,
       });
       setConfirmed(true);
     } catch (e: any) {
@@ -71,7 +62,7 @@ export default function BookingScreen({ navigation }: any) {
           <Text style={styles.confirmEmoji}>✅</Text>
           <Text style={styles.confirmTitle}>Booking Confirmed!</Text>
           <Text style={styles.confirmSubtitle}>
-            A verified pro will be matched to your job shortly.
+            A verified pro will be matched to your job shortly. You'll receive updates via SMS and app notifications.
           </Text>
           <View style={styles.guaranteeBadge}>
             <Text style={styles.guaranteeText}>🛡️ UpTend Satisfaction Guarantee</Text>
@@ -96,7 +87,7 @@ export default function BookingScreen({ navigation }: any) {
         {/* Service Selection */}
         <Text style={styles.label}>Service Type</Text>
         <View style={styles.serviceGrid}>
-          {SERVICE_TYPES.map((s) => (
+          {SERVICES.map((s) => (
             <TouchableOpacity
               key={s.key}
               style={[styles.serviceCard, selectedService === s.key && styles.serviceCardActive]}
@@ -106,6 +97,7 @@ export default function BookingScreen({ navigation }: any) {
               <Text style={[styles.serviceLabel, selectedService === s.key && styles.serviceLabelActive]}>
                 {s.label}
               </Text>
+              <Text style={styles.servicePrice}>{s.price}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -123,7 +115,7 @@ export default function BookingScreen({ navigation }: any) {
         />
 
         {/* Address */}
-        <Text style={styles.label}>Service Address</Text>
+        <Text style={styles.label}>Service Address *</Text>
         <TextInput
           style={styles.input}
           placeholder="123 Main St, City, State ZIP"
@@ -132,53 +124,32 @@ export default function BookingScreen({ navigation }: any) {
           onChangeText={setAddress}
         />
 
-        {/* Date & Time */}
-        <View style={styles.row}>
-          <View style={styles.halfField}>
-            <Text style={styles.label}>Date (optional)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="MM/DD/YYYY"
-              placeholderTextColor={Colors.textLight}
-              value={date}
-              onChangeText={setDate}
-            />
-          </View>
-          <View style={styles.halfField}>
-            <Text style={styles.label}>Time (optional)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="10:00 AM"
-              placeholderTextColor={Colors.textLight}
-              value={time}
-              onChangeText={setTime}
-            />
-          </View>
-        </View>
+        {/* Phone */}
+        <Text style={styles.label}>Phone (optional)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="(555) 123-4567"
+          placeholderTextColor={Colors.textLight}
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+        />
 
-        {/* Photos */}
-        <Text style={styles.label}>Photos (optional)</Text>
-        <View style={styles.photoRow}>
-          {photos.map((uri, i) => (
-            <Image key={i} source={{ uri }} style={styles.photoThumb} />
-          ))}
-          <TouchableOpacity style={styles.addPhotoBtn} onPress={pickPhoto}>
-            <Text style={styles.addPhotoText}>📷+</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Submit */}
-        <TouchableOpacity style={styles.primaryBtn} onPress={handleSubmit} disabled={loading}>
+        <TouchableOpacity
+          style={[styles.primaryBtn, (!selectedService || !address.trim()) && styles.primaryBtnDisabled]}
+          onPress={handleSubmit}
+          disabled={loading || !selectedService || !address.trim()}
+        >
           {loading ? (
             <ActivityIndicator color={Colors.white} />
           ) : (
-            <Text style={styles.primaryBtnText}>Submit Booking</Text>
+            <Text style={styles.primaryBtnText}>Request Quote</Text>
           )}
         </TouchableOpacity>
 
-        <View style={styles.guaranteeBadge}>
-          <Text style={styles.guaranteeText}>🛡️ UpTend Satisfaction Guarantee</Text>
-        </View>
+        <Text style={styles.disclaimer}>
+          By submitting, you agree to receive quotes from verified UpTend pros. No charge until you approve a quote.
+        </Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -187,44 +158,40 @@ export default function BookingScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   scroll: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.text },
-  subtitle: { fontSize: 15, color: Colors.textSecondary, marginTop: 4, marginBottom: 24 },
-  label: { fontSize: 14, fontWeight: '600', color: Colors.text, marginBottom: 8, marginTop: 16 },
-  input: {
-    backgroundColor: Colors.white, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14,
-    fontSize: 16, color: Colors.text, borderWidth: 1, borderColor: Colors.border,
-  },
-  textArea: { minHeight: 80, textAlignVertical: 'top' },
-  serviceGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  title: { fontSize: 26, fontWeight: '800', color: Colors.text, marginBottom: 4 },
+  subtitle: { fontSize: 15, color: Colors.textSecondary, marginBottom: 24 },
+  label: { fontSize: 15, fontWeight: '600', color: Colors.text, marginBottom: 8, marginTop: 12 },
+  serviceGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },
   serviceCard: {
-    width: '23%', backgroundColor: Colors.white, borderRadius: 14, padding: 12,
+    backgroundColor: Colors.white, borderRadius: 14, padding: 12,
     alignItems: 'center', borderWidth: 2, borderColor: 'transparent',
+    width: '31%', minHeight: 100,
+    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1,
   },
-  serviceCardActive: { borderColor: Colors.primary, backgroundColor: '#FFF7F0' },
-  serviceEmoji: { fontSize: 24, marginBottom: 4 },
-  serviceLabel: { fontSize: 11, fontWeight: '600', color: Colors.text, textAlign: 'center' },
-  serviceLabelActive: { color: Colors.primary },
-  row: { flexDirection: 'row', gap: 12 },
-  halfField: { flex: 1 },
-  photoRow: { flexDirection: 'row', gap: 10, flexWrap: 'wrap' },
-  photoThumb: { width: 72, height: 72, borderRadius: 10 },
-  addPhotoBtn: {
-    width: 72, height: 72, borderRadius: 10, backgroundColor: Colors.white,
-    borderWidth: 2, borderColor: Colors.border, borderStyle: 'dashed',
-    justifyContent: 'center', alignItems: 'center',
+  serviceCardActive: { borderColor: '#F97316', backgroundColor: '#FFF7F0' },
+  serviceEmoji: { fontSize: 28, marginBottom: 6 },
+  serviceLabel: { fontSize: 12, fontWeight: '600', color: Colors.text, textAlign: 'center' },
+  serviceLabelActive: { color: '#F97316' },
+  servicePrice: { fontSize: 10, color: Colors.textLight, textAlign: 'center', marginTop: 4 },
+  input: {
+    backgroundColor: Colors.white, borderRadius: 12,
+    paddingHorizontal: 16, paddingVertical: 14, fontSize: 16,
+    marginBottom: 12, color: Colors.text, borderWidth: 1, borderColor: Colors.border,
   },
-  addPhotoText: { fontSize: 24 },
+  textArea: { minHeight: 90, textAlignVertical: 'top' },
   primaryBtn: {
-    backgroundColor: Colors.primary, borderRadius: 14, paddingVertical: 16,
-    alignItems: 'center', marginTop: 24,
+    backgroundColor: '#F97316', borderRadius: 14,
+    paddingVertical: 16, alignItems: 'center', marginTop: 20,
   },
+  primaryBtnDisabled: { backgroundColor: Colors.border },
   primaryBtnText: { color: Colors.white, fontSize: 17, fontWeight: '700' },
-  guaranteeBadge: {
-    backgroundColor: '#F0FDF4', borderRadius: 12, padding: 12, alignItems: 'center', marginTop: 16,
-  },
-  guaranteeText: { fontSize: 14, fontWeight: '600', color: '#059669' },
+  disclaimer: { fontSize: 12, color: Colors.textLight, textAlign: 'center', marginTop: 16, lineHeight: 18 },
   confirmationContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
   confirmEmoji: { fontSize: 64, marginBottom: 16 },
   confirmTitle: { fontSize: 28, fontWeight: '800', color: Colors.text, marginBottom: 8 },
-  confirmSubtitle: { fontSize: 16, color: Colors.textSecondary, textAlign: 'center', marginBottom: 24 },
+  confirmSubtitle: { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', marginBottom: 24, lineHeight: 22 },
+  guaranteeBadge: {
+    backgroundColor: '#D1FAE5', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10, marginBottom: 24,
+  },
+  guaranteeText: { fontSize: 14, fontWeight: '600', color: '#059669' },
 });

@@ -18,7 +18,7 @@ const QUICK_ACTIONS = [
   { emoji: '🗺️', label: 'Find a\nPro' },
   { emoji: '📅', label: 'Schedule\nService' },
   { emoji: '🔄', label: 'Rebook\nLast' },
-  { emoji: '💬', label: 'Ask\nBud' },
+  { emoji: '💬', label: 'Ask\nGeorge' },
 ];
 
 const UPCOMING = [
@@ -87,9 +87,9 @@ export default function CustomerDashboardScreen({ navigation }: any) {
               style={styles.quickAction}
               activeOpacity={0.7}
               onPress={() => {
-                if (action.label.includes('Bud')) navigation?.navigate('Bud');
+                if (action.label.includes('George')) navigation?.navigate('George');
                 else if (action.label.includes('Find')) navigation?.navigate('LiveMap');
-                else if (action.label.includes('Photo')) navigation?.navigate('Bud');
+                else if (action.label.includes('Photo')) navigation?.navigate('George');
                 else handleBook(action.label);
               }}
             >

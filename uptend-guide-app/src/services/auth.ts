@@ -3,7 +3,6 @@ import { request, setToken, clearToken, getToken } from './api';
 export { setToken, clearToken, getToken };
 
 export interface LoginResponse {
-  token: string;
   user: {
     id: string;
     email: string;

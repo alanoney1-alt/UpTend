@@ -78,7 +78,7 @@ export default function ProfileScreen() {
 
         <Section title="Preferences">
           <ToggleRow icon="🔔" label="Push Notifications" value={notificationsEnabled} onToggle={setNotificationsEnabled} />
-          <ToggleRow icon="🗣" label="Voice Bud" value={voiceEnabled} onToggle={setVoiceEnabled} />
+          <ToggleRow icon="🗣" label="Voice George" value={voiceEnabled} onToggle={setVoiceEnabled} />
         </Section>
 
         {/* Referral */}

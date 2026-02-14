@@ -7,7 +7,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: Role;
+  role: 'customer' | 'pro' | 'business';
   companyName?: string;
   propertyCount?: number;
   [key: string]: any;
@@ -66,23 +66,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     (async () => {
       try {
-        const token = await authService.getToken();
-        if (token) {
-          const u = await authService.getUser();
-          if (u) {
-            setUser({
-              id: u.id || u._id,
-              name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : u.name || u.email,
-              email: u.email,
-              role: u.role || 'customer',
-              ...u,
-            });
-            setRole(u.role || 'customer');
-          }
+        // Check if user has active session cookie via /api/auth/user
+        const u = await authService.getUser();
+        if (u) {
+          setUser({
+            id: u.id || u._id,
+            name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : u.name || u.email,
+            email: u.email,
+            role: u.role || 'customer',
+            ...u,
+          });
+          setRole(u.role || 'customer');
         }
       } catch {
-        // Token expired or invalid — stay in guest mode
-        await authService.clearToken();
+        // No active session — stay in guest mode
       }
       setLoading(false);
     })();
@@ -91,15 +88,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string, r: 'customer' | 'pro' | 'business') => {
     const fn = r === 'pro' ? authService.proLogin : r === 'business' ? authService.businessLogin : authService.customerLogin;
     const res = await fn(email, password);
-    await authService.setToken(res.token);
+    // Session cookie is set automatically by backend, no need to store token
     const u = res.user;
-    setUser({
+    const userData: User = {
       id: u.id || (u as any)._id,
       name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u as any).name || u.email,
       email: u.email,
       role: r,
-      ...u,
-    });
+    };
+    setUser({ ...userData, ...u });
     setRole(r);
   };
 
@@ -112,29 +109,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       firstName,
       lastName,
     });
-    await authService.setToken(res.token);
+    // Session cookie is set automatically by backend
     const u = res.user;
-    setUser({
+    const userData: User = {
       id: u.id || (u as any)._id,
       name: data.name,
       email: u.email,
       role: data.role,
-      ...u,
-    });
+    };
+    setUser({ ...userData, ...u });
     setRole(data.role);
   };
 
   const loginWithGoogle = async (idToken: string) => {
     const res = await authService.googleOAuthMobile(idToken);
-    await authService.setToken(res.token);
+    // Session cookie is set automatically by backend
     const u = res.user;
-    setUser({
+    const userData: User = {
       id: u.id || (u as any)._id,
       name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u as any).name || u.email,
       email: u.email,
       role: 'customer',
-      ...u,
-    });
+    };
+    setUser({ ...userData, ...u });
     setRole('customer');
   };
 

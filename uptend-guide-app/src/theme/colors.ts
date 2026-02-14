@@ -16,7 +16,7 @@ export const Colors = {
   warning: '#F59E0B',
   error: '#EF4444',
   info: '#3B82F6',
-  budBubble: '#F3F4F6',
+  georgeBubble: '#F3F4F6',
   userBubble: '#F97316',
   inputBackground: '#F9FAFB',
   shadow: 'rgba(0, 0, 0, 0.08)',
