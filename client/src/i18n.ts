@@ -203,7 +203,7 @@ const resources = {
       "footer.footer_light_demolition": "Light Demolition",
 
       "common.book_now": "Book Now",
-      "common.get_quote": "Get a Quote in 30 Seconds",
+      "common.get_quote": "Find a Pro",
       "common.how_it_works": "How the \"Home OS\" Works",
       "common.track_pro": "Track Your Pro",
       "common.upload_photo": "Upload Photo",
@@ -270,7 +270,7 @@ const resources = {
       "hauler.no_jobs_yet": "No completed jobs yet. Go get 'em!",
 
       book_now: "Book Now",
-      get_quote: "Get a Quote in 30 Seconds",
+      get_quote: "Find a Pro",
       how_it_works: "How the \"Home OS\" Works",
       track_pro: "Track Your Pro",
       upload_photo: "Upload Photo",
@@ -561,7 +561,7 @@ const resources = {
       "serviceCard.per_hour": "por hora",
 
       "common.book_now": "Reservar Ahora",
-      "common.get_quote": "Cotiza en 30 Segundos",
+      "common.get_quote": "Encuentra un Pro",
       "common.how_it_works": "Cómo Funciona el \"Home OS\"",
       "common.track_pro": "Rastrear Técnico",
       "common.upload_photo": "Subir Foto",
@@ -628,7 +628,7 @@ const resources = {
       "hauler.no_jobs_yet": "¡Aún sin trabajos completados. A por ellos!",
 
       book_now: "Reservar Ahora",
-      get_quote: "Cotiza en 30 Segundos",
+      get_quote: "Encuentra un Pro",
       how_it_works: "Cómo Funciona el \"Home OS\"",
       track_pro: "Rastrear Técnico",
       upload_photo: "Subir Foto",
