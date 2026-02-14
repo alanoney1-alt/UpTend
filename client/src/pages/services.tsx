@@ -37,6 +37,7 @@ const services = [
     price: "From $75/hr",
     includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
     esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
+    link: "/services/handyman",
   },
   // 3. Junk Removal
   {
@@ -61,6 +62,7 @@ const services = [
     description: "Complete garage cleanout from cluttered to clean. We sort, donate, recycle, and haul everything so you can actually park in your garage again.",
     price: "From $299",
     includes: ["Full sort & organize", "Donation coordination", "Sweep & clean after", "Digital inventory of kept items"],
+    link: "/services/garage-cleanout",
   },
   // 5. Moving Labor
   {
@@ -72,6 +74,7 @@ const services = [
     description: "Furniture moving, truck/pod unloading, or general labor — all $80/hr per Pro. You pick the task, we supply the muscle, dollies, and shrink wrap.",
     price: "$80/hr per Pro",
     includes: ["Furniture Moving — $80/hr per Pro", "Truck/Pod Unloading — $80/hr per Pro", "General Labor — $80/hr per Pro", "Dollies, hand trucks & shrink wrap included"],
+    link: "/services/moving-labor",
   },
   // 6. Home Cleaning
   {
@@ -108,7 +111,7 @@ const services = [
     description: "One-time mow from $49 or recurring monthly plans from $99/mo. Mow & Go, Full Service, and Premium tiers available for lots up to ½ acre.",
     price: "From $49",
     includes: ["One-time mow from $49", "Recurring Mow & Go from $99/mo", "Full Service from $159/mo", "Premium with flowers & mulch from $249/mo"],
-    link: "/book/freshcut",
+    link: "/services/landscaping",
     esgImpact: "Lawn care sequesters carbon and improves air quality",
   },
   // 9. Gutter Cleaning
@@ -122,6 +125,7 @@ const services = [
     price: "From $129",
     includes: ["Full debris removal", "Downspout flushing", "Roof line air-blow", "Debris bagged & hauled"],
     esgImpact: "Prevents 50+ lbs CO2 from water damage repairs",
+    link: "/services/gutter-cleaning",
   },
   // 10. Pressure Washing
   {
@@ -134,6 +138,7 @@ const services = [
     price: "From $120",
     includes: ["Chemical pre-treatment", "Surface sealing available", "Gum removal", "Before/After photos"],
     esgImpact: "Saves 200+ gallons of water per job with low-flow equipment",
+    link: "/services/pressure-washing",
   },
   // 11. Pool Cleaning
   {
@@ -146,6 +151,7 @@ const services = [
     price: "From $89/mo",
     includes: ["Weekly skimming & vacuuming", "Chemical testing & balancing", "Filter cleaning", "Equipment inspection"],
     esgImpact: "Chemical optimization saves water and reduces emissions",
+    link: "/services/pool-cleaning",
   },
   // 12. Light Demolition
   {
@@ -157,6 +163,7 @@ const services = [
     description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. We demo it, clean it up, and haul the debris away in one visit.",
     price: "From $199",
     includes: ["Cabinet & countertop removal", "Fence & deck tear-down", "Shed demolition", "Full debris haul-away"],
+    link: "/services/demolition",
   },
 ];
 
@@ -296,10 +303,10 @@ export default function Services() {
                 <Button
                   size="lg"
                   className="w-full md:w-auto"
-                  onClick={() => setLocation(svc.id === "home_consultation" ? "/services/home-audit" : `/book?service=${svc.id}`)}
+                  onClick={() => setLocation(svc.link || `/services/${svc.id.replace(/_/g, '-')}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
-                  {svc.id === "home_consultation" ? "Learn More" : "Get a Quote"} <ArrowRight className="w-5 h-5 ml-2" />
+                  Learn More <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </CardContent>
             </Card>
@@ -359,10 +366,10 @@ export default function Services() {
 
                 <Button
                   className="w-full mt-auto"
-                  onClick={() => setLocation(svc.id === "home_consultation" ? "/services/home-audit" : `/book?service=${svc.id}`)}
+                  onClick={() => setLocation(svc.link || `/services/${svc.id.replace(/_/g, '-')}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
-                  {svc.id === "home_consultation" ? "Learn More" : "Get a Quote"} <ArrowRight className="w-4 h-4 ml-2" />
+                  Learn More <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </CardContent>
             </Card>

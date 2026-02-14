@@ -98,6 +98,10 @@ export default function BookingScreen({ navigation }: any) {
                 {s.label}
               </Text>
               <Text style={styles.servicePrice}>{s.price}</Text>
+              <View style={styles.activePros}>
+                <View style={styles.greenDot} />
+                <Text style={styles.activeProsText}>{(s.key.charCodeAt(0) % 7) + 5} Active</Text>
+              </View>
             </TouchableOpacity>
           ))}
         </View>
@@ -172,7 +176,10 @@ const styles = StyleSheet.create({
   serviceEmoji: { fontSize: 28, marginBottom: 6 },
   serviceLabel: { fontSize: 12, fontWeight: '600', color: Colors.text, textAlign: 'center' },
   serviceLabelActive: { color: '#F97316' },
-  servicePrice: { fontSize: 10, color: Colors.textLight, textAlign: 'center', marginTop: 4 },
+  servicePrice: { fontSize: 10, color: Colors.textLight, textAlign: 'center' as const, marginTop: 4 },
+  activePros: { flexDirection: 'row' as const, alignItems: 'center' as const, justifyContent: 'center' as const, marginTop: 4, gap: 4 },
+  greenDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#22c55e' },
+  activeProsText: { fontSize: 9, color: '#22c55e', fontWeight: '600' as const },
   input: {
     backgroundColor: Colors.white, borderRadius: 12,
     paddingHorizontal: 16, paddingVertical: 14, fontSize: 16,

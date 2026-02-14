@@ -101,10 +101,16 @@ export default function CustomerDashboardScreen({ navigation }: any) {
                 else handleBook(action.label);
               }}
             >
-              <View style={styles.quickActionIcon}>
+              <View style={[
+                styles.quickActionIcon,
+                action.label.includes('George') && styles.quickActionIconGeorge
+              ]}>
                 <Text style={styles.quickActionEmoji}>{action.emoji}</Text>
               </View>
-              <Text style={styles.quickActionLabel}>{action.label}</Text>
+              <Text style={[
+                styles.quickActionLabel,
+                action.label.includes('George') && styles.quickActionLabelGeorge
+              ]}>{action.label}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -282,8 +288,15 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'transparent',
   },
+  quickActionIconGeorge: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+    shadowColor: Colors.primary,
+    shadowOpacity: 0.3,
+  },
   quickActionEmoji: { fontSize: 24 },
   quickActionLabel: { fontSize: 11, fontWeight: '600', color: Colors.textSecondary, textAlign: 'center', lineHeight: 14 },
+  quickActionLabelGeorge: { color: Colors.primary, fontWeight: '700' },
 
   // Active job
   activeJobCard: {

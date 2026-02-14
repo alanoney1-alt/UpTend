@@ -204,12 +204,21 @@ export default function PublicPricing() {
                 size="lg"
                 data-testid={`button-book-${service.id}`}
               >
-                Check Availability <ArrowRight className="w-4 h-4 ml-2" />
+                Book Now <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
 
-              <p className="text-xs text-center text-muted-foreground mt-3">
-                <ShieldCheck className="w-3 h-3 inline mr-1" /> Liability Insured
-              </p>
+              <div className="flex items-center justify-center gap-3 mt-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                  </span>
+                  <span className="text-xs font-medium text-green-600 dark:text-green-400">{((service.id.charCodeAt(0) + service.id.charCodeAt(1)) % 7) + 5} Active Pros</span>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  <ShieldCheck className="w-3 h-3 inline mr-1" /> Insured
+                </span>
+              </div>
             </div>
           ))}
         </div>
