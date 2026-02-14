@@ -1,15 +1,30 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  MessageCircle, Send, X, Minimize2, Plus, Loader2, Bot, User,
+  MessageCircle, Send, X, Plus, Loader2, Bot, User,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useAiChat, type ChatMessage } from "@/hooks/use-ai-chat";
+import { apiRequest } from "@/lib/queryClient";
 
+// ─── Types ──────────────────────────────────
+interface QuickButton {
+  text: string;
+  action: string;
+}
+
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+  createdAt?: string;
+  buttons?: QuickButton[];
+  bookingDraft?: any;
+}
+
+// ─── Helpers ────────────────────────────────
 function formatTime(dateStr?: string) {
   if (!dateStr) return "";
   const d = new Date(dateStr);
@@ -17,7 +32,6 @@ function formatTime(dateStr?: string) {
 }
 
 function renderMarkdown(text: string) {
-  // Simple markdown: bold, headers, lists
   const html = text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/^### (.+)$/gm, '<h4 class="font-semibold text-sm mt-2 mb-1">$1</h4>')
@@ -29,14 +43,64 @@ function renderMarkdown(text: string) {
   return DOMPurify.sanitize(html);
 }
 
-function MessageBubble({ msg }: { msg: ChatMessage }) {
+function isProPage(path: string) {
+  return /^\/(pro|drive|become-pro)/.test(path);
+}
+
+// ─── Booking Card ───────────────────────────
+function BookingDraftCard({ draft, onConfirm, onEdit }: { draft: any; onConfirm: () => void; onEdit: () => void }) {
+  const q = draft.quote || {};
+  return (
+    <div className="bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-800 rounded-xl p-3.5 mt-2 shadow-sm">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-lg">📋</span>
+        <span className="font-semibold text-sm text-gray-900 dark:text-gray-100">Your Quote</span>
+      </div>
+      <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+        {draft.serviceName} {q.breakdown?.[0]?.label ? `— ${q.breakdown[0].label}` : ""}
+      </p>
+      {q.priceFormatted && (
+        <p className="text-lg font-bold text-[#F47C20] mt-1">{q.priceFormatted}</p>
+      )}
+      {draft.preferredDate && (
+        <p className="text-xs text-gray-500 mt-0.5">📅 {draft.preferredDate}</p>
+      )}
+      <div className="flex gap-2 mt-3">
+        <button onClick={onConfirm} className="flex-1 px-3 py-2 rounded-lg bg-[#F47C20] text-white text-sm font-medium hover:bg-[#e06d15] transition">
+          Confirm & Book
+        </button>
+        <button onClick={onEdit} className="flex-1 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+          Edit Details
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Quick Reply Buttons ────────────────────
+function QuickButtons({ buttons, onPress }: { buttons: QuickButton[]; onPress: (btn: QuickButton) => void }) {
+  return (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {buttons.map((btn) => (
+        <button
+          key={btn.text}
+          onClick={() => onPress(btn)}
+          className="px-3 py-1.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm hover:bg-orange-200 dark:hover:bg-orange-900/50 transition"
+        >
+          {btn.text}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ─── Message Bubble ─────────────────────────
+function MessageBubble({ msg, onButtonPress }: { msg: ChatMessage; onButtonPress: (btn: QuickButton) => void }) {
   const isUser = msg.role === "user";
   return (
     <div className={`flex gap-2 mb-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
       <Avatar className="h-7 w-7 shrink-0 mt-1">
-        <AvatarFallback
-          className={isUser ? "bg-gray-200 text-gray-600" : "bg-[#F47C20] text-white"}
-        >
+        <AvatarFallback className={isUser ? "bg-gray-200 text-gray-600" : "bg-[#F47C20] text-white"}>
           {isUser ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
         </AvatarFallback>
       </Avatar>
@@ -49,6 +113,16 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
           }`}
           dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }}
         />
+        {msg.bookingDraft && (
+          <BookingDraftCard
+            draft={msg.bookingDraft}
+            onConfirm={() => onButtonPress({ text: "Confirm & Book", action: "action:confirmBooking" })}
+            onEdit={() => onButtonPress({ text: "Edit Details", action: "reply:I'd like to change some details" })}
+          />
+        )}
+        {msg.buttons && msg.buttons.length > 0 && (
+          <QuickButtons buttons={msg.buttons} onPress={onButtonPress} />
+        )}
         <p className={`text-[10px] text-gray-400 mt-0.5 px-1 ${isUser ? "text-right" : "text-left"}`}>
           {formatTime(msg.createdAt)}
         </p>
@@ -57,35 +131,136 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
   );
 }
 
+// ─── Main Widget ────────────────────────────
 export function AiChatWidget() {
   const { user, isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const chat = useAiChat();
 
-  // Auto-scroll on new messages
+  // Auto-scroll
   useEffect(() => {
     if (scrollRef.current) {
       const el = scrollRef.current.querySelector("[data-radix-scroll-area-viewport]");
       if (el) el.scrollTop = el.scrollHeight;
     }
-  }, [chat.messages, chat.isLoading]);
+  }, [messages, isLoading]);
 
-  // Focus input when opened
+  // Focus input
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
 
-  if (!isAuthenticated) return null;
+  // Persist to localStorage
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem("george_chat", JSON.stringify({ messages, conversationId }));
+      } catch {}
+    }
+  }, [messages, conversationId]);
+
+  // Restore from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("george_chat");
+      if (saved) {
+        const { messages: m, conversationId: c } = JSON.parse(saved);
+        if (Array.isArray(m)) setMessages(m);
+        if (c) setConversationId(c);
+      }
+    } catch {}
+  }, []);
+
+  const currentPage = typeof window !== "undefined" ? window.location.pathname : "/";
+
+  const sendMessage = useCallback(async (text: string) => {
+    const userMsg: ChatMessage = { role: "user", content: text, createdAt: new Date().toISOString() };
+    setMessages((prev) => [...prev, userMsg]);
+    setIsLoading(true);
+
+    try {
+      const history = messages.map((m) => ({ role: m.role, content: m.content }));
+      const res = await apiRequest("POST", "/api/ai/chat", {
+        message: text,
+        conversationId: conversationId ?? undefined,
+        conversationType: "general",
+        currentPage,
+        conversationHistory: history,
+      });
+      const data = await res.json();
+
+      if (data.conversationId) setConversationId(data.conversationId);
+
+      const aiMsg: ChatMessage = {
+        role: "assistant",
+        content: data.response || data.message?.content || "Sorry, I couldn't process that.",
+        createdAt: new Date().toISOString(),
+        buttons: data.buttons || [],
+        bookingDraft: data.bookingDraft || undefined,
+      };
+      setMessages((prev) => [...prev, aiMsg]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, something went wrong. Please try again.", createdAt: new Date().toISOString() },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [messages, conversationId, currentPage]);
+
+  const handleQuickReply = useCallback((btn: QuickButton) => {
+    if (btn.action.startsWith("navigate:")) {
+      const path = btn.action.replace("navigate:", "");
+      window.location.href = path;
+    } else if (btn.action.startsWith("reply:")) {
+      const replyText = btn.action.replace("reply:", "");
+      sendMessage(replyText);
+    } else if (btn.action.startsWith("action:")) {
+      const action = btn.action.replace("action:", "");
+      if (action === "startBooking" || action === "confirmBooking") {
+        sendMessage(btn.text);
+      }
+    }
+  }, [sendMessage]);
 
   const handleSend = () => {
     const msg = input.trim();
-    if (!msg || chat.isLoading) return;
+    if (!msg || isLoading) return;
     setInput("");
-    chat.sendMessage(msg);
+    sendMessage(msg);
   };
+
+  const newConversation = () => {
+    setConversationId(null);
+    setMessages([]);
+    localStorage.removeItem("george_chat");
+  };
+
+  if (!isAuthenticated) return null;
+
+  // Determine greeting
+  const isPro = isProPage(currentPage);
+  const greetingText = isPro
+    ? `Hey${user?.firstName ? ` ${user.firstName}` : ""}! 👋 Interested in working with UpTend?`
+    : `Hey${user?.firstName ? ` ${user.firstName}` : ""}! 👋 What can I help with?`;
+  const greetingButtons: QuickButton[] = isPro
+    ? [
+        { text: "How It Works", action: "reply:How does working with UpTend work?" },
+        { text: "Earnings Calculator", action: "navigate:/pro/earnings" },
+        { text: "Apply Now", action: "navigate:/become-pro" },
+      ]
+    : [
+        { text: "Book a Service", action: "reply:I'd like to book a service" },
+        { text: "Get a Quote", action: "reply:I need a quote" },
+        { text: "Check My Jobs", action: "reply:Show me my recent jobs" },
+        { text: "Learn About UpTend", action: "reply:Tell me about UpTend" },
+      ];
 
   if (!isOpen) {
     return (
@@ -114,22 +289,10 @@ export function AiChatWidget() {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20"
-            onClick={() => chat.newConversation()}
-            title="New conversation"
-          >
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20" onClick={newConversation} title="New conversation">
             <Plus className="h-4 w-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20"
-            onClick={() => setIsOpen(false)}
-            title="Close"
-          >
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20" onClick={() => setIsOpen(false)} title="Close">
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -137,23 +300,24 @@ export function AiChatWidget() {
 
       {/* Messages */}
       <ScrollArea className="flex-1 px-3 py-3" ref={scrollRef}>
-        {chat.messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center py-12 px-4">
+        {messages.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full text-center py-8 px-4">
             <div className="h-16 w-16 rounded-full bg-[#F47C20]/10 flex items-center justify-center mb-4">
               <Bot className="h-8 w-8 text-[#F47C20]" />
             </div>
             <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
-              Hey{user?.firstName ? ` ${user.firstName}` : ""}! I'm George 👋
+              {greetingText}
             </h4>
-            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[260px]">
-              Need a pro for your home? I can get you a quote, book a service, or answer any questions. Just ask!
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[260px] mb-4">
+              {isPro ? "Learn about earning with UpTend" : "Need a pro for your home? Just ask!"}
             </p>
+            <QuickButtons buttons={greetingButtons} onPress={handleQuickReply} />
           </div>
         )}
-        {chat.messages.map((msg, i) => (
-          <MessageBubble key={i} msg={msg} />
+        {messages.map((msg, i) => (
+          <MessageBubble key={i} msg={msg} onButtonPress={handleQuickReply} />
         ))}
-        {chat.isLoading && (
+        {isLoading && (
           <div className="flex gap-2 mb-3">
             <Avatar className="h-7 w-7 shrink-0 mt-1">
               <AvatarFallback className="bg-[#F47C20] text-white">
@@ -173,29 +337,17 @@ export function AiChatWidget() {
 
       {/* Input */}
       <div className="border-t border-gray-200 dark:border-gray-700 px-3 py-2.5 shrink-0">
-        <form
-          onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-          className="flex gap-2"
-        >
+        <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
           <Input
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask anything..."
             className="flex-1 rounded-full border-gray-300 text-sm h-10"
-            disabled={chat.isLoading}
+            disabled={isLoading}
           />
-          <Button
-            type="submit"
-            size="icon"
-            disabled={!input.trim() || chat.isLoading}
-            className="h-10 w-10 rounded-full bg-[#F47C20] hover:bg-[#e06d15] shrink-0"
-          >
-            {chat.isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
+          <Button type="submit" size="icon" disabled={!input.trim() || isLoading} className="h-10 w-10 rounded-full bg-[#F47C20] hover:bg-[#e06d15] shrink-0">
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </form>
         <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by George AI</p>

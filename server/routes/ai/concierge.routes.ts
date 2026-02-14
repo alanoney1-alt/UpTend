@@ -15,6 +15,7 @@ import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
 import { generateConciergeResponse } from "../../services/ai/concierge-service";
+import { chat as georgeChat, type GeorgeContext } from "../../services/george-agent";
 
 export function createConciergeRoutes(storage: DatabaseStorage) {
   const router = Router();
@@ -29,6 +30,11 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
     sessionId: z.string().optional(),
     conversationType: z.enum(["general", "booking", "support", "onboarding"]).default("general"),
     contextData: z.record(z.any()).optional(),
+    currentPage: z.string().optional(),
+    conversationHistory: z.array(z.object({
+      role: z.enum(["user", "assistant"]),
+      content: z.string(),
+    })).optional(),
   });
 
   router.post("/chat", requireAuth, async (req, res) => {
@@ -66,37 +72,43 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
         createdAt: new Date().toISOString(),
       } as any);
 
-      // Fetch conversation history for context
-      const existingMessages = conversation.id ? await storage.getAiMessagesByConversation(conversation.id) : [];
-      const conversationHistory = existingMessages.map((m: any) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      }));
+      // Build conversation history — prefer client-sent history, fall back to DB
+      let conversationHistory: Array<{ role: "user" | "assistant"; content: string }>;
+      if (validated.conversationHistory && validated.conversationHistory.length > 0) {
+        conversationHistory = validated.conversationHistory as Array<{ role: "user" | "assistant"; content: string }>;
+      } else {
+        const existingMessages = conversation.id ? await storage.getAiMessagesByConversation(conversation.id) : [];
+        conversationHistory = existingMessages.map((m: any) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        }));
+      }
 
       // Get user info for context
       const user = await storage.getUser(userId);
 
-      // Call real AI concierge service
-      const aiResult = await generateConciergeResponse({
-        userMessage: validated.message,
-        conversationHistory,
-        context: {
-          conversationType: validated.conversationType || "general",
-          userId,
-          userName: user?.firstName || user?.username || undefined,
-          userLocation: "Orlando",
-        },
-      });
+      // Build George context
+      const georgeContext: GeorgeContext = {
+        userId: String(userId),
+        userName: user?.firstName || user?.username || undefined,
+        currentPage: validated.currentPage || undefined,
+        isAuthenticated: true,
+        storage,
+      };
 
-      const aiResponse = aiResult.response;
+      // Call George agent with function calling
+      const georgeResult = await georgeChat(
+        validated.message,
+        conversationHistory,
+        georgeContext
+      );
 
       // Save AI response
       const aiMessage = await storage.createAiConversationMessage({
         conversationId: conversation.id,
         role: "assistant",
-        content: aiResponse,
-        detectedIntent: aiResult.intent || null,
-        suggestedActions: aiResult.suggestedActions || null,
+        content: georgeResult.response,
+        suggestedActions: georgeResult.buttons.length > 0 ? JSON.stringify(georgeResult.buttons) : null,
         createdAt: new Date().toISOString(),
       } as any);
 
@@ -109,6 +121,9 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
       res.json({
         success: true,
         conversationId: conversation.id,
+        response: georgeResult.response,
+        buttons: georgeResult.buttons,
+        bookingDraft: georgeResult.bookingDraft || null,
         message: {
           id: aiMessage.id,
           role: aiMessage.role,
