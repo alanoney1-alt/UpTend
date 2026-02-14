@@ -132,6 +132,7 @@ const serviceData: Record<string, ServiceData> = {
       "Reduces stress by creating an organized, accessible storage system"
     ],
     availability: {
+      sameDay: true,
       nextDay: true,
       scheduled: true,
     },
@@ -171,6 +172,7 @@ const serviceData: Record<string, ServiceData> = {
       "Adds flexibility—use labor only where you need it, DIY the rest"
     ],
     availability: {
+      sameDay: true,
       nextDay: true,
       scheduled: true,
     },
@@ -210,6 +212,7 @@ const serviceData: Record<string, ServiceData> = {
       "Reduces stress and saves time—reclaim your weekends for what matters"
     ],
     availability: {
+      sameDay: true,
       nextDay: true,
       scheduled: true,
       recurring: true,
@@ -250,6 +253,7 @@ const serviceData: Record<string, ServiceData> = {
       "Restores appearance—makes old carpets look new again, delaying costly replacement"
     ],
     availability: {
+      sameDay: true,
       nextDay: true,
       scheduled: true,
       recurring: true,
@@ -410,6 +414,7 @@ const serviceData: Record<string, ServiceData> = {
       "Saves water by catching leaks early and optimizing chemical balance (reducing refills)"
     ],
     availability: {
+      sameDay: true,
       scheduled: true,
       recurring: true,
     },
