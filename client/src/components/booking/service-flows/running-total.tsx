@@ -26,7 +26,8 @@ export function RunningTotal({
   continueLabel = "Continue with This Quote",
   note,
 }: RunningTotalProps) {
-  const displayTotal = minimumCharge ? Math.max(total, minimumCharge) : total;
+  const hasItems = total > 0;
+  const displayTotal = minimumCharge && hasItems ? Math.max(total, minimumCharge) : total;
   const isMinimumApplied = minimumCharge ? total < minimumCharge && total > 0 : false;
 
   return (

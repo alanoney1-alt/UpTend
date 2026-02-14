@@ -64,11 +64,19 @@ export default function CustomerSignup() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      toast({
-        title: "Account Created!",
-        description: "Now let's set up your payment method to get started.",
-      });
-      setLocation("/payment-setup");
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get('redirect');
+      if (redirect) {
+        const service = params.get('service');
+        toast({ title: "Account Created!", description: "Completing your booking..." });
+        setLocation(redirect + (service ? `?service=${service}` : ''));
+      } else {
+        toast({
+          title: "Account Created!",
+          description: "Now let's set up your payment method to get started.",
+        });
+        setLocation("/payment-setup");
+      }
     },
     onError: (error: any) => {
       toast({

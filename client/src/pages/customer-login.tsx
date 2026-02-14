@@ -42,13 +42,17 @@ export default function CustomerLogin() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      toast({
-        title: "Welcome Back!",
-        description: "Redirecting...",
-      });
-      if (!data.hasPaymentMethod) {
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get('redirect');
+      if (redirect) {
+        const service = params.get('service');
+        toast({ title: "Welcome Back!", description: "Completing your booking..." });
+        setLocation(redirect + (service ? `?service=${service}` : ''));
+      } else if (!data.hasPaymentMethod) {
+        toast({ title: "Welcome Back!", description: "Let's set up your payment method." });
         setLocation("/payment-setup");
       } else {
+        toast({ title: "Welcome Back!", description: "Redirecting..." });
         setLocation("/book");
       }
     },

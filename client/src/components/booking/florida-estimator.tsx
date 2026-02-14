@@ -183,6 +183,29 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
 
+  // Restore booking state after auth flow
+  useEffect(() => {
+    const saved = sessionStorage.getItem('pendingBooking');
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        if (state.address) setAddress(state.address);
+        if (state.selectedService) setSelectedService(state.selectedService);
+        if (state.manualEstimate) setManualEstimate(state.manualEstimate);
+        if (state.aiQuote) setAiQuote(state.aiQuote);
+        if (state.propertyData) setPropertyData(state.propertyData);
+        if (state.bedrooms) setBedrooms(state.bedrooms);
+        if (state.bathrooms) setBathrooms(state.bathrooms);
+        if (state.sqft) setSqft(state.sqft);
+        if (state.stories) setStories(state.stories);
+        setStep(6);
+        sessionStorage.removeItem('pendingBooking');
+      } catch (e) {
+        console.error('Failed to restore booking state:', e);
+      }
+    }
+  }, []);
+
   // Scroll to top on step change — immediate jump, no smooth scroll
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -404,10 +427,34 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
     }
   };
 
+  const saveBookingState = () => {
+    const bookingState = {
+      address,
+      selectedService,
+      step: 5,
+      manualEstimate,
+      aiQuote,
+      propertyData,
+      bedrooms,
+      bathrooms,
+      sqft,
+      stories,
+    };
+    sessionStorage.setItem('pendingBooking', JSON.stringify(bookingState));
+  };
+
   const goToAuthGate = () => {
+    saveBookingState();
     const params = new URLSearchParams({ redirect: "/book" });
     if (selectedService) params.set("service", selectedService);
     setLocation("/customer-signup?" + params.toString());
+  };
+
+  const goToLoginFromAuthGate = () => {
+    saveBookingState();
+    const params = new URLSearchParams({ redirect: "/book" });
+    if (selectedService) params.set("service", selectedService);
+    setLocation("/customer-login?" + params.toString());
   };
 
   if (step === 1) {
@@ -938,21 +985,25 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
               </ul>
             </div>
 
-            <Button
-              onClick={goToAuthGate}
-              className="w-full"
-              size="lg"
-              data-testid="button-book-quote"
-            >
-              Create Account & Book Now <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-
-            <p className="text-xs text-center text-muted-foreground">
-              Already have an account?{" "}
-              <a href={`/customer-login?redirect=/book${selectedService ? `&service=${selectedService}` : ""}`} className="text-primary underline hover:text-primary/80">
-                Sign in here
-              </a>
-            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                onClick={goToAuthGate}
+                className="flex-1"
+                size="lg"
+                data-testid="button-book-quote"
+              >
+                Create Account & Book <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+              <Button
+                onClick={goToLoginFromAuthGate}
+                variant="outline"
+                className="flex-1"
+                size="lg"
+                data-testid="button-login-book"
+              >
+                Log In & Book
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

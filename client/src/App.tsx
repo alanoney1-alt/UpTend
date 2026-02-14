@@ -189,11 +189,7 @@ function Router() {
       <Route path="/audit" component={HomeHealthAudit} />
       <Route path="/services/material-recovery" component={JunkRemoval} />
       <Route path="/services/junk" component={JunkRemoval} />
-      <Route path="/services/freshcut" component={BookFreshCut} />
-      <Route path="/services/landscaping" component={BookFreshCut} />
       <Route path="/book/freshcut" component={BookFreshCut} />
-      <Route path="/services/deepfiber" component={BookDeepFiber} />
-      <Route path="/services/carpet-cleaning" component={BookDeepFiber} />
       <Route path="/book/deepfiber" component={BookDeepFiber} />
       <Route path="/cost-guides" component={CostGuidesHub} />
       <Route path="/cost-guides/:slug" component={CostGuide} />
