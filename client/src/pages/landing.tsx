@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,6 +29,7 @@ import { StormCountdown } from "@/components/booking/storm-countdown";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
+  usePageTitle("UpTend | Smart Home Services in Orlando — Book Instantly");
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />

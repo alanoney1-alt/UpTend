@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,7 +22,7 @@ const services = [
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
     description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° Home Scan, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($249). $49 back on your next booking.",
     price: "From $99",
-    includes: ["Smart room-by-room inventory", "360° Home Scan walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$100)", "$49 credit toward your next booking"],
+    includes: ["Smart room-by-room inventory", "360° Home Scan walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$150)", "$49 credit toward your next booking"],
     featured: true,
     link: "/services/home-audit",
   },
@@ -192,6 +193,7 @@ const proStandards = [
 ];
 
 export default function Services() {
+  usePageTitle("All Home Services | UpTend Orlando");
   const [, setLocation] = useLocation();
 
   return (

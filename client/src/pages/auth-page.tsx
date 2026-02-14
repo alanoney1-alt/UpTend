@@ -1,9 +1,10 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -51,9 +52,17 @@ const TAB_CONFIG: Record<UserType, {
 };
 
 export default function AuthPage() {
+  usePageTitle("Sign In | UpTend");
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Redirect authenticated users to dashboard
+  const { data: existingUser } = useQuery<any>({
+    queryKey: ["/api/auth/user"],
+    retry: false,
+    staleTime: 1000 * 60 * 5,
+  });
   const [showPassword, setShowPassword] = useState(false);
   const isProRoute = location.includes("pycker") || location.includes("pro");
   const [activeTab, setActiveTab] = useState<UserType>(isProRoute ? "pro" : "homeowner");

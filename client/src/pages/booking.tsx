@@ -1,9 +1,11 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useSearch } from "wouter";
 import { useEffect } from "react";
 import { Header } from "@/components/landing/header";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
 
 export default function BookingPage() {
+  usePageTitle("Book a Service | UpTend");
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
   const preselectedService = params.get("service");

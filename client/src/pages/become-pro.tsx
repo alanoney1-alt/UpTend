@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { Link } from "wouter";
 import { Shield, Leaf, Heart, Globe, Video, DollarSign, Award, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ const steps = [
 ];
 
 export default function BecomePro() {
+  usePageTitle("Become a Pro | UpTend");
   return (
     <div className="min-h-screen bg-background" data-testid="page-become-pro">
       <Header />

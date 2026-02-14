@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
@@ -24,6 +25,7 @@ const statusLabels: Record<string, string> = {
 };
 
 export default function MyJobs() {
+  usePageTitle("My Jobs | UpTend");
   const [, navigate] = useLocation();
 
   const { data: jobs, isLoading } = useQuery<any[]>({

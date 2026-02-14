@@ -82,7 +82,7 @@ export const DEEPFIBER_PER_ROOM: PricingTier[] = [
   { id: 'df_4room', label: '4 Rooms', description: '', basePrice: 14900, unit: 'per_room' },
   { id: 'df_5room', label: '5 Rooms', description: '', basePrice: 17900, unit: 'per_room' },
   { id: 'df_whole', label: 'Whole House (6+ rooms)', description: '', basePrice: 19900, maxPrice: 34900, unit: 'per_room' },
-  { id: 'df_hallway', label: 'Hallway / Stairs (each)', description: '', basePrice: 2900, unit: 'per_item' },
+  { id: 'df_hallway', label: 'Hallway / Stairs (each)', description: '', basePrice: 2500, unit: 'per_item' },
   { id: 'df_closet', label: 'Walk-In Closet', description: '', basePrice: 2500, unit: 'per_item' },
 ];
 

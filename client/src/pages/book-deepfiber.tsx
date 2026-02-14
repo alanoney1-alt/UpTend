@@ -346,7 +346,7 @@ export default function BookDeepFiber() {
                   <div className="grid gap-4 md:grid-cols-2">
                     <div>
                       <Label className="text-sm font-semibold mb-2 block">
-                        Hallways / Stairs ($29 each)
+                        Hallways / Stairs ($25 each)
                       </Label>
                       <div className="flex items-center gap-2">
                         <Button

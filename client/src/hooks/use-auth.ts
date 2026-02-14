@@ -18,13 +18,20 @@ async function fetchUser(): Promise<User | null> {
 }
 
 async function performLogout(role?: string): Promise<void> {
+  // Clear all client-side auth tokens
+  localStorage.removeItem("token");
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("authToken");
+
   if (role === "hauler") {
     await fetch("/api/haulers/logout", { method: "POST", credentials: "include" });
   } else if (role === "customer") {
     await fetch("/api/customers/logout", { method: "POST", credentials: "include" });
   } else {
-    window.location.href = "/api/logout";
-    return;
+    await fetch("/api/logout", { method: "POST", credentials: "include" }).catch(() => {});
   }
   window.location.href = "/";
 }

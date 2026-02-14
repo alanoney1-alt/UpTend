@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Header } from "@/components/landing/header";
@@ -42,6 +43,7 @@ interface QuoteResult {
 }
 
 export default function PhotoToQuote() {
+  usePageTitle("AI Photo Quote | UpTend");
   const [, navigate] = useLocation();
   const [photos, setPhotos] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);

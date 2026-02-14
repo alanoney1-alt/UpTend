@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -401,6 +402,7 @@ function AcademyPublicLanding() {
 }
 
 export default function PyckerAcademy() {
+  usePageTitle("Pro Academy | UpTend");
   const { user, isAuthenticated } = useAuth();
 
   if (isAuthenticated && (user?.role === "hauler" || user?.role === "pro")) {

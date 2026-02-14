@@ -30,11 +30,11 @@ export interface CleanlinessScoreResult {
 // Pricing must match client/src/lib/bundle-pricing.ts loadSizePackages
 // Standard pickup truck bed = 8 cubic yards = 216 cubic feet
 const LOAD_SIZE_THRESHOLDS = {
-  small: { maxVolume: 27, basePrice: 99 },        // Minimum/1/8 truck (0-27 cu ft): $99 if ≤25, $149 if 26-27
-  medium: { maxVolume: 54, basePrice: 199 },      // 1/4 truck (28-54 cu ft)
-  large: { maxVolume: 108, basePrice: 299 },      // 1/2 truck (55-108 cu ft)
-  extra_large: { maxVolume: 162, basePrice: 399 }, // 3/4 truck (109-162 cu ft)
-  full: { maxVolume: Infinity, basePrice: 449 },  // Full truck (163+ cu ft)
+  small: { maxVolume: 27, basePrice: 99 },        // Minimum/1/8 truck (0-27 cu ft): $99 if ≤25, $179 if 26-27
+  medium: { maxVolume: 54, basePrice: 279 },      // 1/4 truck (28-54 cu ft)
+  large: { maxVolume: 108, basePrice: 379 },      // 1/2 truck (55-108 cu ft)
+  extra_large: { maxVolume: 162, basePrice: 449 }, // 3/4 truck (109-162 cu ft)
+  full: { maxVolume: Infinity, basePrice: 549 },  // Full truck (163+ cu ft)
 };
 
 export async function analyzePhotos(photoUrls: string[]): Promise<PhotoAnalysisResult> {
@@ -61,11 +61,11 @@ Your task:
 6. Provide price estimate based on load tier + complexity factors
 
 Load size tiers (VOLUME-BASED TRUCK PRICING):
-- small: Under 1/8 truck (0-25 cu ft): $99 minimum | 1/8 truck (26-27 cu ft): $149
-- medium: 1/4 truck (28-54 cu ft): $199
-- large: 1/2 truck (55-108 cu ft): $299
-- extra_large: 3/4 truck (109-162 cu ft): $399
-- full: Full truck (163+ cu ft / 6+ cubic yards): $449
+- small: Under 1/8 truck (0-25 cu ft): $99 minimum | 1/8 truck (26-27 cu ft): $179
+- medium: 1/4 truck (28-54 cu ft): $279
+- large: 1/2 truck (55-108 cu ft): $379
+- extra_large: 3/4 truck (109-162 cu ft): $449
+- full: Full truck (163+ cu ft / 6+ cubic yards): $549
 
 Service types:
 - junk_removal: General trash, debris, unwanted items
@@ -93,7 +93,7 @@ Respond in JSON format only.`,
         content: [
           {
             type: "text",
-            text: "Analyze these photos and provide a detailed estimate. Return a JSON object with: identifiedItems (array of item names), estimatedVolumeCubicFt (number - be precise, standard pickup = 216 cu ft), recommendedLoadSize (small/medium/large/extra_large/full), suggestedServiceType (junk_removal/furniture_moving/garage_cleanout/truck_unloading), confidence (0-1), suggestedPrice (number based on truck volume tiers: minimum $99, 1/8 truck $149, 1/4 truck $199, 1/2 truck $299, 3/4 truck $399, full truck $449, plus complexity factors), reasoning (string explaining the estimate and which truck tier it falls into), and itemBreakdown (array of objects with item, estimatedWeight, estimatedVolume, and specialHandling if item is mattress/appliance/electronics/hazardous).",
+            text: "Analyze these photos and provide a detailed estimate. Return a JSON object with: identifiedItems (array of item names), estimatedVolumeCubicFt (number - be precise, standard pickup = 216 cu ft), recommendedLoadSize (small/medium/large/extra_large/full), suggestedServiceType (junk_removal/furniture_moving/garage_cleanout/truck_unloading), confidence (0-1), suggestedPrice (number based on truck volume tiers: minimum $99, 1/8 truck $179, 1/4 truck $279, 1/2 truck $379, 3/4 truck $449, full truck $549, plus complexity factors), reasoning (string explaining the estimate and which truck tier it falls into), and itemBreakdown (array of objects with item, estimatedWeight, estimatedVolume, and specialHandling if item is mattress/appliance/electronics/hazardous).",
           },
           ...imageContents,
         ],
@@ -114,20 +114,20 @@ Respond in JSON format only.`,
 
     if (volume <= LOAD_SIZE_THRESHOLDS.small.maxVolume) {
       recommendedLoadSize = "small";
-      // Distinguish between minimum load ($99) and 1/8 truck ($149)
-      suggestedPrice = volume <= 25 ? 99 : 149;
+      // Distinguish between minimum load ($99) and 1/8 truck ($179)
+      suggestedPrice = volume <= 25 ? 99 : 179;
     } else if (volume <= LOAD_SIZE_THRESHOLDS.medium.maxVolume) {
       recommendedLoadSize = "medium";
-      suggestedPrice = LOAD_SIZE_THRESHOLDS.medium.basePrice; // $199 (1/4 truck)
+      suggestedPrice = LOAD_SIZE_THRESHOLDS.medium.basePrice; // $279 (1/4 truck)
     } else if (volume <= LOAD_SIZE_THRESHOLDS.large.maxVolume) {
       recommendedLoadSize = "large";
-      suggestedPrice = LOAD_SIZE_THRESHOLDS.large.basePrice; // $299 (1/2 truck)
+      suggestedPrice = LOAD_SIZE_THRESHOLDS.large.basePrice; // $379 (1/2 truck)
     } else if (volume <= LOAD_SIZE_THRESHOLDS.extra_large.maxVolume) {
       recommendedLoadSize = "extra_large";
-      suggestedPrice = LOAD_SIZE_THRESHOLDS.extra_large.basePrice; // $399 (3/4 truck)
+      suggestedPrice = LOAD_SIZE_THRESHOLDS.extra_large.basePrice; // $449 (3/4 truck)
     } else {
       recommendedLoadSize = "full";
-      suggestedPrice = LOAD_SIZE_THRESHOLDS.full.basePrice; // $449 (full truck)
+      suggestedPrice = LOAD_SIZE_THRESHOLDS.full.basePrice; // $549 (full truck)
     }
     
     const finalConfidence = parsed.confidence || 0.8;
@@ -156,7 +156,7 @@ Respond in JSON format only.`,
       recommendedLoadSize: "medium",
       suggestedServiceType: "junk_removal",
       confidence: 0.5,
-      suggestedPrice: 149,
+      suggestedPrice: 179,
       suggestedPriceMin: 105,
       suggestedPriceMax: 195,
       reasoning: "Unable to analyze photos. Using default estimate.",
@@ -181,7 +181,7 @@ export async function getQuickEstimate(description: string): Promise<{
 
 Volume-based truck pricing (standard pickup truck bed = 216 cubic feet):
 - Minimum load: $99 (1-2 small items, under 25 cu ft)
-- 1/8 truck: $149 (2-4 items, ~27 cu ft)
+- 1/8 truck: $179 (2-4 items, ~27 cu ft)
 - 1/4 truck: $${LOAD_SIZE_THRESHOLDS.medium.basePrice} (4-6 items, ~54 cu ft)
 - 1/2 truck: $${LOAD_SIZE_THRESHOLDS.large.basePrice} (6-10 items, ~108 cu ft)
 - 3/4 truck: $${LOAD_SIZE_THRESHOLDS.extra_large.basePrice} (11-15 items, ~162 cu ft)

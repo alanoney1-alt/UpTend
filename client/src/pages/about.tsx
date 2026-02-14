@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -43,6 +44,7 @@ const milestones = [
 ];
 
 export default function About() {
+  usePageTitle("About UpTend | Smarter Home Services");
   return (
     <div className="min-h-screen bg-background" data-testid="page-about">
       <Header />

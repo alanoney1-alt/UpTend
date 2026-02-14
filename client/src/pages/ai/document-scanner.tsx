@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -41,6 +42,7 @@ interface ScanResult {
 }
 
 export default function DocumentScanner() {
+  usePageTitle("Document Scanner | UpTend");
   const [, navigate] = useLocation();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);

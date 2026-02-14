@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,7 @@ const steps = [
 ];
 
 export default function Drive() {
+  usePageTitle("Drive with UpTend | Earn on Your Schedule");
   const [selectedRole, setSelectedRole] = useState("hauler");
   const [jobsPerDay, setJobsPerDay] = useState([3]);
 

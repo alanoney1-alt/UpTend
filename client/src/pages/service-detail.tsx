@@ -378,7 +378,9 @@ export default function ServiceDetail() {
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold mb-2">Ready to Get Started?</h3>
               <p className="text-muted-foreground mb-6">
-                Book your {service.name.toLowerCase()} service today. Transparent pricing, no hidden fees.
+                {service.name.toLowerCase().includes('service')
+                  ? `Book ${service.name.toLowerCase()} today. Transparent pricing, no hidden fees.`
+                  : `Book your ${service.name.toLowerCase()} service today. Transparent pricing, no hidden fees.`}
               </p>
               <Link href={bookUrl}>
                 <Button size="lg" className="text-lg px-8">

@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { Link } from "wouter";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
@@ -36,8 +37,8 @@ const features = [
     description:
       "Get personalized maintenance tips based on your location and the time of year. Stay ahead of costly repairs.",
     icon: Leaf,
-    href: "#seasonal",
-    badge: "Smart",
+    href: "",
+    badge: "Coming Soon",
     color: "bg-green-100 text-green-600",
   },
   {
@@ -45,13 +46,14 @@ const features = [
     description:
       "AI suggests optimal service times based on weather forecasts and pro availability. Book at the perfect moment.",
     icon: CalendarClock,
-    href: "#scheduling",
-    badge: null,
+    href: "",
+    badge: "Coming Soon",
     color: "bg-purple-100 text-purple-600",
   },
 ];
 
 export default function AIFeaturesHub() {
+  usePageTitle("AI Home Tools | UpTend");
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
       <Header />
@@ -76,9 +78,12 @@ export default function AIFeaturesHub() {
         {/* Feature Cards */}
         <section className="container mx-auto px-4 -mt-8 pb-20">
           <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {features.map((f) => (
-              <Link key={f.title} href={f.href}>
-                <Card className="group p-6 hover:shadow-lg transition-all duration-200 cursor-pointer border-gray-200 dark:border-gray-800 h-full">
+            {features.map((f) => {
+              const Wrapper = f.href ? Link : "div";
+              const wrapperProps = f.href ? { href: f.href } : {};
+              return (
+              <Wrapper key={f.title} {...(wrapperProps as any)}>
+                <Card className={`group p-6 transition-all duration-200 border-gray-200 dark:border-gray-800 h-full ${f.href ? "hover:shadow-lg cursor-pointer" : "opacity-80"}`}>
                   <div className="flex items-start gap-4">
                     <div
                       className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${f.color}`}
@@ -103,11 +108,12 @@ export default function AIFeaturesHub() {
                         {f.description}
                       </p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-[#F47C20] transition-colors shrink-0 mt-1" />
+                    {f.href && <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-[#F47C20] transition-colors shrink-0 mt-1" />}
                   </div>
                 </Card>
-              </Link>
-            ))}
+              </Wrapper>
+              );
+            })}
           </div>
         </section>
       </main>

@@ -41,7 +41,7 @@ export const UPTEND_KNOWLEDGE = {
         { size: "1/4 Truck", price: "$279", capacity: "~54 cubic ft", example: "Couch + small desk OR Dresser + chairs" },
         { size: "1/2 Truck", price: "$379", capacity: "~108 cubic ft", example: "Bedroom set OR Living room furniture" },
         { size: "3/4 Truck", price: "$449", capacity: "~162 cubic ft", example: "Full apartment OR Large garage cleanout" },
-        { size: "Full Truck", price: "$449", capacity: "~216 cubic ft", example: "Multiple rooms, estate cleanout" },
+        { size: "Full Truck", price: "$549", capacity: "~216 cubic ft", example: "Multiple rooms, estate cleanout" },
       ],
       features: [
         "Before/after photos with GPS verification",

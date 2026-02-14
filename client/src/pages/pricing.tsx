@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useLocation } from "wouter";
 import { CheckCircle, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -130,6 +131,7 @@ const SERVICES = [
 ];
 
 export default function PublicPricing() {
+  usePageTitle("Pricing | UpTend Home Services Orlando");
   const [, setLocation] = useLocation();
   const { user, isAuthenticated } = useAuth();
 
@@ -180,7 +182,7 @@ export default function PublicPricing() {
                   {service.price}
                 </span>
                 <span className="text-muted-foreground text-sm ml-2">/ {service.unit}</span>
-                {(service as any).bnplAvailable && (
+                {(service as any).bnplAvailable && ((service as any).bnplPrice || (service as any).bnplStartingPrice) >= 199 && (
                   <p className="text-xs text-primary mt-2">
                     or 4 payments of ${Math.ceil(((service as any).bnplPrice || (service as any).bnplStartingPrice) / 4)}
                   </p>

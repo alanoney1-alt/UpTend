@@ -318,6 +318,11 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
           {!canAcceptJobs ? "Complete Compliance" : "Accept"}
         </Button>
       </div>
+      {!canAcceptJobs && (
+        <p className="text-xs text-muted-foreground mt-2 text-center">
+          Complete your background check and insurance verification to accept jobs.
+        </p>
+      )}
     </Card>
   );
 }

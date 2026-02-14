@@ -6,28 +6,15 @@ import {
   Truck, ArrowLeft, Shield, Phone, Mail, Clock, DollarSign, 
   CheckCircle, Star, Users, MapPin, Zap 
 } from "lucide-react";
+import { Header } from "@/components/landing/header";
+import { Footer } from "@/components/landing/footer";
 
 export default function ServiceGuarantee() {
   return (
     <div className="min-h-screen bg-background" data-testid="page-service-guarantee">
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
-              <Truck className="w-6 h-6" />
-            </div>
-            <span className="text-xl font-bold">UpTend</span>
-          </Link>
-          <Link href="/">
-            <Button variant="ghost" size="sm" data-testid="button-back-home">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <Header />
 
-      <main className="max-w-4xl mx-auto px-4 py-12">
+      <main className="max-w-4xl mx-auto px-4 py-12 pt-28">
         <div className="text-center mb-12">
           <Shield className="w-12 h-12 mx-auto mb-4 text-primary" />
           <h1 className="text-4xl font-bold mb-4">Service Guarantee</h1>
@@ -234,17 +221,7 @@ export default function ServiceGuarantee() {
         </Card>
       </main>
 
-      <footer className="border-t py-8 mt-16">
-        <div className="max-w-4xl mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} UpTend. All rights reserved.</p>
-          <div className="flex justify-center gap-4 mt-2">
-            <Link href="/terms" className="hover:text-foreground">Terms</Link>
-            <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
-            <Link href="/refund-policy" className="hover:text-foreground">Refunds</Link>
-            <Link href="/cancellation-policy" className="hover:text-foreground">Cancellation</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

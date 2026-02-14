@@ -20,7 +20,7 @@ function getEstimates(_addr: string): EstimateData {
     homeRefresh: "$129 – $299",
     pressureWash: "$120 – $350",
     homeAudit: "$99 / $249 (Standard / Aerial)",
-    gutterCare: "$129 – $199",
+    gutterCare: "$129 – $299",
     totalImpact: "Verified & Insured Pros",
     materialRecovery: "~40 lbs verified recovery",
   };

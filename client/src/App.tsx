@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -177,12 +177,13 @@ function Router() {
       <Route path="/settings" component={ProfileSettings} />
       <Route path="/pricing" component={PublicPricing} />
       <Route path="/become-pro" component={BecomePro} />
+      <Route path="/pro-signup">{() => <Redirect to="/login?tab=pro" />}</Route>
       <Route path="/academy-syllabus" component={AcademySyllabus} />
       <Route path="/services" component={Services} />
       <Route path="/services/home-audit" component={HomeAudit} />
       <Route path="/services/audit" component={HomeAudit} />
       <Route path="/home-audit" component={HomeAudit} />
-      <Route path="/home-scan" component={HomeAudit} />
+      <Route path="/home-scan">{() => <Redirect to="/services/home-audit" />}</Route>
       <Route path="/dwellscan" component={HomeAudit} />{/* Legacy redirect */}
       <Route path="/home-health-audit" component={HomeHealthAudit} />
       <Route path="/audit" component={HomeHealthAudit} />

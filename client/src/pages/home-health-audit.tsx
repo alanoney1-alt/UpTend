@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
@@ -94,6 +95,7 @@ const PRIORITY_CONFIG = {
 } as const;
 
 export default function HomeHealthAuditPage() {
+  usePageTitle("AI Home Scan | UpTend");
   const [, setLocation] = useLocation();
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>("");

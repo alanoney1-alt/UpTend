@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -34,6 +35,7 @@ const EMERGENCY_COLORS: Record<string, string> = {
 };
 
 export default function EmergencyPage() {
+  usePageTitle("Emergency Services | UpTend");
   const { toast } = useToast();
   const [step, setStep] = useState<"select" | "details" | "searching" | "found">("select");
   const [selectedType, setSelectedType] = useState<string>("");

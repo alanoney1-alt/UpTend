@@ -73,6 +73,13 @@ function getPageContext(page: string, userRole: string, userName: string | null)
     };
   }
 
+  if (page.startsWith("/pro/") || page.startsWith("/pro") || page === "/drive" || page.startsWith("/drive") || page === "/academy" || page.startsWith("/academy")) {
+    return {
+      welcome: `Hey${name}! 👋 I'm George. Looking for work opportunities or have questions about being an UpTend Pro? I'm here to help.\n\nWhether it's about earnings, how jobs work, route optimization, compliance, or growing your business — just ask!\n\nWhat can I help with? 👇`,
+      quickActions: [],
+    };
+  }
+
   if (page === "/book" || page.startsWith("/book")) {
     return {
       welcome: `Hey there! 😊 I'm George — welcome!\n\nYou're looking at a specific service — awesome! I'd love to help you figure out if it's the right fit. All our pros are verified, background-checked, and genuinely good at what they do.\n\nGot any questions? I'm here — fire away! 👇`,
@@ -294,17 +301,7 @@ export function UpTendGuide() {
   // Should this page hide the widget entirely?
   const isHiddenPage = NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p));
 
-  // Auto-greet EVERY visit — open after a short delay so page loads first
-  useEffect(() => {
-    if (isDisabled || isHiddenPage) return;
-    if (!hasInitRef.current) {
-      const timer = setTimeout(() => {
-        handleOpen();
-        localStorage.setItem(LS_GREETED, "true");
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [isHiddenPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  // George starts minimized (bubble only) — no auto-open
 
   // Gentle pulse every 30 seconds
   useEffect(() => {
@@ -340,6 +337,8 @@ export function UpTendGuide() {
         quickActions: ctx.quickActions,
       }]);
       hasInitRef.current = true;
+      // Mark as greeted so next open shows "welcome back"
+      localStorage.setItem(LS_GREETED, "true");
     }
     setTimeout(() => inputRef.current?.focus(), 200);
   };

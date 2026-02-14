@@ -18,10 +18,10 @@ export const costGuides: CostGuide[] = [
     slug: "junk-removal",
     title: "Junk Removal Cost in Orlando",
     metaTitle: "Junk Removal Cost Orlando 2026 | Pricing Guide | UpTend",
-    metaDescription: "How much does junk removal cost in Orlando? Average $99–$599 for most jobs. See pricing factors, what's included, and book instantly with UpTend.",
+    metaDescription: "How much does junk removal cost in Orlando? Average $99–$549 for most jobs. See pricing factors, what's included, and book instantly with UpTend.",
     serviceType: "junk_removal",
     avgCostLow: 99,
-    avgCostHigh: 599,
+    avgCostHigh: 549,
     costUnit: "per load",
     factors: [
       "Volume of items (measured in truck loads — ¼, ½, ¾, or full)",
@@ -43,7 +43,7 @@ export const costGuides: CostGuide[] = [
       "Book mid-week for better availability and sometimes lower rates",
       "Take photos of items beforehand for a more accurate instant quote",
     ],
-    description: "Orlando junk removal costs depend primarily on volume. A quarter-truck load starts around $99, while a full truck runs $450–$599. UpTend pros handle everything from old furniture and appliances to yard debris and construction waste, with verified eco-friendly disposal.",
+    description: "Orlando junk removal costs depend primarily on volume. A quarter-truck load starts around $99, while a full truck runs $450–$549. UpTend pros handle everything from old furniture and appliances to yard debris and construction waste, with verified eco-friendly disposal.",
   },
   {
     slug: "pressure-washing",
@@ -204,9 +204,9 @@ export const costGuides: CostGuide[] = [
     slug: "garage-cleanout",
     title: "Garage Cleanout Cost in Orlando",
     metaTitle: "Garage Cleanout Cost Orlando 2026 | Pricing Guide | UpTend",
-    metaDescription: "Garage cleanout in Orlando costs $150–$500. See what's included and book with UpTend pros.",
+    metaDescription: "Garage cleanout in Orlando costs $299–$500. See what's included and book with UpTend pros.",
     serviceType: "garage_cleanout",
-    avgCostLow: 150,
+    avgCostLow: 299,
     avgCostHigh: 500,
     costUnit: "per cleanout",
     factors: [

@@ -27,8 +27,8 @@ const faqs = [
     a: "No preparation needed. Just ensure access to all rooms. The Pro handles everything with their own equipment.",
   },
   {
-    q: "Is the $99 really credited if I book a service?",
-    a: "Yes. You get a $49 credit toward any follow-up service you book within 90 days.",
+    q: "Do I really get a credit when I book a service?",
+    a: "Yes! You get a $49 credit toward any follow-up service you book within 90 days of your Home Scan.",
   },
   {
     q: "What happens to my data?",

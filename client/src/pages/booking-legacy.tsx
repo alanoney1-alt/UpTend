@@ -388,7 +388,7 @@ export default function Booking() {
         return garageCleanoutPackages.find(p => p.id === selectedGaragePackage)?.price || 0;
       case "pressure_washing": {
         const raw = Math.round(formData.squareFootage * 0.25);
-        return Math.max(raw, 150);
+        return Math.max(raw, 120);
       }
       case "gutter_cleaning":
         return formData.storyCount === 2 ? 199 : 129;
@@ -1938,7 +1938,7 @@ export default function Booking() {
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
                           {formData.squareFootage.toLocaleString()} sq ft &times; $0.25 = ${Math.round(formData.squareFootage * 0.25)}
-                          {Math.round(formData.squareFootage * 0.25) < 150 ? " (minimum $150 applies)" : ""}
+                          {Math.round(formData.squareFootage * 0.25) < 120 ? " (minimum $120 applies)" : ""}
                         </p>
                       </div>
                     </div>

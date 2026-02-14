@@ -1,3 +1,4 @@
+import { usePageTitle } from "@/hooks/use-page-title";
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -261,6 +262,7 @@ function ActiveJobWithWorker({ job }: { job: ServiceRequest }) {
 }
 
 export default function CustomerDashboard() {
+  usePageTitle("Dashboard | UpTend");
   const { user, isLoading: authLoading } = useAuth();
   const [historyFilter, setHistoryFilter] = useState<"all" | "active" | "completed">("all");
 
