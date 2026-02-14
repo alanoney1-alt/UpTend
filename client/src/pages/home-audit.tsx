@@ -18,7 +18,7 @@ const included = [
   { icon: Home, text: "Digital asset catalog with estimated valuations" },
   { icon: FileText, text: "Treatment plan with transparent pricing for any issues found" },
   { icon: Leaf, text: "Sustainability baseline assessment" },
-  { icon: DollarSign, text: "$49 back on your next booking" },
+  { icon: ShieldCheck, text: "Full accountability with verified documentation" },
 ];
 
 const faqs = [
@@ -27,8 +27,8 @@ const faqs = [
     a: "No preparation needed. Just ensure access to all rooms. The Pro handles everything with their own equipment.",
   },
   {
-    q: "Do I really get a credit when I book a service?",
-    a: "Yes! You get a $49 credit toward any follow-up service you book within 90 days of your Home Scan.",
+    q: "How long does the Home Scan take?",
+    a: "A typical Home Scan takes about 30 minutes. Your Level 3 Consultant will conduct a thorough room-by-room assessment with full photo and video documentation.",
   },
   {
     q: "What happens to my data?",
@@ -69,13 +69,10 @@ export default function HomeAudit() {
             Every job on UpTend is tracked, every Pro is valued, and every impact is measured. Our Home Scan provides
             <strong className="text-foreground"> built-in accountability</strong> for your wallet, your home, and the environment.
           </p>
-          <p className="text-sm font-semibold text-primary dark:text-orange-400 mb-10" data-testid="text-audit-price-hook">
-            $99 flat &middot; $49 back on your next booking
-          </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/book?service=home_consultation">
               <Button size="lg" className="font-bold text-lg" data-testid="button-audit-book-hero">
-                Schedule Your Audit <ArrowRight className="w-5 h-5 ml-2" />
+                Get a Quote <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
             <a href="#how-it-works">
@@ -258,7 +255,7 @@ export default function HomeAudit() {
               What&rsquo;s Included in Every Audit
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              $99 flat fee. No upsells during the visit. Just verified data and transparent recommendations.
+              No upsells during the visit. Just verified data and transparent recommendations.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -337,16 +334,13 @@ export default function HomeAudit() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" data-testid="text-final-cta-headline">
             Get the Intelligence Today.
           </h2>
-          <p className="text-slate-400 text-lg mb-4">
-            30 minutes. $99. Full accountability. Your home becomes a verified, data-backed asset.
-          </p>
-          <p className="text-sm text-orange-400 font-semibold mb-10">
-            $49 back on your next booking within 90 days.
+          <p className="text-slate-400 text-lg mb-10">
+            30 minutes. Full accountability. Your home becomes a verified, data-backed asset.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/book?service=home_consultation">
               <Button size="lg" className="font-bold text-lg" data-testid="button-audit-book-bottom">
-                Book Your Home Scan <ArrowRight className="w-5 h-5 ml-2" />
+                Get a Quote <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
             <Link href="/services">

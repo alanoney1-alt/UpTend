@@ -99,7 +99,7 @@ const services = [
     description: "Standard Steam Clean $39/room, Deep Clean $59/room, Pet Treatment $69/room. Whole house packages: 3BR/2BA $149, 4-5BR $199. $99 minimum charge.",
     price: "From $39/room",
     includes: ["IICRC-certified methods", "Pet odor treatment options", "Scotchgard protection available", "Fast dry times"],
-    link: "/book/deepfiber",
+    link: "/services/carpet-cleaning",
   },
   // 8. Landscaping
   {
