@@ -193,16 +193,9 @@ export function Header() {
             <Link href="/about" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-about-mobile">{t("nav.about")}</span>
             </Link>
-            {isAuthenticated && user && (
-              <Link href={user.role === "hauler" ? "/pro/dashboard" : "/dashboard"} onClick={closeMenu}>
-                <span className="block p-2" data-testid="link-dashboard-mobile">Dashboard</span>
-              </Link>
-            )}
-            {isAuthenticated && user?.role === "customer" && (
-              <Link href="/my-jobs" onClick={closeMenu}>
-                <span className="block p-2" data-testid="link-my-jobs-mobile">My Jobs</span>
-              </Link>
-            )}
+            <Link href={isAuthenticated && user?.role === "hauler" ? "/pro/dashboard" : "/dashboard"} onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-dashboard-mobile">Dashboard</span>
+            </Link>
             <Link href="/academy" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-academy-mobile">{t("nav.pro_academy")}</span>
             </Link>
