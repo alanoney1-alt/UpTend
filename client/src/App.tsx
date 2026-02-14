@@ -25,6 +25,9 @@ const HaulerDashboard = lazy(() => import("@/pages/hauler-dashboard"));
 const Haulers = lazy(() => import("@/pages/haulers"));
 const Drive = lazy(() => import("@/pages/drive"));
 const BusinessDashboard = lazy(() => import("@/pages/business-dashboard"));
+const BusinessLanding = lazy(() => import("@/pages/business"));
+const BusinessLogin = lazy(() => import("@/pages/business-login"));
+const BusinessRegister = lazy(() => import("@/pages/business-register"));
 const Loyalty = lazy(() => import("@/pages/loyalty"));
 const PyckerSignup = lazy(() => import("@/pages/pycker-signup"));
 const PyckerLogin = lazy(() => import("@/pages/pycker-login"));
@@ -128,7 +131,10 @@ function Router() {
       {/* Legacy hauler routes for backward compatibility */}
       <Route path="/hauler/dashboard" component={HaulerDashboard} />
       <Route path="/hauler/earnings" component={EarningsPage} />
-      <Route path="/business" component={BusinessDashboard} />
+      <Route path="/business" component={BusinessLanding} />
+      <Route path="/business/login" component={BusinessLogin} />
+      <Route path="/business/register" component={BusinessRegister} />
+      <Route path="/business/dashboard" component={BusinessDashboard} />
       <Route path="/rewards" component={Loyalty} />
       <Route path="/loyalty" component={Loyalty} />
       <Route path="/ref/:code" component={ReferralLanding} />

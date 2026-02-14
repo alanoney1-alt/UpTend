@@ -120,6 +120,11 @@ export function Footer() {
                   {t("footer.footer_no_lead_fees")}
                 </Link>
               </li>
+              <li>
+                <Link href="/business" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-business">
+                  UpTend for Business
+                </Link>
+              </li>
             </ul>
           </div>
 
