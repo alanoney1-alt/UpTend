@@ -3001,7 +3001,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
           firstName: currentPro?.profile?.companyName?.split(" ")[0] || "Pro",
           profileImageUrl: currentPro?.profile?.profilePhotoUrl || null,
           isVerified: currentPro?.profile?.verified || false,
-          certifications: currentPro?.profile?.isCertified ? ["app_certification"] : [],
+          certifications: currentPro?.profile?.canAcceptJobs ? ["app_certification"] : [],
           payoutSetup: !!currentPro?.profile?.stripeAccountId,
           profileCompleted: !!(currentPro?.profile?.companyName && currentPro?.profile?.serviceTypes?.length),
         }}
