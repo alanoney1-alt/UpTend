@@ -70,7 +70,7 @@ const SERVICES = [
   {
     id: "carpet_cleaning",
     name: <>Carpet Cleaning</>,
-    price: "$39",
+    price: "$50",
     unit: "per room",
     description: "Professional carpet cleaning. $100 minimum (covers up to 2 rooms standard).",
     features: [
@@ -100,7 +100,7 @@ const SERVICES = [
   {
     id: "gutter_cleaning",
     name: <>Gutter Cleaning</>,
-    price: "$129",
+    price: "$150",
     unit: "starting (1-story, up to 150 linear ft)",
     description: "Debris removal and downspout flushing. Tiers: 1-Story $150 | 1-Story Large $195 | 2-Story $225 | 2-Story Large $285 | 3-Story $350+. Add-ons: gutter guards ($4-6/ft), downspout flush ($15/ea), minor repair ($75).",
     features: ["Roof air-blown", "Downspouts tested", "Debris bagged", "5 tiers by size"],
@@ -116,7 +116,7 @@ const SERVICES = [
   {
     id: "pool_cleaning",
     name: <>Pool Cleaning</>,
-    price: "$89",
+    price: "$120",
     unit: "per month",
     description: "Regular pool maintenance to keep your water crystal clear.",
     features: [

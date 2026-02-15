@@ -32,7 +32,7 @@ const services = [
     shortTitle: "Moving Helpers",
     tagline: "Strong backs for heavy lifting.",
     spin: "Certified movers to safely load, unload, or rearrange your heavy furniture.",
-    price: "$80/hr",
+    price: "$65/hr",
     color: "text-violet-600 dark:text-violet-400",
     bgColor: "bg-violet-500/10",
     bookParam: "moving_labor",
