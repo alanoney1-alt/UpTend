@@ -18,6 +18,7 @@ import {
   contractAuditLogs,
 } from "@shared/schema";
 import * as govService from "../../services/government-contracts";
+import { processUpfrontPayment, processCompletionPayment } from "../../services/government-payments";
 
 export function registerGovernmentContractRoutes(app: Express) {
   // ==========================================
@@ -245,7 +246,17 @@ export function registerGovernmentContractRoutes(app: Express) {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const quote = await govService.acceptQuote(req.params.id, userId);
-      res.json(quote);
+
+      // Auto-trigger 50% upfront payment to pro
+      let paymentResult: { success: boolean; error?: string } = { success: false, error: "skipped" };
+      try {
+        paymentResult = await processUpfrontPayment(quote.workOrderId);
+      } catch (paymentError: any) {
+        console.error("Upfront payment failed (non-blocking):", paymentError.message);
+        paymentResult = { success: false, error: paymentError.message };
+      }
+
+      res.json({ ...quote, _paymentResult: paymentResult });
     } catch (error: any) {
       res.status(400).json({ error: error.message || "Failed to accept quote" });
     }
@@ -285,7 +296,17 @@ export function registerGovernmentContractRoutes(app: Express) {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
       await govService.verifyWorkOrder(req.params.id, userId);
-      res.json({ success: true });
+
+      // Auto-trigger completion payment (remaining 50%)
+      let paymentResult: { success: boolean; error?: string } = { success: false, error: "skipped" };
+      try {
+        paymentResult = await processCompletionPayment(req.params.id);
+      } catch (paymentError: any) {
+        console.error("Completion payment failed (non-blocking):", paymentError.message);
+        paymentResult = { success: false, error: paymentError.message };
+      }
+
+      res.json({ success: true, _paymentResult: paymentResult });
     } catch (error: any) {
       res.status(400).json({ error: error.message || "Failed to verify work order" });
     }

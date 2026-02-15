@@ -14,6 +14,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { registerGovernmentContractRoutes } from "./contracts.routes";
+import { registerGovernmentFloatRoutes } from "./float.routes";
 
 /** Helper: generate standard CRUD routes for a table */
 function registerCrud(
@@ -95,6 +96,7 @@ function registerCrud(
 export function registerGovernmentRoutes(app: Express) {
   // Government contract management & compliance system
   registerGovernmentContractRoutes(app);
+  registerGovernmentFloatRoutes(app);
 
   registerCrud(app, "/api/government/prevailing-wages", prevailingWages, "prevailing wage");
   registerCrud(app, "/api/government/certified-payrolls", certifiedPayrolls, "certified payroll", { ownerField: "proId" });

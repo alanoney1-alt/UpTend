@@ -7225,6 +7225,16 @@ export const contractWorkOrders = pgTable("contract_work_orders", {
   verifiedAt: timestamp("verified_at"),
   verifiedBy: varchar("verified_by"),
   paymentStatus: text("payment_status").notNull().default("unpaid"), // unpaid|partial|paid
+  // 50/50 split payment fields
+  upfrontPaymentAmount: integer("upfront_payment_amount").default(0), // cents
+  upfrontPaymentStatus: text("upfront_payment_status").notNull().default("pending"), // pending|processing|paid|failed
+  upfrontPaymentTransferId: text("upfront_payment_transfer_id"),
+  upfrontPaidAt: timestamp("upfront_paid_at"),
+  completionPaymentAmount: integer("completion_payment_amount").default(0), // cents
+  completionPaymentStatus: text("completion_payment_status").notNull().default("pending"), // pending|processing|paid|failed
+  completionPaymentTransferId: text("completion_payment_transfer_id"),
+  completionPaidAt: timestamp("completion_paid_at"),
+  paymentSplit: text("payment_split").notNull().default("50_50"), // 50_50 — future flexibility
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -7267,3 +7277,36 @@ export const contractWorkLogs = pgTable("contract_work_logs", {
 export const insertContractWorkLogSchema = createInsertSchema(contractWorkLogs).omit({ id: true, createdAt: true });
 export type InsertContractWorkLog = z.infer<typeof insertContractWorkLogSchema>;
 export type ContractWorkLog = typeof contractWorkLogs.$inferSelect;
+
+// ==========================================
+// Government Float Ledger — append-only cash flow tracking
+// ==========================================
+export const governmentFloatLedger = pgTable("government_float_ledger", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  workOrderId: varchar("work_order_id"),
+  entryType: text("entry_type").notNull(), // upfront_paid|completion_paid|government_payment_received|adjustment
+  amount: integer("amount").notNull(), // cents — positive = cash out, negative = cash in
+  balanceAfter: integer("balance_after").notNull(), // cents — running float exposure
+  description: text("description"),
+  stripeTransferId: text("stripe_transfer_id"),
+  stripePaymentId: text("stripe_payment_id"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type GovernmentFloatLedgerEntry = typeof governmentFloatLedger.$inferSelect;
+
+// ==========================================
+// Government Float Settings — threshold configuration
+// ==========================================
+export const governmentFloatSettings = pgTable("government_float_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  maxFloatExposure: integer("max_float_exposure").notNull().default(50000000), // cents — alert threshold ($500k default)
+  alertEmail: text("alert_email"),
+  alertSms: text("alert_sms"),
+  autoHoldThreshold: integer("auto_hold_threshold").notNull().default(100000000), // cents — stop posting ($1M default)
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type GovernmentFloatSettings = typeof governmentFloatSettings.$inferSelect;
