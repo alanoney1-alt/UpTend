@@ -48,11 +48,17 @@ export function registerScopeChangeRoutes(app: Express) {
          new Date().toISOString(), new Date().toISOString()]
       );
 
-      // Send notification to customer about scope change
+      // Send notification to customer about scope change (email + SMS)
       try {
-        const customerResult = await pool.query("SELECT email, full_name FROM customers WHERE id = $1", [job.customer_id]);
-        if (customerResult.rows[0]?.email) {
-          console.log(`📧 Scope change notification sent to ${customerResult.rows[0].email} for job ${serviceRequestId}`);
+        const customerResult = await pool.query("SELECT email, phone, full_name FROM customers WHERE id = $1", [job.customer_id]);
+        const cust = customerResult.rows[0];
+        if (cust?.email) {
+          const { sendScopeChangeEmail } = await import("../services/email-service");
+          sendScopeChangeEmail(cust.email, { originalCeiling: originalCeiling, proposedCeiling, reason }, { serviceType: job.service_type }).catch(err => console.error('[EMAIL] Failed scope-change:', err.message));
+        }
+        if (cust?.phone) {
+          const { sendSms } = await import("../services/notifications");
+          sendSms({ to: cust.phone, message: `UpTend: Your Pro requests a scope change ($${originalCeiling} → $${proposedCeiling}). Reason: ${reason}. Please approve/decline in the app within 15 min.` }).catch(err => console.error('[SMS] Failed scope-change:', err.message));
         }
       } catch (notifErr) { console.warn("Failed to send scope change notification:", notifErr); }
 

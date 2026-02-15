@@ -171,7 +171,7 @@ export default function CustomerSignup() {
                     <FormItem>
                       <FormLabel>{t("signup.email")}</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="john@example.com" {...field} data-testid="input-email" />
+                        <Input type="email" placeholder="name@email.com" {...field} data-testid="input-email" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -185,7 +185,7 @@ export default function CustomerSignup() {
                     <FormItem>
                       <FormLabel>{t("signup.phone")} <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
-                        <Input type="tel" placeholder="(555) 123-4567" {...field} data-testid="input-phone" />
+                        <Input type="tel" placeholder="(407) 555-0199" {...field} data-testid="input-phone" />
                       </FormControl>
                       <FormDescription className="text-xs">
                         {t("signup.phone_required")}

@@ -108,7 +108,7 @@ export default function PartnerRegister() {
             </div>
             <div>
               <Label>Phone</Label>
-              <Input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="(555) 123-4567" />
+              <Input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="(407) 555-0199" />
             </div>
             <div>
               <Label>Password</Label>

@@ -427,7 +427,7 @@ function AddInsuranceForm({
         <Input
           id="agentPhone"
           type="tel"
-          placeholder="e.g., (555) 123-4567"
+          placeholder="e.g., (407) 555-0199"
           value={formData.agentPhone}
           onChange={(e) => setFormData({ ...formData, agentPhone: e.target.value })}
         />

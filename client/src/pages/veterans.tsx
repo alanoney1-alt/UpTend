@@ -227,8 +227,8 @@ export default function Veterans() {
                 <div><Label className="text-white">First Name</Label><Input className="bg-slate-700 border-slate-600 text-white" placeholder="John" value={firstName} onChange={e => setFirstName(e.target.value)} /></div>
                 <div><Label className="text-white">Last Name</Label><Input className="bg-slate-700 border-slate-600 text-white" placeholder="Smith" value={lastName} onChange={e => setLastName(e.target.value)} /></div>
               </div>
-              <div><Label className="text-white">Email</Label><Input type="email" className="bg-slate-700 border-slate-600 text-white" placeholder="john@example.com" value={email} onChange={e => setEmail(e.target.value)} /></div>
-              <div><Label className="text-white">Phone</Label><Input type="tel" className="bg-slate-700 border-slate-600 text-white" placeholder="(555) 123-4567" value={phone} onChange={e => setPhone(e.target.value)} /></div>
+              <div><Label className="text-white">Email</Label><Input type="email" className="bg-slate-700 border-slate-600 text-white" placeholder="name@email.com" value={email} onChange={e => setEmail(e.target.value)} /></div>
+              <div><Label className="text-white">Phone</Label><Input type="tel" className="bg-slate-700 border-slate-600 text-white" placeholder="(407) 555-0199" value={phone} onChange={e => setPhone(e.target.value)} /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-white">Branch</Label>

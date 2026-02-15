@@ -156,7 +156,7 @@ export default function BusinessRegister() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Phone</FormLabel>
-                      <FormControl><Input type="tel" placeholder="(555) 123-4567" {...field} /></FormControl>
+                      <FormControl><Input type="tel" placeholder="(407) 555-0199" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

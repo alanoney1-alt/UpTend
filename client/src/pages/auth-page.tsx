@@ -221,7 +221,7 @@ export default function AuthPage() {
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="you@example.com"
+                          placeholder="you@email.com"
                           {...field}
                           data-testid="input-email"
                         />

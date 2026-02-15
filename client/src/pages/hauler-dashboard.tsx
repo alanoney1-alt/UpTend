@@ -1762,7 +1762,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     customerName: currentActiveJob.customer ? 
       `${currentActiveJob.customer.firstName || ''} ${currentActiveJob.customer.lastName || ''}`.trim() : 
       'Customer',
-    customerPhone: currentActiveJob.customerPhone || '(555) 000-0000',
+    customerPhone: currentActiveJob.customerPhone || '(407) 555-0199',
     pickupAddress: currentActiveJob.pickupAddress || '',
     pickupCity: currentActiveJob.pickupCity || '',
     pickupZip: currentActiveJob.pickupZip || '',

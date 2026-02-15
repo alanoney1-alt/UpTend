@@ -160,7 +160,7 @@ export function TeamManagementTable({ businessAccountId }: TeamManagementTablePr
                 <Input
                   id="email"
                   type="email"
-                  placeholder="member@example.com"
+                  placeholder="teammate@company.com"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                 />

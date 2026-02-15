@@ -3,7 +3,7 @@ import { storage } from "../../storage";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import crypto from "crypto";
-import { sendWelcomeEmail } from "../../services/email-service";
+import { sendWelcomeEmail, sendAdminNewSignup } from "../../services/email-service";
 
 /**
  * Customer Authentication Routes
@@ -45,8 +45,11 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
         role: "customer",
       });
 
-      // Fire-and-forget: welcome email
+      // Fire-and-forget: welcome email + admin notification
       sendWelcomeEmail(email, { firstName, lastName }).catch(err => console.error('[EMAIL] Failed welcome:', err.message));
+      if (process.env.ADMIN_EMAIL) {
+        sendAdminNewSignup(process.env.ADMIN_EMAIL, { email, firstName, lastName, role: "customer" }).catch(err => console.error('[EMAIL] Failed admin-signup:', err.message));
+      }
 
       // Auto-login after registration - wait for session to be established before responding
       req.login({

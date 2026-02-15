@@ -225,7 +225,7 @@ export function SupportWidget() {
               <Input
                 id="report-email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="you@email.com"
                 value={reportEmail}
                 onChange={(e) => setReportEmail(e.target.value)}
                 data-testid="input-report-email"

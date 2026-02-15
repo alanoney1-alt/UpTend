@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { uploadFile, getMulterStorage, isCloudStorage } from "../../services/file-storage";
 import {
   veteranProfiles,
   veteranCertifications,
@@ -17,16 +18,8 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-const dd214Storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadsDir),
-  filename: (_req, file, cb) => {
-    const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}${path.extname(file.originalname)}`;
-    cb(null, uniqueName);
-  },
-});
-
 const dd214Upload = multer({
-  storage: dd214Storage,
+  storage: getMulterStorage("dd214"),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (_req, file, cb) => {
     const allowed = [".pdf", ".jpg", ".jpeg", ".png"];
@@ -124,7 +117,9 @@ export function registerVeteranRoutes(app: Express) {
       }
 
       const userId = (req.user as any).userId || (req.user as any).id;
-      const fileUrl = `/uploads/dd214/${req.file.filename}`;
+      const fileUrl = isCloudStorage
+        ? await uploadFile(req.file.buffer, req.file.originalname, req.file.mimetype, "dd214")
+        : `/uploads/dd214/${req.file.filename}`;
 
       // Update the veteran profile with the DD-214 URL
       const [updated] = await db.update(veteranProfiles)

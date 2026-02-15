@@ -557,7 +557,7 @@ export default function PyckerSignup() {
                           <div className="flex gap-2">
                             <Input 
                               type="email" 
-                              placeholder="john@example.com" 
+                              placeholder="name@email.com" 
                               {...field} 
                               disabled={emailVerified}
                               data-testid="input-email" 
@@ -691,7 +691,7 @@ export default function PyckerSignup() {
                     <FormItem className="mb-6">
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input type="tel" placeholder="(555) 123-4567" {...field} data-testid="input-phone" />
+                        <Input type="tel" placeholder="(407) 555-0199" {...field} data-testid="input-phone" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -312,6 +312,22 @@ export function registerComplianceRoutes(app: Express) {
         .where(eq(backgroundChecks.id, req.params.id))
         .returning();
       if (!updated) return res.status(404).json({ error: "Background check not found" });
+
+      // Fire-and-forget: notify pro of background check status change
+      if (req.body.status && updated.proId) {
+        (async () => {
+          try {
+            const { sendBackgroundCheckStatus } = await import("../../services/email-service");
+            const { storage: st } = await import("../../storage");
+            const proProfile = await st.getHaulerProfile(updated.proId).catch(() => null);
+            const proUser = proProfile?.userId ? await st.getUser(proProfile.userId).catch(() => null) : null;
+            if (proUser?.email) {
+              await sendBackgroundCheckStatus(proUser.email, updated);
+            }
+          } catch (err) { console.error('[EMAIL] Failed bg-check-status:', err); }
+        })();
+      }
+
       res.json(updated);
     } catch (error) {
       console.error("Error updating background check:", error);

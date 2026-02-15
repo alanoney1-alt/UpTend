@@ -7,7 +7,7 @@ const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
-const FROM_EMAIL = process.env.FROM_EMAIL || 'UpTend <onboarding@resend.dev>';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'UpTend <noreply@uptendapp.com>';
 
 const twilioClient = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN 
   ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)

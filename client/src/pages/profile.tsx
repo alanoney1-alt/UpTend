@@ -618,7 +618,7 @@ export default function Profile() {
                   <Input 
                     value={profileData.phone}
                     onChange={(e) => setProfileData(p => ({ ...p, phone: e.target.value }))}
-                    placeholder="(555) 555-5555"
+                    placeholder="(407) 555-0199"
                     className="mt-1"
                     data-testid="input-phone"
                   />
@@ -857,7 +857,7 @@ export default function Profile() {
                 <Input
                   id="buyerEmail"
                   type="email"
-                  placeholder="buyer@example.com"
+                  placeholder="buyer@email.com"
                   value={buyerEmail}
                   onChange={(e) => setBuyerEmail(e.target.value)}
                   required

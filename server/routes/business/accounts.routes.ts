@@ -34,6 +34,14 @@ router.get("/:userId", requireAuth, async (req, res) => {
 router.post("/", requireAuth, async (req, res) => {
   try {
     const account = await store.createBusinessAccount(req.body);
+
+    // Fire-and-forget: B2B welcome email
+    if (req.body.email || req.body.contactEmail) {
+      import("../../services/email-service").then(({ sendB2BWelcome }) => {
+        sendB2BWelcome(req.body.email || req.body.contactEmail, account).catch(err => console.error('[EMAIL] Failed b2b-welcome:', err.message));
+      }).catch(() => {});
+    }
+
     res.status(201).json(account);
   } catch (error) {
     console.error("Error creating business account:", error);

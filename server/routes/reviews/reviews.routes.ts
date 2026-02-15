@@ -63,6 +63,19 @@ export function registerReviewRoutes(app: Express) {
         }).where(eq(haulerProfiles.id, proId));
       }
 
+      // Fire-and-forget: notify pro of new review
+      try {
+        const { sendReviewReceived } = await import("../../services/email-service");
+        const proProfile = await db.select().from(haulerProfiles).where(eq(haulerProfiles.id, proId)).limit(1);
+        if (proProfile[0]?.userId) {
+          const { storage: st } = await import("../../storage");
+          const proUser = await st.getUser(proProfile[0].userId).catch(() => null);
+          if (proUser?.email) {
+            sendReviewReceived(proUser.email, { rating: body.rating, comment: body.comment }, job).catch(err => console.error('[EMAIL] Failed review-received:', err.message));
+          }
+        }
+      } catch (notifErr) { console.error('[EMAIL] Review notification error:', notifErr); }
+
       res.json(review);
     } catch (error: any) {
       if (error.name === "ZodError") return res.status(400).json({ error: error.errors });

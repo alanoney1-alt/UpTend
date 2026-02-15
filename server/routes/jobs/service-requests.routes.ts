@@ -6,21 +6,15 @@ import { z } from "zod";
 import { stripeService } from "../../stripeService";
 import { updateDwellScan } from "../../services/scoringService";
 import { processEsgForCompletedJob } from "../../services/job-completion-esg-integration";
-import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobCompleted, sendProNewJob } from "../../services/email-service";
+import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobCompleted, sendProNewJob, sendProEnRoute, sendReviewReminder, sendProPaymentProcessed, sendAdminHighValueBooking } from "../../services/email-service";
+import { sendSms } from "../../services/notifications";
 
 import { broadcastToJob } from "../../websocket";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-
-const uploadDir = path.join(process.cwd(), "uploads", "job-photos");
-fs.mkdirSync(uploadDir, { recursive: true });
+import { uploadFile, getMulterStorage, isCloudStorage } from "../../services/file-storage";
 
 const photoUpload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadDir),
-    filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
-  }),
+  storage: getMulterStorage("job-photos"),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (_req, file, cb) => {
     if (file.mimetype.startsWith("image/")) cb(null, true);
@@ -202,10 +196,19 @@ export function registerServiceRequestRoutes(app: Express) {
         });
       }
 
-      // Fire-and-forget: booking confirmation email
+      // Fire-and-forget: booking confirmation email + SMS
       const customerEmail = user?.email || validatedData.customerEmail;
       if (customerEmail) {
         sendBookingConfirmation(customerEmail, request).catch(err => console.error('[EMAIL] Failed booking confirmation:', err.message));
+      }
+      if (validatedData.customerPhone) {
+        sendSms({ to: validatedData.customerPhone, message: `UpTend booking confirmed! Your ${request.serviceType || "service"} request is submitted. We're matching you with a Pro now.` }).catch(err => console.error('[SMS] Failed booking-confirm:', err.message));
+      }
+
+      // Fire-and-forget: admin alert for high-value bookings (>$500)
+      const price = Number(request.priceEstimate || request.livePrice || 0);
+      if (price >= 500 && process.env.ADMIN_EMAIL) {
+        sendAdminHighValueBooking(process.env.ADMIN_EMAIL, request).catch(err => console.error('[EMAIL] Failed high-value alert:', err.message));
       }
 
       res.status(201).json(request);
@@ -254,19 +257,34 @@ export function registerServiceRequestRoutes(app: Express) {
         request,
       });
 
-      // Fire-and-forget: email on status change
-      if (req.body.status === "assigned" && request) {
-        // Notify customer that a pro accepted
+      // Fire-and-forget: email + SMS on status change
+      if (req.body.status === "en_route" && request) {
+        const pro = request.assignedHaulerId ? await storage.getHaulerProfile(request.assignedHaulerId).catch(() => null) : null;
         if (request.customerEmail) {
-          const pro = request.assignedHaulerId ? await storage.getHaulerProfile(request.assignedHaulerId).catch(() => null) : null;
+          sendProEnRoute(request.customerEmail, request, pro || {}).catch(err => console.error('[EMAIL] Failed pro-en-route:', err.message));
+        }
+        if ((request as any).customerPhone) {
+          sendSms({ to: (request as any).customerPhone, message: `Your UpTend Pro ${pro?.firstName || ""} is on the way! ETA: ~${(pro as any)?.etaMinutes || 30} min.` }).catch(err => console.error('[SMS] Failed en-route:', err.message));
+        }
+      }
+      if (req.body.status === "assigned" && request) {
+        // Notify customer that a pro accepted (email + SMS)
+        const pro = request.assignedHaulerId ? await storage.getHaulerProfile(request.assignedHaulerId).catch(() => null) : null;
+        if (request.customerEmail) {
           sendJobAccepted(request.customerEmail, request, pro || {}).catch(err => console.error('[EMAIL] Failed job-accepted:', err.message));
         }
-        // Notify pro of new job
+        if ((request as any).customerPhone) {
+          sendSms({ to: (request as any).customerPhone, message: `Great news! ${(pro as any)?.firstName || "A Pro"} accepted your UpTend job and will be in touch shortly.` }).catch(err => console.error('[SMS] Failed job-accepted:', err.message));
+        }
+        // Notify pro of new job (email + SMS)
         if (request.assignedHaulerId) {
-          const hauler = await storage.getHaulerProfile(request.assignedHaulerId).catch(() => null);
+          const hauler = pro || await storage.getHaulerProfile(request.assignedHaulerId).catch(() => null);
           const haulerUser = hauler?.userId ? await storage.getUser(hauler.userId).catch(() => null) : null;
           if (haulerUser?.email) {
             sendProNewJob(haulerUser.email, request).catch(err => console.error('[EMAIL] Failed pro-new-job:', err.message));
+          }
+          if (haulerUser?.phone) {
+            sendSms({ to: haulerUser.phone, message: `New UpTend job! ${request.serviceType || "Service"} at ${request.pickupAddress || "see app"}. Open the app to view details.` }).catch(err => console.error('[SMS] Failed pro-new-job:', err.message));
           }
         }
       }
@@ -306,9 +324,12 @@ export function registerServiceRequestRoutes(app: Express) {
         request,
       });
 
-      // Fire-and-forget: job started email
+      // Fire-and-forget: job started email + SMS
       if (request?.customerEmail) {
         sendJobStarted(request.customerEmail, request).catch(err => console.error('[EMAIL] Failed job-started:', err.message));
+      }
+      if ((request as any)?.customerPhone) {
+        sendSms({ to: (request as any).customerPhone, message: `Your UpTend ${request?.serviceType || "service"} job has started! Your Pro is now working.` }).catch(err => console.error('[SMS] Failed job-started:', err.message));
       }
 
       res.json(request);
@@ -409,13 +430,32 @@ export function registerServiceRequestRoutes(app: Express) {
         paymentCaptured: capturedPayment,
       });
 
-      // Fire-and-forget: job completed receipt email
+      // Fire-and-forget: job completed receipt email + SMS
       if (request?.customerEmail) {
         sendJobCompleted(request.customerEmail, request, {
           finalPrice: request.finalPrice || req.body.finalPrice,
           livePrice: request.livePrice,
           platformFee: request.platformFee,
         }).catch(err => console.error('[EMAIL] Failed job-completed:', err.message));
+      }
+      if ((request as any)?.customerPhone) {
+        sendSms({ to: (request as any).customerPhone, message: `Your UpTend job is complete! Total: $${(totalAmount || 0).toFixed(2)}. Please rate your Pro in the app!` }).catch(err => console.error('[SMS] Failed job-completed:', err.message));
+      }
+
+      // Fire-and-forget: notify pro of payment processed
+      if (capturedPayment && request?.assignedHaulerId) {
+        const haulerProfile = await storage.getHaulerProfile(request.assignedHaulerId).catch(() => null);
+        const haulerUser = haulerProfile?.userId ? await storage.getUser(haulerProfile.userId).catch(() => null) : null;
+        if (haulerUser?.email) {
+          sendProPaymentProcessed(haulerUser.email, { ...request, haulerPayout: breakdown.haulerPayout }).catch(err => console.error('[EMAIL] Failed pro-payment:', err.message));
+        }
+      }
+
+      // Fire-and-forget: schedule review reminder (24hr)
+      if (request?.customerEmail) {
+        setTimeout(() => {
+          sendReviewReminder(request!.customerEmail!, request!).catch(err => console.error('[EMAIL] Failed review-reminder:', err.message));
+        }, 24 * 60 * 60 * 1000);
       }
 
       res.json({ ...request, paymentCaptured: capturedPayment });
@@ -441,7 +481,9 @@ export function registerServiceRequestRoutes(app: Express) {
         return res.status(400).json({ error: "No photos uploaded" });
       }
 
-      const uploadedUrls = files.map(f => `/uploads/job-photos/${f.filename}`);
+      const uploadedUrls = isCloudStorage
+        ? await Promise.all(files.map(f => uploadFile(f.buffer, f.originalname, f.mimetype, "job-photos")))
+        : files.map(f => `/uploads/job-photos/${f.filename}`);
 
       // Store photo references in database
       const column = photoType === "after" ? "after_photos" : "before_photos";

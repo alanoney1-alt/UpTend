@@ -366,7 +366,7 @@ function PropertyForm({
               type="email"
               value={formData.ownerEmail}
               onChange={(e) => setFormData({ ...formData, ownerEmail: e.target.value })}
-              placeholder="owner@example.com"
+              placeholder="owner@email.com"
             />
             <p className="text-xs text-muted-foreground">
               Email notifications for violations will be sent here
@@ -380,7 +380,7 @@ function PropertyForm({
               type="tel"
               value={formData.ownerPhone}
               onChange={(e) => setFormData({ ...formData, ownerPhone: e.target.value })}
-              placeholder="(407) 555-0123"
+              placeholder="(407) 555-0199"
             />
             <p className="text-xs text-muted-foreground">
               SMS notifications will be sent here
