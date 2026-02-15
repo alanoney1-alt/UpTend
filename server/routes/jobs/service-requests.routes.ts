@@ -531,6 +531,45 @@ export function registerServiceRequestRoutes(app: Express) {
     }
   });
 
+  // Job tracking data — serves the /track/:jobId page
+  app.get("/api/jobs/:jobId/track", async (req, res) => {
+    try {
+      const job = await storage.getServiceRequest(req.params.jobId);
+      if (!job) return res.status(404).json({ error: "Job not found" });
+
+      // Get latest hauler location if assigned
+      let haulerLocation = null;
+      if (job.haulerId) {
+        try {
+          const locations = await storage.getLocationHistory(job.haulerId, job.id);
+          if (locations.length > 0) {
+            const latest = locations[locations.length - 1];
+            haulerLocation = { lat: Number(latest.lat), lng: Number(latest.lng), recordedAt: latest.recordedAt };
+          }
+        } catch { /* no location data yet */ }
+      }
+
+      res.json({
+        job,
+        haulerLocation,
+        customerLocation: null,
+        pickup: {
+          lat: job.pickupLat ? Number(job.pickupLat) : null,
+          lng: job.pickupLng ? Number(job.pickupLng) : null,
+          address: job.pickupAddress || "",
+        },
+        destination: job.dropoffAddress ? {
+          lat: job.dropoffLat ? Number(job.dropoffLat) : null,
+          lng: job.dropoffLng ? Number(job.dropoffLng) : null,
+          address: job.dropoffAddress,
+        } : null,
+      });
+    } catch (error) {
+      console.error("Error fetching tracking data:", error);
+      res.status(500).json({ error: "Failed to fetch tracking data" });
+    }
+  });
+
   // Get customer's jobs
   app.get("/api/my-jobs", requireAuth, async (req: any, res) => {
     try {

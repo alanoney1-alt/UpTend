@@ -4,8 +4,7 @@ import { requireAuth, requireAdmin, requireHauler } from "../../auth-middleware"
 import { stripeService } from "../../stripeService";
 import { updateDwellScan } from "../../services/scoringService";
 
-// WebSocket broadcast helper (imported from main routes)
-declare function broadcastToJob(jobId: string, message: object): void;
+import { broadcastToJob } from "../../websocket";
 
 export function registerJobManagementRoutes(app: Express) {
   // Pro starts a job (marks as in_progress)
