@@ -24,6 +24,23 @@ const generalUpload = multer({
   },
 });
 
+const videoUpload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, uploadDir),
+    filename: (_req, file, cb) => {
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+      cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
+    },
+  }),
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB for video
+  fileFilter: (_req, file, cb) => {
+    const allowed = /mp4|mov|avi|webm|mkv|video/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = file.mimetype.startsWith("video/");
+    cb(null, ext || mime);
+  },
+});
+
 export function registerUploadRoutes(app: Express) {
   // General file upload
   app.post("/api/upload", requireAuth, generalUpload.any(), async (req, res) => {
@@ -33,7 +50,7 @@ export function registerUploadRoutes(app: Express) {
         return res.status(400).json({ error: "No files uploaded" });
       }
       const urls = files.map((f) => `/uploads/general/${f.filename}`);
-      res.json({ success: true, urls, url: urls[0], count: files.length });
+      res.json({ success: true, urls, url: urls[0], path: urls[0], count: files.length });
     } catch (error) {
       console.error("Upload error:", error);
       res.status(500).json({ error: "Failed to upload file" });
@@ -56,6 +73,21 @@ export function registerUploadRoutes(app: Express) {
     }
   });
 
+  // Video upload (for home-health-audit and other video features)
+  app.post("/api/upload/video", requireAuth, videoUpload.any(), async (req, res) => {
+    try {
+      const files = req.files as Express.Multer.File[];
+      if (!files || files.length === 0) {
+        return res.status(400).json({ error: "No video uploaded" });
+      }
+      const urls = files.map((f) => `/uploads/general/${f.filename}`);
+      res.json({ success: true, urls, url: urls[0], count: files.length });
+    } catch (error) {
+      console.error("Video upload error:", error);
+      res.status(500).json({ error: "Failed to upload video" });
+    }
+  });
+
   // Verification document upload
   app.post("/api/upload/verification", requireAuth, generalUpload.any(), async (req, res) => {
     try {
@@ -64,7 +96,7 @@ export function registerUploadRoutes(app: Express) {
         return res.status(400).json({ error: "No files uploaded" });
       }
       const urls = files.map((f) => `/uploads/general/${f.filename}`);
-      res.json({ success: true, urls, url: urls[0], count: files.length });
+      res.json({ success: true, urls, url: urls[0], fileUrls: urls, count: files.length });
     } catch (error) {
       console.error("Upload verification error:", error);
       res.status(500).json({ error: "Failed to upload file" });

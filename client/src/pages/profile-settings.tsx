@@ -458,7 +458,7 @@ function ProSettings({ profile }: { profile: any }) {
                     checked={profile?.hasOwnLiabilityInsurance || false}
                     onCheckedChange={async (checked) => {
                       try {
-                        await apiRequest("PUT", "/api/pro/profile", {
+                        await apiRequest("PATCH", "/api/pro/profile", {
                           hasOwnLiabilityInsurance: checked,
                         });
                         queryClient.invalidateQueries({ queryKey: ["/api/pro/profile"] });
@@ -492,8 +492,14 @@ function ProSettings({ profile }: { profile: any }) {
                           const formData = new FormData();
                           formData.append("file", file);
                           try {
-                            const result = await apiRequest("POST", "/api/object-storage/upload", formData);
-                            await apiRequest("PUT", "/api/pro/profile", {
+                            const uploadRes = await fetch("/api/upload", {
+                              method: "POST",
+                              body: formData,
+                              credentials: "include",
+                            });
+                            if (!uploadRes.ok) throw new Error("Upload failed");
+                            const result = await uploadRes.json();
+                            await apiRequest("PATCH", "/api/pro/profile", {
                               liabilityInsuranceCertificateUrl: result.url,
                               liabilityInsuranceVerifiedAt: new Date().toISOString(),
                             });

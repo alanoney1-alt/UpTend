@@ -570,6 +570,167 @@ export function registerServiceRequestRoutes(app: Express) {
     }
   });
 
+  // Get completed jobs for a pro
+  app.get("/api/service-requests/pro/:proId", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const completedJobs = await storage.getCompletedJobsForHauler(userId);
+      res.json(completedJobs || []);
+    } catch (error) {
+      console.error("Error fetching pro service requests:", error);
+      res.status(500).json({ error: "Failed to fetch service requests" });
+    }
+  });
+
+  // Pro accepts a job
+  app.post("/api/service-requests/:id/accept", requireAuth, requireHauler, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const { proId } = req.body;
+
+      const request = await storage.getServiceRequest(req.params.id);
+      if (!request) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+
+      // Check if already assigned
+      if (request.status === "assigned" || request.status === "in_progress" || request.status === "completed") {
+        return res.status(400).json({ error: "This job has already been taken" });
+      }
+
+      // Get hauler profile
+      const haulerProfile = await storage.getHaulerProfile(userId);
+      if (!haulerProfile) {
+        return res.status(400).json({ error: "Pro profile not found" });
+      }
+
+      const updated = await storage.updateServiceRequest(req.params.id, {
+        status: "assigned",
+        assignedHaulerId: haulerProfile.id,
+      });
+
+      broadcastToJob(req.params.id, { type: "request_updated", request: updated });
+
+      // Fire-and-forget: email notifications
+      if (updated?.customerEmail) {
+        sendJobAccepted(updated.customerEmail, updated, haulerProfile || {}).catch(err => console.error('[EMAIL] Failed job-accepted:', err.message));
+      }
+
+      res.json({ success: true, request: updated });
+    } catch (error) {
+      console.error("Error accepting job:", error);
+      res.status(500).json({ error: "Failed to accept job" });
+    }
+  });
+
+  // Pro confirms they called the customer
+  app.post("/api/service-requests/:id/confirm-call", requireAuth, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+
+      const request = await storage.getServiceRequest(req.params.id);
+      if (!request) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+
+      const updated = await storage.updateServiceRequest(req.params.id, {
+        proCalledCustomerAt: new Date().toISOString(),
+      });
+
+      broadcastToJob(req.params.id, { type: "request_updated", request: updated });
+
+      res.json({ success: true, request: updated });
+    } catch (error) {
+      console.error("Error confirming call:", error);
+      res.status(500).json({ error: "Failed to confirm call" });
+    }
+  });
+
+  // Pro locks the price at job start (on-site verification)
+  app.post("/api/service-requests/:id/lock-price", requireAuth, requireHauler, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const { newPrice, reason, adjustments } = req.body;
+
+      const request = await storage.getServiceRequest(req.params.id);
+      if (!request) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+
+      const updated = await storage.updateServiceRequest(req.params.id, {
+        livePrice: newPrice,
+        priceLocked: true,
+        priceLockedAt: new Date().toISOString(),
+      });
+
+      broadcastToJob(req.params.id, { type: "price_locked", request: updated, newPrice });
+
+      res.json({ success: true, request: updated });
+    } catch (error) {
+      console.error("Error locking price:", error);
+      res.status(500).json({ error: "Failed to lock price" });
+    }
+  });
+
+  // Update service request status (used by active-job.tsx)
+  app.patch("/api/service-requests/:id/status", requireAuth, async (req: any, res) => {
+    try {
+      const { status, ...data } = req.body;
+
+      if (!status) {
+        return res.status(400).json({ error: "Status is required" });
+      }
+
+      const updated = await storage.updateServiceRequest(req.params.id, { status, ...data });
+      if (!updated) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+
+      broadcastToJob(req.params.id, { type: "request_updated", request: updated });
+
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating status:", error);
+      res.status(500).json({ error: "Failed to update status" });
+    }
+  });
+
+  // Get access code for a job (gate code, lockbox, etc.)
+  app.get("/api/service-requests/:id/access-code", requireAuth, async (req: any, res) => {
+    try {
+      const request = await storage.getServiceRequest(req.params.id);
+      if (!request) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+
+      // Access code is stored in the service request details
+      const code = (request as any).accessCode || (request as any).gateCode || null;
+
+      if (code) {
+        res.json({ code });
+      } else {
+        res.json({ message: "No access code provided for this job" });
+      }
+    } catch (error) {
+      console.error("Error getting access code:", error);
+      res.status(500).json({ error: "Failed to get access code" });
+    }
+  });
+
+  // PII reveal audit log (fire-and-forget from frontend)
+  app.post("/api/audit/pii-reveal", requireAuth, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const { fieldType, resourceId } = req.body;
+      // Log for compliance - in production this would write to an audit table
+      console.log(`[PII AUDIT] User ${userId} revealed ${fieldType} for ${resourceId} at ${new Date().toISOString()}`);
+      res.json({ success: true });
+    } catch (error) {
+      // Don't fail - this is a non-blocking audit log
+      res.json({ success: true });
+    }
+  });
+
   // Get customer's jobs
   app.get("/api/my-jobs", requireAuth, async (req: any, res) => {
     try {

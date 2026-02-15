@@ -67,7 +67,7 @@ export default function EarningsPage() {
                 <p className="text-sm font-medium text-muted-foreground uppercase">This Week</p>
               </div>
               <h2 className="text-3xl font-bold" data-testid="text-earnings-weekly">
-                ${(earningsData.weekly / 100).toFixed(2)}
+                ${earningsData.weekly.toFixed(2)}
               </h2>
             </CardContent>
           </Card>
@@ -78,7 +78,7 @@ export default function EarningsPage() {
                 <p className="text-sm font-medium text-muted-foreground uppercase">Lifetime</p>
               </div>
               <h2 className="text-3xl font-bold" data-testid="text-earnings-lifetime">
-                ${(earningsData.total / 100).toFixed(2)}
+                ${earningsData.total.toFixed(2)}
               </h2>
             </CardContent>
           </Card>
@@ -109,7 +109,7 @@ export default function EarningsPage() {
                   </div>
                   <div className="text-right shrink-0">
                     <p className="font-bold text-green-600 dark:text-green-400">
-                      +${(job.amount / 100).toFixed(2)}
+                      +${job.amount.toFixed(2)}
                     </p>
                     <Badge variant="secondary">{job.status}</Badge>
                   </div>

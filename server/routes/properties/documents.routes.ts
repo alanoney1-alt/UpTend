@@ -16,7 +16,7 @@ const router = express.Router();
 router.get("/:propertyId/documents", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (!property || property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
     const documents = await getDocumentsByProperty(req.params.propertyId);
@@ -29,7 +29,7 @@ router.get("/:propertyId/documents", auth, async (req, res) => {
 router.get("/:propertyId/documents/type/:type", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (!property || property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
     const documents = await getDocumentsByType(req.params.propertyId, req.params.type);
@@ -42,7 +42,7 @@ router.get("/:propertyId/documents/type/:type", auth, async (req, res) => {
 router.post("/:propertyId/documents", auth, async (req, res) => {
   try {
     const property = await getPropertyById(req.params.propertyId);
-    if (!property || property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (!property || property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
     const documentData: InsertPropertyDocument = {
@@ -63,7 +63,7 @@ router.patch("/documents/:id", auth, async (req, res) => {
     const document = await getDocumentById(req.params.id);
     if (!document) return res.status(404).json({ error: "Document not found" });
     const property = await getPropertyById(document.propertyId);
-    if (!property || property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (!property || property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
     const updated = await updateDocument(req.params.id, req.body);

@@ -2135,7 +2135,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     mutationFn: async (requestId: string) => {
       return apiRequest("PATCH", `/api/service-requests/${requestId}`, {
         status: "assigned",
-        assignedProId: currentPro?.id,
+        assignedHaulerId: currentPro?.profile?.id || currentPro?.id,
       });
     },
     onSuccess: () => {
@@ -2830,7 +2830,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               selectedServices={currentPro?.profile?.serviceTypes || []}
               onSelectionChange={(services) => {
                 // Update services via API
-                apiRequest("PATCH", `/api/pros/${currentPro?.id}/profile`, {
+                apiRequest("PATCH", `/api/pros/${currentPro?.profile?.id}/profile`, {
                   serviceTypes: services,
                   supportedServices: services,
                 })

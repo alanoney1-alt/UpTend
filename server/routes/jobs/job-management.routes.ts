@@ -11,7 +11,7 @@ export function registerJobManagementRoutes(app: Express) {
   app.post("/api/jobs/:jobId/start", requireAuth, requireHauler, async (req, res) => {
     try {
       const { jobId } = req.params;
-      const userId = (req.user as any).id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       const job = await storage.getServiceRequest(jobId);
       if (!job) {
@@ -69,7 +69,7 @@ export function registerJobManagementRoutes(app: Express) {
   app.post("/api/jobs/:jobId/adjustments", requireAuth, requireHauler, async (req, res) => {
     try {
       const { jobId } = req.params;
-      const userId = (req.user as any).id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
       const { adjustmentType, itemName, priceChange, reason, photoUrls, quantity } = req.body;
 
       const job = await storage.getServiceRequest(jobId);
@@ -147,7 +147,7 @@ export function registerJobManagementRoutes(app: Express) {
     try {
       const { jobId, adjustmentId } = req.params;
       const { action } = req.body;
-      const userId = (req.user as any).id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       const job = await storage.getServiceRequest(jobId);
       if (!job) {
@@ -199,7 +199,7 @@ export function registerJobManagementRoutes(app: Express) {
   app.patch("/api/jobs/:jobId/completion", requireAuth, requireHauler, async (req, res) => {
     try {
       const { jobId } = req.params;
-      const userId = (req.user as any).id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
       const updates = req.body;
 
       const job = await storage.getServiceRequest(jobId);
@@ -265,7 +265,7 @@ export function registerJobManagementRoutes(app: Express) {
   app.post("/api/jobs/:jobId/complete", requireAuth, requireHauler, async (req, res) => {
     try {
       const { jobId } = req.params;
-      const userId = (req.user as any).id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       const job = await storage.getServiceRequest(jobId);
       if (!job) {

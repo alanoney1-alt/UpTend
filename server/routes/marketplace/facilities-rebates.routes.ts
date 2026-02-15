@@ -82,7 +82,8 @@ export function registerFacilitiesRebatesRoutes(app: Express) {
     try {
       const {
         serviceRequestId,
-        haulerId,
+        haulerId: haulerIdRaw,
+        proId,
         receiptUrl,
         facilityName,
         facilityAddress,
@@ -92,6 +93,9 @@ export function registerFacilitiesRebatesRoutes(app: Express) {
         receiptWeight,
         feeCharged
       } = req.body;
+
+      // Accept either haulerId or proId from frontend
+      const haulerId = haulerIdRaw || proId;
 
       // Validate required fields
       if (!serviceRequestId || !haulerId || !receiptUrl) {
@@ -219,6 +223,18 @@ export function registerFacilitiesRebatesRoutes(app: Express) {
       res.json(claims);
     } catch (error) {
       console.error("Error fetching hauler rebate claims:", error);
+      res.status(500).json({ error: "Failed to fetch rebate claims" });
+    }
+  });
+
+  // Get pro's rebate claims (alias for hauler endpoint)
+  app.get("/api/rebates/pro/:proId", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const { proId } = req.params;
+      const claims = await storage.getRebateClaimsByHauler(proId);
+      res.json(claims);
+    } catch (error) {
+      console.error("Error fetching pro rebate claims:", error);
       res.status(500).json({ error: "Failed to fetch rebate claims" });
     }
   });

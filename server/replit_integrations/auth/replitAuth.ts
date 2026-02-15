@@ -205,6 +205,16 @@ export async function setupAuth(app: Express) {
       );
     });
   });
+
+  // POST /api/logout — used by the SPA's useAuth hook
+  app.post("/api/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Logout failed" });
+      }
+      res.json({ success: true, message: "Logged out successfully" });
+    });
+  });
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {

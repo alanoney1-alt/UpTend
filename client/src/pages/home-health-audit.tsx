@@ -146,9 +146,10 @@ export default function HomeHealthAuditPage() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/upload/video", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
       if (!response.ok) {

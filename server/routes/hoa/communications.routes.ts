@@ -25,7 +25,7 @@ export function registerHoaCommunicationRoutes(app: Express) {
 
       // Verify user owns this business account
       const businessAccount = await storage.getBusinessAccount(businessAccountId);
-      if (!businessAccount || businessAccount.userId !== (req.user as any).userId || (req.user as any).id) {
+      if (!businessAccount || businessAccount.userId !== ((req.user as any).userId || (req.user as any).id)) {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
@@ -124,7 +124,7 @@ export function registerHoaCommunicationRoutes(app: Express) {
 
       // Verify user owns this business account
       const businessAccount = await storage.getBusinessAccount(businessAccountId);
-      if (!businessAccount || businessAccount.userId !== (req.user as any).userId || (req.user as any).id) {
+      if (!businessAccount || businessAccount.userId !== ((req.user as any).userId || (req.user as any).id)) {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
@@ -179,7 +179,7 @@ export function registerHoaCommunicationRoutes(app: Express) {
       }
 
       const businessAccount = await storage.getBusinessAccount(property.businessAccountId);
-      if (!businessAccount || businessAccount.userId !== (req.user as any).userId || (req.user as any).id) {
+      if (!businessAccount || businessAccount.userId !== ((req.user as any).userId || (req.user as any).id)) {
         return res.status(403).json({ error: "Unauthorized" });
       }
 

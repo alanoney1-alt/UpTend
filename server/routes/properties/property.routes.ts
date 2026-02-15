@@ -83,7 +83,7 @@ router.get("/:id", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -107,7 +107,7 @@ router.patch("/:id", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -132,7 +132,7 @@ router.get("/:id/health-score", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -157,7 +157,7 @@ router.post("/:id/health-score/update", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -183,7 +183,7 @@ router.get("/:id/timeline", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -208,7 +208,7 @@ router.get("/:id/maintenance-schedule", auth, async (req, res) => {
     }
 
     // Verify ownership
-    if (property.ownerId !== (req.user as any).userId || (req.user as any).id) {
+    if (property.ownerId !== ((req.user as any).userId || (req.user as any).id)) {
       return res.status(403).json({ error: "Access denied" });
     }
 

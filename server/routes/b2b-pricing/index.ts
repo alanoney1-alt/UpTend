@@ -86,7 +86,7 @@ export function registerB2bPricingRoutes(app: Express) {
         return res.status(401).json({ error: "Authentication required" });
       }
       const [sub] = await db.select().from(b2bSubscriptions).where(
-        eq(b2bSubscriptions.clientId, (req.user as any).id)
+        eq(b2bSubscriptions.clientId, ((req.user as any).userId || (req.user as any).id))
       );
       if (!sub) return res.status(404).json({ error: "No subscription found" });
       res.json(sub);
@@ -140,7 +140,7 @@ export function registerB2bPricingRoutes(app: Express) {
         return res.status(401).json({ error: "Authentication required" });
       }
       const { unitsCount, planId } = req.body;
-      const userId = (req.user as any).id;
+      const userId = ((req.user as any).userId || (req.user as any).id);
 
       const [existing] = await db.select().from(b2bSubscriptions).where(eq(b2bSubscriptions.clientId, userId));
       if (!existing) return res.status(404).json({ error: "No subscription found" });

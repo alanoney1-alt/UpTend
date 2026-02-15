@@ -165,6 +165,20 @@ export function registerProProfileRoutes(app: Express) {
     }
   });
 
+  // Get current Pro profile (for settings page)
+  app.get("/api/pro/profile", requireAuth, requireHauler, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Not authenticated" });
+      const profile = await storage.getHaulerProfile(userId);
+      if (!profile) return res.status(404).json({ error: "Pro profile not found" });
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching Pro profile:", error);
+      res.status(500).json({ error: "Failed to fetch Pro profile" });
+    }
+  });
+
   // Update Pro profile
   app.patch("/api/pro/profile", requireAuth, requireHauler, async (req: any, res) => {
     try {
@@ -184,6 +198,10 @@ export function registerProProfileRoutes(app: Express) {
       if (req.body.profilePhotoUrl !== undefined) allowedFields.profilePhotoUrl = req.body.profilePhotoUrl;
       if (req.body.bio !== undefined) allowedFields.bio = req.body.bio;
       if (req.body.funFact !== undefined) allowedFields.funFact = req.body.funFact;
+      if (req.body.serviceRadius !== undefined) allowedFields.serviceRadius = req.body.serviceRadius;
+      if (req.body.hasOwnLiabilityInsurance !== undefined) allowedFields.hasOwnLiabilityInsurance = req.body.hasOwnLiabilityInsurance;
+      if (req.body.liabilityInsuranceCertificateUrl !== undefined) allowedFields.liabilityInsuranceCertificateUrl = req.body.liabilityInsuranceCertificateUrl;
+      if (req.body.liabilityInsuranceVerifiedAt !== undefined) allowedFields.liabilityInsuranceVerifiedAt = req.body.liabilityInsuranceVerifiedAt;
 
       const updated = await storage.updateHaulerProfile(profile.id, allowedFields);
       res.json(updated);
@@ -221,6 +239,10 @@ export function registerProProfileRoutes(app: Express) {
       if (req.body.profilePhotoUrl !== undefined) allowedFields.profilePhotoUrl = req.body.profilePhotoUrl;
       if (req.body.bio !== undefined) allowedFields.bio = req.body.bio;
       if (req.body.funFact !== undefined) allowedFields.funFact = req.body.funFact;
+      if (req.body.serviceRadius !== undefined) allowedFields.serviceRadius = req.body.serviceRadius;
+      if (req.body.hasOwnLiabilityInsurance !== undefined) allowedFields.hasOwnLiabilityInsurance = req.body.hasOwnLiabilityInsurance;
+      if (req.body.liabilityInsuranceCertificateUrl !== undefined) allowedFields.liabilityInsuranceCertificateUrl = req.body.liabilityInsuranceCertificateUrl;
+      if (req.body.liabilityInsuranceVerifiedAt !== undefined) allowedFields.liabilityInsuranceVerifiedAt = req.body.liabilityInsuranceVerifiedAt;
 
       const updated = await storage.updateHaulerProfile(profile.id, allowedFields);
       res.json(updated);
@@ -535,6 +557,33 @@ export function registerProProfileRoutes(app: Express) {
 
   // Update hauler profile with schema validation
   app.patch("/api/haulers/:profileId/profile", requireAuth, requireHauler, async (req, res) => {
+    try {
+      const parsed = haulerProfileUpdateSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid request body", details: parsed.error.issues });
+      }
+      const profile = await storage.updateHaulerProfile(req.params.profileId, parsed.data);
+      if (!profile) {
+        return res.status(404).json({ error: "Pro profile not found" });
+      }
+      res.json(profile);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+
+      const dbError = error as any;
+      if (dbError.code === '23505') {
+        return res.status(409).json({ error: "Duplicate entry" });
+      }
+      if (dbError.code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: "Database connection failed" });
+      }
+
+      res.status(500).json({ error: "Failed to update profile" });
+    }
+  });
+
+  // Update pro profile with schema validation (pro alias)
+  app.patch("/api/pros/:profileId/profile", requireAuth, requireHauler, async (req, res) => {
     try {
       const parsed = haulerProfileUpdateSchema.safeParse(req.body);
       if (!parsed.success) {
