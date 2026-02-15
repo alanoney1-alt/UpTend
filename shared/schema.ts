@@ -6363,3 +6363,114 @@ export const chargebackDisputesRelations = relations(chargebackDisputes, ({ one 
 export const insertChargebackDisputeSchema = createInsertSchema(chargebackDisputes).omit({ id: true });
 export type InsertChargebackDispute = z.infer<typeof insertChargebackDisputeSchema>;
 export type ChargebackDispute = typeof chargebackDisputes.$inferSelect;
+
+// ─── Accounting / Ledger System ─────────────────────────────────────────────
+
+export const accountTypeEnum = z.enum(["asset", "liability", "equity", "revenue", "expense"]);
+export type AccountType = z.infer<typeof accountTypeEnum>;
+
+export const ledgerAccounts = pgTable("ledger_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // asset|liability|equity|revenue|expense
+  subtype: text("subtype"),
+  parentId: varchar("parent_id"),
+  balance: real("balance").default(0).notNull(),
+  isSystem: boolean("is_system").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertLedgerAccountSchema = createInsertSchema(ledgerAccounts).omit({ id: true, createdAt: true });
+export type InsertLedgerAccount = z.infer<typeof insertLedgerAccountSchema>;
+export type LedgerAccount = typeof ledgerAccounts.$inferSelect;
+
+export const ledgerEntries = pgTable("ledger_entries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  transactionId: varchar("transaction_id").notNull(),
+  accountId: varchar("account_id").notNull(),
+  debit: real("debit").default(0).notNull(),
+  credit: real("credit").default(0).notNull(),
+  description: text("description"),
+  referenceType: text("reference_type"), // job|subscription|refund|dispute|payout|manual|expense
+  referenceId: text("reference_id"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdBy: text("created_by").default("system").notNull(),
+});
+
+export const insertLedgerEntrySchema = createInsertSchema(ledgerEntries).omit({ id: true, createdAt: true });
+export type InsertLedgerEntry = z.infer<typeof insertLedgerEntrySchema>;
+export type LedgerEntry = typeof ledgerEntries.$inferSelect;
+
+export const invoices = pgTable("invoices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  invoiceNumber: integer("invoice_number").notNull(),
+  status: text("status").default("draft").notNull(), // draft|sent|paid|overdue|void
+  subtotal: real("subtotal").default(0).notNull(),
+  taxAmount: real("tax_amount").default(0).notNull(),
+  total: real("total").default(0).notNull(),
+  dueDate: timestamp("due_date"),
+  paidAt: timestamp("paid_at"),
+  paidVia: text("paid_via"),
+  lineItems: jsonb("line_items").default([]).notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertInvoiceSchema = createInsertSchema(invoices).omit({ id: true, createdAt: true });
+export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
+export type Invoice = typeof invoices.$inferSelect;
+
+export const taxRecords = pgTable("tax_records", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  year: integer("year").notNull(),
+  totalEarnings: real("total_earnings").default(0).notNull(),
+  totalJobs: integer("total_jobs").default(0).notNull(),
+  form1099Filed: boolean("form_1099_filed").default(false).notNull(),
+  filedAt: timestamp("filed_at"),
+  w9OnFile: boolean("w9_on_file").default(false).notNull(),
+  tin: text("tin"), // encrypted
+  legalName: text("legal_name"),
+  address: text("address"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertTaxRecordSchema = createInsertSchema(taxRecords).omit({ id: true, createdAt: true });
+export type InsertTaxRecord = z.infer<typeof insertTaxRecordSchema>;
+export type TaxRecord = typeof taxRecords.$inferSelect;
+
+export const monthlyReports = pgTable("monthly_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  year: integer("year").notNull(),
+  month: integer("month").notNull(),
+  totalRevenue: real("total_revenue").default(0).notNull(),
+  totalExpenses: real("total_expenses").default(0).notNull(),
+  grossProfit: real("gross_profit").default(0).notNull(),
+  netIncome: real("net_income").default(0).notNull(),
+  reportData: jsonb("report_data"),
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+});
+
+export const insertMonthlyReportSchema = createInsertSchema(monthlyReports).omit({ id: true, generatedAt: true });
+export type InsertMonthlyReport = z.infer<typeof insertMonthlyReportSchema>;
+export type MonthlyReport = typeof monthlyReports.$inferSelect;
+
+export const manualExpenses = pgTable("manual_expenses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  accountId: varchar("account_id").notNull(),
+  amount: real("amount").notNull(),
+  vendor: text("vendor"),
+  description: text("description"),
+  category: text("category").notNull(), // infrastructure|legal|marketing|payroll|insurance|office|other
+  receiptUrl: text("receipt_url"),
+  expenseDate: timestamp("expense_date").notNull(),
+  createdBy: text("created_by").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertManualExpenseSchema = createInsertSchema(manualExpenses).omit({ id: true, createdAt: true, deletedAt: true });
+export type InsertManualExpense = z.infer<typeof insertManualExpenseSchema>;
+export type ManualExpense = typeof manualExpenses.$inferSelect;

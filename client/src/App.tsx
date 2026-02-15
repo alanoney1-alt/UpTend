@@ -60,6 +60,7 @@ const CustomerSubscriptions = lazy(() => import("@/pages/customer-subscriptions"
 const GodMode = lazy(() => import("@/pages/admin/god-mode"));
 const CarbonTracking = lazy(() => import("@/pages/admin/carbon-tracking"));
 const AdminProMap = lazy(() => import("@/pages/admin/pro-map"));
+const AdminAccounting = lazy(() => import("@/pages/admin/accounting"));
 const ProfileSettings = lazy(() => import("@/pages/profile-settings"));
 const EarningsPage = lazy(() => import("@/pages/hauler/earnings"));
 const PublicPricing = lazy(() => import("@/pages/pricing"));
@@ -198,6 +199,7 @@ function Router() {
       <Route path="/plans" component={SubscriptionPlans} />
       <Route path="/admin/pro-map" component={AdminProMap} />
       <Route path="/admin/god-mode" component={GodMode} />
+      <Route path="/admin/accounting" component={AdminAccounting} />
       <Route path="/settings" component={ProfileSettings} />
       <Route path="/pricing" component={PublicPricing} />
       <Route path="/become-pro" component={BecomePro} />

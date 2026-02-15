@@ -150,6 +150,9 @@ import { registerUploadRoutes } from "./upload.routes";
 // Stripe Dispute / Chargeback Protection routes
 import { registerStripeDisputeRoutes } from "./stripe-disputes";
 
+// Accounting / Ledger routes
+import { registerAccountingRoutes } from "./accounting/index";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -320,6 +323,9 @@ export async function registerRoutes(
   app.use(whiteLabelMiddleware());
   registerWhiteLabelRoutes(app);
   registerUploadRoutes(app);
+
+  // Register Accounting / Ledger routes
+  registerAccountingRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

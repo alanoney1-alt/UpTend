@@ -2,6 +2,7 @@ import { getUncachableStripeClient } from './stripeClient';
 import { storage } from './storage';
 import { sendJobCompleted } from './services/email-service';
 import { handleDisputeWithEvidence } from './routes/stripe-disputes';
+import { logDispute, logRefund } from './services/accounting-service';
 import Stripe from 'stripe';
 
 export class WebhookHandlers {
@@ -220,5 +221,9 @@ export class WebhookHandlers {
 
     // Delegate to the full evidence compilation & submission handler
     await handleDisputeWithEvidence(dispute);
+
+    // Fire-and-forget: accounting ledger entry
+    logDispute({ id: dispute.id, amount: dispute.amount, reason: dispute.reason || undefined })
+      .catch(err => console.error('[ACCOUNTING] Failed logDispute:', err.message));
   }
 }

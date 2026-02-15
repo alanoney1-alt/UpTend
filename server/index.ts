@@ -234,6 +234,10 @@ function validateEnvironment() {
     await initStripe();
     await registerRoutes(httpServer, app);
 
+    // Seed accounting ledger accounts
+    const { seedLedgerAccounts } = await import("./services/accounting-service");
+    seedLedgerAccounts().catch(err => console.error('[ACCOUNTING] Seed failed:', err.message));
+
     // Start the Real-Time Matching timer background service
     startMatchingTimer();
 

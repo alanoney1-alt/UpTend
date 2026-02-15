@@ -153,6 +153,9 @@ export function Footer() {
             <Link href="/cost-guides" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-cost-guides">
               Cost Guides
             </Link>
+            <Link href="/admin-login" className="hover:text-white transition-colors cursor-pointer text-slate-600" data-testid="link-footer-admin">
+              Admin
+            </Link>
           </div>
         </div>
       </div>

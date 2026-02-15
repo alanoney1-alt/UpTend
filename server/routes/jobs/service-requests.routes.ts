@@ -10,6 +10,7 @@ import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobComple
 import { sendSms } from "../../services/notifications";
 
 import { broadcastToJob } from "../../websocket";
+import { logJobPayment } from "../../services/accounting-service";
 import multer from "multer";
 import { uploadFile, getMulterStorage, isCloudStorage } from "../../services/file-storage";
 
@@ -437,6 +438,14 @@ export function registerServiceRequestRoutes(app: Express) {
         request,
         paymentCaptured: capturedPayment,
       });
+
+      // Fire-and-forget: accounting ledger entry
+      if (capturedPayment && breakdown) {
+        logJobPayment(
+          { id: req.params.id, serviceType: existingRequest.serviceType },
+          { totalAmount, platformFee: breakdown.platformFee || 0, haulerPayout: breakdown.haulerPayout || 0 }
+        ).catch(err => console.error('[ACCOUNTING] Failed logJobPayment:', err.message));
+      }
 
       // Fire-and-forget: job completed receipt email + SMS
       if (request?.customerEmail) {
