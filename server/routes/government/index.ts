@@ -54,7 +54,7 @@ function registerCrud(
   app.post(basePath, requireAuth, async (req, res) => {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
-      const values = ownerField ? { ...req.body, [ownerField]: userId } : { ...req.body, createdBy: userId };
+      const values = ownerField ? { ...req.body, [ownerField]: userId } : req.body;
       const [created] = await db.insert(table).values(values).returning();
       res.status(201).json(created);
     } catch (error) {
@@ -93,11 +93,11 @@ function registerCrud(
 
 export function registerGovernmentRoutes(app: Express) {
   registerCrud(app, "/api/government/prevailing-wages", prevailingWages, "prevailing wage");
-  registerCrud(app, "/api/government/certified-payrolls", certifiedPayrolls, "certified payroll");
+  registerCrud(app, "/api/government/certified-payrolls", certifiedPayrolls, "certified payroll", { ownerField: "proId" });
   registerCrud(app, "/api/government/sam-registrations", samRegistrations, "SAM registration", { ownerField: "businessId" });
   registerCrud(app, "/api/government/dbe-utilization", dbeUtilization, "DBE utilization");
-  registerCrud(app, "/api/government/bids", governmentBids, "government bid", { ownerField: "createdBy" });
-  registerCrud(app, "/api/government/fema-vendors", femaVendors, "FEMA vendor");
+  registerCrud(app, "/api/government/bids", governmentBids, "government bid", { ownerField: "businessAccountId" });
+  registerCrud(app, "/api/government/fema-vendors", femaVendors, "FEMA vendor", { ownerField: "proId" });
   registerCrud(app, "/api/government/retainage", retainageTracking, "retainage tracking");
   registerCrud(app, "/api/government/environmental", environmentalCompliance, "environmental compliance");
 }

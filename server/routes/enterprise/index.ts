@@ -4,7 +4,7 @@ import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import {
   whiteLabelConfigs,
-  auditLogs,
+  b2bAuditLogs,
   customReports,
   digitalSignatures,
   assetRegistry,
@@ -50,7 +50,7 @@ function registerCrud(
   app.post(basePath, requireAuth, async (req, res) => {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
-      const values = ownerField ? { ...req.body, [ownerField]: userId } : { ...req.body, createdBy: userId };
+      const values = ownerField ? { ...req.body, [ownerField]: userId } : req.body;
       const [created] = await db.insert(table).values(values).returning();
       res.status(201).json(created);
     } catch (error) {
@@ -89,7 +89,7 @@ function registerCrud(
 
 export function registerEnterpriseRoutes(app: Express) {
   registerCrud(app, "/api/enterprise/white-label", whiteLabelConfigs, "white label config", { ownerField: "clientId" });
-  registerCrud(app, "/api/enterprise/audit-logs", auditLogs, "audit log", { ownerField: "actorId", immutable: true });
+  registerCrud(app, "/api/enterprise/audit-logs", b2bAuditLogs, "audit log", { ownerField: "actorId", immutable: true });
   registerCrud(app, "/api/enterprise/custom-reports", customReports, "custom report", { ownerField: "clientId" });
   registerCrud(app, "/api/enterprise/digital-signatures", digitalSignatures, "digital signature", { immutable: true });
   registerCrud(app, "/api/enterprise/asset-registry", assetRegistry, "asset");

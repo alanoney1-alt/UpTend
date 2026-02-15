@@ -12,7 +12,7 @@ import { z } from "zod";
 // === Validation Schemas ===
 
 const createCertificateSchema = z.object({
-  company: z.string().min(1),
+  companyName: z.string().min(1),
   policyNumber: z.string().min(1),
   provider: z.string().min(1),
   coverageAmount: z.number().positive(),
@@ -42,7 +42,7 @@ export function registerComplianceRoutes(app: Express) {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const certs = await db.select().from(insuranceCertificates)
-        .where(eq(insuranceCertificates.userId, userId));
+        .where(eq(insuranceCertificates.proId, userId));
       res.json(certs);
     } catch (error) {
       console.error("Error fetching certificates:", error);
@@ -67,7 +67,7 @@ export function registerComplianceRoutes(app: Express) {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const data = createCertificateSchema.parse(req.body);
       const [cert] = await db.insert(insuranceCertificates).values({
-        userId,
+        proId: userId,
         ...data,
         verified: false,
       }).returning();
@@ -116,7 +116,7 @@ export function registerComplianceRoutes(app: Express) {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const docs = await db.select().from(complianceDocuments)
-        .where(eq(complianceDocuments.userId, userId));
+        .where(eq(complianceDocuments.proId, userId));
       res.json(docs);
     } catch (error) {
       console.error("Error fetching compliance documents:", error);
@@ -141,7 +141,6 @@ export function registerComplianceRoutes(app: Express) {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const data = createComplianceDocSchema.parse(req.body);
       const [doc] = await db.insert(complianceDocuments).values({
-        userId,
         ...data,
         verified: false,
       }).returning();
@@ -190,7 +189,7 @@ export function registerComplianceRoutes(app: Express) {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const checks = await db.select().from(backgroundChecks)
-        .where(eq(backgroundChecks.userId, userId));
+        .where(eq(backgroundChecks.proId, userId));
       res.json(checks);
     } catch (error) {
       console.error("Error fetching background checks:", error);
@@ -215,7 +214,6 @@ export function registerComplianceRoutes(app: Express) {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const data = createBackgroundCheckSchema.parse(req.body);
       const [check] = await db.insert(backgroundChecks).values({
-        userId,
         proId: data.proId,
         provider: data.provider,
         status: "pending",

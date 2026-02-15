@@ -48,7 +48,7 @@ function registerCrud(
   app.post(basePath, requireAuth, async (req, res) => {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
-      const values = ownerField ? { ...req.body, [ownerField]: userId } : { ...req.body, createdBy: userId };
+      const values = ownerField ? { ...req.body, [ownerField]: userId } : req.body;
       const [created] = await db.insert(table).values(values).returning();
       res.status(201).json(created);
     } catch (error) {
