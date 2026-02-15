@@ -33,7 +33,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />
-      <StormCountdown />
+      {/* <StormCountdown /> — disabled for launch */}
       <main>
         <NewHeroSection />
         <WhatDoesUpTendMeanSection />

@@ -499,7 +499,7 @@ export function UpTendGuide() {
         <button
           onClick={handleOpen}
           className={cn(
-            "fixed bottom-4 right-4 z-50 flex items-center gap-2 px-4 py-2.5",
+            "fixed bottom-20 md:bottom-4 right-4 z-50 flex items-center gap-2 px-4 py-2.5",
             "bg-amber-500/90 hover:bg-amber-500 text-white",
             "rounded-full shadow-lg hover:shadow-xl",
             "transition-all duration-300 ease-out",
