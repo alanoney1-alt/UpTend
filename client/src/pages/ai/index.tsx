@@ -59,7 +59,7 @@ export default function AIFeaturesHub() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#F47C20]/10 via-white to-orange-50 dark:from-[#F47C20]/5 dark:via-gray-950 dark:to-gray-900 py-16 md:py-24">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#F47C20]/10 via-white to-orange-50 dark:from-[#F47C20]/5 dark:via-gray-950 dark:to-gray-900 pt-24 pb-16 md:pt-32 md:pb-24">
           <div className="container mx-auto px-4 text-center max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-[#F47C20]/10 text-[#F47C20] rounded-full px-4 py-1.5 text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
