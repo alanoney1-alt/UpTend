@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,7 @@ export interface SchedulingData {
 }
 
 export function ServiceScheduling({ onComplete, onBack, serviceName, defaultTiming }: ServiceSchedulingProps) {
+  const { t } = useTranslation();
   const mapTiming = (t?: string): "asap" | "scheduled" | "recurring" => {
     if (t === "same-day") return "asap";
     if (t === "next-day" || t === "scheduled") return "scheduled";
@@ -64,7 +66,7 @@ export function ServiceScheduling({ onComplete, onBack, serviceName, defaultTimi
   return (
     <div className="w-full max-w-3xl mx-auto space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl md:text-3xl font-bold mb-2">When do you need this service?</h2>
+        <h2 className="text-2xl md:text-3xl font-bold mb-2">{t("booking.when_need")}</h2>
         <p className="text-muted-foreground">
           {serviceName} • Choose your preferred timing
         </p>
@@ -87,7 +89,7 @@ export function ServiceScheduling({ onComplete, onBack, serviceName, defaultTimi
                   <div className="flex items-center gap-2 mb-2">
                     <Zap className="w-5 h-5 text-orange-500" />
                     <Label htmlFor="asap" className="text-lg font-bold cursor-pointer">
-                      ASAP / Today
+                      {t("booking.asap")}
                     </Label>
                     <Badge variant="default" className="bg-orange-500">Recommended</Badge>
                   </div>
@@ -111,7 +113,7 @@ export function ServiceScheduling({ onComplete, onBack, serviceName, defaultTimi
                   <div className="flex items-center gap-2 mb-2">
                     <CalendarIcon className="w-5 h-5 text-blue-500" />
                     <Label htmlFor="scheduled" className="text-lg font-bold cursor-pointer">
-                      Schedule for Later
+                      {t("booking.schedule_later")}
                     </Label>
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -196,7 +198,7 @@ export function ServiceScheduling({ onComplete, onBack, serviceName, defaultTimi
                   <div className="flex items-center gap-2 mb-2">
                     <RefreshCw className="w-5 h-5 text-green-500" />
                     <Label htmlFor="recurring" className="text-lg font-bold cursor-pointer">
-                      Set Up Recurring Service
+                      {t("booking.recurring_service")}
                     </Label>
                     <Badge variant="secondary">Save 5-15%</Badge>
                   </div>

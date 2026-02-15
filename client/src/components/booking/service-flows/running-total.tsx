@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft } from "lucide-react";
@@ -26,6 +27,7 @@ export function RunningTotal({
   continueLabel = "Continue with This Quote",
   note,
 }: RunningTotalProps) {
+  const { t } = useTranslation();
   const hasItems = total > 0;
   const displayTotal = minimumCharge && hasItems ? Math.max(total, minimumCharge) : total;
   const isMinimumApplied = minimumCharge ? total < minimumCharge && total > 0 : false;
@@ -36,7 +38,7 @@ export function RunningTotal({
         {lineItems.length > 0 && (
           <div className="space-y-2">
             <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Quote Summary
+              {t("booking.quote_summary")}
             </h4>
             {lineItems.map((item, i) => (
               <div key={i} className="flex justify-between text-sm">
@@ -70,7 +72,7 @@ export function RunningTotal({
         <div className="border-t pt-3">
           <div className="flex justify-between items-baseline">
             <span className="text-sm font-medium text-muted-foreground">
-              {monthlyTotal ? "Monthly Total" : "Estimated Total"}
+              {monthlyTotal ? "Monthly Total" : t("booking.estimated_total")}
             </span>
             <span className="text-3xl font-black text-primary">
               {formatCurrency(monthlyTotal || displayTotal)}
@@ -86,7 +88,7 @@ export function RunningTotal({
         <div className="flex gap-3">
           {onBack && (
             <Button variant="outline" onClick={onBack} className="gap-2">
-              <ArrowLeft className="w-4 h-4" /> Back
+              <ArrowLeft className="w-4 h-4" /> {t("booking.back")}
             </Button>
           )}
           <Button

@@ -1061,10 +1061,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
               className="mb-4 text-slate-300 hover:text-white"
               data-testid="button-back-edit-selections"
             >
-              ← Edit Selections
+              ← {t("booking.edit_selections")}
             </Button>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              Confirm & Book
+              {t("booking.confirm_book")}
             </h2>
             <p className="text-base md:text-lg text-slate-300">
               Review your details and confirm your booking
@@ -1112,7 +1112,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                   </>
                 ) : (
                   <>
-                    Confirm & Book <ArrowRight className="ml-2 w-4 h-4" />
+                    {t("booking.confirm_book")} <ArrowRight className="ml-2 w-4 h-4" />
                   </>
                 )}
               </Button>
@@ -1133,7 +1133,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             className="mb-4 text-slate-300 hover:text-white"
             data-testid="button-back-edit-selections"
           >
-            ← Edit Selections
+            ← {t("booking.edit_selections")}
           </Button>
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
             Ready to Book Your Service
@@ -1155,7 +1155,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                 size="lg"
                 data-testid="button-book-quote"
               >
-                Create Account & Book <ArrowRight className="ml-2 w-4 h-4" />
+                {t("booking.create_account_book")} <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
               <Button
                 onClick={goToLoginFromAuthGate}
@@ -1164,7 +1164,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                 size="lg"
                 data-testid="button-login-book"
               >
-                Log In & Book
+                {t("booking.login_book")}
               </Button>
             </div>
           </CardContent>
