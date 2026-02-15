@@ -17,6 +17,8 @@ const resources = {
       "nav.member_login": "Member Login",
       "nav.pro_login": "Pro Login",
       "nav.header_tagline": "Smarter home services. Instant booking. Proven impact.",
+      "nav.for_business": "For Business",
+      "nav.emergency": "Emergency",
 
       "hero.hero_headline_1": "Smarter home services.",
       "hero.hero_headline_2": "Instant booking.",
@@ -675,6 +677,8 @@ const resources = {
       "nav.member_login": "Acceso de Miembro",
       "nav.pro_login": "Acceso de Pro",
       "nav.header_tagline": "Servicios del hogar más inteligentes. Reserva instantánea. Impacto comprobado.",
+      "nav.for_business": "Para Empresas",
+      "nav.emergency": "Emergencia",
 
       "hero.hero_headline_1": "Servicios del hogar más inteligentes.",
       "hero.hero_headline_2": "Reserva instantánea.",

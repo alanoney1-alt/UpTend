@@ -66,7 +66,7 @@ export function Header() {
           </Link>
           <Link href="/business">
             <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-business">
-              For Business
+              {t("nav.for_business", "For Business")}
             </span>
           </Link>
         </div>
@@ -79,7 +79,7 @@ export function Header() {
         <div className="hidden md:flex items-center gap-4 flex-shrink-0">
           <Link href="/emergency">
             <span className="text-sm font-bold text-red-400 hover:text-red-300 transition-colors cursor-pointer flex items-center gap-1.5" data-testid="link-emergency">
-              🚨 Emergency
+              🚨 {t("nav.emergency", "Emergency")}
             </span>
           </Link>
           <LanguageToggle />
@@ -205,7 +205,7 @@ export function Header() {
               <span className="block p-2" data-testid="link-academy-mobile">{t("nav.pro_academy")}</span>
             </Link>
             <Link href="/business" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-business-mobile">For Business</span>
+              <span className="block p-2" data-testid="link-business-mobile">{t("nav.for_business", "For Business")}</span>
             </Link>
             <Link href="/become-pro" onClick={closeMenu}>
               <span className="block p-2 text-primary font-bold flex items-center gap-2" data-testid="link-become-pro-mobile">
