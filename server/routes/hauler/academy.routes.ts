@@ -21,7 +21,7 @@ export function registerProAcademyRoutes(app: Express) {
   app.post("/api/academy/certify", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
       const { skills, scores } = certifySchema.parse(req.body);
-      const proId = (req.user as any).id;
+      const proId = (req.user as any).userId || (req.user as any).id;
 
       // Award certifications for each completed skill
       const certifications = [];
@@ -56,9 +56,13 @@ export function registerProAcademyRoutes(app: Express) {
         });
 
         // Also enable job acceptance in the profile
-        await storage.updateHaulerProfile(proId, {
-          canAcceptJobs: true,
-        });
+        // updateHaulerProfile expects profileId, not userId — look up the profile first
+        const profile = await storage.getHaulerProfile(proId);
+        if (profile) {
+          await storage.updateHaulerProfile(profile.id, {
+            canAcceptJobs: true,
+          });
+        }
 
         certifications.push(appCert);
       }
@@ -83,7 +87,7 @@ export function registerProAcademyRoutes(app: Express) {
    */
   app.get("/api/pro/certifications", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
-      const proId = (req.user as any).id;
+      const proId = (req.user as any).userId || (req.user as any).id;
       const certifications = await storage.getHaulerCertifications(proId);
 
       res.json({
@@ -99,7 +103,7 @@ export function registerProAcademyRoutes(app: Express) {
   // Legacy hauler endpoint (backward compatibility)
   app.get("/api/hauler/certifications", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
-      const proId = (req.user as any).id;
+      const proId = (req.user as any).userId || (req.user as any).id;
       const certifications = await storage.getHaulerCertifications(proId);
 
       res.json({
@@ -118,7 +122,7 @@ export function registerProAcademyRoutes(app: Express) {
    */
   app.get("/api/pro/career", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
-      const proId = (req.user as any).id;
+      const proId = (req.user as any).userId || (req.user as any).id;
       const stats = await storage.getHaulerCareerStats(proId);
 
       res.json(stats);
@@ -131,7 +135,7 @@ export function registerProAcademyRoutes(app: Express) {
   // Legacy hauler endpoint (backward compatibility)
   app.get("/api/hauler/career", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
-      const proId = (req.user as any).id;
+      const proId = (req.user as any).userId || (req.user as any).id;
       const stats = await storage.getHaulerCareerStats(proId);
 
       res.json(stats);
