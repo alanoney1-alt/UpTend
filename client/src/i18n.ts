@@ -621,6 +621,44 @@ const resources = {
       "signup.creating": "Creating Account...",
       "signup.already_have": "Already have an account?",
       "signup.sign_in": "Sign in",
+
+      // Pricing page (additional keys)
+      "pricing.title": "Transparent Pricing. No Surprises.",
+      "pricing.subtitle_auth": "Flat rates, no hidden fees. What you see is what you pay.",
+      "pricing.subtitle_guest": "See our national base rates below.",
+      "pricing.log_in_exact": "Log in to see exact pricing",
+      "pricing.book_now": "Book Now",
+
+      // Booking flow
+      "booking.when_need": "When do you need this service?",
+      "booking.asap": "ASAP / Today",
+      "booking.schedule_later": "Schedule for Later",
+      "booking.recurring_service": "Set Up Recurring Service",
+      "booking.how_quote": "How would you like your quote?",
+      "booking.ai_quote": "AI Quote from Photos",
+      "booking.manual_entry": "Manual Entry",
+      "booking.confirm_book": "Confirm & Book",
+      "booking.create_account_book": "Create Account & Book",
+      "booking.login_book": "Log In & Book",
+      "booking.quote_summary": "Quote Summary",
+      "booking.estimated_total": "Estimated Total",
+      "booking.continue_quote": "Continue with This Quote",
+      "booking.back": "Back",
+      "booking.edit_selections": "Edit Selections",
+
+      // Auth
+      "auth.email": "Email",
+      "auth.password": "Password",
+      "auth.sign_in": "Sign In",
+      "auth.create_account": "Create Account",
+      "auth.forgot_password": "Forgot your password?",
+      "auth.no_account": "Don't have an account?",
+      "auth.have_account": "Already have an account?",
+
+      // About (additional keys)
+      "about.title": "About UpTend",
+      "about.mission": "Our Mission",
+      "about.story": "Our Story",
     },
   },
   es: {
@@ -1258,6 +1296,44 @@ const resources = {
       "signup.creating": "Creando Cuenta...",
       "signup.already_have": "¿Ya tienes una cuenta?",
       "signup.sign_in": "Inicia sesión",
+
+      // Pricing page (additional keys)
+      "pricing.title": "Precios Transparentes. Sin Sorpresas.",
+      "pricing.subtitle_auth": "Tarifas fijas, sin cargos ocultos. Lo que ves es lo que pagas.",
+      "pricing.subtitle_guest": "Vea nuestras tarifas base nacionales.",
+      "pricing.log_in_exact": "Inicie sesión para ver precios exactos",
+      "pricing.book_now": "Reservar Ahora",
+
+      // Booking flow
+      "booking.when_need": "¿Cuándo necesita este servicio?",
+      "booking.asap": "Lo Antes Posible / Hoy",
+      "booking.schedule_later": "Programar Para Después",
+      "booking.recurring_service": "Configurar Servicio Recurrente",
+      "booking.how_quote": "¿Cómo le gustaría su cotización?",
+      "booking.ai_quote": "Cotización IA desde Fotos",
+      "booking.manual_entry": "Entrada Manual",
+      "booking.confirm_book": "Confirmar y Reservar",
+      "booking.create_account_book": "Crear Cuenta y Reservar",
+      "booking.login_book": "Iniciar Sesión y Reservar",
+      "booking.quote_summary": "Resumen de Cotización",
+      "booking.estimated_total": "Total Estimado",
+      "booking.continue_quote": "Continuar con Esta Cotización",
+      "booking.back": "Atrás",
+      "booking.edit_selections": "Editar Selecciones",
+
+      // Auth
+      "auth.email": "Correo Electrónico",
+      "auth.password": "Contraseña",
+      "auth.sign_in": "Iniciar Sesión",
+      "auth.create_account": "Crear Cuenta",
+      "auth.forgot_password": "¿Olvidó su contraseña?",
+      "auth.no_account": "¿No tiene una cuenta?",
+      "auth.have_account": "¿Ya tiene una cuenta?",
+
+      // About (additional keys)
+      "about.title": "Acerca de UpTend",
+      "about.mission": "Nuestra Misión",
+      "about.story": "Nuestra Historia",
     },
   },
 };
