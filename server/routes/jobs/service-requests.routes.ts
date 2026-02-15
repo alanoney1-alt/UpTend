@@ -23,6 +23,7 @@ async function getActiveCertCountForPro(proId: string): Promise<number> {
 
 import { broadcastToJob } from "../../websocket";
 import { logJobPayment } from "../../services/accounting-service";
+import { processJobCompletion } from "../../services/stripe-connect";
 import multer from "multer";
 import { uploadFile, getMulterStorage, isCloudStorage } from "../../services/file-storage";
 
@@ -459,6 +460,13 @@ export function registerServiceRequestRoutes(app: Express) {
           { id: req.params.id, serviceType: existingRequest.serviceType },
           { totalAmount, platformFee: breakdown.platformFee || 0, haulerPayout: breakdown.haulerPayout || 0 }
         ).catch(err => console.error('[ACCOUNTING] Failed logJobPayment:', err.message));
+      }
+
+      // Fire-and-forget: Stripe Connect payout transfer
+      if (capturedPayment && request?.assignedHaulerId) {
+        processJobCompletion(req.params.id).catch(err =>
+          console.error('[PAYOUT] processJobCompletion failed:', err.message)
+        );
       }
 
       // Fire-and-forget: job completed receipt email + SMS

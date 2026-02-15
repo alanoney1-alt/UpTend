@@ -932,6 +932,13 @@ export const businessAccounts = pgTable("business_accounts", {
   carbonCreditRevenue: real("carbon_credit_revenue").default(0), // Revenue from selling credits
   stripeConnectAccountId: text("stripe_connect_account_id"), // For automatic referral payouts
   stripeConnectOnboardingComplete: boolean("stripe_connect_onboarding_complete").default(false),
+  // Weekly Billing fields
+  billingFrequency: text("billing_frequency").default("weekly"),
+  paymentMethodId: text("payment_method_id"), // Stripe payment method for auto-billing
+  stripeCustomerId: text("stripe_customer_id"), // Stripe customer ID for billing
+  autoBillingEnabled: boolean("auto_billing_enabled").default(true),
+  billingContactEmail: text("billing_contact_email"),
+  billingDayOfWeek: integer("billing_day_of_week").default(1), // 1 = Monday
   createdAt: text("created_at").notNull(),
 });
 
@@ -6792,3 +6799,137 @@ export const proCertificationsRelations = relations(proCertifications, ({ one })
 export const insertProCertificationSchema = createInsertSchema(proCertifications).omit({ id: true, createdAt: true });
 export type InsertProCertification = z.infer<typeof insertProCertificationSchema>;
 export type ProCertification = typeof proCertifications.$inferSelect;
+
+// ==========================================
+// Weekly B2B Billing System
+// ==========================================
+
+export const weeklyBillingRuns = pgTable("weekly_billing_runs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  weekStartDate: text("week_start_date").notNull(), // Monday ISO date
+  weekEndDate: text("week_end_date").notNull(), // Sunday ISO date
+  status: text("status").notNull().default("draft"), // draft | pending | charged | failed | void
+  invoiceId: varchar("invoice_id"),
+  totalAmount: real("total_amount").notNull().default(0),
+  jobCount: integer("job_count").notNull().default(0),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  stripeChargeId: text("stripe_charge_id"),
+  errorMessage: text("error_message"),
+  dryRun: boolean("dry_run").notNull().default(false),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  processedAt: text("processed_at"),
+});
+
+export const weeklyBillingRunsRelations = relations(weeklyBillingRuns, ({ one, many }) => ({
+  businessAccount: one(businessAccounts, {
+    fields: [weeklyBillingRuns.businessAccountId],
+    references: [businessAccounts.id],
+  }),
+  invoice: one(invoices, {
+    fields: [weeklyBillingRuns.invoiceId],
+    references: [invoices.id],
+  }),
+  lineItems: many(billingLineItems),
+}));
+
+export const insertWeeklyBillingRunSchema = createInsertSchema(weeklyBillingRuns).omit({ id: true });
+export type InsertWeeklyBillingRun = z.infer<typeof insertWeeklyBillingRunSchema>;
+export type WeeklyBillingRun = typeof weeklyBillingRuns.$inferSelect;
+
+export const billingLineItems = pgTable("billing_line_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  billingRunId: varchar("billing_run_id").notNull(),
+  serviceRequestId: varchar("service_request_id").notNull(),
+  businessBookingId: varchar("business_booking_id"),
+  propertyAddress: text("property_address").notNull(),
+  serviceType: text("service_type").notNull(),
+  completedAt: text("completed_at").notNull(),
+  customerSignoffAt: text("customer_signoff_at"),
+  proName: text("pro_name"),
+  laborCost: real("labor_cost").notNull().default(0),
+  partsCost: real("parts_cost").notNull().default(0),
+  platformFee: real("platform_fee").notNull().default(0),
+  totalCharge: real("total_charge").notNull().default(0),
+  notes: text("notes"),
+});
+
+export const billingLineItemsRelations = relations(billingLineItems, ({ one }) => ({
+  billingRun: one(weeklyBillingRuns, {
+    fields: [billingLineItems.billingRunId],
+    references: [weeklyBillingRuns.id],
+  }),
+  serviceRequest: one(serviceRequests, {
+    fields: [billingLineItems.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertBillingLineItemSchema = createInsertSchema(billingLineItems).omit({ id: true });
+export type InsertBillingLineItem = z.infer<typeof insertBillingLineItemSchema>;
+export type BillingLineItem = typeof billingLineItems.$inferSelect;
+
+// ── Stripe Connect Payout Tables ──
+
+export const proPayoutAccounts = pgTable("pro_payout_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  stripeConnectAccountId: text("stripe_connect_account_id"),
+  stripeAccountStatus: text("stripe_account_status").default("pending"), // pending | active | restricted | disabled
+  onboardingComplete: boolean("onboarding_complete").default(false),
+  payoutSpeed: text("payout_speed").default("standard"), // standard | instant
+  instantPayoutEligible: boolean("instant_payout_eligible").default(false),
+  bankLast4: text("bank_last4"),
+  bankName: text("bank_name"),
+  debitCardLast4: text("debit_card_last4"),
+  totalPaidOut: integer("total_paid_out").default(0), // cents
+  lastPayoutAt: text("last_payout_at"),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").notNull().default(sql`now()`),
+});
+
+export const proPayoutAccountsRelations = relations(proPayoutAccounts, ({ one }) => ({
+  haulerProfile: one(haulerProfiles, {
+    fields: [proPayoutAccounts.proId],
+    references: [haulerProfiles.userId],
+  }),
+}));
+
+export const insertProPayoutAccountSchema = createInsertSchema(proPayoutAccounts).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertProPayoutAccount = z.infer<typeof insertProPayoutAccountSchema>;
+export type ProPayoutAccount = typeof proPayoutAccounts.$inferSelect;
+
+export const proPayouts = pgTable("pro_payouts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  serviceRequestId: varchar("service_request_id"),
+  stripeTransferId: text("stripe_transfer_id"),
+  stripePayoutId: text("stripe_payout_id"),
+  amount: integer("amount").notNull(), // cents - gross job amount
+  platformFee: integer("platform_fee").notNull(), // cents
+  netPayout: integer("net_payout").notNull(), // cents
+  feeRate: real("fee_rate").notNull(), // e.g. 0.20
+  instantPayout: boolean("instant_payout").default(false),
+  instantFee: integer("instant_fee").default(0), // cents
+  status: text("status").notNull().default("pending"), // pending | processing | paid | failed | reversed
+  scheduledFor: text("scheduled_for"),
+  paidAt: text("paid_at"),
+  failureReason: text("failure_reason"),
+  idempotencyKey: text("idempotency_key").notNull(),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+});
+
+export const proPayoutsRelations = relations(proPayouts, ({ one }) => ({
+  haulerProfile: one(haulerProfiles, {
+    fields: [proPayouts.proId],
+    references: [haulerProfiles.userId],
+  }),
+  serviceRequest: one(serviceRequests, {
+    fields: [proPayouts.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertProPayoutSchema = createInsertSchema(proPayouts).omit({ id: true, createdAt: true });
+export type InsertProPayout = z.infer<typeof insertProPayoutSchema>;
+export type ProPayout = typeof proPayouts.$inferSelect;

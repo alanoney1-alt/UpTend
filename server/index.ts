@@ -89,6 +89,14 @@ async function initStripe() {
   }
 }
 
+// Stripe Connect webhooks (separate endpoint for Connect events)
+import stripeConnectWebhooks from './routes/stripe-connect-webhooks';
+app.use(
+  '/api/stripe/connect-webhook',
+  express.raw({ type: 'application/json' }),
+  stripeConnectWebhooks
+);
+
 app.post(
   '/api/stripe/webhook',
   express.raw({ type: 'application/json' }),

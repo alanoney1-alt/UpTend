@@ -34,6 +34,7 @@ const PyckerLogin = lazy(() => import("@/pages/pycker-login"));
 const CustomerSignup = lazy(() => import("@/pages/customer-signup"));
 const CustomerLogin = lazy(() => import("@/pages/customer-login"));
 const PaymentSetup = lazy(() => import("@/pages/payment-setup"));
+const ProPayoutSetup = lazy(() => import("@/pages/pro-payout-setup"));
 const Profile = lazy(() => import("@/pages/profile"));
 const About = lazy(() => import("@/pages/about"));
 const FAQ = lazy(() => import("@/pages/faq"));
@@ -107,6 +108,8 @@ const B2BPricing = lazy(() => import("@/pages/b2b-pricing"));
 const BusinessInvoices = lazy(() => import("@/pages/business-invoices"));
 const BusinessOnboarding = lazy(() => import("@/pages/business-onboarding"));
 const BusinessBooking = lazy(() => import("@/pages/business-booking"));
+const BusinessBilling = lazy(() => import("@/pages/business-billing"));
+const AdminBilling = lazy(() => import("@/pages/admin/billing"));
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -159,6 +162,8 @@ function Router() {
       <Route path="/business/integrations" component={BusinessIntegrations} />
       <Route path="/business/onboarding" component={BusinessOnboarding} />
       <Route path="/business/booking" component={BusinessBooking} />
+      <Route path="/business/billing" component={BusinessBilling} />
+      <Route path="/admin/billing" component={AdminBilling} />
       <Route path="/veterans" component={VeteransPage} />
       <Route path="/rewards" component={Loyalty} />
       <Route path="/loyalty" component={Loyalty} />
@@ -181,6 +186,9 @@ function Router() {
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
       <Route path="/payment-setup" component={PaymentSetup} />
+      <Route path="/pro/payouts/setup" component={ProPayoutSetup} />
+      <Route path="/pro/payouts/setup/complete" component={ProPayoutSetup} />
+      <Route path="/pro/payouts/setup/refresh" component={ProPayoutSetup} />
       <Route path="/profile" component={Profile} />
       <Route path="/about" component={About} />
       <Route path="/faq" component={FAQ} />

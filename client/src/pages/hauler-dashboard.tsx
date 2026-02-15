@@ -61,6 +61,7 @@ import { VerificationGatesDisplay } from "@/components/verification-gates";
 import { EsgImpactDashboard } from "@/components/esg-impact-dashboard";
 import { CertificationDashboardSection } from "@/components/pro/certification-dashboard-section";
 import { FeeProgressWidget } from "@/components/pro/fee-progress";
+import { EarningsDashboard } from "@/components/pro/earnings-dashboard";
 import { ImpactWidget } from "@/components/dashboard/impact-widget";
 import { FileText, Route, Store } from "lucide-react";
 import { ProMarketplace } from "@/components/marketplace/pro-marketplace";
@@ -2607,6 +2608,11 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         <div className="mb-6">
           <h1 className="text-2xl font-bold" data-testid="text-earnings-heading">Earnings</h1>
           <p className="text-muted-foreground">Track your income and payouts</p>
+        </div>
+
+        {/* Stripe Connect Payouts Dashboard */}
+        <div className="mb-8">
+          <EarningsDashboard />
         </div>
         
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

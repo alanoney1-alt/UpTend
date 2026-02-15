@@ -19,6 +19,7 @@ import { registerProAcademyRoutes, registerAcademyRoutes } from "./hauler/academ
 import { registerAcademyCertificationRoutes, seedCertificationPrograms } from "./academy/index";
 import { registerCertificationGatingRoutes } from "./hauler/certification-gating.routes";
 import { registerFeeStatusRoutes } from "./hauler/fee-status.routes";
+import { registerPayoutRoutes } from "./hauler/payouts.routes";
 
 // Customer routes
 import { registerCustomerAccountRoutes } from "./customer/account.routes";
@@ -127,6 +128,7 @@ import { registerPartsRequestRoutes } from "./parts-requests.routes";
 import { registerActiveNearbyRoutes } from "./hauler/active-nearby.routes";
 import { registerAdminProMapRoutes } from "./admin/pro-map.routes";
 import { registerAdminManagementRoutes } from "./admin/admin-management.routes";
+import { registerAdminBillingRoutes } from "./admin/billing.routes";
 
 // B2B routes
 import { registerComplianceRoutes } from "./compliance/index";
@@ -196,6 +198,7 @@ export async function registerRoutes(
   registerAcademyCertificationRoutes(app);
   registerCertificationGatingRoutes(app);
   registerFeeStatusRoutes(app);
+  registerPayoutRoutes(app);
 
   // Register customer routes
   registerCustomerAccountRoutes(app);
@@ -306,6 +309,7 @@ export async function registerRoutes(
 
   // Admin management routes (pyckers, users, surge, active jobs)
   registerAdminManagementRoutes(app);
+  registerAdminBillingRoutes(app);
 
   // B2B routes
   registerComplianceRoutes(app);

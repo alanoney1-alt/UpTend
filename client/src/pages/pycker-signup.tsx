@@ -1535,6 +1535,17 @@ export default function PyckerSignup() {
                   </div>
                 </div>
 
+                {/* Payout Setup CTA */}
+                <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 text-center">
+                  <p className="font-semibold text-amber-900 mb-1">💰 Set up your bank account to get paid</p>
+                  <p className="text-sm text-amber-700 mb-3">Get paid automatically when jobs complete — takes 2 minutes</p>
+                  <Link href="/pro/payouts/setup">
+                    <Button className="bg-amber-600 hover:bg-amber-700">
+                      Set Up Direct Deposit →
+                    </Button>
+                  </Link>
+                </div>
+
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Link href="/">
                     <Button variant="outline">
