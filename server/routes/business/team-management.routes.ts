@@ -98,13 +98,8 @@ router.post("/:id/team/invite", async (req, res) => {
         <p><a href="${inviteUrl}" style="display:inline-block;padding:12px 24px;background:#F47C20;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Accept Invitation</a></p>
         <p>Or copy this link: ${inviteUrl}</p>
       `;
-      const transport = nodemailer.createTransport(
-        process.env.SENDGRID_API_KEY
-          ? { host: "smtp.sendgrid.net", port: 587, auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY } }
-          : { jsonTransport: true }
-      );
-      await transport.sendMail({
-        from: process.env.FROM_EMAIL || "UpTend <noreply@uptend.app>",
+      const { sendEmail } = await import("../../services/notifications");
+      await sendEmail({
         to: validated.email,
         subject: "You're invited to join a team on UpTend",
         html: emailHtml,

@@ -83,14 +83,8 @@ export function registerHoaCommunicationRoutes(app: Express) {
         // Send email/SMS using notification service
         try {
           if (property.ownerEmail) {
-            const nodemailer = await import("nodemailer");
-            const transport = nodemailer.default.createTransport(
-              (process.env.SENDGRID_API_KEY
-                ? { host: "smtp.sendgrid.net", port: 587, auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY } }
-                : { jsonTransport: true }) as any
-            );
-            await transport.sendMail({
-              from: process.env.FROM_EMAIL || "UpTend <noreply@uptend.app>",
+            const { sendEmail } = await import("../../services/notifications");
+            await sendEmail({
               to: property.ownerEmail,
               subject: personalizedSubject,
               html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">

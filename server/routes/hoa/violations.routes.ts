@@ -56,14 +56,8 @@ export function registerHoaViolationRoutes(app: Express) {
       try {
         const ownerResult = await storage.getHoaProperty(data.propertyId);
         if (data.notifyHomeowner && ownerResult?.ownerEmail) {
-          const nodemailer = await import("nodemailer");
-          const transport = nodemailer.default.createTransport(
-            (process.env.SENDGRID_API_KEY
-              ? { host: "smtp.sendgrid.net", port: 587, auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY } }
-              : { jsonTransport: true }) as any
-          );
-          await transport.sendMail({
-            from: process.env.FROM_EMAIL || "UpTend <noreply@uptend.app>",
+          const { sendEmail } = await import("../../services/notifications");
+          await sendEmail({
             to: ownerResult.ownerEmail,
             subject: `HOA Violation Notice: ${violation.title}`,
             html: `<p>Dear ${ownerResult.ownerName || "Homeowner"},</p>

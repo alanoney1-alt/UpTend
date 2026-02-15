@@ -30,42 +30,19 @@ export function registerContactRoutes(app: Express) {
 
       console.log("[Contact Form] New submission from " + email);
 
-      // Send email notification via SendGrid if configured
-      const sendgridKey = process.env.SENDGRID_API_KEY;
+      // Send email notification via Resend/SendGrid
+      const { sendEmail } = await import("../services/notifications");
       const adminEmail = process.env.ADMIN_EMAIL || "alan@uptend.app";
-      const fromEmail = process.env.FROM_EMAIL || "noreply@uptend.app";
 
-      if (sendgridKey) {
-        try {
-          const sgResponse = await fetch("https://api.sendgrid.com/v3/mail/send", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${sendgridKey}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              personalizations: [{ to: [{ email: adminEmail }] }],
-              from: { email: fromEmail, name: "UpTend Contact Form" },
-              reply_to: { email, name },
-              subject: `[UpTend Contact] ${submission.subject} — from ${name}`,
-              content: [
-                {
-                  type: "text/plain",
-                  value: `New contact form submission:\n\nName: ${name}\nEmail: ${email}\nPhone: ${submission.phone}\nSubject: ${submission.subject}\n\nMessage:\n${message}\n\nSubmitted: ${submission.timestamp}`,
-                },
-              ],
-            }),
-          });
-
-          if (!sgResponse.ok) {
-            console.log(`[Contact Form] SendGrid error: ${sgResponse.status}`);
-          }
-        } catch (emailErr) {
-          console.log(`[Contact Form] Email send failed: ${emailErr}`);
-          // Don't fail the request — the submission is still logged
-        }
-      } else {
-        console.log("[Contact Form] SENDGRID_API_KEY not set — email not sent. Submission logged only.");
+      try {
+        await sendEmail({
+          to: adminEmail,
+          subject: `[UpTend Contact] ${submission.subject} — from ${name}`,
+          text: `New contact form submission:\n\nName: ${name}\nEmail: ${email}\nPhone: ${submission.phone}\nSubject: ${submission.subject}\n\nMessage:\n${message}\n\nSubmitted: ${submission.timestamp}`,
+          html: `<h2>New Contact Form Submission</h2><p><strong>Name:</strong> ${name}<br/><strong>Email:</strong> ${email}<br/><strong>Phone:</strong> ${submission.phone}<br/><strong>Subject:</strong> ${submission.subject}</p><p><strong>Message:</strong><br/>${message}</p><p style="color:#999;font-size:12px;">Submitted: ${submission.timestamp}</p>`,
+        });
+      } catch (emailErr) {
+        console.log(`[Contact Form] Email send failed: ${emailErr}`);
       }
 
       res.json({

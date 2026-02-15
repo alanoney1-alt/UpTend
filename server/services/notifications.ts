@@ -1,17 +1,13 @@
-import sgMail from '@sendgrid/mail';
 import twilio from 'twilio';
 import { sanitizePhone } from '../utils/phone';
 
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
-const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@uptend.app';
-
-if (SENDGRID_API_KEY) {
-  sgMail.setApiKey(SENDGRID_API_KEY);
-}
+const FROM_EMAIL = process.env.FROM_EMAIL || 'UpTend <onboarding@resend.dev>';
 
 const twilioClient = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN 
   ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
@@ -34,25 +30,72 @@ interface SmsOptions {
 }
 
 export async function sendEmail(options: EmailOptions): Promise<{ success: boolean; error?: string }> {
-  if (!SENDGRID_API_KEY) {
-    console.warn('SendGrid API key not configured - email not sent');
-    return { success: false, error: 'SendGrid API key not configured' };
+  // Try Resend first, then SendGrid fallback
+  if (RESEND_API_KEY) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: FROM_EMAIL,
+          to: [options.to],
+          subject: options.subject,
+          html: options.html || undefined,
+          text: options.text || undefined,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        console.log(`[Resend] Email sent to ${options.to} — id: ${data.id}`);
+        return { success: true };
+      } else {
+        const err = await res.text();
+        console.error(`[Resend] Error ${res.status}: ${err}`);
+        return { success: false, error: `Resend ${res.status}: ${err}` };
+      }
+    } catch (error: any) {
+      console.error('[Resend] Error:', error.message);
+      return { success: false, error: error.message };
+    }
   }
 
-  try {
-    await sgMail.send({
-      to: options.to,
-      from: FROM_EMAIL,
-      subject: options.subject,
-      text: options.text || '',
-      html: options.html || '',
-    });
-    console.log(`Email sent to ${options.to}`);
-    return { success: true };
-  } catch (error: any) {
-    console.error('SendGrid error:', error.response?.body || error.message);
-    return { success: false, error: error.message };
+  if (SENDGRID_API_KEY) {
+    try {
+      const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SENDGRID_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email: options.to }] }],
+          from: { email: FROM_EMAIL.includes('<') ? FROM_EMAIL.match(/<(.+)>/)?.[1] || 'noreply@uptend.app' : FROM_EMAIL },
+          subject: options.subject,
+          content: [
+            { type: 'text/plain', value: options.text || '' },
+            ...(options.html ? [{ type: 'text/html', value: options.html }] : []),
+          ],
+        }),
+      });
+      if (res.ok || res.status === 202) {
+        console.log(`[SendGrid] Email sent to ${options.to}`);
+        return { success: true };
+      } else {
+        const err = await res.text();
+        console.error(`[SendGrid] Error ${res.status}: ${err}`);
+        return { success: false, error: `SendGrid ${res.status}: ${err}` };
+      }
+    } catch (error: any) {
+      console.error('[SendGrid] Error:', error.message);
+      return { success: false, error: error.message };
+    }
   }
+
+  console.warn('No email provider configured (RESEND_API_KEY or SENDGRID_API_KEY) - email not sent');
+  return { success: false, error: 'No email provider configured' };
 }
 
 export async function sendSms(options: SmsOptions): Promise<{ success: boolean; error?: string; sid?: string; status?: string }> {
@@ -340,7 +383,7 @@ export async function sendPYCKERJobAccepted(
 }
 
 export function isEmailConfigured(): boolean {
-  return !!SENDGRID_API_KEY;
+  return !!(RESEND_API_KEY || SENDGRID_API_KEY);
 }
 
 export function isSmsConfigured(): boolean {
