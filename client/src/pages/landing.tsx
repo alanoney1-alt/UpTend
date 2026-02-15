@@ -36,10 +36,10 @@ export default function Landing() {
       {/* <StormCountdown /> — disabled for launch */}
       <main>
         <NewHeroSection />
+        <ProsNearYou />
         <WhatDoesUpTendMeanSection />
         <HowItWorks />
         <InteractiveFeatures />
-        <ProsNearYou />
         <SafetyShieldSection />
         <WhySection />
         <FortyNineWalkthrough />
