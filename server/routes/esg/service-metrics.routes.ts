@@ -11,6 +11,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { EsgStorage } from "../../storage/domains/esg/storage";
 import { calculateServiceEsg } from "../../services/service-esg-calculators";
+import { storage } from "../../storage";
 
 const router = Router();
 const esgStorage = new EsgStorage();
@@ -371,6 +372,34 @@ router.post("/generate-report", async (req, res) => {
   } catch (error: any) {
     console.error("Error generating ESG report:", error);
     res.status(400).json({ error: error.message || "Failed to generate ESG report" });
+  }
+});
+
+// Temporary: Seed ESG impact logs for demo
+router.post("/seed-impact-log", async (req, res) => {
+  try {
+    const log = await storage.createEsgImpactLog({
+      serviceRequestId: req.body.serviceRequestId,
+      haulerId: req.body.haulerId || null,
+      customerId: req.body.customerId || null,
+      carbonFootprintLbs: req.body.carbonFootprintLbs || 0,
+      totalWeightLbs: req.body.totalWeightLbs || 0,
+      recycledWeightLbs: req.body.recycledWeightLbs || 0,
+      recycledLbs: req.body.recycledWeightLbs || 0,
+      donatedWeightLbs: req.body.donatedWeightLbs || 0,
+      donatedLbs: req.body.donatedWeightLbs || 0,
+      landfilledWeightLbs: req.body.landfilledWeightLbs || 0,
+      landfilledLbs: req.body.landfilledWeightLbs || 0,
+      diversionRate: req.body.diversionRate || 0,
+      treesEquivalent: req.body.treesEquivalent || 0,
+      waterSavedGallons: req.body.waterSavedGallons || 0,
+      carbonSavedLbs: req.body.carbonSavedLbs || 0,
+      serviceType: req.body.serviceType || "junk_removal",
+      createdAt: new Date().toISOString(),
+    });
+    res.json({ success: true, log });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
 });
 
