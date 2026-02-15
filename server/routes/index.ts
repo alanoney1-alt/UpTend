@@ -134,6 +134,9 @@ import { registerConstructionRoutes } from "./construction/index";
 import { registerVeteranRoutes } from "./veterans/index";
 import { registerEnterpriseRoutes } from "./enterprise/index";
 
+// B2B Pricing routes
+import { registerB2bPricingRoutes } from "./b2b-pricing/index";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -287,6 +290,9 @@ export async function registerRoutes(
   registerConstructionRoutes(app);
   registerVeteranRoutes(app);
   registerEnterpriseRoutes(app);
+
+  // Register B2B Pricing routes
+  registerB2bPricingRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

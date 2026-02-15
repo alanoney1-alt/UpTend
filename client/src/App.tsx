@@ -100,6 +100,7 @@ const BusinessProperties = lazy(() => import("@/pages/business-properties"));
 const BusinessConstruction = lazy(() => import("@/pages/business-construction"));
 const VeteransPage = lazy(() => import("@/pages/veterans"));
 const BusinessReports = lazy(() => import("@/pages/business-reports"));
+const B2BPricing = lazy(() => import("@/pages/b2b-pricing"));
 const BusinessInvoices = lazy(() => import("@/pages/business-invoices"));
 
 function ScrollToTop() {
@@ -228,6 +229,7 @@ function Router() {
       <Route path="/ai" component={AIFeaturesHub} />
       <Route path="/ai/photo-quote" component={PhotoToQuote} />
       <Route path="/ai/documents" component={DocumentScanner} />
+      <Route path="/b2b-pricing" component={B2BPricing} />
       <Route path="/partners" component={PartnersLanding} />
       <Route path="/partners/register" component={PartnerRegister} />
       <Route path="/partners/dashboard" component={PartnerDashboard} />

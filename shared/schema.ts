@@ -6271,3 +6271,53 @@ export const whiteLabelConfigsRelations = relations(whiteLabelConfigs, ({ one })
 export const insertWhiteLabelConfigSchema = createInsertSchema(whiteLabelConfigs).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertWhiteLabelConfig = z.infer<typeof insertWhiteLabelConfigSchema>;
 export type WhiteLabelConfig = typeof whiteLabelConfigs.$inferSelect;
+
+// ==========================================
+// 40. B2B Subscription Plans
+// ==========================================
+export const b2bSubscriptionPlans = pgTable("b2b_subscription_plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  segment: text("segment").notNull(), // 'hoa', 'pm', 'construction', 'government'
+  tier: text("tier").notNull(), // 'starter', 'professional', 'enterprise', 'project', 'standard'
+  pricePerUnit: real("price_per_unit").notNull(),
+  unitType: text("unit_type").notNull(), // 'unit', 'door', 'flat_monthly', 'flat_yearly'
+  maxUnits: integer("max_units"), // NULL = unlimited
+  features: jsonb("features").notNull().default(sql`'[]'`),
+  transactionFeePct: real("transaction_fee_pct").notNull().default(5.0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertB2bSubscriptionPlanSchema = createInsertSchema(b2bSubscriptionPlans).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertB2bSubscriptionPlan = z.infer<typeof insertB2bSubscriptionPlanSchema>;
+export type B2bSubscriptionPlan = typeof b2bSubscriptionPlans.$inferSelect;
+
+// ==========================================
+// 41. B2B Subscriptions
+// ==========================================
+export const b2bSubscriptions = pgTable("b2b_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull(),
+  planId: varchar("plan_id").notNull(),
+  unitsCount: integer("units_count").notNull().default(0),
+  monthlyPrice: real("monthly_price").notNull().default(0),
+  status: text("status").notNull().default("active"),
+  billingCycle: text("billing_cycle").notNull().default("monthly"),
+  startedAt: text("started_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  nextBillingAt: text("next_billing_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const b2bSubscriptionsRelations = relations(b2bSubscriptions, ({ one }) => ({
+  plan: one(b2bSubscriptionPlans, {
+    fields: [b2bSubscriptions.planId],
+    references: [b2bSubscriptionPlans.id],
+  }),
+}));
+
+export const insertB2bSubscriptionSchema = createInsertSchema(b2bSubscriptions).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertB2bSubscription = z.infer<typeof insertB2bSubscriptionSchema>;
+export type B2bSubscription = typeof b2bSubscriptions.$inferSelect;
