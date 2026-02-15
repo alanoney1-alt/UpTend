@@ -1,5 +1,8 @@
 import type { Express } from "express";
 import { storage } from "../../storage";
+import { db } from "../../db";
+import { esgImpactLogs, serviceRequests } from "@shared/schema";
+import { eq, inArray, sql } from "drizzle-orm";
 import { requireAuth } from "../../middleware/auth";
 import { requireBusinessTeamAccess } from "../../auth-middleware";
 
@@ -12,8 +15,6 @@ export function registerHoaEsgMetricsRoutes(app: Express) {
   app.get("/api/business/:businessAccountId/esg-metrics", requireAuth, requireBusinessTeamAccess("canAccessEsgReports"), async (req, res) => {
     try {
       const { businessAccountId } = req.params;
-
-      // Team access already verified by middleware
 
       // Get all properties for this business account
       const properties = await storage.getHoaPropertiesByBusinessAccount(businessAccountId);
@@ -33,12 +34,34 @@ export function registerHoaEsgMetricsRoutes(app: Express) {
         });
       }
 
-      // Get property addresses (for quick lookup)
-      const propertyMap = new Map(properties.map(p => [p.id, p.address]));
+      // Match service requests to HOA property addresses
+      const propertyAddresses = properties.map(p => p.address);
+      const matchedRequests = await db.select({ id: serviceRequests.id, pickupAddress: serviceRequests.pickupAddress })
+        .from(serviceRequests)
+        .where(inArray(serviceRequests.pickupAddress, propertyAddresses));
 
-      // Get all ESG impact logs for properties in this portfolio
-      // Note: This requires matching service requests to property addresses
-      // For now, we'll use a simpler approach and aggregate by matching addresses
+      // Build address → serviceRequestIds map
+      const addressToRequestIds = new Map<string, string[]>();
+      for (const sr of matchedRequests) {
+        const list = addressToRequestIds.get(sr.pickupAddress) || [];
+        list.push(sr.id);
+        addressToRequestIds.set(sr.pickupAddress, list);
+      }
+
+      const allRequestIds = matchedRequests.map(r => r.id);
+
+      // Fetch ESG impact logs for all matched service requests
+      let esgLogs: typeof esgImpactLogs.$inferSelect[] = [];
+      if (allRequestIds.length > 0) {
+        esgLogs = await db.select().from(esgImpactLogs)
+          .where(inArray(esgImpactLogs.serviceRequestId, allRequestIds));
+      }
+
+      // Index ESG logs by serviceRequestId
+      const esgByRequest = new Map<string, typeof esgImpactLogs.$inferSelect>();
+      for (const log of esgLogs) {
+        esgByRequest.set(log.serviceRequestId, log);
+      }
 
       let totalJobsCompleted = 0;
       let totalWasteDivertedLbs = 0;
@@ -49,91 +72,92 @@ export function registerHoaEsgMetricsRoutes(app: Express) {
       let totalLandfilledLbs = 0;
 
       const propertyBreakdown: Map<string, any> = new Map();
-      const monthlyData: Map<string, any> = new Map();
+      const monthlyData: Map<string, { jobs: number; waste: number; co2: number }> = new Map();
 
-      // Initialize property breakdown
-      properties.forEach(property => {
-        propertyBreakdown.set(property.id, {
-          propertyId: property.id,
-          address: property.address,
-          jobsCompleted: 0,
-          wasteDivertedLbs: 0,
-          co2AvoidedLbs: 0,
-          recycledLbs: 0,
-          donatedLbs: 0,
-          landfilledLbs: 0,
-          diversionRate: 0,
-        });
-      });
-
-      // Get all service requests and ESG logs
-      // In a real implementation, you'd want to filter by property addresses
-      // For demonstration, we'll aggregate sample data
-
-      // Sample calculation - in production, query actual ESG impact logs
       for (const property of properties) {
-        // Mock data for demonstration
-        const jobsForProperty = Math.floor(Math.random() * 10) + 1;
-        const wasteDiverted = jobsForProperty * (300 + Math.random() * 200);
-        const co2Avoided = wasteDiverted * 0.5;
-        const recycled = wasteDiverted * 0.6;
-        const donated = wasteDiverted * 0.15;
-        const landfilled = wasteDiverted * 0.25;
+        const requestIds = addressToRequestIds.get(property.address) || [];
+        let propJobs = 0;
+        let propWaste = 0;
+        let propCo2 = 0;
+        let propRecycled = 0;
+        let propDonated = 0;
+        let propLandfilled = 0;
+        let propWater = 0;
 
-        totalJobsCompleted += jobsForProperty;
-        totalWasteDivertedLbs += wasteDiverted;
-        totalCo2AvoidedLbs += co2Avoided;
-        totalRecycledLbs += recycled;
-        totalDonatedLbs += donated;
-        totalLandfilledLbs += landfilled;
+        for (const reqId of requestIds) {
+          const log = esgByRequest.get(reqId);
+          if (!log) continue;
+          propJobs++;
+          const recycled = (log.recycledWeightLbs || 0);
+          const donated = (log.donatedWeightLbs || 0);
+          const landfilled = (log.landfilledWeightLbs || 0);
+          const diverted = recycled + donated;
+          propWaste += diverted;
+          propCo2 += (log.carbonSavedLbs || 0);
+          propRecycled += recycled;
+          propDonated += donated;
+          propLandfilled += landfilled;
+          propWater += (log.waterSavedGallons || 0);
 
-        const diversionRate = ((recycled + donated) / (recycled + donated + landfilled)) * 100;
+          // Aggregate monthly trends by createdAt month
+          const month = log.createdAt.substring(0, 7); // "YYYY-MM"
+          const existing = monthlyData.get(month) || { jobs: 0, waste: 0, co2: 0 };
+          existing.jobs++;
+          existing.waste += diverted;
+          existing.co2 += (log.carbonSavedLbs || 0);
+          monthlyData.set(month, existing);
+        }
+
+        totalJobsCompleted += propJobs;
+        totalWasteDivertedLbs += propWaste;
+        totalCo2AvoidedLbs += propCo2;
+        totalRecycledLbs += propRecycled;
+        totalDonatedLbs += propDonated;
+        totalLandfilledLbs += propLandfilled;
+        totalWaterSavedGallons += propWater;
+
+        const totalForRate = propRecycled + propDonated + propLandfilled;
+        const divRate = totalForRate > 0 ? ((propRecycled + propDonated) / totalForRate) * 100 : 0;
 
         propertyBreakdown.set(property.id, {
           propertyId: property.id,
           address: property.address,
-          jobsCompleted: jobsForProperty,
-          wasteDivertedLbs: Math.round(wasteDiverted),
-          co2AvoidedLbs: Math.round(co2Avoided),
-          diversionRate: Math.round(diversionRate),
+          jobsCompleted: propJobs,
+          wasteDivertedLbs: Math.round(propWaste),
+          co2AvoidedLbs: Math.round(propCo2),
+          diversionRate: Math.round(divRate),
         });
       }
 
-      // Calculate water saved (rough estimate: 50 gallons per 100 lbs diverted)
-      totalWaterSavedGallons = Math.round((totalWasteDivertedLbs / 100) * 50);
-
-      // Calculate trees equivalent (1 tree = ~48 lbs CO2/year)
+      // Trees equivalent (1 tree absorbs ~48 lbs CO2/year)
       const treesEquivalent = totalCo2AvoidedLbs / 48;
 
-      // Calculate overall diversion rate
-      const diversionRate = totalWasteDivertedLbs > 0
-        ? ((totalRecycledLbs + totalDonatedLbs) / (totalRecycledLbs + totalDonatedLbs + totalLandfilledLbs)) * 100
+      // Overall diversion rate
+      const totalForRate = totalRecycledLbs + totalDonatedLbs + totalLandfilledLbs;
+      const diversionRate = totalForRate > 0
+        ? ((totalRecycledLbs + totalDonatedLbs) / totalForRate) * 100
         : 0;
 
-      // Calculate carbon credits (1 credit = 1 metric ton CO2)
-      const carbonCreditsEarned = (totalCo2AvoidedLbs / 2204.62); // lbs to metric tons
+      // Carbon credits (1 credit = 1 metric ton CO2 = 2204.62 lbs)
+      const carbonCreditsEarned = totalCo2AvoidedLbs / 2204.62;
       const carbonCreditsValue = carbonCreditsEarned * 15; // $15 per credit estimate
 
-      // Generate monthly trends (last 6 months)
-      const months = ['January', 'February', 'March', 'April', 'May', 'June'];
-      const monthlyTrends = months.map((month, index) => {
-        const jobsInMonth = Math.floor(totalJobsCompleted / 6 * (0.8 + Math.random() * 0.4));
-        const wasteInMonth = (totalWasteDivertedLbs / 6) * (0.8 + Math.random() * 0.4);
-        const co2InMonth = (totalCo2AvoidedLbs / 6) * (0.8 + Math.random() * 0.4);
-
-        return {
+      // Monthly trends sorted chronologically (last 6 months)
+      const monthlyTrends = Array.from(monthlyData.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-6)
+        .map(([month, data]) => ({
           month,
-          jobsCompleted: jobsInMonth,
-          wasteDivertedLbs: Math.round(wasteInMonth),
-          co2AvoidedLbs: Math.round(co2InMonth),
-        };
-      });
+          jobsCompleted: data.jobs,
+          wasteDivertedLbs: Math.round(data.waste),
+          co2AvoidedLbs: Math.round(data.co2),
+        }));
 
       res.json({
         totalJobsCompleted,
         totalWasteDivertedLbs: Math.round(totalWasteDivertedLbs),
         totalCo2AvoidedLbs: Math.round(totalCo2AvoidedLbs),
-        totalWaterSavedGallons,
+        totalWaterSavedGallons: Math.round(totalWaterSavedGallons),
         treesEquivalent: Math.round(treesEquivalent * 10) / 10,
         diversionRate: Math.round(diversionRate),
         carbonCreditsEarned: Math.round(carbonCreditsEarned * 10) / 10,

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -59,10 +61,84 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function BusinessConstruction() {
-  const totalPunchItems = demoPunchLists.reduce((s, p) => s + p.totalItems, 0);
-  const completedPunchItems = demoPunchLists.reduce((s, p) => s + p.completed, 0);
-  const unsignedWaivers = demoLienWaivers.filter(l => !l.signed).length;
-  const pendingPermits = demoPermits.filter(p => p.status === "under_review").length;
+  const { toast } = useToast();
+
+  const createPunchListMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/construction/punch-lists", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/construction/punch-lists"] });
+      toast({ title: "Punch list created" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to create punch list", description: err.message, variant: "destructive" }); },
+  });
+
+  const createLienWaiverMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/construction/lien-waivers", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/construction/lien-waivers"] });
+      toast({ title: "Lien waiver requested" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to request waiver", description: err.message, variant: "destructive" }); },
+  });
+
+  const { data: punchLists = demoPunchLists } = useQuery({
+    queryKey: ["/api/construction/punch-lists"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/construction/punch-lists", { credentials: "include" });
+        if (!res.ok) return demoPunchLists;
+        const data = await res.json();
+        return data.length > 0 ? data : demoPunchLists;
+      } catch { return demoPunchLists; }
+    },
+  });
+
+  const { data: punchItems = demoPunchItems } = useQuery({
+    queryKey: ["/api/construction/punch-list-items"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/construction/punch-list-items", { credentials: "include" });
+        if (!res.ok) return demoPunchItems;
+        const data = await res.json();
+        return data.length > 0 ? data : demoPunchItems;
+      } catch { return demoPunchItems; }
+    },
+  });
+
+  const { data: lienWaivers = demoLienWaivers } = useQuery({
+    queryKey: ["/api/construction/lien-waivers"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/construction/lien-waivers", { credentials: "include" });
+        if (!res.ok) return demoLienWaivers;
+        const data = await res.json();
+        return data.length > 0 ? data : demoLienWaivers;
+      } catch { return demoLienWaivers; }
+    },
+  });
+
+  const { data: permits = demoPermits } = useQuery({
+    queryKey: ["/api/construction/permits"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/construction/permits", { credentials: "include" });
+        if (!res.ok) return demoPermits;
+        const data = await res.json();
+        return data.length > 0 ? data : demoPermits;
+      } catch { return demoPermits; }
+    },
+  });
+
+  const totalPunchItems = punchLists.reduce((s: number, p: any) => s + (p.totalItems || 0), 0);
+  const completedPunchItems = punchLists.reduce((s: number, p: any) => s + (p.completed || 0), 0);
+  const unsignedWaivers = lienWaivers.filter((l: any) => !l.signed).length;
+  const pendingPermits = permits.filter((p: any) => p.status === "under_review").length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -77,7 +153,7 @@ export default function BusinessConstruction() {
               <span className="text-xl font-bold">Construction Management</span>
             </div>
           </div>
-          <Button size="sm" className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Project</Button>
+          <Button size="sm" className="bg-orange-500 hover:bg-orange-600" onClick={() => createPunchListMutation.mutate({ project: "New Project", totalItems: 0, completed: 0, status: "in_progress" })} disabled={createPunchListMutation.isPending}><Plus className="w-4 h-4 mr-2" /> {createPunchListMutation.isPending ? "Creating..." : "New Project"}</Button>
         </div>
       </header>
 
@@ -115,7 +191,7 @@ export default function BusinessConstruction() {
               <div className="p-2 bg-green-500/10 rounded-lg"><Building2 className="w-5 h-5 text-green-500" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Active Projects</p>
-                <p className="text-2xl font-bold">{demoPunchLists.filter(p => p.status === "in_progress").length}</p>
+                <p className="text-2xl font-bold">{punchLists.filter(p => p.status === "in_progress").length}</p>
               </div>
             </div>
           </Card>
@@ -131,7 +207,7 @@ export default function BusinessConstruction() {
           {/* Punch Lists */}
           <TabsContent value="punchlists" className="space-y-6">
             <h2 className="text-xl font-semibold">Punch Lists</h2>
-            {demoPunchLists.map(pl => (
+            {punchLists.map(pl => (
               <Card key={pl.id} className="overflow-hidden">
                 <div className="p-5 border-b">
                   <div className="flex items-start justify-between mb-2">
@@ -158,7 +234,7 @@ export default function BusinessConstruction() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {demoPunchItems.map(item => (
+                      {punchItems.map(item => (
                         <TableRow key={item.id}>
                           <TableCell className="font-medium">{item.description}</TableCell>
                           <TableCell><Badge variant="outline">{item.trade}</Badge></TableCell>
@@ -184,7 +260,7 @@ export default function BusinessConstruction() {
           <TabsContent value="waivers" className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">Lien Waiver Tracking</h2>
-              <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Request Waiver</Button>
+              <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => createLienWaiverMutation.mutate({ project: "", proName: "", type: "Conditional Progress", amount: 0 })} disabled={createLienWaiverMutation.isPending}><Plus className="w-4 h-4 mr-2" /> {createLienWaiverMutation.isPending ? "Requesting..." : "Request Waiver"}</Button>
             </div>
             <Card>
               <div className="overflow-x-auto"><Table>
@@ -200,7 +276,7 @@ export default function BusinessConstruction() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoLienWaivers.map(w => (
+                  {lienWaivers.map(w => (
                     <TableRow key={w.id}>
                       <TableCell className="font-medium">{w.project}</TableCell>
                       <TableCell>{w.proName}</TableCell>
@@ -243,7 +319,7 @@ export default function BusinessConstruction() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoPermits.map(p => (
+                  {permits.map(p => (
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.project}</TableCell>
                       <TableCell>{p.permitType}</TableCell>

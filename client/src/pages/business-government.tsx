@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -71,10 +73,97 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function BusinessGovernment() {
   const [wageSearch, setWageSearch] = useState("");
+  const { toast } = useToast();
 
-  const totalBidValue = demoBids.reduce((s, b) => s + b.estimatedValue, 0);
-  const awardedValue = demoBids.filter(b => b.status === "awarded").reduce((s, b) => s + b.estimatedValue, 0);
-  const dbeTotal = demoDbeCerts.reduce((s, d) => s + d.percentage, 0);
+  const createBidMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/government/bids", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/government/bids"] });
+      toast({ title: "Bid created successfully" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to create bid", description: err.message, variant: "destructive" }); },
+  });
+
+  const { data: bids = demoBids } = useQuery({
+    queryKey: ["/api/government/bids"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/government/bids", { credentials: "include" });
+        if (!res.ok) return demoBids;
+        const data = await res.json();
+        return data.length > 0 ? data : demoBids;
+      } catch { return demoBids; }
+    },
+  });
+
+  const { data: prevailingWages = demoPrevailingWages } = useQuery({
+    queryKey: ["/api/government/prevailing-wages"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/government/prevailing-wages", { credentials: "include" });
+        if (!res.ok) return demoPrevailingWages;
+        const data = await res.json();
+        return data.length > 0 ? data : demoPrevailingWages;
+      } catch { return demoPrevailingWages; }
+    },
+  });
+
+  const { data: certifiedPayrolls = demoCertifiedPayrolls } = useQuery({
+    queryKey: ["/api/government/certified-payrolls"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/government/certified-payrolls", { credentials: "include" });
+        if (!res.ok) return demoCertifiedPayrolls;
+        const data = await res.json();
+        return data.length > 0 ? data : demoCertifiedPayrolls;
+      } catch { return demoCertifiedPayrolls; }
+    },
+  });
+
+  const { data: samRegistrations = [demoSamRegistration] } = useQuery({
+    queryKey: ["/api/government/sam-registrations"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/government/sam-registrations", { credentials: "include" });
+        if (!res.ok) return [demoSamRegistration];
+        const data = await res.json();
+        return data.length > 0 ? data : [demoSamRegistration];
+      } catch { return [demoSamRegistration]; }
+    },
+  });
+
+  const { data: dbeCerts = demoDbeCerts } = useQuery({
+    queryKey: ["/api/government/dbe-utilization"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/government/dbe-utilization", { credentials: "include" });
+        if (!res.ok) return demoDbeCerts;
+        const data = await res.json();
+        return data.length > 0 ? data : demoDbeCerts;
+      } catch { return demoDbeCerts; }
+    },
+  });
+
+  const { data: femaVendors = demoFemaVendors } = useQuery({
+    queryKey: ["/api/government/fema-vendors"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/government/fema-vendors", { credentials: "include" });
+        if (!res.ok) return demoFemaVendors;
+        const data = await res.json();
+        return data.length > 0 ? data : demoFemaVendors;
+      } catch { return demoFemaVendors; }
+    },
+  });
+
+  const samReg = samRegistrations[0] || demoSamRegistration;
+
+  const totalBidValue = bids.reduce((s: number, b: any) => s + (b.estimatedValue || 0), 0);
+  const awardedValue = bids.filter((b: any) => b.status === "awarded").reduce((s: number, b: any) => s + (b.estimatedValue || 0), 0);
+  const dbeTotal = dbeCerts.reduce((s: number, d: any) => s + (d.percentage || 0), 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -89,8 +178,8 @@ export default function BusinessGovernment() {
               <span className="text-xl font-bold">Government Contracts</span>
             </div>
           </div>
-          <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
-            <Plus className="w-4 h-4 mr-2" /> New Bid
+          <Button size="sm" className="bg-orange-500 hover:bg-orange-600" onClick={() => createBidMutation.mutate({ title: "New Bid", agency: "", estimatedValue: 0, status: "drafting" })} disabled={createBidMutation.isPending}>
+            <Plus className="w-4 h-4 mr-2" /> {createBidMutation.isPending ? "Creating..." : "New Bid"}
           </Button>
         </div>
       </header>
@@ -139,7 +228,7 @@ export default function BusinessGovernment() {
               <div className="p-2 bg-red-500/10 rounded-lg"><Zap className="w-5 h-5 text-red-500" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">FEMA Ready</p>
-                <p className="text-2xl font-bold">{demoFemaVendors.filter(f => f.activated).length}/{demoFemaVendors.length}</p>
+                <p className="text-2xl font-bold">{femaVendors.filter(f => f.activated).length}/{femaVendors.length}</p>
               </div>
             </div>
           </Card>
@@ -159,7 +248,7 @@ export default function BusinessGovernment() {
           <TabsContent value="bids" className="space-y-4">
             <h2 className="text-xl font-semibold">Bid & Proposal Pipeline</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {demoBids.map(bid => (
+              {bids.map(bid => (
                 <Card key={bid.id} className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -204,7 +293,7 @@ export default function BusinessGovernment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoPrevailingWages.filter(w => !wageSearch || w.county.toLowerCase().includes(wageSearch.toLowerCase()) || w.trade.toLowerCase().includes(wageSearch.toLowerCase())).map(w => (
+                  {prevailingWages.filter(w => !wageSearch || w.county.toLowerCase().includes(wageSearch.toLowerCase()) || w.trade.toLowerCase().includes(wageSearch.toLowerCase())).map(w => (
                     <TableRow key={w.id}>
                       <TableCell className="font-medium">{w.county}</TableCell>
                       <TableCell>{w.state}</TableCell>
@@ -240,7 +329,7 @@ export default function BusinessGovernment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoCertifiedPayrolls.map(p => (
+                  {certifiedPayrolls.map(p => (
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.contractName}</TableCell>
                       <TableCell>{new Date(p.weekEnding).toLocaleDateString()}</TableCell>
@@ -265,11 +354,11 @@ export default function BusinessGovernment() {
               <Card className="p-6">
                 <CardTitle className="text-lg mb-4 flex items-center gap-2"><Globe className="w-5 h-5 text-orange-500" /> Registration Details</CardTitle>
                 <div className="space-y-4">
-                  <div className="flex justify-between"><span className="text-muted-foreground">Business Name</span><span className="font-medium">{demoSamRegistration.businessName}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">CAGE Code</span><span className="font-mono font-medium">{demoSamRegistration.cageCode}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">UEI</span><span className="font-mono font-medium">{demoSamRegistration.uei}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Business Name</span><span className="font-medium">{samReg.businessName}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">CAGE Code</span><span className="font-mono font-medium">{samReg.cageCode}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">UEI</span><span className="font-mono font-medium">{samReg.uei}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Status</span><Badge variant="default">Active</Badge></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Renewal Date</span><span className="font-medium">{new Date(demoSamRegistration.expiry).toLocaleDateString()}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Renewal Date</span><span className="font-medium">{new Date(samReg.expiry).toLocaleDateString()}</span></div>
                 </div>
               </Card>
               <Card className="p-6">
@@ -277,13 +366,13 @@ export default function BusinessGovernment() {
                 <div className="space-y-3 mb-4">
                   <p className="text-sm text-muted-foreground">NAICS Codes:</p>
                   <div className="flex flex-wrap gap-2">
-                    {demoSamRegistration.naicsCodes.map(code => <Badge key={code} variant="outline" className="font-mono">{code}</Badge>)}
+                    {samReg.naicsCodes.map(code => <Badge key={code} variant="outline" className="font-mono">{code}</Badge>)}
                   </div>
                 </div>
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">SBA Certifications:</p>
                   <div className="flex flex-wrap gap-2">
-                    {demoSamRegistration.sbaCertifications.map(cert => <Badge key={cert} className="bg-orange-500/10 text-orange-600 border-orange-200">{cert}</Badge>)}
+                    {samReg.sbaCertifications.map(cert => <Badge key={cert} className="bg-orange-500/10 text-orange-600 border-orange-200">{cert}</Badge>)}
                   </div>
                 </div>
                 <Button variant="outline" className="mt-4 w-full"><ExternalLink className="w-4 h-4 mr-2" /> View on SAM.gov</Button>
@@ -319,7 +408,7 @@ export default function BusinessGovernment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoDbeCerts.map(d => (
+                  {dbeCerts.map(d => (
                     <TableRow key={d.id}>
                       <TableCell className="font-medium">{d.vendorName}</TableCell>
                       <TableCell><Badge variant="outline">{d.certType}</Badge></TableCell>
@@ -343,7 +432,7 @@ export default function BusinessGovernment() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Register Pro</Button>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-              {demoFemaVendors.map(v => (
+              {femaVendors.map(v => (
                 <Card key={v.id} className={`p-5 ${v.activated ? "border-red-500/50 bg-red-500/5" : ""}`}>
                   <div className="flex items-start justify-between mb-3">
                     <div>

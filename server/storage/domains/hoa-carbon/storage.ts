@@ -51,6 +51,7 @@ export interface IHoaCarbonStorage {
   // Violation Communications
   createViolationCommunication(communication: InsertViolationCommunication): Promise<ViolationCommunication>;
   getViolationCommunicationsByViolation(violationId: string): Promise<ViolationCommunication[]>;
+  getViolationCommunicationsByProperty(propertyId: string): Promise<ViolationCommunication[]>;
   updateViolationCommunication(id: string, updates: Partial<ViolationCommunication>): Promise<ViolationCommunication | undefined>;
 }
 
@@ -160,6 +161,10 @@ export class HoaCarbonStorage implements IHoaCarbonStorage {
 
   async getViolationCommunicationsByViolation(violationId: string): Promise<ViolationCommunication[]> {
     return db.select().from(violationCommunications).where(eq(violationCommunications.violationId, violationId));
+  }
+
+  async getViolationCommunicationsByProperty(propertyId: string): Promise<ViolationCommunication[]> {
+    return db.select().from(violationCommunications).where(eq(violationCommunications.propertyId, propertyId));
   }
 
   async updateViolationCommunication(id: string, updates: Partial<ViolationCommunication>): Promise<ViolationCommunication | undefined> {

@@ -12,6 +12,7 @@
 
 import { Router } from "express";
 import { z } from "zod";
+import crypto from "crypto";
 import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
@@ -89,8 +90,29 @@ export function createFraudDetectionRoutes(storage: DatabaseStorage) {
       // Check 2: GPS mismatch (if pickup coordinates exist)
       // Placeholder — would check hauler GPS vs job address
 
-      // Check 3: Photo hash comparison (placeholder)
-      // Would compare before/after photo hashes against known duplicates
+      // Check 3: Photo hash comparison - detect reused before/after photos
+      if (job.photoUrls && job.photoUrls.length > 0) {
+        const photoHashes: string[] = [];
+        for (const url of job.photoUrls) {
+          try {
+            const resp = await fetch(url);
+            if (resp.ok) {
+              const buffer = Buffer.from(await resp.arrayBuffer());
+              const hash = crypto.createHash("sha256").update(buffer).digest("hex");
+              photoHashes.push(hash);
+            }
+          } catch {
+            // Skip unreachable photos
+          }
+        }
+        // Check for duplicate photos within the same job
+        const uniqueHashes = new Set(photoHashes);
+        if (uniqueHashes.size < photoHashes.length) {
+          checks.push(`Duplicate photos detected: ${photoHashes.length - uniqueHashes.size} reused photo(s)`);
+          riskScore += 30;
+        }
+        // TODO: In production, compare photoHashes against a global duplicate_photo_hashes table
+      }
 
       if (riskScore > 20) {
         await storage.createFraudAlert({

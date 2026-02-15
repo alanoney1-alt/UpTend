@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,20 +59,82 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function BusinessCompliance() {
   const [searchTerm, setSearchTerm] = useState("");
+  const { toast } = useToast();
+  const [showAddPolicy, setShowAddPolicy] = useState(false);
+  const [policyForm, setPolicyForm] = useState({ provider: "", policyNumber: "", coverageType: "", coverageAmount: "", expiry: "" });
+
+  const createCertificateMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/compliance/certificates", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/certificates"] });
+      setShowAddPolicy(false);
+      setPolicyForm({ provider: "", policyNumber: "", coverageType: "", coverageAmount: "", expiry: "" });
+      toast({ title: "Policy added successfully" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to add policy", description: err.message, variant: "destructive" }); },
+  });
+
+  const uploadDocumentMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/compliance/documents", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/documents"] });
+      toast({ title: "Document uploaded successfully" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to upload document", description: err.message, variant: "destructive" }); },
+  });
+
+  const initiateCheckMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/compliance/background-checks", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/background-checks"] });
+      toast({ title: "Background check initiated" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to initiate check", description: err.message, variant: "destructive" }); },
+  });
 
   const { data: certificates } = useQuery({
     queryKey: ["/api/compliance/certificates"],
-    queryFn: async () => demoCertificates,
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/compliance/certificates", { credentials: "include" });
+        if (!res.ok) return demoCertificates;
+        const data = await res.json();
+        return data.length > 0 ? data : demoCertificates;
+      } catch { return demoCertificates; }
+    },
   });
 
   const { data: documents } = useQuery({
     queryKey: ["/api/compliance/documents"],
-    queryFn: async () => demoDocuments,
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/compliance/documents", { credentials: "include" });
+        if (!res.ok) return demoDocuments;
+        const data = await res.json();
+        return data.length > 0 ? data : demoDocuments;
+      } catch { return demoDocuments; }
+    },
   });
 
   const { data: bgChecks } = useQuery({
     queryKey: ["/api/compliance/background-checks"],
-    queryFn: async () => demoBackgroundChecks,
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/compliance/background-checks", { credentials: "include" });
+        if (!res.ok) return demoBackgroundChecks;
+        const data = await res.json();
+        return data.length > 0 ? data : demoBackgroundChecks;
+      } catch { return demoBackgroundChecks; }
+    },
   });
 
   const activeCerts = certificates?.filter(c => c.status === "active").length || 0;
@@ -196,25 +260,26 @@ export default function BusinessCompliance() {
                     <DialogTitle>Add Insurance Certificate</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
-                    <div><Label>Insurance Provider</Label><Input placeholder="e.g., State Farm" /></div>
-                    <div><Label>Policy Number</Label><Input placeholder="e.g., SF-2024-88721" /></div>
+                    <div><Label>Insurance Provider</Label><Input placeholder="e.g., State Farm" value={policyForm.provider} onChange={e => setPolicyForm(f => ({ ...f, provider: e.target.value }))} /></div>
+                    <div><Label>Policy Number</Label><Input placeholder="e.g., SF-2024-88721" value={policyForm.policyNumber} onChange={e => setPolicyForm(f => ({ ...f, policyNumber: e.target.value }))} /></div>
                     <div><Label>Coverage Type</Label>
-                      <Select><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                      <Select value={policyForm.coverageType} onValueChange={v => setPolicyForm(f => ({ ...f, coverageType: v }))}>
+                        <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="gl">General Liability</SelectItem>
-                          <SelectItem value="wc">Workers Comp</SelectItem>
-                          <SelectItem value="auto">Commercial Auto</SelectItem>
-                          <SelectItem value="pl">Professional Liability</SelectItem>
-                          <SelectItem value="umbrella">Umbrella</SelectItem>
+                          <SelectItem value="General Liability">General Liability</SelectItem>
+                          <SelectItem value="Workers Comp">Workers Comp</SelectItem>
+                          <SelectItem value="Commercial Auto">Commercial Auto</SelectItem>
+                          <SelectItem value="Professional Liability">Professional Liability</SelectItem>
+                          <SelectItem value="Umbrella">Umbrella</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <div><Label>Coverage Amount</Label><Input type="number" placeholder="2000000" /></div>
-                      <div><Label>Expiry Date</Label><Input type="date" /></div>
+                      <div><Label>Coverage Amount</Label><Input type="number" placeholder="2000000" value={policyForm.coverageAmount} onChange={e => setPolicyForm(f => ({ ...f, coverageAmount: e.target.value }))} /></div>
+                      <div><Label>Expiry Date</Label><Input type="date" value={policyForm.expiry} onChange={e => setPolicyForm(f => ({ ...f, expiry: e.target.value }))} /></div>
                     </div>
                     <div><Label>Upload COI (PDF)</Label><Input type="file" accept=".pdf,.jpg,.png" /></div>
-                    <Button className="w-full bg-orange-500 hover:bg-orange-600">Save Certificate</Button>
+                    <Button className="w-full bg-orange-500 hover:bg-orange-600" onClick={() => createCertificateMutation.mutate({ ...policyForm, coverageAmount: Number(policyForm.coverageAmount) })} disabled={createCertificateMutation.isPending}>{createCertificateMutation.isPending ? "Saving..." : "Save Certificate"}</Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -271,7 +336,7 @@ export default function BusinessCompliance() {
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <Input placeholder="Search documents..." className="pl-9 w-64" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
                 </div>
-                <Button className="bg-orange-500 hover:bg-orange-600"><Upload className="w-4 h-4 mr-2" /> Upload</Button>
+                <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => uploadDocumentMutation.mutate({ docType: "General", proName: "New Upload" })}><Upload className="w-4 h-4 mr-2" /> Upload</Button>
               </div>
             </div>
 
@@ -320,8 +385,8 @@ export default function BusinessCompliance() {
                 <h2 className="text-xl font-semibold">Background Check Tracking</h2>
                 <p className="text-sm text-muted-foreground">Checkr integration — track status and expiration</p>
               </div>
-              <Button className="bg-orange-500 hover:bg-orange-600">
-                <Plus className="w-4 h-4 mr-2" /> Initiate Check
+              <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => initiateCheckMutation.mutate({ proName: "New Pro", provider: "Checkr" })} disabled={initiateCheckMutation.isPending}>
+                <Plus className="w-4 h-4 mr-2" /> {initiateCheckMutation.isPending ? "Initiating..." : "Initiate Check"}
               </Button>
             </div>
 

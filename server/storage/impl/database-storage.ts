@@ -726,6 +726,10 @@ export class DatabaseStorage implements IStorage {
     return this.hoaCarbon.getViolationCommunicationsByViolation(violationId);
   }
 
+  async getViolationCommunicationsByProperty(propertyId: string): Promise<ViolationCommunication[]> {
+    return this.hoaCarbon.getViolationCommunicationsByProperty(propertyId);
+  }
+
   async updateViolationCommunication(id: string, updates: Partial<ViolationCommunication>): Promise<ViolationCommunication | undefined> {
     return this.hoaCarbon.updateViolationCommunication(id, updates);
   }

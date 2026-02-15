@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -65,10 +67,95 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function BusinessProperties() {
   const [woFilter, setWoFilter] = useState("all");
+  const { toast } = useToast();
 
-  const openWOs = demoWorkOrders.filter(w => w.status !== "completed").length;
-  const urgentWOs = demoWorkOrders.filter(w => w.priority === "urgent" && w.status !== "completed").length;
-  const avgSlaCompliance = Math.round(demoSlaConfigs.reduce((s, c) => s + c.currentCompliance, 0) / demoSlaConfigs.length);
+  const addPropertyMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/pm/properties", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/pm/properties"] });
+      toast({ title: "Property added successfully" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to add property", description: err.message, variant: "destructive" }); },
+  });
+
+  const createWorkOrderMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/pm/work-orders", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/pm/work-orders"] });
+      toast({ title: "Work order created" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to create work order", description: err.message, variant: "destructive" }); },
+  });
+
+  const { data: portfolio = demoPortfolio } = useQuery({
+    queryKey: ["/api/pm/portfolios"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/pm/portfolios", { credentials: "include" });
+        if (!res.ok) return demoPortfolio;
+        const data = await res.json();
+        return data.length > 0 ? data[0] : demoPortfolio;
+      } catch { return demoPortfolio; }
+    },
+  });
+
+  const { data: properties = demoProperties } = useQuery({
+    queryKey: ["/api/pm/properties"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/pm/properties", { credentials: "include" });
+        if (!res.ok) return demoProperties;
+        const data = await res.json();
+        return data.length > 0 ? data : demoProperties;
+      } catch { return demoProperties; }
+    },
+  });
+
+  const { data: workOrders = demoWorkOrders } = useQuery({
+    queryKey: ["/api/pm/work-orders"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/pm/work-orders", { credentials: "include" });
+        if (!res.ok) return demoWorkOrders;
+        const data = await res.json();
+        return data.length > 0 ? data : demoWorkOrders;
+      } catch { return demoWorkOrders; }
+    },
+  });
+
+  const { data: turnovers = demoTurnovers } = useQuery({
+    queryKey: ["/api/pm/turnovers"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/pm/turnovers", { credentials: "include" });
+        if (!res.ok) return demoTurnovers;
+        const data = await res.json();
+        return data.length > 0 ? data : demoTurnovers;
+      } catch { return demoTurnovers; }
+    },
+  });
+
+  const { data: slaConfigs = demoSlaConfigs } = useQuery({
+    queryKey: ["/api/pm/sla-configs"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/pm/sla-configs", { credentials: "include" });
+        if (!res.ok) return demoSlaConfigs;
+        const data = await res.json();
+        return data.length > 0 ? data : demoSlaConfigs;
+      } catch { return demoSlaConfigs; }
+    },
+  });
+
+  const openWOs = workOrders.filter((w: any) => w.status !== "completed").length;
+  const urgentWOs = workOrders.filter((w: any) => w.priority === "urgent" && w.status !== "completed").length;
+  const avgSlaCompliance = Math.round(slaConfigs.reduce((s: number, c: any) => s + (c.currentCompliance || 0), 0) / slaConfigs.length);
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,7 +170,7 @@ export default function BusinessProperties() {
               <span className="text-xl font-bold">Property Management</span>
             </div>
           </div>
-          <Button size="sm" className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Add Property</Button>
+          <Button size="sm" className="bg-orange-500 hover:bg-orange-600" onClick={() => addPropertyMutation.mutate({ name: "New Property", address: "", units: 0, type: "Multi-Family" })} disabled={addPropertyMutation.isPending}><Plus className="w-4 h-4 mr-2" /> {addPropertyMutation.isPending ? "Adding..." : "Add Property"}</Button>
         </div>
       </header>
 
@@ -95,7 +182,7 @@ export default function BusinessProperties() {
               <div className="p-2 bg-orange-500/10 rounded-lg"><Building2 className="w-5 h-5 text-orange-500" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Properties</p>
-                <p className="text-2xl font-bold">{demoPortfolio.totalProperties}</p>
+                <p className="text-2xl font-bold">{portfolio.totalProperties}</p>
               </div>
             </div>
           </Card>
@@ -104,7 +191,7 @@ export default function BusinessProperties() {
               <div className="p-2 bg-blue-500/10 rounded-lg"><Key className="w-5 h-5 text-blue-500" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Total Units</p>
-                <p className="text-2xl font-bold">{demoPortfolio.totalUnits}</p>
+                <p className="text-2xl font-bold">{portfolio.totalUnits}</p>
               </div>
             </div>
           </Card>
@@ -113,7 +200,7 @@ export default function BusinessProperties() {
               <div className="p-2 bg-green-500/10 rounded-lg"><TrendingUp className="w-5 h-5 text-green-500" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Occupancy</p>
-                <p className="text-2xl font-bold">{demoPortfolio.occupancyRate}%</p>
+                <p className="text-2xl font-bold">{portfolio.occupancyRate}%</p>
               </div>
             </div>
           </Card>
@@ -147,9 +234,9 @@ export default function BusinessProperties() {
 
           {/* Properties */}
           <TabsContent value="properties" className="space-y-4">
-            <h2 className="text-xl font-semibold">{demoPortfolio.name}</h2>
+            <h2 className="text-xl font-semibold">{portfolio.name}</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {demoProperties.map(p => (
+              {properties.map(p => (
                 <Card key={p.id} className="p-5 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-semibold text-lg">{p.name}</h3>
@@ -182,7 +269,7 @@ export default function BusinessProperties() {
                     <SelectItem value="completed">Completed</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Work Order</Button>
+                <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => createWorkOrderMutation.mutate({ unit: "", description: "", priority: "normal", status: "open" })} disabled={createWorkOrderMutation.isPending}><Plus className="w-4 h-4 mr-2" /> {createWorkOrderMutation.isPending ? "Creating..." : "New Work Order"}</Button>
               </div>
             </div>
             <Card>
@@ -200,7 +287,7 @@ export default function BusinessProperties() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoWorkOrders.filter(w => woFilter === "all" || w.status === woFilter).map(wo => (
+                  {workOrders.filter(w => woFilter === "all" || w.status === woFilter).map(wo => (
                     <TableRow key={wo.id}>
                       <TableCell className="font-mono text-sm">{wo.id}</TableCell>
                       <TableCell className="font-medium">{wo.unit}</TableCell>
@@ -224,7 +311,7 @@ export default function BusinessProperties() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Turnover</Button>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
-              {demoTurnovers.map(t => (
+              {turnovers.map(t => (
                 <Card key={t.id} className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-semibold">{t.unit}</h3>
@@ -250,7 +337,7 @@ export default function BusinessProperties() {
           <TabsContent value="sla" className="space-y-4">
             <h2 className="text-xl font-semibold">SLA Configuration & Compliance</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {demoSlaConfigs.map(sla => (
+              {slaConfigs.map(sla => (
                 <Card key={sla.id} className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-semibold text-lg">{sla.priority} Priority</h3>

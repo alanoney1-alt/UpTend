@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +48,27 @@ const testimonials = [
 
 export default function Veterans() {
   const [selectedMos, setSelectedMos] = useState("");
+  const { toast } = useToast();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [branch, setBranch] = useState("");
+  const [mosCode, setMosCode] = useState("");
+  const [disabilityRating, setDisabilityRating] = useState("");
+
+  const createVeteranMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/veterans/profiles", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/veterans/profiles"] });
+      toast({ title: "Account Created!", description: "Welcome to UpTend, veteran pro!" });
+      setFirstName(""); setLastName(""); setEmail(""); setPhone(""); setBranch(""); setMosCode(""); setDisabilityRating("");
+    },
+    onError: (err: Error) => { toast({ title: "Failed to create account", description: err.message, variant: "destructive" }); },
+  });
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -174,15 +198,15 @@ export default function Veterans() {
           <Card className="bg-slate-800/50 border-slate-700">
             <CardContent className="p-8 space-y-5">
               <div className="grid grid-cols-2 gap-4">
-                <div><Label className="text-white">First Name</Label><Input className="bg-slate-700 border-slate-600 text-white" placeholder="John" /></div>
-                <div><Label className="text-white">Last Name</Label><Input className="bg-slate-700 border-slate-600 text-white" placeholder="Smith" /></div>
+                <div><Label className="text-white">First Name</Label><Input className="bg-slate-700 border-slate-600 text-white" placeholder="John" value={firstName} onChange={e => setFirstName(e.target.value)} /></div>
+                <div><Label className="text-white">Last Name</Label><Input className="bg-slate-700 border-slate-600 text-white" placeholder="Smith" value={lastName} onChange={e => setLastName(e.target.value)} /></div>
               </div>
-              <div><Label className="text-white">Email</Label><Input type="email" className="bg-slate-700 border-slate-600 text-white" placeholder="john@example.com" /></div>
-              <div><Label className="text-white">Phone</Label><Input type="tel" className="bg-slate-700 border-slate-600 text-white" placeholder="(555) 123-4567" /></div>
+              <div><Label className="text-white">Email</Label><Input type="email" className="bg-slate-700 border-slate-600 text-white" placeholder="john@example.com" value={email} onChange={e => setEmail(e.target.value)} /></div>
+              <div><Label className="text-white">Phone</Label><Input type="tel" className="bg-slate-700 border-slate-600 text-white" placeholder="(555) 123-4567" value={phone} onChange={e => setPhone(e.target.value)} /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-white">Branch</Label>
-                  <Select>
+                  <Select value={branch} onValueChange={setBranch}>
                     <SelectTrigger className="bg-slate-700 border-slate-600 text-white"><SelectValue placeholder="Select" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="army">Army</SelectItem>
@@ -194,7 +218,7 @@ export default function Veterans() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div><Label className="text-white">MOS Code</Label><Input className="bg-slate-700 border-slate-600 text-white" placeholder="e.g., 12B" /></div>
+                <div><Label className="text-white">MOS Code</Label><Input className="bg-slate-700 border-slate-600 text-white" placeholder="e.g., 12B" value={mosCode} onChange={e => setMosCode(e.target.value)} /></div>
               </div>
               <div>
                 <Label className="text-white">Upload DD-214 (optional)</Label>
@@ -206,7 +230,7 @@ export default function Veterans() {
               </div>
               <div>
                 <Label className="text-white">Disability Rating (optional)</Label>
-                <Select>
+                <Select value={disabilityRating} onValueChange={setDisabilityRating}>
                   <SelectTrigger className="bg-slate-700 border-slate-600 text-white"><SelectValue placeholder="Select if applicable" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0%</SelectItem>
@@ -223,8 +247,8 @@ export default function Veterans() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-6">
-                <Shield className="w-5 h-5 mr-2" /> Create Veteran Pro Account
+              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-6" disabled={createVeteranMutation.isPending} onClick={() => createVeteranMutation.mutate({ firstName, lastName, email, phone, branch, mosCode, disabilityRating: disabilityRating ? Number(disabilityRating) : undefined })}>
+                <Shield className="w-5 h-5 mr-2" /> {createVeteranMutation.isPending ? "Creating Account..." : "Create Veteran Pro Account"}
               </Button>
               <p className="text-xs text-slate-500 text-center">
                 By signing up, you agree to UpTend's Terms of Service. Your DD-214 is encrypted and only used for verification.

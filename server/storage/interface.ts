@@ -189,6 +189,7 @@ export interface IStorage {
   // Violation Communications
   createViolationCommunication(communication: InsertViolationCommunication): Promise<ViolationCommunication>;
   getViolationCommunicationsByViolation(violationId: string): Promise<ViolationCommunication[]>;
+  getViolationCommunicationsByProperty(propertyId: string): Promise<ViolationCommunication[]>;
   updateViolationCommunication(id: string, updates: Partial<ViolationCommunication>): Promise<ViolationCommunication | undefined>;
 
   // Job Verification

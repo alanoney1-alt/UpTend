@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -75,10 +77,95 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function BusinessCommunities() {
   const [selectedCommunity, setSelectedCommunity] = useState("all");
+  const { toast } = useToast();
 
-  const totalUnits = demoCommunities.reduce((s, c) => s + c.units, 0);
-  const openViolations = demoViolations.filter(v => v.status === "open" || v.status === "escalated").length;
-  const pendingApprovals = demoApprovals.filter(a => a.status === "pending" || a.status === "voting").length;
+  const addCommunityMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/communities", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/communities"] });
+      toast({ title: "Community added successfully" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to add community", description: err.message, variant: "destructive" }); },
+  });
+
+  const voteApprovalMutation = useMutation({
+    mutationFn: async ({ id, vote }: { id: number; vote: "approve" | "deny" }) => {
+      const res = await apiRequest("PUT", `/api/communities/board-approvals/${id}`, { vote });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/communities/board-approvals"] });
+      toast({ title: "Vote recorded" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to record vote", description: err.message, variant: "destructive" }); },
+  });
+
+  const { data: communities = demoCommunities } = useQuery({
+    queryKey: ["/api/communities"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/communities", { credentials: "include" });
+        if (!res.ok) return demoCommunities;
+        const data = await res.json();
+        return data.length > 0 ? data : demoCommunities;
+      } catch { return demoCommunities; }
+    },
+  });
+
+  const { data: communityProperties = demoViolations } = useQuery({
+    queryKey: ["/api/communities/properties"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/communities/properties", { credentials: "include" });
+        if (!res.ok) return demoViolations;
+        const data = await res.json();
+        return data.length > 0 ? data : demoViolations;
+      } catch { return demoViolations; }
+    },
+  });
+
+  const { data: boardApprovals = demoApprovals } = useQuery({
+    queryKey: ["/api/communities/board-approvals"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/communities/board-approvals", { credentials: "include" });
+        if (!res.ok) return demoApprovals;
+        const data = await res.json();
+        return data.length > 0 ? data : demoApprovals;
+      } catch { return demoApprovals; }
+    },
+  });
+
+  const { data: maintenanceCalendars = demoCalendar } = useQuery({
+    queryKey: ["/api/communities/maintenance-calendars"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/communities/maintenance-calendars", { credentials: "include" });
+        if (!res.ok) return demoCalendar;
+        const data = await res.json();
+        return data.length > 0 ? data : demoCalendar;
+      } catch { return demoCalendar; }
+    },
+  });
+
+  const { data: reserveStudies = demoReserves } = useQuery({
+    queryKey: ["/api/communities/reserve-studies"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/communities/reserve-studies", { credentials: "include" });
+        if (!res.ok) return demoReserves;
+        const data = await res.json();
+        return data.length > 0 ? data : demoReserves;
+      } catch { return demoReserves; }
+    },
+  });
+
+  const totalUnits = communities.reduce((s: number, c: any) => s + (c.units || 0), 0);
+  const openViolations = communityProperties.filter((v: any) => v.status === "open" || v.status === "escalated").length;
+  const pendingApprovals = boardApprovals.filter((a: any) => a.status === "pending" || a.status === "voting").length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -98,10 +185,10 @@ export default function BusinessCommunities() {
               <SelectTrigger className="w-48"><SelectValue placeholder="All Communities" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Communities</SelectItem>
-                {demoCommunities.map(c => <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>)}
+                {communities.map(c => <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Button size="sm" className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Add Community</Button>
+            <Button size="sm" className="bg-orange-500 hover:bg-orange-600" onClick={() => addCommunityMutation.mutate({ name: "New Community", address: "", units: 0, status: "active" })} disabled={addCommunityMutation.isPending}><Plus className="w-4 h-4 mr-2" /> {addCommunityMutation.isPending ? "Adding..." : "Add Community"}</Button>
           </div>
         </div>
       </header>
@@ -114,7 +201,7 @@ export default function BusinessCommunities() {
               <div className="p-2 bg-orange-500/10 rounded-lg"><Building2 className="w-5 h-5 text-orange-500" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Communities</p>
-                <p className="text-2xl font-bold">{demoCommunities.length}</p>
+                <p className="text-2xl font-bold">{communities.length}</p>
               </div>
             </div>
           </Card>
@@ -169,7 +256,7 @@ export default function BusinessCommunities() {
           <TabsContent value="communities" className="space-y-4">
             <h2 className="text-xl font-semibold">Community Portfolio</h2>
             <div className="grid md:grid-cols-3 gap-4">
-              {demoCommunities.map(c => (
+              {communities.map(c => (
                 <Card key={c.id} className="p-5 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-semibold text-lg">{c.name}</h3>
@@ -209,7 +296,7 @@ export default function BusinessCommunities() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoViolations.map(v => (
+                  {communityProperties.map(v => (
                     <TableRow key={v.id}>
                       <TableCell className="font-medium">{v.community}</TableCell>
                       <TableCell className="text-sm">{v.property}</TableCell>
@@ -228,7 +315,7 @@ export default function BusinessCommunities() {
           <TabsContent value="approvals" className="space-y-4">
             <h2 className="text-xl font-semibold">Board Approval Workflows</h2>
             <div className="space-y-4">
-              {demoApprovals.map(a => (
+              {boardApprovals.map(a => (
                 <Card key={a.id} className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -247,8 +334,8 @@ export default function BusinessCommunities() {
                   </div>
                   {(a.status === "pending" || a.status === "voting") && (
                     <div className="flex gap-2 mt-4">
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700"><ThumbsUp className="w-4 h-4 mr-1" /> Approve</Button>
-                      <Button size="sm" variant="destructive"><ThumbsDown className="w-4 h-4 mr-1" /> Deny</Button>
+                      <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => voteApprovalMutation.mutate({ id: a.id, vote: "approve" })} disabled={voteApprovalMutation.isPending}><ThumbsUp className="w-4 h-4 mr-1" /> Approve</Button>
+                      <Button size="sm" variant="destructive" onClick={() => voteApprovalMutation.mutate({ id: a.id, vote: "deny" })} disabled={voteApprovalMutation.isPending}><ThumbsDown className="w-4 h-4 mr-1" /> Deny</Button>
                       <Button size="sm" variant="outline">Request Info</Button>
                     </div>
                   )}
@@ -276,7 +363,7 @@ export default function BusinessCommunities() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoCalendar.map(s => (
+                  {maintenanceCalendars.map(s => (
                     <TableRow key={s.id}>
                       <TableCell className="font-medium">{s.community}</TableCell>
                       <TableCell>{s.serviceType}</TableCell>
@@ -294,7 +381,7 @@ export default function BusinessCommunities() {
           {/* Reserve Studies */}
           <TabsContent value="reserves" className="space-y-6">
             <h2 className="text-xl font-semibold">Reserve Fund Studies</h2>
-            {demoReserves.map(r => (
+            {reserveStudies.map(r => (
               <Card key={r.id} className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>

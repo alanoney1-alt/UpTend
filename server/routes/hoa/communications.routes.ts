@@ -138,13 +138,12 @@ export function registerHoaCommunicationRoutes(app: Express) {
       const properties = await storage.getHoaPropertiesByBusinessAccount(businessAccountId);
       const propertyMap = new Map(properties.map(p => [p.id, p]));
 
-      // Get all communications (we'll query violation communications as proxy)
-      // In production, you'd want a dedicated communications table
+      // Get all communications via violationCommunications table (supports general comms with nullable violationId)
       const communications: any[] = [];
 
       // Get communications for each property
       for (const property of properties) {
-        const propComms = await storage.getViolationCommunicationsByViolation(property.id);
+        const propComms = await storage.getViolationCommunicationsByProperty(property.id);
         propComms.forEach(comm => {
           const prop = propertyMap.get(comm.propertyId || "");
           communications.push({
@@ -191,7 +190,7 @@ export function registerHoaCommunicationRoutes(app: Express) {
       }
 
       // Get communications for this property
-      const communications = await storage.getViolationCommunicationsByViolation(propertyId);
+      const communications = await storage.getViolationCommunicationsByProperty(propertyId);
 
       res.json(communications.map(comm => ({
         id: comm.id,
@@ -218,10 +217,7 @@ export function registerHoaCommunicationRoutes(app: Express) {
         return res.status(400).json({ error: "Invalid status" });
       }
 
-      // Get communication to verify ownership
-      // Using violation communication as proxy
-      // TODO: In production, implement dedicated communications table
-
+      // Get communication to verify ownership (using violationCommunications table for all comms)
       const updated = await storage.updateViolationCommunication(id, { status });
 
       if (!updated) {

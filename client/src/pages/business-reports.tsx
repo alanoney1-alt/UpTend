@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +44,32 @@ const availableColumns = [
 ];
 
 export default function BusinessReports() {
+  const { toast } = useToast();
+
+  const createReportMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/enterprise/custom-reports", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/enterprise/custom-reports"] });
+      toast({ title: "Report created successfully" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to create report", description: err.message, variant: "destructive" }); },
+  });
+
+  const { data: reports = demoReports } = useQuery({
+    queryKey: ["/api/enterprise/custom-reports"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/enterprise/custom-reports", { credentials: "include" });
+        if (!res.ok) return demoReports;
+        const data = await res.json();
+        return data.length > 0 ? data : demoReports;
+      } catch { return demoReports; }
+    },
+  });
+
   const [builderStep, setBuilderStep] = useState(0);
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [selectedColumns, setSelectedColumns] = useState<string[]>(["Date", "Property", "Service Type", "Amount", "Status"]);
@@ -80,7 +108,7 @@ export default function BusinessReports() {
           <TabsContent value="saved" className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">Your Reports</h2>
-              <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Report</Button>
+              <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => setBuilderStep(0)}><Plus className="w-4 h-4 mr-2" /> New Report</Button>
             </div>
             <Card>
               <div className="overflow-x-auto"><Table>
@@ -96,7 +124,7 @@ export default function BusinessReports() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {demoReports.map(r => (
+                  {reports.map(r => (
                     <TableRow key={r.id}>
                       <TableCell className="font-medium">{r.name}</TableCell>
                       <TableCell><Badge variant="outline" className="capitalize">{r.type}</Badge></TableCell>
@@ -282,8 +310,8 @@ export default function BusinessReports() {
 
                   <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setBuilderStep(2)}>Back</Button>
-                    <Button className="bg-orange-500 hover:bg-orange-600"><Play className="w-4 h-4 mr-2" /> Run Now</Button>
-                    <Button variant="outline"><Download className="w-4 h-4 mr-2" /> Save Report</Button>
+                    <Button className="bg-orange-500 hover:bg-orange-600" disabled={createReportMutation.isPending} onClick={() => createReportMutation.mutate({ name: reportName || "Untitled Report", type: selectedTemplate, columns: selectedColumns, dateRange, schedule, runImmediately: true })}><Play className="w-4 h-4 mr-2" /> {createReportMutation.isPending ? "Creating..." : "Run Now"}</Button>
+                    <Button variant="outline" disabled={createReportMutation.isPending} onClick={() => createReportMutation.mutate({ name: reportName || "Untitled Report", type: selectedTemplate, columns: selectedColumns, dateRange, schedule })}><Download className="w-4 h-4 mr-2" /> Save Report</Button>
                   </div>
                 </div>
               </Card>

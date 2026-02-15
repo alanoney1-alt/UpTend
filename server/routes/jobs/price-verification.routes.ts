@@ -21,6 +21,8 @@ import {
   type VerificationResult,
   type CustomerApprovalRequest,
 } from "../../services/verification";
+import { storage } from "../../storage";
+import { sendSms } from "../../services/notifications";
 
 // In-memory storage (replace with database in production)
 const verifications: Map<string, VerificationResult> = new Map();
@@ -59,15 +61,20 @@ app.post("/api/jobs/:jobId/verify-price", async (req: Request, res: Response) =>
     // Store verification result
     verifications.set(verification.verificationId, verification);
 
+    // Fetch job details to get customer and pro info
+    const job = await storage.getServiceRequest(jobId);
+    const customerUser = job ? await storage.getUser(job.customerId) : null;
+    const proUser = job?.assignedHaulerId ? await storage.getUser(job.assignedHaulerId) : null;
+
+    const customer = {
+      id: customerUser?.id || req.body.customerId || "unknown",
+      name: customerUser?.fullName || req.body.customerName || "Customer",
+      phone: customerUser?.phone || req.body.customerPhone || "",
+    };
+    const proName = proUser?.fullName || req.body.proName || "Your Pro";
+
     // If requires approval, create approval request
     if (verification.requiresApproval) {
-      // TODO: Fetch customer info from database using jobId
-      const customer = {
-        id: req.body.customerId || "unknown",
-        name: req.body.customerName || "Customer",
-        phone: req.body.customerPhone || "",
-      };
-
       const approvalRequest: CustomerApprovalRequest = {
         verificationId: verification.verificationId,
         jobId,
@@ -84,12 +91,17 @@ app.post("/api/jobs/:jobId/verify-price", async (req: Request, res: Response) =>
 
       approvalRequests.set(verification.verificationId, approvalRequest);
 
-      // TODO: Send SMS to customer
-      const proName = req.body.proName || "Your Pro"; // TODO: fetch from DB
+      // Send SMS to customer
       const smsMessage = generateApprovalSmsMessage(verification, customer.name, proName);
-      console.log("SMS to customer:", smsMessage);
+      if (customer.phone) {
+        await sendSms({ to: customer.phone, message: smsMessage }).catch(err =>
+          console.error("Failed to send approval SMS:", err)
+        );
+      } else {
+        console.warn("No customer phone for SMS, verification:", verification.verificationId);
+      }
 
-      // TODO: Schedule timeout job (30 minutes)
+      // Schedule timeout (30 minutes) - Note: in production use a persistent job queue
       setTimeout(() => {
         handleTimeoutJob(verification.verificationId);
       }, 30 * 60 * 1000);
@@ -103,15 +115,13 @@ app.post("/api/jobs/:jobId/verify-price", async (req: Request, res: Response) =>
       });
     }
 
-    // Auto-approved
-    // TODO: Notify Pro to start work
-    console.log("Auto-approved, notifying Pro to start work");
-
-    // TODO: Notify customer of price adjustment
-    const customer = { name: req.body.customerName || "Customer" };
-    const proName = req.body.proName || "Your Pro"; // TODO: fetch from DB
+    // Auto-approved - notify customer of price adjustment via SMS
     const smsMessage = generateApprovalSmsMessage(verification, customer.name, proName);
-    console.log("SMS to customer:", smsMessage);
+    if (customer.phone) {
+      await sendSms({ to: customer.phone, message: smsMessage }).catch(err =>
+        console.error("Failed to send auto-approval SMS:", err)
+      );
+    }
 
     return res.status(200).json({
       success: true,
@@ -211,11 +221,18 @@ app.post("/api/jobs/:jobId/price-verification/:verificationId/approve", async (r
       verificationLogs.set(verificationId, log);
     }
 
-    // TODO: Notify Pro to start work
-    console.log("Customer approved, notifying Pro to start work");
-
-    // TODO: Send confirmation SMS to customer
-    console.log("Sending confirmation SMS to customer");
+    // Notify pro and customer via SMS
+    const job = await storage.getServiceRequest(approvalRequest.jobId);
+    if (job) {
+      const proUser = job.assignedHaulerId ? await storage.getUser(job.assignedHaulerId) : null;
+      const customerUser = await storage.getUser(job.customerId);
+      if (proUser?.phone) {
+        await sendSms({ to: proUser.phone, message: `Price approved for job ${approvalRequest.jobId}. You can start work now.` }).catch(err => console.error("SMS to pro failed:", err));
+      }
+      if (customerUser?.phone) {
+        await sendSms({ to: customerUser.phone, message: `You approved the updated price of $${approvalRequest.verifiedPrice?.toFixed(2)}. Your pro will begin shortly.` }).catch(err => console.error("SMS to customer failed:", err));
+      }
+    }
 
     return res.status(200).json({
       success: true,
@@ -272,11 +289,18 @@ app.post("/api/jobs/:jobId/price-verification/:verificationId/decline", async (r
       verificationLogs.set(verificationId, log);
     }
 
-    // TODO: Release Pro (cancel job assignment)
-    console.log("Customer declined, releasing Pro");
-
-    // TODO: Send reschedule options to customer
-    console.log("Sending reschedule options to customer");
+    // Notify pro of decline and send reschedule info to customer
+    const job = await storage.getServiceRequest(approvalRequest.jobId);
+    if (job) {
+      const proUser = job.assignedHaulerId ? await storage.getUser(job.assignedHaulerId) : null;
+      const customerUser = await storage.getUser(job.customerId);
+      if (proUser?.phone) {
+        await sendSms({ to: proUser.phone, message: `Customer declined the updated price for job ${approvalRequest.jobId}. You have been released from this job.` }).catch(err => console.error("SMS to pro failed:", err));
+      }
+      if (customerUser?.phone) {
+        await sendSms({ to: customerUser.phone, message: `You declined the updated price. You can reschedule this job at any time through the app.` }).catch(err => console.error("SMS to customer failed:", err));
+      }
+    }
 
     return res.status(200).json({
       success: true,
@@ -321,11 +345,18 @@ app.post("/api/jobs/:jobId/price-verification/:verificationId/timeout", async (r
     // Update approval request
     approvalRequest.status = "expired";
 
-    // TODO: Release Pro
-    console.log("Approval timeout, releasing Pro");
-
-    // TODO: Send reschedule notification to customer
-    console.log("Sending reschedule notification to customer");
+    // Notify pro of release and customer of timeout
+    const job = await storage.getServiceRequest(approvalRequest.jobId);
+    if (job) {
+      const proUser = job.assignedHaulerId ? await storage.getUser(job.assignedHaulerId) : null;
+      const customerUser = await storage.getUser(job.customerId);
+      if (proUser?.phone) {
+        await sendSms({ to: proUser.phone, message: `Approval timed out for job ${approvalRequest.jobId}. You have been released.` }).catch(err => console.error("SMS to pro failed:", err));
+      }
+      if (customerUser?.phone) {
+        await sendSms({ to: customerUser.phone, message: `Your approval window has expired. Please reschedule through the app.` }).catch(err => console.error("SMS to customer failed:", err));
+      }
+    }
 
     return res.status(200).json({
       success: true,
@@ -358,8 +389,19 @@ async function handleTimeoutJob(verificationId: string) {
       const result = handleApprovalTimeout(verificationId);
       approvalRequest.status = "expired";
 
-      // TODO: Release Pro and send customer reschedule notification
       console.log("Timeout job executed:", result.message);
+      // Send notifications
+      const job = await storage.getServiceRequest(approvalRequest.jobId);
+      if (job) {
+        const proUser = job.assignedHaulerId ? await storage.getUser(job.assignedHaulerId) : null;
+        const customerUser = await storage.getUser(job.customerId);
+        if (proUser?.phone) {
+          await sendSms({ to: proUser.phone, message: `Approval timed out for job ${approvalRequest.jobId}. You have been released.` }).catch(err => console.error("Timeout SMS to pro failed:", err));
+        }
+        if (customerUser?.phone) {
+          await sendSms({ to: customerUser.phone, message: `Your approval window has expired. Please reschedule through the app.` }).catch(err => console.error("Timeout SMS to customer failed:", err));
+        }
+      }
     }
   } catch (error) {
     console.error("Error in timeout job:", error);

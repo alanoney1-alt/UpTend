@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,13 +44,40 @@ function StatusBadge({ status }: { status: string }) {
 export default function BusinessInvoices() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const { toast } = useToast();
+  const [invoiceForm, setInvoiceForm] = useState({ client: "", paymentTerms: "", dueDate: "", notes: "", status: "draft" as string });
 
-  const totalOutstanding = demoInvoices.filter(i => i.status === "sent" || i.status === "overdue").reduce((s, i) => s + i.amount, 0);
-  const totalPaid = demoInvoices.filter(i => i.status === "paid").reduce((s, i) => s + i.amount, 0);
-  const overdueAmount = demoInvoices.filter(i => i.status === "overdue").reduce((s, i) => s + i.amount, 0);
-  const draftAmount = demoInvoices.filter(i => i.status === "draft").reduce((s, i) => s + i.amount, 0);
+  const createInvoiceMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/enterprise/invoices", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/enterprise/invoices"] });
+      setInvoiceForm({ client: "", paymentTerms: "", dueDate: "", notes: "", status: "draft" });
+      toast({ title: "Invoice created successfully" });
+    },
+    onError: (err: Error) => { toast({ title: "Failed to create invoice", description: err.message, variant: "destructive" }); },
+  });
 
-  const filteredInvoices = demoInvoices.filter(i => {
+  const { data: invoices = demoInvoices } = useQuery({
+    queryKey: ["/api/enterprise/invoices"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/enterprise/invoices", { credentials: "include" });
+        if (!res.ok) return demoInvoices;
+        const data = await res.json();
+        return data.length > 0 ? data : demoInvoices;
+      } catch { return demoInvoices; }
+    },
+  });
+
+  const totalOutstanding = invoices.filter((i: any) => i.status === "sent" || i.status === "overdue").reduce((s: number, i: any) => s + (i.amount || 0), 0);
+  const totalPaid = invoices.filter((i: any) => i.status === "paid").reduce((s: number, i: any) => s + (i.amount || 0), 0);
+  const overdueAmount = invoices.filter((i: any) => i.status === "overdue").reduce((s: number, i: any) => s + (i.amount || 0), 0);
+  const draftAmount = invoices.filter((i: any) => i.status === "draft").reduce((s: number, i: any) => s + (i.amount || 0), 0);
+
+  const filteredInvoices = invoices.filter((i: any) => {
     if (statusFilter !== "all" && i.status !== statusFilter) return false;
     if (searchTerm && !i.client.toLowerCase().includes(searchTerm.toLowerCase()) && !i.id.toLowerCase().includes(searchTerm.toLowerCase())) return false;
     return true;
@@ -76,28 +105,30 @@ export default function BusinessInvoices() {
               <div className="space-y-4 py-4">
                 <div>
                   <Label>Client</Label>
-                  <Select><SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
+                  <Select value={invoiceForm.client} onValueChange={v => setInvoiceForm(f => ({ ...f, client: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">Sunrise Lakes HOA</SelectItem>
-                      <SelectItem value="2">Palm Gardens Estates</SelectItem>
-                      <SelectItem value="3">City of Orlando</SelectItem>
-                      <SelectItem value="4">Windermere Villas</SelectItem>
+                      <SelectItem value="Sunrise Lakes HOA">Sunrise Lakes HOA</SelectItem>
+                      <SelectItem value="Palm Gardens Estates">Palm Gardens Estates</SelectItem>
+                      <SelectItem value="City of Orlando">City of Orlando</SelectItem>
+                      <SelectItem value="Windermere Villas">Windermere Villas</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Payment Terms</Label>
-                    <Select><SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                    <Select value={invoiceForm.paymentTerms} onValueChange={v => setInvoiceForm(f => ({ ...f, paymentTerms: v }))}>
+                      <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="net15">Net 15</SelectItem>
-                        <SelectItem value="net30">Net 30</SelectItem>
-                        <SelectItem value="net45">Net 45</SelectItem>
-                        <SelectItem value="net60">Net 60</SelectItem>
-                        <SelectItem value="due_on_receipt">Due on Receipt</SelectItem>
+                        <SelectItem value="Net 15">Net 15</SelectItem>
+                        <SelectItem value="Net 30">Net 30</SelectItem>
+                        <SelectItem value="Net 45">Net 45</SelectItem>
+                        <SelectItem value="Net 60">Net 60</SelectItem>
+                        <SelectItem value="Due on Receipt">Due on Receipt</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  <div><Label>Due Date</Label><Input type="date" /></div>
+                  <div><Label>Due Date</Label><Input type="date" value={invoiceForm.dueDate} onChange={e => setInvoiceForm(f => ({ ...f, dueDate: e.target.value }))} /></div>
                 </div>
 
                 <div className="border rounded-lg p-4 space-y-3">
@@ -111,13 +142,13 @@ export default function BusinessInvoices() {
                   <Button variant="outline" size="sm" className="w-full"><Plus className="w-4 h-4 mr-1" /> Add Line Item</Button>
                 </div>
 
-                <div><Label>Notes</Label><Textarea placeholder="Payment instructions, thank you message, etc." /></div>
+                <div><Label>Notes</Label><Textarea placeholder="Payment instructions, thank you message, etc." value={invoiceForm.notes} onChange={e => setInvoiceForm(f => ({ ...f, notes: e.target.value }))} /></div>
 
                 <div className="flex justify-between items-center border-t pt-4">
                   <span className="text-lg font-semibold">Total: $0.00</span>
                   <div className="flex gap-2">
-                    <Button variant="outline">Save Draft</Button>
-                    <Button className="bg-orange-500 hover:bg-orange-600"><Send className="w-4 h-4 mr-2" /> Send Invoice</Button>
+                    <Button variant="outline" disabled={createInvoiceMutation.isPending} onClick={() => createInvoiceMutation.mutate({ ...invoiceForm, status: "draft" })}>Save Draft</Button>
+                    <Button className="bg-orange-500 hover:bg-orange-600" disabled={createInvoiceMutation.isPending} onClick={() => createInvoiceMutation.mutate({ ...invoiceForm, status: "sent" })}><Send className="w-4 h-4 mr-2" /> {createInvoiceMutation.isPending ? "Sending..." : "Send Invoice"}</Button>
                   </div>
                 </div>
               </div>
