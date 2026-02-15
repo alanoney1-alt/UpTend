@@ -1361,7 +1361,7 @@ Change orders on government jobs are different:
 - Keep all records for a minimum of **3 years** after project completion
 - Government auditors can request records at any time during this period
 - UpTend stores digital records, but keep your own copies
-- Include: time sheets, receipts, photos, communications, certifications
+- Include: work logs, invoices, receipts, photos, communications, certifications
 
 ## Audit Readiness
 Government contracts may be audited. Be prepared for:

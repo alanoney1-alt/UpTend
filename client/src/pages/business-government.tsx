@@ -238,7 +238,7 @@ export default function BusinessGovernment() {
           <TabsList className="flex overflow-x-auto whitespace-nowrap">
             <TabsTrigger value="bids"><FileText className="w-4 h-4 mr-1" /> Bids & Proposals</TabsTrigger>
             <TabsTrigger value="wages"><DollarSign className="w-4 h-4 mr-1" /> Prevailing Wages</TabsTrigger>
-            <TabsTrigger value="payroll"><Calendar className="w-4 h-4 mr-1" /> Certified Payroll</TabsTrigger>
+            <TabsTrigger value="payroll"><Calendar className="w-4 h-4 mr-1" /> WH-347 Reports</TabsTrigger>
             <TabsTrigger value="sam"><Globe className="w-4 h-4 mr-1" /> SAM.gov</TabsTrigger>
             <TabsTrigger value="dbe"><Users className="w-4 h-4 mr-1" /> DBE Tracking</TabsTrigger>
             <TabsTrigger value="fema"><Zap className="w-4 h-4 mr-1" /> FEMA</TabsTrigger>
@@ -312,8 +312,8 @@ export default function BusinessGovernment() {
           {/* Certified Payroll */}
           <TabsContent value="payroll" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Certified Payroll (WH-347)</h2>
-              <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Payroll</Button>
+              <h2 className="text-xl font-semibold">WH-347 Compliance Reports</h2>
+              <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Generate Report</Button>
             </div>
             <Card>
               <div className="overflow-x-auto"><Table>

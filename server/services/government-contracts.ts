@@ -184,10 +184,14 @@ export async function flagUnderpayment(contractId: string, entryId: string, user
 }
 
 // ==========================================
-// Certified Payroll (WH-347)
+// WH-347 Compliance Report Generation
 // ==========================================
+// IMPORTANT: "Certified Payroll" is the government's term for DOL form WH-347.
+// We are NOT running payroll. We compile contractor-submitted invoices/labor logs
+// into the government-mandated compliance report format. All workers are
+// independent contractors per ICA. This is a reporting obligation, not payroll processing.
 export async function generateWeeklyPayroll(contractId: string, weekEndingDate: string, userId: string) {
-  // Get labor entries for the week (Saturday to Friday typically, week ending = Saturday)
+  // Get contractor-submitted labor invoices for the week
   const weekEnd = new Date(weekEndingDate);
   const weekStart = new Date(weekEnd);
   weekStart.setDate(weekStart.getDate() - 6);
