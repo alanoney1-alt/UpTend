@@ -93,6 +93,14 @@ const PartnersLanding = lazy(() => import("@/pages/partners/index"));
 const PartnerRegister = lazy(() => import("@/pages/partners/register"));
 const PartnerDashboard = lazy(() => import("@/pages/partners/dashboard"));
 const HomeProfilePage = lazy(() => import("@/pages/home-profile"));
+const BusinessCompliance = lazy(() => import("@/pages/business-compliance"));
+const BusinessGovernment = lazy(() => import("@/pages/business-government"));
+const BusinessCommunities = lazy(() => import("@/pages/business-communities"));
+const BusinessProperties = lazy(() => import("@/pages/business-properties"));
+const BusinessConstruction = lazy(() => import("@/pages/business-construction"));
+const VeteransPage = lazy(() => import("@/pages/veterans"));
+const BusinessReports = lazy(() => import("@/pages/business-reports"));
+const BusinessInvoices = lazy(() => import("@/pages/business-invoices"));
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -135,6 +143,14 @@ function Router() {
       <Route path="/business/login" component={BusinessLogin} />
       <Route path="/business/register" component={BusinessRegister} />
       <Route path="/business/dashboard" component={BusinessDashboard} />
+      <Route path="/business/compliance" component={BusinessCompliance} />
+      <Route path="/business/government" component={BusinessGovernment} />
+      <Route path="/business/communities" component={BusinessCommunities} />
+      <Route path="/business/properties" component={BusinessProperties} />
+      <Route path="/business/construction" component={BusinessConstruction} />
+      <Route path="/business/reports" component={BusinessReports} />
+      <Route path="/business/invoices" component={BusinessInvoices} />
+      <Route path="/veterans" component={VeteransPage} />
       <Route path="/rewards" component={Loyalty} />
       <Route path="/loyalty" component={Loyalty} />
       <Route path="/ref/:code" component={ReferralLanding} />

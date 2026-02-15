@@ -125,6 +125,15 @@ import { registerActiveNearbyRoutes } from "./hauler/active-nearby.routes";
 import { registerAdminProMapRoutes } from "./admin/pro-map.routes";
 import { registerAdminManagementRoutes } from "./admin/admin-management.routes";
 
+// B2B routes
+import { registerComplianceRoutes } from "./compliance/index";
+import { registerGovernmentRoutes } from "./government/index";
+import { registerCommunityRoutes } from "./communities/index";
+import { registerPmRoutes } from "./pm/index";
+import { registerConstructionRoutes } from "./construction/index";
+import { registerVeteranRoutes } from "./veterans/index";
+import { registerEnterpriseRoutes } from "./enterprise/index";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -269,6 +278,15 @@ export async function registerRoutes(
 
   // Admin management routes (pyckers, users, surge, active jobs)
   registerAdminManagementRoutes(app);
+
+  // B2B routes
+  registerComplianceRoutes(app);
+  registerGovernmentRoutes(app);
+  registerCommunityRoutes(app);
+  registerPmRoutes(app);
+  registerConstructionRoutes(app);
+  registerVeteranRoutes(app);
+  registerEnterpriseRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

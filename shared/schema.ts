@@ -5115,3 +5115,1159 @@ export type CeilingAnalytics = typeof ceilingAnalytics.$inferSelect;
 
 // ESG Service Details (per-service environmental data)
 export * from "./esg-service-details";
+
+// ==========================================
+// B2B FEATURES - NEW TABLES
+// ==========================================
+
+// ==========================================
+// 1. Insurance Certificates (COI Vault)
+// ==========================================
+export const insuranceCertificates = pgTable("insurance_certificates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyName: text("company_name").notNull(),
+  policyNumber: text("policy_number").notNull(),
+  provider: text("provider").notNull(),
+  coverageAmount: real("coverage_amount").notNull(),
+  expiryDate: text("expiry_date").notNull(),
+  documentUrl: text("document_url"),
+  verified: boolean("verified").default(false),
+  verifiedAt: text("verified_at"),
+  verifiedBy: varchar("verified_by"),
+  autoNotify: boolean("auto_notify").default(true),
+  notifyDaysBefore: integer("notify_days_before").default(30),
+  businessAccountId: varchar("business_account_id"),
+  proId: varchar("pro_id"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insuranceCertificatesRelations = relations(insuranceCertificates, ({ one }) => ({
+  businessAccount: one(businessAccounts, {
+    fields: [insuranceCertificates.businessAccountId],
+    references: [businessAccounts.id],
+  }),
+  pro: one(users, {
+    fields: [insuranceCertificates.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertInsuranceCertificateSchema = createInsertSchema(insuranceCertificates).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertInsuranceCertificate = z.infer<typeof insertInsuranceCertificateSchema>;
+export type InsuranceCertificate = typeof insuranceCertificates.$inferSelect;
+
+// ==========================================
+// 2. Compliance Documents
+// ==========================================
+export const complianceDocuments = pgTable("compliance_documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  docType: text("doc_type").notNull(), // 'w9', 'license', 'osha_cert', 'background_check'
+  title: text("title"),
+  expiry: text("expiry"),
+  verified: boolean("verified").default(false),
+  verifiedAt: text("verified_at"),
+  verifiedBy: varchar("verified_by"),
+  documentUrl: text("document_url"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const complianceDocumentsRelations = relations(complianceDocuments, ({ one }) => ({
+  pro: one(users, {
+    fields: [complianceDocuments.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertComplianceDocumentSchema = createInsertSchema(complianceDocuments).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertComplianceDocument = z.infer<typeof insertComplianceDocumentSchema>;
+export type ComplianceDocument = typeof complianceDocuments.$inferSelect;
+
+// ==========================================
+// 3. Background Checks
+// ==========================================
+export const backgroundChecks = pgTable("background_checks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  status: text("status").notNull().default("pending"), // 'pending', 'in_progress', 'completed', 'failed'
+  provider: text("provider").default("checkr"),
+  providerCheckId: text("provider_check_id"),
+  completedAt: text("completed_at"),
+  result: text("result"), // 'clear', 'consider', 'flagged'
+  expiry: text("expiry"),
+  reportUrl: text("report_url"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const backgroundChecksRelations = relations(backgroundChecks, ({ one }) => ({
+  pro: one(users, {
+    fields: [backgroundChecks.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertBackgroundCheckSchema = createInsertSchema(backgroundChecks).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertBackgroundCheck = z.infer<typeof insertBackgroundCheckSchema>;
+export type BackgroundCheck = typeof backgroundChecks.$inferSelect;
+
+// ==========================================
+// 4. Prevailing Wages (Davis-Bacon)
+// ==========================================
+export const prevailingWages = pgTable("prevailing_wages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  county: text("county").notNull(),
+  state: text("state").notNull(),
+  trade: text("trade").notNull(),
+  wageRate: real("wage_rate").notNull(),
+  fringe: real("fringe").notNull().default(0),
+  effectiveDate: text("effective_date").notNull(),
+  expirationDate: text("expiration_date"),
+  source: text("source"), // 'davis_bacon', 'state'
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertPrevailingWageSchema = createInsertSchema(prevailingWages).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertPrevailingWage = z.infer<typeof insertPrevailingWageSchema>;
+export type PrevailingWage = typeof prevailingWages.$inferSelect;
+
+// ==========================================
+// 5. Certified Payrolls (WH-347)
+// ==========================================
+export const certifiedPayrolls = pgTable("certified_payrolls", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  weekEnding: text("week_ending").notNull(),
+  proId: varchar("pro_id").notNull(),
+  hours: real("hours").notNull(),
+  rate: real("rate").notNull(),
+  fringe: real("fringe").default(0),
+  deductions: real("deductions").default(0),
+  netPay: real("net_pay"),
+  trade: text("trade"),
+  certified: boolean("certified").default(false),
+  certifiedBy: varchar("certified_by"),
+  certifiedAt: text("certified_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const certifiedPayrollsRelations = relations(certifiedPayrolls, ({ one }) => ({
+  pro: one(users, {
+    fields: [certifiedPayrolls.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertCertifiedPayrollSchema = createInsertSchema(certifiedPayrolls).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCertifiedPayroll = z.infer<typeof insertCertifiedPayrollSchema>;
+export type CertifiedPayroll = typeof certifiedPayrolls.$inferSelect;
+
+// ==========================================
+// 6. SAM Registrations
+// ==========================================
+export const samRegistrations = pgTable("sam_registrations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessId: varchar("business_id").notNull(),
+  cageCode: text("cage_code"),
+  uei: text("uei"),
+  naicsCodes: text("naics_codes").array(),
+  status: text("status").notNull().default("pending"), // 'pending', 'active', 'expired', 'inactive'
+  expiry: text("expiry"),
+  registeredAt: text("registered_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const samRegistrationsRelations = relations(samRegistrations, ({ one }) => ({
+  business: one(businessAccounts, {
+    fields: [samRegistrations.businessId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertSamRegistrationSchema = createInsertSchema(samRegistrations).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertSamRegistration = z.infer<typeof insertSamRegistrationSchema>;
+export type SamRegistration = typeof samRegistrations.$inferSelect;
+
+// ==========================================
+// 7. DBE Utilization
+// ==========================================
+export const dbeUtilization = pgTable("dbe_utilization", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  vendorId: varchar("vendor_id").notNull(),
+  certificationType: text("certification_type").notNull(), // 'dbe', 'mbe', 'sdvosb', 'wosb', '8a'
+  amount: real("amount").notNull().default(0),
+  percentage: real("percentage").default(0),
+  goalPercentage: real("goal_percentage"),
+  verified: boolean("verified").default(false),
+  verificationDocUrl: text("verification_doc_url"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const dbeUtilizationRelations = relations(dbeUtilization, ({ one }) => ({
+  vendor: one(users, {
+    fields: [dbeUtilization.vendorId],
+    references: [users.id],
+  }),
+}));
+
+export const insertDbeUtilizationSchema = createInsertSchema(dbeUtilization).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertDbeUtilization = z.infer<typeof insertDbeUtilizationSchema>;
+export type DbeUtilization = typeof dbeUtilization.$inferSelect;
+
+// ==========================================
+// 8. Government Bids
+// ==========================================
+export const governmentBids = pgTable("government_bids", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  agency: text("agency").notNull(),
+  dueDate: text("due_date").notNull(),
+  status: text("status").notNull().default("draft"), // 'draft', 'submitted', 'won', 'lost', 'cancelled'
+  estimatedValue: real("estimated_value"),
+  awardedValue: real("awarded_value"),
+  solicitationNumber: text("solicitation_number"),
+  setAside: text("set_aside"), // 'sdvosb', '8a', 'hubzone', 'wosb', 'none'
+  documents: jsonb("documents").$type<string[]>().default(sql`'[]'::jsonb`),
+  notes: text("notes"),
+  businessAccountId: varchar("business_account_id"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const governmentBidsRelations = relations(governmentBids, ({ one }) => ({
+  businessAccount: one(businessAccounts, {
+    fields: [governmentBids.businessAccountId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertGovernmentBidSchema = createInsertSchema(governmentBids).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertGovernmentBid = z.infer<typeof insertGovernmentBidSchema>;
+export type GovernmentBid = typeof governmentBids.$inferSelect;
+
+// ==========================================
+// 9. FEMA Vendors
+// ==========================================
+export const femaVendors = pgTable("fema_vendors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  certifications: text("certifications").array(),
+  equipment: text("equipment").array(),
+  availabilityRadius: integer("availability_radius").default(100),
+  activated: boolean("activated").default(false),
+  activatedAt: text("activated_at"),
+  deactivatedAt: text("deactivated_at"),
+  lastDeployedAt: text("last_deployed_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const femaVendorsRelations = relations(femaVendors, ({ one }) => ({
+  pro: one(users, {
+    fields: [femaVendors.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertFemaVendorSchema = createInsertSchema(femaVendors).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertFemaVendor = z.infer<typeof insertFemaVendorSchema>;
+export type FemaVendor = typeof femaVendors.$inferSelect;
+
+// ==========================================
+// 10. Retainage Tracking
+// ==========================================
+export const retainageTracking = pgTable("retainage_tracking", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  milestone: text("milestone").notNull(),
+  amount: real("amount").notNull(),
+  retainagePct: real("retainage_pct").notNull().default(10),
+  retainageHeld: real("retainage_held").notNull().default(0),
+  released: boolean("released").default(false),
+  releasedAt: text("released_at"),
+  releasedBy: varchar("released_by"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertRetainageTrackingSchema = createInsertSchema(retainageTracking).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertRetainageTracking = z.infer<typeof insertRetainageTrackingSchema>;
+export type RetainageTracking = typeof retainageTracking.$inferSelect;
+
+// ==========================================
+// 11. Environmental Compliance
+// ==========================================
+export const environmentalCompliance = pgTable("environmental_compliance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobId: varchar("job_id").notNull(),
+  wasteType: text("waste_type").notNull(), // 'general', 'hazardous', 'asbestos', 'lead', 'electronic'
+  disposalMethod: text("disposal_method").notNull(), // 'landfill', 'recycling', 'incineration', 'treatment'
+  manifestNumber: text("manifest_number"),
+  epaId: text("epa_id"),
+  facilityName: text("facility_name"),
+  weightLbs: real("weight_lbs"),
+  documentUrl: text("document_url"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const environmentalComplianceRelations = relations(environmentalCompliance, ({ one }) => ({
+  job: one(serviceRequests, {
+    fields: [environmentalCompliance.jobId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertEnvironmentalComplianceSchema = createInsertSchema(environmentalCompliance).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertEnvironmentalCompliance = z.infer<typeof insertEnvironmentalComplianceSchema>;
+export type EnvironmentalCompliance = typeof environmentalCompliance.$inferSelect;
+
+// ==========================================
+// 12. Communities (HOA)
+// ==========================================
+export const communities = pgTable("communities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  address: text("address"),
+  city: text("city"),
+  state: text("state"),
+  zip: text("zip"),
+  unitsCount: integer("units_count").default(0),
+  boardContact: text("board_contact"),
+  managementCompanyId: varchar("management_company_id"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const communitiesRelations = relations(communities, ({ one, many }) => ({
+  managementCompany: one(businessAccounts, {
+    fields: [communities.managementCompanyId],
+    references: [businessAccounts.id],
+  }),
+  properties: many(communityProperties),
+  boardApprovals: many(boardApprovals),
+  maintenanceCalendars: many(maintenanceCalendars),
+  reserveStudies: many(reserveStudies),
+}));
+
+export const insertCommunitySchema = createInsertSchema(communities).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCommunity = z.infer<typeof insertCommunitySchema>;
+export type Community = typeof communities.$inferSelect;
+
+// ==========================================
+// 13. Community Properties
+// ==========================================
+export const communityProperties = pgTable("community_properties", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  communityId: varchar("community_id").notNull(),
+  address: text("address").notNull(),
+  unitNumber: text("unit_number"),
+  ownerId: varchar("owner_id"),
+  residentId: varchar("resident_id"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const communityPropertiesRelations = relations(communityProperties, ({ one }) => ({
+  community: one(communities, {
+    fields: [communityProperties.communityId],
+    references: [communities.id],
+  }),
+  owner: one(users, {
+    fields: [communityProperties.ownerId],
+    references: [users.id],
+  }),
+  resident: one(users, {
+    fields: [communityProperties.residentId],
+    references: [users.id],
+  }),
+}));
+
+export const insertCommunityPropertySchema = createInsertSchema(communityProperties).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCommunityProperty = z.infer<typeof insertCommunityPropertySchema>;
+export type CommunityProperty = typeof communityProperties.$inferSelect;
+
+// ==========================================
+// 14. Board Approvals
+// ==========================================
+export const boardApprovals = pgTable("board_approvals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  communityId: varchar("community_id").notNull(),
+  requestId: varchar("request_id"),
+  requestedBy: varchar("requested_by").notNull(),
+  title: text("title"),
+  description: text("description"),
+  amount: real("amount"),
+  status: text("status").notNull().default("pending"), // 'pending', 'approved', 'denied'
+  votesFor: integer("votes_for").default(0),
+  votesAgainst: integer("votes_against").default(0),
+  deadline: text("deadline"),
+  resolvedAt: text("resolved_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const boardApprovalsRelations = relations(boardApprovals, ({ one }) => ({
+  community: one(communities, {
+    fields: [boardApprovals.communityId],
+    references: [communities.id],
+  }),
+  requester: one(users, {
+    fields: [boardApprovals.requestedBy],
+    references: [users.id],
+  }),
+}));
+
+export const insertBoardApprovalSchema = createInsertSchema(boardApprovals).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertBoardApproval = z.infer<typeof insertBoardApprovalSchema>;
+export type BoardApproval = typeof boardApprovals.$inferSelect;
+
+// ==========================================
+// 15. Maintenance Calendars
+// ==========================================
+export const maintenanceCalendars = pgTable("maintenance_calendars", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  communityId: varchar("community_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  frequency: text("frequency").notNull(), // 'weekly', 'biweekly', 'monthly', 'quarterly', 'annually'
+  nextDate: text("next_date"),
+  lastCompletedDate: text("last_completed_date"),
+  assignedProId: varchar("assigned_pro_id"),
+  notes: text("notes"),
+  isActive: boolean("is_active").default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const maintenanceCalendarsRelations = relations(maintenanceCalendars, ({ one }) => ({
+  community: one(communities, {
+    fields: [maintenanceCalendars.communityId],
+    references: [communities.id],
+  }),
+  assignedPro: one(users, {
+    fields: [maintenanceCalendars.assignedProId],
+    references: [users.id],
+  }),
+}));
+
+export const insertMaintenanceCalendarSchema = createInsertSchema(maintenanceCalendars).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertMaintenanceCalendar = z.infer<typeof insertMaintenanceCalendarSchema>;
+export type MaintenanceCalendar = typeof maintenanceCalendars.$inferSelect;
+
+// ==========================================
+// 16. Reserve Studies
+// ==========================================
+export const reserveStudies = pgTable("reserve_studies", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  communityId: varchar("community_id").notNull(),
+  fiscalYear: integer("fiscal_year").notNull(),
+  totalReserves: real("total_reserves").notNull().default(0),
+  allocated: real("allocated").default(0),
+  spent: real("spent").default(0),
+  remaining: real("remaining").default(0),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const reserveStudiesRelations = relations(reserveStudies, ({ one }) => ({
+  community: one(communities, {
+    fields: [reserveStudies.communityId],
+    references: [communities.id],
+  }),
+}));
+
+export const insertReserveStudySchema = createInsertSchema(reserveStudies).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertReserveStudy = z.infer<typeof insertReserveStudySchema>;
+export type ReserveStudy = typeof reserveStudies.$inferSelect;
+
+// ==========================================
+// 17. PM Portfolios
+// ==========================================
+export const pmPortfolios = pgTable("pm_portfolios", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  ownerId: varchar("owner_id").notNull(),
+  totalUnits: integer("total_units").default(0),
+  totalProperties: integer("total_properties").default(0),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const pmPortfoliosRelations = relations(pmPortfolios, ({ one, many }) => ({
+  owner: one(users, {
+    fields: [pmPortfolios.ownerId],
+    references: [users.id],
+  }),
+  properties: many(pmProperties),
+}));
+
+export const insertPmPortfolioSchema = createInsertSchema(pmPortfolios).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertPmPortfolio = z.infer<typeof insertPmPortfolioSchema>;
+export type PmPortfolio = typeof pmPortfolios.$inferSelect;
+
+// ==========================================
+// 18. PM Properties
+// ==========================================
+export const pmProperties = pgTable("pm_properties", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  portfolioId: varchar("portfolio_id").notNull(),
+  address: text("address").notNull(),
+  city: text("city"),
+  state: text("state"),
+  zip: text("zip"),
+  units: integer("units").default(1),
+  type: text("type"), // 'single_family', 'multi_family', 'commercial', 'condo'
+  ownerId: varchar("owner_id"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const pmPropertiesRelations = relations(pmProperties, ({ one, many }) => ({
+  portfolio: one(pmPortfolios, {
+    fields: [pmProperties.portfolioId],
+    references: [pmPortfolios.id],
+  }),
+  owner: one(users, {
+    fields: [pmProperties.ownerId],
+    references: [users.id],
+  }),
+  pmUnits: many(pmUnits),
+}));
+
+export const insertPmPropertySchema = createInsertSchema(pmProperties).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertPmProperty = z.infer<typeof insertPmPropertySchema>;
+export type PmProperty = typeof pmProperties.$inferSelect;
+
+// ==========================================
+// 19. PM Units
+// ==========================================
+export const pmUnits = pgTable("pm_units", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id").notNull(),
+  unitNumber: text("unit_number"),
+  tenantId: varchar("tenant_id"),
+  status: text("status").notNull().default("occupied"), // 'occupied', 'vacant', 'turnover', 'maintenance'
+  leaseEnd: text("lease_end"),
+  monthlyRent: real("monthly_rent"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const pmUnitsRelations = relations(pmUnits, ({ one, many }) => ({
+  property: one(pmProperties, {
+    fields: [pmUnits.propertyId],
+    references: [pmProperties.id],
+  }),
+  tenant: one(users, {
+    fields: [pmUnits.tenantId],
+    references: [users.id],
+  }),
+  workOrders: many(workOrders),
+  turnoverChecklists: many(turnoverChecklists),
+}));
+
+export const insertPmUnitSchema = createInsertSchema(pmUnits).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertPmUnit = z.infer<typeof insertPmUnitSchema>;
+export type PmUnit = typeof pmUnits.$inferSelect;
+
+// ==========================================
+// 20. Work Orders
+// ==========================================
+export const workOrders = pgTable("work_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  unitId: varchar("unit_id").notNull(),
+  tenantId: varchar("tenant_id"),
+  description: text("description").notNull(),
+  priority: text("priority").notNull().default("normal"), // 'emergency', 'urgent', 'normal', 'low'
+  status: text("status").notNull().default("open"), // 'open', 'assigned', 'in_progress', 'completed', 'cancelled'
+  slaDeadline: text("sla_deadline"),
+  photos: text("photos").array(),
+  assignedProId: varchar("assigned_pro_id"),
+  serviceRequestId: varchar("service_request_id"),
+  completedAt: text("completed_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const workOrdersRelations = relations(workOrders, ({ one }) => ({
+  unit: one(pmUnits, {
+    fields: [workOrders.unitId],
+    references: [pmUnits.id],
+  }),
+  tenant: one(users, {
+    fields: [workOrders.tenantId],
+    references: [users.id],
+  }),
+  assignedPro: one(users, {
+    fields: [workOrders.assignedProId],
+    references: [users.id],
+  }),
+  serviceRequest: one(serviceRequests, {
+    fields: [workOrders.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertWorkOrderSchema = createInsertSchema(workOrders).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertWorkOrder = z.infer<typeof insertWorkOrderSchema>;
+export type WorkOrder = typeof workOrders.$inferSelect;
+
+// ==========================================
+// 21. Turnover Checklists
+// ==========================================
+export const turnoverChecklists = pgTable("turnover_checklists", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  unitId: varchar("unit_id").notNull(),
+  task: text("task").notNull(),
+  status: text("status").notNull().default("pending"), // 'pending', 'in_progress', 'completed', 'skipped'
+  assignedProId: varchar("assigned_pro_id"),
+  completedAt: text("completed_at"),
+  photos: text("photos").array(),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const turnoverChecklistsRelations = relations(turnoverChecklists, ({ one }) => ({
+  unit: one(pmUnits, {
+    fields: [turnoverChecklists.unitId],
+    references: [pmUnits.id],
+  }),
+  assignedPro: one(users, {
+    fields: [turnoverChecklists.assignedProId],
+    references: [users.id],
+  }),
+}));
+
+export const insertTurnoverChecklistSchema = createInsertSchema(turnoverChecklists).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertTurnoverChecklist = z.infer<typeof insertTurnoverChecklistSchema>;
+export type TurnoverChecklist = typeof turnoverChecklists.$inferSelect;
+
+// ==========================================
+// 22. SLA Configs
+// ==========================================
+export const slaConfigs = pgTable("sla_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull(),
+  priority: text("priority").notNull(), // 'emergency', 'urgent', 'normal', 'low'
+  responseHours: integer("response_hours").notNull(),
+  resolutionHours: integer("resolution_hours").notNull(),
+  escalationContact: text("escalation_contact"),
+  penaltyAmount: real("penalty_amount"),
+  isActive: boolean("is_active").default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const slaConfigsRelations = relations(slaConfigs, ({ one }) => ({
+  client: one(businessAccounts, {
+    fields: [slaConfigs.clientId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertSlaConfigSchema = createInsertSchema(slaConfigs).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertSlaConfig = z.infer<typeof insertSlaConfigSchema>;
+export type SlaConfig = typeof slaConfigs.$inferSelect;
+
+// ==========================================
+// 23. SLA Tracking
+// ==========================================
+export const slaTracking = pgTable("sla_tracking", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobId: varchar("job_id").notNull(),
+  slaConfigId: varchar("sla_config_id").notNull(),
+  responseAt: text("response_at"),
+  resolvedAt: text("resolved_at"),
+  breached: boolean("breached").default(false),
+  breachType: text("breach_type"), // 'response', 'resolution', 'both'
+  breachedAt: text("breached_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const slaTrackingRelations = relations(slaTracking, ({ one }) => ({
+  job: one(serviceRequests, {
+    fields: [slaTracking.jobId],
+    references: [serviceRequests.id],
+  }),
+  slaConfig: one(slaConfigs, {
+    fields: [slaTracking.slaConfigId],
+    references: [slaConfigs.id],
+  }),
+}));
+
+export const insertSlaTrackingSchema = createInsertSchema(slaTracking).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertSlaTracking = z.infer<typeof insertSlaTrackingSchema>;
+export type SlaTracking = typeof slaTracking.$inferSelect;
+
+// ==========================================
+// 24. Punch Lists
+// ==========================================
+export const punchLists = pgTable("punch_lists", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: varchar("project_id").notNull(),
+  createdBy: varchar("created_by").notNull(),
+  title: text("title"),
+  status: text("status").notNull().default("open"), // 'open', 'in_progress', 'completed'
+  dueDate: text("due_date"),
+  completedAt: text("completed_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const punchListsRelations = relations(punchLists, ({ one, many }) => ({
+  creator: one(users, {
+    fields: [punchLists.createdBy],
+    references: [users.id],
+  }),
+  items: many(punchListItems),
+}));
+
+export const insertPunchListSchema = createInsertSchema(punchLists).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertPunchList = z.infer<typeof insertPunchListSchema>;
+export type PunchList = typeof punchLists.$inferSelect;
+
+// ==========================================
+// 25. Punch List Items
+// ==========================================
+export const punchListItems = pgTable("punch_list_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  punchListId: varchar("punch_list_id").notNull(),
+  description: text("description").notNull(),
+  trade: text("trade"),
+  assignedProId: varchar("assigned_pro_id"),
+  status: text("status").notNull().default("open"), // 'open', 'in_progress', 'completed', 'rejected'
+  photoBefore: text("photo_before"),
+  photoAfter: text("photo_after"),
+  completedAt: text("completed_at"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const punchListItemsRelations = relations(punchListItems, ({ one }) => ({
+  punchList: one(punchLists, {
+    fields: [punchListItems.punchListId],
+    references: [punchLists.id],
+  }),
+  assignedPro: one(users, {
+    fields: [punchListItems.assignedProId],
+    references: [users.id],
+  }),
+}));
+
+export const insertPunchListItemSchema = createInsertSchema(punchListItems).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertPunchListItem = z.infer<typeof insertPunchListItemSchema>;
+export type PunchListItem = typeof punchListItems.$inferSelect;
+
+// ==========================================
+// 26. Lien Waivers
+// ==========================================
+export const lienWaivers = pgTable("lien_waivers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobId: varchar("job_id").notNull(),
+  proId: varchar("pro_id").notNull(),
+  type: text("type").notNull(), // 'conditional_progress', 'unconditional_progress', 'conditional_final', 'unconditional_final'
+  amount: real("amount").notNull(),
+  signed: boolean("signed").default(false),
+  signedAt: text("signed_at"),
+  documentUrl: text("document_url"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const lienWaiversRelations = relations(lienWaivers, ({ one }) => ({
+  job: one(serviceRequests, {
+    fields: [lienWaivers.jobId],
+    references: [serviceRequests.id],
+  }),
+  pro: one(users, {
+    fields: [lienWaivers.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertLienWaiverSchema = createInsertSchema(lienWaivers).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertLienWaiver = z.infer<typeof insertLienWaiverSchema>;
+export type LienWaiver = typeof lienWaivers.$inferSelect;
+
+// ==========================================
+// 27. Permits
+// ==========================================
+export const permits = pgTable("permits", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobId: varchar("job_id").notNull(),
+  permitType: text("permit_type").notNull(), // 'building', 'demolition', 'electrical', 'plumbing', 'mechanical'
+  permitNumber: text("permit_number"),
+  applicationDate: text("application_date"),
+  status: text("status").notNull().default("pending"), // 'pending', 'approved', 'denied', 'expired'
+  inspectionDate: text("inspection_date"),
+  approved: boolean("approved").default(false),
+  approvedAt: text("approved_at"),
+  documentUrl: text("document_url"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const permitsRelations = relations(permits, ({ one }) => ({
+  job: one(serviceRequests, {
+    fields: [permits.jobId],
+    references: [serviceRequests.id],
+  }),
+}));
+
+export const insertPermitSchema = createInsertSchema(permits).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertPermit = z.infer<typeof insertPermitSchema>;
+export type Permit = typeof permits.$inferSelect;
+
+// ==========================================
+// 28. Digital Signatures
+// ==========================================
+export const digitalSignatures = pgTable("digital_signatures", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  documentType: text("document_type").notNull(), // 'lien_waiver', 'contract', 'change_order', 'nda', 'scope_change'
+  documentId: varchar("document_id").notNull(),
+  signerId: varchar("signer_id").notNull(),
+  signedAt: text("signed_at").notNull(),
+  signatureData: text("signature_data"), // base64 or typed name
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const digitalSignaturesRelations = relations(digitalSignatures, ({ one }) => ({
+  signer: one(users, {
+    fields: [digitalSignatures.signerId],
+    references: [users.id],
+  }),
+}));
+
+export const insertDigitalSignatureSchema = createInsertSchema(digitalSignatures).omit({ id: true, createdAt: true });
+export type InsertDigitalSignature = z.infer<typeof insertDigitalSignatureSchema>;
+export type DigitalSignature = typeof digitalSignatures.$inferSelect;
+
+// ==========================================
+// 29. Veteran Profiles
+// ==========================================
+export const veteranProfiles = pgTable("veteran_profiles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  branch: text("branch").notNull(), // 'army', 'navy', 'air_force', 'marines', 'coast_guard', 'space_force'
+  mosCode: text("mos_code"),
+  mosTitle: text("mos_title"),
+  serviceStart: text("service_start"),
+  serviceEnd: text("service_end"),
+  disabilityRating: integer("disability_rating"),
+  dd214Verified: boolean("dd214_verified").default(false),
+  dd214DocumentUrl: text("dd214_document_url"),
+  verifiedAt: text("verified_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const veteranProfilesRelations = relations(veteranProfiles, ({ one }) => ({
+  pro: one(users, {
+    fields: [veteranProfiles.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertVeteranProfileSchema = createInsertSchema(veteranProfiles).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertVeteranProfile = z.infer<typeof insertVeteranProfileSchema>;
+export type VeteranProfile = typeof veteranProfiles.$inferSelect;
+
+// ==========================================
+// 30. Veteran Certifications
+// ==========================================
+export const veteranCertifications = pgTable("veteran_certifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessId: varchar("business_id").notNull(),
+  certType: text("cert_type").notNull(), // 'sdvosb', 'vosb', 'hubzone'
+  status: text("status").notNull().default("pending"), // 'pending', 'active', 'expired', 'denied'
+  applicationDate: text("application_date"),
+  expiry: text("expiry"),
+  vaVerificationId: text("va_verification_id"),
+  documentUrl: text("document_url"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const veteranCertificationsRelations = relations(veteranCertifications, ({ one }) => ({
+  business: one(businessAccounts, {
+    fields: [veteranCertifications.businessId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertVeteranCertificationSchema = createInsertSchema(veteranCertifications).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertVeteranCertification = z.infer<typeof insertVeteranCertificationSchema>;
+export type VeteranCertification = typeof veteranCertifications.$inferSelect;
+
+// ==========================================
+// 31. Veteran Mentorships
+// ==========================================
+export const veteranMentorships = pgTable("veteran_mentorships", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mentorProId: varchar("mentor_pro_id").notNull(),
+  menteeProId: varchar("mentee_pro_id").notNull(),
+  startedAt: text("started_at").notNull(),
+  status: text("status").notNull().default("active"), // 'active', 'completed', 'paused', 'cancelled'
+  endedAt: text("ended_at"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const veteranMentorshipsRelations = relations(veteranMentorships, ({ one }) => ({
+  mentor: one(users, {
+    fields: [veteranMentorships.mentorProId],
+    references: [users.id],
+  }),
+  mentee: one(users, {
+    fields: [veteranMentorships.menteeProId],
+    references: [users.id],
+  }),
+}));
+
+export const insertVeteranMentorshipSchema = createInsertSchema(veteranMentorships).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertVeteranMentorship = z.infer<typeof insertVeteranMentorshipSchema>;
+export type VeteranMentorship = typeof veteranMentorships.$inferSelect;
+
+// ==========================================
+// 32. Military Spouse Profiles
+// ==========================================
+export const militarySpouseProfiles = pgTable("military_spouse_profiles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  sponsorBranch: text("sponsor_branch"), // 'army', 'navy', etc.
+  currentBase: text("current_base"),
+  skills: text("skills").array(),
+  availableFor: text("available_for").array(), // service types they can perform
+  isActive: boolean("is_active").default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const militarySpouseProfilesRelations = relations(militarySpouseProfiles, ({ one }) => ({
+  user: one(users, {
+    fields: [militarySpouseProfiles.userId],
+    references: [users.id],
+  }),
+}));
+
+export const insertMilitarySpouseProfileSchema = createInsertSchema(militarySpouseProfiles).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertMilitarySpouseProfile = z.infer<typeof insertMilitarySpouseProfileSchema>;
+export type MilitarySpouseProfile = typeof militarySpouseProfiles.$inferSelect;
+
+// ==========================================
+// 33. Contract Pricing
+// ==========================================
+export const contractPricing = pgTable("contract_pricing", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull(),
+  clientType: text("client_type").notNull(), // 'hoa', 'property_manager', 'government', 'enterprise'
+  serviceType: text("service_type").notNull(),
+  rate: real("rate").notNull(),
+  discountPct: real("discount_pct").default(0),
+  effectiveDate: text("effective_date").notNull(),
+  endDate: text("end_date"),
+  isActive: boolean("is_active").default(true),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const contractPricingRelations = relations(contractPricing, ({ one }) => ({
+  client: one(businessAccounts, {
+    fields: [contractPricing.clientId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertContractPricingSchema = createInsertSchema(contractPricing).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertContractPricing = z.infer<typeof insertContractPricingSchema>;
+export type ContractPricing = typeof contractPricing.$inferSelect;
+
+// ==========================================
+// 34. Vendor Scorecards
+// ==========================================
+export const vendorScorecards = pgTable("vendor_scorecards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  clientId: varchar("client_id").notNull(),
+  period: text("period").notNull(), // 'Q1-2026', 'Jan-2026', etc.
+  onTimePct: real("on_time_pct"),
+  qualityAvg: real("quality_avg"),
+  jobsCompleted: integer("jobs_completed").default(0),
+  complaints: integer("complaints").default(0),
+  overallScore: real("overall_score"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const vendorScorecardsRelations = relations(vendorScorecards, ({ one }) => ({
+  pro: one(users, {
+    fields: [vendorScorecards.proId],
+    references: [users.id],
+  }),
+  client: one(businessAccounts, {
+    fields: [vendorScorecards.clientId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertVendorScorecardSchema = createInsertSchema(vendorScorecards).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertVendorScorecard = z.infer<typeof insertVendorScorecardSchema>;
+export type VendorScorecard = typeof vendorScorecards.$inferSelect;
+
+// ==========================================
+// 35. Asset Registry
+// ==========================================
+export const assetRegistry = pgTable("asset_registry", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  propertyId: varchar("property_id"),
+  unitId: varchar("unit_id"),
+  assetType: text("asset_type").notNull(), // 'hvac', 'water_heater', 'appliance', 'roof', 'elevator', etc.
+  brand: text("brand"),
+  model: text("model"),
+  serialNumber: text("serial_number"),
+  installDate: text("install_date"),
+  warrantyEnd: text("warranty_end"),
+  lastService: text("last_service"),
+  nextServiceDue: text("next_service_due"),
+  condition: text("condition"), // 'excellent', 'good', 'fair', 'poor', 'replace'
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertAssetRegistrySchema = createInsertSchema(assetRegistry).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertAssetRegistry = z.infer<typeof insertAssetRegistrySchema>;
+export type AssetRegistry = typeof assetRegistry.$inferSelect;
+
+// ==========================================
+// 36. Audit Logs (Immutable)
+// ==========================================
+export const b2bAuditLogs = pgTable("b2b_audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  entityType: text("entity_type").notNull(), // 'work_order', 'invoice', 'contract', 'user', etc.
+  entityId: varchar("entity_id").notNull(),
+  action: text("action").notNull(), // 'created', 'updated', 'deleted', 'approved', 'rejected'
+  actorId: varchar("actor_id").notNull(),
+  details: jsonb("details"), // arbitrary JSON with change details
+  ipAddress: text("ip_address"),
+  timestamp: text("timestamp").notNull().default(sql`CURRENT_TIMESTAMP`),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const b2bAuditLogsRelations = relations(b2bAuditLogs, ({ one }) => ({
+  actor: one(users, {
+    fields: [b2bAuditLogs.actorId],
+    references: [users.id],
+  }),
+}));
+
+export const insertB2bAuditLogSchema = createInsertSchema(b2bAuditLogs).omit({ id: true, createdAt: true });
+export type InsertB2bAuditLog = z.infer<typeof insertB2bAuditLogSchema>;
+export type B2bAuditLog = typeof b2bAuditLogs.$inferSelect;
+
+// ==========================================
+// 37. Custom Reports
+// ==========================================
+export const customReports = pgTable("custom_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull(),
+  name: text("name").notNull(),
+  filters: jsonb("filters"), // { dateRange, serviceTypes, statuses, etc. }
+  columns: jsonb("columns"), // array of column configs
+  schedule: text("schedule"), // 'daily', 'weekly', 'monthly', null for on-demand
+  lastRunAt: text("last_run_at"),
+  recipientEmails: text("recipient_emails").array(),
+  isActive: boolean("is_active").default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const customReportsRelations = relations(customReports, ({ one }) => ({
+  client: one(businessAccounts, {
+    fields: [customReports.clientId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertCustomReportSchema = createInsertSchema(customReports).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCustomReport = z.infer<typeof insertCustomReportSchema>;
+export type CustomReport = typeof customReports.$inferSelect;
+
+// ==========================================
+// 38. Invoices (B2B)
+// ==========================================
+export const b2bInvoices = pgTable("b2b_invoices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull(),
+  invoiceNumber: text("invoice_number"),
+  amount: real("amount").notNull(),
+  dueDate: text("due_date").notNull(),
+  status: text("status").notNull().default("draft"), // 'draft', 'sent', 'paid', 'overdue', 'cancelled', 'void'
+  paymentTerms: text("payment_terms").default("net_30"), // 'net_15', 'net_30', 'net_45', 'net_60', 'due_on_receipt'
+  lineItems: jsonb("line_items").$type<Array<{ description: string; quantity: number; unitPrice: number; total: number }>>(),
+  paidAt: text("paid_at"),
+  paidAmount: real("paid_amount"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const b2bInvoicesRelations = relations(b2bInvoices, ({ one }) => ({
+  client: one(businessAccounts, {
+    fields: [b2bInvoices.clientId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertB2bInvoiceSchema = createInsertSchema(b2bInvoices).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertB2bInvoice = z.infer<typeof insertB2bInvoiceSchema>;
+export type B2bInvoice = typeof b2bInvoices.$inferSelect;
+
+// ==========================================
+// 39. White Label Configs
+// ==========================================
+export const whiteLabelConfigs = pgTable("white_label_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull(),
+  logoUrl: text("logo_url"),
+  primaryColor: text("primary_color"),
+  secondaryColor: text("secondary_color"),
+  customDomain: text("custom_domain"),
+  companyName: text("company_name"),
+  faviconUrl: text("favicon_url"),
+  supportEmail: text("support_email"),
+  supportPhone: text("support_phone"),
+  customCss: text("custom_css"),
+  isActive: boolean("is_active").default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const whiteLabelConfigsRelations = relations(whiteLabelConfigs, ({ one }) => ({
+  client: one(businessAccounts, {
+    fields: [whiteLabelConfigs.clientId],
+    references: [businessAccounts.id],
+  }),
+}));
+
+export const insertWhiteLabelConfigSchema = createInsertSchema(whiteLabelConfigs).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertWhiteLabelConfig = z.infer<typeof insertWhiteLabelConfigSchema>;
+export type WhiteLabelConfig = typeof whiteLabelConfigs.$inferSelect;

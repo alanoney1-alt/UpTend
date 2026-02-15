@@ -61,6 +61,16 @@ import ProTipsScreen from '../screens/ProTipsScreen';
 
 // B2B screens
 import B2BDashboardScreen from '../screens/B2BDashboardScreen';
+import ComplianceScreen from '../screens/ComplianceScreen';
+import GovernmentContractsScreen from '../screens/GovernmentContractsScreen';
+import HOACommunityScreen from '../screens/HOACommunityScreen';
+import PropertyManagementScreen from '../screens/PropertyManagementScreen';
+import ConstructionScreen from '../screens/ConstructionScreen';
+import VeteranOnboardingScreen from '../screens/VeteranOnboardingScreen';
+import VeteranMentorScreen from '../screens/VeteranMentorScreen';
+import ReportBuilderScreen from '../screens/ReportBuilderScreen';
+import InvoicingScreen from '../screens/InvoicingScreen';
+import WhiteLabelScreen from '../screens/WhiteLabelScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -213,6 +223,15 @@ function B2BPropertiesStackScreen() {
   return (
     <B2BPropertiesStack.Navigator screenOptions={{ headerShown: false }}>
       <B2BPropertiesStack.Screen name="B2BDashboard" component={B2BDashboardScreen} />
+      <B2BPropertiesStack.Screen name="Compliance" component={ComplianceScreen} />
+      <B2BPropertiesStack.Screen name="GovernmentContracts" component={GovernmentContractsScreen} />
+      <B2BPropertiesStack.Screen name="HOACommunity" component={HOACommunityScreen} />
+      <B2BPropertiesStack.Screen name="PropertyManagement" component={PropertyManagementScreen} />
+      <B2BPropertiesStack.Screen name="Construction" component={ConstructionScreen} />
+      <B2BPropertiesStack.Screen name="VeteranOnboarding" component={VeteranOnboardingScreen} />
+      <B2BPropertiesStack.Screen name="VeteranMentor" component={VeteranMentorScreen} />
+      <B2BPropertiesStack.Screen name="Invoicing" component={InvoicingScreen} />
+      <B2BPropertiesStack.Screen name="WhiteLabel" component={WhiteLabelScreen} />
     </B2BPropertiesStack.Navigator>
   );
 }
@@ -221,6 +240,7 @@ function B2BAnalyticsStackScreen() {
   return (
     <B2BAnalyticsStack.Navigator screenOptions={{ headerShown: false }}>
       <B2BAnalyticsStack.Screen name="B2BAnalytics" component={B2BDashboardScreen} />
+      <B2BAnalyticsStack.Screen name="ReportBuilder" component={ReportBuilderScreen} />
     </B2BAnalyticsStack.Navigator>
   );
 }
