@@ -308,6 +308,26 @@ export default function Admin() {
             </Link>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
+            <Link href="/admin/accounting">
+              <Button variant="outline" size="sm" data-testid="button-accounting">
+                💰 Accounting
+              </Button>
+            </Link>
+            <Link href="/admin/god-mode">
+              <Button variant="outline" size="sm" data-testid="button-god-mode">
+                God Mode
+              </Button>
+            </Link>
+            <Link href="/admin/pro-map">
+              <Button variant="outline" size="sm" data-testid="button-pro-map">
+                Pro Map
+              </Button>
+            </Link>
+            <Link href="/admin/carbon-tracking">
+              <Button variant="outline" size="sm" data-testid="button-carbon">
+                Carbon
+              </Button>
+            </Link>
             <Link href="/admin/agentic-brain">
               <Button variant="outline" size="sm" data-testid="button-agentic-brain">
                 Agentic Brain
