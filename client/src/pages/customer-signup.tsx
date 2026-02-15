@@ -256,11 +256,11 @@ export default function CustomerSignup() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
+                      <FormLabel>{t("signup.confirm_password")}</FormLabel>
                       <FormControl>
                         <Input 
                           type={showPassword ? "text" : "password"}
-                          placeholder="Confirm your password" 
+                          placeholder={t("signup.confirm_placeholder")} 
                           {...field}
                           data-testid="input-confirm-password"
                         />
@@ -279,10 +279,10 @@ export default function CustomerSignup() {
                   {signupMutation.isPending ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Creating Account...
+                      {t("signup.creating")}
                     </>
                   ) : (
-                    "Create Account & Continue"
+                    t("signup.create_btn")
                   )}
                 </Button>
               </form>
@@ -290,9 +290,9 @@ export default function CustomerSignup() {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Already have an account?{" "}
+                {t("signup.already_have")}{" "}
                 <Link href="/customer-login" className="text-primary hover:underline">
-                  Sign in
+                  {t("signup.sign_in")}
                 </Link>
               </p>
             </div>

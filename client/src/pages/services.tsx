@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
+import { useTranslation } from "react-i18next";
 
 const services = [
   // 1. AI Home Scan (Featured)
@@ -203,6 +204,7 @@ const proStandards = [
 export default function Services() {
   usePageTitle("All Home Services | UpTend Orlando");
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-services">
@@ -211,17 +213,16 @@ export default function Services() {
       <section className="bg-slate-900 dark:bg-slate-950 pt-28 pb-20 px-4 md:px-6" data-testid="section-services-hero">
         <div className="max-w-4xl mx-auto text-center">
           <Badge variant="secondary" className="mb-6" data-testid="badge-services-label">
-            The Essential Services
+            {t("services_page.badge")}
           </Badge>
           <h1 className="text-4xl md:text-5xl font-black text-white mb-6" data-testid="text-services-headline">
-            Everything Your Home Needs.{" "}
+            {t("services_page.headline_1")}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400">
-              One Platform.
+              {t("services_page.headline_2")}
             </span>
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto" data-testid="text-services-subhead">
-            From junk removal to full home scans, every service is performed by fully insured,
-            background-checked, academy-trained Pros with $1M liability coverage and full photo documentation.
+            {t("services_page.subhead")}
           </p>
         </div>
       </section>
@@ -230,7 +231,7 @@ export default function Services() {
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3">
           <div className="flex items-start gap-2 flex-wrap">
-            <span className="text-xs font-medium text-muted-foreground shrink-0 py-1.5">Jump to:</span>
+            <span className="text-xs font-medium text-muted-foreground shrink-0 py-1.5">{t("services_page.jump_to")}</span>
             {services.map((svc) => (
               <button
                 key={svc.id}
@@ -262,7 +263,7 @@ export default function Services() {
             >
               <CardContent className="p-5 md:p-8 bg-gradient-to-br from-primary/10 to-primary/5">
                 <Badge className="mb-4 bg-primary text-primary-foreground" data-testid={`badge-featured-${svc.id}`}>
-                  Featured
+                  {t("services_page.featured")}
                 </Badge>
 
                 <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6">

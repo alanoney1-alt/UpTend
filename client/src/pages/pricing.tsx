@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslation } from "react-i18next";
 
 const SERVICES = [
   {
@@ -139,6 +140,7 @@ export default function PublicPricing() {
   usePageTitle("Pricing | UpTend Home Services Orlando");
   const [, setLocation] = useLocation();
   const { user, isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   const handleBook = (serviceId: string) => {
     setLocation(`/book?service=${serviceId}`);
@@ -150,18 +152,18 @@ export default function PublicPricing() {
       <div className="pt-24 pb-16">
         <div className="text-center max-w-3xl mx-auto px-6 mb-16">
           <h1 className="text-3xl md:text-4xl font-bold mb-4" data-testid="text-pricing-headline">
-            Transparent Pricing. No Surprises.
+            {t("pricing.headline")}
           </h1>
           <p className="text-lg text-muted-foreground" data-testid="text-pricing-subhead">
             {isAuthenticated ? (
-              "Flat rates, no hidden fees. What you see is what you pay."
+              t("pricing.subhead_auth")
             ) : (
               <>
-                See our national base rates below.{" "}
+                {t("pricing.subhead_guest_prefix")}{" "}
                 <span className="text-foreground font-bold">
-                  Log in to see exact pricing
+                  {t("pricing.subhead_guest_bold")}
                 </span>{" "}
-                for your zip code.
+                {t("pricing.subhead_guest_suffix")}
               </>
             )}
           </p>
@@ -189,7 +191,7 @@ export default function PublicPricing() {
                 <span className="text-muted-foreground text-sm ml-2">/ {service.unit}</span>
                 {(service as any).bnplAvailable && ((service as any).bnplPrice || (service as any).bnplStartingPrice) >= 199 && (
                   <p className="text-xs text-primary mt-2">
-                    or 4 payments of ${Math.ceil(((service as any).bnplPrice || (service as any).bnplStartingPrice) / 4)}
+                    {t("pricing.or_payments")} ${Math.ceil(((service as any).bnplPrice || (service as any).bnplStartingPrice) / 4)}
                   </p>
                 )}
               </div>
@@ -209,7 +211,7 @@ export default function PublicPricing() {
                 size="lg"
                 data-testid={`button-book-${service.id}`}
               >
-                Book Now <ArrowRight className="w-4 h-4 ml-2" />
+                {t("common.book_now")} <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
 
               <div className="flex items-center justify-center gap-3 mt-3">
@@ -218,10 +220,10 @@ export default function PublicPricing() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                   </span>
-                  <span className="text-xs font-medium text-green-600 dark:text-green-400">{((service.id.charCodeAt(0) + service.id.charCodeAt(1)) % 7) + 5} Active Pros</span>
+                  <span className="text-xs font-medium text-green-600 dark:text-green-400">{((service.id.charCodeAt(0) + service.id.charCodeAt(1)) % 7) + 5} {t("pricing.active_pros")}</span>
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  <ShieldCheck className="w-3 h-3 inline mr-1" /> Insured
+                  <ShieldCheck className="w-3 h-3 inline mr-1" /> {t("pricing.insured")}
                 </span>
               </div>
             </div>
@@ -231,11 +233,10 @@ export default function PublicPricing() {
         <div className="max-w-4xl mx-auto mt-24 bg-slate-900 rounded-2xl p-6 md:p-12 text-center text-white relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-2xl md:text-3xl font-bold mb-4" data-testid="text-pricing-why-login">
-              Why is the final price different?
+              {t("pricing.why_different")}
             </h2>
             <p className="text-slate-300 text-lg mb-8 max-w-2xl mx-auto">
-              Our algorithm adjusts for local disposal fees, travel time, and demand in your
-              specific neighborhood.
+              {t("pricing.why_different_desc")}
             </p>
             <Button
               size="lg"
@@ -243,7 +244,7 @@ export default function PublicPricing() {
               onClick={() => setLocation("/book")}
               data-testid="button-pricing-get-exact"
             >
-              Get My Exact Price
+              {t("pricing.get_exact")}
             </Button>
           </div>
           <div className="absolute top-0 left-0 w-64 h-64 bg-primary/40 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />

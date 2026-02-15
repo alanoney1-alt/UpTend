@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import NotFound from "@/pages/not-found";
 import { GuaranteeBadge } from "@/components/guarantee-badge";
+import { useTranslation } from "react-i18next";
 
 interface ServiceData {
   name: string;
@@ -486,6 +487,7 @@ const serviceData: Record<string, ServiceData> = {
 };
 
 export default function ServiceDetail() {
+  const { t } = useTranslation();
   const params = useParams();
   const slug = (params as any).slug ?? (params as any)["0"];
   const service = slug ? serviceData[slug] : undefined;
@@ -514,7 +516,7 @@ export default function ServiceDetail() {
           <p className="text-xl font-semibold text-muted-foreground mb-6">{service.tagline}</p>
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-8">
             <MapPin className="w-4 h-4" />
-            <span>Serving Orlando Metro Area</span>
+            <span>{t("service_detail.serving")}</span>
           </div>
         </div>
       </section>
@@ -522,7 +524,7 @@ export default function ServiceDetail() {
       {/* What We Do */}
       <section className="py-16 px-6 bg-background">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">What We Do</h2>
+          <h2 className="text-3xl font-bold mb-6">{t("service_detail.what_we_do")}</h2>
           <div className="space-y-4">
             {service.whatWeDo.map((paragraph, idx) => (
               <p key={idx} className="text-lg text-muted-foreground leading-relaxed">
@@ -536,7 +538,7 @@ export default function ServiceDetail() {
       {/* How It Improves Your Home */}
       <section className="py-16 px-6 bg-muted/30">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">How It Improves Your Home</h2>
+          <h2 className="text-3xl font-bold mb-6">{t("service_detail.how_improves")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {service.howItImproves.map((benefit, idx) => (
               <Card key={idx}>
@@ -553,33 +555,33 @@ export default function ServiceDetail() {
       {/* Availability */}
       <section className="py-16 px-6 bg-background">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Availability</h2>
+          <h2 className="text-3xl font-bold mb-6">{t("service_detail.availability")}</h2>
           <div className="flex flex-wrap gap-3">
             {service.availability.sameDay && (
               <Link href={`${bookUrl}&timing=same-day`}>
                 <Badge variant="secondary" className="text-base py-2 px-4 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100 cursor-pointer hover:bg-orange-200 dark:hover:bg-orange-800 transition-colors">
-                  <Clock className="w-4 h-4 mr-2" /> Same Day
+                  <Clock className="w-4 h-4 mr-2" /> {t("service_detail.same_day")}
                 </Badge>
               </Link>
             )}
             {service.availability.nextDay && (
               <Link href={`${bookUrl}&timing=next-day`}>
                 <Badge variant="secondary" className="text-base py-2 px-4 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100 cursor-pointer hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors">
-                  <Calendar className="w-4 h-4 mr-2" /> Next Day
+                  <Calendar className="w-4 h-4 mr-2" /> {t("service_detail.next_day")}
                 </Badge>
               </Link>
             )}
             {service.availability.scheduled && (
               <Link href={`${bookUrl}&timing=scheduled`}>
                 <Badge variant="secondary" className="text-base py-2 px-4 bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                  <CalendarCheck className="w-4 h-4 mr-2" /> Scheduled
+                  <CalendarCheck className="w-4 h-4 mr-2" /> {t("service_detail.scheduled")}
                 </Badge>
               </Link>
             )}
             {service.availability.recurring && (
               <Link href={`${bookUrl}&timing=recurring`}>
                 <Badge variant="secondary" className="text-base py-2 px-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 cursor-pointer hover:bg-green-200 dark:hover:bg-green-800 transition-colors">
-                  <Repeat className="w-4 h-4 mr-2" /> Recurring
+                  <Repeat className="w-4 h-4 mr-2" /> {t("service_detail.recurring")}
                 </Badge>
               </Link>
             )}
@@ -590,7 +592,7 @@ export default function ServiceDetail() {
       {/* What's Included */}
       <section className="py-16 px-6 bg-muted/30">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">What's Included</h2>
+          <h2 className="text-3xl font-bold mb-6">{t("service_detail.whats_included")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {service.whatsIncluded.map((item, idx) => (
               <div key={idx} className="flex items-start gap-3">
@@ -605,7 +607,7 @@ export default function ServiceDetail() {
       {/* Why UpTend */}
       <section className="py-16 px-6 bg-background">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Why UpTend</h2>
+          <h2 className="text-3xl font-bold mb-6">{t("service_detail.why_uptend")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {service.whyUpTend.map((reason, idx) => (
               <Card key={idx}>
@@ -629,13 +631,13 @@ export default function ServiceDetail() {
       {/* CTA */}
       <section className="py-20 px-6 bg-slate-900 dark:bg-slate-950">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Get Started?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{t("service_detail.ready")}</h2>
           <p className="text-slate-400 text-lg mb-8">
-            Book your {service.name.toLowerCase()} service today. Get an instant quote and choose your timing.
+            {t("service_detail.book_desc", { service: service.name.toLowerCase() })}
           </p>
           <Link href={bookUrl}>
             <Button size="lg" className="text-lg px-8">
-              Get a Quote <ArrowRight className="w-5 h-5 ml-2" />
+              {t("service_detail.get_quote")} <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
           <div className="flex justify-center mt-6">

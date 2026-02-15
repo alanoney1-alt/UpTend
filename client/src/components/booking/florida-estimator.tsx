@@ -19,6 +19,8 @@ import {
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { apiRequest } from "@/lib/queryClient";
 
 interface ServicePricing {
   id: string;
@@ -157,6 +159,8 @@ interface FloridaEstimatorProps {
 export function FloridaEstimator({ preselectedService, preselectedTiming }: FloridaEstimatorProps = {}) {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
+  const [isBooking, setIsBooking] = useState(false);
   const [address, setAddress] = useState("");
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
   const [propertyData, setPropertyData] = useState<ZillowProperty | null>(null);
@@ -904,8 +908,221 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
     }
   }
 
-  // Step 6: Auth Gate
+  // Step 6: Confirm & Book (authenticated) or Auth Gate (unauthenticated)
   if (step === 6) {
+    const quoteSummary = (
+      <>
+        {aiQuote && (
+          <div className="text-center p-4 bg-muted rounded-lg">
+            <p className="text-sm text-muted-foreground mb-1">Your AI Quote</p>
+            <p className="text-3xl font-bold text-primary">
+              ${aiQuote.suggestedPriceMin} - ${aiQuote.suggestedPriceMax}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              for {selectedService}
+            </p>
+          </div>
+        )}
+
+        {manualEstimate && (
+          <div className="text-center p-4 bg-muted rounded-lg">
+            <p className="text-sm text-muted-foreground mb-1">
+              {manualEstimate.isRecurring ? "Your Monthly Quote" : "Your Preliminary Estimate"}
+            </p>
+            <p className="text-3xl font-bold text-primary">
+              ${manualEstimate.monthlyPrice || manualEstimate.estimatedPrice}
+              {manualEstimate.isRecurring && <span className="text-sm font-normal">/mo</span>}
+            </p>
+            {manualEstimate.lineItems?.length > 0 && (
+              <div className="text-left mt-3 space-y-1 border-t pt-2">
+                {manualEstimate.lineItems.slice(0, 5).map((item: any, i: number) => (
+                  <div key={i} className="flex justify-between text-xs text-muted-foreground">
+                    <span>{item.label}</span>
+                    {item.price > 0 && <span>${item.price * (item.quantity || 1)}</span>}
+                  </div>
+                ))}
+                {manualEstimate.lineItems.length > 5 && (
+                  <p className="text-xs text-muted-foreground">+{manualEstimate.lineItems.length - 5} more items</p>
+                )}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground mt-2">
+              Pro will confirm final price on-site
+            </p>
+          </div>
+        )}
+      </>
+    );
+
+    const whatsNextList = (
+      <div className="space-y-3">
+        <p className="text-sm font-medium">What happens next:</p>
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          <li className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+            <span>Verified Pro dispatched to your location</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+            <span>Track your job live with real-time updates</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+            <span>Eco-friendly disposal with verified tracking</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+            <span>Digital receipt with ESG impact certificate</span>
+          </li>
+        </ul>
+      </div>
+    );
+
+    const handleConfirmBooking = async () => {
+      setIsBooking(true);
+      try {
+        let scheduledFor = "asap";
+        let scheduledDate = new Date().toISOString();
+        let scheduledTime = "flexible";
+
+        if (schedulingData) {
+          if (schedulingData.type === "asap") {
+            scheduledFor = "asap";
+            scheduledDate = new Date().toISOString();
+            scheduledTime = "flexible";
+          } else if (schedulingData.type === "scheduled") {
+            scheduledFor = "scheduled";
+            scheduledDate = (schedulingData as any).scheduledDate || new Date().toISOString();
+            scheduledTime = (schedulingData as any).timeSlot || "flexible";
+          } else if (schedulingData.type === "recurring") {
+            scheduledFor = "recurring";
+            scheduledDate = (schedulingData as any).recurringStartDate || new Date().toISOString();
+            scheduledTime = (schedulingData as any).timeSlot || "flexible";
+          }
+        }
+
+        const description = manualEstimate
+          ? JSON.stringify(manualEstimate)
+          : aiQuote
+            ? JSON.stringify(aiQuote)
+            : "";
+
+        const estimatedPrice = manualEstimate?.estimatedPrice
+          || (aiQuote ? aiQuote.suggestedPriceMin : 0);
+
+        const body = {
+          serviceType: selectedService,
+          description,
+          scheduledDate,
+          scheduledTime,
+          scheduledFor,
+          pickupAddress: address,
+          pickupCity: "Orlando",
+          pickupState: "FL",
+          pickupZip: "32801",
+          pickupLat: 28.5383,
+          pickupLng: -81.3792,
+          estimatedSize: "standard",
+          loadEstimate: 1,
+          customerId: (user as any)?.userId || (user as any)?.id,
+          estimatedPrice,
+          createdAt: new Date().toISOString(),
+        };
+
+        await apiRequest("POST", "/api/service-requests", body);
+
+        toast({
+          title: "Booking confirmed!",
+          description: "Your service request has been created. A verified Pro will be dispatched soon.",
+        });
+
+        setLocation("/booking-success");
+      } catch (error: any) {
+        toast({
+          title: "Booking failed",
+          description: error?.message || "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsBooking(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      // Authenticated: show Confirm & Book screen
+      const serviceName = pricingServices.find(s => s.id === selectedService)?.name || selectedService;
+      return (
+        <div className="w-full max-w-2xl mx-auto" data-testid="widget-confirm-booking">
+          <div className="text-center mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setStep(5)}
+              className="mb-4 text-slate-300 hover:text-white"
+              data-testid="button-back-edit-selections"
+            >
+              ← Edit Selections
+            </Button>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+              Confirm & Book
+            </h2>
+            <p className="text-base md:text-lg text-slate-300">
+              Review your details and confirm your booking
+            </p>
+          </div>
+
+          <Card className="p-6">
+            <CardContent className="p-0 space-y-6">
+              {quoteSummary}
+
+              {/* Service details summary */}
+              <div className="space-y-2 p-4 bg-muted/50 rounded-lg">
+                <p className="text-sm font-medium">Booking Details</p>
+                <div className="grid gap-1 text-sm text-muted-foreground">
+                  <div className="flex justify-between">
+                    <span>Service</span>
+                    <span className="font-medium text-foreground">{serviceName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Address</span>
+                    <span className="font-medium text-foreground truncate ml-4 max-w-[200px]">{address}</span>
+                  </div>
+                  {schedulingData && (
+                    <div className="flex justify-between">
+                      <span>Scheduling</span>
+                      <span className="font-medium text-foreground capitalize">{schedulingData.type}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {whatsNextList}
+
+              <Button
+                onClick={handleConfirmBooking}
+                disabled={isBooking}
+                className="w-full"
+                size="lg"
+                data-testid="button-confirm-book"
+              >
+                {isBooking ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Booking...
+                  </>
+                ) : (
+                  <>
+                    Confirm & Book <ArrowRight className="ml-2 w-4 h-4" />
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    // Not authenticated: show auth gate
     return (
       <div className="w-full max-w-2xl mx-auto" data-testid="widget-auth-gate">
         <div className="text-center mb-6">
@@ -928,68 +1145,8 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
 
         <Card className="p-6">
           <CardContent className="p-0 space-y-6">
-            {/* Show quote summary */}
-            {aiQuote && (
-              <div className="text-center p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">Your AI Quote</p>
-                <p className="text-3xl font-bold text-primary">
-                  ${aiQuote.suggestedPriceMin} - ${aiQuote.suggestedPriceMax}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  for {selectedService}
-                </p>
-              </div>
-            )}
-
-            {manualEstimate && (
-              <div className="text-center p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">
-                  {manualEstimate.isRecurring ? "Your Monthly Quote" : "Your Preliminary Estimate"}
-                </p>
-                <p className="text-3xl font-bold text-primary">
-                  ${manualEstimate.monthlyPrice || manualEstimate.estimatedPrice}
-                  {manualEstimate.isRecurring && <span className="text-sm font-normal">/mo</span>}
-                </p>
-                {manualEstimate.lineItems?.length > 0 && (
-                  <div className="text-left mt-3 space-y-1 border-t pt-2">
-                    {manualEstimate.lineItems.slice(0, 5).map((item: any, i: number) => (
-                      <div key={i} className="flex justify-between text-xs text-muted-foreground">
-                        <span>{item.label}</span>
-                        {item.price > 0 && <span>${item.price * (item.quantity || 1)}</span>}
-                      </div>
-                    ))}
-                    {manualEstimate.lineItems.length > 5 && (
-                      <p className="text-xs text-muted-foreground">+{manualEstimate.lineItems.length - 5} more items</p>
-                    )}
-                  </div>
-                )}
-                <p className="text-xs text-muted-foreground mt-2">
-                  Pro will confirm final price on-site
-                </p>
-              </div>
-            )}
-
-            <div className="space-y-3">
-              <p className="text-sm font-medium">What happens next:</p>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                  <span>Verified Pro dispatched to your location</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                  <span>Track your job live with real-time updates</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                  <span>Eco-friendly disposal with verified tracking</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                  <span>Digital receipt with ESG impact certificate</span>
-                </li>
-              </ul>
-            </div>
+            {quoteSummary}
+            {whatsNextList}
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
