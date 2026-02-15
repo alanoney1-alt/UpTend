@@ -2,6 +2,8 @@ import { getUncachableStripeClient, getStripePublishableKey } from './stripeClie
 import { storage } from './storage';
 import { logError } from './utils/logger';
 
+import { getFeePercent } from './services/fee-calculator';
+
 const LLC_PLATFORM_FEE_PERCENT = 20;
 const NON_LLC_PLATFORM_FEE_PERCENT = 25;
 const NON_LLC_INSURANCE_FEE = 10;
@@ -16,20 +18,20 @@ export interface PayoutBreakdown {
 }
 
 export class StripeService {
-  getPlatformFeePercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false): number {
-    return isVerifiedLlc ? LLC_PLATFORM_FEE_PERCENT : NON_LLC_PLATFORM_FEE_PERCENT;
+  getPlatformFeePercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0): number {
+    return getFeePercent(isVerifiedLlc, activeCertCount);
   }
 
-  getHaulerPayoutPercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false): number {
-    return isVerifiedLlc ? 80 : 75;
+  getHaulerPayoutPercent(_pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0): number {
+    return 100 - getFeePercent(isVerifiedLlc, activeCertCount);
   }
 
   // Recurring/subscription services exempt from $50 minimum payout floor
   static readonly RECURRING_SERVICES = ['pool_cleaning', 'landscaping'];
   static readonly MIN_PAYOUT_FLOOR = 50;
 
-  calculatePayoutBreakdown(totalAmount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, serviceType?: string): PayoutBreakdown {
-    const platformFeePercent = this.getPlatformFeePercent(pyckerTier, isVerifiedLlc);
+  calculatePayoutBreakdown(totalAmount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, serviceType?: string, activeCertCount: number = 0): PayoutBreakdown {
+    const platformFeePercent = this.getPlatformFeePercent(pyckerTier, isVerifiedLlc, activeCertCount);
     const platformFee = Math.round(totalAmount * (platformFeePercent / 100) * 100) / 100;
     const insuranceFee = isVerifiedLlc ? 0 : NON_LLC_INSURANCE_FEE;
     let haulerPayout = Math.round((totalAmount - platformFee - insuranceFee) * 100) / 100;
@@ -137,11 +139,12 @@ export class StripeService {
     totalAmount: number,
     pyckerTier: string = 'independent',
     isVerifiedLlc: boolean = false,
-    serviceType?: string
+    serviceType?: string,
+    activeCertCount: number = 0
   ) {
     const stripe = await getUncachableStripeClient();
 
-    const breakdown = this.calculatePayoutBreakdown(totalAmount, pyckerTier, isVerifiedLlc, serviceType);
+    const breakdown = this.calculatePayoutBreakdown(totalAmount, pyckerTier, isVerifiedLlc, serviceType, activeCertCount);
 
     try {
       await stripe.paymentIntents.capture(paymentIntentId);
@@ -336,13 +339,13 @@ export class StripeService {
     return await getStripePublishableKey();
   }
 
-  calculatePlatformFee(amount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false) {
-    const platformFeePercent = this.getPlatformFeePercent(pyckerTier, isVerifiedLlc);
+  calculatePlatformFee(amount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0) {
+    const platformFeePercent = this.getPlatformFeePercent(pyckerTier, isVerifiedLlc, activeCertCount);
     return Math.round(amount * (platformFeePercent / 100) * 100) / 100;
   }
 
-  calculateHaulerPayout(amount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false) {
-    const platformFee = this.calculatePlatformFee(amount, pyckerTier, isVerifiedLlc);
+  calculateHaulerPayout(amount: number, pyckerTier: string = 'independent', isVerifiedLlc: boolean = false, activeCertCount: number = 0) {
+    const platformFee = this.calculatePlatformFee(amount, pyckerTier, isVerifiedLlc, activeCertCount);
     return Math.round((amount - platformFee) * 100) / 100;
   }
 

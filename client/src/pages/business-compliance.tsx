@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useBusinessTier } from "@/hooks/use-business-tier";
+import { UpgradePrompt } from "@/components/business/upgrade-prompt";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -58,6 +60,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function BusinessCompliance() {
+  const { isIndependent } = useBusinessTier();
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const [showAddPolicy, setShowAddPolicy] = useState(false);
@@ -141,6 +144,14 @@ export default function BusinessCompliance() {
   const expiringSoon = certificates?.filter(c => c.status === "expiring_soon").length || 0;
   const expiredCerts = certificates?.filter(c => c.status === "expired").length || 0;
   const complianceScore = certificates ? Math.round((activeCerts / certificates.length) * 100) : 0;
+
+  if (isIndependent) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
+        <UpgradePrompt featureName="Compliance Management" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

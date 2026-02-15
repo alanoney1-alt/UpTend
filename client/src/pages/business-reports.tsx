@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useBusinessTier } from "@/hooks/use-business-tier";
+import { UpgradePrompt } from "@/components/business/upgrade-prompt";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -44,6 +46,7 @@ const availableColumns = [
 ];
 
 export default function BusinessReports() {
+  const { isIndependent } = useBusinessTier();
   const { toast } = useToast();
 
   const createReportMutation = useMutation({
@@ -80,6 +83,14 @@ export default function BusinessReports() {
   const toggleColumn = (col: string) => {
     setSelectedColumns(prev => prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]);
   };
+
+  if (isIndependent) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
+        <UpgradePrompt featureName="Reports & Analytics" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

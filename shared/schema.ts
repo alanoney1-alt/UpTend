@@ -6474,3 +6474,321 @@ export const manualExpenses = pgTable("manual_expenses", {
 export const insertManualExpenseSchema = createInsertSchema(manualExpenses).omit({ id: true, createdAt: true, deletedAt: true });
 export type InsertManualExpense = z.infer<typeof insertManualExpenseSchema>;
 export type ManualExpense = typeof manualExpenses.$inferSelect;
+
+// ==========================================
+// Integration Connections
+// ==========================================
+export const integrationConnections = pgTable("integration_connections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  platform: text("platform").notNull(), // appfolio|buildium|yardi|rentmanager|realpage|cinc|townsq|vantaca|sam_gov
+  credentials: text("credentials"), // encrypted JSON string
+  status: text("status").notNull().default("disconnected"), // active|disconnected|error
+  lastSyncAt: timestamp("last_sync_at"),
+  lastSyncResult: jsonb("last_sync_result"),
+  syncFrequency: text("sync_frequency").notNull().default("manual"), // manual|hourly|daily
+  autoSync: boolean("auto_sync").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertIntegrationConnectionSchema = createInsertSchema(integrationConnections).omit({ id: true, createdAt: true });
+export type InsertIntegrationConnection = z.infer<typeof insertIntegrationConnectionSchema>;
+export type IntegrationConnection = typeof integrationConnections.$inferSelect;
+
+// ==========================================
+// Government Opportunities
+// ==========================================
+export const governmentOpportunities = pgTable("government_opportunities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  agency: text("agency"),
+  solicitationNumber: text("solicitation_number"),
+  naicsCode: text("naics_code"),
+  setAsideType: text("set_aside_type"),
+  estimatedValue: real("estimated_value"),
+  responseDeadline: timestamp("response_deadline"),
+  placeOfPerformance: text("place_of_performance"),
+  url: text("url"),
+  status: text("status").notNull().default("open"), // open|closed|awarded
+  syncedAt: timestamp("synced_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertGovernmentOpportunitySchema = createInsertSchema(governmentOpportunities).omit({ id: true, createdAt: true });
+export type InsertGovernmentOpportunity = z.infer<typeof insertGovernmentOpportunitySchema>;
+export type GovernmentOpportunity = typeof governmentOpportunities.$inferSelect;
+
+// ==========================================
+// Integration Sync Logs
+// ==========================================
+export const integrationSyncLogs = pgTable("integration_sync_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  connectionId: varchar("connection_id").notNull(),
+  platform: text("platform").notNull(),
+  action: text("action").notNull(), // sync|push|webhook
+  status: text("status").notNull(), // success|error
+  recordsProcessed: integer("records_processed").default(0),
+  details: jsonb("details"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertIntegrationSyncLogSchema = createInsertSchema(integrationSyncLogs).omit({ id: true, createdAt: true });
+export type InsertIntegrationSyncLog = z.infer<typeof insertIntegrationSyncLogSchema>;
+export type IntegrationSyncLog = typeof integrationSyncLogs.$inferSelect;
+
+// ==========================================
+// CRM Contact Mappings
+// ==========================================
+export const crmContactMappings = pgTable("crm_contact_mappings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  crmPlatform: text("crm_platform").notNull(), // salesforce|hubspot|zoho|monday|servicetitan|jobber|housecallpro|govwin
+  externalContactId: text("external_contact_id").notNull(),
+  uptendUserId: varchar("uptend_user_id"),
+  uptendPropertyId: varchar("uptend_property_id"),
+  externalData: jsonb("external_data"),
+  lastSyncAt: timestamp("last_sync_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCrmContactMappingSchema = createInsertSchema(crmContactMappings).omit({ id: true, createdAt: true });
+export type InsertCrmContactMapping = z.infer<typeof insertCrmContactMappingSchema>;
+export type CrmContactMapping = typeof crmContactMappings.$inferSelect;
+
+// ==========================================
+// Parts & Materials Requests
+// ==========================================
+export const partsRequests = pgTable("parts_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceRequestId: varchar("service_request_id").notNull(),
+  requestedByProId: varchar("requested_by_pro_id").notNull(),
+  businessAccountId: varchar("business_account_id"),
+  status: text("status").notNull().default("pending"), // pending | approved | denied | sourced | installed
+  description: text("description").notNull(),
+  photoUrl: text("photo_url"),
+  estimatedCost: real("estimated_cost"),
+  actualCost: real("actual_cost"),
+  supplierSource: text("supplier_source"), // pro | pm | uptend_partner
+  receiptUrl: text("receipt_url"),
+  approvedById: varchar("approved_by_id"),
+  approvedAt: text("approved_at"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const insertPartsRequestSchema = createInsertSchema(partsRequests).omit({ id: true });
+export type InsertPartsRequest = z.infer<typeof insertPartsRequestSchema>;
+export type PartsRequest = typeof partsRequests.$inferSelect;
+
+export const preferredSuppliers = pgTable("preferred_suppliers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  supplierName: text("supplier_name").notNull(),
+  supplierType: text("supplier_type").notNull(), // hardware | plumbing | electrical | general
+  accountNumber: text("account_number"),
+  contactInfo: text("contact_info"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const insertPreferredSupplierSchema = createInsertSchema(preferredSuppliers).omit({ id: true });
+export type InsertPreferredSupplier = z.infer<typeof insertPreferredSupplierSchema>;
+export type PreferredSupplier = typeof preferredSuppliers.$inferSelect;
+
+// ==========================================
+// Business Bookings (B2B Booking Flow)
+// ==========================================
+export const businessBookings = pgTable("business_bookings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  propertyId: varchar("property_id"), // FK to hoaProperties (null if ad-hoc address)
+  serviceRequestId: varchar("service_request_id"), // FK to serviceRequests when job is created
+  serviceType: text("service_type").notNull(),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zipCode: text("zip_code").notNull(),
+  scheduledFor: text("scheduled_for").notNull(),
+  scheduledTime: text("scheduled_time"),
+  recurringFrequency: text("recurring_frequency"), // weekly, biweekly, monthly, null for one-time
+  recurringEndDate: text("recurring_end_date"),
+  preferredProId: varchar("preferred_pro_id"), // FK to users (pro)
+  accessNotes: text("access_notes"), // gate codes, special instructions
+  gateCode: text("gate_code"),
+  specialInstructions: text("special_instructions"),
+  unitNotes: text("unit_notes"), // unit-specific notes
+  status: text("status").notNull().default("pending"), // pending, confirmed, in_progress, completed, cancelled
+  priceEstimate: real("price_estimate"),
+  finalPrice: real("final_price"),
+  bulkBookingGroupId: varchar("bulk_booking_group_id"), // groups bulk bookings together
+  billingMethod: text("billing_method").default("business_account"), // business_account, invoice
+  createdBy: varchar("created_by").notNull(), // userId who created
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at"),
+});
+
+export const businessBookingsRelations = relations(businessBookings, ({ one }) => ({
+  businessAccount: one(businessAccounts, {
+    fields: [businessBookings.businessAccountId],
+    references: [businessAccounts.id],
+  }),
+  property: one(hoaProperties, {
+    fields: [businessBookings.propertyId],
+    references: [hoaProperties.id],
+  }),
+  serviceRequest: one(serviceRequests, {
+    fields: [businessBookings.serviceRequestId],
+    references: [serviceRequests.id],
+  }),
+  preferredPro: one(users, {
+    fields: [businessBookings.preferredProId],
+    references: [users.id],
+  }),
+}));
+
+export const insertBusinessBookingSchema = createInsertSchema(businessBookings).omit({ id: true, createdAt: true });
+export type InsertBusinessBooking = z.infer<typeof insertBusinessBookingSchema>;
+export type BusinessBooking = typeof businessBookings.$inferSelect;
+
+// Business Preferred Pros
+export const businessPreferredPros = pgTable("business_preferred_pros", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  proId: varchar("pro_id").notNull(), // FK to users
+  proName: text("pro_name"),
+  serviceTypes: text("service_types").array(), // which services this pro is preferred for
+  rating: real("rating"),
+  totalJobsTogether: integer("total_jobs_together").default(0),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+});
+
+export const businessPreferredProsRelations = relations(businessPreferredPros, ({ one }) => ({
+  businessAccount: one(businessAccounts, {
+    fields: [businessPreferredPros.businessAccountId],
+    references: [businessAccounts.id],
+  }),
+  pro: one(users, {
+    fields: [businessPreferredPros.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertBusinessPreferredProSchema = createInsertSchema(businessPreferredPros).omit({ id: true, createdAt: true });
+export type InsertBusinessPreferredPro = z.infer<typeof insertBusinessPreferredProSchema>;
+export type BusinessPreferredPro = typeof businessPreferredPros.$inferSelect;
+
+// ==========================================
+// Pro Certification Academy
+// ==========================================
+
+export const certificationCategoryEnum = z.enum(["b2b", "specialty", "government"]);
+export type CertificationCategory = z.infer<typeof certificationCategoryEnum>;
+
+export const certificationStatusEnum = z.enum(["in_progress", "completed", "expired", "revoked"]);
+export type CertificationStatus = z.infer<typeof certificationStatusEnum>;
+
+export const certificationPrograms = pgTable("certification_programs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  slug: varchar("slug").notNull(),
+  description: text("description").notNull(),
+  category: varchar("category").notNull().default("b2b"), // b2b, specialty, government
+  prerequisiteCertId: varchar("prerequisite_cert_id"), // self-reference
+  requiredScore: integer("required_score").notNull().default(80),
+  modulesCount: integer("modules_count").notNull().default(0),
+  estimatedMinutes: integer("estimated_minutes").notNull().default(60),
+  expirationDays: integer("expiration_days").notNull().default(365),
+  isActive: boolean("is_active").default(true),
+  badgeIcon: text("badge_icon").default("shield"),
+  badgeColor: text("badge_color").default("#f59e0b"),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+  updatedAt: text("updated_at").notNull().default(sql`now()`),
+});
+
+export const certificationProgramsRelations = relations(certificationPrograms, ({ one, many }) => ({
+  prerequisite: one(certificationPrograms, {
+    fields: [certificationPrograms.prerequisiteCertId],
+    references: [certificationPrograms.id],
+  }),
+  modules: many(certificationModules),
+  questions: many(certificationQuestions),
+}));
+
+export const insertCertificationProgramSchema = createInsertSchema(certificationPrograms).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCertificationProgram = z.infer<typeof insertCertificationProgramSchema>;
+export type CertificationProgram = typeof certificationPrograms.$inferSelect;
+
+export const certificationModules = pgTable("certification_modules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  certificationId: varchar("certification_id").notNull(),
+  moduleNumber: integer("module_number").notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(), // markdown
+  videoUrl: text("video_url"),
+  estimatedMinutes: integer("estimated_minutes").notNull().default(15),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+});
+
+export const certificationModulesRelations = relations(certificationModules, ({ one }) => ({
+  certification: one(certificationPrograms, {
+    fields: [certificationModules.certificationId],
+    references: [certificationPrograms.id],
+  }),
+}));
+
+export const insertCertificationModuleSchema = createInsertSchema(certificationModules).omit({ id: true, createdAt: true });
+export type InsertCertificationModule = z.infer<typeof insertCertificationModuleSchema>;
+export type CertificationModule = typeof certificationModules.$inferSelect;
+
+export const certificationQuestions = pgTable("certification_questions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  certificationId: varchar("certification_id").notNull(),
+  moduleNumber: integer("module_number"),
+  question: text("question").notNull(),
+  optionA: text("option_a").notNull(),
+  optionB: text("option_b").notNull(),
+  optionC: text("option_c").notNull(),
+  optionD: text("option_d").notNull(),
+  correctOption: varchar("correct_option").notNull(), // a, b, c, d
+  explanation: text("explanation").notNull(),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+});
+
+export const certificationQuestionsRelations = relations(certificationQuestions, ({ one }) => ({
+  certification: one(certificationPrograms, {
+    fields: [certificationQuestions.certificationId],
+    references: [certificationPrograms.id],
+  }),
+}));
+
+export const insertCertificationQuestionSchema = createInsertSchema(certificationQuestions).omit({ id: true, createdAt: true });
+export type InsertCertificationQuestion = z.infer<typeof insertCertificationQuestionSchema>;
+export type CertificationQuestion = typeof certificationQuestions.$inferSelect;
+
+export const proCertifications = pgTable("pro_certifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  certificationId: varchar("certification_id").notNull(),
+  status: varchar("status").notNull().default("in_progress"), // in_progress, completed, expired, revoked
+  score: integer("score"),
+  startedAt: text("started_at").notNull().default(sql`now()`),
+  completedAt: text("completed_at"),
+  expiresAt: text("expires_at"),
+  certificateNumber: varchar("certificate_number"),
+  modulesCompleted: jsonb("modules_completed").default(sql`'[]'::jsonb`),
+  quizAttempts: integer("quiz_attempts").notNull().default(0),
+  createdAt: text("created_at").notNull().default(sql`now()`),
+});
+
+export const proCertificationsRelations = relations(proCertifications, ({ one }) => ({
+  certification: one(certificationPrograms, {
+    fields: [proCertifications.certificationId],
+    references: [certificationPrograms.id],
+  }),
+}));
+
+export const insertProCertificationSchema = createInsertSchema(proCertifications).omit({ id: true, createdAt: true });
+export type InsertProCertification = z.infer<typeof insertProCertificationSchema>;
+export type ProCertification = typeof proCertifications.$inferSelect;

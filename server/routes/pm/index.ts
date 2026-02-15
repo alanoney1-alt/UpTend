@@ -1,7 +1,7 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { requireAuth } from "../../auth-middleware";
 import { db } from "../../db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import {
   pmPortfolios,
   pmProperties,
@@ -10,6 +10,8 @@ import {
   turnoverChecklists,
   slaConfigs,
   slaTracking,
+  businessAccounts,
+  hoaProperties,
 } from "@shared/schema";
 
 function registerCrud(
@@ -17,7 +19,7 @@ function registerCrud(
   basePath: string,
   table: any,
   entityName: string,
-  opts?: { ownerField?: string }
+  opts?: { ownerField?: string; beforeCreate?: (req: Request, res: Response) => Promise<boolean> }
 ) {
   const ownerField = opts?.ownerField;
 
@@ -47,6 +49,10 @@ function registerCrud(
 
   app.post(basePath, requireAuth, async (req, res) => {
     try {
+      if (opts?.beforeCreate) {
+        const allowed = await opts.beforeCreate(req, res);
+        if (!allowed) return; // response already sent
+      }
       const userId = ((req.user as any).userId || (req.user as any).id);
       const values = ownerField ? { ...req.body, [ownerField]: userId } : req.body;
       const [created] = await db.insert(table).values(values).returning();
@@ -83,9 +89,30 @@ function registerCrud(
   });
 }
 
+async function checkPropertyLimit(req: Request, res: Response): Promise<boolean> {
+  try {
+    const userId = ((req.user as any).userId || (req.user as any).id);
+    const [account] = await db.select().from(businessAccounts).where(eq(businessAccounts.userId, userId));
+    if (account?.volumeDiscountTier === "independent") {
+      const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(hoaProperties).where(eq(hoaProperties.businessAccountId, account.id));
+      if (Number(count) >= 10) {
+        res.status(403).json({
+          error: "Property limit reached. The Independent plan supports up to 10 properties. Upgrade to add more.",
+          propertyLimit: 10,
+          currentCount: Number(count),
+        });
+        return false;
+      }
+    }
+  } catch (_e) {
+    // Non-fatal — allow through
+  }
+  return true;
+}
+
 export function registerPmRoutes(app: Express) {
   registerCrud(app, "/api/pm/portfolios", pmPortfolios, "portfolio", { ownerField: "ownerId" });
-  registerCrud(app, "/api/pm/properties", pmProperties, "property", { ownerField: "ownerId" });
+  registerCrud(app, "/api/pm/properties", pmProperties, "property", { ownerField: "ownerId", beforeCreate: checkPropertyLimit });
   registerCrud(app, "/api/pm/units", pmUnits, "unit");
   registerCrud(app, "/api/pm/work-orders", workOrders, "work order");
   registerCrud(app, "/api/pm/turnovers", turnoverChecklists, "turnover checklist");

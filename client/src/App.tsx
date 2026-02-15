@@ -94,6 +94,7 @@ const PartnersLanding = lazy(() => import("@/pages/partners/index"));
 const PartnerRegister = lazy(() => import("@/pages/partners/register"));
 const PartnerDashboard = lazy(() => import("@/pages/partners/dashboard"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
+const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
 const HomeProfilePage = lazy(() => import("@/pages/home-profile"));
 const BusinessCompliance = lazy(() => import("@/pages/business-compliance"));
 const BusinessGovernment = lazy(() => import("@/pages/business-government"));
@@ -104,6 +105,8 @@ const VeteransPage = lazy(() => import("@/pages/veterans"));
 const BusinessReports = lazy(() => import("@/pages/business-reports"));
 const B2BPricing = lazy(() => import("@/pages/b2b-pricing"));
 const BusinessInvoices = lazy(() => import("@/pages/business-invoices"));
+const BusinessOnboarding = lazy(() => import("@/pages/business-onboarding"));
+const BusinessBooking = lazy(() => import("@/pages/business-booking"));
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -153,6 +156,9 @@ function Router() {
       <Route path="/business/construction" component={BusinessConstruction} />
       <Route path="/business/reports" component={BusinessReports} />
       <Route path="/business/invoices" component={BusinessInvoices} />
+      <Route path="/business/integrations" component={BusinessIntegrations} />
+      <Route path="/business/onboarding" component={BusinessOnboarding} />
+      <Route path="/business/booking" component={BusinessBooking} />
       <Route path="/veterans" component={VeteransPage} />
       <Route path="/rewards" component={Loyalty} />
       <Route path="/loyalty" component={Loyalty} />
@@ -205,6 +211,7 @@ function Router() {
       <Route path="/become-pro" component={BecomePro} />
       <Route path="/pro-signup">{() => <Redirect to="/login?tab=pro" />}</Route>
       <Route path="/academy-syllabus" component={AcademySyllabus} />
+      <Route path="/academy/:slug" component={AcademySyllabus} />
       <Route path="/services" component={Services} />
       <Route path="/services/home-audit" component={HomeAudit} />
       <Route path="/services/audit" component={HomeAudit} />

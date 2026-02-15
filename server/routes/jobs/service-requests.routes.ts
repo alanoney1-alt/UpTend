@@ -8,6 +8,18 @@ import { updateDwellScan } from "../../services/scoringService";
 import { processEsgForCompletedJob } from "../../services/job-completion-esg-integration";
 import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobCompleted, sendProNewJob, sendProEnRoute, sendReviewReminder, sendProPaymentProcessed, sendAdminHighValueBooking } from "../../services/email-service";
 import { sendSms } from "../../services/notifications";
+import { db as feeDb } from "../../db";
+import { sql as feeSql } from "drizzle-orm";
+
+async function getActiveCertCountForPro(proId: string): Promise<number> {
+  const now = new Date().toISOString();
+  const result = await feeDb.execute(feeSql`
+    SELECT COUNT(*) as count FROM pro_certifications
+    WHERE pro_id = ${proId} AND status = 'completed'
+      AND (expires_at IS NULL OR expires_at > ${now})
+  `);
+  return Number((result.rows[0] as any)?.count || 0);
+}
 
 import { broadcastToJob } from "../../websocket";
 import { logJobPayment } from "../../services/accounting-service";
@@ -382,13 +394,15 @@ export function registerServiceRequestRoutes(app: Express) {
             isVerifiedLlc = haulerProfile?.isVerifiedLlc || false;
           }
 
+          const activeCertCount = existingRequest.assignedHaulerId ? await getActiveCertCountForPro(existingRequest.assignedHaulerId) : 0;
           paymentResult = await stripeService.capturePaymentAndPayHauler(
             existingRequest.stripePaymentIntentId,
             haulerStripeAccountId,
             baseServicePrice,
             pyckerTier,
             isVerifiedLlc,
-            existingRequest.serviceType // Pass serviceType for $50 minimum payout floor exemption on recurring services
+            existingRequest.serviceType, // Pass serviceType for $50 minimum payout floor exemption on recurring services
+            activeCertCount
           );
           paymentStatus = "captured";
           capturedPayment = true;

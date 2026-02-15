@@ -16,6 +16,9 @@ import { registerGoogleAuthRoutes } from "./auth/google.routes";
 import { registerProProfileRoutes, registerHaulerProfileRoutes } from "./hauler/profile.routes";
 import { registerProStatusRoutes, registerHaulerStatusRoutes } from "./hauler/status.routes";
 import { registerProAcademyRoutes, registerAcademyRoutes } from "./hauler/academy.routes";
+import { registerAcademyCertificationRoutes, seedCertificationPrograms } from "./academy/index";
+import { registerCertificationGatingRoutes } from "./hauler/certification-gating.routes";
+import { registerFeeStatusRoutes } from "./hauler/fee-status.routes";
 
 // Customer routes
 import { registerCustomerAccountRoutes } from "./customer/account.routes";
@@ -66,7 +69,6 @@ import { registerBusinessTeamRoutes } from "./business/index";
 
 // Referral routes
 import { registerReferralRoutes } from "./referrals/referral.routes";
-import { registerCustomerReferralRoutes } from "./customer/referrals.routes";
 
 // AI routes
 import { registerAiAnalysisRoutes } from "./ai/analysis.routes";
@@ -119,6 +121,7 @@ import { registerHomeProfileRoutes } from "./home-profile.routes";
 
 // Scope Change / Guaranteed Price Ceiling routes
 import { registerScopeChangeRoutes } from "./scope-change.routes";
+import { registerPartsRequestRoutes } from "./parts-requests.routes";
 
 // Pro map routes
 import { registerActiveNearbyRoutes } from "./hauler/active-nearby.routes";
@@ -177,6 +180,7 @@ export async function registerRoutes(
   // Seed initial data
   await storage.seedOrlando25PromoCode();
   await storage.seedInitialData();
+  await seedCertificationPrograms();
 
   // Register authentication routes
   await registerProAuthRoutes(app);
@@ -189,6 +193,9 @@ export async function registerRoutes(
   registerProProfileRoutes(app);
   registerProStatusRoutes(app);
   registerProAcademyRoutes(app);
+  registerAcademyCertificationRoutes(app);
+  registerCertificationGatingRoutes(app);
+  registerFeeStatusRoutes(app);
 
   // Register customer routes
   registerCustomerAccountRoutes(app);
@@ -239,7 +246,6 @@ export async function registerRoutes(
 
   // Register referral routes
   registerReferralRoutes(app);
-  registerCustomerReferralRoutes(app);
 
   // Register AI routes
   registerAiAnalysisRoutes(app);
@@ -290,6 +296,9 @@ export async function registerRoutes(
 
   // Register Scope Change / Guaranteed Price Ceiling routes
   registerScopeChangeRoutes(app);
+
+  // Register Parts & Materials request routes
+  registerPartsRequestRoutes(app);
 
   // Pro map routes (public + admin)
   registerActiveNearbyRoutes(app);

@@ -1,191 +1,189 @@
 /**
- * PM Software Integration Webhook Receivers
+ * Integration Routes - Central registration for all third-party integrations
  * 
- * These endpoints receive webhook pushes from property management software.
- * Each maps the incoming payload to UpTend's work_orders format.
- * 
- * Webhook URLs (give these to the PM software):
- *   POST https://your-domain.com/api/integrations/appfolio/sync
- *   POST https://your-domain.com/api/integrations/buildium/sync
- *   POST https://your-domain.com/api/integrations/yardi/sync
- *   GET  https://your-domain.com/api/integrations/status
- * 
- * Authentication: Include X-Integration-Key header with the configured secret.
+ * CRM: Salesforce, HubSpot, Zoho, Monday.com, ServiceTitan, Jobber, Housecall Pro, GovWin
+ * Property Management: AppFolio, Buildium, Yardi, Rent Manager, RealPage
+ * HOA Management: CINC Systems, TownSq, Vantaca
+ * Government: SAM.gov, USASpending.gov, FEMA
  */
-
 import type { Express } from "express";
 import { db } from "../../db";
-import { workOrders } from "@shared/schema";
-import { z } from "zod";
+import { integrationConnections, integrationSyncLogs } from "@shared/schema";
+import { eq } from "drizzle-orm";
+import { syncAll } from "../../services/integration-sync";
 
-// Shared work order mapping schema
-const workOrderPayloadSchema = z.object({
-  externalId: z.string().optional(),
-  unitId: z.string().min(1),
-  tenantId: z.string().optional(),
-  description: z.string().min(1),
-  priority: z.enum(["emergency", "urgent", "normal", "low"]).default("normal"),
-  photos: z.array(z.string()).optional(),
-});
+// CRM Integrations
+import { registerSalesforceRoutes } from "./salesforce";
+import { registerHubspotRoutes } from "./hubspot";
+import { registerZohoRoutes } from "./zoho";
+import { registerMondayRoutes } from "./monday";
+import { registerServiceTitanRoutes } from "./servicetitan";
+import { registerJobberRoutes } from "./jobber";
+import { registerHousecallProRoutes } from "./housecallpro";
+import { registerGovwinRoutes } from "./govwin";
 
-// AppFolio webhook payload
-const appfolioPayloadSchema = z.object({
-  event_type: z.string(),
-  work_order: z.object({
-    id: z.string().or(z.number()).transform(String),
-    unit_id: z.string(),
-    tenant_id: z.string().optional(),
-    description: z.string(),
-    priority: z.string().optional(),
-    images: z.array(z.string()).optional(),
-  }),
-});
+// Property Management
+import { registerAppfolioRoutes } from "./appfolio";
+import { registerBuildiumRoutes } from "./buildium";
+import { registerYardiRoutes } from "./yardi";
+import { registerRentManagerRoutes } from "./rentmanager";
+import { registerRealPageRoutes } from "./realpage";
 
-// Buildium webhook payload
-const buildiumPayloadSchema = z.object({
-  EventType: z.string(),
-  WorkOrder: z.object({
-    Id: z.string().or(z.number()).transform(String),
-    UnitId: z.string(),
-    TenantId: z.string().optional(),
-    Description: z.string(),
-    Priority: z.string().optional(),
-    Attachments: z.array(z.string()).optional(),
-  }),
-});
+// HOA Management
+import { registerCincRoutes } from "./cinc";
+import { registerTownSqRoutes } from "./townsq";
+import { registerVantacaRoutes } from "./vantaca";
 
-// Yardi webhook payload
-const yardiPayloadSchema = z.object({
-  type: z.string(),
-  data: z.object({
-    work_order_id: z.string().or(z.number()).transform(String),
-    unit_code: z.string(),
-    tenant_code: z.string().optional(),
-    description: z.string(),
-    priority_level: z.string().optional(),
-    photo_urls: z.array(z.string()).optional(),
-  }),
-});
-
-function mapPriority(raw?: string): "emergency" | "urgent" | "normal" | "low" {
-  if (!raw) return "normal";
-  const lower = raw.toLowerCase();
-  if (lower.includes("emergency") || lower.includes("critical")) return "emergency";
-  if (lower.includes("urgent") || lower.includes("high")) return "urgent";
-  if (lower.includes("low")) return "low";
-  return "normal";
-}
-
-function validateIntegrationKey(req: any, res: any, envKey: string): boolean {
-  const secret = process.env[envKey];
-  if (!secret) return true; // No key configured = allow (dev mode)
-  const provided = req.headers["x-integration-key"];
-  if (provided !== secret) {
-    res.status(401).json({ error: "Invalid integration key" });
-    return false;
-  }
-  return true;
-}
+// Government
+import { registerSamGovRoutes } from "./sam-gov";
+import { registerUsaSpendingRoutes } from "./usaspending";
+import { registerFemaRoutes } from "./fema";
 
 export function registerIntegrationRoutes(app: Express) {
-  // POST /api/integrations/appfolio/sync
-  app.post("/api/integrations/appfolio/sync", async (req, res) => {
-    if (!validateIntegrationKey(req, res, "APPFOLIO_WEBHOOK_SECRET")) return;
+  // Register CRM routes
+  registerSalesforceRoutes(app);
+  registerHubspotRoutes(app);
+  registerZohoRoutes(app);
+  registerMondayRoutes(app);
+  registerServiceTitanRoutes(app);
+  registerJobberRoutes(app);
+  registerHousecallProRoutes(app);
+  registerGovwinRoutes(app);
+
+  // Register PM/HOA/Gov routes
+  registerAppfolioRoutes(app);
+  registerBuildiumRoutes(app);
+  registerYardiRoutes(app);
+  registerRentManagerRoutes(app);
+  registerRealPageRoutes(app);
+  registerCincRoutes(app);
+  registerTownSqRoutes(app);
+  registerVantacaRoutes(app);
+  registerSamGovRoutes(app);
+  registerUsaSpendingRoutes(app);
+  registerFemaRoutes(app);
+
+  // ===== Unified endpoints =====
+
+  // GET /api/integrations/status — All integrations status for a business account
+  app.get("/api/integrations/status", async (req, res) => {
     try {
-      const payload = appfolioPayloadSchema.parse(req.body);
-      const wo = payload.work_order;
-
-      const [record] = await db.insert(workOrders).values({
-        unitId: wo.unit_id,
-        tenantId: wo.tenant_id || null,
-        description: `[AppFolio #${wo.id}] ${wo.description}`,
-        priority: mapPriority(wo.priority),
-        photos: wo.images || [],
-        status: "open",
-      }).returning();
-
-      console.log(`[Integration] AppFolio work order synced: ${record.id}`);
-      res.status(201).json({ success: true, workOrderId: record.id, source: "appfolio" });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid AppFolio payload", details: error.errors });
+      const businessAccountId = req.query.businessAccountId as string;
+      if (!businessAccountId) {
+        // Return general integration info
+        return res.json({
+          available: [
+            { platform: "salesforce", name: "Salesforce", category: "crm", auth: "oauth2" },
+            { platform: "hubspot", name: "HubSpot", category: "crm", auth: "oauth2" },
+            { platform: "zoho", name: "Zoho CRM", category: "crm", auth: "oauth2" },
+            { platform: "monday", name: "Monday.com", category: "crm", auth: "api_key" },
+            { platform: "servicetitan", name: "ServiceTitan", category: "crm", auth: "oauth2" },
+            { platform: "jobber", name: "Jobber", category: "crm", auth: "oauth2" },
+            { platform: "housecallpro", name: "Housecall Pro", category: "crm", auth: "api_key" },
+            { platform: "govwin", name: "GovWin", category: "crm", auth: "api_key" },
+            { platform: "appfolio", name: "AppFolio", category: "property_management", auth: "oauth2" },
+            { platform: "buildium", name: "Buildium", category: "property_management", auth: "api_key" },
+            { platform: "yardi", name: "Yardi Voyager/Breeze", category: "property_management", auth: "credentials" },
+            { platform: "rentmanager", name: "Rent Manager", category: "property_management", auth: "api_key" },
+            { platform: "realpage", name: "RealPage", category: "property_management", auth: "api_key" },
+            { platform: "cinc", name: "CINC Systems", category: "hoa_management", auth: "api_key" },
+            { platform: "townsq", name: "TownSq", category: "hoa_management", auth: "api_key" },
+            { platform: "vantaca", name: "Vantaca", category: "hoa_management", auth: "api_key" },
+            { platform: "sam_gov", name: "SAM.gov", category: "government", auth: "api_key" },
+            { platform: "usaspending", name: "USASpending.gov", category: "government", auth: "none" },
+            { platform: "fema", name: "FEMA", category: "government", auth: "none" },
+          ],
+        });
       }
-      console.error("AppFolio sync error:", error);
-      res.status(500).json({ error: "Failed to process AppFolio webhook" });
+
+      const connections = await db.select().from(integrationConnections)
+        .where(eq(integrationConnections.businessAccountId, businessAccountId));
+
+      const integrations = connections.map(c => ({
+        platform: c.platform,
+        status: c.status,
+        lastSyncAt: c.lastSyncAt,
+        lastSyncResult: c.lastSyncResult,
+        syncFrequency: c.syncFrequency,
+        autoSync: c.autoSync,
+      }));
+
+      res.json({ businessAccountId, connections: integrations });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get integration status" });
     }
   });
 
-  // POST /api/integrations/buildium/sync
-  app.post("/api/integrations/buildium/sync", async (req, res) => {
-    if (!validateIntegrationKey(req, res, "BUILDIUM_WEBHOOK_SECRET")) return;
+  // POST /api/integrations/sync-all — Trigger sync for all connected integrations
+  app.post("/api/integrations/sync-all", async (req, res) => {
     try {
-      const payload = buildiumPayloadSchema.parse(req.body);
-      const wo = payload.WorkOrder;
-
-      const [record] = await db.insert(workOrders).values({
-        unitId: wo.UnitId,
-        tenantId: wo.TenantId || null,
-        description: `[Buildium #${wo.Id}] ${wo.Description}`,
-        priority: mapPriority(wo.Priority),
-        photos: wo.Attachments || [],
-        status: "open",
-      }).returning();
-
-      console.log(`[Integration] Buildium work order synced: ${record.id}`);
-      res.status(201).json({ success: true, workOrderId: record.id, source: "buildium" });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid Buildium payload", details: error.errors });
-      }
-      console.error("Buildium sync error:", error);
-      res.status(500).json({ error: "Failed to process Buildium webhook" });
+      const { businessAccountId } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      const results = await syncAll(businessAccountId);
+      res.json({ success: true, results });
+    } catch (error: any) {
+      res.status(500).json({ error: "Sync-all failed", details: error.message });
     }
   });
 
-  // POST /api/integrations/yardi/sync
-  app.post("/api/integrations/yardi/sync", async (req, res) => {
-    if (!validateIntegrationKey(req, res, "YARDI_WEBHOOK_SECRET")) return;
+  // GET /api/integrations/sync-logs — Recent sync logs
+  app.get("/api/integrations/sync-logs", async (req, res) => {
     try {
-      const payload = yardiPayloadSchema.parse(req.body);
-      const wo = payload.data;
+      const businessAccountId = req.query.businessAccountId as string;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
 
-      const [record] = await db.insert(workOrders).values({
-        unitId: wo.unit_code,
-        tenantId: wo.tenant_code || null,
-        description: `[Yardi #${wo.work_order_id}] ${wo.description}`,
-        priority: mapPriority(wo.priority_level),
-        photos: wo.photo_urls || [],
-        status: "open",
-      }).returning();
+      const connections = await db.select().from(integrationConnections)
+        .where(eq(integrationConnections.businessAccountId, businessAccountId));
+      const connectionIds = connections.map(c => c.id);
 
-      console.log(`[Integration] Yardi work order synced: ${record.id}`);
-      res.status(201).json({ success: true, workOrderId: record.id, source: "yardi" });
+      if (connectionIds.length === 0) return res.json({ logs: [] });
+
+      const logs = await db.select().from(integrationSyncLogs)
+        .where(eq(integrationSyncLogs.connectionId, connectionIds[0])) // TODO: IN clause
+        .orderBy(integrationSyncLogs.createdAt)
+        .limit(50);
+
+      res.json({ logs });
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid Yardi payload", details: error.errors });
-      }
-      console.error("Yardi sync error:", error);
-      res.status(500).json({ error: "Failed to process Yardi webhook" });
+      res.status(500).json({ error: "Failed to get sync logs" });
     }
   });
 
-  // GET /api/integrations/status
-  app.get("/api/integrations/status", async (_req, res) => {
-    res.json({
-      integrations: {
-        appfolio: {
-          configured: !!process.env.APPFOLIO_WEBHOOK_SECRET,
-          webhookUrl: "/api/integrations/appfolio/sync",
-        },
-        buildium: {
-          configured: !!process.env.BUILDIUM_WEBHOOK_SECRET,
-          webhookUrl: "/api/integrations/buildium/sync",
-        },
-        yardi: {
-          configured: !!process.env.YARDI_WEBHOOK_SECRET,
-          webhookUrl: "/api/integrations/yardi/sync",
-        },
-      },
-    });
+  // POST /api/integrations/disconnect — Disconnect an integration
+  app.post("/api/integrations/disconnect", async (req, res) => {
+    try {
+      const { businessAccountId, platform } = req.body;
+      if (!businessAccountId || !platform) return res.status(400).json({ error: "Missing required fields" });
+
+      await db.update(integrationConnections)
+        .set({ status: "disconnected", credentials: null })
+        .where(eq(integrationConnections.businessAccountId, businessAccountId));
+
+      res.json({ success: true, message: `${platform} disconnected` });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to disconnect integration" });
+    }
+  });
+
+  // POST /api/integrations/settings — Update sync frequency/auto-sync
+  app.post("/api/integrations/settings", async (req, res) => {
+    try {
+      const { businessAccountId, platform, syncFrequency, autoSync } = req.body;
+      if (!businessAccountId || !platform) return res.status(400).json({ error: "Missing required fields" });
+
+      const updates: Record<string, any> = {};
+      if (syncFrequency) updates.syncFrequency = syncFrequency;
+      if (autoSync !== undefined) updates.autoSync = autoSync;
+
+      const connections = await db.select().from(integrationConnections)
+        .where(eq(integrationConnections.businessAccountId, businessAccountId));
+      const conn = connections.find(c => c.platform === platform);
+      if (!conn) return res.status(404).json({ error: "Integration not found" });
+
+      await db.update(integrationConnections).set(updates).where(eq(integrationConnections.id, conn.id));
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update settings" });
+    }
   });
 }

@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useBusinessTier } from "@/hooks/use-business-tier";
+import { UpgradePrompt } from "@/components/business/upgrade-prompt";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +48,7 @@ const frequencies = [
 ];
 
 export default function BusinessDashboard() {
+  const { isIndependent } = useBusinessTier();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const demoUserId = "demo-business-user";
@@ -336,6 +339,11 @@ export default function BusinessDashboard() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        {isIndependent && (
+          <div className="mb-6">
+            <UpgradePrompt featureName="Advanced Features" variant="banner" />
+          </div>
+        )}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           <Card className="p-4">
             <div className="flex items-center gap-3">
@@ -381,6 +389,15 @@ export default function BusinessDashboard() {
               </div>
             </div>
           </Card>
+        </div>
+
+        <div className="mb-6">
+          <Link href="/business/booking">
+            <Button className="bg-amber-600 hover:bg-amber-700 text-white">
+              <CalendarClock className="w-4 h-4 mr-2" />
+              Book a Service
+            </Button>
+          </Link>
         </div>
 
         <Tabs defaultValue="recurring" className="space-y-6">

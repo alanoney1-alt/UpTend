@@ -9,6 +9,7 @@ import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { createChatCompletion } from "../../services/ai/anthropic-client";
 import { db } from "../../db";
 import { sql } from "drizzle-orm";
+import { filterCertifiedPros } from "../../services/certification-guard";
 
 // Haversine distance in miles
 function haversine(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -78,7 +79,13 @@ export function createDispatchIntelligenceRoutes(storage: DatabaseStorage) {
       });
 
       candidates.sort((a: any, b: any) => b.score - a.score);
-      const top = candidates.slice(0, 10);
+
+      // Filter by certification requirements
+      const allCandidateIds = candidates.map((c: any) => c.proId);
+      const certifiedIds = await filterCertifiedPros(allCandidateIds, sr.service_type, sr.business_account_id || undefined);
+      const certifiedSet = new Set(certifiedIds);
+      const certFiltered = candidates.filter((c: any) => certifiedSet.has(c.proId));
+      const top = certFiltered.slice(0, 10);
 
       // AI reasoning for top matches
       let reasoning = "";
@@ -265,8 +272,15 @@ export function createDispatchIntelligenceRoutes(storage: DatabaseStorage) {
         LIMIT 20
       `);
 
-      const pros = (prosResult.rows || []) as any[];
-      if (pros.length === 0) return res.status(404).json({ error: "No available pros" });
+      const allPros = (prosResult.rows || []) as any[];
+      if (allPros.length === 0) return res.status(404).json({ error: "No available pros" });
+
+      // Filter by certification requirements
+      const allProIds = allPros.map((p: any) => p.id);
+      const certifiedProIds = await filterCertifiedPros(allProIds, sr.service_type, sr.business_account_id || undefined);
+      const certSet = new Set(certifiedProIds);
+      const pros = allPros.filter((p: any) => certSet.has(p.id));
+      if (pros.length === 0) return res.status(404).json({ error: "No certified pros available for this job type" });
 
       // Score and pick best
       let best: any = null;

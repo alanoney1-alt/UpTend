@@ -59,6 +59,8 @@ import { CarbonDispatcher } from "@/components/carbon-dispatcher";
 import { ComplianceVault } from "@/components/compliance-vault";
 import { VerificationGatesDisplay } from "@/components/verification-gates";
 import { EsgImpactDashboard } from "@/components/esg-impact-dashboard";
+import { CertificationDashboardSection } from "@/components/pro/certification-dashboard-section";
+import { FeeProgressWidget } from "@/components/pro/fee-progress";
 import { ImpactWidget } from "@/components/dashboard/impact-widget";
 import { FileText, Route, Store } from "lucide-react";
 import { ProMarketplace } from "@/components/marketplace/pro-marketplace";
@@ -3020,6 +3022,12 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       {currentPro?.profile && !currentPro.profile.icaAcceptedAt && (
         <ICABanner onSign={() => setShowIcaModal(true)} />
       )}
+
+      {/* === FEE PROGRESS === */}
+      <FeeProgressWidget />
+
+      {/* === CERTIFICATIONS === */}
+      <CertificationDashboardSection />
 
       {/* === MISSION CONTROL HEADER === */}
       <div className="mb-6 space-y-4">

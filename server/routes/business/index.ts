@@ -8,10 +8,18 @@ import { requireAuth } from "../../middleware/auth";
 import teamManagementRoutes from "./team-management.routes";
 import businessAccountRoutes from "./accounts.routes";
 import recurringJobRoutes from "./recurring-jobs.routes";
+import onboardingRoutes from "./onboarding.routes";
+import bookingRoutes from "./booking.routes";
 
 export function registerBusinessTeamRoutes(app: Express) {
+  // Onboarding routes (no auth required for self-serve signup)
+  app.use("/api/business", onboardingRoutes);
+
   // Team management routes
   app.use("/api/business", requireAuth, teamManagementRoutes);
+
+  // Business booking routes
+  app.use("/api/business", bookingRoutes);
 
   // Business account routes (dashboard)
   app.use("/api/business-accounts", businessAccountRoutes);

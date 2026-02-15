@@ -71,6 +71,9 @@ import VeteranMentorScreen from '../screens/VeteranMentorScreen';
 import ReportBuilderScreen from '../screens/ReportBuilderScreen';
 import InvoicingScreen from '../screens/InvoicingScreen';
 import WhiteLabelScreen from '../screens/WhiteLabelScreen';
+import AcademyScreen from '../screens/AcademyScreen';
+import BusinessBookingScreen from '../screens/BusinessBookingScreen';
+import PartsRequestScreen from '../screens/PartsRequestScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -163,6 +166,7 @@ function ProJobsStackScreen() {
       <ProJobsStack.Screen name="IncidentLog" component={IncidentLogScreen} />
       <ProJobsStack.Screen name="DamageProtection" component={DamageProtectionScreen} />
       <ProJobsStack.Screen name="ScopeMeasure" component={ScopeMeasureScreen} />
+      <ProJobsStack.Screen name="PartsRequest" component={PartsRequestScreen} />
     </ProJobsStack.Navigator>
   );
 }
@@ -200,6 +204,7 @@ function ProProfileStackScreen() {
       <ProProfileStack.Screen name="Emergency" component={EmergencyScreen} />
       <ProProfileStack.Screen name="IdentityVerify" component={IdentityVerifyScreen} />
       <ProProfileStack.Screen name="ProTips" component={ProTipsScreen} />
+      <ProProfileStack.Screen name="Academy" component={AcademyScreen} />
     </ProProfileStack.Navigator>
   );
 }
@@ -232,6 +237,8 @@ function B2BPropertiesStackScreen() {
       <B2BPropertiesStack.Screen name="VeteranMentor" component={VeteranMentorScreen} />
       <B2BPropertiesStack.Screen name="Invoicing" component={InvoicingScreen} />
       <B2BPropertiesStack.Screen name="WhiteLabel" component={WhiteLabelScreen} />
+      <B2BPropertiesStack.Screen name="BusinessBooking" component={BusinessBookingScreen} />
+      <B2BPropertiesStack.Screen name="Academy" component={AcademyScreen} />
     </B2BPropertiesStack.Navigator>
   );
 }

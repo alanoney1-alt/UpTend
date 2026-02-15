@@ -33,7 +33,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Truck, ArrowRight, ArrowLeft, CheckCircle, Shield, DollarSign,
   User, Phone, Mail, MapPin, Car, FileText, CreditCard, Clock,
-  Loader2, AlertTriangle, Building2, Plus, X, Lock
+  Loader2, AlertTriangle, Building2, Plus, X, Lock, TrendingUp, GraduationCap, Star, Award
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { PhotoUpload, MultiPhotoUpload } from "@/components/photo-upload";
@@ -101,7 +101,8 @@ const steps = [
   { id: 3, title: "Vehicle Details", icon: Car },
   { id: 4, title: "Verification", icon: Shield },
   { id: 5, title: "Agreement", icon: FileText },
-  { id: 6, title: "Complete", icon: CheckCircle },
+  { id: 6, title: "Earn More", icon: TrendingUp },
+  { id: 7, title: "Complete", icon: CheckCircle },
 ];
 
 const vehicleTypes = [
@@ -338,7 +339,7 @@ export default function PyckerSignup() {
       return response.json();
     },
     onSuccess: () => {
-      setCurrentStep(6);
+      setCurrentStep(6); // Certification preview step
       toast({
         title: "Application Submitted!",
         description: "We'll review your application and get back to you within 24-48 hours.",
@@ -354,7 +355,7 @@ export default function PyckerSignup() {
   });
 
   const nextStep = () => {
-    if (currentStep < 5) {
+    if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -1371,6 +1372,117 @@ export default function PyckerSignup() {
             )}
 
             {currentStep === 6 && (
+              <Card className="p-8" data-testid="card-step-certifications-pro">
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-500/10 flex items-center justify-center">
+                    <GraduationCap className="w-8 h-8 text-amber-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold mb-2">Unlock Premium Jobs with Certifications</h2>
+                  <p className="text-muted-foreground max-w-lg mx-auto">
+                    UpTend Certified pros earn more and get priority access to high-value contracts
+                  </p>
+                </div>
+
+                {/* Career Ladder Tiers */}
+                <div className="space-y-4 max-w-xl mx-auto mb-8">
+                  {/* Elite Tier */}
+                  <div className="relative p-5 rounded-xl border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50">
+                    <div className="absolute -top-3 left-4">
+                      <Badge className="bg-amber-500 text-white"><Award className="w-3 h-3 mr-1" />Elite Certified</Badge>
+                    </div>
+                    <div className="mt-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="font-semibold text-amber-900">Government contracts, emergency dispatch</p>
+                          <p className="text-sm text-amber-700">Top-tier rates • Priority matching</p>
+                        </div>
+                        <span className="text-2xl font-bold text-amber-700">$6,200<span className="text-sm font-normal">/mo</span></span>
+                      </div>
+                      <p className="text-xs text-amber-600">Requires: Emergency Response + Government Contract certs</p>
+                    </div>
+                  </div>
+
+                  {/* B2B Tier */}
+                  <div className="relative p-5 rounded-xl border-2 border-orange-300 bg-gradient-to-r from-orange-50/50 to-amber-50/50">
+                    <div className="absolute -top-3 left-4">
+                      <Badge className="bg-orange-500 text-white"><Star className="w-3 h-3 mr-1" />B2B Certified</Badge>
+                    </div>
+                    <div className="mt-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="font-semibold">Property management + HOA contracts</p>
+                          <p className="text-sm text-muted-foreground">40% more earnings • Recurring jobs</p>
+                        </div>
+                        <span className="text-2xl font-bold text-orange-600">$4,500<span className="text-sm font-normal">/mo</span></span>
+                      </div>
+                      <p className="text-xs text-orange-600">Requires: B2B Property Management + HOA certs</p>
+                    </div>
+                  </div>
+
+                  {/* Starter Tier */}
+                  <div className="relative p-5 rounded-xl border border-muted bg-muted/30">
+                    <div className="absolute -top-3 left-4">
+                      <Badge variant="secondary">Starter — You are here</Badge>
+                    </div>
+                    <div className="mt-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="font-semibold">Consumer jobs, standard rates</p>
+                          <p className="text-sm text-muted-foreground">Start earning right away</p>
+                        </div>
+                        <span className="text-2xl font-bold text-muted-foreground">$2,800<span className="text-sm font-normal">/mo</span></span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">No certifications needed</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Earnings Comparison Bar */}
+                <div className="max-w-xl mx-auto mb-8">
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-3">Average Monthly Earnings</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs w-16 text-right text-muted-foreground">Starter</span>
+                      <div className="flex-1 bg-muted rounded-full h-6 overflow-hidden">
+                        <div className="bg-gray-400 h-full rounded-full flex items-center justify-end pr-2" style={{ width: "45%" }}>
+                          <span className="text-xs font-semibold text-white">$2,800</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs w-16 text-right text-orange-600 font-medium">B2B</span>
+                      <div className="flex-1 bg-muted rounded-full h-6 overflow-hidden">
+                        <div className="bg-orange-500 h-full rounded-full flex items-center justify-end pr-2" style={{ width: "73%" }}>
+                          <span className="text-xs font-semibold text-white">$4,500</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs w-16 text-right text-amber-600 font-medium">Elite</span>
+                      <div className="flex-1 bg-muted rounded-full h-6 overflow-hidden">
+                        <div className="bg-amber-500 h-full rounded-full flex items-center justify-end pr-2" style={{ width: "100%" }}>
+                          <span className="text-xs font-semibold text-white">$6,200</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link href="/academy">
+                    <Button className="bg-amber-600 hover:bg-amber-700 text-white px-8">
+                      <GraduationCap className="w-4 h-4 mr-2" />
+                      Start Your First Certification
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" onClick={() => setCurrentStep(7)} data-testid="button-skip-certs">
+                    Skip for now <ArrowRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {currentStep === 7 && (
               <Card className="p-8 text-center" data-testid="card-step-complete-pro">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-green-500" />

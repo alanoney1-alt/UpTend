@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useBusinessTier } from "@/hooks/use-business-tier";
+import { UpgradePrompt } from "@/components/business/upgrade-prompt";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -66,6 +68,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function BusinessProperties() {
+  const { isIndependent } = useBusinessTier();
   const [woFilter, setWoFilter] = useState("all");
   const { toast } = useToast();
 
@@ -175,6 +178,28 @@ export default function BusinessProperties() {
       </header>
 
       <main className="container mx-auto px-4 py-8 pb-24">
+        {/* Property Limit for Independent Tier */}
+        {isIndependent && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-amber-800">
+                {portfolio.totalProperties}/10 properties
+              </span>
+              {portfolio.totalProperties >= 8 && (
+                <Badge className="bg-amber-100 text-amber-700 text-xs">
+                  {portfolio.totalProperties >= 10 ? "Limit reached" : "Almost full"}
+                </Badge>
+              )}
+            </div>
+            <Progress value={(portfolio.totalProperties / 10) * 100} className="h-2" />
+            {portfolio.totalProperties >= 10 && (
+              <p className="text-xs text-amber-700 mt-2">
+                You've reached the 10-property limit on the Independent plan.{" "}
+                <Link href="/b2b-pricing"><span className="underline font-medium cursor-pointer">Upgrade to Starter</span></Link> to add more.
+              </p>
+            )}
+          </div>
+        )}
         {/* Portfolio Overview */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card className="p-4">

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Check, Building2, Home, HardHat, Landmark, Star, ArrowRight, HelpCircle } from "lucide-react";
+import { Check, Building2, Home, HardHat, Landmark, Star, ArrowRight, HelpCircle, X, Zap } from "lucide-react";
 
 type Plan = {
   id: string;
@@ -66,9 +66,11 @@ function PlanCard({ plan, featured }: { plan: Plan; featured?: boolean }) {
         <p className="text-xs text-gray-400 mt-4">{plan.transactionFeePct}% transaction fee on booked services</p>
       </CardContent>
       <CardFooter className="flex flex-col gap-2">
-        <Button className={`w-full ${featured ? "bg-orange-500 hover:bg-orange-600" : "bg-gray-900 hover:bg-gray-800"}`}>
-          Start Free Trial <ArrowRight className="w-4 h-4 ml-1" />
-        </Button>
+        <a href="/business/onboarding">
+          <Button className={`w-full ${featured ? "bg-orange-500 hover:bg-orange-600" : "bg-gray-900 hover:bg-gray-800"}`}>
+            Start Free Trial <ArrowRight className="w-4 h-4 ml-1" />
+          </Button>
+        </a>
         {plan.tier === "enterprise" && (
           <Button variant="outline" className="w-full border-orange-500 text-orange-600 hover:bg-orange-50">
             Contact Sales
@@ -124,6 +126,58 @@ export default function B2BPricing() {
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
           Not just software — a complete workforce management platform with real people, real compliance, and real results. Choose the plan that fits your portfolio.
         </p>
+      </div>
+
+      {/* Independent Tier — Free Entry Point */}
+      <div className="max-w-4xl mx-auto px-4 pb-12">
+        <Card className="border-2 border-orange-400 shadow-lg overflow-hidden">
+          <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-3 flex items-center gap-2">
+            <Zap className="h-5 w-5 text-white" />
+            <span className="text-white font-semibold">Perfect for Independent Operators</span>
+            <Badge className="bg-white/20 text-white ml-auto">No Credit Card Required</Badge>
+          </div>
+          <div className="p-8 flex flex-col md:flex-row gap-8 items-center">
+            <div className="flex-1 space-y-4">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Independent</h3>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="text-4xl font-bold text-orange-500">$0</span>
+                  <span className="text-gray-500">/month — forever</span>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Manage up to 10 properties with no subscription fees. Pay only a 7% transaction fee when you book a pro.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {["Book vetted pros", "Track jobs in real-time", "Basic notifications", "Property list & management"].map((f, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm">
+                    <Check className="h-4 w-4 text-orange-500 shrink-0" />
+                    <span>{f}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2 pt-1">
+                {["SLA management", "Compliance", "Reports", "CSV import"].map((f, i) => (
+                  <span key={i} className="inline-flex items-center gap-1 text-xs text-gray-400">
+                    <X className="h-3 w-3" />{f}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <a href="/business/onboarding?plan=independent">
+                <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-lg px-8">
+                  Get Started Free <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </a>
+              <p className="text-xs text-gray-500">1–10 properties • 7% per booking</p>
+            </div>
+          </div>
+        </Card>
+
+        <div className="text-center mt-8 mb-2">
+          <p className="text-gray-500 text-sm">Need more? Choose a paid plan below for advanced features and higher limits.</p>
+        </div>
       </div>
 
       {/* Pricing Tabs */}
@@ -188,9 +242,11 @@ export default function B2BPricing() {
           Join hundreds of businesses using UpTend's Workforce-as-a-Service platform. Start your free trial today.
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50">
-            Start Free Trial
-          </Button>
+          <a href="/business/onboarding">
+            <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50">
+              Start Free Trial
+            </Button>
+          </a>
           <Button size="lg" variant="outline" className="border-white text-white hover:bg-orange-600">
             Contact Sales
           </Button>

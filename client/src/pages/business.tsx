@@ -51,7 +51,7 @@ export default function Business() {
             {t("biz.hero_subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/business/register">
+            <Link href="/business/onboarding">
               <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 text-lg">
                 {t("biz.get_started")} <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
@@ -230,7 +230,7 @@ export default function Business() {
       <section className="py-20 px-4 bg-gradient-to-b from-slate-950 to-slate-900">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("biz.cta_headline")}</h2>
-          <Link href="/business/register">
+          <Link href="/business/onboarding">
             <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-10 text-lg">
               {t("biz.get_started")} <ArrowRight className="ml-2 w-5 h-5" />
             </Button>

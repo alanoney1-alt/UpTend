@@ -2,6 +2,18 @@ import type { Express } from "express";
 import { storage } from "../../storage";
 import { requireAuth, requireHauler } from "../../auth-middleware";
 import { stripeService } from "../../stripeService";
+import { db } from "../../db";
+import { sql } from "drizzle-orm";
+
+async function getActiveCertCount(proId: string): Promise<number> {
+  const now = new Date().toISOString();
+  const result = await db.execute(sql`
+    SELECT COUNT(*) as count FROM pro_certifications
+    WHERE pro_id = ${proId} AND status = 'completed'
+      AND (expires_at IS NULL OR expires_at > ${now})
+  `);
+  return Number((result.rows[0] as any)?.count || 0);
+}
 
 export function registerPaymentRoutes(app: Express) {
   // Get Stripe publishable key
@@ -192,13 +204,15 @@ export function registerPaymentRoutes(app: Express) {
       // Use base service price (excluding 7% customer protection fee) for payout calculation
       // If baseServicePrice was stored at create-intent time, use it; otherwise derive it
       const baseServicePrice = job.baseServicePrice || (totalAmount / 1.07);
+      const activeCertCount = job.assignedHaulerId ? await getActiveCertCount(job.assignedHaulerId) : 0;
       const result = await stripeService.capturePaymentAndPayHauler(
         job.stripePaymentIntentId,
         haulerStripeAccountId,
         baseServicePrice,
         pyckerTier,
         isVerifiedLlc,
-        job.serviceType // Pass serviceType for $50 minimum payout floor exemption on recurring services
+        job.serviceType, // Pass serviceType for $50 minimum payout floor exemption on recurring services
+        activeCertCount
       );
 
       await storage.updateServiceRequest(jobId, {
@@ -634,7 +648,8 @@ export function registerPaymentRoutes(app: Express) {
       // Use base service price (excluding 7% customer protection fee) for payout calculation
       const baseServicePrice = job.baseServicePrice || (totalAmount / 1.07);
       // Use calculatePayoutBreakdown for consistency with actual capture logic
-      const breakdown = stripeService.calculatePayoutBreakdown(baseServicePrice, pyckerTier, isVerifiedLlc, job.serviceType);
+      const activeCertCount = job.assignedHaulerId ? await getActiveCertCount(job.assignedHaulerId) : 0;
+      const breakdown = stripeService.calculatePayoutBreakdown(baseServicePrice, pyckerTier, isVerifiedLlc, job.serviceType, activeCertCount);
 
       res.json({
         totalAmount: breakdown.totalAmount,
