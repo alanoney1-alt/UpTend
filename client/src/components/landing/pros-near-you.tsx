@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Shield, Star, Users } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
+import { useTranslation } from "react-i18next";
 
 interface ActivePro {
   id: string;
@@ -43,6 +44,7 @@ const SAMPLE_PROS: ActivePro[] = [
 ];
 
 export function ProsNearYou() {
+  const { t } = useTranslation();
   const [pros, setPros] = useState<ActivePro[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalOnline, setTotalOnline] = useState(0);
@@ -75,10 +77,9 @@ export function ProsNearYou() {
     <section className="py-16 px-4 bg-gradient-to-b from-background to-muted/30">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-3">Pros Active Right Now</h2>
+          <h2 className="text-3xl font-bold mb-3">{t("pros_near.headline")}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Real verified professionals in the Orlando metro area, ready to help.
-            Every pro is background-checked with $1M liability insurance.
+            {t("pros_near.subhead")}
           </p>
         </div>
 
@@ -86,15 +87,15 @@ export function ProsNearYou() {
         <div className="flex justify-center gap-6 mb-8 flex-wrap">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-sm font-medium">{totalOnline || "—"} Pros Online</span>
+            <span className="text-sm font-medium">{t("pros_near.pros_online", { count: totalOnline || "—" })}</span>
           </div>
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium">All Verified & Insured</span>
+            <span className="text-sm font-medium">{t("pros_near.verified_insured")}</span>
           </div>
           <div className="flex items-center gap-2">
             <Star className="w-4 h-4 text-amber-500" />
-            <span className="text-sm font-medium">4.8 Avg Rating</span>
+            <span className="text-sm font-medium">{t("pros_near.avg_rating")}</span>
           </div>
         </div>
 
@@ -104,7 +105,7 @@ export function ProsNearYou() {
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
                 <Users className="w-12 h-12 mx-auto text-muted-foreground mb-3 animate-pulse" />
-                <p className="text-muted-foreground">Loading active Pros...</p>
+                <p className="text-muted-foreground">{t("pros_near.loading")}</p>
               </div>
             </div>
           ) : (
@@ -140,7 +141,7 @@ export function ProsNearYou() {
         </Card>
 
         <p className="text-center text-sm text-muted-foreground mt-4">
-          Pro locations are approximate for privacy. Exact location shared only after booking.
+          {t("pros_near.privacy_note")}
         </p>
       </div>
     </section>

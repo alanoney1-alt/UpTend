@@ -2,90 +2,92 @@ import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Droplets, Shield as LadderIcon, Package, Hammer, Stethoscope } from "lucide-react";
-
-const services = [
-  {
-    icon: Stethoscope,
-    title: "AI Home Scan",
-    shortTitle: "AI Home Scan",
-    tagline: "Know your home inside out.",
-    spin: "Full interior walkthrough and personalized maintenance report. Upgrade to AI Home Scan Aerial for $249 and add a drone-powered roof and gutter scan.",
-    price: "Starting at $99",
-    color: "text-green-600 dark:text-green-400",
-    bgColor: "bg-green-500/10",
-    bookParam: "home_consultation",
-  },
-  {
-    icon: Truck,
-    title: "Eco-Friendly Disposal & Decluttering",
-    shortTitle: "Junk Removal",
-    tagline: "We haul it all. Garages, furniture, appliances.",
-    spin: "We don't just dump it. We sort, donate, and recycle to keep Orlando green.",
-    price: "$99+",
-    color: "text-primary",
-    bgColor: "bg-primary/10",
-    bookParam: "junk_removal",
-  },
-  {
-    icon: Package,
-    title: "On-Demand Logistics & Heavy Lifting",
-    shortTitle: "Moving Helpers",
-    tagline: "Strong backs for heavy lifting.",
-    spin: "Certified movers to safely load, unload, or rearrange your heavy furniture.",
-    price: "$65/hr",
-    color: "text-violet-600 dark:text-violet-400",
-    bgColor: "bg-violet-500/10",
-    bookParam: "moving_labor",
-  },
-  {
-    icon: LadderIcon,
-    title: "Drainage & Roof Protection",
-    shortTitle: "Gutter Cleaning",
-    tagline: "Protect your roof before the storm.",
-    spin: "Prevent water damage and pest nesting with our debris-free guarantee.",
-    price: "From $150",
-    color: "text-emerald-600 dark:text-emerald-400",
-    bgColor: "bg-emerald-500/10",
-    bookParam: "gutter_cleaning",
-  },
-  {
-    icon: Droplets,
-    title: "Exterior Surface Restoration",
-    shortTitle: "Pressure Washing",
-    tagline: "Delete HOA violations instantly.",
-    spin: "Commercial-grade cleaning for driveways, patios, and walkways to meet HOA standards.",
-    price: "From $120",
-    color: "text-primary",
-    bgColor: "bg-primary/10",
-    bookParam: "pressure_washing",
-  },
-  {
-    icon: Hammer,
-    title: "Structure Removal & Site Prep",
-    shortTitle: "Light Demo",
-    tagline: "Shed & carpet removal made easy.",
-    spin: "Safe dismantling of sheds, carpets, and non-structural fixtures.",
-    price: "From $199",
-    color: "text-amber-600 dark:text-amber-400",
-    bgColor: "bg-amber-500/10",
-    bookParam: "light_demolition",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export function EssentialServices() {
+  const { t } = useTranslation();
+
+  const services = [
+    {
+      icon: Stethoscope,
+      title: t("essential.ai_home_scan"),
+      shortTitle: t("essential.ai_home_scan_short"),
+      tagline: t("essential.ai_home_scan_tagline"),
+      spin: t("essential.ai_home_scan_spin"),
+      price: t("essential.ai_home_scan_price"),
+      color: "text-green-600 dark:text-green-400",
+      bgColor: "bg-green-500/10",
+      bookParam: "home_consultation",
+    },
+    {
+      icon: Truck,
+      title: t("essential.junk_removal"),
+      shortTitle: t("essential.junk_removal_short"),
+      tagline: t("essential.junk_removal_tagline"),
+      spin: t("essential.junk_removal_spin"),
+      price: t("essential.junk_removal_price"),
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      bookParam: "junk_removal",
+    },
+    {
+      icon: Package,
+      title: t("essential.moving_helpers"),
+      shortTitle: t("essential.moving_helpers_short"),
+      tagline: t("essential.moving_helpers_tagline"),
+      spin: t("essential.moving_helpers_spin"),
+      price: t("essential.moving_helpers_price"),
+      color: "text-violet-600 dark:text-violet-400",
+      bgColor: "bg-violet-500/10",
+      bookParam: "moving_labor",
+    },
+    {
+      icon: LadderIcon,
+      title: t("essential.gutter_cleaning"),
+      shortTitle: t("essential.gutter_cleaning_short"),
+      tagline: t("essential.gutter_cleaning_tagline"),
+      spin: t("essential.gutter_cleaning_spin"),
+      price: t("essential.gutter_cleaning_price"),
+      color: "text-emerald-600 dark:text-emerald-400",
+      bgColor: "bg-emerald-500/10",
+      bookParam: "gutter_cleaning",
+    },
+    {
+      icon: Droplets,
+      title: t("essential.pressure_washing"),
+      shortTitle: t("essential.pressure_washing_short"),
+      tagline: t("essential.pressure_washing_tagline"),
+      spin: t("essential.pressure_washing_spin"),
+      price: t("essential.pressure_washing_price"),
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      bookParam: "pressure_washing",
+    },
+    {
+      icon: Hammer,
+      title: t("essential.light_demo"),
+      shortTitle: t("essential.light_demo_short"),
+      tagline: t("essential.light_demo_tagline"),
+      spin: t("essential.light_demo_spin"),
+      price: t("essential.light_demo_price"),
+      color: "text-amber-600 dark:text-amber-400",
+      bgColor: "bg-amber-500/10",
+      bookParam: "light_demolition",
+    },
+  ];
+
   return (
     <section id="services" className="py-16 md:py-24" data-testid="section-essential-services">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="text-center mb-12">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">
-            UpTend Property Care Suite
+            {t("essential.suite_label")}
           </p>
           <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="text-services-headline">
-            Maintain Your Home. Protect Your Asset.
+            {t("essential.headline")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From storm prep to spring cleaning, our Essential Property Maintenance services
-            keep your home in top shape year-round.
+            {t("essential.subhead")}
           </p>
         </div>
 

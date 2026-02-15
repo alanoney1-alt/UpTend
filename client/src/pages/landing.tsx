@@ -438,7 +438,7 @@ function WhySection() {
             <Card className="shadow-lg" data-testid="card-services-grid">
               <CardContent className="p-8">
                 <h3 className="font-bold text-muted-foreground uppercase text-xs tracking-wider mb-6">
-                  All Services
+                  {t("landing.all_services")}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {services.map((svc) => (
