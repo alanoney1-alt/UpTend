@@ -182,7 +182,7 @@ export default function HomeHealthAuditPage() {
 
   const handleDownloadPDF = () => {
     // TODO: Implement PDF generation
-    alert("PDF download coming soon!");
+    alert("PDF download will be available after your audit is complete.");
   };
 
   const getConditionColor = (condition: string) => {

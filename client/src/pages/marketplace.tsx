@@ -167,12 +167,20 @@ export default function MarketplacePage() {
         {filteredItems.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No items found</h3>
-              <p className="text-sm text-muted-foreground mb-4">
+              <Store className="w-12 h-12 mx-auto mb-4 text-orange-400" />
+              <h3 className="text-lg font-semibold mb-2">
+                {searchQuery || (categoryFilter && categoryFilter !== "all") || (conditionFilter && conditionFilter !== "all")
+                  ? "No items match your filters"
+                  : "Marketplace Coming Soon"}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-2">
                 {searchQuery || (categoryFilter && categoryFilter !== "all") || (conditionFilter && conditionFilter !== "all")
                   ? "Try adjusting your filters"
-                  : "Check back soon for new listings"}
+                  : "Our Pros recover quality furniture, appliances, and household items during junk removal jobs."}
+              </p>
+              <p className="text-sm text-muted-foreground mb-4">
+                {!(searchQuery || (categoryFilter && categoryFilter !== "all") || (conditionFilter && conditionFilter !== "all"))
+                  && "Browse rescued items at great prices — and keep them out of the landfill. Listings go live when Pros start posting recovered items."}
               </p>
               {(searchQuery || (categoryFilter && categoryFilter !== "all") || (conditionFilter && conditionFilter !== "all")) && (
                 <Button

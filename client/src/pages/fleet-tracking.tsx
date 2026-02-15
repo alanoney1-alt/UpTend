@@ -67,7 +67,7 @@ export default function FleetTracking() {
             <Card className="mb-6">
               <CardContent className="py-8 text-center text-muted-foreground bg-muted/30">
                 <MapPin className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">Map view coming soon — integrate Google Maps or Mapbox here</p>
+                <p className="text-sm">Map view available when Google Maps API is enabled</p>
                 <p className="text-xs mt-1">
                   Bounding box: {Math.min(...data.locations.map(l => l.lat)).toFixed(4)}–{Math.max(...data.locations.map(l => l.lat)).toFixed(4)} lat,{" "}
                   {Math.min(...data.locations.map(l => l.lng)).toFixed(4)}–{Math.max(...data.locations.map(l => l.lng)).toFixed(4)} lng

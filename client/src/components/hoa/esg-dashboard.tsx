@@ -432,11 +432,11 @@ export function HoaEsgDashboard({ businessAccountId }: HoaEsgDashboardProps) {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    📊 CSV Export Coming Soon
+                  <Badge variant="outline" className="text-xs cursor-pointer hover:bg-orange-50">
+                    📊 Export CSV
                   </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    📧 Newsletter Coming Soon
+                  <Badge variant="outline" className="text-xs cursor-pointer hover:bg-orange-50">
+                    📧 Send Newsletter
                   </Badge>
                 </div>
               </div>

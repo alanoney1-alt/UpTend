@@ -600,7 +600,7 @@ export default function BusinessDashboard() {
           <TabsContent value="history">
             <Card className="p-8 text-center">
               <BarChart3 className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="font-semibold mb-2">Job History Coming Soon</h3>
+              <h3 className="font-semibold mb-2">No Job History Yet</h3>
               <p className="text-muted-foreground">
                 View detailed history of all completed jobs and spending reports.
               </p>

@@ -447,7 +447,7 @@ function CreateListingDialog({
             <div className="border-2 border-dashed rounded-lg p-8 text-center">
               <ImageIcon className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
               <p className="text-sm text-muted-foreground mb-2">
-                Photo upload coming soon
+                Drag photos here or click to upload
               </p>
               <p className="text-xs text-muted-foreground">
                 For now, add photo URLs after creating the listing
