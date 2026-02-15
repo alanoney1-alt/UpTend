@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { index, jsonb, pgTable, timestamp, varchar, text, real, boolean } from "drizzle-orm/pg-core";
+import { index, integer, jsonb, pgTable, timestamp, varchar, text, real, boolean } from "drizzle-orm/pg-core";
 
 // Session storage table.
 // (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
@@ -33,6 +33,9 @@ export const users = pgTable("users", {
   googleId: text("google_id"),
   stripeCustomerId: text("stripe_customer_id"),
   totalJobsCompleted: real("total_jobs_completed").default(0),
+  // Chargeback/Dispute Risk Fields
+  disputeCount: integer("dispute_count").default(0),
+  riskLevel: text("risk_level").default("normal"), // 'normal' | 'elevated' | 'high'
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

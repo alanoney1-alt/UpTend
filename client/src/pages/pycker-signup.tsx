@@ -38,6 +38,7 @@ import {
 import { apiRequest } from "@/lib/queryClient";
 import { PhotoUpload, MultiPhotoUpload } from "@/components/photo-upload";
 import { ServicesSelector } from "@/components/services-selector";
+import { ICAAgreement, type ICAAcceptanceData } from "@/components/auth/ica-agreement";
 
 const vehicleSchema = z.object({
   vehicleType: z.string().min(1, "Vehicle type required"),
@@ -99,7 +100,8 @@ const steps = [
   { id: 2, title: "Personal Info", icon: User },
   { id: 3, title: "Vehicle Details", icon: Car },
   { id: 4, title: "Verification", icon: Shield },
-  { id: 5, title: "Complete", icon: CheckCircle },
+  { id: 5, title: "Agreement", icon: FileText },
+  { id: 6, title: "Complete", icon: CheckCircle },
 ];
 
 const vehicleTypes = [
@@ -154,6 +156,9 @@ export default function PyckerSignup() {
   const [idPhotoUrl, setIdPhotoUrl] = useState<string | null>(null);
   const [generalLiabilityDocUrl, setGeneralLiabilityDocUrl] = useState<string | null>(null);
   const [vehicleInsuranceDocUrl, setVehicleInsuranceDocUrl] = useState<string | null>(null);
+
+  // ICA acceptance state
+  const [icaData, setIcaData] = useState<ICAAcceptanceData | null>(null);
 
   // Services selection state
   const [selectedServices, setSelectedServices] = useState<string[]>(["junk_removal", "furniture_moving"]);
@@ -309,7 +314,7 @@ export default function PyckerSignup() {
 
   const signupMutation = useMutation({
     mutationFn: async (data: SignupForm) => {
-      // Include vehicles array, photo URLs, and selected services in the payload
+      // Include vehicles array, photo URLs, selected services, and ICA data in the payload
       const payload = {
         ...data,
         vehicles: vehicles.filter(v => v.vehicleType), // Only include vehicles with a type selected
@@ -317,6 +322,9 @@ export default function PyckerSignup() {
         driversLicensePhotoUrl: driversLicensePhotoUrl || undefined,
         serviceTypes: selectedServices,
         supportedServices: selectedServices,
+        icaSignedName: icaData?.signedName,
+        icaAcceptedAt: icaData?.acceptedAt,
+        icaVersion: icaData?.icaVersion,
       };
       const response = await fetch("/api/pros/register", {
         method: "POST",
@@ -330,7 +338,7 @@ export default function PyckerSignup() {
       return response.json();
     },
     onSuccess: () => {
-      setCurrentStep(5);
+      setCurrentStep(6);
       toast({
         title: "Application Submitted!",
         description: "We'll review your application and get back to you within 24-48 hours.",
@@ -346,7 +354,7 @@ export default function PyckerSignup() {
   });
 
   const nextStep = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -1342,24 +1350,27 @@ export default function PyckerSignup() {
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back
                   </Button>
-                  <Button type="submit" disabled={signupMutation.isPending} data-testid="button-submit-application">
-                    {signupMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Submitting...
-                      </>
-                    ) : (
-                      <>
-                        Submit Application
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </>
-                    )}
+                  <Button type="button" onClick={handleNext} data-testid="button-next-step-4">
+                    Continue to Agreement
+                    <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
               </Card>
             )}
 
             {currentStep === 5 && (
+              <ICAAgreement
+                contractorName={`${form.getValues("firstName")} ${form.getValues("lastName")}`}
+                onAccept={(data) => {
+                  setIcaData(data);
+                  form.handleSubmit(onSubmit)();
+                }}
+                onBack={prevStep}
+                isSubmitting={signupMutation.isPending}
+              />
+            )}
+
+            {currentStep === 6 && (
               <Card className="p-8 text-center" data-testid="card-step-complete-pro">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-green-500" />

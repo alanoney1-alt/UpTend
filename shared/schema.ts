@@ -172,6 +172,10 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   // Same-Day Service
   sameDayAvailable: boolean("same_day_available").default(false), // Opt-in to same-day jobs
   sameDayRadius: integer("same_day_radius").default(15), // Miles radius for same-day availability
+  // Independent Contractor Agreement (ICA)
+  icaAcceptedAt: text("ica_accepted_at"), // ISO timestamp when ICA was accepted
+  icaSignedName: text("ica_signed_name"), // Full legal name typed as electronic signature
+  icaVersion: text("ica_version"), // Version of ICA accepted (e.g., "v1.0")
 });
 
 export const haulerProfilesRelations = relations(haulerProfiles, ({ one, many }) => ({
@@ -407,6 +411,11 @@ export const serviceRequests = pgTable("service_requests", {
   ceilingOutcome: text("ceiling_outcome"), // 'under_ceiling' | 'at_ceiling' | 'scope_change'
   customerSavings: real("customer_savings"),
   ceilingLockedAt: text("ceiling_locked_at"),
+  // Chargeback/Dispute Protection Fields
+  tosAcceptedAt: text("tos_accepted_at"),
+  cancellationPolicyAcceptedAt: text("cancellation_policy_accepted_at"),
+  customerSignoffAt: text("customer_signoff_at"),
+  customerSignoffMethod: text("customer_signoff_method"), // 'manual' | 'auto' | null
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
@@ -6321,3 +6330,36 @@ export const b2bSubscriptionsRelations = relations(b2bSubscriptions, ({ one }) =
 export const insertB2bSubscriptionSchema = createInsertSchema(b2bSubscriptions).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertB2bSubscription = z.infer<typeof insertB2bSubscriptionSchema>;
 export type B2bSubscription = typeof b2bSubscriptions.$inferSelect;
+
+// ==========================================
+// Chargeback/Dispute Protection
+// ==========================================
+export const chargebackDisputes = pgTable("chargeback_disputes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobId: varchar("job_id"),
+  customerId: varchar("customer_id"),
+  stripeDisputeId: text("stripe_dispute_id"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  amount: integer("amount"), // cents
+  reason: text("reason"),
+  status: text("status").default("needs_response"), // needs_response, under_review, won, lost
+  evidenceSubmittedAt: text("evidence_submitted_at"),
+  resolvedAt: text("resolved_at"),
+  outcome: text("outcome"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const chargebackDisputesRelations = relations(chargebackDisputes, ({ one }) => ({
+  job: one(serviceRequests, {
+    fields: [chargebackDisputes.jobId],
+    references: [serviceRequests.id],
+  }),
+  customer: one(users, {
+    fields: [chargebackDisputes.customerId],
+    references: [users.id],
+  }),
+}));
+
+export const insertChargebackDisputeSchema = createInsertSchema(chargebackDisputes).omit({ id: true });
+export type InsertChargebackDispute = z.infer<typeof insertChargebackDisputeSchema>;
+export type ChargebackDispute = typeof chargebackDisputes.$inferSelect;

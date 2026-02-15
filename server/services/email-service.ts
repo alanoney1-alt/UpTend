@@ -140,6 +140,27 @@ export async function sendProNewJob(to: string, job: any) {
   return send(to, "New UpTend Job Available!", html, text);
 }
 
+export async function sendDisputeAlert(to: string, dispute: any, job: any, customer: any) {
+  const amt = money(dispute.amount / 100);
+  const customerName = customer ? `${customer.firstName || ""} ${customer.lastName || ""}`.trim() || "Unknown" : "Unknown";
+  const html = wrap("⚠️ Chargeback Dispute Alert", `
+    <p style="color:#c00;font-weight:bold;font-size:16px">A chargeback dispute has been filed!</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 0;color:#555;border-bottom:1px solid #eee"><strong>Dispute ID</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee">${dispute.id}</td></tr>
+      <tr><td style="padding:8px 0;color:#555;border-bottom:1px solid #eee"><strong>Amount</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee">${amt}</td></tr>
+      <tr><td style="padding:8px 0;color:#555;border-bottom:1px solid #eee"><strong>Reason</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee">${dispute.reason || "unknown"}</td></tr>
+      <tr><td style="padding:8px 0;color:#555;border-bottom:1px solid #eee"><strong>Customer</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee">${customerName} (${customer?.email || "N/A"})</td></tr>
+      <tr><td style="padding:8px 0;color:#555;border-bottom:1px solid #eee"><strong>Service</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee">${job?.serviceType || "N/A"}</td></tr>
+      <tr><td style="padding:8px 0;color:#555;border-bottom:1px solid #eee"><strong>Job ID</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee">${job?.id || "N/A"}</td></tr>
+      <tr><td style="padding:8px 0;color:#555;border-bottom:1px solid #eee"><strong>TOS Accepted</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee">${job?.tosAcceptedAt || "Not recorded"}</td></tr>
+      <tr><td style="padding:8px 0;color:#555;border-bottom:1px solid #eee"><strong>Customer Signoff</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee">${job?.customerSignoffAt || "Not signed"}</td></tr>
+    </table>
+    <p style="color:#555">Evidence has been automatically compiled and submitted to Stripe. Check your Stripe Dashboard for details.</p>
+  `);
+  const text = `DISPUTE ALERT: ${dispute.id} | Amount: ${amt} | Reason: ${dispute.reason} | Customer: ${customerName} | Job: ${job?.id}`;
+  return send(to, "⚠️ Chargeback Dispute — " + amt, html, text);
+}
+
 export async function sendWelcomeEmail(to: string, user: any) {
   const html = wrap("Welcome to UpTend! 👋", `
     <p style="color:#555;line-height:1.6">Hi ${user.firstName || "there"},</p>

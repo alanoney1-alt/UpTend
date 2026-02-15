@@ -145,6 +145,10 @@ import { registerB2bPricingRoutes } from "./b2b-pricing/index";
 
 // White-label routes
 import { registerWhiteLabelRoutes, whiteLabelMiddleware } from "./white-label/index";
+import { registerUploadRoutes } from "./upload.routes";
+
+// Stripe Dispute / Chargeback Protection routes
+import { registerStripeDisputeRoutes } from "./stripe-disputes";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -309,9 +313,13 @@ export async function registerRoutes(
   // Register B2B Pricing routes
   registerB2bPricingRoutes(app);
 
+  // Register Stripe Dispute / Chargeback Protection routes
+  registerStripeDisputeRoutes(app);
+
   // Register White-label middleware and routes
   app.use(whiteLabelMiddleware());
   registerWhiteLabelRoutes(app);
+  registerUploadRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

@@ -1,6 +1,7 @@
 import { getUncachableStripeClient } from './stripeClient';
 import { storage } from './storage';
 import { sendJobCompleted } from './services/email-service';
+import { handleDisputeWithEvidence } from './routes/stripe-disputes';
 import Stripe from 'stripe';
 
 export class WebhookHandlers {
@@ -210,35 +211,14 @@ export class WebhookHandlers {
   }
 
   /**
-   * charge.dispute.created — Log dispute, flag job, alert admin.
+   * charge.dispute.created — Log dispute, compile evidence, submit to Stripe, alert admin.
    */
   private static async handleDisputeCreated(dispute: Stripe.Dispute): Promise<void> {
-    const chargeId = typeof dispute.charge === 'string' ? dispute.charge : dispute.charge?.id;
     const amount = dispute.amount / 100;
     const reason = dispute.reason || 'unknown';
-    const piId = typeof dispute.payment_intent === 'string' ? dispute.payment_intent : dispute.payment_intent?.id;
+    console.error(`[WEBHOOK][ADMIN][DISPUTE] Dispute ${dispute.id} created! Amount: $${amount}, Reason: ${reason}`);
 
-    console.error(`[WEBHOOK][ADMIN][DISPUTE] Dispute ${dispute.id} created! Amount: $${amount}, Reason: ${reason}, Charge: ${chargeId}, PI: ${piId || 'n/a'}`);
-
-    // Try to find the associated job via the payment intent metadata
-    if (piId) {
-      try {
-        const stripe = await getUncachableStripeClient();
-        const pi = await stripe.paymentIntents.retrieve(piId);
-        const jobId = pi.metadata?.jobId;
-
-        if (jobId) {
-          const job = await storage.getServiceRequest(jobId);
-          if (job) {
-            await storage.updateServiceRequest(jobId, {
-              paymentStatus: 'disputed',
-            });
-            console.error(`[WEBHOOK][ADMIN][DISPUTE] Job ${jobId} marked as disputed. Customer: ${job.customerId}, Amount: $${amount}, Reason: ${reason}`);
-          }
-        }
-      } catch (err: any) {
-        console.error(`[WEBHOOK] Failed to look up job for dispute ${dispute.id}:`, err.message);
-      }
-    }
+    // Delegate to the full evidence compilation & submission handler
+    await handleDisputeWithEvidence(dispute);
   }
 }

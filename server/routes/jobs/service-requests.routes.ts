@@ -432,7 +432,7 @@ export function registerServiceRequestRoutes(app: Express) {
   });
 
   // Photo upload for job proof of completion
-  app.post("/api/jobs/upload-photos", requireAuth, photoUpload.array("photos", 10), async (req, res) => {
+  app.post("/api/jobs/upload-photos", requireAuth, photoUpload.any(), async (req, res) => {
     try {
       const { jobId, photoType } = req.body; // photoType: "before" | "after"
       const files = req.files as Express.Multer.File[];

@@ -341,6 +341,9 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         driversLicensePhotoUrl: data.driversLicensePhotoUrl || null,
         serviceTypes: data.serviceTypes || data.supportedServices || [],
         hasOwnLiabilityInsurance: hasInsurance,
+        icaAcceptedAt: req.body.icaAcceptedAt || null,
+        icaSignedName: req.body.icaSignedName || null,
+        icaVersion: req.body.icaVersion || null,
       });
 
       // Create vehicles from registration data
@@ -500,6 +503,9 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         driversLicensePhotoUrl: data.driversLicensePhotoUrl || null,
         serviceTypes: data.serviceTypes || data.supportedServices || [],
         hasOwnLiabilityInsurance: hasInsurance,
+        icaAcceptedAt: req.body.icaAcceptedAt || null,
+        icaSignedName: req.body.icaSignedName || null,
+        icaVersion: req.body.icaVersion || null,
       });
 
       // Create vehicles from registration data
@@ -670,6 +676,36 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
       }
       res.json({ success: true, message: "Logged out successfully" });
     });
+  });
+
+  // Accept ICA (for existing pros who haven't signed)
+  app.post("/api/auth/accept-ica", async (req, res) => {
+    try {
+      if (!req.isAuthenticated || !req.isAuthenticated() || !req.user) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const { signedName, acceptedAt, icaVersion } = req.body;
+      if (!signedName || !acceptedAt || !icaVersion) {
+        return res.status(400).json({ error: "Missing required fields: signedName, acceptedAt, icaVersion" });
+      }
+
+      const user = req.user as any;
+      const profile = await storage.getHaulerProfile(user.id);
+      if (!profile) {
+        return res.status(404).json({ error: "Pro profile not found" });
+      }
+      await storage.updateHaulerProfile(profile.id, {
+        icaAcceptedAt: acceptedAt,
+        icaSignedName: signedName,
+        icaVersion: icaVersion,
+      });
+
+      res.json({ success: true, message: "ICA accepted successfully" });
+    } catch (error) {
+      console.error("ICA acceptance error:", error);
+      res.status(500).json({ error: "Failed to save ICA acceptance" });
+    }
   });
 
   // Legacy hauler endpoint (backward compatibility)

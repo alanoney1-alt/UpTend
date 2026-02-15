@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Camera, Upload, Image, CheckCircle2, X } from "lucide-react";
@@ -13,16 +12,25 @@ interface JobPhotosProps {
 
 export function JobPhotos({ jobId, type, onUploaded }: JobPhotosProps) {
   const [previews, setPreviews] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploaded, setUploaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const upload = useMutation({
     mutationFn: async () => {
-      const res = await apiRequest("POST", `/api/jobs/${jobId}/photos`, {
-        type,
-        photos: previews,
+      const formData = new FormData();
+      formData.append("jobId", jobId);
+      formData.append("photoType", type);
+      selectedFiles.forEach((file, idx) => {
+        formData.append(`photo_${idx}`, file);
       });
+      const res = await fetch("/api/jobs/upload-photos", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Upload failed");
       return res.json();
     },
     onSuccess: (data) => {
@@ -33,7 +41,9 @@ export function JobPhotos({ jobId, type, onUploaded }: JobPhotosProps) {
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
-    Array.from(files).forEach((file) => {
+    const newFiles = Array.from(files);
+    setSelectedFiles((prev) => [...prev, ...newFiles]);
+    newFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         setPreviews((prev) => [...prev, e.target?.result as string]);
@@ -44,6 +54,7 @@ export function JobPhotos({ jobId, type, onUploaded }: JobPhotosProps) {
 
   const removePreview = (idx: number) => {
     setPreviews((prev) => prev.filter((_, i) => i !== idx));
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== idx));
   };
 
   if (uploaded) {

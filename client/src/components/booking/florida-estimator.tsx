@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { HandymanTaskSelector } from "./handyman-task-selector";
 import { ServiceFlowRouter, type ServiceFlowResult } from "./service-flows";
 import { ServiceScheduling, type SchedulingData } from "./service-scheduling";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowRight, ShieldCheck, Leaf, Sparkles, Pencil,
   Truck, Waves, ArrowUpFromLine, Package, Search, TrendingUp,
@@ -161,6 +162,8 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const [isBooking, setIsBooking] = useState(false);
+  const [tosAccepted, setTosAccepted] = useState(false);
+  const [tosAcceptedAt, setTosAcceptedAt] = useState<string | null>(null);
   const [address, setAddress] = useState("");
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
   const [propertyData, setPropertyData] = useState<ZillowProperty | null>(null);
@@ -1026,6 +1029,8 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           loadEstimate: 1,
           customerId: (user as any)?.userId || (user as any)?.id,
           estimatedPrice,
+          tosAcceptedAt: tosAcceptedAt,
+          cancellationPolicyAcceptedAt: tosAcceptedAt,
           createdAt: new Date().toISOString(),
         };
 
@@ -1098,9 +1103,33 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
 
               {whatsNextList}
 
+              {/* TOS & Cancellation Policy Checkbox */}
+              <div className="flex items-start space-x-3 p-4 bg-muted/30 rounded-lg border">
+                <Checkbox
+                  id="tos-acceptance"
+                  checked={tosAccepted}
+                  onCheckedChange={(checked: boolean) => {
+                    setTosAccepted(checked);
+                    if (checked) {
+                      setTosAcceptedAt(new Date().toISOString());
+                    } else {
+                      setTosAcceptedAt(null);
+                    }
+                  }}
+                  data-testid="checkbox-tos"
+                />
+                <label htmlFor="tos-acceptance" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
+                  I agree to the{" "}
+                  <a href="/terms" target="_blank" className="text-primary underline hover:text-primary/80">Terms of Service</a>
+                  {" "}and{" "}
+                  <a href="/cancellation-policy" target="_blank" className="text-primary underline hover:text-primary/80">Cancellation Policy</a>.
+                  {" "}I understand that cancelling after a Pro has been dispatched may result in charges for work completed.
+                </label>
+              </div>
+
               <Button
                 onClick={handleConfirmBooking}
-                disabled={isBooking}
+                disabled={isBooking || !tosAccepted}
                 className="w-full"
                 size="lg"
                 data-testid="button-confirm-book"

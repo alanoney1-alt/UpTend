@@ -51,6 +51,7 @@ import { Logo } from "@/components/ui/logo";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { VerificationWorkflow } from "@/components/verification/verification-workflow";
 import { NdaAgreementModal } from "@/components/nda-agreement-modal";
+import { ICABanner, ICAAgreement, type ICAAcceptanceData } from "@/components/auth/ica-agreement";
 import { ProRouteOptimizer } from "@/components/pycker-route-optimizer";
 import { ProPriceVerification } from "@/components/pycker-price-verification";
 import { SafetyCopilot } from "@/components/safety-copilot";
@@ -1721,6 +1722,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
   const queryClient = useQueryClient();
   const [showGoOnlineDialog, setShowGoOnlineDialog] = useState(false);
   const [showNdaModal, setShowNdaModal] = useState(false);
+  const [showIcaModal, setShowIcaModal] = useState(false);
   const [selectedVehicleId, setSelectedVehicleId] = useState<string>("");
   const [travelRadius, setTravelRadius] = useState<number>(25);
   const [locationConsent, setLocationConsent] = useState<boolean>(false);
@@ -1837,6 +1839,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         formData.append(`photo_${idx}`, file);
       });
       formData.append("jobId", activeJob.id);
+      formData.append("photoType", "after");
 
       const response = await fetch("/api/jobs/upload-photos", {
         method: "POST",
@@ -3007,6 +3010,11 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         }}
       />
 
+      {/* ICA Banner for existing pros who haven't signed */}
+      {currentPro?.profile && !currentPro.profile.icaAcceptedAt && (
+        <ICABanner onSign={() => setShowIcaModal(true)} />
+      )}
+
       {/* === MISSION CONTROL HEADER === */}
       <div className="mb-6 space-y-4">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -3600,6 +3608,34 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
           queryClient.invalidateQueries({ queryKey: ["/api/pros", currentPro?.profile?.id, "compliance"] });
         }}
       />
+
+      {/* ICA Agreement Modal for existing pros */}
+      <Dialog open={showIcaModal} onOpenChange={setShowIcaModal}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <ICAAgreement
+            contractorName={currentPro?.firstName && currentPro?.lastName
+              ? `${currentPro.firstName} ${currentPro.lastName}`
+              : ""}
+            onAccept={async (data: ICAAcceptanceData) => {
+              try {
+                const res = await fetch("/api/auth/accept-ica", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  credentials: "include",
+                  body: JSON.stringify(data),
+                });
+                if (!res.ok) throw new Error("Failed to save ICA acceptance");
+                setShowIcaModal(false);
+                queryClient.invalidateQueries({ queryKey: ["/api/pros"] });
+                toast({ title: "Agreement Signed", description: "Thank you for signing the Independent Contractor Agreement." });
+              } catch (e: any) {
+                toast({ title: "Error", description: e.message || "Failed to save agreement", variant: "destructive" });
+              }
+            }}
+            onBack={() => setShowIcaModal(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
