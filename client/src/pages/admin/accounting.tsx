@@ -46,7 +46,8 @@ function StatCard({ title, value, icon: Icon, trend, color }: {
 function DashboardTab() {
   const { data, isLoading } = useQuery({
     queryKey: ["/api/accounting/reports/dashboard"],
-    refetchInterval: 30000,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) return <div className="text-center py-8 text-muted-foreground">Loading dashboard...</div>;
