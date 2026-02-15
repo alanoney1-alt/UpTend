@@ -6,12 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, FileText, Send, Printer } from "lucide-react";
+import { ArrowLeft, FileText, Send, Printer, AlertTriangle } from "lucide-react";
 
 function cents(amount: number | null | undefined) {
   return `$${((amount || 0) / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 }
 
+/**
+ * WH-347 Compliance Report Viewer
+ *
+ * INTERNAL ADMIN TOOL ONLY — This page is for government compliance reporting.
+ * All figures shown here (including any rate-of-pay columns) are BACK-CALCULATED
+ * from flat-rate work order quotes for WH-347 form compliance. They do NOT represent
+ * the contractor's actual compensation structure. Contractors are paid flat-rate per job.
+ *
+ * This page should NEVER be shown to pros/contractors.
+ */
 export default function PayrollReport() {
   const { id: contractId, reportId } = useParams<{ id: string; reportId: string }>();
   const [, navigate] = useLocation();
@@ -30,11 +40,11 @@ export default function PayrollReport() {
     mutationFn: () => apiRequest("PUT", `/api/government/payroll/${reportId}/submit`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/government/payroll/${reportId}`] });
-      toast({ title: "Payroll submitted to contracting officer" });
+      toast({ title: "Report submitted to contracting officer" });
     },
   });
 
-  if (isLoading) return <div className="p-6 text-gray-500">Loading payroll report...</div>;
+  if (isLoading) return <div className="p-6 text-gray-500">Loading compliance report...</div>;
   if (!payrollData) return <div className="p-6 text-red-500">Report not found</div>;
 
   const report = (payrollData as any).report;
@@ -52,7 +62,7 @@ export default function PayrollReport() {
             </Button>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <FileText className="h-6 w-6 text-amber-600" /> WH-347 Certified Payroll
+                <FileText className="h-6 w-6 text-amber-600" /> WH-347 Compliance Report
               </h1>
               <p className="text-gray-500">Report #{report.reportNumber} — Week Ending {report.weekEndingDate}</p>
             </div>
@@ -69,6 +79,16 @@ export default function PayrollReport() {
                 <Send className="h-4 w-4 mr-2" /> Submit
               </Button>
             )}
+          </div>
+        </div>
+
+        {/* INTERNAL NOTICE */}
+        <div className="bg-amber-50 border border-amber-300 rounded-lg p-3 flex items-start gap-2 print:hidden">
+          <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-amber-800">
+            <strong>Internal Compliance Report</strong> — All rate and time figures below are back-calculated from
+            flat-rate work order quotes to satisfy DOL WH-347 form requirements. They do not represent contractor
+            compensation structure. Pros are paid flat-rate per job.
           </div>
         </div>
 
@@ -103,7 +123,8 @@ export default function PayrollReport() {
               </div>
             </div>
 
-            {/* Employee Table */}
+            {/* Worker Table */}
+            {/* INTERNAL COMPLIANCE CALCULATION ONLY — all rates are back-calculated from flat-rate quotes */}
             <div className="overflow-x-auto">
               <table className="w-full text-xs border-collapse">
                 <thead>
@@ -119,7 +140,7 @@ export default function PayrollReport() {
                     <th className="border p-1 text-center">F</th>
                     <th className="border p-1 text-center">S</th>
                     <th className="border p-1 text-center">Total</th>
-                    <th className="border p-1 text-right">Rate</th>
+                    <th className="border p-1 text-right">Rate*</th>
                     <th className="border p-1 text-right">Gross</th>
                     <th className="border p-1 text-right">FICA</th>
                     <th className="border p-1 text-right">W/H</th>
@@ -150,6 +171,7 @@ export default function PayrollReport() {
                         <td className="border p-1 text-center">{entry.hoursFriday || ""}</td>
                         <td className="border p-1 text-center">{entry.hoursSaturday || ""}</td>
                         <td className="border p-1 text-center font-medium">{entry.totalHours}</td>
+                        {/* INTERNAL COMPLIANCE CALCULATION ONLY — back-calculated from flat-rate quote */}
                         <td className="border p-1 text-right">{cents(entry.hourlyRate)}</td>
                         <td className="border p-1 text-right font-medium">{cents(entry.grossPay)}</td>
                         <td className="border p-1 text-right">{cents(fica)}</td>
@@ -173,6 +195,11 @@ export default function PayrollReport() {
               </table>
             </div>
 
+            {/* Rate footnote */}
+            <p className="text-xs text-gray-400 mt-2 italic print:text-black">
+              * Rate column: Back-calculated equivalent from flat-rate work order quotes for WH-347 compliance. Not actual compensation rate.
+            </p>
+
             {/* Statement of Compliance */}
             <div className="mt-6 border-t-2 border-black pt-4">
               <h3 className="text-sm font-bold mb-2">STATEMENT OF COMPLIANCE</h3>
@@ -180,14 +207,12 @@ export default function PayrollReport() {
                 <p>
                   I, <span className="border-b border-black px-8">
                     {wh347?.statementOfCompliance?.signedBy || "____________________"}
-                  </span>, 
+                  </span>,
                   <span className="border-b border-black px-8">
                     {wh347?.statementOfCompliance?.title || "____________________"}
                   </span> (Title),
                 </p>
-                <p>
-                  do hereby state:
-                </p>
+                <p>do hereby state:</p>
                 <p className="pl-4">
                   (1) That I pay or supervise the payment of the persons employed by{" "}
                   <span className="font-medium">UpTend LLC</span> on the{" "}

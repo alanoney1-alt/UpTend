@@ -13,9 +13,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ArrowLeft, DollarSign, Milestone, Users, FileText, Shield,
+  ArrowLeft, DollarSign, Milestone, Briefcase, FileText, Shield,
   ClipboardList, History, AlertTriangle, CheckCircle2, Clock,
-  Plus, Send, Download, Calendar
+  Plus, Send, Calendar
 } from "lucide-react";
 
 function cents(amount: number | null | undefined) {
@@ -35,6 +35,14 @@ const STATUS_COLORS: Record<string, string> = {
   accepted: "bg-green-100 text-green-800",
   paid: "bg-green-100 text-green-800",
   rejected: "bg-red-100 text-red-800",
+  posted: "bg-blue-100 text-blue-800",
+  quoted: "bg-amber-100 text-amber-800",
+  assigned: "bg-green-100 text-green-800",
+  in_progress: "bg-purple-100 text-purple-800",
+  completed: "bg-teal-100 text-teal-800",
+  verified: "bg-green-100 text-green-800",
+  declined: "bg-red-100 text-red-800",
+  withdrawn: "bg-gray-100 text-gray-800",
 };
 
 export default function ContractDetail() {
@@ -43,45 +51,17 @@ export default function ContractDetail() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: dashboard, isLoading } = useQuery({
-    queryKey: [`/api/government/contracts/${id}`],
-  });
-
-  const { data: financials } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/financials`],
-  });
-
-  const { data: milestones = [] } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/milestones`],
-  });
-
-  const { data: laborEntries = [] } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/labor`],
-  });
-
-  const { data: payrollReports = [] } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/payroll`],
-  });
-
-  const { data: invoices = [] } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/invoices`],
-  });
-
-  const { data: compliance } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/compliance`],
-  });
-
-  const { data: dailyLogs = [] } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/daily-logs`],
-  });
-
-  const { data: modifications = [] } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/modifications`],
-  });
-
-  const { data: auditTrail = [] } = useQuery({
-    queryKey: [`/api/government/contracts/${id}/audit-trail`],
-  });
+  const { data: dashboard, isLoading } = useQuery({ queryKey: [`/api/government/contracts/${id}`] });
+  const { data: financials } = useQuery({ queryKey: [`/api/government/contracts/${id}/financials`] });
+  const { data: milestones = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/milestones`] });
+  const { data: workOrders = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/work-orders`] });
+  const { data: workLogs = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/work-logs`] });
+  const { data: payrollReports = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/payroll`] });
+  const { data: invoices = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/invoices`] });
+  const { data: compliance } = useQuery({ queryKey: [`/api/government/contracts/${id}/compliance`] });
+  const { data: dailyLogs = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/daily-logs`] });
+  const { data: modifications = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/modifications`] });
+  const { data: auditTrail = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/audit-trail`] });
 
   if (isLoading) return <div className="p-6 text-gray-500">Loading contract...</div>;
   if (!dashboard) return <div className="p-6 text-red-500">Contract not found</div>;
@@ -102,7 +82,7 @@ export default function ContractDetail() {
             <h1 className="text-2xl font-bold text-gray-900">{contract.contractNumber}</h1>
             <p className="text-gray-500">{contract.agencyName} • {contract.contractType?.replace(/_/g, " ")}</p>
           </div>
-          <Badge className={STATUS_COLORS[contract.status] || "bg-gray-100"} >{contract.status}</Badge>
+          <Badge className={STATUS_COLORS[contract.status] || "bg-gray-100"}>{contract.status}</Badge>
           {contract.sdvosbSetAside && <Badge className="bg-amber-100 text-amber-800">SDVOSB</Badge>}
         </div>
 
@@ -117,8 +97,8 @@ export default function ContractDetail() {
             <p className="text-lg font-bold text-blue-700">{cents(contract.fundedAmount)}</p>
           </CardContent></Card>
           <Card><CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Invoiced</p>
-            <p className="text-lg font-bold text-green-700">{cents(summary?.totalInvoiced)}</p>
+            <p className="text-xs text-gray-500">Work Orders</p>
+            <p className="text-lg font-bold text-green-700">{summary?.workOrdersCompleted || 0}/{summary?.workOrdersTotal || 0}</p>
           </CardContent></Card>
           <Card><CardContent className="pt-4">
             <p className="text-xs text-gray-500">Burn Rate</p>
@@ -138,7 +118,8 @@ export default function ContractDetail() {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="budget">Budget</TabsTrigger>
             <TabsTrigger value="milestones">Milestones</TabsTrigger>
-            <TabsTrigger value="labor">Labor</TabsTrigger>
+            <TabsTrigger value="work-orders">Work Orders</TabsTrigger>
+            <TabsTrigger value="work-logs">Work Logs</TabsTrigger>
             <TabsTrigger value="payroll">WH-347 Reports</TabsTrigger>
             <TabsTrigger value="invoices">Invoices</TabsTrigger>
             <TabsTrigger value="compliance">Compliance</TabsTrigger>
@@ -160,7 +141,6 @@ export default function ContractDetail() {
                 <div><span className="text-gray-500">Location:</span> <strong>{contract.performanceLocation || "N/A"}</strong></div>
                 <div><span className="text-gray-500">CO:</span> <strong>{contract.contractingOfficer || "N/A"}</strong></div>
                 <div><span className="text-gray-500">CO Email:</span> <strong>{contract.contractingOfficerEmail || "N/A"}</strong></div>
-                <div><span className="text-gray-500">Prevailing Wage:</span> <strong>{contract.prevailingWageDetermination || "None"}</strong></div>
                 <div><span className="text-gray-500">Bond Required:</span> <strong>{contract.bondRequired ? `Yes (${cents(contract.bondAmount)})` : "No"}</strong></div>
                 <div><span className="text-gray-500">Security Clearance:</span> <strong>{contract.securityClearanceRequired ? "Yes" : "No"}</strong></div>
               </CardContent>
@@ -182,14 +162,12 @@ export default function ContractDetail() {
                     </div>
                     <div className="space-y-2">
                       <h4 className="font-medium">Spending by Category</h4>
-                      {["labor", "materials", "equipment", "subcontractor"].map(cat => (
+                      {["workOrders", "materials", "equipment", "subcontractor"].map(cat => (
                         <div key={cat} className="flex items-center gap-4">
-                          <span className="w-28 text-sm text-gray-500 capitalize">{cat}</span>
+                          <span className="w-28 text-sm text-gray-500 capitalize">{cat === "workOrders" ? "Work Orders" : cat}</span>
                           <div className="flex-1 bg-gray-200 rounded-full h-4">
-                            <div
-                              className="bg-amber-500 rounded-full h-4"
-                              style={{ width: `${fin.budget > 0 ? Math.min(100, ((fin.spent[cat] || 0) / fin.budget) * 100) : 0}%` }}
-                            />
+                            <div className="bg-amber-500 rounded-full h-4"
+                              style={{ width: `${fin.budget > 0 ? Math.min(100, ((fin.spent[cat] || 0) / fin.budget) * 100) : 0}%` }} />
                           </div>
                           <span className="text-sm font-medium w-24 text-right">{cents(fin.spent[cat] || 0)}</span>
                         </div>
@@ -202,42 +180,15 @@ export default function ContractDetail() {
             </Card>
           </TabsContent>
 
-          {/* Milestones Tab */}
-          <TabsContent value="milestones">
-            <MilestonesSection contractId={id!} milestones={milestones as any[]} />
-          </TabsContent>
+          <TabsContent value="milestones"><MilestonesSection contractId={id!} milestones={milestones as any[]} /></TabsContent>
+          <TabsContent value="work-orders"><WorkOrdersSection contractId={id!} workOrders={workOrders as any[]} milestones={milestones as any[]} /></TabsContent>
+          <TabsContent value="work-logs"><WorkLogsSection contractId={id!} logs={workLogs as any[]} /></TabsContent>
+          <TabsContent value="payroll"><PayrollSection contractId={id!} reports={payrollReports as any[]} /></TabsContent>
+          <TabsContent value="invoices"><InvoicesSection contractId={id!} invoices={invoices as any[]} /></TabsContent>
+          <TabsContent value="compliance"><ComplianceSection contractId={id!} compliance={compliance as any} /></TabsContent>
+          <TabsContent value="daily-logs"><DailyLogsSection contractId={id!} logs={dailyLogs as any[]} /></TabsContent>
+          <TabsContent value="modifications"><ModificationsSection contractId={id!} modifications={modifications as any[]} /></TabsContent>
 
-          {/* Labor Tab */}
-          <TabsContent value="labor">
-            <LaborSection contractId={id!} entries={laborEntries as any[]} />
-          </TabsContent>
-
-          {/* Payroll Tab */}
-          <TabsContent value="payroll">
-            <PayrollSection contractId={id!} reports={payrollReports as any[]} />
-          </TabsContent>
-
-          {/* Invoices Tab */}
-          <TabsContent value="invoices">
-            <InvoicesSection contractId={id!} invoices={invoices as any[]} />
-          </TabsContent>
-
-          {/* Compliance Tab */}
-          <TabsContent value="compliance">
-            <ComplianceSection contractId={id!} compliance={compliance as any} />
-          </TabsContent>
-
-          {/* Daily Logs Tab */}
-          <TabsContent value="daily-logs">
-            <DailyLogsSection contractId={id!} logs={dailyLogs as any[]} />
-          </TabsContent>
-
-          {/* Modifications Tab */}
-          <TabsContent value="modifications">
-            <ModificationsSection contractId={id!} modifications={modifications as any[]} />
-          </TabsContent>
-
-          {/* Audit Trail Tab */}
           <TabsContent value="audit">
             <Card>
               <CardHeader><CardTitle className="flex items-center gap-2"><History className="h-5 w-5 text-amber-600" /> Audit Trail (Immutable)</CardTitle></CardHeader>
@@ -326,53 +277,165 @@ function MilestonesSection({ contractId, milestones }: { contractId: string; mil
   );
 }
 
-function LaborSection({ contractId, entries }: { contractId: string; entries: any[] }) {
+function WorkOrdersSection({ contractId, workOrders, milestones }: { contractId: string; workOrders: any[]; milestones: any[] }) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [, navigate] = useLocation();
+  const [showAdd, setShowAdd] = useState(false);
+  const [form, setForm] = useState({
+    title: "", description: "", scopeOfWork: "", serviceType: "", deliverables: "",
+    location: "", deadline: "", milestoneId: "", budgetAmount: "", status: "draft",
+  });
+
+  const addMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("POST", `/api/government/contracts/${contractId}/work-orders`, data),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: [`/api/government/contracts/${contractId}/work-orders`] });
+      setShowAdd(false);
+      if (data?._warning) {
+        toast({ title: "Work order created", description: data._warning, variant: "destructive" });
+      } else {
+        toast({ title: "Work order created" });
+      }
+    },
+  });
+
+  const verifyMutation = useMutation({
+    mutationFn: (woId: string) => apiRequest("PUT", `/api/government/work-orders/${woId}/verify`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/government/contracts/${contractId}/work-orders`] });
+      toast({ title: "Work order verified" });
+    },
+  });
+
+  const totalQuoted = workOrders.filter(wo => wo.acceptedQuoteAmount).reduce((s, wo) => s + (wo.acceptedQuoteAmount || 0), 0);
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="flex items-center gap-2"><Briefcase className="h-5 w-5 text-amber-600" /> Work Orders</CardTitle>
+        <Dialog open={showAdd} onOpenChange={setShowAdd}>
+          <DialogTrigger asChild><Button size="sm" className="bg-amber-600 hover:bg-amber-700"><Plus className="h-4 w-4 mr-1" /> Create</Button></DialogTrigger>
+          <DialogContent className="max-w-lg">
+            <DialogHeader><DialogTitle>Create Work Order</DialogTitle></DialogHeader>
+            <form onSubmit={e => { e.preventDefault(); addMutation.mutate({
+              ...form,
+              budgetAmount: form.budgetAmount ? Math.round(parseFloat(form.budgetAmount) * 100) : undefined,
+              milestoneId: form.milestoneId || undefined,
+            }); }} className="space-y-3 max-h-[70vh] overflow-y-auto">
+              <div><Label>Title *</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required /></div>
+              <div><Label>Description</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></div>
+              <div><Label>Scope of Work</Label><Textarea value={form.scopeOfWork} onChange={e => setForm({ ...form, scopeOfWork: e.target.value })} /></div>
+              <div><Label>Deliverables (what defines "done")</Label><Textarea value={form.deliverables} onChange={e => setForm({ ...form, deliverables: e.target.value })} /></div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><Label>Service Type</Label><Input value={form.serviceType} onChange={e => setForm({ ...form, serviceType: e.target.value })} /></div>
+                <div><Label>Location</Label><Input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} /></div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><Label>Deadline</Label><Input type="date" value={form.deadline} onChange={e => setForm({ ...form, deadline: e.target.value })} /></div>
+                <div>
+                  <Label>Milestone</Label>
+                  <Select value={form.milestoneId} onValueChange={v => setForm({ ...form, milestoneId: v })}>
+                    <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
+                    <SelectContent>
+                      {milestones.map((m: any) => <SelectItem key={m.id} value={m.id}>#{m.milestoneNumber} {m.title}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div><Label>Internal Budget ($) — not shown to pros</Label><Input type="number" step="0.01" value={form.budgetAmount} onChange={e => setForm({ ...form, budgetAmount: e.target.value })} /></div>
+              <div>
+                <Label>Status</Label>
+                <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="posted">Posted (visible to pros)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700">Create Work Order</Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </CardHeader>
+      <CardContent>
+        <div className="flex gap-4 mb-4 text-sm">
+          <span className="text-gray-500">Total: <strong>{workOrders.length}</strong></span>
+          <span className="text-gray-500">Accepted Quotes: <strong>{cents(totalQuoted)}</strong></span>
+          <span className="text-gray-500">Verified: <strong>{workOrders.filter(wo => wo.status === "verified").length}</strong></span>
+        </div>
+        {workOrders.length === 0 ? <p className="text-gray-500">No work orders.</p> : (
+          <div className="space-y-2 max-h-96 overflow-y-auto">
+            {workOrders.map((wo: any) => (
+              <div key={wo.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{wo.title}</span>
+                    <Badge className={STATUS_COLORS[wo.status]}>{wo.status}</Badge>
+                  </div>
+                  <p className="text-xs text-gray-400">
+                    {wo.serviceType && `${wo.serviceType} • `}
+                    {wo.location && `${wo.location} • `}
+                    {wo.deadline && `Due: ${wo.deadline}`}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  {wo.acceptedQuoteAmount > 0 && <span className="font-medium text-amber-700">{cents(wo.acceptedQuoteAmount)}</span>}
+                  {wo.status === "completed" && (
+                    <Button size="sm" variant="outline" onClick={() => verifyMutation.mutate(wo.id)}>
+                      <CheckCircle2 className="h-3 w-3 mr-1" /> Verify
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function WorkLogsSection({ contractId, logs }: { contractId: string; logs: any[] }) {
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   const approveMutation = useMutation({
-    mutationFn: (entryId: string) => apiRequest("PUT", `/api/government/labor/${entryId}/approve`),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: [`/api/government/contracts/${contractId}/labor`] }); toast({ title: "Labor entry approved" }); },
+    mutationFn: (logId: string) => apiRequest("PUT", `/api/government/work-logs/${logId}/approve`),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: [`/api/government/contracts/${contractId}/work-logs`] }); toast({ title: "Work log approved" }); },
   });
-
-  const totalHours = entries.reduce((s, e) => s + e.hoursWorked + (e.overtimeHours || 0), 0);
-  const totalCost = entries.reduce((s, e) => s + Math.round(e.hoursWorked * e.hourlyRate) + Math.round((e.overtimeHours || 0) * (e.overtimeRate || 0)), 0);
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5 text-amber-600" /> Labor Entries</CardTitle>
+        <CardTitle className="flex items-center gap-2"><ClipboardList className="h-5 w-5 text-amber-600" /> Work Logs</CardTitle>
         <Button size="sm" className="bg-amber-600 hover:bg-amber-700" onClick={() => navigate(`/government/contracts/${contractId}/labor`)}>
-          <Plus className="h-4 w-4 mr-1" /> Log Labor
+          <Plus className="h-4 w-4 mr-1" /> Add Log
         </Button>
       </CardHeader>
       <CardContent>
         <div className="flex gap-4 mb-4 text-sm">
-          <span className="text-gray-500">Total Hours: <strong>{totalHours.toFixed(1)}</strong></span>
-          <span className="text-gray-500">Total Cost: <strong>{cents(totalCost)}</strong></span>
-          <span className="text-gray-500">Entries: <strong>{entries.length}</strong></span>
+          <span className="text-gray-500">Total Logs: <strong>{logs.length}</strong></span>
+          <span className="text-gray-500">Approved: <strong>{logs.filter(l => l.status === "approved").length}</strong></span>
         </div>
-        {entries.length === 0 ? <p className="text-gray-500">No labor entries.</p> : (
+        {logs.length === 0 ? <p className="text-gray-500">No work logs.</p> : (
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {entries.map((e: any) => (
-              <div key={e.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">
+            {logs.map((log: any) => (
+              <div key={log.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{e.workDate}</span>
-                    <Badge className={STATUS_COLORS[e.status]}>{e.status}</Badge>
-                    <span className="text-gray-500">{e.jobClassification}</span>
+                    <span className="font-medium">{log.workDate}</span>
+                    <Badge className={STATUS_COLORS[log.status]}>{log.status}</Badge>
                   </div>
-                  <p className="text-xs text-gray-400">{e.hoursWorked}h @ {cents(e.hourlyRate)}/hr {e.overtimeHours ? `+ ${e.overtimeHours}h OT` : ""} — {e.description || ""}</p>
+                  <p className="text-xs text-gray-500">{log.description}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{cents(Math.round(e.hoursWorked * e.hourlyRate))}</span>
-                  {e.status === "pending" && (
-                    <Button size="sm" variant="outline" onClick={() => approveMutation.mutate(e.id)}>
-                      <CheckCircle2 className="h-3 w-3 mr-1" /> Approve
-                    </Button>
-                  )}
-                </div>
+                {log.status === "pending" && (
+                  <Button size="sm" variant="outline" onClick={() => approveMutation.mutate(log.id)}>
+                    <CheckCircle2 className="h-3 w-3 mr-1" /> Approve
+                  </Button>
+                )}
               </div>
             ))}
           </div>
@@ -390,13 +453,13 @@ function PayrollSection({ contractId, reports }: { contractId: string; reports: 
 
   const generateMutation = useMutation({
     mutationFn: (weekEndingDate: string) => apiRequest("POST", `/api/government/contracts/${contractId}/payroll/generate`, { weekEndingDate }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: [`/api/government/contracts/${contractId}/payroll`] }); toast({ title: "Payroll generated" }); setWeekDate(""); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: [`/api/government/contracts/${contractId}/payroll`] }); toast({ title: "WH-347 compliance report generated" }); setWeekDate(""); },
   });
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-amber-600" /> Certified Payroll Reports</CardTitle>
+        <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-amber-600" /> WH-347 Compliance Reports</CardTitle>
         <div className="flex items-center gap-2">
           <Input type="date" value={weekDate} onChange={e => setWeekDate(e.target.value)} className="w-40" />
           <Button size="sm" className="bg-amber-600 hover:bg-amber-700" onClick={() => weekDate && generateMutation.mutate(weekDate)} disabled={!weekDate}>
@@ -405,7 +468,8 @@ function PayrollSection({ contractId, reports }: { contractId: string; reports: 
         </div>
       </CardHeader>
       <CardContent>
-        {reports.length === 0 ? <p className="text-gray-500">No payroll reports.</p> : (
+        <p className="text-xs text-gray-400 mb-3 italic">Internal compliance reports only — generated from work order data for government reporting requirements.</p>
+        {reports.length === 0 ? <p className="text-gray-500">No reports.</p> : (
           <div className="space-y-2">
             {reports.map((r: any) => (
               <div key={r.id} className="flex items-center justify-between p-3 border rounded-lg text-sm cursor-pointer hover:bg-amber-50"
@@ -489,8 +553,7 @@ function ComplianceSection({ contractId, compliance }: { contractId: string; com
   const docTypeLabels: Record<string, string> = {
     insurance_cert: "Insurance Certificate", bond: "Performance Bond", sdvosb_cert: "SDVOSB Certification",
     sam_registration: "SAM Registration", w9: "W-9 Form", eeo_poster: "EEO Poster",
-    drug_free_workplace: "Drug-Free Workplace", osha_log: "OSHA Log", safety_plan: "Safety Plan",
-    quality_plan: "Quality Plan", past_performance: "Past Performance",
+    drug_free_workplace: "Drug-Free Workplace",
   };
 
   const statusIcon = (status: string) => {

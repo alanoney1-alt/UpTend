@@ -7197,3 +7197,73 @@ export const contractAuditLogs = pgTable("contract_audit_logs", {
 });
 
 export type ContractAuditLog = typeof contractAuditLogs.$inferSelect;
+
+// ==========================================
+// FLAT-RATE WORK ORDER SYSTEM
+// Replaces hourly labor entry flow for government contracts.
+// Pros quote flat prices per job/deliverable. ZERO hourly language.
+// ==========================================
+
+export const contractWorkOrders = pgTable("contract_work_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  milestoneId: varchar("milestone_id"),
+  title: text("title").notNull(),
+  description: text("description"),
+  scopeOfWork: text("scope_of_work"),
+  serviceType: text("service_type"),
+  deliverables: text("deliverables"), // what defines "done"
+  location: text("location"),
+  requiredCertifications: jsonb("required_certifications").$type<string[]>().default(sql`'[]'::jsonb`),
+  status: text("status").notNull().default("draft"), // draft|posted|quoted|assigned|in_progress|completed|verified
+  budgetAmount: integer("budget_amount").default(0), // cents — internal max budget, NOT shown to pro
+  postedAt: timestamp("posted_at"),
+  deadline: text("deadline"),
+  assignedProId: varchar("assigned_pro_id"),
+  acceptedQuoteAmount: integer("accepted_quote_amount").default(0), // cents — flat price the pro quoted
+  completedAt: timestamp("completed_at"),
+  verifiedAt: timestamp("verified_at"),
+  verifiedBy: varchar("verified_by"),
+  paymentStatus: text("payment_status").notNull().default("unpaid"), // unpaid|partial|paid
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertContractWorkOrderSchema = createInsertSchema(contractWorkOrders).omit({ id: true, createdAt: true });
+export type InsertContractWorkOrder = z.infer<typeof insertContractWorkOrderSchema>;
+export type ContractWorkOrder = typeof contractWorkOrders.$inferSelect;
+
+export const workOrderQuotes = pgTable("work_order_quotes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  workOrderId: varchar("work_order_id").notNull(),
+  proId: varchar("pro_id").notNull(),
+  quoteAmount: integer("quote_amount").notNull(), // cents — flat price for the entire job
+  estimatedDays: integer("estimated_days"), // scheduling estimate, NOT for billing
+  message: text("message"), // pro explains their quote
+  status: text("status").notNull().default("submitted"), // submitted|accepted|declined|withdrawn
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+  respondedAt: timestamp("responded_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertWorkOrderQuoteSchema = createInsertSchema(workOrderQuotes).omit({ id: true, createdAt: true });
+export type InsertWorkOrderQuote = z.infer<typeof insertWorkOrderQuoteSchema>;
+export type WorkOrderQuote = typeof workOrderQuotes.$inferSelect;
+
+export const contractWorkLogs = pgTable("contract_work_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  workOrderId: varchar("work_order_id"),
+  milestoneId: varchar("milestone_id"),
+  proId: varchar("pro_id").notNull(),
+  workDate: text("work_date").notNull(),
+  description: text("description"), // what was done — documentation, not billing
+  photos: jsonb("photos").$type<string[]>().default(sql`'[]'::jsonb`),
+  status: text("status").notNull().default("pending"), // pending|approved
+  approvedBy: varchar("approved_by"),
+  approvedAt: timestamp("approved_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertContractWorkLogSchema = createInsertSchema(contractWorkLogs).omit({ id: true, createdAt: true });
+export type InsertContractWorkLog = z.infer<typeof insertContractWorkLogSchema>;
+export type ContractWorkLog = typeof contractWorkLogs.$inferSelect;

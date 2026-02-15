@@ -5,7 +5,9 @@ import { eq, and, desc, asc, gte, lte } from "drizzle-orm";
 import {
   governmentContracts,
   contractMilestones,
-  contractLaborEntries,
+  contractWorkOrders,
+  workOrderQuotes,
+  contractWorkLogs,
   certifiedPayrollReports,
   certifiedPayrollEntries,
   contractInvoices,
@@ -166,72 +168,166 @@ export function registerGovernmentContractRoutes(app: Express) {
   });
 
   // ==========================================
-  // Labor Tracking
+  // Work Orders (Flat-Rate)
   // ==========================================
-  app.post("/api/government/contracts/:id/labor", requireAuth, async (req, res) => {
+  app.post("/api/government/contracts/:id/work-orders", requireAuth, async (req, res) => {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
-      const contractId = req.params.id;
-
-      // PREVAILING WAGE VALIDATION — BLOCKS underpayment
-      const rateToCheck = req.body.hourlyRate + (req.body.fringeBenefits || 0);
-      const validation = await govService.validateLaborRate(contractId, req.body.jobClassification, rateToCheck);
-      if (!validation.valid) {
-        return res.status(400).json({
-          error: "Prevailing wage violation",
-          message: validation.message,
-          requiredRate: validation.requiredRate,
-          shortfall: validation.shortfall,
-        });
+      const result = await govService.postWorkOrder(req.params.id, req.body, userId);
+      if (result.davisBaconWarning) {
+        res.status(201).json({ ...result.workOrder, _warning: result.davisBaconWarning });
+      } else {
+        res.status(201).json(result.workOrder);
       }
-
-      const [entry] = await db.insert(contractLaborEntries).values({
-        ...req.body,
-        contractId,
-        prevailingWageRate: validation.requiredRate || null,
-      }).returning();
-
-      await govService.logAudit(contractId, "labor_logged", "labor", entry.id, userId, {
-        proId: entry.proId,
-        hours: entry.hoursWorked,
-        rate: entry.hourlyRate,
-        classification: entry.jobClassification,
-      });
-      res.status(201).json(entry);
-    } catch (error) {
-      console.error("Error creating labor entry:", error);
-      res.status(500).json({ error: "Failed to create labor entry" });
+    } catch (error: any) {
+      if (error.message === "Contract not found") return res.status(404).json({ error: "Contract not found" });
+      console.error("Error creating work order:", error);
+      res.status(500).json({ error: "Failed to create work order" });
     }
   });
 
-  app.get("/api/government/contracts/:id/labor", requireAuth, async (req, res) => {
+  app.get("/api/government/contracts/:id/work-orders", requireAuth, async (req, res) => {
     try {
-      const entries = await db.select().from(contractLaborEntries)
-        .where(eq(contractLaborEntries.contractId, req.params.id))
-        .orderBy(desc(contractLaborEntries.workDate));
-      res.json(entries);
+      const workOrders = await govService.getWorkOrdersByContract(req.params.id);
+      res.json(workOrders);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch labor entries" });
+      res.status(500).json({ error: "Failed to fetch work orders" });
     }
   });
 
-  app.put("/api/government/labor/:id/approve", requireAuth, async (req, res) => {
+  app.get("/api/government/work-orders/available", requireAuth, async (req, res) => {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
-      const [updated] = await db.update(contractLaborEntries)
-        .set({ status: "approved", approvedBy: userId, approvedAt: new Date() })
-        .where(eq(contractLaborEntries.id, req.params.id))
-        .returning();
-      if (!updated) return res.status(404).json({ error: "Labor entry not found" });
-      await govService.logAudit(updated.contractId, "labor_approved", "labor", updated.id, userId, { proId: updated.proId });
-      res.json(updated);
+      const workOrders = await govService.getAvailableWorkOrders(userId);
+      // Strip internal budget info before sending to pro
+      const sanitized = workOrders.map(({ budgetAmount, ...rest }) => rest);
+      res.json(sanitized);
     } catch (error) {
-      res.status(500).json({ error: "Failed to approve labor entry" });
+      res.status(500).json({ error: "Failed to fetch available work orders" });
+    }
+  });
+
+  app.get("/api/government/work-orders/:id", requireAuth, async (req, res) => {
+    try {
+      const detail = await govService.getWorkOrderDetail(req.params.id);
+      // Strip budget from work order for pro-facing response
+      const { budgetAmount, ...workOrder } = detail.workOrder;
+      res.json({ ...detail, workOrder });
+    } catch (error: any) {
+      if (error.message === "Work order not found") return res.status(404).json({ error: "Work order not found" });
+      res.status(500).json({ error: "Failed to fetch work order" });
+    }
+  });
+
+  app.get("/api/government/work-orders/:id/admin", requireAuth, async (req, res) => {
+    try {
+      const detail = await govService.getWorkOrderDetail(req.params.id);
+      res.json(detail); // Admin gets full detail including budget
+    } catch (error: any) {
+      if (error.message === "Work order not found") return res.status(404).json({ error: "Work order not found" });
+      res.status(500).json({ error: "Failed to fetch work order" });
+    }
+  });
+
+  app.post("/api/government/work-orders/:id/quotes", requireAuth, async (req, res) => {
+    try {
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      const quote = await govService.submitQuote(
+        req.params.id, userId, req.body.quoteAmount, req.body.estimatedDays || null, req.body.message || null
+      );
+      res.status(201).json(quote);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Failed to submit quote" });
+    }
+  });
+
+  app.put("/api/government/quotes/:id/accept", requireAuth, async (req, res) => {
+    try {
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      const quote = await govService.acceptQuote(req.params.id, userId);
+      res.json(quote);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Failed to accept quote" });
+    }
+  });
+
+  app.put("/api/government/quotes/:id/decline", requireAuth, async (req, res) => {
+    try {
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      const quote = await govService.declineQuote(req.params.id, userId);
+      res.json(quote);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Failed to decline quote" });
+    }
+  });
+
+  app.put("/api/government/work-orders/:id/start", requireAuth, async (req, res) => {
+    try {
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      await govService.startWorkOrder(req.params.id, userId);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Failed to start work order" });
+    }
+  });
+
+  app.put("/api/government/work-orders/:id/complete", requireAuth, async (req, res) => {
+    try {
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      await govService.completeWorkOrder(req.params.id, userId);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Failed to complete work order" });
+    }
+  });
+
+  app.put("/api/government/work-orders/:id/verify", requireAuth, async (req, res) => {
+    try {
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      await govService.verifyWorkOrder(req.params.id, userId);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Failed to verify work order" });
     }
   });
 
   // ==========================================
-  // Certified Payroll
+  // Work Logs (documentation, NOT billing)
+  // ==========================================
+  app.post("/api/government/contracts/:id/work-logs", requireAuth, async (req, res) => {
+    try {
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      const log = await govService.createWorkLog({ ...req.body, contractId: req.params.id, proId: userId }, userId);
+      res.status(201).json(log);
+    } catch (error) {
+      console.error("Error creating work log:", error);
+      res.status(500).json({ error: "Failed to create work log" });
+    }
+  });
+
+  app.get("/api/government/contracts/:id/work-logs", requireAuth, async (req, res) => {
+    try {
+      const logs = await db.select().from(contractWorkLogs)
+        .where(eq(contractWorkLogs.contractId, req.params.id))
+        .orderBy(desc(contractWorkLogs.workDate));
+      res.json(logs);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch work logs" });
+    }
+  });
+
+  app.put("/api/government/work-logs/:id/approve", requireAuth, async (req, res) => {
+    try {
+      const userId = ((req.user as any).userId || (req.user as any).id);
+      const updated = await govService.approveWorkLog(req.params.id, userId);
+      res.json(updated);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Failed to approve work log" });
+    }
+  });
+
+  // ==========================================
+  // Certified Payroll (WH-347 — INTERNAL compliance only)
   // ==========================================
   app.post("/api/government/contracts/:id/payroll/generate", requireAuth, async (req, res) => {
     try {
@@ -240,7 +336,7 @@ export function registerGovernmentContractRoutes(app: Express) {
       res.status(201).json(report);
     } catch (error) {
       console.error("Error generating payroll:", error);
-      res.status(500).json({ error: "Failed to generate payroll" });
+      res.status(500).json({ error: "Failed to generate compliance report" });
     }
   });
 
@@ -251,7 +347,7 @@ export function registerGovernmentContractRoutes(app: Express) {
         .orderBy(desc(certifiedPayrollReports.weekEndingDate));
       res.json(reports);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch payroll reports" });
+      res.status(500).json({ error: "Failed to fetch compliance reports" });
     }
   });
 
@@ -259,12 +355,12 @@ export function registerGovernmentContractRoutes(app: Express) {
     try {
       const [report] = await db.select().from(certifiedPayrollReports)
         .where(eq(certifiedPayrollReports.id, req.params.id));
-      if (!report) return res.status(404).json({ error: "Payroll report not found" });
+      if (!report) return res.status(404).json({ error: "Report not found" });
       const entries = await db.select().from(certifiedPayrollEntries)
         .where(eq(certifiedPayrollEntries.payrollReportId, req.params.id));
       res.json({ report, entries });
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch payroll report" });
+      res.status(500).json({ error: "Failed to fetch compliance report" });
     }
   });
 
@@ -274,17 +370,18 @@ export function registerGovernmentContractRoutes(app: Express) {
       const updated = await govService.submitPayroll(req.params.id, userId);
       res.json(updated);
     } catch (error: any) {
-      if (error.message === "Payroll report not found") return res.status(404).json({ error: "Payroll report not found" });
-      res.status(500).json({ error: "Failed to submit payroll" });
+      if (error.message === "Payroll report not found") return res.status(404).json({ error: "Report not found" });
+      res.status(500).json({ error: "Failed to submit report" });
     }
   });
 
   app.get("/api/government/payroll/:id/wh347", requireAuth, async (req, res) => {
     try {
+      // INTERNAL COMPLIANCE REPORT — admin only, not pro-facing
       const wh347 = await govService.formatWH347(req.params.id);
       res.json(wh347);
     } catch (error: any) {
-      if (error.message === "Payroll report not found") return res.status(404).json({ error: "Payroll report not found" });
+      if (error.message === "Payroll report not found") return res.status(404).json({ error: "Report not found" });
       res.status(500).json({ error: "Failed to format WH-347" });
     }
   });
@@ -346,7 +443,6 @@ export function registerGovernmentContractRoutes(app: Express) {
         .returning();
       if (!updated) return res.status(404).json({ error: "Invoice not found" });
 
-      // Update contract remaining balance
       await db.update(governmentContracts)
         .set({ remainingBalance: (await db.select().from(governmentContracts).where(eq(governmentContracts.id, updated.contractId)))[0].remainingBalance - (req.body.paymentAmount || 0) })
         .where(eq(governmentContracts.id, updated.contractId));
@@ -472,11 +568,10 @@ export function registerGovernmentContractRoutes(app: Express) {
   });
 
   // ==========================================
-  // Prevailing Wages
+  // Prevailing Wages (admin reference data)
   // ==========================================
   app.post("/api/government/prevailing-wages/rates", requireAuth, async (req, res) => {
     try {
-      const userId = ((req.user as any).userId || (req.user as any).id);
       const rates = Array.isArray(req.body) ? req.body : [req.body];
       const inserted = await db.insert(prevailingWageRates).values(rates).returning();
       res.status(201).json(inserted);
