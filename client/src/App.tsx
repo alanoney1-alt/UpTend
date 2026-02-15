@@ -99,6 +99,10 @@ const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"))
 const HomeProfilePage = lazy(() => import("@/pages/home-profile"));
 const BusinessCompliance = lazy(() => import("@/pages/business-compliance"));
 const BusinessGovernment = lazy(() => import("@/pages/business-government"));
+const GovernmentContractDashboard = lazy(() => import("@/pages/government/contract-dashboard"));
+const GovernmentContractDetail = lazy(() => import("@/pages/government/contract-detail"));
+const GovernmentLaborEntry = lazy(() => import("@/pages/government/labor-entry"));
+const GovernmentPayrollReport = lazy(() => import("@/pages/government/payroll-report"));
 const BusinessCommunities = lazy(() => import("@/pages/business-communities"));
 const BusinessProperties = lazy(() => import("@/pages/business-properties"));
 const BusinessConstruction = lazy(() => import("@/pages/business-construction"));
@@ -154,6 +158,10 @@ function Router() {
       <Route path="/business/dashboard" component={BusinessDashboard} />
       <Route path="/business/compliance" component={BusinessCompliance} />
       <Route path="/business/government" component={BusinessGovernment} />
+      <Route path="/government/contracts" component={GovernmentContractDashboard} />
+      <Route path="/government/contracts/:id" component={GovernmentContractDetail} />
+      <Route path="/government/contracts/:id/labor" component={GovernmentLaborEntry} />
+      <Route path="/government/contracts/:id/payroll/:reportId" component={GovernmentPayrollReport} />
       <Route path="/business/communities" component={BusinessCommunities} />
       <Route path="/business/properties" component={BusinessProperties} />
       <Route path="/business/construction" component={BusinessConstruction} />
