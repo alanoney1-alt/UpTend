@@ -104,7 +104,7 @@ export default function BusinessCompliance() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pb-24">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card className="p-4">
@@ -166,7 +166,7 @@ export default function BusinessCompliance() {
         </div>
 
         <Tabs defaultValue="insurance" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="flex overflow-x-auto whitespace-nowrap w-full">
             <TabsTrigger value="insurance">
               <Shield className="w-4 h-4 mr-2" /> Insurance Vault
             </TabsTrigger>
@@ -221,7 +221,7 @@ export default function BusinessCompliance() {
             </div>
 
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Provider</TableHead>
@@ -255,7 +255,7 @@ export default function BusinessCompliance() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 
@@ -276,7 +276,7 @@ export default function BusinessCompliance() {
             </div>
 
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Document Type</TableHead>
@@ -309,7 +309,7 @@ export default function BusinessCompliance() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 
@@ -326,7 +326,7 @@ export default function BusinessCompliance() {
             </div>
 
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Pro / Employee</TableHead>
@@ -355,7 +355,7 @@ export default function BusinessCompliance() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
         </Tabs>

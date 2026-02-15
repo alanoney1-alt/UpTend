@@ -95,7 +95,7 @@ export default function BusinessGovernment() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pb-24">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card className="p-4">
@@ -146,7 +146,7 @@ export default function BusinessGovernment() {
         </div>
 
         <Tabs defaultValue="bids" className="space-y-6">
-          <TabsList className="flex flex-wrap">
+          <TabsList className="flex overflow-x-auto whitespace-nowrap">
             <TabsTrigger value="bids"><FileText className="w-4 h-4 mr-1" /> Bids & Proposals</TabsTrigger>
             <TabsTrigger value="wages"><DollarSign className="w-4 h-4 mr-1" /> Prevailing Wages</TabsTrigger>
             <TabsTrigger value="payroll"><Calendar className="w-4 h-4 mr-1" /> Certified Payroll</TabsTrigger>
@@ -191,7 +191,7 @@ export default function BusinessGovernment() {
               </div>
             </div>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>County</TableHead>
@@ -216,7 +216,7 @@ export default function BusinessGovernment() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 
@@ -227,7 +227,7 @@ export default function BusinessGovernment() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Payroll</Button>
             </div>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Contract</TableHead>
@@ -254,7 +254,7 @@ export default function BusinessGovernment() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 
@@ -308,7 +308,7 @@ export default function BusinessGovernment() {
               </div>
             </Card>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Vendor</TableHead>
@@ -329,7 +329,7 @@ export default function BusinessGovernment() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 

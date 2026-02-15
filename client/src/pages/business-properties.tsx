@@ -87,7 +87,7 @@ export default function BusinessProperties() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pb-24">
         {/* Portfolio Overview */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card className="p-4">
@@ -138,7 +138,7 @@ export default function BusinessProperties() {
         </div>
 
         <Tabs defaultValue="properties" className="space-y-6">
-          <TabsList className="flex flex-wrap">
+          <TabsList className="flex overflow-x-auto whitespace-nowrap">
             <TabsTrigger value="properties"><Building2 className="w-4 h-4 mr-1" /> Properties</TabsTrigger>
             <TabsTrigger value="workorders"><Wrench className="w-4 h-4 mr-1" /> Work Orders</TabsTrigger>
             <TabsTrigger value="turnovers"><Key className="w-4 h-4 mr-1" /> Turnovers</TabsTrigger>
@@ -186,7 +186,7 @@ export default function BusinessProperties() {
               </div>
             </div>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>ID</TableHead>
@@ -213,7 +213,7 @@ export default function BusinessProperties() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 

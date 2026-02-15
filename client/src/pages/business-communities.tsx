@@ -106,7 +106,7 @@ export default function BusinessCommunities() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pb-24">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card className="p-4">
@@ -157,7 +157,7 @@ export default function BusinessCommunities() {
         </div>
 
         <Tabs defaultValue="communities" className="space-y-6">
-          <TabsList className="flex flex-wrap">
+          <TabsList className="flex overflow-x-auto whitespace-nowrap">
             <TabsTrigger value="communities"><Building2 className="w-4 h-4 mr-1" /> Communities</TabsTrigger>
             <TabsTrigger value="violations"><AlertTriangle className="w-4 h-4 mr-1" /> Violations</TabsTrigger>
             <TabsTrigger value="approvals"><FileText className="w-4 h-4 mr-1" /> Board Approvals</TabsTrigger>
@@ -197,7 +197,7 @@ export default function BusinessCommunities() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Report Violation</Button>
             </div>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Community</TableHead>
@@ -220,7 +220,7 @@ export default function BusinessCommunities() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 
@@ -264,7 +264,7 @@ export default function BusinessCommunities() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Schedule Service</Button>
             </div>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Community</TableHead>
@@ -287,7 +287,7 @@ export default function BusinessCommunities() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 

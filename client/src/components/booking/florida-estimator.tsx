@@ -470,10 +470,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
     return (
       <div className="w-full max-w-2xl mx-auto" data-testid="widget-florida-estimator" ref={wrapperRef}>
         <div className="text-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight" data-testid="text-explainer-headline">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3 leading-tight" data-testid="text-explainer-headline">
             {t("estimator.explainer_headline")}
           </h2>
-          <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed" data-testid="text-explainer-details">
+          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed" data-testid="text-explainer-details">
             {t("estimator.explainer_details")}
           </p>
         </div>
@@ -556,10 +556,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           >
             ← Back to scheduling
           </Button>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
             How would you like your quote?
           </h2>
-          <p className="text-base md:text-lg text-slate-300">
+          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
             Choose the method that works best for you
           </p>
         </div>
@@ -660,10 +660,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             >
               ← Back to quote method
             </Button>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
               Upload Photos or Video
             </h2>
-            <p className="text-base md:text-lg text-slate-300">
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
               Show us what needs to be removed and our AI will analyze it instantly
             </p>
           </div>
@@ -843,10 +843,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             >
               ← Back to upload
             </Button>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
               Your AI-Powered Quote
             </h2>
-            <p className="text-base md:text-lg text-slate-300">
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
               Based on analysis of your photos
             </p>
           </div>
@@ -873,7 +873,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             >
               ← Back to quote method
             </Button>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
               Build Your {serviceName} Quote
             </h2>
           </div>
@@ -1058,15 +1058,15 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
               variant="ghost"
               size="sm"
               onClick={() => setStep(5)}
-              className="mb-4 text-slate-300 hover:text-white"
+              className="mb-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
               data-testid="button-back-edit-selections"
             >
               ← {t("booking.edit_selections")}
             </Button>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
               {t("booking.confirm_book")}
             </h2>
-            <p className="text-base md:text-lg text-slate-300">
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
               Review your details and confirm your booking
             </p>
           </div>
@@ -1130,15 +1130,15 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             variant="ghost"
             size="sm"
             onClick={() => setStep(5)}
-            className="mb-4 text-slate-300 hover:text-white"
+            className="mb-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
             data-testid="button-back-edit-selections"
           >
             ← {t("booking.edit_selections")}
           </Button>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
             Ready to Book Your Service
           </h2>
-          <p className="text-base md:text-lg text-slate-300">
+          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
             Create an account to book your verified UpTend Pro
           </p>
         </div>

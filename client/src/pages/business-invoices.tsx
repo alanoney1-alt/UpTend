@@ -126,7 +126,7 @@ export default function BusinessInvoices() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pb-24">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card className="p-4">
@@ -188,7 +188,7 @@ export default function BusinessInvoices() {
 
         {/* Invoice Table */}
         <Card>
-          <Table>
+          <div className="overflow-x-auto"><Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Invoice #</TableHead>
@@ -224,7 +224,7 @@ export default function BusinessInvoices() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </Table></div>
         </Card>
       </main>
     </div>

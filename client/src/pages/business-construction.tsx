@@ -81,7 +81,7 @@ export default function BusinessConstruction() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pb-24">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card className="p-4">
             <div className="flex items-center gap-3">
@@ -147,7 +147,7 @@ export default function BusinessConstruction() {
                   <Progress value={(pl.completed / pl.totalItems) * 100} />
                 </div>
                 {pl.id === 1 && (
-                  <Table>
+                  <div className="overflow-x-auto"><Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Item</TableHead>
@@ -174,7 +174,7 @@ export default function BusinessConstruction() {
                         </TableRow>
                       ))}
                     </TableBody>
-                  </Table>
+                  </Table></div>
                 )}
               </Card>
             ))}
@@ -187,7 +187,7 @@ export default function BusinessConstruction() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Request Waiver</Button>
             </div>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Project</TableHead>
@@ -220,7 +220,7 @@ export default function BusinessConstruction() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 
@@ -231,7 +231,7 @@ export default function BusinessConstruction() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Permit</Button>
             </div>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Project</TableHead>
@@ -254,7 +254,7 @@ export default function BusinessConstruction() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
         </Tabs>

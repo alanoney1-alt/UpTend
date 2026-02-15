@@ -69,7 +69,7 @@ export default function BusinessReports() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pb-24">
         <Tabs defaultValue="saved" className="space-y-6">
           <TabsList>
             <TabsTrigger value="saved"><FileText className="w-4 h-4 mr-1" /> Saved Reports</TabsTrigger>
@@ -83,7 +83,7 @@ export default function BusinessReports() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Report</Button>
             </div>
             <Card>
-              <Table>
+              <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Report Name</TableHead>
@@ -120,7 +120,7 @@ export default function BusinessReports() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table></div>
             </Card>
           </TabsContent>
 
