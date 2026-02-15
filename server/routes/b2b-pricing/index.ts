@@ -63,7 +63,7 @@ export function registerB2bPricingRoutes(app: Express) {
       const nextBilling = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
       const [subscription] = await db.insert(b2bSubscriptions).values({
-        clientId: (req.user as any).id,
+        clientId: ((req.user as any).userId || (req.user as any).id),
         planId,
         unitsCount: units,
         monthlyPrice,
