@@ -25,7 +25,7 @@ const STEPS = [
   {
     id: "arrive",
     title: "The Arrival",
-    instruction: "You pulled into the driveway. Clock in.",
+    instruction: "You pulled into the driveway. Check in to confirm arrival.",
     why: "This starts the 'On-Site Timer'. If the customer makes you wait, you get paid for wait time.",
     actionLabel: "I've Arrived",
     icon: MapPin,

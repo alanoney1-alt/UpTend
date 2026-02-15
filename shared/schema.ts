@@ -6933,3 +6933,267 @@ export const proPayoutsRelations = relations(proPayouts, ({ one }) => ({
 export const insertProPayoutSchema = createInsertSchema(proPayouts).omit({ id: true, createdAt: true });
 export type InsertProPayout = z.infer<typeof insertProPayoutSchema>;
 export type ProPayout = typeof proPayouts.$inferSelect;
+
+// ==========================================
+// Government Contract Management & Compliance
+// ==========================================
+
+export const governmentContracts = pgTable("government_contracts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  opportunityId: varchar("opportunity_id"),
+  contractNumber: text("contract_number").notNull(),
+  awardDate: text("award_date"),
+  startDate: text("start_date"),
+  endDate: text("end_date"),
+  contractType: text("contract_type").notNull().default("firm_fixed_price"), // firm_fixed_price|time_and_materials|cost_plus
+  totalValue: integer("total_value").notNull().default(0), // cents
+  fundedAmount: integer("funded_amount").notNull().default(0), // cents
+  remainingBalance: integer("remaining_balance").notNull().default(0), // cents
+  naicsCode: text("naics_code"),
+  status: text("status").notNull().default("awarded"), // awarded|active|suspended|completed|closeout|closed
+  agencyName: text("agency_name"),
+  agencyCode: text("agency_code"),
+  contractingOfficer: text("contracting_officer"),
+  contractingOfficerEmail: text("contracting_officer_email"),
+  contractingOfficerPhone: text("contracting_officer_phone"),
+  performanceLocation: text("performance_location"),
+  sdvosbSetAside: boolean("sdvosb_set_aside").default(false),
+  smallBusinessSetAside: boolean("small_business_set_aside").default(false),
+  prevailingWageDetermination: text("prevailing_wage_determination"),
+  bondRequired: boolean("bond_required").default(false),
+  bondAmount: integer("bond_amount").default(0), // cents
+  insuranceMinimum: integer("insurance_minimum").default(0), // cents
+  securityClearanceRequired: boolean("security_clearance_required").default(false),
+  notes: text("notes"),
+  createdBy: varchar("created_by"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertGovernmentContractSchema = createInsertSchema(governmentContracts).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertGovernmentContract = z.infer<typeof insertGovernmentContractSchema>;
+export type GovernmentContract = typeof governmentContracts.$inferSelect;
+
+export const contractMilestones = pgTable("contract_milestones", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  milestoneNumber: integer("milestone_number").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  deliverables: text("deliverables"),
+  dueDate: text("due_date"),
+  completedDate: text("completed_date"),
+  status: text("status").notNull().default("pending"), // pending|in_progress|submitted|accepted|rejected
+  paymentAmount: integer("payment_amount").default(0), // cents
+  paymentStatus: text("payment_status").notNull().default("unbilled"), // unbilled|billed|paid
+  invoiceId: varchar("invoice_id"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertContractMilestoneSchema = createInsertSchema(contractMilestones).omit({ id: true, createdAt: true });
+export type InsertContractMilestone = z.infer<typeof insertContractMilestoneSchema>;
+export type ContractMilestone = typeof contractMilestones.$inferSelect;
+
+export const contractLaborEntries = pgTable("contract_labor_entries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  milestoneId: varchar("milestone_id"),
+  proId: varchar("pro_id").notNull(),
+  workDate: text("work_date").notNull(),
+  hoursWorked: real("hours_worked").notNull(),
+  hourlyRate: integer("hourly_rate").notNull(), // cents
+  prevailingWageRate: integer("prevailing_wage_rate"), // cents
+  fringeBenefits: integer("fringe_benefits").default(0), // cents
+  overtimeHours: real("overtime_hours").default(0),
+  overtimeRate: integer("overtime_rate").default(0), // cents
+  jobClassification: text("job_classification").notNull(),
+  description: text("description"),
+  approvedBy: varchar("approved_by"),
+  approvedAt: timestamp("approved_at"),
+  status: text("status").notNull().default("pending"), // pending|approved|disputed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertContractLaborEntrySchema = createInsertSchema(contractLaborEntries).omit({ id: true, createdAt: true });
+export type InsertContractLaborEntry = z.infer<typeof insertContractLaborEntrySchema>;
+export type ContractLaborEntry = typeof contractLaborEntries.$inferSelect;
+
+export const certifiedPayrollReports = pgTable("certified_payroll_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  weekEndingDate: text("week_ending_date").notNull(),
+  reportNumber: integer("report_number").notNull(),
+  preparedBy: varchar("prepared_by"),
+  preparedAt: timestamp("prepared_at"),
+  status: text("status").notNull().default("draft"), // draft|submitted|accepted|revision_required
+  submittedAt: timestamp("submitted_at"),
+  totalGrossWages: integer("total_gross_wages").default(0), // cents
+  totalFringeBenefits: integer("total_fringe_benefits").default(0), // cents
+  totalDeductions: integer("total_deductions").default(0), // cents
+  totalNetPay: integer("total_net_pay").default(0), // cents
+  wh347FormData: jsonb("wh347_form_data"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCertifiedPayrollReportSchema = createInsertSchema(certifiedPayrollReports).omit({ id: true, createdAt: true });
+export type InsertCertifiedPayrollReport = z.infer<typeof insertCertifiedPayrollReportSchema>;
+export type CertifiedPayrollReport = typeof certifiedPayrollReports.$inferSelect;
+
+export const certifiedPayrollEntries = pgTable("certified_payroll_entries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  payrollReportId: varchar("payroll_report_id").notNull(),
+  proId: varchar("pro_id").notNull(),
+  proName: text("pro_name").notNull(),
+  proAddress: text("pro_address"),
+  proSSNLast4: text("pro_ssn_last4"), // encrypted
+  jobClassification: text("job_classification").notNull(),
+  hoursMonday: real("hours_monday").default(0),
+  hoursTuesday: real("hours_tuesday").default(0),
+  hoursWednesday: real("hours_wednesday").default(0),
+  hoursThursday: real("hours_thursday").default(0),
+  hoursFriday: real("hours_friday").default(0),
+  hoursSaturday: real("hours_saturday").default(0),
+  hoursSunday: real("hours_sunday").default(0),
+  totalHours: real("total_hours").notNull().default(0),
+  hourlyRate: integer("hourly_rate").notNull(), // cents
+  grossPay: integer("gross_pay").notNull().default(0), // cents
+  fringeBenefits: integer("fringe_benefits").default(0), // cents
+  federalTax: integer("federal_tax").default(0), // cents
+  stateTax: integer("state_tax").default(0), // cents
+  socialSecurity: integer("social_security").default(0), // cents
+  medicare: integer("medicare").default(0), // cents
+  otherDeductions: integer("other_deductions").default(0), // cents
+  netPay: integer("net_pay").notNull().default(0), // cents
+  overtimeHours: real("overtime_hours").default(0),
+  overtimeRate: integer("overtime_rate").default(0), // cents
+});
+
+export const insertCertifiedPayrollEntrySchema = createInsertSchema(certifiedPayrollEntries).omit({ id: true });
+export type InsertCertifiedPayrollEntry = z.infer<typeof insertCertifiedPayrollEntrySchema>;
+export type CertifiedPayrollEntry = typeof certifiedPayrollEntries.$inferSelect;
+
+export const contractInvoices = pgTable("contract_invoices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  milestoneId: varchar("milestone_id"),
+  invoiceNumber: text("invoice_number").notNull(),
+  invoicePeriodStart: text("invoice_period_start"),
+  invoicePeriodEnd: text("invoice_period_end"),
+  submittedDate: text("submitted_date"),
+  status: text("status").notNull().default("draft"), // draft|submitted|under_review|approved|paid|disputed|rejected
+  laborCost: integer("labor_cost").default(0), // cents
+  materialsCost: integer("materials_cost").default(0), // cents
+  equipmentCost: integer("equipment_cost").default(0), // cents
+  subcontractorCost: integer("subcontractor_cost").default(0), // cents
+  overhead: integer("overhead").default(0), // cents
+  profit: integer("profit").default(0), // cents
+  totalAmount: integer("total_amount").notNull().default(0), // cents
+  paymentReceivedDate: text("payment_received_date"),
+  paymentAmount: integer("payment_amount").default(0), // cents
+  checkNumber: text("check_number"),
+  eftNumber: text("eft_number"),
+  promptPaymentInterest: integer("prompt_payment_interest").default(0), // cents
+  notes: text("notes"),
+  dueDate: text("due_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertContractInvoiceSchema = createInsertSchema(contractInvoices).omit({ id: true, createdAt: true });
+export type InsertContractInvoice = z.infer<typeof insertContractInvoiceSchema>;
+export type ContractInvoice = typeof contractInvoices.$inferSelect;
+
+export const contractModifications = pgTable("contract_modifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  modNumber: text("mod_number").notNull(),
+  modType: text("mod_type").notNull(), // administrative|scope_change|funding|time_extension|termination
+  description: text("description"),
+  previousValue: integer("previous_value"), // cents
+  newValue: integer("new_value"), // cents
+  previousEndDate: text("previous_end_date"),
+  newEndDate: text("new_end_date"),
+  effectiveDate: text("effective_date"),
+  signedDate: text("signed_date"),
+  status: text("status").notNull().default("pending"), // pending|executed|rejected
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertContractModificationSchema = createInsertSchema(contractModifications).omit({ id: true, createdAt: true });
+export type InsertContractModification = z.infer<typeof insertContractModificationSchema>;
+export type ContractModification = typeof contractModifications.$inferSelect;
+
+export const contractComplianceDocs = pgTable("contract_compliance_docs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  docType: text("doc_type").notNull(), // insurance_cert|bond|sdvosb_cert|sam_registration|w9|eeo_poster|drug_free_workplace|osha_log|safety_plan|quality_plan|past_performance
+  fileName: text("file_name"),
+  fileUrl: text("file_url"),
+  expirationDate: text("expiration_date"),
+  status: text("status").notNull().default("missing"), // current|expiring_soon|expired|missing
+  uploadedAt: timestamp("uploaded_at"),
+  verifiedBy: varchar("verified_by"),
+  verifiedAt: timestamp("verified_at"),
+  notes: text("notes"),
+});
+
+export const insertContractComplianceDocSchema = createInsertSchema(contractComplianceDocs).omit({ id: true });
+export type InsertContractComplianceDoc = z.infer<typeof insertContractComplianceDocSchema>;
+export type ContractComplianceDoc = typeof contractComplianceDocs.$inferSelect;
+
+export const contractDailyLogs = pgTable("contract_daily_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  logDate: text("log_date").notNull(),
+  weather: text("weather"),
+  temperature: text("temperature"),
+  workPerformed: text("work_performed"),
+  materialsUsed: text("materials_used"),
+  equipmentUsed: text("equipment_used"),
+  personnelOnSite: jsonb("personnel_on_site"), // [{proId, name, hoursWorked, classification}]
+  visitorsOnSite: text("visitors_on_site"),
+  safetyIncidents: text("safety_incidents"),
+  delayReasons: text("delay_reasons"),
+  photos: jsonb("photos"), // string[]
+  preparedBy: varchar("prepared_by"),
+  supervisorSignoff: varchar("supervisor_signoff"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertContractDailyLogSchema = createInsertSchema(contractDailyLogs).omit({ id: true, createdAt: true });
+export type InsertContractDailyLog = z.infer<typeof insertContractDailyLogSchema>;
+export type ContractDailyLog = typeof contractDailyLogs.$inferSelect;
+
+export const prevailingWageRates = pgTable("prevailing_wage_rates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  wageDecisionNumber: text("wage_decision_number").notNull(),
+  county: text("county"),
+  state: text("state"),
+  effectiveDate: text("effective_date"),
+  expirationDate: text("expiration_date"),
+  classification: text("classification").notNull(),
+  baseRate: integer("base_rate").notNull(), // cents
+  fringeBenefits: integer("fringe_benefits").notNull().default(0), // cents
+  totalRate: integer("total_rate").notNull(), // cents
+  overtimeRate: integer("overtime_rate").default(0), // cents
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertPrevailingWageRateSchema = createInsertSchema(prevailingWageRates).omit({ id: true, createdAt: true });
+export type InsertPrevailingWageRate = z.infer<typeof insertPrevailingWageRateSchema>;
+export type PrevailingWageRate = typeof prevailingWageRates.$inferSelect;
+
+export const contractAuditLogs = pgTable("contract_audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(),
+  action: text("action").notNull(),
+  entityType: text("entity_type").notNull(), // contract|milestone|labor|payroll|invoice|modification|compliance|daily_log
+  entityId: varchar("entity_id"),
+  userId: varchar("user_id"),
+  details: jsonb("details"),
+  ipAddress: text("ip_address"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type ContractAuditLog = typeof contractAuditLogs.$inferSelect;

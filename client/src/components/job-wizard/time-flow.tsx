@@ -41,7 +41,7 @@ export function TimeFlow({ onComplete, hourlyRate = 45 }: TimeFlowProps) {
         </div>
         <h2 className="text-2xl font-bold mb-2" data-testid="text-time-title">Moving Labor</h2>
         <p className="text-muted-foreground mb-2 text-center max-w-sm">
-          Clock in when you start lifting. The timer tracks your billable hours at ${hourlyRate}/hr.
+          Start the timer when you begin. It tracks your billable hours at ${hourlyRate}/hr.
         </p>
         <p className="text-sm text-muted-foreground mb-8">
           Customer is billed per quarter-hour.

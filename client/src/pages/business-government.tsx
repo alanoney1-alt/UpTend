@@ -26,9 +26,9 @@ const demoPrevailingWages = [
 ];
 
 const demoCertifiedPayrolls = [
-  { id: 1, contractName: "City Hall HVAC Retrofit", weekEnding: "2025-02-07", employees: 8, totalHours: 320, totalWages: 12480, status: "submitted" },
-  { id: 2, contractName: "County Library Renovation", weekEnding: "2025-02-07", employees: 12, totalHours: 480, totalWages: 18720, status: "approved" },
-  { id: 3, contractName: "City Hall HVAC Retrofit", weekEnding: "2025-02-14", employees: 8, totalHours: 312, totalWages: 12168, status: "draft" },
+  { id: 1, contractName: "City Hall HVAC Retrofit", weekEnding: "2025-02-07", workers: 8, totalHours: 320, totalWages: 12480, status: "submitted" },
+  { id: 2, contractName: "County Library Renovation", weekEnding: "2025-02-07", workers: 12, totalHours: 480, totalWages: 18720, status: "approved" },
+  { id: 3, contractName: "City Hall HVAC Retrofit", weekEnding: "2025-02-14", workers: 8, totalHours: 312, totalWages: 12168, status: "draft" },
 ];
 
 const demoSamRegistration = {
@@ -321,7 +321,7 @@ export default function BusinessGovernment() {
                   <TableRow>
                     <TableHead>Contract</TableHead>
                     <TableHead>Week Ending</TableHead>
-                    <TableHead className="text-right">Employees</TableHead>
+                    <TableHead className="text-right">Workers</TableHead>
                     <TableHead className="text-right">Hours</TableHead>
                     <TableHead className="text-right">Total Wages</TableHead>
                     <TableHead>Status</TableHead>
@@ -333,7 +333,7 @@ export default function BusinessGovernment() {
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.contractName}</TableCell>
                       <TableCell>{(() => { const d = new Date(p.weekEnding); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
-                      <TableCell className="text-right">{p.employees}</TableCell>
+                      <TableCell className="text-right">{p.workers}</TableCell>
                       <TableCell className="text-right">{p.totalHours}</TableCell>
                       <TableCell className="text-right font-semibold">${p.totalWages.toLocaleString()}</TableCell>
                       <TableCell><StatusBadge status={p.status} /></TableCell>

@@ -13,6 +13,7 @@ import {
   environmentalCompliance,
 } from "@shared/schema";
 import { z } from "zod";
+import { registerGovernmentContractRoutes } from "./contracts.routes";
 
 /** Helper: generate standard CRUD routes for a table */
 function registerCrud(
@@ -92,6 +93,9 @@ function registerCrud(
 }
 
 export function registerGovernmentRoutes(app: Express) {
+  // Government contract management & compliance system
+  registerGovernmentContractRoutes(app);
+
   registerCrud(app, "/api/government/prevailing-wages", prevailingWages, "prevailing wage");
   registerCrud(app, "/api/government/certified-payrolls", certifiedPayrolls, "certified payroll", { ownerField: "proId" });
   registerCrud(app, "/api/government/sam-registrations", samRegistrations, "SAM registration", { ownerField: "businessId" });

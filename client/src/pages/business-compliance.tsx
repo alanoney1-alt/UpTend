@@ -356,7 +356,7 @@ export default function BusinessCompliance() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Document Type</TableHead>
-                    <TableHead>Pro / Employee</TableHead>
+                    <TableHead>Pro / Contractor</TableHead>
                     <TableHead>Uploaded</TableHead>
                     <TableHead>Expiry</TableHead>
                     <TableHead>Status</TableHead>
@@ -405,7 +405,7 @@ export default function BusinessCompliance() {
               <div className="overflow-x-auto"><Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Pro / Employee</TableHead>
+                    <TableHead>Pro / Contractor</TableHead>
                     <TableHead>Provider</TableHead>
                     <TableHead>Submitted</TableHead>
                     <TableHead>Completed</TableHead>
