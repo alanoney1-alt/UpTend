@@ -276,7 +276,7 @@ export default function Services() {
                     <div className="flex items-baseline gap-3">
                       <span className="text-2xl md:text-3xl font-black text-primary" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
                       <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                        $49 Credit Toward Next Booking
+                        {t("services_page.credit_badge")}
                       </Badge>
                     </div>
                   </div>
@@ -307,7 +307,7 @@ export default function Services() {
                   onClick={() => setLocation(svc.link || `/services/${svc.id.replace(/_/g, '-')}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
-                  Learn More <ArrowRight className="w-5 h-5 ml-2" />
+                  {t("services_page.learn_more")} <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </CardContent>
             </Card>
@@ -318,7 +318,7 @@ export default function Services() {
         <div className="mb-6 mt-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px bg-border flex-1"></div>
-            <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">All Services</span>
+            <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{t("services_page.all_services")}</span>
             <div className="h-px bg-border flex-1"></div>
           </div>
         </div>
@@ -370,7 +370,7 @@ export default function Services() {
                   onClick={() => setLocation(svc.link || `/services/${svc.id.replace(/_/g, '-')}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
-                  Learn More <ArrowRight className="w-4 h-4 ml-2" />
+                  {t("services_page.learn_more")} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </CardContent>
             </Card>
@@ -382,10 +382,10 @@ export default function Services() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white mb-4" data-testid="text-pro-standards-headline">
-              How We Recruit &amp; Train Our Pros
+              {t("services_page.pro_standards_headline")}
             </h2>
             <p className="text-slate-400 text-lg max-w-2xl mx-auto" data-testid="text-pro-standards-subhead">
-              Not just anyone can be an UpTend Pro. Every technician is vetted, trained, and continuously rated.
+              {t("services_page.pro_standards_subhead")}
             </p>
           </div>
 
@@ -406,7 +406,7 @@ export default function Services() {
           <div className="text-center mt-16">
             <Link href="/become-pro">
               <Button variant="outline" size="lg" data-testid="button-become-pro-services">
-                Want to become a Pro? <ChevronRight className="w-4 h-4 ml-2" />
+                {t("services_page.become_pro")} <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
           </div>
@@ -416,10 +416,10 @@ export default function Services() {
       <section className="py-20 bg-background" data-testid="section-services-cta">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-4" data-testid="text-services-cta-headline">
-            Ready to get started?
+            {t("services_page.cta_headline")}
           </h2>
           <p className="text-muted-foreground text-lg mb-8" data-testid="text-services-cta-subhead">
-            Pick a service, get an AI-powered instant quote, and book a Pro in minutes.
+            {t("services_page.cta_subhead")}
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/book">
