@@ -104,17 +104,22 @@ export default function AuthPage() {
 
       // Homeowner login - check for redirect parameters
       if (activeTab === "homeowner") {
-        // If there's a redirect parameter (e.g., from property search), preserve address and bundle params
-        if (redirectParam && redirectParam === "booking") {
-          const params = new URLSearchParams();
-          if (addressParam) params.set("address", addressParam);
-          if (bundleParam) params.set("bundle", bundleParam);
-          if (serviceParam) params.set("service", serviceParam);
-          if (quoteIdParam) params.set("quoteId", quoteIdParam);
-          if (photosParam) params.set("photos", photosParam);
-          if (manualEstimateParam) params.set("manualEstimate", manualEstimateParam);
-          if (schedulingDataParam) params.set("schedulingData", schedulingDataParam);
-          setLocation(`/book?${params.toString()}`);
+        // If there's a redirect parameter, go there after login
+        if (redirectParam) {
+          if (redirectParam === "booking" || redirectParam === "/book" || redirectParam.startsWith("/book")) {
+            const params = new URLSearchParams();
+            if (addressParam) params.set("address", addressParam);
+            if (bundleParam) params.set("bundle", bundleParam);
+            if (serviceParam) params.set("service", serviceParam);
+            if (quoteIdParam) params.set("quoteId", quoteIdParam);
+            if (photosParam) params.set("photos", photosParam);
+            if (manualEstimateParam) params.set("manualEstimate", manualEstimateParam);
+            if (schedulingDataParam) params.set("schedulingData", schedulingDataParam);
+            setLocation(`/book?${params.toString()}`);
+          } else {
+            // Generic redirect — go wherever it says
+            setLocation(redirectParam);
+          }
         } else if (!data.hasPaymentMethod) {
           setLocation("/payment-setup");
         } else {

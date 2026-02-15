@@ -13,6 +13,7 @@ import { ArrowLeft, Loader2, Eye, EyeOff } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Logo } from "@/components/ui/logo";
 import { GoogleLoginButton, GoogleDivider } from "@/components/auth/google-login-button";
+import { useTranslation } from "react-i18next";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -26,6 +27,7 @@ export default function CustomerLogin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -89,7 +91,7 @@ export default function CustomerLogin() {
       <header className="p-4">
         <Link href="/" className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors">
           <ArrowLeft className="w-5 h-5" />
-          <span>Back to Home</span>
+          <span>{t("login.back_home")}</span>
         </Link>
       </header>
 
@@ -99,9 +101,9 @@ export default function CustomerLogin() {
             <div className="flex justify-center mb-4">
               <Logo className="w-10 h-10" textClassName="text-xl" />
             </div>
-            <h1 className="text-2xl font-bold mb-2">Welcome Back</h1>
+            <h1 className="text-2xl font-bold mb-2">{t("login.welcome_back")}</h1>
             <p className="text-muted-foreground">
-              Sign in to book your next home service
+              {t("login.subtitle")}
             </p>
           </div>
 
@@ -115,11 +117,11 @@ export default function CustomerLogin() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("login.email")}</FormLabel>
                     <FormControl>
                       <Input 
                         type="email"
-                        placeholder="Enter your email" 
+                        placeholder={t("login.email_placeholder")} 
                         {...field} 
                         data-testid="input-email"
                       />
@@ -134,12 +136,12 @@ export default function CustomerLogin() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("login.password")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input 
                           type={showPassword ? "text" : "password"}
-                          placeholder="Enter your password" 
+                          placeholder={t("login.password_placeholder")} 
                           {...field}
                           data-testid="input-password"
                         />
@@ -173,10 +175,10 @@ export default function CustomerLogin() {
                 {loginMutation.isPending ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Signing In...
+                    {t("login.signing_in")}
                   </>
                 ) : (
-                  "Sign In"
+                  t("login.sign_in")
                 )}
               </Button>
             </form>
@@ -184,21 +186,21 @@ export default function CustomerLogin() {
 
           <div className="mt-4 text-center">
             <Link href="/forgot-password" className="text-sm text-primary hover:underline" data-testid="link-forgot-password">
-              Forgot your password?
+              {t("login.forgot_password")}
             </Link>
           </div>
 
           <div className="mt-6 text-center space-y-3">
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              {t("login.no_account")}{" "}
               <Link href="/customer-signup" className="text-primary hover:underline">
-                Create one now
+                {t("login.create_one")}
               </Link>
             </p>
             <p className="text-xs text-muted-foreground">
-              Are you a Pro?{" "}
+              {t("login.are_pro")}{" "}
               <Link href="/login" className="text-primary hover:underline">
-                Pro Login
+                {t("login.pro_login")}
               </Link>
             </p>
           </div>

@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { apiRequest } from "@/lib/queryClient";
 import { Logo } from "@/components/ui/logo";
 import { GoogleLoginButton, GoogleDivider } from "@/components/auth/google-login-button";
+import { useTranslation } from "react-i18next";
 
 const signupSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -42,6 +43,7 @@ export default function CustomerSignup() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
 
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
@@ -96,7 +98,7 @@ export default function CustomerSignup() {
       <header className="p-4">
         <Link href="/" className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors">
           <ArrowLeft className="w-5 h-5" />
-          <span>Back to Home</span>
+          <span>{t("signup.back_home")}</span>
         </Link>
       </header>
 
@@ -107,24 +109,24 @@ export default function CustomerSignup() {
               <div className="flex justify-center mb-4">
                 <Logo className="w-10 h-10" textClassName="text-xl" />
               </div>
-              <h1 className="text-2xl font-bold mb-2">Create Your Account</h1>
+              <h1 className="text-2xl font-bold mb-2">{t("signup.create_account")}</h1>
               <p className="text-muted-foreground">
-                Join UpTend to book home services instantly
+                {t("signup.subtitle")}
               </p>
             </div>
 
             <div className="bg-muted/50 rounded-lg p-4 mb-6 space-y-2">
               <div className="flex items-center gap-2 text-sm">
                 <Shield className="w-4 h-4 text-green-500" />
-                <span>Your information is secure and encrypted</span>
+                <span>{t("signup.secure_info")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <CreditCard className="w-4 h-4 text-primary" />
-                <span>Payment info required after signup - <strong>no charges until you confirm a booking</strong></span>
+                <span>{t("signup.payment_note")} <strong>{t("signup.payment_note_bold")}</strong></span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <CheckCircle2 className="w-4 h-4 text-primary" />
-                <span>See your final price before securing a Pro</span>
+                <span>{t("signup.see_price")}</span>
               </div>
             </div>
 
@@ -139,7 +141,7 @@ export default function CustomerSignup() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>First Name</FormLabel>
+                        <FormLabel>{t("signup.first_name")}</FormLabel>
                         <FormControl>
                           <Input placeholder="John" {...field} data-testid="input-first-name" />
                         </FormControl>
@@ -152,7 +154,7 @@ export default function CustomerSignup() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Last Name</FormLabel>
+                        <FormLabel>{t("signup.last_name")}</FormLabel>
                         <FormControl>
                           <Input placeholder="Doe" {...field} data-testid="input-last-name" />
                         </FormControl>
@@ -167,7 +169,7 @@ export default function CustomerSignup() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("signup.email")}</FormLabel>
                       <FormControl>
                         <Input type="email" placeholder="john@example.com" {...field} data-testid="input-email" />
                       </FormControl>
@@ -181,12 +183,12 @@ export default function CustomerSignup() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel>{t("signup.phone")} <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
                         <Input type="tel" placeholder="(555) 123-4567" {...field} data-testid="input-phone" />
                       </FormControl>
                       <FormDescription className="text-xs">
-                        Required for booking updates and Pro communication
+                        {t("signup.phone_required")}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -208,10 +210,10 @@ export default function CustomerSignup() {
                       <div className="space-y-1 leading-none">
                         <FormLabel className="text-sm font-normal">
                           <MessageSquare className="w-4 h-4 inline mr-1 text-primary" />
-                          I agree to receive SMS notifications about my bookings, updates from Pros, and service communications from UpTend. <span className="text-destructive">*</span>
+                          {t("signup.sms_optin")} <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormDescription className="text-xs">
-                          Message and data rates may apply. You can opt out at any time.
+                          {t("signup.sms_rates")}
                         </FormDescription>
                         <FormMessage />
                       </div>
@@ -224,12 +226,12 @@ export default function CustomerSignup() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("signup.password")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input 
                             type={showPassword ? "text" : "password"}
-                            placeholder="At least 8 characters" 
+                            placeholder={t("signup.password_placeholder")} 
                             {...field}
                             data-testid="input-password"
                           />
