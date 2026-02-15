@@ -70,6 +70,7 @@ export function CircularEconomyAgent({ serviceRequestId, photoUrls = [], existin
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/circular-economy/recommendations", serviceRequestId] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const addItem = () => {

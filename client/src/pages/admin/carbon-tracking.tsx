@@ -389,7 +389,7 @@ export default function CarbonTrackingDashboard() {
                   <div>
                     <p className="text-sm font-medium mb-1">Last Updated</p>
                     <p className="text-sm text-muted-foreground">
-                      {new Date(overview.lastUpdatedAt).toLocaleString()}
+                      {overview.lastUpdatedAt ? new Date(overview.lastUpdatedAt).toLocaleString() : "—"}
                     </p>
                   </div>
 
@@ -413,7 +413,7 @@ export default function CarbonTrackingDashboard() {
               <CardTitle>6-Month Trend</CardTitle>
               <CardDescription>Platform sustainability performance over time</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -468,6 +468,7 @@ export default function CarbonTrackingDashboard() {
                   <p>No Pro data available yet. Complete jobs to see rankings.</p>
                 </div>
               ) : (
+                <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -510,6 +511,7 @@ export default function CarbonTrackingDashboard() {
                     ))}
                   </TableBody>
                 </Table>
+                </div>
               )}
 
               <div className="mt-6 grid md:grid-cols-3 gap-4">

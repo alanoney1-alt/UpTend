@@ -31,6 +31,7 @@ export function MaintenancePlan() {
       queryClient.invalidateQueries({ queryKey: ["/api/deferred-jobs"] });
       toast({ title: "Job Booked", description: "This maintenance task has been converted to a booking." });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const dismissMutation = useMutation({
@@ -40,6 +41,7 @@ export function MaintenancePlan() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/deferred-jobs"] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const pendingJobs = (jobs || []).filter((j) => j.status === "pending");

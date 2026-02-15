@@ -76,6 +76,7 @@ export default function HomeProfilePage() {
       setHomeForm({ address: "", city: "", state: "", zip: "", homeType: "single_family", squareFootage: "", yearBuilt: "", bedrooms: "", bathrooms: "" });
       toast({ title: "Home added!" });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   // Add service history
@@ -93,6 +94,7 @@ export default function HomeProfilePage() {
       setServiceForm({ serviceType: "", provider: "", date: "", cost: "", notes: "" });
       toast({ title: "Service record added!" });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   // Add appliance
@@ -106,6 +108,7 @@ export default function HomeProfilePage() {
       setApplianceForm({ name: "", brand: "", model: "", warrantyExpiry: "" });
       toast({ title: "Appliance added!" });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const profiles = dashboard?.profiles || [];

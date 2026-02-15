@@ -455,6 +455,7 @@ export default function Profile() {
       queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
       toast({ title: "Default address updated" });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const setDefaultPaymentMutation = useMutation({
@@ -466,6 +467,7 @@ export default function Profile() {
       queryClient.invalidateQueries({ queryKey: ["/api/customers/payment-methods"] });
       toast({ title: "Default payment method updated" });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const handleSaveAddress = (data: Partial<CustomerAddress>) => {

@@ -37,6 +37,7 @@ export function JobPhotos({ jobId, type, onUploaded }: JobPhotosProps) {
       setUploaded(true);
       onUploaded?.(data.urls);
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const handleFiles = (files: FileList | null) => {

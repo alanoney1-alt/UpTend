@@ -162,6 +162,7 @@ export default function AgenticBrain() {
       queryClient.invalidateQueries({ queryKey: ["/api/agentic/dashboard"] });
       toast({ title: "Flag updated", description: "Sentiment flag status updated." });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   if (authLoading || isLoading) {
@@ -459,7 +460,7 @@ export default function AgenticBrain() {
 
                     <p className="text-xs text-muted-foreground mt-2">
                       <Clock className="w-3 h-3 inline mr-1" />
-                      {new Date(report.createdAt).toLocaleString()} - Confidence: {Math.round(report.confidence * 100)}%
+                      {report.createdAt ? new Date(report.createdAt).toLocaleString() : "—"} - Confidence: {Math.round(report.confidence * 100)}%
                     </p>
                   </CardContent>
                 </Card>
@@ -521,7 +522,7 @@ export default function AgenticBrain() {
                     <div className="flex items-center justify-between gap-2 mt-2 flex-wrap">
                       <p className="text-xs text-muted-foreground">
                         <Clock className="w-3 h-3 inline mr-1" />
-                        {new Date(flag.createdAt).toLocaleString()}
+                        {flag.createdAt ? new Date(flag.createdAt).toLocaleString() : "—"}
                       </p>
                       {flag.status !== "resolved" && (
                         <Button
@@ -617,7 +618,7 @@ export default function AgenticBrain() {
 
                     <p className="text-xs text-muted-foreground">
                       <Clock className="w-3 h-3 inline mr-1" />
-                      {new Date(report.createdAt).toLocaleString()} - Confidence: {Math.round(report.confidence * 100)}%
+                      {report.createdAt ? new Date(report.createdAt).toLocaleString() : "—"} - Confidence: {Math.round(report.confidence * 100)}%
                     </p>
                   </CardContent>
                 </Card>

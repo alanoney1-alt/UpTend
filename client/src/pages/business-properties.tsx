@@ -295,7 +295,7 @@ export default function BusinessProperties() {
                       <TableCell className="max-w-[200px] truncate">{wo.description}</TableCell>
                       <TableCell><PriorityBadge priority={wo.priority} /></TableCell>
                       <TableCell>{wo.assignedPro || <span className="text-muted-foreground italic">Unassigned</span>}</TableCell>
-                      <TableCell className="text-sm">{new Date(wo.slaDeadline).toLocaleString()}</TableCell>
+                      <TableCell className="text-sm">{(() => { const d = new Date(wo.slaDeadline); return isNaN(d.getTime()) ? "—" : d.toLocaleString(); })()}</TableCell>
                       <TableCell><StatusBadge status={wo.status} /></TableCell>
                     </TableRow>
                   ))}

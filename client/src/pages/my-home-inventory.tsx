@@ -54,6 +54,7 @@ export default function MyHomeInventory() {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory"] });
       toast({ title: "Item Updated" });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const items = data?.items || [];

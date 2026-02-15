@@ -5,7 +5,7 @@ import { analyzeImage } from "../services/ai/anthropic-client";
 
 export function registerScopeChangeRoutes(app: Express) {
   // POST /api/scope-change/request — Pro submits a scope change
-  app.post("/api/scope-change/request", async (req, res) => {
+  app.post("/api/scope-change/request", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
       if (!user) return res.status(401).json({ error: "Not authenticated" });
@@ -95,7 +95,7 @@ export function registerScopeChangeRoutes(app: Express) {
   });
 
   // POST /api/scope-change/:id/respond — Customer approves/declines
-  app.post("/api/scope-change/:id/respond", async (req, res) => {
+  app.post("/api/scope-change/:id/respond", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
       if (!user) return res.status(401).json({ error: "Not authenticated" });

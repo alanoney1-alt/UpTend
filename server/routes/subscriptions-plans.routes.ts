@@ -13,6 +13,7 @@
  */
 
 import type { Express, Request, Response } from "express";
+import { requireAuth } from "../auth-middleware";
 import { storage } from "../storage";
 import { z } from "zod";
 import { nanoid } from "nanoid";
@@ -135,7 +136,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
   });
 
   // POST /api/subscriptions/plans — create subscription
-  app.post("/api/subscriptions/plans", async (req: Request, res: Response) => {
+  app.post("/api/subscriptions/plans", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -227,7 +228,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
   });
 
   // GET /api/subscriptions/plans — list my subscriptions
-  app.get("/api/subscriptions/plans", async (req: Request, res: Response) => {
+  app.get("/api/subscriptions/plans", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -255,7 +256,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
   });
 
   // PATCH /api/subscriptions/plans/:id — update/pause/cancel
-  app.patch("/api/subscriptions/plans/:id", async (req: Request, res: Response) => {
+  app.patch("/api/subscriptions/plans/:id", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -303,7 +304,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
   });
 
   // POST /api/subscriptions/plans/:id/resume — resume paused subscription
-  app.post("/api/subscriptions/plans/:id/resume", async (req: Request, res: Response) => {
+  app.post("/api/subscriptions/plans/:id/resume", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
       const userId = (req.user as any).userId || (req.user as any).id;

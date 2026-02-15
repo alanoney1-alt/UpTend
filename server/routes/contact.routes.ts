@@ -1,16 +1,40 @@
 import type { Express } from "express";
+import rateLimit from "express-rate-limit";
+
+// Sanitize user input for safe HTML embedding (prevent XSS in admin emails)
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 /**
  * Contact Form Routes
  * Handles contact form submissions from /contact page
  */
 export function registerContactRoutes(app: Express) {
-  app.post("/api/contact", async (req, res) => {
+  const contactLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // 5 submissions per 15 min per IP
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many submissions. Please try again later." },
+  });
+
+  app.post("/api/contact", contactLimiter, async (req, res) => {
     try {
       const { name, email, phone, subject, message } = req.body;
 
-      if (!name || !email || !message) {
+      if (!name || typeof name !== "string" || !email || typeof email !== "string" || !message || typeof message !== "string") {
         return res.status(400).json({ error: "Name, email, and message are required" });
+      }
+
+      // Length limits
+      if (name.length > 200 || email.length > 320 || message.length > 5000) {
+        return res.status(400).json({ error: "Input too long" });
       }
 
       // Validate email format
@@ -19,16 +43,22 @@ export function registerContactRoutes(app: Express) {
         return res.status(400).json({ error: "Invalid email address" });
       }
 
+      const safeName = escapeHtml(name);
+      const safeEmail = escapeHtml(email);
+      const safePhone = escapeHtml(typeof phone === "string" ? phone : "not provided");
+      const safeSubject = escapeHtml(typeof subject === "string" ? subject : "General Inquiry");
+      const safeMessage = escapeHtml(message);
+
       const submission = {
-        name,
-        email,
-        phone: phone || "not provided",
-        subject: subject || "General Inquiry",
-        message,
+        name: safeName,
+        email: safeEmail,
+        phone: safePhone || "not provided",
+        subject: safeSubject || "General Inquiry",
+        message: safeMessage,
         timestamp: new Date().toISOString(),
       };
 
-      console.log("[Contact Form] New submission from " + email);
+      console.log("[Contact Form] New submission from " + safeEmail);
 
       // Send email notification via Resend/SendGrid
       const { sendEmail } = await import("../services/notifications");
@@ -37,9 +67,9 @@ export function registerContactRoutes(app: Express) {
       try {
         await sendEmail({
           to: adminEmail,
-          subject: `[UpTend Contact] ${submission.subject} — from ${name}`,
+          subject: `[UpTend Contact] ${submission.subject} — from ${submission.name}`,
           text: `New contact form submission:\n\nName: ${name}\nEmail: ${email}\nPhone: ${submission.phone}\nSubject: ${submission.subject}\n\nMessage:\n${message}\n\nSubmitted: ${submission.timestamp}`,
-          html: `<h2>New Contact Form Submission</h2><p><strong>Name:</strong> ${name}<br/><strong>Email:</strong> ${email}<br/><strong>Phone:</strong> ${submission.phone}<br/><strong>Subject:</strong> ${submission.subject}</p><p><strong>Message:</strong><br/>${message}</p><p style="color:#999;font-size:12px;">Submitted: ${submission.timestamp}</p>`,
+          html: `<h2>New Contact Form Submission</h2><p><strong>Name:</strong> ${submission.name}<br/><strong>Email:</strong> ${submission.email}<br/><strong>Phone:</strong> ${submission.phone}<br/><strong>Subject:</strong> ${submission.subject}</p><p><strong>Message:</strong><br/>${submission.message}</p><p style="color:#999;font-size:12px;">Submitted: ${submission.timestamp}</p>`,
         });
       } catch (emailErr) {
         console.log(`[Contact Form] Email send failed: ${emailErr}`);

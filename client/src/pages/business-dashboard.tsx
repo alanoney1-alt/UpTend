@@ -26,6 +26,7 @@ import { HoaCommunicationCenter } from "@/components/hoa/communication-center";
 import { BusinessContextSwitcher } from "@/components/business/business-context-switcher";
 import { TeamManagementTable } from "@/components/business/team-management-table";
 import { ServiceBreakdownChart } from "@/components/esg/service-breakdown-chart";
+import { useToast } from "@/hooks/use-toast";
 
 const businessTypes = [
   { id: "property_manager", label: "Property Manager" },
@@ -45,6 +46,7 @@ const frequencies = [
 ];
 
 export default function BusinessDashboard() {
+  const { toast } = useToast();
   const queryClient = useQueryClient();
   const demoUserId = "demo-business-user";
   
@@ -95,6 +97,7 @@ export default function BusinessDashboard() {
       queryClient.invalidateQueries({ queryKey: ["/api/business-accounts", demoUserId] });
       setShowCreateForm(false);
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const createJobMutation = useMutation({
@@ -120,6 +123,7 @@ export default function BusinessDashboard() {
         estimatedLoadSize: "medium",
       });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const toggleJobMutation = useMutation({
@@ -130,6 +134,7 @@ export default function BusinessDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/business-accounts", demoUserId] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   if (isLoading) {

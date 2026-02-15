@@ -86,6 +86,7 @@ export default function ProfileSettings() {
       queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
       toast({ title: "Address removed" });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const setDefaultAddressMutation = useMutation({
@@ -96,6 +97,7 @@ export default function ProfileSettings() {
       queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
       toast({ title: "Default address updated" });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   if (authLoading) {

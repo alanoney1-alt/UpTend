@@ -58,6 +58,9 @@ app.use('/api/haulers/login', authLimiter);
 app.use('/api/haulers/register', authLimiter);
 app.use('/api/pros/login', authLimiter);
 app.use('/api/pros/register', authLimiter);
+app.use('/api/admin/login', authLimiter);
+app.use('/api/auth/forgot-password', authLimiter);
+app.use('/api/auth/reset-password', authLimiter);
 
 declare module "http" {
   interface IncomingMessage {

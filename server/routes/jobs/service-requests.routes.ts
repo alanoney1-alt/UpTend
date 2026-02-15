@@ -101,7 +101,13 @@ export function registerServiceRequestRoutes(app: Express) {
         console.log("[DEV] Skipping payment verification for service request");
       }
 
-      const validatedData = insertServiceRequestSchema.parse(req.body);
+      const validatedData = insertServiceRequestSchema.parse({
+        ...req.body,
+        customerId: req.body.customerId || userId, // Always use authenticated user if not provided
+      });
+
+      // Override customerId with authenticated user — never trust client
+      (validatedData as any).customerId = userId;
 
       // Require at least one photo for AI pricing validation (skip in dev mode)
       const photoUrls = validatedData.photoUrls as string[] | undefined;
@@ -354,6 +360,8 @@ export function registerServiceRequestRoutes(app: Express) {
       }
 
       const totalAmount = req.body.finalPrice || existingRequest.livePrice || existingRequest.priceEstimate || 0;
+      // Use base service price (excluding 7% UpTend Protection Fee) for payout calculation
+      const baseServicePrice = (existingRequest as any).baseServicePrice || (totalAmount / 1.07);
       let paymentResult = null;
       let paymentStatus = existingRequest.paymentStatus || "pending";
       let capturedPayment = false;
@@ -376,7 +384,7 @@ export function registerServiceRequestRoutes(app: Express) {
           paymentResult = await stripeService.capturePaymentAndPayHauler(
             existingRequest.stripePaymentIntentId,
             haulerStripeAccountId,
-            totalAmount,
+            baseServicePrice,
             pyckerTier,
             isVerifiedLlc,
             existingRequest.serviceType // Pass serviceType for $50 minimum payout floor exemption on recurring services

@@ -10,6 +10,7 @@
  */
 
 import type { Express, Request, Response } from "express";
+import { requireAuth } from "../../auth-middleware";
 import {
   verifyJobPrice,
   generateApprovalSmsMessage,
@@ -35,7 +36,7 @@ export function registerPriceVerificationRoutes(app: Express) {
  * POST /api/jobs/:jobId/verify-price
  * Pro submits on-site verification with photos and adjusted inputs
  */
-app.post("/api/jobs/:jobId/verify-price", async (req: Request, res: Response) => {
+app.post("/api/jobs/:jobId/verify-price", requireAuth, async (req: Request, res: Response) => {
   try {
     const { jobId } = req.params;
     const { proId, originalQuote, verifiedServiceInputs, verificationPhotos, proNotes } = req.body;
@@ -177,7 +178,7 @@ app.get("/api/jobs/:jobId/price-verification", async (req: Request, res: Respons
  * POST /api/jobs/:jobId/price-verification/:verificationId/approve
  * Customer approves price adjustment
  */
-app.post("/api/jobs/:jobId/price-verification/:verificationId/approve", async (req: Request, res: Response) => {
+app.post("/api/jobs/:jobId/price-verification/:verificationId/approve", requireAuth, async (req: Request, res: Response) => {
   try {
     const { verificationId } = req.params;
 
@@ -253,7 +254,7 @@ app.post("/api/jobs/:jobId/price-verification/:verificationId/approve", async (r
  * POST /api/jobs/:jobId/price-verification/:verificationId/decline
  * Customer declines price adjustment
  */
-app.post("/api/jobs/:jobId/price-verification/:verificationId/decline", async (req: Request, res: Response) => {
+app.post("/api/jobs/:jobId/price-verification/:verificationId/decline", requireAuth, async (req: Request, res: Response) => {
   try {
     const { verificationId } = req.params;
 
@@ -321,7 +322,7 @@ app.post("/api/jobs/:jobId/price-verification/:verificationId/decline", async (r
  * POST /api/jobs/:jobId/price-verification/:verificationId/timeout
  * Handle approval timeout (called by scheduled job after 30 minutes)
  */
-app.post("/api/jobs/:jobId/price-verification/:verificationId/timeout", async (req: Request, res: Response) => {
+app.post("/api/jobs/:jobId/price-verification/:verificationId/timeout", requireAuth, async (req: Request, res: Response) => {
   try {
     const { verificationId } = req.params;
 

@@ -94,6 +94,7 @@ export function CleaningChecklist({ serviceRequestId, checklist, onComplete }: C
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/cleaning-checklists/${serviceRequestId}`] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const handleToggleTask = (taskId: string, currentCompleted: boolean) => {

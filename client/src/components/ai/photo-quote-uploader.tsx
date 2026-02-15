@@ -42,6 +42,7 @@ export function PhotoQuoteUploader({ serviceType }: { serviceType: string }) {
     onSuccess: (data) => {
       setResult(data.request);
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

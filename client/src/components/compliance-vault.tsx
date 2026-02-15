@@ -110,6 +110,7 @@ export function ComplianceVault({ proId }: ComplianceVaultProps) {
       setShowReceiptForm(false);
       setReceiptForm({ receiptType: "fuel", vendorName: "", amount: "", receiptDate: new Date().toISOString().split("T")[0] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const addMileageMutation = useMutation({
@@ -130,6 +131,7 @@ export function ComplianceVault({ proId }: ComplianceVaultProps) {
       setShowMileageForm(false);
       setMileageForm({ startAddress: "", endAddress: "", distanceMiles: "", purpose: "business", tripDate: new Date().toISOString().split("T")[0] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   if (loadingReceipts || loadingMileage) return <Skeleton className="h-48 w-full" />;

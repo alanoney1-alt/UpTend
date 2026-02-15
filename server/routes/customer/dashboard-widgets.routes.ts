@@ -10,6 +10,7 @@
 import type { Express } from "express";
 import { db } from "../../db";
 import { sql } from "drizzle-orm";
+import { requireAuth } from "../../auth-middleware";
 
 function getUserId(req: any): number | null {
   if (!req.user) return null;
@@ -19,7 +20,7 @@ function getUserId(req: any): number | null {
 export function registerDashboardWidgetRoutes(app: Express) {
 
   // ─── Home Score ─────────────────────────────────────────
-  app.get("/api/home-score", async (req, res) => {
+  app.get("/api/home-score", requireAuth, async (req, res) => {
     try {
       const userId = getUserId(req);
       if (!userId) {
@@ -62,7 +63,7 @@ export function registerDashboardWidgetRoutes(app: Express) {
     }
   });
 
-  app.post("/api/home-score/boost", async (req, res) => {
+  app.post("/api/home-score/boost", requireAuth, async (req, res) => {
     try {
       const userId = getUserId(req);
       if (!userId) {
@@ -90,7 +91,7 @@ export function registerDashboardWidgetRoutes(app: Express) {
   });
 
   // ─── Inventory ──────────────────────────────────────────
-  app.get("/api/inventory", async (req, res) => {
+  app.get("/api/inventory", requireAuth, async (req, res) => {
     try {
       const userId = getUserId(req);
       if (!userId) {
@@ -130,7 +131,7 @@ export function registerDashboardWidgetRoutes(app: Express) {
     }
   });
 
-  app.patch("/api/inventory/:id", async (req, res) => {
+  app.patch("/api/inventory/:id", requireAuth, async (req, res) => {
     try {
       const userId = getUserId(req);
       if (!userId) {
@@ -144,7 +145,7 @@ export function registerDashboardWidgetRoutes(app: Express) {
   });
 
   // ─── Deferred Jobs ──────────────────────────────────────
-  app.get("/api/deferred-jobs", async (req, res) => {
+  app.get("/api/deferred-jobs", requireAuth, async (req, res) => {
     try {
       const userId = getUserId(req);
       if (!userId) {
@@ -178,16 +179,16 @@ export function registerDashboardWidgetRoutes(app: Express) {
     }
   });
 
-  app.post("/api/deferred-jobs/:id/convert", async (req, res) => {
+  app.post("/api/deferred-jobs/:id/convert", requireAuth, async (req, res) => {
     res.json({ success: true, message: "Job converted to booking" });
   });
 
-  app.patch("/api/deferred-jobs/:id", async (req, res) => {
+  app.patch("/api/deferred-jobs/:id", requireAuth, async (req, res) => {
     res.json({ success: true });
   });
 
   // ─── Impact ─────────────────────────────────────────────
-  app.get("/api/impact", async (req, res) => {
+  app.get("/api/impact", requireAuth, async (req, res) => {
     try {
       const userId = getUserId(req);
       if (!userId) {

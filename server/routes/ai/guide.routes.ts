@@ -17,6 +17,14 @@ const guideChatLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: "Too many requests, please try again later" },
 });
+
+const guideAiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+});
 import { storage } from "../../storage";
 import { pool } from "../../db";
 import { getPropertyData, getPropertyDataAsync, formatPropertySummary, type PropertyData } from "../../services/ai/property-scan-service";
@@ -781,7 +789,7 @@ export default function createGuideRoutes(_storage: any) {
 
   // ─── Photo Analysis Endpoint ─────────────────────────────────────────────
 
-  router.post("/guide/photo-analyze", async (req, res) => {
+  router.post("/guide/photo-analyze", guideAiLimiter, async (req, res) => {
     try {
       await init();
       const { photoUrl, sessionId, serviceType } = req.body;
@@ -838,7 +846,7 @@ Return ONLY valid JSON:
 
   // ─── Receipt Verification Endpoint ───────────────────────────────────────
 
-  router.post("/guide/verify-receipt", async (req, res) => {
+  router.post("/guide/verify-receipt", guideAiLimiter, async (req, res) => {
     try {
       await init();
       const { receiptUrl, serviceKey, claimedPrice, sessionId } = req.body;
@@ -914,7 +922,7 @@ Return ONLY valid JSON.`,
 
   // ─── Property Scan Endpoint ──────────────────────────────────────────────
 
-  router.post("/guide/property-scan", async (req, res) => {
+  router.post("/guide/property-scan", guideAiLimiter, async (req, res) => {
     try {
       await init();
       const { address, sessionId } = req.body;
@@ -955,7 +963,7 @@ Return ONLY valid JSON.`,
 
   // ─── Lock Quote Endpoint ─────────────────────────────────────────────────
 
-  router.post("/guide/lock-quote", async (req, res) => {
+  router.post("/guide/lock-quote", guideAiLimiter, async (req, res) => {
     try {
       await init();
       const { service, price, address, details, sessionId } = req.body;
@@ -1022,7 +1030,7 @@ Return ONLY valid JSON.`,
 
   // ─── Bundle Estimate Endpoint ────────────────────────────────────────────
 
-  router.post("/guide/bundle-estimate", async (req, res) => {
+  router.post("/guide/bundle-estimate", guideAiLimiter, async (req, res) => {
     try {
       const { services } = req.body;
       if (!services || !Array.isArray(services) || services.length < 2) {
@@ -1081,7 +1089,7 @@ Return ONLY valid JSON.`,
 
   // ─── Pool Confirmation ───────────────────────────────────────────────────
 
-  router.post("/guide/confirm-pool", async (req, res) => {
+  router.post("/guide/confirm-pool", guideAiLimiter, async (req, res) => {
     try {
       await init();
       const { hasPool, sessionId } = req.body;
@@ -1113,7 +1121,7 @@ Return ONLY valid JSON.`,
 
   // ─── Feedback Endpoint ─────────────────────────────────────────────────
 
-  router.post("/guide/feedback", async (req, res) => {
+  router.post("/guide/feedback", guideAiLimiter, async (req, res) => {
     try {
       await init();
       const { sessionId, messageId, feedbackType, content } = req.body;

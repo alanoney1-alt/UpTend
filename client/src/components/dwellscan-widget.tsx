@@ -31,6 +31,7 @@ export function DwellScanWidget() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/home-score"] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const score = scoreData?.totalScore || 0;

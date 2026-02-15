@@ -74,6 +74,7 @@ export function Scope3EsgReport({ businessAccountId }: Scope3EsgReportProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/esg/reports", businessAccountId] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   if (isLoading) return <Skeleton className="h-48 w-full" />;

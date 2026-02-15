@@ -29,6 +29,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 
 interface HomeHealthAuditResult {
   id?: string;
@@ -95,6 +96,7 @@ const PRIORITY_CONFIG = {
 } as const;
 
 export default function HomeHealthAuditPage() {
+  const { toast } = useToast();
   usePageTitle("AI Home Scan | UpTend");
   const [, setLocation] = useLocation();
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -120,6 +122,7 @@ export default function HomeHealthAuditPage() {
     onSuccess: (data) => {
       setAuditResult(data);
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

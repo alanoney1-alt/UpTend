@@ -6,6 +6,7 @@
 
 import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
+import { requireAuth } from "../auth-middleware";
 import { stripeService } from "../stripeService";
 import { z } from "zod";
 
@@ -97,7 +98,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Create new recurring subscription
    * POST /api/subscriptions
    */
-  app.post("/api/subscriptions", async (req: Request, res: Response) => {
+  app.post("/api/subscriptions", requireAuth, async (req: Request, res: Response) => {
     try {
       const data = createSubscriptionSchema.parse(req.body);
 
@@ -184,7 +185,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Get subscription by ID
    * GET /api/subscriptions/:id
    */
-  app.get("/api/subscriptions/:id", async (req: Request, res: Response) => {
+  app.get("/api/subscriptions/:id", requireAuth, async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const subscription = await storage.getRecurringSubscription(id);
@@ -204,7 +205,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Get all subscriptions for a customer
    * GET /api/subscriptions/customer/:customerId
    */
-  app.get("/api/subscriptions/customer/:customerId", async (req: Request, res: Response) => {
+  app.get("/api/subscriptions/customer/:customerId", requireAuth, async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
       const subscriptions = await storage.getCustomerSubscriptions(customerId);
@@ -224,7 +225,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Update subscription
    * PUT /api/subscriptions/:id
    */
-  app.put("/api/subscriptions/:id", async (req: Request, res: Response) => {
+  app.put("/api/subscriptions/:id", requireAuth, async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const data = updateSubscriptionSchema.parse(req.body);
@@ -259,7 +260,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Pause subscription
    * PUT /api/subscriptions/:id/pause
    */
-  app.put("/api/subscriptions/:id/pause", async (req: Request, res: Response) => {
+  app.put("/api/subscriptions/:id/pause", requireAuth, async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
 
@@ -298,7 +299,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Resume subscription
    * PUT /api/subscriptions/:id/resume
    */
-  app.put("/api/subscriptions/:id/resume", async (req: Request, res: Response) => {
+  app.put("/api/subscriptions/:id/resume", requireAuth, async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
 
@@ -335,7 +336,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Cancel subscription
    * PUT /api/subscriptions/:id/cancel
    */
-  app.put("/api/subscriptions/:id/cancel", async (req: Request, res: Response) => {
+  app.put("/api/subscriptions/:id/cancel", requireAuth, async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const { cancellationReason, immediately } = req.body;
@@ -382,7 +383,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Skip next booking
    * POST /api/subscriptions/:id/skip-booking
    */
-  app.post("/api/subscriptions/:id/skip-booking", async (req: Request, res: Response) => {
+  app.post("/api/subscriptions/:id/skip-booking", requireAuth, async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
 
@@ -422,7 +423,7 @@ export function registerSubscriptionRoutes(app: Express) {
    * Reschedule subscription (change day/time)
    * PUT /api/subscriptions/:id/reschedule
    */
-  app.put("/api/subscriptions/:id/reschedule", async (req: Request, res: Response) => {
+  app.put("/api/subscriptions/:id/reschedule", requireAuth, async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const { preferredDay, preferredTimeWindow } = req.body;

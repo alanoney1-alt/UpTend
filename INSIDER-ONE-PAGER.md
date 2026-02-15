@@ -22,7 +22,7 @@
 ✅ Full B2B suite: HOA, Property Mgmt, Construction, Government<br/>
 ✅ Government compliance: Davis-Bacon, WH-347, SAM.gov, DBE, FEMA<br/>
 ✅ SDVOSB subsidiary (51% minority disabled veteran) — sole-source up to $5M<br/>
-✅ $125K raised from early believers<br/>
+✅ $35K raised from early believers<br/>
 ✅ Orlando Metro: 2.6M people, ~7M annual jobs, ~$800M market
 </div>
 

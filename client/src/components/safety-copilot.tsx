@@ -46,6 +46,7 @@ export function SafetyCopilot({ serviceRequestId, haulerId, photoUrls, serviceTy
       setAnalyzed(true);
       queryClient.invalidateQueries({ queryKey: ["/api/jobs", serviceRequestId, "safety-alerts"] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const acknowledgeMutation = useMutation({
@@ -53,6 +54,7 @@ export function SafetyCopilot({ serviceRequestId, haulerId, photoUrls, serviceTy
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/jobs", serviceRequestId, "safety-alerts"] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const severityConfig = {

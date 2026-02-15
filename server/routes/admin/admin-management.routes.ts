@@ -151,12 +151,47 @@ export function registerAdminManagementRoutes(app: Express) {
   app.post("/api/admin/users/:userId/refund", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { userId } = req.params;
-      // Placeholder — actual Stripe refund logic would go here
+      const { jobId, amount, reason } = req.body;
+
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-      res.json({ success: true, message: "Refund initiated", userId });
+
+      if (!jobId) {
+        return res.status(400).json({ error: "jobId is required for refund" });
+      }
+
+      const job = await storage.getServiceRequest(jobId);
+      if (!job) {
+        return res.status(404).json({ error: "Job not found" });
+      }
+
+      if (!job.stripePaymentIntentId) {
+        return res.status(400).json({ error: "No Stripe payment found for this job" });
+      }
+
+      const { getUncachableStripeClient } = await import("../../stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const refundParams: any = {
+        payment_intent: job.stripePaymentIntentId,
+        reason: 'requested_by_customer',
+        metadata: { adminUserId: (req.user as any).userId || (req.user as any).id, jobId, refundReason: reason || '' },
+      };
+
+      // Partial refund if amount specified, otherwise full refund
+      if (amount && amount > 0) {
+        refundParams.amount = Math.round(amount * 100); // Convert dollars to cents
+      }
+
+      const refund = await stripe.refunds.create(refundParams);
+
+      await storage.updateServiceRequest(jobId, {
+        paymentStatus: "refunded",
+      });
+
+      res.json({ success: true, message: "Refund initiated", userId, refundId: refund.id, amount: refund.amount / 100 });
     } catch (error) {
       console.error("Error processing refund:", error);
       res.status(500).json({ error: "Failed to process refund" });

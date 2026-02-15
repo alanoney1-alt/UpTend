@@ -1524,7 +1524,7 @@ function GreenGuaranteeSection({ proId, rebateBalance }: { proId: string; rebate
                   <div>
                     <p className="font-medium text-sm">{claim.facilityName || "Disposal Receipt"}</p>
                     <p className="text-xs text-muted-foreground">
-                      {new Date(claim.submittedAt).toLocaleDateString()}
+                      {claim.submittedAt ? new Date(claim.submittedAt).toLocaleDateString() : "—"}
                     </p>
                   </div>
                   <div className="text-right">
@@ -1685,7 +1685,7 @@ function ReferralEarningsCard({ proId }: { proId: string }) {
                     <div>
                       <p className="font-medium text-sm capitalize">{referral.category}</p>
                       <p className="text-xs text-muted-foreground">
-                        Service: ${referral.referralAmount} • {new Date(referral.completedAt).toLocaleDateString()}
+                        Service: ${referral.referralAmount} • {referral.completedAt ? new Date(referral.completedAt).toLocaleDateString() : "—"}
                       </p>
                     </div>
                     <div className="text-right">
@@ -1828,6 +1828,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     onSuccess: () => {
       refetchActiveJobs();
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const handlePhotoUpload = async (files: FileList) => {
@@ -2102,6 +2103,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         description: "Location tracking has stopped. You will not receive new job requests.",
       });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const handleAvailabilityToggle = (checked: boolean) => {
@@ -2141,6 +2143,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests/pending"] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const declineMutation = useMutation({
@@ -2152,6 +2155,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests/pending"] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const { data: stripeStatus } = useQuery<{
@@ -2180,6 +2184,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
         window.location.href = data.url;
       }
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const { data: complianceStatus, isLoading: complianceLoading } = useQuery<{
@@ -2229,6 +2234,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/pros", currentPro?.profile?.id, "compliance"] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const [, navigateTo] = useLocation();
@@ -2657,7 +2663,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                 <div key={tx.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-testid={`row-transaction-${tx.id}`}>
                   <div>
                     <p className="font-medium">{serviceLabelsEarnings[tx.serviceType] || tx.serviceType}</p>
-                    <p className="text-sm text-muted-foreground">{tx.address ? `${tx.address} · ` : ""}{new Date(tx.date).toLocaleDateString()}</p>
+                    <p className="text-sm text-muted-foreground">{tx.address ? `${tx.address} · ` : ""}{tx.date ? new Date(tx.date).toLocaleDateString() : "—"}</p>
                   </div>
                   <span className="font-semibold text-status-online">+${(tx.amount / 100).toFixed(0)}</span>
                 </div>

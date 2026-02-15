@@ -8,6 +8,7 @@
 
 import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
+import { requireAuth } from "../auth-middleware";
 import { z } from "zod";
 
 // Premium pricing multiplier for same-day service
@@ -71,7 +72,7 @@ export function registerSameDayRoutes(app: Express) {
   });
 
   // PATCH /api/same-day/opt-in — pro toggles same-day settings
-  app.patch("/api/same-day/opt-in", async (req: Request, res: Response) => {
+  app.patch("/api/same-day/opt-in", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
       const userId = (req.user as any).userId || (req.user as any).id;

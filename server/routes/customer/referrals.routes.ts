@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { storage } from "../../storage";
+import { requireAuth } from "../../auth-middleware";
 
 // Generate a unique referral code
 function generateReferralCode(): string {
@@ -13,7 +14,7 @@ function generateReferralCode(): string {
 
 export function registerCustomerReferralRoutes(app: Express) {
   // Get or create referral code for current user
-  app.get("/api/referrals/my-code", async (req, res) => {
+  app.get("/api/referrals/my-code", requireAuth, async (req, res) => {
     try {
       if (!req.user || req.user.role !== "customer") {
         return res.status(403).json({ error: "Unauthorized" });
@@ -45,7 +46,7 @@ export function registerCustomerReferralRoutes(app: Express) {
   });
 
   // Get referral stats for current user
-  app.get("/api/referrals/my-stats", async (req, res) => {
+  app.get("/api/referrals/my-stats", requireAuth, async (req, res) => {
     try {
       if (!req.user || req.user.role !== "customer") {
         return res.status(403).json({ error: "Unauthorized" });
@@ -117,7 +118,7 @@ export function registerCustomerReferralRoutes(app: Express) {
   });
 
   // Create referral (when someone uses a code)
-  app.post("/api/referrals/use-code", async (req, res) => {
+  app.post("/api/referrals/use-code", requireAuth, async (req, res) => {
     try {
       const { code, email } = req.body;
 
@@ -164,7 +165,7 @@ export function registerCustomerReferralRoutes(app: Express) {
   });
 
   // Mark referral as completed (called when referred user completes first job)
-  app.post("/api/referrals/:id/complete", async (req, res) => {
+  app.post("/api/referrals/:id/complete", requireAuth, async (req, res) => {
     try {
       if (!req.user || req.user.role !== "customer") {
         return res.status(403).json({ error: "Unauthorized" });

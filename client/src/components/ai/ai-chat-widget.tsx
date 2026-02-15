@@ -135,6 +135,7 @@ export function AiChatWidget() {
       };
       setMessages((prev) => [...prev, aiMsg]);
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   // Auto-scroll

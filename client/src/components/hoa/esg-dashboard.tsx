@@ -99,6 +99,16 @@ export function HoaEsgDashboard({ businessAccountId }: HoaEsgDashboardProps) {
 
   const hasData = metrics && metrics.totalJobsCompleted > 0;
 
+  if (!metrics) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center text-muted-foreground">
+          <p>Unable to load ESG metrics.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}

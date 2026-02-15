@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useSearch, Link } from "wouter";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -213,6 +214,7 @@ export default function Booking() {
   const [, navigate] = useLocation();
   const searchString = useSearch();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   
   const geoLocation = useGeoLocation(true, { enableHighAccuracy: true });
@@ -1085,6 +1087,7 @@ export default function Booking() {
         setMatchingComplete(true);
       }, 3000);
     },
+    onError: (err: Error) => { toast({ title: "Booking failed", description: err.message || "Please try again.", variant: "destructive" }); },
   });
 
   useEffect(() => {

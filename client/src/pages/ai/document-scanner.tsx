@@ -200,7 +200,7 @@ export default function DocumentScanner() {
                               {doc.documentType}
                             </Badge>
                             <Clock className="w-3 h-3" />
-                            {new Date(doc.scannedAt).toLocaleDateString()}
+                            {doc.scannedAt ? new Date(doc.scannedAt).toLocaleDateString() : "—"}
                           </div>
                         </div>
                       </div>

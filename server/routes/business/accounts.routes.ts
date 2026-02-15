@@ -18,6 +18,12 @@ const store = new BusinessAccountsStorage();
 // GET /api/business-accounts/:userId — dashboard initial load
 router.get("/:userId", requireAuth, async (req, res) => {
   try {
+    // Verify the authenticated user matches the requested userId
+    const authUserId = (req.user as any)?.userId || (req.user as any)?.id;
+    if (authUserId && req.params.userId !== authUserId) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
     const account = await store.getBusinessAccountByUser(req.params.userId);
     if (!account) {
       return res.status(404).json({ error: "Business account not found" });

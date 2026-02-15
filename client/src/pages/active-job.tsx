@@ -7,8 +7,10 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
 import type { ServiceRequest, HaulerProfile } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ActiveJob() {
+  const { toast } = useToast();
   const [, params] = useRoute("/job/:jobId/work");
   const jobId = params?.jobId;
   const { user } = useAuth();
@@ -38,6 +40,7 @@ export default function ActiveJob() {
       queryClient.invalidateQueries({ queryKey: ["/api/haulers", "active-jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests/pending"] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   if (isLoading) {

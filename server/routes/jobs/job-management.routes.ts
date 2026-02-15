@@ -417,7 +417,6 @@ export function registerJobManagementRoutes(app: Express) {
           let haulerStripeAccountId = null;
           let pyckerTier = 'independent';
           let isVerifiedLlc = false;
-          let insuranceSurcharge = 0;
           if (job.assignedHaulerId) {
             const haulerProfile = await storage.getHaulerProfile(job.assignedHaulerId);
             if (haulerProfile?.stripeAccountId && haulerProfile?.stripeOnboardingComplete) {
@@ -425,21 +424,14 @@ export function registerJobManagementRoutes(app: Express) {
             }
             pyckerTier = haulerProfile?.pyckerTier || 'independent';
             isVerifiedLlc = haulerProfile?.isVerifiedLlc || false;
-
-            // Apply insurance surcharge for uninsured Pros
-            if (!haulerProfile?.hasOwnLiabilityInsurance && !haulerProfile?.insuranceSurchargeWaived) {
-              insuranceSurcharge = 10;
-            }
           }
 
-          // Deduct insurance surcharge from Pro payout (if applicable)
-          const payoutAmount = baseServicePriceWithAdjustments - insuranceSurcharge;
-
-          // Use payoutAmount for Pro payout calculation (excludes protection fee + insurance surcharge)
+          // Insurance surcharge is handled inside calculatePayoutBreakdown (NON_LLC_INSURANCE_FEE)
+          // Do NOT deduct it separately here to avoid double-deduction
           const result = await stripeService.capturePaymentAndPayHauler(
             job.stripePaymentIntentId,
             haulerStripeAccountId,
-            payoutAmount,
+            baseServicePriceWithAdjustments,
             pyckerTier,
             isVerifiedLlc,
             job.serviceType // Pass serviceType for $50 minimum payout floor exemption on recurring services
@@ -467,7 +459,7 @@ export function registerJobManagementRoutes(app: Express) {
             finalAmount,
             platformFee: result.platformFee,
             haulerPayout: result.haulerPayout,
-            insuranceSurcharge,
+            insuranceFee: result.insuranceFee,
           });
         } catch (paymentError) {
           console.error("Payment capture failed:", paymentError);

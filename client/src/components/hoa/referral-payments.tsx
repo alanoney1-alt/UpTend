@@ -87,6 +87,16 @@ export function HoaReferralPayments({ businessAccountId }: HoaReferralPaymentsPr
 
   const hasData = summary && summary.totalJobs > 0;
 
+  if (!summary) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center text-muted-foreground">
+          <p>Unable to load referral payment data.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}

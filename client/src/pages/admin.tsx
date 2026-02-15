@@ -128,6 +128,7 @@ export default function Admin() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/check"] });
       setLocation("/admin-login");
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const [selectedRebateClaim, setSelectedRebateClaim] = useState<any | null>(null);

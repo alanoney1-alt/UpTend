@@ -78,6 +78,7 @@ export function FraudAlertPanel() {
       setSelectedAlert(null);
       setResolution("");
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const alerts: FraudAlert[] = data?.alerts || [];

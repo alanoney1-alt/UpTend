@@ -44,6 +44,11 @@ export class BusinessAccountsStorage {
     return db.select().from(recurringJobs).where(eq(recurringJobs.businessAccountId, businessAccountId));
   }
 
+  async getRecurringJob(id: string): Promise<RecurringJob | undefined> {
+    const [result] = await db.select().from(recurringJobs).where(eq(recurringJobs.id, id));
+    return result || undefined;
+  }
+
   async updateRecurringJob(id: string, updates: Partial<RecurringJob>): Promise<RecurringJob | undefined> {
     const [result] = await db.update(recurringJobs).set(updates).where(eq(recurringJobs.id, id)).returning();
     return result || undefined;

@@ -51,6 +51,7 @@ export function CarbonDispatcher() {
       setResult(data);
       queryClient.invalidateQueries({ queryKey: ["/api/dispatch/batches"] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   const acceptBatchMutation = useMutation({
@@ -61,6 +62,7 @@ export function CarbonDispatcher() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/dispatch/batches"] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   if (isLoading) {

@@ -50,6 +50,7 @@ export function ReviewForm({ serviceRequestId, onSuccess }: ReviewFormProps) {
       queryClient.invalidateQueries({ queryKey: ["/api/my-jobs"] });
       onSuccess?.();
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   if (isLoading) return null;

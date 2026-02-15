@@ -195,7 +195,7 @@ export default function ClaimProperty() {
                         <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {new Date(event.date).toLocaleDateString()}
+                            {event.date ? new Date(event.date).toLocaleDateString() : "—"}
                           </span>
                           <span>{event.verifiedBy}</span>
                         </div>

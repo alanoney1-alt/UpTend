@@ -4,7 +4,7 @@ import { logError } from './utils/logger';
 
 const LLC_PLATFORM_FEE_PERCENT = 20;
 const NON_LLC_PLATFORM_FEE_PERCENT = 25;
-const NON_LLC_INSURANCE_FEE = 25;
+const NON_LLC_INSURANCE_FEE = 10;
 
 export interface PayoutBreakdown {
   totalAmount: number;
@@ -101,6 +101,7 @@ export class StripeService {
         payment_method_types: paymentMethodTypes,
         metadata: {
           jobId,
+          customerId,
           pyckerTier,
           platformFeePercent: platformFeePercent.toString(),
         },

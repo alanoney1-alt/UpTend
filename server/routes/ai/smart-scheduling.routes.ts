@@ -105,7 +105,7 @@ export function createSmartSchedulingRoutes(storage: DatabaseStorage) {
 
       const suggestions = rows.rows.map((s: any) => ({
         ...s,
-        factorsConsidered: typeof s.factors_considered === "string" ? JSON.parse(s.factors_considered) : s.factors_considered,
+        factorsConsidered: typeof s.factors_considered === "string" ? (() => { try { return JSON.parse(s.factors_considered); } catch { return s.factors_considered; } })() : s.factors_considered,
       }));
 
       res.json({ success: true, suggestions });

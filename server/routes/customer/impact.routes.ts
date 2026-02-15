@@ -60,7 +60,7 @@ export function registerCustomerImpactRoutes(app: Express) {
 
       // Calculate average diversion rate
       const avgDiversionRate = totalJobs > 0
-        ? impactLogs.reduce((sum, log) => sum + (log.diversionRate || 0), 0) / impactLogs.length
+        ? impactLogs.reduce((sum, log) => sum + (log.diversionRate || 0), 0) / (impactLogs.length || 1)
         : 0;
 
       // Calculate trees equivalent (approx 48 lbs CO2 per tree per year)

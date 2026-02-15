@@ -138,6 +138,7 @@ export function DisputeDetail({ disputeId, isAdmin }: DisputeDetailProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/disputes", disputeId] });
     },
+    onError: (err: Error) => { console.error(err); },
   });
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Loading dispute...</p>;

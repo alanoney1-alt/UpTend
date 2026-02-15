@@ -2,9 +2,18 @@ import type { Express } from "express";
 import { db } from "../db";
 import { launchNotifications } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import rateLimit from "express-rate-limit";
 
 export function registerLaunchNotificationRoutes(app: Express) {
-  app.post("/api/launch-notifications", async (req, res) => {
+  const launchNotifLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many requests. Please try again later." },
+  });
+
+  app.post("/api/launch-notifications", launchNotifLimiter, async (req, res) => {
     try {
       const { email, city } = req.body;
       if (!email) return res.status(400).json({ error: "Email is required" });

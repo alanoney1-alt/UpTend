@@ -15,6 +15,7 @@ import { partners, partnerBookings } from "../../shared/schema";
 import { eq, sql, and, desc } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
+import rateLimit from "express-rate-limit";
 
 // Partner API key auth middleware
 export async function requirePartnerAuth(req: Request, res: Response, next: NextFunction) {
@@ -41,6 +42,14 @@ export async function requirePartnerAuth(req: Request, res: Response, next: Next
 export function registerPartnerRoutes(app: Express) {
   const router = Router();
 
+  const partnerAuthLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many attempts. Please try again later." },
+  });
+
   // ==========================================
   // POST /api/partners/register
   // ==========================================
@@ -53,7 +62,7 @@ export function registerPartnerRoutes(app: Express) {
     type: z.enum(["property_manager", "airbnb_host", "real_estate", "other"]),
   });
 
-  router.post("/register", async (req, res) => {
+  router.post("/register", partnerAuthLimiter, async (req, res) => {
     try {
       const validated = registerSchema.parse(req.body);
 
@@ -107,7 +116,7 @@ export function registerPartnerRoutes(app: Express) {
     password: z.string(),
   });
 
-  router.post("/login", async (req, res) => {
+  router.post("/login", partnerAuthLimiter, async (req, res) => {
     try {
       const validated = loginSchema.parse(req.body);
       const [partner] = await db.select().from(partners).where(eq(partners.email, validated.email)).limit(1);

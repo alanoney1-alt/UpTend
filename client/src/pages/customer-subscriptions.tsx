@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Header } from "@/components/landing/header";
 import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import {
   Calendar,
   Clock,
@@ -75,6 +76,7 @@ const TIME_WINDOW_LABELS = {
 };
 
 export default function CustomerSubscriptions() {
+  const { toast } = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
@@ -100,6 +102,7 @@ export default function CustomerSubscriptions() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/subscriptions/customer/${user?.id}`] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   // Resume subscription
@@ -111,6 +114,7 @@ export default function CustomerSubscriptions() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/subscriptions/customer/${user?.id}`] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   // Cancel subscription
@@ -127,6 +131,7 @@ export default function CustomerSubscriptions() {
       setSelectedSubscription(null);
       setCancellationReason("");
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   // Skip next booking
@@ -138,6 +143,7 @@ export default function CustomerSubscriptions() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/subscriptions/customer/${user?.id}`] });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   const handlePause = (subscription: RecurringSubscription) => {

@@ -62,6 +62,7 @@ export default function InsurancePage() {
       queryClient.invalidateQueries({ queryKey: ["/api/insurance/my-policies"] });
       toast({ title: "Removed", description: "Insurance policy unlinked." });
     },
+    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
   return (

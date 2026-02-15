@@ -6,6 +6,7 @@
 
 import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
+import { requireAuth } from "../auth-middleware";
 import { z } from "zod";
 
 const updateTaskSchema = z.object({
@@ -20,7 +21,7 @@ export function registerCleaningChecklistRoutes(app: Express) {
    * Get checklist for a service request
    * GET /api/cleaning-checklists/:serviceRequestId
    */
-  app.get("/api/cleaning-checklists/:serviceRequestId", async (req: Request, res: Response) => {
+  app.get("/api/cleaning-checklists/:serviceRequestId", requireAuth, async (req: Request, res: Response) => {
     try {
       const { serviceRequestId } = req.params;
       const checklist = await storage.getCleaningChecklistsByRequest(serviceRequestId);
@@ -36,7 +37,7 @@ export function registerCleaningChecklistRoutes(app: Express) {
    * Update a single checklist task
    * PUT /api/cleaning-checklists/:serviceRequestId/tasks/:taskId
    */
-  app.put("/api/cleaning-checklists/:serviceRequestId/tasks/:taskId", async (req: Request, res: Response) => {
+  app.put("/api/cleaning-checklists/:serviceRequestId/tasks/:taskId", requireAuth, async (req: Request, res: Response) => {
     try {
       const { taskId } = req.params;
       const data = updateTaskSchema.parse(req.body);
@@ -62,7 +63,7 @@ export function registerCleaningChecklistRoutes(app: Express) {
    * Get checklist completion progress
    * GET /api/cleaning-checklists/:serviceRequestId/progress
    */
-  app.get("/api/cleaning-checklists/:serviceRequestId/progress", async (req: Request, res: Response) => {
+  app.get("/api/cleaning-checklists/:serviceRequestId/progress", requireAuth, async (req: Request, res: Response) => {
     try {
       const { serviceRequestId } = req.params;
       const checklist = await storage.getCleaningChecklistsByRequest(serviceRequestId);
@@ -91,7 +92,7 @@ export function registerCleaningChecklistRoutes(app: Express) {
    * Bulk create checklist tasks
    * POST /api/cleaning-checklists/:serviceRequestId/bulk
    */
-  app.post("/api/cleaning-checklists/:serviceRequestId/bulk", async (req: Request, res: Response) => {
+  app.post("/api/cleaning-checklists/:serviceRequestId/bulk", requireAuth, async (req: Request, res: Response) => {
     try {
       const { serviceRequestId } = req.params;
       const { tasks } = req.body;
