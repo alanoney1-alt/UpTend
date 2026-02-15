@@ -95,6 +95,44 @@ export function registerB2bPricingRoutes(app: Express) {
     }
   });
 
+  // GET /api/b2b-pricing/billing-status - subscription billing status
+  app.get("/api/b2b-pricing/billing-status", async (req: Request, res: Response) => {
+    try {
+      if (!req.isAuthenticated?.() || !req.user) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const [sub] = await db.select().from(b2bSubscriptions).where(eq(b2bSubscriptions.clientId, userId));
+      if (!sub) return res.status(404).json({ error: "No subscription found" });
+
+      const [plan] = await db.select().from(b2bSubscriptionPlans).where(eq(b2bSubscriptionPlans.id, sub.planId));
+
+      const now = new Date();
+      const nextBilling = sub.nextBillingAt ? new Date(sub.nextBillingAt) : null;
+      const daysUntilBilling = nextBilling ? Math.ceil((nextBilling.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : null;
+
+      res.json({
+        subscriptionId: sub.id,
+        status: sub.status,
+        planName: plan?.name || "Unknown",
+        segment: plan?.segment || null,
+        monthlyPrice: sub.monthlyPrice,
+        billingCycle: sub.billingCycle,
+        unitsCount: sub.unitsCount,
+        nextBillingDate: sub.nextBillingAt,
+        daysUntilBilling,
+        startedAt: sub.startedAt,
+        usage: {
+          currentUnits: sub.unitsCount,
+          maxUnits: plan?.maxUnits || null,
+          unitType: plan?.unitType || null,
+        },
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // PUT /api/b2b-pricing/subscription - update subscription
   app.put("/api/b2b-pricing/subscription", async (req: Request, res: Response) => {
     try {

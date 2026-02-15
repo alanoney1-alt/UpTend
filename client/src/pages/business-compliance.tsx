@@ -302,11 +302,11 @@ export default function BusinessCompliance() {
                 <TableBody>
                   {certificates?.map(cert => (
                     <TableRow key={cert.id}>
-                      <TableCell className="font-medium">{cert.provider}</TableCell>
+                      <TableCell className="font-medium">{cert.companyName || cert.provider}</TableCell>
                       <TableCell className="font-mono text-sm">{cert.policyNumber}</TableCell>
-                      <TableCell>{cert.coverageType}</TableCell>
+                      <TableCell>{cert.provider || cert.coverageType}</TableCell>
                       <TableCell className="text-right">${(cert.coverageAmount / 1000000).toFixed(1)}M</TableCell>
-                      <TableCell>{new Date(cert.expiry).toLocaleDateString()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(cert.expiryDate || cert.expiry); return isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell><StatusBadge status={cert.status} /></TableCell>
                       <TableCell>
                         {cert.verified ? <CheckCircle className="w-4 h-4 text-green-500" /> : <Clock className="w-4 h-4 text-muted-foreground" />}
@@ -362,8 +362,8 @@ export default function BusinessCompliance() {
                         </div>
                       </TableCell>
                       <TableCell>{doc.proName}</TableCell>
-                      <TableCell>{new Date(doc.uploadedAt).toLocaleDateString()}</TableCell>
-                      <TableCell>{doc.expiry ? new Date(doc.expiry).toLocaleDateString() : "N/A"}</TableCell>
+                      <TableCell>{(() => { const d = new Date(doc.uploadedAt); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{(() => { if (!doc.expiry) return "N/A"; const d = new Date(doc.expiry); return isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell><StatusBadge status={doc.status} /></TableCell>
                       <TableCell>
                         <div className="flex gap-1">
@@ -410,10 +410,10 @@ export default function BusinessCompliance() {
                       <TableCell>
                         <Badge variant="outline">{check.provider}</Badge>
                       </TableCell>
-                      <TableCell>{new Date(check.submittedAt).toLocaleDateString()}</TableCell>
-                      <TableCell>{check.completedAt ? new Date(check.completedAt).toLocaleDateString() : <Clock className="w-4 h-4 text-amber-500" />}</TableCell>
+                      <TableCell>{(() => { const d = new Date(check.submittedAt); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{check.completedAt ? (() => { const d = new Date(check.completedAt); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })() : <Clock className="w-4 h-4 text-amber-500" />}</TableCell>
                       <TableCell><StatusBadge status={check.result} /></TableCell>
-                      <TableCell>{check.expiry ? new Date(check.expiry).toLocaleDateString() : "—"}</TableCell>
+                      <TableCell>{check.expiry ? (() => { const d = new Date(check.expiry); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })() : "—"}</TableCell>
                       <TableCell>
                         <Button variant="ghost" size="sm"><RefreshCw className="w-4 h-4" /></Button>
                       </TableCell>

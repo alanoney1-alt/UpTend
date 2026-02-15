@@ -228,6 +228,83 @@ export function registerComplianceRoutes(app: Express) {
     }
   });
 
+  // ==========================================
+  // INITIATE BACKGROUND CHECK (Checkr-ready)
+  // ==========================================
+  const initiateCheckSchema = z.object({
+    proId: z.string().min(1),
+    checkLevel: z.enum(["county", "state", "federal", "full"]),
+  });
+
+  app.post("/api/compliance/background-checks/initiate", requireAuth, async (req, res) => {
+    try {
+      const data = initiateCheckSchema.parse(req.body);
+      const checkrApiKey = process.env.CHECKR_API_KEY;
+
+      let status = "pending";
+      let providerCheckId: string | null = null;
+
+      if (checkrApiKey) {
+        // Real Checkr API integration
+        try {
+          const checkrPackage = data.checkLevel === "county" ? "county_criminal"
+            : data.checkLevel === "state" ? "state_criminal"
+            : data.checkLevel === "federal" ? "federal_criminal"
+            : "driver_pro"; // full
+
+          const checkrRes = await fetch("https://api.checkr.com/v1/invitations", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Basic ${Buffer.from(checkrApiKey + ":").toString("base64")}`,
+            },
+            body: JSON.stringify({
+              package: checkrPackage,
+              candidate_id: data.proId,
+            }),
+          });
+
+          if (checkrRes.ok) {
+            const checkrData = await checkrRes.json();
+            providerCheckId = checkrData.id;
+            status = "in_progress";
+          } else {
+            console.error("Checkr API error:", await checkrRes.text());
+            status = "pending";
+          }
+        } catch (checkrErr) {
+          console.error("Checkr API call failed:", checkrErr);
+          status = "pending";
+        }
+      } else {
+        status = "pending_manual";
+        console.log(`[Background Check] No CHECKR_API_KEY set. Manual review needed for pro ${data.proId} (${data.checkLevel} level)`);
+      }
+
+      const [check] = await db.insert(backgroundChecks).values({
+        proId: data.proId,
+        provider: "checkr",
+        status,
+        providerCheckId,
+      }).returning();
+
+      res.status(201).json({
+        ...check,
+        checkLevel: data.checkLevel,
+        mode: checkrApiKey ? "automated" : "manual",
+        message: checkrApiKey
+          ? "Background check initiated with Checkr"
+          : "Background check created for manual review (no Checkr API key configured)",
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+      }
+      console.error("Error initiating background check:", error);
+      res.status(500).json({ error: "Failed to initiate background check" });
+    }
+  });
+
   app.put("/api/compliance/background-checks/:id", requireAuth, async (req, res) => {
     try {
       const [updated] = await db.update(backgroundChecks)

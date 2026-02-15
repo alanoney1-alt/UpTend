@@ -134,8 +134,17 @@ import { registerConstructionRoutes } from "./construction/index";
 import { registerVeteranRoutes } from "./veterans/index";
 import { registerEnterpriseRoutes } from "./enterprise/index";
 
+// Fleet tracking routes
+import { registerFleetRoutes } from "./fleet/index";
+
+// PM Software Integration routes
+import { registerIntegrationRoutes } from "./integrations/index";
+
 // B2B Pricing routes
 import { registerB2bPricingRoutes } from "./b2b-pricing/index";
+
+// White-label routes
+import { registerWhiteLabelRoutes, whiteLabelMiddleware } from "./white-label/index";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -291,8 +300,18 @@ export async function registerRoutes(
   registerVeteranRoutes(app);
   registerEnterpriseRoutes(app);
 
+  // Register Fleet tracking routes
+  registerFleetRoutes(app);
+
+  // Register PM Software Integration routes
+  registerIntegrationRoutes(app);
+
   // Register B2B Pricing routes
   registerB2bPricingRoutes(app);
+
+  // Register White-label middleware and routes
+  app.use(whiteLabelMiddleware());
+  registerWhiteLabelRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

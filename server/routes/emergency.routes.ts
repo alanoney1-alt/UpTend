@@ -53,10 +53,42 @@ export function registerEmergencyRoutes(app: Express) {
         pricingMultiplier: 2.0,
       }).returning();
 
-      // Find available pros within radius and notify via WebSocket
+      // Set SLA deadline — 4 hours for emergency
+      const slaDeadline = new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString();
+
+      // Find available pros and attempt auto-assignment to nearest one
       const availablePros = await db.select().from(haulerProfiles).where(
         eq(haulerProfiles.isAvailable, true)
       ).limit(50);
+
+      let autoAssignedPro = null;
+
+      if (data.lat && data.lng && availablePros.length > 0) {
+        // Sort by distance (haversine approximation) and pick nearest
+        const withDist = availablePros
+          .filter((p: any) => p.latitude && p.longitude)
+          .map((p: any) => {
+            const dlat = ((p.latitude as number) - data.lat!) * 69; // rough miles
+            const dlng = ((p.longitude as number) - data.lng!) * 54.6;
+            return { pro: p, dist: Math.sqrt(dlat * dlat + dlng * dlng) };
+          })
+          .sort((a, b) => a.dist - b.dist);
+
+        if (withDist.length > 0) {
+          autoAssignedPro = withDist[0].pro;
+
+          // Auto-assign the nearest pro
+          await db.update(emergencyRequests)
+            .set({
+              assignedHaulerId: autoAssignedPro.userId,
+              status: "accepted",
+              etaMinutes: Math.max(15, Math.round(withDist[0].dist * 3)), // rough ETA
+              acceptedAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            })
+            .where(eq(emergencyRequests.id, emergency.id));
+        }
+      }
 
       // Broadcast emergency to all available pros via their job room
       for (const pro of availablePros) {
@@ -68,17 +100,21 @@ export function registerEmergencyRoutes(app: Express) {
           city: data.city,
           state: data.state,
           pricingMultiplier: 2.0,
+          slaDeadline,
+          autoAssigned: autoAssignedPro?.userId === pro.userId,
         });
       }
 
-      // Also broadcast to the emergency-specific room
+      // Broadcast to the emergency-specific room
       broadcastToJob(`emergency-${emergency.id}`, {
         type: "emergency_status",
-        status: "searching",
+        status: autoAssignedPro ? "accepted" : "searching",
         emergencyId: emergency.id,
+        slaDeadline,
+        assignedPro: autoAssignedPro ? { userId: autoAssignedPro.userId, companyName: autoAssignedPro.companyName } : null,
       });
 
-      res.status(201).json(emergency);
+      res.status(201).json({ ...emergency, slaDeadline, autoAssignedPro: autoAssignedPro?.userId || null });
     } catch (error) {
       console.error("Error creating emergency request:", error);
       res.status(500).json({ error: "Failed to create emergency request" });

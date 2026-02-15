@@ -318,8 +318,8 @@ export default function BusinessProperties() {
                     <StatusBadge status={t.status} />
                   </div>
                   <div className="space-y-2 text-sm mb-3">
-                    <div className="flex justify-between"><span className="text-muted-foreground">Move-out:</span><span>{new Date(t.moveOut).toLocaleDateString()}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Target Ready:</span><span>{new Date(t.targetReady).toLocaleDateString()}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Move-out:</span><span>{(() => { const d = new Date(t.moveOut); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Target Ready:</span><span>{(() => { const d = new Date(t.targetReady); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</span></div>
                   </div>
                   <div className="mb-2">
                     <div className="flex justify-between text-sm mb-1">

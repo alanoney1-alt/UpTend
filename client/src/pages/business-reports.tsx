@@ -129,7 +129,7 @@ export default function BusinessReports() {
                       <TableCell className="font-medium">{r.name}</TableCell>
                       <TableCell><Badge variant="outline" className="capitalize">{r.type}</Badge></TableCell>
                       <TableCell>{r.schedule}</TableCell>
-                      <TableCell>{new Date(r.lastRun).toLocaleDateString()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(r.lastRun); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell>
                         <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> {r.recipients}</span>
                       </TableCell>

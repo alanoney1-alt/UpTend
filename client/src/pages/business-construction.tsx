@@ -212,8 +212,8 @@ export default function BusinessConstruction() {
                 <div className="p-5 border-b">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <h3 className="font-semibold text-lg">{pl.project}</h3>
-                      <p className="text-sm text-muted-foreground">{pl.createdBy} • Due {new Date(pl.dueDate).toLocaleDateString()}</p>
+                      <h3 className="font-semibold text-lg">{pl.project || pl.projectName || (pl.id?.length > 8 ? `Project ${pl.id.slice(0,6).toUpperCase()}` : `Project #${pl.id}`)}</h3>
+                      <p className="text-sm text-muted-foreground">{pl.createdBy || "—"} • Due {(() => { const d = new Date(pl.dueDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</p>
                     </div>
                     <div className="text-right">
                       <StatusBadge status={pl.status} />
@@ -323,7 +323,7 @@ export default function BusinessConstruction() {
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.project}</TableCell>
                       <TableCell>{p.permitType}</TableCell>
-                      <TableCell>{new Date(p.applicationDate).toLocaleDateString()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(p.applicationDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell>{p.inspectionDate ? new Date(p.inspectionDate).toLocaleDateString() : "TBD"}</TableCell>
                       <TableCell><StatusBadge status={p.status} /></TableCell>
                       <TableCell><Button variant="ghost" size="sm"><Eye className="w-4 h-4" /></Button></TableCell>

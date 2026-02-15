@@ -236,13 +236,13 @@ export default function BusinessInvoices() {
             <TableBody>
               {filteredInvoices.map(inv => (
                 <TableRow key={inv.id}>
-                  <TableCell className="font-mono font-medium">{inv.id}</TableCell>
+                  <TableCell className="font-mono font-medium">{inv.invoiceNumber || (inv.id?.length > 8 ? `INV-${inv.id.slice(0,8).toUpperCase()}` : inv.id)}</TableCell>
                   <TableCell className="font-medium">{inv.client}</TableCell>
                   <TableCell>{inv.items} items</TableCell>
-                  <TableCell className="text-right font-semibold">${inv.amount.toLocaleString()}</TableCell>
+                  <TableCell className="text-right font-semibold">${(inv.amount || 0).toLocaleString()}</TableCell>
                   <TableCell><Badge variant="outline">{inv.paymentTerms}</Badge></TableCell>
-                  <TableCell>{new Date(inv.issuedDate).toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date(inv.dueDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{(() => { const d = new Date(inv.issuedDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                  <TableCell>{(() => { const d = new Date(inv.dueDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
                   <TableCell><StatusBadge status={inv.status} /></TableCell>
                   <TableCell>
                     <div className="flex gap-1">

@@ -2,12 +2,38 @@ import type { Express } from "express";
 import { requireAuth } from "../../auth-middleware";
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import {
   veteranProfiles,
   veteranCertifications,
   veteranMentorships,
   militarySpouseProfiles,
 } from "@shared/schema";
+
+const uploadsDir = path.join(process.cwd(), "uploads", "dd214");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const dd214Storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  filename: (_req, file, cb) => {
+    const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}${path.extname(file.originalname)}`;
+    cb(null, uniqueName);
+  },
+});
+
+const dd214Upload = multer({
+  storage: dd214Storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (_req, file, cb) => {
+    const allowed = [".pdf", ".jpg", ".jpeg", ".png"];
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, allowed.includes(ext));
+  },
+});
 
 function registerCrud(
   app: Express,
@@ -81,8 +107,35 @@ function registerCrud(
 }
 
 export function registerVeteranRoutes(app: Express) {
+  // Serve uploaded files
+  const express = require("express");
+  app.use("/uploads/dd214", express.static(uploadsDir));
+
   registerCrud(app, "/api/veterans/profiles", veteranProfiles, "veteran profile", { ownerField: "proId" });
   registerCrud(app, "/api/veterans/certifications", veteranCertifications, "veteran certification", { ownerField: "businessId" });
   registerCrud(app, "/api/veterans/mentorships", veteranMentorships, "mentorship");
   registerCrud(app, "/api/veterans/military-spouses", militarySpouseProfiles, "military spouse profile", { ownerField: "userId" });
+
+  // POST /api/veterans/upload-dd214 — upload DD-214 document
+  app.post("/api/veterans/upload-dd214", requireAuth, dd214Upload.single("dd214"), async (req: any, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded. Accepted formats: PDF, JPG, PNG (max 10MB)" });
+      }
+
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const fileUrl = `/uploads/dd214/${req.file.filename}`;
+
+      // Update the veteran profile with the DD-214 URL
+      const [updated] = await db.update(veteranProfiles)
+        .set({ dd214DocumentUrl: fileUrl, updatedAt: new Date().toISOString() })
+        .where(eq(veteranProfiles.proId, userId))
+        .returning();
+
+      res.json({ url: fileUrl, profile: updated || null });
+    } catch (error) {
+      console.error("Error uploading DD-214:", error);
+      res.status(500).json({ error: "Failed to upload DD-214" });
+    }
+  });
 }

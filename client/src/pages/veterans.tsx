@@ -56,6 +56,32 @@ export default function Veterans() {
   const [branch, setBranch] = useState("");
   const [mosCode, setMosCode] = useState("");
   const [disabilityRating, setDisabilityRating] = useState("");
+  const [dd214File, setDd214File] = useState<File | null>(null);
+  const [dd214Uploading, setDd214Uploading] = useState(false);
+  const [dd214Url, setDd214Url] = useState("");
+
+  const handleDd214Upload = async (file: File) => {
+    setDd214File(file);
+    setDd214Uploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("dd214", file);
+      const res = await fetch("/api/veterans/upload-dd214", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      setDd214Url(data.url);
+      toast({ title: "DD-214 uploaded successfully" });
+    } catch (err) {
+      toast({ title: "Failed to upload DD-214", variant: "destructive" });
+      setDd214File(null);
+    } finally {
+      setDd214Uploading(false);
+    }
+  };
 
   const createVeteranMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -222,10 +248,26 @@ export default function Veterans() {
               </div>
               <div>
                 <Label className="text-white">Upload DD-214 (optional)</Label>
-                <div className="mt-2 border-2 border-dashed border-slate-600 rounded-lg p-6 text-center hover:border-orange-500/50 transition-colors cursor-pointer">
-                  <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
-                  <p className="text-sm text-slate-400">Drop your DD-214 here or click to upload</p>
-                  <p className="text-xs text-slate-500 mt-1">PDF, JPG, or PNG • Encrypted & secure</p>
+                <div
+                  className="mt-2 border-2 border-dashed border-slate-600 rounded-lg p-6 text-center hover:border-orange-500/50 transition-colors cursor-pointer relative"
+                  onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                  onDrop={e => { e.preventDefault(); e.stopPropagation(); const f = e.dataTransfer.files[0]; if (f) handleDd214Upload(f); }}
+                  onClick={() => { const input = document.createElement("input"); input.type = "file"; input.accept = ".pdf,.jpg,.jpeg,.png"; input.onchange = (e: any) => { const f = e.target.files?.[0]; if (f) handleDd214Upload(f); }; input.click(); }}
+                >
+                  {dd214Uploading ? (
+                    <p className="text-sm text-orange-400">Uploading...</p>
+                  ) : dd214Url ? (
+                    <>
+                      <CheckCircle className="w-8 h-8 mx-auto text-green-400 mb-2" />
+                      <p className="text-sm text-green-400">DD-214 uploaded successfully</p>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
+                      <p className="text-sm text-slate-400">{dd214File ? dd214File.name : "Drop your DD-214 here or click to upload"}</p>
+                      <p className="text-xs text-slate-500 mt-1">PDF, JPG, or PNG • Encrypted & secure</p>
+                    </>
+                  )}
                 </div>
               </div>
               <div>
