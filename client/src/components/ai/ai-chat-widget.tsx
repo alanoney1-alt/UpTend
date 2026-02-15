@@ -77,7 +77,11 @@ function BookingDraftCard({ draft, onAction }: { draft: any; onAction: (btn: Qui
 
 // ─── Main Widget ────────────────────────────
 export function AiChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    // Auto-open for first-time visitors, then remember their choice
+    const hasVisited = localStorage.getItem('george_dismissed');
+    return !hasVisited;
+  });
   const [message, setMessage] = useState("");
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -189,7 +193,7 @@ export function AiChatWidget() {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 md:bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 bg-[#F47C20] hover:bg-[#e06d15]"
+          className="fixed bottom-24 md:bottom-8 right-6 h-14 w-14 rounded-full shadow-lg z-40 bg-[#F47C20] hover:bg-[#e06d15]"
           size="icon"
         >
           <MessageCircle className="h-6 w-6" />
@@ -199,7 +203,7 @@ export function AiChatWidget() {
 
       {/* Chat Widget */}
       {isOpen && (
-        <Card className="fixed bottom-[7.5rem] md:bottom-6 right-6 w-96 max-w-[calc(100vw-2rem)] h-[600px] max-h-[60vh] md:max-h-[600px] shadow-xl z-50 flex flex-col">
+        <Card className="fixed bottom-[7.5rem] md:bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] h-[500px] max-h-[55vh] md:max-h-[500px] shadow-xl z-40 flex flex-col">
           <CardHeader className="pb-3 border-b bg-[#F47C20] rounded-t-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -211,7 +215,7 @@ export function AiChatWidget() {
                   <p className="text-white/70 text-xs">Your home helper</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20">
+              <Button variant="ghost" size="icon" onClick={() => { setIsOpen(false); localStorage.setItem('george_dismissed', 'true'); }} className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20">
                 <X className="h-4 w-4" />
               </Button>
             </div>
