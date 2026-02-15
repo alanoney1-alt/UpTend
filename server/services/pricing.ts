@@ -2,11 +2,11 @@ export const PRICING_CONSTANTS = {
   PRESSURE_WASH_SQFT: 25,
   PRESSURE_WASH_MIN: 12000, // $120 minimum (small job)
 
-  GUTTER_1_STORY: 12900, // $129 — 1-Story (up to 150 linear ft)
-  GUTTER_1_STORY_LARGE: 16900, // $169 — 1-Story Large (150-250 linear ft)
-  GUTTER_2_STORY: 19900, // $199 — 2-Story (up to 150 linear ft)
-  GUTTER_2_STORY_LARGE: 24900, // $249 — 2-Story Large (150-250 linear ft)
-  GUTTER_3_STORY: 29900, // $299+ — 3-Story
+  GUTTER_1_STORY: 15000, // $150 — 1-Story (up to 150 linear ft)
+  GUTTER_1_STORY_LARGE: 19500, // $195 — 1-Story Large (150-250 linear ft)
+  GUTTER_2_STORY: 22500, // $225 — 2-Story (up to 150 linear ft)
+  GUTTER_2_STORY_LARGE: 28500, // $285 — 2-Story Large (150-250 linear ft)
+  GUTTER_3_STORY: 35000, // $350+ — 3-Story
 
   MOVER_HOURLY: 8000, // $80/hr per Pro (Moving Labor)
   MOVER_MIN_HOURS: 1,
@@ -16,21 +16,21 @@ export const PRICING_CONSTANTS = {
   CONSULTATION_FEE: 9900, // $99 (AI Home Scan Standard)
 
   // Pool Cleaning (PoolSpark) tiers
-  POOL_BASIC: 8900,       // $89/mo — Weekly chemicals + skim surface + empty baskets
-  POOL_STANDARD: 12900,   // $129/mo — Basic + brush walls + vacuum + filter check
-  POOL_FULL_SERVICE: 16900, // $169/mo — Standard + tile cleaning + equipment monitoring + filter cleaning
-  POOL_DEEP_CLEAN: 19900, // $199 one-time — Deep clean for neglected/green pools
+  POOL_BASIC: 12000,       // $120/mo — Weekly chemicals + skim surface + empty baskets
+  POOL_STANDARD: 16500,   // $165/mo — Basic + brush walls + vacuum + filter check
+  POOL_FULL_SERVICE: 21000, // $210/mo — Standard + tile cleaning + equipment monitoring + filter cleaning
+  POOL_DEEP_CLEAN: 24900, // $249 one-time — Deep clean for neglected/green pools
 
   // Carpet Cleaning tiers (per room)
-  CARPET_STANDARD: 3900,    // $39/room — Steam/hot water extraction, pre-treatment, vacuum
-  CARPET_DEEP: 5900,        // $59/room — Standard + enzyme treatment, heavy soil agitation, slow dry pass
-  CARPET_PET: 6900,         // $69/room — Deep clean + pet odor enzyme + sanitizer
+  CARPET_STANDARD: 5000,    // $50/room — Steam/hot water extraction, pre-treatment, vacuum
+  CARPET_DEEP: 7500,        // $75/room — Standard + enzyme treatment, heavy soil agitation, slow dry pass
+  CARPET_PET: 8900,         // $89/room — Deep clean + pet odor enzyme + sanitizer
   CARPET_HALLWAY: 2500,     // $25 each
   CARPET_STAIRS: 2500,      // $25 per flight
   CARPET_SCOTCHGARD: 2000,  // $20/room add-on
-  CARPET_PKG_3BR: 14900,    // $149 — 3BR/2BA standard package (all rooms + hallway)
-  CARPET_PKG_4_5BR: 19900,  // $199 — 4-5BR standard package (all rooms + hallways)
-  CARPET_MINIMUM: 9900,     // $99 minimum charge
+  CARPET_PKG_3BR: 12900,    // $129 — 3BR/2BA standard package (all rooms + hallway)
+  CARPET_PKG_4_5BR: 21500,  // $215 — 4-5BR standard package (all rooms + hallways)
+  CARPET_MINIMUM: 10000,    // $100 minimum charge
 
   // Landscaping tiers
   LANDSCAPE_MOW_QUARTER: 4900,   // $49 one-time mow ≤1/4 acre
@@ -207,7 +207,7 @@ export function getUpsellOpportunities(
   ) {
     opportunities.push({
       type: "gutter_cleaning",
-      pitch: "While we're here, want us to check and clean your gutters? Starting at $129.",
+      pitch: "While we're here, want us to check and clean your gutters? Starting at $150.",
       quickPrice: 12900,
     });
   }

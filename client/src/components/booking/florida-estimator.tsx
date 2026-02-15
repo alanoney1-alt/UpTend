@@ -85,8 +85,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "carpet_cleaning",
     name: "Carpet Cleaning",
-    price: "From $39/room",
-    description: "Professional carpet and upholstery cleaning with advanced extraction methods. $99 minimum.",
+    price: "From $50/room",
+    description: "Professional carpet and upholstery cleaning with advanced extraction methods. $100 minimum.",
     benefit: "Removes allergens • Extends carpet life",
     icon: Home,
   },
@@ -101,7 +101,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "gutter_cleaning",
     name: "Gutter Cleaning",
-    price: "From $129",
+    price: "From $150",
     description: "Complete gutter cleaning with flow testing and debris removal for all perimeters.",
     benefit: "Prevents foundation erosion • Protects against water damage",
     icon: Waves,
@@ -117,8 +117,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "pool_cleaning",
     name: "Pool Cleaning",
-    price: "From $89/mo",
-    description: "Basic ($89/mo), Standard ($129/mo), Full Service ($169/mo), or One-Time Deep Clean ($199).",
+    price: "From $120/mo",
+    description: "Basic ($120/mo), Standard ($165/mo), Full Service ($210/mo), or One-Time Deep Clean ($249).",
     benefit: "Crystal clear water • Equipment longevity",
     icon: Droplets,
   },

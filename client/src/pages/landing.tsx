@@ -349,11 +349,11 @@ function WhySection() {
     { key: "garage_cleanout", label: "Garage Cleanout", price: "From $150", icon: Home, color: "text-primary dark:text-orange-400" },
     { key: "moving_labor", label: "Moving Labor", price: "$65/hr per mover", icon: Package, color: "text-secondary dark:text-secondary" },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, color: "text-primary dark:text-orange-400" },
-    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $39/room", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $50/room", icon: Home, color: "text-primary dark:text-orange-400" },
     { key: "landscaping", label: "Landscaping", price: "From $49", icon: Trees, color: "text-green-500 dark:text-green-400" },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $89/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
+    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $120/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
     { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
   ];
 

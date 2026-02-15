@@ -72,14 +72,14 @@ const SERVICES = [
     name: <>Carpet Cleaning</>,
     price: "$39",
     unit: "per room",
-    description: "Professional carpet cleaning. $99 minimum (covers up to 2 rooms standard).",
+    description: "Professional carpet cleaning. $100 minimum (covers up to 2 rooms standard).",
     features: [
-      "Standard Steam Clean: $39/room — extraction, pre-treatment, vacuum",
-      "Deep Clean: $59/room — + enzyme treatment, heavy soil agitation, slow dry pass",
-      "Pet Treatment: $69/room — + pet odor enzyme + sanitizer",
+      "Standard Steam Clean: $50/room — extraction, pre-treatment, vacuum",
+      "Deep Clean: $75/room — + enzyme treatment, heavy soil agitation, slow dry pass",
+      "Pet Treatment: $89/room — + pet odor enzyme + sanitizer",
       "Hallway: $25 each | Stairs: $25/flight",
       "Scotchgard/Protectant: $20/room add-on",
-      "3BR/2BA Package: $149 | 4-5BR Package: $199 (all rooms + hallways)",
+      "3BR/2BA Package: $129 | 4-5BR Package: $215 (all rooms + hallways)",
     ],
   },
   {
@@ -102,7 +102,7 @@ const SERVICES = [
     name: <>Gutter Cleaning</>,
     price: "$129",
     unit: "starting (1-story, up to 150 linear ft)",
-    description: "Debris removal and downspout flushing. Tiers: 1-Story $129 | 1-Story Large $169 | 2-Story $199 | 2-Story Large $249 | 3-Story $299+. Add-ons: gutter guards ($4-6/ft), downspout flush ($15/ea), minor repair ($75).",
+    description: "Debris removal and downspout flushing. Tiers: 1-Story $150 | 1-Story Large $195 | 2-Story $225 | 2-Story Large $285 | 3-Story $350+. Add-ons: gutter guards ($4-6/ft), downspout flush ($15/ea), minor repair ($75).",
     features: ["Roof air-blown", "Downspouts tested", "Debris bagged", "5 tiers by size"],
   },
   {
@@ -120,10 +120,10 @@ const SERVICES = [
     unit: "per month",
     description: "Regular pool maintenance to keep your water crystal clear.",
     features: [
-      "Basic: $89/mo — Weekly chemicals, skim surface, empty baskets",
-      "Standard: $129/mo — + brush walls, vacuum, filter check",
-      "Full Service: $169/mo — + tile cleaning, equipment monitoring, filter cleaning",
-      "One-Time Deep Clean: $199 — Deep clean for neglected/green pools",
+      "Basic: $120/mo — Weekly chemicals, skim surface, empty baskets",
+      "Standard: $165/mo — + brush walls, vacuum, filter check",
+      "Full Service: $210/mo — + tile cleaning, equipment monitoring, filter cleaning",
+      "One-Time Deep Clean: $249 — Deep clean for neglected/green pools",
     ],
   },
   {

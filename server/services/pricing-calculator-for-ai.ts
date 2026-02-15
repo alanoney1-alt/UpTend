@@ -271,20 +271,20 @@ export function calculateGutterFlushPriceForAI(params: {
 
   if (params.stories === 1) {
     if (ft <= 150) {
-      return { price: 129, description: 'Gutter Cleaning 1-Story (up to 150 linear ft)', tier: '1_story' };
+      return { price: 150, description: 'Gutter Cleaning 1-Story (up to 150 linear ft)', tier: '1_story' };
     }
-    return { price: 169, description: 'Gutter Cleaning 1-Story Large (150-250 linear ft)', tier: '1_story_large' };
+    return { price: 195, description: 'Gutter Cleaning 1-Story Large (150-250 linear ft)', tier: '1_story_large' };
   }
 
   if (params.stories === 2) {
     if (ft <= 150) {
-      return { price: 199, description: 'Gutter Cleaning 2-Story (up to 150 linear ft)', tier: '2_story' };
+      return { price: 225, description: 'Gutter Cleaning 2-Story (up to 150 linear ft)', tier: '2_story' };
     }
-    return { price: 249, description: 'Gutter Cleaning 2-Story Large (150-250 linear ft)', tier: '2_story_large' };
+    return { price: 285, description: 'Gutter Cleaning 2-Story Large (150-250 linear ft)', tier: '2_story_large' };
   }
 
   // 3-story
-  return { price: 299, description: 'Gutter Cleaning 3-Story (custom quote for larger)', tier: '3_story' };
+  return { price: 350, description: 'Gutter Cleaning 3-Story (custom quote for larger)', tier: '3_story' };
 }
 
 /**

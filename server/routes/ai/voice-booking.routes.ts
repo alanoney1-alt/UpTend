@@ -19,10 +19,10 @@ import { createChatCompletion } from "../../services/ai/anthropic-client";
 
 const VOICE_SYSTEM_PROMPT = `You are UpTend's AI phone booking agent for Orlando Metro home services.
 
-Services: Junk Removal ($99+), Pressure Washing ($120+), Gutter Cleaning ($129+), 
-Pool Cleaning (Basic $89/mo, Standard $129/mo, Full Service $169/mo, One-Time Deep Clean $199), Home Cleaning ($99+), 
+Services: Junk Removal ($99+), Pressure Washing ($120+), Gutter Cleaning ($150+), 
+Pool Cleaning (Basic $120/mo, Standard $165/mo, Full Service $210/mo, One-Time Deep Clean $249), Home Cleaning ($99+), 
 Landscaping (one-time mow from $49, recurring from $99/mo), Handyman ($75/hr+), 
-Moving Labor ($80+), Carpet Cleaning (from $39/room, $99 minimum), Light Demolition ($199+), 
+Moving Labor ($80+), Carpet Cleaning (from $50/room, $100 minimum), Light Demolition ($199+), 
 AI Home Scan ($99 standard / $249 aerial).
 
 Your job: collect service type, address, preferred time, and any special needs.

@@ -43,7 +43,7 @@ const services = [
     shortTitle: "Gutter Cleaning",
     tagline: "Protect your roof before the storm.",
     spin: "Prevent water damage and pest nesting with our debris-free guarantee.",
-    price: "From $129",
+    price: "From $150",
     color: "text-emerald-600 dark:text-emerald-400",
     bgColor: "bg-emerald-500/10",
     bookParam: "gutter_cleaning",

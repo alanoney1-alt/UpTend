@@ -86,7 +86,7 @@ export function ManualQuoteForm({
       const sqftNum = parseInt(sqft) || 0;
       price = Math.max(sqftNum * 0.25, 120); // FreshWash minimum $120
     } else if (isGutterCleaning) {
-      price = stories === "1" ? 129 : 199; // GutterFlush: single story $129, two story $199
+      price = stories === "1" ? 150 : 225; // GutterFlush: single story $150, two story $225
     } else if (isMovingLabor) {
       const hoursNum = parseInt(hours) || 2;
       const crewNum = parseInt(crewSize) || 2;
@@ -281,8 +281,8 @@ export function ManualQuoteForm({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1 Story - $120</SelectItem>
-                  <SelectItem value="2">2 Story - $199</SelectItem>
+                  <SelectItem value="1">1 Story - $150</SelectItem>
+                  <SelectItem value="2">2 Story - $225</SelectItem>
                 </SelectContent>
               </Select>
             </div>

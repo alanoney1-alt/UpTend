@@ -10,7 +10,7 @@ const RECURRING_TIERS = [
   {
     id: "basic",
     name: "Basic",
-    price: 89,
+    price: 120,
     includes: [
       "Weekly chemical balancing",
       "Surface skimming",
@@ -20,7 +20,7 @@ const RECURRING_TIERS = [
   {
     id: "standard",
     name: "Standard",
-    price: 129,
+    price: 165,
     includes: [
       "Everything in Basic",
       "Brush walls & tile line",
@@ -32,7 +32,7 @@ const RECURRING_TIERS = [
   {
     id: "full",
     name: "Full Service",
-    price: 169,
+    price: 210,
     includes: [
       "Everything in Standard",
       "Tile & waterline cleaning",
@@ -89,7 +89,7 @@ export function PoolCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
         <Card className="border-primary">
           <CardContent className="p-5 space-y-3">
             <h3 className="font-bold text-lg">One-Time Deep Clean</h3>
-            <p className="text-2xl font-black text-primary">$199</p>
+            <p className="text-2xl font-black text-primary">$249</p>
             <p className="text-sm text-muted-foreground">
               Complete pool restoration — ideal for neglected or green pools.
             </p>

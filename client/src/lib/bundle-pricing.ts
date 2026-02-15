@@ -20,11 +20,11 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   garage_cleanout: 299,
   moving_labor: 80,
   home_cleaning: 99,
-  carpet_cleaning: 39, // Carpet Cleaning standard steam clean per room ($99 minimum)
+  carpet_cleaning: 50, // Carpet Cleaning standard steam clean per room ($100 minimum)
   landscaping: 49, // Landscaping one-time mow ≤1/4 acre ($99/mo recurring)
-  gutter_cleaning: 129,
+  gutter_cleaning: 150,
   pressure_washing: 120,
-  pool_cleaning: 89, // PoolSpark monthly (Basic tier: $89 | Standard: $129 | Full: $169 | Deep Clean: $199)
+  pool_cleaning: 120, // PoolSpark monthly (Basic tier: $120 | Standard: $165 | Full: $210 | Deep Clean: $249)
   light_demolition: 199,
   truck_unloading: 80,
   furniture_moving: 80,

@@ -32,7 +32,7 @@ type EligibleService = (typeof ELIGIBLE_SERVICES)[number];
 // Base monthly prices per service
 const BASE_MONTHLY_PRICES: Record<EligibleService, number> = {
   home_cleaning: 149,
-  pool_cleaning: 89, // Basic tier; Standard $129, Full Service $169
+  pool_cleaning: 120, // Basic tier; Standard $165, Full Service $210
   landscaping: 89,
   carpet_cleaning: 179,
   gutter_cleaning: 99,

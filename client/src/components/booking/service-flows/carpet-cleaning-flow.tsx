@@ -8,14 +8,14 @@ import { AiScanToggle } from "./ai-scan-toggle";
 import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 
 const CLEAN_TYPES = [
-  { id: "standard", label: "Standard Clean", pricePerRoom: 39, description: "Hot water extraction — best for regular maintenance" },
-  { id: "deep", label: "Deep Clean", pricePerRoom: 59, description: "Pre-treatment + extraction — for heavy traffic or stains" },
-  { id: "pet", label: "Pet Treatment", pricePerRoom: 69, description: "Enzyme treatment + extraction — eliminates odors & stains" },
+  { id: "standard", label: "Standard Clean", pricePerRoom: 50, description: "Hot water extraction — best for regular maintenance" },
+  { id: "deep", label: "Deep Clean", pricePerRoom: 75, description: "Pre-treatment + extraction — for heavy traffic or stains" },
+  { id: "pet", label: "Pet Treatment", pricePerRoom: 89, description: "Enzyme treatment + extraction — eliminates odors & stains" },
 ];
 
 const WHOLE_HOUSE = [
-  { id: "3br", label: "3-Bedroom Whole House Package", price: 149, rooms: 3 },
-  { id: "4_5br", label: "4-5 Bedroom Whole House Package", price: 199, rooms: 5 },
+  { id: "3br", label: "3-Bedroom Whole House Package", price: 129, rooms: 3 },
+  { id: "4_5br", label: "4-5 Bedroom Whole House Package", price: 215, rooms: 5 },
 ];
 
 export function CarpetCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
@@ -41,7 +41,7 @@ export function CarpetCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
   const stairCost = stairFlights * 25;
   const scotchgardCost = scotchgard ? (whPkg ? whPkg.rooms : rooms) * 20 : 0;
   const subtotal = roomsCost + hallwayCost + stairCost + scotchgardCost;
-  const total = Math.max(subtotal, subtotal > 0 ? 99 : 0);
+  const total = Math.max(subtotal, subtotal > 0 ? 100 : 0);
 
   const lineItems = [
     ...(whPkg
@@ -168,10 +168,10 @@ export function CarpetCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
       <RunningTotal
         total={total}
         lineItems={lineItems}
-        minimumCharge={99}
+        minimumCharge={100}
         onContinue={handleContinue}
         onBack={onBack}
-        note="$99 minimum charge. Pro confirms on-site."
+        note="$100 minimum charge. Pro confirms on-site."
       />
     </div>
   );

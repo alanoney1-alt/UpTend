@@ -91,9 +91,9 @@ export const UPTEND_KNOWLEDGE = {
       description: "Professional gutter cleaning and debris removal to prevent water damage.",
       pricing: "Tiered pricing by home size and linear footage",
       rates: [
-        { type: "1-Story (up to 150 linear ft)", price: "$129", includes: "Full perimeter cleaning + flow test" },
-        { type: "1-Story Large (150-250 linear ft)", price: "$169", includes: "Full perimeter cleaning + flow test" },
-        { type: "2-Story (up to 150 linear ft)", price: "$199", includes: "Full perimeter cleaning + flow test" },
+        { type: "1-Story (up to 150 linear ft)", price: "$150", includes: "Full perimeter cleaning + flow test" },
+        { type: "1-Story Large (150-250 linear ft)", price: "$195", includes: "Full perimeter cleaning + flow test" },
+        { type: "2-Story (up to 150 linear ft)", price: "$225", includes: "Full perimeter cleaning + flow test" },
         { type: "2-Story Large (150-250 linear ft)", price: "$249", includes: "Full perimeter cleaning + flow test" },
         { type: "3-Story", price: "$299+", includes: "Full perimeter cleaning + flow test" },
       ],
