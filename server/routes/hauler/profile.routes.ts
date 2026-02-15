@@ -747,8 +747,8 @@ export function registerProProfileRoutes(app: Express) {
       const result = await pool.query(`
         SELECT 
           COALESCE(SUM(water_saved_gallons), 0) as gallons_saved,
-          COALESCE(SUM(co2_saved_kg), 0) as co2_saved,
-          COALESCE(AVG(esg_score), 0) as avg_esg_score,
+          COALESCE(SUM(carbon_saved_lbs * 0.4536), 0) as co2_saved,
+          COALESCE(AVG(diversion_rate), 0) as avg_esg_score,
           COUNT(*) as total_jobs
         FROM esg_impact_logs 
         WHERE hauler_id = $1
