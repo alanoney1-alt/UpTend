@@ -134,7 +134,14 @@ function MessageBubble({ msg, onButtonPress }: { msg: ChatMessage; onButtonPress
 // ─── Main Widget ────────────────────────────
 export function AiChatWidget() {
   const { user, isAuthenticated } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    // Auto-open for all customers on first visit
+    try {
+      const dismissed = localStorage.getItem("george_auto_dismissed");
+      if (!dismissed) return true;
+    } catch {}
+    return false;
+  });
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -292,7 +299,7 @@ export function AiChatWidget() {
           <Button variant="ghost" size="icon" className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20" onClick={newConversation} title="New conversation">
             <Plus className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20" onClick={() => setIsOpen(false)} title="Close">
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20" onClick={() => { setIsOpen(false); try { localStorage.setItem("george_auto_dismissed", "1"); } catch {} }} title="Close">
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -308,8 +315,11 @@ export function AiChatWidget() {
             <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
               {greetingText}
             </h4>
-            <p className="text-sm text-gray-500 dark:text-gray-300 max-w-[260px] mb-4">
-              {isPro ? "Learn about earning with UpTend" : "Need a pro for your home? Just ask!"}
+            <p className="text-sm text-gray-500 dark:text-gray-300 max-w-[260px] mb-1">
+              {isPro ? "Learn about earning with UpTend" : "I'm just here to help! Need a pro for your home? Just ask."}
+            </p>
+            <p className="text-xs text-gray-400 dark:text-gray-400 max-w-[260px] mb-4">
+              You can close me anytime using the ✕ above.
             </p>
             <QuickButtons buttons={greetingButtons} onPress={handleQuickReply} />
           </div>
