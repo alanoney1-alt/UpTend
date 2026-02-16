@@ -8,6 +8,8 @@
 
 import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
+import { haulerProfiles } from "@shared/schema";
+import { eq, and, sql } from "drizzle-orm";
 import { requireAuth } from "../auth-middleware";
 import { z } from "zod";
 
@@ -33,8 +35,8 @@ export function registerSameDayRoutes(app: Express) {
       const db = (storage as any).db;
       if (!db) return res.status(500).json({ error: "Database not available" });
 
-      const { haulerProfiles } = require("@shared/schema");
-      const { eq, and, sql } = require("drizzle-orm");
+      
+      
 
       // Find available pros who opted into same-day and serve this service type
       const pros = await db
@@ -81,8 +83,8 @@ export function registerSameDayRoutes(app: Express) {
       const db = (storage as any).db;
       if (!db) return res.status(500).json({ error: "Database not available" });
 
-      const { haulerProfiles } = require("@shared/schema");
-      const { eq } = require("drizzle-orm");
+      
+      
 
       const updates: any = { sameDayAvailable: validated.sameDayAvailable };
       if (validated.sameDayRadius !== undefined) {

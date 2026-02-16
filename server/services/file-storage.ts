@@ -8,6 +8,7 @@
  *   import { uploadFile, getFileUrl, isCloudStorage, getMulterStorage } from "./services/file-storage";
  *   const url = await uploadFile(buffer, "photo.jpg", "image/jpeg", "general");
  */
+import multer from "multer";
 
 import path from "path";
 import fs from "fs";
@@ -102,8 +103,7 @@ export function getFileUrl(key: string): string {
  * Returns a multer storage engine: memoryStorage for cloud, diskStorage for local.
  */
 export function getMulterStorage(folder: string) {
-  // Dynamic import not needed — multer is always available
-  const multer = require("multer");
+  // multer imported at top level
 
   if (isCloudStorage) {
     return multer.memoryStorage();

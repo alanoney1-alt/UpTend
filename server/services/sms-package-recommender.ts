@@ -120,7 +120,7 @@ export function recommendPackageFromIntent(
 /**
  * Generate AI Home Scan tier recommendation for SMS
  */
-export function getAI Home ScanSmsMessage(includeAerialUpsell: boolean = true): string {
+export function getAIHomeScanSmsMessage(includeAerialUpsell: boolean = true): string {
   if (includeAerialUpsell) {
     return (
       '🏡 AI Home Scan:\n\n' +

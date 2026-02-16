@@ -13,6 +13,9 @@
  */
 
 import type { Express, Request, Response } from "express";
+import Stripe from "stripe";
+import { serviceSubscriptions } from "@shared/schema";
+import { eq, and } from "drizzle-orm";
 import { requireAuth } from "../auth-middleware";
 import { storage } from "../storage";
 import { z } from "zod";
@@ -148,9 +151,9 @@ export function registerSubscriptionPlansRoutes(app: Express) {
       // Create Stripe subscription if Stripe is configured
       let stripeSubscriptionId: string | null = null;
       try {
-        const stripe = require("stripe");
+        
         if (process.env.STRIPE_SECRET_KEY) {
-          const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
+          const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!);
           // Create or retrieve Stripe price for this combo
           const priceLookupKey = `sub_${validated.serviceType}_${validated.frequency}`;
           let stripePrice;
@@ -187,7 +190,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
       // Use raw SQL insert since storage might not have this method yet
       const db = (storage as any).db;
       if (db) {
-        const { serviceSubscriptions } = require("@shared/schema");
+        
         await db.insert(serviceSubscriptions).values({
           id,
           customerId: userId,
@@ -236,8 +239,8 @@ export function registerSubscriptionPlansRoutes(app: Express) {
       const db = (storage as any).db;
       let subscriptions: any[] = [];
       if (db) {
-        const { serviceSubscriptions } = require("@shared/schema");
-        const { eq } = require("drizzle-orm");
+        
+        
         subscriptions = await db.select().from(serviceSubscriptions).where(eq(serviceSubscriptions.customerId, userId));
       }
 
@@ -265,8 +268,8 @@ export function registerSubscriptionPlansRoutes(app: Express) {
 
       const db = (storage as any).db;
       if (db) {
-        const { serviceSubscriptions } = require("@shared/schema");
-        const { eq, and } = require("drizzle-orm");
+        
+        
 
         // Verify ownership
         const [existing] = await db.select().from(serviceSubscriptions)
@@ -312,8 +315,8 @@ export function registerSubscriptionPlansRoutes(app: Express) {
 
       const db = (storage as any).db;
       if (db) {
-        const { serviceSubscriptions } = require("@shared/schema");
-        const { eq, and } = require("drizzle-orm");
+        
+        
 
         const [existing] = await db.select().from(serviceSubscriptions)
           .where(and(eq(serviceSubscriptions.id, id), eq(serviceSubscriptions.customerId, userId)));

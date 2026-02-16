@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import express from "express";
 import { requireAuth } from "../../auth-middleware";
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
@@ -101,7 +102,6 @@ function registerCrud(
 
 export function registerVeteranRoutes(app: Express) {
   // Serve uploaded files
-  const express = require("express");
   app.use("/uploads/dd214", express.static(uploadsDir));
 
   registerCrud(app, "/api/veterans/profiles", veteranProfiles, "veteran profile", { ownerField: "proId" });
