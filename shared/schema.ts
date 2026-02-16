@@ -179,6 +179,13 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   // No-Show Protection
   noShowCount: integer("no_show_count").default(0),
   lastNoShowAt: text("last_no_show_at"),
+  // Earnings Goal System
+  annualIncomeGoal: real("annual_income_goal").default(0),
+  availableHoursPerWeek: integer("available_hours_per_week").default(40),
+  careerTotalEarnings: real("career_total_earnings").default(0),
+  currentStreakWeeks: integer("current_streak_weeks").default(0),
+  longestStreakWeeks: integer("longest_streak_weeks").default(0),
+  earningsLevel: text("earnings_level").default("starter"), // 'starter', 'rising', 'pro', 'elite', 'legend'
 });
 
 export const haulerProfilesRelations = relations(haulerProfiles, ({ one, many }) => ({
@@ -187,11 +194,57 @@ export const haulerProfilesRelations = relations(haulerProfiles, ({ one, many })
     references: [users.id],
   }),
   vehicles: many(pyckerVehicles),
+  weeklyEarnings: many(proWeeklyEarnings),
+  milestones: many(proMilestones),
 }));
 
 export const insertHaulerProfileSchema = createInsertSchema(haulerProfiles).omit({ id: true });
 export type InsertHaulerProfile = z.infer<typeof insertHaulerProfileSchema>;
 export type HaulerProfile = typeof haulerProfiles.$inferSelect;
+
+// Pro Weekly Earnings tracking
+export const proWeeklyEarnings = pgTable("pro_weekly_earnings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull().references(() => users.id),
+  weekStart: text("week_start").notNull(), // ISO date of Monday
+  weekEnd: text("week_end").notNull(),
+  totalEarnings: real("total_earnings").default(0),
+  jobsCompleted: integer("jobs_completed").default(0),
+  weeklyTarget: real("weekly_target").default(0),
+  targetMet: boolean("target_met").default(false),
+  createdAt: text("created_at").notNull().default(sql`NOW()`),
+});
+
+export const proWeeklyEarningsRelations = relations(proWeeklyEarnings, ({ one }) => ({
+  pro: one(users, {
+    fields: [proWeeklyEarnings.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertProWeeklyEarningsSchema = createInsertSchema(proWeeklyEarnings).omit({ id: true });
+export type InsertProWeeklyEarnings = z.infer<typeof insertProWeeklyEarningsSchema>;
+export type ProWeeklyEarnings = typeof proWeeklyEarnings.$inferSelect;
+
+// Pro Milestones achieved
+export const proMilestones = pgTable("pro_milestones", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull().references(() => users.id),
+  milestoneType: text("milestone_type").notNull(), // 'annual_25', 'annual_50', 'annual_75', 'annual_100', 'streak_4', 'streak_12', 'level_up'
+  milestoneValue: text("milestone_value"),
+  achievedAt: text("achieved_at").notNull().default(sql`NOW()`),
+});
+
+export const proMilestonesRelations = relations(proMilestones, ({ one }) => ({
+  pro: one(users, {
+    fields: [proMilestones.proId],
+    references: [users.id],
+  }),
+}));
+
+export const insertProMilestonesSchema = createInsertSchema(proMilestones).omit({ id: true });
+export type InsertProMilestones = z.infer<typeof insertProMilestonesSchema>;
+export type ProMilestones = typeof proMilestones.$inferSelect;
 
 export const pyckerVehicles = pgTable("pycker_vehicles", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

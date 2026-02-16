@@ -21,6 +21,7 @@ import { registerCertificationGatingRoutes } from "./hauler/certification-gating
 import { registerFeeStatusRoutes } from "./hauler/fee-status.routes";
 import { registerPayoutRoutes } from "./hauler/payouts.routes";
 import { registerProDashboardRoutes } from "./hauler/dashboard.routes";
+import { registerEarningsGoalRoutes } from "./hauler/earnings-goal.routes";
 
 // Customer routes
 import { registerCustomerAccountRoutes } from "./customer/account.routes";
@@ -207,6 +208,7 @@ export async function registerRoutes(
   registerFeeStatusRoutes(app);
   registerPayoutRoutes(app);
   registerProDashboardRoutes(app);
+  registerEarningsGoalRoutes(app);
 
   // Register customer routes
   registerCustomerAccountRoutes(app);
