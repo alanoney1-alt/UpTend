@@ -59,16 +59,16 @@ export default function AIFeaturesHub() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#F47C20]/10 via-white to-orange-50 dark:from-[#F47C20]/5 dark:via-gray-950 dark:to-gray-900 pt-24 pb-16 md:pt-32 md:pb-24">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#F47C20]/10 via-white to-orange-50 dark:from-[#F47C20]/5 dark:via-gray-950 dark:to-gray-900 pt-16 pb-10 md:pt-24 md:pb-16">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <div className="inline-flex items-center gap-2 bg-[#F47C20]/10 text-[#F47C20] rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 bg-[#F47C20]/10 text-[#F47C20] rounded-full px-3 py-1 text-xs font-medium mb-4">
+              <Sparkles className="w-3.5 h-3.5" />
               Powered by AI
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
               AI-Powered Home Services
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               From instant photo quotes to smart scheduling, our AI tools make
               managing your home effortless.
             </p>
@@ -76,7 +76,7 @@ export default function AIFeaturesHub() {
         </section>
 
         {/* Feature Cards */}
-        <section className="container mx-auto px-4 -mt-8 pb-20">
+        <section className="container mx-auto px-4 -mt-4 pb-20">
           <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {features.map((f) => {
               const Wrapper = f.href ? Link : "div";
