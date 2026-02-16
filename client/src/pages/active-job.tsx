@@ -3,6 +3,7 @@ import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { UniversalJobWizard } from "@/components/job-wizard/universal-job-wizard";
 import { JobPhotos } from "@/components/pro/job-photos";
+import { NoShowCheckin } from "@/components/pro/no-show-checkin";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
 import type { ServiceRequest, HaulerProfile } from "@shared/schema";
@@ -77,6 +78,11 @@ export default function ActiveJob() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background" data-testid="page-active-job">
+      {/* No-Show Check-in Banner */}
+      <div className="px-4 pt-2">
+        <NoShowCheckin jobId={job.id} jobStatus={job.status} />
+      </div>
+
       {(showBeforePhotos || showAfterPhotos) && (
         <div className="p-4 space-y-3">
           {showBeforePhotos && <JobPhotos jobId={job.id} type="before" />}

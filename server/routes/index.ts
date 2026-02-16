@@ -33,6 +33,7 @@ import { registerServiceRequestRoutes } from "./jobs/service-requests.routes";
 import { registerJobManagementRoutes } from "./jobs/job-management.routes";
 import { registerJobVerificationRoutes } from "./jobs/verification.routes";
 import { registerPriceVerificationRoutes } from "./jobs/price-verification.routes";
+import { registerNoShowRoutes } from "./jobs/no-show.routes";
 
 // PolishUp routes
 import { registerSubscriptionRoutes } from "./subscriptions.routes";
@@ -212,6 +213,7 @@ export async function registerRoutes(
   registerJobManagementRoutes(app);
   registerJobVerificationRoutes(app);
   registerPriceVerificationRoutes(app);
+  registerNoShowRoutes(app);
 
   // Register PolishUp routes
   registerSubscriptionRoutes(app);

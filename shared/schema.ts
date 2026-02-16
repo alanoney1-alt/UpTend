@@ -176,6 +176,9 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   icaAcceptedAt: text("ica_accepted_at"), // ISO timestamp when ICA was accepted
   icaSignedName: text("ica_signed_name"), // Full legal name typed as electronic signature
   icaVersion: text("ica_version"), // Version of ICA accepted (e.g., "v1.0")
+  // No-Show Protection
+  noShowCount: integer("no_show_count").default(0),
+  lastNoShowAt: text("last_no_show_at"),
 });
 
 export const haulerProfilesRelations = relations(haulerProfiles, ({ one, many }) => ({
@@ -416,6 +419,10 @@ export const serviceRequests = pgTable("service_requests", {
   cancellationPolicyAcceptedAt: text("cancellation_policy_accepted_at"),
   customerSignoffAt: text("customer_signoff_at"),
   customerSignoffMethod: text("customer_signoff_method"), // 'manual' | 'auto' | null
+  // No-Show Protection
+  isUrgentReassign: boolean("is_urgent_reassign").default(false),
+  originalProId: text("original_pro_id"),
+  noShowAt: text("no_show_at"),
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
