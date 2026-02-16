@@ -18,7 +18,7 @@
 <div style="background: #f8f4ee; border-radius: 8px; padding: 10px 12px; margin-bottom: 14px;">
 <strong>Where We Are Today:</strong><br/>
 ✅ Fully built platform — live at uptendapp.com<br/>
-✅ 130+ features, 12 services, 13 AI capabilities, Stripe payments, GPS tracking<br/>
+✅ 130+ features, 12 services, 21 AI capabilities, Stripe payments, GPS tracking<br/>
 ✅ Full B2B suite: HOA, Property Mgmt, Construction, Government<br/>
 ✅ Government compliance: Davis-Bacon, WH-347, SAM.gov, DBE, FEMA<br/>
 ✅ SDVOSB subsidiary (51% minority disabled veteran) — sole-source up to $5M<br/>

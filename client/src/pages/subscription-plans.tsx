@@ -119,7 +119,7 @@ export default function SubscriptionPlans() {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">
             Service Plans & Subscriptions
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Save time and money with recurring service plans. Set it and forget it — we'll handle the scheduling.
           </p>
         </div>
@@ -135,7 +135,7 @@ export default function SubscriptionPlans() {
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     frequency === f
                       ? "bg-[#F47C20] text-white"
-                      : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
                 >
                   {FREQUENCY_LABELS[f]}
@@ -169,7 +169,7 @@ export default function SubscriptionPlans() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                           {plan.description}
                         </p>
                         <div className="flex items-baseline gap-1 mb-4">
@@ -181,13 +181,13 @@ export default function SubscriptionPlans() {
                           </span>
                         </div>
                         <ul className="space-y-2 mb-4">
-                          <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                             <Check className="w-4 h-4 text-green-500" /> Vetted & insured pros
                           </li>
-                          <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                             <Check className="w-4 h-4 text-green-500" /> Flexible scheduling
                           </li>
-                          <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <li className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                             <Check className="w-4 h-4 text-green-500" /> Cancel or pause anytime
                           </li>
                         </ul>
@@ -240,7 +240,7 @@ export default function SubscriptionPlans() {
                       className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                         frequency === f
                           ? "bg-[#F47C20] text-white"
-                          : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+                          : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
                       }`}
                     >
                       {FREQUENCY_LABELS[f]}
@@ -274,7 +274,7 @@ export default function SubscriptionPlans() {
                       className={`flex-1 py-2 rounded-lg text-sm font-medium capitalize transition-colors ${
                         preferredTime === t
                           ? "bg-[#F47C20] text-white"
-                          : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+                          : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
                       }`}
                     >
                       {t}
@@ -324,7 +324,7 @@ export default function SubscriptionPlans() {
               {/* Price summary */}
               <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
                     {selectedPlan.label} — {FREQUENCY_LABELS[frequency]}
                   </span>
                   <span className="text-lg font-bold text-[#F47C20]">

@@ -136,7 +136,7 @@ export default function PhotoToQuote() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Photo-to-Quote
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600 dark:text-gray-300">
             Snap photos of items and get an instant AI estimate
           </p>
         </div>
@@ -151,7 +151,7 @@ export default function PhotoToQuote() {
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400 font-medium mb-1">
+                  <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">
                     Drop photos here or click to upload
                   </p>
                   <p className="text-sm text-gray-400">
@@ -301,7 +301,7 @@ export default function PhotoToQuote() {
                 </div>
               </div>
 
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                 {result.details}
               </p>
 
@@ -347,7 +347,7 @@ export default function PhotoToQuote() {
                       <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Quick DIY Steps</p>
                       <ol className="list-decimal list-inside space-y-1">
                         {result.diyGuide.steps.map((step, i) => (
-                          <li key={i} className="text-sm text-gray-600 dark:text-gray-400">{step}</li>
+                          <li key={i} className="text-sm text-gray-600 dark:text-gray-300">{step}</li>
                         ))}
                       </ol>
                       {result.diyGuide.toolsNeeded && result.diyGuide.toolsNeeded.length > 0 && (

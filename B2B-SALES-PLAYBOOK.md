@@ -51,36 +51,42 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 | Component | Price | Notes |
 |-----------|-------|-------|
-| **Monthly SaaS fee per community** | $149-$249/mo | Undercuts HOALife ($199-299); includes all 12 services |
-| **Per-unit add-on (communities >100 units)** | $0.50/unit/month | HOALife charges $0.55-0.75. We're cheaper. |
-| **Platform transaction fee** | 5% on services booked | Below our consumer 7%; buyer sees it as "free" vs. managing vendors |
+| **Per-unit monthly fee** | $3/$5/$8 per unit/mo by tier | Competitive with AppFolio; includes all 12 services + 21 AI features |
+| **Platform transaction fee** | 7% on services booked | Standard customer-side platform fee |
 | **Setup/onboarding fee** | $500 one-time | Waive for annual contracts (incentivize commitment) |
 | **Annual contract discount** | 15% off monthly rate | Standard SaaS practice |
+| **Weekly B2B billing** | Stripe Connect | Instant payouts for pros |
 
 ### Pricing Tiers
 
-**Starter — $149/month**
-- Up to 100 units
+**Starter — $3/unit/month**
 - Vendor marketplace access (all 12 services)
 - Work order management
 - Resident request portal
 - Basic reporting
+- 7% transaction fee on services
 
-**Professional — $199/month**
-- Up to 250 units
+**Professional — $5/unit/month**
 - Everything in Starter
 - Compliance vault (insurance, licenses)
-- AI-powered vendor matching (George AI)
+- AI-powered vendor matching (George AI — 21 AI features)
 - Automated scheduling
 - Board reporting dashboard
+- Pro Certification Academy access (6 programs)
 
-**Enterprise — $249/month + $0.50/unit over 250**
-- Unlimited units
+**Enterprise — $8/unit/month**
 - Everything in Professional
 - Custom SLAs
 - Priority emergency dispatch
 - Dedicated account manager
 - API integrations
+- White-label portal option
+
+**Free Independent — $0/month**
+- ≤10 properties
+- 7% transaction fee on all services
+- Basic marketplace access
+- Ideal for self-managed small HOAs
 
 ### WHY This Pricing Works — ROI Calculation for HOAs
 
@@ -97,14 +103,14 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 | UpTend Cost | Annual Amount |
 |-------------|---------------|
-| Professional plan ($199/mo) | $2,388 |
-| Transaction fees (5% on $160K annual maintenance spend) | $8,000 |
-| **Total UpTend cost** | **$10,388** |
+| Professional plan ($5/unit × 200 units × 12 mo) | $12,000 |
+| Transaction fees (7% on $160K annual maintenance spend) | $11,200 |
+| **Total UpTend cost** | **$23,200** |
 
-**Net savings: $57,612 - $114,612/year**  
-**ROI: 455% - 1,003%**
+**Net savings: $44,800 - $101,800/year**  
+**ROI: 193% - 439%**
 
-> **Talk track:** *"Your community spends roughly $800 per unit per year on maintenance. That's $160,000 for your 200 units. Right now, between your coordinator's time, board hours, vendor overpayment from not having competitive options, and compliance risk — you're leaving $60,000+ on the table. UpTend costs you about $10,000 a year total, and we'll save you six times that. The platform literally pays for itself in the first month."*
+> **Talk track:** *"Your community spends roughly $800 per unit per year on maintenance. That's $160,000 for your 200 units. Right now, between your coordinator's time, board hours, vendor overpayment from not having competitive options, and compliance risk — you're leaving $60,000+ on the table. UpTend costs you about $23,000 a year total, and we'll save you two to four times that. The platform literally pays for itself in the first quarter."*
 
 ---
 
@@ -114,34 +120,41 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 | Component | Price | Notes |
 |-----------|-------|-------|
-| **Per-door monthly fee** | $2.00/door/month | Property Meld charges $2-4. We include services they don't. |
-| **Transaction fee on maintenance** | 5% on spend through platform | Lula charges 15-25% markup. We're way cheaper. |
+| **Per-door monthly fee** | $4/$6/$10 per door/mo by tier | Includes 21 AI features + full compliance |
+| **Transaction fee on maintenance** | 7% on spend through platform | Standard customer-side platform fee |
 | **Turnover workflow** | $75/turnover event | Covers coordinated clean, paint-touch, punch list |
 | **Emergency dispatch premium** | $25/emergency dispatch | 24/7 AI triage + vendor dispatch after hours |
-| **Minimum monthly** | $200/month | 100-door minimum equivalent |
+| **Weekly B2B billing** | Stripe Connect | Instant payouts for pros |
 
 ### Pricing Tiers
 
-**Core — $2.00/door/month**
+**Core — $4.00/door/month**
 - Maintenance request portal
 - Vendor marketplace (all 12 services)
 - Work order tracking
 - Basic compliance (insurance verification)
+- 7% transaction fee
 
-**Pro — $3.00/door/month**
+**Pro — $6.00/door/month**
 - Everything in Core
-- AI triage (George AI resolves 30%+ of requests without dispatch)
+- AI triage (George AI — 21 AI features — resolves 30%+ of requests without dispatch)
 - Turnover automation workflows
 - Vendor scorecarding
 - Owner reporting
 - Emergency dispatch
+- Pro Certification Academy access (6 programs)
 
-**Enterprise — $3.50/door/month**
+**Enterprise — $10.00/door/month**
 - Everything in Pro
 - API integration with AppFolio/Buildium/Yardi
 - Custom SLAs by owner
 - Dedicated success manager
 - White-label option
+
+**Free Independent — $0/month**
+- ≤10 properties
+- 7% transaction fee on all services
+- Basic marketplace access
 
 ### WHY — ROI Calculation for Property Managers
 
@@ -159,10 +172,10 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 | UpTend Cost (Pro tier) | Annual Amount |
 |------------------------|---------------|
-| $3.00 × 500 doors × 12 months | $18,000 |
-| Transaction fees (5% on $600K maintenance spend) | $30,000 |
+| $6.00 × 500 doors × 12 months | $36,000 |
+| Transaction fees (7% on $600K maintenance spend) | $42,000 |
 | Turnover events (40 × $75) | $3,000 |
-| **Total** | **$51,000** |
+| **Total** | **$81,000** |
 
 **But here's the real math:**
 - Maintenance coordinator can now handle 800 doors instead of 500 → **growth without hiring**
@@ -170,9 +183,9 @@ Before diving into UpTend's pricing, here's what the market charges:
 - AI triage resolves 30% of requests → **saves $18,000 in unnecessary dispatches**
 - Competitive vendor marketplace → **saves $15,000 in vendor costs**
 
-**Net value created: $87,000 (old costs) + $43,000 (additional savings) - $51,000 (UpTend) = $79,000/year in value**
+**Net value created: $87,000 (old costs) + $43,000 (additional savings) - $81,000 (UpTend) = $49,000/year in value**
 
-> **Talk track:** *"You're spending around $87K a year on maintenance coordination for 500 doors — between staff, answering services, compliance, and vendor overpayment. With UpTend at $51K total, you save $36K directly. But here's what really matters: your coordinator can handle 60% more doors without hiring. That means when you grow to 800 doors, you don't add headcount. That's a $42,000/year hire you never make. And our AI resolves 30% of requests before a vendor even rolls — saving you another $18K in unnecessary dispatches."*
+> **Talk track:** *"You're spending around $87K a year on maintenance coordination for 500 doors — between staff, answering services, compliance, and vendor overpayment. With UpTend at $81K total, you're investing in a Workforce-as-a-Service platform that gives you 21 AI features, weekly billing through Stripe Connect, full compliance automation, and the ability to handle 60% more doors without hiring. That's a $42,000/year hire you never make. And our AI resolves 30% of requests before a vendor even rolls — saving you another $18K in unnecessary dispatches. The net value is nearly $50K/year."*
 
 ---
 
@@ -182,10 +195,11 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 | Component | Price | Notes |
 |-----------|-------|-------|
-| **Monthly subscription** | $299-$799/mo by tier | Below Buildertrend ($199-599); more services included |
+| **Monthly subscription** | $299/$599/$999/mo by tier | Competitive with Buildertrend; includes 21 AI features |
 | **Per-project fee** | $500-$2,500 per project | Based on project value |
-| **Transaction fee on sub payments** | 2.5% | Below industry standard 3-5% |
+| **Transaction fee on sub payments** | 7% customer-side | Standard platform fee |
 | **Compliance management per sub** | $15/sub/month | Contractor Compliance charges $10-25; we include more |
+| **Weekly B2B billing** | Stripe Connect | Instant payouts for pros |
 
 ### Pricing Tiers
 
@@ -196,15 +210,16 @@ Before diving into UpTend's pricing, here's what the market charges:
 - Basic compliance vault
 - Lien waiver automation
 
-**Contractor Pro — $499/month**
+**Contractor Pro — $599/month**
 - Up to 15 active projects
 - Everything in Builder
-- AI-powered sub matching
+- AI-powered sub matching (George AI — 21 AI features)
 - Automated insurance/license tracking
 - Progress photo documentation
 - Change order management
+- Pro Certification Academy access (6 programs)
 
-**Enterprise — $799/month**
+**Enterprise — $999/month**
 - Unlimited projects
 - Everything in Contractor Pro
 - Government contract compliance module
@@ -227,11 +242,11 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 | UpTend Cost (Contractor Pro) | Annual Amount |
 |------------------------------|---------------|
-| Monthly subscription ($499 × 12) | $5,988 |
-| Transaction fees (2.5% on $2M sub payments) | $50,000 |
-| **Total** | **$55,988** |
+| Monthly subscription ($599 × 12) | $7,188 |
+| Transaction fees (7% on $2M sub payments) | $140,000 |
+| **Total** | **$147,188** |
 
-**Net savings: $74,012/year**
+**Note:** While platform costs are higher, the value proposition is in time savings, compliance automation, and faster project closeout. The $130K in current hidden costs are eliminated, and faster punch list completion accelerates final payment on every project.
 
 > **Talk track:** *"Punch list delays alone cost you $30K a year. Our platform pre-positions vetted subs who can close punch items in 24 hours instead of 3 days. The lien waiver automation? That $8K in admin time goes to zero — it's automatic. And when you need a sub for pressure washing, demo cleanup, or handyman punch work — they're already vetted, insured, and in the platform. You stop paying your PM to play phone tag."*
 
@@ -245,7 +260,7 @@ Before diving into UpTend's pricing, here's what the market charges:
 |-----------|-------|-------|
 | **Annual subscription** | $15,000-$75,000/year | Based on agency size and project volume |
 | **Per-project compliance fee** | $1,500-$5,000/project | Covers Davis-Bacon, reporting, audit trail |
-| **Transaction fee** | 3% on services procured | Below typical government procurement overhead (15-25%) |
+| **Transaction fee** | 7% on services procured | Below typical government procurement overhead (15-25%) |
 | **Implementation/training** | $5,000-$15,000 one-time | GSA/SDVOSB pricing advantage |
 
 ### Pricing Tiers
@@ -290,16 +305,16 @@ Before diving into UpTend's pricing, here's what the market charges:
 |------------------------------|---------------|
 | Annual subscription | $35,000 |
 | Per-project fees (50 × $2,500) | $125,000 |
-| Transaction fees (3% on $1M spend) | $30,000 |
-| **Total** | **$190,000** |
+| Transaction fees (7% on $1M spend) | $70,000 |
+| **Total** | **$230,000** |
 
-**Direct savings: $25,000/year PLUS:**
+**While total cost is higher, the value is in audit-proof compliance and operational efficiency PLUS:**
 - Audit-proof compliance (eliminates $15K in findings)
 - 70% faster vendor procurement (weeks → days)
 - SDVOSB/veteran workforce metrics for grant reporting
 - FEMA reimbursement documentation pre-built
 
-**Real savings: $55,000+/year**
+**Value justification: Audit-proof compliance, 70% faster procurement, SDVOSB/veteran metrics, FEMA documentation — operational improvements that prevent six-figure audit findings and procurement delays.**
 
 > **Talk track:** *"Every project you run requires vendor vetting, insurance verification, and compliance documentation. Your team spends weeks on each RFP cycle. UpTend pre-vets every vendor — insurance, licenses, background checks — before they ever touch your property. When FEMA audits your disaster response spend, every receipt, every lien waiver, every insurance certificate is already in the compliance vault. We don't just save you money — we make you audit-proof."*
 
@@ -356,8 +371,8 @@ CURRENT COSTS YOU MAY NOT BE TRACKING:
 └── TOTAL HIDDEN COSTS: $[Sum]
 
 UPTEND INVESTMENT:
-├── Monthly platform fee: $[Tier price] × 12 = $[Annual]
-├── Transaction fees (5% on services booked): $[Total × 0.05]
+├── Per-unit fee: $[Tier price/unit] × [units] × 12 = $[Annual]
+├── Transaction fees (7% on services booked): $[Total × 0.07]
 └── TOTAL UPTEND COST: $[Sum]
 
 YOUR NET SAVINGS: $[Hidden costs - UpTend cost]
@@ -403,8 +418,8 @@ UpTend's platform provides:
 
 INVESTMENT
 
-[Selected tier] Plan: $[X]/month
-Transaction fee: 5% on services booked through platform
+[Selected tier] Plan: $[X]/unit/month
+Transaction fee: 7% on services booked through platform
 Setup: $[X] one-time (WAIVED with annual commitment)
 
 Annual investment: $[X]
@@ -440,7 +455,7 @@ NEXT STEPS
 > *"I hear you. But here's the thing — UpTend typically reduces total maintenance spend by 15-25% through competitive marketplace pricing. The platform fee is a fraction of what you save. Your HOA fees don't go up — your maintenance dollars just go further."*
 
 **"We're too small for this."**
-> *"Our Starter plan is $149/month — less than one emergency plumber call. And small communities actually benefit the most because you don't have a full-time manager handling this. UpTend becomes your maintenance department."*
+> *"Our Free Independent tier is $0/month for up to 10 properties — you just pay the 7% transaction fee when you book services. And our Starter plan is just $3/unit/month. Small communities actually benefit the most because you don't have a full-time manager handling this. UpTend becomes your maintenance department."*
 
 **"What if we don't like it?"**
 > *"Monthly contracts. No long-term commitment required. Cancel anytime. But honestly? Our retention rate with communities is [X]% because once the board sees automated compliance tracking and competitive pricing, they don't go back to spreadsheets and phone calls."*
@@ -499,7 +514,7 @@ CURRENT COSTS:
 
 UPTEND INVESTMENT:
 ├── Per-door fee: $[tier] × [doors] × 12 = $[Annual]
-├── Transaction fees (5% on $[maintenance spend]): $[X]
+├── Transaction fees (7% on $[maintenance spend]): $[X]
 ├── Turnover events ([X] × $75): $[X]
 └── TOTAL: $[Sum]
 
@@ -545,7 +560,7 @@ WITH UPTEND
 INVESTMENT
 
 [Tier]: $[X]/door/month
-Transaction fee: 5%
+Transaction fee: 7%
 Turnovers: $75/event
 Monthly investment: $[X]
 
@@ -570,7 +585,7 @@ We recommend a 30-day pilot with [subset of portfolio]:
 
 ### The Close
 
-> *"Let me ask you this: if I could show you in 30 days that your team handles maintenance faster, your vendors are fully compliant, and your turnovers complete in half the time — would that be worth $3 per door per month to you? Here's what I'd suggest: let's run a pilot on 100 doors. Your hardest portfolio — the one that gives you the most maintenance headaches. If we don't measurably improve resolution time and reduce your team's phone time in 30 days, you pay nothing. Deal?"*
+> *"Let me ask you this: if I could show you in 30 days that your team handles maintenance faster, your vendors are fully compliant, and your turnovers complete in half the time — would that be worth $6 per door per month to you? Here's what I'd suggest: let's run a pilot on 100 doors. Your hardest portfolio — the one that gives you the most maintenance headaches. If we don't measurably improve resolution time and reduce your team's phone time in 30 days, you pay nothing. Deal?"*
 
 ### Common Objections & Responses
 
@@ -580,8 +595,8 @@ We recommend a 30-day pilot with [subset of portfolio]:
 **"Our vendors won't want to use another platform."**
 > *"Vendors love UpTend because we send them qualified, paid work. They don't pay to receive leads — they pay a commission only when they complete a job. And we handle their compliance documentation, which most vendors hate doing. It's a win for them."*
 
-**"$3/door/month adds up."**
-> *"It does. On 500 doors that's $1,500/month. But your average unnecessary dispatch costs $150. If we prevent just 10 unnecessary dispatches per month through AI triage, we've paid for ourselves. Everything else is gravy — the faster turnovers, the compliance protection, the time your team gets back."*
+**"$6/door/month adds up."**
+> *"It does. On 500 doors that's $3,000/month. But your average unnecessary dispatch costs $150. If we prevent just 20 unnecessary dispatches per month through AI triage — and with 21 AI features we do — we've paid for ourselves. Everything else is gravy — the faster turnovers, the compliance protection, the time your team gets back. Plus weekly billing through Stripe Connect means you're never waiting on payments."*
 
 **"We tried a vendor platform before and it didn't work."**
 > *"Was it a national platform trying to serve every market from a call center? UpTend is Orlando-based. Our vendors are local. Our team is local. When something goes wrong, I'm 20 minutes away. That's the difference between a tech platform and a partner."*
@@ -630,8 +645,8 @@ We recommend a 30-day pilot with [subset of portfolio]:
 **"We have our own subs."**
 > *"Great. Put them on the platform. We'll verify their compliance for free and send them more work through other projects. But when your regular sub is booked, or you need a specialty service for one job, or someone no-shows — you have a bench. Think of it as your sub bullpen."*
 
-**"2.5% transaction fee is too high."**
-> *"What does a day of project delay cost you? $1,000? $2,000? If our platform saves you even one day per project, the transaction fee pays for itself 10x. And that 2.5% covers full compliance documentation, insurance verification, and lien waiver automation. Your admin is doing that for a lot more than 2.5%."*
+**"7% transaction fee is too high."**
+> *"What does a day of project delay cost you? $1,000? $2,000? If our platform saves you even one day per project, the transaction fee pays for itself many times over. And that 7% covers 21 AI features, full compliance documentation, insurance verification, lien waiver automation, and Stripe Connect instant payouts. Your admin is doing that for a lot more than 7%."*
 
 ---
 
@@ -718,7 +733,7 @@ We recommend a 30-day pilot with [subset of portfolio]:
   - No competitive pricing on maintenance services
   - No emergency dispatch network
   - "Work orders" = task tracking, not vendor management
-- **How to position:** *"HOALife is solid for violations and ARC — if that's your main pain point, they're worth considering. But they don't solve the maintenance problem. They'll track that you need a pressure washing job done. They won't find you a pressure washer, verify their insurance, get you competitive quotes, or ensure the work gets documented. That's what UpTend does. And at $149/month for our Starter plan, we're cheaper than their basic tier."*
+- **How to position:** *"HOALife is solid for violations and ARC — if that's your main pain point, they're worth considering. But they don't solve the maintenance problem. They'll track that you need a pressure washing job done. They won't find you a pressure washer, verify their insurance, get you competitive quotes, or ensure the work gets documented. That's what UpTend does. And at $3/unit/month for our Starter plan, we're price-competitive at any community size."*
 
 ### CINC Systems
 - **What they charge:** Custom pricing, estimated $0.50-$2.00/unit/month for larger portfolios
@@ -755,7 +770,7 @@ We recommend a 30-day pilot with [subset of portfolio]:
   - No construction module
   - No government compliance
   - National network = less local quality control
-- **How to position:** *"Lula does something similar to us on the PM side — but they charge 15-25% markup on every job. We charge 5%. On $600K in annual maintenance spend, that's the difference between $90,000 to Lula and $30,000 to UpTend. That's $60,000 back in your pocket. Plus, we're local to Orlando — our vendors aren't dispatched from a national call center. And we have compliance, HOA, and construction modules that Lula doesn't touch."*
+- **How to position:** *"Lula does something similar to us on the PM side — but they charge 15-25% markup on every job. We charge 7% on the customer side. On $600K in annual maintenance spend, that's the difference between $90,000-$150,000 to Lula and $42,000 to UpTend. Plus, we're local to Orlando — our vendors aren't dispatched from a national call center. And we have 21 AI features, compliance, HOA, and construction modules that Lula doesn't touch."*
 
 ### Vendor Compliance HQ / TenantCloud / Others
 - **What they charge:** Varies, typically $1-3/unit/month
@@ -862,7 +877,7 @@ When asked "What makes UpTend different?" in ANY segment:
 - Quality assurance process
 
 **Section 3: Past Performance**
-- Consumer platform metrics (uptendapp.com — 110+ features, 12 services)
+- Consumer platform metrics (uptendapp.com — 21 AI features, 205 database tables, 12 services)
 - Orlando metro service area coverage
 - Vendor network size and verification stats
 - Technology certifications and security measures
@@ -1017,7 +1032,7 @@ Central Florida gets hit by hurricanes. When a disaster is declared:
 - **Structure:** Hourly rate by trade + materials at cost + markup
 - **Pros:** Fair for variable work, government only pays for what's used
 - **Cons:** Requires detailed time tracking, NTE (not-to-exceed) caps typical
-- **Example:** Facility handyman services — $65/hour (includes platform fee) + materials at cost + 10%
+- **Example:** Facility handyman services — $75/hour (includes platform fee) + materials at cost + 10%
 
 ### Pricing Strategy by Contract Type
 
@@ -1035,12 +1050,14 @@ Central Florida gets hit by hurricanes. When a disaster is declared:
 
 | Segment | Entry Price | Sweet Spot | Premium |
 |---------|------------|------------|---------|
-| **HOA** | $149/mo (≤100 units) | $199/mo (≤250 units) | $249/mo + $0.50/unit |
-| **PM** | $2.00/door/mo | $3.00/door/mo | $3.50/door/mo |
-| **Construction** | $299/mo (≤5 projects) | $499/mo (≤15 projects) | $799/mo (unlimited) |
+| **HOA** | $3/unit/mo | $5/unit/mo | $8/unit/mo |
+| **PM** | $4/door/mo | $6/door/mo | $10/door/mo |
+| **Construction** | $299/mo (≤5 projects) | $599/mo (≤15 projects) | $999/mo (unlimited) |
 | **Government** | $15K/year | $35K/year | $75K/year |
+| **Free Independent** | $0/mo (≤10 properties) | 7% transaction fee | — |
 
-**Transaction fees across all segments:** 2.5-5% on services booked through platform
+**Transaction fee across all segments:** 7% customer-side on services booked through platform
+**Pro-side fees:** 20% LLC (18% floor w/ certs) | 25% non-LLC (20% floor w/ certs) | $10/job non-LLC insurance surcharge | $50/job minimum payout floor
 
 ---
 
@@ -1160,11 +1177,11 @@ uptendapp.com | [Phone]
 - Pilot program (30 days, limited scope, no charge)
 - Annual discount (up to 20%)
 - Custom reporting or integrations (promise timeline, not free)
-- Transaction fee reduction (minimum 3% — below that, margin disappears)
+- Transaction fee reduction (minimum 5% — below that, margin disappears)
 
 ### What You Don't Flex On
-- Monthly subscription minimums (don't go below $149/mo for any segment)
-- Transaction fees below 3% (our vendors are paid from this)
+- Per-unit/door pricing floors (don't go below tier minimums for any segment)
+- Transaction fees below 5% (our vendors are paid from this)
 - Free service without a defined pilot scope and timeline
 - Unlimited liability or indemnification
 - Exclusivity (never promise you won't serve competitors)

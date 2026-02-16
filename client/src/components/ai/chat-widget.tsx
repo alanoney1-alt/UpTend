@@ -308,7 +308,7 @@ export function AiChatWidget() {
             <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
               {greetingText}
             </h4>
-            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[260px] mb-4">
+            <p className="text-sm text-gray-500 dark:text-gray-300 max-w-[260px] mb-4">
               {isPro ? "Learn about earning with UpTend" : "Need a pro for your home? Just ask!"}
             </p>
             <QuickButtons buttons={greetingButtons} onPress={handleQuickReply} />

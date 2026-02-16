@@ -12,7 +12,7 @@
 
 **Setup:** "Home services in the US is a $600 billion market — bigger than the entire restaurant industry. And you know what's wild? There's no platform that actually runs it. You've got Thumbtack sending you leads that ghost you, Angi charging you to compete with fifteen other guys, and HomeAdvisor selling your phone number. They're all lead-gen companies pretending to be platforms."
 
-**Drop:** "UpTend isn't lead gen. We're the operating system. We don't sell leads — we run the entire job lifecycle from quote to payment to review. The platform is live right now at uptendapp.com. Every feature I'm about to walk you through — it's built, it's deployed, it works."
+**Drop:** "UpTend isn't lead gen. We're Workforce-as-a-Service — the operating system for home services. We don't sell leads — we run the entire job lifecycle from quote to payment to review. The platform is live right now at uptendapp.com with 21 AI features and 205 database tables in production. Every feature I'm about to walk you through — it's built, it's deployed, it works."
 
 **Money Line:** "We're not competing with Thumbtack — we're replacing the spreadsheets, the phone tag, and the chaos that the entire industry runs on today."
 
@@ -94,11 +94,11 @@
 
 ---
 
-### 13 AI Features — Real Claude AI
+### 21 AI Features — Real Claude AI
 
 **Setup:** "Everyone's slapping 'AI-powered' on their marketing right now. Most of it is a GPT wrapper with a nice font. I want to be straight with you about what we actually built."
 
-**Drop:** "UpTend has 13 distinct AI capabilities running on Claude — photo analysis, quote generation, scheduling optimization, compliance document generation, customer communication, scope-of-work writing, permit requirement lookup, material estimation, crew matching, risk assessment, report generation, predictive maintenance flagging, and natural language search across all platform data. These aren't demos. They're in production."
+**Drop:** "UpTend has 21 distinct AI capabilities running on Claude — 12 consumer-facing features including photo analysis, quote generation, scheduling optimization, customer communication, scope-of-work writing, permit requirement lookup, material estimation, crew matching, risk assessment, report generation, predictive maintenance flagging, and natural language search. Plus 5 pro-side features for business management, route optimization, pricing intelligence, compliance automation, and job recommendation. And 4 business/admin features for demand forecasting, fraud detection, quality scoring, and platform analytics. These aren't demos. They're in production."
 
 **Money Line:** "AI is our moat — every job that runs through the platform makes George smarter, our pricing more accurate, and our scheduling tighter, and no new entrant can replicate that data advantage."
 
@@ -592,11 +592,11 @@
 
 **Setup:** "So let me tell you how we actually make money, because I think you'll like the math."
 
-**Drop:** "We charge the customer — the homeowner, the HOA, the PM company — 7% on top of the job price for platform access, AI features, and payment processing. On the pro side, we take 20-25% of what they earn through the platform. That's not a marketplace fee — that's the cost of the AI, the scheduling, the compliance, the payment terms, and the lead flow we provide. Most pros are happy to pay it because they're making more money with us than without us."
+**Drop:** "We charge the customer — the homeowner, the HOA, the PM company — 7% on top of the job price for platform access, AI features, and payment processing. On the pro side, we take 20% from LLC pros (with an 18% floor for certified pros) and 25% from non-LLC pros (20% floor with certifications). That's not a marketplace fee — that's the cost of the AI, the scheduling, the compliance, the payment terms, and the lead flow we provide. Plus there's a $10/job insurance surcharge for non-LLC pros. Most pros are happy to pay it because they're making more money with us than without us."
 
-**Money Line:** "Two-sided take rate — 7% from buyers, 20-25% from sellers — means our effective take on every dollar of services is 27-32%, which is best-in-class for a platform that actually delivers value on both sides."
+**Money Line:** "Two-sided take rate — 7% from buyers, 20-25% from sellers — means our effective take on every dollar of services is 27-32%, which is best-in-class for a platform that actually delivers value on both sides. And we've set a $50/job minimum payout floor so every pro earns fairly."
 
-**Objection Killer:** "The pro side take rate sounds high until you realize we're replacing their marketing budget, their office manager, their compliance consultant, and their scheduler — combined, those cost way more than 25%."
+**Objection Killer:** "The pro side take rate sounds high until you realize we're replacing their marketing budget, their office manager, their compliance consultant, and their scheduler — combined, those cost way more than 25%. And our Pro Certification Academy with 6 programs lets them earn their way to lower rates."
 
 ---
 
@@ -630,7 +630,7 @@
 
 **Drop:** "It's a SAFE note — Simple Agreement for Future Equity. $1 million valuation cap. For every $10,000 you invest, you get 1% ownership on a fully diluted basis. No board seat requirements, no complex preferences, no games. You're in early at a cap that, frankly, is a gift considering the platform is live and generating revenue."
 
-**Money Line:** "At a $1M cap with a live platform, 13 AI features, government contract infrastructure, and $125K already committed — this is the cheapest entry point you'll ever see for UpTend."
+**Money Line:** "At a $1M cap with a live platform, 21 AI features, 205 database tables, government contract infrastructure, and $125K already committed — this is the cheapest entry point you'll ever see for UpTend."
 
 **Objection Killer:** "The SAFE converts at the cap or a discount to the next priced round — either way, early investors get the best deal by design."
 
@@ -640,7 +640,7 @@
 
 **Setup:** "I want to leave you with one thing."
 
-**Drop:** "You're not investing in an idea. You're not investing in a pitch deck. You're investing in a live platform — uptendapp.com — that's running right now with every feature I just walked you through. Built, deployed, functional. UPYCK, Inc., Delaware C-Corp, doing business as UpTend. This is real."
+**Drop:** "You're not investing in an idea. You're not investing in a pitch deck. You're investing in a live platform — uptendapp.com — that's running right now with 21 AI features, 205 database tables, full accounting system, Stripe Connect instant payouts, Resend email, Twilio SMS — every feature I just walked you through. Built, deployed, functional. UPYCK, Inc., Delaware C-Corp, doing business as UpTend. This is the Workforce-as-a-Service platform for home services. This is real."
 
 **Money Line:** "The window to get in at this valuation is Monday. After this round closes, the cap goes up significantly."
 

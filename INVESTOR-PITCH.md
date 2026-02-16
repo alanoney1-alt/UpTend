@@ -18,9 +18,9 @@ Thumbtack connects consumers to handymen. ServiceTitan sells software to plumber
 
 ## What We Built (While Everyone Else Was Talking)
 
-**110+ production features.** Not wireframes. Not pitch decks. Not "coming soon." **Live. Deployed. Demoable right now.**
+**130+ production features.** Not wireframes. Not pitch decks. Not "coming soon." **Live. Deployed. Demoable right now.**
 
-🤖 **13 AI capabilities** — real Claude AI powering instant estimates, photo quotes, document scanning, route optimization, and George, our AI concierge that guides every interaction.
+🤖 **21 AI capabilities** — real Claude AI powering instant estimates, photo quotes, document scanning, route optimization, and George, our AI concierge that guides every interaction.
 
 🏛️ **Full government contract suite** — Davis-Bacon prevailing wage automation, WH-347 certified payroll generation, SAM.gov integration, DBE/SDVOSB utilization tracking, FEMA rapid response activation. No home services company on Earth has this.
 
@@ -55,7 +55,7 @@ Thumbtack connects consumers to handymen. ServiceTitan sells software to plumber
 
 **The veteran angle is a strategic weapon.** Our SDVOSB-certified subsidiary (51% minority veteran-owned) unlocks federal sole-source contracts up to $5M with **zero competition**. State and local contracts give preference points for veteran labor. Every veteran we recruit is simultaneously a skilled worker AND a compliance asset.
 
-**AI is our moat.** While competitors bolt chatbots onto legacy platforms, we built AI into the foundation. George doesn't just answer questions — he quotes jobs, books services, optimizes schedules, and manages the entire customer relationship. Our 13 AI capabilities aren't features. They're the product.
+**AI is our moat.** While competitors bolt chatbots onto legacy platforms, we built AI into the foundation. George doesn't just answer questions — he quotes jobs, books services, optimizes schedules, and manages the entire customer relationship. Our 21 AI capabilities aren't features. They're the product.
 
 ---
 
@@ -92,14 +92,14 @@ Every B2B client we sign generates recurring revenue that funds more veteran rec
 - **10% equity** at a $1M cap (pre-revenue SAFE)
 - Ground floor of the **only platform** that serves institutional home services buyers
 - Exposure to **$4B+ in federal set-aside contracts** through our SDVOSB certification
-- A founding team that doesn't just plan — **we ship.** 110+ features, live site, deployed in weeks, not years
+- A founding team that doesn't just plan — **we ship.** 130+ features, live site, deployed in weeks, not years
 - First-mover advantage in a $600B market where the incumbents are asleep
 
 ---
 
 ## The Bottom Line
 
-You're not investing in an idea. You're investing in a **live, deployed, 110-feature platform** with a clear path to revenue through the most underserved, highest-value segment of home services: institutional buyers who write six-figure annual contracts.
+You're not investing in an idea. You're investing in a **live, deployed, 130+ feature platform** with a clear path to revenue through the most underserved, highest-value segment of home services: institutional buyers who write six-figure annual contracts.
 
 The technology is built. The veteran pipeline is ready. The government contracts are waiting. The only question is whether you want to be on the cap table when this thing takes off — or watching from the sidelines wishing you'd moved faster.
 

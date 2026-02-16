@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-UpTend is a technology-driven home services marketplace serving the Orlando metro area, built to become the #1 vendor provider for HOAs, property managers, construction companies, and government agencies. The platform connects homeowners and commercial clients with vetted service professionals across 12 categories, differentiated by **13 AI capabilities**, a **transparent pricing model**, and a **pro-first design** that drives retention on both sides of the marketplace.
+UpTend is a technology-driven home services marketplace serving the Orlando metro area, built to become the #1 vendor provider for HOAs, property managers, construction companies, and government agencies. The platform connects homeowners and commercial clients with vetted service professionals across 12 categories, differentiated by **21 AI capabilities**, a **transparent pricing model**, and a **pro-first design** that drives retention on both sides of the marketplace.
 
 With $125K in committed investment, a veteran recruitment pipeline enabling SDVOSB certification through a partner LLC, and a fully functional platform spanning booking, payments, real-time tracking, and AI-powered operations, UpTend is positioned to capture significant market share in a fragmented $600B+ industry.
 
@@ -19,7 +19,7 @@ This document details every production feature, the business problem it solves, 
 ## Table of Contents
 
 1. [Core Platform](#core-platform)
-2. [AI Capabilities (13)](#ai-capabilities)
+2. [AI Capabilities (21)](#ai-capabilities)
 3. [Pro Features](#pro-features)
 4. [Customer Features](#customer-features)
 5. [Business & Operations](#business--operations)
@@ -563,7 +563,7 @@ This document details every production feature, the business problem it solves, 
 | Category | Features | Strategic Purpose |
 |---|---|---|
 | Core Platform | 5 | Foundation — bookings, payments, pricing |
-| AI Capabilities | 13 | Differentiation — intelligence competitors can't match |
+| AI Capabilities | 21 | Differentiation — intelligence competitors can't match |
 | Pro Features | 5 | Supply retention — tools that make pros stay |
 | Customer Features | 5 | Demand retention — experiences that keep customers |
 | Business & Operations | 8 | Operational excellence — trust, communication, growth |

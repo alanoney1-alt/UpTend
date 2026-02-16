@@ -16,7 +16,7 @@ $35K raised to date from early believers.
 
 ## What We Built
 
-A production-ready platform — **190+ database tables, live on Railway** — serving four verticals:
+A production-ready platform — **205 database tables, live on Railway** — serving four verticals:
 
 | | Consumer | Property Mgmt | Construction | Government |
 |---|---|---|---|---|
@@ -25,7 +25,7 @@ A production-ready platform — **190+ database tables, live on Railway** — se
 **Platform highlights:**
 - **19 integrations** — Salesforce, HubSpot, AppFolio, Buildium, Yardi, SAM.gov, FEMA, and more
 - **Pro Certification Academy** — 6 programs; pros must certify to access B2B jobs
-- **Gamified fees** — certified pros earn lower platform rates (25% → 18%)
+- **Gamified fees** — certified pros earn lower platform rates (25% → 20% floor with certs)
 - **Parts & Materials workflow** — mid-job requests with property manager approval
 - **Automated B2B billing** — weekly, only for verified completed work
 - **Instant payouts** — Stripe Connect, 30 min to debit card
@@ -37,7 +37,7 @@ A production-ready platform — **190+ database tables, live on Railway** — se
 ## Revenue Model
 
 ```
-CONSUMER          7% customer fee + 20-25% pro fee (18% w/ certs)  → C-Corp
+CONSUMER          7% customer fee + 20-25% pro fee (18-20% w/ certs) → C-Corp
 B2B / PM / HOA    $3-$10/door/month + 5-8% transaction fees       → C-Corp
 CONSTRUCTION      Project fees + transaction fees                   → C-Corp
 FREE TIER         $0/month, 7% transaction fee (≤10 properties)    → C-Corp
@@ -129,7 +129,7 @@ Consumer cash flow funds government contract float — no separate working capit
 
 ## Why Now
 
-The platform is **built and live** — not a pitch deck with wireframes. 190+ tables, 19 integrations, government compliance, instant payouts, certification academy. All production-ready.
+The platform is **built and live** — not a pitch deck with wireframes. 205 tables, 19 integrations, government compliance, instant payouts, certification academy. All production-ready.
 
 This $100K accelerates:
 - First government contract wins (SDVOSB pipeline)

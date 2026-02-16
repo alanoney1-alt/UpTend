@@ -10,7 +10,7 @@
 
 UpTend has built and deployed **67 purpose-built B2B features** across six market segments, transforming the platform from a consumer home-services marketplace into a **full-stack vendor management operating system** for the institutional buyers who control 70%+ of home services spend in the United States.
 
-**The strategic thesis is simple:** HOAs, property managers, construction GCs, and government agencies don't hire individuals — they hire *compliant, trackable, insurable vendor programs.* No existing home-services platform serves them. UpTend now does.
+**The strategic thesis is simple:** HOAs, property managers, construction GCs, and government agencies don't hire individuals — they hire *compliant, trackable, insurable vendor programs.* No existing home-services platform serves them. UpTend now does. We are positioning as the **Workforce-as-a-Service** platform for institutional home services — live at **uptendapp.com** with 21 AI features and 205 database tables in production.
 
 ### Why This Matters
 
@@ -22,9 +22,34 @@ UpTend has built and deployed **67 purpose-built B2B features** across six marke
 | Switching Cost | Zero | Extremely high (workflow lock-in) |
 | Pro Retention | Low (gig mentality) | High (stable income pipeline) |
 
+### AI Capabilities: 21 Features in Production
+
+- **Consumer (12):** Photo analysis, quote generation, scheduling optimization, customer communication, scope-of-work writing, permit lookup, material estimation, crew matching, risk assessment, report generation, predictive maintenance, natural language search
+- **Pro (5):** Business management AI, route optimization, pricing intelligence, compliance automation, job recommendation engine
+- **Business/Admin (4):** Demand forecasting, fraud detection, quality scoring, platform analytics
+
+### Platform Infrastructure
+
+- **205 database tables** in production
+- Full accounting system, Resend email integration, Twilio SMS
+- Stripe Connect with instant payouts and weekly B2B billing
+- Site LIVE at **uptendapp.com**
+
 ### Revenue Model Alignment
 
-Platform fees (7% customer / 20% LLC pro / 25% non-LLC pro) compound dramatically when applied to recurring B2B contracts rather than one-off consumer jobs. A single 500-unit property management company generating $1.2M/year in maintenance spend yields **$84K–$300K in annual platform revenue** — the equivalent of 560–2,000 individual consumer jobs.
+Platform fees (7% customer / 20% LLC pro with 18% floor for certified / 25% non-LLC pro with 20% floor for certified / $10/job non-LLC insurance surcharge / $50/job minimum payout floor) compound dramatically when applied to recurring B2B contracts rather than one-off consumer jobs. A single 500-unit property management company generating $1.2M/year in maintenance spend yields **$84K–$300K in annual platform revenue** — the equivalent of 560–2,000 individual consumer jobs.
+
+### B2B Subscription Tiers
+
+| Segment | Starter | Professional | Enterprise |
+|---|---|---|---|
+| HOA | $3/unit/mo | $5/unit/mo | $8/unit/mo |
+| Property Management | $4/door/mo | $6/door/mo | $10/door/mo |
+| Construction | $299/mo | $599/mo | $999/mo |
+| Government | $15K/yr | $35K/yr | $75K/yr |
+| Free Independent | $0/mo (≤10 properties, 7% transaction fee) | — | — |
+
+All tiers: 7% customer transaction fee • Weekly B2B billing via Stripe Connect • Pro Certification Academy (6 programs) • Instant payouts for pros
 
 ### Competitive Moat
 
@@ -32,7 +57,7 @@ No competitor — not Thumbtack, Angi, Jobber, or ServiceTitan — has built com
 
 ### Veteran Strategy Integration
 
-Ten dedicated veteran features operationalize UpTend's SDVOSB certification (through veteran partner's 51% minority veteran-owned LLC), unlocking federal set-aside contracts while building a loyal, skilled workforce pipeline from the 200,000+ service members transitioning annually.
+Ten dedicated veteran features operationalize UpTend's SDVOSB certification (through veteran partner's 51% minority veteran-owned LLC), unlocking federal set-aside contracts while building a loyal, skilled workforce pipeline from the 200,000+ service members transitioning annually. **SDVOSB Government Revenue Projections:** Y1 $300K, Y3 $1.5M, Y5 $3.5M — with a 30% license fee flowing to the C-Corp (UPYCK, Inc.).
 
 ---
 

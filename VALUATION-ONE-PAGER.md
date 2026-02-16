@@ -16,8 +16,8 @@ What's live today at **uptendapp.com** — not wireframes, not a pitch deck:
 | Asset | Details |
 |---|---|
 | **130+ production features** | Consumer marketplace, B2B platform, government compliance, AI suite |
-| **160+ database tables** | Full relational data architecture, migrated and live |
-| **13 AI capabilities** | Claude-powered: instant quotes, photo analysis, document OCR, route optimization, AI concierge (George) |
+| **205 database tables** | Full relational data architecture, migrated and live |
+| **21 AI capabilities** | Claude-powered: instant quotes, photo analysis, document OCR, route optimization, AI concierge (George) |
 | **12 service verticals** | Junk removal, pressure washing, gutter cleaning, moving, handyman, demolition, garage cleanout, home cleaning, pool, landscaping, carpet, AI home scan |
 | **4 B2B segments** | HOA management, property management, construction sub management, government contracts |
 | **Full payment stack** | Stripe integration, platform fee calculation, payment capture on job completion |
@@ -69,12 +69,14 @@ Revenue is dual: **monthly SaaS subscription + 5-8% transaction fee** on every s
 |---|---|---|---|---|---|
 | Y1 | $50K | $150K | $100K | $300K | **$600K** |
 | Y2 | $200K | $600K | $400K | $1.2M | **$2.4M** |
-| Y3 | $500K | $2M | $1.5M | $3.5M | **$7.5M** |
+| Y3 | $500K | $2M | $1.5M | $1.5M | **$5.5M** |
+| Y5 | $1.5M | $5M | $3M | $3.5M | **$13M** |
 
 At **10x revenue multiple** (standard for marketplace/SaaS hybrid):
 - Y1: $6M valuation
 - Y2: **$24M valuation**
-- Y3: **$75M valuation**
+- Y3: **$55M valuation**
+- Y5: **$130M valuation**
 
 ---
 
@@ -85,7 +87,7 @@ At **10x revenue multiple** (standard for marketplace/SaaS hybrid):
 | Consumer marketplace | ✅ | ✅ | ✅ | ❌ | ❌ |
 | B2B institutional | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Government compliance | ✅ | ❌ | ❌ | ❌ | ❌ |
-| AI operations (13) | ✅ | ❌ | ❌ | Basic | ❌ |
+| AI operations (21) | ✅ | ❌ | ❌ | Basic | ❌ |
 | Veteran pipeline | ✅ | ❌ | ❌ | ❌ | ❌ |
 | ESG tracking | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Multi-trade + multi-segment | ✅ | ✅ | ✅ | Single | ❌ |

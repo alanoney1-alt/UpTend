@@ -68,7 +68,7 @@ export default function AIFeaturesHub() {
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
               AI-Powered Home Services
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               From instant photo quotes to smart scheduling, our AI tools make
               managing your home effortless.
             </p>
@@ -104,7 +104,7 @@ export default function AIFeaturesHub() {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                         {f.description}
                       </p>
                     </div>

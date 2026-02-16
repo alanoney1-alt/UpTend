@@ -15,8 +15,8 @@ UpTend isn't asking for $5M. We're demonstrating why the company is **worth** $5
 Most pre-seed companies raise on a slide deck and a promise. UpTend has a **live, deployed, production platform** at uptendapp.com with:
 
 - **130+ production features** across consumer, B2B, AI, and government verticals
-- **160+ database tables** — real data architecture, not wireframes
-- **13 AI capabilities** powered by real Claude AI (not chatbot wrappers)
+- **205 database tables** — real data architecture, not wireframes
+- **21 AI capabilities** powered by real Claude AI (not chatbot wrappers)
 - **Full payment infrastructure** (Stripe integration, payment capture, platform fees)
 - **Real-time WebSocket tracking** for live job monitoring
 - **Email notification system** (6 branded email types)
@@ -89,7 +89,8 @@ No other home services platform has ANY of this:
 |---|---|---|---|---|---|
 | Y1 | $50K | $150K | $100K | $300K | **$600K** |
 | Y2 | $200K | $600K | $400K | $1.2M | **$2.4M** |
-| Y3 | $500K | $2M | $1.5M | $3.5M | **$7.5M** |
+| Y3 | $500K | $2M | $1.5M | $1.5M | **$5.5M** |
+| Y5 | $1.5M | $5M | $3M | $3.5M | **$13M** |
 
 At a 10x revenue multiple (standard for marketplace/SaaS hybrids), Y2 revenue alone justifies a **$24M valuation** — making $5M pre-seed extremely conservative.
 
@@ -104,7 +105,7 @@ At a 10x revenue multiple (standard for marketplace/SaaS hybrids), Y2 revenue al
 | Consumer marketplace | ✅ | ✅ | ✅ | ❌ | ❌ |
 | B2B institutional platform | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Government compliance suite | ✅ | ❌ | ❌ | ❌ | ❌ |
-| AI-powered operations | ✅ (13 capabilities) | ❌ | Basic | Basic | ❌ |
+| AI-powered operations | ✅ (21 capabilities) | ❌ | Basic | Basic | ❌ |
 | Veteran workforce pipeline | ✅ | ❌ | ❌ | ❌ | ❌ |
 | ESG/sustainability tracking | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Multi-trade, multi-segment | ✅ (12 services, 4 B2B segments) | ✅ | ✅ | Single-trade | Multi |
@@ -192,7 +193,7 @@ UpTend has **more product shipped** than any of these companies had at their pre
 | Live deployed platform (130+ features) | $1.5M — replaces $2-5M in dev costs |
 | Government contract access (SDVOSB) | $1.5M — sole-source up to $5M/contract |
 | B2B recurring revenue model | $1M — PM/HOA/Construction pipeline |
-| AI technology moat (13 capabilities) | $500K — 12-18 month competitive lead |
+| AI technology moat (21 capabilities) | $500K — 12-18 month competitive lead |
 | Veteran workforce strategy | $300K — regulatory moat + hiring pipeline |
 | Florida market positioning | $200K — ideal launch market, no competitor |
 | **Total Justified Valuation** | **$5M+** |

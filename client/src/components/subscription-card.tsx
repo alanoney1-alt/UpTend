@@ -123,16 +123,16 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
             <Calendar className="w-4 h-4" />
             <span>Next: {subscription.nextServiceDate || "—"}</span>
           </div>
-          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
             <Clock className="w-4 h-4" />
             <span className="capitalize">{subscription.preferredDay || "Flexible"} {subscription.preferredTime || ""}</span>
           </div>
           {subscription.city && (
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 col-span-2">
+            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 col-span-2">
               <MapPin className="w-4 h-4" />
               <span>{subscription.city}, {subscription.state} {subscription.zip}</span>
             </div>

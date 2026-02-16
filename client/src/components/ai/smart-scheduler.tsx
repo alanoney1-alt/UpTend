@@ -119,7 +119,7 @@ export function SmartScheduler({ serviceType }: { serviceType?: string }) {
                 </Badge>
               </div>
 
-              <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400 mb-3">
+              <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-300 mb-3">
                 <span className="flex items-center gap-1">
                   <CalendarClock className="w-3 h-3" />
                   {new Date(s.suggestedDate).toLocaleDateString("en-US", {

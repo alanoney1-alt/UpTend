@@ -111,7 +111,7 @@ export default function DocumentScanner() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Document Scanner
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600 dark:text-gray-300">
             Upload warranties, receipts, or insurance docs for instant AI extraction
           </p>
         </div>
@@ -125,7 +125,7 @@ export default function DocumentScanner() {
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400 font-medium mb-1">
+                  <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">
                     Upload a document
                   </p>
                   <p className="text-sm text-gray-400">
@@ -226,7 +226,7 @@ export default function DocumentScanner() {
                 </div>
               </div>
 
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                 {result.summary}
               </p>
 
