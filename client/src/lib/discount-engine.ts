@@ -84,10 +84,10 @@ export function calculateDiscounts(context: DiscountContext): DiscountBreakdown 
   // Option A: Property Manager Tier Discount
   if (context.isPropertyManager && context.pmTier) {
     const pmDiscounts = {
-      bronze: 0.10,   // 10% - 5-9 properties
-      silver: 0.15,   // 15% - 10-24 properties
-      gold: 0.20,     // 20% - 25-49 properties
-      platinum: 0.25, // 25% - 50+ properties
+      bronze: 0.025,  // 2.5% - 10-24 properties
+      silver: 0.05,   // 5% - 25-49 properties
+      gold: 0.075,    // 7.5% - 50+ properties
+      platinum: 0.10, // 10% - reserved for annual contracts
     };
 
     percentageDiscount = pmDiscounts[context.pmTier];
@@ -250,9 +250,9 @@ function generateSavingsMessage(
  */
 export function calculatePMTier(propertyCount: number): 'bronze' | 'silver' | 'gold' | 'platinum' | null {
   if (propertyCount >= 50) return 'platinum'; // 25% off
-  if (propertyCount >= 25) return 'gold';     // 20% off
-  if (propertyCount >= 10) return 'silver';   // 15% off
-  if (propertyCount >= 5) return 'bronze';    // 10% off
+  if (propertyCount >= 50) return 'gold';     // 7.5% off
+  if (propertyCount >= 25) return 'silver';   // 5% off
+  if (propertyCount >= 10) return 'bronze';   // 2.5% off
   return null;
 }
 

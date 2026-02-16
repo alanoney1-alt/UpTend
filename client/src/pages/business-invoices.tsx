@@ -21,12 +21,12 @@ import {
 } from "lucide-react";
 
 const demoInvoices = [
-  { id: "INV-2025-001", client: "Sunrise Lakes HOA", amount: 12450, dueDate: "2025-02-28", issuedDate: "2025-02-01", status: "paid", paymentTerms: "Net 30", paidDate: "2025-02-15", items: 8 },
-  { id: "INV-2025-002", client: "Palm Gardens Estates", amount: 8720, dueDate: "2025-03-03", issuedDate: "2025-02-03", status: "sent", paymentTerms: "Net 30", paidDate: null, items: 5 },
+  { id: "INV-2025-001", client: "Sunrise Lakes HOA", amount: 12450, dueDate: "2025-02-28", issuedDate: "2025-02-01", status: "paid", paymentTerms: "Net Weekly", paidDate: "2025-02-15", items: 8 },
+  { id: "INV-2025-002", client: "Palm Gardens Estates", amount: 8720, dueDate: "2025-03-03", issuedDate: "2025-02-03", status: "sent", paymentTerms: "Net Weekly", paidDate: null, items: 5 },
   { id: "INV-2025-003", client: "City of Orlando - Parks Dept", amount: 34500, dueDate: "2025-03-15", issuedDate: "2025-02-10", status: "sent", paymentTerms: "Net 45", paidDate: null, items: 12 },
-  { id: "INV-2025-004", client: "Windermere Villas", amount: 5200, dueDate: "2025-02-15", issuedDate: "2025-01-15", status: "overdue", paymentTerms: "Net 30", paidDate: null, items: 3 },
-  { id: "INV-2025-005", client: "Oak Ridge Apartments", amount: 15800, dueDate: "2025-03-10", issuedDate: "2025-02-10", status: "draft", paymentTerms: "Net 30", paidDate: null, items: 7 },
-  { id: "INV-2025-006", client: "Seminole County Schools", amount: 22100, dueDate: "2025-02-20", issuedDate: "2025-01-20", status: "paid", paymentTerms: "Net 30", paidDate: "2025-02-18", items: 9 },
+  { id: "INV-2025-004", client: "Windermere Villas", amount: 5200, dueDate: "2025-02-15", issuedDate: "2025-01-15", status: "overdue", paymentTerms: "Net Weekly", paidDate: null, items: 3 },
+  { id: "INV-2025-005", client: "Oak Ridge Apartments", amount: 15800, dueDate: "2025-03-10", issuedDate: "2025-02-10", status: "draft", paymentTerms: "Net Weekly", paidDate: null, items: 7 },
+  { id: "INV-2025-006", client: "Seminole County Schools", amount: 22100, dueDate: "2025-02-20", issuedDate: "2025-01-20", status: "paid", paymentTerms: "Net Weekly", paidDate: "2025-02-18", items: 9 },
 ];
 
 function StatusBadge({ status }: { status: string }) {
@@ -121,7 +121,7 @@ export default function BusinessInvoices() {
                       <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Net 15">Net 15</SelectItem>
-                        <SelectItem value="Net 30">Net 30</SelectItem>
+                        <SelectItem value="Net Weekly">Net Weekly</SelectItem>
                         <SelectItem value="Net 45">Net 45</SelectItem>
                         <SelectItem value="Net 60">Net 60</SelectItem>
                         <SelectItem value="Due on Receipt">Due on Receipt</SelectItem>
