@@ -230,6 +230,54 @@ export default function PublicPricing() {
           ))}
         </div>
 
+        {/* Liability Protection Section */}
+        <div className="max-w-4xl mx-auto mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 md:p-8 border border-blue-200">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl mb-4">
+              <ShieldCheck className="w-6 h-6 text-blue-600" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
+              Comprehensive Liability Protection
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Every service is backed by our multi-tier protection system, giving you peace of mind.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl p-6 border border-blue-100">
+              <div className="text-blue-600 font-semibold mb-2">LLC Pros with Insurance</div>
+              <div className="text-2xl font-bold text-gray-900 mb-2">Up to $25,000</div>
+              <p className="text-sm text-gray-600">
+                Platform covers damages up to $25K per incident. Beyond that, the pro's own $1M+ liability policy takes over.
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 border border-blue-100">
+              <div className="text-blue-600 font-semibold mb-2">Standard Pros</div>
+              <div className="text-2xl font-bold text-gray-900 mb-2">Up to $10,000</div>
+              <p className="text-sm text-gray-600">
+                Platform provides blanket coverage up to $10K per incident for property damage and issues.
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 border border-blue-100">
+              <div className="text-blue-600 font-semibold mb-2">Bodily Injury</div>
+              <div className="text-2xl font-bold text-gray-900 mb-2">$5,000 + Escalation</div>
+              <p className="text-sm text-gray-600">
+                Platform covers medical expenses up to $5K, then immediately escalates to the pro's insurance.
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-6 p-4 bg-blue-100 rounded-lg">
+            <p className="text-sm text-blue-800 text-center">
+              <strong>Structural damage</strong> is immediately escalated to the pro's insurer while platform caps still apply.
+              All claims are reviewed within 48 hours.
+            </p>
+          </div>
+        </div>
+
         <div className="max-w-4xl mx-auto mt-24 bg-slate-900 rounded-2xl p-6 md:p-12 text-center text-white relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-2xl md:text-3xl font-bold mb-4" data-testid="text-pricing-why-login">
