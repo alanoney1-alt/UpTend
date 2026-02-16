@@ -4,6 +4,121 @@ import { isAuthenticated } from "../../replit_integrations/auth";
 import { stripeService } from "../../stripeService";
 
 export function registerCustomerAccountRoutes(app: Express) {
+  // Get customer profile
+  app.get("/api/customers/profile", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      if (!userId) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: "Profile not found" });
+      }
+
+      // Return profile data (excluding sensitive fields)
+      const profile = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      };
+
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching customer profile:", error);
+      res.status(500).json({ error: "Failed to fetch profile" });
+    }
+  });
+
+  // Get customer dashboard data
+  app.get("/api/customers/dashboard", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      if (!userId) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      // Get recent service requests
+      const recentRequests = await storage.getServiceRequestsByCustomer(userId, 5);
+      
+      // Get customer stats
+      const totalRequests = await storage.getServiceRequestsByCustomer(userId, null, true); // get count
+      
+      const dashboardData = {
+        recentRequests: recentRequests || [],
+        totalRequests: Array.isArray(totalRequests) ? totalRequests.length : 0,
+        upcomingJobs: [], // TODO: Implement when job scheduling is ready
+        notifications: [], // TODO: Implement notifications
+        esgImpact: {
+          carbonSaved: 0,
+          wasteReduced: 0,
+          esgScore: 0
+        }
+      };
+
+      res.json(dashboardData);
+    } catch (error) {
+      console.error("Error fetching customer dashboard:", error);
+      res.status(500).json({ error: "Failed to fetch dashboard data" });
+    }
+  });
+
+  // Get customer notifications
+  app.get("/api/customers/notifications", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      if (!userId) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      // TODO: Implement notifications system
+      const notifications = [];
+
+      res.json(notifications);
+    } catch (error) {
+      console.error("Error fetching customer notifications:", error);
+      res.status(500).json({ error: "Failed to fetch notifications" });
+    }
+  });
+
+  // Get customer history
+  app.get("/api/customers/history", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      if (!userId) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const history = await storage.getServiceRequestsByCustomer(userId);
+      res.json(history || []);
+    } catch (error) {
+      console.error("Error fetching customer history:", error);
+      res.status(500).json({ error: "Failed to fetch history" });
+    }
+  });
+
+  // Get customer jobs (active/ongoing jobs)
+  app.get("/api/customers/jobs", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      if (!userId) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      // Get active jobs for this customer
+      const jobs = await storage.getServiceRequestsByCustomer(userId);
+      res.json(jobs || []);
+    } catch (error) {
+      console.error("Error fetching customer jobs:", error);
+      res.status(500).json({ error: "Failed to fetch jobs" });
+    }
+  });
   // Setup payment method for customer
   app.post("/api/customers/setup-payment", isAuthenticated, async (req: any, res) => {
     try {

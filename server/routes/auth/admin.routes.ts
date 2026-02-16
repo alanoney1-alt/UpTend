@@ -99,9 +99,12 @@ export async function registerAdminAuthRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Check admin session
+  // Check admin session - consistent with other admin route auth
   app.get("/api/admin/check", (req, res) => {
-    const isAdmin = (req.session as any)?.isAdmin === true;
+    // Check both session and passport user for consistency with other admin routes
+    const sessionIsAdmin = (req.session as any)?.isAdmin === true;
+    const userIsAdmin = (req.user as any)?.role === "admin";
+    const isAdmin = sessionIsAdmin || userIsAdmin;
     res.json({ isAdmin });
   });
 

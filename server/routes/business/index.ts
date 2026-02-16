@@ -11,6 +11,7 @@ import recurringJobRoutes from "./recurring-jobs.routes";
 import onboardingRoutes from "./onboarding.routes";
 import bookingRoutes from "./booking.routes";
 import billingRoutes from "./billing.routes";
+import dashboardRoutes from "./dashboard.routes";
 
 export function registerBusinessTeamRoutes(app: Express) {
   // Onboarding routes (no auth required for self-serve signup)
@@ -24,6 +25,9 @@ export function registerBusinessTeamRoutes(app: Express) {
 
   // Business billing routes
   app.use("/api/business", billingRoutes);
+
+  // Business dashboard routes
+  app.use("/api/business", dashboardRoutes);
 
   // Business account routes (dashboard)
   app.use("/api/business-accounts", businessAccountRoutes);

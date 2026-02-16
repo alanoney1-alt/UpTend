@@ -10,6 +10,76 @@ import { requireAuth, requireAdmin } from "../../middleware/auth";
 import { pool } from "../../db";
 
 export function registerAdminManagementRoutes(app: Express) {
+  // GET /api/admin/customers - Get all customers
+  app.get("/api/admin/customers", requireAuth, requireAdmin, async (_req, res) => {
+    try {
+      // TODO: Get customers with pagination
+      const customers = (await storage.getUsers()).filter(u => u.role === "customer");
+      res.json(customers || []);
+    } catch (error) {
+      console.error("Error fetching admin customers:", error);
+      res.status(500).json({ error: "Failed to fetch customers" });
+    }
+  });
+
+  // GET /api/admin/stats - Get platform statistics
+  app.get("/api/admin/stats", requireAuth, requireAdmin, async (_req, res) => {
+    try {
+      // TODO: Get platform stats
+      const stats = {
+        totalUsers: 0,
+        totalCustomers: 0,
+        totalPros: 0,
+        totalBusinesses: 0,
+        totalJobs: 0,
+        totalRevenue: 0,
+        activeJobs: 0,
+        completedJobs: 0
+      };
+
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching admin stats:", error);
+      res.status(500).json({ error: "Failed to fetch stats" });
+    }
+  });
+
+  // GET /api/admin/service-requests - Get all service requests
+  app.get("/api/admin/service-requests", requireAuth, requireAdmin, async (_req, res) => {
+    try {
+      const requests = await storage.getAllJobsWithDetails();
+      res.json(requests || []);
+    } catch (error) {
+      console.error("Error fetching admin service requests:", error);
+      res.status(500).json({ error: "Failed to fetch service requests" });
+    }
+  });
+
+  // GET /api/admin/businesses - Get all businesses
+  app.get("/api/admin/businesses", requireAuth, requireAdmin, async (_req, res) => {
+    try {
+      // TODO: Get businesses
+      const businesses = (await storage.getUsers()).filter(u => u.role === "business_user");
+      res.json(businesses || []);
+    } catch (error) {
+      console.error("Error fetching admin businesses:", error);
+      res.status(500).json({ error: "Failed to fetch businesses" });
+    }
+  });
+
+  // GET /api/admin/users - Get all users (general endpoint)
+  app.get("/api/admin/users", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { role, limit = 50, offset = 0 } = req.query;
+      
+      // TODO: Implement proper pagination and filtering
+      const users = role ? (await storage.getUsers()).filter(u => u.role === role) : await storage.getUsers();
+      res.json(users || []);
+    } catch (error) {
+      console.error("Error fetching admin users:", error);
+      res.status(500).json({ error: "Failed to fetch users" });
+    }
+  });
   // ==========================================
   // PRO APPLICATION MANAGEMENT (Pyckers)
   // ==========================================

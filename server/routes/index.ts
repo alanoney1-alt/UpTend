@@ -20,6 +20,7 @@ import { registerAcademyCertificationRoutes, seedCertificationPrograms } from ".
 import { registerCertificationGatingRoutes } from "./hauler/certification-gating.routes";
 import { registerFeeStatusRoutes } from "./hauler/fee-status.routes";
 import { registerPayoutRoutes } from "./hauler/payouts.routes";
+import { registerProDashboardRoutes } from "./hauler/dashboard.routes";
 
 // Customer routes
 import { registerCustomerAccountRoutes } from "./customer/account.routes";
@@ -159,6 +160,9 @@ import { registerStripeDisputeRoutes } from "./stripe-disputes";
 // Accounting / Ledger routes
 import { registerAccountingRoutes } from "./accounting/index";
 
+// Public routes
+import { registerPublicRoutes } from "./public.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -200,6 +204,7 @@ export async function registerRoutes(
   registerCertificationGatingRoutes(app);
   registerFeeStatusRoutes(app);
   registerPayoutRoutes(app);
+  registerProDashboardRoutes(app);
 
   // Register customer routes
   registerCustomerAccountRoutes(app);
@@ -341,6 +346,9 @@ export async function registerRoutes(
 
   // Register Accounting / Ledger routes
   registerAccountingRoutes(app);
+
+  // Register Public routes (no auth required)
+  registerPublicRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

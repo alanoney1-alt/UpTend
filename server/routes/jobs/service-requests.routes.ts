@@ -37,6 +37,25 @@ const photoUpload = multer({
 });
 
 export function registerServiceRequestRoutes(app: Express) {
+  // Get service requests for authenticated user (customer view)
+  app.get("/api/service-requests", requireAuth, requireCustomer, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      if (!userId) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const requests = await storage.getServiceRequestsByCustomer(userId);
+      res.json(requests || []);
+    } catch (error) {
+      console.error("Error fetching service requests:", error);
+      if ((error as any).code === 'ECONNREFUSED') {
+        return res.status(503).json({ error: "Database connection failed" });
+      }
+      res.status(500).json({ error: "Failed to fetch service requests" });
+    }
+  });
+
   // Get pending service requests
   app.get("/api/service-requests/pending", async (req, res) => {
     try {
