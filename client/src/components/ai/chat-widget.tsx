@@ -134,14 +134,7 @@ function MessageBubble({ msg, onButtonPress }: { msg: ChatMessage; onButtonPress
 // ─── Main Widget ────────────────────────────
 export function AiChatWidget() {
   const { user, isAuthenticated } = useAuth();
-  const [isOpen, setIsOpen] = useState(() => {
-    // Auto-open for all customers on first visit
-    try {
-      const dismissed = localStorage.getItem("george_auto_dismissed");
-      if (!dismissed) return true;
-    } catch {}
-    return false;
-  });
+  const [isOpen, setIsOpen] = useState(true);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -299,7 +292,7 @@ export function AiChatWidget() {
           <Button variant="ghost" size="icon" className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20" onClick={newConversation} title="New conversation">
             <Plus className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20" onClick={() => { setIsOpen(false); try { localStorage.setItem("george_auto_dismissed", "1"); } catch {} }} title="Close">
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20" onClick={() => setIsOpen(false)} title="Close">
             <X className="h-4 w-4" />
           </Button>
         </div>
