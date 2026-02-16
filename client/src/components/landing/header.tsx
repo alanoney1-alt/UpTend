@@ -71,7 +71,7 @@ export function Header() {
           </Link>
         </div>
 
-        <p className="hidden lg:block text-xs text-slate-500 italic absolute left-1/2 -translate-x-1/2 bottom-1 whitespace-nowrap" data-testid="text-header-tagline">
+        <p className="hidden lg:block text-xs text-slate-400 italic absolute left-1/2 -translate-x-1/2 bottom-1 whitespace-nowrap" data-testid="text-header-tagline">
           {t("nav.header_tagline")}
         </p>
 

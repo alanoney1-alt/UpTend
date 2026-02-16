@@ -90,7 +90,7 @@ function NewHeroSection() {
             </span>
           </h1>
 
-          <p className="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-medium" data-testid="text-hero-sub">
+          <p className="text-slate-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-medium" data-testid="text-hero-sub">
             {t("hero.hero_subhead")}
           </p>
 
@@ -115,7 +115,7 @@ function NewHeroSection() {
 
           <FloridaEstimator />
 
-          <p className="mt-6 text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]" data-testid="text-hero-footnote">
+          <p className="mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]" data-testid="text-hero-footnote">
             {t("hero.hero_footnote")}
           </p>
         </div>
@@ -290,7 +290,7 @@ function SafetyShieldSection() {
         <h2 className="text-3xl font-bold text-white mb-4" data-testid="text-safety-headline">
           {t("safety.safety_headline")}
         </h2>
-        <p className="text-slate-400 mb-12 max-w-2xl mx-auto text-lg">
+        <p className="text-slate-300 mb-12 max-w-2xl mx-auto text-lg">
           {t("safety.safety_subhead")}
         </p>
 
@@ -300,7 +300,7 @@ function SafetyShieldSection() {
               1
             </div>
             <h3 className="text-white font-bold mb-2">{t("safety.safety_background_title")}</h3>
-            <p className="text-slate-400 text-sm">
+            <p className="text-slate-300 text-sm">
               {t("safety.safety_background_desc")}
             </p>
           </div>
@@ -310,7 +310,7 @@ function SafetyShieldSection() {
               2
             </div>
             <h3 className="text-white font-bold mb-2">{t("safety.safety_insurance_title")}</h3>
-            <p className="text-slate-400 text-sm">
+            <p className="text-slate-300 text-sm">
               {t("safety.safety_insurance_desc")}
             </p>
           </div>
@@ -320,7 +320,7 @@ function SafetyShieldSection() {
               3
             </div>
             <h3 className="text-white font-bold mb-2">{t("safety.safety_tracking_title")}</h3>
-            <p className="text-slate-400 text-sm">
+            <p className="text-slate-300 text-sm">
               {t("safety.safety_tracking_desc")}
             </p>
           </div>
@@ -402,7 +402,7 @@ function WhySection() {
                 <p className="text-slate-300 text-base leading-relaxed mb-4">
                   {t("why.why_promise_intro")}
                 </p>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-slate-300 text-sm leading-relaxed">
                   {t("why.why_promise_body")}
                 </p>
                 <p className="text-slate-300 text-sm mt-4 font-medium">
@@ -554,7 +554,7 @@ function WorkerCTA() {
         <h2 className="text-3xl font-bold mb-4" data-testid="text-worker-cta-headline">
           {t("worker.worker_headline")}
         </h2>
-        <p className="text-slate-400 mb-8 max-w-2xl mx-auto">
+        <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
           {t("worker.worker_body")}
         </p>
         <Link href="/become-pro">

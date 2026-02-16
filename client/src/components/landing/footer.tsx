@@ -133,7 +133,7 @@ export function Footer() {
             <p className="text-sm text-slate-400 mb-4">
               Questions? Call us at <a href="tel:407-338-3342" className="text-white hover:text-primary transition-colors">(407) 338-3342</a>
             </p>
-            <p className="text-xs text-slate-500" data-testid="text-footer-serving">
+            <p className="text-xs text-slate-400" data-testid="text-footer-serving">
               {t("footer.footer_serving")}
             </p>
           </div>
@@ -153,7 +153,7 @@ export function Footer() {
             <Link href="/cost-guides" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-cost-guides">
               Cost Guides
             </Link>
-            <Link href="/admin-login" className="hover:text-white transition-colors cursor-pointer text-slate-600" data-testid="link-footer-admin">
+            <Link href="/admin-login" className="hover:text-white transition-colors cursor-pointer text-slate-500" data-testid="link-footer-admin">
               Admin
             </Link>
           </div>

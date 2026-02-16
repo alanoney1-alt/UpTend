@@ -689,7 +689,7 @@ function AcademyPublicLanding() {
             <Card key={item.title} className="p-6 bg-slate-800/50 border-slate-700">
               <item.icon className="w-10 h-10 text-cyan-400 mb-4" />
               <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
-              <p className="text-sm text-slate-400">{item.desc}</p>
+              <p className="text-sm text-slate-300">{item.desc}</p>
             </Card>
           ))}
         </div>
@@ -707,7 +707,7 @@ function AcademyPublicLanding() {
               </div>
               <div>
                 <p className="font-semibold text-white">{item.label}</p>
-                <p className="text-sm text-slate-400">{item.desc}</p>
+                <p className="text-sm text-slate-300">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -718,7 +718,7 @@ function AcademyPublicLanding() {
             <Search className="w-5 h-5 text-cyan-400" />
             Verify a Pro
           </h3>
-          <p className="text-sm text-slate-400 mb-4">
+          <p className="text-sm text-slate-300 mb-4">
             Enter a badge ID to verify your Pro's certification status.
           </p>
           <div className="flex gap-2">
