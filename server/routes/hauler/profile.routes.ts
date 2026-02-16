@@ -168,7 +168,7 @@ export function registerProProfileRoutes(app: Express) {
   // Get current Pro profile (for settings page)
   app.get("/api/pro/profile", requireAuth, requireHauler, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.userId || (req.user as any)?.id;
       if (!userId) return res.status(401).json({ error: "Not authenticated" });
       const profile = await storage.getHaulerProfile(userId);
       if (!profile) return res.status(404).json({ error: "Pro profile not found" });
@@ -182,7 +182,7 @@ export function registerProProfileRoutes(app: Express) {
   // Update Pro profile
   app.patch("/api/pro/profile", requireAuth, requireHauler, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.userId || (req.user as any)?.id;
       if (!userId) return res.status(401).json({ error: "Not authenticated" });
       const profile = await storage.getHaulerProfile(userId);
       if (!profile) return res.status(404).json({ error: "Pro profile not found" });
@@ -223,7 +223,7 @@ export function registerProProfileRoutes(app: Express) {
   // Legacy hauler endpoint (backward compatibility)
   app.patch("/api/hauler/profile", requireAuth, requireHauler, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.userId || (req.user as any)?.id;
       if (!userId) return res.status(401).json({ error: "Not authenticated" });
       const profile = await storage.getHaulerProfile(userId);
       if (!profile) return res.status(404).json({ error: "Pro profile not found" });
@@ -264,7 +264,7 @@ export function registerProProfileRoutes(app: Express) {
   // Update user profile image
   app.patch("/api/user/profile-image", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.userId || (req.user as any)?.id;
       if (!userId) return res.status(401).json({ error: "Not authenticated" });
       const { imageUrl, type } = req.body;
       if (!imageUrl) return res.status(400).json({ error: "imageUrl is required" });
@@ -612,7 +612,7 @@ export function registerProProfileRoutes(app: Express) {
   // Pro earnings (computed from completed jobs)
   app.get("/api/pro/earnings", requireAuth, requireHauler, async (req: any, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.userId || (req.user as any)?.id;
       if (!userId) return res.status(401).json({ error: "Not authenticated" });
       const profile = await storage.getHaulerProfile(userId);
       if (!profile) return res.json({ total: 0, weekly: 0, monthly: 0, today: 0, pending: 0, jobsThisWeek: 0, history: [] });

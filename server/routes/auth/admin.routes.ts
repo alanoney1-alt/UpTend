@@ -80,7 +80,19 @@ export async function registerAdminAuthRoutes(app: Express): Promise<void> {
       (req.session as any).isAdmin = true;
       (req.session as any).adminLoginAt = new Date().toISOString();
 
-      res.json({ success: true, message: "Admin login successful" });
+      // Create Passport session so requireAuth/requireAdmin middleware works
+      const adminUser = {
+        localAuth: true,
+        userId: "admin",
+        role: "admin",
+      };
+      req.login(adminUser, (loginErr) => {
+        if (loginErr) {
+          console.error("Admin session creation error:", loginErr);
+          return res.status(500).json({ error: "Login failed" });
+        }
+        return res.json({ success: true, message: "Admin login successful" });
+      });
     } catch (error) {
       console.error("Admin login error:", error);
       res.status(500).json({ error: "Login failed" });

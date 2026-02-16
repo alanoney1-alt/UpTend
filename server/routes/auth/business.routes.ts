@@ -183,18 +183,33 @@ export async function registerBusinessAuthRoutes(app: Express) {
         { expiresIn: "30d" }
       );
 
-      res.json({
-        success: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          role: user.role,
-        },
-        businessAccounts,
-        currentBusinessAccount: primaryBusiness,
-        token,
+      // Create Passport session so requireAuth middleware works
+      const sessionUser = {
+        localAuth: true,
+        userId: user.id,
+        role: user.role,
+        businessAccountId: primaryBusiness.id,
+      };
+
+      req.login(sessionUser, (loginErr) => {
+        if (loginErr) {
+          console.error("Business session creation error:", loginErr);
+          return res.status(500).json({ error: "Login failed" });
+        }
+
+        return res.json({
+          success: true,
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+          },
+          businessAccounts,
+          currentBusinessAccount: primaryBusiness,
+          token,
+        });
       });
     } catch (error: any) {
       console.error("Business login error:", error);
