@@ -33,7 +33,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Truck, ArrowRight, ArrowLeft, CheckCircle, Shield, DollarSign,
   User, Phone, Mail, MapPin, Car, FileText, CreditCard, Clock,
-  Loader2, AlertTriangle, Building2, Plus, X, Lock, TrendingUp, GraduationCap, Star, Award
+  Loader2, AlertTriangle, Building2, Plus, X, Lock, TrendingUp, GraduationCap, Star, Award, Eye, EyeOff
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { PhotoUpload, MultiPhotoUpload } from "@/components/photo-upload";
@@ -153,6 +153,7 @@ export default function PyckerSignup() {
   const [vehicles, setVehicles] = useState<VehicleData[]>([{ ...defaultVehicle }]);
   const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | null>(null);
   const [driversLicensePhotoUrl, setDriversLicensePhotoUrl] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [selfiePhotoUrl, setSelfiePhotoUrl] = useState<string | null>(null);
   const [idPhotoUrl, setIdPhotoUrl] = useState<string | null>(null);
   const [generalLiabilityDocUrl, setGeneralLiabilityDocUrl] = useState<string | null>(null);
@@ -521,7 +522,12 @@ export default function PyckerSignup() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Min 8 characters" {...field} data-testid="input-password" />
+                          <div className="relative">
+                            <Input type={showPassword ? "text" : "password"} placeholder="Min 8 characters" {...field} data-testid="input-password" />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -534,7 +540,9 @@ export default function PyckerSignup() {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Confirm password" {...field} data-testid="input-confirm-password" />
+                          <div className="relative">
+                            <Input type={showPassword ? "text" : "password"} placeholder="Confirm password" {...field} data-testid="input-confirm-password" />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -1130,10 +1138,10 @@ export default function PyckerSignup() {
                     testId="upload-profile-photo"
                   />
                   <PhotoUpload
-                    label="Driver's License Photo"
-                    description="Front of your driver's license"
+                    label="Vehicle Photo"
+                    description="Photo of your vehicle for customer identification"
                     onUploadComplete={(url) => setDriversLicensePhotoUrl(url)}
-                    testId="upload-drivers-license-photo"
+                    testId="upload-vehicle-photo"
                   />
                 </div>
 
