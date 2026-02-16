@@ -68,6 +68,7 @@ import { ProMarketplace } from "@/components/marketplace/pro-marketplace";
 import { ServicesSelector } from "@/components/services-selector";
 import { ProAiDashboard } from "@/components/ai/pro-ai-dashboard";
 import { ServiceEsgBadge } from "@/components/esg/service-esg-badge";
+import { ProInsuranceSection } from "@/components/pro/insurance-section";
 
 function maskPhone(phone: string): string {
   if (!phone || phone.length < 4) return "***-****";
@@ -88,6 +89,7 @@ const navItems: Array<{ id: string; label: string; icon: typeof LayoutDashboard;
   { id: "ai-insights", label: "AI Insights", icon: Zap },
   { id: "rebates", label: "Green Guarantee", icon: Flag },
   { id: "compliance", label: "Tax & Compliance", icon: FileText },
+  { id: "insurance", label: "Insurance & Claims", icon: Shield },
   { id: "profile", label: "Profile", icon: User },
   { id: "settings", label: "Settings", icon: Settings },
 ];
@@ -2470,6 +2472,13 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       <div className="p-6 space-y-6" data-testid="compliance-section">
         <ComplianceVault proId={currentPro?.profile?.userId || (currentPro as any)?.userId || ""} />
       </div>
+    );
+  }
+
+  // Insurance Section
+  if (activeTab === "insurance") {
+    return (
+      <ProInsuranceSection proId={currentPro?.id || ""} />
     );
   }
 

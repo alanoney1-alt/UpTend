@@ -107,8 +107,10 @@ import { registerEmergencyRoutes } from "./emergency.routes";
 // Neighborhood routes
 import { registerNeighborhoodRoutes } from "./neighborhoods.routes";
 
-// Insurance routes
-import { registerInsuranceRoutes } from "./insurance.routes";
+// Insurance routes (existing partnerships)
+import { registerInsuranceRoutes as registerInsurancePartnerRoutes } from "./insurance.routes";
+// Liability cap insurance routes (new system)
+import { registerInsuranceRoutes as registerLiabilityInsuranceRoutes } from "./insurance/index";
 
 // Launch notifications
 import { registerLaunchNotificationRoutes } from "./launch-notifications.routes";
@@ -291,8 +293,10 @@ export async function registerRoutes(
   // Register Neighborhood routes
   registerNeighborhoodRoutes(app);
 
-  // Register Insurance routes
-  registerInsuranceRoutes(app);
+  // Register Insurance routes (partnerships)
+  registerInsurancePartnerRoutes(app);
+  // Register Liability Cap Insurance routes (new system)
+  registerLiabilityInsuranceRoutes(app);
   registerLaunchNotificationRoutes(app);
 
   // Register Voice AI routes

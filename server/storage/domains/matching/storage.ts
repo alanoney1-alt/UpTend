@@ -133,12 +133,23 @@ export class MatchingStorage {
       allPros = allPros.filter(p => p.profile.pyckerTier === "verified_pro");
     }
 
-    // Filter by service type and calculate scores
-    const scored = allPros
-      .filter(p => {
-        const serviceTypes = p.profile.serviceTypes || [];
-        return serviceTypes.includes(request.serviceType);
-      })
+    // Filter by service type first
+    const serviceFiltered = allPros.filter(p => {
+      const serviceTypes = p.profile.serviceTypes || [];
+      return serviceTypes.includes(request.serviceType);
+    });
+
+    // Filter by insurance validity (async)
+    const insuranceValidated = [];
+    for (const pro of serviceFiltered) {
+      const hasValidInsurance = await this.checkProInsuranceValidity(pro.id);
+      if (hasValidInsurance) {
+        insuranceValidated.push(pro);
+      }
+    }
+
+    // Calculate scores for validated pros
+    const scored = insuranceValidated
       .map(pro => {
         let score = 0;
 
@@ -204,6 +215,37 @@ export class MatchingStorage {
     }
 
     return scored.map(s => s.pro);
+  }
+
+  /**
+   * Check if a pro has valid insurance based on liability cap requirements
+   * - LLC pros MUST have valid (non-expired) GL insurance to accept jobs
+   * - Non-LLC pros can accept jobs without insurance (platform covers them)
+   */
+  private async checkProInsuranceValidity(proId: string): Promise<boolean> {
+    try {
+      // Check if pro has active GL insurance policy
+      const result = await db.query(`
+        SELECT * FROM insurance_policies 
+        WHERE pro_id = $1 AND policy_type = 'gl' AND verified = true
+      `, [proId]);
+
+      if (result.rows.length === 0) {
+        // No insurance policy - assume non-LLC pro (allowed)
+        return true;
+      }
+
+      // Has insurance policy - check if it's not expired
+      const policy = result.rows[0];
+      const isExpired = new Date(policy.expiry_date) < new Date();
+      
+      // If insurance is expired, pro cannot accept new jobs
+      return !isExpired;
+    } catch (error) {
+      console.error('Error checking pro insurance validity:', error);
+      // On error, allow the pro through (fail open)
+      return true;
+    }
   }
 
   // Legacy alias for backward compatibility

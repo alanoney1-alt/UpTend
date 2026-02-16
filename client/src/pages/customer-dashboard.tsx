@@ -14,6 +14,7 @@ import { WorkerIdCard } from "@/components/safety/worker-id-card";
 import { Header } from "@/components/landing/header";
 import { CustomerConfirmation } from "@/components/verification/customer-confirmation";
 import { ReviewForm } from "@/components/reviews/review-form";
+import { CustomerClaimsSection } from "@/components/customer/claims-section";
 import type { ServiceRequest, HomeInventory } from "@shared/schema";
 import {
   ArrowLeft,
@@ -36,6 +37,7 @@ import {
   AlertCircle,
   Timer,
   Sparkles,
+  Shield,
 } from "lucide-react";
 
 const SERVICE_TYPE_LABELS: Record<string, string> = {
@@ -539,6 +541,19 @@ export default function CustomerDashboard() {
               </Link>
             </Card>
           )}
+        </div>
+
+        {/* Claims Section */}
+        <div className="mb-6" data-testid="section-claims">
+          <div className="flex items-center gap-2 mb-3">
+            <Shield className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-bold text-white">Liability Claims</h2>
+          </div>
+          <Card>
+            <CardContent className="p-0">
+              <CustomerClaimsSection customerId={user.id} />
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>
