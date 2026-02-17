@@ -113,6 +113,19 @@ function NewHeroSection() {
             </div>
           </div>
 
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <Link href="/book">
+              <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
+                Get Your Free Quote <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+            <a href="#how-it-works">
+              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 font-bold text-lg px-8 py-6 rounded-xl">
+                See How It Works
+              </Button>
+            </a>
+          </div>
+
           <FloridaEstimator />
 
           <p className="mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]" data-testid="text-hero-footnote">

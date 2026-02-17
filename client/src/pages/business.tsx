@@ -5,195 +5,157 @@ import { Footer } from "@/components/landing/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 import {
-  Building2, Users, Home, Store, Leaf, BarChart3,
-  Link2, DollarSign, Calendar, Bot, Code, CheckCircle,
-  ArrowRight, Shield, TrendingUp, FileText
+  Building2, Users, Home, HardHat, Landmark, ArrowRight, Shield,
+  TrendingUp, Clock, Eye, DollarSign, CheckCircle, Zap,
+  BarChart3, Leaf, Bot, FileText, Truck, AlertTriangle,
+  Calculator, ChevronRight
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
-// sharedFeatures and audiences moved inside component for i18n
+const segments = [
+  { id: "pm", label: "Property Management", icon: Building2 },
+  { id: "hoa", label: "HOA", icon: Users },
+  { id: "construction", label: "Construction", icon: HardHat },
+  { id: "government", label: "Government", icon: Landmark },
+] as const;
+
+type Segment = typeof segments[number]["id"];
+
+const segmentData: Record<Segment, {
+  headline: string;
+  sub: string;
+  tiers: { name: string; price: string; unit: string; features: string[] }[];
+  stats: { value: string; label: string }[];
+}> = {
+  pm: {
+    headline: "Manage Every Property. One Platform.",
+    sub: "Replace 15 vendor relationships with one dashboard. AI-dispatched pros, real-time tracking, weekly invoicing.",
+    tiers: [
+      { name: "Starter", price: "$4", unit: "/door/mo", features: ["Up to 50 doors", "AI dispatch", "Weekly invoicing", "Basic reporting"] },
+      { name: "Pro", price: "$6", unit: "/door/mo", features: ["Up to 200 doors", "Priority scheduling", "Compliance reports", "Dedicated account manager"] },
+      { name: "Enterprise", price: "$10", unit: "/door/mo", features: ["Unlimited doors", "White-label portal", "API access", "SLA guarantees", "Custom integrations"] },
+    ],
+    stats: [
+      { value: "~375", label: "PM companies in Orlando" },
+      { value: "30%", label: "Average cost savings" },
+      { value: "< 2hr", label: "Average dispatch time" },
+    ],
+  },
+  hoa: {
+    headline: "Your Entire Community. One Vendor.",
+    sub: "Common areas, unit turns, emergency repairs — all through one platform with full board reporting.",
+    tiers: [
+      { name: "Starter", price: "$3", unit: "/unit/mo", features: ["Up to 100 units", "Common area services", "Board reports", "Resident portal"] },
+      { name: "Pro", price: "$5", unit: "/unit/mo", features: ["Up to 500 units", "Priority dispatch", "ESG tracking", "Violation management"] },
+      { name: "Enterprise", price: "$8", unit: "/unit/mo", features: ["Unlimited units", "White-label portal", "Custom SLAs", "Dedicated team", "API access"] },
+    ],
+    stats: [
+      { value: "7,500+", label: "HOAs in Orlando" },
+      { value: "48hr", label: "Guaranteed response" },
+      { value: "100%", label: "Insured & verified pros" },
+    ],
+  },
+  construction: {
+    headline: "Subcontractor Management. Simplified.",
+    sub: "Certified pros for finish work, cleanup, and maintenance. Insurance verified. Compliance tracked.",
+    tiers: [
+      { name: "Starter", price: "$299", unit: "/mo", features: ["Up to 5 active sites", "Pro dispatch", "Insurance verification", "Photo documentation"] },
+      { name: "Pro", price: "$599", unit: "/mo", features: ["Up to 20 sites", "Prevailing wage compliance", "Materials tracking", "Priority dispatch"] },
+      { name: "Enterprise", price: "$999", unit: "/mo", features: ["Unlimited sites", "Custom workflows", "API integration", "Dedicated PM", "SLA guarantees"] },
+    ],
+    stats: [
+      { value: "$12B", label: "FL construction market" },
+      { value: "24hr", label: "Pro deployment" },
+      { value: "0", label: "Compliance headaches" },
+    ],
+  },
+  government: {
+    headline: "Government-Ready. Veteran-Powered.",
+    sub: "SDVOSB-certified subsidiary. Prevailing wage compliance. Full audit trails. FEMA-ready.",
+    tiers: [
+      { name: "Municipal", price: "$15K", unit: "/yr", features: ["Up to 50 properties", "Prevailing wage", "Audit trails", "Quarterly reporting"] },
+      { name: "County", price: "$35K", unit: "/yr", features: ["Up to 200 properties", "FEMA response", "Bond compliance", "Dedicated team"] },
+      { name: "State", price: "$75K", unit: "/yr", features: ["Unlimited scope", "Multi-county ops", "Custom compliance", "Executive reporting", "Emergency response"] },
+    ],
+    stats: [
+      { value: "SDVOSB", label: "Certified subsidiary" },
+      { value: "SAM.gov", label: "Registered" },
+      { value: "100%", label: "Audit compliant" },
+    ],
+  },
+};
 
 export default function Business() {
-  usePageTitle("UpTend for Business | B2B Property Services Platform");
-  const { t } = useTranslation();
-
-  const sharedFeatures = [
-    { icon: BarChart3, text: t("biz.feature_dashboard") },
-    { icon: Leaf, text: t("biz.feature_esg") },
-    { icon: Calendar, text: t("biz.feature_priority") },
-    { icon: Home, text: t("biz.feature_bulk_scan") },
-    { icon: Bot, text: t("biz.feature_george") },
-    { icon: Code, text: t("biz.feature_api") },
-  ];
-
-  const audiences = [
-    { icon: Building2, title: t("biz.aud_pm_title"), desc: t("biz.aud_pm_desc") },
-    { icon: Users, title: t("biz.aud_hoa_title"), desc: t("biz.aud_hoa_desc") },
-    { icon: Home, title: t("biz.aud_re_title"), desc: t("biz.aud_re_desc") },
-    { icon: Store, title: t("biz.aud_commercial_title"), desc: t("biz.aud_commercial_desc") },
-  ];
+  usePageTitle("UpTend for Business | Property Services Platform");
+  const [activeSegment, setActiveSegment] = useState<Segment>("pm");
+  const data = segmentData[activeSegment];
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-slate-950 text-white">
       <Header />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-4">
+      <section className="pt-32 pb-20 px-4 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
         <div className="max-w-5xl mx-auto text-center">
-          <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-6 text-sm">
-            {t("biz.badge")}
+          <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-6 text-sm font-semibold">
+            UpTend for Business
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            {t("biz.hero_title_prefix")} <span className="text-orange-500">{t("biz.hero_title_highlight")}</span>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tight leading-[1.1]">
+            One Platform.<br />
+            Every Property.<br />
+            <span className="text-orange-500">Zero Headaches.</span>
           </h1>
-          <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto mb-10">
-            {t("biz.hero_subtitle")}
+          <p className="text-slate-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
+            Property managers, HOAs, and construction companies use UpTend to replace dozens of vendor relationships 
+            with one AI-powered platform. Fully insured pros, real-time tracking, weekly billing.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/business/onboarding">
               <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 text-lg">
-                {t("biz.get_started")} <ArrowRight className="ml-2 w-5 h-5" />
+                Schedule a Demo <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-            <Link href="/business/login">
+            <a href="#pricing">
               <Button size="lg" variant="outline" className="border-slate-600 text-slate-200 hover:bg-slate-800 px-8 text-lg">
-                {t("biz.log_in")}
+                See Pricing
               </Button>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
 
-      {/* Two Business Models */}
-      <section className="py-20 px-4 bg-slate-950">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">{t("biz.two_ways")}</h2>
-          <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">{t("biz.choose_model")}</p>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Referral Partner */}
-            <Card className="bg-slate-800/50 border-slate-700 overflow-hidden">
-              <div className="bg-gradient-to-r from-orange-500/20 to-orange-600/10 p-6 border-b border-slate-700">
-                <Badge className="bg-orange-500/30 text-orange-300 border-orange-500/40 mb-3">{t("biz.referral_partner")}</Badge>
-                <h3 className="text-2xl font-bold text-white">{t("biz.customers_pay")}</h3>
-              </div>
-              <CardContent className="p-6 space-y-6">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <DollarSign className="w-5 h-5 text-orange-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300" dangerouslySetInnerHTML={{ __html: t("biz.referral_revenue") }} />
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300">{t("biz.referral_normal_pricing")}</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <TrendingUp className="w-5 h-5 text-orange-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300">{t("biz.referral_monthly_payouts")}</span>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm text-slate-400 mb-2 font-medium">{t("biz.perfect_for")}:</p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="bg-slate-700 text-slate-300">{t("biz.ref_for_agents")}</Badge>
-                    <Badge variant="secondary" className="bg-slate-700 text-slate-300">{t("biz.ref_for_hoa")}</Badge>
-                    <Badge variant="secondary" className="bg-slate-700 text-slate-300">{t("biz.ref_for_insurance")}</Badge>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm text-slate-400 font-medium">{t("biz.features")}:</p>
-                  <ul className="space-y-2 text-sm text-slate-300">
-                    <li className="flex items-center gap-2"><Link2 className="w-4 h-4 text-orange-400" /> {t("biz.ref_feat_tracking")}</li>
-                    <li className="flex items-center gap-2"><Link2 className="w-4 h-4 text-orange-400" /> {t("biz.ref_feat_links")}</li>
-                    <li className="flex items-center gap-2"><FileText className="w-4 h-4 text-orange-400" /> {t("biz.ref_feat_reports")}</li>
-                    <li className="flex items-center gap-2"><Leaf className="w-4 h-4 text-orange-400" /> {t("biz.ref_feat_esg")}</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Direct Account */}
-            <Card className="bg-slate-800/50 border-orange-500/50 overflow-hidden ring-1 ring-orange-500/30">
-              <div className="bg-gradient-to-r from-orange-500/30 to-orange-600/20 p-6 border-b border-slate-700">
-                <Badge className="bg-orange-500 text-white mb-3">{t("biz.most_popular")}</Badge>
-                <Badge className="bg-orange-500/30 text-orange-300 border-orange-500/40 mb-3 ml-2">{t("biz.direct_account")}</Badge>
-                <h3 className="text-2xl font-bold text-white">{t("biz.you_pay_save")}</h3>
-              </div>
-              <CardContent className="p-6 space-y-6">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <DollarSign className="w-5 h-5 text-orange-400 mt-0.5 shrink-0" />
-                    <div className="text-slate-300">
-                      <strong className="text-white">{t("biz.volume_discounts")}:</strong>
-                      <ul className="mt-1 space-y-1 text-sm">
-                        <li>{t("biz.vol_10")}</li>
-                        <li>{t("biz.vol_25")}</li>
-                        <li>{t("biz.vol_50")}</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <FileText className="w-5 h-5 text-green-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300">{t("biz.net30")}</span>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm text-slate-400 mb-2 font-medium">{t("biz.perfect_for")}:</p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="bg-slate-700 text-slate-300">{t("biz.dir_for_pm")}</Badge>
-                    <Badge variant="secondary" className="bg-slate-700 text-slate-300">{t("biz.dir_for_commercial")}</Badge>
-                    <Badge variant="secondary" className="bg-slate-700 text-slate-300">{t("biz.dir_for_hoa")}</Badge>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm text-slate-400 font-medium">{t("biz.features")}:</p>
-                  <ul className="space-y-2 text-sm text-slate-300">
-                    <li className="flex items-center gap-2"><BarChart3 className="w-4 h-4 text-orange-400" /> {t("biz.dir_feat_dashboard")}</li>
-                    <li className="flex items-center gap-2"><Calendar className="w-4 h-4 text-orange-400" /> {t("biz.dir_feat_bulk")}</li>
-                    <li className="flex items-center gap-2"><Shield className="w-4 h-4 text-orange-400" /> {t("biz.dir_feat_priority")}</li>
-                    <li className="flex items-center gap-2"><Leaf className="w-4 h-4 text-orange-400" /> {t("biz.dir_feat_esg")}</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Both Models Include */}
+      {/* Pain Points */}
       <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">{t("biz.both_include")}</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sharedFeatures.map((f) => (
-              <div key={f.text} className="flex items-start gap-3 bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-                <f.icon className="w-5 h-5 text-orange-400 mt-0.5 shrink-0" />
-                <span className="text-slate-300 text-sm">{f.text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Who It's For */}
-      <section className="py-20 px-4 bg-slate-950">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">{t("biz.who_for")}</h2>
-          <p className="text-slate-400 text-center mb-12">{t("biz.who_for_sub")}</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {audiences.map((a) => (
-              <Card key={a.title} className="bg-slate-800/50 border-slate-700">
-                <CardContent className="p-6 text-center">
-                  <div className="w-14 h-14 rounded-full bg-orange-500/20 flex items-center justify-center mx-auto mb-4">
-                    <a.icon className="w-7 h-7 text-orange-400" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{a.title}</h3>
-                  <p className="text-sm text-slate-400">{a.desc}</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Sound Familiar?</h2>
+          <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">Every property manager has these problems. We built UpTend to solve all three.</p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: AlertTriangle,
+                pain: "Managing 15 different vendors?",
+                solve: "One platform, one invoice, one dashboard. AI matches the right pro to every job automatically.",
+                color: "text-red-400",
+              },
+              {
+                icon: Eye,
+                pain: "Chasing contractors for updates?",
+                solve: "Real-time GPS tracking, photo documentation at every stage, automated status reports to your inbox.",
+                color: "text-yellow-400",
+              },
+              {
+                icon: DollarSign,
+                pain: "Surprise invoices and scope creep?",
+                solve: "Guaranteed pricing ceiling locked at booking. AI scoping. Transparent weekly billing. No surprises.",
+                color: "text-orange-400",
+              },
+            ].map((item) => (
+              <Card key={item.pain} className="bg-slate-800/50 border-slate-700 hover:border-orange-500/40 transition-colors">
+                <CardContent className="p-8">
+                  <item.icon className={`w-10 h-10 ${item.color} mb-4`} />
+                  <h3 className="text-xl font-bold text-white mb-3">{item.pain}</h3>
+                  <p className="text-slate-300 leading-relaxed">{item.solve}</p>
                 </CardContent>
               </Card>
             ))}
@@ -201,40 +163,189 @@ export default function Business() {
         </div>
       </section>
 
-      {/* ESG Differentiator */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
-            <Leaf className="w-8 h-8 text-green-400" />
+      {/* Segment Pricing */}
+      <section id="pricing" className="py-20 px-4 bg-slate-900/50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Pricing Built for Your Business</h2>
+          <p className="text-slate-400 text-center mb-8">Plus transaction fees on completed services. Volume discounts: 2.5% (10+ jobs) · 5% (25+) · 7.5% (50+)</p>
+
+          {/* Segment Tabs */}
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
+            {segments.map((seg) => (
+              <button
+                key={seg.id}
+                onClick={() => setActiveSegment(seg.id)}
+                className={`flex items-center gap-2 px-5 py-3 rounded-lg font-semibold transition-all ${
+                  activeSegment === seg.id
+                    ? "bg-orange-500 text-white shadow-lg shadow-orange-500/25"
+                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                }`}
+              >
+                <seg.icon className="w-4 h-4" />
+                {seg.label}
+              </button>
+            ))}
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {t("biz.esg_headline")}
-          </h2>
-          <p className="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
-            {t("biz.esg_subhead")}
+
+          {/* Segment Header */}
+          <div className="text-center mb-10">
+            <h3 className="text-2xl md:text-3xl font-bold mb-3">{data.headline}</h3>
+            <p className="text-slate-400 max-w-2xl mx-auto">{data.sub}</p>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-12">
+            {data.stats.map((s) => (
+              <div key={s.label} className="text-center">
+                <div className="text-2xl font-black text-orange-400">{s.value}</div>
+                <div className="text-xs text-slate-400 mt-1">{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tier Cards */}
+          <div className="grid md:grid-cols-3 gap-6">
+            {data.tiers.map((tier, i) => (
+              <Card
+                key={tier.name}
+                className={`border overflow-hidden ${
+                  i === 1
+                    ? "bg-slate-800/80 border-orange-500/50 ring-1 ring-orange-500/30"
+                    : "bg-slate-800/50 border-slate-700"
+                }`}
+              >
+                {i === 1 && (
+                  <div className="bg-orange-500 text-center py-1.5 text-sm font-bold text-white">
+                    Most Popular
+                  </div>
+                )}
+                <CardContent className="p-6">
+                  <h4 className="text-lg font-bold text-white mb-2">{tier.name}</h4>
+                  <div className="mb-6">
+                    <span className="text-4xl font-black text-white">{tier.price}</span>
+                    <span className="text-slate-400 text-sm">{tier.unit}</span>
+                  </div>
+                  <ul className="space-y-3 mb-8">
+                    {tier.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
+                        <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/business/onboarding">
+                    <Button
+                      className={`w-full font-semibold ${
+                        i === 1
+                          ? "bg-orange-500 hover:bg-orange-600 text-white"
+                          : "bg-slate-700 hover:bg-slate-600 text-white"
+                      }`}
+                    >
+                      Get Started <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <p className="text-center text-sm text-slate-500 mt-6">
+            All plans include Net Weekly invoicing · Volume discounts applied automatically · Cancel anytime
           </p>
-          <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-5">
-              <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-3" />
-              <p className="text-slate-300 text-sm">{t("biz.esg_report")}</p>
-            </div>
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-5">
-              <BarChart3 className="w-6 h-6 text-green-400 mx-auto mb-3" />
-              <p className="text-slate-300 text-sm">{t("biz.esg_dashboard")}</p>
-            </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Everything You Need to Run Operations</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: Bot, title: "AI-Powered Dispatch", desc: "Automatic pro matching based on skills, location, ratings, and availability" },
+              { icon: Shield, title: "Insurance Verified", desc: "Every pro's GL insurance verified. Expired = blocked from your jobs" },
+              { icon: Eye, title: "Real-Time Tracking", desc: "GPS tracking, photo documentation, live status updates to your dashboard" },
+              { icon: FileText, title: "Weekly Billing", desc: "Net Weekly invoices with line-item detail. No surprises, no chasing" },
+              { icon: Leaf, title: "ESG Reporting", desc: "Carbon tracking, sustainability metrics, and impact reports for your board" },
+              { icon: Zap, title: "Emergency Response", desc: "24/7 urgent dispatch for after-hours emergencies. Auto-escalation" },
+              { icon: TrendingUp, title: "Compliance & Audits", desc: "Full audit trails, prevailing wage compliance, insurance certificates on file" },
+              { icon: Truck, title: "Certified Pro Network", desc: "Background-checked, trained, and certified pros with career accountability" },
+            ].map((f) => (
+              <Card key={f.title} className="bg-slate-800/50 border-slate-700">
+                <CardContent className="p-6">
+                  <f.icon className="w-8 h-8 text-orange-400 mb-3" />
+                  <h3 className="font-bold text-white mb-2">{f.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* ROI Section */}
+      <section className="py-20 px-4 bg-slate-900/50">
+        <div className="max-w-4xl mx-auto text-center">
+          <Calculator className="w-12 h-12 text-orange-400 mx-auto mb-6" />
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">The Math Is Simple</h2>
+          <p className="text-slate-400 text-lg mb-12 max-w-2xl mx-auto">
+            Property managers spend 8-12 hours per week managing vendors. UpTend cuts that to under 1 hour.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-8">
+            {[
+              { value: "30%", label: "Average cost reduction", sub: "vs. managing vendors directly" },
+              { value: "90%", label: "Less time on vendor management", sub: "8-12 hrs/week → under 1 hour" },
+              { value: "< 2hr", label: "Average dispatch time", sub: "AI matches the right pro instantly" },
+            ].map((s) => (
+              <div key={s.label}>
+                <div className="text-4xl font-black text-orange-400 mb-2">{s.value}</div>
+                <div className="text-white font-semibold mb-1">{s.label}</div>
+                <div className="text-sm text-slate-500">{s.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Veteran/Government Badge */}
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <Card className="bg-gradient-to-r from-slate-800 to-slate-800/50 border-slate-700 overflow-hidden">
+            <CardContent className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
+              <div className="shrink-0">
+                <div className="w-20 h-20 rounded-full bg-orange-500/20 flex items-center justify-center">
+                  <Landmark className="w-10 h-10 text-orange-400" />
+                </div>
+              </div>
+              <div>
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 mb-3">Government Ready</Badge>
+                <h3 className="text-2xl font-bold text-white mb-3">Veteran-Owned. Government-Certified.</h3>
+                <p className="text-slate-300 leading-relaxed">
+                  UpTend's service subsidiary is veteran-owned and pursuing SDVOSB, MBE, SBA 8(a), and DBE certifications. 
+                  We're built for government contracts — prevailing wage compliance, full audit trails, FEMA emergency response capability.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       {/* Bottom CTA */}
       <section className="py-20 px-4 bg-gradient-to-b from-slate-950 to-slate-900">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("biz.cta_headline")}</h2>
-          <Link href="/business/onboarding">
-            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-10 text-lg">
-              {t("biz.get_started")} <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Simplify Your Property Services?</h2>
+          <p className="text-slate-400 text-lg mb-8">Join property managers across Orlando who are switching to UpTend.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/business/onboarding">
+              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-10 text-lg">
+                Schedule a Demo <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href="/business/login">
+              <Button size="lg" variant="outline" className="border-slate-600 text-slate-200 hover:bg-slate-800 px-8 text-lg">
+                Log In
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
