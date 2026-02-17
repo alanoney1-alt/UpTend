@@ -117,6 +117,7 @@ const BusinessOnboarding = lazy(() => import("@/pages/business-onboarding"));
 const BusinessBooking = lazy(() => import("@/pages/business-booking"));
 const BusinessBilling = lazy(() => import("@/pages/business-billing"));
 const AdminBilling = lazy(() => import("@/pages/admin/billing"));
+const FindPro = lazy(() => import("@/pages/find-pro"));
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -261,6 +262,7 @@ function Router() {
       <Route path="/ai" component={AIFeaturesHub} />
       <Route path="/ai/photo-quote" component={PhotoToQuote} />
       <Route path="/ai/documents" component={DocumentScanner} />
+      <Route path="/find-pro" component={FindPro} />
       <Route path="/b2b-pricing" component={B2BPricing} />
       <Route path="/fleet-tracking" component={FleetTracking} />
       <Route path="/partners" component={PartnersLanding} />

@@ -328,6 +328,14 @@ function ServicesStrip() {
             </div>
           ))}
         </div>
+        <p className="text-center mt-6">
+          <span
+            onClick={() => setLocation("/find-pro")}
+            className="text-sm text-[#F47C20] hover:underline cursor-pointer font-medium"
+          >
+            Or browse Pros →
+          </span>
+        </p>
       </div>
     </section>
   );

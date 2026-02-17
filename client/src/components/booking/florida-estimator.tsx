@@ -165,7 +165,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
   const [tosAccepted, setTosAccepted] = useState(false);
   const [tosAcceptedAt, setTosAcceptedAt] = useState<string | null>(null);
   const [address, setAddress] = useState("");
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
+  const [step, setStep] = useState<1 | 2 | "choose-pro" | 3 | 4 | 5 | 6>(1);
   const [propertyData, setPropertyData] = useState<ZillowProperty | null>(null);
   const [propertyLoading, setPropertyLoading] = useState(false);
   const [, setLocation] = useLocation();
@@ -271,7 +271,16 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId);
     window.scrollTo(0, 0);
+    setStep("choose-pro");
+  };
+
+  const handleQuickBook = () => {
+    window.scrollTo(0, 0);
     setStep(3);
+  };
+
+  const handleChooseMyPro = () => {
+    setLocation(`/find-pro?service=${selectedService}`);
   };
 
   const extractVideoFrames = async (videoFile: File, maxFrames = 12): Promise<string[]> => {
@@ -523,6 +532,62 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           </div>
           <div className="flex items-center gap-2 text-sm text-slate-400 font-medium" data-testid="trust-instant">
             <TrendingUp className="w-4 h-4 text-primary" /> {t("estimator.instant_results")}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Step "choose-pro": Quick Book vs Choose My Pro
+  if (step === "choose-pro") {
+    return (
+      <div className="w-full max-w-2xl mx-auto" data-testid="widget-choose-pro-method">
+        <div className="text-center mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setStep(2)}
+            className="mb-4"
+          >
+            ← Back to services
+          </Button>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            How would you like to be matched?
+          </h2>
+          <p className="text-muted-foreground">Choose your booking style</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Quick Book */}
+          <div
+            onClick={handleQuickBook}
+            className="p-6 rounded-xl border-2 border-border hover:border-[#F47C20] cursor-pointer transition-all bg-card hover:shadow-lg text-center"
+            data-testid="card-quick-book"
+          >
+            <div className="text-4xl mb-3">⚡</div>
+            <h3 className="text-lg font-bold mb-2">Quick Book</h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Let AI match you with the best available Pro
+            </p>
+            <p className="text-xs text-[#F47C20] font-medium">
+              Fastest option — booked in 30 seconds
+            </p>
+          </div>
+
+          {/* Choose My Pro */}
+          <div
+            onClick={handleChooseMyPro}
+            className="p-6 rounded-xl border-2 border-border hover:border-[#F47C20] cursor-pointer transition-all bg-card hover:shadow-lg text-center"
+            data-testid="card-choose-my-pro"
+          >
+            <div className="text-4xl mb-3">👤</div>
+            <h3 className="text-lg font-bold mb-2">Choose My Pro</h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Browse verified Pros and pick your favorite
+            </p>
+            <p className="text-xs text-[#F47C20] font-medium">
+              See ratings, reviews, and availability
+            </p>
           </div>
         </div>
       </div>

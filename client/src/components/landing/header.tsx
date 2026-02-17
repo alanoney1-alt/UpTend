@@ -49,6 +49,11 @@ export function Header() {
               {t("nav.services")}
             </span>
           </Link>
+          <Link href="/find-pro">
+            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-find-pro">
+              Find a Pro
+            </span>
+          </Link>
           <Link href="/pricing">
             <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-pricing">
               {t("nav.pricing")}
@@ -191,6 +196,9 @@ export function Header() {
           <div className="flex flex-col gap-4 text-lg font-medium text-slate-300">
             <Link href="/services" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-services-mobile">{t("nav.services")}</span>
+            </Link>
+            <Link href="/find-pro" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-find-pro-mobile">Find a Pro</span>
             </Link>
             <Link href="/pricing" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-pricing-mobile">{t("nav.pricing")}</span>
