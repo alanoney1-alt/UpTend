@@ -36,7 +36,7 @@ export default function BusinessLogin() {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
-      const response = await apiRequest("POST", "/api/customers/login", data);
+      const response = await apiRequest("POST", "/api/auth/business/login", data);
       return response.json();
     },
     onSuccess: () => {

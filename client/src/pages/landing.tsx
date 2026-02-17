@@ -40,10 +40,10 @@ export default function Landing() {
 /* ─── GEORGE BANNER ─── */
 function GeorgeBanner() {
   return (
-    <div className="bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-2.5 px-4 text-center">
+    <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-3 px-4 text-center">
       <div className="max-w-4xl mx-auto flex items-center justify-center gap-2 flex-wrap">
         <MessageCircle className="w-4 h-4 shrink-0" />
-        <span className="text-sm font-medium">
+        <span className="text-sm md:text-base font-medium">
           <strong>Meet George</strong> — your AI home services assistant. Need a quote, have a question, or don't know where to start? <strong>Just ask George.</strong> He's the orange chat in the corner 👉
         </span>
       </div>
@@ -57,7 +57,7 @@ function HeroSection() {
   const toggleLanguage = () => i18n.changeLanguage(i18n.language === "en" ? "es" : "en");
 
   return (
-    <section className="relative pt-20 pb-20 overflow-hidden bg-slate-900 dark:bg-slate-950">
+    <section className="relative pt-12 pb-20 overflow-hidden bg-slate-900 dark:bg-slate-950">
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[#3B1D5A]/60 to-slate-900" />
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#3B1D5A]/20 rounded-full blur-[120px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#F47C20]/10 rounded-full blur-[120px]" />

@@ -1,0 +1,339 @@
+{
+  "date": "2026-02-17",
+  "craigslist": [],
+  "reddit": [],
+  "competitors": [
+    {
+      "name": "College Hunks Hauling Junk",
+      "services": [
+        "junk removal",
+        "moving"
+      ],
+      "priceRange": "$300-800",
+      "reviewCount": 500,
+      "rating": 4.5,
+      "location": "Orlando (franchise)",
+      "source": "Google/Yelp",
+      "url": "https://www.collegehunkshaulingjunk.com/orlando/",
+      "weakness": "Expensive, franchise model, no AI, no tech differentiation"
+    },
+    {
+      "name": "1-800-GOT-JUNK",
+      "services": [
+        "junk removal"
+      ],
+      "priceRange": "$250-700",
+      "reviewCount": 300,
+      "rating": 4.3,
+      "location": "Orlando metro",
+      "source": "Google",
+      "url": "https://www.1800gotjunk.com/orlando",
+      "weakness": "Single service, phone-based quoting, no photo quotes"
+    },
+    {
+      "name": "Craigslist Independents",
+      "services": [
+        "handyman",
+        "pressure washing",
+        "landscaping",
+        "junk removal"
+      ],
+      "priceRange": "$30-150/hr",
+      "reviewCount": 0,
+      "rating": 0,
+      "location": "Orlando area",
+      "source": "Craigslist",
+      "url": "https://orlando.craigslist.org",
+      "weakness": "No vetting, no insurance verification, no tracking, trust issues"
+    },
+    {
+      "name": "Angi (formerly Angie's List)",
+      "services": [
+        "all home services"
+      ],
+      "priceRange": "varies",
+      "reviewCount": 1000,
+      "rating": 3.8,
+      "location": "National",
+      "source": "App Store",
+      "url": "https://www.angi.com",
+      "weakness": "Lead gen model — pros pay for leads, customers get spammed. Can't choose your pro."
+    },
+    {
+      "name": "TaskRabbit",
+      "services": [
+        "handyman",
+        "moving",
+        "cleaning",
+        "yard work"
+      ],
+      "priceRange": "$40-100/hr",
+      "reviewCount": 200,
+      "rating": 4,
+      "location": "Orlando",
+      "source": "App Store",
+      "url": "https://www.taskrabbit.com",
+      "weakness": "Gig workers not trade pros, limited service depth, no B2B"
+    },
+    {
+      "name": "Thumbtack",
+      "services": [
+        "all home services"
+      ],
+      "priceRange": "varies",
+      "reviewCount": 400,
+      "rating": 3.5,
+      "location": "National",
+      "source": "Web",
+      "url": "https://www.thumbtack.com",
+      "weakness": "Lead gen, pros pay per lead, high cost of acquisition for pros"
+    }
+  ],
+  "keywords": [
+    {
+      "keyword": "junk removal lake nona",
+      "monthlySearches": "50-100",
+      "difficulty": "low",
+      "intent": "customer",
+      "priority": "high",
+      "contentIdea": "Landing page: Junk Removal in Lake Nona — Instant AI Photo Quotes"
+    },
+    {
+      "keyword": "pressure washing orlando",
+      "monthlySearches": "1K-5K",
+      "difficulty": "medium",
+      "intent": "customer",
+      "priority": "high",
+      "contentIdea": "Service page + blog: Orlando Pressure Washing Guide & Pricing"
+    },
+    {
+      "keyword": "handyman near me orlando",
+      "monthlySearches": "500-1K",
+      "difficulty": "medium",
+      "intent": "customer",
+      "priority": "high",
+      "contentIdea": "Service page with pro profiles and instant booking"
+    },
+    {
+      "keyword": "landscaping lake nona",
+      "monthlySearches": "100-200",
+      "difficulty": "low",
+      "intent": "customer",
+      "priority": "high",
+      "contentIdea": "Local page: Lake Nona Landscaping — Florida-Native Plants & Maintenance"
+    },
+    {
+      "keyword": "gutter cleaning orlando",
+      "monthlySearches": "200-500",
+      "difficulty": "low",
+      "intent": "customer",
+      "priority": "high",
+      "contentIdea": "Service page: Gutter Cleaning Orlando — Before Hurricane Season"
+    },
+    {
+      "keyword": "pool cleaning lake nona",
+      "monthlySearches": "50-100",
+      "difficulty": "low",
+      "intent": "customer",
+      "priority": "high",
+      "contentIdea": "Monthly pool service page targeting Lake Nona HOAs"
+    },
+    {
+      "keyword": "home services orlando",
+      "monthlySearches": "500-1K",
+      "difficulty": "high",
+      "intent": "customer",
+      "priority": "medium",
+      "contentIdea": "Hub page listing all 13 services with local pricing"
+    },
+    {
+      "keyword": "garage cleanout orlando",
+      "monthlySearches": "50-100",
+      "difficulty": "low",
+      "intent": "customer",
+      "priority": "medium",
+      "contentIdea": "Niche page: Garage Cleanout — Before/After Gallery + AI Quotes"
+    },
+    {
+      "keyword": "carpet cleaning lake nona",
+      "monthlySearches": "50-100",
+      "difficulty": "low",
+      "intent": "customer",
+      "priority": "medium",
+      "contentIdea": "Service page with pet treatment upsell"
+    },
+    {
+      "keyword": "handyman jobs orlando",
+      "monthlySearches": "200-500",
+      "difficulty": "low",
+      "intent": "pro",
+      "priority": "high",
+      "contentIdea": "Become a Pro page: Earn $50-75/hr, choose your jobs, keep more"
+    },
+    {
+      "keyword": "junk removal jobs orlando",
+      "monthlySearches": "100-200",
+      "difficulty": "low",
+      "intent": "pro",
+      "priority": "high",
+      "contentIdea": "Pro recruitment: Own a truck? Earn $200-500/day"
+    },
+    {
+      "keyword": "pressure washing business orlando",
+      "monthlySearches": "100-200",
+      "difficulty": "low",
+      "intent": "pro",
+      "priority": "high",
+      "contentIdea": "Blog: How to Start Pressure Washing in Orlando (and get jobs on Day 1)"
+    },
+    {
+      "keyword": "independent contractor home services florida",
+      "monthlySearches": "100-200",
+      "difficulty": "low",
+      "intent": "pro",
+      "priority": "medium",
+      "contentIdea": "Guide: Going Independent vs. Joining UpTend — Why Not Both?"
+    },
+    {
+      "keyword": "property management vendor orlando",
+      "monthlySearches": "50-100",
+      "difficulty": "low",
+      "intent": "both",
+      "priority": "high",
+      "contentIdea": "B2B page: One Vendor for All Your Properties"
+    },
+    {
+      "keyword": "HOA maintenance company orlando",
+      "monthlySearches": "50-100",
+      "difficulty": "low",
+      "intent": "both",
+      "priority": "high",
+      "contentIdea": "B2B page: HOA Maintenance — Automated Dispatch + Compliance"
+    },
+    {
+      "keyword": "how much does pressure washing cost orlando",
+      "monthlySearches": "100-200",
+      "difficulty": "low",
+      "intent": "customer",
+      "priority": "medium",
+      "contentIdea": "Blog with real pricing data from our platform"
+    },
+    {
+      "keyword": "hurricane prep home maintenance florida",
+      "monthlySearches": "500-1K (seasonal)",
+      "difficulty": "medium",
+      "intent": "customer",
+      "priority": "medium",
+      "contentIdea": "Seasonal guide: Pre-Hurricane Home Checklist (gutters, trees, roof)"
+    },
+    {
+      "keyword": "best home service app orlando",
+      "monthlySearches": "50-100",
+      "difficulty": "low",
+      "intent": "customer",
+      "priority": "medium",
+      "contentIdea": "Comparison page: UpTend vs Angi vs TaskRabbit vs Thumbtack"
+    }
+  ],
+  "channels": [
+    {
+      "name": "Lake Nona Social",
+      "platform": "Facebook",
+      "url": "https://www.facebook.com/groups/lakenona",
+      "members": "30K+",
+      "relevance": "high",
+      "strategy": "Join and monitor for home service requests. Respond helpfully. Post seasonal tips (hurricane prep, pool maintenance). DO NOT spam.",
+      "type": "customer"
+    },
+    {
+      "name": "Lake Nona Neighbors",
+      "platform": "Facebook",
+      "url": "https://www.facebook.com/groups/lakenonaneighbors",
+      "members": "15K+",
+      "relevance": "high",
+      "strategy": "Same as above. Watch for 'anyone know a good [service]?' posts — that's your opening.",
+      "type": "customer"
+    },
+    {
+      "name": "Lake Nona Moms",
+      "platform": "Facebook",
+      "url": "https://www.facebook.com/groups/lakenonamoms",
+      "members": "10K+",
+      "relevance": "medium",
+      "strategy": "Home service recs come up often in mom groups. Be helpful, not salesy.",
+      "type": "customer"
+    },
+    {
+      "name": "Orlando Home Services / Contractors",
+      "platform": "Facebook",
+      "url": "search Facebook for Orlando contractor groups",
+      "members": "5-20K",
+      "relevance": "high",
+      "strategy": "Pro recruitment. Post about earning opportunities, fee structure, certifications.",
+      "type": "pro"
+    },
+    {
+      "name": "Orlando Property Managers Network",
+      "platform": "Facebook/LinkedIn",
+      "url": "search LinkedIn",
+      "members": "1-5K",
+      "relevance": "high",
+      "strategy": "B2B lead gen. Connect with PMs, offer free pilot.",
+      "type": "both"
+    },
+    {
+      "name": "Nextdoor — Lake Nona",
+      "platform": "Nextdoor",
+      "url": "https://nextdoor.com",
+      "members": "varies",
+      "relevance": "high",
+      "strategy": "Create business page. Respond to service recommendation requests. Neighbors trust Nextdoor recs more than Google.",
+      "type": "customer"
+    },
+    {
+      "name": "r/orlando",
+      "platform": "Reddit",
+      "url": "https://reddit.com/r/orlando",
+      "members": "200K+",
+      "relevance": "medium",
+      "strategy": "Monitor for home service recommendation threads. Respond genuinely with helpful advice + mention UpTend when relevant.",
+      "type": "customer"
+    },
+    {
+      "name": "r/HomeImprovement",
+      "platform": "Reddit",
+      "url": "https://reddit.com/r/HomeImprovement",
+      "members": "5M+",
+      "relevance": "low",
+      "strategy": "Content marketing — post Orlando-specific home maintenance guides linking back to uptendapp.com",
+      "type": "customer"
+    },
+    {
+      "name": "Orlando Craigslist — Services",
+      "platform": "Craigslist",
+      "url": "https://orlando.craigslist.org/search/hss",
+      "members": "n/a",
+      "relevance": "high",
+      "strategy": "DUAL: (1) Find pros advertising services → recruit them. (2) Post UpTend pro opportunities in gigs/labor.",
+      "type": "pro"
+    },
+    {
+      "name": "Google My Business",
+      "platform": "Google",
+      "url": "https://business.google.com",
+      "members": "n/a",
+      "relevance": "high",
+      "strategy": "Claim UpTend listing. Post weekly updates. Respond to all reviews. Target 'home services lake nona' local pack.",
+      "type": "customer"
+    },
+    {
+      "name": "Yelp Orlando",
+      "platform": "Yelp",
+      "url": "https://yelp.com",
+      "members": "n/a",
+      "relevance": "medium",
+      "strategy": "Claim listing. Monitor competitor reviews for pain points (late, overcharged, no-show) — use in marketing.",
+      "type": "customer"
+    }
+  ]
+}

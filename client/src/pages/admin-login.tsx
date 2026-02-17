@@ -29,7 +29,8 @@ export default function AdminLogin() {
         title: "Login Successful",
         description: "Welcome to the admin panel.",
       });
-      setLocation("/admin");
+      // Use window.location for hard redirect to ensure session cookie is sent
+      window.location.href = "/admin";
     },
     onError: (error: any) => {
       // Parse error message from API response
