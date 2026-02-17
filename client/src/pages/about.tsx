@@ -174,33 +174,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* JOURNEY TIMELINE */}
-      <section className="py-16 md:py-24 max-w-5xl mx-auto px-4 md:px-6" data-testid="section-about-journey">
-        <h2 className="text-2xl font-bold mb-8 text-center" data-testid="text-journey-heading">{t("about.journey_heading")}</h2>
-        <div className="relative">
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-border" />
-          <div className="space-y-8">
-            {milestones.map((milestone, index) => (
-              <div key={index} className={`relative flex items-center gap-4 flex-wrap ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`} data-testid={`milestone-${index}`}>
-                <div className={`flex-1 ${index % 2 === 0 ? "md:text-right" : "md:text-left"} hidden md:block`}>
-                  <Card className="p-4 inline-block">
-                    <p className="font-medium">{milestone.event}</p>
-                  </Card>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center z-10 flex-shrink-0">
-                  <CheckCircle className="w-4 h-4 text-primary-foreground" />
-                </div>
-                <div className="flex-1">
-                  <span className="text-sm font-medium text-primary">{milestone.year}</span>
-                  <Card className="p-4 mt-1 md:hidden">
-                    <p className="font-medium">{milestone.event}</p>
-                  </Card>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* JOURNEY TIMELINE — removed (fake traction) */}
 
       {/* PROVEN IMPACT STATS */}
       <section className="py-16 md:py-24 bg-muted/50 px-4 md:px-6" data-testid="section-about-stats">
@@ -209,20 +183,20 @@ export default function About() {
             <h2 className="text-2xl font-bold mb-4">{t("about.proven_impact")}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
               <div data-testid="stat-jobs">
-                <div className="text-3xl font-bold text-primary mb-1">10K+</div>
-                <p className="text-sm text-muted-foreground">{t("about.stat_jobs")}</p>
+                <div className="text-3xl font-bold text-primary mb-1">21</div>
+                <p className="text-sm text-muted-foreground">AI Features Built</p>
               </div>
               <div data-testid="stat-pros">
-                <div className="text-3xl font-bold text-primary mb-1">500+</div>
-                <p className="text-sm text-muted-foreground">{t("about.stat_pros")}</p>
+                <div className="text-3xl font-bold text-primary mb-1">205</div>
+                <p className="text-sm text-muted-foreground">Database Tables</p>
               </div>
               <div data-testid="stat-rating">
-                <div className="text-3xl font-bold text-primary mb-1">4.9</div>
-                <p className="text-sm text-muted-foreground">{t("about.stat_rating")}</p>
+                <div className="text-3xl font-bold text-primary mb-1">13</div>
+                <p className="text-sm text-muted-foreground">Service Verticals</p>
               </div>
               <div data-testid="stat-diverted">
-                <div className="text-3xl font-bold text-primary mb-1">70%</div>
-                <p className="text-sm text-muted-foreground">{t("about.stat_diverted")}</p>
+                <div className="text-3xl font-bold text-primary mb-1">1</div>
+                <p className="text-sm text-muted-foreground">Founder. Zero Fluff.</p>
               </div>
             </div>
           </Card>
