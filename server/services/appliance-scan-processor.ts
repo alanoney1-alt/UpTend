@@ -25,8 +25,10 @@ import {
 import type { InsertPropertyAppliance, InsertPropertyHealthEvent, InsertNotificationQueue } from "../../shared/schema";
 
 // ==========================================
-// AI INTEGRATION (Placeholder - integrate with your AI service)
+// AI INTEGRATION — OpenAI GPT-5.2 Vision
 // ==========================================
+
+import { scanAppliance } from "./ai/openai-vision-client";
 
 interface AIExtractionResult {
   brand?: string;
@@ -46,21 +48,17 @@ interface AIExtractionResult {
 }
 
 async function extractFromPhoto(photoUrl: string): Promise<AIExtractionResult> {
-  // TODO: Integrate with your AI service (OpenAI Vision, Google Cloud Vision, etc.)
+  const result = await scanAppliance([photoUrl]);
+
   return {
-    brand: "Samsung",
-    model: "RF28R7351SR",
-    serialNumber: "123456789",
-    category: "refrigerator",
-    subcategory: "french_door_refrigerator",
-    confidence: {
-      overall: 0.92,
-      brand: 0.98,
-      model: 0.95,
-      serial: 0.88,
-      category: 0.96,
-    },
-    rawResponse: {},
+    brand: result.brand || undefined,
+    model: result.model || undefined,
+    serialNumber: result.serialNumber || undefined,
+    category: result.category || undefined,
+    subcategory: result.subcategory || undefined,
+    manufacturingDate: result.manufacturingDate || undefined,
+    confidence: result.confidence,
+    rawResponse: result,
   };
 }
 

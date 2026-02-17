@@ -51,7 +51,7 @@ Ignore small clutter (books, clothes, small decorative items under $20).`;
     }));
 
     const response = await getOpenAI().chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-5.2",
       messages: [
         {
           role: "system",

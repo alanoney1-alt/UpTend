@@ -13,7 +13,7 @@ import { z } from "zod";
 import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
-import { analyzeImage } from "../../services/ai/anthropic-client";
+import { analyzeImageOpenAI as analyzeImage } from "../../services/ai/openai-vision-client";
 
 export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
   const router = Router();

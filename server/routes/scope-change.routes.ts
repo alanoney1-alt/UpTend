@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { pool } from "../db";
 import { requireAuth, requireAdmin } from "../middleware/auth";
-import { analyzeImage } from "../services/ai/anthropic-client";
+import { analyzeImageOpenAI as analyzeImage } from "../services/ai/openai-vision-client";
 
 export function registerScopeChangeRoutes(app: Express) {
   // POST /api/scope-change/request — Pro submits a scope change

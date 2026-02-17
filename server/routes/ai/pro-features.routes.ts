@@ -9,7 +9,8 @@ import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
 import { optimizeRoute } from "../../services/ai/route-optimization-service";
-import { createChatCompletion, analyzeImage } from "../../services/ai/anthropic-client";
+import { createChatCompletion } from "../../services/ai/anthropic-client";
+import { analyzeImageOpenAI as analyzeImage } from "../../services/ai/openai-vision-client";
 import { db } from "../../db";
 import { sql } from "drizzle-orm";
 

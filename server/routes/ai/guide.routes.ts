@@ -8,7 +8,8 @@
 
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import { createChatCompletion, analyzeImage } from "../../services/ai/anthropic-client";
+import { createChatCompletion } from "../../services/ai/anthropic-client";
+import { analyzeImageOpenAI as analyzeImage } from "../../services/ai/openai-vision-client";
 
 const guideChatLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
