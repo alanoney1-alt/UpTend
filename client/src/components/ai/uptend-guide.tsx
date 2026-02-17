@@ -35,6 +35,7 @@ const LS_DISABLED = "uptend-guide-disabled";
 const LS_SESSION = "uptend-guide-session";
 const LS_VOICE_OUT = "uptend-guide-voice-output";
 const LS_GREETED = "uptend-guide-greeted";
+const SS_MESSAGES_PREFIX = "uptend-guide-msgs-"; // per-zone sessionStorage key
 
 const PRO_SIGNUP_PAGES = ["/pro/signup", "/pycker/signup", "/become-pro", "/pycker-signup", "/become-a-pycker"];
 const NO_WIDGET_PAGES = ["/login", "/customer-login", "/customer-signup", "/pro-login", "/pro-signup", "/pro/login", "/pro/signup", "/pycker/login", "/pycker/signup", "/pycker-login", "/pycker-signup", "/register", "/admin", "/admin-login", "/forgot-password", "/book"];
@@ -290,6 +291,7 @@ export function UpTendGuide() {
   const [isDisabled, setIsDisabled] = useState(() => localStorage.getItem(LS_DISABLED) === "true");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const skipPersistRef = useRef(false); // flag to skip persisting on zone-change resets
   const [isLoading, setIsLoading] = useState(false);
   const [voiceOutputEnabled, setVoiceOutputEnabled] = useState(() => localStorage.getItem(LS_VOICE_OUT) === "true");
   const [isUploading, setIsUploading] = useState(false);
@@ -327,14 +329,36 @@ export function UpTendGuide() {
   const lastZoneRef = useRef(currentZone);
 
   // Load greeting on mount OR when zone changes (consumer ↔ pro ↔ business)
+  // Restore conversation from sessionStorage if available
   useEffect(() => {
     const zoneChanged = lastZoneRef.current !== currentZone;
     if (zoneChanged) {
+      // Save current zone's messages before switching
+      if (messages.length > 0) {
+        try {
+          sessionStorage.setItem(SS_MESSAGES_PREFIX + lastZoneRef.current, JSON.stringify(messages));
+        } catch { /* quota */ }
+      }
       lastZoneRef.current = currentZone;
-      hasInitRef.current = false; // allow re-init
+      hasInitRef.current = false;
     }
     if (!hasInitRef.current) {
+      // Try restoring from sessionStorage first
+      try {
+        const saved = sessionStorage.getItem(SS_MESSAGES_PREFIX + currentZone);
+        if (saved) {
+          const parsed = JSON.parse(saved) as Message[];
+          if (parsed.length > 0) {
+            skipPersistRef.current = true;
+            setMessages(parsed);
+            hasInitRef.current = true;
+            return;
+          }
+        }
+      } catch { /* corrupt data, fall through */ }
+      // No saved messages — show fresh greeting
       const ctx = getPageContext(pageContext.page, pageContext.userRole, pageContext.userName);
+      skipPersistRef.current = true;
       setMessages([{
         id: `welcome-${Date.now()}`,
         role: "assistant",
@@ -345,6 +369,19 @@ export function UpTendGuide() {
       localStorage.setItem(LS_GREETED, "true");
     }
   }, [currentZone, pageContext.page, pageContext.userRole, pageContext.userName]);
+
+  // Persist messages to sessionStorage whenever they change
+  useEffect(() => {
+    if (skipPersistRef.current) {
+      skipPersistRef.current = false;
+      return;
+    }
+    if (messages.length > 0) {
+      try {
+        sessionStorage.setItem(SS_MESSAGES_PREFIX + currentZone, JSON.stringify(messages));
+      } catch { /* quota */ }
+    }
+  }, [messages, currentZone]);
 
   // Gentle pulse every 30 seconds
   useEffect(() => {
