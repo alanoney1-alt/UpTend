@@ -5,13 +5,18 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_API_KEY_SID = process.env.TWILIO_API_KEY_SID;
+const TWILIO_API_KEY_SECRET = process.env.TWILIO_API_KEY_SECRET;
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
 const FROM_EMAIL = process.env.FROM_EMAIL || 'UpTend <noreply@uptendapp.com>';
 
-const twilioClient = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN 
-  ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-  : null;
+// Prefer API Key auth (more secure), fall back to Account Auth Token
+const twilioClient = TWILIO_API_KEY_SID && TWILIO_API_KEY_SECRET && TWILIO_ACCOUNT_SID
+  ? twilio(TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, { accountSid: TWILIO_ACCOUNT_SID })
+  : TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN
+    ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    : null;
 
 export function generateCode(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
