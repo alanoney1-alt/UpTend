@@ -317,12 +317,26 @@ export function UpTendGuide() {
   const isHiddenPage = NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p));
 
   // George auto-opens for ALL visitors, every visit — Alan's rule
-  // Load greeting immediately when widget mounts open
+  // Detect which "zone" the user is in so we can reset George when they switch
+  const getZone = (page: string): string => {
+    if (page.startsWith("/business")) return "business";
+    if (page.startsWith("/pro") || page.startsWith("/pycker") || page.startsWith("/become-pro") || page.startsWith("/academy") || page.startsWith("/drive") || page.startsWith("/career")) return "pro";
+    return "consumer";
+  };
+  const currentZone = getZone(pageContext.page);
+  const lastZoneRef = useRef(currentZone);
+
+  // Load greeting on mount OR when zone changes (consumer ↔ pro ↔ business)
   useEffect(() => {
-    if (isOpen && !hasInitRef.current && messages.length === 0) {
+    const zoneChanged = lastZoneRef.current !== currentZone;
+    if (zoneChanged) {
+      lastZoneRef.current = currentZone;
+      hasInitRef.current = false; // allow re-init
+    }
+    if (!hasInitRef.current) {
       const ctx = getPageContext(pageContext.page, pageContext.userRole, pageContext.userName);
       setMessages([{
-        id: "welcome",
+        id: `welcome-${Date.now()}`,
         role: "assistant",
         content: ctx.welcome,
         quickActions: ctx.quickActions,
@@ -330,7 +344,7 @@ export function UpTendGuide() {
       hasInitRef.current = true;
       localStorage.setItem(LS_GREETED, "true");
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentZone, pageContext.page, pageContext.userRole, pageContext.userName]);
 
   // Gentle pulse every 30 seconds
   useEffect(() => {
