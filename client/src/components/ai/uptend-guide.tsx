@@ -66,6 +66,21 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 } {
   const name = userName ? `, ${userName}` : "";
 
+  // B2B pages — professional George
+  if (page === "/business" || page.startsWith("/business")) {
+    // Don't show on authenticated dashboard pages (they have their own UI)
+    if (page.startsWith("/business/dashboard") || page.startsWith("/business/billing") || page.startsWith("/business/compliance")) {
+      return {
+        welcome: `Hey${name}! 👋 I'm George — your UpTend business assistant. Need help with your dashboard, billing, team management, or anything else? Just ask.\n\nWhat can I help with? 👇`,
+        quickActions: [],
+      };
+    }
+    return {
+      welcome: `Welcome! 👋 I'm George, UpTend's business solutions assistant.\n\nIf you manage properties, run an HOA, or oversee construction — I can walk you through how UpTend replaces your entire vendor network with one AI-powered platform.\n\n**What I can help with:**\n• Pricing for your portfolio size\n• How our dispatch and tracking works\n• Insurance and compliance requirements\n• Volume discounts and billing\n• Setting up a demo\n\nWhat would you like to know? 👇`,
+      quickActions: [],
+    };
+  }
+
   if (PRO_SIGNUP_PAGES.some(p => page.startsWith(p))) {
     return {
       welcome: `Hey there 👋 I'm George. If you're thinking about joining UpTend as a Pro — you picked a good time. We don't charge lead fees. You keep what you earn. We handle the customers, the scheduling, the payments — you just do great work.\n\nI can answer anything — earnings, how jobs work, what makes this different from the other guys. Just type your question below 👇`,

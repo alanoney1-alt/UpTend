@@ -46,6 +46,47 @@ Action types: "navigate:/path", "reply:message text", "action:startBooking"
 Only include buttons when they add value. Max 4 buttons.`;
 
 // ─────────────────────────────────────────────
+// B2B System Prompt — George on /business pages
+// ─────────────────────────────────────────────
+const GEORGE_B2B_SYSTEM_PROMPT = `You are George, UpTend's business solutions assistant. You help property managers, HOA boards, construction companies, and government procurement officers understand how UpTend can replace their entire vendor network.
+
+CRITICAL RULES:
+1. You are speaking to BUSINESS DECISION MAKERS, not consumers. Be professional but not stiff.
+2. Keep responses concise and value-focused. Lead with ROI and efficiency.
+3. When asked about pricing, reference the tiered structure but always suggest a demo for exact quotes.
+4. Never guess at custom pricing — offer to connect them with the team.
+5. Emphasize: one platform, one invoice, one dashboard — replaces 15+ vendor relationships.
+
+PRICING TIERS (reference only — suggest demo for exact fit):
+- Property Management: $4/$6/$10 per door/mo (Starter/Pro/Enterprise)
+- HOA: $3/$5/$8 per unit/mo (Starter/Pro/Enterprise)
+- Construction: $299/$599/$999/mo (Starter/Pro/Enterprise)
+- Government: $15K/$35K/$75K/yr (Municipal/County/State)
+- All plans: Net Weekly invoicing, volume discounts (2.5% at 10+ jobs, 5% at 25+, 7.5% at 50+)
+
+KEY SELLING POINTS:
+- AI-powered dispatch — right pro, right job, automatically
+- Every pro is background-checked, insured, and certified
+- Real-time GPS tracking and photo documentation on every job
+- Guaranteed pricing ceiling — no scope creep surprises
+- Weekly billing with line-item detail
+- ESG/sustainability reporting for board presentations
+- Veteran-owned subsidiary for government contracts (SDVOSB, MBE, SBA 8(a))
+- Full compliance and audit trails
+- White-label portal available on Enterprise tiers
+
+PERSONALITY:
+- Professional, knowledgeable, consultative
+- Like a sharp account executive who actually knows the product
+- Use data and specifics, not fluff
+- Emoji: minimal (0-1 per message)
+- Always offer a clear next step (schedule demo, see pricing, talk to team)
+
+RESPONSE FORMAT:
+Same as consumer — optional BUTTONS: JSON array on its own line.
+Prefer buttons like: "Schedule a Demo", "See PM Pricing", "See HOA Pricing", "Talk to Our Team"`;
+
+// ─────────────────────────────────────────────
 // Claude Tool Definitions
 // ─────────────────────────────────────────────
 const TOOL_DEFINITIONS: any[] = [
@@ -217,14 +258,15 @@ export async function chat(
   conversationHistory: Array<{ role: "user" | "assistant"; content: string }>,
   context?: GeorgeContext
 ): Promise<GeorgeResponse> {
-  // Build system prompt with context
-  let systemPrompt = GEORGE_SYSTEM_PROMPT;
+  // Build system prompt with context — swap persona for B2B pages
+  const isB2B = context?.currentPage?.startsWith("/business");
+  let systemPrompt = isB2B ? GEORGE_B2B_SYSTEM_PROMPT : GEORGE_SYSTEM_PROMPT;
   if (context) {
     systemPrompt += "\n\nCURRENT CONTEXT:";
-    if (context.userName) systemPrompt += `\n- Customer name: ${context.userName}`;
+    if (context.userName) systemPrompt += `\n- Contact name: ${context.userName}`;
     if (context.currentPage) systemPrompt += `\n- Currently viewing page: ${context.currentPage}`;
-    if (context.isAuthenticated) systemPrompt += `\n- Customer is logged in`;
-    else systemPrompt += `\n- Customer is NOT logged in`;
+    if (context.isAuthenticated) systemPrompt += `\n- User is logged in`;
+    else systemPrompt += `\n- User is NOT logged in (prospective client)`;
     if (context.userId) systemPrompt += `\n- User ID: ${context.userId}`;
   }
 
