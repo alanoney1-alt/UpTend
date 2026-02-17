@@ -8,6 +8,7 @@ import {
   DollarSign, Clock, Ban, TrendingUp, Users, Star,
   CheckCircle, ChevronRight, Wrench, Waves, Truck,
   Package, Home, Trees, ArrowUpFromLine, Sparkles,
+  MessageCircle,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
@@ -21,6 +22,7 @@ export default function Landing() {
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />
       <main>
+        <GeorgeBanner />
         <HeroSection />
         <IndustryIsBroken />
         <UpTendVerb />
@@ -31,6 +33,20 @@ export default function Landing() {
         <FinalCTA />
       </main>
       <Footer />
+    </div>
+  );
+}
+
+/* ─── GEORGE BANNER ─── */
+function GeorgeBanner() {
+  return (
+    <div className="bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-2.5 px-4 text-center">
+      <div className="max-w-4xl mx-auto flex items-center justify-center gap-2 flex-wrap">
+        <MessageCircle className="w-4 h-4 shrink-0" />
+        <span className="text-sm font-medium">
+          <strong>Meet George</strong> — your AI home services assistant. Need a quote, have a question, or don't know where to start? <strong>Just ask George.</strong> He's the orange chat in the corner 👉
+        </span>
+      </div>
     </div>
   );
 }
