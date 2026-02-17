@@ -317,6 +317,20 @@ export function UpTendGuide() {
   const isHiddenPage = NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p));
 
   // George auto-opens for ALL visitors, every visit — Alan's rule
+  // Load greeting immediately when widget mounts open
+  useEffect(() => {
+    if (isOpen && !hasInitRef.current && messages.length === 0) {
+      const ctx = getPageContext(pageContext.page, pageContext.userRole, pageContext.userName);
+      setMessages([{
+        id: "welcome",
+        role: "assistant",
+        content: ctx.welcome,
+        quickActions: ctx.quickActions,
+      }]);
+      hasInitRef.current = true;
+      localStorage.setItem(LS_GREETED, "true");
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Gentle pulse every 30 seconds
   useEffect(() => {
