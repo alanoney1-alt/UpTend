@@ -286,7 +286,7 @@ const pulseKeyframes = `
 export function UpTendGuide() {
   const [, navigate] = useLocation();
   const pageContext = usePageContext();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isDisabled, setIsDisabled] = useState(() => localStorage.getItem(LS_DISABLED) === "true");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -316,7 +316,7 @@ export function UpTendGuide() {
   // Should this page hide the widget entirely?
   const isHiddenPage = NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p));
 
-  // George starts minimized (bubble only) — no auto-open
+  // George auto-opens for ALL visitors, every visit — Alan's rule
 
   // Gentle pulse every 30 seconds
   useEffect(() => {
