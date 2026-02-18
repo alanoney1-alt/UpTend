@@ -3813,3 +3813,271 @@ export async function getSeasonalDemandForGeorge(params: {
     message: demand.tip,
   };
 }
+
+// ═══════════════════════════════════════════════
+// HOME UTILITIES — Home Operating System Tools
+// George knows EVERYTHING about their home.
+// ═══════════════════════════════════════════════
+
+import {
+  lookupTrashSchedule as _lookupTrashSchedule,
+  lookupWaterRestrictions as _lookupWaterRestrictions,
+  lookupUtilityProviders as _lookupUtilityProviders,
+  getSeasonalSprinklerRecommendation as _getSeasonalSprinklerRec,
+  generateTrashReminder as _generateTrashReminder,
+} from "./municipal-data.js";
+import {
+  getHomeDashboard as _getHomeOSDashboard,
+  getWeeklyHomeView as _getWeeklyHomeView,
+  getTonightChecklist as _getTonightChecklist,
+} from "./home-dashboard.js";
+
+/**
+ * getTrashSchedule — "When's my trash day?"
+ */
+export async function getTrashScheduleForGeorge(params: {
+  customerId: string;
+  zip?: string;
+  address?: string;
+}): Promise<object> {
+  if (params.zip) {
+    const schedule = await _lookupTrashSchedule(params.address || "", "", "FL", params.zip);
+    return {
+      ...schedule,
+      message: `🗑️ Your trash days are ${schedule.trashDay}. Recycling: ${schedule.recyclingDay}. ${schedule.yardWasteDay ? `Yard waste: ${schedule.yardWasteDay}.` : ""} Provider: ${schedule.provider}.`,
+    };
+  }
+  // Try DB lookup by customerId
+  try {
+    const result = await pool.query(
+      `SELECT t.*, h.zip FROM trash_recycling_schedules t
+       LEFT JOIN home_utility_profiles h ON h.customer_id = t.customer_id
+       WHERE t.customer_id = $1 LIMIT 1`,
+      [params.customerId]
+    );
+    if (result.rows.length > 0) {
+      const s = result.rows[0];
+      return {
+        trashDay: s.trash_day,
+        recyclingDay: s.recycling_day,
+        yardWasteDay: s.yard_waste_day,
+        provider: s.provider,
+        message: `🗑️ Your trash day is ${s.trash_day}. Recycling: ${s.recycling_day}. ${s.yard_waste_day ? `Yard waste: ${s.yard_waste_day}.` : ""} Provider: ${s.provider || "Orange County Solid Waste"}.`,
+      };
+    }
+  } catch {}
+  return { message: "I don't have your trash schedule yet. What's your zip code? I'll look it up and remember it forever!" };
+}
+
+/**
+ * getRecyclingSchedule — recycling day + what's accepted
+ */
+export async function getRecyclingScheduleForGeorge(params: {
+  customerId: string;
+  zip?: string;
+}): Promise<object> {
+  const trash = await getTrashScheduleForGeorge(params);
+  return {
+    ...(trash as any),
+    accepted: "Paper, cardboard (flattened), plastic bottles (#1-2), glass bottles/jars, aluminum & steel cans",
+    notAccepted: "Plastic bags, styrofoam, food waste, electronics, hazardous materials, garden hoses",
+    tips: [
+      "Rinse containers — no need to scrub, just a quick rinse",
+      "Flatten cardboard boxes to save space",
+      "No plastic bags in recycling — return them to grocery stores",
+      "When in doubt, throw it out (contamination ruins whole loads)",
+    ],
+    message: `♻️ Recycling day: ${(trash as any).recyclingDay || "check your schedule"}. Accepted: paper, cardboard, plastic #1-2, glass, cans. NO plastic bags or styrofoam.`,
+  };
+}
+
+/**
+ * getSprinklerSettings — current zones and schedule
+ */
+export async function getSprinklerSettingsForGeorge(params: {
+  customerId: string;
+}): Promise<object> {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM sprinkler_settings WHERE customer_id = $1 LIMIT 1`,
+      [params.customerId]
+    );
+    if (result.rows.length > 0) {
+      const s = result.rows[0];
+      const zones = typeof s.zones === "string" ? JSON.parse(s.zones) : (s.zones || []);
+      const month = new Date().getMonth() + 1;
+      const rec = _getSeasonalSprinklerRec(month, "32827");
+      return {
+        systemType: s.system_type,
+        zones,
+        waterRestrictions: s.water_restrictions,
+        rainSensor: s.rain_sensor_enabled,
+        smartBrand: s.smart_controller_brand,
+        connectedToGeorge: s.connected_to_george,
+        seasonalRecommendation: rec,
+        message: `💧 Your sprinkler system: ${s.system_type}. ${zones.length} zone(s). Rain sensor: ${s.rain_sensor_enabled ? "ON ✅" : "OFF ❌"}. ${rec.recommendation}`,
+      };
+    }
+  } catch {}
+  return { message: "No sprinkler settings on file yet. Tell me about your system and I'll track it!" };
+}
+
+/**
+ * updateSprinklerZone — adjust watering days/times for a zone
+ */
+export async function updateSprinklerZoneForGeorge(params: {
+  customerId: string;
+  zoneName: string;
+  waterDays?: string[];
+  startTime?: string;
+  duration?: number;
+}): Promise<object> {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM sprinkler_settings WHERE customer_id = $1 LIMIT 1`,
+      [params.customerId]
+    );
+    if (result.rows.length === 0) {
+      return { message: "No sprinkler settings found. Let me set up your system first — what kind of sprinkler system do you have?" };
+    }
+    const s = result.rows[0];
+    const zones = typeof s.zones === "string" ? JSON.parse(s.zones) : (s.zones || []);
+    const zoneIdx = zones.findIndex((z: any) => z.zoneName?.toLowerCase() === params.zoneName.toLowerCase());
+
+    if (zoneIdx === -1) {
+      // Add new zone
+      zones.push({
+        zoneName: params.zoneName,
+        waterDays: params.waterDays || [],
+        startTime: params.startTime || "6:00 AM",
+        duration: params.duration || 20,
+      });
+    } else {
+      if (params.waterDays) zones[zoneIdx].waterDays = params.waterDays;
+      if (params.startTime) zones[zoneIdx].startTime = params.startTime;
+      if (params.duration) zones[zoneIdx].duration = params.duration;
+    }
+
+    await pool.query(
+      `UPDATE sprinkler_settings SET zones = $1, last_updated = NOW() WHERE customer_id = $2`,
+      [JSON.stringify(zones), params.customerId]
+    );
+
+    return {
+      success: true,
+      zone: zones[zoneIdx === -1 ? zones.length - 1 : zoneIdx],
+      message: `✅ Updated zone "${params.zoneName}". ${params.waterDays ? `Days: ${params.waterDays.join(", ")}.` : ""} ${params.startTime ? `Start: ${params.startTime}.` : ""} ${params.duration ? `Duration: ${params.duration} min.` : ""}`,
+    };
+  } catch (err) {
+    return { message: "Failed to update sprinkler zone. Try again?" };
+  }
+}
+
+/**
+ * getWaterRestrictions — local watering ordinance
+ */
+export async function getWaterRestrictionsForGeorge(params: {
+  customerId: string;
+  county?: string;
+  zip?: string;
+  addressNumber?: number;
+}): Promise<object> {
+  const county = params.county || "Orange";
+  const zip = params.zip || "32827";
+  const restrictions = _lookupWaterRestrictions(county, zip, params.addressNumber);
+  return {
+    ...restrictions,
+    message: restrictions.notes,
+  };
+}
+
+/**
+ * getHomeOSDashboard — full "home at a glance" for George
+ */
+export async function getHomeOSDashboardForGeorge(params: {
+  customerId: string;
+}): Promise<object> {
+  return _getHomeOSDashboard(params.customerId);
+}
+
+/**
+ * getTonightChecklist — what to do before bed
+ */
+export async function getTonightChecklistForGeorge(params: {
+  customerId: string;
+}): Promise<object> {
+  return _getTonightChecklist(params.customerId);
+}
+
+/**
+ * setHomeReminder — custom reminder (e.g., "remind me to change AC filter monthly")
+ */
+export async function setHomeReminderForGeorge(params: {
+  customerId: string;
+  reminderType: string;
+  title: string;
+  description?: string;
+  frequency?: string;
+  nextDueDate: string;
+  time?: string;
+}): Promise<object> {
+  try {
+    const result = await pool.query(
+      `INSERT INTO home_reminders (customer_id, reminder_type, title, description, frequency, next_due_date, time)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING id`,
+      [
+        params.customerId,
+        params.reminderType || "filter_change",
+        params.title,
+        params.description || null,
+        params.frequency || "monthly",
+        params.nextDueDate,
+        params.time || "7:00 PM",
+      ]
+    );
+    return {
+      success: true,
+      reminderId: result.rows[0].id,
+      message: `⏰ Got it! I'll remind you: "${params.title}" — ${params.frequency || "monthly"}, starting ${params.nextDueDate} at ${params.time || "7:00 PM"}.`,
+    };
+  } catch (err) {
+    return { message: "Failed to create reminder. Try again?" };
+  }
+}
+
+/**
+ * getUtilityProviders — who services their address
+ */
+export async function getUtilityProvidersForGeorge(params: {
+  customerId: string;
+  address?: string;
+  zip?: string;
+}): Promise<object> {
+  // Check DB first
+  try {
+    const result = await pool.query(
+      `SELECT * FROM home_utility_profiles WHERE customer_id = $1 LIMIT 1`,
+      [params.customerId]
+    );
+    if (result.rows.length > 0) {
+      const p = result.rows[0];
+      const providers = typeof p.utility_provider === "string" ? JSON.parse(p.utility_provider) : (p.utility_provider || {});
+      return {
+        address: `${p.address}, ${p.city}, ${p.state} ${p.zip}`,
+        providers,
+        message: `🏠 Your utility providers:\n⚡ Electric: ${providers.electric?.name || "Unknown"}\n💧 Water: ${providers.water?.name || "Unknown"}\n🔥 Gas: ${providers.gas?.name || "Unknown"}\n🗑️ Trash: ${providers.trash?.name || "Unknown"}`,
+      };
+    }
+  } catch {}
+
+  if (params.zip) {
+    const providers = _lookupUtilityProviders(params.address || "", params.zip);
+    return {
+      providers,
+      message: `🏠 Based on your zip (${params.zip}):\n⚡ Electric: ${providers.electric.name}\n💧 Water: ${providers.water.name}\n🔥 Gas: ${providers.gas.name}\n🗑️ Trash: ${providers.trash.name}`,
+    };
+  }
+
+  return { message: "I need your address or zip code to look up your utility providers. What's your zip?" };
+}

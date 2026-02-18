@@ -190,6 +190,9 @@ import { registerInsuranceClaimsRoutes } from "./insurance-claims.routes";
 import { registerEmergencyDispatchRoutes } from "./emergency-dispatch.routes";
 import { registerBriefingRoutes } from "./briefing.routes";
 
+// Home Utilities & Municipal Data routes
+import { registerHomeUtilitiesRoutes } from "./home-utilities.routes";
+
 // Centralized Pricing Engine routes
 import { registerCentralizedPricingRoutes } from "./pricing.routes";
 
@@ -417,6 +420,9 @@ export async function registerRoutes(
   registerInsuranceClaimsRoutes(app);
   registerEmergencyDispatchRoutes(app);
   registerBriefingRoutes(app);
+
+  // Register Home Utilities & Municipal Data routes
+  registerHomeUtilitiesRoutes(app);
 
   // Register Centralized Pricing Engine routes
   registerCentralizedPricingRoutes(app);

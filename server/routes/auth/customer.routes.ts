@@ -63,6 +63,13 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
             }
           })
           .catch(err => console.error("[HOA] Auto-scrape failed:", err));
+
+        // Fire-and-forget: Auto-populate home utility data (trash schedule, providers, water restrictions)
+        import("../../services/municipal-data.js").then(({ autoPopulateHomeData }) => {
+          autoPopulateHomeData(user.id, req.body.address, req.body.city, req.body.state, req.body.zip, req.body.county)
+            .then(result => console.log("[Home OS] Auto-populated:", result.populated.join(", ")))
+            .catch(err => console.error("[Home OS] Auto-populate failed:", err));
+        }).catch(err => console.error("[Home OS] Import failed:", err));
       }
 
       // Auto-login after registration - wait for session to be established before responding
