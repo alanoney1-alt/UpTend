@@ -2185,6 +2185,20 @@ const TOOL_DEFINITIONS: any[] = [
       required: ["service_type"],
     },
   },
+  {
+    name: "apply_save_discount",
+    description: "LAST RESORT ONLY — Apply the 15% price match save when a customer is about to walk away. Requires competitor quote proof. George should ONLY call this after: (1) selling the value, (2) offering satisfaction guarantee, and (3) customer is STILL leaving. Never volunteer this.",
+    input_schema: {
+      type: "object",
+      properties: {
+        service_type: { type: "string", description: "Service being quoted" },
+        original_price: { type: "number", description: "Our standard price" },
+        competitor_price: { type: "number", description: "Price customer claims they found elsewhere" },
+        customer_id: { type: "string" },
+      },
+      required: ["service_type", "original_price", "competitor_price"],
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────
@@ -2558,6 +2572,8 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return tools.scanReceipt(input);
     case "get_multi_pro_quotes":
       return tools.getMultiProQuotes(input);
+    case "apply_save_discount":
+      return tools.applySaveDiscount(input);
 
     default:
       return { error: `Unknown tool: ${name}` };
