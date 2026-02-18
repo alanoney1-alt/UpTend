@@ -2542,4 +2542,17 @@ export const DIY_KNOWLEDGE_BASE: DIYRepair[] = [
       "Mark stud locations on walls",
       "Start with longest wall for first piece",
       "Cut square ends for pieces ending at doors",
-      "Cut inside corners with
+      "Cut inside corners with a coping saw for tight fit",
+      "Use nail gun to secure to studs",
+      "Fill nail holes with wood filler",
+      "Sand smooth and touch up with paint or stain"
+    ],
+    safetyLevel: "green" as const,
+    safetyWarnings: ["Use eye protection with nail gun", "Be careful with coping saw"],
+    proRecommended: false,
+    commonMistakes: ["Not coping inside corners (using miter cuts instead)", "Not finding studs", "Gaps at floor level"],
+    videoSearchTerms: ["install baseboard molding", "how to cope baseboard corners"],
+    relatedRepairs: ["walls_crown_molding"],
+    upsellService: "handyman"
+  }
+];
