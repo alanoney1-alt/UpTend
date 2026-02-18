@@ -120,6 +120,17 @@ const BusinessBilling = lazy(() => import("@/pages/business-billing"));
 const AdminBilling = lazy(() => import("@/pages/admin/billing"));
 const FindPro = lazy(() => import("@/pages/find-pro"));
 
+// SEO Landing Pages
+const JunkRemovalLakeNona = lazy(() => import("@/pages/services/junk-removal-lake-nona"));
+const PressureWashingOrlando = lazy(() => import("@/pages/services/pressure-washing-orlando"));
+const HandymanOrlando = lazy(() => import("@/pages/services/handyman-orlando"));
+const LandscapingLakeNona = lazy(() => import("@/pages/services/landscaping-lake-nona"));
+const GutterCleaningOrlando = lazy(() => import("@/pages/services/gutter-cleaning-orlando"));
+const PoolCleaningLakeNona = lazy(() => import("@/pages/services/pool-cleaning-lake-nona"));
+const HomeServicesLakeNona = lazy(() => import("@/pages/services/home-services-lake-nona"));
+const HomeCleaningOrlando = lazy(() => import("@/pages/services/home-cleaning-orlando"));
+const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orlando"));
+
 function ScrollToTop() {
   const [location] = useLocation();
   useEffect(() => {
@@ -250,6 +261,15 @@ function Router() {
       <Route path="/book/deepfiber" component={BookDeepFiber} />
       <Route path="/cost-guides" component={CostGuidesHub} />
       <Route path="/cost-guides/:slug" component={CostGuide} />
+      <Route path="/services/junk-removal-lake-nona" component={JunkRemovalLakeNona} />
+      <Route path="/services/pressure-washing-orlando" component={PressureWashingOrlando} />
+      <Route path="/services/handyman-orlando" component={HandymanOrlando} />
+      <Route path="/services/landscaping-lake-nona" component={LandscapingLakeNona} />
+      <Route path="/services/gutter-cleaning-orlando" component={GutterCleaningOrlando} />
+      <Route path="/services/pool-cleaning-lake-nona" component={PoolCleaningLakeNona} />
+      <Route path="/services/home-services-lake-nona" component={HomeServicesLakeNona} />
+      <Route path="/services/home-cleaning-orlando" component={HomeCleaningOrlando} />
+      <Route path="/services/moving-labor-orlando" component={MovingLaborOrlando} />
       <Route path="/services/:slug" component={ServiceDetail} />
       <Route path="/sustainability" component={Sustainability} />
       <Route path="/marketplace" component={Marketplace} />
