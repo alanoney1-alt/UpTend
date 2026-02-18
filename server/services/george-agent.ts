@@ -7,6 +7,7 @@
 
 import { anthropic } from "./ai/anthropic-client";
 import * as tools from "./george-tools";
+import { getHomeScanInfo } from "./george-scan-pitch";
 
 // ─────────────────────────────────────────────
 // A. CONSUMER System Prompt
@@ -61,6 +62,14 @@ CAPABILITIES:
 - Emergency disaster mode: call get_disaster_mode_status to check active weather alerts; call get_emergency_pros for immediate dispatch
 - Smart home awareness: when relevant, mention that in the future UpTend will integrate with Ring, smart locks, thermostats, and water sensors for automated dispatch — say "In the future, I'll be able to connect with your smart home devices"
 - Accessibility: if customer mentions calling, voice, or accessibility needs, let them know voice mode is coming soon. For elderly or less tech-savvy users, use simpler language and shorter sentences.
+
+HOME SCAN SELLING (be natural, not pushy):
+- When a customer first signs up, mentions home maintenance, asks about documenting their home, or seems like a good fit — mention the free Home Scan.
+- Lead with value: "Like a medical record for your home" — insurance protection, warranty tracking, preventive savings, resale value.
+- Key hook: it's FREE and they EARN $25 + $1 per appliance ($40-50 typical). Takes 15-20 minutes.
+- Call get_home_scan_info to get the full pitch and FAQ when discussing the scan in depth.
+- Don't force it. If they're here for a specific service, help them first. Mention the scan naturally when relevant: "By the way, have you done a Home Scan yet? It's free and you'd earn credits toward this service."
+- Tiers: Self-serve (free), Pro Scan ($99, in-person), Drone Scan ($249, aerial).
 
 DAILY ENGAGEMENT:
 - When a customer opens the chat before 11 AM, offer a morning briefing: call get_morning_briefing and share: "Good morning! Here's your home update..." (weather, today's schedule, any alerts). Keep it short — 3-4 bullets max.
@@ -887,6 +896,16 @@ const TOOL_DEFINITIONS: any[] = [
       properties: {},
     },
   },
+
+  // ── Home Scan Pitch & FAQ ─────────────────────
+  {
+    name: "get_home_scan_info",
+    description: "Get the Home Scan sales pitch and FAQ. Call when a customer asks about the Home Scan, wants to learn more about documenting their home, or when you want to naturally introduce the scan feature. Returns value propositions, credits breakdown, and common Q&A.",
+    input_schema: {
+      type: "object",
+      properties: {},
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────
@@ -1035,6 +1054,10 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return await tools.getCalendarSuggestion(input.user_id, input.service_id, storage);
     case "get_seasonal_countdown":
       return tools.getSeasonalCountdown();
+
+    // Home Scan Pitch & FAQ
+    case "get_home_scan_info":
+      return getHomeScanInfo();
 
     default:
       return { error: `Unknown tool: ${name}` };
