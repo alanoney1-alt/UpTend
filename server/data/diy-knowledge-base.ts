@@ -2542,7 +2542,7 @@ export const DIY_KNOWLEDGE_BASE: DIYRepair[] = [
       "Mark stud locations on walls",
       "Start with longest wall for first piece",
       "Cut square ends for pieces ending at doors",
-      "Cut inside corners with a coping saw for tight fit",
+      "Cope inside corners using a coping saw for a tight fit",
       "Use nail gun to secure to studs",
       "Fill nail holes with wood filler",
       "Sand smooth and touch up with paint or stain"
