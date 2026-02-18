@@ -159,7 +159,7 @@ export async function getTutorialForMaintenance(
   applianceDetails?: { brand?: string; model?: string; size?: string }
 ): Promise<object> {
   // Build specific query
-  let query = `how to ${maintenanceType.replace(/_/g, " ")}`;
+  let query = `${maintenanceType.replace(/_/g, " ")}`;
   if (applianceDetails) {
     if (applianceDetails.brand) query += ` ${applianceDetails.brand}`;
     if (applianceDetails.model) query += ` ${applianceDetails.model}`;

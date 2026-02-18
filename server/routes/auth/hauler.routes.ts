@@ -6,6 +6,7 @@ import { z } from "zod";
 import passport from "passport";
 import { sendVerificationEmail, isEmailConfigured } from "../../services/notifications";
 import { getProLoginGreeting } from "../../services/george-events";
+import { pool } from "../../db";
 
 // Pro registration schema
 const proRegistrationSchema = z.object({
@@ -608,12 +609,24 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
             console.error("Session creation error:", loginErr);
             return res.status(500).json({ error: "Login failed" });
           }
+          // Fetch proId from hauler_profiles
+          const userId = user.userId || user.id;
+          let proId: string | null = null;
+          try {
+            const { rows: profiles } = await pool.query(
+              `SELECT id FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
+              [userId]
+            );
+            proId = profiles[0]?.id || null;
+          } catch {}
+
           // George: attach pro greeting to login response (non-blocking)
-          getProLoginGreeting(user.userId || user.id).then(georgeGreeting => {
+          getProLoginGreeting(userId).then(georgeGreeting => {
             return res.json({
               success: true,
               message: "Login successful",
               role: fullUser?.role,
+              proId,
               george: georgeGreeting,
             });
           }).catch(() => {
@@ -621,6 +634,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
               success: true,
               message: "Login successful",
               role: fullUser?.role,
+              proId,
             });
           });
         });
@@ -657,17 +671,29 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
           return res.status(401).json({ error: "Please use the customer login" });
         }
 
-        req.login(user, (loginErr) => {
+        req.login(user, async (loginErr) => {
           if (loginErr) {
             console.error("Session creation error:", loginErr);
             return res.status(500).json({ error: "Login failed" });
           }
+          // Fetch proId from hauler_profiles
+          const legacyUserId = user.userId || user.id;
+          let legacyProId: string | null = null;
+          try {
+            const { rows: lp } = await pool.query(
+              `SELECT id FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
+              [legacyUserId]
+            );
+            legacyProId = lp[0]?.id || null;
+          } catch {}
+
           // George: attach pro greeting to login response (non-blocking)
-          getProLoginGreeting(user.userId || user.id).then(georgeGreeting => {
+          getProLoginGreeting(legacyUserId).then(georgeGreeting => {
             return res.json({
               success: true,
               message: "Login successful",
               role: fullUser?.role,
+              proId: legacyProId,
               george: georgeGreeting,
             });
           }).catch(() => {
@@ -675,6 +701,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
               success: true,
               message: "Login successful",
               role: fullUser?.role,
+              proId: legacyProId,
             });
           });
         });

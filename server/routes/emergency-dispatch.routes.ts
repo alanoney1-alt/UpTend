@@ -15,7 +15,8 @@ export function registerEmergencyDispatchRoutes(app: Express) {
   // Create emergency dispatch
   app.post("/api/emergency/dispatch", requireAuth, async (req, res) => {
     try {
-      const customerId = (req as any).user?.id;
+      const customerId = (req as any).user?.userId || (req as any).user?.id || req.body.customerId;
+      if (!customerId) return res.status(400).json({ error: "customerId required" });
       const { emergencyType, severity, description } = req.body;
       if (!emergencyType) return res.status(400).json({ error: "emergencyType required" });
       const result = await createEmergencyDispatch(
@@ -30,7 +31,8 @@ export function registerEmergencyDispatchRoutes(app: Express) {
   // Get active emergencies
   app.get("/api/emergency/active", requireAuth, async (req, res) => {
     try {
-      const customerId = (req as any).user?.id;
+      const customerId = (req as any).user?.userId || (req as any).user?.id || (req.query.customerId as string);
+      if (!customerId) return res.status(400).json({ error: "customerId required" });
       const emergencies = await getActiveEmergencies(customerId);
       res.json(emergencies);
     } catch (err: any) {

@@ -41,7 +41,7 @@ export async function getDemandForecast(
 
   // Get pro's service types from profile
   const { rows: proProfile } = await pool.query(
-    `SELECT service_types, service_areas FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
+    `SELECT service_types, service_radius FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
     [proId]
   );
 

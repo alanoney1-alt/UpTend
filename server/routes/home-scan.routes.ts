@@ -129,7 +129,9 @@ export function registerHomeScanRoutes(app: Express) {
       }
 
       // Call GPT-5.2 vision to analyze the photo
-      const analysisResult = await analyzeImages({
+      let analysisResult: any;
+      try {
+        analysisResult = await analyzeImages({
         imageUrls: [photoUrl],
         prompt: `Analyze this home appliance/item photo for a home scan. Identify everything you can, paying special attention to any data plates, rating plates, serial number labels, or manufacturer stickers visible in the image.
 
@@ -153,6 +155,26 @@ Return JSON:
         systemPrompt: "You are an expert home inspector analyzing appliances and home items for a comprehensive home scan. Be accurate and helpful. Look carefully for serial numbers, model numbers, manufacturing dates, and data plate information.",
         jsonMode: true,
       });
+      } catch (visionErr: any) {
+        // Graceful fallback for 429 rate limit or other OpenAI errors
+        console.warn("[Home Scan] Vision API error, using fallback:", visionErr.message);
+        analysisResult = {
+          applianceType: "Unknown Item (AI unavailable)",
+          category: "other",
+          brand: null,
+          model: null,
+          serialNumber: null,
+          modelNumber: null,
+          manufacturingDate: null,
+          dataPlateText: null,
+          estimatedAge: null,
+          condition: 5,
+          visibleIssues: [],
+          maintenanceRecommendations: ["Schedule a professional inspection"],
+          estimatedReplacement: null,
+          notes: "AI vision analysis temporarily unavailable. Please re-scan later for detailed analysis.",
+        };
+      }
 
       // Warranty lookup
       let warrantyInfo = null;

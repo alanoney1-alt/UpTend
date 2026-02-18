@@ -63,7 +63,7 @@ export function registerInsuranceClaimsRoutes(app: Express) {
   // Storm prep checklist
   app.get("/api/insurance/storm-prep", optionalAuth, async (req, res) => {
     try {
-      const customerId = (req as any).user?.id;
+      const customerId = (req as any).user?.userId || (req as any).user?.id || (req.query.customerId as string) || null;
       const stormType = req.query.stormType as string;
       if (!stormType) return res.status(400).json({ error: "stormType query param required" });
       const checklist = await getStormPrepChecklist(customerId, stormType);

@@ -82,7 +82,7 @@ export async function findNearestPro(
 ) {
   // Query pros that are online and have relevant skills
   const { rows } = await pool.query(
-    `SELECT hp.id, hp.user_id, hp.full_name as name, hp.phone,
+    `SELECT hp.id, hp.user_id, hp.company_name as name, hp.phone,
             pos.is_online
      FROM hauler_profiles hp
      LEFT JOIN pycker_online_status pos ON pos.hauler_id = hp.id
@@ -125,7 +125,7 @@ export async function updateDispatchStatus(
 
 export async function getActiveEmergencies(customerId: string) {
   const { rows } = await pool.query(
-    `SELECT ed.*, hp.full_name as pro_name, hp.phone as pro_phone
+    `SELECT ed.*, hp.company_name as pro_name, hp.phone as pro_phone
      FROM emergency_dispatches ed
      LEFT JOIN hauler_profiles hp ON hp.id = ed.dispatched_pro_id
      WHERE ed.customer_id = $1 AND ed.status NOT IN ('resolved','cancelled')
@@ -151,7 +151,7 @@ export async function activateDisasterMode(
 
   // Alert all pros in region
   const { rows: pros } = await pool.query(
-    `SELECT hp.id, hp.full_name, hp.phone
+    `SELECT hp.id, hp.company_name as full_name, hp.phone
      FROM hauler_profiles hp
      WHERE hp.service_area ILIKE $1 OR hp.city ILIKE $1`,
     [`%${region}%`]
