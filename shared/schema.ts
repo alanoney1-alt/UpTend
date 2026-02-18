@@ -16,7 +16,8 @@ export type UserRole = z.infer<typeof userRoleEnum>;
 export const serviceTypeEnum = z.enum([
   "junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout",
   "truck_unloading", "hvac", "cleaning", "home_cleaning",
-  "moving_labor", "pressure_washing", "gutter_cleaning", "light_demolition", "home_consultation"
+  "moving_labor", "pressure_washing", "gutter_cleaning", "light_demolition", "home_consultation",
+  "handyman", "pool_cleaning", "landscaping", "carpet_cleaning", "home_scan"
 ]);
 export type ServiceType = z.infer<typeof serviceTypeEnum>;
 

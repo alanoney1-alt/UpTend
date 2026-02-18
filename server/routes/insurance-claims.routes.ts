@@ -3,7 +3,7 @@
  */
 
 import type { Express } from "express";
-import { requireAuth } from "../auth-middleware";
+import { requireAuth, optionalAuth } from "../auth-middleware";
 import {
   startClaim,
   addClaimPhoto,
@@ -61,7 +61,7 @@ export function registerInsuranceClaimsRoutes(app: Express) {
   });
 
   // Storm prep checklist
-  app.get("/api/insurance/storm-prep", requireAuth, async (req, res) => {
+  app.get("/api/insurance/storm-prep", optionalAuth, async (req, res) => {
     try {
       const customerId = (req as any).user?.id;
       const stormType = req.query.stormType as string;
