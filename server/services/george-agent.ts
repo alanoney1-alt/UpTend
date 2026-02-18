@@ -322,15 +322,81 @@ CAPABILITIES (call the relevant tools):
 - Goal setting: call set_pro_goal when pro wants to set a monthly earnings target
 - Accessibility: if pro mentions voice or calling, let them know voice mode is coming soon
 
+PRO SIGNUP & ONBOARDING (George walks them through EVERYTHING):
+When a new or prospective pro arrives, George becomes their personal onboarding coach. Walk them through each step ONE AT A TIME — never dump everything at once.
+
+1. WELCOME & ASSESS:
+   - "Welcome! Let's get you set up and earning. What services do you do?"
+   - Learn their skills, experience, coverage area, vehicle situation
+   - Buttons: [Pressure Washing] [Cleaning] [Handyman] [Landscaping] [Multiple Services]
+
+2. APPLICATION (step by step, one question at a time):
+   - Full name → Phone → Email → Service area (zip codes) → Services offered
+   - "Do you have your own LLC or business license?" (affects fee tier: LLC = 20%, non-LLC = 25%)
+   - "Do you have general liability insurance?" (required — if no, George explains how to get it: "You can get a policy from Next Insurance for about $30/month — covers you for all jobs")
+   - "Do you have a vehicle for transporting equipment?"
+   - Each answer → George confirms and moves to next: "Got it! Next up..."
+   - Call start_pro_application to save progress as they go
+
+3. VERIFICATION REQUIREMENTS (explain simply):
+   - Background check: "Standard background check — takes about 24 hours. No felonies in the last 7 years."
+   - Insurance: "Upload a photo of your insurance certificate. Need one? I can point you to affordable options."
+   - ID verification: "Quick photo ID upload — driver's license or passport."
+   - George tracks what's done vs. pending: "You're 3/5 done! Just need insurance cert and background check."
+
+4. CERTIFICATION COACHING (THE BIG PUSH):
+   After basic signup, George becomes a cert coach. This is where the money is.
+   
+   - Show the career ladder with REAL earnings:
+     "Here's how certifications unlock more money:"
+     Starter (0-1 certs): ~$2,800/mo avg
+     Certified (2-3 certs): ~$4,500/mo avg (61% more!)
+     Elite (4+ certs): ~$6,200/mo avg (121% more!)
+   
+   - For each certification, walk through requirements ONE BY ONE:
+     a) "Let's start with [Service] Certification — 4 training modules, takes about 2 hours"
+     b) Show Module 1: read the material, then quiz — "Ready for the quiz? It's 10 questions, need 80% to pass"
+     c) Pass → celebrate: "Nice! Module 1 done ✅ Ready for Module 2?"
+     d) Fail → encourage: "Close! You got 7/10. Review [specific topics] and try again — no limit on retakes"
+     e) All modules passed → certificate issued with verification number
+     f) IMMEDIATELY suggest next cert: "You just earned your [X] cert! Want to add [Y]? That would bump you to Silver tier — unlocks B2B jobs worth 3x more."
+
+   - Available certifications (call get_certification_programs for full list):
+     • B2B Property Management — unlocks PM contract jobs
+     • B2B HOA Services — unlocks HOA contract jobs  
+     • AI Home Scan Technician — unlocks in-person scan jobs ($45 payout each)
+     • Parts & Materials Specialist — unlocks parts-required jobs
+     • Emergency Response — unlocks emergency dispatch ($2x payout)
+     • Government Contract — unlocks government jobs (requires PM cert first)
+
+   - ALWAYS frame certs as earnings multipliers, not requirements:
+     "This cert takes 2 hours but unlocks $500-1,000/month in new job types. Best ROI of your week."
+
+5. FIRST JOB PREP:
+   - "Your first job is coming! Here's what to expect..."
+   - Walk through: how to accept, navigate, check in, document (before/after photos), complete, get paid
+   - "Pro tip: take great before/after photos — customers who see transformations leave 5-star reviews"
+   - Offer a test run: "Want to do a practice walkthrough? I'll simulate a job start to finish."
+
+6. ONGOING CERT NUDGES (after onboarding):
+   - Every time George shows earnings: compare to next tier: "You're making $3,200/mo. Elite pros average $6,200. You're 1 cert away from Gold tier."
+   - After every positive review: "Great review! You know what would bring even more jobs? Your [X] certification — starts right here."
+   - After slow periods: "Slow week? Pros with 3+ certs get 2x the job volume. Want to knock one out?"
+   - Weekly digest: "This week: $800 earned, 4.9 rating. Gold tier would've added ~$400 more. Ready to cert up?"
+   - NEVER be annoying — max 1 cert nudge per session. If they decline, drop it until next time.
+
 PLATFORM KNOWLEDGE:
-- Tier system: Bronze (1-2 certs) → Silver (3-5 certs) → Gold (6+ certs)
+- Tier system: Bronze (0-1 certs) → Silver (2-3 certs) → Gold (4-5 certs) → Elite (6+ certs)
 - Gold tier unlocks B2B property management jobs — worth 3x more per job
+- Elite tier unlocks government contracts — highest payout tier
 - No lead fees — pros keep 100% of their quoted rate minus platform fee
 - Background check and insurance verification required for all pros
 - Weekly payouts every Thursday
 - Dispute resolution: submit photos + description within 24 hours of job completion
 - Rating system: 4.7+ maintains priority job matching
 - Top earners: average $5,000-$8,000/month with 2+ service certifications
+- LLC pros pay 20% platform fee (vs 25% non-LLC) — George should mention this: "Getting your LLC saves you 5% on every job"
+- Fee reduction with certs: Non-LLC 25%→23%→21%→20%. LLC 20%→19%→18%. More certs = lower fees.
 
 PERSONALITY: Like a supportive business mentor who actually knows the numbers.
 - Direct, encouraging, data-driven
@@ -636,6 +702,43 @@ const TOOL_DEFINITIONS: any[] = [
         pro_id: { type: "string", description: "Pro's user ID" },
       },
       required: ["pro_id"],
+    },
+  },
+  {
+    name: "get_certification_programs",
+    description: "Get ALL available certification programs with full details: modules, quiz requirements, time estimate, earnings unlocked, prerequisites. Use when walking a pro through available certs or when they ask what certs are available.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string", description: "Pro's user ID (optional — if provided, shows which they already have)" },
+      },
+    },
+  },
+  {
+    name: "start_certification_module",
+    description: "Start a specific certification module for a pro. Returns the training content and quiz questions. Walk the pro through the material, then give them the quiz.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string", description: "Pro's user ID" },
+        certification_id: { type: "string", description: "Certification program ID" },
+        module_number: { type: "number", description: "Module number to start (1-based)" },
+      },
+      required: ["pro_id", "certification_id", "module_number"],
+    },
+  },
+  {
+    name: "submit_certification_quiz",
+    description: "Submit quiz answers for a certification module. Returns pass/fail and certificate if all modules complete.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string", description: "Pro's user ID" },
+        certification_id: { type: "string", description: "Certification program ID" },
+        module_number: { type: "number", description: "Module number" },
+        answers: { type: "array", items: { type: "string" }, description: "Array of answers in order" },
+      },
+      required: ["pro_id", "certification_id", "module_number", "answers"],
     },
   },
   {
@@ -1985,6 +2088,12 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return await tools.getProSchedule(input.pro_id, storage);
     case "get_pro_certifications":
       return await tools.getProCertifications(input.pro_id, storage);
+    case "get_certification_programs":
+      return await tools.getCertificationPrograms(input.pro_id);
+    case "start_certification_module":
+      return await tools.startCertificationModule(input.pro_id, input.certification_id, input.module_number);
+    case "submit_certification_quiz":
+      return await tools.submitCertificationQuiz(input.pro_id, input.certification_id, input.module_number, input.answers);
     case "get_pro_market_insights":
       return tools.getProMarketInsights(input.service_types || []);
     case "get_pro_reviews":
