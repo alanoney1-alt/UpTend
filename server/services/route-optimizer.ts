@@ -128,7 +128,7 @@ function calculateMetrics(jobs: JobStop[]): { totalDistance: number; totalDriveT
 export async function optimizeRoute(proId: string, date: string): Promise<OptimizedRoute> {
   // Get jobs for the day
   const { rows: dayJobs } = await pool.query(
-    `SELECT id, pickup_address, pickup_lat, pickup_lng, scheduled_for, estimated_duration_hours
+    `SELECT id, pickup_address, pickup_lat, pickup_lng, scheduled_for
      FROM service_requests
      WHERE assigned_hauler_id = $1 AND scheduled_for::date = $2::date
      AND status IN ('pending', 'confirmed', 'in_progress')
@@ -142,7 +142,7 @@ export async function optimizeRoute(proId: string, date: string): Promise<Optimi
     lat: parseFloat(j.pickup_lat) || 28.5383, // Orlando fallback
     lng: parseFloat(j.pickup_lng) || -81.3792,
     scheduledTime: j.scheduled_for || "",
-    estimatedDuration: (j.estimated_duration_hours || 1) * 60,
+    estimatedDuration: 60, // default 1 hour — no duration column in service_requests
   }));
 
   // Also check existing route plan for manually added jobs

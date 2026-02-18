@@ -33,7 +33,7 @@ export async function getDemandForecast(
             EXTRACT(DOW FROM created_at::timestamp) as day_of_week
      FROM service_requests 
      WHERE pickup_zip = $1 AND status IN ('completed','in_progress')
-     AND created_at > NOW() - INTERVAL '90 days'
+     AND created_at::timestamp > NOW() - INTERVAL '90 days'
      GROUP BY service_type, EXTRACT(DOW FROM created_at::timestamp)
      ORDER BY job_count DESC`,
     [zip]
@@ -246,7 +246,7 @@ export async function getPerformanceAnalytics(
             hr.rating
      FROM service_requests sr
      LEFT JOIN hauler_reviews hr ON hr.service_request_id = sr.id
-     WHERE sr.hauler_id = $1 AND sr.created_at >= $2
+     WHERE sr.hauler_id = $1 AND sr.created_at::timestamp >= $2
      ORDER BY sr.created_at DESC`,
     [proId, periodStart.toISOString()]
   );
@@ -326,7 +326,7 @@ export async function getCompetitivePosition(proId: string, zip: string): Promis
             AVG(final_price)::numeric(10,2) as avg_price
      FROM service_requests sr
      LEFT JOIN hauler_reviews hr ON hr.service_request_id = sr.id
-     WHERE sr.hauler_id = $1 AND sr.status = 'completed' AND sr.created_at > NOW() - INTERVAL '90 days'`,
+     WHERE sr.hauler_id = $1 AND sr.status = 'completed' AND sr.created_at::timestamp > NOW() - INTERVAL '90 days'`,
     [proId]
   );
 
@@ -338,7 +338,7 @@ export async function getCompetitivePosition(proId: string, zip: string): Promis
             PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY hr.rating) as median_rating
      FROM service_requests sr
      LEFT JOIN hauler_reviews hr ON hr.service_request_id = sr.id
-     WHERE sr.zip_code = $1 AND sr.status = 'completed' AND sr.created_at > NOW() - INTERVAL '90 days'`,
+     WHERE sr.zip_code = $1 AND sr.status = 'completed' AND sr.created_at::timestamp > NOW() - INTERVAL '90 days'`,
     [zip]
   );
 
