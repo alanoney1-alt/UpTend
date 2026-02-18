@@ -263,16 +263,21 @@ function B2BProfileStackScreen() {
 // --- Tab Navigators ---
 
 function TabIcon({ emoji }: { emoji: string }) {
-  return <Text style={{ fontSize: 20 }}>{emoji}</Text>;
+  return <Text className="text-xl">{emoji}</Text>;
 }
 
 const tabScreenOptions = {
-  tabBarActiveTintColor: Colors.primary,
-  tabBarInactiveTintColor: Colors.textLight,
-  tabBarStyle: { borderTopColor: Colors.borderLight, paddingBottom: 4, height: 56 },
+  tabBarActiveTintColor: '#F97316',       // orange-500
+  tabBarInactiveTintColor: '#9CA3AF',     // gray-400
+  tabBarStyle: {
+    borderTopColor: '#F3F4F6',            // gray-100
+    paddingBottom: 4,
+    height: 56,
+    backgroundColor: '#FFFFFF',
+  },
   tabBarLabelStyle: { fontSize: 12, fontWeight: '600' as const },
-  headerStyle: { backgroundColor: Colors.white },
-  headerTitleStyle: { fontWeight: '700' as const, color: Colors.text },
+  headerStyle: { backgroundColor: '#FFFFFF' },
+  headerTitleStyle: { fontWeight: '700' as const, color: '#0F172A' },
 };
 
 function CustomerTabs() {

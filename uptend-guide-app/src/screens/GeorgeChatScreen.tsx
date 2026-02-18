@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView,
-  Platform, StyleSheet, ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -12,7 +12,6 @@ import QuickActions from '../components/QuickActions';
 import VoiceInput from '../components/VoiceInput';
 import { showPhotoOptions } from '../components/PhotoCapture';
 import { sendGeorgeMessage } from '../services/chat';
-import { Colors } from '../theme/colors';
 
 const WELCOME: ChatMessage = {
   id: 'welcome',
@@ -66,7 +65,6 @@ export default function GeorgeChatScreen() {
       };
       setMessages((prev) => [...prev, georgeMsg]);
 
-      // Handle tool results if present (e.g., pricing, bookings)
       if (res.toolResults && res.toolResults.length > 0) {
         res.toolResults.forEach((tool: any, idx: number) => {
           if (tool.type === 'quote' || tool.pricing) {
@@ -144,17 +142,21 @@ export default function GeorgeChatScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
       {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>George 🏠</Text>
-          <Text style={styles.headerSubtitle}>AI Home Concierge</Text>
+      <View className="bg-slate-800 px-5 py-4 border-b-[3px] border-orange-500">
+        <View className="items-center">
+          <Text className="text-[22px] font-extrabold text-white tracking-wide">
+            George 🏠
+          </Text>
+          <Text className="text-xs font-semibold text-white/70 mt-0.5">
+            AI Home Concierge
+          </Text>
         </View>
       </View>
 
       <KeyboardAvoidingView
-        style={styles.flex}
+        className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={90}
       >
@@ -163,17 +165,17 @@ export default function GeorgeChatScreen() {
           data={messages}
           keyExtractor={(m) => m.id}
           renderItem={renderItem}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={{ paddingTop: 12, paddingBottom: 8 }}
           onContentSizeChange={scrollToEnd}
           ListFooterComponent={
             isTyping ? (
-              <View style={styles.typingRow}>
-                <View style={styles.typingDots}>
-                  <View style={[styles.typingDot, styles.typingDot1]} />
-                  <View style={[styles.typingDot, styles.typingDot2]} />
-                  <View style={[styles.typingDot, styles.typingDot3]} />
+              <View className="flex-row items-center px-4 py-2">
+                <View className="flex-row gap-1">
+                  <View className="w-2 h-2 rounded-full bg-orange-500 opacity-100" />
+                  <View className="w-2 h-2 rounded-full bg-orange-500 opacity-70" />
+                  <View className="w-2 h-2 rounded-full bg-orange-500 opacity-40" />
                 </View>
-                <Text style={styles.typingText}>George is typing...</Text>
+                <Text className="text-[13px] text-gray-400 ml-2">George is typing...</Text>
               </View>
             ) : null
           }
@@ -183,109 +185,41 @@ export default function GeorgeChatScreen() {
           <QuickActions actions={QUICK_ACTIONS} onPress={sendMessage} />
         )}
 
-        <View style={styles.inputBar}>
-          <TouchableOpacity style={styles.iconBtn} onPress={() => showPhotoOptions(handlePhoto)}>
-            <Text style={styles.iconText}>📎</Text>
+        {/* Input bar */}
+        <View className="flex-row items-end px-2 py-2 bg-white border-t border-gray-100 gap-1.5">
+          <TouchableOpacity
+            className="w-11 h-11 justify-center items-center"
+            onPress={() => showPhotoOptions(handlePhoto)}
+          >
+            <Text className="text-[22px]">📎</Text>
           </TouchableOpacity>
+
           <TextInput
-            style={styles.input}
+            className="flex-1 bg-gray-50 rounded-[20px] px-4 py-2.5 text-base text-slate-900 max-h-[100px]"
             value={input}
             onChangeText={setInput}
             placeholder="Ask George anything..."
-            placeholderTextColor={Colors.textLight}
+            placeholderTextColor="#9CA3AF"
             multiline
             maxLength={2000}
             onSubmitEditing={() => sendMessage(input)}
             returnKeyType="send"
           />
+
           <VoiceInput onRecordingComplete={handleVoiceRecording} />
+
           <TouchableOpacity
-            style={[styles.sendBtn, !input.trim() && styles.sendBtnDisabled]}
+            className={`w-10 h-10 rounded-full justify-center items-center ${
+              input.trim() ? 'bg-orange-500 shadow-orange-500/40' : 'bg-gray-200'
+            }`}
             onPress={() => sendMessage(input)}
             disabled={!input.trim()}
             activeOpacity={0.7}
           >
-            <Text style={styles.sendIcon}>↑</Text>
+            <Text className="text-white text-xl font-bold">↑</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  header: {
-    backgroundColor: '#2D2640',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 3,
-    borderBottomColor: Colors.primary,
-  },
-  headerContent: {
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: Colors.white,
-    letterSpacing: 0.5,
-  },
-  headerSubtitle: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.7)',
-    fontWeight: '600',
-    marginTop: 2,
-  },
-  flex: { flex: 1 },
-  listContent: { paddingTop: 12, paddingBottom: 8 },
-  typingRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8 },
-  typingDots: { flexDirection: 'row', gap: 4 },
-  typingDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.primary,
-  },
-  typingDot1: { opacity: 1 },
-  typingDot2: { opacity: 0.7 },
-  typingDot3: { opacity: 0.4 },
-  typingText: { fontSize: 13, color: Colors.textLight, marginLeft: 8 },
-  inputBar: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    backgroundColor: Colors.white,
-    borderTopWidth: 1,
-    borderTopColor: Colors.borderLight,
-    gap: 6,
-  },
-  iconBtn: { width: 44, height: 44, justifyContent: 'center', alignItems: 'center' },
-  iconText: { fontSize: 22 },
-  input: {
-    flex: 1,
-    backgroundColor: Colors.inputBackground,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    fontSize: 16,
-    maxHeight: 100,
-    color: Colors.text,
-  },
-  sendBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  sendBtnDisabled: { backgroundColor: Colors.border, shadowOpacity: 0 },
-  sendIcon: { color: Colors.white, fontSize: 20, fontWeight: '700' },
-});
