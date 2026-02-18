@@ -3266,6 +3266,46 @@ export async function getDroneScanStatus(params: { customerId: string; bookingId
   };
 }
 
+// ─── Insurance, Emergency & Briefing Tools ──────────────
+
+import { startClaim, getStormPrepChecklist } from "./insurance-claims";
+import { createEmergencyDispatch } from "./emergency-dispatch";
+import { generateMorningBriefing, getWeatherForZip } from "./morning-briefing";
+
+export async function startInsuranceClaim(params: {
+  customerId: string;
+  claimType: string;
+  description: string;
+}): Promise<object> {
+  return startClaim(params.customerId, params.claimType, params.description);
+}
+
+export async function getStormPrepChecklistTool(params: {
+  customerId: string;
+  stormType: string;
+}): Promise<object> {
+  return getStormPrepChecklist(params.customerId, params.stormType);
+}
+
+export async function createEmergencyDispatchTool(params: {
+  customerId: string;
+  emergencyType: string;
+  severity: string;
+  description: string;
+}): Promise<object> {
+  return createEmergencyDispatch(params.customerId, params.emergencyType, params.severity, params.description);
+}
+
+export async function getMorningBriefingTool(params: {
+  customerId: string;
+}): Promise<object> {
+  return generateMorningBriefing(params.customerId);
+}
+
+export async function getWeather(params: { zip: string }): Promise<object> {
+  return getWeatherForZip(params.zip);
+}
+
 // ─── Smart Home Tools ───────────────────────────────────
 
 import {

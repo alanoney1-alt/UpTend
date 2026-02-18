@@ -185,8 +185,18 @@ import { registerDroneScanRoutes } from "./drone-scan.routes";
 // Smart Home OAuth routes
 import { registerSmartHomeRoutes } from "./smart-home.routes";
 
+// Insurance Claims + Emergency Dispatch + Briefing routes
+import { registerInsuranceClaimsRoutes } from "./insurance-claims.routes";
+import { registerEmergencyDispatchRoutes } from "./emergency-dispatch.routes";
+import { registerBriefingRoutes } from "./briefing.routes";
+
 // Centralized Pricing Engine routes
 import { registerCentralizedPricingRoutes } from "./pricing.routes";
+
+// Loyalty Engine + Referral Engine + Community Engine routes
+import { registerLoyaltyEngineRoutes } from "./loyalty.routes";
+import { registerReferralEngineRoutes } from "./referrals.routes";
+import { registerCommunityEngineRoutes } from "./community.routes";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -397,8 +407,18 @@ export async function registerRoutes(
   // Register Smart Home OAuth routes
   registerSmartHomeRoutes(app);
 
+  // Register Insurance Claims + Emergency Dispatch + Briefing routes
+  registerInsuranceClaimsRoutes(app);
+  registerEmergencyDispatchRoutes(app);
+  registerBriefingRoutes(app);
+
   // Register Centralized Pricing Engine routes
   registerCentralizedPricingRoutes(app);
+
+  // Register Loyalty Engine + Referral Engine + Community Engine routes
+  registerLoyaltyEngineRoutes(app);
+  registerReferralEngineRoutes(app);
+  registerCommunityEngineRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
