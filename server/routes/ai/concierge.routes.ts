@@ -37,62 +37,67 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
     })).optional(),
   });
 
-  router.post("/chat", requireAuth, async (req, res) => {
+  router.post("/chat", async (req, res) => {
     try {
       const validated = chatSchema.parse(req.body);
-      const userId = ((req.user as any).userId || (req.user as any).id);
+      const userId = (req.user as any)?.userId || (req.user as any)?.id || null;
+      const isAuthenticated = !!userId;
 
-      // Get or create conversation
-      let conversation;
-      if (validated.conversationId) {
-        conversation = await storage.getAiConversation(validated.conversationId);
-        if (!conversation || conversation.userId !== userId) {
-          return res.status(404).json({ error: "Conversation not found" });
+      // Get or create conversation (only for authenticated users)
+      let conversation: any = null;
+      if (isAuthenticated) {
+        if (validated.conversationId) {
+          conversation = await storage.getAiConversation(validated.conversationId);
+          if (!conversation || conversation.userId !== userId) {
+            return res.status(404).json({ error: "Conversation not found" });
+          }
+        } else {
+          // Create new conversation
+          conversation = await storage.createAiConversation({
+            userId,
+            title: validated.message.slice(0, 100),
+            channel: "in_app",
+            status: "active",
+            contextType: validated.conversationType || "general",
+            messageCount: 0,
+            aiModelUsed: "claude-sonnet",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          } as any);
         }
-      } else {
-        // Create new conversation
-        conversation = await storage.createAiConversation({
-          userId,
-          title: validated.message.slice(0, 100),
-          channel: "in_app",
-          status: "active",
-          contextType: validated.conversationType || "general",
-          messageCount: 0,
-          aiModelUsed: "claude-sonnet",
+
+        // Save user message
+        await storage.createAiConversationMessage({
+          conversationId: conversation.id,
+          role: "user",
+          content: validated.message,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
         } as any);
       }
-
-      // Save user message
-      await storage.createAiConversationMessage({
-        conversationId: conversation.id,
-        role: "user",
-        content: validated.message,
-        createdAt: new Date().toISOString(),
-      } as any);
 
       // Build conversation history — prefer client-sent history, fall back to DB
       let conversationHistory: Array<{ role: "user" | "assistant"; content: string }>;
       if (validated.conversationHistory && validated.conversationHistory.length > 0) {
         conversationHistory = validated.conversationHistory as Array<{ role: "user" | "assistant"; content: string }>;
-      } else {
-        const existingMessages = conversation.id ? await storage.getAiMessagesByConversation(conversation.id) : [];
+      } else if (conversation?.id) {
+        const existingMessages = await storage.getAiMessagesByConversation(conversation.id);
         conversationHistory = existingMessages.map((m: any) => ({
           role: m.role as "user" | "assistant",
           content: m.content,
         }));
+      } else {
+        conversationHistory = [];
       }
 
-      // Get user info for context
-      const user = await storage.getUser(userId);
+      // Get user info for context (if authenticated)
+      const user = isAuthenticated ? await storage.getUser(userId) : null;
 
       // Build George context
       const georgeContext: GeorgeContext = {
-        userId: String(userId),
+        userId: userId ? String(userId) : "anonymous",
         userName: user?.firstName || user?.username || undefined,
         currentPage: validated.currentPage || undefined,
-        isAuthenticated: true,
+        isAuthenticated,
         storage,
       };
 
@@ -103,32 +108,39 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
         georgeContext
       );
 
-      // Save AI response
-      const aiMessage = await storage.createAiConversationMessage({
-        conversationId: conversation.id,
-        role: "assistant",
-        content: georgeResult.response,
-        suggestedActions: georgeResult.buttons.length > 0 ? JSON.stringify(georgeResult.buttons) : null,
-        createdAt: new Date().toISOString(),
-      } as any);
+      // Save AI response (only for authenticated users with a conversation)
+      let aiMessage: any = null;
+      if (conversation) {
+        aiMessage = await storage.createAiConversationMessage({
+          conversationId: conversation.id,
+          role: "assistant",
+          content: georgeResult.response,
+          suggestedActions: georgeResult.buttons.length > 0 ? JSON.stringify(georgeResult.buttons) : null,
+          createdAt: new Date().toISOString(),
+        } as any);
 
-      // Update conversation
-      await storage.updateAiConversation(conversation.id, {
-        updatedAt: new Date().toISOString(),
-        messageCount: (conversation.messageCount || 0) + 2,
-      });
+        // Update conversation
+        await storage.updateAiConversation(conversation.id, {
+          updatedAt: new Date().toISOString(),
+          messageCount: (conversation.messageCount || 0) + 2,
+        });
+      }
 
       res.json({
         success: true,
-        conversationId: conversation.id,
+        conversationId: conversation?.id || null,
         response: georgeResult.response,
         buttons: georgeResult.buttons,
         bookingDraft: georgeResult.bookingDraft || null,
-        message: {
+        message: aiMessage ? {
           id: aiMessage.id,
           role: aiMessage.role,
           content: aiMessage.content,
           createdAt: aiMessage.createdAt,
+        } : {
+          role: "assistant",
+          content: georgeResult.response,
+          createdAt: new Date().toISOString(),
         },
       });
     } catch (error: any) {

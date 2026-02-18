@@ -214,7 +214,7 @@ export async function getRouteForDay(proId: string, date: string): Promise<Optim
 export async function addJobToRoute(proId: string, date: string, jobId: string): Promise<OptimizedRoute> {
   // Get the new job
   const { rows: newJob } = await pool.query(
-    `SELECT id, address, latitude, longitude, scheduled_date, estimated_duration
+    `SELECT id, address, latitude, longitude, scheduled_date
      FROM service_requests WHERE id = $1`,
     [jobId]
   );
@@ -228,7 +228,7 @@ export async function addJobToRoute(proId: string, date: string, jobId: string):
     lat: parseFloat(j.latitude) || 28.5383,
     lng: parseFloat(j.longitude) || -81.3792,
     scheduledTime: j.scheduled_date || "",
-    estimatedDuration: j.estimated_duration || 60,
+    estimatedDuration: 60,
   };
 
   // Get existing route
