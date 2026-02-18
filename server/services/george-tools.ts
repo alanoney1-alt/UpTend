@@ -3344,3 +3344,71 @@ export async function getSmartHomeOAuthStatus(params: { customerId: string }): P
     message: `You have ${connections.length} platform(s) connected with ${connections.reduce((s: number, c: any) => s + (c.device_count || 0), 0)} devices. ${alerts.length ? `⚠️ ${alerts.length} unacknowledged alert(s).` : "All clear — no alerts!"}`,
   };
 }
+
+// ═══════════════════════════════════════════════
+// CONSENT + PASSIVE DATA TOOLS (for George)
+// ═══════════════════════════════════════════════
+
+import {
+  checkConsent as _checkConsent,
+  requireConsent as _requireConsent,
+  grantConsent as _grantConsent,
+  type ConsentType,
+} from "./consent-manager";
+import {
+  getNextQuestion as _getNextQuestion,
+  collectFromProReport as _collectFromProReport,
+} from "./passive-data";
+
+/**
+ * checkUserConsent — Check if user has consented to a specific data type
+ */
+export async function checkUserConsent(params: {
+  userId: string;
+  consentType: string;
+}): Promise<{ hasConsent: boolean }> {
+  const hasConsent = await _checkConsent(params.userId, params.consentType as ConsentType);
+  return { hasConsent };
+}
+
+/**
+ * requestConsent — Conversationally ask for consent; returns prompt if not yet granted
+ */
+export async function requestConsent(params: {
+  userId: string;
+  consentType: string;
+  customMessage?: string;
+}): Promise<{ hasConsent: boolean; prompt?: string }> {
+  return _requireConsent(params.userId, params.consentType as ConsentType, params.customMessage);
+}
+
+/**
+ * getNextPassiveQuestion — Gets one question to weave into conversation
+ */
+export async function getNextPassiveQuestion(params: {
+  customerId: string;
+}): Promise<{ question: string; dataKey: string; relatedService: string } | { message: string }> {
+  const result = await _getNextQuestion(params.customerId);
+  if (!result) return { message: "Home profile is looking great — no more questions needed right now!" };
+  return result;
+}
+
+/**
+ * submitProSiteReport — Pro reports observations from job
+ */
+export async function submitProSiteReport(params: {
+  proId: string;
+  jobId: string;
+  customerId: string;
+  reportType: string;
+  details: Record<string, any>;
+  photos?: string[];
+}): Promise<{ reportId: string; message: string }> {
+  const reportId = await _collectFromProReport(params.proId, params.jobId, {
+    customerId: params.customerId,
+    reportType: params.reportType,
+    details: params.details,
+    photos: params.photos,
+  });
+  return { reportId, message: "Report submitted — thanks for the observations! This helps us serve the customer better." };
+}

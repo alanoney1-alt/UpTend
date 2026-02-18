@@ -173,6 +173,9 @@ import { registerGeorgeCronRoutes } from "./george-cron.routes";
 // George Daily Engagement routes (Phase 3)
 import { registerGeorgeDailyRoutes } from "./george-daily.routes";
 
+// Consent + Re-engagement routes
+import { registerConsentRoutes } from "./consent.routes";
+
 // Self-Serve AI Home Scan routes
 import { registerHomeScanRoutes } from "./home-scan.routes";
 
@@ -381,6 +384,9 @@ export async function registerRoutes(
 
   // Register George Daily Engagement routes (Phase 3)
   registerGeorgeDailyRoutes(app);
+
+  // Register Consent + Re-engagement routes
+  registerConsentRoutes(app);
 
   // Register Self-Serve AI Home Scan + Wallet routes
   registerHomeScanRoutes(app);
