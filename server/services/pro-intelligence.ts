@@ -32,7 +32,7 @@ export async function getDemandForecast(
             AVG(final_price)::numeric(10,2) as avg_price,
             EXTRACT(DOW FROM created_at::timestamp) as day_of_week
      FROM service_requests 
-     WHERE zip_code = $1 AND status IN ('completed','in_progress')
+     WHERE pickup_zip = $1 AND status IN ('completed','in_progress')
      AND created_at > NOW() - INTERVAL '90 days'
      GROUP BY service_type, EXTRACT(DOW FROM created_at::timestamp)
      ORDER BY job_count DESC`,

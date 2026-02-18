@@ -142,6 +142,7 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
           return res.json({
             success: true,
             message: "Login successful",
+            userId: user.userId,
             role: user.role,
             hasPaymentMethod: !!fullUser?.stripeCustomerId,
           });

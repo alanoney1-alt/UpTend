@@ -20,6 +20,10 @@ export function registerConsentRoutes(app: Express): void {
   // Get all consent statuses for a user
   app.get("/api/consent/:userId", async (req: Request, res: Response) => {
     try {
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(req.params.userId)) {
+        return res.status(400).json({ success: false, error: "Invalid userId format — expected UUID" });
+      }
       const consents = await getConsentStatus(req.params.userId);
       res.json({ success: true, consents });
     } catch (error: any) {
