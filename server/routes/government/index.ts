@@ -43,7 +43,8 @@ function registerCrud(
   // GET by id
   app.get(`${basePath}/:id`, requireAuth, async (req, res) => {
     try {
-      const [row] = await db.select().from(table).where(eq(table.id, req.params.id));
+      const rowResult = await db.select().from(table).where(eq(table.id, req.params.id));
+      const row = (rowResult as any[])[0];
       if (!row) return res.status(404).json({ error: `${entityName} not found` });
       res.json(row);
     } catch (error) {
@@ -57,7 +58,8 @@ function registerCrud(
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const values = ownerField ? { ...req.body, [ownerField]: userId } : req.body;
-      const [created] = await db.insert(table).values(values).returning();
+      const result = await db.insert(table).values(values).returning();
+      const created = (result as any[])[0];
       res.status(201).json(created);
     } catch (error) {
       console.error(`Error creating ${entityName}:`, error);
@@ -68,10 +70,11 @@ function registerCrud(
   // PUT update
   app.put(`${basePath}/:id`, requireAuth, async (req, res) => {
     try {
-      const [updated] = await db.update(table)
+      const updResult = await db.update(table)
         .set({ ...req.body, updatedAt: new Date().toISOString() })
         .where(eq(table.id, req.params.id))
         .returning();
+      const updated = (updResult as any[])[0];
       if (!updated) return res.status(404).json({ error: `${entityName} not found` });
       res.json(updated);
     } catch (error) {
@@ -83,7 +86,8 @@ function registerCrud(
   // DELETE
   app.delete(`${basePath}/:id`, requireAuth, async (req, res) => {
     try {
-      const [deleted] = await db.delete(table).where(eq(table.id, req.params.id)).returning();
+      const delResult = await db.delete(table).where(eq(table.id, req.params.id)).returning();
+      const deleted = (delResult as any[])[0];
       if (!deleted) return res.status(404).json({ error: `${entityName} not found` });
       res.json({ success: true });
     } catch (error) {

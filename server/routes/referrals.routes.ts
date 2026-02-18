@@ -7,7 +7,8 @@ import {
 export function registerReferralEngineRoutes(app: Express) {
   app.post("/api/referrals/generate-code", async (req, res) => {
     try {
-      const { customerId } = req.body;
+      const customerId = req.body.customerId || (req as any).user?.userId || (req as any).user?.id;
+      if (!customerId) return res.status(400).json({ error: "customerId required" });
       const result = await generateReferralCode(customerId);
       res.json(result);
     } catch (e: any) {
