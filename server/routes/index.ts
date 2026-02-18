@@ -216,6 +216,9 @@ import { registerShoppingRoutes } from "./shopping.routes";
 // Pro Field Assistant routes
 import { registerProFieldAssistRoutes } from "./pro-field-assist.routes";
 
+// Auto Services routes (vehicle profiles, maintenance, diagnosis, parts, OBD)
+import { registerAutoRoutes } from "./auto.routes.js";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -452,6 +455,9 @@ export async function registerRoutes(
 
   // Register Shopping Assistant + Tutorial routes
   registerShoppingRoutes(app);
+
+  // Register Auto Services routes
+  registerAutoRoutes(app);
 
   // Register Pro Field Assistant routes
   registerProFieldAssistRoutes(app);

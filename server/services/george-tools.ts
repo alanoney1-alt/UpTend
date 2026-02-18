@@ -4500,3 +4500,123 @@ export async function getSeasonalDIYSuggestionsForGeorge(params: {
   const month = params.month || new Date().getMonth() + 1;
   return _getSeasonalDIYProjects(month);
 }
+
+// ─────────────────────────────────────────────
+// Auto Services — Vehicle, Maintenance, Diagnosis, Parts, OBD
+// ─────────────────────────────────────────────
+import {
+  addVehicle as _addVehicle,
+  lookupVehicleByVIN as _lookupVehicleByVIN,
+  getMaintenanceSchedule as _getAutoMaintenanceSchedule,
+  logMaintenance as _logMaintenance,
+  getMaintenanceDue as _getMaintenanceDue,
+  diagnoseIssue as _diagnoseIssue,
+  searchAutoParts as _searchAutoParts,
+  findAutoTutorial as _findAutoTutorial,
+  getOBDCodeInfo as _getOBDCodeInfo,
+  estimateRepairCost as _estimateRepairCost,
+} from "./auto-services.js";
+
+/**
+ * addVehicleToProfile — add a vehicle to a customer's garage
+ */
+export async function addVehicleToProfile(params: {
+  customerId: string;
+  year?: number; make?: string; model?: string; trim?: string; vin?: string;
+  mileage?: number; color?: string; licensePlate?: string; nickname?: string;
+  oilType?: string; tireSize?: string; engineSize?: string; transmission?: string; fuelType?: string;
+}): Promise<object> {
+  const { customerId, ...vehicleData } = params;
+  return _addVehicle(customerId, vehicleData);
+}
+
+/**
+ * lookupVIN — decode a VIN to get vehicle details
+ */
+export async function lookupVIN(params: { vin: string }): Promise<object> {
+  return _lookupVehicleByVIN(params.vin);
+}
+
+/**
+ * getVehicleMaintenanceSchedule — get upcoming maintenance schedule for a vehicle
+ */
+export async function getVehicleMaintenanceSchedule(params: { vehicleId: string }): Promise<object> {
+  return _getAutoMaintenanceSchedule(params.vehicleId);
+}
+
+/**
+ * logVehicleMaintenance — log a completed maintenance item
+ */
+export async function logVehicleMaintenance(params: {
+  customerId: string;
+  vehicleId: string;
+  serviceType: string;
+  description?: string;
+  mileageAtService?: number;
+  cost?: number;
+  provider?: string;
+  notes?: string;
+  receiptUrl?: string;
+}): Promise<object> {
+  const { customerId, vehicleId, ...entry } = params;
+  return _logMaintenance(customerId, vehicleId, entry);
+}
+
+/**
+ * getVehicleMaintenanceDue — get all overdue/upcoming maintenance across customer vehicles
+ */
+export async function getVehicleMaintenanceDue(params: { customerId: string }): Promise<object> {
+  return _getMaintenanceDue(params.customerId);
+}
+
+/**
+ * diagnoseCarIssue — AI-powered car issue diagnosis from symptoms/photos
+ */
+export async function diagnoseCarIssue(params: {
+  customerId: string;
+  vehicleId?: string;
+  symptoms: string;
+  photos?: string[];
+}): Promise<object> {
+  return _diagnoseIssue(params.customerId, params.vehicleId || null, params.symptoms, params.photos);
+}
+
+/**
+ * searchAutoPartsForGeorge — search for auto parts across retailers
+ */
+export async function searchAutoPartsForGeorge(params: {
+  customerId: string;
+  partName: string;
+  vehicleId?: string;
+  year?: number; make?: string; model?: string;
+}): Promise<object> {
+  return _searchAutoParts(params.customerId, params.partName, params.vehicleId, params.year, params.make, params.model);
+}
+
+/**
+ * findAutoTutorial — find YouTube tutorials for auto repair tasks
+ */
+export async function findAutoTutorial(params: {
+  task: string;
+  year?: number; make?: string; model?: string;
+}): Promise<object> {
+  return _findAutoTutorial(params.task, params.year, params.make, params.model);
+}
+
+/**
+ * getOBDCode — look up what an OBD-II code means and recommended actions
+ */
+export async function getOBDCode(params: { code: string }): Promise<object> {
+  return _getOBDCodeInfo(params.code);
+}
+
+/**
+ * estimateAutoRepairCost — estimate cost range for a repair
+ */
+export async function estimateAutoRepairCost(params: {
+  repairType: string;
+  year?: number; make?: string; model?: string;
+  zipCode?: string;
+}): Promise<object> {
+  return _estimateRepairCost(params.repairType, params.year, params.make, params.model, params.zipCode);
+}
