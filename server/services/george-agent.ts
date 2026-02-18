@@ -2228,6 +2228,124 @@ function parseButtons(text: string): {
 // ─────────────────────────────────────────────
 // Main chat function
 // ─────────────────────────────────────────────
+// AUDIENCE ADAPTIVE PROFILING
+// Analyzes conversation signals to adapt George's communication style
+// ─────────────────────────────────────────────
+
+type AudienceProfile = "senior" | "gen-z" | "busy-professional" | "detail-oriented" | "default";
+
+function profileAudience(
+  messages: Array<{ role: "user" | "assistant"; content: string }>,
+  context?: GeorgeContext
+): AudienceProfile {
+  const userMessages = messages.filter((m) => m.role === "user").map((m) => m.content);
+  if (userMessages.length === 0) return "default";
+
+  const allText = userMessages.join(" ");
+  const avgLength = allText.length / userMessages.length;
+  const hasEmoji = /[\uD83C-\uDBFF][\uDC00-\uDFFF]/.test(allText) || allText.includes("😀") || allText.includes("👍") || allText.includes("🔥") || allText.includes("💀") || allText.includes("😂");
+  const hasSlang = /\b(lol|omg|bruh|ngl|tbh|fr|bet|slay|vibe|lowkey|highkey|idk|wya|asap|rn)\b/i.test(allText);
+  const hasEllipsis = /\.{3,}/.test(allText);
+  const asksHowItWorks = /how (does|do) (this|it|that) work|what is|explain|help me understand|not sure how|confused/i.test(allText);
+  const wantsSpeed = /just (book|do|fix|schedule)|asap|quick|fast|hurry|rush|don't care|whatever works|just get it done/i.test(allText);
+  const wantsDetail = /break(down| it down)|itemized|line.?by.?line|explain the (cost|price|fee)|why (is|does)|how much exactly|what's included/i.test(allText);
+  const mentionsVoiceOrCall = /call me|phone|voice|can you call|prefer (to talk|calling)|hard to type|can't type well/i.test(allText);
+  const formalLanguage = /\b(please|thank you|kindly|would you|could you|I would appreciate|good (morning|afternoon|evening))\b/i.test(allText);
+  const shortMessages = avgLength < 25;
+  const longMessages = avgLength > 120;
+
+  // Senior signals: formal, asks how things work, mentions calling, longer deliberate messages, ellipsis
+  let seniorScore = 0;
+  if (formalLanguage) seniorScore += 2;
+  if (asksHowItWorks) seniorScore += 2;
+  if (mentionsVoiceOrCall) seniorScore += 3;
+  if (hasEllipsis) seniorScore += 1;
+  if (!hasEmoji && !hasSlang) seniorScore += 1;
+
+  // Gen-Z signals: short messages, emoji, slang, wants speed
+  let genZScore = 0;
+  if (shortMessages) genZScore += 2;
+  if (hasEmoji) genZScore += 2;
+  if (hasSlang) genZScore += 3;
+  if (wantsSpeed) genZScore += 2;
+
+  // Busy professional: wants speed, moderate length, no slang
+  let busyScore = 0;
+  if (wantsSpeed && !hasSlang) busyScore += 3;
+  if (!longMessages && !shortMessages) busyScore += 1;
+  if (formalLanguage && wantsSpeed) busyScore += 2;
+
+  // Detail-oriented: long messages, asks for breakdowns
+  let detailScore = 0;
+  if (longMessages) detailScore += 2;
+  if (wantsDetail) detailScore += 3;
+
+  const scores: Array<[AudienceProfile, number]> = [
+    ["senior", seniorScore],
+    ["gen-z", genZScore],
+    ["busy-professional", busyScore],
+    ["detail-oriented", detailScore],
+  ];
+
+  const [topProfile, topScore] = scores.sort((a, b) => b[1] - a[1])[0];
+  // Need minimum confidence threshold
+  return topScore >= 3 ? topProfile : "default";
+}
+
+function getAdaptivePrompt(profile: AudienceProfile): string {
+  switch (profile) {
+    case "senior":
+      return `
+AUDIENCE ADAPTATION — PATIENT & ACCESSIBLE:
+- Use simple, clear language. Avoid jargon and abbreviations.
+- Write in shorter sentences. One idea per sentence.
+- Explain each step before moving to the next.
+- Offer to call them or have someone call: "Would you like us to call you to walk through this?"
+- Don't assume tech familiarity. If mentioning the app or website, give explicit instructions.
+- Be warm, patient, and reassuring. Never rush.
+- Use larger, clearer button labels. Fewer options at a time (max 2 buttons).
+- If they seem confused, proactively simplify: "Let me break that down..."
+- Address them respectfully. Mirror their formality level.`;
+
+    case "gen-z":
+      return `
+AUDIENCE ADAPTATION — FAST & CASUAL:
+- Be concise. 1-2 sentences max. They want speed.
+- Use quick-reply buttons aggressively — let them tap instead of type.
+- Emoji is fine (match their energy, 1-2 per message).
+- Lead with the price/answer, then details only if asked.
+- Skip pleasantries and get to the point. "Pressure wash: $149. Thursday? ✅"
+- If they say "bet" or "yep" or "do it" — that's a yes, move forward immediately.
+- Show you respect their time. No walls of text.
+- Offer 3-4 quick-reply buttons for fast tapping.`;
+
+    case "busy-professional":
+      return `
+AUDIENCE ADAPTATION — EFFICIENT & RESPECTFUL:
+- Lead with the answer/recommendation, then offer details on request.
+- Format: "Recommendation: X. Cost: $Y. Available: Z. Want me to book it?"
+- Don't ask unnecessary questions — make smart defaults and confirm.
+- Offer to handle everything: "I'll take care of the rest — you'll get a confirmation text."
+- Respect their time explicitly: "This will take 30 seconds."
+- One clear CTA per message. Don't give 5 options when 2 will do.
+- If they say "just handle it" — proceed with best option, confirm after.`;
+
+    case "detail-oriented":
+      return `
+AUDIENCE ADAPTATION — THOROUGH & TRANSPARENT:
+- Provide full breakdowns: line items, what's included, what's not.
+- Explain the "why" behind pricing and recommendations.
+- Offer comparisons: "Option A vs Option B — here's the difference."
+- Don't skip steps. They want to understand before they commit.
+- Include relevant context: average local pricing, what neighbors pay, seasonal factors.
+- Be prepared for follow-up questions — anticipate and address them proactively.
+- Show your work: "Based on your 2,400 sq ft home with a tile roof, here's the breakdown..."`;
+
+    default:
+      return ""; // No adaptation needed
+  }
+}
+
 export interface GeorgeContext {
   userId?: string;
   userName?: string;
@@ -2273,6 +2391,13 @@ export async function chat(
     if (context.isAuthenticated) systemPrompt += `\n- User is logged in`;
     else systemPrompt += `\n- User is NOT logged in (prospective)`;
     if (context.userId) systemPrompt += `\n- User ID: ${context.userId}`;
+  }
+
+  // Audience adaptive profiling — analyze conversation to adapt style
+  const audienceProfile = profileAudience(conversationHistory, context);
+  const adaptivePrompt = getAdaptivePrompt(audienceProfile);
+  if (adaptivePrompt) {
+    systemPrompt += "\n" + adaptivePrompt;
   }
 
   // Build messages array for Claude
