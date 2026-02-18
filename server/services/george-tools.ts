@@ -4515,6 +4515,9 @@ import {
   findAutoTutorial as _findAutoTutorial,
   getOBDCodeInfo as _getOBDCodeInfo,
   estimateRepairCost as _estimateRepairCost,
+  startVehicleDIYSession as _startVehicleDIYSession,
+  checkVehicleRecalls as _checkVehicleRecalls,
+  getMaintenanceHistory as _getMaintenanceHistory,
 } from "./auto-services.js";
 
 /**
@@ -4619,4 +4622,98 @@ export async function estimateAutoRepairCost(params: {
   zipCode?: string;
 }): Promise<object> {
   return _estimateRepairCost(params.repairType, params.year, params.make, params.model, params.zipCode);
+}
+
+// ═════════════════════════════════════════════
+// AUTOMOTIVE MODULE — New George Tools
+// ═════════════════════════════════════════════
+
+/**
+ * tool_vehicle_add — add a vehicle to a customer's garage
+ */
+export async function tool_vehicle_add(params: {
+  customerId: string;
+  year?: number; make?: string; model?: string; trim?: string;
+  vin?: string; mileage?: number; color?: string; nickname?: string;
+  oilType?: string; tireSize?: string; engineSize?: string;
+  transmission?: string; fuelType?: string;
+}): Promise<object> {
+  const { customerId, ...vehicleData } = params;
+  return _addVehicle(customerId, vehicleData);
+}
+
+/**
+ * tool_vehicle_diagnose — diagnose a vehicle issue from symptoms, with safety escalation
+ */
+export async function tool_vehicle_diagnose(params: {
+  symptomDescription: string;
+  vehicleInfo?: { year?: number; make?: string; model?: string };
+  photoUrl?: string;
+}): Promise<object> {
+  return _diagnoseIssue(params.symptomDescription, params.vehicleInfo, params.photoUrl);
+}
+
+/**
+ * tool_vehicle_parts_search — search for auto parts across multiple retailers
+ */
+export async function tool_vehicle_parts_search(params: {
+  partName: string;
+  year?: number; make?: string; model?: string;
+  customerId?: string; vehicleId?: string;
+}): Promise<object> {
+  return _searchAutoParts(params.partName, params.year, params.make, params.model, params.customerId, params.vehicleId);
+}
+
+/**
+ * tool_vehicle_diy_start — start a vehicle DIY repair coaching session.
+ * Safety-critical repairs (brake lines, fuel system, airbags, transmission internals, etc.)
+ * are automatically escalated — George recommends a qualified independent contractor instead.
+ */
+export async function tool_vehicle_diy_start(params: {
+  customerId: string;
+  vehicleId?: string;
+  issue: string;
+}): Promise<object> {
+  return _startVehicleDIYSession(params.customerId, params.vehicleId || null, params.issue);
+}
+
+/**
+ * tool_vehicle_recall_check — check NHTSA recalls for a vehicle by VIN
+ */
+export async function tool_vehicle_recall_check(params: {
+  vin: string;
+  vehicleId?: string;
+}): Promise<object> {
+  return _checkVehicleRecalls(params.vin, params.vehicleId);
+}
+
+/**
+ * tool_vehicle_maintenance_log — log completed maintenance for a vehicle
+ */
+export async function tool_vehicle_maintenance_log(params: {
+  customerId: string;
+  vehicleId: string;
+  serviceType: string;
+  mileage?: number;
+  cost?: number;
+  partsUsed?: any[];
+  notes?: string;
+  performedAt?: string;
+}): Promise<object> {
+  return _logMaintenance(params.customerId, params.vehicleId, {
+    maintenanceType: params.serviceType,
+    mileageAtService: params.mileage,
+    cost: params.cost,
+    parts: params.partsUsed,
+    notes: params.notes,
+  });
+}
+
+/**
+ * tool_vehicle_maintenance_due — check what maintenance is due/overdue for a customer's vehicles
+ */
+export async function tool_vehicle_maintenance_due(params: {
+  customerId: string;
+}): Promise<object> {
+  return _getMaintenanceDue(params.customerId);
 }
