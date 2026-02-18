@@ -263,7 +263,7 @@ function B2BProfileStackScreen() {
 // --- Tab Navigators ---
 
 function TabIcon({ emoji }: { emoji: string }) {
-  return <Text className="text-xl">{emoji}</Text>;
+  return <Text style={{ fontSize: 20 }}>{emoji}</Text>;
 }
 
 const tabScreenOptions = {

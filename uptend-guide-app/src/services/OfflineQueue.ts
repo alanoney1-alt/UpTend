@@ -80,7 +80,7 @@ class OfflineQueueService {
         const headers: Record<string, string> = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const res = await fetch(`http://localhost:5000${action.path}`, {
+        const res = await fetch(`https://uptendapp.com${action.path}`, {
           method: action.method,
           headers,
           body: action.body ? JSON.stringify(action.body) : undefined,
@@ -120,7 +120,7 @@ class OfflineQueueService {
         const headers: Record<string, string> = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const res = await fetch(`http://localhost:5000${path}`, {
+        const res = await fetch(`https://uptendapp.com${path}`, {
           method, headers,
           body: body ? JSON.stringify(body) : undefined,
         });

@@ -159,21 +159,21 @@ export default function GeorgeChatScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['top', 'bottom']}>
       {/* Header */}
-      <View className="bg-slate-800 px-5 py-4 border-b-[3px] border-orange-500">
-        <View className="items-center">
-          <Text className="text-[22px] font-extrabold text-white tracking-wide">
+      <View style={{ backgroundColor: '#1e293b', paddingHorizontal: 20, paddingVertical: 16, borderBottomWidth: 3, borderBottomColor: '#f97316' }}>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ fontSize: 22, fontWeight: '800', color: '#ffffff', letterSpacing: 1 }}>
             George 🏠
           </Text>
-          <Text className="text-xs font-semibold text-white/70 mt-0.5">
+          <Text style={{ fontSize: 12, fontWeight: '600', color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
             AI Home Concierge
           </Text>
         </View>
       </View>
 
       <KeyboardAvoidingView
-        className="flex-1"
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={90}
       >
@@ -186,13 +186,13 @@ export default function GeorgeChatScreen() {
           onContentSizeChange={scrollToEnd}
           ListFooterComponent={
             isTyping ? (
-              <View className="flex-row items-center px-4 py-2">
-                <View className="flex-row gap-1">
-                  <View className="w-2 h-2 rounded-full bg-orange-500 opacity-100" />
-                  <View className="w-2 h-2 rounded-full bg-orange-500 opacity-70" />
-                  <View className="w-2 h-2 rounded-full bg-orange-500 opacity-40" />
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8 }}>
+                <View style={{ flexDirection: 'row', gap: 4 }}>
+                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97316', opacity: 1 }} />
+                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97316', opacity: 0.7 }} />
+                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97316', opacity: 0.4 }} />
                 </View>
-                <Text className="text-[13px] text-gray-400 ml-2">George is typing...</Text>
+                <Text style={{ fontSize: 13, color: '#9ca3af', marginLeft: 8 }}>George is typing...</Text>
               </View>
             ) : null
           }
@@ -203,16 +203,16 @@ export default function GeorgeChatScreen() {
         )}
 
         {/* Input bar */}
-        <View className="flex-row items-end px-2 py-2 bg-white border-t border-gray-100 gap-1.5">
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 8, paddingVertical: 8, backgroundColor: '#ffffff', borderTopWidth: 1, borderTopColor: '#f3f4f6', gap: 6 }}>
           <TouchableOpacity
-            className="w-11 h-11 justify-center items-center"
+            style={{ width: 44, height: 44, justifyContent: 'center', alignItems: 'center' }}
             onPress={() => showPhotoOptions(handlePhoto)}
           >
-            <Text className="text-[22px]">📎</Text>
+            <Text style={{ fontSize: 22 }}>📎</Text>
           </TouchableOpacity>
 
           <TextInput
-            className="flex-1 bg-gray-50 rounded-[20px] px-4 py-2.5 text-base text-slate-900 max-h-[100px]"
+            style={{ flex: 1, backgroundColor: '#f9fafb', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, fontSize: 16, color: '#0f172a', maxHeight: 100 }}
             value={input}
             onChangeText={setInput}
             placeholder="Ask George anything..."
@@ -226,14 +226,15 @@ export default function GeorgeChatScreen() {
           <VoiceInput onRecordingComplete={handleVoiceRecording} />
 
           <TouchableOpacity
-            className={`w-10 h-10 rounded-full justify-center items-center ${
-              input.trim() ? 'bg-orange-500 shadow-orange-500/40' : 'bg-gray-200'
-            }`}
+            style={{
+              width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center',
+              backgroundColor: input.trim() ? '#f97316' : '#e5e7eb',
+            }}
             onPress={() => sendMessage(input)}
             disabled={!input.trim()}
             activeOpacity={0.7}
           >
-            <Text className="text-white text-xl font-bold">↑</Text>
+            <Text style={{ color: '#ffffff', fontSize: 20, fontWeight: '700' }}>↑</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

@@ -1,7 +1,7 @@
 // ProAvailabilityAPI.ts — REST API for pro availability
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = __DEV__ ? 'http://localhost:5000' : 'https://api.uptend.com';
+const BASE_URL = __DEV__ ? 'https://uptendapp.com' : 'https://api.uptend.com';
 
 export interface ProLocation {
   id: string;

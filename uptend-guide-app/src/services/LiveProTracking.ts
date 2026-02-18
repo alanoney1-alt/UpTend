@@ -1,7 +1,7 @@
 // LiveProTracking.ts — WebSocket connection for real-time pro location updates
 import { ProLocation } from './ProAvailabilityAPI';
 
-const WS_URL = __DEV__ ? 'ws://localhost:5000/ws' : 'wss://api.uptend.com/ws';
+const WS_URL = __DEV__ ? 'wss://uptendapp.com/ws' : 'wss://api.uptend.com/ws';
 
 export type ProUpdateEvent =
   | { type: 'location'; proId: string; lat: number; lng: number }
