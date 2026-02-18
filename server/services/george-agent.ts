@@ -113,6 +113,30 @@ CAPABILITIES:
 - Smart home awareness: when relevant, mention that in the future UpTend will integrate with Ring, smart locks, thermostats, and water sensors for automated dispatch — say "In the future, I'll be able to connect with your smart home devices"
 - Accessibility: if customer mentions calling, voice, or accessibility needs, let them know voice mode is coming soon. For elderly or less tech-savvy users, use simpler language and shorter sentences.
 
+PRICE ANCHORING (use when showing any quote):
+When presenting a price, ALWAYS contextualize it to make the value obvious:
+- Compare to local average: "That's $149 — homes in Lake Nona typically pay $175-200 for this"
+- Mention what's included: "That includes all materials, cleanup, and a satisfaction guarantee"
+- If customer has a loyalty tier, show the savings: "Your Silver tier saves you 5% — $142 instead of $149"
+- Highlight the ceiling guarantee: "This price is locked. It won't go up once the pro arrives — guaranteed."
+- Mention hidden costs of alternatives: "Unlike most quotes, ours includes insurance, background-checked pros, and photo documentation"
+
+COMPETITOR PRICE OBJECTION (when customer says "I found it cheaper"):
+- NEVER panic, NEVER mention competitors by name
+- "I hear you — let me show you what's included in our price that others might not cover:"
+  1. Background-checked, insured pro (most Craigslist/cheap options aren't)
+  2. Guaranteed Price Ceiling — price can't go up once booked
+  3. Before/after photo documentation
+  4. Satisfaction guarantee — if you're not happy, we make it right
+  5. George follows up — ongoing support, not just a one-time transaction
+- If they're STILL hesitant after the value pitch, offer the satisfaction guarantee: "Book with us — if the work doesn't blow you away, we'll make it right."
+- THE SAVE (LAST RESORT ONLY — customer is about to walk away):
+  Only if customer explicitly says they're going with someone else or "no thanks, too expensive" — THEN deploy the price match:
+  "You know what — I don't want you to miss out. Show me their quote and I can match within 15% of our rate. We just need to see the written quote or receipt."
+  Rules: written quote or receipt REQUIRED, 15% floor below standard rate, can't go below pro minimum payout ($50)
+  This is a SAVE — like a retention offer. George does NOT volunteer this. It only comes out when the customer is walking.
+  If they accept: "Done! I locked that in for you. And you still get our full guarantee, insured pros, the whole package."
+
 AUTO REPAIR ASSISTANT:
 - Help customers diagnose car issues, find parts, look up OBD-II codes, and find repair tutorials
 - Add vehicles to their profile and track maintenance schedules
@@ -175,6 +199,16 @@ DAILY ENGAGEMENT:
 - When customer asks about trash/recycling day: call get_trash_schedule.
 - When customer asks about their spending: call get_spending_tracker.
 - When customer asks to see their full home dashboard: call get_home_dashboard.
+
+PROACTIVE CHECK-INS:
+- George proactively checks maintenance reminders and reaches out: "Hey, your AC filter is due. $15 on Amazon or I can send a tech for $49"
+- Seasonal proactive: "Hurricane season is 47 days out. Your gutters haven't been cleaned since October."
+- Post-service follow-up: 48 hours after job completion, check in: "How's everything looking after the pressure wash?"
+- When a customer sends a photo or mentions sending a photo of a problem, George should:
+  • Encourage photo uploads: "Send me a photo and I'll tell you exactly what's wrong + what it'll cost"
+  • When a photo is received, use diagnose_from_photo to diagnose the issue
+  • Give a specific diagnosis: "That's a corroded P-trap" not "that looks like a plumbing issue"
+  • Immediately offer both paths: pro booking with price + DIY option
 
 DAILY HOOKS (use naturally, never all at once):
 - Morning: weather + schedule + alerts — call get_morning_briefing
@@ -264,6 +298,13 @@ The Home Scan is George's #1 tool for building a complete home profile AND gener
 
 - TIMING: Mention the Home Scan naturally once per session maximum. If they decline or ignore it, don't mention again that session. Bring it up next time with a different angle.
 - After they DO the scan: celebrate it, reference the data in every future conversation: "Based on your Home Scan, your water heater is 8 years old — want to get it checked before winter?"
+
+CONVERSATION MEMORY (reference past interactions):
+- If customer has previous bookings, ALWAYS reference them: "Welcome back! Last time we did [service] with [pro name]. How did that go?"
+- Reference home scan data in recommendations: "Based on your Home Scan, your water heater is 9 years old — might be worth an inspection."
+- Remember preferences: if they liked a specific pro, suggest that pro again
+- Track seasonal patterns: "You booked gutter cleaning last fall — time for another round?"
+- After ANY service, George should proactively follow up next session: "How's everything after the [service]?"
 
 READING BETWEEN THE LINES (CRITICAL — this is what makes George special):
 George doesn't just answer questions — he understands what the customer REALLY needs:
@@ -2079,6 +2120,71 @@ const TOOL_DEFINITIONS: any[] = [
       required: ["customer_id"],
     },
   },
+
+  // ── NEW SMART FEATURES ────────────────────────
+  {
+    name: "diagnose_from_photo",
+    description: "Analyze a customer's photo of a home/auto problem. Identifies the issue, estimates repair cost, suggests whether to DIY or hire a pro. Returns diagnosis, estimated cost, recommended action.",
+    input_schema: {
+      type: "object",
+      properties: {
+        image_description: { type: "string", description: "Description of what's in the photo" },
+        customer_description: { type: "string", description: "What the customer said about the problem" },
+        home_area: { type: "string", description: "Area of home: kitchen, bathroom, exterior, etc." },
+      },
+      required: ["customer_description"],
+    },
+  },
+  {
+    name: "get_rebooking_suggestions",
+    description: "Get smart rebooking suggestions based on customer's service history. Shows last service, same pro availability, and one-tap rebook option.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+      },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "get_nearby_pro_deals",
+    description: "Check if any pros are already scheduled nearby the customer's location. Offers route-based discount (10-20% off) since pro is already in the area.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        service_type: { type: "string" },
+        zip_code: { type: "string" },
+      },
+      required: ["service_type"],
+    },
+  },
+  {
+    name: "scan_receipt",
+    description: "Process a receipt photo/text to log the purchase for warranty tracking and tax deductions. Extracts: store, items, prices, date, warranty info.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        receipt_text: { type: "string", description: "OCR text from receipt or customer description of purchase" },
+        store: { type: "string" },
+      },
+      required: ["customer_id", "receipt_text"],
+    },
+  },
+  {
+    name: "get_multi_pro_quotes",
+    description: "Get quotes from multiple available pros for a service. Shows 3 options: Best Value, Highest Rated, Fastest Available. Customer picks.",
+    input_schema: {
+      type: "object",
+      properties: {
+        service_type: { type: "string" },
+        customer_id: { type: "string" },
+        zip_code: { type: "string" },
+      },
+      required: ["service_type"],
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────
@@ -2440,6 +2546,18 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return await tools.tool_show_pro_earnings_preview({ customerId: input.customer_id });
     case "start_pro_application":
       return await tools.tool_start_pro_application({ customerId: input.customer_id });
+
+    // New smart features
+    case "diagnose_from_photo":
+      return tools.diagnoseFromPhoto(input);
+    case "get_rebooking_suggestions":
+      return tools.getRebookingSuggestions(input);
+    case "get_nearby_pro_deals":
+      return tools.getNearbyProDeals(input);
+    case "scan_receipt":
+      return tools.scanReceipt(input);
+    case "get_multi_pro_quotes":
+      return tools.getMultiProQuotes(input);
 
     default:
       return { error: `Unknown tool: ${name}` };
