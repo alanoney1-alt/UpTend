@@ -8,6 +8,7 @@ import {
   Mic, MicOff, Volume2, VolumeX, Paperclip,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { VideoPlayer, extractAllVideoIds } from "./video-player";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -686,6 +687,9 @@ export function UpTendGuide() {
                   )}
                   dangerouslySetInnerHTML={{ __html: renderContent(msg.content) }}
                 />
+                {msg.role === "assistant" && extractAllVideoIds(msg.content).map((vid) => (
+                  <VideoPlayer key={vid} videoId={vid} />
+                ))}
                 {msg.propertyData && <PropertyCard data={msg.propertyData} />}
                 {msg.quoteCard && <QuoteCard data={msg.quoteCard} />}
                 {msg.bundleData && <BundleCard data={msg.bundleData} />}

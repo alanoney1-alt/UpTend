@@ -7,6 +7,7 @@ import {
   addVehicle, getCustomerVehicles, getVehicleById, lookupVehicleByVIN,
   getMaintenanceSchedule, logMaintenance, getMaintenanceDue,
   diagnoseIssue, searchAutoParts, findAutoTutorial, getOBDCodeInfo, estimateRepairCost,
+  startVehicleDIYSession, checkVehicleRecalls, getMaintenanceHistory, comparePartsPrices,
 } from "../services/auto-services.js";
 
 export function registerAutoRoutes(app: Express) {
@@ -128,6 +129,50 @@ export function registerAutoRoutes(app: Express) {
     try {
       const info = await getOBDCodeInfo(req.params.code);
       res.json({ success: true, info });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // POST /api/auto/diy-start — start a vehicle DIY repair session
+  app.post("/api/auto/diy-start", async (req: Request, res: Response) => {
+    try {
+      const { customerId, vehicleId, issue } = req.body;
+      if (!customerId || !issue) return res.status(400).json({ error: "customerId and issue required" });
+      const session = await startVehicleDIYSession(customerId, vehicleId, issue);
+      res.json({ success: true, session });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // GET /api/auto/recalls/:vin — check NHTSA recalls
+  app.get("/api/auto/recalls/:vin", async (req: Request, res: Response) => {
+    try {
+      const recalls = await checkVehicleRecalls(req.params.vin);
+      res.json({ success: true, recalls });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // GET /api/auto/maintenance/history/:vehicleId — maintenance history
+  app.get("/api/auto/maintenance/history/:vehicleId", async (req: Request, res: Response) => {
+    try {
+      const history = await getMaintenanceHistory(req.params.vehicleId);
+      res.json({ success: true, history });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // POST /api/auto/parts-price-compare — compare parts prices across retailers
+  app.post("/api/auto/parts-price-compare", async (req: Request, res: Response) => {
+    try {
+      const { partName, year, make, model, customerId, vehicleId } = req.body;
+      if (!partName) return res.status(400).json({ error: "partName required" });
+      const comparison = await comparePartsPrices(partName, year, make, model, customerId, vehicleId);
+      res.json({ success: true, comparison });
     } catch (e: any) {
       res.status(500).json({ error: e.message });
     }

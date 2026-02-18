@@ -59,7 +59,8 @@ async function searchYouTube(query: string, maxResults = 3): Promise<TutorialRes
     } catch {}
   }
 
-  // Fallback: return YouTube search URL
+  // Fallback: return YouTube search URL with oEmbed metadata attempt
+  const fallbackUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
   return [{
     videoId: "",
     title: query,
@@ -67,8 +68,41 @@ async function searchYouTube(query: string, maxResults = 3): Promise<TutorialRes
     duration: "",
     thumbnail: "",
     viewCount: null,
-    url: `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`,
+    url: fallbackUrl,
   }];
+}
+
+/** Fetch video metadata via YouTube oEmbed (no API key needed) */
+export async function getVideoMetadata(videoUrl: string): Promise<{
+  title: string;
+  videoId: string;
+  thumbnailUrl: string;
+  duration: string;
+} | null> {
+  // Extract video ID
+  const idMatch = videoUrl.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  const videoId = idMatch?.[1];
+  if (!videoId) return null;
+
+  try {
+    const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}&format=json`;
+    const resp = await fetch(oembedUrl);
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return {
+      title: data.title || "",
+      videoId,
+      thumbnailUrl: data.thumbnail_url || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+      duration: "", // oEmbed doesn't provide duration; would need Data API for that
+    };
+  } catch {
+    return {
+      title: "",
+      videoId,
+      thumbnailUrl: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+      duration: "",
+    };
+  }
 }
 
 function parseDuration(iso: string): string {
@@ -143,10 +177,21 @@ export async function findTutorial(
     }
   }
 
+  // Build structured video data for in-app players
+  const structuredVideos = videos.filter(v => v.videoId).map(v => ({
+    title: v.title,
+    videoId: v.videoId,
+    thumbnailUrl: v.thumbnail || `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`,
+    duration: v.duration,
+    channel: v.channel,
+    url: v.url,
+  }));
+
   return {
     task: taskDescription,
     difficulty: difficulty || "medium",
     videos,
+    structuredVideos,
     dangerWarning,
     message: dangerWarning
       ? `${dangerWarning}\n\nBut here are tutorials if you want to learn more:\n${videos.map((v, i) => `${i + 1}. 🎥 ${v.title} (${v.channel}) — ${v.url}`).join("\n")}`

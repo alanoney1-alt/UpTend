@@ -8,6 +8,7 @@ import * as Haptics from 'expo-haptics';
 import ChatBubble, { ChatMessage } from '../components/ChatBubble';
 import QuoteCard from '../components/QuoteCard';
 import PropertyCard from '../components/PropertyCard';
+import InlineVideoPlayer, { extractVideoIds } from '../components/InlineVideoPlayer';
 import QuickActions from '../components/QuickActions';
 import VoiceInput from '../components/VoiceInput';
 import { showPhotoOptions } from '../components/PhotoCapture';
@@ -137,6 +138,22 @@ export default function GeorgeChatScreen() {
           homeScore={item.data.homeScore}
         />
       );
+    }
+    // Render inline video players for YouTube URLs in George's messages
+    if (item.sender === 'george' && item.text) {
+      const videoIds = extractVideoIds(item.text);
+      if (videoIds.length > 0) {
+        return (
+          <View>
+            <ChatBubble message={item} />
+            {videoIds.map((vid) => (
+              <View key={vid} style={{ paddingHorizontal: 12 }}>
+                <InlineVideoPlayer videoId={vid} />
+              </View>
+            ))}
+          </View>
+        );
+      }
     }
     return <ChatBubble message={item} />;
   };

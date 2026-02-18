@@ -485,3 +485,253 @@ export async function estimateRepairCost(
     message: "I don't have a specific estimate for that repair. I'd recommend getting quotes from 2-3 local shops.",
   };
 }
+
+// ─── Vehicle DIY Session ────────────────────────────────────
+
+const SAFETY_CRITICAL_PATTERNS = [
+  'brake line', 'brake hose', 'brake fluid bleed', 'master cylinder',
+  'fuel line', 'fuel system', 'fuel pump internal', 'fuel injector rail',
+  'transmission internal', 'transmission rebuild', 'torque converter',
+  'airbag', 'srs system', 'supplemental restraint',
+  'steering rack', 'power steering pump',
+  'spring compression', 'coil spring removal',
+  'ac refrigerant', 'r-134a', 'r-1234yf',
+  'engine internal', 'engine rebuild', 'head gasket',
+  'suspension spring', 'strut mount removal',
+  'exhaust manifold gasket',
+];
+
+function checkSafetyCritical(issue: string): { isCritical: boolean; warnings: string[] } {
+  const lower = issue.toLowerCase();
+  const warnings: string[] = [];
+  for (const pattern of SAFETY_CRITICAL_PATTERNS) {
+    if (lower.includes(pattern)) {
+      warnings.push(pattern);
+    }
+  }
+  return { isCritical: warnings.length > 0, warnings };
+}
+
+export async function startVehicleDIYSession(customerId: string, vehicleId: string | null, issue: string) {
+  const safety = checkSafetyCritical(issue);
+
+  if (safety.isCritical) {
+    // Insert as escalated session
+    const result = await pool.query(
+      `INSERT INTO vehicle_diy_sessions (customer_id, vehicle_id, issue, status, safety_warnings, steps, current_step)
+       VALUES ($1, $2, $3, 'escalated', $4, '[]'::jsonb, 0) RETURNING *`,
+      [customerId, vehicleId, issue, JSON.stringify(safety.warnings)]
+    );
+    return {
+      session: result.rows[0],
+      escalated: true,
+      message: `⚠️ **Safety Stop** — This repair involves ${safety.warnings.join(', ')}, which is safety-critical work. I strongly recommend finding a trusted, certified mechanic for this job. Incorrect work on these systems can cause serious injury or death.\n\nWant me to help you find a qualified independent contractor near you instead?`,
+      safetyWarnings: safety.warnings,
+    };
+  }
+
+  // Generate DIY steps based on the issue
+  const steps = generateDIYSteps(issue);
+
+  const result = await pool.query(
+    `INSERT INTO vehicle_diy_sessions (customer_id, vehicle_id, issue, status, safety_warnings, steps, current_step)
+     VALUES ($1, $2, $3, 'active', '[]'::jsonb, $4, 0) RETURNING *`,
+    [customerId, vehicleId, issue, JSON.stringify(steps)]
+  );
+
+  return {
+    session: result.rows[0],
+    escalated: false,
+    disclaimer: "I'm an AI assistant sharing repair tips, not a certified mechanic. You're responsible for your safety. If at ANY point you're uncomfortable, say 'get me a pro' and I'll find a qualified independent contractor nearby.",
+    currentStep: steps[0] || null,
+    totalSteps: steps.length,
+  };
+}
+
+function generateDIYSteps(issue: string): Array<{ step: number; title: string; description: string; tools?: string[]; safetyTip?: string }> {
+  const lower = issue.toLowerCase();
+
+  if (lower.includes('oil change') || lower.includes('oil')) {
+    return [
+      { step: 1, title: "Gather supplies", description: "You'll need: correct oil type/amount (check owner's manual), new oil filter, drain pan, socket wrench, funnel, jack & jack stands.", tools: ["socket wrench", "drain pan", "funnel", "jack", "jack stands"] },
+      { step: 2, title: "Warm up engine", description: "Run the engine for 2-3 minutes. Warm oil drains faster and more completely.", safetyTip: "Don't run it too long — the oil will be HOT." },
+      { step: 3, title: "Lift and secure vehicle", description: "Jack up the front of the car and place it securely on jack stands. NEVER work under a car supported only by a jack.", safetyTip: "Always use jack stands. Double-check they're on solid, level ground." },
+      { step: 4, title: "Drain old oil", description: "Place drain pan under the oil pan drain plug. Remove the plug with a socket wrench. Let all oil drain completely (5-10 min).", safetyTip: "Oil may be hot. Wear gloves." },
+      { step: 5, title: "Replace oil filter", description: "Remove the old oil filter (may need an oil filter wrench). Apply a thin layer of new oil to the gasket of the new filter. Install hand-tight.", tools: ["oil filter wrench"] },
+      { step: 6, title: "Replace drain plug & add new oil", description: "Reinstall drain plug (don't overtighten). Lower vehicle. Add new oil through the filler cap using a funnel. Check dipstick for correct level." },
+      { step: 7, title: "Check for leaks", description: "Start the engine, let it run for a minute. Check under the car for leaks around the drain plug and filter. Check dipstick again and top off if needed." },
+    ];
+  }
+
+  if (lower.includes('tire') && (lower.includes('change') || lower.includes('flat') || lower.includes('replace'))) {
+    return [
+      { step: 1, title: "Safety first", description: "Pull over to a flat, stable surface away from traffic. Turn on hazard lights. Apply parking brake.", safetyTip: "Never change a tire on a slope or soft ground." },
+      { step: 2, title: "Loosen lug nuts", description: "While the tire is still on the ground, use the lug wrench to loosen (not remove) the lug nuts by turning counter-clockwise.", tools: ["lug wrench"] },
+      { step: 3, title: "Jack up vehicle", description: "Place the jack under the vehicle's frame near the flat tire (check owner's manual for jack points). Raise until tire is about 6 inches off the ground.", tools: ["jack"], safetyTip: "Only use the jack on designated jack points." },
+      { step: 4, title: "Remove tire", description: "Fully remove the lug nuts and pull the flat tire straight toward you." },
+      { step: 5, title: "Mount spare/new tire", description: "Place the new tire on the hub. Hand-tighten the lug nuts in a star pattern." },
+      { step: 6, title: "Lower and tighten", description: "Lower the vehicle until the tire touches the ground but doesn't bear full weight. Tighten lug nuts fully in a star pattern. Lower completely.", safetyTip: "Torque lug nuts to spec (typically 80-100 ft-lbs) within 50 miles." },
+    ];
+  }
+
+  if (lower.includes('battery') && (lower.includes('replace') || lower.includes('change') || lower.includes('dead'))) {
+    return [
+      { step: 1, title: "Safety prep", description: "Turn off the engine and all electronics. Wear safety glasses and gloves. Locate the battery.", tools: ["safety glasses", "gloves", "wrench set"], safetyTip: "Batteries contain sulfuric acid. Don't tip or puncture." },
+      { step: 2, title: "Disconnect negative terminal", description: "ALWAYS disconnect the negative (−) terminal FIRST using a wrench. Move the cable aside.", safetyTip: "Negative first prevents short circuits." },
+      { step: 3, title: "Disconnect positive terminal", description: "Remove the positive (+) terminal cable." },
+      { step: 4, title: "Remove old battery", description: "Remove any hold-down clamp or bracket. Lift out the old battery (they're heavy, 30-50 lbs)." },
+      { step: 5, title: "Clean and install", description: "Clean the terminal connectors with a wire brush if corroded. Place the new battery in. Secure with the hold-down bracket." },
+      { step: 6, title: "Reconnect terminals", description: "Connect positive (+) terminal FIRST, then negative (−). Tighten securely. Apply anti-corrosion grease if available.", safetyTip: "Positive first when reconnecting (opposite of removal)." },
+    ];
+  }
+
+  if (lower.includes('air filter') || lower.includes('cabin filter')) {
+    return [
+      { step: 1, title: "Locate the filter", description: "Engine air filter: usually in a black plastic box near the front of the engine. Cabin filter: usually behind the glove box or under the dashboard." },
+      { step: 2, title: "Open housing", description: "Unlatch clips or remove screws holding the filter housing closed." },
+      { step: 3, title: "Remove and inspect", description: "Pull out the old filter. Hold it up to light — if you can't see through it, it needs replacing." },
+      { step: 4, title: "Install new filter", description: "Place the new filter in the same orientation as the old one (check for airflow arrows). Close and secure the housing." },
+    ];
+  }
+
+  // Generic steps for unknown repairs
+  return [
+    { step: 1, title: "Research your specific vehicle", description: `Search for "${issue}" + your year/make/model on YouTube for visual guides. Your owner's manual is also a great resource.` },
+    { step: 2, title: "Gather tools and parts", description: "Make a list of needed tools and parts before starting. Most auto parts stores can look up the exact parts for your vehicle." },
+    { step: 3, title: "Document before you start", description: "Take photos of everything before disassembly. This makes reassembly much easier." },
+    { step: 4, title: "Work safely", description: "Use jack stands (never just a jack), wear safety glasses, and work in a well-ventilated area.", safetyTip: "If anything feels beyond your skill level, there's no shame in calling a pro." },
+  ];
+}
+
+// ─── NHTSA Recall Check ─────────────────────────────────────
+
+export async function checkVehicleRecalls(vin: string, vehicleId?: string) {
+  // First decode VIN to get make/model/year
+  const decoded = await lookupVehicleByVIN(vin);
+  if (!decoded.make || !decoded.model || !decoded.year) {
+    return { vin, error: "Could not decode VIN to determine make/model/year", decoded };
+  }
+
+  const url = `https://api.nhtsa.dot.gov/recalls/recallsByVehicle?make=${encodeURIComponent(decoded.make)}&model=${encodeURIComponent(decoded.model)}&modelYear=${decoded.year}`;
+  const resp = await fetch(url);
+  const data = await resp.json();
+  const recalls = (data.results || []).map((r: any) => ({
+    campaignNumber: r.NHTSACampaignNumber,
+    component: r.Component,
+    summary: r.Summary,
+    consequence: r.Consequence,
+    remedy: r.Remedy,
+    manufacturer: r.Manufacturer,
+    reportDate: r.ReportReceivedDate,
+  }));
+
+  // Store recalls in DB
+  for (const recall of recalls) {
+    try {
+      await pool.query(
+        `INSERT INTO vehicle_recalls (vehicle_id, vin, campaign_number, component, summary, consequence, remedy)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         ON CONFLICT DO NOTHING`,
+        [vehicleId || null, vin, recall.campaignNumber, recall.component, recall.summary, recall.consequence, recall.remedy]
+      );
+    } catch { /* ignore duplicates */ }
+  }
+
+  return {
+    vin,
+    vehicle: { year: decoded.year, make: decoded.make, model: decoded.model },
+    recallCount: recalls.length,
+    recalls,
+    checkedAt: new Date().toISOString(),
+    note: recalls.length > 0
+      ? "Contact your dealer to check if these recalls have been completed on your specific vehicle. Recall repairs are always free."
+      : "No open recalls found for this vehicle. 👍",
+  };
+}
+
+// ─── Maintenance History ────────────────────────────────────
+
+export async function getMaintenanceHistory(vehicleId: string) {
+  // Check both tables — the existing vehicle_maintenance_log and new vehicle_maintenance_logs
+  const result = await pool.query(
+    `SELECT * FROM vehicle_maintenance_log WHERE vehicle_id = $1 ORDER BY created_at DESC`,
+    [vehicleId]
+  );
+
+  const newLogs = await pool.query(
+    `SELECT * FROM vehicle_maintenance_logs WHERE vehicle_id = $1 ORDER BY performed_at DESC`,
+    [vehicleId]
+  );
+
+  const combined = [
+    ...result.rows.map((r: any) => ({
+      id: r.id,
+      serviceType: r.maintenance_type,
+      mileage: r.mileage_at_service,
+      cost: r.cost,
+      performedBy: r.performed_by,
+      shopName: r.shop_name,
+      notes: r.notes,
+      date: r.created_at,
+      source: 'log',
+    })),
+    ...newLogs.rows.map((r: any) => ({
+      id: r.id,
+      serviceType: r.service_type,
+      mileage: r.mileage,
+      cost: r.cost,
+      partsUsed: r.parts_used,
+      notes: r.notes,
+      date: r.performed_at,
+      source: 'maintenance_log',
+    })),
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  return { vehicleId, entries: combined, totalEntries: combined.length };
+}
+
+// ─── Parts Price Comparison ─────────────────────────────────
+
+export async function comparePartsPrices(
+  partName: string, year?: number, make?: string, model?: string,
+  customerId?: string, vehicleId?: string
+) {
+  const query = `${partName} ${year || ''} ${make || ''} ${model || ''}`.trim();
+
+  const retailers = [
+    { name: 'AutoZone', site: 'autozone.com', searchPath: '/searchresult?searchText=' },
+    { name: "O'Reilly Auto Parts", site: 'oreillyauto.com', searchPath: '/shop/b/' },
+    { name: 'RockAuto', site: 'rockauto.com', searchPath: '/catalog/' },
+    { name: 'Amazon', site: 'amazon.com', searchPath: '/s?k=' },
+    { name: 'Advance Auto Parts', site: 'advanceautoparts.com', searchPath: '/search?q=' },
+    { name: 'Walmart Auto', site: 'walmart.com', searchPath: '/search?q=' },
+  ];
+
+  const comparison = retailers.map(r => ({
+    retailer: r.name,
+    searchUrl: `https://www.${r.site}${r.searchPath}${encodeURIComponent(query)}`,
+    googleSearchUrl: `https://www.google.com/search?q=${encodeURIComponent(query + ' site:' + r.site + ' price')}`,
+    tip: r.name === 'RockAuto' ? 'Usually cheapest for parts, ships from warehouse'
+       : r.name === 'AutoZone' || r.name === "O'Reilly Auto Parts" ? 'Same-day pickup available, free loaner tools'
+       : r.name === 'Amazon' ? 'Check reviews carefully, fast shipping with Prime'
+       : 'Compare prices and availability',
+  }));
+
+  // Log the search
+  if (customerId) {
+    try {
+      await pool.query(
+        `INSERT INTO auto_parts_search (customer_id, vehicle_id, part_name, fitment, results)
+         VALUES ($1,$2,$3,$4,$5)`,
+        [customerId, vehicleId, partName, JSON.stringify({ year, make, model }), JSON.stringify(comparison)]
+      );
+    } catch { /* ignore */ }
+  }
+
+  return {
+    partName,
+    vehicle: { year, make, model },
+    retailers: comparison,
+    proTip: "RockAuto is typically cheapest for parts. AutoZone and O'Reilly offer free loaner tools and same-day pickup. Always verify the part fits your exact vehicle (year/make/model/engine).",
+  };
+}

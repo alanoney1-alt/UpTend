@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest } from "@/lib/queryClient";
+import { VideoPlayer, extractAllVideoIds } from "./video-player";
 
 // ─── Types ──────────────────────────────────
 interface QuickButton {
@@ -97,6 +98,7 @@ function QuickButtons({ buttons, onPress }: { buttons: QuickButton[]; onPress: (
 // ─── Message Bubble ─────────────────────────
 function MessageBubble({ msg, onButtonPress }: { msg: ChatMessage; onButtonPress: (btn: QuickButton) => void }) {
   const isUser = msg.role === "user";
+  const videoIds = !isUser ? extractAllVideoIds(msg.content) : [];
   return (
     <div className={`flex gap-2 mb-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
       <Avatar className="h-7 w-7 shrink-0 mt-1">
@@ -113,6 +115,9 @@ function MessageBubble({ msg, onButtonPress }: { msg: ChatMessage; onButtonPress
           }`}
           dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }}
         />
+        {videoIds.map((vid) => (
+          <VideoPlayer key={vid} videoId={vid} />
+        ))}
         {msg.bookingDraft && (
           <BookingDraftCard
             draft={msg.bookingDraft}
