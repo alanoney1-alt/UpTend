@@ -59,21 +59,52 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Avatar */}
-        <View style={styles.avatarSection}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{(user?.name || 'U')[0].toUpperCase()}</Text>
+        {/* Header Bar */}
+        <View style={styles.headerBar}>
+          <View style={styles.headerRow}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>{(user?.name || 'U')[0].toUpperCase()}</Text>
+            </View>
+            <View style={styles.headerInfo}>
+              <Text style={styles.name}>{user?.name || 'UpTend User'}</Text>
+              <Text style={styles.email}>{user?.email || 'user@uptend.com'}</Text>
+            </View>
           </View>
-          <Text style={styles.name}>{user?.name || 'UpTend User'}</Text>
-          <Text style={styles.email}>{user?.email || 'user@uptend.com'}</Text>
         </View>
+
+        {/* Loyalty + Wallet */}
+        <View style={styles.loyaltyWalletRow}>
+          <View style={styles.loyaltyCard}>
+            <Text style={styles.loyaltyIcon}>🥉</Text>
+            <Text style={styles.loyaltyTier}>Bronze</Text>
+            <Text style={styles.loyaltySub}>250 pts to Silver</Text>
+          </View>
+          <View style={styles.walletCard}>
+            <Text style={styles.walletIcon}>💰</Text>
+            <Text style={styles.walletBalance}>$42.50</Text>
+            <Text style={styles.walletSub}>Wallet Balance</Text>
+          </View>
+        </View>
+
+        {/* Home Details */}
+        <Section title="Home Details">
+          <Row icon="🏠" label="3BR / 2BA · 1,850 sqft" />
+          <Row icon="📍" label="123 Oak Lane, Orlando, FL" />
+          <Row icon="📅" label="Built 2004 · Owned since 2019" />
+          <Row icon="🛡️" label="State Farm · Policy #SF-12345" />
+        </Section>
+
+        {/* Vehicles */}
+        <Section title="Vehicles">
+          <Row icon="🚗" label="2021 Toyota Camry · 34,200 mi" />
+          <Row icon="🚙" label="2019 Honda CR-V · 58,700 mi" />
+          <Row icon="➕" label="Add Vehicle" />
+        </Section>
 
         <Section title="Account">
           <Row icon="✏️" label="Edit Profile" />
-          <Row icon="🏠" label="Property Info" />
           <Row icon="💳" label="Payment Methods" />
           <Row icon="📍" label="Service Address" />
-          <Row icon="🛡️" label="Linked Insurance" />
         </Section>
 
         <Section title="Preferences">
@@ -174,14 +205,31 @@ const styles = StyleSheet.create({
   perkText: { fontSize: 15, color: Colors.text },
 
   // Logged-in styles
-  avatarSection: { alignItems: 'center', marginBottom: 28 },
+  headerBar: { backgroundColor: '#f97316', borderRadius: 20, padding: 20, marginBottom: 16 },
+  headerRow: { flexDirection: 'row', alignItems: 'center' },
+  headerInfo: { marginLeft: 14 },
   avatar: {
-    width: 72, height: 72, borderRadius: 36, backgroundColor: Colors.primary,
-    justifyContent: 'center', alignItems: 'center', marginBottom: 12,
+    width: 56, height: 56, borderRadius: 28, backgroundColor: 'rgba(255,255,255,0.25)',
+    justifyContent: 'center', alignItems: 'center',
   },
-  avatarText: { color: Colors.white, fontSize: 28, fontWeight: '700' },
-  name: { fontSize: 20, fontWeight: '700', color: Colors.text },
-  email: { fontSize: 14, color: Colors.textSecondary, marginTop: 4 },
+  avatarText: { color: '#fff', fontSize: 24, fontWeight: '700' },
+  name: { fontSize: 20, fontWeight: '700', color: '#fff' },
+  email: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 2 },
+  loyaltyWalletRow: { flexDirection: 'row', gap: 12, marginBottom: 20 },
+  loyaltyCard: {
+    flex: 1, backgroundColor: '#fff7ed', borderRadius: 16, padding: 16,
+    alignItems: 'center', borderWidth: 1.5, borderColor: '#fdba74',
+  },
+  loyaltyIcon: { fontSize: 28 },
+  loyaltyTier: { fontSize: 18, fontWeight: '800', color: '#1e293b', marginTop: 4 },
+  loyaltySub: { fontSize: 11, color: '#9ca3af', marginTop: 2 },
+  walletCard: {
+    flex: 1, backgroundColor: '#f0fdf4', borderRadius: 16, padding: 16,
+    alignItems: 'center', borderWidth: 1.5, borderColor: '#bbf7d0',
+  },
+  walletIcon: { fontSize: 28 },
+  walletBalance: { fontSize: 18, fontWeight: '800', color: '#22c55e', marginTop: 4 },
+  walletSub: { fontSize: 11, color: '#9ca3af', marginTop: 2 },
   section: { marginBottom: 24 },
   sectionTitle: { fontSize: 14, fontWeight: '600', color: Colors.textSecondary, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
   sectionCard: { backgroundColor: Colors.white, borderRadius: 14, overflow: 'hidden' },

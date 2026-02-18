@@ -20,6 +20,13 @@ import VerifyProScreen from '../screens/VerifyProScreen';
 import BookingScreen from '../screens/BookingScreen';
 import EmergencyScreen from '../screens/EmergencyScreen';
 
+// New screens
+import HomeScanScreen from '../screens/HomeScanScreen';
+import DIYScreen from '../screens/DIYScreen';
+import AutoScreen from '../screens/AutoScreen';
+import ShoppingScreen from '../screens/ShoppingScreen';
+import MoreScreen from '../screens/MoreScreen';
+
 // Customer screens
 import CustomerDashboardScreen from '../screens/CustomerDashboardScreen';
 import LiveMapScreen from '../screens/LiveMapScreen';
@@ -100,38 +107,31 @@ function CustomerBookingStack() {
   );
 }
 
-function CustomerEmergencyStack() {
+function CustomerHomeScanStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="EmergencyHome" component={EmergencyScreen} />
-    </CustomerStack.Navigator>
-  );
-}
-
-function CustomerDashboardStack() {
-  return (
-    <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="DashboardHome" component={CustomerDashboardScreen} />
-      <CustomerStack.Screen name="LiveMap" component={LiveMapScreen} />
-      <CustomerStack.Screen name="PhotoTimeline" component={PhotoTimelineScreen} />
-      <CustomerStack.Screen name="Neighborhood" component={NeighborhoodScreen} />
-      <CustomerStack.Screen name="TransformationFeed" component={TransformationFeedScreen} />
-      <CustomerStack.Screen name="HomeHealth" component={HomeHealthScreen} />
-      <CustomerStack.Screen name="SmartHome" component={SmartHomeScreen} />
-      <CustomerStack.Screen name="VerifyPro" component={VerifyProScreen} />
-      <CustomerStack.Screen name="FlashDeals" component={FlashDealsScreen} options={{ headerShown: true, headerTitle: 'Flash Deals' }} />
-      <CustomerStack.Screen name="Subscribe" component={SubscribeScreen} options={{ headerShown: true, headerTitle: 'Subscribe & Save' }} />
-      <CustomerStack.Screen name="HomeStreaks" component={HomeStreaksScreen} options={{ headerShown: true, headerTitle: 'Home Streaks' }} />
-      <CustomerStack.Screen name="ProTips" component={ProTipsScreen} options={{ headerShown: true, headerTitle: 'Pro Tips' }} />
-      <CustomerStack.Screen name="NeighborhoodActivity" component={NeighborhoodActivityScreen} options={{ headerShown: true, headerTitle: 'Your Neighborhood' }} />
-    </CustomerStack.Navigator>
-  );
-}
-
-function CustomerProfileStack() {
-  return (
-    <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
+      <CustomerStack.Screen name="HomeScanHome" component={HomeScanScreen} />
       <CustomerStack.Screen name="ProfileHome" component={ProfileScreen} />
+    </CustomerStack.Navigator>
+  );
+}
+
+function CustomerAutoStack() {
+  return (
+    <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
+      <CustomerStack.Screen name="AutoHome" component={AutoScreen} />
+    </CustomerStack.Navigator>
+  );
+}
+
+function CustomerMoreStack() {
+  return (
+    <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
+      <CustomerStack.Screen name="MoreHome" component={MoreScreen} />
+      <CustomerStack.Screen name="DIY" component={DIYScreen} />
+      <CustomerStack.Screen name="Shopping" component={ShoppingScreen} />
+      <CustomerStack.Screen name="Emergency" component={EmergencyScreen} />
+      <CustomerStack.Screen name="Profile" component={ProfileScreen} />
       <CustomerStack.Screen name="Recruit" component={RecruitScreen} />
     </CustomerStack.Navigator>
   );
@@ -286,27 +286,27 @@ function CustomerTabs() {
       <Tab.Screen
         name="Home"
         component={CustomerGeorgeStack}
-        options={{ tabBarLabel: 'Home', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        options={{ tabBarLabel: 'George', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
       />
       <Tab.Screen
-        name="Services"
+        name="Book"
         component={CustomerBookingStack}
-        options={{ tabBarLabel: 'Services', tabBarIcon: () => <TabIcon emoji="🔧" />, headerShown: false }}
+        options={{ tabBarLabel: 'Book', tabBarIcon: () => <TabIcon emoji="📋" />, headerShown: false }}
       />
       <Tab.Screen
-        name="Scan"
-        component={CustomerDashboardStack}
-        options={{ tabBarLabel: 'Scan', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
+        name="HomeScan"
+        component={CustomerHomeScanStack}
+        options={{ tabBarLabel: 'Home', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
       />
       <Tab.Screen
-        name="Activity"
-        component={CustomerEmergencyStack}
-        options={{ tabBarLabel: 'Activity', tabBarIcon: () => <TabIcon emoji="📋" />, headerShown: false }}
+        name="Auto"
+        component={CustomerAutoStack}
+        options={{ tabBarLabel: 'Auto', tabBarIcon: () => <TabIcon emoji="🚗" />, headerShown: false }}
       />
       <Tab.Screen
-        name="Profile"
-        component={CustomerProfileStack}
-        options={{ tabBarLabel: 'Profile', tabBarIcon: () => <TabIcon emoji="👤" />, headerShown: false }}
+        name="More"
+        component={CustomerMoreStack}
+        options={{ tabBarLabel: 'More', tabBarIcon: () => <TabIcon emoji="⚙️" />, headerShown: false }}
       />
     </Tab.Navigator>
   );

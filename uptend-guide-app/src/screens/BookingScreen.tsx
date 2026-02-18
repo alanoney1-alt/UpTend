@@ -22,6 +22,7 @@ const SERVICES = [
   { key: 'pressure_washing', label: 'Pressure Washing', emoji: '💦', price: 'From $120' },
   { key: 'pool_cleaning', label: 'Pool Cleaning', emoji: '🏊', price: '$89-$169/mo' },
   { key: 'light_demolition', label: 'Light Demolition', emoji: '🔨', price: 'From $199' },
+  { key: 'auto_repair', label: 'Auto Repair', emoji: '🚗', price: 'From $79' },
 ];
 
 export default function BookingScreen({ navigation }: any) {
@@ -81,9 +82,13 @@ export default function BookingScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Orange Header */}
+      <View style={styles.headerBar}>
+        <Text style={styles.headerTitle}>Book a Service</Text>
+        <Text style={styles.headerSub}>Select a service and tell us what you need</Text>
+      </View>
+
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Book a Service</Text>
-        <Text style={styles.subtitle}>Select a service and tell us what you need</Text>
 
         {/* Service Selection */}
         <Text style={styles.label}>Service Type</Text>
@@ -156,9 +161,10 @@ export default function BookingScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  headerBar: { backgroundColor: '#f97316', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 20 },
+  headerTitle: { fontSize: 24, fontWeight: '800', color: '#fff' },
+  headerSub: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 4 },
   scroll: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 26, fontWeight: '800', color: Colors.text, marginBottom: 4 },
-  subtitle: { fontSize: 15, color: Colors.textSecondary, marginBottom: 24 },
   label: { fontSize: 15, fontWeight: '600', color: Colors.text, marginBottom: 8, marginTop: 12 },
   serviceGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },
   // ServiceCard component handles individual card styles
