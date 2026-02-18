@@ -5606,15 +5606,40 @@ export async function getMultiProQuotes(params: {
 }
 
 // ─── SAVE DISCOUNT (last resort price match) ─────────
-export function applySaveDiscount(params: {
+export async function applySaveDiscount(params: {
   service_type: string;
   original_price: number;
   competitor_price: number;
   customer_id?: string;
-}): object {
-  const { service_type, original_price, competitor_price } = params;
+}): Promise<object> {
+  const { service_type, original_price, competitor_price, customer_id } = params;
   const floor = original_price * 0.85; // 15% max discount
   const proMinPayout = 50; // Pro minimum payout floor
+
+  // 90-day cooldown check — one price match per customer per 3 months
+  if (customer_id) {
+    try {
+      const result = await pool.query(
+        `SELECT created_at FROM price_match_history 
+         WHERE customer_id = $1 AND created_at > NOW() - INTERVAL '90 days'
+         ORDER BY created_at DESC LIMIT 1`,
+        [customer_id]
+      );
+      if (result.rows.length > 0) {
+        const lastMatch = new Date(result.rows[0].created_at);
+        const nextEligible = new Date(lastMatch.getTime() + 90 * 24 * 60 * 60 * 1000);
+        return {
+          applied: false,
+          reason: "cooldown",
+          lastMatchDate: lastMatch.toISOString(),
+          nextEligibleDate: nextEligible.toISOString(),
+          message: `Our pricing is already competitive and includes insured pros, a price ceiling guarantee, and full satisfaction guarantee. I can't adjust further right now, but I'm happy to find you the best value for your budget!`,
+        };
+      }
+    } catch {
+      // Table may not exist yet — proceed (fail open for now)
+    }
+  }
 
   // Calculate the matched price
   let matchedPrice: number;
@@ -5659,6 +5684,29 @@ export function applySaveDiscount(params: {
 
   const savings = original_price - matchedPrice;
   const discountPercent = Math.round((savings / original_price) * 100);
+
+  // Log the price match for 90-day cooldown tracking
+  if (customer_id) {
+    try {
+      await pool.query(
+        `CREATE TABLE IF NOT EXISTS price_match_history (
+          id SERIAL PRIMARY KEY,
+          customer_id TEXT NOT NULL,
+          service_type TEXT,
+          original_price NUMERIC,
+          competitor_price NUMERIC,
+          matched_price NUMERIC,
+          discount_percent INTEGER,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        )`
+      );
+      await pool.query(
+        `INSERT INTO price_match_history (customer_id, service_type, original_price, competitor_price, matched_price, discount_percent)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [customer_id, service_type, original_price, competitor_price, matchedPrice, discountPercent]
+      );
+    } catch { /* ignore */ }
+  }
 
   return {
     applied: true,
