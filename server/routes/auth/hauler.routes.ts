@@ -604,7 +604,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
           return res.status(401).json({ error: "Please use the customer login" });
         }
 
-        req.login(user, (loginErr) => {
+        req.login(user, async (loginErr) => {
           if (loginErr) {
             console.error("Session creation error:", loginErr);
             return res.status(500).json({ error: "Login failed" });
