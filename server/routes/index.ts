@@ -210,6 +210,9 @@ import { registerCommunityEngineRoutes } from "./community.routes";
 // Purchase & Receipt Tracking + Appliance Profile routes
 import { registerPurchaseRoutes } from "./purchases.routes";
 
+// Shopping Assistant + Tutorial routes
+import { registerShoppingRoutes } from "./shopping.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -443,6 +446,9 @@ export async function registerRoutes(
 
   // Register Purchase & Receipt Tracking + Appliance Profile routes
   registerPurchaseRoutes(app);
+
+  // Register Shopping Assistant + Tutorial routes
+  registerShoppingRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

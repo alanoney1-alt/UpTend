@@ -59,6 +59,14 @@ CAPABILITIES:
 - Maintenance reminders: call get_home_maintenance_reminders to surface upcoming maintenance items; call get_home_tips for seasonal tips
 - Custom reminders: call add_custom_reminder when customer wants to set a recurring reminder
 - Education (build trust): occasionally share quick DIY tips for truly minor issues — "That sounds like a running toilet flapper — $3 fix at Home Depot. Want a video? But if it's still running, I can send a plumber." Frame it as: "I'll always be honest about what needs a pro vs. what you can handle"
+- Shopping assistant: call search_products to find products at Home Depot, Lowe's, Walmart, Amazon, Harbor Freight, Ace Hardware with buy links
+- Product recommendations: call get_product_recommendation to suggest exact products based on their home profile (e.g., "Your HVAC uses 20x25x1 filters")
+- Price comparison: call compare_prices for side-by-side pricing across retailers
+- YouTube tutorials: call find_diy_tutorial to find how-to videos for any home task — always share top 3 videos with links
+- Shopping list: call get_shopping_list to compile everything they should buy (overdue maintenance, seasonal, project supplies)
+- DIY projects: call start_diy_project when customer wants to do a project — creates full plan with steps, tools, products, tutorials
+- Seasonal DIY: call get_seasonal_diy_suggestions for what to work on this month
+- SAFETY: For dangerous DIY (electrical beyond light fixtures, gas lines, roofing 2+ stories, garage door springs, tree removal near power lines, structural mods, asbestos/lead paint) — ALWAYS say: "I found a tutorial, but honestly? This one's dangerous to DIY. Let me get you a pro quote — it's worth the safety." Then offer to book a pro.
 - Emergency disaster mode: call get_disaster_mode_status to check active weather alerts; call get_emergency_pros for immediate dispatch
 - Smart home awareness: when relevant, mention that in the future UpTend will integrate with Ring, smart locks, thermostats, and water sensors for automated dispatch — say "In the future, I'll be able to connect with your smart home devices"
 - Accessibility: if customer mentions calling, voice, or accessibility needs, let them know voice mode is coming soon. For elderly or less tech-savvy users, use simpler language and shorter sentences.
@@ -897,6 +905,90 @@ const TOOL_DEFINITIONS: any[] = [
     },
   },
 
+  // ── Shopping Assistant + Tutorials ────────────
+  {
+    name: "search_products",
+    description: "Search for home products across retailers (Home Depot, Lowe's, Walmart, Amazon, Harbor Freight, Ace Hardware). Use when customer asks where to buy something or needs a product.",
+    input_schema: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "Product search query, e.g. '20x25x1 air filter'" },
+        category: { type: "string", description: "Optional category: filter, tool, appliance, supply, hardware, plumbing, electrical, paint, outdoor, cleaning" },
+        specifications: { type: "object", description: "Optional specs like size, type, compatibility" },
+      },
+      required: ["query"],
+    },
+  },
+  {
+    name: "get_product_recommendation",
+    description: "Recommend exact products based on customer's home profile and appliances. E.g. 'What filter does my HVAC need?' Uses their registered appliance details to find exact matches.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer ID" },
+        appliance_type: { type: "string", description: "Type of appliance: hvac, water_heater, garage_door, sprinkler, etc." },
+      },
+      required: ["customer_id", "appliance_type"],
+    },
+  },
+  {
+    name: "compare_prices",
+    description: "Compare prices for a product across all retailers. Use when customer asks 'what's cheapest' or wants a comparison.",
+    input_schema: {
+      type: "object",
+      properties: {
+        product_name: { type: "string", description: "Product to compare" },
+        specifications: { type: "object", description: "Optional specs to narrow search" },
+      },
+      required: ["product_name"],
+    },
+  },
+  {
+    name: "find_diy_tutorial",
+    description: "Find YouTube tutorials for a DIY task. Returns top videos with links. Flags dangerous tasks and recommends booking a pro.",
+    input_schema: {
+      type: "object",
+      properties: {
+        task: { type: "string", description: "What the customer wants to learn, e.g. 'flush water heater', 'change HVAC filter'" },
+        difficulty: { type: "string", description: "Optional: easy, medium, hard" },
+      },
+      required: ["task"],
+    },
+  },
+  {
+    name: "get_shopping_list",
+    description: "Get personalized shopping list for a customer — overdue maintenance items, seasonal needs, DIY project supplies. Sorted by urgency.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer ID" },
+      },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "start_diy_project",
+    description: "Create a tracked DIY project with shopping list and tutorials. E.g. 'I want to repaint my bathroom' → full plan.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer ID" },
+        project_name: { type: "string", description: "Name of the project" },
+        description: { type: "string", description: "Detailed description of what they want to do" },
+      },
+      required: ["customer_id", "project_name"],
+    },
+  },
+  {
+    name: "get_seasonal_diy_suggestions",
+    description: "What DIY projects make sense this month? Seasonal recommendations based on time of year.",
+    input_schema: {
+      type: "object",
+      properties: {
+        month: { type: "number", description: "Month number 1-12. Defaults to current month." },
+      },
+    },
+  },
   // ── Home Scan Pitch & FAQ ─────────────────────
   {
     name: "get_home_scan_info",
@@ -1054,6 +1146,22 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return await tools.getCalendarSuggestion(input.user_id, input.service_id, storage);
     case "get_seasonal_countdown":
       return tools.getSeasonalCountdown();
+
+    // Shopping Assistant + Tutorials
+    case "search_products":
+      return tools.searchProductsForGeorge({ query: input.query, category: input.category, specifications: input.specifications });
+    case "get_product_recommendation":
+      return tools.getProductRecommendationForGeorge({ customerId: input.customer_id, applianceType: input.appliance_type });
+    case "compare_prices":
+      return tools.comparePricesForGeorge({ productName: input.product_name, specifications: input.specifications });
+    case "find_diy_tutorial":
+      return tools.findDIYTutorialForGeorge({ task: input.task, difficulty: input.difficulty });
+    case "get_shopping_list":
+      return tools.getShoppingListForGeorge({ customerId: input.customer_id });
+    case "start_diy_project":
+      return tools.startDIYProjectForGeorge({ customerId: input.customer_id, projectName: input.project_name, description: input.description });
+    case "get_seasonal_diy_suggestions":
+      return tools.getSeasonalDIYSuggestionsForGeorge({ month: input.month });
 
     // Home Scan Pitch & FAQ
     case "get_home_scan_info":

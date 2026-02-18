@@ -4402,3 +4402,101 @@ export async function getUtilityProvidersForGeorge(params: {
 
   return { message: "I need your address or zip code to look up your utility providers. What's your zip?" };
 }
+
+// ─────────────────────────────────────────────
+// Shopping Assistant + YouTube Tutorial Tools
+// ─────────────────────────────────────────────
+import {
+  searchProduct as _searchProduct,
+  getProductRecommendation as _getProductRecommendation,
+  compareProductPrices as _compareProductPrices,
+  getSmartRecommendations as _getSmartRecommendations,
+} from "./product-search.js";
+import {
+  findTutorial as _findTutorial,
+  getSeasonalDIYProjects as _getSeasonalDIYProjects,
+} from "./tutorial-finder.js";
+import {
+  getShoppingList as _getShoppingList,
+  startDIYProject as _startDIYProject,
+  getProjectPlan as _getProjectPlan,
+} from "./shopping-assistant.js";
+
+/**
+ * searchProducts — search retailers for a product
+ */
+export async function searchProductsForGeorge(params: {
+  query: string;
+  category?: string;
+  specifications?: Record<string, any>;
+}): Promise<object> {
+  return _searchProduct(params.query, params.category, params.specifications);
+}
+
+/**
+ * getProductRecommendation — recommend exact product based on home profile
+ */
+export async function getProductRecommendationForGeorge(params: {
+  customerId: string;
+  applianceType: string;
+}): Promise<object> {
+  return _getProductRecommendation(params.customerId, params.applianceType);
+}
+
+/**
+ * comparePrices — compare prices across retailers
+ */
+export async function comparePricesForGeorge(params: {
+  productName: string;
+  specifications?: Record<string, any>;
+}): Promise<object> {
+  return _compareProductPrices(params.productName, params.specifications);
+}
+
+/**
+ * findDIYTutorial — find YouTube tutorials for a task
+ */
+export async function findDIYTutorialForGeorge(params: {
+  task: string;
+  difficulty?: string;
+}): Promise<object> {
+  return _findTutorial(params.task, params.difficulty);
+}
+
+/**
+ * getShoppingList — personalized shopping list for a customer
+ */
+export async function getShoppingListForGeorge(params: {
+  customerId: string;
+}): Promise<object> {
+  return _getShoppingList(params.customerId);
+}
+
+/**
+ * startDIYProject — create a tracked DIY project
+ */
+export async function startDIYProjectForGeorge(params: {
+  customerId: string;
+  projectName: string;
+  description?: string;
+}): Promise<object> {
+  // Get full project plan first
+  const plan = await _getProjectPlan(params.customerId, params.description || params.projectName) as any;
+  // Auto-create the project with planned items
+  return _startDIYProject(
+    params.customerId,
+    params.projectName,
+    plan.items || [],
+    plan.tutorials || []
+  );
+}
+
+/**
+ * getSeasonalDIYSuggestions — what to work on this month
+ */
+export async function getSeasonalDIYSuggestionsForGeorge(params: {
+  month?: number;
+}): Promise<object> {
+  const month = params.month || new Date().getMonth() + 1;
+  return _getSeasonalDIYProjects(month);
+}
