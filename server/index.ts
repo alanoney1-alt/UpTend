@@ -24,7 +24,21 @@ app.get('/health', (_req, res) => res.status(200).send('OK'));
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: false, // Vite dev server needs inline scripts
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://maps.googleapis.com", "https://js.stripe.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      connectSrc: ["'self'", "https://api.stripe.com", "https://maps.googleapis.com", "https://api.anthropic.com", "https://api.openai.com", "wss:", "ws:"],
+      frameSrc: ["'self'", "https://js.stripe.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      upgradeInsecureRequests: [],
+    },
+  } : false,
   crossOriginEmbedderPolicy: false,
 }));
 
@@ -58,6 +72,10 @@ app.use('/api/haulers/login', authLimiter);
 app.use('/api/haulers/register', authLimiter);
 app.use('/api/pros/login', authLimiter);
 app.use('/api/pros/register', authLimiter);
+app.use('/api/auth/', authLimiter);
+app.use('/api/admin/login', authLimiter);
+app.use('/api/business/login', authLimiter);
+app.use('/api/password-reset', authLimiter);
 app.use('/api/admin/login', authLimiter);
 app.use('/api/auth/forgot-password', authLimiter);
 app.use('/api/auth/reset-password', authLimiter);
