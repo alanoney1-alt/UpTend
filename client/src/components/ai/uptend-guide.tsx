@@ -59,6 +59,21 @@ function renderContent(text: string) {
   return DOMPurify.sanitize(html);
 }
 
+// ─── Derive role from URL (zone-aware, overrides auth role for correct persona) ──
+
+function getDerivedUserRole(page: string, authRole: string): "consumer" | "pro" | "business" | "admin" {
+  if (page.startsWith("/business")) return "business";
+  if (
+    page.startsWith("/pro") ||
+    page.startsWith("/become-pro") ||
+    page.startsWith("/academy") ||
+    page.startsWith("/drive") ||
+    page.startsWith("/pycker")
+  ) return "pro";
+  if (authRole === "admin") return "admin";
+  return "consumer";
+}
+
 // ─── Page-Aware Welcome & Quick Actions ──────────────────────────────────────
 
 function getPageContext(page: string, userRole: string, userName: string | null): {
@@ -474,7 +489,11 @@ export function UpTendGuide() {
           message: "I uploaded a photo for a quote.",
           sessionId: getSessionId(),
           photoAnalysis: analyzeData.analysis || {},
-          context: { page: pageContext.page, userRole: pageContext.userRole, userName: pageContext.userName },
+          context: {
+            page: pageContext.page,
+            userRole: getDerivedUserRole(pageContext.page, pageContext.userRole),
+            userName: pageContext.userName,
+          },
         }),
       });
       const chatData = await chatRes.json();
@@ -527,7 +546,11 @@ export function UpTendGuide() {
         body: JSON.stringify({
           message: msg,
           sessionId: getSessionId(),
-          context: { page: pageContext.page, userRole: pageContext.userRole, userName: pageContext.userName },
+          context: {
+            page: pageContext.page,
+            userRole: getDerivedUserRole(pageContext.page, pageContext.userRole),
+            userName: pageContext.userName,
+          },
         }),
       });
 

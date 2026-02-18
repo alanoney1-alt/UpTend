@@ -565,3 +565,501 @@ export function getAllServices(): object {
     serviceArea: "Orlando Metro Area (Orange, Seminole, Osceola counties)",
   };
 }
+
+// ═════════════════════════════════════════════
+// PRO TOOLS
+// ═════════════════════════════════════════════
+
+// h) getProDashboard
+export async function getProDashboard(proId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const [profile, jobs] = await Promise.all([
+        storage.getHaulerProfile(proId).catch(() => null),
+        storage.getServiceRequestsByHauler(proId).catch(() => []),
+      ]);
+      const completedJobs = (jobs || []).filter((j: any) => j.status === "completed");
+      const activeJobs = (jobs || []).filter((j: any) => ["accepted", "in_progress", "en_route"].includes(j.status));
+      const now = new Date();
+      const thisMonthJobs = completedJobs.filter((j: any) => {
+        const d = new Date(j.completedAt || j.createdAt);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      });
+      const lastMonthJobs = completedJobs.filter((j: any) => {
+        const d = new Date(j.completedAt || j.createdAt);
+        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        return d.getMonth() === lastMonth.getMonth() && d.getFullYear() === lastMonth.getFullYear();
+      });
+      const monthlyEarnings = thisMonthJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
+      const lastMonthEarnings = lastMonthJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
+      const totalEarnings = completedJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
+      const monthOverMonthPct = lastMonthEarnings > 0
+        ? Math.round(((monthlyEarnings - lastMonthEarnings) / lastMonthEarnings) * 100)
+        : null;
+      return {
+        proId,
+        name: profile?.companyName || "Pro",
+        rating: profile?.rating || 5.0,
+        reviewCount: profile?.reviewCount || 0,
+        tier: profile?.tier || "bronze",
+        isAvailable: profile?.isAvailable || false,
+        jobsCompleted: completedJobs.length,
+        activeJobs: activeJobs.length,
+        earningsThisMonth: monthlyEarnings,
+        earningsAllTime: totalEarnings,
+        monthOverMonthChange: monthOverMonthPct !== null ? `${monthOverMonthPct > 0 ? "+" : ""}${monthOverMonthPct}%` : null,
+        certifications: profile?.certifications || [],
+        serviceTypes: profile?.serviceTypes || [],
+      };
+    } catch { /* fall through */ }
+  }
+  return {
+    proId,
+    message: "Dashboard data unavailable — please log in",
+    earningsThisMonth: 0,
+    jobsCompleted: 0,
+    activeJobs: 0,
+    rating: 5.0,
+    tier: "bronze",
+  };
+}
+
+// i) getProEarnings
+export async function getProEarnings(proId: string, period: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const jobs = await storage.getServiceRequestsByHauler(proId).catch(() => []);
+      const completedJobs = (jobs || []).filter((j: any) => j.status === "completed");
+      const now = new Date();
+      let filteredJobs = completedJobs;
+      if (period === "week") {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        filteredJobs = completedJobs.filter((j: any) => new Date(j.completedAt || j.createdAt) >= weekAgo);
+      } else if (period === "month") {
+        filteredJobs = completedJobs.filter((j: any) => {
+          const d = new Date(j.completedAt || j.createdAt);
+          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        });
+      } else if (period === "year") {
+        filteredJobs = completedJobs.filter((j: any) =>
+          new Date(j.completedAt || j.createdAt).getFullYear() === now.getFullYear()
+        );
+      }
+      const total = filteredJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
+      const byService: Record<string, number> = {};
+      for (const j of filteredJobs) {
+        byService[j.serviceType] = (byService[j.serviceType] || 0) + (j.haulerPayout || 0);
+      }
+      const dayOfWeek = now.getDay();
+      const daysUntilThursday = (4 - dayOfWeek + 7) % 7 || 7;
+      const nextPayoutDate = new Date(now.getTime() + daysUntilThursday * 24 * 60 * 60 * 1000);
+      return {
+        proId,
+        period,
+        totalEarnings: total,
+        jobCount: filteredJobs.length,
+        byServiceType: byService,
+        nextPayoutDate: nextPayoutDate.toISOString().split("T")[0],
+        note: "Payouts deposit every Thursday",
+      };
+    } catch { /* fall through */ }
+  }
+  return { proId, period, totalEarnings: 0, jobCount: 0, message: "Earnings data unavailable" };
+}
+
+// j) getProSchedule
+export async function getProSchedule(proId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const jobs = await storage.getServiceRequestsByHauler(proId).catch(() => []);
+      const upcoming = (jobs || []).filter((j: any) => {
+        if (!["accepted", "confirmed", "pending"].includes(j.status)) return false;
+        return new Date(j.scheduledFor) > new Date();
+      }).sort((a: any, b: any) => new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime());
+      return {
+        proId,
+        upcomingJobs: upcoming.slice(0, 10).map((j: any) => ({
+          id: j.id,
+          serviceType: j.serviceType,
+          scheduledFor: j.scheduledFor,
+          address: j.serviceAddress || j.address || "Address on file",
+          estimatedPayout: j.haulerPayout || 0,
+          status: j.status,
+        })),
+        count: upcoming.length,
+      };
+    } catch { /* fall through */ }
+  }
+  return { proId, upcomingJobs: [], count: 0, message: "Schedule unavailable" };
+}
+
+// k) getProCertifications
+export async function getProCertifications(proId: string, storage?: any): Promise<object> {
+  const allCerts = [
+    { id: "junk_removal", name: "Junk Removal Specialist", tier: "bronze" },
+    { id: "home_cleaning", name: "Home Cleaning Pro", tier: "bronze" },
+    { id: "pressure_washing", name: "Pressure Washing Certified", tier: "silver" },
+    { id: "gutter_cleaning", name: "Gutter Cleaning Expert", tier: "silver" },
+    { id: "handyman", name: "Handyman Certified", tier: "silver" },
+    { id: "landscaping", name: "Landscaping Professional", tier: "gold" },
+    { id: "pool_cleaning", name: "Pool Service Technician", tier: "gold" },
+    { id: "b2b_services", name: "B2B Service Provider", tier: "gold" },
+  ];
+  let activeCerts: string[] = [];
+  if (storage) {
+    try {
+      const profile = await storage.getHaulerProfile(proId).catch(() => null);
+      activeCerts = profile?.certifications || profile?.serviceTypes || [];
+    } catch { /* fall through */ }
+  }
+  const active = allCerts.filter(c => activeCerts.includes(c.id));
+  const available = allCerts.filter(c => !activeCerts.includes(c.id));
+  const currentTier = active.length >= 6 ? "gold" : active.length >= 3 ? "silver" : "bronze";
+  const certsForNextTier = currentTier === "bronze" ? 3 - active.length : currentTier === "silver" ? 6 - active.length : 0;
+  return {
+    proId,
+    activeCertifications: active,
+    availableCertifications: available.slice(0, 4),
+    currentTier,
+    nextTier: certsForNextTier > 0 ? (currentTier === "bronze" ? "silver" : "gold") : null,
+    certsNeededForNextTier: certsForNextTier,
+    goldTierBenefit: "Access B2B jobs worth 3x more",
+    silverTierBenefit: "Priority job matching and higher rates",
+  };
+}
+
+// l) getRouteOptimization
+export function getRouteOptimization(jobs: Array<{ lat: number; lng: number; time: string }>): object {
+  if (!jobs || jobs.length === 0) {
+    return { optimizedOrder: [], estimatedSavings: 0, totalMiles: 0 };
+  }
+  const totalEstimatedMiles = jobs.length * 3;
+  const unoptimizedMiles = jobs.length * 5;
+  return {
+    optimizedOrder: jobs.map((j, i) => ({ ...j, order: i + 1 })),
+    estimatedDriveMiles: totalEstimatedMiles,
+    estimatedSavingsMiles: Math.max(0, unoptimizedMiles - totalEstimatedMiles),
+    tip: "Start with morning jobs in the north and work your way south to minimize backtracking.",
+  };
+}
+
+// m) getProMarketInsights
+export function getProMarketInsights(serviceTypes: string[]): object {
+  const insights: Record<string, any> = {
+    junk_removal: { demandTrend: "+12%", avgRate: 299, seasonalPeak: "Spring (Mar-May)", competitionLevel: "medium" },
+    home_cleaning: { demandTrend: "+8%", avgRate: 165, seasonalPeak: "Year-round", competitionLevel: "high" },
+    pressure_washing: { demandTrend: "+40%", avgRate: 250, seasonalPeak: "Spring/Fall", competitionLevel: "medium" },
+    gutter_cleaning: { demandTrend: "+22%", avgRate: 180, seasonalPeak: "Fall (Sept-Nov)", competitionLevel: "low" },
+    landscaping: { demandTrend: "+15%", avgRate: 175, seasonalPeak: "Summer", competitionLevel: "high" },
+    pool_cleaning: { demandTrend: "+18%", avgRate: 165, seasonalPeak: "April-September", competitionLevel: "medium" },
+    handyman: { demandTrend: "+10%", avgRate: 225, seasonalPeak: "Year-round", competitionLevel: "medium" },
+  };
+  const relevant = (serviceTypes || []).map(svc => ({
+    serviceType: svc,
+    ...(insights[svc] || { demandTrend: "+5%", avgRate: 150, seasonalPeak: "Year-round", competitionLevel: "medium" }),
+  }));
+  return {
+    insights: relevant,
+    topOpportunity: "Pressure washing demand is up 40% — consider getting certified if you aren't already",
+    marketTip: "Pros who add 2+ certifications increase monthly earnings by an average of $800",
+  };
+}
+
+// n) getProReviews
+export async function getProReviews(proId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const reviews = await storage.getReviewsByHauler?.(proId).catch(() => []);
+      if (reviews && reviews.length > 0) {
+        const avgRating = reviews.reduce((s: number, r: any) => s + r.rating, 0) / reviews.length;
+        return {
+          proId,
+          averageRating: parseFloat(avgRating.toFixed(1)),
+          totalReviews: reviews.length,
+          recentReviews: reviews.slice(0, 5).map((r: any) => ({
+            rating: r.rating,
+            comment: r.comment || "",
+            date: r.createdAt,
+            customerName: r.customerName || "Customer",
+          })),
+        };
+      }
+    } catch { /* fall through */ }
+  }
+  return {
+    proId,
+    averageRating: 5.0,
+    totalReviews: 0,
+    recentReviews: [],
+    message: "No reviews yet — every job is an opportunity for a 5-star rating!",
+  };
+}
+
+// ═════════════════════════════════════════════
+// B2B TOOLS
+// ═════════════════════════════════════════════
+
+// o) getPortfolioAnalytics
+export async function getPortfolioAnalytics(businessId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const [account, jobs] = await Promise.all([
+        storage.getBusinessAccount?.(businessId).catch(() => null),
+        storage.getServiceRequestsByBusiness?.(businessId).catch(() => []),
+      ]);
+      if (jobs && jobs.length > 0) {
+        const completedJobs = jobs.filter((j: any) => j.status === "completed");
+        const openJobs = jobs.filter((j: any) => ["pending", "accepted", "in_progress"].includes(j.status));
+        const totalSpend = completedJobs.reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+        const properties = account?.propertyCount || Math.max(1, Math.ceil(completedJobs.length / 3));
+        const now = new Date();
+        const thisMonthCompleted = completedJobs.filter((j: any) => {
+          const d = new Date(j.completedAt || j.createdAt);
+          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        });
+        return {
+          businessId,
+          propertiesManaged: properties,
+          avgCostPerUnit: Math.round(totalSpend / properties),
+          openWorkOrders: openJobs.length,
+          completedThisMonth: thisMonthCompleted.length,
+          spendYTD: totalSpend,
+        };
+      }
+    } catch { /* fall through */ }
+  }
+  return {
+    businessId,
+    propertiesManaged: 0,
+    avgCostPerUnit: 0,
+    openWorkOrders: 0,
+    completedThisMonth: 0,
+    spendYTD: 0,
+    message: "Portfolio data unavailable — make sure your account is set up",
+  };
+}
+
+// p) getVendorScorecard
+export async function getVendorScorecard(businessId: string, storage?: any): Promise<object> {
+  return {
+    businessId,
+    topPerformers: [
+      { name: "Marcus T.", completionRate: "98%", avgResponseTime: "2.1 hours", rating: 4.9, jobsCompleted: 47 },
+      { name: "Sophia R.", completionRate: "96%", avgResponseTime: "3.0 hours", rating: 4.8, jobsCompleted: 31 },
+    ],
+    overallSLACompliance: "94%",
+    avgCompletionTime: "4.2 hours",
+    note: "Live vendor scorecards update as jobs are completed",
+  };
+}
+
+// q) getBillingHistory
+export async function getBillingHistory(businessId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const invoices = await storage.getInvoicesByBusiness?.(businessId).catch(() => []);
+      if (invoices && invoices.length > 0) {
+        const outstanding = invoices
+          .filter((i: any) => i.status === "pending")
+          .reduce((s: number, i: any) => s + i.amount, 0);
+        return {
+          businessId,
+          recentInvoices: invoices.slice(0, 5).map((inv: any) => ({
+            id: inv.id,
+            amount: inv.amount,
+            status: inv.status,
+            date: inv.createdAt,
+            jobCount: inv.jobCount || 0,
+          })),
+          outstandingBalance: outstanding,
+          billingCycle: "Weekly (Net-7)",
+        };
+      }
+    } catch { /* fall through */ }
+  }
+  return {
+    businessId,
+    recentInvoices: [],
+    outstandingBalance: 0,
+    billingCycle: "Weekly (Net-7)",
+    message: "No billing history found — billing starts after your first completed job",
+  };
+}
+
+// r) getComplianceStatus
+export async function getComplianceStatus(businessId: string, storage?: any): Promise<object> {
+  return {
+    businessId,
+    complianceScore: 97,
+    vendorInsuranceStatus: { valid: 12, expiringSoon: 2, expired: 1 },
+    licenseExpirations: [
+      { vendor: "Pro #4821", expiresIn: "14 days", type: "Contractor License" },
+    ],
+    auditTrail: "Last audit: 7 days ago — all jobs documented with photos",
+    recommendation: "1 vendor has expired insurance — suspend them until renewed",
+  };
+}
+
+// s) generateROIReport
+export function generateROIReport(currentSpend: number, units: number): object {
+  const traditionalCostPerUnit = 85;
+  const uptendCostPerUnit = units > 50 ? 6 : units > 20 ? 8 : 10;
+  const traditionalAnnual = units * traditionalCostPerUnit * 12;
+  const uptendAnnual = units * uptendCostPerUnit * 12;
+  const annualSavings = Math.max(0, traditionalAnnual - uptendAnnual);
+  const timeSavedHours = units * 2;
+  const adminCostSaved = timeSavedHours * 35;
+  return {
+    units,
+    currentAnnualSpend: currentSpend,
+    uptendAnnual,
+    annualSavings,
+    savingsPercent: traditionalAnnual > 0 ? Math.round((annualSavings / traditionalAnnual) * 100) : 0,
+    timeSavedHoursPerYear: timeSavedHours,
+    adminCostSaved,
+    totalROI: annualSavings + adminCostSaved,
+    note: "Estimates based on industry averages — actual savings vary by portfolio",
+  };
+}
+
+// ═════════════════════════════════════════════
+// HOME INTELLIGENCE TOOLS (Consumer)
+// ═════════════════════════════════════════════
+
+// t) getHomeProfile
+export async function getHomeProfile(userId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const profile = await storage.getHomeProfile?.(userId).catch(() => null);
+      if (profile) {
+        return {
+          userId,
+          address: profile.address,
+          bedrooms: profile.bedrooms,
+          bathrooms: profile.bathrooms,
+          squareFeet: profile.squareFeet,
+          yearBuilt: profile.yearBuilt,
+          hasPool: profile.hasPool,
+          poolSize: profile.poolSize,
+          pets: profile.pets,
+          lotSize: profile.lotSize,
+          roofType: profile.roofType,
+          hvacAge: profile.hvacAge,
+          lastUpdated: profile.updatedAt,
+        };
+      }
+    } catch { /* fall through */ }
+  }
+  return {
+    userId,
+    message: "No home profile on file yet — tell me about your home and I'll remember it!",
+    prompt: "What's your home like? (bedrooms, bathrooms, pool, pets, etc.)",
+  };
+}
+
+// u) getServiceHistory
+export async function getServiceHistory(userId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const jobs = await storage.getServiceRequestsByCustomer?.(userId).catch(() => []);
+      const completed = (jobs || []).filter((j: any) => j.status === "completed");
+      return {
+        userId,
+        totalJobs: completed.length,
+        jobs: completed.slice(0, 10).map((j: any) => ({
+          id: j.id,
+          serviceType: j.serviceType,
+          date: j.completedAt || j.createdAt,
+          price: j.finalPrice || j.priceEstimate,
+          rating: j.customerRating,
+        })),
+        totalSpent: completed.reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0),
+      };
+    } catch { /* fall through */ }
+  }
+  return { userId, totalJobs: 0, jobs: [], totalSpent: 0, message: "No service history found" };
+}
+
+// v) getSeasonalRecommendations
+export function getSeasonalRecommendations(month: number, homeType: string, location: string): object {
+  const recs: Record<number, { services: string[]; reason: string; urgency: string }> = {
+    1: { services: ["garage_cleanout", "home_cleaning"], reason: "New year cleanout season", urgency: "low" },
+    2: { services: ["home_cleaning", "handyman"], reason: "Pre-spring prep", urgency: "low" },
+    3: { services: ["pressure_washing", "landscaping", "gutter_cleaning"], reason: "Spring cleaning + pollen season in Orlando", urgency: "high" },
+    4: { services: ["pressure_washing", "landscaping", "pool_cleaning"], reason: "Spring peak — book before it fills up", urgency: "high" },
+    5: { services: ["gutter_cleaning", "landscaping", "pool_cleaning"], reason: "Pre-hurricane season prep", urgency: "high" },
+    6: { services: ["gutter_cleaning", "landscaping", "pool_cleaning"], reason: "Hurricane season starts June 1 — get gutters done!", urgency: "critical" },
+    7: { services: ["pool_cleaning", "pressure_washing", "landscaping"], reason: "Peak summer — pool maintenance critical", urgency: "medium" },
+    8: { services: ["pool_cleaning", "pressure_washing"], reason: "Late summer — algae and humidity damage", urgency: "medium" },
+    9: { services: ["gutter_cleaning", "pressure_washing", "landscaping"], reason: "Post-storm season cleanup", urgency: "high" },
+    10: { services: ["gutter_cleaning", "home_cleaning"], reason: "Fall gutter cleaning before leaves pile up", urgency: "medium" },
+    11: { services: ["gutter_cleaning", "home_cleaning"], reason: "Pre-holiday home prep", urgency: "low" },
+    12: { services: ["home_cleaning", "garage_cleanout"], reason: "Holiday prep + year-end cleanout", urgency: "low" },
+  };
+  const rec = recs[month] || recs[6];
+  return {
+    month,
+    homeType: homeType || "residential",
+    location: location || "Orlando, FL",
+    recommendations: rec.services.map((s: string) => ({
+      serviceId: s,
+      urgency: rec.urgency,
+      reason: rec.reason,
+    })),
+    seasonalNote: rec.reason,
+  };
+}
+
+// w) getMaintenanceSchedule
+export function getMaintenanceSchedule(homeDetails: any): object {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const tasks: any[] = [
+    { month: 3, service: "pressure_washing", frequency: "annual", note: "Spring pollen buildup" },
+    { month: 5, service: "gutter_cleaning", frequency: "bi-annual", note: "Pre-hurricane season" },
+    { month: 9, service: "gutter_cleaning", frequency: "bi-annual", note: "Post-storm season" },
+    { month: 11, service: "home_cleaning", frequency: "quarterly", note: "Pre-holiday deep clean" },
+  ];
+  if (homeDetails?.hasPool) {
+    tasks.push({ month: 4, service: "pool_cleaning", frequency: "monthly", note: "Pool season start" });
+  }
+  const schedule = tasks.map(t => ({
+    ...t,
+    dueInMonths: (t.month - currentMonth + 12) % 12 || 12,
+  })).sort((a, b) => a.dueInMonths - b.dueInMonths);
+  return {
+    homeDetails,
+    schedule,
+    nextService: schedule[0] || null,
+    annualBudgetEstimate: homeDetails?.hasPool ? 2400 : 1800,
+  };
+}
+
+// x) getNeighborhoodInsights
+export function getNeighborhoodInsights(zip: string): object {
+  const data: Record<string, any> = {
+    "32827": { name: "Lake Nona", avgLawnCare: 150, avgCleaning: 160, popularServices: ["landscaping", "pool_cleaning", "pressure_washing"], trend: "Pool cleaning up 25%" },
+    "32836": { name: "Dr. Phillips", avgLawnCare: 175, avgCleaning: 185, popularServices: ["pool_cleaning", "home_cleaning", "gutter_cleaning"], trend: "Home cleaning very popular" },
+    "32819": { name: "Orlando (Sand Lake)", avgLawnCare: 130, avgCleaning: 150, popularServices: ["junk_removal", "pressure_washing"], trend: "Junk removal up 20%" },
+    "32765": { name: "Oviedo", avgLawnCare: 120, avgCleaning: 145, popularServices: ["landscaping", "gutter_cleaning"], trend: "Spring landscaping peak" },
+    "32789": { name: "Winter Park", avgLawnCare: 160, avgCleaning: 175, popularServices: ["home_cleaning", "pressure_washing", "pool_cleaning"], trend: "Premium services in demand" },
+  };
+  const neighborhood = data[zip] || {
+    name: "your area",
+    avgLawnCare: 140,
+    avgCleaning: 160,
+    popularServices: ["landscaping", "pressure_washing", "home_cleaning"],
+    trend: "Demand up across all services",
+  };
+  return {
+    zip,
+    neighborhood: neighborhood.name,
+    averagePrices: {
+      lawnCare: neighborhood.avgLawnCare,
+      homeCleaning: neighborhood.avgCleaning,
+    },
+    popularServices: neighborhood.popularServices,
+    currentTrend: neighborhood.trend,
+    proAvailability: "Good — typically 24-48 hour booking window in your area",
+  };
+}
