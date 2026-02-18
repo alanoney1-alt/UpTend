@@ -1908,3 +1908,415 @@ export function getNeighborhoodInsights(zip: string): object {
     proAvailability: "Good — typically 24-48 hour booking window in your area",
   };
 }
+
+// ═════════════════════════════════════════════
+// DAILY ENGAGEMENT TOOLS (Phase 3)
+// ═════════════════════════════════════════════
+
+// da1) getMorningBriefing
+export async function getMorningBriefing(userId: string, storage?: any): Promise<object> {
+  const { buildMorningBriefing } = await import("./george-daily");
+  const briefing = await buildMorningBriefing(userId, storage);
+
+  const sections: string[] = [];
+
+  // Weather
+  const w = briefing.weather;
+  sections.push(`🌤 **Weather**: ${w.temp}°F (feels like ${w.feelsLike}°F), ${w.conditions}, ${w.humidity}% humidity`);
+  if (w.alerts.length > 0) {
+    sections.push(`⚠️ **Alert**: ${w.alerts[0]}`);
+  }
+
+  // Today's schedule
+  if (briefing.todaySchedule.length > 0) {
+    const jobSummary = briefing.todaySchedule.map(j =>
+      `${j.serviceType.replace(/_/g, " ")} with ${j.proName} (${j.timeWindow})`
+    ).join(", ");
+    sections.push(`📅 **Today**: ${jobSummary}`);
+  } else {
+    sections.push("📅 **Today**: No services scheduled");
+  }
+
+  // Trash day
+  if (briefing.trashDay.isTrashDay) {
+    sections.push("🗑️ **Trash day!** Put the bins out");
+  } else if (briefing.trashDay.isRecyclingDay) {
+    sections.push("♻️ **Recycling day!** Blue bin goes out");
+  }
+
+  // Home alerts
+  if (briefing.homeAlerts.length > 0) {
+    sections.push(`🔔 **Home alerts**: ${briefing.homeAlerts.map(a => a.message).join("; ")}`);
+  }
+
+  // Seasonal countdown
+  const s = briefing.seasonalCountdown;
+  if (s.daysUntil <= 60) {
+    sections.push(`📆 **${s.event}** in ${s.daysUntil} days — readiness: ${s.readinessScore}/10`);
+  }
+
+  // Daily tip
+  sections.push(`💡 **Daily tip**: ${briefing.tips}`);
+
+  // Loyalty
+  sections.push(`⭐ ${briefing.loyaltyUpdate}`);
+
+  return {
+    greeting: briefing.greeting,
+    summary: sections.join("\n\n"),
+    sections,
+    raw: briefing,
+  };
+}
+
+// da2) getHomeDashboard
+export async function getHomeDashboard(userId: string, storage?: any): Promise<object> {
+  let homeProfile: any = null;
+  let recentJobs: any[] = [];
+  let upcomingJobs: any[] = [];
+  let thisMonthSpend = 0;
+  let lifetimeSpend = 0;
+  let loyaltyTier = "bronze";
+  let maintenanceAlerts: any[] = [];
+
+  if (storage) {
+    try {
+      homeProfile = await storage.getHomeProfile?.(userId).catch(() => null);
+      const jobs = await storage.getServiceRequestsByCustomer?.(userId).catch(() => []);
+      const now = new Date();
+
+      const completed = (jobs || []).filter((j: any) => j.status === "completed");
+      recentJobs = completed
+        .sort((a: any, b: any) =>
+          new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime()
+        )
+        .slice(0, 5)
+        .map((j: any) => ({
+          id: j.id,
+          serviceType: j.serviceType,
+          date: j.completedAt || j.createdAt,
+          price: j.finalPrice || j.priceEstimate || 0,
+          pro: j.proName || j.haulerName || "Pro",
+          rating: j.customerRating || null,
+        }));
+
+      upcomingJobs = (jobs || [])
+        .filter((j: any) => ["accepted", "confirmed", "pending"].includes(j.status) && new Date(j.scheduledFor) > now)
+        .sort((a: any, b: any) => new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime())
+        .slice(0, 5)
+        .map((j: any) => ({
+          id: j.id,
+          serviceType: j.serviceType,
+          scheduledFor: j.scheduledFor,
+          pro: j.proName || j.haulerName || "Pro",
+          status: j.status,
+        }));
+
+      lifetimeSpend = completed.reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+      loyaltyTier = lifetimeSpend >= 5000 ? "platinum" : lifetimeSpend >= 2000 ? "gold" : lifetimeSpend >= 500 ? "silver" : "bronze";
+
+      const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      thisMonthSpend = completed
+        .filter((j: any) => new Date(j.completedAt || j.createdAt) >= firstOfMonth)
+        .reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+
+      // Basic maintenance alerts
+      const month = now.getMonth() + 1;
+      if (month >= 5 && month <= 6) {
+        maintenanceAlerts.push({ task: "Pre-hurricane season gutter cleaning", urgency: "high", serviceId: "gutter_cleaning" });
+      }
+      if (month === 3 || month === 4) {
+        maintenanceAlerts.push({ task: "Spring pressure washing", urgency: "medium", serviceId: "pressure_washing" });
+      }
+    } catch (err: any) {
+      console.warn("[George Tools] getHomeDashboard error:", err.message);
+    }
+  }
+
+  return {
+    userId,
+    homeProfile: homeProfile ? {
+      address:     homeProfile.address,
+      bedrooms:    homeProfile.bedrooms,
+      bathrooms:   homeProfile.bathrooms,
+      squareFeet:  homeProfile.squareFeet,
+      hasPool:     homeProfile.hasPool,
+      yearBuilt:   homeProfile.yearBuilt,
+    } : null,
+    upcomingJobs,
+    recentJobs,
+    spending: {
+      thisMonth:     thisMonthSpend,
+      lifetimeTotal: lifetimeSpend,
+      loyaltyTier,
+    },
+    maintenanceAlerts,
+    smartDevices: {
+      note: "Smart home integration coming soon — Ring, smart locks, thermostats, and water sensors will auto-dispatch pros when they detect issues",
+      connected: false,
+    },
+    lastUpdated: new Date().toISOString(),
+  };
+}
+
+// da3) getSpendingTracker
+export async function getSpendingTracker(userId: string, period: string, storage?: any): Promise<object> {
+  let jobs: any[] = [];
+
+  if (storage) {
+    try {
+      const all = await storage.getServiceRequestsByCustomer?.(userId).catch(() => []);
+      jobs = (all || []).filter((j: any) => j.status === "completed");
+    } catch { /* fall through */ }
+  }
+
+  const now = new Date();
+  let startDate: Date;
+
+  if (period === "quarter") {
+    const quarter = Math.floor(now.getMonth() / 3);
+    startDate = new Date(now.getFullYear(), quarter * 3, 1);
+  } else if (period === "year") {
+    startDate = new Date(now.getFullYear(), 0, 1);
+  } else {
+    // Default: month
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
+  const lastPeriodStart = new Date(startDate);
+  if (period === "quarter") {
+    lastPeriodStart.setMonth(lastPeriodStart.getMonth() - 3);
+  } else if (period === "year") {
+    lastPeriodStart.setFullYear(lastPeriodStart.getFullYear() - 1);
+  } else {
+    lastPeriodStart.setMonth(lastPeriodStart.getMonth() - 1);
+  }
+
+  const periodJobs = jobs.filter((j: any) => {
+    const d = new Date(j.completedAt || j.createdAt);
+    return d >= startDate && d <= now;
+  });
+
+  const lastPeriodJobs = jobs.filter((j: any) => {
+    const d = new Date(j.completedAt || j.createdAt);
+    return d >= lastPeriodStart && d < startDate;
+  });
+
+  const total = periodJobs.reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+  const lastTotal = lastPeriodJobs.reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+
+  const byCategory: Record<string, number> = {};
+  for (const j of periodJobs) {
+    const cat = j.serviceType || "other";
+    byCategory[cat] = (byCategory[cat] || 0) + (j.finalPrice || j.priceEstimate || 0);
+  }
+
+  const budget = period === "year" ? 3600 : period === "quarter" ? 900 : 500;
+  const change = lastTotal > 0 ? ((total - lastTotal) / lastTotal * 100).toFixed(0) : null;
+
+  return {
+    userId,
+    period,
+    total,
+    budget,
+    remaining: Math.max(0, budget - total),
+    budgetUsedPct: budget > 0 ? Math.round((total / budget) * 100) : 0,
+    byCategory,
+    jobCount: periodJobs.length,
+    vsLastPeriod: change !== null ? `${parseFloat(change) > 0 ? "+" : ""}${change}%` : null,
+    topService: Object.keys(byCategory).sort((a, b) => byCategory[b] - byCategory[a])[0] || null,
+    note: total > budget
+      ? `You're $${total - budget} over your ${period}ly budget`
+      : `$${budget - total} left in your ${period}ly budget`,
+  };
+}
+
+// da4) getTrashSchedule
+export function getTrashScheduleInfo(zip: string): object {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  const trashDays: Record<string, number[]> = {
+    "32827": [1, 4], "32832": [1, 4], "32824": [2, 5], "32836": [2, 5],
+    "32819": [1, 4], "32789": [1, 4], "32765": [3, 6],
+  };
+  const recyclingWeekdays: Record<string, number> = {
+    "32827": 1, "32832": 1, "32824": 2, "32836": 2,
+    "32819": 1, "32789": 1, "32765": 3,
+  };
+
+  const schedule = trashDays[zip] || [1, 4];
+  const recyclingDay = recyclingWeekdays[zip] || 1;
+
+  function nextOccurrence(targetDay: number): string {
+    const d = new Date(now);
+    let daysUntil = (targetDay - dayOfWeek + 7) % 7;
+    if (daysUntil === 0) return "Today";
+    d.setDate(d.getDate() + daysUntil);
+    return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  }
+
+  return {
+    zip,
+    trashDays:         schedule.map(d => dayNames[d]),
+    recyclingDay:      dayNames[recyclingDay],
+    isTrashToday:      schedule.includes(dayOfWeek),
+    isRecyclingToday:  dayOfWeek === recyclingDay,
+    nextTrashPickup:   nextOccurrence(schedule[0]),
+    nextRecyclingPickup: nextOccurrence(recyclingDay),
+    bulkPickup:        "First Monday of each month (varies by area)",
+    accepted:          "Household trash, recycling (paper, plastic 1–2, glass, cardboard — flattened)",
+    notAccepted:       "Hazardous waste, electronics, tires, construction debris",
+    source:            "Orange County Utilities — ocfl.net for holiday schedule changes",
+  };
+}
+
+// da5) getHomeValueEstimate
+export async function getHomeValueEstimate(address: string): Promise<object> {
+  const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || process.env.REALTY_RAPIDAPI_KEY;
+
+  if (RAPIDAPI_KEY) {
+    try {
+      const encodedAddress = encodeURIComponent(address);
+      const res = await fetch(
+        `https://realty-in-us.p.rapidapi.com/properties/v3/search?location=${encodedAddress}&limit=5`,
+        {
+          headers: {
+            "x-rapidapi-key":  RAPIDAPI_KEY,
+            "x-rapidapi-host": "realty-in-us.p.rapidapi.com",
+          },
+          signal: AbortSignal.timeout(5000),
+        }
+      );
+
+      if (res.ok) {
+        const data: any = await res.json();
+        const homes = data?.data?.home_search?.results || [];
+        if (homes.length > 0) {
+          const prices = homes.map((h: any) => h.list_price || h.price || 0).filter((p: number) => p > 0);
+          const avgPrice = prices.length > 0 ? Math.round(prices.reduce((s: number, p: number) => s + p, 0) / prices.length) : null;
+          const estValue = avgPrice ? Math.round(avgPrice * (0.9 + Math.random() * 0.2)) : null;
+
+          return {
+            address,
+            estimatedValue: estValue,
+            comparables: homes.slice(0, 3).map((h: any) => ({
+              address: h.location?.address?.line || "Nearby home",
+              listPrice: h.list_price || 0,
+              beds: h.description?.beds || 0,
+              baths: h.description?.baths || 0,
+              sqft: h.description?.sqft || 0,
+            })),
+            neighborhoodAvg: avgPrice,
+            note: "Estimate based on nearby comparable listings. For an official value, request an appraisal.",
+            homeTip: "Homes with documented maintenance history sell for 3–5% more. Your UpTend service records count!",
+          };
+        }
+      }
+    } catch { /* fall through to mock */ }
+  }
+
+  // Fallback mock for Orlando area
+  const baseValue = 380000 + Math.floor(Math.random() * 120000);
+  return {
+    address,
+    estimatedValue: baseValue,
+    comparables: [
+      { address: "Nearby home #1", listPrice: baseValue - 15000, beds: 3, baths: 2, sqft: 1800 },
+      { address: "Nearby home #2", listPrice: baseValue + 22000, beds: 4, baths: 2, sqft: 2100 },
+    ],
+    neighborhoodAvg: baseValue,
+    note: "Estimated range based on Orlando market averages. Connect Realty API for live data.",
+    homeTip: "Homes with documented maintenance history sell for 3–5% more. Your UpTend service records count!",
+  };
+}
+
+// da6) getCalendarSuggestion
+export async function getCalendarSuggestion(userId: string, serviceId: string, storage?: any): Promise<object> {
+  const { suggestBestTime } = await import("./george-calendar");
+  const suggestion = await suggestBestTime(userId, serviceId, storage);
+
+  const serviceLabel = (serviceId || "this service")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c: string) => c.toUpperCase());
+
+  return {
+    userId,
+    serviceId,
+    serviceLabel,
+    suggestion,
+    message: suggestion.suggestedSlot
+      ? `Based on your calendar, ${suggestion.suggestedSlot.label} looks good for ${serviceLabel}. ${suggestion.reason}.`
+      : `I can find you a time for ${serviceLabel} — when are you generally free?`,
+    calendarConnected: suggestion.suggestedSlot?.start !== undefined,
+    howToConnect: !suggestion.suggestedSlot
+      ? "Connect your Google Calendar so I can find the perfect slot around your schedule"
+      : undefined,
+  };
+}
+
+// da7) getSeasonalCountdown
+export function getSeasonalCountdown(): object {
+  const now = new Date();
+  const month = now.getMonth() + 1;
+
+  // Hurricane season readiness
+  const isHurricaneSeason = month >= 6 && month <= 11;
+  const hurricaneStart = new Date(now.getFullYear(), 5, 1); // June 1
+  if (hurricaneStart < now) hurricaneStart.setFullYear(now.getFullYear() + 1);
+  const daysToHurricane = Math.ceil((hurricaneStart.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Spring cleaning
+  const springStart = new Date(now.getFullYear(), 2, 1); // March 1
+  if (springStart < now) springStart.setFullYear(now.getFullYear() + 1);
+  const daysToSpring = Math.ceil((springStart.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Holiday prep
+  const holidayStart = new Date(now.getFullYear(), 10, 1); // Nov 1
+  if (holidayStart < now) holidayStart.setFullYear(now.getFullYear() + 1);
+  const daysToHoliday = Math.ceil((holidayStart.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Which is closest
+  const events = [
+    {
+      name: "Hurricane Season",
+      daysUntil: isHurricaneSeason ? 0 : daysToHurricane,
+      active: isHurricaneSeason,
+      services: ["gutter_cleaning", "landscaping", "home_scan"],
+      tip: isHurricaneSeason
+        ? "Hurricane season is active through November 30. Keep gutters clear and document your home."
+        : `Hurricane season starts in ${daysToHurricane} days. Prep checklist: gutters, tree trimming, exterior photos.`,
+    },
+    {
+      name: "Spring Cleaning Season",
+      daysUntil: daysToSpring,
+      active: month >= 3 && month <= 5,
+      services: ["pressure_washing", "landscaping", "gutter_cleaning"],
+      tip: `Spring cleaning season is ${daysToSpring <= 30 ? "here" : `${daysToSpring} days away`}. Pressure washing, landscaping, and gutters are in high demand.`,
+    },
+    {
+      name: "Holiday Season",
+      daysUntil: daysToHoliday,
+      active: month >= 11,
+      services: ["home_cleaning", "garage_cleanout"],
+      tip: `Holiday season is ${daysToHoliday <= 30 ? "almost here" : `${daysToHoliday} days away`}. Book home cleaning early — pros fill up fast in November.`,
+    },
+  ];
+
+  const closest = events.sort((a, b) => a.daysUntil - b.daysUntil)[0];
+
+  return {
+    upcoming: events,
+    closest,
+    currentMonth: month,
+    isHurricaneSeason,
+    hurricaneSeasonWindow: "June 1 – November 30",
+    readinessChecklist: {
+      guttersCleaned: false, // Would pull from service history in production
+      treestrimmed:   false,
+      homeDocumented: false,
+      message: "Complete your readiness checklist to reach 10/10",
+    },
+  };
+}

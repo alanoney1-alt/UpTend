@@ -62,6 +62,25 @@ CAPABILITIES:
 - Smart home awareness: when relevant, mention that in the future UpTend will integrate with Ring, smart locks, thermostats, and water sensors for automated dispatch — say "In the future, I'll be able to connect with your smart home devices"
 - Accessibility: if customer mentions calling, voice, or accessibility needs, let them know voice mode is coming soon. For elderly or less tech-savvy users, use simpler language and shorter sentences.
 
+DAILY ENGAGEMENT:
+- When a customer opens the chat before 11 AM, offer a morning briefing: call get_morning_briefing and share: "Good morning! Here's your home update..." (weather, today's schedule, any alerts). Keep it short — 3-4 bullets max.
+- Always know the weather and tie it to services: "Storms coming Thursday — want me to check your gutters first?"
+- Track their home spending: call get_spending_tracker when relevant — "You've spent $340 of your $500 monthly budget. $160 left."
+- Know their calendar: call get_calendar_suggestion when scheduling — "I see you're free Tuesday afternoon — perfect for that pressure washing."
+- Share one daily tip related to their home when it feels natural (not every message) — call get_morning_briefing which includes the tip.
+- Seasonal countdowns: call get_seasonal_countdown — "Hurricane season in 47 days. Your home readiness: 7/10."
+- Home value awareness: call get_home_value_estimate occasionally for context — "Fun fact — homes with clean gutters sell for 3-5% more. Yours are due."
+- When customer asks "what's happening today" or "home update" or "morning briefing": call get_morning_briefing immediately.
+- When customer asks about trash/recycling day: call get_trash_schedule.
+- When customer asks about their spending: call get_spending_tracker.
+- When customer asks to see their full home dashboard: call get_home_dashboard.
+
+DAILY HOOKS (use naturally, never all at once):
+- Morning: weather + schedule + alerts — call get_morning_briefing
+- Midday: pro updates if jobs are happening — check get_customer_jobs
+- Evening: daily summary if something happened
+- Weekly: spending recap via get_spending_tracker + upcoming maintenance via get_home_maintenance_reminders
+
 EMERGENCY RULES (highest priority):
 - When customer mentions EMERGENCY words ("pipe burst", "flooding", "tree fell", "fire", "water leak", "gas smell", "break-in", "unsafe", "hurt"), IMMEDIATELY enter emergency mode
 - In emergency mode: skip small talk, ask ONLY two things — (1) address and (2) what happened — then dispatch
@@ -790,6 +809,84 @@ const TOOL_DEFINITIONS: any[] = [
       required: ["current_spend", "units"],
     },
   },
+
+  // ── Daily Engagement Tools (Phase 3) ─────────
+  {
+    name: "get_morning_briefing",
+    description: "Get the customer's personalized morning briefing: weather, today's schedule, home alerts, trash day, seasonal countdown, daily tip, loyalty status. Call when customer opens chat before 11 AM or asks 'what's happening today'.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id: { type: "string", description: "Customer's user ID" },
+      },
+      required: ["user_id"],
+    },
+  },
+  {
+    name: "get_home_dashboard",
+    description: "Get the customer's full home dashboard: upcoming and recent jobs, smart devices status, spending summary, maintenance alerts. The 'one glance' view of their entire home.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id: { type: "string", description: "Customer's user ID" },
+      },
+      required: ["user_id"],
+    },
+  },
+  {
+    name: "get_spending_tracker",
+    description: "Get customer's home service spending for a period: total vs budget, breakdown by service category, comparison to last period. Call when customer asks about their spending or budget.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id: { type: "string", description: "Customer's user ID" },
+        period:  { type: "string", enum: ["month", "quarter", "year"], description: "Reporting period" },
+      },
+      required: ["user_id", "period"],
+    },
+  },
+  {
+    name: "get_trash_schedule",
+    description: "Get trash and recycling pickup schedule for a zip code. Call when customer asks about trash day.",
+    input_schema: {
+      type: "object",
+      properties: {
+        zip: { type: "string", description: "5-digit zip code" },
+      },
+      required: ["zip"],
+    },
+  },
+  {
+    name: "get_home_value_estimate",
+    description: "Get estimated home value and nearby comps for an address. Call when customer asks about their home's value or when suggesting value-add services.",
+    input_schema: {
+      type: "object",
+      properties: {
+        address: { type: "string", description: "Full address of the home" },
+      },
+      required: ["address"],
+    },
+  },
+  {
+    name: "get_calendar_suggestion",
+    description: "Suggest the best time to book a service based on the customer's calendar availability, pro availability, and service requirements. Call when scheduling and the customer hasn't specified a time.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id:    { type: "string", description: "Customer's user ID" },
+        service_id: { type: "string", description: "Service being scheduled" },
+      },
+      required: ["user_id", "service_id"],
+    },
+  },
+  {
+    name: "get_seasonal_countdown",
+    description: "Get countdowns to key seasonal events: hurricane season, spring cleaning, holiday season. Includes readiness score and prep recommendations.",
+    input_schema: {
+      type: "object",
+      properties: {},
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────
@@ -922,6 +1019,22 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return await tools.getComplianceStatus(input.business_id, storage);
     case "generate_roi_report":
       return tools.generateROIReport(input.current_spend || 0, input.units || 1);
+
+    // Daily Engagement Tools (Phase 3)
+    case "get_morning_briefing":
+      return await tools.getMorningBriefing(input.user_id, storage);
+    case "get_home_dashboard":
+      return await tools.getHomeDashboard(input.user_id, storage);
+    case "get_spending_tracker":
+      return await tools.getSpendingTracker(input.user_id, input.period || "month", storage);
+    case "get_trash_schedule":
+      return tools.getTrashScheduleInfo(input.zip);
+    case "get_home_value_estimate":
+      return await tools.getHomeValueEstimate(input.address);
+    case "get_calendar_suggestion":
+      return await tools.getCalendarSuggestion(input.user_id, input.service_id, storage);
+    case "get_seasonal_countdown":
+      return tools.getSeasonalCountdown();
 
     default:
       return { error: `Unknown tool: ${name}` };

@@ -169,6 +169,9 @@ import { registerPublicRoutes } from "./public.routes";
 // George cron routes
 import { registerGeorgeCronRoutes } from "./george-cron.routes";
 
+// George Daily Engagement routes (Phase 3)
+import { registerGeorgeDailyRoutes } from "./george-daily.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -361,6 +364,9 @@ export async function registerRoutes(
 
   // Register George cron routes
   registerGeorgeCronRoutes(app);
+
+  // Register George Daily Engagement routes (Phase 3)
+  registerGeorgeDailyRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
