@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import passport from "passport";
 import { sendVerificationEmail, isEmailConfigured } from "../../services/notifications";
+import { getProLoginGreeting } from "../../services/george-events";
 
 // Pro registration schema
 const proRegistrationSchema = z.object({
@@ -607,10 +608,20 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
             console.error("Session creation error:", loginErr);
             return res.status(500).json({ error: "Login failed" });
           }
-          return res.json({
-            success: true,
-            message: "Login successful",
-            role: fullUser?.role,
+          // George: attach pro greeting to login response (non-blocking)
+          getProLoginGreeting(user.userId || user.id).then(georgeGreeting => {
+            return res.json({
+              success: true,
+              message: "Login successful",
+              role: fullUser?.role,
+              george: georgeGreeting,
+            });
+          }).catch(() => {
+            return res.json({
+              success: true,
+              message: "Login successful",
+              role: fullUser?.role,
+            });
           });
         });
       } catch (error) {
@@ -651,10 +662,20 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
             console.error("Session creation error:", loginErr);
             return res.status(500).json({ error: "Login failed" });
           }
-          return res.json({
-            success: true,
-            message: "Login successful",
-            role: fullUser?.role,
+          // George: attach pro greeting to login response (non-blocking)
+          getProLoginGreeting(user.userId || user.id).then(georgeGreeting => {
+            return res.json({
+              success: true,
+              message: "Login successful",
+              role: fullUser?.role,
+              george: georgeGreeting,
+            });
+          }).catch(() => {
+            return res.json({
+              success: true,
+              message: "Login successful",
+              role: fullUser?.role,
+            });
           });
         });
       } catch (error) {

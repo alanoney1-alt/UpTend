@@ -8,6 +8,7 @@ import { updateDwellScan } from "../../services/scoringService";
 import { processEsgForCompletedJob } from "../../services/job-completion-esg-integration";
 import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobCompleted, sendProNewJob, sendProEnRoute, sendReviewReminder, sendProPaymentProcessed, sendAdminHighValueBooking } from "../../services/email-service";
 import { sendSms } from "../../services/notifications";
+import { onBookingConfirmed } from "../../services/george-events";
 import { db as feeDb } from "../../db";
 import { sql as feeSql } from "drizzle-orm";
 
@@ -250,6 +251,11 @@ export function registerServiceRequestRoutes(app: Express) {
       if (price >= 500 && process.env.ADMIN_EMAIL) {
         sendAdminHighValueBooking(process.env.ADMIN_EMAIL, request).catch(err => console.error('[EMAIL] Failed high-value alert:', err.message));
       }
+
+      // George: post-booking follow-up (fire-and-forget)
+      onBookingConfirmed(request.id, userId, request.serviceType || 'unknown').catch(err =>
+        console.error('[George] onBookingConfirmed error:', err.message)
+      );
 
       res.status(201).json(request);
     } catch (error) {

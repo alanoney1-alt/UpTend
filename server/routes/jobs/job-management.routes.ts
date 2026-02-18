@@ -3,6 +3,7 @@ import { storage } from "../../storage";
 import { requireAuth, requireAdmin, requireHauler } from "../../auth-middleware";
 import { stripeService } from "../../stripeService";
 import { updateDwellScan } from "../../services/scoringService";
+import { onProEnRoute, onJobCompleted } from "../../services/george-events";
 
 import { broadcastToJob } from "../../websocket";
 
@@ -45,6 +46,13 @@ export function registerJobManagementRoutes(app: Express) {
 
       // Broadcast update to connected clients
       broadcastToJob(jobId, { type: "job_started", job: updated });
+
+      // George: pro en-route notification to customer (fire-and-forget)
+      if (job.customerId) {
+        onProEnRoute(jobId, job.customerId, userId).catch(err =>
+          console.error('[George] onProEnRoute error:', err.message)
+        );
+      }
 
       res.json({ success: true, job: updated, completion });
     } catch (error) {
@@ -409,6 +417,13 @@ export function registerJobManagementRoutes(app: Express) {
         await updateDwellScan(job.customerId, job.serviceType, jobId);
       } catch (scoreErr) {
         console.error("Home score update failed (non-blocking):", scoreErr);
+      }
+
+      // George: 2-hour follow-up after job completion (fire-and-forget)
+      if (job.customerId) {
+        onJobCompleted(jobId, job.customerId, job.serviceType || 'unknown').catch(err =>
+          console.error('[George] onJobCompleted error:', err.message)
+        );
       }
 
       // Attempt to capture payment

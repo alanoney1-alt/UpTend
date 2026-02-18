@@ -166,6 +166,9 @@ import { registerAccountingRoutes } from "./accounting/index";
 // Public routes
 import { registerPublicRoutes } from "./public.routes";
 
+// George cron routes
+import { registerGeorgeCronRoutes } from "./george-cron.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -355,6 +358,9 @@ export async function registerRoutes(
 
   // Register Public routes (no auth required)
   registerPublicRoutes(app);
+
+  // Register George cron routes
+  registerGeorgeCronRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

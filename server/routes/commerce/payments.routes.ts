@@ -4,6 +4,7 @@ import { requireAuth, requireHauler } from "../../auth-middleware";
 import { stripeService } from "../../stripeService";
 import { db } from "../../db";
 import { sql } from "drizzle-orm";
+import { onPaymentCaptured } from "../../services/george-events";
 
 async function getActiveCertCount(proId: string): Promise<number> {
   const now = new Date().toISOString();
@@ -221,6 +222,14 @@ export function registerPaymentRoutes(app: Express) {
         haulerPayout: result.haulerPayout,
         paidAt: new Date().toISOString(),
       });
+
+      // George: loyalty tier update after payment (fire-and-forget)
+      if (job.customerId && job.livePrice) {
+        const amountCents = Math.round(job.livePrice * 100);
+        onPaymentCaptured(job.customerId, amountCents).catch(err =>
+          console.error('[George] onPaymentCaptured error:', err.message)
+        );
+      }
 
       res.json({
         success: true,
