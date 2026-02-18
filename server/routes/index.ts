@@ -193,6 +193,9 @@ import { registerBriefingRoutes } from "./briefing.routes";
 // Centralized Pricing Engine routes
 import { registerCentralizedPricingRoutes } from "./pricing.routes";
 
+// Pro Intelligence routes (demand forecast, retention, goals, route optimization)
+import { registerProIntelligenceRoutes } from "./pro-intelligence.routes";
+
 // Loyalty Engine + Referral Engine + Community Engine routes
 import { registerLoyaltyEngineRoutes } from "./loyalty.routes";
 import { registerReferralEngineRoutes } from "./referrals.routes";
@@ -414,6 +417,9 @@ export async function registerRoutes(
 
   // Register Centralized Pricing Engine routes
   registerCentralizedPricingRoutes(app);
+
+  // Register Pro Intelligence routes
+  registerProIntelligenceRoutes(app);
 
   // Register Loyalty Engine + Referral Engine + Community Engine routes
   registerLoyaltyEngineRoutes(app);

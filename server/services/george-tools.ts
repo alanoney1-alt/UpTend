@@ -3553,3 +3553,102 @@ export async function submitProSiteReport(params: {
   });
   return { reportId, message: "Report submitted — thanks for the observations! This helps us serve the customer better." };
 }
+
+// ═══════════════════════════════════════════════
+// PRO INTELLIGENCE + GOALS + ROUTE TOOLS
+// ═══════════════════════════════════════════════
+
+import {
+  getDemandForecast as _getDemandForecast,
+  getCustomerRetention as _getCustomerRetentionIntel,
+  getPerformanceAnalytics as _getPerformanceAnalytics,
+} from "./pro-intelligence.js";
+import {
+  setGoal as _setGoal,
+  getGoalProgress as _getGoalProgress,
+  suggestGoal as _suggestGoal,
+} from "./pro-goals.js";
+import {
+  getRouteForDay as _getRouteForDay,
+  getWeeklyRouteSummary as _getWeeklyRouteSummary,
+} from "./route-optimizer.js";
+
+/**
+ * getProDemandForecast — Predict demand in a zip code for a pro
+ */
+export async function getProDemandForecast(params: {
+  proId: string;
+  zip?: string;
+  daysAhead?: number;
+}): Promise<object> {
+  return _getDemandForecast(params.proId, params.zip || "32801", params.daysAhead || 7);
+}
+
+/**
+ * getProCustomerRetentionIntel — Analyze customer retention & at-risk clients
+ */
+export async function getProCustomerRetentionIntel(params: {
+  proId: string;
+}): Promise<object> {
+  return _getCustomerRetentionIntel(params.proId);
+}
+
+/**
+ * getProPerformanceAnalytics — Weekly/monthly performance breakdown
+ */
+export async function getProPerformanceAnalytics(params: {
+  proId: string;
+  period?: string;
+}): Promise<object> {
+  return _getPerformanceAnalytics(params.proId, (params.period as "weekly" | "monthly") || "weekly");
+}
+
+/**
+ * setProEarningsGoal — Create an earnings goal for a pro
+ */
+export async function setProEarningsGoal(params: {
+  proId: string;
+  goalType: string;
+  targetAmount: number;
+  startDate: string;
+  endDate: string;
+}): Promise<object> {
+  return _setGoal(params.proId, params.goalType as any, params.targetAmount, params.startDate, params.endDate);
+}
+
+/**
+ * getProGoalProgress — Get active goals with progress bars and pace
+ */
+export async function getProGoalProgress(params: {
+  proId: string;
+}): Promise<object> {
+  return _getGoalProgress(params.proId);
+}
+
+/**
+ * suggestProGoal — AI-suggested earnings goal based on history + demand
+ */
+export async function suggestProGoal(params: {
+  proId: string;
+}): Promise<object> {
+  return _suggestGoal(params.proId);
+}
+
+/**
+ * getOptimizedRoute — Get optimized route for a day's jobs
+ */
+export async function getOptimizedRoute(params: {
+  proId: string;
+  date: string;
+}): Promise<object> {
+  return _getRouteForDay(params.proId, params.date);
+}
+
+/**
+ * getWeeklyRouteSummaryForGeorge — Weekly driving summary
+ */
+export async function getWeeklyRouteSummaryForGeorge(params: {
+  proId: string;
+}): Promise<object> {
+  return _getWeeklyRouteSummary(params.proId);
+}
