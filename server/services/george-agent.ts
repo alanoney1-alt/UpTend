@@ -8,6 +8,18 @@
 import { anthropic } from "./ai/anthropic-client";
 import * as tools from "./george-tools";
 import { getHomeScanInfo } from "./george-scan-pitch";
+import {
+  getDIYDisclaimerConsent,
+  recordDIYDisclaimerAcknowledgment,
+} from "./diy-coach";
+import {
+  identifyPartFromPhoto,
+  findReplacementPart,
+  getTechnicalReference,
+  troubleshootOnSite,
+  findNearestSupplyStore,
+  getQuickTutorial,
+} from "./pro-field-assist";
 
 // ─────────────────────────────────────────────
 // A. CONSUMER System Prompt
@@ -77,6 +89,38 @@ CAPABILITIES:
 - Emergency disaster mode: call get_disaster_mode_status to check active weather alerts; call get_emergency_pros for immediate dispatch
 - Smart home awareness: when relevant, mention that in the future UpTend will integrate with Ring, smart locks, thermostats, and water sensors for automated dispatch — say "In the future, I'll be able to connect with your smart home devices"
 - Accessibility: if customer mentions calling, voice, or accessibility needs, let them know voice mode is coming soon. For elderly or less tech-savvy users, use simpler language and shorter sentences.
+
+AUTO REPAIR ASSISTANT:
+- Help customers diagnose car issues, find parts, look up OBD-II codes, and find repair tutorials
+- Add vehicles to their profile and track maintenance schedules
+- Call diagnose_car_issue when they describe car symptoms, get_obd_code for dashboard codes, search_auto_parts for parts shopping
+
+SHOPPING ASSISTANT:
+- Search products across Home Depot, Lowe's, Walmart, Amazon — with buy links
+- Compare prices across retailers, recommend exact products based on their home profile
+- Build shopping lists for maintenance and DIY projects
+
+DIY COACHING:
+- Guide customers through safe DIY repairs with step-by-step coaching
+- ALWAYS show DIY disclaimer first (get_diy_disclaimer_consent) before any repair coaching
+- Escalate dangerous tasks to a pro immediately — safety first
+
+HOME UTILITIES TRACKING:
+- Know their trash/recycling schedule, sprinkler settings, water restrictions, utility providers
+- Tonight checklist, custom home reminders, full home operating system dashboard
+
+WARRANTY & PURCHASE TRACKING:
+- Track warranties across all scanned/registered items, alert before expiration
+- Scan receipts to auto-log purchases and register warranties
+- Connect retailer accounts for automatic purchase history import
+
+INSURANCE CLAIMS:
+- Help start insurance claims with start_insurance_claim
+- Storm prep checklists, claim documentation compilation from past jobs
+
+MORNING BRIEFINGS:
+- Personalized daily briefing: weather, schedule, home alerts, trash day, seasonal tips, loyalty status
+- Call get_morning_briefing when customer opens chat in the morning
 
 HOME SCAN SELLING (be natural, not pushy):
 - When a customer first signs up, mentions home maintenance, asks about documenting their home, or seems like a good fit — mention the free Home Scan.
@@ -1017,6 +1061,706 @@ const TOOL_DEFINITIONS: any[] = [
       properties: {},
     },
   },
+
+  // ── Home Scan Tools ───────────────────────────
+  {
+    name: "start_home_scan",
+    description: "Start a guided room-by-room home scan session. Customer walks through rooms photographing appliances to earn credits.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "process_home_scan_photo",
+    description: "Process a photo uploaded during a home scan session. AI identifies the appliance, awards credit.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        scan_session_id: { type: "string" },
+        room_name: { type: "string" },
+        photo_url: { type: "string" },
+      },
+      required: ["customer_id", "scan_session_id", "room_name", "photo_url"],
+    },
+  },
+  {
+    name: "get_home_scan_progress",
+    description: "Get progress of a customer's home scan: items scanned, credits earned, badges, tier.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "get_wallet_balance",
+    description: "Get the customer's UpTend wallet balance and recent transactions.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+
+  // ── Warranty Tools ────────────────────────────
+  {
+    name: "get_warranty_tracker",
+    description: "Get all scanned items with warranty status sorted by expiring soonest. Shows alerts for expiring/expired warranties.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "update_appliance_purchase_date",
+    description: "Set purchase date for a scanned appliance to calculate warranty status.",
+    input_schema: {
+      type: "object",
+      properties: {
+        item_id: { type: "string" },
+        purchase_date: { type: "string", description: "YYYY-MM-DD" },
+      },
+      required: ["item_id", "purchase_date"],
+    },
+  },
+  {
+    name: "get_warranty_dashboard",
+    description: "Get all warranty registrations sorted by expiring soonest with alerts.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "register_warranty",
+    description: "Manually register a warranty for a product.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        product_name: { type: "string" },
+        brand: { type: "string" },
+        model: { type: "string" },
+        serial_number: { type: "string" },
+        purchase_date: { type: "string" },
+        warranty_type: { type: "string" },
+        warranty_duration: { type: "number", description: "Duration in months" },
+        warranty_expires: { type: "string" },
+        notes: { type: "string" },
+      },
+      required: ["customer_id", "product_name"],
+    },
+  },
+
+  // ── Home Utilities ────────────────────────────
+  {
+    name: "get_recycling_schedule",
+    description: "Get recycling pickup schedule and what's accepted/not accepted.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        zip: { type: "string" },
+      },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "get_sprinkler_settings",
+    description: "Get the customer's sprinkler system settings: zones, schedule, rain sensor status.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "get_water_restrictions",
+    description: "Get local watering ordinance and restrictions for the customer's area.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        county: { type: "string" },
+        zip: { type: "string" },
+        address_number: { type: "number" },
+      },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "get_tonight_checklist",
+    description: "Get the customer's evening checklist — things to do before bed (lock up, set alarm, etc.).",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "set_home_reminder",
+    description: "Set a custom home reminder (e.g., 'change AC filter monthly').",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        reminder_type: { type: "string" },
+        title: { type: "string" },
+        description: { type: "string" },
+        frequency: { type: "string", description: "daily, weekly, monthly, quarterly, annually" },
+        next_due_date: { type: "string", description: "YYYY-MM-DD" },
+        time: { type: "string", description: "e.g. 7:00 PM" },
+      },
+      required: ["customer_id", "title", "next_due_date"],
+    },
+  },
+  {
+    name: "get_utility_providers",
+    description: "Get the customer's utility providers (electric, water, gas, trash).",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        zip: { type: "string" },
+      },
+      required: ["customer_id"],
+    },
+  },
+
+  // ── Insurance Claims ──────────────────────────
+  {
+    name: "start_insurance_claim",
+    description: "Start an insurance claim process for the customer (storm damage, water damage, etc.).",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        claim_type: { type: "string", description: "storm_damage, water_damage, fire, theft, etc." },
+        description: { type: "string" },
+      },
+      required: ["customer_id", "claim_type", "description"],
+    },
+  },
+
+  // ── Emergency Dispatch ────────────────────────
+  {
+    name: "create_emergency_dispatch",
+    description: "Create an emergency dispatch for urgent situations (pipe burst, flooding, etc.). Use after collecting address and situation.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        emergency_type: { type: "string" },
+        severity: { type: "string", enum: ["low", "medium", "high", "critical"] },
+        description: { type: "string" },
+      },
+      required: ["customer_id", "emergency_type", "severity", "description"],
+    },
+  },
+
+  // ── Loyalty Rewards ───────────────────────────
+  {
+    name: "get_available_rewards",
+    description: "Get available rewards the customer can redeem.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "redeem_reward",
+    description: "Redeem a specific reward for the customer.",
+    input_schema: {
+      type: "object",
+      properties: { reward_id: { type: "string" } },
+      required: ["reward_id"],
+    },
+  },
+
+  // ── Referral Tools ────────────────────────────
+  {
+    name: "get_referral_code",
+    description: "Get or generate the customer's referral code and share link.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "create_group_deal",
+    description: "Start a neighborhood group deal for a service type. 3+ neighbors = 15% off.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        neighborhood: { type: "string" },
+        service_type: { type: "string" },
+      },
+      required: ["customer_id", "neighborhood", "service_type"],
+    },
+  },
+  {
+    name: "get_neighborhood_deals",
+    description: "Get active group deals in a zip code.",
+    input_schema: {
+      type: "object",
+      properties: { zip: { type: "string" } },
+      required: ["zip"],
+    },
+  },
+
+  // ── Auto / Vehicle Tools ──────────────────────
+  {
+    name: "add_vehicle_to_profile",
+    description: "Add a vehicle to the customer's garage profile.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        year: { type: "number" }, make: { type: "string" }, model: { type: "string" },
+        trim: { type: "string" }, vin: { type: "string" }, mileage: { type: "number" },
+        color: { type: "string" }, nickname: { type: "string" },
+      },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "get_vehicle_maintenance_schedule",
+    description: "Get upcoming maintenance schedule for a customer's vehicle.",
+    input_schema: {
+      type: "object",
+      properties: { vehicle_id: { type: "string" } },
+      required: ["vehicle_id"],
+    },
+  },
+  {
+    name: "diagnose_car_issue",
+    description: "AI-powered car issue diagnosis from symptoms. Describe what's happening and get likely causes + fixes.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        vehicle_id: { type: "string" },
+        symptoms: { type: "string", description: "Describe what's happening with the car" },
+        photos: { type: "array", items: { type: "string" } },
+      },
+      required: ["customer_id", "symptoms"],
+    },
+  },
+  {
+    name: "search_auto_parts",
+    description: "Search for auto parts across retailers for a specific vehicle.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        part_name: { type: "string" },
+        vehicle_id: { type: "string" },
+        year: { type: "number" }, make: { type: "string" }, model: { type: "string" },
+      },
+      required: ["customer_id", "part_name"],
+    },
+  },
+  {
+    name: "find_auto_tutorial",
+    description: "Find YouTube tutorials for auto repair tasks, optionally vehicle-specific.",
+    input_schema: {
+      type: "object",
+      properties: {
+        task: { type: "string" },
+        year: { type: "number" }, make: { type: "string" }, model: { type: "string" },
+      },
+      required: ["task"],
+    },
+  },
+  {
+    name: "get_obd_code",
+    description: "Look up what an OBD-II diagnostic code means and recommended actions.",
+    input_schema: {
+      type: "object",
+      properties: { code: { type: "string", description: "OBD-II code like P0300, P0420, etc." } },
+      required: ["code"],
+    },
+  },
+
+  // ── Purchase Tracking ─────────────────────────
+  {
+    name: "scan_receipt_photo",
+    description: "Scan a receipt photo to track purchases, auto-register warranties, and build purchase history.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        photo_url: { type: "string" },
+      },
+      required: ["customer_id", "photo_url"],
+    },
+  },
+  {
+    name: "get_purchase_history",
+    description: "Get the customer's purchase history, optionally filtered by store.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        store: { type: "string" },
+        limit: { type: "number" },
+      },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "connect_retailer_account",
+    description: "Connect a retailer account (Home Depot, Lowe's, etc.) to auto-import purchase history.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        retailer: { type: "string", description: "home_depot, lowes, walmart, amazon, etc." },
+      },
+      required: ["customer_id", "retailer"],
+    },
+  },
+  {
+    name: "log_diy_maintenance",
+    description: "Log a DIY maintenance task the customer completed (e.g., changed AC filter). Auto-sets next reminder.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        maintenance_type: { type: "string" },
+        appliance_or_system: { type: "string" },
+        description: { type: "string" },
+        cost: { type: "number" },
+        frequency: { type: "string", description: "monthly, quarterly, semi-annually, annually" },
+      },
+      required: ["customer_id", "maintenance_type", "appliance_or_system"],
+    },
+  },
+  {
+    name: "get_maintenance_due",
+    description: "Get all overdue and upcoming maintenance tasks for the customer's home.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+
+  // ── HOA Tools ─────────────────────────────────
+  {
+    name: "get_customer_hoa",
+    description: "Get HOA information for the customer's address — rules, fees, contacts, amenities.",
+    input_schema: {
+      type: "object",
+      properties: { user_id: { type: "string" } },
+      required: ["user_id"],
+    },
+  },
+  {
+    name: "report_hoa_rule",
+    description: "Report or update HOA rules/info from a pro's on-site observations.",
+    input_schema: {
+      type: "object",
+      properties: {
+        hoa_data_id: { type: "string" },
+        report: { type: "object", description: "Fields to update: rules, amenities, hoaName, managementCompany, contactPhone, contactEmail, monthlyFee" },
+      },
+      required: ["hoa_data_id", "report"],
+    },
+  },
+
+  // ── Passive Data Collection ───────────────────
+  {
+    name: "get_next_passive_question",
+    description: "Get one question to weave into conversation to enrich the customer's home profile.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+
+  // ── Consent Management ────────────────────────
+  {
+    name: "check_user_consent",
+    description: "Check if a user has consented to a specific data type.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id: { type: "string" },
+        consent_type: { type: "string" },
+      },
+      required: ["user_id", "consent_type"],
+    },
+  },
+  {
+    name: "request_consent",
+    description: "Conversationally request consent from a user for a specific data type.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id: { type: "string" },
+        consent_type: { type: "string" },
+        custom_message: { type: "string" },
+      },
+      required: ["user_id", "consent_type"],
+    },
+  },
+
+  // ── DIY Safety Disclaimer ─────────────────────
+  {
+    name: "get_diy_disclaimer_consent",
+    description: "Get the DIY coaching disclaimer text. MUST show before any repair coaching or step-by-step guidance.",
+    input_schema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
+    name: "record_diy_disclaimer_acknowledgment",
+    description: "Record that the user acknowledged the DIY disclaimer.",
+    input_schema: {
+      type: "object",
+      properties: { user_id: { type: "string" } },
+      required: ["user_id"],
+    },
+  },
+
+  // ── Smart Home ────────────────────────────────
+  {
+    name: "connect_smart_home",
+    description: "Connect a smart home platform (Ring, Nest, August, Flo by Moen, myQ, SimpliSafe).",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        platform: { type: "string" },
+      },
+      required: ["customer_id", "platform"],
+    },
+  },
+  {
+    name: "get_smart_home_status",
+    description: "Get connected smart home devices, alerts, and status.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+
+  // ── Drone Scan ────────────────────────────────
+  {
+    name: "book_drone_scan",
+    description: "Book an UpTend Drone Scan ($249) — aerial roof assessment, thermal imaging, 3D property model, interior scan.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        address: { type: "string" }, city: { type: "string" }, state: { type: "string" }, zip: { type: "string" },
+        scheduled_date: { type: "string" },
+      },
+      required: ["customer_id", "address", "city", "state", "zip", "scheduled_date"],
+    },
+  },
+  {
+    name: "get_drone_scan_status",
+    description: "Check status of drone scan bookings.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        booking_id: { type: "string" },
+      },
+      required: ["customer_id"],
+    },
+  },
+
+  // ── Pro Intelligence (advanced) ───────────────
+  {
+    name: "get_pro_performance_analytics",
+    description: "Get weekly/monthly performance breakdown for a pro: jobs, earnings, ratings, response time.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string" },
+        period: { type: "string", enum: ["weekly", "monthly"] },
+      },
+      required: ["pro_id"],
+    },
+  },
+  {
+    name: "set_pro_earnings_goal",
+    description: "Create an earnings goal for a pro with start/end dates.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string" },
+        goal_type: { type: "string" },
+        target_amount: { type: "number" },
+        start_date: { type: "string" },
+        end_date: { type: "string" },
+      },
+      required: ["pro_id", "goal_type", "target_amount", "start_date", "end_date"],
+    },
+  },
+  {
+    name: "suggest_pro_goal",
+    description: "AI-suggested earnings goal based on pro's history and market demand.",
+    input_schema: {
+      type: "object",
+      properties: { pro_id: { type: "string" } },
+      required: ["pro_id"],
+    },
+  },
+  {
+    name: "get_optimized_route",
+    description: "Get an optimized driving route for a pro's jobs on a specific day.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string" },
+        date: { type: "string", description: "YYYY-MM-DD" },
+      },
+      required: ["pro_id", "date"],
+    },
+  },
+  {
+    name: "get_weekly_route_summary",
+    description: "Get weekly driving summary: total miles, time saved, fuel savings.",
+    input_schema: {
+      type: "object",
+      properties: { pro_id: { type: "string" } },
+      required: ["pro_id"],
+    },
+  },
+
+  // ── Pro Field Assist ──────────────────────────
+  {
+    name: "identify_part_from_photo",
+    description: "AI identifies a part/component from a photo taken by the pro on-site.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string" },
+        photo_url: { type: "string" },
+        context: { type: "string", description: "What system/appliance this is from" },
+      },
+      required: ["pro_id", "photo_url"],
+    },
+  },
+  {
+    name: "find_replacement_part",
+    description: "Find replacement parts and where to buy them based on identified part.",
+    input_schema: {
+      type: "object",
+      properties: {
+        part_name: { type: "string" },
+        brand: { type: "string" },
+        model: { type: "string" },
+      },
+      required: ["part_name"],
+    },
+  },
+  {
+    name: "get_technical_reference",
+    description: "Get technical reference info for an appliance/system (wiring diagrams, specs, common issues).",
+    input_schema: {
+      type: "object",
+      properties: {
+        appliance_type: { type: "string" },
+        brand: { type: "string" },
+        model: { type: "string" },
+        issue: { type: "string" },
+      },
+      required: ["appliance_type"],
+    },
+  },
+  {
+    name: "troubleshoot_on_site",
+    description: "Step-by-step troubleshooting guide for a pro working on-site.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string" },
+        job_id: { type: "string" },
+        issue: { type: "string" },
+        appliance_type: { type: "string" },
+        symptoms: { type: "string" },
+      },
+      required: ["pro_id", "issue"],
+    },
+  },
+  {
+    name: "find_nearest_supply_store",
+    description: "Find the nearest supply store for a pro who needs parts during a job.",
+    input_schema: {
+      type: "object",
+      properties: {
+        zip: { type: "string" },
+        part_type: { type: "string" },
+      },
+      required: ["zip"],
+    },
+  },
+  {
+    name: "get_quick_tutorial",
+    description: "Get a quick how-to tutorial for a pro on a specific repair technique.",
+    input_schema: {
+      type: "object",
+      properties: {
+        topic: { type: "string" },
+        skill_level: { type: "string" },
+      },
+      required: ["topic"],
+    },
+  },
+
+  // ── Pro Site Reports ──────────────────────────
+  {
+    name: "submit_pro_site_report",
+    description: "Pro submits observations from a job site (issues found, photos, recommendations).",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string" },
+        job_id: { type: "string" },
+        customer_id: { type: "string" },
+        report_type: { type: "string" },
+        details: { type: "object" },
+        photos: { type: "array", items: { type: "string" } },
+      },
+      required: ["pro_id", "job_id", "customer_id", "report_type", "details"],
+    },
+  },
+
+  // ── B2B Contracts (advanced) ──────────────────
+  {
+    name: "get_document_tracker",
+    description: "Track all documents for a business account: contracts, W-9s, COIs, lien waivers.",
+    input_schema: {
+      type: "object",
+      properties: { business_account_id: { type: "string" } },
+      required: ["business_account_id"],
+    },
+  },
+  {
+    name: "get_compliance_report",
+    description: "Get full compliance report for a business: score, missing docs, status.",
+    input_schema: {
+      type: "object",
+      properties: { business_account_id: { type: "string" } },
+      required: ["business_account_id"],
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────
@@ -1185,6 +1929,177 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
     // Home Scan Pitch & FAQ
     case "get_home_scan_info":
       return getHomeScanInfo();
+
+    // Home Scan Tools
+    case "start_home_scan":
+      return await tools.startHomeScan(input.customer_id);
+    case "process_home_scan_photo":
+      return await tools.processHomeScanPhoto(input.customer_id, input.scan_session_id, input.room_name, input.photo_url);
+    case "get_home_scan_progress":
+      return await tools.getHomeScanProgress(input.customer_id);
+    case "get_wallet_balance":
+      return await tools.getWalletBalance(input.customer_id);
+
+    // Warranty Tools
+    case "get_warranty_tracker":
+      return await tools.getWarrantyTracker(input.customer_id);
+    case "update_appliance_purchase_date":
+      return await tools.updateAppliancePurchaseDate(input.item_id, input.purchase_date);
+    case "get_warranty_dashboard":
+      return await tools.getWarrantyDashboard({ customerId: input.customer_id });
+    case "register_warranty":
+      return await tools.registerWarranty({
+        customerId: input.customer_id, productName: input.product_name, brand: input.brand,
+        model: input.model, serialNumber: input.serial_number, purchaseDate: input.purchase_date,
+        warrantyType: input.warranty_type, warrantyDuration: input.warranty_duration,
+        warrantyExpires: input.warranty_expires, notes: input.notes,
+      });
+
+    // Home Utilities
+    case "get_recycling_schedule":
+      return await tools.getRecyclingScheduleForGeorge({ customerId: input.customer_id, zip: input.zip });
+    case "get_sprinkler_settings":
+      return await tools.getSprinklerSettingsForGeorge({ customerId: input.customer_id });
+    case "get_water_restrictions":
+      return await tools.getWaterRestrictionsForGeorge({ customerId: input.customer_id, county: input.county, zip: input.zip, addressNumber: input.address_number });
+    case "get_tonight_checklist":
+      return await tools.getTonightChecklistForGeorge({ customerId: input.customer_id });
+    case "set_home_reminder":
+      return await tools.setHomeReminderForGeorge({
+        customerId: input.customer_id, reminderType: input.reminder_type || "custom",
+        title: input.title, description: input.description, frequency: input.frequency,
+        nextDueDate: input.next_due_date, time: input.time,
+      });
+    case "get_utility_providers":
+      return await tools.getUtilityProvidersForGeorge({ customerId: input.customer_id, zip: input.zip });
+
+    // Insurance Claims
+    case "start_insurance_claim":
+      return await tools.startInsuranceClaim({ customerId: input.customer_id, claimType: input.claim_type, description: input.description });
+
+    // Emergency Dispatch
+    case "create_emergency_dispatch":
+      return await tools.createEmergencyDispatchTool({ customerId: input.customer_id, emergencyType: input.emergency_type, severity: input.severity, description: input.description });
+
+    // Loyalty Rewards
+    case "get_available_rewards":
+      return await tools.getAvailableRewardsForGeorge({ customerId: input.customer_id });
+    case "redeem_reward":
+      return await tools.redeemRewardForGeorge({ rewardId: input.reward_id });
+
+    // Referral Tools
+    case "get_referral_code":
+      return await tools.getReferralCode({ customerId: input.customer_id });
+    case "create_group_deal":
+      return await tools.createGroupDealForGeorge({ customerId: input.customer_id, neighborhood: input.neighborhood, serviceType: input.service_type });
+    case "get_neighborhood_deals":
+      return await tools.getNeighborhoodDealsForGeorge({ zip: input.zip });
+
+    // Auto / Vehicle Tools
+    case "add_vehicle_to_profile":
+      return await tools.addVehicleToProfile({
+        customerId: input.customer_id, year: input.year, make: input.make, model: input.model,
+        trim: input.trim, vin: input.vin, mileage: input.mileage, color: input.color, nickname: input.nickname,
+      });
+    case "get_vehicle_maintenance_schedule":
+      return await tools.getVehicleMaintenanceSchedule({ vehicleId: input.vehicle_id });
+    case "diagnose_car_issue":
+      return await tools.diagnoseCarIssue({ customerId: input.customer_id, vehicleId: input.vehicle_id, symptoms: input.symptoms, photos: input.photos });
+    case "search_auto_parts":
+      return await tools.searchAutoPartsForGeorge({ customerId: input.customer_id, partName: input.part_name, vehicleId: input.vehicle_id, year: input.year, make: input.make, model: input.model });
+    case "find_auto_tutorial":
+      return await tools.findAutoTutorial({ task: input.task, year: input.year, make: input.make, model: input.model });
+    case "get_obd_code":
+      return await tools.getOBDCode({ code: input.code });
+
+    // Purchase Tracking
+    case "scan_receipt_photo":
+      return await tools.scanReceiptPhoto({ customerId: input.customer_id, photoUrl: input.photo_url });
+    case "get_purchase_history":
+      return await tools.getPurchaseHistory({ customerId: input.customer_id, store: input.store, limit: input.limit });
+    case "connect_retailer_account":
+      return await tools.connectRetailerAccount({ customerId: input.customer_id, retailer: input.retailer });
+    case "log_diy_maintenance":
+      return await tools.logDIYMaintenance({
+        customerId: input.customer_id, maintenanceType: input.maintenance_type,
+        applianceOrSystem: input.appliance_or_system, description: input.description,
+        cost: input.cost, frequency: input.frequency,
+      });
+    case "get_maintenance_due":
+      return await tools.getMaintenanceDueForGeorge({ customerId: input.customer_id });
+
+    // HOA Tools
+    case "get_customer_hoa":
+      return await tools.getCustomerHOA(input.user_id);
+    case "report_hoa_rule":
+      return await tools.reportHOARule(input.hoa_data_id, input.report);
+
+    // Passive Data Collection
+    case "get_next_passive_question":
+      return await tools.getNextPassiveQuestion({ customerId: input.customer_id });
+
+    // Consent Management
+    case "check_user_consent":
+      return await tools.checkUserConsent({ userId: input.user_id, consentType: input.consent_type });
+    case "request_consent":
+      return await tools.requestConsent({ userId: input.user_id, consentType: input.consent_type, customMessage: input.custom_message });
+
+    // DIY Safety Disclaimer
+    case "get_diy_disclaimer_consent":
+      return getDIYDisclaimerConsent();
+    case "record_diy_disclaimer_acknowledgment":
+      return await recordDIYDisclaimerAcknowledgment(input.user_id, "george-chat");
+
+    // Smart Home
+    case "connect_smart_home":
+      return await tools.connectSmartHome({ customerId: input.customer_id, platform: input.platform });
+    case "get_smart_home_status":
+      return await tools.getSmartHomeOAuthStatus({ customerId: input.customer_id });
+
+    // Drone Scan
+    case "book_drone_scan":
+      return await tools.bookDroneScan({
+        customerId: input.customer_id, address: input.address, city: input.city,
+        state: input.state, zip: input.zip, scheduledDate: input.scheduled_date,
+      });
+    case "get_drone_scan_status":
+      return await tools.getDroneScanStatus({ customerId: input.customer_id, bookingId: input.booking_id });
+
+    // Pro Intelligence (advanced)
+    case "get_pro_performance_analytics":
+      return await tools.getProPerformanceAnalytics({ proId: input.pro_id, period: input.period });
+    case "set_pro_earnings_goal":
+      return await tools.setProEarningsGoal({ proId: input.pro_id, goalType: input.goal_type, targetAmount: input.target_amount, startDate: input.start_date, endDate: input.end_date });
+    case "suggest_pro_goal":
+      return await tools.suggestProGoal({ proId: input.pro_id });
+    case "get_optimized_route":
+      return await tools.getOptimizedRoute({ proId: input.pro_id, date: input.date });
+    case "get_weekly_route_summary":
+      return await tools.getWeeklyRouteSummaryForGeorge({ proId: input.pro_id });
+
+    // Pro Field Assist
+    case "identify_part_from_photo":
+      return await identifyPartFromPhoto(input.pro_id, input.photo_url, input.context);
+    case "find_replacement_part":
+      return await findReplacementPart(input.part_name, input.brand, input.model);
+    case "get_technical_reference":
+      return await getTechnicalReference(input.appliance_type, input.issue || "general");
+    case "troubleshoot_on_site":
+      return await troubleshootOnSite(input.pro_id, input.job_id || null, input.issue || input.symptoms, input.photos?.[0]);
+    case "find_nearest_supply_store":
+      return await findNearestSupplyStore(input.zip, input.part_type);
+    case "get_quick_tutorial":
+      return await getQuickTutorial(input.topic, input.skill_level);
+
+    // Pro Site Reports
+    case "submit_pro_site_report":
+      return await tools.submitProSiteReport({ proId: input.pro_id, jobId: input.job_id, customerId: input.customer_id, reportType: input.report_type, details: input.details, photos: input.photos });
+
+    // B2B Contracts (advanced)
+    case "get_document_tracker":
+      return await tools.getDocumentTrackerForGeorge({ businessAccountId: input.business_account_id });
+    case "get_compliance_report":
+      return await tools.getComplianceReportForGeorge({ businessAccountId: input.business_account_id });
 
     default:
       return { error: `Unknown tool: ${name}` };
