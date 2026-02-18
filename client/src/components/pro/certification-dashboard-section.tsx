@@ -32,7 +32,10 @@ export function CertificationDashboardSection() {
 
   if (!data) return null;
 
-  const { active, inProgress, available, hiddenJobCount } = data;
+  const active = data.active || [];
+  const inProgress = data.inProgress || [];
+  const available = data.available || [];
+  const hiddenJobCount = data.hiddenJobCount || 0;
   const totalCerts = 6;
   const isFullyCertified = active.length >= totalCerts && available.length === 0;
   const hasNoCerts = active.length === 0 && inProgress.length === 0;
