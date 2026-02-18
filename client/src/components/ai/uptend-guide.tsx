@@ -443,10 +443,13 @@ export function UpTendGuide() {
   const handleAction = useCallback((action: string) => {
     if (action.startsWith("navigate:")) {
       navigate(action.replace("navigate:", ""));
-    } else if (action.startsWith("message:")) {
-      const msg = action.replace("message:", "");
+    } else if (action.startsWith("message:") || action.startsWith("reply:")) {
+      const msg = action.startsWith("reply:") ? action.replace("reply:", "") : action.replace("message:", "");
       setInput(msg);
       setTimeout(() => sendMessageRef.current?.(msg), 100);
+    } else if (action.startsWith("action:")) {
+      // Generic action passthrough — send as a message for George to handle
+      sendMessageRef.current?.(action.replace("action:", ""));
     }
   }, [navigate]);
 

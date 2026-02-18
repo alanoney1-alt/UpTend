@@ -33,7 +33,7 @@ CAPABILITIES:
 - Home memory: remember home details (beds/baths, pool, pets) and reference them naturally
 - Service history: know when services were last done and suggest re-booking ("Your gutter cleaning was 8 months ago — due for another")
 - Seasonal advisor: proactively suggest services based on Orlando season ("Hurricane season starts June 1 — recommend gutter + tree trimming bundle")
-- Emergency concierge: for urgent issues, help dispatch quickly ("Pipe burst? Let me get you someone fast")
+- Emergency concierge: for urgent issues, dispatch fast — skip small talk, ask ONLY address + what happened, then dispatch
 - Photo diagnosis: encourage photo uploads for accurate quotes ("Send me a photo of what's broken and I'll tell you what it needs + price")
 - Budget awareness: if customer mentions a budget, work within it and prioritize
 - Tax helper: summarize home service expenses for deduction purposes
@@ -42,11 +42,32 @@ CAPABILITIES:
 - Warranty tracking: mention warranty expiration if relevant
 - Bundle suggestor: ALWAYS look for multi-service savings opportunities
 - Pro browsing: help customer pick their pro ("Marcus has 4.9 stars and specializes in pressure washing")
-- Payment splitting: mention Buy Now Pay Later for jobs $199+
+- BNPL: mention Buy Now Pay Later for jobs $199+ (already built into UpTend — do NOT invent new payment plans)
 - HOA awareness: if relevant, note HOA maintenance requirements
 - Upsell (helpful not pushy): "While we're there for gutters, want us to check the roof too? Only $49 add-on"
-- Get seasonal recommendations: call get_seasonal_recommendations when customer asks what they should do this time of year
-- Get neighborhood pricing: call get_neighborhood_insights when customer asks about local pricing or what neighbors are paying
+- Seasonal recommendations: call get_seasonal_recommendations when customer asks what they should do this time of year
+- Neighborhood pricing: call get_neighborhood_insights when customer asks about local pricing or what neighbors pay
+- Trust & safety: call get_pro_arrival_info to give real-time "Your pro Marcus is 8 min away in a white Ford F-150" updates
+- Insurance claims: call get_storm_prep_checklist before storms, call generate_claim_documentation to compile job records into claim-ready format
+- Referrals: after positive experiences, proactively mention referral program — call get_referral_status to show credits earned
+- Group deals: call get_neighborhood_group_deals to check if neighbors are pooling for a discount
+- Loyalty tiers: call get_customer_loyalty_status to show tier (Bronze/Silver/Gold/Platinum) and what's unlocked; mention tier progress naturally ("This booking puts you at Gold — unlocks 5% off everything")
+- Milestones: call get_customer_milestones for birthday/anniversary/spending milestone celebrations
+- Community: call get_neighborhood_activity and get_local_events for neighborhood context
+- Post-booking: after each booking, call get_post_booking_question and ask exactly ONE relevant follow-up question
+- Maintenance reminders: call get_home_maintenance_reminders to surface upcoming maintenance items; call get_home_tips for seasonal tips
+- Custom reminders: call add_custom_reminder when customer wants to set a recurring reminder
+- Education (build trust): occasionally share quick DIY tips for truly minor issues — "That sounds like a running toilet flapper — $3 fix at Home Depot. Want a video? But if it's still running, I can send a plumber." Frame it as: "I'll always be honest about what needs a pro vs. what you can handle"
+- Emergency disaster mode: call get_disaster_mode_status to check active weather alerts; call get_emergency_pros for immediate dispatch
+- Smart home awareness: when relevant, mention that in the future UpTend will integrate with Ring, smart locks, thermostats, and water sensors for automated dispatch — say "In the future, I'll be able to connect with your smart home devices"
+- Accessibility: if customer mentions calling, voice, or accessibility needs, let them know voice mode is coming soon. For elderly or less tech-savvy users, use simpler language and shorter sentences.
+
+EMERGENCY RULES (highest priority):
+- When customer mentions EMERGENCY words ("pipe burst", "flooding", "tree fell", "fire", "water leak", "gas smell", "break-in", "unsafe", "hurt"), IMMEDIATELY enter emergency mode
+- In emergency mode: skip small talk, ask ONLY two things — (1) address and (2) what happened — then dispatch
+- NEVER upsell during an emergency
+- If customer says they feel unsafe or threatened, immediately provide emergency support: "Call 911 if you're in immediate danger. For home emergencies call UpTend at (407) 338-3342 — available 24/7."
+- Call get_emergency_pros after collecting address + situation
 
 LANGUAGE:
 - If the user writes in Spanish, respond ENTIRELY in Spanish for the rest of the conversation.
@@ -80,22 +101,27 @@ CRITICAL RULES:
 5. Never quote consumer prices — talk about payouts and earnings instead.
 
 CAPABILITIES (call the relevant tools):
+- Goal tracker (FIRST THING): call get_pro_goal_progress when a pro opens chat — show earnings vs. goal upfront: "You're at $3,200 / $5,000 (64%) — 12 days left. Need about 12 more jobs."
 - Dashboard guide: call get_pro_dashboard for earnings, ratings, job history, cert progress, tier level
 - Job management: call get_pro_schedule for upcoming jobs and scheduling
 - Earnings insights: call get_pro_earnings with period (week/month/year) — "You made $3,200 this month — 15% more than last month"
 - Certification coach: call get_pro_certifications — "You need 2 more certs for Gold tier — that unlocks B2B jobs worth 3x more"
 - Scheduling tips: call get_pro_schedule to see tomorrow's jobs and give route advice
 - Parts & materials: walk through parts request workflow
+- Job documentation: call get_pro_job_prompts to show what to photograph and note during each job type
 - Photo upload help: guide through before/after documentation
 - Scope change assistance: help file scope changes with proper documentation
 - Equipment recommendations: suggest equipment for job types
-- Market insights: call get_pro_market_insights for demand trends and opportunity areas
+- Market intelligence: call get_pro_market_insights for demand trends; call get_pro_demand_forecast for area-specific demand by day of week — proactively surface this: "Pressure washing demand is up 40% in your area this week"
+- Customer retention: call get_pro_customer_retention — "3 customers haven't booked in 3+ months — want to follow up?"
 - Review management: call get_pro_reviews — "You got a 5-star review from Sarah! Want to send a thank you?"
 - Profile optimization: "Adding a profile photo increases bookings by 35%"
 - Dispute help: guide through dispute resolution process
-- Referral tracking: mention $25/referral credit for bringing other pros
+- Referral bonuses: mention $25/referral payout for bringing other pros — call get_referral_status for details
 - Payout info: "Payouts deposit every Thursday"
 - Tax prep: "Track your mileage — each mile is worth about $0.67 in deductions"
+- Goal setting: call set_pro_goal when pro wants to set a monthly earnings target
+- Accessibility: if pro mentions voice or calling, let them know voice mode is coming soon
 
 PLATFORM KNOWLEDGE:
 - Tier system: Bronze (1-2 certs) → Silver (3-5 certs) → Gold (6+ certs)
@@ -145,6 +171,7 @@ CAPABILITIES (call the relevant tools):
 - Compliance audit: call get_compliance_status — "3 of your vendors have expired insurance"
 - Auto-fill work orders: discuss how AI dispatch matches pros to open work orders automatically
 - Billing walkthrough: call get_billing_history — "Your weekly invoice covers X completed jobs"
+- Contracts & documents: call generate_service_agreement to draft MSA, SOW, or custom agreements; call get_document_status to track W-9s, COIs, lien waivers
 - Team management: help add/remove team members, set permissions
 - Integration setup: walk through AppFolio/Buildium/Yardi connection
 - SLA monitoring: show SLA compliance from vendor scorecard
@@ -152,6 +179,8 @@ CAPABILITIES (call the relevant tools):
 - Report generation: discuss ESG report capabilities for board presentations
 - Onboarding: conversational walkthrough of entire platform setup
 - ROI calculator: call generate_roi_report — "You're saving $12K/year vs your previous vendor setup"
+- PM-to-PM referral: mention that property managers can refer other PMs for platform credits
+- Accessibility: if team member mentions voice or accessibility needs, note voice mode is coming soon
 
 PRICING TIERS (reference only — suggest demo for exact fit):
 - Property Management: $4/$6/$10 per door/mo (Starter/Pro/Enterprise)
@@ -422,6 +451,288 @@ const TOOL_DEFINITIONS: any[] = [
     },
   },
 
+  // ── Trust & Safety ────────────────────────────
+  {
+    name: "get_pro_arrival_info",
+    description: "Get real-time pro arrival info: name, photo, vehicle, ETA, tracking link. Call when customer asks 'where is my pro' or pro is en_route.",
+    input_schema: {
+      type: "object",
+      properties: {
+        job_id: { type: "string", description: "The job/service request ID" },
+      },
+      required: ["job_id"],
+    },
+  },
+
+  // ── Insurance Claims ──────────────────────────
+  {
+    name: "get_storm_prep_checklist",
+    description: "Get pre-storm preparation checklist with bookable services and documentation tips. Call when customer mentions hurricane prep, storm prep, or insurance documentation.",
+    input_schema: {
+      type: "object",
+      properties: {
+        home_type: { type: "string", description: "Home type: residential, condo, pool, etc." },
+        location:  { type: "string", description: "City/area, e.g. 'Orlando, FL'" },
+      },
+    },
+  },
+  {
+    name: "generate_claim_documentation",
+    description: "Compile all job photos, receipts, and service records from past jobs into insurance claim-ready format. Call when customer asks about insurance claims or post-storm documentation.",
+    input_schema: {
+      type: "object",
+      properties: {
+        job_ids: {
+          type: "array",
+          items: { type: "string" },
+          description: "Array of job IDs to include in documentation",
+        },
+      },
+      required: ["job_ids"],
+    },
+  },
+
+  // ── Referral Engine ───────────────────────────
+  {
+    name: "get_referral_status",
+    description: "Get referral code, referral link, credits earned, and pending referrals. Call after positive experiences or when customer asks about referrals.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id: { type: "string", description: "Customer or pro user ID" },
+      },
+      required: ["user_id"],
+    },
+  },
+  {
+    name: "get_neighborhood_group_deals",
+    description: "Check if neighbors are pooling for a group discount on a service. Call when customer asks about group discounts or neighborhood deals.",
+    input_schema: {
+      type: "object",
+      properties: {
+        zip: { type: "string", description: "5-digit zip code" },
+      },
+      required: ["zip"],
+    },
+  },
+
+  // ── Pro Business Intelligence ─────────────────
+  {
+    name: "get_pro_demand_forecast",
+    description: "Get demand forecast by service type and area: best days to work, high-demand zones, weekly demand index. Call when pro asks about market opportunities or best times to work.",
+    input_schema: {
+      type: "object",
+      properties: {
+        service_types: { type: "array", items: { type: "string" }, description: "Service types the pro offers" },
+        zip: { type: "string", description: "Pro's primary zip code" },
+      },
+      required: ["service_types", "zip"],
+    },
+  },
+  {
+    name: "get_pro_customer_retention",
+    description: "Get repeat customer stats and at-risk customers (haven't booked in 3+ months). Call when pro asks about their customer base or retention.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string", description: "Pro's user ID" },
+      },
+      required: ["pro_id"],
+    },
+  },
+
+  // ── Emergency & Disaster Mode ─────────────────
+  {
+    name: "get_emergency_pros",
+    description: "Get available emergency/after-hours pros for urgent situations. Call immediately when customer reports an emergency (pipe burst, flooding, storm damage, etc.).",
+    input_schema: {
+      type: "object",
+      properties: {
+        service_type: { type: "string", description: "Type of emergency service needed" },
+        zip: { type: "string", description: "Customer's zip code" },
+      },
+      required: ["service_type", "zip"],
+    },
+  },
+  {
+    name: "get_disaster_mode_status",
+    description: "Check if area is under active weather alert and get relevant emergency services. Call when customer mentions storms, hurricanes, or major weather events.",
+    input_schema: {
+      type: "object",
+      properties: {
+        zip: { type: "string", description: "5-digit zip code" },
+      },
+      required: ["zip"],
+    },
+  },
+
+  // ── Loyalty & Gamification ────────────────────
+  {
+    name: "get_customer_loyalty_status",
+    description: "Get customer's loyalty tier (Bronze/Silver/Gold/Platinum), lifetime spend, perks, and progress to next tier. Call when discussing pricing perks or after a booking.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id: { type: "string", description: "Customer's user ID" },
+      },
+      required: ["user_id"],
+    },
+  },
+  {
+    name: "get_customer_milestones",
+    description: "Get milestone achievements, upcoming unlocks, and anniversary/spending celebrations for a customer.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id: { type: "string", description: "Customer's user ID" },
+      },
+      required: ["user_id"],
+    },
+  },
+
+  // ── Community Features ────────────────────────
+  {
+    name: "get_neighborhood_activity",
+    description: "Get anonymized nearby bookings, popular services, and active group deals in the customer's neighborhood.",
+    input_schema: {
+      type: "object",
+      properties: {
+        zip: { type: "string", description: "5-digit zip code" },
+      },
+      required: ["zip"],
+    },
+  },
+  {
+    name: "get_local_events",
+    description: "Get upcoming community events and seasonal patterns relevant to home services in the customer's area.",
+    input_schema: {
+      type: "object",
+      properties: {
+        zip: { type: "string", description: "5-digit zip code" },
+      },
+      required: ["zip"],
+    },
+  },
+
+  // ── Post-Booking Intelligence ─────────────────
+  {
+    name: "get_post_booking_question",
+    description: "Get the ONE most valuable follow-up question to ask a customer after a specific booking. Always call after creating a booking draft.",
+    input_schema: {
+      type: "object",
+      properties: {
+        service_id:   { type: "string", description: "Service that was just booked" },
+        home_profile: { type: "object", description: "Customer's home profile (optional)" },
+      },
+      required: ["service_id"],
+    },
+  },
+  {
+    name: "get_pro_job_prompts",
+    description: "Get what the pro should photograph and note during a specific job type. Call when a pro asks about job documentation or best practices.",
+    input_schema: {
+      type: "object",
+      properties: {
+        service_id:   { type: "string", description: "Service type" },
+        home_profile: { type: "object", description: "Home profile (optional)" },
+      },
+      required: ["service_id"],
+    },
+  },
+
+  // ── Home Maintenance Reminders ────────────────
+  {
+    name: "get_home_maintenance_reminders",
+    description: "Get upcoming maintenance items with due dates (air filters, gutters, water heater, etc.). Call when customer asks what they should do or what's coming due.",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id:      { type: "string", description: "Customer's user ID" },
+        home_details: { type: "object", description: "Home details: {hasPool, bedrooms, yearBuilt, etc.}" },
+      },
+      required: ["user_id"],
+    },
+  },
+  {
+    name: "get_home_tips",
+    description: "Get Orlando-specific seasonal home maintenance tips. Call when customer asks for seasonal advice.",
+    input_schema: {
+      type: "object",
+      properties: {
+        season:    { type: "string", enum: ["spring", "summer", "fall", "winter"], description: "Current season" },
+        home_type: { type: "string", description: "Home type: residential, condo, etc." },
+        location:  { type: "string", description: "City/area" },
+      },
+      required: ["season"],
+    },
+  },
+  {
+    name: "add_custom_reminder",
+    description: "Set a custom recurring reminder for the customer (e.g., 'change water filter every 6 months').",
+    input_schema: {
+      type: "object",
+      properties: {
+        user_id:       { type: "string", description: "Customer's user ID" },
+        description:   { type: "string", description: "What to remind them about" },
+        interval_days: { type: "number", description: "How often in days (e.g., 90, 180, 365)" },
+      },
+      required: ["user_id", "description", "interval_days"],
+    },
+  },
+
+  // ── Pro Goal Tracker ──────────────────────────
+  {
+    name: "get_pro_goal_progress",
+    description: "Get a pro's earnings goal progress: current vs. goal, days left, jobs needed, streak, comparison to last month. Call at the START of every pro conversation.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id: { type: "string", description: "Pro's user ID" },
+      },
+      required: ["pro_id"],
+    },
+  },
+  {
+    name: "set_pro_goal",
+    description: "Set or update a pro's monthly earnings target.",
+    input_schema: {
+      type: "object",
+      properties: {
+        pro_id:         { type: "string", description: "Pro's user ID" },
+        monthly_target: { type: "number", description: "Monthly earnings target in dollars" },
+      },
+      required: ["pro_id", "monthly_target"],
+    },
+  },
+
+  // ── Contracts & Documents (B2B) ───────────────
+  {
+    name: "generate_service_agreement",
+    description: "Generate a draft service agreement (MSA, SOW) for a B2B client. Call when business asks about contracts or formalizing the relationship.",
+    input_schema: {
+      type: "object",
+      properties: {
+        business_id: { type: "string", description: "Business account ID" },
+        terms: {
+          type: "object",
+          description: "Agreement terms: {agreementType, services[], endDate}",
+        },
+      },
+      required: ["business_id"],
+    },
+  },
+  {
+    name: "get_document_status",
+    description: "Track pending contracts, W-9s, COIs, lien waivers, and renewal dates for a business account.",
+    input_schema: {
+      type: "object",
+      properties: {
+        business_id: { type: "string", description: "Business account ID" },
+      },
+      required: ["business_id"],
+    },
+  },
+
   // ── B2B tools ─────────────────────────────────
   {
     name: "get_portfolio_analytics",
@@ -533,6 +844,72 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return tools.getProMarketInsights(input.service_types || []);
     case "get_pro_reviews":
       return await tools.getProReviews(input.pro_id, storage);
+
+    // Trust & Safety
+    case "get_pro_arrival_info":
+      return await tools.getProArrivalInfo(input.job_id, storage);
+
+    // Insurance Claims
+    case "get_storm_prep_checklist":
+      return tools.getStormPrepChecklist(input.home_type || "residential", input.location || "Orlando, FL");
+    case "generate_claim_documentation":
+      return await tools.generateClaimDocumentation(input.job_ids || [], storage);
+
+    // Referral Engine
+    case "get_referral_status":
+      return await tools.getReferralStatus(input.user_id, storage);
+    case "get_neighborhood_group_deals":
+      return tools.getNeighborhoodGroupDeals(input.zip);
+
+    // Pro Business Intelligence
+    case "get_pro_demand_forecast":
+      return tools.getProDemandForecast(input.service_types || [], input.zip || "");
+    case "get_pro_customer_retention":
+      return await tools.getProCustomerRetention(input.pro_id, storage);
+
+    // Emergency & Disaster Mode
+    case "get_emergency_pros":
+      return await tools.getEmergencyPros(input.service_type || "", input.zip || "", storage);
+    case "get_disaster_mode_status":
+      return tools.getDisasterModeStatus(input.zip);
+
+    // Loyalty & Gamification
+    case "get_customer_loyalty_status":
+      return await tools.getCustomerLoyaltyStatus(input.user_id, storage);
+    case "get_customer_milestones":
+      return await tools.getCustomerMilestones(input.user_id, storage);
+
+    // Community Features
+    case "get_neighborhood_activity":
+      return tools.getNeighborhoodActivity(input.zip);
+    case "get_local_events":
+      return tools.getLocalEvents(input.zip);
+
+    // Post-Booking Intelligence
+    case "get_post_booking_question":
+      return tools.getPostBookingQuestion(input.service_id, input.home_profile || {});
+    case "get_pro_job_prompts":
+      return tools.getProJobPrompts(input.service_id, input.home_profile || {});
+
+    // Home Maintenance Reminders
+    case "get_home_maintenance_reminders":
+      return await tools.getHomeMaintenanceReminders(input.user_id, input.home_details || {}, storage);
+    case "get_home_tips":
+      return tools.getHomeTips(input.season || "spring", input.home_type || "residential", input.location || "Orlando, FL");
+    case "add_custom_reminder":
+      return await tools.addCustomReminder(input.user_id, input.description, input.interval_days || 90, storage);
+
+    // Pro Goal Tracker
+    case "get_pro_goal_progress":
+      return await tools.getProGoalProgress(input.pro_id, storage);
+    case "set_pro_goal":
+      return await tools.setProGoal(input.pro_id, input.monthly_target, storage);
+
+    // Contracts & Documents (B2B)
+    case "generate_service_agreement":
+      return tools.generateServiceAgreement(input.business_id, input.terms || {});
+    case "get_document_status":
+      return await tools.getDocumentStatus(input.business_id, storage);
 
     // B2B tools
     case "get_portfolio_analytics":

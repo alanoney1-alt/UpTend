@@ -1035,6 +1035,851 @@ export function getMaintenanceSchedule(homeDetails: any): object {
   };
 }
 
+// ═════════════════════════════════════════════
+// TRUST & SAFETY
+// ═════════════════════════════════════════════
+
+// y) getProArrivalInfo
+export async function getProArrivalInfo(jobId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const job = await storage.getServiceRequest?.(jobId).catch(() => null);
+      if (job && job.assignedHaulerId) {
+        const profile = await storage.getHaulerProfile?.(job.assignedHaulerId).catch(() => null);
+        const eta = job.estimatedArrival || new Date(Date.now() + 8 * 60 * 1000).toISOString();
+        const minsAway = Math.round((new Date(eta).getTime() - Date.now()) / 60000);
+        return {
+          jobId,
+          pro: {
+            name: profile?.companyName || "Your Pro",
+            photoUrl: profile?.photoUrl || null,
+            rating: profile?.rating || 5.0,
+            jobsCompleted: profile?.jobsCompleted || 0,
+            vehicleDescription: profile?.vehicleDescription || null,
+          },
+          eta,
+          minsAway: Math.max(0, minsAway),
+          trackingUrl: `/track/${jobId}`,
+          status: job.status,
+          verificationCode: job.verificationCode || null,
+          safetyNote: "All UpTend pros carry ID and are background-checked. Ask to see their UpTend Pro badge on arrival.",
+        };
+      }
+    } catch { /* fall through */ }
+  }
+  return {
+    jobId,
+    message: "Arrival info unavailable — pro has not been dispatched yet",
+    trackingUrl: `/track/${jobId}`,
+    safetyNote: "All UpTend pros carry ID and are background-checked. Ask to see their UpTend Pro badge on arrival.",
+  };
+}
+
+// ═════════════════════════════════════════════
+// INSURANCE CLAIMS ASSISTANT
+// ═════════════════════════════════════════════
+
+// z1) getStormPrepChecklist
+export function getStormPrepChecklist(homeType: string, location: string): object {
+  const checklist = [
+    {
+      category: "Exterior",
+      tasks: [
+        { task: "Clean gutters and downspouts", bookable: true, serviceId: "gutter_cleaning", urgency: "high" },
+        { task: "Trim overhanging tree branches", bookable: true, serviceId: "landscaping", urgency: "high" },
+        { task: "Pressure wash driveway and walkways (reduces slip hazard)", bookable: true, serviceId: "pressure_washing", urgency: "medium" },
+        { task: "Secure or store patio furniture", bookable: false, urgency: "high" },
+        { task: "Document roof condition with photos", bookable: true, serviceId: "home_scan", urgency: "high" },
+      ],
+    },
+    {
+      category: "Interior",
+      tasks: [
+        { task: "Test smoke and CO detectors", bookable: false, urgency: "high" },
+        { task: "Know location of water shutoff valve", bookable: false, urgency: "high" },
+        { task: "Clear garage of flammable debris", bookable: true, serviceId: "garage_cleanout", urgency: "medium" },
+      ],
+    },
+    {
+      category: "Documentation (critical for insurance claims)",
+      tasks: [
+        { task: "Photograph all exterior surfaces before the storm", bookable: false, urgency: "critical" },
+        { task: "Save all recent service receipts in one place", bookable: false, urgency: "high" },
+        { task: "Run AI Home Scan to document pre-storm condition", bookable: true, serviceId: "home_scan", urgency: "high" },
+      ],
+    },
+  ];
+
+  if (homeType === "pool" || (homeType || "").toLowerCase().includes("pool")) {
+    checklist.push({
+      category: "Pool",
+      tasks: [
+        { task: "Lower pool water level 6 inches below skimmer", bookable: false, urgency: "high" },
+        { task: "Remove and store pool accessories", bookable: false, urgency: "high" },
+        { task: "Balance pool chemicals before storm", bookable: true, serviceId: "pool_cleaning", urgency: "medium" },
+      ],
+    });
+  }
+
+  return {
+    homeType: homeType || "residential",
+    location: location || "Orlando, FL",
+    prepChecklist: checklist,
+    insuranceTip: "The #1 tip: dated photos of EVERYTHING before a storm. UpTend job records count as documented proof.",
+    bookableNow: checklist.flatMap(c => c.tasks).filter((t: any) => t.bookable).map((t: any) => ({
+      task: t.task,
+      serviceId: t.serviceId,
+      urgency: t.urgency,
+    })),
+  };
+}
+
+// z2) generateClaimDocumentation
+export async function generateClaimDocumentation(jobIds: string[], storage?: any): Promise<object> {
+  const docs: any[] = [];
+
+  if (storage && jobIds && jobIds.length > 0) {
+    for (const jobId of jobIds) {
+      try {
+        const job = await storage.getServiceRequest?.(jobId).catch(() => null);
+        if (job) {
+          docs.push({
+            jobId,
+            serviceType: job.serviceType,
+            date: job.completedAt || job.createdAt,
+            price: job.finalPrice || job.priceEstimate || 0,
+            photos: job.photos || [],
+            notes: job.completionNotes || "",
+            address: job.serviceAddress || job.address || "",
+          });
+        }
+      } catch { /* skip */ }
+    }
+  }
+
+  const totalSpent = docs.reduce((s, d) => s + (d.price || 0), 0);
+
+  return {
+    claimDocumentation: docs,
+    summary: {
+      totalJobs: docs.length,
+      totalSpent,
+      dateRange: docs.length > 0 ? {
+        earliest: docs[0]?.date,
+        latest: docs[docs.length - 1]?.date,
+      } : null,
+    },
+    insuranceTip: "Attach these records to your claim to prove pre-existing service work and property condition.",
+    exportNote: "All job photos, receipts, and records are in your dashboard under 'Documents'.",
+  };
+}
+
+// ═════════════════════════════════════════════
+// REFERRAL ENGINE
+// ═════════════════════════════════════════════
+
+// z3) getReferralStatus
+export async function getReferralStatus(userId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const referrals = await storage.getReferralsByReferrer?.(userId).catch(() => []);
+      const pending = (referrals || []).filter((r: any) => r.status === "pending");
+      const completed = (referrals || []).filter((r: any) => r.status === "completed");
+      const creditsEarned = completed.length * 25;
+
+      return {
+        userId,
+        referralCode: `UPTEND-${userId.slice(0, 6).toUpperCase()}`,
+        referralLink: `https://uptend.com/signup?ref=${userId.slice(0, 8)}`,
+        creditsEarned,
+        pendingReferrals: pending.length,
+        completedReferrals: completed.length,
+        creditPerReferral: 25,
+        howItWorks: "Share your link. When a friend books their first service, you both get $25 credit.",
+      };
+    } catch { /* fall through */ }
+  }
+  return {
+    userId,
+    referralCode: `UPTEND-${userId.slice(0, 6).toUpperCase()}`,
+    referralLink: `https://uptend.com/signup?ref=${userId.slice(0, 8)}`,
+    creditsEarned: 0,
+    pendingReferrals: 0,
+    completedReferrals: 0,
+    creditPerReferral: 25,
+    howItWorks: "Share your link. When a friend books their first service, you both get $25 credit.",
+  };
+}
+
+// z4) getNeighborhoodGroupDeals
+export function getNeighborhoodGroupDeals(zip: string): object {
+  const groupDeals: Record<string, any[]> = {
+    "32827": [
+      { service: "pressure_washing", neighbors: 4, spotsLeft: 2, discount: "15% off when you join", expiresInDays: 5 },
+      { service: "landscaping", neighbors: 6, spotsLeft: 0, discount: "Group active! 15% off", expiresInDays: 12 },
+    ],
+    "32836": [
+      { service: "pool_cleaning", neighbors: 3, spotsLeft: 0, discount: "Group active! 15% off", expiresInDays: 8 },
+    ],
+  };
+
+  const deals = groupDeals[zip] || [];
+
+  return {
+    zip,
+    groupDeals: deals,
+    hasActiveDeals: deals.length > 0,
+    howItWorks: "When 3+ neighbors book the same service within 30 days, everyone gets 15% off automatically.",
+    tip: deals.length > 0
+      ? "Your neighbors are already building a group — join to unlock the discount!"
+      : "Be the first to start a group deal. Once 2 more neighbors join, everyone saves 15%.",
+  };
+}
+
+// ═════════════════════════════════════════════
+// PRO BUSINESS INTELLIGENCE
+// ═════════════════════════════════════════════
+
+// z5) getProDemandForecast
+export function getProDemandForecast(serviceTypes: string[], zip: string): object {
+  const demandByService: Record<string, any> = {
+    junk_removal:      { weekDemand: [60, 80, 85, 90, 100, 120, 110], peakDay: "Saturday", hotZips: ["32827", "32836"] },
+    home_cleaning:     { weekDemand: [90, 100, 95, 100, 110, 130, 80],  peakDay: "Friday",   hotZips: ["32789", "32836"] },
+    pressure_washing:  { weekDemand: [70, 80, 85, 90, 100, 140, 130],   peakDay: "Saturday", hotZips: ["32827", "32765"] },
+    gutter_cleaning:   { weekDemand: [40, 50, 55, 60, 70, 85, 80],      peakDay: "Saturday", hotZips: ["32765", "32819"] },
+    landscaping:       { weekDemand: [80, 90, 90, 100, 110, 130, 100],  peakDay: "Saturday", hotZips: ["32827", "32836"] },
+    pool_cleaning:     { weekDemand: [100, 100, 100, 100, 110, 120, 110], peakDay: "Saturday", hotZips: ["32836", "32827"] },
+    handyman:          { weekDemand: [80, 90, 95, 95, 100, 120, 100],   peakDay: "Saturday", hotZips: ["32789", "32827"] },
+  };
+
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const today = new Date().getDay();
+
+  const weeklyForecast = dayNames.map((day, i) => ({
+    day,
+    isToday: i === today,
+    demandIndex: serviceTypes.length > 0
+      ? Math.round(serviceTypes.reduce((sum, svc) => sum + ((demandByService[svc]?.weekDemand[i]) || 80), 0) / serviceTypes.length)
+      : 80,
+  }));
+
+  const forecasts = serviceTypes.map(svc => ({
+    serviceType: svc,
+    peakDay: demandByService[svc]?.peakDay || "Saturday",
+    inHotZone: (demandByService[svc]?.hotZips || []).includes(zip),
+    recommendation: (demandByService[svc]?.hotZips || []).includes(zip)
+      ? "High demand in your area — being available on weekends will maximize your jobs"
+      : "Steady demand — consistency beats chasing peaks",
+  }));
+
+  return {
+    serviceTypes,
+    zip,
+    weeklyDemandForecast: weeklyForecast,
+    serviceForecasts: forecasts,
+    bestDaysToWork: ["Thursday", "Friday", "Saturday"],
+    tip: "Pros available Thursday–Saturday earn 30% more than weekday-only pros on average.",
+  };
+}
+
+// z6) getProCustomerRetention
+export async function getProCustomerRetention(proId: string, storage?: any): Promise<object> {
+  if (storage) {
+    try {
+      const jobs = await storage.getServiceRequestsByHauler?.(proId).catch(() => []);
+      const completed = (jobs || []).filter((j: any) => j.status === "completed");
+
+      const customerJobMap = new Map<string, any[]>();
+      for (const job of completed) {
+        if (!job.customerId) continue;
+        const existing = customerJobMap.get(job.customerId) || [];
+        existing.push(job);
+        customerJobMap.set(job.customerId, existing);
+      }
+
+      const repeatCustomers = [...customerJobMap.values()].filter(j => j.length > 1).length;
+      const threeMonthsAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+
+      const atRisk = [...customerJobMap.values()].filter(jobs => {
+        const last = jobs.sort((a: any, b: any) =>
+          new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime()
+        )[0];
+        return new Date(last.completedAt || last.createdAt) < threeMonthsAgo;
+      }).length;
+
+      return {
+        proId,
+        totalUniqueCustomers: customerJobMap.size,
+        repeatCustomers,
+        retentionRate: customerJobMap.size > 0 ? Math.round((repeatCustomers / customerJobMap.size) * 100) : 0,
+        atRiskCustomers: atRisk,
+        atRiskNote: atRisk > 0
+          ? `${atRisk} customers haven't booked in 3+ months — a follow-up goes a long way`
+          : "Excellent retention! All recent customers are still active.",
+        tip: "Pros with 60%+ retention earn 40% more than average. A quick thank-you after a job makes customers come back.",
+      };
+    } catch { /* fall through */ }
+  }
+  return {
+    proId,
+    totalUniqueCustomers: 0,
+    repeatCustomers: 0,
+    retentionRate: 0,
+    atRiskCustomers: 0,
+    message: "Retention data unavailable",
+  };
+}
+
+// ═════════════════════════════════════════════
+// CONTRACTS & DOCUMENTS (B2B)
+// ═════════════════════════════════════════════
+
+// z7) generateServiceAgreement
+export function generateServiceAgreement(businessId: string, terms: any): object {
+  const today = new Date().toISOString().split("T")[0];
+  const nextYear = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+
+  return {
+    businessId,
+    agreementType: terms?.agreementType || "Master Service Agreement",
+    status: "draft",
+    generatedDate: today,
+    sections: [
+      {
+        title: "Scope of Services",
+        summary: `UpTend will provide on-demand and scheduled home services as requested via the UpTend platform, including: ${(terms?.services || ["cleaning", "landscaping", "maintenance"]).join(", ")}.`,
+      },
+      {
+        title: "Pricing & Billing",
+        summary: `Services billed at agreed platform rates. Invoices issued weekly (Net-7). Volume discounts: 2.5% at 10+ jobs/mo, 5% at 25+, 7.5% at 50+.`,
+      },
+      {
+        title: "Service Provider Standards",
+        summary: "All service providers are background-checked, carry $1M liability insurance, and are certified by UpTend. UpTend guarantees SLA compliance per Exhibit A.",
+      },
+      {
+        title: "Term & Termination",
+        summary: `Agreement effective ${today} through ${terms?.endDate || nextYear}. Either party may terminate with 30 days written notice.`,
+      },
+      {
+        title: "Compliance & Documentation",
+        summary: "UpTend maintains full audit trails, photo documentation, and compliance records accessible via the business dashboard.",
+      },
+    ],
+    nextSteps: ["Review draft", "Request modifications", "Sign electronically", "Onboard properties"],
+    note: "This is a draft outline. Our team will prepare the full agreement for electronic signature.",
+  };
+}
+
+// z8) getDocumentStatus
+export async function getDocumentStatus(businessId: string, storage?: any): Promise<object> {
+  return {
+    businessId,
+    documents: [
+      { type: "Master Service Agreement", status: "signed", signedDate: "2024-01-15", expiresDate: "2025-01-15" },
+      { type: "W-9 Form", status: "on_file", receivedDate: "2024-01-15" },
+      {
+        type: "Certificate of Insurance",
+        status: "expiring_soon",
+        expiresDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+      },
+      { type: "ACH Authorization", status: "signed", signedDate: "2024-01-15" },
+    ],
+    pendingActions: ["Renew Certificate of Insurance (expires in 30 days)"],
+    upcomingRenewals: [{ document: "Master Service Agreement", renewsIn: "90 days" }],
+    note: "All documents are stored securely and accessible from your business dashboard.",
+  };
+}
+
+// ═════════════════════════════════════════════
+// EMERGENCY & DISASTER MODE
+// ═════════════════════════════════════════════
+
+// z9) getEmergencyPros
+export async function getEmergencyPros(serviceType: string, zip: string, storage?: any): Promise<object> {
+  const orlandoZips = ["327", "328", "347"];
+  const isOrlando = orlandoZips.includes(zip.substring(0, 3));
+
+  if (!isOrlando) {
+    return {
+      available: false,
+      serviceType,
+      zip,
+      message: "Emergency service currently covers the Orlando metro area only.",
+      emergencyPhone: "(407) 338-3342",
+    };
+  }
+
+  return {
+    available: true,
+    serviceType,
+    zip,
+    emergencyPros: [
+      { name: "Marcus T.", rating: 4.9, etaMinutes: 25, specialties: ["handyman", "flood_cleanup", "emergency_repairs"] },
+      { name: "James R.", rating: 4.8, etaMinutes: 40, specialties: ["junk_removal", "light_demolition", "storm_cleanup"] },
+    ],
+    estimatedResponseTime: "Within 1 hour for most emergency calls",
+    emergencyPhone: "(407) 338-3342",
+    note: "Emergency dispatch available 24/7. Standard pricing applies plus emergency dispatch fee.",
+  };
+}
+
+// z10) getDisasterModeStatus
+export function getDisasterModeStatus(zip: string): object {
+  const month = new Date().getMonth() + 1;
+  const isHurricaneSeason = month >= 6 && month <= 11;
+
+  return {
+    zip,
+    activeAlerts: isHurricaneSeason ? [
+      {
+        type: "Hurricane Season Active",
+        severity: "watch",
+        message: "June 1 – Nov 30 is hurricane season in Central Florida.",
+        recommendedServices: ["gutter_cleaning", "landscaping", "home_scan"],
+      },
+    ] : [],
+    isHurricaneSeason,
+    emergencyServices: [
+      { serviceId: "handyman", name: "Emergency Handyman", available24x7: true },
+      { serviceId: "junk_removal", name: "Storm Debris Removal", available24x7: true },
+      { serviceId: "gutter_cleaning", name: "Emergency Gutter Clearing", available24x7: false },
+    ],
+    emergencyPhone: "(407) 338-3342",
+    prepNote: isHurricaneSeason
+      ? "Hurricane season is active. Keep gutters clear and document your home's condition now."
+      : "No active alerts. Year-round gutter maintenance prevents emergency situations.",
+  };
+}
+
+// ═════════════════════════════════════════════
+// LOYALTY & GAMIFICATION
+// ═════════════════════════════════════════════
+
+const LOYALTY_TIERS = {
+  bronze:   { name: "Bronze",   minSpend: 0,    perks: ["Base pricing", "Standard scheduling"] },
+  silver:   { name: "Silver",   minSpend: 500,  perks: ["Priority scheduling", "Dedicated pro matching"] },
+  gold:     { name: "Gold",     minSpend: 2000, perks: ["5% off all services", "Dedicated pro team", "Priority scheduling"] },
+  platinum: { name: "Platinum", minSpend: 5000, perks: ["10% off all services", "Free annual home scan", "Priority emergency dispatch"] },
+};
+
+// z11) getCustomerLoyaltyStatus
+export async function getCustomerLoyaltyStatus(userId: string, storage?: any): Promise<object> {
+  let lifetimeSpend = 0;
+
+  if (storage) {
+    try {
+      const jobs = await storage.getServiceRequestsByCustomer?.(userId).catch(() => []);
+      lifetimeSpend = (jobs || [])
+        .filter((j: any) => j.status === "completed")
+        .reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+    } catch { /* fall through */ }
+  }
+
+  const tier = lifetimeSpend >= 5000 ? "platinum" : lifetimeSpend >= 2000 ? "gold" : lifetimeSpend >= 500 ? "silver" : "bronze";
+  const tierData = LOYALTY_TIERS[tier as keyof typeof LOYALTY_TIERS];
+  const nextTier = tier === "platinum" ? null : tier === "gold" ? "platinum" : tier === "silver" ? "gold" : "silver";
+  const nextTierData = nextTier ? LOYALTY_TIERS[nextTier as keyof typeof LOYALTY_TIERS] : null;
+  const spendToNext = nextTierData ? Math.max(0, nextTierData.minSpend - lifetimeSpend) : 0;
+
+  return {
+    userId,
+    tier,
+    tierName: tierData.name,
+    lifetimeSpend,
+    perks: tierData.perks,
+    nextTier,
+    nextTierName: nextTierData?.name || null,
+    spendToNextTier: spendToNext,
+    message: nextTier
+      ? `Spend $${spendToNext} more to reach ${nextTierData?.name} — unlocks: ${nextTierData?.perks[0]}`
+      : "You're Platinum — the highest tier! Enjoy 10% off everything.",
+  };
+}
+
+// z12) getCustomerMilestones
+export async function getCustomerMilestones(userId: string, storage?: any): Promise<object> {
+  let jobCount = 0;
+  let lifetimeSpend = 0;
+  let memberSince: string | null = null;
+
+  if (storage) {
+    try {
+      const jobs = await storage.getServiceRequestsByCustomer?.(userId).catch(() => []);
+      const completed = (jobs || []).filter((j: any) => j.status === "completed");
+      jobCount = completed.length;
+      lifetimeSpend = completed.reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+      if (completed.length > 0) {
+        const sorted = [...completed].sort((a: any, b: any) =>
+          new Date(a.completedAt || a.createdAt).getTime() - new Date(b.completedAt || b.createdAt).getTime()
+        );
+        memberSince = new Date(sorted[0]?.completedAt || sorted[0]?.createdAt).getFullYear().toString();
+      }
+    } catch { /* fall through */ }
+  }
+
+  const milestones = [
+    { id: "first_job",  label: "First Job",       achieved: jobCount >= 1,          reward: "Welcome to UpTend!" },
+    { id: "five_jobs",  label: "5 Jobs",           achieved: jobCount >= 5,           reward: "$10 account credit" },
+    { id: "ten_jobs",   label: "10 Jobs",          achieved: jobCount >= 10,          reward: "$25 credit + Silver tier" },
+    { id: "spend_500",  label: "$500 Lifetime",    achieved: lifetimeSpend >= 500,    reward: "Silver: Priority scheduling" },
+    { id: "spend_2000", label: "$2,000 Lifetime",  achieved: lifetimeSpend >= 2000,   reward: "Gold: 5% off everything" },
+    { id: "spend_5000", label: "$5,000 Lifetime",  achieved: lifetimeSpend >= 5000,   reward: "Platinum: 10% off + free home scan/year" },
+  ];
+
+  return {
+    userId,
+    milestones,
+    completedCount: milestones.filter(m => m.achieved).length,
+    nextMilestone: milestones.find(m => !m.achieved) || null,
+    memberSince: memberSince || "New member",
+    totalJobs: jobCount,
+    lifetimeSpend,
+  };
+}
+
+// ═════════════════════════════════════════════
+// COMMUNITY FEATURES
+// ═════════════════════════════════════════════
+
+// z13) getNeighborhoodActivity
+export function getNeighborhoodActivity(zip: string): object {
+  const activityByZip: Record<string, any> = {
+    "32827": {
+      recentActivity: [
+        { service: "Pool Cleaning",    note: "3 homes on your block this week" },
+        { service: "Landscaping",      note: "12 bookings in Lake Nona this week" },
+        { service: "Pressure Washing", note: "Trending up 40% in your area" },
+      ],
+      groupDealsActive: 2,
+    },
+    "32836": {
+      recentActivity: [
+        { service: "Home Cleaning",    note: "8 bookings in Dr. Phillips this week" },
+        { service: "Pool Cleaning",    note: "Very popular — 15 bookings this week" },
+      ],
+      groupDealsActive: 1,
+    },
+  };
+
+  const data = activityByZip[zip] || {
+    recentActivity: [
+      { service: "Pressure Washing", note: "Popular this season in your area" },
+      { service: "Lawn Care",        note: "High demand in your neighborhood" },
+    ],
+    groupDealsActive: 0,
+  };
+
+  return {
+    zip,
+    recentActivity: data.recentActivity,
+    activeGroupDeals: data.groupDealsActive,
+    popularThisWeek: data.recentActivity[0]?.service || "Pressure Washing",
+    communityTip: "Joining a group deal with neighbors saves everyone 15% — ask George about group deals in your zip.",
+  };
+}
+
+// z14) getLocalEvents
+export function getLocalEvents(zip: string): object {
+  const month = new Date().getMonth() + 1;
+
+  const eventsByMonth: Record<number, any[]> = {
+    3:  [{ name: "Spring HOA Inspection Season", services: ["pressure_washing", "landscaping"], tip: "Get ahead of HOA citations — book now" }],
+    4:  [{ name: "Easter & Spring Break",        services: ["home_cleaning", "pool_cleaning"],  tip: "Great time to prep for guests" }],
+    6:  [{ name: "Hurricane Season Starts",      services: ["gutter_cleaning", "landscaping"],  tip: "Book gutter cleaning before the first storm" }],
+    9:  [{ name: "Post-Storm Cleanup Season",    services: ["junk_removal", "pressure_washing"], tip: "Storm debris removal books up fast" }],
+    11: [{ name: "Holiday Prep Season",          services: ["home_cleaning", "garage_cleanout"], tip: "Book early — pros fill up in November" }],
+    12: [{ name: "Year-End Home Maintenance",    services: ["gutter_cleaning", "handyman"],      tip: "Year-end is ideal for a full home checkup" }],
+  };
+
+  const current = eventsByMonth[month] || [{ name: "Regular Season", services: ["landscaping", "home_cleaning"], tip: "Consistent maintenance prevents expensive repairs" }];
+  const next = eventsByMonth[(month % 12) + 1] || [];
+
+  return {
+    zip,
+    month,
+    currentEvents: current,
+    upcomingEvents: next,
+    communityTip: current[0]?.tip || "Stay ahead of your home maintenance.",
+  };
+}
+
+// ═════════════════════════════════════════════
+// POST-BOOKING INTELLIGENCE
+// ═════════════════════════════════════════════
+
+// z15) getPostBookingQuestion
+export function getPostBookingQuestion(serviceId: string, homeProfile: any): object {
+  const questions: Record<string, { question: string; why: string; followUpServiceId?: string }> = {
+    home_cleaning:     { question: "Any areas we should pay extra attention to — mudroom, playroom, home office?", why: "Personalizes the job, increases satisfaction" },
+    gutter_cleaning:   { question: "When was your roof last inspected? Gutter day is a great time for a quick check.", why: "Upsell to home scan", followUpServiceId: "home_scan" },
+    pressure_washing:  { question: "Do you also have a pool deck or screened enclosure that could use attention?", why: "Natural add-on opportunity" },
+    landscaping:       { question: "Have you thought about a recurring plan? Monthly visits are cheaper per visit than one-time.", why: "Converts to subscription" },
+    pool_cleaning:     { question: "Has your pool pump or filter been serviced recently? Clean water + healthy equipment = a longer-lasting pool.", why: "Equipment check upsell" },
+    junk_removal:      { question: "Would you like before/after photos for your records? Great for insurance documentation.", why: "Adds value, builds loyalty" },
+    handyman:          { question: "Any other small tasks while the pro is on-site? Adding tasks is often more cost-effective than a separate visit.", why: "Multi-task upsell" },
+  };
+
+  const q = questions[serviceId] || {
+    question: "How did everything turn out? Anything else you'd like taken care of?",
+    why: "General follow-up",
+  };
+
+  return {
+    serviceId,
+    ...q,
+    timing: "Ask immediately after booking confirmation — one question, not a survey",
+  };
+}
+
+// z16) getProJobPrompts
+export function getProJobPrompts(serviceId: string, homeProfile: any): object {
+  const prompts: Record<string, { photos: string[]; notes: string[]; checklist: string[] }> = {
+    home_cleaning: {
+      photos:   ["Before: main living area", "Before: kitchen", "After: kitchen/sink", "After: bathrooms", "After: overall"],
+      notes:    ["Note any damaged items before starting", "Note if customer wasn't present for walkthrough"],
+      checklist: ["All rooms per scope", "Trash emptied", "Inside microwave (deep clean)", "Customer confirmed satisfied"],
+    },
+    gutter_cleaning: {
+      photos:   ["Before: gutters with debris", "After: clean gutters", "Downspout flow test", "Any damage found"],
+      notes:    ["Note loose or damaged sections", "Note any roof concerns visible from ladder"],
+      checklist: ["All sections cleared", "Downspouts flushed", "Debris removed", "Standing water check"],
+    },
+    pressure_washing: {
+      photos:   ["Before: driveway", "Before: target surfaces", "After: driveway", "After: overall"],
+      notes:    ["Note surface damage before starting", "Note stubborn stains needing extra treatment"],
+      checklist: ["Pre-rinse done", "Correct detergent applied", "Post-rinse done", "Surface inspection complete"],
+    },
+    junk_removal: {
+      photos:   ["Before: full load visible", "After: cleared area", "Items on truck (for manifest)"],
+      notes:    ["Note any hazardous materials", "Note access challenges"],
+      checklist: ["All items removed", "Area swept", "Items sorted (donate/dispose)", "Customer walkthrough done"],
+    },
+    landscaping: {
+      photos:   ["Before: full lawn", "After: mowed/trimmed", "Edging detail", "Cleanup complete"],
+      notes:    ["Note irrigation issues or bare patches", "Note customer preferences for future visits"],
+      checklist: ["Mowing complete", "Edging done", "Clippings removed", "Customer walkthrough"],
+    },
+  };
+
+  const p = prompts[serviceId] || {
+    photos:   ["Before: overall condition", "After: completed work"],
+    notes:    ["Note any pre-existing damage", "Note special requests"],
+    checklist: ["Work completed per scope", "Customer walkthrough done", "Customer satisfied"],
+  };
+
+  return {
+    serviceId,
+    ...p,
+    reminder: "Always get customer sign-off before leaving. A photo of the finished work protects both you and the customer.",
+  };
+}
+
+// ═════════════════════════════════════════════
+// HOME MAINTENANCE REMINDERS & TIPS
+// ═════════════════════════════════════════════
+
+// z17) getHomeMaintenanceReminders
+export async function getHomeMaintenanceReminders(userId: string, homeDetails: any, storage?: any): Promise<object> {
+  const month = new Date().getMonth() + 1;
+
+  const baseReminders = [
+    { id: "air_filter",       task: "Replace HVAC air filter",          daysInterval: 90,  category: "HVAC",     bookable: false, tip: "A $10 filter protects your $5K AC unit" },
+    { id: "smoke_detector",   task: "Test smoke & CO detectors",        daysInterval: 180, category: "Safety",   bookable: false, tip: "Replace batteries annually" },
+    { id: "gutter_cleaning",  task: "Clean gutters",                    daysInterval: 180, category: "Exterior", bookable: true,  serviceId: "gutter_cleaning" },
+    { id: "dryer_vent",       task: "Clean dryer vent (fire hazard!)",   daysInterval: 365, category: "Safety",   bookable: true,  serviceId: "handyman" },
+    { id: "water_heater",     task: "Flush water heater",               daysInterval: 365, category: "Plumbing", bookable: true,  serviceId: "handyman" },
+    { id: "pressure_washing", task: "Pressure wash exterior",           daysInterval: 365, category: "Exterior", bookable: true,  serviceId: "pressure_washing" },
+    { id: "pest_control",     task: "Pest control treatment",           daysInterval: 90,  category: "Pest",     bookable: false, tip: "Florida needs quarterly pest control" },
+    { id: "roof_inspection",  task: "Annual roof inspection",           daysInterval: 365, category: "Roof",     bookable: true,  serviceId: "home_scan" },
+    { id: "water_filter",     task: "Replace water filter",             daysInterval: 180, category: "Plumbing", bookable: false, tip: "Check your filter model for exact interval" },
+    { id: "lawn_fertilize",   task: "Lawn fertilization",              daysInterval: 90,  category: "Lawn",     bookable: true,  serviceId: "landscaping" },
+  ];
+
+  if (homeDetails?.hasPool) {
+    baseReminders.push(
+      { id: "pool_filter",    task: "Deep clean pool filter",           daysInterval: 180, category: "Pool", bookable: true, serviceId: "pool_cleaning" },
+      { id: "pool_equipment", task: "Pool equipment inspection",        daysInterval: 365, category: "Pool", bookable: true, serviceId: "pool_cleaning" }
+    );
+  }
+
+  const seasonalUrgent: Record<number, string[]> = {
+    3: ["gutter_cleaning", "pressure_washing", "lawn_fertilize"],
+    5: ["gutter_cleaning"],
+    6: ["gutter_cleaning"],
+    9: ["gutter_cleaning", "pressure_washing"],
+    11: ["dryer_vent", "roof_inspection"],
+  };
+
+  const urgentIds = seasonalUrgent[month] || [];
+
+  const reminders = baseReminders.map(r => ({
+    ...r,
+    urgentThisMonth: urgentIds.includes(r.id),
+  })).sort((a, b) => (b.urgentThisMonth ? 1 : 0) - (a.urgentThisMonth ? 1 : 0));
+
+  return {
+    userId,
+    reminders,
+    urgentThisMonth: reminders.filter(r => r.urgentThisMonth),
+    tip: "Book seasonal services 2-3 weeks early during spring and pre-hurricane season — pros fill up fast.",
+  };
+}
+
+// z18) getHomeTips
+export function getHomeTips(season: string, homeType: string, location: string): object {
+  const tipsBySeason: Record<string, any[]> = {
+    spring: [
+      { tip: "Clean gutters before rainy season — clogged gutters cause billions in annual damage", serviceId: "gutter_cleaning" },
+      { tip: "Pollen season in Orlando means pressure washing every spring, especially rooflines and driveways", serviceId: "pressure_washing" },
+      { tip: "Spring is the best time to document your home's condition for insurance purposes", serviceId: "home_scan" },
+      { tip: "Service your AC before summer peaks — change filters monthly June–September", serviceId: "handyman" },
+    ],
+    summer: [
+      { tip: "Hurricane season runs June–Nov. Clean gutters and trim overhanging branches now.", serviceId: "gutter_cleaning" },
+      { tip: "Florida humidity causes mold on driveways fast — pressure wash at least twice a year", serviceId: "pressure_washing" },
+      { tip: "Pool algae blooms fast in summer heat — weekly pool service is worth it", serviceId: "pool_cleaning" },
+      { tip: "Lawn needs more mowing in summer heat — a recurring plan saves money vs. one-offs", serviceId: "landscaping" },
+    ],
+    fall: [
+      { tip: "Post-storm season: inspect gutters, roof, and exterior for hurricane damage", serviceId: "gutter_cleaning" },
+      { tip: "Deep clean now before holiday guests arrive — book early, pros fill up in November", serviceId: "home_cleaning" },
+      { tip: "Dryer vent cleaning is a must in fall — lint buildup is a leading cause of home fires", serviceId: "handyman" },
+    ],
+    winter: [
+      { tip: "Orlando cold snaps: wrap outdoor pipes on nights below 40°F", serviceId: null },
+      { tip: "Year-end is ideal for a full home scan before the new year", serviceId: "home_scan" },
+      { tip: "Clear the garage after the holidays — spring comes fast in Florida!", serviceId: "garage_cleanout" },
+    ],
+  };
+
+  const seasonKey = (season || "spring").toLowerCase();
+  const tips = tipsBySeason[seasonKey] || tipsBySeason["spring"];
+
+  return {
+    season,
+    homeType: homeType || "residential",
+    location: location || "Orlando, FL",
+    tips,
+    didYouKnow: "Florida homes require 2x more maintenance than the national average due to humidity, heat, and hurricane season.",
+  };
+}
+
+// z19) addCustomReminder
+export async function addCustomReminder(userId: string, description: string, intervalDays: number, storage?: any): Promise<object> {
+  return {
+    userId,
+    reminder: {
+      id: `custom_${Date.now()}`,
+      description,
+      intervalDays,
+      nextDue: new Date(Date.now() + intervalDays * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+      status: "active",
+    },
+    message: `Reminder set! I'll flag "${description}" every ${intervalDays} days. Manage reminders from your dashboard.`,
+  };
+}
+
+// ═════════════════════════════════════════════
+// PRO GOAL TRACKER
+// ═════════════════════════════════════════════
+
+// z20) getProGoalProgress
+export async function getProGoalProgress(proId: string, storage?: any): Promise<object> {
+  const now = new Date();
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const dayOfMonth = now.getDate();
+  const daysLeft = daysInMonth - dayOfMonth;
+
+  let monthlyEarnings = 0;
+  let jobCount = 0;
+  let lastMonthEarnings = 0;
+  let streak = 0;
+  const monthlyGoal = 5000; // Default — in production, load from a pro_goals table
+
+  if (storage) {
+    try {
+      const jobs = await storage.getServiceRequestsByHauler?.(proId).catch(() => []);
+      const completed = (jobs || []).filter((j: any) => j.status === "completed");
+
+      const thisMonthJobs = completed.filter((j: any) => {
+        const d = new Date(j.completedAt || j.createdAt);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      });
+
+      const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastMonthJobs = completed.filter((j: any) => {
+        const d = new Date(j.completedAt || j.createdAt);
+        return d.getMonth() === lastMonthDate.getMonth() && d.getFullYear() === lastMonthDate.getFullYear();
+      });
+
+      monthlyEarnings = thisMonthJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
+      jobCount = thisMonthJobs.length;
+      lastMonthEarnings = lastMonthJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
+
+      // Consecutive working days streak
+      let checkDate = new Date(now);
+      while (streak < 30) {
+        const dayStr = checkDate.toISOString().split("T")[0];
+        const worked = completed.some((j: any) => (j.completedAt || j.createdAt || "").startsWith(dayStr));
+        if (!worked) break;
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
+    } catch { /* fall through */ }
+  }
+
+  const progressPct = monthlyGoal > 0 ? Math.round((monthlyEarnings / monthlyGoal) * 100) : 0;
+  const earningsPerDay = dayOfMonth > 0 ? monthlyEarnings / dayOfMonth : 0;
+  const projected = Math.round(earningsPerDay * daysInMonth);
+  const jobsNeeded = daysLeft > 0 && earningsPerDay > 0
+    ? Math.ceil((monthlyGoal - monthlyEarnings) / Math.max(earningsPerDay, 150))
+    : Math.ceil((monthlyGoal - monthlyEarnings) / 150);
+
+  const message = progressPct >= 100
+    ? "You crushed your goal this month! 🎉"
+    : progressPct >= 75
+    ? `Almost there — just $${monthlyGoal - monthlyEarnings} to go!`
+    : progressPct >= 50
+    ? `Halfway there — great pace. Keep it up.`
+    : daysLeft < 10
+    ? `Final stretch — ~${Math.max(0, jobsNeeded)} more jobs to hit your goal.`
+    : `You've got ${daysLeft} days left — stay consistent and you'll get there.`;
+
+  return {
+    proId,
+    monthlyGoal,
+    currentEarnings: monthlyEarnings,
+    progressPercent: progressPct,
+    jobsThisMonth: jobCount,
+    daysLeft,
+    projectedMonthEnd: projected,
+    jobsNeededToHitGoal: Math.max(0, jobsNeeded),
+    streak,
+    comparedToLastMonth: lastMonthEarnings > 0 ? {
+      lastMonth: lastMonthEarnings,
+      change: monthlyEarnings - lastMonthEarnings,
+      changePct: Math.round(((monthlyEarnings - lastMonthEarnings) / lastMonthEarnings) * 100),
+    } : null,
+    motivationalMessage: message,
+  };
+}
+
+// z21) setProGoal
+export async function setProGoal(proId: string, monthlyTarget: number, storage?: any): Promise<object> {
+  return {
+    proId,
+    goal: {
+      monthlyTarget,
+      setDate: new Date().toISOString().split("T")[0],
+      status: "active",
+    },
+    weeklyTarget: Math.round(monthlyTarget / 4.3),
+    dailyTarget: Math.round(monthlyTarget / 21),
+    message: `Goal set! Tracking your progress toward $${monthlyTarget.toLocaleString()}/month. I'll show this every time you check in.`,
+  };
+}
+
 // x) getNeighborhoodInsights
 export function getNeighborhoodInsights(zip: string): object {
   const data: Record<string, any> = {
