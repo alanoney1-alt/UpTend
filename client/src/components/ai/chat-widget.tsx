@@ -253,7 +253,7 @@ export function AiChatWidget() {
   const isPro = isProPage(currentPage);
   const greetingText = isPro
     ? `Hey${user?.firstName ? ` ${user.firstName}` : ""}! 👋 Interested in working with UpTend?`
-    : `Hey${user?.firstName ? ` ${user.firstName}` : ""}! 👋 What can I help with?`;
+    : `Hey${user?.firstName ? ` ${user.firstName}` : ""}! 👋 I'm George — your AI home expert. Need a pro for a job, or want to try fixing it yourself? I do both — on-demand home services AND free DIY coaching. What's going on?`;
   const greetingButtons: QuickButton[] = isPro
     ? [
         { text: "How It Works", action: "reply:How does working with UpTend work?" },
@@ -261,10 +261,10 @@ export function AiChatWidget() {
         { text: "Apply Now", action: "navigate:/become-pro" },
       ]
     : [
-        { text: "Book a Service", action: "reply:I'd like to book a service" },
-        { text: "Get a Quote", action: "reply:I need a quote" },
-        { text: "Check My Jobs", action: "reply:Show me my recent jobs" },
-        { text: "Learn About UpTend", action: "reply:Tell me about UpTend" },
+        { text: "🔧 Book a Pro", action: "reply:I need to book a service" },
+        { text: "🛠️ DIY Help", action: "reply:I want to try fixing something myself" },
+        { text: "🏠 Scan My Home", action: "reply:I want to scan my home" },
+        { text: "🚗 Car Help", action: "reply:I need help with my car" },
       ];
 
   if (!isOpen) {
