@@ -16,6 +16,12 @@ import {
   getServiceLabel,
 } from "./pricing";
 import {
+  getQuote as pricingEngineGetQuote,
+  getServicePricing as pricingEngineGetServicePricing,
+  getBundleDiscount as pricingEngineGetBundleDiscount,
+  getAllPricing as pricingEngineGetAllPricing,
+} from "./pricing-engine.js";
+import {
   POLISHUP_BASE_PRICES,
   POLISHUP_ADDONS,
   TWO_STORY_SURCHARGE,
@@ -86,8 +92,39 @@ async function getHaulerProfileByProId(proId: string) {
 }
 
 // ─────────────────────────────────────────────
-// a) getServicePricing
+// a) getServicePricing — delegates to centralized pricing engine
 // ─────────────────────────────────────────────
+export async function getServicePricingFromEngine(serviceId: string): Promise<object> {
+  try {
+    const tiers = await pricingEngineGetServicePricing(serviceId);
+    if (tiers.length > 0) {
+      const svc = (SERVICES as any)[serviceId];
+      return {
+        serviceId,
+        displayName: svc?.display || svc?.branded || serviceId,
+        tagline: svc?.tagline,
+        description: svc?.description,
+        tiers: tiers.map(t => ({
+          size: t.sizeCategory,
+          scope: t.scopeLevel,
+          price: t.baseRate,
+          unit: t.unit,
+          minPrice: t.minPrice,
+          maxPrice: t.maxPrice,
+          estimatedMinutes: t.estimatedDuration,
+        })),
+        startingPrice: tiers[0].baseRate,
+        priceUnit: tiers[0].unit,
+        source: "pricing_engine",
+      };
+    }
+  } catch (err) {
+    console.warn("[George Tools] Pricing engine fallback for", serviceId, err);
+  }
+  // Fallback to legacy
+  return getServicePricing(serviceId);
+}
+
 export function getServicePricing(serviceId: string): object {
   const svc = (SERVICES as any)[serviceId];
   if (!svc) {
@@ -226,8 +263,46 @@ export function getServicePricing(serviceId: string): object {
 }
 
 // ─────────────────────────────────────────────
-// b) calculateQuote
+// b) calculateQuote — delegates to centralized pricing engine
 // ─────────────────────────────────────────────
+export async function calculateQuoteFromEngine(serviceId: string, selections: any): Promise<object> {
+  try {
+    const options: any = {};
+    // Map selections to pricing engine options
+    if (selections.size || selections.loadSize) options.size = selections.size || selections.loadSize;
+    if (selections.cleanType) options.scope = selections.cleanType;
+    if (selections.tier) options.scope = selections.tier;
+    if (selections.scope) options.scope = selections.scope;
+    if (selections.zip) options.zip = selections.zip;
+    if (selections.isRush) options.isRush = true;
+    if (selections.rooms) options.rooms = selections.rooms;
+    if (selections.hours) options.hours = selections.hours;
+    if (selections.squareFootage) options.sqft = selections.squareFootage;
+    if (selections.bundledWith) options.bundledWith = selections.bundledWith;
+
+    const quote = await pricingEngineGetQuote(serviceId, options);
+    const svc = (SERVICES as any)[serviceId];
+    return {
+      serviceId,
+      serviceName: svc?.display || svc?.branded || serviceId,
+      lowEstimate: quote.lowEstimate,
+      highEstimate: quote.highEstimate,
+      guaranteedCeiling: quote.guaranteedCeiling,
+      baseRate: quote.baseRate,
+      unit: quote.unit,
+      totalPrice: quote.lowEstimate,
+      priceFormatted: `$${quote.lowEstimate}`,
+      appliedMultipliers: quote.appliedMultipliers,
+      breakdown: quote.breakdown,
+      source: "pricing_engine",
+    };
+  } catch (err) {
+    console.warn("[George Tools] Quote engine fallback for", serviceId, err);
+  }
+  // Fallback to legacy
+  return calculateQuote(serviceId, selections);
+}
+
 export function calculateQuote(serviceId: string, selections: any): object {
   switch (serviceId) {
     case "home_cleaning": {
@@ -470,8 +545,29 @@ export function calculateQuote(serviceId: string, selections: any): object {
 }
 
 // ─────────────────────────────────────────────
-// c) getBundleOptions
+// c) getBundleOptions — delegates to centralized pricing engine
 // ─────────────────────────────────────────────
+export async function getBundleOptionsFromEngine(serviceIds: string[]): Promise<object> {
+  try {
+    if (serviceIds.length >= 2) {
+      const bundle = await pricingEngineGetBundleDiscount(serviceIds);
+      return {
+        requestedServices: serviceIds,
+        bundleName: bundle.bundleName,
+        discountPercent: bundle.discountPercent,
+        estimatedSavings: bundle.estimatedSavings,
+        individualPrices: bundle.individualTotals,
+        totalBeforeDiscount: Object.values(bundle.individualTotals).reduce((s, v) => s + v, 0),
+        totalAfterDiscount: Object.values(bundle.individualTotals).reduce((s, v) => s + v, 0) - bundle.estimatedSavings,
+        source: "pricing_engine",
+      };
+    }
+  } catch (err) {
+    console.warn("[George Tools] Bundle engine fallback:", err);
+  }
+  return getBundleOptions(serviceIds);
+}
+
 export function getBundleOptions(serviceIds: string[]): object {
   const matching: any[] = [];
   const serviceSet = new Set(serviceIds);
@@ -3065,5 +3161,186 @@ export async function reportHOARule(
     success: true,
     message: "HOA information updated. Thank you for the report!",
     data: updated,
+  };
+}
+
+// ─── Drone Scan Tools ───────────────────────────────────
+
+export async function bookDroneScan(params: {
+  customerId: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  scheduledDate: string;
+  scheduledTime?: string;
+  propertySize?: number;
+  roofType?: string;
+  stories?: number;
+  interiorIncluded?: boolean;
+}): Promise<object> {
+  // Weather check
+  let weatherSummary = "Weather check pending";
+  try {
+    const location = encodeURIComponent(`${params.city}, ${params.state}`);
+    const res = await fetch(`https://wttr.in/${location}?format=j1`);
+    if (res.ok) {
+      const data = await res.json() as any;
+      const forecast = data.weather?.[0];
+      if (forecast) {
+        const maxWind = Math.max(...(forecast.hourly || []).map((h: any) => parseInt(h.windspeedMiles || "0")));
+        const chanceOfRain = Math.max(...(forecast.hourly || []).map((h: any) => parseInt(h.chanceofrain || "0")));
+        const suitable = maxWind < 20 && chanceOfRain < 50;
+        weatherSummary = suitable
+          ? `Looks like clear skies for your scan — perfect for aerial imaging! (Wind: ${maxWind}mph, Rain: ${chanceOfRain}%)`
+          : `⚠️ Weather might be iffy — ${maxWind}mph winds, ${chanceOfRain}% rain chance. We may need to adjust the date.`;
+      }
+    }
+  } catch {}
+
+  const { rows } = await pool.query(
+    `INSERT INTO drone_scan_bookings
+      (customer_id, address, city, state, zip, scheduled_date, scheduled_time,
+       faa_compliance_ack, property_size, roof_type, stories, interior_included, status)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,true,$8,$9,$10,$11,'confirmed')
+     RETURNING *`,
+    [
+      params.customerId, params.address, params.city, params.state, params.zip,
+      params.scheduledDate, params.scheduledTime || null,
+      params.propertySize || null, params.roofType || null, params.stories || 1,
+      params.interiorIncluded !== false,
+    ]
+  );
+
+  return {
+    booking: rows[0],
+    price: "$249",
+    weatherNote: weatherSummary,
+    deliverables: [
+      "📸 High-res roof assessment photos",
+      "🌡️ Thermal imaging (detect leaks & insulation gaps)",
+      "🏠 Full exterior wall & gutter condition scan",
+      "🗺️ 3D property model",
+      "🏡 Complete interior walk-through scan",
+    ],
+    message: `Your UpTend Drone Scan is booked for ${params.scheduledDate}! Here's what you'll get: a complete aerial roof assessment, thermal imaging to spot hidden leaks, exterior wall & gutter condition report, a 3D model of your property, plus a full interior scan. ${weatherSummary}`,
+  };
+}
+
+export async function getDroneScanStatus(params: { customerId: string; bookingId?: string }): Promise<object> {
+  let query: string;
+  let queryParams: string[];
+
+  if (params.bookingId) {
+    query = "SELECT * FROM drone_scan_bookings WHERE id = $1";
+    queryParams = [params.bookingId];
+  } else {
+    query = "SELECT * FROM drone_scan_bookings WHERE customer_id = $1 ORDER BY created_at DESC LIMIT 5";
+    queryParams = [params.customerId];
+  }
+
+  const { rows } = await pool.query(query, queryParams);
+
+  if (!rows.length) {
+    return {
+      found: false,
+      message: "No drone scans found. Want to book one? Our $249 Drone Scan includes aerial roof assessment, thermal imaging, 3D property model, and interior walk-through!",
+    };
+  }
+
+  const scans = rows.map((r: any) => ({
+    id: r.id,
+    address: r.address,
+    scheduledDate: r.scheduled_date,
+    status: r.status,
+    reportUrl: r.report_url,
+    completedAt: r.completed_at,
+  }));
+
+  return {
+    found: true,
+    scans,
+    message: params.bookingId
+      ? `Your drone scan at ${rows[0].address} is ${rows[0].status}${rows[0].report_url ? " — your report is ready!" : "."}`
+      : `You have ${rows.length} drone scan(s) on file.`,
+  };
+}
+
+// ─── Smart Home Tools ───────────────────────────────────
+
+import {
+  getSupportedPlatforms,
+  getAuthUrl,
+  getConnectedDevices,
+  type SmartHomePlatform,
+} from "./smart-home-oauth";
+
+export async function connectSmartHome(params: {
+  customerId: string;
+  platform: SmartHomePlatform;
+}): Promise<object> {
+  const platforms = getSupportedPlatforms();
+  const selected = platforms.find(p => p.id === params.platform);
+
+  if (!selected) {
+    return {
+      error: false,
+      availablePlatforms: platforms,
+      message: `I can connect these smart home platforms: ${platforms.map(p => `${p.icon} ${p.name}`).join(", ")}. Which one would you like to set up?`,
+    };
+  }
+
+  const redirectUri = `${process.env.APP_URL || "https://uptend.com"}/api/smart-home/callback/${params.platform}`;
+  const authUrl = getAuthUrl(params.platform, params.customerId, redirectUri);
+
+  return {
+    platform: selected.name,
+    icon: selected.icon,
+    authUrl,
+    message: `Great! To connect your ${selected.icon} ${selected.name}, click the link below to authorize UpTend. Once connected, I'll be able to monitor your devices and alert you to any issues — like water leaks, unusual temperature changes, or security events.`,
+    benefits: [
+      "🔔 Real-time alerts for leaks, smoke, and CO",
+      "🌡️ Temperature anomaly detection",
+      "🔒 Security event monitoring",
+      "📊 Energy usage insights",
+      "🛠️ Proactive maintenance based on device data",
+    ],
+  };
+}
+
+export async function getSmartHomeStatus(params: { customerId: string }): Promise<object> {
+  const connections = await getConnectedDevices(params.customerId);
+
+  if (!connections.length) {
+    const platforms = getSupportedPlatforms();
+    return {
+      connected: false,
+      message: `You haven't connected any smart home devices yet. I can help you link: ${platforms.map(p => `${p.icon} ${p.name}`).join(", ")}. Want to set one up?`,
+    };
+  }
+
+  // Get recent alerts
+  const { rows: alerts } = await pool.query(
+    "SELECT * FROM smart_home_alerts WHERE customer_id = $1 AND acknowledged = false ORDER BY created_at DESC LIMIT 10",
+    [params.customerId]
+  );
+
+  return {
+    connected: true,
+    deviceCount: connections.reduce((sum: number, c: any) => sum + (c.device_count || 0), 0),
+    platforms: connections.map((c: any) => ({
+      platform: c.platform,
+      status: c.status,
+      devices: c.device_count,
+      lastSync: c.last_sync_at,
+    })),
+    alerts: alerts.map((a: any) => ({
+      type: a.alert_type,
+      device: a.device_name,
+      message: a.message,
+      severity: a.severity,
+      time: a.created_at,
+    })),
+    message: `You have ${connections.length} platform(s) connected with ${connections.reduce((s: number, c: any) => s + (c.device_count || 0), 0)} devices. ${alerts.length ? `⚠️ ${alerts.length} unacknowledged alert(s).` : "All clear — no alerts!"}`,
   };
 }

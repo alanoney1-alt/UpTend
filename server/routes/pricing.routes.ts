@@ -1,0 +1,89 @@
+/**
+ * Centralized Pricing API Routes
+ *
+ * GET  /api/pricing              — full price menu
+ * GET  /api/pricing/:serviceType — specific service pricing
+ * POST /api/pricing/quote        — get a quote with options
+ * POST /api/pricing/bundle       — calculate bundle discount
+ */
+
+import type { Express, Request, Response } from "express";
+import {
+  getAllPricing,
+  getServicePricing,
+  getQuote,
+  getBundleDiscount,
+  getGuaranteedCeiling,
+} from "../services/pricing-engine.js";
+
+export function registerCentralizedPricingRoutes(app: Express) {
+  // Full price menu
+  app.get("/api/pricing", async (_req: Request, res: Response) => {
+    try {
+      const menu = await getAllPricing();
+      res.json({ success: true, pricing: menu });
+    } catch (err: any) {
+      console.error("GET /api/pricing error:", err);
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // Specific service pricing
+  app.get("/api/pricing/:serviceType", async (req: Request, res: Response) => {
+    try {
+      const tiers = await getServicePricing(req.params.serviceType);
+      if (tiers.length === 0) {
+        return res.status(404).json({ success: false, error: "Service not found" });
+      }
+      res.json({ success: true, serviceType: req.params.serviceType, tiers });
+    } catch (err: any) {
+      console.error("GET /api/pricing/:serviceType error:", err);
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // Get a quote with options
+  app.post("/api/pricing/quote", async (req: Request, res: Response) => {
+    try {
+      const { serviceType, ...options } = req.body;
+      if (!serviceType) {
+        return res.status(400).json({ success: false, error: "serviceType required" });
+      }
+      const quote = await getQuote(serviceType, options);
+      res.json({ success: true, serviceType, quote });
+    } catch (err: any) {
+      console.error("POST /api/pricing/quote error:", err);
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // Calculate bundle discount
+  app.post("/api/pricing/bundle", async (req: Request, res: Response) => {
+    try {
+      const { serviceTypes } = req.body;
+      if (!serviceTypes || !Array.isArray(serviceTypes) || serviceTypes.length < 2) {
+        return res.status(400).json({ success: false, error: "serviceTypes array with 2+ services required" });
+      }
+      const bundle = await getBundleDiscount(serviceTypes);
+      res.json({ success: true, bundle });
+    } catch (err: any) {
+      console.error("POST /api/pricing/bundle error:", err);
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // Get guaranteed ceiling
+  app.post("/api/pricing/ceiling", async (req: Request, res: Response) => {
+    try {
+      const { serviceType, ...options } = req.body;
+      if (!serviceType) {
+        return res.status(400).json({ success: false, error: "serviceType required" });
+      }
+      const ceiling = await getGuaranteedCeiling(serviceType, options);
+      res.json({ success: true, ...ceiling });
+    } catch (err: any) {
+      console.error("POST /api/pricing/ceiling error:", err);
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+}

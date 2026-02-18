@@ -176,6 +176,15 @@ import { registerGeorgeDailyRoutes } from "./george-daily.routes";
 // Self-Serve AI Home Scan routes
 import { registerHomeScanRoutes } from "./home-scan.routes";
 
+// Drone Scan routes
+import { registerDroneScanRoutes } from "./drone-scan.routes";
+
+// Smart Home OAuth routes
+import { registerSmartHomeRoutes } from "./smart-home.routes";
+
+// Centralized Pricing Engine routes
+import { registerCentralizedPricingRoutes } from "./pricing.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -375,6 +384,15 @@ export async function registerRoutes(
 
   // Register Self-Serve AI Home Scan + Wallet routes
   registerHomeScanRoutes(app);
+
+  // Register Drone Scan routes
+  registerDroneScanRoutes(app);
+
+  // Register Smart Home OAuth routes
+  registerSmartHomeRoutes(app);
+
+  // Register Centralized Pricing Engine routes
+  registerCentralizedPricingRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
