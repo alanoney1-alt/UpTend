@@ -137,27 +137,9 @@ export async function getClaimStatus(claimId: string) {
 // ─── Storm prep checklist generator ─────────────────────
 
 export async function getStormPrepChecklist(
-  customerId: string,
+  customerId: string | null | undefined,
   stormType: string
 ) {
-  // Check for existing checklist
-  const { rows: existing } = await pool.query(
-    `SELECT * FROM storm_prep_checklists
-     WHERE customer_id = $1 AND storm_type = $2
-     ORDER BY created_at DESC LIMIT 1`,
-    [customerId, stormType]
-  );
-
-  if (existing.length) return existing[0];
-
-  // Get home profile for personalization
-  const { rows: profiles } = await pool.query(
-    `SELECT * FROM home_profiles WHERE customer_id = $1 LIMIT 1`,
-    [customerId]
-  ).catch(() => ({ rows: [] }));
-
-  const profile = profiles[0] || {};
-
   // Base checklists by storm type
   const baseChecklists: Record<string, string[]> = {
     hurricane: [
@@ -199,6 +181,32 @@ export async function getStormPrepChecklist(
       "Check weather stripping on doors/windows",
     ],
   };
+
+  // If no customerId, return a generic checklist without saving to DB
+  if (!customerId) {
+    const checklist = (baseChecklists[stormType] || baseChecklists.severe_storm).map(
+      (task) => ({ task, completed: false, completedAt: null })
+    );
+    return { storm_type: stormType, checklist, generic: true };
+  }
+
+  // Check for existing checklist
+  const { rows: existing } = await pool.query(
+    `SELECT * FROM storm_prep_checklists
+     WHERE customer_id = $1 AND storm_type = $2
+     ORDER BY created_at DESC LIMIT 1`,
+    [customerId, stormType]
+  );
+
+  if (existing.length) return existing[0];
+
+  // Get home profile for personalization
+  const { rows: profiles } = await pool.query(
+    `SELECT * FROM home_profiles WHERE customer_id = $1 LIMIT 1`,
+    [customerId]
+  ).catch(() => ({ rows: [] }));
+
+  const profile = profiles[0] || {};
 
   const checklist = (baseChecklists[stormType] || baseChecklists.severe_storm).map(
     (task) => ({ task, completed: false, completedAt: null })

@@ -41,7 +41,7 @@ export async function getDemandForecast(
 
   // Get pro's service types from profile
   const { rows: proProfile } = await pool.query(
-    `SELECT services_offered, service_areas FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
+    `SELECT service_types, service_areas FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
     [proId]
   );
 
@@ -148,7 +148,7 @@ export async function getCustomerRetention(proId: string): Promise<RetentionResu
      FROM service_requests sr
      LEFT JOIN users u ON u.id::text = sr.customer_id::text
      LEFT JOIN hauler_reviews hr ON hr.service_request_id = sr.id
-     WHERE sr.hauler_id = $1 AND sr.status = 'completed'
+     WHERE sr.assigned_hauler_id = $1 AND sr.status = 'completed'
      GROUP BY sr.customer_id, u.full_name
      ORDER BY last_job DESC`,
     [proId]
@@ -246,7 +246,7 @@ export async function getPerformanceAnalytics(
             hr.rating
      FROM service_requests sr
      LEFT JOIN hauler_reviews hr ON hr.service_request_id = sr.id
-     WHERE sr.hauler_id = $1 AND sr.created_at::timestamp >= $2
+     WHERE sr.assigned_hauler_id = $1 AND sr.created_at::timestamp >= $2
      ORDER BY sr.created_at DESC`,
     [proId, periodStart.toISOString()]
   );
@@ -266,7 +266,7 @@ export async function getPerformanceAnalytics(
   const { rows: returnCustomers } = await pool.query(
     `SELECT COUNT(DISTINCT customer_id)::int as returning
      FROM service_requests
-     WHERE hauler_id = $1 AND status = 'completed' AND created_at < $2
+     WHERE assigned_hauler_id = $1 AND status = 'completed' AND created_at < $2
      AND customer_id = ANY($3)`,
     [proId, periodStart.toISOString(), Array.from(uniqueCustomers)]
   );
@@ -326,13 +326,13 @@ export async function getCompetitivePosition(proId: string, zip: string): Promis
             AVG(final_price)::numeric(10,2) as avg_price
      FROM service_requests sr
      LEFT JOIN hauler_reviews hr ON hr.service_request_id = sr.id
-     WHERE sr.hauler_id = $1 AND sr.status = 'completed' AND sr.created_at::timestamp > NOW() - INTERVAL '90 days'`,
+     WHERE sr.assigned_hauler_id = $1 AND sr.status = 'completed' AND sr.created_at::timestamp > NOW() - INTERVAL '90 days'`,
     [proId]
   );
 
   // Get area stats (anonymized)
   const { rows: areaStats } = await pool.query(
-    `SELECT COUNT(DISTINCT sr.hauler_id)::int as total_pros,
+    `SELECT COUNT(DISTINCT sr.assigned_hauler_id)::int as total_pros,
             COUNT(*)::int as total_jobs,
             AVG(hr.rating)::numeric(3,2) as avg_rating,
             PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY hr.rating) as median_rating
