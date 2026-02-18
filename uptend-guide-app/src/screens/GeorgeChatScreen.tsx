@@ -145,7 +145,7 @@ export default function GeorgeChatScreen() {
       if (videoIds.length > 0) {
         return (
           <View>
-            <ChatBubble message={item} />
+            <ChatBubble message={item} onQuickReply={sendMessage} />
             {videoIds.map((vid) => (
               <View key={vid} style={{ paddingHorizontal: 12 }}>
                 <InlineVideoPlayer videoId={vid} />
@@ -155,7 +155,7 @@ export default function GeorgeChatScreen() {
         );
       }
     }
-    return <ChatBubble message={item} />;
+    return <ChatBubble message={item} onQuickReply={sendMessage} />;
   };
 
   return (

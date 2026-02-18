@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
 import { useAuth } from '../context/AuthContext';
 import { request } from '../services/api';
+import ServiceCard from '../components/ServiceCard';
 
 const SERVICES = [
   { key: 'ai_home_scan', label: 'AI Home Scan', emoji: '🏠', price: '$99 standard, $249 aerial' },
@@ -88,21 +89,15 @@ export default function BookingScreen({ navigation }: any) {
         <Text style={styles.label}>Service Type</Text>
         <View style={styles.serviceGrid}>
           {SERVICES.map((s) => (
-            <TouchableOpacity
+            <ServiceCard
               key={s.key}
-              style={[styles.serviceCard, selectedService === s.key && styles.serviceCardActive]}
-              onPress={() => setSelectedService(s.key)}
-            >
-              <Text style={styles.serviceEmoji}>{s.emoji}</Text>
-              <Text style={[styles.serviceLabel, selectedService === s.key && styles.serviceLabelActive]}>
-                {s.label}
-              </Text>
-              <Text style={styles.servicePrice}>{s.price}</Text>
-              <View style={styles.activePros}>
-                <View style={styles.greenDot} />
-                <Text style={styles.activeProsText}>{(s.key.charCodeAt(0) % 7) + 5} Active</Text>
-              </View>
-            </TouchableOpacity>
+              emoji={s.emoji}
+              label={s.label}
+              price={s.price}
+              isActive={selectedService === s.key}
+              activePros={(s.key.charCodeAt(0) % 7) + 5}
+              onSelect={() => setSelectedService(s.key)}
+            />
           ))}
         </View>
 
@@ -166,20 +161,7 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 15, color: Colors.textSecondary, marginBottom: 24 },
   label: { fontSize: 15, fontWeight: '600', color: Colors.text, marginBottom: 8, marginTop: 12 },
   serviceGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },
-  serviceCard: {
-    backgroundColor: Colors.white, borderRadius: 14, padding: 12,
-    alignItems: 'center', borderWidth: 2, borderColor: 'transparent',
-    width: '31%', minHeight: 100,
-    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1,
-  },
-  serviceCardActive: { borderColor: '#F97316', backgroundColor: '#FFF7F0' },
-  serviceEmoji: { fontSize: 28, marginBottom: 6 },
-  serviceLabel: { fontSize: 12, fontWeight: '600', color: Colors.text, textAlign: 'center' },
-  serviceLabelActive: { color: '#F97316' },
-  servicePrice: { fontSize: 10, color: Colors.textLight, textAlign: 'center' as const, marginTop: 4 },
-  activePros: { flexDirection: 'row' as const, alignItems: 'center' as const, justifyContent: 'center' as const, marginTop: 4, gap: 4 },
-  greenDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#22c55e' },
-  activeProsText: { fontSize: 9, color: '#22c55e', fontWeight: '600' as const },
+  // ServiceCard component handles individual card styles
   input: {
     backgroundColor: Colors.white, borderRadius: 12,
     paddingHorizontal: 16, paddingVertical: 14, fontSize: 16,
