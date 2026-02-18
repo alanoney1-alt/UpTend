@@ -247,23 +247,35 @@ export function AiChatWidget() {
     localStorage.removeItem("george_chat");
   };
 
-  if (!isAuthenticated) return null;
-
-  // Determine greeting
+  // Determine greeting — George is available to EVERYONE (logged in or not)
   const isPro = isProPage(currentPage);
+  const isB2B = currentPage?.startsWith("/business");
+  const firstName = user?.firstName;
+  
   const greetingText = isPro
-    ? `Hey${user?.firstName ? ` ${user.firstName}` : ""}! 👋 Interested in working with UpTend?`
-    : `Hey${user?.firstName ? ` ${user.firstName}` : ""}! 👋 I'm George — your AI home expert. Need a pro for a job, or want to try fixing it yourself? I do both — on-demand home services AND free DIY coaching. What's going on?`;
+    ? `Hey${firstName ? ` ${firstName}` : ""}! 👋 Interested in earning with UpTend?`
+    : isB2B
+    ? `Welcome${firstName ? `, ${firstName}` : ""}! 👋 I'm George — let me show you how UpTend replaces your entire vendor network.`
+    : firstName
+    ? `Hey ${firstName}! 👋 What's going on at home today? Need a pro, or want to tackle something yourself?`
+    : `Hey! 👋 I'm George — I know basically everything about home repair. Need a pro, or want to try fixing it yourself? I do both. 🏠`;
+  
   const greetingButtons: QuickButton[] = isPro
     ? [
         { text: "How It Works", action: "reply:How does working with UpTend work?" },
         { text: "Earnings Calculator", action: "navigate:/pro/earnings" },
         { text: "Apply Now", action: "navigate:/become-pro" },
       ]
+    : isB2B
+    ? [
+        { text: "Property Management", action: "reply:Tell me about property management solutions" },
+        { text: "HOA Solutions", action: "reply:How does UpTend work for HOAs?" },
+        { text: "Get a Demo", action: "reply:I'd like a demo" },
+      ]
     : [
-        { text: "🔧 Book a Pro", action: "reply:I need to book a service" },
-        { text: "🛠️ DIY Help", action: "reply:I want to try fixing something myself" },
-        { text: "🏠 Scan My Home", action: "reply:I want to scan my home" },
+        { text: "🚀 Need a Pro Now", action: "reply:I need to book a service" },
+        { text: "🔧 DIY Help", action: "reply:I want to try fixing something myself" },
+        { text: "📸 Free Home Scan", action: "reply:Tell me about the free Home Scan" },
         { text: "🚗 Car Help", action: "reply:I need help with my car" },
       ];
 
