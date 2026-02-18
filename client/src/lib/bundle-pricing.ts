@@ -1,6 +1,6 @@
 import { Sofa, Tv, Refrigerator, Bed, Package, Home, Armchair, Table2, Lamp, Monitor, Dumbbell, Trees, Trash2, Box, Camera, Truck, Clock, Users, Wrench, LucideIcon } from "lucide-react";
 
-export type ServiceType = "furniture_moving" | "garage_cleanout" | "truck_unloading" | "junk_removal" | "handyman";
+export type ServiceType = "furniture_moving" | "garage_cleanout" | "truck_unloading" | "junk_removal" | "handyman" | "moving_labor";
 
 export interface ServiceTypeConfig {
   id: ServiceType;

@@ -140,9 +140,9 @@ export default function BusinessCompliance() {
     },
   });
 
-  const activeCerts = certificates?.filter(c => c.status === "active").length || 0;
-  const expiringSoon = certificates?.filter(c => c.status === "expiring_soon").length || 0;
-  const expiredCerts = certificates?.filter(c => c.status === "expired").length || 0;
+  const activeCerts = certificates?.filter((c: any) => c.status === "active").length || 0;
+  const expiringSoon = certificates?.filter((c: any) => c.status === "expiring_soon").length || 0;
+  const expiredCerts = certificates?.filter((c: any) => c.status === "expired").length || 0;
   const complianceScore = certificates ? Math.round((activeCerts / certificates.length) * 100) : 0;
 
   if (isIndependent) {
@@ -234,7 +234,7 @@ export default function BusinessCompliance() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">BG Checks</p>
-                <p className="text-2xl font-bold">{bgChecks?.filter(b => b.result === "clear").length || 0}/{bgChecks?.length || 0}</p>
+                <p className="text-2xl font-bold">{bgChecks?.filter((b: any) => b.result === "clear").length || 0}/{bgChecks?.length || 0}</p>
               </div>
             </div>
           </Card>
@@ -311,7 +311,7 @@ export default function BusinessCompliance() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {certificates?.map(cert => (
+                  {certificates?.map((cert: any) => (
                     <TableRow key={cert.id}>
                       <TableCell className="font-medium">{cert.companyName || cert.provider}</TableCell>
                       <TableCell className="font-mono text-sm">{cert.policyNumber}</TableCell>
@@ -364,7 +364,7 @@ export default function BusinessCompliance() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {documents?.filter(d => !searchTerm || d.proName.toLowerCase().includes(searchTerm.toLowerCase()) || d.docType.toLowerCase().includes(searchTerm.toLowerCase())).map(doc => (
+                  {documents?.filter((d: any) => !searchTerm || d.proName.toLowerCase().includes(searchTerm.toLowerCase()) || d.docType.toLowerCase().includes(searchTerm.toLowerCase())).map((doc: any) => (
                     <TableRow key={doc.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -415,7 +415,7 @@ export default function BusinessCompliance() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {bgChecks?.map(check => (
+                  {bgChecks?.map((check: any) => (
                     <TableRow key={check.id}>
                       <TableCell className="font-medium">{check.proName}</TableCell>
                       <TableCell>

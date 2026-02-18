@@ -87,7 +87,7 @@ export function ProsNearYou() {
         <div className="flex justify-center gap-6 mb-8 flex-wrap">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-sm font-medium">{t("pros_near.pros_online", { count: totalOnline || "—" })}</span>
+            <span className="text-sm font-medium">{t("pros_near.pros_online", { count: totalOnline || 0 })}</span>
           </div>
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-primary" />

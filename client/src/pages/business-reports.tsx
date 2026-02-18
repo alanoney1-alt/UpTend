@@ -135,7 +135,7 @@ export default function BusinessReports() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {reports.map(r => (
+                  {reports.map((r: any) => (
                     <TableRow key={r.id}>
                       <TableCell className="font-medium">{r.name}</TableCell>
                       <TableCell><Badge variant="outline" className="capitalize">{r.type}</Badge></TableCell>

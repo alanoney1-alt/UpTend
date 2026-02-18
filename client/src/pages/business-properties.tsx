@@ -261,7 +261,7 @@ export default function BusinessProperties() {
           <TabsContent value="properties" className="space-y-4">
             <h2 className="text-xl font-semibold">{portfolio.name}</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {properties.map(p => (
+              {properties.map((p: any) => (
                 <Card key={p.id} className="p-5 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-semibold text-lg">{p.name}</h3>
@@ -312,7 +312,7 @@ export default function BusinessProperties() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {workOrders.filter(w => woFilter === "all" || w.status === woFilter).map(wo => (
+                  {workOrders.filter((w: any) => woFilter === "all" || w.status === woFilter).map((wo: any) => (
                     <TableRow key={wo.id}>
                       <TableCell className="font-mono text-sm">{wo.id}</TableCell>
                       <TableCell className="font-medium">{wo.unit}</TableCell>
@@ -336,7 +336,7 @@ export default function BusinessProperties() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> New Turnover</Button>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
-              {turnovers.map(t => (
+              {turnovers.map((t: any) => (
                 <Card key={t.id} className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-semibold">{t.unit}</h3>
@@ -362,7 +362,7 @@ export default function BusinessProperties() {
           <TabsContent value="sla" className="space-y-4">
             <h2 className="text-xl font-semibold">SLA Configuration & Compliance</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {slaConfigs.map(sla => (
+              {slaConfigs.map((sla: any) => (
                 <Card key={sla.id} className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-semibold text-lg">{sla.priority} Priority</h3>

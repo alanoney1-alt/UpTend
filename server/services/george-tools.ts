@@ -4063,7 +4063,7 @@ import {
   updateWaterHeaterProfile,
   getMaintenanceLog,
   addMaintenanceEntry,
-  getMaintenanceDue as _getMaintenanceDue,
+  getMaintenanceDue as _getApplianceMaintenanceDue,
   getDIYPurchaseSuggestions,
 } from "./appliance-profiles.js";
 
@@ -4275,7 +4275,7 @@ export async function logDIYMaintenance(params: {
 export async function getMaintenanceDueForGeorge(params: {
   customerId: string;
 }): Promise<object> {
-  const { overdue, upcoming } = await _getMaintenanceDue(params.customerId);
+  const { overdue, upcoming } = await _getApplianceMaintenanceDue(params.customerId);
 
   if (overdue.length === 0 && upcoming.length === 0) {
     return { overdue: [], upcoming: [], message: "✅ No maintenance due! Your home is in good shape. Keep it up!" };
@@ -4553,11 +4553,14 @@ export async function getVehicleMaintenanceSchedule(params: { vehicleId: string 
 export async function logVehicleMaintenance(params: {
   customerId: string;
   vehicleId: string;
-  serviceType: string;
-  description?: string;
+  maintenanceType: string;
+  performedBy?: string;
+  shopName?: string;
   mileageAtService?: number;
   cost?: number;
-  provider?: string;
+  parts?: any[];
+  nextDueMileage?: number;
+  nextDueDate?: string;
   notes?: string;
   receiptUrl?: string;
 }): Promise<object> {
@@ -4581,7 +4584,7 @@ export async function diagnoseCarIssue(params: {
   symptoms: string;
   photos?: string[];
 }): Promise<object> {
-  return _diagnoseIssue(params.customerId, params.vehicleId || null, params.symptoms, params.photos);
+  return _diagnoseIssue(params.symptoms, params.vehicleId ? { year: undefined, make: undefined, model: undefined } : undefined, params.photos?.[0]);
 }
 
 /**
@@ -4593,7 +4596,7 @@ export async function searchAutoPartsForGeorge(params: {
   vehicleId?: string;
   year?: number; make?: string; model?: string;
 }): Promise<object> {
-  return _searchAutoParts(params.customerId, params.partName, params.vehicleId, params.year, params.make, params.model);
+  return _searchAutoParts(params.partName, params.year, params.make, params.model, params.customerId, params.vehicleId);
 }
 
 /**

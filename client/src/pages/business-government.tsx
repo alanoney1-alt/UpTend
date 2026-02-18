@@ -228,7 +228,7 @@ export default function BusinessGovernment() {
               <div className="p-2 bg-red-500/10 rounded-lg"><Zap className="w-5 h-5 text-red-500" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">FEMA Ready</p>
-                <p className="text-2xl font-bold">{femaVendors.filter(f => f.activated).length}/{femaVendors.length}</p>
+                <p className="text-2xl font-bold">{femaVendors.filter((f: any) => f.activated).length}/{femaVendors.length}</p>
               </div>
             </div>
           </Card>
@@ -248,7 +248,7 @@ export default function BusinessGovernment() {
           <TabsContent value="bids" className="space-y-4">
             <h2 className="text-xl font-semibold">Bid & Proposal Pipeline</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {bids.map(bid => (
+              {bids.map((bid: any) => (
                 <Card key={bid.id} className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -293,7 +293,7 @@ export default function BusinessGovernment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {prevailingWages.filter(w => !wageSearch || w.county.toLowerCase().includes(wageSearch.toLowerCase()) || w.trade.toLowerCase().includes(wageSearch.toLowerCase())).map(w => (
+                  {prevailingWages.filter((w: any) => !wageSearch || w.county.toLowerCase().includes(wageSearch.toLowerCase()) || w.trade.toLowerCase().includes(wageSearch.toLowerCase())).map((w: any) => (
                     <TableRow key={w.id}>
                       <TableCell className="font-medium">{w.county}</TableCell>
                       <TableCell>{w.state}</TableCell>
@@ -329,7 +329,7 @@ export default function BusinessGovernment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {certifiedPayrolls.map(p => (
+                  {certifiedPayrolls.map((p: any) => (
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.contractName}</TableCell>
                       <TableCell>{(() => { const d = new Date(p.weekEnding); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
@@ -366,13 +366,13 @@ export default function BusinessGovernment() {
                 <div className="space-y-3 mb-4">
                   <p className="text-sm text-muted-foreground">NAICS Codes:</p>
                   <div className="flex flex-wrap gap-2">
-                    {samReg.naicsCodes.map(code => <Badge key={code} variant="outline" className="font-mono">{code}</Badge>)}
+                    {samReg.naicsCodes.map((code: any) => <Badge key={code} variant="outline" className="font-mono">{code}</Badge>)}
                   </div>
                 </div>
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">SBA Certifications:</p>
                   <div className="flex flex-wrap gap-2">
-                    {samReg.sbaCertifications.map(cert => <Badge key={cert} className="bg-orange-500/10 text-orange-600 border-orange-200">{cert}</Badge>)}
+                    {samReg.sbaCertifications.map((cert: any) => <Badge key={cert} className="bg-orange-500/10 text-orange-600 border-orange-200">{cert}</Badge>)}
                   </div>
                 </div>
                 <Button variant="outline" className="mt-4 w-full"><ExternalLink className="w-4 h-4 mr-2" /> View on SAM.gov</Button>
@@ -408,7 +408,7 @@ export default function BusinessGovernment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {dbeCerts.map(d => (
+                  {dbeCerts.map((d: any) => (
                     <TableRow key={d.id}>
                       <TableCell className="font-medium">{d.vendorName}</TableCell>
                       <TableCell><Badge variant="outline">{d.certType}</Badge></TableCell>
@@ -432,7 +432,7 @@ export default function BusinessGovernment() {
               <Button className="bg-orange-500 hover:bg-orange-600"><Plus className="w-4 h-4 mr-2" /> Register Pro</Button>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-              {femaVendors.map(v => (
+              {femaVendors.map((v: any) => (
                 <Card key={v.id} className={`p-5 ${v.activated ? "border-red-500/50 bg-red-500/5" : ""}`}>
                   <div className="flex items-start justify-between mb-3">
                     <div>

@@ -185,7 +185,7 @@ export default function BusinessCommunities() {
               <SelectTrigger className="w-48"><SelectValue placeholder="All Communities" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Communities</SelectItem>
-                {communities.map(c => <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>)}
+                {communities.map((c: any) => <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
             <Button size="sm" className="bg-orange-500 hover:bg-orange-600" onClick={() => addCommunityMutation.mutate({ name: "New Community", address: "", units: 0, status: "active" })} disabled={addCommunityMutation.isPending}><Plus className="w-4 h-4 mr-2" /> {addCommunityMutation.isPending ? "Adding..." : "Add Community"}</Button>
@@ -256,7 +256,7 @@ export default function BusinessCommunities() {
           <TabsContent value="communities" className="space-y-4">
             <h2 className="text-xl font-semibold">Community Portfolio</h2>
             <div className="grid md:grid-cols-3 gap-4">
-              {communities.map(c => (
+              {communities.map((c: any) => (
                 <Card key={c.id} className="p-5 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-semibold text-lg">{c.name}</h3>
@@ -296,7 +296,7 @@ export default function BusinessCommunities() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {communityProperties.map(v => (
+                  {communityProperties.map((v: any) => (
                     <TableRow key={v.id}>
                       <TableCell className="font-medium">{v.community}</TableCell>
                       <TableCell className="text-sm">{v.property}</TableCell>
@@ -315,7 +315,7 @@ export default function BusinessCommunities() {
           <TabsContent value="approvals" className="space-y-4">
             <h2 className="text-xl font-semibold">Board Approval Workflows</h2>
             <div className="space-y-4">
-              {boardApprovals.map(a => (
+              {boardApprovals.map((a: any) => (
                 <Card key={a.id} className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -363,7 +363,7 @@ export default function BusinessCommunities() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {maintenanceCalendars.map(s => (
+                  {maintenanceCalendars.map((s: any) => (
                     <TableRow key={s.id}>
                       <TableCell className="font-medium">{s.community}</TableCell>
                       <TableCell>{s.serviceType}</TableCell>
@@ -381,7 +381,7 @@ export default function BusinessCommunities() {
           {/* Reserve Studies */}
           <TabsContent value="reserves" className="space-y-6">
             <h2 className="text-xl font-semibold">Reserve Fund Studies</h2>
-            {reserveStudies.map(r => (
+            {reserveStudies.map((r: any) => (
               <Card key={r.id} className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
@@ -408,7 +408,7 @@ export default function BusinessCommunities() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  {r.categories.map(cat => (
+                  {r.categories.map((cat: any) => (
                     <div key={cat.name}>
                       <div className="flex justify-between text-sm mb-1">
                         <span>{cat.name}</span>

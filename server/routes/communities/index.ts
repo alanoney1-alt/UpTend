@@ -47,7 +47,8 @@ function registerCrud(
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
       const values = ownerField ? { ...req.body, [ownerField]: userId } : req.body;
-      const [created] = await db.insert(table).values(values).returning();
+      const result = await db.insert(table).values(values).returning();
+      const created = Array.isArray(result) ? result[0] : (result as any).rows?.[0] ?? result;
       res.status(201).json(created);
     } catch (error) {
       console.error(`Error creating ${entityName}:`, error);
@@ -71,7 +72,8 @@ function registerCrud(
 
   app.delete(`${basePath}/:id`, requireAuth, async (req, res) => {
     try {
-      const [deleted] = await db.delete(table).where(eq(table.id, req.params.id)).returning();
+      const deleteResult = await db.delete(table).where(eq(table.id, req.params.id)).returning();
+      const deleted = Array.isArray(deleteResult) ? deleteResult[0] : (deleteResult as any).rows?.[0] ?? deleteResult;
       if (!deleted) return res.status(404).json({ error: `${entityName} not found` });
       res.json({ success: true });
     } catch (error) {

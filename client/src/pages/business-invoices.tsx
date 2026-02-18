@@ -234,7 +234,7 @@ export default function BusinessInvoices() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredInvoices.map(inv => (
+              {filteredInvoices.map((inv: any) => (
                 <TableRow key={inv.id}>
                   <TableCell className="font-mono font-medium">{inv.invoiceNumber || (inv.id?.length > 8 ? `INV-${inv.id.slice(0,8).toUpperCase()}` : inv.id)}</TableCell>
                   <TableCell className="font-medium">{inv.client}</TableCell>

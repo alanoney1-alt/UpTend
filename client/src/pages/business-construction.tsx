@@ -191,7 +191,7 @@ export default function BusinessConstruction() {
               <div className="p-2 bg-green-500/10 rounded-lg"><Building2 className="w-5 h-5 text-green-500" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Active Projects</p>
-                <p className="text-2xl font-bold">{punchLists.filter(p => p.status === "in_progress").length}</p>
+                <p className="text-2xl font-bold">{punchLists.filter((p: any) => p.status === "in_progress").length}</p>
               </div>
             </div>
           </Card>
@@ -207,7 +207,7 @@ export default function BusinessConstruction() {
           {/* Punch Lists */}
           <TabsContent value="punchlists" className="space-y-6">
             <h2 className="text-xl font-semibold">Punch Lists</h2>
-            {punchLists.map(pl => (
+            {punchLists.map((pl: any) => (
               <Card key={pl.id} className="overflow-hidden">
                 <div className="p-5 border-b">
                   <div className="flex items-start justify-between mb-2">
@@ -234,7 +234,7 @@ export default function BusinessConstruction() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {punchItems.map(item => (
+                      {punchItems.map((item: any) => (
                         <TableRow key={item.id}>
                           <TableCell className="font-medium">{item.description}</TableCell>
                           <TableCell><Badge variant="outline">{item.trade}</Badge></TableCell>
@@ -276,7 +276,7 @@ export default function BusinessConstruction() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {lienWaivers.map(w => (
+                  {lienWaivers.map((w: any) => (
                     <TableRow key={w.id}>
                       <TableCell className="font-medium">{w.project}</TableCell>
                       <TableCell>{w.proName}</TableCell>
@@ -319,7 +319,7 @@ export default function BusinessConstruction() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {permits.map(p => (
+                  {permits.map((p: any) => (
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.project}</TableCell>
                       <TableCell>{p.permitType}</TableCell>
