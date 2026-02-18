@@ -3015,3 +3015,55 @@ export function getSeasonalCountdown(): object {
     },
   };
 }
+
+// ─── HOA Auto-Scrape Tools ──────────────────────────────
+
+import { getHOAForCustomer, enrichHOAFromProReport } from "./hoa-scraper";
+
+export async function getCustomerHOA(userId: string): Promise<object> {
+  const data = await getHOAForCustomer(userId);
+
+  if (!data) {
+    return {
+      found: false,
+      message: "No HOA information found for your address. If you live in an HOA community, you can report your HOA details and we'll save them for future reference.",
+    };
+  }
+
+  return {
+    found: true,
+    hoaName: data.hoaName,
+    managementCompany: data.managementCompany,
+    monthlyFee: data.monthlyFee,
+    annualFee: data.annualFee,
+    contactPhone: data.contactPhone,
+    contactEmail: data.contactEmail,
+    website: data.website,
+    rules: data.rules,
+    amenities: data.amenities,
+    meetingSchedule: data.meetingSchedule,
+    confidence: data.confidence,
+    lastUpdated: data.lastUpdated,
+  };
+}
+
+export async function reportHOARule(
+  hoaDataId: string,
+  report: { rules?: Record<string, any>; amenities?: Record<string, any>; hoaName?: string; managementCompany?: string; contactPhone?: string; contactEmail?: string; monthlyFee?: number }
+): Promise<object> {
+  if (!hoaDataId) {
+    return { success: false, error: "hoaDataId is required. Look up the customer's HOA first." };
+  }
+
+  const updated = await enrichHOAFromProReport(hoaDataId, report);
+
+  if (!updated) {
+    return { success: false, error: "HOA record not found" };
+  }
+
+  return {
+    success: true,
+    message: "HOA information updated. Thank you for the report!",
+    data: updated,
+  };
+}

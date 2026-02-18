@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import crypto from "crypto";
 import { sendWelcomeEmail, sendAdminNewSignup } from "../../services/email-service";
+import { scrapeHOAForAddress, linkCustomerToHOA } from "../../services/hoa-scraper";
 
 /**
  * Customer Authentication Routes
@@ -49,6 +50,19 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
       sendWelcomeEmail(email, { firstName, lastName }).catch(err => console.error('[EMAIL] Failed welcome:', err.message));
       if (process.env.ADMIN_EMAIL) {
         sendAdminNewSignup(process.env.ADMIN_EMAIL, { email, firstName, lastName, role: "customer" }).catch(err => console.error('[EMAIL] Failed admin-signup:', err.message));
+      }
+
+      // Fire-and-forget: HOA auto-scrape if address provided
+      if (req.body.address && req.body.city && req.body.state && req.body.zip) {
+        scrapeHOAForAddress(req.body.address, req.body.city, req.body.state, req.body.zip)
+          .then(hoaData => {
+            if (hoaData) {
+              linkCustomerToHOA(user.id, hoaData.id).catch(err =>
+                console.error("[HOA] Failed to link customer:", err)
+              );
+            }
+          })
+          .catch(err => console.error("[HOA] Auto-scrape failed:", err));
       }
 
       // Auto-login after registration - wait for session to be established before responding
