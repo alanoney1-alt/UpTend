@@ -3308,7 +3308,7 @@ export async function connectSmartHome(params: {
   };
 }
 
-export async function getSmartHomeStatus(params: { customerId: string }): Promise<object> {
+export async function getSmartHomeOAuthStatus(params: { customerId: string }): Promise<object> {
   const connections = await getConnectedDevices(params.customerId);
 
   if (!connections.length) {
