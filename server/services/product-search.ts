@@ -10,7 +10,7 @@ const RETAILERS = [
   { name: "Home Depot", domain: "homedepot.com", affiliatePrefix: "uptend-hd-" },
   { name: "Lowe's", domain: "lowes.com", affiliatePrefix: "uptend-lowes-" },
   { name: "Walmart", domain: "walmart.com", affiliatePrefix: "uptend-wm-" },
-  { name: "Amazon", domain: "amazon.com", affiliatePrefix: "uptend-amz-", affiliateTag: "uptend-20" },
+  { name: "Amazon", domain: "amazon.com", affiliatePrefix: "uptend-amz-", affiliateTag: "uptend20-20" },
   { name: "Harbor Freight", domain: "harborfreight.com", affiliatePrefix: "uptend-hf-" },
   { name: "Ace Hardware", domain: "acehardware.com", affiliatePrefix: "uptend-ace-" },
 ] as const;
@@ -115,7 +115,7 @@ export function generateAffiliateUrl(retailerUrl: string, retailer: string): str
     const url = new URL(retailerUrl);
 
     if (retailer === "Amazon") {
-      url.searchParams.set("tag", "uptend-20");
+      url.searchParams.set("tag", "uptend20-20");
     } else {
       // Generic affiliate tracking parameter
       url.searchParams.set("utm_source", "uptend");
