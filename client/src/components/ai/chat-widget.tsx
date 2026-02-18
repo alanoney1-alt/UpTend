@@ -276,7 +276,7 @@ export function AiChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-[7.5rem] md:bottom-6 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] h-[440px] max-h-[60vh] md:max-h-[600px] flex flex-col bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-[7.5rem] md:bottom-6 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] h-[340px] max-h-[50vh] md:h-[440px] md:max-h-[600px] flex flex-col bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
       {/* Header */}
       <div className="bg-[#F47C20] px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">

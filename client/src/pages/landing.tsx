@@ -40,11 +40,11 @@ export default function Landing() {
 /* ─── GEORGE BANNER ─── */
 function GeorgeBanner() {
   return (
-    <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-3 px-4 text-center">
-      <div className="max-w-4xl mx-auto flex items-center justify-center gap-2 flex-wrap">
-        <MessageCircle className="w-4 h-4 shrink-0" />
-        <span className="text-sm md:text-base font-medium">
-          <strong>Meet George</strong> — your AI home services assistant. Need a quote, have a question, or don't know where to start? <strong>Just ask George.</strong> He's the orange chat in the corner 👉
+    <div className="mt-16 md:mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-1.5 md:py-3 px-3 md:px-4 text-center">
+      <div className="max-w-4xl mx-auto flex items-center justify-center gap-1.5 md:gap-2">
+        <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
+        <span className="text-xs md:text-base font-medium">
+          <strong>Meet George</strong> — your AI assistant. Questions? <strong>Ask George</strong> 👉
         </span>
       </div>
     </div>
