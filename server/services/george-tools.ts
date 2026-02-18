@@ -4049,6 +4049,327 @@ export async function setHomeReminderForGeorge(params: {
 /**
  * getUtilityProviders — who services their address
  */
+// ═══════════════════════════════════════════════
+// PURCHASE TRACKING + WARRANTIES + APPLIANCE PROFILES
+// George tracks what customers buy and maintains their home.
+// ═══════════════════════════════════════════════
+
+import { scanReceipt, processReceiptItems } from "./receipt-scanner.js";
+import { getConnectedRetailers, connectRetailer, syncPurchaseHistory } from "./retailer-connect.js";
+import {
+  getGarageDoorProfile,
+  updateGarageDoorProfile,
+  getWaterHeaterProfile,
+  updateWaterHeaterProfile,
+  getMaintenanceLog,
+  addMaintenanceEntry,
+  getMaintenanceDue as _getMaintenanceDue,
+  getDIYPurchaseSuggestions,
+} from "./appliance-profiles.js";
+
+/**
+ * scanReceiptPhoto — "Snap your receipt and I'll track everything"
+ */
+export async function scanReceiptPhoto(params: {
+  customerId: string;
+  photoUrl: string;
+}): Promise<object> {
+  const scanResult = await scanReceipt(params.photoUrl);
+  const { purchaseId, warrantiesCreated } = await processReceiptItems(
+    params.customerId,
+    scanResult.items,
+    scanResult.storeNormalized,
+    scanResult.date
+  );
+
+  // Update receipt URL
+  await pool.query(
+    `UPDATE customer_purchases SET receipt_url = $1, raw_ocr_text = $2 WHERE id = $3`,
+    [params.photoUrl, scanResult.rawText, purchaseId]
+  );
+
+  const itemList = scanResult.items.map((i: any) => `• ${i.name}${i.brand ? ` (${i.brand})` : ""} — $${i.price}`).join("\n");
+
+  return {
+    purchaseId,
+    store: scanResult.store,
+    items: scanResult.items,
+    totalAmount: scanResult.totalAmount,
+    warrantiesCreated,
+    message: `🧾 Got it! Scanned your ${scanResult.store} receipt:\n${itemList}\n\nTotal: $${scanResult.totalAmount || "N/A"}${warrantiesCreated > 0 ? `\n\n🛡️ Auto-created ${warrantiesCreated} warranty registration(s) for big-ticket items!` : ""}`,
+  };
+}
+
+/**
+ * getWarrantyDashboard — all warranties sorted by expiring soonest
+ */
+export async function getWarrantyDashboard(params: {
+  customerId: string;
+}): Promise<object> {
+  const { rows } = await pool.query(
+    `SELECT * FROM warranty_registrations WHERE customer_id = $1 ORDER BY warranty_expires ASC`,
+    [params.customerId]
+  );
+
+  if (rows.length === 0) {
+    return { warranties: [], message: "No warranties on file yet. Scan a receipt or register one manually!" };
+  }
+
+  const now = new Date();
+  const expiringSoon = rows.filter((w: any) => {
+    const exp = new Date(w.warranty_expires);
+    const daysLeft = Math.floor((exp.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    return daysLeft >= 0 && daysLeft <= 90;
+  });
+
+  const expired = rows.filter((w: any) => new Date(w.warranty_expires) < now);
+
+  const list = rows.slice(0, 10).map((w: any) => {
+    const exp = new Date(w.warranty_expires);
+    const daysLeft = Math.floor((exp.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    const status = daysLeft < 0 ? "❌ EXPIRED" : daysLeft <= 30 ? "⚠️ EXPIRING SOON" : "✅ Active";
+    return `${status} ${w.product_name}${w.brand ? ` (${w.brand})` : ""} — expires ${exp.toLocaleDateString()} (${daysLeft < 0 ? `${Math.abs(daysLeft)}d ago` : `${daysLeft}d left`})`;
+  }).join("\n");
+
+  return {
+    warranties: rows,
+    expiringSoonCount: expiringSoon.length,
+    expiredCount: expired.length,
+    message: `🛡️ Warranty Dashboard (${rows.length} total):\n${list}${expiringSoon.length > 0 ? `\n\n⚠️ ${expiringSoon.length} warranty(ies) expiring within 90 days!` : ""}`,
+  };
+}
+
+/**
+ * registerWarranty — manual warranty entry
+ */
+export async function registerWarranty(params: {
+  customerId: string;
+  productName: string;
+  brand?: string;
+  model?: string;
+  serialNumber?: string;
+  purchaseDate?: string;
+  warrantyType?: string;
+  warrantyDuration?: number;
+  warrantyExpires?: string;
+  notes?: string;
+}): Promise<object> {
+  let warrantyExpires = params.warrantyExpires;
+  if (!warrantyExpires && params.purchaseDate && params.warrantyDuration) {
+    const exp = new Date(params.purchaseDate);
+    exp.setMonth(exp.getMonth() + params.warrantyDuration);
+    warrantyExpires = exp.toISOString();
+  }
+
+  const { rows } = await pool.query(
+    `INSERT INTO warranty_registrations
+     (customer_id, product_name, brand, model, serial_number, purchase_date, warranty_type, warranty_duration, warranty_expires, registration_confirmed, notes)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true, $10)
+     RETURNING *`,
+    [
+      params.customerId, params.productName, params.brand || null, params.model || null,
+      params.serialNumber || null, params.purchaseDate || null,
+      params.warrantyType || "manufacturer", params.warrantyDuration || null,
+      warrantyExpires || null, params.notes || null,
+    ]
+  );
+
+  return {
+    warranty: rows[0],
+    message: `🛡️ Warranty registered: ${params.productName}${params.brand ? ` (${params.brand})` : ""}${warrantyExpires ? `. Expires: ${new Date(warrantyExpires).toLocaleDateString()}` : ""}. I'll alert you before it expires!`,
+  };
+}
+
+/**
+ * getGarageDoorInfo — "What kind of garage door do I have?"
+ */
+export async function getGarageDoorInfo(params: {
+  customerId: string;
+}): Promise<object> {
+  const profile = await getGarageDoorProfile(params.customerId);
+  if (!profile) {
+    return { message: "No garage door profile on file. Tell me about your garage door — brand, opener type, smart-enabled? Or I can scan the label!" };
+  }
+  return {
+    profile,
+    message: `🚗 Your Garage Door:\n• Brand: ${profile.brand || "Unknown"}\n• Model: ${profile.model || "Unknown"}\n• Opener: ${profile.opener_type || "Unknown"}\n• Smart: ${profile.smart_enabled ? `Yes (${profile.controller_brand || "unknown controller"})` : "No"}\n• Springs: ${profile.springs || "Unknown"}\n• Last serviced: ${profile.last_serviced ? new Date(profile.last_serviced).toLocaleDateString() : "Unknown"}\n• Warranty expires: ${profile.warranty_expires ? new Date(profile.warranty_expires).toLocaleDateString() : "Unknown"}`,
+  };
+}
+
+/**
+ * getWaterHeaterInfo — "When should I flush my water heater?"
+ */
+export async function getWaterHeaterInfo(params: {
+  customerId: string;
+}): Promise<object> {
+  const profile = await getWaterHeaterProfile(params.customerId);
+  if (!profile) {
+    return { message: "No water heater profile on file. Tell me about your water heater — type, brand, when installed? Or snap a photo of the label!" };
+  }
+
+  let flushMessage = "";
+  if (profile.last_flushed) {
+    const lastFlushed = new Date(profile.last_flushed);
+    const monthsSince = Math.floor((Date.now() - lastFlushed.getTime()) / (1000 * 60 * 60 * 24 * 30));
+    const freq = profile.flush_frequency || 12;
+    if (monthsSince >= freq) {
+      flushMessage = `\n\n⚠️ FLUSH OVERDUE! Last flushed ${monthsSince} months ago (recommended every ${freq} months).`;
+    } else {
+      const monthsUntil = freq - monthsSince;
+      flushMessage = `\n\nNext flush due in ~${monthsUntil} month(s).`;
+    }
+  } else {
+    flushMessage = "\n\n💡 No flush on record. Water heaters should be flushed every 12 months to prevent sediment buildup.";
+  }
+
+  return {
+    profile,
+    message: `🔥 Your Water Heater:\n• Type: ${profile.type || "Unknown"}\n• Brand: ${profile.brand || "Unknown"} ${profile.model || ""}\n• Capacity: ${profile.capacity ? `${profile.capacity} gal` : "Unknown"}\n• Fuel: ${profile.fuel_type || "Unknown"}\n• Installed: ${profile.year_installed || "Unknown"}\n• Location: ${profile.location || "Unknown"}\n• Temp: ${profile.temp_setting ? `${profile.temp_setting}°F` : "Unknown"}\n• Warranty: ${profile.warranty_expires ? new Date(profile.warranty_expires).toLocaleDateString() : "Unknown"}${flushMessage}`,
+  };
+}
+
+/**
+ * logDIYMaintenance — "I just changed my AC filter" → log it + set next reminder
+ */
+export async function logDIYMaintenance(params: {
+  customerId: string;
+  maintenanceType: string;
+  applianceOrSystem: string;
+  description?: string;
+  cost?: number;
+  frequency?: string;
+  performedAt?: string;
+}): Promise<object> {
+  const performedAt = params.performedAt || new Date().toISOString();
+  let nextDueDate: string | undefined;
+
+  // Auto-calculate next due date from frequency
+  if (params.frequency) {
+    const next = new Date(performedAt);
+    const freqMap: Record<string, number> = { monthly: 1, quarterly: 3, "semi-annually": 6, annually: 12 };
+    const months = freqMap[params.frequency] || 3;
+    next.setMonth(next.getMonth() + months);
+    nextDueDate = next.toISOString();
+  }
+
+  const entry = await addMaintenanceEntry(params.customerId, {
+    maintenanceType: params.maintenanceType,
+    applianceOrSystem: params.applianceOrSystem,
+    description: params.description,
+    performedBy: "self",
+    cost: params.cost,
+    frequency: params.frequency,
+    nextDueDate,
+    performedAt,
+  });
+
+  return {
+    entry,
+    message: `✅ Logged: ${params.applianceOrSystem} — ${params.maintenanceType.replace(/_/g, " ")}${params.description ? ` (${params.description})` : ""}${nextDueDate ? `\n⏰ Next due: ${new Date(nextDueDate).toLocaleDateString()}` : ""}${params.cost ? `\n💰 Cost: $${params.cost}` : ""}`,
+  };
+}
+
+/**
+ * getMaintenanceDueForGeorge — "What maintenance is due?"
+ */
+export async function getMaintenanceDueForGeorge(params: {
+  customerId: string;
+}): Promise<object> {
+  const { overdue, upcoming } = await _getMaintenanceDue(params.customerId);
+
+  if (overdue.length === 0 && upcoming.length === 0) {
+    return { overdue: [], upcoming: [], message: "✅ No maintenance due! Your home is in good shape. Keep it up!" };
+  }
+
+  let msg = "";
+  if (overdue.length > 0) {
+    msg += `🚨 OVERDUE (${overdue.length}):\n` + overdue.map((m: any) =>
+      `• ${m.appliance_or_system} — ${m.maintenance_type?.replace(/_/g, " ")} (due ${new Date(m.next_due_date).toLocaleDateString()})`
+    ).join("\n");
+  }
+  if (upcoming.length > 0) {
+    msg += `${msg ? "\n\n" : ""}📋 Coming up (${upcoming.length}):\n` + upcoming.map((m: any) =>
+      `• ${m.appliance_or_system} — ${m.maintenance_type?.replace(/_/g, " ")} (due ${new Date(m.next_due_date).toLocaleDateString()})`
+    ).join("\n");
+  }
+
+  return { overdue, upcoming, message: msg };
+}
+
+/**
+ * getPurchaseHistory — "What did I buy at Lowe's last month?"
+ */
+export async function getPurchaseHistory(params: {
+  customerId: string;
+  store?: string;
+  limit?: number;
+}): Promise<object> {
+  let query = `SELECT * FROM customer_purchases WHERE customer_id = $1`;
+  const queryParams: any[] = [params.customerId];
+
+  if (params.store) {
+    query += ` AND store = $${queryParams.length + 1}`;
+    queryParams.push(params.store);
+  }
+
+  query += ` ORDER BY purchase_date DESC LIMIT $${queryParams.length + 1}`;
+  queryParams.push(params.limit || 10);
+
+  const { rows } = await pool.query(query, queryParams);
+
+  if (rows.length === 0) {
+    return { purchases: [], message: `No purchases found${params.store ? ` from ${params.store}` : ""}. Scan a receipt to start tracking!` };
+  }
+
+  const list = rows.map((p: any) => {
+    const items = Array.isArray(p.items) ? p.items : (typeof p.items === "string" ? JSON.parse(p.items) : []);
+    return `• ${p.store} — ${new Date(p.purchase_date).toLocaleDateString()} — $${p.total_amount} (${items.length} item${items.length !== 1 ? "s" : ""})`;
+  }).join("\n");
+
+  return {
+    purchases: rows,
+    message: `🛒 Purchase History${params.store ? ` (${params.store})` : ""}:\n${list}`,
+  };
+}
+
+/**
+ * connectRetailerAccount — guide through retailer linking
+ */
+export async function connectRetailerAccount(params: {
+  customerId: string;
+  retailer: string;
+}): Promise<object> {
+  const result = await connectRetailer(params.customerId, params.retailer as any);
+  return {
+    ...result,
+    message: result.success
+      ? `🔗 ${result.message}`
+      : `❌ ${result.message}`,
+  };
+}
+
+/**
+ * getDIYShoppingList — "What should I buy for home maintenance?"
+ */
+export async function getDIYShoppingList(params: {
+  customerId: string;
+}): Promise<object> {
+  const suggestions = await getDIYPurchaseSuggestions(params.customerId);
+
+  if (suggestions.length === 0) {
+    return { suggestions: [], message: "✅ No maintenance supplies needed right now! Your home is well-stocked." };
+  }
+
+  const list = suggestions.map((s: any) =>
+    `🏪 ${s.store === "lowes" ? "Lowe's" : s.store === "home_depot" ? "Home Depot" : s.store}\n  • ${s.item} (${s.estimatedCost})\n  💡 ${s.reason}`
+  ).join("\n\n");
+
+  return {
+    suggestions,
+    message: `🛒 DIY Shopping List:\n\n${list}`,
+  };
+}
+
 export async function getUtilityProvidersForGeorge(params: {
   customerId: string;
   address?: string;

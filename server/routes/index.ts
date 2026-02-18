@@ -207,6 +207,9 @@ import { registerLoyaltyEngineRoutes } from "./loyalty.routes";
 import { registerReferralEngineRoutes } from "./referrals.routes";
 import { registerCommunityEngineRoutes } from "./community.routes";
 
+// Purchase & Receipt Tracking + Appliance Profile routes
+import { registerPurchaseRoutes } from "./purchases.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -437,6 +440,9 @@ export async function registerRoutes(
   registerLoyaltyEngineRoutes(app);
   registerReferralEngineRoutes(app);
   registerCommunityEngineRoutes(app);
+
+  // Register Purchase & Receipt Tracking + Appliance Profile routes
+  registerPurchaseRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
