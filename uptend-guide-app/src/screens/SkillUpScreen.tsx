@@ -56,7 +56,7 @@ export default function SkillUpScreen() {
                 <View style={styles.skillInfo}>
                   <Text style={styles.skillName}>{skill.name}</Text>
                   <View style={styles.progressRow}>
-                    <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${skill.progress}%` }]} /></View>
+                    <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${skill.progress ?? 0}%` }]} /></View>
                     <Text style={styles.progressPct}>{skill.progress}%</Text>
                   </View>
                   <Text style={styles.skillRoi}>Estimated ROI: {skill.roi}</Text>

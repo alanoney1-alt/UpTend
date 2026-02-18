@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: u.email,
       role: r,
     };
-    setUser({ ...userData, ...u });
+    setUser({ ...userData, ...u, role: r } as User);
     setRole(r);
   };
 
@@ -117,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: u.email,
       role: data.role,
     };
-    setUser({ ...userData, ...u });
+    setUser({ ...userData, ...u, role: data.role } as User);
     setRole(data.role);
   };
 
@@ -129,9 +129,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: u.id || (u as any)._id,
       name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u as any).name || u.email,
       email: u.email,
-      role: 'customer',
+      role: 'customer' as const,
     };
-    setUser({ ...userData, ...u });
+    setUser({ ...userData, ...u, role: 'customer' as const } as User);
     setRole('customer');
   };
 

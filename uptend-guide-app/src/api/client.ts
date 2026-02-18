@@ -2,7 +2,7 @@
 export { setToken, clearToken, getToken } from '../services/api';
 export { request } from '../services/api';
 export { customerLogin, proLogin, businessLogin, customerRegister, getUser } from '../services/auth';
-export { sendGeorgeMessage as guideChat, sendGeorgeMessage as georgeChat } from '../services/chat';
+export { sendChatMessage as guideChat, sendGeorgeMessage as georgeChat } from '../services/chat';
 
 // Legacy aliases kept for any remaining imports
 import { request } from '../services/api';

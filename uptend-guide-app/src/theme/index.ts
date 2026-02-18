@@ -2,6 +2,16 @@ import { Colors } from './colors';
 
 export { Colors };
 
+/** Unified theme object for easy access */
+export const theme = {
+  colors: Colors,
+  fonts: { regular: 'System', medium: 'System', semiBold: 'System', bold: 'System' },
+  get typography() { return Typography; },
+  get spacing() { return Spacing; },
+  get radius() { return Radius; },
+  get shadows() { return Shadows; },
+} as const;
+
 export const Typography = {
   h1: { fontSize: 28, fontWeight: '800' as const, color: Colors.text, letterSpacing: -0.5 },
   h2: { fontSize: 24, fontWeight: '700' as const, color: Colors.text },

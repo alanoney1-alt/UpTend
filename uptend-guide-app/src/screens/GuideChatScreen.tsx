@@ -60,8 +60,8 @@ export default function GuideChatScreen() {
       const guideMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'george',
-        type: res.type || 'text',
-        text: res.message || res.text,
+        type: (res.type as any) || 'text',
+        text: res.message || res.text || res.response,
         data: res.data,
         timestamp: new Date(),
       };

@@ -135,7 +135,7 @@ class SmartNotificationService {
   ): Promise<string> {
     return await Notifications.scheduleNotificationAsync({
       content: { title, body, data: data || {}, sound: 'default' },
-      trigger: date,
+      trigger: { type: 'date', date } as any,
     });
   }
 

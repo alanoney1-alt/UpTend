@@ -280,23 +280,23 @@ function CustomerTabs() {
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen
         name="Home"
-        component={CustomerDashboardStack}
-        options={{ tabBarLabel: 'Home', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
-      />
-      <Tab.Screen
-        name="George"
         component={CustomerGeorgeStack}
-        options={{ tabBarLabel: 'George', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        options={{ tabBarLabel: 'Home', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
       />
       <Tab.Screen
-        name="Book"
+        name="Services"
         component={CustomerBookingStack}
-        options={{ tabBarLabel: 'Book', tabBarIcon: () => <TabIcon emoji="📅" />, headerShown: false }}
+        options={{ tabBarLabel: 'Services', tabBarIcon: () => <TabIcon emoji="🔧" />, headerShown: false }}
       />
       <Tab.Screen
-        name="Emergency"
+        name="Scan"
+        component={CustomerDashboardStack}
+        options={{ tabBarLabel: 'Scan', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
+      />
+      <Tab.Screen
+        name="Activity"
         component={CustomerEmergencyStack}
-        options={{ tabBarLabel: 'Emergency', tabBarIcon: () => <TabIcon emoji="🚨" />, headerShown: false }}
+        options={{ tabBarLabel: 'Activity', tabBarIcon: () => <TabIcon emoji="📋" />, headerShown: false }}
       />
       <Tab.Screen
         name="Profile"
@@ -410,17 +410,16 @@ export default function AppNavigator() {
     return <CustomerTabs />;
   };
 
-  if (guestMode && !hasOnboarded) {
-    return (
-      <NavigationContainer>
-        <OnboardingNavigator onComplete={() => setHasOnboarded(true)} />
-        <SignUpModal
-          visible={showSignUpModal}
-          onClose={() => { setShowSignUpModal(false); setPendingAction(null); }}
-        />
-      </NavigationContainer>
-    );
-  }
+  // Guest mode goes straight to George — onboarding is optional
+  // Uncomment to re-enable onboarding gate:
+  // if (guestMode && !hasOnboarded) {
+  //   return (
+  //     <NavigationContainer>
+  //       <OnboardingNavigator onComplete={() => setHasOnboarded(true)} />
+  //       <SignUpModal visible={showSignUpModal} onClose={() => { setShowSignUpModal(false); setPendingAction(null); }} />
+  //     </NavigationContainer>
+  //   );
+  // }
 
   return (
     <NavigationContainer>

@@ -247,9 +247,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: Colors.primary,
   },
-  typingDot1: { animationDelay: '0s' },
-  typingDot2: { animationDelay: '0.2s' },
-  typingDot3: { animationDelay: '0.4s' },
+  typingDot1: { opacity: 1 },
+  typingDot2: { opacity: 0.7 },
+  typingDot3: { opacity: 0.4 },
   typingText: { fontSize: 13, color: Colors.textLight, marginLeft: 8 },
   inputBar: {
     flexDirection: 'row',
