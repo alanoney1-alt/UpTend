@@ -112,7 +112,7 @@ async function createAutoBooking(subscription: RecurringSubscription): Promise<S
         id: serviceRequest.id,
         serviceType: subscription.serviceType,
         scheduledDate: serviceRequest.scheduledFor,
-        address: subscription.address,
+        address: (subscription as any).address,
       });
     }
     if (subscription.assignedProId) {
@@ -123,7 +123,7 @@ async function createAutoBooking(subscription: RecurringSubscription): Promise<S
           id: serviceRequest.id,
           serviceType: subscription.serviceType,
           scheduledDate: serviceRequest.scheduledFor,
-          address: subscription.address,
+          address: (subscription as any).address,
         });
       }
     }

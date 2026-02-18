@@ -175,7 +175,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
               product: product.id,
               unit_amount: price * 100,
               currency: "usd",
-              recurring: intervalMap[validated.frequency],
+              recurring: intervalMap[validated.frequency] as any,
               lookup_key: priceLookupKey,
             });
           }

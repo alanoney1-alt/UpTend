@@ -60,13 +60,13 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
   // Fetch insurance policies
   const { data: policies, isLoading: policiesLoading } = useQuery<{ policies: InsurancePolicy[] }>({
     queryKey: ["insurance-policies", proId],
-    queryFn: () => apiRequest("/api/insurance/my-policies"),
+    queryFn: () => apiRequest("/api/insurance/my-policies").then(r => r.json()),
   });
 
   // Fetch claims
   const { data: claims, isLoading: claimsLoading } = useQuery<{ claims: LiabilityClaim[] }>({
     queryKey: ["liability-claims", proId],
-    queryFn: () => apiRequest("/api/claims/my-claims"),
+    queryFn: () => apiRequest("/api/claims/my-claims").then(r => r.json()),
   });
 
   // Upload policy mutation
@@ -78,7 +78,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
       coverage_amount: number;
       expiry_date: string;
       document_url: string;
-    }) => apiRequest("/api/insurance/upload-policy", { method: "POST", body: data }),
+    }) => apiRequest("/api/insurance/upload-policy", { method: "POST", body: data }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["insurance-policies"] });
       setShowUploadDialog(false);

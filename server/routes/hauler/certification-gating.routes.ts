@@ -52,7 +52,7 @@ export function registerCertificationGatingRoutes(app: Express) {
       const missingCertsSet = new Set<string>();
 
       for (const job of allJobs) {
-        const required = getRequiredCerts(job.service_type, job.business_account_id, job.account_type);
+        const required = getRequiredCerts(job.service_type, job.account_type);
         if (required.length === 0) {
           // Consumer job — no cert needed
           visibleJobs.push(job);
@@ -111,7 +111,7 @@ export function registerCertificationGatingRoutes(app: Express) {
       const availableCerts = (allCerts.rows || []).filter((r: any) => !earnedIds.has(r.id));
 
       // Count hidden jobs
-      const { hiddenCount, missingCerts } = await countHiddenJobs(proId);
+      const { count: hiddenCount, missingCerts } = await countHiddenJobs(proId);
 
       res.json({
         active: activeCerts,

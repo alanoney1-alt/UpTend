@@ -3268,7 +3268,7 @@ export async function getDroneScanStatus(params: { customerId: string; bookingId
 
 // ─── Insurance, Emergency & Briefing Tools ──────────────
 
-import { startClaim, getStormPrepChecklist } from "./insurance-claims";
+import { startClaim, getStormPrepChecklist as _getStormPrepChecklist } from "./insurance-claims";
 import { createEmergencyDispatch } from "./emergency-dispatch";
 import { generateMorningBriefing, getWeatherForZip } from "./morning-briefing";
 
@@ -3284,7 +3284,7 @@ export async function getStormPrepChecklistTool(params: {
   customerId: string;
   stormType: string;
 }): Promise<object> {
-  return getStormPrepChecklist(params.customerId, params.stormType);
+  return _getStormPrepChecklist(params.customerId, params.stormType);
 }
 
 export async function createEmergencyDispatchTool(params: {
@@ -3421,7 +3421,7 @@ import {
   submitTip,
 } from "./community-engine.js";
 
-export async function getCustomerLoyaltyStatus(params: { customerId: string }) {
+export async function getCustomerLoyaltyStatusForGeorge(params: { customerId: string }) {
   const loyalty = await getCustomerLoyalty(params.customerId);
   return {
     ...loyalty,
@@ -3576,7 +3576,7 @@ import {
 /**
  * getProDemandForecast — Predict demand in a zip code for a pro
  */
-export async function getProDemandForecast(params: {
+export async function getProDemandForecastForGeorge(params: {
   proId: string;
   zip?: string;
   daysAhead?: number;
@@ -3619,7 +3619,7 @@ export async function setProEarningsGoal(params: {
 /**
  * getProGoalProgress — Get active goals with progress bars and pace
  */
-export async function getProGoalProgress(params: {
+export async function getProGoalProgressForGeorge(params: {
   proId: string;
 }): Promise<object> {
   return _getGoalProgress(params.proId);

@@ -225,7 +225,7 @@ export class EarningsTrackingService {
     ];
 
     for (const streak of streakChecks) {
-      if (profile.currentStreakWeeks >= streak.threshold) {
+      if ((profile.currentStreakWeeks ?? 0) >= streak.threshold) {
         const existingStreak = await db
           .select()
           .from(proMilestones)

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "../../../db";
 import { haulerProfiles, users } from "@shared/schema";
 import type {
@@ -225,18 +225,19 @@ export class MatchingStorage {
   private async checkProInsuranceValidity(proId: string): Promise<boolean> {
     try {
       // Check if pro has active GL insurance policy
-      const result = await db.query(`
-        SELECT * FROM insurance_policies 
-        WHERE pro_id = $1 AND policy_type = 'gl' AND verified = true
-      `, [proId]);
+      const result = await db.execute(
+        sql`SELECT * FROM insurance_policies 
+        WHERE pro_id = ${proId} AND policy_type = 'gl' AND verified = true`
+      );
 
-      if (result.rows.length === 0) {
+      const rows = Array.isArray(result) ? result : (result as any).rows ?? [];
+      if (rows.length === 0) {
         // No insurance policy - assume non-LLC pro (allowed)
         return true;
       }
 
       // Has insurance policy - check if it's not expired
-      const policy = result.rows[0];
+      const policy = rows[0] as any;
       const isExpired = new Date(policy.expiry_date) < new Date();
       
       // If insurance is expired, pro cannot accept new jobs

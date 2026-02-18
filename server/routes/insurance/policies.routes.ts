@@ -1,5 +1,5 @@
 import type { Express } from "express";
-import { db } from "../../db";
+import { db, pool } from "../../db";
 import { requireAuth } from "../../auth-middleware";
 import { z } from "zod";
 
@@ -35,14 +35,14 @@ export function registerInsurancePolicyRoutes(app: Express) {
       }
 
       // Check if policy already exists for this pro and type
-      const existing = await db.query(`
+      const existing = await pool.query(`
         SELECT id FROM insurance_policies 
         WHERE pro_id = $1 AND policy_type = $2
       `, [userId, parsed.data.policy_type]);
 
       if (existing.rows.length > 0) {
         // Update existing policy
-        const updated = await db.query(`
+        const updated = await pool.query(`
           UPDATE insurance_policies 
           SET carrier_name = $1, policy_number = $2, coverage_amount = $3, 
               expiry_date = $4, document_url = $5, verified = false, 
@@ -66,7 +66,7 @@ export function registerInsurancePolicyRoutes(app: Express) {
         });
       } else {
         // Create new policy
-        const created = await db.query(`
+        const created = await pool.query(`
           INSERT INTO insurance_policies 
           (pro_id, policy_type, carrier_name, policy_number, coverage_amount, expiry_date, document_url)
           VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -99,7 +99,7 @@ export function registerInsurancePolicyRoutes(app: Express) {
       const userId = ((req.user as any).userId || (req.user as any).id);
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
-      const policies = await db.query(`
+      const policies = await pool.query(`
         SELECT * FROM insurance_policies 
         WHERE pro_id = $1 
         ORDER BY created_at DESC
@@ -135,7 +135,7 @@ export function registerInsurancePolicyRoutes(app: Express) {
         return res.status(400).json({ error: "Invalid request", details: parsed.error.flatten() });
       }
 
-      const updated = await db.query(`
+      const updated = await pool.query(`
         UPDATE insurance_policies 
         SET verified = $1, verified_at = $2, updated_at = NOW()
         WHERE id = $3
@@ -173,7 +173,7 @@ export function registerInsurancePolicyRoutes(app: Express) {
 
       const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
-      const expiring = await db.query(`
+      const expiring = await pool.query(`
         SELECT 
           ip.*,
           u.name as pro_name,

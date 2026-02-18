@@ -5,7 +5,7 @@
 
 import { db } from "../db";
 import { proCertifications, certificationPrograms } from "@shared/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 // Map job types / business account types to required certification slugs
 const JOB_TYPE_CERT_REQUIREMENTS: Record<string, string[]> = {
@@ -170,10 +170,11 @@ export function getRequiredCerts(jobType?: string, businessType?: string): strin
 export async function getRequiredCertsForJob(jobType?: string, businessAccountId?: string): Promise<string[]> {
   let businessType: string | undefined;
   if (businessAccountId) {
-    const [account] = await db.execute(
+    const result = await db.execute(
       sql`SELECT segment FROM business_accounts WHERE id = ${businessAccountId} LIMIT 1`
     );
-    if (account) businessType = (account as any).segment;
+    const rows = Array.isArray(result) ? result : (result as any).rows ?? [];
+    if (rows[0]) businessType = (rows[0] as any).segment;
   }
   return getRequiredCerts(jobType, businessType);
 }

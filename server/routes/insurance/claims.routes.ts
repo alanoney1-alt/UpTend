@@ -1,5 +1,5 @@
 import type { Express } from "express";
-import { db } from "../../db";
+import { db, pool } from "../../db";
 import { requireAuth } from "../../auth-middleware";
 import { z } from "zod";
 
@@ -21,7 +21,7 @@ const reviewClaimSchema = z.object({
 });
 
 async function getConfig(key: string) {
-  const result = await db.query(`
+  const result = await pool.query(`
     SELECT config_value FROM platform_liability_config WHERE config_key = $1
   `, [key]);
   return result.rows[0]?.config_value ? Number(result.rows[0].config_value) : 0;
@@ -29,7 +29,7 @@ async function getConfig(key: string) {
 
 async function getProLiabilityCap(proId: string) {
   // Check if pro has valid insurance (LLC pro with verified insurance = $25K cap)
-  const insurance = await db.query(`
+  const insurance = await pool.query(`
     SELECT * FROM insurance_policies 
     WHERE pro_id = $1 AND policy_type = 'gl' AND verified = true AND expiry_date > NOW()
   `, [proId]);
@@ -59,7 +59,7 @@ export function registerClaimsRoutes(app: Express) {
       }
 
       // Verify the pro exists
-      const proCheck = await db.query(`SELECT id FROM users WHERE id = $1`, [parsed.data.pro_id]);
+      const proCheck = await pool.query(`SELECT id FROM users WHERE id = $1`, [parsed.data.pro_id]);
       if (proCheck.rows.length === 0) {
         return res.status(404).json({ error: "Pro not found" });
       }
@@ -72,7 +72,7 @@ export function registerClaimsRoutes(app: Express) {
         liabilityCap = await getProLiabilityCap(parsed.data.pro_id);
       }
 
-      const claim = await db.query(`
+      const claim = await pool.query(`
         INSERT INTO liability_claims 
         (service_request_id, customer_id, pro_id, claim_type, description, 
          estimated_damage, photo_urls, platform_liability_cap)
@@ -108,7 +108,7 @@ export function registerClaimsRoutes(app: Express) {
 
       let claims;
       if ((req.user as any).role === "customer") {
-        claims = await db.query(`
+        claims = await pool.query(`
           SELECT 
             lc.*,
             u.name as pro_name,
@@ -120,7 +120,7 @@ export function registerClaimsRoutes(app: Express) {
           ORDER BY lc.created_at DESC
         `, [userId]);
       } else if ((req.user as any).role === "hauler") {
-        claims = await db.query(`
+        claims = await pool.query(`
           SELECT 
             lc.*,
             cu.name as customer_name,
@@ -147,7 +147,7 @@ export function registerClaimsRoutes(app: Express) {
       const userId = ((req.user as any).userId || (req.user as any).id);
       if (!userId) return res.status(401).json({ error: "Authentication required" });
 
-      const claim = await db.query(`
+      const claim = await pool.query(`
         SELECT 
           lc.*,
           cu.name as customer_name,
@@ -237,7 +237,7 @@ export function registerClaimsRoutes(app: Express) {
       updateFields.push(`updated_at = NOW()`);
       updateValues.push(req.params.id);
 
-      const updated = await db.query(`
+      const updated = await pool.query(`
         UPDATE liability_claims 
         SET ${updateFields.join(", ")}
         WHERE id = $${paramCount}
@@ -287,7 +287,7 @@ export function registerClaimsRoutes(app: Express) {
 
       queryParams.push(Number(limit), Number(offset));
 
-      const claims = await db.query(`
+      const claims = await pool.query(`
         SELECT 
           lc.*,
           cu.name as customer_name,
@@ -305,7 +305,7 @@ export function registerClaimsRoutes(app: Express) {
       `, queryParams);
 
       // Get total count for pagination
-      const countResult = await db.query(`
+      const countResult = await pool.query(`
         SELECT COUNT(*) as total
         FROM liability_claims lc
         ${whereClause.replace(/LIMIT.*$/, '')}

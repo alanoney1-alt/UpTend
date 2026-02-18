@@ -11,6 +11,7 @@ import { Router, type Request, type Response } from "express";
 import multer from "multer";
 import { BusinessAccountsStorage } from "../../storage/domains/business-accounts/storage";
 import { storage } from "../../storage";
+import { pool } from "../../db";
 import { logSubscriptionPayment } from "../../services/accounting-service";
 import { stripeService } from "../../stripeService";
 
@@ -134,7 +135,7 @@ router.post("/onboard", async (req: Request, res: Response) => {
     if (!user) {
       user = await storage.createUser({
         email: businessInfo.contactEmail || businessInfo.email,
-        name: businessInfo.contactName || businessInfo.companyName,
+        firstName: businessInfo.contactName || businessInfo.companyName, lastName: "",
         phone: businessInfo.contactPhone || businessInfo.phone,
         role: "business",
       });
@@ -201,7 +202,7 @@ router.post("/onboard", async (req: Request, res: Response) => {
     if (propertyData.length > 0) {
       for (const prop of propertyData) {
         try {
-          await storage.query(`
+          await pool.query(`
             INSERT INTO hoa_properties (business_account_id, address, city, state, zip, unit_count, property_type, tenant_name, tenant_email, tenant_phone, created_at)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())
           `, [account.id, prop.address, prop.city, prop.state, prop.zip, prop.units || 1, prop.type || "residential", prop.tenantName || "", prop.tenantEmail || "", prop.tenantPhone || ""]);
@@ -225,8 +226,8 @@ router.post("/onboard", async (req: Request, res: Response) => {
             role: member.role || "coordinator",
             invitedEmail: member.email,
             invitedName: member.name,
-            isActive: false, // Pending invite acceptance
-          });
+            isActive: false,
+          } as any);
 
           // Send invitation email
           await sendB2BWelcome(member.email, {
@@ -305,7 +306,7 @@ router.get("/property-limit", async (req: Request, res: Response) => {
     const propertyLimit = isIndependent ? 10 : null; // null = unlimited
 
     // Count existing properties
-    const result = await storage.query(
+    const result = await pool.query(
       `SELECT COUNT(*) as count FROM hoa_properties WHERE business_account_id = $1`,
       [account.id]
     );

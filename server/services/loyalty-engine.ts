@@ -109,7 +109,7 @@ export async function grantMilestoneReward(customerId: string, milestoneType: st
   await pool.query(
     `INSERT INTO loyalty_milestones (customer_id, milestone_type, reward_granted, reward_id)
      VALUES ($1, $2, true, $3)`,
-    [customerId, milestoneType, reward.rows ? reward[0].id : reward[0].id]
+    [customerId, milestoneType, reward[0].id]
   );
 
   return { granted: true, milestoneType, reward: rewardDef };

@@ -11,14 +11,35 @@ async function throwIfResNotOk(res: Response) {
 }
 
 export async function apiRequest(
-  method: string,
-  url: string,
+  methodOrUrl: string,
+  urlOrOptions?: string | { method?: string; body?: unknown },
   data?: unknown | undefined,
 ): Promise<Response> {
+  let method: string;
+  let url: string;
+  let body: unknown | undefined;
+
+  if (urlOrOptions === undefined) {
+    // apiRequest("/api/foo") — GET by default
+    method = "GET";
+    url = methodOrUrl;
+    body = undefined;
+  } else if (typeof urlOrOptions === "string") {
+    // apiRequest("POST", "/api/foo", data?)
+    method = methodOrUrl;
+    url = urlOrOptions;
+    body = data;
+  } else {
+    // apiRequest("/api/foo", { method: "POST", body: data })
+    method = urlOrOptions.method || "GET";
+    url = methodOrUrl;
+    body = urlOrOptions.body;
+  }
+
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
+    headers: body ? { "Content-Type": "application/json" } : {},
+    body: body ? JSON.stringify(body) : undefined,
     credentials: "include",
   });
 

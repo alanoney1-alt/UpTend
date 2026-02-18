@@ -19,7 +19,7 @@ router.get("/team", requireAuth, async (req: any, res) => {
     }
 
     // TODO: Find user's business and return team members
-    const teamMembers = [];
+    const teamMembers: any[] = [];
     res.json(teamMembers);
   } catch (error) {
     console.error("Error fetching team:", error);
@@ -115,7 +115,7 @@ router.get("/jobs", requireAuth, async (req: any, res) => {
     }
 
     // TODO: Get business jobs
-    const jobs = [];
+    const jobs: any[] = [];
     res.json(jobs);
   } catch (error) {
     console.error("Error fetching business jobs:", error);
@@ -157,7 +157,7 @@ router.get("/invoices", requireAuth, async (req: any, res) => {
     }
 
     // TODO: Get business invoices
-    const invoices = [];
+    const invoices: any[] = [];
     res.json(invoices);
   } catch (error) {
     console.error("Error fetching business invoices:", error);
@@ -198,7 +198,7 @@ router.get("/service-requests", requireAuth, async (req: any, res) => {
     }
 
     // TODO: Get business service requests
-    const requests = [];
+    const requests: any[] = [];
     res.json(requests);
   } catch (error) {
     console.error("Error fetching business service requests:", error);

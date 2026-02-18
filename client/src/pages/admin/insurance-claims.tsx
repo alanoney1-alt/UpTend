@@ -73,7 +73,7 @@ export default function AdminInsuranceClaims() {
     offset: number;
   }>({
     queryKey: ["admin-claims", claimFilter],
-    queryFn: () => apiRequest(`/api/admin/claims?status=${claimFilter !== "all" ? claimFilter : ""}&limit=100`),
+    queryFn: () => apiRequest(`/api/admin/claims?status=${claimFilter !== "all" ? claimFilter : ""}&limit=100`).then(r => r.json()),
   });
 
   // Fetch expiring policies
@@ -81,7 +81,7 @@ export default function AdminInsuranceClaims() {
     expiring_policies: InsurancePolicy[];
   }>({
     queryKey: ["admin-expiring-policies"],
-    queryFn: () => apiRequest("/api/admin/insurance/expiring"),
+    queryFn: () => apiRequest("/api/admin/insurance/expiring").then(r => r.json()),
   });
 
   // Review claim mutation
@@ -93,7 +93,7 @@ export default function AdminInsuranceClaims() {
       escalated_to_insurer?: boolean;
       insurer_claim_reference?: string;
       resolution_notes?: string;
-    }) => apiRequest(`/api/claims/${claimId}/review`, { method: "PATCH", body: data }),
+    }) => apiRequest(`/api/claims/${claimId}/review`, { method: "PATCH", body: data }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-claims"] });
       setShowReviewDialog(false);

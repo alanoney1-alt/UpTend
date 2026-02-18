@@ -3,6 +3,7 @@ import { storage } from "../../storage";
 import { requireAuth, requireHauler } from "../../auth-middleware";
 import { scoreCleanliness } from "../../photoAnalysisService";
 import { z } from "zod";
+import { broadcastToJob } from "../../websocket";
 
 /**
  * Job Verification Routes
@@ -654,7 +655,7 @@ export function registerJobVerificationRoutes(app: Express) {
       await storage.updateServiceRequest(jobId, {
         pendingPriceChange: verifiedPrice,
         priceChangeReason: proNotes || `On-site verification: price difference of ${percentageDifference}%`,
-      });
+      } as any);
 
       broadcastToJob(jobId, {
         type: "price_approval_requested",
@@ -690,7 +691,6 @@ export function registerJobVerificationRoutes(app: Express) {
         const userId = (req.user as any)?.userId || (req.user as any)?.id;
         verification = await storage.createJobVerification({
           serviceRequestId: jobId,
-          haulerId: userId || job.assignedHaulerId,
           verificationStatus: verified ? "verified" : "pending",
           stepsCompleted: {},
           createdAt: new Date().toISOString(),

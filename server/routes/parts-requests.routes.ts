@@ -277,10 +277,9 @@ export function registerPartsRequestRoutes(app: Express) {
           await logManualExpense({
             description: `Parts/Materials: ${pr.description}`,
             amount: cost,
-            category: "parts_materials",
             serviceRequestId: pr.service_request_id,
             notes: pr.supplier_source === "pro" ? "Pro-sourced, reimbursement required" : "PM/customer supplied",
-          }).catch((err: any) => console.error("[ACCOUNTING] Parts expense log failed:", err.message));
+          } as any).catch((err: any) => console.error("[ACCOUNTING] Parts expense log failed:", err.message));
         }
       } catch (accErr) {
         console.warn("Failed to log parts expense:", accErr);

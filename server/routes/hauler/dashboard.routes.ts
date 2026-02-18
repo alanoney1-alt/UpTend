@@ -107,7 +107,7 @@ export function registerProDashboardRoutes(app: Express) {
       }
 
       // TODO: Get notifications from storage
-      const notifications = [];
+      const notifications: any[] = [];
 
       res.json(notifications);
     } catch (error) {
@@ -125,7 +125,7 @@ export function registerProDashboardRoutes(app: Express) {
       }
 
       // Get jobs for this pro
-      const jobs = await storage.getServiceRequestsByPro(userId);
+      const jobs = await storage.getServiceRequestsByHauler(userId);
       res.json(jobs || []);
     } catch (error) {
       console.error("Error fetching pro jobs:", error);

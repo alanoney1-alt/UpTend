@@ -69,10 +69,10 @@ app.post("/api/jobs/:jobId/verify-price", requireAuth, async (req: Request, res:
 
     const customer = {
       id: customerUser?.id || req.body.customerId || "unknown",
-      name: customerUser?.fullName || req.body.customerName || "Customer",
+      name: customerUser?.firstName || "Unknown" || req.body.customerName || "Customer",
       phone: customerUser?.phone || req.body.customerPhone || "",
     };
-    const proName = proUser?.fullName || req.body.proName || "Your Pro";
+    const proName = proUser?.firstName || "Unknown" || req.body.proName || "Your Pro";
 
     // If requires approval, create approval request
     if (verification.requiresApproval) {

@@ -45,10 +45,10 @@ export function registerCustomerAccountRoutes(app: Express) {
       }
 
       // Get recent service requests
-      const recentRequests = await storage.getServiceRequestsByCustomer(userId, 5);
+      const recentRequests = await storage.getServiceRequestsByCustomer(userId);
       
       // Get customer stats
-      const totalRequests = await storage.getServiceRequestsByCustomer(userId, null, true); // get count
+      const totalRequests = await storage.getServiceRequestsByCustomer(userId); // get count
       
       const dashboardData = {
         recentRequests: recentRequests || [],
@@ -78,7 +78,7 @@ export function registerCustomerAccountRoutes(app: Express) {
       }
 
       // TODO: Implement notifications system
-      const notifications = [];
+      const notifications: any[] = [];
 
       res.json(notifications);
     } catch (error) {

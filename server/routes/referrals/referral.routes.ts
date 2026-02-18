@@ -160,7 +160,7 @@ export function registerReferralRoutes(app: Express) {
         `INSERT INTO partner_referrals (home_health_audit_id, partner_id, customer_id, pro_id, category, description, estimated_value)
          VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING *`,
-        [homeHealthAuditId, partnerId, ((req.user as any).userId || (req.user as any).id), audit.proId || null, category, description, estimatedValue]
+        [homeHealthAuditId, partnerId, ((req.user as any).userId || (req.user as any).id), (audit as any).proId || null, category, description, estimatedValue]
       );
 
       res.json({

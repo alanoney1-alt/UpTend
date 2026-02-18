@@ -419,7 +419,7 @@ export async function checkFloatThreshold(): Promise<{
       try {
         await sendSms({
           to: settings.alertSms,
-          body: `⚠️ UpTend Float Alert: Exposure at ${formatDollars(exposure.currentExposure)} exceeds ${formatDollars(settings.maxFloatExposure)} threshold.`,
+          message: `⚠️ UpTend Float Alert: Exposure at ${formatDollars(exposure.currentExposure)} exceeds ${formatDollars(settings.maxFloatExposure)} threshold.`,
         });
       } catch (e) { /* non-blocking */ }
     }

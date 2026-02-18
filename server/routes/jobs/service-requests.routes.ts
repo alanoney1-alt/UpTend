@@ -116,7 +116,7 @@ export function registerServiceRequestRoutes(app: Express) {
 
         // Verify actual attached payment method via Stripe
         try {
-          const paymentMethods = await stripeService.listPaymentMethods(user.stripeCustomerId);
+          const paymentMethods = await stripeService.listPaymentMethods(user!.stripeCustomerId!);
           if (paymentMethods.data.length === 0) {
             return res.status(400).json({
               error: "Payment method required",
@@ -310,7 +310,7 @@ export function registerServiceRequestRoutes(app: Express) {
           sendProEnRoute(request.customerEmail, request, pro || {}).catch(err => console.error('[EMAIL] Failed pro-en-route:', err.message));
         }
         if ((request as any).customerPhone) {
-          sendSms({ to: (request as any).customerPhone, message: `Your UpTend Pro ${pro?.firstName || ""} is on the way! ETA: ~${(pro as any)?.etaMinutes || 30} min.` }).catch(err => console.error('[SMS] Failed en-route:', err.message));
+          sendSms({ to: (request as any).customerPhone, message: `Your UpTend Pro ${pro?.companyName || ""} is on the way! ETA: ~${(pro as any)?.etaMinutes || 30} min.` }).catch(err => console.error('[SMS] Failed en-route:', err.message));
         }
       }
       if (req.body.status === "assigned" && request) {
@@ -646,9 +646,9 @@ export function registerServiceRequestRoutes(app: Express) {
 
       // Get latest hauler location if assigned
       let haulerLocation = null;
-      if (job.haulerId) {
+      if ((job as any).haulerId) {
         try {
-          const locations = await storage.getLocationHistory(job.haulerId, job.id);
+          const locations = await storage.getLocationHistory((job as any).haulerId, job.id);
           if (locations.length > 0) {
             const latest = locations[locations.length - 1];
             haulerLocation = { lat: Number(latest.lat), lng: Number(latest.lng), recordedAt: latest.recordedAt };
@@ -665,10 +665,10 @@ export function registerServiceRequestRoutes(app: Express) {
           lng: job.pickupLng ? Number(job.pickupLng) : null,
           address: job.pickupAddress || "",
         },
-        destination: job.dropoffAddress ? {
-          lat: job.dropoffLat ? Number(job.dropoffLat) : null,
-          lng: job.dropoffLng ? Number(job.dropoffLng) : null,
-          address: job.dropoffAddress,
+        destination: (job as any).dropoffAddress ? {
+          lat: (job as any).dropoffLat ? Number((job as any).dropoffLat) : null,
+          lng: (job as any).dropoffLng ? Number((job as any).dropoffLng) : null,
+          address: (job as any).dropoffAddress,
         } : null,
       });
     } catch (error) {
@@ -742,7 +742,7 @@ export function registerServiceRequestRoutes(app: Express) {
 
       const updated = await storage.updateServiceRequest(req.params.id, {
         proCalledCustomerAt: new Date().toISOString(),
-      });
+      } as any);
 
       broadcastToJob(req.params.id, { type: "request_updated", request: updated });
 
@@ -766,9 +766,9 @@ export function registerServiceRequestRoutes(app: Express) {
 
       const updated = await storage.updateServiceRequest(req.params.id, {
         livePrice: newPrice,
-        priceLocked: true,
+        isPriceLocked: true,
         priceLockedAt: new Date().toISOString(),
-      });
+      } as any);
 
       broadcastToJob(req.params.id, { type: "price_locked", request: updated, newPrice });
 

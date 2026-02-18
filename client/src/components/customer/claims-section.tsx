@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import {
   Shield, AlertTriangle, FileText, Calendar, DollarSign, 
-  Clock, ExternalLink, Plus, Upload, Eye
+  Clock, ExternalLink, Plus, Upload, Eye, X
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -50,13 +50,13 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
   // Fetch recent service requests
   const { data: serviceRequests } = useQuery<ServiceRequest[]>({
     queryKey: ["recent-services", customerId],
-    queryFn: () => apiRequest("/api/customer/recent-services"),
+    queryFn: () => apiRequest("/api/customer/recent-services").then(r => r.json()),
   });
 
   // Fetch claims
   const { data: claims, isLoading: claimsLoading } = useQuery<{ claims: LiabilityClaim[] }>({
     queryKey: ["my-claims", customerId],
-    queryFn: () => apiRequest("/api/claims/my-claims"),
+    queryFn: () => apiRequest("/api/claims/my-claims").then(r => r.json()),
   });
 
   // File claim mutation
@@ -68,7 +68,7 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
       description: string;
       estimated_damage?: number;
       photo_urls?: string[];
-    }) => apiRequest("/api/claims/file", { method: "POST", body: data }),
+    }) => apiRequest("/api/claims/file", { method: "POST", body: data }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-claims"] });
       setShowClaimDialog(false);

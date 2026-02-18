@@ -119,7 +119,7 @@ Consider: safety risk, tools required, skill level, physical difficulty, and cod
 
       // Update with analysis results
       const updatedRequest = await storage.updatePhotoQuoteRequest(request.id, {
-        aiDescription: JSON.stringify(mockAnalysis),
+        aiDescription: JSON.stringify(normalizedAnalysis),
         additionalServices: normalizedAnalysis.detectedItems,
         estimatedScope: normalizedAnalysis.estimatedVolume,
         estimatedPriceMin: normalizedAnalysis.priceRange.min,
