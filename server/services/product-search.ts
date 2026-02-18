@@ -4,6 +4,28 @@
  */
 
 import { pool } from "../db";
+import { CURATED_PRODUCTS } from "../data/george-app-knowledge.js";
+
+// ─── Curated Product Lookup ──────────────────
+// For common home repair items, return exact product recommendations
+export function getCuratedProduct(query: string): typeof CURATED_PRODUCTS[string] | null {
+  const lower = query.toLowerCase();
+  for (const [key, products] of Object.entries(CURATED_PRODUCTS)) {
+    const keyWords = key.replace(/_/g, " ");
+    if (lower.includes(keyWords) || keyWords.includes(lower.split(" ").slice(0, 2).join(" "))) {
+      return products;
+    }
+  }
+  // Check product names too
+  for (const [_key, products] of Object.entries(CURATED_PRODUCTS)) {
+    for (const p of products) {
+      if (lower.includes(p.name.toLowerCase().split(" ").slice(0, 2).join(" "))) {
+        return [p];
+      }
+    }
+  }
+  return null;
+}
 
 // ─── Retailer Configuration ──────────────────
 const RETAILERS = [
@@ -136,8 +158,36 @@ export async function searchProduct(
   query: string,
   category?: string,
   specifications?: Record<string, any>
-): Promise<{ results: ProductResult[]; dangerWarning?: string }> {
+): Promise<{ results: ProductResult[]; dangerWarning?: string; curatedRecommendation?: any; accuracy?: string; message?: string }> {
   const dangerFlag = isDangerousDIY(query);
+
+  // Check curated products first for accuracy
+  const curated = getCuratedProduct(query);
+  if (curated && curated.length > 0) {
+    const curatedResults: ProductResult[] = curated.map((p) => ({
+      productName: p.name,
+      price: null,
+      retailer: "Amazon (Recommended)",
+      url: `https://www.amazon.com/s?k=${encodeURIComponent(p.amazonSearchQuery)}&tag=uptend20-20`,
+      affiliateUrl: `https://www.amazon.com/s?k=${encodeURIComponent(p.amazonSearchQuery)}&tag=uptend20-20`,
+      inStock: true,
+      rating: null,
+      reviewCount: null,
+    }));
+    // Still search retailers for price comparison, but curated is the primary recommendation
+    const allResults: ProductResult[] = [...curatedResults];
+    const searches = RETAILERS.filter(r => r.name !== "Amazon").map(r => searchRetailer(query, r));
+    const results = await Promise.all(searches);
+    for (const r of results) allResults.push(...r);
+
+    return {
+      results: allResults,
+      curatedRecommendation: curated[0],
+      dangerWarning: dangerFlag ? "⚠️ This involves potentially dangerous work. Consider hiring a pro." : undefined,
+      accuracy: "HIGH — matched from curated product database",
+      message: `✅ **George's Pick:** ${curated[0].name} (~${curated[0].typicalPrice})\n${curated[0].notes}\nTop brands: ${curated[0].topBrands.join(", ")}`,
+    };
+  }
 
   // Build refined query from specs
   let refinedQuery = query;
