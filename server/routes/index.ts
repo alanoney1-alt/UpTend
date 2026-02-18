@@ -213,6 +213,9 @@ import { registerPurchaseRoutes } from "./purchases.routes";
 // Shopping Assistant + Tutorial routes
 import { registerShoppingRoutes } from "./shopping.routes";
 
+// Pro Field Assistant routes
+import { registerProFieldAssistRoutes } from "./pro-field-assist.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -449,6 +452,9 @@ export async function registerRoutes(
 
   // Register Shopping Assistant + Tutorial routes
   registerShoppingRoutes(app);
+
+  // Register Pro Field Assistant routes
+  registerProFieldAssistRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
