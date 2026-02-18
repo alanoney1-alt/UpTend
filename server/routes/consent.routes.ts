@@ -16,7 +16,7 @@ import {
   type ConsentMethod,
 } from "../services/consent-manager";
 
-export function registerConsentRoutes(app: Express): void {
+export async function registerConsentRoutes(app: Express): Promise<void> {
   // Get all consent statuses for a user
   app.get("/api/consent/:userId", async (req: Request, res: Response) => {
     try {
@@ -35,15 +35,18 @@ export function registerConsentRoutes(app: Express): void {
   // Grant consent
   app.post("/api/consent/grant", async (req: Request, res: Response) => {
     try {
-      const { userId, consentType, method, consentText, userType, ipAddress } = req.body;
-      if (!userId || !consentType || !method || !consentText) {
-        return res.status(400).json({ success: false, error: "Missing required fields" });
+      const { userId: rawUserId, customerId, consentType, method, consentText, userType, ipAddress } = req.body;
+      const userId = rawUserId || customerId;
+      const resolvedMethod = method || "api";
+      const resolvedConsentText = consentText || `User consented to ${consentType || "unknown"} via API`;
+      if (!userId || !consentType) {
+        return res.status(400).json({ success: false, error: "Missing required fields: userId (or customerId) and consentType are required" });
       }
       const consent = await grantConsent(
         userId,
         consentType as ConsentType,
-        method as ConsentMethod,
-        consentText,
+        resolvedMethod as ConsentMethod,
+        resolvedConsentText,
         { userType, ipAddress: ipAddress ?? req.ip }
       );
       res.json({ success: true, consent });
@@ -110,7 +113,7 @@ export function registerConsentRoutes(app: Express): void {
   });
 
   // Re-engagement cron endpoint
-  const { checkAndTriggerReengagement } = require("../services/reengagement");
+  const { checkAndTriggerReengagement } = await import("../services/reengagement.js");
   app.get("/api/cron/reengagement", async (_req: Request, res: Response) => {
     try {
       const result = await checkAndTriggerReengagement();

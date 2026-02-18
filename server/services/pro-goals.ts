@@ -211,11 +211,11 @@ export async function suggestGoal(proId: string): Promise<object> {
 
   // Get pro's zip for demand forecast
   const { rows: profile } = await pool.query(
-    `SELECT service_areas FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
+    `SELECT service_radius FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
     [proId]
   );
 
-  const zip = profile[0]?.service_areas?.[0] || "32801";
+  const zip = "32801";
 
   // Suggest 10-15% stretch goal
   const stretchMultiplier = monthlyEarnings > 0 ? 1.12 : 1.0;

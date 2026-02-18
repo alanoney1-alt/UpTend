@@ -26,7 +26,8 @@ export function registerCommunityEngineRoutes(app: Express) {
 
   app.post("/api/community/tips", async (req, res) => {
     try {
-      const { customerId, zip, category, title, content } = req.body;
+      const { customerId, zip: rawZip, zipCode, category, title, content } = req.body;
+      const zip = rawZip || zipCode;
       const result = await submitTip(customerId, zip, category, title, content);
       res.json(result);
     } catch (e: any) {

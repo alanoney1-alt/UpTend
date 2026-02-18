@@ -141,7 +141,7 @@ interface RetentionResult {
 export async function getCustomerRetention(proId: string): Promise<RetentionResult> {
   // Get all customers this pro has served
   const { rows: customerJobs } = await pool.query(
-    `SELECT sr.customer_id, u.full_name,
+    `SELECT sr.customer_id, COALESCE(u.first_name || ' ' || u.last_name, 'Customer') as full_name,
             COUNT(*)::int as total_jobs,
             MAX(sr.created_at) as last_job,
             AVG(hr.rating)::numeric(3,2) as avg_rating
@@ -149,7 +149,7 @@ export async function getCustomerRetention(proId: string): Promise<RetentionResu
      LEFT JOIN users u ON u.id::text = sr.customer_id::text
      LEFT JOIN hauler_reviews hr ON hr.service_request_id = sr.id
      WHERE sr.assigned_hauler_id = $1 AND sr.status = 'completed'
-     GROUP BY sr.customer_id, u.full_name
+     GROUP BY sr.customer_id, u.first_name, u.last_name
      ORDER BY last_job DESC`,
     [proId]
   );
