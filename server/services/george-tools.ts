@@ -4414,6 +4414,7 @@ import {
 } from "./product-search.js";
 import {
   findTutorial as _findTutorial,
+  getNextTutorial as _getNextTutorial,
   getSeasonalDIYProjects as _getSeasonalDIYProjects,
 } from "./tutorial-finder.js";
 import {
@@ -4454,13 +4455,28 @@ export async function comparePricesForGeorge(params: {
 }
 
 /**
- * findDIYTutorial — find YouTube tutorials for a task
+ * findDIYTutorial — find YouTube tutorials from top creators for a task.
+ * George knows 30+ top DIY creators and prioritizes trusted sources.
+ * Returns a top pick + alternatives. Customer can say "next video" to cycle.
  */
 export async function findDIYTutorialForGeorge(params: {
   task: string;
   difficulty?: string;
+  skipVideoIds?: string[];
 }): Promise<object> {
-  return _findTutorial(params.task, params.difficulty);
+  return _findTutorial(params.task, params.difficulty, params.skipVideoIds);
+}
+
+/**
+ * getNextTutorialVideo — when customer says "next" or doesn't like current video.
+ * Skips previously shown videos and finds the next best match.
+ */
+export async function getNextTutorialVideoForGeorge(params: {
+  task: string;
+  skipVideoIds: string[];
+  difficulty?: string;
+}): Promise<object> {
+  return _getNextTutorial(params.task, params.skipVideoIds, params.difficulty);
 }
 
 /**

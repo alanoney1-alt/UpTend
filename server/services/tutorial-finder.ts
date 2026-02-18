@@ -1,11 +1,104 @@
 /**
- * YouTube Tutorial Service — finds how-to videos, generates DIY project plans,
- * and suggests seasonal projects.
+ * YouTube Tutorial Service — finds how-to videos from top DIY creators,
+ * generates DIY project plans, and suggests seasonal projects.
+ * George knows the best creators and searches intelligently.
  */
 
 import { pool } from "../db";
 
-// ─── YouTube search ──────────────────────────
+// ─── TOP DIY CREATORS DATABASE ──────────────
+// George knows every major DIY/home repair creator and their specialties.
+// When searching, we boost results from trusted creators for accuracy.
+
+interface CreatorProfile {
+  channel: string;
+  channelId?: string;
+  specialties: string[];
+  style: string; // beginner-friendly, technical, entertaining, etc.
+  trustScore: number; // 1-10 — how reliable their advice is
+}
+
+const TOP_DIY_CREATORS: CreatorProfile[] = [
+  // PLUMBING
+  { channel: "Roger Wakefield", specialties: ["plumbing", "drain", "toilet", "water heater", "pipe", "faucet", "sewer", "garbage disposal"], style: "professional plumber, detailed explanations", trustScore: 10 },
+  { channel: "Got2Learn", specialties: ["plumbing", "pipe", "solder", "faucet", "valve", "drain", "toilet"], style: "concise pro tips, visual demonstrations", trustScore: 9 },
+  { channel: "Apple Drains", specialties: ["drain", "sewer", "french drain", "plumbing", "pipe"], style: "real job footage, drainage expert", trustScore: 9 },
+  
+  // ELECTRICAL
+  { channel: "Electrician U", specialties: ["electrical", "wiring", "outlet", "switch", "circuit", "panel", "GFCI", "breaker", "lighting"], style: "licensed electrician, safety-focused, educational", trustScore: 10 },
+  { channel: "How To Home", specialties: ["electrical", "outlet", "switch", "fan", "lighting", "dimmer", "doorbell"], style: "beginner-friendly electrical", trustScore: 8 },
+  { channel: "Sparky Channel", specialties: ["electrical", "wiring", "panel", "circuit", "smart home"], style: "professional electrician tutorials", trustScore: 9 },
+
+  // GENERAL HOME REPAIR & DIY
+  { channel: "Home Mender", specialties: ["drywall", "paint", "tile", "plumbing", "door", "window", "general repair"], style: "friendly handyman, step-by-step, beginner-focused", trustScore: 9 },
+  { channel: "Vancouver Carpenter", specialties: ["carpentry", "door", "trim", "baseboard", "framing", "cabinet", "wood"], style: "master carpenter, precision work", trustScore: 10 },
+  { channel: "Home RenoVision DIY", specialties: ["bathroom", "tile", "shower", "flooring", "drywall", "general renovation"], style: "renovation contractor, thorough explanations", trustScore: 9 },
+  { channel: "See Jane Drill", specialties: ["general repair", "paint", "caulk", "drywall", "hardware", "hanging", "beginner"], style: "beginner-friendly, simple explanations", trustScore: 8 },
+  { channel: "This Old House", specialties: ["general repair", "plumbing", "electrical", "HVAC", "paint", "flooring", "renovation", "exterior"], style: "classic PBS, expert contractors, comprehensive", trustScore: 10 },
+  { channel: "The Honest Carpenter", specialties: ["carpentry", "trim", "door", "window", "framing", "baseboard", "crown molding"], style: "professional carpenter, detailed technique", trustScore: 9 },
+
+  // HVAC
+  { channel: "HVAC School", specialties: ["HVAC", "AC", "air conditioner", "furnace", "thermostat", "filter", "ductwork", "refrigerant"], style: "HVAC technician training, very technical", trustScore: 10 },
+  { channel: "AC Service Tech", specialties: ["AC", "HVAC", "refrigerant", "compressor", "condenser", "thermostat"], style: "professional HVAC tech, diagnostic focused", trustScore: 9 },
+  { channel: "Word of Advice TV", specialties: ["HVAC", "AC", "thermostat", "smart thermostat", "filter", "efficiency"], style: "homeowner-friendly HVAC tips", trustScore: 8 },
+
+  // APPLIANCE REPAIR
+  { channel: "Bens Appliances and Junk", specialties: ["appliance", "washer", "dryer", "dishwasher", "refrigerator", "oven", "microwave", "ice maker"], style: "appliance repair tech, diagnostic walkthroughs", trustScore: 9 },
+  { channel: "AppliancePartsPros", specialties: ["appliance", "washer", "dryer", "dishwasher", "fridge", "oven", "parts replacement"], style: "parts-focused, step-by-step replacements", trustScore: 8 },
+  { channel: "PartSelect", specialties: ["appliance", "washer", "dryer", "dishwasher", "refrigerator", "range"], style: "clear part replacement guides", trustScore: 8 },
+
+  // EXTERIOR & LANDSCAPING
+  { channel: "LawnCareNut", specialties: ["lawn", "grass", "fertilizer", "weed", "landscaping", "sprinkler", "mowing"], style: "lawn care obsessive, detailed programs", trustScore: 9 },
+  { channel: "Ryan Knorr", specialties: ["lawn", "landscaping", "grass", "overseeding", "fertilizer"], style: "lawn transformation specialist", trustScore: 8 },
+  { channel: "Everyday Home Repairs", specialties: ["exterior", "siding", "gutter", "deck", "fence", "concrete", "caulk", "weatherproof"], style: "practical homeowner repairs, no-nonsense", trustScore: 9 },
+
+  // FLOORING
+  { channel: "Home RenoVision DIY", specialties: ["tile", "flooring", "laminate", "vinyl plank", "hardwood", "grout"], style: "flooring installation expert", trustScore: 9 },
+  { channel: "Fix This Build That", specialties: ["woodworking", "furniture", "flooring", "shelving", "cabinet", "build"], style: "maker/builder, polished production", trustScore: 8 },
+
+  // PAINTING
+  { channel: "The Idaho Painter", specialties: ["paint", "painting", "interior paint", "exterior paint", "trim", "cabinet painting", "spray"], style: "professional painter, technique-focused", trustScore: 10 },
+  { channel: "Home Mender", specialties: ["paint", "drywall repair", "texture matching", "primer", "caulk"], style: "practical painting and patching", trustScore: 9 },
+
+  // SMART HOME
+  { channel: "Smart Home Solver", specialties: ["smart home", "smart lock", "Ring", "Nest", "WiFi", "automation", "security camera", "smart thermostat"], style: "smart home integration expert", trustScore: 9 },
+  { channel: "Shane Whatley", specialties: ["smart home", "Home Assistant", "automation", "smart lock", "security"], style: "home automation deep dives", trustScore: 8 },
+
+  // AUTO / VEHICLE
+  { channel: "ChrisFix", specialties: ["car", "auto", "oil change", "brake", "engine", "tire", "car repair", "diagnostics", "OBD"], style: "most popular auto DIY, excellent visuals, beginner-friendly", trustScore: 10 },
+  { channel: "Scotty Kilmer", specialties: ["car", "auto", "engine", "transmission", "diagnostics", "maintenance", "buying"], style: "veteran mechanic, opinion-heavy, entertaining", trustScore: 8 },
+  { channel: "South Main Auto", specialties: ["auto", "diagnostics", "engine", "electrical", "OBD", "car repair"], style: "real shop diagnostics, very technical", trustScore: 9 },
+  { channel: "Engineering Explained", specialties: ["car", "engine", "transmission", "brake", "suspension", "automotive engineering"], style: "engineering-focused explanations", trustScore: 9 },
+  { channel: "1A Auto", specialties: ["car", "auto parts", "brake", "suspension", "engine", "replacement"], style: "step-by-step parts replacement, all makes/models", trustScore: 8 },
+
+  // POOL
+  { channel: "Swim University", specialties: ["pool", "pool cleaning", "pool chemistry", "hot tub", "pool pump", "pool filter"], style: "pool care expert, clear explanations", trustScore: 10 },
+
+  // PRESSURE WASHING
+  { channel: "SESW Softwash", specialties: ["pressure washing", "soft wash", "exterior cleaning", "roof cleaning", "concrete cleaning"], style: "professional pressure washer, technique + business", trustScore: 9 },
+];
+
+// Map task keywords to optimal search queries for precision
+const SEARCH_REFINEMENTS: Record<string, string[]> = {
+  "running toilet": ["how to fix a running toilet", "toilet flapper replacement", "toilet fill valve repair"],
+  "leaky faucet": ["how to fix a leaky faucet", "faucet cartridge replacement", "kitchen faucet dripping"],
+  "clogged drain": ["how to unclog a drain without chemicals", "snake a drain DIY", "slow drain fix"],
+  "garbage disposal": ["garbage disposal not working reset", "garbage disposal jammed fix", "replace garbage disposal"],
+  "drywall hole": ["how to patch drywall hole", "drywall repair for beginners", "fix hole in wall"],
+  "squeaky door": ["fix squeaky door hinge", "door hinge lubrication", "squeaky hinge WD40 alternative"],
+  "ceiling fan": ["install ceiling fan", "ceiling fan wobble fix", "ceiling fan direction switch"],
+  "thermostat": ["replace thermostat DIY", "smart thermostat installation", "thermostat wiring guide"],
+  "water heater": ["water heater not heating", "flush water heater DIY", "water heater pilot light"],
+  "gutter": ["clean gutters safely", "gutter guard installation", "downspout clogged fix"],
+  "pressure wash": ["pressure washing driveway technique", "pressure washer PSI settings", "how to pressure wash house"],
+  "paint": ["how to paint a room like a pro", "interior painting tips", "cutting in paint technique"],
+  "tile grout": ["regrout tile shower", "grout repair bathroom", "how to regrout tile"],
+  "ac filter": ["change AC filter", "HVAC filter replacement", "air filter size guide"],
+  "oil change": ["how to change oil yourself", "oil change for beginners", "what oil does my car need"],
+  "brake pads": ["how to change brake pads", "brake pad replacement DIY", "front brake job"],
+};
+
+// ─── YouTube search (enhanced) ───────────────
 interface TutorialResult {
   videoId: string;
   title: string;
@@ -14,9 +107,49 @@ interface TutorialResult {
   thumbnail: string;
   viewCount: number | null;
   url: string;
+  isTrustedCreator: boolean;
+  creatorTrustScore: number;
 }
 
-async function searchYouTube(query: string, maxResults = 3): Promise<TutorialResult[]> {
+function findRelevantCreators(taskDescription: string): CreatorProfile[] {
+  const lower = taskDescription.toLowerCase();
+  return TOP_DIY_CREATORS.filter((c) =>
+    c.specialties.some((s) => lower.includes(s) || s.includes(lower.split(" ")[0]))
+  ).sort((a, b) => b.trustScore - a.trustScore);
+}
+
+function buildSmartQueries(taskDescription: string): string[] {
+  const lower = taskDescription.toLowerCase();
+  
+  // Check for refined search terms
+  for (const [key, queries] of Object.entries(SEARCH_REFINEMENTS)) {
+    if (lower.includes(key)) return queries;
+  }
+
+  // Find top creators for this topic
+  const creators = findRelevantCreators(taskDescription);
+  const topCreator = creators[0];
+
+  const queries: string[] = [];
+  
+  // Creator-specific search (most accurate)
+  if (topCreator) {
+    queries.push(`${topCreator.channel} ${taskDescription}`);
+  }
+  
+  // General searches with different angles
+  queries.push(`how to ${taskDescription} step by step`);
+  queries.push(`${taskDescription} DIY fix for beginners`);
+  
+  // Brand/model specific if mentioned
+  if (lower.match(/\b(ge|samsung|lg|whirlpool|maytag|frigidaire|kenmore|bosch|kitchenaid|kohler|moen|delta)\b/)) {
+    queries.push(`${taskDescription} repair`);
+  }
+
+  return queries.slice(0, 3);
+}
+
+async function searchYouTube(query: string, maxResults = 5): Promise<TutorialResult[]> {
   const apiKey = process.env.YOUTUBE_API_KEY || process.env.GOOGLE_API_KEY;
 
   if (apiKey) {
@@ -45,21 +178,28 @@ async function searchYouTube(query: string, maxResults = 3): Promise<TutorialRes
 
         return (data.items || []).slice(0, maxResults).map((item: any) => {
           const videoId = item.id?.videoId || "";
+          const channelTitle = item.snippet?.channelTitle || "";
+          const trusted = TOP_DIY_CREATORS.find(
+            (c) => channelTitle.toLowerCase().includes(c.channel.toLowerCase()) ||
+                   c.channel.toLowerCase().includes(channelTitle.toLowerCase())
+          );
           return {
             videoId,
             title: item.snippet?.title || query,
-            channel: item.snippet?.channelTitle || "",
+            channel: channelTitle,
             duration: stats[videoId]?.duration || "",
             thumbnail: item.snippet?.thumbnails?.medium?.url || item.snippet?.thumbnails?.default?.url || "",
             viewCount: stats[videoId]?.viewCount || null,
             url: `https://www.youtube.com/watch?v=${videoId}`,
+            isTrustedCreator: !!trusted,
+            creatorTrustScore: trusted?.trustScore || 5,
           };
         });
       }
     } catch {}
   }
 
-  // Fallback: return YouTube search URL with oEmbed metadata attempt
+  // Fallback: return YouTube search URL
   const fallbackUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
   return [{
     videoId: "",
@@ -69,7 +209,22 @@ async function searchYouTube(query: string, maxResults = 3): Promise<TutorialRes
     thumbnail: "",
     viewCount: null,
     url: fallbackUrl,
+    isTrustedCreator: false,
+    creatorTrustScore: 0,
   }];
+}
+
+// Rank results: trusted creators first, then by views
+function rankResults(results: TutorialResult[]): TutorialResult[] {
+  return [...results].sort((a, b) => {
+    // Trusted creators always rank higher
+    if (a.isTrustedCreator && !b.isTrustedCreator) return -1;
+    if (!a.isTrustedCreator && b.isTrustedCreator) return 1;
+    // Among trusted, sort by trust score
+    if (a.isTrustedCreator && b.isTrustedCreator) return b.creatorTrustScore - a.creatorTrustScore;
+    // Among untrusted, sort by views
+    return (b.viewCount || 0) - (a.viewCount || 0);
+  });
 }
 
 /** Fetch video metadata via YouTube oEmbed (no API key needed) */
@@ -151,21 +306,38 @@ function getDangerWarning(task: string): string | null {
 
 export async function findTutorial(
   taskDescription: string,
-  difficulty?: string
+  difficulty?: string,
+  skipVideoIds?: string[] // For "next video" — skip previously shown
 ): Promise<object> {
   const dangerWarning = getDangerWarning(taskDescription);
 
-  const queries = [
-    `how to ${taskDescription} DIY`,
-    `${taskDescription} tutorial step by step`,
-    `DIY ${taskDescription} for beginners`,
-  ];
+  // Smart query building — uses creator knowledge + refined searches
+  const queries = buildSmartQueries(taskDescription);
+  const relevantCreators = findRelevantCreators(taskDescription);
 
-  // Use first query for search
-  const videos = await searchYouTube(queries[0]);
+  // Search with multiple queries for better coverage, get more results for "next" functionality
+  const allResults: TutorialResult[] = [];
+  const seenIds = new Set<string>(skipVideoIds || []);
+
+  for (const query of queries) {
+    const results = await searchYouTube(query, 5);
+    for (const r of results) {
+      if (r.videoId && !seenIds.has(r.videoId)) {
+        seenIds.add(r.videoId);
+        allResults.push(r);
+      }
+    }
+  }
+
+  // Rank: trusted creators first, then by views
+  const ranked = rankResults(allResults);
+
+  // Top pick + alternatives for "next video" navigation
+  const topPick = ranked[0];
+  const alternatives = ranked.slice(1);
 
   // Save to DB
-  for (const v of videos) {
+  for (const v of ranked.slice(0, 5)) {
     if (v.videoId) {
       try {
         await pool.query(
@@ -177,26 +349,60 @@ export async function findTutorial(
     }
   }
 
-  // Build structured video data for in-app players
-  const structuredVideos = videos.filter(v => v.videoId).map(v => ({
+  // Build structured video data for in-app player
+  const structuredVideos = ranked.filter(v => v.videoId).map(v => ({
     title: v.title,
     videoId: v.videoId,
     thumbnailUrl: v.thumbnail || `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`,
     duration: v.duration,
     channel: v.channel,
     url: v.url,
+    isTrustedCreator: v.isTrustedCreator,
+    trustScore: v.creatorTrustScore,
   }));
+
+  // Creator context for George to explain WHY this video
+  const creatorContext = topPick?.isTrustedCreator
+    ? `This video is from ${topPick.channel}, one of the most trusted ${relevantCreators[0]?.specialties[0] || "DIY"} channels on YouTube.`
+    : topPick?.channel
+    ? `This video is from ${topPick.channel}${topPick.viewCount ? ` (${(topPick.viewCount / 1000).toFixed(0)}K views)` : ""}.`
+    : "";
+
+  // George's walkthrough digest — key info George can use to coach the customer
+  const georgeDigest = {
+    task: taskDescription,
+    topVideo: topPick ? { title: topPick.title, channel: topPick.channel, trusted: topPick.isTrustedCreator } : null,
+    totalAlternatives: alternatives.length,
+    relevantCreators: relevantCreators.slice(0, 3).map(c => ({ channel: c.channel, style: c.style, trust: c.trustScore })),
+    canShowNext: alternatives.length > 0,
+    skipVideoIds: ranked.map(r => r.videoId).filter(Boolean), // pass to next call for pagination
+  };
 
   return {
     task: taskDescription,
     difficulty: difficulty || "medium",
-    videos,
+    videos: ranked.slice(0, 5),
     structuredVideos,
+    topPick: structuredVideos[0] || null,
+    alternatives: structuredVideos.slice(1),
+    georgeDigest,
     dangerWarning,
+    creatorContext,
     message: dangerWarning
-      ? `${dangerWarning}\n\nBut here are tutorials if you want to learn more:\n${videos.map((v, i) => `${i + 1}. 🎥 ${v.title} (${v.channel}) — ${v.url}`).join("\n")}`
-      : `🎥 Top tutorials for "${taskDescription}":\n${videos.map((v, i) => `${i + 1}. **${v.title}** by ${v.channel}${v.duration ? ` (${v.duration})` : ""}\n   ${v.url}`).join("\n")}`,
+      ? `${dangerWarning}\n\nBut here are tutorials if you want to learn more:\n${ranked.slice(0, 3).map((v, i) => `${i + 1}. 🎥 ${v.title} (${v.channel}) — ${v.url}`).join("\n")}`
+      : topPick?.videoId
+      ? `🎥 **Best match:** "${topPick.title}" by **${topPick.channel}**${topPick.isTrustedCreator ? " ⭐" : ""}${topPick.duration ? ` (${topPick.duration})` : ""}\n${creatorContext}\n\n${alternatives.length > 0 ? `Don't like this one? I have ${alternatives.length} more options — just say "next video" 👉` : ""}`
+      : `🎥 Top tutorials for "${taskDescription}":\n${ranked.slice(0, 3).map((v, i) => `${i + 1}. **${v.title}** by ${v.channel}${v.duration ? ` (${v.duration})` : ""}\n   ${v.url}`).join("\n")}`,
   };
+}
+
+/** Get next video when customer wants a different one */
+export async function getNextTutorial(
+  taskDescription: string,
+  skipVideoIds: string[],
+  difficulty?: string
+): Promise<object> {
+  return findTutorial(taskDescription, difficulty, skipVideoIds);
 }
 
 export async function getTutorialForMaintenance(

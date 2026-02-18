@@ -93,7 +93,8 @@ CAPABILITIES:
 - Shopping assistant: call search_products to find products at Home Depot, Lowe's, Walmart, Amazon, Harbor Freight, Ace Hardware with buy links
 - Product recommendations: call get_product_recommendation to suggest exact products based on their home profile (e.g., "Your HVAC uses 20x25x1 filters")
 - Price comparison: call compare_prices for side-by-side pricing across retailers
-- YouTube tutorials: call find_diy_tutorial to find how-to videos for any home task — always share top 3 videos with links
+- YouTube tutorials: call find_diy_tutorial to find the BEST video for any home/auto task. You know 30+ top creators by name (Roger Wakefield for plumbing, ChrisFix for auto, This Old House, Electrician U, etc.) and prioritize trusted sources. Show the #1 pick with the creator context ("This is from Roger Wakefield — he's a master plumber with 20+ years experience"). If customer says "next", "show me another", or doesn't like the video, call get_next_tutorial_video with the skip_video_ids to show alternatives. Videos play INSIDE the app — never link externally.
+- Video walkthrough: After showing a video, offer to walk them through the repair yourself: "Want me to walk you through this step by step while you watch?" Then break it down conversationally — explain each step, ask if they're ready for the next one, answer questions as they go. Be their virtual handyman buddy.
 - Shopping list: call get_shopping_list to compile everything they should buy (overdue maintenance, seasonal, project supplies)
 - DIY projects: call start_diy_project when customer wants to do a project — creates full plan with steps, tools, products, tutorials
 - Seasonal DIY: call get_seasonal_diy_suggestions for what to work on this month
@@ -1122,14 +1123,28 @@ const TOOL_DEFINITIONS: any[] = [
   },
   {
     name: "find_diy_tutorial",
-    description: "Find YouTube tutorials for a DIY task. Returns top videos with links. Flags dangerous tasks and recommends booking a pro.",
+    description: "Find YouTube tutorials from top DIY creators for a task. George knows 30+ trusted creators (Roger Wakefield for plumbing, ChrisFix for auto, This Old House, etc.) and prioritizes their content. Returns best match + alternatives. Customer can say 'next video' to see more options. Also returns creator context so you can explain WHY you picked this video.",
     input_schema: {
       type: "object",
       properties: {
-        task: { type: "string", description: "What the customer wants to learn, e.g. 'flush water heater', 'change HVAC filter'" },
+        task: { type: "string", description: "What the customer wants to learn, e.g. 'flush water heater', 'fix running toilet', 'change brake pads'" },
         difficulty: { type: "string", description: "Optional: easy, medium, hard" },
+        skip_video_ids: { type: "array", items: { type: "string" }, description: "Video IDs to skip (for 'next video' pagination)" },
       },
       required: ["task"],
+    },
+  },
+  {
+    name: "get_next_tutorial_video",
+    description: "Get the next tutorial video when customer says 'next', 'show me another', 'different video', etc. Skips previously shown videos and finds the next best match from trusted creators.",
+    input_schema: {
+      type: "object",
+      properties: {
+        task: { type: "string", description: "Original task description" },
+        skip_video_ids: { type: "array", items: { type: "string" }, description: "All video IDs already shown to customer" },
+        difficulty: { type: "string", description: "Optional: easy, medium, hard" },
+      },
+      required: ["task", "skip_video_ids"],
     },
   },
   {
@@ -2077,7 +2092,9 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
     case "compare_prices":
       return tools.comparePricesForGeorge({ productName: input.product_name, specifications: input.specifications });
     case "find_diy_tutorial":
-      return tools.findDIYTutorialForGeorge({ task: input.task, difficulty: input.difficulty });
+      return tools.findDIYTutorialForGeorge({ task: input.task, difficulty: input.difficulty, skipVideoIds: input.skip_video_ids });
+    case "get_next_tutorial_video":
+      return tools.getNextTutorialVideoForGeorge({ task: input.task, skipVideoIds: input.skip_video_ids, difficulty: input.difficulty });
     case "get_shopping_list":
       return tools.getShoppingListForGeorge({ customerId: input.customer_id });
     case "start_diy_project":
