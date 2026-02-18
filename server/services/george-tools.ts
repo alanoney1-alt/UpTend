@@ -4717,3 +4717,251 @@ export async function tool_vehicle_maintenance_due(params: {
 }): Promise<object> {
   return _getMaintenanceDue(params.customerId);
 }
+
+// ─────────────────────────────────────────────
+// DIY-to-Pro Recruitment Pipeline Tools
+// ─────────────────────────────────────────────
+
+const DIY_CATEGORY_TO_SERVICE: Record<string, { serviceType: string; label: string }> = {
+  plumbing: { serviceType: "plumbing", label: "Plumbing" },
+  electrical: { serviceType: "handyman", label: "Electrical / Handyman" },
+  hvac: { serviceType: "hvac", label: "HVAC" },
+  appliance: { serviceType: "appliance_repair", label: "Appliance Repair" },
+  carpentry: { serviceType: "handyman", label: "Carpentry / Handyman" },
+  painting: { serviceType: "painting", label: "Painting" },
+  drywall: { serviceType: "handyman", label: "Drywall / Handyman" },
+  flooring: { serviceType: "flooring", label: "Flooring" },
+  landscaping: { serviceType: "lawn_care", label: "Lawn & Landscaping" },
+  cleaning: { serviceType: "cleaning", label: "Cleaning" },
+  roofing: { serviceType: "roofing", label: "Roofing" },
+  general: { serviceType: "handyman", label: "General Handyman" },
+};
+
+const ORLANDO_EARNINGS: Record<string, { low: number; high: number; perJob: string }> = {
+  plumbing: { low: 4200, high: 7500, perJob: "$150-$450" },
+  handyman: { low: 3200, high: 5800, perJob: "$75-$250" },
+  hvac: { low: 4800, high: 8200, perJob: "$200-$600" },
+  appliance_repair: { low: 3500, high: 6000, perJob: "$100-$350" },
+  painting: { low: 3000, high: 5500, perJob: "$200-$800" },
+  flooring: { low: 3800, high: 6500, perJob: "$300-$1,200" },
+  lawn_care: { low: 2800, high: 5000, perJob: "$50-$200" },
+  cleaning: { low: 2500, high: 4500, perJob: "$80-$250" },
+  roofing: { low: 5000, high: 9000, perJob: "$500-$2,000" },
+};
+
+/** Log a DIY completion after customer finishes a coached repair */
+export async function tool_log_diy_completion(params: {
+  customerId: string;
+  repairCategory: string;
+  repairTitle: string;
+  difficulty?: string;
+  timeTakenMinutes?: number;
+  selfRating?: number;
+}): Promise<object> {
+  try {
+    const result = await pool.query(
+      `INSERT INTO diy_completions (customer_id, repair_category, repair_title, difficulty, time_taken_minutes, self_rating)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [params.customerId, params.repairCategory.toLowerCase(), params.repairTitle, params.difficulty || "medium", params.timeTakenMinutes || null, params.selfRating || null]
+    );
+    const countResult = await pool.query(
+      `SELECT COUNT(*) as total FROM diy_completions WHERE customer_id = $1`,
+      [params.customerId]
+    );
+    return {
+      success: true,
+      completion: result.rows[0],
+      totalCompletions: parseInt(countResult.rows[0].total),
+    };
+  } catch (err: any) {
+    return { error: "Failed to log DIY completion", details: err.message };
+  }
+}
+
+/** Check if customer has hit a recruitment milestone (3/5/10 completions) */
+export async function tool_check_pro_recruitment(params: {
+  customerId: string;
+}): Promise<object> {
+  try {
+    const countResult = await pool.query(
+      `SELECT COUNT(*) as total FROM diy_completions WHERE customer_id = $1`,
+      [params.customerId]
+    );
+    const total = parseInt(countResult.rows[0].total);
+
+    // Check existing conversion record
+    const convResult = await pool.query(
+      `SELECT * FROM diy_to_pro_conversions WHERE customer_id = $1`,
+      [params.customerId]
+    );
+    const existing = convResult.rows[0];
+
+    // Respect 30-day cooldown after decline
+    if (existing?.status === "declined" && existing.pitch_shown_at) {
+      const daysSince = (Date.now() - new Date(existing.pitch_shown_at).getTime()) / (1000 * 60 * 60 * 24);
+      if (daysSince < 30) {
+        return { shouldPitch: false, reason: "declined_recently", totalCompletions: total, daysUntilNextPitch: Math.ceil(30 - daysSince) };
+      }
+    }
+
+    // Already in pipeline
+    if (existing?.status === "applied" || existing?.status === "approved" || existing?.status === "interested") {
+      return { shouldPitch: false, reason: "already_in_pipeline", status: existing.status, totalCompletions: total };
+    }
+
+    let milestone: number | null = null;
+    let pitchLevel: string = "none";
+    let pitchMessage: string = "";
+
+    if (total >= 10) {
+      milestone = 10;
+      pitchLevel = "full_application";
+      pitchMessage = "You're basically a pro already! I've got your skill profile ready — want to start earning?";
+    } else if (total >= 5) {
+      milestone = 5;
+      pitchLevel = "earnings_pitch";
+      pitchMessage = `You've completed ${total} repairs. Handymen in Orlando earn $3,200-$5,800/mo on UpTend. Want to see what YOU could make?`;
+    } else if (total >= 3) {
+      milestone = 3;
+      pitchLevel = "casual_mention";
+      pitchMessage = "You're getting good at this! Did you know you could earn doing this for others?";
+    }
+
+    if (milestone && !existing) {
+      // Record the pitch
+      await pool.query(
+        `INSERT INTO diy_to_pro_conversions (customer_id, total_diy_completed, trigger_milestone, pitch_shown_at, status)
+         VALUES ($1, $2, $3, NOW(), 'pitched')
+         ON CONFLICT (customer_id) DO UPDATE SET
+           total_diy_completed = $2, trigger_milestone = $3, pitch_shown_at = NOW(), status = 'pitched'`,
+        [params.customerId, total, milestone]
+      );
+    }
+
+    return {
+      shouldPitch: milestone !== null,
+      totalCompletions: total,
+      milestone,
+      pitchLevel,
+      pitchMessage,
+      note: milestone ? "Your DIY history counts toward certification — you're already ahead of most applicants." : undefined,
+    };
+  } catch (err: any) {
+    return { error: "Failed to check pro recruitment", details: err.message };
+  }
+}
+
+/** Show earnings potential based on customer's specific DIY skills */
+export async function tool_show_pro_earnings_preview(params: {
+  customerId: string;
+}): Promise<object> {
+  try {
+    const completions = await pool.query(
+      `SELECT repair_category, COUNT(*) as count FROM diy_completions
+       WHERE customer_id = $1 GROUP BY repair_category ORDER BY count DESC`,
+      [params.customerId]
+    );
+
+    if (completions.rows.length === 0) {
+      return { earningsPreview: null, message: "No DIY completions yet." };
+    }
+
+    const skills: string[] = [];
+    let totalLow = 0;
+    let totalHigh = 0;
+    const breakdown: any[] = [];
+    const seenTypes = new Set<string>();
+
+    for (const row of completions.rows) {
+      const mapping = DIY_CATEGORY_TO_SERVICE[row.repair_category] || DIY_CATEGORY_TO_SERVICE.general;
+      if (seenTypes.has(mapping.serviceType)) continue;
+      seenTypes.add(mapping.serviceType);
+
+      const earnings = ORLANDO_EARNINGS[mapping.serviceType] || ORLANDO_EARNINGS.handyman;
+      skills.push(mapping.label);
+      totalLow += earnings.low;
+      totalHigh += earnings.high;
+      breakdown.push({
+        skill: mapping.label,
+        monthlyRange: `$${earnings.low.toLocaleString()}-$${earnings.high.toLocaleString()}`,
+        perJob: earnings.perJob,
+        diyCompletions: parseInt(row.count),
+      });
+    }
+
+    const cappedLow = Math.min(totalLow, 8000);
+    const cappedHigh = Math.min(totalHigh, 15000);
+
+    return {
+      skills,
+      totalMonthlyPotential: `$${cappedLow.toLocaleString()}-$${cappedHigh.toLocaleString()}`,
+      breakdown,
+      message: `You've already proven you can do ${skills.join(", ")} — that's $${cappedLow.toLocaleString()}-$${cappedHigh.toLocaleString()}/month potential as an UpTend pro in Orlando.`,
+      note: "Your DIY history counts toward certification — you're already ahead of most applicants.",
+    };
+  } catch (err: any) {
+    return { error: "Failed to generate earnings preview", details: err.message };
+  }
+}
+
+/** Pre-fill pro application with DIY history as portfolio */
+export async function tool_start_pro_application(params: {
+  customerId: string;
+}): Promise<object> {
+  try {
+    const completions = await pool.query(
+      `SELECT * FROM diy_completions WHERE customer_id = $1 ORDER BY completed_at DESC`,
+      [params.customerId]
+    );
+
+    if (completions.rows.length === 0) {
+      return { error: "No DIY completions found — customer needs to complete at least 3 DIY repairs first." };
+    }
+
+    // Build skill portfolio from DIY history
+    const skillMap: Record<string, { count: number; avgRating: number; repairs: string[] }> = {};
+    for (const c of completions.rows) {
+      if (!skillMap[c.repair_category]) {
+        skillMap[c.repair_category] = { count: 0, avgRating: 0, repairs: [] };
+      }
+      skillMap[c.repair_category].count++;
+      if (c.self_rating) skillMap[c.repair_category].avgRating += c.self_rating;
+      skillMap[c.repair_category].repairs.push(c.repair_title);
+    }
+
+    const portfolio = Object.entries(skillMap).map(([category, data]) => ({
+      category,
+      serviceType: (DIY_CATEGORY_TO_SERVICE[category] || DIY_CATEGORY_TO_SERVICE.general).serviceType,
+      completedRepairs: data.count,
+      avgSelfRating: data.count > 0 ? Math.round((data.avgRating / data.count) * 10) / 10 : null,
+      repairTitles: data.repairs.slice(0, 5),
+    }));
+
+    // Update conversion status
+    await pool.query(
+      `INSERT INTO diy_to_pro_conversions (customer_id, total_diy_completed, trigger_milestone, status, applied_at)
+       VALUES ($1, $2, $3, 'applied', NOW())
+       ON CONFLICT (customer_id) DO UPDATE SET
+         total_diy_completed = $2, status = 'applied', applied_at = NOW()`,
+      [params.customerId, completions.rows.length, completions.rows.length >= 10 ? 10 : completions.rows.length >= 5 ? 5 : 3]
+    );
+
+    return {
+      success: true,
+      applicationPreFilled: true,
+      customerId: params.customerId,
+      totalDiyCompleted: completions.rows.length,
+      portfolio,
+      serviceTypes: portfolio.map(p => p.serviceType),
+      message: "Application started! Your DIY history has been added as your skill portfolio. You're already ahead of most applicants.",
+      nextSteps: [
+        "Complete your profile (name, contact, service area)",
+        "Upload insurance/license if applicable",
+        "Pass background check",
+        "You're ready to start earning!",
+      ],
+    };
+  } catch (err: any) {
+    return { error: "Failed to start pro application", details: err.message };
+  }
+}

@@ -117,6 +117,16 @@ DIY COACHING:
 - ALWAYS show DIY disclaimer first (get_diy_disclaimer_consent) before any repair coaching
 - Escalate dangerous tasks to a pro immediately — safety first
 
+DIY-TO-PRO RECRUITMENT:
+- After EVERY successful DIY completion, call log_diy_completion then check_pro_recruitment
+- At 3 completions: casual mention — "You're getting good at this! Did you know you could earn doing this for others?"
+- At 5 completions: stronger pitch with earnings — "You've completed 5 repairs. Handymen in Orlando earn $3,200-$5,800/mo on UpTend. Want to see what YOU could make?" Then call show_pro_earnings_preview if they're interested.
+- At 10 completions: full pitch with pre-filled application — "You're basically a pro already! I've got your skill profile ready — want to start earning?" Then call start_pro_application if they say yes.
+- NEVER be pushy. If they say no or "not interested", respect it. Don't mention again for 30 days.
+- Their DIY completion history becomes their skill portfolio when they apply
+- Mention: "Your DIY history counts toward certification — you're already ahead of most applicants"
+- Pros are 1099 independent contractors — NEVER use "wage/hourly/salary/employee". Use "earnings/payout/per job".
+
 HOME UTILITIES TRACKING:
 - Know their trash/recycling schedule, sprinkler settings, water restrictions, utility providers
 - Tonight checklist, custom home reminders, full home operating system dashboard
@@ -1792,6 +1802,51 @@ const TOOL_DEFINITIONS: any[] = [
       required: ["business_account_id"],
     },
   },
+
+  // ── DIY-to-Pro Recruitment Pipeline ─────────────────────
+  {
+    name: "log_diy_completion",
+    description: "Log a DIY repair completion after customer finishes a coached repair session. Call this after EVERY successful DIY completion.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string" },
+        repair_category: { type: "string", description: "plumbing, electrical, hvac, appliance, carpentry, painting, drywall, flooring, landscaping, cleaning, roofing, general" },
+        repair_title: { type: "string", description: "Short description of what was repaired" },
+        difficulty: { type: "string", description: "easy, medium, hard" },
+        time_taken_minutes: { type: "number" },
+        self_rating: { type: "number", description: "Customer self-rating 1-5" },
+      },
+      required: ["customer_id", "repair_category", "repair_title"],
+    },
+  },
+  {
+    name: "check_pro_recruitment",
+    description: "Check if customer has hit a DIY-to-pro recruitment milestone (3/5/10 completions). Call AFTER every log_diy_completion. Returns pitch level and message if they qualify.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "show_pro_earnings_preview",
+    description: "Show earning potential based on customer's specific DIY repair skills. Maps their completed repair categories to pro service types and shows Orlando earnings data.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "start_pro_application",
+    description: "Pre-fill pro signup application with customer's DIY history as their skill portfolio. Their completion history counts toward certification.",
+    input_schema: {
+      type: "object",
+      properties: { customer_id: { type: "string" } },
+      required: ["customer_id"],
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────
@@ -2131,6 +2186,20 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return await tools.getDocumentTrackerForGeorge({ businessAccountId: input.business_account_id });
     case "get_compliance_report":
       return await tools.getComplianceReportForGeorge({ businessAccountId: input.business_account_id });
+
+    // DIY-to-Pro Recruitment Pipeline
+    case "log_diy_completion":
+      return await tools.tool_log_diy_completion({
+        customerId: input.customer_id, repairCategory: input.repair_category,
+        repairTitle: input.repair_title, difficulty: input.difficulty,
+        timeTakenMinutes: input.time_taken_minutes, selfRating: input.self_rating,
+      });
+    case "check_pro_recruitment":
+      return await tools.tool_check_pro_recruitment({ customerId: input.customer_id });
+    case "show_pro_earnings_preview":
+      return await tools.tool_show_pro_earnings_preview({ customerId: input.customer_id });
+    case "start_pro_application":
+      return await tools.tool_start_pro_application({ customerId: input.customer_id });
 
     default:
       return { error: `Unknown tool: ${name}` };
