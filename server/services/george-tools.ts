@@ -3400,6 +3400,107 @@ import {
   collectFromProReport as _collectFromProReport,
 } from "./passive-data";
 
+// ═══════════════════════════════════════════════
+// LOYALTY + REFERRAL + COMMUNITY TOOLS
+// ═══════════════════════════════════════════════
+
+import {
+  getCustomerLoyalty,
+  getAvailableRewards as _getAvailableRewards,
+  redeemReward as _redeemReward,
+} from "./loyalty-engine.js";
+import {
+  generateReferralCode,
+  getReferralStatus as _getReferralStatus,
+  createGroupDeal as _createGroupDeal,
+  getNeighborhoodDeals as _getNeighborhoodDeals,
+} from "./referral-engine.js";
+import {
+  getNeighborhoodActivity as _getNeighborhoodActivity,
+  getLocalEvents as _getLocalEvents,
+  submitTip,
+} from "./community-engine.js";
+
+export async function getCustomerLoyaltyStatus(params: { customerId: string }) {
+  const loyalty = await getCustomerLoyalty(params.customerId);
+  return {
+    ...loyalty,
+    message: `You're a ${loyalty.currentTier.toUpperCase()} member with $${loyalty.lifetimeSpend} lifetime spend. ${loyalty.discountPercent}% discount on all services.${loyalty.nextTierThreshold ? ` $${loyalty.nextTierThreshold - loyalty.lifetimeSpend} more to next tier!` : " You're at the top tier! 🏆"}`,
+  };
+}
+
+export async function getAvailableRewardsForGeorge(params: { customerId: string }) {
+  const rewards = await _getAvailableRewards(params.customerId);
+  return {
+    rewards,
+    message: rewards.length
+      ? `You have ${rewards.length} reward(s) available! ${rewards.map((r: any) => r.description).join("; ")}`
+      : "No rewards available right now — keep booking to earn more!",
+  };
+}
+
+export async function redeemRewardForGeorge(params: { rewardId: string }) {
+  return _redeemReward(params.rewardId);
+}
+
+export async function getReferralCode(params: { customerId: string }) {
+  const result = await generateReferralCode(params.customerId);
+  return {
+    ...result,
+    message: `Your referral code is ${result.code}. Share it with friends — they get $10 off their first booking and you get $25 credit! 🎉`,
+  };
+}
+
+export async function getReferralStatusForGeorge(params: { customerId: string }) {
+  const status = await _getReferralStatus(params.customerId);
+  return {
+    ...status,
+    message: `You've referred ${status.totalReferrals} people, earning $${status.totalEarned} total. ${status.pending} pending.`,
+  };
+}
+
+export async function createGroupDealForGeorge(params: { customerId: string; neighborhood: string; serviceType: string }) {
+  const deal = await _createGroupDeal(params.customerId, params.neighborhood, params.serviceType);
+  return {
+    ...deal,
+    message: `Group deal created for ${params.serviceType} in ${params.neighborhood}! Get ${deal.minParticipants} neighbors to join for ${deal.discountPercent}% off. Share the deal ID: ${deal.dealId}`,
+  };
+}
+
+export async function getNeighborhoodDealsForGeorge(params: { zip: string }) {
+  const deals = await _getNeighborhoodDeals(params.zip);
+  return {
+    deals,
+    message: deals.length
+      ? `Found ${deals.length} active group deal(s) near you!`
+      : "No active group deals in your area yet. Want to start one?",
+  };
+}
+
+export async function getNeighborhoodActivityForGeorge(params: { zip: string; limit?: number }) {
+  const activity = await _getNeighborhoodActivity(params.zip, params.limit || 10);
+  return {
+    activity,
+    message: activity.length
+      ? `Here's what's happening in your neighborhood (${params.zip}):`
+      : "Not much activity in your area yet — be the first!",
+  };
+}
+
+export async function getLocalEventsForGeorge(params: { zip: string; startDate?: string; endDate?: string }) {
+  const events = await _getLocalEvents(params.zip, params.startDate, params.endDate);
+  return {
+    events,
+    message: events.length
+      ? `Found ${events.length} upcoming event(s) near you!`
+      : "No upcoming events found in your area.",
+  };
+}
+
+export async function submitNeighborhoodTip(params: { customerId: string; zip: string; category: string; title: string; content: string }) {
+  return submitTip(params.customerId, params.zip, params.category, params.title, params.content);
+}
+
 /**
  * checkUserConsent — Check if user has consented to a specific data type
  */
