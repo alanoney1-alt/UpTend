@@ -125,6 +125,11 @@ export function Footer() {
                   UpTend for Business
                 </Link>
               </li>
+              <li>
+                <Link href="/ai/home-scan" className="hover:text-primary transition-colors cursor-pointer text-[#F47C20] font-medium" data-testid="link-footer-home-scan">
+                  ✨ AI Home Scan (Free)
+                </Link>
+              </li>
             </ul>
           </div>
 

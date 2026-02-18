@@ -3652,3 +3652,164 @@ export async function getWeeklyRouteSummaryForGeorge(params: {
 }): Promise<object> {
   return _getWeeklyRouteSummary(params.proId);
 }
+
+// ═══════════════════════════════════════════════
+// DIY TIPS + B2B CONTRACTS + POST-BOOKING + NEIGHBORHOOD TOOLS
+// ═══════════════════════════════════════════════
+
+import {
+  getDIYTip as _getDIYTip,
+  getSeasonalDIYTips as _getSeasonalDIYTips,
+  getDIYvsPro as _getDIYvsPro,
+} from "./diy-tips.js";
+import {
+  generateServiceAgreement as _generateServiceAgreement,
+  getDocumentTracker as _getDocumentTracker,
+  getComplianceReport as _getComplianceReport,
+} from "./b2b-contracts.js";
+import {
+  getPostBookingQuestion as _getPostBookingQuestion,
+  getProJobPrompts as _getProJobPrompts,
+} from "./post-booking.js";
+import {
+  generateInsights as _generateInsights,
+  getSeasonalDemand as _getSeasonalDemand,
+} from "./neighborhood-insights.js";
+
+/**
+ * getDIYTip — Get a DIY tip for a service type
+ */
+export async function getDIYTipForGeorge(params: {
+  serviceType: string;
+}): Promise<object> {
+  const tip = await _getDIYTip(params.serviceType);
+  if (!tip) return { message: `No DIY tip available for ${params.serviceType}. This is best handled by a pro — want me to get you a quote?` };
+  return {
+    ...tip,
+    message: `Here's a DIY option: "${tip.title}" (${tip.difficulty}, ~${tip.estimatedTime} min). You could save ~$${tip.estimatedSavings}. ${tip.whenToCallPro ? `⚠️ Call a pro if: ${tip.whenToCallPro}` : ""}`,
+  };
+}
+
+/**
+ * getDIYvsPro — Compare DIY vs hiring a pro
+ */
+export async function getDIYvsProForGeorge(params: {
+  serviceType: string;
+}): Promise<object> {
+  return _getDIYvsPro(params.serviceType);
+}
+
+/**
+ * getSeasonalDIYTips — Tips relevant to the current month
+ */
+export async function getSeasonalDIYTipsForGeorge(params: {
+  month: number;
+}): Promise<object> {
+  const tips = await _getSeasonalDIYTips(params.month);
+  return {
+    tips,
+    message: tips.length
+      ? `Found ${tips.length} DIY tip(s) for this time of year. Here are the top ones you can tackle yourself!`
+      : "No seasonal DIY tips right now — but I can help you book a pro for anything you need.",
+  };
+}
+
+/**
+ * generateServiceAgreement — Create a B2B service agreement
+ */
+export async function generateServiceAgreementForGeorge(params: {
+  businessAccountId: string;
+  agreementType: string;
+  terms?: Record<string, any>;
+}): Promise<object> {
+  const agreement = await _generateServiceAgreement(params.businessAccountId, params.agreementType, params.terms || {});
+  return {
+    ...agreement,
+    message: `Draft ${params.agreementType.replace(/_/g, " ")} created (ID: ${agreement.id}). Status: ${agreement.status}. Ready for review.`,
+  };
+}
+
+/**
+ * getDocumentTracker — All documents for a business account
+ */
+export async function getDocumentTrackerForGeorge(params: {
+  businessAccountId: string;
+}): Promise<object> {
+  const docs = await _getDocumentTracker(params.businessAccountId);
+  return {
+    documents: docs,
+    message: docs.length
+      ? `Found ${docs.length} document(s) on file. ${docs.filter((d: any) => d.status === "pending").length} pending action.`
+      : "No documents tracked yet for this account.",
+  };
+}
+
+/**
+ * getComplianceReport — Compliance status for a business
+ */
+export async function getComplianceReportForGeorge(params: {
+  businessAccountId: string;
+}): Promise<object> {
+  const report = await _getComplianceReport(params.businessAccountId);
+  return {
+    ...report,
+    message: `Compliance score: ${report.complianceScore}/100 (${report.status}). ${report.missingDocuments.length ? `Missing: ${report.missingDocuments.join(", ")}` : "All required docs on file."}`,
+  };
+}
+
+/**
+ * getPostBookingQuestion — Get a follow-up question after a completed job
+ */
+export async function getPostBookingQuestionForGeorge(params: {
+  customerId: string;
+  jobId: string;
+  serviceType?: string;
+}): Promise<object> {
+  const question = await _getPostBookingQuestion(params.customerId, params.jobId, params.serviceType);
+  return {
+    ...question,
+    message: question.question,
+  };
+}
+
+/**
+ * getProJobPrompts — Prompts for a pro during a job
+ */
+export async function getProJobPromptsForGeorge(params: {
+  proId: string;
+  jobId: string;
+  serviceType?: string;
+}): Promise<object> {
+  const prompts = await _getProJobPrompts(params.proId, params.jobId, params.serviceType);
+  return {
+    prompts,
+    message: `${prompts.length} prompt(s) for this job. Complete them to help us serve the customer better!`,
+  };
+}
+
+/**
+ * getNeighborhoodInsights — Local market data for a zip code
+ */
+export async function getNeighborhoodInsightsForGeorge(params: {
+  zip: string;
+}): Promise<object> {
+  const insights = await _generateInsights(params.zip);
+  return {
+    ...insights,
+    message: `Here's what's happening in ${params.zip}: ${(insights as any).popularServices ? `Most popular services: ${(insights as any).popularServices.slice(0, 3).join(", ")}` : "Generating insights..."}`,
+  };
+}
+
+/**
+ * getSeasonalDemand — What's in demand this month locally
+ */
+export async function getSeasonalDemandForGeorge(params: {
+  zip: string;
+  month: number;
+}): Promise<object> {
+  const demand = await _getSeasonalDemand(params.zip, params.month);
+  return {
+    ...demand,
+    message: demand.tip,
+  };
+}

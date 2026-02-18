@@ -193,6 +193,9 @@ import { registerBriefingRoutes } from "./briefing.routes";
 // Centralized Pricing Engine routes
 import { registerCentralizedPricingRoutes } from "./pricing.routes";
 
+// DIY Tips + B2B Contracts + Post-Booking Intelligence + Neighborhood Insights
+import { registerDiyB2bPostBookingRoutes } from "./diy-b2b-postbooking.routes";
+
 // Pro Intelligence routes (demand forecast, retention, goals, route optimization)
 import { registerProIntelligenceRoutes } from "./pro-intelligence.routes";
 
@@ -417,6 +420,9 @@ export async function registerRoutes(
 
   // Register Centralized Pricing Engine routes
   registerCentralizedPricingRoutes(app);
+
+  // Register DIY Tips + B2B Contracts + Post-Booking + Neighborhood routes
+  registerDiyB2bPostBookingRoutes(app);
 
   // Register Pro Intelligence routes
   registerProIntelligenceRoutes(app);

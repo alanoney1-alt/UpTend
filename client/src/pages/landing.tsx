@@ -29,6 +29,7 @@ export default function Landing() {
         <ProsNearYou />
         <TwoSides />
         <ServicesStrip />
+        <HomeScanPromo />
         <TrustBar />
         <FinalCTA />
       </main>
@@ -90,6 +91,11 @@ function HeroSection() {
           <Link href="/book">
             <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
               Get Your Free Quote <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
+          <Link href="/ai/home-scan">
+            <Button size="lg" variant="outline" className="border-[#F47C20]/50 text-[#F47C20] hover:bg-[#F47C20]/10 font-bold text-lg px-8 py-6 rounded-xl">
+              ✨ Free Home Scan
             </Button>
           </Link>
           <Link href="/become-pro">
@@ -286,6 +292,33 @@ function TwoSides() {
             When a customer books through UpTend, they fund fair wages, verified quality, and a platform that holds everyone accountable. 
             <strong className="text-white"> You're not just booking a service — you're supporting a better industry.</strong>
           </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── HOME SCAN PROMO ─── */
+function HomeScanPromo() {
+  const { t } = useTranslation();
+  return (
+    <section className="py-16 bg-gradient-to-r from-[#3B1D5A] to-slate-900 text-white border-t border-border">
+      <div className="max-w-5xl mx-auto px-4 text-center">
+        <Badge className="mb-4 bg-[#F47C20]/20 text-[#F47C20] border-[#F47C20]/30 text-sm px-4 py-1">
+          ✨ {t("home_scan_promo.badge", "NEW — 100% Free")}
+        </Badge>
+        <h2 className="text-3xl md:text-4xl font-black mb-4">
+          {t("home_scan_promo.headline", "Scan Your Home for Free — Earn $25+")}
+        </h2>
+        <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+          {t("home_scan_promo.body", "George guides you room by room. AI reads every appliance — brand, model, age, condition. Get a complete Home Health Record and earn credits toward your first service.")}
+        </p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link href="/ai/home-scan">
+            <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
+              {t("home_scan_promo.cta", "Learn More & Start Scanning")} <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

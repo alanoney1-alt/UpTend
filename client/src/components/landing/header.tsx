@@ -69,6 +69,11 @@ export function Header() {
               {t("nav.pro_academy")}
             </span>
           </Link>
+          <Link href="/ai/home-scan">
+            <span className="hover:opacity-80 transition-opacity cursor-pointer text-[#F47C20] font-bold flex items-center gap-1" data-testid="link-home-scan">
+              ✨ {t("nav.ai_home_scan", "AI Home Scan")}
+            </span>
+          </Link>
           <Link href="/business">
             <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-business">
               {t("nav.for_business", "For Business")}
@@ -211,6 +216,11 @@ export function Header() {
             </Link>
             <Link href="/academy" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-academy-mobile">{t("nav.pro_academy")}</span>
+            </Link>
+            <Link href="/ai/home-scan" onClick={closeMenu}>
+              <span className="block p-2 text-[#F47C20] font-bold flex items-center gap-1" data-testid="link-home-scan-mobile">
+                ✨ {t("nav.ai_home_scan", "AI Home Scan")}
+              </span>
             </Link>
             <Link href="/business" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-business-mobile">{t("nav.for_business", "For Business")}</span>

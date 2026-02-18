@@ -82,6 +82,7 @@ const PropertyDashboard = lazy(() => import("@/pages/property-dashboard"));
 const AIFeaturesHub = lazy(() => import("@/pages/ai/index"));
 const PhotoToQuote = lazy(() => import("@/pages/ai/photo-quote"));
 const DocumentScanner = lazy(() => import("@/pages/ai/document-scanner"));
+const HomeScan = lazy(() => import("@/pages/ai/home-scan"));
 const MyJobs = lazy(() => import("@/pages/my-jobs"));
 const ServiceDetail = lazy(() => import("@/pages/service-detail"));
 const Sustainability = lazy(() => import("@/pages/sustainability"));
@@ -262,6 +263,7 @@ function Router() {
       <Route path="/ai" component={AIFeaturesHub} />
       <Route path="/ai/photo-quote" component={PhotoToQuote} />
       <Route path="/ai/documents" component={DocumentScanner} />
+      <Route path="/ai/home-scan" component={HomeScan} />
       <Route path="/find-pro" component={FindPro} />
       <Route path="/b2b-pricing" component={B2BPricing} />
       <Route path="/fleet-tracking" component={FleetTracking} />

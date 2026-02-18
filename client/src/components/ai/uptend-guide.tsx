@@ -592,6 +592,19 @@ export function UpTendGuide() {
   // Keep ref in sync for voice auto-send
   useEffect(() => { sendMessageRef.current = sendMessage; }, [sendMessage]);
 
+  // Listen for george:open events (e.g. from AI Home Scan page)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setIsOpen(true);
+      if (detail?.message) {
+        setTimeout(() => sendMessageRef.current?.(detail.message), 300);
+      }
+    };
+    window.addEventListener("george:open", handler);
+    return () => window.removeEventListener("george:open", handler);
+  }, []);
+
   // Don't show on login/signup pages or if disabled
   if (isDisabled) return null;
   if (isHiddenPage) return null;

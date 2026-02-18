@@ -7370,3 +7370,118 @@ export const governmentFloatSettings = pgTable("government_float_settings", {
 });
 
 export type GovernmentFloatSettings = typeof governmentFloatSettings.$inferSelect;
+
+// ==========================================
+// DIY Tips
+// ==========================================
+export const diyTips = pgTable("diy_tips", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceType: text("service_type").notNull(),
+  difficulty: text("difficulty").notNull(), // easy|medium|hard
+  title: text("title").notNull(),
+  summary: text("summary").notNull(),
+  steps: jsonb("steps").notNull().default([]),
+  toolsNeeded: jsonb("tools_needed").notNull().default([]),
+  estimatedTime: integer("estimated_time").notNull(), // minutes
+  estimatedSavings: real("estimated_savings").notNull().default(0),
+  safetyWarnings: jsonb("safety_warnings").notNull().default([]),
+  whenToCallPro: text("when_to_call_pro"),
+  videoUrl: text("video_url"),
+  imageUrl: text("image_url"),
+  seasonalRelevance: jsonb("seasonal_relevance").notNull().default([]), // month numbers 1-12
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type DIYTip = typeof diyTips.$inferSelect;
+
+// ==========================================
+// B2B Service Agreements
+// ==========================================
+export const b2bServiceAgreements = pgTable("b2b_service_agreements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  agreementType: text("agreement_type").notNull(), // master_service|statement_of_work|sla|amendment
+  status: text("status").notNull().default("draft"), // draft|pending_review|active|expired|terminated
+  title: text("title").notNull(),
+  terms: jsonb("terms").notNull().default({}),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  autoRenew: boolean("auto_renew").default(false),
+  signedByClient: timestamp("signed_by_client"),
+  signedByUptend: timestamp("signed_by_uptend"),
+  documentUrl: text("document_url"),
+  version: integer("version").notNull().default(1),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type B2BServiceAgreement = typeof b2bServiceAgreements.$inferSelect;
+
+// ==========================================
+// B2B Document Tracking
+// ==========================================
+export const b2bDocumentTracking = pgTable("b2b_document_tracking", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  documentType: text("document_type").notNull(), // agreement|invoice|compliance_report|audit_log|insurance_cert|w9
+  documentName: text("document_name").notNull(),
+  status: text("status").notNull().default("pending"), // pending|submitted|approved|rejected|expired
+  dueDate: timestamp("due_date"),
+  submittedAt: timestamp("submitted_at"),
+  reviewedBy: varchar("reviewed_by"),
+  notes: text("notes"),
+  fileUrl: text("file_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type B2BDocumentTracking = typeof b2bDocumentTracking.$inferSelect;
+
+// ==========================================
+// Post-Booking Questions
+// ==========================================
+export const postBookingQuestions = pgTable("post_booking_questions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  jobId: varchar("job_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  question: text("question").notNull(),
+  answer: text("answer"),
+  dataPointExtracted: jsonb("data_point_extracted"),
+  askedAt: timestamp("asked_at").defaultNow().notNull(),
+  answeredAt: timestamp("answered_at"),
+});
+
+export type PostBookingQuestion = typeof postBookingQuestions.$inferSelect;
+
+// ==========================================
+// Pro Job Prompts
+// ==========================================
+export const proJobPrompts = pgTable("pro_job_prompts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull(),
+  jobId: varchar("job_id").notNull(),
+  promptType: text("prompt_type").notNull(), // photo_request|condition_check|appliance_spot|hoa_observation|safety_flag|upsell_opportunity
+  prompt: text("prompt").notNull(),
+  response: text("response"),
+  photos: jsonb("photos").default([]),
+  georgeProcessed: boolean("george_processed").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type ProJobPrompt = typeof proJobPrompts.$inferSelect;
+
+// ==========================================
+// Neighborhood Insights
+// ==========================================
+export const neighborhoodInsights = pgTable("neighborhood_insights", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  zip: text("zip").notNull(),
+  neighborhoodName: text("neighborhood_name"),
+  insightType: text("insight_type").notNull(), // avg_price|popular_service|pro_density|booking_trend|satisfaction|seasonal_demand
+  serviceType: text("service_type"),
+  value: jsonb("value").notNull().default({}),
+  period: text("period"),
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+});
+
+export type NeighborhoodInsight = typeof neighborhoodInsights.$inferSelect;
