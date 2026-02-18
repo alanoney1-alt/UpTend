@@ -1,6 +1,10 @@
 /**
  * George AI Agent — Tool Functions
  *
+ * Phase 1: All DB-backed tools now query real Supabase via Drizzle ORM.
+ * New tables: maintenance_reminders, pro_goals, customer_loyalty,
+ *             smart_home_devices, service_history_notes.
+ *
  * Every function pulls LIVE data from the existing pricing constants.
  * George NEVER hardcodes prices — he always calls these tools.
  */
@@ -43,6 +47,43 @@ import {
   BUNDLES as PRICING_BUNDLES,
 } from "../../shared/pricing/constants";
 import { DWELLSCAN_TIERS, DWELLSCAN_SERVICE_CREDIT } from "../../shared/dwellscan-tiers";
+
+// ─────────────────────────────────────────────
+// DB imports — Phase 1 live database queries
+// ─────────────────────────────────────────────
+import { db, pool } from "../db";
+import {
+  serviceRequests,
+  haulerProfiles,
+  haulerReviews,
+  proCertifications,
+  businessAccounts,
+  weeklyBillingRuns,
+  homeProfiles,
+  homeAppliances,
+  homeServiceHistory,
+  referrals,
+} from "../../shared/schema";
+import { eq, desc, and, inArray } from "drizzle-orm";
+
+// ─────────────────────────────────────────────
+// Helper: resolve hauler profile by userId or profile id
+// ─────────────────────────────────────────────
+async function getHaulerProfileByProId(proId: string) {
+  try {
+    let [profile] = await db.select().from(haulerProfiles)
+      .where(eq(haulerProfiles.userId, proId))
+      .limit(1);
+    if (!profile) {
+      [profile] = await db.select().from(haulerProfiles)
+        .where(eq(haulerProfiles.id, proId))
+        .limit(1);
+    }
+    return profile || null;
+  } catch {
+    return null;
+  }
+}
 
 // ─────────────────────────────────────────────
 // a) getServicePricing
@@ -516,28 +557,32 @@ export function createBookingDraft(params: any): object {
 }
 
 // ─────────────────────────────────────────────
-// f) getCustomerJobs  (stub — connects to DB)
+// f) getCustomerJobs — live DB query
 // ─────────────────────────────────────────────
 export async function getCustomerJobs(userId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const jobs = await storage.getJobsByUser?.(userId);
-      if (jobs && jobs.length > 0) {
-        return {
-          userId,
-          jobs: jobs.map((j: any) => ({
-            id: j.id,
-            service: j.serviceType,
-            status: j.status,
-            date: j.scheduledDate,
-            price: j.totalPrice,
-          })),
-          count: jobs.length,
-        };
-      }
-    } catch {}
-  }
+  try {
+    const jobs = await db.select().from(serviceRequests)
+      .where(eq(serviceRequests.customerId, userId))
+      .orderBy(desc(serviceRequests.createdAt))
+      .limit(20);
 
+    return {
+      userId,
+      jobs: jobs.map((j) => ({
+        id: j.id,
+        service: j.serviceType,
+        status: j.status,
+        date: j.scheduledFor,
+        price: j.finalPrice || j.priceEstimate,
+        address: j.pickupAddress,
+        city: j.pickupCity,
+      })),
+      count: jobs.length,
+      message: jobs.length === 0 ? "No recent jobs found. Ready to book your first service?" : undefined,
+    };
+  } catch (e) {
+    console.error("getCustomerJobs DB error:", e);
+  }
   return {
     userId,
     jobs: [],
@@ -570,48 +615,58 @@ export function getAllServices(): object {
 // PRO TOOLS
 // ═════════════════════════════════════════════
 
-// h) getProDashboard
+// h) getProDashboard — live DB query
 export async function getProDashboard(proId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const [profile, jobs] = await Promise.all([
-        storage.getHaulerProfile(proId).catch(() => null),
-        storage.getServiceRequestsByHauler(proId).catch(() => []),
-      ]);
-      const completedJobs = (jobs || []).filter((j: any) => j.status === "completed");
-      const activeJobs = (jobs || []).filter((j: any) => ["accepted", "in_progress", "en_route"].includes(j.status));
-      const now = new Date();
-      const thisMonthJobs = completedJobs.filter((j: any) => {
-        const d = new Date(j.completedAt || j.createdAt);
-        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-      });
-      const lastMonthJobs = completedJobs.filter((j: any) => {
-        const d = new Date(j.completedAt || j.createdAt);
-        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        return d.getMonth() === lastMonth.getMonth() && d.getFullYear() === lastMonth.getFullYear();
-      });
-      const monthlyEarnings = thisMonthJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
-      const lastMonthEarnings = lastMonthJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
-      const totalEarnings = completedJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
-      const monthOverMonthPct = lastMonthEarnings > 0
+  try {
+    const profile = await getHaulerProfileByProId(proId);
+    const haulerId = profile?.id || proId;
+
+    const jobs = await db.select().from(serviceRequests)
+      .where(eq(serviceRequests.assignedHaulerId, haulerId));
+
+    const completedJobs = jobs.filter((j) => j.status === "completed");
+    const activeJobs = jobs.filter((j) =>
+      ["accepted", "in_progress", "en_route"].includes(j.status)
+    );
+
+    const now = new Date();
+    const thisMonthJobs = completedJobs.filter((j) => {
+      const d = new Date(j.completedAt || j.createdAt);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const lastMonthJobs = completedJobs.filter((j) => {
+      const d = new Date(j.completedAt || j.createdAt);
+      const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      return d.getMonth() === lastMonth.getMonth() && d.getFullYear() === lastMonth.getFullYear();
+    });
+
+    const monthlyEarnings = thisMonthJobs.reduce((s, j) => s + (j.haulerPayout || 0), 0);
+    const lastMonthEarnings = lastMonthJobs.reduce((s, j) => s + (j.haulerPayout || 0), 0);
+    const totalEarnings = completedJobs.reduce((s, j) => s + (j.haulerPayout || 0), 0);
+    const monthOverMonthPct =
+      lastMonthEarnings > 0
         ? Math.round(((monthlyEarnings - lastMonthEarnings) / lastMonthEarnings) * 100)
         : null;
-      return {
-        proId,
-        name: profile?.companyName || "Pro",
-        rating: profile?.rating || 5.0,
-        reviewCount: profile?.reviewCount || 0,
-        tier: profile?.tier || "bronze",
-        isAvailable: profile?.isAvailable || false,
-        jobsCompleted: completedJobs.length,
-        activeJobs: activeJobs.length,
-        earningsThisMonth: monthlyEarnings,
-        earningsAllTime: totalEarnings,
-        monthOverMonthChange: monthOverMonthPct !== null ? `${monthOverMonthPct > 0 ? "+" : ""}${monthOverMonthPct}%` : null,
-        certifications: profile?.certifications || [],
-        serviceTypes: profile?.serviceTypes || [],
-      };
-    } catch { /* fall through */ }
+
+    return {
+      proId,
+      name: profile?.companyName || "Pro",
+      rating: profile?.rating || 5.0,
+      reviewCount: profile?.reviewCount || 0,
+      tier: profile?.pyckerTier || "bronze",
+      isAvailable: profile?.isAvailable || false,
+      jobsCompleted: profile?.jobsCompleted || completedJobs.length,
+      activeJobs: activeJobs.length,
+      earningsThisMonth: monthlyEarnings,
+      earningsAllTime: totalEarnings,
+      monthOverMonthChange:
+        monthOverMonthPct !== null
+          ? `${monthOverMonthPct > 0 ? "+" : ""}${monthOverMonthPct}%`
+          : null,
+      serviceTypes: profile?.serviceTypes || [],
+    };
+  } catch (e) {
+    console.error("getProDashboard DB error:", e);
   }
   return {
     proId,
@@ -624,76 +679,97 @@ export async function getProDashboard(proId: string, storage?: any): Promise<obj
   };
 }
 
-// i) getProEarnings
+// i) getProEarnings — live DB query
 export async function getProEarnings(proId: string, period: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const jobs = await storage.getServiceRequestsByHauler(proId).catch(() => []);
-      const completedJobs = (jobs || []).filter((j: any) => j.status === "completed");
-      const now = new Date();
-      let filteredJobs = completedJobs;
-      if (period === "week") {
-        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        filteredJobs = completedJobs.filter((j: any) => new Date(j.completedAt || j.createdAt) >= weekAgo);
-      } else if (period === "month") {
-        filteredJobs = completedJobs.filter((j: any) => {
-          const d = new Date(j.completedAt || j.createdAt);
-          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-        });
-      } else if (period === "year") {
-        filteredJobs = completedJobs.filter((j: any) =>
-          new Date(j.completedAt || j.createdAt).getFullYear() === now.getFullYear()
-        );
-      }
-      const total = filteredJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
-      const byService: Record<string, number> = {};
-      for (const j of filteredJobs) {
-        byService[j.serviceType] = (byService[j.serviceType] || 0) + (j.haulerPayout || 0);
-      }
-      const dayOfWeek = now.getDay();
-      const daysUntilThursday = (4 - dayOfWeek + 7) % 7 || 7;
-      const nextPayoutDate = new Date(now.getTime() + daysUntilThursday * 24 * 60 * 60 * 1000);
-      return {
-        proId,
-        period,
-        totalEarnings: total,
-        jobCount: filteredJobs.length,
-        byServiceType: byService,
-        nextPayoutDate: nextPayoutDate.toISOString().split("T")[0],
-        note: "Payouts deposit every Thursday",
-      };
-    } catch { /* fall through */ }
+  try {
+    const profile = await getHaulerProfileByProId(proId);
+    const haulerId = profile?.id || proId;
+
+    const allCompleted = await db.select().from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.assignedHaulerId, haulerId),
+        eq(serviceRequests.status, "completed"),
+      ));
+
+    const now = new Date();
+    let filteredJobs = allCompleted;
+    if (period === "week") {
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      filteredJobs = allCompleted.filter(
+        (j) => new Date(j.completedAt || j.createdAt) >= weekAgo
+      );
+    } else if (period === "month") {
+      filteredJobs = allCompleted.filter((j) => {
+        const d = new Date(j.completedAt || j.createdAt);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      });
+    } else if (period === "year") {
+      filteredJobs = allCompleted.filter(
+        (j) => new Date(j.completedAt || j.createdAt).getFullYear() === now.getFullYear()
+      );
+    }
+
+    const total = filteredJobs.reduce((s, j) => s + (j.haulerPayout || 0), 0);
+    const byService: Record<string, number> = {};
+    for (const j of filteredJobs) {
+      byService[j.serviceType] = (byService[j.serviceType] || 0) + (j.haulerPayout || 0);
+    }
+
+    const dayOfWeek = now.getDay();
+    const daysUntilThursday = (4 - dayOfWeek + 7) % 7 || 7;
+    const nextPayoutDate = new Date(now.getTime() + daysUntilThursday * 24 * 60 * 60 * 1000);
+
+    return {
+      proId,
+      period,
+      totalEarnings: total,
+      jobCount: filteredJobs.length,
+      byServiceType: byService,
+      nextPayoutDate: nextPayoutDate.toISOString().split("T")[0],
+      note: "Payouts deposit every Thursday",
+    };
+  } catch (e) {
+    console.error("getProEarnings DB error:", e);
   }
   return { proId, period, totalEarnings: 0, jobCount: 0, message: "Earnings data unavailable" };
 }
 
-// j) getProSchedule
+// j) getProSchedule — live DB query
 export async function getProSchedule(proId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const jobs = await storage.getServiceRequestsByHauler(proId).catch(() => []);
-      const upcoming = (jobs || []).filter((j: any) => {
-        if (!["accepted", "confirmed", "pending"].includes(j.status)) return false;
-        return new Date(j.scheduledFor) > new Date();
-      }).sort((a: any, b: any) => new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime());
-      return {
-        proId,
-        upcomingJobs: upcoming.slice(0, 10).map((j: any) => ({
-          id: j.id,
-          serviceType: j.serviceType,
-          scheduledFor: j.scheduledFor,
-          address: j.serviceAddress || j.address || "Address on file",
-          estimatedPayout: j.haulerPayout || 0,
-          status: j.status,
-        })),
-        count: upcoming.length,
-      };
-    } catch { /* fall through */ }
+  try {
+    const profile = await getHaulerProfileByProId(proId);
+    const haulerId = profile?.id || proId;
+
+    const upcoming = await db.select().from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.assignedHaulerId, haulerId),
+        inArray(serviceRequests.status, ["accepted", "confirmed", "pending"]),
+      ))
+      .orderBy(serviceRequests.scheduledFor);
+
+    const now = new Date();
+    const futureJobs = upcoming.filter((j) => new Date(j.scheduledFor) > now);
+
+    return {
+      proId,
+      upcomingJobs: futureJobs.slice(0, 10).map((j) => ({
+        id: j.id,
+        serviceType: j.serviceType,
+        scheduledFor: j.scheduledFor,
+        address: j.pickupAddress || "Address on file",
+        city: j.pickupCity,
+        estimatedPayout: j.haulerPayout || 0,
+        status: j.status,
+      })),
+      count: futureJobs.length,
+    };
+  } catch (e) {
+    console.error("getProSchedule DB error:", e);
   }
   return { proId, upcomingJobs: [], count: 0, message: "Schedule unavailable" };
 }
 
-// k) getProCertifications
+// k) getProCertifications — live DB query
 export async function getProCertifications(proId: string, storage?: any): Promise<object> {
   const allCerts = [
     { id: "junk_removal", name: "Junk Removal Specialist", tier: "bronze" },
@@ -705,17 +781,34 @@ export async function getProCertifications(proId: string, storage?: any): Promis
     { id: "pool_cleaning", name: "Pool Service Technician", tier: "gold" },
     { id: "b2b_services", name: "B2B Service Provider", tier: "gold" },
   ];
-  let activeCerts: string[] = [];
-  if (storage) {
-    try {
-      const profile = await storage.getHaulerProfile(proId).catch(() => null);
-      activeCerts = profile?.certifications || profile?.serviceTypes || [];
-    } catch { /* fall through */ }
+
+  let activeCertIds: string[] = [];
+  try {
+    const dbCerts = await db.select().from(proCertifications)
+      .where(and(
+        eq(proCertifications.proId, proId),
+        eq(proCertifications.status, "completed"),
+      ));
+    activeCertIds = dbCerts.map((c) => c.certificationId);
+  } catch (e) {
+    console.error("getProCertifications DB error:", e);
   }
-  const active = allCerts.filter(c => activeCerts.includes(c.id));
-  const available = allCerts.filter(c => !activeCerts.includes(c.id));
+
+  // Fallback: check haulerProfile.serviceTypes if no certs found
+  if (activeCertIds.length === 0) {
+    try {
+      const profile = await getHaulerProfileByProId(proId);
+      const serviceTypeList = profile?.serviceTypes || [];
+      activeCertIds = serviceTypeList.filter((s) => allCerts.some((c) => c.id === s));
+    } catch { /* ignore */ }
+  }
+
+  const active = allCerts.filter((c) => activeCertIds.includes(c.id));
+  const available = allCerts.filter((c) => !activeCertIds.includes(c.id));
   const currentTier = active.length >= 6 ? "gold" : active.length >= 3 ? "silver" : "bronze";
-  const certsForNextTier = currentTier === "bronze" ? 3 - active.length : currentTier === "silver" ? 6 - active.length : 0;
+  const certsForNextTier =
+    currentTier === "bronze" ? 3 - active.length : currentTier === "silver" ? 6 - active.length : 0;
+
   return {
     proId,
     activeCertifications: active,
@@ -754,7 +847,7 @@ export function getProMarketInsights(serviceTypes: string[]): object {
     pool_cleaning: { demandTrend: "+18%", avgRate: 165, seasonalPeak: "April-September", competitionLevel: "medium" },
     handyman: { demandTrend: "+10%", avgRate: 225, seasonalPeak: "Year-round", competitionLevel: "medium" },
   };
-  const relevant = (serviceTypes || []).map(svc => ({
+  const relevant = (serviceTypes || []).map((svc) => ({
     serviceType: svc,
     ...(insights[svc] || { demandTrend: "+5%", avgRate: 150, seasonalPeak: "Year-round", competitionLevel: "medium" }),
   }));
@@ -765,26 +858,41 @@ export function getProMarketInsights(serviceTypes: string[]): object {
   };
 }
 
-// n) getProReviews
+// n) getProReviews — live DB query
 export async function getProReviews(proId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const reviews = await storage.getReviewsByHauler?.(proId).catch(() => []);
-      if (reviews && reviews.length > 0) {
-        const avgRating = reviews.reduce((s: number, r: any) => s + r.rating, 0) / reviews.length;
-        return {
-          proId,
-          averageRating: parseFloat(avgRating.toFixed(1)),
-          totalReviews: reviews.length,
-          recentReviews: reviews.slice(0, 5).map((r: any) => ({
-            rating: r.rating,
-            comment: r.comment || "",
-            date: r.createdAt,
-            customerName: r.customerName || "Customer",
-          })),
-        };
-      }
-    } catch { /* fall through */ }
+  try {
+    const profile = await getHaulerProfileByProId(proId);
+    const haulerId = profile?.id || proId;
+
+    const reviews = await db.select().from(haulerReviews)
+      .where(eq(haulerReviews.haulerId, haulerId))
+      .orderBy(desc(haulerReviews.createdAt))
+      .limit(20);
+
+    if (reviews.length > 0) {
+      const avgRating = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+      return {
+        proId,
+        averageRating: parseFloat(avgRating.toFixed(1)),
+        totalReviews: profile?.reviewCount || reviews.length,
+        recentReviews: reviews.slice(0, 5).map((r) => ({
+          rating: r.rating,
+          comment: r.comment || "",
+          title: r.title || "",
+          date: r.createdAt,
+        })),
+      };
+    }
+
+    return {
+      proId,
+      averageRating: profile?.rating || 5.0,
+      totalReviews: profile?.reviewCount || 0,
+      recentReviews: [],
+      message: "No reviews yet — every job is an opportunity for a 5-star rating!",
+    };
+  } catch (e) {
+    console.error("getProReviews DB error:", e);
   }
   return {
     proId,
@@ -799,34 +907,57 @@ export async function getProReviews(proId: string, storage?: any): Promise<objec
 // B2B TOOLS
 // ═════════════════════════════════════════════
 
-// o) getPortfolioAnalytics
+// o) getPortfolioAnalytics — live DB query
 export async function getPortfolioAnalytics(businessId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const [account, jobs] = await Promise.all([
-        storage.getBusinessAccount?.(businessId).catch(() => null),
-        storage.getServiceRequestsByBusiness?.(businessId).catch(() => []),
-      ]);
-      if (jobs && jobs.length > 0) {
-        const completedJobs = jobs.filter((j: any) => j.status === "completed");
-        const openJobs = jobs.filter((j: any) => ["pending", "accepted", "in_progress"].includes(j.status));
-        const totalSpend = completedJobs.reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
-        const properties = account?.propertyCount || Math.max(1, Math.ceil(completedJobs.length / 3));
-        const now = new Date();
-        const thisMonthCompleted = completedJobs.filter((j: any) => {
-          const d = new Date(j.completedAt || j.createdAt);
-          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-        });
-        return {
-          businessId,
-          propertiesManaged: properties,
-          avgCostPerUnit: Math.round(totalSpend / properties),
-          openWorkOrders: openJobs.length,
-          completedThisMonth: thisMonthCompleted.length,
-          spendYTD: totalSpend,
-        };
-      }
-    } catch { /* fall through */ }
+  try {
+    let [account] = await db.select().from(businessAccounts)
+      .where(eq(businessAccounts.id, businessId))
+      .limit(1);
+    if (!account) {
+      [account] = await db.select().from(businessAccounts)
+        .where(eq(businessAccounts.userId, businessId))
+        .limit(1);
+    }
+
+    const userId = account?.userId || businessId;
+
+    const jobs = await db.select().from(serviceRequests)
+      .where(eq(serviceRequests.customerId, userId));
+
+    const completedJobs = jobs.filter((j) => j.status === "completed");
+    const openJobs = jobs.filter((j) =>
+      ["pending", "accepted", "in_progress"].includes(j.status)
+    );
+    const totalSpend = completedJobs.reduce(
+      (s, j) => s + (j.finalPrice || j.priceEstimate || 0),
+      0
+    );
+    const properties =
+      account?.totalProperties || Math.max(1, Math.ceil(completedJobs.length / 3));
+
+    const now = new Date();
+    const thisMonthCompleted = completedJobs.filter((j) => {
+      const d = new Date(j.completedAt || j.createdAt);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const yearStart = new Date(now.getFullYear(), 0, 1).getTime();
+    const spendYTD = completedJobs
+      .filter((j) => new Date(j.completedAt || j.createdAt).getTime() >= yearStart)
+      .reduce((s, j) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+
+    return {
+      businessId,
+      businessName: account?.businessName,
+      propertiesManaged: properties,
+      avgCostPerUnit: properties > 0 ? Math.round(totalSpend / properties) : 0,
+      openWorkOrders: openJobs.length,
+      completedThisMonth: thisMonthCompleted.length,
+      totalJobsCompleted: completedJobs.length,
+      spendYTD: Math.round(spendYTD),
+      totalSpend: Math.round(totalSpend),
+    };
+  } catch (e) {
+    console.error("getPortfolioAnalytics DB error:", e);
   }
   return {
     businessId,
@@ -839,43 +970,104 @@ export async function getPortfolioAnalytics(businessId: string, storage?: any): 
   };
 }
 
-// p) getVendorScorecard
+// p) getVendorScorecard — live DB query
 export async function getVendorScorecard(businessId: string, storage?: any): Promise<object> {
+  try {
+    let [account] = await db.select().from(businessAccounts)
+      .where(eq(businessAccounts.id, businessId))
+      .limit(1);
+    if (!account) {
+      [account] = await db.select().from(businessAccounts)
+        .where(eq(businessAccounts.userId, businessId))
+        .limit(1);
+    }
+
+    const userId = account?.userId || businessId;
+
+    const completedJobs = await db.select().from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.customerId, userId),
+        eq(serviceRequests.status, "completed"),
+      ));
+
+    const haulerIds = [...new Set(
+      completedJobs.map((j) => j.assignedHaulerId).filter(Boolean)
+    )] as string[];
+
+    if (haulerIds.length > 0) {
+      const profileResults = await Promise.all(
+        haulerIds.slice(0, 10).map((id) =>
+          db.select().from(haulerProfiles).where(eq(haulerProfiles.id, id)).limit(1)
+        )
+      );
+
+      const vendors = profileResults
+        .map((p) => p[0])
+        .filter(Boolean)
+        .map((p) => ({
+          name: p!.companyName,
+          rating: p!.rating || 5.0,
+          jobsCompleted: completedJobs.filter((j) => j.assignedHaulerId === p!.id).length,
+          completionRate: "100%",
+          verified: p!.verified,
+        }))
+        .sort((a, b) => (b.rating || 0) - (a.rating || 0));
+
+      const avgRating =
+        vendors.length > 0
+          ? vendors.reduce((s, v) => s + (v.rating || 0), 0) / vendors.length
+          : 5.0;
+
+      return {
+        businessId,
+        topPerformers: vendors.slice(0, 5),
+        totalVendors: haulerIds.length,
+        overallSLACompliance: "Active",
+        avgRating: parseFloat(avgRating.toFixed(1)),
+        note: "Vendor scorecards based on completed jobs",
+      };
+    }
+  } catch (e) {
+    console.error("getVendorScorecard DB error:", e);
+  }
   return {
     businessId,
-    topPerformers: [
-      { name: "Marcus T.", completionRate: "98%", avgResponseTime: "2.1 hours", rating: 4.9, jobsCompleted: 47 },
-      { name: "Sophia R.", completionRate: "96%", avgResponseTime: "3.0 hours", rating: 4.8, jobsCompleted: 31 },
-    ],
-    overallSLACompliance: "94%",
-    avgCompletionTime: "4.2 hours",
-    note: "Live vendor scorecards update as jobs are completed",
+    topPerformers: [],
+    overallSLACompliance: "N/A",
+    note: "No vendor data yet — vendor scorecards update as jobs are completed",
   };
 }
 
-// q) getBillingHistory
+// q) getBillingHistory — live DB query
 export async function getBillingHistory(businessId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const invoices = await storage.getInvoicesByBusiness?.(businessId).catch(() => []);
-      if (invoices && invoices.length > 0) {
-        const outstanding = invoices
-          .filter((i: any) => i.status === "pending")
-          .reduce((s: number, i: any) => s + i.amount, 0);
-        return {
-          businessId,
-          recentInvoices: invoices.slice(0, 5).map((inv: any) => ({
-            id: inv.id,
-            amount: inv.amount,
-            status: inv.status,
-            date: inv.createdAt,
-            jobCount: inv.jobCount || 0,
-          })),
-          outstandingBalance: outstanding,
-          billingCycle: "Weekly (Net-7)",
-        };
-      }
-    } catch { /* fall through */ }
+  try {
+    const billingRuns = await db.select().from(weeklyBillingRuns)
+      .where(eq(weeklyBillingRuns.businessAccountId, businessId))
+      .orderBy(desc(weeklyBillingRuns.createdAt))
+      .limit(10);
+
+    if (billingRuns.length > 0) {
+      const outstanding = billingRuns
+        .filter((r) => r.status === "pending")
+        .reduce((s, r) => s + (r.totalAmount || 0), 0);
+
+      return {
+        businessId,
+        recentInvoices: billingRuns.map((r) => ({
+          id: r.id,
+          amount: r.totalAmount,
+          status: r.status,
+          weekStart: r.weekStartDate,
+          weekEnd: r.weekEndDate,
+          jobCount: r.jobCount,
+          processedAt: r.processedAt,
+        })),
+        outstandingBalance: outstanding,
+        billingCycle: "Weekly (Net-7)",
+      };
+    }
+  } catch (e) {
+    console.error("getBillingHistory DB error:", e);
   }
   return {
     businessId,
@@ -886,17 +1078,101 @@ export async function getBillingHistory(businessId: string, storage?: any): Prom
   };
 }
 
-// r) getComplianceStatus
+// r) getComplianceStatus — live DB query
 export async function getComplianceStatus(businessId: string, storage?: any): Promise<object> {
+  try {
+    let [account] = await db.select().from(businessAccounts)
+      .where(eq(businessAccounts.id, businessId))
+      .limit(1);
+    if (!account) {
+      [account] = await db.select().from(businessAccounts)
+        .where(eq(businessAccounts.userId, businessId))
+        .limit(1);
+    }
+
+    const userId = account?.userId || businessId;
+
+    const completedJobs = await db.select({
+      assignedHaulerId: serviceRequests.assignedHaulerId,
+    }).from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.customerId, userId),
+        eq(serviceRequests.status, "completed"),
+      ));
+
+    const haulerIds = [...new Set(
+      completedJobs.map((j) => j.assignedHaulerId).filter(Boolean)
+    )] as string[];
+
+    if (haulerIds.length > 0) {
+      const profileResults = await Promise.all(
+        haulerIds.slice(0, 20).map((id) =>
+          db.select({
+            id: haulerProfiles.id,
+            companyName: haulerProfiles.companyName,
+            generalLiabilityExpiration: haulerProfiles.generalLiabilityExpiration,
+            hasInsurance: haulerProfiles.hasInsurance,
+            backgroundCheckStatus: haulerProfiles.backgroundCheckStatus,
+            verified: haulerProfiles.verified,
+          }).from(haulerProfiles).where(eq(haulerProfiles.id, id)).limit(1)
+        )
+      );
+
+      const allProfiles = profileResults.map((p) => p[0]).filter(Boolean);
+      const now = new Date();
+      const thirtyDaysOut = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+      const expired = allProfiles.filter(
+        (p) => p!.generalLiabilityExpiration && new Date(p!.generalLiabilityExpiration) < now
+      );
+      const expiringSoon = allProfiles.filter(
+        (p) =>
+          p!.generalLiabilityExpiration &&
+          new Date(p!.generalLiabilityExpiration) >= now &&
+          new Date(p!.generalLiabilityExpiration) <= thirtyDaysOut
+      );
+      const valid = allProfiles.filter(
+        (p) =>
+          !p!.generalLiabilityExpiration ||
+          new Date(p!.generalLiabilityExpiration) > thirtyDaysOut
+      );
+
+      const complianceScore =
+        allProfiles.length > 0
+          ? Math.round((valid.length / allProfiles.length) * 100)
+          : 100;
+
+      return {
+        businessId,
+        complianceScore,
+        vendorInsuranceStatus: {
+          valid: valid.length,
+          expiringSoon: expiringSoon.length,
+          expired: expired.length,
+        },
+        licenseExpirations: expiringSoon.slice(0, 5).map((p) => ({
+          vendor: p!.companyName,
+          type: "General Liability Insurance",
+          expiresOn: p!.generalLiabilityExpiration,
+        })),
+        totalVendors: allProfiles.length,
+        recommendation:
+          expired.length > 0
+            ? `${expired.length} vendor(s) have expired insurance — suspend them until renewed`
+            : expiringSoon.length > 0
+            ? `${expiringSoon.length} vendor(s) have insurance expiring within 30 days — follow up`
+            : "All vendors are compliant — great work!",
+      };
+    }
+  } catch (e) {
+    console.error("getComplianceStatus DB error:", e);
+  }
   return {
     businessId,
-    complianceScore: 97,
-    vendorInsuranceStatus: { valid: 12, expiringSoon: 2, expired: 1 },
-    licenseExpirations: [
-      { vendor: "Pro #4821", expiresIn: "14 days", type: "Contractor License" },
-    ],
-    auditTrail: "Last audit: 7 days ago — all jobs documented with photos",
-    recommendation: "1 vendor has expired insurance — suspend them until renewed",
+    complianceScore: 100,
+    vendorInsuranceStatus: { valid: 0, expiringSoon: 0, expired: 0 },
+    licenseExpirations: [],
+    recommendation: "No vendor data yet — scorecards populate as jobs are completed",
   };
 }
 
@@ -926,29 +1202,43 @@ export function generateROIReport(currentSpend: number, units: number): object {
 // HOME INTELLIGENCE TOOLS (Consumer)
 // ═════════════════════════════════════════════
 
-// t) getHomeProfile
+// t) getHomeProfile — live DB query
 export async function getHomeProfile(userId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const profile = await storage.getHomeProfile?.(userId).catch(() => null);
-      if (profile) {
-        return {
-          userId,
-          address: profile.address,
-          bedrooms: profile.bedrooms,
-          bathrooms: profile.bathrooms,
-          squareFeet: profile.squareFeet,
-          yearBuilt: profile.yearBuilt,
-          hasPool: profile.hasPool,
-          poolSize: profile.poolSize,
-          pets: profile.pets,
-          lotSize: profile.lotSize,
-          roofType: profile.roofType,
-          hvacAge: profile.hvacAge,
-          lastUpdated: profile.updatedAt,
-        };
-      }
-    } catch { /* fall through */ }
+  try {
+    const [profile] = await db.select().from(homeProfiles)
+      .where(eq(homeProfiles.customerId, userId))
+      .limit(1);
+
+    if (profile) {
+      const appliances = await db.select().from(homeAppliances)
+        .where(eq(homeAppliances.homeProfileId, profile.id));
+
+      return {
+        userId,
+        homeProfileId: profile.id,
+        address: profile.address,
+        city: profile.city,
+        state: profile.state,
+        zip: profile.zip,
+        homeType: profile.homeType,
+        bedrooms: profile.bedrooms,
+        bathrooms: profile.bathrooms,
+        squareFeet: profile.squareFootage,
+        yearBuilt: profile.yearBuilt,
+        lotSize: profile.lotSize,
+        appliances: appliances.map((a) => ({
+          name: a.name,
+          brand: a.brand,
+          model: a.model,
+          warrantyExpiry: a.warrantyExpiry,
+          lastServiced: a.lastServiceDate,
+          notes: a.notes,
+        })),
+        lastUpdated: profile.createdAt,
+      };
+    }
+  } catch (e) {
+    console.error("getHomeProfile DB error:", e);
   }
   return {
     userId,
@@ -957,25 +1247,35 @@ export async function getHomeProfile(userId: string, storage?: any): Promise<obj
   };
 }
 
-// u) getServiceHistory
+// u) getServiceHistory — live DB query
 export async function getServiceHistory(userId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const jobs = await storage.getServiceRequestsByCustomer?.(userId).catch(() => []);
-      const completed = (jobs || []).filter((j: any) => j.status === "completed");
-      return {
-        userId,
-        totalJobs: completed.length,
-        jobs: completed.slice(0, 10).map((j: any) => ({
-          id: j.id,
-          serviceType: j.serviceType,
-          date: j.completedAt || j.createdAt,
-          price: j.finalPrice || j.priceEstimate,
-          rating: j.customerRating,
-        })),
-        totalSpent: completed.reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0),
-      };
-    } catch { /* fall through */ }
+  try {
+    const jobs = await db.select().from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.customerId, userId),
+        eq(serviceRequests.status, "completed"),
+      ))
+      .orderBy(desc(serviceRequests.completedAt))
+      .limit(10);
+
+    const totalSpent = jobs.reduce((s, j) => s + (j.finalPrice || j.priceEstimate || 0), 0);
+
+    return {
+      userId,
+      totalJobs: jobs.length,
+      jobs: jobs.map((j) => ({
+        id: j.id,
+        serviceType: j.serviceType,
+        date: j.completedAt || j.createdAt,
+        price: j.finalPrice || j.priceEstimate,
+        address: j.pickupAddress,
+        city: j.pickupCity,
+        status: j.status,
+      })),
+      totalSpent,
+    };
+  } catch (e) {
+    console.error("getServiceHistory DB error:", e);
   }
   return { userId, totalJobs: 0, jobs: [], totalSpent: 0, message: "No service history found" };
 }
@@ -1023,7 +1323,7 @@ export function getMaintenanceSchedule(homeDetails: any): object {
   if (homeDetails?.hasPool) {
     tasks.push({ month: 4, service: "pool_cleaning", frequency: "monthly", note: "Pool season start" });
   }
-  const schedule = tasks.map(t => ({
+  const schedule = tasks.map((t) => ({
     ...t,
     dueInMonths: (t.month - currentMonth + 12) % 12 || 12,
   })).sort((a, b) => a.dueInMonths - b.dueInMonths);
@@ -1035,8 +1335,484 @@ export function getMaintenanceSchedule(homeDetails: any): object {
   };
 }
 
+// x) getNeighborhoodInsights
+export function getNeighborhoodInsights(zip: string): object {
+  const data: Record<string, any> = {
+    "32827": { name: "Lake Nona", avgLawnCare: 150, avgCleaning: 160, popularServices: ["landscaping", "pool_cleaning", "pressure_washing"], trend: "Pool cleaning up 25%" },
+    "32836": { name: "Dr. Phillips", avgLawnCare: 175, avgCleaning: 185, popularServices: ["pool_cleaning", "home_cleaning", "gutter_cleaning"], trend: "Home cleaning very popular" },
+    "32819": { name: "Orlando (Sand Lake)", avgLawnCare: 130, avgCleaning: 150, popularServices: ["junk_removal", "pressure_washing"], trend: "Junk removal up 20%" },
+    "32765": { name: "Oviedo", avgLawnCare: 120, avgCleaning: 145, popularServices: ["landscaping", "gutter_cleaning"], trend: "Spring landscaping peak" },
+    "32789": { name: "Winter Park", avgLawnCare: 160, avgCleaning: 175, popularServices: ["home_cleaning", "pressure_washing", "pool_cleaning"], trend: "Premium services in demand" },
+  };
+  const neighborhood = data[zip] || {
+    name: "your area",
+    avgLawnCare: 140,
+    avgCleaning: 160,
+    popularServices: ["landscaping", "pressure_washing", "home_cleaning"],
+    trend: "Demand up across all services",
+  };
+  return {
+    zip,
+    neighborhood: neighborhood.name,
+    averagePrices: {
+      lawnCare: neighborhood.avgLawnCare,
+      homeCleaning: neighborhood.avgCleaning,
+    },
+    popularServices: neighborhood.popularServices,
+    currentTrend: neighborhood.trend,
+    proAvailability: "Good — typically 24-48 hour booking window in your area",
+  };
+}
+
+// ═════════════════════════════════════════════
+// NEW TOOLS — Phase 1
+// ═════════════════════════════════════════════
+
+// y) getProGoalProgress — queries pro_goals + service_requests
+export async function getProGoalProgress(proId: string, storage?: any): Promise<object> {
+  try {
+    const { rows: goals } = await (pool as any).query(
+      "SELECT * FROM pro_goals WHERE pro_id = $1 ORDER BY created_at DESC LIMIT 1",
+      [proId]
+    );
+    const goal = goals[0];
+    const monthlyTargetCents = goal?.monthly_target || 500000; // default $5,000
+
+    const profile = await getHaulerProfileByProId(proId);
+    const haulerId = profile?.id || proId;
+
+    const allCompleted = await db.select().from(serviceRequests)
+      .where(and(
+        eq(serviceRequests.assignedHaulerId, haulerId),
+        eq(serviceRequests.status, "completed"),
+      ));
+
+    const now = new Date();
+    const thisMonthJobs = allCompleted.filter((j) => {
+      const d = new Date(j.completedAt || j.createdAt);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+
+    // haulerPayout stored in dollars; convert to cents for comparison
+    const actualEarningsCents = Math.round(
+      thisMonthJobs.reduce((s, j) => s + (j.haulerPayout || 0), 0) * 100
+    );
+    const progressPercent = Math.round((actualEarningsCents / monthlyTargetCents) * 100);
+    const remainingCents = Math.max(0, monthlyTargetCents - actualEarningsCents);
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const daysLeft = daysInMonth - now.getDate();
+    const dayElapsedPct = ((now.getDate() - 1) / daysInMonth) * 100;
+
+    return {
+      proId,
+      monthlyTargetCents,
+      monthlyTargetDollars: monthlyTargetCents / 100,
+      actualEarningsCents,
+      actualEarningsDollars: actualEarningsCents / 100,
+      progressPercent: Math.min(progressPercent, 100),
+      remainingCents,
+      remainingDollars: remainingCents / 100,
+      jobsThisMonth: thisMonthJobs.length,
+      daysLeft,
+      onTrack: progressPercent >= dayElapsedPct,
+    };
+  } catch (e) {
+    console.error("getProGoalProgress DB error:", e);
+  }
+  return {
+    proId,
+    monthlyTargetDollars: 5000,
+    actualEarningsDollars: 0,
+    progressPercent: 0,
+    message: "Goal tracking unavailable",
+  };
+}
+
+// z) getHomeMaintenanceReminders — queries maintenance_reminders
+export async function getHomeMaintenanceReminders(userId: string, homeDetails: any, storage?: any): Promise<object> {
+  try {
+    const { rows } = await (pool as any).query(
+      "SELECT * FROM maintenance_reminders WHERE user_id = $1 ORDER BY next_due ASC NULLS LAST",
+      [userId]
+    );
+
+    const now = new Date();
+    const overdue = rows.filter((r: any) => r.next_due && new Date(r.next_due) < now);
+    const upcoming = rows.filter((r: any) => r.next_due && new Date(r.next_due) >= now);
+
+    return {
+      userId,
+      reminders: rows.map((r: any) => ({
+        id: r.id,
+        type: r.reminder_type,
+        description: r.description,
+        lastCompleted: r.last_completed,
+        nextDue: r.next_due,
+        intervalDays: r.interval_days,
+        autoBook: r.auto_book,
+        isOverdue: r.next_due && new Date(r.next_due) < now,
+      })),
+      overdueCount: overdue.length,
+      upcomingCount: upcoming.length,
+      total: rows.length,
+    };
+  } catch (e) {
+    console.error("getHomeMaintenanceReminders DB error:", e);
+  }
+  return {
+    userId,
+    reminders: [],
+    overdueCount: 0,
+    upcomingCount: 0,
+    total: 0,
+    message: "No maintenance reminders set up yet. Want me to create a maintenance schedule for your home?",
+  };
+}
+
+// aa) getCustomerLoyaltyStatus — queries customer_loyalty
+export async function getCustomerLoyaltyStatus(userId: string, storage?: any): Promise<object> {
+  const tierThresholds: Record<string, number> = {
+    bronze: 0,
+    silver: 50000,
+    gold: 150000,
+    platinum: 500000,
+  };
+  const tierOrder = ["bronze", "silver", "gold", "platinum"];
+
+  try {
+    const { rows } = await (pool as any).query(
+      "SELECT * FROM customer_loyalty WHERE user_id = $1 LIMIT 1",
+      [userId]
+    );
+    const loyalty = rows[0];
+
+    if (loyalty) {
+      const currentTierIdx = tierOrder.indexOf(loyalty.tier);
+      const nextTier = currentTierIdx < tierOrder.length - 1 ? tierOrder[currentTierIdx + 1] : null;
+      const nextTierThreshold = nextTier ? tierThresholds[nextTier] : null;
+      const spendToNextTierCents = nextTierThreshold
+        ? Math.max(0, nextTierThreshold - loyalty.lifetime_spend)
+        : 0;
+
+      return {
+        userId,
+        tier: loyalty.tier,
+        lifetimeSpendCents: loyalty.lifetime_spend,
+        lifetimeSpendDollars: loyalty.lifetime_spend / 100,
+        points: loyalty.points,
+        streakMonths: loyalty.streak_months,
+        nextTier,
+        spendToNextTierCents,
+        spendToNextTierDollars: spendToNextTierCents / 100,
+        memberSince: loyalty.joined_at,
+        benefits: getLoyaltyTierBenefits(loyalty.tier),
+      };
+    }
+
+    return {
+      userId,
+      tier: "bronze",
+      lifetimeSpendDollars: 0,
+      points: 0,
+      streakMonths: 0,
+      nextTier: "silver",
+      spendToNextTierDollars: 500,
+      message: "You're just getting started! Book your first service to earn loyalty points.",
+      benefits: getLoyaltyTierBenefits("bronze"),
+    };
+  } catch (e) {
+    console.error("getCustomerLoyaltyStatus DB error:", e);
+  }
+  return {
+    userId,
+    tier: "bronze",
+    message: "Loyalty status unavailable",
+  };
+}
+
+function getLoyaltyTierBenefits(tier: string): string[] {
+  const benefits: Record<string, string[]> = {
+    bronze: ["Earn 1 point per $1 spent", "Birthday discount"],
+    silver: ["Earn 1.5 points per $1", "Priority scheduling", "5% loyalty discount"],
+    gold: ["Earn 2 points per $1", "Free add-ons", "10% loyalty discount", "Dedicated support"],
+    platinum: ["Earn 3 points per $1", "15% loyalty discount", "Free annual home scan", "VIP support line"],
+  };
+  return benefits[tier] || benefits["bronze"];
+}
+
+// bb) getReferralStatus — queries existing referrals table via Drizzle
+export async function getReferralStatus(userId: string, storage?: any): Promise<object> {
+  try {
+    const refs = await db.select().from(referrals)
+      .where(eq(referrals.referrerId, userId))
+      .orderBy(desc(referrals.createdAt))
+      .limit(20);
+
+    const completedRefs = refs.filter((r) => ["completed", "paid"].includes(r.status));
+    const pendingRefs = refs.filter((r) => r.status === "pending");
+    const totalEarned = completedRefs.reduce((s, r) => s + (r.referrerBonusAmount || 0), 0);
+    const referralCode = refs[0]?.referralCode || null;
+
+    return {
+      userId,
+      referrals: refs.map((r) => ({
+        id: r.id,
+        referredEmail: r.referredEmail,
+        status: r.status,
+        referralCode: r.referralCode,
+        creditAmount: r.referrerBonusAmount,
+        createdAt: r.createdAt,
+        completedAt: r.firstJobCompletedAt,
+      })),
+      totalReferrals: refs.length,
+      completedReferrals: completedRefs.length,
+      pendingReferrals: pendingRefs.length,
+      totalEarned,
+      referralCode,
+      creditPerReferral: 50,
+      message:
+        totalEarned > 0
+          ? `You've earned $${totalEarned} from referrals! Share your code to earn more.`
+          : "Refer a friend and earn $50 when they complete their first service!",
+    };
+  } catch (e) {
+    console.error("getReferralStatus DB error:", e);
+  }
+  return {
+    userId,
+    referrals: [],
+    totalReferrals: 0,
+    completedReferrals: 0,
+    totalEarned: 0,
+    creditPerReferral: 50,
+    message: "Refer a friend and earn $50 when they complete their first service!",
+  };
+}
+
+// cc) getSmartHomeStatus — queries smart_home_devices
+export async function getSmartHomeStatus(userId: string, storage?: any): Promise<object> {
+  try {
+    const { rows } = await (pool as any).query(
+      "SELECT id, device_type, device_name, last_data_sync, status FROM smart_home_devices WHERE user_id = $1",
+      [userId]
+    );
+
+    const connected = rows.filter((d: any) => d.status === "connected");
+
+    return {
+      userId,
+      devices: rows.map((d: any) => ({
+        id: d.id,
+        deviceType: d.device_type,
+        deviceName: d.device_name,
+        status: d.status,
+        lastSync: d.last_data_sync,
+      })),
+      connectedCount: connected.length,
+      disconnectedCount: rows.length - connected.length,
+      total: rows.length,
+      supportedDevices: ["Nest", "Ring", "August", "Flo by Moen", "myQ", "SimpliSafe"],
+    };
+  } catch (e) {
+    console.error("getSmartHomeStatus DB error:", e);
+  }
+  return {
+    userId,
+    devices: [],
+    connectedCount: 0,
+    total: 0,
+    supportedDevices: ["Nest", "Ring", "August", "Flo by Moen", "myQ", "SimpliSafe"],
+    message: "No smart home devices connected yet. Connect your devices for proactive maintenance alerts.",
+  };
+}
+
+// ─────────────────────────────────────────────
+// dd) Self-Serve AI Home Scan Tools
+// ─────────────────────────────────────────────
+
+import { analyzeImages } from "./ai/openai-vision-client";
+
+const SCAN_CREDIT_PER_ITEM = 1;
+const SCAN_COMPLETION_BONUS = 25;
+const SCAN_STREAK_BONUS = 5;
+const SCAN_STREAK_DAYS_REQUIRED = 3;
+const SCAN_MIN_ITEMS = 10;
+const SCAN_ESTIMATED_TOTAL = 20;
+const SCAN_ROOM_BADGES = ["Kitchen", "Bathroom", "Bedroom", "Garage", "HVAC", "Laundry", "Living Room", "Outdoor"];
+
+function getScanTier(pct: number): string {
+  if (pct >= 75) return "Smart Home Ready";
+  if (pct >= 50) return "Gold";
+  if (pct >= 25) return "Silver";
+  return "Bronze Home";
+}
+
+// dd-1) startHomeScan — initiates guided room-by-room scan
+export async function startHomeScan(customerId: string): Promise<object> {
+  try {
+    // Ensure wallet exists
+    await pool.query(
+      `INSERT INTO customer_wallet (customer_id, balance, total_earned, total_spent) VALUES ($1, 0, 0, 0) ON CONFLICT (customer_id) DO NOTHING`,
+      [customerId]
+    );
+
+    const { rows } = await pool.query(
+      `INSERT INTO home_scan_sessions (customer_id, status) VALUES ($1, 'in_progress') RETURNING *`,
+      [customerId]
+    );
+
+    return {
+      success: true,
+      session: rows[0],
+      instructions: `🏠 Home Scan started! Walk through each room and take photos of your appliances. You'll earn $${SCAN_CREDIT_PER_ITEM} for each item scanned, plus a $${SCAN_COMPLETION_BONUS} bonus when you complete at least ${SCAN_MIN_ITEMS} items!`,
+      suggestedRooms: SCAN_ROOM_BADGES,
+      estimatedItems: SCAN_ESTIMATED_TOTAL,
+    };
+  } catch (e) {
+    console.error("startHomeScan error:", e);
+    return { success: false, error: "Failed to start home scan" };
+  }
+}
+
+// dd-2) processHomeScanPhoto — handles photo upload during scan
+export async function processHomeScanPhoto(
+  customerId: string,
+  scanSessionId: string,
+  roomName: string,
+  photoUrl: string
+): Promise<object> {
+  try {
+    // Verify session
+    const { rows: sessions } = await pool.query(
+      `SELECT * FROM home_scan_sessions WHERE id = $1 AND customer_id = $2 AND status = 'in_progress'`,
+      [scanSessionId, customerId]
+    );
+    if (sessions.length === 0) {
+      return { success: false, error: "No active scan session found" };
+    }
+
+    // GPT-5.2 vision analysis
+    const analysis = await analyzeImages({
+      imageUrls: [photoUrl],
+      prompt: `Analyze this home appliance/item photo. Return JSON:
+{
+  "applianceType": "what this is",
+  "brand": "manufacturer" or null,
+  "model": "model number" or null,
+  "estimatedAge": "X years" or null,
+  "condition": 1-10,
+  "visibleIssues": [],
+  "maintenanceRecommendations": [],
+  "notes": ""
+}`,
+      systemPrompt: "You are an expert home inspector analyzing appliances for a home scan.",
+      jsonMode: true,
+    });
+
+    // Store item
+    await pool.query(
+      `INSERT INTO scanned_items (scan_session_id, customer_id, room_name, appliance_name, photo_url, analysis_result, condition, brand, model, estimated_age, credit_awarded)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+      [scanSessionId, customerId, roomName, analysis.applianceType || "Unknown", photoUrl, JSON.stringify(analysis),
+       analysis.condition || null, analysis.brand || null, analysis.model || null, analysis.estimatedAge || null, SCAN_CREDIT_PER_ITEM]
+    );
+
+    // Award credit
+    await pool.query(`INSERT INTO customer_wallet (customer_id, balance, total_earned, total_spent) VALUES ($1, 0, 0, 0) ON CONFLICT (customer_id) DO NOTHING`, [customerId]);
+    await pool.query(`UPDATE customer_wallet SET balance = balance + $1, total_earned = total_earned + $1, updated_at = now() WHERE customer_id = $2`, [SCAN_CREDIT_PER_ITEM, customerId]);
+    await pool.query(`INSERT INTO scan_rewards (customer_id, reward_type, amount, description) VALUES ($1, 'per_item', $2, $3)`, [customerId, SCAN_CREDIT_PER_ITEM, `Scanned: ${analysis.applianceType || "item"} in ${roomName}`]);
+    await pool.query(`UPDATE home_scan_sessions SET total_credits_earned = total_credits_earned + $1 WHERE id = $2`, [SCAN_CREDIT_PER_ITEM, scanSessionId]);
+
+    // Get item count
+    const { rows: countRows } = await pool.query(`SELECT COUNT(*) as count FROM scanned_items WHERE scan_session_id = $1`, [scanSessionId]);
+    const itemCount = parseInt(countRows[0].count, 10);
+    const pct = Math.min(100, Math.round((itemCount / SCAN_ESTIMATED_TOTAL) * 100));
+
+    return {
+      success: true,
+      applianceName: analysis.applianceType,
+      analysis,
+      creditAwarded: SCAN_CREDIT_PER_ITEM,
+      progress: { itemsScanned: itemCount, percentage: pct, tier: getScanTier(pct) },
+      message: `✅ ${analysis.applianceType || "Item"} scanned in ${roomName}! +$${SCAN_CREDIT_PER_ITEM} credit. (${itemCount}/${SCAN_ESTIMATED_TOTAL} items, ${pct}%)`,
+    };
+  } catch (e) {
+    console.error("processHomeScanPhoto error:", e);
+    return { success: false, error: "Failed to process scan photo" };
+  }
+}
+
+// dd-3) getHomeScanProgress — shows progress, credits, badges
+export async function getHomeScanProgress(customerId: string): Promise<object> {
+  try {
+    const { rows: sessions } = await pool.query(
+      `SELECT * FROM home_scan_sessions WHERE customer_id = $1 ORDER BY started_at DESC LIMIT 1`,
+      [customerId]
+    );
+    const { rows: items } = await pool.query(
+      `SELECT * FROM scanned_items WHERE customer_id = $1 ORDER BY scanned_at DESC`,
+      [customerId]
+    );
+
+    const roomsScanned = [...new Set(items.map((i: any) => i.room_name))];
+    const badges = SCAN_ROOM_BADGES.filter((b) => roomsScanned.some((r: string) => r.toLowerCase().includes(b.toLowerCase())));
+    const totalItems = items.length;
+    const pct = Math.min(100, Math.round((totalItems / SCAN_ESTIMATED_TOTAL) * 100));
+
+    await pool.query(`INSERT INTO customer_wallet (customer_id, balance, total_earned, total_spent) VALUES ($1, 0, 0, 0) ON CONFLICT (customer_id) DO NOTHING`, [customerId]);
+    const { rows: walletRows } = await pool.query(`SELECT * FROM customer_wallet WHERE customer_id = $1`, [customerId]);
+
+    return {
+      session: sessions[0] || null,
+      totalItemsScanned: totalItems,
+      progressPercentage: pct,
+      tier: getScanTier(pct),
+      roomsScanned,
+      badges,
+      allBadges: SCAN_ROOM_BADGES,
+      creditsEarned: walletRows[0]?.total_earned || 0,
+      balance: walletRows[0]?.balance || 0,
+      recentItems: items.slice(0, 5).map((i: any) => ({ appliance: i.appliance_name, room: i.room_name, condition: i.condition })),
+      message: totalItems === 0
+        ? "No items scanned yet. Start your home scan to earn credits!"
+        : `📊 ${totalItems} items scanned (${pct}%) — ${getScanTier(pct)} tier. Balance: $${walletRows[0]?.balance || 0}`,
+    };
+  } catch (e) {
+    console.error("getHomeScanProgress error:", e);
+    return { totalItemsScanned: 0, progressPercentage: 0, tier: "Bronze Home", message: "Unable to load progress." };
+  }
+}
+
+// dd-4) getWalletBalance — shows customer credit balance
+export async function getWalletBalance(customerId: string): Promise<object> {
+  try {
+    await pool.query(`INSERT INTO customer_wallet (customer_id, balance, total_earned, total_spent) VALUES ($1, 0, 0, 0) ON CONFLICT (customer_id) DO NOTHING`, [customerId]);
+    const { rows: walletRows } = await pool.query(`SELECT * FROM customer_wallet WHERE customer_id = $1`, [customerId]);
+    const { rows: rewards } = await pool.query(`SELECT * FROM scan_rewards WHERE customer_id = $1 ORDER BY awarded_at DESC LIMIT 20`, [customerId]);
+
+    const wallet = walletRows[0];
+    return {
+      balance: wallet.balance,
+      totalEarned: wallet.total_earned,
+      totalSpent: wallet.total_spent,
+      recentTransactions: rewards.map((r: any) => ({
+        type: r.reward_type,
+        amount: r.amount,
+        description: r.description,
+        date: r.awarded_at,
+      })),
+      message: `💰 Wallet balance: $${wallet.balance} (earned: $${wallet.total_earned})`,
+    };
+  } catch (e) {
+    console.error("getWalletBalance error:", e);
+    return { balance: 0, totalEarned: 0, message: "Unable to load wallet." };
+  }
+}
+
 // ═════════════════════════════════════════════
 // TRUST & SAFETY
+// ═════════════════════════════════════════════
+
 // ═════════════════════════════════════════════
 
 // y) getProArrivalInfo
@@ -1174,42 +1950,10 @@ export async function generateClaimDocumentation(jobIds: string[], storage?: any
   };
 }
 
+
 // ═════════════════════════════════════════════
 // REFERRAL ENGINE
 // ═════════════════════════════════════════════
-
-// z3) getReferralStatus
-export async function getReferralStatus(userId: string, storage?: any): Promise<object> {
-  if (storage) {
-    try {
-      const referrals = await storage.getReferralsByReferrer?.(userId).catch(() => []);
-      const pending = (referrals || []).filter((r: any) => r.status === "pending");
-      const completed = (referrals || []).filter((r: any) => r.status === "completed");
-      const creditsEarned = completed.length * 25;
-
-      return {
-        userId,
-        referralCode: `UPTEND-${userId.slice(0, 6).toUpperCase()}`,
-        referralLink: `https://uptend.com/signup?ref=${userId.slice(0, 8)}`,
-        creditsEarned,
-        pendingReferrals: pending.length,
-        completedReferrals: completed.length,
-        creditPerReferral: 25,
-        howItWorks: "Share your link. When a friend books their first service, you both get $25 credit.",
-      };
-    } catch { /* fall through */ }
-  }
-  return {
-    userId,
-    referralCode: `UPTEND-${userId.slice(0, 6).toUpperCase()}`,
-    referralLink: `https://uptend.com/signup?ref=${userId.slice(0, 8)}`,
-    creditsEarned: 0,
-    pendingReferrals: 0,
-    completedReferrals: 0,
-    creditPerReferral: 25,
-    howItWorks: "Share your link. When a friend books their first service, you both get $25 credit.",
-  };
-}
 
 // z4) getNeighborhoodGroupDeals
 export function getNeighborhoodGroupDeals(zip: string): object {
@@ -1452,50 +2196,10 @@ export function getDisasterModeStatus(zip: string): object {
   };
 }
 
+
 // ═════════════════════════════════════════════
 // LOYALTY & GAMIFICATION
 // ═════════════════════════════════════════════
-
-const LOYALTY_TIERS = {
-  bronze:   { name: "Bronze",   minSpend: 0,    perks: ["Base pricing", "Standard scheduling"] },
-  silver:   { name: "Silver",   minSpend: 500,  perks: ["Priority scheduling", "Dedicated pro matching"] },
-  gold:     { name: "Gold",     minSpend: 2000, perks: ["5% off all services", "Dedicated pro team", "Priority scheduling"] },
-  platinum: { name: "Platinum", minSpend: 5000, perks: ["10% off all services", "Free annual home scan", "Priority emergency dispatch"] },
-};
-
-// z11) getCustomerLoyaltyStatus
-export async function getCustomerLoyaltyStatus(userId: string, storage?: any): Promise<object> {
-  let lifetimeSpend = 0;
-
-  if (storage) {
-    try {
-      const jobs = await storage.getServiceRequestsByCustomer?.(userId).catch(() => []);
-      lifetimeSpend = (jobs || [])
-        .filter((j: any) => j.status === "completed")
-        .reduce((s: number, j: any) => s + (j.finalPrice || j.priceEstimate || 0), 0);
-    } catch { /* fall through */ }
-  }
-
-  const tier = lifetimeSpend >= 5000 ? "platinum" : lifetimeSpend >= 2000 ? "gold" : lifetimeSpend >= 500 ? "silver" : "bronze";
-  const tierData = LOYALTY_TIERS[tier as keyof typeof LOYALTY_TIERS];
-  const nextTier = tier === "platinum" ? null : tier === "gold" ? "platinum" : tier === "silver" ? "gold" : "silver";
-  const nextTierData = nextTier ? LOYALTY_TIERS[nextTier as keyof typeof LOYALTY_TIERS] : null;
-  const spendToNext = nextTierData ? Math.max(0, nextTierData.minSpend - lifetimeSpend) : 0;
-
-  return {
-    userId,
-    tier,
-    tierName: tierData.name,
-    lifetimeSpend,
-    perks: tierData.perks,
-    nextTier,
-    nextTierName: nextTierData?.name || null,
-    spendToNextTier: spendToNext,
-    message: nextTier
-      ? `Spend $${spendToNext} more to reach ${nextTierData?.name} — unlocks: ${nextTierData?.perks[0]}`
-      : "You're Platinum — the highest tier! Enjoy 10% off everything.",
-  };
-}
 
 // z12) getCustomerMilestones
 export async function getCustomerMilestones(userId: string, storage?: any): Promise<object> {
@@ -1675,56 +2379,10 @@ export function getProJobPrompts(serviceId: string, homeProfile: any): object {
   };
 }
 
+
 // ═════════════════════════════════════════════
-// HOME MAINTENANCE REMINDERS & TIPS
+// HOME MAINTENANCE TIPS
 // ═════════════════════════════════════════════
-
-// z17) getHomeMaintenanceReminders
-export async function getHomeMaintenanceReminders(userId: string, homeDetails: any, storage?: any): Promise<object> {
-  const month = new Date().getMonth() + 1;
-
-  const baseReminders = [
-    { id: "air_filter",       task: "Replace HVAC air filter",          daysInterval: 90,  category: "HVAC",     bookable: false, tip: "A $10 filter protects your $5K AC unit" },
-    { id: "smoke_detector",   task: "Test smoke & CO detectors",        daysInterval: 180, category: "Safety",   bookable: false, tip: "Replace batteries annually" },
-    { id: "gutter_cleaning",  task: "Clean gutters",                    daysInterval: 180, category: "Exterior", bookable: true,  serviceId: "gutter_cleaning" },
-    { id: "dryer_vent",       task: "Clean dryer vent (fire hazard!)",   daysInterval: 365, category: "Safety",   bookable: true,  serviceId: "handyman" },
-    { id: "water_heater",     task: "Flush water heater",               daysInterval: 365, category: "Plumbing", bookable: true,  serviceId: "handyman" },
-    { id: "pressure_washing", task: "Pressure wash exterior",           daysInterval: 365, category: "Exterior", bookable: true,  serviceId: "pressure_washing" },
-    { id: "pest_control",     task: "Pest control treatment",           daysInterval: 90,  category: "Pest",     bookable: false, tip: "Florida needs quarterly pest control" },
-    { id: "roof_inspection",  task: "Annual roof inspection",           daysInterval: 365, category: "Roof",     bookable: true,  serviceId: "home_scan" },
-    { id: "water_filter",     task: "Replace water filter",             daysInterval: 180, category: "Plumbing", bookable: false, tip: "Check your filter model for exact interval" },
-    { id: "lawn_fertilize",   task: "Lawn fertilization",              daysInterval: 90,  category: "Lawn",     bookable: true,  serviceId: "landscaping" },
-  ];
-
-  if (homeDetails?.hasPool) {
-    baseReminders.push(
-      { id: "pool_filter",    task: "Deep clean pool filter",           daysInterval: 180, category: "Pool", bookable: true, serviceId: "pool_cleaning" },
-      { id: "pool_equipment", task: "Pool equipment inspection",        daysInterval: 365, category: "Pool", bookable: true, serviceId: "pool_cleaning" }
-    );
-  }
-
-  const seasonalUrgent: Record<number, string[]> = {
-    3: ["gutter_cleaning", "pressure_washing", "lawn_fertilize"],
-    5: ["gutter_cleaning"],
-    6: ["gutter_cleaning"],
-    9: ["gutter_cleaning", "pressure_washing"],
-    11: ["dryer_vent", "roof_inspection"],
-  };
-
-  const urgentIds = seasonalUrgent[month] || [];
-
-  const reminders = baseReminders.map(r => ({
-    ...r,
-    urgentThisMonth: urgentIds.includes(r.id),
-  })).sort((a, b) => (b.urgentThisMonth ? 1 : 0) - (a.urgentThisMonth ? 1 : 0));
-
-  return {
-    userId,
-    reminders,
-    urgentThisMonth: reminders.filter(r => r.urgentThisMonth),
-    tip: "Book seasonal services 2-3 weeks early during spring and pre-hurricane season — pros fill up fast.",
-  };
-}
 
 // z18) getHomeTips
 export function getHomeTips(season: string, homeType: string, location: string): object {
@@ -1780,90 +2438,10 @@ export async function addCustomReminder(userId: string, description: string, int
   };
 }
 
+
 // ═════════════════════════════════════════════
 // PRO GOAL TRACKER
 // ═════════════════════════════════════════════
-
-// z20) getProGoalProgress
-export async function getProGoalProgress(proId: string, storage?: any): Promise<object> {
-  const now = new Date();
-  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-  const dayOfMonth = now.getDate();
-  const daysLeft = daysInMonth - dayOfMonth;
-
-  let monthlyEarnings = 0;
-  let jobCount = 0;
-  let lastMonthEarnings = 0;
-  let streak = 0;
-  const monthlyGoal = 5000; // Default — in production, load from a pro_goals table
-
-  if (storage) {
-    try {
-      const jobs = await storage.getServiceRequestsByHauler?.(proId).catch(() => []);
-      const completed = (jobs || []).filter((j: any) => j.status === "completed");
-
-      const thisMonthJobs = completed.filter((j: any) => {
-        const d = new Date(j.completedAt || j.createdAt);
-        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-      });
-
-      const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const lastMonthJobs = completed.filter((j: any) => {
-        const d = new Date(j.completedAt || j.createdAt);
-        return d.getMonth() === lastMonthDate.getMonth() && d.getFullYear() === lastMonthDate.getFullYear();
-      });
-
-      monthlyEarnings = thisMonthJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
-      jobCount = thisMonthJobs.length;
-      lastMonthEarnings = lastMonthJobs.reduce((s: number, j: any) => s + (j.haulerPayout || 0), 0);
-
-      // Consecutive working days streak
-      let checkDate = new Date(now);
-      while (streak < 30) {
-        const dayStr = checkDate.toISOString().split("T")[0];
-        const worked = completed.some((j: any) => (j.completedAt || j.createdAt || "").startsWith(dayStr));
-        if (!worked) break;
-        streak++;
-        checkDate.setDate(checkDate.getDate() - 1);
-      }
-    } catch { /* fall through */ }
-  }
-
-  const progressPct = monthlyGoal > 0 ? Math.round((monthlyEarnings / monthlyGoal) * 100) : 0;
-  const earningsPerDay = dayOfMonth > 0 ? monthlyEarnings / dayOfMonth : 0;
-  const projected = Math.round(earningsPerDay * daysInMonth);
-  const jobsNeeded = daysLeft > 0 && earningsPerDay > 0
-    ? Math.ceil((monthlyGoal - monthlyEarnings) / Math.max(earningsPerDay, 150))
-    : Math.ceil((monthlyGoal - monthlyEarnings) / 150);
-
-  const message = progressPct >= 100
-    ? "You crushed your goal this month! 🎉"
-    : progressPct >= 75
-    ? `Almost there — just $${monthlyGoal - monthlyEarnings} to go!`
-    : progressPct >= 50
-    ? `Halfway there — great pace. Keep it up.`
-    : daysLeft < 10
-    ? `Final stretch — ~${Math.max(0, jobsNeeded)} more jobs to hit your goal.`
-    : `You've got ${daysLeft} days left — stay consistent and you'll get there.`;
-
-  return {
-    proId,
-    monthlyGoal,
-    currentEarnings: monthlyEarnings,
-    progressPercent: progressPct,
-    jobsThisMonth: jobCount,
-    daysLeft,
-    projectedMonthEnd: projected,
-    jobsNeededToHitGoal: Math.max(0, jobsNeeded),
-    streak,
-    comparedToLastMonth: lastMonthEarnings > 0 ? {
-      lastMonth: lastMonthEarnings,
-      change: monthlyEarnings - lastMonthEarnings,
-      changePct: Math.round(((monthlyEarnings - lastMonthEarnings) / lastMonthEarnings) * 100),
-    } : null,
-    motivationalMessage: message,
-  };
-}
 
 // z21) setProGoal
 export async function setProGoal(proId: string, monthlyTarget: number, storage?: any): Promise<object> {
@@ -1877,35 +2455,6 @@ export async function setProGoal(proId: string, monthlyTarget: number, storage?:
     weeklyTarget: Math.round(monthlyTarget / 4.3),
     dailyTarget: Math.round(monthlyTarget / 21),
     message: `Goal set! Tracking your progress toward $${monthlyTarget.toLocaleString()}/month. I'll show this every time you check in.`,
-  };
-}
-
-// x) getNeighborhoodInsights
-export function getNeighborhoodInsights(zip: string): object {
-  const data: Record<string, any> = {
-    "32827": { name: "Lake Nona", avgLawnCare: 150, avgCleaning: 160, popularServices: ["landscaping", "pool_cleaning", "pressure_washing"], trend: "Pool cleaning up 25%" },
-    "32836": { name: "Dr. Phillips", avgLawnCare: 175, avgCleaning: 185, popularServices: ["pool_cleaning", "home_cleaning", "gutter_cleaning"], trend: "Home cleaning very popular" },
-    "32819": { name: "Orlando (Sand Lake)", avgLawnCare: 130, avgCleaning: 150, popularServices: ["junk_removal", "pressure_washing"], trend: "Junk removal up 20%" },
-    "32765": { name: "Oviedo", avgLawnCare: 120, avgCleaning: 145, popularServices: ["landscaping", "gutter_cleaning"], trend: "Spring landscaping peak" },
-    "32789": { name: "Winter Park", avgLawnCare: 160, avgCleaning: 175, popularServices: ["home_cleaning", "pressure_washing", "pool_cleaning"], trend: "Premium services in demand" },
-  };
-  const neighborhood = data[zip] || {
-    name: "your area",
-    avgLawnCare: 140,
-    avgCleaning: 160,
-    popularServices: ["landscaping", "pressure_washing", "home_cleaning"],
-    trend: "Demand up across all services",
-  };
-  return {
-    zip,
-    neighborhood: neighborhood.name,
-    averagePrices: {
-      lawnCare: neighborhood.avgLawnCare,
-      homeCleaning: neighborhood.avgCleaning,
-    },
-    popularServices: neighborhood.popularServices,
-    currentTrend: neighborhood.trend,
-    proAvailability: "Good — typically 24-48 hour booking window in your area",
   };
 }
 
