@@ -1810,6 +1810,152 @@ export async function getWalletBalance(customerId: string): Promise<object> {
 }
 
 // ═════════════════════════════════════════════
+// WARRANTY TRACKER TOOLS
+// ═════════════════════════════════════════════
+
+import { lookupWarranty, getWarrantyStatus as calcWarrantyStatus } from "./warranty-lookup";
+
+// ee-1) getWarrantyTracker — all scanned items with warranty status, sorted by expiring soonest
+export async function getWarrantyTracker(customerId: string): Promise<object> {
+  try {
+    const { rows } = await pool.query(
+      `SELECT id, appliance_name, room_name, brand, model, serial_number, model_number,
+              manufacture_date, warranty_status, warranty_expires, warranty_details, purchase_date, scanned_at
+       FROM scanned_items WHERE customer_id = $1
+       ORDER BY
+         CASE warranty_status
+           WHEN 'expiring_soon' THEN 1
+           WHEN 'active' THEN 2
+           WHEN 'expired' THEN 3
+           ELSE 4
+         END,
+         warranty_expires ASC NULLS LAST`,
+      [customerId]
+    );
+
+    const now = new Date();
+    const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+
+    const items = rows.map((r: any) => {
+      const expiresDate = r.warranty_expires ? new Date(r.warranty_expires) : null;
+      const isExpiringSoon = expiresDate && (expiresDate.getTime() - now.getTime()) < thirtyDaysMs && expiresDate > now;
+
+      return {
+        id: r.id,
+        appliance: r.appliance_name,
+        room: r.room_name,
+        brand: r.brand,
+        model: r.model_number || r.model,
+        serialNumber: r.serial_number,
+        warrantyStatus: r.warranty_status || "unknown",
+        warrantyExpires: r.warranty_expires,
+        purchaseDate: r.purchase_date,
+        manufactureDate: r.manufacture_date,
+        needsPurchaseDate: !r.purchase_date && r.warranty_status === "unknown",
+        expiringWithin30Days: isExpiringSoon,
+      };
+    });
+
+    const expiringSoon = items.filter((i: any) => i.expiringWithin30Days);
+    const needsPurchaseDate = items.filter((i: any) => i.needsPurchaseDate);
+    const expired = items.filter((i: any) => i.warrantyStatus === "expired");
+
+    return {
+      customerId,
+      items,
+      totalItems: items.length,
+      summary: {
+        expiringSoonCount: expiringSoon.length,
+        expiredCount: expired.length,
+        needsPurchaseDateCount: needsPurchaseDate.length,
+        activeCount: items.filter((i: any) => i.warrantyStatus === "active").length,
+      },
+      alerts: [
+        ...(expiringSoon.length > 0
+          ? [`⚠️ ${expiringSoon.length} item(s) expiring within 30 days: ${expiringSoon.map((i: any) => i.appliance).join(", ")}`]
+          : []),
+        ...(needsPurchaseDate.length > 0
+          ? [`📋 ${needsPurchaseDate.length} item(s) need a purchase date to determine warranty status: ${needsPurchaseDate.map((i: any) => i.appliance).join(", ")}`]
+          : []),
+      ],
+      message: items.length === 0
+        ? "No scanned items found. Start a home scan to track your warranties!"
+        : `📊 Tracking warranties for ${items.length} items. ${expiringSoon.length} expiring soon, ${needsPurchaseDate.length} need purchase dates.`,
+    };
+  } catch (e) {
+    console.error("getWarrantyTracker error:", e);
+    return { customerId, items: [], totalItems: 0, message: "Unable to load warranty tracker." };
+  }
+}
+
+// ee-2) updateAppliancePurchaseDate — set purchase date and recalculate warranty
+export async function updateAppliancePurchaseDate(itemId: string, purchaseDate: string): Promise<object> {
+  try {
+    // Get current item
+    const { rows } = await pool.query(
+      `SELECT * FROM scanned_items WHERE id = $1`,
+      [itemId]
+    );
+    if (rows.length === 0) {
+      return { success: false, error: "Item not found" };
+    }
+
+    const item = rows[0];
+    const purchaseDateObj = new Date(purchaseDate);
+
+    // Recalculate warranty
+    let warrantyInfo = null;
+    if (item.brand) {
+      warrantyInfo = lookupWarranty(
+        item.brand,
+        item.model_number || item.model || null,
+        item.serial_number || null,
+        item.analysis_result?.category || "appliance"
+      );
+
+      // Recalculate with purchase date
+      const mfgDate = item.manufacture_date ? new Date(item.manufacture_date) : purchaseDateObj;
+      const statusResult = calcWarrantyStatus(mfgDate, purchaseDateObj, warrantyInfo.category, item.brand);
+      warrantyInfo.overallStatus = statusResult.status;
+      warrantyInfo.overallExpires = statusResult.expiresDate;
+      warrantyInfo.warranties = statusResult.warranties as any;
+      warrantyInfo.needsPurchaseDate = false;
+    }
+
+    // Update DB
+    await pool.query(
+      `UPDATE scanned_items SET
+        purchase_date = $1,
+        warranty_status = $2,
+        warranty_expires = $3,
+        warranty_details = $4
+       WHERE id = $5`,
+      [
+        purchaseDate,
+        warrantyInfo?.overallStatus || null,
+        warrantyInfo?.overallExpires || null,
+        warrantyInfo ? JSON.stringify(warrantyInfo) : null,
+        itemId,
+      ]
+    );
+
+    return {
+      success: true,
+      itemId,
+      appliance: item.appliance_name,
+      brand: item.brand,
+      purchaseDate,
+      warrantyStatus: warrantyInfo?.overallStatus || "unknown",
+      warrantyExpires: warrantyInfo?.overallExpires || null,
+      message: `✅ Purchase date set for ${item.appliance_name}. Warranty status: ${warrantyInfo?.overallStatus || "unknown"}${warrantyInfo?.overallExpires ? `, expires ${warrantyInfo.overallExpires}` : ""}.`,
+    };
+  } catch (e) {
+    console.error("updateAppliancePurchaseDate error:", e);
+    return { success: false, error: "Failed to update purchase date" };
+  }
+}
+
+// ═════════════════════════════════════════════
 // TRUST & SAFETY
 // ═════════════════════════════════════════════
 

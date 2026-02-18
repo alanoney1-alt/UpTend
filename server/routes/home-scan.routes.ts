@@ -16,6 +16,7 @@ import { Router, type Express } from "express";
 import { z } from "zod";
 import { pool } from "../db";
 import { analyzeImages } from "../services/ai/openai-vision-client";
+import { lookupWarranty } from "../services/warranty-lookup";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -130,12 +131,18 @@ export function registerHomeScanRoutes(app: Express) {
       // Call GPT-5.2 vision to analyze the photo
       const analysisResult = await analyzeImages({
         imageUrls: [photoUrl],
-        prompt: `Analyze this home appliance/item photo for a home scan. Identify:
+        prompt: `Analyze this home appliance/item photo for a home scan. Identify everything you can, paying special attention to any data plates, rating plates, serial number labels, or manufacturer stickers visible in the image.
+
 Return JSON:
 {
   "applianceType": "what this appliance/item is",
+  "category": "hvac" | "water_heater" | "appliance" | "roofing" | "plumbing" | "other",
   "brand": "manufacturer" or null,
   "model": "model number" or null,
+  "serialNumber": "serial number if visible on label/plate" or null,
+  "modelNumber": "full model number if visible" or null,
+  "manufacturingDate": "YYYY-MM-DD or YYYY if visible" or null,
+  "dataPlateText": "full text from any data/rating plate visible" or null,
   "estimatedAge": "X years" or null,
   "condition": 1-10 (10 = excellent),
   "visibleIssues": ["issue1", ...] or [],
@@ -143,14 +150,28 @@ Return JSON:
   "estimatedReplacement": "when replacement may be needed" or null,
   "notes": "any other observations"
 }`,
-        systemPrompt: "You are an expert home inspector analyzing appliances and home items for a comprehensive home scan. Be accurate and helpful.",
+        systemPrompt: "You are an expert home inspector analyzing appliances and home items for a comprehensive home scan. Be accurate and helpful. Look carefully for serial numbers, model numbers, manufacturing dates, and data plate information.",
         jsonMode: true,
       });
 
+      // Warranty lookup
+      let warrantyInfo = null;
+      if (analysisResult.brand) {
+        warrantyInfo = lookupWarranty(
+          analysisResult.brand,
+          analysisResult.modelNumber || analysisResult.model || null,
+          analysisResult.serialNumber || null,
+          analysisResult.category || analysisResult.applianceType || "appliance"
+        );
+      }
+
+      const mfgDateStr = analysisResult.manufacturingDate
+        || (warrantyInfo?.estimatedManufactureDate ? warrantyInfo.estimatedManufactureDate.toISOString().split("T")[0] : null);
+
       // Store scanned item
       const { rows: items } = await pool.query(
-        `INSERT INTO scanned_items (scan_session_id, customer_id, room_name, appliance_name, photo_url, analysis_result, condition, brand, model, estimated_age, credit_awarded)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        `INSERT INTO scanned_items (scan_session_id, customer_id, room_name, appliance_name, photo_url, analysis_result, condition, brand, model, estimated_age, credit_awarded, serial_number, model_number, manufacture_date, warranty_status, warranty_expires, warranty_details)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
          RETURNING *`,
         [
           scanSessionId, customerId, roomName,
@@ -162,6 +183,12 @@ Return JSON:
           analysisResult.model || null,
           analysisResult.estimatedAge || null,
           CREDIT_PER_ITEM,
+          analysisResult.serialNumber || null,
+          analysisResult.modelNumber || analysisResult.model || null,
+          mfgDateStr || null,
+          warrantyInfo?.overallStatus || null,
+          warrantyInfo?.overallExpires || null,
+          warrantyInfo ? JSON.stringify(warrantyInfo) : null,
         ]
       );
 
@@ -197,6 +224,7 @@ Return JSON:
         success: true,
         item: items[0],
         analysis: analysisResult,
+        warranty: warrantyInfo,
         creditAwarded: CREDIT_PER_ITEM,
         streakDays,
         streakBonusAwarded,
