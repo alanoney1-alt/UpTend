@@ -64,11 +64,6 @@ export function Header() {
               {t("nav.about")}
             </span>
           </Link>
-          <Link href="/academy">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-academy">
-              {t("nav.pro_academy")}
-            </span>
-          </Link>
           <Link href="/ai/home-scan">
             <span className="hover:opacity-80 transition-opacity cursor-pointer text-[#F47C20] font-bold flex items-center gap-1" data-testid="link-home-scan">
               ✨ {t("nav.ai_home_scan", "AI Home Scan")}
@@ -87,11 +82,6 @@ export function Header() {
 
         {/* Right: Actions */}
         <div className="hidden md:flex items-center gap-4 flex-shrink-0">
-          <Link href="/emergency">
-            <span className="text-sm font-bold text-red-400 hover:text-red-300 transition-colors cursor-pointer flex items-center gap-1.5" data-testid="link-emergency">
-              🚨 {t("nav.emergency", "Emergency")}
-            </span>
-          </Link>
           <LanguageToggle />
           <Link href="/become-pro">
             <span
@@ -213,9 +203,6 @@ export function Header() {
             </Link>
             <Link href={isAuthenticated && user?.role === "hauler" ? "/pro/dashboard" : "/dashboard"} onClick={closeMenu}>
               <span className="block p-2" data-testid="link-dashboard-mobile">Dashboard</span>
-            </Link>
-            <Link href="/academy" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-academy-mobile">{t("nav.pro_academy")}</span>
             </Link>
             <Link href="/ai/home-scan" onClick={closeMenu}>
               <span className="block p-2 text-[#F47C20] font-bold flex items-center gap-1" data-testid="link-home-scan-mobile">

@@ -130,6 +130,11 @@ export function Footer() {
                   ✨ AI Home Scan (Free)
                 </Link>
               </li>
+              <li>
+                <Link href="/emergency" className="hover:text-primary transition-colors cursor-pointer text-red-400" data-testid="link-footer-emergency">
+                  🚨 Emergency Services
+                </Link>
+              </li>
             </ul>
           </div>
 
