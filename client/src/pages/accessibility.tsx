@@ -1,9 +1,9 @@
-import { Accessibility } from "lucide-react";
+import { PersonStanding } from "lucide-react";
 import { LegalPage } from "./legal/legal-page";
 
 export default function Accessibility() {
   return (
-    <LegalPage title="Accessibility Statement" icon={<Accessibility className="w-12 h-12" />} lastUpdated="February 19, 2026">
+    <LegalPage title="Accessibility Statement" icon={<PersonStanding className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
 <strong>UPYCK, Inc. d/b/a UpTend — Accessibility Statement</strong>

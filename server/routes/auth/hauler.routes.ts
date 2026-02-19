@@ -347,11 +347,15 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaSignedName: req.body.icaSignedName || null,
         icaVersion: req.body.icaVersion || null,
       });
-        facebookUrl: req.body.facebookUrl || null,
-        instagramUrl: req.body.instagramUrl || null,
-        linkedinUrl: req.body.linkedinUrl || null,
-        tiktokUrl: req.body.tiktokUrl || null,
-        nextdoorUrl: req.body.nextdoorUrl || null,
+
+      // Update social profiles if provided
+      if (req.body.facebookUrl || req.body.instagramUrl || req.body.linkedinUrl || req.body.tiktokUrl || req.body.nextdoorUrl) {
+        const { pool: dbPool } = await import('../../db');
+        await (dbPool || pool).query(
+          `UPDATE hauler_profiles SET facebook_url = \$1, instagram_url = \$2, linkedin_url = \$3, tiktok_url = \$4, nextdoor_url = \$5 WHERE user_id = \$6`,
+          [req.body.facebookUrl || null, req.body.instagramUrl || null, req.body.linkedinUrl || null, req.body.tiktokUrl || null, req.body.nextdoorUrl || null, user.id]
+        );
+      }
 
       // Create vehicles from registration data
       const vehicles = (req.body.vehicles as any[]) || [];
@@ -514,11 +518,15 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaSignedName: req.body.icaSignedName || null,
         icaVersion: req.body.icaVersion || null,
       });
-        facebookUrl: req.body.facebookUrl || null,
-        instagramUrl: req.body.instagramUrl || null,
-        linkedinUrl: req.body.linkedinUrl || null,
-        tiktokUrl: req.body.tiktokUrl || null,
-        nextdoorUrl: req.body.nextdoorUrl || null,
+
+      // Update social profiles if provided
+      if (req.body.facebookUrl || req.body.instagramUrl || req.body.linkedinUrl || req.body.tiktokUrl || req.body.nextdoorUrl) {
+        const { pool: dbPool } = await import('../../db');
+        await (dbPool || pool).query(
+          `UPDATE hauler_profiles SET facebook_url = \$1, instagram_url = \$2, linkedin_url = \$3, tiktok_url = \$4, nextdoor_url = \$5 WHERE user_id = \$6`,
+          [req.body.facebookUrl || null, req.body.instagramUrl || null, req.body.linkedinUrl || null, req.body.tiktokUrl || null, req.body.nextdoorUrl || null, user.id]
+        );
+      }
 
       // Create vehicles from registration data
       const vehicles = (req.body.vehicles as any[]) || [];
