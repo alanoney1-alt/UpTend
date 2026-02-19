@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { usePageContext } from "@/hooks/use-page-context";
 import {
   Send, X, Loader2, ChevronRight,
-  Mic, MicOff, Volume2, VolumeX, Paperclip,
+  Mic, MicOff, Volume2, VolumeX, Camera,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VideoPlayer, extractAllVideoIds } from "./video-player";
@@ -756,7 +756,6 @@ export function UpTendGuide() {
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            capture="environment"
             className="hidden"
             onChange={(e) => { const file = e.target.files?.[0]; if (file) handlePhotoUpload(file); e.target.value = ""; }}
           />
@@ -770,6 +769,15 @@ export function UpTendGuide() {
               className="flex-1 bg-transparent text-[12px] h-7 px-2 rounded-full border border-black/10 dark:border-white/10 focus:outline-none focus:border-amber-400/50 transition-colors placeholder:text-muted-foreground/60"
               disabled={isLoading || speech.isListening || isUploading}
             />
+            <button
+              type="button"
+              className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading || isUploading}
+              title="Send a photo"
+            >
+              {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5" />}
+            </button>
             {speech.isSupported && (
               <button
                 type="button"
