@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
-import founderPhoto from "@assets/stock_images/professional_male_wo_4cd11950.jpg";
+const founderPhoto = "/alan-founder.jpg";
 
 function useValues() {
   const { t } = useTranslation();
