@@ -209,7 +209,7 @@ function TwoSides() {
             The Fix
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
-            Fair for customers. Fair for Pros.<br />
+            Fair for customers.<br className="md:hidden" />{" "}Fair for Pros.<br />
             <span className="text-[#F47C20]">That's the whole point.</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
