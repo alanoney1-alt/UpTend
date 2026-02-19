@@ -14,9 +14,31 @@ import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
 import { analyzeImageOpenAI as analyzeImage } from "../../services/ai/openai-vision-client";
+import multer from "multer";
+import path from "path";
+import { getMulterStorage, isCloudStorage, uploadFile } from "../../services/file-storage";
+
+const photoUpload = multer({
+  storage: getMulterStorage("photo-quotes"),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req: any, file: any, cb: any) => {
+    const allowed = /jpeg|jpg|png|gif|webp|heic|heif/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = file.mimetype.startsWith("image/");
+    cb(null, ext || mime);
+  },
+});
 
 export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
   const router = Router();
+
+  // Helper to resolve uploaded file URLs
+  async function resolvePhotoUrls(files: Express.Multer.File[]): Promise<string[]> {
+    if (isCloudStorage) {
+      return Promise.all(files.map((f) => uploadFile(f.buffer, f.originalname, f.mimetype, "photo-quotes")));
+    }
+    return files.map((f) => `/uploads/photo-quotes/${(f as any).filename || f.originalname}`);
+  }
 
   // ==========================================
   // POST /api/ai/photo-quote
@@ -28,22 +50,36 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
     additionalNotes: z.string().optional(),
   });
 
-  router.post("/photo-quote", requireAuth, async (req, res) => {
+  router.post("/photo-quote", requireAuth, photoUpload.array("photos", 10), async (req, res) => {
     try {
-      const validated = photoQuoteSchema.parse(req.body);
+      const files = req.files as Express.Multer.File[];
+      let photoUrls: string[];
+
+      if (files && files.length > 0) {
+        // FormData upload path (from frontend)
+        photoUrls = await resolvePhotoUrls(files);
+      } else if (req.body.photoUrls) {
+        // JSON path (API clients)
+        const validated = photoQuoteSchema.parse(req.body);
+        photoUrls = validated.photoUrls;
+      } else {
+        return res.status(400).json({ error: "No photos provided" });
+      }
+
+      const serviceType = req.body.serviceType || req.body.notes || "general home service";
       const userId = ((req.user as any).userId || (req.user as any).id);
 
       // Create photo quote request
       const request = await storage.createPhotoQuoteRequest({
         userId,
-        photoUrls: validated.photoUrls,
-        aiClassifiedService: validated.serviceType,
+        photoUrls: photoUrls,
+        aiClassifiedService: serviceType,
         status: "pending",
         createdAt: new Date().toISOString(),
       });
 
       // Call AI vision service to analyze photos
-      const photoAnalysisPrompt = `Analyze this image for a home services quote. The customer wants: ${validated.serviceType.replace(/_/g, ' ')}.
+      const photoAnalysisPrompt = `Analyze this image for a home services quote. The customer wants: ${serviceType.replace(/_/g, ' ')}.
 
 Return ONLY valid JSON with these fields:
 {
@@ -74,7 +110,7 @@ Consider: safety risk, tools required, skill level, physical difficulty, and cod
       let analysis;
       try {
         const aiResult = await analyzeImage({
-          imageUrl: validated.photoUrls[0],
+          imageUrl: photoUrls[0],
           prompt: photoAnalysisPrompt,
           maxTokens: 1024,
         });
