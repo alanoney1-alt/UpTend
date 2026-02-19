@@ -1,9 +1,8 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUp, ShieldCheck, FileText, Wrench, TrendingUp } from "lucide-react";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { ArrowUp, ShieldCheck, FileText, Wrench, Info, ChevronDown, ChevronUp } from "lucide-react";
 
 interface ScoreData {
   totalScore: number;
@@ -26,13 +25,7 @@ export function DwellScanWidget() {
     queryKey: ["/api/home-score"],
   });
 
-  const boostMutation = useMutation({
-    mutationFn: () => apiRequest("POST", "/api/home-score/boost"),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/home-score"] });
-    },
-    onError: (err: Error) => { console.error(err); },
-  });
+  const [showExplainer, setShowExplainer] = useState(false);
 
   const score = scoreData?.totalScore || 0;
   const history = scoreData?.history || [];
@@ -72,7 +65,7 @@ export function DwellScanWidget() {
             {score}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {scoreData?.label || "Not Rated"} {score > 0 && `\u2022 Top ${scoreData?.percentile || 50}%`}
+            {scoreData?.label || "Not Rated"}{score > 0 && scoreData?.percentile ? ` \u2022 Top ${scoreData.percentile}%` : ""}
           </p>
         </div>
 
@@ -116,17 +109,51 @@ export function DwellScanWidget() {
           </div>
         )}
 
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full mt-4"
-          onClick={() => boostMutation.mutate()}
-          disabled={boostMutation.isPending}
-          data-testid="button-boost-score"
+        <button
+          type="button"
+          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mt-4 mx-auto"
+          onClick={() => setShowExplainer(!showExplainer)}
+          data-testid="button-score-explainer-toggle"
         >
-          <TrendingUp className="w-3 h-3 mr-1" />
-          {boostMutation.isPending ? "Boosting..." : "Boost Score (+50 Pts)"}
-        </Button>
+          <Info className="w-3.5 h-3.5" />
+          <span>How does this work?</span>
+          {showExplainer ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+        </button>
+
+        {showExplainer && (
+          <div className="mt-3 p-4 bg-muted/50 rounded-lg text-xs space-y-3 text-left" data-testid="section-score-explainer">
+            <div>
+              <p className="font-semibold text-sm mb-1">What is the UpTend Home Score?</p>
+              <p className="text-muted-foreground">
+                Your Home Score is like a credit score for your property. It tracks how well-maintained,
+                documented, and safe your home is. A higher score means better insurance claim support,
+                higher resale value, and peace of mind.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold mb-1">How to increase your score:</p>
+              <ul className="space-y-1.5 text-muted-foreground">
+                <li>📷 <strong>Book an AI Home Scan</strong> (+100-200 pts) — Get a professional assessment of your home's condition</li>
+                <li>🔧 <strong>Complete maintenance services</strong> (+25-50 pts each) — Every completed job boosts your Maintenance score</li>
+                <li>📄 <strong>Upload home documents</strong> (+15-30 pts each) — Insurance policies, warranties, receipts, inspection reports</li>
+                <li>🛡️ <strong>Safety checks</strong> (+20-40 pts) — Smoke detectors, carbon monoxide, fire extinguishers verified</li>
+                <li>⭐ <strong>Keep a regular schedule</strong> (+10 pts/month) — Consistent maintenance shows your home is cared for</li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="font-semibold mb-1">Score ranges:</p>
+              <ul className="space-y-0.5 text-muted-foreground">
+                <li><strong>0–199:</strong> Not Yet Scored — Get started with a Home Scan!</li>
+                <li><strong>200–549:</strong> Building — You're on your way</li>
+                <li><strong>550–649:</strong> Fair — Regular maintenance is paying off</li>
+                <li><strong>650–749:</strong> Good — Your home is well-maintained</li>
+                <li><strong>750–850:</strong> Excellent — Top-tier home care</li>
+              </ul>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

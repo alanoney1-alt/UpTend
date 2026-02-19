@@ -63,31 +63,9 @@ export function registerDashboardWidgetRoutes(app: Express) {
     }
   });
 
-  app.post("/api/home-score/boost", requireAuth, async (req, res) => {
-    try {
-      const userId = getUserId(req);
-      if (!userId) {
-        return res.status(401).json({ error: "Not authenticated" });
-      }
-      res.json({
-        totalScore: 700,
-        maintenanceHealth: 75,
-        documentationHealth: 65,
-        safetyHealth: 85,
-        label: "Very Good",
-        percentile: 72,
-        history: [{
-          id: "boost-" + Date.now(),
-          pointsChanged: 50,
-          reason: "Score boost applied",
-          category: "bonus",
-          createdAt: new Date().toISOString(),
-        }],
-      });
-    } catch (error) {
-      console.error("Home score boost error:", error);
-      res.status(500).json({ error: "Failed to boost score" });
-    }
+  app.post("/api/home-score/boost", requireAuth, async (_req, res) => {
+    // Boost is not yet implemented — return a no-op acknowledgment
+    res.json({ message: "Score boost is not available yet." });
   });
 
   // ─── Inventory ──────────────────────────────────────────
@@ -209,13 +187,13 @@ export function registerDashboardWidgetRoutes(app: Express) {
 
       res.json({
         totalJobs,
-        totalWeightDiverted: totalJobs * 150,
-        totalCo2Saved: totalJobs * 45.2,
-        landfillDiversionRate: totalJobs > 0 ? 78 : 0,
-        treesEquivalent: totalJobs * 0.9,
-        donationItems: totalJobs * 3,
+        totalWeightDiverted: 0,
+        totalCo2Saved: 0,
+        landfillDiversionRate: 0,
+        treesEquivalent: 0,
+        donationItems: 0,
         valueProtected: 0,
-        prosSupported: totalJobs,
+        prosSupported: 0,
       });
     } catch (error) {
       console.error("Impact error:", error);
