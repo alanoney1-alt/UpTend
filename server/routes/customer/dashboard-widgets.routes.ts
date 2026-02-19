@@ -35,12 +35,12 @@ export function registerDashboardWidgetRoutes(app: Express) {
         if (result.rows && result.rows.length > 0) {
           const row: any = result.rows[0];
           return res.json({
-            totalScore: row.total_score || 650,
-            maintenanceHealth: row.maintenance_health || 70,
-            documentationHealth: row.documentation_health || 60,
-            safetyHealth: row.safety_health || 80,
-            label: row.label || "Good",
-            percentile: row.percentile || 65,
+            totalScore: row.total_score || 0,
+            maintenanceHealth: row.maintenance_health || 0,
+            documentationHealth: row.documentation_health || 0,
+            safetyHealth: row.safety_health || 0,
+            label: row.label || "Not Yet Scored",
+            percentile: row.percentile || 0,
             history: [],
           });
         }
@@ -49,12 +49,12 @@ export function registerDashboardWidgetRoutes(app: Express) {
       }
 
       res.json({
-        totalScore: 650,
-        maintenanceHealth: 70,
-        documentationHealth: 60,
-        safetyHealth: 80,
-        label: "Good",
-        percentile: 65,
+        totalScore: 0,
+        maintenanceHealth: 0,
+        documentationHealth: 0,
+        safetyHealth: 0,
+        label: "Not Yet Scored",
+        percentile: 0,
         history: [],
       });
     } catch (error) {
