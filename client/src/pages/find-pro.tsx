@@ -80,144 +80,6 @@ const proMarkerIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-// ── Mock Data ──
-
-const MOCK_PROS: ProProfile[] = [
-  {
-    id: "pro-001", firstName: "Marcus", lastInitial: "R", rating: 4.9, reviewCount: 47, jobsCompleted: 156,
-    services: ["handyman", "pressure_washing", "light_demolition"],
-    certifications: ["b2b_pm", "osha_10"],
-    bio: "10 years of experience in home repairs and renovations across Orlando. Former contractor turned UpTend Pro — I treat every home like my own.",
-    isVerified: true, isInsured: true, memberSince: "2025-06",
-    approximateLocation: { lat: 28.54, lng: -81.38 },
-    serviceRatings: { handyman: 4.9, pressure_washing: 5.0, light_demolition: 4.8 },
-    reviews: [
-      { id: "r1", customerName: "Sarah T.", rating: 5, text: "Marcus fixed everything on my list in under 3 hours. Incredible!", date: "2026-02-10", service: "handyman" },
-      { id: "r2", customerName: "Tom K.", rating: 5, text: "Pressure washed my driveway and it looks brand new. Very professional.", date: "2026-01-28", service: "pressure_washing" },
-      { id: "r3", customerName: "Lisa M.", rating: 4, text: "Good work, showed up on time. Would book again.", date: "2026-01-15", service: "handyman" },
-    ],
-  },
-  {
-    id: "pro-002", firstName: "David", lastInitial: "L", rating: 4.8, reviewCount: 89, jobsCompleted: 234,
-    services: ["junk_removal", "garage_cleanout", "moving_labor"],
-    certifications: ["sustainability"],
-    bio: "Specializing in eco-friendly junk removal. 90%+ diversion rate from landfill. Fast, clean, and green.",
-    isVerified: true, isInsured: true, memberSince: "2025-03",
-    approximateLocation: { lat: 28.60, lng: -81.20 },
-    serviceRatings: { junk_removal: 4.9, garage_cleanout: 4.7, moving_labor: 4.8 },
-    reviews: [
-      { id: "r4", customerName: "Mike J.", rating: 5, text: "David and his team cleared our entire garage in 2 hours. Recycled most of it too!", date: "2026-02-05", service: "garage_cleanout" },
-      { id: "r5", customerName: "Anna P.", rating: 5, text: "So respectful of our property. Best junk removal service I've used.", date: "2026-01-20", service: "junk_removal" },
-      { id: "r6", customerName: "Chris B.", rating: 4, text: "Great service. A bit pricey but worth it for the eco approach.", date: "2026-01-08", service: "junk_removal" },
-    ],
-  },
-  {
-    id: "pro-003", firstName: "Carlos", lastInitial: "M", rating: 5.0, reviewCount: 62, jobsCompleted: 203,
-    services: ["landscaping", "pressure_washing", "gutter_cleaning"],
-    certifications: ["senior_pro", "sustainability"],
-    bio: "Master landscaper with 15 years in Central Florida. From lawn care to full landscape design — your yard is my canvas.",
-    isVerified: true, isInsured: true, memberSince: "2025-01",
-    approximateLocation: { lat: 28.48, lng: -81.46 },
-    serviceRatings: { landscaping: 5.0, pressure_washing: 4.9, gutter_cleaning: 5.0 },
-    reviews: [
-      { id: "r7", customerName: "Jennifer R.", rating: 5, text: "Carlos transformed our backyard. Neighbors are jealous!", date: "2026-02-12", service: "landscaping" },
-      { id: "r8", customerName: "Robert W.", rating: 5, text: "Best landscaper in Orlando. Period.", date: "2026-01-30", service: "landscaping" },
-      { id: "r9", customerName: "Emily S.", rating: 5, text: "Gutters are spotless. He even showed me photos of what he cleared out.", date: "2026-01-18", service: "gutter_cleaning" },
-    ],
-  },
-  {
-    id: "pro-004", firstName: "James", lastInitial: "W", rating: 4.7, reviewCount: 31, jobsCompleted: 78,
-    services: ["home_cleaning", "carpet_cleaning"],
-    certifications: [],
-    bio: "Detail-oriented cleaning professional. I don't leave until it sparkles. Eco-friendly products only.",
-    isVerified: true, isInsured: true, memberSince: "2025-09",
-    approximateLocation: { lat: 28.69, lng: -81.31 },
-    serviceRatings: { home_cleaning: 4.8, carpet_cleaning: 4.6 },
-    reviews: [
-      { id: "r10", customerName: "Diana F.", rating: 5, text: "My carpets haven't looked this good since we moved in!", date: "2026-02-01", service: "carpet_cleaning" },
-      { id: "r11", customerName: "Steve L.", rating: 4, text: "Good cleaning, very thorough. Took a bit longer than expected.", date: "2026-01-22", service: "home_cleaning" },
-    ],
-  },
-  {
-    id: "pro-005", firstName: "Miguel", lastInitial: "S", rating: 4.9, reviewCount: 55, jobsCompleted: 145,
-    services: ["pool_cleaning", "pressure_washing", "landscaping"],
-    certifications: ["lead_safe"],
-    bio: "Pool and exterior specialist. Certified pool operator with deep knowledge of Florida's unique climate challenges.",
-    isVerified: true, isInsured: true, memberSince: "2025-04",
-    approximateLocation: { lat: 28.34, lng: -81.42 },
-    serviceRatings: { pool_cleaning: 5.0, pressure_washing: 4.8, landscaping: 4.9 },
-    reviews: [
-      { id: "r12", customerName: "Karen D.", rating: 5, text: "Miguel keeps our pool crystal clear year-round. Best in Kissimmee!", date: "2026-02-08", service: "pool_cleaning" },
-      { id: "r13", customerName: "Paul H.", rating: 5, text: "Pressure washed our entire house exterior. Looks like it was just painted!", date: "2026-01-25", service: "pressure_washing" },
-    ],
-  },
-  {
-    id: "pro-006", firstName: "Anthony", lastInitial: "J", rating: 4.6, reviewCount: 18, jobsCompleted: 42,
-    services: ["junk_removal", "light_demolition", "moving_labor"],
-    certifications: [],
-    bio: "Former Marine, now hauling junk and helping people move. Strong, fast, and always on time.",
-    isVerified: true, isInsured: true, memberSince: "2025-11",
-    approximateLocation: { lat: 28.55, lng: -81.53 },
-    serviceRatings: { junk_removal: 4.7, light_demolition: 4.5, moving_labor: 4.6 },
-    reviews: [
-      { id: "r14", customerName: "Greg N.", rating: 5, text: "Anthony is a beast. Moved all our heavy furniture like it was nothing.", date: "2026-01-30", service: "moving_labor" },
-      { id: "r15", customerName: "Nancy B.", rating: 4, text: "Good demo work. Cleaned up after himself too.", date: "2026-01-12", service: "light_demolition" },
-    ],
-  },
-  {
-    id: "pro-007", firstName: "Robert", lastInitial: "K", rating: 4.8, reviewCount: 73, jobsCompleted: 189,
-    services: ["handyman", "gutter_cleaning", "home_consultation"],
-    certifications: ["b2b_pm", "senior_pro"],
-    bio: "Licensed contractor turned UpTend Pro. Specializing in home maintenance, inspections, and the AI Home Scan service.",
-    isVerified: true, isInsured: true, memberSince: "2025-02",
-    approximateLocation: { lat: 28.41, lng: -81.30 },
-    serviceRatings: { handyman: 4.9, gutter_cleaning: 4.7, home_consultation: 4.8 },
-    reviews: [
-      { id: "r16", customerName: "Maria G.", rating: 5, text: "Robert did our AI Home Scan and found issues we never would have caught. Saved us thousands.", date: "2026-02-14", service: "home_consultation" },
-      { id: "r17", customerName: "Dave C.", rating: 5, text: "Fixed our leaky faucet, patched drywall, and re-caulked the bathtub in one visit.", date: "2026-01-28", service: "handyman" },
-    ],
-  },
-  {
-    id: "pro-008", firstName: "Daniel", lastInitial: "P", rating: 4.7, reviewCount: 44, jobsCompleted: 112,
-    services: ["pressure_washing", "gutter_cleaning", "home_cleaning"],
-    certifications: ["sustainability"],
-    bio: "Exterior cleaning expert. Low-pressure soft wash for roofs and delicate surfaces. Your home's curb appeal is my business.",
-    isVerified: true, isInsured: true, memberSince: "2025-07",
-    approximateLocation: { lat: 28.61, lng: -81.44 },
-    serviceRatings: { pressure_washing: 4.8, gutter_cleaning: 4.7, home_cleaning: 4.6 },
-    reviews: [
-      { id: "r18", customerName: "Julie A.", rating: 5, text: "Our roof looks 10 years younger after Daniel's soft wash. Amazing results!", date: "2026-02-06", service: "pressure_washing" },
-      { id: "r19", customerName: "Mark T.", rating: 4, text: "Good work on the gutters. Showed up right on time.", date: "2026-01-19", service: "gutter_cleaning" },
-    ],
-  },
-  {
-    id: "pro-009", firstName: "Jason", lastInitial: "L", rating: 5.0, reviewCount: 91, jobsCompleted: 267,
-    services: ["junk_removal", "garage_cleanout", "light_demolition", "moving_labor"],
-    certifications: ["senior_pro", "osha_10"],
-    bio: "Top-rated Pro with 250+ jobs. If it needs removing, hauling, or demolishing — I'm your guy. Safety-first approach.",
-    isVerified: true, isInsured: true, memberSince: "2025-01",
-    approximateLocation: { lat: 28.39, lng: -81.18 },
-    serviceRatings: { junk_removal: 5.0, garage_cleanout: 5.0, light_demolition: 4.9, moving_labor: 5.0 },
-    reviews: [
-      { id: "r20", customerName: "Rachel M.", rating: 5, text: "Jason is the GOAT. Cleared our entire estate in one day.", date: "2026-02-11", service: "junk_removal" },
-      { id: "r21", customerName: "Brian F.", rating: 5, text: "Demolished our old deck safely and hauled it all away. Flawless.", date: "2026-01-27", service: "light_demolition" },
-      { id: "r22", customerName: "Amy W.", rating: 5, text: "Helped us move across town. Careful with everything, even our antiques.", date: "2026-01-14", service: "moving_labor" },
-    ],
-  },
-  {
-    id: "pro-010", firstName: "Kevin", lastInitial: "B", rating: 4.8, reviewCount: 36, jobsCompleted: 94,
-    services: ["pool_cleaning", "landscaping", "home_cleaning"],
-    certifications: [],
-    bio: "Full-service home exterior maintenance. Pool, lawn, and cleaning bundles available for recurring customers.",
-    isVerified: true, isInsured: true, memberSince: "2025-08",
-    approximateLocation: { lat: 28.51, lng: -81.15 },
-    serviceRatings: { pool_cleaning: 4.9, landscaping: 4.7, home_cleaning: 4.8 },
-    reviews: [
-      { id: "r23", customerName: "Sandra L.", rating: 5, text: "Kevin does our pool and lawn every week. Always reliable.", date: "2026-02-03", service: "pool_cleaning" },
-      { id: "r24", customerName: "Tim R.", rating: 4, text: "Good deep clean of our home. Would use again.", date: "2026-01-17", service: "home_cleaning" },
-    ],
-  },
-];
 
 // ── Component ──
 
@@ -230,7 +92,7 @@ function FindProPage() {
   const [availabilityFilter, setAvailabilityFilter] = useState("anytime");
   const [sortBy, setSortBy] = useState("rating");
   const [selectedPro, setSelectedPro] = useState<ProProfile | null>(null);
-  const [pros, setPros] = useState<ProProfile[]>(MOCK_PROS);
+  const [pros, setPros] = useState<ProProfile[]>([]);
 
   // Fetch from API (falls back to mock)
   useEffect(() => {
@@ -245,7 +107,7 @@ function FindProPage() {
         if (Array.isArray(data) && data.length > 0) setPros(data);
       })
       .catch(() => {
-        // keep mock data
+        // API unavailable — empty state shown
       });
   }, [serviceFilter, sortBy, availabilityFilter]);
 

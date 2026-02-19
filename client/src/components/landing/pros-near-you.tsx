@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Shield, Star, Users } from "lucide-react";
+import { Shield, Users } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { useTranslation } from "react-i18next";
@@ -27,21 +27,6 @@ const proMarkerIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-// Placeholder pros spread across Orlando metro area (Orange, Seminole, Osceola counties)
-// Sample pros for Orlando area — shown when no real pros are actively tracking.
-// These represent real service capabilities available through the platform.
-const SAMPLE_PROS: ActivePro[] = [
-  { id: "p1", firstName: "Marcus", lastName: "T", rating: 4.9, jobsCompleted: 127, serviceTypes: ["Junk Removal", "Yard Waste"], location: { latitude: 28.5383, longitude: -81.3792 }, isAvailable: true },
-  { id: "p2", firstName: "David", lastName: "R", rating: 4.8, jobsCompleted: 89, serviceTypes: ["Appliance Removal"], location: { latitude: 28.6024, longitude: -81.2001 }, isAvailable: true },
-  { id: "p3", firstName: "Carlos", lastName: "M", rating: 5.0, jobsCompleted: 203, serviceTypes: ["Construction Debris", "Junk Removal"], location: { latitude: 28.4772, longitude: -81.4588 }, isAvailable: true },
-  { id: "p4", firstName: "James", lastName: "W", rating: 4.7, jobsCompleted: 56, serviceTypes: ["Furniture Removal"], location: { latitude: 28.6934, longitude: -81.3084 }, isAvailable: true },
-  { id: "p5", firstName: "Miguel", lastName: "S", rating: 4.9, jobsCompleted: 145, serviceTypes: ["Yard Waste", "Hot Tub Removal"], location: { latitude: 28.3401, longitude: -81.4248 }, isAvailable: true },
-  { id: "p6", firstName: "Anthony", lastName: "J", rating: 4.6, jobsCompleted: 34, serviceTypes: ["Junk Removal"], location: { latitude: 28.5541, longitude: -81.5320 }, isAvailable: true },
-  { id: "p7", firstName: "Robert", lastName: "K", rating: 4.8, jobsCompleted: 98, serviceTypes: ["Appliance Removal", "Furniture Removal"], location: { latitude: 28.4100, longitude: -81.2990 }, isAvailable: true },
-  { id: "p8", firstName: "Daniel", lastName: "P", rating: 4.7, jobsCompleted: 72, serviceTypes: ["Construction Debris"], location: { latitude: 28.6120, longitude: -81.4400 }, isAvailable: true },
-  { id: "p9", firstName: "Jason", lastName: "L", rating: 5.0, jobsCompleted: 167, serviceTypes: ["Junk Removal", "Yard Waste"], location: { latitude: 28.3890, longitude: -81.1750 }, isAvailable: true },
-  { id: "p10", firstName: "Kevin", lastName: "B", rating: 4.8, jobsCompleted: 110, serviceTypes: ["Appliance Removal", "Hot Tub Removal"], location: { latitude: 28.5100, longitude: -81.1500 }, isAvailable: true },
-];
 
 export function ProsNearYou() {
   const { t } = useTranslation();
@@ -54,19 +39,13 @@ export function ProsNearYou() {
       .then(r => r.json())
       .then(data => {
         const realPros = data.pros || [];
-        if (realPros.length > 0) {
-          setPros(realPros);
-          setTotalOnline(data.totalOnline || realPros.length);
-        } else {
-          // Use placeholders until real pros are tracking
-          setPros(SAMPLE_PROS);
-          setTotalOnline(SAMPLE_PROS.length);
-        }
+        setPros(realPros);
+        setTotalOnline(data.totalOnline || realPros.length);
         setLoading(false);
       })
       .catch(() => {
-        setPros(SAMPLE_PROS);
-        setTotalOnline(SAMPLE_PROS.length);
+        setPros([]);
+        setTotalOnline(0);
         setLoading(false);
       });
   }, []);
@@ -85,27 +64,35 @@ export function ProsNearYou() {
 
         {/* Stats bar */}
         <div className="flex justify-center gap-6 mb-8 flex-wrap">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-sm font-medium">{t("pros_near.pros_online", { count: totalOnline || 0 })}</span>
-          </div>
+          {totalOnline > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-sm font-medium">{t("pros_near.pros_online", { count: totalOnline })}</span>
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium">{t("pros_near.verified_insured")}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-amber-500" />
-            <span className="text-sm font-medium">{t("pros_near.avg_rating")}</span>
-          </div>
         </div>
 
-        {/* Map */}
+        {/* Map or empty state */}
         <Card className="overflow-hidden rounded-2xl shadow-lg" style={{ height: "450px" }}>
           {loading ? (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
                 <Users className="w-12 h-12 mx-auto text-muted-foreground mb-3 animate-pulse" />
                 <p className="text-muted-foreground">{t("pros_near.loading")}</p>
+              </div>
+            </div>
+          ) : pros.length === 0 ? (
+            <div className="h-full flex items-center justify-center bg-muted/30">
+              <div className="text-center px-6">
+                <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="font-bold text-lg mb-2">Pros joining your area soon</h3>
+                <p className="text-muted-foreground text-sm max-w-xs mx-auto">
+                  We're onboarding verified Pros across the Orlando metro area. Book a service and we'll match you with the best available Pro.
+                </p>
               </div>
             </div>
           ) : (

@@ -17,17 +17,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const MAP_HEIGHT = SCREEN_HEIGHT * 0.38;
 const SHEET_MIN = SCREEN_HEIGHT * 0.58;
 
-// Orlando metro area pros (replaced with real API data later)
-const PROS = [
-  { id: '1', name: 'Mike R.', service: 'Handyman', lat: 28.5383, lng: -81.3792, rating: 4.9 },
-  { id: '2', name: 'Sarah K.', service: 'Cleaning', lat: 28.4772, lng: -81.4588, rating: 4.8 },
-  { id: '3', name: 'James T.', service: 'Pressure Wash', lat: 28.5021, lng: -81.3101, rating: 4.7 },
-  { id: '4', name: 'Maria L.', service: 'Landscaping', lat: 28.4186, lng: -81.2987, rating: 5.0 },
-  { id: '5', name: 'Carlos D.', service: 'Pool Care', lat: 28.5165, lng: -81.3680, rating: 4.9 },
-  { id: '6', name: 'David W.', service: 'Junk Removal', lat: 28.5545, lng: -81.3500, rating: 4.6 },
-  { id: '7', name: 'Lisa M.', service: 'Gutters', lat: 28.4500, lng: -81.4000, rating: 4.8 },
-  { id: '8', name: 'Tony P.', service: 'Moving', lat: 28.5800, lng: -81.2200, rating: 4.7 },
-];
+type NearbyPro = { id: string; name: string; service: string; lat: number; lng: number; rating: number };
 
 const REGION = {
   latitude: 28.4950,
@@ -58,9 +48,23 @@ export default function GeorgeHomeScreen() {
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [selectedPro, setSelectedPro] = useState<typeof PROS[0] | null>(null);
+  const [selectedPro, setSelectedPro] = useState<NearbyPro | null>(null);
+  const [nearbyPros, setNearbyPros] = useState<NearbyPro[]>([]);
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    fetch('/api/pros/active-nearby?lat=28.4950&lng=-81.3600&radius=30')
+      .then(r => r.json())
+      .then(data => {
+        const list = (data.pros || []).map((p: any) => ({
+          id: p.id, name: `${p.firstName} ${p.lastInitial}.`,
+          service: p.services?.[0] || 'Pro', lat: p.lat, lng: p.lng, rating: p.rating,
+        }));
+        setNearbyPros(list);
+      })
+      .catch(() => setNearbyPros([]));
+  }, []);
 
   const scrollToEnd = useCallback(() => {
     setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 80);
@@ -142,7 +146,7 @@ export default function GeorgeHomeScreen() {
           showsCompass={false}
           mapPadding={{ top: insets.top + 50, right: 0, bottom: 40, left: 0 }}
         >
-          {PROS.map((pro, i) => (
+          {nearbyPros.map((pro, i) => (
             <Marker
               key={pro.id}
               coordinate={{ latitude: pro.lat, longitude: pro.lng }}
@@ -165,14 +169,16 @@ export default function GeorgeHomeScreen() {
         {/* Live badge */}
         <View style={[styles.liveBadge, { top: insets.top + 8 }]}>
           <View style={styles.liveIndicator} />
-          <Text style={styles.liveText}>{PROS.length} pros nearby</Text>
+          <Text style={styles.liveText}>
+            {nearbyPros.length > 0 ? `${nearbyPros.length} pros nearby` : 'Pros coming soon'}
+          </Text>
         </View>
 
         {/* Selected pro card */}
         {selectedPro && (
           <View style={styles.proCard}>
             <View style={styles.proCardLeft}>
-              <View style={[styles.proCardAvatar, { backgroundColor: PRO_COLORS[PROS.indexOf(selectedPro) % PRO_COLORS.length] }]}>
+              <View style={[styles.proCardAvatar, { backgroundColor: PRO_COLORS[nearbyPros.indexOf(selectedPro) % PRO_COLORS.length] }]}>
                 <Text style={styles.proCardInitial}>{selectedPro.name[0]}</Text>
               </View>
               <View>

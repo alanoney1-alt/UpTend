@@ -847,11 +847,11 @@ const resources = {
       "faq.pros.a21": "Yes! Many Pros bring helpers for larger jobs (full truckloads, heavy items, estate cleanouts). You're responsible for paying your helper from your earnings (75% payout). Helpers don't need UpTend approval, but you're liable for their conduct and safety. Two-person crews can complete jobs 40-50% faster, allowing more jobs per day.",
 
       // ===== PROS NEAR YOU =====
-      "pros_near.headline": "Pros Active Right Now",
+      "pros_near.headline": "Verified Pros in Your Area",
       "pros_near.subhead": "Real verified professionals in the Orlando metro area, ready to help. Every pro is background-checked with $1M liability insurance.",
       "pros_near.pros_online": "{{count}} Pros Online",
       "pros_near.verified_insured": "All Verified & Insured",
-      "pros_near.avg_rating": "4.8 Avg Rating",
+      "pros_near.avg_rating": "Top-Rated Pros",
       "pros_near.loading": "Loading active Pros...",
       "pros_near.privacy_note": "Pro locations are approximate for privacy. Exact location shared only after booking.",
 
