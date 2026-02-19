@@ -111,7 +111,7 @@ export default function Business() {
             with one AI-powered platform. Fully insured pros, real-time tracking, weekly billing.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/business/onboarding">
+            <Link href="/business/onboarding" asChild>
               <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 text-lg">
                 Schedule a Demo <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
@@ -233,7 +233,7 @@ export default function Business() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/business/onboarding">
+                  <Link href="/business/onboarding" asChild>
                     <Button
                       className={`w-full font-semibold ${
                         i === 1
@@ -335,12 +335,12 @@ export default function Business() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Simplify Your Property Services?</h2>
           <p className="text-slate-400 text-lg mb-8">Join property managers across Orlando who are switching to UpTend.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/business/onboarding">
+            <Link href="/business/onboarding" asChild>
               <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-10 text-lg">
                 Schedule a Demo <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-            <Link href="/business/login">
+            <Link href="/business/login" asChild>
               <Button size="lg" variant="outline" className="border-slate-600 text-slate-200 hover:bg-slate-800 px-8 text-lg">
                 Log In
               </Button>

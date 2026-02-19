@@ -107,21 +107,21 @@ export function Header() {
           ) : isAuthenticated && user ? (
             <div className="flex items-center gap-2">
               {user.role === "customer" && (
-                <Link href="/dashboard">
+                <Link href="/dashboard" asChild>
                   <Button variant="ghost" className="text-slate-300" data-testid="button-customer-dashboard">
                     {t("nav.dashboard")}
                   </Button>
                 </Link>
               )}
               {user.role === "hauler" && (
-                <Link href="/pro/dashboard">
+                <Link href="/pro/dashboard" asChild>
                   <Button variant="ghost" className="text-slate-300" data-testid="button-dashboard">
                     {t("nav.dashboard")}
                   </Button>
                 </Link>
               )}
               {user.role === "admin" && (
-                <Link href="/admin">
+                <Link href="/admin" asChild>
                   <Button variant="ghost" className="text-slate-300" data-testid="button-admin">
                     {t("nav.admin")}
                   </Button>
@@ -169,7 +169,7 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Link href="/book">
+              <Link href="/book" asChild>
                 <Button
                   className="bg-white text-slate-900 font-bold px-6"
                   data-testid="button-book-now"

@@ -211,12 +211,12 @@ export default function About() {
           {t("about.mantra_text")}
         </p>
         <div className="flex justify-center gap-4 flex-wrap">
-          <Link href="/book">
+          <Link href="/book" asChild>
             <Button size="lg" data-testid="button-about-book">
               {t("about.get_started")} <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
-          <Link href="/become-pro">
+          <Link href="/become-pro" asChild>
             <Button variant="outline" size="lg" data-testid="button-about-join">
               {t("about.join_as_pro")}
             </Button>

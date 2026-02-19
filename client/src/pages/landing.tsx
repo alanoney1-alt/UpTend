@@ -88,17 +88,17 @@ function HeroSection() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-4 mb-8">
-          <Link href="/book">
+          <Link href="/book" asChild>
             <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
               Get Your Free Quote <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
-          <Link href="/ai/home-scan">
+          <Link href="/ai/home-scan" asChild>
             <Button size="lg" variant="outline" className="border-[#F47C20]/50 text-[#F47C20] hover:bg-[#F47C20]/10 font-bold text-lg px-8 py-6 rounded-xl">
               ✨ Free Home Scan
             </Button>
           </Link>
-          <Link href="/become-pro">
+          <Link href="/become-pro" asChild>
             <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 font-bold text-lg px-8 py-6 rounded-xl">
               Join as a Pro
             </Button>
@@ -243,7 +243,7 @@ function TwoSides() {
                 </Card>
               ))}
             </div>
-            <Link href="/book">
+            <Link href="/book" asChild>
               <Button className="mt-6 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold">
                 Get Your Free Quote <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
@@ -275,7 +275,7 @@ function TwoSides() {
                 </Card>
               ))}
             </div>
-            <Link href="/become-pro">
+            <Link href="/become-pro" asChild>
               <Button className="mt-6 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold">
                 Join as a Pro <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
@@ -314,7 +314,7 @@ function HomeScanPromo() {
           {t("home_scan_promo.body", "George guides you room by room. AI reads every appliance — brand, model, age, condition. Get a complete Home Health Record and earn credits toward your first service.")}
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/ai/home-scan">
+          <Link href="/ai/home-scan" asChild>
             <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
               {t("home_scan_promo.cta", "Learn More & Start Scanning")} <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -415,12 +415,12 @@ function FinalCTA() {
           Whether you need a hand or you are one — there's a place for you here.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/book">
+          <Link href="/book" asChild>
             <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl">
               Book a Service <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
-          <Link href="/become-pro">
+          <Link href="/become-pro" asChild>
             <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 rounded-xl border-[#F47C20] text-[#F47C20] hover:bg-[#F47C20]/10">
               Become a Pro <ChevronRight className="ml-1 w-5 h-5" />
             </Button>

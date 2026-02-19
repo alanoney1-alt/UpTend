@@ -404,7 +404,7 @@ export default function Services() {
           </div>
 
           <div className="text-center mt-16">
-            <Link href="/become-pro">
+            <Link href="/become-pro" asChild>
               <Button variant="outline" size="lg" data-testid="button-become-pro-services">
                 {t("services_page.become_pro")} <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
@@ -422,12 +422,12 @@ export default function Services() {
             {t("services_page.cta_subhead")}
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
-            <Link href="/book">
+            <Link href="/book" asChild>
               <Button size="lg" data-testid="button-services-book">
                 Book a Service <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Link href="/pricing">
+            <Link href="/pricing" asChild>
               <Button size="lg" variant="outline" data-testid="button-services-pricing">
                 View Pricing
               </Button>
