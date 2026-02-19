@@ -1,30 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Switch, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Switch, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-
-const TODAYS_SCHEDULE = [
-  { id: '1', time: '8:00 AM', service: 'Lawn Mowing', address: '123 Oak St', status: 'completed', amount: '$65' },
-  { id: '2', time: '10:30 AM', service: 'Junk Removal', address: '456 Elm Ave', status: 'completed', amount: '$149' },
-  { id: '3', time: '1:00 PM', service: 'Pressure Washing', address: '789 Pine Dr', status: 'current', amount: '$120' },
-  { id: '4', time: '3:30 PM', service: 'Gutter Cleaning', address: '321 Maple Ln', status: 'upcoming', amount: '$95' },
-];
-
-const AVAILABLE_JOBS = [
-  { id: '1', service: 'Junk Removal', address: '555 Cedar Ct', price: '$175', distance: '1.8 mi', icon: '🗑', surge: false },
-  { id: '2', service: 'Lawn Mowing', address: '777 Birch Way', price: '$98', distance: '0.9 mi', icon: '🌱', surge: true, surgeMultiplier: '1.5x' },
-  { id: '3', service: 'Fence Repair', address: '222 Willow Rd', price: '$250', distance: '2.4 mi', icon: '🔨', surge: false },
-];
-
-const WEEKLY_EARNINGS = [
-  { day: 'Mon', amount: 245, lastWeek: 180 },
-  { day: 'Tue', amount: 310, lastWeek: 220 },
-  { day: 'Wed', amount: 340, lastWeek: 290 },
-  { day: 'Thu', amount: 0, lastWeek: 310 },
-  { day: 'Fri', amount: 0, lastWeek: 275 },
-  { day: 'Sat', amount: 0, lastWeek: 420 },
-  { day: 'Sun', amount: 0, lastWeek: 0 },
-];
+import { fetchProDashboard, fetchProEarnings, fetchAvailableJobs } from '../services/api';
+import config from '../config';
 
 const QUICK_ACTIONS = [
   { emoji: '🗺️', label: 'Optimize\nRoute' },
@@ -33,170 +12,111 @@ const QUICK_ACTIONS = [
   { emoji: '🎓', label: 'Academy' },
 ];
 
-const MAX_EARNING = Math.max(...WEEKLY_EARNINGS.map(e => Math.max(e.amount, e.lastWeek)), 1);
-
-const STATUS_COLORS: Record<string, string> = {
-  completed: '#9CA3AF',
-  current: Colors.success,
-  upcoming: Colors.info,
-};
-
 export default function ProDashboardScreen({ navigation }: any) {
   const [isOnline, setIsOnline] = useState(true);
+  const [dashboard, setDashboard] = useState<any>(null);
+  const [earnings, setEarnings] = useState<any>(null);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetchProDashboard().catch(() => ({ totalJobs: 0, activeJobs: 0, completedJobs: 0, totalEarnings: 0 })),
+      fetchProEarnings().catch(() => ({ totalEarnings: 0, weeklyEarnings: 0 })),
+      fetchAvailableJobs().catch(() => ({ jobs: [] })),
+    ]).then(([d, e, j]) => {
+      setDashboard(d);
+      setEarnings(e);
+      setJobs(j.jobs || []);
+    }).finally(() => setLoading(false));
+  }, []);
+
+  const toggleOnline = () => {
+    const newState = !isOnline;
+    setIsOnline(newState);
+    fetch(`${config.API_BASE_URL}/api/pros/update-location`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isAvailable: newState, latitude: 28.495, longitude: -81.36 }),
+    }).catch(() => {});
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.center}><ActivityIndicator size="large" color={Colors.primary} /></View>
+      </SafeAreaView>
+    );
+  }
+
+  const todayEarnings = earnings?.weeklyEarnings || earnings?.totalEarnings || 0;
+  const totalJobs = dashboard?.totalJobs || 0;
+  const activeJobs = dashboard?.activeJobs || 0;
+  const completedJobs = dashboard?.completedJobs || 0;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-
-        {/* Top: Go Online + Earnings + Active job */}
+        {/* Online Toggle + Earnings */}
         <View style={styles.topCard}>
-          {/* Online toggle */}
           <View style={styles.onlineRow}>
             <View>
               <Text style={styles.onlineLabel}>{isOnline ? '🟢 Online' : '⚫ Offline'}</Text>
               <Text style={styles.onlineSubtext}>{isOnline ? 'Accepting jobs' : 'Not accepting jobs'}</Text>
             </View>
-            <Switch
-              value={isOnline}
-              onValueChange={setIsOnline}
-              trackColor={{ false: '#D1D5DB', true: Colors.success }}
-              thumbColor={Colors.white}
-              style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }] }}
-            />
+            <Switch value={isOnline} onValueChange={toggleOnline} trackColor={{ false: '#333', true: Colors.primary + '60' }} thumbColor={isOnline ? Colors.primary : '#666'} />
           </View>
 
-          {/* Today's earnings */}
           <View style={styles.earningsRow}>
-            <View style={styles.earningsStat}>
-              <Text style={styles.earningsAmount}>$340</Text>
-              <Text style={styles.earningsLabel}>Earned Today</Text>
+            <View style={styles.earningItem}>
+              <Text style={styles.earningValue}>${todayEarnings}</Text>
+              <Text style={styles.earningLabel}>Today</Text>
             </View>
-            <View style={styles.earningsDivider} />
-            <View style={styles.earningsStat}>
-              <Text style={styles.earningsAmount}>$1,280</Text>
-              <Text style={styles.earningsLabel}>This Week</Text>
+            <View style={styles.earningItem}>
+              <Text style={styles.earningValue}>{activeJobs}</Text>
+              <Text style={styles.earningLabel}>Active</Text>
             </View>
-            <View style={styles.earningsDivider} />
-            <View style={styles.earningsStat}>
-              <Text style={styles.earningsAmount}>5</Text>
-              <Text style={styles.earningsLabel}>Jobs Today</Text>
+            <View style={styles.earningItem}>
+              <Text style={styles.earningValue}>{completedJobs}</Text>
+              <Text style={styles.earningLabel}>Completed</Text>
             </View>
-          </View>
-        </View>
-
-        {/* Today's Schedule */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Today's Schedule</Text>
-        </View>
-        {TODAYS_SCHEDULE.map((job) => (
-          <TouchableOpacity key={job.id} style={styles.scheduleItem} activeOpacity={0.7}>
-            <View style={[styles.timelineDot, { backgroundColor: STATUS_COLORS[job.status] }]} />
-            <View style={styles.timelineContent}>
-              <Text style={styles.scheduleTime}>{job.time}</Text>
-              <Text style={[styles.scheduleName, job.status === 'completed' && styles.completedText]}>{job.service}</Text>
-              <Text style={styles.scheduleAddress}>{job.address}</Text>
+            <View style={styles.earningItem}>
+              <Text style={styles.earningValue}>{totalJobs}</Text>
+              <Text style={styles.earningLabel}>Total</Text>
             </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <Text style={styles.scheduleAmount}>{job.amount}</Text>
-              <Text style={[styles.scheduleStatus, { color: STATUS_COLORS[job.status] }]}>
-                {job.status === 'completed' ? '✓ Done' : job.status === 'current' ? '● Now' : 'Upcoming'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-
-        {/* Available Jobs */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Available Nearby</Text>
-          <Text style={styles.sectionCount}>{AVAILABLE_JOBS.length} jobs</Text>
-        </View>
-        {AVAILABLE_JOBS.map((job) => (
-          <View key={job.id} style={styles.jobCard}>
-            <Text style={styles.jobIcon}>{job.icon}</Text>
-            <View style={{ flex: 1 }}>
-              <View style={styles.jobNameRow}>
-                <Text style={styles.jobName}>{job.service}</Text>
-                {job.surge && (
-                  <View style={styles.surgeBadge}>
-                    <Text style={styles.surgeText}>{job.surgeMultiplier} 🔥</Text>
-                  </View>
-                )}
-              </View>
-              <Text style={styles.jobAddress}>{job.address} • {job.distance}</Text>
-            </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <Text style={styles.jobPrice}>{job.price}</Text>
-              <TouchableOpacity style={styles.acceptBtn} activeOpacity={0.8}>
-                <Text style={styles.acceptText}>Accept</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-
-        {/* Weekly Earnings Chart */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Weekly Earnings</Text>
-          <TouchableOpacity><Text style={styles.viewAll}>View Details</Text></TouchableOpacity>
-        </View>
-        <View style={styles.chartCard}>
-          <View style={styles.chartLegend}>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: Colors.primary }]} />
-              <Text style={styles.legendText}>This Week</Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: Colors.borderLight }]} />
-              <Text style={styles.legendText}>Last Week</Text>
-            </View>
-          </View>
-          <View style={styles.chartBars}>
-            {WEEKLY_EARNINGS.map((day, i) => (
-              <View key={day.day} style={styles.chartColumn}>
-                <View style={styles.barGroup}>
-                  <View style={[styles.bar, styles.barLastWeek, { height: Math.max(4, (day.lastWeek / MAX_EARNING) * 100) }]} />
-                  <View style={[styles.bar, styles.barThisWeek, { height: Math.max(4, (day.amount / MAX_EARNING) * 100) }]} />
-                </View>
-                <Text style={styles.chartLabel}>{day.day}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Performance Stats */}
-        <Text style={styles.sectionTitle}>Performance</Text>
-        <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>⭐ 4.9</Text>
-            <Text style={styles.statLabel}>Rating</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>47</Text>
-            <Text style={styles.statLabel}>Jobs / Month</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>3 min</Text>
-            <Text style={styles.statLabel}>Avg Response</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>98%</Text>
-            <Text style={styles.statLabel}>Completion</Text>
           </View>
         </View>
 
         {/* Quick Actions */}
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.quickActionsRow}>
-          {QUICK_ACTIONS.map((action, i) => (
-            <TouchableOpacity key={i} style={styles.quickAction} activeOpacity={0.7}>
-              <View style={styles.quickActionIcon}>
-                <Text style={styles.quickActionEmoji}>{action.emoji}</Text>
-              </View>
-              <Text style={styles.quickActionLabel}>{action.label}</Text>
+        <View style={styles.actionsRow}>
+          {QUICK_ACTIONS.map((a, i) => (
+            <TouchableOpacity key={i} style={styles.actionCard}>
+              <Text style={styles.actionEmoji}>{a.emoji}</Text>
+              <Text style={styles.actionLabel}>{a.label}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <View style={{ height: 20 }} />
+        {/* Available Jobs */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Available Jobs ({jobs.length})</Text>
+          {jobs.length === 0 ? (
+            <View style={styles.emptyCard}>
+              <Text style={styles.emptyText}>No available jobs right now. Stay online and they'll appear here.</Text>
+            </View>
+          ) : (
+            jobs.slice(0, 5).map((job: any, i: number) => (
+              <TouchableOpacity key={job.id || i} style={styles.jobCard}>
+                <View style={styles.jobTop}>
+                  <Text style={styles.jobService}>{(job.service_type || '').replace(/_/g, ' ')}</Text>
+                  <Text style={styles.jobPrice}>${job.estimated_price || 'TBD'}</Text>
+                </View>
+                <Text style={styles.jobAddress}>{job.address}</Text>
+                <Text style={styles.jobUrgency}>{job.urgency}</Text>
+              </TouchableOpacity>
+            ))
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -204,98 +124,28 @@ export default function ProDashboardScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  scroll: { padding: 20, paddingBottom: 40 },
-
-  // Top card
-  topCard: {
-    backgroundColor: Colors.primary, borderRadius: 20, padding: 20, marginBottom: 20,
-  },
-  onlineRow: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20,
-  },
-  onlineLabel: { color: Colors.white, fontSize: 18, fontWeight: '700' },
-  onlineSubtext: { color: 'rgba(255,255,255,0.7)', fontSize: 13, marginTop: 2 },
-  earningsRow: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' },
-  earningsStat: { alignItems: 'center' },
-  earningsAmount: { color: Colors.white, fontSize: 22, fontWeight: '800' },
-  earningsLabel: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
-  earningsDivider: { width: 1, height: 36, backgroundColor: 'rgba(255,255,255,0.2)' },
-
-  // Section
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, marginTop: 4 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  scroll: { padding: 16 },
+  topCard: { backgroundColor: Colors.surface, borderRadius: 20, padding: 20, marginBottom: 16 },
+  onlineRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+  onlineLabel: { fontSize: 18, fontWeight: '700', color: Colors.text },
+  onlineSubtext: { fontSize: 13, color: Colors.textLight, marginTop: 2 },
+  earningsRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  earningItem: { alignItems: 'center' },
+  earningValue: { fontSize: 22, fontWeight: '800', color: Colors.text },
+  earningLabel: { fontSize: 12, color: Colors.textLight, marginTop: 4 },
+  actionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
+  actionCard: { flex: 1, alignItems: 'center', backgroundColor: Colors.surface, borderRadius: 16, padding: 14, marginHorizontal: 4 },
+  actionEmoji: { fontSize: 24 },
+  actionLabel: { fontSize: 11, color: Colors.textLight, textAlign: 'center', marginTop: 6 },
+  section: { marginBottom: 24 },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: 12 },
-  sectionCount: { fontSize: 13, color: Colors.textSecondary, fontWeight: '600' },
-  viewAll: { fontSize: 14, fontWeight: '600', color: Colors.primary },
-
-  // Schedule timeline
-  scheduleItem: {
-    flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8,
-    backgroundColor: Colors.white, borderRadius: 14, padding: 14,
-    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1,
-  },
-  timelineDot: { width: 12, height: 12, borderRadius: 6 },
-  timelineContent: { flex: 1 },
-  scheduleTime: { fontSize: 12, color: Colors.textSecondary, fontWeight: '600' },
-  scheduleName: { fontSize: 15, fontWeight: '600', color: Colors.text, marginTop: 2 },
-  completedText: { color: Colors.textLight, textDecorationLine: 'line-through' },
-  scheduleAddress: { fontSize: 13, color: Colors.textSecondary, marginTop: 2 },
-  scheduleAmount: { fontSize: 16, fontWeight: '700', color: Colors.text },
-  scheduleStatus: { fontSize: 11, fontWeight: '600', marginTop: 2 },
-
-  // Available jobs
-  jobCard: {
-    backgroundColor: Colors.white, borderRadius: 14, padding: 14,
-    flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 10,
-    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1,
-  },
-  jobIcon: { fontSize: 24 },
-  jobNameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  jobName: { fontSize: 15, fontWeight: '600', color: Colors.text },
-  surgeBadge: { backgroundColor: '#FEF3C7', borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
-  surgeText: { fontSize: 11, fontWeight: '700', color: '#D97706' },
-  jobAddress: { fontSize: 13, color: Colors.textSecondary, marginTop: 2 },
-  jobPrice: { fontSize: 18, fontWeight: '700', color: Colors.primary },
-  acceptBtn: {
-    backgroundColor: Colors.primary, borderRadius: 8,
-    paddingHorizontal: 14, paddingVertical: 6, marginTop: 4,
-  },
-  acceptText: { color: Colors.white, fontSize: 13, fontWeight: '700' },
-
-  // Chart
-  chartCard: {
-    backgroundColor: Colors.white, borderRadius: 18, padding: 18, marginBottom: 20,
-    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 6, elevation: 2,
-  },
-  chartLegend: { flexDirection: 'row', gap: 16, marginBottom: 16 },
-  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  legendDot: { width: 8, height: 8, borderRadius: 4 },
-  legendText: { fontSize: 12, color: Colors.textSecondary },
-  chartBars: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', height: 120 },
-  chartColumn: { alignItems: 'center', flex: 1 },
-  barGroup: { flexDirection: 'row', gap: 3, alignItems: 'flex-end' },
-  bar: { width: 12, borderRadius: 4 },
-  barThisWeek: { backgroundColor: Colors.primary },
-  barLastWeek: { backgroundColor: Colors.borderLight },
-  chartLabel: { fontSize: 11, color: Colors.textSecondary, marginTop: 6 },
-
-  // Stats
-  statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 20 },
-  statCard: {
-    width: '48%' as any, backgroundColor: Colors.white, borderRadius: 14, padding: 16,
-    alignItems: 'center',
-    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1,
-  },
-  statValue: { fontSize: 20, fontWeight: '800', color: Colors.text },
-  statLabel: { fontSize: 12, color: Colors.textSecondary, marginTop: 4 },
-
-  // Quick actions
-  quickActionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
-  quickAction: { alignItems: 'center', flex: 1 },
-  quickActionIcon: {
-    width: 56, height: 56, borderRadius: 16, backgroundColor: Colors.white,
-    justifyContent: 'center', alignItems: 'center', marginBottom: 6,
-    shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, elevation: 2,
-  },
-  quickActionEmoji: { fontSize: 24 },
-  quickActionLabel: { fontSize: 11, fontWeight: '600', color: Colors.textSecondary, textAlign: 'center', lineHeight: 14 },
+  emptyCard: { padding: 20, backgroundColor: Colors.surface, borderRadius: 12, alignItems: 'center' },
+  emptyText: { fontSize: 14, color: Colors.textLight, textAlign: 'center' },
+  jobCard: { backgroundColor: Colors.surface, borderRadius: 12, padding: 16, marginBottom: 8 },
+  jobTop: { flexDirection: 'row', justifyContent: 'space-between' },
+  jobService: { fontSize: 15, fontWeight: '600', color: Colors.text, textTransform: 'capitalize' },
+  jobPrice: { fontSize: 16, fontWeight: '700', color: Colors.primary },
+  jobAddress: { fontSize: 13, color: Colors.textLight, marginTop: 4 },
+  jobUrgency: { fontSize: 12, color: Colors.primary, marginTop: 6, fontWeight: '500' },
 });
