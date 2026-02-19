@@ -226,6 +226,7 @@ import { registerContentRoutes } from "./content.routes.js";
 
 // Invite Code routes
 import { registerInviteCodeRoutes } from "./invite-codes/invite-codes.routes";
+import { registerAppDataRoutes } from "./app-data.routes";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -380,6 +381,7 @@ export async function registerRoutes(
 
   // Pro map routes (public + admin)
   registerActiveNearbyRoutes(app);
+  registerAppDataRoutes(app);
   registerAdminProMapRoutes(app);
 
   // Admin management routes (pyckers, users, surge, active jobs)

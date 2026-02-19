@@ -1,109 +1,96 @@
-import React, { useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-import ScoreCircle from '../components/ScoreCircle';
-import { calculateHomeHealth, MOCK_SERVICE_HISTORY } from '../services/HomeHealthScoring';
-
-function CategoryCard({ cat }: { cat: any }) {
-  return (
-    <View style={[styles.catCard, cat.overdue && styles.catCardOverdue]}>
-      <View style={styles.catHeader}>
-        <Text style={styles.catEmoji}>{cat.emoji}</Text>
-        <View style={styles.catInfo}>
-          <Text style={styles.catName}>{cat.name}</Text>
-          <Text style={styles.catDate}>
-            {cat.lastServiceDate ? `Last: ${cat.lastServiceDate}` : 'Never serviced'}
-          </Text>
-        </View>
-        <View style={[styles.catScoreBadge, { backgroundColor: cat.score >= 75 ? Colors.success + '20' : cat.score >= 50 ? Colors.warning + '20' : Colors.error + '20' }]}>
-          <Text style={[styles.catScore, { color: cat.score >= 75 ? Colors.success : cat.score >= 50 ? Colors.warning : Colors.error }]}>{cat.score}</Text>
-        </View>
-      </View>
-      {cat.overdue && (
-        <View style={styles.overdueBadge}>
-          <Text style={styles.overdueText}>⚠️ {cat.suggestion}</Text>
-        </View>
-      )}
-    </View>
-  );
-}
+import { fetchHomeHealth } from '../services/api';
 
 export default function HomeHealthScreen() {
-  const navigation = useNavigation<any>();
-  const health = useMemo(() => calculateHomeHealth(MOCK_SERVICE_HISTORY), []);
+  const [health, setHealth] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchHomeHealth()
+      .then(data => setHealth(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.center}><ActivityIndicator size="large" color={Colors.primary} /></View>
+      </SafeAreaView>
+    );
+  }
+
+  const score = health?.score ?? health?.overallScore ?? 0;
+  const systems = health?.systems || health?.categories || [];
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      {/* Score */}
-      <View style={styles.scoreSection}>
-        <ScoreCircle score={health.totalScore} />
-      </View>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>🏠 Home Health Score</Text>
 
-      {/* Quick Actions */}
-      <View style={styles.quickActions}>
-        {[
-          { label: '🔥 Streaks', screen: 'HomeStreaks' },
-          { label: '📦 Subscribe', screen: 'Subscribe' },
-          { label: '⚡ Deals', screen: 'FlashDeals' },
-          { label: '💡 Tips', screen: 'ProTips' },
-        ].map(action => (
-          <TouchableOpacity key={action.screen} style={styles.quickAction} onPress={() => navigation.navigate(action.screen)}>
-            <Text style={styles.quickActionText}>{action.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+        <View style={styles.scoreCard}>
+          <Text style={styles.scoreNumber}>{score}</Text>
+          <Text style={styles.scoreLabel}>/ 100</Text>
+          <Text style={styles.scoreStatus}>
+            {score >= 80 ? '✅ Healthy' : score >= 60 ? '⚠️ Needs Attention' : '🔴 Action Required'}
+          </Text>
+        </View>
 
-      {/* Categories */}
-      <Text style={styles.sectionTitle}>Health Breakdown</Text>
-      {health.categories.map(cat => (
-        <CategoryCard key={cat.id} cat={cat} />
-      ))}
-
-      {/* History */}
-      <Text style={styles.sectionTitle}>Score History</Text>
-      <View style={styles.historyChart}>
-        {health.history.map((h, i) => (
-          <View key={i} style={styles.historyBar}>
-            <View style={[styles.bar, { height: h.score * 0.8, backgroundColor: h.score >= 75 ? Colors.success : h.score >= 50 ? Colors.warning : Colors.error }]} />
-            <Text style={styles.historyMonth}>{h.date.slice(5)}</Text>
+        {systems.length > 0 ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>System Breakdown</Text>
+            {systems.map((s: any, i: number) => (
+              <View key={i} style={styles.systemRow}>
+                <Text style={styles.systemName}>{s.name || s.system || 'System'}</Text>
+                <View style={styles.barBg}>
+                  <View style={[styles.barFill, { width: `${s.score || s.health || 0}%`, backgroundColor: (s.score || s.health || 0) >= 70 ? '#34C759' : '#FF9F0A' }]} />
+                </View>
+                <Text style={styles.systemScore}>{s.score || s.health || 0}%</Text>
+              </View>
+            ))}
           </View>
-        ))}
-      </View>
+        ) : (
+          <View style={styles.emptySection}>
+            <Text style={styles.emptyText}>Complete an AI Home Scan to see your home health breakdown.</Text>
+          </View>
+        )}
 
-      {/* Neighborhood Activity */}
-      <TouchableOpacity style={styles.neighborhoodBtn} onPress={() => navigation.navigate('NeighborhoodActivity')}>
-        <Text style={styles.neighborhoodBtnText}>🏘️ See Neighborhood Activity</Text>
-      </TouchableOpacity>
-
-      <View style={{ height: 40 }} />
-    </ScrollView>
+        {health?.recommendations && health.recommendations.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Recommendations</Text>
+            {health.recommendations.map((r: any, i: number) => (
+              <View key={i} style={styles.recCard}>
+                <Text style={styles.recText}>{typeof r === 'string' ? r : r.text || r.recommendation}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  content: { paddingBottom: 20 },
-  scoreSection: { alignItems: 'center', paddingVertical: 28, backgroundColor: Colors.white, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 12 },
-  quickActions: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 16, paddingHorizontal: 12 },
-  quickAction: { backgroundColor: Colors.white, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 6, elevation: 2 },
-  quickActionText: { fontSize: 13, fontWeight: '600', color: Colors.text },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginHorizontal: 16, marginTop: 20, marginBottom: 12 },
-  catCard: { backgroundColor: Colors.white, marginHorizontal: 16, marginBottom: 10, borderRadius: 14, padding: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.04, shadowRadius: 6, elevation: 1 },
-  catCardOverdue: { borderLeftWidth: 3, borderLeftColor: Colors.error },
-  catHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  catEmoji: { fontSize: 28 },
-  catInfo: { flex: 1 },
-  catName: { fontSize: 15, fontWeight: '600', color: Colors.text },
-  catDate: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
-  catScoreBadge: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10 },
-  catScore: { fontSize: 18, fontWeight: '800' },
-  overdueBadge: { marginTop: 8, backgroundColor: Colors.error + '10', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 },
-  overdueText: { fontSize: 12, color: Colors.error, fontWeight: '500' },
-  historyChart: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', marginHorizontal: 16, height: 100, backgroundColor: Colors.white, borderRadius: 14, padding: 14 },
-  historyBar: { alignItems: 'center', gap: 4 },
-  bar: { width: 28, borderRadius: 6, minHeight: 4 },
-  historyMonth: { fontSize: 10, color: Colors.textSecondary, fontWeight: '500' },
-  neighborhoodBtn: { marginHorizontal: 16, marginTop: 20, backgroundColor: Colors.purple, paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
-  neighborhoodBtnText: { color: Colors.white, fontWeight: '700', fontSize: 15 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  content: { padding: 20 },
+  title: { fontSize: 24, fontWeight: '700', color: Colors.text, marginBottom: 20 },
+  scoreCard: { alignItems: 'center', padding: 32, backgroundColor: Colors.surface, borderRadius: 20, marginBottom: 24 },
+  scoreNumber: { fontSize: 64, fontWeight: '800', color: Colors.primary },
+  scoreLabel: { fontSize: 18, color: Colors.textLight, marginTop: -8 },
+  scoreStatus: { fontSize: 16, fontWeight: '600', marginTop: 12, color: Colors.text },
+  section: { marginBottom: 24 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: 12 },
+  systemRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+  systemName: { width: 90, fontSize: 13, color: Colors.text },
+  barBg: { flex: 1, height: 8, backgroundColor: Colors.surface, borderRadius: 4, marginHorizontal: 8 },
+  barFill: { height: 8, borderRadius: 4 },
+  systemScore: { width: 40, fontSize: 13, fontWeight: '600', color: Colors.text, textAlign: 'right' },
+  emptySection: { padding: 24, backgroundColor: Colors.surface, borderRadius: 16, alignItems: 'center' },
+  emptyText: { fontSize: 14, color: Colors.textLight, textAlign: 'center' },
+  recCard: { padding: 12, backgroundColor: Colors.surface, borderRadius: 12, marginBottom: 8 },
+  recText: { fontSize: 14, color: Colors.text },
 });

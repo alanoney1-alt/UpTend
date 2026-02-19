@@ -1,154 +1,97 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-import { SUBSCRIPTION_PLANS, SUBSCRIPTION_BUNDLES, MOCK_ACTIVE_SUBSCRIPTIONS, Frequency } from '../data/mockSubscriptions';
-import { calculateSavings, totalMonthlyCost } from '../services/SubscriptionService';
+import { fetchActiveSubscriptions } from '../services/api';
+import config from '../config';
 
-function BundleCard({ bundle }: { bundle: typeof SUBSCRIPTION_BUNDLES[0] }) {
-  return (
-    <View style={styles.bundleCard}>
-      <View style={styles.bundleHeader}>
-        <Text style={styles.bundleIcon}>{bundle.icon}</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.bundleName}>{bundle.name}</Text>
-          <Text style={styles.bundleDesc}>{bundle.description}</Text>
-        </View>
-        <View style={styles.discountBadge}>
-          <Text style={styles.discountText}>-{bundle.discountPercent}%</Text>
-        </View>
-      </View>
-      <View style={styles.bundleServices}>
-        {bundle.services.map(s => <Text key={s} style={styles.bundleService}>✓ {s}</Text>)}
-      </View>
-      <View style={styles.bundlePriceRow}>
-        <Text style={styles.bundleOldPrice}>${bundle.regularMonthlyPrice}/mo</Text>
-        <Text style={styles.bundlePrice}>${bundle.monthlyPrice}/mo</Text>
-      </View>
-      <TouchableOpacity style={styles.subscribeBtn} onPress={() => Alert.alert('Bundle Selected', `${bundle.name} — $${bundle.monthlyPrice}/mo`)} activeOpacity={0.8}>
-        <Text style={styles.subscribeBtnText}>Subscribe to Bundle</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function PlanCard({ plan }: { plan: typeof SUBSCRIPTION_PLANS[0] }) {
-  const [selectedFreq, setSelectedFreq] = useState<Frequency>(plan.frequencies[0]);
-  const price = plan.pricing[selectedFreq];
-  const regular = plan.regularPrice[selectedFreq];
-  const savings = calculateSavings(regular, price);
-
-  return (
-    <View style={styles.planCard}>
-      <View style={styles.planHeader}>
-        <Text style={styles.planIcon}>{plan.icon}</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.planName}>{plan.serviceName}</Text>
-          <Text style={styles.planDesc}>{plan.description}</Text>
-        </View>
-      </View>
-      <View style={styles.freqRow}>
-        {plan.frequencies.map(f => (
-          <TouchableOpacity key={f} style={[styles.freqBtn, selectedFreq === f && styles.freqBtnActive]} onPress={() => setSelectedFreq(f)}>
-            <Text style={[styles.freqText, selectedFreq === f && styles.freqTextActive]}>{f}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <View style={styles.planPriceRow}>
-        <Text style={styles.planOldPrice}>${regular}</Text>
-        <Text style={styles.planPrice}>${price}</Text>
-        <View style={styles.saveBadge}><Text style={styles.saveText}>Save {savings.percent}%</Text></View>
-      </View>
-      <TouchableOpacity style={styles.subBtnSmall} onPress={() => Alert.alert('Subscribed!', `${plan.serviceName} — ${selectedFreq} at $${price}`)}>
-        <Text style={styles.subBtnSmallText}>Subscribe</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
+const PLANS = [
+  { id: 'pool_monthly', name: 'Pool Cleaning', frequency: 'Monthly', price: '$120/mo', icon: '🏊' },
+  { id: 'lawn_biweekly', name: 'Lawn Care', frequency: 'Bi-weekly', price: '$89/mo', icon: '🌿' },
+  { id: 'cleaning_weekly', name: 'Home Cleaning', frequency: 'Weekly', price: '$149/mo', icon: '🧹' },
+  { id: 'gutter_quarterly', name: 'Gutter Cleaning', frequency: 'Quarterly', price: '$50/mo', icon: '🏠' },
+];
 
 export default function SubscribeScreen() {
-  const monthlyCost = totalMonthlyCost(MOCK_ACTIVE_SUBSCRIPTIONS);
+  const [activeSubs, setActiveSubs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchActiveSubscriptions()
+      .then(data => setActiveSubs(data.subscriptions || []))
+      .catch(() => setActiveSubs([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.center}><ActivityIndicator size="large" color={Colors.primary} /></View>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Subscribe & Save</Text>
-        <Text style={styles.headerSub}>Recurring services at a discount</Text>
-      </View>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>📅 Subscriptions</Text>
+        <Text style={styles.subtitle}>Set it and forget it — recurring home maintenance.</Text>
 
-      {/* Active subs summary */}
-      {MOCK_ACTIVE_SUBSCRIPTIONS.length > 0 && (
-        <View style={styles.activeSection}>
-          <Text style={styles.sectionTitle}>Your Subscriptions</Text>
-          <Text style={styles.monthlyCost}>~${Math.round(monthlyCost)}/mo</Text>
-          {MOCK_ACTIVE_SUBSCRIPTIONS.map(sub => (
-            <View key={sub.id} style={styles.activeSub}>
-              <Text style={styles.activeIcon}>{sub.icon}</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.activeName}>{sub.serviceName} · {sub.frequency}</Text>
-                <Text style={styles.activeNext}>Next: {sub.nextServiceDate} · {sub.proName}</Text>
+        {activeSubs.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Active Subscriptions</Text>
+            {activeSubs.map((sub: any, i: number) => (
+              <View key={i} style={styles.activeCard}>
+                <Text style={styles.activeService}>{sub.service_type || sub.name}</Text>
+                <Text style={styles.activeFreq}>{sub.frequency || 'Monthly'}</Text>
+                <Text style={styles.activePrice}>${sub.price || sub.amount}/mo</Text>
               </View>
-              <Text style={styles.activePrice}>${sub.price}</Text>
-            </View>
+            ))}
+          </View>
+        )}
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Available Plans</Text>
+          {PLANS.map(plan => (
+            <TouchableOpacity key={plan.id} style={styles.planCard}>
+              <Text style={styles.planIcon}>{plan.icon}</Text>
+              <View style={styles.planInfo}>
+                <Text style={styles.planName}>{plan.name}</Text>
+                <Text style={styles.planFreq}>{plan.frequency}</Text>
+              </View>
+              <Text style={styles.planPrice}>{plan.price}</Text>
+            </TouchableOpacity>
           ))}
         </View>
-      )}
 
-      {/* Bundles */}
-      <Text style={styles.sectionTitle}>Bundles — Extra Savings</Text>
-      {SUBSCRIPTION_BUNDLES.map(b => <BundleCard key={b.id} bundle={b} />)}
-
-      {/* Individual plans */}
-      <Text style={styles.sectionTitle}>Individual Services</Text>
-      {SUBSCRIPTION_PLANS.map(p => <PlanCard key={p.id} plan={p} />)}
-
-      <View style={{ height: 40 }} />
-    </ScrollView>
+        <View style={styles.bundleCard}>
+          <Text style={styles.bundleTitle}>🎁 Bundle & Save</Text>
+          <Text style={styles.bundleText}>Subscribe to 2+ services and save 7-18% on every visit.</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  content: { paddingBottom: 20 },
-  header: { backgroundColor: Colors.purple, paddingVertical: 24, paddingHorizontal: 20, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, alignItems: 'center' },
-  headerTitle: { fontSize: 24, fontWeight: '800', color: Colors.white },
-  headerSub: { fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 4 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginHorizontal: 16, marginTop: 24, marginBottom: 12 },
-  activeSection: { marginTop: 8 },
-  monthlyCost: { fontSize: 14, color: Colors.primary, fontWeight: '700', marginHorizontal: 16, marginBottom: 8 },
-  activeSub: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.white, marginHorizontal: 16, padding: 14, borderRadius: 14, marginBottom: 8, gap: 12 },
-  activeIcon: { fontSize: 24 },
-  activeName: { fontSize: 14, fontWeight: '600', color: Colors.text },
-  activeNext: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
-  activePrice: { fontSize: 16, fontWeight: '700', color: Colors.primary },
-  bundleCard: { backgroundColor: Colors.white, marginHorizontal: 16, marginBottom: 12, borderRadius: 18, padding: 16, borderWidth: 2, borderColor: Colors.primary + '30', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 2 },
-  bundleHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  bundleIcon: { fontSize: 32 },
-  bundleName: { fontSize: 17, fontWeight: '700', color: Colors.text },
-  bundleDesc: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
-  discountBadge: { backgroundColor: Colors.error, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
-  discountText: { color: Colors.white, fontWeight: '800', fontSize: 13 },
-  bundleServices: { marginTop: 10, gap: 4 },
-  bundleService: { fontSize: 13, color: Colors.text, fontWeight: '500' },
-  bundlePriceRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
-  bundleOldPrice: { fontSize: 15, color: Colors.textLight, textDecorationLine: 'line-through' },
-  bundlePrice: { fontSize: 24, fontWeight: '800', color: Colors.primary },
-  subscribeBtn: { backgroundColor: Colors.primary, paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginTop: 12 },
-  subscribeBtnText: { color: Colors.white, fontWeight: '700', fontSize: 15 },
-  planCard: { backgroundColor: Colors.white, marginHorizontal: 16, marginBottom: 12, borderRadius: 16, padding: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.04, shadowRadius: 6, elevation: 1 },
-  planHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  planIcon: { fontSize: 28 },
-  planName: { fontSize: 16, fontWeight: '600', color: Colors.text },
-  planDesc: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
-  freqRow: { flexDirection: 'row', gap: 6, marginTop: 12 },
-  freqBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: Colors.background },
-  freqBtnActive: { backgroundColor: Colors.primary },
-  freqText: { fontSize: 12, fontWeight: '600', color: Colors.textSecondary, textTransform: 'capitalize' },
-  freqTextActive: { color: Colors.white },
-  planPriceRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
-  planOldPrice: { fontSize: 14, color: Colors.textLight, textDecorationLine: 'line-through' },
-  planPrice: { fontSize: 22, fontWeight: '800', color: Colors.primary },
-  saveBadge: { backgroundColor: Colors.success + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
-  saveText: { fontSize: 11, fontWeight: '700', color: Colors.success },
-  subBtnSmall: { backgroundColor: Colors.primary, paddingVertical: 10, borderRadius: 10, alignItems: 'center', marginTop: 10 },
-  subBtnSmallText: { color: Colors.white, fontWeight: '700', fontSize: 14 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  content: { padding: 20 },
+  title: { fontSize: 24, fontWeight: '700', color: Colors.text },
+  subtitle: { fontSize: 14, color: Colors.textLight, marginTop: 4, marginBottom: 20 },
+  section: { marginBottom: 24 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: 12 },
+  activeCard: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: Colors.primary + '10', borderRadius: 12, marginBottom: 8, borderWidth: 1, borderColor: Colors.primary + '30' },
+  activeService: { fontSize: 15, fontWeight: '600', color: Colors.text },
+  activeFreq: { fontSize: 13, color: Colors.textLight },
+  activePrice: { fontSize: 15, fontWeight: '700', color: Colors.primary },
+  planCard: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: Colors.surface, borderRadius: 12, marginBottom: 8 },
+  planIcon: { fontSize: 28, marginRight: 12 },
+  planInfo: { flex: 1 },
+  planName: { fontSize: 15, fontWeight: '600', color: Colors.text },
+  planFreq: { fontSize: 12, color: Colors.textLight, marginTop: 2 },
+  planPrice: { fontSize: 16, fontWeight: '700', color: Colors.primary },
+  bundleCard: { padding: 20, backgroundColor: Colors.primary + '10', borderRadius: 16, alignItems: 'center', marginTop: 8 },
+  bundleTitle: { fontSize: 18, fontWeight: '700', color: Colors.text },
+  bundleText: { fontSize: 14, color: Colors.textLight, textAlign: 'center', marginTop: 8 },
 });

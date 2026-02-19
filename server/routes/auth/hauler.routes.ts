@@ -347,6 +347,11 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaSignedName: req.body.icaSignedName || null,
         icaVersion: req.body.icaVersion || null,
       });
+        facebookUrl: req.body.facebookUrl || null,
+        instagramUrl: req.body.instagramUrl || null,
+        linkedinUrl: req.body.linkedinUrl || null,
+        tiktokUrl: req.body.tiktokUrl || null,
+        nextdoorUrl: req.body.nextdoorUrl || null,
 
       // Create vehicles from registration data
       const vehicles = (req.body.vehicles as any[]) || [];
@@ -509,6 +514,11 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaSignedName: req.body.icaSignedName || null,
         icaVersion: req.body.icaVersion || null,
       });
+        facebookUrl: req.body.facebookUrl || null,
+        instagramUrl: req.body.instagramUrl || null,
+        linkedinUrl: req.body.linkedinUrl || null,
+        tiktokUrl: req.body.tiktokUrl || null,
+        nextdoorUrl: req.body.nextdoorUrl || null,
 
       // Create vehicles from registration data
       const vehicles = (req.body.vehicles as any[]) || [];

@@ -1,131 +1,105 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { fetchAvailableJobs } from '../services/api';
 
 interface NearbyJob {
   id: string;
   service: string;
-  icon: string;
+  address: string;
   distance: string;
-  urgency: 'now' | 'today' | 'this_week';
-  estimatedPay: number;
-  postedAgo: string;
-  competitors: number; // other pros who can see this
+  payout: string;
+  urgency: string;
 }
 
-const MOCK_NEARBY_JOBS: NearbyJob[] = [
-  { id: 'j1', service: 'Junk Removal', icon: '🗑️', distance: '1.2 mi', urgency: 'now', estimatedPay: 185, postedAgo: '2 min ago', competitors: 3 },
-  { id: 'j2', service: 'Pressure Washing', icon: '💦', distance: '2.8 mi', urgency: 'now', estimatedPay: 165, postedAgo: '8 min ago', competitors: 5 },
-  { id: 'j3', service: 'Lawn Care', icon: '🌿', distance: '0.5 mi', urgency: 'today', estimatedPay: 75, postedAgo: '25 min ago', competitors: 2 },
-  { id: 'j4', service: 'Handyman', icon: '🔧', distance: '3.5 mi', urgency: 'today', estimatedPay: 120, postedAgo: '1 hr ago', competitors: 4 },
-  { id: 'j5', service: 'Pool Cleaning', icon: '🏊', distance: '4.1 mi', urgency: 'this_week', estimatedPay: 110, postedAgo: '3 hrs ago', competitors: 1 },
-];
+export default function ProDemandView() {
+  const [jobs, setJobs] = useState<NearbyJob[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const URGENCY_CONFIG = {
-  now: { label: '🔴 ASAP', bg: '#FEE2E2', color: Colors.error },
-  today: { label: '🟡 Today', bg: '#FFF8E1', color: Colors.warning },
-  this_week: { label: '🟢 This Week', bg: '#E8F5E8', color: Colors.success },
-};
+  useEffect(() => {
+    fetchAvailableJobs()
+      .then(data => {
+        const list = (data.jobs || data.requests || []).map((j: any) => ({
+          id: j.id,
+          service: j.service_type || j.serviceType || 'Service',
+          address: j.pickup_address || j.address || '',
+          distance: j.distance ? `${j.distance} mi` : 'Nearby',
+          payout: j.payout ? `$${j.payout}` : j.estimated_price ? `$${j.estimated_price}` : 'TBD',
+          urgency: j.urgency || (j.scheduled_date === new Date().toISOString().split('T')[0] ? 'Today' : 'Upcoming'),
+        }));
+        setJobs(list);
+      })
+      .catch(() => setJobs([]))
+      .finally(() => setLoading(false));
+  }, []);
 
-export default function ProDemandView({ navigation }: any) {
-  const [jobs] = useState(MOCK_NEARBY_JOBS);
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.center}><ActivityIndicator size="large" color={Colors.primary} /></View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>📡 Nearby Demand</Text>
-        <Text style={styles.subtitle}>Jobs customers are looking for right now</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>📍 Available Jobs</Text>
+        <Text style={styles.subtitle}>{jobs.length} jobs near you</Text>
+      </View>
 
-        {/* Demand heat map placeholder */}
-        <View style={styles.heatMap}>
-          <Text style={styles.heatIcon}>🗺️</Text>
-          <Text style={styles.heatText}>Demand Heat Map</Text>
-          {/* Heat bubbles */}
-          <View style={[styles.heatBubble, { backgroundColor: 'rgba(239,68,68,0.2)', top: 15, left: 30, width: 70, height: 70 }]} />
-          <View style={[styles.heatBubble, { backgroundColor: 'rgba(245,158,11,0.2)', bottom: 20, right: 40, width: 55, height: 55 }]} />
-          <View style={[styles.heatBubble, { backgroundColor: 'rgba(16,185,129,0.15)', top: 40, right: 60, width: 40, height: 40 }]} />
+      {jobs.length === 0 ? (
+        <View style={styles.center}>
+          <Text style={styles.emptyIcon}>📍</Text>
+          <Text style={styles.emptyTitle}>No Jobs Available</Text>
+          <Text style={styles.emptyText}>New jobs will appear here as customers book services in your area.</Text>
         </View>
-
-        {/* Summary */}
-        <View style={styles.summaryRow}>
-          <View style={styles.summaryCard}>
-            <Text style={styles.summaryNum}>{jobs.filter(j => j.urgency === 'now').length}</Text>
-            <Text style={styles.summaryLabel}>Need ASAP</Text>
-          </View>
-          <View style={styles.summaryCard}>
-            <Text style={styles.summaryNum}>{jobs.length}</Text>
-            <Text style={styles.summaryLabel}>Total Nearby</Text>
-          </View>
-          <View style={styles.summaryCard}>
-            <Text style={styles.summaryNum}>${jobs.reduce((s, j) => s + j.estimatedPay, 0)}</Text>
-            <Text style={styles.summaryLabel}>Potential</Text>
-          </View>
-        </View>
-
-        {/* Job list */}
-        <Text style={styles.sectionTitle}>Available Jobs</Text>
-        {jobs.map(job => {
-          const urg = URGENCY_CONFIG[job.urgency];
-          return (
-            <TouchableOpacity key={job.id} style={styles.jobCard} activeOpacity={0.7}>
-              <View style={styles.jobHeader}>
-                <Text style={styles.jobIcon}>{job.icon}</Text>
-                <View style={styles.jobInfo}>
-                  <Text style={styles.jobService}>{job.service}</Text>
-                  <Text style={styles.jobMeta}>📍 {job.distance} • {job.postedAgo}</Text>
-                </View>
-                <View style={[styles.urgencyBadge, { backgroundColor: urg.bg }]}>
-                  <Text style={[styles.urgencyText, { color: urg.color }]}>{urg.label}</Text>
+      ) : (
+        <FlatList
+          data={jobs}
+          keyExtractor={j => j.id}
+          contentContainerStyle={styles.list}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.card}>
+              <View style={styles.cardTop}>
+                <Text style={styles.cardService}>{item.service}</Text>
+                <Text style={styles.cardPayout}>{item.payout}</Text>
+              </View>
+              <Text style={styles.cardAddress}>{item.address}</Text>
+              <View style={styles.cardBottom}>
+                <Text style={styles.cardDistance}>{item.distance}</Text>
+                <View style={[styles.urgencyBadge, item.urgency === 'Today' && styles.urgentBadge]}>
+                  <Text style={[styles.urgencyText, item.urgency === 'Today' && styles.urgentText]}>{item.urgency}</Text>
                 </View>
               </View>
-              <View style={styles.jobFooter}>
-                <Text style={styles.jobPay}>${job.estimatedPay}</Text>
-                <View style={styles.competitorInfo}>
-                  <Text style={styles.competitorText}>👀 {job.competitors} pros can see this</Text>
-                </View>
-                <TouchableOpacity style={styles.respondBtn}>
-                  <Text style={styles.respondBtnText}>⚡ Respond</Text>
-                </TouchableOpacity>
-              </View>
-              {job.urgency === 'now' && (
-                <Text style={styles.firstToRespond}>🏃 First to respond gets it!</Text>
-              )}
             </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  content: { padding: 20 },
-  title: { fontSize: 24, fontWeight: '800', color: Colors.text },
-  subtitle: { fontSize: 14, color: Colors.textSecondary, marginTop: 4, marginBottom: 16 },
-  heatMap: { height: 150, backgroundColor: '#1a1a2e', borderRadius: 16, justifyContent: 'center', alignItems: 'center', marginBottom: 16, position: 'relative', overflow: 'hidden' },
-  heatIcon: { fontSize: 28 },
-  heatText: { color: '#999', fontSize: 13, marginTop: 4 },
-  heatBubble: { position: 'absolute', borderRadius: 100 },
-  summaryRow: { flexDirection: 'row', gap: 8, marginBottom: 16 },
-  summaryCard: { flex: 1, backgroundColor: '#fff', borderRadius: 10, padding: 12, alignItems: 'center' },
-  summaryNum: { fontSize: 20, fontWeight: '800', color: Colors.primary },
-  summaryLabel: { fontSize: 11, color: Colors.textSecondary, marginTop: 2 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: 10 },
-  jobCard: { backgroundColor: '#fff', borderRadius: 14, padding: 14, marginBottom: 10, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } },
-  jobHeader: { flexDirection: 'row', alignItems: 'center' },
-  jobIcon: { fontSize: 28, marginRight: 12 },
-  jobInfo: { flex: 1 },
-  jobService: { fontSize: 16, fontWeight: '700', color: Colors.text },
-  jobMeta: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
-  urgencyBadge: { borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 },
-  urgencyText: { fontSize: 11, fontWeight: '700' },
-  jobFooter: { flexDirection: 'row', alignItems: 'center', marginTop: 10, gap: 8 },
-  jobPay: { fontSize: 20, fontWeight: '800', color: Colors.primary },
-  competitorInfo: { flex: 1 },
-  competitorText: { fontSize: 11, color: Colors.textSecondary },
-  respondBtn: { backgroundColor: Colors.primary, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 8 },
-  respondBtnText: { color: '#fff', fontWeight: '700', fontSize: 13 },
-  firstToRespond: { fontSize: 12, color: Colors.error, fontWeight: '600', marginTop: 6, fontStyle: 'italic' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40 },
+  emptyIcon: { fontSize: 48, marginBottom: 16 },
+  emptyTitle: { fontSize: 20, fontWeight: '700', color: Colors.text, marginBottom: 8 },
+  emptyText: { fontSize: 14, color: Colors.textLight, textAlign: 'center' },
+  header: { padding: 20, paddingBottom: 8 },
+  title: { fontSize: 22, fontWeight: '700', color: Colors.text },
+  subtitle: { fontSize: 14, color: Colors.textLight, marginTop: 4 },
+  list: { padding: 16, paddingTop: 8 },
+  card: { backgroundColor: Colors.surface, borderRadius: 12, padding: 16, marginBottom: 12 },
+  cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  cardService: { fontSize: 16, fontWeight: '700', color: Colors.text },
+  cardPayout: { fontSize: 18, fontWeight: '700', color: Colors.primary },
+  cardAddress: { fontSize: 13, color: Colors.textLight, marginTop: 6 },
+  cardBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 },
+  cardDistance: { fontSize: 13, color: Colors.textLight },
+  urgencyBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, backgroundColor: Colors.surface },
+  urgentBadge: { backgroundColor: '#FF6B3520' },
+  urgencyText: { fontSize: 12, fontWeight: '600', color: Colors.textLight },
+  urgentText: { color: '#FF6B35' },
 });
