@@ -1,15 +1,14 @@
-import { MOCK_DEALS, FlashDeal } from '../data/mockDeals';
 
 export function getActiveDeals(): FlashDeal[] {
-  return MOCK_DEALS.filter(d => d.category === 'today' && d.endsAt > new Date());
+  return [].filter(d => d.category === 'today' && d.endsAt > new Date());
 }
 
 export function getUpcomingDeals(): FlashDeal[] {
-  return MOCK_DEALS.filter(d => d.category === 'upcoming');
+  return [].filter(d => d.category === 'upcoming');
 }
 
 export function getPastDeals(): FlashDeal[] {
-  return MOCK_DEALS.filter(d => d.category === 'past' || d.endsAt <= new Date());
+  return [].filter(d => d.category === 'past' || d.endsAt <= new Date());
 }
 
 export function formatCountdown(endsAt: Date): string {
@@ -22,7 +21,7 @@ export function formatCountdown(endsAt: Date): string {
 }
 
 export function claimDeal(dealId: string): FlashDeal | null {
-  const deal = MOCK_DEALS.find(d => d.id === dealId);
+  const deal = [].find(d => d.id === dealId);
   if (deal && deal.claimed < deal.totalQuantity) {
     deal.claimed += 1;
     return deal;

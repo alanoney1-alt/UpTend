@@ -1,21 +1,20 @@
-import { MOCK_TIPS, ProTip, TipCategory } from '../data/mockTips';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BOOKMARKS_KEY = '@uptend_tip_bookmarks';
 
 export function getTipOfDay(): ProTip {
-  const dayIndex = Math.floor(Date.now() / 86400000) % MOCK_TIPS.length;
-  return { ...MOCK_TIPS[dayIndex], isTipOfDay: true };
+  const dayIndex = Math.floor(Date.now() / 86400000) % [].length;
+  return { ...[][dayIndex], isTipOfDay: true };
 }
 
 export function getTips(category?: TipCategory): ProTip[] {
-  if (!category) return MOCK_TIPS;
-  return MOCK_TIPS.filter(t => t.category === category);
+  if (!category) return [];
+  return [].filter(t => t.category === category);
 }
 
 export function searchTips(query: string): ProTip[] {
   const q = query.toLowerCase();
-  return MOCK_TIPS.filter(t => t.title.toLowerCase().includes(q) || t.summary.toLowerCase().includes(q));
+  return [].filter(t => t.title.toLowerCase().includes(q) || t.summary.toLowerCase().includes(q));
 }
 
 export async function getBookmarkedIds(): Promise<string[]> {

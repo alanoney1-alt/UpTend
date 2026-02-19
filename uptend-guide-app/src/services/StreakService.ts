@@ -1,6 +1,5 @@
-import { MOCK_WEEK_DATA, STREAK_MILESTONES, WeekData, StreakMilestone } from '../data/mockStreaks';
 
-export function getCurrentStreak(weeks: WeekData[] = MOCK_WEEK_DATA): number {
+export function getCurrentStreak(weeks: WeekData[] = []): number {
   let streak = 0;
   for (let i = weeks.length - 1; i >= 0; i--) {
     if (weeks[i].servicesCount > 0) streak++;
@@ -9,7 +8,7 @@ export function getCurrentStreak(weeks: WeekData[] = MOCK_WEEK_DATA): number {
   return streak;
 }
 
-export function getLongestStreak(weeks: WeekData[] = MOCK_WEEK_DATA): number {
+export function getLongestStreak(weeks: WeekData[] = []): number {
   let max = 0, current = 0;
   for (const w of weeks) {
     if (w.servicesCount > 0) { current++; max = Math.max(max, current); }

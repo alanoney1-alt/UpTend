@@ -12,13 +12,6 @@ interface Recruit {
   status: 'found' | 'invited' | 'signed_up' | 'completed_first_job' | 'declined';
 }
 
-const MOCK_RECRUITS: Recruit[] = [
-  { id: '1', name: "Mike's Lawn Care", phone: '(407) 555-1234', keywords: ['lawn', 'landscap'], confidence: 0.9, status: 'found' },
-  { id: '2', name: 'Clean Queen Maria', phone: '(407) 555-5678', keywords: ['clean', 'maid'], confidence: 0.85, status: 'invited' },
-  { id: '3', name: 'Dave Pool Service', phone: '(321) 555-9012', keywords: ['pool'], confidence: 0.7, status: 'signed_up' },
-  { id: '4', name: 'HandyMan Joe', phone: '(407) 555-3456', keywords: ['handyman'], confidence: 0.8, status: 'completed_first_job' },
-  { id: '5', name: 'Tom R. Painter', phone: '(321) 555-7890', keywords: ['paint'], confidence: 0.75, status: 'declined' },
-];
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   found: { label: 'Found', color: Colors.primary, bg: '#FFF3E8' },
@@ -29,7 +22,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
 };
 
 export default function RecruitScreen() {
-  const [recruits, setRecruits] = useState(MOCK_RECRUITS);
+  const [recruits, setRecruits] = useState([]);
   const [scanning, setScanning] = useState(false);
 
   const scanContacts = () => {

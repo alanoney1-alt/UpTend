@@ -14,15 +14,9 @@ interface Recording {
   uploaded: boolean;
 }
 
-const MOCK_RECORDINGS: Recording[] = [
-  { id: '1', jobId: 'JOB-4821', time: 'Today 2:15 PM', duration: '60s', trigger: 'impact', gForce: 3.8, size: '15.2 MB', uploaded: false },
-  { id: '2', jobId: 'JOB-4821', time: 'Today 1:45 PM', duration: '60s', trigger: 'impact', gForce: 2.9, size: '14.8 MB', uploaded: false },
-  { id: '3', jobId: 'JOB-4815', time: 'Yesterday 10:30 AM', duration: '60s', trigger: 'manual', size: '15.5 MB', uploaded: true },
-  { id: '4', jobId: 'JOB-4801', time: 'Feb 10 3:20 PM', duration: '60s', trigger: 'impact', gForce: 4.2, size: '14.1 MB', uploaded: true },
-];
 
 export default function DamageProtectionScreen() {
-  const [recordings, setRecordings] = useState(MOCK_RECORDINGS);
+  const [recordings, setRecordings] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
 
   const totalStorage = '59.6 MB';

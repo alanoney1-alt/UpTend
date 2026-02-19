@@ -3,7 +3,6 @@ import { View, FlatList, Text, TouchableOpacity, RefreshControl, StyleSheet, Sta
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../theme/colors';
 import TransformationCard from '../components/TransformationCard';
-import { MOCK_TRANSFORMATIONS, Transformation } from '../data/mockTransformations';
 
 const FILTERS = ['All', 'Trending', 'Near Me', 'By Service'] as const;
 
@@ -11,7 +10,7 @@ export default function TransformationFeedScreen() {
   const navigation = useNavigation<any>();
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [refreshing, setRefreshing] = useState(false);
-  const [data, setData] = useState(MOCK_TRANSFORMATIONS);
+  const [data, setData] = useState([]);
 
   const filtered = activeFilter === 'Trending'
     ? data.filter(t => t.trending)
@@ -22,7 +21,7 @@ export default function TransformationFeedScreen() {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      setData([...MOCK_TRANSFORMATIONS].sort(() => Math.random() - 0.5));
+      setData([...[]].sort(() => Math.random() - 0.5));
       setRefreshing(false);
     }, 1000);
   }, []);

@@ -16,12 +16,6 @@ interface RouteJob {
   status: 'upcoming' | 'in_progress' | 'completed';
 }
 
-const MOCK_ROUTE: RouteJob[] = [
-  { id: '1', order: 1, customer: 'Sarah M.', address: '1234 Oak Ave, Winter Park', service: 'Lawn Care', time: '8:00 AM', duration: '1.5 hrs', distance: '3.2 mi', driveTime: '8 min', status: 'completed' },
-  { id: '2', order: 2, customer: 'James K.', address: '567 Pine St, Orlando', service: 'Pressure Washing', time: '10:00 AM', duration: '2 hrs', distance: '5.1 mi', driveTime: '12 min', status: 'in_progress' },
-  { id: '3', order: 3, customer: 'Maria L.', address: '890 Maple Dr, Orlando', service: 'Gutter Cleaning', time: '1:00 PM', duration: '1 hr', distance: '2.8 mi', driveTime: '7 min', status: 'upcoming' },
-  { id: '4', order: 4, customer: 'David W.', address: '321 Elm Ct, Lake Nona', service: 'Junk Removal', time: '3:00 PM', duration: '2 hrs', distance: '8.4 mi', driveTime: '18 min', status: 'upcoming' },
-];
 
 export default function ProRouteScreen({ navigation }: any) {
   const [optimized, setOptimized] = useState(false);
@@ -32,17 +26,17 @@ export default function ProRouteScreen({ navigation }: any) {
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>🗺️ Today's Route</Text>
-        <Text style={styles.subtitle}>{MOCK_ROUTE.length} jobs • {totalDrive} total drive time</Text>
+        <Text style={styles.subtitle}>{[].length} jobs • {totalDrive} total drive time</Text>
 
         {/* Map placeholder */}
         <View style={styles.mapCard}>
           <Text style={styles.mapIcon}>🗺️</Text>
           <Text style={styles.mapText}>Route Map</Text>
           <View style={styles.routeLine}>
-            {MOCK_ROUTE.map((_, i) => (
+            {[].map((_, i) => (
               <React.Fragment key={i}>
                 <View style={[styles.routeDot, i === 1 && styles.activeDot]} />
-                {i < MOCK_ROUTE.length - 1 && <View style={styles.routeConnector} />}
+                {i < [].length - 1 && <View style={styles.routeConnector} />}
               </React.Fragment>
             ))}
           </View>
@@ -55,20 +49,20 @@ export default function ProRouteScreen({ navigation }: any) {
 
         {/* Stats */}
         <View style={styles.statsRow}>
-          <View style={styles.stat}><Text style={styles.statNum}>{MOCK_ROUTE.length}</Text><Text style={styles.statLabel}>Jobs</Text></View>
+          <View style={styles.stat}><Text style={styles.statNum}>{[].length}</Text><Text style={styles.statLabel}>Jobs</Text></View>
           <View style={styles.stat}><Text style={styles.statNum}>{totalDrive}</Text><Text style={styles.statLabel}>Drive Time</Text></View>
           <View style={styles.stat}><Text style={styles.statNum}>19.5 mi</Text><Text style={styles.statLabel}>Distance</Text></View>
           <View style={styles.stat}><Text style={styles.statNum}>$485</Text><Text style={styles.statLabel}>Est. Earnings</Text></View>
         </View>
 
         {/* Job list */}
-        {MOCK_ROUTE.map((job, index) => (
+        {[].map((job, index) => (
           <View key={job.id} style={styles.jobCard}>
             <View style={styles.jobOrder}>
               <View style={[styles.orderCircle, job.status === 'completed' && styles.orderCompleted, job.status === 'in_progress' && styles.orderActive]}>
                 <Text style={styles.orderNum}>{job.status === 'completed' ? '✓' : job.order}</Text>
               </View>
-              {index < MOCK_ROUTE.length - 1 && (
+              {index < [].length - 1 && (
                 <View style={styles.driveInfo}>
                   <Text style={styles.driveText}>{job.driveTime} • {job.distance}</Text>
                 </View>

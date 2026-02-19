@@ -1,4 +1,3 @@
-import { Frequency, SUBSCRIPTION_PLANS, SUBSCRIPTION_BUNDLES, MOCK_ACTIVE_SUBSCRIPTIONS, ActiveSubscription } from '../data/mockSubscriptions';
 
 export function getPlans() {
   return SUBSCRIPTION_PLANS;
@@ -9,7 +8,7 @@ export function getBundles() {
 }
 
 export function getActiveSubscriptions(): ActiveSubscription[] {
-  return [...MOCK_ACTIVE_SUBSCRIPTIONS];
+  return [...[]];
 }
 
 export function calculateSavings(regularPrice: number, subPrice: number): { amount: number; percent: number } {

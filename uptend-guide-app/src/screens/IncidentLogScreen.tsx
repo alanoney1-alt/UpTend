@@ -14,12 +14,6 @@ interface Incident {
   location: string;
 }
 
-const MOCK_INCIDENTS: Incident[] = [
-  { id: '1', timestamp: '2026-02-11 3:42 PM', gForce: 3.2, jobId: 'JOB-4815', status: 'detected', notes: '', hasPhoto: false, location: 'Winter Park, FL' },
-  { id: '2', timestamp: '2026-02-10 11:15 AM', gForce: 4.8, jobId: 'JOB-4801', status: 'reviewed', notes: 'Heavy dresser dropped on porch step. No damage found.', hasPhoto: true, location: 'Orlando, FL' },
-  { id: '3', timestamp: '2026-02-08 2:30 PM', gForce: 2.7, jobId: 'JOB-4789', status: 'dismissed', notes: 'False positive — truck hit pothole', hasPhoto: false, location: 'Kissimmee, FL' },
-  { id: '4', timestamp: '2026-02-05 9:05 AM', gForce: 5.1, jobId: 'JOB-4760', status: 'escalated', notes: 'TV fell during move. Customer filed claim.', hasPhoto: true, location: 'Lake Nona, FL' },
-];
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   detected: { bg: '#FFF3E8', text: Colors.primary },
@@ -30,7 +24,7 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
 
 export default function IncidentLogScreen() {
   const [filter, setFilter] = useState<string>('all');
-  const filtered = filter === 'all' ? MOCK_INCIDENTS : MOCK_INCIDENTS.filter(i => i.status === filter);
+  const filtered = filter === 'all' ? [] : [].filter(i => i.status === filter);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>

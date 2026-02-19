@@ -148,14 +148,38 @@ export function Footer() {
           <div>
             <p data-testid="text-copyright">&copy; {currentYear} {t("footer.footer_copyright")}</p>
           </div>
-          <div className="flex gap-6 flex-wrap">
+          <div className="flex gap-x-6 gap-y-2 flex-wrap">
             <Link href="/terms" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-terms">
-              {t("footer.footer_terms")}
+              Terms
             </Link>
             <Link href="/privacy" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-privacy">
-              {t("footer.footer_privacy")}
+              Privacy
             </Link>
-            <Link href="/cost-guides" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-cost-guides">
+            <Link href="/cancellation-policy" className="hover:text-white transition-colors cursor-pointer">
+              Cancellations
+            </Link>
+            <Link href="/service-guarantee" className="hover:text-white transition-colors cursor-pointer">
+              Guarantee
+            </Link>
+            <Link href="/cookies" className="hover:text-white transition-colors cursor-pointer">
+              Cookies
+            </Link>
+            <Link href="/communications-consent" className="hover:text-white transition-colors cursor-pointer">
+              SMS Terms
+            </Link>
+            <Link href="/affiliate-disclosure" className="hover:text-white transition-colors cursor-pointer">
+              Affiliate Disclosure
+            </Link>
+            <Link href="/accessibility" className="hover:text-white transition-colors cursor-pointer">
+              Accessibility
+            </Link>
+            <Link href="/b2b-terms" className="hover:text-white transition-colors cursor-pointer">
+              B2B Terms
+            </Link>
+            <Link href="/acceptable-use" className="hover:text-white transition-colors cursor-pointer">
+              Acceptable Use
+            </Link>
+            <Link href="/cost-guides" className="hover:text-white transition-colors cursor-pointer">
               Cost Guides
             </Link>
             <Link href="/admin-login" className="hover:text-white transition-colors cursor-pointer text-slate-500" data-testid="link-footer-admin">

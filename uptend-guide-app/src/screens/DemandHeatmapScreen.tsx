@@ -12,14 +12,6 @@ interface HeatZone {
   avgPayout: number;
 }
 
-const MOCK_ZONES: HeatZone[] = [
-  { id: '1', area: 'Winter Park', demand: 'high', pendingJobs: 12, topService: 'Junk Removal', avgPayout: 185 },
-  { id: '2', area: 'Downtown Orlando', demand: 'high', pendingJobs: 9, topService: 'Pressure Washing', avgPayout: 165 },
-  { id: '3', area: 'Lake Nona', demand: 'medium', pendingJobs: 6, topService: 'Lawn Care', avgPayout: 95 },
-  { id: '4', area: 'Kissimmee', demand: 'medium', pendingJobs: 5, topService: 'Pool Cleaning', avgPayout: 110 },
-  { id: '5', area: 'Dr. Phillips', demand: 'low', pendingJobs: 2, topService: 'Handyman', avgPayout: 120 },
-  { id: '6', area: 'Altamonte Springs', demand: 'low', pendingJobs: 3, topService: 'Gutter Cleaning', avgPayout: 90 },
-];
 
 const SERVICES = ['All', 'Junk Removal', 'Pressure Washing', 'Lawn Care', 'Pool Cleaning', 'Handyman'];
 const TIME_FILTERS = ['Today', 'This Week', 'This Month'];
@@ -30,7 +22,7 @@ export default function DemandHeatmapScreen() {
   const [selectedService, setSelectedService] = useState('All');
   const [timeFilter, setTimeFilter] = useState('This Week');
 
-  const filtered = selectedService === 'All' ? MOCK_ZONES : MOCK_ZONES.filter(z => z.topService === selectedService);
+  const filtered = selectedService === 'All' ? [] : [].filter(z => z.topService === selectedService);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>

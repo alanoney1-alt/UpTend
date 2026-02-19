@@ -16,27 +16,19 @@ interface TimelineEntry {
   proName: string;
 }
 
-const MOCK_TIMELINE: TimelineEntry[] = [
-  { id: '1', area: 'Yard', areaIcon: '🌿', date: 'Feb 8, 2026', serviceType: 'Lawn Care', beforeUri: '', afterUri: '', proName: 'Mike T.' },
-  { id: '2', area: 'Driveway', areaIcon: '🚗', date: 'Jan 22, 2026', serviceType: 'Pressure Washing', beforeUri: '', afterUri: '', proName: 'Carlos R.' },
-  { id: '3', area: 'Kitchen', areaIcon: '🍳', date: 'Jan 15, 2026', serviceType: 'Deep Cleaning', beforeUri: '', afterUri: '', proName: 'Maria L.' },
-  { id: '4', area: 'Pool', areaIcon: '🏊', date: 'Dec 20, 2025', serviceType: 'Pool Cleaning', beforeUri: '', afterUri: '', proName: 'Dave P.' },
-  { id: '5', area: 'Garage', areaIcon: '🏠', date: 'Dec 5, 2025', serviceType: 'Junk Removal', beforeUri: '', afterUri: '', proName: 'Marcus J.' },
-  { id: '6', area: 'Yard', areaIcon: '🌿', date: 'Nov 10, 2025', serviceType: 'Landscaping', beforeUri: '', afterUri: '', proName: 'Mike T.' },
-];
 
 const AREAS = ['All', 'Yard', 'Driveway', 'Kitchen', 'Pool', 'Garage'];
 
 export default function PhotoTimelineScreen() {
   const [selectedArea, setSelectedArea] = useState('All');
   const [sliderPosition, setSliderPosition] = useState(0.5);
-  const filtered = selectedArea === 'All' ? MOCK_TIMELINE : MOCK_TIMELINE.filter(e => e.area === selectedArea);
+  const filtered = selectedArea === 'All' ? [] : [].filter(e => e.area === selectedArea);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>Your Home's Journey</Text>
-        <Text style={styles.subtitle}>📸 {MOCK_TIMELINE.length} services documented</Text>
+        <Text style={styles.subtitle}>📸 {[].length} services documented</Text>
       </View>
 
       <ScrollView horizontal style={styles.areaFilter} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.areaFilterContent}>

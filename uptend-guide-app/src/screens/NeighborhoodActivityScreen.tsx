@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { Colors } from '../theme/colors';
 import ActivityCard from '../components/ActivityCard';
-import { MOCK_ACTIVITY, ActivityItem } from '../data/mockActivity';
 
 export default function NeighborhoodActivityScreen() {
   return (
@@ -26,7 +25,7 @@ export default function NeighborhoodActivityScreen() {
       </View>
 
       <FlatList
-        data={MOCK_ACTIVITY}
+        data={[]}
         renderItem={({ item }: { item: ActivityItem }) => <ActivityCard item={item} />}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}

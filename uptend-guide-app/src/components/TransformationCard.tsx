@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Share } from 'react-native';
 import { Colors } from '../theme/colors';
 import BeforeAfterSlider from './BeforeAfterSlider';
-import { Transformation } from '../data/mockTransformations';
 
 interface Props {
   item: Transformation;

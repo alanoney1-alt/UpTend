@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, LayoutAnimation, UIManager, Platform } from 'react-native';
 import { Colors } from '../theme/colors';
-import { MOCK_TIPS, ProTip, TipCategory, CATEGORY_META } from '../data/mockTips';
 import { getTipOfDay } from '../services/TipsService';
 
 if (Platform.OS === 'android') UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -58,7 +57,7 @@ function TipCard({ tip, featured }: { tip: ProTip; featured?: boolean }) {
 export default function ProTipsScreen() {
   const [filter, setFilter] = useState<TipCategory | 'all'>('all');
   const tipOfDay = getTipOfDay();
-  const tips = filter === 'all' ? MOCK_TIPS : MOCK_TIPS.filter(t => t.category === filter);
+  const tips = filter === 'all' ? [] : [].filter(t => t.category === filter);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>

@@ -14,16 +14,9 @@ interface SmartDevice {
   autoAction: boolean;
 }
 
-const MOCK_DEVICES: SmartDevice[] = [
-  { id: 'd1', name: 'Front Door Camera', type: 'doorbell', provider: 'Ring', icon: '🔔', status: 'Online', connected: true, autoAction: true },
-  { id: 'd2', name: 'Smart Lock', type: 'lock', provider: 'August', icon: '🔒', status: 'Locked', connected: true, autoAction: true },
-  { id: 'd3', name: 'Backyard Camera', type: 'camera', provider: 'Nest', icon: '📹', status: 'Recording', connected: true, autoAction: false },
-  { id: 'd4', name: 'Thermostat', type: 'thermostat', provider: 'Nest', icon: '🌡️', status: '72°F', connected: true, autoAction: false },
-  { id: 'd5', name: 'Garage Camera', type: 'camera', provider: 'Ring', icon: '📹', status: 'Offline', connected: false, autoAction: false },
-];
 
 export default function SmartHomeScreen() {
-  const [devices, setDevices] = useState(MOCK_DEVICES);
+  const [devices, setDevices] = useState([]);
 
   const toggleAutoAction = (deviceId: string) => {
     setDevices(prev => prev.map(d => d.id === deviceId ? { ...d, autoAction: !d.autoAction } : d));

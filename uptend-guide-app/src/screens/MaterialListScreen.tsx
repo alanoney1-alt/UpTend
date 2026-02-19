@@ -4,10 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
 import { materialCalculator, Material } from '../services/MaterialCalculator';
 
-const MOCK_LIST = materialCalculator.calculate('Pressure Washing', 1200);
+const [] = materialCalculator.calculate('Pressure Washing', 1200);
 
 export default function MaterialListScreen() {
-  const [materials, setMaterials] = useState<Material[]>(MOCK_LIST.materials);
+  const [materials, setMaterials] = useState<Material[]>([].materials);
 
   const toggle = (id: string) => {
     setMaterials(prev => prev.map(m => m.id === id ? { ...m, purchased: !m.purchased } : m));

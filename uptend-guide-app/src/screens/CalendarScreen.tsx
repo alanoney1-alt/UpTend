@@ -15,7 +15,7 @@ interface CalendarDay {
 }
 
 const today = new Date();
-const MOCK_DAYS: CalendarDay[] = Array.from({ length: 28 }, (_, i) => {
+const []: CalendarDay[] = Array.from({ length: 28 }, (_, i) => {
   const day = i + 1;
   const services: Record<number, { name: string; time: string }> = {
     5: { name: 'Lawn Care', time: '10:00 AM' },
@@ -50,7 +50,7 @@ export default function CalendarScreen() {
           <View style={styles.daysGrid}>
             {/* Offset for month start */}
             {Array.from({ length: 0 }).map((_, i) => <View key={`empty-${i}`} style={styles.dayCell} />)}
-            {MOCK_DAYS.map(day => (
+            {[].map(day => (
               <TouchableOpacity
                 key={day.day}
                 style={[styles.dayCell, day.isToday && styles.todayCell, selectedDay?.day === day.day && styles.selectedCell]}
@@ -102,7 +102,7 @@ export default function CalendarScreen() {
 
         {/* Upcoming */}
         <Text style={styles.sectionTitle}>Upcoming Services</Text>
-        {MOCK_DAYS.filter(d => d.hasService).map(d => (
+        {[].filter(d => d.hasService).map(d => (
           <View key={d.day} style={styles.upcomingRow}>
             <View style={styles.upcomingDate}><Text style={styles.upcomingDateText}>Feb {d.day}</Text></View>
             <View><Text style={styles.upcomingService}>{d.serviceName}</Text><Text style={styles.upcomingTime}>{d.serviceTime}</Text></View>

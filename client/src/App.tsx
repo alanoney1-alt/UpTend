@@ -119,6 +119,12 @@ const BusinessBooking = lazy(() => import("@/pages/business-booking"));
 const BusinessBilling = lazy(() => import("@/pages/business-billing"));
 const AdminBilling = lazy(() => import("@/pages/admin/billing"));
 const FindPro = lazy(() => import("@/pages/find-pro"));
+const B2BTerms = lazy(() => import("@/pages/b2b-terms"));
+const AcceptableUse = lazy(() => import("@/pages/acceptable-use"));
+const AccessibilityPage = lazy(() => import("@/pages/accessibility"));
+const CookiePolicy = lazy(() => import("@/pages/cookies"));
+const CommunicationsConsent = lazy(() => import("@/pages/communications-consent"));
+const AffiliateDisclosure = lazy(() => import("@/pages/affiliate-disclosure"));
 
 // SEO Landing Pages
 const JunkRemovalLakeNona = lazy(() => import("@/pages/services/junk-removal-lake-nona"));
@@ -224,6 +230,12 @@ function Router() {
       <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/cancellation-policy" component={CancellationPolicy} />
       <Route path="/service-guarantee" component={ServiceGuarantee} />
+      <Route path="/b2b-terms" component={B2BTerms} />
+      <Route path="/acceptable-use" component={AcceptableUse} />
+      <Route path="/accessibility" component={AccessibilityPage} />
+      <Route path="/cookies" component={CookiePolicy} />
+      <Route path="/communications-consent" component={CommunicationsConsent} />
+      <Route path="/affiliate-disclosure" component={AffiliateDisclosure} />
       <Route path="/admin" component={Admin} />
       <Route path="/admin/agentic-brain" component={AgenticBrain} />
       <Route path="/admin/carbon-tracking" component={CarbonTracking} />

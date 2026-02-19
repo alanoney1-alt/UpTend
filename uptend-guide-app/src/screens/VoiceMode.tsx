@@ -6,11 +6,6 @@ const { width } = Dimensions.get('window');
 
 type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking';
 
-const MOCK_RESPONSES = [
-  "I found 3 lawn care pros available this week. The best rated is Mike with 4.9 stars. Want me to book him?",
-  "Your gutters were last cleaned 8 months ago. Based on the tree coverage, I'd recommend scheduling a cleaning. Prices start at $80.",
-  "Great news! There's a 20% group discount available for pressure washing in your neighborhood. 2 neighbors already booked.",
-];
 
 export default function VoiceMode({ navigation }: any) {
   const [state, setState] = useState<VoiceState>('idle');
@@ -52,7 +47,7 @@ export default function VoiceMode({ navigation }: any) {
         setTranscript('How much does lawn mowing cost?');
         setState('processing');
         setTimeout(() => {
-          setResponse(MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)]);
+          setResponse([][Math.floor(Math.random() * [].length)]);
           setState('speaking');
           setTimeout(() => setState('idle'), 4000);
         }, 1500);

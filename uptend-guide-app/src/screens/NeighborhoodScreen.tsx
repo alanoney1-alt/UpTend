@@ -14,13 +14,6 @@ interface NeighborhoodActivity {
   currentBookings: number;
 }
 
-const MOCK_ACTIVITIES: NeighborhoodActivity[] = [
-  { id: '1', service: 'Pressure Washing', count: 5, icon: '💦', discount: true, discountPct: 20, minForDiscount: 3, currentBookings: 2 },
-  { id: '2', service: 'Lawn Care', count: 8, icon: '🌿', discount: true, discountPct: 15, minForDiscount: 4, currentBookings: 3 },
-  { id: '3', service: 'Gutter Cleaning', count: 3, icon: '🏠', discount: false, discountPct: 20, minForDiscount: 3, currentBookings: 1 },
-  { id: '4', service: 'Junk Removal', count: 2, icon: '🗑️', discount: false, discountPct: 15, minForDiscount: 3, currentBookings: 0 },
-  { id: '5', service: 'Pool Cleaning', count: 4, icon: '🏊', discount: true, discountPct: 20, minForDiscount: 3, currentBookings: 4 },
-];
 
 const STATS = {
   activeNeighbors: 23,
@@ -62,7 +55,7 @@ export default function NeighborhoodScreen() {
 
         {/* Group Deals */}
         <Text style={styles.sectionTitle}>Group Deals Available</Text>
-        {MOCK_ACTIVITIES.map(activity => {
+        {[].map(activity => {
           const joined = joinedGroups.includes(activity.id);
           const spotsNeeded = activity.minForDiscount - activity.currentBookings;
           return (

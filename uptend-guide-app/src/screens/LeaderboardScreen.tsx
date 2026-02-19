@@ -14,16 +14,6 @@ interface ProRank {
   badges: string[];
 }
 
-const MOCK_LEADERS: ProRank[] = [
-  { id: '1', name: 'Carlos Rodriguez', rank: 1, prevRank: 1, jobs: 48, rating: 4.95, earnings: 8200, badges: ['👑', '⭐'] },
-  { id: '2', name: 'Marcus Johnson', rank: 2, prevRank: 4, jobs: 42, rating: 4.92, earnings: 7600, badges: ['🥈', '⚡'] },
-  { id: '3', name: 'You', rank: 3, prevRank: 3, jobs: 38, rating: 4.88, earnings: 6900, badges: ['🥉'] },
-  { id: '4', name: 'Sarah Chen', rank: 4, prevRank: 2, jobs: 36, rating: 4.90, earnings: 6400, badges: [] },
-  { id: '5', name: 'David Williams', rank: 5, prevRank: 6, jobs: 34, rating: 4.85, earnings: 5800, badges: ['⚡'] },
-  { id: '6', name: 'Mike Torres', rank: 6, prevRank: 5, jobs: 31, rating: 4.82, earnings: 5200, badges: [] },
-  { id: '7', name: 'Jennifer Park', rank: 7, prevRank: 8, jobs: 29, rating: 4.80, earnings: 4900, badges: [] },
-  { id: '8', name: 'Alex Rivera', rank: 8, prevRank: 7, jobs: 27, rating: 4.78, earnings: 4500, badges: [] },
-];
 
 const TIME_FILTERS = ['This Week', 'This Month', 'All Time'];
 const METRIC_FILTERS = ['Jobs', 'Rating', 'Earnings', 'Speed'];
@@ -61,7 +51,7 @@ export default function LeaderboardScreen() {
 
       {/* Top 3 podium */}
       <View style={styles.podium}>
-        {[MOCK_LEADERS[1], MOCK_LEADERS[0], MOCK_LEADERS[2]].map((p, i) => {
+        {[[][1], [][0], [][2]].map((p, i) => {
           const heights = [80, 110, 60];
           const medals = ['🥈', '👑', '🥉'];
           return (
@@ -77,7 +67,7 @@ export default function LeaderboardScreen() {
       </View>
 
       <FlatList
-        data={MOCK_LEADERS}
+        data={[]}
         keyExtractor={p => p.id}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => {

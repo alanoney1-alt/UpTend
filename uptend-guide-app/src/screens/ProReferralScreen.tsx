@@ -11,12 +11,6 @@ interface Referral {
   earnedBonus: boolean;
 }
 
-const MOCK_REFERRALS: Referral[] = [
-  { id: '1', name: 'Tony Martinez', status: 'first_job_completed', invitedDate: 'Jan 15', earnedBonus: true },
-  { id: '2', name: 'Lisa Wang', status: 'signed_up', invitedDate: 'Jan 28', earnedBonus: false },
-  { id: '3', name: 'Kevin Brown', status: 'pending', invitedDate: 'Feb 5', earnedBonus: false },
-  { id: '4', name: 'Ana Gomez', status: 'first_job_completed', invitedDate: 'Dec 20', earnedBonus: true },
-];
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   pending: { label: 'Invite Sent', color: Colors.textSecondary, bg: '#F3F4F6' },
@@ -25,7 +19,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
 };
 
 export default function ProReferralScreen() {
-  const [referrals] = useState(MOCK_REFERRALS);
+  const [referrals] = useState([]);
   const referralCode = 'UPTEND-MJ2026';
   const totalEarned = referrals.filter(r => r.earnedBonus).length * 50;
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { Colors } from '../theme/colors';
-import { MOCK_DEALS, FlashDeal } from '../data/mockDeals';
 import { formatCountdown, claimDeal } from '../services/FlashDealsService';
 
 function DealCard({ deal }: { deal: FlashDeal }) {
@@ -61,7 +60,7 @@ function DealCard({ deal }: { deal: FlashDeal }) {
 
 export default function FlashDealsScreen() {
   const [tab, setTab] = useState<'today' | 'upcoming' | 'past'>('today');
-  const deals = MOCK_DEALS.filter(d => d.category === tab);
+  const deals = [].filter(d => d.category === tab);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Colors } from '../theme/colors';
-import { ActivityItem } from '../data/mockActivity';
 
 const TYPE_COLORS: Record<string, string> = {
   service: Colors.primary,
