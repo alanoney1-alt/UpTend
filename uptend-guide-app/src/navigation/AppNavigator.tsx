@@ -14,6 +14,7 @@ import LoginScreen from '../screens/LoginScreen';
 
 // Shared screens
 import GeorgeChatScreen from '../screens/GeorgeChatScreen';
+import GeorgeHomeScreen from '../screens/GeorgeHomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import VoiceMode from '../screens/VoiceMode';
 import VerifyProScreen from '../screens/VerifyProScreen';
@@ -91,7 +92,7 @@ const CustomerStack = createNativeStackNavigator();
 function CustomerGeorgeStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="GeorgeChat" component={GeorgeChatScreen} />
+      <CustomerStack.Screen name="GeorgeChat" component={GeorgeHomeScreen} />
       <CustomerStack.Screen name="ARCamera" component={ARCameraScreen} options={{ presentation: 'fullScreenModal' }} />
       <CustomerStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
       <CustomerStack.Screen name="Calendar" component={CalendarScreen} />
