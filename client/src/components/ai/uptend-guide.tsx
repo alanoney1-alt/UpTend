@@ -629,7 +629,7 @@ export function UpTendGuide() {
         <button
           onClick={handleOpen}
           className={cn(
-            "fixed bottom-20 md:bottom-4 right-4 z-50 flex items-center gap-2 px-4 py-2.5",
+            "fixed bottom-20 md:bottom-4 right-4 z-[9999] flex items-center gap-2 px-4 py-2.5",
             "bg-amber-500/90 hover:bg-amber-500 text-white",
             "rounded-full shadow-lg hover:shadow-xl",
             "transition-all duration-300 ease-out",
@@ -650,7 +650,7 @@ export function UpTendGuide() {
       {/* ─── Chat Card ───────────────────────────────────────────────── */}
       <div
         className={cn(
-          "fixed z-50 flex flex-col transition-all duration-300 ease-out",
+          "fixed z-[9999] flex flex-col transition-all duration-300 ease-out",
           // Glass effect
           "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl",
           "border border-white/40 dark:border-zinc-700/40",
