@@ -160,10 +160,10 @@ function getPageContext(page: string, userRole: string, userName: string | null)
     return {
       welcome: `Hey — I'm George. 🔧\n\nI know basically everything about home repair. Whether something's broken, you're trying to prevent a problem, or you just need a pro out there fast — I've got you.\n\nWhat's going on with your home?`,
       quickActions: [
-        { label: "🚀 Need a Pro Now", action: "I need to book a professional service" },
-        { label: "🏠 Check My Home's Health", action: "I want to check on my home's health" },
-        { label: "📸 Send a Photo", action: "I want to send a photo of an issue" },
-        { label: "🔧 Fix It Myself", action: "I want to fix something myself" },
+        { label: "🚀 Need a Pro Now", action: "message:I need to book a professional service" },
+        { label: "🏠 Check My Home's Health", action: "message:I want to check on my home's health" },
+        { label: "📸 Send a Photo", action: "message:I want to send a photo of an issue" },
+        { label: "🔧 Fix It Myself", action: "message:I want to fix something myself" },
       ],
     };
   }
@@ -171,10 +171,10 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   return {
     welcome: `Hey — glad you're back. 🔧\n\nSomething going on with your home? I'm ready to get it handled — whether that's booking a pro right now or walking you through it yourself.\n\nWhat do you need?`,
     quickActions: [
-      { label: "🚀 Book a Pro", action: "I need to book a professional service" },
-      { label: "🏠 Home Health Check", action: "How's my home doing?" },
-      { label: "📸 Photo Diagnosis", action: "I want to send a photo of an issue" },
-      { label: "🔧 DIY Help", action: "I want to fix something myself" },
+      { label: "🚀 Book a Pro", action: "message:I need to book a professional service" },
+      { label: "🏠 Home Health Check", action: "message:How's my home doing?" },
+      { label: "📸 Photo Diagnosis", action: "message:I want to send a photo of an issue" },
+      { label: "🔧 DIY Help", action: "message:I want to fix something myself" },
     ],
   };
 }
