@@ -1,351 +1,358 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, FlatList,
   KeyboardAvoidingView, Platform, Animated, Dimensions,
-  StyleSheet, ActivityIndicator,
+  StyleSheet, StatusBar,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import MapView, { Marker } from 'react-native-maps';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import ChatBubble, { ChatMessage } from '../components/ChatBubble';
-import QuickActions from '../components/QuickActions';
+import ChatBubble, { ChatMessage, TypingIndicator } from '../components/ChatBubble';
 import { showPhotoOptions } from '../components/PhotoCapture';
 import { sendGeorgeMessage } from '../services/chat';
 import { Colors } from '../theme/colors';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const MAP_HEIGHT = SCREEN_HEIGHT * 0.35;
+const MAP_HEIGHT = SCREEN_HEIGHT * 0.38;
+const SHEET_MIN = SCREEN_HEIGHT * 0.58;
 
-// Orlando metro area pros (will be replaced with real API data)
-const ORLANDO_PROS = [
+// Orlando metro area pros (replaced with real API data later)
+const PROS = [
   { id: '1', name: 'Mike R.', service: 'Handyman', lat: 28.5383, lng: -81.3792, rating: 4.9 },
   { id: '2', name: 'Sarah K.', service: 'Cleaning', lat: 28.4772, lng: -81.4588, rating: 4.8 },
-  { id: '3', name: 'James T.', service: 'Pressure Washing', lat: 28.5021, lng: -81.3101, rating: 4.7 },
+  { id: '3', name: 'James T.', service: 'Pressure Wash', lat: 28.5021, lng: -81.3101, rating: 4.7 },
   { id: '4', name: 'Maria L.', service: 'Landscaping', lat: 28.4186, lng: -81.2987, rating: 5.0 },
   { id: '5', name: 'Carlos D.', service: 'Pool Care', lat: 28.5165, lng: -81.3680, rating: 4.9 },
   { id: '6', name: 'David W.', service: 'Junk Removal', lat: 28.5545, lng: -81.3500, rating: 4.6 },
-  { id: '7', name: 'Lisa M.', service: 'Gutter Cleaning', lat: 28.4500, lng: -81.4000, rating: 4.8 },
-  { id: '8', name: 'Tony P.', service: 'Moving Labor', lat: 28.5800, lng: -81.2200, rating: 4.7 },
-  { id: '9', name: 'Ana G.', service: 'Carpet Cleaning', lat: 28.4300, lng: -81.3400, rating: 4.9 },
-  { id: '10', name: 'Robert H.', service: 'Handyman', lat: 28.5100, lng: -81.4200, rating: 4.5 },
+  { id: '7', name: 'Lisa M.', service: 'Gutters', lat: 28.4500, lng: -81.4000, rating: 4.8 },
+  { id: '8', name: 'Tony P.', service: 'Moving', lat: 28.5800, lng: -81.2200, rating: 4.7 },
 ];
 
-const ORLANDO_REGION = {
-  latitude: 28.5000,
-  longitude: -81.3700,
-  latitudeDelta: 0.25,
-  longitudeDelta: 0.25,
+const REGION = {
+  latitude: 28.4950,
+  longitude: -81.3600,
+  latitudeDelta: 0.22,
+  longitudeDelta: 0.22,
 };
 
 const WELCOME: ChatMessage = {
   id: 'welcome',
   sender: 'george',
   type: 'text',
-  text: "Hey — I'm George. 🔧\n\nI know basically everything about home repair. What's going on with your home?",
+  text: "Hey — I'm George. 🔧\nWhat's going on with your home?",
   timestamp: new Date(),
 };
 
-const QUICK_ACTIONS = [
-  '🚀 Need a Pro Now',
-  '🏠 Home Health Check',
-  '📸 Send a Photo',
-  '🔧 Fix It Myself',
+const ACTIONS = [
+  { label: 'Need a Pro', icon: '→', msg: 'I need a pro right now' },
+  { label: 'Home Scan', icon: '⊙', msg: 'I want a home health check' },
+  { label: 'Send Photo', icon: '◉', msg: '__photo__' },
+  { label: 'DIY Help', icon: '⚡', msg: 'I want to fix it myself' },
 ];
 
+const PRO_COLORS = ['#FF6B35', '#007AFF', '#AF52DE', '#34C759', '#FF9F0A', '#FF3B30', '#5AC8FA', '#FF2D55'];
+
 export default function GeorgeHomeScreen() {
+  const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [mapExpanded, setMapExpanded] = useState(false);
+  const [selectedPro, setSelectedPro] = useState<typeof PROS[0] | null>(null);
   const flatListRef = useRef<FlatList>(null);
-  const mapHeight = useRef(new Animated.Value(MAP_HEIGHT)).current;
+  const inputRef = useRef<TextInput>(null);
 
-  const scrollToEnd = () => {
-    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
-  };
+  const scrollToEnd = useCallback(() => {
+    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 80);
+  }, []);
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = useCallback(async (text: string) => {
     if (!text.trim()) return;
     const userMsg: ChatMessage = {
-      id: Date.now().toString(),
-      sender: 'user',
-      type: 'text',
-      text: text.trim(),
-      timestamp: new Date(),
+      id: Date.now().toString(), sender: 'user', type: 'text',
+      text: text.trim(), timestamp: new Date(),
     };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
     scrollToEnd();
 
-    // Collapse map when chatting
-    if (mapExpanded) toggleMap();
-
     try {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       const response = await sendGeorgeMessage(text.trim());
-      const georgeMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: 'george',
-        type: 'text',
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(), sender: 'george', type: 'text',
         text: response.reply || response.response || "I'm here to help! What's going on?",
         timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, georgeMsg]);
+      }]);
     } catch {
       setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        sender: 'george',
-        type: 'text',
-        text: "Having trouble connecting. Try again in a sec.",
+        id: (Date.now() + 1).toString(), sender: 'george', type: 'text',
+        text: "Connection issue — try again in a sec.",
         timestamp: new Date(),
       }]);
     } finally {
       setIsTyping(false);
       scrollToEnd();
     }
-  };
+  }, []);
 
-  const toggleMap = () => {
-    const toValue = mapExpanded ? MAP_HEIGHT : SCREEN_HEIGHT * 0.55;
-    Animated.spring(mapHeight, { toValue, useNativeDriver: false, friction: 8 }).start();
-    setMapExpanded(!mapExpanded);
-  };
-
-  const handlePhoto = async () => {
+  const handlePhoto = useCallback(async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     showPhotoOptions(async (uri: string) => {
-      const photoMsg: ChatMessage = {
-        id: Date.now().toString(),
-        sender: 'user',
-        type: 'text',
-        text: '📸 Sent a photo for diagnosis',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, photoMsg]);
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(), sender: 'user', type: 'text',
+        text: '📸 Photo sent', timestamp: new Date(),
+      }]);
       setIsTyping(true);
       scrollToEnd();
-
       try {
-        const response = await sendGeorgeMessage('I sent a photo of an issue I need help with');
+        const response = await sendGeorgeMessage('I sent a photo of an issue');
         setMessages(prev => [...prev, {
-          id: (Date.now() + 1).toString(),
-          sender: 'george',
-          type: 'text',
-          text: response.reply || "Got your photo! Let me take a look...",
+          id: (Date.now() + 1).toString(), sender: 'george', type: 'text',
+          text: response.reply || "Let me take a look at that...",
           timestamp: new Date(),
         }]);
       } catch {
         setMessages(prev => [...prev, {
-          id: (Date.now() + 1).toString(),
-          sender: 'george',
-          type: 'text',
-          text: "Got it — let me analyze that for you.",
-          timestamp: new Date(),
+          id: (Date.now() + 1).toString(), sender: 'george', type: 'text',
+          text: "Got it — analyzing now.", timestamp: new Date(),
         }]);
-      } finally {
-        setIsTyping(false);
-        scrollToEnd();
-      }
+      } finally { setIsTyping(false); scrollToEnd(); }
     });
-  };
+  }, []);
+
+  const handleAction = useCallback((action: typeof ACTIONS[0]) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (action.msg === '__photo__') handlePhoto();
+    else sendMessage(action.msg);
+  }, []);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Map Section */}
-      <Animated.View style={[styles.mapContainer, { height: mapHeight }]}>
-        {Platform.OS === 'web' ? (
-          <View style={styles.webMapPlaceholder}>
-            <Text style={styles.webMapIcon}>🗺️</Text>
-            <Text style={styles.webMapTitle}>10 Pros Active Near You</Text>
-            <View style={styles.proStats}>
-              <View style={styles.statBadge}>
-                <View style={styles.greenDot} />
-                <Text style={styles.statText}>10 Online</Text>
-              </View>
-              <View style={styles.statBadge}>
-                <Text style={styles.statText}>⭐ 4.8 Avg</Text>
-              </View>
-              <View style={styles.statBadge}>
-                <Text style={styles.statText}>~15min Response</Text>
-              </View>
-            </View>
-          </View>
-        ) : (
-          <MapView
-            style={StyleSheet.absoluteFillObject}
-            provider={PROVIDER_GOOGLE}
-            initialRegion={ORLANDO_REGION}
-            showsUserLocation
-            showsMyLocationButton={false}
-          >
-            {ORLANDO_PROS.map(pro => (
-              <Marker
-                key={pro.id}
-                coordinate={{ latitude: pro.lat, longitude: pro.lng }}
-                title={pro.name}
-                description={`${pro.service} • ⭐ ${pro.rating}`}
-              />
-            ))}
-          </MapView>
-        )}
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
 
-        {/* Map overlay - pro count badge */}
-        <View style={styles.mapOverlay}>
-          <View style={styles.proBadge}>
-            <View style={styles.greenDotSmall} />
-            <Text style={styles.proBadgeText}>{ORLANDO_PROS.length} Pros Active</Text>
-          </View>
-        </View>
-
-        {/* Map expand/collapse handle */}
-        <TouchableOpacity style={styles.mapHandle} onPress={toggleMap} activeOpacity={0.7}>
-          <View style={styles.handleBar} />
-        </TouchableOpacity>
-      </Animated.View>
-
-      {/* Chat Section */}
-      <KeyboardAvoidingView
-        style={styles.chatContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-      >
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <ChatBubble message={item} />}
-          contentContainerStyle={styles.messageList}
-          onContentSizeChange={scrollToEnd}
-          ListFooterComponent={
-            isTyping ? (
-              <View style={styles.typingRow}>
-                <View style={styles.typingBubble}>
-                  <ActivityIndicator size="small" color={Colors.primary} />
-                  <Text style={styles.typingText}>George is thinking...</Text>
-                </View>
+      {/* Map — full bleed behind status bar */}
+      <View style={styles.mapContainer}>
+        <MapView
+          style={StyleSheet.absoluteFillObject}
+          initialRegion={REGION}
+          showsUserLocation
+          showsMyLocationButton={false}
+          showsCompass={false}
+          mapPadding={{ top: insets.top + 50, right: 0, bottom: 40, left: 0 }}
+        >
+          {PROS.map((pro, i) => (
+            <Marker
+              key={pro.id}
+              coordinate={{ latitude: pro.lat, longitude: pro.lng }}
+              onPress={() => setSelectedPro(pro)}
+            >
+              <View style={[styles.pin, { backgroundColor: PRO_COLORS[i % PRO_COLORS.length] }]}>
+                <Text style={styles.pinText}>{pro.name.split(' ')[0][0]}</Text>
               </View>
-            ) : null
-          }
+            </Marker>
+          ))}
+        </MapView>
+
+        {/* Gradient overlay at top for status bar readability */}
+        <LinearGradient
+          colors={['rgba(0,0,0,0.5)', 'transparent']}
+          style={styles.topGradient}
+          pointerEvents="none"
         />
 
-        {/* Quick Actions */}
-        {messages.length <= 1 && (
-          <View style={styles.quickActions}>
-            {QUICK_ACTIONS.map((action, i) => (
-              <TouchableOpacity
-                key={i}
-                style={styles.quickActionBtn}
-                onPress={() => sendMessage(action)}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.quickActionText}>{action}</Text>
-              </TouchableOpacity>
-            ))}
+        {/* Live badge */}
+        <View style={[styles.liveBadge, { top: insets.top + 8 }]}>
+          <View style={styles.liveIndicator} />
+          <Text style={styles.liveText}>{PROS.length} pros nearby</Text>
+        </View>
+
+        {/* Selected pro card */}
+        {selectedPro && (
+          <View style={styles.proCard}>
+            <View style={styles.proCardLeft}>
+              <View style={[styles.proCardAvatar, { backgroundColor: PRO_COLORS[PROS.indexOf(selectedPro) % PRO_COLORS.length] }]}>
+                <Text style={styles.proCardInitial}>{selectedPro.name[0]}</Text>
+              </View>
+              <View>
+                <Text style={styles.proCardName}>{selectedPro.name}</Text>
+                <Text style={styles.proCardService}>{selectedPro.service} · ⭐ {selectedPro.rating}</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.proCardBtn}
+              onPress={() => {
+                setSelectedPro(null);
+                sendMessage(`Book ${selectedPro.name} for ${selectedPro.service}`);
+              }}
+            >
+              <Text style={styles.proCardBtnText}>Book</Text>
+            </TouchableOpacity>
           </View>
         )}
+      </View>
 
-        {/* Input Bar */}
-        <View style={styles.inputBar}>
-          <TouchableOpacity style={styles.cameraBtn} onPress={handlePhoto}>
-            <Text style={styles.cameraBtnText}>📷</Text>
-          </TouchableOpacity>
-          <TextInput
-            style={styles.textInput}
-            value={input}
-            onChangeText={setInput}
-            placeholder="What's going on with your home?"
-            placeholderTextColor="#9CA3AF"
-            returnKeyType="send"
-            onSubmitEditing={() => sendMessage(input)}
-          />
-          <TouchableOpacity
-            style={[styles.sendBtn, !input.trim() && styles.sendBtnDisabled]}
-            onPress={() => sendMessage(input)}
-            disabled={!input.trim() || isTyping}
-          >
-            <Text style={styles.sendBtnText}>↑</Text>
-          </TouchableOpacity>
+      {/* Bottom sheet — Chat */}
+      <View style={styles.sheet}>
+        {/* Handle */}
+        <View style={styles.handleRow}>
+          <View style={styles.handle} />
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={90}
+        >
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => <ChatBubble message={item} />}
+            contentContainerStyle={styles.messageList}
+            onContentSizeChange={scrollToEnd}
+            ListFooterComponent={isTyping ? <TypingIndicator /> : null}
+          />
+
+          {/* Quick actions — only on first message */}
+          {messages.length <= 1 && (
+            <View style={styles.actions}>
+              {ACTIONS.map((action, i) => (
+                <TouchableOpacity key={i} style={styles.actionBtn} onPress={() => handleAction(action)} activeOpacity={0.6}>
+                  <Text style={styles.actionIcon}>{action.icon}</Text>
+                  <Text style={styles.actionLabel}>{action.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
+          {/* Input bar */}
+          <View style={[styles.inputBar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+            <TouchableOpacity style={styles.cameraBtn} onPress={handlePhoto} activeOpacity={0.6}>
+              <Text style={styles.cameraIcon}>⬤</Text>
+            </TouchableOpacity>
+            <View style={styles.inputWrap}>
+              <TextInput
+                ref={inputRef}
+                style={styles.input}
+                value={input}
+                onChangeText={setInput}
+                placeholder="Ask George anything..."
+                placeholderTextColor={Colors.gray400}
+                returnKeyType="send"
+                onSubmitEditing={() => sendMessage(input)}
+                multiline={false}
+              />
+            </View>
+            <TouchableOpacity
+              style={[styles.sendBtn, !input.trim() && styles.sendBtnOff]}
+              onPress={() => sendMessage(input)}
+              disabled={!input.trim() || isTyping}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.sendArrow}>↑</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  container: { flex: 1, backgroundColor: Colors.black },
 
   // Map
-  mapContainer: { position: 'relative', overflow: 'hidden' },
-  webMapPlaceholder: {
-    flex: 1, backgroundColor: '#1E293B', justifyContent: 'center', alignItems: 'center',
+  mapContainer: { height: MAP_HEIGHT, position: 'relative' },
+  topGradient: { position: 'absolute', top: 0, left: 0, right: 0, height: 100 },
+  liveBadge: {
+    position: 'absolute', left: 16,
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.65)', paddingHorizontal: 14, paddingVertical: 8,
+    borderRadius: 24, gap: 8,
   },
-  webMapIcon: { fontSize: 48, marginBottom: 8 },
-  webMapTitle: { color: '#FFFFFF', fontSize: 18, fontWeight: '700', marginBottom: 12 },
-  proStats: { flexDirection: 'row', gap: 12 },
-  statBadge: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20, gap: 6,
-  },
-  statText: { color: '#FFFFFF', fontSize: 12, fontWeight: '600' },
-  greenDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#22C55E' },
-  mapOverlay: {
-    position: 'absolute', top: 12, left: 12,
-  },
-  proBadge: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.75)',
-    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, gap: 6,
-  },
-  greenDotSmall: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#22C55E' },
-  proBadgeText: { color: '#FFFFFF', fontSize: 13, fontWeight: '600' },
-  mapHandle: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    alignItems: 'center', paddingVertical: 8, backgroundColor: 'rgba(255,255,255,0.95)',
-    borderTopLeftRadius: 16, borderTopRightRadius: 16,
-  },
-  handleBar: { width: 40, height: 4, borderRadius: 2, backgroundColor: '#D1D5DB' },
+  liveIndicator: { width: 8, height: 8, borderRadius: 4, backgroundColor: Colors.live },
+  liveText: { color: Colors.white, fontSize: 14, fontWeight: '600', letterSpacing: -0.3 },
 
-  // Chat
-  chatContainer: { flex: 1 },
-  messageList: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
-  typingRow: { paddingHorizontal: 16, paddingVertical: 4 },
-  typingBubble: {
-    flexDirection: 'row', alignItems: 'center', gap: 8,
-    backgroundColor: '#F3F4F6', paddingHorizontal: 14, paddingVertical: 10,
-    borderRadius: 18, alignSelf: 'flex-start',
+  // Map pins
+  pin: {
+    width: 38, height: 38, borderRadius: 19,
+    justifyContent: 'center', alignItems: 'center',
+    borderWidth: 3, borderColor: Colors.white,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3, shadowRadius: 4, elevation: 6,
   },
-  typingText: { color: '#6B7280', fontSize: 13 },
+  pinText: { color: Colors.white, fontSize: 15, fontWeight: '800' },
 
-  // Quick Actions
-  quickActions: {
-    flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16,
-    paddingBottom: 8, gap: 8,
+  // Pro card
+  proCard: {
+    position: 'absolute', bottom: 16, left: 16, right: 16,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    backgroundColor: Colors.white, borderRadius: 16, padding: 14,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12, shadowRadius: 24, elevation: 10,
   },
-  quickActionBtn: {
-    backgroundColor: '#FFF7ED', borderWidth: 1, borderColor: '#F97316',
-    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
+  proCardLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  proCardAvatar: {
+    width: 44, height: 44, borderRadius: 22,
+    justifyContent: 'center', alignItems: 'center',
   },
-  quickActionText: { color: '#F97316', fontSize: 13, fontWeight: '600' },
+  proCardInitial: { color: Colors.white, fontSize: 18, fontWeight: '800' },
+  proCardName: { fontSize: 16, fontWeight: '700', color: Colors.gray900, letterSpacing: -0.3 },
+  proCardService: { fontSize: 13, color: Colors.gray500, marginTop: 1 },
+  proCardBtn: {
+    backgroundColor: Colors.gray900, paddingHorizontal: 22, paddingVertical: 11,
+    borderRadius: 24,
+  },
+  proCardBtnText: { color: Colors.white, fontSize: 15, fontWeight: '700' },
+
+  // Bottom sheet
+  sheet: {
+    flex: 1, backgroundColor: Colors.white,
+    borderTopLeftRadius: 20, borderTopRightRadius: 20,
+    marginTop: -16, // overlap map slightly
+    shadowColor: '#000', shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.06, shadowRadius: 12, elevation: 8,
+  },
+  handleRow: { alignItems: 'center', paddingTop: 10, paddingBottom: 4 },
+  handle: { width: 36, height: 5, borderRadius: 3, backgroundColor: Colors.gray200 },
+
+  // Messages
+  messageList: { paddingTop: 8, paddingBottom: 4 },
+
+  // Quick actions
+  actions: {
+    flexDirection: 'row', paddingHorizontal: 16, paddingBottom: 12, gap: 8,
+  },
+  actionBtn: {
+    flex: 1, alignItems: 'center', paddingVertical: 14,
+    backgroundColor: Colors.gray50, borderRadius: 14,
+    borderWidth: 1, borderColor: Colors.gray150,
+  },
+  actionIcon: { fontSize: 16, color: Colors.gray900, marginBottom: 4 },
+  actionLabel: { fontSize: 12, fontWeight: '600', color: Colors.gray900, letterSpacing: -0.2 },
 
   // Input
   inputBar: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12,
-    paddingVertical: 8, borderTopWidth: 1, borderTopColor: '#F3F4F6',
-    backgroundColor: '#FFFFFF', gap: 8,
+    paddingTop: 8, gap: 8, borderTopWidth: 0.5, borderTopColor: Colors.gray150,
+    backgroundColor: Colors.white,
   },
   cameraBtn: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: '#F3F4F6',
+    width: 38, height: 38, borderRadius: 19, backgroundColor: Colors.gray100,
     justifyContent: 'center', alignItems: 'center',
   },
-  cameraBtnText: { fontSize: 18 },
-  textInput: {
-    flex: 1, backgroundColor: '#F3F4F6', borderRadius: 20,
-    paddingHorizontal: 16, paddingVertical: 10, fontSize: 15, color: '#0F172A',
+  cameraIcon: { fontSize: 12, color: Colors.gray400 },
+  inputWrap: {
+    flex: 1, backgroundColor: Colors.gray100, borderRadius: 22,
+    paddingHorizontal: 16, justifyContent: 'center', minHeight: 42,
   },
+  input: { fontSize: 16, color: Colors.gray900, paddingVertical: 10, letterSpacing: -0.2 },
   sendBtn: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: '#F97316',
+    width: 38, height: 38, borderRadius: 19, backgroundColor: Colors.gray900,
     justifyContent: 'center', alignItems: 'center',
   },
-  sendBtnDisabled: { backgroundColor: '#D1D5DB' },
-  sendBtnText: { color: '#FFFFFF', fontSize: 18, fontWeight: '700' },
+  sendBtnOff: { backgroundColor: Colors.gray200 },
+  sendArrow: { color: Colors.white, fontSize: 20, fontWeight: '700', marginTop: -1 },
 });

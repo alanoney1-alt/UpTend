@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { VideoPlayer, extractAllVideoIds } from "./video-player";
 
 // ─── Types ──────────────────────────────────
 interface QuickButton {
@@ -251,6 +252,9 @@ export function AiChatWidget() {
                     }`}>
                       <p className="whitespace-pre-wrap">{msg.content}</p>
                     </div>
+                    {msg.role === "assistant" && extractAllVideoIds(msg.content).map((vid) => (
+                      <VideoPlayer key={vid} videoId={vid} />
+                    ))}
                     {msg.bookingDraft && <BookingDraftCard draft={msg.bookingDraft} onAction={handleQuickReply} />}
                     {msg.buttons && msg.buttons.length > 0 && <QuickButtons buttons={msg.buttons} onPress={handleQuickReply} />}
                     <p className={`text-[10px] text-gray-400 mt-0.5 px-1 ${msg.role === "user" ? "text-right" : "text-left"}`}>

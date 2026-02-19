@@ -3,6 +3,7 @@ import { ActivityIndicator, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { Colors } from '../theme/colors';
 import SignUpModal from '../components/SignUpModal';
@@ -263,22 +264,23 @@ function B2BProfileStackScreen() {
 
 // --- Tab Navigators ---
 
-function TabIcon({ emoji }: { emoji: string }) {
-  return <Text style={{ fontSize: 20 }}>{emoji}</Text>;
+function TabBarIcon({ name, focused }: { name: keyof typeof Ionicons.glyphMap; focused: boolean }) {
+  return <Ionicons name={name} size={22} color={focused ? '#111111' : '#8E8E93'} />;
 }
 
 const tabScreenOptions = {
-  tabBarActiveTintColor: '#F97316',       // orange-500
-  tabBarInactiveTintColor: '#9CA3AF',     // gray-400
+  tabBarActiveTintColor: '#111111',
+  tabBarInactiveTintColor: '#8E8E93',
   tabBarStyle: {
-    borderTopColor: '#F3F4F6',            // gray-100
-    paddingBottom: 4,
-    height: 56,
+    borderTopColor: '#F2F2F7',
+    borderTopWidth: 0.5,
+    paddingBottom: 2,
+    paddingTop: 6,
+    height: 52,
     backgroundColor: '#FFFFFF',
   },
-  tabBarLabelStyle: { fontSize: 12, fontWeight: '600' as const },
-  headerStyle: { backgroundColor: '#FFFFFF' },
-  headerTitleStyle: { fontWeight: '700' as const, color: '#0F172A' },
+  tabBarLabelStyle: { fontSize: 10, fontWeight: '600' as const, letterSpacing: 0.2 },
+  headerShown: false,
 };
 
 function CustomerTabs() {
@@ -287,27 +289,34 @@ function CustomerTabs() {
       <Tab.Screen
         name="Home"
         component={CustomerGeorgeStack}
-        options={{ tabBarLabel: 'George', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'George',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'chatbubble' : 'chatbubble-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="Book"
         component={CustomerBookingStack}
-        options={{ tabBarLabel: 'Book', tabBarIcon: () => <TabIcon emoji="📋" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Book',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'calendar' : 'calendar-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="HomeScan"
         component={CustomerHomeScanStack}
-        options={{ tabBarLabel: 'Home', tabBarIcon: () => <TabIcon emoji="🏠" />, headerShown: false }}
-      />
-      <Tab.Screen
-        name="Auto"
-        component={CustomerAutoStack}
-        options={{ tabBarLabel: 'Auto', tabBarIcon: () => <TabIcon emoji="🚗" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'home' : 'home-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="More"
         component={CustomerMoreStack}
-        options={{ tabBarLabel: 'More', tabBarIcon: () => <TabIcon emoji="⚙️" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'More',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'grid' : 'grid-outline'} focused={focused} />,
+        }}
       />
     </Tab.Navigator>
   );
@@ -319,27 +328,42 @@ function ProTabs() {
       <Tab.Screen
         name="George"
         component={ProGeorgeStackScreen}
-        options={{ tabBarLabel: 'George', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'George',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'chatbubble' : 'chatbubble-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="Jobs"
         component={ProJobsStackScreen}
-        options={{ tabBarLabel: 'Jobs', tabBarIcon: () => <TabIcon emoji="📋" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Jobs',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'briefcase' : 'briefcase-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="Routes"
         component={ProRoutesStackScreen}
-        options={{ tabBarLabel: 'Routes', tabBarIcon: () => <TabIcon emoji="🗺️" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Routes',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'navigate' : 'navigate-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="Earnings"
         component={ProEarningsStackScreen}
-        options={{ tabBarLabel: 'Earnings', tabBarIcon: () => <TabIcon emoji="📊" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Earnings',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'wallet' : 'wallet-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="Profile"
         component={ProProfileStackScreen}
-        options={{ tabBarLabel: 'Profile', tabBarIcon: () => <TabIcon emoji="👤" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'person-circle' : 'person-circle-outline'} focused={focused} />,
+        }}
       />
     </Tab.Navigator>
   );
@@ -351,22 +375,34 @@ function B2BTabs() {
       <Tab.Screen
         name="George"
         component={B2BGeorgeStackScreen}
-        options={{ tabBarLabel: 'George', tabBarIcon: () => <TabIcon emoji="💬" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'George',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'chatbubble' : 'chatbubble-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="Properties"
         component={B2BPropertiesStackScreen}
-        options={{ tabBarLabel: 'Properties', tabBarIcon: () => <TabIcon emoji="🏢" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Properties',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'business' : 'business-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="Analytics"
         component={B2BAnalyticsStackScreen}
-        options={{ tabBarLabel: 'Analytics', tabBarIcon: () => <TabIcon emoji="📊" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Analytics',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'bar-chart' : 'bar-chart-outline'} focused={focused} />,
+        }}
       />
       <Tab.Screen
         name="Profile"
         component={B2BProfileStackScreen}
-        options={{ tabBarLabel: 'Profile', tabBarIcon: () => <TabIcon emoji="👤" />, headerShown: false }}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'person-circle' : 'person-circle-outline'} focused={focused} />,
+        }}
       />
     </Tab.Navigator>
   );

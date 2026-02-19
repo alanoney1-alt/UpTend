@@ -50,9 +50,9 @@ export function createPhotoQuoteRoutes(storage: DatabaseStorage) {
     additionalNotes: z.string().optional(),
   });
 
-  router.post("/photo-quote", requireAuth, photoUpload.array("photos", 10), async (req, res) => {
+  router.post("/photo-quote", requireAuth, photoUpload.any(), async (req, res) => {
     try {
-      const files = req.files as Express.Multer.File[];
+      const files = (req.files as Express.Multer.File[] | undefined) || [];
       let photoUrls: string[];
 
       if (files && files.length > 0) {

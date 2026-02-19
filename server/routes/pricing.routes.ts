@@ -47,10 +47,13 @@ export function registerCentralizedPricingRoutes(app: Express) {
         const serviceType = (req.query.service || req.query.serviceType) as string;
         const allPricing = await getAllPricing();
         const keys = Object.keys(allPricing);
-        const match = keys.find(k =>
-          k.toLowerCase().includes(serviceType.toLowerCase()) ||
-          serviceType.toLowerCase().includes(k.toLowerCase())
-        );
+        // Normalize: lowercase, replace spaces/hyphens with underscores for comparison
+        const normalize = (s: string) => s.toLowerCase().replace(/[\s\-]+/g, '_');
+        const sn = normalize(serviceType);
+        const match = keys.find(k => {
+          const kn = normalize(k);
+          return kn === sn || kn.includes(sn) || sn.includes(kn);
+        });
         if (match) {
           const quote = await getQuote(match, {});
           return res.json({ success: true, serviceType: match, quote });

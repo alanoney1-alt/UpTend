@@ -1,37 +1,39 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/colors';
 
-const MENU_ITEMS = [
-  { key: 'DIY', label: 'DIY Guides', icon: '🔨', desc: 'Learn home repairs with George' },
-  { key: 'Shopping', label: 'Shopping', icon: '🛒', desc: 'Compare prices across retailers' },
-  { key: 'Emergency', label: 'Emergency SOS', icon: '🚨', desc: 'Get immediate help' },
-  { key: 'Profile', label: 'Profile & Settings', icon: '👤', desc: 'Account, home, vehicles' },
+const MENU = [
+  { key: 'DIY', label: 'DIY Guides', icon: 'build-outline' as const, desc: 'Step-by-step repair help' },
+  { key: 'Shopping', label: 'Shopping', icon: 'bag-outline' as const, desc: 'Compare prices on parts' },
+  { key: 'Emergency', label: 'Emergency', icon: 'alert-circle-outline' as const, desc: 'Get help right now' },
+  { key: 'Profile', label: 'Profile', icon: 'person-outline' as const, desc: 'Account & settings' },
+  { key: 'Recruit', label: 'Become a Pro', icon: 'arrow-up-circle-outline' as const, desc: 'Earn on your skills' },
 ];
 
 export default function MoreScreen({ navigation }: any) {
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>More</Text>
+    <SafeAreaView style={s.container} edges={['top']}>
+      <View style={s.header}>
+        <Text style={s.title}>More</Text>
       </View>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {MENU_ITEMS.map(item => (
+      <ScrollView contentContainerStyle={s.scroll}>
+        {MENU.map(item => (
           <TouchableOpacity
             key={item.key}
-            style={styles.menuCard}
-            activeOpacity={0.7}
+            style={s.row}
+            activeOpacity={0.6}
             onPress={() => navigation.navigate(item.key)}
           >
-            <View style={styles.menuIcon}>
-              <Text style={{ fontSize: 28 }}>{item.icon}</Text>
+            <View style={s.iconWrap}>
+              <Ionicons name={item.icon} size={20} color={Colors.gray900} />
             </View>
-            <View style={styles.menuInfo}>
-              <Text style={styles.menuLabel}>{item.label}</Text>
-              <Text style={styles.menuDesc}>{item.desc}</Text>
+            <View style={s.info}>
+              <Text style={s.label}>{item.label}</Text>
+              <Text style={s.desc}>{item.desc}</Text>
             </View>
-            <Text style={styles.menuArrow}>›</Text>
+            <Ionicons name="chevron-forward" size={18} color={Colors.gray300} />
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -39,25 +41,20 @@ export default function MoreScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.white },
-  header: {
-    backgroundColor: '#f97316', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 20,
+  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 16 },
+  title: { fontSize: 28, fontWeight: '800', color: Colors.gray900, letterSpacing: -0.5 },
+  scroll: { paddingHorizontal: 20 },
+  row: {
+    flexDirection: 'row', alignItems: 'center', paddingVertical: 16,
+    borderBottomWidth: 0.5, borderBottomColor: Colors.gray150,
   },
-  headerTitle: { fontSize: 24, fontWeight: '800', color: '#fff' },
-  scroll: { padding: 20, paddingBottom: 40 },
-  menuCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff',
-    borderRadius: 16, padding: 18, marginBottom: 12,
-    borderWidth: 1, borderColor: '#f3f4f6',
-    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2,
-  },
-  menuIcon: {
-    width: 52, height: 52, borderRadius: 14, backgroundColor: '#f9fafb',
+  iconWrap: {
+    width: 40, height: 40, borderRadius: 12, backgroundColor: Colors.gray100,
     justifyContent: 'center', alignItems: 'center', marginRight: 14,
   },
-  menuInfo: { flex: 1 },
-  menuLabel: { fontSize: 17, fontWeight: '700', color: '#1e293b' },
-  menuDesc: { fontSize: 13, color: '#64748b', marginTop: 2 },
-  menuArrow: { fontSize: 24, color: '#9ca3af' },
+  info: { flex: 1 },
+  label: { fontSize: 16, fontWeight: '600', color: Colors.gray900, letterSpacing: -0.2 },
+  desc: { fontSize: 13, color: Colors.gray500, marginTop: 2 },
 });

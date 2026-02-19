@@ -8,3 +8,4 @@ export { AiChatWidget } from "./ai-chat-widget";
 export { PhotoQuoteUploader } from "./photo-quote-uploader";
 export { ProQualityScore } from "./pro-quality-score";
 export { FraudAlertPanel } from "./fraud-alert-panel";
+export { VideoPlayer, extractYouTubeVideoId, extractAllVideoIds } from "./video-player";

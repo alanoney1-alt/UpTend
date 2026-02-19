@@ -4,7 +4,8 @@
  * Scan warranty, insurance, receipts → AI extracts data → auto-files to property record.
  *
  * Endpoints:
- * - POST /api/ai/documents/scan - Upload document for AI extraction
+ * - POST /api/ai/documents/scan    - Upload document for AI extraction (FormData or JSON)
+ * - POST /api/ai/documents/analyze - Alias for /scan (accepts FormData or JSON)
  * - GET /api/ai/documents/scans - List user's scanned documents
  * - GET /api/ai/documents/scans/:id - Get scan details
  * - POST /api/ai/documents/scans/:id/confirm - Confirm extracted data
@@ -13,36 +14,71 @@
 
 import { Router } from "express";
 import { z } from "zod";
+import multer from "multer";
 import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
 import { analyzeImageOpenAI as analyzeImage } from "../../services/ai/openai-vision-client";
 
+// Accept document files via FormData (memory storage → base64 data URL for AI)
+const docUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req: any, file: any, cb: any) => {
+    const isImage = file.mimetype.startsWith("image/");
+    const isPdf = file.mimetype === "application/pdf";
+    cb(null, isImage || isPdf);
+  },
+});
+
 export function createDocumentScannerRoutes(storage: DatabaseStorage) {
   const router = Router();
 
-  // POST /api/ai/documents/scan
-  const scanSchema = z.object({
-    documentUrl: z.string().url(),
+  const jsonBodySchema = z.object({
+    documentUrl: z.string().url().optional(),
     documentContentType: z.string().optional(),
     originalFilename: z.string().optional(),
     propertyId: z.string().optional(),
   });
 
-  // Handler for document scanning/analysis
+  // Shared handler — resolves documentUrl from uploaded file OR JSON body
   const handleDocumentScan = async (req: any, res: any) => {
     try {
-      const validated = scanSchema.parse(req.body);
+      let documentUrl: string;
+      let documentContentType: string | undefined;
+      let originalFilename: string | undefined;
+      let propertyId: string | undefined;
+
+      if (req.file) {
+        // File uploaded via FormData — convert buffer to base64 data URL
+        const base64 = req.file.buffer.toString("base64");
+        documentUrl = `data:${req.file.mimetype};base64,${base64}`;
+        documentContentType = req.file.mimetype;
+        originalFilename = req.file.originalname;
+        propertyId = req.body?.propertyId;
+      } else {
+        // JSON body with documentUrl
+        const parsed = jsonBodySchema.safeParse(req.body);
+        const body = parsed.success ? parsed.data : {};
+        if (!body.documentUrl) {
+          return res.status(400).json({ error: "No document provided. Upload a file or pass documentUrl." });
+        }
+        documentUrl = body.documentUrl;
+        documentContentType = body.documentContentType;
+        originalFilename = body.originalFilename;
+        propertyId = body.propertyId;
+      }
+
       const userId = ((req.user as any).userId || (req.user as any).id);
 
       // Create scan record
       const scan = await storage.createDocumentScan({
         id: nanoid(),
         userId,
-        propertyId: validated.propertyId || null,
-        documentUrl: validated.documentUrl,
-        documentContentType: validated.documentContentType || null,
-        originalFilename: validated.originalFilename || null,
+        propertyId: propertyId || null,
+        documentUrl,
+        documentContentType: documentContentType || null,
+        originalFilename: originalFilename || null,
         documentType: null,
         aiConfidence: null,
         extractedData: null,
@@ -51,7 +87,7 @@ export function createDocumentScannerRoutes(storage: DatabaseStorage) {
         linkedHealthEventId: null,
         linkedApplianceId: null,
         processingStatus: "processing",
-        aiModelUsed: "claude-sonnet-4-20250514",
+        aiModelUsed: "gpt-4o",
         processingTimeMs: null,
         errorMessage: null,
         userVerified: false,
@@ -60,11 +96,11 @@ export function createDocumentScannerRoutes(storage: DatabaseStorage) {
         processedAt: null,
       });
 
-      // Call AI to analyze document
+      // Call AI vision to analyze document
       const startTime = Date.now();
       try {
         const aiResult = await analyzeImage({
-          imageUrl: validated.documentUrl,
+          imageUrl: documentUrl,
           prompt: `Analyze this document image. Classify it and extract structured data.
 
 Return ONLY valid JSON:
@@ -72,12 +108,11 @@ Return ONLY valid JSON:
   "documentType": "warranty" | "insurance_declaration" | "repair_invoice" | "hoa_letter" | "inspection_report" | "receipt" | "manual" | "other",
   "confidence": 0.0-1.0,
   "extractedData": {
-    // For warranty: { provider, coverageType, startDate, endDate, policyNumber, coveredItems }
-    // For insurance: { carrier, policyNumber, premium, deductible, renewalDate, coverageTypes }
-    // For invoice/receipt: { vendor, date, description, amount, lineItems: [{item, cost}] }
-    // For HOA letter: { violationType, deadline, description, fineAmount }
-    // For inspection: { inspector, date, findings, recommendations }
-    // For manual: { brand, model, productType, keyMaintenanceNotes }
+    "provider": "string (if applicable)",
+    "policyNumber": "string (if applicable)",
+    "date": "string (if applicable)",
+    "amount": "number (if applicable)",
+    "description": "string"
   },
   "summary": "One sentence summary of the document"
 }`,
@@ -85,12 +120,12 @@ Return ONLY valid JSON:
         });
 
         const processingTime = Date.now() - startTime;
-        const parsed = typeof aiResult === 'string' ? JSON.parse(aiResult) : aiResult;
+        const extracted = typeof aiResult === "string" ? JSON.parse(aiResult) : aiResult;
 
         await storage.updateDocumentScan(scan.id, {
-          documentType: parsed.documentType || "other",
-          aiConfidence: parsed.confidence || 0.5,
-          extractedData: JSON.stringify(parsed.extractedData || {}),
+          documentType: extracted.documentType || "other",
+          aiConfidence: extracted.confidence || 0.5,
+          extractedData: JSON.stringify(extracted.extractedData || {}),
           processingStatus: "extracted",
           processingTimeMs: processingTime,
           processedAt: new Date().toISOString(),
@@ -100,10 +135,10 @@ Return ONLY valid JSON:
           success: true,
           scan: {
             id: scan.id,
-            documentType: parsed.documentType,
-            confidence: parsed.confidence,
-            extractedData: parsed.extractedData,
-            summary: parsed.summary,
+            documentType: extracted.documentType,
+            confidence: extracted.confidence,
+            extractedData: extracted.extractedData,
+            summary: extracted.summary,
             processingTimeMs: processingTime,
             status: "extracted",
           },
@@ -127,8 +162,9 @@ Return ONLY valid JSON:
     }
   };
 
-  router.post("/documents/scan", requireAuth, handleDocumentScan);
-  router.post("/documents/analyze", requireAuth, handleDocumentScan);
+  // Both routes accept FormData (field: "document") or JSON body (documentUrl)
+  router.post("/documents/scan", requireAuth, docUpload.single("document"), handleDocumentScan);
+  router.post("/documents/analyze", requireAuth, docUpload.single("document"), handleDocumentScan);
 
   // GET /api/ai/documents/scans
   router.get("/documents/scans", requireAuth, async (req, res) => {

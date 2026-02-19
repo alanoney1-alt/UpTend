@@ -2,6 +2,7 @@ import { request } from './api';
 
 export interface ChatResponse {
   response: string;
+  reply?: string;
   message?: string;
   text?: string;
   type?: string;
