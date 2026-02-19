@@ -54,12 +54,14 @@ export default function GeorgeHomeScreen() {
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    fetch('/api/pros/active-nearby?lat=28.4950&lng=-81.3600&radius=30')
+    fetch('https://uptendapp.com/api/pros/active-nearby?lat=28.4950&lng=-81.3600&radius=30')
       .then(r => r.json())
       .then(data => {
         const list = (data.pros || []).map((p: any) => ({
-          id: p.id, name: `${p.firstName} ${p.lastInitial}.`,
-          service: p.services?.[0] || 'Pro', lat: p.lat, lng: p.lng, rating: p.rating,
+          id: p.id, name: `${p.firstName} ${(p.lastName || '').charAt(0)}.`,
+          service: (p.serviceTypes || [])[0] || 'Pro',
+          lat: p.location?.latitude, lng: p.location?.longitude,
+          rating: p.rating,
         }));
         setNearbyPros(list);
       })

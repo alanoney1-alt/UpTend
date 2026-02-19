@@ -48,13 +48,13 @@ export function registerActiveNearbyRoutes(app: Express) {
         SELECT 
           u.id, u.first_name, u.last_name,
           hp.rating, hp.jobs_completed, hp.service_types,
-          hp.current_latitude, hp.current_longitude,
+          hp.current_lat, hp.current_lng,
           hp.is_available
         FROM users u
         JOIN hauler_profiles hp ON u.id = hp.user_id
         WHERE hp.is_available = true
-          AND hp.current_latitude IS NOT NULL
-          AND hp.current_longitude IS NOT NULL
+          AND hp.current_lat IS NOT NULL
+          AND hp.current_lng IS NOT NULL
         ORDER BY hp.rating DESC NULLS LAST
         LIMIT 50
       `);
@@ -67,8 +67,8 @@ export function registerActiveNearbyRoutes(app: Express) {
         jobsCompleted: row.jobs_completed || 0,
         serviceTypes: row.service_types || [],
         location: {
-          latitude: parseFloat(row.current_latitude),
-          longitude: parseFloat(row.current_longitude),
+          latitude: parseFloat(row.current_lat),
+          longitude: parseFloat(row.current_lng),
         },
         isAvailable: true,
       }));
