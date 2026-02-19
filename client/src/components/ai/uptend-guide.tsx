@@ -171,7 +171,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   return {
     welcome: `Hey — glad you're back. 🔧\n\nSomething going on with your home? I'm ready to get it handled — whether that's booking a pro right now or walking you through it yourself.\n\nWhat do you need?`,
     quickActions: [
-      { label: "🚀 Book a Pro", action: "message:I need to book a professional service" },
+      { label: "🚀 Book Your Home Service", action: "message:I need to book a professional service" },
       { label: "🏠 Home Health Check", action: "message:How's my home doing?" },
       { label: "📸 Photo Diagnosis", action: "message:I want to send a photo of an issue" },
       { label: "🔧 DIY Help", action: "message:I want to fix something myself" },

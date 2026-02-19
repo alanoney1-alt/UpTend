@@ -94,7 +94,7 @@ export default function Drive() {
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/book">
-              <Button variant="outline" data-testid="link-book-service">Book a Pro</Button>
+              <Button variant="outline" data-testid="link-book-service">Book Your Home Service</Button>
             </Link>
           </div>
         </div>

@@ -1210,7 +1210,7 @@ export default function Booking() {
         <div className="max-w-3xl mx-auto px-4 md:px-6">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl md:text-3xl font-bold">Book a Pro</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Book Your Home Service</h1>
               <Badge variant="secondary">Step {step} of 4</Badge>
             </div>
             <Progress value={progress} className="h-2" />

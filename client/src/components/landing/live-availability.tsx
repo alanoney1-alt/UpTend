@@ -158,7 +158,7 @@ export function LiveAvailability() {
             </div>
             <h4 className="font-semibold mb-2">Same-Day Service</h4>
             <p className="text-sm text-muted-foreground">
-              Book a Pro and get your job done today
+              Book Your Home Service and get your job done today
             </p>
           </div>
           <div className="text-center">
