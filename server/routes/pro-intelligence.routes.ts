@@ -34,6 +34,23 @@ router.get("/api/pro/retention/:proId", async (req, res) => {
   }
 });
 
+// ─── Performance Analytics (no required params) ──────────────────
+router.get("/api/pro/analytics", async (req, res) => {
+  try {
+    const { proId, period = "weekly" } = req.query;
+    if (!proId) {
+      return res.json({ analytics: [], message: "Pass ?proId=<id>&period=weekly|monthly for detailed analytics" });
+    }
+    if (!["weekly", "monthly"].includes(period as string)) {
+      return res.status(400).json({ error: "Period must be weekly or monthly" });
+    }
+    const result = await getPerformanceAnalytics(proId as string, period as "weekly" | "monthly");
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── Performance Analytics ───────────────────────────────────────
 router.get("/api/pro/analytics/:proId/:period", async (req, res) => {
   try {

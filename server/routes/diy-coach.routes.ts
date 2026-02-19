@@ -15,6 +15,38 @@ import {
 } from "../services/diy-coach.js";
 
 export function registerDiyCoachRoutes(app: Express) {
+  // POST /api/diy/diagnose — alias for /api/diy-coach/diagnose
+  app.post("/api/diy/diagnose", async (req, res) => {
+    try {
+      const { userId, conversationId, issueDescription, symptoms } = req.body;
+      const desc = issueDescription || symptoms;
+      if (!desc) {
+        return res.status(400).json({ error: "issueDescription or symptoms required" });
+      }
+      const convId = conversationId || "default";
+      if (userId) {
+        const acknowledged = await hasUserAcknowledgedDIYDisclaimer(userId, convId);
+        if (acknowledged) {
+          return res.json({
+            disclaimerAcknowledged: true,
+            issueDescription: desc,
+            message: `Let's diagnose: "${desc}". Describe the symptoms in detail — what do you see, hear, or smell?`,
+          });
+        }
+      }
+      const consent = getDIYDisclaimerConsent();
+      return res.json({
+        disclaimerAcknowledged: false,
+        disclaimer: consent,
+        issueDescription: desc,
+        message: consent.disclaimerText,
+      });
+    } catch (err: any) {
+      console.error("[DIY] Diagnose error:", err);
+      res.status(500).json({ error: err.message || "Failed to diagnose" });
+    }
+  });
+
   // POST /api/diy-coach/diagnose — start a DIY coaching session
   app.post("/api/diy-coach/diagnose", async (req, res) => {
     try {

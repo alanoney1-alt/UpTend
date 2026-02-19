@@ -204,4 +204,12 @@ export function registerEmergencyRoutes(app: Express) {
       label: type.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
     })));
   });
+
+  // GET /api/emergency/services — alias for /api/emergency/types
+  app.get("/api/emergency/services", (_req, res) => {
+    res.json(EMERGENCY_TYPES.map(type => ({
+      id: type,
+      label: type.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+    })));
+  });
 }

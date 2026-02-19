@@ -321,5 +321,18 @@ export function registerHomeProfileRoutes(app: Express) {
     }
   });
 
+  // GET /api/home-profile/:userId — return user's home profiles (alt path for tests)
+  app.get("/api/home-profile/:userId", requireAuth, async (req, res) => {
+    try {
+      const profiles = await db.select().from(homeProfiles)
+        .where(eq(homeProfiles.customerId, req.params.userId))
+        .orderBy(desc(homeProfiles.createdAt));
+      res.json({ success: true, profiles });
+    } catch (error: any) {
+      console.error("Home profile fetch error:", error);
+      res.status(500).json({ error: "Failed to fetch home profiles" });
+    }
+  });
+
   app.use("/api/home", router);
 }

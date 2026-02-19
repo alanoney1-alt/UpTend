@@ -24,10 +24,6 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
         return res.status(400).json({ error: "A valid phone number is required for booking updates" });
       }
 
-      if (!smsOptIn) {
-        return res.status(400).json({ error: "You must agree to receive SMS notifications to register" });
-      }
-
       const existingEmail = await storage.getUserByEmail(email);
       if (existingEmail) {
         return res.status(400).json({ error: "Email already registered" });

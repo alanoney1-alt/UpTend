@@ -3,6 +3,16 @@ import { storage } from "../../storage";
 import { isAuthenticated } from "../../replit_integrations/auth";
 
 export function registerLoyaltyRoutes(app: Express) {
+  // GET /api/loyalty/status — loyalty program info (must be before /:userId)
+  app.get("/api/loyalty/status", (_req, res) => {
+    res.json({
+      programName: "OpenClaw Rewards",
+      tiers: ["bronze", "silver", "gold", "platinum"],
+      pointsPerDollar: 1,
+      active: true,
+    });
+  });
+
   // Get user's loyalty account status
   app.get("/api/loyalty/:userId", async (req, res) => {
     try {

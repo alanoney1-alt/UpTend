@@ -21,6 +21,21 @@ function generateCertificateNumber(): string {
 }
 
 export function registerCertificationRoutes(app: Express) {
+  // POST /api/certification/programs — list certification programs (filterable)
+  app.post("/api/certification/programs", async (req: Request, res: Response) => {
+    try {
+      const programs = await db
+        .select()
+        .from(certificationPrograms)
+        .where(eq(certificationPrograms.isActive, true))
+        .orderBy(asc(certificationPrograms.createdAt));
+      res.json({ programs });
+    } catch (error) {
+      console.error("[Academy] Failed to list certification programs:", error);
+      res.status(500).json({ error: "Failed to retrieve programs" });
+    }
+  });
+
   // List all available certifications (with pro's status if authenticated)
   app.get("/api/academy/certifications", async (req: Request, res: Response) => {
     try {
