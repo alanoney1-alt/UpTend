@@ -9,6 +9,7 @@
 import { db } from "../db";
 import { eq, and, sql } from "drizzle-orm";
 import { haulerProfiles, proCertifications, serviceRequests } from "@shared/schema";
+import { getActiveDiscount } from "./invite-code.service.js";
 
 // ── Tier Definitions ──
 
@@ -85,14 +86,21 @@ export interface FeeStatus {
     isCurrent: boolean;
     isUnlocked: boolean;
   }>;
+  // Invite code discount (if active)
+  inviteDiscount?: {
+    discountPercent: number;
+    daysRemaining: number;
+    codeName?: string;
+  };
 }
 
 // ── DB-backed calculation ──
 
 export async function calculatePlatformFee(proId: string): Promise<FeeStatus> {
-  // Get pro profile
+  // Get pro profile (proId here is the userId on hauler_profiles)
   const [profile] = await db
     .select({
+      id: haulerProfiles.id,
       isVerifiedLlc: haulerProfiles.isVerifiedLlc,
     })
     .from(haulerProfiles)
@@ -100,6 +108,7 @@ export async function calculatePlatformFee(proId: string): Promise<FeeStatus> {
     .limit(1);
 
   const isLlc = profile?.isVerifiedLlc || false;
+  const haulerProfileId = profile?.id ?? null;
 
   // Count active (completed, not expired) certifications
   const now = new Date().toISOString();
@@ -111,8 +120,17 @@ export async function calculatePlatformFee(proId: string): Promise<FeeStatus> {
   `);
   const activeCertCount = Number((activeCertsResult.rows[0] as any)?.count || 0);
 
-  // Current fee
-  const feeRate = getFeeRate(isLlc, activeCertCount);
+  // Current fee (cert-based)
+  const baseFeeRate = getFeeRate(isLlc, activeCertCount);
+
+  // Apply invite code discount if active (lookup by hauler profile id)
+  const inviteDiscount = haulerProfileId
+    ? await getActiveDiscount(haulerProfileId)
+    : { hasDiscount: false, discountPercent: 0, discountExpiresAt: null, daysRemaining: 0 };
+  const feeRate = inviteDiscount.hasDiscount
+    ? Math.max(0, baseFeeRate - inviteDiscount.discountPercent / 100)
+    : baseFeeRate;
+
   const feePercent = Math.round(feeRate * 100);
   const currentTier = getCurrentTier(activeCertCount);
   const nextTier = getNextTier(activeCertCount);
@@ -166,6 +184,13 @@ export async function calculatePlatformFee(proId: string): Promise<FeeStatus> {
     projectedNextTierSavings,
     recentEarnings,
     tiers,
+    ...(inviteDiscount.hasDiscount && {
+      inviteDiscount: {
+        discountPercent: inviteDiscount.discountPercent,
+        daysRemaining: inviteDiscount.daysRemaining,
+        codeName: inviteDiscount.codeName,
+      },
+    }),
   };
 }
 

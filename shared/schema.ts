@@ -7485,4 +7485,45 @@ export const neighborhoodInsights = pgTable("neighborhood_insights", {
   generatedAt: timestamp("generated_at").defaultNow().notNull(),
 });
 
+// ==========================================
+// Pro Invite Codes
+// ==========================================
+export const proInviteCodes = pgTable("pro_invite_codes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  code: varchar("code", { length: 64 }).unique().notNull(),
+  discountPercent: integer("discount_percent").notNull().default(10),
+  durationDays: integer("duration_days").notNull().default(30),
+  maxUses: integer("max_uses"),       // null = unlimited
+  currentUses: integer("current_uses").notNull().default(0),
+  expiresAt: timestamp("expires_at"), // null = never expires
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertProInviteCodeSchema = createInsertSchema(proInviteCodes).omit({ id: true, createdAt: true, currentUses: true });
+export type InsertProInviteCode = z.infer<typeof insertProInviteCodeSchema>;
+export type ProInviteCode = typeof proInviteCodes.$inferSelect;
+
+export const proCodeRedemptions = pgTable("pro_code_redemptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proId: varchar("pro_id").notNull().references(() => haulerProfiles.id, { onDelete: "cascade" }),
+  codeId: varchar("code_id").notNull().references(() => proInviteCodes.id),
+  redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),
+  discountExpiresAt: timestamp("discount_expires_at").notNull(),
+  discountPercent: integer("discount_percent").notNull(),
+});
+
+export const proCodeRedemptionsRelations = relations(proCodeRedemptions, ({ one }) => ({
+  pro: one(haulerProfiles, {
+    fields: [proCodeRedemptions.proId],
+    references: [haulerProfiles.id],
+  }),
+  code: one(proInviteCodes, {
+    fields: [proCodeRedemptions.codeId],
+    references: [proInviteCodes.id],
+  }),
+}));
+
+export type ProCodeRedemption = typeof proCodeRedemptions.$inferSelect;
+
 export type NeighborhoodInsight = typeof neighborhoodInsights.$inferSelect;

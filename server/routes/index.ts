@@ -224,6 +224,9 @@ import { registerDiyToProRoutes } from "./diy-to-pro.routes";
 import { registerAutoRoutes } from "./auto.routes.js";
 import { registerContentRoutes } from "./content.routes.js";
 
+// Invite Code routes
+import { registerInviteCodeRoutes } from "./invite-codes/invite-codes.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -471,6 +474,9 @@ export async function registerRoutes(
 
   // Register DIY-to-Pro Recruitment Pipeline routes
   registerDiyToProRoutes(app);
+
+  // Register Invite Code routes
+  registerInviteCodeRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

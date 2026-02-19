@@ -162,6 +162,38 @@ export default function PyckerSignup() {
   // ICA acceptance state
   const [icaData, setIcaData] = useState<ICAAcceptanceData | null>(null);
 
+  // Invite code state
+  const [inviteCode, setInviteCode] = useState("");
+  const [inviteCodeStatus, setInviteCodeStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
+  const [inviteCodeMessage, setInviteCodeMessage] = useState("");
+  const [validatedCode, setValidatedCode] = useState<string | null>(null);
+
+  const checkInviteCode = async () => {
+    if (!inviteCode.trim()) return;
+    setInviteCodeStatus("checking");
+    try {
+      const res = await fetch("/api/invite-codes/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: inviteCode }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setInviteCodeStatus("valid");
+        setInviteCodeMessage(`10% fee discount for ${data.durationDays} days!`);
+        setValidatedCode(inviteCode.trim().toUpperCase());
+      } else {
+        setInviteCodeStatus("invalid");
+        setInviteCodeMessage(data.reason || "Invalid code");
+        setValidatedCode(null);
+      }
+    } catch {
+      setInviteCodeStatus("invalid");
+      setInviteCodeMessage("Could not check code — try again");
+      setValidatedCode(null);
+    }
+  };
+
   // Services selection state
   const [selectedServices, setSelectedServices] = useState<string[]>(["junk_removal", "furniture_moving"]);
 
@@ -337,13 +369,30 @@ export default function PyckerSignup() {
         const error = await response.json();
         throw new Error(error.error || "Registration failed");
       }
-      return response.json();
+      const result = await response.json();
+
+      // Auto-redeem invite code if one was validated
+      if (validatedCode && result.haulerProfile?.id) {
+        try {
+          await fetch("/api/invite-codes/redeem", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code: validatedCode, proId: result.haulerProfile.id }),
+          });
+        } catch {
+          // Non-fatal — registration still succeeded
+        }
+      }
+
+      return result;
     },
     onSuccess: () => {
       setCurrentStep(6); // Certification preview step
       toast({
         title: "Application Submitted!",
-        description: "We'll review your application and get back to you within 24-48 hours.",
+        description: validatedCode
+          ? "Your invite code discount has been applied. We'll review your application shortly."
+          : "We'll review your application and get back to you within 24-48 hours.",
       });
     },
     onError: (error: Error) => {
@@ -640,6 +689,50 @@ export default function PyckerSignup() {
                     >
                       Didn't receive the code? Click to resend
                     </button>
+                  )}
+                </div>
+
+                {/* Invite Code */}
+                <div className="border-t pt-6 mt-6">
+                  <h3 className="text-sm font-medium mb-3 text-muted-foreground">
+                    Have an invite code? (Optional)
+                  </h3>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="e.g. LAKENONA10"
+                      value={inviteCode}
+                      onChange={(e) => {
+                        setInviteCode(e.target.value.toUpperCase());
+                        if (inviteCodeStatus !== "idle") {
+                          setInviteCodeStatus("idle");
+                          setInviteCodeMessage("");
+                        }
+                      }}
+                      className="uppercase"
+                      data-testid="input-invite-code"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={checkInviteCode}
+                      disabled={inviteCodeStatus === "checking" || !inviteCode.trim()}
+                      data-testid="button-check-invite-code"
+                    >
+                      {inviteCodeStatus === "checking" ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        "Apply"
+                      )}
+                    </Button>
+                  </div>
+                  {inviteCodeStatus === "valid" && (
+                    <div className="flex items-center gap-2 mt-2 p-2 rounded-lg bg-green-500/10 text-green-600 text-sm">
+                      <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                      <span className="font-medium">{inviteCodeMessage}</span>
+                    </div>
+                  )}
+                  {inviteCodeStatus === "invalid" && (
+                    <p className="mt-2 text-sm text-destructive">{inviteCodeMessage}</p>
                   )}
                 </div>
 
