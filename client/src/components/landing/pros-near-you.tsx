@@ -77,7 +77,7 @@ export function ProsNearYou() {
         </div>
 
         {/* Map or empty state */}
-        <Card className="overflow-hidden rounded-2xl shadow-lg" style={{ height: "450px" }}>
+        <Card className="overflow-hidden rounded-2xl shadow-lg relative" style={{ height: "450px", zIndex: 0 }}>
           {loading ? (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
