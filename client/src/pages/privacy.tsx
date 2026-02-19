@@ -1,480 +1,319 @@
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ArrowLeft, Shield } from "lucide-react";
-import { Logo } from "@/components/ui/logo";
+import { Shield } from "lucide-react";
+import { LegalPage } from "./legal/legal-page";
 
-export default function Privacy() {
+export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-background" data-testid="page-privacy">
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/">
-            <Logo className="w-8 h-8" textClassName="text-xl" />
-          </Link>
-          <Link href="/">
-            <Button variant="ghost" size="sm" data-testid="button-back-home">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-      </header>
+    <LegalPage title="Privacy Policy" icon={<Shield className="w-12 h-12" />} lastUpdated="February 19, 2026">
+      <div dangerouslySetInnerHTML={{ __html: `
 
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <Shield className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
-          <p className="text-muted-foreground">
-            Last Updated: January 17, 2026
-          </p>
-        </div>
+<strong>UPYCK, Inc. d/b/a UpTend — Privacy Policy</strong>
+<strong>Effective Date: February 19, 2026</strong>
 
-        <Card className="p-8 prose prose-gray dark:prose-invert max-w-none">
-          <h2>Introduction</h2>
-          <p>
-            Welcome to UpTend ("we," "us," "our," or "UpTend"). We are committed to protecting your privacy and being transparent about how we collect, use, and share your information.
-          </p>
-          <p>This Privacy Policy explains:</p>
-          <ul>
-            <li>What information we collect</li>
-            <li>How we use your information</li>
-            <li>When we share your information</li>
-            <li>Your privacy rights and choices</li>
-            <li>How we protect your information</li>
-          </ul>
-          <p><strong>By using the UpTend platform at www.uptend.app (the "Platform"), you agree to this Privacy Policy.</strong></p>
+<p>This Privacy Policy describes how UPYCK, Inc. d/b/a UpTend ("UpTend," "we," "us," or "our") collects, uses, shares, and protects your personal information when you use our platform at uptendapp.com and our mobile applications (collectively, the "Platform"). By using the Platform, you agree to the practices described in this Privacy Policy.</p>
 
-          <h2>1. Information We Collect</h2>
+<h2>1. Information We Collect</h2>
 
-          <h3>1.1 Information You Provide</h3>
-          <p><strong>Account Information:</strong></p>
-          <ul>
-            <li>Name (first and last)</li>
-            <li>Email address</li>
-            <li>Phone number</li>
-            <li>Password (encrypted)</li>
-            <li>Profile photo (optional)</li>
-            <li>User role (customer, Pro, admin)</li>
-          </ul>
+<h3>1.1 Information You Provide</h3>
 
-          <p><strong>Customer Booking Information:</strong></p>
-          <ul>
-            <li>Service address (pickup location)</li>
-            <li>Service details (items to remove, job description)</li>
-            <li>Photos of items</li>
-            <li>Preferred language</li>
-            <li>Payment information (processed by Stripe)</li>
-            <li>Special instructions or notes</li>
-          </ul>
+<strong>Account Information:</strong>
+<ul>
+<li>Name, email address, phone number, mailing address or ZIP code</li>
+<li>Password (stored in hashed form)</li>
+<li>Profile photo (optional)</li>
+<li>For Pros: business name, LLC documentation, insurance certificates, licenses, tax identification (EIN or SSN for 1099 purposes), bank account information for payouts, FAA Part 107 certification (if applicable)</li>
+<li>For Business Accounts: company name, business address, tax ID, authorized representative information, billing contact</li>
+</ul>
+<strong>Booking and Service Information:</strong>
+<ul>
+<li>Service requests, descriptions, property details, photos submitted with bookings</li>
+<li>Scheduling preferences, booking history</li>
+<li>Communications with Pros through the Platform messaging system</li>
+<li>Ratings, reviews, and feedback</li>
+</ul>
+<strong>Payment Information:</strong>
+<ul>
+<li>Credit/debit card details, bank account information (collected and processed by Stripe — UpTend does not store full payment card numbers)</li>
+<li>Billing address</li>
+<li>Transaction history, refund records</li>
+</ul>
+<strong>AI Interaction Data:</strong>
+<ul>
+<li>Conversations with George AI Assistant, including questions, prompts, and descriptions</li>
+<li>Photos and images submitted for AI Home Scan analysis</li>
+<li>DIY Coaching queries and interaction history</li>
+<li>Home profile data passively gathered from your interactions with George (e.g., home age, known issues, maintenance history you've discussed)</li>
+<li>George's audience profiling signals (communication style preferences such as senior-friendly, Gen-Z casual, busy-professional concise, or detail-oriented — used solely to adapt George's communication style to your preferences)</li>
+</ul>
+<strong>Communications:</strong>
+<ul>
+<li>Emails, chat messages, and support requests you send to us</li>
+<li>Phone call records (we may record calls for quality assurance with notice)</li>
+</ul>
+<h3>1.2 Information Collected Automatically</h3>
 
-          <p><strong>Pro Information:</strong></p>
-          <ul>
-            <li>Business name</li>
-            <li>Service area (ZIP codes)</li>
-            <li>Vehicle information (type, make, model, license plate, photos)</li>
-            <li>Driver's license information</li>
-            <li>Insurance information (Verified Pros)</li>
-            <li>Business license information</li>
-            <li>Background check consent and results</li>
-            <li>Bank account information (for payouts via Stripe)</li>
-            <li>Tax information (W-9 for 1099 reporting)</li>
-            <li>Incident payment method (card on file for accountability)</li>
-          </ul>
+<strong>Device and Technical Information:</strong>
+<ul>
+<li>Device type, operating system, browser type and version</li>
+<li>IP address, unique device identifiers</li>
+<li>App version, crash reports, performance data</li>
+</ul>
+<strong>Usage Information:</strong>
+<ul>
+<li>Pages visited, features used, time spent on pages</li>
+<li>Search queries within the Platform</li>
+<li>Clickstream data, referral URLs</li>
+</ul>
+<strong>Location Information:</strong>
+<ul>
+<li><strong>Customers:</strong> ZIP code or city-level location for service matching (we do not track precise Customer GPS location)</li>
+<li><strong>Pros:</strong> Precise GPS location during active jobs only (from job acceptance to job completion), used to provide Customers with arrival estimates and to verify job completion. Pros may disable location sharing when not on active jobs.</li>
+</ul>
+<strong>Cookie and Tracking Data:</strong>
+<ul>
+<li>See our Cookie Policy for details on cookies and similar technologies</li>
+</ul>
+<h3>1.3 Information from Third Parties</h3>
 
-          <p><strong>Communications:</strong></p>
-          <ul>
-            <li>Messages sent through the Platform</li>
-            <li>Customer service inquiries</li>
-            <li>Reviews and ratings</li>
-            <li>Feedback and survey responses</li>
-          </ul>
+<ul>
+<li><strong>Stripe:</strong> Payment confirmation, fraud signals</li>
+<li><strong>Checkr:</strong> Background check results (where applicable)</li>
+<li><strong>Public databases:</strong> Business registration verification, license verification</li>
+<li><strong>Amazon Associates:</strong> Aggregate purchase and commission data (no individual purchase details)</li>
+</ul>
+<h2>2. How We Use Your Information</h2>
 
-          <h3>1.2 Information Automatically Collected</h3>
-          <p><strong>Device and Usage Information:</strong></p>
-          <ul>
-            <li>IP address</li>
-            <li>Device type (phone, tablet, computer)</li>
-            <li>Operating system (iOS, Android, Windows, etc.)</li>
-            <li>Browser type and version</li>
-            <li>Mobile device identifiers</li>
-            <li>Pages viewed and features used</li>
-            <li>Time and date of visits</li>
-            <li>Referring website or app</li>
-            <li>Crash reports and error logs</li>
-          </ul>
+<p>We use your information for the following purposes:</p>
 
-          <p><strong>Location Information:</strong></p>
-          <ul>
-            <li><strong>Customers:</strong> ZIP code for service area verification</li>
-            <li><strong>Pros:</strong> Real-time GPS location during active jobs (for tracking and navigation)</li>
-            <li><strong>Both:</strong> Approximate location based on IP address</li>
-          </ul>
+<h3>2.1 Platform Operations</h3>
+<ul>
+<li>Creating and managing your account</li>
+<li>Facilitating service bookings and matching Customers with Pros</li>
+<li>Processing payments, refunds, and payouts</li>
+<li>Sending transactional communications (booking confirmations, receipts, service updates)</li>
+<li>Providing customer support</li>
+</ul>
+<h3>2.2 AI Features</h3>
+<ul>
+<li>Powering George AI Assistant responses</li>
+<li>Performing AI Home Scan analysis</li>
+<li>Providing DIY Coaching</li>
+<li>Adapting George's communication style to your preferences (audience profiling)</li>
+<li>Building and maintaining your home profile for personalized recommendations</li>
+</ul>
+<h3>2.3 AI Training and Improvement</h3>
+<ul>
+<li>With your consent, using your AI interactions (conversations with George, submitted photos, queries) to improve our AI features, train models, and enhance accuracy of estimates and recommendations</li>
+<li>AI training data is anonymized and aggregated where possible</li>
+<li><strong>You may opt out of AI training data usage through your account settings without affecting your ability to use AI features</strong></li>
+</ul>
+<h3>2.4 Safety and Trust</h3>
+<ul>
+<li>Verifying Pro credentials, insurance, and licenses</li>
+<li>Conducting background checks (where applicable)</li>
+<li>Detecting and preventing fraud, abuse, and policy violations</li>
+<li>Ensuring compliance with our Terms of Service and Acceptable Use Policy</li>
+</ul>
+<h3>2.5 Communications</h3>
+<ul>
+<li>Sending service-related SMS messages via Twilio</li>
+<li>Sending emails via SendGrid</li>
+<li>Sending push notifications (if enabled)</li>
+<li>Marketing communications (with consent and opt-out)</li>
+</ul>
+<h3>2.6 Analytics and Improvement</h3>
+<ul>
+<li>Understanding how users interact with the Platform</li>
+<li>Improving features, performance, and user experience</li>
+<li>Conducting research and analysis</li>
+</ul>
+<h3>2.7 Legal and Compliance</h3>
+<ul>
+<li>Complying with legal obligations, tax reporting (1099s for Pros), and regulatory requirements</li>
+<li>Responding to legal process (subpoenas, court orders)</li>
+<li>Protecting our rights, property, and safety</li>
+</ul>
+<h2>3. How We Share Your Information</h2>
 
-          <p><strong>Cookies and Similar Technologies:</strong></p>
-          <ul>
-            <li>Session cookies (for login authentication)</li>
-            <li>Preference cookies (remember your settings)</li>
-            <li>Analytics cookies (understand Platform usage)</li>
-            <li>Advertising cookies (show relevant ads)</li>
-          </ul>
+<h3>3.1 With Pros (When You Book a Service)</h3>
+<p>When you book a service, we share your first name, service address, phone number, service details, and any photos or notes you provided with the assigned Pro. We do not share your payment information with Pros.</p>
 
-          <h3>1.3 Information from Third Parties</h3>
-          <p><strong>Background Check Providers:</strong></p>
-          <ul>
-            <li>Criminal history</li>
-            <li>Sex offender registry status</li>
-            <li>Motor vehicle records (for Pros)</li>
-          </ul>
+<h3>3.2 With Customers (When You Accept a Job as a Pro)</h3>
+<p>When a Pro accepts a booking, we share the Pro's first name, profile photo, rating, verification status, and real-time location (during active jobs) with the Customer.</p>
 
-          <p><strong>Payment Processors (Stripe):</strong></p>
-          <ul>
-            <li>Payment transaction details</li>
-            <li>Card type and last 4 digits (for display only)</li>
-            <li>Payment success/failure status</li>
-          </ul>
+<h3>3.3 Service Providers</h3>
+<p>We share information with third-party service providers who perform services on our behalf:</p>
 
-          <p><strong>Social Media:</strong></p>
-          <ul>
-            <li>If you sign in with Facebook or Google, we receive your basic profile information (name, email, photo)</li>
-          </ul>
+<p>| Provider | Purpose | Data Shared |</p>
+<p>|---|---|---|</p>
+<p>| <strong>Stripe</strong> | Payment processing, BNPL | Payment details, transaction data |</p>
+<p>| <strong>Twilio</strong> | SMS/voice communications | Phone numbers, message content |</p>
+<p>| <strong>SendGrid</strong> | Email delivery | Email addresses, email content |</p>
+<p>| <strong>Anthropic (Claude)</strong> | George AI Assistant | Conversation content, user queries |</p>
+<p>| <strong>OpenAI (GPT-5.2)</strong> | Photo analysis, AI Home Scan | Photos, image data, analysis queries |</p>
+<p>| <strong>Railway</strong> | Platform hosting | All platform data (encrypted in transit and at rest) |</p>
+<p>| <strong>Supabase</strong> | Database services | All platform data (encrypted at rest) |</p>
+<p>| <strong>Checkr</strong> | Background checks | Pro name, SSN, date of birth (with Pro consent) |</p>
+<p>| <strong>Amazon Associates</strong> | Affiliate tracking | Affiliate link click data, cookies |</p>
 
-          <p><strong>Analytics Providers:</strong></p>
-          <ul>
-            <li>Aggregated usage statistics</li>
-            <li>Performance metrics</li>
-            <li>Conversion tracking data</li>
-          </ul>
+<h3>3.4 Legal Requirements</h3>
+<p>We may disclose information if required by law, regulation, legal process, or governmental request, or if we believe disclosure is necessary to protect our rights, your safety, or the safety of others, or to detect, prevent, or address fraud or security issues.</p>
 
-          <h2>2. How We Use Your Information</h2>
+<h3>3.5 Business Transfers</h3>
+<p>If UpTend is involved in a merger, acquisition, bankruptcy, or sale of all or a portion of its assets, your information may be transferred as part of that transaction. We will notify you of any such change and any choices you may have regarding your information.</p>
 
-          <h3>2.1 To Provide Platform Services</h3>
-          <ul>
-            <li>Create and manage your account</li>
-            <li>Process bookings and payments</li>
-            <li>Match Customers with Pros</li>
-            <li>Provide real-time GPS tracking</li>
-            <li>Send booking confirmations and updates</li>
-            <li>Enable communication between Customers and Pros</li>
-            <li>Process Green Verified disposal rebates</li>
-            <li>Calculate loyalty points and rewards</li>
-            <li>Generate environmental impact certificates</li>
-          </ul>
+<h3>3.6 With Your Consent</h3>
+<p>We may share your information in other ways if you specifically consent.</p>
 
-          <h3>2.2 To Improve Our Services</h3>
-          <ul>
-            <li>Analyze Platform usage and user behavior</li>
-            <li>Develop new features and improvements</li>
-            <li>Conduct AI-powered photo analysis for load estimation</li>
-            <li>Optimize matching algorithms</li>
-            <li>Personalize your experience</li>
-            <li>Conduct research and analytics</li>
-            <li>Test new features (A/B testing)</li>
-          </ul>
+<h3>3.7 Aggregated/De-Identified Data</h3>
+<p>We may share aggregated or de-identified data that cannot reasonably be used to identify you for any purpose, including research, analytics, and marketing.</p>
 
-          <h3>2.3 For Safety and Security</h3>
-          <ul>
-            <li>Verify identities and prevent fraud</li>
-            <li>Conduct background checks on Pros</li>
-            <li>Detect and prevent abuse or violations</li>
-            <li>Enforce our Terms of Service</li>
-            <li>Protect against security threats</li>
-            <li>Investigate and resolve disputes</li>
-            <li>Comply with legal obligations</li>
-          </ul>
+<h2>4. Cookies and Tracking Technologies</h2>
 
-          <h3>2.4 For Communication</h3>
-          <ul>
-            <li>Send booking confirmations and receipts</li>
-            <li>Notify you of Pro arrival and job status</li>
-            <li>Send account-related notifications</li>
-            <li>Respond to customer support inquiries</li>
-            <li>Send marketing communications (with your consent)</li>
-            <li>Conduct surveys and request feedback</li>
-            <li>Send important updates about the Platform</li>
-          </ul>
+<p>We use cookies and similar technologies on the Platform. For full details, see our standalone Cookie Policy. Categories include:</p>
 
-          <h3>2.5 For Legal and Compliance</h3>
-          <ul>
-            <li>Comply with laws and regulations</li>
-            <li>Respond to legal requests and court orders</li>
-            <li>Protect our rights and property</li>
-            <li>Enforce our Terms of Service</li>
-            <li>Process tax reporting (1099s for Pros)</li>
-            <li>Maintain records as required by law</li>
-          </ul>
+<ul>
+<li><strong>Essential Cookies</strong> — Required for Platform functionality (authentication, session management, security)</li>
+<li><strong>Analytics Cookies</strong> — Help us understand usage patterns and improve the Platform</li>
+<li><strong>Marketing Cookies</strong> — Used to deliver relevant advertising and measure campaign effectiveness</li>
+<li><strong>Affiliate Cookies</strong> — Track purchases made through affiliate links (e.g., Amazon Associates) to attribute commissions</li>
+</ul>
+<p>You can manage cookie preferences through the cookie consent mechanism on our Platform and through your browser settings.</p>
 
-          <h2>3. How We Share Your Information</h2>
+<h2>5. Location Tracking</h2>
 
-          <h3>3.1 With Pros (When You Book)</h3>
-          <p>When you book a service, we share with the matched Pro:</p>
-          <ul>
-            <li>Your name and phone number (after they accept the job)</li>
-            <li>Service address</li>
-            <li>Job details and photos</li>
-            <li>Real-time location (if you enable tracking)</li>
-            <li>Your rating and review history (if applicable)</li>
-          </ul>
-          <p><strong>Note:</strong> Phone numbers are masked until Pro accepts to prevent spam.</p>
+<h3>5.1 Customer Location</h3>
+<p>We collect Customer location at the ZIP code or city level only, based on the service address provided. We do not track Customers' precise GPS location.</p>
 
-          <h3>3.2 With Customers (For Pros)</h3>
-          <p>When a Pro accepts a job, we share with the Customer:</p>
-          <ul>
-            <li>Pro name and company name</li>
-            <li>Phone number</li>
-            <li>Vehicle information</li>
-            <li>Photo and bio</li>
-            <li>Rating and reviews</li>
-            <li>Real-time GPS location during active job</li>
-            <li>Pro tier (Verified Pro or Independent)</li>
-            <li>Insurance status (for Verified Pros)</li>
-          </ul>
+<h3>5.2 Pro Location</h3>
+<p>With Pro consent, we collect precise GPS location during active jobs (from job acceptance to job completion) for the following purposes:</p>
+<ul>
+<li>Providing Customers with real-time arrival estimates</li>
+<li>Verifying job site arrival and departure</li>
+<li>Route optimization</li>
+<li>Safety and dispute resolution</li>
+</ul>
+<p>Pros may disable location sharing when not on active jobs through their device or app settings. Disabling location during active jobs may result in reduced booking eligibility.</p>
 
-          <h3>3.3 With Service Providers</h3>
-          <p>We share information with third-party service providers who help us operate the Platform:</p>
-          <p><strong>Stripe (Payment Processing):</strong></p>
-          <ul>
-            <li>Name, email, payment information</li>
-            <li>Transaction amounts and dates</li>
-            <li>Bank account information (Pros)</li>
-          </ul>
-          <p><strong>Twilio (SMS Notifications):</strong></p>
-          <ul>
-            <li>Phone numbers</li>
-            <li>Message content (booking confirmations, alerts)</li>
-          </ul>
-          <p><strong>SendGrid (Email Communications):</strong></p>
-          <ul>
-            <li>Email addresses</li>
-            <li>Name</li>
-            <li>Email content (confirmations, receipts, marketing)</li>
-          </ul>
-          <p><strong>Background Check Providers:</strong></p>
-          <ul>
-            <li>Name, date of birth, Social Security number</li>
-            <li>Driver's license information</li>
-            <li>Address history</li>
-          </ul>
-          <p><strong>Cloud Hosting (Replit/AWS):</strong></p>
-          <ul>
-            <li>All data stored on Platform infrastructure</li>
-          </ul>
-          <p><strong>Analytics Providers (Google Analytics):</strong></p>
-          <ul>
-            <li>Device and usage information</li>
-            <li>Aggregated, anonymized data</li>
-          </ul>
-          <p><strong>OpenAI (AI Services):</strong></p>
-          <ul>
-            <li>Photos of items (for load estimation)</li>
-            <li>Photos of disposal receipts (for Green Verified validation)</li>
-          </ul>
+<h2>6. Data Retention</h2>
 
-          <h3>3.4 For Legal Reasons</h3>
-          <p>We may share your information:</p>
-          <ul>
-            <li>To comply with laws, regulations, or legal process</li>
-            <li>To respond to government or law enforcement requests</li>
-            <li>To protect the rights, property, or safety of UpTend, users, or the public</li>
-            <li>To enforce our Terms of Service</li>
-            <li>In connection with legal proceedings or investigations</li>
-          </ul>
+<p>We retain your information for as long as necessary to fulfill the purposes described in this Privacy Policy, unless a longer retention period is required by law.</p>
 
-          <h3>3.5 Business Transfers</h3>
-          <p>If UpTend is involved in a merger, acquisition, sale of assets, or bankruptcy, your information may be transferred to the successor entity.</p>
+<p>| Data Type | Retention Period |</p>
+<p>|---|---|</p>
+<p>| Account information | Duration of account + 3 years after deletion |</p>
+<p>| Booking and transaction records | 7 years (tax and legal compliance) |</p>
+<p>| AI conversation history | 2 years (or until you delete it) |</p>
+<p>| AI Home Scan photos | 3 years (or until you delete them) |</p>
+<p>| Pro GPS location data | 90 days after job completion |</p>
+<p>| Payment card data | Retained by Stripe per their policies; not stored by UpTend |</p>
+<p>| Background check results | Duration of Pro's active account |</p>
+<p>| Support communications | 3 years |</p>
+<p>| Marketing preferences | Duration of account |</p>
 
-          <h3>3.6 With Your Consent</h3>
-          <p>We may share your information for other purposes with your explicit consent.</p>
+<p>You may request deletion of your data as described in Section 8.</p>
 
-          <h3>3.7 Public Information</h3>
-          <p>The following information is publicly visible on the Platform:</p>
-          <ul>
-            <li>Pro profiles (name, company, photo, bio, ratings)</li>
-            <li>Reviews and ratings you post</li>
-            <li>Environmental certificates (with job details anonymized)</li>
-          </ul>
-          <p>We never publicly share:</p>
-          <ul>
-            <li>Email addresses</li>
-            <li>Phone numbers (until job acceptance)</li>
-            <li>Physical addresses</li>
-            <li>Payment information</li>
-            <li>Private messages</li>
-          </ul>
+<h2>7. Data Security</h2>
 
-          <h2>4. Your Privacy Rights and Choices</h2>
+<p>We implement reasonable administrative, technical, and physical security measures to protect your information, including:</p>
 
-          <h3>4.1 Access and Update</h3>
-          <p>You can access and update your information by:</p>
-          <ul>
-            <li>Logging into your account settings</li>
-            <li>Contacting us at privacy@uptend.app</li>
-          </ul>
+<ul>
+<li>Encryption of data in transit (TLS 1.2+) and at rest</li>
+<li>Secure authentication with hashed passwords</li>
+<li>Access controls limiting employee access to personal data on a need-to-know basis</li>
+<li>Regular security assessments and monitoring</li>
+<li>Secure cloud infrastructure (Railway, Supabase)</li>
+</ul>
+<p>No method of transmission or storage is 100% secure. While we strive to protect your information, we cannot guarantee absolute security.</p>
 
-          <h3>4.2 Delete Your Account</h3>
-          <p>You can request account deletion by:</p>
-          <ul>
-            <li>Emailing support@uptend.app</li>
-            <li>We will delete your personal information within 30 days, except:</li>
-            <ul>
-              <li>Transaction records (required for tax/legal compliance - 7 years)</li>
-              <li>Aggregated, anonymized data</li>
-              <li>Information needed for legal claims or compliance</li>
-            </ul>
-          </ul>
+<h2>8. Your Privacy Rights</h2>
 
-          <h3>4.3 Marketing Communications</h3>
-          <p>You can opt out of marketing emails by:</p>
-          <ul>
-            <li>Clicking "Unsubscribe" in any marketing email</li>
-            <li>Adjusting settings in your account</li>
-            <li>Emailing marketing@uptend.app</li>
-          </ul>
-          <p><strong>Note:</strong> You will still receive transactional emails (booking confirmations, receipts, account notifications).</p>
+<h3>8.1 All Users</h3>
 
-          <h3>4.4 SMS Notifications</h3>
-          <p>You can opt out of SMS notifications by:</p>
-          <ul>
-            <li>Replying STOP to any SMS message</li>
-            <li>Adjusting settings in your account</li>
-            <li>Emailing support@uptend.app</li>
-          </ul>
-          <p><strong>Note:</strong> Opting out may affect service delivery (e.g., Pro arrival notifications).</p>
+<p>All users may:</p>
+<ul>
+<li><strong>Access</strong> your personal information by contacting privacy@uptendapp.com</li>
+<li><strong>Correct</strong> inaccurate information through your account settings or by contacting us</li>
+<li><strong>Delete</strong> your account and associated data by contacting privacy@uptendapp.com</li>
+<li><strong>Opt out</strong> of marketing communications (email unsubscribe, SMS STOP, push notification settings)</li>
+<li><strong>Opt out</strong> of AI training data usage through account settings</li>
+</ul>
+<p>We will respond to access and deletion requests within <strong>thirty (30) days</strong>.</p>
 
-          <h3>4.5 Location Tracking</h3>
-          <p><strong>Customers:</strong> Location is used only for ZIP code verification and is not tracked in real-time.</p>
-          <p><strong>Pros:</strong> Real-time GPS tracking is required during active jobs. You can:</p>
-          <ul>
-            <li>Disable tracking when not on a job</li>
-            <li>Stop accepting jobs if you don't want to be tracked</li>
-          </ul>
+<h3>8.2 California Residents (CCPA/CPRA)</h3>
 
-          <h3>4.6 Cookie Preferences</h3>
-          <p>You can control cookies through:</p>
-          <ul>
-            <li>Browser settings (block all cookies or third-party cookies)</li>
-            <li>Our cookie preference center (if available)</li>
-          </ul>
-          <p><strong>Note:</strong> Disabling cookies may affect Platform functionality.</p>
+<p>If you are a California resident, you have the following additional rights under the California Consumer Privacy Act, as amended by the California Privacy Rights Act:</p>
 
-          <h3>4.7 Do Not Track</h3>
-          <p>Our Platform does not currently respond to Do Not Track (DNT) browser signals.</p>
+<ul>
+<li><strong>Right to Know:</strong> You may request the categories and specific pieces of personal information we have collected about you, the sources, purposes, and categories of third parties with whom we share it.</li>
+<li><strong>Right to Delete:</strong> You may request deletion of your personal information, subject to exceptions (e.g., legal compliance, completing transactions).</li>
+<li><strong>Right to Correct:</strong> You may request correction of inaccurate personal information.</li>
+<li><strong>Right to Opt Out of Sale/Sharing:</strong> UpTend does not sell personal information. We do not share personal information for cross-context behavioral advertising as defined under the CPRA.</li>
+<li><strong>Right to Limit Use of Sensitive Personal Information:</strong> You may request that we limit use of sensitive personal information to purposes necessary to provide the services.</li>
+<li><strong>Right to Non-Discrimination:</strong> We will not discriminate against you for exercising any CCPA/CPRA rights.</li>
+</ul>
+<p>To exercise these rights, contact privacy@uptendapp.com or call (407) 338-3342. We will verify your identity before processing requests. You may designate an authorized agent to make requests on your behalf.</p>
 
-          <h2>5. State-Specific Privacy Rights</h2>
+<strong>Categories of Personal Information Collected (CCPA Categories):</strong>
+<ul>
+<li>Identifiers (name, email, phone, address)</li>
+<li>Customer records (payment information, service history)</li>
+<li>Commercial information (booking history, transaction records)</li>
+<li>Internet/electronic activity (usage data, cookies, device information)</li>
+<li>Geolocation data (Pro GPS during jobs, Customer ZIP)</li>
+<li>Professional/employment information (Pro credentials, licenses)</li>
+<li>Inferences (audience profiling, home profile)</li>
+<li>Sensitive personal information (account login credentials, precise geolocation of Pros)</li>
+</ul>
+<h3>8.3 Virginia Residents (VCDPA)</h3>
 
-          <h3>5.1 California Residents (CCPA/CPRA)</h3>
-          <p>If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA):</p>
-          <p><strong>Right to Know:</strong></p>
-          <ul>
-            <li>Request what personal information we collect, use, and share</li>
-            <li>Request the categories of sources and purposes</li>
-          </ul>
-          <p><strong>Right to Delete:</strong></p>
-          <ul>
-            <li>Request deletion of your personal information (with exceptions)</li>
-          </ul>
-          <p><strong>Right to Opt-Out:</strong></p>
-          <ul>
-            <li>Opt out of "sale" or "sharing" of personal information</li>
-            <li>Note: We do not sell personal information in the traditional sense</li>
-          </ul>
-          <p><strong>Right to Non-Discrimination:</strong></p>
-          <ul>
-            <li>We will not discriminate against you for exercising your privacy rights</li>
-          </ul>
-          <p><strong>Right to Correct:</strong></p>
-          <ul>
-            <li>Request correction of inaccurate personal information</li>
-          </ul>
-          <p><strong>To Exercise Your Rights:</strong></p>
-          <ul>
-            <li>Email: privacy@uptend.app</li>
-            <li>Verify your identity (we may ask for confirming information)</li>
-            <li>Response within 45 days (may extend 45 more days if needed)</li>
-          </ul>
+<p>Virginia residents have the right to access, correct, delete, and obtain a copy of their personal data, and to opt out of the processing of personal data for targeted advertising, sale, or profiling. To exercise these rights, contact privacy@uptendapp.com. If we decline your request, you may appeal by contacting us with the subject line "VCDPA Appeal."</p>
 
-          <h3>5.2 Virginia Residents (VCDPA)</h3>
-          <p>Virginia residents have similar rights under the Virginia Consumer Data Protection Act:</p>
-          <ul>
-            <li>Right to access personal data</li>
-            <li>Right to correct inaccuracies</li>
-            <li>Right to delete personal data</li>
-            <li>Right to data portability</li>
-            <li>Right to opt out of targeted advertising and profiling</li>
-          </ul>
+<h3>8.4 Colorado Residents (CPA)</h3>
 
-          <h3>5.3 Colorado, Connecticut, Utah Residents</h3>
-          <p>Residents of Colorado (CPA), Connecticut (CTDPA), and Utah (UCPA) have similar rights to CCPA/VCDPA.</p>
+<p>Colorado residents have similar rights to access, correct, delete, and opt out of targeted advertising, sale, or profiling. To exercise these rights, contact privacy@uptendapp.com. You may appeal a declined request by contacting us.</p>
 
-          <p><strong>To Exercise State Privacy Rights:</strong> Email privacy@uptend.app with "State Privacy Request" in the subject line.</p>
+<h3>8.5 Connecticut Residents (CTDPA)</h3>
 
-          <h2>6. Children's Privacy</h2>
-          <p>UpTend is not intended for children under 18. We do not knowingly collect information from children under 18.</p>
-          <p>If we learn we have collected information from a child under 18, we will delete it immediately.</p>
-          <p>If you believe a child has provided us with personal information, contact us at privacy@uptend.app.</p>
+<p>Connecticut residents have the right to access, correct, delete, obtain a copy of, and opt out of the processing of personal data for targeted advertising, sale, or profiling. Contact privacy@uptendapp.com to exercise these rights.</p>
 
-          <h2>7. Data Security</h2>
-          <p>We implement reasonable security measures to protect your information:</p>
-          <p><strong>Technical Safeguards:</strong></p>
-          <ul>
-            <li>Encryption in transit (HTTPS/TLS)</li>
-            <li>Encryption at rest for sensitive data</li>
-            <li>Secure password hashing (bcrypt)</li>
-            <li>Payment data handled by PCI-compliant Stripe</li>
-            <li>Regular security audits and updates</li>
-          </ul>
-          <p><strong>Organizational Safeguards:</strong></p>
-          <ul>
-            <li>Access controls (role-based access)</li>
-            <li>Employee training on privacy and security</li>
-            <li>Confidentiality agreements</li>
-            <li>Incident response procedures</li>
-          </ul>
-          <p><strong>However:</strong></p>
-          <ul>
-            <li>No system is 100% secure</li>
-            <li>You are responsible for protecting your password</li>
-            <li>Use strong, unique passwords</li>
-            <li>Enable two-factor authentication if available</li>
-            <li>Report suspicious activity immediately</li>
-          </ul>
+<h3>8.6 Utah Residents (UCPA)</h3>
 
-          <h2>8. Cookies and Tracking Technologies</h2>
-          <p>We use cookies and similar tracking technologies to enhance your experience on our platform:</p>
-          <ul>
-            <li><strong>Essential Cookies:</strong> Required for the site to function properly, including session management and authentication.</li>
-            <li><strong>Analytics Cookies:</strong> Help us understand how visitors interact with our platform, allowing us to improve our services. These collect anonymized usage data.</li>
-            <li><strong>Marketing Cookies:</strong> Used to deliver relevant advertisements and track campaign performance across platforms.</li>
-          </ul>
-          <p>You can manage your cookie preferences at any time using the cookie consent banner on our site. Essential cookies cannot be disabled as they are necessary for the platform to function. Disabling analytics or marketing cookies will not affect your ability to use our services.</p>
-          <p>We may also use web beacons, pixel tags, and similar technologies to collect information about your interactions with our emails and platform.</p>
+<p>Utah residents have the right to access and delete their personal data and to opt out of the sale of personal data or targeted advertising. Contact privacy@uptendapp.com.</p>
 
-          <h2>9. Data Retention</h2>
-          <p>We retain your personal information for as long as your account is active or as needed to provide services. We may retain certain information for legal compliance, dispute resolution, and enforcement of our agreements.</p>
+<h3>8.7 GDPR (European Economic Area)</h3>
 
-          <h2>10. Changes to This Policy</h2>
-          <p>We may update this Privacy Policy from time to time. We will notify you of significant changes by posting the new policy on our platform and updating the "Last updated" date.</p>
+<p>UpTend's services are currently offered within the United States. If you access the Platform from the European Economic Area, United Kingdom, or Switzerland, the General Data Protection Regulation (GDPR) or UK GDPR may apply. We process data based on contractual necessity, legitimate interests, and consent. You may have rights to access, rectification, erasure, restriction, data portability, and objection. Contact privacy@uptendapp.com to exercise these rights. If you believe your rights have been violated, you may lodge a complaint with your local supervisory authority.</p>
 
-          <h2>11. Contact Us</h2>
-          <p>If you have questions or concerns about this Privacy Policy, please contact us:</p>
-          <ul>
-            <li>Email: privacy@uptend.app</li>
-            <li>Phone: (407) 338-3342</li>
-            <li>Address: Orlando, FL 32801</li>
-          </ul>
-        </Card>
-      </main>
+<h2>9. Children's Privacy</h2>
 
-      <footer className="border-t py-8 mt-16">
-        <div className="max-w-4xl mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} UpTend. All rights reserved.</p>
-          <div className="flex justify-center gap-4 mt-2">
-            <Link href="/terms" className="hover:text-foreground">Terms of Service</Link>
-            <Link href="/refund-policy" className="hover:text-foreground">Refund Policy</Link>
-            <Link href="/faq" className="hover:text-foreground">FAQ</Link>
-          </div>
-        </div>
-      </footer>
-    </div>
+<p>The Platform is not directed to individuals under the age of eighteen (18). We do not knowingly collect personal information from anyone under 18. If we learn that we have collected information from a child under 18, we will delete it promptly. If you believe a child under 18 has provided us with personal information, contact privacy@uptendapp.com.</p>
+
+<h2>10. Do Not Track</h2>
+
+<p>Some browsers offer a "Do Not Track" ("DNT") signal. There is no industry-standard protocol for DNT. Currently, the Platform does not respond to DNT signals. We will update this policy if a uniform standard is established.</p>
+
+<h2>11. Smart Home and Vehicle Data (Planned)</h2>
+
+<p>UpTend may in the future offer integrations with smart home platforms (e.g., Nest, Ring) via OAuth and vehicle maintenance features. When these features become available:</p>
+
+<ul>
+<li><strong>Smart Home Data:</strong> Device status, sensor data, and alerts from connected devices will be used solely to provide proactive home maintenance recommendations and will be stored securely.</li>
+<li><strong>Vehicle Data:</strong> Vehicle make, model, year, mileage, and maintenance history will be used to provide maintenance reminders and service recommendations.</li>
+</ul>
+<p>We will update this Privacy Policy before launching these features to provide specific details on data collection, use, and sharing.</p>
+
+<h2>12. Changes to This Privacy Policy</h2>
+
+<p>We may update this Privacy Policy from time to time. We will notify you of material changes via email or in-app notification at least thirty (30) days before the changes take effect. The updated policy will be posted on the Platform with the revised effective date. Your continued use after the effective date constitutes acceptance.</p>
+
+<h2>13. Contact Us</h2>
+
+<strong>Privacy Inquiries:</strong>
+<p>UPYCK, Inc. d/b/a UpTend</p>
+<p>Orlando, FL 32801</p>
+<p>Email: privacy@uptendapp.com</p>
+<p>Phone: (407) 338-3342</p>
+` }} />
+    </LegalPage>
   );
 }

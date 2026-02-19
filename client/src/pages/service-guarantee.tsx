@@ -1,227 +1,110 @@
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Truck, ArrowLeft, Shield, Phone, Mail, Clock, DollarSign, 
-  CheckCircle, Star, Users, MapPin, Zap 
-} from "lucide-react";
-import { Header } from "@/components/landing/header";
-import { Footer } from "@/components/landing/footer";
+import { Shield } from "lucide-react";
+import { LegalPage } from "./legal/legal-page";
 
-export default function ServiceGuarantee() {
+export default function ServiceguaranteePage() {
   return (
-    <div className="min-h-screen bg-background" data-testid="page-service-guarantee">
-      <Header />
+    <LegalPage title="Service Guarantee" icon={<Shield className="w-12 h-12" />} lastUpdated="February 19, 2026">
+      <div dangerouslySetInnerHTML={{ __html: `
 
-      <main className="max-w-4xl mx-auto px-4 py-12 pt-28">
-        <div className="text-center mb-12">
-          <Shield className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-4">Service Guarantee</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            We stand behind every pickup. Here's our commitment to you.
-          </p>
-        </div>
+<strong>UPYCK, Inc. d/b/a UpTend — Service Guarantee</strong>
+<strong>Effective Date: February 19, 2026</strong>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          <Card className="p-6 border-primary/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-bold">Price Match Promise</h3>
-                <Badge variant="secondary">Guaranteed</Badge>
-              </div>
-            </div>
-            <p className="text-muted-foreground text-sm">
-              The price you see is the price you pay. No surprise fees, no hidden charges. 
-              If items match your description, the price won't change.
-            </p>
-          </Card>
+<p>At UpTend, we stand behind every service booked through our Platform. This Service Guarantee outlines our commitments to you.</p>
 
-          <Card className="p-6 border-primary/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Clock className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-bold">On-Time Arrival</h3>
-                <Badge variant="secondary">Guaranteed</Badge>
-              </div>
-            </div>
-            <p className="text-muted-foreground text-sm">
-              Your Pro will arrive within the scheduled window. If they're more than 
-              30 minutes late without notice, you get $10 off your next booking.
-            </p>
-          </Card>
+<h2>1. Price Transparency Guarantee</h2>
 
-          <Card className="p-6 border-primary/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-bold">Complete Cleanup</h3>
-                <Badge variant="secondary">Guaranteed</Badge>
-              </div>
-            </div>
-            <p className="text-muted-foreground text-sm">
-              Pros are expected to leave the area clean after removal. This includes 
-              sweeping up debris and ensuring nothing is left behind.
-            </p>
-          </Card>
+<strong>What you see is what you pay.</strong> The price displayed at booking is your total price, inclusive of all platform fees. There are no hidden charges, surprise fees, or post-service surcharges. The only exception is if <strong>you</strong> approve additional work beyond the original scope — and that requires your explicit approval through the Platform before any additional charges apply.
 
-          <Card className="p-6 border-primary/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Shield className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-bold">Property Protection</h3>
-                <Badge variant="secondary">$1M Insured</Badge>
-              </div>
-            </div>
-            <p className="text-muted-foreground text-sm">
-              Pros are required to carry liability insurance. If damage occurs during 
-              service, claims are handled through the Pro's insurance up to $1 million.
-            </p>
-          </Card>
-        </div>
+<p>Your final price will never exceed the <strong>Guaranteed Price Ceiling</strong> (115% of the high estimate), regardless of circumstances.</p>
 
-        <Card className="p-8 prose prose-gray dark:prose-invert max-w-none">
-          <h2>The UpTend Promise</h2>
-          <p>
-            Every booking with UpTend comes with these guarantees. No exceptions.
-          </p>
+<h2>2. On-Time Arrival Guarantee</h2>
 
-          <h2>1. Transparent Pricing Guarantee</h2>
-          <p>
-            We believe in honest, upfront pricing:
-          </p>
-          <ul>
-            <li><strong>No hidden fees:</strong> The quoted price includes labor, disposal, and basic mileage</li>
-            <li><strong>$99 minimum:</strong> Our minimum charge is clearly stated upfront</li>
-            <li><strong>$1/mile (moving only):</strong> Distance charges are calculated before you book</li>
-            <li><strong>$25/flight:</strong> Stair charges are disclosed before confirmation</li>
-            <li><strong>Price lock:</strong> Your price is locked once you approve the quote</li>
-          </ul>
-          <p>
-            <strong>If we're wrong:</strong> If you were charged more than the approved quote for the same 
-            items, we'll refund the difference plus give you $10 credit.
-          </p>
+<p>Your Pro will arrive within the scheduled arrival window. If they don't, you are automatically compensated:</p>
 
-          <h2>2. Punctuality Guarantee</h2>
-          <p>
-            Your time matters:
-          </p>
-          <ul>
-            <li>Pros will arrive within your selected time window</li>
-            <li>Real-time GPS tracking so you always know when they'll arrive</li>
-            <li>Automatic notifications when they're on the way</li>
-          </ul>
-          <p>
-            <strong>If we're late:</strong> More than 30 minutes past your window without prior 
-            communication = $10 credit on your next booking.
-          </p>
+<ul>
+<li><strong>30–59 minutes late:</strong> 10% off your service</li>
+<li><strong>60–119 minutes late:</strong> 25% off your service</li>
+<li><strong>2+ hours late or no-show:</strong> Full refund plus a \$25 UpTend credit</li>
+</ul>
+<p>You don't need to request these discounts — they are applied automatically. You may also cancel for a full refund at any point during a delay.</p>
 
-          <h2>3. Professionalism Guarantee</h2>
-          <p>
-            Every Pro on our platform is:
-          </p>
-          <ul>
-            <li><strong>Background checked:</strong> Verified for your safety</li>
-            <li><strong>Highly rated:</strong> Minimum 4.5-star rating to remain active</li>
-            <li><strong>Properly equipped:</strong> Right vehicle and tools for the job</li>
-            <li><strong>Trained:</strong> Knows proper lifting techniques and disposal methods</li>
-          </ul>
-          <p>
-            <strong>If there's an issue:</strong> Report unprofessional behavior and we'll investigate 
-            within 24 hours. Confirmed issues result in Pro penalties and credits for you.
-          </p>
+<h2>3. Professionalism Guarantee</h2>
 
-          <h2>4. Satisfaction Guarantee</h2>
-          <p>
-            We want you to be 100% satisfied:
-          </p>
-          <ul>
-            <li>Review and approve the items to be removed before service starts</li>
-            <li>Verify the work is complete before the job is marked done</li>
-            <li>Rate your experience to help us maintain quality</li>
-          </ul>
-          <p>
-            <strong>If you're not satisfied:</strong> Contact us within 48 hours. We'll work to 
-            make it right - whether that means sending another Pro or issuing a refund.
-          </p>
+<p>Every UpTend Pro is expected to:</p>
 
-          <h2>5. Environmental Responsibility</h2>
-          <p>
-            We care about responsible disposal:
-          </p>
-          <ul>
-            <li>Items in good condition are donated when possible</li>
-            <li>Recyclable materials go to appropriate facilities</li>
-            <li>Electronics are disposed of per e-waste regulations</li>
-            <li>Hazardous materials are never illegally dumped</li>
-          </ul>
-          <p>
-            <strong>Our commitment:</strong> We divert at least 40% of collected items from landfills 
-            through donation and recycling programs.
-          </p>
+<ul>
+<li>Communicate clearly and courteously</li>
+<li>Arrive prepared with appropriate tools and equipment</li>
+<li>Treat your property with care and respect</li>
+<li>Complete work to a professional standard</li>
+<li>Clean up the work area upon completion</li>
+</ul>
+<p>If a Pro fails to meet these standards, contact us within 48 hours. We will investigate and may provide a partial or full refund, credit, or re-service.</p>
 
-          <h2>How to Make a Guarantee Claim</h2>
-          <p>
-            If we haven't met these guarantees:
-          </p>
-          <ol>
-            <li>Contact us within 48 hours of your service</li>
-            <li>Provide your booking number and describe the issue</li>
-            <li>Include photos if relevant (damage claims)</li>
-            <li>We'll respond within 24 hours with a resolution</li>
-          </ol>
+<h2>4. Satisfaction Guarantee</h2>
 
-          <h2>Contact Us</h2>
-          <p>
-            Questions about our guarantees? We're here 7 AM - 10 PM, 7 days a week.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 not-prose mt-4">
-            <Button variant="outline" asChild data-testid="button-email-support">
-              <a href="mailto:support@uptend.app">
-                <Mail className="w-4 h-4 mr-2" />
-                support@uptend.app
-              </a>
-            </Button>
-            <Button asChild data-testid="button-call-support">
-              <a href="tel:407-338-3342">
-                <Phone className="w-4 h-4 mr-2" />
-                (407) 338-3342
-              </a>
-            </Button>
-          </div>
+<p>If you are not satisfied with the quality of work performed:</p>
 
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg text-xs text-muted-foreground not-prose">
-            <strong>Marketplace Notice:</strong> UpTend is a technology platform connecting customers with independent 
-            service providers (Pros). These guarantees describe the standards we require of Pros on our platform 
-            and the support UpTend provides when issues arise. Pros are independent contractors, not UpTend employees. 
-            Insurance claims are handled through the Pro's own liability coverage.
-          </div>
-        </Card>
+<p>1. Contact us within <strong>48 hours</strong> of service completion</p>
+<p>2. Describe the issue and provide photos if possible</p>
+<p>3. We will work with you and the Pro to make it right</p>
 
-        <Card className="p-6 mt-8 bg-primary/5 border-primary/20 text-center">
-          <h3 className="text-xl font-bold mb-2">Ready to experience the UpTend difference?</h3>
-          <p className="text-muted-foreground mb-4">
-            Book with confidence. Every job is backed by our platform standards.
-          </p>
-          <Link href="/book">
-            <Button size="lg" data-testid="button-book-now">
-              <Zap className="w-4 h-4 mr-2" />
-              Book Now
-            </Button>
-          </Link>
-        </Card>
-      </main>
+<p>Resolutions may include:</p>
+<ul>
+<li><strong>Re-service</strong> at no additional cost (Pro returns to address the issue)</li>
+<li><strong>Partial refund</strong> for work not completed to standard</li>
+<li><strong>Full refund</strong> in cases of significant quality failure</li>
+<li><strong>UpTend credit</strong> for future services</li>
+</ul>
+<h2>5. Property Protection</h2>
 
-      <Footer />
-    </div>
+<p>We take the protection of your property seriously.</p>
+
+<h3>5.1 LLC-Verified Pros</h3>
+<p>LLC-Verified Pros carry their own <strong>commercial general liability insurance</strong> with a minimum of \$1,000,000 per occurrence. This insurance covers property damage and bodily injury that may occur during the performance of services at your home.</p>
+
+<h3>5.2 Independent Pros</h3>
+<p>Independent Pros are covered by <strong>UpTend's supplemental liability program</strong>, which provides limited coverage for property damage during jobs. This coverage has lower limits than the insurance carried by LLC-Verified Pros.</p>
+
+<h3>5.3 How to File a Property Damage Claim</h3>
+<p>1. Document the damage with photos and a written description</p>
+<p>2. Contact support@uptendapp.com within <strong>48 hours</strong> of the incident</p>
+<p>3. Include your booking number and Pro name</p>
+<p>4. We will initiate the claims process and guide you through next steps</p>
+
+<h2>6. Environmental Responsibility</h2>
+
+<p>UpTend encourages environmentally responsible practices:</p>
+
+<ul>
+<li><strong>Junk removal:</strong> We encourage Pros to donate usable items and recycle materials when feasible</li>
+<li><strong>Pressure washing:</strong> We encourage the use of environmentally safe cleaning solutions</li>
+<li><strong>Landscaping:</strong> We support sustainable landscaping practices</li>
+</ul>
+<p>While we cannot guarantee every Pro's environmental practices, we promote and incentivize responsible behavior through our platform.</p>
+
+<h2>7. What This Guarantee Does Not Cover</h2>
+
+<p>This Service Guarantee does not cover:</p>
+
+<ul>
+<li>Pre-existing conditions or damage not caused by the Pro</li>
+<li>Damage resulting from inaccurate or incomplete information provided by the Customer</li>
+<li>Issues reported more than 48 hours after service completion</li>
+<li>Normal wear and tear or cosmetic imperfections inherent to the work type</li>
+<li>Work performed outside the scope of the original booking</li>
+<li>Third-party products or materials (covered by manufacturer warranties)</li>
+<li>Force majeure events (natural disasters, severe weather)</li>
+</ul>
+<h2>8. Contact</h2>
+
+<p>To make a guarantee claim:</p>
+
+<strong>Email:</strong> support@uptendapp.com
+<strong>Phone:</strong> (407) 338-3342
+<strong>In-App:</strong> Use the Help & Support feature
+<strong>Response time:</strong> Within 2 business days
+` }} />
+    </LegalPage>
   );
 }

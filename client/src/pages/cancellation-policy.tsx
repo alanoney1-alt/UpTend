@@ -1,180 +1,131 @@
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Truck, ArrowLeft, XCircle, Phone, Mail, Clock, AlertTriangle } from "lucide-react";
+import { XCircle } from "lucide-react";
+import { LegalPage } from "./legal/legal-page";
 
-export default function CancellationPolicy() {
+export default function CancellationpolicyPage() {
   return (
-    <div className="min-h-screen bg-background" data-testid="page-cancellation-policy">
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
-              <Truck className="w-6 h-6" />
-            </div>
-            <span className="text-xl font-bold">UpTend</span>
-          </Link>
-          <Link href="/">
-            <Button variant="ghost" size="sm" data-testid="button-back-home">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-      </header>
+    <LegalPage title="Cancellation & Refund Policy" icon={<XCircle className="w-12 h-12" />} lastUpdated="February 19, 2026">
+      <div dangerouslySetInnerHTML={{ __html: `
 
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <XCircle className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-4">Cancellation Policy</h1>
-          <p className="text-muted-foreground">
-            Last updated: January 2026
-          </p>
-        </div>
+<strong>UPYCK, Inc. d/b/a UpTend — Cancellation & Refund Policy</strong>
+<strong>Effective Date: February 19, 2026</strong>
 
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
-          <Card className="p-4 text-center border-green-500/30 bg-green-500/5">
-            <Clock className="w-8 h-8 mx-auto mb-2 text-green-600" />
-            <p className="font-semibold text-green-700 dark:text-green-400">2+ Hours Before</p>
-            <p className="text-2xl font-bold text-green-600">FREE</p>
-            <p className="text-xs text-muted-foreground mt-1">Full refund, no fees</p>
-          </Card>
-          <Card className="p-4 text-center border-amber-500/30 bg-amber-500/5">
-            <Clock className="w-8 h-8 mx-auto mb-2 text-amber-600" />
-            <p className="font-semibold text-amber-700 dark:text-amber-400">30 Min - 2 Hours</p>
-            <p className="text-2xl font-bold text-amber-600">$15 Fee</p>
-            <p className="text-xs text-muted-foreground mt-1">Covers Pro travel</p>
-          </Card>
-          <Card className="p-4 text-center border-red-500/30 bg-red-500/5">
-            <Clock className="w-8 h-8 mx-auto mb-2 text-red-600" />
-            <p className="font-semibold text-red-700 dark:text-red-400">Under 30 Min</p>
-            <p className="text-2xl font-bold text-red-600">$25 Fee</p>
-            <p className="text-xs text-muted-foreground mt-1">Pro may be en route</p>
-          </Card>
-        </div>
+<p>This is the <strong>sole and definitive</strong> cancellation and refund policy for UpTend. In the event of any conflict with summaries or descriptions elsewhere on the Platform, this document controls.</p>
 
-        <Card className="p-8 prose prose-gray dark:prose-invert max-w-none">
-          <h2>Customer Cancellations</h2>
-          
-          <h3>Free Cancellation Window</h3>
-          <p>
-            You may cancel your booking <strong>free of charge</strong> if you cancel at least 
-            <strong> 2 hours before</strong> your scheduled pickup time. You'll receive a full refund 
-            to your original payment method.
-          </p>
+<h2>1. Customer Cancellation Fees</h2>
 
-          <h3>Late Cancellation Fees</h3>
-          <p>
-            We charge cancellation fees for late cancellations because Pros are independent contractors 
-            who reserve their time for your job. Late cancellations mean lost income for them.
-          </p>
-          <ul>
-            <li><strong>30 minutes to 2 hours before pickup:</strong> $15 cancellation fee</li>
-            <li><strong>Less than 30 minutes before pickup:</strong> $25 cancellation fee</li>
-            <li><strong>After Pro arrives:</strong> Up to 50% of the quoted price</li>
-          </ul>
+<p>| When You Cancel | What You Pay |</p>
+<p>|---|---|</p>
+<p>| <strong>Before the Pro accepts</strong> your booking | Nothing — free cancellation |</p>
+<p>| <strong>After the Pro accepts</strong> but before the Pro is en route | Nothing — free cancellation |</p>
+<p>| <strong>After the Pro is en route</strong> to your location | \$25 cancellation fee |</p>
+<p>| <strong>After the Pro arrives</strong> at your location | \$50 cancellation fee |</p>
+<p>| <strong>After work has begun</strong> | Full charge for the estimated service amount |</p>
 
-          <h3>How to Cancel</h3>
-          <p>You can cancel your booking through:</p>
-          <ul>
-            <li><strong>The UpTend app:</strong> Go to your booking and tap "Cancel Booking"</li>
-            <li><strong>Phone:</strong> Call (407) 338-3342</li>
-            <li><strong>Text:</strong> Reply "CANCEL" to your booking confirmation text</li>
-          </ul>
+<p>Cancellation fees are charged to the payment method on file. UpTend credits cannot be used to offset cancellation fees.</p>
 
-          <h2>Pro Cancellations</h2>
-          <p>
-            We take Pro reliability seriously. If your Pro cancels:
-          </p>
-          <ul>
-            <li>You'll be automatically matched with another available Pro when possible</li>
-            <li>If no replacement is available, you receive a <strong>full refund</strong> plus a <strong>$10 credit</strong></li>
-            <li>Pros with repeated cancellations face penalties and potential deactivation</li>
-          </ul>
+<h2>2. Pro Cancellation</h2>
 
-          <h2>No-Show Policy</h2>
-          
-          <h3>Customer No-Shows</h3>
-          <p>
-            If you're not present at the scheduled time and haven't responded to the Pro's contact 
-            attempts within 15 minutes:
-          </p>
-          <ul>
-            <li>The job will be marked as a customer no-show</li>
-            <li>A <strong>$25 no-show fee</strong> will be charged</li>
-            <li>You'll need to rebook for a new time</li>
-          </ul>
+<p>If a Pro cancels an accepted booking at any time before or during the scheduled service:</p>
 
-          <h3>Pro No-Shows</h3>
-          <p>
-            If a Pro doesn't arrive and doesn't communicate:
-          </p>
-          <ul>
-            <li>You receive a <strong>full refund</strong></li>
-            <li>You receive a <strong>$25 credit</strong> toward your next booking</li>
-            <li>The Pro is penalized and may face account suspension</li>
-          </ul>
+<ul>
+<li><strong>Customer receives:</strong> Full refund of any amounts charged <strong>plus</strong> a \$25 UpTend credit</li>
+<li><strong>UpTend will:</strong> Attempt to match the Customer with a replacement Pro as quickly as possible</li>
+</ul>
+<p>Pros who frequently cancel accepted bookings are subject to account penalties, including reduced visibility, suspension, or removal.</p>
 
-          <h2>Rescheduling</h2>
-          <p>
-            Need to change your time instead of canceling? <strong>Rescheduling is always free</strong> if done 
-            at least 2 hours before your original pickup time. You can reschedule through the app or by 
-            contacting us.
-          </p>
+<h2>3. Customer No-Show</h2>
 
-          <h2>Special Circumstances</h2>
-          <p>
-            We understand emergencies happen. In cases of:
-          </p>
-          <ul>
-            <li>Medical emergencies</li>
-            <li>Severe weather (hurricane, flood warnings)</li>
-            <li>Other genuine emergencies</li>
-          </ul>
-          <p>
-            Please contact us and we'll waive cancellation fees on a case-by-case basis. We just ask 
-            that you let us know as soon as possible.
-          </p>
+<p>If a Customer is not present or does not provide access at the scheduled time:</p>
 
-          <h2>Contact Us</h2>
-          <p>
-            Questions about cancellations? We're here to help.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 not-prose mt-4">
-            <Button variant="outline" asChild data-testid="button-email-support">
-              <a href="mailto:support@uptend.app">
-                <Mail className="w-4 h-4 mr-2" />
-                support@uptend.app
-              </a>
-            </Button>
-            <Button asChild data-testid="button-call-support">
-              <a href="tel:407-338-3342">
-                <Phone className="w-4 h-4 mr-2" />
-                (407) 338-3342
-              </a>
-            </Button>
-          </div>
+<p>1. The Pro will wait for <strong>fifteen (15) minutes</strong></p>
+<p>2. During the wait, the Pro will attempt to contact the Customer via the Platform and by phone</p>
+<p>3. If the Customer is unreachable after 15 minutes, the job is marked as a Customer no-show</p>
+<p>4. <strong>A \$25 no-show fee</strong> is charged to the Customer</p>
 
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg text-xs text-muted-foreground not-prose">
-            <strong>Marketplace Notice:</strong> UpTend is a technology platform connecting customers with independent 
-            service providers (Pros). Cancellation fees help compensate Pros for their reserved time. 
-            Pros are independent contractors, not UpTend employees.
-          </div>
-        </Card>
-      </main>
+<h2>4. Pro No-Show</h2>
 
-      <footer className="border-t py-8 mt-16">
-        <div className="max-w-4xl mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} UpTend. All rights reserved.</p>
-          <div className="flex justify-center gap-4 mt-2">
-            <Link href="/terms" className="hover:text-foreground">Terms</Link>
-            <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
-            <Link href="/refund-policy" className="hover:text-foreground">Refunds</Link>
-            <Link href="/service-guarantee" className="hover:text-foreground">Guarantee</Link>
-          </div>
-        </div>
-      </footer>
-    </div>
+<p>If a Pro fails to arrive for a scheduled booking:</p>
+
+<ul>
+<li><strong>Customer receives:</strong> Full refund of any amounts charged <strong>plus</strong> a \$25 UpTend credit</li>
+<li><strong>UpTend will:</strong> Attempt to assign a replacement Pro</li>
+</ul>
+<h2>5. Pro Late Arrival</h2>
+
+<p>Late arrival is measured from the <strong>end</strong> of the scheduled arrival window:</p>
+
+<p>| How Late | Your Automatic Discount |</p>
+<p>|---|---|</p>
+<p>| 30–59 minutes | 10% off the service price |</p>
+<p>| 60–119 minutes | 25% off the service price |</p>
+<p>| 2+ hours (or Pro does not arrive) | Full refund + \$25 UpTend credit |</p>
+
+<p>Discounts are applied automatically. You do not need to request them. If you prefer not to wait, you may cancel at any time during the delay for a <strong>full refund</strong> regardless of how long the Pro is late.</p>
+
+<h2>6. Rescheduling</h2>
+
+<p>You may reschedule any booking <strong>free of charge</strong> if you request the change at least <strong>two (2) hours</strong> before the scheduled service time. Rescheduling requests made less than two hours before the scheduled time are treated as cancellations and subject to the fees in Section 1.</p>
+
+<h2>7. Special Circumstances</h2>
+
+<p>UpTend may waive cancellation fees in the following circumstances at our sole discretion:</p>
+
+<ul>
+<li><strong>Documented personal or family emergencies</strong> (medical emergency, death in family)</li>
+<li><strong>Severe weather events</strong> that make service unsafe or impractical</li>
+<li><strong>Natural disasters</strong> affecting the service area</li>
+<li><strong>Government-mandated restrictions</strong> (evacuation orders, stay-at-home orders)</li>
+</ul>
+<p>Contact support@uptendapp.com as soon as possible with any relevant documentation. Approval of fee waivers is not guaranteed.</p>
+
+<h2>8. Estimate Accuracy</h2>
+
+<p>If the actual service price differs from the original estimate by more than <strong>20%</strong> (higher or lower):</p>
+
+<ul>
+<li>UpTend will investigate the discrepancy</li>
+<li>If the discrepancy was caused by <strong>inaccurate or incomplete information</strong> provided by the Customer, the revised price applies</li>
+<li>If the discrepancy was caused by a <strong>Platform error or AI estimate inaccuracy</strong>, the Customer will be charged the lower of the original estimate or actual price, and UpTend will absorb the difference</li>
+<li>In all cases, the <strong>Guaranteed Price Ceiling</strong> (high estimate × 1.15) is the maximum a Customer can be charged</li>
+</ul>
+<h2>9. Refund Processing Timeline</h2>
+
+<p>| Refund Method | Timeline |</p>
+<p>|---|---|</p>
+<p>| Credit/debit card | 5–10 business days |</p>
+<p>| Klarna | 5–14 business days (varies by Klarna) |</p>
+<p>| Afterpay | 5–14 business days (varies by Afterpay) |</p>
+<p>| UpTend credits | Immediate |</p>
+
+<p>Refunds are returned to the original payment method. UpTend credits do not expire and are applied automatically to future bookings.</p>
+
+<h2>10. Subscription Service Cancellation</h2>
+
+<p>For recurring or subscription-based services (e.g., weekly cleaning, monthly lawn care):</p>
+
+<ul>
+<li>Cancel at any time through your account settings or by contacting support</li>
+<li>Cancellation takes effect at the <strong>end of the current billing period</strong></li>
+<li>No refunds for partial billing periods unless required by law</li>
+<li>Any upcoming scheduled service within a cancelled subscription will be cancelled without fee if not yet assigned to a Pro</li>
+</ul>
+<h2>11. B2B Contract Cancellation</h2>
+
+<p>Business Account cancellation terms are governed by:</p>
+
+<ul>
+<li>The <strong>B2B Terms of Service</strong></li>
+<li>Any individual <strong>Service Level Agreement (SLA)</strong> or contract between UpTend and the Business Account</li>
+<li>B2B cancellation terms may differ from consumer terms and are specified in the applicable agreement</li>
+</ul>
+<h2>12. Contact</h2>
+
+<p>For cancellations, refund inquiries, or special circumstances:</p>
+
+<strong>Email:</strong> support@uptendapp.com
+<strong>Phone:</strong> (407) 338-3342
+<strong>In-App:</strong> Use the Help & Support feature in the UpTend app
+` }} />
+    </LegalPage>
   );
 }
