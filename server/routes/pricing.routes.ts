@@ -2,6 +2,7 @@
  * Centralized Pricing API Routes
  *
  * GET  /api/pricing              — full price menu
+ * GET  /api/pricing/quote        — get a quote (simple GET lookup)
  * GET  /api/pricing/:serviceType — specific service pricing
  * POST /api/pricing/quote        — get a quote with options
  * POST /api/pricing/bundle       — calculate bundle discount
@@ -28,21 +29,7 @@ export function registerCentralizedPricingRoutes(app: Express) {
     }
   });
 
-  // Specific service pricing
-  app.get("/api/pricing/:serviceType", async (req: Request, res: Response) => {
-    try {
-      const tiers = await getServicePricing(req.params.serviceType);
-      if (tiers.length === 0) {
-        return res.status(404).json({ success: false, error: "Service not found" });
-      }
-      res.json({ success: true, serviceType: req.params.serviceType, tiers });
-    } catch (err: any) {
-      console.error("GET /api/pricing/:serviceType error:", err);
-      res.status(500).json({ success: false, error: err.message });
-    }
-  });
-
-  // Get a quote with options (GET for simple lookups, POST for full options)
+  // Get a quote with options (GET for simple lookups — must be before /:serviceType)
   app.get("/api/pricing/quote", async (req: Request, res: Response) => {
     try {
       const serviceType = (req.query.service || req.query.serviceType) as string;
@@ -73,6 +60,21 @@ export function registerCentralizedPricingRoutes(app: Express) {
     }
   });
 
+  // Specific service pricing (after /quote to avoid matching "quote" as :serviceType)
+  app.get("/api/pricing/:serviceType", async (req: Request, res: Response) => {
+    try {
+      const tiers = await getServicePricing(req.params.serviceType);
+      if (tiers.length === 0) {
+        return res.status(404).json({ success: false, error: "Service not found" });
+      }
+      res.json({ success: true, serviceType: req.params.serviceType, tiers });
+    } catch (err: any) {
+      console.error("GET /api/pricing/:serviceType error:", err);
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // POST quote with full options
   app.post("/api/pricing/quote", async (req: Request, res: Response) => {
     try {
       const { serviceType, ...options } = req.body;
