@@ -11,11 +11,20 @@
 
 import { Router } from "express";
 import { z } from "zod";
+import rateLimit from "express-rate-limit";
 import { requireAuth } from "../../auth-middleware";
 import type { DatabaseStorage } from "../../storage/impl/database-storage";
 import { nanoid } from "nanoid";
 import { generateConciergeResponse } from "../../services/ai/concierge-service";
 import { chat as georgeChat, type GeorgeContext } from "../../services/george-agent";
+
+const aiChatLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+});
 
 export function createConciergeRoutes(storage: DatabaseStorage) {
   const router = Router();
@@ -37,7 +46,12 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
     })).optional(),
   });
 
-  router.post("/chat", async (req, res) => {
+  router.post("/chat", aiChatLimiter, async (req, res) => {
+    // Enforce 10KB payload limit
+    const bodySize = JSON.stringify(req.body).length;
+    if (bodySize > 10240) {
+      return res.status(413).json({ error: "Payload too large. Maximum 10KB allowed." });
+    }
     try {
       const validated = chatSchema.parse(req.body);
       const userId = (req.user as any)?.userId || (req.user as any)?.id || null;

@@ -17,6 +17,7 @@ import { z } from "zod";
 import { pool } from "../db";
 import { analyzeImages } from "../services/ai/openai-vision-client";
 import { lookupWarranty } from "../services/warranty-lookup";
+import { requireAuth } from "../auth-middleware";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -90,7 +91,7 @@ export function registerHomeScanRoutes(app: Express) {
     customerId: z.string().min(1),
   });
 
-  router.post("/start", async (req, res) => {
+  router.post("/start", requireAuth, async (req, res) => {
     try {
       const { customerId } = startSchema.parse(req.body);
       await ensureWallet(customerId);

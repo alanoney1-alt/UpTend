@@ -4,6 +4,7 @@
  */
 import type { Express } from "express";
 import { pool } from "../db";
+import { requireAuth } from "../auth-middleware";
 
 export function registerAppDataRoutes(app: Express) {
   // DIY diagnosis alias
@@ -46,7 +47,7 @@ export function registerAppDataRoutes(app: Express) {
   });
 
   // Pro earnings alias
-  app.get("/api/hauler/earnings", async (req: any, res) => {
+  app.get("/api/hauler/earnings", requireAuth, async (req: any, res) => {
     try {
       res.json({ totalEarnings: 0, weeklyEarnings: 0, pendingPayouts: 0, history: [] });
     } catch (e) {

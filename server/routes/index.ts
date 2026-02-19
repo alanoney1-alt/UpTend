@@ -11,6 +11,7 @@ import { registerCustomerAuthRoutes } from "./auth/customer.routes";
 import { registerAdminAuthRoutes } from "./auth/admin.routes";
 import { registerBusinessAuthRoutes } from "./auth/business.routes";
 import { registerGoogleAuthRoutes } from "./auth/google.routes";
+import { registerUnifiedAuthRoutes } from "./auth/unified.routes";
 
 // Pro routes (formerly Hauler routes)
 import { registerProProfileRoutes, registerHaulerProfileRoutes } from "./hauler/profile.routes";
@@ -260,6 +261,7 @@ export async function registerRoutes(
   await registerAdminAuthRoutes(app);
   await registerBusinessAuthRoutes(app);
   await registerGoogleAuthRoutes(app);
+  registerUnifiedAuthRoutes(app);
 
   // Register Pro routes
   registerProProfileRoutes(app);

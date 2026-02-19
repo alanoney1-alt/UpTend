@@ -18,6 +18,17 @@ import {
 } from "../services/pricing-engine.js";
 
 export function registerCentralizedPricingRoutes(app: Express) {
+  // Service catalog alias — /api/pricing/services returns same as /api/pricing
+  app.get("/api/pricing/services", async (_req: Request, res: Response) => {
+    try {
+      const menu = await getAllPricing();
+      res.json({ success: true, pricing: menu });
+    } catch (err: any) {
+      console.error("GET /api/pricing/services error:", err);
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
   // Full price menu
   app.get("/api/pricing", async (_req: Request, res: Response) => {
     try {
