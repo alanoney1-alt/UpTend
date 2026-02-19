@@ -346,7 +346,11 @@ function ServicesStrip() {
   return (
     <section className="py-16 bg-slate-50 dark:bg-slate-900/50 border-t border-border">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-2xl font-bold text-center mb-2">12 Services. One App. Transparent Pricing.</h2>
+        <h2 className="text-2xl font-bold text-center mb-2">
+          12 Services.<br />
+          One App.<br />
+          Transparent Pricing.
+        </h2>
         <p className="text-center text-muted-foreground mb-10">Tap any service to get an instant quote.</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {services.map((svc) => (
