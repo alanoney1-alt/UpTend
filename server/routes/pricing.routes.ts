@@ -42,7 +42,37 @@ export function registerCentralizedPricingRoutes(app: Express) {
     }
   });
 
-  // Get a quote with options
+  // Get a quote with options (GET for simple lookups, POST for full options)
+  app.get("/api/pricing/quote", async (req: Request, res: Response) => {
+    try {
+      const serviceType = (req.query.service || req.query.serviceType) as string;
+      if (!serviceType) {
+        return res.status(400).json({ success: false, error: "service or serviceType query param required" });
+      }
+      const options: any = {};
+      if (req.query.size) options.size = req.query.size;
+      if (req.query.scope) options.scope = req.query.scope;
+      const quote = await getQuote(serviceType, options);
+      res.json({ success: true, serviceType, quote });
+    } catch (err: any) {
+      // If exact match fails, try fuzzy match against all pricing
+      try {
+        const serviceType = (req.query.service || req.query.serviceType) as string;
+        const allPricing = await getAllPricing();
+        const keys = Object.keys(allPricing);
+        const match = keys.find(k =>
+          k.toLowerCase().includes(serviceType.toLowerCase()) ||
+          serviceType.toLowerCase().includes(k.toLowerCase())
+        );
+        if (match) {
+          const quote = await getQuote(match, {});
+          return res.json({ success: true, serviceType: match, quote });
+        }
+      } catch {}
+      res.status(404).json({ success: false, error: "Service not found" });
+    }
+  });
+
   app.post("/api/pricing/quote", async (req: Request, res: Response) => {
     try {
       const { serviceType, ...options } = req.body;

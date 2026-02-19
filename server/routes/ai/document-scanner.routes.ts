@@ -29,7 +29,8 @@ export function createDocumentScannerRoutes(storage: DatabaseStorage) {
     propertyId: z.string().optional(),
   });
 
-  router.post("/documents/scan", requireAuth, async (req, res) => {
+  // Handler for document scanning/analysis
+  const handleDocumentScan = async (req: any, res: any) => {
     try {
       const validated = scanSchema.parse(req.body);
       const userId = ((req.user as any).userId || (req.user as any).id);
@@ -124,7 +125,10 @@ Return ONLY valid JSON:
       console.error("Error scanning document:", error);
       res.status(400).json({ error: error.message || "Failed to scan document" });
     }
-  });
+  };
+
+  router.post("/documents/scan", requireAuth, handleDocumentScan);
+  router.post("/documents/analyze", requireAuth, handleDocumentScan);
 
   // GET /api/ai/documents/scans
   router.get("/documents/scans", requireAuth, async (req, res) => {

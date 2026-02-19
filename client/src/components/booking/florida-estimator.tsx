@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest } from "@/lib/queryClient";
+import { PaymentForm } from "@/components/payment-form";
 
 interface ServicePricing {
   id: string;
@@ -165,7 +166,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
   const [tosAccepted, setTosAccepted] = useState(false);
   const [tosAcceptedAt, setTosAcceptedAt] = useState<string | null>(null);
   const [address, setAddress] = useState("");
-  const [step, setStep] = useState<1 | 2 | "choose-pro" | 3 | 4 | 5 | 6>(1);
+  const [step, setStep] = useState<1 | 2 | "choose-pro" | 3 | 4 | 5 | 6 | 7>(1);
+  const [createdJobId, setCreatedJobId] = useState<string | null>(null);
+  const [bookingAmount, setBookingAmount] = useState<number>(0);
   const [propertyData, setPropertyData] = useState<ZillowProperty | null>(null);
   const [propertyLoading, setPropertyLoading] = useState(false);
   const [, setLocation] = useLocation();
@@ -1099,14 +1102,19 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           createdAt: new Date().toISOString(),
         };
 
-        await apiRequest("POST", "/api/service-requests", body);
+        const response = await apiRequest("POST", "/api/service-requests", body);
+        const createdRequest = await response.json();
+
+        // Save job info for payment step
+        setCreatedJobId(createdRequest.id);
+        setBookingAmount(estimatedPrice);
 
         toast({
-          title: "Booking confirmed!",
-          description: "Your service request has been created. A verified Pro will be dispatched soon.",
+          title: "Booking created!",
+          description: "Now complete payment to confirm your booking.",
         });
 
-        setLocation("/booking-success");
+        setStep(7);
       } catch (error: any) {
         toast({
           title: "Booking failed",
@@ -1263,6 +1271,51 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             </div>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  // Step 7: Payment
+  if (step === 7 && createdJobId && isAuthenticated) {
+    const customerId = (user as any)?.userId || (user as any)?.id;
+    return (
+      <div className="w-full max-w-2xl mx-auto" data-testid="widget-payment-step">
+        <div className="text-center mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setStep(6)}
+            className="mb-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+          >
+            ← Back to Booking Details
+          </Button>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            Complete Payment
+          </h2>
+          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
+            Authorize payment to confirm your booking
+          </p>
+        </div>
+
+        <PaymentForm
+          amount={bookingAmount}
+          jobId={createdJobId}
+          customerId={customerId}
+          onSuccess={() => {
+            toast({
+              title: "Payment authorized!",
+              description: "Your booking is confirmed. A verified Pro will be dispatched soon.",
+            });
+            setLocation("/booking-success");
+          }}
+          onError={(error) => {
+            toast({
+              title: "Payment failed",
+              description: error,
+              variant: "destructive",
+            });
+          }}
+        />
       </div>
     );
   }
