@@ -20,7 +20,7 @@ const resources = {
       "nav.for_business": "For Business",
       "nav.emergency": "Emergency",
 
-      "hero.hero_headline_1": "Book Your Home Service. Not a prayer.",
+      "hero.hero_headline_1": "Book Your Home Service.",
       "hero.hero_headline_2": "Instant AI quotes.",
       "hero.hero_headline_3": "",
       "hero.hero_subhead": "Stop calling 5 contractors for 1 job. Get an instant price, book a verified Pro, and track everything in real-time. Home services, finally fixed.",
@@ -292,7 +292,7 @@ const resources = {
       lifetime: "Lifetime",
       recent_payouts: "Recent Payouts",
       no_jobs_yet: "No completed jobs yet. Go get 'em!",
-      hero_headline_1: "Book Your Home Service. Not a prayer.",
+      hero_headline_1: "Book Your Home Service.",
       hero_headline_2: "Instant AI quotes.",
       hero_headline_3: "",
       hero_subhead: "Stop calling 5 contractors for 1 job. Get an instant price, book a verified Pro, and track everything in real-time. Home services, finally fixed.",
@@ -972,7 +972,7 @@ const resources = {
       "nav.for_business": "Para Empresas",
       "nav.emergency": "Emergencia",
 
-      "hero.hero_headline_1": "Reserva Tu Servicio del Hogar. No una esperanza.",
+      "hero.hero_headline_1": "Reserva Tu Servicio del Hogar.",
       "hero.hero_headline_2": "Cotizaciones AI instantáneas.",
       "hero.hero_headline_3": "Seguimiento en tiempo real.",
       "hero.hero_subhead": "Deja de llamar a 5 contratistas para 1 trabajo. Obtén un precio instantáneo, contrata un Pro verificado y rastrea todo en tiempo real. Servicios del hogar, finalmente arreglados.",
