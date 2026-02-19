@@ -158,14 +158,24 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   const isFirstVisit = !localStorage.getItem(LS_GREETED);
   if (isFirstVisit) {
     return {
-      welcome: `Hey! 😊 I'm George — so glad you stopped by!\n\nWelcome to UpTend — on-demand home services with verified pros who care about doing things right. Whether it's junk removal, pressure washing, a deep clean, or something else entirely — we match you with trusted, background-checked professionals who show up on time and treat your home like their own. Oh, and we're sustainability-focused too 🌱 because taking care of your home shouldn't mean trashing the planet.\n\nI'm here if you have ANY questions — about what we do, how it works, what services might be right for you, anything at all. Seriously, no question is too small. I love chatting 😄\n\nWhat's on your mind? 👇`,
-      quickActions: [],
+      welcome: `Hey — I'm George. 🔧\n\nI know basically everything about home repair. Whether something's broken, you're trying to prevent a problem, or you just need a pro out there fast — I've got you.\n\nWhat's going on with your home?`,
+      quickActions: [
+        { label: "🚀 Need a Pro Now", action: "I need to book a professional service" },
+        { label: "🏠 Check My Home's Health", action: "I want to check on my home's health" },
+        { label: "📸 Send a Photo", action: "I want to send a photo of an issue" },
+        { label: "🔧 Fix It Myself", action: "I want to fix something myself" },
+      ],
     };
   }
 
   return {
-    welcome: `Hey, welcome back! 😊 So happy to see you again.\n\nI'm right here if you need anything — questions about services, how something works, or just figuring out what you need. I'm all ears!\n\nWhat can I help with today? 👇`,
-    quickActions: [],
+    welcome: `Hey — glad you're back. 🔧\n\nSomething going on with your home? I'm ready to get it handled — whether that's booking a pro right now or walking you through it yourself.\n\nWhat do you need?`,
+    quickActions: [
+      { label: "🚀 Book a Pro", action: "I need to book a professional service" },
+      { label: "🏠 Home Health Check", action: "How's my home doing?" },
+      { label: "📸 Photo Diagnosis", action: "I want to send a photo of an issue" },
+      { label: "🔧 DIY Help", action: "I want to fix something myself" },
+    ],
   };
 }
 
