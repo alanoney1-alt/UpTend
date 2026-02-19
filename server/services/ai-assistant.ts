@@ -25,7 +25,7 @@ export const UPTEND_KNOWLEDGE = {
       "Eco-friendly disposal: 70%+ landfill diversion rate",
       "Carbon offset tracking for every job (trees planted equivalent)",
       "Same-day or next-day service availability",
-      "7% Protection Fee covers all insurance, no hidden fees",
+      "All insurance and protection included in quoted price",
       "Buy Now Pay Later options (Afterpay/Klarna) for jobs $199+",
     ],
   },
