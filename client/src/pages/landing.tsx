@@ -17,7 +17,7 @@ import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
-  usePageTitle("UpTend | Smart Home Services in Orlando — Book Instantly");
+  usePageTitle("UpTend | Home Services, Finally Done Right");
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />
