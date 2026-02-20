@@ -575,12 +575,12 @@ export default function Profile() {
 
   const addressesQuery = useQuery<CustomerAddress[]>({
     queryKey: ["/api/customers/addresses"],
-    enabled: !!user,
+    enabled: !!user && !isPro,
   });
 
   const paymentMethodsQuery = useQuery<PaymentMethod[]>({
     queryKey: ["/api/customers/payment-methods"],
-    enabled: !!user,
+    enabled: !!user && !isPro,
   });
 
   interface PropertyWithTransfers {
@@ -601,7 +601,7 @@ export default function Profile() {
 
   const propertiesQuery = useQuery<PropertyWithTransfers[]>({
     queryKey: ["/api/properties/my-properties"],
-    enabled: !!user,
+    enabled: !!user && !isPro,
   });
 
   const transferMutation = useMutation({
@@ -813,7 +813,7 @@ export default function Profile() {
                 ) : (
                   <>
                     <h2 className="text-xl font-bold">{user.firstName} {user.lastName}</h2>
-                    <p className="text-muted-foreground">Customer since {new Date(user.createdAt || Date.now()).getFullYear()}</p>
+                    <p className="text-muted-foreground">{isPro ? 'Pro' : 'Customer'} since {new Date(user.createdAt || Date.now()).getFullYear()}</p>
                   </>
                 )}
               </div>
