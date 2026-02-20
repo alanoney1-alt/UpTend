@@ -93,11 +93,6 @@ function HeroSection() {
               Get Your Free Quote <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
-          <Link href="/ai/home-scan" asChild>
-            <Button size="lg" variant="outline" className="border-[#F47C20]/50 text-[#F47C20] hover:bg-[#F47C20]/10 font-bold text-lg px-8 py-6 rounded-xl">
-              ✨ Free Home Scan
-            </Button>
-          </Link>
           <Link href="/become-pro" asChild>
             <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 font-bold text-lg px-8 py-6 rounded-xl">
               Join as a Pro
