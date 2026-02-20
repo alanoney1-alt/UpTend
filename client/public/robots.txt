@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
-
+Disallow: /api/
+Disallow: /admin
+Disallow: /pro/
+Disallow: /dashboard
 Sitemap: https://uptendapp.com/sitemap.xml
