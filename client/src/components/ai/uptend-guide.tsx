@@ -886,7 +886,7 @@ export function UpTendGuide() {
             <iframe
               src={inAppUrl}
               className="w-full h-[calc(80vh-40px)] border-0"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"
               title="In-app browser"
             />
           </div>

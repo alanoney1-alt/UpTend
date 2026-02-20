@@ -33,7 +33,7 @@ export function VideoPlayer({ videoId, title }: VideoPlayerProps) {
   if (!videoId) return null;
 
   const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`;
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1&origin=${window.location.origin}`;
 
   // Click-to-load: show thumbnail first, load iframe on click (lighter & faster)
   if (!loaded) {
