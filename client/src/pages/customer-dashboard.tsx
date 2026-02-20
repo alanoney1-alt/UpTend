@@ -238,6 +238,199 @@ function JobHistoryRow({ job }: { job: ServiceRequest }) {
   );
 }
 
+const EVENT_TYPE_CONFIG: Record<string, { label: string; color: string; Icon: typeof CheckCircle2 }> = {
+  service: { label: "Service", color: "text-green-400", Icon: CheckCircle2 },
+  appliance: { label: "Appliance", color: "text-blue-400", Icon: Boxes },
+  warranty: { label: "Warranty", color: "text-yellow-400", Icon: Shield },
+  scan: { label: "Home Scan", color: "text-purple-400", Icon: Activity },
+  diy: { label: "DIY Repair", color: "text-orange-400", Icon: Wrench },
+  maintenance: { label: "Maintenance", color: "text-cyan-400", Icon: Clock },
+  reminder: { label: "Reminder", color: "text-pink-400", Icon: AlertCircle },
+  inventory: { label: "Inventory", color: "text-emerald-400", Icon: Package },
+};
+
+function HomeReportSection({ userId }: { userId: string }) {
+  const [filter, setFilter] = useState<string>("all");
+  const { data: reportData, isLoading } = useQuery<{ events: any[]; summary: any }>({
+    queryKey: ["/api/home-report"],
+    enabled: !!userId,
+  });
+
+  const events = reportData?.events || [];
+  const summary = reportData?.summary || {};
+  const filteredEvents = filter === "all" ? events : events.filter(e => e.type === filter);
+
+  const filterOptions = [
+    { key: "all", label: "All" },
+    { key: "service", label: "Services" },
+    { key: "appliance", label: "Appliances" },
+    { key: "warranty", label: "Warranties" },
+    { key: "scan", label: "Scans" },
+    { key: "diy", label: "DIY" },
+    { key: "maintenance", label: "Maintenance" },
+    { key: "inventory", label: "Inventory" },
+    { key: "reminder", label: "Reminders" },
+  ];
+
+  return (
+    <Card className="mb-6" data-testid="card-home-report">
+      <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <div>
+          <div className="flex items-center gap-2">
+            <FileBarChart className="w-5 h-5 text-primary" />
+            <CardTitle className="text-base">Home Report</CardTitle>
+            {events.length > 0 && (
+              <Badge variant="secondary" className="text-[10px]">{events.length} events</Badge>
+            )}
+          </div>
+          <p className="text-xs text-white/60 mt-1">Complete history of your home — like Carfax, but for houses.</p>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <Button variant="ghost" size="sm" onClick={() => console.log("Download full home report")} data-testid="button-download-home-report">
+            <Download className="w-4 h-4 mr-1" /> Download
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => console.log("Share home report")} data-testid="button-share-home-report">
+            <Share2 className="w-4 h-4 mr-1" /> Share
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {/* Summary stats row */}
+        {events.length > 0 && (
+          <div className="grid grid-cols-4 gap-2 mb-4" data-testid="home-report-summary">
+            {summary.totalServices > 0 && (
+              <div className="text-center p-2 rounded-md bg-green-500/10 border border-green-500/20">
+                <p className="text-lg font-bold text-green-400">{summary.totalServices}</p>
+                <p className="text-[10px] text-white/50">Services</p>
+              </div>
+            )}
+            {summary.totalAppliances > 0 && (
+              <div className="text-center p-2 rounded-md bg-blue-500/10 border border-blue-500/20">
+                <p className="text-lg font-bold text-blue-400">{summary.totalAppliances}</p>
+                <p className="text-[10px] text-white/50">Appliances</p>
+              </div>
+            )}
+            {summary.totalWarranties > 0 && (
+              <div className="text-center p-2 rounded-md bg-yellow-500/10 border border-yellow-500/20">
+                <p className="text-lg font-bold text-yellow-400">{summary.totalWarranties}</p>
+                <p className="text-[10px] text-white/50">Warranties</p>
+              </div>
+            )}
+            {summary.totalDIY > 0 && (
+              <div className="text-center p-2 rounded-md bg-orange-500/10 border border-orange-500/20">
+                <p className="text-lg font-bold text-orange-400">{summary.totalDIY}</p>
+                <p className="text-[10px] text-white/50">DIY Repairs</p>
+              </div>
+            )}
+            {summary.totalInventory > 0 && (
+              <div className="text-center p-2 rounded-md bg-emerald-500/10 border border-emerald-500/20">
+                <p className="text-lg font-bold text-emerald-400">{summary.totalInventory}</p>
+                <p className="text-[10px] text-white/50">Items</p>
+              </div>
+            )}
+            {summary.totalScans > 0 && (
+              <div className="text-center p-2 rounded-md bg-purple-500/10 border border-purple-500/20">
+                <p className="text-lg font-bold text-purple-400">{summary.totalScans}</p>
+                <p className="text-[10px] text-white/50">Scans</p>
+              </div>
+            )}
+            {summary.totalMaintenance > 0 && (
+              <div className="text-center p-2 rounded-md bg-cyan-500/10 border border-cyan-500/20">
+                <p className="text-lg font-bold text-cyan-400">{summary.totalMaintenance}</p>
+                <p className="text-[10px] text-white/50">Maintenance</p>
+              </div>
+            )}
+            {summary.upcomingReminders > 0 && (
+              <div className="text-center p-2 rounded-md bg-pink-500/10 border border-pink-500/20">
+                <p className="text-lg font-bold text-pink-400">{summary.upcomingReminders}</p>
+                <p className="text-[10px] text-white/50">Reminders</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Filter tabs */}
+        {events.length > 0 && (
+          <div className="flex items-center gap-1 mb-4 overflow-x-auto pb-1 scrollbar-hide">
+            {filterOptions.map((f) => (
+              <Button
+                key={f.key}
+                variant={filter === f.key ? "secondary" : "ghost"}
+                size="sm"
+                className={`text-[11px] shrink-0 ${filter !== f.key ? "text-white/50" : ""}`}
+                onClick={() => setFilter(f.key)}
+              >
+                {f.label}
+              </Button>
+            ))}
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          </div>
+        ) : filteredEvents.length > 0 ? (
+          <div className="relative pl-6 space-y-4" data-testid="timeline-home-report">
+            <div className="absolute left-[9px] top-2 bottom-2 w-0.5 bg-primary/30" />
+            {filteredEvents.slice(0, 50).map((event: any) => {
+              const config = EVENT_TYPE_CONFIG[event.type] || EVENT_TYPE_CONFIG.service;
+              const EventIcon = config.Icon;
+              return (
+                <div key={`${event.type}-${event.id}`} className="relative flex items-start gap-3" data-testid={`timeline-entry-${event.type}-${event.id}`}>
+                  <div className={`absolute -left-6 top-1 w-[18px] h-[18px] rounded-full bg-muted border-2 border-primary/50 flex items-center justify-center`}>
+                    <EventIcon className={`w-3 h-3 ${config.color}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {event.type === "service" ? (SERVICE_TYPE_LABELS[event.title] || event.title) : event.title}
+                        </p>
+                        <Badge variant="outline" className={`text-[9px] shrink-0 ${config.color} border-current/30`}>
+                          {config.label}
+                        </Badge>
+                      </div>
+                      <span className="text-[11px] text-white/50 shrink-0">
+                        {event.date ? formatDate(event.date) : ""}
+                      </span>
+                    </div>
+                    <p className="text-xs text-white/60 truncate">{event.description}</p>
+                    <div className="flex items-center gap-3 mt-0.5 text-xs text-white/50">
+                      {event.cost != null && <span className="font-medium text-white/70">${Number(event.cost).toFixed(0)}</span>}
+                      {event.value != null && <span className="font-medium text-white/70">Value: ${Number(event.value).toLocaleString()}</span>}
+                      {event.status && event.status !== "completed" && (
+                        <Badge variant="outline" className="text-[9px]">{event.status}</Badge>
+                      )}
+                      {event.isUpcoming && (
+                        <Badge variant="secondary" className="text-[9px]">Upcoming</Badge>
+                      )}
+                      {event.warrantyExpiry && (
+                        <span className="text-[10px]">Warranty: {formatDate(event.warrantyExpiry)}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-6" data-testid="empty-home-report">
+            <History className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground mb-1">Your home report is empty</p>
+            <p className="text-xs text-muted-foreground mb-4">Book a service, register an appliance, or run an AI Home Scan to start building your home&apos;s history.</p>
+            <Link href="/book">
+              <Button size="sm" data-testid="button-book-first-service">
+                <Plus className="w-3 h-3 mr-1" /> Book a Service
+              </Button>
+            </Link>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 function ActiveJobWithWorker({ job }: { job: ServiceRequest }) {
   const { data: haulerProfile } = useQuery<HaulerProfileData>({
     queryKey: [`/api/haulers/${job.assignedHaulerId}/profile`],
@@ -348,67 +541,7 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Home Report — Carfax for Homes */}
-        <Card className="mb-6" data-testid="card-home-report">
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
-            <div>
-              <div className="flex items-center gap-2">
-                <FileBarChart className="w-5 h-5 text-primary" />
-                <CardTitle className="text-base">Home Report</CardTitle>
-              </div>
-              <p className="text-xs text-white/60 mt-1">Complete history of your home — like Carfax, but for houses.</p>
-            </div>
-            <div className="flex items-center gap-1 shrink-0">
-              <Button variant="ghost" size="sm" onClick={() => console.log("Download full home report")} data-testid="button-download-home-report">
-                <Download className="w-4 h-4 mr-1" /> Download
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => console.log("Share home report")} data-testid="button-share-home-report">
-                <Share2 className="w-4 h-4 mr-1" /> Share
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {completedJobs.length > 0 ? (
-              <div className="relative pl-6 space-y-4" data-testid="timeline-home-report">
-                {/* vertical line */}
-                <div className="absolute left-[9px] top-2 bottom-2 w-0.5 bg-primary/30" />
-                {completedJobs
-                  .sort((a, b) => new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime())
-                  .map((job) => {
-                    const price = job.finalPrice || job.priceEstimate;
-                    return (
-                      <div key={job.id} className="relative flex items-start gap-3" data-testid={`timeline-entry-${job.id}`}>
-                        {/* dot */}
-                        <div className="absolute -left-6 top-1 w-[18px] h-[18px] rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
-                          <CheckCircle2 className="w-3 h-3 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <p className="text-sm font-medium">{SERVICE_TYPE_LABELS[job.serviceType] || job.serviceType}</p>
-                            <span className="text-[11px] text-white/50 shrink-0">{formatDate(job.completedAt || job.scheduledFor)}</span>
-                          </div>
-                          <p className="text-xs text-white/60 truncate">{job.pickupAddress}</p>
-                          <div className="flex items-center gap-3 mt-0.5 text-xs text-white/50">
-                            {price != null && <span className="font-medium text-white/70">${price.toFixed(0)}</span>}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
-            ) : (
-              <div className="text-center py-6" data-testid="empty-home-report">
-                <History className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground mb-1">Your home report is empty</p>
-                <p className="text-xs text-muted-foreground mb-4">Book your first service to start building your home&apos;s history.</p>
-                <Link href="/book">
-                  <Button size="sm" data-testid="button-book-first-service">
-                    <Plus className="w-3 h-3 mr-1" /> Book a Service
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <HomeReportSection userId={user.id} />
 
         <div className="mb-6">
           <ImpactTracker />

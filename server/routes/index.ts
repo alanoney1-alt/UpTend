@@ -179,6 +179,7 @@ import { registerConsentRoutes } from "./consent.routes";
 
 // Self-Serve AI Home Scan routes
 import { registerHomeScanRoutes } from "./home-scan.routes";
+import { registerHomeReportRoutes } from "./home-report.routes";
 
 // Drone Scan routes
 import { registerDroneScanRoutes } from "./drone-scan.routes";
@@ -433,6 +434,7 @@ export async function registerRoutes(
 
   // Register Self-Serve AI Home Scan + Wallet routes
   registerHomeScanRoutes(app);
+  registerHomeReportRoutes(app);
 
   // Register Drone Scan routes
   registerDroneScanRoutes(app);
