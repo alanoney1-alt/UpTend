@@ -115,7 +115,7 @@ function WhatIsItSection({ isEs }: { isEs: boolean }) {
       title: isEs ? "Seguimiento de Garantías" : "Warranty Tracking",
       desc: isEs
         ? "Mr. George te alerta antes de que expiren tus garantías"
-        : "George alerts you before warranties expire",
+        : "Mr. George alerts you before warranties expire",
     },
     {
       icon: Zap,
@@ -223,7 +223,7 @@ function WhyDoItSection({ isEs }: { isEs: boolean }) {
       icon: Clock,
       title: isEs ? "Nunca Pierdas una Garantía" : "Never Miss a Warranty",
       desc: isEs
-        ? "George rastrea cada garantía y te alerta antes de que expiren. No más perder cientos porque te pasó una fecha límite."
+        ? "Mr. George rastrea cada garantía y te alerta antes de que expiren. No más perder cientos porque te pasó una fecha límite."
         : "Mr. George tracks every warranty and alerts you before they expire. No more losing hundreds because you missed a deadline.",
       color: "bg-orange-500/10 text-orange-500",
     },
@@ -232,7 +232,7 @@ function WhyDoItSection({ isEs }: { isEs: boolean }) {
       icon: AlertTriangle,
       title: isEs ? "Listo para Emergencias" : "Emergency Ready",
       desc: isEs
-        ? "Si una tubería se rompe a las 2AM, George ya conoce tu sistema de plomería, las ubicaciones de cierre y qué profesional llamar."
+        ? "Si una tubería se rompe a las 2AM, Mr. George ya conoce tu sistema de plomería, las ubicaciones de cierre y qué profesional llamar."
         : "If a pipe bursts at 2AM, Mr. George already knows your plumbing system, your shutoff locations, and which pro to call.",
       color: "bg-red-500/10 text-red-500",
     },
@@ -241,7 +241,7 @@ function WhyDoItSection({ isEs }: { isEs: boolean }) {
       icon: Home,
       title: isEs ? "Mantenimiento Inteligente" : "Smart Maintenance",
       desc: isEs
-        ? "George aprende tu hogar y te dice exactamente cuándo cambiar el filtro del HVAC, cuándo tu calentador de agua se acerca al fin de su vida útil."
+        ? "Mr. George aprende tu hogar y te dice exactamente cuándo cambiar el filtro del HVAC, cuándo tu calentador de agua se acerca al fin de su vida útil."
         : "Mr. George learns your home and tells you exactly when your HVAC filter needs changing, when your water heater is approaching end-of-life.",
       color: "bg-cyan-500/10 text-cyan-500",
     },
@@ -298,7 +298,7 @@ function HowItWorksSection({ isEs }: { isEs: boolean }) {
     {
       num: "1",
       icon: Smartphone,
-      title: isEs ? "Abre George y di 'Escanea mi hogar'" : "Open George & say 'Scan my home'",
+      title: isEs ? "Abre Mr. George y di 'Escanea mi hogar'" : "Open Mr. George & say 'Scan my home'",
       desc: isEs ? "Mr. George te guía habitación por habitación" : "Mr. George guides you room by room",
     },
     {
@@ -652,7 +652,7 @@ function FinalCTASection({ isEs }: { isEs: boolean }) {
             className="font-bold text-lg px-8 py-6 rounded-xl border-[#F47C20] text-[#F47C20] hover:bg-[#F47C20]/10 w-full sm:w-auto"
             onClick={openGeorgeWithScan}
           >
-            {isEs ? "¿Preguntas? Pregúntale a George 👉" : "Questions? Just ask George 👉"}
+            {isEs ? "¿Preguntas? Pregúntale a Mr. George 👉" : "Questions? Just ask Mr. George 👉"}
           </Button>
         </div>
       </div>

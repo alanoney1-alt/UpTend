@@ -54,8 +54,8 @@ const MODULES: AcademyModule[] = [
       "Use the app's tracking and photo documentation features on every job — they protect you.",
       "If the scope of work changes, always submit a scope adjustment through the app before proceeding.",
       "Mr. George is your AI co-pilot. Ask him pricing questions, job tips, or customer communication help anytime.",
-      "Use George to generate professional messages to customers about delays, scope changes, or completion updates.",
-      "After completing a job, ask George to help you document the work for your ESG impact record.",
+      "Use Mr. George to generate professional messages to customers about delays, scope changes, or completion updates.",
+      "After completing a job, ask Mr. George to help you document the work for your ESG impact record.",
     ],
     quiz: [
       {
@@ -129,7 +129,7 @@ const MODULES: AcademyModule[] = [
   {
     id: "app_and_george",
     skillType: "app_and_george",
-    title: "Using George & The App",
+    title: "Using Mr. George & The App",
     icon: MessageCircle,
     iconColor: "text-cyan-600 dark:text-cyan-400",
     required: true,
@@ -187,12 +187,12 @@ const MODULES: AcademyModule[] = [
         explanation: "Always use the app's scope adjustment feature. The customer sees the updated price and must approve before you do additional work. This protects your payout and keeps insurance active.",
       },
       {
-        question: "How do you ask George for help while you're on a job?",
+        question: "How do you ask Mr. George for help while you're on a job?",
         options: [
-          "Call the UpTend support hotline and ask for George",
+          "Call the UpTend support hotline and ask for Mr. George",
           "Send an email to george@uptend.com",
-          "Click the George chat bubble — it's available on every page in the app",
-          "You can only access George from a desktop computer",
+          "Click the Mr. George chat bubble — it's available on every page in the app",
+          "You can only access Mr. George from a desktop computer",
         ],
         correct: 2,
         explanation: "Mr. George is always available via the chat bubble on every page of the app. Ask him about pricing, job tips, customer communication, scope changes, or anything else you need help with.",
@@ -849,7 +849,7 @@ function ProAcademyDashboard() {
 
   const startQuiz = () => {
     if (isModuleLocked(currentModule)) {
-      const missing = !coreComplete ? "Core Safety" : "Using George & The App";
+      const missing = !coreComplete ? "Core Safety" : "Using Mr. George & The App";
       toast({
         title: "Prerequisites Required",
         description: `You must pass ${missing} first.`,
@@ -968,7 +968,7 @@ function ProAcademyDashboard() {
             </Button>
 
             <p className="text-xs text-center text-muted-foreground">
-              Core Safety and Using George & The App are required. Additional badges unlock higher-paying job types.
+              Core Safety and Using Mr. George & The App are required. Additional badges unlock higher-paying job types.
             </p>
           </CardContent>
         </Card>

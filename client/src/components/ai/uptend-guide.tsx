@@ -643,7 +643,7 @@ export function UpTendGuide() {
           aria-label="Chat with Mr. George"
         >
           <span className="text-base leading-none">🏠</span>
-          <span>Need a hand from George? 👋</span>
+          <span>Need a hand from Mr. George? 👋</span>
         </button>
       )}
 
@@ -668,7 +668,7 @@ export function UpTendGuide() {
       >
         {/* Header — minimal */}
         <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-black/5 dark:border-white/5 shrink-0">
-          <span className="font-semibold text-sm">George 🏠</span>
+          <span className="font-semibold text-sm">Mr. George 🏠</span>
           <button
             onClick={() => { setIsOpen(false); synth.cancel(); }}
             className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"

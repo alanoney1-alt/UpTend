@@ -169,7 +169,7 @@ export default function TermsPage() {
 
 <h2>6. AI Features — Mr. George AI Assistant</h2>
 
-<h3>6.1 What George Is</h3>
+<h3>6.1 What Mr. George Is</h3>
 
 <p>Mr. George is UpTend's AI-powered assistant, built using Anthropic's Claude large language model. Mr. George can help you with:</p>
 
@@ -196,7 +196,7 @@ export default function TermsPage() {
 
 <h3>6.3 DIY Coaching</h3>
 
-<p>George offers DIY coaching — educational guidance on home improvement and maintenance tasks that homeowners may choose to perform themselves. <strong>DIY Coaching is provided for educational and informational purposes only.</strong> By using DIY Coaching:</p>
+<p>Mr. George offers DIY coaching — educational guidance on home improvement and maintenance tasks that homeowners may choose to perform themselves. <strong>DIY Coaching is provided for educational and informational purposes only.</strong> By using DIY Coaching:</p>
 
 <p>(a) You acknowledge that you are solely responsible for determining whether a task is within your skill level;</p>
 <p>(b) You assume all risk of injury, property damage, or any other harm arising from your decision to perform work yourself;</p>
@@ -467,7 +467,7 @@ export default function TermsPage() {
 
 <h3>16.1 UpTend IP</h3>
 
-<p>The Platform, including its design, features, content, software, algorithms, AI models, trademarks (including "UpTend," "George," and the UpTend logo), and all related intellectual property, is owned by UPYCK, Inc. or its licensors. You may not copy, modify, distribute, reverse engineer, or create derivative works from any part of the Platform without our express written consent.</p>
+<p>The Platform, including its design, features, content, software, algorithms, AI models, trademarks (including "UpTend," "Mr. George," and the UpTend logo), and all related intellectual property, is owned by UPYCK, Inc. or its licensors. You may not copy, modify, distribute, reverse engineer, or create derivative works from any part of the Platform without our express written consent.</p>
 
 <h3>16.2 User Content License</h3>
 
@@ -490,7 +490,7 @@ export default function TermsPage() {
 <p>(a) <strong>Stripe</strong> — Payment processing, including BNPL (Klarna/Afterpay);</p>
 <p>(b) <strong>Twilio</strong> — SMS and voice communications;</p>
 <p>(c) <strong>SendGrid</strong> — Email delivery;</p>
-<p>(d) <strong>Anthropic</strong> — Claude AI models powering George;</p>
+<p>(d) <strong>Anthropic</strong> — Claude AI models powering Mr. George;</p>
 <p>(e) <strong>OpenAI</strong> — GPT and vision models for photo analysis and AI Home Scan;</p>
 <p>(f) <strong>Amazon Associates</strong> — Affiliate product links;</p>
 <p>(g) <strong>Checkr</strong> — Background check services (where applicable).</p>
