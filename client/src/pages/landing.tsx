@@ -299,19 +299,30 @@ function HomeScanPromo() {
   return (
     <section className="py-16 bg-gradient-to-r from-[#3B1D5A] to-slate-900 text-white border-t border-border">
       <div className="max-w-5xl mx-auto px-4 text-center">
-        <Badge className="mb-4 bg-[#F47C20]/20 text-[#F47C20] border-[#F47C20]/30 text-sm px-4 py-1">
-          ✨ {t("home_scan_promo.badge", "NEW — 100% Free")}
-        </Badge>
         <h2 className="text-3xl md:text-4xl font-black mb-4">
           {t("home_scan_promo.headline", "Scan Your Home for Free — Earn $25+")}
         </h2>
-        <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-          {t("home_scan_promo.body", "Mr. George guides you room by room. AI reads every appliance — brand, model, age, condition. Get a complete Home Health Record and earn credits toward your first service.")}
+        <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-6 leading-relaxed">
+          {t("home_scan_promo.body", "Walk through your home room by room. Our AI identifies every appliance — brand, model, age, and condition — and builds a complete Home Health Record you own forever.")}
         </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8 text-left">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <p className="font-bold text-white mb-1">📋 Full Inventory</p>
+            <p className="text-sm text-slate-400">Every appliance, fixture, and system documented with photos, specs, and estimated remaining life.</p>
+          </div>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <p className="font-bold text-white mb-1">🛡️ Insurance-Ready</p>
+            <p className="text-sm text-slate-400">Timestamped records for claims, warranties, and resale — proof of what you have and its condition.</p>
+          </div>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <p className="font-bold text-white mb-1">💰 $25 Credit</p>
+            <p className="text-sm text-slate-400">Complete your scan and earn $25+ in service credits toward any booking on the platform.</p>
+          </div>
+        </div>
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/ai/home-scan" asChild>
             <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
-              {t("home_scan_promo.cta", "Learn More & Start Scanning")} <ArrowRight className="ml-2 w-5 h-5" />
+              {t("home_scan_promo.cta", "Start Your Free Scan")} <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
         </div>
@@ -335,14 +346,13 @@ function ServicesStrip() {
     { key: "carpet_cleaning", label: "Carpet Cleaning", price: "$50/room", icon: Home },
     { key: "garage_cleanout", label: "Garage Cleanout", price: "From $150", icon: Home },
     { key: "light_demolition", label: "Light Demo", price: "From $199", icon: Truck },
-    { key: "home_consultation", label: "AI Home Scan", price: "From $99", icon: Star },
   ];
 
   return (
     <section className="py-16 bg-slate-50 dark:bg-slate-900/50 border-t border-border">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-2xl font-bold text-center mb-2">
-          12 Services.<br />
+          11 Services.<br />
           One App.<br />
           Transparent Pricing.
         </h2>
