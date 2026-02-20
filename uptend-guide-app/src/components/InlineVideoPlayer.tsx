@@ -57,7 +57,7 @@ export default function InlineVideoPlayer({ videoId, title }: Props) {
     <!DOCTYPE html>
     <html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
     <style>*{margin:0;padding:0}body{background:#000}iframe{width:100%;height:100%;border:0}</style></head>
-    <body><iframe src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+    <body><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=0"
     allow="autoplay;encrypted-media" allowfullscreen></iframe></body></html>
   `;
 

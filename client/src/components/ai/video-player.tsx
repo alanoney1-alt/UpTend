@@ -33,8 +33,9 @@ export function VideoPlayer({ videoId, title }: VideoPlayerProps) {
   if (!videoId) return null;
 
   const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-  // Use plain embed URL — no JS API, no origin param (avoids Error 153)
-  const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+  // origin param tells YouTube which domain is embedding — prevents Error 153
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://uptendapp.com';
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?origin=${encodeURIComponent(origin)}&rel=0&modestbranding=1&enablejsapi=0`;
 
   // Click-to-load: show thumbnail first, load iframe on click (lighter & faster)
   if (!loaded) {
