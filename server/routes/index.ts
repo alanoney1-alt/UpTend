@@ -118,9 +118,6 @@ import { registerInsuranceRoutes as registerLiabilityInsuranceRoutes } from "./i
 // Launch notifications
 import { registerLaunchNotificationRoutes } from "./launch-notifications.routes";
 
-// Voice AI routes
-import { registerVoiceRoutes } from "./voice.routes";
-
 // Partner Portal routes
 import { registerPartnerRoutes } from "./partners.routes";
 
@@ -231,9 +228,6 @@ import { registerContentRoutes } from "./content.routes.js";
 // Invite Code routes
 import { registerInviteCodeRoutes } from "./invite-codes/invite-codes.routes";
 import { registerAppDataRoutes } from "./app-data.routes";
-
-// Push notification routes (Expo)
-import { registerPushRoutes } from "./push.routes.js";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -372,9 +366,6 @@ export async function registerRoutes(
   registerLiabilityInsuranceRoutes(app);
   registerLaunchNotificationRoutes(app);
 
-  // Register Voice AI routes
-  registerVoiceRoutes(app);
-
   // Register Partner Portal routes
   registerPartnerRoutes(app);
 
@@ -490,9 +481,6 @@ export async function registerRoutes(
 
   // Register Invite Code routes
   registerInviteCodeRoutes(app);
-
-  // Register Push notification routes (Expo token registration)
-  registerPushRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
