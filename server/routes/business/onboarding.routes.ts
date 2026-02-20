@@ -2,13 +2,16 @@
  * B2B Onboarding Routes
  *
  * POST /api/business/onboard           — Full onboarding flow
- * POST /api/business/onboard/parse-csv — Parse property CSV
+ * POST /api/business/onboard/parse-file — Parse property CSV or Excel (.xlsx/.xls)
+ * POST /api/business/onboard/parse-csv — Parse property CSV (legacy alias)
  * GET  /api/business/onboard/csv-template — Download CSV template
+ * GET  /api/business/onboard/excel-template — Download Excel (.xlsx) template
  * POST /api/business/onboard/validate-integration — Test PM software connection
  */
 
 import { Router, type Request, type Response } from "express";
 import multer from "multer";
+import * as XLSX from "xlsx";
 import { BusinessAccountsStorage } from "../../storage/domains/business-accounts/storage";
 import { storage } from "../../storage";
 import { pool } from "../../db";
@@ -30,25 +33,65 @@ router.get("/onboard/csv-template", (_req: Request, res: Response) => {
   res.send(CSV_TEMPLATE);
 });
 
-// ─── CSV Parse ─────────────────────────────────────────────────────
+// ─── Excel Template ────────────────────────────────────────────────
 
-router.post("/onboard/parse-csv", upload.single("file"), async (req: Request, res: Response) => {
+router.get("/onboard/excel-template", (_req: Request, res: Response) => {
   try {
-    const file = req.file;
-    if (!file) return res.status(400).json({ error: "No file uploaded" });
+    const templateData = [
+      ["address", "city", "state", "zip", "units", "type", "tenant_name", "tenant_email", "tenant_phone"],
+      ["123 Main St", "Orlando", "FL", "32827", "4", "residential", "John Smith", "john@example.com", "407-555-0100"],
+      ["456 Oak Ave", "Orlando", "FL", "32836", "8", "residential", "Jane Doe", "jane@example.com", "407-555-0200"],
+    ];
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(templateData);
+    // Set column widths
+    ws["!cols"] = [
+      { wch: 20 }, { wch: 12 }, { wch: 6 }, { wch: 8 }, { wch: 6 }, { wch: 12 }, { wch: 18 }, { wch: 24 }, { wch: 14 },
+    ];
+    XLSX.utils.book_append_sheet(wb, ws, "Properties");
+    const buf = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", "attachment; filename=uptend-property-template.xlsx");
+    res.send(buf);
+  } catch (error: any) {
+    console.error("[ONBOARD] Excel template error:", error);
+    res.status(500).json({ error: "Failed to generate Excel template" });
+  }
+});
 
+// ─── Unified File Parse (CSV + Excel) ──────────────────────────────
+
+function parseFileToRows(file: Express.Multer.File): { headers: string[]; rawRows: Record<string, string>[]; errors: string[] } {
+  const errors: string[] = [];
+  let headers: string[] = [];
+  const rawRows: Record<string, string>[] = [];
+
+  const ext = (file.originalname || "").toLowerCase();
+  const isExcel = ext.endsWith(".xlsx") || ext.endsWith(".xls");
+  const mimeIsExcel = file.mimetype?.includes("spreadsheet") || file.mimetype?.includes("excel");
+
+  if (isExcel || mimeIsExcel) {
+    // Parse Excel
+    const wb = XLSX.read(file.buffer, { type: "buffer" });
+    const sheetName = wb.SheetNames[0];
+    if (!sheetName) throw new Error("Excel file has no sheets");
+    const ws = wb.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(ws, { defval: "" });
+    if (jsonData.length === 0) throw new Error("Excel sheet is empty");
+    headers = Object.keys(jsonData[0]).map(h => h.trim().toLowerCase());
+    for (let i = 0; i < jsonData.length; i++) {
+      const row: Record<string, string> = {};
+      for (const key of Object.keys(jsonData[i])) {
+        row[key.trim().toLowerCase()] = String(jsonData[i][key] || "").trim();
+      }
+      rawRows.push(row);
+    }
+  } else {
+    // Parse CSV
     const content = file.buffer.toString("utf-8");
     const lines = content.split(/\r?\n/).filter(l => l.trim());
-    if (lines.length < 2) return res.status(400).json({ error: "CSV must have a header row and at least one data row" });
-
-    const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
-    const requiredHeaders = ["address", "city", "state", "zip"];
-    const missing = requiredHeaders.filter(h => !headers.includes(h));
-    if (missing.length > 0) return res.status(400).json({ error: `Missing required columns: ${missing.join(", ")}` });
-
-    const rows: Record<string, string>[] = [];
-    const errors: string[] = [];
-
+    if (lines.length < 2) throw new Error("File must have a header row and at least one data row");
+    headers = lines[0].split(",").map(h => h.trim().toLowerCase());
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(",").map(v => v.trim());
       if (values.length < headers.length) {
@@ -57,27 +100,73 @@ router.post("/onboard/parse-csv", upload.single("file"), async (req: Request, re
       }
       const row: Record<string, string> = {};
       headers.forEach((h, idx) => { row[h] = values[idx] || ""; });
-
-      if (!row.address) {
-        errors.push(`Row ${i}: missing address`);
-        continue;
-      }
-      if (!row.state || row.state.length !== 2) {
-        errors.push(`Row ${i}: invalid state code`);
-      }
-      rows.push(row);
+      rawRows.push(row);
     }
+  }
+
+  return { headers, rawRows, errors };
+}
+
+function validatePropertyRows(rawRows: Record<string, string>[], headers: string[]) {
+  const requiredHeaders = ["address", "city", "state", "zip"];
+  const missing = requiredHeaders.filter(h => !headers.includes(h));
+  if (missing.length > 0) throw new Error(`Missing required columns: ${missing.join(", ")}`);
+
+  const rows: Record<string, string>[] = [];
+  const errors: string[] = [];
+
+  for (let i = 0; i < rawRows.length; i++) {
+    const row = rawRows[i];
+    if (!row.address) { errors.push(`Row ${i + 1}: missing address`); continue; }
+    if (!row.state || row.state.length !== 2) { errors.push(`Row ${i + 1}: invalid state code`); }
+    rows.push(row);
+  }
+
+  return { rows, errors };
+}
+
+// Unified endpoint — accepts CSV, XLS, XLSX
+router.post("/onboard/parse-file", upload.single("file"), async (req: Request, res: Response) => {
+  try {
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: "No file uploaded. Accepts .csv, .xls, .xlsx" });
+
+    const { headers, rawRows, errors: parseErrors } = parseFileToRows(file);
+    const { rows, errors: validationErrors } = validatePropertyRows(rawRows, headers);
 
     res.json({
       headers,
       rows,
-      totalRows: lines.length - 1,
+      totalRows: rawRows.length,
       validRows: rows.length,
-      errors,
+      errors: [...parseErrors, ...validationErrors],
+      format: file.originalname?.toLowerCase().endsWith(".csv") ? "csv" : "excel",
+    });
+  } catch (error: any) {
+    console.error("[ONBOARD] File parse error:", error);
+    res.status(400).json({ error: error.message || "Failed to parse file" });
+  }
+});
+
+// Legacy CSV-only endpoint (backwards compat)
+router.post("/onboard/parse-csv", upload.single("file"), async (req: Request, res: Response) => {
+  try {
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: "No file uploaded" });
+
+    const { headers, rawRows, errors: parseErrors } = parseFileToRows(file);
+    const { rows, errors: validationErrors } = validatePropertyRows(rawRows, headers);
+
+    res.json({
+      headers,
+      rows,
+      totalRows: rawRows.length,
+      validRows: rows.length,
+      errors: [...parseErrors, ...validationErrors],
     });
   } catch (error: any) {
     console.error("[ONBOARD] CSV parse error:", error);
-    res.status(500).json({ error: "Failed to parse CSV" });
+    res.status(500).json({ error: "Failed to parse file" });
   }
 });
 
