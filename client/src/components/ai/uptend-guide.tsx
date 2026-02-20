@@ -52,18 +52,32 @@ function getSessionId() {
   return sid;
 }
 
+// YouTube URL pattern — these are rendered as embedded VideoPlayer, so strip from text
+const YT_URL_RE = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)[\w-]{11}[^\s<>"]*/g;
+
 function renderContent(text: string) {
-  const html = text
-    // Markdown links: [text](url)
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#F47C20] underline break-all">$1</a>')
+  // 1. Remove YouTube URLs entirely (they render as embedded players below)
+  let cleaned = text.replace(YT_URL_RE, '').replace(/\n{3,}/g, '\n\n');
+
+  const html = cleaned
+    // Markdown links: [text](url) — use data-uptend-url for in-app handling
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, label, url) => {
+      const isProduct = /amazon\.com|homedepot\.com|lowes\.com|walmart\.com/.test(url);
+      const icon = isProduct ? '🛒 ' : '';
+      return `<a href="#" data-uptend-url="${encodeURIComponent(url)}" class="text-[#F47C20] underline break-all cursor-pointer">${icon}${label}</a>`;
+    })
     // Bold
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     // Italic
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    // Bare URLs (not already inside an href) — make clickable
-    .replace(/(?<!href=")(https?:\/\/[^\s<>"]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-[#F47C20] underline break-all">$1</a>')
+    // Bare URLs (not already inside an href) — use data-uptend-url for in-app handling
+    .replace(/(?<!href="#" data-uptend-url="[^"]*" class="[^"]*">)(https?:\/\/[^\s<>"]+)/g, (_m, url) => {
+      const isProduct = /amazon\.com|homedepot\.com|lowes\.com|walmart\.com/.test(url);
+      const label = isProduct ? '🛒 View Product' : url.length > 40 ? url.substring(0, 40) + '…' : url;
+      return `<a href="#" data-uptend-url="${encodeURIComponent(url)}" class="text-[#F47C20] underline break-all cursor-pointer">${label}</a>`;
+    })
     .replace(/\n/g, "<br/>");
-  return DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
+  return DOMPurify.sanitize(html, { ADD_ATTR: ['data-uptend-url'] });
 }
 
 // ─── Derive role from URL (zone-aware, overrides auth role for correct persona) ──
@@ -332,6 +346,7 @@ export function UpTendGuide() {
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasInitRef = useRef(false);
+  const [inAppUrl, setInAppUrl] = useState<string | null>(null);
 
   const speech = useSpeechRecognition();
   const synth = useSpeechSynthesis();
@@ -685,7 +700,20 @@ export function UpTendGuide() {
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2.5 space-y-2">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2.5 space-y-2" onClick={(e) => {
+          const target = (e.target as HTMLElement).closest('a[data-uptend-url]') as HTMLAnchorElement | null;
+          if (!target) return;
+          e.preventDefault();
+          const url = decodeURIComponent(target.getAttribute('data-uptend-url') || '');
+          if (!url) return;
+          // Internal uptend links — navigate in-app
+          if (url.includes('uptendapp.com') || url.startsWith('/')) {
+            navigate(url.replace(/https?:\/\/[^/]+/, ''));
+            return;
+          }
+          // External links — open in in-app modal
+          setInAppUrl(url);
+        }}>
           {messages.map((msg) => (
             <div key={msg.id} className={cn("flex flex-col group", msg.role === "user" ? "items-end" : "items-start")}>
               <div className={cn("max-w-[88%] space-y-1.5")}>
@@ -840,6 +868,30 @@ export function UpTendGuide() {
           </div>
         </div>
       </div>
+      {/* ─── In-App Link/Product Modal ────────────────────────────── */}
+      {inAppUrl && (
+        <div className="fixed inset-0 z-[10001] bg-black/60 flex items-center justify-center p-4" onClick={() => setInAppUrl(null)}>
+          <div className="relative w-full max-w-lg h-[80vh] bg-white rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+              <span className="text-sm font-medium truncate flex-1 mr-2">
+                {inAppUrl.includes('amazon.com') ? '🛒 Amazon' :
+                 inAppUrl.includes('homedepot.com') ? '🛒 Home Depot' :
+                 inAppUrl.includes('lowes.com') ? '🛒 Lowe\'s' :
+                 inAppUrl.includes('walmart.com') ? '🛒 Walmart' : '🔗 Link'}
+              </span>
+              <button onClick={() => setInAppUrl(null)} className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/20">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <iframe
+              src={inAppUrl}
+              className="w-full h-[calc(80vh-40px)] border-0"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              title="In-app browser"
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }
