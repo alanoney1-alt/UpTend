@@ -224,18 +224,6 @@ export default function PublicPricing() {
                 {t("common.book_now")} <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
 
-              <div className="flex items-center justify-center gap-3 mt-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-                  </span>
-                  <span className="text-xs font-medium text-green-600 dark:text-green-400">{((service.id.charCodeAt(0) + service.id.charCodeAt(1)) % 7) + 5} {t("pricing.active_pros")}</span>
-                </div>
-                <span className="text-xs text-muted-foreground">
-                  <ShieldCheck className="w-3 h-3 inline mr-1" /> {t("pricing.insured")}
-                </span>
-              </div>
             </div>
           ))}
         </div>
