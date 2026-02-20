@@ -219,6 +219,26 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
     }
   }, []);
 
+  // Auto-populate address from user's saved default address
+  useEffect(() => {
+    if (!isAuthenticated || address) return;
+    // Don't overwrite if restored from pendingBooking
+    const saved = sessionStorage.getItem('pendingBooking');
+    if (saved) return;
+
+    fetch("/api/customers/addresses")
+      .then(res => res.ok ? res.json() : [])
+      .then((addresses: Array<{ id: string; label: string; street: string; city: string; state: string; zipCode: string; isDefault: boolean }>) => {
+        const defaultAddr = addresses.find(a => a.isDefault) || addresses[0];
+        if (defaultAddr) {
+          const fullAddress = `${defaultAddr.street}, ${defaultAddr.city}, ${defaultAddr.state} ${defaultAddr.zipCode}`;
+          setAddress(fullAddress);
+          fetchPropertyValue(fullAddress);
+        }
+      })
+      .catch(() => {}); // silently fail — user can still type manually
+  }, [isAuthenticated]);
+
   // Scroll to top on step change — immediate jump, no smooth scroll
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1088,11 +1108,23 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           scheduledTime,
           scheduledFor,
           pickupAddress: address,
-          pickupCity: "Orlando",
-          pickupState: "FL",
-          pickupZip: "32801",
-          pickupLat: 28.5383,
-          pickupLng: -81.3792,
+          // Parse city/state/zip from address string (format: "123 Main St, City, ST 12345")
+          pickupCity: (() => {
+            const parts = address.split(",").map(s => s.trim());
+            return parts.length >= 2 ? parts[parts.length - 2] : "Orlando";
+          })(),
+          pickupState: (() => {
+            const parts = address.split(",").map(s => s.trim());
+            const last = parts[parts.length - 1] || "";
+            const stateMatch = last.match(/^([A-Z]{2})\s/);
+            return stateMatch ? stateMatch[1] : "FL";
+          })(),
+          pickupZip: (() => {
+            const zipMatch = address.match(/\b(\d{5})(?:-\d{4})?\b/);
+            return zipMatch ? zipMatch[1] : "32801";
+          })(),
+          pickupLat: propertyData?.latitude || 28.5383,
+          pickupLng: propertyData?.longitude || -81.3792,
           estimatedSize: "standard",
           loadEstimate: 1,
           customerId: (user as any)?.userId || (user as any)?.id,

@@ -311,3 +311,19 @@
     padding-bottom: 5rem;
   }
 }
+
+/* Hide Stripe developer toolbar and badge in test mode */
+iframe[src*="js.stripe.com/v3/controller"],
+iframe[name*="__privateStripeController"],
+iframe[name*="__stripeJSChallengeFrame"],
+div[class*="StripeElement--developers"],
+#stripe-developer-tools,
+a[href*="stripe.com"][target="_blank"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  pointer-events: none !important;
+}
