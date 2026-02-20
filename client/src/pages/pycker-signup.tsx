@@ -33,7 +33,8 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Truck, ArrowRight, ArrowLeft, CheckCircle, Shield, DollarSign,
   User, Phone, Mail, MapPin, Car, FileText, CreditCard, Clock,
-  Loader2, AlertTriangle, Building2, Plus, X, Lock, TrendingUp, GraduationCap, Star, Award, Eye, EyeOff
+  Loader2, AlertTriangle, Building2, Plus, X, Lock, TrendingUp, GraduationCap, Star, Award, Eye, EyeOff,
+  Wrench, ClipboardList, Package
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { PhotoUpload, MultiPhotoUpload } from "@/components/photo-upload";
@@ -96,14 +97,16 @@ type SignupForm = z.infer<typeof signupSchema>;
 type VehicleData = z.infer<typeof vehicleSchema>;
 
 const steps = [
-  { id: 1, title: "Create Account", icon: Lock },
+  { id: 1, title: "Account", icon: Lock },
   { id: 2, title: "Personal Info", icon: User },
-  { id: 3, title: "Vehicle Details", icon: Car },
-  { id: 4, title: "Verification", icon: Shield },
-  { id: 5, title: "Your Rates", icon: DollarSign },
-  { id: 6, title: "Agreement", icon: FileText },
-  { id: 7, title: "Earn More", icon: TrendingUp },
-  { id: 8, title: "Complete", icon: CheckCircle },
+  { id: 3, title: "Services", icon: ClipboardList },
+  { id: 4, title: "Tools", icon: Wrench },
+  { id: 5, title: "Vehicles", icon: Car },
+  { id: 6, title: "Verification", icon: Shield },
+  { id: 7, title: "Rates", icon: DollarSign },
+  { id: 8, title: "Agreement", icon: FileText },
+  { id: 9, title: "Review", icon: CheckCircle },
+  { id: 10, title: "Welcome", icon: Star },
 ];
 
 const vehicleTypes = [
@@ -146,6 +149,21 @@ const bedLengths = [
   { value: "6.5ft", label: "6.5 ft (Standard bed)" },
   { value: "8ft", label: "8 ft (Long bed)" },
 ];
+
+// Tools & Equipment options per service type
+const TOOLS_BY_SERVICE: Record<string, string[]> = {
+  junk_removal: ["Pickup Truck", "Box Truck", "Trailer", "Dolly", "Furniture Pads", "Straps", "PPE"],
+  pressure_washing: ["Pressure Washer (PSI range)", "Surface Cleaner", "Extension Wand", "Chemical Injector", "Hoses", "Water Tank"],
+  gutter_cleaning: ["Ladder (height)", "Gutter Scoop", "Leaf Blower", "Safety Harness", "Gutter Guards"],
+  landscaping: ["Mower (type)", "Trimmer", "Edger", "Blower", "Hedge Trimmer", "Chainsaw"],
+  home_cleaning: ["Vacuum", "Mop", "Steam Cleaner", "Chemical Kit", "Microfiber Kit"],
+  pool_cleaning: ["Pool Net", "Brush", "Vacuum Head", "Chemical Test Kit", "Pump Tools"],
+  handyman: ["Basic Tool Kit", "Power Drill", "Saw", "Level", "Stud Finder", "Paint Supplies"],
+  carpet_cleaning: ["Carpet Extractor", "Spot Cleaner", "Deodorizer", "Upholstery Tool"],
+  moving_labor: ["Dolly", "Furniture Pads", "Straps", "Hand Truck", "Moving Blankets"],
+  furniture_moving: ["Dolly", "Furniture Pads", "Straps", "Hand Truck", "Moving Blankets"],
+  light_demolition: ["Sledgehammer", "Pry Bar", "Reciprocating Saw", "Dumpster Access", "PPE"],
+};
 
 export default function PyckerSignup() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -195,9 +213,13 @@ export default function PyckerSignup() {
     }
   };
 
-  // Services selection state
-  const [selectedServices, setSelectedServices] = useState<string[]>(["junk_removal", "furniture_moving"]);
+  // Services selection state — default to empty, user must choose
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [pricingFeedback, setPricingFeedback] = useState<Record<string, { low: string; high: string; years: string }>>({});
+
+  // Tools & Equipment state: service -> selected tools
+  const [toolsEquipment, setToolsEquipment] = useState<Record<string, string[]>>({});
+  const [customToolInputs, setCustomToolInputs] = useState<Record<string, string>>({});
 
   // Email verification state
   const [emailVerified, setEmailVerified] = useState(false);
@@ -220,6 +242,28 @@ export default function PyckerSignup() {
     const updated = [...vehicles];
     updated[index] = { ...updated[index], [field]: value };
     setVehicles(updated);
+  };
+
+  const toggleTool = (service: string, tool: string) => {
+    setToolsEquipment(prev => {
+      const current = prev[service] || [];
+      if (current.includes(tool)) {
+        return { ...prev, [service]: current.filter(t => t !== tool) };
+      } else {
+        return { ...prev, [service]: [...current, tool] };
+      }
+    });
+  };
+
+  const addCustomTool = (service: string) => {
+    const custom = customToolInputs[service]?.trim();
+    if (!custom) return;
+    setToolsEquipment(prev => {
+      const current = prev[service] || [];
+      if (current.includes(custom)) return prev;
+      return { ...prev, [service]: [...current, custom] };
+    });
+    setCustomToolInputs(prev => ({ ...prev, [service]: "" }));
   };
 
   const form = useForm<SignupForm>({
@@ -282,7 +326,6 @@ export default function PyckerSignup() {
       const data = await response.json();
       setVerificationSent(true);
       
-      // In development, show the code in the toast for easier testing
       if (data.devCode) {
         toast({
           title: "Verification Code (Dev Mode)",
@@ -348,16 +391,29 @@ export default function PyckerSignup() {
     }
   };
 
+  // Profile is ONLY created on final submit (step 9 Review)
   const signupMutation = useMutation({
     mutationFn: async (data: SignupForm) => {
-      // Include vehicles array, photo URLs, selected services, and ICA data in the payload
       const payload = {
         ...data,
-        vehicles: vehicles.filter(v => v.vehicleType), // Only include vehicles with a type selected
+        vehicles: vehicles.filter(v => v.vehicleType),
         profilePhotoUrl: profilePhotoUrl || undefined,
         driversLicensePhotoUrl: driversLicensePhotoUrl || undefined,
+        selfiePhotoUrl: selfiePhotoUrl || undefined,
+        idPhotoUrl: idPhotoUrl || undefined,
+        generalLiabilityDocUrl: generalLiabilityDocUrl || undefined,
+        vehicleInsuranceDocUrl: vehicleInsuranceDocUrl || undefined,
         serviceTypes: selectedServices,
         supportedServices: selectedServices,
+        toolsEquipment,
+        pricingFeedback: Object.entries(pricingFeedback)
+          .filter(([_, v]) => v.low || v.high)
+          .map(([serviceType, v]) => ({
+            serviceType,
+            chargeLow: v.low ? parseInt(v.low) : null,
+            chargeHigh: v.high ? parseInt(v.high) : null,
+            yearsExperience: v.years ? parseInt(v.years) : null,
+          })),
         icaSignedName: icaData?.signedName,
         icaAcceptedAt: icaData?.acceptedAt,
         icaVersion: icaData?.icaVersion,
@@ -382,14 +438,14 @@ export default function PyckerSignup() {
             body: JSON.stringify({ code: validatedCode, proId: result.haulerProfile.id }),
           });
         } catch {
-          // Non-fatal — registration still succeeded
+          // Non-fatal
         }
       }
 
       return result;
     },
     onSuccess: () => {
-      setCurrentStep(7); // Certification preview step
+      setCurrentStep(10); // Welcome step
       toast({
         title: "Application Submitted!",
         description: validatedCode
@@ -407,7 +463,7 @@ export default function PyckerSignup() {
   });
 
   const nextStep = () => {
-    if (currentStep < 7) {
+    if (currentStep < 10) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -418,17 +474,18 @@ export default function PyckerSignup() {
     }
   };
 
-  const onSubmit = (data: SignupForm) => {
-    signupMutation.mutate(data);
+  const handleFinalSubmit = () => {
+    // Trigger form validation for required fields, then submit
+    form.handleSubmit((data) => {
+      signupMutation.mutate(data);
+    })();
   };
 
   const validateCurrentStep = async () => {
     let fieldsToValidate: (keyof SignupForm)[] = [];
     
     if (currentStep === 1) {
-      // Step 1: Create Account - validate password and email
       fieldsToValidate = ["password", "confirmPassword", "email"];
-      
       if (!emailVerified) {
         toast({
           title: "Email Not Verified",
@@ -440,9 +497,20 @@ export default function PyckerSignup() {
     } else if (currentStep === 2) {
       fieldsToValidate = ["firstName", "lastName", "phone", "companyName", "streetAddress", "city", "state", "zipCode"];
     } else if (currentStep === 3) {
+      // Services step — must select at least one
+      if (selectedServices.length === 0) {
+        toast({
+          title: "Services Required",
+          description: "Please select at least one service you can provide",
+          variant: "destructive",
+        });
+        return false;
+      }
+    } else if (currentStep === 4) {
+      // Tools step — no hard requirement, but encourage
+      // Allow proceeding even with no tools selected
+    } else if (currentStep === 5) {
       fieldsToValidate = ["vehicleType"];
-
-      // Check if primary vehicle has required info
       const primaryVehicle = vehicles[0];
       if (!primaryVehicle || !primaryVehicle.vehicleType) {
         toast({
@@ -452,35 +520,17 @@ export default function PyckerSignup() {
         });
         return false;
       }
-
-      // Check if at least one service is selected
-      if (selectedServices.length === 0) {
-        toast({
-          title: "Services Required",
-          description: "Please select at least one service you can provide",
-          variant: "destructive",
-        });
-        return false;
-      }
-      
-      // Check if at least one vehicle has photos
       const hasVehiclePhotos = vehicles.some(v => v.photoUrls && v.photoUrls.length > 0);
       if (!hasVehiclePhotos) {
         toast({
           title: "Vehicle Photos Required",
-          description: "Please upload at least one photo of your vehicle (exterior or cargo area)",
+          description: "Please upload at least one photo of your vehicle",
           variant: "destructive",
         });
         return false;
       }
-    } else if (currentStep === 4) {
-      fieldsToValidate = [
-        "driversLicense", 
-        "agreeTerms", 
-        "agreeBackgroundCheck"
-      ];
-      
-      // Check if required photos are uploaded (selfie and ID are mandatory)
+    } else if (currentStep === 6) {
+      fieldsToValidate = ["driversLicense", "agreeTerms", "agreeBackgroundCheck"];
       if (!selfiePhotoUrl || !idPhotoUrl) {
         toast({
           title: "Photos Required",
@@ -489,10 +539,23 @@ export default function PyckerSignup() {
         });
         return false;
       }
+    } else if (currentStep === 8) {
+      // Agreement step — ICA must be signed
+      if (!icaData) {
+        toast({
+          title: "Agreement Required",
+          description: "Please sign the Independent Contractor Agreement to continue",
+          variant: "destructive",
+        });
+        return false;
+      }
     }
 
-    const result = await form.trigger(fieldsToValidate);
-    return result;
+    if (fieldsToValidate.length > 0) {
+      const result = await form.trigger(fieldsToValidate);
+      return result;
+    }
+    return true;
   };
 
   const handleNext = async () => {
@@ -501,6 +564,9 @@ export default function PyckerSignup() {
       nextStep();
     }
   };
+
+  const formatServiceLabel = (service: string) =>
+    service.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
     <div className="min-h-screen bg-background">
@@ -524,26 +590,33 @@ export default function PyckerSignup() {
           <p className="text-muted-foreground">Join our verified network of Pros and start building your impact record</p>
         </div>
 
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-2">
+        {/* Step indicator — scrollable on mobile */}
+        <div className="flex justify-center mb-8 overflow-x-auto pb-2">
+          <div className="flex items-center gap-1">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
-                <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                  currentStep === step.id 
-                    ? "bg-primary text-primary-foreground" 
-                    : currentStep > step.id 
-                      ? "bg-green-500 text-white"
-                      : "bg-muted text-muted-foreground"
-                }`}>
+                <div
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg cursor-pointer transition-colors ${
+                    currentStep === step.id 
+                      ? "bg-primary text-primary-foreground" 
+                      : currentStep > step.id 
+                        ? "bg-green-500 text-white"
+                        : "bg-muted text-muted-foreground"
+                  }`}
+                  onClick={() => {
+                    // Allow going back to completed steps
+                    if (step.id < currentStep) setCurrentStep(step.id);
+                  }}
+                >
                   {currentStep > step.id ? (
-                    <CheckCircle className="w-4 h-4" />
+                    <CheckCircle className="w-3.5 h-3.5" />
                   ) : (
-                    <step.icon className="w-4 h-4" />
+                    <step.icon className="w-3.5 h-3.5" />
                   )}
-                  <span className="text-sm font-medium hidden sm:inline">{step.title}</span>
+                  <span className="text-xs font-medium whitespace-nowrap hidden sm:inline">{step.title}</span>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={`w-8 h-0.5 mx-1 ${currentStep > step.id ? "bg-green-500" : "bg-muted"}`} />
+                  <div className={`w-4 h-0.5 mx-0.5 ${currentStep > step.id ? "bg-green-500" : "bg-muted"}`} />
                 )}
               </div>
             ))}
@@ -551,7 +624,9 @@ export default function PyckerSignup() {
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={(e) => e.preventDefault()}>
+
+            {/* ==================== STEP 1: CREATE ACCOUNT ==================== */}
             {currentStep === 1 && (
               <Card className="p-6" data-testid="card-step-account-pro">
                 <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
@@ -752,6 +827,7 @@ export default function PyckerSignup() {
               </Card>
             )}
 
+            {/* ==================== STEP 2: PERSONAL INFO ==================== */}
             {currentStep === 2 && (
               <Card className="p-6" data-testid="card-step-personal-pro">
                 <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
@@ -815,6 +891,16 @@ export default function PyckerSignup() {
                     </FormItem>
                   )}
                 />
+
+                {/* Profile Photo */}
+                <div className="mb-6">
+                  <PhotoUpload
+                    label="Profile Photo"
+                    description="Professional photo for your Pro profile"
+                    onUploadComplete={(url) => setProfilePhotoUrl(url)}
+                    testId="upload-profile-photo"
+                  />
+                </div>
 
                 <FormField
                   control={form.control}
@@ -884,6 +970,174 @@ export default function PyckerSignup() {
                     Back
                   </Button>
                   <Button type="button" onClick={handleNext} data-testid="button-next-step-2">
+                    Continue to Select Services
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {/* ==================== STEP 3: SELECT SERVICES ==================== */}
+            {currentStep === 3 && (
+              <Card className="p-6" data-testid="card-step-services-pro">
+                <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                  <ClipboardList className="w-5 h-5" />
+                  Select Your Services
+                </h2>
+                <p className="text-muted-foreground mb-2">
+                  Choose the services you want to offer. You can always add or remove services later from your dashboard.
+                </p>
+                <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg mb-6">
+                  <p className="text-sm text-primary font-medium">
+                    Select at least one service to continue. The more services you offer, the more jobs you'll be matched with!
+                  </p>
+                </div>
+
+                <ServicesSelector
+                  selectedServices={selectedServices}
+                  onSelectionChange={setSelectedServices}
+                  showEquipmentInfo={true}
+                />
+
+                {selectedServices.length > 0 && (
+                  <div className="mt-4 p-3 rounded-lg bg-green-500/10 text-green-600">
+                    <p className="text-sm font-medium flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4" />
+                      {selectedServices.length} service{selectedServices.length > 1 ? 's' : ''} selected
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex justify-between mt-8">
+                  <Button type="button" variant="outline" onClick={prevStep} data-testid="button-prev-step-3">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button type="button" onClick={handleNext} data-testid="button-next-step-3">
+                    Continue to Tools & Equipment
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {/* ==================== STEP 4: TOOLS & EQUIPMENT ==================== */}
+            {currentStep === 4 && (
+              <Card className="p-6" data-testid="card-step-tools-pro">
+                <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                  <Wrench className="w-5 h-5" />
+                  Tools & Equipment
+                </h2>
+                <p className="text-muted-foreground mb-2">
+                  Tell us what tools and equipment you have for each service. This helps us match you with the right jobs.
+                </p>
+                <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg mb-6">
+                  <p className="text-sm text-blue-700 dark:text-blue-400 font-medium">
+                    Check the tools you own. You can also add custom equipment not listed here.
+                  </p>
+                </div>
+
+                {selectedServices.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>Go back and select services first</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {selectedServices.map((service) => {
+                      const tools = TOOLS_BY_SERVICE[service] || [];
+                      const selectedTools = toolsEquipment[service] || [];
+                      const label = formatServiceLabel(service);
+
+                      return (
+                        <div key={service} className="p-4 border rounded-lg">
+                          <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+                            <Wrench className="w-4 h-4 text-primary" />
+                            {label}
+                          </h3>
+                          
+                          {tools.length > 0 ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3">
+                              {tools.map((tool) => (
+                                <label
+                                  key={tool}
+                                  className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-colors ${
+                                    selectedTools.includes(tool)
+                                      ? "bg-primary/10 border-primary/40"
+                                      : "hover:bg-muted"
+                                  }`}
+                                >
+                                  <Checkbox
+                                    checked={selectedTools.includes(tool)}
+                                    onCheckedChange={() => toggleTool(service, tool)}
+                                  />
+                                  <span className="text-sm">{tool}</span>
+                                </label>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-muted-foreground mb-3">No predefined tools for this service.</p>
+                          )}
+
+                          {/* Custom tool input */}
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Add custom tool or equipment..."
+                              value={customToolInputs[service] || ""}
+                              onChange={(e) => setCustomToolInputs(prev => ({ ...prev, [service]: e.target.value }))}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addCustomTool(service);
+                                }
+                              }}
+                              className="text-sm"
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addCustomTool(service)}
+                              disabled={!customToolInputs[service]?.trim()}
+                            >
+                              <Plus className="w-4 h-4" />
+                            </Button>
+                          </div>
+
+                          {/* Show custom tools that aren't in the predefined list */}
+                          {selectedTools.filter(t => !tools.includes(t)).length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {selectedTools.filter(t => !tools.includes(t)).map(tool => (
+                                <Badge
+                                  key={tool}
+                                  variant="secondary"
+                                  className="flex items-center gap-1 cursor-pointer"
+                                  onClick={() => toggleTool(service, tool)}
+                                >
+                                  {tool}
+                                  <X className="w-3 h-3" />
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+
+                          {selectedTools.length > 0 && (
+                            <p className="text-xs text-green-600 mt-2">
+                              {selectedTools.length} item{selectedTools.length > 1 ? 's' : ''} selected
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div className="flex justify-between mt-8">
+                  <Button type="button" variant="outline" onClick={prevStep} data-testid="button-prev-step-4">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button type="button" onClick={handleNext} data-testid="button-next-step-4">
                     Continue to Vehicle Details
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -891,17 +1145,18 @@ export default function PyckerSignup() {
               </Card>
             )}
 
-            {currentStep === 3 && (
+            {/* ==================== STEP 5: VEHICLE DETAILS ==================== */}
+            {currentStep === 5 && (
               <Card className="p-6" data-testid="card-step-vehicle-pro">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-xl font-semibold flex items-center gap-2">
                     <Car className="w-5 h-5" />
-                    Your Vehicle & Equipment
+                    Your Vehicles
                   </h2>
                   <Badge variant="default" className="bg-primary">Required</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  List all vehicles and equipment you use for jobs. When you go online, you'll select which vehicle you're using that day.
+                  List all vehicles you use for jobs. When you go online, you'll select which vehicle you're using that day.
                 </p>
                 <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg mb-6">
                   <p className="text-sm text-primary font-medium">
@@ -1130,20 +1385,12 @@ export default function PyckerSignup() {
                   </ul>
                 </div>
 
-                <div className="mb-8 border-t pt-6">
-                  <ServicesSelector
-                    selectedServices={selectedServices}
-                    onSelectionChange={setSelectedServices}
-                    showEquipmentInfo={true}
-                  />
-                </div>
-
                 <div className="flex justify-between mt-8">
-                  <Button type="button" variant="outline" onClick={prevStep} data-testid="button-prev-step-3">
+                  <Button type="button" variant="outline" onClick={prevStep} data-testid="button-prev-step-5">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back
                   </Button>
-                  <Button type="button" onClick={handleNext} data-testid="button-next-step-3">
+                  <Button type="button" onClick={handleNext} data-testid="button-next-step-5">
                     Continue to Verification
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -1151,11 +1398,12 @@ export default function PyckerSignup() {
               </Card>
             )}
 
-            {currentStep === 4 && (
+            {/* ==================== STEP 6: INSURANCE & VERIFICATION ==================== */}
+            {currentStep === 6 && (
               <Card className="p-6" data-testid="card-step-verification-pro">
                 <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                   <Shield className="w-5 h-5" />
-                  Verification & Background Check
+                  Insurance & Verification
                 </h2>
 
                 <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg mb-6">
@@ -1223,21 +1471,6 @@ export default function PyckerSignup() {
                       Identity verification photos uploaded successfully
                     </p>
                   )}
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  <PhotoUpload
-                    label="Profile Photo"
-                    description="Professional photo for your Pro profile"
-                    onUploadComplete={(url) => setProfilePhotoUrl(url)}
-                    testId="upload-profile-photo"
-                  />
-                  <PhotoUpload
-                    label="Vehicle Photo"
-                    description="Photo of your vehicle for customer identification"
-                    onUploadComplete={(url) => setDriversLicensePhotoUrl(url)}
-                    testId="upload-vehicle-photo"
-                  />
                 </div>
 
                 <FormField
@@ -1450,19 +1683,20 @@ export default function PyckerSignup() {
                 </div>
 
                 <div className="flex justify-between mt-8">
-                  <Button type="button" variant="outline" onClick={prevStep} data-testid="button-prev-step-4">
+                  <Button type="button" variant="outline" onClick={prevStep} data-testid="button-prev-step-6">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back
                   </Button>
-                  <Button type="button" onClick={handleNext} data-testid="button-next-step-4">
-                    Continue to Agreement
+                  <Button type="button" onClick={handleNext} data-testid="button-next-step-6">
+                    Continue to Set Your Rates
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
               </Card>
             )}
 
-            {currentStep === 5 && (
+            {/* ==================== STEP 7: SET YOUR RATES ==================== */}
+            {currentStep === 7 && (
               <Card className="p-6" data-testid="card-step-pricing-feedback">
                 <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
                   <DollarSign className="w-5 h-5" />
@@ -1474,7 +1708,7 @@ export default function PyckerSignup() {
 
                 <div className="space-y-4">
                   {selectedServices.map((service) => {
-                    const label = service.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+                    const label = formatServiceLabel(service);
                     const fb = pricingFeedback[service] || { low: "", high: "", years: "" };
                     return (
                       <div key={service} className="p-4 border rounded-lg bg-card">
@@ -1514,163 +1748,212 @@ export default function PyckerSignup() {
                 </div>
 
                 <div className="flex justify-between mt-6">
-                  <Button variant="outline" onClick={prevStep}>
+                  <Button type="button" variant="outline" onClick={prevStep}>
                     <ArrowLeft className="w-4 h-4 mr-2" /> Back
                   </Button>
-                  <Button
-                    onClick={async () => {
-                      // Save feedback if any was provided
-                      const items = Object.entries(pricingFeedback)
-                        .filter(([_, v]) => v.low || v.high)
-                        .map(([serviceType, v]) => ({
-                          serviceType,
-                          chargeLow: v.low ? parseInt(v.low) : null,
-                          chargeHigh: v.high ? parseInt(v.high) : null,
-                          yearsExperience: v.years ? parseInt(v.years) : null,
-                        }));
-                      if (items.length > 0) {
-                        try {
-                          await fetch("/api/pros/pricing-feedback", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            credentials: "include",
-                            body: JSON.stringify({ feedbackItems: items, zipCode: form.getValues("zipCode") }),
-                          });
-                        } catch (_) { /* non-blocking */ }
-                      }
-                      nextStep();
-                    }}
-                  >
-                    Continue <ArrowRight className="w-4 h-4 ml-2" />
+                  <Button type="button" onClick={handleNext}>
+                    Continue to Agreement <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
               </Card>
             )}
 
-            {currentStep === 6 && (
-              <ICAAgreement
-                contractorName={`${form.getValues("firstName")} ${form.getValues("lastName")}`}
-                onAccept={(data) => {
-                  setIcaData(data);
-                  form.handleSubmit(onSubmit)();
-                }}
-                onBack={prevStep}
-                isSubmitting={signupMutation.isPending}
-              />
-            )}
-
-            {currentStep === 7 && (
-              <Card className="p-8" data-testid="card-step-certifications-pro">
-                <div className="text-center mb-8">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <GraduationCap className="w-8 h-8 text-amber-600" />
-                  </div>
-                  <h2 className="text-2xl font-bold mb-2">Unlock Premium Jobs with Certifications</h2>
-                  <p className="text-muted-foreground max-w-lg mx-auto">
-                    UpTend Certified pros earn more and get priority access to high-value contracts
-                  </p>
-                </div>
-
-                {/* Career Ladder Tiers */}
-                <div className="space-y-4 max-w-xl mx-auto mb-8">
-                  {/* Elite Tier */}
-                  <div className="relative p-5 rounded-xl border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-orange-50">
-                    <div className="absolute -top-3 left-4">
-                      <Badge className="bg-amber-500 text-white"><Award className="w-3 h-3 mr-1" />Elite Certified</Badge>
-                    </div>
-                    <div className="mt-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <div>
-                          <p className="font-semibold text-amber-900">Government contracts, emergency dispatch</p>
-                          <p className="text-sm text-amber-700">Top-tier rates • Priority matching</p>
-                        </div>
-                        <span className="text-2xl font-bold text-amber-700">$6,200<span className="text-sm font-normal">/mo</span></span>
-                      </div>
-                      <p className="text-xs text-amber-600">Requires: Emergency Response + Government Contract certs</p>
-                    </div>
-                  </div>
-
-                  {/* B2B Tier */}
-                  <div className="relative p-5 rounded-xl border-2 border-orange-300 bg-gradient-to-r from-orange-50/50 to-amber-50/50">
-                    <div className="absolute -top-3 left-4">
-                      <Badge className="bg-orange-500 text-white"><Star className="w-3 h-3 mr-1" />B2B Certified</Badge>
-                    </div>
-                    <div className="mt-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <div>
-                          <p className="font-semibold">Property management + HOA contracts</p>
-                          <p className="text-sm text-muted-foreground">40% more earnings • Recurring jobs</p>
-                        </div>
-                        <span className="text-2xl font-bold text-orange-600">$4,500<span className="text-sm font-normal">/mo</span></span>
-                      </div>
-                      <p className="text-xs text-orange-600">Requires: B2B Property Management + HOA certs</p>
-                    </div>
-                  </div>
-
-                  {/* Starter Tier */}
-                  <div className="relative p-5 rounded-xl border border-muted bg-muted/30">
-                    <div className="absolute -top-3 left-4">
-                      <Badge variant="secondary">Starter — You are here</Badge>
-                    </div>
-                    <div className="mt-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <div>
-                          <p className="font-semibold">Consumer jobs, standard rates</p>
-                          <p className="text-sm text-muted-foreground">Start earning right away</p>
-                        </div>
-                        <span className="text-2xl font-bold text-muted-foreground">$2,800<span className="text-sm font-normal">/mo</span></span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">No certifications needed</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Earnings Comparison Bar */}
-                <div className="max-w-xl mx-auto mb-8">
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-3">Average Monthly Earnings</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs w-16 text-right text-muted-foreground">Starter</span>
-                      <div className="flex-1 bg-muted rounded-full h-6 overflow-hidden">
-                        <div className="bg-gray-400 h-full rounded-full flex items-center justify-end pr-2" style={{ width: "45%" }}>
-                          <span className="text-xs font-semibold text-white">$2,800</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs w-16 text-right text-orange-600 font-medium">B2B</span>
-                      <div className="flex-1 bg-muted rounded-full h-6 overflow-hidden">
-                        <div className="bg-orange-500 h-full rounded-full flex items-center justify-end pr-2" style={{ width: "73%" }}>
-                          <span className="text-xs font-semibold text-white">$4,500</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs w-16 text-right text-amber-600 font-medium">Elite</span>
-                      <div className="flex-1 bg-muted rounded-full h-6 overflow-hidden">
-                        <div className="bg-amber-500 h-full rounded-full flex items-center justify-end pr-2" style={{ width: "100%" }}>
-                          <span className="text-xs font-semibold text-white">$6,200</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link href="/academy">
-                    <Button className="bg-amber-600 hover:bg-amber-700 text-white px-8">
-                      <GraduationCap className="w-4 h-4 mr-2" />
-                      Start Your First Certification
-                    </Button>
-                  </Link>
-                  <Button variant="ghost" onClick={() => setCurrentStep(7)} data-testid="button-skip-certs">
-                    Skip for now <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </div>
-              </Card>
-            )}
-
+            {/* ==================== STEP 8: AGREEMENT (ICA) ==================== */}
             {currentStep === 8 && (
+              <div>
+                <ICAAgreement
+                  contractorName={`${form.getValues("firstName")} ${form.getValues("lastName")}`}
+                  onAccept={(data) => {
+                    setIcaData(data);
+                    // Don't submit here — just save ICA data and go to Review
+                    nextStep();
+                  }}
+                  onBack={prevStep}
+                  isSubmitting={false}
+                />
+              </div>
+            )}
+
+            {/* ==================== STEP 9: REVIEW & SUBMIT ==================== */}
+            {currentStep === 9 && (
+              <Card className="p-6" data-testid="card-step-review-pro">
+                <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5" />
+                  Review Your Application
+                </h2>
+                <p className="text-muted-foreground mb-6">
+                  Please review everything below. Your Pro profile will be created when you click Submit.
+                </p>
+
+                {/* Personal Info Summary */}
+                <div className="mb-6 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <User className="w-4 h-4" /> Personal Info
+                    </h3>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setCurrentStep(2)}>Edit</Button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><span className="text-muted-foreground">Name:</span> {form.getValues("firstName")} {form.getValues("lastName")}</div>
+                    <div><span className="text-muted-foreground">Email:</span> {form.getValues("email")}</div>
+                    <div><span className="text-muted-foreground">Phone:</span> {form.getValues("phone")}</div>
+                    <div><span className="text-muted-foreground">Company:</span> {form.getValues("companyName")}</div>
+                    <div className="col-span-2"><span className="text-muted-foreground">Address:</span> {form.getValues("streetAddress")}, {form.getValues("city")}, {form.getValues("state")} {form.getValues("zipCode")}</div>
+                  </div>
+                </div>
+
+                {/* Services Summary */}
+                <div className="mb-6 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <ClipboardList className="w-4 h-4" /> Services
+                    </h3>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setCurrentStep(3)}>Edit</Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedServices.map(s => (
+                      <Badge key={s} variant="secondary">{formatServiceLabel(s)}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tools Summary */}
+                {Object.keys(toolsEquipment).some(k => toolsEquipment[k]?.length > 0) && (
+                  <div className="mb-6 p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Wrench className="w-4 h-4" /> Tools & Equipment
+                      </h3>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => setCurrentStep(4)}>Edit</Button>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      {selectedServices.map(service => {
+                        const tools = toolsEquipment[service];
+                        if (!tools || tools.length === 0) return null;
+                        return (
+                          <div key={service}>
+                            <span className="font-medium">{formatServiceLabel(service)}:</span>{" "}
+                            <span className="text-muted-foreground">{tools.join(", ")}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Vehicle Summary */}
+                <div className="mb-6 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <Car className="w-4 h-4" /> Vehicles
+                    </h3>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setCurrentStep(5)}>Edit</Button>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    {vehicles.filter(v => v.vehicleType).map((v, i) => {
+                      const vType = vehicleTypes.find(t => t.value === v.vehicleType);
+                      return (
+                        <div key={i}>
+                          <span className="font-medium">{v.vehicleName || `Vehicle ${i + 1}`}:</span>{" "}
+                          {vType?.label || v.vehicleType}
+                          {v.year && ` • ${v.year}`}
+                          {v.make && ` ${v.make}`}
+                          {v.model && ` ${v.model}`}
+                          {v.photoUrls.length > 0 && ` • ${v.photoUrls.length} photo(s)`}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Verification Summary */}
+                <div className="mb-6 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <Shield className="w-4 h-4" /> Verification
+                    </h3>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setCurrentStep(6)}>Edit</Button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Selfie:</span>{" "}
+                      {selfiePhotoUrl ? <span className="text-green-600">✓ Uploaded</span> : <span className="text-red-600">Missing</span>}
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">ID Photo:</span>{" "}
+                      {idPhotoUrl ? <span className="text-green-600">✓ Uploaded</span> : <span className="text-red-600">Missing</span>}
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Driver's License:</span> {form.getValues("driversLicense") || "—"}
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">GL Insurance:</span>{" "}
+                      {form.getValues("generalLiabilityProvider") ? `${form.getValues("generalLiabilityProvider")}` : "Not provided (25% commission)"}
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Vehicle Insurance:</span>{" "}
+                      {form.getValues("vehicleInsuranceProvider") ? `${form.getValues("vehicleInsuranceProvider")}` : "Not provided"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Agreement Summary */}
+                <div className="mb-6 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <FileText className="w-4 h-4" /> Agreement
+                    </h3>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setCurrentStep(8)}>Edit</Button>
+                  </div>
+                  <div className="text-sm">
+                    {icaData ? (
+                      <span className="text-green-600 flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4" />
+                        ICA signed by {icaData.signedName} on {new Date(icaData.acceptedAt).toLocaleDateString()}
+                      </span>
+                    ) : (
+                      <span className="text-red-600">Agreement not signed — go back to sign</span>
+                    )}
+                  </div>
+                </div>
+
+                {validatedCode && (
+                  <div className="mb-6 p-3 rounded-lg bg-green-500/10 text-green-600 text-sm flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Invite code <strong>{validatedCode}</strong> will be applied for a fee discount
+                  </div>
+                )}
+
+                <div className="flex justify-between mt-8">
+                  <Button type="button" variant="outline" onClick={prevStep} data-testid="button-prev-step-9">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleFinalSubmit}
+                    disabled={signupMutation.isPending || !icaData}
+                    className="bg-green-600 hover:bg-green-700 text-white px-8"
+                    data-testid="button-submit-application"
+                  >
+                    {signupMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        Submit Application
+                        <CheckCircle className="w-4 h-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {/* ==================== STEP 10: WELCOME ==================== */}
+            {currentStep === 10 && (
               <Card className="p-8 text-center" data-testid="card-step-complete-pro">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-green-500" />
@@ -1723,26 +2006,43 @@ export default function PyckerSignup() {
                   </div>
                 </div>
 
+                {/* Certification upsell */}
+                <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 max-w-md mx-auto">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/10 flex items-center justify-center">
+                    <GraduationCap className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <p className="font-semibold text-amber-900 mb-1">Unlock Premium Jobs with Certifications</p>
+                  <p className="text-sm text-amber-700 mb-3">
+                    Certified pros earn up to 2x more and get priority access to high-value contracts.
+                  </p>
+                  <Link href="/academy">
+                    <Button className="bg-amber-600 hover:bg-amber-700 text-white">
+                      <GraduationCap className="w-4 h-4 mr-2" />
+                      Explore Certifications
+                    </Button>
+                  </Link>
+                </div>
+
                 {/* Payout Setup CTA */}
-                <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 text-center">
-                  <p className="font-semibold text-amber-900 mb-1">💰 Set up your bank account to get paid</p>
-                  <p className="text-sm text-amber-700 mb-3">Get paid automatically when jobs complete — takes 2 minutes</p>
+                <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-center max-w-md mx-auto">
+                  <p className="font-semibold text-green-900 mb-1">💰 Set up your bank account to get paid</p>
+                  <p className="text-sm text-green-700 mb-3">Get paid automatically when jobs complete — takes 2 minutes</p>
                   <Link href="/pro/payouts/setup">
-                    <Button className="bg-amber-600 hover:bg-amber-700">
+                    <Button className="bg-green-600 hover:bg-green-700">
                       Set Up Direct Deposit →
                     </Button>
                   </Link>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link href="/login?tab=pro">
+                    <Button>
+                      Log In to Dashboard
+                    </Button>
+                  </Link>
                   <Link href="/">
                     <Button variant="outline">
                       Return Home
-                    </Button>
-                  </Link>
-                  <Link href="/drive">
-                    <Button>
-                      Learn More About Driving
                     </Button>
                   </Link>
                 </div>
