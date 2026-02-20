@@ -1,5 +1,5 @@
 import { usePageTitle } from "@/hooks/use-page-title";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,15 @@ import {
   Shield,
   Clock,
   Package,
-  TrendingUp
+  TrendingUp,
+  Truck,
+  DollarSign,
+  Award,
+  Settings,
+  Wallet,
+  Radius,
+  BadgeCheck,
+  ShieldCheck
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import {
@@ -58,6 +66,10 @@ interface CustomerAddress {
   state: string;
   zipCode: string;
   isDefault: boolean;
+  bedrooms?: string;
+  bathrooms?: string;
+  sqft?: string;
+  yearBuilt?: string;
 }
 
 interface PaymentMethod {
@@ -102,6 +114,16 @@ function AddressCard({
             </div>
             <p className="text-sm text-muted-foreground mt-1">{address.street}</p>
             <p className="text-sm text-muted-foreground">{address.city}, {address.state} {address.zipCode}</p>
+            {(address.bedrooms || address.bathrooms || address.sqft) && (
+              <p className="text-xs text-muted-foreground/70 mt-1">
+                {[
+                  address.bedrooms && `${address.bedrooms} bd`,
+                  address.bathrooms && `${address.bathrooms} ba`,
+                  address.sqft && `${address.sqft} sqft`,
+                  address.yearBuilt && `Built ${address.yearBuilt}`,
+                ].filter(Boolean).join(" · ")}
+              </p>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -206,15 +228,44 @@ function AddAddressDialog({
   editAddress?: CustomerAddress | null;
   onSave: (data: Partial<CustomerAddress>) => void;
 }) {
-  const [label, setLabel] = useState(editAddress?.label || "");
-  const [street, setStreet] = useState(editAddress?.street || "");
-  const [city, setCity] = useState(editAddress?.city || "");
-  const [state, setState] = useState(editAddress?.state || "");
-  const [zipCode, setZipCode] = useState(editAddress?.zipCode || "");
+  const [label, setLabel] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [bedrooms, setBedrooms] = useState("");
+  const [bathrooms, setBathrooms] = useState("");
+  const [sqft, setSqft] = useState("");
+  const [yearBuilt, setYearBuilt] = useState("");
+
+  // Sync form fields when editAddress changes (fixes edit not pre-filling)
+  useEffect(() => {
+    if (editAddress) {
+      setLabel(editAddress.label || "");
+      setStreet(editAddress.street || "");
+      setCity(editAddress.city || "");
+      setState(editAddress.state || "");
+      setZipCode(editAddress.zipCode || "");
+      setBedrooms((editAddress as any).bedrooms || "");
+      setBathrooms((editAddress as any).bathrooms || "");
+      setSqft((editAddress as any).sqft || "");
+      setYearBuilt((editAddress as any).yearBuilt || "");
+    } else {
+      setLabel("");
+      setStreet("");
+      setCity("");
+      setState("");
+      setZipCode("");
+      setBedrooms("");
+      setBathrooms("");
+      setSqft("");
+      setYearBuilt("");
+    }
+  }, [editAddress, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ label, street, city, state, zipCode });
+    onSave({ label, street, city, state, zipCode, ...(bedrooms && { bedrooms }), ...(bathrooms && { bathrooms }), ...(sqft && { sqft }), ...(yearBuilt && { yearBuilt }) } as any);
     onOpenChange(false);
   };
 
@@ -285,6 +336,55 @@ function AddAddressDialog({
               data-testid="input-address-zip"
             />
           </div>
+
+          <Separator className="my-2" />
+          <p className="text-sm font-medium text-muted-foreground">Home Specs (optional)</p>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="bedrooms">Bedrooms</Label>
+              <Input 
+                id="bedrooms" 
+                placeholder="3" 
+                value={bedrooms}
+                onChange={(e) => setBedrooms(e.target.value)}
+                data-testid="input-address-bedrooms"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bathrooms">Bathrooms</Label>
+              <Input 
+                id="bathrooms" 
+                placeholder="2" 
+                value={bathrooms}
+                onChange={(e) => setBathrooms(e.target.value)}
+                data-testid="input-address-bathrooms"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="sqft">Sq Ft</Label>
+              <Input 
+                id="sqft" 
+                placeholder="1,800" 
+                value={sqft}
+                onChange={(e) => setSqft(e.target.value)}
+                data-testid="input-address-sqft"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="yearBuilt">Year Built</Label>
+              <Input 
+                id="yearBuilt" 
+                placeholder="2005" 
+                value={yearBuilt}
+                onChange={(e) => setYearBuilt(e.target.value)}
+                data-testid="input-address-yearbuilt"
+              />
+            </div>
+          </div>
+
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
@@ -296,6 +396,156 @@ function AddAddressDialog({
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ProProfileSection() {
+  const { user } = useAuth();
+
+  const proProfileQuery = useQuery<any>({
+    queryKey: ["/api/pro/profile"],
+    enabled: !!user,
+  });
+
+  const proData = proProfileQuery.data;
+
+  return (
+    <>
+      {/* Quick Stats */}
+      <Card className="p-6 mb-6" data-testid="card-pro-stats">
+        <div className="flex items-center gap-2 mb-4">
+          <TrendingUp className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-semibold">Quick Stats</h3>
+        </div>
+        {proProfileQuery.isLoading ? (
+          <div className="flex justify-center py-6">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center p-3 rounded-lg bg-muted">
+              <p className="text-2xl font-bold text-primary">{proData?.payoutRate ? `$${proData.payoutRate}` : '—'}</p>
+              <p className="text-xs text-muted-foreground">Payout Rate</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-muted">
+              <p className="text-2xl font-bold text-primary">{proData?.tier || proData?.level || '—'}</p>
+              <p className="text-xs text-muted-foreground">Tier / Level</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-muted">
+              <p className="text-2xl font-bold text-primary">{proData?.serviceRadius ? `${proData.serviceRadius} mi` : '—'}</p>
+              <p className="text-xs text-muted-foreground">Service Radius</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-muted">
+              <p className="text-2xl font-bold text-primary">{proData?.jobsCompleted ?? proData?.completedJobs ?? '—'}</p>
+              <p className="text-xs text-muted-foreground">Jobs Completed</p>
+            </div>
+          </div>
+        )}
+      </Card>
+
+      {/* Quick Links */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <Link href="/career">
+          <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-career-dashboard">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                <TrendingUp className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-bold text-sm">Career Dashboard</p>
+                <p className="text-xs text-muted-foreground">Track your progression</p>
+              </div>
+            </div>
+          </Card>
+        </Link>
+        <Link href="/earnings">
+          <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-earnings">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-md bg-green-500/10 flex items-center justify-center shrink-0">
+                <DollarSign className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <p className="font-bold text-sm">Earnings</p>
+                <p className="text-xs text-muted-foreground">View your payouts</p>
+              </div>
+            </div>
+          </Card>
+        </Link>
+      </div>
+
+      {/* Vehicle Info */}
+      {proData && (proData.vehicleMake || proData.vehicleModel) && (
+        <Card className="p-6 mb-6" data-testid="card-vehicle-info">
+          <div className="flex items-center gap-2 mb-4">
+            <Truck className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-semibold">Vehicle</h3>
+          </div>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Make / Model</span>
+              <span className="font-medium">{proData.vehicleMake} {proData.vehicleModel}</span>
+            </div>
+            {proData.vehicleYear && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Year</span>
+                <span className="font-medium">{proData.vehicleYear}</span>
+              </div>
+            )}
+            {proData.licensePlate && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Plate</span>
+                <span className="font-medium">{proData.licensePlate}</span>
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
+
+      {/* Certifications & Insurance */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <Link href="/certifications">
+          <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-certifications">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-md bg-amber-500/10 flex items-center justify-center shrink-0">
+                <Award className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="font-bold text-sm">Certifications</p>
+                <p className="text-xs text-muted-foreground">View & manage</p>
+              </div>
+            </div>
+          </Card>
+        </Link>
+        <Card className="p-4" data-testid="card-insurance-status">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${proData?.hasOwnInsurance ? 'bg-green-500/10' : 'bg-muted'}`}>
+              <ShieldCheck className={`w-5 h-5 ${proData?.hasOwnInsurance ? 'text-green-600' : 'text-muted-foreground'}`} />
+            </div>
+            <div>
+              <p className="font-bold text-sm">Insurance</p>
+              <p className="text-xs text-muted-foreground">
+                {proData?.hasOwnInsurance ? 'Own coverage' : 'UpTend covered'}
+              </p>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Settings Link */}
+      <Link href="/profile/settings">
+        <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-pro-settings">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center shrink-0">
+              <Settings className="w-5 h-5 text-muted-foreground" />
+            </div>
+            <div>
+              <p className="font-bold text-sm">Settings</p>
+              <p className="text-xs text-muted-foreground">Vehicle, radius, notifications & more</p>
+            </div>
+          </div>
+        </Card>
+      </Link>
+    </>
   );
 }
 
@@ -316,6 +566,8 @@ export default function Profile() {
     lastName: "",
     phone: "",
   });
+
+  const isPro = user?.role === "hauler" || user?.role === "pro" || user?.role === "worker";
 
   const userInitials = user 
     ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() || 'U'
@@ -632,203 +884,194 @@ export default function Profile() {
           </div>
         </Card>
 
-        <Card className="p-6 mb-6" data-testid="card-addresses">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-primary" />
-              <h3 className="text-lg font-semibold">Saved Addresses</h3>
-            </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => {
-                setEditingAddress(null);
-                setAddressDialogOpen(true);
-              }}
-              data-testid="button-add-address"
-            >
-              <Plus className="w-4 h-4 mr-1" />
-              Add
-            </Button>
-          </div>
-
-          {addressesQuery.isLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            </div>
-          ) : addressesQuery.data && addressesQuery.data.length > 0 ? (
-            <div className="space-y-3">
-              {addressesQuery.data.map((address) => (
-                <AddressCard 
-                  key={address.id} 
-                  address={address}
-                  onEdit={() => handleEditAddress(address)}
-                  onDelete={() => deleteAddressMutation.mutate(address.id)}
-                  onSetDefault={() => setDefaultAddressMutation.mutate(address.id)}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <MapPin className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No saved addresses</p>
-              <p className="text-sm">Add an address for faster booking</p>
-            </div>
-          )}
-        </Card>
-
-        <div className="mb-6">
-          <DwellScanWidget />
-        </div>
-
-        <div className="mb-6">
-          <MaintenancePlan />
-        </div>
-
-        <div className="mb-6">
-          <ImpactDashboard />
-        </div>
-
-        <div className={`grid grid-cols-1 ${user?.role === 'hauler' ? 'sm:grid-cols-2' : ''} gap-3 mb-6`}>
-          <Link href="/my-home">
-            <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-my-home-inventory">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                  <Package className="w-5 h-5 text-primary" />
+        {isPro ? (
+          <ProProfileSection />
+        ) : (
+          <>
+            <Card className="p-6 mb-6" data-testid="card-addresses">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Saved Addresses</h3>
                 </div>
-                <div>
-                  <p className="font-bold text-sm">My Digital Home</p>
-                  <p className="text-xs text-muted-foreground">View your AI-cataloged inventory</p>
-                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setEditingAddress(null);
+                    setAddressDialogOpen(true);
+                  }}
+                  data-testid="button-add-address"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add
+                </Button>
               </div>
-            </Card>
-          </Link>
-          {user?.role === 'hauler' && (
-            <Link href="/career">
-              <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-career-dashboard">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                    <TrendingUp className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm">Career Dashboard</p>
-                    <p className="text-xs text-muted-foreground">Track your Pro progression</p>
-                  </div>
+
+              {addressesQuery.isLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
-              </Card>
-            </Link>
-          )}
-        </div>
+              ) : addressesQuery.data && addressesQuery.data.length > 0 ? (
+                <div className="space-y-3">
+                  {addressesQuery.data.map((address) => (
+                    <AddressCard 
+                      key={address.id} 
+                      address={address}
+                      onEdit={() => handleEditAddress(address)}
+                      onDelete={() => deleteAddressMutation.mutate(address.id)}
+                      onSetDefault={() => setDefaultAddressMutation.mutate(address.id)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <MapPin className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>No saved addresses</p>
+                  <p className="text-sm">Add an address for faster booking</p>
+                </div>
+              )}
+            </Card>
 
-        <Card className="p-6 mb-6" data-testid="card-home-history">
-          <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-primary" />
-              <h3 className="text-lg font-semibold">Home History</h3>
+            <div className="mb-6">
+              <DwellScanWidget />
             </div>
-            <Badge variant="outline">
-              <Shield className="w-3 h-3 mr-1" />
-              Verified by UpTend
-            </Badge>
-          </div>
 
-          {propertiesQuery.isLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            <div className="mb-6">
+              <MaintenancePlan />
             </div>
-          ) : propertiesQuery.data && propertiesQuery.data.length > 0 ? (
-            <div className="space-y-4">
-              {propertiesQuery.data.map((property) => (
-                <Card key={property.id} className="p-4" data-testid={`card-property-${property.id}`}>
-                  <div className="flex items-start justify-between gap-3 flex-wrap">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <Home className="w-4 h-4 text-muted-foreground shrink-0" />
-                        <span className="font-medium truncate">{property.fullAddress || "Unknown Address"}</span>
-                      </div>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
-                        <span>Score: <strong className="text-foreground">{property.maintenanceScore || 0}</strong>/100</span>
-                        <span>Value Add: <strong className="text-foreground">+${property.estimatedValueIncrease || 0}</strong></span>
-                      </div>
-                      {property.transfers.length > 0 && (
-                        <div className="mt-2 space-y-1">
-                          {property.transfers.map((t) => (
-                            <div key={t.id} className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-                              <Clock className="w-3 h-3 shrink-0" />
-                              <span>
-                                Transfer to {t.toEmail.replace(/(.{3}).*@/, "$1***@")} - 
-                                <Badge variant={t.status === "claimed" ? "default" : "secondary"} className="ml-1 text-xs">
-                                  {t.status === "claimed" ? "Claimed" : "Pending"}
-                                </Badge>
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+
+            <div className="mb-6">
+              <ImpactDashboard />
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 mb-6">
+              <Link href="/my-home">
+                <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-my-home-inventory">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                      <Package className="w-5 h-5 text-primary" />
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setTransferPropertyHash(property.addressHash || "");
-                        setTransferPropertyAddress(property.fullAddress || "");
-                        setTransferDialogOpen(true);
-                      }}
-                      data-testid={`button-transfer-${property.id}`}
-                    >
-                      <ArrowRightLeft className="w-4 h-4 mr-1" />
-                      Transfer
-                    </Button>
+                    <div>
+                      <p className="font-bold text-sm">My Digital Home</p>
+                      <p className="text-xs text-muted-foreground">View your AI-cataloged inventory</p>
+                    </div>
                   </div>
                 </Card>
-              ))}
+              </Link>
             </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <Home className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No property history yet</p>
-              <p className="text-sm">Complete a service to start building your home's maintenance record</p>
-            </div>
-          )}
-        </Card>
 
-        <Card className="p-6" data-testid="card-payment-methods">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-primary" />
-              <h3 className="text-lg font-semibold">Payment Methods</h3>
-            </div>
-            <Link href="/payment-setup">
-              <Button variant="outline" size="sm" data-testid="button-add-payment">
-                <Plus className="w-4 h-4 mr-1" />
-                Add
-              </Button>
-            </Link>
-          </div>
+            <Card className="p-6 mb-6" data-testid="card-home-history">
+              <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Home History</h3>
+                </div>
+                <Badge variant="outline">
+                  <Shield className="w-3 h-3 mr-1" />
+                  Verified by UpTend
+                </Badge>
+              </div>
 
-          {paymentMethodsQuery.isLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            </div>
-          ) : paymentMethodsQuery.data && paymentMethodsQuery.data.length > 0 ? (
-            <div className="space-y-3">
-              {paymentMethodsQuery.data.map((method) => (
-                <PaymentMethodCard 
-                  key={method.id} 
-                  method={method}
-                  onDelete={() => deletePaymentMutation.mutate(method.id)}
-                  onSetDefault={() => setDefaultPaymentMutation.mutate(method.id)}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <CreditCard className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No payment methods</p>
-              <p className="text-sm">Add a card for instant booking</p>
-            </div>
-          )}
-        </Card>
+              {propertiesQuery.isLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                </div>
+              ) : propertiesQuery.data && propertiesQuery.data.length > 0 ? (
+                <div className="space-y-4">
+                  {propertiesQuery.data.map((property) => (
+                    <Card key={property.id} className="p-4" data-testid={`card-property-${property.id}`}>
+                      <div className="flex items-start justify-between gap-3 flex-wrap">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <Home className="w-4 h-4 text-muted-foreground shrink-0" />
+                            <span className="font-medium truncate">{property.fullAddress || "Unknown Address"}</span>
+                          </div>
+                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
+                            <span>Score: <strong className="text-foreground">{property.maintenanceScore || 0}</strong>/100</span>
+                            <span>Value Add: <strong className="text-foreground">+${property.estimatedValueIncrease || 0}</strong></span>
+                          </div>
+                          {property.transfers.length > 0 && (
+                            <div className="mt-2 space-y-1">
+                              {property.transfers.map((t) => (
+                                <div key={t.id} className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                                  <Clock className="w-3 h-3 shrink-0" />
+                                  <span>
+                                    Transfer to {t.toEmail.replace(/(.{3}).*@/, "$1***@")} - 
+                                    <Badge variant={t.status === "claimed" ? "default" : "secondary"} className="ml-1 text-xs">
+                                      {t.status === "claimed" ? "Claimed" : "Pending"}
+                                    </Badge>
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setTransferPropertyHash(property.addressHash || "");
+                            setTransferPropertyAddress(property.fullAddress || "");
+                            setTransferDialogOpen(true);
+                          }}
+                          data-testid={`button-transfer-${property.id}`}
+                        >
+                          <ArrowRightLeft className="w-4 h-4 mr-1" />
+                          Transfer
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Home className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>No property history yet</p>
+                  <p className="text-sm">Complete a service to start building your home's maintenance record</p>
+                </div>
+              )}
+            </Card>
+
+            <Card className="p-6" data-testid="card-payment-methods">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Payment Methods</h3>
+                </div>
+                <Link href="/payment-setup">
+                  <Button variant="outline" size="sm" data-testid="button-add-payment">
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add
+                  </Button>
+                </Link>
+              </div>
+
+              {paymentMethodsQuery.isLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                </div>
+              ) : paymentMethodsQuery.data && paymentMethodsQuery.data.length > 0 ? (
+                <div className="space-y-3">
+                  {paymentMethodsQuery.data.map((method) => (
+                    <PaymentMethodCard 
+                      key={method.id} 
+                      method={method}
+                      onDelete={() => deletePaymentMutation.mutate(method.id)}
+                      onSetDefault={() => setDefaultPaymentMutation.mutate(method.id)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <CreditCard className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>No payment methods</p>
+                  <p className="text-sm">Add a card for instant booking</p>
+                </div>
+              )}
+            </Card>
+          </>
+        )}
       </main>
 
       <AddAddressDialog 
