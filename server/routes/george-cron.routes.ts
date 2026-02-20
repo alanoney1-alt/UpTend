@@ -17,6 +17,7 @@ import {
   sendWeatherHeadsUp,
   sendMaintenanceNudge,
   sendHomeScanPromo,
+  scanGovernmentContracts,
 } from '../services/george-events';
 
 function requireCronKey(req: Request, res: Response): boolean {
@@ -106,6 +107,20 @@ export function registerGeorgeCronRoutes(app: Express): void {
     } catch (err: any) {
       console.error('[George Cron] Home scan promo error:', err.message);
       res.status(500).json({ error: 'Failed to run home scan promo' });
+    }
+  });
+
+  // Daily 7 AM: government contract scan (emails admin only)
+  app.get('/api/george-cron/gov-contracts', async (req, res) => {
+    if (!requireCronKey(req, res)) return;
+
+    console.log('[George Cron] Running government contract scan...');
+    try {
+      const result = await scanGovernmentContracts();
+      res.json({ success: true, ...result });
+    } catch (err: any) {
+      console.error('[George Cron] Gov contract scan error:', err.message);
+      res.status(500).json({ error: 'Failed to run gov contract scan' });
     }
   });
 

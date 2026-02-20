@@ -1040,3 +1040,126 @@ export async function onSmartHomeAlert(
     return { handled: false };
   }
 }
+
+// ─── Government Contract Scanner (Admin Only) ─────────────────────
+
+export async function scanGovernmentContracts(): Promise<{ found: number; emailed: boolean }> {
+  const adminEmail = process.env.ADMIN_EMAIL || "alan@uptendapp.com";
+  const samApiKey = process.env.SAM_GOV_API_KEY;
+  
+  if (!samApiKey) {
+    console.log("[GOV-SCAN] SAM_GOV_API_KEY not configured, skipping");
+    return { found: 0, emailed: false };
+  }
+
+  try {
+    // Search for opportunities matching our service categories in Florida
+    const keywords = ["debris removal", "janitorial", "landscaping", "pressure washing", "cleaning services", "building maintenance", "facility maintenance", "grounds maintenance"];
+    const allOpportunities: any[] = [];
+
+    for (const keyword of keywords) {
+      try {
+        const url = `https://api.sam.gov/opportunities/v2/search?api_key=${samApiKey}&postedFrom=${getDateDaysAgo(1)}&postedTo=${getTodayDate()}&ptype=o&soltype=o&state=FL&keyword=${encodeURIComponent(keyword)}&limit=10`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          const opps = data?.opportunitiesData || [];
+          allOpportunities.push(...opps);
+        }
+      } catch (e) {
+        // Individual keyword search failed, continue
+      }
+    }
+
+    // Deduplicate by noticeId
+    const seen = new Set<string>();
+    const unique = allOpportunities.filter(o => {
+      const id = o.noticeId || o.solicitationNumber || JSON.stringify(o).slice(0, 50);
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    });
+
+    if (unique.length === 0) {
+      console.log("[GOV-SCAN] No new opportunities found today");
+      return { found: 0, emailed: false };
+    }
+
+    // Build email
+    const rows = unique.map(o => `
+      <tr>
+        <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px"><strong>${o.title || "Untitled"}</strong></td>
+        <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px">${o.department || o.fullParentPathName || "N/A"}</td>
+        <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px">${o.type || "N/A"}</td>
+        <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px">${o.responseDeadLine || "N/A"}</td>
+        <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px">
+          ${o.uiLink ? `<a href="${o.uiLink}" style="color:#F47C20">View</a>` : "N/A"}
+        </td>
+      </tr>
+    `).join("");
+
+    const html = `
+      <div style="font-family:-apple-system,sans-serif;max-width:700px;margin:0 auto;padding:20px">
+        <div style="background:#F47C20;padding:16px 24px;border-radius:8px 8px 0 0">
+          <h1 style="color:white;margin:0;font-size:20px">🏛️ Government Contract Alert</h1>
+          <p style="color:rgba(255,255,255,0.8);margin:4px 0 0;font-size:13px">${unique.length} new opportunities found in Florida</p>
+        </div>
+        <div style="background:white;padding:20px 24px;border:1px solid #e5e5e5;border-top:none;border-radius:0 0 8px 8px">
+          <table style="width:100%;border-collapse:collapse">
+            <tr style="background:#f8f8f8">
+              <th style="padding:8px;text-align:left;font-size:12px">Title</th>
+              <th style="padding:8px;text-align:left;font-size:12px">Agency</th>
+              <th style="padding:8px;text-align:left;font-size:12px">Type</th>
+              <th style="padding:8px;text-align:left;font-size:12px">Deadline</th>
+              <th style="padding:8px;text-align:left;font-size:12px">Link</th>
+            </tr>
+            ${rows}
+          </table>
+          <p style="margin-top:16px;font-size:12px;color:#666">
+            These contracts match UpTend's service categories (cleaning, maintenance, landscaping, debris removal) in Florida.
+            Review and decide which ones to bid on through the SDVOSB subsidiary.
+          </p>
+          <p style="font-size:11px;color:#999;margin-top:12px">This is an automated scan from Mr. George. Runs daily at 7 AM EST.</p>
+        </div>
+      </div>
+    `;
+
+    // Send email
+    const nodemailer = await import("nodemailer");
+    let transporter;
+    if (process.env.SENDGRID_API_KEY) {
+      transporter = nodemailer.createTransport({
+        host: "smtp.sendgrid.net",
+        port: 587,
+        auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY },
+      });
+    } else {
+      console.log("[GOV-SCAN] No email configured, logging results");
+      console.log(`[GOV-SCAN] Found ${unique.length} opportunities`);
+      return { found: unique.length, emailed: false };
+    }
+
+    await transporter.sendMail({
+      from: process.env.FROM_EMAIL || "UpTend <noreply@uptendapp.com>",
+      to: adminEmail,
+      subject: `🏛️ ${unique.length} Government Contract Opportunities — Florida`,
+      html,
+    });
+
+    console.log(`[GOV-SCAN] Emailed ${unique.length} opportunities to ${adminEmail}`);
+    return { found: unique.length, emailed: true };
+  } catch (err) {
+    console.error("[GOV-SCAN] Error:", err);
+    return { found: 0, emailed: false };
+  }
+}
+
+function getDateDaysAgo(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  return d.toISOString().split("T")[0].replace(/-/g, "/");
+}
+
+function getTodayDate(): string {
+  return new Date().toISOString().split("T")[0].replace(/-/g, "/");
+}
