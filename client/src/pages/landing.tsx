@@ -225,7 +225,7 @@ function TwoSides() {
             </h3>
             <div className="space-y-4">
               {[
-                { icon: Zap, title: "Instant, honest pricing", desc: "See your price in 30 seconds. No haggling. No \"I'll get back to you.\"" },
+                { icon: Zap, title: "Instant, honest pricing", desc: "Get your price upfront. No haggling. No \"I'll get back to you.\"" },
                 { icon: ShieldCheck, title: "Every Pro is verified", desc: "Background checked, insured, and rated by real customers. No randos." },
                 { icon: Clock, title: "Real-time tracking", desc: "Know exactly when your Pro is arriving, working, and done. Like Uber for your home." },
                 { icon: DollarSign, title: "Price ceiling guarantee", desc: "The price you're quoted is the most you'll ever pay. Period." },

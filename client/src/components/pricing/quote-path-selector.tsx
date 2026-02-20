@@ -113,7 +113,7 @@ export function QuotePathSelector({ serviceType, onQuoteGenerated, onBack }: Quo
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5" />
-                Get precise pricing in under 30 seconds
+                Get precise pricing instantly
               </li>
             </ul>
 
@@ -143,7 +143,7 @@ export function QuotePathSelector({ serviceType, onQuoteGenerated, onBack }: Quo
 
             <div className="flex items-center gap-2 pt-2">
               <Clock className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">~30 seconds</span>
+              <span className="text-sm text-muted-foreground">Quick &amp; easy</span>
             </div>
           </CardContent>
         </Card>

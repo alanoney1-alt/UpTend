@@ -573,7 +573,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
               Let AI match you with the best available Pro
             </p>
             <p className="text-xs text-[#F47C20] font-medium">
-              Fastest option — booked in 30 seconds
+              Fastest option — book instantly
             </p>
           </div>
 
