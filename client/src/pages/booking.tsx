@@ -36,7 +36,7 @@ export default function BookingPage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-amber-50/30 to-white dark:from-zinc-950 dark:to-zinc-900">
         <Header />
-        <main className="container mx-auto px-4 py-8 md:py-12">
+        <main className="container mx-auto px-4 pt-24 pb-24 md:pt-28 md:pb-12">
           <div className="w-full max-w-2xl mx-auto">
             <div className="text-center mb-6">
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
@@ -74,7 +74,7 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50/30 to-white dark:from-zinc-950 dark:to-zinc-900">
       <Header />
-      <main className="container mx-auto px-4 py-8 md:py-12">
+      <main className="container mx-auto px-4 pt-24 pb-24 md:pt-28 md:pb-12">
         <FloridaEstimator preselectedService={preselectedService ?? undefined} preselectedTiming={preselectedTiming ?? undefined} />
       </main>
     </div>
