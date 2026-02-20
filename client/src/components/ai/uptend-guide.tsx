@@ -346,7 +346,7 @@ export function UpTendGuide() {
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasInitRef = useRef(false);
-  const [inAppUrl, setInAppUrl] = useState<string | null>(null);
+  // External product links open in new tab (retailers block iframes)
 
   const speech = useSpeechRecognition();
   const synth = useSpeechSynthesis();
@@ -711,8 +711,8 @@ export function UpTendGuide() {
             navigate(url.replace(/https?:\/\/[^/]+/, ''));
             return;
           }
-          // External links — open in in-app modal
-          setInAppUrl(url);
+          // External links — open in new tab (most retailers block iframes)
+          window.open(url, '_blank', 'noopener,noreferrer');
         }}>
           {messages.map((msg) => (
             <div key={msg.id} className={cn("flex flex-col group", msg.role === "user" ? "items-end" : "items-start")}>
@@ -868,30 +868,7 @@ export function UpTendGuide() {
           </div>
         </div>
       </div>
-      {/* ─── In-App Link/Product Modal ────────────────────────────── */}
-      {inAppUrl && (
-        <div className="fixed inset-0 z-[10001] bg-black/60 flex items-center justify-center p-4" onClick={() => setInAppUrl(null)}>
-          <div className="relative w-full max-w-lg h-[80vh] bg-white rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-              <span className="text-sm font-medium truncate flex-1 mr-2">
-                {inAppUrl.includes('amazon.com') ? '🛒 Amazon' :
-                 inAppUrl.includes('homedepot.com') ? '🛒 Home Depot' :
-                 inAppUrl.includes('lowes.com') ? '🛒 Lowe\'s' :
-                 inAppUrl.includes('walmart.com') ? '🛒 Walmart' : '🔗 Link'}
-              </span>
-              <button onClick={() => setInAppUrl(null)} className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/20">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <iframe
-              src={inAppUrl}
-              className="w-full h-[calc(80vh-40px)] border-0"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"
-              title="In-app browser"
-            />
-          </div>
-        </div>
-      )}
+      {/* External links open in new tab — retailers block iframes */}
     </>
   );
 }
