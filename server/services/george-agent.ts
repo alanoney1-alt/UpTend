@@ -3065,7 +3065,15 @@ export async function chat(
     let currentMessages = [...messages];
     let bookingDraft: any = null;
 
+    // Detect if the user message needs tool calls (DIY, video, product queries)
+    const lastUserMsg = (currentMessages.filter((m: any) => m.role === "user").pop() as any)?.content || "";
+    const msgText = typeof lastUserMsg === "string" ? lastUserMsg.toLowerCase() : JSON.stringify(lastUserMsg).toLowerCase();
+    const needsToolCall = /\b(fix|repair|how to|diy|video|show me|tutorial|watch|youtube|buy|product|price|cost|quote|book|schedule|amazon|home depot|lowe|walmart|parts|tools needed|what do i need)\b/.test(msgText);
+
     for (let i = 0; i < 5; i++) {
+      // Force tool use on first iteration when the message clearly needs tools
+      const toolChoice = (i === 0 && needsToolCall) ? { type: "any" as const } : undefined;
+
       const response = await anthropic.messages.create({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1024,
@@ -3073,6 +3081,7 @@ export async function chat(
         system: systemPrompt,
         tools: TOOL_DEFINITIONS,
         messages: currentMessages as any,
+        ...(toolChoice ? { tool_choice: toolChoice } : {}),
       });
 
       // Check if Claude wants to use tools
