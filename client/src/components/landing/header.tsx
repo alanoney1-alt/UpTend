@@ -38,12 +38,12 @@ export function Header() {
         {/* Left: Logo */}
         <div className="flex-shrink-0">
           <Link href="/" onClick={closeMenu} data-testid="link-logo">
-            <Logo className="w-10 h-10" textClassName="text-2xl hidden md:block" />
+            <Logo className="w-10 h-10" textClassName="text-2xl hidden lg:block" />
           </Link>
         </div>
 
         {/* Center: Nav Links */}
-        <div className="hidden md:flex items-center justify-center gap-8 text-sm font-medium text-slate-300 flex-1">
+        <div className="hidden lg:flex items-center justify-center gap-6 text-sm font-medium text-slate-300 flex-1">
           <Link href="/services">
             <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-services">
               {t("nav.services")}
@@ -81,7 +81,7 @@ export function Header() {
         </p>
 
         {/* Right: Actions */}
-        <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+        <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
           <LanguageToggle />
           <Link href="/become-pro">
             <span
@@ -171,7 +171,7 @@ export function Header() {
           )}
         </div>
 
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <Button
             variant="ghost"
             size="icon"
@@ -186,7 +186,7 @@ export function Header() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-slate-900 border-t border-slate-800 absolute top-20 left-0 w-full p-6 flex flex-col gap-6 shadow-2xl z-50">
+        <div className="lg:hidden bg-slate-900 border-t border-slate-800 absolute top-20 left-0 w-full p-6 flex flex-col gap-6 shadow-2xl z-50">
 
           <div className="flex flex-col gap-4 text-lg font-medium text-slate-300">
             <Link href="/services" onClick={closeMenu}>
