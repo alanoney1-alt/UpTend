@@ -389,10 +389,11 @@ export async function addToCalendar(params: {
       const html = brandedEmailTemplate('Your Booking is Confirmed! 📅', bodyHtml, customer.first_name || customer.full_name?.split(' ')[0]);
 
       // SendGrid with attachment
-      const sgMail = await import('@sendgrid/mail');
+      const sgMail = (await import('@sendgrid/mail')) as any;
+      const mailer = sgMail.default || sgMail;
       if (process.env.SENDGRID_API_KEY) {
-        sgMail.default.setApiKey(process.env.SENDGRID_API_KEY);
-        await sgMail.default.send({
+        mailer.setApiKey(process.env.SENDGRID_API_KEY);
+        await mailer.send({
           to: customer.email,
           from: process.env.FROM_EMAIL || 'alan@uptendapp.com',
           subject: `📅 ${booking.service_type} Booked — Calendar Invite`,
