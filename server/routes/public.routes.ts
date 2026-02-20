@@ -6,6 +6,7 @@
 
 import type { Express } from "express";
 import { storage } from "../storage";
+import { pool } from "../db";
 
 export function registerPublicRoutes(app: Express) {
   // GET /api/pros/browse - Browse available pros (public)
@@ -13,41 +14,66 @@ export function registerPublicRoutes(app: Express) {
     try {
       const { service, sort = "rating", available = "anytime" } = req.query as Record<string, string>;
 
-      // Mock pro data — replace with real DB queries when pros exist
-      const mockPros = [
-        { id: "pro-001", firstName: "Marcus", lastInitial: "R", rating: 4.9, reviewCount: 47, jobsCompleted: 156, services: ["handyman", "pressure_washing", "light_demolition"], certifications: ["b2b_pm", "osha_10"], bio: "10 years of experience in home repairs and renovations across Orlando.", isVerified: true, isInsured: true, memberSince: "2025-06", approximateLocation: { lat: 28.54, lng: -81.38 } },
-        { id: "pro-002", firstName: "David", lastInitial: "L", rating: 4.8, reviewCount: 89, jobsCompleted: 234, services: ["junk_removal", "garage_cleanout", "moving_labor"], certifications: ["sustainability"], bio: "Eco-friendly junk removal specialist. 90%+ diversion rate.", isVerified: true, isInsured: true, memberSince: "2025-03", approximateLocation: { lat: 28.60, lng: -81.20 } },
-        { id: "pro-003", firstName: "Carlos", lastInitial: "M", rating: 5.0, reviewCount: 62, jobsCompleted: 203, services: ["landscaping", "pressure_washing", "gutter_cleaning"], certifications: ["senior_pro", "sustainability"], bio: "Master landscaper with 15 years in Central Florida.", isVerified: true, isInsured: true, memberSince: "2025-01", approximateLocation: { lat: 28.48, lng: -81.46 } },
-        { id: "pro-004", firstName: "James", lastInitial: "W", rating: 4.7, reviewCount: 31, jobsCompleted: 78, services: ["home_cleaning", "carpet_cleaning"], certifications: [], bio: "Detail-oriented cleaning professional. Eco-friendly products only.", isVerified: true, isInsured: true, memberSince: "2025-09", approximateLocation: { lat: 28.69, lng: -81.31 } },
-        { id: "pro-005", firstName: "Miguel", lastInitial: "S", rating: 4.9, reviewCount: 55, jobsCompleted: 145, services: ["pool_cleaning", "pressure_washing", "landscaping"], certifications: ["lead_safe"], bio: "Pool and exterior specialist. Certified pool operator.", isVerified: true, isInsured: true, memberSince: "2025-04", approximateLocation: { lat: 28.34, lng: -81.42 } },
-        { id: "pro-006", firstName: "Anthony", lastInitial: "J", rating: 4.6, reviewCount: 18, jobsCompleted: 42, services: ["junk_removal", "light_demolition", "moving_labor"], certifications: [], bio: "Former Marine. Strong, fast, and always on time.", isVerified: true, isInsured: true, memberSince: "2025-11", approximateLocation: { lat: 28.55, lng: -81.53 } },
-        { id: "pro-007", firstName: "Robert", lastInitial: "K", rating: 4.8, reviewCount: 73, jobsCompleted: 189, services: ["handyman", "gutter_cleaning", "home_consultation"], certifications: ["b2b_pm", "senior_pro"], bio: "Licensed contractor turned UpTend Pro.", isVerified: true, isInsured: true, memberSince: "2025-02", approximateLocation: { lat: 28.41, lng: -81.30 } },
-        { id: "pro-008", firstName: "Daniel", lastInitial: "P", rating: 4.7, reviewCount: 44, jobsCompleted: 112, services: ["pressure_washing", "gutter_cleaning", "home_cleaning"], certifications: ["sustainability"], bio: "Exterior cleaning expert. Soft wash specialist.", isVerified: true, isInsured: true, memberSince: "2025-07", approximateLocation: { lat: 28.61, lng: -81.44 } },
-        { id: "pro-009", firstName: "Jason", lastInitial: "L", rating: 5.0, reviewCount: 91, jobsCompleted: 267, services: ["junk_removal", "garage_cleanout", "light_demolition", "moving_labor"], certifications: ["senior_pro", "osha_10"], bio: "Top-rated Pro with 250+ jobs. Safety-first approach.", isVerified: true, isInsured: true, memberSince: "2025-01", approximateLocation: { lat: 28.39, lng: -81.18 } },
-        { id: "pro-010", firstName: "Kevin", lastInitial: "B", rating: 4.8, reviewCount: 36, jobsCompleted: 94, services: ["pool_cleaning", "landscaping", "home_cleaning"], certifications: [], bio: "Full-service home exterior maintenance.", isVerified: true, isInsured: true, memberSince: "2025-08", approximateLocation: { lat: 28.51, lng: -81.15 } },
-      ];
+      // Query real pros from DB
+      let orderClause = 'hp.rating DESC';
+      if (sort === 'jobs') orderClause = 'hp.jobs_completed DESC';
+      else if (sort === 'reviews') orderClause = 'hp.review_count DESC';
 
-      let results = mockPros;
-
-      // Filter by service
+      let serviceFilter = '';
+      const params: any[] = [];
       if (service) {
-        results = results.filter((p) => p.services.includes(service));
+        params.push(service);
+        serviceFilter = `AND $${params.length} = ANY(hp.service_types)`;
       }
 
-      // Sort
-      switch (sort) {
-        case "rating":
-          results.sort((a, b) => b.rating - a.rating);
-          break;
-        case "jobs":
-          results.sort((a, b) => b.jobsCompleted - a.jobsCompleted);
-          break;
-        case "reviews":
-          results.sort((a, b) => b.reviewCount - a.reviewCount);
-          break;
+      const { rows } = await pool.query(`
+        SELECT 
+          hp.id,
+          u.first_name,
+          SUBSTRING(u.last_name, 1, 1) as last_initial,
+          hp.rating,
+          hp.review_count,
+          hp.jobs_completed,
+          hp.service_types as services,
+          hp.bio,
+          hp.verified as is_verified,
+          hp.insurance_coverage,
+          hp.current_lat,
+          hp.current_lng,
+          hp.service_radius,
+          u.created_at as member_since
+        FROM hauler_profiles hp
+        JOIN users u ON hp.user_id = u.id
+        WHERE hp.can_accept_jobs = true
+        ${serviceFilter}
+        ORDER BY ${orderClause}
+        LIMIT 50
+      `, params);
+
+      if (rows.length > 0) {
+        const results = rows.map((row: any) => ({
+          id: row.id,
+          firstName: row.first_name || "Pro",
+          lastInitial: row.last_initial || "",
+          rating: parseFloat(row.rating) || 5.0,
+          reviewCount: parseInt(row.review_count) || 0,
+          jobsCompleted: parseInt(row.jobs_completed) || 0,
+          services: row.services || [],
+          certifications: [],
+          bio: row.bio || "Verified UpTend Pro ready to help.",
+          isVerified: row.is_verified || false,
+          isInsured: !!row.insurance_coverage,
+          memberSince: row.member_since ? new Date(row.member_since).toISOString().slice(0, 7) : "2025-01",
+          approximateLocation: {
+            lat: row.current_lat || 28.5383 + (Math.random() - 0.5) * 0.2,
+            lng: row.current_lng || -81.3792 + (Math.random() - 0.5) * 0.2,
+          },
+        }));
+        return res.json(results);
       }
 
-      res.json(results);
+      // No pros in DB yet — show empty state instead of fake data
+      res.json([]);
     } catch (error) {
       console.error("Error browsing pros:", error);
       res.status(500).json({ error: "Failed to browse pros" });
