@@ -63,13 +63,13 @@ export function ServiceBagSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <button className="relative p-2 text-slate-300 hover:text-white transition-colors" aria-label="Service bag" data-testid="button-service-bag">
+        <button
+          className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
+          aria-label="View service bag"
+          data-testid="button-service-bag"
+        >
           <ShoppingBag className="w-5 h-5" />
-          {itemCount > 0 && (
-            <Badge className="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center p-0 rounded-full border-0">
-              {itemCount}
-            </Badge>
-          )}
+          <span>View Cart ({itemCount})</span>
         </button>
       </SheetTrigger>
       <SheetContent className="bg-slate-900 border-slate-800 text-white w-[340px] sm:w-[400px] flex flex-col" side="right">
