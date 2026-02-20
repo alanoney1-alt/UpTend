@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Image, TouchableOpacity, Animated, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Animated, StyleSheet, Linking } from 'react-native';
 import { Colors } from '../theme/colors';
 
 export type MessageType = 'text' | 'photo' | 'quote' | 'property' | 'bundle' | 'typing';
@@ -38,11 +38,25 @@ function renderFormattedText(text: string, isUser: boolean) {
       {lines.map((line, lineIdx) => {
         const isBullet = /^\s*[-•]\s+/.test(line);
         const cleanLine = isBullet ? line.replace(/^\s*[-•]\s+/, '') : line;
-        const parts = cleanLine.split(/(\*\*[^*]+\*\*)/g);
+        // Parse: bold (**text**), markdown links [text](url), bare URLs
+        const parts = cleanLine.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)]+\)|https?:\/\/[^\s<>"]+)/g);
         const spans = parts.map((part, i) => {
           const boldMatch = part.match(/^\*\*(.+)\*\*$/);
           if (boldMatch) {
             return <Text key={i} style={{ fontWeight: '700' }}>{boldMatch[1]}</Text>;
+          }
+          // Markdown link: [label](url)
+          const mdLink = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
+          if (mdLink) {
+            return <Text key={i} style={{ color: '#f97316', textDecorationLine: 'underline' }} onPress={() => Linking.openURL(mdLink[2])}>{mdLink[1]}</Text>;
+          }
+          // Bare URL
+          if (/^https?:\/\//.test(part)) {
+            const label = part.includes('amazon.com') ? '🛒 Amazon' :
+              part.includes('homedepot.com') ? '🛒 Home Depot' :
+              part.includes('lowes.com') ? '🛒 Lowe\'s' :
+              part.includes('walmart.com') ? '🛒 Walmart' : '🔗 Link';
+            return <Text key={i} style={{ color: '#f97316', textDecorationLine: 'underline' }} onPress={() => Linking.openURL(part)}>{label}</Text>;
           }
           return <Text key={i}>{part}</Text>;
         });
