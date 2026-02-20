@@ -21,6 +21,8 @@ import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
+import { useServiceBag } from "@/contexts/service-bag-context";
+import { ShoppingBag, Check } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { PaymentForm } from "@/components/payment-form";
 
@@ -162,6 +164,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
+  const serviceBag = useServiceBag();
   const [isBooking, setIsBooking] = useState(false);
   const [tosAccepted, setTosAccepted] = useState(false);
   const [tosAcceptedAt, setTosAcceptedAt] = useState<string | null>(null);
@@ -1475,13 +1478,37 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                 </div>
                 <p className="text-sm mb-2 text-muted-foreground">{service.description}</p>
                 <p className="text-xs text-primary font-medium">✓ {service.benefit}</p>
-                <Button
-                  onClick={() => handleServiceSelect(service.id)}
-                  className="mt-4 w-full"
-                  size="lg"
-                >
-                  Select AI Home Scan <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    onClick={() => handleServiceSelect(service.id)}
+                    className="flex-1"
+                    size="lg"
+                  >
+                    Book Now <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                  {serviceBag.isInBag(service.id) ? (
+                    <Button variant="outline" size="lg" disabled className="border-green-500 text-green-400">
+                      <Check className="w-4 h-4 mr-1" /> In Bag
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        serviceBag.addItem({
+                          serviceId: service.id,
+                          serviceName: service.name,
+                          price: service.price,
+                          addedAt: new Date().toISOString(),
+                        });
+                        toast({ title: `${service.name} added to bag` });
+                      }}
+                    >
+                      <ShoppingBag className="w-4 h-4 mr-1" /> Add to Bag
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -1525,14 +1552,40 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                   </span>
                   <span className="text-xl md:text-2xl font-black" data-testid={`text-service-price-${service.id}`}>{service.price}</span>
                 </div>
-                <Button
-                  onClick={(e) => { e.stopPropagation(); handleServiceSelect(service.id); }}
-                  size="sm"
-                  className="font-bold min-h-[44px]"
-                  data-testid={`button-book-${service.id}`}
-                >
-                  {t("common.get_quote")} <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  {serviceBag.isInBag(service.id) ? (
+                    <Button variant="outline" size="sm" disabled className="border-green-500 text-green-400 min-h-[44px]">
+                      <Check className="w-3 h-3 mr-1" /> In Bag
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="min-h-[44px]"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        serviceBag.addItem({
+                          serviceId: service.id,
+                          serviceName: service.name,
+                          price: service.price,
+                          addedAt: new Date().toISOString(),
+                        });
+                        toast({ title: `${service.name} added to bag` });
+                      }}
+                      data-testid={`button-add-bag-${service.id}`}
+                    >
+                      <ShoppingBag className="w-3 h-3 mr-1" /> Bag
+                    </Button>
+                  )}
+                  <Button
+                    onClick={(e) => { e.stopPropagation(); handleServiceSelect(service.id); }}
+                    size="sm"
+                    className="font-bold min-h-[44px]"
+                    data-testid={`button-book-${service.id}`}
+                  >
+                    {t("common.get_quote")} <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           ))}

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useEffect, lazy, Suspense } from "react";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
+import { ServiceBagProvider } from "@/contexts/service-bag-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
@@ -136,6 +137,10 @@ const PoolCleaningLakeNona = lazy(() => import("@/pages/services/pool-cleaning-l
 const HomeServicesLakeNona = lazy(() => import("@/pages/services/home-services-lake-nona"));
 const HomeCleaningOrlando = lazy(() => import("@/pages/services/home-cleaning-orlando"));
 const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orlando"));
+
+// Blog
+const BlogIndex = lazy(() => import("@/pages/blog/index"));
+const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -303,6 +308,8 @@ function Router() {
       <Route path="/partners/register" component={PartnerRegister} />
       <Route path="/partners/dashboard" component={PartnerDashboard} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
+      <Route path="/blog" component={BlogIndex} />
+      <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
       <Route component={NotFound} />
     </Switch>
     </Suspense>
@@ -330,6 +337,7 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <ServiceBagProvider>
           <ThemeProvider>
             <Toaster />
             <Router />
@@ -338,6 +346,7 @@ function App() {
             <InstallBanner />
             <CookieConsent />
           </ThemeProvider>
+          </ServiceBagProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </ErrorBoundary>

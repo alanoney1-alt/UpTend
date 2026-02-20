@@ -6,6 +6,7 @@ import {
   Menu, X, Leaf, ChevronDown,
   UserCircle, LogOut, ShieldCheck,
 } from "lucide-react";
+import { ServiceBagSheet } from "@/components/service-bag";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -82,6 +83,7 @@ export function Header() {
 
         {/* Right: Actions */}
         <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
+          <ServiceBagSheet />
           <LanguageToggle />
           <Link href="/become-pro">
             <span
@@ -171,7 +173,8 @@ export function Header() {
           )}
         </div>
 
-        <div className="lg:hidden">
+        <div className="lg:hidden flex items-center gap-1">
+          <ServiceBagSheet />
           <Button
             variant="ghost"
             size="icon"
