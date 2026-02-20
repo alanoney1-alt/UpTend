@@ -114,16 +114,16 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
 
   const getClaimStatusBadge = (status: string) => {
     const statusStyles: Record<string, string> = {
-      pending: "bg-yellow-100 text-yellow-800",
-      reviewing: "bg-blue-100 text-blue-800",
-      approved: "bg-green-100 text-green-800",
-      denied: "bg-red-100 text-red-800",
-      escalated: "bg-purple-100 text-purple-800",
-      resolved: "bg-gray-100 text-gray-800",
+      pending: "bg-yellow-500/20 text-yellow-400",
+      reviewing: "bg-blue-500/20 text-blue-400",
+      approved: "bg-green-500/20 text-green-400",
+      denied: "bg-red-500/20 text-red-400",
+      escalated: "bg-purple-500/20 text-purple-400",
+      resolved: "bg-muted text-gray-800",
     };
 
     return (
-      <Badge className={statusStyles[status] || "bg-gray-100 text-gray-800"}>
+      <Badge className={statusStyles[status] || "bg-muted text-gray-800"}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     );
@@ -132,15 +132,15 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
   const getClaimTypeIcon = (type: string) => {
     switch (type) {
       case "property_damage":
-        return <AlertTriangle className="text-orange-600" size={20} />;
+        return <AlertTriangle className="text-orange-500" size={20} />;
       case "structural":
-        return <AlertTriangle className="text-red-600" size={20} />;
+        return <AlertTriangle className="text-red-500" size={20} />;
       case "bodily_injury":
-        return <Shield className="text-red-600" size={20} />;
+        return <Shield className="text-red-500" size={20} />;
       case "theft":
-        return <Shield className="text-purple-600" size={20} />;
+        return <Shield className="text-purple-500" size={20} />;
       default:
-        return <FileText className="text-gray-600" size={20} />;
+        return <FileText className="text-muted-foreground" size={20} />;
     }
   };
 
@@ -148,8 +148,8 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Liability Claims</h2>
-          <p className="text-gray-600 mt-1">
+          <h2 className="text-xl font-bold text-foreground">Liability Claims</h2>
+          <p className="text-muted-foreground mt-1">
             File and track claims for damages or issues with your services
           </p>
         </div>
@@ -159,17 +159,17 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
         </Button>
       </div>
 
-      {/* Liability Protection Info */}
-      <Card className="p-4 bg-blue-50 border-blue-200">
+      {/* Claims Process Info */}
+      <Card className="p-4 bg-primary/5 border-primary/20">
         <div className="flex items-start gap-3">
-          <Shield className="text-blue-600 mt-1" size={20} />
+          <Shield className="text-primary mt-1" size={20} />
           <div>
-            <h3 className="font-semibold text-blue-900">Your Protection Coverage</h3>
-            <p className="text-sm text-blue-700 mt-1">
-              UpTend provides liability protection for damages during service delivery:<br />
-              • <strong>Property damage:</strong> Up to $10K-$25K depending on pro's insurance<br />
-              • <strong>Bodily injury:</strong> Up to $5K + escalation to pro's insurance<br />
-              • <strong>Structural damage:</strong> Immediate escalation to pro's insurer
+            <h3 className="font-semibold">How Claims Work</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              If something goes wrong during a service, UpTend helps resolve it:<br />
+              • <strong>File a claim</strong> — describe the issue with photos and we review within 48 hours<br />
+              • <strong>Pro's insurance</strong> — verified pros carry their own liability coverage. We coordinate directly with their insurer on your behalf.<br />
+              • <strong>Resolution support</strong> — we mediate between you and the pro to reach a fair outcome. If needed, claims are escalated to the pro's insurance carrier.
             </p>
           </div>
         </div>
@@ -186,9 +186,9 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
           </div>
         ) : claims?.claims.length === 0 ? (
           <Card className="p-8 text-center">
-            <Shield className="mx-auto mb-4 text-gray-400" size={48} />
+            <Shield className="mx-auto mb-4 text-muted-foreground" size={48} />
             <h3 className="text-lg font-medium mb-2">No Claims Filed</h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               You haven't filed any liability claims yet. If you experience damage or issues during service, you can file a claim here.
             </p>
             <Button onClick={() => setShowClaimDialog(true)}>
@@ -208,7 +208,7 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
                       </h3>
                       {getClaimStatusBadge(claim.status)}
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       Against {claim.pro_name} {claim.company_name && `(${claim.company_name})`} 
                       • Filed {format(new Date(claim.created_at), "MMM dd, yyyy")}
                     </p>
@@ -220,19 +220,19 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
                       Estimated: ${claim.estimated_damage.toLocaleString()}
                     </p>
                   )}
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     Coverage: ${claim.platform_liability_cap.toLocaleString()}
                   </p>
                 </div>
               </div>
               
-              <p className="text-sm text-gray-700 mb-3">{claim.description}</p>
+              <p className="text-sm text-muted-foreground mb-3">{claim.description}</p>
               
               {claim.status === "approved" && claim.platform_payout > 0 && (
-                <div className="bg-green-50 border border-green-200 rounded p-3 mb-3">
+                <div className="bg-green-500/10 border border-green-500/30 rounded p-3 mb-3">
                   <div className="flex items-center gap-2">
-                    <DollarSign size={16} className="text-green-600" />
-                    <span className="text-sm font-medium text-green-800">
+                    <DollarSign size={16} className="text-green-500" />
+                    <span className="text-sm font-medium text-green-400">
                       Approved: ${claim.platform_payout.toLocaleString()} payout
                     </span>
                   </div>
@@ -240,10 +240,10 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
               )}
               
               {claim.status === "denied" && (
-                <div className="bg-red-50 border border-red-200 rounded p-3 mb-3">
+                <div className="bg-red-500/10 border border-red-500/30 rounded p-3 mb-3">
                   <div className="flex items-center gap-2">
-                    <X size={16} className="text-red-600" />
-                    <span className="text-sm font-medium text-red-800">
+                    <X size={16} className="text-red-500" />
+                    <span className="text-sm font-medium text-red-400">
                       Claim denied
                     </span>
                   </div>
@@ -251,10 +251,10 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
               )}
               
               {claim.escalated_to_insurer && (
-                <div className="bg-purple-50 border border-purple-200 rounded p-3 mb-3">
+                <div className="bg-purple-500/10 border border-purple-500/30 rounded p-3 mb-3">
                   <div className="flex items-center gap-2">
-                    <ExternalLink size={16} className="text-purple-600" />
-                    <span className="text-sm font-medium text-purple-800">
+                    <ExternalLink size={16} className="text-purple-500" />
+                    <span className="text-sm font-medium text-purple-400">
                       Escalated to pro's insurance company
                     </span>
                   </div>
@@ -262,9 +262,9 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
               )}
               
               {claim.resolution_notes && (
-                <div className="bg-gray-50 border rounded p-3">
+                <div className="bg-muted border rounded p-3">
                   <h4 className="text-sm font-medium mb-1">Resolution:</h4>
-                  <p className="text-sm text-gray-700">{claim.resolution_notes}</p>
+                  <p className="text-sm text-muted-foreground">{claim.resolution_notes}</p>
                 </div>
               )}
             </Card>
@@ -309,7 +309,7 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
                 placeholder="Enter the Pro's ID"
                 required 
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 You can find this in your service confirmation or receipt
               </p>
             </div>
@@ -350,7 +350,7 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
                 step="0.01"
                 placeholder="0.00"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Optional: Estimate the cost to repair or replace
               </p>
             </div>
@@ -359,7 +359,7 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
               <Label>Evidence Photos (Optional)</Label>
               <div className="space-y-2">
                 {photoUrls.map((url, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                  <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded">
                     <Eye size={16} />
                     <span className="text-sm truncate flex-1">{url}</span>
                     <Button
@@ -383,7 +383,7 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
                   Add Photo URL
                 </Button>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Upload photos elsewhere and paste the URLs here
               </p>
             </div>
