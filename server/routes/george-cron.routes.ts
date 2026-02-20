@@ -10,7 +10,14 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { checkMaintenanceReminders, sendSeasonalCampaign } from '../services/george-events';
+import {
+  checkMaintenanceReminders,
+  sendSeasonalCampaign,
+  sendPostServiceFollowUp,
+  sendWeatherHeadsUp,
+  sendMaintenanceNudge,
+  sendHomeScanPromo,
+} from '../services/george-events';
 
 function requireCronKey(req: Request, res: Response): boolean {
   const cronKey = process.env.CRON_API_KEY;
@@ -43,6 +50,62 @@ export function registerGeorgeCronRoutes(app: Express): void {
     } catch (err: any) {
       console.error('[George Cron] Maintenance reminders error:', err.message);
       res.status(500).json({ error: 'Failed to run maintenance reminders' });
+    }
+  });
+
+  // Every 12 hours: post-service follow-up (48hr check-ins)
+  app.get('/api/george-cron/post-service-followup', async (req, res) => {
+    if (!requireCronKey(req, res)) return;
+
+    console.log('[George Cron] Running post-service follow-up...');
+    try {
+      const result = await sendPostServiceFollowUp();
+      res.json({ success: true, ...result });
+    } catch (err: any) {
+      console.error('[George Cron] Post-service follow-up error:', err.message);
+      res.status(500).json({ error: 'Failed to run post-service follow-up' });
+    }
+  });
+
+  // Every 2 hours: check weather alerts and notify customers
+  app.get('/api/george-cron/weather-alerts', async (req, res) => {
+    if (!requireCronKey(req, res)) return;
+
+    console.log('[George Cron] Running weather alerts check...');
+    try {
+      const result = await sendWeatherHeadsUp();
+      res.json({ success: true, ...result });
+    } catch (err: any) {
+      console.error('[George Cron] Weather alerts error:', err.message);
+      res.status(500).json({ error: 'Failed to run weather alerts' });
+    }
+  });
+
+  // Daily at 10 AM EST: maintenance nudge
+  app.get('/api/george-cron/maintenance-nudge', async (req, res) => {
+    if (!requireCronKey(req, res)) return;
+
+    console.log('[George Cron] Running maintenance nudge...');
+    try {
+      const result = await sendMaintenanceNudge();
+      res.json({ success: true, ...result });
+    } catch (err: any) {
+      console.error('[George Cron] Maintenance nudge error:', err.message);
+      res.status(500).json({ error: 'Failed to run maintenance nudge' });
+    }
+  });
+
+  // Twice weekly: home scan promo for inactive users
+  app.get('/api/george-cron/home-scan-promo', async (req, res) => {
+    if (!requireCronKey(req, res)) return;
+
+    console.log('[George Cron] Running home scan promo...');
+    try {
+      const result = await sendHomeScanPromo();
+      res.json({ success: true, ...result });
+    } catch (err: any) {
+      console.error('[George Cron] Home scan promo error:', err.message);
+      res.status(500).json({ error: 'Failed to run home scan promo' });
     }
   });
 

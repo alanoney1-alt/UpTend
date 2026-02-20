@@ -32,7 +32,7 @@ function isQuietHoursEst(): boolean {
     new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
   );
   const hour = nowEst.getHours();
-  return hour >= 21 || hour < 8;
+  return hour >= 21 || hour < 9;
 }
 
 // ─── Safe SMS helper ──────────────────────────────────────────────────────────
@@ -482,7 +482,330 @@ export async function handleEmergency(
   }
 }
 
-// ─── 7. SEASONAL CAMPAIGN (CRON) ─────────────────────────────────────────────
+// ─── 7. PROACTIVE OUTREACH: POST-SERVICE FOLLOW-UP ───────────────────────────
+/**
+ * Query jobs completed ~48 hours ago, send follow-up SMS.
+ * Checks consent, quiet hours, and 7-day message cap per customer.
+ */
+export async function sendPostServiceFollowUp(): Promise<{ sent: number; skipped: number }> {
+  console.log('[George] sendPostServiceFollowUp: scanning for 48hr follow-ups...');
+  let sent = 0;
+  let skipped = 0;
+
+  try {
+    if (isQuietHoursEst()) {
+      console.log('[George] Quiet hours — skipping post-service follow-up batch');
+      return { sent, skipped };
+    }
+
+    // Jobs completed between 44-52 hours ago (window around 48hr mark)
+    const result = await pool.query<{
+      customer_id: string;
+      service_type: string;
+      first_name: string;
+      phone: string;
+    }>(
+      `SELECT DISTINCT ON (sr.customer_id)
+         sr.customer_id,
+         sr.service_type,
+         u.first_name,
+         u.phone
+       FROM service_requests sr
+       JOIN users u ON sr.customer_id = u.id
+       WHERE sr.status = 'completed'
+         AND sr.completed_at >= NOW() - INTERVAL '52 hours'
+         AND sr.completed_at <= NOW() - INTERVAL '44 hours'
+         AND u.phone IS NOT NULL AND u.phone != ''
+         AND NOT EXISTS (
+           SELECT 1 FROM reengagement_messages rm
+           WHERE rm.customer_id = sr.customer_id
+             AND rm.sent_at >= NOW() - INTERVAL '7 days'
+         )
+       ORDER BY sr.customer_id, sr.completed_at DESC
+       LIMIT 200`
+    ).catch(() => ({ rows: [] as any[] }));
+
+    for (const row of result.rows) {
+      try {
+        // Check SMS consent
+        const consent = await pool.query(
+          `SELECT 1 FROM customer_action_tracking
+           WHERE user_id = $1 AND action_type = 'consent_sms' AND action_data->>'enabled' = 'true'
+           LIMIT 1`,
+          [row.customer_id]
+        ).catch(() => ({ rows: [] as any[] }));
+        if (consent.rows.length === 0) { skipped++; continue; }
+
+        const name = row.first_name || 'there';
+        const service = SERVICE_NAMES[row.service_type] || row.service_type.replace(/_/g, ' ');
+        const message = `Hey ${name}! Mr. George here 👋 How's everything looking after your ${service}? If anything needs attention, just reply and I'll take care of it.`;
+
+        await sendGeorgeSms(row.phone, message, row.customer_id);
+
+        // Log to reengagement_messages
+        await pool.query(
+          `INSERT INTO reengagement_messages (customer_id, message_type, message_text, sent_at)
+           VALUES ($1, 'post_service_followup', $2, NOW())`,
+          [row.customer_id, message]
+        ).catch(() => {});
+
+        sent++;
+      } catch (rowErr: any) {
+        console.error(`[George] Post-service follow-up row error: ${rowErr.message}`);
+        skipped++;
+      }
+    }
+  } catch (err: any) {
+    console.error(`[George] sendPostServiceFollowUp error: ${err.message}`);
+  }
+
+  console.log(`[George] Post-service follow-up: ${sent} sent, ${skipped} skipped`);
+  return { sent, skipped };
+}
+
+// ─── 8. PROACTIVE OUTREACH: WEATHER HEADS-UP ─────────────────────────────────
+/**
+ * Check NWS for severe weather alerts, SMS customers with relevant tips.
+ */
+export async function sendWeatherHeadsUp(): Promise<{ sent: number; skipped: number; alertCount: number }> {
+  console.log('[George] sendWeatherHeadsUp: checking for severe weather...');
+  let sent = 0;
+  let skipped = 0;
+
+  try {
+    if (isQuietHoursEst()) {
+      console.log('[George] Quiet hours — skipping weather heads-up');
+      return { sent, skipped, alertCount: 0 };
+    }
+
+    const alertRes = await fetch("https://api.weather.gov/alerts/active?area=FL&severity=Extreme,Severe", {
+      headers: { "User-Agent": "UpTend-George/1.0 (contact@uptendapp.com)" },
+      signal: AbortSignal.timeout(8000),
+    }).then(r => r.json()).catch(() => null);
+
+    if (!alertRes?.features?.length) {
+      console.log('[George] No severe weather alerts — nothing to send');
+      return { sent, skipped, alertCount: 0 };
+    }
+
+    // Filter for Orlando/Central FL
+    const orlandoKeywords = ["orange", "orlando", "seminole", "osceola", "lake", "central florida"];
+    const relevant = alertRes.features.filter((f: any) => {
+      const desc = ((f.properties?.areaDesc || "") + " " + (f.properties?.headline || "")).toLowerCase();
+      return orlandoKeywords.some((kw: string) => desc.includes(kw));
+    });
+
+    if (relevant.length === 0) {
+      console.log('[George] No Orlando-area severe alerts');
+      return { sent, skipped, alertCount: 0 };
+    }
+
+    const topAlert = relevant[0].properties;
+    const eventName = topAlert.event || "Severe weather";
+
+    // Weather-specific tips
+    const tipMap: Record<string, string> = {
+      "Hurricane Warning": "Secure outdoor furniture, fill bathtubs for water, charge all devices.",
+      "Hurricane Watch": "Stock up on water, batteries, and non-perishables. Review your evacuation route.",
+      "Tornado Warning": "Get to an interior room on the lowest floor immediately. Stay away from windows.",
+      "Tornado Watch": "Stay alert and keep an eye on conditions. Have a safe room plan ready.",
+      "Severe Thunderstorm Warning": "Stay indoors, unplug sensitive electronics, and stay away from windows.",
+      "Tropical Storm Warning": "Secure loose outdoor items and keep your phone charged.",
+      "Flood Warning": "Avoid driving through standing water. Move valuables to higher ground.",
+    };
+    const tip = tipMap[eventName] || "Stay safe, stay informed, and keep emergency supplies ready.";
+
+    // Get customers in Orlando area with consent
+    const customers = await pool.query<{
+      id: string;
+      first_name: string;
+      phone: string;
+    }>(
+      `SELECT DISTINCT u.id, u.first_name, u.phone
+       FROM users u
+       WHERE u.role = 'customer'
+         AND u.phone IS NOT NULL AND u.phone != ''
+         AND EXISTS (
+           SELECT 1 FROM customer_action_tracking cat
+           WHERE cat.user_id = u.id AND cat.action_type = 'consent_sms' AND cat.action_data->>'enabled' = 'true'
+         )
+         AND NOT EXISTS (
+           SELECT 1 FROM reengagement_messages rm
+           WHERE rm.customer_id = u.id
+             AND rm.sent_at >= NOW() - INTERVAL '7 days'
+         )
+       LIMIT 500`
+    ).catch(() => ({ rows: [] as any[] }));
+
+    for (const customer of customers.rows) {
+      try {
+        const name = customer.first_name || 'there';
+        const message = `Hey ${name}, Mr. George here. ${eventName} headed our way. ${tip} Need help prepping? Just reply.`;
+
+        await sendGeorgeSms(customer.phone, message, customer.id);
+
+        await pool.query(
+          `INSERT INTO reengagement_messages (customer_id, message_type, message_text, sent_at)
+           VALUES ($1, 'weather_headsup', $2, NOW())`,
+          [customer.id, message]
+        ).catch(() => {});
+
+        sent++;
+      } catch (rowErr: any) {
+        console.error(`[George] Weather heads-up row error: ${rowErr.message}`);
+        skipped++;
+      }
+    }
+
+    console.log(`[George] Weather heads-up: ${sent} sent, ${skipped} skipped, ${relevant.length} alerts`);
+    return { sent, skipped, alertCount: relevant.length };
+  } catch (err: any) {
+    console.error(`[George] sendWeatherHeadsUp error: ${err.message}`);
+    return { sent, skipped, alertCount: 0 };
+  }
+}
+
+// ─── 9. PROACTIVE OUTREACH: MAINTENANCE NUDGE ────────────────────────────────
+/**
+ * Query maintenance_reminders due within 7 days, send gentle nudge SMS.
+ */
+export async function sendMaintenanceNudge(): Promise<{ sent: number; skipped: number }> {
+  console.log('[George] sendMaintenanceNudge: scanning for upcoming maintenance...');
+  let sent = 0;
+  let skipped = 0;
+
+  try {
+    if (isQuietHoursEst()) {
+      console.log('[George] Quiet hours — skipping maintenance nudge');
+      return { sent, skipped };
+    }
+
+    const result = await pool.query<{
+      customer_id: string;
+      reminder_type: string;
+      first_name: string;
+      phone: string;
+    }>(
+      `SELECT DISTINCT ON (mr.customer_id)
+         mr.customer_id,
+         mr.reminder_type,
+         u.first_name,
+         u.phone
+       FROM maintenance_reminders mr
+       JOIN users u ON mr.customer_id = u.id
+       WHERE mr.next_due <= NOW() + INTERVAL '7 days'
+         AND mr.next_due >= NOW()
+         AND u.phone IS NOT NULL AND u.phone != ''
+         AND EXISTS (
+           SELECT 1 FROM customer_action_tracking cat
+           WHERE cat.user_id = mr.customer_id AND cat.action_type = 'consent_sms' AND cat.action_data->>'enabled' = 'true'
+         )
+         AND NOT EXISTS (
+           SELECT 1 FROM reengagement_messages rm
+           WHERE rm.customer_id = mr.customer_id
+             AND rm.sent_at >= NOW() - INTERVAL '7 days'
+         )
+       ORDER BY mr.customer_id, mr.next_due ASC
+       LIMIT 200`
+    ).catch(() => ({ rows: [] as any[] }));
+
+    for (const row of result.rows) {
+      try {
+        const name = row.first_name || 'there';
+        const reminderType = (row.reminder_type || 'maintenance').replace(/_/g, ' ');
+        const message = `Hey ${name}! Quick heads up from Mr. George — your ${reminderType} is due this week. Want me to book a pro, or I can walk you through doing it yourself?`;
+
+        await sendGeorgeSms(row.phone, message, row.customer_id);
+
+        await pool.query(
+          `INSERT INTO reengagement_messages (customer_id, message_type, message_text, sent_at)
+           VALUES ($1, 'maintenance_nudge', $2, NOW())`,
+          [row.customer_id, message]
+        ).catch(() => {});
+
+        sent++;
+      } catch (rowErr: any) {
+        console.error(`[George] Maintenance nudge row error: ${rowErr.message}`);
+        skipped++;
+      }
+    }
+  } catch (err: any) {
+    console.error(`[George] sendMaintenanceNudge error: ${err.message}`);
+  }
+
+  console.log(`[George] Maintenance nudge: ${sent} sent, ${skipped} skipped`);
+  return { sent, skipped };
+}
+
+// ─── 10. PROACTIVE OUTREACH: HOME SCAN PROMO ─────────────────────────────────
+/**
+ * For customers with 0 home scans and inactive 7+ days, send Home Scan promo.
+ */
+export async function sendHomeScanPromo(): Promise<{ sent: number; skipped: number }> {
+  console.log('[George] sendHomeScanPromo: finding eligible customers...');
+  let sent = 0;
+  let skipped = 0;
+
+  try {
+    if (isQuietHoursEst()) {
+      console.log('[George] Quiet hours — skipping home scan promo');
+      return { sent, skipped };
+    }
+
+    const result = await pool.query<{
+      id: string;
+      first_name: string;
+      phone: string;
+    }>(
+      `SELECT u.id, u.first_name, u.phone
+       FROM users u
+       WHERE u.role = 'customer'
+         AND u.phone IS NOT NULL AND u.phone != ''
+         AND u.last_active_at <= NOW() - INTERVAL '7 days'
+         AND NOT EXISTS (
+           SELECT 1 FROM home_scan_sessions hss
+           WHERE hss.customer_id = u.id
+         )
+         AND EXISTS (
+           SELECT 1 FROM customer_action_tracking cat
+           WHERE cat.user_id = u.id AND cat.action_type = 'consent_sms' AND cat.action_data->>'enabled' = 'true'
+         )
+         AND NOT EXISTS (
+           SELECT 1 FROM reengagement_messages rm
+           WHERE rm.customer_id = u.id
+             AND rm.sent_at >= NOW() - INTERVAL '7 days'
+         )
+       LIMIT 200`
+    ).catch(() => ({ rows: [] as any[] }));
+
+    for (const row of result.rows) {
+      try {
+        const name = row.first_name || 'there';
+        const message = `Hey ${name}! Did you know you can get a free AI Home Scan? It checks your home's health and catches small problems before they get expensive. Takes 15 minutes. Want me to set one up?`;
+
+        await sendGeorgeSms(row.phone, message, row.id);
+
+        await pool.query(
+          `INSERT INTO reengagement_messages (customer_id, message_type, message_text, sent_at)
+           VALUES ($1, 'home_scan_promo', $2, NOW())`,
+          [row.id, message]
+        ).catch(() => {});
+
+        sent++;
+      } catch (rowErr: any) {
+        console.error(`[George] Home scan promo row error: ${rowErr.message}`);
+        skipped++;
+      }
+    }
+  } catch (err: any) {
+    console.error(`[George] sendHomeScanPromo error: ${err.message}`);
+  }
+
+  console.log(`[George] Home scan promo: ${sent} sent, ${skipped} skipped`);
+  return { sent, skipped };
+}
+
+// ─── 11. SEASONAL CAMPAIGN (CRON) ────────────────────────────────────────────
 // Florida-specific seasonal maintenance tips by month
 const SEASONAL_TIPS: Record<number, { service: string; msg: string }> = {
   1:  { service: 'pressure_washing', msg: "New year, fresh home! January is perfect for pressure washing — clean off the holiday grime. Book now →" },

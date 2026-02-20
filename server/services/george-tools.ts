@@ -3001,9 +3001,12 @@ export async function getMorningBriefing(userId: string, storage?: any): Promise
 
   const sections: string[] = [];
 
-  // Weather
+  // Weather (enhanced with UV + precipitation)
   const w = briefing.weather;
-  sections.push(`🌤 **Weather**: ${w.temp}°F (feels like ${w.feelsLike}°F), ${w.conditions}, ${w.humidity}% humidity`);
+  let weatherLine = `🌤 **Weather**: ${w.temp}°F (feels like ${w.feelsLike}°F), ${w.conditions}, ${w.humidity}% humidity`;
+  if ((w as any).uvIndex != null) weatherLine += `, UV index ${(w as any).uvIndex}`;
+  if ((w as any).precipChance != null && (w as any).precipChance > 0) weatherLine += `, ${(w as any).precipChance}% chance of rain`;
+  sections.push(weatherLine);
   if (w.alerts.length > 0) {
     sections.push(`⚠️ **Alert**: ${w.alerts[0]}`);
   }
@@ -3048,6 +3051,60 @@ export async function getMorningBriefing(userId: string, storage?: any): Promise
     sections,
     raw: briefing,
   };
+}
+
+// da1b) getWeatherAlerts — Hurricane/Severe Weather Tracking
+export async function getWeatherAlerts(): Promise<object> {
+  try {
+    const res = await fetch("https://api.weather.gov/alerts/active?area=FL&severity=Extreme,Severe", {
+      headers: { "User-Agent": "UpTend-George/1.0 (contact@uptendapp.com)" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) throw new Error(`NWS API returned ${res.status}`);
+    const data: any = await res.json();
+
+    // Filter for Orange County / Orlando area
+    const orlandoKeywords = ["orange", "orlando", "seminole", "osceola", "lake", "central florida"];
+    const relevant = (data.features || []).filter((f: any) => {
+      const props = f.properties || {};
+      const areaDesc = (props.areaDesc || "").toLowerCase();
+      const headline = (props.headline || "").toLowerCase();
+      return orlandoKeywords.some(kw => areaDesc.includes(kw) || headline.includes(kw));
+    });
+
+    const alerts = relevant.map((f: any) => {
+      const p = f.properties;
+      return {
+        event: p.event,
+        headline: p.headline,
+        severity: p.severity,
+        urgency: p.urgency,
+        description: (p.description || "").slice(0, 500),
+        instruction: (p.instruction || "").slice(0, 300),
+        onset: p.onset,
+        expires: p.expires,
+        areaDesc: p.areaDesc,
+      };
+    });
+
+    return {
+      alertCount: alerts.length,
+      alerts,
+      checkedAt: new Date().toISOString(),
+      message: alerts.length === 0
+        ? "No severe weather alerts for the Orlando area right now. All clear! ☀️"
+        : `⚠️ ${alerts.length} active severe weather alert${alerts.length > 1 ? "s" : ""} for the Orlando area.`,
+    };
+  } catch (err: any) {
+    console.warn("[George Tools] Weather alerts fetch failed:", err.message);
+    return {
+      alertCount: 0,
+      alerts: [],
+      checkedAt: new Date().toISOString(),
+      message: "Couldn't check weather alerts right now — try again in a few minutes.",
+      error: err.message,
+    };
+  }
 }
 
 // da2) getHomeDashboard

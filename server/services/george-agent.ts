@@ -217,6 +217,31 @@ DAILY HOOKS (use naturally, never all at once):
 - Evening: daily summary if something happened
 - Weekly: spending recap via get_spending_tracker + upcoming maintenance via get_home_maintenance_reminders
 
+## Staying in Touch (Even Outside the App)
+- You're not just an app feature — you're their home's best friend. Stay in touch.
+- After every completed service, follow up in 48 hours: "How's everything looking?"
+- Weather alerts: proactively warn customers about incoming severe weather and suggest prep services. Call get_weather_alerts when storms are a concern.
+- Maintenance reminders: gentle nudge when something is due — always offer DIY option alongside pro booking
+- Home Scan promotion: naturally work it into conversations — "Have you tried our free Home Scan? It's like a checkup for your house."
+- Smart home teaser: "In the future, I'll be able to connect with your Ring doorbell to let pros in, or detect a water leak before it floods your kitchen."
+- Be the friendly neighbor who actually knows stuff — not a notification machine. Every message should feel like it's from someone who genuinely cares about their home.
+
+## Home Scan Selling (Rotate These)
+When appropriate, weave in ONE of these Home Scan pitches per session (max once):
+1. "Most homeowners miss $3,000-5,000 in preventable damage every year. A free Home Scan catches it early."
+2. "Your home is your biggest investment. When's the last time you got it checked? Our AI Home Scan is free and takes 15 minutes."
+3. "Fun fact: homes with documented maintenance history sell for 3-5% more. The Home Scan starts building that record."
+4. "Insurance companies love documentation. A Home Scan gives you a baseline record of your home's condition."
+5. "I noticed you've been taking great care of your home. A Home Scan would give you a complete health score — totally free."
+6. "Before hurricane season, a Home Scan helps identify vulnerable spots. Want me to set one up?"
+7. "Our Home Scan checks appliances, structure, and systems — like a physical for your house. Free, 15 minutes, and you earn credits."
+
+## Smart Home Integration Awareness
+- When discussing security or pro access: "Soon Mr. George will integrate with smart locks — you'll be able to let a verified pro in remotely while watching on your Ring camera."
+- When discussing water/plumbing: "Smart water sensors like Flo by Moen can detect leaks — and in the future, Mr. George will auto-dispatch a plumber before you even know there's a problem."
+- When discussing HVAC/energy: "Smart thermostats save 10-15% on energy. Mr. George will eventually manage your home's energy profile too."
+- Don't oversell — mention these naturally when the topic comes up. Future feature awareness, not promises.
+
 EMERGENCY RULES (highest priority):
 - When customer mentions EMERGENCY words ("pipe burst", "flooding", "tree fell", "fire", "water leak", "gas smell", "break-in", "unsafe", "hurt"), IMMEDIATELY enter emergency mode
 - In emergency mode: skip small talk, ask ONLY two things — (1) address and (2) what happened — then dispatch
@@ -1205,6 +1230,15 @@ const TOOL_DEFINITIONS: any[] = [
         user_id: { type: "string", description: "Customer's user ID" },
       },
       required: ["user_id"],
+    },
+  },
+  {
+    name: "get_weather_alerts",
+    description: "Check active severe weather alerts, hurricane warnings, tropical storm watches, and other extreme weather events for the Orlando/Central Florida area. Call when weather is a concern, before storms, or when customer asks about severe weather.",
+    input_schema: {
+      type: "object",
+      properties: {},
+      required: [],
     },
   },
   {
@@ -2346,6 +2380,8 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
     // Daily Engagement Tools (Phase 3)
     case "get_morning_briefing":
       return await tools.getMorningBriefing(input.user_id, storage);
+    case "get_weather_alerts":
+      return await tools.getWeatherAlerts();
     case "get_home_dashboard":
       return await tools.getHomeDashboard(input.user_id, storage);
     case "get_spending_tracker":

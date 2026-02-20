@@ -11,6 +11,8 @@ export interface WeatherSummary {
   conditions: string;
   humidity: number;
   windSpeed: number;
+  uvIndex: number;
+  precipChance: number;
   alerts: string[];
   forecast3day: Array<{ day: string; high: number; low: number; conditions: string }>;
 }
@@ -96,6 +98,8 @@ export async function getWeatherBrief(zip: string): Promise<WeatherSummary> {
       conditions,
       humidity: parseInt(current.humidity || "70"),
       windSpeed: parseInt(current.windspeedMiles || "8"),
+      uvIndex: parseInt(current.uvIndex || "5"),
+      precipChance: parseInt(weather?.[0]?.hourly?.[4]?.chanceofrain || "0"),
       alerts,
       forecast3day,
     };
@@ -110,6 +114,8 @@ export async function getWeatherBrief(zip: string): Promise<WeatherSummary> {
       conditions: isHot ? "Partly Cloudy, chance of afternoon storms" : "Clear and pleasant",
       humidity: isHot ? 78 : 55,
       windSpeed: 9,
+      uvIndex: isHot ? 8 : 4,
+      precipChance: isHot ? 40 : 10,
       alerts: month >= 6 && month <= 11 ? ["Hurricane season active — June 1 through November 30"] : [],
       forecast3day: [
         { day: "Today",     high: isHot ? 91 : 74, low: isHot ? 75 : 58, conditions: isHot ? "Partly Cloudy" : "Sunny" },
