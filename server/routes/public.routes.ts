@@ -156,4 +156,34 @@ export function registerPublicRoutes(app: Express) {
       res.status(500).json({ error: "Failed to fetch pricing" });
     }
   });
+
+  // ─── Weather (public) ──────────────────────────────────────────
+  app.get("/api/weather", async (_req, res) => {
+    try {
+      const weatherRes = await fetch("https://wttr.in/Orlando,FL?format=j1").then(r => r.json()).catch(() => null);
+      if (!weatherRes?.current_condition?.[0]) {
+        return res.json({ error: "Weather data unavailable", fallback: true, temp: 82, condition: "Partly Cloudy", humidity: 65, uvIndex: 7 });
+      }
+      const c = weatherRes.current_condition[0];
+      const forecast = weatherRes.weather?.[0] || {};
+      res.json({
+        temp: parseInt(c.temp_F) || 82,
+        feelsLike: parseInt(c.FeelsLikeF) || 84,
+        condition: c.weatherDesc?.[0]?.value || "Clear",
+        humidity: parseInt(c.humidity) || 65,
+        uvIndex: parseInt(c.uvIndex) || 5,
+        windMph: parseInt(c.windspeedMiles) || 8,
+        precipChance: parseInt(forecast.hourly?.[0]?.chanceofrain) || 0,
+        high: parseInt(forecast.maxtempF) || 88,
+        low: parseInt(forecast.mintempF) || 72,
+        sunrise: forecast.astronomy?.[0]?.sunrise || "6:45 AM",
+        sunset: forecast.astronomy?.[0]?.sunset || "7:30 PM",
+        location: "Orlando, FL",
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Weather API error:", error);
+      res.json({ error: "Weather unavailable", temp: 82, condition: "Partly Cloudy", humidity: 65, uvIndex: 7, fallback: true });
+    }
+  });
 }
