@@ -38,6 +38,12 @@ import {
   Timer,
   Sparkles,
   Shield,
+  Wrench,
+  PlayCircle,
+  ShoppingCart,
+  FileBarChart,
+  Share2,
+  History,
 } from "lucide-react";
 
 const SERVICE_TYPE_LABELS: Record<string, string> = {
@@ -341,6 +347,69 @@ export default function CustomerDashboard() {
           <DwellScanWidget />
         </div>
 
+        {/* Home Report — Carfax for Homes */}
+        <Card className="mb-6" data-testid="card-home-report">
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <FileBarChart className="w-5 h-5 text-primary" />
+                <CardTitle className="text-base">Home Report</CardTitle>
+              </div>
+              <p className="text-xs text-white/60 mt-1">Complete history of your home — like Carfax, but for houses.</p>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <Button variant="ghost" size="sm" onClick={() => console.log("Download full home report")} data-testid="button-download-home-report">
+                <Download className="w-4 h-4 mr-1" /> Download
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => console.log("Share home report")} data-testid="button-share-home-report">
+                <Share2 className="w-4 h-4 mr-1" /> Share
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {completedJobs.length > 0 ? (
+              <div className="relative pl-6 space-y-4" data-testid="timeline-home-report">
+                {/* vertical line */}
+                <div className="absolute left-[9px] top-2 bottom-2 w-0.5 bg-primary/30" />
+                {completedJobs
+                  .sort((a, b) => new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime())
+                  .map((job) => {
+                    const price = job.finalPrice || job.priceEstimate;
+                    return (
+                      <div key={job.id} className="relative flex items-start gap-3" data-testid={`timeline-entry-${job.id}`}>
+                        {/* dot */}
+                        <div className="absolute -left-6 top-1 w-[18px] h-[18px] rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
+                          <CheckCircle2 className="w-3 h-3 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-sm font-medium">{SERVICE_TYPE_LABELS[job.serviceType] || job.serviceType}</p>
+                            <span className="text-[11px] text-white/50 shrink-0">{formatDate(job.completedAt || job.scheduledFor)}</span>
+                          </div>
+                          <p className="text-xs text-white/60 truncate">{job.pickupAddress}</p>
+                          <div className="flex items-center gap-3 mt-0.5 text-xs text-white/50">
+                            {price != null && <span className="font-medium text-white/70">${price.toFixed(0)}</span>}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            ) : (
+              <div className="text-center py-6" data-testid="empty-home-report">
+                <History className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground mb-1">Your home report is empty</p>
+                <p className="text-xs text-muted-foreground mb-4">Book your first service to start building your home&apos;s history.</p>
+                <Link href="/book">
+                  <Button size="sm" data-testid="button-book-first-service">
+                    <Plus className="w-3 h-3 mr-1" /> Book a Service
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <div className="mb-6">
           <ImpactTracker />
         </div>
@@ -349,37 +418,31 @@ export default function CustomerDashboard() {
           <ReferralWidget />
         </div>
 
-        {/* AI Features Quick Access */}
-        <div className="mb-6">
+        {/* Mr. George Can Help */}
+        <div className="mb-6" data-testid="section-mr-george">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-bold text-white">AI Tools</h2>
+            <h2 className="text-lg font-bold text-white">Mr. George Can Help</h2>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <Link href="/ai/photo-quote">
-              <Card className="p-3 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Package className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-xs font-medium">Photo Quote</p>
-              </Card>
-            </Link>
-            <Link href="/ai/documents">
-              <Card className="p-3 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-xs font-medium">Doc Scanner</p>
-              </Card>
-            </Link>
-            <Link href="/ai">
-              <Card className="p-3 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-primary" />
-                </div>
-                <p className="text-xs font-medium">All AI</p>
-              </Card>
-            </Link>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {([
+              { href: "/ai", icon: Wrench, label: "DIY Repair Help", desc: "Step-by-step repair guides" },
+              { href: "/ai", icon: PlayCircle, label: "Video Tutorials", desc: "Watch how-to videos in the app" },
+              { href: "/ai", icon: ShoppingCart, label: "Smart Shopping", desc: "Find parts at the best prices" },
+              { href: "/ai/photo-quote", icon: Camera, label: "Photo Quote", desc: "Snap a photo, get an instant quote" },
+              { href: "/ai", icon: Activity, label: "Home Scan", desc: "Free AI health check for your home" },
+              { href: "/ai/documents", icon: FileText, label: "Doc Scanner", desc: "Scan receipts, warranties, manuals" },
+            ] as const).map((item) => (
+              <Link key={item.label} href={item.href}>
+                <Card className="p-3 text-center hover:border-primary/50 transition-colors cursor-pointer h-full" data-testid={`card-mr-george-${item.label.toLowerCase().replace(/\s+/g, "-")}`}>
+                  <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
+                    <item.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <p className="text-xs font-medium">{item.label}</p>
+                  <p className="text-[10px] text-white/50 mt-0.5">{item.desc}</p>
+                </Card>
+              </Link>
+            ))}
           </div>
         </div>
 
