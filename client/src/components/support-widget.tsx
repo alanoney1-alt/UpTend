@@ -123,7 +123,7 @@ export function SupportWidget() {
               </button>
 
               <a
-                href="mailto:support@uptend.app"
+                href="mailto:support@uptendapp.com"
                 className="flex items-center gap-3 p-3 rounded-lg hover-elevate border"
                 data-testid="link-widget-email"
               >
@@ -132,7 +132,7 @@ export function SupportWidget() {
                 </div>
                 <div className="flex-1">
                   <div className="font-medium">Email Support</div>
-                  <div className="text-sm text-muted-foreground">support@uptend.app</div>
+                  <div className="text-sm text-muted-foreground">support@uptendapp.com</div>
                 </div>
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </a>

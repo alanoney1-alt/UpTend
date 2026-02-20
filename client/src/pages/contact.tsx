@@ -53,7 +53,7 @@ export default function Contact() {
       // Fallback: open email client
       const subject = encodeURIComponent(`Contact Form: ${formState.subject || "General Inquiry"}`);
       const body = encodeURIComponent(`Name: ${formState.name}\nEmail: ${formState.email}\nPhone: ${formState.phone || "N/A"}\n\n${formState.message}`);
-      window.location.href = `mailto:alan@uptend.app?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:alan@uptendapp.com?subject=${subject}&body=${body}`;
       toast({
         title: "Opening Email Client",
         description: "If the form didn't work, please send your message via email.",
@@ -115,11 +115,11 @@ export default function Contact() {
                   <div>
                     <h3 className="font-medium">{t("contact.email_support")}</h3>
                     <a 
-                      href="mailto:alan@uptend.app" 
+                      href="mailto:alan@uptendapp.com" 
                       className="text-primary hover:underline"
                       data-testid="link-contact-email"
                     >
-                      alan@uptend.app
+                      alan@uptendapp.com
                     </a>
                     <p className="text-sm text-muted-foreground mt-1">
                       {t("contact.respond_24h")}

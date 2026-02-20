@@ -33,20 +33,20 @@ function getShareText(data: ImpactData): string {
       `💚 ${data.itemsRecycled.toLocaleString()} lbs recycled\n` +
       `🎁 ${data.itemsDonated.toLocaleString()} lbs donated to families in need\n` +
       `💧 ${Math.round(data.waterSavedGallons).toLocaleString()} gallons of water saved\n\n` +
-      `Your stuff doesn't have to end up in a landfill. Join me → uptend.app`;
+      `Your stuff doesn't have to end up in a landfill. Join me → uptendapp.com`;
   } else if (weight > 500) {
     return `🌱 Just hit ${weight} lbs diverted from landfills with @UpTend!\n\n` +
       `♻️ ${diversion}% landfill diversion rate\n` +
       `🌳 ${trees} trees worth of CO2 offset\n` +
       `💧 ${Math.round(data.waterSavedGallons).toLocaleString()} gallons saved\n\n` +
-      `Every junk removal job comes with verified impact tracking. Try it → uptend.app`;
+      `Every junk removal job comes with verified impact tracking. Try it → uptendapp.com`;
   } else {
     return `✨ Started tracking my environmental impact with @UpTend!\n\n` +
       `Already diverted ${weight} lbs from landfills:\n` +
       `♻️ ${data.itemsRecycled} lbs recycled\n` +
       `❤️ ${data.itemsDonated} lbs donated\n` +
       `🌳 ${trees} trees worth of CO2\n\n` +
-      `Every job = verified sustainability certificate → uptend.app`;
+      `Every job = verified sustainability certificate → uptendapp.com`;
   }
 }
 
@@ -383,7 +383,7 @@ export function ImpactTracker() {
                 Every job tracked. Every impact verified.
               </div>
               <div className="text-3xl font-black">
-                uptend.app
+                uptendapp.com
               </div>
             </div>
           </div>

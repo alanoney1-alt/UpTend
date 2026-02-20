@@ -203,7 +203,7 @@ function JobHistoryRow({ job }: { job: ServiceRequest }) {
                 };
                 const blob = new Blob(
                   [
-                    `UpTend TAX RECEIPT\n${"=".repeat(40)}\n\nReceipt #: ${receiptData.jobId}\nService: ${receiptData.service}\nAddress: ${receiptData.address}\nDate: ${formatDate(receiptData.date)}\nAmount Paid: $${(receiptData.amount || 0).toFixed(2)}\n\n${"=".repeat(40)}\nUpTend Inc.\nwww.uptend.app\n\nThis receipt may be used for tax purposes.\nRetain for your records.\n`,
+                    `UpTend TAX RECEIPT\n${"=".repeat(40)}\n\nReceipt #: ${receiptData.jobId}\nService: ${receiptData.service}\nAddress: ${receiptData.address}\nDate: ${formatDate(receiptData.date)}\nAmount Paid: $${(receiptData.amount || 0).toFixed(2)}\n\n${"=".repeat(40)}\nUpTend Inc.\nwww.uptendapp.com\n\nThis receipt may be used for tax purposes.\nRetain for your records.\n`,
                   ],
                   { type: "text/plain" }
                 );
