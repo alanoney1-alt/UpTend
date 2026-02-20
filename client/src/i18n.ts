@@ -21,7 +21,7 @@ const resources = {
       "nav.emergency": "Emergency",
 
       "hero.hero_headline_1": "Book Your Home Service.",
-      "hero.hero_headline_2": "Instant AI quotes.",
+      "hero.hero_headline_2": "Instant quotes.",
       "hero.hero_headline_3": "",
       "hero.hero_subhead": "Stop calling 5 contractors for 1 job. Get an instant price, book a verified Pro, and track everything in real-time. Home services, finally fixed.",
       "hero.hero_footnote": "Free Instant Quote • See Your Price in 30 Seconds • No Account Required",
@@ -293,7 +293,7 @@ const resources = {
       recent_payouts: "Recent Payouts",
       no_jobs_yet: "No completed jobs yet. Go get 'em!",
       hero_headline_1: "Book Your Home Service.",
-      hero_headline_2: "Instant AI quotes.",
+      hero_headline_2: "Instant quotes.",
       hero_headline_3: "",
       hero_subhead: "Stop calling 5 contractors for 1 job. Get an instant price, book a verified Pro, and track everything in real-time. Home services, finally fixed.",
 
