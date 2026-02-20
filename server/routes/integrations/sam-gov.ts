@@ -38,9 +38,15 @@ async function samFetch(endpoint: string, apiKey?: string) {
   return res.json();
 }
 
+function requireAdmin(req: Request, res: Response, next: Function) {
+  const role = (req.user as any)?.role;
+  if (role !== "admin") return res.status(403).json({ error: "Admin access only" });
+  next();
+}
+
 export function registerSamGovRoutes(app: Express) {
-  // Search opportunities
-  app.post("/api/integrations/sam/search-opportunities", async (req: Request, res: Response) => {
+  // Search opportunities — ADMIN ONLY
+  app.post("/api/integrations/sam/search-opportunities", requireAdmin, async (req: Request, res: Response) => {
     try {
       const params = searchSchema.parse(req.body);
       const queryParts: string[] = [];
@@ -74,7 +80,7 @@ export function registerSamGovRoutes(app: Express) {
   });
 
   // Register entity info
-  app.post("/api/integrations/sam/register-entity", async (req: Request, res: Response) => {
+  app.post("/api/integrations/sam/register-entity", requireAdmin, async (req: Request, res: Response) => {
     try {
       const data = registerSchema.parse(req.body);
       const { businessAccountId, ...creds } = data;
@@ -95,7 +101,7 @@ export function registerSamGovRoutes(app: Express) {
   });
 
   // Check SAM registration status
-  app.get("/api/integrations/sam/check-status", async (req: Request, res: Response) => {
+  app.get("/api/integrations/sam/check-status", requireAdmin, async (req: Request, res: Response) => {
     try {
       const businessAccountId = req.query.businessAccountId as string;
       if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
@@ -130,7 +136,7 @@ export function registerSamGovRoutes(app: Express) {
   });
 
   // Auto-sync relevant opportunities
-  app.post("/api/integrations/sam/sync-opportunities", async (req: Request, res: Response) => {
+  app.post("/api/integrations/sam/sync-opportunities", requireAdmin, async (req: Request, res: Response) => {
     try {
       const apiKey = process.env.SAM_GOV_API_KEY || "DEMO_KEY";
       let totalSynced = 0;
