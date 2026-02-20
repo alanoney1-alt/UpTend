@@ -38,6 +38,7 @@ const PaymentSetup = lazy(() => import("@/pages/payment-setup"));
 const ProPayoutSetup = lazy(() => import("@/pages/pro-payout-setup"));
 const Profile = lazy(() => import("@/pages/profile"));
 const About = lazy(() => import("@/pages/about"));
+const MeetGeorge = lazy(() => import("@/pages/meet-george"));
 const FAQ = lazy(() => import("@/pages/faq"));
 const Terms = lazy(() => import("@/pages/terms"));
 const Privacy = lazy(() => import("@/pages/privacy"));
@@ -229,6 +230,7 @@ function Router() {
       <Route path="/pro/payouts/setup/refresh" component={ProPayoutSetup} />
       <Route path="/profile" component={Profile} />
       <Route path="/about" component={About} />
+      <Route path="/meet-george" component={MeetGeorge} />
       <Route path="/faq" component={FAQ} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />

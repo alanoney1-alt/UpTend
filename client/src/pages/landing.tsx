@@ -45,7 +45,8 @@ function GeorgeBanner() {
       <div className="max-w-4xl mx-auto flex items-center justify-center gap-1.5 md:gap-2">
         <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
         <span className="text-xs md:text-base font-medium">
-          <strong>Meet Mr. George</strong> — your AI assistant. Questions? <strong>Ask Mr. George</strong> 👉
+          <strong>Meet Mr. George</strong> — your AI assistant. Questions?{" "}
+          <Link href="/meet-george" className="underline font-bold hover:text-white/90 transition-colors">Ask Mr. George 👉</Link>
         </span>
       </div>
     </div>
