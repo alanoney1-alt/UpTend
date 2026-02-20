@@ -176,6 +176,7 @@ import { registerConsentRoutes } from "./consent.routes";
 
 // Self-Serve AI Home Scan routes
 import { registerHomeScanRoutes } from "./home-scan.routes";
+import roomScannerRoutes from "./ai/room-scanner.routes";
 import { registerHomeReportRoutes } from "./home-report.routes";
 import { registerVoiceRoutes } from "./voice.routes";
 import { registerPushRoutes } from "./push.routes";
@@ -430,6 +431,9 @@ export async function registerRoutes(
 
   // Register Self-Serve AI Home Scan + Wallet routes
   registerHomeScanRoutes(app);
+
+  // Room video scanner (My Digital Home inventory)
+  app.use("/api/ai", roomScannerRoutes);
   registerHomeReportRoutes(app);
   registerVoiceRoutes(app);
   registerPushRoutes(app);
