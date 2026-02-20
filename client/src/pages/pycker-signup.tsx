@@ -100,9 +100,10 @@ const steps = [
   { id: 2, title: "Personal Info", icon: User },
   { id: 3, title: "Vehicle Details", icon: Car },
   { id: 4, title: "Verification", icon: Shield },
-  { id: 5, title: "Agreement", icon: FileText },
-  { id: 6, title: "Earn More", icon: TrendingUp },
-  { id: 7, title: "Complete", icon: CheckCircle },
+  { id: 5, title: "Your Rates", icon: DollarSign },
+  { id: 6, title: "Agreement", icon: FileText },
+  { id: 7, title: "Earn More", icon: TrendingUp },
+  { id: 8, title: "Complete", icon: CheckCircle },
 ];
 
 const vehicleTypes = [
@@ -196,6 +197,7 @@ export default function PyckerSignup() {
 
   // Services selection state
   const [selectedServices, setSelectedServices] = useState<string[]>(["junk_removal", "furniture_moving"]);
+  const [pricingFeedback, setPricingFeedback] = useState<Record<string, { low: string; high: string; years: string }>>({});
 
   // Email verification state
   const [emailVerified, setEmailVerified] = useState(false);
@@ -387,7 +389,7 @@ export default function PyckerSignup() {
       return result;
     },
     onSuccess: () => {
-      setCurrentStep(6); // Certification preview step
+      setCurrentStep(7); // Certification preview step
       toast({
         title: "Application Submitted!",
         description: validatedCode
@@ -405,7 +407,7 @@ export default function PyckerSignup() {
   });
 
   const nextStep = () => {
-    if (currentStep < 6) {
+    if (currentStep < 7) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -1461,6 +1463,91 @@ export default function PyckerSignup() {
             )}
 
             {currentStep === 5 && (
+              <Card className="p-6" data-testid="card-step-pricing-feedback">
+                <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                  <DollarSign className="w-5 h-5" />
+                  What Do You Typically Charge?
+                </h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  This helps us keep pricing competitive for your market. Totally optional — skip any you'd rather not answer.
+                </p>
+
+                <div className="space-y-4">
+                  {selectedServices.map((service) => {
+                    const label = service.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+                    const fb = pricingFeedback[service] || { low: "", high: "", years: "" };
+                    return (
+                      <div key={service} className="p-4 border rounded-lg bg-card">
+                        <p className="font-medium text-sm mb-3">{label}</p>
+                        <div className="grid grid-cols-3 gap-3">
+                          <div>
+                            <label className="text-xs text-muted-foreground">Low end ($)</label>
+                            <Input
+                              type="number"
+                              placeholder="e.g. 100"
+                              value={fb.low}
+                              onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, low: e.target.value } }))}
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-muted-foreground">High end ($)</label>
+                            <Input
+                              type="number"
+                              placeholder="e.g. 300"
+                              value={fb.high}
+                              onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, high: e.target.value } }))}
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-muted-foreground">Years exp.</label>
+                            <Input
+                              type="number"
+                              placeholder="e.g. 5"
+                              value={fb.years}
+                              onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, years: e.target.value } }))}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex justify-between mt-6">
+                  <Button variant="outline" onClick={prevStep}>
+                    <ArrowLeft className="w-4 h-4 mr-2" /> Back
+                  </Button>
+                  <Button
+                    onClick={async () => {
+                      // Save feedback if any was provided
+                      const items = Object.entries(pricingFeedback)
+                        .filter(([_, v]) => v.low || v.high)
+                        .map(([serviceType, v]) => ({
+                          serviceType,
+                          chargeLow: v.low ? parseInt(v.low) : null,
+                          chargeHigh: v.high ? parseInt(v.high) : null,
+                          yearsExperience: v.years ? parseInt(v.years) : null,
+                        }));
+                      if (items.length > 0) {
+                        try {
+                          await fetch("/api/pros/pricing-feedback", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            credentials: "include",
+                            body: JSON.stringify({ feedbackItems: items, zipCode: form.getValues("zipCode") }),
+                          });
+                        } catch (_) { /* non-blocking */ }
+                      }
+                      nextStep();
+                    }}
+                  >
+                    Continue <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {currentStep === 6 && (
               <ICAAgreement
                 contractorName={`${form.getValues("firstName")} ${form.getValues("lastName")}`}
                 onAccept={(data) => {
@@ -1472,7 +1559,7 @@ export default function PyckerSignup() {
               />
             )}
 
-            {currentStep === 6 && (
+            {currentStep === 7 && (
               <Card className="p-8" data-testid="card-step-certifications-pro">
                 <div className="text-center mb-8">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-500/10 flex items-center justify-center">
@@ -1583,7 +1670,7 @@ export default function PyckerSignup() {
               </Card>
             )}
 
-            {currentStep === 7 && (
+            {currentStep === 8 && (
               <Card className="p-8 text-center" data-testid="card-step-complete-pro">
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-green-500" />

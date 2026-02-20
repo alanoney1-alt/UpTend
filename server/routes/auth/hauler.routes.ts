@@ -783,6 +783,65 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
       res.json({ success: true, message: "Logged out successfully" });
     });
   });
+  // ===== Pro Pricing Feedback (onboarding market intelligence) =====
+  app.post("/api/pros/pricing-feedback", async (req, res) => {
+    try {
+      const userId = (req.user as any)?.userId || (req.user as any)?.id;
+      if (!userId) return res.status(401).json({ error: "Not authenticated" });
+
+      const { feedbackItems, zipCode } = req.body;
+      if (!Array.isArray(feedbackItems) || feedbackItems.length === 0) {
+        return res.status(400).json({ error: "feedbackItems required" });
+      }
+
+      const { pool: dbPool } = await import('../../db');
+      const db = dbPool || pool;
+
+      // Get hauler profile
+      const profileResult = await db.query(
+        `SELECT id FROM hauler_profiles WHERE user_id = $1 LIMIT 1`,
+        [userId]
+      );
+      if (profileResult.rows.length === 0) {
+        return res.status(404).json({ error: "Pro profile not found" });
+      }
+      const profileId = profileResult.rows[0].id;
+
+      for (const item of feedbackItems) {
+        await db.query(
+          `INSERT INTO pro_pricing_feedback (hauler_profile_id, user_id, service_type, typical_charge_low, typical_charge_high, years_experience, notes, zip_code)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [profileId, userId, item.serviceType, item.chargeLow || null, item.chargeHigh || null, item.yearsExperience || null, item.notes || null, zipCode || null]
+        );
+      }
+
+      res.json({ success: true, message: "Thanks for the pricing insight — this helps us keep rates competitive for your market." });
+    } catch (error) {
+      console.error("Pricing feedback error:", error);
+      res.status(500).json({ error: "Failed to save pricing feedback" });
+    }
+  });
+
+  // Get aggregated pricing feedback (admin/internal)
+  app.get("/api/admin/pricing-feedback", async (req, res) => {
+    try {
+      const { pool: dbPool } = await import('../../db');
+      const db = dbPool || pool;
+      const result = await db.query(`
+        SELECT service_type, zip_code,
+               COUNT(*) as responses,
+               ROUND(AVG(typical_charge_low)) as avg_low,
+               ROUND(AVG(typical_charge_high)) as avg_high,
+               ROUND(AVG(years_experience), 1) as avg_experience
+        FROM pro_pricing_feedback
+        GROUP BY service_type, zip_code
+        ORDER BY service_type, zip_code
+      `);
+      res.json({ data: result.rows });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch pricing feedback" });
+    }
+  });
 }
 
 // Legacy export for backward compatibility
