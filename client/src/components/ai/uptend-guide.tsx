@@ -54,10 +54,16 @@ function getSessionId() {
 
 function renderContent(text: string) {
   const html = text
+    // Markdown links: [text](url)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#F47C20] underline break-all">$1</a>')
+    // Bold
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    // Italic
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    // Bare URLs (not already inside an href) — make clickable
+    .replace(/(?<!href=")(https?:\/\/[^\s<>"]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-[#F47C20] underline break-all">$1</a>')
     .replace(/\n/g, "<br/>");
-  return DOMPurify.sanitize(html);
+  return DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
 }
 
 // ─── Derive role from URL (zone-aware, overrides auth role for correct persona) ──
@@ -690,7 +696,7 @@ export function UpTendGuide() {
                 )}
                 <div
                   className={cn(
-                    "rounded-2xl px-3 py-2 text-[12px] leading-[1.5]",
+                    "rounded-2xl px-3 py-2 text-[12px] leading-[1.5] break-words overflow-hidden",
                     msg.role === "user"
                       ? "bg-amber-500 text-white rounded-br-md"
                       : "bg-black/[0.04] dark:bg-white/[0.06] rounded-bl-md"
