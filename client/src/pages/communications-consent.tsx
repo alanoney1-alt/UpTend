@@ -45,7 +45,7 @@ export default function Communicationsconsent() {
 <li>Referral program information</li>
 <li>Seasonal promotions</li>
 <li>Partner offers</li>
-<li>George AI recommendations and tips</li>
+<li>Mr. George AI recommendations and tips</li>
 </ul>
 <h2>2. Communication Channels</h2>
 

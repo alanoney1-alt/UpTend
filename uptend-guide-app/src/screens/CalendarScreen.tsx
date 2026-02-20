@@ -85,7 +85,7 @@ export default function CalendarScreen() {
         )}
 
         {/* AI Suggestions */}
-        <Text style={styles.sectionTitle}>🤖 George Suggested Times</Text>
+        <Text style={styles.sectionTitle}>🤖 Mr. George Suggested Times</Text>
         <Text style={styles.sectionSubtitle}>Based on your calendar & weather</Text>
         {SUGGESTED_TIMES.map((st, i) => (
           <View key={i} style={styles.suggestionCard}>

@@ -1,7 +1,7 @@
 /**
  * Home Dashboard Service — Home Operating System
  *
- * George's "home at a glance" — everything a customer needs to know about
+ * Mr. George's "home at a glance" — everything a customer needs to know about
  * their home right now: reminders, weather, maintenance, utilities, schedule.
  */
 

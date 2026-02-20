@@ -27,7 +27,7 @@ export default function Affiliatedisclosure() {
 <p>Affiliate links may appear in the following places on the UpTend Platform:</p>
 
 <ul>
-<li><strong>George AI recommendations</strong> — When George suggests a product (tool, cleaning supply, home improvement item), the link may be an affiliate link</li>
+<li><strong>Mr. George AI recommendations</strong> — When George suggests a product (tool, cleaning supply, home improvement item), the link may be an affiliate link</li>
 <li><strong>DIY Coaching guides</strong> — Product links in DIY instructions and guides</li>
 <li><strong>Service recommendation pages</strong> — Links to recommended products or materials</li>
 <li><strong>Blog content and educational articles</strong></li>
@@ -43,7 +43,7 @@ export default function Affiliatedisclosure() {
 <strong>Affiliate relationships do not influence our recommendations.</strong> Specifically:
 
 <ul>
-<li>George will never recommend an inferior or unsafe product because of an affiliate relationship</li>
+<li>Mr. George will never recommend an inferior or unsafe product because of an affiliate relationship</li>
 <li>Safety recommendations are never influenced by affiliate commissions</li>
 <li>We recommend products based on quality, value, suitability, and user reviews — not commission rates</li>
 <li>We may recommend products from non-affiliate retailers when those products are superior for the user's needs</li>

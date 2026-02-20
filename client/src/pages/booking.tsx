@@ -17,7 +17,7 @@ export default function BookingPage() {
   const preselectedService = params.get("service");
   const preselectedTiming = params.get("timing");
 
-  // Direct payment step — used when George AI creates a booking draft and redirects here
+  // Direct payment step — used when Mr. George AI creates a booking draft and redirects here
   const directJobId = params.get("jobId");
   const directAmount = params.get("amount");
   const directStep = params.get("step");

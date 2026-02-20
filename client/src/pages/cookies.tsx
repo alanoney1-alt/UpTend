@@ -57,7 +57,7 @@ export default function Cookies() {
 <p>| Amazon Associates | Amazon | Tracks qualifying purchases made through UpTend affiliate links (tag: uptend20-20) | 24 hours (Amazon's standard) |</p>
 <p>| Future affiliate partners | Various | Will track qualifying purchases through respective affiliate programs | Varies by partner |</p>
 
-<p>Affiliate cookies are placed when you click an affiliate link on our Platform or recommended by George. They do not collect personal information beyond what is necessary for purchase attribution.</p>
+<p>Affiliate cookies are placed when you click an affiliate link on our Platform or recommended by Mr. George. They do not collect personal information beyond what is necessary for purchase attribution.</p>
 
 <h2>3. Third-Party Cookies</h2>
 

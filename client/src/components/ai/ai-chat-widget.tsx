@@ -1,7 +1,7 @@
 /**
  * AI Chat Widget Component (Secondary)
  *
- * Floating chat widget with George AI agent — quick replies, context, booking drafts.
+ * Floating chat widget with Mr. George AI agent — quick replies, context, booking drafts.
  * Used on pages where the primary chat-widget.tsx is not mounted.
  */
 
@@ -212,7 +212,7 @@ export function AiChatWidget() {
                   <Bot className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-base text-white">George</CardTitle>
+                  <CardTitle className="text-base text-white">Mr. George</CardTitle>
                   <p className="text-white/70 text-xs">Your home helper</p>
                 </div>
               </div>
@@ -302,7 +302,7 @@ export function AiChatWidget() {
                 {sendMessageMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </Button>
             </div>
-            <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by George AI</p>
+            <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by Mr. George AI</p>
           </div>
         </Card>
       )}

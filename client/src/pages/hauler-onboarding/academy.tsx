@@ -45,7 +45,7 @@ const MODULES: AcademyModule[] = [
     icon: ShieldCheck,
     iconColor: "text-primary",
     required: true,
-    description: "Required for all Pros. Learn professional standards, safety codes, customer interaction protocols, and how to use George — your AI co-pilot.",
+    description: "Required for all Pros. Learn professional standards, safety codes, customer interaction protocols, and how to use Mr. George — your AI co-pilot.",
     lessons: [
       "Always wear a collared shirt or UpTend gear. Introduce yourself by name.",
       "Display your Safety Code to the customer before starting any work.",
@@ -53,7 +53,7 @@ const MODULES: AcademyModule[] = [
       "Zero tolerance: No harassment, no illegal dumping, no sharing personal contact info.",
       "Use the app's tracking and photo documentation features on every job — they protect you.",
       "If the scope of work changes, always submit a scope adjustment through the app before proceeding.",
-      "George is your AI co-pilot. Ask him pricing questions, job tips, or customer communication help anytime.",
+      "Mr. George is your AI co-pilot. Ask him pricing questions, job tips, or customer communication help anytime.",
       "Use George to generate professional messages to customers about delays, scope changes, or completion updates.",
       "After completing a job, ask George to help you document the work for your ESG impact record.",
     ],
@@ -118,11 +118,11 @@ const MODULES: AcademyModule[] = [
         options: [
           "Quote them a price yourself based on what seems fair",
           "Tell them to book separately through the website",
-          "Ask George for the current pricing and scope change process, then walk the customer through it in the app",
+          "Ask Mr. George for the current pricing and scope change process, then walk the customer through it in the app",
           "Call the UpTend office to ask what to charge",
         ],
         correct: 2,
-        explanation: "George knows all current pricing and can walk you through the scope change flow. This keeps everything documented and ensures the customer gets the right price.",
+        explanation: "Mr. George knows all current pricing and can walk you through the scope change flow. This keeps everything documented and ensures the customer gets the right price.",
       },
     ],
   },
@@ -133,13 +133,13 @@ const MODULES: AcademyModule[] = [
     icon: MessageCircle,
     iconColor: "text-cyan-600 dark:text-cyan-400",
     required: true,
-    description: "Required for all Pros. Learn how to use real-time tracking, SafeComms, photo documentation, scope changes, and George — your AI assistant.",
+    description: "Required for all Pros. Learn how to use real-time tracking, SafeComms, photo documentation, scope changes, and Mr. George — your AI assistant.",
     lessons: [
       "How to use real-time GPS tracking — customers can see your location once you start a job by marking 'On My Way'.",
       "SafeComms chat: All messages go through the app. Phone numbers are auto-redacted for safety.",
       "Photo documentation: Take before/after photos on every job. This protects YOU from disputes.",
       "Scope changes: If the job is bigger than expected, use the app to send a scope adjustment. Customer must approve before you proceed.",
-      "George can help you: draft customer messages, check pricing, understand job requirements, track your ESG impact, and troubleshoot issues.",
+      "Mr. George can help you: draft customer messages, check pricing, understand job requirements, track your ESG impact, and troubleshoot issues.",
     ],
     quiz: [
       {
@@ -195,7 +195,7 @@ const MODULES: AcademyModule[] = [
           "You can only access George from a desktop computer",
         ],
         correct: 2,
-        explanation: "George is always available via the chat bubble on every page of the app. Ask him about pricing, job tips, customer communication, scope changes, or anything else you need help with.",
+        explanation: "Mr. George is always available via the chat bubble on every page of the app. Ask him about pricing, job tips, customer communication, scope changes, or anything else you need help with.",
       },
       {
         question: "What does your Green Guarantee badge communicate to customers?",
@@ -899,7 +899,7 @@ function ProAcademyDashboard() {
 
             <div className="p-4 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800">
               <p className="text-sm font-medium text-cyan-800 dark:text-cyan-200">
-                💡 Need help? George is here! Click the chat bubble anytime during your training.
+                💡 Need help? Mr. George is here! Click the chat bubble anytime during your training.
                 He can explain concepts, answer questions about UpTend policies, or help you prepare for quizzes.
               </p>
             </div>
@@ -996,7 +996,7 @@ function ProAcademyDashboard() {
 
           <div className="p-4 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800">
             <p className="text-sm font-medium text-cyan-800 dark:text-cyan-200">
-              💡 Need help? George is here! Click the chat bubble anytime during your training.
+              💡 Need help? Mr. George is here! Click the chat bubble anytime during your training.
               He can explain concepts, answer questions about UpTend policies, or help you prepare for quizzes.
             </p>
           </div>

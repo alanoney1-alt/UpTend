@@ -452,7 +452,7 @@ export default function AppNavigator() {
     return <CustomerTabs />;
   };
 
-  // Guest mode goes straight to George — onboarding is optional
+  // Guest mode goes straight to Mr. George — onboarding is optional
   // Uncomment to re-enable onboarding gate:
   // if (guestMode && !hasOnboarded) {
   //   return (

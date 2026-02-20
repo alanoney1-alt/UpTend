@@ -20,7 +20,7 @@ const SLIDES: Slide[] = [
   {
     id: '1',
     emoji: '🏠✨',
-    title: 'Meet George',
+    title: 'Meet Mr. George',
     subtitle: 'Your AI-powered home concierge. Just chat to get instant quotes, book pros, and manage your entire home.',
     bgColor: '#1A1A2E',
   },

@@ -1,5 +1,5 @@
 /**
- * George AI Agent — Tool Functions
+ * Mr. George AI Agent — Tool Functions
  *
  * Phase 1: All DB-backed tools now query real Supabase via Drizzle ORM.
  * New tables: maintenance_reminders, pro_goals, customer_loyalty,
@@ -1123,7 +1123,7 @@ CUSTOMER EXPERIENCE TIPS:
 • Explain what you're looking at: "I'm checking your water heater age and condition"
 • Never alarm them: "This looks fine for now, but worth monitoring" vs "This is about to fail!"
 • Mention the $25 credit: "You earned $25 just for doing this scan — you can use it on any service"
-• Mention upcoming maintenance: "Based on this scan, George will remind you when things need attention"
+• Mention upcoming maintenance: "Based on this scan, Mr. George will remind you when things need attention"
 
 PAYOUT:
 • $45 base per completed scan
@@ -4106,7 +4106,7 @@ export async function getSeasonalDemandForGeorge(params: {
 
 // ═══════════════════════════════════════════════
 // HOME UTILITIES — Home Operating System Tools
-// George knows EVERYTHING about their home.
+// Mr. George knows EVERYTHING about their home.
 // ═══════════════════════════════════════════════
 
 import {
@@ -4341,7 +4341,7 @@ export async function setHomeReminderForGeorge(params: {
  */
 // ═══════════════════════════════════════════════
 // PURCHASE TRACKING + WARRANTIES + APPLIANCE PROFILES
-// George tracks what customers buy and maintains their home.
+// Mr. George tracks what customers buy and maintains their home.
 // ═══════════════════════════════════════════════
 
 import { scanReceipt, processReceiptItems } from "./receipt-scanner.js";
@@ -4746,7 +4746,7 @@ export async function comparePricesForGeorge(params: {
 
 /**
  * findDIYTutorial — find YouTube tutorials from top creators for a task.
- * George knows 30+ top DIY creators and prioritizes trusted sources.
+ * Mr. George knows 30+ top DIY creators and prioritizes trusted sources.
  * Returns a top pick + alternatives. Customer can say "next video" to cycle.
  */
 export async function findDIYTutorialForGeorge(params: {
@@ -4976,7 +4976,7 @@ export async function tool_vehicle_parts_search(params: {
 /**
  * tool_vehicle_diy_start — start a vehicle DIY repair coaching session.
  * Safety-critical repairs (brake lines, fuel system, airbags, transmission internals, etc.)
- * are automatically escalated — George recommends a qualified independent contractor instead.
+ * are automatically escalated — Mr. George recommends a qualified independent contractor instead.
  */
 export async function tool_vehicle_diy_start(params: {
   customerId: string;

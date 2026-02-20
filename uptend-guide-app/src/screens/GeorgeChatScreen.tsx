@@ -18,7 +18,7 @@ const WELCOME: ChatMessage = {
   id: 'welcome',
   sender: 'george',
   type: 'text',
-  text: "Hey! I'm George, your UpTend AI concierge. What can I help you with today? 👋",
+  text: "Hey! I'm Mr. George, your UpTend AI concierge. What can I help you with today? 👋",
   timestamp: new Date(),
 };
 
@@ -139,7 +139,7 @@ export default function GeorgeChatScreen() {
         />
       );
     }
-    // Render inline video players for YouTube URLs in George's messages
+    // Render inline video players for YouTube URLs in Mr. George's messages
     if (item.sender === 'george' && item.text) {
       const videoIds = extractVideoIds(item.text);
       if (videoIds.length > 0) {
@@ -192,7 +192,7 @@ export default function GeorgeChatScreen() {
                   <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97316', opacity: 0.7 }} />
                   <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97316', opacity: 0.4 }} />
                 </View>
-                <Text style={{ fontSize: 13, color: '#9ca3af', marginLeft: 8 }}>George is typing...</Text>
+                <Text style={{ fontSize: 13, color: '#9ca3af', marginLeft: 8 }}>Mr. George is typing...</Text>
               </View>
             ) : null
           }
@@ -215,7 +215,7 @@ export default function GeorgeChatScreen() {
             style={{ flex: 1, backgroundColor: '#f9fafb', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, fontSize: 16, color: '#0f172a', maxHeight: 100 }}
             value={input}
             onChangeText={setInput}
-            placeholder="Ask George anything..."
+            placeholder="Ask Mr. George anything..."
             placeholderTextColor="#9CA3AF"
             multiline
             maxLength={2000}

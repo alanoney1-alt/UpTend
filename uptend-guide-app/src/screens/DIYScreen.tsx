@@ -40,7 +40,7 @@ export default function DIYScreen({ navigation }: any) {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>DIY Guides</Text>
-        <Text style={styles.headerSub}>Learn to fix it yourself with George</Text>
+        <Text style={styles.headerSub}>Learn to fix it yourself with Mr. George</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -56,14 +56,14 @@ export default function DIYScreen({ navigation }: any) {
           />
         </View>
 
-        {/* Ask George */}
+        {/* Ask Mr. George */}
         <TouchableOpacity style={styles.georgeCard} activeOpacity={0.8}
           onPress={() => navigation?.navigate?.('Home')}>
           <View style={styles.georgeLeft}>
             <Text style={styles.georgeIcon}>💬</Text>
           </View>
           <View style={styles.georgeInfo}>
-            <Text style={styles.georgeTitle}>Ask George</Text>
+            <Text style={styles.georgeTitle}>Ask Mr. George</Text>
             <Text style={styles.georgeSub}>Start a DIY coaching session with your AI guide</Text>
           </View>
           <Text style={styles.georgeArrow}>→</Text>

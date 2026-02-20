@@ -136,7 +136,7 @@ export default function AutoScreen({ navigation }: any) {
               <Text style={styles.diagTitle}>Describe a Problem</Text>
               <Text style={styles.diagSub}>Tell George about a weird noise, light, or symptom and get instant guidance</Text>
               <TouchableOpacity style={styles.connectBtn} onPress={() => navigation?.navigate?.('Home')}>
-                <Text style={styles.connectBtnText}>Ask George</Text>
+                <Text style={styles.connectBtnText}>Ask Mr. George</Text>
               </TouchableOpacity>
             </View>
 

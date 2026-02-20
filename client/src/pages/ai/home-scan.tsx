@@ -114,7 +114,7 @@ function WhatIsItSection({ isEs }: { isEs: boolean }) {
       icon: Clock,
       title: isEs ? "Seguimiento de Garantías" : "Warranty Tracking",
       desc: isEs
-        ? "George te alerta antes de que expiren tus garantías"
+        ? "Mr. George te alerta antes de que expiren tus garantías"
         : "George alerts you before warranties expire",
     },
     {
@@ -224,7 +224,7 @@ function WhyDoItSection({ isEs }: { isEs: boolean }) {
       title: isEs ? "Nunca Pierdas una Garantía" : "Never Miss a Warranty",
       desc: isEs
         ? "George rastrea cada garantía y te alerta antes de que expiren. No más perder cientos porque te pasó una fecha límite."
-        : "George tracks every warranty and alerts you before they expire. No more losing hundreds because you missed a deadline.",
+        : "Mr. George tracks every warranty and alerts you before they expire. No more losing hundreds because you missed a deadline.",
       color: "bg-orange-500/10 text-orange-500",
     },
     {
@@ -233,7 +233,7 @@ function WhyDoItSection({ isEs }: { isEs: boolean }) {
       title: isEs ? "Listo para Emergencias" : "Emergency Ready",
       desc: isEs
         ? "Si una tubería se rompe a las 2AM, George ya conoce tu sistema de plomería, las ubicaciones de cierre y qué profesional llamar."
-        : "If a pipe bursts at 2AM, George already knows your plumbing system, your shutoff locations, and which pro to call.",
+        : "If a pipe bursts at 2AM, Mr. George already knows your plumbing system, your shutoff locations, and which pro to call.",
       color: "bg-red-500/10 text-red-500",
     },
     {
@@ -242,7 +242,7 @@ function WhyDoItSection({ isEs }: { isEs: boolean }) {
       title: isEs ? "Mantenimiento Inteligente" : "Smart Maintenance",
       desc: isEs
         ? "George aprende tu hogar y te dice exactamente cuándo cambiar el filtro del HVAC, cuándo tu calentador de agua se acerca al fin de su vida útil."
-        : "George learns your home and tells you exactly when your HVAC filter needs changing, when your water heater is approaching end-of-life.",
+        : "Mr. George learns your home and tells you exactly when your HVAC filter needs changing, when your water heater is approaching end-of-life.",
       color: "bg-cyan-500/10 text-cyan-500",
     },
     {
@@ -299,7 +299,7 @@ function HowItWorksSection({ isEs }: { isEs: boolean }) {
       num: "1",
       icon: Smartphone,
       title: isEs ? "Abre George y di 'Escanea mi hogar'" : "Open George & say 'Scan my home'",
-      desc: isEs ? "George te guía habitación por habitación" : "George guides you room by room",
+      desc: isEs ? "Mr. George te guía habitación por habitación" : "Mr. George guides you room by room",
     },
     {
       num: "2",

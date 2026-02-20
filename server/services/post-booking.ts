@@ -201,7 +201,7 @@ export async function processProPromptResponse(
     .set({
       response,
       photos: photos || [],
-      georgeProcessed: false, // Will be processed by George async
+      georgeProcessed: false, // Will be processed by Mr. George async
     })
     .where(eq(proJobPrompts.id, promptId))
     .returning();

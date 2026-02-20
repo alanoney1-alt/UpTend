@@ -936,7 +936,7 @@ const resources = {
       "biz.feature_esg": "ESG compliance reporting (brandable with company logo)",
       "biz.feature_priority": "Priority scheduling for all jobs",
       "biz.feature_bulk_scan": "Bulk AI Home Scan pricing ($79/unit at 10+, $59/unit at 25+)",
-      "biz.feature_george": "George AI assistant for your team",
+      "biz.feature_george": "Mr. George AI assistant for your team",
       "biz.feature_api": "API access for property management software integration",
       "biz.who_for": "Who It's For",
       "biz.who_for_sub": "Built for businesses that manage properties at scale",

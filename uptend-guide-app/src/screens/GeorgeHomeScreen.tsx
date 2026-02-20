@@ -30,7 +30,7 @@ const WELCOME: ChatMessage = {
   id: 'welcome',
   sender: 'george',
   type: 'text',
-  text: "Hey — I'm George. 🔧\nWhat's going on with your home?",
+  text: "Hey — I'm Mr. George. 🔧\nWhat's going on with your home?",
   timestamp: new Date(),
 };
 
@@ -246,7 +246,7 @@ export default function GeorgeHomeScreen() {
                 style={styles.input}
                 value={input}
                 onChangeText={setInput}
-                placeholder="Ask George anything..."
+                placeholder="Ask Mr. George anything..."
                 placeholderTextColor={Colors.gray400}
                 returnKeyType="send"
                 onSubmitEditing={() => sendMessage(input)}

@@ -18,7 +18,7 @@ const WELCOME: ChatMessage = {
   id: 'welcome',
   sender: 'george',
   type: 'text',
-  text: "Welcome to UpTend! 👋 I'm George, your AI home helper. What's your address?",
+  text: "Welcome to UpTend! 👋 I'm Mr. George, your AI home helper. What's your address?",
   timestamp: new Date(),
 };
 
@@ -172,7 +172,7 @@ export default function GuideChatScreen() {
             isTyping ? (
               <View style={styles.typingRow}>
                 <ActivityIndicator size="small" color={Colors.primary} />
-                <Text style={styles.typingText}>George is thinking...</Text>
+                <Text style={styles.typingText}>Mr. George is thinking...</Text>
               </View>
             ) : null
           }
@@ -190,7 +190,7 @@ export default function GuideChatScreen() {
             style={styles.input}
             value={input}
             onChangeText={setInput}
-            placeholder="Ask George anything..."
+            placeholder="Ask Mr. George anything..."
             placeholderTextColor={Colors.textLight}
             multiline
             maxLength={2000}

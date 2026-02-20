@@ -60,7 +60,7 @@ export default function CustomerDashboardScreen({ navigation }: any) {
         <View style={styles.quickActions}>
           <TouchableOpacity style={styles.quickBtn} onPress={() => navigation?.navigate?.('George')}>
             <Text style={styles.quickEmoji}>💬</Text>
-            <Text style={styles.quickLabel}>Ask George</Text>
+            <Text style={styles.quickLabel}>Ask Mr. George</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.quickBtn} onPress={() => navigation?.navigate?.('Book')}>
             <Text style={styles.quickEmoji}>📅</Text>

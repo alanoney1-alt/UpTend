@@ -45,7 +45,7 @@ function GeorgeBanner() {
       <div className="max-w-4xl mx-auto flex items-center justify-center gap-1.5 md:gap-2">
         <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
         <span className="text-xs md:text-base font-medium">
-          <strong>Meet George</strong> — your AI assistant. Questions? <strong>Ask George</strong> 👉
+          <strong>Meet Mr. George</strong> — your AI assistant. Questions? <strong>Ask Mr. George</strong> 👉
         </span>
       </div>
     </div>
@@ -311,7 +311,7 @@ function HomeScanPromo() {
           {t("home_scan_promo.headline", "Scan Your Home for Free — Earn $25+")}
         </h2>
         <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-          {t("home_scan_promo.body", "George guides you room by room. AI reads every appliance — brand, model, age, condition. Get a complete Home Health Record and earn credits toward your first service.")}
+          {t("home_scan_promo.body", "Mr. George guides you room by room. AI reads every appliance — brand, model, age, condition. Get a complete Home Health Record and earn credits toward your first service.")}
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/ai/home-scan" asChild>
