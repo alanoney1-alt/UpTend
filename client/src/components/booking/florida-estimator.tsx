@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceBag } from "@/contexts/service-bag-context";
+import { ServiceBagSheet } from "@/components/service-bag";
 import { ShoppingBag, Check } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { PaymentForm } from "@/components/payment-form";
@@ -507,6 +508,12 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
   if (step === 1) {
     return (
       <div className="w-full max-w-2xl mx-auto" data-testid="widget-florida-estimator" ref={wrapperRef}>
+        {/* Floating Service Bag — visible when items are in the bag */}
+        {serviceBag.itemCount > 0 && (
+          <div className="fixed bottom-24 right-4 z-[9990] md:bottom-6 md:right-6">
+            <ServiceBagSheet />
+          </div>
+        )}
         <div className="text-center mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight" data-testid="text-explainer-headline">
             {t("estimator.explainer_headline")}

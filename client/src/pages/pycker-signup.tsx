@@ -103,7 +103,7 @@ const steps = [
   { id: 4, title: "Tools", icon: Wrench },
   { id: 5, title: "Vehicles", icon: Car },
   { id: 6, title: "Verification", icon: Shield },
-  { id: 7, title: "Rates", icon: DollarSign },
+  { id: 7, title: "Pricing Input", icon: DollarSign },
   { id: 8, title: "Agreement", icon: FileText },
   { id: 9, title: "Review", icon: CheckCircle },
   { id: 10, title: "Welcome", icon: Star },
@@ -220,6 +220,8 @@ export default function PyckerSignup() {
   // Tools & Equipment state: service -> selected tools
   const [toolsEquipment, setToolsEquipment] = useState<Record<string, string[]>>({});
   const [customToolInputs, setCustomToolInputs] = useState<Record<string, string>>({});
+  const [desiredHourlyRate, setDesiredHourlyRate] = useState("");
+  const [licensesAndCerts, setLicensesAndCerts] = useState("");
 
   // Email verification state
   const [emailVerified, setEmailVerified] = useState(false);
@@ -406,6 +408,8 @@ export default function PyckerSignup() {
         serviceTypes: selectedServices,
         supportedServices: selectedServices,
         toolsEquipment,
+        desiredHourlyRate: desiredHourlyRate ? parseInt(desiredHourlyRate) : null,
+        licensesAndCerts: licensesAndCerts || null,
         pricingFeedback: Object.entries(pricingFeedback)
           .filter(([_, v]) => v.low || v.high)
           .map(([serviceType, v]) => ({
@@ -1688,63 +1692,111 @@ export default function PyckerSignup() {
                     Back
                   </Button>
                   <Button type="button" onClick={handleNext} data-testid="button-next-step-6">
-                    Continue to Set Your Rates
+                    Continue to Pricing Input
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
               </Card>
             )}
 
-            {/* ==================== STEP 7: SET YOUR RATES ==================== */}
+            {/* ==================== STEP 7: PRICING INPUT ==================== */}
             {currentStep === 7 && (
               <Card className="p-6" data-testid="card-step-pricing-feedback">
                 <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
                   <DollarSign className="w-5 h-5" />
-                  What Do You Typically Charge?
+                  Pricing Input
                 </h2>
-                <p className="text-sm text-muted-foreground mb-6">
-                  This helps us keep pricing competitive for your market. Totally optional — skip any you'd rather not answer.
+                <p className="text-sm text-muted-foreground mb-4">
+                  UpTend sets all service rates to ensure fair, competitive pricing for customers and pros.
+                  Your input helps us understand your experience level and market expectations.
                 </p>
 
-                <div className="space-y-4">
-                  {selectedServices.map((service) => {
-                    const label = formatServiceLabel(service);
-                    const fb = pricingFeedback[service] || { low: "", high: "", years: "" };
-                    return (
-                      <div key={service} className="p-4 border rounded-lg bg-card">
-                        <p className="font-medium text-sm mb-3">{label}</p>
-                        <div className="grid grid-cols-3 gap-3">
-                          <div>
-                            <label className="text-xs text-muted-foreground">Low end ($)</label>
-                            <Input
-                              type="number"
-                              placeholder="e.g. 100"
-                              value={fb.low}
-                              onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, low: e.target.value } }))}
-                            />
-                          </div>
-                          <div>
-                            <label className="text-xs text-muted-foreground">High end ($)</label>
-                            <Input
-                              type="number"
-                              placeholder="e.g. 300"
-                              value={fb.high}
-                              onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, high: e.target.value } }))}
-                            />
-                          </div>
-                          <div>
-                            <label className="text-xs text-muted-foreground">Years exp.</label>
-                            <Input
-                              type="number"
-                              placeholder="e.g. 5"
-                              value={fb.years}
-                              onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, years: e.target.value } }))}
-                            />
+                <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg mb-6">
+                  <p className="text-sm text-blue-700 dark:text-blue-400">
+                    <strong>Note:</strong> Final rates are set by UpTend based on market data, your experience, certifications, and customer demand.
+                    We'll take your preferences into consideration.
+                  </p>
+                </div>
+
+                {/* Desired hourly rate */}
+                <div className="mb-6 p-4 border rounded-lg">
+                  <Label className="text-base font-medium mb-2 block">What hourly rate would you like to earn?</Label>
+                  <p className="text-xs text-muted-foreground mb-3">This is not a guarantee — it helps us understand your expectations.</p>
+                  <div className="flex items-center gap-2 max-w-xs">
+                    <span className="text-lg font-medium text-muted-foreground">$</span>
+                    <Input
+                      type="number"
+                      placeholder="e.g. 35"
+                      value={desiredHourlyRate}
+                      onChange={(e) => setDesiredHourlyRate(e.target.value)}
+                      data-testid="input-desired-hourly-rate"
+                    />
+                    <span className="text-sm text-muted-foreground whitespace-nowrap">/ hour</span>
+                  </div>
+                </div>
+
+                {/* Per-service experience & pricing preferences */}
+                <div className="mb-6">
+                  <h3 className="font-medium mb-1">Experience & Pricing Preferences Per Service</h3>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    What have you typically charged in the past? This is feedback only — UpTend determines final pricing.
+                  </p>
+                  <div className="space-y-4">
+                    {selectedServices.map((service) => {
+                      const label = formatServiceLabel(service);
+                      const fb = pricingFeedback[service] || { low: "", high: "", years: "" };
+                      return (
+                        <div key={service} className="p-4 border rounded-lg bg-card">
+                          <p className="font-medium text-sm mb-3">{label}</p>
+                          <div className="grid grid-cols-3 gap-3">
+                            <div>
+                              <label className="text-xs text-muted-foreground">Past low end ($)</label>
+                              <Input
+                                type="number"
+                                placeholder="e.g. 100"
+                                value={fb.low}
+                                onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, low: e.target.value } }))}
+                              />
+                            </div>
+                            <div>
+                              <label className="text-xs text-muted-foreground">Past high end ($)</label>
+                              <Input
+                                type="number"
+                                placeholder="e.g. 300"
+                                value={fb.high}
+                                onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, high: e.target.value } }))}
+                              />
+                            </div>
+                            <div>
+                              <label className="text-xs text-muted-foreground">Years of experience</label>
+                              <Input
+                                type="number"
+                                placeholder="e.g. 5"
+                                value={fb.years}
+                                onChange={(e) => setPricingFeedback((prev) => ({ ...prev, [service]: { ...fb, years: e.target.value } }))}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Licenses & Certifications */}
+                <div className="mb-6 p-4 border rounded-lg">
+                  <Label className="text-base font-medium mb-2 block">Relevant Licenses & Certifications</Label>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    List any trade licenses, certifications, or training you hold (e.g., EPA Lead-Safe, OSHA 10, CDL, pest control license).
+                    These can influence your rate tier.
+                  </p>
+                  <Textarea
+                    placeholder="e.g. OSHA 10-Hour Construction, EPA Lead-Safe Certified, Class B CDL..."
+                    className="min-h-[80px]"
+                    value={licensesAndCerts}
+                    onChange={(e) => setLicensesAndCerts(e.target.value)}
+                    data-testid="input-licenses-certs"
+                  />
                 </div>
 
                 <div className="flex justify-between mt-6">

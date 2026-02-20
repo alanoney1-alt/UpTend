@@ -6,7 +6,7 @@ import {
   Menu, X, Leaf, ChevronDown,
   UserCircle, LogOut, ShieldCheck,
 } from "lucide-react";
-import { ServiceBagSheet } from "@/components/service-bag";
+// ServiceBagSheet moved to booking flow — not in global header
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,56 +43,33 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Center: Nav Links */}
-        <div className="hidden lg:flex items-center justify-center gap-6 text-sm font-medium text-slate-300 flex-1">
+        {/* Center: Nav Links — clean, minimal */}
+        <div className="hidden lg:flex items-center justify-center gap-8 text-sm font-medium text-slate-300 flex-1">
           <Link href="/services">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-services">
+            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-services">
               {t("nav.services")}
             </span>
           </Link>
-          <Link href="/find-pro">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-find-pro">
-              Find a Pro
-            </span>
-          </Link>
           <Link href="/pricing">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-pricing">
+            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-pricing">
               {t("nav.pricing")}
             </span>
           </Link>
           <Link href="/about">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-about">
+            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-about">
               {t("nav.about")}
             </span>
           </Link>
-          <Link href="/ai/home-scan">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer text-[#F47C20] font-bold flex items-center gap-1" data-testid="link-home-scan">
-              ✨ {t("nav.ai_home_scan", "AI Home Scan")}
-            </span>
-          </Link>
           <Link href="/business">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-business">
+            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-business">
               {t("nav.for_business", "For Business")}
             </span>
           </Link>
         </div>
 
-        <p className="hidden lg:block text-xs text-slate-400 italic absolute left-1/2 -translate-x-1/2 bottom-1 whitespace-nowrap" data-testid="text-header-tagline">
-          {t("nav.header_tagline")}
-        </p>
-
         {/* Right: Actions */}
         <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
-          <ServiceBagSheet />
           <LanguageToggle />
-          <Link href="/become-pro">
-            <span
-              className="text-sm font-bold text-primary hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-2 mr-2"
-              data-testid="link-become-pro"
-            >
-              <Leaf className="w-4 h-4" /> {t("nav.join_the_pros")}
-            </span>
-          </Link>
 
           {isLoading ? (
             <div className="w-8 h-8 rounded-full bg-slate-700 animate-pulse" />
@@ -174,7 +151,6 @@ export function Header() {
         </div>
 
         <div className="lg:hidden flex items-center gap-1">
-          <ServiceBagSheet />
           <Button
             variant="ghost"
             size="icon"
@@ -195,31 +171,20 @@ export function Header() {
             <Link href="/services" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-services-mobile">{t("nav.services")}</span>
             </Link>
-            <Link href="/find-pro" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-find-pro-mobile">Find a Pro</span>
-            </Link>
             <Link href="/pricing" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-pricing-mobile">{t("nav.pricing")}</span>
             </Link>
             <Link href="/about" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-about-mobile">{t("nav.about")}</span>
             </Link>
-            <Link href={isAuthenticated && user?.role === "hauler" ? "/pro/dashboard" : "/dashboard"} onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-dashboard-mobile">Dashboard</span>
-            </Link>
-            <Link href="/ai/home-scan" onClick={closeMenu}>
-              <span className="block p-2 text-[#F47C20] font-bold flex items-center gap-1" data-testid="link-home-scan-mobile">
-                ✨ {t("nav.ai_home_scan", "AI Home Scan")}
-              </span>
-            </Link>
             <Link href="/business" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-business-mobile">{t("nav.for_business", "For Business")}</span>
             </Link>
-            <Link href="/become-pro" onClick={closeMenu}>
-              <span className="block p-2 text-primary font-bold flex items-center gap-2" data-testid="link-become-pro-mobile">
-                <Leaf className="w-5 h-5" /> {t("nav.join_the_pros")}
-              </span>
-            </Link>
+            {isAuthenticated && (
+              <Link href={user?.role === "hauler" ? "/pro/dashboard" : "/dashboard"} onClick={closeMenu}>
+                <span className="block p-2" data-testid="link-dashboard-mobile">Dashboard</span>
+              </Link>
+            )}
           </div>
 
           <div className="flex justify-end">
