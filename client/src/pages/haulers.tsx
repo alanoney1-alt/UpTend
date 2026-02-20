@@ -15,6 +15,7 @@ import {
   CheckCircle, ExternalLink, Navigation, MessageSquare, Package, Sofa, Zap, Home,
   Users, Lightbulb, Wrench
 } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 import { SiFacebook, SiInstagram, SiX, SiYelp } from "react-icons/si";
 import type { HaulerWithProfile, HaulerReviewWithCustomer } from "@shared/schema";
 
@@ -425,10 +426,7 @@ export default function Haulers() {
                 Back
               </Button>
             </Link>
-            <div className="flex items-center gap-2">
-              <Truck className="w-6 h-6 text-primary" />
-              <span className="text-xl font-bold">UpTend</span>
-            </div>
+            <Logo className="w-10 h-10" textClassName="text-xl" />
           </div>
         </div>
       </header>

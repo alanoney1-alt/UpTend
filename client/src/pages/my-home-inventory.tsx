@@ -12,8 +12,9 @@ import { RoomScanner } from "@/components/tools/room-scanner";
 import { ResaleGenerator } from "@/components/tools/resale-generator";
 import {
   ArrowLeft, DollarSign, ShieldCheck, Tag, Package, Loader2,
-  Truck, Home, Scan, Trash2, ArrowRight, Video, Grid3X3,
+  Home, Scan, Trash2, ArrowRight, Video, Grid3X3,
 } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 interface InventoryItem {
   id: string;
@@ -108,10 +109,7 @@ export default function MyHomeInventory() {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-2 flex-wrap">
           <Link href="/profile" className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary text-primary-foreground">
-              <Truck className="w-6 h-6" />
-            </div>
-            <span className="text-xl font-bold">UpTend</span>
+            <Logo className="w-10 h-10" textClassName="text-xl" />
           </Link>
           <Link href="/profile">
             <Button variant="ghost" size="sm" data-testid="button-back-profile">
