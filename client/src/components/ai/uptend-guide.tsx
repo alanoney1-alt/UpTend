@@ -629,28 +629,28 @@ export function UpTendGuide() {
         <button
           onClick={handleOpen}
           className={cn(
-            "fixed bottom-20 md:bottom-4 right-4 z-[9999] flex items-center gap-2 px-4 py-2.5",
+            "fixed bottom-24 md:bottom-4 right-4 z-[9998] flex items-center gap-2 px-3 py-2",
             "bg-amber-500/90 hover:bg-amber-500 text-white",
             "rounded-full shadow-lg hover:shadow-xl",
             "transition-all duration-300 ease-out",
             "backdrop-blur-sm",
-            "text-[13px] font-medium",
+            "text-xs font-medium",
           )}
           style={{
             animation: shouldPulse ? "gentlePulse 2s ease-in-out" : "none",
-            maxWidth: "200px",
+            maxWidth: "180px",
           }}
           aria-label="Chat with Mr. George"
         >
-          <span className="text-base leading-none">🏠</span>
-          <span>Need a hand from Mr. George? 👋</span>
+          <span className="text-sm leading-none">🏠</span>
+          <span>Mr. George 👋</span>
         </button>
       )}
 
       {/* ─── Chat Card ───────────────────────────────────────────────── */}
       <div
         className={cn(
-          "fixed z-[9999] flex flex-col transition-all duration-300 ease-out",
+          "fixed z-[9998] flex flex-col transition-all duration-300 ease-out",
           // Glass effect
           "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl",
           "border border-white/40 dark:border-zinc-700/40",
