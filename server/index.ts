@@ -24,10 +24,11 @@ app.get('/health', (_req, res) => res.status(200).send('OK'));
 
 // Security middleware
 app.use(helmet({
-  // CSP disabled — was causing YouTube Error 153 (embed player blocked by script-src-attr/connect-src).
-  // TODO: Re-enable with proper YouTube whitelist before launch.
+  // CSP disabled for now — re-enable with proper YouTube/Stripe whitelist before launch
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
+  // YouTube embeds require referrer to verify embedding domain (Error 153 without it)
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
 }));
 
 app.use(cors({
