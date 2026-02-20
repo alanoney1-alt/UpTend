@@ -10,6 +10,7 @@ import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { createChatCompletion } from "../../services/ai/anthropic-client";
 import { analyzeImageOpenAI as analyzeImage } from "../../services/ai/openai-vision-client";
+import { chat as georgeChat, type GeorgeContext } from "../../services/george-agent";
 
 const guideChatLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -746,25 +747,22 @@ export default function createGuideRoutes(_storage: any) {
       session.history.push({ role: "user", content: userContent });
       const trimmedHistory = session.history.slice(-20);
 
-      const response = await createChatCompletion({
-        systemPrompt,
-        messages: trimmedHistory,
-        model: "claude-sonnet-4-20250514",
-        maxTokens: 800,
-      });
+      // Route through George agent (full 140-tool suite with YouTube, products, etc.)
+      const georgeContext: GeorgeContext = {
+        userName: context?.userName || (user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : undefined),
+        currentPage: context?.page,
+        userRole: user?.role === "hauler" ? "pro" : context?.userRole || "customer",
+        isAuthenticated: !!user,
+        userId: userId || undefined,
+      };
 
-      const rawContent = typeof response === "string" ? response : (response as any)?.content || "Sorry, I couldn't process that!";
-      const { cleanText, actions } = extractActions(rawContent);
+      // Pass trimmed history WITHOUT the last user message (georgeChat adds it)
+      const historyForGeorge = trimmedHistory.slice(0, -1);
+      const georgeResult = await georgeChat(userContent, historyForGeorge, georgeContext);
 
+      const cleanText = georgeResult.response;
       session.history.push({ role: "assistant", content: cleanText });
       if (session.history.length > 20) session.history = session.history.slice(-20);
-
-      // Process actions
-      const actionResults: any[] = [];
-      for (const action of actions) {
-        const result = await processAction(action, session, userId);
-        if (result) actionResults.push(result);
-      }
 
       // Save conversation to DB if user is authenticated
       if (userId) {
@@ -777,7 +775,8 @@ export default function createGuideRoutes(_storage: any) {
         reply: cleanText,
         sessionId: sid,
         quickActions,
-        actions: actionResults.length > 0 ? actionResults : undefined,
+        buttons: georgeResult.buttons,
+        actions: georgeResult.booking ? [{ type: "booking", data: georgeResult.booking }] : undefined,
       });
     } catch (error: any) {
       console.error("Guide chat error:", error);
