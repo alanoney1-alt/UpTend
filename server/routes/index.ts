@@ -180,6 +180,8 @@ import { registerConsentRoutes } from "./consent.routes";
 // Self-Serve AI Home Scan routes
 import { registerHomeScanRoutes } from "./home-scan.routes";
 import { registerHomeReportRoutes } from "./home-report.routes";
+import { registerVoiceRoutes } from "./voice.routes";
+import { registerPushRoutes } from "./push.routes";
 
 // Drone Scan routes
 import { registerDroneScanRoutes } from "./drone-scan.routes";
@@ -229,6 +231,9 @@ import { registerContentRoutes } from "./content.routes.js";
 // Invite Code routes
 import { registerInviteCodeRoutes } from "./invite-codes/invite-codes.routes";
 import { registerAppDataRoutes } from "./app-data.routes";
+
+// Push notification routes (Expo)
+import { registerPushRoutes } from "./push.routes.js";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -435,6 +440,8 @@ export async function registerRoutes(
   // Register Self-Serve AI Home Scan + Wallet routes
   registerHomeScanRoutes(app);
   registerHomeReportRoutes(app);
+  registerVoiceRoutes(app);
+  registerPushRoutes(app);
 
   // Register Drone Scan routes
   registerDroneScanRoutes(app);
@@ -483,6 +490,9 @@ export async function registerRoutes(
 
   // Register Invite Code routes
   registerInviteCodeRoutes(app);
+
+  // Register Push notification routes (Expo token registration)
+  registerPushRoutes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);

@@ -5785,3 +5785,426 @@ export async function applySaveDiscount(params: {
       : `Our best offer is **$${matchedPrice}** — that's ${discountPercent}% off our standard rate. I can't go lower, but you're still getting background-checked, insured pros with our full guarantee. Want me to lock it in?`,
   };
 }
+
+// ═════════════════════════════════════════════
+// COMMUNICATION & MULTI-CHANNEL TOOLS
+// ═════════════════════════════════════════════
+
+import { sendEmail, sendSms } from './notifications.js';
+import { makeOutboundCall, getCallStatus as voiceGetCallStatus } from './voice-service.js';
+import { sendPushNotification as expoPush } from './push-notification.js';
+import { sanitizePhone } from '../utils/phone.js';
+
+// ─────────────────────────────────────────────
+// Helper: get customer contact info by ID
+// ─────────────────────────────────────────────
+async function getCustomerContact(customerId: string): Promise<{ email?: string; phone?: string; name?: string; expoPushToken?: string } | null> {
+  try {
+    const result = await pool.query(
+      `SELECT email, phone, username, full_name, expo_push_token FROM users WHERE id = $1 LIMIT 1`,
+      [customerId]
+    );
+    if (result.rows.length > 0) {
+      const r = result.rows[0];
+      return { email: r.email, phone: r.phone, name: r.full_name || r.username, expoPushToken: r.expo_push_token };
+    }
+    return null;
+  } catch { return null; }
+}
+
+// ─────────────────────────────────────────────
+// Branded HTML email template
+// ─────────────────────────────────────────────
+function buildBrandedEmailHtml(subject: string, bodyHtml: string): string {
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;">
+      <div style="background: linear-gradient(135deg, #F47C20 0%, #e06b15 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">UpTend</h1>
+        <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0; font-size: 14px;">🤖 From Mr. George, your AI home expert</p>
+      </div>
+      <div style="padding: 30px; background: #ffffff; border: 1px solid #e5e7eb; border-top: none;">
+        <h2 style="color: #1f2937; margin-top: 0;">${subject}</h2>
+        ${bodyHtml}
+      </div>
+      <div style="padding: 20px; background: #f9fafb; text-align: center; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb; border-top: none;">
+        <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+          UpTend — Orlando Metro Area | (407) 338-3342<br>
+          Sent by Mr. George 🤖
+        </p>
+      </div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────
+// 1. Send Email to Customer
+// ─────────────────────────────────────────────
+export async function sendEmailToCustomer(
+  customerId: string,
+  subject: string,
+  emailType: string,
+  customMessage?: string
+): Promise<object> {
+  const contact = await getCustomerContact(customerId);
+  if (!contact?.email) {
+    return { success: false, error: 'Customer email not found' };
+  }
+
+  const typeTemplates: Record<string, string> = {
+    quote: `<p style="color: #4b5563;">Here's your personalized quote from UpTend:</p><div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 20px 0;">${customMessage || 'Your quote details will appear here.'}</div><p style="color: #4b5563;">Ready to book? Reply to this email or open the UpTend app!</p>`,
+    booking: `<p style="color: #4b5563;">Great news — your booking is confirmed! 🎉</p><div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">${customMessage || 'Your booking details.'}</div><p style="color: #4b5563;">You'll receive updates as your pro heads your way.</p>`,
+    scan_results: `<p style="color: #4b5563;">Your AI Home Scan results are ready! 🏠</p><div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">${customMessage || 'Your home scan analysis.'}</div>`,
+    receipt: `<p style="color: #4b5563;">Here's your spending summary:</p><div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 20px 0;">${customMessage || 'Your receipt details.'}</div>`,
+    referral: `<p style="color: #4b5563;">Your friend thinks you'd love UpTend! 🎁</p><div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; padding: 20px; margin: 20px 0;"><p style="margin: 0; color: #92400e; font-weight: bold;">You've been invited to UpTend — get $25 off your first service!</p></div><p style="color: #4b5563;">${customMessage || 'Sign up and save on your first home service.'}</p>`,
+    custom: `<div style="color: #4b5563; line-height: 1.6;">${customMessage || ''}</div>`,
+  };
+
+  const bodyHtml = typeTemplates[emailType] || typeTemplates.custom;
+  const html = buildBrandedEmailHtml(subject, bodyHtml);
+
+  const result = await sendEmail({ to: contact.email, subject, html, text: customMessage || subject });
+
+  return {
+    success: result.success,
+    sentTo: contact.email,
+    customerName: contact.name,
+    emailType,
+    error: result.error,
+  };
+}
+
+// ─────────────────────────────────────────────
+// 2. Call Customer (Twilio Voice)
+// ─────────────────────────────────────────────
+export async function callCustomer(customerId: string, message: string): Promise<object> {
+  const contact = await getCustomerContact(customerId);
+  if (!contact?.phone) {
+    return { success: false, error: 'Customer phone not found' };
+  }
+
+  const cleanPhone = sanitizePhone(contact.phone);
+  if (!cleanPhone) {
+    return { success: false, error: 'Invalid phone number format' };
+  }
+  const result = await makeOutboundCall(cleanPhone, message);
+  return {
+    success: result.success,
+    callSid: result.callSid,
+    calledNumber: contact.phone,
+    customerName: contact.name,
+    message,
+    error: result.error,
+  };
+}
+
+export async function getCallStatusTool(callSid: string): Promise<object> {
+  const result = await voiceGetCallStatus(callSid);
+  return {
+    callSid,
+    status: result.status,
+    duration: result.duration,
+    success: result.success,
+    error: result.error,
+  };
+}
+
+// ─────────────────────────────────────────────
+// 3. Send Quote PDF (rich email)
+// ─────────────────────────────────────────────
+export async function sendQuotePdf(
+  customerId: string,
+  serviceType: string,
+  quoteDetails: any,
+  includeBreakdown: boolean
+): Promise<object> {
+  const contact = await getCustomerContact(customerId);
+  if (!contact?.email) {
+    return { success: false, error: 'Customer email not found' };
+  }
+
+  let breakdownHtml = '';
+  if (includeBreakdown && quoteDetails?.breakdown) {
+    const rows = (Array.isArray(quoteDetails.breakdown) ? quoteDetails.breakdown : [])
+      .map((item: any) => `<tr><td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${item.item || item.label || 'Item'}</td><td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">$${item.lineTotal || item.price || 0}</td></tr>`)
+      .join('');
+    breakdownHtml = `<table style="width: 100%; border-collapse: collapse; margin: 15px 0;">${rows}<tr style="font-weight: bold;"><td style="padding: 8px;">Total</td><td style="padding: 8px; text-align: right;">$${quoteDetails.totalPrice || quoteDetails.total || 0}</td></tr></table>`;
+  }
+
+  const bodyHtml = `
+    <p style="color: #4b5563;">Hi ${contact.name || 'there'}! Here's your detailed quote for <strong>${serviceType}</strong>:</p>
+    <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      <p style="margin: 5px 0;"><strong>Service:</strong> ${serviceType}</p>
+      <p style="margin: 5px 0;"><strong>Estimated Total:</strong> <span style="color: #F47C20; font-size: 24px; font-weight: bold;">$${quoteDetails?.totalPrice || quoteDetails?.total || 'TBD'}</span></p>
+      ${quoteDetails?.priceFormatted ? `<p style="margin: 5px 0;"><strong>Price:</strong> ${quoteDetails.priceFormatted}</p>` : ''}
+      ${breakdownHtml}
+    </div>
+    <p style="color: #4b5563;">This is a guaranteed price ceiling — it won't go up. Ready to book? Open the UpTend app or reply to this email!</p>
+    <div style="text-align: center; margin: 25px 0;">
+      <a href="https://uptend.app/book?service=${encodeURIComponent(serviceType)}" style="display: inline-block; background: #F47C20; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold;">Book Now</a>
+    </div>`;
+
+  const html = buildBrandedEmailHtml(`Your ${serviceType} Quote`, bodyHtml);
+  const result = await sendEmail({ to: contact.email, subject: `Your UpTend ${serviceType} Quote`, html });
+
+  return {
+    success: result.success,
+    sentTo: contact.email,
+    customerName: contact.name,
+    serviceType,
+    quoteTotal: quoteDetails?.totalPrice || quoteDetails?.total,
+    error: result.error,
+  };
+}
+
+// ─────────────────────────────────────────────
+// 4. Get Pro Live Location
+// ─────────────────────────────────────────────
+function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 3959; // Earth radius in miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+export async function getProLiveLocation(jobId: string): Promise<object> {
+  try {
+    // Get the job and assigned pro
+    const jobResult = await pool.query(
+      `SELECT sr.*, hp.company_name, hp.current_lat, hp.current_lng, hp.vehicle_description
+       FROM service_requests sr
+       LEFT JOIN hauler_profiles hp ON hp.id = sr.assigned_hauler_id OR hp.user_id = sr.assigned_hauler_id
+       WHERE sr.id = $1 LIMIT 1`,
+      [jobId]
+    );
+
+    if (jobResult.rows.length === 0) {
+      return { success: false, error: 'Job not found' };
+    }
+
+    const job = jobResult.rows[0];
+    if (!job.current_lat || !job.current_lng) {
+      return { success: false, error: 'Pro location not available — they may not have shared their location yet' };
+    }
+
+    // Parse customer address to get approximate coordinates (fallback to Orlando center)
+    const customerLat = 28.5383;
+    const customerLng = -81.3792;
+
+    const distance = haversineDistance(job.current_lat, job.current_lng, customerLat, customerLng);
+    const avgSpeedMph = 25; // city driving
+    const etaMinutes = Math.round((distance / avgSpeedMph) * 60);
+
+    return {
+      success: true,
+      proName: job.company_name || 'Your Pro',
+      latitude: job.current_lat,
+      longitude: job.current_lng,
+      distanceMiles: parseFloat(distance.toFixed(1)),
+      etaMinutes,
+      vehicleDescription: job.vehicle_description || 'Vehicle info not available',
+      jobStatus: job.status,
+      message: `${job.company_name || 'Your pro'} is ${distance.toFixed(1)} miles away${job.vehicle_description ? ` in a ${job.vehicle_description}` : ''}, about ${etaMinutes} minutes out.`,
+    };
+  } catch (error: any) {
+    console.error('[Pro Location] Error:', error.message);
+    return { success: false, error: 'Unable to fetch pro location' };
+  }
+}
+
+// ─────────────────────────────────────────────
+// 5. Calendar Integration (.ics)
+// ─────────────────────────────────────────────
+export async function addToCalendar(customerId: string, bookingId: string): Promise<object> {
+  const contact = await getCustomerContact(customerId);
+  if (!contact?.email) {
+    return { success: false, error: 'Customer email not found' };
+  }
+
+  // Fetch booking details
+  let booking: any = null;
+  try {
+    const result = await pool.query(`SELECT * FROM service_requests WHERE id = $1 LIMIT 1`, [bookingId]);
+    if (result.rows.length > 0) booking = result.rows[0];
+  } catch { /* ignore */ }
+
+  if (!booking) {
+    return { success: false, error: 'Booking not found' };
+  }
+
+  const scheduledDate = booking.scheduled_for ? new Date(booking.scheduled_for) : new Date(Date.now() + 86400000);
+  const endDate = new Date(scheduledDate.getTime() + 2 * 60 * 60 * 1000); // 2 hour window
+
+  const formatIcsDate = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const uid = `uptend-${bookingId}@uptend.app`;
+
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//UpTend//Mr. George//EN',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTART:${formatIcsDate(scheduledDate)}`,
+    `DTEND:${formatIcsDate(endDate)}`,
+    `SUMMARY:UpTend ${booking.service_type || 'Service'} Appointment`,
+    `DESCRIPTION:Your UpTend ${booking.service_type || 'service'} is scheduled. Job #${bookingId.slice(-6)}. Track your pro in the UpTend app!`,
+    `LOCATION:${booking.pickup_address || 'Address on file'}`,
+    'STATUS:CONFIRMED',
+    `ORGANIZER;CN=Mr. George:mailto:alan@uptendapp.com`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+
+  // Build Google Calendar link
+  const gcalParams = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `UpTend ${booking.service_type || 'Service'} Appointment`,
+    dates: `${formatIcsDate(scheduledDate)}/${formatIcsDate(endDate)}`,
+    details: `Your UpTend service appointment. Job #${bookingId.slice(-6)}. Track your pro in the app!`,
+    location: booking.pickup_address || '',
+  });
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?${gcalParams.toString()}`;
+
+  // Send email with .ics as base64 attachment via SendGrid
+  const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+  let emailSent = false;
+
+  if (SENDGRID_API_KEY) {
+    try {
+      const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${SENDGRID_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email: contact.email }] }],
+          from: { email: 'alan@uptendapp.com', name: 'Mr. George @ UpTend' },
+          subject: `Calendar Invite: UpTend ${booking.service_type || 'Service'} Appointment`,
+          content: [{ type: 'text/html', value: buildBrandedEmailHtml(
+            'Your Appointment is on the Calendar! 📅',
+            `<p style="color: #4b5563;">Hi ${contact.name || 'there'}! I've added your ${booking.service_type || 'service'} appointment to your calendar.</p>
+             <div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 20px 0;">
+               <p style="margin: 5px 0;"><strong>Date:</strong> ${scheduledDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+               <p style="margin: 5px 0;"><strong>Time:</strong> ${scheduledDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</p>
+               <p style="margin: 5px 0;"><strong>Location:</strong> ${booking.pickup_address || 'Address on file'}</p>
+             </div>
+             <div style="text-align: center; margin: 20px 0;">
+               <a href="${googleCalendarUrl}" style="display: inline-block; background: #F47C20; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold;">Add to Google Calendar</a>
+             </div>
+             <p style="color: #6b7280; font-size: 13px;">The .ics file is attached — open it to add to Apple Calendar, Outlook, or any calendar app.</p>`
+          ) }],
+          attachments: [{
+            content: Buffer.from(icsContent).toString('base64'),
+            filename: 'uptend-appointment.ics',
+            type: 'text/calendar',
+            disposition: 'attachment',
+          }],
+        }),
+      });
+      emailSent = res.ok || res.status === 202;
+    } catch (e: any) {
+      console.error('[Calendar] SendGrid error:', e.message);
+    }
+  }
+
+  return {
+    success: true,
+    emailSent,
+    sentTo: contact.email,
+    googleCalendarUrl,
+    scheduledDate: scheduledDate.toISOString(),
+    serviceType: booking.service_type,
+    message: emailSent
+      ? `Calendar invite sent to ${contact.email}! Also here's a link to add it to Google Calendar.`
+      : `Here's your Google Calendar link. Email couldn't be sent right now.`,
+  };
+}
+
+// ─────────────────────────────────────────────
+// 6. WhatsApp Messaging (Twilio)
+// ─────────────────────────────────────────────
+export async function sendWhatsAppMessage(customerId: string, message: string, templateType?: string): Promise<object> {
+  const contact = await getCustomerContact(customerId);
+  if (!contact?.phone) {
+    return { success: false, error: 'Customer phone not found' };
+  }
+
+  // Try WhatsApp first via Twilio
+  const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+  const TWILIO_API_KEY_SID = process.env.TWILIO_API_KEY_SID;
+  const TWILIO_API_KEY_SECRET = process.env.TWILIO_API_KEY_SECRET;
+  const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+  const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
+
+  let whatsappSent = false;
+  let whatsappError: string | undefined;
+
+  // Twilio WhatsApp requires whatsapp: prefix
+  const cleanPhone = sanitizePhone(contact.phone);
+
+  if (cleanPhone && TWILIO_ACCOUNT_SID) {
+    try {
+      const twilio = (await import('twilio')).default;
+      const client = TWILIO_API_KEY_SID && TWILIO_API_KEY_SECRET
+        ? twilio(TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, { accountSid: TWILIO_ACCOUNT_SID })
+        : twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN!);
+
+      const msg = await client.messages.create({
+        body: message,
+        from: `whatsapp:${TWILIO_PHONE_NUMBER}`,
+        to: `whatsapp:${cleanPhone}`,
+      });
+      whatsappSent = true;
+      console.log(`[WhatsApp] Sent to ${cleanPhone} — SID: ${msg.sid}`);
+    } catch (err: any) {
+      whatsappError = err.message;
+      console.warn(`[WhatsApp] Failed, falling back to SMS: ${err.message}`);
+    }
+  }
+
+  // Fallback to SMS if WhatsApp fails
+  let smsFallback = false;
+  if (!whatsappSent) {
+    const smsResult = await sendSms({ to: contact.phone, message });
+    smsFallback = smsResult.success;
+  }
+
+  return {
+    success: whatsappSent || smsFallback,
+    channel: whatsappSent ? 'whatsapp' : smsFallback ? 'sms_fallback' : 'failed',
+    sentTo: contact.phone,
+    customerName: contact.name,
+    whatsappError: !whatsappSent ? whatsappError : undefined,
+    message: whatsappSent
+      ? `WhatsApp message sent to ${contact.name || contact.phone}`
+      : smsFallback
+        ? `WhatsApp unavailable — sent via SMS instead to ${contact.name || contact.phone}`
+        : 'Failed to send via WhatsApp and SMS',
+  };
+}
+
+// ─────────────────────────────────────────────
+// 7. Push Notification
+// ─────────────────────────────────────────────
+export async function sendPushNotificationToCustomer(
+  customerId: string,
+  title: string,
+  body: string,
+  action?: string
+): Promise<object> {
+  const contact = await getCustomerContact(customerId);
+  if (!contact?.expoPushToken) {
+    return { success: false, error: 'Customer does not have a registered push token. They need to open the UpTend mobile app first.' };
+  }
+
+  const result = await expoPush(contact.expoPushToken, title, body, {
+    action: action || 'open_app',
+    customerId,
+  });
+
+  return {
+    success: result.success,
+    ticketId: result.ticketId,
+    customerName: contact.name,
+    title,
+    body,
+    error: result.error,
+  };
+}

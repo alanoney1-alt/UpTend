@@ -49,3 +49,61 @@ export async function sendAppLink(toNumber: string): Promise<void> {
     to: toNumber,
   });
 }
+
+// ─────────────────────────────────────────────
+// Outbound Voice Calls (Mr. George calling customers)
+// ─────────────────────────────────────────────
+
+function escapeXml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+}
+
+export function generateTwimlResponse(message: string): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="Polly.Matthew" language="en-US">${escapeXml(message)}</Say>
+  <Pause length="1"/>
+  <Say voice="Polly.Matthew" language="en-US">Thank you for choosing UpTend. Goodbye!</Say>
+</Response>`;
+}
+
+export async function makeOutboundCall(
+  to: string,
+  message: string,
+  callbackUrl?: string
+): Promise<{ success: boolean; callSid?: string; error?: string }> {
+  try {
+    const client = getTwilioClient();
+    const from = getTwilioPhoneNumber();
+
+    const baseUrl = process.env.BASE_URL || (process.env.REPLIT_DEV_DOMAIN
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
+      : 'https://uptend.app');
+
+    const call = await client.calls.create({
+      to,
+      from,
+      twiml: generateTwimlResponse(message),
+      statusCallback: callbackUrl || `${baseUrl}/api/voice/status`,
+      statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
+      statusCallbackMethod: 'POST',
+    });
+
+    console.log(`[Voice] Outbound call to ${to} — SID: ${call.sid}`);
+    return { success: true, callSid: call.sid };
+  } catch (error: any) {
+    console.error('[Voice] Outbound call error:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getCallStatus(callSid: string): Promise<{ success: boolean; status?: string; duration?: string; error?: string }> {
+  try {
+    const client = getTwilioClient();
+    const call = await client.calls(callSid).fetch();
+    return { success: true, status: call.status, duration: call.duration };
+  } catch (error: any) {
+    console.error('[Voice] Status error:', error.message);
+    return { success: false, error: error.message };
+  }
+}

@@ -20,6 +20,16 @@ import {
   findNearestSupplyStore,
   getQuickTutorial,
 } from "./pro-field-assist";
+import {
+  sendEmailToCustomer,
+  callCustomer,
+  getCallStatus,
+  sendQuoteEmail,
+  getProLiveLocation,
+  addToCalendar,
+  sendWhatsAppMessage,
+  sendPushNotification,
+} from "./george-communication";
 
 // ─────────────────────────────────────────────
 // A. CONSUMER System Prompt
@@ -80,7 +90,22 @@ You are not a simple chatbot. You function like a real person with real capabili
 📱 COMMUNICATION:
 - SMS outreach — send weather alerts, maintenance reminders, post-service follow-ups, Home Scan promotions
 - Proactive check-ins outside the app (you're their home's best friend, not just an app feature)
-- Voice calling coming soon — you'll be able to call customers and take inbound calls
+- Voice calling — call customers directly with updates, confirmations, or alerts (call_customer)
+- Track call status (get_call_status)
+
+📧 EMAIL:
+- Send customers email summaries of quotes, bookings, Home Scan results, spending reports (send_email_to_customer)
+- Email referral invites, send calendar invites (.ics) for bookings (add_to_calendar)
+- Send beautifully formatted quote breakdowns via email (send_quote_pdf)
+
+💬 MULTI-CHANNEL:
+- SMS, WhatsApp, email, push notifications — reach customers however they prefer
+- WhatsApp messaging (send_whatsapp_message) with SMS fallback
+- Push notifications to mobile app (send_push_notification)
+
+📍 LIVE TRACKING:
+- Real-time pro GPS location with ETA, distance, vehicle description (get_pro_live_location)
+- "Marcus is 2.3 miles away in a white Ford F-150, about 8 minutes out"
 
 🏢 BUSINESS INTELLIGENCE:
 - Neighborhood insights and local pricing context
@@ -2311,6 +2336,110 @@ const TOOL_DEFINITIONS: any[] = [
       required: ["service_type", "original_price", "competitor_price"],
     },
   },
+
+  // ── Communication & Multi-Channel Tools ──────
+  {
+    name: "send_email_to_customer",
+    description: "Send a branded HTML email to a customer. Use for quote summaries, booking confirmations, Home Scan results, receipts, referral invites, or custom messages.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer's user ID — looks up their email from DB" },
+        subject: { type: "string", description: "Email subject line" },
+        email_type: { type: "string", enum: ["quote", "booking", "scan_results", "receipt", "referral", "custom"], description: "Type of email template to use" },
+        custom_message: { type: "string", description: "Custom message body (HTML supported)" },
+      },
+      required: ["customer_id", "subject", "email_type"],
+    },
+  },
+  {
+    name: "call_customer",
+    description: "Make an outbound voice call to a customer via Twilio with a spoken message from Mr. George.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer's user ID — looks up their phone from DB" },
+        message: { type: "string", description: "Message to speak to the customer on the call" },
+      },
+      required: ["customer_id", "message"],
+    },
+  },
+  {
+    name: "get_call_status",
+    description: "Check the status of a previous outbound call by its Twilio Call SID.",
+    input_schema: {
+      type: "object",
+      properties: {
+        call_sid: { type: "string", description: "Twilio Call SID from a previous call_customer result" },
+      },
+      required: ["call_sid"],
+    },
+  },
+  {
+    name: "send_quote_pdf",
+    description: "Send a beautifully formatted quote breakdown email to a customer with service details, pricing, and a Book Now button.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer's user ID" },
+        service_type: { type: "string", description: "Name of the service being quoted" },
+        quote_details: { type: "object", description: "Quote object with totalPrice, breakdown[], priceFormatted" },
+        include_breakdown: { type: "boolean", description: "Whether to include line-item breakdown" },
+      },
+      required: ["customer_id", "service_type", "quote_details"],
+    },
+  },
+  {
+    name: "get_pro_live_location",
+    description: "Get real-time GPS location, ETA, distance, and vehicle info for the pro assigned to an active job. Returns something like 'Marcus is 2.3 miles away in a white Ford F-150, about 8 minutes out'.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer's user ID" },
+        booking_id: { type: "string", description: "Optional specific booking/job ID to track" },
+      },
+      required: ["customer_id"],
+    },
+  },
+  {
+    name: "add_to_calendar",
+    description: "Generate an .ics calendar event for a booking and email it to the customer. Also returns a Google Calendar link.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer's user ID" },
+        booking_id: { type: "string", description: "Service request / booking ID" },
+      },
+      required: ["customer_id", "booking_id"],
+    },
+  },
+  {
+    name: "send_whatsapp_message",
+    description: "Send a WhatsApp message to a customer via Twilio. Falls back to SMS if WhatsApp is unavailable.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer's user ID" },
+        message: { type: "string", description: "Message text to send" },
+        template_type: { type: "string", description: "Optional template type for pre-approved WhatsApp templates" },
+      },
+      required: ["customer_id", "message"],
+    },
+  },
+  {
+    name: "send_push_notification",
+    description: "Send a push notification to a customer's mobile app via Expo Push. Customer must have the UpTend app installed with push enabled.",
+    input_schema: {
+      type: "object",
+      properties: {
+        customer_id: { type: "string", description: "Customer's user ID" },
+        title: { type: "string", description: "Notification title" },
+        body: { type: "string", description: "Notification body text" },
+        action: { type: "string", description: "Deep link action (e.g., 'open_job', 'open_scan', 'open_app')" },
+      },
+      required: ["customer_id", "title", "body"],
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────
@@ -2688,6 +2817,24 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
       return tools.getMultiProQuotes(input);
     case "apply_save_discount":
       return tools.applySaveDiscount(input);
+
+    // Communication & Multi-Channel Tools
+    case "send_email_to_customer":
+      return await sendEmailToCustomer({ customerId: input.customer_id, subject: input.subject, emailType: input.email_type, customMessage: input.custom_message });
+    case "call_customer":
+      return await callCustomer({ customerId: input.customer_id, message: input.message, urgent: input.urgent });
+    case "get_call_status":
+      return await getCallStatus({ callSid: input.call_sid });
+    case "send_quote_pdf":
+      return await sendQuoteEmail({ customerId: input.customer_id, serviceType: input.service_type, totalPrice: input.quote_details?.totalPrice || input.total_price || 0, breakdown: input.quote_details?.breakdown || input.breakdown, notes: input.notes });
+    case "get_pro_live_location":
+      return await getProLiveLocation({ customerId: input.customer_id, bookingId: input.booking_id });
+    case "add_to_calendar":
+      return await addToCalendar({ customerId: input.customer_id, bookingId: input.booking_id });
+    case "send_whatsapp_message":
+      return await sendWhatsAppMessage({ customerId: input.customer_id, message: input.message });
+    case "send_push_notification":
+      return await sendPushNotification({ customerId: input.customer_id, title: input.title, body: input.body, action: input.action });
 
     default:
       return { error: `Unknown tool: ${name}` };
