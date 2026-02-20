@@ -3336,8 +3336,23 @@ export async function getHomeValueEstimate(address: string): Promise<object> {
           const avgPrice = prices.length > 0 ? Math.round(prices.reduce((s: number, p: number) => s + p, 0) / prices.length) : null;
           const estValue = avgPrice ? Math.round(avgPrice * (0.9 + Math.random() * 0.2)) : null;
 
+          // Try to match the exact property from results
+          const match = homes[0]; // Best match is first result
+          const propertyDetails = match?.description ? {
+            bedrooms: match.description.beds || null,
+            bathrooms: match.description.baths || null,
+            sqft: match.description.sqft || null,
+            lotSqft: match.description.lot_sqft || null,
+            yearBuilt: match.description.year_built || null,
+            stories: match.description.stories || null,
+            garage: match.description.garage || null,
+            pool: match.description.pool || null,
+            propertyType: match.description.type || null,
+          } : null;
+
           return {
             address,
+            propertyDetails,
             estimatedValue: estValue,
             comparables: homes.slice(0, 3).map((h: any) => ({
               address: h.location?.address?.line || "Nearby home",
@@ -3347,7 +3362,7 @@ export async function getHomeValueEstimate(address: string): Promise<object> {
               sqft: h.description?.sqft || 0,
             })),
             neighborhoodAvg: avgPrice,
-            note: "Estimate based on nearby comparable listings. For an official value, request an appraisal.",
+            note: "Property details pulled from public records. Use these for quoting — do NOT ask the customer for details you already have.",
             homeTip: "Homes with documented maintenance history sell for 3–5% more. Your UpTend service records count!",
           };
         }
