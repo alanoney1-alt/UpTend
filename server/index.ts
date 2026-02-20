@@ -24,21 +24,9 @@ app.get('/health', (_req, res) => res.status(200).send('OK'));
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://maps.googleapis.com", "https://js.stripe.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "https://api.stripe.com", "https://maps.googleapis.com", "https://api.anthropic.com", "https://api.openai.com", "wss:", "ws:"],
-      frameSrc: ["'self'", "https://js.stripe.com", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
-      objectSrc: ["'none'"],
-      baseUri: ["'self'"],
-      formAction: ["'self'"],
-      upgradeInsecureRequests: [],
-    },
-  } : false,
+  // CSP disabled — was causing YouTube Error 153 (embed player blocked by script-src-attr/connect-src).
+  // TODO: Re-enable with proper YouTube whitelist before launch.
+  contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
 }));
 
