@@ -3076,10 +3076,21 @@ export async function chat(
     const lastUserMsg = (currentMessages.filter((m: any) => m.role === "user").pop() as any)?.content || "";
     const msgText = typeof lastUserMsg === "string" ? lastUserMsg.toLowerCase() : JSON.stringify(lastUserMsg).toLowerCase();
     const needsToolCall = /\b(fix|repair|how to|diy|video|show me|tutorial|watch|youtube|buy|product|price|cost|quote|book|schedule|amazon|home depot|lowe|walmart|parts|tools needed|what do i need)\b/.test(msgText);
+    const needsVideo = /\b(video|tutorial|show me|watch|youtube|how to|fix|repair|diy)\b/.test(msgText);
+    const needsProduct = /\b(buy|product|price|cost|amazon|home depot|lowe|walmart|parts|tools needed|what do i need)\b/.test(msgText);
 
     for (let i = 0; i < 5; i++) {
-      // Force tool use on first iteration when the message clearly needs tools
-      const toolChoice = (i === 0 && needsToolCall) ? { type: "any" as const } : undefined;
+      // Force SPECIFIC tool on first iteration — prevents George from picking disclaimer tool instead
+      let toolChoice: any = undefined;
+      if (i === 0 && needsToolCall) {
+        if (needsVideo) {
+          toolChoice = { type: "tool" as const, name: "find_diy_tutorial" };
+        } else if (needsProduct) {
+          toolChoice = { type: "tool" as const, name: "search_products" };
+        } else {
+          toolChoice = { type: "any" as const };
+        }
+      }
 
       const response = await anthropic.messages.create({
         model: "claude-sonnet-4-20250514",
