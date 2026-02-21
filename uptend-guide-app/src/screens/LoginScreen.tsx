@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator,
-  ScrollView, KeyboardAvoidingView, Platform,
+  View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView,
+  Platform, Alert, useColorScheme,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { Button, Input } from '../components/ui';
+import { colors, spacing, radii } from '../components/ui/tokens';
 import { useAuth } from '../context/AuthContext';
-import { Colors } from '../theme/colors';
+
+WebBrowser.maybeCompleteAuthSession();
 
 type RoleOption = 'customer' | 'pro' | 'business';
 
@@ -15,147 +20,177 @@ const ROLE_OPTIONS: { key: RoleOption; label: string; emoji: string; desc: strin
   { key: 'business', label: 'Property Manager', emoji: '🏢', desc: 'Manage multiple properties' },
 ];
 
-export default function LoginScreen() {
-  const { login, signup } = useAuth();
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+export default function LoginScreen({ navigation }: { navigation?: any }) {
+  const dark = useColorScheme() === 'dark';
+  const { login, loginWithGoogle } = useAuth();
   const [role, setRole] = useState<RoleOption>('customer');
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [propertyCount, setPropertyCount] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const bg = dark ? colors.backgroundDark : '#FFFBF5';
+  const cardBg = dark ? colors.surfaceDark : colors.surface;
+  const textColor = dark ? colors.textDark : colors.text;
+  const mutedColor = dark ? colors.textMutedDark : colors.textMuted;
+  const borderColor = dark ? colors.borderDark : colors.border;
+
+  // Google auth
+  const [_googleRequest, googleResponse, googlePromptAsync] = Google.useAuthRequest({
+    // TODO: Replace with real client IDs
+    iosClientId: 'YOUR_IOS_CLIENT_ID',
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID',
+    webClientId: 'YOUR_WEB_CLIENT_ID',
+  });
+
+  React.useEffect(() => {
+    if (googleResponse?.type === 'success') {
+      const idToken = googleResponse.authentication?.idToken;
+      if (idToken) {
+        handleGoogleLogin(idToken);
+      }
+    }
+  }, [googleResponse]);
+
+  const handleGoogleLogin = async (idToken: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await loginWithGoogle(idToken);
+    } catch (e: any) {
+      setError(e.message || 'Google sign-in failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async () => {
-    if (mode === 'signup' && !name.trim()) { Alert.alert('Error', 'Please enter your name.'); return; }
-    if (!email || !password) { Alert.alert('Error', 'Please fill in all fields.'); return; }
-    if (mode === 'signup' && role === 'business' && !companyName.trim()) {
-      Alert.alert('Error', 'Please enter your company name.'); return;
-    }
+    setError(null);
+    if (!email.trim()) { setError('Please enter your email.'); return; }
+    if (!password) { setError('Please enter your password.'); return; }
     setLoading(true);
     try {
-      if (mode === 'signin') {
-        await login(email, password, role);
-      } else {
-        await signup({
-          name, email, password, role,
-          companyName: role === 'business' ? companyName : undefined,
-          propertyCount: role === 'business' ? parseInt(propertyCount) || undefined : undefined,
-        });
-      }
+      await login(email.trim(), password, role);
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'Something went wrong.');
+      const msg = e.message || 'Something went wrong.';
+      if (msg.toLowerCase().includes('401') || msg.toLowerCase().includes('password') || msg.toLowerCase().includes('credentials')) {
+        setError('Invalid email or password. Please try again.');
+      } else if (msg.toLowerCase().includes('network') || msg.toLowerCase().includes('fetch')) {
+        setError('Network error. Please check your connection.');
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-          <Text style={styles.title}>{mode === 'signin' ? 'Welcome Back' : 'Create Account'}</Text>
-          <Text style={styles.subtitle}>
-            {mode === 'signin' ? 'Sign in to continue' : 'Choose your account type'}
-          </Text>
+        <ScrollView contentContainerStyle={{ padding: spacing.xl, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
+          {/* George avatar */}
+          <View style={{ alignItems: 'center', marginBottom: spacing.xl }}>
+            <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginBottom: spacing.md }}>
+              <Text style={{ fontSize: 36 }}>🏠</Text>
+            </View>
+            <Text accessibilityRole="header" style={{ fontSize: 28, fontWeight: '800', color: textColor, textAlign: 'center' }}>
+              Welcome Back
+            </Text>
+            <Text style={{ fontSize: 15, color: mutedColor, textAlign: 'center', marginTop: spacing.xs }}>
+              Mr. George is ready to help!
+            </Text>
+          </View>
 
           {/* Role selector */}
-          <View style={styles.roleContainer}>
+          <View style={{ flexDirection: 'row', gap: 10, marginBottom: spacing.xl }} accessibilityRole="radiogroup" accessibilityLabel="Account type">
             {ROLE_OPTIONS.map((opt) => (
               <TouchableOpacity
                 key={opt.key}
-                style={[styles.roleCard, role === opt.key && styles.roleCardActive]}
+                accessibilityRole="radio"
+                accessibilityLabel={opt.label}
+                accessibilityState={{ selected: role === opt.key }}
+                style={{
+                  flex: 1, backgroundColor: role === opt.key ? (dark ? '#3B2A15' : '#FFF7ED') : cardBg,
+                  borderRadius: radii.lg, padding: 14, alignItems: 'center',
+                  borderWidth: 2, borderColor: role === opt.key ? colors.primary : 'transparent',
+                }}
                 onPress={() => setRole(opt.key)}
                 activeOpacity={0.7}
               >
-                <Text style={styles.roleEmoji}>{opt.emoji}</Text>
-                <Text style={[styles.roleLabel, role === opt.key && styles.roleLabelActive]}>{opt.label}</Text>
-                <Text style={styles.roleDesc}>{opt.desc}</Text>
+                <Text style={{ fontSize: 24, marginBottom: 6 }}>{opt.emoji}</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: role === opt.key ? colors.primary : textColor, textAlign: 'center' }}>{opt.label}</Text>
+                <Text style={{ fontSize: 11, color: mutedColor, textAlign: 'center', marginTop: 2 }}>{opt.desc}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          {/* Name (signup only) */}
-          {mode === 'signup' && (
-            <TextInput
-              style={styles.input}
-              placeholder="Full name"
-              placeholderTextColor={Colors.textLight}
-              value={name}
-              onChangeText={setName}
-              autoCapitalize="words"
-            />
+          {/* Error message */}
+          {error && (
+            <View style={{ backgroundColor: '#FEF2F2', borderRadius: radii.md, padding: 12, marginBottom: spacing.md }}>
+              <Text style={{ color: colors.error, fontSize: 14, textAlign: 'center' }}>{error}</Text>
+            </View>
           )}
 
-          {/* Business fields (signup + business role) */}
-          {mode === 'signup' && role === 'business' && (
-            <>
-              <TextInput
-                style={styles.input}
-                placeholder="Company name"
-                placeholderTextColor={Colors.textLight}
-                value={companyName}
-                onChangeText={setCompanyName}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Number of properties"
-                placeholderTextColor={Colors.textLight}
-                value={propertyCount}
-                onChangeText={setPropertyCount}
-                keyboardType="number-pad"
-              />
-            </>
-          )}
-
-          <TextInput
-            style={styles.input}
+          <Input
+            variant="email"
             placeholder="Email"
-            placeholderTextColor={Colors.textLight}
             value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
+            onChangeText={(t: string) => { setEmail(t); setError(null); }}
+            accessibilityLabel="Email address"
+            containerStyle={{ marginBottom: spacing.sm }}
           />
-          <TextInput
-            style={styles.input}
+          <Input
+            variant="password"
             placeholder="Password"
-            placeholderTextColor={Colors.textLight}
             value={password}
-            onChangeText={setPassword}
-            secureTextEntry
+            onChangeText={(t: string) => { setPassword(t); setError(null); }}
+            accessibilityLabel="Password"
+            containerStyle={{ marginBottom: spacing.sm }}
           />
 
-          <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit} disabled={loading} activeOpacity={0.8}>
-            {loading ? <ActivityIndicator color={Colors.white} /> : (
-              <Text style={styles.submitText}>{mode === 'signin' ? 'Sign In' : 'Create Account'}</Text>
-            )}
-          </TouchableOpacity>
+          <Button variant="primary" size="lg" fullWidth loading={loading} onPress={handleSubmit} style={{ marginTop: spacing.sm }}>
+            Sign In
+          </Button>
 
-          {/* Social stubs */}
-          <View style={styles.dividerRow}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.dividerLine} />
+          {/* Divider */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: spacing.xl }}>
+            <View style={{ flex: 1, height: 1, backgroundColor: borderColor }} />
+            <Text style={{ marginHorizontal: spacing.lg, fontSize: 13, color: mutedColor }}>or</Text>
+            <View style={{ flex: 1, height: 1, backgroundColor: borderColor }} />
           </View>
 
-          <TouchableOpacity style={styles.socialBtn} activeOpacity={0.7}>
-            <Text style={styles.socialIcon}>🍎</Text>
-            <Text style={styles.socialText}>Continue with Apple</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.socialBtn} activeOpacity={0.7}>
-            <Text style={styles.socialIcon}>G</Text>
-            <Text style={styles.socialText}>Continue with Google</Text>
+          {/* Google button */}
+          <TouchableOpacity
+            accessibilityRole="button" accessibilityLabel="Continue with Google"
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: cardBg, borderRadius: radii.md, paddingVertical: 14, marginBottom: 10, borderWidth: 1, borderColor, gap: 10 }}
+            activeOpacity={0.7}
+            onPress={() => googlePromptAsync()}
+            disabled={loading}
+          >
+            <Text style={{ fontSize: 18, fontWeight: '700', color: '#4285F4' }}>G</Text>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: textColor }}>Continue with Google</Text>
           </TouchableOpacity>
 
-          {/* Toggle */}
+          {/* Apple button */}
           <TouchableOpacity
-            style={styles.toggleBtn}
-            onPress={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
+            accessibilityRole="button" accessibilityLabel="Continue with Apple"
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: cardBg, borderRadius: radii.md, paddingVertical: 14, marginBottom: 10, borderWidth: 1, borderColor, gap: 10 }}
+            activeOpacity={0.7}
           >
-            <Text style={styles.toggleText}>
-              {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-              <Text style={styles.toggleLink}>{mode === 'signin' ? 'Sign Up' : 'Sign In'}</Text>
+            <Text style={{ fontSize: 18 }}>🍎</Text>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: textColor }}>Continue with Apple</Text>
+          </TouchableOpacity>
+
+          {/* Create Account link */}
+          <TouchableOpacity
+            accessibilityRole="button"
+            style={{ alignItems: 'center', marginTop: spacing.lg }}
+            onPress={() => navigation?.navigate?.('Register')}
+          >
+            <Text style={{ fontSize: 14, color: mutedColor }}>
+              Don't have an account?{' '}
+              <Text style={{ color: colors.primary, fontWeight: '600' }}>Create Account</Text>
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -163,43 +198,3 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.white },
-  scroll: { padding: 24, paddingBottom: 40 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.text, textAlign: 'center' },
-  subtitle: { fontSize: 15, color: Colors.textSecondary, textAlign: 'center', marginTop: 8, marginBottom: 24 },
-  roleContainer: { flexDirection: 'row', gap: 10, marginBottom: 24 },
-  roleCard: {
-    flex: 1, backgroundColor: Colors.inputBackground, borderRadius: 14, padding: 14,
-    alignItems: 'center', borderWidth: 2, borderColor: 'transparent',
-  },
-  roleCardActive: { borderColor: Colors.primary, backgroundColor: '#FFF7F0' },
-  roleEmoji: { fontSize: 24, marginBottom: 6 },
-  roleLabel: { fontSize: 13, fontWeight: '700', color: Colors.text, textAlign: 'center' },
-  roleLabelActive: { color: Colors.primary },
-  roleDesc: { fontSize: 11, color: Colors.textLight, textAlign: 'center', marginTop: 2 },
-  input: {
-    backgroundColor: Colors.inputBackground, borderRadius: 12,
-    paddingHorizontal: 16, paddingVertical: 14, fontSize: 16,
-    marginBottom: 12, color: Colors.text, borderWidth: 1, borderColor: Colors.border,
-  },
-  submitBtn: {
-    backgroundColor: Colors.primary, borderRadius: 14,
-    paddingVertical: 16, alignItems: 'center', marginTop: 4,
-  },
-  submitText: { color: Colors.white, fontSize: 17, fontWeight: '700' },
-  dividerRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 20 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: Colors.border },
-  dividerText: { marginHorizontal: 16, fontSize: 13, color: Colors.textLight },
-  socialBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    backgroundColor: Colors.inputBackground, borderRadius: 12, paddingVertical: 14,
-    marginBottom: 10, borderWidth: 1, borderColor: Colors.border, gap: 10,
-  },
-  socialIcon: { fontSize: 18 },
-  socialText: { fontSize: 16, fontWeight: '600', color: Colors.text },
-  toggleBtn: { alignItems: 'center', marginTop: 16 },
-  toggleText: { fontSize: 14, color: Colors.textSecondary },
-  toggleLink: { color: Colors.primary, fontWeight: '600' },
-});

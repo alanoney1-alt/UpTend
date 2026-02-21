@@ -1,18 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-
-const CURRENT_CONFIG = {
-  clientName: 'Maple Property Group',
-  logo: '🏢',
-  primaryColor: '#2563EB',
-  secondaryColor: '#1E40AF',
-  customDomain: 'portal.maplepropertygroup.com',
-  favicon: '🏢',
-  emailFrom: 'service@maplepropertygroup.com',
-  supportPhone: '(813) 555-0100',
-};
+import { fetchWhiteLabelPortals, saveWhiteLabelConfig } from '../services/api';
+import ApiStateWrapper from '../components/ApiStateWrapper';
 
 const COLOR_PRESETS = [
   { name: 'Ocean Blue', primary: '#2563EB', secondary: '#1E40AF' },
@@ -23,7 +14,7 @@ const COLOR_PRESETS = [
   { name: 'Cherry Red', primary: '#DC2626', secondary: '#B91C1C' },
 ];
 
-const PORTAL_FEATURES = [
+const DEFAULT_FEATURES = [
   { name: 'Tenant Work Order Portal', enabled: true, description: 'Tenants submit & track work orders' },
   { name: 'Vendor Scorecards', enabled: true, description: 'Performance metrics visible to clients' },
   { name: 'Invoice Portal', enabled: true, description: 'Clients view & pay invoices online' },
@@ -33,133 +24,144 @@ const PORTAL_FEATURES = [
   { name: 'Board Approval Workflow', enabled: false, description: 'HOA board voting & approvals' },
 ];
 
-const ACTIVE_PORTALS = [
-  { id: '1', client: 'Maple Property Group', domain: 'portal.maplepropertygroup.com', users: 24, color: '#2563EB', lastActive: '2 min ago' },
-  { id: '2', client: 'Sunset Ridge HOA', domain: 'sunsetridge.uptend.io', users: 8, color: '#059669', lastActive: '1 hr ago' },
-  { id: '3', client: 'Palm Bay Condos', domain: 'palmbay.uptend.io', users: 15, color: '#7C3AED', lastActive: '30 min ago' },
-];
-
 export default function WhiteLabelScreen() {
   const [activeTab, setActiveTab] = useState<'portals' | 'branding' | 'features'>('portals');
   const [selectedPreset, setSelectedPreset] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [portals, setPortals] = useState<any[]>([]);
+  const [config, setConfig] = useState<any>({});
+  const [features, setFeatures] = useState(DEFAULT_FEATURES);
+
+  const load = async () => {
+    setLoading(true); setError(null);
+    try {
+      const res = await fetchWhiteLabelPortals();
+      setPortals(res?.portals || res || []);
+      if (res?.config) setConfig(res.config);
+      if (res?.features) setFeatures(res.features);
+    } catch (e: any) { setError(e?.message || 'Failed to load'); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleSave = async () => {
+    try { await saveWhiteLabelConfig({ features, preset: COLOR_PRESETS[selectedPreset], ...config }); } catch {}
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <View style={styles.header}>
-          <Text style={styles.title}>White Label</Text>
-          <Text style={styles.subtitle}>Portal branding & configuration</Text>
-        </View>
+      <ApiStateWrapper loading={loading} error={error} onRetry={load}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+          <View style={styles.header}>
+            <Text style={styles.title}>White Label</Text>
+            <Text style={styles.subtitle}>Portal branding & configuration</Text>
+          </View>
 
-        {/* Tabs */}
-        <View style={styles.tabs}>
-          {([['portals', '🌐 Portals'], ['branding', '🎨 Branding'], ['features', '⚙️ Features']] as const).map(([key, label]) => (
-            <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
-              <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+          <View style={styles.tabs}>
+            {([['portals', '🌐 Portals'], ['branding', '🎨 Branding'], ['features', '⚙️ Features']] as const).map(([key, label]) => (
+              <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
+                <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-        {/* Active Portals */}
-        {activeTab === 'portals' && (
-          <>
-            <TouchableOpacity style={styles.createBtn}><Text style={styles.createBtnText}>➕ Create New Portal</Text></TouchableOpacity>
-            {ACTIVE_PORTALS.map((p) => (
-              <View key={p.id} style={styles.card}>
-                <View style={styles.cardHeader}>
-                  <View style={[styles.portalDot, { backgroundColor: p.color }]} />
+          {activeTab === 'portals' && (
+            <>
+              <TouchableOpacity style={styles.createBtn}><Text style={styles.createBtnText}>➕ Create New Portal</Text></TouchableOpacity>
+              {portals.length === 0 ? (
+                <View style={styles.emptyCard}><Text style={styles.emptyText}>No portals configured</Text></View>
+              ) : portals.map((p: any) => (
+                <View key={p.id || p._id} style={styles.card}>
+                  <View style={styles.cardHeader}>
+                    <View style={[styles.portalDot, { backgroundColor: p.color || Colors.primary }]} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.cardTitle}>{p.client}</Text>
+                      <Text style={styles.cardSubtitle}>{p.domain}</Text>
+                    </View>
+                    <View style={styles.usersBadge}><Text style={styles.usersText}>👥 {p.users || 0}</Text></View>
+                  </View>
+                  <View style={styles.cardRow}>
+                    <Text style={styles.cardDetail}>Last active: {p.lastActive || '—'}</Text>
+                    <TouchableOpacity style={styles.editBtn}><Text style={styles.editBtnText}>Configure</Text></TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+            </>
+          )}
+
+          {activeTab === 'branding' && (
+            <>
+              <View style={[styles.previewCard, { borderColor: COLOR_PRESETS[selectedPreset].primary }]}>
+                <View style={[styles.previewHeader, { backgroundColor: COLOR_PRESETS[selectedPreset].primary }]}>
+                  <Text style={styles.previewLogo}>{config.logo || '🏢'}</Text>
+                  <Text style={styles.previewTitle}>{config.clientName || 'Your Business'}</Text>
+                </View>
+                <View style={styles.previewBody}>
+                  <Text style={styles.previewText}>Portal Preview</Text>
+                  <View style={styles.previewNav}>
+                    <View style={[styles.previewNavItem, { backgroundColor: COLOR_PRESETS[selectedPreset].primary }]}><Text style={{ color: '#fff', fontSize: 10 }}>Dashboard</Text></View>
+                    <View style={styles.previewNavItem}><Text style={{ fontSize: 10 }}>Work Orders</Text></View>
+                    <View style={styles.previewNavItem}><Text style={{ fontSize: 10 }}>Invoices</Text></View>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={styles.sectionTitle}>Color Theme</Text>
+              <View style={styles.presetsGrid}>
+                {COLOR_PRESETS.map((preset, i) => (
+                  <TouchableOpacity key={i} style={[styles.presetCard, selectedPreset === i && styles.presetSelected]} onPress={() => setSelectedPreset(i)}>
+                    <View style={styles.presetColors}>
+                      <View style={[styles.presetDot, { backgroundColor: preset.primary }]} />
+                      <View style={[styles.presetDot, { backgroundColor: preset.secondary }]} />
+                    </View>
+                    <Text style={styles.presetName}>{preset.name}</Text>
+                    {selectedPreset === i && <Text style={{ color: Colors.primary, fontSize: 12 }}>✓</Text>}
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <Text style={styles.sectionTitle}>Portal Settings</Text>
+              <View style={styles.card}>
+                {[
+                  ['Custom Domain', config.customDomain || 'Not set'],
+                  ['Email From', config.emailFrom || 'Not set'],
+                  ['Support Phone', config.supportPhone || 'Not set'],
+                ].map(([label, value], i) => (
+                  <TouchableOpacity key={i} style={styles.configRow}>
+                    <Text style={styles.configLabel}>{label}</Text>
+                    <Text style={styles.configValue}>{value} ›</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </>
+          )}
+
+          {activeTab === 'features' && (
+            <>
+              <Text style={styles.sectionTitle}>Portal Features</Text>
+              {features.map((f, i) => (
+                <View key={i} style={styles.featureRow}>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.cardTitle}>{p.client}</Text>
-                    <Text style={styles.cardSubtitle}>{p.domain}</Text>
+                    <Text style={styles.featureName}>{f.name}</Text>
+                    <Text style={styles.featureDesc}>{f.description}</Text>
                   </View>
-                  <View style={styles.usersBadge}><Text style={styles.usersText}>👥 {p.users}</Text></View>
+                  <TouchableOpacity
+                    style={[styles.toggleBtn, f.enabled ? styles.toggleOn : styles.toggleOff]}
+                    onPress={() => setFeatures(prev => prev.map((feat, j) => j === i ? { ...feat, enabled: !feat.enabled } : feat))}
+                  >
+                    <View style={[styles.toggleDot, f.enabled ? styles.toggleDotOn : styles.toggleDotOff]} />
+                  </TouchableOpacity>
                 </View>
-                <View style={styles.cardRow}>
-                  <Text style={styles.cardDetail}>Last active: {p.lastActive}</Text>
-                  <TouchableOpacity style={styles.editBtn}><Text style={styles.editBtnText}>Configure</Text></TouchableOpacity>
-                </View>
-              </View>
-            ))}
-          </>
-        )}
-
-        {/* Branding */}
-        {activeTab === 'branding' && (
-          <>
-            {/* Preview */}
-            <View style={[styles.previewCard, { borderColor: COLOR_PRESETS[selectedPreset].primary }]}>
-              <View style={[styles.previewHeader, { backgroundColor: COLOR_PRESETS[selectedPreset].primary }]}>
-                <Text style={styles.previewLogo}>{CURRENT_CONFIG.logo}</Text>
-                <Text style={styles.previewTitle}>{CURRENT_CONFIG.clientName}</Text>
-              </View>
-              <View style={styles.previewBody}>
-                <Text style={styles.previewText}>Portal Preview</Text>
-                <View style={styles.previewNav}>
-                  <View style={[styles.previewNavItem, { backgroundColor: COLOR_PRESETS[selectedPreset].primary }]}><Text style={{ color: '#fff', fontSize: 10 }}>Dashboard</Text></View>
-                  <View style={styles.previewNavItem}><Text style={{ fontSize: 10 }}>Work Orders</Text></View>
-                  <View style={styles.previewNavItem}><Text style={{ fontSize: 10 }}>Invoices</Text></View>
-                </View>
-              </View>
-            </View>
-
-            {/* Color Presets */}
-            <Text style={styles.sectionTitle}>Color Theme</Text>
-            <View style={styles.presetsGrid}>
-              {COLOR_PRESETS.map((preset, i) => (
-                <TouchableOpacity key={i} style={[styles.presetCard, selectedPreset === i && styles.presetSelected]} onPress={() => setSelectedPreset(i)}>
-                  <View style={styles.presetColors}>
-                    <View style={[styles.presetDot, { backgroundColor: preset.primary }]} />
-                    <View style={[styles.presetDot, { backgroundColor: preset.secondary }]} />
-                  </View>
-                  <Text style={styles.presetName}>{preset.name}</Text>
-                  {selectedPreset === i && <Text style={{ color: Colors.primary, fontSize: 12 }}>✓</Text>}
-                </TouchableOpacity>
               ))}
-            </View>
+            </>
+          )}
 
-            {/* Config Fields */}
-            <Text style={styles.sectionTitle}>Portal Settings</Text>
-            <View style={styles.card}>
-              {[
-                ['Custom Domain', CURRENT_CONFIG.customDomain],
-                ['Email From', CURRENT_CONFIG.emailFrom],
-                ['Support Phone', CURRENT_CONFIG.supportPhone],
-                ['Logo', 'Upload logo (PNG, SVG)'],
-                ['Favicon', 'Upload favicon'],
-              ].map(([label, value], i) => (
-                <TouchableOpacity key={i} style={styles.configRow}>
-                  <Text style={styles.configLabel}>{label}</Text>
-                  <Text style={styles.configValue}>{value} ›</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </>
-        )}
-
-        {/* Features */}
-        {activeTab === 'features' && (
-          <>
-            <Text style={styles.sectionTitle}>Portal Features</Text>
-            <Text style={styles.sectionSubtitle}>Toggle features available in your client portal</Text>
-            {PORTAL_FEATURES.map((f, i) => (
-              <View key={i} style={styles.featureRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.featureName}>{f.name}</Text>
-                  <Text style={styles.featureDesc}>{f.description}</Text>
-                </View>
-                <TouchableOpacity style={[styles.toggleBtn, f.enabled ? styles.toggleOn : styles.toggleOff]}>
-                  <View style={[styles.toggleDot, f.enabled ? styles.toggleDotOn : styles.toggleDotOff]} />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </>
-        )}
-
-        {/* Save Button */}
-        <TouchableOpacity style={styles.saveBtn}><Text style={styles.saveBtnText}>💾 Save Configuration</Text></TouchableOpacity>
-
-        <View style={{ height: 20 }} />
-      </ScrollView>
+          <TouchableOpacity style={styles.saveBtn} onPress={handleSave}><Text style={styles.saveBtnText}>💾 Save Configuration</Text></TouchableOpacity>
+          <View style={{ height: 20 }} />
+        </ScrollView>
+      </ApiStateWrapper>
     </SafeAreaView>
   );
 }
@@ -197,7 +199,6 @@ const styles = StyleSheet.create({
   previewNav: { flexDirection: 'row', gap: 8 },
   previewNavItem: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6, backgroundColor: Colors.borderLight },
   sectionTitle: { fontSize: 16, fontWeight: '700', color: Colors.text, marginBottom: 8 },
-  sectionSubtitle: { fontSize: 13, color: Colors.textSecondary, marginBottom: 12 },
   presetsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 20 },
   presetCard: { width: '47%' as any, backgroundColor: Colors.white, borderRadius: 12, padding: 12, flexDirection: 'row', alignItems: 'center', gap: 8, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 },
   presetSelected: { borderWidth: 2, borderColor: Colors.primary },
@@ -218,4 +219,6 @@ const styles = StyleSheet.create({
   toggleDotOff: { alignSelf: 'flex-start' },
   saveBtn: { backgroundColor: Colors.primary, borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 8 },
   saveBtnText: { color: Colors.white, fontSize: 16, fontWeight: '700' },
+  emptyCard: { backgroundColor: Colors.white, borderRadius: 14, padding: 24, alignItems: 'center', marginBottom: 12 },
+  emptyText: { fontSize: 14, color: Colors.textSecondary },
 });

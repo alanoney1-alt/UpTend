@@ -17,6 +17,8 @@ import {
   getConnectedDevices,
   disconnectPlatform,
   getSupportedPlatforms,
+  isConfigured,
+  getPlatformAvailability,
   type SmartHomePlatform,
 } from "../services/smart-home-oauth";
 
@@ -27,16 +29,19 @@ const VALID_PLATFORMS = ["nest", "ring", "august", "ecobee", "myq"] as const;
 router.get("/platforms", async (req, res) => {
   try {
     const customerId = req.query.customerId as string;
-    const platforms = getSupportedPlatforms();
+    const platforms = getPlatformAvailability();
 
     if (customerId) {
       const connections = await getConnectedDevices(customerId);
       const connMap = new Map(connections.map((c: any) => [c.platform, c.status]));
-      const enriched = platforms.map(p => ({ ...p, status: connMap.get(p.id) || "not_connected" }));
+      const enriched = platforms.map(p => ({
+        ...p,
+        status: p.available ? (connMap.get(p.id) || "not_connected") : "unavailable",
+      }));
       return res.json(enriched);
     }
 
-    res.json(platforms.map(p => ({ ...p, status: "not_connected" })));
+    res.json(platforms.map(p => ({ ...p, status: p.available ? "not_connected" : "unavailable" })));
   } catch (err) {
     res.status(500).json({ error: "Failed to list platforms" });
   }
@@ -51,6 +56,10 @@ router.get("/auth/:platform", (req, res) => {
 
     const customerId = req.query.customerId as string;
     if (!customerId) return res.status(400).json({ error: "customerId required" });
+
+    if (!isConfigured(platform)) {
+      return res.status(503).json({ available: false, reason: "Coming soon — developer account setup required" });
+    }
 
     const redirectUri = `${process.env.APP_URL || req.protocol + "://" + req.get("host")}/api/smart-home/callback/${platform}`;
     const url = getAuthUrl(platform, customerId, redirectUri);

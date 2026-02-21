@@ -1,180 +1,177 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-
-const PUNCH_LISTS = [
-  { id: '1', project: 'Riverside Office Build-Out', status: 'Active', dueDate: 'Feb 28, 2026', totalItems: 24, completedItems: 18, trades: ['Electrical', 'Drywall', 'Paint'] },
-  { id: '2', project: 'Marina Bay Condos Phase 2', status: 'Active', dueDate: 'Mar 15, 2026', totalItems: 42, completedItems: 12, trades: ['Plumbing', 'HVAC', 'Flooring', 'Paint'] },
-  { id: '3', project: 'Tampa Heights Restaurant', status: 'Final Review', dueDate: 'Feb 20, 2026', totalItems: 15, completedItems: 14, trades: ['Electrical', 'Plumbing'] },
-];
-
-const PUNCH_ITEMS = [
-  { id: '1', description: 'Touch up paint - lobby south wall', trade: 'Paint', assignedTo: 'Maria S.', status: 'Open', photos: 2 },
-  { id: '2', description: 'Adjust HVAC duct damper - Suite 200', trade: 'HVAC', assignedTo: 'David K.', status: 'In Progress', photos: 1 },
-  { id: '3', description: 'Install outlet cover plates - 3rd floor', trade: 'Electrical', assignedTo: 'Carlos M.', status: 'Completed', photos: 3 },
-  { id: '4', description: 'Fix drywall crack above door frame', trade: 'Drywall', assignedTo: 'James R.', status: 'Open', photos: 1 },
-  { id: '5', description: 'Caulk bathroom tile gaps - Unit 204', trade: 'Tile', assignedTo: 'Maria S.', status: 'Open', photos: 0 },
-];
-
-const LIEN_WAIVERS = [
-  { id: '1', project: 'Riverside Office', vendor: 'Martinez Electric LLC', type: 'Conditional Progress', amount: '$34,500', signed: true, date: 'Feb 1, 2026' },
-  { id: '2', project: 'Riverside Office', vendor: 'Santos Plumbing Co', type: 'Conditional Progress', amount: '$22,000', signed: true, date: 'Feb 1, 2026' },
-  { id: '3', project: 'Marina Bay', vendor: 'Premier HVAC Inc', type: 'Unconditional Progress', amount: '$67,000', signed: false, date: null },
-  { id: '4', project: 'Marina Bay', vendor: 'GreenPro Landscaping', type: 'Conditional Final', amount: '$18,500', signed: false, date: null },
-];
-
-const PERMITS = [
-  { id: '1', project: 'Riverside Office', type: 'Building Permit', number: 'BLD-2026-04412', status: 'Approved', inspectionDate: 'Feb 18, 2026', emoji: '🏗️' },
-  { id: '2', project: 'Marina Bay', type: 'Electrical Permit', number: 'ELE-2026-07823', status: 'Inspection Scheduled', inspectionDate: 'Feb 22, 2026', emoji: '⚡' },
-  { id: '3', project: 'Marina Bay', type: 'Plumbing Permit', number: 'PLB-2026-06104', status: 'Under Review', inspectionDate: null, emoji: '🔧' },
-  { id: '4', project: 'Tampa Heights', type: 'Fire Suppression', number: 'FIR-2026-01199', status: 'Passed', inspectionDate: 'Feb 10, 2026', emoji: '🔥' },
-  { id: '5', project: 'Tampa Heights', type: 'Health Dept', number: 'HLT-2026-00332', status: 'Inspection Scheduled', inspectionDate: 'Feb 19, 2026', emoji: '🏥' },
-];
+import { fetchPunchLists, fetchPunchItems, fetchLienWaivers, fetchPermits } from '../services/api';
+import ApiStateWrapper from '../components/ApiStateWrapper';
 
 const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
-  'Open': { bg: '#FEF3C7', color: '#D97706' },
-  'In Progress': { bg: '#DBEAFE', color: '#2563EB' },
-  'Completed': { bg: '#D1FAE5', color: '#059669' },
-  'Active': { bg: '#DBEAFE', color: '#2563EB' },
-  'Final Review': { bg: '#FEF3C7', color: '#D97706' },
-  'Approved': { bg: '#D1FAE5', color: '#059669' },
-  'Passed': { bg: '#D1FAE5', color: '#059669' },
-  'Inspection Scheduled': { bg: '#FEF3C7', color: '#D97706' },
+  'Open': { bg: '#FEF3C7', color: '#D97706' }, 'In Progress': { bg: '#DBEAFE', color: '#2563EB' },
+  'Completed': { bg: '#D1FAE5', color: '#059669' }, 'Active': { bg: '#DBEAFE', color: '#2563EB' },
+  'Final Review': { bg: '#FEF3C7', color: '#D97706' }, 'Approved': { bg: '#D1FAE5', color: '#059669' },
+  'Passed': { bg: '#D1FAE5', color: '#059669' }, 'Inspection Scheduled': { bg: '#FEF3C7', color: '#D97706' },
   'Under Review': { bg: '#F3F4F6', color: '#6B7280' },
 };
 
 export default function ConstructionScreen() {
   const [activeTab, setActiveTab] = useState<'punchlist' | 'liens' | 'permits'>('punchlist');
-  const [expandedPunch, setExpandedPunch] = useState<string | null>('1');
+  const [expandedPunch, setExpandedPunch] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [punchLists, setPunchLists] = useState<any[]>([]);
+  const [punchItems, setPunchItems] = useState<Record<string, any[]>>({});
+  const [lienWaivers, setLienWaivers] = useState<any[]>([]);
+  const [permits, setPermits] = useState<any[]>([]);
+  const [summary, setSummary] = useState<any>({});
+
+  const load = async () => {
+    setLoading(true); setError(null);
+    try {
+      const [plRes, lwRes, pRes] = await Promise.allSettled([fetchPunchLists(), fetchLienWaivers(), fetchPermits()]);
+      const plData = plRes.status === 'fulfilled' ? plRes.value : {};
+      setPunchLists(plData?.punchLists || plData || []);
+      setSummary(plData?.summary || {});
+      setLienWaivers(lwRes.status === 'fulfilled' ? (lwRes.value?.waivers || lwRes.value || []) : []);
+      setPermits(pRes.status === 'fulfilled' ? (pRes.value?.permits || pRes.value || []) : []);
+    } catch (e: any) { setError(e?.message || 'Failed to load'); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const loadPunchItems = async (plId: string) => {
+    if (punchItems[plId]) return;
+    try {
+      const res = await fetchPunchItems(plId);
+      setPunchItems(prev => ({ ...prev, [plId]: res?.items || res || [] }));
+    } catch {}
+  };
+
+  const handleExpand = (plId: string) => {
+    const newId = expandedPunch === plId ? null : plId;
+    setExpandedPunch(newId);
+    if (newId) loadPunchItems(newId);
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Construction</Text>
-          <Text style={styles.subtitle}>Punch lists, lien waivers & permits</Text>
-        </View>
-
-        {/* Summary */}
-        <View style={styles.summaryRow}>
-          <View style={[styles.summaryCard, { backgroundColor: '#FEF3C7' }]}>
-            <Text style={styles.summaryValue}>81</Text>
-            <Text style={styles.summaryLabel}>Punch Items</Text>
+      <ApiStateWrapper loading={loading} error={error} onRetry={load}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Construction</Text>
+            <Text style={styles.subtitle}>Punch lists, lien waivers & permits</Text>
           </View>
-          <View style={[styles.summaryCard, { backgroundColor: '#DBEAFE' }]}>
-            <Text style={styles.summaryValue}>4</Text>
-            <Text style={styles.summaryLabel}>Pending Waivers</Text>
-          </View>
-          <View style={[styles.summaryCard, { backgroundColor: '#D1FAE5' }]}>
-            <Text style={styles.summaryValue}>5</Text>
-            <Text style={styles.summaryLabel}>Active Permits</Text>
-          </View>
-        </View>
 
-        {/* Tabs */}
-        <View style={styles.tabs}>
-          {([['punchlist', '📋 Punch Lists'], ['liens', '📝 Lien Waivers'], ['permits', '🏗️ Permits']] as const).map(([key, label]) => (
-            <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
-              <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+          <View style={styles.summaryRow}>
+            <View style={[styles.summaryCard, { backgroundColor: '#FEF3C7' }]}>
+              <Text style={styles.summaryValue}>{summary.punchItems || 0}</Text>
+              <Text style={styles.summaryLabel}>Punch Items</Text>
+            </View>
+            <View style={[styles.summaryCard, { backgroundColor: '#DBEAFE' }]}>
+              <Text style={styles.summaryValue}>{summary.pendingWaivers || lienWaivers.filter((l: any) => !l.signed).length}</Text>
+              <Text style={styles.summaryLabel}>Pending Waivers</Text>
+            </View>
+            <View style={[styles.summaryCard, { backgroundColor: '#D1FAE5' }]}>
+              <Text style={styles.summaryValue}>{permits.length}</Text>
+              <Text style={styles.summaryLabel}>Active Permits</Text>
+            </View>
+          </View>
 
-        {/* Punch Lists */}
-        {activeTab === 'punchlist' && (
-          <>
-            {PUNCH_LISTS.map((pl) => {
-              const s = STATUS_STYLES[pl.status] || STATUS_STYLES['Active'];
-              const expanded = expandedPunch === pl.id;
-              return (
-                <View key={pl.id}>
-                  <TouchableOpacity style={styles.card} onPress={() => setExpandedPunch(expanded ? null : pl.id)}>
-                    <View style={styles.cardHeader}>
+          <View style={styles.tabs}>
+            {([['punchlist', '📋 Punch Lists'], ['liens', '📝 Lien Waivers'], ['permits', '🏗️ Permits']] as const).map(([key, label]) => (
+              <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
+                <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {activeTab === 'punchlist' && (punchLists.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No punch lists</Text></View>
+          ) : punchLists.map((pl: any) => {
+            const s = STATUS_STYLES[pl.status] || STATUS_STYLES['Active'];
+            const expanded = expandedPunch === (pl.id || pl._id);
+            const items = punchItems[pl.id || pl._id] || [];
+            return (
+              <View key={pl.id || pl._id}>
+                <TouchableOpacity style={styles.card} onPress={() => handleExpand(pl.id || pl._id)}>
+                  <View style={styles.cardHeader}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.cardTitle}>{pl.project}</Text>
+                      <Text style={styles.cardSubtitle}>Due: {pl.dueDate} • {(pl.trades || []).join(', ')}</Text>
+                    </View>
+                    <View style={[styles.badge, { backgroundColor: s.bg }]}>
+                      <Text style={[styles.badgeText, { color: s.color }]}>{pl.status}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.progressRow}>
+                    <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${pl.totalItems ? ((pl.completedItems || 0) / pl.totalItems) * 100 : 0}%` }]} /></View>
+                    <Text style={styles.progressText}>{pl.completedItems || 0}/{pl.totalItems || 0}</Text>
+                  </View>
+                </TouchableOpacity>
+                {expanded && items.map((item: any) => {
+                  const is = STATUS_STYLES[item.status] || STATUS_STYLES['Open'];
+                  return (
+                    <View key={item.id || item._id} style={styles.punchItem}>
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.cardTitle}>{pl.project}</Text>
-                        <Text style={styles.cardSubtitle}>Due: {pl.dueDate} • {pl.trades.join(', ')}</Text>
+                        <Text style={styles.punchDesc}>{item.description}</Text>
+                        <Text style={styles.punchMeta}>{item.trade} • {item.assignedTo} {item.photos > 0 ? `• 📷 ${item.photos}` : ''}</Text>
                       </View>
-                      <View style={[styles.badge, { backgroundColor: s.bg }]}>
-                        <Text style={[styles.badgeText, { color: s.color }]}>{pl.status}</Text>
+                      <View style={[styles.badge, { backgroundColor: is.bg }]}>
+                        <Text style={[styles.badgeText, { color: is.color }]}>{item.status}</Text>
                       </View>
                     </View>
-                    <View style={styles.progressRow}>
-                      <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${(pl.completedItems / pl.totalItems) * 100}%` }]} /></View>
-                      <Text style={styles.progressText}>{pl.completedItems}/{pl.totalItems}</Text>
-                    </View>
-                  </TouchableOpacity>
-                  {expanded && PUNCH_ITEMS.map((item) => {
-                    const is = STATUS_STYLES[item.status] || STATUS_STYLES['Open'];
-                    return (
-                      <View key={item.id} style={styles.punchItem}>
-                        <View style={{ flex: 1 }}>
-                          <Text style={styles.punchDesc}>{item.description}</Text>
-                          <Text style={styles.punchMeta}>{item.trade} • {item.assignedTo} {item.photos > 0 ? `• 📷 ${item.photos}` : ''}</Text>
-                        </View>
-                        <View style={[styles.badge, { backgroundColor: is.bg }]}>
-                          <Text style={[styles.badgeText, { color: is.color }]}>{item.status}</Text>
-                        </View>
-                      </View>
-                    );
-                  })}
-                </View>
-              );
-            })}
-          </>
-        )}
-
-        {/* Lien Waivers */}
-        {activeTab === 'liens' && LIEN_WAIVERS.map((lw) => (
-          <View key={lw.id} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.cardTitle}>{lw.vendor}</Text>
-                <Text style={styles.cardSubtitle}>{lw.project} • {lw.type}</Text>
+                  );
+                })}
               </View>
-              {lw.signed ? (
-                <View style={[styles.badge, { backgroundColor: '#D1FAE5' }]}>
-                  <Text style={[styles.badgeText, { color: '#059669' }]}>✓ Signed</Text>
-                </View>
-              ) : (
-                <View style={[styles.badge, { backgroundColor: '#FEE2E2' }]}>
-                  <Text style={[styles.badgeText, { color: '#DC2626' }]}>Pending</Text>
-                </View>
-              )}
-            </View>
-            <View style={styles.cardRow}>
-              <Text style={styles.lienAmount}>{lw.amount}</Text>
-              {lw.date ? <Text style={styles.cardDetail}>Signed: {lw.date}</Text> : (
-                <TouchableOpacity style={styles.signBtn}><Text style={styles.signBtnText}>Request Signature</Text></TouchableOpacity>
-              )}
-            </View>
-          </View>
-        ))}
+            );
+          }))}
 
-        {/* Permits */}
-        {activeTab === 'permits' && PERMITS.map((p) => {
-          const s = STATUS_STYLES[p.status] || STATUS_STYLES['Under Review'];
-          return (
-            <View key={p.id} style={styles.card}>
+          {activeTab === 'liens' && (lienWaivers.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No lien waivers</Text></View>
+          ) : lienWaivers.map((lw: any) => (
+            <View key={lw.id || lw._id} style={styles.card}>
               <View style={styles.cardHeader}>
-                <Text style={{ fontSize: 24 }}>{p.emoji}</Text>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.cardTitle}>{p.type}</Text>
-                  <Text style={styles.cardSubtitle}>{p.project} • #{p.number}</Text>
+                  <Text style={styles.cardTitle}>{lw.vendor}</Text>
+                  <Text style={styles.cardSubtitle}>{lw.project} • {lw.type}</Text>
                 </View>
-                <View style={[styles.badge, { backgroundColor: s.bg }]}>
-                  <Text style={[styles.badgeText, { color: s.color }]}>{p.status}</Text>
+                <View style={[styles.badge, { backgroundColor: lw.signed ? '#D1FAE5' : '#FEE2E2' }]}>
+                  <Text style={[styles.badgeText, { color: lw.signed ? '#059669' : '#DC2626' }]}>{lw.signed ? '✓ Signed' : 'Pending'}</Text>
                 </View>
               </View>
-              {p.inspectionDate && (
-                <Text style={styles.cardDetail}>Inspection: {p.inspectionDate}</Text>
-              )}
+              <View style={styles.cardRow}>
+                <Text style={styles.lienAmount}>{lw.amount}</Text>
+                {lw.date ? <Text style={styles.cardDetail}>Signed: {lw.date}</Text> : (
+                  <TouchableOpacity style={styles.signBtn}><Text style={styles.signBtnText}>Request Signature</Text></TouchableOpacity>
+                )}
+              </View>
             </View>
-          );
-        })}
+          )))}
 
-        <View style={{ height: 20 }} />
-      </ScrollView>
+          {activeTab === 'permits' && (permits.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No permits</Text></View>
+          ) : permits.map((p: any) => {
+            const s = STATUS_STYLES[p.status] || STATUS_STYLES['Under Review'];
+            return (
+              <View key={p.id || p._id} style={styles.card}>
+                <View style={styles.cardHeader}>
+                  <Text style={{ fontSize: 24 }}>{p.emoji || '🏗️'}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.cardTitle}>{p.type}</Text>
+                    <Text style={styles.cardSubtitle}>{p.project} • #{p.number}</Text>
+                  </View>
+                  <View style={[styles.badge, { backgroundColor: s.bg }]}>
+                    <Text style={[styles.badgeText, { color: s.color }]}>{p.status}</Text>
+                  </View>
+                </View>
+                {p.inspectionDate && <Text style={styles.cardDetail}>Inspection: {p.inspectionDate}</Text>}
+              </View>
+            );
+          }))}
+
+          <View style={{ height: 20 }} />
+        </ScrollView>
+      </ApiStateWrapper>
     </SafeAreaView>
   );
 }
@@ -212,4 +209,6 @@ const styles = StyleSheet.create({
   lienAmount: { fontSize: 18, fontWeight: '800', color: Colors.primary },
   signBtn: { backgroundColor: Colors.primary, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 7 },
   signBtnText: { color: Colors.white, fontSize: 13, fontWeight: '600' },
+  emptyCard: { backgroundColor: Colors.white, borderRadius: 14, padding: 24, alignItems: 'center', marginBottom: 12 },
+  emptyText: { fontSize: 14, color: Colors.textSecondary },
 });

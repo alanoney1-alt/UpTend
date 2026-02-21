@@ -15,48 +15,57 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { DwellScanWidget } from "@/components/dwellscan-widget";
 import { MaintenancePlan } from "@/components/maintenance-plan";
 import { ImpactDashboard } from "@/components/impact-dashboard";
-import { 
-  ArrowLeft, 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  CreditCard, 
-  Plus, 
-  Pencil, 
-  Trash2, 
-  Loader2,
-  Home,
-  Building,
-  Star,
-  Check,
-  X,
-  Send,
-  FileText,
-  ArrowRightLeft,
-  Shield,
-  Clock,
-  Package,
-  TrendingUp,
-  Truck,
-  DollarSign,
-  Award,
-  Settings,
-  Wallet,
-  Radius,
-  BadgeCheck,
-  ShieldCheck
+import { Footer } from "@/components/landing/footer";
+import {
+  ArrowLeft, User, Mail, Phone, MapPin, CreditCard, Plus, Pencil, Trash2, Loader2,
+  Home, Building, Star, Check, X, Send, FileText, ArrowRightLeft, Shield, Clock,
+  Package, TrendingUp, Truck, DollarSign, Award, Settings, Wallet, Radius,
+  BadgeCheck, ShieldCheck, MessageCircle,
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogDescription, DialogFooter,
+  DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
+
+/* ─── Design Tokens ─── */
+const T = {
+  bg: "#FFFBF5",
+  primary: "#F59E0B",
+  primaryDark: "#D97706",
+  text: "#1E293B",
+  textMuted: "#64748B",
+  card: "#FFFFFF",
+};
+
+function openGeorge(message?: string) {
+  window.dispatchEvent(new CustomEvent("george:open", { detail: message ? { message } : undefined }));
+}
+
+/* ─── George Avatar ─── */
+function GeorgeAvatar({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const s = size === "sm" ? "w-10 h-10 text-lg" : size === "lg" ? "w-20 h-20 text-3xl" : "w-14 h-14 text-2xl";
+  return (
+    <div
+      className={`${s} rounded-full flex items-center justify-center text-white font-bold shadow-lg`}
+      style={{ background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})` }}
+    >
+      G
+    </div>
+  );
+}
+
+/* ─── George Speech Bubble ─── */
+function GeorgeSays({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={`rounded-2xl px-5 py-4 text-base leading-relaxed shadow-sm ${className}`}
+      style={{ background: T.card, color: T.text }}
+    >
+      {children}
+    </div>
+  );
+}
 
 interface CustomerAddress {
   id: string;
@@ -81,149 +90,118 @@ interface PaymentMethod {
   isDefault: boolean;
 }
 
-function AddressCard({ 
-  address, 
-  onEdit, 
-  onDelete, 
-  onSetDefault 
-}: { 
-  address: CustomerAddress; 
-  onEdit: () => void; 
+/* ─── George's Home Knowledge Card ─── */
+function GeorgeHomeCard({
+  address,
+  onEdit,
+  onDelete,
+  onSetDefault,
+}: {
+  address: CustomerAddress;
+  onEdit: () => void;
   onDelete: () => void;
   onSetDefault: () => void;
 }) {
+  const specs = [
+    address.bedrooms && `${address.bedrooms}-bed`,
+    address.bathrooms && `${address.bathrooms}-bath`,
+    address.sqft && `${Number(address.sqft).toLocaleString()} sqft`,
+  ].filter(Boolean);
+
   return (
-    <Card className="p-4" data-testid={`address-card-${address.id}`}>
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-            {address.label.toLowerCase().includes('home') ? (
-              <Home className="w-5 h-5 text-primary" />
-            ) : address.label.toLowerCase().includes('work') ? (
-              <Building className="w-5 h-5 text-primary" />
-            ) : (
-              <MapPin className="w-5 h-5 text-primary" />
+    <div
+      className="rounded-2xl p-5 border border-amber-100 shadow-sm"
+      style={{ background: "linear-gradient(135deg, #FFFDF7, #FFF8E7)" }}
+      data-testid={`address-card-${address.id}`}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <Home className="w-4 h-4" style={{ color: T.primary }} />
+            <span className="font-bold" style={{ color: T.text }}>{address.label}</span>
+            {address.isDefault && (
+              <Badge className="text-xs bg-amber-100 text-amber-700 border-0">Primary</Badge>
             )}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h4 className="font-semibold">{address.label}</h4>
-              {address.isDefault && (
-                <Badge variant="secondary" className="text-xs">Default</Badge>
-              )}
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">{address.street}</p>
-            <p className="text-sm text-muted-foreground">{address.city}, {address.state} {address.zipCode}</p>
-            {(address.bedrooms || address.bathrooms || address.sqft) && (
-              <p className="text-xs text-muted-foreground/70 mt-1">
-                {[
-                  address.bedrooms && `${address.bedrooms} bd`,
-                  address.bathrooms && `${address.bathrooms} ba`,
-                  address.sqft && `${address.sqft} sqft`,
-                  address.yearBuilt && `Built ${address.yearBuilt}`,
-                ].filter(Boolean).join(" · ")}
-              </p>
-            )}
-          </div>
+          <p className="text-sm mt-2" style={{ color: T.text }}>
+            Your home at <strong>{address.street}</strong> in {address.city}, {address.state} {address.zipCode}
+            {specs.length > 0 && <> is a <strong>{specs.join(", ")}</strong></>}
+            {address.yearBuilt && <> built in <strong>{address.yearBuilt}</strong></>}.
+          </p>
+          {specs.length === 0 && !address.yearBuilt && (
+            <p className="text-sm mt-1 italic" style={{ color: T.textMuted }}>
+              Tell me more about this home so I can take better care of it!
+            </p>
+          )}
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0">
           {!address.isDefault && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={onSetDefault}
-              data-testid={`button-set-default-${address.id}`}
-            >
+            <Button variant="ghost" size="icon" onClick={onSetDefault} data-testid={`button-set-default-${address.id}`}>
               <Star className="w-4 h-4" />
             </Button>
           )}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={onEdit}
-            data-testid={`button-edit-address-${address.id}`}
-          >
+          <Button variant="ghost" size="icon" onClick={onEdit} data-testid={`button-edit-address-${address.id}`}>
             <Pencil className="w-4 h-4" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={onDelete}
-            data-testid={`button-delete-address-${address.id}`}
-          >
+          <Button variant="ghost" size="icon" onClick={onDelete} data-testid={`button-delete-address-${address.id}`}>
             <Trash2 className="w-4 h-4 text-destructive" />
           </Button>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
-function PaymentMethodCard({ 
-  method, 
+function PaymentMethodCard({
+  method,
   onDelete,
-  onSetDefault
-}: { 
-  method: PaymentMethod; 
+  onSetDefault,
+}: {
+  method: PaymentMethod;
   onDelete: () => void;
   onSetDefault: () => void;
 }) {
-  const brandColors: Record<string, string> = {
-    visa: "text-blue-600",
-    mastercard: "text-orange-500",
-    amex: "text-blue-400",
-    discover: "text-orange-600",
-  };
-
   return (
-    <Card className="p-4" data-testid={`payment-card-${method.id}`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-            <CreditCard className={`w-5 h-5 ${brandColors[method.brand.toLowerCase()] || 'text-muted-foreground'}`} />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="font-medium capitalize">{method.brand} •••• {method.last4}</p>
-              {method.isDefault && (
-                <Badge variant="secondary" className="text-xs">Default</Badge>
-              )}
-            </div>
-            <p className="text-sm text-muted-foreground">Expires {method.expMonth}/{method.expYear}</p>
-          </div>
+    <div
+      className="rounded-2xl p-4 border border-amber-100 shadow-sm flex items-center justify-between"
+      style={{ background: T.card }}
+      data-testid={`payment-card-${method.id}`}
+    >
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+          <CreditCard className="w-5 h-5" style={{ color: T.primary }} />
         </div>
-        <div className="flex items-center gap-1">
-          {!method.isDefault && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={onSetDefault}
-              data-testid={`button-set-default-payment-${method.id}`}
-            >
-              <Star className="w-4 h-4" />
-            </Button>
-          )}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={onDelete}
-            data-testid={`button-delete-payment-${method.id}`}
-          >
-            <Trash2 className="w-4 h-4 text-destructive" />
-          </Button>
+        <div>
+          <div className="flex items-center gap-2">
+            <p className="font-medium capitalize" style={{ color: T.text }}>{method.brand} •••• {method.last4}</p>
+            {method.isDefault && (
+              <Badge className="text-xs bg-amber-100 text-amber-700 border-0">Default</Badge>
+            )}
+          </div>
+          <p className="text-sm" style={{ color: T.textMuted }}>Expires {method.expMonth}/{method.expYear}</p>
         </div>
       </div>
-    </Card>
+      <div className="flex items-center gap-1">
+        {!method.isDefault && (
+          <Button variant="ghost" size="icon" onClick={onSetDefault} data-testid={`button-set-default-payment-${method.id}`}>
+            <Star className="w-4 h-4" />
+          </Button>
+        )}
+        <Button variant="ghost" size="icon" onClick={onDelete} data-testid={`button-delete-payment-${method.id}`}>
+          <Trash2 className="w-4 h-4 text-destructive" />
+        </Button>
+      </div>
+    </div>
   );
 }
 
-function AddAddressDialog({ 
-  open, 
-  onOpenChange, 
+function AddAddressDialog({
+  open,
+  onOpenChange,
   editAddress,
-  onSave 
-}: { 
-  open: boolean; 
+  onSave,
+}: {
+  open: boolean;
   onOpenChange: (open: boolean) => void;
   editAddress?: CustomerAddress | null;
   onSave: (data: Partial<CustomerAddress>) => void;
@@ -238,7 +216,6 @@ function AddAddressDialog({
   const [sqft, setSqft] = useState("");
   const [yearBuilt, setYearBuilt] = useState("");
 
-  // Sync form fields when editAddress changes (fixes edit not pre-filling)
   useEffect(() => {
     if (editAddress) {
       setLabel(editAddress.label || "");
@@ -251,21 +228,18 @@ function AddAddressDialog({
       setSqft((editAddress as any).sqft || "");
       setYearBuilt((editAddress as any).yearBuilt || "");
     } else {
-      setLabel("");
-      setStreet("");
-      setCity("");
-      setState("");
-      setZipCode("");
-      setBedrooms("");
-      setBathrooms("");
-      setSqft("");
-      setYearBuilt("");
+      setLabel(""); setStreet(""); setCity(""); setState(""); setZipCode("");
+      setBedrooms(""); setBathrooms(""); setSqft(""); setYearBuilt("");
     }
   }, [editAddress, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ label, street, city, state, zipCode, ...(bedrooms && { bedrooms }), ...(bathrooms && { bathrooms }), ...(sqft && { sqft }), ...(yearBuilt && { yearBuilt }) } as any);
+    onSave({
+      label, street, city, state, zipCode,
+      ...(bedrooms && { bedrooms }), ...(bathrooms && { bathrooms }),
+      ...(sqft && { sqft }), ...(yearBuilt && { yearBuilt }),
+    } as any);
     onOpenChange(false);
   };
 
@@ -273,124 +247,60 @@ function AddAddressDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{editAddress ? "Edit Address" : "Add New Address"}</DialogTitle>
+          <DialogTitle>{editAddress ? "Update Your Home Details" : "Tell Me About a New Home"}</DialogTitle>
           <DialogDescription>
-            Save an address for faster booking.
+            {editAddress ? "Let me know what's changed." : "The more I know, the better I can help."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="label">Label</Label>
-            <Input 
-              id="label" 
-              placeholder="Home, Work, etc." 
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              required
-              data-testid="input-address-label"
-            />
+            <Label htmlFor="label">What do you call this place?</Label>
+            <Input id="label" placeholder="Home, Work, Mom's house..." value={label} onChange={(e) => setLabel(e.target.value)} required data-testid="input-address-label" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="street">Street Address</Label>
-            <Input 
-              id="street" 
-              placeholder="123 Main St" 
-              value={street}
-              onChange={(e) => setStreet(e.target.value)}
-              required
-              data-testid="input-address-street"
-            />
+            <Input id="street" placeholder="123 Main St" value={street} onChange={(e) => setStreet(e.target.value)} required data-testid="input-address-street" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
-              <Input 
-                id="city" 
-                placeholder="Orlando" 
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                required
-                data-testid="input-address-city"
-              />
+              <Input id="city" placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} required data-testid="input-address-city" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="state">State</Label>
-              <Input 
-                id="state" 
-                placeholder="FL" 
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                required
-                data-testid="input-address-state"
-              />
+              <Input id="state" placeholder="FL" value={state} onChange={(e) => setState(e.target.value)} required data-testid="input-address-state" />
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="zipCode">ZIP Code</Label>
-            <Input 
-              id="zipCode" 
-              placeholder="32801" 
-              value={zipCode}
-              onChange={(e) => setZipCode(e.target.value)}
-              required
-              data-testid="input-address-zip"
-            />
+            <Input id="zipCode" placeholder="32801" value={zipCode} onChange={(e) => setZipCode(e.target.value)} required data-testid="input-address-zip" />
           </div>
-
           <Separator className="my-2" />
-          <p className="text-sm font-medium text-muted-foreground">Home Specs (optional)</p>
-
+          <p className="text-sm font-medium" style={{ color: T.textMuted }}>Home details (helps me give better estimates)</p>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="bedrooms">Bedrooms</Label>
-              <Input 
-                id="bedrooms" 
-                placeholder="3" 
-                value={bedrooms}
-                onChange={(e) => setBedrooms(e.target.value)}
-                data-testid="input-address-bedrooms"
-              />
+              <Input id="bedrooms" placeholder="3" value={bedrooms} onChange={(e) => setBedrooms(e.target.value)} data-testid="input-address-bedrooms" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="bathrooms">Bathrooms</Label>
-              <Input 
-                id="bathrooms" 
-                placeholder="2" 
-                value={bathrooms}
-                onChange={(e) => setBathrooms(e.target.value)}
-                data-testid="input-address-bathrooms"
-              />
+              <Input id="bathrooms" placeholder="2" value={bathrooms} onChange={(e) => setBathrooms(e.target.value)} data-testid="input-address-bathrooms" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="sqft">Sq Ft</Label>
-              <Input 
-                id="sqft" 
-                placeholder="1,800" 
-                value={sqft}
-                onChange={(e) => setSqft(e.target.value)}
-                data-testid="input-address-sqft"
-              />
+              <Input id="sqft" placeholder="1,800" value={sqft} onChange={(e) => setSqft(e.target.value)} data-testid="input-address-sqft" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="yearBuilt">Year Built</Label>
-              <Input 
-                id="yearBuilt" 
-                placeholder="2005" 
-                value={yearBuilt}
-                onChange={(e) => setYearBuilt(e.target.value)}
-                data-testid="input-address-yearbuilt"
-              />
+              <Input id="yearBuilt" placeholder="2005" value={yearBuilt} onChange={(e) => setYearBuilt(e.target.value)} data-testid="input-address-yearbuilt" />
             </div>
           </div>
-
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" data-testid="button-save-address">
-              {editAddress ? "Save Changes" : "Add Address"}
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button type="submit" style={{ background: T.primary }} data-testid="button-save-address">
+              {editAddress ? "Save Changes" : "Add Home"}
             </Button>
           </DialogFooter>
         </form>
@@ -399,6 +309,7 @@ function AddAddressDialog({
   );
 }
 
+/* ─── Pro Profile Section (George-wrapped) ─── */
 function ProProfileSection() {
   const { user } = useAuth();
 
@@ -411,149 +322,136 @@ function ProProfileSection() {
 
   return (
     <>
-      {/* Quick Stats */}
-      <Card className="p-6 mb-6" data-testid="card-pro-stats">
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">Quick Stats</h3>
-        </div>
-        {proProfileQuery.isLoading ? (
-          <div className="flex justify-center py-6">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 rounded-lg bg-muted">
-              <p className="text-2xl font-bold text-primary">{proData?.payoutRate ? `$${proData.payoutRate}` : '—'}</p>
-              <p className="text-xs text-muted-foreground">Payout Rate</p>
-            </div>
-            <div className="text-center p-3 rounded-lg bg-muted">
-              <p className="text-2xl font-bold text-primary">{proData?.tier || proData?.level || '—'}</p>
-              <p className="text-xs text-muted-foreground">Tier / Level</p>
-            </div>
-            <div className="text-center p-3 rounded-lg bg-muted">
-              <p className="text-2xl font-bold text-primary">{proData?.serviceRadius ? `${proData.serviceRadius} mi` : '—'}</p>
-              <p className="text-xs text-muted-foreground">Service Radius</p>
-            </div>
-            <div className="text-center p-3 rounded-lg bg-muted">
-              <p className="text-2xl font-bold text-primary">{proData?.jobsCompleted ?? proData?.completedJobs ?? '—'}</p>
-              <p className="text-xs text-muted-foreground">Jobs Completed</p>
-            </div>
-          </div>
-        )}
-      </Card>
+      {/* George's Briefing */}
+      <div className="flex items-start gap-3 mb-6">
+        <GeorgeAvatar size="sm" />
+        <GeorgeSays>
+          <p className="font-medium mb-1">Here's your pro snapshot:</p>
+          {proProfileQuery.isLoading ? (
+            <p style={{ color: T.textMuted }}>Let me pull up your stats...</p>
+          ) : (
+            <p>
+              You're at <strong>{proData?.tier || proData?.level || "Rookie"}</strong> level
+              with <strong>{proData?.jobsCompleted ?? proData?.completedJobs ?? 0}</strong> jobs completed
+              and a <strong>{proData?.serviceRadius || "—"} mile</strong> service radius.
+              Your payout rate is <strong>{proData?.payoutRate ? `$${proData.payoutRate}` : "standard"}</strong>.
+            </p>
+          )}
+        </GeorgeSays>
+      </div>
 
       {/* Quick Links */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         <Link href="/career">
-          <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-career-dashboard">
+          <div className="rounded-2xl p-4 border border-amber-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow" style={{ background: T.card }} data-testid="link-career-dashboard">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                <TrendingUp className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+                <TrendingUp className="w-5 h-5" style={{ color: T.primary }} />
               </div>
               <div>
-                <p className="font-bold text-sm">Career Dashboard</p>
-                <p className="text-xs text-muted-foreground">Track your progression</p>
+                <p className="font-bold text-sm" style={{ color: T.text }}>Career Dashboard</p>
+                <p className="text-xs" style={{ color: T.textMuted }}>Track your progression</p>
               </div>
             </div>
-          </Card>
+          </div>
         </Link>
         <Link href="/earnings">
-          <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-earnings">
+          <div className="rounded-2xl p-4 border border-amber-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow" style={{ background: T.card }} data-testid="link-earnings">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-md bg-green-500/10 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center shrink-0">
                 <DollarSign className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="font-bold text-sm">Earnings</p>
-                <p className="text-xs text-muted-foreground">View your payouts</p>
+                <p className="font-bold text-sm" style={{ color: T.text }}>Earnings</p>
+                <p className="text-xs" style={{ color: T.textMuted }}>View your payouts</p>
               </div>
             </div>
-          </Card>
+          </div>
         </Link>
       </div>
 
       {/* Vehicle Info */}
       {proData && (proData.vehicleMake || proData.vehicleModel) && (
-        <Card className="p-6 mb-6" data-testid="card-vehicle-info">
-          <div className="flex items-center gap-2 mb-4">
-            <Truck className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold">Vehicle</h3>
+        <div className="rounded-2xl p-5 border border-amber-100 shadow-sm mb-6" style={{ background: T.card }} data-testid="card-vehicle-info">
+          <div className="flex items-center gap-2 mb-3">
+            <Truck className="w-5 h-5" style={{ color: T.primary }} />
+            <h3 className="font-bold" style={{ color: T.text }}>Your Vehicle</h3>
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Make / Model</span>
-              <span className="font-medium">{proData.vehicleMake} {proData.vehicleModel}</span>
+              <span style={{ color: T.textMuted }}>Make / Model</span>
+              <span className="font-medium" style={{ color: T.text }}>{proData.vehicleMake} {proData.vehicleModel}</span>
             </div>
             {proData.vehicleYear && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Year</span>
-                <span className="font-medium">{proData.vehicleYear}</span>
+                <span style={{ color: T.textMuted }}>Year</span>
+                <span className="font-medium" style={{ color: T.text }}>{proData.vehicleYear}</span>
               </div>
             )}
             {proData.licensePlate && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Plate</span>
-                <span className="font-medium">{proData.licensePlate}</span>
+                <span style={{ color: T.textMuted }}>Plate</span>
+                <span className="font-medium" style={{ color: T.text }}>{proData.licensePlate}</span>
               </div>
             )}
           </div>
-        </Card>
+        </div>
       )}
 
-      {/* Certifications & Insurance */}
+      {/* Certs & Insurance */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         <Link href="/certifications">
-          <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-certifications">
+          <div className="rounded-2xl p-4 border border-amber-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow" style={{ background: T.card }} data-testid="link-certifications">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-md bg-amber-500/10 flex items-center justify-center shrink-0">
-                <Award className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+                <Award className="w-5 h-5" style={{ color: T.primaryDark }} />
               </div>
               <div>
-                <p className="font-bold text-sm">Certifications</p>
-                <p className="text-xs text-muted-foreground">View & manage</p>
+                <p className="font-bold text-sm" style={{ color: T.text }}>Certifications</p>
+                <p className="text-xs" style={{ color: T.textMuted }}>View & manage</p>
               </div>
             </div>
-          </Card>
+          </div>
         </Link>
-        <Card className="p-4" data-testid="card-insurance-status">
+        <div className="rounded-2xl p-4 border border-amber-100 shadow-sm" style={{ background: T.card }} data-testid="card-insurance-status">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${proData?.hasOwnInsurance ? 'bg-green-500/10' : 'bg-muted'}`}>
-              <ShieldCheck className={`w-5 h-5 ${proData?.hasOwnInsurance ? 'text-green-600' : 'text-muted-foreground'}`} />
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${proData?.hasOwnInsurance ? "bg-green-50" : "bg-gray-50"}`}>
+              <ShieldCheck className={`w-5 h-5 ${proData?.hasOwnInsurance ? "text-green-600" : "text-gray-400"}`} />
             </div>
             <div>
-              <p className="font-bold text-sm">Insurance</p>
-              <p className="text-xs text-muted-foreground">
-                {proData?.hasOwnInsurance ? 'Own coverage' : 'UpTend covered'}
+              <p className="font-bold text-sm" style={{ color: T.text }}>Insurance</p>
+              <p className="text-xs" style={{ color: T.textMuted }}>
+                {proData?.hasOwnInsurance ? "Own coverage" : "UpTend covered"}
               </p>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
-      {/* Settings Link */}
+      {/* Settings */}
       <Link href="/profile/settings">
-        <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-pro-settings">
+        <div className="rounded-2xl p-4 border border-amber-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow" style={{ background: T.card }} data-testid="link-pro-settings">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center shrink-0">
-              <Settings className="w-5 h-5 text-muted-foreground" />
+            <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0">
+              <Settings className="w-5 h-5" style={{ color: T.textMuted }} />
             </div>
             <div>
-              <p className="font-bold text-sm">Settings</p>
-              <p className="text-xs text-muted-foreground">Vehicle, radius, notifications & more</p>
+              <p className="font-bold text-sm" style={{ color: T.text }}>Settings</p>
+              <p className="text-xs" style={{ color: T.textMuted }}>Vehicle, radius, notifications & more</p>
             </div>
           </div>
-        </Card>
+        </div>
       </Link>
     </>
   );
 }
 
+/* ─── Main Profile Page ─── */
 export default function Profile() {
   usePageTitle("My Profile | UpTend");
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const [addressDialogOpen, setAddressDialogOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<CustomerAddress | null>(null);
   const [editingProfile, setEditingProfile] = useState(false);
@@ -561,17 +459,13 @@ export default function Profile() {
   const [transferPropertyHash, setTransferPropertyHash] = useState("");
   const [transferPropertyAddress, setTransferPropertyAddress] = useState("");
   const [buyerEmail, setBuyerEmail] = useState("");
-  const [profileData, setProfileData] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-  });
+  const [profileData, setProfileData] = useState({ firstName: "", lastName: "", phone: "" });
 
   const isPro = user?.role === "hauler" || user?.role === "pro" || user?.role === "worker";
-
-  const userInitials = user 
-    ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() || 'U'
-    : '';
+  const firstName = user?.firstName || "friend";
+  const userInitials = user
+    ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() || "U"
+    : "";
 
   const addressesQuery = useQuery<CustomerAddress[]>({
     queryKey: ["/api/customers/addresses"],
@@ -591,12 +485,7 @@ export default function Profile() {
     maintenanceScore: number | null;
     lastAssessmentDate: string | null;
     estimatedValueIncrease: number | null;
-    transfers: Array<{
-      id: string;
-      toEmail: string;
-      status: string | null;
-      createdAt: string | null;
-    }>;
+    transfers: Array<{ id: string; toEmail: string; status: string | null; createdAt: string | null }>;
   }
 
   const propertiesQuery = useQuery<PropertyWithTransfers[]>({
@@ -610,20 +499,13 @@ export default function Profile() {
       return res.json();
     },
     onSuccess: (data) => {
-      toast({
-        title: "Transfer Sent",
-        description: data.message || "The buyer will receive an email to claim the property history.",
-      });
+      toast({ title: "Transfer Sent", description: data.message || "The buyer will receive an email to claim the property history." });
       setTransferDialogOpen(false);
       setBuyerEmail("");
-      queryClient.invalidateQueries({ queryKey: ["/api/properties/my-properties"] });
+      qc.invalidateQueries({ queryKey: ["/api/properties/my-properties"] });
     },
     onError: (error: any) => {
-      toast({
-        title: "Transfer Failed",
-        description: error.message || "Could not send the transfer invitation.",
-        variant: "destructive",
-      });
+      toast({ title: "Transfer Failed", description: error.message || "Could not send the transfer invitation.", variant: "destructive" });
     },
   });
 
@@ -633,8 +515,8 @@ export default function Profile() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      toast({ title: "Profile updated", description: "Your profile has been saved." });
+      qc.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      toast({ title: "Got it!", description: "Your profile has been updated." });
       setEditingProfile(false);
     },
     onError: () => {
@@ -648,8 +530,8 @@ export default function Profile() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
-      toast({ title: "Address added", description: "Your address has been saved." });
+      qc.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
+      toast({ title: "Home added!", description: "I'll keep track of it for you." });
     },
     onError: () => {
       toast({ title: "Error", description: "Failed to add address.", variant: "destructive" });
@@ -662,8 +544,8 @@ export default function Profile() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
-      toast({ title: "Address updated", description: "Your address has been saved." });
+      qc.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
+      toast({ title: "Updated!", description: "Home details saved." });
     },
     onError: () => {
       toast({ title: "Error", description: "Failed to update address.", variant: "destructive" });
@@ -676,8 +558,8 @@ export default function Profile() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
-      toast({ title: "Address deleted", description: "Your address has been removed." });
+      qc.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
+      toast({ title: "Removed", description: "Address deleted." });
     },
     onError: () => {
       toast({ title: "Error", description: "Failed to delete address.", variant: "destructive" });
@@ -690,8 +572,8 @@ export default function Profile() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/customers/payment-methods"] });
-      toast({ title: "Payment method removed", description: "Your card has been removed." });
+      qc.invalidateQueries({ queryKey: ["/api/customers/payment-methods"] });
+      toast({ title: "Card removed" });
     },
     onError: () => {
       toast({ title: "Error", description: "Failed to remove payment method.", variant: "destructive" });
@@ -704,8 +586,8 @@ export default function Profile() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
-      toast({ title: "Default address updated" });
+      qc.invalidateQueries({ queryKey: ["/api/customers/addresses"] });
+      toast({ title: "Primary home updated" });
     },
     onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
@@ -716,8 +598,8 @@ export default function Profile() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/customers/payment-methods"] });
-      toast({ title: "Default payment method updated" });
+      qc.invalidateQueries({ queryKey: ["/api/customers/payment-methods"] });
+      toast({ title: "Default payment updated" });
     },
     onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
@@ -747,176 +629,150 @@ export default function Profile() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: T.bg }}>
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: T.primary }} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex flex-col items-center justify-center px-4">
-        <Card className="w-full max-w-md p-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Sign In Required</h1>
-          <p className="text-muted-foreground mb-6">Please sign in to view your profile.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: T.bg }}>
+        <GeorgeAvatar size="lg" />
+        <GeorgeSays className="mt-6 max-w-md text-center">
+          <p className="font-medium mb-3">Hey! I'd love to help, but I need to know who you are first.</p>
           <Link href="/login">
-            <Button className="w-full" data-testid="button-go-to-login">Sign In</Button>
+            <Button style={{ background: T.primary }} className="text-white font-bold" data-testid="button-go-to-login">
+              Sign In
+            </Button>
           </Link>
-        </Card>
+        </GeorgeSays>
       </div>
     );
   }
 
+  const defaultAddress = addressesQuery.data?.find((a) => a.isDefault) || addressesQuery.data?.[0];
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950" data-testid="page-profile">
-      <header className="p-4">
-        <Link href="/" className="inline-flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Home</span>
+    <div className="min-h-screen" style={{ background: T.bg }} data-testid="page-profile">
+      {/* Header */}
+      <header className="p-4 max-w-2xl mx-auto">
+        <Link href="/" className="inline-flex items-center gap-2 hover:opacity-70 transition-opacity">
+          <ArrowLeft className="w-5 h-5" style={{ color: T.text }} />
+          <span style={{ color: T.text }}>Back</span>
         </Link>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 pb-12">
-        <div className="flex justify-center mb-6">
-          <Logo className="w-10 h-10" textClassName="text-xl" />
+        {/* George Greeting */}
+        <div className="flex flex-col items-center mb-8">
+          <GeorgeAvatar size="lg" />
+          <h1 className="mt-4 text-2xl font-bold" style={{ color: T.text }}>
+            Hey, {firstName}!
+          </h1>
+          <p style={{ color: T.textMuted }} className="text-sm mt-1">
+            Here's everything I know about {isPro ? "your career" : "your home"}
+          </p>
         </div>
 
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white text-center mb-8">My Profile</h1>
-
-        <Card className="p-6 mb-6" data-testid="card-profile-info">
-          <div className="flex items-start justify-between mb-6">
+        {/* Profile Card */}
+        <div className="rounded-2xl p-6 mb-6 border border-amber-100 shadow-sm" style={{ background: T.card }} data-testid="card-profile-info">
+          <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-4">
-              <Avatar className="h-16 w-16">
+              <Avatar className="h-14 w-14 ring-2 ring-amber-200">
                 <AvatarImage src={user.profileImageUrl || undefined} />
-                <AvatarFallback className="text-xl">{userInitials}</AvatarFallback>
+                <AvatarFallback className="bg-amber-100 text-amber-700 text-lg font-bold">{userInitials}</AvatarFallback>
               </Avatar>
               <div>
                 {editingProfile ? (
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <Input 
-                        value={profileData.firstName}
-                        onChange={(e) => setProfileData(p => ({ ...p, firstName: e.target.value }))}
-                        placeholder="First Name"
-                        className="w-32"
-                        data-testid="input-first-name"
-                      />
-                      <Input 
-                        value={profileData.lastName}
-                        onChange={(e) => setProfileData(p => ({ ...p, lastName: e.target.value }))}
-                        placeholder="Last Name"
-                        className="w-32"
-                        data-testid="input-last-name"
-                      />
-                    </div>
+                  <div className="flex gap-2">
+                    <Input value={profileData.firstName} onChange={(e) => setProfileData((p) => ({ ...p, firstName: e.target.value }))} placeholder="First Name" className="w-28" data-testid="input-first-name" />
+                    <Input value={profileData.lastName} onChange={(e) => setProfileData((p) => ({ ...p, lastName: e.target.value }))} placeholder="Last Name" className="w-28" data-testid="input-last-name" />
                   </div>
                 ) : (
                   <>
-                    <h2 className="text-xl font-bold">{user.firstName} {user.lastName}</h2>
-                    <p className="text-muted-foreground">{isPro ? 'Pro' : 'Customer'} since {new Date(user.createdAt || Date.now()).getFullYear()}</p>
+                    <h2 className="text-xl font-bold" style={{ color: T.text }}>{user.firstName} {user.lastName}</h2>
+                    <p style={{ color: T.textMuted }} className="text-sm">{isPro ? "Pro" : "Member"} since {new Date(user.createdAt || Date.now()).getFullYear()}</p>
                   </>
                 )}
               </div>
             </div>
             {editingProfile ? (
-              <div className="flex gap-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => setEditingProfile(false)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => updateProfileMutation.mutate(profileData)}
-                  disabled={updateProfileMutation.isPending}
-                  data-testid="button-save-profile"
-                >
-                  {updateProfileMutation.isPending ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Check className="w-4 h-4" />
-                  )}
+              <div className="flex gap-1">
+                <Button variant="ghost" size="icon" onClick={() => setEditingProfile(false)}><X className="w-4 h-4" /></Button>
+                <Button variant="ghost" size="icon" onClick={() => updateProfileMutation.mutate(profileData)} disabled={updateProfileMutation.isPending} data-testid="button-save-profile">
+                  {updateProfileMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                 </Button>
               </div>
             ) : (
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={handleStartEditProfile}
-                data-testid="button-edit-profile"
-              >
+              <Button variant="ghost" size="icon" onClick={handleStartEditProfile} data-testid="button-edit-profile">
                 <Pencil className="w-4 h-4" />
               </Button>
             )}
           </div>
 
-          <Separator className="mb-6" />
-
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm text-muted-foreground">Email</p>
-                <p className="font-medium">{user.email || "Not provided"}</p>
-              </div>
+              <Mail className="w-4 h-4" style={{ color: T.textMuted }} />
+              <span className="text-sm" style={{ color: T.text }}>{user.email || "Not provided"}</span>
             </div>
-
             <div className="flex items-center gap-3">
-              <Phone className="w-5 h-5 text-muted-foreground" />
-              <div className="flex-1">
-                <p className="text-sm text-muted-foreground">Phone</p>
-                {editingProfile ? (
-                  <Input 
-                    value={profileData.phone}
-                    onChange={(e) => setProfileData(p => ({ ...p, phone: e.target.value }))}
-                    placeholder="(407) 555-0199"
-                    className="mt-1"
-                    data-testid="input-phone"
-                  />
-                ) : (
-                  <p className="font-medium">{user.phone || "Not provided"}</p>
-                )}
-              </div>
+              <Phone className="w-4 h-4" style={{ color: T.textMuted }} />
+              {editingProfile ? (
+                <Input value={profileData.phone} onChange={(e) => setProfileData((p) => ({ ...p, phone: e.target.value }))} placeholder="(407) 555-0199" className="flex-1" data-testid="input-phone" />
+              ) : (
+                <span className="text-sm" style={{ color: T.text }}>{user.phone || "Not provided"}</span>
+              )}
             </div>
           </div>
-        </Card>
+        </div>
 
         {isPro ? (
           <ProProfileSection />
         ) : (
           <>
-            <Card className="p-6 mb-6" data-testid="card-addresses">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Saved Addresses</h3>
-                </div>
-                <Button 
-                  variant="outline" 
+            {/* George's Home Knowledge */}
+            <div className="flex items-start gap-3 mb-4">
+              <GeorgeAvatar size="sm" />
+              <GeorgeSays className="flex-1">
+                {addressesQuery.isLoading ? (
+                  <p style={{ color: T.textMuted }}>Let me pull up your homes...</p>
+                ) : defaultAddress ? (
+                  <p>
+                    I'm tracking <strong>{addressesQuery.data?.length || 0}</strong> home{(addressesQuery.data?.length || 0) !== 1 ? "s" : ""} for you.
+                    {defaultAddress.street && <> Your primary home is at <strong>{defaultAddress.street}</strong>.</>}
+                    {" "}Here's what I know:
+                  </p>
+                ) : (
+                  <p>I don't have any homes on file yet. <strong>Add one</strong> so I can start keeping track of maintenance, history, and value!</p>
+                )}
+              </GeorgeSays>
+            </div>
+
+            {/* Addresses */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold" style={{ color: T.text }}>Your Homes</h3>
+                <Button
+                  variant="outline"
                   size="sm"
-                  onClick={() => {
-                    setEditingAddress(null);
-                    setAddressDialogOpen(true);
-                  }}
+                  className="border-amber-200 hover:bg-amber-50"
+                  onClick={() => { setEditingAddress(null); setAddressDialogOpen(true); }}
                   data-testid="button-add-address"
                 >
-                  <Plus className="w-4 h-4 mr-1" />
-                  Add
+                  <Plus className="w-4 h-4 mr-1" /> Add Home
                 </Button>
               </div>
 
               {addressesQuery.isLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  <Loader2 className="w-6 h-6 animate-spin" style={{ color: T.primary }} />
                 </div>
               ) : addressesQuery.data && addressesQuery.data.length > 0 ? (
                 <div className="space-y-3">
                   {addressesQuery.data.map((address) => (
-                    <AddressCard 
-                      key={address.id} 
+                    <GeorgeHomeCard
+                      key={address.id}
                       address={address}
                       onEdit={() => handleEditAddress(address)}
                       onDelete={() => deleteAddressMutation.mutate(address.id)}
@@ -925,80 +781,72 @@ export default function Profile() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <MapPin className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No saved addresses</p>
-                  <p className="text-sm">Add an address for faster booking</p>
+                <div className="text-center py-8 rounded-2xl border border-dashed border-amber-200" style={{ color: T.textMuted }}>
+                  <Home className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                  <p className="font-medium">No homes yet</p>
+                  <p className="text-sm">Add your first home to get started</p>
                 </div>
               )}
-            </Card>
-
-            <div className="mb-6">
-              <DwellScanWidget />
             </div>
 
-            <div className="mb-6">
-              <MaintenancePlan />
-            </div>
+            {/* DwellScan, Maintenance, Impact */}
+            <div className="mb-6"><DwellScanWidget /></div>
+            <div className="mb-6"><MaintenancePlan /></div>
+            <div className="mb-6"><ImpactDashboard /></div>
 
-            <div className="mb-6">
-              <ImpactDashboard />
-            </div>
-
-            <div className="grid grid-cols-1 gap-3 mb-6">
-              <Link href="/my-home">
-                <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-my-home-inventory">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                      <Package className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm">My Digital Home</p>
-                      <p className="text-xs text-muted-foreground">View your AI-cataloged inventory</p>
-                    </div>
+            {/* Digital Home link */}
+            <Link href="/my-home">
+              <div className="rounded-2xl p-4 border border-amber-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-6" style={{ background: T.card }} data-testid="link-my-home-inventory">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+                    <Package className="w-5 h-5" style={{ color: T.primary }} />
                   </div>
-                </Card>
-              </Link>
-            </div>
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: T.text }}>My Digital Home</p>
+                    <p className="text-xs" style={{ color: T.textMuted }}>View your AI-cataloged inventory</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
 
-            <Card className="p-6 mb-6" data-testid="card-home-history">
+            {/* Home History */}
+            <div className="rounded-2xl p-6 border border-amber-100 shadow-sm mb-6" style={{ background: T.card }} data-testid="card-home-history">
               <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Home History</h3>
+                  <FileText className="w-5 h-5" style={{ color: T.primary }} />
+                  <h3 className="font-bold" style={{ color: T.text }}>Home History</h3>
                 </div>
-                <Badge variant="outline">
-                  <Shield className="w-3 h-3 mr-1" />
-                  Verified by UpTend
+                <Badge className="bg-amber-50 text-amber-700 border-0 text-xs">
+                  <Shield className="w-3 h-3 mr-1" /> Verified by George
                 </Badge>
               </div>
 
               {propertiesQuery.isLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  <Loader2 className="w-6 h-6 animate-spin" style={{ color: T.primary }} />
                 </div>
               ) : propertiesQuery.data && propertiesQuery.data.length > 0 ? (
                 <div className="space-y-4">
                   {propertiesQuery.data.map((property) => (
-                    <Card key={property.id} className="p-4" data-testid={`card-property-${property.id}`}>
+                    <div key={property.id} className="rounded-xl p-4 border border-amber-50" style={{ background: "#FFFDF7" }} data-testid={`card-property-${property.id}`}>
                       <div className="flex items-start justify-between gap-3 flex-wrap">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <Home className="w-4 h-4 text-muted-foreground shrink-0" />
-                            <span className="font-medium truncate">{property.fullAddress || "Unknown Address"}</span>
+                            <Home className="w-4 h-4 shrink-0" style={{ color: T.primary }} />
+                            <span className="font-medium truncate" style={{ color: T.text }}>{property.fullAddress || "Unknown Address"}</span>
                           </div>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
-                            <span>Score: <strong className="text-foreground">{property.maintenanceScore || 0}</strong>/100</span>
-                            <span>Value Add: <strong className="text-foreground">+${property.estimatedValueIncrease || 0}</strong></span>
-                          </div>
+                          <p className="text-sm mt-1" style={{ color: T.textMuted }}>
+                            Maintenance score: <strong style={{ color: T.text }}>{property.maintenanceScore || 0}/100</strong>
+                            {" · "}Value added: <strong style={{ color: T.text }}>+${property.estimatedValueIncrease || 0}</strong>
+                          </p>
                           {property.transfers.length > 0 && (
                             <div className="mt-2 space-y-1">
                               {property.transfers.map((t) => (
-                                <div key={t.id} className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                                <div key={t.id} className="flex items-center gap-2 text-xs" style={{ color: T.textMuted }}>
                                   <Clock className="w-3 h-3 shrink-0" />
                                   <span>
-                                    Transfer to {t.toEmail.replace(/(.{3}).*@/, "$1***@")} - 
-                                    <Badge variant={t.status === "claimed" ? "default" : "secondary"} className="ml-1 text-xs">
+                                    Transfer to {t.toEmail.replace(/(.{3}).*@/, "$1***@")} —{" "}
+                                    <Badge className={`text-xs border-0 ${t.status === "claimed" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
                                       {t.status === "claimed" ? "Claimed" : "Pending"}
                                     </Badge>
                                   </span>
@@ -1010,6 +858,7 @@ export default function Profile() {
                         <Button
                           variant="outline"
                           size="sm"
+                          className="border-amber-200 hover:bg-amber-50"
                           onClick={() => {
                             setTransferPropertyHash(property.addressHash || "");
                             setTransferPropertyAddress(property.fullAddress || "");
@@ -1017,45 +866,44 @@ export default function Profile() {
                           }}
                           data-testid={`button-transfer-${property.id}`}
                         >
-                          <ArrowRightLeft className="w-4 h-4 mr-1" />
-                          Transfer
+                          <ArrowRightLeft className="w-4 h-4 mr-1" /> Transfer
                         </Button>
                       </div>
-                    </Card>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Home className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No property history yet</p>
-                  <p className="text-sm">Complete a service to start building your home's maintenance record</p>
+                <div className="text-center py-8" style={{ color: T.textMuted }}>
+                  <Home className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                  <p className="font-medium">No property history yet</p>
+                  <p className="text-sm">Complete a service to start building your home's record</p>
                 </div>
               )}
-            </Card>
+            </div>
 
-            <Card className="p-6" data-testid="card-payment-methods">
+            {/* Payment Methods */}
+            <div className="rounded-2xl p-6 border border-amber-100 shadow-sm" style={{ background: T.card }} data-testid="card-payment-methods">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Payment Methods</h3>
+                  <CreditCard className="w-5 h-5" style={{ color: T.primary }} />
+                  <h3 className="font-bold" style={{ color: T.text }}>Payment Methods</h3>
                 </div>
                 <Link href="/payment-setup">
-                  <Button variant="outline" size="sm" data-testid="button-add-payment">
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add
+                  <Button variant="outline" size="sm" className="border-amber-200 hover:bg-amber-50" data-testid="button-add-payment">
+                    <Plus className="w-4 h-4 mr-1" /> Add
                   </Button>
                 </Link>
               </div>
 
               {paymentMethodsQuery.isLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  <Loader2 className="w-6 h-6 animate-spin" style={{ color: T.primary }} />
                 </div>
               ) : paymentMethodsQuery.data && paymentMethodsQuery.data.length > 0 ? (
                 <div className="space-y-3">
                   {paymentMethodsQuery.data.map((method) => (
-                    <PaymentMethodCard 
-                      key={method.id} 
+                    <PaymentMethodCard
+                      key={method.id}
                       method={method}
                       onDelete={() => deletePaymentMutation.mutate(method.id)}
                       onSetDefault={() => setDefaultPaymentMutation.mutate(method.id)}
@@ -1063,18 +911,32 @@ export default function Profile() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <CreditCard className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No payment methods</p>
+                <div className="text-center py-8" style={{ color: T.textMuted }}>
+                  <CreditCard className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                  <p className="font-medium">No payment methods</p>
                   <p className="text-sm">Add a card for instant booking</p>
                 </div>
               )}
-            </Card>
+            </div>
           </>
         )}
+
+        {/* Ask George CTA */}
+        <div className="mt-8 text-center">
+          <button
+            onClick={() => openGeorge("What should I do next for my home?")}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white font-bold shadow-lg hover:shadow-xl transition-shadow"
+            style={{ background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})` }}
+          >
+            <MessageCircle className="w-5 h-5" />
+            Ask George anything
+          </button>
+        </div>
       </main>
 
-      <AddAddressDialog 
+      <Footer />
+
+      <AddAddressDialog
         open={addressDialogOpen}
         onOpenChange={setAddressDialogOpen}
         editAddress={editingAddress}
@@ -1086,8 +948,7 @@ export default function Profile() {
           <DialogHeader>
             <DialogTitle>Transfer Home History</DialogTitle>
             <DialogDescription>
-              Enter the buyer's email address. They'll receive an invitation to claim 
-              the verified maintenance history for {transferPropertyAddress}.
+              Enter the buyer's email. They'll get an invitation to claim the verified maintenance history for {transferPropertyAddress}.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={(e) => {
@@ -1099,19 +960,11 @@ export default function Profile() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="buyerEmail">Buyer's Email</Label>
-                <Input
-                  id="buyerEmail"
-                  type="email"
-                  placeholder="buyer@email.com"
-                  value={buyerEmail}
-                  onChange={(e) => setBuyerEmail(e.target.value)}
-                  required
-                  data-testid="input-buyer-email"
-                />
+                <Input id="buyerEmail" type="email" placeholder="buyer@email.com" value={buyerEmail} onChange={(e) => setBuyerEmail(e.target.value)} required data-testid="input-buyer-email" />
               </div>
-              <div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
-                <p className="font-medium text-foreground mb-1">What gets transferred:</p>
-                <ul className="space-y-1 list-disc list-inside">
+              <div className="rounded-xl bg-amber-50 p-3 text-sm" style={{ color: T.text }}>
+                <p className="font-medium mb-1">What gets transferred:</p>
+                <ul className="space-y-1 list-disc list-inside" style={{ color: T.textMuted }}>
                   <li>Verified maintenance history with before/after photos</li>
                   <li>Property maintenance score</li>
                   <li>Service certificates from UpTend-verified pros</li>
@@ -1120,15 +973,9 @@ export default function Profile() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setTransferDialogOpen(false)} data-testid="button-cancel-transfer">
-                Cancel
-              </Button>
-              <Button type="submit" disabled={transferMutation.isPending || !buyerEmail} data-testid="button-send-transfer">
-                {transferMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4 mr-1" />
-                )}
+              <Button type="button" variant="outline" onClick={() => setTransferDialogOpen(false)} data-testid="button-cancel-transfer">Cancel</Button>
+              <Button type="submit" disabled={transferMutation.isPending || !buyerEmail} style={{ background: T.primary }} className="text-white" data-testid="button-send-transfer">
+                {transferMutation.isPending ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Send className="w-4 h-4 mr-1" />}
                 Send Transfer
               </Button>
             </DialogFooter>

@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { storage } from "../../storage";
 import { requireAuth } from "../../auth-middleware";
 import { quoteRequestSchema } from "@shared/schema";
-import { calculateDistance, geocodeZip, isZipCodeSupported, calculateMovePricing, findNearestDump, SUPPORTED_ZIP_CODES } from "../../distanceUtils";
+import { calculateDistance, geocodeZip, isZipCodeSupported, calculateMovePricing, findNearestDump, SUPPORTED_ZIP_CODES, geocodeAnyAddress } from "../../distanceUtils";
 import { z } from "zod";
 
 export function registerPricingRoutes(app: Express) {
@@ -108,22 +108,20 @@ export function registerPricingRoutes(app: Express) {
       }
       const { pickupZip, destinationZip, pickupStairs, destinationStairs, moveServiceMode, basePrice } = parseResult.data;
 
-      const pickupSupported = isZipCodeSupported(pickupZip);
-      const destSupported = isZipCodeSupported(destinationZip);
+      // Skip strict ZIP validation — Google geocoding will handle unknown ZIPs
 
-      if (!pickupSupported || !destSupported) {
-        const unsupported = [];
-        if (!pickupSupported) unsupported.push(`pickup: ${pickupZip}`);
-        if (!destSupported) unsupported.push(`destination: ${destinationZip}`);
-        return res.status(400).json({
-          error: "Zip code not in service area",
-          unsupportedZips: unsupported,
-          message: "UpTend is currently only available in the Orlando metro area. We're expanding soon!"
-        });
+      // Try ZIP table first, fall back to Google geocoding for any address
+      let pickupCoords = geocodeZip(pickupZip);
+      let destCoords = geocodeZip(destinationZip);
+
+      if (!pickupCoords) {
+        const googleResult = await geocodeAnyAddress(pickupZip);
+        if (googleResult) pickupCoords = { lat: googleResult.lat, lng: googleResult.lng };
       }
-
-      const pickupCoords = geocodeZip(pickupZip);
-      const destCoords = geocodeZip(destinationZip);
+      if (!destCoords) {
+        const googleResult = await geocodeAnyAddress(destinationZip);
+        if (googleResult) destCoords = { lat: googleResult.lat, lng: googleResult.lng };
+      }
 
       if (!pickupCoords || !destCoords) {
         return res.status(400).json({ error: "Could not locate addresses" });
@@ -165,7 +163,13 @@ export function registerPricingRoutes(app: Express) {
   app.get("/api/pricing/dump-distance/:zip", async (req, res) => {
     try {
       const { zip } = req.params;
-      const coords = geocodeZip(zip);
+      let coords = geocodeZip(zip);
+
+      if (!coords) {
+        // Try Google geocoding as fallback
+        const googleResult = await geocodeAnyAddress(zip);
+        if (googleResult) coords = { lat: googleResult.lat, lng: googleResult.lng };
+      }
 
       if (!coords) {
         return res.status(400).json({

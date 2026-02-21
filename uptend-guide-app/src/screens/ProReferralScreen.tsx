@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Share } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Share, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { LoadingScreen, EmptyState } from '../components/ui';
+import { fetchReferrals } from '../services/api';
 
 interface Referral {
   id: string;
@@ -19,7 +21,26 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
 };
 
 export default function ProReferralScreen() {
-  const [referrals] = useState([]);
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetchReferrals();
+      const list: Referral[] = (res?.referrals || res || []).map((r: any) => ({
+        id: r.id || r._id || '',
+        name: r.name || r.refereeName || 'Unknown',
+        status: r.status || 'pending',
+        invitedDate: r.invitedDate || r.created_at || '',
+        earnedBonus: r.earnedBonus || r.status === 'first_job_completed',
+      }));
+      setReferrals(list);
+    } catch { setReferrals([]); }
+  }, []);
+
+  useEffect(() => { load().finally(() => setLoading(false)); }, [load]);
+  const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
   const referralCode = 'UPTEND-MJ2026';
   const totalEarned = referrals.filter(r => r.earnedBonus).length * 50;
 

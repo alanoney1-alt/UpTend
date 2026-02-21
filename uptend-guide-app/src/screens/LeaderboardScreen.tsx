@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { LoadingScreen, EmptyState } from '../components/ui';
+import { fetchLeaderboard } from '../services/api';
 
 interface ProRank {
   id: string;
@@ -14,13 +16,39 @@ interface ProRank {
   badges: string[];
 }
 
-
-const TIME_FILTERS = ['This Week', 'This Month', 'All Time'];
-const METRIC_FILTERS = ['Jobs', 'Rating', 'Earnings', 'Speed'];
+const TIME_FILTERS = ['This Week', 'This Month', 'All Time'] as const;
+const METRIC_MAP: Record<string, string> = { Jobs: 'jobs', Rating: 'rating', Earnings: 'earnings', Speed: 'speed' };
+const PERIOD_MAP: Record<string, string> = { 'This Week': 'week', 'This Month': 'month', 'All Time': 'all' };
 
 export default function LeaderboardScreen() {
   const [timeFilter, setTimeFilter] = useState('This Month');
   const [metric, setMetric] = useState('Jobs');
+  const [leaders, setLeaders] = useState<ProRank[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetchLeaderboard(METRIC_MAP[metric] || 'jobs', PERIOD_MAP[timeFilter] || 'month');
+      const list: ProRank[] = (res?.leaders || res?.leaderboard || res || []).map((p: any, i: number) => ({
+        id: p.id || `${i}`,
+        name: p.name || p.username || 'Pro',
+        rank: p.rank || i + 1,
+        prevRank: p.prevRank || p.rank || i + 1,
+        jobs: p.jobs || p.totalJobs || 0,
+        rating: p.rating || 0,
+        earnings: p.earnings || p.totalEarnings || 0,
+        badges: p.badges || [],
+      }));
+      setLeaders(list);
+    } catch {
+      setLeaders([]);
+    }
+  }, [metric, timeFilter]);
+
+  useEffect(() => { load().finally(() => setLoading(false)); }, [load]);
+
+  const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
 
   const rankChange = (current: number, prev: number) => {
     if (current < prev) return { text: `↑${prev - current}`, color: Colors.success };
@@ -28,65 +56,76 @@ export default function LeaderboardScreen() {
     return { text: '—', color: Colors.textLight };
   };
 
+  if (loading) return <LoadingScreen message="Loading leaderboard..." />;
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <Text style={styles.title}>🏆 Leaderboard</Text>
+      <Text style={styles.title} accessibilityRole="header">🏆 Leaderboard</Text>
       <Text style={styles.subtitle}>Orlando Area Rankings</Text>
 
       <View style={styles.timeRow}>
         {TIME_FILTERS.map(t => (
-          <TouchableOpacity key={t} style={[styles.timeBtn, timeFilter === t && styles.timeActive]} onPress={() => setTimeFilter(t)}>
+          <TouchableOpacity key={t} style={[styles.timeBtn, timeFilter === t && styles.timeActive]} onPress={() => setTimeFilter(t)} accessibilityRole="button">
             <Text style={[styles.timeText, timeFilter === t && styles.timeTextActive]}>{t}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
       <View style={styles.metricRow}>
-        {METRIC_FILTERS.map(m => (
-          <TouchableOpacity key={m} style={[styles.metricBtn, metric === m && styles.metricActive]} onPress={() => setMetric(m)}>
+        {Object.keys(METRIC_MAP).map(m => (
+          <TouchableOpacity key={m} style={[styles.metricBtn, metric === m && styles.metricActive]} onPress={() => setMetric(m)} accessibilityRole="button">
             <Text style={[styles.metricText, metric === m && styles.metricTextActive]}>{m}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Top 3 podium */}
-      <View style={styles.podium}>
-        {[[][1], [][0], [][2]].map((p, i) => {
-          const heights = [80, 110, 60];
-          const medals = ['🥈', '👑', '🥉'];
-          return (
-            <View key={p.id} style={styles.podiumItem}>
-              <Text style={styles.podiumMedal}>{medals[i]}</Text>
-              <Text style={[styles.podiumName, p.name === 'You' && styles.youName]}>{p.name}</Text>
-              <View style={[styles.podiumBar, { height: heights[i], backgroundColor: i === 1 ? Colors.primary : Colors.purple }]}>
-                <Text style={styles.podiumRank}>#{p.rank}</Text>
-              </View>
+      {leaders.length === 0 ? (
+        <EmptyState icon="🏆" title="No Rankings Yet" description="Mr. George says: Check back soon — the leaderboard updates as pros complete jobs!" />
+      ) : (
+        <>
+          {/* Top 3 podium */}
+          {leaders.length >= 3 && (
+            <View style={styles.podium}>
+              {[leaders[1], leaders[0], leaders[2]].map((p, i) => {
+                const heights = [80, 110, 60];
+                const medals = ['🥈', '👑', '🥉'];
+                return (
+                  <View key={p.id} style={styles.podiumItem}>
+                    <Text style={styles.podiumMedal}>{medals[i]}</Text>
+                    <Text style={[styles.podiumName, p.name === 'You' && styles.youName]}>{p.name}</Text>
+                    <View style={[styles.podiumBar, { height: heights[i], backgroundColor: i === 1 ? Colors.primary : Colors.purple }]}>
+                      <Text style={styles.podiumRank}>#{p.rank}</Text>
+                    </View>
+                  </View>
+                );
+              })}
             </View>
-          );
-        })}
-      </View>
+          )}
 
-      <FlatList
-        data={[]}
-        keyExtractor={p => p.id}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => {
-          const rc = rankChange(item.rank, item.prevRank);
-          return (
-            <View style={[styles.card, item.name === 'You' && styles.youCard]}>
-              <Text style={styles.cardRank}>#{item.rank}</Text>
-              <View style={[styles.rankChange, { backgroundColor: `${rc.color}20` }]}>
-                <Text style={[styles.rankChangeText, { color: rc.color }]}>{rc.text}</Text>
-              </View>
-              <View style={styles.cardInfo}>
-                <Text style={[styles.cardName, item.name === 'You' && styles.youText]}>{item.name}</Text>
-                <Text style={styles.cardStats}>{item.jobs} jobs • ⭐ {item.rating} • ${item.earnings.toLocaleString()}</Text>
-              </View>
-              <View style={styles.badgeRow}>{item.badges.map((b, i) => <Text key={i} style={styles.badge}>{b}</Text>)}</View>
-            </View>
-          );
-        }}
-      />
+          <FlatList
+            data={leaders.slice(3)}
+            keyExtractor={p => p.id}
+            contentContainerStyle={styles.list}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
+            renderItem={({ item }) => {
+              const rc = rankChange(item.rank, item.prevRank);
+              return (
+                <View style={[styles.card, item.name === 'You' && styles.youCard]} accessibilityLabel={`Rank ${item.rank}: ${item.name}`}>
+                  <Text style={styles.cardRank}>#{item.rank}</Text>
+                  <View style={[styles.rankChange, { backgroundColor: `${rc.color}20` }]}>
+                    <Text style={[styles.rankChangeText, { color: rc.color }]}>{rc.text}</Text>
+                  </View>
+                  <View style={styles.cardInfo}>
+                    <Text style={[styles.cardName, item.name === 'You' && styles.youText]}>{item.name}</Text>
+                    <Text style={styles.cardStats}>{item.jobs} jobs • ⭐ {item.rating} • ${item.earnings.toLocaleString()}</Text>
+                  </View>
+                  <View style={styles.badgeRow}>{item.badges.map((b: string, i: number) => <Text key={i} style={styles.badge}>{b}</Text>)}</View>
+                </View>
+              );
+            }}
+          />
+        </>
+      )}
     </SafeAreaView>
   );
 }

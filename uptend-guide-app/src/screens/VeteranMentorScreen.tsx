@@ -1,139 +1,148 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-
-const MENTORS = [
-  { id: '1', name: 'SGM (Ret.) Mike Thompson', branch: 'Army', mos: '12B → General Contractor', years: 22, trades: ['General Contracting', 'Project Management'], rating: 4.9, mentees: 14, status: 'Available', avatar: '🎖️' },
-  { id: '2', name: 'SCPO (Ret.) Lisa Chen', branch: 'Navy', mos: 'UT → Plumber', years: 18, trades: ['Plumbing', 'HVAC'], rating: 5.0, mentees: 8, status: 'Available', avatar: '⚓' },
-  { id: '3', name: 'MSgt (Ret.) James Ortiz', branch: 'USAF', mos: '3E1X1 → HVAC Tech', years: 20, trades: ['HVAC', 'Refrigeration'], rating: 4.8, mentees: 11, status: 'Busy', avatar: '✈️' },
-  { id: '4', name: 'GySgt (Ret.) Sarah Washington', branch: 'Marines', mos: '1141 → Electrician', years: 16, trades: ['Electrical', 'Solar'], rating: 4.9, mentees: 6, status: 'Available', avatar: '🦅' },
-];
-
-const ACTIVE_MENTORSHIPS = [
-  { id: '1', mentor: 'Mike Thompson', mentee: 'PFC Rodriguez', started: 'Jan 5, 2026', meetings: 6, nextMeeting: 'Feb 18, 2026', progress: 65 },
-  { id: '2', mentor: 'Lisa Chen', mentee: 'PO3 Williams', started: 'Dec 1, 2025', meetings: 10, nextMeeting: 'Feb 16, 2026', progress: 85 },
-];
-
-const SPOUSE_PROGRAM = [
-  { id: '1', name: 'Jennifer Martinez', sponsorBranch: 'Army', base: 'MacDill AFB', skills: ['Admin', 'Scheduling', 'Customer Service'], available: 'Dispatch & Office Support', status: 'Active' },
-  { id: '2', name: 'Keisha Johnson', sponsorBranch: 'Navy', base: 'NAS Jacksonville', skills: ['Bookkeeping', 'Marketing', 'Social Media'], available: 'Marketing & Bookkeeping', status: 'Active' },
-  { id: '3', name: 'Amanda Lee', sponsorBranch: 'USAF', base: 'Patrick SFB', skills: ['Project Management', 'Data Entry'], available: 'Operations Coordinator', status: 'Seeking' },
-];
+import { fetchVeteranMentors, fetchActiveMentorships, fetchSpouseProgram, requestMentor } from '../services/api';
+import ApiStateWrapper from '../components/ApiStateWrapper';
 
 export default function VeteranMentorScreen() {
   const [activeTab, setActiveTab] = useState<'find' | 'active' | 'spouse'>('find');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [mentors, setMentors] = useState<any[]>([]);
+  const [active, setActive] = useState<any[]>([]);
+  const [spouses, setSpouses] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>({});
+
+  const load = async () => {
+    setLoading(true); setError(null);
+    try {
+      const [mRes, aRes, sRes] = await Promise.allSettled([fetchVeteranMentors(), fetchActiveMentorships(), fetchSpouseProgram()]);
+      const mData = mRes.status === 'fulfilled' ? mRes.value : {};
+      setMentors(mData?.mentors || mData || []);
+      setStats(mData?.stats || {});
+      setActive(aRes.status === 'fulfilled' ? (aRes.value?.mentorships || aRes.value || []) : []);
+      setSpouses(sRes.status === 'fulfilled' ? (sRes.value?.participants || sRes.value || []) : []);
+    } catch (e: any) { setError(e?.message || 'Failed to load'); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleRequestMentor = async (id: string) => {
+    try { await requestMentor(id); load(); } catch {}
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Veteran Network</Text>
-          <Text style={styles.subtitle}>Mentor matching & military spouse program</Text>
-        </View>
-
-        {/* Stats */}
-        <View style={styles.statsRow}>
-          <View style={[styles.statCard, { backgroundColor: Colors.purple }]}>
-            <Text style={[styles.statValue, { color: Colors.white }]}>127</Text>
-            <Text style={[styles.statLabel, { color: 'rgba(255,255,255,0.7)' }]}>Veteran Mentors</Text>
+      <ApiStateWrapper loading={loading} error={error} onRetry={load}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Veteran Network</Text>
+            <Text style={styles.subtitle}>Mentor matching & military spouse program</Text>
           </View>
-          <View style={[styles.statCard, { backgroundColor: '#D1FAE5' }]}>
-            <Text style={styles.statValue}>89</Text>
-            <Text style={styles.statLabel}>Active Pairs</Text>
-          </View>
-          <View style={[styles.statCard, { backgroundColor: '#FEF3C7' }]}>
-            <Text style={styles.statValue}>42</Text>
-            <Text style={styles.statLabel}>Mil Spouses</Text>
-          </View>
-        </View>
 
-        {/* Tabs */}
-        <View style={styles.tabs}>
-          {([['find', '🤝 Find Mentor'], ['active', '📊 Active'], ['spouse', '💜 Spouse Program']] as const).map(([key, label]) => (
-            <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
-              <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Find Mentors */}
-        {activeTab === 'find' && MENTORS.map((m) => (
-          <View key={m.id} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <View style={styles.avatar}><Text style={{ fontSize: 24 }}>{m.avatar}</Text></View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.cardTitle}>{m.name}</Text>
-                <Text style={styles.cardSubtitle}>{m.branch} • {m.years} years • {m.mos}</Text>
-              </View>
-              <View style={[styles.badge, m.status === 'Available' ? { backgroundColor: '#D1FAE5' } : { backgroundColor: '#FEF3C7' }]}>
-                <Text style={[styles.badgeText, m.status === 'Available' ? { color: '#059669' } : { color: '#D97706' }]}>{m.status}</Text>
-              </View>
+          <View style={styles.statsRow}>
+            <View style={[styles.statCard, { backgroundColor: Colors.purple }]}>
+              <Text style={[styles.statValue, { color: Colors.white }]}>{stats.totalMentors || mentors.length}</Text>
+              <Text style={[styles.statLabel, { color: 'rgba(255,255,255,0.7)' }]}>Veteran Mentors</Text>
             </View>
-            <View style={styles.tradesRow}>
-              {m.trades.map((t, i) => (
-                <View key={i} style={styles.tradeBadge}><Text style={styles.tradeBadgeText}>{t}</Text></View>
-              ))}
+            <View style={[styles.statCard, { backgroundColor: '#D1FAE5' }]}>
+              <Text style={styles.statValue}>{stats.activePairs || active.length}</Text>
+              <Text style={styles.statLabel}>Active Pairs</Text>
             </View>
-            <View style={styles.mentorStats}>
-              <Text style={styles.mentorStat}>⭐ {m.rating}</Text>
-              <Text style={styles.mentorStat}>👥 {m.mentees} mentees</Text>
-            </View>
-            {m.status === 'Available' && (
-              <TouchableOpacity style={styles.connectBtn}><Text style={styles.connectBtnText}>Request Mentor</Text></TouchableOpacity>
-            )}
-          </View>
-        ))}
-
-        {/* Active Mentorships */}
-        {activeTab === 'active' && ACTIVE_MENTORSHIPS.map((a) => (
-          <View key={a.id} style={styles.card}>
-            <Text style={styles.cardTitle}>{a.mentor} → {a.mentee}</Text>
-            <Text style={styles.cardSubtitle}>Started: {a.started} • {a.meetings} meetings</Text>
-            <View style={styles.progressRow}>
-              <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${a.progress}%` }]} /></View>
-              <Text style={styles.progressText}>{a.progress}%</Text>
-            </View>
-            <View style={[styles.cardRow, { marginTop: 10 }]}>
-              <Text style={styles.cardDetail}>Next: {a.nextMeeting}</Text>
-              <TouchableOpacity style={styles.smallBtn}><Text style={styles.smallBtnText}>View</Text></TouchableOpacity>
+            <View style={[styles.statCard, { backgroundColor: '#FEF3C7' }]}>
+              <Text style={styles.statValue}>{stats.milSpouses || spouses.length}</Text>
+              <Text style={styles.statLabel}>Mil Spouses</Text>
             </View>
           </View>
-        ))}
 
-        {/* Spouse Program */}
-        {activeTab === 'spouse' && (
-          <>
-            <View style={styles.spouseHero}>
-              <Text style={{ fontSize: 28 }}>💜</Text>
-              <Text style={styles.spouseHeroTitle}>Military Spouse Program</Text>
-              <Text style={styles.spouseHeroText}>Flexible remote & local roles supporting home services operations — perfect for PCS-friendly careers.</Text>
-            </View>
-            {SPOUSE_PROGRAM.map((s) => (
-              <View key={s.id} style={styles.card}>
-                <View style={styles.cardHeader}>
-                  <View style={[styles.avatar, { backgroundColor: '#E9D5FF' }]}><Text style={{ fontSize: 18 }}>💜</Text></View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.cardTitle}>{s.name}</Text>
-                    <Text style={styles.cardSubtitle}>{s.sponsorBranch} spouse • {s.base}</Text>
-                  </View>
-                  <View style={[styles.badge, s.status === 'Active' ? { backgroundColor: '#D1FAE5' } : { backgroundColor: '#DBEAFE' }]}>
-                    <Text style={[styles.badgeText, s.status === 'Active' ? { color: '#059669' } : { color: '#2563EB' }]}>{s.status}</Text>
-                  </View>
-                </View>
-                <View style={styles.tradesRow}>
-                  {s.skills.map((sk, i) => (
-                    <View key={i} style={styles.tradeBadge}><Text style={styles.tradeBadgeText}>{sk}</Text></View>
-                  ))}
-                </View>
-                <Text style={[styles.cardDetail, { marginTop: 6 }]}>Available for: {s.available}</Text>
-              </View>
+          <View style={styles.tabs}>
+            {([['find', '🤝 Find Mentor'], ['active', '📊 Active'], ['spouse', '💜 Spouse Program']] as const).map(([key, label]) => (
+              <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
+                <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
+              </TouchableOpacity>
             ))}
-          </>
-        )}
+          </View>
 
-        <View style={{ height: 20 }} />
-      </ScrollView>
+          {activeTab === 'find' && (mentors.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No mentors available</Text></View>
+          ) : mentors.map((m: any) => (
+            <View key={m.id || m._id} style={styles.card}>
+              <View style={styles.cardHeader}>
+                <View style={styles.avatar}><Text style={{ fontSize: 24 }}>{m.avatar || '🎖️'}</Text></View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.cardTitle}>{m.name}</Text>
+                  <Text style={styles.cardSubtitle}>{m.branch} • {m.years} years • {m.mos}</Text>
+                </View>
+                <View style={[styles.badge, m.status === 'Available' ? { backgroundColor: '#D1FAE5' } : { backgroundColor: '#FEF3C7' }]}>
+                  <Text style={[styles.badgeText, m.status === 'Available' ? { color: '#059669' } : { color: '#D97706' }]}>{m.status}</Text>
+                </View>
+              </View>
+              <View style={styles.tradesRow}>
+                {(m.trades || []).map((t: string, i: number) => (
+                  <View key={i} style={styles.tradeBadge}><Text style={styles.tradeBadgeText}>{t}</Text></View>
+                ))}
+              </View>
+              <View style={styles.mentorStats}>
+                <Text style={styles.mentorStat}>⭐ {m.rating || '—'}</Text>
+                <Text style={styles.mentorStat}>👥 {m.mentees || 0} mentees</Text>
+              </View>
+              {m.status === 'Available' && (
+                <TouchableOpacity style={styles.connectBtn} onPress={() => handleRequestMentor(m.id || m._id)}><Text style={styles.connectBtnText}>Request Mentor</Text></TouchableOpacity>
+              )}
+            </View>
+          )))}
+
+          {activeTab === 'active' && (active.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No active mentorships</Text></View>
+          ) : active.map((a: any) => (
+            <View key={a.id || a._id} style={styles.card}>
+              <Text style={styles.cardTitle}>{a.mentor} → {a.mentee}</Text>
+              <Text style={styles.cardSubtitle}>Started: {a.started} • {a.meetings} meetings</Text>
+              <View style={styles.progressRow}>
+                <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${a.progress || 0}%` }]} /></View>
+                <Text style={styles.progressText}>{a.progress || 0}%</Text>
+              </View>
+              <View style={[styles.cardRow, { marginTop: 10 }]}>
+                <Text style={styles.cardDetail}>Next: {a.nextMeeting}</Text>
+                <TouchableOpacity style={styles.smallBtn}><Text style={styles.smallBtnText}>View</Text></TouchableOpacity>
+              </View>
+            </View>
+          )))}
+
+          {activeTab === 'spouse' && (
+            <>
+              <View style={styles.spouseHero}>
+                <Text style={{ fontSize: 28 }}>💜</Text>
+                <Text style={styles.spouseHeroTitle}>Military Spouse Program</Text>
+                <Text style={styles.spouseHeroText}>Flexible remote & local roles supporting home services operations — perfect for PCS-friendly careers.</Text>
+              </View>
+              {spouses.length === 0 ? (
+                <View style={styles.emptyCard}><Text style={styles.emptyText}>No spouse program participants yet</Text></View>
+              ) : spouses.map((s: any) => (
+                <View key={s.id || s._id} style={styles.card}>
+                  <View style={styles.cardHeader}>
+                    <View style={[styles.avatar, { backgroundColor: '#E9D5FF' }]}><Text style={{ fontSize: 18 }}>💜</Text></View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.cardTitle}>{s.name}</Text>
+                      <Text style={styles.cardSubtitle}>{s.sponsorBranch} spouse • {s.base}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.tradesRow}>
+                    {(s.skills || []).map((sk: string, i: number) => (
+                      <View key={i} style={styles.tradeBadge}><Text style={styles.tradeBadgeText}>{sk}</Text></View>
+                    ))}
+                  </View>
+                  <Text style={[styles.cardDetail, { marginTop: 6 }]}>Available for: {s.available}</Text>
+                </View>
+              ))}
+            </>
+          )}
+
+          <View style={{ height: 20 }} />
+        </ScrollView>
+      </ApiStateWrapper>
     </SafeAreaView>
   );
 }
@@ -178,4 +187,6 @@ const styles = StyleSheet.create({
   spouseHero: { backgroundColor: '#E9D5FF', borderRadius: 16, padding: 20, alignItems: 'center', marginBottom: 16 },
   spouseHeroTitle: { fontSize: 18, fontWeight: '700', color: Colors.purple, marginTop: 8 },
   spouseHeroText: { fontSize: 13, color: '#6B21A8', textAlign: 'center', marginTop: 6, lineHeight: 20 },
+  emptyCard: { backgroundColor: Colors.white, borderRadius: 14, padding: 24, alignItems: 'center', marginBottom: 12 },
+  emptyText: { fontSize: 14, color: Colors.textSecondary },
 });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors } from '../theme/colors';
+import { WeekData } from '../types/models';
 
 interface Props {
   weeks: WeekData[];

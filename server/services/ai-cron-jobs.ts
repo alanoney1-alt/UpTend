@@ -31,18 +31,31 @@ cron.schedule("0 2 * * *", async () => {
     let scored = 0;
     for (const pro of pros) {
       try {
-        // Get pro's recent performance data (last 30 days)
-        // TODO: Implement actual data fetching
+        // Get pro's real performance data from DB
+        const allJobs = await storage.getServiceRequestsByHauler(pro.id);
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+        const recentJobs = allJobs.filter(j => j.createdAt && j.createdAt > thirtyDaysAgo);
+        const completedJobs = recentJobs.filter(j => j.status === "completed");
+        const reviews = await storage.getReviewsByHauler(pro.id);
+        const recentReviews = reviews.filter((r: any) => r.createdAt && r.createdAt > thirtyDaysAgo);
+
+        // Build real performance data (fall back to 0 when no data)
+        const customerRatings = recentReviews.map((r: any) => r.rating).filter((r: any) => typeof r === "number");
+        const uniqueCustomers = new Set(recentJobs.map(j => j.customerId));
+        const repeatCustomerSet = new Set(
+          recentJobs.map(j => j.customerId).filter((c, _, arr) => arr.filter(x => x === c).length > 1)
+        );
+
         const performanceData = {
-          completedJobs: 25,
-          totalJobs: 28,
-          onTimeJobs: 23,
-          customerRatings: [5, 4, 5, 5, 4],
-          esgScores: [85, 90, 88, 92, 87],
-          photosProvided: 24,
-          photosRequired: 25,
-          repeatCustomers: 8,
-          totalCustomers: 20,
+          completedJobs: completedJobs.length,
+          totalJobs: recentJobs.length,
+          onTimeJobs: completedJobs.length, // No late tracking yet — assume on-time
+          customerRatings: customerRatings.length > 0 ? customerRatings : [0],
+          esgScores: [] as number[], // No ESG data yet
+          photosProvided: completedJobs.length, // No photo tracking yet
+          photosRequired: completedJobs.length || 1,
+          repeatCustomers: repeatCustomerSet.size,
+          totalCustomers: uniqueCustomers.size || 1,
         };
 
         // Calculate quality score
@@ -101,27 +114,23 @@ cron.schedule("0 3 * * 0", async () => {
     let generated = 0;
     for (const business of businessAccounts) {
       try {
-        // Calculate portfolio health metrics
-        // TODO: Implement actual calculations based on properties and service requests
+        // Portfolio health metrics — real data not yet available for B2B accounts
+        // Returns honest nulls/zeros instead of fake numbers
         const mockReport = {
-          propertiesAnalyzed: 25,
-          totalServiceRequests: 150,
-          avgResponseTimeHours: 4.2,
-          avgCompletionTimeHours: 24.5,
-          tenantSatisfactionScore: 4.3,
-          costPerUnitAvg: 125.50,
-          preventiveMaintenanceRate: 0.68,
-          emergencyRequestRate: 0.15,
-          vendorPerformanceScores: {
-            junk_removal: 4.5,
-            pressure_washing: 4.7,
-            gutter_cleaning: 4.3,
-          },
-          budgetUtilizationPct: 78.5,
-          upcomingSeasonalNeeds: ["Fall gutter cleaning", "Winter pool closing"],
-          riskProperties: ["123 Main St - High maintenance cost"],
-          costSavingOpportunities: ["Bundle services for 10% savings"],
-          recommendedActions: ["Schedule preventive maintenance", "Review vendor contracts"],
+          propertiesAnalyzed: 0,
+          totalServiceRequests: 0,
+          avgResponseTimeHours: null as number | null,
+          avgCompletionTimeHours: null as number | null,
+          tenantSatisfactionScore: null as number | null,
+          costPerUnitAvg: null as number | null,
+          preventiveMaintenanceRate: null as number | null,
+          emergencyRequestRate: null as number | null,
+          vendorPerformanceScores: {},
+          budgetUtilizationPct: null as number | null,
+          upcomingSeasonalNeeds: [] as string[],
+          riskProperties: [] as string[],
+          costSavingOpportunities: [] as string[],
+          recommendedActions: ["Connect properties to start receiving insights"],
         };
 
         await storage.createPortfolioHealthReport({
@@ -245,32 +254,24 @@ cron.schedule("0 4 * * 1", async () => {
     let updated = 0;
     for (const zipCode of targetZipCodes) {
       try {
-        // Generate neighborhood intelligence report
+        // Neighborhood intelligence — no external data sources integrated yet
+        // Returns empty/null structure instead of fabricated numbers
         const mockReport = {
-          populationDensity: "urban",
-          medianHomeValue: 285000,
-          avgPropertyAge: 35,
-          hoaPrevalencePct: 65,
-          seasonalDemandPatterns: {
-            spring: { gutter: "high", pressure_washing: "high" },
-            summer: { pool: "peak", landscaping: "high" },
-            fall: { gutter: "peak", junk_removal: "high" },
-            winter: { home_cleaning: "moderate" },
-          },
-          topServiceTypes: ["junk_removal", "pressure_washing", "gutter_cleaning"],
-          avgServiceFrequencyDays: 45,
-          priceSensitivity: "moderate",
-          ecoConsciousnessScore: 72,
-          competitionLevel: "high",
-          marketOpportunityScore: 78,
-          recommendedServices: ["pressure_washing", "gutter_cleaning"],
-          recommendedPricing: { junk_removal: "$200-350", pressure_washing: "$150-250" },
-          marketingInsights: [
-            "Emphasis ESG benefits",
-            "Target HOA board members",
-            "Seasonal promotions effective",
-          ],
-          dataSources: ["UpTend platform data", "Census data", "Weather patterns"],
+          populationDensity: null as string | null,
+          medianHomeValue: null as number | null,
+          avgPropertyAge: null as number | null,
+          hoaPrevalencePct: null as number | null,
+          seasonalDemandPatterns: {},
+          topServiceTypes: [] as string[],
+          avgServiceFrequencyDays: null as number | null,
+          priceSensitivity: null as string | null,
+          ecoConsciousnessScore: null as number | null,
+          competitionLevel: null as string | null,
+          marketOpportunityScore: null as number | null,
+          recommendedServices: [] as string[],
+          recommendedPricing: {},
+          marketingInsights: [] as string[],
+          dataSources: ["UpTend platform data"],
         };
 
         await storage.createNeighborhoodIntelligence({

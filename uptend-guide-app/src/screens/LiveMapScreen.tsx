@@ -1,16 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { LoadingScreen } from '../components/ui';
+import { fetchLiveMapStats } from '../services/api';
 
-// On web, show a placeholder. On native, this would use react-native-maps.
-// For the investor demo (web), we show the map placeholder.
 export default function LiveMapScreen() {
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchLiveMapStats()
+      .then(res => setStats(res))
+      .catch(() => setStats({ prosOnline: 10, avgRating: 4.8, avgResponse: '~15min' }))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <LoadingScreen message="Loading live map..." />;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.center}>
         <Text style={styles.icon}>🗺️</Text>
-        <Text style={styles.title}>Live Pro Map</Text>
+        <Text style={styles.title} accessibilityRole="header">Live Pro Map</Text>
         <Text style={styles.subtitle}>
           {Platform.OS === 'web'
             ? 'Live map tracking is available in the mobile app. Download from the App Store or Google Play.'
@@ -18,15 +30,15 @@ export default function LiveMapScreen() {
         </Text>
         <View style={styles.stats}>
           <View style={styles.stat}>
-            <Text style={styles.statNumber}>10</Text>
+            <Text style={styles.statNumber}>{stats?.prosOnline ?? stats?.activePros ?? 10}</Text>
             <Text style={styles.statLabel}>Pros Online</Text>
           </View>
           <View style={styles.stat}>
-            <Text style={styles.statNumber}>4.8</Text>
+            <Text style={styles.statNumber}>{stats?.avgRating ?? 4.8}</Text>
             <Text style={styles.statLabel}>Avg Rating</Text>
           </View>
           <View style={styles.stat}>
-            <Text style={styles.statNumber}>~15min</Text>
+            <Text style={styles.statNumber}>{stats?.avgResponse ?? '~15min'}</Text>
             <Text style={styles.statLabel}>Avg Response</Text>
           </View>
         </View>

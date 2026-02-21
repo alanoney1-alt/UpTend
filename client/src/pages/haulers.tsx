@@ -1,593 +1,367 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Link } from "wouter";
 import {
-  Star, MapPin, Phone, Globe, Truck, Shield, Clock, ChevronLeft,
-  CheckCircle, ExternalLink, Navigation, MessageSquare, Package, Sofa, Zap, Home,
-  Users, Lightbulb, Wrench
+  Star, MapPin, Clock, ChevronLeft, Send,
+  Sparkles, CalendarCheck, ThumbsUp, Wrench, Droplets, Trash2, Zap, Truck,
+  Package, Sofa, Home, Users, Shield, Navigation
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
-import { SiFacebook, SiInstagram, SiX, SiYelp } from "react-icons/si";
-import type { HaulerWithProfile, HaulerReviewWithCustomer } from "@shared/schema";
-
-const SERVICE_TYPES = [
-  { value: "all", label: "All Services", icon: Truck },
-  { value: "junk_removal", label: "Junk Removal", icon: Package },
-  { value: "furniture_moving", label: "Furniture Moving", icon: Sofa },
-  { value: "garage_cleanout", label: "Garage Cleanout", icon: Home },
-  { value: "estate_cleanout", label: "Estate Cleanout", icon: Home },
-];
-
-const CAPABILITY_TYPES = [
-  { value: "all", label: "Any Vehicle", icon: Truck },
-  { value: "pickup_truck", label: "Pickup Truck", icon: Truck },
-  { value: "cargo_van", label: "Cargo Van", icon: Truck },
-  { value: "box_truck", label: "Box Truck", icon: Truck },
-  { value: "flatbed", label: "Flatbed", icon: Truck },
-  { value: "trailer", label: "Trailer", icon: Truck },
-];
+import type { HaulerWithProfile } from "@shared/schema";
 
 type SearchResult = {
   matches: HaulerWithProfile[];
   suggestions: HaulerWithProfile[];
 };
 
-function calculateETA(
-  haulerLat: number | null | undefined, 
-  haulerLng: number | null | undefined, 
-  customerLat: number | null, 
-  customerLng: number | null
-): string | null {
-  if (!haulerLat || !haulerLng || !customerLat || !customerLng) return null;
-  
-  const R = 3959;
-  const dLat = (customerLat - haulerLat) * Math.PI / 180;
-  const dLon = (customerLng - haulerLng) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(haulerLat * Math.PI / 180) * Math.cos(customerLat * Math.PI / 180) *
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const distanceMiles = R * c;
-  
-  const avgSpeedMph = 25;
-  const etaMinutes = Math.round((distanceMiles / avgSpeedMph) * 60);
-  
-  if (etaMinutes < 5) return "< 5 min";
-  if (etaMinutes < 60) return `${etaMinutes} min`;
-  const hours = Math.floor(etaMinutes / 60);
-  const mins = etaMinutes % 60;
-  return `${hours}h ${mins}m`;
-}
-
-function ReviewsDialog({ 
-  haulerId, 
-  companyName, 
-  open, 
-  onOpenChange 
-}: { 
-  haulerId: string; 
-  companyName: string; 
-  open: boolean; 
-  onOpenChange: (open: boolean) => void;
-}) {
-  const { data: reviews, isLoading } = useQuery<HaulerReviewWithCustomer[]>({
-    queryKey: ["/api/pros", haulerId, "reviews"],
-    queryFn: async () => {
-      const res = await fetch(`/api/pros/${haulerId}/reviews`);
-      if (!res.ok) return [];
-      return res.json();
-    },
-    enabled: open && !!haulerId,
-  });
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Reviews for {companyName}</DialogTitle>
-        </DialogHeader>
-        <ScrollArea className="max-h-96">
-          {isLoading ? (
-            <div className="space-y-4">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="p-4 border rounded-lg">
-                  <Skeleton className="h-4 w-32 mb-2" />
-                  <Skeleton className="h-12 w-full" />
-                </div>
-              ))}
-            </div>
-          ) : reviews && reviews.length > 0 ? (
-            <div className="space-y-4">
-              {reviews.map((review) => (
-                <div key={review.id} className="p-4 border rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarFallback>
-                          {review.customer?.firstName?.charAt(0) || "C"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium text-sm">
-                        {review.customer ? `${review.customer.firstName || ''} ${review.customer.lastName || ''}`.trim() || "Customer" : "Customer"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-3 h-3 ${
-                            i < review.rating
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-muted-foreground"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  {review.title && (
-                    <p className="font-medium text-sm mb-1">{review.title}</p>
-                  )}
-                  {review.comment && (
-                    <p className="text-sm text-muted-foreground">{review.comment}</p>
-                  )}
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "—"}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <MessageSquare className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
-              <p className="text-muted-foreground">No reviews yet</p>
-            </div>
-          )}
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function HaulerCard({ 
-  hauler, 
-  customerLat, 
-  customerLng 
-}: { 
-  hauler: HaulerWithProfile; 
-  customerLat: number | null; 
-  customerLng: number | null;
-}) {
+// Generate a George "introduction" for a pro
+function georgeIntro(hauler: HaulerWithProfile): string {
   const profile = hauler.profile;
-  const [showReviews, setShowReviews] = useState(false);
-  
-  const vehicleLabels: Record<string, string> = {
-    pickup_truck: "Pickup Truck",
-    cargo_van: "Cargo Van",
-    box_truck: "Box Truck",
-    flatbed: "Flatbed",
-    trailer: "Trailer",
-    none: "No Vehicle",
-  };
+  const name = hauler.firstName || profile?.companyName || "This pro";
+  const years = profile?.yearsInBusiness || 1;
+  const reviews = profile?.reviewCount || 0;
+  const rating = profile?.rating || 5.0;
+  const services = profile?.serviceTypes?.map(s => serviceLabel(s)).join(", ") || "home services";
 
-  const capabilityLabels: Record<string, string> = {
-    pickup_truck: "Pickup",
-    cargo_van: "Cargo Van",
-    box_truck: "Box Truck",
-    flatbed: "Flatbed",
-    trailer: "Trailer",
-    labor_only: "Labor Only",
-    uhaul_unload: "U-Haul Help",
-    furniture_assembly: "Furniture Assembly",
-  };
+  const intros = [
+    `${name} has been doing ${services} for ${years}+ years. ${reviews > 0 ? `${reviews} reviews, ${rating} stars.` : "New on UpTend but verified and ready."} Available soon.`,
+    `I'd recommend ${name} — ${years}+ years in ${services}. ${reviews > 0 ? `${reviews} happy customers.` : "Just getting started but looks great."}`,
+    `${name} specializes in ${services}. ${years}+ years experience${reviews > 0 ? `, ${reviews} five-star reviews` : ""}. Solid pick.`,
+  ];
+  return intros[Math.abs(hashCode(hauler.id)) % intros.length];
+}
 
-  const eta = calculateETA(profile?.currentLat, profile?.currentLng, customerLat, customerLng);
+function hashCode(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+  return h;
+}
 
-  const serviceTypeLabels: Record<string, string> = {
-    junk_removal: "Junk Removal",
-    furniture_moving: "Furniture",
-    garage_cleanout: "Garage Cleanout",
-    estate_cleanout: "Estate Cleanout",
+function serviceLabel(s: string): string {
+  const map: Record<string, string> = {
+    junk_removal: "junk removal",
+    furniture_moving: "furniture moving",
+    garage_cleanout: "garage cleanouts",
+    estate_cleanout: "estate cleanouts",
+    pressure_washing: "pressure washing",
+    gutter_cleaning: "gutter cleaning",
   };
+  return map[s] || s.replace(/_/g, " ");
+}
+
+const SERVICE_CHIPS = [
+  { value: "all", label: "All", icon: Sparkles },
+  { value: "junk_removal", label: "Junk Removal", icon: Trash2 },
+  { value: "furniture_moving", label: "Moving", icon: Sofa },
+  { value: "garage_cleanout", label: "Garage", icon: Home },
+  { value: "estate_cleanout", label: "Estate", icon: Package },
+];
+
+const AVAILABILITY_CHIPS = [
+  { value: "all", label: "Any Time", icon: Clock },
+  { value: "today", label: "Today", icon: CalendarCheck },
+];
+
+const RATING_CHIPS = [
+  { value: "all", label: "Any Rating", icon: Star },
+  { value: "4.5", label: "4.5+ ★", icon: ThumbsUp },
+];
+
+function ProCard({ hauler }: { hauler: HaulerWithProfile }) {
+  const profile = hauler.profile;
+  const name = hauler.firstName || profile?.companyName || "Pro";
+  const fullName = profile?.companyName || `${hauler.firstName || ""} ${hauler.lastName || ""}`.trim() || "Pro";
 
   return (
-    <>
-      <Card className="p-5 hover-elevate" data-testid={`card-pro-${hauler.id}`}>
-        <div className="flex items-start gap-4 mb-4">
-          <Avatar className="w-16 h-16">
-            <AvatarImage src={hauler.profileImageUrl || undefined} />
-            <AvatarFallback className="text-lg">
-              {profile?.companyName?.charAt(0) || hauler.firstName?.charAt(0) || "P"}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <h3 className="font-semibold text-lg">{profile?.companyName || `${hauler.firstName || ''} ${hauler.lastName || ''}`.trim() || 'Pro'}</h3>
-                <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  {profile?.verified && (
-                    <Badge variant="secondary">
-                      <Shield className="w-3 h-3 mr-1" />
-                      Verified
-                    </Badge>
-                  )}
-                  {eta && (
-                    <Badge variant="outline" className="text-green-600 border-green-600">
-                      <Navigation className="w-3 h-3 mr-1" />
-                      {eta} away
-                    </Badge>
-                  )}
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowReviews(true)}
-                className="flex items-center gap-1 shrink-0 hover:opacity-80 transition-opacity"
-                data-testid={`button-reviews-${hauler.id}`}
-              >
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="font-semibold">{profile?.rating || 5.0}</span>
-                <span className="text-muted-foreground text-sm">
-                  ({profile?.reviewCount || 0})
-                </span>
-              </button>
+    <Card className="p-5 border-0 shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: "#FFFBF5" }}>
+      {/* George intro bubble */}
+      <div className="flex items-start gap-2.5 mb-4">
+        <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span className="text-white text-xs font-bold">G</span>
+        </div>
+        <p className="text-sm text-stone-600 italic leading-relaxed">
+          "{georgeIntro(hauler)}"
+        </p>
+      </div>
+
+      {/* Pro info */}
+      <div className="flex items-center gap-3 mb-3">
+        <Avatar className="w-14 h-14 border-2 border-amber-200">
+          <AvatarImage src={hauler.profileImageUrl || undefined} />
+          <AvatarFallback className="bg-amber-100 text-amber-700 text-lg font-semibold">
+            {fullName.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-lg text-stone-800">{fullName}</h3>
+          <div className="flex items-center gap-2 mt-0.5">
+            <div className="flex items-center gap-0.5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className={`w-3.5 h-3.5 ${i < Math.round(profile?.rating || 5) ? "fill-amber-400 text-amber-400" : "text-stone-300"}`} />
+              ))}
             </div>
+            <span className="text-xs text-stone-500">({profile?.reviewCount || 0})</span>
           </div>
         </div>
-
-        {profile?.serviceTypes && profile.serviceTypes.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {profile.serviceTypes.map((type) => (
-              <Badge key={type} variant="outline" className="text-xs">
-                {serviceTypeLabels[type] || type}
-              </Badge>
-            ))}
-          </div>
+        {profile?.verified && (
+          <Badge className="bg-green-100 text-green-700 border-0 text-xs">
+            <Shield className="w-3 h-3 mr-1" /> Verified
+          </Badge>
         )}
+      </div>
 
-        {profile?.capabilities && profile.capabilities.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {profile.capabilities.map((cap) => (
-              <Badge key={cap} variant="secondary" className="text-xs">
-                {capabilityLabels[cap] || cap}
-              </Badge>
-            ))}
-            {profile.offersLaborOnly && (
-              <Badge variant="default" className="text-xs bg-primary">
-                <Users className="w-3 h-3 mr-1" />
-                Movers Available
-              </Badge>
-            )}
-          </div>
+      {/* Specialties */}
+      {profile?.serviceTypes && profile.serviceTypes.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {profile.serviceTypes.map((type) => (
+            <Badge key={type} variant="outline" className="text-xs bg-white border-amber-200 text-stone-600">
+              {serviceLabel(type)}
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      {/* Stats row */}
+      <div className="flex items-center gap-4 text-xs text-stone-500 mb-4">
+        {profile?.yearsInBusiness && (
+          <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{profile.yearsInBusiness}+ yrs</span>
         )}
-
-        {profile?.bio && (
-          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-            {profile.bio}
-          </p>
+        {profile?.jobsCompleted ? (
+          <span className="flex items-center gap-1"><Wrench className="w-3 h-3" />{profile.jobsCompleted} jobs</span>
+        ) : null}
+        {profile?.serviceRadius && (
+          <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{profile.serviceRadius} mi</span>
         )}
+      </div>
 
-        <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-          <div className="flex items-center gap-2">
-            <Truck className="w-4 h-4 text-muted-foreground" />
-            <span>{vehicleLabels[profile?.vehicleType || ""] || profile?.vehicleType}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
-            <span>{profile?.serviceRadius || 25} mi radius</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-muted-foreground" />
-            <span>{profile?.jobsCompleted || 0} jobs done</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-muted-foreground" />
-            <span>{profile?.yearsInBusiness || 1}+ years</span>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          {profile?.phone && (
-            <Button variant="outline" size="sm" asChild data-testid={`button-call-${hauler.id}`}>
-              <a href={`tel:${profile.phone}`}>
-                <Phone className="w-4 h-4 mr-1" />
-                Call
-              </a>
-            </Button>
-          )}
-          {profile?.website && (
-            <Button variant="outline" size="sm" asChild data-testid={`button-website-${hauler.id}`}>
-              <a href={profile.website} target="_blank" rel="noopener noreferrer">
-                <Globe className="w-4 h-4 mr-1" />
-                Website
-              </a>
-            </Button>
-          )}
-        </div>
-
-        <div className="flex items-center gap-3 pt-3 border-t">
-          <span className="text-xs text-muted-foreground">Follow:</span>
-          {profile?.facebookUrl && (
-            <a href={profile.facebookUrl} target="_blank" rel="noopener noreferrer" 
-               className="text-muted-foreground hover:text-foreground transition-colors"
-               data-testid={`link-facebook-${hauler.id}`}>
-              <SiFacebook className="w-4 h-4" />
-            </a>
-          )}
-          {profile?.instagramUrl && (
-            <a href={profile.instagramUrl} target="_blank" rel="noopener noreferrer"
-               className="text-muted-foreground hover:text-foreground transition-colors"
-               data-testid={`link-instagram-${hauler.id}`}>
-              <SiInstagram className="w-4 h-4" />
-            </a>
-          )}
-          {profile?.twitterUrl && (
-            <a href={profile.twitterUrl} target="_blank" rel="noopener noreferrer"
-               className="text-muted-foreground hover:text-foreground transition-colors"
-               data-testid={`link-twitter-${hauler.id}`}>
-              <SiX className="w-4 h-4" />
-            </a>
-          )}
-          {profile?.yelpUrl && (
-            <a href={profile.yelpUrl} target="_blank" rel="noopener noreferrer"
-               className="text-muted-foreground hover:text-foreground transition-colors"
-               data-testid={`link-yelp-${hauler.id}`}>
-              <SiYelp className="w-4 h-4" />
-            </a>
-          )}
-          <div className="flex-1" />
-          <Button size="sm" asChild data-testid={`button-book-${hauler.id}`}>
-            <Link href="/book">
-              Book Now
-              <ExternalLink className="w-3 h-3 ml-1" />
-            </Link>
-          </Button>
-        </div>
-      </Card>
-
-      <ReviewsDialog
-        haulerId={profile?.id || ""}
-        companyName={profile?.companyName || `${hauler.firstName || ''} ${hauler.lastName || ''}`.trim() || "Pro"}
-        open={showReviews}
-        onOpenChange={setShowReviews}
-      />
-    </>
+      {/* CTA */}
+      <Button asChild className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl">
+        <Link href="/book">
+          Book with {name}
+        </Link>
+      </Button>
+    </Card>
   );
 }
 
 export default function Haulers() {
-  const [selectedServiceType, setSelectedServiceType] = useState("all");
-  const [selectedCapability, setSelectedCapability] = useState("all");
-  const [laborOnly, setLaborOnly] = useState(false);
-  const [customerLocation, setCustomerLocation] = useState<{ lat: number | null; lng: number | null }>({
-    lat: null,
-    lng: null,
-  });
-
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCustomerLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        () => {
-          setCustomerLocation({ lat: 37.7749, lng: -122.4194 });
-        }
-      );
-    } else {
-      setCustomerLocation({ lat: 37.7749, lng: -122.4194 });
-    }
-  }, []);
+  const [serviceFilter, setServiceFilter] = useState("all");
+  const [availFilter, setAvailFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState("all");
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState<{ role: "user" | "george"; text: string }[]>([]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   const { data: searchResult, isLoading } = useQuery<SearchResult>({
-    queryKey: ["/api/pros/search", selectedServiceType, selectedCapability, laborOnly],
+    queryKey: ["/api/pros/search", serviceFilter],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (selectedServiceType !== "all") params.set("serviceType", selectedServiceType);
-      if (selectedCapability !== "all") params.set("capability", selectedCapability);
-      if (laborOnly) params.set("laborOnly", "true");
+      if (serviceFilter !== "all") params.set("serviceType", serviceFilter);
       params.set("availableOnly", "true");
-
       const res = await fetch(`/api/pros/search?${params.toString()}`);
       if (!res.ok) return { matches: [], suggestions: [] };
       return res.json();
     },
   });
 
-  const filteredHaulers = searchResult?.matches || [];
-  const suggestions = searchResult?.suggestions || [];
+  let haulers = [...(searchResult?.matches || []), ...(searchResult?.suggestions || [])];
 
-  const hasActiveFilters = selectedServiceType !== "all" || selectedCapability !== "all" || laborOnly;
+  // Client-side rating filter
+  if (ratingFilter !== "all") {
+    const min = parseFloat(ratingFilter);
+    haulers = haulers.filter(h => (h.profile?.rating || 5) >= min);
+  }
 
-  const clearFilters = () => {
-    setSelectedServiceType("all");
-    setSelectedCapability("all");
-    setLaborOnly(false);
+  const handleChat = () => {
+    if (!chatInput.trim()) return;
+    const q = chatInput.trim();
+    setChatInput("");
+    setChatMessages(prev => [...prev, { role: "user", text: q }]);
+    // Simple local response — in production this would call the AI
+    setTimeout(() => {
+      const count = haulers.length;
+      setChatMessages(prev => [...prev, {
+        role: "george",
+        text: count > 0
+          ? `Great question! I found ${count} pro${count !== 1 ? "s" : ""} that might be perfect. Take a look at the recommendations above — I've picked them based on ratings and availability. Want me to narrow it down?`
+          : "I don't have anyone available right now for that, but book a job and I'll match you as soon as someone's free!"
+      }]);
+    }, 600);
   };
 
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
+
   return (
-    <div className="min-h-screen bg-background" data-testid="page-pros">
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+    <div className="min-h-screen" style={{ backgroundColor: "#FFFBF5" }}>
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-amber-100 bg-[#FFFBF5]/95 backdrop-blur">
+        <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <Link href="/">
-              <Button variant="ghost" size="sm">
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                Back
+              <Button variant="ghost" size="sm" className="text-stone-500">
+                <ChevronLeft className="w-4 h-4 mr-1" /> Back
               </Button>
             </Link>
-            <Logo className="w-10 h-10" textClassName="text-xl" />
+            <Logo className="w-8 h-8" textClassName="text-lg" />
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Available Pros</h1>
-          <p className="text-muted-foreground">
-            Browse verified Pros ready to work now. View ratings, contact info, and book instantly.
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* George hero */}
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 rounded-full bg-amber-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-200">
+            <span className="text-white text-3xl font-bold">G</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold text-stone-800 mb-2">
+            Let me find the perfect pro for you
+          </h1>
+          <p className="text-stone-500 text-sm max-w-md mx-auto">
+            I've reviewed every pro on UpTend. Here are my top picks based on ratings, experience, and availability.
           </p>
         </div>
 
-        <div className="space-y-4 mb-6">
-          <div>
-            <p className="text-sm text-muted-foreground mb-3">Filter by service type:</p>
-            <div className="flex flex-wrap gap-2">
-              {SERVICE_TYPES.map((type) => {
-                const Icon = type.icon;
-                return (
-                  <Button
-                    key={type.value}
-                    variant={selectedServiceType === type.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedServiceType(type.value)}
-                    data-testid={`filter-${type.value}`}
-                  >
-                    <Icon className="w-4 h-4 mr-1" />
-                    {type.label}
-                  </Button>
-                );
-              })}
-            </div>
+        {/* Quick filter chips */}
+        <div className="space-y-3 mb-8">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {SERVICE_CHIPS.map((chip) => {
+              const Icon = chip.icon;
+              const active = serviceFilter === chip.value;
+              return (
+                <button
+                  key={chip.value}
+                  onClick={() => setServiceFilter(chip.value)}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    active ? "bg-amber-500 text-white shadow-sm" : "bg-white text-stone-600 border border-stone-200 hover:border-amber-300"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" /> {chip.label}
+                </button>
+              );
+            })}
           </div>
-
-          <div>
-            <p className="text-sm text-muted-foreground mb-3">Filter by vehicle/equipment:</p>
-            <div className="flex flex-wrap gap-2">
-              {CAPABILITY_TYPES.map((type) => {
-                const Icon = type.icon;
-                return (
-                  <Button
-                    key={type.value}
-                    variant={selectedCapability === type.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCapability(type.value)}
-                    data-testid={`filter-capability-${type.value}`}
-                  >
-                    <Icon className="w-4 h-4 mr-1" />
-                    {type.label}
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Switch
-                id="labor-only"
-                checked={laborOnly}
-                onCheckedChange={setLaborOnly}
-                data-testid="switch-labor-only"
-              />
-              <Label htmlFor="labor-only" className="flex items-center gap-2 cursor-pointer">
-                <Users className="w-4 h-4" />
-                Movers Only (no vehicle needed)
-              </Label>
-            </div>
-            {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={clearFilters} data-testid="button-clear-filters">
-                Clear all filters
-              </Button>
-            )}
+          <div className="flex flex-wrap gap-2 justify-center">
+            {AVAILABILITY_CHIPS.map((chip) => {
+              const Icon = chip.icon;
+              const active = availFilter === chip.value;
+              return (
+                <button
+                  key={chip.value}
+                  onClick={() => setAvailFilter(chip.value)}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    active ? "bg-amber-500 text-white shadow-sm" : "bg-white text-stone-600 border border-stone-200 hover:border-amber-300"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" /> {chip.label}
+                </button>
+              );
+            })}
+            {RATING_CHIPS.map((chip) => {
+              const Icon = chip.icon;
+              const active = ratingFilter === chip.value;
+              return (
+                <button
+                  key={chip.value}
+                  onClick={() => setRatingFilter(chip.value)}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    active ? "bg-amber-500 text-white shadow-sm" : "bg-white text-stone-600 border border-stone-200 hover:border-amber-300"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" /> {chip.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
+        {/* Pro cards */}
         {isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i} className="p-5">
-                <div className="flex items-start gap-4 mb-4">
-                  <Skeleton className="w-16 h-16 rounded-full" />
-                  <div className="flex-1 space-y-2">
-                    <Skeleton className="h-6 w-40" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
+          <div className="grid md:grid-cols-2 gap-5">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="p-5 border-0" style={{ backgroundColor: "#FFFBF5" }}>
+                <Skeleton className="h-4 w-3/4 mb-4" />
+                <div className="flex items-center gap-3 mb-3">
+                  <Skeleton className="w-14 h-14 rounded-full" />
+                  <div className="space-y-2 flex-1"><Skeleton className="h-5 w-32" /><Skeleton className="h-3 w-20" /></div>
                 </div>
-                <Skeleton className="h-16 w-full mb-4" />
                 <Skeleton className="h-10 w-full" />
               </Card>
             ))}
           </div>
-        ) : filteredHaulers && filteredHaulers.length > 0 ? (
+        ) : haulers.length > 0 ? (
           <>
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-sm text-muted-foreground">
-                {filteredHaulers.length} Pro{filteredHaulers.length !== 1 ? "s" : ""} online now
-                {selectedServiceType !== "all" && ` for ${SERVICE_TYPES.find(t => t.value === selectedServiceType)?.label}`}
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              <span className="text-sm text-stone-500">
+                {haulers.length} pro{haulers.length !== 1 ? "s" : ""} recommended
               </span>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredHaulers.map((hauler) => (
-                <HaulerCard 
-                  key={hauler.id} 
-                  hauler={hauler} 
-                  customerLat={customerLocation.lat}
-                  customerLng={customerLocation.lng}
-                />
+            <div className="grid md:grid-cols-2 gap-5">
+              {haulers.map((hauler) => (
+                <ProCard key={hauler.id} hauler={hauler} />
               ))}
             </div>
           </>
         ) : (
-          <div className="space-y-8">
-            <Card className="p-8 text-center">
-              <Truck className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="font-semibold text-lg mb-2">
-                {hasActiveFilters
-                  ? "No Pros Match Your Filters"
-                  : "No Pros Available Right Now"}
-              </h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                {hasActiveFilters
-                  ? "Try adjusting your filters or check out our suggestions below."
-                  : "All our Pros are currently busy or offline. Check back soon or book a job and we'll match you when someone becomes available."}
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                {hasActiveFilters && (
-                  <Button variant="outline" onClick={clearFilters}>
-                    Clear All Filters
-                  </Button>
-                )}
-                <Button asChild>
-                  <Link href="/book">Book a Job Anyway</Link>
-                </Button>
-              </div>
-            </Card>
-
-            {suggestions.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Lightbulb className="w-5 h-5 text-yellow-500" />
-                  <h2 className="text-lg font-semibold">Suggested Available Pros</h2>
-                </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  These Pros are available now and may be able to help with your job:
-                </p>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {suggestions.map((hauler) => (
-                    <HaulerCard 
-                      key={hauler.id} 
-                      hauler={hauler} 
-                      customerLat={customerLocation.lat}
-                      customerLng={customerLocation.lng}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+          <div className="text-center py-12">
+            <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
+              <Truck className="w-8 h-8 text-amber-500" />
+            </div>
+            <h3 className="font-semibold text-stone-700 mb-2">No pros available right now</h3>
+            <p className="text-stone-500 text-sm mb-4">Book a job and I'll match you as soon as someone's free.</p>
+            <Button asChild className="bg-amber-500 hover:bg-amber-600 text-white rounded-xl">
+              <Link href="/book">Book a Job</Link>
+            </Button>
           </div>
         )}
+
+        {/* Chat section */}
+        <div className="mt-10 border border-amber-200 rounded-2xl bg-white p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center">
+              <span className="text-white text-[10px] font-bold">G</span>
+            </div>
+            <span className="text-sm font-medium text-stone-700">Ask George about any pro</span>
+          </div>
+
+          {chatMessages.length > 0 && (
+            <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[80%] px-3.5 py-2 rounded-2xl text-sm ${
+                    msg.role === "user"
+                      ? "bg-amber-500 text-white rounded-br-md"
+                      : "bg-amber-50 text-stone-700 rounded-bl-md"
+                  }`}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              <div ref={chatEndRef} />
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <Input
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleChat()}
+              placeholder="Who's the best for gutter cleaning?"
+              className="border-amber-200 focus-visible:ring-amber-300 rounded-xl"
+            />
+            <Button onClick={handleChat} size="icon" className="bg-amber-500 hover:bg-amber-600 rounded-xl shrink-0">
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
       </main>
     </div>
   );

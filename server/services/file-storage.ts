@@ -12,13 +12,19 @@ import multer from "multer";
 
 import path from "path";
 import fs from "fs";
+import { STORAGE_CONFIG } from "./storage-config";
 
-const AWS_S3_BUCKET = process.env.AWS_S3_BUCKET;
-const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+// Support both AWS_S3_* env vars (legacy) and R2_* env vars (preferred for Cloudflare R2)
+const useR2 = STORAGE_CONFIG.provider === 'r2' && !!STORAGE_CONFIG.r2.accessKeyId && !!STORAGE_CONFIG.r2.secretAccessKey;
+
+const AWS_S3_BUCKET = useR2 ? STORAGE_CONFIG.r2.bucketName : process.env.AWS_S3_BUCKET;
+const AWS_ACCESS_KEY_ID = useR2 ? STORAGE_CONFIG.r2.accessKeyId : process.env.AWS_ACCESS_KEY_ID;
+const AWS_SECRET_ACCESS_KEY = useR2 ? STORAGE_CONFIG.r2.secretAccessKey : process.env.AWS_SECRET_ACCESS_KEY;
 const AWS_REGION = process.env.AWS_REGION || "us-east-1";
-const AWS_S3_ENDPOINT = process.env.AWS_S3_ENDPOINT; // For R2/MinIO: e.g. https://<account>.r2.cloudflarestorage.com
-const AWS_S3_PUBLIC_URL = process.env.AWS_S3_PUBLIC_URL; // Public URL prefix if using CDN/custom domain
+const AWS_S3_ENDPOINT = useR2
+  ? `https://${STORAGE_CONFIG.r2.accountId}.r2.cloudflarestorage.com`
+  : process.env.AWS_S3_ENDPOINT; // For R2/MinIO: e.g. https://<account>.r2.cloudflarestorage.com
+const AWS_S3_PUBLIC_URL = useR2 ? STORAGE_CONFIG.r2.publicUrl : process.env.AWS_S3_PUBLIC_URL; // Public URL prefix if using CDN/custom domain
 
 export const isCloudStorage = !!(AWS_S3_BUCKET && AWS_ACCESS_KEY_ID && AWS_SECRET_ACCESS_KEY);
 

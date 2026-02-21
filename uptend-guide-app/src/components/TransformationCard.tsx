@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Share } from 'react-native';
 import { Colors } from '../theme/colors';
 import BeforeAfterSlider from './BeforeAfterSlider';
+import { Transformation } from '../types/models';
 
 interface Props {
   item: Transformation;
@@ -13,7 +14,7 @@ export default function TransformationCard({ item, onGetThisDone, onProTap }: Pr
   const [reactions, setReactions] = useState(item.reactions);
 
   const react = (type: 'heart' | 'fire' | 'love') => {
-    setReactions(prev => ({ ...prev, [type]: prev[type] + 1 }));
+    setReactions((prev: { heart: number; fire: number; love: number }) => ({ ...prev, [type]: prev[type] + 1 }));
   };
 
   const handleShare = () => {

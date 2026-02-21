@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, TextInput, Switch } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, TextInput, Switch, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { LoadingScreen } from '../components/ui';
+import { colors } from '../components/ui/tokens';
+import { fetchB2BProperties, fetchB2BServices, request } from '../services/api';
 
-const PROPERTIES = [
+const FALLBACK_PROPERTIES = [
   { id: '1', address: '123 Oak St, Unit A-D', type: 'Apartment Complex', image: '🏢' },
   { id: '2', address: '456 Elm Ave', type: 'Single Family', image: '🏠' },
   { id: '3', address: '789 Pine Plaza', type: 'Commercial', image: '🏬' },
@@ -36,7 +39,8 @@ const PREFERRED_PROS = [
 
 type Step = 'property' | 'service' | 'schedule' | 'review';
 
-export default function BusinessBookingScreen() {
+export default function BusinessBookingScreen({ navigation }: any) {
+  const dark = useColorScheme() === 'dark';
   const [step, setStep] = useState<Step>('property');
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
   const [selectedService, setSelectedService] = useState<string | null>(null);
@@ -46,6 +50,27 @@ export default function BusinessBookingScreen() {
   const [proPreference, setProPreference] = useState<string>('any');
   const [bulkMode, setBulkMode] = useState(false);
   const [accessNotes, setAccessNotes] = useState('');
+  const [apiProperties, setApiProperties] = useState<any[] | null>(null);
+  const [initLoading, setInitLoading] = useState(true);
+
+  useEffect(() => {
+    fetchB2BProperties()
+      .then(data => {
+        const list = data?.properties || data || [];
+        if (Array.isArray(list) && list.length > 0) {
+          setApiProperties(list.map((p: any) => ({
+            id: p.id || String(Math.random()),
+            address: p.address || p.name || '',
+            type: p.type || p.property_type || 'Property',
+            image: p.type?.includes('Apartment') ? '🏢' : p.type?.includes('Commercial') ? '🏬' : '🏠',
+          })));
+        }
+      })
+      .catch(() => {})
+      .finally(() => setInitLoading(false));
+  }, []);
+
+  const PROPERTIES = apiProperties || FALLBACK_PROPERTIES;
 
   const toggleProperty = (id: string) => {
     setSelectedProperties(prev =>

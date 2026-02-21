@@ -1,3 +1,4 @@
+import { WeekData, StreakMilestone, STREAK_MILESTONES } from '../types/models';
 
 export function getCurrentStreak(weeks: WeekData[] = []): number {
   let streak = 0;

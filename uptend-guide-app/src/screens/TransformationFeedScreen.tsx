@@ -1,73 +1,22 @@
-import React, { useState, useCallback } from 'react';
-import { View, FlatList, Text, TouchableOpacity, RefreshControl, StyleSheet, StatusBar } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Colors } from '../theme/colors';
-import TransformationCard from '../components/TransformationCard';
+import React from 'react';
+import { useColorScheme } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Header, EmptyState } from '../components/ui';
+import { colors } from '../components/ui/tokens';
 
-const FILTERS = ['All', 'Trending', 'Near Me', 'By Service'] as const;
-
-export default function TransformationFeedScreen() {
-  const navigation = useNavigation<any>();
-  const [activeFilter, setActiveFilter] = useState<string>('All');
-  const [refreshing, setRefreshing] = useState(false);
-  const [data, setData] = useState([]);
-
-  const filtered = activeFilter === 'Trending'
-    ? data.filter(t => t.trending)
-    : activeFilter === 'Near Me'
-    ? data.slice(0, 8)
-    : data;
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setData([...[]].sort(() => Math.random() - 0.5));
-      setRefreshing(false);
-    }, 1000);
-  }, []);
-
-  const handleGetThisDone = (serviceType: string) => {
-    navigation.navigate('George', { prefill: `I'd like to book ${serviceType}` });
-  };
-
-  const renderItem = ({ item }: { item: Transformation }) => (
-    <TransformationCard item={item} onGetThisDone={handleGetThisDone} />
-  );
+export default function TransformationFeedScreen({ navigation }: any) {
+  const dark = useColorScheme() === 'dark';
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      {/* Filter tabs */}
-      <View style={styles.filterBar}>
-        {FILTERS.map(f => (
-          <TouchableOpacity
-            key={f}
-            style={[styles.filterTab, activeFilter === f && styles.filterTabActive]}
-            onPress={() => setActiveFilter(f)}
-          >
-            <Text style={[styles.filterText, activeFilter === f && styles.filterTextActive]}>{f}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <FlatList
-        data={filtered}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.list}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
-        showsVerticalScrollIndicator={false}
+    <SafeAreaView style={{ flex: 1, backgroundColor: dark ? colors.backgroundDark : '#FFFBF5' }} edges={['top']}>
+      <Header title="Transformations" subtitle="Before & after gallery" onBack={() => navigation?.goBack()} />
+      <EmptyState
+        icon="✨"
+        title="No Transformations Yet"
+        description="Once jobs are completed, amazing before & after transformations will show up here. George can't wait to show them off!"
+        ctaLabel="Book a Service"
+        onCta={() => navigation?.navigate('ServiceCatalog')}
       />
-    </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  filterBar: { flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 12, gap: 8, backgroundColor: Colors.white, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
-  filterTab: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: Colors.background },
-  filterTabActive: { backgroundColor: Colors.primary },
-  filterText: { fontSize: 13, fontWeight: '600', color: Colors.textSecondary },
-  filterTextActive: { color: Colors.white },
-  list: { paddingTop: 16, paddingBottom: 40 },
-});

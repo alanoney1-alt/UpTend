@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "UpTend",
-    "slug": "uptend-app",
+    "slug": "uptend",
     "scheme": "uptend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,23 +9,59 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F97316"
+      "backgroundColor": "#FFFBF5"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.uptend.app",
+      "associatedDomains": [
+        "applinks:uptendapp.com"
+      ],
+      "infoPlist": {
+        "NSCameraUsageDescription": "UpTend uses the camera for home scans and AR features",
+        "NSPhotoLibraryUsageDescription": "UpTend needs photo access to upload images"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#F59E0B"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "package": "com.uptend.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "uptendapp.com",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#F59E0B"
+        }
+      ],
+      "expo-web-browser",
+      "@stripe/stripe-react-native"
+    ]
   }
 }

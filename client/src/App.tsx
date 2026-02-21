@@ -151,6 +151,15 @@ function ScrollToTop() {
   return null;
 }
 
+function PageTransition({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  return (
+    <div key={location} className="page-fade-in">
+      {children}
+    </div>
+  );
+}
+
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -164,6 +173,7 @@ function Router() {
     <>
     <ScrollToTop />
     <Suspense fallback={<PageLoader />}>
+    <PageTransition>
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/book" component={Booking} />
@@ -261,6 +271,8 @@ function Router() {
       <Route path="/admin/god-mode" component={GodMode} />
       <Route path="/admin/accounting" component={AdminAccounting} />
       <Route path="/settings" component={ProfileSettings} />
+      <Route path="/profile/settings">{() => { window.location.replace("/settings"); return null; }}</Route>
+      <Route path="/hauler-signup">{() => { window.location.replace("/pro/signup"); return null; }}</Route>
       <Route path="/pricing" component={PublicPricing} />
       <Route path="/become-pro" component={BecomePro} />
       <Route path="/pro-signup">{() => <Redirect to="/login?tab=pro" />}</Route>
@@ -314,6 +326,7 @@ function Router() {
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
       <Route component={NotFound} />
     </Switch>
+    </PageTransition>
     </Suspense>
     </>
   );

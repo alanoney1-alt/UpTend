@@ -1,145 +1,168 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, useColorScheme, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '../theme/colors';
+import { Header, LoadingScreen, EmptyState, Card, Badge, Button } from '../components/ui';
+import { colors, spacing, radii } from '../components/ui/tokens';
+import { useAuth } from '../context/AuthContext';
 import { fetchMyBookings, fetchLoyaltyStatus, fetchHomeHealth } from '../services/api';
 
 export default function CustomerDashboardScreen({ navigation }: any) {
+  const dark = useColorScheme() === 'dark';
+  const { user } = useAuth();
   const [bookings, setBookings] = useState<any[]>([]);
   const [loyalty, setLoyalty] = useState<any>(null);
   const [health, setHealth] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    Promise.all([
+  const textColor = dark ? colors.textDark : colors.text;
+  const mutedColor = dark ? colors.textMutedDark : colors.textMuted;
+  const bg = dark ? colors.backgroundDark : colors.background;
+  const cardBg = dark ? colors.surfaceDark : colors.surface;
+
+  const load = useCallback(async () => {
+    const [b, l, h] = await Promise.all([
       fetchMyBookings().catch(() => ({ requests: [] })),
       fetchLoyaltyStatus().catch(() => ({ tier: 'Bronze', points: 0 })),
       fetchHomeHealth().catch(() => ({ score: 0 })),
-    ]).then(([b, l, h]) => {
-      setBookings(b.requests || b.bookings || []);
-      setLoyalty(l);
-      setHealth(h);
-    }).finally(() => setLoading(false));
+    ]);
+    setBookings(b.requests || b.bookings || []);
+    setLoyalty(l);
+    setHealth(h);
   }, []);
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.center}><ActivityIndicator size="large" color={Colors.primary} /></View>
-      </SafeAreaView>
-    );
-  }
+  useEffect(() => {
+    setLoading(true);
+    load().finally(() => setLoading(false));
+  }, [load]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await load();
+    setRefreshing(false);
+  }, [load]);
+
+  if (loading) return <LoadingScreen message="Loading your dashboard..." />;
 
   const activeBookings = bookings.filter((b: any) => !['completed', 'cancelled'].includes(b.status));
   const completedBookings = bookings.filter((b: any) => b.status === 'completed');
+  const displayName = user?.firstName || user?.name?.split(' ')[0] || 'there';
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: bg }} edges={['top']}>
+      <Header title={`Hey, ${displayName}!`} subtitle="Your dashboard" onBack={() => navigation.goBack()} />
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
+      >
         {/* Stats Row */}
-        <View style={styles.statsRow}>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{activeBookings.length}</Text>
-            <Text style={styles.statLabel}>Active</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{completedBookings.length}</Text>
-            <Text style={styles.statLabel}>Completed</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{health?.score || 0}</Text>
-            <Text style={styles.statLabel}>Home Score</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{loyalty?.tier || 'Bronze'}</Text>
-            <Text style={styles.statLabel}>Tier</Text>
-          </View>
+        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+          {[
+            { value: activeBookings.length, label: 'Active', color: colors.primary },
+            { value: completedBookings.length, label: 'Done', color: '#34C759' },
+            { value: health?.score || 0, label: 'Home Score', color: '#007AFF' },
+            { value: loyalty?.tier || 'Bronze', label: 'Tier', color: '#5856D6' },
+          ].map((s, i) => (
+            <View
+              key={i}
+              style={{
+                flex: 1, alignItems: 'center', backgroundColor: cardBg,
+                borderRadius: 16, padding: 14,
+              }}
+              accessibilityLabel={`${s.label}: ${s.value}`}
+            >
+              <Text style={{ fontSize: typeof s.value === 'number' ? 22 : 14, fontWeight: '800', color: s.color }}>
+                {s.value}
+              </Text>
+              <Text style={{ fontSize: 11, color: mutedColor, marginTop: 4 }}>{s.label}</Text>
+            </View>
+          ))}
         </View>
 
         {/* Quick Actions */}
-        <View style={styles.quickActions}>
-          <TouchableOpacity style={styles.quickBtn} onPress={() => navigation?.navigate?.('George')}>
-            <Text style={styles.quickEmoji}>💬</Text>
-            <Text style={styles.quickLabel}>Ask Mr. George</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickBtn} onPress={() => navigation?.navigate?.('Book')}>
-            <Text style={styles.quickEmoji}>📅</Text>
-            <Text style={styles.quickLabel}>Book Service</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickBtn} onPress={() => navigation?.navigate?.('HomeScan')}>
-            <Text style={styles.quickEmoji}>🏠</Text>
-            <Text style={styles.quickLabel}>Home Scan</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickBtn} onPress={() => navigation?.navigate?.('DIY')}>
-            <Text style={styles.quickEmoji}>🔧</Text>
-            <Text style={styles.quickLabel}>DIY Help</Text>
-          </TouchableOpacity>
+        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
+          {[
+            { emoji: '💬', label: 'Ask George', screen: 'GeorgeChat' },
+            { emoji: '📅', label: 'Book', screen: 'Book' },
+            { emoji: '🏠', label: 'Home Scan', screen: 'HomeScan' },
+            { emoji: '🔧', label: 'DIY Help', screen: 'DIY' },
+          ].map(a => (
+            <TouchableOpacity
+              key={a.label}
+              style={{
+                flex: 1, alignItems: 'center', backgroundColor: cardBg,
+                borderRadius: 16, padding: 14,
+              }}
+              onPress={() => navigation?.navigate?.(a.screen)}
+              accessibilityRole="button"
+              accessibilityLabel={a.label}
+            >
+              <Text style={{ fontSize: 24 }}>{a.emoji}</Text>
+              <Text style={{ fontSize: 11, color: mutedColor, marginTop: 6, textAlign: 'center' }}>{a.label}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
-        {/* Active Bookings */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Active Bookings</Text>
-          {activeBookings.length === 0 ? (
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyText}>No active bookings. Book a service to get started!</Text>
+        {/* Loyalty */}
+        {loyalty && (
+          <View style={{ backgroundColor: cardBg, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: textColor }}>🏆 Loyalty</Text>
+              <Badge status="active" label={loyalty.tier} />
             </View>
-          ) : (
-            activeBookings.map((b: any, i: number) => (
-              <TouchableOpacity key={b.id || i} style={styles.bookingCard}>
-                <View style={styles.bookingTop}>
-                  <Text style={styles.bookingService}>{(b.service_type || b.serviceType || '').replace(/_/g, ' ')}</Text>
-                  <View style={[styles.statusBadge, { backgroundColor: b.status === 'pending' ? '#FF9F0A20' : '#34C75920' }]}>
-                    <Text style={[styles.statusText, { color: b.status === 'pending' ? '#FF9F0A' : '#34C759' }]}>{b.status}</Text>
-                  </View>
-                </View>
-                <Text style={styles.bookingAddress}>{b.pickup_address || b.address || ''}</Text>
-                <Text style={styles.bookingDate}>{b.scheduled_date || b.scheduledDate || ''}</Text>
-              </TouchableOpacity>
-            ))
-          )}
-        </View>
+            <Text style={{ fontSize: 13, color: mutedColor, marginTop: 6 }}>
+              {loyalty.points || 0} points • {loyalty.nextTierPoints ? `${loyalty.nextTierPoints - (loyalty.points || 0)} to next tier` : 'Top tier!'}
+            </Text>
+          </View>
+        )}
+
+        {/* Active Bookings */}
+        <Text style={{ fontSize: 18, fontWeight: '700', color: textColor, marginBottom: 12 }}>Active Bookings</Text>
+        {activeBookings.length === 0 ? (
+          <EmptyState
+            icon="📋"
+            title="No Active Bookings"
+            description="Book a service to get started!"
+            ctaLabel="Book Now"
+            onCta={() => navigation?.navigate?.('Book')}
+          />
+        ) : (
+          activeBookings.map((b: any, i: number) => (
+            <View key={b.id || i} style={{ backgroundColor: cardBg, borderRadius: 14, padding: 16, marginBottom: 8 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text style={{ fontSize: 15, fontWeight: '600', color: textColor, textTransform: 'capitalize' }}>
+                  {(b.service_type || b.serviceType || '').replace(/_/g, ' ')}
+                </Text>
+                <Badge status={b.status === 'pending' ? 'pending' : b.status === 'in_progress' ? 'in_progress' : 'completed'} />
+              </View>
+              <Text style={{ fontSize: 13, color: mutedColor, marginTop: 6 }}>{b.pickup_address || b.address || ''}</Text>
+              <Text style={{ fontSize: 12, color: colors.primary, marginTop: 4 }}>{b.scheduled_date || b.scheduledDate || ''}</Text>
+            </View>
+          ))
+        )}
 
         {/* Recent Completed */}
         {completedBookings.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Recent Jobs</Text>
-            {completedBookings.slice(0, 3).map((b: any, i: number) => (
-              <View key={b.id || i} style={styles.completedCard}>
-                <Text style={styles.completedService}>{(b.service_type || '').replace(/_/g, ' ')}</Text>
-                <Text style={styles.completedDate}>{b.scheduled_date || ''}</Text>
+          <>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: textColor, marginTop: 20, marginBottom: 12 }}>
+              Recent Jobs
+            </Text>
+            {completedBookings.slice(0, 5).map((b: any, i: number) => (
+              <View key={b.id || i} style={{
+                flexDirection: 'row', justifyContent: 'space-between',
+                padding: 12, backgroundColor: cardBg, borderRadius: 10, marginBottom: 6,
+              }}>
+                <Text style={{ fontSize: 14, color: textColor, textTransform: 'capitalize' }}>
+                  {(b.service_type || '').replace(/_/g, ' ')}
+                </Text>
+                <Text style={{ fontSize: 13, color: mutedColor }}>{b.scheduled_date || ''}</Text>
               </View>
             ))}
-          </View>
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  scroll: { padding: 16 },
-  statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
-  statCard: { flex: 1, alignItems: 'center', backgroundColor: Colors.surface, borderRadius: 16, padding: 14, marginHorizontal: 3 },
-  statValue: { fontSize: 20, fontWeight: '800', color: Colors.primary },
-  statLabel: { fontSize: 11, color: Colors.textLight, marginTop: 4 },
-  quickActions: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
-  quickBtn: { flex: 1, alignItems: 'center', backgroundColor: Colors.surface, borderRadius: 16, padding: 14, marginHorizontal: 3 },
-  quickEmoji: { fontSize: 24 },
-  quickLabel: { fontSize: 11, color: Colors.textLight, marginTop: 6, textAlign: 'center' },
-  section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: 12 },
-  emptyCard: { padding: 24, backgroundColor: Colors.surface, borderRadius: 16, alignItems: 'center' },
-  emptyText: { fontSize: 14, color: Colors.textLight, textAlign: 'center' },
-  bookingCard: { backgroundColor: Colors.surface, borderRadius: 12, padding: 16, marginBottom: 8 },
-  bookingTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  bookingService: { fontSize: 15, fontWeight: '600', color: Colors.text, textTransform: 'capitalize' },
-  statusBadge: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 8 },
-  statusText: { fontSize: 12, fontWeight: '600', textTransform: 'capitalize' },
-  bookingAddress: { fontSize: 13, color: Colors.textLight, marginTop: 6 },
-  bookingDate: { fontSize: 12, color: Colors.primary, marginTop: 4 },
-  completedCard: { flexDirection: 'row', justifyContent: 'space-between', padding: 12, backgroundColor: Colors.surface, borderRadius: 10, marginBottom: 6 },
-  completedService: { fontSize: 14, color: Colors.text, textTransform: 'capitalize' },
-  completedDate: { fontSize: 13, color: Colors.textLight },
-});

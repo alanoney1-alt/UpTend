@@ -53,7 +53,11 @@ export async function generateContentBatch(
 
   for (let i = 0; i < selectedTopics.length; i++) {
     const topic = selectedTopics[i];
-    const video = getVideoRefForTopic(topic);
+    const video = await getVideoRefForTopic(topic);
+    if (!video) {
+      console.warn(`⚠️  No real video found for "${topic}", skipping`);
+      continue;
+    }
     const review = generateDIYReview(topic, video.category);
 
     // Generate one post per platform

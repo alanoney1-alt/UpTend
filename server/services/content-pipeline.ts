@@ -102,33 +102,90 @@ export async function findAllTrendingVideos(): Promise<DIYVideo[]> {
   return all;
 }
 
+// ─── In-memory cache for YouTube search results ─────────────────────────────
+const videoCache = new Map<string, { videos: DIYVideo[]; cachedAt: number }>();
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+const TOPIC_CATEGORY_MAP: Record<string, DIYCategory> = {
+  'Running toilet fix': 'plumbing',
+  'Clogged drain': 'plumbing',
+  'Squeaky door hinge': 'doors',
+  'Replace light switch': 'electrical',
+  'Patch drywall hole': 'walls',
+  'Clean dryer vent': 'hvac',
+  'Fix leaky faucet': 'plumbing',
+  'Replace toilet flapper': 'plumbing',
+  'Unclog garbage disposal': 'appliances',
+  'Install smart thermostat': 'electrical',
+};
+
 /**
- * Get a curated video reference for a specific DIY topic.
- * Used by the batch generator for known topics.
+ * Get a real video reference for a specific DIY topic.
+ * Searches YouTube via the real search in findTrendingDIYVideos, with caching.
+ * Returns null if no real video can be found (no fake data).
  */
-export function getVideoRefForTopic(topic: string): DIYVideo {
-  const categoryMap: Record<string, DIYCategory> = {
-    'Running toilet fix': 'plumbing',
-    'Clogged drain': 'plumbing',
-    'Squeaky door hinge': 'doors',
-    'Replace light switch': 'electrical',
-    'Patch drywall hole': 'walls',
-    'Clean dryer vent': 'hvac',
-    'Fix leaky faucet': 'plumbing',
-    'Replace toilet flapper': 'plumbing',
-    'Unclog garbage disposal': 'appliances',
-    'Install smart thermostat': 'electrical',
-  };
+export async function getVideoRefForTopic(topic: string): Promise<DIYVideo | null> {
+  const category = TOPIC_CATEGORY_MAP[topic] ?? 'plumbing';
 
-  const category = categoryMap[topic] ?? 'plumbing';
-  const fakeId = Buffer.from(topic).toString('base64url').slice(0, 11);
+  // Check cache
+  const cached = videoCache.get(topic);
+  if (cached && Date.now() - cached.cachedAt < CACHE_TTL_MS && cached.videos.length > 0) {
+    return cached.videos[0];
+  }
 
-  return {
-    title: `How to ${topic} — DIY Home Repair`,
-    videoId: fakeId,
-    thumbnailUrl: `https://img.youtube.com/vi/${fakeId}/hqdefault.jpg`,
-    viewCountEstimate: 100000 + Math.floor(Math.random() * 500000),
-    channelName: 'DIY Home Repair',
-    category,
-  };
+  try {
+    // Use the existing YouTube scraper from this file
+    const query = `DIY ${topic}`;
+    const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=CAMSAhAB`;
+    const res = await fetch(searchUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; UpTendBot/1.0)' },
+    });
+    const html = await res.text();
+
+    const videoIdMatches = html.match(/"videoId":"([a-zA-Z0-9_-]{11})"/g) ?? [];
+    const seen = new Set<string>();
+
+    for (const match of videoIdMatches.slice(0, 3)) {
+      const id = match.match(/"videoId":"([a-zA-Z0-9_-]{11})"/)?.[1];
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+
+      try {
+        const oembedRes = await fetch(
+          `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`
+        );
+        if (!oembedRes.ok) continue;
+        const oembed = (await oembedRes.json()) as {
+          title: string;
+          author_name: string;
+          thumbnail_url?: string;
+        };
+
+        const video: DIYVideo = {
+          title: oembed.title,
+          videoId: id,
+          thumbnailUrl: oembed.thumbnail_url ?? `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+          viewCountEstimate: 0, // unknown without API key
+          channelName: oembed.author_name,
+          category,
+        };
+
+        // Cache result
+        const existing = videoCache.get(topic);
+        if (existing) {
+          existing.videos.push(video);
+        } else {
+          videoCache.set(topic, { videos: [video], cachedAt: Date.now() });
+        }
+
+        return video;
+      } catch {
+        // skip individual errors
+      }
+    }
+  } catch {
+    // YouTube search failed — return null, not fake data
+  }
+
+  return null;
 }

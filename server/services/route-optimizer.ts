@@ -5,6 +5,7 @@
  */
 
 import { pool } from "../db.js";
+import { getOptimizedRoute as googleOptimizeRoute } from "./google-maps";
 
 interface JobStop {
   jobId: string;
@@ -164,10 +165,47 @@ export async function optimizeRoute(proId: string, date: string): Promise<Optimi
     };
   }
 
-  // Optimize
-  const nnRoute = nearestNeighbor(jobs);
-  const optimized = twoOpt(nnRoute);
-  const metrics = calculateMetrics(optimized);
+  // Try Google waypoint optimization for < 25 stops
+  let optimized: JobStop[];
+  let metrics: ReturnType<typeof calculateMetrics>;
+
+  if (jobs.length < 25) {
+    try {
+      const origin = { lat: jobs[0].lat, lng: jobs[0].lng };
+      const stops = jobs.map((j) => ({ id: j.jobId, lat: j.lat, lng: j.lng, address: j.address }));
+      const googleResult = await googleOptimizeRoute(origin, stops);
+
+      // Reorder jobs by Google's optimized order
+      const orderMap = new Map(jobs.map((j) => [j.jobId, j]));
+      optimized = googleResult.optimizedOrder
+        .map((id) => orderMap.get(id))
+        .filter((j): j is JobStop => j != null);
+
+      metrics = {
+        totalDistance: googleResult.totalDistanceMiles,
+        totalDriveTime: googleResult.totalDurationMinutes,
+        fuelEstimate: parseFloat((googleResult.totalDistanceMiles * FUEL_COST_PER_MILE).toFixed(2)),
+        legs: googleResult.legs.map((l) => ({
+          from: l.from,
+          to: l.to,
+          distance: l.distanceMiles,
+          driveTime: l.durationMinutes,
+        })),
+      };
+
+      console.log(`[route-optimizer] Google optimized ${jobs.length} stops: ${metrics.totalDistance} mi, ${metrics.totalDriveTime} min`);
+    } catch (err) {
+      console.warn("[route-optimizer] Google optimization failed, falling back to Haversine:", err);
+      const nnRoute = nearestNeighbor(jobs);
+      optimized = twoOpt(nnRoute);
+      metrics = calculateMetrics(optimized);
+    }
+  } else {
+    // > 25 stops: use Haversine
+    const nnRoute = nearestNeighbor(jobs);
+    optimized = twoOpt(nnRoute);
+    metrics = calculateMetrics(optimized);
+  }
 
   // Store route plan
   await pool.query(

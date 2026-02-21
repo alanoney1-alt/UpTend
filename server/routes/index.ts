@@ -98,6 +98,9 @@ import { registerContactRoutes } from "./contact.routes";
 // Google API routes
 import { registerGoogleApiRoutes } from "./google-api.routes";
 
+// Google Maps routes
+import { registerMapsRoutes } from "./maps.routes";
+
 // Property routes
 import { registerPropertyValuationRoutes } from "./property/valuation.routes";
 
@@ -348,6 +351,9 @@ export async function registerRoutes(
 
   // Register Google API routes
   registerGoogleApiRoutes(app);
+
+  // Register Google Maps routes
+  registerMapsRoutes(app);
 
   // Register Property valuation routes
   registerPropertyValuationRoutes(app);

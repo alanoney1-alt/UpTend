@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ActivityIndicator, View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { Colors } from '../theme/colors';
 import SignUpModal from '../components/SignUpModal';
+import linking from '../config/linking';
+import { useNotifications } from '../hooks/useNotifications';
+import { setNavigationRef } from '../services/notifications';
 
 // Auth screens
 import OnboardingScreen from '../screens/OnboardingScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 
 // Shared screens
 import GeorgeChatScreen from '../screens/GeorgeChatScreen';
@@ -21,6 +25,10 @@ import VoiceMode from '../screens/VoiceMode';
 import VerifyProScreen from '../screens/VerifyProScreen';
 import BookingScreen from '../screens/BookingScreen';
 import EmergencyScreen from '../screens/EmergencyScreen';
+
+// Core screens
+import HomeScreen from '../screens/HomeScreen';
+import ProListScreen from '../screens/ProListScreen';
 
 // New screens
 import HomeScanScreen from '../screens/HomeScanScreen';
@@ -93,10 +101,20 @@ const CustomerStack = createNativeStackNavigator();
 function CustomerGeorgeStack() {
   return (
     <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
-      <CustomerStack.Screen name="GeorgeChat" component={GeorgeHomeScreen} />
+      <CustomerStack.Screen name="HomeScreen" component={HomeScreen} />
+      <CustomerStack.Screen name="GeorgeChat" component={GeorgeChatScreen} />
       <CustomerStack.Screen name="ARCamera" component={ARCameraScreen} options={{ presentation: 'fullScreenModal' }} />
       <CustomerStack.Screen name="VoiceMode" component={VoiceMode} options={{ presentation: 'fullScreenModal' }} />
       <CustomerStack.Screen name="Calendar" component={CalendarScreen} />
+    </CustomerStack.Navigator>
+  );
+}
+
+function CustomerProListStack() {
+  return (
+    <CustomerStack.Navigator screenOptions={{ headerShown: false }}>
+      <CustomerStack.Screen name="ProListHome" component={ProListScreen} />
+      <CustomerStack.Screen name="GeorgeChat" component={GeorgeChatScreen} />
     </CustomerStack.Navigator>
   );
 }
@@ -303,19 +321,19 @@ function CustomerTabs() {
         }}
       />
       <Tab.Screen
-        name="HomeScan"
-        component={CustomerHomeScanStack}
+        name="FindPro"
+        component={CustomerProListStack}
         options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'home' : 'home-outline'} focused={focused} />,
+          tabBarLabel: 'Find Pro',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'search' : 'search-outline'} focused={focused} />,
         }}
       />
       <Tab.Screen
         name="More"
         component={CustomerMoreStack}
         options={{
-          tabBarLabel: 'More',
-          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'grid' : 'grid-outline'} focused={focused} />,
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ focused }) => <TabBarIcon name={focused ? 'person-circle' : 'person-circle-outline'} focused={focused} />,
         }}
       />
     </Tab.Navigator>
@@ -421,6 +439,7 @@ function OnboardingNavigator({ onComplete }: { onComplete: () => void }) {
         {(props) => <WelcomeScreen {...props} onComplete={onComplete} />}
       </OnboardingStack.Screen>
       <OnboardingStack.Screen name="Login" component={LoginScreen} />
+      <OnboardingStack.Screen name="Register" component={RegisterScreen} />
     </OnboardingStack.Navigator>
   );
 }
@@ -431,6 +450,10 @@ export default function AppNavigator() {
   const { user, role, loading, guestMode, pendingAction, setPendingAction } = useAuth();
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [hasOnboarded, setHasOnboarded] = useState(false);
+  const navigationRef = useRef<NavigationContainerRef<any>>(null);
+
+  // Wire up push notifications
+  useNotifications();
 
   React.useEffect(() => {
     if (pendingAction && guestMode) {
@@ -464,7 +487,11 @@ export default function AppNavigator() {
   // }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      ref={navigationRef}
+      linking={linking}
+      onReady={() => setNavigationRef(navigationRef.current)}
+    >
       {getMainTabs()}
       <SignUpModal
         visible={showSignUpModal}

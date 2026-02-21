@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1284" height="2778" viewBox="0 0 1284 2778">
+  <rect width="1284" height="2778" fill="#FFFBF5"/>
+  <!-- House icon centered -->
+  <g transform="translate(492, 1100)">
+    <defs>
+      <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F59E0B"/>
+        <stop offset="100%" stop-color="#D97706"/>
+      </linearGradient>
+    </defs>
+    <path d="M150 0 L0 130 L40 130 L40 260 L260 260 L260 130 L300 130 Z" 
+          fill="url(#iconGrad)"/>
+    <rect x="115" y="170" width="70" height="90" rx="6" fill="#FFFBF5" opacity="0.8"/>
+  </g>
+  <!-- App name -->
+  <text x="642" y="1500" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" 
+        font-size="72" font-weight="700" fill="#1F2937">UpTend</text>
+  <!-- Tagline -->
+  <text x="642" y="1580" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" 
+        font-size="36" fill="#6B7280">Your Home, Handled.</text>
+</svg>

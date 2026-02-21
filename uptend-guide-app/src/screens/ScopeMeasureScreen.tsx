@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Colors } from '../theme/colors';
+import { saveScopeMeasurement } from '../services/api';
 
 interface Measurement {
   type: string;
@@ -10,10 +10,12 @@ interface Measurement {
   icon: string;
 }
 
-export default function ScopeMeasureScreen({ navigation }: any) {
+export default function ScopeMeasureScreen({ navigation, route }: any) {
+  const jobId = route?.params?.jobId;
   const [measuring, setMeasuring] = useState(false);
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [confirmed, setConfirmed] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const simulateMeasure = () => {
     setMeasuring(true);
@@ -27,16 +29,25 @@ export default function ScopeMeasureScreen({ navigation }: any) {
     }, 2000);
   };
 
+  const handleConfirm = async () => {
+    setSaving(true);
+    try {
+      await saveScopeMeasurement({ jobId, measurements });
+      setConfirmed(true);
+    } catch (e: any) {
+      Alert.alert('Error', e.message || 'Could not save measurement');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* Camera view */}
       <View style={styles.cameraArea}>
         <View style={styles.cameraPlaceholder}>
           <Text style={styles.cameraIcon}>📷</Text>
           <Text style={styles.cameraText}>Point camera at the area to measure</Text>
         </View>
-
-        {/* Measurement overlay */}
         {measurements.length > 0 && (
           <View style={styles.measureOverlay}>
             <View style={styles.measureLine1} />
@@ -45,8 +56,6 @@ export default function ScopeMeasureScreen({ navigation }: any) {
             <View style={styles.measureLabel2}><Text style={styles.measureLabelText}>35.7 ft</Text></View>
           </View>
         )}
-
-        {/* Scan corners */}
         <View style={styles.corners}>
           <View style={[styles.corner, styles.cTL]} />
           <View style={[styles.corner, styles.cTR]} />
@@ -55,13 +64,11 @@ export default function ScopeMeasureScreen({ navigation }: any) {
         </View>
       </View>
 
-      {/* Results panel */}
       <View style={styles.panel}>
         <View style={styles.panelHandle} />
-
         {measurements.length === 0 ? (
           <View style={styles.emptyState}>
-            <TouchableOpacity style={styles.measureBtn} onPress={simulateMeasure}>
+            <TouchableOpacity style={styles.measureBtn} onPress={simulateMeasure} disabled={measuring}>
               <Text style={styles.measureBtnText}>{measuring ? '🔄 Measuring...' : '📐 Measure Area'}</Text>
             </TouchableOpacity>
             <Text style={styles.hint}>AI will estimate dimensions from your camera</Text>
@@ -79,7 +86,6 @@ export default function ScopeMeasureScreen({ navigation }: any) {
                 </View>
               ))}
             </View>
-
             {confirmed ? (
               <View style={styles.confirmedBanner}>
                 <Text style={styles.confirmedText}>✓ Scope Confirmed & Locked</Text>
@@ -89,16 +95,12 @@ export default function ScopeMeasureScreen({ navigation }: any) {
                 <TouchableOpacity style={styles.remeasureBtn} onPress={simulateMeasure}>
                   <Text style={styles.remeasureBtnText}>Re-measure</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.confirmBtn} onPress={() => setConfirmed(true)}>
-                  <Text style={styles.confirmBtnText}>✓ Confirm Scope</Text>
+                <TouchableOpacity style={styles.confirmBtn} onPress={handleConfirm} disabled={saving}>
+                  <Text style={styles.confirmBtnText}>{saving ? 'Saving...' : '✓ Confirm Scope'}</Text>
                 </TouchableOpacity>
               </View>
             )}
-
-            <TouchableOpacity
-              style={styles.materialsBtn}
-              onPress={() => navigation.navigate('MaterialList', { measurements })}
-            >
+            <TouchableOpacity style={styles.materialsBtn} onPress={() => navigation.navigate('MaterialList', { measurements, jobId })}>
               <Text style={styles.materialsBtnText}>📋 Calculate Materials Needed</Text>
             </TouchableOpacity>
           </>

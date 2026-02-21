@@ -1,212 +1,204 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-
-const BID_PIPELINE = [
-  { id: '1', title: 'City Hall HVAC Replacement', agency: 'City of Tampa', dueDate: 'Mar 15, 2026', value: '$340,000', status: 'Drafting', emoji: '🏛️' },
-  { id: '2', title: 'VA Hospital Grounds Maintenance', agency: 'Dept of Veterans Affairs', dueDate: 'Feb 28, 2026', value: '$1,200,000', status: 'Submitted', emoji: '🏥' },
-  { id: '3', title: 'School District Roof Repairs', agency: 'Hillsborough County Schools', dueDate: 'Apr 1, 2026', value: '$560,000', status: 'Under Review', emoji: '🏫' },
-  { id: '4', title: 'Highway Rest Stop Renovation', agency: 'FL DOT', dueDate: 'May 10, 2026', value: '$890,000', status: 'Won', emoji: '🛣️' },
-];
-
-const PREVAILING_WAGES = [
-  { trade: 'Electrician', county: 'Hillsborough', rate: '$42.50/hr', fringe: '$18.75/hr' },
-  { trade: 'Plumber', county: 'Hillsborough', rate: '$40.00/hr', fringe: '$17.25/hr' },
-  { trade: 'HVAC Mechanic', county: 'Pinellas', rate: '$38.75/hr', fringe: '$16.50/hr' },
-  { trade: 'Carpenter', county: 'Hillsborough', rate: '$35.00/hr', fringe: '$15.00/hr' },
-  { trade: 'Laborer', county: 'Hillsborough', rate: '$28.00/hr', fringe: '$12.50/hr' },
-];
-
-const PAYROLL_RECORDS = [
-  { id: '1', contract: 'Highway Rest Stop', weekEnding: 'Feb 7, 2026', workers: 12, totalHours: 480, status: 'Certified' },
-  { id: '2', contract: 'Highway Rest Stop', weekEnding: 'Jan 31, 2026', workers: 12, totalHours: 456, status: 'Certified' },
-  { id: '3', contract: 'VA Hospital Grounds', weekEnding: 'Feb 7, 2026', workers: 8, totalHours: 320, status: 'Pending' },
-];
-
-const DBE_TRACKING = [
-  { id: '1', vendor: 'Martinez Electric LLC', certType: 'MBE / DBE', contract: 'Highway Rest Stop', amount: '$124,000', pct: '14%' },
-  { id: '2', vendor: 'Santos Plumbing Co', certType: 'WBE', contract: 'Highway Rest Stop', amount: '$89,000', pct: '10%' },
-  { id: '3', vendor: 'Kim HVAC Solutions', certType: 'SDVOSB', contract: 'VA Hospital', amount: '$210,000', pct: '17.5%' },
-];
-
-const FEMA_POOL = [
-  { id: '1', name: 'Carlos Martinez', trade: 'Electrician', equipment: 'Generator, tools', radius: '150 mi', activated: false },
-  { id: '2', name: 'James Rivera', trade: 'Plumber', equipment: 'Pump, tools', radius: '100 mi', activated: true },
-  { id: '3', name: 'David Kim', trade: 'HVAC', equipment: 'Full mobile unit', radius: '200 mi', activated: false },
-];
+import { fetchGovBids, fetchGovSAMStatus, fetchPrevailingWages, fetchPayrollRecords, fetchDBETracking, fetchFEMAPool } from '../services/api';
+import ApiStateWrapper from '../components/ApiStateWrapper';
 
 const BID_STATUS_STYLES: Record<string, { bg: string; color: string }> = {
-  'Drafting': { bg: '#F3F4F6', color: '#6B7280' },
-  'Submitted': { bg: '#DBEAFE', color: '#2563EB' },
-  'Under Review': { bg: '#FEF3C7', color: '#D97706' },
-  'Won': { bg: '#D1FAE5', color: '#059669' },
-  'Lost': { bg: '#FEE2E2', color: '#DC2626' },
-  'Certified': { bg: '#D1FAE5', color: '#059669' },
+  'Drafting': { bg: '#F3F4F6', color: '#6B7280' }, 'Submitted': { bg: '#DBEAFE', color: '#2563EB' },
+  'Under Review': { bg: '#FEF3C7', color: '#D97706' }, 'Won': { bg: '#D1FAE5', color: '#059669' },
+  'Lost': { bg: '#FEE2E2', color: '#DC2626' }, 'Certified': { bg: '#D1FAE5', color: '#059669' },
   'Pending': { bg: '#FEF3C7', color: '#D97706' },
 };
 
 export default function GovernmentContractsScreen() {
   const [activeTab, setActiveTab] = useState<'bids' | 'wages' | 'payroll' | 'dbe' | 'fema'>('bids');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [sam, setSam] = useState<any>(null);
+  const [bids, setBids] = useState<any[]>([]);
+  const [wages, setWages] = useState<any[]>([]);
+  const [payroll, setPayroll] = useState<any[]>([]);
+  const [dbe, setDbe] = useState<any>({ vendors: [], goalProgress: 0 });
+  const [fema, setFema] = useState<any[]>([]);
+
+  const load = async () => {
+    setLoading(true); setError(null);
+    try {
+      const [samRes, bidRes, wRes, pRes, dRes, fRes] = await Promise.allSettled([
+        fetchGovSAMStatus(), fetchGovBids(), fetchPrevailingWages(), fetchPayrollRecords(), fetchDBETracking(), fetchFEMAPool(),
+      ]);
+      setSam(samRes.status === 'fulfilled' ? samRes.value : null);
+      setBids(bidRes.status === 'fulfilled' ? (bidRes.value?.bids || bidRes.value || []) : []);
+      setWages(wRes.status === 'fulfilled' ? (wRes.value?.wages || wRes.value || []) : []);
+      setPayroll(pRes.status === 'fulfilled' ? (pRes.value?.records || pRes.value || []) : []);
+      const dbeData = dRes.status === 'fulfilled' ? dRes.value : {};
+      setDbe({ vendors: dbeData?.vendors || dbeData || [], goalProgress: dbeData?.goalProgress || 0 });
+      setFema(fRes.status === 'fulfilled' ? (fRes.value?.pool || fRes.value || []) : []);
+    } catch (e: any) { setError(e?.message || 'Failed to load'); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { load(); }, []);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Government Contracts</Text>
-          <Text style={styles.subtitle}>Bids, payroll, compliance & FEMA</Text>
-        </View>
-
-        {/* SAM Status */}
-        <View style={styles.samCard}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.samTitle}>🏛️ SAM.gov Registration</Text>
-            <Text style={styles.samDetail}>UEI: K8JX2NP4L7M3 • CAGE: 7A2B9</Text>
-            <Text style={styles.samDetail}>NAICS: 236220, 238210, 561730</Text>
+      <ApiStateWrapper loading={loading} error={error} onRetry={load}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Government Contracts</Text>
+            <Text style={styles.subtitle}>Bids, payroll, compliance & FEMA</Text>
           </View>
-          <View style={[styles.badge, { backgroundColor: '#D1FAE5' }]}>
-            <Text style={[styles.badgeText, { color: '#059669' }]}>Active</Text>
-          </View>
-        </View>
 
-        {/* Tabs */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScroll}>
-          <View style={styles.tabs}>
-            {([['bids', '📋 Bids'], ['wages', '💰 Wages'], ['payroll', '📊 Payroll'], ['dbe', '🤝 DBE'], ['fema', '🌪️ FEMA']] as const).map(([key, label]) => (
-              <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
-                <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
-
-        {/* Bids */}
-        {activeTab === 'bids' && BID_PIPELINE.map((bid) => {
-          const s = BID_STATUS_STYLES[bid.status] || BID_STATUS_STYLES['Drafting'];
-          return (
-            <View key={bid.id} style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.bidEmoji}>{bid.emoji}</Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.cardTitle}>{bid.title}</Text>
-                  <Text style={styles.cardSubtitle}>{bid.agency}</Text>
-                </View>
-                <View style={[styles.badge, { backgroundColor: s.bg }]}>
-                  <Text style={[styles.badgeText, { color: s.color }]}>{bid.status}</Text>
-                </View>
+          {sam && (
+            <View style={styles.samCard}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.samTitle}>🏛️ SAM.gov Registration</Text>
+                <Text style={styles.samDetail}>UEI: {sam.uei || '—'} • CAGE: {sam.cage || '—'}</Text>
+                <Text style={styles.samDetail}>NAICS: {sam.naics || '—'}</Text>
               </View>
-              <View style={styles.cardRow}>
-                <Text style={styles.bidValue}>{bid.value}</Text>
-                <Text style={styles.cardDetail}>Due: {bid.dueDate}</Text>
+              <View style={[styles.badge, { backgroundColor: sam.active ? '#D1FAE5' : '#FEE2E2' }]}>
+                <Text style={[styles.badgeText, { color: sam.active ? '#059669' : '#DC2626' }]}>{sam.active ? 'Active' : 'Inactive'}</Text>
               </View>
             </View>
-          );
-        })}
+          )}
 
-        {/* Wages */}
-        {activeTab === 'wages' && (
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>Davis-Bacon Prevailing Wages</Text>
-            {PREVAILING_WAGES.map((w, i) => (
-              <View key={i} style={[styles.wageRow, i < PREVAILING_WAGES.length - 1 && styles.wageRowBorder]}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.wageTrade}>{w.trade}</Text>
-                  <Text style={styles.wageCounty}>{w.county} County</Text>
-                </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={styles.wageRate}>{w.rate}</Text>
-                  <Text style={styles.wageFringe}>+{w.fringe} fringe</Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Payroll */}
-        {activeTab === 'payroll' && (
-          <>
-            <TouchableOpacity style={styles.uploadBtn}>
-              <Text style={styles.uploadBtnText}>📋 Generate WH-347 Report</Text>
-            </TouchableOpacity>
-            {PAYROLL_RECORDS.map((p) => {
-              const s = BID_STATUS_STYLES[p.status] || BID_STATUS_STYLES['Pending'];
-              return (
-                <View key={p.id} style={styles.card}>
-                  <View style={styles.cardHeader}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.cardTitle}>{p.contract}</Text>
-                      <Text style={styles.cardSubtitle}>Week ending: {p.weekEnding}</Text>
-                    </View>
-                    <View style={[styles.badge, { backgroundColor: s.bg }]}>
-                      <Text style={[styles.badgeText, { color: s.color }]}>{p.status}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.cardRow}>
-                    <Text style={styles.cardDetail}>{p.workers} workers</Text>
-                    <Text style={styles.cardDetail}>{p.totalHours} total hours</Text>
-                  </View>
-                </View>
-              );
-            })}
-          </>
-        )}
-
-        {/* DBE */}
-        {activeTab === 'dbe' && (
-          <>
-            <View style={styles.dbeGoalCard}>
-              <Text style={styles.dbeGoalTitle}>DBE Goal Progress</Text>
-              <View style={styles.progressBar}><View style={[styles.progressFill, { width: '72%' }]} /></View>
-              <Text style={styles.dbeGoalDetail}>72% of 15% goal achieved across active contracts</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScroll}>
+            <View style={styles.tabs}>
+              {([['bids', '📋 Bids'], ['wages', '💰 Wages'], ['payroll', '📊 Payroll'], ['dbe', '🤝 DBE'], ['fema', '🌪️ FEMA']] as const).map(([key, label]) => (
+                <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
+                  <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
-            {DBE_TRACKING.map((d) => (
-              <View key={d.id} style={styles.card}>
+          </ScrollView>
+
+          {activeTab === 'bids' && (bids.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No bids found</Text></View>
+          ) : bids.map((bid: any) => {
+            const s = BID_STATUS_STYLES[bid.status] || BID_STATUS_STYLES['Drafting'];
+            return (
+              <View key={bid.id || bid._id} style={styles.card}>
                 <View style={styles.cardHeader}>
+                  <Text style={styles.bidEmoji}>{bid.emoji || '🏛️'}</Text>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.cardTitle}>{d.vendor}</Text>
-                    <Text style={styles.cardSubtitle}>{d.certType} • {d.contract}</Text>
+                    <Text style={styles.cardTitle}>{bid.title}</Text>
+                    <Text style={styles.cardSubtitle}>{bid.agency}</Text>
+                  </View>
+                  <View style={[styles.badge, { backgroundColor: s.bg }]}>
+                    <Text style={[styles.badgeText, { color: s.color }]}>{bid.status}</Text>
                   </View>
                 </View>
                 <View style={styles.cardRow}>
-                  <Text style={styles.bidValue}>{d.amount}</Text>
-                  <Text style={styles.cardDetail}>{d.pct} of contract</Text>
+                  <Text style={styles.bidValue}>{bid.value}</Text>
+                  <Text style={styles.cardDetail}>Due: {bid.dueDate}</Text>
                 </View>
               </View>
-            ))}
-          </>
-        )}
+            );
+          }))}
 
-        {/* FEMA */}
-        {activeTab === 'fema' && (
-          <>
-            <View style={[styles.samCard, { backgroundColor: '#FEF3C7' }]}>
-              <Text style={{ fontSize: 14, color: '#92400E' }}>🌪️ FEMA Pre-Registration Pool — 3 pros registered, 1 currently activated</Text>
-            </View>
-            {FEMA_POOL.map((f) => (
-              <View key={f.id} style={styles.card}>
-                <View style={styles.cardHeader}>
+          {activeTab === 'wages' && (
+            <View style={styles.card}>
+              <Text style={styles.sectionTitle}>Davis-Bacon Prevailing Wages</Text>
+              {wages.length === 0 ? <Text style={styles.emptyText}>No wage data</Text> : wages.map((w: any, i: number) => (
+                <View key={i} style={[styles.wageRow, i < wages.length - 1 && styles.wageRowBorder]}>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.cardTitle}>{f.name}</Text>
-                    <Text style={styles.cardSubtitle}>{f.trade} • {f.equipment}</Text>
+                    <Text style={styles.wageTrade}>{w.trade}</Text>
+                    <Text style={styles.wageCounty}>{w.county} County</Text>
                   </View>
-                  {f.activated ? (
-                    <View style={[styles.badge, { backgroundColor: '#FEE2E2' }]}>
-                      <Text style={[styles.badgeText, { color: '#DC2626' }]}>🔴 Activated</Text>
-                    </View>
-                  ) : (
-                    <View style={[styles.badge, { backgroundColor: '#D1FAE5' }]}>
-                      <Text style={[styles.badgeText, { color: '#059669' }]}>Standby</Text>
-                    </View>
-                  )}
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={styles.wageRate}>{w.rate}</Text>
+                    <Text style={styles.wageFringe}>+{w.fringe} fringe</Text>
+                  </View>
                 </View>
-                <Text style={styles.cardDetail}>Response radius: {f.radius}</Text>
-              </View>
-            ))}
-          </>
-        )}
+              ))}
+            </View>
+          )}
 
-        <View style={{ height: 20 }} />
-      </ScrollView>
+          {activeTab === 'payroll' && (
+            <>
+              <TouchableOpacity style={styles.uploadBtn}><Text style={styles.uploadBtnText}>📋 Generate WH-347 Report</Text></TouchableOpacity>
+              {payroll.length === 0 ? (
+                <View style={styles.emptyCard}><Text style={styles.emptyText}>No payroll records</Text></View>
+              ) : payroll.map((p: any) => {
+                const s = BID_STATUS_STYLES[p.status] || BID_STATUS_STYLES['Pending'];
+                return (
+                  <View key={p.id || p._id} style={styles.card}>
+                    <View style={styles.cardHeader}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.cardTitle}>{p.contract}</Text>
+                        <Text style={styles.cardSubtitle}>Week ending: {p.weekEnding}</Text>
+                      </View>
+                      <View style={[styles.badge, { backgroundColor: s.bg }]}>
+                        <Text style={[styles.badgeText, { color: s.color }]}>{p.status}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.cardRow}>
+                      <Text style={styles.cardDetail}>{p.workers} workers</Text>
+                      <Text style={styles.cardDetail}>{p.totalHours} total hours</Text>
+                    </View>
+                  </View>
+                );
+              })}
+            </>
+          )}
+
+          {activeTab === 'dbe' && (
+            <>
+              <View style={styles.dbeGoalCard}>
+                <Text style={styles.dbeGoalTitle}>DBE Goal Progress</Text>
+                <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${dbe.goalProgress}%` }]} /></View>
+                <Text style={styles.dbeGoalDetail}>{dbe.goalProgress}% of 15% goal achieved across active contracts</Text>
+              </View>
+              {(Array.isArray(dbe.vendors) ? dbe.vendors : []).map((d: any) => (
+                <View key={d.id || d._id} style={styles.card}>
+                  <View style={styles.cardHeader}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.cardTitle}>{d.vendor}</Text>
+                      <Text style={styles.cardSubtitle}>{d.certType} • {d.contract}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.cardRow}>
+                    <Text style={styles.bidValue}>{d.amount}</Text>
+                    <Text style={styles.cardDetail}>{d.pct} of contract</Text>
+                  </View>
+                </View>
+              ))}
+            </>
+          )}
+
+          {activeTab === 'fema' && (
+            <>
+              <View style={[styles.samCard, { backgroundColor: '#FEF3C7' }]}>
+                <Text style={{ fontSize: 14, color: '#92400E' }}>🌪️ FEMA Pre-Registration Pool — {fema.length} pros registered</Text>
+              </View>
+              {fema.map((f: any) => (
+                <View key={f.id || f._id} style={styles.card}>
+                  <View style={styles.cardHeader}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.cardTitle}>{f.name}</Text>
+                      <Text style={styles.cardSubtitle}>{f.trade} • {f.equipment}</Text>
+                    </View>
+                    {f.activated ? (
+                      <View style={[styles.badge, { backgroundColor: '#FEE2E2' }]}>
+                        <Text style={[styles.badgeText, { color: '#DC2626' }]}>🔴 Activated</Text>
+                      </View>
+                    ) : (
+                      <View style={[styles.badge, { backgroundColor: '#D1FAE5' }]}>
+                        <Text style={[styles.badgeText, { color: '#059669' }]}>Standby</Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.cardDetail}>Response radius: {f.radius}</Text>
+                </View>
+              ))}
+            </>
+          )}
+
+          <View style={{ height: 20 }} />
+        </ScrollView>
+      </ApiStateWrapper>
     </SafeAreaView>
   );
 }
@@ -250,4 +242,6 @@ const styles = StyleSheet.create({
   dbeGoalDetail: { fontSize: 13, color: Colors.textSecondary, marginTop: 8 },
   progressBar: { height: 10, backgroundColor: Colors.borderLight, borderRadius: 5 },
   progressFill: { height: 10, backgroundColor: Colors.primary, borderRadius: 5 },
+  emptyCard: { backgroundColor: Colors.white, borderRadius: 14, padding: 24, alignItems: 'center', marginBottom: 12 },
+  emptyText: { fontSize: 14, color: Colors.textSecondary },
 });

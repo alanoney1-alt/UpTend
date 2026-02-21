@@ -1,427 +1,205 @@
 import { usePageTitle } from "@/hooks/use-page-title";
-import { Link, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  ShieldCheck, ArrowRight, Globe, Leaf, Heart, Zap,
-  DollarSign, Clock, Ban, TrendingUp, Users, Star,
-  CheckCircle, ChevronRight, Wrench, Waves, Truck,
-  Package, Home, Trees, ArrowUpFromLine, Sparkles,
-  MessageCircle,
-} from "lucide-react";
 import { Footer } from "@/components/landing/footer";
-import { Header } from "@/components/landing/header";
-import { useTranslation } from "react-i18next";
+import {
+  MessageCircle, Droplets, Zap, Truck, TreePine, Bug,
+  Paintbrush, Wind, Flame, Home, Wrench, Sparkles, Shield,
+  ChevronDown, Send, Star,
+} from "lucide-react";
 
+/* ─── Design Tokens ─── */
+const T = {
+  bg: "#FFFBF5",
+  primary: "#F59E0B",
+  primaryDark: "#D97706",
+  text: "#1E293B",
+  textMuted: "#64748B",
+  card: "#FFFFFF",
+};
+
+/* ─── Services Data ─── */
+const SERVICES = [
+  { icon: Droplets, name: "Plumbing" },
+  { icon: Zap, name: "Electrical" },
+  { icon: Wind, name: "HVAC" },
+  { icon: Paintbrush, name: "Painting" },
+  { icon: Truck, name: "Junk Removal" },
+  { icon: TreePine, name: "Lawn Care" },
+  { icon: Bug, name: "Pest Control" },
+  { icon: Home, name: "Roofing" },
+  { icon: Flame, name: "Appliance Repair" },
+  { icon: Wrench, name: "Handyman" },
+  { icon: Sparkles, name: "Cleaning" },
+  { icon: Shield, name: "Security" },
+] as const;
+
+const CHIPS = ["Book a Pro", "DIY Help", "Get a Quote", "What services do you offer?"];
+
+function openGeorge(message?: string) {
+  window.dispatchEvent(new CustomEvent("george:open", { detail: message ? { message } : undefined }));
+}
+
+/* ─── Main Landing ─── */
 export default function Landing() {
   usePageTitle("UpTend | Home Services, Finally Done Right");
+
   return (
-    <div className="min-h-screen bg-background" data-testid="page-landing">
-      <Header />
-      <main>
-        <HeroSection />
-        <ServicesStrip />
-        <TwoSides />
-        <GeorgeBanner />
-        <TrustBar />
-        <FinalCTA />
-      </main>
+    <div style={{ background: T.bg }} className="min-h-screen" data-testid="page-landing">
+      <HeroChat />
+      <HowItWorks />
+      <TrustBar />
+      <ServicesGrid />
+      <SocialProof />
       <Footer />
     </div>
   );
 }
 
-/* ─── GEORGE BANNER ─── */
-function GeorgeBanner() {
+/* ─── Hero: Full-screen George Chat ─── */
+function HeroChat() {
   return (
-    <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-2.5 md:py-3 px-3 md:px-4 text-center">
-      <div className="max-w-4xl mx-auto flex items-center justify-center gap-1.5 md:gap-2">
-        <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
-        <span className="text-xs md:text-base font-medium">
-          <strong>Meet Mr. George</strong> — your AI assistant. Questions?{" "}
-          <Link href="/meet-george" className="underline font-bold hover:text-white/90 transition-colors">Ask Mr. George 👉</Link>
-        </span>
+    <section
+      className="relative flex flex-col items-center justify-center px-4 pt-16 pb-8"
+      style={{ minHeight: "100svh", color: T.text }}
+    >
+      {/* Avatar */}
+      <div
+        className="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg"
+        style={{ background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})` }}
+      >
+        G
       </div>
+      <h1 className="mt-4 text-2xl md:text-3xl font-bold tracking-tight">Mr. George</h1>
+      <p style={{ color: T.textMuted }} className="text-sm md:text-base mt-1">
+        Your Home Health Expert
+      </p>
+
+      {/* Greeting bubble */}
+      <div
+        className="mt-8 max-w-md w-full rounded-2xl px-5 py-4 text-base md:text-lg leading-relaxed shadow-sm"
+        style={{ background: T.card, color: T.text }}
+      >
+        Hey! I'm George. I know everything about homes — what's going on with yours today?
+      </div>
+
+      {/* Chat input */}
+      <div className="mt-8 max-w-md w-full">
+        <button
+          onClick={() => openGeorge()}
+          className="w-full flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-5 py-4 text-left text-base shadow-sm hover:shadow-md transition-shadow cursor-text"
+          style={{ color: T.textMuted }}
+        >
+          <span className="flex-1">Tell me what your home needs...</span>
+          <Send className="w-5 h-5 shrink-0" style={{ color: T.primary }} />
+        </button>
+
+        {/* Chips */}
+        <div className="flex flex-wrap gap-2 mt-4 justify-center">
+          {CHIPS.map((chip) => (
+            <button
+              key={chip}
+              onClick={() => openGeorge(chip)}
+              className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium hover:border-amber-300 hover:bg-amber-50 transition-colors"
+              style={{ color: T.text }}
+            >
+              {chip}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Scroll hint */}
+      <button
+        onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+        className="absolute bottom-6 animate-bounce"
+        aria-label="Scroll down"
+      >
+        <ChevronDown className="w-6 h-6" style={{ color: T.textMuted }} />
+      </button>
+    </section>
+  );
+}
+
+/* ─── How It Works ─── */
+function HowItWorks() {
+  const steps = [
+    { emoji: "💬", title: "Tell George", desc: "Describe what your home needs — anything from a leaky faucet to a full renovation." },
+    { emoji: "⚡", title: "He Handles It", desc: "George finds the right vetted pro, gets you a guaranteed price, and books it." },
+    { emoji: "🏠", title: "Your Home Wins", desc: "Sit back. Quality work, fair price, no surprises. Every time." },
+  ];
+
+  return (
+    <section id="how-it-works" className="py-20 px-4" style={{ color: T.text }}>
+      <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">How George Works</h2>
+      <div className="max-w-3xl mx-auto grid md:grid-cols-3 gap-8">
+        {steps.map((s, i) => (
+          <div key={i} className="text-center">
+            <div className="text-4xl mb-3">{s.emoji}</div>
+            <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
+            <p style={{ color: T.textMuted }} className="text-sm leading-relaxed">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─── Trust Bar ─── */
+function TrustBar() {
+  return (
+    <div
+      className="py-4 text-center text-sm md:text-base font-medium tracking-wide"
+      style={{ background: T.primary, color: "white" }}
+    >
+      12 Services &bull; Vetted Pros &bull; Guaranteed Prices &bull; Orlando Metro
     </div>
   );
 }
 
-/* ─── HERO ─── */
-function HeroSection() {
-  const { t, i18n } = useTranslation();
-  const toggleLanguage = () => i18n.changeLanguage(i18n.language === "en" ? "es" : "en");
-
+/* ─── Services Grid ─── */
+function ServicesGrid() {
   return (
-    <section className="relative pt-12 pb-20 overflow-hidden bg-slate-900 dark:bg-slate-950">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[#3B1D5A]/60 to-slate-900" />
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#3B1D5A]/20 rounded-full blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#F47C20]/10 rounded-full blur-[120px]" />
-
-      <div className="max-w-5xl mx-auto px-4 relative z-10 text-center">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
-          Home services,<br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F47C20] to-orange-300">
-            finally done right.
-          </span>
-        </h1>
-
-        <p className="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          Verified pros, upfront pricing, real accountability. Book in 60 seconds.
-        </p>
-
-        <div className="flex flex-wrap justify-center gap-4 mb-6">
-          <Link href="/book" asChild>
-            <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-10 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
-              Get Your Free Quote <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-3">
-          <div onClick={toggleLanguage} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleLanguage(); } }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/5 transition-all">
-            <Globe className="w-4 h-4 text-[#F47C20]" />
-            {i18n.language === "en" ? (
-              <span className="text-sm text-slate-400">¿Español? <span className="font-semibold text-[#F47C20]">Cambiar →</span></span>
-            ) : (
-              <span className="text-sm text-slate-400">English? <span className="font-semibold text-[#F47C20]">Switch →</span></span>
-            )}
-          </div>
-        </div>
+    <section className="py-16 px-4" style={{ color: T.text }}>
+      <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">What Can George Help With?</h2>
+      <div className="max-w-3xl mx-auto grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+        {SERVICES.map(({ icon: Icon, name }) => (
+          <button
+            key={name}
+            onClick={() => openGeorge(`I need help with ${name}`)}
+            className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <Icon className="w-7 h-7" style={{ color: T.primary }} />
+            <span className="text-xs font-medium text-center leading-tight">{name}</span>
+          </button>
+        ))}
       </div>
     </section>
   );
 }
 
-/* ─── THE INDUSTRY IS BROKEN ─── */
-function IndustryIsBroken() {
-  return (
-    <section className="py-20 bg-slate-950 text-white">
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="text-center mb-14">
-          <Badge className="bg-red-500/20 text-red-400 border-red-500/30 mb-4 text-sm font-bold">
-            The Problem
-          </Badge>
-          <h2 className="text-3xl md:text-4xl font-black mb-4">
-            Home services is broken.<br />
-            <span className="text-slate-400">For everyone.</span>
-          </h2>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {/* Customer pain */}
-          <Card className="bg-slate-800/60 border-slate-700">
-            <CardContent className="p-8">
-              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <Home className="w-5 h-5 text-orange-400" /> If you're a homeowner:
-              </h3>
-              <ul className="space-y-4">
-                {[
-                  { icon: Clock, text: "You call 5 contractors, maybe 2 call back" },
-                  { icon: DollarSign, text: "The quote is whatever they feel like charging" },
-                  { icon: Ban, text: "No insurance, no background check, no accountability" },
-                  { icon: Clock, text: "They no-show. You take another day off work." },
-                ].map((item) => (
-                  <li key={item.text} className="flex items-start gap-3">
-                    <item.icon className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Pro pain */}
-          <Card className="bg-slate-800/60 border-slate-700">
-            <CardContent className="p-8">
-              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <Wrench className="w-5 h-5 text-orange-400" /> If you're a Pro:
-              </h3>
-              <ul className="space-y-4">
-                {[
-                  { icon: DollarSign, text: "Platforms charge you $30-50 per lead — most don't convert" },
-                  { icon: Ban, text: "You compete on price against uninsured guys on Craigslist" },
-                  { icon: Clock, text: "Customers ghost, cancel, or dispute payments" },
-                  { icon: TrendingUp, text: "No path to grow. Just hustle harder." },
-                ].map((item) => (
-                  <li key={item.text} className="flex items-start gap-3">
-                    <item.icon className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-
-        <p className="text-center text-slate-500 mt-10 text-sm font-semibold uppercase tracking-wider">
-          Other platforms profit from this chaos. We're ending it.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-/* ─── UPTEND VERB ─── */
-function UpTendVerb() {
-  const { t } = useTranslation();
-  return (
-    <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
-      <div className="max-w-3xl mx-auto px-4 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
-          {t("landing.uptend_meaning_title")}
-        </h2>
-        <p className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: t("landing.uptend_meaning_body") }} />
-      </div>
-    </section>
-  );
-}
-
-/* ─── TWO SIDES: WHY CUSTOMERS + PROS NEED US ─── */
-function TwoSides() {
-  return (
-    <section className="py-20 bg-background">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="text-center mb-14">
-          <Badge className="bg-green-500/20 text-green-500 dark:text-green-400 border-green-500/30 mb-4 text-sm font-bold">
-            The Fix
-          </Badge>
-          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
-            Fair for customers.<br className="md:hidden" />{" "}Fair for Pros.<br />
-            <span className="text-[#C05600]">That's the whole point.</span>
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            When Pros are treated right, customers get better service. When customers pay fair prices, Pros get steady work. UpTend makes both sides win.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* For Customers */}
-          <div>
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
-              <Heart className="w-5 h-5 text-[#F47C20]" /> For Homeowners
-            </h3>
-            <div className="space-y-4">
-              {[
-                { icon: Zap, title: "Instant, honest pricing", desc: "Get your price upfront. No haggling. No \"I'll get back to you.\"" },
-                { icon: ShieldCheck, title: "Every Pro is verified", desc: "Background checked, insured, and rated by real customers. No randos." },
-                { icon: Clock, title: "Real-time tracking", desc: "Know exactly when your Pro is arriving, working, and done. Like Uber for your home." },
-                { icon: DollarSign, title: "Price ceiling guarantee", desc: "The price you're quoted is the most you'll ever pay. Period." },
-              ].map((item) => (
-                <Card key={item.title} className="border-border hover:border-[#F47C20]/30 transition-colors">
-                  <CardContent className="p-5 flex gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
-                      <item.icon className="w-5 h-5 text-[#F47C20]" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm mb-1">{item.title}</h4>
-                      <p className="text-sm text-muted-foreground">{item.desc}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <Link href="/book" asChild>
-              <Button className="mt-6 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold">
-                Get Your Free Quote <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-
-          {/* For Pros */}
-          <div>
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
-              <Wrench className="w-5 h-5 text-[#F47C20]" /> For Pros
-            </h3>
-            <div className="space-y-4">
-              {[
-                { icon: Ban, title: "Zero lead fees", desc: "We don't charge you to find work. You get matched to jobs — free. No pay-per-lead scam." },
-                { icon: DollarSign, title: "Get paid in 48 hours", desc: "Finish the job, get paid. Instant payout available. No chasing invoices." },
-                { icon: TrendingUp, title: "A real career path", desc: "Set your income goal. We build your job track. Certifications unlock higher-paying B2B work." },
-                { icon: ShieldCheck, title: "You're protected too", desc: "Liability coverage, no-show protection for customers, and dispute resolution that's actually fair." },
-              ].map((item) => (
-                <Card key={item.title} className="border-border hover:border-[#F47C20]/30 transition-colors">
-                  <CardContent className="p-5 flex gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
-                      <item.icon className="w-5 h-5 text-[#F47C20]" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm mb-1">{item.title}</h4>
-                      <p className="text-sm text-muted-foreground">{item.desc}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <Link href="/become-pro" asChild>
-              <Button className="mt-6 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold">
-                Join as a Pro <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* The connection */}
-        <div className="mt-14 max-w-2xl mx-auto text-center p-8 rounded-2xl bg-slate-900 dark:bg-slate-800">
-          <Users className="w-10 h-10 text-[#F47C20] mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-white mb-3">Better together.</h3>
-          <p className="text-slate-300 leading-relaxed">
-            When a Pro does great work, they earn higher ratings, unlock better jobs, and build a reputation that follows them. 
-            When a customer books through UpTend, they fund fair wages, verified quality, and a platform that holds everyone accountable. 
-            <strong className="text-white"> You're not just booking a service — you're supporting a better industry.</strong>
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── HOME SCAN PROMO ─── */
-function HomeScanPromo() {
-  const { t } = useTranslation();
-  return (
-    <section className="py-16 bg-gradient-to-r from-[#3B1D5A] to-slate-900 text-white border-t border-border">
-      <div className="max-w-5xl mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-black mb-4">
-          {t("home_scan_promo.headline", "Scan Your Home for Free — Earn $25+")}
-        </h2>
-        <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-6 leading-relaxed">
-          {t("home_scan_promo.body", "Walk through your home room by room. Our AI identifies every appliance — brand, model, age, and condition — and builds a complete Home Health Record you own forever.")}
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8 text-left">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">📋 Full Inventory</p>
-            <p className="text-sm text-slate-400">Every appliance, fixture, and system documented with photos, specs, and estimated remaining life.</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">🛡️ Insurance-Ready</p>
-            <p className="text-sm text-slate-400">Timestamped records for claims, warranties, and resale — proof of what you have and its condition.</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">💰 $25 Credit</p>
-            <p className="text-sm text-slate-400">Complete your scan and earn $25+ in service credits toward any booking on the platform.</p>
-          </div>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/ai/home-scan" asChild>
-            <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
-              {t("home_scan_promo.cta", "Start Your Free Scan")} <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── SERVICES STRIP ─── */
-function ServicesStrip() {
-  const [, setLocation] = useLocation();
-  const services = [
-    { key: "handyman", label: "Handyman", price: "$75/hr", icon: Wrench },
-    { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck },
-    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: ArrowUpFromLine },
-    { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles },
-    { key: "landscaping", label: "Landscaping", price: "From $49", icon: Trees },
-    { key: "pool_cleaning", label: "Pool Cleaning", price: "$120/mo", icon: Waves },
-    { key: "moving_labor", label: "Moving Labor", price: "$65/hr", icon: Package },
-    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "$50/room", icon: Home },
-    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $150", icon: Home },
-    { key: "light_demolition", label: "Light Demo", price: "From $199", icon: Truck },
+/* ─── Social Proof ─── */
+function SocialProof() {
+  const reviews = [
+    { name: "Maria S.", text: "George found me a plumber in 10 minutes. Best price I've gotten." },
+    { name: "James T.", text: "I just told George what was wrong and he handled everything. Amazing." },
+    { name: "Linda R.", text: "Finally, home services that don't make me anxious. Love this." },
   ];
 
   return (
-    <section className="py-16 bg-slate-50 dark:bg-slate-900/50 border-t border-border">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-2xl font-bold text-center mb-2">
-          11 Services.<br />
-          One App.<br />
-          Transparent Pricing.
-        </h2>
-        <p className="text-center text-muted-foreground mb-10">Tap any service to get an instant quote.</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {services.map((svc) => (
-            <div
-              key={svc.key}
-              onClick={() => setLocation(`/book?service=${svc.key}`)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLocation(`/book?service=${svc.key}`); } }}
-              className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-slate-800 border border-border hover:border-[#F47C20]/50 cursor-pointer transition-all hover:shadow-md text-center"
-            >
-              <svc.icon className="w-6 h-6 text-[#F47C20]" />
-              <span className="font-bold text-xs">{svc.label}</span>
-              <span className="text-[11px] text-muted-foreground">{svc.price}</span>
+    <section className="py-16 px-4" style={{ background: "#FFF9F0", color: T.text }}>
+      <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">What Homeowners Say</h2>
+      <div className="max-w-3xl mx-auto grid md:grid-cols-3 gap-6">
+        {reviews.map((r, i) => (
+          <div key={i} className="bg-white rounded-xl p-5 shadow-sm">
+            <div className="flex gap-1 mb-3">
+              {[...Array(5)].map((_, j) => (
+                <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
+              ))}
             </div>
-          ))}
-        </div>
-        <p className="text-center mt-6">
-          <span
-            onClick={() => setLocation("/find-pro")}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLocation("/find-pro"); } }}
-            className="text-sm text-[#C05600] hover:underline cursor-pointer font-medium"
-          >
-            Or browse Pros →
-          </span>
-        </p>
+            <p className="text-sm leading-relaxed mb-3" style={{ color: T.textMuted }}>"{r.text}"</p>
+            <p className="text-sm font-semibold">{r.name}</p>
+          </div>
+        ))}
       </div>
     </section>
   );
 }
-
-/* ─── TRUST BAR ─── */
-function TrustBar() {
-  return (
-    <section className="py-16 bg-slate-900 dark:bg-slate-950">
-      <div className="max-w-5xl mx-auto px-4">
-        <h2 className="text-2xl font-bold text-white text-center mb-10">Why people trust UpTend</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { icon: ShieldCheck, label: "Background Checked", desc: "Every Pro, every time" },
-            { icon: DollarSign, label: "Price Guarantee", desc: "Quoted price = max price" },
-            { icon: Leaf, label: "Impact Tracked", desc: "Every job measured" },
-            { icon: Star, label: "Real Reviews", desc: "From verified customers" },
-          ].map((item) => (
-            <div key={item.label}>
-              <item.icon className="w-8 h-8 text-[#F47C20] mx-auto mb-3" />
-              <h3 className="font-bold text-white text-sm mb-1">{item.label}</h3>
-              <p className="text-xs text-slate-400">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── FINAL CTA ─── */
-function FinalCTA() {
-  return (
-    <section className="py-20 bg-background text-center">
-      <div className="max-w-3xl mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-black mb-4">
-          Ready to <span className="text-[#C05600]">UpTend</span> your home?
-        </h2>
-        <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
-          Whether you need a hand or you are one — there's a place for you here.
-        </p>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/book" asChild>
-            <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl">
-              Book a Service <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-          <Link href="/become-pro" asChild>
-            <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 rounded-xl border-[#C05600] text-[#C05600] hover:bg-[#C05600]/10">
-              Become a Pro <ChevronRight className="ml-1 w-5 h-5" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-

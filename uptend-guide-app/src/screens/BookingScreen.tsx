@@ -1,53 +1,80 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet,
-  Alert, ActivityIndicator,
+  View, Text, ScrollView, Alert, useColorScheme,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../theme/colors';
+import { Button, Card, Input, Header, LoadingScreen, EmptyState } from '../components/ui';
+import { colors, spacing, radii } from '../components/ui/tokens';
 import { useAuth } from '../context/AuthContext';
-import { request } from '../services/api';
+import { fetchPricingQuote, createServiceRequest } from '../services/api';
 
 const SERVICES = [
-  { key: 'handyman', label: 'Handyman', icon: 'hammer-outline' as const, price: '$75/hr' },
-  { key: 'home_cleaning', label: 'Home Cleaning', icon: 'sparkles-outline' as const, price: 'From $99' },
-  { key: 'junk_removal', label: 'Junk Removal', icon: 'trash-outline' as const, price: 'From $99' },
-  { key: 'landscaping', label: 'Landscaping', icon: 'leaf-outline' as const, price: 'From $49' },
-  { key: 'pressure_washing', label: 'Pressure Wash', icon: 'water-outline' as const, price: 'From $120' },
-  { key: 'pool_cleaning', label: 'Pool Cleaning', icon: 'fish-outline' as const, price: '$120/mo' },
-  { key: 'gutter_cleaning', label: 'Gutter Cleaning', icon: 'home-outline' as const, price: 'From $150' },
-  { key: 'moving_labor', label: 'Moving Labor', icon: 'cube-outline' as const, price: '$80/hr' },
-  { key: 'carpet_cleaning', label: 'Carpet Clean', icon: 'layers-outline' as const, price: '$50/room' },
-  { key: 'garage_cleanout', label: 'Garage Cleanout', icon: 'car-outline' as const, price: 'From $299' },
-  { key: 'light_demolition', label: 'Demolition', icon: 'construct-outline' as const, price: 'From $199' },
-  { key: 'ai_home_scan', label: 'AI Home Scan', icon: 'scan-outline' as const, price: 'Free' },
+  { key: 'handyman', label: 'Handyman', icon: '🔧' },
+  { key: 'home_cleaning', label: 'Home Cleaning', icon: '🧹' },
+  { key: 'junk_removal', label: 'Junk Removal', icon: '🗑' },
+  { key: 'landscaping', label: 'Landscaping', icon: '🌿' },
+  { key: 'pressure_washing', label: 'Pressure Wash', icon: '💦' },
+  { key: 'pool_cleaning', label: 'Pool Cleaning', icon: '🏊' },
+  { key: 'gutter_cleaning', label: 'Gutter Cleaning', icon: '🏠' },
+  { key: 'moving_labor', label: 'Moving Labor', icon: '📦' },
+  { key: 'carpet_cleaning', label: 'Carpet Clean', icon: '🧶' },
+  { key: 'garage_cleanout', label: 'Garage Cleanout', icon: '🚗' },
+  { key: 'light_demolition', label: 'Demolition', icon: '🏗' },
+  { key: 'ai_home_scan', label: 'AI Home Scan', icon: '🔍' },
 ];
 
+type Step = 'select' | 'details' | 'quote' | 'confirmed';
+
 export default function BookingScreen({ navigation }: any) {
+  const dark = useColorScheme() === 'dark';
   const { requireAuth, user } = useAuth();
   const [selectedService, setSelectedService] = useState('');
   const [description, setDescription] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState((user as any)?.address || '');
+  const [phone, setPhone] = useState(user?.phone || '');
   const [loading, setLoading] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quote, setQuote] = useState<any>(null);
+  const [step, setStep] = useState<Step>('select');
+
+  const textColor = dark ? colors.textDark : colors.text;
+  const mutedColor = dark ? colors.textMutedDark : colors.textMuted;
+
+  const getQuote = async () => {
+    if (!selectedService || !address.trim()) return;
+    setQuoteLoading(true);
+    setQuote(null);
+    try {
+      const svc = SERVICES.find(s => s.key === selectedService);
+      const result = await fetchPricingQuote(selectedService, {
+        address: address.trim(),
+        description: description.trim(),
+        serviceName: svc?.label,
+      });
+      setQuote(result);
+      setStep('quote');
+    } catch {
+      setQuote({ estimate: 'Contact for pricing', note: 'A pro will provide a detailed quote.' });
+      setStep('quote');
+    } finally {
+      setQuoteLoading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (requireAuth({ type: 'book', payload: { service: selectedService } })) return;
-    if (!selectedService) { Alert.alert('Select a Service', 'Please choose what you need.'); return; }
-    if (!address.trim()) { Alert.alert('Address Required', 'Enter where the work will be done.'); return; }
     setLoading(true);
     try {
       const svc = SERVICES.find(s => s.key === selectedService);
-      await request('POST', '/api/service-requests', {
+      await createServiceRequest({
         serviceType: selectedService,
         serviceName: svc?.label,
         description: description.trim() || `${svc?.label} requested`,
         address: address.trim(),
         phone: phone.trim() || user?.phone,
       });
-      setConfirmed(true);
+      setStep('confirmed');
     } catch (e: any) {
       Alert.alert('Error', e.message || 'Something went wrong.');
     } finally {
@@ -55,130 +82,162 @@ export default function BookingScreen({ navigation }: any) {
     }
   };
 
-  if (confirmed) {
+  // Confirmed state
+  if (step === 'confirmed') {
     return (
-      <SafeAreaView style={s.container} edges={['top']}>
-        <View style={s.confirmWrap}>
-          <View style={s.confirmCheck}>
-            <Ionicons name="checkmark" size={40} color={Colors.white} />
-          </View>
-          <Text style={s.confirmTitle}>You're all set</Text>
-          <Text style={s.confirmSub}>A verified pro will be matched shortly. We'll keep you updated.</Text>
-          <TouchableOpacity style={s.primaryBtn} onPress={() => navigation?.navigate('Home')}>
-            <Text style={s.primaryBtnText}>Done</Text>
-          </TouchableOpacity>
-        </View>
+      <SafeAreaView style={{ flex: 1, backgroundColor: dark ? colors.backgroundDark : colors.background }} edges={['top']}>
+        <EmptyState
+          icon="✅"
+          title="You're all set!"
+          description="A verified pro will be matched shortly. We'll keep you updated."
+          ctaLabel="Done"
+          onCta={() => navigation?.navigate('Home')}
+        />
       </SafeAreaView>
     );
   }
 
+  const selectedSvc = SERVICES.find(s => s.key === selectedService);
+
   return (
-    <SafeAreaView style={s.container} edges={['top']}>
-      <View style={s.header}>
-        <Text style={s.headerTitle}>Book a Service</Text>
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: dark ? colors.backgroundDark : colors.background }} edges={['top']}>
+      <Header
+        title="Book a Service"
+        onBack={step !== 'select' ? () => setStep(step === 'quote' ? 'details' : 'select') : undefined}
+      />
 
-      <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
-        <Text style={s.sectionLabel}>What do you need?</Text>
-        <View style={s.grid}>
-          {SERVICES.map(svc => {
-            const active = selectedService === svc.key;
-            return (
-              <TouchableOpacity
-                key={svc.key}
-                style={[s.serviceCard, active && s.serviceCardActive]}
-                onPress={() => setSelectedService(svc.key)}
-                activeOpacity={0.7}
-              >
-                <Ionicons name={svc.icon} size={22} color={active ? Colors.white : Colors.gray900} />
-                <Text style={[s.serviceName, active && s.serviceNameActive]}>{svc.label}</Text>
-                <Text style={[s.servicePrice, active && s.servicePriceActive]}>{svc.price}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
+        {/* George intro */}
+        <Card style={{ marginBottom: spacing.lg, flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+          <Text style={{ fontSize: 28 }}>🏠</Text>
+          <Text style={{ flex: 1, fontSize: 14, color: mutedColor }}>
+            {step === 'select'
+              ? "I'll walk you through booking. What service do you need?"
+              : step === 'details'
+              ? `Great choice! Tell me about the ${selectedSvc?.label || 'service'} job.`
+              : "Here's your estimate. Confirm when you're ready!"}
+          </Text>
+        </Card>
 
-        <Text style={s.sectionLabel}>Details</Text>
-        <TextInput
-          style={[s.input, s.textArea]}
-          placeholder="What needs to be done?"
-          placeholderTextColor={Colors.gray400}
-          value={description}
-          onChangeText={setDescription}
-          multiline
-          numberOfLines={3}
-        />
+        {/* Step 1: Service selection chips */}
+        {step === 'select' && (
+          <>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: textColor, marginBottom: spacing.md }}>
+              What do you need?
+            </Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+              {SERVICES.map(svc => (
+                <Button
+                  key={svc.key}
+                  variant={selectedService === svc.key ? 'primary' : 'secondary'}
+                  size="sm"
+                  onPress={() => {
+                    setSelectedService(svc.key);
+                    setStep('details');
+                  }}
+                  accessibilityLabel={`Select ${svc.label}`}
+                >
+                  {`${svc.icon} ${svc.label}`}
+                </Button>
+              ))}
+            </View>
+          </>
+        )}
 
-        <TextInput
-          style={s.input}
-          placeholder="Service address"
-          placeholderTextColor={Colors.gray400}
-          value={address}
-          onChangeText={setAddress}
-        />
+        {/* Step 2: Details */}
+        {step === 'details' && (
+          <View style={{ gap: spacing.md }}>
+            <Input
+              label="What needs to be done?"
+              placeholder="Describe the job..."
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={3}
+              accessibilityLabel="Job description"
+            />
+            <Input
+              label="Service address"
+              variant="address"
+              placeholder="123 Main St, Orlando, FL"
+              value={address}
+              onChangeText={setAddress}
+              accessibilityLabel="Service address"
+            />
+            <Input
+              label="Phone (optional)"
+              variant="phone"
+              placeholder="(555) 123-4567"
+              value={phone}
+              onChangeText={setPhone}
+              accessibilityLabel="Phone number"
+            />
+            <Button
+              variant="primary"
+              size="lg"
+              fullWidth
+              loading={quoteLoading}
+              disabled={!address.trim()}
+              onPress={getQuote}
+              accessibilityLabel="Get price quote"
+            >
+              Get Quote
+            </Button>
+          </View>
+        )}
 
-        <TextInput
-          style={s.input}
-          placeholder="Phone (optional)"
-          placeholderTextColor={Colors.gray400}
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
-        />
+        {/* Step 3: Quote summary */}
+        {step === 'quote' && quote && (
+          <View style={{ gap: spacing.lg }}>
+            <Card style={{
+              alignItems: 'center',
+              backgroundColor: dark ? '#064E3B' : '#F0FDF4',
+              borderColor: dark ? '#10B981' : '#BBF7D0',
+            }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: textColor }}>💰 Price Estimate</Text>
+              <Text style={{ fontSize: 36, fontWeight: '900', color: colors.success, marginVertical: spacing.sm }}>
+                {quote.price || quote.estimate || quote.total || 'Contact for pricing'}
+              </Text>
+              {quote.breakdown && Array.isArray(quote.breakdown) && (
+                <View style={{ gap: 4, width: '100%' }}>
+                  {quote.breakdown.map((item: any, i: number) => (
+                    <Text key={i} style={{ fontSize: 13, color: mutedColor }}>
+                      {item.label || item.name}: {item.amount || item.price}
+                    </Text>
+                  ))}
+                </View>
+              )}
+              {(quote.note || quote.disclaimer) && (
+                <Text style={{ fontSize: 12, color: mutedColor, marginTop: spacing.sm, textAlign: 'center', fontStyle: 'italic' }}>
+                  {quote.note || quote.disclaimer}
+                </Text>
+              )}
+            </Card>
 
-        <TouchableOpacity
-          style={[s.primaryBtn, (!selectedService || !address.trim()) && s.primaryBtnOff]}
-          onPress={handleSubmit}
-          disabled={loading || !selectedService || !address.trim()}
-        >
-          {loading ? (
-            <ActivityIndicator color={Colors.white} />
-          ) : (
-            <Text style={s.primaryBtnText}>Get Quote</Text>
-          )}
-        </TouchableOpacity>
+            {/* Summary card */}
+            <Card>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: mutedColor, marginBottom: spacing.sm }}>BOOKING SUMMARY</Text>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: textColor }}>{selectedSvc?.icon} {selectedSvc?.label}</Text>
+              {description ? <Text style={{ fontSize: 14, color: mutedColor, marginTop: 4 }}>{description}</Text> : null}
+              <Text style={{ fontSize: 14, color: mutedColor, marginTop: 4 }}>📍 {address}</Text>
+            </Card>
 
-        <Text style={s.fine}>No charge until you approve a quote from a verified pro.</Text>
+            <Button
+              variant="primary"
+              size="lg"
+              fullWidth
+              loading={loading}
+              onPress={handleSubmit}
+              accessibilityLabel="Confirm booking"
+            >
+              Confirm Booking
+            </Button>
+            <Text style={{ fontSize: 12, color: mutedColor, textAlign: 'center' }}>
+              No charge until you approve a quote from a verified pro.
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.white },
-  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 16 },
-  headerTitle: { fontSize: 28, fontWeight: '800', color: Colors.gray900, letterSpacing: -0.5 },
-  scroll: { paddingHorizontal: 20, paddingBottom: 40 },
-  sectionLabel: { fontSize: 16, fontWeight: '700', color: Colors.gray900, marginTop: 16, marginBottom: 12, letterSpacing: -0.3 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  serviceCard: {
-    width: '31%', backgroundColor: Colors.gray50, borderRadius: 14,
-    padding: 14, alignItems: 'center', gap: 6,
-    borderWidth: 1.5, borderColor: Colors.gray150,
-  },
-  serviceCardActive: { backgroundColor: Colors.gray900, borderColor: Colors.gray900 },
-  serviceName: { fontSize: 12, fontWeight: '600', color: Colors.gray900, textAlign: 'center', letterSpacing: -0.2 },
-  serviceNameActive: { color: Colors.white },
-  servicePrice: { fontSize: 11, color: Colors.gray500 },
-  servicePriceActive: { color: Colors.gray300 },
-  input: {
-    backgroundColor: Colors.gray100, borderRadius: 14,
-    paddingHorizontal: 16, paddingVertical: 14, fontSize: 16,
-    marginBottom: 10, color: Colors.gray900, letterSpacing: -0.2,
-  },
-  textArea: { minHeight: 80, textAlignVertical: 'top' },
-  primaryBtn: {
-    backgroundColor: Colors.gray900, borderRadius: 14,
-    paddingVertical: 16, alignItems: 'center', marginTop: 20,
-  },
-  primaryBtnOff: { backgroundColor: Colors.gray200 },
-  primaryBtnText: { color: Colors.white, fontSize: 17, fontWeight: '700', letterSpacing: -0.3 },
-  fine: { fontSize: 12, color: Colors.gray400, textAlign: 'center', marginTop: 14 },
-  confirmWrap: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
-  confirmCheck: {
-    width: 72, height: 72, borderRadius: 36, backgroundColor: Colors.success,
-    justifyContent: 'center', alignItems: 'center', marginBottom: 20,
-  },
-  confirmTitle: { fontSize: 26, fontWeight: '800', color: Colors.gray900, marginBottom: 8, letterSpacing: -0.5 },
-  confirmSub: { fontSize: 15, color: Colors.gray500, textAlign: 'center', lineHeight: 22, marginBottom: 28 },
-});

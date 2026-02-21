@@ -1,29 +1,44 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Switch } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Switch, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { fetchProSchedule, saveProSchedule } from '../services/api';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const HOURS = Array.from({ length: 13 }, (_, i) => i + 6); // 6am to 6pm
 
 interface DaySchedule {
   day: string;
   enabled: boolean;
-  start: number; // hour
+  start: number;
   end: number;
 }
 
 export default function ProSchedulerScreen() {
   const [schedule, setSchedule] = useState<DaySchedule[]>(
-    DAYS.map((day, i) => ({
-      day,
-      enabled: i < 5, // Mon-Fri enabled
-      start: 8,
-      end: 17,
-    }))
+    DAYS.map((day, i) => ({ day, enabled: i < 5, start: 8, end: 17 }))
   );
   const [vacationMode, setVacationMode] = useState(false);
   const [calendarSync, setCalendarSync] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetchProSchedule()
+      .then(data => {
+        if (data?.schedule && Array.isArray(data.schedule)) {
+          setSchedule(data.schedule.map((d: any) => ({
+            day: d.day,
+            enabled: d.enabled ?? true,
+            start: d.start ?? 8,
+            end: d.end ?? 17,
+          })));
+        }
+        if (data?.vacationMode != null) setVacationMode(data.vacationMode);
+        if (data?.calendarSync != null) setCalendarSync(data.calendarSync);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
 
   const toggleDay = (index: number) => {
     setSchedule(prev => prev.map((d, i) => i === index ? { ...d, enabled: !d.enabled } : d));
@@ -44,7 +59,27 @@ export default function ProSchedulerScreen() {
     return `${h > 12 ? h - 12 : h}:00 ${h >= 12 ? 'PM' : 'AM'}`;
   };
 
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await saveProSchedule({ schedule, vacationMode, calendarSync });
+      Alert.alert('Saved', 'Schedule updated successfully.');
+    } catch (e: any) {
+      Alert.alert('Error', e.message || 'Could not save schedule');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const totalHours = schedule.filter(d => d.enabled).reduce((s, d) => s + (d.end - d.start), 0);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.center}><ActivityIndicator size="large" color={Colors.primary} /></View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -52,7 +87,6 @@ export default function ProSchedulerScreen() {
         <Text style={styles.title}>📅 Availability</Text>
         <Text style={styles.subtitle}>{totalHours} hours/week</Text>
 
-        {/* Vacation mode */}
         <View style={[styles.vacationCard, vacationMode && styles.vacationActive]}>
           <View style={styles.vacationInfo}>
             <Text style={styles.vacationIcon}>🏖️</Text>
@@ -63,15 +97,9 @@ export default function ProSchedulerScreen() {
               </Text>
             </View>
           </View>
-          <Switch
-            value={vacationMode}
-            onValueChange={setVacationMode}
-            trackColor={{ false: '#ddd', true: 'rgba(255,255,255,0.3)' }}
-            thumbColor={vacationMode ? '#fff' : '#f4f3f4'}
-          />
+          <Switch value={vacationMode} onValueChange={setVacationMode} trackColor={{ false: '#ddd', true: 'rgba(255,255,255,0.3)' }} thumbColor={vacationMode ? '#fff' : '#f4f3f4'} />
         </View>
 
-        {/* Weekly schedule */}
         <Text style={styles.sectionTitle}>Weekly Schedule</Text>
         {schedule.map((day, index) => (
           <View key={day.day} style={[styles.dayCard, !day.enabled && styles.dayDisabled]}>
@@ -84,30 +112,21 @@ export default function ProSchedulerScreen() {
             {day.enabled && (
               <View style={styles.timeRow}>
                 <View style={styles.timeControl}>
-                  <TouchableOpacity style={styles.timeBtn} onPress={() => adjustTime(index, 'start', -1)}>
-                    <Text style={styles.timeBtnText}>−</Text>
-                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.timeBtn} onPress={() => adjustTime(index, 'start', -1)}><Text style={styles.timeBtnText}>−</Text></TouchableOpacity>
                   <Text style={styles.timeText}>{formatHour(day.start)}</Text>
-                  <TouchableOpacity style={styles.timeBtn} onPress={() => adjustTime(index, 'start', 1)}>
-                    <Text style={styles.timeBtnText}>+</Text>
-                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.timeBtn} onPress={() => adjustTime(index, 'start', 1)}><Text style={styles.timeBtnText}>+</Text></TouchableOpacity>
                 </View>
                 <Text style={styles.timeSep}>to</Text>
                 <View style={styles.timeControl}>
-                  <TouchableOpacity style={styles.timeBtn} onPress={() => adjustTime(index, 'end', -1)}>
-                    <Text style={styles.timeBtnText}>−</Text>
-                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.timeBtn} onPress={() => adjustTime(index, 'end', -1)}><Text style={styles.timeBtnText}>−</Text></TouchableOpacity>
                   <Text style={styles.timeText}>{formatHour(day.end)}</Text>
-                  <TouchableOpacity style={styles.timeBtn} onPress={() => adjustTime(index, 'end', 1)}>
-                    <Text style={styles.timeBtnText}>+</Text>
-                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.timeBtn} onPress={() => adjustTime(index, 'end', 1)}><Text style={styles.timeBtnText}>+</Text></TouchableOpacity>
                 </View>
               </View>
             )}
           </View>
         ))}
 
-        {/* Calendar sync */}
         <View style={styles.syncCard}>
           <View style={styles.syncInfo}>
             <Text style={styles.syncIcon}>📱</Text>
@@ -116,16 +135,11 @@ export default function ProSchedulerScreen() {
               <Text style={styles.syncSub}>Block times from your personal calendar</Text>
             </View>
           </View>
-          <Switch
-            value={calendarSync}
-            onValueChange={setCalendarSync}
-            trackColor={{ false: '#ddd', true: Colors.primaryLight }}
-            thumbColor={calendarSync ? Colors.primary : '#f4f3f4'}
-          />
+          <Switch value={calendarSync} onValueChange={setCalendarSync} trackColor={{ false: '#ddd', true: Colors.primaryLight }} thumbColor={calendarSync ? Colors.primary : '#f4f3f4'} />
         </View>
 
-        <TouchableOpacity style={styles.saveBtn}>
-          <Text style={styles.saveBtnText}>💾 Save Schedule</Text>
+        <TouchableOpacity style={styles.saveBtn} onPress={handleSave} disabled={saving}>
+          <Text style={styles.saveBtnText}>{saving ? 'Saving...' : '💾 Save Schedule'}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -134,6 +148,7 @@ export default function ProSchedulerScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   content: { padding: 20 },
   title: { fontSize: 24, fontWeight: '800', color: Colors.text },
   subtitle: { fontSize: 14, color: Colors.primary, fontWeight: '600', marginTop: 4, marginBottom: 16 },
