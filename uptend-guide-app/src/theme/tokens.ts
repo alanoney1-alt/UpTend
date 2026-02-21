@@ -42,14 +42,17 @@ export const colors = {
     infoBg: '#EFF6FF',
   },
   dark: {
-    bg: '#1C1917',
-    card: '#292524',
-    border: '#44403C',
-    text: '#FAFAF9',
-    textSecondary: '#A8A29E',
-    primary: '#FB923C',
-    primaryHover: '#F97316',
-    success: '#4ADE80',
+    bg: '#121212',
+    surface: '#1A1A1A',
+    card: '#282828',
+    elevated: '#333333',
+    border: '#333333',
+    text: '#FFFFFF',
+    textSecondary: '#B3B3B3',
+    textTertiary: '#727272',
+    primary: '#F59E0B',
+    primaryHover: '#D97706',
+    success: '#1DB954',
     warning: '#FACC15',
     error: '#F87171',
     info: '#60A5FA',
@@ -235,20 +238,20 @@ export const lightTheme: ThemeColors = {
 };
 
 export const darkTheme: ThemeColors = {
-  background: colors.dark.bg,
-  surface: colors.dark.card,
-  surfaceElevated: colors.gray[700],
-  border: colors.dark.border,
-  borderSubtle: colors.gray[800],
-  textPrimary: colors.dark.text,
-  textSecondary: colors.dark.textSecondary,
-  textTertiary: colors.gray[500],
-  textInverse: colors.gray[900],
-  primary: colors.dark.primary,
-  primaryHover: colors.dark.primaryHover,
+  background: colors.dark.bg,           // #121212 — Spotify black
+  surface: colors.dark.surface,          // #1A1A1A — card base
+  surfaceElevated: colors.dark.elevated, // #333333 — hover/active states
+  border: colors.dark.border,            // #333333 — subtle, barely visible
+  borderSubtle: 'transparent',           // No visible borders — Spotify style
+  textPrimary: colors.dark.text,         // #FFFFFF
+  textSecondary: colors.dark.textSecondary, // #B3B3B3
+  textTertiary: colors.dark.textTertiary,   // #727272
+  textInverse: colors.dark.bg,
+  primary: colors.dark.primary,          // #F59E0B — warm amber
+  primaryHover: colors.dark.primaryHover, // #D97706
   primaryActive: colors.primary[500],
-  primarySubtle: colors.george.darkBubble,
-  success: colors.dark.success,
+  primarySubtle: '#2A1F00',              // Dark amber tint
+  success: colors.dark.success,          // #1DB954 — Spotify green
   successBg: '#052E16',
   warning: colors.dark.warning,
   warningBg: '#422006',
@@ -256,6 +259,6 @@ export const darkTheme: ThemeColors = {
   errorBg: '#450A0A',
   info: colors.dark.info,
   infoBg: '#172554',
-  georgeBubble: colors.george.darkBubble,
-  georgeAccent: colors.george.accent,
+  georgeBubble: '#1E1B18',              // Warm dark bubble
+  georgeAccent: colors.dark.primary,
 };

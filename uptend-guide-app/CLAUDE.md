@@ -9,15 +9,35 @@ UpTend is a home services app for Orlando Metro. The AI assistant "Mr. George" i
 - Expo Router / React Navigation
 - Backend API at https://uptendapp.com/api (or localhost:5001 for dev)
 
-## Design Direction
+## Design Direction — Spotify Quality Bar
 - **Clean and polished** — Spotify-level quality. No clutter, no noise.
-- **Dark theme**: background #121212, surfaces #1A1A1A to #282828
+- **Dark theme**: background #121212, surfaces #1A1A1A, cards #282828, elevated #333333
 - **Amber accent**: #F59E0B primary, #D97706 secondary
-- **Typography**: tight, minimal — bold white headers, gray subtitles, nothing extra
-- **No visible card borders** — use background color elevation only
+- **Typography**: tight, minimal — bold white headers (#FFFFFF), gray subtitles (#B3B3B3), nothing extra
+- **No visible card borders** — use background color elevation only (surface → card → elevated)
 - **No emojis anywhere** — clean, typographic, professional
 - **Smooth 60fps** — use react-native-reanimated, gesture-handler
 - **George is the UI** — not a chatbot in a drawer. He's the primary interface.
+
+### Spotify Patterns to Follow
+- **Content-first cards**: No borders, just background elevation. Cards are #282828 on #121212.
+- **Horizontal carousels**: ScrollView horizontal for service categories, recent activity
+- **Filter pills**: Rounded full pills at top of lists (All, Junk Removal, Cleaning, etc.)
+- **Persistent bottom tab bar**: dark bg (#1A1A1A), active tab = white icon, inactive = #727272
+- **Large bold headers**: 28-32px bold white, left-aligned, with generous top padding
+- **Subtle transitions**: 200ms ease-out, content fades in, no jarring changes
+- **Pull to refresh**: Native feel, no custom spinners
+- **Status bar**: Light content on dark bg
+- **Bottom sheet modals**: #282828 bg, drag indicator at top, spring animation
+- **Search bar**: Rounded, #282828 bg, placeholder #727272, no border
+- **List items**: No dividers between items — use spacing instead
+
+### What NOT to Do
+- No gradients (except subtle ambient on hero/George face)
+- No box shadows on cards — elevation via background color only
+- No borders on anything — invisible separation via bg colors
+- No bright colors competing with amber — amber is the ONLY accent
+- No loading skeletons with borders — use subtle pulse on bg color
 
 ## Our 12 Services (ONLY these — nothing else)
 - Junk Removal: from $99
