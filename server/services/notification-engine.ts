@@ -2,8 +2,8 @@
  * Notification Engine
  *
  * Multi-channel notification dispatcher:
- * - Push notifications (via FCM/APNS)
- * - Email notifications (via SendGrid)
+ * - Push notifications (via Expo Push API)
+ * - Email notifications (via SendGrid/nodemailer)
  * - SMS notifications (via Twilio)
  * - In-app notifications (database only)
  *
@@ -15,65 +15,120 @@ import {
   updateNotification,
   markNotificationSent,
 } from "../storage/domains/properties/storage";
+import { storage } from "../storage";
+import { sendPushNotification as sendExpoPush } from "./push-notification";
+import { sendSms } from "./notifications";
 import type { NotificationQueue } from "../../shared/schema";
+import { pool } from "../db";
 
 // ==========================================
-// CHANNEL HANDLERS (Placeholders - integrate with your services)
+// CHANNEL HANDLERS
 // ==========================================
 
 async function sendPushNotification(notification: NotificationQueue): Promise<boolean> {
-  // TODO: Integrate with Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNS)
-  // Example:
-  // const message = {
-  //   notification: {
-  //     title: notification.title,
-  //     body: notification.body,
-  //   },
-  //   data: {
-  //     deepLink: notification.deepLink,
-  //     ctaText: notification.ctaText,
-  //     ctaLink: notification.ctaLink,
-  //   },
-  //   token: userDeviceToken,
-  // };
-  // await admin.messaging().send(message);
+  // Look up user's Expo push token (stored via raw SQL column, not in Drizzle schema)
+  const result = await pool.query(
+    `SELECT expo_push_token FROM users WHERE id = $1`,
+    [notification.userId]
+  );
+  const token: string | null = result.rows[0]?.expo_push_token;
 
-  console.log(`[NotificationEngine] Sending push to user ${notification.userId}: ${notification.title}`);
+  if (!token) {
+    console.warn(`[NotificationEngine] No push token for user ${notification.userId}, skipping push`);
+    return false;
+  }
+
+  const pushResult = await sendExpoPush(
+    token,
+    notification.title,
+    notification.message,
+    {
+      deepLink: notification.actionUrl || undefined,
+      ctaText: notification.actionText || undefined,
+      notificationType: notification.notificationType,
+    }
+  );
+
+  if (!pushResult.success) {
+    // If device not registered, remove the stale token
+    if (pushResult.error?.includes("DeviceNotRegistered") || pushResult.error?.includes("InvalidCredentials")) {
+      console.warn(`[NotificationEngine] Removing stale push token for user ${notification.userId}`);
+      await pool.query(`UPDATE users SET expo_push_token = NULL WHERE id = $1`, [notification.userId]);
+    }
+    throw new Error(`Push failed: ${pushResult.error}`);
+  }
+
   return true;
 }
 
 async function sendEmailNotification(notification: NotificationQueue): Promise<boolean> {
-  // TODO: Integrate with SendGrid or your email service
-  // Example:
-  // const msg = {
-  //   to: userEmail,
-  //   from: 'noreply@uptend.com',
-  //   subject: notification.title,
-  //   html: generateEmailTemplate(notification),
-  // };
-  // await sgMail.send(msg);
+  const user = await storage.getUser(notification.userId);
+  if (!user?.email) {
+    console.warn(`[NotificationEngine] No email for user ${notification.userId}, skipping email`);
+    return false;
+  }
 
-  console.log(`[NotificationEngine] Sending email to user ${notification.userId}: ${notification.title}`);
+  // Dynamic import to avoid circular deps — use the generic send from notifications service
+  const { sendEmail } = await import("./notifications");
+
+  const textBody = `${notification.title}\n\n${notification.message}${notification.actionUrl ? `\n\n${notification.actionText || "View"}: ${notification.actionUrl}` : ""}`;
+
+  // Simple branded HTML wrapper
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:24px 0">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;overflow:hidden">
+<tr><td style="background:#F47C20;padding:24px 32px">
+  <h1 style="margin:0;color:#fff;font-size:24px">🏠 UpTend</h1>
+</td></tr>
+<tr><td style="padding:32px">
+  <h2 style="margin:0 0 16px;color:#222">${notification.title}</h2>
+  <p style="color:#555;line-height:1.6">${notification.message}</p>
+  ${notification.actionUrl ? `<div style="text-align:center;margin:24px 0"><a href="${notification.actionUrl}" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600">${notification.actionText || "View"}</a></div>` : ""}
+</td></tr>
+<tr><td style="padding:16px 32px;background:#fafafa;color:#999;font-size:12px;text-align:center">
+  © ${new Date().getFullYear()} UpTend — Home services, simplified.
+</td></tr>
+</table></td></tr></table></body></html>`;
+
+  const result = await sendEmail({
+    to: user.email,
+    subject: notification.title,
+    html,
+    text: textBody,
+  });
+
+  if (!result.success) {
+    throw new Error(`Email failed: ${result.error}`);
+  }
+
   return true;
 }
 
 async function sendSmsNotification(notification: NotificationQueue): Promise<boolean> {
-  // TODO: Integrate with Twilio
-  // Example:
-  // await twilioClient.messages.create({
-  //   body: `${notification.title}\n${notification.body}\n${notification.ctaLink}`,
-  //   from: process.env.TWILIO_PHONE_NUMBER,
-  //   to: userPhoneNumber,
-  // });
+  const user = await storage.getUser(notification.userId);
+  if (!user?.phone) {
+    console.warn(`[NotificationEngine] No phone for user ${notification.userId}, skipping SMS`);
+    return false;
+  }
 
-  console.log(`[NotificationEngine] Sending SMS to user ${notification.userId}: ${notification.title}`);
+  const body = `${notification.title}\n${notification.message}${notification.actionUrl ? `\n${notification.actionUrl}` : ""}`;
+
+  const result = await sendSms({
+    to: user.phone,
+    message: body,
+  });
+
+  if (!result.success) {
+    throw new Error(`SMS failed: ${result.error}`);
+  }
+
   return true;
 }
 
-async function createInAppNotification(notification: NotificationQueue): Promise<boolean> {
+async function createInAppNotification(_notification: NotificationQueue): Promise<boolean> {
   // In-app notifications are just database records - already created in notification_queue
-  // No action needed here
-  console.log(`[NotificationEngine] In-app notification created for user ${notification.userId}`);
   return true;
 }
 
@@ -117,7 +172,6 @@ async function sendNotification(notification: NotificationQueue): Promise<void> 
     const maxRetries = notification.maxRetries || 3;
 
     if (retryCount >= maxRetries) {
-      // Max retries reached, mark as failed
       await updateNotification(notification.id, {
         status: "failed",
         failureReason: error instanceof Error ? error.message : "Unknown error",
@@ -125,7 +179,6 @@ async function sendNotification(notification: NotificationQueue): Promise<void> 
       });
       console.error(`[NotificationEngine] Notification ${notification.id} failed after ${maxRetries} retries`);
     } else {
-      // Retry later
       await updateNotification(notification.id, {
         retryCount,
         failureReason: error instanceof Error ? error.message : "Unknown error",

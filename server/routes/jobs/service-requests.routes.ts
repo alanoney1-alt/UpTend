@@ -9,6 +9,7 @@ import { processEsgForCompletedJob } from "../../services/job-completion-esg-int
 import { sendBookingConfirmation, sendJobAccepted, sendJobStarted, sendJobCompleted, sendProNewJob, sendProEnRoute, sendReviewReminder, sendProPaymentProcessed, sendAdminHighValueBooking } from "../../services/email-service";
 import { sendSms } from "../../services/notifications";
 import { onBookingConfirmed } from "../../services/george-events";
+import { geocodeAddress, getDistanceMatrix } from "../../services/google-maps";
 import { db as feeDb } from "../../db";
 import { sql as feeSql } from "drizzle-orm";
 
@@ -206,16 +207,57 @@ export function registerServiceRequestRoutes(app: Express) {
         ceilingLockedAt: new Date().toISOString(),
       });
 
+      // Geocode customer address if we don't have coords
+      let pickupLat = validatedData.pickupLat;
+      let pickupLng = validatedData.pickupLng;
+      if ((!pickupLat || !pickupLng) && validatedData.pickupAddress) {
+        const geo = await geocodeAddress(validatedData.pickupAddress).catch(() => null);
+        if (geo) {
+          pickupLat = geo.lat;
+          pickupLng = geo.lng;
+        }
+      }
+
       // Use smart matching with language preference
       const matchedHaulers = await storage.getSmartMatchedHaulers({
         serviceType: validatedData.serviceType,
         loadSize: validatedData.loadEstimate,
-        pickupLat: validatedData.pickupLat || undefined,
-        pickupLng: validatedData.pickupLng || undefined,
+        pickupLat: pickupLat || undefined,
+        pickupLng: pickupLng || undefined,
         preferVerifiedPro: validatedData.preferVerifiedPro || false,
       });
 
-      for (const hauler of matchedHaulers.slice(0, 3)) {
+      // Re-rank by actual drive time if we have coordinates
+      let rankedHaulers = matchedHaulers;
+      if (pickupLat && pickupLng && matchedHaulers.length > 1) {
+        try {
+          const prosWithCoords = matchedHaulers.filter(
+            (h: any) => h.profile?.lastLat && h.profile?.lastLng
+          );
+          if (prosWithCoords.length > 0) {
+            const distances = await getDistanceMatrix(
+              { lat: pickupLat, lng: pickupLng },
+              prosWithCoords.map((h: any) => ({
+                id: h.id.toString(),
+                lat: parseFloat(h.profile.lastLat),
+                lng: parseFloat(h.profile.lastLng),
+              }))
+            );
+            if (distances.length > 0) {
+              const distMap = new Map(distances.map((d) => [d.id, d.durationMinutes]));
+              rankedHaulers = [...matchedHaulers].sort((a: any, b: any) => {
+                const aDur = distMap.get(a.id.toString()) ?? 999;
+                const bDur = distMap.get(b.id.toString()) ?? 999;
+                return aDur - bDur;
+              });
+            }
+          }
+        } catch (err) {
+          console.warn("[service-requests] Google distance ranking failed, using default order:", err);
+        }
+      }
+
+      for (const hauler of rankedHaulers.slice(0, 3)) {
         const haulerQuote = await storage.calculateQuote({
           serviceType: validatedData.serviceType as any,
           loadSize: validatedData.loadEstimate as any,

@@ -6,6 +6,7 @@
  */
 
 import { pool } from "../db";
+import { geocodeAddress, getDistanceMatrix } from "./google-maps";
 
 const EMERGENCY_SKILL_MAP: Record<string, string[]> = {
   pipe_burst: ["plumbing", "water_damage"],
@@ -80,18 +81,57 @@ export async function findNearestPro(
   serviceType: string,
   maxRadius: number = 25
 ) {
-  // Query pros that are online and have relevant skills
-  const { rows } = await pool.query(
+  // Query all online pros
+  const { rows: pros } = await pool.query(
     `SELECT hp.id, hp.user_id, hp.company_name as name, hp.phone,
-            pos.is_online
+            pos.is_online, pos.last_lat, pos.last_lng
      FROM hauler_profiles hp
      LEFT JOIN pycker_online_status pos ON pos.hauler_id = hp.id
-     WHERE pos.is_online = true
-     ORDER BY hp.created_at DESC
-     LIMIT 1`
-  ).catch(() => ({ rows: [] }));
+     WHERE pos.is_online = true`
+  ).catch(() => ({ rows: [] as any[] }));
 
-  return rows[0] || null;
+  if (!pros.length) return null;
+
+  // Try distance-based matching via Google Maps
+  try {
+    // Geocode the customer address
+    const customerCoords = await geocodeAddress(address);
+    if (!customerCoords) throw new Error("Could not geocode customer address");
+
+    // Filter pros that have location data
+    const prosWithLocation = pros.filter(
+      (p) => p.last_lat != null && p.last_lng != null
+    );
+
+    if (prosWithLocation.length > 0) {
+      const destinations = prosWithLocation.map((p) => ({
+        id: p.id.toString(),
+        lat: parseFloat(p.last_lat),
+        lng: parseFloat(p.last_lng),
+      }));
+
+      const distances = await getDistanceMatrix(
+        { lat: customerCoords.lat, lng: customerCoords.lng },
+        destinations
+      );
+
+      if (distances.length > 0) {
+        // Find closest within maxRadius
+        const closest = distances.find((d) => d.distanceMiles <= maxRadius);
+        if (closest) {
+          return pros.find((p) => p.id.toString() === closest.id) || null;
+        }
+        // All too far — return null (no pro in range)
+        console.log(`[emergency-dispatch] No pro within ${maxRadius} miles. Closest: ${distances[0].distanceMiles} mi`);
+        return null;
+      }
+    }
+  } catch (err) {
+    console.warn("[emergency-dispatch] Google Maps distance matching failed, falling back:", err);
+  }
+
+  // Fallback: return first online pro (old behavior)
+  return pros[0] || null;
 }
 
 // ─── Update dispatch status ─────────────────────────────

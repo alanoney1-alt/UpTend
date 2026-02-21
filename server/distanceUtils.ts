@@ -1,3 +1,5 @@
+import { geocodeAddress as googleGeocodeAddress } from "./services/google-maps";
+
 // Pricing constants (must match client/src/lib/bundle-pricing.ts and client/src/lib/distance-utils.ts)
 export const MILEAGE_RATE = 1.00;
 export const STAIRS_FLAT_FEE = 25;
@@ -114,6 +116,45 @@ export function findNearestDump(lat: number, lng: number): {
 
 export function geocodeZip(zip: string): { lat: number; lng: number } | null {
   return SUPPORTED_ZIP_CODES[zip] || null;
+}
+
+/**
+ * Geocode a ZIP using the hardcoded table, falling back to Google Geocoding API.
+ */
+export async function geocodeZipAsync(zip: string): Promise<{ lat: number; lng: number } | null> {
+  const local = SUPPORTED_ZIP_CODES[zip];
+  if (local) return local;
+
+  // Fall through to Google
+  try {
+    const result = await googleGeocodeAddress(zip);
+    if (result) return { lat: result.lat, lng: result.lng };
+  } catch (err) {
+    console.warn("[distanceUtils] Google geocode fallback failed for ZIP:", zip, err);
+  }
+  return null;
+}
+
+/**
+ * Geocode any address string. Tries Google first, falls back to ZIP extraction.
+ */
+export async function geocodeAnyAddress(address: string): Promise<{ lat: number; lng: number; formattedAddress?: string } | null> {
+  // Try Google first
+  try {
+    const result = await googleGeocodeAddress(address);
+    if (result) return result;
+  } catch (err) {
+    console.warn("[distanceUtils] Google geocode failed for address:", address, err);
+  }
+
+  // Fallback: extract ZIP from address string
+  const zipMatch = address.match(/\b(\d{5})\b/);
+  if (zipMatch) {
+    const coords = SUPPORTED_ZIP_CODES[zipMatch[1]];
+    if (coords) return coords;
+  }
+
+  return null;
 }
 
 export function calculateMovePricing(

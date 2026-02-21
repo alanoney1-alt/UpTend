@@ -69,6 +69,41 @@ const PLATFORM_CONFIGS: Record<SmartHomePlatform, PlatformConfig> = {
   },
 };
 
+// ─── Configuration Check ─────────────────────────────────────────────────────
+
+/**
+ * Check if a platform has real OAuth credentials configured (not placeholders).
+ */
+export function isConfigured(platform: SmartHomePlatform): boolean {
+  const config = PLATFORM_CONFIGS[platform];
+  if (!config) return false;
+  return !!(
+    config.clientId &&
+    !config.clientId.startsWith("PLACEHOLDER") &&
+    config.clientSecret &&
+    !config.clientSecret.startsWith("PLACEHOLDER")
+  );
+}
+
+/**
+ * Get configuration status for all platforms.
+ */
+export function getPlatformAvailability(): Array<{
+  id: string;
+  name: string;
+  icon: string;
+  available: boolean;
+  reason?: string;
+}> {
+  return Object.entries(PLATFORM_CONFIGS).map(([key, config]) => ({
+    id: key,
+    name: config.name,
+    icon: config.icon,
+    available: isConfigured(key as SmartHomePlatform),
+    ...(!isConfigured(key as SmartHomePlatform) && { reason: "Coming soon — developer account setup required" }),
+  }));
+}
+
 // ─── OAuth Flow ──────────────────────────────────────────────────────────────
 
 export function getAuthUrl(platform: SmartHomePlatform, customerId: string, redirectUri: string): string {
