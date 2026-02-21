@@ -18,7 +18,6 @@ import { useSiteMode } from "@/contexts/site-mode-context";
 export default function LandingClassic() {
   usePageTitle("UpTend | Home Services, Finally Done Right");
   const { toggle } = useSiteMode();
-
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing-classic">
       <Header />
@@ -47,7 +46,7 @@ function GeorgeBanner() {
         <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
         <span className="text-xs md:text-base font-medium">
           <strong>Meet Mr. George</strong> — your AI assistant. Questions?{" "}
-          <Link href="/meet-george" className="underline font-bold hover:text-white/90 transition-colors">Ask Mr. George</Link>
+          <Link href="/meet-george" className="underline font-bold hover:text-white/90 transition-colors">Ask Mr. George 👉</Link>
         </span>
       </div>
     </div>
@@ -89,12 +88,96 @@ function HeroSection() {
           <div onClick={toggleLanguage} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleLanguage(); } }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/5 transition-all">
             <Globe className="w-4 h-4 text-[#F47C20]" />
             {i18n.language === "en" ? (
-              <span className="text-sm text-slate-400">Espanol? <span className="font-semibold text-[#F47C20]">Cambiar</span></span>
+              <span className="text-sm text-slate-400">¿Español? <span className="font-semibold text-[#F47C20]">Cambiar →</span></span>
             ) : (
-              <span className="text-sm text-slate-400">English? <span className="font-semibold text-[#F47C20]">Switch</span></span>
+              <span className="text-sm text-slate-400">English? <span className="font-semibold text-[#F47C20]">Switch →</span></span>
             )}
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── THE INDUSTRY IS BROKEN ─── */
+function IndustryIsBroken() {
+  return (
+    <section className="py-20 bg-slate-950 text-white">
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="text-center mb-14">
+          <Badge className="bg-red-500/20 text-red-400 border-red-500/30 mb-4 text-sm font-bold">
+            The Problem
+          </Badge>
+          <h2 className="text-3xl md:text-4xl font-black mb-4">
+            Home services is broken.<br />
+            <span className="text-slate-400">For everyone.</span>
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {/* Customer pain */}
+          <Card className="bg-slate-800/60 border-slate-700">
+            <CardContent className="p-8">
+              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                <Home className="w-5 h-5 text-orange-400" /> If you're a homeowner:
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  { icon: Clock, text: "You call 5 contractors, maybe 2 call back" },
+                  { icon: DollarSign, text: "The quote is whatever they feel like charging" },
+                  { icon: Ban, text: "No insurance, no background check, no accountability" },
+                  { icon: Clock, text: "They no-show. You take another day off work." },
+                ].map((item) => (
+                  <li key={item.text} className="flex items-start gap-3">
+                    <item.icon className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
+                    <span className="text-slate-300">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* Pro pain */}
+          <Card className="bg-slate-800/60 border-slate-700">
+            <CardContent className="p-8">
+              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                <Wrench className="w-5 h-5 text-orange-400" /> If you're a Pro:
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  { icon: DollarSign, text: "Platforms charge you $30-50 per lead — most don't convert" },
+                  { icon: Ban, text: "You compete on price against uninsured guys on Craigslist" },
+                  { icon: Clock, text: "Customers ghost, cancel, or dispute payments" },
+                  { icon: TrendingUp, text: "No path to grow. Just hustle harder." },
+                ].map((item) => (
+                  <li key={item.text} className="flex items-start gap-3">
+                    <item.icon className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
+                    <span className="text-slate-300">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+
+        <p className="text-center text-slate-500 mt-10 text-sm font-semibold uppercase tracking-wider">
+          Other platforms profit from this chaos. We're ending it.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ─── UPTEND VERB ─── */
+function UpTendVerb() {
+  const { t } = useTranslation();
+  return (
+    <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
+      <div className="max-w-3xl mx-auto px-4 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
+          {t("landing.uptend_meaning_title")}
+        </h2>
+        <p className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: t("landing.uptend_meaning_body") }} />
       </div>
     </section>
   );
@@ -199,6 +282,44 @@ function TwoSides() {
   );
 }
 
+/* ─── HOME SCAN PROMO ─── */
+function HomeScanPromo() {
+  const { t } = useTranslation();
+  return (
+    <section className="py-16 bg-gradient-to-r from-[#3B1D5A] to-slate-900 text-white border-t border-border">
+      <div className="max-w-5xl mx-auto px-4 text-center">
+        <h2 className="text-3xl md:text-4xl font-black mb-4">
+          {t("home_scan_promo.headline", "Scan Your Home for Free — Earn $25+")}
+        </h2>
+        <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-6 leading-relaxed">
+          {t("home_scan_promo.body", "Walk through your home room by room. Our AI identifies every appliance — brand, model, age, and condition — and builds a complete Home Health Record you own forever.")}
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8 text-left">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <p className="font-bold text-white mb-1">📋 Full Inventory</p>
+            <p className="text-sm text-slate-400">Every appliance, fixture, and system documented with photos, specs, and estimated remaining life.</p>
+          </div>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <p className="font-bold text-white mb-1">🛡️ Insurance-Ready</p>
+            <p className="text-sm text-slate-400">Timestamped records for claims, warranties, and resale — proof of what you have and its condition.</p>
+          </div>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <p className="font-bold text-white mb-1">💰 $25 Credit</p>
+            <p className="text-sm text-slate-400">Complete your scan and earn $25+ in service credits toward any booking on the platform.</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link href="/ai/home-scan" asChild>
+            <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
+              {t("home_scan_promo.cta", "Start Your Free Scan")} <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── SERVICES STRIP ─── */
 function ServicesStrip() {
   const [, setLocation] = useLocation();
@@ -220,7 +341,9 @@ function ServicesStrip() {
     <section className="py-16 bg-slate-50 dark:bg-slate-900/50 border-t border-border">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-2xl font-bold text-center mb-2">
-          12 Services. One App. Transparent Pricing.
+          11 Services.<br />
+          One App.<br />
+          Transparent Pricing.
         </h2>
         <p className="text-center text-muted-foreground mb-10">Tap any service to get an instant quote.</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -247,7 +370,7 @@ function ServicesStrip() {
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLocation("/find-pro"); } }}
             className="text-sm text-[#C05600] hover:underline cursor-pointer font-medium"
           >
-            Or browse Pros
+            Or browse Pros →
           </span>
         </p>
       </div>
@@ -307,3 +430,4 @@ function FinalCTA() {
     </section>
   );
 }
+
