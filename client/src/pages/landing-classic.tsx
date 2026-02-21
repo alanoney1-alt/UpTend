@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import {
-  ShieldCheck,
-  ClipboardCheck,
-  ScanFace, TrendingUp, ChevronRight, Truck,
-  Waves, ArrowUpFromLine, Package, Search, BrainCircuit,
-  ArrowRight, Activity, Globe, Heart, Leaf,
-  Sparkles, Trees, Home, Wrench, ScanLine,
+  ShieldCheck, ArrowRight, Globe, Leaf, Heart, Zap,
+  DollarSign, Clock, Ban, TrendingUp, Users, Star,
+  CheckCircle, ChevronRight, Wrench, Waves, Truck,
+  Package, Home, Trees, ArrowUpFromLine, Sparkles,
+  MessageCircle, CloudRain, Warehouse, Hammer, Droplets, ScanLine,
+  ClipboardCheck, ScanFace, BrainCircuit, Activity,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer-classic";
 import { Header } from "@/components/landing/header-classic";
@@ -344,17 +344,17 @@ function WhySection() {
   };
 
   const services = [
-    { key: "handyman", label: "Handyman Services", price: "From $75/hr", icon: Wrench, color: "text-blue-500 dark:text-blue-400" },
+    { key: "handyman", label: "Handyman", price: "$75/hr", icon: Wrench, color: "text-blue-500 dark:text-blue-400" },
     { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck, color: "text-primary dark:text-orange-400" },
-    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $299", icon: Home, color: "text-primary dark:text-orange-400" },
-    { key: "moving_labor", label: "Moving Labor", price: "$80/hr", icon: Package, color: "text-secondary dark:text-secondary" },
+    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Droplets, color: "text-primary dark:text-orange-400" },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: CloudRain, color: "text-orange-500 dark:text-orange-400" },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, color: "text-primary dark:text-orange-400" },
-    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $39/room", icon: Home, color: "text-primary dark:text-orange-400" },
     { key: "landscaping", label: "Landscaping", price: "From $49", icon: Trees, color: "text-green-500 dark:text-green-400" },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
-    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $89/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
+    { key: "pool_cleaning", label: "Pool Cleaning", price: "$120/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
+    { key: "moving_labor", label: "Moving Labor", price: "$65/hr", icon: Package, color: "text-secondary dark:text-secondary" },
+    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "$50/room", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $150", icon: Warehouse, color: "text-primary dark:text-orange-400" },
+    { key: "light_demolition", label: "Light Demo", price: "From $199", icon: Hammer, color: "text-primary dark:text-orange-400" },
     { key: "home_scan", label: "AI Home Scan", price: "From $99", icon: ScanLine, color: "text-violet-500 dark:text-violet-400" },
   ];
 
