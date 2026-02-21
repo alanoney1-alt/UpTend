@@ -22,8 +22,8 @@ export default function LandingClassic() {
     <div className="min-h-screen bg-background" data-testid="page-landing-classic">
       <Header />
       {/* George AI toggle banner */}
-      <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-2 px-4 text-center cursor-pointer hover:from-amber-500 hover:to-orange-500 transition-colors" onClick={toggle}>
-        <span className="text-sm font-medium">Try <strong>George AI</strong> — our intelligent home assistant. <span className="underline">Switch to AI Mode</span></span>
+      <div className="sticky top-0 z-50 bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-4 text-center cursor-pointer hover:from-amber-500 hover:to-orange-500 transition-colors shadow-lg" onClick={toggle}>
+        <span className="text-sm md:text-base font-semibold">Try <strong>George AI</strong> — your intelligent home assistant. <span className="underline font-bold">Switch to AI Mode</span> <span className="ml-1">&rarr;</span></span>
       </div>
       <main>
         <HeroSection />
