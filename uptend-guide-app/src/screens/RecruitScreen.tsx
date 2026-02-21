@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { LoadingScreen } from '../components/ui';
+import { fetchRecruits, sendRecruitInvite, scanContactsForPros } from '../services/api';
 
 interface Recruit {
   id: string;
@@ -22,18 +24,55 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
 };
 
 export default function RecruitScreen() {
-  const [recruits, setRecruits] = useState([]);
+  const [recruits, setRecruits] = useState<Recruit[]>([]);
   const [scanning, setScanning] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const scanContacts = () => {
+  const load = useCallback(async () => {
+    try {
+      const res = await fetchRecruits();
+      const list: Recruit[] = (res?.recruits || res || []).map((r: any) => ({
+        id: r.id || r._id || '',
+        name: r.name || 'Unknown',
+        phone: r.phone || '',
+        keywords: r.keywords || r.skills || [],
+        confidence: r.confidence || 0,
+        status: r.status || 'found',
+      }));
+      setRecruits(list);
+    } catch { setRecruits([]); }
+  }, []);
+
+  useEffect(() => { load().finally(() => setLoading(false)); }, [load]);
+
+  const scanContacts = async () => {
     setScanning(true);
-    setTimeout(() => setScanning(false), 2000);
+    try {
+      const res = await scanContactsForPros();
+      const found: Recruit[] = (res?.contacts || res || []).map((r: any) => ({
+        id: r.id || r._id || `scan-${Date.now()}`,
+        name: r.name || 'Unknown',
+        phone: r.phone || '',
+        keywords: r.keywords || [],
+        confidence: r.confidence || 0,
+        status: 'found' as const,
+      }));
+      setRecruits(prev => [...prev, ...found]);
+    } catch { /* ignore */ }
+    setScanning(false);
   };
 
-  const sendInvite = (id: string) => {
-    setRecruits(prev => prev.map(r => r.id === id ? { ...r, status: 'invited' as const } : r));
-    Alert.alert('Invite Sent! 📨', 'A recruitment invite has been sent via SMS.');
+  const handleInvite = async (id: string) => {
+    try {
+      await sendRecruitInvite(id);
+      setRecruits(prev => prev.map(r => r.id === id ? { ...r, status: 'invited' as const } : r));
+      Alert.alert('Invite Sent! 📨', 'A recruitment invite has been sent via SMS.');
+    } catch {
+      Alert.alert('Error', 'Could not send invite. Try again.');
+    }
   };
+
+  if (loading) return <LoadingScreen message="Loading recruits..." />;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -77,7 +116,7 @@ export default function RecruitScreen() {
                 </View>
               </View>
               {item.status === 'found' && (
-                <TouchableOpacity style={styles.inviteBtn} onPress={() => sendInvite(item.id)}>
+                <TouchableOpacity style={styles.inviteBtn} onPress={() => handleInvite(item.id)}>
                   <Text style={styles.inviteBtnText}>📨 Send Invite</Text>
                 </TouchableOpacity>
               )}

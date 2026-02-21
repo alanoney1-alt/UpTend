@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { LoadingScreen } from '../components/ui';
+import { fetchTaxSummary } from '../services/api';
 
-const TAX_DATA = {
+const FALLBACK_TAX_DATA = {
   ytdEarnings: 38450,
   ytdMileage: 4280,
   mileageDeduction: 2825,
@@ -25,8 +27,38 @@ const EXPENSES = [
 ];
 
 export default function TaxHelperScreen() {
-  const [showExport, setShowExport] = useState(false);
-  const totalDeductions = EXPENSES.reduce((s, e) => s + e.amount, 0);
+  const [taxData, setTaxData] = useState(FALLBACK_TAX_DATA);
+  const [expenses, setExpenses] = useState(EXPENSES);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetchTaxSummary();
+      if (res) {
+        setTaxData({
+          ytdEarnings: res.ytdEarnings ?? FALLBACK_TAX_DATA.ytdEarnings,
+          ytdMileage: res.ytdMileage ?? FALLBACK_TAX_DATA.ytdMileage,
+          mileageDeduction: res.mileageDeduction ?? FALLBACK_TAX_DATA.mileageDeduction,
+          suppliesDeduction: res.suppliesDeduction ?? FALLBACK_TAX_DATA.suppliesDeduction,
+          phoneDeduction: res.phoneDeduction ?? FALLBACK_TAX_DATA.phoneDeduction,
+          insuranceDeduction: res.insuranceDeduction ?? FALLBACK_TAX_DATA.insuranceDeduction,
+          estimatedTax: res.estimatedTax ?? FALLBACK_TAX_DATA.estimatedTax,
+          quarterlyPayment: res.quarterlyPayment ?? FALLBACK_TAX_DATA.quarterlyPayment,
+          nextQuarterlyDue: res.nextQuarterlyDue ?? FALLBACK_TAX_DATA.nextQuarterlyDue,
+        });
+        if (res.expenses) setExpenses(res.expenses);
+      }
+    } catch { /* keep fallback */ }
+  }, []);
+
+  useEffect(() => { load().finally(() => setLoading(false)); }, [load]);
+  const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
+
+  if (loading) return <LoadingScreen message="Loading tax summary..." />;
+
+  const TAX_DATA = taxData;
+  const totalDeductions = expenses.reduce((s: number, e: any) => s + e.amount, 0);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -80,7 +112,7 @@ export default function TaxHelperScreen() {
 
         {/* Deductions */}
         <Text style={styles.sectionTitle}>Deduction Breakdown</Text>
-        {EXPENSES.map((exp, i) => (
+        {expenses.map((exp: any, i: number) => (
           <View key={i} style={styles.expenseRow}>
             <Text style={styles.expenseIcon}>{exp.icon}</Text>
             <View style={styles.expenseInfo}>

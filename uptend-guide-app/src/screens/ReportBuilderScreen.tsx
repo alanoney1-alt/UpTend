@@ -1,23 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-
-const REPORT_TEMPLATES = [
-  { id: '1', name: 'Monthly Spend Summary', description: 'Total spend by property, service type, and vendor', category: 'Financial', emoji: '💰', popular: true },
-  { id: '2', name: 'SLA Compliance Report', description: 'Response & resolution times across all work orders', category: 'Operations', emoji: '⏱️', popular: true },
-  { id: '3', name: 'Vendor Scorecard', description: 'Performance metrics for all assigned pros', category: 'Vendor', emoji: '⭐', popular: false },
-  { id: '4', name: 'Insurance Expiry Report', description: 'COI and compliance document expiration timeline', category: 'Compliance', emoji: '🛡️', popular: false },
-  { id: '5', name: 'Occupancy & Turnover', description: 'Unit status, vacancy rates, and turnover timelines', category: 'Property', emoji: '🏢', popular: true },
-  { id: '6', name: 'Government Contract Status', description: 'Bid pipeline, payroll, and DBE utilization', category: 'Government', emoji: '🏛️', popular: false },
-  { id: '7', name: 'Certified Payroll (WH-347)', description: 'Davis-Bacon compliant payroll export', category: 'Government', emoji: '📊', popular: false },
-];
-
-const SAVED_REPORTS = [
-  { id: '1', name: 'Q4 2025 Portfolio Summary', template: 'Monthly Spend Summary', lastRun: 'Jan 15, 2026', schedule: 'Monthly', format: 'PDF' },
-  { id: '2', name: 'Weekly SLA Dashboard', template: 'SLA Compliance Report', lastRun: 'Feb 14, 2026', schedule: 'Weekly', format: 'Excel' },
-  { id: '3', name: 'January Vendor Review', template: 'Vendor Scorecard', lastRun: 'Feb 1, 2026', schedule: 'One-time', format: 'PDF' },
-];
+import { fetchReportTemplates, fetchSavedReports, generateReport } from '../services/api';
+import ApiStateWrapper from '../components/ApiStateWrapper';
 
 const AVAILABLE_COLUMNS = [
   { group: 'Property', columns: ['Address', 'Unit', 'Type', 'Occupancy', 'Monthly Rent'] },
@@ -25,13 +11,28 @@ const AVAILABLE_COLUMNS = [
   { group: 'Operations', columns: ['Work Orders', 'Response Time', 'Resolution Time', 'SLA Status'] },
   { group: 'Vendor', columns: ['Pro Name', 'Rating', 'Jobs Completed', 'On-Time %'] },
 ];
-
 const WIZARD_STEPS = ['Template', 'Filters', 'Columns', 'Schedule'];
 
 export default function ReportBuilderScreen() {
   const [activeTab, setActiveTab] = useState<'templates' | 'saved' | 'builder'>('templates');
   const [wizardStep, setWizardStep] = useState(0);
   const [selectedColumns, setSelectedColumns] = useState<string[]>(['Address', 'Total Spend', 'Work Orders', 'Pro Name']);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [saved, setSaved] = useState<any[]>([]);
+
+  const load = async () => {
+    setLoading(true); setError(null);
+    try {
+      const [tRes, sRes] = await Promise.allSettled([fetchReportTemplates(), fetchSavedReports()]);
+      setTemplates(tRes.status === 'fulfilled' ? (tRes.value?.templates || tRes.value || []) : []);
+      setSaved(sRes.status === 'fulfilled' ? (sRes.value?.reports || sRes.value || []) : []);
+    } catch (e: any) { setError(e?.message || 'Failed to load'); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { load(); }, []);
 
   const toggleColumn = (col: string) => {
     setSelectedColumns(prev => prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]);
@@ -39,159 +40,151 @@ export default function ReportBuilderScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Report Builder</Text>
-          <Text style={styles.subtitle}>Custom reports & analytics</Text>
-        </View>
+      <ApiStateWrapper loading={loading} error={error} onRetry={load}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Report Builder</Text>
+            <Text style={styles.subtitle}>Custom reports & analytics</Text>
+          </View>
 
-        {/* Tabs */}
-        <View style={styles.tabs}>
-          {([['templates', '📋 Templates'], ['saved', '💾 Saved'], ['builder', '🔧 Builder']] as const).map(([key, label]) => (
-            <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
-              <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Templates */}
-        {activeTab === 'templates' && REPORT_TEMPLATES.map((t) => (
-          <TouchableOpacity key={t.id} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={{ fontSize: 28 }}>{t.emoji}</Text>
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <Text style={styles.cardTitle}>{t.name}</Text>
-                  {t.popular && <View style={styles.popularBadge}><Text style={styles.popularText}>Popular</Text></View>}
-                </View>
-                <Text style={styles.cardSubtitle}>{t.description}</Text>
-              </View>
-            </View>
-            <View style={styles.cardRow}>
-              <View style={styles.categoryBadge}><Text style={styles.categoryText}>{t.category}</Text></View>
-              <TouchableOpacity style={styles.useBtn}><Text style={styles.useBtnText}>Use Template</Text></TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        ))}
-
-        {/* Saved */}
-        {activeTab === 'saved' && (
-          <>
-            {SAVED_REPORTS.map((r) => (
-              <View key={r.id} style={styles.card}>
-                <Text style={styles.cardTitle}>{r.name}</Text>
-                <Text style={styles.cardSubtitle}>Based on: {r.template}</Text>
-                <View style={[styles.cardRow, { marginTop: 10 }]}>
-                  <Text style={styles.cardDetail}>Last run: {r.lastRun}</Text>
-                  <View style={styles.schedBadge}><Text style={styles.schedText}>{r.schedule}</Text></View>
-                  <View style={styles.formatBadge}><Text style={styles.formatText}>{r.format}</Text></View>
-                </View>
-                <View style={[styles.cardActions, { marginTop: 10 }]}>
-                  <TouchableOpacity style={styles.actionBtn}><Text style={styles.actionBtnText}>📥 Download</Text></TouchableOpacity>
-                  <TouchableOpacity style={styles.actionBtn}><Text style={styles.actionBtnText}>🔄 Re-run</Text></TouchableOpacity>
-                  <TouchableOpacity style={[styles.actionBtn, styles.primaryBtn]}><Text style={styles.primaryBtnText}>✏️ Edit</Text></TouchableOpacity>
-                </View>
-              </View>
+          <View style={styles.tabs}>
+            {([['templates', '📋 Templates'], ['saved', '💾 Saved'], ['builder', '🔧 Builder']] as const).map(([key, label]) => (
+              <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.activeTab]} onPress={() => setActiveTab(key as any)}>
+                <Text style={[styles.tabText, activeTab === key && styles.activeTabText]}>{label}</Text>
+              </TouchableOpacity>
             ))}
-          </>
-        )}
+          </View>
 
-        {/* Builder Wizard */}
-        {activeTab === 'builder' && (
-          <>
-            {/* Wizard Progress */}
-            <View style={styles.wizardProgress}>
-              {WIZARD_STEPS.map((step, i) => (
-                <View key={i} style={styles.wizardStepRow}>
-                  <View style={[styles.wizardDot, i <= wizardStep ? styles.wizardDotActive : {}]}>
-                    <Text style={[styles.wizardDotText, i <= wizardStep ? { color: Colors.white } : {}]}>{i + 1}</Text>
+          {activeTab === 'templates' && (templates.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No report templates available</Text></View>
+          ) : templates.map((t: any) => (
+            <TouchableOpacity key={t.id || t._id} style={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={{ fontSize: 28 }}>{t.emoji || '📊'}</Text>
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <Text style={styles.cardTitle}>{t.name}</Text>
+                    {t.popular && <View style={styles.popularBadge}><Text style={styles.popularText}>Popular</Text></View>}
                   </View>
-                  <Text style={[styles.wizardLabel, i === wizardStep && { color: Colors.primary, fontWeight: '700' }]}>{step}</Text>
-                  {i < WIZARD_STEPS.length - 1 && <View style={[styles.wizardLine, i < wizardStep ? styles.wizardLineActive : {}]} />}
+                  <Text style={styles.cardSubtitle}>{t.description}</Text>
                 </View>
-              ))}
+              </View>
+              <View style={styles.cardRow}>
+                <View style={styles.categoryBadge}><Text style={styles.categoryText}>{t.category}</Text></View>
+                <TouchableOpacity style={styles.useBtn}><Text style={styles.useBtnText}>Use Template</Text></TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          )))}
+
+          {activeTab === 'saved' && (saved.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No saved reports</Text></View>
+          ) : saved.map((r: any) => (
+            <View key={r.id || r._id} style={styles.card}>
+              <Text style={styles.cardTitle}>{r.name}</Text>
+              <Text style={styles.cardSubtitle}>Based on: {r.template}</Text>
+              <View style={[styles.cardRow, { marginTop: 10 }]}>
+                <Text style={styles.cardDetail}>Last run: {r.lastRun}</Text>
+                <View style={styles.schedBadge}><Text style={styles.schedText}>{r.schedule}</Text></View>
+                <View style={styles.formatBadge}><Text style={styles.formatText}>{r.format}</Text></View>
+              </View>
+              <View style={[styles.cardActions, { marginTop: 10 }]}>
+                <TouchableOpacity style={styles.actionBtn}><Text style={styles.actionBtnText}>📥 Download</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.actionBtn}><Text style={styles.actionBtnText}>🔄 Re-run</Text></TouchableOpacity>
+                <TouchableOpacity style={[styles.actionBtn, styles.primaryBtn]}><Text style={styles.primaryBtnText}>✏️ Edit</Text></TouchableOpacity>
+              </View>
             </View>
+          )))}
 
-            {/* Step Content */}
-            {wizardStep === 0 && (
-              <View style={styles.card}>
-                <Text style={styles.sectionTitle}>Choose Report Type</Text>
-                {['Financial Summary', 'Operations Dashboard', 'Vendor Performance', 'Compliance Audit'].map((type, i) => (
-                  <TouchableOpacity key={i} style={[styles.typeOption, i === 0 && styles.typeOptionSelected]}>
-                    <Text style={[styles.typeOptionText, i === 0 && { color: Colors.primary }]}>{type}</Text>
-                    {i === 0 && <Text style={{ color: Colors.primary }}>✓</Text>}
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-
-            {wizardStep === 1 && (
-              <View style={styles.card}>
-                <Text style={styles.sectionTitle}>Set Filters</Text>
-                {[['Date Range', 'Last 30 days'], ['Properties', 'All (20)'], ['Service Types', 'All'], ['Vendors', 'All (15)']].map(([label, value], i) => (
-                  <TouchableOpacity key={i} style={styles.filterRow}>
-                    <Text style={styles.filterLabel}>{label}</Text>
-                    <Text style={styles.filterValue}>{value} ›</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-
-            {wizardStep === 2 && (
-              <View style={styles.card}>
-                <Text style={styles.sectionTitle}>Select Columns</Text>
-                {AVAILABLE_COLUMNS.map((group, gi) => (
-                  <View key={gi}>
-                    <Text style={styles.groupTitle}>{group.group}</Text>
-                    <View style={styles.columnsRow}>
-                      {group.columns.map((col, ci) => (
-                        <TouchableOpacity key={ci} style={[styles.columnChip, selectedColumns.includes(col) && styles.columnChipSelected]} onPress={() => toggleColumn(col)}>
-                          <Text style={[styles.columnChipText, selectedColumns.includes(col) && { color: Colors.white }]}>{col}</Text>
-                        </TouchableOpacity>
-                      ))}
+          {activeTab === 'builder' && (
+            <>
+              <View style={styles.wizardProgress}>
+                {WIZARD_STEPS.map((step, i) => (
+                  <View key={i} style={styles.wizardStepRow}>
+                    <View style={[styles.wizardDot, i <= wizardStep && styles.wizardDotActive]}>
+                      <Text style={[styles.wizardDotText, i <= wizardStep && { color: Colors.white }]}>{i + 1}</Text>
                     </View>
+                    <Text style={[styles.wizardLabel, i === wizardStep && { color: Colors.primary, fontWeight: '700' }]}>{step}</Text>
+                    {i < WIZARD_STEPS.length - 1 && <View style={[styles.wizardLine, i < wizardStep && styles.wizardLineActive]} />}
                   </View>
                 ))}
               </View>
-            )}
 
-            {wizardStep === 3 && (
-              <View style={styles.card}>
-                <Text style={styles.sectionTitle}>Schedule & Export</Text>
-                {[['One-time', true], ['Weekly', false], ['Monthly', false], ['Quarterly', false]].map(([label, selected], i) => (
-                  <TouchableOpacity key={i} style={[styles.typeOption, selected && styles.typeOptionSelected]}>
-                    <Text style={[styles.typeOptionText, selected && { color: Colors.primary }]}>{label as string}</Text>
-                    {selected && <Text style={{ color: Colors.primary }}>✓</Text>}
-                  </TouchableOpacity>
-                ))}
-                <Text style={[styles.groupTitle, { marginTop: 16 }]}>Export Format</Text>
-                <View style={styles.columnsRow}>
-                  {['PDF', 'Excel', 'CSV', 'Google Sheets'].map((fmt, i) => (
-                    <TouchableOpacity key={i} style={[styles.columnChip, i === 0 && styles.columnChipSelected]}>
-                      <Text style={[styles.columnChipText, i === 0 && { color: Colors.white }]}>{fmt}</Text>
+              {wizardStep === 0 && (
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>Choose Report Type</Text>
+                  {['Financial Summary', 'Operations Dashboard', 'Vendor Performance', 'Compliance Audit'].map((type, i) => (
+                    <TouchableOpacity key={i} style={[styles.typeOption, i === 0 && styles.typeOptionSelected]}>
+                      <Text style={[styles.typeOptionText, i === 0 && { color: Colors.primary }]}>{type}</Text>
+                      {i === 0 && <Text style={{ color: Colors.primary }}>✓</Text>}
                     </TouchableOpacity>
                   ))}
                 </View>
-              </View>
-            )}
-
-            {/* Navigation */}
-            <View style={styles.wizardNav}>
-              {wizardStep > 0 && (
-                <TouchableOpacity style={styles.backBtn} onPress={() => setWizardStep(wizardStep - 1)}>
-                  <Text style={styles.backBtnText}>← Back</Text>
-                </TouchableOpacity>
               )}
-              <View style={{ flex: 1 }} />
-              <TouchableOpacity style={styles.nextBtn} onPress={() => setWizardStep(Math.min(wizardStep + 1, 3))}>
-                <Text style={styles.nextBtnText}>{wizardStep === 3 ? '🚀 Generate Report' : 'Next →'}</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
+              {wizardStep === 1 && (
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>Set Filters</Text>
+                  {[['Date Range', 'Last 30 days'], ['Properties', 'All'], ['Service Types', 'All'], ['Vendors', 'All']].map(([label, value], i) => (
+                    <TouchableOpacity key={i} style={styles.filterRow}>
+                      <Text style={styles.filterLabel}>{label}</Text>
+                      <Text style={styles.filterValue}>{value} ›</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+              {wizardStep === 2 && (
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>Select Columns</Text>
+                  {AVAILABLE_COLUMNS.map((group, gi) => (
+                    <View key={gi}>
+                      <Text style={styles.groupTitle}>{group.group}</Text>
+                      <View style={styles.columnsRow}>
+                        {group.columns.map((col, ci) => (
+                          <TouchableOpacity key={ci} style={[styles.columnChip, selectedColumns.includes(col) && styles.columnChipSelected]} onPress={() => toggleColumn(col)}>
+                            <Text style={[styles.columnChipText, selectedColumns.includes(col) && { color: Colors.white }]}>{col}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+              {wizardStep === 3 && (
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>Schedule & Export</Text>
+                  {['One-time', 'Weekly', 'Monthly', 'Quarterly'].map((label, i) => (
+                    <TouchableOpacity key={i} style={[styles.typeOption, i === 0 && styles.typeOptionSelected]}>
+                      <Text style={[styles.typeOptionText, i === 0 && { color: Colors.primary }]}>{label}</Text>
+                      {i === 0 && <Text style={{ color: Colors.primary }}>✓</Text>}
+                    </TouchableOpacity>
+                  ))}
+                  <Text style={[styles.groupTitle, { marginTop: 16 }]}>Export Format</Text>
+                  <View style={styles.columnsRow}>
+                    {['PDF', 'Excel', 'CSV', 'Google Sheets'].map((fmt, i) => (
+                      <TouchableOpacity key={i} style={[styles.columnChip, i === 0 && styles.columnChipSelected]}>
+                        <Text style={[styles.columnChipText, i === 0 && { color: Colors.white }]}>{fmt}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              )}
 
-        <View style={{ height: 20 }} />
-      </ScrollView>
+              <View style={styles.wizardNav}>
+                {wizardStep > 0 && (
+                  <TouchableOpacity style={styles.backBtn} onPress={() => setWizardStep(wizardStep - 1)}>
+                    <Text style={styles.backBtnText}>← Back</Text>
+                  </TouchableOpacity>
+                )}
+                <View style={{ flex: 1 }} />
+                <TouchableOpacity style={styles.nextBtn} onPress={() => setWizardStep(Math.min(wizardStep + 1, 3))}>
+                  <Text style={styles.nextBtnText}>{wizardStep === 3 ? '🚀 Generate Report' : 'Next →'}</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+
+          <View style={{ height: 20 }} />
+        </ScrollView>
+      </ApiStateWrapper>
     </SafeAreaView>
   );
 }
@@ -253,4 +246,6 @@ const styles = StyleSheet.create({
   backBtnText: { fontSize: 15, fontWeight: '600', color: Colors.text },
   nextBtn: { paddingVertical: 12, paddingHorizontal: 20, borderRadius: 10, backgroundColor: Colors.primary },
   nextBtnText: { fontSize: 15, fontWeight: '700', color: Colors.white },
+  emptyCard: { backgroundColor: Colors.white, borderRadius: 14, padding: 24, alignItems: 'center', marginBottom: 12 },
+  emptyText: { fontSize: 14, color: Colors.textSecondary },
 });

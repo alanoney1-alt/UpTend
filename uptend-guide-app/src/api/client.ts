@@ -5,10 +5,11 @@ export { customerLogin, proLogin, businessLogin, customerRegister, getUser } fro
 export { sendChatMessage as guideChat, sendGeorgeMessage as georgeChat } from '../services/chat';
 
 // Legacy aliases kept for any remaining imports
+import { uploadForm } from '../services/api';
 import { request } from '../services/api';
 
 export const georgePhotoAnalyze = (formData: FormData) =>
-  request('POST', '/api/ai/photo-analyze', formData, true);
+  uploadForm('/api/ai/photo-analyze', formData);
 
 export const georgePropertyScan = (address: string) =>
   request('POST', '/api/ai/property-scan', { address });

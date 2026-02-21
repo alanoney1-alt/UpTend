@@ -1,21 +1,33 @@
 import React, { useState, useRef, useCallback } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView,
-  Platform, ActivityIndicator, Linking,
+  View, Text, FlatList, KeyboardAvoidingView,
+  Platform, Linking, useColorScheme,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import ChatBubble, { ChatMessage } from '../components/ChatBubble';
+import { ChatBubble, Button, Header, LoadingScreen, Avatar } from '../components/ui';
+import { colors, spacing, radii } from '../components/ui/tokens';
 import QuoteCard from '../components/QuoteCard';
 import PropertyCard from '../components/PropertyCard';
 import InlineVideoPlayer, { extractVideoIds } from '../components/InlineVideoPlayer';
 import QuickActions from '../components/QuickActions';
 import VoiceInput from '../components/VoiceInput';
 import { showPhotoOptions } from '../components/PhotoCapture';
+import { Input } from '../components/ui';
 import { sendGeorgeMessage } from '../services/chat';
 import { useAuth } from '../context/AuthContext';
 
-const WELCOME: ChatMessage = {
+interface Message {
+  id: string;
+  sender: 'user' | 'george';
+  type: 'text' | 'photo' | 'quote' | 'property' | 'product' | 'actions';
+  text?: string;
+  imageUri?: string;
+  data?: any;
+  timestamp: Date;
+}
+
+const WELCOME: Message = {
   id: 'welcome',
   sender: 'george',
   type: 'text',
@@ -23,17 +35,12 @@ const WELCOME: ChatMessage = {
   timestamp: new Date(),
 };
 
-const QUICK_ACTIONS = [
-  '🏠 AI Home Scan',
-  '🗑 Junk Removal Quote',
-  '🧹 Home Cleaning',
-  '📦 Moving Help',
-  '🔧 Handyman Service',
-];
+const QUICK_ACTIONS = ['📋 Book a Pro', '🔧 DIY Help', '💰 Get a Quote'];
 
 export default function GeorgeChatScreen() {
+  const dark = useColorScheme() === 'dark';
   const { user, role, guestSessionId } = useAuth();
-  const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
+  const [messages, setMessages] = useState<Message[]>([WELCOME]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sessionId] = useState(() => user?.id || guestSessionId || `session_${Date.now()}`);
@@ -45,7 +52,7 @@ export default function GeorgeChatScreen() {
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim()) return;
-    const userMsg: ChatMessage = {
+    const userMsg: Message = {
       id: Date.now().toString(),
       sender: 'user',
       type: 'text',
@@ -66,7 +73,7 @@ export default function GeorgeChatScreen() {
       });
 
       const responseText = res.response || res.reply || res.message || res.text || "I'm here to help!";
-      const georgeMsg: ChatMessage = {
+      const georgeMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'george',
         type: 'text',
@@ -75,13 +82,13 @@ export default function GeorgeChatScreen() {
       };
       setMessages(prev => [...prev, georgeMsg]);
 
-      // Handle inline products from response
+      // Handle inline products
       if (res.products && res.products.length > 0) {
         res.products.forEach((product: any, idx: number) => {
-          const productMsg: ChatMessage = {
+          const productMsg: Message = {
             id: (Date.now() + idx + 10).toString(),
             sender: 'george',
-            type: 'product' as any,
+            type: 'product',
             data: product,
             text: `📦 ${product.name || product.title} — ${product.price || ''}`,
             timestamp: new Date(),
@@ -94,75 +101,68 @@ export default function GeorgeChatScreen() {
       if (res.toolResults && res.toolResults.length > 0) {
         res.toolResults.forEach((tool: any, idx: number) => {
           if (tool.type === 'quote' || tool.pricing) {
-            const quoteMsg: ChatMessage = {
+            setMessages(prev => [...prev, {
               id: (Date.now() + idx + 100).toString(),
               sender: 'george',
               type: 'quote',
               data: tool.pricing || tool,
               timestamp: new Date(),
-            };
-            setMessages(prev => [...prev, quoteMsg]);
+            }]);
           }
           if (tool.type === 'property' || tool.property) {
-            const propMsg: ChatMessage = {
+            setMessages(prev => [...prev, {
               id: (Date.now() + idx + 200).toString(),
               sender: 'george',
               type: 'property',
               data: tool.property || tool,
               timestamp: new Date(),
-            };
-            setMessages(prev => [...prev, propMsg]);
+            }]);
           }
         });
       }
 
       // Handle quick actions from API
       if (res.quickActions && res.quickActions.length > 0) {
-        const actionsMsg: ChatMessage = {
+        setMessages(prev => [...prev, {
           id: (Date.now() + 300).toString(),
           sender: 'george',
-          type: 'actions' as any,
+          type: 'actions',
           data: res.quickActions,
           text: '',
           timestamp: new Date(),
-        };
-        setMessages(prev => [...prev, actionsMsg]);
+        }]);
       }
-    } catch (err: any) {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          sender: 'george',
-          type: 'text',
-          text: "Sorry, I'm having trouble connecting right now. Please try again.",
-          timestamp: new Date(),
-        },
-      ]);
+    } catch {
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        sender: 'george',
+        type: 'text',
+        text: "Sorry, I'm having trouble connecting right now. Please try again.",
+        timestamp: new Date(),
+      }]);
     } finally {
       setIsTyping(false);
       scrollToEnd();
     }
-  }, [sessionId, role]);
+  }, [sessionId, role, scrollToEnd]);
 
   const handlePhoto = useCallback((uri: string) => {
-    const photoMsg: ChatMessage = {
+    setMessages(prev => [...prev, {
       id: Date.now().toString(),
       sender: 'user',
       type: 'photo',
       imageUri: uri,
       text: 'Sent a photo',
       timestamp: new Date(),
-    };
-    setMessages(prev => [...prev, photoMsg]);
+    }]);
     scrollToEnd();
-  }, []);
+  }, [scrollToEnd]);
 
   const handleVoiceRecording = useCallback((_uri: string) => {
     sendMessage('[Voice message recorded]');
   }, [sendMessage]);
 
-  const renderItem = useCallback(({ item }: { item: ChatMessage }) => {
+  const renderItem = useCallback(({ item }: { item: Message }) => {
     // Quote card
     if (item.type === 'quote' && item.data) {
       return (
@@ -189,55 +189,59 @@ export default function GeorgeChatScreen() {
         />
       );
     }
-    // Inline product card (don't open externally)
-    if ((item.type as string) === 'product' && item.data) {
+    // Product card — uses Linking.openURL for "Buy Now"
+    if (item.type === 'product' && item.data) {
       const p = item.data;
       return (
-        <View style={{ marginHorizontal: 12, marginVertical: 6, backgroundColor: '#f9fafb', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: '#e5e7eb' }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: '#1e293b' }}>{p.name || p.title}</Text>
-          {p.description && <Text style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>{p.description}</Text>}
-          {p.price && <Text style={{ fontSize: 18, fontWeight: '800', color: '#f97316', marginTop: 6 }}>{p.price}</Text>}
-          {p.features && (
-            <View style={{ marginTop: 8 }}>
-              {(Array.isArray(p.features) ? p.features : []).map((f: string, i: number) => (
-                <Text key={i} style={{ fontSize: 12, color: '#64748b' }}>• {f}</Text>
-              ))}
-            </View>
-          )}
-          <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+        <View style={{ marginHorizontal: spacing.md, marginVertical: spacing.xs }}>
+          <ChatBubble
+            sender="george"
+            text={`**${p.name || p.title}**${p.description ? '\n' + p.description : ''}`}
+            product={{
+              title: p.name || p.title,
+              price: p.price || '',
+              image: p.image || p.imageUrl,
+              url: p.url || p.affiliateUrl || p.link,
+            }}
+          />
+          <View style={{ flexDirection: 'row', gap: spacing.sm, marginTop: spacing.xs, paddingHorizontal: spacing.sm }}>
             {(p.url || p.affiliateUrl || p.link) && (
-              <TouchableOpacity
-                style={{ flex: 1, backgroundColor: '#f97316', borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}
+              <Button
+                variant="primary"
+                size="sm"
+                fullWidth
                 onPress={() => Linking.openURL(p.url || p.affiliateUrl || p.link)}
+                accessibilityLabel={`Buy ${p.name || p.title}`}
               >
-                <Text style={{ color: '#fff', fontWeight: '700' }}>Buy Now</Text>
-              </TouchableOpacity>
+                Buy Now
+              </Button>
             )}
-            <TouchableOpacity
-              style={{ flex: 1, backgroundColor: !(p.url || p.affiliateUrl || p.link) ? '#f97316' : '#f1f5f9', borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}
+            <Button
+              variant="secondary"
+              size="sm"
+              fullWidth
               onPress={() => sendMessage(`Tell me more about ${p.name || p.title}`)}
+              accessibilityLabel={`Learn more about ${p.name || p.title}`}
             >
-              <Text style={{ color: !(p.url || p.affiliateUrl || p.link) ? '#fff' : '#475569', fontWeight: '700' }}>Learn More</Text>
-            </TouchableOpacity>
+              Learn More
+            </Button>
           </View>
         </View>
       );
     }
     // Quick actions from API
-    if ((item.type as string) === 'actions' && item.data) {
-      return (
-        <QuickActions actions={item.data} onPress={sendMessage} />
-      );
+    if (item.type === 'actions' && item.data) {
+      return <QuickActions actions={item.data} onPress={sendMessage} />;
     }
     // Render inline video players for YouTube URLs
     if (item.sender === 'george' && item.text) {
       const videoIds = extractVideoIds(item.text);
       if (videoIds.length > 0) {
         return (
-          <View>
-            <ChatBubble message={item} onQuickReply={sendMessage} />
+          <View style={{ paddingHorizontal: spacing.md, marginVertical: spacing.xs }}>
+            <ChatBubble sender="george" text={item.text} />
             {videoIds.map(vid => (
-              <View key={vid} style={{ paddingHorizontal: 12 }}>
+              <View key={vid} style={{ marginTop: spacing.xs }}>
                 <InlineVideoPlayer videoId={vid} />
               </View>
             ))}
@@ -245,21 +249,27 @@ export default function GeorgeChatScreen() {
         );
       }
     }
-    return <ChatBubble message={item} onQuickReply={sendMessage} />;
+    // Standard message — use new UI ChatBubble
+    return (
+      <View style={{ paddingHorizontal: spacing.md, marginVertical: spacing.xs }}>
+        <ChatBubble
+          sender={item.sender === 'george' ? 'george' : 'user'}
+          text={item.text || ''}
+          time={item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        />
+      </View>
+    );
   }, [sendMessage]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }} edges={['top', 'bottom']}>
-      <View style={{ backgroundColor: '#1e293b', paddingHorizontal: 20, paddingVertical: 16, borderBottomWidth: 3, borderBottomColor: '#f97316' }}>
-        <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 22, fontWeight: '800', color: '#ffffff', letterSpacing: 1 }}>
-            George 🏠
-          </Text>
-          <Text style={{ fontSize: 12, fontWeight: '600', color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
-            AI Home Concierge
-          </Text>
-        </View>
-      </View>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: dark ? colors.backgroundDark : colors.background }}
+      edges={['top', 'bottom']}
+    >
+      <Header
+        title="George 🏠"
+        subtitle="AI Home Concierge"
+      />
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -271,59 +281,85 @@ export default function GeorgeChatScreen() {
           data={messages}
           keyExtractor={m => m.id}
           renderItem={renderItem}
-          contentContainerStyle={{ paddingTop: 12, paddingBottom: 8 }}
+          contentContainerStyle={{ paddingTop: spacing.md, paddingBottom: spacing.sm }}
           onContentSizeChange={scrollToEnd}
           ListFooterComponent={
             isTyping ? (
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8 }}>
-                <View style={{ flexDirection: 'row', gap: 4 }}>
-                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97316', opacity: 1 }} />
-                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97316', opacity: 0.7 }} />
-                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97316', opacity: 0.4 }} />
-                </View>
-                <Text style={{ fontSize: 13, color: '#9ca3af', marginLeft: 8 }}>Mr. George is typing...</Text>
+              <View style={{ paddingHorizontal: spacing.md, marginVertical: spacing.xs }}>
+                <ChatBubble sender="george" text="" typing />
               </View>
             ) : null
           }
         />
 
+        {/* Quick action chips — shown when conversation just started */}
         {messages.length === 1 && (
-          <QuickActions actions={QUICK_ACTIONS} onPress={sendMessage} />
+          <View style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: spacing.sm,
+            paddingHorizontal: spacing.lg,
+            paddingBottom: spacing.md,
+          }}>
+            {QUICK_ACTIONS.map(action => (
+              <Button
+                key={action}
+                variant="secondary"
+                size="sm"
+                onPress={() => sendMessage(action)}
+                accessibilityLabel={action}
+              >
+                {action}
+              </Button>
+            ))}
+          </View>
         )}
 
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 8, paddingVertical: 8, backgroundColor: '#ffffff', borderTopWidth: 1, borderTopColor: '#f3f4f6', gap: 6 }}>
-          <TouchableOpacity
-            style={{ width: 44, height: 44, justifyContent: 'center', alignItems: 'center' }}
+        {/* Input bar */}
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'flex-end',
+          paddingHorizontal: spacing.sm,
+          paddingVertical: spacing.sm,
+          backgroundColor: dark ? colors.backgroundDark : colors.background,
+          borderTopWidth: 1,
+          borderTopColor: dark ? colors.borderDark : colors.border,
+          gap: spacing.xs,
+        }}>
+          <Button
+            variant="tertiary"
+            size="sm"
             onPress={() => showPhotoOptions(handlePhoto)}
+            accessibilityLabel="Attach photo"
           >
-            <Text style={{ fontSize: 22 }}>📎</Text>
-          </TouchableOpacity>
+            📎
+          </Button>
 
-          <TextInput
-            style={{ flex: 1, backgroundColor: '#f9fafb', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, fontSize: 16, color: '#0f172a', maxHeight: 100 }}
-            value={input}
-            onChangeText={setInput}
-            placeholder="Ask Mr. George anything..."
-            placeholderTextColor="#9CA3AF"
-            multiline
-            maxLength={2000}
-            onSubmitEditing={() => sendMessage(input)}
-            returnKeyType="send"
-          />
+          <View style={{ flex: 1 }}>
+            <Input
+              placeholder="Ask Mr. George anything..."
+              value={input}
+              onChangeText={setInput}
+              onSubmitEditing={() => sendMessage(input)}
+              returnKeyType="send"
+              multiline
+              containerStyle={{ marginBottom: 0 }}
+              accessibilityLabel="Message input"
+            />
+          </View>
 
           <VoiceInput onRecordingComplete={handleVoiceRecording} />
 
-          <TouchableOpacity
-            style={{
-              width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center',
-              backgroundColor: input.trim() ? '#f97316' : '#e5e7eb',
-            }}
+          <Button
+            variant="primary"
+            size="sm"
             onPress={() => sendMessage(input)}
             disabled={!input.trim()}
-            activeOpacity={0.7}
+            accessibilityLabel="Send message"
+            style={{ borderRadius: radii.full, width: 40, height: 40, paddingHorizontal: 0 }}
           >
-            <Text style={{ color: '#ffffff', fontSize: 20, fontWeight: '700' }}>↑</Text>
-          </TouchableOpacity>
+            ↑
+          </Button>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

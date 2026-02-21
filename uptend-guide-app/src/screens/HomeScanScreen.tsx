@@ -1,111 +1,173 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
-  View, Text, TouchableOpacity, ScrollView, StyleSheet, FlatList,
+  View, Text, TouchableOpacity, ScrollView, useColorScheme, Alert, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '../theme/colors';
+import { Header, Button, Card, Badge, EmptyState } from '../components/ui';
+import { colors, spacing, radii } from '../components/ui/tokens';
+import { showPhotoOptions } from '../components/PhotoCapture';
+import { analyzeRoom } from '../services/api';
 
-const ROOMS = [
-  { id: '1', name: 'Kitchen', icon: '🍳', scanned: true, issues: 2 },
-  { id: '2', name: 'Living Room', icon: '🛋️', scanned: true, issues: 0 },
-  { id: '3', name: 'Master Bedroom', icon: '🛏️', scanned: false, issues: 0 },
-  { id: '4', name: 'Bathroom', icon: '🚿', scanned: true, issues: 1 },
-  { id: '5', name: 'Garage', icon: '🚗', scanned: false, issues: 0 },
-  { id: '6', name: 'Backyard', icon: '🌳', scanned: false, issues: 0 },
-];
+interface Room { id: string; name: string; icon: string; scanned: boolean; issues: number; analysis?: any; }
 
-const BADGES = [
-  { id: '1', name: 'First Scan', icon: '🏅', earned: true },
-  { id: '2', name: 'Room Master', icon: '🏆', earned: true },
+const BADGES_INIT = [
+  { id: '1', name: 'First Scan', icon: '🏅', earned: false },
+  { id: '2', name: 'Room Master', icon: '🏆', earned: false },
   { id: '3', name: 'Full House', icon: '🏠', earned: false },
   { id: '4', name: 'Eagle Eye', icon: '🦅', earned: false },
 ];
 
 export default function HomeScanScreen({ navigation }: any) {
+  const dark = useColorScheme() === 'dark';
   const [activeTab, setActiveTab] = useState<'scan' | 'badges' | 'wallet'>('scan');
-  const scannedCount = ROOMS.filter(r => r.scanned).length;
-  const totalRooms = ROOMS.length;
-  const progress = scannedCount / totalRooms;
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [scanning, setScanning] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [badges, setBadges] = useState(BADGES_INIT);
+
+  const bg = dark ? colors.backgroundDark : '#FFFBF5';
+  const cardBg = dark ? colors.surfaceDark : colors.surface;
+  const textColor = dark ? colors.textDark : colors.text;
+  const mutedColor = dark ? colors.textMutedDark : colors.textMuted;
+  const scannedCount = rooms.filter(r => r.scanned).length;
+  const progress = rooms.length > 0 ? scannedCount / Math.max(rooms.length, 1) : 0;
+
+  const getRoomIcon = (name: string): string => {
+    const n = name.toLowerCase();
+    if (n.includes('kitchen')) return '🍳';
+    if (n.includes('living')) return '🛋️';
+    if (n.includes('bed')) return '🛏️';
+    if (n.includes('bath')) return '🚿';
+    if (n.includes('garage')) return '🚗';
+    if (n.includes('yard') || n.includes('outdoor')) return '🌳';
+    if (n.includes('laundry')) return '🧺';
+    return '🏠';
+  };
+
+  const handleScan = useCallback(() => {
+    showPhotoOptions(async (uri: string) => {
+      setScanning(true);
+      setAnalysisResult(null);
+      try {
+        const formData = new FormData();
+        formData.append('image', { uri, type: 'image/jpeg', name: 'room-scan.jpg' } as any);
+        const result = await analyzeRoom(formData);
+        setAnalysisResult(result);
+        const roomName = result.roomType || result.room || result.label || `Room ${rooms.length + 1}`;
+        const issueCount = result.issues?.length || result.problems?.length || 0;
+        setRooms(prev => [...prev, { id: Date.now().toString(), name: roomName, icon: getRoomIcon(roomName), scanned: true, issues: issueCount, analysis: result }]);
+        const newBadges = [...badges];
+        if (newBadges[0]) newBadges[0].earned = true;
+        if (rooms.length + 1 >= 3 && newBadges[1]) newBadges[1].earned = true;
+        if (rooms.length + 1 >= 6 && newBadges[2]) newBadges[2].earned = true;
+        setBadges(newBadges);
+      } catch (e: any) {
+        Alert.alert('Scan Error', e.message || 'Could not analyze the image.');
+      } finally { setScanning(false); }
+    });
+  }, [rooms, badges]);
+
+  const tabs = [
+    { key: 'scan' as const, label: '📷 Scan' },
+    { key: 'badges' as const, label: '🏅 Badges' },
+    { key: 'wallet' as const, label: '💰 Credits' },
+  ];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>AI Home Scan</Text>
-        <Text style={styles.headerSub}>Scan your home to detect issues</Text>
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: bg }} edges={['top']}>
+      <Header title="AI Home Scan" subtitle="Powered by AI Vision" onBack={() => navigation?.goBack()} />
 
-      {/* Tabs */}
-      <View style={styles.tabRow}>
-        {(['scan', 'badges', 'wallet'] as const).map(tab => (
-          <TouchableOpacity
-            key={tab}
-            style={[styles.tab, activeTab === tab && styles.tabActive]}
-            onPress={() => setActiveTab(tab)}
-          >
-            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-              {tab === 'scan' ? '📷 Scan' : tab === 'badges' ? '🏅 Badges' : '💰 Credits'}
-            </Text>
+      <View style={{ flexDirection: 'row', paddingHorizontal: spacing.lg, paddingTop: spacing.md, gap: 8 }}>
+        {tabs.map(tab => (
+          <TouchableOpacity key={tab.key} accessibilityRole="tab" accessibilityState={{ selected: activeTab === tab.key }}
+            style={{ flex: 1, paddingVertical: 10, borderRadius: radii.sm, alignItems: 'center', backgroundColor: activeTab === tab.key ? (dark ? '#3B2A15' : '#FFF7ED') : cardBg, borderWidth: activeTab === tab.key ? 1.5 : 0, borderColor: colors.primary }}
+            onPress={() => setActiveTab(tab.key)}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: activeTab === tab.key ? colors.primary : mutedColor }}>{tab.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={{ padding: spacing.xl, paddingBottom: 40 }}>
         {activeTab === 'scan' && (
           <>
-            {/* Progress */}
-            <View style={styles.progressCard}>
-              <View style={styles.progressHeader}>
-                <Text style={styles.progressTitle}>Scan Progress</Text>
-                <Text style={styles.progressCount}>{scannedCount}/{totalRooms} rooms</Text>
-              </View>
-              <View style={styles.progressBar}>
-                <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
-              </View>
-              <Text style={styles.progressHint}>
-                Scan {totalRooms - scannedCount} more rooms to earn the Full House badge!
-              </Text>
-            </View>
-
-            {/* Camera Button */}
-            <TouchableOpacity style={styles.scanBtn} activeOpacity={0.8}>
-              <Text style={styles.scanBtnIcon}>📸</Text>
-              <Text style={styles.scanBtnText}>Start Scanning</Text>
-              <Text style={styles.scanBtnSub}>Point camera at any room or appliance</Text>
-            </TouchableOpacity>
-
-            {/* Room List */}
-            <Text style={styles.sectionTitle}>Your Rooms</Text>
-            {ROOMS.map(room => (
-              <TouchableOpacity key={room.id} style={styles.roomCard}>
-                <Text style={styles.roomIcon}>{room.icon}</Text>
-                <View style={styles.roomInfo}>
-                  <Text style={styles.roomName}>{room.name}</Text>
-                  <Text style={styles.roomStatus}>
-                    {room.scanned
-                      ? room.issues > 0
-                        ? `⚠️ ${room.issues} issue${room.issues > 1 ? 's' : ''} found`
-                        : '✅ No issues'
-                      : '⏳ Not scanned yet'}
-                  </Text>
+            {rooms.length > 0 && (
+              <View style={{ backgroundColor: cardBg, borderRadius: radii.lg, padding: 20, marginBottom: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: textColor }}>Scan Progress</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: colors.primary }}>{scannedCount} rooms</Text>
                 </View>
-                <View style={[styles.roomBadge, room.scanned ? styles.roomBadgeGreen : styles.roomBadgeGray]}>
-                  <Text style={styles.roomBadgeText}>{room.scanned ? 'Done' : 'Scan'}</Text>
+                <View style={{ height: 8, backgroundColor: dark ? colors.borderDark : '#E5E7EB', borderRadius: 4, overflow: 'hidden' }}>
+                  <View style={{ height: 8, backgroundColor: colors.success, borderRadius: 4, width: `${Math.min(progress * 100, 100)}%` }} />
                 </View>
-              </TouchableOpacity>
-            ))}
+              </View>
+            )}
+
+            <Button variant="primary" size="lg" fullWidth loading={scanning} onPress={handleScan} style={{ marginBottom: spacing.xl }}>
+              {scanning ? 'Analyzing...' : '📸 Start Scanning'}
+            </Button>
+
+            {analysisResult && (
+              <View style={{ backgroundColor: dark ? '#0A2E1A' : '#F0FDF4', borderRadius: radii.lg, padding: 20, marginBottom: 20, borderWidth: 2, borderColor: dark ? '#166534' : '#BBF7D0' }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: textColor, marginBottom: 8 }}>🔍 Analysis Result</Text>
+                <Text style={{ fontSize: 22, fontWeight: '800', color: colors.primary, marginBottom: 8 }}>{analysisResult.roomType || analysisResult.room || 'Room Detected'}</Text>
+                {analysisResult.condition && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: mutedColor, marginRight: 8 }}>Condition:</Text>
+                    <Badge status={analysisResult.condition === 'good' ? 'success' : analysisResult.condition === 'fair' ? 'warning' : 'error'}>{analysisResult.condition}</Badge>
+                  </View>
+                )}
+                {analysisResult.description && <Text style={{ fontSize: 14, color: mutedColor, lineHeight: 20 }}>{analysisResult.description}</Text>}
+                {(analysisResult.issues || analysisResult.problems || []).length > 0 && (
+                  <View style={{ marginTop: 12 }}>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: colors.error, marginBottom: 6 }}>⚠️ Issues Found</Text>
+                    {(analysisResult.issues || analysisResult.problems || []).map((issue: any, i: number) => (
+                      <Text key={i} style={{ fontSize: 13, color: mutedColor, marginBottom: 4, paddingLeft: 4 }}>• {typeof issue === 'string' ? issue : issue.description || issue.text || issue.name}</Text>
+                    ))}
+                  </View>
+                )}
+                {(analysisResult.recommendations || []).length > 0 && (
+                  <View style={{ marginTop: 12 }}>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: textColor, marginBottom: 6 }}>💡 Recommendations</Text>
+                    {analysisResult.recommendations.map((rec: any, i: number) => (
+                      <Text key={i} style={{ fontSize: 13, color: mutedColor, marginBottom: 4, paddingLeft: 4 }}>• {typeof rec === 'string' ? rec : rec.text || rec.recommendation}</Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+            )}
+
+            {rooms.length > 0 && (
+              <>
+                <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '700', color: textColor, marginBottom: 12 }}>Your Rooms</Text>
+                {rooms.map(room => (
+                  <TouchableOpacity key={room.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: cardBg, borderRadius: radii.lg, padding: spacing.lg, marginBottom: 10, borderWidth: 1, borderColor: dark ? colors.borderDark : '#F3F4F6' }}
+                    onPress={() => room.analysis && setAnalysisResult(room.analysis)}>
+                    <Text style={{ fontSize: 28, marginRight: 14 }}>{room.icon}</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 16, fontWeight: '600', color: textColor }}>{room.name}</Text>
+                      <Text style={{ fontSize: 13, color: mutedColor, marginTop: 2 }}>{room.issues > 0 ? `⚠️ ${room.issues} issue${room.issues > 1 ? 's' : ''}` : '✅ No issues'}</Text>
+                    </View>
+                    <Badge status="success" size="sm">Done</Badge>
+                  </TouchableOpacity>
+                ))}
+              </>
+            )}
+
+            {rooms.length === 0 && !scanning && !analysisResult && (
+              <EmptyState icon="🏠" title="No rooms scanned yet" description="Take a photo of any room and our AI will analyze it for issues, inventory, and maintenance recommendations." />
+            )}
           </>
         )}
 
         {activeTab === 'badges' && (
           <>
-            <Text style={styles.sectionTitle}>Badges Earned</Text>
-            <View style={styles.badgeGrid}>
-              {BADGES.map(badge => (
-                <View key={badge.id} style={[styles.badgeCard, !badge.earned && styles.badgeCardLocked]}>
-                  <Text style={styles.badgeIcon}>{badge.icon}</Text>
-                  <Text style={[styles.badgeName, !badge.earned && styles.badgeNameLocked]}>{badge.name}</Text>
-                  <Text style={styles.badgeStatus}>{badge.earned ? '✅ Earned' : '🔒 Locked'}</Text>
+            <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '700', color: textColor, marginBottom: spacing.md }}>Badges</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+              {badges.map(badge => (
+                <View key={badge.id} style={{ width: '47%', backgroundColor: badge.earned ? (dark ? '#3B2A15' : '#FFF7ED') : cardBg, borderRadius: radii.lg, padding: 20, alignItems: 'center', borderWidth: 1.5, borderColor: badge.earned ? colors.primary : (dark ? colors.borderDark : colors.border), opacity: badge.earned ? 1 : 0.6 }}>
+                  <Text style={{ fontSize: 36, marginBottom: 8 }}>{badge.icon}</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: badge.earned ? textColor : mutedColor }}>{badge.name}</Text>
+                  <Text style={{ fontSize: 12, color: mutedColor, marginTop: 4 }}>{badge.earned ? '✅ Earned' : '🔒 Locked'}</Text>
                 </View>
               ))}
             </View>
@@ -114,116 +176,28 @@ export default function HomeScanScreen({ navigation }: any) {
 
         {activeTab === 'wallet' && (
           <>
-            <View style={styles.walletCard}>
-              <Text style={styles.walletLabel}>Scan Credits</Text>
-              <Text style={styles.walletBalance}>$15.00</Text>
-              <Text style={styles.walletSub}>Earned from scanning your home</Text>
+            <View style={{ backgroundColor: colors.primary, borderRadius: radii.lg, padding: 28, alignItems: 'center', marginBottom: spacing.xl }}>
+              <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.8)' }}>Scan Credits</Text>
+              <Text style={{ fontSize: 42, fontWeight: '900', color: '#fff', marginVertical: 4 }}>${(scannedCount * 2.5).toFixed(2)}</Text>
+              <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>Earned from scanning your home</Text>
             </View>
-
-            <Text style={styles.sectionTitle}>How to Earn</Text>
-            <View style={styles.earnCard}>
-              <Text style={styles.earnIcon}>📷</Text>
-              <View style={styles.earnInfo}>
-                <Text style={styles.earnTitle}>Scan a Room</Text>
-                <Text style={styles.earnDesc}>+$2.50 per room scanned</Text>
+            <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '700', color: textColor, marginBottom: spacing.md }}>How to Earn</Text>
+            {[
+              { icon: '📷', title: 'Scan a Room', desc: '+$2.50 per room scanned' },
+              { icon: '🏅', title: 'Earn a Badge', desc: '+$5.00 per badge earned' },
+              { icon: '🏠', title: 'Complete Full Scan', desc: '+$10.00 bonus' },
+            ].map((item, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: cardBg, borderRadius: radii.lg, padding: spacing.lg, marginBottom: 10 }}>
+                <Text style={{ fontSize: 28, marginRight: 14 }}>{item.icon}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15, fontWeight: '600', color: textColor }}>{item.title}</Text>
+                  <Text style={{ fontSize: 13, color: colors.success, fontWeight: '600', marginTop: 2 }}>{item.desc}</Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.earnCard}>
-              <Text style={styles.earnIcon}>🏅</Text>
-              <View style={styles.earnInfo}>
-                <Text style={styles.earnTitle}>Earn a Badge</Text>
-                <Text style={styles.earnDesc}>+$5.00 per badge earned</Text>
-              </View>
-            </View>
-            <View style={styles.earnCard}>
-              <Text style={styles.earnIcon}>🏠</Text>
-              <View style={styles.earnInfo}>
-                <Text style={styles.earnTitle}>Complete Full Scan</Text>
-                <Text style={styles.earnDesc}>+$10.00 bonus</Text>
-              </View>
-            </View>
+            ))}
           </>
         )}
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.white },
-  header: {
-    backgroundColor: '#f97316', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 20,
-  },
-  headerTitle: { fontSize: 24, fontWeight: '800', color: '#fff' },
-  headerSub: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 4 },
-  tabRow: {
-    flexDirection: 'row', backgroundColor: '#fff', paddingHorizontal: 16,
-    paddingTop: 12, gap: 8,
-  },
-  tab: {
-    flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center',
-    backgroundColor: '#f9fafb',
-  },
-  tabActive: { backgroundColor: '#fff7ed', borderWidth: 1.5, borderColor: '#f97316' },
-  tabText: { fontSize: 13, fontWeight: '600', color: '#64748b' },
-  tabTextActive: { color: '#f97316' },
-  scroll: { padding: 20, paddingBottom: 40 },
-  progressCard: {
-    backgroundColor: '#f9fafb', borderRadius: 16, padding: 20, marginBottom: 20,
-  },
-  progressHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
-  progressTitle: { fontSize: 16, fontWeight: '700', color: '#1e293b' },
-  progressCount: { fontSize: 14, fontWeight: '600', color: '#f97316' },
-  progressBar: {
-    height: 8, backgroundColor: '#e5e7eb', borderRadius: 4, overflow: 'hidden',
-  },
-  progressFill: { height: 8, backgroundColor: '#22c55e', borderRadius: 4 },
-  progressHint: { fontSize: 12, color: '#64748b', marginTop: 8 },
-  scanBtn: {
-    backgroundColor: '#f97316', borderRadius: 20, padding: 24, alignItems: 'center',
-    marginBottom: 24, shadowColor: '#f97316', shadowOpacity: 0.3, shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-  },
-  scanBtnIcon: { fontSize: 40, marginBottom: 8 },
-  scanBtnText: { fontSize: 20, fontWeight: '800', color: '#fff' },
-  scanBtnSub: { fontSize: 13, color: 'rgba(255,255,255,0.8)', marginTop: 4 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1e293b', marginBottom: 12, marginTop: 4 },
-  roomCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff',
-    borderRadius: 14, padding: 16, marginBottom: 10,
-    borderWidth: 1, borderColor: '#f3f4f6',
-  },
-  roomIcon: { fontSize: 28, marginRight: 14 },
-  roomInfo: { flex: 1 },
-  roomName: { fontSize: 16, fontWeight: '600', color: '#1e293b' },
-  roomStatus: { fontSize: 13, color: '#64748b', marginTop: 2 },
-  roomBadge: { borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
-  roomBadgeGreen: { backgroundColor: '#dcfce7' },
-  roomBadgeGray: { backgroundColor: '#f3f4f6' },
-  roomBadgeText: { fontSize: 12, fontWeight: '600', color: '#1e293b' },
-  badgeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  badgeCard: {
-    width: '47%', backgroundColor: '#fff7ed', borderRadius: 16, padding: 20,
-    alignItems: 'center', borderWidth: 1.5, borderColor: '#fdba74',
-  },
-  badgeCardLocked: { backgroundColor: '#f9fafb', borderColor: '#e5e7eb', opacity: 0.6 },
-  badgeIcon: { fontSize: 36, marginBottom: 8 },
-  badgeName: { fontSize: 14, fontWeight: '700', color: '#1e293b' },
-  badgeNameLocked: { color: '#9ca3af' },
-  badgeStatus: { fontSize: 12, color: '#64748b', marginTop: 4 },
-  walletCard: {
-    backgroundColor: '#f97316', borderRadius: 20, padding: 28, alignItems: 'center',
-    marginBottom: 24,
-  },
-  walletLabel: { fontSize: 14, color: 'rgba(255,255,255,0.8)' },
-  walletBalance: { fontSize: 42, fontWeight: '900', color: '#fff', marginVertical: 4 },
-  walletSub: { fontSize: 13, color: 'rgba(255,255,255,0.7)' },
-  earnCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#f9fafb',
-    borderRadius: 14, padding: 16, marginBottom: 10,
-  },
-  earnIcon: { fontSize: 28, marginRight: 14 },
-  earnInfo: { flex: 1 },
-  earnTitle: { fontSize: 15, fontWeight: '600', color: '#1e293b' },
-  earnDesc: { fontSize: 13, color: '#22c55e', fontWeight: '600', marginTop: 2 },
-});

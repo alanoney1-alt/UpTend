@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { LoadingScreen } from '../components/ui';
+import { fetchAcademyCertifications, fetchAcademyCareerLadder } from '../services/api';
 
 type CertStatus = 'Available' | 'In Progress' | 'Certified' | 'Expired';
 
@@ -41,7 +43,37 @@ const statusColors: Record<CertStatus, { bg: string; text: string }> = {
 };
 
 export default function AcademyScreen() {
-  const [certs] = useState<Certification[]>(CERTIFICATIONS);
+  const [certs, setCerts] = useState<Certification[]>(CERTIFICATIONS);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      const [certRes, _ladderRes] = await Promise.all([
+        fetchAcademyCertifications().catch(() => null),
+        fetchAcademyCareerLadder().catch(() => null),
+      ]);
+      if (certRes?.certifications || certRes?.courses) {
+        const list = (certRes.certifications || certRes.courses || []).map((c: any, i: number) => ({
+          id: c.id || `${i}`,
+          name: c.name || c.title || 'Course',
+          description: c.description || '',
+          estimatedHours: c.estimatedHours || c.hours || 4,
+          status: c.status || 'Available',
+          progress: c.progress || 0,
+          icon: c.icon || '📚',
+          color: c.color || '#3B82F6',
+          expiresAt: c.expiresAt,
+        }));
+        setCerts(list);
+      }
+    } catch { /* keep fallback data */ }
+  }, []);
+
+  useEffect(() => { load().finally(() => setLoading(false)); }, [load]);
+  const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
+
+  if (loading) return <LoadingScreen message="Loading Pro Academy..." />;
   const earnedCount = certs.filter(c => c.status === 'Certified').length;
   const currentTier = FEE_TIERS.filter(t => t.certs <= earnedCount).pop()!;
 

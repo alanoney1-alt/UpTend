@@ -1,3 +1,4 @@
+import { SUBSCRIPTION_PLANS, SUBSCRIPTION_BUNDLES, ActiveSubscription, Frequency } from '../types/models';
 
 export function getPlans() {
   return SUBSCRIPTION_PLANS;
@@ -8,7 +9,7 @@ export function getBundles() {
 }
 
 export function getActiveSubscriptions(): ActiveSubscription[] {
-  return [...[]];
+  return [];
 }
 
 export function calculateSavings(regularPrice: number, subPrice: number): { amount: number; percent: number } {

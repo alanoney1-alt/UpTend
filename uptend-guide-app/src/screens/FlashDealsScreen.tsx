@@ -1,134 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
-import { Colors } from '../theme/colors';
-import { formatCountdown, claimDeal } from '../services/FlashDealsService';
+import React from 'react';
+import { View, Text, ScrollView, useColorScheme } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Header, Button, Badge, EmptyState } from '../components/ui';
+import { colors, spacing, radii } from '../components/ui/tokens';
 
-function DealCard({ deal }: { deal: FlashDeal }) {
-  const [countdown, setCountdown] = useState(formatCountdown(deal.endsAt));
-  const [claimed, setClaimed] = useState(false);
-  const remaining = deal.totalQuantity - deal.claimed;
-  const progress = deal.claimed / deal.totalQuantity;
+const DEALS = [
+  { id: '1', title: '50% Off First Cleaning', desc: 'Deep clean your home for half price', icon: '🧹', original: '$159', price: '$79', expires: '2 days', service: 'Cleaning' },
+  { id: '2', title: 'Free Lawn Assessment', desc: 'George analyzes your yard — no charge', icon: '🌱', original: '$49', price: 'FREE', expires: '3 days', service: 'Lawn Care' },
+  { id: '3', title: '$30 Off Junk Removal', desc: 'Spring cleaning special', icon: '🗑️', original: '$129', price: '$99', expires: '5 days', service: 'Junk Removal' },
+  { id: '4', title: 'HVAC Tune-Up Special', desc: 'Pre-summer AC check at a great price', icon: '❄️', original: '$149', price: '$99', expires: '1 week', service: 'HVAC' },
+];
 
-  useEffect(() => {
-    const timer = setInterval(() => setCountdown(formatCountdown(deal.endsAt)), 1000);
-    return () => clearInterval(timer);
-  }, [deal.endsAt]);
-
-  const handleClaim = () => {
-    const result = claimDeal(deal.id);
-    if (result) {
-      setClaimed(true);
-      Alert.alert('Deal Claimed! 🎉', `You saved $${deal.originalPrice - deal.dealPrice} on ${deal.serviceName}`);
-    }
-  };
+export default function FlashDealsScreen({ navigation }: any) {
+  const dark = useColorScheme() === 'dark';
+  const bg = dark ? colors.backgroundDark : '#FFFBF5';
+  const cardBg = dark ? colors.surfaceDark : colors.surface;
+  const textColor = dark ? colors.textDark : colors.text;
+  const mutedColor = dark ? colors.textMutedDark : colors.textMuted;
 
   return (
-    <View style={styles.dealCard}>
-      <Image source={{ uri: deal.image }} style={styles.dealImage} />
-      <View style={styles.savingsBadge}>
-        <Text style={styles.savingsText}>SAVE {deal.savingsPercent}%</Text>
-      </View>
-      <View style={styles.dealContent}>
-        <Text style={styles.dealName}>{deal.serviceName}</Text>
-        <Text style={styles.dealDesc}>{deal.description}</Text>
-        <View style={styles.priceRow}>
-          <Text style={styles.originalPrice}>${deal.originalPrice}</Text>
-          <Text style={styles.dealPrice}>${deal.dealPrice}</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: bg }} edges={['top']}>
+      <Header title="Flash Deals" subtitle="⚡ Limited time offers" onBack={() => navigation?.goBack()} />
+      <ScrollView contentContainerStyle={{ padding: spacing.xl, paddingBottom: 40 }}>
+        <View style={{ backgroundColor: colors.primary, borderRadius: radii.lg, padding: spacing.xl, marginBottom: spacing.xl, alignItems: 'center' }}>
+          <Text style={{ fontSize: 24, fontWeight: '800', color: '#fff' }}>⚡ Flash Deals</Text>
+          <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 4 }}>Grab these before they're gone!</Text>
         </View>
-        <View style={styles.metaRow}>
-          <Text style={styles.countdown}>⏱ {countdown}</Text>
-          <Text style={[styles.remaining, remaining <= 3 && { color: Colors.error }]}>
-            {remaining > 0 ? `Only ${remaining} left!` : 'Sold out'}
-          </Text>
-        </View>
-        {/* Progress bar */}
-        <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
-        </View>
-        <TouchableOpacity
-          style={[styles.claimBtn, (claimed || remaining <= 0) && styles.claimBtnDisabled]}
-          onPress={handleClaim}
-          disabled={claimed || remaining <= 0}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.claimText}>{claimed ? '✓ Claimed' : remaining <= 0 ? 'Sold Out' : 'Claim Deal'}</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
 
-export default function FlashDealsScreen() {
-  const [tab, setTab] = useState<'today' | 'upcoming' | 'past'>('today');
-  const deals = [].filter(d => d.category === tab);
-
-  return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerEmoji}>⚡</Text>
-        <Text style={styles.headerTitle}>Flash Deals</Text>
-        <Text style={styles.headerSub}>Limited time, limited quantity</Text>
-      </View>
-
-      {/* Tabs */}
-      <View style={styles.tabs}>
-        {(['today', 'upcoming', 'past'] as const).map(t => (
-          <TouchableOpacity key={t} style={[styles.tab, tab === t && styles.tabActive]} onPress={() => setTab(t)}>
-            <Text style={[styles.tabText, tab === t && styles.tabTextActive]}>
-              {t === 'today' ? "Today's Deals" : t === 'upcoming' ? 'Upcoming' : 'Past Deals'}
-            </Text>
-          </TouchableOpacity>
+        {DEALS.map(deal => (
+          <View key={deal.id} style={{ backgroundColor: cardBg, borderRadius: radii.lg, padding: spacing.xl, marginBottom: spacing.md, borderWidth: 1, borderColor: dark ? colors.borderDark : colors.border }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}>
+              <Text style={{ fontSize: 32, marginRight: 12 }}>{deal.icon}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 17, fontWeight: '700', color: textColor }}>{deal.title}</Text>
+                <Text style={{ fontSize: 13, color: mutedColor, marginTop: 2 }}>{deal.desc}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 13, color: mutedColor, textDecorationLine: 'line-through' }}>{deal.original}</Text>
+                <Text style={{ fontSize: 20, fontWeight: '800', color: colors.primary }}>{deal.price}</Text>
+              </View>
+              <Badge status="warning" size="sm">⏰ {deal.expires}</Badge>
+            </View>
+            <Button variant="primary" size="md" fullWidth onPress={() => navigation?.navigate('Book', { service: deal.service })}>
+              Book Now
+            </Button>
+          </View>
         ))}
-      </View>
-
-      {deals.map(deal => <DealCard key={deal.id} deal={deal} />)}
-      {deals.length === 0 && (
-        <View style={styles.empty}><Text style={styles.emptyText}>No deals in this category</Text></View>
-      )}
-
-      {/* Notification opt-in */}
-      <TouchableOpacity style={styles.notifyBtn} activeOpacity={0.8}>
-        <Text style={styles.notifyText}>🔔 Get notified about flash deals</Text>
-      </TouchableOpacity>
-
-      <View style={{ height: 40 }} />
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  content: { paddingBottom: 20 },
-  header: { alignItems: 'center', paddingVertical: 24, backgroundColor: Colors.primary, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
-  headerEmoji: { fontSize: 40 },
-  headerTitle: { fontSize: 26, fontWeight: '800', color: Colors.white, marginTop: 4 },
-  headerSub: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 4 },
-  tabs: { flexDirection: 'row', marginHorizontal: 16, marginTop: 16, gap: 8 },
-  tab: { flex: 1, paddingVertical: 10, borderRadius: 12, backgroundColor: Colors.white, alignItems: 'center' },
-  tabActive: { backgroundColor: Colors.purple },
-  tabText: { fontSize: 13, fontWeight: '600', color: Colors.textSecondary },
-  tabTextActive: { color: Colors.white },
-  dealCard: { backgroundColor: Colors.white, borderRadius: 18, marginHorizontal: 16, marginTop: 16, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 12, elevation: 3 },
-  dealImage: { width: '100%', height: 160, resizeMode: 'cover' },
-  savingsBadge: { position: 'absolute', top: 12, right: 12, backgroundColor: Colors.error, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
-  savingsText: { color: Colors.white, fontWeight: '800', fontSize: 12 },
-  dealContent: { padding: 16 },
-  dealName: { fontSize: 18, fontWeight: '700', color: Colors.text },
-  dealDesc: { fontSize: 13, color: Colors.textSecondary, marginTop: 4 },
-  priceRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10 },
-  originalPrice: { fontSize: 16, color: Colors.textLight, textDecorationLine: 'line-through' },
-  dealPrice: { fontSize: 26, fontWeight: '800', color: Colors.primary },
-  metaRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
-  countdown: { fontSize: 13, fontWeight: '600', color: Colors.purple },
-  remaining: { fontSize: 13, fontWeight: '600', color: Colors.warning },
-  progressTrack: { height: 6, backgroundColor: Colors.borderLight, borderRadius: 3, marginTop: 10 },
-  progressFill: { height: 6, backgroundColor: Colors.primary, borderRadius: 3 },
-  claimBtn: { backgroundColor: Colors.primary, paddingVertical: 14, borderRadius: 14, alignItems: 'center', marginTop: 14 },
-  claimBtnDisabled: { backgroundColor: Colors.textLight },
-  claimText: { color: Colors.white, fontWeight: '700', fontSize: 16 },
-  empty: { alignItems: 'center', paddingVertical: 40 },
-  emptyText: { color: Colors.textSecondary, fontSize: 15 },
-  notifyBtn: { marginHorizontal: 16, marginTop: 24, backgroundColor: Colors.purple, paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
-  notifyText: { color: Colors.white, fontWeight: '700', fontSize: 15 },
-});

@@ -9,8 +9,10 @@ import MapView, { Marker } from 'react-native-maps';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import ChatBubble, { ChatMessage, TypingIndicator } from '../components/ChatBubble';
+import InlineVideoPlayer, { extractVideoIds } from '../components/InlineVideoPlayer';
 import { showPhotoOptions } from '../components/PhotoCapture';
 import { sendGeorgeMessage } from '../services/chat';
+import { useAuth } from '../context/AuthContext';
 import { Colors } from '../theme/colors';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -45,6 +47,8 @@ const PRO_COLORS = ['#FF6B35', '#007AFF', '#AF52DE', '#34C759', '#FF9F0A', '#FF3
 
 export default function GeorgeHomeScreen() {
   const insets = useSafeAreaInsets();
+  const { user, role, guestSessionId } = useAuth();
+  const [sessionId] = useState(() => user?.id || guestSessionId || `session_${Date.now()}`);
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -85,10 +89,14 @@ export default function GeorgeHomeScreen() {
 
     try {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      const response = await sendGeorgeMessage(text.trim());
+      const response = await sendGeorgeMessage(text.trim(), {
+        sessionId,
+        page: 'mobile-home',
+        userRole: role || 'customer',
+      });
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(), sender: 'george', type: 'text',
-        text: response.reply || response.response || "I'm here to help! What's going on?",
+        text: response.response || response.reply || "I'm here to help! What's going on?",
         timestamp: new Date(),
       }]);
     } catch {
@@ -113,7 +121,11 @@ export default function GeorgeHomeScreen() {
       setIsTyping(true);
       scrollToEnd();
       try {
-        const response = await sendGeorgeMessage('I sent a photo of an issue');
+        const response = await sendGeorgeMessage('I sent a photo of an issue', {
+          sessionId,
+          page: 'mobile-home',
+          userRole: role || 'customer',
+        });
         setMessages(prev => [...prev, {
           id: (Date.now() + 1).toString(), sender: 'george', type: 'text',
           text: response.reply || "Let me take a look at that...",
@@ -217,7 +229,24 @@ export default function GeorgeHomeScreen() {
             ref={flatListRef}
             data={messages}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => <ChatBubble message={item} />}
+            renderItem={({ item }) => {
+              if (item.sender === 'george' && item.text) {
+                const videoIds = extractVideoIds(item.text);
+                if (videoIds.length > 0) {
+                  return (
+                    <View>
+                      <ChatBubble message={item} />
+                      {videoIds.map(vid => (
+                        <View key={vid} style={{ paddingHorizontal: 12 }}>
+                          <InlineVideoPlayer videoId={vid} />
+                        </View>
+                      ))}
+                    </View>
+                  );
+                }
+              }
+              return <ChatBubble message={item} />;
+            }}
             contentContainerStyle={styles.messageList}
             onContentSizeChange={scrollToEnd}
             ListFooterComponent={isTyping ? <TypingIndicator /> : null}

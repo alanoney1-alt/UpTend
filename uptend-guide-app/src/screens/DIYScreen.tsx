@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import {
-  View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '../theme/colors';
+import { Header, Input, Card, Button, Badge } from '../components/ui';
+import { colors, spacing, radii } from '../components/ui/tokens';
 
 const CATEGORIES = [
   { id: '1', name: 'Plumbing', icon: '🔧', count: 24 },
@@ -26,133 +25,72 @@ const POPULAR_REPAIRS = [
 ];
 
 export default function DIYScreen({ navigation }: any) {
+  const dark = useColorScheme() === 'dark';
   const [search, setSearch] = useState('');
 
-  const filteredRepairs = POPULAR_REPAIRS.filter(r =>
-    r.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const bg = dark ? colors.backgroundDark : '#FFFBF5';
+  const cardBg = dark ? colors.surfaceDark : colors.surface;
+  const textColor = dark ? colors.textDark : colors.text;
+  const mutedColor = dark ? colors.textMutedDark : colors.textMuted;
 
-  const difficultyColor = (d: string) =>
-    d === 'Easy' ? '#22c55e' : d === 'Medium' ? '#f59e0b' : '#ef4444';
+  const filteredRepairs = POPULAR_REPAIRS.filter(r => r.title.toLowerCase().includes(search.toLowerCase()));
+
+  const diffColor = (d: string) => d === 'Easy' ? colors.success : d === 'Medium' ? colors.warning : colors.error;
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>DIY Guides</Text>
-        <Text style={styles.headerSub}>Learn to fix it yourself with Mr. George</Text>
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: bg }} edges={['top']}>
+      <Header title="DIY Guides" subtitle="Learn to fix it with Mr. George" onBack={() => navigation?.goBack()} />
 
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Search */}
-        <View style={styles.searchRow}>
-          <Text style={styles.searchIcon}>🔍</Text>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search repairs..."
-            placeholderTextColor="#9ca3af"
-            value={search}
-            onChangeText={setSearch}
-          />
-        </View>
+      <ScrollView contentContainerStyle={{ padding: spacing.xl, paddingBottom: 40 }}>
+        <Input placeholder="🔍 Search repairs..." value={search} onChangeText={setSearch} accessibilityLabel="Search DIY repairs" />
 
-        {/* Ask Mr. George */}
-        <TouchableOpacity style={styles.georgeCard} activeOpacity={0.8}
-          onPress={() => navigation?.navigate?.('Home')}>
-          <View style={styles.georgeLeft}>
-            <Text style={styles.georgeIcon}>💬</Text>
+        {/* Ask George CTA */}
+        <TouchableOpacity
+          accessibilityRole="button" accessibilityLabel="Ask Mr. George for DIY help"
+          style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: dark ? colors.surfaceDark : '#1E293B', borderRadius: radii.lg, padding: 18, marginTop: spacing.lg, marginBottom: spacing.xl }}
+          onPress={() => navigation?.navigate?.('GeorgeChat', { initialMessage: 'DIY Help' })}
+          activeOpacity={0.8}
+        >
+          <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginRight: 14 }}>
+            <Text style={{ fontSize: 22 }}>💬</Text>
           </View>
-          <View style={styles.georgeInfo}>
-            <Text style={styles.georgeTitle}>Ask Mr. George</Text>
-            <Text style={styles.georgeSub}>Start a DIY coaching session with your AI guide</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 17, fontWeight: '700', color: '#fff' }}>Ask Mr. George</Text>
+            <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>Start a DIY coaching session with your AI guide</Text>
           </View>
-          <Text style={styles.georgeArrow}>→</Text>
+          <Text style={{ fontSize: 20, color: colors.primary, fontWeight: '700' }}>→</Text>
         </TouchableOpacity>
 
         {/* Categories */}
-        <Text style={styles.sectionTitle}>Categories</Text>
-        <View style={styles.catGrid}>
+        <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '700', color: textColor, marginBottom: spacing.md }}>Categories</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: spacing.xl }}>
           {CATEGORIES.map(cat => (
-            <TouchableOpacity key={cat.id} style={styles.catCard}>
-              <Text style={styles.catIcon}>{cat.icon}</Text>
-              <Text style={styles.catName}>{cat.name}</Text>
-              <Text style={styles.catCount}>{cat.count} guides</Text>
+            <TouchableOpacity key={cat.id} accessibilityRole="button" accessibilityLabel={`${cat.name} category, ${cat.count} guides`}
+              style={{ width: '31%', backgroundColor: cardBg, borderRadius: radii.lg, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: dark ? colors.borderDark : '#F3F4F6' }}>
+              <Text style={{ fontSize: 28, marginBottom: 6 }}>{cat.icon}</Text>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: textColor }}>{cat.name}</Text>
+              <Text style={{ fontSize: 11, color: mutedColor, marginTop: 2 }}>{cat.count} guides</Text>
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Popular Repairs */}
-        <Text style={styles.sectionTitle}>Popular Repairs</Text>
+        <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '700', color: textColor, marginBottom: spacing.md }}>Popular Repairs</Text>
         {filteredRepairs.map(repair => (
-          <TouchableOpacity key={repair.id} style={styles.repairCard}>
-            <Text style={styles.repairIcon}>{repair.icon}</Text>
-            <View style={styles.repairInfo}>
-              <Text style={styles.repairTitle}>{repair.title}</Text>
-              <View style={styles.repairMeta}>
-                <View style={[styles.diffBadge, { backgroundColor: difficultyColor(repair.difficulty) + '20' }]}>
-                  <Text style={[styles.diffText, { color: difficultyColor(repair.difficulty) }]}>
-                    {repair.difficulty}
-                  </Text>
-                </View>
-                <Text style={styles.repairTime}>⏱ {repair.time}</Text>
+          <TouchableOpacity key={repair.id} accessibilityRole="button" accessibilityLabel={`${repair.title}, ${repair.difficulty}, ${repair.time}`}
+            style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: cardBg, borderRadius: radii.lg, padding: spacing.lg, marginBottom: 10, borderWidth: 1, borderColor: dark ? colors.borderDark : '#F3F4F6' }}>
+            <Text style={{ fontSize: 28, marginRight: 14 }}>{repair.icon}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: textColor }}>{repair.title}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 6 }}>
+                <Badge status={repair.difficulty === 'Easy' ? 'success' : 'warning'} size="sm">{repair.difficulty}</Badge>
+                <Text style={{ fontSize: 12, color: mutedColor }}>⏱ {repair.time}</Text>
               </View>
             </View>
-            <Text style={styles.repairArrow}>›</Text>
+            <Text style={{ fontSize: 22, color: mutedColor }}>›</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.white },
-  header: {
-    backgroundColor: '#f97316', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 20,
-  },
-  headerTitle: { fontSize: 24, fontWeight: '800', color: '#fff' },
-  headerSub: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 4 },
-  scroll: { padding: 20, paddingBottom: 40 },
-  searchRow: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#f9fafb',
-    borderRadius: 14, paddingHorizontal: 14, marginBottom: 20,
-    borderWidth: 1, borderColor: '#e5e7eb',
-  },
-  searchIcon: { fontSize: 18, marginRight: 8 },
-  searchInput: { flex: 1, paddingVertical: 14, fontSize: 16, color: '#1e293b' },
-  georgeCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#1e293b',
-    borderRadius: 16, padding: 18, marginBottom: 24,
-  },
-  georgeLeft: {
-    width: 48, height: 48, borderRadius: 24, backgroundColor: '#f97316',
-    justifyContent: 'center', alignItems: 'center', marginRight: 14,
-  },
-  georgeIcon: { fontSize: 22 },
-  georgeInfo: { flex: 1 },
-  georgeTitle: { fontSize: 17, fontWeight: '700', color: '#fff' },
-  georgeSub: { fontSize: 13, color: 'rgba(255,255,255,0.6)', marginTop: 2 },
-  georgeArrow: { fontSize: 20, color: '#f97316', fontWeight: '700' },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1e293b', marginBottom: 12 },
-  catGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 24 },
-  catCard: {
-    width: '31%', backgroundColor: '#f9fafb', borderRadius: 14, padding: 14,
-    alignItems: 'center', borderWidth: 1, borderColor: '#f3f4f6',
-  },
-  catIcon: { fontSize: 28, marginBottom: 6 },
-  catName: { fontSize: 13, fontWeight: '600', color: '#1e293b' },
-  catCount: { fontSize: 11, color: '#9ca3af', marginTop: 2 },
-  repairCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff',
-    borderRadius: 14, padding: 16, marginBottom: 10,
-    borderWidth: 1, borderColor: '#f3f4f6',
-  },
-  repairIcon: { fontSize: 28, marginRight: 14 },
-  repairInfo: { flex: 1 },
-  repairTitle: { fontSize: 15, fontWeight: '600', color: '#1e293b' },
-  repairMeta: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 6 },
-  diffBadge: { borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
-  diffText: { fontSize: 11, fontWeight: '700' },
-  repairTime: { fontSize: 12, color: '#64748b' },
-  repairArrow: { fontSize: 22, color: '#9ca3af' },
-});

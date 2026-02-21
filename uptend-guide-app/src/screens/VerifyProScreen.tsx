@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-import config from '../config';
+import { LoadingScreen } from '../components/ui';
+import { fetchProById } from '../services/api';
 
 export default function VerifyProScreen({ route }: any) {
   const proId = route?.params?.proId;
@@ -11,9 +12,8 @@ export default function VerifyProScreen({ route }: any) {
 
   useEffect(() => {
     if (!proId) { setLoading(false); return; }
-    fetch(`${config.API_BASE_URL}/api/find-pro?id=${proId}`)
-      .then(r => r.json())
-      .then(data => setPro(data.pros?.[0] || data.pro || null))
+    fetchProById(proId)
+      .then(data => setPro(data?.pros?.[0] || data?.pro || data || null))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [proId]);

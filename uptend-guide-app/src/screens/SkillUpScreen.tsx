@@ -1,20 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
+import { fetchSkillPrograms, enrollSkillProgram } from '../services/api';
 
-interface SkillRec {
-  id: string;
-  name: string;
-  icon: string;
-  roi: string;
-  demand: 'high' | 'medium';
-  status: 'recommended' | 'in_progress' | 'completed';
-  progress?: number;
-  courseUrl?: string;
-}
-
-const SKILLS: SkillRec[] = [
+const FALLBACK_SKILLS = [
   { id: '1', name: 'Pressure Washing Certification', icon: '💦', roi: '+$800/month', demand: 'high', status: 'recommended' },
   { id: '2', name: 'HVAC Basics', icon: '❄️', roi: '+$1,200/month', demand: 'high', status: 'in_progress', progress: 45 },
   { id: '3', name: 'Electrical Safety', icon: '⚡', roi: '+$600/month', demand: 'medium', status: 'recommended' },
@@ -24,9 +14,55 @@ const SKILLS: SkillRec[] = [
 ];
 
 export default function SkillUpScreen() {
-  const completed = SKILLS.filter(s => s.status === 'completed');
-  const inProgress = SKILLS.filter(s => s.status === 'in_progress');
-  const recommended = SKILLS.filter(s => s.status === 'recommended');
+  const [skills, setSkills] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [enrolling, setEnrolling] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchSkillPrograms()
+      .then(data => {
+        const list = data?.programs || data?.skills || data || [];
+        if (Array.isArray(list) && list.length > 0) {
+          setSkills(list.map((s: any) => ({
+            id: s.id,
+            name: s.name || s.title || '',
+            icon: s.icon || '📚',
+            roi: s.roi || s.estimated_roi || '',
+            demand: s.demand || 'medium',
+            status: s.status || 'recommended',
+            progress: s.progress || 0,
+          })));
+        } else {
+          setSkills(FALLBACK_SKILLS);
+        }
+      })
+      .catch(() => setSkills(FALLBACK_SKILLS))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleEnroll = async (skillId: string) => {
+    setEnrolling(skillId);
+    try {
+      await enrollSkillProgram(skillId);
+      setSkills(prev => prev.map(s => s.id === skillId ? { ...s, status: 'in_progress', progress: 0 } : s));
+    } catch (e: any) {
+      Alert.alert('Error', e.message || 'Could not enroll');
+    } finally {
+      setEnrolling(null);
+    }
+  };
+
+  const completed = skills.filter(s => s.status === 'completed');
+  const inProgress = skills.filter(s => s.status === 'in_progress');
+  const recommended = skills.filter(s => s.status === 'recommended');
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.center}><ActivityIndicator size="large" color={Colors.primary} /></View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -34,7 +70,6 @@ export default function SkillUpScreen() {
         <Text style={styles.title}>🎓 Skill Up</Text>
         <Text style={styles.subtitle}>Grow your skills, grow your earnings</Text>
 
-        {/* Badges */}
         {completed.length > 0 && (
           <View style={styles.badgeRow}>
             {completed.map(s => (
@@ -46,7 +81,6 @@ export default function SkillUpScreen() {
           </View>
         )}
 
-        {/* In progress */}
         {inProgress.length > 0 && (
           <>
             <Text style={styles.sectionTitle}>In Progress</Text>
@@ -59,7 +93,7 @@ export default function SkillUpScreen() {
                     <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${skill.progress ?? 0}%` }]} /></View>
                     <Text style={styles.progressPct}>{skill.progress}%</Text>
                   </View>
-                  <Text style={styles.skillRoi}>Estimated ROI: {skill.roi}</Text>
+                  {skill.roi && <Text style={styles.skillRoi}>Estimated ROI: {skill.roi}</Text>}
                 </View>
                 <TouchableOpacity style={styles.continueBtn}><Text style={styles.continueBtnText}>Continue</Text></TouchableOpacity>
               </View>
@@ -67,7 +101,6 @@ export default function SkillUpScreen() {
           </>
         )}
 
-        {/* Recommended */}
         <Text style={styles.sectionTitle}>Recommended for You</Text>
         <Text style={styles.sectionSub}>Based on local demand & your earnings data</Text>
         {recommended.map(skill => (
@@ -79,14 +112,15 @@ export default function SkillUpScreen() {
                 <View style={[styles.demandBadge, skill.demand === 'high' ? styles.highDemand : styles.medDemand]}>
                   <Text style={styles.demandText}>{skill.demand} demand</Text>
                 </View>
-                <Text style={styles.skillRoi}>{skill.roi}</Text>
+                {skill.roi && <Text style={styles.skillRoi}>{skill.roi}</Text>}
               </View>
             </View>
-            <TouchableOpacity style={styles.startBtn}><Text style={styles.startBtnText}>Start</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.startBtn} onPress={() => handleEnroll(skill.id)} disabled={enrolling === skill.id}>
+              <Text style={styles.startBtnText}>{enrolling === skill.id ? '...' : 'Start'}</Text>
+            </TouchableOpacity>
           </View>
         ))}
 
-        {/* Completed */}
         {completed.length > 0 && (
           <>
             <Text style={styles.sectionTitle}>Completed ✓</Text>
@@ -108,6 +142,7 @@ export default function SkillUpScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   content: { padding: 20 },
   title: { fontSize: 24, fontWeight: '800', color: Colors.text },
   subtitle: { fontSize: 14, color: Colors.textSecondary, marginTop: 4, marginBottom: 16 },
@@ -117,7 +152,7 @@ const styles = StyleSheet.create({
   badgeLabel: { fontSize: 10, color: Colors.success, fontWeight: '700' },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginTop: 8, marginBottom: 4 },
   sectionSub: { fontSize: 12, color: Colors.textSecondary, marginBottom: 12 },
-  skillCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, padding: 14, marginBottom: 8, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } },
+  skillCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, padding: 14, marginBottom: 8 },
   completedCard: { opacity: 0.7 },
   skillIcon: { fontSize: 28, marginRight: 12 },
   skillInfo: { flex: 1 },

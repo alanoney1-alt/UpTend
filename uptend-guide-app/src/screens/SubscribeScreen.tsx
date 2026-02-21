@@ -1,97 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, useColorScheme, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '../theme/colors';
+import { Header, Button, Badge, LoadingScreen, EmptyState } from '../components/ui';
+import { colors, spacing, radii } from '../components/ui/tokens';
 import { fetchActiveSubscriptions } from '../services/api';
-import config from '../config';
 
 const PLANS = [
-  { id: 'pool_monthly', name: 'Pool Cleaning', frequency: 'Monthly', price: '$120/mo', icon: '🏊' },
-  { id: 'lawn_biweekly', name: 'Lawn Care', frequency: 'Bi-weekly', price: '$89/mo', icon: '🌿' },
-  { id: 'cleaning_weekly', name: 'Home Cleaning', frequency: 'Weekly', price: '$149/mo', icon: '🧹' },
-  { id: 'gutter_quarterly', name: 'Gutter Cleaning', frequency: 'Quarterly', price: '$50/mo', icon: '🏠' },
+  { id: 'pool', name: 'Pool Cleaning', icon: '🏊', price: '$79/mo', desc: 'Weekly cleaning, chemical balancing, equipment check', features: ['Weekly service', 'Chemical balancing', 'Equipment inspection'] },
+  { id: 'lawn', name: 'Lawn Care', icon: '🌱', price: '$49/mo', desc: 'Bi-weekly mowing, edging, and seasonal care', features: ['Bi-weekly mowing', 'Edging & trimming', 'Seasonal treatment'] },
+  { id: 'cleaning', name: 'Home Cleaning', icon: '🧹', price: '$99/mo', desc: 'Bi-weekly deep cleaning service', features: ['Bi-weekly cleaning', 'Kitchen & bathrooms', 'Vacuuming & mopping'] },
+  { id: 'hvac', name: 'HVAC Maintenance', icon: '❄️', price: '$29/mo', desc: 'Quarterly tune-ups and filter replacement', features: ['Quarterly tune-up', 'Filter replacement', 'Priority repairs'] },
 ];
 
-export default function SubscribeScreen() {
-  const [activeSubs, setActiveSubs] = useState<any[]>([]);
+export default function SubscribeScreen({ navigation }: any) {
+  const dark = useColorScheme() === 'dark';
   const [loading, setLoading] = useState(true);
+  const [activeSubs, setActiveSubs] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchActiveSubscriptions()
-      .then(data => setActiveSubs(data.subscriptions || []))
-      .catch(() => setActiveSubs([]))
-      .finally(() => setLoading(false));
+  const bg = dark ? colors.backgroundDark : '#FFFBF5';
+  const cardBg = dark ? colors.surfaceDark : colors.surface;
+  const textColor = dark ? colors.textDark : colors.text;
+  const mutedColor = dark ? colors.textMutedDark : colors.textMuted;
+
+  const load = useCallback(async () => {
+    try { setError(null); const d = await fetchActiveSubscriptions(); setActiveSubs(Array.isArray(d) ? d : d?.subscriptions || []); }
+    catch (e: any) { setError(e.message); }
+    finally { setLoading(false); }
   }, []);
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.center}><ActivityIndicator size="large" color={Colors.primary} /></View>
-      </SafeAreaView>
-    );
-  }
+  useEffect(() => { load(); }, [load]);
+
+  if (loading) return <LoadingScreen message="Loading subscription plans..." />;
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>📅 Subscriptions</Text>
-        <Text style={styles.subtitle}>Set it and forget it — recurring home maintenance.</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: bg }} edges={['top']}>
+      <Header title="Subscriptions" subtitle="Save with recurring service" onBack={() => navigation?.goBack()} />
+      <ScrollView contentContainerStyle={{ padding: spacing.xl, paddingBottom: 40 }}>
+        {error && <EmptyState icon="⚠️" title="Couldn't load subscriptions" description={error} ctaLabel="Retry" onCta={load} />}
 
-        {activeSubs.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Active Subscriptions</Text>
-            {activeSubs.map((sub: any, i: number) => (
-              <View key={i} style={styles.activeCard}>
-                <Text style={styles.activeService}>{sub.service_type || sub.name}</Text>
-                <Text style={styles.activeFreq}>{sub.frequency || 'Monthly'}</Text>
-                <Text style={styles.activePrice}>${sub.price || sub.amount}/mo</Text>
+        {!error && (
+          <>
+            {activeSubs.length > 0 && (
+              <>
+                <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '700', color: textColor, marginBottom: spacing.md }}>Active Subscriptions</Text>
+                {activeSubs.map((sub: any, i: number) => (
+                  <View key={i} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: dark ? '#0A2E1A' : '#F0FDF4', borderRadius: radii.lg, padding: spacing.lg, marginBottom: spacing.md, borderWidth: 1, borderColor: colors.success }}>
+                    <Text style={{ fontSize: 28, marginRight: 12 }}>{sub.icon || '✅'}</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 15, fontWeight: '700', color: textColor }}>{sub.name || sub.plan}</Text>
+                      <Text style={{ fontSize: 13, color: mutedColor, marginTop: 2 }}>Next: {sub.nextDate || sub.nextService || 'TBD'}</Text>
+                    </View>
+                    <Badge status="success" size="sm">Active</Badge>
+                  </View>
+                ))}
+              </>
+            )}
+
+            <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '700', color: textColor, marginBottom: spacing.md, marginTop: activeSubs.length > 0 ? spacing.xl : 0 }}>Available Plans</Text>
+            {PLANS.map(plan => (
+              <View key={plan.id} style={{ backgroundColor: cardBg, borderRadius: radii.lg, padding: spacing.xl, marginBottom: spacing.md, borderWidth: 1, borderColor: dark ? colors.borderDark : colors.border }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}>
+                  <Text style={{ fontSize: 32, marginRight: 12 }}>{plan.icon}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 17, fontWeight: '700', color: textColor }}>{plan.name}</Text>
+                    <Text style={{ fontSize: 13, color: mutedColor, marginTop: 2 }}>{plan.desc}</Text>
+                  </View>
+                  <Text style={{ fontSize: 18, fontWeight: '800', color: colors.primary }}>{plan.price}</Text>
+                </View>
+                {plan.features.map((f, i) => (
+                  <Text key={i} style={{ fontSize: 14, color: mutedColor, paddingLeft: 4, marginBottom: 2 }}>✓ {f}</Text>
+                ))}
+                <Button variant="primary" size="md" fullWidth onPress={() => navigation?.navigate('Book', { service: plan.name, subscription: true })} style={{ marginTop: spacing.md }}>
+                  Subscribe
+                </Button>
               </View>
             ))}
-          </View>
+          </>
         )}
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Available Plans</Text>
-          {PLANS.map(plan => (
-            <TouchableOpacity key={plan.id} style={styles.planCard}>
-              <Text style={styles.planIcon}>{plan.icon}</Text>
-              <View style={styles.planInfo}>
-                <Text style={styles.planName}>{plan.name}</Text>
-                <Text style={styles.planFreq}>{plan.frequency}</Text>
-              </View>
-              <Text style={styles.planPrice}>{plan.price}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <View style={styles.bundleCard}>
-          <Text style={styles.bundleTitle}>🎁 Bundle & Save</Text>
-          <Text style={styles.bundleText}>Subscribe to 2+ services and save 7-18% on every visit.</Text>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  content: { padding: 20 },
-  title: { fontSize: 24, fontWeight: '700', color: Colors.text },
-  subtitle: { fontSize: 14, color: Colors.textLight, marginTop: 4, marginBottom: 20 },
-  section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.text, marginBottom: 12 },
-  activeCard: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: Colors.primary + '10', borderRadius: 12, marginBottom: 8, borderWidth: 1, borderColor: Colors.primary + '30' },
-  activeService: { fontSize: 15, fontWeight: '600', color: Colors.text },
-  activeFreq: { fontSize: 13, color: Colors.textLight },
-  activePrice: { fontSize: 15, fontWeight: '700', color: Colors.primary },
-  planCard: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: Colors.surface, borderRadius: 12, marginBottom: 8 },
-  planIcon: { fontSize: 28, marginRight: 12 },
-  planInfo: { flex: 1 },
-  planName: { fontSize: 15, fontWeight: '600', color: Colors.text },
-  planFreq: { fontSize: 12, color: Colors.textLight, marginTop: 2 },
-  planPrice: { fontSize: 16, fontWeight: '700', color: Colors.primary },
-  bundleCard: { padding: 20, backgroundColor: Colors.primary + '10', borderRadius: 16, alignItems: 'center', marginTop: 8 },
-  bundleTitle: { fontSize: 18, fontWeight: '700', color: Colors.text },
-  bundleText: { fontSize: 14, color: Colors.textLight, textAlign: 'center', marginTop: 8 },
-});

@@ -1,14 +1,17 @@
+import { FlashDeal } from '../types/models';
+
+const deals: FlashDeal[] = [];
 
 export function getActiveDeals(): FlashDeal[] {
-  return [].filter(d => d.category === 'today' && d.endsAt > new Date());
+  return deals.filter(d => d.category === 'today' && d.endsAt > new Date());
 }
 
 export function getUpcomingDeals(): FlashDeal[] {
-  return [].filter(d => d.category === 'upcoming');
+  return deals.filter(d => d.category === 'upcoming');
 }
 
 export function getPastDeals(): FlashDeal[] {
-  return [].filter(d => d.category === 'past' || d.endsAt <= new Date());
+  return deals.filter(d => d.category === 'past' || d.endsAt <= new Date());
 }
 
 export function formatCountdown(endsAt: Date): string {
@@ -21,7 +24,7 @@ export function formatCountdown(endsAt: Date): string {
 }
 
 export function claimDeal(dealId: string): FlashDeal | null {
-  const deal = [].find(d => d.id === dealId);
+  const deal = deals.find(d => d.id === dealId);
   if (deal && deal.claimed < deal.totalQuantity) {
     deal.claimed += 1;
     return deal;

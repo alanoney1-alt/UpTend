@@ -1,165 +1,155 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/colors';
-
-const COI_VAULT = [
-  { id: '1', provider: 'State Farm', policyNumber: 'GL-2026-44821', type: 'General Liability', coverage: '$2,000,000', expiry: 'Aug 15, 2026', verified: true },
-  { id: '2', provider: 'Hartford', policyNumber: 'WC-2026-77102', type: "Workers' Comp", coverage: '$1,000,000', expiry: 'Jun 30, 2026', verified: true },
-  { id: '3', provider: 'Progressive', policyNumber: 'CA-2026-33019', type: 'Commercial Auto', coverage: '$500,000', expiry: 'Mar 1, 2026', verified: false },
-  { id: '4', provider: 'Zurich', policyNumber: 'UMB-2026-90155', type: 'Umbrella', coverage: '$5,000,000', expiry: 'Dec 31, 2026', verified: true },
-];
-
-const COMPLIANCE_DOCS = [
-  { id: '1', name: 'W-9 Tax Form', status: 'Current', uploaded: 'Jan 5, 2026', emoji: '📄' },
-  { id: '2', name: 'OSHA 30-Hour Card', status: 'Current', uploaded: 'Nov 12, 2025', emoji: '🦺' },
-  { id: '3', name: 'EPA Lead-Safe Cert', status: 'Expiring Soon', uploaded: 'Feb 20, 2025', emoji: '🏗️' },
-  { id: '4', name: 'Business License', status: 'Current', uploaded: 'Jan 15, 2026', emoji: '📋' },
-  { id: '5', name: 'Contractor Bond', status: 'Current', uploaded: 'Dec 1, 2025', emoji: '🔒' },
-];
-
-const BACKGROUND_CHECKS = [
-  { id: '1', name: 'Carlos Martinez', role: 'Lead Tech', status: 'Clear', completedAt: 'Jan 20, 2026', expiry: 'Jan 20, 2027' },
-  { id: '2', name: 'James Rivera', role: 'Electrician', status: 'Clear', completedAt: 'Dec 15, 2025', expiry: 'Dec 15, 2026' },
-  { id: '3', name: 'Maria Santos', role: 'Plumber', status: 'Pending', completedAt: null, expiry: null },
-  { id: '4', name: 'David Kim', role: 'HVAC Tech', status: 'Clear', completedAt: 'Feb 1, 2026', expiry: 'Feb 1, 2027' },
-  { id: '5', name: 'Sarah Johnson', role: 'Apprentice', status: 'Action Required', completedAt: null, expiry: null },
-];
+import { fetchCOIVault, fetchComplianceDocs, fetchBackgroundChecks } from '../services/api';
+import ApiStateWrapper from '../components/ApiStateWrapper';
 
 const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
-  'Current': { bg: '#D1FAE5', color: '#059669' },
-  'Clear': { bg: '#D1FAE5', color: '#059669' },
-  'Expiring Soon': { bg: '#FEF3C7', color: '#D97706' },
-  'Pending': { bg: '#DBEAFE', color: '#2563EB' },
+  'Current': { bg: '#D1FAE5', color: '#059669' }, 'Clear': { bg: '#D1FAE5', color: '#059669' },
+  'Expiring Soon': { bg: '#FEF3C7', color: '#D97706' }, 'Pending': { bg: '#DBEAFE', color: '#2563EB' },
   'Action Required': { bg: '#FEE2E2', color: '#DC2626' },
 };
 
 export default function ComplianceScreen() {
   const [activeTab, setActiveTab] = useState<'coi' | 'docs' | 'bgcheck'>('coi');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [coiVault, setCoiVault] = useState<any[]>([]);
+  const [docs, setDocs] = useState<any[]>([]);
+  const [bgChecks, setBgChecks] = useState<any[]>([]);
+  const [summary, setSummary] = useState<any>({});
+
+  const load = async () => {
+    setLoading(true); setError(null);
+    try {
+      const [cRes, dRes, bRes] = await Promise.allSettled([fetchCOIVault(), fetchComplianceDocs(), fetchBackgroundChecks()]);
+      const coiData = cRes.status === 'fulfilled' ? cRes.value : {};
+      setCoiVault(coiData?.policies || coiData || []);
+      setDocs(dRes.status === 'fulfilled' ? (dRes.value?.documents || dRes.value || []) : []);
+      setBgChecks(bRes.status === 'fulfilled' ? (bRes.value?.checks || bRes.value || []) : []);
+      setSummary(coiData?.summary || {});
+    } catch (e: any) { setError(e?.message || 'Failed to load'); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { load(); }, []);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Compliance Center</Text>
-          <Text style={styles.subtitle}>Insurance, documents & background checks</Text>
-        </View>
-
-        {/* Summary Cards */}
-        <View style={styles.summaryRow}>
-          <View style={[styles.summaryCard, { backgroundColor: '#D1FAE5' }]}>
-            <Text style={styles.summaryValue}>4</Text>
-            <Text style={styles.summaryLabel}>Active Policies</Text>
+      <ApiStateWrapper loading={loading} error={error} onRetry={load}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Compliance Center</Text>
+            <Text style={styles.subtitle}>Insurance, documents & background checks</Text>
           </View>
-          <View style={[styles.summaryCard, { backgroundColor: '#FEF3C7' }]}>
-            <Text style={styles.summaryValue}>1</Text>
-            <Text style={styles.summaryLabel}>Expiring Soon</Text>
-          </View>
-          <View style={[styles.summaryCard, { backgroundColor: '#DBEAFE' }]}>
-            <Text style={styles.summaryValue}>92%</Text>
-            <Text style={styles.summaryLabel}>Compliant</Text>
-          </View>
-        </View>
 
-        {/* Tabs */}
-        <View style={styles.tabs}>
-          {(['coi', 'docs', 'bgcheck'] as const).map((tab) => (
-            <TouchableOpacity key={tab} style={[styles.tab, activeTab === tab && styles.activeTab]} onPress={() => setActiveTab(tab)}>
-              <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
-                {tab === 'coi' ? '🛡️ COI Vault' : tab === 'docs' ? '📄 Documents' : '🔍 Background'}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+          <View style={styles.summaryRow}>
+            <View style={[styles.summaryCard, { backgroundColor: '#D1FAE5' }]}>
+              <Text style={styles.summaryValue}>{summary.activePolicies || coiVault.length}</Text>
+              <Text style={styles.summaryLabel}>Active Policies</Text>
+            </View>
+            <View style={[styles.summaryCard, { backgroundColor: '#FEF3C7' }]}>
+              <Text style={styles.summaryValue}>{summary.expiringSoon || 0}</Text>
+              <Text style={styles.summaryLabel}>Expiring Soon</Text>
+            </View>
+            <View style={[styles.summaryCard, { backgroundColor: '#DBEAFE' }]}>
+              <Text style={styles.summaryValue}>{summary.compliancePct || '—'}%</Text>
+              <Text style={styles.summaryLabel}>Compliant</Text>
+            </View>
+          </View>
 
-        {/* COI Vault */}
-        {activeTab === 'coi' && COI_VAULT.map((coi) => (
-          <View key={coi.id} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.cardTitle}>{coi.type}</Text>
-                <Text style={styles.cardSubtitle}>{coi.provider} • {coi.policyNumber}</Text>
+          <View style={styles.tabs}>
+            {(['coi', 'docs', 'bgcheck'] as const).map((tab) => (
+              <TouchableOpacity key={tab} style={[styles.tab, activeTab === tab && styles.activeTab]} onPress={() => setActiveTab(tab)}>
+                <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
+                  {tab === 'coi' ? '🛡️ COI Vault' : tab === 'docs' ? '📄 Documents' : '🔍 Background'}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {activeTab === 'coi' && (coiVault.length === 0 ? (
+            <View style={styles.emptyCard}><Text style={styles.emptyText}>No insurance policies on file</Text></View>
+          ) : coiVault.map((coi: any) => (
+            <View key={coi.id || coi._id} style={styles.card}>
+              <View style={styles.cardHeader}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.cardTitle}>{coi.type}</Text>
+                  <Text style={styles.cardSubtitle}>{coi.provider} • {coi.policyNumber}</Text>
+                </View>
+                <View style={[styles.badge, { backgroundColor: coi.verified ? '#D1FAE5' : '#FEE2E2' }]}>
+                  <Text style={[styles.badgeText, { color: coi.verified ? '#059669' : '#DC2626' }]}>{coi.verified ? '✓ Verified' : 'Unverified'}</Text>
+                </View>
               </View>
-              {coi.verified ? (
-                <View style={[styles.badge, { backgroundColor: '#D1FAE5' }]}>
-                  <Text style={[styles.badgeText, { color: '#059669' }]}>✓ Verified</Text>
-                </View>
-              ) : (
-                <View style={[styles.badge, { backgroundColor: '#FEE2E2' }]}>
-                  <Text style={[styles.badgeText, { color: '#DC2626' }]}>Unverified</Text>
-                </View>
-              )}
+              <View style={styles.cardRow}>
+                <Text style={styles.cardDetail}>Coverage: {coi.coverage}</Text>
+                <Text style={styles.cardDetail}>Expires: {coi.expiry}</Text>
+              </View>
+              <View style={styles.cardActions}>
+                <TouchableOpacity style={styles.actionBtn}><Text style={styles.actionBtnText}>View PDF</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.actionBtn}><Text style={styles.actionBtnText}>Share</Text></TouchableOpacity>
+                <TouchableOpacity style={[styles.actionBtn, styles.primaryBtn]}><Text style={styles.primaryBtnText}>Renew</Text></TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.cardRow}>
-              <Text style={styles.cardDetail}>Coverage: {coi.coverage}</Text>
-              <Text style={styles.cardDetail}>Expires: {coi.expiry}</Text>
-            </View>
-            <View style={styles.cardActions}>
-              <TouchableOpacity style={styles.actionBtn}><Text style={styles.actionBtnText}>View PDF</Text></TouchableOpacity>
-              <TouchableOpacity style={styles.actionBtn}><Text style={styles.actionBtnText}>Share</Text></TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, styles.primaryBtn]}><Text style={styles.primaryBtnText}>Renew</Text></TouchableOpacity>
-            </View>
-          </View>
-        ))}
+          )))}
 
-        {/* Documents */}
-        {activeTab === 'docs' && (
-          <>
-            <TouchableOpacity style={styles.uploadBtn}>
-              <Text style={styles.uploadBtnText}>📤 Upload New Document</Text>
-            </TouchableOpacity>
-            {COMPLIANCE_DOCS.map((doc) => {
-              const s = STATUS_STYLES[doc.status] || STATUS_STYLES['Current'];
-              return (
-                <View key={doc.id} style={styles.docRow}>
-                  <Text style={styles.docEmoji}>{doc.emoji}</Text>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.docName}>{doc.name}</Text>
-                    <Text style={styles.docDate}>Uploaded: {doc.uploaded}</Text>
-                  </View>
-                  <View style={[styles.badge, { backgroundColor: s.bg }]}>
-                    <Text style={[styles.badgeText, { color: s.color }]}>{doc.status}</Text>
-                  </View>
-                </View>
-              );
-            })}
-          </>
-        )}
-
-        {/* Background Checks */}
-        {activeTab === 'bgcheck' && (
-          <>
-            <TouchableOpacity style={styles.uploadBtn}>
-              <Text style={styles.uploadBtnText}>➕ Request New Check</Text>
-            </TouchableOpacity>
-            {BACKGROUND_CHECKS.map((bg) => {
-              const s = STATUS_STYLES[bg.status] || STATUS_STYLES['Pending'];
-              return (
-                <View key={bg.id} style={styles.card}>
-                  <View style={styles.cardHeader}>
+          {activeTab === 'docs' && (
+            <>
+              <TouchableOpacity style={styles.uploadBtn}><Text style={styles.uploadBtnText}>📤 Upload New Document</Text></TouchableOpacity>
+              {docs.length === 0 ? (
+                <View style={styles.emptyCard}><Text style={styles.emptyText}>No documents uploaded</Text></View>
+              ) : docs.map((doc: any) => {
+                const s = STATUS_STYLES[doc.status] || STATUS_STYLES['Current'];
+                return (
+                  <View key={doc.id || doc._id} style={styles.docRow}>
+                    <Text style={styles.docEmoji}>{doc.emoji || '📄'}</Text>
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.cardTitle}>{bg.name}</Text>
-                      <Text style={styles.cardSubtitle}>{bg.role}</Text>
+                      <Text style={styles.docName}>{doc.name}</Text>
+                      <Text style={styles.docDate}>Uploaded: {doc.uploaded}</Text>
                     </View>
                     <View style={[styles.badge, { backgroundColor: s.bg }]}>
-                      <Text style={[styles.badgeText, { color: s.color }]}>{bg.status}</Text>
+                      <Text style={[styles.badgeText, { color: s.color }]}>{doc.status}</Text>
                     </View>
                   </View>
-                  {bg.completedAt && (
-                    <View style={styles.cardRow}>
-                      <Text style={styles.cardDetail}>Completed: {bg.completedAt}</Text>
-                      <Text style={styles.cardDetail}>Expires: {bg.expiry}</Text>
-                    </View>
-                  )}
-                </View>
-              );
-            })}
-          </>
-        )}
+                );
+              })}
+            </>
+          )}
 
-        <View style={{ height: 20 }} />
-      </ScrollView>
+          {activeTab === 'bgcheck' && (
+            <>
+              <TouchableOpacity style={styles.uploadBtn}><Text style={styles.uploadBtnText}>➕ Request New Check</Text></TouchableOpacity>
+              {bgChecks.length === 0 ? (
+                <View style={styles.emptyCard}><Text style={styles.emptyText}>No background checks</Text></View>
+              ) : bgChecks.map((bg: any) => {
+                const s = STATUS_STYLES[bg.status] || STATUS_STYLES['Pending'];
+                return (
+                  <View key={bg.id || bg._id} style={styles.card}>
+                    <View style={styles.cardHeader}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.cardTitle}>{bg.name}</Text>
+                        <Text style={styles.cardSubtitle}>{bg.role}</Text>
+                      </View>
+                      <View style={[styles.badge, { backgroundColor: s.bg }]}>
+                        <Text style={[styles.badgeText, { color: s.color }]}>{bg.status}</Text>
+                      </View>
+                    </View>
+                    {bg.completedAt && (
+                      <View style={styles.cardRow}>
+                        <Text style={styles.cardDetail}>Completed: {bg.completedAt}</Text>
+                        <Text style={styles.cardDetail}>Expires: {bg.expiry}</Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
+            </>
+          )}
+
+          <View style={{ height: 20 }} />
+        </ScrollView>
+      </ApiStateWrapper>
     </SafeAreaView>
   );
 }
@@ -198,4 +188,6 @@ const styles = StyleSheet.create({
   docEmoji: { fontSize: 24 },
   docName: { fontSize: 15, fontWeight: '600', color: Colors.text },
   docDate: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
+  emptyCard: { backgroundColor: Colors.white, borderRadius: 14, padding: 24, alignItems: 'center', marginBottom: 12 },
+  emptyText: { fontSize: 14, color: Colors.textSecondary },
 });
