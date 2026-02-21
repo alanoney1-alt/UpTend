@@ -461,6 +461,310 @@
   }
 }
 
+/* ============================================
+   Landing Page: Futuristic Immersive Styles
+   ============================================ */
+
+/* Root background */
+.landing-root {
+  background: linear-gradient(160deg, #FFFBF5 0%, #FFF7ED 30%, #FEF3C7 70%, #FFFBF5 100%);
+  background-size: 400% 400%;
+  animation: landingBgShift 20s ease infinite;
+}
+.dark .landing-root {
+  background: linear-gradient(160deg, hsl(270 51% 10%) 0%, hsl(270 40% 14%) 30%, hsl(30 40% 12%) 70%, hsl(270 51% 10%) 100%);
+  background-size: 400% 400%;
+  animation: landingBgShift 20s ease infinite;
+}
+
+@keyframes landingBgShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Ambient floating orbs */
+.landing-ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.landing-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  will-change: transform;
+}
+.dark .landing-orb { opacity: 0.15; }
+
+.landing-orb-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #F59E0B 0%, transparent 70%);
+  top: -10%; left: -10%;
+  animation: orbFloat1 16s ease-in-out infinite;
+}
+.landing-orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #FB923C 0%, transparent 70%);
+  bottom: -5%; right: -5%;
+  animation: orbFloat2 20s ease-in-out infinite;
+}
+.landing-orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, #FBBF24 0%, transparent 70%);
+  top: 40%; left: 50%;
+  animation: orbFloat3 14s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(60px, 40px) scale(1.1); }
+  66% { transform: translate(-30px, 80px) scale(0.95); }
+}
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-50px, -30px) scale(1.05); }
+  66% { transform: translate(40px, -60px) scale(0.9); }
+}
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-80px, -40px) scale(1.15); }
+}
+
+/* Avatar with glow ring */
+.landing-avatar-glow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: landingFadeUp 0.6s ease-out both;
+}
+.landing-avatar-glow::before {
+  content: "";
+  position: absolute;
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #F59E0B, #FB923C, #FBBF24, #F59E0B);
+  animation: avatarGlowSpin 4s linear infinite;
+  opacity: 0.5;
+  filter: blur(12px);
+}
+.landing-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.875rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes avatarGlowSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Fade-up entrance animation */
+.landing-fade-up {
+  animation: landingFadeUp 0.6s ease-out both;
+}
+@keyframes landingFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Chat messages */
+.landing-msg {
+  max-width: 85%;
+  padding: 14px 18px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.landing-msg-george {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #1E293B;
+  border-bottom-left-radius: 6px;
+}
+.dark .landing-msg-george {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #F5F5F4;
+}
+.landing-msg-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: white;
+  border-bottom-right-radius: 6px;
+}
+.landing-msg-appear {
+  animation: msgAppear 0.35s ease-out both;
+}
+@keyframes msgAppear {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Typing indicator dots */
+.landing-typing-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  height: 20px;
+}
+.landing-typing-dots span {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #A8A29E;
+  animation: typingBounce 1.2s ease-in-out infinite;
+}
+.landing-typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+.landing-typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Premium chat input */
+.landing-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  padding: 6px 6px 6px 18px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.dark .landing-input-wrap {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+.landing-input-wrap:focus-within {
+  border-color: #F59E0B;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15), 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+.dark .landing-input-wrap:focus-within {
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2), 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+.landing-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: #1E293B;
+  padding: 10px 0;
+}
+.dark .landing-input {
+  color: #F5F5F4;
+}
+.landing-input::placeholder {
+  color: #A8A29E;
+}
+.landing-send-btn {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  flex-shrink: 0;
+}
+.landing-send-btn:hover:not(:disabled) {
+  transform: scale(1.08);
+}
+.landing-send-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+.landing-send-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Floating pill chips */
+.landing-chip {
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #1E293B;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.dark .landing-chip {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #F5F5F4;
+}
+.landing-chip:hover {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.12);
+}
+
+/* Glassmorphism cards */
+.landing-glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.dark .landing-glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.landing-glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Service button extra */
+.landing-service-btn {
+  cursor: pointer;
+}
+.landing-service-btn:hover {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* Trust bar gradient */
+.landing-trust-bar {
+  background: linear-gradient(90deg, #F59E0B, #D97706, #F59E0B);
+  background-size: 200% 100%;
+  animation: trustBarShimmer 6s ease infinite;
+}
+@keyframes trustBarShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 /* iOS Safe Area Support for PWA */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .pb-safe {
