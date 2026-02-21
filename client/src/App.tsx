@@ -144,10 +144,13 @@ const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orla
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
 const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
 
-/** Hide floating George widget on pages that have their own George UI */
+/** Hide floating George widget on pages that have their own George UI (AI mode landing) */
 function GuideGate() {
   const [location] = useLocation();
-  const hidden = location === "/" || location === "/meet-george";
+  // In classic mode, show widget everywhere including landing
+  const siteMode = localStorage.getItem("uptend-site-mode");
+  const isGeorgeLanding = location === "/" && siteMode !== "classic";
+  const hidden = isGeorgeLanding || location === "/meet-george";
   if (hidden) return null;
   return <UpTendGuide />;
 }
