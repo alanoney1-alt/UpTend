@@ -485,13 +485,14 @@
 /* ─── Mode toggle ─── */
 .geo-mode-toggle {
   position: fixed; top: 1rem; right: 1rem; z-index: 50;
-  display: flex; align-items: center; gap: 6px;
-  padding: 8px 14px; border-radius: 10px; font-size: 0.75rem; font-weight: 500;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
-  color: #57534E; cursor: pointer; transition: all 0.25s;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.01em;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: #D6D3D1; cursor: pointer; transition: all 0.25s;
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
-.geo-mode-toggle:hover { color: #A8A29E; border-color: rgba(255,255,255,0.12); }
+.geo-mode-toggle:hover { color: #FAFAF9; background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.4); transform: translateY(-1px); }
 
 /* ─── Full-screen conversation ─── */
 .geo-conversation {

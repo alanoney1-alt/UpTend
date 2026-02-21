@@ -1,0 +1,26 @@
+import { useSearch } from "wouter";
+import { useEffect } from "react";
+import { Header } from "@/components/landing/header-classic";
+import { FloridaEstimator } from "@/components/booking/florida-estimator-classic";
+
+export default function BookingClassicPage() {
+  const searchString = useSearch();
+  const params = new URLSearchParams(searchString);
+  const preselectedService = params.get("service");
+
+  // Scroll to top on mount — belt-and-suspenders with App-level ScrollToTop
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-zinc-950 to-zinc-900">
+      <Header />
+      <main className="container mx-auto px-4 py-8 md:py-12">
+        <FloridaEstimator preselectedService={preselectedService ?? undefined} />
+      </main>
+    </div>
+  );
+}

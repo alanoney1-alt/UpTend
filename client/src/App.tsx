@@ -148,9 +148,15 @@ const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-l
 function GuideGate() {
   const [location] = useLocation();
   const { mode } = useSiteMode();
-  // In classic mode, show widget everywhere including landing
-  const isGeorgeLanding = location === "/" && mode !== "classic";
-  const hidden = isGeorgeLanding || location === "/meet-george";
+  // Classic mode: George widget on all pages EXCEPT landing (original site had it as a chatbot)
+  // George mode: hide on landing (inline George) and meet-george (dedicated page)
+  if (mode === "classic") {
+    // In classic mode, show the original floating George on non-landing pages
+    if (location === "/") return null;
+    return <UpTendGuide />;
+  }
+  // George AI mode: hide widget on pages with their own George UI
+  const hidden = location === "/" || location === "/meet-george";
   if (hidden) return null;
   return <UpTendGuide />;
 }

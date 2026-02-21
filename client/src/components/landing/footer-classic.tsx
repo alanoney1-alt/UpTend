@@ -120,21 +120,6 @@ export function Footer() {
                   {t("footer.footer_no_lead_fees")}
                 </Link>
               </li>
-              <li>
-                <Link href="/business" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-business">
-                  UpTend for Business
-                </Link>
-              </li>
-              <li>
-                <Link href="/ai/home-scan" className="hover:text-primary transition-colors cursor-pointer text-[#F47C20] font-medium" data-testid="link-footer-home-scan">
-                  ✨ AI Home Scan (Free)
-                </Link>
-              </li>
-              <li>
-                <Link href="/emergency" className="hover:text-primary transition-colors cursor-pointer text-red-400" data-testid="link-footer-emergency">
-                  🚨 Emergency Services
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -143,9 +128,19 @@ export function Footer() {
             <p className="text-sm text-slate-400 mb-4">
               Questions? Call us at <a href="tel:407-338-3342" className="text-white hover:text-primary transition-colors">(407) 338-3342</a>
             </p>
-            <p className="text-xs text-slate-400" data-testid="text-footer-serving">
+            <p className="text-xs text-slate-500 mb-4" data-testid="text-footer-serving">
               {t("footer.footer_serving")}
             </p>
+            <div className="flex gap-3 mt-4">
+              <a href="https://www.facebook.com/UptendGeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">f</a>
+              <a href="https://www.instagram.com/uptendgeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">ig</a>
+              <a href="https://www.tiktok.com/@uptendgeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">tt</a>
+              <a href="https://www.youtube.com/@UpTendGeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">yt</a>
+            </div>
+            <div className="mt-4 space-y-2 text-sm">
+              <Link href="/business" className="block hover:text-primary transition-colors">UpTend for Business</Link>
+              <Link href="/emergency" className="block text-red-400 hover:text-red-300 transition-colors">Emergency Services</Link>
+            </div>
           </div>
         </div>
 
@@ -153,42 +148,15 @@ export function Footer() {
           <div>
             <p data-testid="text-copyright">&copy; {currentYear} {t("footer.footer_copyright")}</p>
           </div>
-          <div className="flex gap-x-6 gap-y-2 flex-wrap">
+          <div className="flex gap-6 flex-wrap">
             <Link href="/terms" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-terms">
-              Terms
+              {t("footer.footer_terms")}
             </Link>
             <Link href="/privacy" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-privacy">
-              Privacy
+              {t("footer.footer_privacy")}
             </Link>
-            <Link href="/cancellation-policy" className="hover:text-white transition-colors cursor-pointer">
-              Cancellations
-            </Link>
-            <Link href="/service-guarantee" className="hover:text-white transition-colors cursor-pointer">
-              Guarantee
-            </Link>
-            <Link href="/cookies" className="hover:text-white transition-colors cursor-pointer">
-              Cookies
-            </Link>
-            <Link href="/communications-consent" className="hover:text-white transition-colors cursor-pointer">
-              SMS Terms
-            </Link>
-            <Link href="/affiliate-disclosure" className="hover:text-white transition-colors cursor-pointer">
-              Affiliate Disclosure
-            </Link>
-            <Link href="/accessibility" className="hover:text-white transition-colors cursor-pointer">
-              Accessibility
-            </Link>
-            <Link href="/b2b-terms" className="hover:text-white transition-colors cursor-pointer">
-              B2B Terms
-            </Link>
-            <Link href="/acceptable-use" className="hover:text-white transition-colors cursor-pointer">
-              Acceptable Use
-            </Link>
-            <Link href="/cost-guides" className="hover:text-white transition-colors cursor-pointer">
+            <Link href="/cost-guides" className="hover:text-white transition-colors cursor-pointer" data-testid="link-footer-cost-guides">
               Cost Guides
-            </Link>
-            <Link href="/admin-login" className="hover:text-white transition-colors cursor-pointer text-slate-500" data-testid="link-footer-admin">
-              Admin
             </Link>
           </div>
         </div>

@@ -93,8 +93,8 @@ function GeorgeLanding() {
   return (
     <div className="geo-root" data-testid="page-landing">
       <button onClick={toggle} className="geo-mode-toggle" aria-label="Switch to classic view">
-        <LayoutGrid className="w-3.5 h-3.5" />
-        <span>Classic Site</span>
+        <LayoutGrid className="w-4 h-4" />
+        <span>View Classic Site</span>
       </button>
 
       <nav className="geo-nav">

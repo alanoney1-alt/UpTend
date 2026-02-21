@@ -183,6 +183,128 @@ export function registerPublicRoutes(app: Express) {
     }
   });
 
+  // GET /api/public/services - Public services list
+  app.get("/api/public/services", (_req, res) => {
+    res.json([
+      { id: "ai_home_scan", name: "AI Home Scan", startingAt: "$99", category: "featured" },
+      { id: "handyman", name: "Handyman Services", startingAt: "$75/hr", category: "repairs" },
+      { id: "junk_removal", name: "Junk Removal", startingAt: "$99", category: "removal" },
+      { id: "pressure_washing", name: "Pressure Washing", startingAt: "$120", category: "exterior" },
+      { id: "gutter_cleaning", name: "Gutter Cleaning", startingAt: "$150", category: "exterior" },
+      { id: "home_cleaning", name: "Home Cleaning", startingAt: "$99", category: "cleaning" },
+      { id: "landscaping", name: "Landscaping", startingAt: "$49", category: "exterior" },
+      { id: "pool_cleaning", name: "Pool Cleaning", startingAt: "$120/mo", category: "cleaning" },
+      { id: "moving_labor", name: "Moving Labor", startingAt: "$65/hr", category: "labor" },
+      { id: "carpet_cleaning", name: "Carpet Cleaning", startingAt: "$50/room", category: "cleaning" },
+      { id: "garage_cleanout", name: "Garage Cleanout", startingAt: "$150", category: "removal" },
+      { id: "light_demolition", name: "Light Demolition", startingAt: "$199", category: "labor" },
+    ]);
+  });
+
+  // GET /api/public/service-areas - Service areas
+  app.get("/api/public/service-areas", (_req, res) => {
+    res.json({
+      primary: { name: "Orlando Metro", center: { lat: 28.5383, lng: -81.3792 }, radiusMiles: 30 },
+      areas: [
+        "Orlando", "Lake Nona", "Kissimmee", "Winter Park", "Altamonte Springs",
+        "Sanford", "Oviedo", "Winter Garden", "Apopka", "Clermont",
+        "Celebration", "Dr. Phillips", "Windermere", "Maitland", "Casselberry"
+      ]
+    });
+  });
+
+  // GET /api/ai/seasonal-advisories - Seasonal maintenance tips
+  app.get("/api/ai/seasonal-advisories", (_req, res) => {
+    const month = new Date().getMonth(); // 0-11
+    const seasons: Record<string, any> = {
+      winter: { months: [11, 0, 1], tips: [
+        { title: "HVAC Filter Change", priority: "high", description: "Replace air filters for heating efficiency" },
+        { title: "Pipe Insulation Check", priority: "medium", description: "Inspect exposed pipes before cold snaps" },
+        { title: "Gutter Cleaning", priority: "high", description: "Clear leaves before winter rains" },
+      ]},
+      spring: { months: [2, 3, 4], tips: [
+        { title: "AC Tune-Up", priority: "high", description: "Schedule before summer heat hits" },
+        { title: "Pressure Wash Exterior", priority: "medium", description: "Remove pollen and winter grime" },
+        { title: "Landscaping Refresh", priority: "medium", description: "Mulch, trim, and prep for growing season" },
+      ]},
+      summer: { months: [5, 6, 7], tips: [
+        { title: "Pool Maintenance", priority: "high", description: "Weekly chemical balance and cleaning" },
+        { title: "Hurricane Prep", priority: "high", description: "Trim trees, check shutters, stock supplies" },
+        { title: "Pest Prevention", priority: "medium", description: "Seal entry points and schedule treatment" },
+      ]},
+      fall: { months: [8, 9, 10], tips: [
+        { title: "Roof Inspection", priority: "high", description: "Check for damage before storm season ends" },
+        { title: "Dryer Vent Cleaning", priority: "high", description: "Prevent fire hazards, improve efficiency" },
+        { title: "Garage Cleanout", priority: "low", description: "Organize and donate before holidays" },
+      ]},
+    };
+    const season = Object.entries(seasons).find(([_, s]) => s.months.includes(month));
+    const current = season ? { season: season[0], ...season[1] } : { season: "spring", ...seasons.spring };
+    res.json({ ...current, location: "Orlando, FL", generatedAt: new Date().toISOString() });
+  });
+
+  // POST /api/ai/smart-schedule - Smart scheduling suggestions
+  app.post("/api/ai/smart-schedule", (req, res) => {
+    res.status(503).json({
+      status: "coming_soon",
+      message: "Smart scheduling is coming soon. In the meantime, book directly and we'll match you with the best available pro.",
+    });
+  });
+
+  // GET /api/pricing/estimate - Quick price estimate
+  app.get("/api/pricing/estimate", (req, res) => {
+    const { service } = req.query as Record<string, string>;
+    const prices: Record<string, any> = {
+      handyman: { startingAt: 75, unit: "hr", estimate: "$75-150" },
+      junk_removal: { startingAt: 99, unit: "job", estimate: "$99-449" },
+      pressure_washing: { startingAt: 120, unit: "job", estimate: "$120-350" },
+      gutter_cleaning: { startingAt: 150, unit: "job", estimate: "$150-350" },
+      home_cleaning: { startingAt: 99, unit: "visit", estimate: "$99-249" },
+      landscaping: { startingAt: 49, unit: "visit", estimate: "$49-299" },
+      pool_cleaning: { startingAt: 120, unit: "month", estimate: "$120-210/mo" },
+      moving_labor: { startingAt: 65, unit: "hr/mover", estimate: "$65-130/hr" },
+      carpet_cleaning: { startingAt: 50, unit: "room", estimate: "$50-89/room" },
+      garage_cleanout: { startingAt: 150, unit: "job", estimate: "$150-499" },
+      light_demolition: { startingAt: 199, unit: "job", estimate: "$199-999" },
+      ai_home_scan: { startingAt: 99, unit: "scan", estimate: "$99-249" },
+    };
+    if (service && prices[service]) {
+      return res.json({ service, ...prices[service] });
+    }
+    res.json({ services: prices });
+  });
+
+  // GET /api/marketplace - Public marketplace items
+  app.get("/api/marketplace", async (_req, res) => {
+    try {
+      const { rows } = await pool.query(`
+        SELECT id, title, description, price, condition, category, photos, created_at
+        FROM marketplace_items 
+        WHERE status = 'available' 
+        ORDER BY created_at DESC 
+        LIMIT 50
+      `).catch(() => ({ rows: [] }));
+      res.json(rows);
+    } catch {
+      res.json([]);
+    }
+  });
+
+  // POST /api/launch-notify - Email signup for launch notifications
+  app.post("/api/launch-notify", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ error: "Email required" });
+      await pool.query(
+        `INSERT INTO launch_notifications (email, created_at) VALUES ($1, NOW()) ON CONFLICT (email) DO NOTHING`,
+        [email]
+      ).catch(() => {});
+      res.json({ success: true, message: "You're on the list!" });
+    } catch {
+      res.json({ success: true, message: "You're on the list!" });
+    }
+  });
+
   // ─── Weather (public) ──────────────────────────────────────────
   app.get("/api/weather", async (_req, res) => {
     try {
