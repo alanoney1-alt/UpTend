@@ -271,6 +271,8 @@ function Router() {
       <Route path="/admin/god-mode" component={GodMode} />
       <Route path="/admin/accounting" component={AdminAccounting} />
       <Route path="/settings" component={ProfileSettings} />
+      <Route path="/profile/settings">{() => { window.location.replace("/settings"); return null; }}</Route>
+      <Route path="/hauler-signup">{() => { window.location.replace("/pro/signup"); return null; }}</Route>
       <Route path="/pricing" component={PublicPricing} />
       <Route path="/become-pro" component={BecomePro} />
       <Route path="/pro-signup">{() => <Redirect to="/login?tab=pro" />}</Route>

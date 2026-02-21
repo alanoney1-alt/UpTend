@@ -33,9 +33,7 @@ export function VideoPlayer({ videoId, title }: VideoPlayerProps) {
   if (!videoId) return null;
 
   const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-  // origin param tells YouTube which domain is embedding — prevents Error 153
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://uptendapp.com';
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?origin=${encodeURIComponent(origin)}&rel=0&modestbranding=1&enablejsapi=0`;
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
 
   // Click-to-load: show thumbnail first, load iframe on click (lighter & faster)
   if (!loaded) {
@@ -74,9 +72,11 @@ export function VideoPlayer({ videoId, title }: VideoPlayerProps) {
       <iframe
         src={embedUrl}
         title={title || "YouTube video"}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
         allowFullScreen
+        referrerPolicy="origin"
         className="absolute inset-0 w-full h-full border-0"
+        style={{ minWidth: 200, minHeight: 200 }}
       />
     </div>
   );
