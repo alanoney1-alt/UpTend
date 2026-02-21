@@ -55,7 +55,8 @@ function registerCrud(
       }
       const userId = ((req.user as any).userId || (req.user as any).id);
       const values = ownerField ? { ...req.body, [ownerField]: userId } : req.body;
-      const [created] = await db.insert(table).values(values).returning();
+      const result = await db.insert(table).values(values).returning();
+      const created = (result as any[])[0];
       res.status(201).json(created);
     } catch (error) {
       console.error(`Error creating ${entityName}:`, error);

@@ -4416,7 +4416,7 @@ export async function setHomeReminderForGeorge(params: {
 // Mr. George tracks what customers buy and maintains their home.
 // ═══════════════════════════════════════════════
 
-import { scanReceipt, processReceiptItems } from "./receipt-scanner.js";
+import { scanReceipt as scanReceiptFromScanner, processReceiptItems } from "./receipt-scanner.js";
 import { getConnectedRetailers, connectRetailer, syncPurchaseHistory } from "./retailer-connect.js";
 import {
   getGarageDoorProfile,
@@ -4436,7 +4436,7 @@ export async function scanReceiptPhoto(params: {
   customerId: string;
   photoUrl: string;
 }): Promise<object> {
-  const scanResult = await scanReceipt(params.photoUrl);
+  const scanResult: any = await scanReceiptFromScanner(params.photoUrl);
   const { purchaseId, warrantiesCreated } = await processReceiptItems(
     params.customerId,
     scanResult.items,
@@ -5439,7 +5439,7 @@ export async function getRebookingSuggestions(params: { customer_id: string }): 
       lastCost: booking.total_cost,
       proName: booking.pro_name,
       proAvailable: Math.random() > 0.4, // 60% chance available
-      suggestedRebooking: daysSince > 90, // Suggest if more than 3 months
+      suggestedRebooking: Math.floor((Date.now() - new Date(booking.completed_at).getTime()) / (1000 * 60 * 60 * 24)) > 90, // Suggest if more than 3 months
     }));
 
     return {
@@ -5525,7 +5525,7 @@ export async function scanReceipt(params: {
     const receiptText = params.receipt_text.toLowerCase();
     
     // Extract common home maintenance items
-    const extractedItems = [];
+    const extractedItems: any[] = [];
     const commonItems = [
       { term: "filter", category: "HVAC", warranty: "6 months", tax_deductible: false },
       { term: "toilet", category: "plumbing", warranty: "1 year", tax_deductible: false },
@@ -5607,7 +5607,7 @@ export async function getMultiProQuotes(params: {
     const zipCode = params.zip_code || "32801";
     
     // Get base pricing for the service
-    const basePricing = await getServicePricing(serviceType);
+    const basePricing: any = await getServicePricing(serviceType);
     const basePrice = basePricing.tiers?.[0]?.price || 150;
     
     // Generate 3 different pro options with different value propositions

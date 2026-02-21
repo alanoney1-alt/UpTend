@@ -776,7 +776,7 @@ export default function createGuideRoutes(_storage: any) {
         sessionId: sid,
         quickActions,
         buttons: georgeResult.buttons,
-        actions: georgeResult.booking ? [{ type: "booking", data: georgeResult.booking }] : undefined,
+        actions: (georgeResult as any).booking ? [{ type: "booking", data: (georgeResult as any).booking }] : undefined,
       });
     } catch (error: any) {
       console.error("Guide chat error:", error);

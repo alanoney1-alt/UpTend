@@ -28,7 +28,7 @@ async function getCredentials() {
       };
     }
 
-    console.log('Using direct Stripe API keys from .env (local development mode)');
+    console.log('[UpTend] Using direct Stripe API keys from .env (local development mode)');
 
     return {
       publishableKey,

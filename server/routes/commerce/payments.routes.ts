@@ -441,7 +441,7 @@ export function registerPaymentRoutes(app: Express) {
         await storage.updateHaulerProfile(profileId, { stripeAccountId: accountId });
       }
 
-      const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}`;
+      const baseUrl = process.env.BASE_URL || `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}`;
       const accountLink = await stripeService.createAccountLink(
         accountId,
         `${baseUrl}/hauler-dashboard?stripe=success`,
@@ -531,7 +531,7 @@ export function registerPaymentRoutes(app: Express) {
         accountId = account.id;
         await storage.updateHaulerProfile(profileId, { stripeAccountId: accountId });
       }
-      const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}`;
+      const baseUrl = process.env.BASE_URL || `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000'}`;
       const accountLink = await stripeService.createAccountLink(
         accountId,
         `${baseUrl}/hauler-dashboard?stripe=success`,
