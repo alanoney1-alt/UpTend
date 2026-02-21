@@ -1,6 +1,8 @@
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useSearch, useLocation } from "wouter";
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useSiteMode } from "@/contexts/site-mode-context";
+import BookingClassicPage from "./booking-classic";
 import { Header } from "@/components/landing/header";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { PaymentForm } from "@/components/payment-form";
@@ -603,6 +605,12 @@ function mapToDisplayStep(internalStep: number | string): number {
 
 /* ─── Main Page ─── */
 export default function BookingPage() {
+  const { mode } = useSiteMode();
+  if (mode === "classic") return <BookingClassicPage />;
+  return <BookingGeorgePage />;
+}
+
+function BookingGeorgePage() {
   usePageTitle("Book a Service | UpTend");
   const searchString = useSearch();
   const [, navigate] = useLocation();
