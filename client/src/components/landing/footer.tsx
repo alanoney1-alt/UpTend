@@ -17,7 +17,7 @@ const services = [
   { label: "Junk Removal", href: "/services/material-recovery" },
   { label: "Handyman", href: "/services/handyman" },
   { label: "Pressure Washing", href: "/services/pressure-washing" },
-  { label: "Lawn Care", href: "/services/landscaping" },
+  { label: "Landscaping", href: "/services/landscaping" },
   { label: "Home Cleaning", href: "/services/home-cleaning" },
   { label: "Gutter Cleaning", href: "/services/gutter-cleaning" },
   { label: "Pool Cleaning", href: "/services/pool-cleaning" },

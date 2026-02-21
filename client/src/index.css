@@ -470,7 +470,6 @@
 .geo-root {
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
   background: #0A0A0B;
   color: #E8E5E0;
 }
@@ -627,7 +626,7 @@
 @keyframes gBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
 
 /* ─── Sections ─── */
-.geo-section { padding: 5rem 1rem; }
+.geo-section { padding: 5rem 1rem; background: #0A0A0B; }
 .geo-section-inner { max-width: 56rem; margin: 0 auto; }
 .geo-h2 { font-size: 1.75rem; font-weight: 700; text-align: center; letter-spacing: -0.02em; color: #E8E5E0; margin-bottom: 0.75rem; }
 .geo-p { text-align: center; color: #78716C; max-width: 28rem; margin: 0 auto 2.5rem; font-size: 0.95rem; line-height: 1.6; }

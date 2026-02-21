@@ -4,8 +4,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useSiteMode } from "@/contexts/site-mode-context";
 import LandingClassic from "./landing-classic";
 import {
-  Truck, TreePine, Droplets, Wrench, Sparkles, Home,
-  Scissors, Waves, HardHat, Hammer, ScanLine,
+  Truck, TreePine, Droplets, Wrench, Sparkles, CloudRain,
+  Scissors, Waves, HardHat, Hammer, ScanLine, Warehouse,
   ArrowUp, ArrowRight, ChevronDown, Shield, Clock,
   MapPin, Zap, LayoutGrid,
 } from "lucide-react";
@@ -14,7 +14,7 @@ import {
 const SERVICES = [
   { icon: Truck, name: "Junk Removal", from: "$99" },
   { icon: Droplets, name: "Pressure Washing", from: "$120" },
-  { icon: Home, name: "Gutter Cleaning", from: "$150" },
+  { icon: CloudRain, name: "Gutter Cleaning", from: "$150" },
   { icon: Wrench, name: "Handyman", from: "$75/hr" },
   { icon: HardHat, name: "Moving Labor", from: "$65/hr" },
   { icon: Hammer, name: "Light Demolition", from: "$199" },
@@ -22,7 +22,7 @@ const SERVICES = [
   { icon: Waves, name: "Pool Cleaning", from: "$120/mo" },
   { icon: TreePine, name: "Landscaping", from: "$49" },
   { icon: Scissors, name: "Carpet Cleaning", from: "$50/room" },
-  { icon: Home, name: "Garage Cleanout", from: "$150" },
+  { icon: Warehouse, name: "Garage Cleanout", from: "$150" },
   { icon: ScanLine, name: "AI Home Scan", from: "$99" },
 ] as const;
 
@@ -42,21 +42,31 @@ interface ChatMessage {
 
 let msgId = 0;
 
-function getGeorgeResponse(userMsg: string): string {
-  const lower = userMsg.toLowerCase();
-  if (lower.includes("gutter")) return "Smart timing — clogged gutters are the number one cause of water damage in Florida homes. Our crews handle 1-story ($150) and 2-story ($225). Want me to get you on the schedule?";
-  if (lower.includes("junk") || lower.includes("furniture") || lower.includes("get rid")) return "I've got a crew for that. Junk removal starts at $99 depending on volume. Furniture, appliances, yard waste — they haul everything. Want a quote?";
-  if (lower.includes("pressure") || lower.includes("driveway")) return "A good pressure wash is deeply satisfying. Driveways, patios, pool decks — starting at $120. Your neighbors will notice. Ready to book?";
-  if (lower.includes("handyman") || lower.includes("fix") || lower.includes("disposal")) return "Our handyman pros handle it all — $75/hr, and they come with tools and know-how. From garbage disposals to shelf mounting to door repairs. What needs fixing?";
-  if (lower.includes("pool")) return "Crystal clear pools, every time. Monthly service starts at $120 for basic, $165 standard, or $210 for the full treatment. Which sounds right?";
-  if (lower.includes("clean")) return "A clean home changes everything. Our crews start at $99 for standard service. Deep cleans, move-out cleans, recurring — we do it all. What are you looking for?";
-  if (lower.includes("landscap") || lower.includes("lawn") || lower.includes("yard")) return "Let's get that yard right. Landscaping starts at $49 for basic maintenance — mowing, edging, hedge trimming, mulching. What does your yard need?";
-  if (lower.includes("maintain") || lower.includes("check") || lower.includes("scan")) return "Great question. Every Orlando home should get checked seasonally. Our AI Home Scan ($99) gives you a full health report — roof to foundation. Want to schedule one?";
-  if (lower.includes("demo") || lower.includes("tear")) return "Light demolition starts at $199. Shed removal, deck teardown, interior demo — safely done with proper disposal. What are we working with?";
-  if (lower.includes("moving") || lower.includes("move")) return "Moving is stressful enough — let us handle the heavy lifting. Our crew is $65/hr and they're fast. Loading, unloading, rearranging. What do you need?";
-  if (lower.includes("carpet")) return "Nothing beats fresh carpets. Standard cleaning is $50/room, deep clean $75, pet treatment $89. How many rooms are we talking?";
-  if (lower.includes("garage")) return "Garage cleanouts are one of our most popular services. Starting at $150 — we organize, haul away junk, and leave you with a garage you can actually use. Sound good?";
-  return "I can help with that. We cover 12 service categories — from junk removal to handyman work to AI-powered home scans. Want me to find the right pro for you?";
+async function fetchGeorgeResponse(
+  userMsg: string,
+  history: ChatMessage[],
+): Promise<string> {
+  try {
+    const conversationHistory = history.map((m) => ({
+      role: m.role === "george" ? "assistant" as const : "user" as const,
+      content: m.text,
+    }));
+    const res = await fetch("/api/ai/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: userMsg,
+        conversationType: "general",
+        currentPage: "/",
+        conversationHistory,
+      }),
+    });
+    if (!res.ok) throw new Error("API error");
+    const data = await res.json();
+    return data.response || "I can help with that. Want me to find the right pro for you?";
+  } catch {
+    return "I can help with that. We cover 12 service categories — from junk removal to handyman work to AI-powered home scans. Want me to find the right pro for you?";
+  }
 }
 
 /* ─── Main ─── */
@@ -120,12 +130,16 @@ function Hero() {
     if (!msg || isTyping) return;
     setInput("");
     setShowStarters(false);
-    setMessages((p) => [...p, { role: "user", text: msg, id: msgId++ }]);
-    setIsTyping(true);
-    setTimeout(() => {
-      setIsTyping(false);
-      setMessages((p) => [...p, { role: "george", text: getGeorgeResponse(msg), id: msgId++ }]);
-    }, 500 + Math.random() * 700);
+    const userMsg: ChatMessage = { role: "user", text: msg, id: msgId++ };
+    setMessages((p) => {
+      const updated = [...p, userMsg];
+      setIsTyping(true);
+      fetchGeorgeResponse(msg, updated).then((response) => {
+        setIsTyping(false);
+        setMessages((prev) => [...prev, { role: "george", text: response, id: msgId++ }]);
+      });
+      return updated;
+    });
   }, [input, isTyping]);
 
   const onKey = (e: React.KeyboardEvent) => {
