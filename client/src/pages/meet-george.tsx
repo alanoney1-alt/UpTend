@@ -1,102 +1,153 @@
-import { Header } from "@/components/landing/header";
+import { useState, useEffect, useRef } from "react";
 import { usePageTitle } from "@/hooks/use-page-title";
-import { Bot, Video, ShoppingCart, Camera, Calculator, Phone, Mail, MapPin, Shield, Wrench, Brain, MessageCircle, Star, Zap } from "lucide-react";
+import { Header } from "@/components/landing/header";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import {
+  Send, MessageCircle, Video, ShoppingCart, Camera, Calculator, Phone,
+  MapPin, Shield, Wrench, Brain, Star, Zap, Mail
+} from "lucide-react";
+
+const CHAT_BUBBLES = [
+  "I know every home service trick in the book.",
+  "I've watched thousands of repair videos so you don't have to.",
+  "I can quote you a price, find you a pro, or walk you through fixing it yourself.",
+  "Try me. Ask me anything about your home.",
+];
 
 const capabilities = [
-  { icon: MessageCircle, title: "AI Home Expert", desc: "Ask anything about home repair, maintenance, or improvement. George knows 63+ DIY repairs inside out." },
-  { icon: Video, title: "Video Tutorials", desc: "George searches YouTube and plays repair videos right in the chat — no leaving the app." },
-  { icon: ShoppingCart, title: "Product Recommendations", desc: "Need parts? George finds exact products with real prices from Amazon, Home Depot, and Lowe's." },
-  { icon: Calculator, title: "Instant Quotes", desc: "Get real pricing for any service in seconds. AI-powered quotes based on your home and location." },
-  { icon: Camera, title: "Photo Diagnosis", desc: "Snap a photo of what's broken. George uses AI vision to diagnose the problem and give you a fix plan + price." },
-  { icon: Brain, title: "Room Scanner", desc: "Walk through your home room by room. George inventories every appliance — brand, model, age, condition." },
-  { icon: MapPin, title: "Real-Time Tracking", desc: "Know exactly when your Pro is arriving, working, and done. Live GPS tracking like Uber for your home." },
-  { icon: Shield, title: "Price Ceiling Guarantee", desc: "The price George quotes is the most you'll ever pay. Period. No surprises, no hidden fees." },
-  { icon: Phone, title: "Voice & Text", desc: "Talk to George by voice or text. He speaks English and Spanish and adapts to your communication style." },
-  { icon: Mail, title: "Email Summaries", desc: "George sends you quote breakdowns, booking confirmations, and home health reports by email." },
-  { icon: Wrench, title: "Pro Matching", desc: "When DIY isn't the move, George matches you with a background-checked, insured Pro in minutes." },
-  { icon: Star, title: "Home Health Record", desc: "George builds a living record of your home — every appliance, service, and maintenance event tracked." },
+  { icon: MessageCircle, label: "Home Expert" },
+  { icon: Video, label: "Video Tutorials" },
+  { icon: ShoppingCart, label: "Product Picks" },
+  { icon: Calculator, label: "Instant Quotes" },
+  { icon: Camera, label: "Photo Diagnosis" },
+  { icon: Brain, label: "Room Scanner" },
+  { icon: MapPin, label: "Pro Tracking" },
+  { icon: Shield, label: "Price Guarantee" },
+  { icon: Phone, label: "Voice & Text" },
+  { icon: Mail, label: "Email Reports" },
+  { icon: Wrench, label: "Pro Matching" },
+  { icon: Star, label: "Home Record" },
 ];
 
 export default function MeetGeorgePage() {
   usePageTitle("Meet Mr. George | UpTend");
 
+  const [visibleBubbles, setVisibleBubbles] = useState(0);
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState<{ role: "user" | "george"; text: string }[]>([]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Animate bubbles appearing one by one
+  useEffect(() => {
+    if (visibleBubbles < CHAT_BUBBLES.length) {
+      const timer = setTimeout(() => setVisibleBubbles(v => v + 1), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [visibleBubbles]);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
+
+  const handleChat = () => {
+    if (!chatInput.trim()) return;
+    const q = chatInput.trim();
+    setChatInput("");
+    setChatMessages(prev => [...prev, { role: "user", text: q }]);
+    setTimeout(() => {
+      setChatMessages(prev => [...prev, {
+        role: "george",
+        text: "Great question! I'd love to help with that. For the full experience, head to the home page and use the orange chat bubble — I can pull up videos, quotes, and pros right there. 🏠"
+      }]);
+    }, 600);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 text-white">
+    <div className="min-h-screen" style={{ backgroundColor: "#FFFBF5" }}>
       <Header />
+
       <main className="pt-28 pb-20">
-        {/* Hero */}
-        <section className="max-w-4xl mx-auto px-4 text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-[#F47C20]/20 text-[#F47C20] rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-            <Bot className="w-4 h-4" />
-            AI-Powered Home Assistant
+        {/* Hero — George avatar with glow */}
+        <section className="max-w-2xl mx-auto px-4 text-center mb-12">
+          <div className="relative inline-block mb-6">
+            <div className="absolute inset-0 rounded-full bg-amber-400/30 animate-pulse scale-110" />
+            <div className="relative w-28 h-28 rounded-full bg-amber-500 flex items-center justify-center shadow-xl shadow-amber-200">
+              <span className="text-white text-5xl font-bold">G</span>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
-            Meet <span className="text-[#F47C20]">Mr. George</span> 🏠
+          <h1 className="text-3xl md:text-5xl font-bold text-stone-800 mb-3">
+            I'm George. Your home's best friend.
           </h1>
-          <p className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Your AI home expert who knows everything about home repair, finds the best Pros, 
-            and saves you money — all from one conversation.
+          <p className="text-stone-500 text-base md:text-lg max-w-lg mx-auto">
+            AI-powered, always available, and here to save you time and money on everything home.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/book" asChild>
-              <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl">
-                <Zap className="w-5 h-5 mr-2" /> Try George Now
-              </Button>
-            </Link>
-          </div>
         </section>
 
-        {/* Capabilities Grid */}
-        <section className="max-w-6xl mx-auto px-4 mb-20">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">What George Can Do</h2>
-          <p className="text-slate-400 text-center mb-12 max-w-xl mx-auto">
-            140 tools. 13 AI capabilities. One conversation.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {capabilities.map((cap) => (
-              <div key={cap.title} className="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
-                <cap.icon className="w-8 h-8 text-[#F47C20] mb-3" />
-                <h3 className="font-bold text-lg mb-2">{cap.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{cap.desc}</p>
+        {/* Chat bubbles — George tells his story */}
+        <section className="max-w-xl mx-auto px-4 mb-10">
+          <div className="space-y-3">
+            {CHAT_BUBBLES.slice(0, visibleBubbles).map((text, i) => (
+              <div key={i} className="flex items-start gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                {i === 0 ? (
+                  <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">G</span>
+                  </div>
+                ) : (
+                  <div className="w-8 flex-shrink-0" />
+                )}
+                <div className="bg-white border border-amber-100 rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm">
+                  <p className="text-sm text-stone-700 leading-relaxed">{text}</p>
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* How It Works */}
-        <section className="max-w-4xl mx-auto px-4 mb-20 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-10">How It Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="w-12 h-12 rounded-full bg-[#F47C20] text-white flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
-              <h3 className="font-bold text-lg mb-2">Tell George What's Going On</h3>
-              <p className="text-sm text-slate-400">Describe your problem, send a photo, or just ask a question. George understands it all.</p>
-            </div>
-            <div>
-              <div className="w-12 h-12 rounded-full bg-[#F47C20] text-white flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
-              <h3 className="font-bold text-lg mb-2">Get Your Answer Instantly</h3>
-              <p className="text-sm text-slate-400">DIY walkthrough with video? Product recommendation? Instant quote? George handles it in seconds.</p>
-            </div>
-            <div>
-              <div className="w-12 h-12 rounded-full bg-[#F47C20] text-white flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
-              <h3 className="font-bold text-lg mb-2">Book a Pro or Fix It Yourself</h3>
-              <p className="text-sm text-slate-400">Your choice. George books a verified Pro in minutes, or coaches you through the repair step by step.</p>
+        {/* Live chat input */}
+        <section className="max-w-xl mx-auto px-4 mb-16">
+          <div className="border border-amber-200 rounded-2xl bg-white p-4 shadow-sm">
+            {chatMessages.length > 0 && (
+              <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
+                {chatMessages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[80%] px-3.5 py-2 rounded-2xl text-sm ${
+                      msg.role === "user"
+                        ? "bg-amber-500 text-white rounded-br-md"
+                        : "bg-amber-50 text-stone-700 rounded-bl-md"
+                    }`}>
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+                <div ref={chatEndRef} />
+              </div>
+            )}
+            <div className="flex gap-2">
+              <Input
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleChat()}
+                placeholder="Ask me anything about your home..."
+                className="border-amber-200 focus-visible:ring-amber-300 rounded-xl"
+              />
+              <Button onClick={handleChat} size="icon" className="bg-amber-500 hover:bg-amber-600 rounded-xl shrink-0">
+                <Send className="w-4 h-4" />
+              </Button>
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="max-w-3xl mx-auto px-4 text-center">
-          <div className="bg-gradient-to-r from-[#F47C20]/20 to-orange-500/20 border border-[#F47C20]/30 rounded-2xl p-8 md:p-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Meet George?</h2>
-            <p className="text-slate-300 mb-6">He's available 24/7 on every page. Just click the orange bubble in the corner.</p>
-            <Link href="/" asChild>
-              <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl">
-                Get Started
-              </Button>
-            </Link>
+        {/* Capabilities grid */}
+        <section className="max-w-3xl mx-auto px-4">
+          <h2 className="text-xl font-bold text-stone-800 text-center mb-6">What I can do</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+            {capabilities.map((cap) => (
+              <div key={cap.label} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-amber-100 hover:border-amber-300 transition-colors">
+                <cap.icon className="w-6 h-6 text-amber-500" />
+                <span className="text-xs font-medium text-stone-600 text-center leading-tight">{cap.label}</span>
+              </div>
+            ))}
           </div>
         </section>
       </main>
