@@ -10,8 +10,8 @@ import {
   Package, Home, Trees, ArrowUpFromLine, Sparkles,
   MessageCircle,
 } from "lucide-react";
-import { Footer } from "@/components/landing/footer-classic";
-import { Header } from "@/components/landing/header-classic";
+import { Footer } from "@/components/landing/footer";
+import { Header } from "@/components/landing/header";
 import { useTranslation } from "react-i18next";
 import { useSiteMode } from "@/contexts/site-mode-context";
 
