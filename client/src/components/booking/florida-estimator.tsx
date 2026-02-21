@@ -159,9 +159,10 @@ interface ZillowProperty {
 interface FloridaEstimatorProps {
   preselectedService?: string;
   preselectedTiming?: string;
+  onStepChange?: (step: number | string) => void;
 }
 
-export function FloridaEstimator({ preselectedService, preselectedTiming }: FloridaEstimatorProps = {}) {
+export function FloridaEstimator({ preselectedService, preselectedTiming, onStepChange }: FloridaEstimatorProps = {}) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
@@ -242,6 +243,11 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
       })
       .catch(() => {}); // silently fail — user can still type manually
   }, [isAuthenticated]);
+
+  // Report step changes to parent
+  useEffect(() => {
+    onStepChange?.(step);
+  }, [step, onStepChange]);
 
   // Scroll to top on step change — immediate jump, no smooth scroll
   useEffect(() => {
@@ -594,6 +600,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           {/* Quick Book */}
           <div
             onClick={handleQuickBook}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleQuickBook(); } }}
             className="p-6 rounded-xl border-2 border-border hover:border-[#F47C20] cursor-pointer transition-all bg-card hover:shadow-lg text-center"
             data-testid="card-quick-book"
           >
@@ -610,6 +619,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           {/* Choose My Pro */}
           <div
             onClick={handleChooseMyPro}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleChooseMyPro(); } }}
             className="p-6 rounded-xl border-2 border-border hover:border-[#F47C20] cursor-pointer transition-all bg-card hover:shadow-lg text-center"
             data-testid="card-choose-my-pro"
           >
@@ -669,10 +681,13 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           {/* AI Quote Option */}
           <Card
             className="cursor-pointer hover:border-primary transition-all p-6"
+            role="button"
+            tabIndex={0}
             onClick={() => {
               setQuoteMethod("ai");
               setStep(5);
             }}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setQuoteMethod("ai"); setStep(5); } }}
             data-testid="card-ai-quote"
           >
             <CardContent className="p-0">
@@ -708,10 +723,13 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           {/* Manual Quote Option */}
           <Card
             className="cursor-pointer hover:border-primary transition-all p-6"
+            role="button"
+            tabIndex={0}
             onClick={() => {
               setQuoteMethod("manual");
               setStep(5);
             }}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setQuoteMethod("manual"); setStep(5); } }}
             data-testid="card-manual-quote"
           >
             <CardContent className="p-0">
@@ -1396,8 +1414,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Bedrooms</label>
+                <label htmlFor="bedrooms-select" className="block text-xs font-medium text-muted-foreground mb-1">Bedrooms</label>
                 <select
+                  id="bedrooms-select"
                   value={bedrooms}
                   onChange={(e) => setBedrooms(e.target.value)}
                   className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
@@ -1412,8 +1431,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Bathrooms</label>
+                <label htmlFor="bathrooms-select" className="block text-xs font-medium text-muted-foreground mb-1">Bathrooms</label>
                 <select
+                  id="bathrooms-select"
                   value={bathrooms}
                   onChange={(e) => setBathrooms(e.target.value)}
                   className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
@@ -1430,8 +1450,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Approx. Sq Ft</label>
+                <label htmlFor="sqft-select" className="block text-xs font-medium text-muted-foreground mb-1">Approx. Sq Ft</label>
                 <select
+                  id="sqft-select"
                   value={sqft}
                   onChange={(e) => setSqft(e.target.value)}
                   className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
@@ -1447,8 +1468,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Stories</label>
+                <label htmlFor="stories-select" className="block text-xs font-medium text-muted-foreground mb-1">Stories</label>
                 <select
+                  id="stories-select"
                   value={stories}
                   onChange={(e) => setStories(e.target.value)}
                   className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"

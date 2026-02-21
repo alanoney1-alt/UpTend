@@ -724,7 +724,7 @@ export function UpTendGuide() {
                 )}
                 <div
                   className={cn(
-                    "rounded-2xl px-3 py-2 text-[12px] leading-[1.5] break-words overflow-hidden",
+                    "rounded-2xl px-3 py-2 text-[14px] leading-[1.6] break-words overflow-hidden",
                     msg.role === "user"
                       ? "bg-amber-500 text-white rounded-br-md"
                       : "bg-black/[0.04] dark:bg-white/[0.06] rounded-bl-md"
@@ -810,7 +810,7 @@ export function UpTendGuide() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask anything…"
-              className="flex-1 bg-transparent text-[12px] h-7 px-2 rounded-full border border-black/10 dark:border-white/10 focus:outline-none focus:border-amber-400/50 transition-colors placeholder:text-muted-foreground/60"
+              className="flex-1 bg-transparent text-[14px] h-8 px-3 rounded-full border border-black/10 dark:border-white/10 focus:outline-none focus:border-amber-400/50 transition-colors placeholder:text-muted-foreground/60"
               disabled={isLoading || speech.isListening || isUploading}
             />
             <button

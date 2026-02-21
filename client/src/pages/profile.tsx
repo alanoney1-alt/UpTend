@@ -747,7 +747,7 @@ export default function Profile() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -755,7 +755,7 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex flex-col items-center justify-center px-4">
         <Card className="w-full max-w-md p-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Sign In Required</h1>
           <p className="text-muted-foreground mb-6">Please sign in to view your profile.</p>
@@ -768,9 +768,9 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-[#3B1D5A]" data-testid="page-profile">
+    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950" data-testid="page-profile">
       <header className="p-4">
-        <Link href="/" className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors">
+        <Link href="/" className="inline-flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
           <ArrowLeft className="w-5 h-5" />
           <span>Back to Home</span>
         </Link>
@@ -781,7 +781,7 @@ export default function Profile() {
           <Logo className="w-10 h-10" textClassName="text-xl" />
         </div>
 
-        <h1 className="text-2xl font-bold text-white text-center mb-8">My Profile</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white text-center mb-8">My Profile</h1>
 
         <Card className="p-6 mb-6" data-testid="card-profile-info">
           <div className="flex items-start justify-between mb-6">

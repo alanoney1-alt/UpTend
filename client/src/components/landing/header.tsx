@@ -31,7 +31,7 @@ export function Header() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 text-white"
+      className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800"
       data-testid="header"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 h-20 flex items-center relative">
@@ -44,24 +44,24 @@ export function Header() {
         </div>
 
         {/* Center: Nav Links — clean, minimal */}
-        <div className="hidden lg:flex items-center justify-center gap-8 text-sm font-medium text-slate-300 flex-1">
+        <div className="hidden lg:flex items-center justify-center gap-8 text-sm font-medium text-gray-600 dark:text-gray-300 flex-1">
           <Link href="/services">
-            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-services">
+            <span className="hover:text-primary-500 transition-colors duration-150 cursor-pointer" data-testid="link-services">
               {t("nav.services")}
             </span>
           </Link>
           <Link href="/pricing">
-            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-pricing">
+            <span className="hover:text-primary-500 transition-colors duration-150 cursor-pointer" data-testid="link-pricing">
               {t("nav.pricing")}
             </span>
           </Link>
           <Link href="/about">
-            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-about">
+            <span className="hover:text-primary-500 transition-colors duration-150 cursor-pointer" data-testid="link-about">
               {t("nav.about")}
             </span>
           </Link>
           <Link href="/business">
-            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-business">
+            <span className="hover:text-primary-500 transition-colors duration-150 cursor-pointer" data-testid="link-business">
               {t("nav.for_business", "For Business")}
             </span>
           </Link>
@@ -72,26 +72,26 @@ export function Header() {
           <LanguageToggle />
 
           {isLoading ? (
-            <div className="w-8 h-8 rounded-full bg-slate-700 animate-pulse" />
+            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
           ) : isAuthenticated && user ? (
             <div className="flex items-center gap-2">
               {user.role === "customer" && (
                 <Link href="/dashboard" asChild>
-                  <Button variant="ghost" className="text-slate-300" data-testid="button-customer-dashboard">
+                  <Button variant="ghost" className="text-gray-600 dark:text-gray-300 hover:text-primary-500" data-testid="button-customer-dashboard">
                     {t("nav.dashboard")}
                   </Button>
                 </Link>
               )}
               {user.role === "hauler" && (
                 <Link href="/pro/dashboard" asChild>
-                  <Button variant="ghost" className="text-slate-300" data-testid="button-dashboard">
+                  <Button variant="ghost" className="text-gray-600 dark:text-gray-300 hover:text-primary-500" data-testid="button-dashboard">
                     {t("nav.dashboard")}
                   </Button>
                 </Link>
               )}
               {user.role === "admin" && (
                 <Link href="/admin" asChild>
-                  <Button variant="ghost" className="text-slate-300" data-testid="button-admin">
+                  <Button variant="ghost" className="text-gray-600 dark:text-gray-300 hover:text-primary-500" data-testid="button-admin">
                     {t("nav.admin")}
                   </Button>
                 </Link>
@@ -99,16 +99,16 @@ export function Header() {
               <Link href="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity" data-testid="link-profile">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={user.profileImageUrl || undefined} />
-                  <AvatarFallback className="bg-slate-700 text-slate-200 text-xs">{userInitials}</AvatarFallback>
+                  <AvatarFallback className="bg-primary-100 text-primary-700 text-xs">{userInitials}</AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium hidden lg:block text-slate-200">
+                <span className="text-sm font-medium hidden lg:block text-gray-800 dark:text-gray-200">
                   {user.firstName || "User"}
                 </span>
               </Link>
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-slate-400"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                 onClick={() => logout()}
                 aria-label="Log out"
                 data-testid="button-logout"
@@ -120,7 +120,7 @@ export function Header() {
             <>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="text-slate-300" data-testid="button-login-dropdown">
+                  <Button variant="ghost" className="text-gray-600 dark:text-gray-300 hover:text-primary-500" data-testid="button-login-dropdown">
                     {t("nav.log_in")} <ChevronDown className="ml-1 w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -140,7 +140,7 @@ export function Header() {
 
               <Link href="/book" asChild>
                 <Button
-                  className="bg-white text-slate-900 font-bold px-6"
+                  className="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-6 rounded-xl transition-all duration-150"
                   data-testid="button-book-now"
                 >
                   {t("common.book_now")}
@@ -154,7 +154,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="text-white"
+            className="text-gray-700 dark:text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             data-testid="button-mobile-menu"
@@ -165,9 +165,9 @@ export function Header() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-slate-900 border-t border-slate-800 absolute top-20 left-0 w-full p-6 flex flex-col gap-6 shadow-2xl z-50">
+        <div className="lg:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 absolute top-20 left-0 w-full p-6 flex flex-col gap-6 shadow-xl z-50 animate-slide-down">
 
-          <div className="flex flex-col gap-4 text-lg font-medium text-slate-300">
+          <div className="flex flex-col gap-4 text-lg font-medium text-gray-600 dark:text-gray-300">
             <Link href="/services" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-services-mobile">{t("nav.services")}</span>
             </Link>
@@ -191,7 +191,7 @@ export function Header() {
             <LanguageToggle />
           </div>
 
-          <hr className="border-slate-800" />
+          <hr className="border-gray-100 dark:border-gray-800" />
 
           <div className="flex flex-col gap-3">
             {isAuthenticated && user ? (
@@ -200,28 +200,28 @@ export function Header() {
                   <div className="flex items-center gap-3 p-2" data-testid="link-profile-mobile">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.profileImageUrl || undefined} />
-                      <AvatarFallback className="bg-slate-700 text-slate-200 text-xs">{userInitials}</AvatarFallback>
+                      <AvatarFallback className="bg-primary-100 text-primary-700 text-xs">{userInitials}</AvatarFallback>
                     </Avatar>
-                    <span className="text-sm font-medium text-slate-200">{user.firstName} {user.lastName}</span>
+                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{user.firstName} {user.lastName}</span>
                   </div>
                 </Link>
                 {user.role === "customer" && (
                   <Link href="/dashboard" onClick={closeMenu}>
-                    <Button variant="outline" className="w-full border-slate-600 text-slate-300" data-testid="button-customer-dashboard-mobile">
+                    <Button variant="outline" className="w-full border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300" data-testid="button-customer-dashboard-mobile">
                       {t("nav.dashboard")}
                     </Button>
                   </Link>
                 )}
                 {user.role === "hauler" && (
                   <Link href="/pro/dashboard" onClick={closeMenu}>
-                    <Button variant="outline" className="w-full border-slate-600 text-slate-300" data-testid="button-dashboard-mobile">
+                    <Button variant="outline" className="w-full border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300" data-testid="button-dashboard-mobile">
                       {t("nav.dashboard")}
                     </Button>
                   </Link>
                 )}
                 <Button
                   variant="outline"
-                  className="w-full border-slate-600 text-slate-300"
+                  className="w-full border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300"
                   onClick={() => { logout(); closeMenu(); }}
                   data-testid="button-logout-mobile"
                 >
@@ -232,7 +232,7 @@ export function Header() {
             ) : (
               <div className="grid grid-cols-2 gap-4">
                 <Link href="/login" onClick={closeMenu}>
-                  <Button variant="outline" className="w-full border-slate-600 text-slate-300" data-testid="button-login-mobile">
+                  <Button variant="outline" className="w-full border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300" data-testid="button-login-mobile">
                     {t("nav.log_in")}
                   </Button>
                 </Link>

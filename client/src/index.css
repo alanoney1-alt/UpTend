@@ -4,8 +4,94 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   UpTend Design System Tokens
+   ============================================ */
+
 /* LIGHT MODE */
 :root {
+  /* — Design System: Primary (Orange/Amber) — */
+  --color-primary-50: #FFF7ED;
+  --color-primary-100: #FFEDD5;
+  --color-primary-200: #FED7AA;
+  --color-primary-300: #FDBA74;
+  --color-primary-400: #FB923C;
+  --color-primary-500: #F97316;
+  --color-primary-600: #EA580C;
+  --color-primary-700: #C2410C;
+  --color-primary-800: #9A3412;
+  --color-primary-900: #7C2D12;
+  --color-primary: #F97316;
+
+  /* — Design System: Neutral (Warm Gray/Stone) — */
+  --color-gray-50: #FAFAF9;
+  --color-gray-100: #F5F5F4;
+  --color-gray-200: #E7E5E4;
+  --color-gray-300: #D6D3D1;
+  --color-gray-400: #A8A29E;
+  --color-gray-500: #78716C;
+  --color-gray-600: #57534E;
+  --color-gray-700: #44403C;
+  --color-gray-800: #292524;
+  --color-gray-900: #1C1917;
+
+  /* — Design System: Semantic — */
+  --color-success: #16A34A;
+  --color-success-bg: #F0FDF4;
+  --color-warning: #CA8A04;
+  --color-warning-bg: #FEFCE8;
+  --color-error: #DC2626;
+  --color-error-bg: #FEF2F2;
+  --color-info: #2563EB;
+  --color-info-bg: #EFF6FF;
+
+  /* — Design System: Mr. George — */
+  --color-george-bubble: #FFF7ED;
+  --color-george-accent: #F97316;
+
+  /* — Design System: Typography — */
+  --font-family-sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  /* — Design System: Spacing (8px base) — */
+  --space-0: 0px;
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* — Design System: Border Radius — */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* — Design System: Shadows — */
+  --shadow-xs: 0 1px 2px rgba(28, 25, 23, 0.05);
+  --shadow-sm: 0 2px 4px rgba(28, 25, 23, 0.06), 0 1px 2px rgba(28, 25, 23, 0.04);
+  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.08), 0 2px 4px rgba(28, 25, 23, 0.04);
+  --shadow-lg: 0 8px 24px rgba(28, 25, 23, 0.12), 0 4px 8px rgba(28, 25, 23, 0.04);
+  --shadow-xl: 0 16px 48px rgba(28, 25, 23, 0.16), 0 8px 16px rgba(28, 25, 23, 0.04);
+
+  /* — Design System: Animation — */
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 300ms;
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-enter: cubic-bezier(0, 0, 0.2, 1);
+  --easing-exit: cubic-bezier(0.4, 0, 1, 1);
   --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
   --opaque-button-border-intensity: -8;
@@ -90,6 +176,30 @@
 }
 
 .dark {
+  /* — Design System: Dark Mode Overrides — */
+  --color-primary: #FB923C;
+  --color-primary-500: #FB923C;
+  --color-primary-600: #F97316;
+  --color-gray-50: #1C1917;
+  --color-gray-100: #292524;
+  --color-gray-200: #44403C;
+  --color-gray-800: #FAFAF9;
+  --color-gray-500: #A8A29E;
+  --color-success: #4ADE80;
+  --color-success-bg: #052E16;
+  --color-warning: #FACC15;
+  --color-warning-bg: #422006;
+  --color-error: #F87171;
+  --color-error-bg: #450A0A;
+  --color-info: #60A5FA;
+  --color-info-bg: #172554;
+  --color-george-bubble: #431407;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.15);
+
   --button-outline: rgba(255,255,255, .10);
   --badge-outline: rgba(255,255,255, .05);
   --opaque-button-border-intensity: 9;
@@ -172,8 +282,49 @@
     @apply border-border;
   }
 
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    font-family: var(--font-family-sans);
+    @apply antialiased bg-background text-foreground;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ============================================
+   Design System: Component Utilities
+   ============================================ */
+@layer components {
+  /* Button hover transitions (150ms ease) */
+  .btn-transition {
+    transition: all var(--duration-normal) var(--easing-default);
+  }
+
+  /* Card hover lift effect */
+  .card-hover-lift {
+    transition: box-shadow var(--duration-slow) var(--easing-default),
+                transform var(--duration-slow) var(--easing-default);
+  }
+  .card-hover-lift:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  /* Page transition fade-in */
+  .page-fade-in {
+    animation: fadeIn var(--duration-slow) var(--easing-enter);
   }
 }
 

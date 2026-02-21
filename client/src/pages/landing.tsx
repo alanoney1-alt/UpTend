@@ -12,8 +12,6 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
-import { ProsNearYou } from "@/components/landing/pros-near-you";
-import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
@@ -22,14 +20,10 @@ export default function Landing() {
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />
       <main>
-        <GeorgeBanner />
         <HeroSection />
-        <IndustryIsBroken />
-        <UpTendVerb />
-        <ProsNearYou />
-        <TwoSides />
         <ServicesStrip />
-        <HomeScanPromo />
+        <TwoSides />
+        <GeorgeBanner />
         <TrustBar />
         <FinalCTA />
       </main>
@@ -66,19 +60,26 @@ function HeroSection() {
 
       <div className="max-w-5xl mx-auto px-4 relative z-10 text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
-          {t("hero.hero_headline_1")}<br />
-          Without the headache.<br />
+          Home services,<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F47C20] to-orange-300">
-            {t("hero.hero_headline_2")}
+            finally done right.
           </span>
         </h1>
 
-        <p className="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
-          {t("hero.hero_subhead")}
+        <p className="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+          Verified pros, upfront pricing, real accountability. Book in 60 seconds.
         </p>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
-          <div onClick={toggleLanguage} className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/5 transition-all">
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
+          <Link href="/book" asChild>
+            <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-10 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
+              Get Your Free Quote <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3">
+          <div onClick={toggleLanguage} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleLanguage(); } }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/5 transition-all">
             <Globe className="w-4 h-4 text-[#F47C20]" />
             {i18n.language === "en" ? (
               <span className="text-sm text-slate-400">¿Español? <span className="font-semibold text-[#F47C20]">Cambiar →</span></span>
@@ -87,25 +88,6 @@ function HeroSection() {
             )}
           </div>
         </div>
-
-        <div className="flex flex-wrap justify-center gap-4 mb-8">
-          <Link href="/book" asChild>
-            <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
-              Get Your Free Quote <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-          <Link href="/become-pro" asChild>
-            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 font-bold text-lg px-8 py-6 rounded-xl">
-              Join as a Pro
-            </Button>
-          </Link>
-        </div>
-
-        <FloridaEstimator />
-
-        <p className="mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
-          {t("hero.hero_footnote")}
-        </p>
       </div>
     </section>
   );
@@ -206,7 +188,7 @@ function TwoSides() {
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
             Fair for customers.<br className="md:hidden" />{" "}Fair for Pros.<br />
-            <span className="text-[#F47C20]">That's the whole point.</span>
+            <span className="text-[#C05600]">That's the whole point.</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             When Pros are treated right, customers get better service. When customers pay fair prices, Pros get steady work. UpTend makes both sides win.
@@ -363,6 +345,9 @@ function ServicesStrip() {
             <div
               key={svc.key}
               onClick={() => setLocation(`/book?service=${svc.key}`)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLocation(`/book?service=${svc.key}`); } }}
               className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-slate-800 border border-border hover:border-[#F47C20]/50 cursor-pointer transition-all hover:shadow-md text-center"
             >
               <svc.icon className="w-6 h-6 text-[#F47C20]" />
@@ -374,7 +359,10 @@ function ServicesStrip() {
         <p className="text-center mt-6">
           <span
             onClick={() => setLocation("/find-pro")}
-            className="text-sm text-[#F47C20] hover:underline cursor-pointer font-medium"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLocation("/find-pro"); } }}
+            className="text-sm text-[#C05600] hover:underline cursor-pointer font-medium"
           >
             Or browse Pros →
           </span>
@@ -415,7 +403,7 @@ function FinalCTA() {
     <section className="py-20 bg-background text-center">
       <div className="max-w-3xl mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-black mb-4">
-          Ready to <span className="text-[#F47C20]">UpTend</span> your home?
+          Ready to <span className="text-[#C05600]">UpTend</span> your home?
         </h2>
         <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
           Whether you need a hand or you are one — there's a place for you here.
@@ -427,7 +415,7 @@ function FinalCTA() {
             </Button>
           </Link>
           <Link href="/become-pro" asChild>
-            <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 rounded-xl border-[#F47C20] text-[#F47C20] hover:bg-[#F47C20]/10">
+            <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 rounded-xl border-[#C05600] text-[#C05600] hover:bg-[#C05600]/10">
               Become a Pro <ChevronRight className="ml-1 w-5 h-5" />
             </Button>
           </Link>
@@ -436,3 +424,4 @@ function FinalCTA() {
     </section>
   );
 }
+
