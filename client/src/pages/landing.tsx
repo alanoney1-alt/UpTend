@@ -1,11 +1,13 @@
 import { usePageTitle } from "@/hooks/use-page-title";
 import { Footer } from "@/components/landing/footer";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useSiteMode } from "@/contexts/site-mode-context";
+import LandingClassic from "./landing-classic";
 import {
   Truck, TreePine, Droplets, Wrench, Sparkles, Home,
   Scissors, Waves, HardHat, Hammer, ScanLine,
   ArrowUp, ArrowRight, ChevronDown, Shield, Clock,
-  MapPin, Zap,
+  MapPin, Zap, LayoutGrid,
 } from "lucide-react";
 
 /* ─── Real Services ─── */
@@ -59,10 +61,23 @@ function getGeorgeResponse(userMsg: string): string {
 
 /* ─── Main ─── */
 export default function Landing() {
+  const { mode } = useSiteMode();
+  if (mode === "classic") return <LandingClassic />;
+  return <GeorgeLanding />;
+}
+
+function GeorgeLanding() {
   usePageTitle("UpTend — Your Home, Handled.");
+  const { toggle } = useSiteMode();
 
   return (
     <div className="geo-root" data-testid="page-landing">
+      {/* Mode toggle */}
+      <button onClick={toggle} className="geo-mode-toggle" aria-label="Switch to classic view">
+        <LayoutGrid className="w-3.5 h-3.5" />
+        <span>Classic View</span>
+      </button>
+
       <div className="geo-ambient" aria-hidden="true">
         <div className="geo-grad geo-grad-1" />
         <div className="geo-grad geo-grad-2" />

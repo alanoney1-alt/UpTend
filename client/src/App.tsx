@@ -7,6 +7,7 @@ import { useEffect, lazy, Suspense, useMemo } from "react";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
 import { ServiceBagProvider } from "@/contexts/service-bag-context";
+import { SiteModeProvider } from "@/contexts/site-mode-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
@@ -360,6 +361,7 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <SiteModeProvider>
           <ServiceBagProvider>
           <ThemeProvider>
             <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:rounded">Skip to main content</a>
@@ -373,6 +375,7 @@ function App() {
             <CookieConsent />
           </ThemeProvider>
           </ServiceBagProvider>
+          </SiteModeProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </ErrorBoundary>
