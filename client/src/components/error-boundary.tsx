@@ -24,6 +24,10 @@ export class ErrorBoundary extends Component<Props, State> {
     console.error("[ErrorBoundary] Component stack:", errorInfo.componentStack);
   }
 
+  handleRetry = () => {
+    this.setState({ hasError: false, error: null });
+  };
+
   handleRefresh = () => {
     window.location.reload();
   };
@@ -37,80 +41,111 @@ export class ErrorBoundary extends Component<Props, State> {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "linear-gradient(135deg, #3B1D5A 0%, #2a1443 100%)",
-            fontFamily: "system-ui, -apple-system, sans-serif",
+            background: "#FFFBF5",
+            fontFamily: "Inter, system-ui, -apple-system, sans-serif",
             padding: "24px",
           }}
         >
           <div
             style={{
               background: "white",
-              borderRadius: "16px",
-              padding: "48px",
+              borderRadius: "24px",
+              padding: "48px 40px",
               maxWidth: "480px",
               width: "100%",
               textAlign: "center",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+              boxShadow: "0 8px 24px rgba(28,25,23,0.12), 0 4px 8px rgba(28,25,23,0.04)",
+              border: "1px solid #E7E5E4",
             }}
           >
+            {/* George Avatar */}
             <div
               style={{
-                width: "64px",
-                height: "64px",
+                width: "80px",
+                height: "80px",
                 borderRadius: "50%",
-                background: "#F47C20",
+                background: "linear-gradient(135deg, #FFF7ED, #FFEDD5)",
+                border: "3px solid #F97316",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 margin: "0 auto 24px",
-                fontSize: "32px",
+                fontSize: "40px",
               }}
             >
-              ⚠️
+              🏠
             </div>
             <h1
               style={{
                 fontSize: "24px",
-                fontWeight: 800,
-                color: "#3B1D5A",
-                marginBottom: "12px",
+                fontWeight: 700,
+                color: "#292524",
+                marginBottom: "8px",
               }}
             >
-              Something went wrong
+              Oops, something went wrong
             </h1>
             <p
               style={{
                 fontSize: "16px",
-                color: "#666",
+                color: "#78716C",
                 marginBottom: "32px",
-                lineHeight: 1.5,
+                lineHeight: 1.6,
               }}
             >
-              Something went wrong. Please refresh the page.
+              Mr. George is on it! Let me fix that for you...
             </p>
-            <button
-              onClick={this.handleRefresh}
-              style={{
-                background: "#F47C20",
-                color: "white",
-                border: "none",
-                borderRadius: "12px",
-                padding: "16px 48px",
-                fontSize: "18px",
-                fontWeight: 700,
-                cursor: "pointer",
-                transition: "transform 0.1s, box-shadow 0.1s",
-                boxShadow: "0 4px 12px rgba(244,124,32,0.4)",
-              }}
-              onMouseOver={(e) => {
-                (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
-              }}
-              onMouseOut={(e) => {
-                (e.target as HTMLButtonElement).style.transform = "scale(1)";
-              }}
-            >
-              Refresh Page
-            </button>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+              <button
+                onClick={this.handleRetry}
+                style={{
+                  background: "#F97316",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "16px",
+                  padding: "14px 32px",
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                  boxShadow: "0 4px 12px rgba(249,115,22,0.3)",
+                }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.background = "#EA580C";
+                  (e.target as HTMLButtonElement).style.transform = "scale(1.02)";
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.background = "#F97316";
+                  (e.target as HTMLButtonElement).style.transform = "scale(1)";
+                }}
+              >
+                Try Again
+              </button>
+              <button
+                onClick={this.handleRefresh}
+                style={{
+                  background: "white",
+                  color: "#57534E",
+                  border: "2px solid #E7E5E4",
+                  borderRadius: "16px",
+                  padding: "14px 32px",
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.borderColor = "#F97316";
+                  (e.target as HTMLButtonElement).style.color = "#F97316";
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.borderColor = "#E7E5E4";
+                  (e.target as HTMLButtonElement).style.color = "#57534E";
+                }}
+              >
+                Refresh Page
+              </button>
+            </div>
           </div>
         </div>
       );

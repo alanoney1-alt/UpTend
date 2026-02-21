@@ -151,6 +151,15 @@ function ScrollToTop() {
   return null;
 }
 
+function PageTransition({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  return (
+    <div key={location} className="page-fade-in">
+      {children}
+    </div>
+  );
+}
+
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -164,6 +173,7 @@ function Router() {
     <>
     <ScrollToTop />
     <Suspense fallback={<PageLoader />}>
+    <PageTransition>
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/book" component={Booking} />
@@ -314,6 +324,7 @@ function Router() {
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
       <Route component={NotFound} />
     </Switch>
+    </PageTransition>
     </Suspense>
     </>
   );

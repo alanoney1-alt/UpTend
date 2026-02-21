@@ -1,15 +1,48 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
+import { Footer } from "@/components/landing/footer";
 import {
-  ArrowLeft, Truck, Star, Award, TrendingUp, Loader2,
-  Medal, ShieldCheck, Zap, Target, Lock
+  ArrowLeft, Star, Award, TrendingUp, Loader2,
+  Medal, ShieldCheck, Zap, Target, Lock, MessageCircle,
 } from "lucide-react";
-import { Logo } from "@/components/ui/logo";
+
+/* ─── Design Tokens ─── */
+const T = {
+  bg: "#FFFBF5",
+  primary: "#F59E0B",
+  primaryDark: "#D97706",
+  text: "#1E293B",
+  textMuted: "#64748B",
+  card: "#FFFFFF",
+};
+
+function openGeorge(message?: string) {
+  window.dispatchEvent(new CustomEvent("george:open", { detail: message ? { message } : undefined }));
+}
+
+function GeorgeAvatar({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const s = size === "sm" ? "w-10 h-10 text-lg" : size === "lg" ? "w-20 h-20 text-3xl" : "w-14 h-14 text-2xl";
+  return (
+    <div
+      className={`${s} rounded-full flex items-center justify-center text-white font-bold shadow-lg`}
+      style={{ background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})` }}
+    >
+      G
+    </div>
+  );
+}
+
+function GeorgeSays({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`rounded-2xl px-5 py-4 text-base leading-relaxed shadow-sm ${className}`} style={{ background: T.card, color: T.text }}>
+      {children}
+    </div>
+  );
+}
 
 interface CareerStats {
   level: number;
@@ -35,13 +68,14 @@ interface Certification {
 }
 
 const levelConfig = [
-  { level: 1, title: "Rookie", icon: Star, color: "text-primary", requiredJobs: 0, requiredStars: 0, payout: "75%" },
+  { level: 1, title: "Rookie", icon: Star, color: "text-amber-500", requiredJobs: 0, requiredStars: 0, payout: "75%" },
   { level: 2, title: "Verified Pro", icon: ShieldCheck, color: "text-green-500", requiredJobs: 10, requiredStars: 0, payout: "80%" },
-  { level: 3, title: "Master Consultant", icon: Award, color: "text-amber-500", requiredJobs: 50, requiredStars: 40, payout: "85% + Commissions" },
+  { level: 3, title: "Master Consultant", icon: Award, color: "text-amber-600", requiredJobs: 50, requiredStars: 40, payout: "85% + Commissions" },
 ];
 
 export default function CareerDashboard() {
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
+  const firstName = user?.firstName || "Pro";
 
   const { data: careerData, isLoading: careerLoading } = useQuery<CareerStats>({
     queryKey: ["/api/hauler/career"],
@@ -57,23 +91,22 @@ export default function CareerDashboard() {
 
   if (authLoading || isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: T.bg }}>
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: T.primary }} />
       </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="p-6 max-w-md text-center">
-          <ShieldCheck className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h2 className="text-xl font-bold mb-2">Sign In Required</h2>
-          <p className="text-muted-foreground mb-4">Please sign in to view your career dashboard.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center p-4" style={{ background: T.bg }}>
+        <GeorgeAvatar size="lg" />
+        <GeorgeSays className="mt-6 max-w-md text-center">
+          <p className="font-medium mb-3">Hey! Sign in so I can show you your career stats.</p>
           <Link href="/login">
-            <Button data-testid="button-go-to-login">Sign In</Button>
+            <Button style={{ background: T.primary }} className="text-white font-bold" data-testid="button-go-to-login">Sign In</Button>
           </Link>
-        </Card>
+        </GeorgeSays>
       </div>
     );
   }
@@ -81,96 +114,122 @@ export default function CareerDashboard() {
   const currentLevel = careerData?.level || 1;
   const currentLevelConfig = levelConfig.find((l) => l.level === currentLevel) || levelConfig[0];
   const CurrentIcon = currentLevelConfig.icon;
+  const jobs = careerData?.jobsCompleted || 0;
+  const stars = careerData?.fiveStarRatingCount || 0;
+  const xp = careerData?.xpPoints || 0;
+  const rating = careerData?.rating || "N/A";
 
   return (
-    <div className="min-h-screen bg-background" data-testid="page-career-dashboard">
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-2 flex-wrap">
+    <div className="min-h-screen" style={{ background: T.bg }} data-testid="page-career-dashboard">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-amber-100 backdrop-blur-md" style={{ background: `${T.bg}ee` }}>
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Logo className="w-10 h-10" textClassName="text-xl" />
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})` }}>G</div>
+            <span className="font-bold text-lg" style={{ color: T.text }}>UpTend</span>
           </Link>
           <Link href="/profile">
             <Button variant="ghost" size="sm" data-testid="button-back-profile">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              <ArrowLeft className="w-4 h-4 mr-2" /> Profile
             </Button>
           </Link>
         </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        <Card className="p-6 text-center" data-testid="card-level-hero">
-          <CurrentIcon className={`w-16 h-16 mx-auto ${currentLevelConfig.color}`} />
-          <h1 className="text-2xl font-bold mt-3" data-testid="text-level-title">
-            {currentLevelConfig.title}
+        {/* George's Greeting */}
+        <div className="flex flex-col items-center text-center">
+          <GeorgeAvatar size="lg" />
+          <h1 className="mt-4 text-2xl font-bold" style={{ color: T.text }}>
+            Hey {firstName}, here's your day
           </h1>
-          <Badge variant="secondary" className="mt-2">
-            Level {currentLevel}
-          </Badge>
-          <p className="text-muted-foreground text-sm mt-2">
-            Payout Rate: {currentLevelConfig.payout}
+          <p className="mt-1 text-sm" style={{ color: T.textMuted }}>
+            Your Home Health Expert has your career briefing ready
           </p>
-        </Card>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <Card className="p-4 text-center" data-testid="card-stat-xp">
-            <Zap className="w-5 h-5 mx-auto text-amber-500 mb-1" />
-            <p className="text-2xl font-bold">{careerData?.xpPoints || 0}</p>
-            <p className="text-xs text-muted-foreground">XP Points</p>
-          </Card>
-          <Card className="p-4 text-center" data-testid="card-stat-jobs">
-            <Target className="w-5 h-5 mx-auto text-primary mb-1" />
-            <p className="text-2xl font-bold">{careerData?.jobsCompleted || 0}</p>
-            <p className="text-xs text-muted-foreground">Completed</p>
-          </Card>
-          <Card className="p-4 text-center" data-testid="card-stat-stars">
-            <Star className="w-5 h-5 mx-auto text-yellow-500 mb-1" />
-            <p className="text-2xl font-bold">{careerData?.fiveStarRatingCount || 0}</p>
-            <p className="text-xs text-muted-foreground">5-Star Reviews</p>
-          </Card>
-          <Card className="p-4 text-center" data-testid="card-stat-rating">
-            <Medal className="w-5 h-5 mx-auto text-green-500 mb-1" />
-            <p className="text-2xl font-bold">{careerData?.rating || "N/A"}</p>
-            <p className="text-xs text-muted-foreground">Rating</p>
-          </Card>
         </div>
 
+        {/* George's Briefing Bubble */}
+        <div className="flex items-start gap-3">
+          <GeorgeAvatar size="sm" />
+          <GeorgeSays className="flex-1">
+            <p>
+              You're a <strong>{currentLevelConfig.title}</strong> with <strong>{jobs}</strong> jobs completed
+              and <strong>{stars}</strong> five-star reviews.
+              {rating !== "N/A" && <> Your rating is <strong>{rating}</strong>.</>}
+              {currentLevel < 3 && careerData?.nextLevel && (
+                <> You're <strong>{careerData.progress || 0}%</strong> of the way to <strong>{levelConfig[currentLevel]?.title}</strong>!</>
+              )}
+              {currentLevel >= 3 && <> You've reached the top tier — incredible work! 🏆</>}
+            </p>
+          </GeorgeSays>
+        </div>
+
+        {/* Level Hero */}
+        <div className="rounded-2xl p-6 text-center border border-amber-100 shadow-sm" style={{ background: T.card }} data-testid="card-level-hero">
+          <CurrentIcon className={`w-16 h-16 mx-auto ${currentLevelConfig.color}`} />
+          <h2 className="text-2xl font-bold mt-3" style={{ color: T.text }} data-testid="text-level-title">
+            {currentLevelConfig.title}
+          </h2>
+          <Badge className="mt-2 bg-amber-100 text-amber-700 border-0">Level {currentLevel}</Badge>
+          <p className="text-sm mt-2" style={{ color: T.textMuted }}>Payout Rate: {currentLevelConfig.payout}</p>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { icon: Zap, value: xp, label: "XP Points", color: "text-amber-500", bg: "bg-amber-50" },
+            { icon: Target, value: jobs, label: "Completed", color: "text-blue-500", bg: "bg-blue-50" },
+            { icon: Star, value: stars, label: "5-Star Reviews", color: "text-yellow-500", bg: "bg-yellow-50" },
+            { icon: Medal, value: rating, label: "Rating", color: "text-green-500", bg: "bg-green-50" },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-2xl p-4 text-center border border-amber-100 shadow-sm"
+              style={{ background: T.card }}
+              data-testid={`card-stat-${stat.label.toLowerCase().replace(/\s/g, "-")}`}
+            >
+              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mx-auto mb-2`}>
+                <stat.icon className={`w-5 h-5 ${stat.color}`} />
+              </div>
+              <p className="text-2xl font-bold" style={{ color: T.text }}>{stat.value}</p>
+              <p className="text-xs" style={{ color: T.textMuted }}>{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Next Level Progress */}
         {currentLevel < 3 && (
-          <Card className="p-5" data-testid="card-next-level">
+          <div className="rounded-2xl p-5 border border-amber-100 shadow-sm" style={{ background: T.card }} data-testid="card-next-level">
             <div className="flex justify-between mb-2 gap-2 flex-wrap">
               <div>
-                <h3 className="font-bold">Next: {levelConfig[currentLevel].title}</h3>
-                <p className="text-xs text-muted-foreground">Level {currentLevel + 1}</p>
+                <h3 className="font-bold" style={{ color: T.text }}>Next: {levelConfig[currentLevel].title}</h3>
+                <p className="text-xs" style={{ color: T.textMuted }}>Level {currentLevel + 1}</p>
               </div>
-              <Badge variant="outline">
+              <Badge className="bg-amber-50 text-amber-700 border-0">
                 <TrendingUp className="w-3 h-3 mr-1" />
                 {careerData?.progress || 0}%
               </Badge>
             </div>
             <Progress value={careerData?.progress || 0} className="h-2 mb-3" />
-
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-muted-foreground" />
-                <span>
-                  {careerData?.jobsCompleted || 0} / {levelConfig[currentLevel].requiredJobs} Jobs
-                </span>
+              <div className="flex items-center gap-2" style={{ color: T.text }}>
+                <Target className="w-4 h-4" style={{ color: T.textMuted }} />
+                <span>{jobs} / {levelConfig[currentLevel].requiredJobs} Jobs</span>
               </div>
               {levelConfig[currentLevel].requiredStars > 0 && (
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-muted-foreground" />
-                  <span>
-                    {careerData?.fiveStarRatingCount || 0} / {levelConfig[currentLevel].requiredStars} Stars
-                  </span>
+                <div className="flex items-center gap-2" style={{ color: T.text }}>
+                  <Star className="w-4 h-4" style={{ color: T.textMuted }} />
+                  <span>{stars} / {levelConfig[currentLevel].requiredStars} Stars</span>
                 </div>
               )}
             </div>
-          </Card>
+          </div>
         )}
 
-        <Card className="p-5" data-testid="card-career-ladder">
-          <h3 className="font-bold mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-primary" />
+        {/* Career Ladder */}
+        <div className="rounded-2xl p-5 border border-amber-100 shadow-sm" style={{ background: T.card }} data-testid="card-career-ladder">
+          <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: T.text }}>
+            <TrendingUp className="w-5 h-5" style={{ color: T.primary }} />
             Career Ladder
           </h3>
           <div className="space-y-4">
@@ -180,68 +239,82 @@ export default function CareerDashboard() {
               return (
                 <div key={level.level} className="flex gap-3 items-center" data-testid={`level-row-${level.level}`}>
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      unlocked
-                        ? "bg-primary/10 text-primary"
-                        : "bg-muted text-muted-foreground"
-                    }`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${unlocked ? "bg-amber-50" : "bg-gray-100"}`}
                   >
                     {unlocked ? (
-                      <LevelIcon className="w-5 h-5" />
+                      <LevelIcon className={`w-5 h-5 ${level.color}`} />
                     ) : (
-                      <Lock className="w-4 h-4" />
+                      <Lock className="w-4 h-4 text-gray-400" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className={`font-bold text-sm ${unlocked ? "" : "text-muted-foreground"}`}>
+                    <p className={`font-bold text-sm ${unlocked ? "" : "opacity-50"}`} style={{ color: T.text }}>
                       {level.title}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      {level.level === 1
-                        ? "Starting level"
-                        : `${level.requiredJobs} jobs${level.requiredStars > 0 ? ` + ${level.requiredStars} five-star reviews` : ""}`}
+                    <p className="text-xs" style={{ color: T.textMuted }}>
+                      {level.level === 1 ? "Starting level" : `${level.requiredJobs} jobs${level.requiredStars > 0 ? ` + ${level.requiredStars} five-star reviews` : ""}`}
                     </p>
                   </div>
-                  <Badge variant={unlocked ? "default" : "outline"} className="shrink-0">
+                  <Badge className={unlocked ? "bg-amber-100 text-amber-700 border-0" : "bg-gray-100 text-gray-500 border-0"}>
                     {level.payout}
                   </Badge>
                 </div>
               );
             })}
           </div>
-        </Card>
+        </div>
 
+        {/* Certifications */}
         {certifications.length > 0 && (
-          <Card className="p-5" data-testid="card-certifications">
-            <h3 className="font-bold mb-3 flex items-center gap-2">
-              <Award className="w-5 h-5 text-primary" />
+          <div className="rounded-2xl p-5 border border-amber-100 shadow-sm" style={{ background: T.card }} data-testid="card-certifications">
+            <h3 className="font-bold mb-3 flex items-center gap-2" style={{ color: T.text }}>
+              <Award className="w-5 h-5" style={{ color: T.primary }} />
               Certifications
             </h3>
             <div className="flex gap-2 flex-wrap">
               {certifications.map((cert) => (
-                <Badge key={cert.id} variant="secondary" data-testid={`badge-cert-${cert.id}`}>
+                <Badge key={cert.id} className="bg-amber-50 text-amber-700 border-0" data-testid={`badge-cert-${cert.id}`}>
                   <ShieldCheck className="w-3 h-3 mr-1" />
                   {cert.certType.replace(/_/g, " ")}
                 </Badge>
               ))}
             </div>
-          </Card>
+          </div>
         )}
 
+        {/* Consultation Unlock */}
         {careerData?.isConsultantEligible && (
-          <Card className="p-5 border-primary/30 bg-primary/5" data-testid="card-consultation-unlock">
+          <div
+            className="rounded-2xl p-5 border-2 shadow-sm"
+            style={{ background: "linear-gradient(135deg, #FFFDF7, #FFF8E7)", borderColor: `${T.primary}40` }}
+            data-testid="card-consultation-unlock"
+          >
             <div className="flex items-center gap-3">
-              <Award className="w-8 h-8 text-primary" />
+              <Award className="w-8 h-8" style={{ color: T.primary }} />
               <div>
-                <h3 className="font-bold">Consultation Mode Unlocked</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-bold" style={{ color: T.text }}>Consultation Mode Unlocked 🎉</h3>
+                <p className="text-sm" style={{ color: T.textMuted }}>
                   You can perform $99 Home Assessments and earn {careerData.commissionRate}% commission.
                 </p>
               </div>
             </div>
-          </Card>
+          </div>
         )}
+
+        {/* Ask George CTA */}
+        <div className="text-center pt-2">
+          <button
+            onClick={() => openGeorge("How can I level up faster?")}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white font-bold shadow-lg hover:shadow-xl transition-shadow"
+            style={{ background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})` }}
+          >
+            <MessageCircle className="w-5 h-5" />
+            Ask George for tips
+          </button>
+        </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
