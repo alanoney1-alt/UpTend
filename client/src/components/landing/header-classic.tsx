@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,6 +29,7 @@ export function Header() {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
+    <>
     <nav
       className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 text-white"
       data-testid="header"
@@ -263,5 +264,19 @@ export function Header() {
         </div>
       )}
     </nav>
+    {/* George AI toggle banner — visible on every page in classic mode */}
+    <div
+      className="sticky top-[80px] z-40 bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-4 text-center cursor-pointer hover:from-amber-500 hover:to-orange-500 transition-colors shadow-lg"
+      onClick={() => {
+        localStorage.setItem("uptend-site-mode", "george");
+        window.location.reload();
+      }}
+    >
+      <span className="text-sm md:text-base font-semibold">
+        Try <strong>George AI</strong> — your intelligent home assistant.{" "}
+        <span className="underline font-bold">Switch to AI Mode</span> &rarr;
+      </span>
+    </div>
+    </>
   );
 }
