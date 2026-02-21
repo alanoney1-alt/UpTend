@@ -8,7 +8,7 @@ import {
   DollarSign, Clock, Ban, TrendingUp, Users, Star,
   CheckCircle, ChevronRight, Wrench, Waves, Truck,
   Package, Home, Trees, ArrowUpFromLine, Sparkles,
-  MessageCircle,
+  MessageCircle, CloudRain, Warehouse, Hammer, Droplets, ScanLine,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
@@ -205,15 +205,16 @@ function ServicesStrip() {
   const services = [
     { key: "handyman", label: "Handyman", price: "$75/hr", icon: Wrench },
     { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck },
-    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: ArrowUpFromLine },
+    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Droplets },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: CloudRain },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles },
     { key: "landscaping", label: "Landscaping", price: "From $49", icon: Trees },
     { key: "pool_cleaning", label: "Pool Cleaning", price: "$120/mo", icon: Waves },
     { key: "moving_labor", label: "Moving Labor", price: "$65/hr", icon: Package },
     { key: "carpet_cleaning", label: "Carpet Cleaning", price: "$50/room", icon: Home },
-    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $150", icon: Home },
-    { key: "light_demolition", label: "Light Demo", price: "From $199", icon: Truck },
+    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $150", icon: Warehouse },
+    { key: "light_demolition", label: "Light Demo", price: "From $199", icon: Hammer },
+    { key: "home_scan", label: "AI Home Scan", price: "From $99", icon: ScanLine },
   ];
 
   return (

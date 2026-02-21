@@ -3,11 +3,11 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect, lazy, Suspense, useMemo } from "react";
+import { useEffect, lazy, Suspense, useMemo, memo } from "react";
 import { trackInstall } from "@/lib/analytics";
 import { InstallBanner } from "@/components/pwa/install-banner";
 import { ServiceBagProvider } from "@/contexts/service-bag-context";
-import { SiteModeProvider } from "@/contexts/site-mode-context";
+import { SiteModeProvider, useSiteMode } from "@/contexts/site-mode-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
@@ -147,9 +147,9 @@ const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-l
 /** Hide floating George widget on pages that have their own George UI (AI mode landing) */
 function GuideGate() {
   const [location] = useLocation();
+  const { mode } = useSiteMode();
   // In classic mode, show widget everywhere including landing
-  const siteMode = localStorage.getItem("uptend-site-mode");
-  const isGeorgeLanding = location === "/" && siteMode !== "classic";
+  const isGeorgeLanding = location === "/" && mode !== "classic";
   const hidden = isGeorgeLanding || location === "/meet-george";
   if (hidden) return null;
   return <UpTendGuide />;

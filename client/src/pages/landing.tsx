@@ -2,7 +2,7 @@ import { usePageTitle } from "@/hooks/use-page-title";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSiteMode } from "@/contexts/site-mode-context";
 import LandingClassic from "./landing-classic";
-import { ArrowUp, LayoutGrid } from "lucide-react";
+import { ArrowUp, LayoutGrid, Camera } from "lucide-react";
 
 const STARTERS = [
   "What can you help me with?",
@@ -10,12 +10,30 @@ const STARTERS = [
   "I need my gutters cleaned before rainy season",
   "Help me get rid of old furniture",
   "What should I be doing to maintain my home?",
+  "How much does pressure washing cost?",
+  "I need a handyman for a few hours",
+  "Can you help me with moving labor?",
+  "I need light demolition for a bathroom remodel",
+  "How do I book a home cleaning?",
+  "What are your pool cleaning plans?",
+  "My lawn needs serious help — landscaping options?",
+  "I need my carpets deep cleaned — pets and all",
+  "My garage is a disaster, help me clean it out",
+  "Tell me about the AI Home Scan",
 ];
+
+interface GeorgeResponse {
+  text: string;
+  buttons?: Array<{ label: string; action: string; style?: string }>;
+  bookingDraft?: any;
+}
 
 interface ChatMessage {
   role: "george" | "user";
   text: string;
   id: number;
+  buttons?: Array<{ label: string; action: string; style?: string }>;
+  bookingDraft?: any;
 }
 
 let msgId = 0;
@@ -31,7 +49,7 @@ const GEORGE_INTRO = [
 async function fetchGeorgeResponse(
   userMsg: string,
   history: ChatMessage[],
-): Promise<string> {
+): Promise<GeorgeResponse> {
   try {
     const conversationHistory = history
       .filter((m) => !m.text.startsWith("Hey — I'm George")) // skip intro from API context
@@ -51,9 +69,13 @@ async function fetchGeorgeResponse(
     });
     if (!res.ok) throw new Error("API error");
     const data = await res.json();
-    return data.response || "Tell me more about what's going on and I'll point you in the right direction.";
+    return {
+      text: data.response || "Tell me more about what's going on and I'll point you in the right direction.",
+      buttons: data.buttons,
+      bookingDraft: data.bookingDraft,
+    };
   } catch {
-    return "Tell me more about what's going on and I'll point you in the right direction.";
+    return { text: "Tell me more about what's going on and I'll point you in the right direction." };
   }
 }
 
@@ -75,6 +97,14 @@ function GeorgeLanding() {
         <span>Classic Site</span>
       </button>
 
+      <nav className="geo-nav">
+        <a href="/book" className="geo-nav-link">Book</a>
+        <a href="/services" className="geo-nav-link">Services</a>
+        <a href="/pricing" className="geo-nav-link">Pricing</a>
+        <a href="/ai/home-scan" className="geo-nav-link">Home Scan</a>
+        <a href="/dashboard" className="geo-nav-link">Dashboard</a>
+      </nav>
+
       <div className="geo-ambient" aria-hidden="true">
         <div className="geo-grad geo-grad-1" />
         <div className="geo-grad geo-grad-2" />
@@ -95,8 +125,10 @@ function Conversation() {
   const [introStep, setIntroStep] = useState(0);
   const [showStarters, setShowStarters] = useState(false);
   const [starterIdx, setStarterIdx] = useState(0);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   // George introduces himself message by message
   useEffect(() => {
@@ -126,20 +158,47 @@ function Conversation() {
   const send = useCallback((text?: string) => {
     const msg = text || input.trim();
     if (!msg || isTyping) return;
+    const photoAttached = photoPreview;
     setInput("");
+    setPhotoPreview(null);
     setShowStarters(false);
-    const userMsg: ChatMessage = { role: "user", text: msg, id: msgId++ };
+    const displayText = photoAttached ? `${msg}\n[Photo attached]` : msg;
+    const userMsg: ChatMessage = { role: "user", text: displayText, id: msgId++ };
     setMessages((p) => {
       const updated = [...p, userMsg];
       setIsTyping(true);
       fetchGeorgeResponse(msg, updated).then((response) => {
         setIsTyping(false);
-        setMessages((prev) => [...prev, { role: "george", text: response, id: msgId++ }]);
+        setMessages((prev) => [...prev, {
+          role: "george",
+          text: response.text,
+          id: msgId++,
+          buttons: response.buttons,
+          bookingDraft: response.bookingDraft,
+        }]);
       });
       return updated;
     });
     inputRef.current?.focus();
-  }, [input, isTyping]);
+  }, [input, isTyping, photoPreview]);
+
+  const handleAction = useCallback((btn: { label: string; action: string }) => {
+    if (btn.action.startsWith("navigate:")) {
+      window.location.href = btn.action.replace("navigate:", "");
+    } else if (btn.action.startsWith("message:")) {
+      send(btn.action.replace("message:", ""));
+    } else {
+      send(btn.label);
+    }
+  }, [send]);
+
+  const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setPhotoPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
 
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
@@ -164,6 +223,33 @@ function Conversation() {
         {messages.map((m) => (
           <div key={m.id} className={`geo-msg geo-msg-in ${m.role === "george" ? "geo-msg-ai" : "geo-msg-you"}`}>
             <div className={m.role === "george" ? "geo-txt-ai" : "geo-txt-you"}>{m.text}</div>
+            {m.buttons && m.buttons.length > 0 && (
+              <div className="geo-actions">
+                {m.buttons.map((btn, i) => (
+                  <button key={i} onClick={() => handleAction(btn)} className="geo-action-btn">
+                    {btn.label}
+                  </button>
+                ))}
+              </div>
+            )}
+            {m.bookingDraft && (
+              <div className="geo-booking-card">
+                <div className="geo-booking-title">{m.bookingDraft.serviceName}</div>
+                <div className="geo-booking-price">
+                  ${m.bookingDraft.quote?.totalPrice || m.bookingDraft.quote?.estimatedTotal}
+                </div>
+                {m.bookingDraft.address && (
+                  <div className="geo-booking-detail">{m.bookingDraft.address}</div>
+                )}
+                <a
+                  href={`/book?service=${m.bookingDraft.serviceId}&draft=${m.bookingDraft.draftId}`}
+                  className="geo-action-btn"
+                  style={{ marginTop: '8px', display: 'inline-block' }}
+                >
+                  Confirm & Book &rarr;
+                </a>
+              </div>
+            )}
           </div>
         ))}
         {isTyping && (
@@ -198,7 +284,24 @@ function Conversation() {
 
       {/* Input — always at bottom */}
       <div className="geo-input-dock">
+        {photoPreview && (
+          <div className="geo-photo-preview">
+            <img src={photoPreview} alt="Attached" className="geo-photo-thumb" />
+            <button onClick={() => setPhotoPreview(null)} className="geo-photo-remove" aria-label="Remove photo">&times;</button>
+          </div>
+        )}
         <div className="geo-field">
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhoto}
+            className="hidden"
+            aria-hidden="true"
+          />
+          <button onClick={() => fileRef.current?.click()} className="geo-photo-btn" aria-label="Attach photo">
+            <Camera className="w-4 h-4" />
+          </button>
           <input
             ref={inputRef}
             value={input}
@@ -207,7 +310,7 @@ function Conversation() {
             placeholder={STARTERS[starterIdx]}
             className="geo-in"
           />
-          <button onClick={() => send()} disabled={!input.trim() || isTyping} className="geo-send" aria-label="Send">
+          <button onClick={() => send()} disabled={(!input.trim() && !photoPreview) || isTyping} className="geo-send" aria-label="Send">
             <ArrowUp className="w-4 h-4" />
           </button>
         </div>

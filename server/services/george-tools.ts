@@ -70,7 +70,7 @@ import {
   homeServiceHistory,
   referrals,
 } from "../../shared/schema";
-import { eq, desc, and, inArray } from "drizzle-orm";
+import { eq, desc, and, inArray, sql } from "drizzle-orm";
 
 // ─────────────────────────────────────────────
 // Helper: resolve hauler profile by userId or profile id
@@ -601,7 +601,7 @@ export function getBundleOptions(serviceIds: string[]): object {
 // ─────────────────────────────────────────────
 // d) checkAvailability
 // ─────────────────────────────────────────────
-export function checkAvailability(serviceId: string, zip: string, date: string): object {
+export async function checkAvailability(serviceId: string, zip: string, date: string): Promise<object> {
   // Orlando-area zip prefixes
   const orlandoZips = ["327", "328", "347"];
   const zipPrefix = zip.substring(0, 3);
@@ -617,38 +617,153 @@ export function checkAvailability(serviceId: string, zip: string, date: string):
     };
   }
 
-  return {
-    available: true,
-    serviceId,
-    zip,
-    date,
-    message: "Service is available in your area! We can typically schedule within 24-48 hours.",
-    nextAvailableSlots: [
-      { date, timeSlot: "Morning (8am-12pm)" },
-      { date, timeSlot: "Afternoon (12pm-5pm)" },
-    ],
-  };
+  // Query real pro availability from database
+  try {
+    const availablePros = await db.select({
+      id: haulerProfiles.id,
+      companyName: haulerProfiles.companyName,
+      rating: haulerProfiles.rating,
+      isAvailable: haulerProfiles.isAvailable,
+    })
+    .from(haulerProfiles)
+    .where(
+      and(
+        eq(haulerProfiles.isAvailable, true),
+        sql`${haulerProfiles.serviceTypes} @> ARRAY[${serviceId}]::text[]`
+      )
+    )
+    .limit(5);
+
+    const proCount = availablePros.length;
+
+    if (proCount === 0) {
+      return {
+        available: true,
+        serviceId,
+        zip,
+        date,
+        proCount: 0,
+        message: "Service is available in your area. We're matching you with the best pro — typically within 24-48 hours.",
+        nextAvailableSlots: [
+          { date, timeSlot: "Morning (8am-12pm)" },
+          { date, timeSlot: "Afternoon (12pm-5pm)" },
+        ],
+      };
+    }
+
+    const avgRating = (availablePros.reduce((sum, p) => sum + (p.rating || 5), 0) / proCount).toFixed(1);
+
+    return {
+      available: true,
+      serviceId,
+      zip,
+      date,
+      proCount,
+      avgRating,
+      message: `${proCount} verified pro${proCount > 1 ? 's' : ''} available near you (avg ${avgRating}★). We can schedule as early as today.`,
+      nextAvailableSlots: [
+        { date, timeSlot: "Morning (8am-12pm)" },
+        { date, timeSlot: "Afternoon (12pm-5pm)" },
+        { date, timeSlot: "Evening (5pm-8pm)" },
+      ],
+    };
+  } catch (err) {
+    // Fallback if DB query fails
+    return {
+      available: true,
+      serviceId,
+      zip,
+      date,
+      message: "Service is available in your area! We can typically schedule within 24-48 hours.",
+      nextAvailableSlots: [
+        { date, timeSlot: "Morning (8am-12pm)" },
+        { date, timeSlot: "Afternoon (12pm-5pm)" },
+      ],
+    };
+  }
 }
 
 // ─────────────────────────────────────────────
-// e) createBookingDraft
+// e) createBookingDraft — persists to DB
 // ─────────────────────────────────────────────
-export function createBookingDraft(params: any): object {
+export async function createBookingDraft(params: any): Promise<object> {
   const quote = calculateQuote(params.serviceId, params.selections || {});
   const quoteAny = quote as any;
 
+  const serviceName = quoteAny.serviceName || getServiceLabel(params.serviceId);
+  const estimatedPrice = quoteAny.totalPrice ?? null;
+  const customerId = params.customerId;
+
+  // If we have a logged-in customer, persist the draft to the database
+  if (customerId) {
+    try {
+      // Parse address into components (address may be "123 Main St, Orlando, FL 32801" or just a street)
+      let pickupAddress = params.address || "TBD";
+      let pickupCity = "Orlando";
+      let pickupZip = "32801";
+
+      if (params.address) {
+        const addressParts = params.address.split(",").map((s: string) => s.trim());
+        if (addressParts.length >= 1) pickupAddress = addressParts[0];
+        if (addressParts.length >= 2) pickupCity = addressParts[1];
+        if (addressParts.length >= 3) {
+          // Extract zip from "FL 32801" or just "32801"
+          const zipMatch = addressParts[addressParts.length - 1].match(/\d{5}/);
+          if (zipMatch) pickupZip = zipMatch[0];
+        }
+      }
+
+      const [draft] = await db.insert(serviceRequests).values({
+        customerId,
+        serviceType: params.serviceId,
+        status: "draft",
+        pickupAddress,
+        pickupCity,
+        pickupZip,
+        loadEstimate: quoteAny.loadSize || "standard",
+        scheduledFor: params.date || "TBD",
+        priceEstimate: estimatedPrice,
+        description: `${serviceName} — ${JSON.stringify(params.selections || {})}`,
+        bookingSource: "george_ai",
+        createdAt: new Date().toISOString(),
+      }).returning();
+
+      return {
+        draftId: draft.id,
+        serviceId: params.serviceId,
+        serviceName,
+        selections: params.selections,
+        quote: quoteAny,
+        address: params.address || null,
+        preferredDate: params.date || null,
+        preferredTime: params.timeSlot || null,
+        status: "draft",
+        persisted: true,
+        message: "Here's your booking summary. Ready to confirm?",
+        nextStep: "confirm_booking",
+      };
+    } catch (err) {
+      console.error("[createBookingDraft] DB insert failed, falling back to in-memory draft:", err);
+      // Fall through to in-memory fallback below
+    }
+  }
+
+  // Fallback for unauthenticated users or DB errors — in-memory draft
   return {
     draftId: `draft_${Date.now()}`,
     serviceId: params.serviceId,
-    serviceName: quoteAny.serviceName || getServiceLabel(params.serviceId),
+    serviceName,
     selections: params.selections,
     quote: quoteAny,
     address: params.address || null,
     preferredDate: params.date || null,
     preferredTime: params.timeSlot || null,
     status: "draft",
-    message: "Here's your booking summary. Ready to confirm?",
-    nextStep: "confirm_booking",
+    persisted: false,
+    message: customerId
+      ? "Here's your booking summary. Ready to confirm?"
+      : "Here's your booking summary. Log in or create an account to confirm and pay.",
+    nextStep: customerId ? "confirm_booking" : "login_required",
   };
 }
 
@@ -5351,56 +5466,122 @@ export async function tool_start_pro_application(params: {
 // NEW SMART FEATURES Implementation
 // ─────────────────────────────────────────────
 
-export async function diagnoseFromPhoto(params: { 
-  image_description?: string; 
-  customer_description: string; 
-  home_area?: string 
+export async function diagnoseFromPhoto(params: {
+  photo_url?: string;
+  customer_description: string;
+  home_area?: string;
 }): Promise<object> {
+  // If no photo URL provided, fall back gracefully and ask for a photo
+  if (!params.photo_url) {
+    return {
+      diagnosis: "I'd love to diagnose this for you! Send me a photo of the issue and I'll use AI vision to identify exactly what's going on, give you a cost estimate, and recommend the best fix.",
+      confidence: "none",
+      needsPhoto: true,
+      message: "Send me a photo and I'll tell you exactly what's wrong + what it'll cost to fix. Just snap a pic of the problem area!",
+    };
+  }
+
   try {
-    // Use symptom matching from DIY brain + pricing engine
-    const { findRepairBySymptoms, getDifficultyAssessment } = await import("./diy-brain");
-    const searchQuery = params.customer_description + " " + (params.image_description || "") + " " + (params.home_area || "");
-    const matches = findRepairBySymptoms(searchQuery);
-    const topMatch = matches[0];
-    
-    if (!topMatch) {
-      return {
-        diagnosis: "I can see the issue but want to make sure I get this right. Can you describe what's happening?",
-        confidence: "low",
-        recommendation: "Let me connect you with a pro who can diagnose this in person.",
-      };
+    // Build context block from customer description and home area
+    const contextParts: string[] = [];
+    if (params.customer_description) contextParts.push(`Customer says: "${params.customer_description}"`);
+    if (params.home_area) contextParts.push(`Area of home: ${params.home_area}`);
+    const contextBlock = contextParts.length > 0 ? `\n\nAdditional context:\n${contextParts.join("\n")}` : "";
+
+    // Call GPT-5.2 vision for real image analysis
+    const visionResult = await analyzeImages({
+      imageUrls: [params.photo_url],
+      prompt: `You are diagnosing a home problem from a customer's photo. Analyze the image carefully and identify the issue.${contextBlock}
+
+Return JSON:
+{
+  "diagnosis": "Clear, specific description of what you see wrong (e.g., 'corroded P-trap under kitchen sink with active drip leak' not 'plumbing issue')",
+  "severity": "low" | "medium" | "high" | "urgent",
+  "issueCategory": "plumbing" | "electrical" | "structural" | "roofing" | "hvac" | "appliance" | "exterior" | "landscaping" | "flooring" | "painting" | "pest" | "cleaning" | "other",
+  "recommendedService": one of ["Junk Removal", "Pressure Washing", "Gutter Cleaning", "Handyman", "Moving Labor", "Light Demolition", "Home Cleaning", "Pool Cleaning", "Landscaping", "Carpet Cleaning", "Garage Cleanout", "AI Home Scan"] or null if none fit,
+  "estimatedCostMin": number (dollars, conservative low end for Orlando FL market),
+  "estimatedCostMax": number (dollars, realistic high end),
+  "estimatedTime": "time estimate as string (e.g., '1-2 hours')",
+  "proRecommended": true | false (true if safety risk, complexity, or licensing required),
+  "safetyLevel": "safe" | "caution" | "dangerous" (for DIY attempt),
+  "diyPossible": true | false,
+  "diySteps": ["step 1", "step 2", "step 3"] (first 3 DIY steps if applicable, empty array if pro-only),
+  "toolsNeeded": ["tool1", "tool2"] (for DIY),
+  "partsNeeded": ["part1", "part2"] (for DIY),
+  "urgencyNote": "string explaining timeline — e.g., 'Fix within 48 hours to prevent water damage' or 'Cosmetic — no rush'",
+  "confidenceScore": 0.0-1.0,
+  "additionalNotes": "any other observations about the issue"
+}
+
+Be specific and honest. If you can't clearly identify the issue from the photo, say so and suggest what angles or details would help. Base cost estimates on Central Florida / Orlando metro market rates.`,
+      systemPrompt: "You are an expert home inspector and contractor with 25+ years of experience in the Orlando, FL metro area. You diagnose home problems from photos with high accuracy. Be specific — say 'corroded copper elbow joint' not 'pipe problem'. Always consider safety implications. Base all cost estimates on real Central Florida market rates.",
+      jsonMode: true,
+      maxTokens: 2048,
+    });
+
+    // Map the recommended service to a booking slug
+    const serviceSlugMap: Record<string, string> = {
+      "Junk Removal": "junk_removal",
+      "Pressure Washing": "pressure_washing",
+      "Gutter Cleaning": "gutter_cleaning",
+      "Handyman": "handyman",
+      "Moving Labor": "moving_labor",
+      "Light Demolition": "light_demolition",
+      "Home Cleaning": "home_cleaning",
+      "Pool Cleaning": "pool_cleaning",
+      "Landscaping": "landscaping",
+      "Carpet Cleaning": "carpet_cleaning",
+      "Garage Cleanout": "garage_cleanout",
+      "AI Home Scan": "home_consultation",
+    };
+
+    const recommendedService = visionResult.recommendedService || null;
+    const serviceSlug = recommendedService ? (serviceSlugMap[recommendedService] || null) : null;
+    const costMin = visionResult.estimatedCostMin || 0;
+    const costMax = visionResult.estimatedCostMax || 0;
+    const proRecommended = visionResult.proRecommended !== false;
+
+    // Build a human-friendly summary message
+    let message: string;
+    if (proRecommended && recommendedService) {
+      message = `That looks like: **${visionResult.diagnosis}**. Severity: ${visionResult.severity}. This one needs a pro — I'd recommend our **${recommendedService}** service. Estimated cost: $${costMin}-$${costMax}. Want me to get you a quote?`;
+    } else if (visionResult.diyPossible && costMin > 0) {
+      message = `That looks like: **${visionResult.diagnosis}**. Estimated fix: ~$${costMin}-$${costMax}, takes about ${visionResult.estimatedTime}. Want a pro to handle it, or want me to walk you through the DIY?`;
+    } else {
+      message = `I can see: **${visionResult.diagnosis}**. ${visionResult.urgencyNote || ""} Let me help you figure out the best next step.`;
     }
 
-    const assessment = getDifficultyAssessment(topMatch.id);
-    
     return {
-      diagnosis: topMatch.diagnosis,
-      repairName: topMatch.name,
-      estimatedCost: topMatch.estimatedCost,
-      estimatedTime: topMatch.estimatedTime,
-      safetyLevel: topMatch.safetyLevel,
-      difficulty: topMatch.difficulty,
-      proRecommended: topMatch.proRecommended,
-      diySteps: topMatch.steps.slice(0, 3), // First 3 steps as preview
-      tools: topMatch.tools,
-      parts: topMatch.parts,
-      assessment,
-      upsellService: topMatch.upsellService,
-      confidence: "high",
-      message: topMatch.proRecommended
-        ? `That looks like: **${topMatch.name}**. ${topMatch.diagnosis}. This one needs a pro — let me get you a quote.`
-        : `That looks like: **${topMatch.name}**. ${topMatch.diagnosis}. Estimated fix: ~${topMatch.estimatedCost}, takes about ${topMatch.estimatedTime}. Want a pro to handle it, or want me to walk you through the DIY?`,
+      diagnosis: visionResult.diagnosis,
+      severity: visionResult.severity,
+      issueCategory: visionResult.issueCategory,
+      recommendedService,
+      serviceSlug,
+      estimatedCost: costMin > 0 ? `$${costMin}-$${costMax}` : null,
+      estimatedCostMin: costMin,
+      estimatedCostMax: costMax,
+      estimatedTime: visionResult.estimatedTime,
+      proRecommended,
+      safetyLevel: visionResult.safetyLevel || "caution",
+      diyPossible: visionResult.diyPossible || false,
+      diySteps: visionResult.diySteps || [],
+      toolsNeeded: visionResult.toolsNeeded || [],
+      partsNeeded: visionResult.partsNeeded || [],
+      urgencyNote: visionResult.urgencyNote,
+      confidence: visionResult.confidenceScore >= 0.7 ? "high" : visionResult.confidenceScore >= 0.4 ? "medium" : "low",
+      confidenceScore: visionResult.confidenceScore,
+      additionalNotes: visionResult.additionalNotes,
+      message,
     };
-  } catch (error) {
-    // Fallback with simulated response
+  } catch (error: any) {
+    console.error("[diagnoseFromPhoto] Vision API error:", error.message);
+    // Fallback: encourage re-upload or text description
     return {
-      diagnosis: "Based on the description, this looks like a common home maintenance issue.",
-      repairName: "Standard Home Repair",
-      estimatedCost: "$75-150",
-      estimatedTime: "1-2 hours",
-      confidence: "medium",
-      message: "I can see the issue but want to make sure I get this right. Let me connect you with a pro for an accurate diagnosis.",
-      recommendation: "Book a professional assessment for best results.",
+      diagnosis: "I wasn't able to analyze that photo right now. This can happen with very dark, blurry, or oversized images.",
+      confidence: "low",
+      message: "I had trouble analyzing that photo. Could you try sending another one with better lighting? Or describe what you're seeing and I'll help diagnose it.",
+      error: error.message,
+      recommendation: "Try uploading a clearer photo, or describe the issue and I'll help.",
     };
   }
 }
@@ -5429,18 +5610,37 @@ export async function getRebookingSuggestions(params: { customer_id: string }): 
     const lastService = pastBookings.rows[0];
     const daysSinceLast = Math.floor((Date.now() - new Date(lastService.completed_at).getTime()) / (1000 * 60 * 60 * 24));
     
-    // Simulate same pro availability
-    const sameProAvailable = Math.random() > 0.3; // 70% chance available
-    
-    const suggestions = pastBookings.rows.map(booking => ({
-      serviceType: booking.service_type,
-      lastCompleted: booking.completed_at,
-      daysSince: Math.floor((Date.now() - new Date(booking.completed_at).getTime()) / (1000 * 60 * 60 * 24)),
-      lastCost: booking.total_cost,
-      proName: booking.pro_name,
-      proAvailable: Math.random() > 0.4, // 60% chance available
-      suggestedRebooking: daysSince > 90, // Suggest if more than 3 months
-    }));
+    // Check if the same pro is actually available
+    const lastProId = lastService.assigned_hauler_id;
+    let sameProAvailable = false;
+    if (lastProId) {
+      const proResult = await pool.query(
+        `SELECT is_available FROM hauler_profiles WHERE id = $1`,
+        [lastProId]
+      );
+      sameProAvailable = proResult.rows[0]?.is_available === true;
+    }
+
+    const suggestions = [];
+    for (const booking of pastBookings.rows) {
+      let proAvailable = false;
+      if (booking.assigned_hauler_id) {
+        const proResult = await pool.query(
+          `SELECT is_available FROM hauler_profiles WHERE id = $1`,
+          [booking.assigned_hauler_id]
+        );
+        proAvailable = proResult.rows[0]?.is_available === true;
+      }
+      suggestions.push({
+        serviceType: booking.service_type,
+        lastCompleted: booking.completed_at,
+        daysSince: Math.floor((Date.now() - new Date(booking.completed_at).getTime()) / (1000 * 60 * 60 * 24)),
+        lastCost: booking.total_cost,
+        proName: booking.pro_name,
+        proAvailable,
+        suggestedRebooking: daysSinceLast > 90,
+      });
+    }
 
     return {
       hasHistory: true,

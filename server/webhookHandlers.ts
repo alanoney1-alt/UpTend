@@ -171,12 +171,35 @@ export class WebhookHandlers {
       }
 
       if (email) {
-        // Use the generic send from email-service (import inline to avoid circular deps)
-        const { default: nodemailer } = await import('nodemailer');
-        // Re-use the same transport logic — but since sendJobCompleted doesn't fit,
-        // we'll log for now. In production, add a sendPaymentFailed email template.
-        console.log(`[WEBHOOK] Payment failed notification should be sent to ${email} for job ${jobId}`);
-        // TODO: Create sendPaymentFailed email template and call it here
+        const { sendEmail } = await import('./services/notifications');
+        await sendEmail({
+          to: email,
+          subject: `Payment Issue — Action Required for Your UpTend Service`,
+          html: `
+            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+              <h2 style="color: #1E293B; margin-bottom: 16px;">Payment Update</h2>
+              <p style="color: #475569; line-height: 1.6;">
+                We weren't able to process your payment for your recent service (Job #${jobId?.toString().slice(0, 8)}).
+              </p>
+              <p style="color: #475569; line-height: 1.6;">
+                <strong>Reason:</strong> ${failureMessage || 'Your payment method was declined.'}
+              </p>
+              <p style="color: #475569; line-height: 1.6;">
+                Please update your payment method to complete this transaction. Your service is still confirmed — we just need to resolve the payment.
+              </p>
+              <div style="margin: 24px 0;">
+                <a href="${process.env.APP_URL || 'https://uptendapp.com'}/payment-setup"
+                   style="display: inline-block; padding: 12px 24px; background: #F97316; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                  Update Payment Method
+                </a>
+              </div>
+              <p style="color: #94A3B8; font-size: 0.85rem;">
+                Questions? Call us at (407) 338-3342 or reply to this email.
+              </p>
+            </div>
+          `,
+        });
+        console.log(`[WEBHOOK] Payment failed notification sent to ${email} for job ${jobId}`);
       }
     } catch (emailErr: any) {
       console.error(`[WEBHOOK] Failed to process payment failure email for job ${jobId}:`, emailErr.message);

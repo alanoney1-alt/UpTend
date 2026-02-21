@@ -268,19 +268,32 @@ Consider: safety risk, tools required, skill level, physical difficulty, and cod
         return res.status(400).json({ error: "Quote is not ready yet" });
       }
 
-      // TODO: Create actual service request from photo quote
-      // This would integrate with the existing service request creation flow
+      // Create actual service request from photo quote analysis
+      const analysis = typeof request.analysis === 'string' ? JSON.parse(request.analysis) : request.analysis;
+
+      const serviceRequest = await storage.createServiceRequest({
+        customerId: userId,
+        serviceType: request.serviceType || 'junk_removal',
+        status: 'requested',
+        pickupAddress: request.address || '',
+        description: `Photo quote conversion: ${analysis?.detectedItems?.join(', ') || 'Photo-analyzed items'}`,
+        estimatedPrice: analysis?.estimatedPrice?.max || analysis?.estimatedPrice?.min || 0,
+        photoUrls: request.photoUrl ? [request.photoUrl] : [],
+        source: 'photo_quote',
+        photoQuoteId: id,
+        createdAt: new Date().toISOString(),
+      } as any);
 
       // Update photo quote status
       await storage.updatePhotoQuoteRequest(id, {
         status: "converted",
-        proQuotesSent: 3, // Mock: sent to 3 pros
+        serviceRequestId: serviceRequest.id,
       });
 
       res.json({
         success: true,
         message: "Photo quote converted to service request",
-        serviceRequestId: nanoid(), // Mock service request ID
+        serviceRequestId: serviceRequest.id,
       });
     } catch (error: any) {
       console.error("Error converting photo quote:", error);

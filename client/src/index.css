@@ -590,6 +590,63 @@
 .geo-send:hover:not(:disabled) { background: #44403C; color: #E8E5E0; }
 .geo-send:disabled { opacity: 0.2; cursor: default; }
 
+/* ─── Action buttons ─── */
+.geo-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.geo-action-btn {
+  padding: 7px 14px; border-radius: 10px; font-size: 0.8rem;
+  background: rgba(120,53,15,0.15); border: 1px solid rgba(120,53,15,0.25);
+  color: #D97706; cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.geo-action-btn:hover { background: rgba(120,53,15,0.25); color: #F59E0B; }
+
+/* ─── Navigation ─── */
+.geo-nav {
+  display: flex; gap: 4px; padding: 8px 16px; justify-content: center;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  background: rgba(17,17,16,0.8); backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.geo-nav-link {
+  padding: 6px 12px; border-radius: 8px; font-size: 0.72rem; font-weight: 500;
+  color: #57534E; text-decoration: none; transition: all 0.2s;
+}
+.geo-nav-link:hover { color: #A8A29E; background: rgba(255,255,255,0.04); }
+
+/* ─── Photo button & preview ─── */
+.geo-photo-btn {
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; color: #57534E;
+  border: none; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.geo-photo-btn:hover { color: #A8A29E; }
+.geo-photo-preview {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; margin-bottom: 6px;
+}
+.geo-photo-thumb {
+  width: 48px; height: 48px; border-radius: 8px; object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.geo-photo-remove {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.06); border: none;
+  color: #78716C; cursor: pointer; font-size: 0.9rem; line-height: 1;
+  transition: all 0.2s;
+}
+.geo-photo-remove:hover { background: rgba(255,255,255,0.12); color: #A8A29E; }
+
+/* ─── Booking draft card ─── */
+.geo-booking-card {
+  margin-top: 10px; padding: 14px; border-radius: 14px;
+  background: rgba(120,53,15,0.08); border: 1px solid rgba(120,53,15,0.2);
+}
+.geo-booking-title { font-weight: 600; color: #E8E5E0; font-size: 0.9rem; }
+.geo-booking-price { font-size: 1.2rem; font-weight: 700; color: #D97706; margin: 4px 0; }
+.geo-booking-detail { font-size: 0.8rem; color: #78716C; }
+
 /* ─── Reveal ─── */
 @keyframes gUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
 

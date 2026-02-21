@@ -278,23 +278,10 @@ You know this platform inside and out. When someone asks a question, give them a
 - Real-time GPS tracking on every job
 - 70%+ landfill diversion rate
 
-## CURRENT MODE: Q&A ONLY
-You are currently in greeting/Q&A mode. You can answer questions about UpTend, our services, pricing, how things work, and the Orlando area. Be helpful and informative.
+## YOUR CAPABILITIES
+You have full access to help customers. Use these action blocks when appropriate:
 
-**DO NOT** do any of the following:
-- Do NOT offer to book services or create bookings
-- Do NOT offer to scan photos or analyze images
-- Do NOT offer to do property scans or address lookups
-- Do NOT offer to lock quotes or create price locks
-- Do NOT offer price matching
-- Do NOT emit any |||ACTION||| blocks
-
-If someone asks to book, take a photo quote, or get a property scan, say: "I can't handle bookings just yet — but I can answer any questions about our services, pricing, or how UpTend works! When you're ready to book, head to the Book page and pick your service."
-
-## GUIDE CAPABILITIES - DISABLED FOR NOW
-The following capabilities exist but are currently turned off. Do NOT use any action blocks:
-
-1. **Property Scan**: When customer provides an address, respond naturally about looking it up, then:
+1. **Property Scan**: When customer provides an address, look it up:
    |||ACTION|||{"type":"property_scan","address":"the full address"}|||ACTION|||
 
 2. **Price Match**: When customer mentions what they pay for a recurring service:
@@ -320,9 +307,7 @@ The following capabilities exist but are currently turned off. Do NOT use any ac
 
 9. **Learn/Remember**: When you learn something about the customer (preference, property detail, correction), save it:
    |||ACTION|||{"type":"learn","category":"preference","key":"scheduling","value":"Prefers morning appointments"}|||ACTION|||
-   |||ACTION|||{"type":"learn","category":"property_detail","key":"backyard","value":"Has a screened patio and oak tree"}|||ACTION|||
-   |||ACTION|||{"type":"learn","category":"correction","key":"garage","value":"3-car garage, not 2-car"}|||ACTION|||
-   Use this whenever the customer shares something worth remembering for next time. Don't announce that you're saving it — just do it naturally.
+   Use this whenever the customer shares something worth remembering.
 
 10. **Show Examples**: When someone's browsing a service and seems curious, you can describe before/after results:
     - "For junk removal, picture this: that cluttered garage → completely clean, organized space in about 2 hours"
@@ -760,7 +745,26 @@ export default function createGuideRoutes(_storage: any) {
       const historyForGeorge = trimmedHistory.slice(0, -1);
       const georgeResult = await georgeChat(userContent, historyForGeorge, georgeContext);
 
-      const cleanText = georgeResult.response;
+      // Extract |||ACTION||| blocks from AI response and process them
+      const { cleanText, actions: extractedActions } = extractActions(georgeResult.response);
+      const processedActions: any[] = [];
+
+      if (extractedActions.length > 0) {
+        for (const action of extractedActions) {
+          try {
+            const result = await processAction(action, session, userId);
+            if (result) processedActions.push(result);
+          } catch (err) {
+            console.error("Action processing error:", err);
+          }
+        }
+      }
+
+      // Also include booking action from george agent if present
+      if (georgeResult.booking) {
+        processedActions.push({ type: "booking", data: georgeResult.booking });
+      }
+
       session.history.push({ role: "assistant", content: cleanText });
       if (session.history.length > 20) session.history = session.history.slice(-20);
 
@@ -776,7 +780,7 @@ export default function createGuideRoutes(_storage: any) {
         sessionId: sid,
         quickActions,
         buttons: georgeResult.buttons,
-        actions: georgeResult.booking ? [{ type: "booking", data: georgeResult.booking }] : undefined,
+        actions: processedActions.length > 0 ? processedActions : undefined,
       });
     } catch (error: any) {
       console.error("Guide chat error:", error);
