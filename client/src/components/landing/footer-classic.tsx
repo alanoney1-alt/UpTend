@@ -27,7 +27,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
                 <Mail className="w-4 h-4 text-primary shrink-0" />
-                <a href="mailto:alan@uptend.app" data-testid="text-footer-email">alan@uptend.app</a>
+                <a href="mailto:alan@uptendapp.com" data-testid="text-footer-email">alan@uptendapp.com</a>
               </div>
               <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
                 <MapPin className="w-4 h-4 text-primary shrink-0" />
@@ -128,9 +128,19 @@ export function Footer() {
             <p className="text-sm text-slate-400 mb-4">
               Questions? Call us at <a href="tel:407-338-3342" className="text-white hover:text-primary transition-colors">(407) 338-3342</a>
             </p>
-            <p className="text-xs text-slate-500" data-testid="text-footer-serving">
+            <p className="text-xs text-slate-500 mb-4" data-testid="text-footer-serving">
               {t("footer.footer_serving")}
             </p>
+            <div className="flex gap-3 mt-4">
+              <a href="https://www.facebook.com/UptendGeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">f</a>
+              <a href="https://www.instagram.com/uptendgeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">ig</a>
+              <a href="https://www.tiktok.com/@uptendgeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">tt</a>
+              <a href="https://www.youtube.com/@UpTendGeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">yt</a>
+            </div>
+            <div className="mt-4 space-y-2 text-sm">
+              <Link href="/business" className="block hover:text-primary transition-colors">UpTend for Business</Link>
+              <Link href="/emergency" className="block text-red-400 hover:text-red-300 transition-colors">Emergency Services</Link>
+            </div>
           </div>
         </div>
 

@@ -65,6 +65,16 @@ export function Header() {
               {t("nav.pro_academy")}
             </span>
           </Link>
+          <Link href="/find-pro">
+            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-find-pro">
+              Find a Pro
+            </span>
+          </Link>
+          <Link href="/meet-george">
+            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-meet-george">
+              Meet George
+            </span>
+          </Link>
         </div>
 
         <p className="hidden lg:block text-xs text-slate-500 italic absolute left-1/2 -translate-x-1/2 bottom-1 whitespace-nowrap" data-testid="text-header-tagline">
@@ -196,6 +206,12 @@ export function Header() {
             </Link>
             <Link href="/academy" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-academy-mobile">{t("nav.pro_academy")}</span>
+            </Link>
+            <Link href="/find-pro" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-find-pro-mobile">Find a Pro</span>
+            </Link>
+            <Link href="/meet-george" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-meet-george-mobile">Meet George</span>
             </Link>
             <Link href="/become-pro" onClick={closeMenu}>
               <span className="block p-2 text-primary font-bold flex items-center gap-2" data-testid="link-become-pro-mobile">
