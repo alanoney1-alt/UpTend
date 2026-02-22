@@ -613,6 +613,53 @@
 }
 .geo-send:disabled { opacity: 0.2; cursor: default; }
 
+/* ─── Clickable Service Grid ─── */
+.geo-service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+  animation: gUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@media (min-width: 480px) {
+  .geo-service-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.geo-service-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.geo-service-btn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(249,115,22,0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+.geo-service-btn:active { transform: translateY(1px) scale(0.98); }
+.geo-service-icon { font-size: 1.2rem; flex-shrink: 0; }
+.geo-service-info { display: flex; flex-direction: column; min-width: 0; }
+.geo-service-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #E7E5E4;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.geo-service-price {
+  font-size: 0.65rem;
+  color: #78716C;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ─── Action buttons ─── */
 .geo-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .geo-action-btn {

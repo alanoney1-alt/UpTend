@@ -1,5 +1,5 @@
 import { usePageTitle } from "@/hooks/use-page-title";
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useSiteMode } from "@/contexts/site-mode-context";
 import LandingClassic from "./landing-classic";
 import DOMPurify from "dompurify";
@@ -79,55 +79,28 @@ if (typeof window !== "undefined") {
   (window as any).__georgeSound = georgeSound;
 }
 
-// ─── Starters — categorized, seasonal ─────────────────────────────────────
+// ─── Service detection — makes listed services clickable ─────────────────
 
-const STARTER_CATEGORIES = {
-  booking: [
-    "How much does pressure washing cost?",
-    "I need my gutters cleaned before rainy season",
-    "I need a handyman for a few hours",
-    "How do I book a home cleaning?",
-  ],
-  diy: [
-    "My garbage disposal is making weird noises",
-    "How do I fix a running toilet?",
-    "My AC isn't cooling — what should I check?",
-    "Walk me through replacing a light switch",
-  ],
-  homeHealth: [
-    "What should I be maintaining this month?",
-    "Tell me about the Home Health Score",
-    "Run a home health check on my property",
-    "When should I replace my air filters?",
-  ],
-  photo: [
-    "Can you diagnose something from a picture?",
-    "I want to send a photo of a problem",
-    "Can you give me a quote from a photo?",
-  ],
-  explore: [
-    "Tell me about the AI Home Scan",
-    "What can you help me with?",
-    "How does the Pro Academy work?",
-    "How do you vet your Pros?",
-  ],
-};
+const KNOWN_SERVICES = [
+  { name: "Junk Removal", slug: "junk_removal", icon: "🚛", price: "from $99" },
+  { name: "Pressure Washing", slug: "pressure_washing", icon: "💨", price: "from $120" },
+  { name: "Gutter Cleaning", slug: "gutter_cleaning", icon: "🌧️", price: "from $150" },
+  { name: "Handyman", slug: "handyman", icon: "🔧", price: "$75/hr" },
+  { name: "Moving Labor", slug: "moving_labor", icon: "📦", price: "$65/hr" },
+  { name: "Light Demolition", slug: "light_demolition", icon: "🔨", price: "from $199" },
+  { name: "Home Cleaning", slug: "home_cleaning", icon: "🏠", price: "from $99" },
+  { name: "Pool Cleaning", slug: "pool_cleaning", icon: "🏊", price: "$120/mo" },
+  { name: "Landscaping", slug: "landscaping", icon: "🌿", price: "from $49" },
+  { name: "Carpet Cleaning", slug: "carpet_cleaning", icon: "🧽", price: "from $50/room" },
+  { name: "Garage Cleanout", slug: "garage_cleanout", icon: "🧹", price: "from $150" },
+  { name: "AI Home Scan", slug: "ai_home_scan", icon: "📡", price: "from $99" },
+];
 
-function getSeasonalStarters(): string[] {
-  const month = new Date().getMonth();
-  const picks: string[] = [];
-  const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
-
-  if (month >= 2 && month <= 4) {
-    picks.push("How much does pressure washing cost?");
-  } else {
-    picks.push(pick(STARTER_CATEGORIES.booking));
-  }
-  picks.push(pick(STARTER_CATEGORIES.diy));
-  picks.push(pick(STARTER_CATEGORIES.homeHealth));
-  picks.push(pick(STARTER_CATEGORIES.photo));
-  picks.push(pick(STARTER_CATEGORIES.explore));
-  return picks;
+function detectServiceListing(text: string): typeof KNOWN_SERVICES | null {
+  const lower = text.toLowerCase();
+  const found = KNOWN_SERVICES.filter((s) => lower.includes(s.name.toLowerCase()));
+  // 4+ services mentioned = this is a service listing
+  return found.length >= 4 ? found : null;
 }
 
 // ─── YouTube URL patterns ─────────────────────────────────────────────────
@@ -474,7 +447,6 @@ function Conversation() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [introReady, setIntroReady] = useState(false);
-  const [showStarters, setShowStarters] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
@@ -489,14 +461,10 @@ function Conversation() {
   const cameraFileRef = useRef<HTMLInputElement>(null);
   const { isListening, isSupported: voiceSupported, start: startVoice, stop: stopVoice } = useSpeechRecognition();
 
-  // Seasonal starters
-  const starters = useMemo(() => getSeasonalStarters(), []);
-
   // Cinematic intro: greeting appears immediately, subtitle + dock after 1.2s
   useEffect(() => {
     const timer = setTimeout(() => {
       setIntroReady(true);
-      setTimeout(() => setShowStarters(true), 400);
     }, 1200);
     return () => clearTimeout(timer);
   }, []);
@@ -534,7 +502,6 @@ function Conversation() {
     setInput("");
     setPhotoPreview(null);
     setPhotoDataUrl(null);
-    setShowStarters(false);
 
     const displayText = photoAttached ? (msg ? `${msg}\n\u{1F4F7} Photo attached` : "\u{1F4F7} Sent a photo for analysis") : msg;
     const userMsg: ChatMessage = { role: "user", text: displayText, id: msgId++ };
@@ -645,7 +612,6 @@ function Conversation() {
         id: msgId++,
       };
       setMessages((p) => [...p, userMsg, georgeMsg]);
-      setShowStarters(false);
     }
     setCameraOverlay(false);
     setCameraPhoto(null);
@@ -702,7 +668,7 @@ function Conversation() {
           <div className="geo-greeting">Your home, handled.</div>
           {introReady && (
             <div className="geo-subtitle">
-              I'm George — your home's best friend. I cover everything in Orlando Metro, all upfront pricing, no surprises.
+              I'm George — your home's best friend. Tap a service below, type a question, or snap a photo of the problem.
             </div>
           )}
         </div>
@@ -727,6 +693,29 @@ function Conversation() {
             {m.breakdown && <BreakdownCard data={m.breakdown} />}
             {m.bookingData && <BookingCard data={m.bookingData} />}
             {m.homeScore && <HomeScoreCard data={m.homeScore} />}
+
+            {/* Clickable service grid — auto-detected from response */}
+            {m.role === "george" && (() => {
+              const services = detectServiceListing(m.text);
+              if (!services) return null;
+              return (
+                <div className="geo-service-grid">
+                  {services.map((s) => (
+                    <button
+                      key={s.slug}
+                      onClick={() => send(`I'd like to book ${s.name}`)}
+                      className="geo-service-btn"
+                    >
+                      <span className="geo-service-icon">{s.icon}</span>
+                      <div className="geo-service-info">
+                        <span className="geo-service-name">{s.name}</span>
+                        <span className="geo-service-price">{s.price}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* Action buttons */}
             {m.buttons && m.buttons.length > 0 && (
@@ -781,17 +770,6 @@ function Conversation() {
           </div>
         )}
 
-        {/* Starters */}
-        {showStarters && !hasMessages && (
-          <div className="geo-starters">
-            <div className="geo-starters-label">People usually ask things like:</div>
-            {starters.map((s, i) => (
-              <button key={s} onClick={() => send(s)} className="geo-pill" style={{ animationDelay: `${0.1 + i * 0.05}s` }}>
-                {s}
-              </button>
-            ))}
-          </div>
-        )}
         <div ref={scrollRef} />
       </div>
 
