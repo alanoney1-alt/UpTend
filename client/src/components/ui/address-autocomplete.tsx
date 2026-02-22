@@ -125,7 +125,7 @@ export function AddressAutocomplete({
       </div>
 
       {showDropdown && (
-        <div className="absolute z-50 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-600 rounded-md shadow-xl max-h-60 overflow-auto">
           {isLoading && suggestions.length === 0 ? (
             <div className="px-4 py-3 text-sm text-muted-foreground">
               Searching addresses...
@@ -137,9 +137,9 @@ export function AddressAutocomplete({
                 type="button"
                 onClick={() => handleSelect(suggestion.description, suggestion.place_id)}
                 className={cn(
-                  "w-full px-4 py-3 text-left text-sm hover:bg-accent transition-colors",
-                  "focus:bg-accent focus:outline-none",
-                  index === selectedIndex && "bg-accent"
+                  "w-full px-4 py-3 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors",
+                  "focus:bg-zinc-100 dark:focus:bg-zinc-700 focus:outline-none",
+                  index === selectedIndex && "bg-zinc-100 dark:bg-zinc-700"
                 )}
                 onMouseEnter={() => setSelectedIndex(index)}
               >

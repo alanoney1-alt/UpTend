@@ -3,7 +3,9 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useSiteMode } from "@/contexts/site-mode-context";
 import LandingClassic from "./landing-classic";
 import DOMPurify from "dompurify";
-import { ArrowUp, LayoutGrid, Camera, Mic, MicOff, ThumbsUp, ThumbsDown, ChevronDown } from "lucide-react";
+import { ArrowUp, LayoutGrid, Camera, Mic, MicOff, ThumbsUp, ThumbsDown, ChevronDown, UserCircle, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { Link } from "wouter";
 import { VideoPlayer, extractAllVideoIds } from "@/components/ai/video-player";
 import { PropertyCard, QuoteCard, BundleCard, BreakdownCard, BookingCard, HomeScoreCard } from "@/components/george/RichCards";
 import { CapabilityCard } from "@/components/george/CapabilityCard";
@@ -166,15 +168,40 @@ const GEORGE_INTRO: Array<{ text: string; isCapabilityCard?: boolean }> = [
 
 // ─── API call — uses guide/chat for rich responses ────────────────────────
 
-async function fetchGeorgeResponse(userMsg: string): Promise<GeorgeResponse> {
+async function fetchGeorgeResponse(userMsg: string, photoDataUrl?: string): Promise<GeorgeResponse> {
   try {
+    let photoAnalysis: any = undefined;
+
+    // Step 1: If photo attached, analyze it with GPT-5.2 vision first
+    if (photoDataUrl) {
+      try {
+        const analyzeRes = await fetch("/api/ai/guide/photo-analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            photoUrl: photoDataUrl,
+            sessionId: getSessionId(),
+            serviceType: "junk_removal",
+          }),
+        });
+        if (analyzeRes.ok) {
+          const analyzeData = await analyzeRes.json();
+          photoAnalysis = analyzeData.analysis || {};
+        }
+      } catch {
+        // Photo analysis failed — continue with text only
+      }
+    }
+
+    // Step 2: Send message + optional photo analysis to George
     const res = await fetch("/api/ai/guide/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        message: userMsg,
+        message: userMsg || (photoDataUrl ? "I uploaded a photo for analysis." : ""),
         sessionId: getSessionId(),
         context: { page: "/", userRole: "visitor" },
+        ...(photoAnalysis ? { photoAnalysis } : {}),
       }),
     });
     if (!res.ok) throw new Error("API error");
@@ -267,13 +294,75 @@ export default function Landing() {
 function GeorgeLanding() {
   usePageTitle("UpTend \u2014 Your Home, Handled.");
   const { toggle } = useSiteMode();
+  const { user, isAuthenticated, logout } = useAuth();
+  const [showAuthMenu, setShowAuthMenu] = useState(false);
 
   return (
     <div className="geo-root" data-testid="page-landing">
-      <button onClick={toggle} className="geo-mode-toggle" aria-label="Switch to classic view">
-        <LayoutGrid className="w-4 h-4" />
-        <span>View Classic Site</span>
-      </button>
+      {/* Close auth menu on outside click */}
+      {showAuthMenu && <div className="fixed inset-0 z-40" onClick={() => setShowAuthMenu(false)} />}
+      {/* Top-right controls: auth + classic toggle */}
+      <div className="fixed top-2 right-2 md:top-4 md:right-4 z-50 flex items-center gap-2">
+        {/* Auth button */}
+        <div className="relative">
+          {isAuthenticated && user ? (
+            <div className="flex items-center gap-2">
+              <Link href="/dashboard" className="geo-mode-toggle" style={{ position: "relative" }}>
+                <UserCircle className="w-4 h-4" />
+                <span>{user.firstName || "Account"}</span>
+              </Link>
+              <button
+                onClick={() => logout()}
+                className="geo-mode-toggle"
+                style={{ position: "relative" }}
+                aria-label="Log out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={() => setShowAuthMenu(!showAuthMenu)}
+                className="geo-mode-toggle"
+                style={{ position: "relative" }}
+                aria-label="Sign in or sign up"
+              >
+                <UserCircle className="w-4 h-4" />
+                <span>Sign In</span>
+              </button>
+              {showAuthMenu && (
+                <div className="absolute right-0 top-full mt-2 bg-stone-900/95 backdrop-blur-md border border-stone-700/50 rounded-xl p-3 min-w-[200px] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
+                  <Link href="/login" onClick={() => setShowAuthMenu(false)}>
+                    <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-stone-800/50 cursor-pointer transition-colors">
+                      <UserCircle className="w-5 h-5 text-primary" />
+                      <div>
+                        <div className="text-sm font-medium text-stone-200">Sign In</div>
+                        <div className="text-xs text-stone-500">Welcome back</div>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link href="/signup" onClick={() => setShowAuthMenu(false)}>
+                    <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-stone-800/50 cursor-pointer transition-colors">
+                      <UserCircle className="w-5 h-5 text-green-400" />
+                      <div>
+                        <div className="text-sm font-medium text-stone-200">Create Account</div>
+                        <div className="text-xs text-stone-500">Free, takes 30 seconds</div>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Classic site toggle */}
+        <button onClick={toggle} className="geo-mode-toggle" style={{ position: "relative" }} aria-label="Switch to classic view">
+          <LayoutGrid className="w-4 h-4" />
+          <span>View Classic Site</span>
+        </button>
+      </div>
 
 
 
@@ -298,6 +387,7 @@ function Conversation() {
   const [showStarters, setShowStarters] = useState(false);
   const [starterIdx, setStarterIdx] = useState(0);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
@@ -358,17 +448,19 @@ function Conversation() {
 
   const send = useCallback((text?: string) => {
     const msg = text || input.trim();
-    if (!msg || isTyping) return;
-    const photoAttached = photoPreview;
+    if ((!msg && !photoDataUrl) || isTyping) return;
+    const currentPhotoData = photoDataUrl;
+    const photoAttached = !!currentPhotoData;
     setInput("");
     setPhotoPreview(null);
+    setPhotoDataUrl(null);
     setShowStarters(false);
-    const displayText = photoAttached ? `${msg}\n[Photo attached]` : msg;
+    const displayText = photoAttached ? (msg ? `${msg}\n\u{1F4F7} Photo attached` : "\u{1F4F7} Sent a photo for analysis") : msg;
     const userMsg: ChatMessage = { role: "user", text: displayText, id: msgId++ };
     setMessages((p) => {
       const updated = [...p, userMsg];
       setIsTyping(true);
-      fetchGeorgeResponse(msg).then((response) => {
+      fetchGeorgeResponse(msg || "I uploaded a photo for analysis.", currentPhotoData || undefined).then((response) => {
         setIsTyping(false);
         // Extract video IDs from response text
         const videoIds = extractAllVideoIds(response.text);
@@ -390,7 +482,7 @@ function Conversation() {
       return updated;
     });
     inputRef.current?.focus();
-  }, [input, isTyping, photoPreview]);
+  }, [input, isTyping, photoDataUrl]);
 
   const handleAction = useCallback((btn: { label: string; action: string }) => {
     if (btn.action.startsWith("navigate:")) {
@@ -404,9 +496,13 @@ function Conversation() {
 
   const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !file.type.startsWith("image/")) return;
     const reader = new FileReader();
-    reader.onload = () => setPhotoPreview(reader.result as string);
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      setPhotoPreview(dataUrl);
+      setPhotoDataUrl(dataUrl);
+    };
     reader.readAsDataURL(file);
   };
 
@@ -572,6 +668,7 @@ function Conversation() {
             ref={fileRef}
             type="file"
             accept="image/*"
+            capture="environment"
             onChange={handlePhoto}
             className="hidden"
             aria-hidden="true"
