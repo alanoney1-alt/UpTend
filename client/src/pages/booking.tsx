@@ -534,7 +534,7 @@ function BookingConversation({
           <p className="text-[10px] text-slate-400 text-center mt-2">
             By continuing, you agree to UpTend's{" "}
             <a href="/terms" className="underline hover:text-slate-600">Terms</a>,{" "}
-            <a href="/ai-terms" className="underline hover:text-slate-600">AI Terms</a>, and{" "}
+            <a href="/terms" className="underline hover:text-slate-600">AI Terms</a>, and{" "}
             <a href="/privacy" className="underline hover:text-slate-600">Privacy Policy</a>.
           </p>
         </div>

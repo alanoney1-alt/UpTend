@@ -617,6 +617,7 @@ export function UpTendGuide() {
       });
 
       const data = await res.json();
+      if (!res.ok) throw new Error(data.reply || data.error || "Request failed");
       const replyText = typeof data.reply === "string" ? data.reply : data.reply?.content || "Sorry, something went wrong!";
 
       const aiMsg: Message = {

@@ -151,8 +151,7 @@ function GuideGate() {
   // Classic mode: George widget on all pages EXCEPT landing (original site had it as a chatbot)
   // George mode: hide on landing (inline George) and meet-george (dedicated page)
   if (mode === "classic") {
-    // In classic mode, show the original floating George on non-landing pages
-    if (location === "/") return null;
+    // In classic mode, show floating George on all pages including landing
     return <UpTendGuide />;
   }
   // George AI mode: hide widget on pages with their own George UI

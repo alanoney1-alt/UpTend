@@ -371,7 +371,7 @@ export function AiChatWidget() {
           </Button>
         </form>
         <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by Mr. George AI</p>
-        <p className="text-[9px] text-gray-400 dark:text-gray-500 text-center mt-0.5">By continuing to chat, you agree to UpTend's <a href="/terms" className="underline hover:text-gray-600">Terms of Service</a>, <a href="/ai-terms" className="underline hover:text-gray-600">A.I. Terms</a>, and <a href="/privacy" className="underline hover:text-gray-600">Privacy Policy</a>.</p>
+        <p className="text-[9px] text-gray-400 dark:text-gray-500 text-center mt-0.5">By continuing to chat, you agree to UpTend's <a href="/terms" className="underline hover:text-gray-600">Terms of Service</a>, <a href="/terms" className="underline hover:text-gray-600">A.I. Terms</a>, and <a href="/privacy" className="underline hover:text-gray-600">Privacy Policy</a>.</p>
       </div>
     </div>
   );

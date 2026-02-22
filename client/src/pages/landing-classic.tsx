@@ -15,22 +15,18 @@ import {
   ClipboardCheck,
   ScanFace, TrendingUp, ChevronRight, Truck,
   Waves, ArrowUpFromLine, Package, Search, BrainCircuit,
-  ArrowRight, Activity, Globe, Heart, Leaf,
-  Sparkles, Trees, Home, Wrench, ScanLine,
+  ArrowRight, Activity, Globe, Heart,
+  Sparkles, Trees, Home, Wrench,
   BadgeCheck, Handshake, Receipt,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer-classic";
 import { Header } from "@/components/landing/header-classic";
 import { HowItWorks } from "@/components/landing/how-it-works";
-import { BookingChatbot } from "@/components/booking-chatbot";
 import { ProsNearYou } from "@/components/landing/pros-near-you-classic";
 import { FloridaEstimator } from "@/components/booking/florida-estimator-classic";
 import { StormCountdown } from "@/components/booking/storm-countdown";
 import { useTranslation } from "react-i18next";
-import { useSiteMode } from "@/contexts/site-mode-context";
-
 export default function LandingClassic() {
-  const { toggle } = useSiteMode();
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing-classic">
       <Header />
@@ -47,7 +43,6 @@ export default function LandingClassic() {
         <WorkerCTA />
       </main>
       <Footer />
-      {/* BookingChatbot removed — AI Chat Widget (global) handles this */}
     </div>
   );
 }
@@ -96,10 +91,11 @@ function NewHeroSection() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-10">
-            <div
+            <button
               onClick={toggleLanguage}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer transition-all ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/5"
               data-testid="pill-language-toggle"
+              aria-label={i18n.language === "en" ? "Cambiar a español" : "Switch to English"}
             >
               <Globe className="w-4 h-4 text-[#F47C20]" />
               {i18n.language === "en" ? (
@@ -111,7 +107,7 @@ function NewHeroSection() {
                   English? <span className="font-semibold text-[#F47C20]">Switch &rarr;</span>
                 </span>
               )}
-            </div>
+            </button>
           </div>
 
           <FloridaEstimator />
@@ -347,16 +343,15 @@ function WhySection() {
   const services = [
     { key: "handyman", label: "Handyman Services", price: "From $75/hr", icon: Wrench, color: "text-blue-500 dark:text-blue-400" },
     { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck, color: "text-primary dark:text-orange-400" },
-    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $299", icon: Home, color: "text-primary dark:text-orange-400" },
-    { key: "moving_labor", label: "Moving Labor", price: "$80/hr", icon: Package, color: "text-secondary dark:text-secondary" },
+    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $150", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "moving_labor", label: "Moving Labor", price: "From $65/hr", icon: Package, color: "text-secondary dark:text-secondary" },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, color: "text-primary dark:text-orange-400" },
-    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $39/room", icon: Home, color: "text-primary dark:text-orange-400" },
+    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $50/room", icon: Home, color: "text-primary dark:text-orange-400" },
     { key: "landscaping", label: "Landscaping", price: "From $49", icon: Trees, color: "text-green-500 dark:text-green-400" },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: ArrowUpFromLine, color: "text-orange-500 dark:text-orange-400" },
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
-    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $89/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
+    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $120/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
     { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
-    { key: "home_scan", label: "AI Home Scan", price: "From $99", icon: ScanLine, color: "text-violet-500 dark:text-violet-400" },
   ];
 
   return (
@@ -420,10 +415,11 @@ function WhySection() {
             <Card className="shadow-xl border-2 border-primary">
               <CardContent className="p-6 bg-gradient-to-br from-primary/10 to-primary/5">
                 <Badge className="mb-3 bg-primary">Featured</Badge>
-                <div
-                  className="flex items-start gap-4 cursor-pointer"
+                <button
+                  className="flex items-start gap-4 cursor-pointer text-left w-full"
                   onClick={() => setLocation(`/book?service=${featuredService.key}`)}
                   data-testid={`service-${featuredService.key}`}
+                  aria-label={`Book ${featuredService.label} - ${featuredService.price}`}
                 >
                   <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center shrink-0">
                     <featuredService.icon className={`w-6 h-6 ${featuredService.color}`} />
@@ -433,7 +429,7 @@ function WhySection() {
                     <p className="text-sm text-muted-foreground mb-2">{featuredService.description}</p>
                     <p className="text-primary font-bold">{featuredService.price}</p>
                   </div>
-                </div>
+                </button>
               </CardContent>
             </Card>
 
@@ -444,11 +440,12 @@ function WhySection() {
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {services.map((svc) => (
-                    <div
+                    <button
                       key={svc.key}
-                      className="flex items-center gap-4 p-4 rounded-lg bg-muted/50 hover-elevate cursor-pointer"
+                      className="flex items-center gap-4 p-4 rounded-lg bg-muted/50 hover-elevate cursor-pointer text-left w-full"
                       onClick={() => setLocation(`/book?service=${svc.key}`)}
                       data-testid={`service-${svc.key}`}
+                      aria-label={`Book ${svc.label} - ${svc.price}`}
                     >
                       <div className="w-10 h-10 bg-background rounded-full shadow-sm flex items-center justify-center shrink-0">
                         <svc.icon className={`w-5 h-5 ${svc.color}`} />
@@ -457,7 +454,7 @@ function WhySection() {
                         <p className="font-bold text-sm">{svc.label}</p>
                         <p className="text-xs text-muted-foreground">{svc.price}</p>
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </CardContent>
