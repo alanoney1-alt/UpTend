@@ -61,11 +61,11 @@ export function Header() {
             </span>
           </Link>
           <span
-            className="hover:opacity-80 transition-opacity cursor-pointer"
+            className="hover:opacity-90 transition-all cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent font-bold"
             data-testid="link-meet-george"
             onClick={() => { localStorage.setItem("uptend-site-mode", "george"); window.location.href = "/"; }}
           >
-            Meet George
+            ✦ Try George AI
           </span>
           <Link href="/become-pro">
             <span
@@ -187,11 +187,11 @@ export function Header() {
               <span className="block p-2" data-testid="link-about-mobile">{t("nav.about")}</span>
             </Link>
             <span
-              className="block p-2 cursor-pointer"
+              className="block p-2 cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent font-bold"
               data-testid="link-meet-george-mobile"
               onClick={() => { closeMenu(); localStorage.setItem("uptend-site-mode", "george"); window.location.href = "/"; }}
             >
-              Meet George
+              ✦ Try George AI
             </span>
             <Link href="/become-pro" onClick={closeMenu}>
               <span className="block p-2 text-primary font-bold flex items-center gap-2" data-testid="link-become-pro-mobile">
