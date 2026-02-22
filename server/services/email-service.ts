@@ -49,13 +49,20 @@ function money(dollars: number | string | null | undefined): string {
 }
 
 async function send(to: string, subject: string, html: string, text: string) {
-  const info = await transporter.sendMail({ from: FROM, to, subject, html, text });
-  if (isDev) {
-    const parsed = JSON.parse(info.message);
-    console.log(`[EMAIL] → ${parsed.to} | ${parsed.subject}`);
-    console.log(`[EMAIL] Text: ${text.slice(0, 200)}...`);
+  try {
+    const info = await transporter.sendMail({ from: FROM, to, subject, html, text });
+    if (isDev) {
+      const parsed = JSON.parse(info.message);
+      console.log(`[EMAIL] → ${parsed.to} | ${parsed.subject}`);
+      console.log(`[EMAIL] Text: ${text.slice(0, 200)}...`);
+    }
+    return info;
+  } catch (error) {
+    console.error(`[EMAIL] Failed to send "${subject}" to ${to}:`, error instanceof Error ? error.message : error);
+    // Don't throw for non-critical emails in production — log and return null
+    // This prevents email failures from crashing booking flows
+    return null;
   }
-  return info;
 }
 
 // ─── Email Functions ───────────────────────────────────────────────

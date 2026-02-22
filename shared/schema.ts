@@ -1912,7 +1912,7 @@ export const mileageLogs = pgTable("mileage_logs", {
   distanceMiles: real("distance_miles").notNull(),
   purpose: text("purpose").default("business"), // 'business', 'personal'
   tripDate: text("trip_date").notNull(),
-  irsRateCentsPerMile: real("irs_rate_cents_per_mile").default(67), // 2024 IRS rate
+  irsRateCentsPerMile: real("irs_rate_cents_per_mile").default(70), // 2025 IRS rate
   deductionAmount: real("deduction_amount").default(0),
   createdAt: text("created_at").notNull(),
 });

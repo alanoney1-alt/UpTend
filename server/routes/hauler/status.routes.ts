@@ -183,6 +183,16 @@ export function registerProStatusRoutes(app: Express) {
         lastCheckedIn: now,
       });
 
+      // Persist to location_history for audit trail (matching WebSocket behavior)
+      storage.addLocationHistory({
+        userId,
+        jobId: existingStatus.currentJobId || undefined,
+        lat: latitude,
+        lng: longitude,
+        accuracy: accuracy || null,
+        recordedAt: now,
+      }).catch(err => console.error("[LOCATION] Failed to persist location_history:", err));
+
       res.json({ success: true, status: updatedStatus });
     } catch (error) {
       console.error("Update location error:", error);
@@ -239,6 +249,16 @@ export function registerProStatusRoutes(app: Express) {
         currentLng: longitude,
         lastCheckedIn: now,
       });
+
+      // Persist to location_history for audit trail (matching WebSocket behavior)
+      storage.addLocationHistory({
+        userId,
+        jobId: existingStatus.currentJobId || undefined,
+        lat: latitude,
+        lng: longitude,
+        accuracy: accuracy || null,
+        recordedAt: now,
+      }).catch(err => console.error("[LOCATION] Failed to persist location_history:", err));
 
       res.json({ success: true, status: updatedStatus });
     } catch (error) {
