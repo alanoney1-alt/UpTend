@@ -1373,15 +1373,15 @@ function getQuickActions(
 
   if (userRole === "customer") {
     return [
-      { label: "Find what you need", action: "navigate:/book" },
+      { label: "Book a Service", action: "message:I need to book a service" },
       { label: "📷 Photo Quote", action: "message:I want to send a photo for a quote" },
       { label: "My Dashboard", action: "navigate:/dashboard" },
     ];
   }
 
   return [
-    { label: "See what we offer", action: "navigate:/services" },
-    { label: "Get a closer estimate", action: "navigate:/quote" },
-    { label: "I'm a Pro", action: "navigate:/pros" },
+    { label: "See what we offer", action: "message:What services do you offer?" },
+    { label: "Get a quote", action: "message:I'd like to get a quote" },
+    { label: "I'm a Pro", action: "message:I'm a Pro, how do I join UpTend?" },
   ];
 }

@@ -535,7 +535,14 @@ function Conversation() {
 
   const handleAction = useCallback((btn: { label: string; action: string }) => {
     if (btn.action.startsWith("navigate:")) {
-      window.location.href = btn.action.replace("navigate:", "");
+      const path = btn.action.replace("navigate:", "");
+      // Allow dashboard routes and tel: links to navigate normally
+      if (path.startsWith("/dashboard") || path.startsWith("/pro/") || path.startsWith("tel:")) {
+        window.location.href = path;
+      } else {
+        // Convert classic-site navigations into George chat messages
+        send(btn.label);
+      }
     } else if (btn.action.startsWith("message:")) {
       send(btn.action.replace("message:", ""));
     } else {
