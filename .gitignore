@@ -40,6 +40,10 @@ lerna-debug.log*
 .temp/
 .tmp/
 
+# Vite cache
+.vite-cache*/
+node_modules_backup/
+
 # Replit
 .replit
 replit.nix

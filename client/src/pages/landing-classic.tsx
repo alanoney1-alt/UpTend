@@ -16,7 +16,7 @@ import {
   ScanFace, TrendingUp, ChevronRight, Truck,
   Waves, ArrowUpFromLine, Package, Search, BrainCircuit,
   ArrowRight, Activity, Globe, Heart, Leaf,
-  Sparkles, Trees, Home, Wrench,
+  Sparkles, Trees, Home, Wrench, ScanLine,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer-classic";
 import { Header } from "@/components/landing/header-classic";
@@ -355,6 +355,7 @@ function WhySection() {
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, color: "text-primary dark:text-orange-400" },
     { key: "pool_cleaning", label: "Pool Cleaning", price: "From $89/mo", icon: Waves, color: "text-primary dark:text-orange-400" },
     { key: "light_demolition", label: "Light Demolition", price: "From $199", icon: Truck, color: "text-primary dark:text-orange-400" },
+    { key: "home_scan", label: "AI Home Scan", price: "From $99", icon: ScanLine, color: "text-violet-500 dark:text-violet-400" },
   ];
 
   return (

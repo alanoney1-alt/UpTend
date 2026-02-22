@@ -229,6 +229,8 @@ export function registerServiceRequestRoutes(app: Express) {
 
       // Re-rank by actual drive time if we have coordinates
       let rankedHaulers = matchedHaulers;
+      // ETA map: hauler ID → durationMinutes from Google Distance Matrix
+      const etaMap = new Map<string, number>();
       if (pickupLat && pickupLng && matchedHaulers.length > 1) {
         try {
           const prosWithCoords = matchedHaulers.filter(
@@ -244,10 +246,12 @@ export function registerServiceRequestRoutes(app: Express) {
               }))
             );
             if (distances.length > 0) {
-              const distMap = new Map(distances.map((d) => [d.id, d.durationMinutes]));
+              for (const d of distances) {
+                etaMap.set(d.id, d.durationMinutes);
+              }
               rankedHaulers = [...matchedHaulers].sort((a: any, b: any) => {
-                const aDur = distMap.get(a.id.toString()) ?? 999;
-                const bDur = distMap.get(b.id.toString()) ?? 999;
+                const aDur = etaMap.get(a.id.toString()) ?? 999;
+                const bDur = etaMap.get(b.id.toString()) ?? 999;
                 return aDur - bDur;
               });
             }
@@ -268,12 +272,32 @@ export function registerServiceRequestRoutes(app: Express) {
           vehicleType: hauler.profile.vehicleType as any,
         });
 
+        // Use real ETA from Google Distance Matrix; fall back to Haversine estimate
+        let etaMinutes = etaMap.get(hauler.id.toString());
+        if (etaMinutes == null && pickupLat && pickupLng && hauler.profile?.lastLat && hauler.profile?.lastLng) {
+          // Haversine fallback: compute straight-line distance, assume 40 km/h city average
+          const R = 6371; // Earth radius in km
+          const dLat = (parseFloat(hauler.profile.lastLat) - pickupLat) * Math.PI / 180;
+          const dLng = (parseFloat(hauler.profile.lastLng) - pickupLng) * Math.PI / 180;
+          const a = Math.sin(dLat / 2) ** 2
+            + Math.cos(pickupLat * Math.PI / 180) * Math.cos(parseFloat(hauler.profile.lastLat) * Math.PI / 180)
+            * Math.sin(dLng / 2) ** 2;
+          const distKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          etaMinutes = Math.round(distKm / 40 * 60); // 40 km/h average city speed
+        }
+        // Final fallback: 20 minutes (reasonable urban default, never random)
+        if (etaMinutes == null) {
+          etaMinutes = 20;
+        }
+        // Ensure ETA is at least 5 minutes (pro needs prep time)
+        etaMinutes = Math.max(etaMinutes, 5);
+
         await storage.createMatchAttempt({
           requestId: request.id,
           haulerId: hauler.id,
           status: "pending",
           quotedPrice: haulerQuote.totalPrice,
-          etaMinutes: Math.floor(Math.random() * 20) + 15,
+          etaMinutes,
           expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
           createdAt: new Date().toISOString(),
         });

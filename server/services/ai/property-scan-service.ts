@@ -28,7 +28,7 @@ export interface PropertyData {
 
 // ─── Realty in US API via RapidAPI ────────────────────────────────────────────
 
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || "d8b4031b0cmsh0fff73bec93f734p1d1ef8jsnc985291799d6";
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || "";
 const RAPIDAPI_HOST = "realty-in-us.p.rapidapi.com";
 
 interface RealtyResult {

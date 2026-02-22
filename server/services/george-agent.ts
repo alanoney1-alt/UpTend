@@ -2280,11 +2280,11 @@ const TOOL_DEFINITIONS: any[] = [
   // ── NEW SMART FEATURES ────────────────────────
   {
     name: "diagnose_from_photo",
-    description: "Analyze a customer's photo of a home/auto problem. Identifies the issue, estimates repair cost, suggests whether to DIY or hire a pro. Returns diagnosis, estimated cost, recommended action.",
+    description: "Analyze a customer's photo of a home/auto problem using GPT-5.2 vision AI. Identifies the issue, severity, estimates repair cost, recommends a service, and suggests whether to DIY or hire a pro. Pass the photo_url when the customer uploads a photo.",
     input_schema: {
       type: "object",
       properties: {
-        image_description: { type: "string", description: "Description of what's in the photo" },
+        photo_url: { type: "string", description: "URL of the uploaded photo to analyze with AI vision" },
         customer_description: { type: "string", description: "What the customer said about the problem" },
         home_area: { type: "string", description: "Area of home: kitchen, bathroom, exterior, etc." },
       },
@@ -2464,7 +2464,7 @@ const TOOL_DEFINITIONS: any[] = [
 // ─────────────────────────────────────────────
 // Execute tool call
 // ─────────────────────────────────────────────
-async function executeTool(name: string, input: any, storage?: any): Promise<any> {
+async function executeTool(name: string, input: any, storage?: any, userId?: string): Promise<any> {
   switch (name) {
     // Existing consumer tools
     case "get_service_pricing":
@@ -2476,12 +2476,13 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
     case "check_availability":
       return tools.checkAvailability(input.service_id, input.zip, input.date || "");
     case "create_booking_draft":
-      return tools.createBookingDraft({
+      return await tools.createBookingDraft({
         serviceId: input.service_id,
         selections: input.selections,
         address: input.address,
         date: input.date,
         timeSlot: input.time_slot,
+        customerId: userId,
       });
     case "get_customer_jobs":
       return await tools.getCustomerJobs(input.user_id, storage);
@@ -3130,7 +3131,8 @@ export async function chat(
         const result = await executeTool(
           (toolBlock as any).name,
           (toolBlock as any).input,
-          context?.storage
+          context?.storage,
+          context?.userId
         );
 
         // Track booking drafts

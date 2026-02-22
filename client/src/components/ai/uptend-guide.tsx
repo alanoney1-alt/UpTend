@@ -28,6 +28,7 @@ interface Message {
   breakdown?: any;
   quoteCard?: any;
   bundleData?: any;
+  bookingData?: any;
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -319,6 +320,30 @@ function BreakdownCard({ data }: { data: any }) {
   );
 }
 
+function BookingCard({ data }: { data: any }) {
+  return (
+    <div className="bg-gradient-to-br from-blue-50/80 to-indigo-50/80 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl p-2.5 text-[11px] space-y-1.5 border border-blue-200/40 backdrop-blur-sm">
+      <div className="font-semibold text-xs">📋 Booking Draft</div>
+      {data.serviceName && <div className="text-sm font-medium">{data.serviceName}</div>}
+      {(data.price || data.estimatedPrice) && (
+        <div className="text-base font-bold text-blue-700 dark:text-blue-400">
+          ${data.price || data.estimatedPrice}
+        </div>
+      )}
+      {data.address && <div><span className="text-muted-foreground">Address:</span> {data.address}</div>}
+      {data.scheduledDate && <div><span className="text-muted-foreground">Date:</span> {data.scheduledDate}</div>}
+      {(data.draftId || data.serviceRequestId) && (
+        <a
+          href={`/book?service=${data.serviceId || ""}&draft=${data.draftId || data.serviceRequestId || ""}`}
+          className="inline-flex items-center gap-1 mt-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+        >
+          Confirm & Book &rarr;
+        </a>
+      )}
+    </div>
+  );
+}
+
 // ─── Pulse Animation CSS ─────────────────────────────────────────────────────
 
 const pulseKeyframes = `
@@ -546,6 +571,7 @@ export function UpTendGuide() {
           if (action.type === "lock_quote") msg.quoteCard = action.data;
           if (action.type === "bundle") msg.bundleData = action.data;
           if (action.type === "breakdown") msg.breakdown = action.data;
+          if (action.type === "booking") msg.bookingData = action.data;
         }
       }
 
@@ -738,6 +764,7 @@ export function UpTendGuide() {
                 {msg.quoteCard && <QuoteCard data={msg.quoteCard} />}
                 {msg.bundleData && <BundleCard data={msg.bundleData} />}
                 {msg.breakdown && <BreakdownCard data={msg.breakdown} />}
+                {msg.bookingData && <BookingCard data={msg.bookingData} />}
                 {msg.quickActions && msg.quickActions.length > 0 && (
                   <div className="flex flex-wrap gap-1 pt-0.5">
                     {msg.quickActions.map((qa, i) => (
