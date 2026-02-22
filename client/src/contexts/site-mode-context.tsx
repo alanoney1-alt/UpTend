@@ -18,9 +18,19 @@ export function useSiteMode() {
   return useContext(SiteModeContext);
 }
 
+const MODE_VERSION_KEY = "uptend-site-mode-v";
+const CURRENT_VERSION = "2"; // bump to reset all users to classic
+
 export function SiteModeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<SiteMode>(() => {
     if (typeof window === "undefined") return "classic";
+    // One-time migration: reset existing users to classic
+    const version = localStorage.getItem(MODE_VERSION_KEY);
+    if (version !== CURRENT_VERSION) {
+      localStorage.setItem(MODE_VERSION_KEY, CURRENT_VERSION);
+      localStorage.setItem("uptend-site-mode", "classic");
+      return "classic";
+    }
     return (localStorage.getItem("uptend-site-mode") as SiteMode) || "classic";
   });
 
