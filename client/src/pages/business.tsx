@@ -1,23 +1,24 @@
 import { Link } from "wouter";
 import { usePageTitle } from "@/hooks/use-page-title";
-import { Header } from "@/components/landing/header";
+import { BusinessHeader } from "@/components/business/business-header";
 import { Footer } from "@/components/landing/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import {
-  Building2, Users, Home, HardHat, Landmark, ArrowRight, Shield,
+  Building2, Users, HardHat, ArrowRight, Shield,
   TrendingUp, Clock, Eye, DollarSign, CheckCircle, Zap,
-  BarChart3, Leaf, Bot, FileText, Truck, AlertTriangle,
-  Calculator, ChevronRight
+  BarChart3, Bot, FileText, Truck, AlertTriangle,
+  Calculator, ChevronRight, Plug, BadgeCheck, ShieldCheck,
+  Handshake, LayoutDashboard, RefreshCw, Bell, Camera,
+  Wrench, ClipboardList, HardDrive, FileSpreadsheet
 } from "lucide-react";
 
 const segments = [
   { id: "pm", label: "Property Management", icon: Building2 },
-  { id: "hoa", label: "HOA", icon: Users },
+  { id: "hoa", label: "HOA / Community", icon: Users },
   { id: "construction", label: "Construction", icon: HardHat },
-  { id: "government", label: "Government", icon: Landmark },
 ] as const;
 
 type Segment = typeof segments[number]["id"];
@@ -47,7 +48,7 @@ const segmentData: Record<Segment, {
     sub: "Common areas, unit turns, emergency repairs — all through one platform with full board reporting.",
     tiers: [
       { name: "Starter", price: "$3", unit: "/unit/mo", features: ["Up to 100 units", "Common area services", "Board reports", "Resident portal"] },
-      { name: "Pro", price: "$5", unit: "/unit/mo", features: ["Up to 500 units", "Priority dispatch", "ESG tracking", "Violation management"] },
+      { name: "Pro", price: "$5", unit: "/unit/mo", features: ["Up to 500 units", "Priority dispatch", "Violation tracking", "Weekly reporting"] },
       { name: "Enterprise", price: "$8", unit: "/unit/mo", features: ["Unlimited units", "White-label portal", "Custom SLAs", "Dedicated team", "API access"] },
     ],
     stats: [
@@ -70,33 +71,77 @@ const segmentData: Record<Segment, {
       { value: "0", label: "Compliance headaches" },
     ],
   },
-  government: {
-    headline: "Government-Ready. Veteran-Powered.",
-    sub: "SDVOSB-certified subsidiary. Prevailing wage compliance. Full audit trails. FEMA-ready.",
-    tiers: [
-      { name: "Municipal", price: "$15K", unit: "/yr", features: ["Up to 50 properties", "Prevailing wage", "Audit trails", "Quarterly reporting"] },
-      { name: "County", price: "$35K", unit: "/yr", features: ["Up to 200 properties", "FEMA response", "Bond compliance", "Dedicated team"] },
-      { name: "State", price: "$75K", unit: "/yr", features: ["Unlimited scope", "Multi-county ops", "Custom compliance", "Executive reporting", "Emergency response"] },
+};
+
+// ─── Segment-Specific Content ───────────────────────────────────────────
+const segmentContent: Record<Segment, {
+  features: { icon: React.ElementType; title: string; desc: string }[];
+  integrations: string[];
+  useCases: { title: string; desc: string }[];
+}> = {
+  pm: {
+    features: [
+      { icon: LayoutDashboard, title: "Multi-Property Dashboard", desc: "Monitor every property from one view — open work orders, scheduled services, spend-to-date, and pro performance." },
+      { icon: RefreshCw, title: "Unit-Turn Coordination", desc: "Automate the full turn cycle: cleaning, painting, repairs, landscaping — all dispatched and tracked in sequence." },
+      { icon: Bell, title: "Tenant Communication Portal", desc: "Tenants submit requests directly. You approve, we dispatch. No phone tag, no lost emails." },
+      { icon: FileText, title: "Consolidated Weekly Invoicing", desc: "One invoice per week across all properties. Line-item detail by property, service type, and pro." },
     ],
-    stats: [
-      { value: "SDVOSB", label: "Certified subsidiary" },
-      { value: "SAM.gov", label: "Registered" },
-      { value: "100%", label: "Audit compliant" },
+    integrations: ["AppFolio", "Buildium", "Yardi", "Excel/CSV", "QuickBooks", "Salesforce"],
+    useCases: [
+      { title: "Portfolio-Wide Maintenance", desc: "Schedule recurring services across all properties — landscaping, pool cleaning, pressure washing — with volume pricing." },
+      { title: "Emergency Dispatch", desc: "After-hours pipe burst? Our AI matches the nearest available pro and dispatches within 2 hours, with real-time updates to your phone." },
+      { title: "Unit Turn Automation", desc: "Tenant moves out Friday, new tenant moves in Monday. UpTend coordinates cleaning, painting, and handyman work to hit your deadline." },
+    ],
+  },
+  hoa: {
+    features: [
+      { icon: BarChart3, title: "Board Reporting Dashboard", desc: "Auto-generated reports for your board meetings — spending by category, vendor performance, compliance status." },
+      { icon: Wrench, title: "Common Area Management", desc: "Pool decks, clubhouses, walking trails, parking lots — schedule and track every common area service." },
+      { icon: ClipboardList, title: "Violation Tracking", desc: "Flag properties that need remediation. Auto-dispatch approved vendors to handle violations with photo proof of completion." },
+      { icon: Bell, title: "Resident Portal", desc: "Residents submit maintenance requests through a branded portal. Track status in real-time without calling the management office." },
+    ],
+    integrations: ["Excel/CSV", "QuickBooks", "HubSpot", "Buildium"],
+    useCases: [
+      { title: "Seasonal Common Area Refresh", desc: "Spring landscaping, fall gutter cleaning, holiday pressure washing — schedule seasonal services for the entire community in one click." },
+      { title: "Violation Remediation", desc: "Board approves a violation notice? We dispatch the right pro, document the fix with photos, and close the ticket automatically." },
+      { title: "Storm Response", desc: "After a hurricane, submit one emergency request. We deploy crews for tree removal, pressure washing, and debris cleanup across the entire community." },
+    ],
+  },
+  construction: {
+    features: [
+      { icon: Users, title: "Subcontractor Management", desc: "Find, vet, and dispatch specialty subs for finish work — drywall, painting, cleaning, landscaping. All insurance-verified." },
+      { icon: HardDrive, title: "Project-Based Tracking", desc: "Organize work orders by project and site. Track progress, spending, and sub performance across all active builds." },
+      { icon: Shield, title: "Compliance Built In", desc: "Prevailing wage tracking, insurance certificate management, OSHA compliance documentation — all automated." },
+      { icon: FileSpreadsheet, title: "Change Order Management", desc: "Scope changes flow through UpTend. Updated pricing, new dispatch, documentation — no more handshake deals." },
+    ],
+    integrations: ["Procore", "Monday.com", "Excel/CSV", "QuickBooks", "Salesforce"],
+    useCases: [
+      { title: "Finish Work Coordination", desc: "Drywall done? UpTend auto-sequences painting, cleaning, and final landscaping. Each sub is dispatched as the previous one completes." },
+      { title: "Multi-Site Cleanup", desc: "Managing 10 active builds? Schedule post-construction cleanup across all sites with one request. We handle the logistics." },
+      { title: "Warranty Service Dispatch", desc: "Homeowner warranty call comes in? Route it through UpTend for documentation, dispatch, and close-out. Full audit trail for your records." },
     ],
   },
 };
+
+// ─── All Integration Platforms ──────────────────────────────────────────
+const ALL_INTEGRATIONS = [
+  "AppFolio", "Buildium", "Yardi", "Salesforce", "HubSpot",
+  "QuickBooks", "Procore", "Monday.com", "Excel/CSV",
+  "ServiceTitan", "Jobber", "Housecall Pro",
+];
 
 export default function Business() {
   usePageTitle("UpTend for Business | Property Services Platform");
   const [activeSegment, setActiveSegment] = useState<Segment>("pm");
   const data = segmentData[activeSegment];
+  const content = segmentContent[activeSegment];
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      <Header />
+      <BusinessHeader />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-4 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+      <section className="pt-24 pb-20 px-4 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
         <div className="max-w-5xl mx-auto text-center">
           <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-6 text-sm font-semibold">
             UpTend for Business
@@ -107,7 +152,7 @@ export default function Business() {
             <span className="text-orange-500">Zero Headaches.</span>
           </h1>
           <p className="text-slate-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
-            Property managers, HOAs, and construction companies use UpTend to replace dozens of vendor relationships 
+            Property managers, HOAs, and construction companies use UpTend to replace dozens of vendor relationships
             with one AI-powered platform. Fully insured pros, real-time tracking, weekly billing.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -255,7 +300,97 @@ export default function Business() {
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* Segment-Specific Features & Use Cases */}
+      <section id="features" className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-4">
+              Built for {segments.find(s => s.id === activeSegment)?.label}
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Features That Fit Your Workflow</h2>
+            <p className="text-slate-400 max-w-2xl mx-auto">
+              Every segment gets tailored tools. Here's what {segments.find(s => s.id === activeSegment)?.label} teams use most.
+            </p>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid sm:grid-cols-2 gap-6 mb-16">
+            {content.features.map((f) => (
+              <Card key={f.title} className="bg-slate-800/50 border-slate-700 hover:border-orange-500/30 transition-colors">
+                <CardContent className="p-6 flex gap-4">
+                  <div className="shrink-0 mt-1">
+                    <div className="w-10 h-10 rounded-lg bg-orange-500/15 flex items-center justify-center">
+                      <f.icon className="w-5 h-5 text-orange-400" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white mb-2">{f.title}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Integrations for this segment */}
+          <div className="mb-16">
+            <h3 className="text-xl font-bold text-center mb-6">
+              Integrates with your {segments.find(s => s.id === activeSegment)?.label?.toLowerCase()} stack
+            </h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {content.integrations.map((name) => (
+                <Badge key={name} className="bg-slate-800 text-slate-200 border-slate-600 px-4 py-2 text-sm font-medium">
+                  <Plug className="w-3.5 h-3.5 mr-2 text-orange-400" />
+                  {name}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* Use Cases */}
+          <div>
+            <h3 className="text-xl font-bold text-center mb-8">Real-World Use Cases</h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              {content.useCases.map((uc) => (
+                <Card key={uc.title} className="bg-slate-800/30 border-slate-700/50">
+                  <CardContent className="p-6">
+                    <h4 className="font-bold text-orange-400 mb-3">{uc.title}</h4>
+                    <p className="text-sm text-slate-400 leading-relaxed">{uc.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Works With Your Tools */}
+      <section id="integrations" className="py-20 px-4 bg-slate-900/50">
+        <div className="max-w-5xl mx-auto text-center">
+          <Plug className="w-12 h-12 text-orange-400 mx-auto mb-6" />
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Works With Your Tools</h2>
+          <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto">
+            We plug into your existing workflow — no system replacement needed. Keep your CRM, your accounting software, and your spreadsheets.
+            UpTend syncs with all of them.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {ALL_INTEGRATIONS.map((name) => (
+              <div
+                key={name}
+                className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-full px-5 py-2.5 text-sm font-medium text-slate-200 hover:border-orange-500/40 transition-colors"
+              >
+                <Plug className="w-4 h-4 text-orange-400" />
+                {name}
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-slate-500">
+            Don't see your platform? We support custom API integrations and CSV import/export for any system.
+          </p>
+        </div>
+      </section>
+
+      {/* Platform Features Grid */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Everything You Need to Run Operations</h2>
@@ -265,7 +400,7 @@ export default function Business() {
               { icon: Shield, title: "Insurance Verified", desc: "Every pro's GL insurance verified. Expired = blocked from your jobs" },
               { icon: Eye, title: "Real-Time Tracking", desc: "GPS tracking, photo documentation, live status updates to your dashboard" },
               { icon: FileText, title: "Weekly Billing", desc: "Net Weekly invoices with line-item detail. No surprises, no chasing" },
-              { icon: Leaf, title: "ESG Reporting", desc: "Carbon tracking, sustainability metrics, and impact reports for your board" },
+              { icon: Camera, title: "Photo Documentation", desc: "Before & after photos on every job. Full visual audit trail for your records" },
               { icon: Zap, title: "Emergency Response", desc: "24/7 urgent dispatch for after-hours emergencies. Auto-escalation" },
               { icon: TrendingUp, title: "Compliance & Audits", desc: "Full audit trails, prevailing wage compliance, insurance certificates on file" },
               { icon: Truck, title: "Certified Pro Network", desc: "Background-checked, trained, and certified pros with career accountability" },
@@ -306,26 +441,49 @@ export default function Business() {
         </div>
       </section>
 
-      {/* Veteran/Government Badge */}
+      {/* Value / Safety / Trust Pillars */}
       <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <Card className="bg-gradient-to-r from-slate-800 to-slate-800/50 border-slate-700 overflow-hidden">
-            <CardContent className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
-              <div className="shrink-0">
-                <div className="w-20 h-20 rounded-full bg-orange-500/20 flex items-center justify-center">
-                  <Landmark className="w-10 h-10 text-orange-400" />
-                </div>
-              </div>
-              <div>
-                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 mb-3">Government Ready</Badge>
-                <h3 className="text-2xl font-bold text-white mb-3">Veteran-Owned. Government-Certified.</h3>
-                <p className="text-slate-300 leading-relaxed">
-                  UpTend's service subsidiary is veteran-owned and pursuing SDVOSB, MBE, SBA 8(a), and DBE certifications. 
-                  We're built for government contracts — prevailing wage compliance, full audit trails, FEMA emergency response capability.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Built on Value, Safety & Trust</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: BadgeCheck,
+                pillar: "VALUE",
+                title: "Transparent Pricing",
+                desc: "AI-powered quoting means no guessing and no haggling. Guaranteed ceiling prices locked at booking. Weekly invoicing with line-item detail.",
+                color: "text-orange-400",
+                bg: "bg-orange-500/15",
+              },
+              {
+                icon: ShieldCheck,
+                pillar: "SAFETY",
+                title: "Fully Verified Pros",
+                desc: "Every pro is background-checked, GL insured up to $1M, and tracked in real-time. Expired insurance = automatically blocked from your jobs.",
+                color: "text-blue-400",
+                bg: "bg-blue-500/15",
+              },
+              {
+                icon: Handshake,
+                pillar: "TRUST",
+                title: "Fair for Everyone",
+                desc: "We treat pros like professionals — fair pay, instant payouts, no lead fees. Happy pros deliver better work for your properties.",
+                color: "text-emerald-400",
+                bg: "bg-emerald-500/15",
+              },
+            ].map((p) => (
+              <Card key={p.pillar} className="bg-slate-800/50 border-slate-700">
+                <CardContent className="p-8 text-center">
+                  <div className={`w-14 h-14 rounded-lg ${p.bg} flex items-center justify-center mx-auto mb-4`}>
+                    <p.icon className={`w-7 h-7 ${p.color}`} />
+                  </div>
+                  <span className={`text-xs font-black uppercase tracking-widest ${p.color}`}>{p.pillar}</span>
+                  <h3 className="text-xl font-bold text-white mt-2 mb-3">{p.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{p.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
