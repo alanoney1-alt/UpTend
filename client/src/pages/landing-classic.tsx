@@ -11,13 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import {
-  ShieldCheck, ArrowRight, Globe, Leaf, Heart, Zap,
-  DollarSign, Clock, Ban, TrendingUp, Users, Star,
-  CheckCircle, ChevronRight, Wrench, Waves, Truck,
-  Package, Home, Trees, ArrowUpFromLine, Sparkles,
-  MessageCircle, CloudRain, Warehouse, Hammer, Droplets, ScanLine,
+  ShieldCheck, ArrowRight, Globe, Heart,
+  TrendingUp, ChevronRight, Wrench, Waves, Truck,
+  Package, Home, Trees, Sparkles,
+  CloudRain, Warehouse, Hammer, Droplets, ScanLine,
   ClipboardCheck, ScanFace, BrainCircuit, Activity,
-  BadgeCheck, Handshake, Receipt, Search,
+  BadgeCheck, Handshake, Receipt,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer-classic";
 import { Header } from "@/components/landing/header-classic";

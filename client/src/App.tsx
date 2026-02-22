@@ -146,17 +146,10 @@ const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-l
 
 /** Hide floating George widget on pages that have their own George UI (AI mode landing) */
 function GuideGate() {
-  const [location] = useLocation();
   const { mode } = useSiteMode();
-  // Classic mode: George widget on all pages EXCEPT landing (original site had it as a chatbot)
-  // George mode: hide on landing (inline George) and meet-george (dedicated page)
-  if (mode === "classic") {
-    // In classic mode, show floating George on all pages including landing
-    return <UpTendGuide />;
-  }
-  // George AI mode: hide widget on pages with their own George UI
-  const hidden = location === "/" || location === "/meet-george";
-  if (hidden) return null;
+  // George AI mode: George IS the landing page. No floating widget anywhere.
+  if (mode === "george") return null;
+  // Classic mode: floating George widget on all pages
   return <UpTendGuide />;
 }
 
@@ -257,7 +250,7 @@ function Router() {
       <Route path="/pro/payouts/setup/refresh" component={ProPayoutSetup} />
       <Route path="/profile" component={Profile} />
       <Route path="/about" component={About} />
-      <Route path="/meet-george" component={MeetGeorge} />
+      <Route path="/meet-george">{() => <Redirect to="/" />}</Route>
       <Route path="/faq" component={FAQ} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />

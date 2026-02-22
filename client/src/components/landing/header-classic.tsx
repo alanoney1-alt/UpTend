@@ -60,11 +60,13 @@ export function Header() {
               {t("nav.about")}
             </span>
           </Link>
-          <Link href="/meet-george">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-meet-george">
-              Meet George
-            </span>
-          </Link>
+          <span
+            className="hover:opacity-80 transition-opacity cursor-pointer"
+            data-testid="link-meet-george"
+            onClick={() => { localStorage.setItem("uptend-site-mode", "george"); window.location.href = "/"; }}
+          >
+            Meet George
+          </span>
           <Link href="/become-pro">
             <span
               className="hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-1.5 text-primary"
@@ -184,9 +186,13 @@ export function Header() {
             <Link href="/about" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-about-mobile">{t("nav.about")}</span>
             </Link>
-            <Link href="/meet-george" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-meet-george-mobile">Meet George</span>
-            </Link>
+            <span
+              className="block p-2 cursor-pointer"
+              data-testid="link-meet-george-mobile"
+              onClick={() => { closeMenu(); localStorage.setItem("uptend-site-mode", "george"); window.location.href = "/"; }}
+            >
+              Meet George
+            </span>
             <Link href="/become-pro" onClick={closeMenu}>
               <span className="block p-2 text-primary font-bold flex items-center gap-2" data-testid="link-become-pro-mobile">
                 <Leaf className="w-5 h-5" /> {t("nav.join_the_pros")}
@@ -254,12 +260,14 @@ export function Header() {
         </div>
       )}
     </nav>
-    {/* George AI toggle banner — visible on every page in classic mode */}
+    {/* Spacer to account for fixed header (h-20 = 80px) */}
+    <div className="h-20" aria-hidden="true" />
+    {/* George AI toggle banner — scrolls naturally, never covers content */}
     <div
-      className="sticky top-[80px] z-40 bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-4 text-center cursor-pointer hover:from-amber-500 hover:to-orange-500 transition-colors shadow-lg"
+      className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-4 text-center cursor-pointer hover:from-amber-500 hover:to-orange-500 transition-colors shadow-lg"
       onClick={() => {
         localStorage.setItem("uptend-site-mode", "george");
-        window.location.reload();
+        window.location.href = "/";
       }}
     >
       <span className="text-sm md:text-base font-semibold">
