@@ -84,8 +84,8 @@ function NewHeroSection() {
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]" data-testid="text-hero-tagline">
             {t("hero.hero_headline_1")}<br />
-            {t("hero.hero_headline_2")}<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">
+            <span className="text-slate-400 font-bold">{t("hero.hero_headline_2")}</span><br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F47C20] to-amber-400">
               {t("hero.hero_headline_3")}
             </span>
           </h1>

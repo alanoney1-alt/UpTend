@@ -20,9 +20,9 @@ const resources = {
       "nav.for_business": "For Business",
       "nav.emergency": "Emergency",
 
-      "hero.hero_headline_1": "Book Your Home Service.",
-      "hero.hero_headline_2": "Instant quotes.",
-      "hero.hero_headline_3": "",
+      "hero.hero_headline_1": "Book Your Home Service",
+      "hero.hero_headline_2": "Without the headache.",
+      "hero.hero_headline_3": "Instant Quotes.",
       "hero.hero_subhead": "Stop calling 5 contractors for 1 job. Get an instant price, book a verified Pro, and track everything in real-time. Home services, finally fixed.",
       "hero.hero_footnote": "Free Instant Quote • No Account Required",
       "hero.pill_protect": "Protect",
@@ -292,9 +292,9 @@ const resources = {
       lifetime: "Lifetime",
       recent_payouts: "Recent Payouts",
       no_jobs_yet: "No completed jobs yet. Go get 'em!",
-      hero_headline_1: "Book Your Home Service.",
-      hero_headline_2: "Instant quotes.",
-      hero_headline_3: "",
+      hero_headline_1: "Book Your Home Service",
+      hero_headline_2: "Without the headache.",
+      hero_headline_3: "Instant Quotes.",
       hero_subhead: "Stop calling 5 contractors for 1 job. Get an instant price, book a verified Pro, and track everything in real-time. Home services, finally fixed.",
 
       training: {
@@ -972,9 +972,9 @@ const resources = {
       "nav.for_business": "Para Empresas",
       "nav.emergency": "Emergencia",
 
-      "hero.hero_headline_1": "Reserva Tu Servicio del Hogar.",
-      "hero.hero_headline_2": "Cotizaciones AI instantáneas.",
-      "hero.hero_headline_3": "Seguimiento en tiempo real.",
+      "hero.hero_headline_1": "Reserva Tu Servicio del Hogar",
+      "hero.hero_headline_2": "Sin el dolor de cabeza.",
+      "hero.hero_headline_3": "Cotizaciones Instantáneas.",
       "hero.hero_subhead": "Deja de llamar a 5 contratistas para 1 trabajo. Obtén un precio instantáneo, contrata un Pro verificado y rastrea todo en tiempo real. Servicios del hogar, finalmente arreglados.",
       "hero.hero_footnote": "Cotización Instantánea Gratuita • Sin Cuenta Requerida",
       "hero.pill_protect": "Proteger",
@@ -1262,9 +1262,9 @@ const resources = {
       lifetime: "Total",
       recent_payouts: "Pagos Recientes",
       no_jobs_yet: "¡Aún sin trabajos completados. A por ellos!",
-      hero_headline_1: "Contrata un Pro. No una esperanza.",
-      hero_headline_2: "Cotizaciones AI instantáneas. Pros verificados.",
-      hero_headline_3: "Seguimiento en tiempo real.",
+      hero_headline_1: "Reserva Tu Servicio del Hogar",
+      hero_headline_2: "Sin el dolor de cabeza.",
+      hero_headline_3: "Cotizaciones Instantáneas.",
       hero_subhead: "Deja de llamar a 5 contratistas para 1 trabajo. Obtén un precio instantáneo, contrata un Pro verificado y rastrea todo en tiempo real. Servicios del hogar, finalmente arreglados.",
 
       training: {
