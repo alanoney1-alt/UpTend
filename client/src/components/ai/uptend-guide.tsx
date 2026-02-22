@@ -358,7 +358,8 @@ const pulseKeyframes = `
 export function UpTendGuide() {
   const [, navigate] = useLocation();
   const pageContext = usePageContext();
-  const [isOpen, setIsOpen] = useState(true);
+  // Auto-open on desktop, start closed on mobile so it doesn't cover content
+  const [isOpen, setIsOpen] = useState(() => window.innerWidth >= 768);
   const [isDisabled, setIsDisabled] = useState(() => localStorage.getItem(LS_DISABLED) === "true");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
