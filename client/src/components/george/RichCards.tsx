@@ -4,6 +4,7 @@
  * Designed for immersive dark UI (#111110 background).
  */
 
+import { useEffect } from "react";
 import { Home, Lock, Package, BarChart3, Calendar, TrendingUp } from "lucide-react";
 
 // ─── PropertyCard ────────────────────────────────────────────────────────────
@@ -68,6 +69,13 @@ export function PropertyCard({ data }: { data: any }) {
 export function QuoteCard({ data }: { data: any }) {
   const validDate = data.validUntil ? new Date(data.validUntil) : null;
   const daysLeft = validDate ? Math.max(0, Math.ceil((validDate.getTime() - Date.now()) / 86400000)) : null;
+
+  // Play lock sound when quote card appears
+  useEffect(() => {
+    try {
+      (window as any).__georgeSound?.play("lock");
+    } catch {}
+  }, []);
 
   return (
     <div className="geo-card geo-card-in geo-card-green">

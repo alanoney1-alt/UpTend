@@ -530,7 +530,7 @@
 }
 .geo-messages::-webkit-scrollbar { display: none; }
 
-/* ─── Message bubbles ─── */
+/* ─── Message bubbles — NO bubbles, text floats on canvas ─── */
 .geo-msg { max-width: 85%; }
 .geo-msg-ai { align-self: flex-start; }
 .geo-msg-you { align-self: flex-end; }
@@ -538,14 +538,17 @@
 @keyframes gBubble { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
 
 .geo-txt-ai {
-  padding: 10px 14px; border-radius: 16px; border-top-left-radius: 4px;
-  background: #1C1917;
-  font-size: 0.9rem; line-height: 1.6; color: #D6D3D1;
+  padding: 6px 0;
+  font-size: 15px; line-height: 1.65; color: #D6D3D1;
+}
+.geo-txt-ai.geo-txt-thinking {
+  background: rgba(255,255,255,0.03); border-radius: 12px;
+  display: inline-flex; padding: 10px 14px;
 }
 .geo-txt-you {
-  padding: 10px 14px; border-radius: 16px; border-top-right-radius: 4px;
-  background: #292524;
-  font-size: 0.9rem; line-height: 1.6; color: #FAFAF9;
+  border-left: 2px solid rgba(249,115,22,0.4);
+  padding: 8px 0 8px 14px;
+  font-size: 15px; line-height: 1.65; color: #FAFAF9;
 }
 
 /* ─── Thinking ─── */
@@ -662,28 +665,20 @@
 .geo-booking-price { font-size: 1.2rem; font-weight: 700; color: #D97706; margin: 4px 0; }
 .geo-booking-detail { font-size: 0.8rem; color: #78716C; }
 
-/* ─── Rich Card System ─── */
+/* ─── Rich Card System — Apple Wallet glass morphism ─── */
 .geo-card {
-  margin-top: 10px; padding: 16px; border-radius: 16px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
+  margin-top: 10px; padding: 18px; border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   font-size: 0.82rem; color: #D6D3D1;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
 }
-.geo-card-amber { border-color: rgba(245,158,11,0.15); }
-.geo-card-green { border-color: rgba(52,211,153,0.15); }
-.geo-card-purple { border-color: rgba(168,85,247,0.15); }
-.geo-card-blue { border-color: rgba(96,165,250,0.15); }
-.geo-card-teal { border-color: rgba(45,212,191,0.15); }
-
-.geo-card-header {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
-  text-transform: uppercase; color: #78716C; margin-bottom: 8px;
-}
-.geo-card-value {
-  font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;
-}
+.geo-card-amber { border-color: rgba(245,158,11,0.18); }
+.geo-card-green { border-color: rgba(52,211,153,0.18); }
+.geo-card-purple { border-color: rgba(168,85,247,0.18); }
+.geo-card-blue { border-color: rgba(96,165,250,0.18); }
+.geo-card-teal { border-color: rgba(45,212,191,0.18); }
 .geo-card-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-top: 10px;
 }
@@ -708,12 +703,12 @@
 .geo-card-cta-blue { background: rgba(96,165,250,0.15); color: #60A5FA; }
 .geo-card-cta-blue:hover { background: rgba(96,165,250,0.25); }
 
-/* ─── Card Animations ─── */
+/* ─── Card Animations — Apple Wallet slide-up ─── */
 @keyframes gCardIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  from { opacity: 0; transform: translateY(24px) scale(0.95); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.geo-card-in { animation: gCardIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both; }
+.geo-card-in { animation: gCardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 @keyframes gPriceIn {
   from { opacity: 0; transform: scale(0.9); }
@@ -860,6 +855,160 @@
     padding-bottom: 5rem;
   }
 }
+
+/* ─── Cinematic Greeting (Item 2) ─── */
+.geo-intro-block {
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 35vh; padding: 2rem 0;
+  transition: min-height 0.6s cubic-bezier(0.16, 1, 0.3, 1), padding 0.6s, opacity 0.4s;
+}
+.geo-intro-block.geo-intro-collapsed {
+  min-height: 0; padding: 0; opacity: 0; pointer-events: none;
+  position: absolute;
+}
+@keyframes gGreetIn {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.geo-greeting {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 36px; font-weight: 200; color: #E8E5E0;
+  line-height: 1.2; letter-spacing: -0.02em;
+  animation: gGreetIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.geo-subtitle {
+  font-size: 15px; color: #A8A29E; margin-top: 12px; line-height: 1.6;
+  animation: gGreetIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+@media (max-width: 480px) {
+  .geo-greeting { font-size: 28px; }
+}
+
+/* ─── Typography System (Item 8) ─── */
+.geo-card-header {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+  text-transform: uppercase; color: #78716C; margin-bottom: 8px;
+}
+.geo-card-value {
+  font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.geo-meta { font-size: 12px; color: #57534E; }
+
+/* ─── Capability Dock (Item 4) ─── */
+.geo-capability-dock {
+  flex-shrink: 0; padding: 0 0 8px;
+  animation: gUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+}
+
+/* ─── Settings Gear (Item 10) ─── */
+.geo-settings-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+  color: #78716C; cursor: pointer; transition: all 0.25s;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.geo-settings-btn:hover { color: #A8A29E; background: rgba(255,255,255,0.1); }
+@keyframes gSettingsIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.geo-settings-panel {
+  position: absolute; top: 100%; right: 0; margin-top: 8px;
+  min-width: 220px; padding: 6px;
+  background: rgba(28,25,23,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  animation: gSettingsIn 0.2s ease-out both;
+}
+.geo-settings-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px; font-size: 0.82rem;
+  color: #A8A29E; cursor: pointer; transition: all 0.15s; border: none; background: none;
+}
+.geo-settings-item:hover { background: rgba(255,255,255,0.06); color: #E8E5E0; }
+.geo-settings-toggle {
+  width: 36px; height: 20px; border-radius: 10px; position: relative;
+  background: rgba(255,255,255,0.1); border: none; cursor: pointer; transition: background 0.2s;
+  margin-left: auto; flex-shrink: 0;
+}
+.geo-settings-toggle.active { background: rgba(249,115,22,0.4); }
+.geo-settings-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #E8E5E0; transition: transform 0.2s;
+}
+.geo-settings-toggle.active::after { transform: translateX(16px); }
+
+/* ─── Send Button Spinner (Item 7) ─── */
+.geo-send-spin {
+  width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.15);
+  border-top-color: #F97316; border-radius: 50%;
+  animation: gSpin 0.8s linear infinite;
+}
+@keyframes gSpin { to { transform: rotate(360deg); } }
+.geo-send { transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.geo-send svg, .geo-send .geo-send-spin { transition: transform 0.15s, opacity 0.15s; }
+
+/* ─── Camera Overlay (Item 5) ─── */
+@keyframes gFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.geo-camera-overlay {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  animation: gFadeIn 0.3s ease both;
+}
+.geo-camera-inner {
+  width: 100%; max-width: 480px; padding: 2rem;
+  display: flex; flex-direction: column; align-items: center; gap: 2rem;
+}
+.geo-camera-close {
+  position: fixed; top: 1rem; right: 1rem;
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.08); border: none;
+  color: #A8A29E; cursor: pointer; transition: all 0.2s; z-index: 61;
+}
+.geo-camera-close:hover { background: rgba(255,255,255,0.14); color: #E8E5E0; }
+.geo-camera-prompt {
+  text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px;
+  padding-top: 4rem;
+}
+.geo-camera-btn-main {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 32px; border-radius: 16px;
+  background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3);
+  color: #F97316; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.geo-camera-btn-main:hover { background: rgba(249,115,22,0.25); transform: translateY(-1px); }
+.geo-camera-result {
+  position: relative; width: 100%; max-width: 480px;
+  border-radius: 20px; overflow: hidden;
+  animation: gCardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.geo-camera-result img {
+  width: 100%; display: block; max-height: 60vh; object-fit: cover;
+}
+.geo-camera-analysis {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 4rem 1.5rem 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+  color: #E8E5E0; font-size: 0.9rem; line-height: 1.6;
+  animation: gUp 0.4s ease-out 0.3s both;
+}
+.geo-camera-done {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 1.5rem; padding: 12px 24px; border-radius: 12px;
+  background: rgba(249,115,22,0.2); border: 1px solid rgba(249,115,22,0.3);
+  color: #F97316; font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; transition: all 0.2s; border: none;
+}
+.geo-camera-done:hover { background: rgba(249,115,22,0.3); }
 
 /* Hide Stripe developer toolbar and badge in test mode */
 iframe[src*="js.stripe.com/v3/controller"],
