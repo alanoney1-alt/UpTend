@@ -1,41 +1,41 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, Zap, Leaf, CheckCircle2 } from "lucide-react";
+import { BadgeCheck, ShieldCheck, Handshake, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const steps = [
   {
-    pillar: "PROTECT",
-    keyword: "Protect",
-    title: "The Intelligence Phase",
-    description: "Our AI monitors your home value and tracks market shifts. Your journey starts with a 360\u00B0 Home Scan that creates a digital shield, protecting you during insurance claims and resale.",
+    pillar: "VALUE",
+    keyword: "Value",
+    title: "Unbeatable Value",
+    description: "Instant AI-powered quotes mean no guessing and no haggling. You see the real price before you book.",
+    icon: BadgeCheck,
+    bullets: ["Instant AI Pricing", "Verified Maintenance Record", "Home Value Protection"],
+    color: "text-orange-600 dark:text-orange-400",
+    bg: "bg-orange-100 dark:bg-orange-900/30",
+    checkColor: "text-orange-400 dark:text-orange-500",
+  },
+  {
+    pillar: "SAFETY",
+    keyword: "Safety",
+    title: "Built-In Safety",
+    description: "Every Pro is background-checked, fully insured up to $1M, and tracked in real-time.",
     icon: ShieldCheck,
-    bullets: ["360° Home Scan", "Insurance Claim Shield", "Market Value Monitoring"],
+    bullets: ["Background-Checked Pros", "$1M Liability Coverage", "Real-Time GPS Tracking"],
     color: "text-blue-600 dark:text-blue-400",
     bg: "bg-blue-100 dark:bg-blue-900/30",
     checkColor: "text-blue-400 dark:text-blue-500",
   },
   {
-    pillar: "CONNECT",
-    keyword: "Connect",
-    title: "The Action Phase",
-    description: "Get on-demand access to our network of Vetted Pros. No middle-men, no lead fees, and no guessing. You book in minutes; we handle the rest with total transparency.",
-    icon: Zap,
-    bullets: ["Instant Match with local Pros", "Bilingual Support", "Transparent, Up-front Pay"],
-    color: "text-cyan-600 dark:text-cyan-400",
-    bg: "bg-cyan-100 dark:bg-cyan-900/30",
-    checkColor: "text-cyan-400 dark:text-cyan-500",
-  },
-  {
-    pillar: "SUSTAIN",
-    keyword: "Sustain",
-    title: "The Impact Phase",
-    description: "Every job is ESG-tracked. We provide you with a verified report on the sustainability impact of your service, while our Pros build green credentials for their own careers.",
-    icon: Leaf,
-    bullets: ["Verified ESG Reporting", "Material Diversion Tracking", "Pro Sustainability Badges"],
-    color: "text-green-600 dark:text-green-400",
-    bg: "bg-green-100 dark:bg-green-900/30",
-    checkColor: "text-green-400 dark:text-green-500",
+    pillar: "TRUST",
+    keyword: "Trust",
+    title: "Earned Trust",
+    description: "We treat Pros like professionals \u2014 fair pay, instant payouts, and a real career path.",
+    icon: Handshake,
+    bullets: ["Instant Pro Payouts", "No Lead Fees Ever", "Full Photo Documentation"],
+    color: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-emerald-100 dark:bg-emerald-900/30",
+    checkColor: "text-emerald-400 dark:text-emerald-500",
   },
 ];
 
