@@ -11,7 +11,7 @@ import {
   Shield, DollarSign, TrendingUp, Clock, AlertTriangle,
   Home, CreditCard, Camera, Cpu, CheckCircle, ArrowRight,
   Lock, Smartphone, Star, Zap, ChevronRight, Award,
-  Flame, Eye, Thermometer, Plane,
+  Eye, Thermometer, Plane,
 } from "lucide-react";
 
 function openGeorgeWithScan() {
@@ -421,18 +421,6 @@ function GamificationSection({ isEs }: { isEs: boolean }) {
           ))}
         </div>
 
-        {/* Streak bonus */}
-        <div className="text-center">
-          <Card className="inline-block border-[#F47C20]/30">
-            <CardContent className="p-4 flex items-center gap-3">
-              <Flame className="w-6 h-6 text-[#F47C20]" />
-              <span className="font-bold text-sm">
-                {isEs ? "Escanea 3 días seguidos → $5 extra" : "Scan 3 days in a row → extra $5"}
-              </span>
-              <Flame className="w-6 h-6 text-[#F47C20]" />
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </section>
   );
