@@ -8,6 +8,9 @@ import {
   backgroundChecks,
 } from "@shared/schema";
 import { z } from "zod";
+import { ComplianceStorage } from "../../storage/domains/compliance/storage";
+
+const complianceStorage = new ComplianceStorage();
 
 // === Validation Schemas ===
 
@@ -345,6 +348,140 @@ export function registerComplianceRoutes(app: Express) {
     } catch (error) {
       console.error("Error deleting background check:", error);
       res.status(500).json({ error: "Failed to delete background check" });
+    }
+  });
+
+  // ==========================================
+  // RECEIPTS (Tax Compliance Vault)
+  // ==========================================
+
+  app.get("/api/compliance/receipts/:haulerId", requireAuth, async (req, res) => {
+    try {
+      const receipts = await complianceStorage.getComplianceReceiptsByHauler(req.params.haulerId);
+      res.json(receipts);
+    } catch (error) {
+      console.error("Error fetching receipts:", error);
+      res.status(500).json({ error: "Failed to fetch receipts" });
+    }
+  });
+
+  app.post("/api/compliance/receipts", requireAuth, async (req, res) => {
+    try {
+      const { proId, receiptType, vendorName, amount, receiptDate } = req.body;
+
+      if (!receiptType || !amount || !receiptDate) {
+        return res.status(400).json({ error: "receiptType, amount, and receiptDate are required" });
+      }
+
+      const userId = proId || ((req.user as any).userId || (req.user as any).id);
+
+      // Determine tax deductibility based on type
+      const deductibleTypes = ["fuel", "disposal", "equipment", "insurance", "license"];
+      const taxDeductible = deductibleTypes.includes(receiptType);
+
+      // Map receipt type to IRS category
+      const categoryMap: Record<string, string> = {
+        fuel: "vehicle_expense",
+        disposal: "supplies",
+        equipment: "supplies",
+        insurance: "insurance",
+        license: "business_license",
+        other: "other",
+      };
+
+      const receipt = await complianceStorage.createComplianceReceipt({
+        haulerId: userId,
+        receiptType,
+        vendorName: vendorName || null,
+        amount: parseFloat(amount),
+        receiptDate,
+        taxDeductible,
+        category: categoryMap[receiptType] || "other",
+        createdAt: new Date().toISOString(),
+      });
+
+      res.status(201).json(receipt);
+    } catch (error) {
+      console.error("Error creating receipt:", error);
+      res.status(500).json({ error: "Failed to create receipt" });
+    }
+  });
+
+  // ==========================================
+  // MILEAGE LOGS (Tax Compliance Vault)
+  // ==========================================
+
+  app.get("/api/compliance/mileage/:haulerId", requireAuth, async (req, res) => {
+    try {
+      const logs = await complianceStorage.getMileageLogsByHauler(req.params.haulerId);
+      res.json(logs);
+    } catch (error) {
+      console.error("Error fetching mileage logs:", error);
+      res.status(500).json({ error: "Failed to fetch mileage logs" });
+    }
+  });
+
+  app.post("/api/compliance/mileage", requireAuth, async (req, res) => {
+    try {
+      const { proId, startAddress, endAddress, distanceMiles, purpose, tripDate } = req.body;
+
+      if (!distanceMiles || !tripDate) {
+        return res.status(400).json({ error: "distanceMiles and tripDate are required" });
+      }
+
+      const userId = proId || ((req.user as any).userId || (req.user as any).id);
+
+      const log = await complianceStorage.createMileageLog({
+        haulerId: userId,
+        startAddress: startAddress || null,
+        endAddress: endAddress || null,
+        distanceMiles: parseFloat(distanceMiles),
+        purpose: purpose || "business",
+        tripDate,
+        irsRateCentsPerMile: 70, // 2025 IRS standard mileage rate
+        createdAt: new Date().toISOString(),
+      });
+
+      res.status(201).json(log);
+    } catch (error) {
+      console.error("Error creating mileage log:", error);
+      res.status(500).json({ error: "Failed to create mileage log" });
+    }
+  });
+
+  // ==========================================
+  // TAX SUMMARY (Tax Compliance Vault)
+  // ==========================================
+
+  app.get("/api/compliance/tax-summary/:haulerId", requireAuth, async (req, res) => {
+    try {
+      const year = parseInt(req.query.year as string) || new Date().getFullYear();
+      const haulerId = req.params.haulerId;
+
+      const [receiptSummary, mileageSummary] = await Promise.all([
+        complianceStorage.getComplianceReceiptSummary(haulerId, year),
+        complianceStorage.getMileageSummary(haulerId, year),
+      ]);
+
+      const totalDeductions = receiptSummary.totalDeductible + mileageSummary.totalDeduction;
+      // Estimated tax savings at ~25% effective rate for self-employed
+      const estimatedTaxSavings = Math.round(totalDeductions * 0.25);
+
+      res.json({
+        year,
+        totalExpenses: receiptSummary.totalExpenses,
+        totalDeductibleExpenses: receiptSummary.totalDeductible,
+        expensesByCategory: receiptSummary.byCategory,
+        totalMiles: mileageSummary.totalMiles,
+        businessMiles: mileageSummary.businessMiles,
+        mileageDeduction: mileageSummary.totalDeduction,
+        totalDeductions,
+        irsStandardRate: "$0.70/mile",
+        estimatedTaxSavings,
+      });
+    } catch (error) {
+      console.error("Error computing tax summary:", error);
+      res.status(500).json({ error: "Failed to compute tax summary" });
     }
   });
 }

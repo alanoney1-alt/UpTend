@@ -44,7 +44,7 @@ export class ComplianceStorage implements IComplianceStorage {
   }
 
   async createMileageLog(log: InsertMileageLog): Promise<MileageLog> {
-    const deduction = (log.distanceMiles * (log.irsRateCentsPerMile || 67)) / 100;
+    const deduction = (log.distanceMiles * (log.irsRateCentsPerMile || 70)) / 100;
     const [result] = await db.insert(mileageLogs).values({ ...log, deductionAmount: deduction }).returning();
     return result;
   }
