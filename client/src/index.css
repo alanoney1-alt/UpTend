@@ -468,8 +468,9 @@
 
 /* ─── Root ─── */
 .geo-root {
-  min-height: 100vh; position: relative; overflow: hidden;
+  height: 100vh; height: 100dvh; position: relative; overflow: hidden;
   background: #111110; color: #E8E5E0;
+  display: flex; flex-direction: column;
 }
 
 /* ─── Ambient ─── */
@@ -493,18 +494,23 @@
   box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 .geo-mode-toggle:hover { color: #FAFAF9; background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.4); transform: translateY(-1px); }
+@media (max-width: 768px) {
+  .geo-mode-toggle { padding: 8px 12px; font-size: 0.7rem; top: 0.5rem; right: 0.5rem; }
+  .geo-mode-toggle span { display: none; }
+  .geo-mode-toggle { gap: 0; }
+}
 
 /* ─── Full-screen conversation ─── */
 .geo-conversation {
   display: flex; flex-direction: column;
-  min-height: 100vh; max-width: 640px; margin: 0 auto;
+  flex: 1; min-height: 0; max-width: 640px; margin: 0 auto; width: 100%;
   padding: 0 1rem;
 }
 
 /* ─── Header — like a chat app ─── */
 .geo-header {
   display: flex; align-items: center; gap: 12px;
-  padding: 1.25rem 0; flex-shrink: 0;
+  padding: 1.25rem 0; padding-top: 2.75rem; flex-shrink: 0;
 }
 .geo-avatar-circle {
   width: 40px; height: 40px; border-radius: 50%;
@@ -568,6 +574,9 @@
   padding: 0.75rem 0 1.5rem; flex-shrink: 0;
   padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
 }
+@media (max-width: 768px) {
+  .geo-input-dock { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); }
+}
 .geo-field {
   display: flex; align-items: center; gap: 8px;
   background: #1C1917; border-radius: 14px;
@@ -602,15 +611,20 @@
 
 /* ─── Navigation ─── */
 .geo-nav {
-  display: flex; gap: 4px; padding: 8px 16px; justify-content: center;
+  display: flex; gap: 4px; padding: 8px 16px; padding-right: 160px; justify-content: center;
   position: fixed; top: 0; left: 0; right: 0; z-index: 40;
   background: rgba(17,17,16,0.8); backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255,255,255,0.04);
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.geo-nav::-webkit-scrollbar { display: none; }
+@media (max-width: 768px) {
+  .geo-nav { padding-right: 48px; justify-content: flex-start; }
 }
 .geo-nav-link {
   padding: 6px 12px; border-radius: 8px; font-size: 0.72rem; font-weight: 500;
-  color: #57534E; text-decoration: none; transition: all 0.2s;
+  color: #57534E; text-decoration: none; transition: all 0.2s; white-space: nowrap;
 }
 .geo-nav-link:hover { color: #A8A29E; background: rgba(255,255,255,0.04); }
 

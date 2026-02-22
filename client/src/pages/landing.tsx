@@ -110,7 +110,7 @@ function GeorgeLanding() {
         <div className="geo-grad geo-grad-2" />
         <div className="geo-grad geo-grad-3" />
       </div>
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col flex-1 min-h-0">
         <Conversation />
       </div>
     </div>
@@ -272,7 +272,7 @@ function Conversation() {
         {showStarters && (
           <div className="geo-starters">
             <div className="geo-starters-label">People usually ask things like:</div>
-            {STARTERS.map((s, i) => (
+            {STARTERS.slice(0, 5).map((s, i) => (
               <button key={s} onClick={() => send(s)} className="geo-pill" style={{ animationDelay: `${0.1 + i * 0.05}s` }}>
                 {s}
               </button>
