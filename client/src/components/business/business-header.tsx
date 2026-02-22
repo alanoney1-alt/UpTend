@@ -9,7 +9,7 @@ export function BusinessHeader() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Left: Logo → Home */}
         <Link href="/">
           <Logo className="w-9 h-9" textClassName="text-xl" />
@@ -33,7 +33,7 @@ export function BusinessHeader() {
             <Button variant="ghost" size="sm" className="text-slate-300">Log In</Button>
           </Link>
           <Link href="/business/onboarding">
-            <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold">
+            <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold">
               Get Started <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </Link>
@@ -70,7 +70,7 @@ export function BusinessHeader() {
               <Button variant="outline" className="w-full border-slate-600 text-slate-300">Log In</Button>
             </Link>
             <Link href="/business/onboarding" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full bg-orange-500 text-white font-semibold">Get Started</Button>
+              <Button className="w-full bg-amber-500 text-white font-semibold">Get Started</Button>
             </Link>
           </div>
         </div>
