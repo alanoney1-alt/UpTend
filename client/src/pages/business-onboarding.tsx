@@ -22,7 +22,6 @@ import {
   Building2,
   Home,
   HardHat,
-  Landmark,
   Check,
   Upload,
   Download,
@@ -41,7 +40,7 @@ import {
 
 // ─── Types ─────────────────────────────────────────────────────────
 
-type Segment = "property_management" | "hoa" | "construction" | "government";
+type Segment = "property_management" | "hoa" | "construction";
 
 interface BusinessInfo {
   segment: Segment | "";
@@ -115,14 +114,12 @@ const SEGMENTS: { key: Segment; label: string; icon: React.ReactNode; descriptio
   { key: "property_management", label: "Property Management", icon: <Building2 className="h-6 w-6" />, description: "Manage residential & commercial properties" },
   { key: "hoa", label: "HOA / Community", icon: <Home className="h-6 w-6" />, description: "Homeowner associations & communities" },
   { key: "construction", label: "Construction", icon: <HardHat className="h-6 w-6" />, description: "General contractors & builders" },
-  { key: "government", label: "Government", icon: <Landmark className="h-6 w-6" />, description: "Municipal & government agencies" },
 ];
 
 const UNIT_LABELS: Record<Segment, string> = {
   property_management: "Number of Doors",
   hoa: "Number of Units",
   construction: "Active Projects",
-  government: "Facilities",
 };
 
 const PLANS: Record<Segment, PlanOption[]> = {
@@ -141,11 +138,6 @@ const PLANS: Record<Segment, PlanOption[]> = {
     { tier: "starter", name: "Starter", price: "$299", priceNote: "/mo", features: ["Up to 5 active projects", "Basic scheduling", "Email support", "Standard response times", "Monthly reporting"] },
     { tier: "pro", name: "Pro", price: "$599", priceNote: "/mo", popular: true, features: ["Up to 20 active projects", "Priority scheduling", "Phone & email support", "Material tracking", "Real-time updates", "Weekly reporting"] },
     { tier: "enterprise", name: "Enterprise", price: "$999", priceNote: "/mo", features: ["Unlimited projects", "Dedicated account manager", "24/7 support", "Full material tracking", "Custom integrations", "API access", "Compliance tools"] },
-  ],
-  government: [
-    { tier: "starter", name: "Starter", price: "$15K", priceNote: "/yr", features: ["Up to 10 facilities", "Basic work management", "Email support", "Compliance tracking", "Quarterly reporting"] },
-    { tier: "pro", name: "Pro", price: "$35K", priceNote: "/yr", popular: true, features: ["Up to 50 facilities", "Priority response", "Phone & email support", "Full compliance suite", "Real-time tracking", "Monthly reporting", "Audit trail"] },
-    { tier: "enterprise", name: "Enterprise", price: "$75K", priceNote: "/yr", features: ["Unlimited facilities", "Dedicated team", "24/7 support", "Custom compliance", "Integrations", "API access", "On-site training"] },
   ],
 };
 
@@ -178,6 +170,15 @@ const INTEGRATIONS = [
   { key: "appfolio", name: "AppFolio" },
   { key: "buildium", name: "Buildium" },
   { key: "yardi", name: "Yardi" },
+  { key: "salesforce", name: "Salesforce" },
+  { key: "hubspot", name: "HubSpot" },
+  { key: "quickbooks", name: "QuickBooks" },
+  { key: "procore", name: "Procore" },
+  { key: "monday", name: "Monday.com" },
+  { key: "servicetitan", name: "ServiceTitan" },
+  { key: "jobber", name: "Jobber" },
+  { key: "housecallpro", name: "Housecall Pro" },
+  { key: "excel", name: "Excel/CSV" },
 ];
 
 // ─── Helpers ───────────────────────────────────────────────────────
@@ -276,10 +277,6 @@ export default function BusinessOnboarding() {
     const units = parseInt(info.unitCount) || totalUnits || 0;
     if (seg === "construction") {
       return { amount: parseInt(plan.price.replace(/[^0-9]/g, "")) || 0, label: plan.price + plan.priceNote };
-    }
-    if (seg === "government") {
-      const yearly = parseInt(plan.price.replace(/[^0-9]/g, "")) * 1000;
-      return { amount: Math.round(yearly / 12), label: plan.price + plan.priceNote };
     }
     const perUnit = parseInt(plan.price.replace(/[^0-9]/g, "")) || 0;
     return { amount: perUnit * units, label: `$${(perUnit * units).toLocaleString()}${plan.priceNote.replace(/\/.*\//, "/")}` };
