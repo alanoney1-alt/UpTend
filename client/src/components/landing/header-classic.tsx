@@ -43,7 +43,7 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Center: Nav Links */}
+        {/* Center: Nav Links — clean & minimal */}
         <div className="hidden md:flex items-center justify-center gap-8 text-sm font-medium text-slate-300 flex-1">
           <Link href="/services">
             <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-services">
@@ -60,43 +60,23 @@ export function Header() {
               {t("nav.about")}
             </span>
           </Link>
-          <Link href="/academy">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-academy">
-              {t("nav.pro_academy")}
-            </span>
-          </Link>
-          <Link href="/find-pro">
-            <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-find-pro">
-              Find a Pro
-            </span>
-          </Link>
           <Link href="/meet-george">
             <span className="hover:opacity-80 transition-opacity cursor-pointer" data-testid="link-meet-george">
               Meet George
             </span>
           </Link>
-        </div>
-
-        <p className="hidden lg:block text-xs text-slate-500 italic absolute left-1/2 -translate-x-1/2 bottom-1 whitespace-nowrap" data-testid="text-header-tagline">
-          {t("nav.header_tagline")}
-        </p>
-
-        {/* Right: Actions */}
-        <div className="hidden md:flex items-center gap-4 flex-shrink-0">
-          <Link href="/emergency">
-            <span className="text-sm font-bold text-red-400 hover:text-red-300 transition-colors cursor-pointer flex items-center gap-1.5" data-testid="link-emergency">
-              🚨 Emergency
-            </span>
-          </Link>
-          <LanguageToggle />
           <Link href="/become-pro">
             <span
-              className="text-sm font-bold text-primary hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-2 mr-2"
+              className="hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-1.5 text-primary"
               data-testid="link-become-pro"
             >
-              <Leaf className="w-4 h-4" /> {t("nav.join_the_pros")}
+              <Leaf className="w-3.5 h-3.5" /> {t("nav.join_the_pros")}
             </span>
           </Link>
+        </div>
+
+        {/* Right: Actions */}
+        <div className="hidden md:flex items-center gap-3 flex-shrink-0">
 
           {isLoading ? (
             <div className="w-8 h-8 rounded-full bg-slate-700 animate-pulse" />
@@ -203,12 +183,6 @@ export function Header() {
             </Link>
             <Link href="/about" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-about-mobile">{t("nav.about")}</span>
-            </Link>
-            <Link href="/academy" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-academy-mobile">{t("nav.pro_academy")}</span>
-            </Link>
-            <Link href="/find-pro" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-find-pro-mobile">Find a Pro</span>
             </Link>
             <Link href="/meet-george" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-meet-george-mobile">Meet George</span>
