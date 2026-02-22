@@ -132,10 +132,10 @@ export function Footer() {
               {t("footer.footer_serving")}
             </p>
             <div className="flex gap-3 mt-4">
-              <a href="https://www.facebook.com/UptendGeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">f</a>
-              <a href="https://www.instagram.com/uptendgeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">ig</a>
-              <a href="https://www.tiktok.com/@uptendgeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">tt</a>
-              <a href="https://www.youtube.com/@UpTendGeorge" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">yt</a>
+              <a href="https://www.facebook.com/UptendGeorge" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">f</a>
+              <a href="https://www.instagram.com/uptendgeorge" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">ig</a>
+              <a href="https://www.tiktok.com/@uptendgeorge" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">tt</a>
+              <a href="https://www.youtube.com/@UpTendGeorge" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors text-slate-400 hover:text-white text-xs font-bold">yt</a>
             </div>
             <div className="mt-4 space-y-2 text-sm">
               <Link href="/business" className="block hover:text-primary transition-colors">UpTend for Business</Link>

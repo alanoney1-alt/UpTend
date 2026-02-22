@@ -52,14 +52,14 @@ const pricingServices: ServicePricing[] = [
     id: "junk_removal",
     name: "Junk Removal",
     price: "From $99",
-    description: "Professional debris removal with verified ESG tracking and sustainability reporting.",
+    description: "Professional debris removal with donation tracking and tax receipts for qualifying items.",
     benefit: "Clears yard hazards & storm-risk items • Eco-friendly disposal",
     icon: Truck,
   },
   {
     id: "garage_cleanout",
     name: "Garage Cleanout",
-    price: "From $299",
+    price: "From $150",
     description: "Complete garage cleanout with sorting, hauling, and organization assistance.",
     benefit: "Reclaim valuable space • Prepare for sale or storage",
     icon: Home,
@@ -67,7 +67,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "moving_labor",
     name: "Moving Labor",
-    price: "$80/hr",
+    price: "From $65/hr",
     description: "Hourly labor for loading, unloading, packing, and heavy lifting assistance.",
     benefit: "Flexible hourly rates • Professional muscle when needed",
     icon: Package,
@@ -83,7 +83,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "carpet_cleaning",
     name: "Carpet Cleaning",
-    price: "Professional deep cleaning",
+    price: "From $50/room",
     description: "Professional carpet and upholstery cleaning with advanced extraction methods.",
     benefit: "Removes allergens • Extends carpet life",
     icon: Home,
@@ -91,7 +91,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "landscaping",
     name: "Landscaping",
-    price: "Competitive rates",
+    price: "From $49",
     description: "Professional lawn care, trimming, edging, and yard maintenance services.",
     benefit: "Maintains curb appeal • Prevents code violations",
     icon: Trees,
@@ -99,7 +99,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "gutter_cleaning",
     name: "Gutter Cleaning",
-    price: "From $129",
+    price: "From $150",
     description: "Complete gutter cleaning with flow testing and debris removal for all perimeters.",
     benefit: "Prevents foundation erosion • Protects against water damage",
     icon: Waves,
@@ -115,8 +115,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "pool_cleaning",
     name: "Pool Cleaning",
-    price: "From $89/mo",
-    description: "Basic ($89/mo), Standard ($129/mo), Full Service ($169/mo), or One-Time Deep Clean ($199).",
+    price: "From $120/mo",
+    description: "Basic ($120/mo), Standard ($165/mo), Premium ($210/mo), or One-Time Deep Clean ($199).",
     benefit: "Crystal clear water • Equipment longevity",
     icon: Droplets,
   },
@@ -854,7 +854,7 @@ export function FloridaEstimator({ preselectedService }: FloridaEstimatorProps =
             variant="ghost"
             size="sm"
             onClick={() => setStep(5)}
-            className="mb-4 text-slate-300 hover:text-white"
+            className="mb-4 text-slate-400 hover:text-white"
             data-testid="button-back-edit-selections"
           >
             ← Edit Selections

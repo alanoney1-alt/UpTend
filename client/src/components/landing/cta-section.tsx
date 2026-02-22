@@ -49,7 +49,7 @@ export function CTASection() {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
-              <Link href="/pro/dashboard">
+              <Link href="/become-pro">
                 <Button
                   size="lg"
                   variant="outline"
