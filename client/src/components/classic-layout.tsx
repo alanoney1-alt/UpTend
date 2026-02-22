@@ -14,16 +14,6 @@ export function ClassicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      {/* George AI toggle banner — sticky below the fixed header */}
-      <div
-        className="sticky top-[60px] z-40 bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-4 text-center cursor-pointer hover:from-amber-500 hover:to-orange-500 transition-colors shadow-lg"
-        onClick={toggle}
-      >
-        <span className="text-sm md:text-base font-semibold">
-          Try <strong>George AI</strong> — your intelligent home assistant.{" "}
-          <span className="underline font-bold">Switch to AI Mode</span> &rarr;
-        </span>
-      </div>
       <main>{children}</main>
       <Footer />
     </div>

@@ -9,7 +9,7 @@ interface SiteModeContextType {
 }
 
 const SiteModeContext = createContext<SiteModeContextType>({
-  mode: "george",
+  mode: "classic",
   setMode: () => {},
   toggle: () => {},
 });
@@ -20,8 +20,8 @@ export function useSiteMode() {
 
 export function SiteModeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<SiteMode>(() => {
-    if (typeof window === "undefined") return "george";
-    return (localStorage.getItem("uptend-site-mode") as SiteMode) || "george";
+    if (typeof window === "undefined") return "classic";
+    return (localStorage.getItem("uptend-site-mode") as SiteMode) || "classic";
   });
 
   useEffect(() => {

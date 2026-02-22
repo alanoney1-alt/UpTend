@@ -118,9 +118,7 @@ function getSeasonalStarters(): string[] {
   const picks: string[] = [];
   const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
 
-  if (month >= 5 && month <= 7) {
-    picks.push("I need my gutters cleaned before hurricane season");
-  } else if (month >= 2 && month <= 4) {
+  if (month >= 2 && month <= 4) {
     picks.push("How much does pressure washing cost?");
   } else {
     picks.push(pick(STARTER_CATEGORIES.booking));
@@ -166,7 +164,7 @@ function renderContent(text: string): string {
 
   html = html.replace(/\x00LINK(\d+)\x00/g, (_m, idx) => linkSlots[parseInt(idx)]);
 
-  return DOMPurify.sanitize(html);
+  return DOMPurify.sanitize(html, { ADD_ATTR: ['target'] });
 }
 
 // ─── Session management ───────────────────────────────────────────────────
@@ -440,7 +438,7 @@ function GeorgeLanding() {
                 className="geo-settings-item w-full"
               >
                 <LayoutGrid className="w-4 h-4" />
-                <span>Classic Site</span>
+                <span>Switch to Classic Site</span>
               </button>
               <button
                 onClick={() => {
@@ -778,7 +776,7 @@ function Conversation() {
         {isTyping && (
           <div className="geo-msg geo-msg-ai geo-msg-in">
             <div className="geo-txt-ai geo-txt-thinking">
-              <span className="geo-think"><i /><i /><i /></span>
+              <div className="geo-think-shimmer" />
             </div>
           </div>
         )}

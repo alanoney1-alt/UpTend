@@ -133,7 +133,7 @@ export function Header() {
                     {t("nav.log_in")} <ChevronDown className="ml-1 w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" data-testid="menu-login-options">
+                <DropdownMenuContent className="w-56 bg-slate-800 border-slate-700 text-white" data-testid="menu-login-options">
                   <Link href="/login">
                     <DropdownMenuItem className="cursor-pointer p-3" data-testid="link-customer-login">
                       <UserCircle className="mr-2 w-4 h-4 text-primary" /> {t("nav.member_login")}
@@ -262,19 +262,6 @@ export function Header() {
     </nav>
     {/* Spacer to account for fixed header (h-20 = 80px) */}
     <div className="h-20" aria-hidden="true" />
-    {/* George AI toggle banner — scrolls naturally, never covers content */}
-    <div
-      className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-4 text-center cursor-pointer hover:from-amber-500 hover:to-orange-500 transition-colors shadow-lg"
-      onClick={() => {
-        localStorage.setItem("uptend-site-mode", "george");
-        window.location.href = "/";
-      }}
-    >
-      <span className="text-sm md:text-base font-semibold">
-        Try <strong>George AI</strong> — your intelligent home assistant.{" "}
-        <span className="underline font-bold">Switch to AI Mode</span> &rarr;
-      </span>
-    </div>
     </>
   );
 }

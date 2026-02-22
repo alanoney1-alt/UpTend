@@ -24,13 +24,11 @@ import { Header } from "@/components/landing/header-classic";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { ProsNearYou } from "@/components/landing/pros-near-you-classic";
 import { FloridaEstimator } from "@/components/booking/florida-estimator-classic";
-import { StormCountdown } from "@/components/booking/storm-countdown";
 import { useTranslation } from "react-i18next";
 export default function LandingClassic() {
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing-classic">
       <Header />
-      <StormCountdown />
       <main>
         <NewHeroSection />
         <WhatDoesUpTendMeanSection />
