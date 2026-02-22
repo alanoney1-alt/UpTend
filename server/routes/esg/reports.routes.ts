@@ -26,8 +26,7 @@ router.get("/reports/scope3", async (req, res) => {
     const { businessAccountId, startDate, endDate } = scope3Schema.parse(req.query);
 
     // Verify user has access to this business account
-    // @ts-ignore
-    const userId = req.user?.id || "";
+    const userId = ((req.user as any)?.userId || (req.user as any)?.id) || "";
     const membership = await storage.getTeamMemberByUserAndBusiness(userId, businessAccountId);
     if (!membership || !membership.canAccessEsgReports) {
       return res.status(403).json({ error: "Insufficient permissions to access ESG reports" });
@@ -67,8 +66,7 @@ router.get("/reports/csv", async (req, res) => {
     const { businessAccountId, startDate, endDate, serviceType } = csvExportSchema.parse(req.query);
 
     // Verify access
-    // @ts-ignore
-    const userId = req.user?.id || "";
+    const userId = ((req.user as any)?.userId || (req.user as any)?.id) || "";
     const membership = await storage.getTeamMemberByUserAndBusiness(userId, businessAccountId);
     if (!membership || !membership.canAccessEsgReports) {
       return res.status(403).json({ error: "Insufficient permissions to access ESG reports" });
@@ -112,8 +110,7 @@ router.get("/reports/pdf", async (req, res) => {
     const { businessAccountId, startDate, endDate } = scope3Schema.parse(req.query);
 
     // Verify access
-    // @ts-ignore
-    const userId = req.user?.id || "";
+    const userId = ((req.user as any)?.userId || (req.user as any)?.id) || "";
     const membership = await storage.getTeamMemberByUserAndBusiness(userId, businessAccountId);
     if (!membership || !membership.canAccessEsgReports) {
       return res.status(403).json({ error: "Insufficient permissions to access ESG reports" });
@@ -166,8 +163,7 @@ router.get("/reports/certificate", async (req, res) => {
     const { businessAccountId } = z.object({ businessAccountId: z.string() }).parse(req.query);
 
     // Verify access
-    // @ts-ignore
-    const userId = req.user?.id || "";
+    const userId = ((req.user as any)?.userId || (req.user as any)?.id) || "";
     const membership = await storage.getTeamMemberByUserAndBusiness(userId, businessAccountId);
     if (!membership || !membership.canAccessEsgReports) {
       return res.status(403).json({ error: "Insufficient permissions to access ESG reports" });

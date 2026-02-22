@@ -1,10 +1,11 @@
 import type { Express } from "express";
+import { requireAuth } from "../../auth-middleware";
 import { storage } from "../../storage";
 import { isAuthenticated } from "../../replit_integrations/auth";
 
 export function registerLoyaltyRoutes(app: Express) {
   // GET /api/loyalty/status — loyalty program info (must be before /:userId)
-  app.get("/api/loyalty/status", (_req, res) => {
+  app.get("/api/loyalty/status", requireAuth, (_req, res) => {
     res.json({
       programName: "OpenClaw Rewards",
       tiers: ["bronze", "silver", "gold", "platinum"],
@@ -14,7 +15,7 @@ export function registerLoyaltyRoutes(app: Express) {
   });
 
   // Get user's loyalty account status
-  app.get("/api/loyalty/:userId", async (req, res) => {
+  app.get("/api/loyalty/:userId", requireAuth, async (req, res) => {
     try {
       const { userId } = req.params;
 
@@ -53,7 +54,7 @@ export function registerLoyaltyRoutes(app: Express) {
   });
 
   // Redeem a loyalty reward
-  app.post("/api/loyalty/:userId/redeem", isAuthenticated, async (req: any, res) => {
+  app.post("/api/loyalty/:userId/redeem", requireAuth, async (req: any, res) => {
     try {
       const { userId } = req.params;
       const { rewardId } = req.body;
@@ -82,7 +83,7 @@ export function registerLoyaltyRoutes(app: Express) {
   });
 
   // Get available rewards for user
-  app.get("/api/loyalty/:userId/rewards", async (req, res) => {
+  app.get("/api/loyalty/:userId/rewards", requireAuth, async (req, res) => {
     try {
       const { userId } = req.params;
 

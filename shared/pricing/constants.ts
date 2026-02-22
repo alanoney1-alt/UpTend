@@ -223,17 +223,17 @@ export const BUNDLES: Bundle[] = [
 // ════════════════════════════════════════════════════════════
 // SERVICE 13: POOL CLEANING (POOLSPARK)
 // Orlando market: $80–$200/month for weekly service
-// UpTend tiers: Basic $89, Standard $129, Full Service $169, Deep Clean $199
+// UpTend tiers: Basic $120, Standard $165, Full Service $210
 // ════════════════════════════════════════════════════════════
 
 export const POOLSPARK_RECURRING: PricingTier[] = [
-  { id: 'ps_basic', label: 'Basic Pool Cleaning', description: 'Weekly chemicals + skim surface + empty baskets', basePrice: 8900, unit: 'monthly' },
-  { id: 'ps_standard', label: 'Standard Pool Cleaning', description: 'Basic + brush walls + vacuum + filter check', basePrice: 12900, unit: 'monthly' },
-  { id: 'ps_full', label: 'Full Service Pool Cleaning', description: 'Standard + tile cleaning + equipment monitoring + filter cleaning', basePrice: 16900, unit: 'monthly' },
+  { id: 'ps_basic', label: 'Basic Pool Cleaning', description: 'Weekly chemicals + skim surface + empty baskets', basePrice: 12000, unit: 'monthly' },
+  { id: 'ps_standard', label: 'Standard Pool Cleaning', description: 'Basic + brush walls + vacuum + filter check', basePrice: 16500, unit: 'monthly' },
+  { id: 'ps_full', label: 'Full Service Pool Cleaning', description: 'Standard + tile cleaning + equipment monitoring + filter cleaning', basePrice: 21000, unit: 'monthly' },
 ];
 
 export const POOLSPARK_ONE_TIME: PricingTier[] = [
-  { id: 'ps_deep_clean', label: 'One-Time Deep Clean', description: 'Deep clean for neglected/green pools', basePrice: 19900, unit: 'flat' },
+  { id: 'ps_deep_clean', label: 'One-Time Deep Clean', description: 'Deep clean for neglected/green pools', basePrice: 24900, unit: 'flat' },
 ];
 
 // ════════════════════════════════════════════════════════════

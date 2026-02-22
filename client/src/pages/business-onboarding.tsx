@@ -142,18 +142,18 @@ const PLANS: Record<Segment, PlanOption[]> = {
 };
 
 const ALL_SERVICES = [
-  { key: "junk_removal", label: "Junk Removal & Hauling", priceRange: "$89–$499" },
-  { key: "landscaping", label: "Landscaping & Lawn Care", priceRange: "$49–$299" },
-  { key: "pool_cleaning", label: "Pool Cleaning & Maintenance", priceRange: "$99–$249" },
-  { key: "pressure_washing", label: "Pressure Washing", priceRange: "$149–$449" },
-  { key: "plumbing", label: "Plumbing", priceRange: "$99–$599" },
-  { key: "electrical", label: "Electrical", priceRange: "$89–$499" },
-  { key: "hvac", label: "HVAC", priceRange: "$99–$699" },
-  { key: "painting", label: "Painting", priceRange: "$199–$2,999" },
-  { key: "cleaning", label: "Cleaning", priceRange: "$79–$299" },
-  { key: "handyman", label: "Handyman", priceRange: "$69–$399" },
-  { key: "pest_control", label: "Pest Control", priceRange: "$99–$349" },
-  { key: "roofing", label: "Roofing", priceRange: "$299–$9,999" },
+  { key: "junk_removal", label: "Junk Removal", priceRange: "from $99" },
+  { key: "pressure_washing", label: "Pressure Washing", priceRange: "from $120" },
+  { key: "gutter_cleaning", label: "Gutter Cleaning", priceRange: "from $150" },
+  { key: "handyman", label: "Handyman", priceRange: "$75/hr" },
+  { key: "moving_labor", label: "Moving Labor", priceRange: "$65/hr" },
+  { key: "light_demolition", label: "Light Demolition", priceRange: "from $199" },
+  { key: "home_cleaning", label: "Home Cleaning", priceRange: "from $99" },
+  { key: "pool_cleaning", label: "Pool Cleaning", priceRange: "from $120/mo" },
+  { key: "landscaping", label: "Landscaping", priceRange: "from $49" },
+  { key: "carpet_cleaning", label: "Carpet Cleaning", priceRange: "from $50/room" },
+  { key: "garage_cleanout", label: "Garage Cleanout", priceRange: "from $150" },
+  { key: "home_scan", label: "AI Home Scan", priceRange: "from $99" },
 ];
 
 const STEPS = [

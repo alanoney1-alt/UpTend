@@ -90,7 +90,7 @@ export function ManualQuoteForm({
     } else if (isMovingLabor) {
       const hoursNum = parseInt(hours) || 2;
       const crewNum = parseInt(crewSize) || 2;
-      price = hoursNum * crewNum * 80; // LiftCrew: $80/hr per Pro
+      price = hoursNum * crewNum * 65; // LiftCrew: $65/hr per Pro
     } else if (isHomeCleaning) {
       // PolishUp pricing based on bedrooms/bathrooms (simplified matrix)
       const bed = parseInt(bedrooms) || 2;

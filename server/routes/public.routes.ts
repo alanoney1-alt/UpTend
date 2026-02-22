@@ -83,43 +83,19 @@ export function registerPublicRoutes(app: Express) {
   // GET /api/services - Get available services
   app.get("/api/services", async (_req, res) => {
     try {
-      // TODO: Get services from storage or config
       const services = [
-        {
-          id: "junk-removal",
-          name: "Junk Removal",
-          description: "Professional junk removal and disposal services",
-          basePrice: 150,
-          category: "removal"
-        },
-        {
-          id: "debris-removal",
-          name: "Debris Removal", 
-          description: "Construction and yard debris removal",
-          basePrice: 200,
-          category: "removal"
-        },
-        {
-          id: "appliance-removal",
-          name: "Appliance Removal",
-          description: "Safe removal and disposal of old appliances",
-          basePrice: 100,
-          category: "removal"
-        },
-        {
-          id: "furniture-removal",
-          name: "Furniture Removal",
-          description: "Furniture pickup and donation services",
-          basePrice: 120,
-          category: "removal"
-        },
-        {
-          id: "move-out-cleanout",
-          name: "Move-Out Cleanout",
-          description: "Complete property cleanout services",
-          basePrice: 300,
-          category: "cleanout"
-        }
+        { id: "junk_removal", name: "Junk Removal", description: "Professional junk removal and hauling", startingPrice: 99, priceLabel: "from $99", category: "removal" },
+        { id: "pressure_washing", name: "Pressure Washing", description: "Professional pressure washing for driveways, patios, and exteriors", startingPrice: 120, priceLabel: "from $120", category: "exterior" },
+        { id: "gutter_cleaning", name: "Gutter Cleaning", description: "Thorough gutter cleaning and debris removal", startingPrice: 150, priceLabel: "from $150", category: "exterior" },
+        { id: "handyman", name: "Handyman", description: "Skilled handyman for repairs, installations, and odd jobs", startingPrice: 75, priceLabel: "$75/hr", category: "repair" },
+        { id: "moving_labor", name: "Moving Labor", description: "Professional moving help — loading, unloading, and rearranging", startingPrice: 65, priceLabel: "$65/hr", category: "labor" },
+        { id: "light_demolition", name: "Light Demolition", description: "Interior demolition, tear-outs, and debris removal", startingPrice: 199, priceLabel: "from $199", category: "demolition" },
+        { id: "home_cleaning", name: "Home Cleaning", description: "Professional home cleaning services", startingPrice: 99, priceLabel: "from $99", category: "cleaning" },
+        { id: "pool_cleaning", name: "Pool Cleaning", description: "Recurring pool maintenance and cleaning", startingPrice: 120, priceLabel: "from $120/mo", category: "maintenance" },
+        { id: "landscaping", name: "Landscaping", description: "Lawn care, trimming, and landscape maintenance", startingPrice: 49, priceLabel: "from $49", category: "exterior" },
+        { id: "carpet_cleaning", name: "Carpet Cleaning", description: "Deep carpet cleaning — standard, deep clean, and pet treatment", startingPrice: 50, priceLabel: "from $50/room", category: "cleaning" },
+        { id: "garage_cleanout", name: "Garage Cleanout", description: "Full garage cleanout and organization", startingPrice: 150, priceLabel: "from $150", category: "cleanout" },
+        { id: "home_scan", name: "AI Home Scan", description: "AI-powered home health assessment with detailed report", startingPrice: 99, priceLabel: "from $99", category: "inspection" },
       ];
 
       res.json(services);

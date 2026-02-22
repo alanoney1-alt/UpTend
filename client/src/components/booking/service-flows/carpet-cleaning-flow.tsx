@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Redirect } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,9 +29,7 @@ export function CarpetCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
   const [wholeHouse, setWholeHouse] = useState<string | null>(null);
 
   if (quoteMode === "ai") {
-    // Redirect to AI photo quote
-    window.location.href = `/ai/photo-quote?service=carpet_cleaning`;
-    return null;
+    return <Redirect to="/ai/photo-quote?service=carpet_cleaning" />;
   }
 
   const ct = CLEAN_TYPES.find((c) => c.id === cleanType)!;

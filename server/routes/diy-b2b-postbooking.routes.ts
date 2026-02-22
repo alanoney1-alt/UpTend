@@ -3,6 +3,7 @@
  */
 
 import type { Express } from "express";
+import { requireAuth } from "../auth-middleware";
 import { getDIYTip, getSeasonalDIYTips, getDIYvsPro } from "../services/diy-tips.js";
 import {
   generateServiceAgreement,
@@ -22,7 +23,7 @@ import { generateInsights, getSeasonalDemand } from "../services/neighborhood-in
 export function registerDiyB2bPostBookingRoutes(app: Express) {
   // ── DIY Tips ──────────────────────────────────────────
 
-  app.get("/api/diy/:serviceType", async (req, res) => {
+  app.get("/api/diy/:serviceType", requireAuth, async (req, res) => {
     try {
       const tip = await getDIYTip(req.params.serviceType);
       if (!tip) return res.status(404).json({ error: "No DIY tip found for this service type" });
@@ -32,7 +33,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.get("/api/diy/seasonal/:month", async (req, res) => {
+  app.get("/api/diy/seasonal/:month", requireAuth, async (req, res) => {
     try {
       const month = parseInt(req.params.month);
       if (isNaN(month) || month < 1 || month > 12) {
@@ -45,7 +46,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.get("/api/diy/compare/:serviceType", async (req, res) => {
+  app.get("/api/diy/compare/:serviceType", requireAuth, async (req, res) => {
     try {
       const comparison = await getDIYvsPro(req.params.serviceType);
       res.json(comparison);
@@ -56,7 +57,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
 
   // ── B2B Contracts ─────────────────────────────────────
 
-  app.get("/api/b2b/agreements/:businessId", async (req, res) => {
+  app.get("/api/b2b/agreements/:businessId", requireAuth, async (req, res) => {
     try {
       const docs = await getDocumentTracker(req.params.businessId);
       res.json(docs);
@@ -65,7 +66,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.post("/api/b2b/agreements", async (req, res) => {
+  app.post("/api/b2b/agreements", requireAuth, async (req, res) => {
     try {
       const { businessAccountId, agreementType, terms } = req.body;
       if (!businessAccountId || !agreementType) {
@@ -78,7 +79,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.get("/api/b2b/agreements/status/:agreementId", async (req, res) => {
+  app.get("/api/b2b/agreements/status/:agreementId", requireAuth, async (req, res) => {
     try {
       const status = await getAgreementStatus(req.params.agreementId);
       if (!status) return res.status(404).json({ error: "Agreement not found" });
@@ -88,7 +89,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.get("/api/b2b/documents/:businessId", async (req, res) => {
+  app.get("/api/b2b/documents/:businessId", requireAuth, async (req, res) => {
     try {
       const docs = await getDocumentTracker(req.params.businessId);
       res.json(docs);
@@ -97,7 +98,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.get("/api/b2b/documents/:businessId/expiring", async (req, res) => {
+  app.get("/api/b2b/documents/:businessId/expiring", requireAuth, async (req, res) => {
     try {
       const expiring = await flagExpiringDocuments(req.params.businessId);
       res.json(expiring);
@@ -106,7 +107,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.get("/api/b2b/compliance/:businessId", async (req, res) => {
+  app.get("/api/b2b/compliance/:businessId", requireAuth, async (req, res) => {
     try {
       const report = await getComplianceReport(req.params.businessId);
       res.json(report);
@@ -117,7 +118,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
 
   // ── Post-Booking Intelligence ─────────────────────────
 
-  app.get("/api/post-booking/question/:customerId/:jobId", async (req, res) => {
+  app.get("/api/post-booking/question/:customerId/:jobId", requireAuth, async (req, res) => {
     try {
       const { customerId, jobId } = req.params;
       const serviceType = req.query.serviceType as string | undefined;
@@ -128,7 +129,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.post("/api/post-booking/answer", async (req, res) => {
+  app.post("/api/post-booking/answer", requireAuth, async (req, res) => {
     try {
       const { questionId, answer } = req.body;
       if (!questionId || !answer) {
@@ -142,7 +143,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.get("/api/pro/prompts/:proId/:jobId", async (req, res) => {
+  app.get("/api/pro/prompts/:proId/:jobId", requireAuth, async (req, res) => {
     try {
       const { proId, jobId } = req.params;
       const serviceType = req.query.serviceType as string | undefined;
@@ -153,7 +154,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.post("/api/pro/prompts/respond", async (req, res) => {
+  app.post("/api/pro/prompts/respond", requireAuth, async (req, res) => {
     try {
       const { promptId, response, photos } = req.body;
       if (!promptId || !response) {
@@ -169,7 +170,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
 
   // ── Neighborhood Insights ─────────────────────────────
 
-  app.get("/api/neighborhood/:zip", async (req, res) => {
+  app.get("/api/neighborhood/:zip", requireAuth, async (req, res) => {
     try {
       const insights = await generateInsights(req.params.zip);
       res.json(insights);
@@ -178,7 +179,7 @@ export function registerDiyB2bPostBookingRoutes(app: Express) {
     }
   });
 
-  app.get("/api/neighborhood/:zip/seasonal/:month", async (req, res) => {
+  app.get("/api/neighborhood/:zip/seasonal/:month", requireAuth, async (req, res) => {
     try {
       const month = parseInt(req.params.month);
       if (isNaN(month) || month < 1 || month > 12) {

@@ -3,6 +3,7 @@
  */
 
 import type { Express, Request, Response } from "express";
+import { requireAuth } from "../auth-middleware";
 import { searchProduct, getProductRecommendation, compareProductPrices, getSmartRecommendations } from "../services/product-search.js";
 import { findTutorial, getTutorialForMaintenance, getSeasonalDIYProjects } from "../services/tutorial-finder.js";
 import { getShoppingList, startDIYProject, updateDIYProject, getProjectPlan } from "../services/shopping-assistant.js";
@@ -12,7 +13,7 @@ export function registerShoppingRoutes(app: Express): void {
   // ── Shopping ───────────────────────────────
 
   // GET /api/shopping/recommendations/:customerId
-  app.get("/api/shopping/recommendations/:customerId", async (req: Request, res: Response) => {
+  app.get("/api/shopping/recommendations/:customerId", requireAuth, async (req: Request, res: Response) => {
     try {
       const result = await getSmartRecommendations(req.params.customerId);
       res.json(result);
@@ -22,7 +23,7 @@ export function registerShoppingRoutes(app: Express): void {
   });
 
   // POST /api/shopping/search
-  app.post("/api/shopping/search", async (req: Request, res: Response) => {
+  app.post("/api/shopping/search", requireAuth, async (req: Request, res: Response) => {
     try {
       const { query, category, specifications } = req.body;
       if (!query) return res.status(400).json({ error: "query required" });
@@ -34,7 +35,7 @@ export function registerShoppingRoutes(app: Express): void {
   });
 
   // GET /api/shopping/compare
-  app.get("/api/shopping/compare", async (req: Request, res: Response) => {
+  app.get("/api/shopping/compare", requireAuth, async (req: Request, res: Response) => {
     try {
       const product = req.query.product as string;
       const specs = req.query.specs ? JSON.parse(req.query.specs as string) : undefined;
@@ -47,7 +48,7 @@ export function registerShoppingRoutes(app: Express): void {
   });
 
   // GET /api/shopping/list/:customerId
-  app.get("/api/shopping/list/:customerId", async (req: Request, res: Response) => {
+  app.get("/api/shopping/list/:customerId", requireAuth, async (req: Request, res: Response) => {
     try {
       const result = await getShoppingList(req.params.customerId);
       res.json(result);
@@ -57,7 +58,7 @@ export function registerShoppingRoutes(app: Express): void {
   });
 
   // POST /api/shopping/project
-  app.post("/api/shopping/project", async (req: Request, res: Response) => {
+  app.post("/api/shopping/project", requireAuth, async (req: Request, res: Response) => {
     try {
       const { customerId, projectName, items, tutorials } = req.body;
       if (!customerId || !projectName) return res.status(400).json({ error: "customerId and projectName required" });
@@ -69,7 +70,7 @@ export function registerShoppingRoutes(app: Express): void {
   });
 
   // GET /api/shopping/projects/:customerId
-  app.get("/api/shopping/projects/:customerId", async (req: Request, res: Response) => {
+  app.get("/api/shopping/projects/:customerId", requireAuth, async (req: Request, res: Response) => {
     try {
       const result = await pool.query(
         `SELECT * FROM diy_projects WHERE customer_id = $1 ORDER BY created_at DESC`,
@@ -84,7 +85,7 @@ export function registerShoppingRoutes(app: Express): void {
   // ── Tutorials ──────────────────────────────
 
   // GET /api/tutorials/search?task=
-  app.get("/api/tutorials/search", async (req: Request, res: Response) => {
+  app.get("/api/tutorials/search", requireAuth, async (req: Request, res: Response) => {
     try {
       const task = req.query.task as string;
       if (!task) return res.status(400).json({ error: "task required" });
@@ -96,7 +97,7 @@ export function registerShoppingRoutes(app: Express): void {
   });
 
   // GET /api/tutorials/maintenance/:type
-  app.get("/api/tutorials/maintenance/:type", async (req: Request, res: Response) => {
+  app.get("/api/tutorials/maintenance/:type", requireAuth, async (req: Request, res: Response) => {
     try {
       const brand = req.query.brand as string | undefined;
       const model = req.query.model as string | undefined;
@@ -109,7 +110,7 @@ export function registerShoppingRoutes(app: Express): void {
   });
 
   // GET /api/tutorials/seasonal/:month
-  app.get("/api/tutorials/seasonal/:month", async (req: Request, res: Response) => {
+  app.get("/api/tutorials/seasonal/:month", requireAuth, async (req: Request, res: Response) => {
     try {
       const month = parseInt(req.params.month);
       if (isNaN(month) || month < 1 || month > 12) return res.status(400).json({ error: "month must be 1-12" });

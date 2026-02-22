@@ -116,9 +116,11 @@ export default function AuthPage() {
             if (manualEstimateParam) params.set("manualEstimate", manualEstimateParam);
             if (schedulingDataParam) params.set("schedulingData", schedulingDataParam);
             setLocation(`/book?${params.toString()}`);
-          } else {
-            // Generic redirect — go wherever it says
+          } else if (redirectParam.startsWith("/")) {
+            // Only allow relative path redirects (prevent open redirect)
             setLocation(redirectParam);
+          } else {
+            setLocation("/dashboard");
           }
         } else if (!data.hasPaymentMethod) {
           setLocation("/payment-setup");

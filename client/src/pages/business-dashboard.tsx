@@ -28,6 +28,7 @@ import { HoaCommunicationCenter } from "@/components/hoa/communication-center";
 import { BusinessContextSwitcher } from "@/components/business/business-context-switcher";
 import { TeamManagementTable } from "@/components/business/team-management-table";
 import { ServiceBreakdownChart } from "@/components/esg/service-breakdown-chart";
+import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 
 const businessTypes = [
@@ -51,7 +52,8 @@ export default function BusinessDashboard() {
   const { isIndependent } = useBusinessTier();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const demoUserId = "demo-business-user";
+  const { user, isLoading: authLoading } = useAuth();
+  const userId = (user as any)?.userId || (user as any)?.id;
   
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showRecurringJobForm, setShowRecurringJobForm] = useState(false);
@@ -79,25 +81,26 @@ export default function BusinessDashboard() {
   });
 
   const { data, isLoading, error } = useQuery<{ account: BusinessAccount; recurringJobs: RecurringJob[] }>({
-    queryKey: ["/api/business-accounts", demoUserId],
+    queryKey: ["/api/business-accounts", userId],
     queryFn: async () => {
-      const res = await fetch(`/api/business-accounts/${demoUserId}`);
+      const res = await fetch(`/api/business-accounts/${userId}`);
       if (res.status === 404) return null;
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
+    enabled: !!userId,
   });
 
   const createAccountMutation = useMutation({
     mutationFn: async (formData: typeof accountForm) => {
       const response = await apiRequest("POST", "/api/business-accounts", {
         ...formData,
-        userId: demoUserId,
+        userId: userId,
       });
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/business-accounts", demoUserId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/business-accounts", userId] });
       setShowCreateForm(false);
     },
     onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
@@ -112,7 +115,7 @@ export default function BusinessDashboard() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/business-accounts", demoUserId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/business-accounts", userId] });
       setShowRecurringJobForm(false);
       setJobForm({
         serviceType: "junk_removal",
@@ -135,12 +138,18 @@ export default function BusinessDashboard() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/business-accounts", demoUserId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/business-accounts", userId] });
     },
     onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
-  if (isLoading) {
+  // Auth guard: redirect to login if not authenticated
+  if (!authLoading && !user) {
+    window.location.href = "/business/login";
+    return null;
+  }
+
+  if (isLoading || authLoading) {
     return (
       <div className="min-h-screen bg-background">
         <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">

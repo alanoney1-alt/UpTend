@@ -1,8 +1,9 @@
 import type { Express } from "express";
+import { requireAuth } from "../auth-middleware";
 import { getCustomerLoyalty, getAvailableRewards, redeemReward, calculateDiscount } from "../services/loyalty-engine.js";
 
 export function registerLoyaltyEngineRoutes(app: Express) {
-  app.get("/api/loyalty/:customerId", async (req, res) => {
+  app.get("/api/loyalty/:customerId", requireAuth, async (req, res) => {
     try {
       const data = await getCustomerLoyalty(req.params.customerId);
       res.json(data);
@@ -11,7 +12,7 @@ export function registerLoyaltyEngineRoutes(app: Express) {
     }
   });
 
-  app.get("/api/loyalty/rewards/:customerId", async (req, res) => {
+  app.get("/api/loyalty/rewards/:customerId", requireAuth, async (req, res) => {
     try {
       const rewards = await getAvailableRewards(req.params.customerId);
       res.json({ rewards });
@@ -20,7 +21,7 @@ export function registerLoyaltyEngineRoutes(app: Express) {
     }
   });
 
-  app.post("/api/loyalty/redeem", async (req, res) => {
+  app.post("/api/loyalty/redeem", requireAuth, async (req, res) => {
     try {
       const { rewardId } = req.body;
       const result = await redeemReward(rewardId);
@@ -30,7 +31,7 @@ export function registerLoyaltyEngineRoutes(app: Express) {
     }
   });
 
-  app.post("/api/loyalty/calculate-discount", async (req, res) => {
+  app.post("/api/loyalty/calculate-discount", requireAuth, async (req, res) => {
     try {
       const { customerId, serviceType, basePrice } = req.body;
       const result = await calculateDiscount(customerId, serviceType, basePrice);

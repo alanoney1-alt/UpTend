@@ -5,7 +5,7 @@ import LandingClassic from "./landing-classic";
 import DOMPurify from "dompurify";
 import { ArrowUp, Camera, Mic, MicOff, ThumbsUp, ThumbsDown, ChevronDown, UserCircle, LogOut, Settings, Volume2, VolumeX, LayoutGrid, X } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { VideoPlayer, extractAllVideoIds } from "@/components/ai/video-player";
 import { PropertyCard, QuoteCard, BundleCard, BreakdownCard, BookingCard, HomeScoreCard } from "@/components/george/RichCards";
 import { CapabilityCard } from "@/components/george/CapabilityCard";
@@ -443,6 +443,7 @@ function GeorgeLanding() {
 
 /* ─── Full-screen Conversation ─── */
 function Conversation() {
+  const [, navigateTo] = useLocation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -537,8 +538,10 @@ function Conversation() {
     if (btn.action.startsWith("navigate:")) {
       const path = btn.action.replace("navigate:", "");
       // Allow dashboard routes and tel: links to navigate normally
-      if (path.startsWith("/dashboard") || path.startsWith("/pro/") || path.startsWith("tel:")) {
+      if (path.startsWith("tel:")) {
         window.location.href = path;
+      } else if (path.startsWith("/")) {
+        navigateTo(path);
       } else {
         // Convert classic-site navigations into George chat messages
         send(btn.label);

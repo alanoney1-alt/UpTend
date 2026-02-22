@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Redirect } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,8 +26,7 @@ export function LightDemolitionFlow({ onComplete, onBack }: ServiceFlowProps) {
   const [haulAway, setHaulAway] = useState(true);
 
   if (quoteMode === "ai") {
-    window.location.href = `/ai/photo-quote?service=light_demolition`;
-    return null;
+    return <Redirect to="/ai/photo-quote?service=light_demolition" />;
   }
 
   const toggleScope = (id: string) => {

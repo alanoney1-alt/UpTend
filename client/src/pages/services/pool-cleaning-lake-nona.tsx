@@ -25,8 +25,8 @@ const data = {
   ],
   pricing: {
     label: "Pool Cleaning",
-    startingAt: "From $99/month",
-    details: "Weekly service from $99/month. Bi-weekly from $69/month. One-time deep cleans from $149. Chemical costs included in recurring plans.",
+    startingAt: "From $120/month",
+    details: "Weekly service from $120/month. Standard $165/month. Full Service $210/month. Chemical costs included in recurring plans.",
   },
   neighborhoods: [
     "Laureate Park", "Lake Nona Town Center", "North Lake Nona", "Randal Park",

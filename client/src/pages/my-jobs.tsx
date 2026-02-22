@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/landing/header";
 import { Loader2, Package, ArrowRight, Clock, MapPin } from "lucide-react";
 import { formatServiceType, safeFormatDate } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
 const statusColors: Record<string, string> = {
   matching: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
@@ -27,6 +28,7 @@ const statusLabels: Record<string, string> = {
 export default function MyJobs() {
   usePageTitle("My Jobs | UpTend");
   const [, navigate] = useLocation();
+  const { user, isLoading: authLoading } = useAuth();
 
   const { data: jobs, isLoading } = useQuery<any[]>({
     queryKey: ["/api/my-jobs"],
@@ -36,6 +38,25 @@ export default function MyJobs() {
       return res.json();
     },
   });
+
+  // Auth guard: redirect to login if not authenticated
+  if (!authLoading && !user) {
+    window.location.href = "/login";
+    return null;
+  }
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="pt-24 pb-12">
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

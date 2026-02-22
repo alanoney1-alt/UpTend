@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import { requireAuth } from "../auth-middleware";
 import {
   getNeighborhoodActivity, getLocalEvents, submitTip, voteTip, getNeighborhoodStats,
 } from "../services/community-engine.js";
@@ -36,7 +37,7 @@ export function registerCommunityEngineRoutes(app: Express) {
     }
   });
 
-  app.post("/api/community/tips", async (req, res) => {
+  app.post("/api/community/tips", requireAuth, async (req, res) => {
     try {
       const { customerId, zip: rawZip, zipCode, category, title, content } = req.body;
       const zip = rawZip || zipCode;
@@ -47,7 +48,7 @@ export function registerCommunityEngineRoutes(app: Express) {
     }
   });
 
-  app.post("/api/community/tips/:id/vote", async (req, res) => {
+  app.post("/api/community/tips/:id/vote", requireAuth, async (req, res) => {
     try {
       const { userId, direction } = req.body;
       const result = await voteTip(req.params.id, userId, direction);

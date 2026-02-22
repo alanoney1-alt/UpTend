@@ -39,7 +39,6 @@ const PaymentSetup = lazy(() => import("@/pages/payment-setup"));
 const ProPayoutSetup = lazy(() => import("@/pages/pro-payout-setup"));
 const Profile = lazy(() => import("@/pages/profile"));
 const About = lazy(() => import("@/pages/about"));
-const MeetGeorge = lazy(() => import("@/pages/meet-george"));
 const FAQ = lazy(() => import("@/pages/faq"));
 const Terms = lazy(() => import("@/pages/terms"));
 const Privacy = lazy(() => import("@/pages/privacy"));

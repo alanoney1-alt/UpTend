@@ -6,6 +6,7 @@
  */
 
 import type { Express } from "express";
+import { requireAuth } from "../auth-middleware";
 import {
   getDIYDisclaimerConsent,
   hasUserAcknowledgedDIYDisclaimer,
@@ -16,7 +17,7 @@ import {
 
 export function registerDiyCoachRoutes(app: Express) {
   // POST /api/diy/diagnose — alias for /api/diy-coach/diagnose
-  app.post("/api/diy/diagnose", async (req, res) => {
+  app.post("/api/diy/diagnose", requireAuth, async (req, res) => {
     try {
       const { userId, conversationId, issueDescription, symptoms } = req.body;
       const desc = issueDescription || symptoms;
@@ -48,7 +49,7 @@ export function registerDiyCoachRoutes(app: Express) {
   });
 
   // POST /api/diy-coach/diagnose — start a DIY coaching session
-  app.post("/api/diy-coach/diagnose", async (req, res) => {
+  app.post("/api/diy-coach/diagnose", requireAuth, async (req, res) => {
     try {
       const { userId, conversationId, issueDescription } = req.body;
 
@@ -85,7 +86,7 @@ export function registerDiyCoachRoutes(app: Express) {
   });
 
   // POST /api/diy-coach/acknowledge — record disclaimer acknowledgment
-  app.post("/api/diy-coach/acknowledge", async (req, res) => {
+  app.post("/api/diy-coach/acknowledge", requireAuth, async (req, res) => {
     try {
       const { userId, conversationId, response } = req.body;
       if (!userId || !response) {

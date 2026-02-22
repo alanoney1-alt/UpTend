@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 import { DwellScanWidget } from "@/components/dwellscan-widget";
 import { ImpactWidget } from "@/components/dashboard/impact-widget";
 import { ImpactTracker } from "@/components/dashboard/impact-tracker";
@@ -286,10 +287,10 @@ function HomeReportSection({ userId }: { userId: string }) {
           <p className="text-xs text-white/60 mt-1">Complete history of your home — like Carfax, but for houses.</p>
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <Button variant="ghost" size="sm" onClick={() => console.log("Download full home report")} data-testid="button-download-home-report">
+          <Button variant="ghost" size="sm" onClick={() => toast({ title: "Coming Soon", description: "Home Report download will be available soon." })} data-testid="button-download-home-report">
             <Download className="w-4 h-4 mr-1" /> Download
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => console.log("Share home report")} data-testid="button-share-home-report">
+          <Button variant="ghost" size="sm" onClick={() => toast({ title: "Coming Soon", description: "Home Report sharing will be available soon." })} data-testid="button-share-home-report">
             <Share2 className="w-4 h-4 mr-1" /> Share
           </Button>
         </div>
@@ -465,6 +466,7 @@ function ActiveJobWithWorker({ job }: { job: ServiceRequest }) {
 export default function CustomerDashboard() {
   usePageTitle("Dashboard | UpTend");
   const { user, isLoading: authLoading } = useAuth();
+  const { toast } = useToast();
   const [historyFilter, setHistoryFilter] = useState<"all" | "active" | "completed">("all");
 
   const { data: jobs, isLoading: jobsLoading } = useQuery<ServiceRequest[]>({

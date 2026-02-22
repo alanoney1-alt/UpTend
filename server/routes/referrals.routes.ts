@@ -1,11 +1,12 @@
 import type { Express } from "express";
+import { requireAuth } from "../auth-middleware";
 import {
   generateReferralCode, trackReferral, getReferralStatus,
   createGroupDeal, joinGroupDeal, getNeighborhoodDeals,
 } from "../services/referral-engine.js";
 
 export function registerReferralEngineRoutes(app: Express) {
-  app.post("/api/referrals/generate-code", async (req, res) => {
+  app.post("/api/referrals/generate-code", requireAuth, async (req, res) => {
     try {
       const customerId = req.body.customerId || (req as any).user?.userId || (req as any).user?.id;
       if (!customerId) return res.status(400).json({ error: "customerId required" });
@@ -16,7 +17,7 @@ export function registerReferralEngineRoutes(app: Express) {
     }
   });
 
-  app.post("/api/referrals/track", async (req, res) => {
+  app.post("/api/referrals/track", requireAuth, async (req, res) => {
     try {
       const { code, email } = req.body;
       const result = await trackReferral(code, email);
@@ -26,7 +27,7 @@ export function registerReferralEngineRoutes(app: Express) {
     }
   });
 
-  app.get("/api/referrals/:customerId", async (req, res) => {
+  app.get("/api/referrals/:customerId", requireAuth, async (req, res) => {
     try {
       const result = await getReferralStatus(req.params.customerId);
       res.json(result);
@@ -35,7 +36,7 @@ export function registerReferralEngineRoutes(app: Express) {
     }
   });
 
-  app.post("/api/referrals/group-deal", async (req, res) => {
+  app.post("/api/referrals/group-deal", requireAuth, async (req, res) => {
     try {
       const { customerId, neighborhood, serviceType } = req.body;
       const result = await createGroupDeal(customerId, neighborhood, serviceType);
@@ -45,7 +46,7 @@ export function registerReferralEngineRoutes(app: Express) {
     }
   });
 
-  app.post("/api/referrals/group-deal/join", async (req, res) => {
+  app.post("/api/referrals/group-deal/join", requireAuth, async (req, res) => {
     try {
       const { dealId, customerId } = req.body;
       const result = await joinGroupDeal(dealId, customerId);
@@ -55,7 +56,7 @@ export function registerReferralEngineRoutes(app: Express) {
     }
   });
 
-  app.get("/api/referrals/deals/:zip", async (req, res) => {
+  app.get("/api/referrals/deals/:zip", requireAuth, async (req, res) => {
     try {
       const deals = await getNeighborhoodDeals(req.params.zip);
       res.json({ deals });

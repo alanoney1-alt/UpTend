@@ -5,6 +5,7 @@
  */
 
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -76,6 +77,7 @@ const TIME_WINDOW_LABELS = {
 };
 
 export default function CustomerSubscriptions() {
+  const [, navigate] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -208,7 +210,7 @@ export default function CustomerSubscriptions() {
               <p className="text-muted-foreground mb-6">
                 Set up a recurring clean and save 10-15% on every visit
               </p>
-              <Button onClick={() => (window.location.href = "/book?service=home_cleaning")}>
+              <Button onClick={() => (navigate("/book?service=home_cleaning"))}>
                 Book Home Cleaning
               </Button>
             </CardContent>
@@ -319,7 +321,7 @@ export default function CustomerSubscriptions() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => (window.location.href = `/book?service=home_cleaning&edit=${subscription.id}`)}
+                            onClick={() => navigate(`/book?service=home_cleaning&edit=${subscription.id}`)}
                           >
                             <Edit className="w-4 h-4 mr-2" />
                             Edit Plan

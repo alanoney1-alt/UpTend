@@ -17,8 +17,8 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   home_consultation_aerial: 249, // AI Home Scan Aerial with drone
   handyman: 75, // Handyman Services $75/hr, 1hr minimum
   junk_removal: 99,
-  garage_cleanout: 299,
-  moving_labor: 80,
+  garage_cleanout: 150,
+  moving_labor: 65,
   home_cleaning: 99,
   carpet_cleaning: 50, // Carpet Cleaning standard steam clean per room ($100 minimum)
   landscaping: 49, // Landscaping one-time mow ≤1/4 acre ($99/mo recurring)
@@ -412,7 +412,7 @@ export const CREW_SIZE_OPTIONS: CrewSizeOption[] = [
   { id: 3, label: "3 People", description: "Pro + 2 helpers" },
 ];
 
-export const HOURLY_RATE_PER_PRO = 80; // $80/hr per Pro for LiftCrew and UnloadPro
+export const HOURLY_RATE_PER_PRO = 65; // $65/hr per Pro for LiftCrew and UnloadPro
 export const DEFAULT_HOURS = 1;
 export const MAX_HOURS = 8;
 

@@ -55,8 +55,7 @@ router.post("/:id/team/invite", async (req, res) => {
     const validated = inviteTeamMemberSchema.parse(req.body);
 
     // Check if requesting user has permission to manage team
-    // @ts-ignore - req.user is set by auth middleware
-    const requestingUserId = req.user?.id;
+    const requestingUserId = ((req.user as any)?.userId || (req.user as any)?.id);
     if (!requestingUserId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -126,8 +125,7 @@ router.post("/:id/team/invite", async (req, res) => {
 // ==========================================
 router.get("/my-memberships", async (req, res) => {
   try {
-    // @ts-ignore
-    const userId = req.user?.id;
+    const userId = ((req.user as any)?.userId || (req.user as any)?.id);
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -171,8 +169,7 @@ router.get("/:id/team", async (req, res) => {
   try {
     const { id: businessAccountId } = req.params;
 
-    // @ts-ignore
-    const requestingUserId = req.user?.id;
+    const requestingUserId = ((req.user as any)?.userId || (req.user as any)?.id);
     if (!requestingUserId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -218,8 +215,7 @@ router.patch("/:id/team/:memberId", async (req, res) => {
     const { id: businessAccountId, memberId } = req.params;
     const validated = updateTeamMemberSchema.parse(req.body);
 
-    // @ts-ignore
-    const requestingUserId = req.user?.id;
+    const requestingUserId = ((req.user as any)?.userId || (req.user as any)?.id);
     if (!requestingUserId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -262,8 +258,7 @@ router.delete("/:id/team/:memberId", async (req, res) => {
   try {
     const { id: businessAccountId, memberId } = req.params;
 
-    // @ts-ignore
-    const requestingUserId = req.user?.id;
+    const requestingUserId = ((req.user as any)?.userId || (req.user as any)?.id);
     if (!requestingUserId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -299,8 +294,7 @@ router.post("/team/accept-invitation", async (req, res) => {
   try {
     const { invitationToken } = acceptInvitationSchema.parse(req.body);
 
-    // @ts-ignore
-    const userId = req.user?.id;
+    const userId = ((req.user as any)?.userId || (req.user as any)?.id);
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized" });
     }

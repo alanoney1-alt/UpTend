@@ -4,6 +4,7 @@
  */
 
 import type { Express, Request, Response } from "express";
+import { requireAuth } from "../auth-middleware";
 import {
   identifyPartFromPhoto,
   findReplacementPart,
@@ -19,7 +20,7 @@ import {
 
 export function registerProFieldAssistRoutes(app: Express) {
   // POST /api/pro/field-assist/identify — photo → part identification
-  app.post("/api/pro/field-assist/identify", async (req: Request, res: Response) => {
+  app.post("/api/pro/field-assist/identify", requireAuth, async (req: Request, res: Response) => {
     try {
       const { proId, photo, description } = req.body;
       if (!proId || !photo) return res.status(400).json({ error: "proId and photo required" });
@@ -31,7 +32,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // POST /api/pro/field-assist/find-part — search for replacement
-  app.post("/api/pro/field-assist/find-part", async (req: Request, res: Response) => {
+  app.post("/api/pro/field-assist/find-part", requireAuth, async (req: Request, res: Response) => {
     try {
       const { partDescription, brand, model } = req.body;
       if (!partDescription) return res.status(400).json({ error: "partDescription required" });
@@ -43,7 +44,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // GET /api/pro/field-assist/reference/:category — quick reference
-  app.get("/api/pro/field-assist/reference/:category", async (req: Request, res: Response) => {
+  app.get("/api/pro/field-assist/reference/:category", requireAuth, async (req: Request, res: Response) => {
     try {
       const { category } = req.params;
       const { issue } = req.query;
@@ -55,7 +56,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // POST /api/pro/field-assist/troubleshoot — on-site troubleshooting
-  app.post("/api/pro/field-assist/troubleshoot", async (req: Request, res: Response) => {
+  app.post("/api/pro/field-assist/troubleshoot", requireAuth, async (req: Request, res: Response) => {
     try {
       const { proId, jobId, issueDescription, photo } = req.body;
       if (!proId || !issueDescription) return res.status(400).json({ error: "proId and issueDescription required" });
@@ -67,7 +68,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // GET /api/pro/field-assist/stores/:zip — nearest supply stores
-  app.get("/api/pro/field-assist/stores/:zip", async (req: Request, res: Response) => {
+  app.get("/api/pro/field-assist/stores/:zip", requireAuth, async (req: Request, res: Response) => {
     try {
       const { zip } = req.params;
       const { part } = req.query;
@@ -79,7 +80,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // POST /api/pro/field-assist/tutorial — find tutorial
-  app.post("/api/pro/field-assist/tutorial", async (req: Request, res: Response) => {
+  app.post("/api/pro/field-assist/tutorial", requireAuth, async (req: Request, res: Response) => {
     try {
       const { task, experienceLevel } = req.body;
       if (!task) return res.status(400).json({ error: "task required" });
@@ -91,7 +92,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // GET /api/pro/field-assist/history/:proId — past assists
-  app.get("/api/pro/field-assist/history/:proId", async (req: Request, res: Response) => {
+  app.get("/api/pro/field-assist/history/:proId", requireAuth, async (req: Request, res: Response) => {
     try {
       const { proId } = req.params;
       const result = await getAssistHistory(proId);
@@ -102,7 +103,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // POST /api/pro/field-assist/knowledge — contribute to knowledge base
-  app.post("/api/pro/field-assist/knowledge", async (req: Request, res: Response) => {
+  app.post("/api/pro/field-assist/knowledge", requireAuth, async (req: Request, res: Response) => {
     try {
       const { proId, entry } = req.body;
       if (!proId || !entry) return res.status(400).json({ error: "proId and entry required" });
@@ -114,7 +115,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // GET /api/pro/field-assist/knowledge/:category — search knowledge base
-  app.get("/api/pro/field-assist/knowledge/:category", async (req: Request, res: Response) => {
+  app.get("/api/pro/field-assist/knowledge/:category", requireAuth, async (req: Request, res: Response) => {
     try {
       const { category } = req.params;
       const { subcategory, brand } = req.query;
@@ -126,7 +127,7 @@ export function registerProFieldAssistRoutes(app: Express) {
   });
 
   // POST /api/pro/field-assist/order-part — log part order for job billing
-  app.post("/api/pro/field-assist/order-part", async (req: Request, res: Response) => {
+  app.post("/api/pro/field-assist/order-part", requireAuth, async (req: Request, res: Response) => {
     try {
       const { proId, jobId, ...orderData } = req.body;
       if (!proId || !orderData.partName) return res.status(400).json({ error: "proId and partName required" });

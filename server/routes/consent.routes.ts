@@ -5,6 +5,7 @@
  */
 
 import type { Express, Request, Response } from "express";
+import { requireAuth } from "../auth-middleware";
 import {
   getConsentStatus,
   grantConsent,
@@ -18,7 +19,7 @@ import {
 
 export async function registerConsentRoutes(app: Express): Promise<void> {
   // Get all consent statuses for a user
-  app.get("/api/consent/:userId", async (req: Request, res: Response) => {
+  app.get("/api/consent/:userId", requireAuth, async (req: Request, res: Response) => {
     try {
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       if (!uuidRegex.test(req.params.userId)) {
@@ -33,7 +34,7 @@ export async function registerConsentRoutes(app: Express): Promise<void> {
   });
 
   // Grant consent
-  app.post("/api/consent/grant", async (req: Request, res: Response) => {
+  app.post("/api/consent/grant", requireAuth, async (req: Request, res: Response) => {
     try {
       const { userId: rawUserId, customerId, consentType, method, consentText, userType, ipAddress } = req.body;
       const userId = rawUserId || customerId;
@@ -57,7 +58,7 @@ export async function registerConsentRoutes(app: Express): Promise<void> {
   });
 
   // Revoke consent
-  app.post("/api/consent/revoke", async (req: Request, res: Response) => {
+  app.post("/api/consent/revoke", requireAuth, async (req: Request, res: Response) => {
     try {
       const { userId, consentType } = req.body;
       if (!userId || !consentType) {
@@ -87,7 +88,7 @@ export async function registerConsentRoutes(app: Express): Promise<void> {
   });
 
   // CCPA/GDPR data deletion request
-  app.post("/api/consent/delete-data", async (req: Request, res: Response) => {
+  app.post("/api/consent/delete-data", requireAuth, async (req: Request, res: Response) => {
     try {
       const { userId, categories } = req.body;
       if (!userId || !categories) {
@@ -102,7 +103,7 @@ export async function registerConsentRoutes(app: Express): Promise<void> {
   });
 
   // Audit trail
-  app.get("/api/consent/audit/:userId", async (req: Request, res: Response) => {
+  app.get("/api/consent/audit/:userId", requireAuth, async (req: Request, res: Response) => {
     try {
       const trail = await getAuditTrail(req.params.userId);
       res.json({ success: true, trail });

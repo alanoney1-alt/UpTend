@@ -8,6 +8,7 @@
  */
 
 import type { Express, Request, Response } from "express";
+import { requireAuth } from "../auth-middleware";
 import { db, pool } from "../db.js";
 
 // ─── Category → Service Type mapping ─────────────────────
@@ -43,7 +44,7 @@ const ORLANDO_MONTHLY_EARNINGS: Record<string, { low: number; high: number; perJ
 export function registerDiyToProRoutes(app: Express) {
 
   // POST /api/diy/complete — log a DIY completion
-  app.post("/api/diy/complete", async (req: Request, res: Response) => {
+  app.post("/api/diy/complete", requireAuth, async (req: Request, res: Response) => {
     try {
       const { customer_id, repair_category, repair_title, difficulty, time_taken_minutes, self_rating } = req.body;
       if (!customer_id || !repair_category || !repair_title) {
@@ -64,7 +65,7 @@ export function registerDiyToProRoutes(app: Express) {
   });
 
   // GET /api/diy/completions/:customerId — get all completions + count + skill summary
-  app.get("/api/diy/completions/:customerId", async (req: Request, res: Response) => {
+  app.get("/api/diy/completions/:customerId", requireAuth, async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
 
@@ -105,7 +106,7 @@ export function registerDiyToProRoutes(app: Express) {
   });
 
   // GET /api/diy/pro-ready/:customerId — check if customer qualifies for pro pitch
-  app.get("/api/diy/pro-ready/:customerId", async (req: Request, res: Response) => {
+  app.get("/api/diy/pro-ready/:customerId", requireAuth, async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
 
@@ -156,7 +157,7 @@ export function registerDiyToProRoutes(app: Express) {
   });
 
   // POST /api/diy/pro-interest — customer expresses interest (or declines)
-  app.post("/api/diy/pro-interest", async (req: Request, res: Response) => {
+  app.post("/api/diy/pro-interest", requireAuth, async (req: Request, res: Response) => {
     try {
       const { customer_id, interested } = req.body;
       if (!customer_id || interested === undefined) {
@@ -189,7 +190,7 @@ export function registerDiyToProRoutes(app: Express) {
   });
 
   // GET /api/diy/earnings-preview/:customerId — earnings potential based on DIY skills
-  app.get("/api/diy/earnings-preview/:customerId", async (req: Request, res: Response) => {
+  app.get("/api/diy/earnings-preview/:customerId", requireAuth, async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
 

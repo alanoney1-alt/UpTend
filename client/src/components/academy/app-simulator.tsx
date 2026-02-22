@@ -35,7 +35,7 @@ const STEPS = [
     title: "Liability Protection",
     instruction: "Before you touch ANYTHING, take a photo of the pile.",
     why: "If the customer claims you scratched the wall behind the junk, this photo proves the scratch was already there.",
-    actionLabel: "[Mock] Upload Before Photo",
+    actionLabel: "Upload Before Photo",
     icon: Camera,
   },
   {
@@ -43,7 +43,7 @@ const STEPS = [
     title: "The Video Scan",
     instruction: "Walk around the item and narrate any damage.",
     why: "This builds the 'Virtual Warehouse' so we can resell items for you.",
-    actionLabel: "[Mock] Record 5s Video",
+    actionLabel: "Record 5s Video",
     icon: Video,
   },
   {
@@ -51,7 +51,7 @@ const STEPS = [
     title: "The Digital Handshake",
     instruction: "Job done? Get the signature.",
     why: "No Signature = No Payment. This stops chargebacks dead.",
-    actionLabel: "[Mock] Collect Signature",
+    actionLabel: "Collect Signature",
     icon: PenTool,
   },
 ];

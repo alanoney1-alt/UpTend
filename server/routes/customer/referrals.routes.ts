@@ -144,7 +144,7 @@ export function registerCustomerReferralRoutes(app: Express) {
 
       // Create the referral
       const referral = await storage.createReferral({
-        referrerId: req.user?.id || "", // Will be set properly when we have user context
+        referrerId: ((req.user as any)?.userId || (req.user as any)?.id) || "",
         referredEmail: email,
         referralCode,
         status: "pending",

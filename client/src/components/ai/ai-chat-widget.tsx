@@ -6,6 +6,7 @@
  */
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { MessageCircle, X, Send, Loader2, Bot, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,7 @@ function BookingDraftCard({ draft, onAction }: { draft: any; onAction: (btn: Qui
 
 // ─── Main Widget ────────────────────────────
 export function AiChatWidget() {
+  const [, navigate] = useLocation();
   const [isOpen, setIsOpen] = useState(() => {
     // Auto-open for first-time visitors, then remember their choice
     const hasVisited = localStorage.getItem('george_dismissed');
@@ -159,7 +161,7 @@ export function AiChatWidget() {
 
   const handleQuickReply = useCallback((btn: QuickButton) => {
     if (btn.action.startsWith("navigate:")) {
-      window.location.href = btn.action.replace("navigate:", "");
+      navigate(btn.action.replace("navigate:", ""));
     } else if (btn.action.startsWith("reply:")) {
       handleSend(btn.action.replace("reply:", ""));
     } else if (btn.action.startsWith("action:")) {

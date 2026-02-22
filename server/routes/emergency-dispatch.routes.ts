@@ -3,7 +3,7 @@
  */
 
 import type { Express } from "express";
-import { requireAuth } from "../auth-middleware";
+import { requireAuth, requireAdmin } from "../auth-middleware";
 import {
   createEmergencyDispatch,
   updateDispatchStatus,
@@ -13,7 +13,7 @@ import {
 
 export function registerEmergencyDispatchRoutes(app: Express) {
   // Create emergency dispatch
-  app.post("/api/emergency/dispatch", async (req, res) => {
+  app.post("/api/emergency/dispatch", requireAuth, async (req, res) => {
     try {
       const customerId = (req as any).user?.userId || (req as any).user?.id || req.body.customerId;
       if (!customerId) return res.status(400).json({ error: "customerId required" });
@@ -29,7 +29,7 @@ export function registerEmergencyDispatchRoutes(app: Express) {
   });
 
   // Get active emergencies
-  app.get("/api/emergency/active", async (req, res) => {
+  app.get("/api/emergency/active", requireAuth, async (req, res) => {
     try {
       const customerId = (req as any).user?.userId || (req as any).user?.id || (req.query.customerId as string);
       if (!customerId) return res.status(400).json({ error: "customerId required" });
@@ -53,7 +53,7 @@ export function registerEmergencyDispatchRoutes(app: Express) {
   });
 
   // Activate disaster mode (admin only)
-  app.post("/api/emergency/disaster-mode", requireAuth, async (req, res) => {
+  app.post("/api/emergency/disaster-mode", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { region, stormName } = req.body;
       if (!region || !stormName) return res.status(400).json({ error: "region and stormName required" });

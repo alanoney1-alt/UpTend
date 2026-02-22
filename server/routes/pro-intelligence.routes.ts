@@ -5,6 +5,7 @@
 
 import { Router } from "express";
 import type { Express } from "express";
+import { requireAuth } from "../auth-middleware";
 import { getDemandForecast, getCustomerRetention, getPerformanceAnalytics, getCompetitivePosition } from "../services/pro-intelligence.js";
 import { setGoal, getGoalProgress, checkMilestones, getGoalHistory, suggestGoal } from "../services/pro-goals.js";
 import { optimizeRoute, getRouteForDay, addJobToRoute, getWeeklyRouteSummary } from "../services/route-optimizer.js";
@@ -12,7 +13,7 @@ import { optimizeRoute, getRouteForDay, addJobToRoute, getWeeklyRouteSummary } f
 const router = Router();
 
 // ─── Demand Forecast ─────────────────────────────────────────────
-router.get("/api/pro/forecast/:proId", async (req, res) => {
+router.get("/api/pro/forecast/:proId", requireAuth, async (req, res) => {
   try {
     const { proId } = req.params;
     const zip = (req.query.zip as string) || "32801";
@@ -25,7 +26,7 @@ router.get("/api/pro/forecast/:proId", async (req, res) => {
 });
 
 // ─── Customer Retention ──────────────────────────────────────────
-router.get("/api/pro/retention/:proId", async (req, res) => {
+router.get("/api/pro/retention/:proId", requireAuth, async (req, res) => {
   try {
     const result = await getCustomerRetention(req.params.proId);
     res.json(result);
@@ -35,7 +36,7 @@ router.get("/api/pro/retention/:proId", async (req, res) => {
 });
 
 // ─── Performance Analytics (no required params) ──────────────────
-router.get("/api/pro/analytics", async (req, res) => {
+router.get("/api/pro/analytics", requireAuth, async (req, res) => {
   try {
     const { proId, period = "weekly" } = req.query;
     if (!proId) {
@@ -52,7 +53,7 @@ router.get("/api/pro/analytics", async (req, res) => {
 });
 
 // ─── Performance Analytics ───────────────────────────────────────
-router.get("/api/pro/analytics/:proId/:period", async (req, res) => {
+router.get("/api/pro/analytics/:proId/:period", requireAuth, async (req, res) => {
   try {
     const period = req.params.period as "weekly" | "monthly";
     if (!["weekly", "monthly"].includes(period)) {
@@ -66,7 +67,7 @@ router.get("/api/pro/analytics/:proId/:period", async (req, res) => {
 });
 
 // ─── Competitive Position ────────────────────────────────────────
-router.get("/api/pro/position/:proId", async (req, res) => {
+router.get("/api/pro/position/:proId", requireAuth, async (req, res) => {
   try {
     const zip = (req.query.zip as string) || "32801";
     const result = await getCompetitivePosition(req.params.proId, zip);
@@ -77,7 +78,7 @@ router.get("/api/pro/position/:proId", async (req, res) => {
 });
 
 // ─── Goals ───────────────────────────────────────────────────────
-router.post("/api/pro/goals", async (req, res) => {
+router.post("/api/pro/goals", requireAuth, async (req, res) => {
   try {
     const { proId, goalType, targetAmount, startDate, endDate } = req.body;
     if (!proId || !goalType || !targetAmount || !startDate || !endDate) {
@@ -90,7 +91,7 @@ router.post("/api/pro/goals", async (req, res) => {
   }
 });
 
-router.get("/api/pro/goals/:proId", async (req, res) => {
+router.get("/api/pro/goals/:proId", requireAuth, async (req, res) => {
   try {
     const result = await getGoalProgress(req.params.proId);
     res.json(result);
@@ -99,7 +100,7 @@ router.get("/api/pro/goals/:proId", async (req, res) => {
   }
 });
 
-router.get("/api/pro/goals/:proId/history", async (req, res) => {
+router.get("/api/pro/goals/:proId/history", requireAuth, async (req, res) => {
   try {
     const result = await getGoalHistory(req.params.proId);
     res.json(result);
@@ -108,7 +109,7 @@ router.get("/api/pro/goals/:proId/history", async (req, res) => {
   }
 });
 
-router.get("/api/pro/goals/:proId/suggest", async (req, res) => {
+router.get("/api/pro/goals/:proId/suggest", requireAuth, async (req, res) => {
   try {
     const result = await suggestGoal(req.params.proId);
     res.json(result);
@@ -117,7 +118,7 @@ router.get("/api/pro/goals/:proId/suggest", async (req, res) => {
   }
 });
 
-router.post("/api/pro/goals/:proId/milestones", async (req, res) => {
+router.post("/api/pro/goals/:proId/milestones", requireAuth, async (req, res) => {
   try {
     const result = await checkMilestones(req.params.proId);
     res.json(result);
@@ -127,7 +128,7 @@ router.post("/api/pro/goals/:proId/milestones", async (req, res) => {
 });
 
 // ─── Route Optimization ─────────────────────────────────────────
-router.get("/api/pro/route/:proId/:date", async (req, res) => {
+router.get("/api/pro/route/:proId/:date", requireAuth, async (req, res) => {
   try {
     const result = await getRouteForDay(req.params.proId, req.params.date);
     res.json(result);
@@ -136,7 +137,7 @@ router.get("/api/pro/route/:proId/:date", async (req, res) => {
   }
 });
 
-router.post("/api/pro/route/:proId/optimize", async (req, res) => {
+router.post("/api/pro/route/:proId/optimize", requireAuth, async (req, res) => {
   try {
     const date = req.body.date || new Date().toISOString().split("T")[0];
     const result = await optimizeRoute(req.params.proId, date);
@@ -146,7 +147,7 @@ router.post("/api/pro/route/:proId/optimize", async (req, res) => {
   }
 });
 
-router.post("/api/pro/route/:proId/add-job", async (req, res) => {
+router.post("/api/pro/route/:proId/add-job", requireAuth, async (req, res) => {
   try {
     const { date, jobId } = req.body;
     if (!date || !jobId) return res.status(400).json({ error: "date and jobId required" });
@@ -157,7 +158,7 @@ router.post("/api/pro/route/:proId/add-job", async (req, res) => {
   }
 });
 
-router.get("/api/pro/route/:proId/weekly", async (req, res) => {
+router.get("/api/pro/route/:proId/weekly", requireAuth, async (req, res) => {
   try {
     const result = await getWeeklyRouteSummary(req.params.proId);
     res.json(result);

@@ -124,7 +124,7 @@ export function registerAppDataRoutes(app: Express) {
   });
 
   // Business customers (CRM)
-  app.get("/api/business/customers", async (req: any, res) => {
+  app.get("/api/business/customers", requireAuth, async (req: any, res) => {
     try {
       const userId = (req.user as any)?.userId || (req.user as any)?.id;
       if (!userId) return res.json({ customers: [] });
@@ -153,7 +153,7 @@ export function registerAppDataRoutes(app: Express) {
   });
 
   // Available jobs for pros
-  app.get("/api/hauler/available-jobs", async (req: any, res) => {
+  app.get("/api/hauler/available-jobs", requireAuth, async (req: any, res) => {
     try {
       const { rows } = await pool.query(
         "SELECT id, service_type, pickup_address, scheduled_date, scheduled_time, estimated_price, status, pickup_lat, pickup_lng FROM service_requests WHERE status = 'pending' AND hauler_id IS NULL ORDER BY created_at DESC LIMIT 50"

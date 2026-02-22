@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Redirect } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,8 +49,7 @@ export function LandscapingFlow({ onComplete, onBack }: ServiceFlowProps) {
   const [lotSize, setLotSize] = useState<LotSize>("quarter");
 
   if (quoteMode === "ai") {
-    window.location.href = `/ai/photo-quote?service=landscaping`;
-    return null;
+    return <Redirect to="/ai/photo-quote?service=landscaping" />;
   }
 
   // One-time total

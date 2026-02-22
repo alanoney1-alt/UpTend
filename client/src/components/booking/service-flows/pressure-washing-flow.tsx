@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Redirect } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -76,8 +77,7 @@ export function PressureWashingFlow({ onComplete, onBack }: ServiceFlowProps) {
   const [selections, setSelections] = useState<Record<string, string>>({});
 
   if (quoteMode === "ai") {
-    window.location.href = `/ai/photo-quote?service=pressure_washing`;
-    return null;
+    return <Redirect to="/ai/photo-quote?service=pressure_washing" />;
   }
 
   const toggleSurface = (surfaceId: string) => {

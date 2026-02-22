@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useLocation } from "wouter";
 import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -138,6 +139,7 @@ function MessageBubble({ msg, onButtonPress }: { msg: ChatMessage; onButtonPress
 
 // ─── Main Widget ────────────────────────────
 export function AiChatWidget() {
+  const [, navigate] = useLocation();
   const { user, isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(true);
   const [input, setInput] = useState("");
@@ -222,7 +224,7 @@ export function AiChatWidget() {
   const handleQuickReply = useCallback((btn: QuickButton) => {
     if (btn.action.startsWith("navigate:")) {
       const path = btn.action.replace("navigate:", "");
-      window.location.href = path;
+      navigate(path);
     } else if (btn.action.startsWith("reply:")) {
       const replyText = btn.action.replace("reply:", "");
       sendMessage(replyText);

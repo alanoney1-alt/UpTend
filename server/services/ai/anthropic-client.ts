@@ -17,7 +17,7 @@ if (!ANTHROPIC_API_KEY) {
 }
 
 export const anthropic = new Anthropic({
-  apiKey: ANTHROPIC_API_KEY || "sk-mock-key",
+  apiKey: ANTHROPIC_API_KEY || "",
 });
 
 /**

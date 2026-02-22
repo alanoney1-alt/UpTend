@@ -84,13 +84,13 @@ const junkRemovalLoadTiers = loadSizePackages.map(pkg => ({
   examples: pkg.example,
 }));
 
-// Truck unloading hourly rates ($160/hr for 2 Pros, 1hr minimum)
+// Truck unloading hourly rates ($130/hr for 2 Pros, 1hr minimum)
 const truckUnloadingRates = [
-  { id: "1hour", label: "1 Hour", price: 160, description: "Minimum booking (small loads)" },
-  { id: "2hours", label: "2 Hours", price: 320, description: "Standard U-Haul" },
-  { id: "3hours", label: "3 Hours", price: 480, description: "Typical 15-20ft truck" },
-  { id: "4hours", label: "4 Hours", price: 640, description: "Full 26ft truck" },
-  { id: "5hours", label: "5+ Hours", price: 800, description: "Large moves with heavy items" },
+  { id: "1hour", label: "1 Hour", price: 130, description: "Minimum booking (small loads)" },
+  { id: "2hours", label: "2 Hours", price: 260, description: "Standard U-Haul" },
+  { id: "3hours", label: "3 Hours", price: 390, description: "Typical 15-20ft truck" },
+  { id: "4hours", label: "4 Hours", price: 520, description: "Full 26ft truck" },
+  { id: "5hours", label: "5+ Hours", price: 650, description: "Large moves with heavy items" },
 ];
 
 // Map shared truck sizes
@@ -396,7 +396,7 @@ export default function Booking() {
         return formData.storyCount === 2 ? 199 : 129;
       case "moving_labor": {
         const hrs = Math.max(formData.laborHours, 1);
-        return hrs * formData.laborCrewSize * 80;
+        return hrs * formData.laborCrewSize * 65;
       }
       case "handyman": {
         const hrs = Math.max(formData.laborHours, 1);
@@ -1567,7 +1567,7 @@ export default function Booking() {
                             <span className="text-xl font-bold text-primary" data-testid="text-truck-price">${getServicePrice()}</span>
                           </div>
                           <p className="text-xs text-muted-foreground mt-1">
-                            {formData.laborCrewSize || 2} Pro{(formData.laborCrewSize || 2) > 1 ? "s" : ""} &times; {formData.laborHours || 1} hrs &times; $80/hr = ${getServicePrice()}
+                            {formData.laborCrewSize || 2} Pro{(formData.laborCrewSize || 2) > 1 ? "s" : ""} &times; {formData.laborHours || 1} hrs &times; $65/hr = ${getServicePrice()}
                           </p>
                         </div>
 
@@ -2065,7 +2065,7 @@ export default function Booking() {
                       </div>
 
                       <p className="text-sm text-muted-foreground mb-6">
-                        Hourly labor for loading, unloading, or rearranging. $80/hr per Pro, 2-hour minimum.
+                        Hourly labor for loading, unloading, or rearranging. $65/hr per Pro, 2-hour minimum.
                       </p>
 
                       <div className="space-y-6">
@@ -2144,7 +2144,7 @@ export default function Booking() {
                           <span className="text-xl font-bold text-primary" data-testid="text-labor-price">${getServicePrice()}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {formData.laborCrewSize} Pro{formData.laborCrewSize > 1 ? "s" : ""} &times; {formData.laborHours} hrs &times; $80/hr = ${getServicePrice()}
+                          {formData.laborCrewSize} Pro{formData.laborCrewSize > 1 ? "s" : ""} &times; {formData.laborHours} hrs &times; $65/hr = ${getServicePrice()}
                         </p>
                       </div>
                     </div>

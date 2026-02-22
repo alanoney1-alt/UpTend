@@ -1874,7 +1874,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       await apiRequest("POST", `/api/jobs/${activeJob.id}/report-issue`, issue);
       toast({ title: "Issue Reported", description: "Support will contact you shortly" });
     } catch {
-      toast({ title: "Issue Reported", description: "Support will contact you shortly" });
+      toast({ title: "Failed to Report Issue", description: "Please try again or call support", variant: "destructive" });
     }
   };
 

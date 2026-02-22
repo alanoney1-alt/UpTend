@@ -14,7 +14,7 @@ export default function ActiveJob() {
   const { toast } = useToast();
   const [, params] = useRoute("/job/:jobId/work");
   const jobId = params?.jobId;
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
 
   const { data: job, isLoading } = useQuery<ServiceRequest>({
     queryKey: ["/api/service-requests", jobId],
@@ -44,7 +44,13 @@ export default function ActiveJob() {
     onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
   });
 
-  if (isLoading) {
+  // Auth guard: redirect to login if not authenticated
+  if (!authLoading && !user) {
+    window.location.href = "/login";
+    return null;
+  }
+
+  if (isLoading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background" data-testid="page-active-job-loading">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
