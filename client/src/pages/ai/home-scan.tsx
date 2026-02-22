@@ -438,7 +438,7 @@ function TierComparison({ isEs }: { isEs: boolean }) {
         { label: isEs ? "Tú escaneas" : "You scan", value: "✅" },
         { label: isEs ? "Créditos ganados" : "Credits earned", value: "$25+" },
         { label: isEs ? "Sistemas interiores" : "Interior systems", value: "✅" },
-        { label: isEs ? "Techo/exterior" : "Roof/exterior", value: isEs ? "Solo fotos" : "Photos only" },
+        { label: isEs ? "Techo/exterior" : "Roof/exterior", value: isEs ? "Fotos desde el suelo" : "Ground-level photos" },
         { label: isEs ? "Imagen térmica" : "Thermal imaging", value: "—" },
         { label: isEs ? "Tiempo" : "Time", value: "15-20 min" },
       ],
