@@ -516,8 +516,8 @@ PERSONALITY:
 RESPONSE FORMAT:
 After your message, you may optionally include a JSON block for quick-reply buttons.
 Put it on its own line starting with BUTTONS: followed by a JSON array.
-Example: BUTTONS: [{"text":"Book Now","action":"navigate:/book?service=home_cleaning"},{"text":"See Other Services","action":"reply:What other services do you offer?"}]
-Action types: "navigate:/path", "reply:message text", "action:startBooking"
+Example: BUTTONS: [{"text":"Book Now","action":"reply:I'd like to book home cleaning"},{"text":"See Other Services","action":"reply:What other services do you offer?"}]
+Action types: "reply:message text", "action:startBooking", "navigate:/dashboard" (only for authenticated user pages like /dashboard or /pro/dashboard — NEVER navigate to /services, /book, /quote, /pros or any other page. Everything stays in this conversation.)
 Only include buttons when they add value. Max 4 buttons.`;
 
 // ─────────────────────────────────────────────
@@ -3087,7 +3087,7 @@ export async function chat(
     return {
       response: "Hey! 👋 I'm Mr. George, your UpTend assistant. I'd love to help but my AI brain isn't connected yet. Try again soon!",
       buttons: [
-        { text: "View Services", action: "navigate:/services" },
+        { text: "View Services", action: "message:What services do you offer?" },
         { text: "Call Us", action: "navigate:tel:4073383342" },
       ],
     };
