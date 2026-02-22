@@ -38,7 +38,7 @@ const STARTER_CATEGORIES = {
     "Tell me about the AI Home Scan",
     "What can you help me with?",
     "How does the Pro Academy work?",
-    "Tell me about UpTend's ESG tracking",
+    "How do you vet your Pros?",
   ],
 };
 
@@ -275,13 +275,7 @@ function GeorgeLanding() {
         <span>View Classic Site</span>
       </button>
 
-      <nav className="geo-nav">
-        <a href="/book" className="geo-nav-link">Book</a>
-        <a href="/services" className="geo-nav-link">Services</a>
-        <a href="/pricing" className="geo-nav-link">Pricing</a>
-        <a href="/ai/home-scan" className="geo-nav-link">Home Scan</a>
-        <a href="/dashboard" className="geo-nav-link">Dashboard</a>
-      </nav>
+
 
       <div className="geo-ambient" aria-hidden="true">
         <div className="geo-grad geo-grad-1" />
