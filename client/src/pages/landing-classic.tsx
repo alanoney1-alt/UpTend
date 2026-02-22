@@ -17,6 +17,7 @@ import {
   Waves, ArrowUpFromLine, Package, Search, BrainCircuit,
   ArrowRight, Activity, Globe, Heart, Leaf,
   Sparkles, Trees, Home, Wrench, ScanLine,
+  BadgeCheck, Handshake, Receipt,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer-classic";
 import { Header } from "@/components/landing/header-classic";
@@ -71,14 +72,14 @@ function NewHeroSection() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
           <div className="flex flex-wrap justify-center gap-3 mb-8">
-            <span className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 text-blue-400 rounded-full text-xs font-black uppercase tracking-widest border border-blue-500/20" data-testid="pill-protect">
-              <ShieldCheck className="w-3 h-3" /> {t("hero.pill_protect")}
+            <span className="flex items-center gap-2 px-4 py-2 bg-[#F47C20]/10 text-[#F47C20] rounded-full text-xs font-black uppercase tracking-widest border border-[#F47C20]/20" data-testid="pill-protect">
+              <BadgeCheck className="w-3 h-3" /> {t("hero.pill_protect")}
             </span>
-            <span className="flex items-center gap-2 px-4 py-2 bg-[#F47C20]/10 text-[#F47C20] rounded-full text-xs font-black uppercase tracking-widest border border-[#F47C20]/20" data-testid="pill-connect">
-              <Activity className="w-3 h-3" /> {t("hero.pill_connect")}
+            <span className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 text-blue-400 rounded-full text-xs font-black uppercase tracking-widest border border-blue-500/20" data-testid="pill-connect">
+              <ShieldCheck className="w-3 h-3" /> {t("hero.pill_connect")}
             </span>
-            <span className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-full text-xs font-black uppercase tracking-widest border border-green-500/20" data-testid="pill-sustain">
-              <Leaf className="w-3 h-3" /> {t("hero.pill_sustain")}
+            <span className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-black uppercase tracking-widest border border-emerald-500/20" data-testid="pill-sustain">
+              <Handshake className="w-3 h-3" /> {t("hero.pill_sustain")}
             </span>
           </div>
 
@@ -247,7 +248,7 @@ function InteractiveFeatures() {
               >
                 <CardContent className="p-8 flex flex-col h-full">
                   <div className="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center mb-6">
-                    <Leaf className="w-7 h-7 text-green-600 dark:text-green-400" />
+                    <Receipt className="w-7 h-7 text-green-600 dark:text-green-400" />
                   </div>
                   <h3 className="font-bold text-xl mb-3">{t("features.feature_green_title")}</h3>
                   <p className="text-muted-foreground leading-relaxed flex-grow">
