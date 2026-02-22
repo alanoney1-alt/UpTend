@@ -662,6 +662,179 @@
 .geo-booking-price { font-size: 1.2rem; font-weight: 700; color: #D97706; margin: 4px 0; }
 .geo-booking-detail { font-size: 0.8rem; color: #78716C; }
 
+/* ─── Rich Card System ─── */
+.geo-card {
+  margin-top: 10px; padding: 16px; border-radius: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.82rem; color: #D6D3D1;
+  backdrop-filter: blur(8px);
+}
+.geo-card-amber { border-color: rgba(245,158,11,0.15); }
+.geo-card-green { border-color: rgba(52,211,153,0.15); }
+.geo-card-purple { border-color: rgba(168,85,247,0.15); }
+.geo-card-blue { border-color: rgba(96,165,250,0.15); }
+.geo-card-teal { border-color: rgba(45,212,191,0.15); }
+
+.geo-card-header {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+  text-transform: uppercase; color: #78716C; margin-bottom: 8px;
+}
+.geo-card-value {
+  font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;
+}
+.geo-card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-top: 10px;
+}
+.geo-card-stat { display: flex; flex-direction: column; gap: 1px; }
+.geo-card-label {
+  font-size: 0.68rem; color: #57534E; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.geo-card-data { font-size: 0.85rem; font-weight: 600; color: #E8E5E0; }
+.geo-card-details { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; font-size: 0.8rem; }
+.geo-card-details .geo-card-label { display: inline; margin-right: 6px; }
+.geo-card-rows { display: flex; flex-direction: column; gap: 4px; }
+.geo-card-row { display: flex; justify-content: space-between; font-size: 0.82rem; }
+.geo-card-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 8px 0; }
+.geo-card-cta {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 10px; padding: 8px 16px; border-radius: 10px;
+  font-size: 0.8rem; font-weight: 600; text-decoration: none;
+  transition: all 0.2s; cursor: pointer; border: none;
+}
+.geo-card-cta-green { background: rgba(52,211,153,0.15); color: #34D399; }
+.geo-card-cta-green:hover { background: rgba(52,211,153,0.25); }
+.geo-card-cta-blue { background: rgba(96,165,250,0.15); color: #60A5FA; }
+.geo-card-cta-blue:hover { background: rgba(96,165,250,0.25); }
+
+/* ─── Card Animations ─── */
+@keyframes gCardIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.geo-card-in { animation: gCardIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+@keyframes gPriceIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.geo-price-in { animation: gPriceIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s both; }
+
+@keyframes gRingFill {
+  from { stroke-dashoffset: 283; }
+  to { stroke-dashoffset: var(--ring-offset); }
+}
+.geo-ring-fill { animation: gRingFill 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both; }
+
+/* ─── Capability Grid ─── */
+.geo-capability-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px; padding: 4px;
+  margin-top: 6px;
+}
+@keyframes gTileIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.geo-capability-tile {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer; transition: all 0.2s;
+  text-align: left; animation: gTileIn 0.3s ease both;
+}
+.geo-capability-tile:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.1);
+  transform: translateY(-1px);
+}
+@media (max-width: 360px) {
+  .geo-capability-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Markdown Links ─── */
+.geo-link {
+  color: #F97316; text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s;
+}
+.geo-link:hover { color: #FB923C; }
+.geo-txt-ai strong { color: #FAFAF9; }
+
+/* ─── Quick Actions (contextual follow-ups) ─── */
+.geo-quick-actions {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+}
+.geo-pill-sm {
+  font-size: 0.72rem !important; padding: 5px 12px !important;
+}
+
+/* ─── Feedback Buttons ─── */
+.geo-feedback {
+  display: flex; gap: 4px; margin-top: 6px;
+  opacity: 0; transition: opacity 0.2s;
+}
+.geo-msg:hover .geo-feedback,
+.geo-feedback-done { opacity: 1; }
+.geo-feedback-btn {
+  width: 24px; height: 24px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid rgba(255,255,255,0.06);
+  color: #57534E; cursor: pointer; transition: all 0.15s;
+}
+.geo-feedback-btn:hover { color: #A8A29E; background: rgba(255,255,255,0.04); }
+.geo-feedback-active { color: #F97316 !important; border-color: rgba(249,115,22,0.3); background: rgba(249,115,22,0.08); }
+
+/* ─── Voice Input ─── */
+.geo-voice-active {
+  color: #EF4444 !important;
+  animation: gVoicePulse 1.2s ease infinite;
+}
+@keyframes gVoicePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.2); }
+  50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+}
+
+/* ─── Scroll-to-Bottom Button ─── */
+.geo-scroll-btn {
+  position: absolute; bottom: 5.5rem; left: 50%; transform: translateX(-50%);
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  color: #A8A29E; cursor: pointer; transition: all 0.2s;
+  backdrop-filter: blur(12px); z-index: 20;
+  animation: gBubble 0.25s ease both;
+}
+.geo-scroll-btn:hover { background: rgba(255,255,255,0.14); color: #E8E5E0; }
+
+/* ─── Avatar Enhancements ─── */
+.geo-avatar-thinking {
+  animation: gBreathe 2s ease-in-out infinite;
+}
+@keyframes gBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+.geo-status-thinking {
+  animation: gPulseGreen 1s ease infinite;
+}
+@keyframes gPulseGreen {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ─── Send Button Press ─── */
+.geo-send:active:not(:disabled) { transform: scale(0.92); }
+
+/* ─── Video Embed Dark Theme ─── */
+.geo-msg .aspect-video { border-radius: 14px; overflow: hidden; }
+.geo-msg button.group { border-radius: 14px; }
+.geo-msg button.group > div:last-child > div { /* play button */
+  background: #F97316 !important;
+}
+
 /* ─── Reveal ─── */
 @keyframes gUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
 
