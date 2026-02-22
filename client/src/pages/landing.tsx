@@ -76,20 +76,36 @@ const YT_URL_RE = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed
 
 function renderContent(text: string): string {
   let cleaned = text.replace(YT_URL_RE, "").replace(/\n{3,}/g, "\n\n");
-  const html = cleaned
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, label, url) => {
-      const isProduct = /amazon\.com|homedepot\.com|lowes\.com|walmart\.com/.test(url);
-      const icon = isProduct ? "\u{1F6D2} " : "";
-      return `<a href="${url}" target="_blank" rel="noopener" class="geo-link">${icon}${label}</a>`;
-    })
+
+  // Step 1: Extract markdown links [text](url) → placeholders to avoid double-processing
+  const linkSlots: string[] = [];
+  cleaned = cleaned.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, label, url) => {
+    const isProduct = /amazon\.com|homedepot\.com|lowes\.com|walmart\.com|harborfreight\.com|acehardware\.com|target\.com/.test(url);
+    const icon = isProduct ? "\u{1F6D2} " : "";
+    const tag = `<a href="${url}" target="_blank" rel="noopener" class="geo-link">${icon}${label}</a>`;
+    linkSlots.push(tag);
+    return `\x00LINK${linkSlots.length - 1}\x00`;
+  });
+
+  // Step 2: Convert bare URLs (not already in a placeholder) → placeholders
+  cleaned = cleaned.replace(/(https?:\/\/[^\s<>"]+)/g, (_m, url) => {
+    const isProduct = /amazon\.com|homedepot\.com|lowes\.com|walmart\.com|harborfreight\.com|acehardware\.com|target\.com/.test(url);
+    const label = isProduct ? "\u{1F6D2} View Product" : url.length > 40 ? url.substring(0, 40) + "\u2026" : url;
+    const tag = `<a href="${url}" target="_blank" rel="noopener" class="geo-link">${label}</a>`;
+    linkSlots.push(tag);
+    return `\x00LINK${linkSlots.length - 1}\x00`;
+  });
+
+  // Step 3: Bold (**text** and __text__), italic (*text*)
+  let html = cleaned
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/__(.*?)__/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    .replace(/(?<!href="[^"]*"[^>]*>)(https?:\/\/[^\s<>"]+)/g, (_m, url) => {
-      const isProduct = /amazon\.com|homedepot\.com|lowes\.com|walmart\.com/.test(url);
-      const label = isProduct ? "\u{1F6D2} View Product" : url.length > 40 ? url.substring(0, 40) + "\u2026" : url;
-      return `<a href="${url}" target="_blank" rel="noopener" class="geo-link">${label}</a>`;
-    })
     .replace(/\n/g, "<br/>");
+
+  // Step 4: Restore link placeholders
+  html = html.replace(/\x00LINK(\d+)\x00/g, (_m, idx) => linkSlots[parseInt(idx)]);
+
   return DOMPurify.sanitize(html);
 }
 
