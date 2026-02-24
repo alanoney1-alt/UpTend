@@ -35,13 +35,14 @@ export default function Landing() {
 
 /* ─── GEORGE BANNER ─── */
 function GeorgeBanner() {
+  const { t } = useTranslation();
   return (
     <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-2.5 md:py-3 px-3 md:px-4 text-center">
       <div className="max-w-4xl mx-auto flex items-center justify-center gap-1.5 md:gap-2">
         <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
         <span className="text-xs md:text-base font-medium">
-          <strong>Meet Mr. George</strong> — your AI assistant. Questions?{" "}
-          <Link href="/meet-george" className="underline font-bold hover:text-white/90 transition-colors">Ask Mr. George</Link>
+          <strong>{t("landing.george_banner_title", "Meet Mr. George")}</strong> — {t("landing.george_banner_sub", "your AI assistant. Questions?")}{" "}
+          <Link href="/meet-george" className="underline font-bold hover:text-white/90 transition-colors">{t("landing.george_banner_cta", "Ask Mr. George")}</Link>
         </span>
       </div>
     </div>
@@ -62,7 +63,7 @@ function HeroSection() {
       <div className="max-w-5xl mx-auto px-4 relative z-10 text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
           {t("hero.hero_headline_1")}<br />
-          Without the headache.<br />
+          {t("hero.hero_headline_3", "Without the headache.")}<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F47C20] to-orange-300">
             {t("hero.hero_headline_2")}
           </span>
@@ -86,12 +87,12 @@ function HeroSection() {
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           <Link href="/book" asChild>
             <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
-              Get Your Free Quote <ArrowRight className="ml-2 w-5 h-5" />
+              {t("landing.get_free_quote", "Get Your Free Quote")} <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
           <Link href="/become-pro" asChild>
             <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 font-bold text-lg px-8 py-6 rounded-xl">
-              Join as a Pro
+              {t("landing.join_as_pro", "Join as a Pro")}
             </Button>
           </Link>
         </div>
@@ -108,19 +109,20 @@ function HeroSection() {
 
 /* ─── TWO SIDES: WHY CUSTOMERS + PROS NEED US ─── */
 function TwoSides() {
+  const { t } = useTranslation();
   return (
     <section className="py-20 bg-background">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-14">
           <Badge className="bg-green-500/20 text-green-500 dark:text-green-400 border-green-500/30 mb-4 text-sm font-bold">
-            The Fix
+            {t("landing.twosides_badge", "The Fix")}
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
-            Fair for customers.<br className="md:hidden" />{" "}Fair for Pros.<br />
-            <span className="text-[#F47C20]">That's the whole point.</span>
+            {t("landing.twosides_h2_1", "Fair for customers.")}<br className="md:hidden" />{" "}{t("landing.twosides_h2_2", "Fair for Pros.")}<br />
+            <span className="text-[#F47C20]">{t("landing.twosides_h2_3", "That's the whole point.")}</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            When Pros are treated right, customers get better service. When customers pay fair prices, Pros get steady work. UpTend makes both sides win.
+            {t("landing.twosides_sub", "When Pros are treated right, customers get better service. When customers pay fair prices, Pros get steady work. UpTend makes both sides win.")}
           </p>
         </div>
 
@@ -128,14 +130,14 @@ function TwoSides() {
           {/* For Customers */}
           <div>
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
-              <Heart className="w-5 h-5 text-[#F47C20]" /> For Homeowners
+              <Heart className="w-5 h-5 text-[#F47C20]" /> {t("landing.for_homeowners", "For Homeowners")}
             </h3>
             <div className="space-y-4">
               {[
-                { icon: Zap, title: "Instant, honest pricing", desc: "Get your price upfront. No haggling. No \"I'll get back to you.\"" },
-                { icon: ShieldCheck, title: "Every Pro is verified", desc: "Background checked, insured, and rated by real customers. No randos." },
-                { icon: Clock, title: "Real-time tracking", desc: "Know exactly when your Pro is arriving, working, and done. Like Uber for your home." },
-                { icon: DollarSign, title: "Price ceiling guarantee", desc: "The price you're quoted is the most you'll ever pay. Period." },
+                { icon: Zap, title: t("landing.cust_1_title", "Instant, honest pricing"), desc: t("landing.cust_1_desc", "Get your price upfront. No haggling. No \"I'll get back to you.\"") },
+                { icon: ShieldCheck, title: t("landing.cust_2_title", "Every Pro is verified"), desc: t("landing.cust_2_desc", "Background checked, insured, and rated by real customers. No randos.") },
+                { icon: Clock, title: t("landing.cust_3_title", "Real-time tracking"), desc: t("landing.cust_3_desc", "Know exactly when your Pro is arriving, working, and done. Like Uber for your home.") },
+                { icon: DollarSign, title: t("landing.cust_4_title", "Price ceiling guarantee"), desc: t("landing.cust_4_desc", "The price you're quoted is the most you'll ever pay. Period.") },
               ].map((item) => (
                 <Card key={item.title} className="border-border hover:border-[#F47C20]/30 transition-colors">
                   <CardContent className="p-5 flex gap-4">
@@ -152,7 +154,7 @@ function TwoSides() {
             </div>
             <Link href="/book" asChild>
               <Button className="mt-6 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold">
-                Get Your Free Quote <ArrowRight className="ml-2 w-4 h-4" />
+                {t("landing.get_free_quote", "Get Your Free Quote")} <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -160,14 +162,14 @@ function TwoSides() {
           {/* For Pros */}
           <div>
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
-              <Wrench className="w-5 h-5 text-[#F47C20]" /> For Pros
+              <Wrench className="w-5 h-5 text-[#F47C20]" /> {t("landing.for_pros", "For Pros")}
             </h3>
             <div className="space-y-4">
               {[
-                { icon: Ban, title: "Zero lead fees", desc: "We don't charge you to find work. You get matched to jobs — free. No pay-per-lead scam." },
-                { icon: DollarSign, title: "Get paid in 48 hours", desc: "Finish the job, get paid. Instant payout available. No chasing invoices." },
-                { icon: TrendingUp, title: "A real career path", desc: "Set your income goal. We build your job track. Certifications unlock higher-paying B2B work." },
-                { icon: ShieldCheck, title: "You're protected too", desc: "Liability coverage, no-show protection for customers, and dispute resolution that's actually fair." },
+                { icon: Ban, title: t("landing.pro_1_title", "Zero lead fees"), desc: t("landing.pro_1_desc", "We don't charge you to find work. You get matched to jobs — free. No pay-per-lead scam.") },
+                { icon: DollarSign, title: t("landing.pro_2_title", "Get paid in 48 hours"), desc: t("landing.pro_2_desc", "Finish the job, get paid. Instant payout available. No chasing invoices.") },
+                { icon: TrendingUp, title: t("landing.pro_3_title", "A real career path"), desc: t("landing.pro_3_desc", "Set your income goal. We build your job track. Certifications unlock higher-paying B2B work.") },
+                { icon: ShieldCheck, title: t("landing.pro_4_title", "You're protected too"), desc: t("landing.pro_4_desc", "Liability coverage, no-show protection for customers, and dispute resolution that's actually fair.") },
               ].map((item) => (
                 <Card key={item.title} className="border-border hover:border-[#F47C20]/30 transition-colors">
                   <CardContent className="p-5 flex gap-4">
@@ -184,7 +186,7 @@ function TwoSides() {
             </div>
             <Link href="/become-pro" asChild>
               <Button className="mt-6 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold">
-                Join as a Pro <ArrowRight className="ml-2 w-4 h-4" />
+                {t("landing.join_as_pro", "Join as a Pro")} <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -193,11 +195,10 @@ function TwoSides() {
         {/* The connection */}
         <div className="mt-14 max-w-2xl mx-auto text-center p-8 rounded-2xl bg-slate-900 dark:bg-slate-800">
           <Users className="w-10 h-10 text-[#F47C20] mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-white mb-3">Better together.</h3>
+          <h3 className="text-xl font-bold text-white mb-3">{t("landing.better_together", "Better together.")}</h3>
           <p className="text-slate-300 leading-relaxed">
-            When a Pro does great work, they earn higher ratings, unlock better jobs, and build a reputation that follows them. 
-            When a customer books through UpTend, they fund fair wages, verified quality, and a platform that holds everyone accountable. 
-            <strong className="text-white"> You're not just booking a service — you're supporting a better industry.</strong>
+            {t("landing.better_together_desc", "When a Pro does great work, they earn higher ratings, unlock better jobs, and build a reputation that follows them. When a customer books through UpTend, they fund fair wages, verified quality, and a platform that holds everyone accountable.")}
+            <strong className="text-white"> {t("landing.better_together_bold", "You're not just booking a service — you're supporting a better industry.")}</strong>
           </p>
         </div>
       </div>
@@ -208,6 +209,7 @@ function TwoSides() {
 /* ─── SERVICES STRIP ─── */
 function ServicesStrip() {
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
   const services = [
     { key: "handyman", label: "Handyman", price: "$75/hr", icon: Wrench },
     { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck },
@@ -226,11 +228,11 @@ function ServicesStrip() {
     <section className="py-16 bg-slate-50 dark:bg-slate-900/50 border-t border-border">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-2xl font-bold text-center mb-2">
-          11 Services.<br />
-          One App.<br />
-          Transparent Pricing.
+          {t("landing.strip_h2_1", "11 Services.")}<br />
+          {t("landing.strip_h2_2", "One App.")}<br />
+          {t("landing.strip_h2_3", "Transparent Pricing.")}
         </h2>
-        <p className="text-center text-muted-foreground mb-10">Tap any service to get an instant quote.</p>
+        <p className="text-center text-muted-foreground mb-10">{t("landing.strip_sub", "Tap any service to get an instant quote.")}</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {services.map((svc) => (
             <div
@@ -249,7 +251,7 @@ function ServicesStrip() {
             onClick={() => setLocation("/find-pro")}
             className="text-sm text-[#F47C20] hover:underline cursor-pointer font-medium"
           >
-            Or browse Pros →
+            {t("landing.browse_pros", "Or browse Pros →")}
           </span>
         </p>
       </div>
@@ -259,6 +261,7 @@ function ServicesStrip() {
 
 /* ─── TESTIMONIALS ─── */
 function Testimonials() {
+  const { t } = useTranslation();
   const testimonials = [
     {
       name: "Maria S.",
@@ -297,10 +300,10 @@ function Testimonials() {
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black mb-4">
-            What Our Customers Are Saying
+            {t("landing.testimonials_title", "What Our Customers Are Saying")}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Real reviews from real homeowners across the Orlando metro area.
+            {t("landing.testimonials_sub", "Real reviews from real homeowners across the Orlando metro area.")}
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -326,24 +329,25 @@ function Testimonials() {
 
 /* ─── FINAL CTA ─── */
 function FinalCTA() {
+  const { t } = useTranslation();
   return (
     <section className="py-20 bg-background text-center">
       <div className="max-w-3xl mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-black mb-4">
-          Ready to <span className="text-[#F47C20]">UpTend</span> your home?
+          {t("landing.cta_title_1", "Ready to")} <span className="text-[#F47C20]">UpTend</span> {t("landing.cta_title_2", "your home?")}
         </h2>
         <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
-          Whether you need a hand or you are one — there's a place for you here.
+          {t("landing.cta_sub", "Whether you need a hand or you are one — there's a place for you here.")}
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/book" asChild>
             <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl">
-              Book a Service <ArrowRight className="ml-2 w-5 h-5" />
+              {t("landing.book_a_service", "Book a Service")} <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
           <Link href="/become-pro" asChild>
             <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 rounded-xl border-[#F47C20] text-[#F47C20] hover:bg-[#F47C20]/10">
-              Become a Pro <ChevronRight className="ml-1 w-5 h-5" />
+              {t("landing.become_a_pro", "Become a Pro")} <ChevronRight className="ml-1 w-5 h-5" />
             </Button>
           </Link>
         </div>

@@ -65,6 +65,30 @@ export function Header() {
               {t("nav.for_business", "For Business")}
             </span>
           </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <span className="hover:text-white transition-colors cursor-pointer flex items-center gap-1" data-testid="link-more">
+                {t("nav.more", "More")} <ChevronDown className="w-3.5 h-3.5" />
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href="/blog" className="cursor-pointer" data-testid="link-blog">
+                  {t("nav.blog", "Blog")}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/faq" className="cursor-pointer" data-testid="link-faq">
+                  {t("nav.faq", "FAQ")}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/contact" className="cursor-pointer" data-testid="link-contact">
+                  {t("nav.contact", "Contact")}
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Right: Actions */}
@@ -179,6 +203,15 @@ export function Header() {
             </Link>
             <Link href="/business" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-business-mobile">{t("nav.for_business", "For Business")}</span>
+            </Link>
+            <Link href="/blog" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-blog-mobile">{t("nav.blog", "Blog")}</span>
+            </Link>
+            <Link href="/faq" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-faq-mobile">{t("nav.faq", "FAQ")}</span>
+            </Link>
+            <Link href="/contact" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-contact-mobile">{t("nav.contact", "Contact")}</span>
             </Link>
             {isAuthenticated && (
               <Link href={user?.role === "hauler" ? "/pro/dashboard" : "/dashboard"} onClick={closeMenu}>

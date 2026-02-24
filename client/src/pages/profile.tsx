@@ -477,12 +477,12 @@ function ProProfileSection() {
       </div>
 
       {/* Vehicle Info */}
-      {proData && (proData.vehicleMake || proData.vehicleModel) && (
-        <Card className="p-6 mb-6" data-testid="card-vehicle-info">
-          <div className="flex items-center gap-2 mb-4">
-            <Truck className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold">Vehicle</h3>
-          </div>
+      <Card className="p-6 mb-6" data-testid="card-vehicle-info">
+        <div className="flex items-center gap-2 mb-4">
+          <Truck className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-semibold">Vehicle</h3>
+        </div>
+        {proData && (proData.vehicleMake || proData.vehicleModel) ? (
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Make / Model</span>
@@ -501,8 +501,10 @@ function ProProfileSection() {
               </div>
             )}
           </div>
-        </Card>
-      )}
+        ) : (
+          <p className="text-sm text-muted-foreground">No vehicle info added. Update in Settings.</p>
+        )}
+      </Card>
 
       {/* Certifications & Insurance */}
       <div className="grid grid-cols-2 gap-3 mb-6">

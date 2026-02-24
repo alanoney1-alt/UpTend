@@ -72,6 +72,7 @@ const AcademySyllabus = lazy(() => import("@/pages/academy-syllabus"));
 const ProVerification = lazy(() => import("@/pages/pro-verification"));
 const ProSustainabilityCert = lazy(() => import("@/pages/pro-sustainability-cert"));
 const Services = lazy(() => import("@/pages/services"));
+const Certifications = lazy(() => import("@/pages/certifications"));
 const HomeAudit = lazy(() => import("@/pages/home-audit"));
 const HomeHealthAudit = lazy(() => import("@/pages/home-health-audit"));
 const JunkRemoval = lazy(() => import("@/pages/junk-removal"));
@@ -308,6 +309,7 @@ function Router() {
       <Route path="/home-dna-scan" component={HomeScan} />
       <Route path="/ai/home-scan" component={HomeScan} />
       <Route path="/find-pro" component={FindPro} />
+      <Route path="/certifications" component={Certifications} />
       <Route path="/b2b-pricing" component={B2BPricing} />
       <Route path="/fleet-tracking" component={FleetTracking} />
       <Route path="/partners" component={PartnersLanding} />

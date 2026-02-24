@@ -258,10 +258,10 @@ export default function Services() {
                     <svc.icon className="w-8 h-8 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-2xl font-bold mb-2" data-testid={`text-service-name-${svc.id}`}>{svc.name}</h3>
-                    <p className="text-base font-semibold text-muted-foreground mb-2" data-testid={`text-service-tagline-${svc.id}`}>{svc.tagline}</p>
+                    <h3 className="text-2xl font-bold mb-2" data-testid={`text-service-name-${svc.id}`}>{t(`svc.${svc.id}_name`, svc.name)}</h3>
+                    <p className="text-base font-semibold text-muted-foreground mb-2" data-testid={`text-service-tagline-${svc.id}`}>{t(`svc.${svc.id}_tagline`, svc.tagline)}</p>
                     <div className="flex items-baseline gap-3">
-                      <span className="text-2xl md:text-3xl font-black text-primary" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
+                      <span className="text-2xl md:text-3xl font-black text-primary" data-testid={`text-service-price-${svc.id}`}>{t(`svc.${svc.id}_price`, svc.price)}</span>
                       <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
                         {t("services_page.credit_badge")}
                       </Badge>
@@ -270,7 +270,7 @@ export default function Services() {
                 </div>
 
                 <p className="text-foreground text-base leading-relaxed mb-4" data-testid={`text-service-desc-${svc.id}`}>
-                  {svc.description}
+                  {t(`svc.${svc.id}_desc`, svc.description)}
                 </p>
 
                 {"esgImpact" in svc && (
@@ -331,16 +331,16 @@ export default function Services() {
                     <svc.icon className="w-8 h-8 text-primary dark:text-orange-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xl font-bold mb-1" data-testid={`text-service-name-${svc.id}`}>{svc.name}</h3>
-                    <p className="text-sm font-medium text-muted-foreground" data-testid={`text-service-tagline-${svc.id}`}>{svc.tagline}</p>
+                    <h3 className="text-xl font-bold mb-1" data-testid={`text-service-name-${svc.id}`}>{t(`svc.${svc.id}_name`, svc.name)}</h3>
+                    <p className="text-sm font-medium text-muted-foreground" data-testid={`text-service-tagline-${svc.id}`}>{t(`svc.${svc.id}_tagline`, svc.tagline)}</p>
                     <div className="mt-2">
-                      <span className="text-2xl font-black text-primary dark:text-orange-400" data-testid={`text-service-price-${svc.id}`}>{svc.price}</span>
+                      <span className="text-2xl font-black text-primary dark:text-orange-400" data-testid={`text-service-price-${svc.id}`}>{t(`svc.${svc.id}_price`, svc.price)}</span>
                     </div>
                   </div>
                 </div>
 
                 <p className="text-muted-foreground text-sm leading-relaxed mb-4" data-testid={`text-service-desc-${svc.id}`}>
-                  {svc.description}
+                  {t(`svc.${svc.id}_desc`, svc.description)}
                 </p>
 
                 {"esgImpact" in svc && (
