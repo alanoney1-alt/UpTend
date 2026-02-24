@@ -1,0 +1,31 @@
+{
+  "postedTopics": [
+    {"date": "2026-02-21", "topic": "dryer-vent-safety", "platform": "fb+ig"},
+    {"date": "2026-02-23", "topic": "dryer-vent-safety", "platform": "fb"},
+    {"date": "2026-02-24", "topic": "dryer-vent-safety", "platform": "fb"},
+    {"date": "2026-02-24", "topic": "3-things-pros-check", "platform": "fb+ig"}
+  ],
+  "topicPool": [
+    "water-heater-maintenance",
+    "pressure-washing-tips",
+    "hurricane-prep",
+    "gutter-cleaning-schedule",
+    "first-time-homeowner-mistakes",
+    "diy-vs-pro",
+    "pool-maintenance-florida",
+    "junk-removal-costs",
+    "hvac-filter-change",
+    "smoke-detector-testing",
+    "garage-door-maintenance",
+    "attic-insulation-check",
+    "landscaping-curb-appeal",
+    "carpet-cleaning-frequency",
+    "plumbing-leak-detection",
+    "electrical-safety-tips",
+    "roof-inspection-checklist",
+    "energy-efficiency-home",
+    "mold-prevention-florida",
+    "pest-prevention-orlando"
+  ],
+  "note": "Content generator should check this file and pick a topic NOT in postedTopics from the last 14 days"
+}
