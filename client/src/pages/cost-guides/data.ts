@@ -322,7 +322,7 @@ export const costGuides: CostGuide[] = [
       "Bundle mowing with pressure washing for curb appeal maintenance packages",
       "Mulch beds 2x/year to reduce weeds and retain moisture in sandy soil",
     ],
-    description: "UpTend Landscaping: One-time mow from $49 (≤¼ acre) or $79 (≤½ acre). Yard cleanup $149–$299. Recurring monthly plans: Mow & Go $99/mo (≤¼ acre) or $149/mo (≤½ acre) for weekly mow + blow + edging. Full Service $159/mo (≤¼ acre) or $219/mo (≤½ acre) adds trim, weed beds, and monthly hedge trim. Premium $249/mo (≤¼ acre) or $329/mo (≤½ acre) includes seasonal flowers, mulch 2x/year, and irrigation check.",
+    description: "UpTend Landscaping: One-time mow from $59 (≤¼ acre) or $89 (≤½ acre). Yard cleanup $149–$299. Recurring monthly plans: Mow & Go $99/mo (≤¼ acre) or $149/mo (≤½ acre) for weekly mow + blow + edging. Full Service $159/mo (≤¼ acre) or $219/mo (≤½ acre) adds trim, weed beds, and monthly hedge trim. Premium $249/mo (≤¼ acre) or $329/mo (≤½ acre) includes seasonal flowers, mulch 2x/year, and irrigation check.",
   },
   {
     slug: "carpet-cleaning",

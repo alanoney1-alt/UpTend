@@ -299,7 +299,7 @@ function ServicesStrip() {
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves },
     { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles },
-    { key: "landscaping", label: "Landscaping", price: "From $49", icon: Trees },
+    { key: "landscaping", label: "Landscaping", price: "From $59", icon: Trees },
     { key: "pool_cleaning", label: "Pool Cleaning", price: "From $99/mo", icon: Waves },
     { key: "moving_labor", label: "Moving Labor", price: "$65/hr", icon: Package },
     { key: "carpet_cleaning", label: "Carpet Cleaning", price: "$50/room", icon: Home },

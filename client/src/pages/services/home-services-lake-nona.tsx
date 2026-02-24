@@ -25,8 +25,8 @@ const data = {
   ],
   pricing: {
     label: "Home Services",
-    startingAt: "From $49",
-    details: "Pricing varies by service. Lawn care from $49, cleaning from $99, handyman from $75/hr. Bundle multiple services and save. See individual service pages for details.",
+    startingAt: "From $59",
+    details: "Pricing varies by service. Lawn care from $59, cleaning from $99, handyman from $75/hr. Bundle multiple services and save. See individual service pages for details.",
   },
   neighborhoods: [
     "Laureate Park", "Lake Nona Town Center", "North Lake Nona", "Randal Park",

@@ -151,7 +151,7 @@ const PLANS: Record<Segment, PlanOption[]> = {
 
 const ALL_SERVICES = [
   { key: "junk_removal", label: "Junk Removal & Hauling", priceRange: "$89–$499" },
-  { key: "landscaping", label: "Landscaping & Lawn Care", priceRange: "$49–$299" },
+  { key: "landscaping", label: "Landscaping & Lawn Care", priceRange: "$59–$299" },
   { key: "pool_cleaning", label: "Pool Cleaning & Maintenance", priceRange: "$99–$249" },
   { key: "pressure_washing", label: "Pressure Washing", priceRange: "$149–$449" },
   { key: "plumbing", label: "Plumbing", priceRange: "$99–$599" },

@@ -33,8 +33,8 @@ export const PRICING_CONSTANTS = {
   CARPET_MINIMUM: 10000,    // $100 minimum charge
 
   // Landscaping tiers
-  LANDSCAPE_MOW_QUARTER: 4900,   // $49 one-time mow ≤1/4 acre
-  LANDSCAPE_MOW_HALF: 7900,      // $79 one-time mow ≤1/2 acre
+  LANDSCAPE_MOW_QUARTER: 5900,   // $59 one-time mow ≤1/4 acre
+  LANDSCAPE_MOW_HALF: 8900,      // $89 one-time mow ≤1/2 acre
   LANDSCAPE_CLEANUP_MIN: 14900,  // $149 yard cleanup minimum
   LANDSCAPE_CLEANUP_MAX: 29900,  // $299 yard cleanup maximum
   LANDSCAPE_MOW_GO_QUARTER: 9900,    // $99/mo Mow & Go ≤1/4 acre

@@ -8,8 +8,8 @@ import { AiScanToggle } from "./ai-scan-toggle";
 import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 
 const ONE_TIME_OPTIONS = [
-  { id: "mow_quarter", label: "Mow + Edge + Blow (≤1/4 acre)", price: 49 },
-  { id: "mow_half", label: "Mow + Edge + Blow (≤1/2 acre)", price: 79 },
+  { id: "mow_quarter", label: "Mow + Edge + Blow (≤1/4 acre)", price: 59 },
+  { id: "mow_half", label: "Mow + Edge + Blow (≤1/2 acre)", price: 89 },
   { id: "yard_cleanup_sm", label: "Yard Cleanup (Small)", price: 149 },
   { id: "yard_cleanup_md", label: "Yard Cleanup (Medium)", price: 199 },
   { id: "yard_cleanup_lg", label: "Yard Cleanup (Large)", price: 299 },

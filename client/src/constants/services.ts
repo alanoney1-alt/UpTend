@@ -140,14 +140,14 @@ export const SERVICES = {
     generic: 'Landscaping',
     display: 'Landscaping',
     slug: '/freshcut',
-    startingPrice: 49,
+    startingPrice: 59,
     priceUnit: 'flat',
     tagline: 'Your yard, perfected.',
     description: 'Lawn mowing, edging, trimming, and seasonal maintenance.',
     tiers: {
       // One-Time Services
-      one_time_mow_quarter: { name: 'One-Time Mow (≤¼ acre)', price: 49, unit: 'one-time', description: 'Single mow, edge, and blow' },
-      one_time_mow_half: { name: 'One-Time Mow (≤½ acre)', price: 79, unit: 'one-time', description: 'Single mow, edge, and blow for larger lots' },
+      one_time_mow_quarter: { name: 'One-Time Mow (≤¼ acre)', price: 59, unit: 'one-time', description: 'Single mow, edge, and blow' },
+      one_time_mow_half: { name: 'One-Time Mow (≤½ acre)', price: 89, unit: 'one-time', description: 'Single mow, edge, and blow for larger lots' },
       yard_cleanup: { name: 'Yard Cleanup', price: 149, unit: 'one-time', description: 'Overgrown lot, debris, trimming ($149–$299)' },
       // Recurring Monthly (billed monthly, service weekly)
       mow_and_go_quarter: { name: 'Mow & Go (≤¼ acre)', price: 99, unit: 'mo', description: 'Weekly mow + blow + edging along hardscapes' },

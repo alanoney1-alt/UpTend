@@ -25,8 +25,8 @@ const data = {
   ],
   pricing: {
     label: "Landscaping",
-    startingAt: "From $49/visit",
-    details: "Basic lawn mow & edge from $49. Full-service maintenance plans from $149/month. Landscape design projects quoted separately.",
+    startingAt: "From $59/visit",
+    details: "Basic lawn mow & edge from $59. Full-service maintenance plans from $149/month. Landscape design projects quoted separately.",
   },
   neighborhoods: [
     "Laureate Park", "Lake Nona Town Center", "North Lake Nona", "Moss Park",

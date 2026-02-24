@@ -21,7 +21,7 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   moving_labor: 80,
   home_cleaning: 99,
   carpet_cleaning: 50, // Carpet Cleaning standard steam clean per room ($100 minimum)
-  landscaping: 49, // Landscaping one-time mow ≤1/4 acre ($99/mo recurring)
+  landscaping: 59, // Landscaping one-time mow ≤1/4 acre ($99/mo recurring)
   gutter_cleaning: 129, // GutterFlush: 1-story $129, 2-story $199
   pressure_washing: 120,
   pool_cleaning: 99, // PoolSpark monthly (Basic tier: $99/mo | Standard: $165 | Full: $210 | Deep Clean: $249)
