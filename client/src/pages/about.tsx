@@ -203,6 +203,16 @@ export default function About() {
         </div>
       </section>
 
+      {/* WHERE WE'RE GOING — Vision Statement */}
+      <section className="py-16 md:py-24 px-4 md:px-6" data-testid="section-about-vision">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-black mb-8">Where We're Going</h2>
+          <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+            UpTend is building toward a future where every home in America has a verified digital record — a Home DNA — that protects property value, simplifies insurance, and connects homeowners with trusted professionals. Orlando is our proving ground. Florida is next. Then the nation.
+          </p>
+        </div>
+      </section>
+
       {/* FINAL MANTRA */}
       <section className="py-16 md:py-24 text-center px-4 md:px-6" data-testid="section-about-mantra">
         <Quote className="w-12 h-12 text-muted-foreground/20 mx-auto mb-8" />

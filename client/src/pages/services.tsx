@@ -327,8 +327,8 @@ export default function Services() {
             >
               <CardContent className="p-5 md:p-8 flex flex-col flex-1">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0" data-testid={`icon-service-${svc.id}`}>
-                    <svc.icon className="w-6 h-6 text-primary dark:text-orange-400" />
+                  <div className="w-16 h-16 rounded-full bg-primary/10 dark:bg-orange-400/10 flex items-center justify-center shrink-0" data-testid={`icon-service-${svc.id}`}>
+                    <svc.icon className="w-8 h-8 text-primary dark:text-orange-400" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-xl font-bold mb-1" data-testid={`text-service-name-${svc.id}`}>{svc.name}</h3>

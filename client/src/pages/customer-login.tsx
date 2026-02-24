@@ -101,9 +101,9 @@ export default function CustomerLogin() {
             <div className="flex justify-center mb-4">
               <Logo className="w-10 h-10" textClassName="text-xl" />
             </div>
-            <h1 className="text-2xl font-bold mb-2">{t("login.welcome_back")}</h1>
+            <h1 className="text-2xl font-bold mb-2">Welcome back.</h1>
             <p className="text-muted-foreground">
-              {t("login.subtitle")}
+              Your home is waiting.
             </p>
           </div>
 

@@ -332,7 +332,12 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
           ))}
         </div>
 
-        {/* Service pills */}
+        {/* Experience + Service pills */}
+        {pro.memberSince && (
+          <p className="text-xs font-semibold text-primary mb-2">
+            {Math.max(1, new Date().getFullYear() - parseInt(pro.memberSince))}+ years experience
+          </p>
+        )}
         <div className="flex flex-wrap gap-1 mb-3">
           {pro.services.map((svc) => (
             <span

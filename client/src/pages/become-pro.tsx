@@ -162,6 +162,39 @@ export default function BecomePro() {
         </div>
       </section>
 
+      {/* Pro Testimonials */}
+      <section className="py-16 md:py-24 bg-slate-50 dark:bg-slate-900/50 px-4 md:px-6" data-testid="section-pro-testimonials">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-4">Hear From Our Pros</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Real professionals building real businesses on UpTend.
+          </p>
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="p-6">
+              <p className="text-muted-foreground italic leading-relaxed mb-4">
+                "I switched from Thumbtack. No more paying $40 per lead just to compete with 5 other guys. I keep 80% and get matched with real customers."
+              </p>
+              <p className="font-bold">Carlos M.</p>
+              <p className="text-sm text-muted-foreground">Junk Removal Pro</p>
+            </Card>
+            <Card className="p-6">
+              <p className="text-muted-foreground italic leading-relaxed mb-4">
+                "The certification program helped me stand out. My customers trust me before I even show up because they can verify my credentials."
+              </p>
+              <p className="font-bold">Maria R.</p>
+              <p className="text-sm text-muted-foreground">Home Cleaning Pro</p>
+            </Card>
+            <Card className="p-6">
+              <p className="text-muted-foreground italic leading-relaxed mb-4">
+                "I was doing everything through Craigslist. Now I have a real business profile, insurance coverage, and steady bookings."
+              </p>
+              <p className="font-bold">James W.</p>
+              <p className="text-sm text-muted-foreground">Pressure Washing Pro</p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       <section className="py-16 md:py-24 max-w-5xl mx-auto px-4 md:px-6 text-center" data-testid="section-pro-steps">
         <h2 className="text-3xl font-bold mb-12" data-testid="text-steps-title">How to become a Verified Green Pro</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

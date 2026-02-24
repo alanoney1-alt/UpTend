@@ -108,9 +108,9 @@ export default function CustomerSignup() {
               <div className="flex justify-center mb-4">
                 <Logo className="w-10 h-10" textClassName="text-xl" />
               </div>
-              <h1 className="text-2xl font-bold mb-2">{t("signup.create_account")}</h1>
+              <h1 className="text-2xl font-bold mb-2">Create Your Account</h1>
               <p className="text-muted-foreground">
-                {t("signup.subtitle")}
+                Join thousands of Orlando homeowners who trust UpTend.
               </p>
             </div>
 
