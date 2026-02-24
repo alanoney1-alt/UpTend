@@ -32,7 +32,7 @@ I prefer detailed explanations and iterative development. Ask before making majo
 - **AI Integration**: Leverages OpenAI GPT for advanced features like photo analysis, load estimation, item classification, sentiment analysis, and dispute resolution.
 - **Smart Matching & Dispatch**: Algorithms consider PYCKER ratings, proximity, capacity, and language, featuring a "PYCKER Swiper" and "Bounty Hunter Mode." Includes a Carbon-Intelligent Dispatcher for job batching.
 - **Dynamic Pricing Engine**: Calculates prices based on service type, load size, distance, and specific item characteristics.
-- **Instant Home Scan (Estimator)**: A no-login address-based estimator in the Hero section that provides instant estimates for Essential 5 services and shows protected value potential. After results appear, a Florida "Green-Light" pre-storm checklist modal auto-appears with urgency-based CTAs. Both feed into the auth redirect flow with address/bundle params.
+- **Instant Home DNA Scan (Estimator)**: A no-login address-based estimator in the Hero section that provides instant estimates for Essential 5 services and shows protected value potential. After results appear, a Florida "Green-Light" pre-storm checklist modal auto-appears with urgency-based CTAs. Both feed into the auth redirect flow with address/bundle params.
 - **Customer Booking Flow**: A multi-step wizard incorporating live price quotes, à la carte item selection, and AI photo analysis.
 - **PYCKER On-Site Verification**: PYCKERs use AI photo analysis to verify items and finalize pricing.
 - **Two-Tier PYCKER System**: "Verified Pro" (80% payout) and "Independent" (75% payout) with a career ladder for progression.

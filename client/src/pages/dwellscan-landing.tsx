@@ -44,7 +44,7 @@ export default function DwellScanLanding() {
       <section className="pt-32 pb-16 px-6 bg-gradient-to-br from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-950/20">
         <div className="max-w-6xl mx-auto text-center">
           <Badge className="mb-4 bg-primary text-white">
-            #1 Home Scan Service in Orlando
+            #1 Home DNA Scan Service in Orlando
           </Badge>
           <h1 className="text-5xl md:text-6xl font-black mb-6">
             Home DNA Scan

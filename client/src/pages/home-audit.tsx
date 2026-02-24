@@ -28,7 +28,7 @@ const faqs = [
   },
   {
     q: "How long does the Home DNA Scan take?",
-    a: "A typical Home Scan takes about 30 minutes. Your Level 3 Consultant will conduct a thorough room-by-room assessment with full photo and video documentation.",
+    a: "A typical Home DNA Scan takes about 30 minutes. Your Level 3 Consultant will conduct a thorough room-by-room assessment with full photo and video documentation.",
   },
   {
     q: "What happens to my data?",
@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     q: "How is this different from a home inspection?",
-    a: "A home inspection is a one-time pass/fail. The UpTend Home Scan creates a living, data-backed asset record that grows with every service. It\u2019s Intelligence, not just an inspection.",
+    a: "A home inspection is a one-time pass/fail. The UpTend Home DNA Scan creates a living, data-backed asset record that grows with every service. It\u2019s Intelligence, not just an inspection.",
   },
   {
     q: "Can I transfer my report to a new owner?",

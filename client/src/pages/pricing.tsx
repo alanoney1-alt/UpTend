@@ -149,7 +149,7 @@ export default function PublicPricing() {
   return (
     <div className="min-h-screen bg-background" data-testid="page-pricing">
       <Header />
-      {/* Free Home Scan Banner */}
+      {/* Free Home DNA Scan Banner */}
       <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-4 px-4 text-center">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3">
           <span className="font-bold text-sm md:text-base">Did you know? You can scan your home for FREE and earn $25+ in credits!</span>

@@ -134,9 +134,9 @@ This document details every production feature, the business problem it solves, 
 
 **Why we built it:** Homeowners are reactive — they fix things when they break, which costs 3–5x more than preventive maintenance. There's no affordable way to get a whole-property assessment without hiring multiple specialists.
 
-**How it helps the business:** Each Home Scan generates immediate revenue ($99–$249) AND a pipeline of follow-on bookings (average 2.5 services recommended per scan). It's a lead generation engine disguised as a product. The aerial tier also positions UpTend for insurance and real estate partnerships.
+**How it helps the business:** Each Home DNA Scan generates immediate revenue ($99–$249) AND a pipeline of follow-on bookings (average 2.5 services recommended per scan). It's a lead generation engine disguised as a product. The aerial tier also positions UpTend for insurance and real estate partnerships.
 
-**How it helps pros succeed:** Home Scans create pre-qualified, prioritized job pipelines. Instead of competing for one-off jobs, pros receive customers who have a list of needed services and a budget expectation already set by the AI assessment.
+**How it helps pros succeed:** Home DNA Scans create pre-qualified, prioritized job pipelines. Instead of competing for one-off jobs, pros receive customers who have a list of needed services and a budget expectation already set by the AI assessment.
 
 ---
 

@@ -12,7 +12,7 @@
 |-------|--------|-------|
 | 1. George Chat (AI) | ✅ 100% | 5/5 |
 | 2. DIY Flow | ✅ 100% | 3/3 |
-| 3. Home Scan | ✅ 100% | 2/2 |
+| 3. Home DNA Scan | ✅ 100% | 2/2 |
 | 4. Automotive | ⚠️ PARTIAL | 2/4 |
 | 5. Video/Tutorials | ✅ 100% | 2/2 |
 | 6. Pricing | ✅ 100% | 2/2 |

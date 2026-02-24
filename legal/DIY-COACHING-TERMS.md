@@ -107,7 +107,7 @@ If any provision of these terms is found to be unenforceable or invalid by a cou
 
 ## 16. Relationship to Other Terms
 
-These DIY Coaching terms supplement and are incorporated into UpTend's general Terms of Service, Privacy Policy, and Home Scan Terms & Conditions. In the event of a conflict between these terms and the general Terms of Service, the more protective provision (from UpTend's perspective) shall control.
+These DIY Coaching terms supplement and are incorporated into UpTend's general Terms of Service, Privacy Policy, and Home DNA Scan Terms & Conditions. In the event of a conflict between these terms and the general Terms of Service, the more protective provision (from UpTend's perspective) shall control.
 
 ---
 

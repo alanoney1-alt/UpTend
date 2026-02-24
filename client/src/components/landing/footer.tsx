@@ -126,8 +126,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/ai/home-scan" className="hover:text-primary transition-colors cursor-pointer text-[#F47C20] font-medium" data-testid="link-footer-home-scan">
-                  Home DNA Scan (Free)
+                <Link href="/home-dna-scan" className="hover:text-primary transition-colors cursor-pointer text-[#F47C20] font-medium" data-testid="link-footer-home-scan">
+                  Home DNA Scan
                 </Link>
               </li>
               <li>
