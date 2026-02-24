@@ -26,7 +26,7 @@ const data = {
   pricing: {
     label: "Gutter Cleaning",
     startingAt: "From $129",
-    details: "Single-story homes from $129, two-story from $179. Pricing based on linear footage. Gutter guard installation quoted separately.",
+    details: "Single-story homes from $129, two-story from $199. Pricing based on linear footage. Gutter guard installation quoted separately.",
   },
   neighborhoods: [
     "College Park", "Winter Park", "Baldwin Park", "Downtown Orlando",

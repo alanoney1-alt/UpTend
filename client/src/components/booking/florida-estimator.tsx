@@ -122,8 +122,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "pool_cleaning",
     name: "Pool Cleaning",
-    price: "From $120/mo",
-    description: "Basic ($120/mo), Standard ($165/mo), Full Service ($210/mo), or One-Time Deep Clean ($249).",
+    price: "From $99/mo",
+    description: "Basic ($99/mo), Standard ($165/mo), Full Service ($210/mo), or One-Time Deep Clean ($249).",
     benefit: "Crystal clear water • Equipment longevity",
     icon: Droplets,
   },

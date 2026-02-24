@@ -878,7 +878,7 @@ const resources = {
       "essential.gutter_cleaning_short": "Gutter Cleaning",
       "essential.gutter_cleaning_tagline": "Protect your roof before the storm.",
       "essential.gutter_cleaning_spin": "Prevent water damage and pest nesting with our debris-free guarantee.",
-      "essential.gutter_cleaning_price": "From $150",
+      "essential.gutter_cleaning_price": "From $129",
       "essential.pressure_washing": "Exterior Surface Restoration",
       "essential.pressure_washing_short": "Pressure Washing",
       "essential.pressure_washing_tagline": "Delete HOA violations instantly.",

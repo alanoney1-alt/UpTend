@@ -25,8 +25,8 @@ const data = {
   ],
   pricing: {
     label: "Moving Labor",
-    startingAt: "From $69/hr",
-    details: "2-hour minimum. 1 mover from $69/hr, 2 movers from $99/hr. All equipment (blankets, dollies, straps) included. No truck — labor only.",
+    startingAt: "$65/hr per mover",
+    details: "2-hour minimum. $65/hr per mover, 2-mover minimum. All equipment (blankets, dollies, straps) included. No truck — labor only.",
   },
   neighborhoods: [
     "Downtown Orlando", "Winter Park", "College Park", "Baldwin Park",

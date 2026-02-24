@@ -184,10 +184,10 @@ export default function BlogHomeServicesLakeNona() {
         <ul>
           <li><strong>Lawn care (weekly mowing):</strong> $30–$60/visit</li>
           <li><strong>Pressure washing (full exterior):</strong> $200–$450</li>
-          <li><strong>Gutter cleaning:</strong> $150–$250</li>
-          <li><strong>Pool cleaning (monthly service):</strong> $120–$210/month</li>
-          <li><strong>Junk removal (single load):</strong> $150–$400</li>
-          <li><strong>Handyman (general repairs):</strong> $65–$95/hour</li>
+          <li><strong>Gutter cleaning:</strong> $129–$250</li>
+          <li><strong>Pool cleaning (monthly service):</strong> $99–$210/month</li>
+          <li><strong>Junk removal (single load):</strong> $99–$400</li>
+          <li><strong>Handyman (general repairs):</strong> $75–$125/hour</li>
           <li><strong>Deep home cleaning:</strong> $200–$400</li>
           <li><strong>Landscaping (design + install):</strong> $1,500–$5,000+</li>
         </ul>
