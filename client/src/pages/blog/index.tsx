@@ -2,12 +2,17 @@ import { Helmet } from "react-helmet";
 import { Link } from "wouter";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
+import {
+  Wrench, Droplets, Wind, Home, AlertTriangle, Hammer, Waves, Trash2, MapPin,
+} from "lucide-react";
 
 interface BlogPost {
   slug: string;
   title: string;
   date: string;
   excerpt: string;
+  gradient: string;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 const posts: BlogPost[] = [
@@ -17,6 +22,8 @@ const posts: BlogPost[] = [
     date: "2026-02-20",
     excerpt:
       "From junk removal to pool cleaning, here's everything Lake Nona homeowners need to know about maintaining their homes in 2026.",
+    gradient: "from-violet-500 to-purple-700",
+    icon: MapPin,
   },
   {
     slug: "when-to-replace-water-heater",
@@ -24,6 +31,8 @@ const posts: BlogPost[] = [
     date: "2026-02-24",
     excerpt:
       "Learn the 5 warning signs your water heater is failing. Mr. George explains what Orlando homeowners should watch for and when to replace.",
+    gradient: "from-orange-400 to-red-600",
+    icon: Wrench,
   },
   {
     slug: "pressure-washing-guide-orlando",
@@ -31,6 +40,8 @@ const posts: BlogPost[] = [
     date: "2026-02-24",
     excerpt:
       "Orlando pressure washing guide from Mr. George. Learn what to clean, how often, costs, and mistakes to avoid for your Central Florida home.",
+    gradient: "from-cyan-400 to-blue-600",
+    icon: Droplets,
   },
   {
     slug: "hurricane-prep-home-checklist",
@@ -38,6 +49,8 @@ const posts: BlogPost[] = [
     date: "2026-02-24",
     excerpt:
       "Complete hurricane preparation checklist for Orlando homeowners. Mr. George covers everything from roof inspections to yard cleanup.",
+    gradient: "from-slate-600 to-gray-900",
+    icon: Wind,
   },
   {
     slug: "gutter-cleaning-frequency",
@@ -45,6 +58,8 @@ const posts: BlogPost[] = [
     date: "2026-02-24",
     excerpt:
       "Find out how often Florida homeowners should clean their gutters. Mr. George explains the risks of neglect and what gutter cleaning costs.",
+    gradient: "from-emerald-400 to-teal-700",
+    icon: Home,
   },
   {
     slug: "first-time-homeowner-mistakes",
@@ -52,6 +67,8 @@ const posts: BlogPost[] = [
     date: "2026-02-24",
     excerpt:
       "First-time homeowner? Avoid these 7 costly maintenance mistakes. Mr. George shares what Orlando homeowners get wrong and how to fix it.",
+    gradient: "from-amber-400 to-orange-600",
+    icon: AlertTriangle,
   },
   {
     slug: "diy-vs-pro-when-to-call",
@@ -59,6 +76,8 @@ const posts: BlogPost[] = [
     date: "2026-02-24",
     excerpt:
       "Not sure if you should DIY or hire a pro? Mr. George breaks down which home projects Orlando homeowners can handle and which need an expert.",
+    gradient: "from-indigo-400 to-blue-700",
+    icon: Hammer,
   },
   {
     slug: "pool-maintenance-basics-florida",
@@ -66,6 +85,8 @@ const posts: BlogPost[] = [
     date: "2026-02-24",
     excerpt:
       "Essential pool maintenance guide for Florida homeowners. Mr. George covers chemicals, cleaning schedules, costs, and common mistakes.",
+    gradient: "from-sky-400 to-cyan-600",
+    icon: Waves,
   },
   {
     slug: "junk-removal-cost-orlando",
@@ -73,6 +94,8 @@ const posts: BlogPost[] = [
     date: "2026-02-24",
     excerpt:
       "2026 junk removal pricing for Orlando. Mr. George breaks down costs by load size, item type, and what affects your final price.",
+    gradient: "from-green-500 to-emerald-700",
+    icon: Trash2,
   },
 ];
 
@@ -97,8 +120,16 @@ export default function BlogIndex() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => (
-            <article key={post.slug} className="border rounded-xl p-6 hover:border-primary/30 transition-colors flex flex-col">
+          {posts.map((post) => {
+            const Icon = post.icon;
+            return (
+            <article key={post.slug} className="border rounded-xl overflow-hidden hover:border-primary/30 transition-colors flex flex-col">
+              <Link href={`/blog/${post.slug}`}>
+                <div className={`h-40 bg-gradient-to-br ${post.gradient} flex items-center justify-center`}>
+                  <Icon className="w-12 h-12 text-white/80" />
+                </div>
+              </Link>
+              <div className="p-6 flex flex-col flex-1">
               <time className="text-sm text-muted-foreground">{post.date}</time>
               <h2 className="text-lg font-semibold mt-2 mb-3 flex-1">
                 <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
@@ -109,8 +140,10 @@ export default function BlogIndex() {
               <Link href={`/blog/${post.slug}`} className="text-primary font-medium text-sm hover:underline mt-auto">
                 Read more &rarr;
               </Link>
+              </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </div>
 
