@@ -187,16 +187,16 @@ export default function About() {
                 <p className="text-sm text-muted-foreground">AI Features Built</p>
               </div>
               <div data-testid="stat-pros">
-                <div className="text-3xl font-bold text-primary mb-1">205</div>
-                <p className="text-sm text-muted-foreground">Database Tables</p>
+                <div className="text-3xl font-bold text-primary mb-1">200+</div>
+                <p className="text-sm text-muted-foreground">Data Points Tracked</p>
               </div>
               <div data-testid="stat-rating">
                 <div className="text-3xl font-bold text-primary mb-1">13</div>
                 <p className="text-sm text-muted-foreground">Service Verticals</p>
               </div>
               <div data-testid="stat-diverted">
-                <div className="text-3xl font-bold text-primary mb-1">1</div>
-                <p className="text-sm text-muted-foreground">Founder. Zero Fluff.</p>
+                <div className="text-3xl font-bold text-primary mb-1">24/7</div>
+                <p className="text-sm text-muted-foreground">AI Support</p>
               </div>
             </div>
           </Card>

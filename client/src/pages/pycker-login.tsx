@@ -77,14 +77,14 @@ export default function PyckerLogin() {
 
   return (
     <div className="min-h-screen bg-[#3B1D5A] flex flex-col">
-      <header className="p-4">
+      <header className="p-4 pt-6">
         <Link href="/" className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors">
           <ArrowLeft className="w-5 h-5" />
           <span>Back to Home</span>
         </Link>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4 py-8">
+      <main className="flex-1 flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md p-8" data-testid="card-pro-login">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">

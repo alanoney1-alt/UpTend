@@ -42,9 +42,9 @@ const SERVICES = [
   {
     id: "garage_cleanout",
     name: <>Garage Cleanout</>,
-    price: "$150",
+    price: "$129",
     unit: "starting (mini)",
-    description: "Full sort, donate, recycle, and haul so you can actually park in your garage again. Mini: $150 | Small: $299 | Medium: $499 | Large: $749 | XL: $999",
+    description: "Full sort, donate, recycle, and haul so you can actually park in your garage again. Mini: $129 | Small: $299 | Medium: $499 | Large: $749 | XL: $999",
     features: ["Full sort & organize", "Donation coordination", "Sweep & clean after"],
     bnplAvailable: true,
     bnplPrice: 299,
@@ -100,9 +100,9 @@ const SERVICES = [
   {
     id: "gutter_cleaning",
     name: <>Gutter Cleaning</>,
-    price: "$150",
+    price: "$129",
     unit: "starting (1-story, up to 150 linear ft)",
-    description: "Debris removal and downspout flushing. Tiers: 1-Story $150 | 1-Story Large $195 | 2-Story $225 | 2-Story Large $285 | 3-Story $350+. Add-ons: gutter guards ($4-6/ft), downspout flush ($15/ea), minor repair ($75).",
+    description: "Debris removal and downspout flushing. Tiers: 1-Story $129 | 2-Story $199 | 2-Story Large $285 | 3-Story $350+. Add-ons: gutter guards ($4-6/ft), downspout flush ($15/ea), minor repair ($75).",
     features: ["Roof air-blown", "Downspouts tested", "Debris bagged", "5 tiers by size"],
   },
   {
@@ -116,11 +116,11 @@ const SERVICES = [
   {
     id: "pool_cleaning",
     name: <>Pool Cleaning</>,
-    price: "$120",
+    price: "$99",
     unit: "per month",
     description: "Regular pool maintenance to keep your water crystal clear.",
     features: [
-      "Basic: $120/mo — Weekly chemicals, skim surface, empty baskets",
+      "Basic: $99/mo — Weekly chemicals, skim surface, empty baskets",
       "Standard: $165/mo — + brush walls, vacuum, filter check",
       "Full Service: $210/mo — + tile cleaning, equipment monitoring, filter cleaning",
       "One-Time Deep Clean: $249 — Deep clean for neglected/green pools",
@@ -152,7 +152,7 @@ export default function PublicPricing() {
       {/* Free Home Scan Banner */}
       <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-4 px-4 text-center">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3">
-          <span className="font-bold text-sm md:text-base">✨ Did you know? You can scan your home for FREE and earn $25+ in credits!</span>
+          <span className="font-bold text-sm md:text-base">Did you know? You can scan your home for FREE and earn $25+ in credits!</span>
           <a href="/ai/home-scan" className="inline-flex items-center gap-1 bg-white text-[#F47C20] font-bold text-sm px-4 py-1.5 rounded-full hover:bg-orange-50 transition-colors">
             Learn More <ArrowRight className="w-4 h-4" />
           </a>

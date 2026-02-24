@@ -45,6 +45,10 @@ export function registerPublicRoutes(app: Express) {
         FROM hauler_profiles hp
         JOIN users u ON hp.user_id = u.id
         WHERE hp.can_accept_jobs = true
+        AND LOWER(u.email) NOT LIKE '%test%'
+        AND LOWER(u.email) NOT LIKE '%demo%'
+        AND LOWER(u.email) NOT LIKE '%qa%'
+        AND LOWER(u.first_name) NOT LIKE '%test%'
         ${serviceFilter}
         ORDER BY ${orderClause}
         LIMIT 50

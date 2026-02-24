@@ -218,7 +218,7 @@ function FindProPage() {
             <h3 className="text-lg font-bold mb-2">No Pros available for this service right now.</h3>
             <p className="text-muted-foreground mb-4">Try Quick Book for the fastest match.</p>
             <Button onClick={() => setLocation("/book")} className="bg-[#F47C20] hover:bg-[#e06a10]">
-              ⚡ Quick Book
+              Quick Book
             </Button>
           </Card>
         ) : (

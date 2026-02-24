@@ -118,7 +118,7 @@ export default function EmergencyPage() {
         {/* Warning Banner */}
         <div className="bg-red-900/30 border border-red-700 rounded-lg p-4 mb-8 text-center">
           <p className="text-red-300 font-semibold">
-            ⚠️ For life-threatening emergencies, call <strong>911</strong> first.
+            For life-threatening emergencies, call <strong>911</strong> first.
           </p>
           <p className="text-red-400 text-sm mt-1">This service is for urgent home repairs, not medical emergencies.</p>
         </div>
@@ -129,6 +129,22 @@ export default function EmergencyPage() {
               <h1 className="text-4xl font-bold mb-2">Emergency Home Services</h1>
               <p className="text-slate-400">Get a pro to your door ASAP. 24/7 emergency dispatch.</p>
               <p className="text-amber-400 text-sm mt-2 font-medium">Emergency pricing: 2× standard rate</p>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <a href="tel:407-338-3342" className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition-colors">
+                <Phone className="w-5 h-5" /> Call Now: (407) 338-3342
+              </a>
+              <button
+                onClick={() => { const el = document.querySelector('[data-testid="uptend-guide-toggle"]') as HTMLElement; if (el) el.click(); }}
+                className="inline-flex items-center gap-2 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition-colors"
+              >
+                Chat with George
+              </button>
+            </div>
+            <div className="text-center mb-8">
+              <p className="text-green-400 font-semibold">Available 24/7</p>
+              <p className="text-slate-400 text-sm">Response within 30 minutes</p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -147,6 +163,9 @@ export default function EmergencyPage() {
                   >
                     <Icon className={`w-10 h-10 mx-auto mb-3 ${color}`} />
                     <p className="text-sm font-medium text-center">{type.label}</p>
+                    <a href="tel:407-338-3342" className="block mt-2 text-xs text-red-400 font-semibold hover:underline" onClick={(e) => e.stopPropagation()}>
+                      Call (407) 338-3342
+                    </a>
                   </button>
                 );
               })}
@@ -209,7 +228,7 @@ export default function EmergencyPage() {
               disabled={!address.addressLine1 || !address.city || !address.state || !address.zipCode || submitMutation.isPending}
               className="w-full h-16 text-xl font-bold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg shadow-red-600/30 animate-pulse hover:animate-none"
             >
-              {submitMutation.isPending ? "Submitting..." : "🚨 I Need Help NOW"}
+              {submitMutation.isPending ? "Submitting..." : "I Need Help NOW"}
             </Button>
           </div>
         )}
@@ -242,7 +261,7 @@ export default function EmergencyPage() {
             <div>
               <h2 className="text-3xl font-bold mb-2 text-green-400">Pro Found!</h2>
               {proInfo && (
-                <p className="text-slate-300 text-lg">{proInfo.companyName} • ⭐ {proInfo.rating?.toFixed(1)}</p>
+                <p className="text-slate-300 text-lg">{proInfo.companyName} • * {proInfo.rating?.toFixed(1)}</p>
               )}
             </div>
             {eta && (

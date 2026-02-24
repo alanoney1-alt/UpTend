@@ -265,6 +265,7 @@ function Router() {
       <Route path="/become-pro" component={BecomePro} />
       <Route path="/hauler-landing" component={HaulerLanding} />
       <Route path="/pro-signup">{() => <Redirect to="/login?tab=pro" />}</Route>
+      <Route path="/pro-login">{() => <Redirect to="/login?tab=pro" />}</Route>
       <Route path="/academy-syllabus" component={AcademySyllabus} />
       <Route path="/academy/:slug" component={AcademySyllabus} />
       <Route path="/services" component={Services} />

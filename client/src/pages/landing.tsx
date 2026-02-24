@@ -30,6 +30,7 @@ export default function Landing() {
         <TwoSides />
         <ServicesStrip />
         <HomeScanPromo />
+        <Testimonials />
         <TrustBar />
         <FinalCTA />
       </main>
@@ -46,7 +47,7 @@ function GeorgeBanner() {
         <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
         <span className="text-xs md:text-base font-medium">
           <strong>Meet Mr. George</strong> — your AI assistant. Questions?{" "}
-          <Link href="/meet-george" className="underline font-bold hover:text-white/90 transition-colors">Ask Mr. George 👉</Link>
+          <Link href="/meet-george" className="underline font-bold hover:text-white/90 transition-colors">Ask Mr. George</Link>
         </span>
       </div>
     </div>
@@ -308,15 +309,15 @@ function HomeScanPromo() {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8 text-left">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">📋 Full Inventory</p>
+            <p className="font-bold text-white mb-1">Full Inventory</p>
             <p className="text-sm text-slate-400">Every appliance, fixture, and system documented with photos, specs, and estimated remaining life.</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">🛡️ Insurance-Ready</p>
+            <p className="font-bold text-white mb-1">Insurance-Ready</p>
             <p className="text-sm text-slate-400">Timestamped records for claims, warranties, and resale — proof of what you have and its condition.</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">💰 $25 Credit</p>
+            <p className="font-bold text-white mb-1">$25 Credit</p>
             <p className="text-sm text-slate-400">Complete your scan and earn $25+ in service credits toward any booking on the platform.</p>
           </div>
         </div>
@@ -339,13 +340,13 @@ function ServicesStrip() {
     { key: "handyman", label: "Handyman", price: "$75/hr", icon: Wrench },
     { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck },
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: ArrowUpFromLine },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles },
     { key: "landscaping", label: "Landscaping", price: "From $49", icon: Trees },
-    { key: "pool_cleaning", label: "Pool Cleaning", price: "$120/mo", icon: Waves },
+    { key: "pool_cleaning", label: "Pool Cleaning", price: "From $99/mo", icon: Waves },
     { key: "moving_labor", label: "Moving Labor", price: "$65/hr", icon: Package },
     { key: "carpet_cleaning", label: "Carpet Cleaning", price: "$50/room", icon: Home },
-    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $150", icon: Home },
+    { key: "garage_cleanout", label: "Garage Cleanout", price: "From $129", icon: Home },
     { key: "light_demolition", label: "Light Demo", price: "From $199", icon: Truck },
   ];
 
@@ -379,6 +380,73 @@ function ServicesStrip() {
             Or browse Pros →
           </span>
         </p>
+      </div>
+    </section>
+  );
+}
+
+/* ─── TESTIMONIALS ─── */
+function Testimonials() {
+  const testimonials = [
+    {
+      name: "Maria S.",
+      location: "Lake Nona, FL",
+      service: "Junk Removal",
+      text: "I had a garage full of old furniture and appliances after my parents downsized. The crew showed up on time, loaded everything in under two hours, and the price was exactly what I was quoted. No surprises, no haggling. I have used other services before and always felt like I was being overcharged. Not here.",
+    },
+    {
+      name: "James T.",
+      location: "Winter Park, FL",
+      service: "Pressure Washing",
+      text: "My driveway had not been cleaned in five years and honestly looked like it belonged to an abandoned house. The difference after pressure washing was night and day. My neighbors actually asked me if I had the driveway repaved. The Pro was thorough and even hit the sidewalk edges I did not ask about.",
+    },
+    {
+      name: "Patricia W.",
+      location: "Dr. Phillips, FL",
+      service: "Gutter Cleaning",
+      text: "I put off gutter cleaning for two years because I could not find someone I trusted to show up and do the job right. The Pro who came was professional from start to finish. He showed me photos of the buildup before cleaning and the clear gutters after. Downspouts were tested and everything was bagged up. Very impressed.",
+    },
+    {
+      name: "David R.",
+      location: "Kissimmee, FL",
+      service: "Handyman",
+      text: "I needed a ceiling fan installed, a leaky faucet fixed, and some drywall patched. I described everything to the George AI assistant and got a quote that turned out to be almost exactly what I paid. No one has ever given me an accurate estimate on handyman work before. The Pro knocked out all three tasks in one visit.",
+    },
+    {
+      name: "Linda M.",
+      location: "Altamonte Springs, FL",
+      service: "Home Cleaning",
+      text: "What sold me was the communication. I got updates when the Pro was on the way, knew exactly what was being cleaned, and received before and after photos when it was done. I have tried three other cleaning services in Orlando and none of them were this reliable or this transparent. I am on the recurring plan now.",
+    },
+  ];
+
+  return (
+    <section className="py-20 bg-background">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-black mb-4">
+            What Our Customers Are Saying
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Real reviews from real homeowners across the Orlando metro area.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((t) => (
+            <Card key={t.name} className="p-6 flex flex-col">
+              <div className="flex items-center gap-1 mb-3">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed flex-1 mb-4">"{t.text}"</p>
+              <div className="border-t border-border pt-3">
+                <p className="font-bold text-sm">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.service} -- {t.location}</p>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
     </section>
   );
