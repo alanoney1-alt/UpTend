@@ -38,8 +38,8 @@ const capabilities = [
 ];
 
 function openChatWidget() {
-  // Trigger the chat widget open event
-  const event = new CustomEvent("open-chat-widget");
+  // Trigger the George guide open event
+  const event = new CustomEvent("george:open");
   window.dispatchEvent(event);
   // Fallback: click the chat bubble if it exists
   const bubble = document.querySelector("[data-chat-bubble]") as HTMLElement;
