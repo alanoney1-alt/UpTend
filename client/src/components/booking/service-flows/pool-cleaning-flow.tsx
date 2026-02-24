@@ -10,7 +10,7 @@ const RECURRING_TIERS = [
   {
     id: "basic",
     name: "Basic",
-    price: 120,
+    price: 99,
     includes: [
       "Weekly chemical balancing",
       "Surface skimming",

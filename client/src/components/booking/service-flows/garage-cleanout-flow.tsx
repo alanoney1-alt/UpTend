@@ -10,7 +10,7 @@ const TIERS = [
   {
     id: "mini",
     name: "Mini",
-    price: 150,
+    price: 129,
     description: "Quick cleanout — minimal items",
     items: "~5-10 items",
     duration: "1-2 hours",

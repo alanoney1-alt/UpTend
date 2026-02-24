@@ -140,8 +140,8 @@ export default function BookingPage() {
         <div className="max-w-2xl mx-auto mb-10">
           <div className="grid grid-cols-3 gap-4 text-center">
             {[
-              { step: 1, icon: ClipboardCheck, text: "Choose your service" },
-              { step: 2, icon: MapPin, text: "Enter your address for an instant quote" },
+              { step: 1, icon: MapPin, text: "Enter your address" },
+              { step: 2, icon: ClipboardCheck, text: "Choose your service and get a quote" },
               { step: 3, icon: Calendar, text: "Pick your pro and schedule" },
             ].map((item) => (
               <div key={item.step} className="flex flex-col items-center gap-2">

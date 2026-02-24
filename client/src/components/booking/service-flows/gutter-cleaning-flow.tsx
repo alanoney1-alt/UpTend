@@ -7,10 +7,10 @@ import { RunningTotal } from "./running-total";
 import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 
 const SIZE_TIERS = [
-  { id: "1s_sm", stories: 1, size: "Standard", linearFt: "Up to 150 linear ft", price: 150 },
-  { id: "1s_lg", stories: 1, size: "Large", linearFt: "150-250 linear ft", price: 195 },
-  { id: "2s_sm", stories: 2, size: "Standard", linearFt: "Up to 150 linear ft", price: 225 },
-  { id: "2s_lg", stories: 2, size: "Large", linearFt: "150-250 linear ft", price: 285 },
+  { id: "1s_sm", stories: 1, size: "Standard", linearFt: "Up to 150 linear ft", price: 129 },
+  { id: "1s_lg", stories: 1, size: "Large", linearFt: "150-250 linear ft", price: 179 },
+  { id: "2s_sm", stories: 2, size: "Standard", linearFt: "Up to 150 linear ft", price: 199 },
+  { id: "2s_lg", stories: 2, size: "Large", linearFt: "150-250 linear ft", price: 259 },
   { id: "3s", stories: 3, size: "Any", linearFt: "All sizes", price: 350 },
 ];
 
