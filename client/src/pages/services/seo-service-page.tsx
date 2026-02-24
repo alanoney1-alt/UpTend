@@ -243,7 +243,7 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
             Ready to Get Started?
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Book your {data.schemaService.serviceType.toLowerCase()} service today. Same-day availability in {data.localContent.areaName}.
+            Book your {data.schemaService.serviceType.toLowerCase().replace(/\s*services?\s*$/i, '')} today. Same-day availability in {data.localContent.areaName}.
           </p>
           <Link href="/book">
             <Button size="lg" variant="secondary" className="text-lg px-10 py-6 font-bold">

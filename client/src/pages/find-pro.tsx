@@ -57,6 +57,7 @@ const SERVICE_OPTIONS = [
   { value: "carpet_cleaning", label: "Carpet Cleaning" },
   { value: "garage_cleanout", label: "Garage Cleanout" },
   { value: "light_demolition", label: "Light Demo" },
+  { value: "home_consultation", label: "Home DNA Scan" },
 ];
 
 const SERVICE_LABELS: Record<string, string> = Object.fromEntries(
