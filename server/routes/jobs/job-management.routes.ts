@@ -4,6 +4,7 @@ import { requireAuth, requireAdmin, requireHauler } from "../../auth-middleware"
 import { stripeService } from "../../stripeService";
 import { updateDwellScan } from "../../services/scoringService";
 import { onProEnRoute, onJobCompleted } from "../../services/george-events";
+import { schedulePostJobSequence } from "../../services/email-sequences";
 
 import { broadcastToJob } from "../../websocket";
 
@@ -424,6 +425,19 @@ export function registerJobManagementRoutes(app: Express) {
         onJobCompleted(jobId, job.customerId, job.serviceType || 'unknown').catch(err =>
           console.error('[George] onJobCompleted error:', err.message)
         );
+      }
+
+      // Schedule customer post-job email sequence (review, score, seasonal, referral)
+      if (job.customerId && job.assignedHaulerId) {
+        try {
+          const haulerProfile = await storage.getHaulerProfile(job.assignedHaulerId);
+          const haulerUser = haulerProfile?.userId ? await storage.getUser(haulerProfile.userId) : null;
+          const proName = haulerUser ? `${haulerUser.firstName || ''} ${haulerUser.lastName || ''}`.trim() : 'Your Pro';
+          const proFirstName = haulerUser?.firstName || 'Your Pro';
+          schedulePostJobSequence(job.customerId, jobId, proName, proFirstName, job.serviceType || 'General');
+        } catch (seqErr: any) {
+          console.error('[EmailSeq] Failed to schedule post-job sequence:', seqErr.message);
+        }
       }
 
       // Attempt to capture payment

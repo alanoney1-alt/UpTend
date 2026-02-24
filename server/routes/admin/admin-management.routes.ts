@@ -133,6 +133,15 @@ export function registerAdminManagementRoutes(app: Express) {
       if (!updated) {
         return res.status(404).json({ error: "Profile not found" });
       }
+
+      // Schedule pro onboarding email sequence
+      if (updated.userId) {
+        const { scheduleProWelcomeSequence } = await import("../../services/email-sequences");
+        scheduleProWelcomeSequence(Number(profileId), updated.userId).catch((err: any) =>
+          console.error('[EmailSeq] Pro welcome sequence error:', err.message)
+        );
+      }
+
       res.json({ success: true, profile: updated });
     } catch (error) {
       console.error("Error approving pycker:", error);
