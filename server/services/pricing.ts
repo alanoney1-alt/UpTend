@@ -2,13 +2,13 @@ export const PRICING_CONSTANTS = {
   PRESSURE_WASH_SQFT: 25,
   PRESSURE_WASH_MIN: 12000, // $120 minimum (small job)
 
-  GUTTER_1_STORY: 15000, // $150 — 1-Story (up to 150 linear ft)
-  GUTTER_1_STORY_LARGE: 19500, // $195 — 1-Story Large (150-250 linear ft)
-  GUTTER_2_STORY: 22500, // $225 — 2-Story (up to 150 linear ft)
-  GUTTER_2_STORY_LARGE: 28500, // $285 — 2-Story Large (150-250 linear ft)
+  GUTTER_1_STORY: 12900, // $129 — 1-Story (up to 150 linear ft)
+  GUTTER_1_STORY_LARGE: 17900, // $179 — 1-Story Large (150-250 linear ft)
+  GUTTER_2_STORY: 19900, // $199 — 2-Story (up to 150 linear ft)
+  GUTTER_2_STORY_LARGE: 25900, // $259 — 2-Story Large (150-250 linear ft)
   GUTTER_3_STORY: 35000, // $350+ — 3-Story
 
-  MOVER_HOURLY: 8000, // $80/hr per Pro (Moving Labor)
+  MOVER_HOURLY: 6500, // $65/hr per Pro (Moving Labor)
   MOVER_MIN_HOURS: 1,
 
   DEMO_BASE_RATE: 19900, // $199 starting (Light Demolition)
@@ -16,7 +16,7 @@ export const PRICING_CONSTANTS = {
   CONSULTATION_FEE: 9900, // $99 (Home DNA Scan Standard)
 
   // Pool Cleaning (PoolSpark) tiers
-  POOL_BASIC: 12000,       // $120/mo — Weekly chemicals + skim surface + empty baskets
+  POOL_BASIC: 9900,        // $99/mo — Weekly chemicals + skim surface + empty baskets
   POOL_STANDARD: 16500,   // $165/mo — Basic + brush walls + vacuum + filter check
   POOL_FULL_SERVICE: 21000, // $210/mo — Standard + tile cleaning + equipment monitoring + filter cleaning
   POOL_DEEP_CLEAN: 24900, // $249 one-time — Deep clean for neglected/green pools
