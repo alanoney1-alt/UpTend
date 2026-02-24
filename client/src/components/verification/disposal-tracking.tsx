@@ -189,7 +189,7 @@ export function DisposalTracking({ jobId, onComplete, onCancel }: DisposalTracki
         {/* Instructions */}
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
           <p className="font-semibold text-sm text-blue-900 dark:text-blue-100 mb-2">
-            📦 Item Tracking Guidelines:
+             Item Tracking Guidelines:
           </p>
           <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1 ml-4 list-disc">
             <li>Log EVERY item removed from the site</li>
@@ -234,7 +234,7 @@ export function DisposalTracking({ jobId, onComplete, onCancel }: DisposalTracki
                   </div>
                   {record.receiptPhotoUrl && (
                     <Badge variant="outline" className="text-xs">
-                      Receipt ✓
+                      Receipt 
                     </Badge>
                   )}
                 </div>
@@ -356,7 +356,7 @@ export function DisposalTracking({ jobId, onComplete, onCancel }: DisposalTracki
                 disabled={uploading}
               />
               {receiptPhotoUrl && (
-                <p className="text-xs text-green-600">✓ Receipt uploaded</p>
+                <p className="text-xs text-green-600"> Receipt uploaded</p>
               )}
             </div>
 

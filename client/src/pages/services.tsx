@@ -288,7 +288,7 @@ export default function Services() {
 
                 {"esgImpact" in svc && (
                   <Badge variant="secondary" className="mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                    🌱 {svc.esgImpact}
+                     {svc.esgImpact}
                   </Badge>
                 )}
 
@@ -358,7 +358,7 @@ export default function Services() {
 
                 {"esgImpact" in svc && (
                   <Badge variant="secondary" className="mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                    🌱 {svc.esgImpact}
+                     {svc.esgImpact}
                   </Badge>
                 )}
 

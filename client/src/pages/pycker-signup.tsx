@@ -1929,11 +1929,11 @@ export default function PyckerSignup() {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="text-muted-foreground">Selfie:</span>{" "}
-                      {selfiePhotoUrl ? <span className="text-green-600">✓ Uploaded</span> : <span className="text-red-600">Missing</span>}
+                      {selfiePhotoUrl ? <span className="text-green-600"> Uploaded</span> : <span className="text-red-600">Missing</span>}
                     </div>
                     <div>
                       <span className="text-muted-foreground">ID Photo:</span>{" "}
-                      {idPhotoUrl ? <span className="text-green-600">✓ Uploaded</span> : <span className="text-red-600">Missing</span>}
+                      {idPhotoUrl ? <span className="text-green-600"> Uploaded</span> : <span className="text-red-600">Missing</span>}
                     </div>
                     <div>
                       <span className="text-muted-foreground">Driver's License:</span> {form.getValues("driversLicense") || "—"}
@@ -2077,7 +2077,7 @@ export default function PyckerSignup() {
 
                 {/* Payout Setup CTA */}
                 <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-center max-w-md mx-auto">
-                  <p className="font-semibold text-green-900 mb-1">💰 Set up your bank account to get paid</p>
+                  <p className="font-semibold text-green-900 mb-1"> Set up your bank account to get paid</p>
                   <p className="text-sm text-green-700 mb-3">Get paid automatically when jobs complete — takes 2 minutes</p>
                   <Link href="/pro/payouts/setup">
                     <Button className="bg-green-600 hover:bg-green-700">

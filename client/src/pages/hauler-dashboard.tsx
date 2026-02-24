@@ -1303,19 +1303,19 @@ function GreenGuaranteeSection({ proId, rebateBalance }: { proId: string; rebate
               </p>
               <ul className="space-y-1 text-muted-foreground">
                 <li className={facilityName && facilityAddress ? "text-green-600" : ""}>
-                  {facilityName && facilityAddress ? "✓" : "○"} Facility name/address
+                  {facilityName && facilityAddress ? "" : ""} Facility name/address
                 </li>
                 <li className={receiptDate ? "text-green-600" : ""}>
-                  {receiptDate ? "✓" : "○"} Date & time (within 24 hours of job)
+                  {receiptDate ? "" : ""} Date & time (within 24 hours of job)
                 </li>
                 <li className={receiptWeight ? "text-green-600" : ""}>
-                  {receiptWeight ? "✓" : "○"} Weight of load
+                  {receiptWeight ? "" : ""} Weight of load
                 </li>
                 <li className={feeCharged ? "text-green-600" : ""}>
-                  {feeCharged ? "✓" : "○"} Fee charged
+                  {feeCharged ? "" : ""} Fee charged
                 </li>
                 <li className={receiptNumber ? "text-green-600" : ""}>
-                  {receiptNumber ? "✓" : "○"} Receipt number
+                  {receiptNumber ? "" : ""} Receipt number
                 </li>
               </ul>
             </div>

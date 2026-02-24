@@ -1,8 +1,9 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Package, Users } from "lucide-react";
+import { Check, Package, Users, Trash2, Sparkles, Droplets, Home, ClipboardList, Wrench, Move, TreePine, Waves, Brush } from "lucide-react";
 import { NAMED_BUNDLES, type BundleId } from "@shared/bundles";
+import type { LucideIcon } from "lucide-react";
 
 interface BundleSelectorProps {
   selectedBundle: BundleId | null;
@@ -10,17 +11,17 @@ interface BundleSelectorProps {
   onSkip: () => void;
 }
 
-const SERVICE_ICONS: Record<string, string> = {
-  junk_removal: "🗑️",
-  home_cleaning: "✨",
-  pressure_washing: "💧",
-  gutter_cleaning: "🏠",
-  home_consultation: "📋",
-  handyman: "🔧",
-  moving_labor: "💪",
-  landscaping: "🌳",
-  pool_cleaning: "🏊",
-  carpet_cleaning: "🧹",
+const SERVICE_ICONS: Record<string, LucideIcon> = {
+  junk_removal: Trash2,
+  home_cleaning: Sparkles,
+  pressure_washing: Droplets,
+  gutter_cleaning: Home,
+  home_consultation: ClipboardList,
+  handyman: Wrench,
+  moving_labor: Move,
+  landscaping: TreePine,
+  pool_cleaning: Waves,
+  carpet_cleaning: Brush,
 };
 
 const SERVICE_NAMES: Record<string, string> = {
@@ -89,12 +90,15 @@ export function BundleSelector({ selectedBundle, onSelectBundle, onSkip }: Bundl
                   <p className="text-xs font-medium text-muted-foreground uppercase">
                     Includes:
                   </p>
-                  {bundle.services.map((serviceId) => (
-                    <div key={serviceId} className="flex items-center gap-2">
-                      <span className="text-lg">{SERVICE_ICONS[serviceId] || "✓"}</span>
-                      <span className="text-sm">{SERVICE_NAMES[serviceId] || serviceId}</span>
-                    </div>
-                  ))}
+                  {bundle.services.map((serviceId) => {
+                    const Icon = SERVICE_ICONS[serviceId];
+                    return (
+                      <div key={serviceId} className="flex items-center gap-2">
+                        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+                        <span className="text-sm">{SERVICE_NAMES[serviceId] || serviceId}</span>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Pricing */}

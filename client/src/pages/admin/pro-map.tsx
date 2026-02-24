@@ -239,7 +239,7 @@ export default function AdminProMap() {
                     <p className="font-bold text-base">{pro.firstName} {pro.lastName}</p>
                     {pro.companyName && <p className="text-gray-500">{pro.companyName}</p>}
                     <div className="mt-2 space-y-1">
-                      <p>★ {pro.rating.toFixed(1)} · {pro.jobsCompleted} jobs completed</p>
+                      <p> {pro.rating.toFixed(1)} · {pro.jobsCompleted} jobs completed</p>
                       <p>
                         Status:{" "}
                         <span className={

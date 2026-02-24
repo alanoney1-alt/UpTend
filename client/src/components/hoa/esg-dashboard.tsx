@@ -443,10 +443,10 @@ export function HoaEsgDashboard({ businessAccountId }: HoaEsgDashboardProps) {
                 </div>
                 <div className="flex gap-2">
                   <Badge variant="outline" className="text-xs cursor-pointer hover:bg-orange-50">
-                    📊 Export CSV
+                     Export CSV
                   </Badge>
                   <Badge variant="outline" className="text-xs cursor-pointer hover:bg-orange-50">
-                    📧 Send Newsletter
+                     Send Newsletter
                   </Badge>
                 </div>
               </div>

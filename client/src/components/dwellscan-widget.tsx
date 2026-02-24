@@ -134,11 +134,11 @@ export function DwellScanWidget() {
             <div>
               <p className="font-semibold mb-1">How to increase your score:</p>
               <ul className="space-y-1.5 text-muted-foreground">
-                <li>📷 <strong>Book an Home DNA Scan</strong> (+100-200 pts) — Get a professional assessment of your home's condition</li>
-                <li>🔧 <strong>Complete maintenance services</strong> (+25-50 pts each) — Every completed job boosts your Maintenance score</li>
-                <li>📄 <strong>Upload home documents</strong> (+15-30 pts each) — Insurance policies, warranties, receipts, inspection reports</li>
-                <li>🛡️ <strong>Safety checks</strong> (+20-40 pts) — Smoke detectors, carbon monoxide, fire extinguishers verified</li>
-                <li>⭐ <strong>Keep a regular schedule</strong> (+10 pts/month) — Consistent maintenance shows your home is cared for</li>
+                <li> <strong>Book an Home DNA Scan</strong> (+100-200 pts) — Get a professional assessment of your home's condition</li>
+                <li> <strong>Complete maintenance services</strong> (+25-50 pts each) — Every completed job boosts your Maintenance score</li>
+                <li> <strong>Upload home documents</strong> (+15-30 pts each) — Insurance policies, warranties, receipts, inspection reports</li>
+                <li> <strong>Safety checks</strong> (+20-40 pts) — Smoke detectors, carbon monoxide, fire extinguishers verified</li>
+                <li> <strong>Keep a regular schedule</strong> (+10 pts/month) — Consistent maintenance shows your home is cared for</li>
               </ul>
             </div>
 

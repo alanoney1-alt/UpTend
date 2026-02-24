@@ -251,7 +251,7 @@ export function InsuranceHub({ propertyId }: InsuranceHubProps) {
       {/* Insurance Tips */}
       <Card className="bg-blue-50 border-blue-200">
         <CardContent className="pt-6">
-          <h3 className="font-semibold text-blue-900 mb-3">💡 Insurance Tips</h3>
+          <h3 className="font-semibold text-blue-900 mb-3"> Insurance Tips</h3>
           <ul className="text-sm text-blue-800 space-y-2">
             <li>• Review your coverage annually to ensure adequate protection</li>
             <li>• Document your property with photos and videos for claims</li>

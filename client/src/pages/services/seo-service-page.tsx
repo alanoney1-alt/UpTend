@@ -138,7 +138,7 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
           </div>
           <div className="flex flex-wrap gap-6 mt-8 text-sm text-white/80">
             <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> Licensed & Insured</span>
-            <span className="flex items-center gap-2"><Star className="h-4 w-4" /> 4.9★ Average Rating</span>
+            <span className="flex items-center gap-2"><Star className="h-4 w-4" /> 4.9 Average Rating</span>
             <span className="flex items-center gap-2"><Clock className="h-4 w-4" /> Same-Day Available</span>
           </div>
         </div>

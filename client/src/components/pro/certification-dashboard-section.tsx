@@ -60,7 +60,7 @@ export function CertificationDashboardSection() {
             </div>
             <div className="flex-1">
               <p className="font-semibold text-amber-900 dark:text-amber-200">
-                🔒 {hiddenJobCount} premium job{hiddenJobCount !== 1 ? "s" : ""} in your area require additional certifications
+                 {hiddenJobCount} premium job{hiddenJobCount !== 1 ? "s" : ""} in your area require additional certifications
               </p>
               <p className="text-sm text-amber-700 dark:text-amber-400">
                 Get certified to unlock higher-paying contracts
@@ -84,7 +84,7 @@ export function CertificationDashboardSection() {
             </div>
             <div>
               <h3 className="font-bold text-lg flex items-center gap-2">
-                🏆 Fully Certified
+                 Fully Certified
                 <Badge className="bg-amber-500 text-white">Elite Pro</Badge>
               </h3>
               <p className="text-sm text-muted-foreground">You have access to all job categories including premium B2B and government contracts</p>
@@ -119,7 +119,7 @@ export function CertificationDashboardSection() {
               <GraduationCap className="h-6 w-6 text-amber-600" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-lg text-amber-900 dark:text-amber-200">🎓 Get Certified, Earn More</h3>
+              <h3 className="font-bold text-lg text-amber-900 dark:text-amber-200"> Get Certified, Earn More</h3>
               <p className="text-sm text-amber-700 dark:text-amber-400 mb-3">
                 Certified pros unlock premium B2B contracts and earn up to 40% more
               </p>
@@ -171,7 +171,7 @@ export function CertificationDashboardSection() {
                     expiringSoon.some((e: any) => e.id === cert.id) ? "text-orange-600 font-medium" : "text-gray-500"
                   }`}>
                     <Clock className="h-3 w-3" />
-                    {expiringSoon.some((e: any) => e.id === cert.id) ? "⚠️ " : ""}
+                    {expiringSoon.some((e: any) => e.id === cert.id) ? " " : ""}
                     Expires {new Date(cert.expires_at).toLocaleDateString()}
                   </div>
                 )}

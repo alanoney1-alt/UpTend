@@ -46,7 +46,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
             </div>
             {onDismiss && (
               <Button variant="ghost" size="sm" onClick={onDismiss}>
-                ✕
+                
               </Button>
             )}
           </div>
@@ -89,7 +89,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
 
           <div className="bg-white/80 dark:bg-gray-900/80 p-3 rounded-lg border">
             <p className="text-xs text-muted-foreground">
-              💡 <strong>Worth it?</strong> Comparable drone roof inspections cost $290-$350 elsewhere.
+               <strong>Worth it?</strong> Comparable drone roof inspections cost $290-$350 elsewhere.
             </p>
           </div>
 
@@ -131,7 +131,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
           </div>
           {onDismiss && (
             <Button variant="ghost" size="sm" onClick={onDismiss}>
-              ✕
+              
             </Button>
           )}
         </div>

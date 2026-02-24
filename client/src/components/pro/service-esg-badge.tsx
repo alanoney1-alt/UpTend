@@ -22,37 +22,37 @@ interface ServiceEsgBadgeProps {
 const BADGE_TYPES = {
   water_saver: {
     name: "Water Saver",
-    icon: "💧",
+    icon: "",
     color: "bg-blue-100 text-blue-800",
     threshold: (metrics: any) => (metrics?.waterSaved || 0) > 100,
   },
   chemical_optimizer: {
     name: "Chemical Optimizer",
-    icon: "🧪",
+    icon: "",
     color: "bg-green-100 text-green-800",
     threshold: (metrics: any) => (metrics?.esgScore || 0) >= 80,
   },
   carbon_champion: {
     name: "Carbon Champion",
-    icon: "🌱",
+    icon: "",
     color: "bg-emerald-100 text-emerald-800",
     threshold: (metrics: any) => (metrics?.co2Saved || 0) > 50,
   },
   eco_pro: {
     name: "Eco Pro",
-    icon: "⭐",
+    icon: "",
     color: "bg-purple-100 text-purple-800",
     threshold: (metrics: any) => (metrics?.esgScore || 0) >= 90,
   },
   waste_diverter: {
     name: "Waste Diverter",
-    icon: "♻️",
+    icon: "",
     color: "bg-teal-100 text-teal-800",
     threshold: (metrics: any) => (metrics?.diversionRate || 0) > 75,
   },
   energy_efficient: {
     name: "Energy Efficient",
-    icon: "⚡",
+    icon: "",
     color: "bg-yellow-100 text-yellow-800",
     threshold: (metrics: any) => (metrics?.energySaved || 0) > 10,
   },
@@ -129,17 +129,17 @@ export function ServiceEsgSummary({ proId }: { proId: string }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       <div className="text-center p-4 bg-blue-50 rounded-lg">
-        <div className="text-3xl mb-1">💧</div>
+        <div className="text-3xl mb-1"></div>
         <div className="text-2xl font-bold">{stats.gallonsSaved.toLocaleString()}</div>
         <div className="text-sm text-gray-600">Gallons Saved</div>
       </div>
       <div className="text-center p-4 bg-green-50 rounded-lg">
-        <div className="text-3xl mb-1">🌱</div>
+        <div className="text-3xl mb-1"></div>
         <div className="text-2xl font-bold">{stats.co2Saved.toLocaleString()}</div>
         <div className="text-sm text-gray-600">lbs CO₂ Saved</div>
       </div>
       <div className="text-center p-4 bg-purple-50 rounded-lg">
-        <div className="text-3xl mb-1">⭐</div>
+        <div className="text-3xl mb-1"></div>
         <div className="text-2xl font-bold">{stats.avgEsgScore}</div>
         <div className="text-sm text-gray-600">Avg ESG Score</div>
       </div>

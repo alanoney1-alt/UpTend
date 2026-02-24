@@ -178,7 +178,7 @@ export function FeeProgressWidget() {
           <Sparkles className="h-5 w-5 text-amber-500" />
           <div>
             <p className="text-sm font-bold text-amber-900 dark:text-amber-200">
-              🎉 Elite Pro — Lowest fee rate unlocked!
+               Elite Pro — Lowest fee rate unlocked!
             </p>
             <p className="text-xs text-amber-700 dark:text-amber-400">
               You're paying the minimum {feePercent}% platform fee

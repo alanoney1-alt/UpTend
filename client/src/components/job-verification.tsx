@@ -187,7 +187,7 @@ export function JobVerification({
             </div>
             {job.quoteMethod === "manual" && (
               <p className="text-xs text-muted-foreground mt-1">
-                ⚠️ Manual estimate - verify actual measurements
+                 Manual estimate - verify actual measurements
               </p>
             )}
           </div>

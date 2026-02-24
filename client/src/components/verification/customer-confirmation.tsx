@@ -267,10 +267,10 @@ export function CustomerConfirmation({ jobId }: CustomerConfirmationProps) {
                 <div>
                   <p className="font-semibold text-sm mb-2">Environmental Impact</p>
                   <ul className="text-sm space-y-1">
-                    <li>♻️ {(verificationData.totalRecycledLbs || 0).toFixed(0)} lbs recycled</li>
-                    <li>🌳 Equivalent to {((verificationData.carbonOffsetTons || 0) * 16.5).toFixed(1)} trees planted</li>
-                    <li>💧 ~{((verificationData.totalWeightLbs || 0) * 0.5).toFixed(0)} gallons water saved</li>
-                    <li>🌍 {(verificationData.carbonOffsetTons || 0).toFixed(2)} metric tons CO2 avoided</li>
+                    <li> {(verificationData.totalRecycledLbs || 0).toFixed(0)} lbs recycled</li>
+                    <li> Equivalent to {((verificationData.carbonOffsetTons || 0) * 16.5).toFixed(1)} trees planted</li>
+                    <li> ~{((verificationData.totalWeightLbs || 0) * 0.5).toFixed(0)} gallons water saved</li>
+                    <li> {(verificationData.carbonOffsetTons || 0).toFixed(2)} metric tons CO2 avoided</li>
                   </ul>
                 </div>
               </div>

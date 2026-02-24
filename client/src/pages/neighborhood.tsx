@@ -104,7 +104,7 @@ export default function NeighborhoodPage() {
                   </Button>
                 ) : (
                   <div className="flex items-center gap-3">
-                    <Badge className="bg-green-600/20 text-green-400 border-green-600/30">✓ Member</Badge>
+                    <Badge className="bg-green-600/20 text-green-400 border-green-600/30"> Member</Badge>
                     <Button variant="outline" size="sm" onClick={() => setShowRecommendForm(!showRecommendForm)} className="border-slate-600">
                       <ThumbsUp className="w-4 h-4 mr-2" /> Recommend a Pro
                     </Button>

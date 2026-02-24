@@ -170,8 +170,8 @@ export function ReferralWidget() {
 
       {/* Info */}
       <div className="mt-4 text-xs text-muted-foreground">
-        <p>✓ Your friend gets $25 off their first booking</p>
-        <p>✓ You get $25 credit when they complete their first job</p>
+        <p> Your friend gets $25 off their first booking</p>
+        <p> You get $25 credit when they complete their first job</p>
       </div>
     </Card>
   );

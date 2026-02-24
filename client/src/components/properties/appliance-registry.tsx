@@ -55,18 +55,18 @@ export function ApplianceRegistry({ propertyId }: ApplianceRegistryProps) {
 
   function getApplianceIcon(category: string) {
     const icons: Record<string, string> = {
-      refrigerator: "❄️",
-      dishwasher: "🍽️",
-      oven: "🔥",
-      microwave: "📟",
-      washer: "🧺",
-      dryer: "👔",
-      hvac: "🌡️",
-      water_heater: "💧",
-      garbage_disposal: "🗑️",
-      range_hood: "💨",
+      refrigerator: "",
+      dishwasher: "",
+      oven: "",
+      microwave: "",
+      washer: "",
+      dryer: "",
+      hvac: "",
+      water_heater: "",
+      garbage_disposal: "",
+      range_hood: "",
     };
-    return icons[category] || "⚡";
+    return icons[category] || "";
   }
 
   function getWarrantyStatusColor(status?: string) {
@@ -193,7 +193,7 @@ export function ApplianceRegistry({ propertyId }: ApplianceRegistryProps) {
                     </p>
                     {appliance.location && (
                       <p className="text-xs text-muted-foreground mt-1">
-                        📍 {appliance.location}
+                         {appliance.location}
                       </p>
                     )}
                   </div>
@@ -359,10 +359,10 @@ function ScanApplianceForm({
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h4 className="font-semibold text-blue-900 mb-2">How AI Scanning Works</h4>
         <ul className="text-sm text-blue-800 space-y-1">
-          <li>✓ AI extracts brand, model, and serial number</li>
-          <li>✓ Auto-lookup warranty information</li>
-          <li>✓ Add to your registry automatically</li>
-          <li>✓ Results ready in 30-60 seconds</li>
+          <li> AI extracts brand, model, and serial number</li>
+          <li> Auto-lookup warranty information</li>
+          <li> Add to your registry automatically</li>
+          <li> Results ready in 30-60 seconds</li>
         </ul>
       </div>
 

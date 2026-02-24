@@ -54,7 +54,7 @@ export function UrgentJobCard({ job, onAccepted, onDismissed }: UrgentJobCardPro
       return apiRequest("POST", `/api/service-requests/${job.jobId}/accept`);
     },
     onSuccess: () => {
-      toast({ title: "🎉 Job Accepted!", description: "Head to the location ASAP." });
+      toast({ title: " Job Accepted!", description: "Head to the location ASAP." });
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests/pending"] });
       queryClient.invalidateQueries({ queryKey: ["/api/haulers", "active-jobs"] });
       onAccepted?.();

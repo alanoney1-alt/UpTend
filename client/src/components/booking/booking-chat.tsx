@@ -61,13 +61,13 @@ function renderContent(text: string) {
 function PropertyCard({ data }: { data: any }) {
   return (
     <div className="bg-gradient-to-br from-amber-50/80 to-orange-50/80 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-3 text-sm space-y-2 border border-amber-200/40">
-      <div className="font-semibold">🏠 Property Info</div>
+      <div className="font-semibold"> Property Info</div>
       <div className="grid grid-cols-2 gap-1 text-xs">
         {data.homeValueEstimate && <div><span className="text-muted-foreground">Value:</span> ${data.homeValueEstimate?.toLocaleString()}</div>}
         {data.sqFootage && <div><span className="text-muted-foreground">Size:</span> {data.sqFootage?.toLocaleString()} sqft</div>}
         {data.bedrooms && <div><span className="text-muted-foreground">Beds/Bath:</span> {data.bedrooms}/{data.bathrooms}</div>}
         {data.yearBuilt && <div><span className="text-muted-foreground">Built:</span> {data.yearBuilt}</div>}
-        {data.hasPool !== undefined && <div><span className="text-muted-foreground">Pool:</span> {data.hasPool === true ? "✅" : data.hasPool === "uncertain" ? "❓" : "❌"}</div>}
+        {data.hasPool !== undefined && <div><span className="text-muted-foreground">Pool:</span> {data.hasPool === true ? "" : data.hasPool === "uncertain" ? "?" : ""}</div>}
         {data.roofType && <div><span className="text-muted-foreground">Roof:</span> {data.roofType}</div>}
       </div>
     </div>
@@ -77,7 +77,7 @@ function PropertyCard({ data }: { data: any }) {
 function QuoteCard({ data }: { data: any }) {
   return (
     <div className="bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-3 text-sm space-y-2 border border-green-200/40">
-      <div className="font-semibold">✨ Your Quote</div>
+      <div className="font-semibold"> Your Quote</div>
       <div className="text-2xl font-bold text-green-700 dark:text-green-400">${data.price}</div>
       <div className="text-xs"><span className="text-muted-foreground">Service:</span> {data.service}</div>
       {data.address && <div className="text-xs"><span className="text-muted-foreground">Address:</span> {data.address}</div>}
@@ -89,7 +89,7 @@ function QuoteCard({ data }: { data: any }) {
 function BreakdownCard({ data }: { data: any }) {
   return (
     <div className="bg-gradient-to-br from-amber-50/80 to-orange-50/80 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-3 text-sm space-y-2 border border-amber-200/40">
-      <div className="font-semibold">📊 Price Breakdown</div>
+      <div className="font-semibold"> Price Breakdown</div>
       {data.items && <div className="text-xs"><span className="text-muted-foreground">Items:</span> {data.items.join(", ")}</div>}
       {data.volume && <div className="text-xs"><span className="text-muted-foreground">Volume:</span> {data.volume}</div>}
       {data.laborHours && <div className="text-xs"><span className="text-muted-foreground">Labor:</span> ~{data.laborHours} hours</div>}
@@ -186,7 +186,7 @@ export function BookingChat({ serviceType, serviceLabel, onQuoteLocked, onBookAc
       setMessages(prev => [...prev, {
         id: `err-${Date.now()}`,
         role: "assistant",
-        content: "Hmm, I couldn't connect. Check your internet and try again! 🔄",
+        content: "Hmm, I couldn't connect. Check your internet and try again! ",
       }]);
     } finally {
       setIsLoading(false);
@@ -201,7 +201,7 @@ export function BookingChat({ serviceType, serviceLabel, onQuoteLocked, onBookAc
     setMessages(prev => [...prev, {
       id: `user-photo-${Date.now()}`,
       role: "user",
-      content: "📷 Sent a photo for analysis",
+      content: " Sent a photo for analysis",
       photoUrl: photoPreviewUrl,
     }]);
 
@@ -255,7 +255,7 @@ export function BookingChat({ serviceType, serviceLabel, onQuoteLocked, onBookAc
       setMessages(prev => [...prev, {
         id: `err-photo-${Date.now()}`,
         role: "assistant",
-        content: "Sorry, I couldn't analyze that photo. Try again! 📷",
+        content: "Sorry, I couldn't analyze that photo. Try again! ",
       }]);
     } finally {
       setIsUploading(false);

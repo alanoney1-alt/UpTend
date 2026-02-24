@@ -945,14 +945,14 @@ export default function BusinessOnboarding() {
       <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-orange-100">
         <Sparkles className="h-10 w-10 text-orange-500" />
       </div>
-      <h2 className="text-3xl font-bold">You're All Set! 🎉</h2>
+      <h2 className="text-3xl font-bold">You're All Set! </h2>
       <p className="text-muted-foreground max-w-md mx-auto">
         Your UpTend business account has been created. We're ready to start serving your properties.
       </p>
       {selectedPlan === "independent" && (
         <Card className="max-w-md mx-auto border-green-200 bg-green-50">
           <CardContent className="p-4 text-sm">
-            <p className="font-medium">🎉 You're on the Independent plan (Free)</p>
+            <p className="font-medium"> You're on the Independent plan (Free)</p>
             <p className="text-muted-foreground">No monthly fees — you only pay a 7% fee when you book a pro. Upgrade anytime to unlock advanced features.</p>
           </CardContent>
         </Card>
@@ -960,7 +960,7 @@ export default function BusinessOnboarding() {
       {selectedPlan === "enterprise" && (
         <Card className="max-w-md mx-auto border-orange-200">
           <CardContent className="p-4 text-sm">
-            <p className="font-medium">🤝 Enterprise Support</p>
+            <p className="font-medium"> Enterprise Support</p>
             <p className="text-muted-foreground">Your dedicated account manager will reach out within 24 hours.</p>
           </CardContent>
         </Card>

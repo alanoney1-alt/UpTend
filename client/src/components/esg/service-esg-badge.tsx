@@ -22,16 +22,16 @@ interface ServiceEsgBadgeProps {
 }
 
 const SERVICE_ICONS: Record<string, string> = {
-  junk_removal: "🚛",
-  pressure_washing: "💧",
-  gutter_cleaning: "🏠",
-  pool_cleaning: "🏊",
-  landscaping: "🌿",
-  carpet_cleaning: "✨",
-  home_cleaning: "✨",
-  moving_labor: "💪",
-  light_demolition: "🔨",
-  handyman: "🔧",
+  junk_removal: "",
+  pressure_washing: "",
+  gutter_cleaning: "",
+  pool_cleaning: "",
+  landscaping: "",
+  carpet_cleaning: "",
+  home_cleaning: "",
+  moving_labor: "",
+  light_demolition: "",
+  handyman: "",
 };
 
 export function ServiceEsgBadge({
@@ -54,7 +54,7 @@ export function ServiceEsgBadge({
     return "text-red-600 dark:text-red-400";
   };
 
-  const icon = SERVICE_ICONS[serviceType] || "📊";
+  const icon = SERVICE_ICONS[serviceType] || "";
 
   if (compact) {
     return (

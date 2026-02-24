@@ -110,7 +110,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
           <Badge
             className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white"
           >
-            ⭐ RECOMMENDED
+            RECOMMENDED
           </Badge>
 
           <CardHeader className="pt-6">
@@ -138,7 +138,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
             </p>
 
             <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg text-sm text-blue-900 dark:text-blue-100">
-              💡 <strong>Value:</strong> Comparable drone inspections cost $290–$350 alone. <strong>$49 back on your next booking</strong>.
+               <strong>Value:</strong> Comparable drone inspections cost $290–$350 alone. <strong>$49 back on your next booking</strong>.
             </div>
 
             <div className="space-y-2">

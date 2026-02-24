@@ -288,7 +288,7 @@ export function DocumentVault({ propertyId }: DocumentVaultProps) {
       {/* Document Organization Tips */}
       <Card className="bg-purple-50 border-purple-200">
         <CardContent className="pt-6">
-          <h3 className="font-semibold text-purple-900 mb-3">📁 Document Organization Tips</h3>
+          <h3 className="font-semibold text-purple-900 mb-3"> Document Organization Tips</h3>
           <ul className="text-sm text-purple-800 space-y-2">
             <li>• Keep all purchase receipts for appliances and improvements</li>
             <li>• Store warranty documents for easy access when needed</li>

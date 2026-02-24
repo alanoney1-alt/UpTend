@@ -28,35 +28,35 @@ function getShareText(data: ImpactData): string {
 
   // Different messages based on impact level
   if (weight > 1000) {
-    return `🌍 I've kept ${weight.toLocaleString()} lbs of waste out of landfills with @UpTend!\n\n` +
+    return ` I've kept ${weight.toLocaleString()} lbs of waste out of landfills with @UpTend!\n\n` +
       `That's equivalent to ${trees} trees worth of CO2. Every item tracked. Every impact verified.\n\n` +
-      `💚 ${data.itemsRecycled.toLocaleString()} lbs recycled\n` +
-      `🎁 ${data.itemsDonated.toLocaleString()} lbs donated to families in need\n` +
-      `💧 ${Math.round(data.waterSavedGallons).toLocaleString()} gallons of water saved\n\n` +
+      ` ${data.itemsRecycled.toLocaleString()} lbs recycled\n` +
+      ` ${data.itemsDonated.toLocaleString()} lbs donated to families in need\n` +
+      ` ${Math.round(data.waterSavedGallons).toLocaleString()} gallons of water saved\n\n` +
       `Your stuff doesn't have to end up in a landfill. Join me → uptendapp.com`;
   } else if (weight > 500) {
-    return `🌱 Just hit ${weight} lbs diverted from landfills with @UpTend!\n\n` +
-      `♻️ ${diversion}% landfill diversion rate\n` +
-      `🌳 ${trees} trees worth of CO2 offset\n` +
-      `💧 ${Math.round(data.waterSavedGallons).toLocaleString()} gallons saved\n\n` +
+    return ` Just hit ${weight} lbs diverted from landfills with @UpTend!\n\n` +
+      ` ${diversion}% landfill diversion rate\n` +
+      ` ${trees} trees worth of CO2 offset\n` +
+      ` ${Math.round(data.waterSavedGallons).toLocaleString()} gallons saved\n\n` +
       `Every junk removal job comes with verified impact tracking. Try it → uptendapp.com`;
   } else {
-    return `✨ Started tracking my environmental impact with @UpTend!\n\n` +
+    return ` Started tracking my environmental impact with @UpTend!\n\n` +
       `Already diverted ${weight} lbs from landfills:\n` +
-      `♻️ ${data.itemsRecycled} lbs recycled\n` +
-      `❤️ ${data.itemsDonated} lbs donated\n` +
-      `🌳 ${trees} trees worth of CO2\n\n` +
+      ` ${data.itemsRecycled} lbs recycled\n` +
+      ` ${data.itemsDonated} lbs donated\n` +
+      ` ${trees} trees worth of CO2\n\n` +
       `Every job = verified sustainability certificate → uptendapp.com`;
   }
 }
 
 // Get achievement level based on weight
 function getAchievementLevel(weight: number): { level: string; emoji: string; color: string } {
-  if (weight > 2000) return { level: "Planet Protector", emoji: "🌍", color: "text-purple-600" };
-  if (weight > 1000) return { level: "Impact Champion", emoji: "🏆", color: "text-yellow-600" };
-  if (weight > 500) return { level: "Eco Warrior", emoji: "⚡", color: "text-blue-600" };
-  if (weight > 200) return { level: "Green Pioneer", emoji: "🌱", color: "text-green-600" };
-  return { level: "Impact Starter", emoji: "✨", color: "text-emerald-600" };
+  if (weight > 2000) return { level: "Planet Protector", emoji: "", color: "text-purple-600" };
+  if (weight > 1000) return { level: "Impact Champion", emoji: "", color: "text-yellow-600" };
+  if (weight > 500) return { level: "Eco Warrior", emoji: "", color: "text-blue-600" };
+  if (weight > 200) return { level: "Green Pioneer", emoji: "", color: "text-green-600" };
+  return { level: "Impact Starter", emoji: "", color: "text-emerald-600" };
 }
 
 export function ImpactTracker() {
@@ -94,7 +94,7 @@ export function ImpactTracker() {
           text: shareText,
         });
         toast({
-          title: "Thanks for sharing! 🌱",
+          title: "Thanks for sharing! ",
           description: "Every share helps more people discover verified sustainability",
         });
       } catch (err) {
@@ -104,7 +104,7 @@ export function ImpactTracker() {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(shareText);
       toast({
-        title: "Copied to clipboard! 📋",
+        title: "Copied to clipboard! ",
         description: "Paste it anywhere to share your impact",
       });
     }
@@ -131,7 +131,7 @@ export function ImpactTracker() {
       link.click();
 
       toast({
-        title: "Impact card ready! 📸",
+        title: "Impact card ready! ",
         description: "Post it on Instagram, Facebook, or Twitter",
       });
     } catch (err) {
@@ -268,7 +268,7 @@ export function ImpactTracker() {
             <div>
               <div className="flex items-center justify-between text-sm mb-2">
                 <span className="text-muted-foreground flex items-center gap-1.5">
-                  <span className="text-red-500">❤️</span>
+                  <span className="text-red-500"></span>
                   Donated
                 </span>
                 <span className="font-bold text-purple-600">{data.itemsDonated.toLocaleString()} lbs</span>

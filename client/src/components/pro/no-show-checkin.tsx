@@ -49,7 +49,7 @@ export function NoShowCheckin({ jobId, jobStatus }: NoShowCheckinProps) {
       return apiRequest("POST", `/api/jobs/${jobId}/check-in`, body);
     },
     onSuccess: () => {
-      toast({ title: "✅ Checked In", description: "You're confirmed on-site!" });
+      toast({ title: " Checked In", description: "You're confirmed on-site!" });
       queryClient.invalidateQueries({ queryKey: ["/api/jobs", jobId, "no-show-status"] });
     },
     onError: (err: Error) => {

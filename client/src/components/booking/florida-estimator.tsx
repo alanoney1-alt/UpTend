@@ -597,7 +597,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             className="p-6 rounded-xl border-2 border-border hover:border-[#F47C20] cursor-pointer transition-all bg-card hover:shadow-lg text-center"
             data-testid="card-quick-book"
           >
-            <div className="text-4xl mb-3">⚡</div>
+            <div className="text-4xl mb-3"></div>
             <h3 className="text-lg font-bold mb-2">Quick Book</h3>
             <p className="text-sm text-muted-foreground mb-3">
               Let AI match you with the best available Pro
@@ -613,7 +613,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
             className="p-6 rounded-xl border-2 border-border hover:border-[#F47C20] cursor-pointer transition-all bg-card hover:shadow-lg text-center"
             data-testid="card-choose-my-pro"
           >
-            <div className="text-4xl mb-3">👤</div>
+            <div className="text-4xl mb-3"></div>
             <h3 className="text-lg font-bold mb-2">Choose My Pro</h3>
             <p className="text-sm text-muted-foreground mb-3">
               Browse verified Pros and pick your favorite
@@ -779,7 +779,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                   </TabsTrigger>
                   <TabsTrigger value="video" className="gap-2">
                     <Video className="w-4 h-4" />
-                    Video ⭐
+                    Video
                   </TabsTrigger>
                 </TabsList>
 
@@ -1484,7 +1484,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
                   </div>
                 </div>
                 <p className="text-sm mb-2 text-muted-foreground">{service.description}</p>
-                <p className="text-xs text-primary font-medium">✓ {service.benefit}</p>
+                <p className="text-xs text-primary font-medium"> {service.benefit}</p>
                 <div className="flex gap-2 mt-4">
                   <Button
                     onClick={() => handleServiceSelect(service.id)}

@@ -621,7 +621,7 @@ export default function ServiceDetail() {
           {service.esgImpact && (
             <div className="mt-6">
               <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 text-sm py-2 px-4">
-                🌱 {service.esgImpact}
+                 {service.esgImpact}
               </Badge>
             </div>
           )}

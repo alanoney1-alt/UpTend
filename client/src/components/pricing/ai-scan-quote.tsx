@@ -236,19 +236,19 @@ export function AIScanQuote({ serviceType, onQuoteGenerated, onBack }: AIScanQuo
     const instructions = {
       polishup: {
         photo: 'Take photos of each room, focusing on overall cleanliness and size. Include a few wide-angle shots.',
-        video: '📹 Walk through each room slowly, showing the overall condition. Include all main areas.',
+        video: ' Walk through each room slowly, showing the overall condition. Include all main areas.',
       },
       bulksnap: {
         photo: 'Take photos of all items to be removed. Include multiple angles for large items.',
-        video: '📹 Do a walkthrough showing all items from multiple angles. Show scale with a reference object.',
+        video: ' Do a walkthrough showing all items from multiple angles. Show scale with a reference object.',
       },
       freshwash: {
         photo: 'Capture each surface to be cleaned (driveway, siding, deck). Stand back to show full area with a reference object for scale.',
-        video: '📹 Walk around the property showing all surfaces. Include a person or car for scale.',
+        video: ' Walk around the property showing all surfaces. Include a person or car for scale.',
       },
       gutterflush: {
         photo: 'Take photos of your roofline from different angles. Include photos showing story count.',
-        video: '📹 Walk around the property showing the full roofline and structure.',
+        video: ' Walk around the property showing the full roofline and structure.',
       },
     };
 

@@ -76,7 +76,7 @@ export default function Sustainability() {
       <section className="pt-28 pb-16 px-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-b border-border">
         <div className="max-w-4xl mx-auto text-center">
           <Badge variant="secondary" className="mb-6 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-            🌱 Sustainability at UpTend
+             Sustainability at UpTend
           </Badge>
           <h1 className="text-4xl md:text-5xl font-black mb-6">
             Every Job Has an{" "}

@@ -1168,7 +1168,7 @@ export default function Booking() {
                   onClick={() => setDevPaymentBypass(true)}
                   data-testid="button-dev-skip-payment"
                 >
-                  ⚡ Dev Mode: Skip Payment
+                   Dev Mode: Skip Payment
                 </Button>
               )}
             </Card>
@@ -2330,7 +2330,7 @@ export default function Booking() {
                             <li className="flex items-center gap-2"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" /> GPS-tagged aerial photos</li>
                           </ul>
                           <p className="text-xs text-blue-600 mt-2 font-medium">
-                            ⚡ Comparable drone inspections: $290-$350
+                             Comparable drone inspections: $290-$350
                           </p>
                         </button>
                       </div>
@@ -3294,7 +3294,7 @@ export default function Booking() {
                                   }}
                                   data-testid="button-dev-authorize-payment"
                                 >
-                                  ⚡ Dev Mode: Authorize Payment
+                                   Dev Mode: Authorize Payment
                                 </Button>
                               ) : (
                                 <PaymentForm

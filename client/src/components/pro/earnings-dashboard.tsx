@@ -107,7 +107,7 @@ export function EarningsDashboard() {
       return res.json();
     },
     onSuccess: () => {
-      toast({ title: "Instant payout initiated! ⚡", description: "Funds should arrive within minutes." });
+      toast({ title: "Instant payout initiated! ", description: "Funds should arrive within minutes." });
       queryClient.invalidateQueries({ queryKey: ["/api/pro/payouts/dashboard"] });
     },
     onError: (err: Error) => {
@@ -246,7 +246,7 @@ export function EarningsDashboard() {
                 ) : (
                   <Zap className="w-4 h-4 mr-2" />
                 )}
-                Get Paid Now ⚡
+                Get Paid Now 
                 <span className="ml-2 text-xs opacity-80">
                   1.5% fee ({centsToDisplay(Math.max(50, Math.round(pendingPayouts[0].netPayout * 0.015)))})
                 </span>

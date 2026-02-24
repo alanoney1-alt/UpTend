@@ -60,11 +60,11 @@ interface EarningsTrackData {
 }
 
 const LEVEL_CONFIGS = {
-  starter: { label: "Starter", color: "bg-gray-500", icon: "🚀", range: "$0-$10K" },
-  rising: { label: "Rising", color: "bg-blue-500", icon: "📈", range: "$10K-$25K" },
-  pro: { label: "Pro", color: "bg-purple-500", icon: "⭐", range: "$25K-$50K" },
-  elite: { label: "Elite", color: "bg-amber-500", icon: "👑", range: "$50K-$100K" },
-  legend: { label: "Legend", color: "bg-gradient-to-r from-amber-400 to-orange-500", icon: "🏆", range: "$100K+" },
+  starter: { label: "Starter", color: "bg-gray-500", icon: "", range: "$0-$10K" },
+  rising: { label: "Rising", color: "bg-blue-500", icon: "", range: "$10K-$25K" },
+  pro: { label: "Pro", color: "bg-purple-500", icon: "", range: "$25K-$50K" },
+  elite: { label: "Elite", color: "bg-amber-500", icon: "", range: "$50K-$100K" },
+  legend: { label: "Legend", color: "bg-gradient-to-r from-amber-400 to-orange-500", icon: "", range: "$100K+" },
 };
 
 const GOAL_PRESETS = [30000, 45000, 60000, 75000, 100000, 120000];
@@ -89,7 +89,7 @@ export function EarningsGoalWidget() {
       return res.json();
     },
     onSuccess: () => {
-      toast({ title: "Income goal set! 🎯", description: "Your personalized job track is ready." });
+      toast({ title: "Income goal set! ", description: "Your personalized job track is ready." });
       setShowSetup(false);
       queryClient.invalidateQueries({ queryKey: ["/api/pro/earnings-track"] });
     },
@@ -274,7 +274,7 @@ export function EarningsGoalWidget() {
           
           <div className="text-center">
             <div className="text-3xl font-bold text-orange-600 mb-1">
-              {profile.currentStreakWeeks} 🔥
+              {profile.currentStreakWeeks} 
             </div>
             <p className="text-sm text-muted-foreground">
               consecutive weeks • best: {profile.longestStreakWeeks}
@@ -296,12 +296,12 @@ export function EarningsGoalWidget() {
                 <span className="text-muted-foreground"> @ ${jobTrack.avgPayout} avg</span>
               </div>
               <div className="text-xs text-muted-foreground">
-                {jobTrack.hoursNeeded}h needed • {jobTrack.canMeetGoal ? "✅" : "⚠️"} {jobTrack.canMeetGoal ? "Achievable" : "Stretch"}
+                {jobTrack.hoursNeeded}h needed • {jobTrack.canMeetGoal ? "" : ""} {jobTrack.canMeetGoal ? "Achievable" : "Stretch"}
               </div>
               
               {jobTrack.certUpgrade && (
                 <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p className="text-xs font-medium text-amber-800 mb-1">💡 Pro Tip</p>
+                  <p className="text-xs font-medium text-amber-800 mb-1"> Pro Tip</p>
                   <p className="text-xs text-amber-700">
                     Get B2B certification → {jobTrack.certUpgrade.withCertJobsPerWeek} jobs/week
                   </p>

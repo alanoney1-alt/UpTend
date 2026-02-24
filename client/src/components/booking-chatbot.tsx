@@ -26,7 +26,7 @@ export function BookingChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{
     id: "initial",
-    text: "👋 Hey! I'm Mr. George, your home helper. I can:\n\n• Get you an instant quote (even from a photo!)\n• Help you book a verified pro\n• Answer questions about pricing & services\n\nWhat do you need help with?",
+    text: " Hey! I'm Mr. George, your home helper. I can:\n\n• Get you an instant quote (even from a photo!)\n• Help you book a verified pro\n• Answer questions about pricing & services\n\nWhat do you need help with?",
     role: "assistant",
     timestamp: Date.now(),
   }]);
@@ -243,7 +243,7 @@ export function BookingChatbot() {
                   {msg.aiAnalysis && (
                     <div className="mt-3 p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
                       <p className="font-semibold text-sm text-green-900 dark:text-green-100 mb-2">
-                        ✓ AI Quote Generated
+                         AI Quote Generated
                       </p>
                       <div className="space-y-1 text-xs">
                         <p><strong>Items:</strong> {msg.aiAnalysis.identifiedItems.slice(0, 3).join(", ")}{msg.aiAnalysis.identifiedItems.length > 3 ? "..." : ""}</p>

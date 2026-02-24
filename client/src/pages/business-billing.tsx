@@ -151,7 +151,7 @@ export default function BusinessBilling() {
               </CardTitle>
               <div className="flex items-center gap-3">
                 {statusBadge(runDetail.status)}
-                <Button variant="ghost" size="sm" onClick={() => setSelectedRun(null)}>✕</Button>
+                <Button variant="ghost" size="sm" onClick={() => setSelectedRun(null)}></Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -183,7 +183,7 @@ export default function BusinessBilling() {
                       <td className="p-2">{formatServiceType(li.serviceType)}</td>
                       <td className="p-2">{li.proName || "—"}</td>
                       <td className="p-2">{formatDate(li.completedAt)}</td>
-                      <td className="p-2">{li.customerSignoffAt ? "✅ Signed" : "⏰ Auto"}</td>
+                      <td className="p-2">{li.customerSignoffAt ? " Signed" : " Auto"}</td>
                       <td className="p-2 text-right font-medium">${li.totalCharge.toFixed(2)}</td>
                     </tr>
                   ))}
@@ -329,10 +329,10 @@ export default function BusinessBilling() {
                     <div className="p-4 border rounded-lg">
                       <Label className="text-base">Payment Method</Label>
                       {settings.hasPaymentMethod ? (
-                        <p className="text-sm text-green-600 mt-1">✅ Card on file</p>
+                        <p className="text-sm text-green-600 mt-1"> Card on file</p>
                       ) : (
                         <div className="mt-2">
-                          <p className="text-sm text-amber-600 mb-2">⚠️ No payment method on file. Add one to enable auto-billing.</p>
+                          <p className="text-sm text-amber-600 mb-2"> No payment method on file. Add one to enable auto-billing.</p>
                           <Button
                             variant="outline"
                             size="sm"

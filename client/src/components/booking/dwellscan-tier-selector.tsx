@@ -141,7 +141,7 @@ export function DwellScanTierSelector({ selectedTier, onSelectTier }: DwellScanT
       {/* Service Credit Notice */}
       <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
         <p className="text-sm text-green-800 font-medium">
-          🎁 Special Offer: Both packages include a $49 credit toward your first or next booking!
+           Special Offer: Both packages include a $49 credit toward your first or next booking!
         </p>
       </div>
     </div>

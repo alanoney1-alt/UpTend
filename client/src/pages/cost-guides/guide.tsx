@@ -108,7 +108,7 @@ export default function CostGuide() {
             <ul className="space-y-3">
               {guide.tips.map((tip, i) => (
                 <li key={i} className="flex items-start gap-3 text-slate-700">
-                  <span className="text-amber-500 font-bold flex-shrink-0">💡</span>
+                  <span className="text-amber-500 font-bold flex-shrink-0"></span>
                   {tip}
                 </li>
               ))}

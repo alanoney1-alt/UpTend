@@ -80,11 +80,11 @@ export function AIQuoteDisplay({
 
   const getConfidenceBadge = (confidence: number) => {
     if (confidence >= 0.9) {
-      return { color: "bg-green-500", text: "High Confidence", icon: "⭐⭐⭐⭐" };
+      return { color: "bg-green-500", text: "High Confidence", icon: ""High"" };
     } else if (confidence >= 0.7) {
-      return { color: "bg-yellow-500", text: "Good Confidence", icon: "⭐⭐⭐" };
+      return { color: "bg-yellow-500", text: "Good Confidence", icon: ""Good"" };
     } else {
-      return { color: "bg-orange-500", text: "Fair Confidence", icon: "⭐⭐" };
+      return { color: "bg-orange-500", text: "Fair Confidence", icon: ""Fair"" };
     }
   };
 
@@ -273,13 +273,13 @@ export function AIQuoteDisplay({
                 </p>
                 <div className="flex justify-center gap-4 mt-3 text-xs">
                   <span className="text-green-600">
-                    ♻️ {quote.sustainability.recycledLbs}lbs recycled
+                     {quote.sustainability.recycledLbs}lbs recycled
                   </span>
                   <span className="text-blue-600">
-                    🎁 {quote.sustainability.donatedLbs}lbs donated
+                     {quote.sustainability.donatedLbs}lbs donated
                   </span>
                   <span className="text-gray-600">
-                    🗑️ {quote.sustainability.landfilledLbs}lbs landfilled
+                     {quote.sustainability.landfilledLbs}lbs landfilled
                   </span>
                 </div>
               </div>
@@ -318,7 +318,7 @@ export function AIQuoteDisplay({
               </div>
 
               <p className="text-xs text-center text-green-700 dark:text-green-400 font-medium">
-                ♻️ This job supports circular economy practices
+                 This job supports circular economy practices
               </p>
             </div>
           </CardContent>

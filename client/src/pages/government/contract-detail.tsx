@@ -107,7 +107,7 @@ export default function ContractDetail() {
           <Card><CardContent className="pt-4">
             <p className="text-xs text-gray-500">Compliance</p>
             <p className={`text-lg font-bold ${summary?.complianceIssues ? "text-red-700" : "text-green-700"}`}>
-              {summary?.complianceIssues ? `${summary.complianceIssues} issues` : "✓ OK"}
+              {summary?.complianceIssues ? `${summary.complianceIssues} issues` : " OK"}
             </p>
           </CardContent></Card>
         </div>
@@ -662,8 +662,8 @@ function DailyLogsSection({ contractId, logs }: { contractId: string; logs: any[
                   {log.weather && <span className="text-gray-500">{log.weather} {log.temperature}</span>}
                 </div>
                 {log.workPerformed && <p className="text-gray-700">{log.workPerformed}</p>}
-                {log.safetyIncidents && <p className="text-red-600 text-xs mt-1">⚠️ Safety: {log.safetyIncidents}</p>}
-                {log.delayReasons && <p className="text-yellow-600 text-xs mt-1">⏱ Delay: {log.delayReasons}</p>}
+                {log.safetyIncidents && <p className="text-red-600 text-xs mt-1"> Safety: {log.safetyIncidents}</p>}
+                {log.delayReasons && <p className="text-yellow-600 text-xs mt-1"> Delay: {log.delayReasons}</p>}
               </div>
             ))}
           </div>

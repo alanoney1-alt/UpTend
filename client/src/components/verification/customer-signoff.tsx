@@ -209,7 +209,7 @@ export function CustomerSignoff({
           className="w-full"
           size="lg"
         >
-          {isSubmitting ? "Confirming..." : "✓ Confirm Job Complete"}
+          {isSubmitting ? "Confirming..." : " Confirm Job Complete"}
         </Button>
 
         <p className="text-xs text-center text-muted-foreground">

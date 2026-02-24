@@ -12,7 +12,7 @@ import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 const ITEM_CATEGORIES = [
   {
     id: "living_room",
-    label: "🛋️ Living Room & Bedroom Furniture",
+    label: " Living Room & Bedroom Furniture",
     items: [
       { id: "sofa", label: "Sofa/Couch", price: 75 },
       { id: "loveseat", label: "Loveseat", price: 55 },
@@ -31,7 +31,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "bedroom",
-    label: "🛏️ Bedroom Furniture",
+    label: " Bedroom Furniture",
     items: [
       { id: "bed_frame_twin", label: "Bed Frame (Twin/Full)", price: 45 },
       { id: "bed_frame_queen", label: "Bed Frame (Queen)", price: 55 },
@@ -46,7 +46,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "mattresses",
-    label: "🛏️ Mattresses & Box Springs",
+    label: " Mattresses & Box Springs",
     items: [
       { id: "mattress_twin", label: "Twin Mattress", price: 45 },
       { id: "mattress_full", label: "Full Mattress", price: 50 },
@@ -59,7 +59,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "dining",
-    label: "🍽️ Dining & Kitchen",
+    label: " Dining & Kitchen",
     items: [
       { id: "dining_table", label: "Dining Table", price: 75 },
       { id: "dining_chair", label: "Dining Chair (each)", price: 20 },
@@ -71,7 +71,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "office",
-    label: "💻 Office Furniture",
+    label: " Office Furniture",
     items: [
       { id: "office_desk", label: "Office Desk", price: 60 },
       { id: "office_chair", label: "Office Chair", price: 30 },
@@ -83,7 +83,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "exercise",
-    label: "🏋️ Exercise Equipment",
+    label: " Exercise Equipment",
     items: [
       { id: "treadmill", label: "Treadmill", price: 85 },
       { id: "elliptical", label: "Elliptical", price: 85 },
@@ -96,7 +96,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "electronics",
-    label: "📺 Electronics",
+    label: " Electronics",
     items: [
       { id: "tv_small", label: "TV (under 40\")", price: 35 },
       { id: "tv_medium", label: "TV (40-65\")", price: 45 },
@@ -110,7 +110,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "appliances_large",
-    label: "🧊 Large Appliances",
+    label: " Large Appliances",
     items: [
       { id: "refrigerator", label: "Refrigerator", price: 85 },
       { id: "washer", label: "Washer", price: 75 },
@@ -125,7 +125,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "appliances_small",
-    label: "🔧 Small Appliances",
+    label: " Small Appliances",
     items: [
       { id: "microwave", label: "Microwave", price: 25 },
       { id: "toaster_oven", label: "Toaster Oven", price: 15 },
@@ -135,7 +135,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "outdoor",
-    label: "🌳 Outdoor & Yard",
+    label: " Outdoor & Yard",
     items: [
       { id: "patio_set", label: "Patio Furniture Set", price: 85 },
       { id: "patio_table", label: "Patio Table", price: 45 },
@@ -154,7 +154,7 @@ const ITEM_CATEGORIES = [
   },
   {
     id: "misc",
-    label: "📦 Miscellaneous",
+    label: " Miscellaneous",
     items: [
       { id: "boxes", label: "Boxes/Bags (per 5)", price: 25 },
       { id: "tires", label: "Tires (per 4)", price: 40 },
@@ -268,7 +268,7 @@ export function JunkRemovalFlow({ onComplete, onBack }: ServiceFlowProps) {
           }`}
           onClick={() => setPricingMode("itemized")}
         >
-          📋 Pick Items
+           Pick Items
         </Button>
         <Button
           className={`flex-1 ${
@@ -287,7 +287,7 @@ export function JunkRemovalFlow({ onComplete, onBack }: ServiceFlowProps) {
           <CardContent className="p-4 space-y-1">
             {itemCount >= 3 && (
               <Badge className="bg-green-600 mb-2">
-                🎉 {discountPct * 100}% volume discount applied!
+                 {discountPct * 100}% volume discount applied!
               </Badge>
             )}
             <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">

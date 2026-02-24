@@ -11,6 +11,14 @@ import {
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
+// Fix Leaflet default icon
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+});
+
 // ── Types ──
 
 interface ProReview {
@@ -167,7 +175,7 @@ function FindProPage() {
                 <Popup>
                   <div className="text-sm">
                     <p className="font-semibold">{pro.firstName} {pro.lastInitial}.</p>
-                    <p className="text-amber-600">★ {pro.rating} · {pro.jobsCompleted} jobs</p>
+                    <p className="text-amber-600"> {pro.rating} · {pro.jobsCompleted} jobs</p>
                     <p className="text-xs text-gray-500 mt-1">{pro.services.map((s) => SERVICE_LABELS[s] || s).join(", ")}</p>
                   </div>
                 </Popup>

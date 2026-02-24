@@ -20,10 +20,10 @@ const BRAND = "#F47C20";
 
 // ── Tier styling ─────────────────────────────────────────────
 const tierConfig: Record<string, { bg: string; text: string; icon: string }> = {
-  platinum: { bg: "bg-gradient-to-r from-blue-400 to-purple-600", text: "text-white", icon: "💎" },
-  gold:     { bg: "bg-gradient-to-r from-yellow-400 to-orange-500", text: "text-white", icon: "🥇" },
-  silver:   { bg: "bg-gradient-to-r from-gray-300 to-gray-500", text: "text-white", icon: "🥈" },
-  bronze:   { bg: "bg-gradient-to-r from-orange-700 to-yellow-700", text: "text-white", icon: "🥉" },
+  platinum: { bg: "bg-gradient-to-r from-blue-400 to-purple-600", text: "text-white", icon: "" },
+  gold:     { bg: "bg-gradient-to-r from-yellow-400 to-orange-500", text: "text-white", icon: "" },
+  silver:   { bg: "bg-gradient-to-r from-gray-300 to-gray-500", text: "text-white", icon: "" },
+  bronze:   { bg: "bg-gradient-to-r from-orange-700 to-yellow-700", text: "text-white", icon: "" },
 };
 
 // ── Score Circle ─────────────────────────────────────────────

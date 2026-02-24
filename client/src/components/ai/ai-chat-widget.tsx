@@ -58,12 +58,12 @@ function BookingDraftCard({ draft, onAction }: { draft: any; onAction: (btn: Qui
   return (
     <div className="bg-white border border-orange-200 rounded-xl p-3 mt-2 shadow-sm">
       <div className="flex items-center gap-2 mb-1.5">
-        <span className="text-base">📋</span>
+        <span className="text-base"></span>
         <span className="font-semibold text-sm">Your Quote</span>
       </div>
       <p className="text-sm font-medium">{draft.serviceName}</p>
       {q.priceFormatted && <p className="text-lg font-bold text-orange-600 mt-1">{q.priceFormatted}</p>}
-      {draft.preferredDate && <p className="text-xs text-gray-500">📅 {draft.preferredDate}</p>}
+      {draft.preferredDate && <p className="text-xs text-gray-500"> {draft.preferredDate}</p>}
       <div className="flex gap-2 mt-2">
         <button onClick={() => onAction({ text: "Confirm & Book", action: "action:confirmBooking" })} className="flex-1 px-3 py-1.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 transition">
           Confirm & Book
@@ -229,7 +229,7 @@ export function AiChatWidget() {
                   <Bot className="h-7 w-7 text-[#F47C20]" />
                 </div>
                 <p className="font-semibold text-sm mb-1">
-                  {isPro ? "Hey! 👋 Interested in working with UpTend?" : "Hey! 👋 What can I help with?"}
+                  {isPro ? "Hey!  Interested in working with UpTend?" : "Hey!  What can I help with?"}
                 </p>
                 <p className="text-xs text-muted-foreground mb-3">
                   {isPro ? "Learn about earning with UpTend" : "Ask me anything about our services!"}

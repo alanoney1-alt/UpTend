@@ -310,7 +310,7 @@ export default function Admin() {
           <div className="flex items-center gap-2 flex-wrap">
             <Link href="/admin/accounting">
               <Button variant="outline" size="sm" data-testid="button-accounting">
-                💰 Accounting
+                 Accounting
               </Button>
             </Link>
             <Link href="/admin/god-mode">

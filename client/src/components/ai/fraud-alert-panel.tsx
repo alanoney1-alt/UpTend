@@ -24,10 +24,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 
 const severityConfig = {
-  critical: { color: "bg-red-600", icon: "🚨" },
-  high: { color: "bg-orange-500", icon: "⚠️" },
-  medium: { color: "bg-yellow-500", icon: "⚡" },
-  low: { color: "bg-blue-500", icon: "ℹ️" },
+  critical: { color: "bg-red-600", icon: "" },
+  high: { color: "bg-orange-500", icon: "" },
+  medium: { color: "bg-yellow-500", icon: "" },
+  low: { color: "bg-blue-500", icon: "ℹ" },
 };
 
 interface FraudAlert {

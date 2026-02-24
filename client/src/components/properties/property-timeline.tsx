@@ -325,7 +325,7 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
       {!limit && sortedEvents.length > 0 && (
         <Card className="bg-green-50 border-green-200">
           <CardContent className="pt-6">
-            <h3 className="font-semibold text-green-900 mb-3">📊 Timeline Value</h3>
+            <h3 className="font-semibold text-green-900 mb-3"> Timeline Value</h3>
             <p className="text-sm text-green-800">
               Your complete property history increases resale value and helps buyers understand the
               care and maintenance invested in this home. This "Carfax for Homes" can transfer to

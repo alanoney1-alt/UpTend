@@ -133,7 +133,7 @@ export default function DwellScanLanding() {
             {/* Aerial Tier - RECOMMENDED */}
             <Card className="border-2 border-blue-500 relative bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
               <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1">
-                ⭐ RECOMMENDED
+                RECOMMENDED
               </Badge>
               <CardContent className="pt-6">
                 <div className="text-center mb-6">
@@ -149,7 +149,7 @@ export default function DwellScanLanding() {
 
                 <div className="p-3 bg-white dark:bg-gray-900 rounded-lg border border-blue-200 mb-4">
                   <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
-                    💡 Incredible Value
+                     Incredible Value
                   </p>
                   <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
                     Comparable drone roof inspections cost $290-$350 alone. You're getting it
@@ -318,7 +318,7 @@ export default function DwellScanLanding() {
             </Button>
           </div>
           <p className="text-sm mt-6 opacity-75">
-            ✅ Same-day or next-day appointments • ✅ $49 credit included • ✅ No hidden fees
+             Same-day or next-day appointments •  $49 credit included •  No hidden fees
           </p>
         </div>
       </section>

@@ -313,7 +313,7 @@ export function AIPhotoQuote({
               className="p-6 border-2 border-dashed rounded-lg hover:border-primary hover:bg-primary/5 transition-all text-left group relative"
             >
               <Badge className="absolute top-3 right-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                ⭐ RECOMMENDED
+                RECOMMENDED
               </Badge>
               <Video className="w-8 h-8 text-blue-600 mb-3 group-hover:scale-110 transition-transform" />
               <h3 className="font-semibold mb-1">Upload Video Walkthrough</h3>

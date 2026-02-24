@@ -257,7 +257,7 @@ export default function HomeHealthAuditPage() {
                       <p className="text-sm text-blue-600">Uploading...</p>
                     )}
                     {videoUrl && !isUploading && (
-                      <p className="text-sm text-green-600">✓ Uploaded successfully</p>
+                      <p className="text-sm text-green-600"> Uploaded successfully</p>
                     )}
                     <Button
                       variant="outline"

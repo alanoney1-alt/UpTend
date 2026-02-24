@@ -513,7 +513,7 @@ const resources = {
       "scheduling.every_2_weeks": "Every 2 weeks",
       "scheduling.every_month": "Every month",
       "scheduling.starting": "Starting",
-      "scheduling.recurring_perks": "✓ Same Pro assigned • ✓ Priority scheduling • ✓ Cancel anytime",
+      "scheduling.recurring_perks": " Same Pro assigned •  Priority scheduling •  Cancel anytime",
       "scheduling.continue": "Continue",
       "scheduling.back": "Back",
 
@@ -581,7 +581,7 @@ const resources = {
       "estimator.select": "Select",
       "estimator.all_services": "All Services",
       "estimator.photos_tab": "Photos",
-      "estimator.video_tab": "Video ⭐",
+      "estimator.video_tab": "Video",
       "estimator.more_items": "+{{count}} more items",
 
       // Customer login
@@ -1482,7 +1482,7 @@ const resources = {
       "scheduling.every_2_weeks": "Cada 2 semanas",
       "scheduling.every_month": "Cada mes",
       "scheduling.starting": "Comenzando",
-      "scheduling.recurring_perks": "✓ Mismo Pro asignado • ✓ Programación prioritaria • ✓ Cancela cuando quieras",
+      "scheduling.recurring_perks": " Mismo Pro asignado •  Programación prioritaria •  Cancela cuando quieras",
       "scheduling.continue": "Continuar",
       "scheduling.back": "Atrás",
 
@@ -1550,7 +1550,7 @@ const resources = {
       "estimator.select": "Seleccionar",
       "estimator.all_services": "Todos los Servicios",
       "estimator.photos_tab": "Fotos",
-      "estimator.video_tab": "Video ⭐",
+      "estimator.video_tab": "Video",
       "estimator.more_items": "+{{count}} más artículos",
 
       // Customer login

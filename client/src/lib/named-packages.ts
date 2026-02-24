@@ -38,7 +38,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     name: 'The Refresh',
     tagline: 'Inside & Outside Shine',
     description: 'Professional home cleaning plus pressure washing for a complete property refresh',
-    icon: '✨',
+    icon: '',
     services: [
       {
         serviceType: 'home_cleaning',
@@ -72,7 +72,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     name: 'The Curb Appeal',
     tagline: 'First Impressions Matter',
     description: 'Complete exterior transformation: pressure washing, gutter cleaning, and lawn care',
-    icon: '🏡',
+    icon: '',
     services: [
       {
         serviceType: 'pressure_washing',
@@ -109,7 +109,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     name: 'The Move-Out',
     tagline: 'Leave It Spotless',
     description: 'Complete move-out package: deep cleaning, junk removal, and exterior wash for deposit return',
-    icon: '📦',
+    icon: '',
     services: [
       {
         serviceType: 'home_cleaning',
@@ -148,7 +148,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     name: 'The Full Reset',
     tagline: 'Complete Property Overhaul',
     description: 'Ultimate package: home scan, deep cleaning, junk removal, pressure washing, and gutter cleaning',
-    icon: '🔄',
+    icon: '',
     services: [
       {
         serviceType: 'home_scan',
@@ -200,7 +200,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     name: "The Mover's Bundle",
     tagline: 'We Do The Heavy Lifting',
     description: 'Moving labor, junk removal, and final cleanup - everything you need for moving day',
-    icon: '🚚',
+    icon: '',
     services: [
       {
         serviceType: 'moving_labor',
@@ -243,7 +243,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     name: 'The Landlord Special',
     tagline: 'Turnover Ready',
     description: 'Fast tenant turnover: move-out clean, junk removal, basic repairs',
-    icon: '🔑',
+    icon: '',
     services: [
       {
         serviceType: 'home_cleaning',
@@ -282,7 +282,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     name: 'The Seasonal Prep',
     tagline: 'Ready For Any Season',
     description: 'Seasonal maintenance: gutter cleaning, pressure washing, HVAC filter change',
-    icon: '🍂',
+    icon: '',
     services: [
       {
         serviceType: 'gutter_cleaning',
@@ -319,7 +319,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     name: 'The Party Ready',
     tagline: 'Host With Confidence',
     description: 'Get your home party-ready: deep cleaning, pressure washing, and yard cleanup',
-    icon: '🎉',
+    icon: '',
     services: [
       {
         serviceType: 'home_cleaning',

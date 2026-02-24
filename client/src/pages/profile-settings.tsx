@@ -522,7 +522,7 @@ function ProSettings({ profile }: { profile: any }) {
                     />
                     {profile?.liabilityInsuranceCertificateUrl && (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-green-600 font-medium">✓ Certificate on file</span>
+                        <span className="text-green-600 font-medium"> Certificate on file</span>
                         <Button
                           variant="ghost"
                           size="sm"

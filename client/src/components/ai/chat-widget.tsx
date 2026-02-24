@@ -54,7 +54,7 @@ function BookingDraftCard({ draft, onConfirm, onEdit }: { draft: any; onConfirm:
   return (
     <div className="bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-800 rounded-xl p-3.5 mt-2 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-lg">📋</span>
+        <span className="text-lg"></span>
         <span className="font-semibold text-sm text-gray-900 dark:text-gray-100">Your Quote</span>
       </div>
       <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
@@ -64,7 +64,7 @@ function BookingDraftCard({ draft, onConfirm, onEdit }: { draft: any; onConfirm:
         <p className="text-lg font-bold text-[#F47C20] mt-1">{q.priceFormatted}</p>
       )}
       {draft.preferredDate && (
-        <p className="text-xs text-gray-500 mt-0.5">📅 {draft.preferredDate}</p>
+        <p className="text-xs text-gray-500 mt-0.5"> {draft.preferredDate}</p>
       )}
       <div className="flex gap-2 mt-3">
         <button onClick={onConfirm} className="flex-1 px-3 py-2 rounded-lg bg-[#F47C20] text-white text-sm font-medium hover:bg-[#e06d15] transition">
@@ -253,12 +253,12 @@ export function AiChatWidget() {
   const firstName = user?.firstName;
   
   const greetingText = isPro
-    ? `Hey${firstName ? ` ${firstName}` : ""}! 👋 Interested in earning with UpTend?`
+    ? `Hey${firstName ? ` ${firstName}` : ""}!  Interested in earning with UpTend?`
     : isB2B
-    ? `Welcome${firstName ? `, ${firstName}` : ""}! 👋 I'm Mr. George — let me show you how UpTend replaces your entire vendor network.`
+    ? `Welcome${firstName ? `, ${firstName}` : ""}!  I'm Mr. George — let me show you how UpTend replaces your entire vendor network.`
     : firstName
-    ? `Hey ${firstName}! 👋 What's going on at home today? Need a pro, or want to tackle something yourself?`
-    : `Hey! 👋 I'm Mr. George — I know basically everything about home repair. Need a pro, or want to try fixing it yourself? I do both. 🏠`;
+    ? `Hey ${firstName}!  What's going on at home today? Need a pro, or want to tackle something yourself?`
+    : `Hey!  I'm Mr. George — I know basically everything about home repair. Need a pro, or want to try fixing it yourself? I do both. `;
   
   const greetingButtons: QuickButton[] = isPro
     ? [
@@ -273,10 +273,10 @@ export function AiChatWidget() {
         { text: "Get a Demo", action: "reply:I'd like a demo" },
       ]
     : [
-        { text: "🚀 Need a Pro Now", action: "reply:I need to book a service" },
-        { text: "🔧 DIY Help", action: "reply:I want to try fixing something myself" },
-        { text: "📸 Free Home DNA Scan", action: "reply:Tell me about the free Home DNA Scan" },
-        { text: "🚗 Car Help", action: "reply:I need help with my car" },
+        { text: " Need a Pro Now", action: "reply:I need to book a service" },
+        { text: " DIY Help", action: "reply:I want to try fixing something myself" },
+        { text: " Free Home DNA Scan", action: "reply:Tell me about the free Home DNA Scan" },
+        { text: " Car Help", action: "reply:I need help with my car" },
       ];
 
   if (!isOpen) {
@@ -329,7 +329,7 @@ export function AiChatWidget() {
               {isPro ? "Learn about earning with UpTend" : "I'm just here to help! Need a pro for your home? Just ask."}
             </p>
             <p className="text-xs text-gray-400 dark:text-gray-400 max-w-[260px] mb-4">
-              You can close me anytime using the ✕ above.
+              You can close me anytime using the  above.
             </p>
             <QuickButtons buttons={greetingButtons} onPress={handleQuickReply} />
           </div>

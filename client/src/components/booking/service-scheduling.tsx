@@ -272,7 +272,7 @@ export function ServiceScheduling({ onComplete, onBack, serviceName, defaultTimi
                             Starting {format(recurringStartDate, "MMMM d, yyyy")} • {timeSlot === "flexible" ? "Flexible timing" : timeSlot}
                           </p>
                           <p className="text-xs text-green-600 dark:text-green-500 mt-2">
-                            ✓ Same Pro assigned • ✓ Priority scheduling • ✓ Cancel anytime
+                             Same Pro assigned •  Priority scheduling •  Cancel anytime
                           </p>
                         </div>
                       )}

@@ -25,7 +25,7 @@ export function InsuranceBadge({ serviceType, className = "" }: InsuranceBadgePr
   return (
     <Badge className={`bg-green-600/20 text-green-400 border-green-600/30 gap-1 ${className}`}>
       <ShieldCheck className="w-3.5 h-3.5" />
-      Covered{data.bestDiscount > 0 ? ` • ${data.bestDiscount}% off` : " ✓"}
+      Covered{data.bestDiscount > 0 ? ` • ${data.bestDiscount}% off` : " "}
     </Badge>
   );
 }

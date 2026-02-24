@@ -12,10 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
 const tierConfig = {
-  platinum: { color: "bg-gradient-to-r from-blue-400 to-purple-600", icon: "💎" },
-  gold: { color: "bg-gradient-to-r from-yellow-400 to-orange-500", icon: "🥇" },
-  silver: { color: "bg-gradient-to-r from-gray-300 to-gray-400", icon: "🥈" },
-  bronze: { color: "bg-gradient-to-r from-orange-700 to-yellow-700", icon: "🥉" },
+  platinum: { color: "bg-gradient-to-r from-blue-400 to-purple-600", icon: "" },
+  gold: { color: "bg-gradient-to-r from-yellow-400 to-orange-500", icon: "" },
+  silver: { color: "bg-gradient-to-r from-gray-300 to-gray-400", icon: "" },
+  bronze: { color: "bg-gradient-to-r from-orange-700 to-yellow-700", icon: "" },
 };
 
 export function ProQualityScore() {
@@ -132,7 +132,7 @@ export function ProQualityScore() {
             <ul className="space-y-2">
               {score.strengths.map((strength: string, i: number) => (
                 <li key={i} className="flex items-start gap-2 text-sm">
-                  <span className="text-green-500">✓</span>
+                  <span className="text-green-500"></span>
                   <span>{strength}</span>
                 </li>
               ))}

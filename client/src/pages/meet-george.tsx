@@ -33,7 +33,7 @@ export default function MeetGeorgePage() {
             AI-Powered Home Assistant
           </div>
           <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
-            Meet <span className="text-[#F47C20]">Mr. George</span> 🏠
+            Meet <span className="text-[#F47C20]">Mr. George</span> 
           </h1>
           <p className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
             Your AI home expert who knows everything about home repair, finds the best Pros, 

@@ -256,7 +256,7 @@ export function MaintenanceCalendar({ propertyId }: MaintenanceCalendarProps) {
 
                     {task.generatedFrom === "seasonal" && task.notes && (
                       <div className="mt-3 p-2 bg-blue-50 rounded text-xs text-blue-800">
-                        💡 {task.notes}
+                         {task.notes}
                       </div>
                     )}
                   </div>
@@ -286,7 +286,7 @@ export function MaintenanceCalendar({ propertyId }: MaintenanceCalendarProps) {
       {/* AI Maintenance Tips */}
       <Card className="bg-purple-50 border-purple-200">
         <CardContent className="pt-6">
-          <h3 className="font-semibold text-purple-900 mb-3">🤖 AI-Generated Schedule</h3>
+          <h3 className="font-semibold text-purple-900 mb-3"> AI-Generated Schedule</h3>
           <p className="text-sm text-purple-800 mb-3">
             Your maintenance schedule is customized based on:
           </p>

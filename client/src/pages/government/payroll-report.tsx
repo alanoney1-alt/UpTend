@@ -238,7 +238,7 @@ export default function PayrollReport() {
                 <div>
                   <p className="border-b border-black pb-1 mb-1">Signature: ____________________________</p>
                   <p className="text-xs text-gray-500">
-                    {wh347?.statementOfCompliance?.isCertified ? "✓ Certified" : "Not yet certified"}
+                    {wh347?.statementOfCompliance?.isCertified ? " Certified" : "Not yet certified"}
                   </p>
                 </div>
                 <div>

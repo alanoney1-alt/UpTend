@@ -16,7 +16,7 @@ export function AiScanToggle({ serviceId, quoteMode, onModeChange }: AiScanToggl
         onClick={() => onModeChange("ai")}
       >
         <Camera className="w-4 h-4" />
-        📸 AI Photo Quote
+         AI Photo Quote
       </Button>
       <Button
         variant={quoteMode === "manual" ? "default" : "outline"}
@@ -24,7 +24,7 @@ export function AiScanToggle({ serviceId, quoteMode, onModeChange }: AiScanToggl
         onClick={() => onModeChange("manual")}
       >
         <ClipboardList className="w-4 h-4" />
-        📋 Build Quote Manually
+         Build Quote Manually
       </Button>
     </div>
   );

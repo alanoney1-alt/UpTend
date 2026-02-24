@@ -66,7 +66,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 fontSize: "32px",
               }}
             >
-              ⚠️
+              
             </div>
             <h1
               style={{

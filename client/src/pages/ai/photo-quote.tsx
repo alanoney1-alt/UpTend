@@ -352,18 +352,18 @@ export default function PhotoToQuote() {
                       </ol>
                       {result.diyGuide.toolsNeeded && result.diyGuide.toolsNeeded.length > 0 && (
                         <p className="text-xs text-gray-500 mt-2">
-                          🔧 Tools: {result.diyGuide.toolsNeeded.join(", ")}
+                           Tools: {result.diyGuide.toolsNeeded.join(", ")}
                         </p>
                       )}
                       {result.diyGuide.estimatedTime && (
                         <p className="text-xs text-gray-500 mt-1">
-                          ⏱️ Estimated time: {result.diyGuide.estimatedTime}
+                           Estimated time: {result.diyGuide.estimatedTime}
                         </p>
                       )}
                       {result.diyGuide.safetyWarnings && result.diyGuide.safetyWarnings.length > 0 && (
                         <div className="mt-2">
                           {result.diyGuide.safetyWarnings.map((w, i) => (
-                            <p key={i} className="text-xs text-red-600 dark:text-red-400">⚠️ {w}</p>
+                            <p key={i} className="text-xs text-red-600 dark:text-red-400"> {w}</p>
                           ))}
                         </div>
                       )}

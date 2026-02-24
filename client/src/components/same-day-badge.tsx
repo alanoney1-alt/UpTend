@@ -1,5 +1,5 @@
 /**
- * Same-Day Available Badge — "Same-Day Available ⚡"
+ * Same-Day Available Badge — "Same-Day Available "
  */
 
 import { Badge } from "@/components/ui/badge";

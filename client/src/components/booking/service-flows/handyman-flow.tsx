@@ -139,7 +139,7 @@ export function HandymanFlow({ onComplete, onBack }: ServiceFlowProps) {
         <Card>
           <CardContent className="p-4 space-y-2">
             {taskCount >= 3 && (
-              <Badge className="bg-green-600 mb-2">🎉 10% multi-task discount applied!</Badge>
+              <Badge className="bg-green-600 mb-2"> 10% multi-task discount applied!</Badge>
             )}
             {CATEGORIES.map((cat) => (
               <div key={cat} className="border rounded-lg overflow-hidden">
@@ -226,7 +226,7 @@ export function HandymanFlow({ onComplete, onBack }: ServiceFlowProps) {
               </div>
             </div>
             <p className="text-xs text-muted-foreground">
-              💡 Not sure what you need done? Book hourly and let the Pro handle multiple small tasks.
+               Not sure what you need done? Book hourly and let the Pro handle multiple small tasks.
             </p>
           </CardContent>
         </Card>

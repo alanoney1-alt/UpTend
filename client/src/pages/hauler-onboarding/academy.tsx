@@ -899,7 +899,7 @@ function ProAcademyDashboard() {
 
             <div className="p-4 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800">
               <p className="text-sm font-medium text-cyan-800 dark:text-cyan-200">
-                💡 Need help? Mr. George is here! Click the chat bubble anytime during your training.
+                 Need help? Mr. George is here! Click the chat bubble anytime during your training.
                 He can explain concepts, answer questions about UpTend policies, or help you prepare for quizzes.
               </p>
             </div>
@@ -996,7 +996,7 @@ function ProAcademyDashboard() {
 
           <div className="p-4 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800">
             <p className="text-sm font-medium text-cyan-800 dark:text-cyan-200">
-              💡 Need help? Mr. George is here! Click the chat bubble anytime during your training.
+               Need help? Mr. George is here! Click the chat bubble anytime during your training.
               He can explain concepts, answer questions about UpTend policies, or help you prepare for quizzes.
             </p>
           </div>

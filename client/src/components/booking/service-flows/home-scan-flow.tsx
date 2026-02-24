@@ -89,7 +89,7 @@ export function HomeScanFlow({ onComplete, onBack }: ServiceFlowProps) {
               </div>
               <p className="text-2xl font-black text-primary">${t.price}</p>
               <p className="text-xs text-muted-foreground">{t.description}</p>
-              <p className="text-xs text-muted-foreground">⏱ {t.duration}</p>
+              <p className="text-xs text-muted-foreground"> {t.duration}</p>
               <ul className="space-y-1.5">
                 {t.includes.map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
@@ -105,7 +105,7 @@ export function HomeScanFlow({ onComplete, onBack }: ServiceFlowProps) {
 
       <div className="p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg text-center">
         <p className="text-sm font-medium text-green-800 dark:text-green-200">
-          💰 Get a <strong>$49 credit</strong> toward your next UpTend service (valid 90 days)
+           Get a <strong>$49 credit</strong> toward your next UpTend service (valid 90 days)
         </p>
       </div>
 

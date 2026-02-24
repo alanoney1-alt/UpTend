@@ -207,7 +207,7 @@ export default function AdminBilling() {
                                     className="h-7 text-xs"
                                     onClick={() => { setVoidRunId(null); setVoidReason(""); }}
                                   >
-                                    ✕
+                                    
                                   </Button>
                                 </div>
                               ) : (
@@ -276,7 +276,7 @@ export default function AdminBilling() {
                                   <td className="p-1">{li.propertyAddress}</td>
                                   <td className="p-1">{li.serviceType?.replace(/_/g, " ")}</td>
                                   <td className="p-1">{li.completedAt ? formatDate(li.completedAt) : "—"}</td>
-                                  <td className="p-1">{li.customerSignoffAt ? "✅" : "⏰"}</td>
+                                  <td className="p-1">{li.customerSignoffAt ? "" : ""}</td>
                                   <td className="p-1 text-right">${li.totalCharge?.toFixed(2)}</td>
                                 </tr>
                               ))}
