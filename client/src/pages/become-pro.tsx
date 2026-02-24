@@ -53,10 +53,10 @@ const pillars = [
 ];
 
 const steps = [
-  { num: "01", title: "Sign Up", desc: "Takes 3 minutes." },
-  { num: "02", title: "Background Check", desc: "Safety first. We pay for it." },
-  { num: "03", title: "Sustainability Credentials", desc: "Learn the UpTend Standard and start building your verified impact record." },
-  { num: "04", title: "Go Live", desc: "Claim your first job and start proving your impact." },
+  { num: "01", title: "Sign Up", desc: "Takes 3 minutes. Pick your services, set your availability." },
+  { num: "02", title: "Background Check", desc: "We cover the cost. Once cleared, you're verified on the platform." },
+  { num: "03", title: "Set Up Your Profile", desc: "Add your experience, service areas, and certifications. Customers see this when they book." },
+  { num: "04", title: "Start Earning", desc: "Get matched with real, pre-paid jobs. Keep 80% of every dollar. Same-day payouts." },
 ];
 
 export default function BecomePro() {
