@@ -1,6 +1,6 @@
 /**
  * Property Scan Service
- * Uses Realty in US (Realtor.com) data via RapidAPI for real market values
+ * Uses RentCast API for real property data (beds, baths, sqft, lot, year built)
  * Falls back to estimated data when API unavailable
  */
 
@@ -19,291 +19,142 @@ export interface PropertyData {
   stories: number;
   exteriorType: string;
   propertyType: string;
-  rentEstimate?: number;
   taxAssessedValue?: number;
-  dataSource: "zillow" | "estimated" | "address_only";
-  zillowUrl?: string;
-  imgSrc?: string;
+  dataSource: "rentcast" | "estimated" | "address_only";
+  lastSalePrice?: number;
+  lastSaleDate?: string;
 }
 
-// ─── Realty in US API via RapidAPI ────────────────────────────────────────────
+// ─── RentCast API ────────────────────────────────────────────────────────────
 
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || "d8b4031b0cmsh0fff73bec93f734p1d1ef8jsnc985291799d6";
-const RAPIDAPI_HOST = "realty-in-us.p.rapidapi.com";
+const RENTCAST_API_KEY = process.env.RENTCAST_API_KEY || "";
+const RENTCAST_BASE = "https://api.rentcast.io/v1";
 
-interface RealtyResult {
-  property_id: string;
-  status: string;
-  location: {
-    address: {
-      line: string;
-      city: string;
-      state_code: string;
-      state: string;
-      postal_code: string;
-      street_name: string;
-      street_number: string;
-      coordinate: { lat: number; lon: number } | null;
-    };
-    street_view_url?: string;
-  };
-  description: {
-    type: string;
-    sub_type: string | null;
-    beds: number;
-    baths: number;
-    sqft: number;
-    lot_sqft: number;
-    baths_full: number | null;
-    baths_half: number | null;
-  };
-  list_price?: number;
-  estimate?: { estimate: number };
-  tax_record?: { public_record_doctype?: string; list?: Array<{ amount?: number; year?: number }> };
-  photos?: Array<{ href: string }>;
-  flags?: {
-    is_new_construction: boolean | null;
-    is_foreclosure: boolean | null;
-  };
-}
+// Simple in-memory cache (30 min TTL — RentCast has limited free calls)
+const cache = new Map<string, { data: PropertyData; ts: number }>();
+const CACHE_TTL = 30 * 60 * 1000;
 
-// Normalized internal result to keep downstream code consistent
-interface ZillowResult {
+interface RentCastProperty {
   id: string;
-  price: string;
-  unformattedPrice: number;
-  beds: number;
-  baths: number;
-  area: number;
-  livingArea: number;
-  homeType: string;
-  rentZestimate: number;
-  taxAssessedValue: number;
-  lotAreaValue: number;
-  lotAreaUnit: string;
-  address: { street: string; city: string; state: string; zipcode: string };
-  latLong: { latitude: number; longitude: number };
-  detailUrl: string;
-  imgSrc: string;
-  zestimate: number;
-  daysOnZillow: number;
+  formattedAddress: string;
+  addressLine1: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  county: string;
+  latitude: number;
+  longitude: number;
+  propertyType: string;
+  bedrooms: number;
+  bathrooms: number;
+  squareFootage: number;
+  lotSize: number;
+  yearBuilt: number;
+  lastSaleDate?: string;
+  lastSalePrice?: number;
+  features?: {
+    cooling?: boolean;
+    coolingType?: string;
+    exteriorType?: string;
+    floorCount?: number;
+    garage?: boolean;
+    garageType?: string;
+    heating?: boolean;
+    heatingType?: string;
+    roofType?: string;
+    pool?: boolean;
+  };
+  taxAssessments?: Record<string, { year: number; value: number; land?: number; improvements?: number }>;
 }
 
-function realtyToZillow(r: RealtyResult): ZillowResult {
-  const addr = r.location?.address || {} as any;
-  const desc = r.description || {} as any;
-  const price = r.list_price || 0;
-  const estimate = r.estimate?.estimate || price;
-  const taxAmount = r.tax_record?.list?.[0]?.amount || 0;
-  const photo = (r as any).primary_photo?.href || r.photos?.[0]?.href || "";
-
+function parseAddress(address: string): { street: string; city: string; state: string; zip: string } {
+  const parts = address.split(",").map(s => s.trim());
+  const street = parts[0] || "";
+  const city = parts[1] || "";
+  const stateZip = parts[2] || parts[1] || "";
+  const stateMatch = stateZip.match(/([A-Z]{2})\s*(\d{5})?/i);
   return {
-    id: r.property_id,
-    price: `$${price.toLocaleString()}`,
-    unformattedPrice: price,
-    beds: desc.beds || 0,
-    baths: desc.baths || 0,
-    area: desc.sqft || 0,
-    livingArea: desc.sqft || 0,
-    homeType: desc.type?.toUpperCase()?.replace(/\s+/g, "_") || "RESIDENTIAL",
-    rentZestimate: 0, // Not in this API
-    taxAssessedValue: taxAmount,
-    lotAreaValue: desc.lot_sqft || 0,
-    lotAreaUnit: "sqft",
-    address: {
-      street: addr.line || `${addr.street_number || ""} ${addr.street_name || ""}`.trim(),
-      city: addr.city || "",
-      state: addr.state_code || addr.state || "",
-      zipcode: addr.postal_code || "",
-    },
-    latLong: {
-      latitude: addr.coordinate?.lat || 0,
-      longitude: addr.coordinate?.lon || 0,
-    },
-    detailUrl: `https://www.realtor.com/realestateandhomes-detail/${r.property_id}`,
-    imgSrc: photo,
-    zestimate: estimate,
-    daysOnZillow: 0,
+    street,
+    city: parts.length >= 3 ? city : "",
+    state: stateMatch?.[1]?.toUpperCase() || "FL",
+    zip: stateMatch?.[2] || "",
   };
 }
 
-// Simple in-memory cache (5 min TTL)
-const cache = new Map<string, { data: ZillowResult[]; ts: number }>();
-const CACHE_TTL = 5 * 60 * 1000;
-
-async function searchZillow(location: string): Promise<ZillowResult[]> {
-  const cacheKey = location.toLowerCase().trim();
-  const cached = cache.get(cacheKey);
-  if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.data;
+async function fetchFromRentCast(address: string): Promise<RentCastProperty | null> {
+  if (!RENTCAST_API_KEY) {
+    console.error("RENTCAST_API_KEY not set");
+    return null;
+  }
 
   try {
-    // Extract postal code if present
-    const zipMatch = location.match(/\b(\d{5})\b/);
-    const body: any = {
-      limit: 200,
-      offset: 0,
-      status: ["for_sale", "sold", "ready_to_build"],
-      sort: { direction: "desc", field: "list_date" },
-    };
+    const parsed = parseAddress(address);
+    const params = new URLSearchParams({ address: parsed.street });
+    if (parsed.city) params.set("city", parsed.city);
+    if (parsed.state) params.set("state", parsed.state);
+    if (parsed.zip) params.set("zipCode", parsed.zip);
 
-    if (zipMatch) {
-      body.postal_code = zipMatch[1];
-    } else {
-      // Parse "City, ST" format
-      const parts = location.split(",").map(s => s.trim());
-      const city = parts[0];
-      const stateMatch = (parts[1] || "").match(/([A-Z]{2})/i);
-      body.city = city;
-      if (stateMatch) body.state_code = stateMatch[1].toUpperCase();
-    }
-
-    const res = await fetch(`https://${RAPIDAPI_HOST}/properties/v3/list`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-rapidapi-host": RAPIDAPI_HOST,
-        "x-rapidapi-key": RAPIDAPI_KEY,
-      },
-      body: JSON.stringify(body),
+    const res = await fetch(`${RENTCAST_BASE}/properties?${params.toString()}`, {
+      headers: { "X-Api-Key": RENTCAST_API_KEY, Accept: "application/json" },
     });
 
     if (!res.ok) {
-      console.error(`Realty API error: ${res.status}`);
-      return [];
+      console.error(`RentCast API error: ${res.status} ${res.statusText}`);
+      return null;
     }
 
-    const data = await res.json();
-    const results: RealtyResult[] = data?.data?.home_search?.results || [];
-    if (results.length === 0) return [];
-
-    const normalized = results.map(realtyToZillow);
-    cache.set(cacheKey, { data: normalized, ts: Date.now() });
-    return normalized;
+    const data: RentCastProperty[] = await res.json();
+    return data?.[0] || null;
   } catch (err) {
-    console.error("Realty API fetch error:", err);
-    return [];
+    console.error("RentCast fetch error:", err);
+    return null;
   }
-}
-
-function normalizeStreet(street: string): string {
-  return street.toLowerCase()
-    .replace(/\b(st|street|ave|avenue|blvd|boulevard|dr|drive|ln|lane|ct|court|rd|road|pl|place|way|cir|circle)\b/g, "")
-    .replace(/[^a-z0-9]/g, "");
-}
-
-/**
- * Try to find a specific property by address from Zillow search results
- */
-async function findPropertyByAddress(address: string): Promise<ZillowResult | null> {
-  // Parse city/state/zip from address
-  const parts = address.split(",").map(s => s.trim());
-  let location: string;
-
-  if (parts.length >= 2) {
-    // "123 Main St, Orlando, FL 32801" or "123 Main St, Orlando FL"
-    location = parts.slice(1).join(", ").trim();
-  } else {
-    // Try to extract city/state from the single string
-    const match = address.match(/([A-Za-z\s]+),?\s*(FL|Florida)\s*(\d{5})?/i);
-    location = match ? `${match[1].trim()}, FL` : "Orlando, FL";
-  }
-
-  const results = await searchZillow(location);
-  if (results.length === 0) return null;
-
-  // Try exact street match
-  const inputStreet = normalizeStreet(address.split(",")[0]);
-  const exactMatch = results.find(r => normalizeStreet(r.address.street) === inputStreet);
-  if (exactMatch) return exactMatch;
-
-  // Try partial match (street number + first word)
-  const inputWords = address.split(",")[0].toLowerCase().split(/\s+/);
-  const streetNum = inputWords[0];
-  if (streetNum && /^\d+$/.test(streetNum)) {
-    const partial = results.find(r => {
-      const rStreet = r.address.street.toLowerCase();
-      return rStreet.startsWith(streetNum + " ");
-    });
-    if (partial) return partial;
-  }
-
-  return null;
-}
-
-/**
- * Get nearby comps to estimate value for an address not found in listings
- */
-async function getAreaComps(address: string): Promise<{ medianValue: number; medianSqft: number; medianBeds: number; medianBaths: number; count: number } | null> {
-  const parts = address.split(",").map(s => s.trim());
-  let location: string;
-
-  if (parts.length >= 2) {
-    location = parts.slice(1).join(", ").trim();
-  } else {
-    const match = address.match(/([A-Za-z\s]+),?\s*(FL|Florida)/i);
-    location = match ? `${match[1].trim()}, FL` : "Orlando, FL";
-  }
-
-  const results = await searchZillow(location);
-  if (results.length === 0) return null;
-
-  // Use zestimates from results as comps
-  const withZestimate = results.filter(r => r.zestimate && r.zestimate > 0);
-  if (withZestimate.length === 0) return null;
-
-  const values = withZestimate.map(r => r.zestimate).sort((a, b) => a - b);
-  const sqfts = withZestimate.map(r => r.area || r.livingArea).filter(Boolean).sort((a, b) => a - b);
-  const beds = withZestimate.map(r => r.beds).filter(Boolean).sort((a, b) => a - b);
-  const baths = withZestimate.map(r => r.baths).filter(Boolean).sort((a, b) => a - b);
-
-  const median = (arr: number[]) => arr.length ? arr[Math.floor(arr.length / 2)] : 0;
-
-  return {
-    medianValue: median(values),
-    medianSqft: median(sqfts),
-    medianBeds: median(beds),
-    medianBaths: median(baths),
-    count: withZestimate.length,
-  };
 }
 
 // ─── Main Export ─────────────────────────────────────────────────────────────
 
 /**
- * Get property data — tries Zillow first, falls back to estimation
+ * Get property data — tries RentCast first, falls back to estimation
  */
 export async function getPropertyDataAsync(address: string): Promise<PropertyData> {
-  // Try exact match from Zillow
-  const match = await findPropertyByAddress(address);
-  if (match) {
-    const lotAcres = match.lotAreaUnit === "acres"
-      ? match.lotAreaValue
-      : (match.lotAreaValue || 0) / 43560;
+  const cacheKey = address.toLowerCase().trim();
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.ts < CACHE_TTL) return cached.data;
 
-    return {
-      address: `${match.address.street}, ${match.address.city}, ${match.address.state} ${match.address.zipcode}`,
-      homeValueEstimate: match.zestimate || match.unformattedPrice,
-      sqFootage: match.area || match.livingArea,
-      lotSizeAcres: +lotAcres.toFixed(2),
-      hasPool: "uncertain", // Zillow doesn't reliably report pools in search results
-      yearBuilt: 0, // Not in search results
-      bedrooms: match.beds,
-      bathrooms: match.baths,
-      roofType: "Unknown",
-      hasGarage: true,
-      garageSize: "Unknown",
-      stories: match.area > 2500 ? 2 : 1,
-      exteriorType: "Unknown",
-      propertyType: match.homeType === "SINGLE_FAMILY" ? "Single Family" : match.homeType?.replace(/_/g, " ") || "Residential",
-      rentEstimate: match.rentZestimate,
-      taxAssessedValue: match.taxAssessedValue,
-      dataSource: "zillow",
-      zillowUrl: match.detailUrl,
-      imgSrc: match.imgSrc,
+  const prop = await fetchFromRentCast(address);
+  if (prop && (prop.squareFootage || prop.bedrooms)) {
+    const lotAcres = prop.lotSize ? +(prop.lotSize / 43560).toFixed(2) : 0;
+    const features = prop.features || {};
+    const latestTax = prop.taxAssessments
+      ? Object.values(prop.taxAssessments).sort((a, b) => b.year - a.year)[0]
+      : null;
+
+    const result: PropertyData = {
+      address: prop.formattedAddress || address,
+      homeValueEstimate: prop.lastSalePrice || latestTax?.value || 0,
+      sqFootage: prop.squareFootage || 0,
+      lotSizeAcres: lotAcres,
+      hasPool: features.pool === true ? true : features.pool === false ? false : "uncertain",
+      yearBuilt: prop.yearBuilt || 0,
+      bedrooms: prop.bedrooms || 0,
+      bathrooms: prop.bathrooms || 0,
+      roofType: features.roofType || "Unknown",
+      hasGarage: features.garage || false,
+      garageSize: features.garageType || "Unknown",
+      stories: features.floorCount || (prop.squareFootage > 2500 ? 2 : 1),
+      exteriorType: features.exteriorType || "Unknown",
+      propertyType: prop.propertyType || "Residential",
+      taxAssessedValue: latestTax?.value,
+      dataSource: "rentcast",
+      lastSalePrice: prop.lastSalePrice,
+      lastSaleDate: prop.lastSaleDate,
     };
+
+    cache.set(cacheKey, { data: result, ts: Date.now() });
+    return result;
   }
 
-  // No exact match found — return address-only result and let George ask for details
+  // No match — return address-only and let George ask for details
   return {
     address,
     homeValueEstimate: 0,
@@ -381,11 +232,11 @@ export function formatPropertySummary(data: PropertyData): string {
   if (data.dataSource === "address_only") {
     return [
       `Address: ${data.address}`,
-      `⚠️ No property details found in public records — ASK the customer for: bedrooms, bathrooms, approximate square footage, whether they have a pool, and home type. Be natural about it: "I found your address but I don't have the details on file — can you tell me a bit about your place?"`,
+      `No property details found in public records -- ASK the customer for: bedrooms, bathrooms, approximate square footage, whether they have a pool, and home type. Be natural about it: "I found your address but I don't have the details on file -- can you tell me a bit about your place?"`,
     ].join("\n");
   }
 
-  const source = data.dataSource === "zillow" ? "📊 Zillow data" : "📐 Estimated";
+  const source = data.dataSource === "rentcast" ? "Public records" : "Estimated";
 
   return [
     `Address: ${data.address}`,
