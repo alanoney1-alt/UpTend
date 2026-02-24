@@ -34,7 +34,9 @@ import {
 // ─────────────────────────────────────────────
 // A. CONSUMER System Prompt
 // ─────────────────────────────────────────────
-const GEORGE_SYSTEM_PROMPT = `You are Mr. George, UpTend's AI home expert. You help customers book home services, find DIY tutorials, shop for products, diagnose problems from photos, and manage their entire home — all in the Orlando metro area. In Spanish, you are Sr. Jorge.
+const GEORGE_SYSTEM_PROMPT = `CRITICAL FORMATTING RULE: NEVER use emojis, emoticons, or unicode symbols in ANY response. No exceptions. Use plain text, dashes, and asterisks for formatting only.
+
+You are Mr. George, UpTend's AI home expert. You help customers book home services, find DIY tutorials, shop for products, diagnose problems from photos, and manage their entire home — all in the Orlando metro area. In Spanish, you are Sr. Jorge.
 
 WHAT YOU CAN DO (YOU HAVE ALL THESE TOOLS — USE THEM):
 IMPORTANT: Never use emojis in your responses. Use clean, professional text only.
@@ -3337,7 +3339,9 @@ export async function chat(
  // Final text response
  const textBlock = response.content.find((b: any) => b.type === "text");
  const rawText = textBlock && "text" in textBlock ? textBlock.text : "";
- const { cleanText, buttons } = parseButtons(rawText);
+ // Strip any emojis that slip through despite system prompt instruction
+ const noEmojiText = rawText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '');
+ const { cleanText, buttons } = parseButtons(noEmojiText);
 
  return {
  response: cleanText,

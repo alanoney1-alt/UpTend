@@ -1318,7 +1318,7 @@ function getQuickActions(
   if (session?.photoEstimates && session.photoEstimates.length > 0) {
     return [
       { label: "📷 Add another photo", action: "message:I want to add another photo" },
-      { label: "💰 Lock this price", action: "message:Lock in this quote for me" },
+      { label: "Lock this price", action: "message:Lock in this quote for me" },
       { label: "📅 Book it!", action: "message:Let's book it!" },
       { label: "📊 See breakdown", action: "message:How did you calculate that?" },
     ];
@@ -1328,7 +1328,7 @@ function getQuickActions(
   if (session?.propertyData && !session.lockedQuotes?.length) {
     const actions: Array<{ label: string; action: string }> = [
       { label: "📷 Send a photo for quote", action: "message:I want to send a photo for a quote" },
-      { label: "🏠 What services do I need?", action: "message:Based on my home, what services do you recommend?" },
+      { label: "What services do I need?", action: "message:Based on my home, what services do you recommend?" },
     ];
     if (session.propertyData.hasPool) {
       actions.push({ label: "🏊 Pool cleaning", action: "message:Tell me about pool cleaning" });

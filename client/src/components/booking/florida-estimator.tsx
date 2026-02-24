@@ -106,7 +106,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "gutter_cleaning",
     name: "Gutter Cleaning",
-    price: "From $150",
+    price: "From $129",
     description: "Complete gutter cleaning with flow testing and debris removal for all perimeters.",
     benefit: "Prevents foundation erosion • Protects against water damage",
     icon: Waves,
@@ -130,8 +130,8 @@ const pricingServices: ServicePricing[] = [
   {
     id: "light_demolition",
     name: "Light Demolition",
-    price: "From $149",
-    description: "Light demolition services for sheds ($299), decks ($199), fencing ($149), and walls ($399).",
+    price: "From $199",
+    description: "Light demolition services for decks ($199), sheds ($299), fencing ($249), and walls ($399).",
     benefit: "Safe removal • Permits handled • Debris hauled",
     icon: Truck,
   },
