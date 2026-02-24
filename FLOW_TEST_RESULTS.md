@@ -221,8 +221,8 @@
 - ✅ Impact Stats
 
 **Bug Fixed:**
-- ❌ **Was:** "360° Home Scan"
-- ✅ **Now:** "360° Home Scan"
+- ❌ **Was:** "360° Home DNA Scan"
+- ✅ **Now:** "360° Home DNA Scan"
 - **Commit:** 3378a09
 
 ---

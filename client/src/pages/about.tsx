@@ -182,21 +182,21 @@ export default function About() {
           <Card className="p-8 text-center bg-primary/5 border-primary/20" data-testid="card-stats">
             <h2 className="text-2xl font-bold mb-4">{t("about.proven_impact")}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
-              <div data-testid="stat-jobs">
-                <div className="text-3xl font-bold text-primary mb-1">21</div>
-                <p className="text-sm text-muted-foreground">AI Features Built</p>
-              </div>
-              <div data-testid="stat-pros">
-                <div className="text-3xl font-bold text-primary mb-1">200+</div>
-                <p className="text-sm text-muted-foreground">Data Points Tracked</p>
-              </div>
-              <div data-testid="stat-rating">
-                <div className="text-3xl font-bold text-primary mb-1">13</div>
+              <div data-testid="stat-verticals">
+                <div className="text-3xl font-bold text-primary mb-1">12</div>
                 <p className="text-sm text-muted-foreground">Service Verticals</p>
               </div>
-              <div data-testid="stat-diverted">
+              <div data-testid="stat-support">
                 <div className="text-3xl font-bold text-primary mb-1">24/7</div>
                 <p className="text-sm text-muted-foreground">AI Support</p>
+              </div>
+              <div data-testid="stat-local">
+                <div className="text-3xl font-bold text-primary mb-1">Orlando</div>
+                <p className="text-sm text-muted-foreground">Born and Built</p>
+              </div>
+              <div data-testid="stat-pricing">
+                <div className="text-3xl font-bold text-primary mb-1">100%</div>
+                <p className="text-sm text-muted-foreground">Guaranteed Pricing</p>
               </div>
             </div>
           </Card>

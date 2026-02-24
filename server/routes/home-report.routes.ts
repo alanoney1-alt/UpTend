@@ -89,7 +89,7 @@ export function registerHomeReportRoutes(app: Express) {
             type: "scan",
             id: s.id,
             date: s.completed_at || s.started_at,
-            title: "AI Home Scan",
+            title: "Home DNA Scan",
             description: s.status === "completed"
               ? `Completed — earned ${s.total_credits_earned || 0} credits`
               : `Status: ${s.status}`,

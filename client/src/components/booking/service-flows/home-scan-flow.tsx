@@ -8,7 +8,7 @@ import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 const tiers = [
   {
     id: "standard",
-    name: "AI Home Scan Standard",
+    name: "Home DNA Scan Standard",
     price: 99,
     icon: Sparkles,
     description: "Interior + exterior ground-level walkthrough",
@@ -25,7 +25,7 @@ const tiers = [
   },
   {
     id: "aerial",
-    name: "AI Home Scan Aerial",
+    name: "Home DNA Scan Aerial",
     price: 249,
     icon: Plane,
     featured: true,

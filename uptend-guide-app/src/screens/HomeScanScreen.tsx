@@ -31,7 +31,7 @@ export default function HomeScanScreen({ navigation }: any) {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>AI Home Scan</Text>
+        <Text style={styles.headerTitle}>Home DNA Scan</Text>
         <Text style={styles.headerSub}>Scan your home to detect issues</Text>
       </View>
 

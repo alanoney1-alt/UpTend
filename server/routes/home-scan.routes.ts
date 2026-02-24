@@ -1,5 +1,5 @@
 /**
- * Self-Serve AI Home Scan Routes
+ * Self-Serve Home DNA Scan Routes
  *
  * Gamified room-by-room home scanning with GPT-5.2 vision analysis.
  * Customers earn credits for each appliance scanned.

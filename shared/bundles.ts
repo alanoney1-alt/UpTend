@@ -50,13 +50,13 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Complete home inspection, cleanout, deep clean, and exterior wash",
     services: ["home_consultation", "junk_removal", "home_cleaning", "pressure_washing"],
     bundlePrice: 449,
-    alacartePrice: 517, // $249 (AI Home Scan Aerial) + $99 (Junk Removal min) + $149 (Home Cleaning deep 1BR/1BA) + $120 (Pressure Washing small)
+    alacartePrice: 517, // $249 (Home DNA Scan Aerial) + $99 (Junk Removal min) + $149 (Home Cleaning deep 1BR/1BA) + $120 (Pressure Washing small)
     savings: 68,
     badge: "PM Anchor Offer",
     notes: [
-      "Includes AI Home Scan Aerial ($249 value)",
+      "Includes Home DNA Scan Aerial ($249 value)",
       "Multiple Pros may work on this project",
-      "$49 Home Scan credit applies automatically",
+      "$49 Home DNA Scan credit applies automatically",
     ],
     requiresMultiplePros: true,
   },
@@ -76,13 +76,13 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "Complete home transformation - inspection, cleanout, deep clean, pressure wash, and gutters",
     services: ["home_consultation", "junk_removal", "home_cleaning", "pressure_washing", "gutter_cleaning"],
     bundlePrice: 569,
-    alacartePrice: 666, // $249 (AI Home Scan Aerial) + $99 (Junk Removal min) + $149 (Home Cleaning deep 1BR/1BA) + $120 (Pressure Washing small) + $129 (Gutter Cleaning single story)
+    alacartePrice: 666, // $249 (Home DNA Scan Aerial) + $99 (Junk Removal min) + $149 (Home Cleaning deep 1BR/1BA) + $120 (Pressure Washing small) + $129 (Gutter Cleaning single story)
     savings: 97,
     badge: "Best Value",
     notes: [
-      "Includes AI Home Scan Aerial ($249 value)",
+      "Includes Home DNA Scan Aerial ($249 value)",
       "Multiple Pros may work on this project",
-      "$49 Home Scan credit applies automatically",
+      "$49 Home DNA Scan credit applies automatically",
     ],
     requiresMultiplePros: true,
   },
@@ -121,7 +121,7 @@ export const NAMED_BUNDLES: Record<string, BundlePackage> = {
     description: "HOA compliance package",
     services: ["landscaping", "pressure_washing", "gutter_cleaning", "home_consultation"],
     bundlePrice: 319,
-    alacartePrice: 397, // $49 (Landscaping one-time) + $120 (Pressure Washing) + $129 (Gutter Cleaning) + $99 (AI Home Scan) × 80% = $319
+    alacartePrice: 397, // $49 (Landscaping one-time) + $120 (Pressure Washing) + $129 (Gutter Cleaning) + $99 (Home DNA Scan) × 80% = $319
     savings: 78,
     badge: "HOA Approved",
   },

@@ -59,13 +59,13 @@ export function registerAppDataRoutes(app: Express) {
   app.get("/api/home-scan/health", async (req: any, res) => {
     try {
       const userId = (req.user as any)?.userId || (req.user as any)?.id;
-      if (!userId) return res.json({ score: 0, systems: [], recommendations: ["Complete an AI Home Scan to get your health score."] });
+      if (!userId) return res.json({ score: 0, systems: [], recommendations: ["Complete an Home DNA Scan to get your health score."] });
 
       const { rows } = await pool.query(
         "SELECT * FROM home_scans WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1",
         [userId]
       );
-      if (!rows.length) return res.json({ score: 0, systems: [], recommendations: ["Complete an AI Home Scan to get started."] });
+      if (!rows.length) return res.json({ score: 0, systems: [], recommendations: ["Complete an Home DNA Scan to get started."] });
 
       const scan = rows[0];
       res.json({

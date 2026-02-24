@@ -1,8 +1,8 @@
 export const SERVICES = {
   home_scan: {
-    branded: 'AI Home Scan',
-    generic: 'Home Scan',
-    display: 'AI Home Scan',
+    branded: 'Home DNA Scan',
+    generic: 'Home DNA Scan',
+    display: 'Home DNA Scan',
     slug: '/home-scan',
     startingPrice: 99,
     priceUnit: 'flat',
@@ -10,9 +10,9 @@ export const SERVICES = {
     description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $249.',
     tiers: {
       standard: {
-        name: 'AI Home Scan Standard',
+        name: 'Home DNA Scan Standard',
         price: 99,
-        proPayout: 50, // $50 FLAT payout for ALL AI Home Scan tiers
+        proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers
         description: 'Interior + exterior ground-level walkthrough with maintenance report',
         includes: [
           'Full interior room-by-room walkthrough with photos',
@@ -27,12 +27,12 @@ export const SERVICES = {
         prosNeeded: 1,
       },
       aerial: {
-        name: 'AI Home Scan Aerial',
+        name: 'Home DNA Scan Aerial',
         price: 249,
-        proPayout: 50, // $50 FLAT payout for ALL AI Home Scan tiers
+        proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers
         description: 'Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan',
         includes: [
-          'Everything in AI Home Scan Standard',
+          'Everything in Home DNA Scan Standard',
           'FAA Part 107 certified drone flyover',
           'Aerial roof condition scan (missing shingles, sagging, moss, flashing damage)',
           'Gutter blockage percentage estimate from above',

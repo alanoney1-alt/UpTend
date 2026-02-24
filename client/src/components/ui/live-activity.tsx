@@ -9,7 +9,7 @@ const ACTIVITIES = [
   "David uploaded a Home Inventory in Altamonte",
   "Maria completed Moving Labor in Lake Nona",
   "James hauled debris in Windermere",
-  "Ana scheduled a Home Scan in Dr. Phillips",
+  "Ana scheduled a Home DNA Scan in Dr. Phillips",
 ];
 
 export function LiveActivity() {

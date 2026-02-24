@@ -174,7 +174,7 @@ import { registerGeorgeDailyRoutes } from "./george-daily.routes";
 // Consent + Re-engagement routes
 import { registerConsentRoutes } from "./consent.routes";
 
-// Self-Serve AI Home Scan routes
+// Self-Serve Home DNA Scan routes
 import { registerHomeScanRoutes } from "./home-scan.routes";
 import roomScannerRoutes from "./ai/room-scanner.routes";
 import { registerHomeReportRoutes } from "./home-report.routes";
@@ -429,7 +429,7 @@ export async function registerRoutes(
   // Register Consent + Re-engagement routes
   registerConsentRoutes(app);
 
-  // Register Self-Serve AI Home Scan + Wallet routes
+  // Register Self-Serve Home DNA Scan + Wallet routes
   registerHomeScanRoutes(app);
 
   // Room video scanner (My Digital Home inventory)

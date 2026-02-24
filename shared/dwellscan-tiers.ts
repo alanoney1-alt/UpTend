@@ -1,12 +1,12 @@
 /**
- * AI Home Scan Service Tiers
+ * Home DNA Scan Service Tiers
  * Two-tier home inspection service with optional drone aerial scan
  */
 
 export const DWELLSCAN_TIERS = {
   standard: {
     id: "standard",
-    name: "AI Home Scan Standard",
+    name: "Home DNA Scan Standard",
     price: 99,
     description: "Full interior and exterior walkthrough with personalized maintenance report.",
     features: [
@@ -17,12 +17,12 @@ export const DWELLSCAN_TIERS = {
       "Personalized maintenance report",
       "One-tap booking from report recommendations",
     ],
-    proPayout: 50, // $50 FLAT payout for ALL AI Home Scan tiers
+    proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers
     recommended: false,
   },
   aerial: {
     id: "aerial",
-    name: "AI Home Scan Aerial",
+    name: "Home DNA Scan Aerial",
     price: 249,
     badge: "Best Value",
     description: "Everything in Standard plus drone-powered roof, gutter, and exterior scan.",
@@ -36,7 +36,7 @@ export const DWELLSCAN_TIERS = {
       "Tree overhang proximity to roof",
       "Full aerial photo set, GPS-tagged",
     ],
-    // $50 FLAT payout for ALL AI Home Scan tiers (standard AND aerial)
+    // $50 FLAT payout for ALL Home DNA Scan tiers (standard AND aerial)
     proPayout: 50,
     recommended: true,
     requiresDroneCertified: true,
@@ -72,6 +72,6 @@ export function getDwellScanProPayout(
     isDroneCertified?: boolean;
   }
 ): number {
-  // $50 FLAT payout for ALL AI Home Scan tiers (standard AND aerial)
+  // $50 FLAT payout for ALL Home DNA Scan tiers (standard AND aerial)
   return 50;
 }

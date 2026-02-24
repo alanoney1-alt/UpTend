@@ -21,7 +21,7 @@ const SERVICES = [
   { key: 'carpet_cleaning', label: 'Carpet Clean', icon: 'layers-outline' as const, price: '$50/room' },
   { key: 'garage_cleanout', label: 'Garage Cleanout', icon: 'car-outline' as const, price: 'From $299' },
   { key: 'light_demolition', label: 'Demolition', icon: 'construct-outline' as const, price: 'From $199' },
-  { key: 'ai_home_scan', label: 'AI Home Scan', icon: 'scan-outline' as const, price: 'Free' },
+  { key: 'ai_home_scan', label: 'Home DNA Scan', icon: 'scan-outline' as const, price: 'Free' },
 ];
 
 export default function BookingScreen({ navigation }: any) {

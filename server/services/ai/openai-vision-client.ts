@@ -292,7 +292,7 @@ Return JSON:
 }
 
 /**
- * Analyze home exterior for AI Home Scan
+ * Analyze home exterior for Home DNA Scan
  */
 export async function analyzeHomeExterior(imageUrls: string[]): Promise<any> {
   return analyzeImages({

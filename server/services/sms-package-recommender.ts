@@ -4,7 +4,7 @@
  * Enhances SMS bot with:
  * - Named package recommendations
  * - PolishUp dynamic pricing knowledge
- * - AI Home Scan two-tier awareness
+ * - Home DNA Scan two-tier awareness
  * - Multi-service discount prompts
  */
 
@@ -34,13 +34,13 @@ export function recommendPackageFromIntent(
   ) {
     return {
       name: 'The Move-Out',
-      services: ['AI Home Scan Aerial', 'BulkSnap', 'PolishUp Move-Out', 'FreshWash'],
+      services: ['Home DNA Scan Aerial', 'BulkSnap', 'PolishUp Move-Out', 'FreshWash'],
       description: 'Tenant out. Rent-ready in 48 hours.',
       estimatedPrice: '$800-$1,200',
       savings: '10% multi-service discount',
       smsMessage:
         '🏠 Moving out? Try THE MOVE-OUT package:\n\n' +
-        '✅ AI Home Scan Aerial ($249)\n' +
+        '✅ Home DNA Scan Aerial ($249)\n' +
         '✅ BulkSnap (junk removal)\n' +
         '✅ PolishUp Move-Out Clean\n' +
         '✅ FreshWash exterior\n\n' +
@@ -80,12 +80,12 @@ export function recommendPackageFromIntent(
       services: ['FreshWash', 'GutterFlush'],
       description: 'Everything your neighbors see, refreshed.',
       estimatedPrice: '$270-$370',
-      savings: 'Add AI Home Scan for $99 + 10% off total',
+      savings: 'Add Home DNA Scan for $99 + 10% off total',
       smsMessage:
         '🌟 THE CURB APPEAL package:\n\n' +
         '✅ FreshWash (pressure washing)\n' +
         '✅ GutterFlush (gutter cleaning)\n\n' +
-        '💡 Add AI Home Scan for $99 and get 10% off!\n' +
+        '💡 Add Home DNA Scan for $99 and get 10% off!\n' +
         'Total: $270-$370\n\n' +
         'Book now: [link]',
     };
@@ -97,13 +97,13 @@ export function recommendPackageFromIntent(
   ) {
     return {
       name: 'The Full Reset',
-      services: ['AI Home Scan Aerial', 'BulkSnap', 'PolishUp Deep', 'FreshWash', 'GutterFlush'],
+      services: ['Home DNA Scan Aerial', 'BulkSnap', 'PolishUp Deep', 'FreshWash', 'GutterFlush'],
       description: 'The complete home reset, inside and out.',
       estimatedPrice: '$1,000-$1,500',
       savings: '15% off (5 services)',
       smsMessage:
         '🎯 THE FULL RESET package:\n\n' +
-        '✅ AI Home Scan Aerial ($249)\n' +
+        '✅ Home DNA Scan Aerial ($249)\n' +
         '✅ BulkSnap (junk removal)\n' +
         '✅ PolishUp Deep Clean\n' +
         '✅ FreshWash (pressure washing)\n' +
@@ -118,12 +118,12 @@ export function recommendPackageFromIntent(
 }
 
 /**
- * Generate AI Home Scan tier recommendation for SMS
+ * Generate Home DNA Scan tier recommendation for SMS
  */
 export function getAIHomeScanSmsMessage(includeAerialUpsell: boolean = true): string {
   if (includeAerialUpsell) {
     return (
-      '🏡 AI Home Scan:\n\n' +
+      '🏡 Home DNA Scan:\n\n' +
       '📋 STANDARD - $99\n' +
       'Full walkthrough + maintenance report\n\n' +
       '🚁 AERIAL - $249 ⭐ RECOMMENDED\n' +
@@ -135,7 +135,7 @@ export function getAIHomeScanSmsMessage(includeAerialUpsell: boolean = true): st
   }
 
   return (
-    '🏡 AI Home Scan - $99\n\n' +
+    '🏡 Home DNA Scan - $99\n\n' +
     '✅ Full interior walkthrough\n' +
     '✅ Exterior assessment\n' +
     '✅ Maintenance report\n' +

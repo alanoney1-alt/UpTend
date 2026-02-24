@@ -14,16 +14,16 @@ import { Footer } from "@/components/landing/footer";
 import { useTranslation } from "react-i18next";
 
 const services = [
-  // 1. AI Home Scan (Featured)
+  // 1. Home DNA Scan (Featured)
   {
     id: "home_consultation",
-    name: "AI Home Scan",
-    jumpToLabel: "AI Home Scan",
+    name: "Home DNA Scan",
+    jumpToLabel: "Home DNA Scan",
     icon: ClipboardCheck,
     tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
-    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° Home Scan, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($249). $49 back on your next booking.",
+    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° Home DNA Scan, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($249). $49 back on your next booking.",
     price: "From $99",
-    includes: ["Smart room-by-room inventory", "360° Home Scan walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$150)", "$49 credit toward your next booking"],
+    includes: ["Smart room-by-room inventory", "360° Home DNA Scan walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$150)", "$49 credit toward your next booking"],
     featured: true,
     link: "/services/home-audit",
   },
@@ -47,9 +47,9 @@ const services = [
     jumpToLabel: "Junk Removal",
     icon: Recycle,
     tagline: "Space Rejuvenation. Verified Material Recovery.",
-    description: "Your unwanted items are resources. We recover your space, protect your property with a 360° Home Scan, and verify the environmental impact of every item through our circular economy system.",
+    description: "Your unwanted items are resources. We recover your space, protect your property with a 360° Home DNA Scan, and verify the environmental impact of every item through our circular economy system.",
     price: "From $99",
-    includes: ["360° Home Scan", "Verified Impact Report", "Circular economy sorting", "ESG compliance documentation"],
+    includes: ["360° Home DNA Scan", "Verified Impact Report", "Circular economy sorting", "ESG compliance documentation"],
     link: "/services/material-recovery",
     esgImpact: "Avg 600 lbs CO2 saved per job through recycling & donation",
   },
@@ -254,7 +254,7 @@ export default function Services() {
       </div>
 
       <section className="py-12 md:py-20 max-w-7xl mx-auto px-4 md:px-6" data-testid="section-services-grid">
-        {/* Featured: AI Home Scan */}
+        {/* Featured: Home DNA Scan */}
         {services.filter(s => s.featured).map((svc) => (
           <div key={svc.id} id={`service-${svc.id}`} className="mb-8">
             <Card
@@ -301,13 +301,19 @@ export default function Services() {
                   ))}
                 </ul>
 
+                <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4 flex-wrap">
+                  <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-green-600" /> Licensed & Insured</span>
+                  <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5 text-green-600" /> Guaranteed Pricing</span>
+                  <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-green-600" /> Background Checked</span>
+                </div>
+
                 <Button
                   size="lg"
                   className="w-full md:w-auto"
-                  onClick={() => setLocation(svc.link || `/services/${svc.id.replace(/_/g, '-')}`)}
+                  onClick={() => setLocation(`/book?service=${svc.id}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
-                  {t("services_page.learn_more")} <ArrowRight className="w-5 h-5 ml-2" />
+                  Book Now <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </CardContent>
             </Card>
@@ -365,12 +371,18 @@ export default function Services() {
                   ))}
                 </ul>
 
+                <div className="flex items-center gap-3 text-xs text-muted-foreground mb-4 flex-wrap">
+                  <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-green-600" /> Licensed & Insured</span>
+                  <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5 text-green-600" /> Guaranteed Pricing</span>
+                  <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-green-600" /> Background Checked</span>
+                </div>
+
                 <Button
                   className="w-full mt-auto"
-                  onClick={() => setLocation(svc.link || `/services/${svc.id.replace(/_/g, '-')}`)}
+                  onClick={() => setLocation(`/book?service=${svc.id}`)}
                   data-testid={`button-book-service-${svc.id}`}
                 >
-                  {t("services_page.learn_more")} <ArrowRight className="w-4 h-4 ml-2" />
+                  Book Now <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </CardContent>
             </Card>

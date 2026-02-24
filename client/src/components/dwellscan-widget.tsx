@@ -134,7 +134,7 @@ export function DwellScanWidget() {
             <div>
               <p className="font-semibold mb-1">How to increase your score:</p>
               <ul className="space-y-1.5 text-muted-foreground">
-                <li>📷 <strong>Book an AI Home Scan</strong> (+100-200 pts) — Get a professional assessment of your home's condition</li>
+                <li>📷 <strong>Book an Home DNA Scan</strong> (+100-200 pts) — Get a professional assessment of your home's condition</li>
                 <li>🔧 <strong>Complete maintenance services</strong> (+25-50 pts each) — Every completed job boosts your Maintenance score</li>
                 <li>📄 <strong>Upload home documents</strong> (+15-30 pts each) — Insurance policies, warranties, receipts, inspection reports</li>
                 <li>🛡️ <strong>Safety checks</strong> (+20-40 pts) — Smoke detectors, carbon monoxide, fire extinguishers verified</li>
@@ -145,7 +145,7 @@ export function DwellScanWidget() {
             <div>
               <p className="font-semibold mb-1">Score ranges:</p>
               <ul className="space-y-0.5 text-muted-foreground">
-                <li><strong>0–199:</strong> Not Yet Scored — Get started with a Home Scan!</li>
+                <li><strong>0–199:</strong> Not Yet Scored — Get started with a Home DNA Scan!</li>
                 <li><strong>200–549:</strong> Building — You're on your way</li>
                 <li><strong>550–649:</strong> Fair — Regular maintenance is paying off</li>
                 <li><strong>650–749:</strong> Good — Your home is well-maintained</li>

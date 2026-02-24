@@ -23,7 +23,7 @@ const WELCOME: ChatMessage = {
 };
 
 const QUICK_ACTIONS = [
-  '🏠 AI Home Scan',
+  '🏠 Home DNA Scan',
   '🗑 Junk Removal Quote',
   '🧹 Home Cleaning',
   '📦 Moving Help',

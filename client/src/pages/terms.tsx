@@ -34,7 +34,7 @@ export default function TermsPage() {
 <p>9. <strong>Pool Cleaning</strong> — Pool maintenance, chemical balancing, and equipment inspection</p>
 <p>10. <strong>Landscaping</strong> — Lawn care, garden maintenance, tree trimming, and landscape design</p>
 <p>11. <strong>Carpet Cleaning</strong> — Professional carpet, rug, and upholstery cleaning</p>
-<p>12. <strong>AI Home Scan</strong> — AI-assisted visual analysis of home conditions using photographs or drone-captured imagery (see Section 7)</p>
+<p>12. <strong>Home DNA Scan</strong> — AI-assisted visual analysis of home conditions using photographs or drone-captured imagery (see Section 7)</p>
 <p>13. <strong>General Home Consultation</strong> — Advisory consultations on home maintenance, improvement planning, and project scoping</p>
 
 <h3>1.3 Business-to-Business Services</h3>
@@ -43,7 +43,7 @@ export default function TermsPage() {
 
 <h3>1.4 AI-Powered Features</h3>
 
-<p>The Platform includes artificial intelligence features, including the Mr. George AI Assistant (powered by Anthropic Claude), photo and vision analysis (powered by OpenAI), DIY Coaching, and AI Home Scan. These features are described in detail in Sections 6 and 7.</p>
+<p>The Platform includes artificial intelligence features, including the Mr. George AI Assistant (powered by Anthropic Claude), photo and vision analysis (powered by OpenAI), DIY Coaching, and Home DNA Scan. These features are described in detail in Sections 6 and 7.</p>
 
 <h3>1.5 Platform Role</h3>
 
@@ -165,7 +165,7 @@ export default function TermsPage() {
 
 <h3>5.6 Drone Operators</h3>
 
-<p>Pros who perform AI Home Scan services using drones are independent contractors who hold current Federal Aviation Administration (FAA) Part 107 Remote Pilot Certificates. Drone operations are conducted in compliance with applicable FAA regulations. UpTend verifies Part 107 certification prior to authorizing drone-based scan services.</p>
+<p>Pros who perform Home DNA Scan services using drones are independent contractors who hold current Federal Aviation Administration (FAA) Part 107 Remote Pilot Certificates. Drone operations are conducted in compliance with applicable FAA regulations. UpTend verifies Part 107 certification prior to authorizing drone-based scan services.</p>
 
 <h2>6. AI Features — Mr. George AI Assistant</h2>
 
@@ -211,15 +211,15 @@ export default function TermsPage() {
 
 <p>Interactions with Mr. George, including questions, descriptions of home conditions, and photos submitted for analysis, may be used to improve the Platform's AI features, train our systems, and enhance the accuracy of estimates and recommendations. You may opt out of AI training data usage through your account settings. See our Privacy Policy for details.</p>
 
-<h2>7. AI Home Scan</h2>
+<h2>7. Home DNA Scan</h2>
 
-<h3>7.1 What AI Home Scan Is</h3>
+<h3>7.1 What Home DNA Scan Is</h3>
 
-<p>AI Home Scan uses artificial intelligence (powered by OpenAI's vision models) to analyze photographs of your home — submitted by you or captured by a drone operator — to identify potential maintenance needs, damage, or improvement opportunities.</p>
+<p>Home DNA Scan uses artificial intelligence (powered by OpenAI's vision models) to analyze photographs of your home — submitted by you or captured by a drone operator — to identify potential maintenance needs, damage, or improvement opportunities.</p>
 
-<h3>7.2 What AI Home Scan Is NOT</h3>
+<h3>7.2 What Home DNA Scan Is NOT</h3>
 
-<strong>AI Home Scan is NOT a home inspection.</strong> It is not performed by a licensed home inspector and does not constitute a home inspection under Florida law (Florida Statutes § 468.8311 et seq.) or the laws of any other state. AI Home Scan:
+<strong>Home DNA Scan is NOT a home inspection.</strong> It is not performed by a licensed home inspector and does not constitute a home inspection under Florida law (Florida Statutes § 468.8311 et seq.) or the laws of any other state. Home DNA Scan:
 
 <p>(a) Does not replace a professional home inspection;</p>
 <p>(b) Should not be relied upon for real estate transactions, insurance claims, or legal proceedings;</p>
@@ -229,7 +229,7 @@ export default function TermsPage() {
 
 <h3>7.3 Drone-Assisted Scans</h3>
 
-<p>Where AI Home Scan is performed using drone-captured imagery, the drone is operated by an independent contractor holding a current FAA Part 107 Remote Pilot Certificate. Drone scans are subject to weather conditions, airspace restrictions, and FAA regulations. UpTend does not guarantee the availability of drone scans in all areas.</p>
+<p>Where Home DNA Scan is performed using drone-captured imagery, the drone is operated by an independent contractor holding a current FAA Part 107 Remote Pilot Certificate. Drone scans are subject to weather conditions, airspace restrictions, and FAA regulations. UpTend does not guarantee the availability of drone scans in all areas.</p>
 
 <h2>8. Affiliate Links and Product Recommendations</h2>
 
@@ -491,7 +491,7 @@ export default function TermsPage() {
 <p>(b) <strong>Twilio</strong> — SMS and voice communications;</p>
 <p>(c) <strong>SendGrid</strong> — Email delivery;</p>
 <p>(d) <strong>Anthropic</strong> — Claude AI models powering Mr. George;</p>
-<p>(e) <strong>OpenAI</strong> — GPT and vision models for photo analysis and AI Home Scan;</p>
+<p>(e) <strong>OpenAI</strong> — GPT and vision models for photo analysis and Home DNA Scan;</p>
 <p>(f) <strong>Amazon Associates</strong> — Affiliate product links;</p>
 <p>(g) <strong>Checkr</strong> — Background check services (where applicable).</p>
 

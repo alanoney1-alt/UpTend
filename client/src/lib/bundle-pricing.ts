@@ -13,8 +13,8 @@ export interface ServiceTypeConfig {
 
 // Starting prices: Junk Removal $99 (min load), Garage Cleanout $299 (small), Truck Unloading $80/hr per Pro, Moving Labor $80/hr per Pro
 export const SERVICE_STARTING_PRICES: Record<string, number> = {
-  home_consultation: 99, // AI Home Scan Standard base price
-  home_consultation_aerial: 249, // AI Home Scan Aerial with drone
+  home_consultation: 99, // Home DNA Scan Standard base price
+  home_consultation_aerial: 249, // Home DNA Scan Aerial with drone
   handyman: 75, // Handyman Services $75/hr, 1hr minimum
   junk_removal: 99,
   garage_cleanout: 299,
@@ -30,7 +30,7 @@ export const SERVICE_STARTING_PRICES: Record<string, number> = {
   furniture_moving: 80,
 };
 
-// AI Home Scan service configuration with two tiers
+// Home DNA Scan service configuration with two tiers
 export interface DwellScanTier {
   id: string;
   name: string;
@@ -45,7 +45,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
   {
     id: "standard",
     name: "Standard",
-    brandedName: "AI Home Scan Standard",
+    brandedName: "Home DNA Scan Standard",
     price: 99,
     description: "Full interior and exterior walkthrough with personalized maintenance report.",
     features: [
@@ -60,7 +60,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
   {
     id: "aerial",
     name: "Aerial",
-    brandedName: "AI Home Scan Aerial",
+    brandedName: "Home DNA Scan Aerial",
     price: 249,
     description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan.",
     features: [
@@ -80,9 +80,9 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
 ];
 
 export const DWELLSCAN_SERVICE = {
-  branded: "AI Home Scan",
-  generic: "Home Scan",
-  display: "AI Home Scan",
+  branded: "Home DNA Scan",
+  generic: "Home DNA Scan",
+  display: "Home DNA Scan",
   slug: "/home-scan",
   startingPrice: 99,
   priceUnit: "flat",

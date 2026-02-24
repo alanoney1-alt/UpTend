@@ -255,7 +255,7 @@ You know this platform inside and out. When someone asks a question, give them a
 7. **Light Demolition** — Starting $199 flat.
 8. **Garage Cleanout** — Starting $299 flat.
 9. **Truck Unloading** — Starting $80/hr.
-10. **AI Home Scan** — $99 standard, $249 with drone. Includes $49 credit toward your next booking.
+10. **Home DNA Scan** — $99 standard, $249 with drone. Includes $49 credit toward your next booking.
 11. **Landscaping** — One-time mow from $49 (≤¼ acre) or $79 (≤½ acre). Yard cleanup $149–$299. Recurring: Mow & Go $99/mo (≤¼ acre), $149/mo (≤½ acre). Full Service $159–$219/mo. Premium $249–$329/mo.
 12. **Carpet Cleaning** — Standard Steam Clean $50/room, Deep Clean $75/room, Pet Treatment $89/room. Hallway $25, Stairs $25/flight. Scotchgard $20/room add-on. Whole house: 3BR/2BA $129, 4-5BR $215. $100 minimum charge.
 
@@ -646,7 +646,7 @@ function formatServiceType(type: string): string {
     junk_removal: "Junk Removal", home_cleaning: "Home Cleaning", pressure_washing: "Pressure Washing",
     gutter_cleaning: "Gutter Cleaning", moving_labor: "Moving Labor", handyman: "Handyman",
     light_demolition: "Light Demolition", garage_cleanout: "Garage Cleanout", truck_unloading: "Truck Unloading",
-    home_consultation: "AI Home Scan", pool_cleaning: "Pool Cleaning", landscaping: "Landscaping",
+    home_consultation: "Home DNA Scan", pool_cleaning: "Pool Cleaning", landscaping: "Landscaping",
     carpet_cleaning: "Carpet Cleaning", lawn_landscaping: "Lawn/Landscaping", house_cleaning: "House Cleaning",
   };
   return map[type] || type.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());

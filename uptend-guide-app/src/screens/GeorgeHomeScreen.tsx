@@ -36,7 +36,7 @@ const WELCOME: ChatMessage = {
 
 const ACTIONS = [
   { label: 'Need a Pro', icon: '→', msg: 'I need a pro right now' },
-  { label: 'Home Scan', icon: '⊙', msg: 'I want a home health check' },
+  { label: 'Home DNA Scan', icon: '⊙', msg: 'I want a home health check' },
   { label: 'Send Photo', icon: '◉', msg: '__photo__' },
   { label: 'DIY Help', icon: '⚡', msg: 'I want to fix it myself' },
 ];

@@ -27,7 +27,7 @@ const faqs = [
     a: "No preparation needed. Just ensure access to all rooms. The Pro handles everything with their own equipment.",
   },
   {
-    q: "How long does the Home Scan take?",
+    q: "How long does the Home DNA Scan take?",
     a: "A typical Home Scan takes about 30 minutes. Your Level 3 Consultant will conduct a thorough room-by-room assessment with full photo and video documentation.",
   },
   {
@@ -66,7 +66,7 @@ export default function HomeAudit() {
             </span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-10 leading-relaxed" data-testid="text-audit-subhead">
-            Every job on UpTend is tracked, every Pro is valued, and every impact is measured. Our Home Scan provides
+            Every job on UpTend is tracked, every Pro is valued, and every impact is measured. Our Home DNA Scan provides
             <strong className="text-foreground"> built-in accountability</strong> for your wallet, your home, and the environment.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
@@ -125,7 +125,7 @@ export default function HomeAudit() {
                 <Video className="text-primary dark:text-orange-400 w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-bold" data-testid="text-feature-video-manifest">360° Home Scan</h4>
+                <h4 className="font-bold" data-testid="text-feature-video-manifest">360° Home DNA Scan</h4>
                 <p className="text-sm text-muted-foreground">A high-definition visual record of every room, serial number, and finish.</p>
               </div>
             </div>
@@ -234,7 +234,7 @@ export default function HomeAudit() {
             <Badge variant="outline" className="mb-4 border-green-600 text-green-400" data-testid="badge-value-sustainability-baseline">Sustainability Baseline</Badge>
             <h2 className="text-3xl font-black mb-6 uppercase">Proven Sustainability.</h2>
             <p className="text-slate-400 mb-8">
-              We don&rsquo;t just talk green. We track it. Our Home Scan identifies efficiency leaks and disposal
+              We don&rsquo;t just talk green. We track it. Our Home DNA Scan identifies efficiency leaks and disposal
               opportunities, turning your residence into a verified participant in the circular economy.
               Pros build their <strong className="text-white">sustainability credentials</strong> while you build equity.
             </p>

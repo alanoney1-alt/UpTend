@@ -10,7 +10,7 @@
 | 2 | `GET /ai/home-scan` | 200 | **PASS** | <!DOCTYPE html> <html lang="en">   <head>     <meta charset="UTF-8" />     <meta name="viewport" con |
 | 3 | `POST /api/ai/chat` | 200 | **PASS** | {"success":true,"conversationId":null,"response":"Here are all the services we offer in the Orlando  |
 | 4 | `POST /api/ai/chat` | 200 | **PASS** | {"success":true,"conversationId":null,"response":"**Gutter cleaning starts at $150** for a 1-story h |
-| 5 | `POST /api/ai/chat` | 200 | **PASS** | {"success":true,"conversationId":null,"response":"Perfect! Here's why the Home Scan is such a game-c |
+| 5 | `POST /api/ai/chat` | 200 | **PASS** | {"success":true,"conversationId":null,"response":"Perfect! Here's why the Home DNA Scan is such a game-c |
 | 6 | `POST /api/ai/chat` | 200 | **PASS** | {"success":true,"conversationId":null,"response":"¡Hola! Te puedo ayudar con ese ruido extraño al  |
 | 7 | `GET /api/pricing` | 200 | **PASS** | {"baseRates":{"junk-removal":{"minimum":150,"perCubicYard":25,"laborRate":45},"debris-removal":{"min |
 | 8 | `GET /api/pricing/junk_removal` | 200 | **PASS** | {"success":true,"serviceType":"junk_removal","tiers":[{"sizeCategory":"small","scopeLevel":"standard |

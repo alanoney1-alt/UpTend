@@ -45,7 +45,7 @@ export const CUSTOMER_FLOWS = {
   },
 
   homeScan: {
-    name: "AI Home Scan",
+    name: "Home DNA Scan",
     tiers: {
       selfServe: {
         price: "FREE",
@@ -229,7 +229,7 @@ export const PRO_FLOWS = {
     programs: [
       { name: "B2B Property Management", time: "2-3 hrs", unlocks: "PM contract jobs ($800-2,000/mo)" },
       { name: "B2B HOA Services", time: "2-3 hrs", unlocks: "HOA contract jobs ($500-1,500/mo)" },
-      { name: "AI Home Scan Technician", time: "1.5 hrs", unlocks: "Home scan jobs ($45-60/job, 30-45 min)" },
+      { name: "Home DNA Scan Technician", time: "1.5 hrs", unlocks: "Home scan jobs ($45-60/job, 30-45 min)" },
       { name: "Parts & Materials Specialist", time: "1.5 hrs", unlocks: "Repair jobs requiring parts ($150-400 avg)" },
       { name: "Emergency Response", time: "2-3 hrs", unlocks: "Emergency dispatch at 2x payout" },
       { name: "Government Contract", time: "3-4 hrs", unlocks: "Government jobs ($300-1,000/job)", prereq: "B2B PM" },
@@ -398,7 +398,7 @@ export const SITE_PAGES = {
   "/": "Landing page — hero, services overview, CTA to book or scan",
   "/book": "Booking flow — pick service → details → schedule → confirm & pay",
   "/services": "All 13 services with pricing and descriptions",
-  "/ai": "AI hub — Home Scan, Photo Quote, Document OCR",
+  "/ai": "AI hub — Home DNA Scan, Photo Quote, Document OCR",
   "/ai/photo-quote": "Upload a photo → George analyzes → instant quote",
   "/ai/documents": "Upload a document → OCR extraction → organized info",
   "/marketplace": "Browse and search pros by service, rating, location",

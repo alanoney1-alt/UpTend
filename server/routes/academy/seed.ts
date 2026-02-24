@@ -41,10 +41,10 @@ export async function seedCertificationPrograms() {
     badgeColor: "#d97706",
   }).returning();
 
-  // 3. AI Home Scan Specialist
+  // 3. Home DNA Scan Specialist
   const [aiCert] = await db.insert(certificationPrograms).values({
-    name: "AI Home Scan Specialist",
-    slug: "ai-home-scan-specialist",
+    name: "Home DNA Scan Specialist",
+    slug: "home-dna-scan-specialist",
     description: "Learn UpTend's AI-powered home assessment methodology. Master photo documentation, condition reporting, and generating actionable maintenance plans for homeowners.",
     category: "specialty",
     requiredScore: 85,
@@ -582,7 +582,7 @@ Occasionally you may be asked to attend a board meeting to:
     },
   ]);
 
-  // AI Home Scan Modules
+  // Home DNA Scan Modules
   await db.insert(certificationModules).values([
     {
       certificationId: aiCert.id,
@@ -591,9 +591,9 @@ Occasionally you may be asked to attend a board meeting to:
       estimatedMinutes: 10,
       content: `# Home Assessment Methodology
 
-## What is an AI Home Scan?
+## What is an Home DNA Scan?
 
-UpTend's AI Home Scan is a comprehensive property assessment that uses your on-site expertise combined with AI analysis to generate actionable maintenance recommendations for homeowners.
+UpTend's Home DNA Scan is a comprehensive property assessment that uses your on-site expertise combined with AI analysis to generate actionable maintenance recommendations for homeowners.
 
 ## The Assessment Process
 
@@ -731,7 +731,7 @@ The UpTend app auto-tags photos, but add notes:
       estimatedMinutes: 10,
       content: `# Report Generation
 
-## The AI Home Scan Report
+## The Home DNA Scan Report
 
 After your assessment, UpTend's AI combines your photos, notes, and scores to generate a comprehensive maintenance report. Your input quality directly determines report quality.
 
@@ -788,7 +788,7 @@ Your assessments are rated by:
 - **Timeliness**: Assessment submitted within 24 hours of visit
 - **Customer Feedback**: Homeowner satisfaction with the assessment
 
-Maintaining a 4.5+ quality score keeps you eligible for premium AI Home Scan assignments.`,
+Maintaining a 4.5+ quality score keeps you eligible for premium Home DNA Scan assignments.`,
     },
   ]);
 
@@ -1716,12 +1716,12 @@ OSHA requires reporting:
     },
   ]);
 
-  // AI Home Scan Questions (7 questions)
+  // Home DNA Scan Questions (7 questions)
   await db.insert(certificationQuestions).values([
     {
       certificationId: aiCert.id,
       moduleNumber: 1,
-      question: "What is the correct inspection order for an AI Home Scan?",
+      question: "What is the correct inspection order for an Home DNA Scan?",
       optionA: "Interior → Systems → Exterior",
       optionB: "Systems → Exterior → Interior",
       optionC: "Exterior → Interior → Systems",
@@ -1743,13 +1743,13 @@ OSHA requires reporting:
     {
       certificationId: aiCert.id,
       moduleNumber: 2,
-      question: "What is the minimum number of photos required for a complete AI Home Scan?",
+      question: "What is the minimum number of photos required for a complete Home DNA Scan?",
       optionA: "10-15 photos",
       optionB: "20-25 photos",
       optionC: "35-50 photos",
       optionD: "100+ photos",
       correctOption: "c",
-      explanation: "A complete AI Home Scan requires a minimum of 35-50 photos: at least 15 exterior, 15 interior, plus additional issue documentation photos.",
+      explanation: "A complete Home DNA Scan requires a minimum of 35-50 photos: at least 15 exterior, 15 interior, plus additional issue documentation photos.",
     },
     {
       certificationId: aiCert.id,
@@ -1765,18 +1765,18 @@ OSHA requires reporting:
     {
       certificationId: aiCert.id,
       moduleNumber: 3,
-      question: "What quality score must you maintain to remain eligible for premium AI Home Scan assignments?",
+      question: "What quality score must you maintain to remain eligible for premium Home DNA Scan assignments?",
       optionA: "3.0+",
       optionB: "3.5+",
       optionC: "4.0+",
       optionD: "4.5+",
       correctOption: "d",
-      explanation: "A quality score of 4.5+ is required to remain eligible for premium AI Home Scan assignments.",
+      explanation: "A quality score of 4.5+ is required to remain eligible for premium Home DNA Scan assignments.",
     },
     {
       certificationId: aiCert.id,
       moduleNumber: 3,
-      question: "When should you submit your AI Home Scan assessment after the site visit?",
+      question: "When should you submit your Home DNA Scan assessment after the site visit?",
       optionA: "Within 1 hour",
       optionB: "Within 24 hours",
       optionC: "Within 48 hours",

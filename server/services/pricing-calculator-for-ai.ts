@@ -151,22 +151,22 @@ export function calculateDwellScanPriceForAI(params: {
   proModel?: 'two_pro' | 'one_pro'; // Only for aerial
 }): {
   customerPrice: number;
-  proPayout: number; // $50 FLAT for all AI Home Scan tiers
+  proPayout: number; // $50 FLAT for all Home DNA Scan tiers
   description: string;
 } {
   if (params.tier === 'standard') {
     return {
       customerPrice: 99,
-      proPayout: 50, // $50 FLAT payout for ALL AI Home Scan tiers
-      description: 'AI Home Scan Standard - Full interior + exterior ground-level walkthrough with maintenance report',
+      proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers
+      description: 'Home DNA Scan Standard - Full interior + exterior ground-level walkthrough with maintenance report',
     };
   }
 
   // Aerial tier - $50 FLAT payout regardless of pro model
   return {
     customerPrice: 249,
-    proPayout: 50, // $50 FLAT payout for ALL AI Home Scan tiers
-    description: 'AI Home Scan Aerial - Full walkthrough + drone flyover',
+    proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers
+    description: 'Home DNA Scan Aerial - Full walkthrough + drone flyover',
   };
 }
 

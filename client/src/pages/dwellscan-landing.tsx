@@ -1,5 +1,5 @@
 /**
- * AI Home Scan SEO Landing Page
+ * Home DNA Scan SEO Landing Page
  *
  * Optimized for:
  * - "home inspection Orlando"
@@ -47,7 +47,7 @@ export default function DwellScanLanding() {
             #1 Home Scan Service in Orlando
           </Badge>
           <h1 className="text-5xl md:text-6xl font-black mb-6">
-            AI Home Scan
+            Home DNA Scan
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-3xl mx-auto">
             Know your home inside out. Complete walkthrough with personalized maintenance
@@ -78,7 +78,7 @@ export default function DwellScanLanding() {
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Choose Your AI Home Scan</h2>
+            <h2 className="text-4xl font-bold mb-4">Choose Your Home DNA Scan</h2>
             <p className="text-lg text-muted-foreground">
               Both options include a $49 credit toward your next UpTend service
             </p>
@@ -92,7 +92,7 @@ export default function DwellScanLanding() {
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                     <Home className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">AI Home Scan Standard</h3>
+                  <h3 className="text-2xl font-bold mb-2">Home DNA Scan Standard</h3>
                   <p className="text-4xl font-black text-primary mb-2">$99</p>
                   <p className="text-sm text-muted-foreground">
                     {dwellScan.tiers.standard.description}
@@ -140,7 +140,7 @@ export default function DwellScanLanding() {
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
                     <Plane className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">AI Home Scan Aerial</h3>
+                  <h3 className="text-2xl font-bold mb-2">Home DNA Scan Aerial</h3>
                   <p className="text-4xl font-black text-blue-600 mb-2">$249</p>
                   <p className="text-sm text-muted-foreground">
                     {dwellScan.tiers.aerial.description}
@@ -204,7 +204,7 @@ export default function DwellScanLanding() {
                 </h3>
                 <p className="text-green-800 dark:text-green-200">
                   Use your $49 credit toward any UpTend service within 90 days. That means
-                  AI Home Scan Standard is effectively just <strong>$50</strong> when you book a
+                  Home DNA Scan Standard is effectively just <strong>$50</strong> when you book a
                   follow-up service, and Aerial is effectively just $200 for a drone inspection
                   worth $290+.
                 </p>
@@ -218,7 +218,7 @@ export default function DwellScanLanding() {
       <section className="py-20 px-6 bg-muted/50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12">
-            Why Choose AI Home Scan?
+            Why Choose Home DNA Scan?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <Card>
@@ -286,9 +286,9 @@ export default function DwellScanLanding() {
 
           <h3 className="text-2xl font-bold mb-4">Trusted by Orlando Homeowners</h3>
           <p className="text-muted-foreground mb-8">
-            AI Home Scan helps homeowners protect their biggest investment with verified,
+            Home DNA Scan helps homeowners protect their biggest investment with verified,
             documented maintenance insights. Whether you're buying, selling, renting, or just
-            want to know what your home needs, AI Home Scan gives you the clarity you deserve.
+            want to know what your home needs, Home DNA Scan gives you the clarity you deserve.
           </p>
         </div>
       </section>
@@ -298,7 +298,7 @@ export default function DwellScanLanding() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to Know Your Home?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Book your AI Home Scan today. Most homes can be scanned within 48 hours.
+            Book your Home DNA Scan today. Most homes can be scanned within 48 hours.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button
@@ -326,26 +326,26 @@ export default function DwellScanLanding() {
       {/* SEO Content */}
       <section className="py-16 px-6 bg-muted/30">
         <div className="max-w-4xl mx-auto prose prose-sm dark:prose-invert">
-          <h2>AI Home Scan Service in Orlando, Florida</h2>
+          <h2>Home DNA Scan Service in Orlando, Florida</h2>
           <p>
-            AI Home Scan is UpTend's comprehensive home inspection and audit service designed
+            Home DNA Scan is UpTend's comprehensive home inspection and audit service designed
             specifically for Central Florida homeowners. Unlike traditional home inspections that
-            focus solely on pre-purchase assessments, AI Home Scan provides ongoing home health
+            focus solely on pre-purchase assessments, Home DNA Scan provides ongoing home health
             monitoring for existing homeowners, renters, landlords, and property managers.
           </p>
 
-          <h3>What is included in AI Home Scan Standard?</h3>
+          <h3>What is included in Home DNA Scan Standard?</h3>
           <p>
-            AI Home Scan Standard ($99) includes a complete interior and exterior ground-level
+            Home DNA Scan Standard ($99) includes a complete interior and exterior ground-level
             walkthrough of your property. Our verified Pro will photograph and document every room,
             assess major systems (HVAC, water heater, electrical panel, plumbing), check your
             foundation and exterior for visible issues, and provide a personalized maintenance
             report with priority rankings.
           </p>
 
-          <h3>What makes AI Home Scan Aerial different?</h3>
+          <h3>What makes Home DNA Scan Aerial different?</h3>
           <p>
-            AI Home Scan Aerial adds a FAA Part 107 certified drone flyover to capture aerial
+            Home DNA Scan Aerial adds a FAA Part 107 certified drone flyover to capture aerial
             roof condition scans, gutter blockage estimates, chimney and vent inspections, tree
             overhang proximity assessments, and property drainage overviews. Standalone drone roof
             inspections typically cost $290-$350 in the Orlando market, making Aerial an incredible
@@ -354,23 +354,23 @@ export default function DwellScanLanding() {
 
           <h3>Do I really get a $49 credit?</h3>
           <p>
-            Yes! Every AI Home Scan (Standard or Aerial) includes a $49 credit toward any UpTend
-            service booked within 90 days. This means AI Home Scan Standard is essentially free when
+            Yes! Every Home DNA Scan (Standard or Aerial) includes a $49 credit toward any UpTend
+            service booked within 90 days. This means Home DNA Scan Standard is essentially free when
             you book a follow-up service like junk removal, home cleaning, or pressure washing.
           </p>
 
           <h3>Who performs the inspection?</h3>
           <p>
-            All AI Home Scan Standard inspections are performed by UpTend's verified Pros who are
-            background-checked and insured. AI Home Scan Aerial inspections are performed by FAA Part
+            All Home DNA Scan Standard inspections are performed by UpTend's verified Pros who are
+            background-checked and insured. Home DNA Scan Aerial inspections are performed by FAA Part
             107 certified drone pilots with additional walkthrough training. We do not subcontract
             — all Pros are directly vetted by UpTend.
           </p>
 
-          <h3>How is AI Home Scan different from a traditional home inspection?</h3>
+          <h3>How is Home DNA Scan different from a traditional home inspection?</h3>
           <p>
             Traditional home inspections ($300-$500) are designed for pre-purchase due diligence
-            and focus on major structural and system defects. AI Home Scan is designed for ongoing
+            and focus on major structural and system defects. Home DNA Scan is designed for ongoing
             home maintenance and includes actionable recommendations with one-tap booking for
             services. We're focused on preventative maintenance, not just defect identification.
           </p>

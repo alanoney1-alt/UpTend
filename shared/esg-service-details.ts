@@ -413,7 +413,7 @@ export const esgServiceTemplates: Record<EsgServiceType, { label: string; releva
     ],
   },
   ai_home_scan: {
-    label: "AI Home Scan",
+    label: "Home DNA Scan",
     relevantFields: [
       "scanEnergyEfficiencyFlags",
       "scanAgingApplianceCount",

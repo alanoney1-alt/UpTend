@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-UpTend is launching a home services marketplace in Lake Nona, FL — one of the most affluent, tech-forward planned communities in America. Our AI assistant "George" is the primary UX: customers talk to George, George handles everything. The AI Home Scan is our free viral hook — scan your home, get $25 in credits, and George tells you what your home needs.
+UpTend is launching a home services marketplace in Lake Nona, FL — one of the most affluent, tech-forward planned communities in America. Our AI assistant "George" is the primary UX: customers talk to George, George handles everything. The Home DNA Scan is our free viral hook — scan your home, get $25 in credits, and George tells you what your home needs.
 
 **The goal:** 100 paying customers and 20 active pros in 90 days.
 
@@ -65,7 +65,7 @@ Lake Nona residents with $50K+ vehicles who want mobile detailing, maintenance c
 **Tactics:**
 - Identify the top 5 HOAs by size: Laureate Park (~3,500 homes), Village Walk, Northlake Park, Storey Park, Moss Park
 - Attend board meetings (most are monthly, open to residents and vendors)
-- Offer: "Free AI Home Scan for all residents" + $25 credit per household
+- Offer: "Free Home DNA Scan for all residents" + $25 credit per household
 - Propose: UpTend as preferred vendor for common area maintenance (pressure washing, landscaping, pool)
 - Create HOA-specific landing page: `uptendapp.com/lakenona/[hoa-name]`
 - Offer HOA board members 3 free services as trial
@@ -79,7 +79,7 @@ Lake Nona residents with $50K+ vehicles who want mobile detailing, maintenance c
 - Create UpTend business page on Nextdoor
 - Monitor and respond to every home service request in Lake Nona neighborhoods
 - Post 2x/week: before/after photos, George demo clips, customer testimonials
-- Run Nextdoor Local Deals: "Free AI Home Scan — see what your home needs" ($50–$100/mo)
+- Run Nextdoor Local Deals: "Free Home DNA Scan — see what your home needs" ($50–$100/mo)
 - Engage authentically in community threads (not salesy)
 
 **Expected yield:** 15–25 customers in first 90 days
@@ -115,13 +115,13 @@ Lake Nona residents with $50K+ vehicles who want mobile detailing, maintenance c
 **Tactics:**
 - Target: 32827 zip code + 5-mile radius, homeowners, HHI $100K+, age 28–60
 - Ad types:
-  - **Hook ad:** "Lake Nona homeowners: scan your home with AI, get $25 free" (drive to Home Scan)
+  - **Hook ad:** "Lake Nona homeowners: scan your home with AI, get $25 free" (drive to Home DNA Scan)
   - **Before/after carousel:** pressure washing, junk removal transformations
   - **George demo video:** 30-sec screen recording of booking through George
   - **Social proof:** customer testimonial clips
 - Budget: $30–$50/day initially
-- Retarget website visitors and Home Scan users who didn't convert
-- A/B test: AI Home Scan CTA vs direct booking CTA
+- Retarget website visitors and Home DNA Scan users who didn't convert
+- A/B test: Home DNA Scan CTA vs direct booking CTA
 
 **Expected yield:** 15–30 customers in first 90 days at $25–$35 CAC
 
@@ -146,7 +146,7 @@ Lake Nona residents with $50K+ vehicles who want mobile detailing, maintenance c
 **Why:** Lake Nona has constant community events. Physical presence builds trust in a new brand.
 
 **Tactics:**
-- **Lake Nona Farmers Market** (Saturdays) — booth with live George demos, free Home Scans on iPads ($200/weekend for booth)
+- **Lake Nona Farmers Market** (Saturdays) — booth with live George demos, free Home DNA Scans on iPads ($200/weekend for booth)
 - **Boxi Park events** — sponsor a trivia night or live music event ($500–$1,000)
 - **Lake Nona Impact Forum** — if timing aligns, get a demo slot
 - **Kids' sports leagues** — sponsor a team ($250–$500), banner + flyers to parents
@@ -235,7 +235,7 @@ Lake Nona residents with $50K+ vehicles who want mobile detailing, maintenance c
 
 | Task | Owner | Status |
 |------|-------|--------|
-| AI Home Scan live and tested | Engineering | |
+| Home DNA Scan live and tested | Engineering | |
 | George booking flow live for top 5 verticals | Engineering | |
 | Landing pages for Lake Nona + top 5 services | Marketing | |
 | Referral program built into George | Engineering | |
@@ -255,12 +255,12 @@ Lake Nona residents with $50K+ vehicles who want mobile detailing, maintenance c
 - [ ] Each free service → professional before/after photos + video
 - [ ] Ask each for honest review (Google, Nextdoor) and 3 referrals
 - [ ] Post first Nextdoor content: "Hey Lake Nona! We just launched..."
-- [ ] Launch AI Home Scan with $25 credit incentive
+- [ ] Launch Home DNA Scan with $25 credit incentive
 - **Target: 10 customers (mostly free/subsidized)**
 
 **Week 2: Expand the Circle**
 - [ ] 10 free service recipients refer friends → follow up personally
-- [ ] First Facebook/Instagram ads go live ($30/day, Home Scan CTA)
+- [ ] First Facebook/Instagram ads go live ($30/day, Home DNA Scan CTA)
 - [ ] Attend first HOA board meeting (Laureate Park)
 - [ ] Post before/after content from Week 1 services
 - [ ] First TikTok/Reel: pressure washing transformation
@@ -272,13 +272,13 @@ Lake Nona residents with $50K+ vehicles who want mobile detailing, maintenance c
 - [ ] Second HOA meeting (Village Walk or Storey Park)
 - [ ] Referral program generating organic signups
 - [ ] First Lake Nona Farmers Market booth
-- [ ] Email/SMS follow-up to all Home Scan users who haven't booked
+- [ ] Email/SMS follow-up to all Home DNA Scan users who haven't booked
 - **Target: +7 customers (25 cumulative)**
 
 **Week 4: Optimize & Double Down**
 - [ ] Analyze: which channel produced best customers? Double spend there.
 - [ ] Kill or pause underperforming channels
-- [ ] George sends re-engagement messages to Home Scan users
+- [ ] George sends re-engagement messages to Home DNA Scan users
 - [ ] Second farmers market booth
 - [ ] Collect and publish first 5 Google reviews
 - **Target: Hold at 25, focus on quality and retention**
@@ -401,9 +401,9 @@ Lake Nona residents with $50K+ vehicles who want mobile detailing, maintenance c
 
 George isn't just the product — George is the growth loop.
 
-### 6.1 AI Home Scan Virality
+### 6.1 Home DNA Scan Virality
 
-The Home Scan is our Trojan horse. It's free, it's novel, and it creates demand.
+The Home DNA Scan is our Trojan horse. It's free, it's novel, and it creates demand.
 
 **Flow:**
 1. Customer uploads photos of their home (exterior + interior)
@@ -417,7 +417,7 @@ The Home Scan is our Trojan horse. It's free, it's novel, and it creates demand.
 - **Social proof prompt:** After scan, George says: *"Want to share your Home Health Score? Send this link to neighbors — they get a free scan and $25, you get $25."*
 - **Seasonal triggers:** George emails/texts: *"Hurricane season is coming. Your home scan showed your gutters need attention. Want to get ahead of it?"*
 
-**Target:** 500 Home Scans in 90 days → 100 convert to paying customers (20% conversion)
+**Target:** 500 Home DNA Scans in 90 days → 100 convert to paying customers (20% conversion)
 
 ### 6.2 Referral Prompts (Built into George)
 
@@ -447,7 +447,7 @@ George doesn't just wait for referrals — George creates referral moments:
 ### Content Pillars
 
 1. **Transformations** (40%) — Before/after photos and videos. This is the money content.
-2. **George in Action** (25%) — Screen recordings of booking through George, AI Home Scan demos
+2. **George in Action** (25%) — Screen recordings of booking through George, Home DNA Scan demos
 3. **Lake Nona Community** (20%) — Local content, partnerships, events, neighborhood spotlights
 4. **Home Tips & Education** (15%) — Seasonal maintenance guides, cost comparisons, DIY vs. pro advice
 
@@ -461,7 +461,7 @@ George doesn't just wait for referrals — George creates referral moments:
 | **Nextdoor** | 2–3x/week | Helpful responses, before/after, offers | Local trust |
 | **Google Business** | 2x/week | Posts, photos, offers | SEO + trust |
 | **YouTube** | 1x/week | Long-form: "We transformed this Lake Nona home", George tutorials | SEO + authority |
-| **Email/SMS** | 1x/week | Seasonal tips, special offers, Home Scan nudges | Retention + reactivation |
+| **Email/SMS** | 1x/week | Seasonal tips, special offers, Home DNA Scan nudges | Retention + reactivation |
 
 ### Content Calendar (Sample Week)
 
@@ -480,7 +480,7 @@ George doesn't just wait for referrals — George creates referral moments:
 - **Weeks 1–4:** Alan + team create all content (phone camera is fine)
 - **Weeks 5–8:** Hire part-time content creator ($500–$1,000/mo) or trade services for content
 - **Weeks 9+:** Pros create content (train them to take before/after photos/videos at every job)
-- **Ongoing:** User-generated content from Home Scans and referrals
+- **Ongoing:** User-generated content from Home DNA Scans and referrals
 
 ---
 
@@ -544,8 +544,8 @@ George doesn't just wait for referrals — George creates referral moments:
 | **Total customers** | 10 | 25 | 60 | 100 |
 | **Active pros** | 5 | 10 | 15 | 20 |
 | **Jobs completed** | 10 | 40 | 120 | 250 |
-| **AI Home Scans** | 30 | 100 | 300 | 500 |
-| **Home Scan → Booking %** | 20% | 22% | 25% | 25% |
+| **Home DNA Scans** | 30 | 100 | 300 | 500 |
+| **Home DNA Scan → Booking %** | 20% | 22% | 25% | 25% |
 | **Google reviews** | 3 | 10 | 25 | 50 |
 | **Blended CAC** | $50* | $80* | $45 | $30 |
 | **Avg order value** | $150 | $175 | $180 | $200 |
@@ -567,7 +567,7 @@ George doesn't just wait for referrals — George creates referral moments:
 | 10+ Google reviews (4.5+ avg) | Week 6 | |
 | Positive unit economics proven | Week 8 | LTV > 3× CAC |
 | 50 customers | Week 8 | |
-| 100 AI Home Scans completed | Week 8 | |
+| 100 Home DNA Scans completed | Week 8 | |
 | First repeat customer | Week 6 | |
 | 100 customers | Week 12 | 🎯 |
 | 20 pros active | Week 12 | 🎯 |
@@ -583,7 +583,7 @@ These are the numbers that close the $1M round:
 - **25%+ referral rate** — proves virality / product-market fit
 - **$30 blended CAC, $300+ LTV** — proves economics
 - **50+ Google reviews, 4.7+ average** — proves quality
-- **20% Home Scan → Booking conversion** — proves the AI funnel works
+- **20% Home DNA Scan → Booking conversion** — proves the AI funnel works
 
 ---
 
@@ -605,7 +605,7 @@ These are the numbers that close the $1M round:
 **1. George — The AI Home Manager**
 Nobody else has this. Thumbtack makes you search, compare, and message 5 pros. George handles everything in one conversation. This is the iPhone vs. flip phone moment for home services.
 
-**2. AI Home Scan — Free Value First**
+**2. Home DNA Scan — Free Value First**
 Competitors charge from the first interaction. UpTend gives you a free home assessment and credits before you spend a dollar. This inverts the funnel.
 
 **3. One Platform, Every Service**
@@ -673,7 +673,7 @@ Every competitor waits for you to have a problem. George tells you about problem
 
 **Wedge:** Lake Nona — 30K residents, $120K+ HHI, tech-forward, tight community. Perfect petri dish.
 
-**Product:** George (AI assistant) + 13 service verticals + AI Home Scan (free viral hook).
+**Product:** George (AI assistant) + 13 service verticals + Home DNA Scan (free viral hook).
 
 **Traction target (90 days):** 100 customers, 20 pros, $15K/mo GMV, 35% repeat rate.
 

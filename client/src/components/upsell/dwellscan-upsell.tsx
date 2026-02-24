@@ -1,10 +1,10 @@
 /**
- * AI Home Scan Upsell Component
+ * Home DNA Scan Upsell Component
  *
- * Shows after service completion to encourage customers to book AI Home Scan
+ * Shows after service completion to encourage customers to book Home DNA Scan
  * Two variants:
- * 1. After AI Home Scan Standard - upgrade to Aerial
- * 2. After any other service - book AI Home Scan
+ * 1. After Home DNA Scan Standard - upgrade to Aerial
+ * 2. After any other service - book Home DNA Scan
  *
  * Highlights the $49 credit benefit
  */
@@ -40,7 +40,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <div>
                 <CardTitle className="text-xl">Want to See Your Roof?</CardTitle>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Upgrade to AI Home Scan Aerial
+                  Upgrade to Home DNA Scan Aerial
                 </p>
               </div>
             </div>
@@ -144,7 +144,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
             <div className="flex items-center gap-2 mb-2">
               <Home className="w-5 h-5 text-primary" />
               <div>
-                <p className="font-semibold">AI Home Scan Standard</p>
+                <p className="font-semibold">Home DNA Scan Standard</p>
                 <p className="text-2xl font-bold text-primary">$99</p>
               </div>
             </div>
@@ -169,7 +169,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
             <div className="flex items-center gap-2 mb-2">
               <Plane className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="font-semibold">AI Home Scan Aerial</p>
+                <p className="font-semibold">Home DNA Scan Aerial</p>
                 <p className="text-2xl font-bold text-blue-600">$249</p>
               </div>
             </div>

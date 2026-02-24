@@ -71,7 +71,7 @@ export const CROSS_SELL_MATRIX: Record<string, CrossSellSuggestion> = {
     serviceId: "home_consultation",
     suggestedService: "audit_recommendations",
     headline: "Book recommended services from your audit",
-    description: "After your AI Home Scan, we'll recommend specific services based on what we find.",
+    description: "After your Home DNA Scan, we'll recommend specific services based on what we find.",
   },
 };
 

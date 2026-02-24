@@ -168,7 +168,7 @@ All pages loaded within 2-3 seconds. No obvious performance issues.
 | Pro tools | ✅ Dashboard with 12 sections | Basic task management |
 
 ### What UpTend Does BETTER Than All of Them
-1. **Home Intelligence Platform** — No competitor has anything close to the AI Home Scan, Home Health Record, impact tracking, or "Carfax for houses" concept
+1. **Home Intelligence Platform** — No competitor has anything close to the Home DNA Scan, Home Health Record, impact tracking, or "Carfax for houses" concept
 2. **George AI** — A genuinely useful AI assistant with real pricing, real YouTube videos, photo diagnosis, and DIY coaching. This is a moat.
 3. **Pro Economics** — 80% revenue share with zero lead fees is category-best. This will attract the best pros.
 4. **Documentation** — 360° video verification, before/after photos, timestamped records. This is institutional-grade.

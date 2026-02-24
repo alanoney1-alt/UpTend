@@ -275,7 +275,7 @@ export function AiChatWidget() {
     : [
         { text: "🚀 Need a Pro Now", action: "reply:I need to book a service" },
         { text: "🔧 DIY Help", action: "reply:I want to try fixing something myself" },
-        { text: "📸 Free Home Scan", action: "reply:Tell me about the free Home Scan" },
+        { text: "📸 Free Home DNA Scan", action: "reply:Tell me about the free Home DNA Scan" },
         { text: "🚗 Car Help", action: "reply:I need help with my car" },
       ];
 

@@ -13,7 +13,7 @@ export const PRICING_CONSTANTS = {
 
   DEMO_BASE_RATE: 19900, // $199 starting (Light Demolition)
 
-  CONSULTATION_FEE: 9900, // $99 (AI Home Scan Standard)
+  CONSULTATION_FEE: 9900, // $99 (Home DNA Scan Standard)
 
   // Pool Cleaning (PoolSpark) tiers
   POOL_BASIC: 12000,       // $120/mo — Weekly chemicals + skim surface + empty baskets
@@ -157,7 +157,7 @@ export function getServiceLabel(type: string): string {
     pressure_washing: "Pressure Washing",
     gutter_cleaning: "Gutter Cleaning",
     light_demolition: "Light Demolition",
-    home_consultation: "AI Home Scan",
+    home_consultation: "Home DNA Scan",
     pool_cleaning: "Pool Cleaning",
     landscaping: "Landscaping",
     carpet_cleaning: "Carpet Cleaning",

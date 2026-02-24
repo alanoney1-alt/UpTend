@@ -60,7 +60,7 @@ Field is `message` (string), not `messages` (array).
 | GET /api/diy/hvac | 200 | ✅ PASS | "Change Your HVAC Filter" — step-by-step guide |
 | GET /api/diy/electrical | 200 | ✅ PASS | "Replace a Light Switch" — step-by-step guide |
 
-### 3. Home Scan — 2/2 ✅
+### 3. Home DNA Scan — 2/2 ✅
 
 | Test | HTTP | Status | Notes |
 |------|------|--------|-------|

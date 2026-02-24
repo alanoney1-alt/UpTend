@@ -127,7 +127,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (page === "/services" || page.startsWith("/services/")) {
     return {
-      welcome: `Hey! 😊 I'm Mr. George — glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full home scans — and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine — just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! 👇`,
+      welcome: `Hey! 😊 I'm Mr. George — glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full Home DNA Scans — and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine — just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! 👇`,
       quickActions: [],
     };
   }
@@ -609,7 +609,7 @@ export function UpTendGuide() {
   // Keep ref in sync for voice auto-send
   useEffect(() => { sendMessageRef.current = sendMessage; }, [sendMessage]);
 
-  // Listen for george:open events (e.g. from AI Home Scan page)
+  // Listen for george:open events (e.g. from Home DNA Scan page)
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail;

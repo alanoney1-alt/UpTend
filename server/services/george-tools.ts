@@ -530,7 +530,7 @@ export function calculateQuote(serviceId: string, selections: any): object {
       if (!tierData) return { serviceId, error: "Invalid tier" };
       return {
         serviceId,
-        serviceName: "AI Home Scan",
+        serviceName: "Home DNA Scan",
         tier,
         totalPrice: tierData.price,
         serviceCredit: DWELLSCAN_SERVICE_CREDIT,
@@ -946,7 +946,7 @@ export async function getCertificationPrograms(proId?: string): Promise<object> 
     },
     {
       id: "home_scan_tech",
-      name: "AI Home Scan Technician",
+      name: "Home DNA Scan Technician",
       description: "Conduct in-person home scans — document appliances, systems, and condition for AI analysis",
       modules: 3,
       timeEstimate: "1.5 hours",
@@ -1045,7 +1045,7 @@ export async function startCertificationModule(proId: string, certId: string, mo
     home_scan_tech: [
       {
         title: "Photo Documentation Standards",
-        content: `Welcome to Home Scan Technician training! 📸
+        content: `Welcome to Home DNA Scan Technician training! 📸
 
 In this module, you'll learn how to photograph homes for AI analysis.
 
@@ -1108,7 +1108,7 @@ REPLACEMENT URGENCY SCORING:
         content: `Final module — putting it all together! 📋
 
 SCAN WORKFLOW:
-1. Introduce yourself: "Hi, I'm [name] from UpTend. I'm here for your free Home Scan."
+1. Introduce yourself: "Hi, I'm [name] from UpTend. I'm here for your free Home DNA Scan."
 2. Start with exterior: roof, siding, foundation, gutters, landscape
 3. Move inside systematically: room by room, don't skip any
 4. Kitchen & bathrooms get extra attention (most expensive systems)
@@ -2013,7 +2013,7 @@ export async function getSmartHomeStatus(userId: string, storage?: any): Promise
 }
 
 // ─────────────────────────────────────────────
-// dd) Self-Serve AI Home Scan Tools
+// dd) Self-Serve Home DNA Scan Tools
 // ─────────────────────────────────────────────
 
 import { analyzeImages } from "./ai/openai-vision-client";
@@ -2050,7 +2050,7 @@ export async function startHomeScan(customerId: string): Promise<object> {
     return {
       success: true,
       session: rows[0],
-      instructions: `🏠 Home Scan started! Walk through each room and take photos of your appliances. You'll earn $${SCAN_CREDIT_PER_ITEM} for each item scanned, plus a $${SCAN_COMPLETION_BONUS} bonus when you complete at least ${SCAN_MIN_ITEMS} items!`,
+      instructions: `🏠 Home DNA Scan started! Walk through each room and take photos of your appliances. You'll earn $${SCAN_CREDIT_PER_ITEM} for each item scanned, plus a $${SCAN_COMPLETION_BONUS} bonus when you complete at least ${SCAN_MIN_ITEMS} items!`,
       suggestedRooms: SCAN_ROOM_BADGES,
       estimatedItems: SCAN_ESTIMATED_TOTAL,
     };
@@ -2413,7 +2413,7 @@ export function getStormPrepChecklist(homeType: string, location: string): objec
       tasks: [
         { task: "Photograph all exterior surfaces before the storm", bookable: false, urgency: "critical" },
         { task: "Save all recent service receipts in one place", bookable: false, urgency: "high" },
-        { task: "Run AI Home Scan to document pre-storm condition", bookable: true, serviceId: "home_scan", urgency: "high" },
+        { task: "Run Home DNA Scan to document pre-storm condition", bookable: true, serviceId: "home_scan", urgency: "high" },
       ],
     },
   ];
@@ -5867,7 +5867,7 @@ export async function sendEmailToCustomer(
   const typeTemplates: Record<string, string> = {
     quote: `<p style="color: #4b5563;">Here's your personalized quote from UpTend:</p><div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 20px 0;">${customMessage || 'Your quote details will appear here.'}</div><p style="color: #4b5563;">Ready to book? Reply to this email or open the UpTend app!</p>`,
     booking: `<p style="color: #4b5563;">Great news — your booking is confirmed! 🎉</p><div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">${customMessage || 'Your booking details.'}</div><p style="color: #4b5563;">You'll receive updates as your pro heads your way.</p>`,
-    scan_results: `<p style="color: #4b5563;">Your AI Home Scan results are ready! 🏠</p><div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">${customMessage || 'Your home scan analysis.'}</div>`,
+    scan_results: `<p style="color: #4b5563;">Your Home DNA Scan results are ready! 🏠</p><div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">${customMessage || 'Your home scan analysis.'}</div>`,
     receipt: `<p style="color: #4b5563;">Here's your spending summary:</p><div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 20px 0;">${customMessage || 'Your receipt details.'}</div>`,
     referral: `<p style="color: #4b5563;">Your friend thinks you'd love UpTend! 🎁</p><div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; padding: 20px; margin: 20px 0;"><p style="margin: 0; color: #92400e; font-weight: bold;">You've been invited to UpTend — get $25 off your first service!</p></div><p style="color: #4b5563;">${customMessage || 'Sign up and save on your first home service.'}</p>`,
     custom: `<div style="color: #4b5563; line-height: 1.6;">${customMessage || ''}</div>`,

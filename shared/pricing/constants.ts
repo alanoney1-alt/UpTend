@@ -206,7 +206,7 @@ export const BUNDLES: Bundle[] = [
     services: ['freshcut', 'freshwash', 'gutterflush', 'home_scan'],
     discountPct: 0.15,
     target: 'HOA compliance',
-    description: 'FreshCut + FreshWash + GutterFlush + AI Home Scan audit',
+    description: 'FreshCut + FreshWash + GutterFlush + Home DNA Scan audit',
   },
   {
     id: 'seasonal_reset',

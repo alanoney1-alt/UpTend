@@ -97,7 +97,7 @@ const PRIORITY_CONFIG = {
 
 export default function HomeHealthAuditPage() {
   const { toast } = useToast();
-  usePageTitle("AI Home Scan | UpTend");
+  usePageTitle("Home DNA Scan | UpTend");
   const [, setLocation] = useLocation();
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>("");

@@ -304,6 +304,7 @@ function Router() {
       <Route path="/ai" component={AIFeaturesHub} />
       <Route path="/ai/photo-quote" component={PhotoToQuote} />
       <Route path="/ai/documents" component={DocumentScanner} />
+      <Route path="/home-dna-scan" component={HomeScan} />
       <Route path="/ai/home-scan" component={HomeScan} />
       <Route path="/find-pro" component={FindPro} />
       <Route path="/b2b-pricing" component={B2BPricing} />

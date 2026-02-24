@@ -54,7 +54,7 @@ export default function HomeHealthScreen() {
           </View>
         ) : (
           <View style={styles.emptySection}>
-            <Text style={styles.emptyText}>Complete an AI Home Scan to see your home health breakdown.</Text>
+            <Text style={styles.emptyText}>Complete an Home DNA Scan to see your home health breakdown.</Text>
           </View>
         )}
 

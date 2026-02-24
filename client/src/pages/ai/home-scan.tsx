@@ -20,7 +20,7 @@ function openGeorgeWithScan() {
 }
 
 export default function HomeScanPage() {
-  usePageTitle("AI Home Scan — Free Home Health Record | UpTend");
+  usePageTitle("Home DNA Scan — Free Home Health Record | UpTend");
   const { t, i18n } = useTranslation();
   const isEs = i18n.language === "es";
 
@@ -577,8 +577,8 @@ function DisclaimerBanner({ isEs }: { isEs: boolean }) {
       <div className="max-w-5xl mx-auto text-center">
         <p className="text-sm text-amber-800 dark:text-amber-200">
           ⚠️ {isEs
-            ? "El AI Home Scan proporciona estimaciones informativas únicamente y no es un sustituto de una inspección de hogar con licencia."
-            : "The AI Home Scan provides informational estimates only and is not a substitute for a licensed home inspection."}{" "}
+            ? "El Home DNA Scan proporciona estimaciones informativas únicamente y no es un sustituto de una inspección de hogar con licencia."
+            : "The Home DNA Scan provides informational estimates only and is not a substitute for a licensed home inspection."}{" "}
           <Link href="/legal/home-scan-terms" className="underline font-medium hover:text-amber-900 dark:hover:text-amber-100">
             {isEs ? "Ver Términos y Condiciones completos" : "See full Terms & Conditions"}
           </Link>

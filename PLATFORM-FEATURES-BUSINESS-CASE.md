@@ -32,7 +32,7 @@ This document details every production feature, the business problem it solves, 
 
 ### 1. 12 Service Categories
 
-**What it is:** UpTend supports Junk Removal, Pressure Washing, Gutter Cleaning, Moving Labor, Handyman, Light Demo, Garage Cleanout, Home Cleaning, Pool Cleaning, Landscaping, Carpet Cleaning, and AI Home Scan — covering the most-requested residential and light commercial services.
+**What it is:** UpTend supports Junk Removal, Pressure Washing, Gutter Cleaning, Moving Labor, Handyman, Light Demo, Garage Cleanout, Home Cleaning, Pool Cleaning, Landscaping, Carpet Cleaning, and Home DNA Scan — covering the most-requested residential and light commercial services.
 
 **Why we built it:** Homeowners and property managers use an average of 3–5 different apps or Craigslist posts to handle routine property maintenance. Fragmentation means inconsistent quality, no pricing transparency, and zero data continuity between vendors.
 
@@ -128,7 +128,7 @@ This document details every production feature, the business problem it solves, 
 
 ---
 
-### 9. AI Home Scan — $99 Standard / $249 Aerial Property Assessment
+### 9. Home DNA Scan — $99 Standard / $249 Aerial Property Assessment
 
 **What it is:** A comprehensive AI-powered property assessment that evaluates a home's exterior and (with the aerial tier) roof condition, generating a prioritized maintenance report with cost estimates.
 

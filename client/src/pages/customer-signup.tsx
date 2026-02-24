@@ -25,11 +25,10 @@ const signupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   phone: z.string()
-    .min(10, "Please enter a valid phone number")
-    .regex(/^[\d\s\-\(\)\+]+$/, "Please enter a valid phone number"),
-  smsOptIn: z.boolean().refine((val) => val === true, {
-    message: "You must agree to receive SMS notifications",
-  }),
+    .regex(/^[\d\s\-\(\)\+]*$/, "Please enter a valid phone number")
+    .optional()
+    .or(z.literal("")),
+  smsOptIn: z.boolean().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -183,7 +182,7 @@ export default function CustomerSignup() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("signup.phone")} <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel>{t("signup.phone")} <span className="text-muted-foreground text-xs">(optional)</span></FormLabel>
                       <FormControl>
                         <Input type="tel" placeholder="(407) 555-0199" {...field} data-testid="input-phone" />
                       </FormControl>
@@ -210,7 +209,7 @@ export default function CustomerSignup() {
                       <div className="space-y-1 leading-none">
                         <FormLabel className="text-sm font-normal">
                           <MessageSquare className="w-4 h-4 inline mr-1 text-primary" />
-                          {t("signup.sms_optin")} <span className="text-destructive">*</span>
+                          {t("signup.sms_optin")}
                         </FormLabel>
                         <FormDescription className="text-xs">
                           {t("signup.sms_rates")}

@@ -20,7 +20,7 @@ interface Certification {
 const CERTIFICATIONS: Certification[] = [
   { id: '1', name: 'B2B Property Management', description: 'Master commercial property service workflows, bulk scheduling, and PM communication protocols.', estimatedHours: 8, status: 'In Progress', progress: 0.45, icon: '🏢', color: '#3B82F6' },
   { id: '2', name: 'B2B HOA', description: 'Learn HOA compliance standards, community board reporting, and seasonal planning.', estimatedHours: 6, status: 'Available', progress: 0, icon: '🏘️', color: '#10B981' },
-  { id: '3', name: 'AI Home Scan', description: 'Use AR/AI tools to assess property conditions, generate scopes, and create estimates.', estimatedHours: 4, status: 'Certified', progress: 1, icon: '📱', color: '#8B5CF6' },
+  { id: '3', name: 'Home DNA Scan', description: 'Use AR/AI tools to assess property conditions, generate scopes, and create estimates.', estimatedHours: 4, status: 'Certified', progress: 1, icon: '📱', color: '#8B5CF6' },
   { id: '4', name: 'Parts & Materials', description: 'Handle parts requests, supplier coordination, receipt tracking, and cost management.', estimatedHours: 3, status: 'Available', progress: 0, icon: '🔧', color: '#F97316' },
   { id: '5', name: 'Emergency Response', description: 'Rapid response protocols, damage documentation, insurance coordination, and safety procedures.', estimatedHours: 5, status: 'Expired', progress: 1, icon: '🚨', color: '#EF4444', expiresAt: 'Jan 15, 2026' },
   { id: '6', name: 'Government Contract', description: 'Federal/state contract requirements, Davis-Bacon compliance, and documentation standards.', estimatedHours: 10, status: 'Available', progress: 0, icon: '🏛️', color: '#1E3A5F' },

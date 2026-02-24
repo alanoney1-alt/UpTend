@@ -70,11 +70,11 @@
 
 ---
 
-### AI Home Scan ($99 / $249)
+### Home DNA Scan ($99 / $249)
 
 **Setup:** "Homeowners have no idea what their house needs. They wait until something breaks, panic-call someone, and pay emergency rates. It's bad for them, it's unpredictable for the pros, and it's a terrible customer experience."
 
-**Drop:** "AI Home Scan is like a physical for your house. For $99 we do an exterior scan — photos, AI analysis, prioritized maintenance report. For $249 we do interior and exterior. The homeowner gets a clear plan: 'Here's what needs attention now, here's what can wait six months, here's what to budget for next year.' And every item on that report is a bookable job on UpTend."
+**Drop:** "Home DNA Scan is like a physical for your house. For $99 we do an exterior scan — photos, AI analysis, prioritized maintenance report. For $249 we do interior and exterior. The homeowner gets a clear plan: 'Here's what needs attention now, here's what can wait six months, here's what to budget for next year.' And every item on that report is a bookable job on UpTend."
 
 **Money Line:** "A $99 scan generates an average of $2,000-$5,000 in downstream service bookings — it's a customer acquisition tool that the customer pays US for."
 

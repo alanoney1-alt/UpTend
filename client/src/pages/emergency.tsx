@@ -1,9 +1,9 @@
 import { usePageTitle } from "@/hooks/use-page-title";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -11,28 +11,102 @@ import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import {
   AlertTriangle, Droplets, Flame, KeyRound, Wrench,
-  Zap, Wind, Clock, CheckCircle2, Phone,
+  Zap, Wind, Clock, CheckCircle2, Phone, ShieldCheck,
 } from "lucide-react";
 
-const EMERGENCY_ICONS: Record<string, any> = {
-  water_damage: Droplets,
-  fire_damage: Flame,
-  lockout: KeyRound,
-  broken_pipe: Wrench,
-  electrical_emergency: Zap,
-  gas_leak: AlertTriangle,
-  storm_damage: Wind,
-};
-
-const EMERGENCY_COLORS: Record<string, string> = {
-  water_damage: "text-blue-500",
-  fire_damage: "text-orange-500",
-  lockout: "text-yellow-500",
-  broken_pipe: "text-cyan-500",
-  electrical_emergency: "text-amber-500",
-  gas_leak: "text-red-600",
-  storm_damage: "text-gray-500",
-};
+const EMERGENCY_TYPES = [
+  {
+    id: "water_damage",
+    label: "Water Damage / Flooding",
+    icon: Droplets,
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10 border-blue-500/30",
+    firstSteps: [
+      "Locate your main water shutoff valve (usually near the water meter or where the main line enters your home)",
+      "Turn the valve clockwise to shut off water supply",
+      "Turn off electricity to affected areas at the breaker box if water is near outlets",
+      "Move valuables to higher ground if possible",
+    ],
+  },
+  {
+    id: "broken_pipe",
+    label: "Broken / Burst Pipe",
+    icon: Wrench,
+    color: "text-cyan-500",
+    bgColor: "bg-cyan-500/10 border-cyan-500/30",
+    firstSteps: [
+      "Shut off the main water valve immediately",
+      "Open faucets to drain remaining water from pipes",
+      "Turn off the water heater to prevent damage",
+      "Place buckets under active leaks and mop standing water",
+    ],
+  },
+  {
+    id: "gas_leak",
+    label: "Gas Leak",
+    icon: AlertTriangle,
+    color: "text-red-600",
+    bgColor: "bg-red-500/10 border-red-500/30",
+    firstSteps: [
+      "DO NOT turn on/off any lights, appliances, or electronics",
+      "Open all windows and doors immediately",
+      "Leave the house and move at least 100 feet away",
+      "Call 911 first, then call us from a safe distance",
+    ],
+  },
+  {
+    id: "fire_damage",
+    label: "Fire Damage",
+    icon: Flame,
+    color: "text-orange-500",
+    bgColor: "bg-orange-500/10 border-orange-500/30",
+    firstSteps: [
+      "Ensure everyone is out of the home and call 911 if the fire is active",
+      "Do not re-enter the structure until cleared by fire department",
+      "Document damage with photos from a safe distance",
+      "Do not turn on HVAC — it spreads soot and smoke damage",
+    ],
+  },
+  {
+    id: "electrical_emergency",
+    label: "Electrical Emergency",
+    icon: Zap,
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10 border-amber-500/30",
+    firstSteps: [
+      "Turn off the main breaker at your electrical panel",
+      "Do not touch any exposed wires or sparking outlets",
+      "If someone is being shocked, do NOT touch them — cut power first",
+      "Stay away from any standing water near electrical sources",
+    ],
+  },
+  {
+    id: "lockout",
+    label: "Home Lockout",
+    icon: KeyRound,
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-500/10 border-yellow-500/30",
+    firstSteps: [
+      "Check all other doors and windows (safely) for an unlocked entry",
+      "Do not attempt to force or break locks — it causes expensive damage",
+      "If you have a smart lock, check your phone app for remote unlock",
+      "Stay in a safe, well-lit area while waiting for help",
+    ],
+  },
+  {
+    id: "storm_damage",
+    label: "Storm / Hurricane Damage",
+    icon: Wind,
+    color: "text-gray-400",
+    bgColor: "bg-gray-500/10 border-gray-500/30",
+    firstSteps: [
+      "Stay inside and away from windows until the storm passes",
+      "Turn off main breaker if you see water intrusion near electrical",
+      "Document all damage with photos and video for insurance",
+      "Cover broken windows or roof openings with tarps if safely accessible",
+    ],
+  },
+];
 
 export default function EmergencyPage() {
   usePageTitle("Emergency Services | UpTend");
@@ -42,39 +116,23 @@ export default function EmergencyPage() {
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState({ addressLine1: "", city: "", state: "", zipCode: "" });
   const [emergencyId, setEmergencyId] = useState<string | null>(null);
-  const [ws, setWs] = useState<WebSocket | null>(null);
   const [proInfo, setProInfo] = useState<any>(null);
   const [eta, setEta] = useState<number | null>(null);
 
-  const { data: types } = useQuery({
-    queryKey: ["/api/emergency/types"],
-    queryFn: async () => {
-      const res = await fetch("/api/emergency/types");
-      return res.json();
-    },
-  });
-
-  // WebSocket for real-time status
   useEffect(() => {
     if (!emergencyId) return;
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const socket = new WebSocket(`${protocol}//${window.location.host}/ws?jobId=emergency-${emergencyId}&role=customer`);
-
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type === "emergency_status") {
-        if (data.status === "accepted") {
-          setStep("found");
-          setEta(data.etaMinutes);
-        }
+      if (data.type === "emergency_status" && data.status === "accepted") {
+        setStep("found");
+        setEta(data.etaMinutes);
       }
     };
-
-    setWs(socket);
     return () => socket.close();
   }, [emergencyId]);
 
-  // Poll status as fallback
   const { data: statusData } = useQuery({
     queryKey: ["/api/emergency/status", emergencyId],
     queryFn: async () => {
@@ -107,15 +165,40 @@ export default function EmergencyPage() {
       setStep("searching");
     },
     onError: () => {
-      toast({ title: "Error", description: "Failed to submit emergency request. Please call 911 for life-threatening emergencies.", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to submit emergency request. Please call (407) 338-3342 directly.", variant: "destructive" });
     },
   });
+
+  const selectedEmergency = EMERGENCY_TYPES.find((t) => t.id === selectedType);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <Header />
       <main className="pt-24 pb-16 px-4 max-w-3xl mx-auto">
-        {/* Warning Banner */}
+
+        {/* CALL NOW banner */}
+        <div className="mb-8">
+          <a
+            href="tel:407-338-3342"
+            className="block w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white text-center py-6 rounded-2xl shadow-2xl shadow-red-600/30 transition-all"
+          >
+            <Phone className="w-8 h-8 mx-auto mb-2" />
+            <span className="text-3xl font-black block">CALL NOW</span>
+            <span className="text-xl font-bold block">(407) 338-3342</span>
+            <span className="text-sm opacity-80 block mt-1">Available 24/7 -- Emergency dispatch</span>
+          </a>
+        </div>
+
+        {/* Response time */}
+        <div className="flex items-center justify-center gap-3 mb-8 bg-slate-800/60 rounded-xl py-4 px-6 border border-slate-700">
+          <Clock className="w-6 h-6 text-green-400" />
+          <div>
+            <p className="font-bold text-green-400 text-lg">Average response time: 30 minutes</p>
+            <p className="text-slate-400 text-sm">Our closest available Pro is dispatched immediately</p>
+          </div>
+        </div>
+
+        {/* 911 Warning */}
         <div className="bg-red-900/30 border border-red-700 rounded-lg p-4 mb-8 text-center">
           <p className="text-red-300 font-semibold">
             For life-threatening emergencies, call <strong>911</strong> first.
@@ -126,46 +209,24 @@ export default function EmergencyPage() {
         {step === "select" && (
           <div className="space-y-8">
             <div className="text-center">
-              <h1 className="text-4xl font-bold mb-2">Emergency Home Services</h1>
-              <p className="text-slate-400">Get a pro to your door ASAP. 24/7 emergency dispatch.</p>
-              <p className="text-amber-400 text-sm mt-2 font-medium">Emergency pricing: 2× standard rate</p>
+              <h1 className="text-4xl font-black mb-2">What type of emergency?</h1>
+              <p className="text-slate-400">Select your emergency below. We'll show you what to do first, then get a Pro on the way.</p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              <a href="tel:407-338-3342" className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition-colors">
-                <Phone className="w-5 h-5" /> Call Now: (407) 338-3342
-              </a>
-              <button
-                onClick={() => { const el = document.querySelector('[data-testid="uptend-guide-toggle"]') as HTMLElement; if (el) el.click(); }}
-                className="inline-flex items-center gap-2 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition-colors"
-              >
-                Chat with George
-              </button>
-            </div>
-            <div className="text-center mb-8">
-              <p className="text-green-400 font-semibold">Available 24/7</p>
-              <p className="text-slate-400 text-sm">Response within 30 minutes</p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {(types || []).map((type: any) => {
-                const Icon = EMERGENCY_ICONS[type.id] || AlertTriangle;
-                const color = EMERGENCY_COLORS[type.id] || "text-red-500";
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {EMERGENCY_TYPES.map((type) => {
+                const Icon = type.icon;
                 return (
                   <button
                     key={type.id}
                     onClick={() => { setSelectedType(type.id); setStep("details"); }}
-                    className={`p-6 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
-                      selectedType === type.id
-                        ? "border-red-500 bg-red-500/10"
-                        : "border-slate-700 bg-slate-800/50 hover:border-slate-600"
-                    }`}
+                    className={`p-6 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02] text-left ${type.bgColor} hover:border-orange-500/50`}
                   >
-                    <Icon className={`w-10 h-10 mx-auto mb-3 ${color}`} />
-                    <p className="text-sm font-medium text-center">{type.label}</p>
-                    <a href="tel:407-338-3342" className="block mt-2 text-xs text-red-400 font-semibold hover:underline" onClick={(e) => e.stopPropagation()}>
-                      Call (407) 338-3342
-                    </a>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Icon className={`w-8 h-8 ${type.color}`} />
+                      <span className="text-lg font-bold">{type.label}</span>
+                    </div>
+                    <p className="text-xs text-slate-400">Tap for safety steps + dispatch</p>
                   </button>
                 );
               })}
@@ -173,63 +234,72 @@ export default function EmergencyPage() {
           </div>
         )}
 
-        {step === "details" && (
+        {step === "details" && selectedEmergency && (
           <div className="space-y-6">
             <Button variant="ghost" onClick={() => setStep("select")} className="text-slate-400">
-              ← Back
+              &larr; Back to emergency types
             </Button>
-            <h2 className="text-2xl font-bold">
-              {selectedType.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
-            </h2>
 
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-slate-400 mb-1 block">Address</label>
-                <Input
-                  placeholder="Street address"
-                  value={address.addressLine1}
-                  onChange={(e) => setAddress(a => ({ ...a, addressLine1: e.target.value }))}
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                <Input
-                  placeholder="City"
-                  value={address.city}
-                  onChange={(e) => setAddress(a => ({ ...a, city: e.target.value }))}
-                  className="bg-slate-800 border-slate-700"
-                />
-                <Input
-                  placeholder="State"
-                  value={address.state}
-                  onChange={(e) => setAddress(a => ({ ...a, state: e.target.value }))}
-                  className="bg-slate-800 border-slate-700"
-                />
-                <Input
-                  placeholder="ZIP"
-                  value={address.zipCode}
-                  onChange={(e) => setAddress(a => ({ ...a, zipCode: e.target.value }))}
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
-              <div>
-                <label className="text-sm text-slate-400 mb-1 block">What's happening? (optional)</label>
-                <Textarea
-                  placeholder="Describe the situation..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
+            <div className="flex items-center gap-3">
+              <selectedEmergency.icon className={`w-10 h-10 ${selectedEmergency.color}`} />
+              <h2 className="text-2xl font-black">{selectedEmergency.label}</h2>
             </div>
+
+            {/* FIRST: Safety steps */}
+            <Card className="bg-amber-950/40 border-amber-700/50">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5" /> Do This FIRST -- Before We Arrive
+                </h3>
+                <ol className="space-y-3">
+                  {selectedEmergency.firstSteps.map((step, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <span className="w-7 h-7 rounded-full bg-amber-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
+                        {idx + 1}
+                      </span>
+                      <span className="text-slate-200 leading-relaxed">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </CardContent>
+            </Card>
+
+            {/* THEN: Request help */}
+            <Card className="bg-slate-800/60 border-slate-700">
+              <CardContent className="p-6 space-y-4">
+                <h3 className="text-lg font-bold text-white mb-2">Now, let us send help</h3>
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">Your Address</label>
+                  <Input
+                    placeholder="Street address"
+                    value={address.addressLine1}
+                    onChange={(e) => setAddress(a => ({ ...a, addressLine1: e.target.value }))}
+                    className="bg-slate-900 border-slate-600"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <Input placeholder="City" value={address.city} onChange={(e) => setAddress(a => ({ ...a, city: e.target.value }))} className="bg-slate-900 border-slate-600" />
+                  <Input placeholder="State" value={address.state} onChange={(e) => setAddress(a => ({ ...a, state: e.target.value }))} className="bg-slate-900 border-slate-600" />
+                  <Input placeholder="ZIP" value={address.zipCode} onChange={(e) => setAddress(a => ({ ...a, zipCode: e.target.value }))} className="bg-slate-900 border-slate-600" />
+                </div>
+                <div>
+                  <label className="text-sm text-slate-400 mb-1 block">What's happening? (optional)</label>
+                  <Textarea placeholder="Describe the situation..." value={description} onChange={(e) => setDescription(e.target.value)} className="bg-slate-900 border-slate-600" />
+                </div>
+              </CardContent>
+            </Card>
 
             <Button
               onClick={() => submitMutation.mutate()}
               disabled={!address.addressLine1 || !address.city || !address.state || !address.zipCode || submitMutation.isPending}
-              className="w-full h-16 text-xl font-bold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg shadow-red-600/30 animate-pulse hover:animate-none"
+              className="w-full h-16 text-xl font-black bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg shadow-red-600/30"
             >
-              {submitMutation.isPending ? "Submitting..." : "I Need Help NOW"}
+              {submitMutation.isPending ? "Dispatching..." : "Send Help Now"}
             </Button>
+
+            <p className="text-center text-slate-500 text-sm">
+              Or call directly: <a href="tel:407-338-3342" className="text-red-400 font-bold hover:underline">(407) 338-3342</a>
+            </p>
           </div>
         )}
 
@@ -242,13 +312,22 @@ export default function EmergencyPage() {
               </div>
             </div>
             <div>
-              <h2 className="text-3xl font-bold mb-2">Finding a pro near you...</h2>
-              <p className="text-slate-400">We're notifying all available pros in your area.</p>
+              <h2 className="text-3xl font-bold mb-2">Dispatching a Pro to you now...</h2>
+              <p className="text-slate-400">We're notifying all available Pros in your area.</p>
               <p className="text-slate-500 text-sm mt-2">Emergency ID: {emergencyId}</p>
             </div>
-            <div className="flex items-center justify-center gap-2 text-amber-400">
-              <Clock className="w-5 h-5 animate-spin" />
-              <span>Average response time: 15-30 minutes</span>
+            <div className="flex items-center justify-center gap-2 text-green-400 font-bold text-lg">
+              <Clock className="w-5 h-5" />
+              <span>Average response time: 30 minutes</span>
+            </div>
+            <div className="bg-slate-800/60 rounded-xl p-6 border border-slate-700 max-w-md mx-auto text-left">
+              <h3 className="font-bold text-white mb-3">While you wait:</h3>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Follow the safety steps above</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Take photos of the damage for insurance</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Keep your phone nearby for Pro updates</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Ensure clear access to the affected area</li>
+              </ul>
             </div>
           </div>
         )}
@@ -259,23 +338,24 @@ export default function EmergencyPage() {
               <CheckCircle2 className="w-16 h-16 text-green-500" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold mb-2 text-green-400">Pro Found!</h2>
+              <h2 className="text-3xl font-bold mb-2 text-green-400">Help is on the way.</h2>
+              <p className="text-slate-300">You're in good hands. A verified, insured Pro has been dispatched.</p>
               {proInfo && (
-                <p className="text-slate-300 text-lg">{proInfo.companyName} • * {proInfo.rating?.toFixed(1)}</p>
+                <p className="text-slate-300 text-lg mt-2">{proInfo.companyName} -- {proInfo.rating?.toFixed(1)} stars</p>
               )}
             </div>
             {eta && (
               <Card className="bg-slate-800/50 border-slate-700 max-w-sm mx-auto">
                 <CardContent className="p-6 text-center">
                   <p className="text-slate-400 text-sm">Estimated arrival</p>
-                  <p className="text-4xl font-bold text-white mt-1">{eta} min</p>
+                  <p className="text-5xl font-black text-white mt-1">{eta} min</p>
                 </CardContent>
               </Card>
             )}
             {proInfo?.phone && (
               <Button variant="outline" className="border-slate-600" asChild>
                 <a href={`tel:${proInfo.phone}`}>
-                  <Phone className="w-4 h-4 mr-2" /> Call Pro
+                  <Phone className="w-4 h-4 mr-2" /> Call Your Pro
                 </a>
               </Button>
             )}

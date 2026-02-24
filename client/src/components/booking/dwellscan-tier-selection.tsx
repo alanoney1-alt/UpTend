@@ -1,9 +1,9 @@
 /**
- * AI Home Scan Tier Selection Component
+ * Home DNA Scan Tier Selection Component
  *
  * Allows customers to choose between:
- * - AI Home Scan Standard ($99)
- * - AI Home Scan Aerial ($249) - RECOMMENDED
+ * - Home DNA Scan Standard ($99)
+ * - Home DNA Scan Aerial ($249) - RECOMMENDED
  *
  * Both include $49 credit toward next service
  */
@@ -33,7 +33,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold mb-2">Choose Your AI Home Scan</h2>
+        <h2 className="text-3xl font-bold mb-2">Choose Your Home DNA Scan</h2>
         <p className="text-muted-foreground">
           Both tiers include the same <strong>$49 credit</strong> toward any future UpTend service
         </p>
@@ -52,7 +52,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                   <Home className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl">AI Home Scan Standard</CardTitle>
+                  <CardTitle className="text-xl">Home DNA Scan Standard</CardTitle>
                   <p className="text-2xl font-bold text-primary mt-1">$99</p>
                 </div>
               </div>
@@ -120,7 +120,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                   <Plane className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl">AI Home Scan Aerial</CardTitle>
+                  <CardTitle className="text-xl">Home DNA Scan Aerial</CardTitle>
                   <p className="text-2xl font-bold text-primary mt-1">$249</p>
                 </div>
               </div>

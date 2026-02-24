@@ -24,11 +24,10 @@ export default function Landing() {
       <main>
         <GeorgeBanner />
         <HeroSection />
-        <IndustryIsBroken />
-        <UpTendVerb />
-        <ProsNearYou />
-        <TwoSides />
+        <BeforeAfter />
         <ServicesStrip />
+        <TwoSides />
+        <ProsNearYou />
         <HomeScanPromo />
         <Testimonials />
         <TrustBar />
@@ -112,85 +111,55 @@ function HeroSection() {
   );
 }
 
-/* ─── THE INDUSTRY IS BROKEN ─── */
-function IndustryIsBroken() {
+/* ─── BEFORE / AFTER — VISUAL ─── */
+function BeforeAfter() {
   return (
-    <section className="py-20 bg-slate-950 text-white">
+    <section className="py-16 bg-slate-950 text-white">
       <div className="max-w-5xl mx-auto px-4">
-        <div className="text-center mb-14">
-          <Badge className="bg-red-500/20 text-red-400 border-red-500/30 mb-4 text-sm font-bold">
-            The Problem
-          </Badge>
-          <h2 className="text-3xl md:text-4xl font-black mb-4">
-            Home services is broken.<br />
-            <span className="text-slate-400">For everyone.</span>
-          </h2>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {/* Customer pain */}
-          <Card className="bg-slate-800/60 border-slate-700">
-            <CardContent className="p-8">
-              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <Home className="w-5 h-5 text-orange-400" /> If you're a homeowner:
-              </h3>
-              <ul className="space-y-4">
-                {[
-                  { icon: Clock, text: "You call 5 contractors, maybe 2 call back" },
-                  { icon: DollarSign, text: "The quote is whatever they feel like charging" },
-                  { icon: Ban, text: "No insurance, no background check, no accountability" },
-                  { icon: Clock, text: "They no-show. You take another day off work." },
-                ].map((item) => (
-                  <li key={item.text} className="flex items-start gap-3">
-                    <item.icon className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Pro pain */}
-          <Card className="bg-slate-800/60 border-slate-700">
-            <CardContent className="p-8">
-              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <Wrench className="w-5 h-5 text-orange-400" /> If you're a Pro:
-              </h3>
-              <ul className="space-y-4">
-                {[
-                  { icon: DollarSign, text: "Platforms charge you $30-50 per lead — most don't convert" },
-                  { icon: Ban, text: "You compete on price against uninsured guys on Craigslist" },
-                  { icon: Clock, text: "Customers ghost, cancel, or dispute payments" },
-                  { icon: TrendingUp, text: "No path to grow. Just hustle harder." },
-                ].map((item) => (
-                  <li key={item.text} className="flex items-start gap-3">
-                    <item.icon className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-
-        <p className="text-center text-slate-500 mt-10 text-sm font-semibold uppercase tracking-wider">
-          Other platforms profit from this chaos. We're ending it.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-/* ─── UPTEND VERB ─── */
-function UpTendVerb() {
-  const { t } = useTranslation();
-  return (
-    <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
-      <div className="max-w-3xl mx-auto px-4 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-slate-900 dark:text-white">
-          {t("landing.uptend_meaning_title")}
+        <h2 className="text-3xl md:text-4xl font-black text-center mb-12">
+          Home services, before and after <span className="text-[#F47C20]">UpTend</span>
         </h2>
-        <p className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: t("landing.uptend_meaning_body") }} />
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {/* Before */}
+          <Card className="bg-slate-800/60 border-red-500/30 border-2">
+            <CardContent className="p-8">
+              <h3 className="text-lg font-bold text-red-400 mb-6 uppercase tracking-wider">Before</h3>
+              <ul className="space-y-4">
+                {[
+                  { icon: Clock, text: "Call 5 contractors, maybe 2 call back" },
+                  { icon: DollarSign, text: "Price is whatever they feel like charging" },
+                  { icon: Ban, text: "No insurance, no background check" },
+                  { icon: Clock, text: "They no-show. You take another day off." },
+                ].map((item) => (
+                  <li key={item.text} className="flex items-start gap-3">
+                    <item.icon className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
+                    <span className="text-slate-300 line-through decoration-red-400/40">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* After */}
+          <Card className="bg-slate-800/60 border-green-500/30 border-2">
+            <CardContent className="p-8">
+              <h3 className="text-lg font-bold text-green-400 mb-6 uppercase tracking-wider">After</h3>
+              <ul className="space-y-4">
+                {[
+                  { icon: Zap, text: "Instant quote. Book in 60 seconds." },
+                  { icon: DollarSign, text: "Guaranteed pricing — quoted price is the max" },
+                  { icon: ShieldCheck, text: "Every Pro background checked and insured" },
+                  { icon: CheckCircle, text: "Real-time tracking. Know exactly when they arrive." },
+                ].map((item) => (
+                  <li key={item.text} className="flex items-start gap-3">
+                    <item.icon className="w-5 h-5 text-green-400 mt-0.5 shrink-0" />
+                    <span className="text-white font-medium">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </section>
   );

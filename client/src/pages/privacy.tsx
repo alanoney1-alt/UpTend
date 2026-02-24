@@ -39,7 +39,7 @@ export default function PrivacyPage() {
 <strong>AI Interaction Data:</strong>
 <ul>
 <li>Conversations with Mr. George AI Assistant, including questions, prompts, and descriptions</li>
-<li>Photos and images submitted for AI Home Scan analysis</li>
+<li>Photos and images submitted for Home DNA Scan analysis</li>
 <li>DIY Coaching queries and interaction history</li>
 <li>Home profile data passively gathered from your interactions with Mr. George (e.g., home age, known issues, maintenance history you've discussed)</li>
 <li>Mr. George's audience profiling signals (communication style preferences such as senior-friendly, Gen-Z casual, busy-professional concise, or detail-oriented — used solely to adapt Mr. George's communication style to your preferences)</li>
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
 <h3>2.2 AI Features</h3>
 <ul>
 <li>Powering Mr. George AI Assistant responses</li>
-<li>Performing AI Home Scan analysis</li>
+<li>Performing Home DNA Scan analysis</li>
 <li>Providing DIY Coaching</li>
 <li>Adapting Mr. George's communication style to your preferences (audience profiling)</li>
 <li>Building and maintaining your home profile for personalized recommendations</li>
@@ -149,7 +149,7 @@ export default function PrivacyPage() {
 <p>| <strong>Twilio</strong> | SMS/voice communications | Phone numbers, message content |</p>
 <p>| <strong>SendGrid</strong> | Email delivery | Email addresses, email content |</p>
 <p>| <strong>Anthropic (Claude)</strong> | Mr. George AI Assistant | Conversation content, user queries |</p>
-<p>| <strong>OpenAI (GPT-5.2)</strong> | Photo analysis, AI Home Scan | Photos, image data, analysis queries |</p>
+<p>| <strong>OpenAI (GPT-5.2)</strong> | Photo analysis, Home DNA Scan | Photos, image data, analysis queries |</p>
 <p>| <strong>Railway</strong> | Platform hosting | All platform data (encrypted in transit and at rest) |</p>
 <p>| <strong>Supabase</strong> | Database services | All platform data (encrypted at rest) |</p>
 <p>| <strong>Checkr</strong> | Background checks | Pro name, SSN, date of birth (with Pro consent) |</p>
@@ -203,7 +203,7 @@ export default function PrivacyPage() {
 <p>| Account information | Duration of account + 3 years after deletion |</p>
 <p>| Booking and transaction records | 7 years (tax and legal compliance) |</p>
 <p>| AI conversation history | 2 years (or until you delete it) |</p>
-<p>| AI Home Scan photos | 3 years (or until you delete them) |</p>
+<p>| Home DNA Scan photos | 3 years (or until you delete them) |</p>
 <p>| Pro GPS location data | 90 days after job completion |</p>
 <p>| Payment card data | Retained by Stripe per their policies; not stored by UpTend |</p>
 <p>| Background check results | Duration of Pro's active account |</p>

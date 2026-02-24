@@ -68,7 +68,7 @@ export default function CustomerDashboardScreen({ navigation }: any) {
           </TouchableOpacity>
           <TouchableOpacity style={styles.quickBtn} onPress={() => navigation?.navigate?.('HomeScan')}>
             <Text style={styles.quickEmoji}>🏠</Text>
-            <Text style={styles.quickLabel}>Home Scan</Text>
+            <Text style={styles.quickLabel}>Home DNA Scan</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.quickBtn} onPress={() => navigation?.navigate?.('DIY')}>
             <Text style={styles.quickEmoji}>🔧</Text>

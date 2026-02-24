@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 const SERVICES = [
   {
     id: "home_consultation",
-    name: <>AI Home Scan</>,
+    name: <>Home DNA Scan</>,
     price: "$99",
     unit: "Standard",
     description: "Complete home documentation that protects your investment. Our Pro walks every room capturing video, photos, and condition notes — then AI analyzes it all into an actionable report. Use it for insurance claims, maintenance planning, or pre-sale prep.",

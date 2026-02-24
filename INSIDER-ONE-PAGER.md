@@ -33,7 +33,7 @@
 <tr><td style="padding: 3px 6px;">Google Ads (high-intent)</td><td style="padding: 3px 6px;">$35</td><td style="padding: 3px 6px;">People searching "junk removal Orlando" right now</td></tr>
 <tr style="background: #faf8f4;"><td style="padding: 3px 6px;">Referral program ($25/$25)</td><td style="padding: 3px 6px;">$12</td><td style="padding: 3px 6px;">92% trust referrals; avg 9 referrals per customer</td></tr>
 <tr><td style="padding: 3px 6px;">Social (TikTok/IG/FB)</td><td style="padding: 3px 6px;">$22</td><td style="padding: 3px 6px;">Before/after transformations go viral</td></tr>
-<tr style="background: #faf8f4;"><td style="padding: 3px 6px;">AI Home Scan ($99)</td><td style="padding: 3px 6px;">$0</td><td style="padding: 3px 6px;">Revenue-positive + 2.4x cross-sell ($216 avg)</td></tr>
+<tr style="background: #faf8f4;"><td style="padding: 3px 6px;">Home DNA Scan ($99)</td><td style="padding: 3px 6px;">$0</td><td style="padding: 3px 6px;">Revenue-positive + 2.4x cross-sell ($216 avg)</td></tr>
 <tr><td style="padding: 3px 6px;">HOA/PM contracts</td><td style="padding: 3px 6px;">$6</td><td style="padding: 3px 6px;">One contract = 200-2,000 households overnight</td></tr>
 </table>
 <p style="font-size: 11px; color: #666; margin: 4px 0 0;">Blended CAC: $18 | 7,500+ HOAs and 375 PM companies in Orlando</p>

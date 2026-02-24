@@ -84,7 +84,7 @@ const serviceData: Record<string, ServiceData> = {
     icon: Recycle,
     heroGradient: "from-green-600 to-emerald-500",
     whatWeDo: [
-      "Your unwanted items are resources, not trash. UpTend's junk removal service recovers your space while protecting your property and the environment through our verified circular economy system. Before we touch anything, we conduct a 360° Home Scan to document your property's condition—protecting you from any disputes.",
+      "Your unwanted items are resources, not trash. UpTend's junk removal service recovers your space while protecting your property and the environment through our verified circular economy system. Before we touch anything, we conduct a 360° Home DNA Scan to document your property's condition—protecting you from any disputes.",
       "We don't just haul—we sort. Every item is evaluated for donation, recycling, or responsible disposal. You receive a verified Impact Report showing exactly where your items went and the environmental impact of diverting them from landfills. For property managers and commercial clients, we provide ESG compliance documentation that proves your commitment to sustainability."
     ],
     howItImproves: [
@@ -99,7 +99,7 @@ const serviceData: Record<string, ServiceData> = {
       scheduled: true,
     },
     whatsIncluded: [
-      "360° Home Scan before work begins to protect your property",
+      "360° Home DNA Scan before work begins to protect your property",
       "Full sort and evaluation—donate, recycle, or dispose",
       "Coordination with local charities for tax-deductible donations",
       "Heavy lifting and careful maneuvering to avoid property damage",

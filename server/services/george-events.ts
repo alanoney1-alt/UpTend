@@ -70,7 +70,7 @@ const SERVICE_NAMES: Record<string, string> = {
   gutter_cleaning: 'gutter cleaning',
   moving_labor: 'moving labor',
   light_demolition: 'demo work',
-  home_consultation: 'AI Home Scan',
+  home_consultation: 'Home DNA Scan',
   home_cleaning: 'home cleaning',
   handyman: 'handyman service',
   pool_cleaning: 'pool cleaning',
@@ -739,7 +739,7 @@ export async function sendMaintenanceNudge(): Promise<{ sent: number; skipped: n
 
 // ─── 10. PROACTIVE OUTREACH: HOME SCAN PROMO ─────────────────────────────────
 /**
- * For customers with 0 home scans and inactive 7+ days, send Home Scan promo.
+ * For customers with 0 home scans and inactive 7+ days, send Home DNA Scan promo.
  */
 export async function sendHomeScanPromo(): Promise<{ sent: number; skipped: number }> {
   console.log('[George] sendHomeScanPromo: finding eligible customers...');
@@ -781,7 +781,7 @@ export async function sendHomeScanPromo(): Promise<{ sent: number; skipped: numb
     for (const row of result.rows) {
       try {
         const name = row.first_name || 'there';
-        const message = `Hey ${name}! Did you know you can get a free AI Home Scan? It checks your home's health and catches small problems before they get expensive. Takes 15 minutes. Want me to set one up?`;
+        const message = `Hey ${name}! Did you know you can get a free Home DNA Scan? It checks your home's health and catches small problems before they get expensive. Takes 15 minutes. Want me to set one up?`;
 
         await sendGeorgeSms(row.phone, message, row.id);
 

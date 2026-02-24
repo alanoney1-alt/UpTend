@@ -152,7 +152,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
     services: [
       {
         serviceType: 'home_scan',
-        serviceBranded: 'AI Home Scan',
+        serviceBranded: 'Home DNA Scan',
         required: true,
         defaultOptions: {
           tier: 'aerial', // Premium tier
@@ -192,7 +192,7 @@ export const NAMED_PACKAGES: Record<string, NamedPackage> = {
       from: 799,
       to: 1499,
     },
-    savingsMessage: '15% off + $49 AI Home Scan credit - save up to $270',
+    savingsMessage: '15% off + $49 Home DNA Scan credit - save up to $270',
   },
 
   the_movers_bundle: {

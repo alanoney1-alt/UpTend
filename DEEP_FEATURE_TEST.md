@@ -9,7 +9,7 @@
 
 | Group | Status | Score |
 |-------|--------|-------|
-| 1. AI Home Scan | ⚠️ PARTIAL | 3/5 |
+| 1. Home DNA Scan | ⚠️ PARTIAL | 3/5 |
 | 2. Warranty System | ✅ 100% | 2/2 |
 | 3. Home Utilities | ✅ 100% | 5/5 |
 | 4. Shopping & Products | ✅ 100% | 5/5 |
@@ -205,7 +205,7 @@
 
 ### HIGH (Should Fix Before Launch)
 
-3. **Home Scan — OpenAI quota exhausted (Group 1)**
+3. **Home DNA Scan — OpenAI quota exhausted (Group 1)**
    - `/api/home-scan/scan-item` returns 500 with OpenAI 429 error
    - Action: Check OpenAI billing / add spending limit / add graceful fallback
 

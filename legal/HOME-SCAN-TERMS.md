@@ -1,17 +1,17 @@
-# UpTend Self-Serve Home Scan — Terms & Conditions
+# UpTend Self-Serve Home DNA Scan — Terms & Conditions
 
 **Effective Date:** February 17, 2026
 **Last Updated:** February 17, 2026
 
-By using UpTend's Self-Serve Home Scan feature ("Home Scan"), you ("Customer") agree to the following Terms & Conditions. If you do not agree, do not use the Home Scan feature.
+By using UpTend's Self-Serve Home DNA Scan feature ("Home DNA Scan"), you ("Customer") agree to the following Terms & Conditions. If you do not agree, do not use the Home DNA Scan feature.
 
 ---
 
 ## 1. Nature of Service — Not a Home Inspection
 
-UpTend is **not** a licensed home inspector. The Home Scan is an **informational tool only** and does not constitute a professional home inspection under Florida Statute §468.8311 or any other jurisdiction's licensing requirements.
+UpTend is **not** a licensed home inspector. The Home DNA Scan is an **informational tool only** and does not constitute a professional home inspection under Florida Statute §468.8311 or any other jurisdiction's licensing requirements.
 
-The Home Scan:
+The Home DNA Scan:
 - Provides general observations about the visible condition of home systems and appliances based on customer-submitted photographs.
 - Is **not a substitute** for a licensed home inspection, appraisal, engineering assessment, or any professional evaluation.
 - Should **not** be relied upon for real estate transactions, insurance claims, legal proceedings, or any purpose requiring a certified inspection.
@@ -36,17 +36,17 @@ UpTend's analysis is only as good as the photos provided. Incomplete, blurry, mi
 ## 4. Limitation of Liability
 
 **UpTend is not liable for:**
-- Issues, defects, or conditions not identified by the Home Scan.
+- Issues, defects, or conditions not identified by the Home DNA Scan.
 - Incorrect, incomplete, or misleading AI assessments.
-- Any decisions made by Customer based on Home Scan data, including but not limited to purchasing, selling, repairing, or insuring a property.
-- Property damage, personal injury, or financial loss arising from reliance on Home Scan results.
-- Third-party actions or omissions related to Home Scan data.
+- Any decisions made by Customer based on Home DNA Scan data, including but not limited to purchasing, selling, repairing, or insuring a property.
+- Property damage, personal injury, or financial loss arising from reliance on Home DNA Scan results.
+- Third-party actions or omissions related to Home DNA Scan data.
 
-**UpTend's total aggregate liability** arising from or related to the Home Scan shall not exceed the total value of credits earned by Customer through the Home Scan feature. This limitation applies regardless of the theory of liability (contract, tort, strict liability, or otherwise).
+**UpTend's total aggregate liability** arising from or related to the Home DNA Scan shall not exceed the total value of credits earned by Customer through the Home DNA Scan feature. This limitation applies regardless of the theory of liability (contract, tort, strict liability, or otherwise).
 
 ## 5. Credits & Rewards
 
-- Home Scan credits and rewards have **no cash value** and are **non-transferable**.
+- Home DNA Scan credits and rewards have **no cash value** and are **non-transferable**.
 - Credits may only be applied toward UpTend services.
 - Credits **expire twelve (12) months** from the date of issuance.
 - UpTend reserves the right to modify reward amounts, earning rates, and credit structures with **thirty (30) days' prior notice** to affected Customers.
@@ -55,8 +55,8 @@ UpTend's analysis is only as good as the photos provided. Incomplete, blurry, mi
 
 ## 6. Data Usage & Consent
 
-By using the Home Scan, Customer expressly consents to UpTend's use of submitted photographs and scan data for the following purposes:
-- Generating the Customer's Home Scan report and ongoing maintenance recommendations.
+By using the Home DNA Scan, Customer expressly consents to UpTend's use of submitted photographs and scan data for the following purposes:
+- Generating the Customer's Home DNA Scan report and ongoing maintenance recommendations.
 - Improving and training UpTend's AI analysis capabilities.
 - Matching Customer with relevant service providers based on identified home needs.
 - Providing personalized maintenance reminders, service suggestions, and related communications.
@@ -67,7 +67,7 @@ Customer's data will **never be sold** to third parties. Service provider matchi
 ## 7. Data Retention & Deletion
 
 - All photographs and scan data are stored using industry-standard encryption and security measures.
-- Customer may request deletion of their Home Scan data at any time by contacting support@uptend.com or through in-app settings.
+- Customer may request deletion of their Home DNA Scan data at any time by contacting support@uptend.com or through in-app settings.
 - Upon a valid deletion request, UpTend will delete Customer's scan data within thirty (30) days, except where retention is required by law or for legitimate business purposes (e.g., active disputes).
 - UpTend complies with applicable data protection regulations, including the California Consumer Privacy Act (CCPA) and the General Data Protection Regulation (GDPR) where applicable.
 
@@ -84,10 +84,10 @@ UpTend reserves the right to reject or remove photographs that violate these req
 ## 9. Indemnification
 
 Customer agrees to indemnify, defend, and hold harmless UpTend, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising from or related to:
-- Customer's use of the Home Scan feature.
+- Customer's use of the Home DNA Scan feature.
 - Customer's breach of these Terms & Conditions.
 - Photographs submitted by Customer, including any intellectual property or privacy claims.
-- Decisions or actions taken by Customer or third parties based on Home Scan data.
+- Decisions or actions taken by Customer or third parties based on Home DNA Scan data.
 
 ## 10. Drone Scan Add-On ($249)
 
@@ -108,7 +108,7 @@ For Customers who purchase the Pro Scan add-on:
 
 ## 12. Dispute Resolution — Binding Arbitration
 
-**Any dispute, claim, or controversy arising out of or relating to the Home Scan or these Terms & Conditions** shall be resolved through **binding arbitration** administered by the American Arbitration Association (AAA) under its Consumer Arbitration Rules.
+**Any dispute, claim, or controversy arising out of or relating to the Home DNA Scan or these Terms & Conditions** shall be resolved through **binding arbitration** administered by the American Arbitration Association (AAA) under its Consumer Arbitration Rules.
 
 - Arbitration shall take place in **Orange County, Florida**.
 - The arbitrator's decision shall be final and binding and may be entered as a judgment in any court of competent jurisdiction.
@@ -117,11 +117,11 @@ For Customers who purchase the Pro Scan add-on:
 
 ## 13. Class Action Waiver
 
-**Customer agrees to resolve disputes with UpTend on an individual basis only.** Customer waives any right to participate in a class action, collective action, private attorney general action, or any other representative proceeding against UpTend related to the Home Scan.
+**Customer agrees to resolve disputes with UpTend on an individual basis only.** Customer waives any right to participate in a class action, collective action, private attorney general action, or any other representative proceeding against UpTend related to the Home DNA Scan.
 
 ## 14. TCPA Compliance & Communications Consent
 
-By using the Home Scan, Customer consents to receive scan-related communications from UpTend, including but not limited to:
+By using the Home DNA Scan, Customer consents to receive scan-related communications from UpTend, including but not limited to:
 - Scan status updates and results notifications.
 - Maintenance reminders and recommendations based on scan data.
 - Service provider matches and related offers.
@@ -130,7 +130,7 @@ Communications may be sent via SMS, email, push notification, or in-app messagin
 
 ## 15. Modification of Terms
 
-UpTend reserves the right to update or modify these Terms & Conditions at any time. Changes will be posted with an updated "Last Updated" date. **Continued use of the Home Scan after modifications constitutes acceptance of the revised Terms.**
+UpTend reserves the right to update or modify these Terms & Conditions at any time. Changes will be posted with an updated "Last Updated" date. **Continued use of the Home DNA Scan after modifications constitutes acceptance of the revised Terms.**
 
 For material changes, UpTend will make reasonable efforts to notify active users via email or in-app notification.
 
@@ -144,7 +144,7 @@ If any provision of these Terms is found to be unenforceable or invalid, that pr
 
 ## 18. Entire Agreement
 
-These Terms & Conditions, together with UpTend's general Terms of Service and Privacy Policy, constitute the entire agreement between Customer and UpTend regarding the Home Scan feature.
+These Terms & Conditions, together with UpTend's general Terms of Service and Privacy Policy, constitute the entire agreement between Customer and UpTend regarding the Home DNA Scan feature.
 
 ---
 

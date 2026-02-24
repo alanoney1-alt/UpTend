@@ -23,8 +23,8 @@ const CERT_CONFIG: Record<string, { label: string; icon: typeof Building2; color
     color: "text-green-600",
     bgColor: "bg-green-50 border-green-200 hover:bg-green-100",
   },
-  "ai-home-scan": {
-    label: "AI Home Scan",
+  "home-dna-scan": {
+    label: "Home DNA Scan",
     icon: Brain,
     color: "text-purple-600",
     bgColor: "bg-purple-50 border-purple-200 hover:bg-purple-100",

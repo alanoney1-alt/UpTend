@@ -242,7 +242,7 @@ const EVENT_TYPE_CONFIG: Record<string, { label: string; color: string; Icon: ty
   service: { label: "Service", color: "text-green-400", Icon: CheckCircle2 },
   appliance: { label: "Appliance", color: "text-blue-400", Icon: Boxes },
   warranty: { label: "Warranty", color: "text-yellow-400", Icon: Shield },
-  scan: { label: "Home Scan", color: "text-purple-400", Icon: Activity },
+  scan: { label: "Home DNA Scan", color: "text-purple-400", Icon: Activity },
   diy: { label: "DIY Repair", color: "text-orange-400", Icon: Wrench },
   maintenance: { label: "Maintenance", color: "text-cyan-400", Icon: Clock },
   reminder: { label: "Reminder", color: "text-pink-400", Icon: AlertCircle },
@@ -418,7 +418,7 @@ function HomeReportSection({ userId }: { userId: string }) {
           <div className="text-center py-6" data-testid="empty-home-report">
             <History className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
             <p className="text-sm text-muted-foreground mb-1">Your home report is empty</p>
-            <p className="text-xs text-muted-foreground mb-4">Book a service, register an appliance, or run an AI Home Scan to start building your home&apos;s history.</p>
+            <p className="text-xs text-muted-foreground mb-4">Book a service, register an appliance, or run an Home DNA Scan to start building your home&apos;s history.</p>
             <Link href="/book">
               <Button size="sm" data-testid="button-book-first-service">
                 <Plus className="w-3 h-3 mr-1" /> Book a Service
@@ -563,7 +563,7 @@ export default function CustomerDashboard() {
               { href: "/ai", icon: PlayCircle, label: "Video Tutorials", desc: "Watch how-to videos in the app" },
               { href: "/ai", icon: ShoppingCart, label: "Smart Shopping", desc: "Find parts at the best prices" },
               { href: "/ai/photo-quote", icon: Camera, label: "Photo Quote", desc: "Snap a photo, get an instant quote" },
-              { href: "/ai", icon: Activity, label: "Home Scan", desc: "Free AI health check for your home" },
+              { href: "/ai", icon: Activity, label: "Home DNA Scan", desc: "Free AI health check for your home" },
               { href: "/ai/documents", icon: FileText, label: "Doc Scanner", desc: "Scan receipts, warranties, manuals" },
             ] as const).map((item) => (
               <Link key={item.label} href={item.href}>

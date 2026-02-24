@@ -170,11 +170,11 @@ export const UPTEND_KNOWLEDGE = {
     },
 
     home_scan: {
-      name: "AI Home Scan",
+      name: "Home DNA Scan",
       description: "Complete home health assessment with personalized maintenance report. Available in two tiers: Standard and Aerial.",
       tiers: [
         {
-          name: "AI Home Scan Standard",
+          name: "Home DNA Scan Standard",
           price: "$99",
           description: "Full interior and exterior ground-level walkthrough with maintenance report",
           features: [
@@ -187,7 +187,7 @@ export const UPTEND_KNOWLEDGE = {
           dronRequired: false,
         },
         {
-          name: "AI Home Scan Aerial",
+          name: "Home DNA Scan Aerial",
           price: "$249",
           description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan",
           features: [

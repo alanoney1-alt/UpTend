@@ -40,7 +40,7 @@ export interface Service {
 const ALL_SERVICES: Service[] = [
   {
     id: "home_consultation",
-    label: "AI Home Scan",
+    label: "Home DNA Scan",
     icon: ClipboardCheck,
     description: "Home walkthrough and consultation",
     requiresCertification: true,

@@ -1,8 +1,8 @@
 /**
- * George Home Scan Sales Pitch & FAQ
+ * George Home DNA Scan Sales Pitch & FAQ
  *
  * Educational, value-driven content George uses when introducing
- * the Self-Serve Home Scan to homeowners. Tone: friendly neighbor, not salesman.
+ * the Self-Serve Home DNA Scan to homeowners. Tone: friendly neighbor, not salesman.
  */
 
 export interface HomeScanPitch {
@@ -26,12 +26,12 @@ export function getHomeScanPitch(): HomeScanPitch {
       {
         title: "Home Health Record",
         pitch:
-          "Right now, everything about your home lives in your head — or worse, in a junk drawer full of receipts. A Home Scan gives you a single, organized record of every system in your house: HVAC, water heater, roof, appliances, plumbing, electrical — all documented with photos and condition notes. Like a Carfax, but for your home.",
+          "Right now, everything about your home lives in your head — or worse, in a junk drawer full of receipts. A Home DNA Scan gives you a single, organized record of every system in your house: HVAC, water heater, roof, appliances, plumbing, electrical — all documented with photos and condition notes. Like a Carfax, but for your home.",
       },
       {
         title: "Insurance Protection",
         pitch:
-          "Here's something most people don't think about until it's too late: when disaster strikes, you need to prove what you had and what condition it was in BEFORE the damage. Your Home Scan gives you timestamped photo evidence of every appliance and system. Insurance companies love documentation — and you'll love having it when you need to file a claim.",
+          "Here's something most people don't think about until it's too late: when disaster strikes, you need to prove what you had and what condition it was in BEFORE the damage. Your Home DNA Scan gives you timestamped photo evidence of every appliance and system. Insurance companies love documentation — and you'll love having it when you need to file a claim.",
       },
       {
         title: "Warranty Tracking",
@@ -86,7 +86,7 @@ export function getHomeScanPitch(): HomeScanPitch {
 export function getHomeScanFAQ(): HomeScanFAQItem[] {
   return [
     {
-      question: "What exactly is a Home Scan?",
+      question: "What exactly is a Home DNA Scan?",
       answer:
         "It's a self-guided walkthrough of your home where you take photos of your major systems and appliances — HVAC, water heater, electrical panel, appliances, roof (from the ground), plumbing fixtures, etc. Mr. George's AI analyzes everything and builds a complete home health profile with estimated ages, conditions, and maintenance recommendations.",
     },
@@ -113,7 +113,7 @@ export function getHomeScanFAQ(): HomeScanFAQItem[] {
     {
       question: "Is this a home inspection?",
       answer:
-        "No — and that's an important distinction. A Home Scan is an informational tool that documents your home's visible systems and provides AI-assisted analysis. It's not a licensed home inspection and shouldn't be used as a substitute for one, especially for real estate transactions. Think of it as your home's ongoing health record, not a one-time inspection report.",
+        "No — and that's an important distinction. A Home DNA Scan is an informational tool that documents your home's visible systems and provides AI-assisted analysis. It's not a licensed home inspection and shouldn't be used as a substitute for one, especially for real estate transactions. Think of it as your home's ongoing health record, not a one-time inspection report.",
     },
     {
       question: "What happens to my photos and data?",
