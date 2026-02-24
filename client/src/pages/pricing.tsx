@@ -9,19 +9,6 @@ import { useTranslation } from "react-i18next";
 
 const SERVICES = [
   {
-    id: "home_consultation",
-    name: <>Home DNA Scan</>,
-    price: "$99",
-    unit: "Standard",
-    description: "Complete home documentation that protects your investment. Our Pro walks every room capturing video, photos, and condition notes — then AI analyzes it all into an actionable report. Use it for insurance claims, maintenance planning, or pre-sale prep.",
-    features: [
-      "Standard ($99) — Interior walkthrough: room-by-room video, appliance inventory, condition scoring, maintenance priority list, insurance-ready documentation",
-      "Aerial ($249) — Everything in Standard + licensed drone footage of roof, gutters, siding, landscaping, and foundation perimeter. Full exterior condition report",
-      "$49 credit back on your next UpTend booking",
-      "Protects property value • Catches issues before they're expensive • Peace of mind",
-    ],
-  },
-  {
     id: "handyman",
     name: <>Handyman Services</>,
     price: "$75",

@@ -14,20 +14,7 @@ import { Footer } from "@/components/landing/footer";
 import { useTranslation } from "react-i18next";
 
 const services = [
-  // 1. Home DNA Scan (Featured)
-  {
-    id: "home_consultation",
-    name: "Home DNA Scan",
-    jumpToLabel: "Home DNA Scan",
-    icon: ClipboardCheck,
-    tagline: "Your Insurance Shield. Your Resale Proof. Your Sustainability Baseline.",
-    description: "A 30-minute on-site intelligence scan by a verified Level 3 Consultant. Smart inventory, 360° Home DNA Scan, and a treatment plan with transparent pricing. Choose Standard ($99) or Aerial with drone scan ($249). $49 back on your next booking.",
-    price: "From $99",
-    includes: ["Smart room-by-room inventory", "360° Home DNA Scan walkthrough", "Sustainability baseline assessment", "Treatment plan with transparent pricing", "Aerial drone option available (+$150)", "$49 credit toward your next booking"],
-    featured: true,
-    link: "/services/home-audit",
-  },
-  // 2. Handyman
+  // 1. Handyman
   {
     id: "handyman",
     name: "Handyman Services",

@@ -39,15 +39,6 @@ interface ServicePricing {
 
 const pricingServices: ServicePricing[] = [
   {
-    id: "home_consultation",
-    name: "Home DNA Scan",
-    price: "$99 / $249",
-    description: "Complete home documentation: Standard ($99) interior walkthrough or Aerial ($249) with drone footage. $49 back on your next booking.",
-    benefit: "Protects property value • Insurance-ready documentation • $49 credit with first booking",
-    icon: ClipboardCheck,
-    featured: true,
-  },
-  {
     id: "handyman",
     name: "Handyman Services",
     price: "$75/hr • 1hr min",

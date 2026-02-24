@@ -9,17 +9,6 @@ export function EssentialServices() {
 
   const services = [
     {
-      icon: Stethoscope,
-      title: t("essential.ai_home_scan"),
-      shortTitle: t("essential.ai_home_scan_short"),
-      tagline: t("essential.ai_home_scan_tagline"),
-      spin: t("essential.ai_home_scan_spin"),
-      price: t("essential.ai_home_scan_price"),
-      color: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-500/10",
-      bookParam: "home_consultation",
-    },
-    {
       icon: Truck,
       title: t("essential.junk_removal"),
       shortTitle: t("essential.junk_removal_short"),
