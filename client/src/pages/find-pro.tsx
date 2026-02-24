@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/landing/header";
+import { Footer } from "@/components/landing/footer";
 import {
   Star, Shield, CheckCircle, MapPin, ArrowRight, X,
   Search, SlidersHorizontal, Users,
@@ -56,7 +57,6 @@ const SERVICE_OPTIONS = [
   { value: "carpet_cleaning", label: "Carpet Cleaning" },
   { value: "garage_cleanout", label: "Garage Cleanout" },
   { value: "light_demolition", label: "Light Demo" },
-  { value: "home_consultation", label: "Home DNA Scan" },
 ];
 
 const SERVICE_LABELS: Record<string, string> = Object.fromEntries(
@@ -248,6 +248,7 @@ function FindProPage() {
           }}
         />
       )}
+      <Footer />
     </div>
   );
 }
