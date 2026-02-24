@@ -66,7 +66,7 @@ const pricingServices: ServicePricing[] = [
   {
     id: "garage_cleanout",
     name: "Garage Cleanout",
-    price: "From $150",
+    price: "From $129",
     description: "Complete garage cleanout with sorting, hauling, and organization assistance.",
     benefit: "Reclaim valuable space • Prepare for sale or storage",
     icon: Home,
