@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { DwellScanWidget } from "@/components/dwellscan-widget";
+import { HomeDnaScoreWidget } from "@/components/home-dna-score-widget";
 import { MaintenancePlan } from "@/components/maintenance-plan";
 import { ImpactDashboard } from "@/components/impact-dashboard";
 import { 
@@ -997,7 +997,7 @@ export default function Profile() {
               </button>
               {expanded.intelligence && (
                 <div className="mt-3 space-y-4 overflow-hidden">
-                  <DwellScanWidget />
+                  <HomeDnaScoreWidget />
                   <MaintenancePlan />
                   <ImpactDashboard />
                 </div>

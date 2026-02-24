@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
-import { DwellScanWidget } from "@/components/dwellscan-widget";
+import { HomeDnaScoreWidget } from "@/components/home-dna-score-widget";
 import { ImpactWidget } from "@/components/dashboard/impact-widget";
 import { ImpactTracker } from "@/components/dashboard/impact-tracker";
 import { ReferralWidget } from "@/components/dashboard/referral-widget";
@@ -537,7 +537,7 @@ export default function CustomerDashboard() {
             </div>
             <Badge variant="secondary" className="text-[10px]">BETA</Badge>
           </div>
-          <DwellScanWidget />
+          <HomeDnaScoreWidget />
         </div>
 
         {/* Home Report — Carfax for Homes */}
