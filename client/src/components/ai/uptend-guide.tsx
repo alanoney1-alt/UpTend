@@ -319,7 +319,7 @@ const pulseKeyframes = `
 export function UpTendGuide() {
   const [, navigate] = useLocation();
   const pageContext = usePageContext();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(() => localStorage.getItem(LS_DISABLED) === "true");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");

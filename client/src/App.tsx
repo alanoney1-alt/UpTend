@@ -263,6 +263,7 @@ function Router() {
       <Route path="/settings" component={ProfileSettings} />
       <Route path="/pricing" component={PublicPricing} />
       <Route path="/become-pro" component={BecomePro} />
+      <Route path="/hauler-landing" component={HaulerLanding} />
       <Route path="/pro-signup">{() => <Redirect to="/login?tab=pro" />}</Route>
       <Route path="/academy-syllabus" component={AcademySyllabus} />
       <Route path="/academy/:slug" component={AcademySyllabus} />
@@ -345,8 +346,8 @@ function App() {
             <Router />
             <MobileNav />
             <UpTendGuide />
-            <InstallBanner />
-            <CookieConsent />
+            {/* <InstallBanner /> */}
+            {/* <CookieConsent /> */}
           </ThemeProvider>
           </ServiceBagProvider>
         </TooltipProvider>

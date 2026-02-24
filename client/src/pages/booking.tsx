@@ -2,6 +2,7 @@ import { usePageTitle } from "@/hooks/use-page-title";
 import { useSearch, useLocation } from "wouter";
 import { useEffect } from "react";
 import { Header } from "@/components/landing/header";
+import { Footer } from "@/components/landing/footer";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { PaymentForm } from "@/components/payment-form";
 import { useAuth } from "@/hooks/use-auth";
@@ -77,6 +78,7 @@ export default function BookingPage() {
       <main className="container mx-auto px-4 pt-24 pb-24 md:pt-28 md:pb-12">
         <FloridaEstimator preselectedService={preselectedService ?? undefined} preselectedTiming={preselectedTiming ?? undefined} />
       </main>
+      <Footer />
     </div>
   );
 }
