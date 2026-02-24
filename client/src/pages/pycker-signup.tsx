@@ -2103,22 +2103,26 @@ export default function PyckerSignup() {
           </form>
         </Form>
 
-        <div className="mt-8 grid md:grid-cols-3 gap-4">
+        <div className="mt-8 grid md:grid-cols-4 gap-4">
           <Card className="p-4 text-center">
             <DollarSign className="w-6 h-6 mx-auto mb-2 text-primary" />
             <h3 className="font-medium">Keep 80% of Every Job</h3>
-            <p className="text-sm text-muted-foreground">With proper licenses, insurance & business validation</p>
-            <p className="text-xs text-muted-foreground mt-1">75% without • Plus 100% of tips</p>
+            <p className="text-sm text-muted-foreground">Every pro. Every job. Plus 100% of tips.</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <Shield className="w-6 h-6 mx-auto mb-2 text-primary" />
+            <h3 className="font-medium">We Cover Your Insurance</h3>
+            <p className="text-sm text-muted-foreground">No insurance? No problem. $10/job covers you up to $25K — unlocks every job on the platform.</p>
           </Card>
           <Card className="p-4 text-center">
             <Clock className="w-6 h-6 mx-auto mb-2 text-primary" />
             <h3 className="font-medium">Instant Payouts</h3>
-            <p className="text-sm text-muted-foreground">Get paid same day</p>
+            <p className="text-sm text-muted-foreground">Get paid same day, every time.</p>
           </Card>
           <Card className="p-4 text-center">
-            <Shield className="w-6 h-6 mx-auto mb-2 text-primary" />
-            <h3 className="font-medium">No Lead Fees</h3>
-            <p className="text-sm text-muted-foreground">Unlike competitors</p>
+            <TrendingUp className="w-6 h-6 mx-auto mb-2 text-primary" />
+            <h3 className="font-medium">We Pay for Marketing</h3>
+            <p className="text-sm text-muted-foreground">Zero lead fees. We bring you customers — you just show up and do great work.</p>
           </Card>
         </div>
       </main>

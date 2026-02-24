@@ -32,22 +32,22 @@ const pillars = [
     icon: DollarSign,
     iconBg: "bg-orange-100 dark:bg-orange-900/30",
     iconColor: "text-orange-600 dark:text-orange-400",
-    title: "Instant Payouts",
-    desc: "No waiting two weeks for a check. Complete the job, get paid same-day via Stripe. Your earnings are yours the moment the customer approves.",
+    title: "Keep 80% of Every Job",
+    desc: "Every pro keeps 80%. No exceptions, no tiers, no games. Plus 100% of tips. Instant same-day payouts via Stripe.",
   },
   {
     icon: Shield,
     iconBg: "bg-orange-100 dark:bg-orange-900/30",
     iconColor: "text-orange-600 dark:text-orange-400",
-    title: "$1M Insurance Coverage",
-    desc: "We cover you with blanket liability insurance on every job. No need to carry your own expensive policy to get started.",
+    title: "Insurance? We've Got You.",
+    desc: "Don't have your own insurance? Just $10/job and you're covered up to $25K. It unlocks every job on the platform — no policy needed to get started.",
   },
   {
     icon: TrendingUp,
     iconBg: "bg-red-100 dark:bg-red-900/30",
     iconColor: "text-red-600 dark:text-red-400",
-    title: "Career Growth Path",
-    desc: "Start as an Independent Pro, earn your way to Verified Pro status with higher payouts. The UpTend Academy builds your skills, your income, and your verified impact record.",
+    title: "We Pay for Your Marketing",
+    desc: "Zero lead fees. We spend the money to bring customers to you. Your job is to show up, do great work, and build your reputation. We handle the rest.",
   },
 ];
 
