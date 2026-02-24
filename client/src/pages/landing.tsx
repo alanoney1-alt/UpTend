@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  ShieldCheck, ArrowRight, Globe, Leaf, Heart, Zap,
+  ShieldCheck, ArrowRight, Globe, Heart, Zap,
   DollarSign, Clock, Ban, TrendingUp, Users, Star,
   CheckCircle, ChevronRight, Wrench, Waves, Truck,
   Package, Home, Trees, ArrowUpFromLine, Sparkles,
@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
-import { ProsNearYou } from "@/components/landing/pros-near-you";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { useTranslation } from "react-i18next";
 
@@ -24,13 +23,9 @@ export default function Landing() {
       <main>
         <GeorgeBanner />
         <HeroSection />
-        <BeforeAfter />
         <ServicesStrip />
         <TwoSides />
-        <ProsNearYou />
-        <HomeScanPromo />
         <Testimonials />
-        <TrustBar />
         <FinalCTA />
       </main>
       <Footer />
@@ -106,60 +101,6 @@ function HeroSection() {
         <p className="mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
           {t("hero.hero_footnote")}
         </p>
-      </div>
-    </section>
-  );
-}
-
-/* ─── BEFORE / AFTER — VISUAL ─── */
-function BeforeAfter() {
-  return (
-    <section className="py-16 bg-slate-950 text-white">
-      <div className="max-w-5xl mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-black text-center mb-12">
-          Home services, before and after <span className="text-[#F47C20]">UpTend</span>
-        </h2>
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {/* Before */}
-          <Card className="bg-slate-800/60 border-red-500/30 border-2">
-            <CardContent className="p-8">
-              <h3 className="text-lg font-bold text-red-400 mb-6 uppercase tracking-wider">Before</h3>
-              <ul className="space-y-4">
-                {[
-                  { icon: Clock, text: "Call 5 contractors, maybe 2 call back" },
-                  { icon: DollarSign, text: "Price is whatever they feel like charging" },
-                  { icon: Ban, text: "No insurance, no background check" },
-                  { icon: Clock, text: "They no-show. You take another day off." },
-                ].map((item) => (
-                  <li key={item.text} className="flex items-start gap-3">
-                    <item.icon className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
-                    <span className="text-slate-300 line-through decoration-red-400/40">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* After */}
-          <Card className="bg-slate-800/60 border-green-500/30 border-2">
-            <CardContent className="p-8">
-              <h3 className="text-lg font-bold text-green-400 mb-6 uppercase tracking-wider">After</h3>
-              <ul className="space-y-4">
-                {[
-                  { icon: Zap, text: "Instant quote. Book in 60 seconds." },
-                  { icon: DollarSign, text: "Guaranteed pricing — quoted price is the max" },
-                  { icon: ShieldCheck, text: "Every Pro background checked and insured" },
-                  { icon: CheckCircle, text: "Real-time tracking. Know exactly when they arrive." },
-                ].map((item) => (
-                  <li key={item.text} className="flex items-start gap-3">
-                    <item.icon className="w-5 h-5 text-green-400 mt-0.5 shrink-0" />
-                    <span className="text-white font-medium">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </section>
   );
@@ -258,44 +199,6 @@ function TwoSides() {
             When a customer books through UpTend, they fund fair wages, verified quality, and a platform that holds everyone accountable. 
             <strong className="text-white"> You're not just booking a service — you're supporting a better industry.</strong>
           </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── HOME SCAN PROMO ─── */
-function HomeScanPromo() {
-  const { t } = useTranslation();
-  return (
-    <section className="py-16 bg-gradient-to-r from-[#3B1D5A] to-slate-900 text-white border-t border-border">
-      <div className="max-w-5xl mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-black mb-4">
-          {t("home_scan_promo.headline", "Scan Your Home for Free — Earn $25+")}
-        </h2>
-        <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-6 leading-relaxed">
-          {t("home_scan_promo.body", "Walk through your home room by room. Our AI identifies every appliance — brand, model, age, and condition — and builds a complete Home Health Record you own forever.")}
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8 text-left">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">Full Inventory</p>
-            <p className="text-sm text-slate-400">Every appliance, fixture, and system documented with photos, specs, and estimated remaining life.</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">Insurance-Ready</p>
-            <p className="text-sm text-slate-400">Timestamped records for claims, warranties, and resale — proof of what you have and its condition.</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="font-bold text-white mb-1">$25 Credit</p>
-            <p className="text-sm text-slate-400">Complete your scan and earn $25+ in service credits toward any booking on the platform.</p>
-          </div>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/ai/home-scan" asChild>
-            <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#F47C20]/25">
-              {t("home_scan_promo.cta", "Start Your Free Scan")} <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
         </div>
       </div>
     </section>
@@ -414,31 +317,6 @@ function Testimonials() {
                 <p className="text-xs text-muted-foreground">{t.service} -- {t.location}</p>
               </div>
             </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── TRUST BAR ─── */
-function TrustBar() {
-  return (
-    <section className="py-16 bg-slate-900 dark:bg-slate-950">
-      <div className="max-w-5xl mx-auto px-4">
-        <h2 className="text-2xl font-bold text-white text-center mb-10">Why people trust UpTend</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { icon: ShieldCheck, label: "Background Checked", desc: "Every Pro, every time" },
-            { icon: DollarSign, label: "Price Guarantee", desc: "Quoted price = max price" },
-            { icon: Leaf, label: "Impact Tracked", desc: "Every job measured" },
-            { icon: Star, label: "Real Reviews", desc: "From verified customers" },
-          ].map((item) => (
-            <div key={item.label}>
-              <item.icon className="w-8 h-8 text-[#F47C20] mx-auto mb-3" />
-              <h3 className="font-bold text-white text-sm mb-1">{item.label}</h3>
-              <p className="text-xs text-slate-400">{item.desc}</p>
-            </div>
           ))}
         </div>
       </div>

@@ -254,30 +254,69 @@ function FindProPage() {
 
 // ── Pro Card ──
 
+function StarRating({ rating, max = 5 }: { rating: number; max?: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {Array.from({ length: max }, (_, i) => (
+        <Star
+          key={i}
+          className={`w-3.5 h-3.5 ${
+            i < Math.round(rating)
+              ? "text-amber-500 fill-amber-500"
+              : "text-slate-300 dark:text-slate-600"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ProAvatar({ firstName, lastInitial }: { firstName: string; lastInitial: string }) {
+  const initials = `${firstName.charAt(0)}${lastInitial.charAt(0)}`.toUpperCase();
+  const colors = [
+    "bg-[#F47C20]",
+    "bg-[#3B1D5A]",
+    "bg-emerald-600",
+    "bg-sky-600",
+    "bg-rose-600",
+    "bg-amber-600",
+  ];
+  const colorIndex =
+    (firstName.charCodeAt(0) + lastInitial.charCodeAt(0)) % colors.length;
+  return (
+    <div
+      className={`w-12 h-12 rounded-full ${colors[colorIndex]} flex items-center justify-center text-white font-bold text-sm shrink-0`}
+    >
+      {initials}
+    </div>
+  );
+}
+
 function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfile: () => void; onBook: () => void }) {
   return (
     <Card className="overflow-hidden hover:border-[#F47C20]/50 transition-all">
       <CardContent className="p-5">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-3">
-          <div>
-            <h3 className="text-lg font-bold">{pro.firstName} {pro.lastInitial}.</h3>
-            <div className="flex items-center gap-1.5 mt-1">
-              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-              <span className="font-bold text-sm">{pro.rating}</span>
-              <span className="text-xs text-muted-foreground">({pro.reviewCount} reviews)</span>
+        {/* Header with avatar */}
+        <div className="flex items-start gap-3 mb-3">
+          <ProAvatar firstName={pro.firstName} lastInitial={pro.lastInitial} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between">
+              <h3 className="text-lg font-bold">{pro.firstName} {pro.lastInitial}.</h3>
+              <span className="text-xs text-muted-foreground shrink-0">{pro.jobsCompleted} jobs</span>
             </div>
-          </div>
-          <div className="text-right text-xs text-muted-foreground">
-            {pro.jobsCompleted} jobs
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <StarRating rating={pro.rating} />
+              <span className="font-bold text-xs">{pro.rating}</span>
+              <span className="text-[10px] text-muted-foreground">({pro.reviewCount})</span>
+            </div>
           </div>
         </div>
 
-        {/* Badges */}
+        {/* Verified badge — prominent */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           {pro.isVerified && (
-            <Badge variant="outline" className="text-[10px] border-green-500/50 text-green-500 gap-1">
-              <CheckCircle className="w-3 h-3" /> Verified
+            <Badge className="bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/30 text-[11px] font-semibold gap-1">
+              <CheckCircle className="w-3 h-3" /> Verified Pro
             </Badge>
           )}
           {pro.isInsured && (
@@ -292,24 +331,29 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
           ))}
         </div>
 
-        {/* Services */}
+        {/* Service pills */}
         <div className="flex flex-wrap gap-1 mb-3">
           {pro.services.map((svc) => (
-            <Badge key={svc} variant="secondary" className="text-[10px]">
+            <span
+              key={svc}
+              className="inline-block px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-medium text-slate-600 dark:text-slate-300"
+            >
               {SERVICE_LABELS[svc] || svc}
-            </Badge>
+            </span>
           ))}
         </div>
 
         {/* Bio */}
-        <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{pro.bio}</p>
+        {pro.bio && (
+          <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{pro.bio}</p>
+        )}
 
-        {/* Actions */}
+        {/* Two distinct buttons */}
         <div className="flex gap-2">
           <Button onClick={onBook} className="flex-1 bg-[#F47C20] hover:bg-[#e06a10] text-white font-bold" size="sm">
-            Book This Pro <ArrowRight className="w-3 h-3 ml-1" />
+            Book Now
           </Button>
-          <Button onClick={onViewProfile} variant="outline" size="sm">
+          <Button onClick={onViewProfile} variant="outline" className="flex-1" size="sm">
             View Profile
           </Button>
         </div>
