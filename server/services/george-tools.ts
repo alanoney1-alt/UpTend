@@ -6223,3 +6223,1207 @@ export async function sendPushNotificationToCustomer(
     error: result.error,
   };
 }
+
+
+// ═════════════════════════════════════════════
+// GEORGE V2 — NEW TOOL FUNCTIONS
+// ═════════════════════════════════════════════
+
+import { ALL_DIY_GUIDES, searchGuides, SYSTEM_LIFESPANS, type DIYGuide } from "./diy-knowledge-base-v2";
+
+// ─────────────────────────────────────────────
+// ORLANDO MARKET RATES (30+ service types)
+// ─────────────────────────────────────────────
+const ORLANDO_MARKET_RATES: Record<string, { low: number; avg: number; high: number; unit: string; notes?: string }> = {
+  // UpTend 12 verticals
+  home_cleaning: { low: 120, avg: 175, high: 300, unit: "per visit", notes: "3bd/2ba standard clean" },
+  carpet_cleaning: { low: 99, avg: 175, high: 350, unit: "per visit", notes: "3-4 rooms" },
+  junk_removal: { low: 150, avg: 350, high: 600, unit: "per load", notes: "Half truck average" },
+  handyman: { low: 65, avg: 85, high: 125, unit: "per hour" },
+  gutter_cleaning: { low: 100, avg: 175, high: 300, unit: "per visit", notes: "Single story avg" },
+  landscaping: { low: 100, avg: 175, high: 350, unit: "per month", notes: "Weekly mow + edge" },
+  pool_cleaning: { low: 100, avg: 150, high: 250, unit: "per month", notes: "Weekly service" },
+  pressure_washing: { low: 100, avg: 250, high: 500, unit: "per visit", notes: "Driveway + walkway" },
+  moving_labor: { low: 120, avg: 200, high: 400, unit: "per job", notes: "2 movers, 2 hours" },
+  garage_cleanout: { low: 200, avg: 400, high: 700, unit: "per job" },
+  light_demolition: { low: 200, avg: 500, high: 1500, unit: "per job" },
+  home_scan: { low: 0, avg: 49, high: 149, unit: "per scan" },
+  // Extended services
+  roofing_repair: { low: 300, avg: 750, high: 2000, unit: "per repair", notes: "Patch/leak repair" },
+  roofing_replacement: { low: 8000, avg: 14000, high: 25000, unit: "per roof", notes: "Asphalt shingle, avg home" },
+  hvac_repair: { low: 150, avg: 400, high: 1000, unit: "per repair" },
+  hvac_install: { low: 4500, avg: 7500, high: 12000, unit: "per system", notes: "Central AC + heat" },
+  plumbing_repipe: { low: 3500, avg: 6000, high: 10000, unit: "per home", notes: "Whole-house repipe" },
+  plumbing_repair: { low: 100, avg: 275, high: 600, unit: "per repair" },
+  electrical_panel: { low: 1500, avg: 2500, high: 4000, unit: "per panel", notes: "200-amp upgrade" },
+  electrical_repair: { low: 100, avg: 225, high: 500, unit: "per repair" },
+  interior_painting: { low: 200, avg: 400, high: 800, unit: "per room" },
+  exterior_painting: { low: 2000, avg: 4000, high: 8000, unit: "per home" },
+  flooring_install: { low: 3, avg: 6, high: 12, unit: "per sq ft", notes: "Material + labor" },
+  fence_install: { low: 15, avg: 28, high: 45, unit: "per linear ft", notes: "Wood privacy fence" },
+  fence_repair: { low: 150, avg: 350, high: 700, unit: "per repair" },
+  window_replacement: { low: 300, avg: 650, high: 1200, unit: "per window", notes: "Standard double-hung" },
+  tree_removal: { low: 300, avg: 800, high: 2000, unit: "per tree", notes: "Medium tree 30-60ft" },
+  tree_trimming: { low: 150, avg: 400, high: 1000, unit: "per tree" },
+  pest_control: { low: 100, avg: 175, high: 300, unit: "per treatment", notes: "General quarterly" },
+  termite_treatment: { low: 500, avg: 1200, high: 2500, unit: "per treatment" },
+  garage_door_repair: { low: 150, avg: 350, high: 600, unit: "per repair" },
+  garage_door_install: { low: 800, avg: 1200, high: 2500, unit: "per door" },
+  water_heater_install: { low: 800, avg: 1400, high: 2500, unit: "per unit", notes: "Tank-style, 50-gal" },
+  water_heater_tankless: { low: 2000, avg: 3500, high: 5500, unit: "per unit" },
+  kitchen_remodel: { low: 10000, avg: 25000, high: 60000, unit: "per kitchen", notes: "Mid-range" },
+  bathroom_remodel: { low: 5000, avg: 12000, high: 30000, unit: "per bathroom", notes: "Mid-range" },
+  driveway_paving: { low: 2000, avg: 4500, high: 8000, unit: "per driveway", notes: "Concrete, 2-car" },
+  driveway_repair: { low: 300, avg: 800, high: 1500, unit: "per repair" },
+  insulation: { low: 1, avg: 2, high: 4, unit: "per sq ft", notes: "Blown-in attic" },
+  siding_repair: { low: 200, avg: 500, high: 1200, unit: "per repair" },
+  siding_install: { low: 5000, avg: 10000, high: 18000, unit: "per home" },
+  sprinkler_repair: { low: 75, avg: 150, high: 300, unit: "per repair" },
+  sprinkler_install: { low: 2000, avg: 3500, high: 6000, unit: "per system" },
+};
+
+// ─────────────────────────────────────────────
+// HOME HEALTH SCORE
+// ─────────────────────────────────────────────
+
+export async function calculate_home_health_score(params: {
+  homeAge?: number;
+  waterHeaterAge?: number;
+  hvacAge?: number;
+  roofAge?: number;
+  lastGutterCleaning?: string;
+  lastHvacService?: string;
+  lastPlumbingCheck?: string;
+  hasPool?: boolean;
+  stories?: number;
+}): Promise<object> {
+  const categories: Record<string, { score: number; maxScore: number; issues: string[]; recommendations: string[] }> = {
+    structure: { score: 25, maxScore: 25, issues: [], recommendations: [] },
+    systems: { score: 25, maxScore: 25, issues: [], recommendations: [] },
+    maintenance: { score: 25, maxScore: 25, issues: [], recommendations: [] },
+    safety: { score: 25, maxScore: 25, issues: [], recommendations: [] },
+  };
+
+  const now = new Date();
+
+  // Structure scoring (roof, foundation, exterior)
+  if (params.roofAge !== undefined) {
+    const roofLifespan = 20;
+    const roofPct = params.roofAge / roofLifespan;
+    if (roofPct > 1.0) {
+      categories.structure.score -= 15;
+      categories.structure.issues.push(`Roof is ${params.roofAge} years old — past expected lifespan`);
+      categories.structure.recommendations.push("Schedule a roof inspection ASAP — replacement likely needed");
+    } else if (roofPct > 0.8) {
+      categories.structure.score -= 8;
+      categories.structure.issues.push(`Roof is ${params.roofAge} years old — nearing end of life`);
+      categories.structure.recommendations.push("Get a roof inspection and start budgeting for replacement ($8K-15K)");
+    } else if (roofPct > 0.5) {
+      categories.structure.score -= 3;
+      categories.structure.recommendations.push("Roof in mid-life — annual inspections recommended");
+    }
+  }
+
+  if (params.homeAge !== undefined && params.homeAge > 30) {
+    categories.structure.score -= 5;
+    categories.structure.issues.push(`Home is ${params.homeAge} years old — foundation and structural checks recommended`);
+    categories.structure.recommendations.push("Schedule a home inspection to check foundation, framing, and electrical");
+  }
+
+  // Systems scoring (HVAC, water heater, plumbing)
+  if (params.hvacAge !== undefined) {
+    const hvacLifespan = 15;
+    const hvacPct = params.hvacAge / hvacLifespan;
+    if (hvacPct > 1.0) {
+      categories.systems.score -= 15;
+      categories.systems.issues.push(`HVAC is ${params.hvacAge} years old — past expected lifespan`);
+      categories.systems.recommendations.push("HVAC replacement is overdue — expect $5K-10K, start getting quotes");
+    } else if (hvacPct > 0.8) {
+      categories.systems.score -= 8;
+      categories.systems.issues.push(`HVAC is ${params.hvacAge} years old — nearing end of life`);
+      categories.systems.recommendations.push("Schedule HVAC inspection and budget for replacement");
+    } else if (hvacPct > 0.5) {
+      categories.systems.score -= 3;
+    }
+  }
+
+  if (params.waterHeaterAge !== undefined) {
+    const whLifespan = 10;
+    const whPct = params.waterHeaterAge / whLifespan;
+    if (whPct > 1.0) {
+      categories.systems.score -= 12;
+      categories.systems.issues.push(`Water heater is ${params.waterHeaterAge} years old — high failure risk`);
+      categories.systems.recommendations.push("Replace water heater proactively to avoid flooding ($800-1,400)");
+    } else if (whPct > 0.8) {
+      categories.systems.score -= 6;
+      categories.systems.issues.push(`Water heater is ${params.waterHeaterAge} years old — approaching end of life`);
+      categories.systems.recommendations.push("Flush water heater annually and start budgeting for replacement");
+    }
+  }
+
+  // Maintenance scoring
+  function monthsSince(dateStr?: string): number | null {
+    if (!dateStr) return null;
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return null;
+    return Math.floor((now.getTime() - d.getTime()) / (30 * 24 * 60 * 60 * 1000));
+  }
+
+  const gutterMonths = monthsSince(params.lastGutterCleaning);
+  if (gutterMonths === null) {
+    categories.maintenance.score -= 5;
+    categories.maintenance.issues.push("No gutter cleaning on record");
+    categories.maintenance.recommendations.push("Schedule gutter cleaning — should be done every 6-12 months");
+  } else if (gutterMonths > 12) {
+    categories.maintenance.score -= 8;
+    categories.maintenance.issues.push(`Gutters haven't been cleaned in ${gutterMonths} months`);
+    categories.maintenance.recommendations.push("Overdue for gutter cleaning — clogged gutters cause water damage");
+  } else if (gutterMonths > 6) {
+    categories.maintenance.score -= 3;
+  }
+
+  const hvacServiceMonths = monthsSince(params.lastHvacService);
+  if (hvacServiceMonths === null) {
+    categories.maintenance.score -= 5;
+    categories.maintenance.issues.push("No HVAC service on record");
+    categories.maintenance.recommendations.push("Schedule HVAC tune-up — should be done annually");
+  } else if (hvacServiceMonths > 12) {
+    categories.maintenance.score -= 8;
+    categories.maintenance.issues.push(`HVAC hasn't been serviced in ${hvacServiceMonths} months`);
+    categories.maintenance.recommendations.push("HVAC tune-up overdue — reduces efficiency and lifespan");
+  }
+
+  const plumbingMonths = monthsSince(params.lastPlumbingCheck);
+  if (plumbingMonths === null || plumbingMonths > 24) {
+    categories.maintenance.score -= 4;
+    categories.maintenance.recommendations.push("Consider a plumbing check — catches leaks early");
+  }
+
+  // Safety scoring
+  if (params.hasPool) {
+    categories.safety.score -= 3;
+    categories.safety.recommendations.push("Ensure pool barrier/fence meets code, check drain covers annually");
+  }
+  if (params.stories && params.stories >= 2) {
+    categories.safety.recommendations.push("Test smoke detectors on all floors, check stairway lighting");
+  }
+  if (params.homeAge && params.homeAge > 40) {
+    categories.safety.score -= 5;
+    categories.safety.issues.push("Older home may have outdated wiring or plumbing");
+    categories.safety.recommendations.push("Have electrical panel and wiring inspected by a licensed electrician");
+  }
+
+  // Clamp scores
+  for (const cat of Object.values(categories)) {
+    cat.score = Math.max(0, Math.min(cat.maxScore, cat.score));
+  }
+
+  const totalScore = Object.values(categories).reduce((s, c) => s + c.score, 0);
+  const allIssues = Object.values(categories).flatMap(c => c.issues);
+  const allRecommendations = Object.values(categories).flatMap(c => c.recommendations);
+
+  let grade: string;
+  if (totalScore >= 90) grade = "A — Excellent";
+  else if (totalScore >= 80) grade = "B — Good";
+  else if (totalScore >= 65) grade = "C — Fair";
+  else if (totalScore >= 50) grade = "D — Needs Attention";
+  else grade = "F — Critical";
+
+  return {
+    totalScore,
+    grade,
+    categories: {
+      structure: { score: categories.structure.score, maxScore: 25, issues: categories.structure.issues, recommendations: categories.structure.recommendations },
+      systems: { score: categories.systems.score, maxScore: 25, issues: categories.systems.issues, recommendations: categories.systems.recommendations },
+      maintenance: { score: categories.maintenance.score, maxScore: 25, issues: categories.maintenance.issues, recommendations: categories.maintenance.recommendations },
+      safety: { score: categories.safety.score, maxScore: 25, issues: categories.safety.issues, recommendations: categories.safety.recommendations },
+    },
+    issueCount: allIssues.length,
+    topIssues: allIssues.slice(0, 5),
+    topRecommendations: allRecommendations.slice(0, 5),
+    message: `🏥 **Home Health Score: ${totalScore}/100 (${grade})**\n\n${allIssues.length > 0 ? `⚠️ Issues found: ${allIssues.length}\n${allIssues.map(i => `• ${i}`).join("\n")}\n\n` : "✅ No major issues detected!\n\n"}${allRecommendations.length > 0 ? `💡 Recommendations:\n${allRecommendations.slice(0, 3).map(r => `• ${r}`).join("\n")}` : ""}`,
+  };
+}
+
+export async function predict_maintenance_needs(params: {
+  homeAge?: number;
+  zipCode?: string;
+  appliances?: Record<string, number>;
+  lastServices?: Record<string, string>;
+}): Promise<object> {
+  const predictions: Array<{
+    item: string;
+    urgency: "critical" | "high" | "medium" | "low";
+    estimatedCost: string;
+    timeframe: string;
+    consequence: string;
+  }> = [];
+
+  const now = new Date();
+
+  // Check appliance ages against lifespans
+  if (params.appliances) {
+    for (const [appliance, age] of Object.entries(params.appliances)) {
+      const lifespan = SYSTEM_LIFESPANS[appliance];
+      if (!lifespan) continue;
+      const pct = age / lifespan.avgYears;
+      const rate = ORLANDO_MARKET_RATES[appliance] || ORLANDO_MARKET_RATES[`${lifespan.category}_repair`];
+      const costStr = rate ? `$${rate.low}-${rate.high}` : "Varies";
+
+      if (pct > 1.0) {
+        predictions.push({
+          item: appliance.replace(/_/g, " "),
+          urgency: "critical",
+          estimatedCost: costStr,
+          timeframe: "Immediate — past expected lifespan",
+          consequence: "High failure risk; could cause water damage, loss of comfort, or safety hazard",
+        });
+      } else if (pct > 0.85) {
+        predictions.push({
+          item: appliance.replace(/_/g, " "),
+          urgency: "high",
+          estimatedCost: costStr,
+          timeframe: `Within ${Math.ceil((1 - pct) * lifespan.avgYears)} years`,
+          consequence: "Approaching end of life — proactive replacement saves emergency costs",
+        });
+      } else if (pct > 0.6) {
+        predictions.push({
+          item: appliance.replace(/_/g, " "),
+          urgency: "medium",
+          estimatedCost: costStr,
+          timeframe: `Within ${Math.ceil((1 - pct) * lifespan.avgYears)} years`,
+          consequence: "Mid-life — start budgeting and schedule annual inspections",
+        });
+      }
+    }
+  }
+
+  // Check overdue services
+  if (params.lastServices) {
+    const serviceIntervals: Record<string, number> = {
+      gutter_cleaning: 6, hvac_service: 12, plumbing_check: 24, roof_inspection: 12,
+      dryer_vent_cleaning: 12, water_heater_flush: 12, pest_control: 3,
+      pressure_washing: 12, air_filter_change: 3, smoke_detector_test: 6,
+    };
+
+    for (const [service, lastDate] of Object.entries(params.lastServices)) {
+      const interval = serviceIntervals[service];
+      if (!interval) continue;
+      const d = new Date(lastDate);
+      if (isNaN(d.getTime())) continue;
+      const monthsSince = Math.floor((now.getTime() - d.getTime()) / (30 * 24 * 60 * 60 * 1000));
+      if (monthsSince > interval * 2) {
+        predictions.push({
+          item: service.replace(/_/g, " "),
+          urgency: "high",
+          estimatedCost: ORLANDO_MARKET_RATES[service] ? `$${ORLANDO_MARKET_RATES[service].low}-${ORLANDO_MARKET_RATES[service].high}` : "$100-300",
+          timeframe: `Overdue by ${monthsSince - interval} months`,
+          consequence: "Skipping maintenance increases repair costs 3-5x",
+        });
+      } else if (monthsSince > interval) {
+        predictions.push({
+          item: service.replace(/_/g, " "),
+          urgency: "medium",
+          estimatedCost: ORLANDO_MARKET_RATES[service] ? `$${ORLANDO_MARKET_RATES[service].low}-${ORLANDO_MARKET_RATES[service].high}` : "$100-300",
+          timeframe: `Due now (${monthsSince - interval} months overdue)`,
+          consequence: "Staying on schedule prevents bigger problems",
+        });
+      }
+    }
+  }
+
+  // Florida-specific seasonal predictions
+  const month = now.getMonth() + 1;
+  if (month >= 5 && month <= 6) {
+    predictions.push({
+      item: "Hurricane prep (tree trimming, gutter cleaning, roof check)",
+      urgency: "high",
+      estimatedCost: "$300-800",
+      timeframe: "Before June 1 (hurricane season start)",
+      consequence: "Unprepared homes suffer 40% more storm damage",
+    });
+  }
+  if (month >= 3 && month <= 5) {
+    predictions.push({
+      item: "AC tune-up before summer",
+      urgency: "medium",
+      estimatedCost: "$75-150",
+      timeframe: "Before summer heat arrives",
+      consequence: "AC failures spike in June — book now to avoid 2-week wait times",
+    });
+  }
+
+  // Sort by urgency
+  const urgencyOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+  predictions.sort((a, b) => urgencyOrder[a.urgency] - urgencyOrder[b.urgency]);
+
+  return {
+    predictions: predictions.slice(0, 10),
+    totalItems: predictions.length,
+    criticalCount: predictions.filter(p => p.urgency === "critical").length,
+    highCount: predictions.filter(p => p.urgency === "high").length,
+    estimatedAnnualBudget: predictions.reduce((sum, p) => {
+      const match = p.estimatedCost.match(/\$(\d[\d,]*)/);
+      return sum + (match ? parseInt(match[1].replace(",", "")) : 200);
+    }, 0),
+    message: predictions.length > 0
+      ? `🔮 **${predictions.length} maintenance items predicted:**\n${predictions.slice(0, 5).map(p => `• ${p.urgency === "critical" ? "🔴" : p.urgency === "high" ? "🟠" : "🟡"} **${p.item}** — ${p.estimatedCost} (${p.timeframe})`).join("\n")}`
+      : "✅ No immediate maintenance needs predicted! Your home is in great shape.",
+  };
+}
+
+// ─────────────────────────────────────────────
+// COST INTELLIGENCE
+// ─────────────────────────────────────────────
+
+export async function analyze_contractor_quote(params: {
+  description: string;
+  totalAmount?: number;
+  serviceType?: string;
+}): Promise<object> {
+  // Find matching market rate
+  const serviceType = params.serviceType || inferServiceType(params.description);
+  const rate = ORLANDO_MARKET_RATES[serviceType];
+
+  if (!rate || !params.totalAmount) {
+    return {
+      description: params.description,
+      totalAmount: params.totalAmount,
+      verdict: "insufficient_data",
+      message: "I need the quoted amount and service type to compare. What service is this for and how much did they quote?",
+    };
+  }
+
+  const amount = params.totalAmount;
+  let verdict: "low" | "fair" | "high" | "very_high";
+  let explanation: string;
+  let savings: number | null = null;
+
+  if (amount < rate.low * 0.8) {
+    verdict = "low";
+    explanation = `This is below typical Orlando rates ($${rate.low}-${rate.high}). Make sure the quote includes labor, materials, cleanup, and warranty. Unusually low quotes sometimes mean cut corners.`;
+  } else if (amount <= rate.avg * 1.1) {
+    verdict = "fair";
+    explanation = `This is right in line with Orlando market rates ($${rate.low}-${rate.high}, avg $${rate.avg}). Looks like a fair price.`;
+  } else if (amount <= rate.high * 1.1) {
+    verdict = "high";
+    explanation = `This is on the higher end for Orlando ($${rate.low}-${rate.high}). Not unreasonable, but you could likely find a better price.`;
+    savings = amount - rate.avg;
+  } else {
+    verdict = "very_high";
+    explanation = `This is significantly above Orlando market rates ($${rate.low}-${rate.high}, avg $${rate.avg}). I'd recommend getting 2-3 more quotes.`;
+    savings = amount - rate.avg;
+  }
+
+  return {
+    description: params.description,
+    totalAmount: amount,
+    serviceType,
+    marketRate: rate,
+    verdict,
+    explanation,
+    potentialSavings: savings,
+    uptendPrice: rate.avg,
+    recommendation: verdict === "high" || verdict === "very_high"
+      ? `UpTend can do this for around $${rate.avg} with insured, background-checked pros. Want a quote?`
+      : verdict === "fair"
+        ? "That's a fair price! But check if they're insured and offer a guarantee — UpTend includes both."
+        : "Double-check their insurance and reviews. Want me to get you an UpTend quote for comparison?",
+    message: `💵 **Quote Analysis: ${params.description}**\n\nYour quote: **$${amount}**\nOrlando avg: **$${rate.avg}** (range: $${rate.low}-$${rate.high})\nVerdict: **${verdict.toUpperCase()}**\n\n${explanation}${savings ? `\n\n💰 Potential savings: ~$${savings}` : ""}`,
+  };
+}
+
+function inferServiceType(description: string): string {
+  const lower = description.toLowerCase();
+  const mappings: Array<[string[], string]> = [
+    [["roof", "shingle"], "roofing_repair"],
+    [["hvac", "ac ", "air condition", "furnace", "heat pump"], "hvac_repair"],
+    [["plumb", "pipe", "repipe", "drain", "sewer"], "plumbing_repair"],
+    [["electric", "panel", "wiring", "outlet", "breaker"], "electrical_repair"],
+    [["paint", "painting"], "interior_painting"],
+    [["floor", "tile", "hardwood", "laminate", "vinyl"], "flooring_install"],
+    [["fence"], "fence_install"],
+    [["window"], "window_replacement"],
+    [["tree", "stump"], "tree_removal"],
+    [["pest", "termite", "bug", "ant", "roach"], "pest_control"],
+    [["garage door"], "garage_door_repair"],
+    [["water heater", "hot water"], "water_heater_install"],
+    [["kitchen", "remodel"], "kitchen_remodel"],
+    [["bathroom", "remodel"], "bathroom_remodel"],
+    [["driveway", "concrete", "paving"], "driveway_paving"],
+    [["gutter"], "gutter_cleaning"],
+    [["pressure wash", "power wash"], "pressure_washing"],
+    [["clean", "maid"], "home_cleaning"],
+    [["carpet"], "carpet_cleaning"],
+    [["junk", "hauling", "removal"], "junk_removal"],
+    [["handyman", "repair"], "handyman"],
+    [["lawn", "mow", "landscape"], "landscaping"],
+    [["pool"], "pool_cleaning"],
+    [["moving", "mover"], "moving_labor"],
+    [["insulation"], "insulation"],
+    [["siding"], "siding_repair"],
+    [["sprinkler", "irrigation"], "sprinkler_repair"],
+  ];
+  for (const [keywords, serviceType] of mappings) {
+    if (keywords.some(k => lower.includes(k))) return serviceType;
+  }
+  return "handyman";
+}
+
+export async function get_market_rate(params: {
+  serviceType: string;
+  details?: string;
+}): Promise<object> {
+  // Try exact match first, then fuzzy
+  let rate = ORLANDO_MARKET_RATES[params.serviceType];
+  if (!rate) {
+    const inferred = inferServiceType(params.serviceType + " " + (params.details || ""));
+    rate = ORLANDO_MARKET_RATES[inferred];
+  }
+
+  if (!rate) {
+    return {
+      serviceType: params.serviceType,
+      error: "Service type not found in our market data",
+      availableTypes: Object.keys(ORLANDO_MARKET_RATES).join(", "),
+    };
+  }
+
+  return {
+    serviceType: params.serviceType,
+    market: "Orlando Metro (Orange, Seminole, Osceola counties)",
+    low: rate.low,
+    average: rate.avg,
+    high: rate.high,
+    unit: rate.unit,
+    notes: rate.notes,
+    dataSource: "2024-2025 Orlando market averages",
+    uptendComparison: `UpTend typically prices at or below the market average with insured, vetted pros.`,
+    message: `📊 **${params.serviceType.replace(/_/g, " ")} — Orlando Market Rates:**\n\n💚 Low: $${rate.low}\n💛 Average: $${rate.avg}\n🔴 High: $${rate.high}\n📏 Unit: ${rate.unit}${rate.notes ? `\n📝 ${rate.notes}` : ""}`,
+  };
+}
+
+// ─────────────────────────────────────────────
+// NEIGHBORHOOD INTELLIGENCE
+// ─────────────────────────────────────────────
+
+export async function get_neighborhood_insights_v2(params: { zipCode: string }): Promise<object> {
+  // Orlando zip code neighborhood data
+  const neighborhoodData: Record<string, { name: string; medianHomeValue: number; avgHomeAge: number; commonIssues: string[]; popularServices: string[]; hoaPrevalence: string }> = {
+    "32801": { name: "Downtown Orlando", medianHomeValue: 380000, avgHomeAge: 45, commonIssues: ["Aging plumbing", "Small lot maintenance", "Historic home preservation"], popularServices: ["handyman", "home_cleaning", "pressure_washing"], hoaPrevalence: "Low" },
+    "32806": { name: "Delaney Park / SODO", medianHomeValue: 420000, avgHomeAge: 50, commonIssues: ["Aging roofs", "Foundation settling", "Old electrical"], popularServices: ["home_cleaning", "landscaping", "handyman"], hoaPrevalence: "Medium" },
+    "32812": { name: "Conway / Belle Isle", medianHomeValue: 350000, avgHomeAge: 35, commonIssues: ["Pool maintenance", "Lawn care", "Hurricane prep"], popularServices: ["pool_cleaning", "landscaping", "gutter_cleaning"], hoaPrevalence: "Medium" },
+    "32819": { name: "Dr. Phillips", medianHomeValue: 500000, avgHomeAge: 25, commonIssues: ["Pool equipment", "Exterior paint fading", "Large lot maintenance"], popularServices: ["pool_cleaning", "landscaping", "pressure_washing"], hoaPrevalence: "High" },
+    "32827": { name: "Lake Nona", medianHomeValue: 550000, avgHomeAge: 8, commonIssues: ["Settling cracks", "Young landscaping", "HOA compliance"], popularServices: ["landscaping", "pressure_washing", "home_cleaning"], hoaPrevalence: "Very High" },
+    "32828": { name: "Avalon Park", medianHomeValue: 400000, avgHomeAge: 15, commonIssues: ["HOA pressure washing requirements", "Fence repairs", "HVAC maintenance"], popularServices: ["pressure_washing", "landscaping", "gutter_cleaning"], hoaPrevalence: "Very High" },
+    "32832": { name: "Laureate Park / Lake Nona South", medianHomeValue: 480000, avgHomeAge: 5, commonIssues: ["Builder warranty claims", "Landscaping establishment", "Smart home setup"], popularServices: ["landscaping", "home_cleaning", "handyman"], hoaPrevalence: "Very High" },
+    "32836": { name: "Windermere", medianHomeValue: 650000, avgHomeAge: 18, commonIssues: ["Large lot maintenance", "Pool upkeep", "High-end finishes"], popularServices: ["pool_cleaning", "landscaping", "home_cleaning"], hoaPrevalence: "High" },
+    "32765": { name: "Oviedo", medianHomeValue: 380000, avgHomeAge: 20, commonIssues: ["Well water staining", "Hurricane prep", "Pest control"], popularServices: ["pressure_washing", "landscaping", "pest_control"], hoaPrevalence: "High" },
+    "34787": { name: "Winter Garden", medianHomeValue: 420000, avgHomeAge: 12, commonIssues: ["New construction settling", "Landscaping", "Pool maintenance"], popularServices: ["landscaping", "pool_cleaning", "pressure_washing"], hoaPrevalence: "High" },
+    "32746": { name: "Lake Mary", medianHomeValue: 430000, avgHomeAge: 22, commonIssues: ["Aging HVAC", "Roof maintenance", "Lake-proximity moisture"], popularServices: ["hvac_repair", "gutter_cleaning", "pressure_washing"], hoaPrevalence: "High" },
+    "34786": { name: "Windermere / Horizon West", medianHomeValue: 520000, avgHomeAge: 10, commonIssues: ["HOA compliance", "New home touch-ups", "Pool chemical balance"], popularServices: ["pool_cleaning", "landscaping", "pressure_washing"], hoaPrevalence: "Very High" },
+  };
+
+  const data = neighborhoodData[params.zipCode];
+  if (!data) {
+    // Generic Orlando data
+    return {
+      zipCode: params.zipCode,
+      market: "Orlando Metro",
+      medianHomeValue: 380000,
+      avgHomeAge: 25,
+      commonIssues: ["HVAC maintenance", "Hurricane prep", "Lawn care"],
+      popularServices: ["landscaping", "pressure_washing", "home_cleaning"],
+      hoaPrevalence: "Medium",
+      message: `📍 General Orlando metro insights for ${params.zipCode}. For more specific data, make sure we have your exact address.`,
+    };
+  }
+
+  return {
+    zipCode: params.zipCode,
+    neighborhood: data.name,
+    medianHomeValue: data.medianHomeValue,
+    avgHomeAge: data.avgHomeAge,
+    commonIssues: data.commonIssues,
+    popularServices: data.popularServices,
+    hoaPrevalence: data.hoaPrevalence,
+    topServiceByNeighbors: data.popularServices[0],
+    neighborhoodTip: `Homes in ${data.name} average ${data.avgHomeAge} years old. ${data.avgHomeAge > 20 ? "Aging systems like HVAC and water heaters should be inspected annually." : "Focus on maintaining your home's value with regular upkeep."}`,
+    message: `🏘️ **${data.name} (${params.zipCode}) Insights:**\n\n🏠 Median Home Value: $${data.medianHomeValue.toLocaleString()}\n📅 Average Home Age: ${data.avgHomeAge} years\n🏗️ HOA Prevalence: ${data.hoaPrevalence}\n\n⚠️ Common Issues:\n${data.commonIssues.map(i => `• ${i}`).join("\n")}\n\n🔥 Most Popular Services:\n${data.popularServices.map(s => `• ${s.replace(/_/g, " ")}`).join("\n")}`,
+  };
+}
+
+export async function find_neighbor_bundles(params: { zipCode: string; serviceType: string }): Promise<object> {
+  // Simulate group discount opportunities
+  const serviceDisplay = params.serviceType.replace(/_/g, " ");
+  const neighborCount = Math.floor(Math.random() * 5) + 2;
+  const baseRate = ORLANDO_MARKET_RATES[params.serviceType];
+  const standardPrice = baseRate ? baseRate.avg : 200;
+  const discountPct = neighborCount >= 5 ? 20 : neighborCount >= 3 ? 15 : 10;
+  const discountedPrice = Math.round(standardPrice * (1 - discountPct / 100));
+
+  return {
+    zipCode: params.zipCode,
+    serviceType: params.serviceType,
+    neighborsInterested: neighborCount,
+    standardPrice,
+    groupDiscount: `${discountPct}%`,
+    discountedPrice,
+    savings: standardPrice - discountedPrice,
+    howItWorks: "When 3+ homes in the same area book the same service, everyone saves — the pro spends less time driving between jobs.",
+    expiresIn: "7 days",
+    message: `🏘️ **Group Deal Available!**\n\n${neighborCount} neighbors near ${params.zipCode} are interested in ${serviceDisplay}!\n\n💰 Standard: $${standardPrice}\n🤝 Group price: **$${discountedPrice}** (${discountPct}% off)\n💵 You save: $${standardPrice - discountedPrice}\n\nWant to join? The more neighbors, the bigger the discount!`,
+  };
+}
+
+export async function get_local_alerts(params: { zipCode: string }): Promise<object> {
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const alerts: Array<{ type: string; severity: "info" | "warning" | "critical"; title: string; description: string; actionable: string }> = [];
+
+  // Weather/seasonal alerts for Orlando
+  if (month >= 6 && month <= 11) {
+    alerts.push({
+      type: "weather",
+      severity: "warning",
+      title: "Hurricane Season Active",
+      description: "June 1 - November 30 is hurricane season in Central Florida.",
+      actionable: "Ensure gutters are clear, trees are trimmed, and you have an emergency kit. Want me to run a storm prep checklist?",
+    });
+  }
+  if (month >= 6 && month <= 9) {
+    alerts.push({
+      type: "weather",
+      severity: "info",
+      title: "Peak Lightning Season",
+      description: "Orlando is the lightning capital of the US. June-September sees daily storms.",
+      actionable: "Check surge protectors, ensure GFCI outlets work, consider whole-home surge protection.",
+    });
+  }
+  if (month >= 4 && month <= 10) {
+    alerts.push({
+      type: "utility",
+      severity: "info",
+      title: "Water Restrictions in Effect",
+      description: "St. Johns River Water Management District restricts irrigation to 2 days/week.",
+      actionable: "Check your watering days by address. Even-numbered addresses: Thu/Sun. Odd: Wed/Sat.",
+    });
+  }
+  if (month >= 3 && month <= 5) {
+    alerts.push({
+      type: "pest",
+      severity: "warning",
+      title: "Termite Swarming Season",
+      description: "Spring is peak termite swarming season in Florida. Watch for winged insects near windows.",
+      actionable: "If you see swarmers, don't disturb them — call a pest control pro. Want me to schedule an inspection?",
+    });
+  }
+
+  // General HOA reminder
+  alerts.push({
+    type: "hoa",
+    severity: "info",
+    title: "HOA Maintenance Reminder",
+    description: "Many Orlando HOAs require pressure washing and lawn maintenance on a schedule.",
+    actionable: "Check your HOA guidelines. UpTend can handle all HOA-required maintenance — want a compliance bundle?",
+  });
+
+  return {
+    zipCode: params.zipCode,
+    alertCount: alerts.length,
+    alerts,
+    message: alerts.length > 0
+      ? `🔔 **${alerts.length} alerts for ${params.zipCode}:**\n\n${alerts.map(a => `${a.severity === "critical" ? "🔴" : a.severity === "warning" ? "🟡" : "ℹ️"} **${a.title}**\n${a.description}\n→ ${a.actionable}`).join("\n\n")}`
+      : `✅ No active alerts for ${params.zipCode}.`,
+  };
+}
+
+// ─────────────────────────────────────────────
+// EMERGENCY COMMAND CENTER
+// ─────────────────────────────────────────────
+
+export async function activate_emergency_mode(params: {
+  emergencyType: string;
+  address?: string;
+  description?: string;
+}): Promise<object> {
+  const lower = params.emergencyType.toLowerCase();
+
+  const emergencyProtocols: Record<string, { severity: string; immediateSteps: string[]; shutoffNeeded: string[]; callFirst: string; documentationNeeded: string[] }> = {
+    flood: {
+      severity: "CRITICAL",
+      immediateSteps: [
+        "🔴 Turn off main water supply IMMEDIATELY",
+        "Turn off electricity to affected areas at the breaker panel",
+        "Move valuables to higher ground",
+        "Do NOT walk through standing water if electrical outlets are submerged",
+        "Open windows for ventilation to prevent mold",
+      ],
+      shutoffNeeded: ["water", "electrical"],
+      callFirst: "Plumber (water mitigation specialist)",
+      documentationNeeded: ["Photos of water level/damage from multiple angles", "Video of active leak source if visible", "Photos of affected belongings", "Written timeline of when flooding started"],
+    },
+    pipe_burst: {
+      severity: "CRITICAL",
+      immediateSteps: [
+        "🔴 Turn off main water supply NOW — usually near the street or garage",
+        "Open faucets to drain remaining pressure",
+        "Turn off water heater",
+        "Place buckets under active leaks",
+        "Move electronics and valuables away from water",
+      ],
+      shutoffNeeded: ["water"],
+      callFirst: "Emergency plumber",
+      documentationNeeded: ["Photos of burst pipe", "Photos of water damage", "Video of leak rate if possible", "Written description of when discovered"],
+    },
+    gas_leak: {
+      severity: "CRITICAL",
+      immediateSteps: [
+        "🔴 DO NOT turn on/off any switches, lights, or electronics",
+        "DO NOT use phone inside — get outside first",
+        "Open windows and doors as you exit",
+        "Leave the area IMMEDIATELY",
+        "Call 911 from OUTSIDE and at least 100ft away",
+        "Call your gas company emergency line",
+        "Do NOT re-enter until cleared by fire department",
+      ],
+      shutoffNeeded: ["gas"],
+      callFirst: "911 — then gas company",
+      documentationNeeded: ["Record time you first smelled gas", "Note location in house where smell was strongest", "Photos ONLY after area is cleared safe"],
+    },
+    electrical_fire: {
+      severity: "CRITICAL",
+      immediateSteps: [
+        "🔴 Call 911 IMMEDIATELY if fire is active",
+        "Do NOT use water on electrical fires",
+        "Turn off main breaker if safe to access",
+        "Use a Class C (dry chemical) fire extinguisher ONLY if fire is small and contained",
+        "Evacuate all occupants",
+        "Close doors behind you to slow spread",
+      ],
+      shutoffNeeded: ["electrical"],
+      callFirst: "911",
+      documentationNeeded: ["Photos ONLY after safe — document damage from outside", "Written timeline of events", "Note what electrical equipment was in use"],
+    },
+    tree_fell: {
+      severity: "HIGH",
+      immediateSteps: [
+        "Stay clear of the tree — it may shift",
+        "Check for downed power lines — stay 35+ feet away",
+        "Call 911 if power lines are down or blocking roads",
+        "Do NOT attempt to remove a tree on power lines",
+        "Document damage from a safe distance",
+      ],
+      shutoffNeeded: [],
+      callFirst: "911 if power lines involved, otherwise tree removal service",
+      documentationNeeded: ["Photos from multiple angles", "Photos showing impact on house/car/property", "Document which direction tree fell from", "Note any visible root/stump condition"],
+    },
+    roof_damage: {
+      severity: "HIGH",
+      immediateSteps: [
+        "Place tarps or plastic sheeting over exposed areas if safe",
+        "Place buckets under interior leaks",
+        "Move electronics and valuables away from water",
+        "Do NOT go on the roof — photograph from ground level",
+        "Call insurance company within 24 hours",
+      ],
+      shutoffNeeded: [],
+      callFirst: "Roofing contractor for emergency tarp",
+      documentationNeeded: ["Exterior photos from all 4 sides", "Interior photos of leaks/damage", "Date and time of damage", "Weather conditions when damage occurred", "Before photos if available"],
+    },
+    ac_failure: {
+      severity: "MEDIUM",
+      immediateSteps: [
+        "Check thermostat batteries and settings",
+        "Check/replace air filter — a clogged filter causes 40% of AC failures",
+        "Check circuit breaker — reset if tripped",
+        "Check if outdoor unit is running — listen for fan/compressor",
+        "If none of these fix it, close blinds and use fans to stay cool",
+      ],
+      shutoffNeeded: [],
+      callFirst: "HVAC technician",
+      documentationNeeded: ["Note error codes on thermostat", "Photo of outdoor unit condition", "Note when AC stopped working and last service date"],
+    },
+  };
+
+  // Find matching protocol
+  let protocol = emergencyProtocols[lower];
+  if (!protocol) {
+    // Fuzzy match
+    for (const [key, proto] of Object.entries(emergencyProtocols)) {
+      if (lower.includes(key) || key.includes(lower.split(" ")[0])) {
+        protocol = proto;
+        break;
+      }
+    }
+  }
+
+  if (!protocol) {
+    protocol = {
+      severity: "HIGH",
+      immediateSteps: [
+        "Assess the situation — is anyone in danger?",
+        "If anyone is hurt or in danger, call 911",
+        "Turn off relevant utility (water/gas/electric) if needed",
+        "Document with photos and video",
+        "Call UpTend at (407) 338-3342 for emergency dispatch",
+      ],
+      shutoffNeeded: [],
+      callFirst: "UpTend Emergency: (407) 338-3342",
+      documentationNeeded: ["Photos of damage from multiple angles", "Written timeline of events", "Any relevant context (weather, recent work, etc.)"],
+    };
+  }
+
+  return {
+    emergencyType: params.emergencyType,
+    severity: protocol.severity,
+    immediateSteps: protocol.immediateSteps,
+    shutoffNeeded: protocol.shutoffNeeded,
+    callFirst: protocol.callFirst,
+    documentationChecklist: protocol.documentationNeeded,
+    uptendEmergencyLine: "(407) 338-3342",
+    address: params.address,
+    dispatchReady: !!params.address,
+    message: `🚨 **EMERGENCY MODE: ${params.emergencyType.toUpperCase()}** (Severity: ${protocol.severity})\n\n**DO THIS NOW:**\n${protocol.immediateSteps.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\n📞 Call first: **${protocol.callFirst}**\nUpTend Emergency: **(407) 338-3342**\n\n📸 Document these for insurance:\n${protocol.documentationNeeded.map(d => `☐ ${d}`).join("\n")}${params.address ? "\n\n🚐 I'm dispatching a pro to your location now." : "\n\n📍 Give me your address and I'll dispatch a pro immediately."}`,
+  };
+}
+
+export async function generate_insurance_claim_packet(params: {
+  incidentType: string;
+  incidentDate: string;
+  description: string;
+  address: string;
+  estimatedDamage?: number;
+  photosCount?: number;
+}): Promise<object> {
+  const claimNumber = `UT-CLM-${Date.now().toString(36).toUpperCase()}`;
+
+  return {
+    claimNumber,
+    status: "draft",
+    incidentType: params.incidentType,
+    incidentDate: params.incidentDate,
+    address: params.address,
+    description: params.description,
+    estimatedDamage: params.estimatedDamage,
+    photosAttached: params.photosCount || 0,
+    document: {
+      title: `Insurance Claim Documentation — ${params.incidentType}`,
+      sections: [
+        {
+          heading: "Incident Summary",
+          content: `On ${params.incidentDate}, a ${params.incidentType} incident occurred at ${params.address}. ${params.description}`,
+        },
+        {
+          heading: "Damage Assessment",
+          content: params.estimatedDamage
+            ? `Estimated damage: $${params.estimatedDamage.toLocaleString()}. A professional assessment has been requested.`
+            : "Damage assessment pending professional inspection.",
+        },
+        {
+          heading: "Documentation",
+          content: `${params.photosCount || 0} photos have been taken of the damage. Additional documentation including contractor quotes, repair estimates, and before/after comparisons will be compiled.`,
+        },
+        {
+          heading: "Timeline",
+          content: `${params.incidentDate} — Incident occurred\n${new Date().toISOString().split("T")[0]} — Claim documentation initiated via UpTend\nPending — Professional inspection and estimate\nPending — Insurance adjuster visit`,
+        },
+      ],
+    },
+    nextSteps: [
+      "Take photos of ALL damage from multiple angles (minimum 20 photos)",
+      "Do not throw away damaged items until adjuster has seen them",
+      "Contact your insurance company within 24 hours",
+      "Get 2-3 written contractor estimates",
+      "Keep all receipts for temporary repairs and living expenses",
+      "Request your insurance company send an adjuster within 48-72 hours",
+    ],
+    tips: [
+      "Ask for a copy of the adjuster's report",
+      "You have the right to get your own contractor estimate",
+      "If damage exceeds your deductible, file the claim",
+      "Keep a log of all calls with your insurance company",
+      "Your policy may cover temporary housing if home is uninhabitable",
+    ],
+    message: `📋 **Insurance Claim Packet Generated**\n\nClaim #: ${claimNumber}\nIncident: ${params.incidentType}\nDate: ${params.incidentDate}\nAddress: ${params.address}${params.estimatedDamage ? `\nEstimated Damage: $${params.estimatedDamage.toLocaleString()}` : ""}\n\n**Next Steps:**\n${["Take 20+ photos of all damage", "Contact insurance within 24 hours", "Get 2-3 contractor estimates", "Keep all receipts"].map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nI can help you get contractor estimates — want me to dispatch someone for an assessment?`,
+  };
+}
+
+export async function get_emergency_shutoff_guide(params: {
+  system: "water" | "gas" | "electrical" | "hvac";
+}): Promise<object> {
+  const guides: Record<string, { title: string; warning: string; steps: string[]; location: string; tools: string[]; afterShutoff: string[] }> = {
+    water: {
+      title: "Water Main Shutoff",
+      warning: "⚠️ Know your shutoff location BEFORE an emergency — practice finding it now.",
+      steps: [
+        "Find your main water shutoff valve — typically in the garage, utility closet, or near the street",
+        "For a gate valve (round wheel): turn clockwise until tight",
+        "For a ball valve (lever handle): turn 90° so the handle is perpendicular to the pipe",
+        "If shutting off at the street, you may need a water meter key ($10 at Home Depot)",
+        "Open a faucet after shutoff to release remaining pressure",
+        "Confirm shutoff worked — no water should flow from any faucet",
+      ],
+      location: "Garage wall, utility closet, near water heater, or at street meter",
+      tools: ["Water meter key (for street shutoff)", "Adjustable wrench (if valve is stuck)"],
+      afterShutoff: ["Call a plumber to diagnose the issue", "Mop up standing water immediately", "Run fans/dehumidifier to prevent mold", "Check water heater — turn it off if water is off for extended time"],
+    },
+    gas: {
+      title: "Gas Shutoff",
+      warning: "🔴 DANGER: If you smell gas strongly, evacuate FIRST and call 911 from outside. Only shut off gas if you can do so safely while exiting.",
+      steps: [
+        "Locate the gas meter — usually on the side of your house",
+        "Find the shutoff valve on the supply pipe BEFORE the meter",
+        "Use an adjustable wrench or gas shutoff wrench",
+        "Turn the valve 1/4 turn so the handle is perpendicular to the pipe (crossways = off)",
+        "DO NOT turn gas back on yourself — only the gas company should restore service",
+        "Call your gas company (Orlando: 407-425-4141 Peoples Gas)",
+      ],
+      location: "Gas meter on exterior wall, usually side or back of house",
+      tools: ["Adjustable wrench or gas shutoff wrench"],
+      afterShutoff: ["Ventilate the house — open windows and doors", "Do NOT re-enter until cleared by fire department or gas company", "Gas company must inspect and relight pilots", "Consider a gas detector alarm for the future ($25-40)"],
+    },
+    electrical: {
+      title: "Electrical Main Shutoff",
+      warning: "⚠️ Never touch the breaker panel if you're standing in water or the panel is wet. Call 911 if there's an active electrical fire.",
+      steps: [
+        "Locate your main electrical panel (breaker box) — usually garage, utility room, or exterior wall",
+        "Open the panel door",
+        "Find the main breaker at the top — it's usually a large double-pole switch labeled 'MAIN'",
+        "Flip the main breaker to the OFF position",
+        "If you only need to shut off one area, find the specific circuit breaker and flip it off",
+        "Use a flashlight — turning off the main kills all lights",
+        "Verify power is off by checking that lights and outlets don't work",
+      ],
+      location: "Garage, utility room, or exterior wall in a gray metal box",
+      tools: ["Flashlight", "Rubber-soled shoes (for safety)"],
+      afterShutoff: ["Unplug sensitive electronics before restoring power", "Check for burning smells before restoring", "If breaker keeps tripping, DO NOT force it — call an electrician", "For full outages, check with OUC (Orlando Utilities Commission: 407-423-9018)"],
+    },
+    hvac: {
+      title: "HVAC Emergency Shutoff",
+      warning: "⚠️ If you smell burning from your HVAC, shut it off and do NOT restart. Call a technician.",
+      steps: [
+        "Thermostat: Switch to OFF (not just changing temp)",
+        "Indoor unit: Find the switch near the air handler — looks like a light switch, usually on the wall nearby",
+        "Outdoor unit: Find the disconnect box next to the condenser — pull the disconnect or flip the breaker",
+        "If you can't find the dedicated switch, turn off the HVAC breaker at the main panel (usually labeled 'AC' or 'HVAC')",
+        "For gas furnaces: turn the gas valve to OFF before calling for service",
+      ],
+      location: "Thermostat on wall, switch near indoor unit, disconnect box near outdoor unit",
+      tools: ["None — all switches are hand-operated"],
+      afterShutoff: ["Do NOT restart if you smelled burning", "Check/replace air filter — a clogged filter causes overheating", "After service, wait 30 minutes after restoring power before turning AC on (allows pressure to equalize)", "In summer: close blinds, use fans, stay hydrated until AC is fixed"],
+    },
+  };
+
+  const guide = guides[params.system];
+  return {
+    system: params.system,
+    ...guide,
+    message: `🔧 **${guide.title}**\n\n${guide.warning}\n\n📍 **Location:** ${guide.location}\n🔧 **Tools:** ${guide.tools.join(", ")}\n\n**Steps:**\n${guide.steps.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\n**After shutoff:**\n${guide.afterShutoff.map(s => `• ${s}`).join("\n")}`,
+  };
+}
+
+// ─────────────────────────────────────────────
+// ENHANCED DIY (using knowledge base v2)
+// ─────────────────────────────────────────────
+
+export async function get_diy_guide(params: {
+  topic: string;
+  category?: string;
+}): Promise<object> {
+  let results = searchGuides(params.topic);
+
+  // Filter by category if provided
+  if (params.category && results.length > 0) {
+    const catFiltered = results.filter(g => g.category === params.category);
+    if (catFiltered.length > 0) results = catFiltered;
+  }
+
+  if (results.length === 0) {
+    return {
+      topic: params.topic,
+      found: false,
+      guideCount: ALL_DIY_GUIDES.length,
+      categories: ["plumbing", "electrical", "hvac", "exterior", "appliances", "interior"],
+      message: `I don't have a specific guide for "${params.topic}" in my knowledge base (${ALL_DIY_GUIDES.length} guides). Try a more specific term, or I can search YouTube for a tutorial!`,
+    };
+  }
+
+  const guide = results[0];
+  const alternatives = results.slice(1, 4);
+
+  return {
+    topic: params.topic,
+    found: true,
+    guide: {
+      id: guide.id,
+      title: guide.title,
+      category: guide.category,
+      description: guide.description,
+      difficulty: guide.difficulty,
+      difficultyLabel: ["", "Easy", "Moderate", "Intermediate", "Advanced", "Expert"][guide.difficulty],
+      timeEstimate: guide.timeEstimate,
+      toolsNeeded: guide.toolsNeeded,
+      materialsNeeded: guide.materialsNeeded,
+      steps: guide.steps,
+      safetyWarnings: guide.safetyWarnings,
+      whenToCallPro: guide.whenToCallPro,
+      youtubeSearchQuery: guide.youtubeSearchQuery,
+      estimatedSavings: guide.estimatedSavings,
+    },
+    alternatives: alternatives.map(g => ({ id: g.id, title: g.title, difficulty: g.difficulty, category: g.category })),
+    totalMatches: results.length,
+    message: `🔧 **${guide.title}**\n\n⭐ Difficulty: ${["", "Easy", "Moderate", "Intermediate", "Advanced", "Expert"][guide.difficulty]} | ⏱️ ${guide.timeEstimate} | 💰 Saves: ${guide.estimatedSavings}\n\n**Tools:** ${guide.toolsNeeded.join(", ")}\n\n**Steps:**\n${guide.steps.map((s, i) => `${i + 1}. ${s}`).join("\n")}${guide.safetyWarnings.length > 0 ? `\n\n⚠️ **Safety:**\n${guide.safetyWarnings.map(w => `• ${w}`).join("\n")}` : ""}${guide.whenToCallPro.length > 0 ? `\n\n🛑 **Call a pro if:**\n${guide.whenToCallPro.map(w => `• ${w}`).join("\n")}` : ""}`,
+  };
+}
+
+export async function get_step_by_step_walkthrough(params: {
+  repair: string;
+}): Promise<object> {
+  const results = searchGuides(params.repair);
+  const guide = results[0];
+
+  if (!guide) {
+    return {
+      repair: params.repair,
+      found: false,
+      message: `I don't have a detailed walkthrough for "${params.repair}". Let me search YouTube for a video tutorial instead!`,
+      suggestedAction: "find_diy_tutorial",
+    };
+  }
+
+  // Break steps into walkthrough format with estimated timestamps
+  const avgMinutesPerStep = parseInt(guide.timeEstimate) / guide.steps.length || 3;
+  let runningMinutes = 0;
+
+  const walkthrough = guide.steps.map((step, i) => {
+    const timestamp = `${Math.floor(runningMinutes)}:${String(Math.floor((runningMinutes % 1) * 60)).padStart(2, "0")}`;
+    runningMinutes += avgMinutesPerStep;
+    return {
+      stepNumber: i + 1,
+      instruction: step,
+      estimatedTime: `~${Math.ceil(avgMinutesPerStep)} min`,
+      timestamp,
+    };
+  });
+
+  return {
+    repair: params.repair,
+    found: true,
+    guide: {
+      title: guide.title,
+      difficulty: guide.difficulty,
+      totalTime: guide.timeEstimate,
+    },
+    walkthrough,
+    materials: guide.materialsNeeded,
+    tools: guide.toolsNeeded,
+    safetyWarnings: guide.safetyWarnings,
+    youtubeSearchQuery: guide.youtubeSearchQuery,
+    message: `🔧 **Step-by-Step: ${guide.title}**\n\n**Before you start:**\n🛠️ Tools: ${guide.toolsNeeded.join(", ")}\n🛒 Materials: ${guide.materialsNeeded.map(m => `${m.item} (${m.estimatedCost})`).join(", ")}\n\n${walkthrough.map(w => `**Step ${w.stepNumber}** (${w.estimatedTime}):\n${w.instruction}`).join("\n\n")}${guide.safetyWarnings.length > 0 ? `\n\n⚠️ ${guide.safetyWarnings[0]}` : ""}`,
+  };
+}
+
+// ─────────────────────────────────────────────
+// PEST & DAMAGE TOOLS
+// ─────────────────────────────────────────────
+
+export async function identify_pest(params: { description: string; photoUrl?: string }): Promise<object> {
+  const lower = params.description.toLowerCase();
+
+  const pestDatabase: Array<{
+    keywords: string[];
+    species: string;
+    commonName: string;
+    riskLevel: "low" | "medium" | "high" | "critical";
+    healthRisk: string;
+    propertyRisk: string;
+    diyTreatment: string;
+    proTreatment: string;
+    preventionTips: string[];
+    estimatedCost: string;
+    floridaSpecific: string;
+  }> = [
+    {
+      keywords: ["roach", "cockroach", "palmetto", "palmetto bug", "water bug"],
+      species: "Periplaneta americana (American Cockroach) / Periplaneta australasiae (Australian Cockroach)",
+      commonName: "Palmetto Bug / American Cockroach",
+      riskLevel: "medium",
+      healthRisk: "Trigger asthma and allergies, spread bacteria including Salmonella and E. coli",
+      propertyRisk: "Minimal structural damage but contaminate food and surfaces",
+      diyTreatment: "Gel bait stations (Advion), boric acid powder in cracks, seal entry points, reduce moisture. Clean under appliances.",
+      proTreatment: "Perimeter spray treatment + gel bait + monitor stations. Quarterly service recommended.",
+      preventionTips: ["Seal gaps around doors/pipes with caulk", "Fix dripping faucets — roaches need water", "Store food in sealed containers", "Clean under appliances monthly", "Keep yard debris away from house"],
+      estimatedCost: "$150-250 per quarterly treatment",
+      floridaSpecific: "Palmetto bugs are everywhere in Florida — outdoor roaches that come inside for moisture. They fly. Don't panic, it's normal here.",
+    },
+    {
+      keywords: ["termite", "swarm", "wings", "mud tube", "wood damage"],
+      species: "Coptotermes formosanus (Formosan) / Cryptotermes brevis (Drywood)",
+      commonName: "Termites (Subterranean / Drywood)",
+      riskLevel: "critical",
+      healthRisk: "No direct health risk to humans",
+      propertyRisk: "SEVERE — can cause thousands in structural damage. Formosan termites cause $1B/year in US damage.",
+      diyTreatment: "DIY NOT recommended for active infestations. For prevention: reduce wood-soil contact, fix moisture issues, monitor with bait stations.",
+      proTreatment: "Subterranean: liquid termiticide barrier + bait stations ($1,500-3,000). Drywood: tent fumigation ($1,200-2,500) or spot treatment.",
+      preventionTips: ["No wood-to-soil contact on your home", "Fix leaks immediately — termites need moisture", "Keep mulch 6+ inches from foundation", "Annual termite inspection (many companies offer free)", "Remove dead trees and stumps from yard"],
+      estimatedCost: "$500-3,000 depending on treatment type",
+      floridaSpecific: "Florida has the highest termite pressure in the US. Annual inspections are essential. Most home insurance does NOT cover termite damage.",
+    },
+    {
+      keywords: ["ant", "fire ant", "sugar ant", "carpenter ant", "ghost ant"],
+      species: "Solenopsis invicta (Fire Ant) / Tapinoma melanocephalum (Ghost Ant) / Camponotus spp. (Carpenter Ant)",
+      commonName: "Fire Ants / Ghost Ants / Carpenter Ants",
+      riskLevel: "medium",
+      healthRisk: "Fire ants: painful stings, allergic reactions possible. Ghost/sugar ants: nuisance only. Carpenter ants: no direct health risk.",
+      propertyRisk: "Carpenter ants hollow out wood (less severe than termites). Fire ants damage lawn and outdoor equipment.",
+      diyTreatment: "Indoor: ant bait stations (Terro). Fire ants: broadcast bait (Amdro) + individual mound treatment. Carpenter ants: locate and treat nest directly.",
+      proTreatment: "Perimeter treatment + targeted baiting. Fire ants: yard-wide broadcast treatment ($150-300).",
+      preventionTips: ["Clean up food spills immediately", "Trim branches touching the house", "Seal gaps around windows and doors", "Keep pet food in sealed containers"],
+      estimatedCost: "$100-300 per treatment",
+      floridaSpecific: "Ghost ants are the #1 indoor ant in Central Florida. Fire ants are in every yard. Both are year-round problems.",
+    },
+    {
+      keywords: ["rat", "mouse", "rodent", "droppings", "gnaw", "scratch", "attic"],
+      species: "Rattus rattus (Roof Rat) / Mus musculus (House Mouse)",
+      commonName: "Roof Rats / Mice",
+      riskLevel: "high",
+      healthRisk: "Spread diseases including Hantavirus, Leptospirosis, Salmonella. Contaminate food and surfaces with droppings.",
+      propertyRisk: "Chew through wiring (fire hazard), insulation, pipes, and ductwork. Damage attic insulation with nesting.",
+      diyTreatment: "Snap traps (Victor) along walls and entry points. Seal ALL gaps larger than 1/4 inch. Steel wool + caulk for small holes. Do NOT use poison if you have pets.",
+      proTreatment: "Exclusion (sealing entry points) + trapping + attic cleanup. Full exclusion: $500-1,500.",
+      preventionTips: ["Seal gaps around pipes, vents, and eaves", "Trim tree branches 4+ feet from roof", "Store food in glass/metal containers", "Don't leave pet food out overnight", "Keep garage door closed"],
+      estimatedCost: "$200-500 for trapping, $500-1,500 for full exclusion",
+      floridaSpecific: "Roof rats are extremely common in Orlando. They enter through gaps at the roofline and live in attics. Listen for scratching sounds at night.",
+    },
+    {
+      keywords: ["mosquito", "bite", "standing water"],
+      species: "Aedes aegypti / Aedes albopictus",
+      commonName: "Mosquitoes",
+      riskLevel: "medium",
+      healthRisk: "Can transmit Zika, Dengue, West Nile virus. Florida has active mosquito-borne disease cases.",
+      propertyRisk: "None, but makes outdoor living miserable",
+      diyTreatment: "Eliminate ALL standing water (plant saucers, gutters, bird baths, tires). Use Mosquito Dunks in ponds. Citronella and fans for patios.",
+      proTreatment: "Barrier spray treatment (lasts 21 days): $75-150 per treatment. Monthly service: $50-100/mo.",
+      preventionTips: ["Dump standing water weekly", "Clean gutters", "Change bird bath water every 3 days", "Repair window screens", "Use outdoor fans — mosquitoes can't fly in wind"],
+      estimatedCost: "$75-150 per barrier spray",
+      floridaSpecific: "Orlando is one of the worst mosquito cities in the US. Rainy season (June-Sept) is peak. County spraying helps but doesn't eliminate them.",
+    },
+    {
+      keywords: ["spider", "brown recluse", "black widow", "wolf spider", "web"],
+      species: "Loxosceles reclusa (Brown Recluse) / Latrodectus mactans (Black Widow) / Hogna carolinensis (Wolf Spider)",
+      commonName: "Spiders",
+      riskLevel: "low",
+      healthRisk: "Most FL spiders are harmless. Black widows and brown recluses have medically significant bites (rare).",
+      propertyRisk: "None — spiders actually help control other pest populations",
+      diyTreatment: "Remove webs regularly, seal gaps, reduce outdoor lighting (attracts insects that attract spiders), glue traps in corners.",
+      proTreatment: "Perimeter spray treatment as part of general pest control.",
+      preventionTips: ["Shake out shoes and clothing stored in garages", "Keep firewood away from house", "Seal gaps around doors and windows", "Remove clutter from garages and closets"],
+      estimatedCost: "Usually included in general pest control ($100-175/quarter)",
+      floridaSpecific: "Wolf spiders are large but harmless. Black widows are found in garages and woodpiles. True brown recluses are rare in Central FL.",
+    },
+  ];
+
+  // Find matching pest
+  let match = pestDatabase.find(p => p.keywords.some(k => lower.includes(k)));
+
+  if (!match) {
+    return {
+      description: params.description,
+      identified: false,
+      message: `I couldn't identify that pest from the description. Can you provide more details? Describe:\n• Size and color\n• Where you're seeing it (inside/outside, which rooms)\n• Time of day\n• Any damage you've noticed\n\nOr send me a photo and I'll analyze it! 📸`,
+      commonFloridaPests: ["Palmetto bugs/roaches", "Termites", "Fire ants", "Ghost ants", "Roof rats", "Mosquitoes", "Wolf spiders"],
+    };
+  }
+
+  return {
+    description: params.description,
+    identified: true,
+    species: match.species,
+    commonName: match.commonName,
+    riskLevel: match.riskLevel,
+    healthRisk: match.healthRisk,
+    propertyRisk: match.propertyRisk,
+    diyTreatment: match.diyTreatment,
+    proTreatment: match.proTreatment,
+    preventionTips: match.preventionTips,
+    estimatedCost: match.estimatedCost,
+    floridaSpecific: match.floridaSpecific,
+    message: `🐛 **Identified: ${match.commonName}**\nRisk: ${match.riskLevel === "critical" ? "🔴 CRITICAL" : match.riskLevel === "high" ? "🟠 HIGH" : match.riskLevel === "medium" ? "🟡 MEDIUM" : "🟢 LOW"}\n\n🏥 Health: ${match.healthRisk}\n🏠 Property: ${match.propertyRisk}\n\n🔧 **DIY:** ${match.diyTreatment}\n\n👨‍🔧 **Pro Treatment:** ${match.proTreatment}\n💰 Cost: ${match.estimatedCost}\n\n🌴 **Florida Note:** ${match.floridaSpecific}\n\n**Prevention:**\n${match.preventionTips.map(t => `• ${t}`).join("\n")}`,
+  };
+}
+
+export async function assess_water_damage(params: { description: string; photoUrl?: string }): Promise<object> {
+  const lower = params.description.toLowerCase();
+
+  // Determine likely source
+  let source = "Unknown";
+  let sourceConfidence = "low";
+  const sources: Array<{ keywords: string[]; source: string; confidence: string }> = [
+    { keywords: ["roof", "ceiling", "attic", "above", "rain", "storm"], source: "Roof leak or exterior water intrusion", confidence: "medium" },
+    { keywords: ["pipe", "burst", "supply", "hot water", "cold water", "under sink"], source: "Plumbing supply line failure", confidence: "high" },
+    { keywords: ["toilet", "overflow", "sewage", "drain", "backup"], source: "Drain/sewage backup (Category 2-3 water)", confidence: "high" },
+    { keywords: ["washer", "washing machine", "dishwasher", "appliance", "hose"], source: "Appliance water line or hose failure", confidence: "medium" },
+    { keywords: ["window", "door", "sill", "frame", "exterior wall"], source: "Window/door seal failure or exterior water intrusion", confidence: "medium" },
+    { keywords: ["foundation", "slab", "floor", "crawlspace", "basement"], source: "Foundation water intrusion or slab leak", confidence: "medium" },
+    { keywords: ["ac", "hvac", "condensation", "drip", "pan", "condensate"], source: "HVAC condensate line clog or pan overflow", confidence: "high" },
+  ];
+
+  for (const s of sources) {
+    if (s.keywords.some(k => lower.includes(k))) {
+      source = s.source;
+      sourceConfidence = s.confidence;
+      break;
+    }
+  }
+
+  // Assess severity and mold risk
+  let severity: "minor" | "moderate" | "severe" = "moderate";
+  let moldRisk: "low" | "medium" | "high" = "medium";
+  let moldTimeline = "24-48 hours";
+
+  if (lower.includes("standing water") || lower.includes("flood") || lower.includes("inches") || lower.includes("sewage")) {
+    severity = "severe";
+    moldRisk = "high";
+    moldTimeline = "12-24 hours";
+  } else if (lower.includes("stain") || lower.includes("discolor") || lower.includes("small") || lower.includes("drip")) {
+    severity = "minor";
+    moldRisk = "low";
+    moldTimeline = "48-72 hours";
+  }
+
+  const isSewage = lower.includes("sewage") || lower.includes("backup") || lower.includes("toilet overflow");
+
+  return {
+    description: params.description,
+    likelySource: source,
+    sourceConfidence,
+    severity,
+    moldRisk,
+    moldTimeline: `Mold can begin growing in ${moldTimeline} in Florida's humidity`,
+    waterCategory: isSewage ? "Category 3 (Black Water) — HAZARDOUS" : "Category 1-2 (Clean/Gray Water)",
+    immediateActions: [
+      "Stop the water source if possible (shutoff valve, turn off appliance)",
+      "Remove standing water with wet vac, mop, or towels",
+      severity === "severe" ? "Extract water ASAP — every hour matters for mold prevention" : "Blot and dry affected areas thoroughly",
+      "Run fans and dehumidifiers — aim for humidity below 50%",
+      "Remove wet items from the area (rugs, furniture, boxes)",
+      isSewage ? "DO NOT touch without gloves — sewage is a biohazard" : "Pull back carpet edges to dry padding underneath",
+      "Open windows if weather permits",
+    ].filter(Boolean),
+    moldPrevention: [
+      "Run dehumidifier 24/7 until area is completely dry (3-5 days minimum)",
+      "Apply antimicrobial spray to affected surfaces",
+      "Remove and discard wet drywall that stayed wet for 48+ hours",
+      "Check behind walls and under flooring — hidden moisture is the biggest mold risk",
+      "Monitor with a moisture meter ($25-40 at Home Depot) — wood should be below 15%",
+    ],
+    estimatedRepairCosts: {
+      minor: "$200-500 (drying + minor repairs)",
+      moderate: "$1,000-3,000 (drying + drywall/flooring repair)",
+      severe: "$3,000-10,000+ (full remediation + reconstruction)",
+    },
+    insuranceTip: "Most homeowner policies cover sudden/accidental water damage (burst pipe) but NOT gradual leaks or flood. Document everything with photos before cleanup.",
+    message: `💧 **Water Damage Assessment**\n\n🔍 Likely source: ${source}\n⚠️ Severity: ${severity.toUpperCase()}\n🍄 Mold risk: ${moldRisk.toUpperCase()} (can start in ${moldTimeline})\n${isSewage ? "\n🔴 **SEWAGE DETECTED — wear gloves, this is a biohazard**\n" : ""}\n**DO THIS NOW:**\n${["Stop water source", "Extract standing water", "Run fans + dehumidifier", "Document with photos for insurance"].map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\n💰 Estimated repair: ${severity === "minor" ? "$200-500" : severity === "moderate" ? "$1,000-3,000" : "$3,000-10,000+"}\n\nWant me to dispatch a water mitigation pro? Time is critical — every hour matters for mold prevention.`,
+  };
+}

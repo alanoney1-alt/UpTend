@@ -73,9 +73,61 @@ const TOP_DIY_CREATORS: CreatorProfile[] = [
 
   // POOL
   { channel: "Swim University", specialties: ["pool", "pool cleaning", "pool chemistry", "hot tub", "pool pump", "pool filter"], style: "pool care expert, clear explanations", trustScore: 10 },
+  { channel: "Pool School Videos", specialties: ["pool", "pool pump", "pool filter", "pool chemistry", "pool equipment"], style: "pool equipment troubleshooting", trustScore: 8 },
 
   // PRESSURE WASHING
   { channel: "SESW Softwash", specialties: ["pressure washing", "soft wash", "exterior cleaning", "roof cleaning", "concrete cleaning"], style: "professional pressure washer, technique + business", trustScore: 9 },
+  { channel: "Obsessed Garage", specialties: ["pressure washing", "detailing", "cleaning", "exterior cleaning"], style: "detail-oriented cleaning and restoration", trustScore: 8 },
+
+  // PAINTING
+  { channel: "Painting and Decorating", specialties: ["paint", "painting", "interior paint", "exterior paint", "trim paint", "spray painting"], style: "UK painter, excellent technique demos", trustScore: 8 },
+  { channel: "The Funny Carpenter", specialties: ["paint", "cabinet painting", "trim", "carpentry", "finish work"], style: "entertaining painter/carpenter", trustScore: 7 },
+  { channel: "Paint Life TV", specialties: ["paint", "painting business", "exterior paint", "interior paint", "spray"], style: "painting contractor business + technique", trustScore: 8 },
+
+  // FLOORING
+  { channel: "That Kilted Guy DIY Home Improvement", specialties: ["flooring", "laminate", "vinyl plank", "tile", "hardwood"], style: "flooring specialist, beginner-friendly", trustScore: 8 },
+  { channel: "Floor Hacks", specialties: ["flooring", "vinyl plank", "laminate", "tile", "installation"], style: "quick flooring tips and tricks", trustScore: 7 },
+  { channel: "Sal DiBlasi", specialties: ["tile", "flooring", "shower", "bathroom tile", "backsplash"], style: "tile installer, detailed technique", trustScore: 9 },
+
+  // ROOFING
+  { channel: "Roofing Insights", specialties: ["roof", "roofing", "shingle", "roof repair", "roof leak", "flashing"], style: "roofing contractor education", trustScore: 9 },
+  { channel: "Dmitry Lipinskiy", specialties: ["roof", "roofing", "shingle", "metal roof", "roof inspection"], style: "roofing contractor, inspection expert", trustScore: 9 },
+  { channel: "West Side Roofing", specialties: ["roof", "roofing", "shingle replacement", "roof repair"], style: "hands-on roofing tutorials", trustScore: 8 },
+
+  // PEST CONTROL
+  { channel: "Solutions Pest & Lawn", specialties: ["pest", "pest control", "termite", "ant", "roach", "mosquito", "rodent", "spider"], style: "pest control product tutorials", trustScore: 9 },
+  { channel: "DoMyOwn", specialties: ["pest", "pest control", "termite", "ant", "weed", "lawn"], style: "DIY pest and lawn care", trustScore: 8 },
+  { channel: "Twin Home Experts", specialties: ["pest", "termite", "rodent", "home inspection", "mold"], style: "home inspection + pest identification", trustScore: 8 },
+
+  // LANDSCAPING
+  { channel: "This Old House - Landscaping", specialties: ["landscaping", "garden", "patio", "retaining wall", "drainage"], style: "professional landscaping projects", trustScore: 9 },
+  { channel: "Bricks and Stones", specialties: ["landscaping", "paver", "retaining wall", "patio", "hardscape"], style: "hardscape installation expert", trustScore: 8 },
+  { channel: "Lawn Tips", specialties: ["lawn", "grass", "fertilizer", "sprinkler", "weed control"], style: "quick lawn care tips", trustScore: 7 },
+  { channel: "How To with Doc", specialties: ["landscaping", "lawn", "irrigation", "sprinkler", "drainage"], style: "irrigation and drainage specialist", trustScore: 8 },
+
+  // SMART HOME & SECURITY
+  { channel: "The Hook Up", specialties: ["smart home", "home assistant", "automation", "zigbee", "matter", "smart switch"], style: "smart home deep dives, technical", trustScore: 9 },
+  { channel: "Paul Hibbert", specialties: ["smart home", "automation", "google home", "alexa", "smart speaker"], style: "accessible smart home tutorials", trustScore: 8 },
+  { channel: "Ring", specialties: ["security", "doorbell", "camera", "ring", "home security"], style: "official Ring tutorials", trustScore: 7 },
+  { channel: "The DIY Security Guy", specialties: ["security", "camera", "alarm", "smart lock", "home security"], style: "DIY security system installation", trustScore: 8 },
+
+  // CLEANING & ORGANIZATION
+  { channel: "Clean My Space", specialties: ["cleaning", "home cleaning", "organization", "deep clean", "kitchen clean", "bathroom clean"], style: "cleaning expert, technique-focused", trustScore: 9 },
+  { channel: "GoCleanCo", specialties: ["cleaning", "deep clean", "home cleaning", "stain removal", "disinfecting"], style: "professional cleaning techniques", trustScore: 8 },
+  { channel: "The Organized Home", specialties: ["organization", "closet", "garage organization", "pantry", "declutter"], style: "home organization expert", trustScore: 8 },
+  { channel: "Clutterbug", specialties: ["organization", "declutter", "storage", "closet", "garage", "pantry"], style: "fun organizing personality", trustScore: 7 },
+  { channel: "Alejandra.tv", specialties: ["organization", "home organization", "closet", "kitchen organization", "bathroom organization"], style: "detailed organizing systems", trustScore: 8 },
+
+  // CONCRETE & MASONRY
+  { channel: "Mike Day Concrete", specialties: ["concrete", "driveway", "slab", "patio", "foundation"], style: "concrete contractor, professional techniques", trustScore: 9 },
+  { channel: "Kirk Giordano Plastering", specialties: ["stucco", "plaster", "masonry", "concrete repair"], style: "veteran plasterer/mason", trustScore: 8 },
+
+  // GARAGE & STORAGE
+  { channel: "Garage Transformation", specialties: ["garage", "garage door", "garage organization", "epoxy floor", "storage"], style: "garage makeover specialist", trustScore: 8 },
+
+  // INSULATION & ENERGY
+  { channel: "Build Show Network", specialties: ["insulation", "energy efficiency", "building science", "moisture", "ventilation"], style: "building science education", trustScore: 9 },
+  { channel: "Matt Risinger", specialties: ["building science", "insulation", "moisture", "construction", "energy efficiency", "windows"], style: "builder, building science advocate", trustScore: 10 },
 ];
 
 // Map task keywords to optimal search queries for precision
@@ -600,5 +652,52 @@ export async function getSeasonalDIYProjects(
     monthName: new Date(2024, month - 1, 1).toLocaleString("en-US", { month: "long" }),
     projects,
     message: `🏠 **${new Date(2024, month - 1, 1).toLocaleString("en-US", { month: "long" })} DIY Projects:**\n${projects.map((p, i) => `${i + 1}. **${p.project}** (${p.difficulty}) — ~${p.estimatedCost}\n   _${p.reason}_`).join("\n")}`,
+  };
+}
+
+// ─── Emergency Tutorial Finder ───────────────
+const EMERGENCY_QUERIES: Record<string, string[]> = {
+  water: ["how to shut off water main emergency", "water shutoff valve location home", "stop water leak emergency"],
+  gas: ["gas leak what to do emergency", "how to turn off gas valve home", "gas shutoff valve location"],
+  electrical: ["how to turn off main breaker emergency", "electrical panel shutoff guide", "electrical fire what to do"],
+  hvac: ["AC emergency shutoff", "how to turn off HVAC system", "furnace emergency shutoff"],
+  flood: ["house flooding what to do", "water damage emergency steps", "how to stop flooding in house"],
+  pipe_burst: ["burst pipe emergency fix", "how to fix burst pipe temporary", "pipe burst what to do first"],
+  roof_damage: ["emergency roof tarp how to", "temporary roof repair storm damage", "tarp a damaged roof DIY"],
+  tree_fell: ["tree fell on house what to do", "storm tree damage emergency", "tree on power line what to do"],
+};
+
+export async function findEmergencyTutorial(emergencyType: string): Promise<object> {
+  const queries = EMERGENCY_QUERIES[emergencyType.toLowerCase()] || [`${emergencyType} emergency what to do`, `${emergencyType} shutoff how to`];
+
+  const allResults: TutorialResult[] = [];
+  const seenIds = new Set<string>();
+
+  for (const query of queries.slice(0, 2)) {
+    const results = await searchYouTube(query, 3);
+    for (const r of results) {
+      if (r.videoId && !seenIds.has(r.videoId)) {
+        seenIds.add(r.videoId);
+        allResults.push(r);
+      }
+    }
+  }
+
+  const ranked = rankResults(allResults);
+
+  return {
+    emergencyType,
+    videos: ranked.slice(0, 3).map(v => ({
+      title: v.title,
+      channel: v.channel,
+      url: v.url,
+      videoId: v.videoId,
+      thumbnail: v.thumbnail,
+      isTrustedCreator: v.isTrustedCreator,
+    })),
+    warning: "⚠️ Watch these for reference ONLY after ensuring safety. If in immediate danger, call 911 first.",
+    message: ranked.length > 0
+      ? `🚨 **Emergency tutorials for ${emergencyType}:**\n${ranked.slice(0, 3).map((v, i) => `${i + 1}. 🎥 ${v.title} — ${v.url}`).join("\n")}\n\n⚠️ Safety first — only watch after securing the area.`
+      : `No emergency tutorials found. Call UpTend Emergency: (407) 338-3342`,
   };
 }
