@@ -45,7 +45,10 @@ import {
   Wallet,
   Radius,
   BadgeCheck,
-  ShieldCheck
+  ShieldCheck,
+  ChevronDown,
+  CalendarPlus,
+  MessageCircle
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import {
@@ -567,6 +570,9 @@ export default function Profile() {
     phone: "",
   });
 
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({ profile: true });
+  const toggleSection = (key: string) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
+
   const isPro = user?.role === "hauler" || user?.role === "pro" || user?.role === "worker";
 
   const userInitials = user 
@@ -783,8 +789,8 @@ export default function Profile() {
 
         <h1 className="text-2xl font-bold text-white text-center mb-8">My Profile</h1>
 
-        <Card className="p-6 mb-6" data-testid="card-profile-info">
-          <div className="flex items-start justify-between mb-6">
+        <Card className="p-4 mb-4" data-testid="card-profile-info">
+          <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
                 <AvatarImage src={user.profileImageUrl || undefined} />
@@ -853,9 +859,9 @@ export default function Profile() {
             )}
           </div>
 
-          <Separator className="mb-6" />
+          <Separator className="mb-4" />
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-muted-foreground" />
               <div>
@@ -888,185 +894,244 @@ export default function Profile() {
           <ProProfileSection />
         ) : (
           <>
-            <Card className="p-6 mb-6" data-testid="card-addresses">
-              <div className="flex items-center justify-between mb-4">
+            {/* Quick Actions */}
+            <div className="flex gap-3 mb-4">
+              <Link href="/book" className="flex-1">
+                <Button className="w-full" size="sm" data-testid="button-book-service">
+                  <CalendarPlus className="w-4 h-4 mr-1" />
+                  Book a Service
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => window.dispatchEvent(new CustomEvent("george:open"))}
+                data-testid="button-talk-to-george"
+              >
+                <MessageCircle className="w-4 h-4 mr-1" />
+                Talk to George
+              </Button>
+            </div>
+
+            {/* My Digital Home — inline */}
+            <Link href="/my-home">
+              <Card className="p-3 mb-4 hover-elevate cursor-pointer" data-testid="link-my-home-inventory">
+                <div className="flex items-center gap-2">
+                  <Package className="w-4 h-4 text-primary shrink-0" />
+                  <span className="font-semibold text-sm">My Digital Home</span>
+                  <span className="text-xs text-muted-foreground">— AI-cataloged inventory</span>
+                </div>
+              </Card>
+            </Link>
+
+            {/* Addresses */}
+            <Card className="p-4 mb-4" data-testid="card-addresses">
+              <button
+                type="button"
+                className="flex items-center justify-between w-full"
+                onClick={() => toggleSection("addresses")}
+              >
                 <div className="flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Saved Addresses</h3>
+                  <h3 className="text-base font-semibold">Saved Addresses</h3>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    setEditingAddress(null);
-                    setAddressDialogOpen(true);
-                  }}
-                  data-testid="button-add-address"
-                >
-                  <Plus className="w-4 h-4 mr-1" />
-                  Add
-                </Button>
-              </div>
-
-              {addressesQuery.isLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                <div className="flex items-center gap-2">
+                  <span
+                    role="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingAddress(null);
+                      setAddressDialogOpen(true);
+                    }}
+                    className="inline-flex items-center text-sm text-primary hover:underline"
+                    data-testid="button-add-address"
+                  >
+                    <Plus className="w-4 h-4 mr-0.5" />
+                    Add
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expanded.addresses ? "rotate-180" : ""}`} />
                 </div>
-              ) : addressesQuery.data && addressesQuery.data.length > 0 ? (
-                <div className="space-y-3">
-                  {addressesQuery.data.map((address) => (
-                    <AddressCard 
-                      key={address.id} 
-                      address={address}
-                      onEdit={() => handleEditAddress(address)}
-                      onDelete={() => deleteAddressMutation.mutate(address.id)}
-                      onSetDefault={() => setDefaultAddressMutation.mutate(address.id)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <MapPin className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No saved addresses</p>
-                  <p className="text-sm">Add an address for faster booking</p>
+              </button>
+              {expanded.addresses && (
+                <div className="mt-3 overflow-hidden">
+                  {addressesQuery.isLoading ? (
+                    <div className="flex justify-center py-6">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    </div>
+                  ) : addressesQuery.data && addressesQuery.data.length > 0 ? (
+                    <div className="space-y-2">
+                      {addressesQuery.data.map((address) => (
+                        <AddressCard 
+                          key={address.id} 
+                          address={address}
+                          onEdit={() => handleEditAddress(address)}
+                          onDelete={() => deleteAddressMutation.mutate(address.id)}
+                          onSetDefault={() => setDefaultAddressMutation.mutate(address.id)}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-muted-foreground">
+                      <MapPin className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                      <p>No saved addresses</p>
+                      <p className="text-sm">Add an address for faster booking</p>
+                    </div>
+                  )}
                 </div>
               )}
             </Card>
 
-            <div className="mb-6">
-              <DwellScanWidget />
-            </div>
+            {/* Home Intelligence group */}
+            <Card className="p-4 mb-4" data-testid="card-home-intelligence">
+              <button
+                type="button"
+                className="flex items-center justify-between w-full"
+                onClick={() => toggleSection("intelligence")}
+              >
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                  <h3 className="text-base font-semibold">Home Intelligence</h3>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expanded.intelligence ? "rotate-180" : ""}`} />
+              </button>
+              {expanded.intelligence && (
+                <div className="mt-3 space-y-4 overflow-hidden">
+                  <DwellScanWidget />
+                  <MaintenancePlan />
+                  <ImpactDashboard />
+                </div>
+              )}
+            </Card>
 
-            <div className="mb-6">
-              <MaintenancePlan />
-            </div>
-
-            <div className="mb-6">
-              <ImpactDashboard />
-            </div>
-
-            <div className="grid grid-cols-1 gap-3 mb-6">
-              <Link href="/my-home">
-                <Card className="p-4 hover-elevate cursor-pointer" data-testid="link-my-home-inventory">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                      <Package className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm">My Digital Home</p>
-                      <p className="text-xs text-muted-foreground">View your AI-cataloged inventory</p>
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-            </div>
-
-            <Card className="p-6 mb-6" data-testid="card-home-history">
-              <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
+            {/* Home History */}
+            <Card className="p-4 mb-4" data-testid="card-home-history">
+              <button
+                type="button"
+                className="flex items-center justify-between w-full"
+                onClick={() => toggleSection("history")}
+              >
                 <div className="flex items-center gap-2">
                   <FileText className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Home History</h3>
+                  <h3 className="text-base font-semibold">Home History</h3>
                 </div>
-                <Badge variant="outline">
-                  <Shield className="w-3 h-3 mr-1" />
-                  Verified by UpTend
-                </Badge>
-              </div>
-
-              {propertiesQuery.isLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Verified
+                  </Badge>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expanded.history ? "rotate-180" : ""}`} />
                 </div>
-              ) : propertiesQuery.data && propertiesQuery.data.length > 0 ? (
-                <div className="space-y-4">
-                  {propertiesQuery.data.map((property) => (
-                    <Card key={property.id} className="p-4" data-testid={`card-property-${property.id}`}>
-                      <div className="flex items-start justify-between gap-3 flex-wrap">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <Home className="w-4 h-4 text-muted-foreground shrink-0" />
-                            <span className="font-medium truncate">{property.fullAddress || "Unknown Address"}</span>
-                          </div>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
-                            <span>Score: <strong className="text-foreground">{property.maintenanceScore || 0}</strong>/100</span>
-                            <span>Value Add: <strong className="text-foreground">+${property.estimatedValueIncrease || 0}</strong></span>
-                          </div>
-                          {property.transfers.length > 0 && (
-                            <div className="mt-2 space-y-1">
-                              {property.transfers.map((t) => (
-                                <div key={t.id} className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-                                  <Clock className="w-3 h-3 shrink-0" />
-                                  <span>
-                                    Transfer to {t.toEmail.replace(/(.{3}).*@/, "$1***@")} - 
-                                    <Badge variant={t.status === "claimed" ? "default" : "secondary"} className="ml-1 text-xs">
-                                      {t.status === "claimed" ? "Claimed" : "Pending"}
-                                    </Badge>
-                                  </span>
+              </button>
+              {expanded.history && (
+                <div className="mt-3 overflow-hidden">
+                  {propertiesQuery.isLoading ? (
+                    <div className="flex justify-center py-6">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    </div>
+                  ) : propertiesQuery.data && propertiesQuery.data.length > 0 ? (
+                    <div className="space-y-3">
+                      {propertiesQuery.data.map((property) => (
+                        <Card key={property.id} className="p-3" data-testid={`card-property-${property.id}`}>
+                          <div className="flex items-start justify-between gap-3 flex-wrap">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <Home className="w-4 h-4 text-muted-foreground shrink-0" />
+                                <span className="font-medium truncate">{property.fullAddress || "Unknown Address"}</span>
+                              </div>
+                              <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground flex-wrap">
+                                <span>Score: <strong className="text-foreground">{property.maintenanceScore || 0}</strong>/100</span>
+                                <span>Value Add: <strong className="text-foreground">+${property.estimatedValueIncrease || 0}</strong></span>
+                              </div>
+                              {property.transfers.length > 0 && (
+                                <div className="mt-2 space-y-1">
+                                  {property.transfers.map((t) => (
+                                    <div key={t.id} className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                                      <Clock className="w-3 h-3 shrink-0" />
+                                      <span>
+                                        Transfer to {t.toEmail.replace(/(.{3}).*@/, "$1***@")} - 
+                                        <Badge variant={t.status === "claimed" ? "default" : "secondary"} className="ml-1 text-xs">
+                                          {t.status === "claimed" ? "Claimed" : "Pending"}
+                                        </Badge>
+                                      </span>
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
+                              )}
                             </div>
-                          )}
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setTransferPropertyHash(property.addressHash || "");
-                            setTransferPropertyAddress(property.fullAddress || "");
-                            setTransferDialogOpen(true);
-                          }}
-                          data-testid={`button-transfer-${property.id}`}
-                        >
-                          <ArrowRightLeft className="w-4 h-4 mr-1" />
-                          Transfer
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Home className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No property history yet</p>
-                  <p className="text-sm">Complete a service to start building your home's maintenance record</p>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setTransferPropertyHash(property.addressHash || "");
+                                setTransferPropertyAddress(property.fullAddress || "");
+                                setTransferDialogOpen(true);
+                              }}
+                              data-testid={`button-transfer-${property.id}`}
+                            >
+                              <ArrowRightLeft className="w-4 h-4 mr-1" />
+                              Transfer
+                            </Button>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-muted-foreground">
+                      <Home className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                      <p>No property history yet</p>
+                      <p className="text-sm">Complete a service to start building your home's maintenance record</p>
+                    </div>
+                  )}
                 </div>
               )}
             </Card>
 
-            <Card className="p-6" data-testid="card-payment-methods">
-              <div className="flex items-center justify-between mb-4">
+            {/* Payment Methods */}
+            <Card className="p-4" data-testid="card-payment-methods">
+              <button
+                type="button"
+                className="flex items-center justify-between w-full"
+                onClick={() => toggleSection("payments")}
+              >
                 <div className="flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Payment Methods</h3>
+                  <h3 className="text-base font-semibold">Payment Methods</h3>
                 </div>
-                <Link href="/payment-setup">
-                  <Button variant="outline" size="sm" data-testid="button-add-payment">
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add
-                  </Button>
-                </Link>
-              </div>
-
-              {paymentMethodsQuery.isLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                <div className="flex items-center gap-2">
+                  <Link href="/payment-setup" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+                    <span className="inline-flex items-center text-sm text-primary hover:underline" data-testid="button-add-payment">
+                      <Plus className="w-4 h-4 mr-0.5" />
+                      Add
+                    </span>
+                  </Link>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expanded.payments ? "rotate-180" : ""}`} />
                 </div>
-              ) : paymentMethodsQuery.data && paymentMethodsQuery.data.length > 0 ? (
-                <div className="space-y-3">
-                  {paymentMethodsQuery.data.map((method) => (
-                    <PaymentMethodCard 
-                      key={method.id} 
-                      method={method}
-                      onDelete={() => deletePaymentMutation.mutate(method.id)}
-                      onSetDefault={() => setDefaultPaymentMutation.mutate(method.id)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <CreditCard className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No payment methods</p>
-                  <p className="text-sm">Add a card for instant booking</p>
+              </button>
+              {expanded.payments && (
+                <div className="mt-3 overflow-hidden">
+                  {paymentMethodsQuery.isLoading ? (
+                    <div className="flex justify-center py-6">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    </div>
+                  ) : paymentMethodsQuery.data && paymentMethodsQuery.data.length > 0 ? (
+                    <div className="space-y-2">
+                      {paymentMethodsQuery.data.map((method) => (
+                        <PaymentMethodCard 
+                          key={method.id} 
+                          method={method}
+                          onDelete={() => deletePaymentMutation.mutate(method.id)}
+                          onSetDefault={() => setDefaultPaymentMutation.mutate(method.id)}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-muted-foreground">
+                      <CreditCard className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                      <p>No payment methods</p>
+                      <p className="text-sm">Add a card for instant booking</p>
+                    </div>
+                  )}
                 </div>
               )}
             </Card>
