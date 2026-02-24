@@ -47,6 +47,14 @@ export default function Loyalty() {
     account: LoyaltyAccount; 
     transactions: LoyaltyTransaction[];
     availableRewards: LoyaltyReward[];
+    // Flat response from customer loyalty route
+    userId?: string;
+    points?: number;
+    tier?: string;
+    lifetimePoints?: number;
+    tenureMonths?: number;
+    tenureBonusPoints?: number;
+    memberSince?: string | null;
   }>({
     queryKey: ["/api/loyalty", demoUserId],
     queryFn: async () => {
@@ -127,9 +135,13 @@ export default function Loyalty() {
   const transactions = data?.transactions || [];
   const availableRewards = data?.availableRewards || [];
 
-  const currentTier = account?.currentTier || "bronze";
-  const currentPoints = account?.currentPoints || 0;
-  const lifetimePoints = account?.lifetimePoints || 0;
+  // Support both nested account and flat response shapes
+  const currentTier = account?.currentTier || data?.tier || "bronze";
+  const currentPoints = account?.currentPoints || data?.points || 0;
+  const lifetimePoints = account?.lifetimePoints || data?.lifetimePoints || 0;
+  const tenureMonths = data?.tenureMonths || 0;
+  const tenureBonusPoints = data?.tenureBonusPoints || 0;
+  const memberSince = data?.memberSince || null;
   
   const TierIcon = tierIcons[currentTier] || Star;
   const tierInfo = LOYALTY_TIER_CONFIG[currentTier as keyof typeof LOYALTY_TIER_CONFIG];
@@ -175,9 +187,14 @@ export default function Loyalty() {
                   <h1 className={`text-3xl font-bold capitalize ${tierColors[currentTier]}`} data-testid="current-tier">
                     {currentTier} Member
                   </h1>
+                  {memberSince && (
+                    <p className="text-sm font-medium text-muted-foreground mt-1">
+                      Member Since {new Date(memberSince).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                    </p>
+                  )}
                   <p className="text-muted-foreground">
                     {tierInfo?.discountPercent > 0 && `${tierInfo.discountPercent}% discount on all jobs`}
-                    {tierInfo?.priorityMatching && " • Priority matching"}
+                    {tierInfo?.priorityMatching && " | Priority matching"}
                   </p>
                 </div>
               </div>
@@ -189,6 +206,11 @@ export default function Loyalty() {
                 <p className="text-sm text-muted-foreground">
                   Earn {POINTS_PER_DOLLAR} points per $1 spent
                 </p>
+                {tenureBonusPoints > 0 && (
+                  <p className="text-sm font-medium text-green-600 mt-1">
+                    Tenure Bonus: +{tenureBonusPoints.toLocaleString()} points ({tenureMonths} {tenureMonths === 1 ? "month" : "months"})
+                  </p>
+                )}
               </div>
             </div>
 

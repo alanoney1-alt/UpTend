@@ -51,6 +51,8 @@ export async function getCustomerLoyalty(customerId: string) {
   const currentTier = tier.current_tier as keyof typeof TIER_THRESHOLDS;
   const config = TIER_THRESHOLDS[currentTier];
 
+  const tenure = await calculateTenureBonus(customerId);
+
   return {
     customerId,
     currentTier: tier.current_tier,
@@ -63,6 +65,9 @@ export async function getCustomerLoyalty(customerId: string) {
       ? Math.min(100, Math.round((parseFloat(tier.lifetime_spend) / config.next) * 100))
       : 100,
     tierUpdatedAt: tier.tier_updated_at,
+    tenureMonths: tenure.months,
+    tenureBonusPoints: tenure.bonusPoints,
+    memberSince: tenure.memberSince,
   };
 }
 
@@ -130,6 +135,48 @@ export async function redeemReward(rewardId: string) {
   );
   if (!rows.length) return { error: "Reward not found or already redeemed" };
   return { redeemed: true, reward: rows[0] };
+}
+
+const TENURE_POINTS_PER_MONTH = 50;
+
+export async function calculateTenureBonus(userId: string): Promise<{ months: number; bonusPoints: number; memberSince: string | null }> {
+  // Try customers (users table) first, then hauler_profiles
+  let createdAt: string | null = null;
+
+  const { rows: userRows } = await pool.query(
+    `SELECT created_at FROM users WHERE id = $1`,
+    [userId]
+  );
+  if (userRows.length && userRows[0].created_at) {
+    createdAt = userRows[0].created_at;
+  }
+
+  if (!createdAt) {
+    const { rows: haulerRows } = await pool.query(
+      `SELECT created_at FROM hauler_profiles WHERE user_id = $1`,
+      [userId]
+    );
+    if (haulerRows.length && haulerRows[0].created_at) {
+      createdAt = haulerRows[0].created_at;
+    }
+  }
+
+  if (!createdAt) {
+    return { months: 0, bonusPoints: 0, memberSince: null };
+  }
+
+  const signupDate = new Date(createdAt);
+  const now = new Date();
+  const months = Math.max(0,
+    (now.getFullYear() - signupDate.getFullYear()) * 12 +
+    (now.getMonth() - signupDate.getMonth())
+  );
+
+  return {
+    months,
+    bonusPoints: months * TENURE_POINTS_PER_MONTH,
+    memberSince: createdAt,
+  };
 }
 
 export async function calculateDiscount(customerId: string, _serviceType: string, basePrice: number) {

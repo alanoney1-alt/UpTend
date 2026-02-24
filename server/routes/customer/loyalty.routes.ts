@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { storage } from "../../storage";
 import { isAuthenticated } from "../../replit_integrations/auth";
+import { calculateTenureBonus } from "../../services/loyalty-engine.js";
+import { LOYALTY_TIER_CONFIG } from "@shared/schema";
 
 export function registerLoyaltyRoutes(app: Express) {
   // GET /api/loyalty/status — loyalty program info (must be before /:userId)
@@ -28,12 +30,32 @@ export function registerLoyaltyRoutes(app: Express) {
         return res.status(404).json({ error: "User not found" });
       }
 
-      // For now, return a basic loyalty structure
-      // TODO: Implement full loyalty program with points/rewards
+      // Calculate tenure bonus
+      const tenure = await calculateTenureBonus(userId);
+
+      // Base points (from loyalty account if exists, otherwise 0)
+      const basePoints = 0; // TODO: pull from real loyalty account
+      const baseLifetimePoints = 0;
+
+      const totalLifetimePoints = baseLifetimePoints + tenure.bonusPoints;
+
+      // Determine tier based on combined total
+      let tier = "bronze";
+      for (const [t, config] of Object.entries(LOYALTY_TIER_CONFIG).reverse()) {
+        if (totalLifetimePoints >= config.minPoints) {
+          tier = t;
+          break;
+        }
+      }
+
       const loyaltyAccount = {
         userId,
-        points: 0,
-        tier: "bronze",
+        points: basePoints + tenure.bonusPoints,
+        tier,
+        lifetimePoints: totalLifetimePoints,
+        tenureMonths: tenure.months,
+        tenureBonusPoints: tenure.bonusPoints,
+        memberSince: tenure.memberSince,
         availableRewards: [],
         history: [],
       };
@@ -46,6 +68,10 @@ export function registerLoyaltyRoutes(app: Express) {
         userId: req.params.userId,
         points: 0,
         tier: "bronze",
+        lifetimePoints: 0,
+        tenureMonths: 0,
+        tenureBonusPoints: 0,
+        memberSince: null,
         availableRewards: [],
         history: [],
       });

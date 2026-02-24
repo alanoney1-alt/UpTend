@@ -338,9 +338,19 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
 
         {/* Experience + Service pills */}
         {pro.memberSince && (
-          <p className="text-xs font-semibold text-primary mb-2">
-            {Math.max(1, new Date().getFullYear() - parseInt(pro.memberSince))}+ years experience
-          </p>
+          <>
+            <p className="text-xs font-semibold text-primary mb-1">
+              {Math.max(1, new Date().getFullYear() - parseInt(pro.memberSince))}+ years experience
+            </p>
+            <p className="text-[10px] text-muted-foreground mb-2">
+              {(() => {
+                const since = new Date(pro.memberSince);
+                const now = new Date();
+                const months = Math.max(0, (now.getFullYear() - since.getFullYear()) * 12 + (now.getMonth() - since.getMonth()));
+                return months > 0 ? `${months} ${months === 1 ? "month" : "months"} on UpTend` : "New on UpTend";
+              })()}
+            </p>
+          </>
         )}
         <div className="flex flex-wrap gap-1 mb-3">
           {pro.services.map((svc) => (
@@ -408,7 +418,15 @@ function ProProfileModal({ pro, onClose, onBook }: { pro: ProProfile; onClose: (
               <span className="text-sm text-muted-foreground">({pro.reviewCount} reviews)</span>
               <span className="text-sm text-muted-foreground">· {pro.jobsCompleted} jobs</span>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Member since {pro.memberSince}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Member since {pro.memberSince}
+              {(() => {
+                const since = new Date(pro.memberSince);
+                const now = new Date();
+                const months = Math.max(0, (now.getFullYear() - since.getFullYear()) * 12 + (now.getMonth() - since.getMonth()));
+                return months > 0 ? ` -- ${months} ${months === 1 ? "month" : "months"} on UpTend` : "";
+              })()}
+            </p>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-5 h-5" />
