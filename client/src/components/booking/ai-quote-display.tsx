@@ -80,11 +80,11 @@ export function AIQuoteDisplay({
 
   const getConfidenceBadge = (confidence: number) => {
     if (confidence >= 0.9) {
-      return { color: "bg-green-500", text: "High Confidence", icon: ""High"" };
+      return { color: "bg-green-500", text: "High Confidence", icon: "High" };
     } else if (confidence >= 0.7) {
-      return { color: "bg-yellow-500", text: "Good Confidence", icon: ""Good"" };
+      return { color: "bg-yellow-500", text: "Good Confidence", icon: "Good" };
     } else {
-      return { color: "bg-orange-500", text: "Fair Confidence", icon: ""Fair"" };
+      return { color: "bg-orange-500", text: "Fair Confidence", icon: "Fair" };
     }
   };
 
