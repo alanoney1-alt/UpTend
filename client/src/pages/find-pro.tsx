@@ -353,10 +353,26 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
           ))}
         </div>
 
-        {/* Bio */}
-        {pro.bio && (
-          <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{pro.bio}</p>
-        )}
+        {/* Jobs completed */}
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-semibold text-primary">
+            {pro.jobsCompleted > 0
+              ? t("findpro.jobs_completed", "{{count}} jobs completed", { count: pro.jobsCompleted })
+              : t("findpro.recently_joined", "Recently joined")}
+          </span>
+        </div>
+
+        {/* Review snippet */}
+        <div className="mb-3 p-2.5 rounded-lg bg-muted/50">
+          {pro.reviews && pro.reviews.length > 0 ? (
+            <>
+              <p className="text-[11px] text-muted-foreground italic line-clamp-2">"{pro.reviews[0].text}"</p>
+              <p className="text-[10px] font-medium text-muted-foreground mt-1">— {pro.reviews[0].customerName}</p>
+            </>
+          ) : (
+            <p className="text-[11px] text-muted-foreground italic">{t("findpro.no_reviews_yet", "New to UpTend — book to be their first reviewer!")}</p>
+          )}
+        </div>
 
         {/* Two distinct buttons */}
         <div className="flex gap-2">

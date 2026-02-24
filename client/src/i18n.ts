@@ -1157,6 +1157,38 @@ const resources = {
       "landing.become_a_pro": "Become a Pro",
       "hero.hero_headline_3": "Without the headache.",
 
+      // Trust Bar & Social Proof
+      "landing.trust_headline": "Trusted by Orlando homeowners",
+      "landing.trust_badges_line": "Background-Checked Pros | Insured | Price Protection Guarantee",
+      "landing.trust_review_1": "Gutters look brand new. Pro was on time and professional.",
+      "landing.trust_review_1_author": "Sarah T., Lake Nona",
+      "landing.trust_review_2": "Best pressure washing service we've used. Will definitely book again.",
+      "landing.trust_review_2_author": "Mike R., Winter Park",
+      "landing.trust_review_3": "George helped me figure out exactly what my house needed. So easy.",
+      "landing.trust_review_3_author": "Ana M., Laureate Park",
+
+      // Price Protection Guarantee
+      "landing.ppg_title": "Price Protection Guarantee",
+      "landing.ppg_desc": "Your price is locked at booking. If your pro finds the scope is different than described, any changes require your approval with photo documentation. No surprises, ever.",
+
+      // How It Works
+      "landing.hiw_headline": "How It Works",
+      "landing.hiw_step_label": "Step",
+      "landing.hiw_step1_title": "Enter Your Address",
+      "landing.hiw_step1_desc": "Tell us where you are and we'll show services available in your area.",
+      "landing.hiw_step2_title": "Pick Your Service",
+      "landing.hiw_step2_desc": "Choose from 11 home services with transparent, upfront pricing.",
+      "landing.hiw_step3_title": "Book a Verified Pro",
+      "landing.hiw_step3_desc": "Every pro is background-checked and insured. Your price is guaranteed.",
+
+      // Booking page badge tooltip
+      "booking_page.badge_price_tooltip": "Your price is locked at booking. Scope changes require your approval with photo documentation.",
+
+      // Find Pro page extras
+      "findpro.jobs_completed": "{{count}} jobs completed",
+      "findpro.recently_joined": "Recently joined",
+      "findpro.no_reviews_yet": "New to UpTend — book to be their first reviewer!",
+
       // Nav
       "nav.more": "More",
       "nav.blog": "Blog",
@@ -2067,6 +2099,38 @@ const resources = {
       "landing.book_a_service": "Reservar un Servicio",
       "landing.become_a_pro": "Conviértete en Pro",
       "hero.hero_headline_3": "Sin dolores de cabeza.",
+
+      // Trust Bar & Social Proof
+      "landing.trust_headline": "Confianza de propietarios en Orlando",
+      "landing.trust_badges_line": "Pros con Antecedentes Verificados | Asegurados | Garantía de Protección de Precio",
+      "landing.trust_review_1": "Las canaletas quedaron como nuevas. El Pro llegó a tiempo y fue muy profesional.",
+      "landing.trust_review_1_author": "Sarah T., Lake Nona",
+      "landing.trust_review_2": "El mejor servicio de lavado a presión que hemos usado. Definitivamente reservaremos de nuevo.",
+      "landing.trust_review_2_author": "Mike R., Winter Park",
+      "landing.trust_review_3": "George me ayudó a descubrir exactamente lo que mi casa necesitaba. Muy fácil.",
+      "landing.trust_review_3_author": "Ana M., Laureate Park",
+
+      // Price Protection Guarantee
+      "landing.ppg_title": "Garantía de Protección de Precio",
+      "landing.ppg_desc": "Su precio queda fijado al reservar. Si su Pro encuentra que el alcance es diferente al descrito, cualquier cambio requiere su aprobación con documentación fotográfica. Sin sorpresas, nunca.",
+
+      // How It Works
+      "landing.hiw_headline": "Cómo Funciona",
+      "landing.hiw_step_label": "Paso",
+      "landing.hiw_step1_title": "Ingrese Su Dirección",
+      "landing.hiw_step1_desc": "Díganos dónde está y le mostraremos los servicios disponibles en su área.",
+      "landing.hiw_step2_title": "Elija Su Servicio",
+      "landing.hiw_step2_desc": "Elija entre 11 servicios del hogar con precios transparentes y por adelantado.",
+      "landing.hiw_step3_title": "Reserve un Pro Verificado",
+      "landing.hiw_step3_desc": "Cada Pro tiene antecedentes verificados y seguro. Su precio está garantizado.",
+
+      // Booking page badge tooltip
+      "booking_page.badge_price_tooltip": "Su precio queda fijado al reservar. Cambios de alcance requieren su aprobación con documentación fotográfica.",
+
+      // Find Pro page extras
+      "findpro.jobs_completed": "{{count}} trabajos completados",
+      "findpro.recently_joined": "Recién ingresado",
+      "findpro.no_reviews_yet": "Nuevo en UpTend — ¡reserve para ser su primer reseñador!",
 
       // Nav
       "nav.more": "Más",

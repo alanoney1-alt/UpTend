@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Menu, X, Leaf, ChevronDown,
-  UserCircle, LogOut, ShieldCheck,
+  UserCircle, LogOut, ShieldCheck, Phone,
 } from "lucide-react";
 // ServiceBagSheet moved to booking flow — not in global header
 import {
@@ -93,6 +93,10 @@ export function Header() {
 
         {/* Right: Actions */}
         <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
+          <a href="tel:+14073383342" className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors text-sm">
+            <Phone className="w-3.5 h-3.5" />
+            <span>(407) 338-3342</span>
+          </a>
           <LanguageToggle />
 
           {isLoading ? (
@@ -174,6 +178,11 @@ export function Header() {
           )}
         </div>
 
+        <div className="lg:hidden flex items-center gap-2">
+          <a href="tel:+14073383342" className="text-slate-400 hover:text-white" aria-label="Call us">
+            <Phone className="w-5 h-5" />
+          </a>
+        </div>
         <div className="lg:hidden flex items-center gap-1">
           <Button
             variant="ghost"

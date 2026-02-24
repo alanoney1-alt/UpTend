@@ -8,7 +8,7 @@ import {
   DollarSign, Clock, Ban, TrendingUp, Users, Star,
   CheckCircle, ChevronRight, Wrench, Waves, Truck,
   Package, Home, Trees, ArrowUpFromLine, Sparkles,
-  MessageCircle,
+  MessageCircle, MapPin, Quote,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
@@ -23,6 +23,8 @@ export default function Landing() {
       <main>
         <GeorgeBanner />
         <HeroSection />
+        <TrustBar />
+        <HowItWorks />
         <ServicesStrip />
         <TwoSides />
         <Testimonials />
@@ -102,6 +104,87 @@ function HeroSection() {
         <p className="mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
           {t("hero.hero_footnote")}
         </p>
+      </div>
+    </section>
+  );
+}
+
+/* ─── TRUST BAR ─── */
+function TrustBar() {
+  const { t } = useTranslation();
+  const reviews = [
+    { text: t("landing.trust_review_1"), author: t("landing.trust_review_1_author") },
+    { text: t("landing.trust_review_2"), author: t("landing.trust_review_2_author") },
+    { text: t("landing.trust_review_3"), author: t("landing.trust_review_3_author") },
+  ];
+
+  return (
+    <section className="py-10 bg-slate-50 dark:bg-slate-900/50 border-b border-border">
+      <div className="max-w-5xl mx-auto px-4 text-center">
+        <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+          {t("landing.trust_headline")}
+        </p>
+        <p className="text-xs text-muted-foreground mb-6">
+          {t("landing.trust_badges_line")}
+        </p>
+
+        {/* Price Protection Guarantee */}
+        <div className="max-w-2xl mx-auto mb-8 p-4 rounded-xl bg-white dark:bg-slate-800 border border-[#F47C20]/20">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <ShieldCheck className="w-5 h-5 text-[#F47C20]" />
+            <span className="font-bold text-sm text-slate-900 dark:text-white">{t("landing.ppg_title")}</span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {t("landing.ppg_desc")}
+          </p>
+        </div>
+
+        {/* Review quotes */}
+        <div className="grid md:grid-cols-3 gap-4">
+          {reviews.map((r, i) => (
+            <div key={i} className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-slate-800 border border-border">
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }, (_, j) => (
+                  <Star key={j} className="w-3 h-3 text-amber-500 fill-amber-500" />
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground italic">"{r.text}"</p>
+              <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">— {r.author}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── HOW IT WORKS ─── */
+function HowItWorks() {
+  const { t } = useTranslation();
+  const steps = [
+    { icon: MapPin, title: t("landing.hiw_step1_title"), desc: t("landing.hiw_step1_desc") },
+    { icon: Wrench, title: t("landing.hiw_step2_title"), desc: t("landing.hiw_step2_desc") },
+    { icon: ShieldCheck, title: t("landing.hiw_step3_title"), desc: t("landing.hiw_step3_desc") },
+  ];
+
+  return (
+    <section className="py-16 bg-white dark:bg-slate-950 border-b border-border">
+      <div className="max-w-4xl mx-auto px-4">
+        <h2 className="text-2xl md:text-3xl font-black text-center mb-10 text-slate-900 dark:text-white">
+          {t("landing.hiw_headline")}
+        </h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {steps.map((step, i) => (
+            <div key={i} className="flex flex-col items-center text-center gap-3">
+              <div className="w-14 h-14 rounded-full bg-[#F47C20]/10 flex items-center justify-center">
+                <step.icon className="w-7 h-7 text-[#F47C20]" />
+              </div>
+              <span className="text-xs font-bold text-[#F47C20] uppercase tracking-wider">{t("landing.hiw_step_label", "Step")} {i + 1}</span>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{step.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

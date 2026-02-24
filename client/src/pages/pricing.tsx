@@ -225,6 +225,35 @@ export default function PublicPricing() {
           ))}
         </div>
 
+        {/* Price Protection Guarantee */}
+        <div className="max-w-4xl mx-auto mt-16 mb-8 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl p-6 md:p-8 border border-[#F47C20]/20">
+          <div className="text-center mb-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#F47C20]/10 rounded-xl mb-4">
+              <ShieldCheck className="w-6 h-6 text-[#F47C20]" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+              {t("pricing.ppg_title", "Price Protection Guarantee")}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 text-base max-w-2xl mx-auto leading-relaxed">
+              {t("pricing.ppg_desc", "Your price is locked at booking. If your pro finds the scope is different than described, any changes require your approval with photo documentation. No surprises, ever.")}
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4 mt-6">
+            <div className="text-center p-4">
+              <div className="font-bold text-[#F47C20] mb-1">{t("pricing.ppg_locked_title", "Locked Price")}</div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{t("pricing.ppg_locked_desc", "The quote you see is the most you'll pay")}</p>
+            </div>
+            <div className="text-center p-4">
+              <div className="font-bold text-[#F47C20] mb-1">{t("pricing.ppg_approval_title", "Your Approval Required")}</div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{t("pricing.ppg_approval_desc", "Scope changes need your OK with photo proof")}</p>
+            </div>
+            <div className="text-center p-4">
+              <div className="font-bold text-[#F47C20] mb-1">{t("pricing.ppg_nosurprises_title", "No Surprises")}</div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{t("pricing.ppg_nosurprises_desc", "No hidden fees, no after-the-fact charges")}</p>
+            </div>
+          </div>
+        </div>
+
         {/* Liability Protection Section */}
         <div className="max-w-4xl mx-auto mt-16 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 md:p-8 border border-blue-200">
           <div className="text-center mb-8">

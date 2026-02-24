@@ -23,7 +23,7 @@ const services = [
     tagline: "No task too small.",
     description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
     price: "From $75/hr",
-    includes: ["TV mounting & picture hanging", "Furniture assembly", "Minor repairs & touch-ups", "Light fixture installation", "Drywall patching", "Door adjustments"],
+    includes: ["Skilled repairs, minor installations & troubleshooting", "TV mounting & picture hanging", "Furniture assembly", "Drywall patching & touch-up painting", "Light fixture & ceiling fan installation", "Door adjustments & lock changes"],
     esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
     link: "/services/handyman",
   },
@@ -73,7 +73,7 @@ const services = [
     tagline: "Spotless homes. Verified clean.",
     description: "Professional home cleaning with room-by-room checklists and before/after photo verification. Standard, deep, or move-in/move-out clean options. Recurring plans available with your dedicated Pro.",
     price: "From $99",
-    includes: ["Room-by-room checklist", "Before/After photos", "Supplies included", "Recurring options available"],
+    includes: ["Dusting, vacuuming & mopping all rooms", "Kitchen & bathroom sanitization", "Before/After photo documentation", "All supplies & equipment included"],
     link: "/services/home-cleaning",
     esgImpact: "Eco-friendly products reduce CO2 emissions",
   },
@@ -111,7 +111,7 @@ const services = [
     tagline: "Prevent water damage before it starts.",
     description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
     price: "From $129",
-    includes: ["Full debris removal", "Downspout flushing", "Roof line air-blow", "Debris bagged & hauled"],
+    includes: ["Debris removal from all gutters & downspouts", "Downspout flush test to ensure proper flow", "Roof line air-blow to clear loose debris", "Ground cleanup — all debris bagged & hauled"],
     esgImpact: "Prevents 50+ lbs CO2 from water damage repairs",
     link: "/services/gutter-cleaning",
   },
@@ -124,7 +124,7 @@ const services = [
     tagline: "Curb appeal, restored in hours.",
     description: "Industrial-grade surface cleaning for driveways, patios, walkways, pool decks, and home exteriors. Chemical pre-treatment included on every job.",
     price: "From $120",
-    includes: ["Chemical pre-treatment", "Surface sealing available", "Gum removal", "Before/After photos"],
+    includes: ["Surface cleaning with commercial-grade equipment", "Chemical pre-treatment on every job", "Rinse & final inspection", "All equipment included — nothing for you to provide"],
     esgImpact: "Saves 200+ gallons of water per job with low-flow equipment",
     link: "/services/pressure-washing",
   },
@@ -358,10 +358,14 @@ export default function Services() {
                   ))}
                 </ul>
 
-                <div className="flex items-center gap-3 text-xs text-muted-foreground mb-4 flex-wrap">
+                <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2 flex-wrap">
                   <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-green-600" /> Licensed & Insured</span>
                   <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5 text-green-600" /> Guaranteed Pricing</span>
                   <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-green-600" /> Background Checked</span>
+                </div>
+                <div className="flex items-center gap-1.5 mb-4 px-2 py-1.5 rounded-md bg-[#F47C20]/5 border border-[#F47C20]/15">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#F47C20] shrink-0" />
+                  <span className="text-[10px] text-[#F47C20] font-semibold">{t("services_page.ppg_badge", "Price Protection Guarantee — your price is locked at booking")}</span>
                 </div>
 
                 <Button

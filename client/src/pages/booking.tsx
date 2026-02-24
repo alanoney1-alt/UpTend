@@ -123,13 +123,14 @@ export default function BookingPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             {[
-              { icon: ShieldCheck, label: t("booking_page.badge_price") },
+              { icon: ShieldCheck, label: t("booking_page.badge_price"), tooltip: t("booking_page.badge_price_tooltip") },
               { icon: CheckCircle, label: t("booking_page.badge_background") },
               { icon: Shield, label: t("booking_page.badge_insured") },
             ].map((badge) => (
               <div
                 key={badge.label}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold"
+                title={(badge as any).tooltip || ""}
               >
                 <badge.icon className="w-3.5 h-3.5" />
                 {badge.label}
