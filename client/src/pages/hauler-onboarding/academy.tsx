@@ -650,9 +650,12 @@ function AcademyPublicLanding() {
               Certified
             </span>
           </h1>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
+          <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-4">
             Our Pros complete mandatory safety certification, background checks, and skill verification
             before they ever set foot on your property.
+          </p>
+          <p className="text-base text-slate-400 max-w-xl mx-auto mb-8">
+            92% of homeowners say they prefer certified service professionals. Every UpTend Pro earns their badge.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
             <Link href="/book">

@@ -1,9 +1,12 @@
 import { Helmet } from "react-helmet";
 import { Link } from "wouter";
+import { Header } from "@/components/landing/header";
+import { Footer } from "@/components/landing/footer";
 
 export default function BlogHomeServicesLakeNona() {
   return (
     <div className="min-h-screen bg-white">
+      <Header />
       <Helmet>
         <title>Home Services Lake Nona FL | Find Trusted Local Pros | 2026 Guide</title>
         <meta
@@ -28,7 +31,7 @@ export default function BlogHomeServicesLakeNona() {
         })}</script>
       </Helmet>
 
-      <article className="max-w-3xl mx-auto px-4 py-16 prose prose-lg prose-orange">
+      <article className="max-w-3xl mx-auto px-4 pt-28 pb-16 prose prose-lg prose-orange">
         <nav className="text-sm text-gray-500 mb-8 not-prose">
           <Link href="/blog" className="hover:text-orange-600">← Back to Blog</Link>
         </nav>
@@ -219,6 +222,7 @@ export default function BlogHomeServicesLakeNona() {
           </em>
         </p>
       </article>
+      <Footer />
     </div>
   );
 }

@@ -142,6 +142,7 @@ const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orla
 // Blog
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
 const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
+const BlogPost = lazy(() => import("@/pages/blog/post"));
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -315,6 +316,7 @@ function Router() {
       <Route path="/my-home-profile" component={HomeProfilePage} />
       <Route path="/blog" component={BlogIndex} />
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
+      <Route path="/blog/:slug" component={BlogPost} />
       <Route component={NotFound} />
     </Switch>
     </Suspense>
