@@ -1,4 +1,5 @@
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -463,6 +464,7 @@ function ActiveJobWithWorker({ job }: { job: ServiceRequest }) {
 }
 
 export default function CustomerDashboard() {
+  const { t } = useTranslation();
   usePageTitle("Dashboard | UpTend");
   const { user, isLoading: authLoading } = useAuth();
   const [historyFilter, setHistoryFilter] = useState<"all" | "active" | "completed">("all");
@@ -504,10 +506,10 @@ export default function CustomerDashboard() {
     return (
       <div className="min-h-screen bg-[#3B1D5A] flex flex-col items-center justify-center px-4">
         <Card className="w-full max-w-md p-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Sign In Required</h1>
-          <p className="text-muted-foreground mb-6">Please sign in to access your Home OS dashboard.</p>
+          <h1 className="text-2xl font-bold mb-4">{t("dashboard.sign_in_required")}</h1>
+          <p className="text-muted-foreground mb-6">{t("dashboard.sign_in_desc")}</p>
           <Link href="/login">
-            <Button className="w-full" data-testid="button-go-to-login">Sign In</Button>
+            <Button className="w-full" data-testid="button-go-to-login">{t("common.sign_in")}</Button>
           </Link>
         </Card>
       </div>
@@ -522,10 +524,10 @@ export default function CustomerDashboard() {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-1">
             <Home className="w-5 h-5 text-primary" />
-            <h1 className="text-2xl font-bold text-white" data-testid="text-dashboard-title">Home OS</h1>
+            <h1 className="text-2xl font-bold text-white" data-testid="text-dashboard-title">{t("dashboard.home_os")}</h1>
           </div>
           <p className="text-white/60 text-sm" data-testid="text-dashboard-subtitle">
-            Welcome back, {user.firstName || "there"}. Your home at a glance.
+            {t("dashboard.welcome_back", { name: user.firstName || t("dashboard.there") })}
           </p>
         </div>
 
@@ -533,7 +535,7 @@ export default function CustomerDashboard() {
           <div className="flex items-center justify-between gap-2 mb-3">
             <div className="flex items-center gap-2">
               <Activity className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-bold text-white">UpTend Home Score</h2>
+              <h2 className="text-lg font-bold text-white">{t("dashboard.home_score")}</h2>
             </div>
             <Badge variant="secondary" className="text-[10px]">BETA</Badge>
           </div>
@@ -555,7 +557,7 @@ export default function CustomerDashboard() {
         <div className="mb-6" data-testid="section-mr-george">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-bold text-white">Mr. George Can Help</h2>
+            <h2 className="text-lg font-bold text-white">{t("dashboard.george_help")}</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {([
@@ -583,7 +585,7 @@ export default function CustomerDashboard() {
           <CardHeader className="flex flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              <CardTitle className="text-base">My Subscriptions</CardTitle>
+              <CardTitle className="text-base">{t("dashboard.my_subscriptions")}</CardTitle>
             </div>
             <Link href="/subscriptions">
               <Button variant="ghost" size="icon" data-testid="button-view-subscriptions">
@@ -594,11 +596,11 @@ export default function CustomerDashboard() {
           <CardContent>
             <div className="text-center py-4">
               <p className="text-sm text-muted-foreground mb-3">
-                Manage your recurring cleaning plans
+                {t("dashboard.manage_plans")}
               </p>
               <Link href="/subscriptions">
                 <Button variant="outline" size="sm">
-                  View All Subscriptions
+                  {t("dashboard.view_subscriptions")}
                 </Button>
               </Link>
             </div>
@@ -609,7 +611,7 @@ export default function CustomerDashboard() {
           <CardHeader className="flex flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Boxes className="w-5 h-5 text-primary" />
-              <CardTitle className="text-base">Digital Inventory</CardTitle>
+              <CardTitle className="text-base">{t("dashboard.digital_inventory")}</CardTitle>
             </div>
             <div className="flex items-center gap-2">
               {totalAssetValue > 0 && (
@@ -638,9 +640,9 @@ export default function CustomerDashboard() {
             ) : (
               <div className="text-center py-8" data-testid="empty-inventory">
                 <Camera className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground mb-1">No items scanned yet</p>
+                <p className="text-sm text-muted-foreground mb-1">{t("dashboard.no_items")}</p>
                 <p className="text-xs text-muted-foreground mb-4">
-                  Items are auto-cataloged during service visits
+                  {t("dashboard.items_auto")}
                 </p>
                 <Link href="/my-home">
                   <Button variant="outline" size="sm" data-testid="button-scan-items">
@@ -666,7 +668,7 @@ export default function CustomerDashboard() {
           <div className="mb-6" data-testid="section-active-jobs">
             <div className="flex items-center gap-2 mb-3">
               <Activity className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-bold text-white">Active Jobs</h2>
+              <h2 className="text-lg font-bold text-white">{t("dashboard.active_jobs")}</h2>
               <Badge variant="secondary" className="text-xs" data-testid="badge-active-count">
                 {activeJobs.length}
               </Badge>
@@ -683,7 +685,7 @@ export default function CustomerDashboard() {
           <div className="flex items-center justify-between gap-4 mb-3 flex-wrap">
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-bold text-white">Job History</h2>
+              <h2 className="text-lg font-bold text-white">{t("dashboard.job_history")}</h2>
             </div>
             <div className="flex items-center gap-1">
               {(["all", "active", "completed"] as const).map((f) => (
@@ -723,12 +725,12 @@ export default function CustomerDashboard() {
               <Truck className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground mb-1">
                 {historyFilter === "all"
-                  ? "No jobs yet"
+                  ? t("dashboard.no_jobs")
                   : historyFilter === "active"
-                    ? "No active jobs"
-                    : "No completed jobs"}
+                    ? t("dashboard.no_active")
+                    : t("dashboard.no_completed")}
               </p>
-              <p className="text-xs text-muted-foreground mb-4">Book your first service to get started</p>
+              <p className="text-xs text-muted-foreground mb-4">{t("dashboard.book_first")}</p>
               <Link href="/book">
                 <Button size="sm" data-testid="button-book-service">
                   <Plus className="w-3 h-3 mr-1" />
@@ -743,7 +745,7 @@ export default function CustomerDashboard() {
         <div className="mb-6" data-testid="section-claims">
           <div className="flex items-center gap-2 mb-3">
             <Shield className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-bold text-white">Liability Claims</h2>
+            <h2 className="text-lg font-bold text-white">{t("dashboard.liability_claims")}</h2>
           </div>
           <Card>
             <CardContent className="p-0">

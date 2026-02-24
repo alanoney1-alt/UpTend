@@ -1,4 +1,5 @@
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -109,6 +110,7 @@ const EMERGENCY_TYPES = [
 ];
 
 export default function EmergencyPage() {
+  const { t } = useTranslation();
   usePageTitle("Emergency Services | UpTend");
   const { toast } = useToast();
   const [step, setStep] = useState<"select" | "details" | "searching" | "found">("select");
@@ -183,9 +185,9 @@ export default function EmergencyPage() {
             className="block w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white text-center py-6 rounded-2xl shadow-2xl shadow-red-600/30 transition-all"
           >
             <Phone className="w-8 h-8 mx-auto mb-2" />
-            <span className="text-3xl font-black block">CALL NOW</span>
+            <span className="text-3xl font-black block">{t("emergency.call_now")}</span>
             <span className="text-xl font-bold block">(407) 338-3342</span>
-            <span className="text-sm opacity-80 block mt-1">Available 24/7 -- Emergency dispatch</span>
+            <span className="text-sm opacity-80 block mt-1">{t("emergency.available_247")}</span>
           </a>
         </div>
 
@@ -193,24 +195,24 @@ export default function EmergencyPage() {
         <div className="flex items-center justify-center gap-3 mb-8 bg-slate-800/60 rounded-xl py-4 px-6 border border-slate-700">
           <Clock className="w-6 h-6 text-green-400" />
           <div>
-            <p className="font-bold text-green-400 text-lg">Average response time: 30 minutes</p>
-            <p className="text-slate-400 text-sm">Our closest available Pro is dispatched immediately</p>
+            <p className="font-bold text-green-400 text-lg">{t("emergency.avg_response")}</p>
+            <p className="text-slate-400 text-sm">{t("emergency.closest_pro")}</p>
           </div>
         </div>
 
         {/* 911 Warning */}
         <div className="bg-red-900/30 border border-red-700 rounded-lg p-4 mb-8 text-center">
           <p className="text-red-300 font-semibold">
-            For life-threatening emergencies, call <strong>911</strong> first.
+            {t("emergency.call_911")}
           </p>
-          <p className="text-red-400 text-sm mt-1">This service is for urgent home repairs, not medical emergencies.</p>
+          <p className="text-red-400 text-sm mt-1">{t("emergency.not_medical")}</p>
         </div>
 
         {step === "select" && (
           <div className="space-y-8">
             <div className="text-center">
-              <h1 className="text-4xl font-black mb-2">What type of emergency?</h1>
-              <p className="text-slate-400">Select your emergency below. We'll show you what to do first, then get a Pro on the way.</p>
+              <h1 className="text-4xl font-black mb-2">{t("emergency.what_type")}</h1>
+              <p className="text-slate-400">{t("emergency.select_below")}</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -226,7 +228,7 @@ export default function EmergencyPage() {
                       <Icon className={`w-8 h-8 ${type.color}`} />
                       <span className="text-lg font-bold">{type.label}</span>
                     </div>
-                    <p className="text-xs text-slate-400">Tap for safety steps + dispatch</p>
+                    <p className="text-xs text-slate-400">{t("emergency.tap_safety")}</p>
                   </button>
                 );
               })}
@@ -237,7 +239,7 @@ export default function EmergencyPage() {
         {step === "details" && selectedEmergency && (
           <div className="space-y-6">
             <Button variant="ghost" onClick={() => setStep("select")} className="text-slate-400">
-              &larr; Back to emergency types
+              &larr; {t("emergency.back_types")}
             </Button>
 
             <div className="flex items-center gap-3">
@@ -249,7 +251,7 @@ export default function EmergencyPage() {
             <Card className="bg-amber-950/40 border-amber-700/50">
               <CardContent className="p-6">
                 <h3 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5" /> Do This FIRST -- Before We Arrive
+                  <ShieldCheck className="w-5 h-5" /> {t("emergency.do_first")}
                 </h3>
                 <ol className="space-y-3">
                   {selectedEmergency.firstSteps.map((step, idx) => (
@@ -267,9 +269,9 @@ export default function EmergencyPage() {
             {/* THEN: Request help */}
             <Card className="bg-slate-800/60 border-slate-700">
               <CardContent className="p-6 space-y-4">
-                <h3 className="text-lg font-bold text-white mb-2">Now, let us send help</h3>
+                <h3 className="text-lg font-bold text-white mb-2">{t("emergency.send_help")}</h3>
                 <div>
-                  <label className="text-sm text-slate-400 mb-1 block">Your Address</label>
+                  <label className="text-sm text-slate-400 mb-1 block">{t("emergency.your_address")}</label>
                   <Input
                     placeholder="Street address"
                     value={address.addressLine1}
@@ -283,7 +285,7 @@ export default function EmergencyPage() {
                   <Input placeholder="ZIP" value={address.zipCode} onChange={(e) => setAddress(a => ({ ...a, zipCode: e.target.value }))} className="bg-slate-900 border-slate-600" />
                 </div>
                 <div>
-                  <label className="text-sm text-slate-400 mb-1 block">What's happening? (optional)</label>
+                  <label className="text-sm text-slate-400 mb-1 block">{t("emergency.whats_happening")}</label>
                   <Textarea placeholder="Describe the situation..." value={description} onChange={(e) => setDescription(e.target.value)} className="bg-slate-900 border-slate-600" />
                 </div>
               </CardContent>
@@ -294,7 +296,7 @@ export default function EmergencyPage() {
               disabled={!address.addressLine1 || !address.city || !address.state || !address.zipCode || submitMutation.isPending}
               className="w-full h-16 text-xl font-black bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg shadow-red-600/30"
             >
-              {submitMutation.isPending ? "Dispatching..." : "Send Help Now"}
+              {submitMutation.isPending ? t("emergency.dispatching") : t("emergency.send_help_now")}
             </Button>
 
             <p className="text-center text-slate-500 text-sm">
@@ -312,21 +314,21 @@ export default function EmergencyPage() {
               </div>
             </div>
             <div>
-              <h2 className="text-3xl font-bold mb-2">Dispatching a Pro to you now...</h2>
-              <p className="text-slate-400">We're notifying all available Pros in your area.</p>
+              <h2 className="text-3xl font-bold mb-2">{t("emergency.dispatching_pro")}</h2>
+              <p className="text-slate-400">{t("emergency.notifying_pros")}</p>
               <p className="text-slate-500 text-sm mt-2">Emergency ID: {emergencyId}</p>
             </div>
             <div className="flex items-center justify-center gap-2 text-green-400 font-bold text-lg">
               <Clock className="w-5 h-5" />
-              <span>Average response time: 30 minutes</span>
+              <span>{t("emergency.avg_response")}</span>
             </div>
             <div className="bg-slate-800/60 rounded-xl p-6 border border-slate-700 max-w-md mx-auto text-left">
-              <h3 className="font-bold text-white mb-3">While you wait:</h3>
+              <h3 className="font-bold text-white mb-3">{t("emergency.while_wait")}:</h3>
               <ul className="space-y-2 text-sm text-slate-300">
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Follow the safety steps above</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Take photos of the damage for insurance</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Keep your phone nearby for Pro updates</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Ensure clear access to the affected area</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> {t("emergency.wait_step1")}</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> {t("emergency.wait_step2")}</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> {t("emergency.wait_step3")}</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> {t("emergency.wait_step4")}</li>
               </ul>
             </div>
           </div>
@@ -338,8 +340,8 @@ export default function EmergencyPage() {
               <CheckCircle2 className="w-16 h-16 text-green-500" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold mb-2 text-green-400">Help is on the way.</h2>
-              <p className="text-slate-300">You're in good hands. A verified, insured Pro has been dispatched.</p>
+              <h2 className="text-3xl font-bold mb-2 text-green-400">{t("emergency.help_on_way")}</h2>
+              <p className="text-slate-300">{t("emergency.in_good_hands")}</p>
               {proInfo && (
                 <p className="text-slate-300 text-lg mt-2">{proInfo.companyName} -- {proInfo.rating?.toFixed(1)} stars</p>
               )}
@@ -347,7 +349,7 @@ export default function EmergencyPage() {
             {eta && (
               <Card className="bg-slate-800/50 border-slate-700 max-w-sm mx-auto">
                 <CardContent className="p-6 text-center">
-                  <p className="text-slate-400 text-sm">Estimated arrival</p>
+                  <p className="text-slate-400 text-sm">{t("emergency.estimated_arrival")}</p>
                   <p className="text-5xl font-black text-white mt-1">{eta} min</p>
                 </CardContent>
               </Card>
@@ -355,7 +357,7 @@ export default function EmergencyPage() {
             {proInfo?.phone && (
               <Button variant="outline" className="border-slate-600" asChild>
                 <a href={`tel:${proInfo.phone}`}>
-                  <Phone className="w-4 h-4 mr-2" /> Call Your Pro
+                  <Phone className="w-4 h-4 mr-2" /> {t("emergency.call_pro")}
                 </a>
               </Button>
             )}

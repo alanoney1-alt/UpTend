@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import { Link } from "wouter";
 import { Header } from "@/components/landing/header";
@@ -100,6 +101,7 @@ const posts: BlogPost[] = [
 ];
 
 export default function BlogIndex() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
@@ -114,9 +116,9 @@ export default function BlogIndex() {
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 pt-28 pb-16">
-        <h1 className="text-4xl font-bold mb-2">UpTend Blog</h1>
+        <h1 className="text-4xl font-bold mb-2">{t("blog.title")}</h1>
         <p className="text-muted-foreground mb-12 text-lg">
-          Home maintenance tips, cost guides, and local insights for Orlando homeowners.
+          {t("blog.subtitle")}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -138,7 +140,7 @@ export default function BlogIndex() {
               </h2>
               <p className="text-sm text-muted-foreground mb-4">{post.excerpt}</p>
               <Link href={`/blog/${post.slug}`} className="text-primary font-medium text-sm hover:underline mt-auto">
-                Read more &rarr;
+                {t("blog.read_more")} &rarr;
               </Link>
               </div>
             </article>

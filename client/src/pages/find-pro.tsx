@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useSearch } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -87,6 +88,7 @@ const proMarkerIcon = new L.Icon({
 // ── Component ──
 
 function FindProPage() {
+  const { t } = useTranslation();
   const search = useSearch();
   const [, setLocation] = useLocation();
   const params = new URLSearchParams(search);
@@ -141,9 +143,9 @@ function FindProPage() {
       <div className="pt-24 pb-16 px-4 max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Find Your Pro</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">{t("findpro.title")}</h1>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Browse verified, insured Pros in the Orlando area. Read reviews, compare ratings, and book your favorite.
+            {t("findpro.subtitle")}
           </p>
         </div>
 
@@ -183,7 +185,7 @@ function FindProPage() {
         <div className="flex flex-wrap gap-3 mb-8 items-center">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Filters:</span>
+            <span className="text-sm font-medium text-muted-foreground">{t("findpro.filters")}:</span>
           </div>
           <select
             value={serviceFilter}
@@ -218,10 +220,10 @@ function FindProPage() {
         {filtered.length === 0 ? (
           <Card className="p-12 text-center">
             <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-bold mb-2">No Pros available for this service right now.</h3>
-            <p className="text-muted-foreground mb-4">Try Quick Book for the fastest match.</p>
+            <h3 className="text-lg font-bold mb-2">{t("findpro.no_pros")}</h3>
+            <p className="text-muted-foreground mb-4">{t("findpro.try_quick_book")}</p>
             <Button onClick={() => setLocation("/book")} className="bg-[#F47C20] hover:bg-[#e06a10]">
-              Quick Book
+              {t("findpro.quick_book")}
             </Button>
           </Card>
         ) : (
@@ -295,6 +297,7 @@ function ProAvatar({ firstName, lastInitial }: { firstName: string; lastInitial:
 }
 
 function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfile: () => void; onBook: () => void }) {
+  const { t } = useTranslation();
   return (
     <Card className="overflow-hidden hover:border-[#F47C20]/50 transition-all">
       <CardContent className="p-5">
@@ -358,10 +361,10 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
         {/* Two distinct buttons */}
         <div className="flex gap-2">
           <Button onClick={onBook} className="flex-1 bg-[#F47C20] hover:bg-[#e06a10] text-white font-bold" size="sm">
-            Book Now
+            {t("findpro.book_now")}
           </Button>
           <Button onClick={onViewProfile} variant="outline" className="flex-1" size="sm">
-            View Profile
+            {t("findpro.view_profile")}
           </Button>
         </div>
       </CardContent>
@@ -372,6 +375,7 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
 // ── Profile Modal ──
 
 function ProProfileModal({ pro, onClose, onBook }: { pro: ProProfile; onClose: () => void; onBook: () => void }) {
+  const { t } = useTranslation();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div
@@ -419,7 +423,7 @@ function ProProfileModal({ pro, onClose, onBook }: { pro: ProProfile; onClose: (
 
         {/* Services with ratings */}
         <div className="mb-6">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">Services & Ratings</h3>
+          <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">{t("findpro.services_ratings")}</h3>
           <div className="space-y-2">
             {pro.services.map((svc) => (
               <div key={svc} className="flex items-center justify-between py-1.5 border-b border-border last:border-0">
@@ -436,7 +440,7 @@ function ProProfileModal({ pro, onClose, onBook }: { pro: ProProfile; onClose: (
         {/* Reviews */}
         {pro.reviews && pro.reviews.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">Recent Reviews</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">{t("findpro.recent_reviews")}</h3>
             <div className="space-y-3">
               {pro.reviews.map((review) => (
                 <div key={review.id} className="p-3 rounded-lg bg-muted/50">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useSearch, useLocation } from "wouter";
 import { useEffect } from "react";
@@ -45,6 +46,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function BookingPage() {
+  const { t } = useTranslation();
   usePageTitle("Book a Service | UpTend");
   const searchString = useSearch();
   const [, navigate] = useLocation();
@@ -75,10 +77,10 @@ export default function BookingPage() {
           <div className="w-full max-w-2xl mx-auto">
             <div className="text-center mb-6">
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
-                Complete Payment
+                {t("booking_page.complete_payment")}
               </h2>
               <p className="text-base text-slate-600 dark:text-slate-300">
-                Authorize payment to confirm your booking
+                {t("booking_page.authorize_payment")}
               </p>
             </div>
             <PaymentForm
@@ -114,16 +116,16 @@ export default function BookingPage() {
         {/* Hero */}
         <div className="text-center max-w-2xl mx-auto mb-8">
           <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-3">
-            Book a Home Service
+            {t("booking_page.hero_title")}
           </h1>
           <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 mb-6">
-            Transparent pricing. Background-checked pros. Guaranteed satisfaction.
+            {t("booking_page.hero_subtitle")}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             {[
-              { icon: ShieldCheck, label: "Price Guarantee" },
-              { icon: CheckCircle, label: "Background Checked" },
-              { icon: Shield, label: "Insured Pros" },
+              { icon: ShieldCheck, label: t("booking_page.badge_price") },
+              { icon: CheckCircle, label: t("booking_page.badge_background") },
+              { icon: Shield, label: t("booking_page.badge_insured") },
             ].map((badge) => (
               <div
                 key={badge.label}
@@ -140,9 +142,9 @@ export default function BookingPage() {
         <div className="max-w-2xl mx-auto mb-10">
           <div className="grid grid-cols-3 gap-4 text-center">
             {[
-              { step: 1, icon: MapPin, text: "Enter your address" },
-              { step: 2, icon: ClipboardCheck, text: "Choose your service and get a quote" },
-              { step: 3, icon: Calendar, text: "Pick your pro and schedule" },
+              { step: 1, icon: MapPin, text: t("booking_page.step1") },
+              { step: 2, icon: ClipboardCheck, text: t("booking_page.step2") },
+              { step: 3, icon: Calendar, text: t("booking_page.step3") },
             ].map((item) => (
               <div key={item.step} className="flex flex-col items-center gap-2">
                 <div className="relative">
@@ -167,29 +169,29 @@ export default function BookingPage() {
 
         {/* Trust line */}
         <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-10 mb-12 max-w-lg mx-auto">
-          Every UpTend Pro is background checked, insured, and rated by real customers.
+          {t("booking_page.trust_line")}
         </p>
 
         {/* FAQ */}
         <div className="max-w-xl mx-auto mb-8">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 text-center">
-            Frequently Asked Questions
+            {t("booking_page.faq_title")}
           </h2>
           <FAQItem
-            question="How does pricing work?"
-            answer="Our prices are transparent and guaranteed. The quote you see is the maximum you'll pay. If the job scope changes on-site, your pro will document it with photos and get your approval before any additional charges."
+            question={t("booking_page.faq_q1")}
+            answer={t("booking_page.faq_a1")}
           />
           <FAQItem
-            question="What if I'm not satisfied?"
-            answer="Every job is backed by our satisfaction guarantee. If something isn't right, we'll send another pro to fix it at no additional cost."
+            question={t("booking_page.faq_q2")}
+            answer={t("booking_page.faq_a2")}
           />
           <FAQItem
-            question="Are your pros licensed and insured?"
-            answer="Every pro on UpTend passes a background check and carries minimum $10,000 in liability coverage. LLC pros carry $25,000. You're protected on every job."
+            question={t("booking_page.faq_q3")}
+            answer={t("booking_page.faq_a3")}
           />
           <FAQItem
-            question="Can I cancel or reschedule?"
-            answer="You can cancel or reschedule any booking up to 24 hours before the scheduled time at no charge."
+            question={t("booking_page.faq_q4")}
+            answer={t("booking_page.faq_a4")}
           />
         </div>
       </main>

@@ -1,4 +1,5 @@
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import { Shield, Leaf, Heart, Globe, Video, DollarSign, Award, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,7 @@ const steps = [
 ];
 
 export default function BecomePro() {
+  const { t } = useTranslation();
   usePageTitle("Become a Pro | UpTend");
   return (
     <div className="min-h-screen bg-background" data-testid="page-become-pro">
@@ -66,24 +68,23 @@ export default function BecomePro() {
 
       <section className="bg-slate-950 pt-28 pb-24 px-4 md:px-6 text-center" data-testid="section-pro-hero">
         <h1 className="text-4xl md:text-6xl font-black text-white mb-6" data-testid="text-pro-headline">
-          Build a Verified <br />
+          {t("become_pro.hero_line1")} <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400">
-            Green Track Record.
+            {t("become_pro.hero_line2")}
           </span>
         </h1>
         <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-10" data-testid="text-pro-subhead">
-          UpTend matches you with real jobs, pays you fairly, and automatically builds your verified green track record.
-          Become the first choice for homeowners and property managers who care about sustainability.
+          {t("become_pro.hero_desc")}
         </p>
         <div className="flex justify-center gap-4 flex-wrap">
           <Link href="/pro/signup">
             <Button size="lg" className="font-bold text-lg" data-testid="button-apply-hero">
-              Apply to Join
+              {t("become_pro.apply_join")}
             </Button>
           </Link>
           <Link href="/academy">
             <Button size="lg" variant="outline" className="border-slate-700 text-slate-300 font-bold text-lg" data-testid="button-view-academy">
-              View Credentials Program
+              {t("become_pro.view_credentials")}
             </Button>
           </Link>
         </div>
@@ -97,36 +98,35 @@ export default function BecomePro() {
             </div>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-4" data-testid="text-green-hook-title">
-            Your Verified Impact Portfolio
+            {t("become_pro.impact_title")}
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
-            Every job builds your transparent, verified impact record. Property managers and enterprise
-            clients choose Pros with proven accountability and measurable sustainability credentials.
+            {t("become_pro.impact_desc")}
           </p>
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="p-6 text-center" data-testid="card-green-diversion">
               <p className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">70%</p>
-              <p className="text-sm font-medium">Avg. Landfill Diversion</p>
-              <p className="text-xs text-muted-foreground mt-1">Verified per job</p>
+              <p className="text-sm font-medium">{t("become_pro.avg_diversion")}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("become_pro.verified_per_job")}</p>
             </Card>
             <Card className="p-6 text-center" data-testid="card-green-carbon">
               <p className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">CO2</p>
-              <p className="text-sm font-medium">Carbon Impact Tracked</p>
-              <p className="text-xs text-muted-foreground mt-1">Route optimization + offsets</p>
+              <p className="text-sm font-medium">{t("become_pro.carbon_tracked")}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("become_pro.route_optimization")}</p>
             </Card>
             <Card className="p-6 text-center" data-testid="card-green-certs">
               <p className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">ESG</p>
-              <p className="text-sm font-medium">Credentials Earned</p>
-              <p className="text-xs text-muted-foreground mt-1">Shareable with clients</p>
+              <p className="text-sm font-medium">{t("become_pro.credentials_earned")}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("become_pro.shareable")}</p>
             </Card>
           </div>
         </div>
       </section>
 
       <section className="py-16 md:py-24 max-w-7xl mx-auto px-4 md:px-6" data-testid="section-pro-pillars" id="benefits">
-        <h2 className="text-3xl font-bold text-center mb-4" data-testid="text-pillars-title">The UpTend Pro Advantage</h2>
+        <h2 className="text-3xl font-bold text-center mb-4" data-testid="text-pillars-title">{t("become_pro.advantage_title")}</h2>
         <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
-          Transparent tools, verified protection, and a track record of real impact.
+          {t("become_pro.advantage_desc")}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {pillars.map((pillar) => (
@@ -150,7 +150,7 @@ export default function BecomePro() {
           </div>
           <div>
             <h2 className="text-3xl font-bold mb-4" data-testid="text-alan-quote-title">
-              &ldquo;I built this because the system was broken for you.&rdquo;
+              &ldquo;{t("become_pro.alan_quote_title")}&rdquo;
             </h2>
             <p className="text-muted-foreground italic leading-relaxed mb-6" data-testid="text-alan-quote">
               &ldquo;I&rsquo;ve seen how hard it is for high-quality Pros to grow a business when apps keep squeezing them for fees.
@@ -165,9 +165,9 @@ export default function BecomePro() {
       {/* Pro Testimonials */}
       <section className="py-16 md:py-24 bg-slate-50 dark:bg-slate-900/50 px-4 md:px-6" data-testid="section-pro-testimonials">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">Hear From Our Pros</h2>
+          <h2 className="text-3xl font-bold text-center mb-4">{t("become_pro.testimonials_title")}</h2>
           <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Real professionals building real businesses on UpTend.
+            {t("become_pro.testimonials_desc")}
           </p>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="p-6">
@@ -196,7 +196,7 @@ export default function BecomePro() {
       </section>
 
       <section className="py-16 md:py-24 max-w-5xl mx-auto px-4 md:px-6 text-center" data-testid="section-pro-steps">
-        <h2 className="text-3xl font-bold mb-12" data-testid="text-steps-title">How to become a Verified Green Pro</h2>
+        <h2 className="text-3xl font-bold mb-12" data-testid="text-steps-title">{t("become_pro.steps_title")}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {steps.map((step) => (
             <div key={step.num} className="p-6 bg-card border border-border rounded-xl" data-testid={`step-pro-${step.num}`}>
@@ -210,7 +210,7 @@ export default function BecomePro() {
         <div className="mt-12">
           <Link href="/pro/signup">
             <Button size="lg" className="font-bold text-lg" data-testid="button-apply-bottom">
-              Apply Now
+              {t("become_pro.apply_now")}
             </Button>
           </Link>
         </div>

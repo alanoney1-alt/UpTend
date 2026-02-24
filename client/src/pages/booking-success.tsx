@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Home, CalendarPlus, MapPin, TrendingUp, Sparkles } from "lucide-react";
@@ -7,6 +8,7 @@ import { PolishUpCrossSell } from "@/components/cross-sell/polishup-prompt";
 import { GuaranteeBadge } from "@/components/guarantee-badge";
 
 export default function BookingSuccess() {
+  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const [phase, setPhase] = useState<"check" | "house">("check");
   const [fillPercent, setFillPercent] = useState(0);
@@ -96,14 +98,14 @@ export default function BookingSuccess() {
 
           <div className={`space-y-3 transition-opacity duration-700 ${showContent ? "opacity-100" : "opacity-0"}`}>
             <h1 className="text-2xl font-bold" data-testid="text-success-title">
-              Maintenance Scheduled!
+              {t("booking_success.title")}
             </h1>
 
             <div className="flex items-center justify-center gap-2">
               <TrendingUp className="w-5 h-5 text-emerald-500" />
               <p className="text-muted-foreground" data-testid="text-score-impact">
-                Projected Home Score Impact:{" "}
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">+15 Points</span>
+                {t("booking_success.score_impact")}{" "}
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">{t("booking_success.points")}</span>
               </p>
             </div>
           </div>
@@ -116,9 +118,9 @@ export default function BookingSuccess() {
                 <Sparkles className="w-5 h-5 text-primary" />
               </div>
               <div className="space-y-1">
-                <p className="font-semibold text-sm" data-testid="text-digital-twin-title">Digital Inventory Update</p>
+                <p className="font-semibold text-sm" data-testid="text-digital-twin-title">{t("booking_success.inventory_title")}</p>
                 <p className="text-sm text-muted-foreground" data-testid="text-digital-twin-desc">
-                  Your Digital Inventory will be updated automatically during this service.
+                  {t("booking_success.inventory_desc")}
                 </p>
               </div>
             </div>
@@ -150,12 +152,12 @@ export default function BookingSuccess() {
             data-testid="button-add-to-calendar"
           >
             <CalendarPlus className="w-4 h-4" />
-            Add to Calendar
+            {t("booking_success.add_calendar")}
           </Button>
           <Link href="/dashboard">
             <Button variant="outline" className="w-full gap-2" data-testid="button-track-pro">
               <MapPin className="w-4 h-4" />
-              Track My Pro
+              {t("booking_success.track_pro")}
             </Button>
           </Link>
         </div>
