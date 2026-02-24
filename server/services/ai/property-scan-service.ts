@@ -240,12 +240,12 @@ export function formatPropertySummary(data: PropertyData): string {
 
   return [
     `Address: ${data.address}`,
-    data.homeValueEstimate ? `Market Value: $${data.homeValueEstimate.toLocaleString()} (${source})` : null,
+    // Home value intentionally excluded from property summary
     data.sqFootage ? `Size: ${data.sqFootage.toLocaleString()} sqft, ${data.bedrooms} bed / ${data.bathrooms} bath` : null,
     data.lotSizeAcres ? `Lot: ${data.lotSizeAcres} acres` : null,
     data.yearBuilt ? `Built: ${data.yearBuilt}` : null,
     data.propertyType && data.propertyType !== "Unknown" ? `Type: ${data.propertyType}` : null,
     poolText,
-    data.taxAssessedValue ? `Tax Assessed: $${data.taxAssessedValue.toLocaleString()}` : null,
+    // Tax/value data intentionally excluded from summary
   ].filter(Boolean).join("\n");
 }
