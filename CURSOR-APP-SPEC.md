@@ -191,51 +191,60 @@ GET  /api/properties/lookup?address=...    — RentCast property data
 
 ---
 
-## George's 162 Tools (What He Can Do)
+## George's 157 Tools (Complete List From Codebase)
 
 George calls these tools server-side. The app just sends messages and renders responses. But you need to know what George can do to build appropriate UI cards:
 
-### Booking & Pricing (12 tools)
-get_service_pricing, calculate_quote, get_bundle_options, check_availability, create_booking_draft, get_customer_jobs, get_all_services, smart_match_pro, get_customer_address, check_pro_availability, send_booking_confirmation, generate_payment_link
+### Booking & Pricing (14 tools)
+get_service_pricing, calculate_quote, check_availability, create_booking_draft, get_customer_jobs, get_all_services, smart_match_pro, get_customer_address, check_pro_availability, send_booking_confirmation, generate_payment_link, get_multi_pro_quotes, apply_save_discount, get_rebooking_suggestions
 
-### Home Management (20 tools)
-get_home_profile, get_service_history, get_seasonal_recommendations, get_maintenance_schedule, get_neighborhood_insights, get_morning_briefing, get_weather_alerts, get_home_dashboard, get_spending_tracker, get_trash_schedule, get_home_value_estimate, get_calendar_suggestion, get_seasonal_countdown, get_tonight_checklist, set_home_reminder, get_utility_providers, get_recycling_schedule, get_sprinkler_settings, get_water_restrictions, get_home_maintenance_reminders
+### Home Management (22 tools)
+get_service_history, get_seasonal_recommendations, get_maintenance_schedule, get_neighborhood_insights, get_morning_briefing, get_weather_alerts, get_home_dashboard, get_spending_tracker, get_trash_schedule, get_home_value_estimate, get_calendar_suggestion, get_seasonal_countdown, get_tonight_checklist, set_home_reminder, get_utility_providers, get_recycling_schedule, get_sprinkler_settings, get_water_restrictions, get_home_maintenance_reminders, get_customer_hoa, report_hoa_rule, update_appliance_purchase_date
 
-### DIY & Shopping (12 tools)
-find_diy_tutorial, get_next_tutorial_video, search_products, get_product_recommendation, compare_prices, get_shopping_list, start_diy_project, get_seasonal_diy_suggestions, get_diy_guide, get_step_by_step_walkthrough, get_home_tips, log_diy_completion
+### DIY & Shopping (16 tools)
+find_diy_tutorial, get_next_tutorial_video, search_products, get_product_recommendation, compare_prices, get_shopping_list, start_diy_project, get_seasonal_diy_suggestions, get_diy_guide, get_step_by_step_walkthrough, get_home_tips, log_diy_completion, get_quick_tutorial, get_technical_reference, log_diy_maintenance, find_replacement_part
 
 ### Home DNA Scan (4 tools)
 get_home_scan_info, start_home_scan, process_home_scan_photo, get_home_scan_progress
 
-### Vision / Photo Analysis (3 tools)
-diagnose_from_photo, analyze_photo_in_chat, scan_receipt_photo
+### Vision / Photo Analysis (5 tools)
+diagnose_from_photo, analyze_photo_in_chat, scan_receipt_photo, scan_receipt, identify_part_from_photo
 
-### Pro Tools (15 tools)
-get_pro_dashboard, get_pro_earnings, get_pro_schedule, get_pro_certifications, get_certification_programs, start_certification_module, submit_certification_quiz, get_pro_market_insights, get_pro_reviews, get_pro_arrival_info, get_pro_demand_forecast, get_pro_customer_retention, get_pro_goal_progress, set_pro_goal, get_pro_job_prompts
+### Pro Tools (22 tools)
+get_pro_dashboard, get_pro_earnings, get_pro_schedule, get_pro_certifications, get_certification_programs, start_certification_module, submit_certification_quiz, get_pro_market_insights, get_pro_reviews, get_pro_arrival_info, get_pro_demand_forecast, get_pro_customer_retention, get_pro_goal_progress, set_pro_goal, get_pro_job_prompts, get_pro_performance_analytics, set_pro_earnings_goal, show_pro_earnings_preview, suggest_pro_goal, get_weekly_route_summary, get_optimized_route, start_pro_application
 
 ### Communication (8 tools)
-send_email_to_customer, call_customer, get_call_status, send_quote_pdf, get_pro_live_location, add_to_calendar, send_whatsapp_message, send_push_notification
+call_customer, get_call_status, send_quote_pdf, get_pro_live_location, add_to_calendar, send_whatsapp_message, send_push_notification, submit_pro_site_report
 
-### Emergency (4 tools)
-activate_emergency_mode, get_emergency_shutoff_guide, generate_insurance_claim_packet, create_emergency_dispatch
+### Emergency (5 tools)
+activate_emergency_mode, get_emergency_shutoff_guide, generate_insurance_claim_packet, create_emergency_dispatch, get_emergency_pros
 
-### Intelligence (10 tools)
-calculate_home_health_score, predict_maintenance_needs, analyze_contractor_quote, get_market_rate, get_neighborhood_insights_v2, find_neighbor_bundles, get_local_alerts, identify_pest, assess_water_damage, get_nearby_pro_deals
+### Intelligence (12 tools)
+calculate_home_health_score, predict_maintenance_needs, analyze_contractor_quote, get_market_rate, get_neighborhood_insights_v2, get_local_alerts, identify_pest, assess_water_damage, get_nearby_pro_deals, get_neighborhood_deals, find_nearest_supply_store, get_disaster_mode_status
 
 ### Loyalty & Rewards (6 tools)
 get_customer_loyalty_status, get_customer_milestones, get_wallet_balance, get_available_rewards, redeem_reward, get_referral_code
 
 ### Vehicle (8 tools)
-add_vehicle_to_profile, get_vehicle_maintenance_schedule, diagnose_car_issue, search_auto_parts, find_auto_tutorial, get_obd_code, get_maintenance_due, get_purchase_history
+get_vehicle_maintenance_schedule, diagnose_car_issue, search_auto_parts, find_auto_tutorial, get_obd_code, get_maintenance_due, get_purchase_history, connect_retailer_account
 
-### B2B (8 tools)
-generate_service_agreement, get_document_status, get_portfolio_analytics, get_vendor_scorecard, get_billing_history, get_compliance_status, generate_roi_report, check_pro_recruitment
+### B2B (9 tools)
+generate_service_agreement, get_document_status, get_document_tracker, get_portfolio_analytics, get_vendor_scorecard, get_billing_history, get_compliance_status, get_compliance_report, generate_roi_report
+
+### Drone Scanning (2 tools)
+book_drone_scan, get_drone_scan_status
+
+### Warranty & Insurance (4 tools)
+get_warranty_tracker, get_warranty_dashboard, register_warranty, start_insurance_claim
+
+### Consent & Safety (4 tools)
+check_user_consent, request_consent, get_diy_disclaimer_consent, record_diy_disclaimer_acknowledgment
 
 ### Booking Management (2 tools)
 cancel_booking, reschedule_booking
 
-### Other (12 tools)
-get_storm_prep_checklist, generate_claim_documentation, get_referral_status, get_neighborhood_group_deals, get_neighborhood_activity, get_local_events, get_post_booking_question, add_custom_reminder, connect_smart_home, get_smart_home_status, start_insurance_claim, get_warranty_tracker
+### Other (14 tools)
+get_storm_prep_checklist, generate_claim_documentation, get_referral_status, get_neighborhood_group_deals, get_neighborhood_activity, get_local_events, get_post_booking_question, add_custom_reminder, connect_smart_home, get_smart_home_status, check_pro_recruitment, get_next_passive_question, create_group_deal, troubleshoot_on_site
 
 ---
 

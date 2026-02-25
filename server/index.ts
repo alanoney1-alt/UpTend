@@ -44,7 +44,7 @@ app.use(helmet({
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://uptend.app', 'https://www.uptend.app', 'https://uptendapp.com', 'https://www.uptendapp.com']
+    ? ['https://uptend.app', 'https://www.uptend.app', 'https://uptendapp.com', 'https://www.uptendapp.com', 'https://uptendapp.business', 'https://www.uptendapp.business']
     : true, // Allow all in development
   credentials: true,
 }));
