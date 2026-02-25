@@ -1,9 +1,30 @@
 {
   "postedTopics": [
-    {"date": "2026-02-21", "topic": "dryer-vent-safety", "platform": "fb+ig"},
-    {"date": "2026-02-23", "topic": "dryer-vent-safety", "platform": "fb"},
-    {"date": "2026-02-24", "topic": "dryer-vent-safety", "platform": "fb"},
-    {"date": "2026-02-24", "topic": "3-things-pros-check", "platform": "fb+ig"}
+    {
+      "date": "2026-02-21",
+      "topic": "dryer-vent-safety",
+      "platform": "fb+ig"
+    },
+    {
+      "date": "2026-02-23",
+      "topic": "dryer-vent-safety",
+      "platform": "fb"
+    },
+    {
+      "date": "2026-02-24",
+      "topic": "dryer-vent-safety",
+      "platform": "fb"
+    },
+    {
+      "date": "2026-02-24",
+      "topic": "3-things-pros-check",
+      "platform": "fb+ig"
+    },
+    {
+      "date": "2026-02-25",
+      "topic": "water-heater-maintenance",
+      "platform": "fb+ig"
+    }
   ],
   "topicPool": [
     "water-heater-maintenance",

@@ -70,7 +70,10 @@ function HeroSection() {
           </span>
         </h1>
 
-        <p className="text-white/75 text-xl md:text-2xl max-w-2xl mx-auto mb-8 leading-relaxed font-light">
+        <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
+          Orlando's home services marketplace. Background-checked pros, upfront pricing, and George — your personal home expert — all in one place.
+        </p>
+        <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
           {getTimeAwareSubtitle()}
         </p>
 
@@ -82,7 +85,7 @@ function HeroSection() {
 
         {/* Service category selector */}
         <p className="text-white/50 text-sm font-semibold uppercase tracking-widest mb-4">What do you need?</p>
-        <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto mb-10">
+        <div className="flex flex-wrap justify-center gap-2.5 max-w-3xl mx-auto mb-10">
           {[
             { key: "junk_removal", label: "Junk Removal", icon: Truck },
             { key: "pressure_washing", label: "Pressure Washing", icon: Waves },
@@ -90,16 +93,27 @@ function HeroSection() {
             { key: "home_cleaning", label: "Home Cleaning", icon: Sparkles },
             { key: "handyman", label: "Handyman", icon: Wrench },
             { key: "landscaping", label: "Landscaping", icon: Trees },
+            { key: "moving_labor", label: "Moving Labor", icon: Package },
+            { key: "light_demolition", label: "Demolition", icon: Zap },
+            { key: "garage_cleanout", label: "Garage Cleanout", icon: Home },
+            { key: "pool_cleaning", label: "Pool Cleaning", icon: Waves },
+            { key: "carpet_cleaning", label: "Carpet Cleaning", icon: Sparkles },
           ].map((svc) => (
             <Link
               key={svc.key}
               href={`/book?service=${svc.key}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium hover:bg-[#F47C20] hover:border-[#F47C20] hover:text-white transition-all duration-200 hover:shadow-lg hover:shadow-[#F47C20]/20 hover:scale-[1.03]"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium hover:bg-[#F47C20] hover:border-[#F47C20] hover:text-white transition-all duration-200 hover:shadow-lg hover:shadow-[#F47C20]/20 hover:scale-[1.03]"
             >
-              <svc.icon className="w-4 h-4" />
+              <svc.icon className="w-3.5 h-3.5" />
               {svc.label}
             </Link>
           ))}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("george:open"))}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#F47C20]/20 border border-[#F47C20]/30 text-[#F47C20] text-sm font-medium hover:bg-[#F47C20] hover:text-white transition-all duration-200"
+          >
+            Something else? Ask George
+          </button>
         </div>
 
         <div className="flex justify-center mb-10">
