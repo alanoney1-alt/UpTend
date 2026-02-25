@@ -150,9 +150,10 @@ interface ZillowProperty {
 interface FloridaEstimatorProps {
   preselectedService?: string;
   preselectedTiming?: string;
+  variant?: "light" | "dark";
 }
 
-export function FloridaEstimator({ preselectedService, preselectedTiming }: FloridaEstimatorProps = {}) {
+export function FloridaEstimator({ preselectedService, preselectedTiming, variant }: FloridaEstimatorProps = {}) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
@@ -506,10 +507,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           </div>
         )}
         <div className="text-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight" data-testid="text-explainer-headline">
+          <h2 className={`text-2xl md:text-3xl font-bold mb-3 leading-tight ${variant === "dark" ? "text-white" : "text-slate-900 dark:text-white"}`} data-testid="text-explainer-headline">
             {t("estimator.explainer_headline")}
           </h2>
-          <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed" data-testid="text-explainer-details">
+          <p className={`text-base md:text-lg max-w-2xl mx-auto leading-relaxed ${variant === "dark" ? "text-slate-300" : "text-slate-600 dark:text-slate-300"}`} data-testid="text-explainer-details">
             {t("estimator.explainer_details")}
           </p>
         </div>
