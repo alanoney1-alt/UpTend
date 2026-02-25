@@ -1375,12 +1375,71 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
           </Button>
         </div>
 
-        {/* Property Details Form */}
+        {/* Property Details — auto-filled from public records or manual entry */}
         <Card className="mb-6" data-testid="card-property-details">
           <CardContent className="p-5">
             <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
               <Home className="w-4 h-4" /> Property Details
+              {propertyData?.source === "rentcast" && (
+                <span className="text-[10px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full ml-2">Public Records</span>
+              )}
             </h3>
+
+            {/* Show real data as read-only info when we have it from RentCast */}
+            {propertyData?.bedrooms && propertyData?.livingArea ? (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="bg-muted/50 rounded-lg p-3 text-center">
+                    <div className="text-lg font-bold">{propertyData.bedrooms}</div>
+                    <div className="text-xs text-muted-foreground">Bedrooms</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-3 text-center">
+                    <div className="text-lg font-bold">{propertyData.bathrooms}</div>
+                    <div className="text-xs text-muted-foreground">Bathrooms</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-3 text-center">
+                    <div className="text-lg font-bold">{propertyData.livingArea?.toLocaleString()}</div>
+                    <div className="text-xs text-muted-foreground">Sq Ft</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-3 text-center">
+                    <div className="text-lg font-bold">{propertyData.stories || propertyData.yearBuilt || "—"}</div>
+                    <div className="text-xs text-muted-foreground">{propertyData.stories ? "Stories" : "Year Built"}</div>
+                  </div>
+                </div>
+                {/* Extra details row if available */}
+                {(propertyData.lotAreaValue || propertyData.roofType || propertyData.yearBuilt) && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {propertyData.yearBuilt && propertyData.stories && (
+                      <div className="bg-muted/50 rounded-lg p-3 text-center">
+                        <div className="text-lg font-bold">{propertyData.yearBuilt}</div>
+                        <div className="text-xs text-muted-foreground">Year Built</div>
+                      </div>
+                    )}
+                    {propertyData.lotAreaValue && (
+                      <div className="bg-muted/50 rounded-lg p-3 text-center">
+                        <div className="text-lg font-bold">{(propertyData.lotAreaValue / 43560).toFixed(2)}</div>
+                        <div className="text-xs text-muted-foreground">Lot (Acres)</div>
+                      </div>
+                    )}
+                    {propertyData.roofType && (
+                      <div className="bg-muted/50 rounded-lg p-3 text-center">
+                        <div className="text-lg font-bold capitalize">{propertyData.roofType}</div>
+                        <div className="text-xs text-muted-foreground">Roof Type</div>
+                      </div>
+                    )}
+                    {propertyData.pool !== undefined && (
+                      <div className="bg-muted/50 rounded-lg p-3 text-center">
+                        <div className="text-lg font-bold">{propertyData.pool ? "Yes" : "No"}</div>
+                        <div className="text-xs text-muted-foreground">Pool</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground text-center mt-1">
+                  Something look off? <button onClick={() => setPropertyData(null)} className="underline hover:text-foreground">Edit manually</button>
+                </p>
+              </div>
+            ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Bedrooms</label>
@@ -1448,6 +1507,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
                 </select>
               </div>
             </div>
+            )}
           </CardContent>
         </Card>
 
