@@ -108,31 +108,34 @@ export function registerCalendarRoutes(app: Express): void {
         return res.status(401).json({ error: "User not found" });
       }
 
-      const result = await pool.query(
-        `SELECT sr.id, sr.service_type, sr.scheduled_for, sr.status,
-                sr.pickup_address, sr.pickup_city, sr.pickup_zip,
-                u.full_name as pro_name
-         FROM service_requests sr
-         LEFT JOIN users u ON u.id = sr.assigned_hauler_id
-         WHERE (sr.customer_id = $1 OR sr.assigned_hauler_id = $1)
-           AND sr.status NOT IN ('completed', 'cancelled')
-           AND sr.scheduled_for >= NOW()
-         ORDER BY sr.scheduled_for ASC
-         LIMIT 20`,
-        [userId]
-      );
-
-      const appointments = result.rows.map((row: any) => ({
-        jobId: row.id,
-        serviceType: row.service_type,
-        scheduledFor: row.scheduled_for,
-        status: row.status,
-        address: row.pickup_address,
-        city: row.pickup_city,
-        proName: row.pro_name,
-        icsUrl: `/api/calendar/ics/${row.id}`,
-        googleCalendarUrl: `/api/calendar/google-link/${row.id}`,
-      }));
+      let appointments: any[] = [];
+      try {
+        const result = await pool.query(
+          `SELECT sr.id, sr.service_type, sr.scheduled_for, sr.status,
+                  sr.pickup_address, sr.pickup_city, sr.pickup_zip,
+                  COALESCE(u.name, u.username) as pro_name
+           FROM service_requests sr
+           LEFT JOIN users u ON u.id = sr.assigned_hauler_id
+           WHERE (sr.customer_id = $1 OR sr.assigned_hauler_id = $1)
+             AND sr.status NOT IN ('completed', 'cancelled')
+           ORDER BY sr.scheduled_for ASC NULLS LAST
+           LIMIT 20`,
+          [userId]
+        );
+        appointments = result.rows.map((row: any) => ({
+          jobId: row.id,
+          serviceType: row.service_type,
+          scheduledFor: row.scheduled_for,
+          status: row.status,
+          address: row.pickup_address,
+          city: row.pickup_city,
+          proName: row.pro_name,
+          icsUrl: `/api/calendar/ics/${row.id}`,
+          googleCalendarUrl: `/api/calendar/google-link/${row.id}`,
+        }));
+      } catch (queryErr: any) {
+        console.error("[Calendar] Query failed, returning empty:", queryErr.message);
+      }
 
       return res.json({ appointments });
     } catch (error: any) {

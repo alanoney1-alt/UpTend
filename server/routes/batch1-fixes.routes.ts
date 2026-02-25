@@ -61,14 +61,19 @@ export function registerBatch1FixRoutes(app: Express) {
       } catch (queryErr: any) {
         // If column doesn't exist, try minimal query
         console.error("Haulers available query failed, trying minimal:", queryErr.message);
-        const { rows: minRows } = await pool.query(
-          `SELECT hp.id, COALESCE(hp.company_name, u.name, u.username) as name,
-                  hp.rating, hp.service_types as services, hp.verified
-           FROM hauler_profiles hp
-           JOIN users u ON hp.user_id = u.id
-           ORDER BY hp.rating DESC NULLS LAST LIMIT 50`
-        );
-        rows = minRows;
+        try {
+          const { rows: minRows } = await pool.query(
+            `SELECT hp.id, COALESCE(hp.company_name, u.name, u.username) as name,
+                    hp.rating, hp.service_types as services, hp.verified
+             FROM hauler_profiles hp
+             JOIN users u ON hp.user_id = u.id
+             ORDER BY hp.rating DESC NULLS LAST LIMIT 50`
+          );
+          rows = minRows;
+        } catch (minErr: any) {
+          console.error("Haulers minimal query also failed:", minErr.message);
+          rows = [];
+        }
       }
 
       res.json(rows.map((r: any) => ({
@@ -235,10 +240,12 @@ export function registerBatch1FixRoutes(app: Express) {
       const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
       const offset = parseInt(req.query.offset as string) || 0;
 
-      // Try notification_queue first, fall back to deriving from service_requests
+      // Try notification_queue, then service_requests, then return empty
       let notifications: any[] = [];
       let total = 0;
       let unread = 0;
+      
+      // Attempt 1: notification_queue table
       try {
         const { rows } = await pool.query(
           `SELECT id, notification_type as "notificationType", title, message,
@@ -259,22 +266,26 @@ export function registerBatch1FixRoutes(app: Express) {
         notifications = rows;
         total = parseInt(countRows[0]?.total || "0");
         unread = parseInt(countRows[0]?.unread || "0");
-      } catch {
-        // Table may not exist — derive notifications from service_requests
-        const { rows } = await pool.query(
-          `SELECT id, service_type as "notificationType", 
-                  CONCAT('Job Update: ', service_type) as title,
-                  CONCAT('Your ', service_type, ' job status: ', status) as message,
-                  status, created_at as "createdAt"
-           FROM service_requests
-           WHERE customer_id = $1
-           ORDER BY updated_at DESC NULLS LAST, created_at DESC
-           LIMIT $2 OFFSET $3`,
-          [userId, limit, offset]
-        );
-        notifications = rows.map((r: any) => ({ ...r, isRead: true, actionUrl: `/profile` }));
-        total = notifications.length;
-        unread = 0;
+      } catch (_e1) {
+        // Attempt 2: derive from service_requests
+        try {
+          const { rows } = await pool.query(
+            `SELECT id, service_type as "notificationType", 
+                    CONCAT('Job Update: ', service_type) as title,
+                    CONCAT('Your ', service_type, ' job status: ', status) as message,
+                    status, created_at as "createdAt"
+             FROM service_requests
+             WHERE customer_id = $1
+             ORDER BY created_at DESC
+             LIMIT $2 OFFSET $3`,
+            [userId, limit, offset]
+          );
+          notifications = rows.map((r: any) => ({ ...r, isRead: true, actionUrl: `/profile` }));
+          total = notifications.length;
+        } catch (_e2) {
+          // Both failed — return empty
+          console.error("Notifications: both queries failed");
+        }
       }
 
       res.json({ notifications, total, unread });
