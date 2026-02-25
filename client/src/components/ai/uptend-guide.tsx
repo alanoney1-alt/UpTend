@@ -474,15 +474,45 @@ export function UpTendGuide() {
   // ─── Photo Upload ──────────────────────────────────────────────────────
 
   const handlePhotoUpload = useCallback(async (file: File) => {
-    if (!file || !file.type.startsWith("image/")) return;
+    if (!file) return;
+    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith("video/");
+    if (!isImage && !isVideo) return;
     setIsUploading(true);
     hasInitRef.current = true;
 
-    const photoPreviewUrl = URL.createObjectURL(file);
+    // For videos, extract first frame as image
+    let imageFile = file;
+    if (isVideo) {
+      try {
+        const video = document.createElement("video");
+        video.preload = "metadata";
+        video.muted = true;
+        const videoUrl = URL.createObjectURL(file);
+        video.src = videoUrl;
+        await new Promise<void>((resolve) => { video.onloadeddata = () => resolve(); video.load(); });
+        video.currentTime = 1; // grab frame at 1 second
+        await new Promise<void>((resolve) => { video.onseeked = () => resolve(); });
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d")?.drawImage(video, 0, 0);
+        const blob = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b!), "image/jpeg", 0.85));
+        imageFile = new File([blob], "video-frame.jpg", { type: "image/jpeg" });
+        URL.revokeObjectURL(videoUrl);
+      } catch {
+        // If frame extraction fails, show error
+        setMessages(prev => [...prev, { id: `err-video-${Date.now()}`, role: "assistant", content: "I couldn't process that video. Try sending a photo instead — snap a picture of the issue and I can analyze it." }]);
+        setIsUploading(false);
+        return;
+      }
+    }
+
+    const photoPreviewUrl = URL.createObjectURL(imageFile);
     setMessages(prev => [...prev, {
       id: `user-photo-${Date.now()}`,
       role: "user",
-      content: " Sent a photo for analysis",
+      content: isVideo ? " Sent a video for analysis" : " Sent a photo for analysis",
       photoUrl: photoPreviewUrl,
     }]);
 
@@ -491,7 +521,7 @@ export function UpTendGuide() {
       const dataUrl: string = await new Promise((resolve, reject) => {
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = reject;
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(imageFile);
       });
 
       // Send photo through George chat flow for contextual analysis
@@ -758,7 +788,7 @@ export function UpTendGuide() {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,video/*"
             className="hidden"
             onChange={(e) => { const file = e.target.files?.[0]; if (file) handlePhotoUpload(file); e.target.value = ""; }}
           />
