@@ -1,5 +1,3 @@
-import "@/styles/marquee.css";
-
 const PROOF_ENTRIES = [
   { name: "Sarah", neighborhood: "Lake Nona", service: "gutter cleaning", time: "2 hours ago" },
   { name: "James", neighborhood: "Winter Park", service: "pressure washing", time: "3 hours ago" },

@@ -327,3 +327,17 @@ a[href*="stripe.com"][target="_blank"] {
   position: absolute !important;
   pointer-events: none !important;
 }
+
+/* Marquee animation for social proof ticker */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: inline-flex;
+  animation: marquee 60s linear infinite;
+}
+.marquee-track:hover,
+.group:hover .marquee-track {
+  animation-play-state: paused;
+}
