@@ -10,6 +10,7 @@ import { ServiceBagProvider } from "@/contexts/service-bag-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
+import { FloatingCart } from "@/components/floating-cart";
 import { ErrorBoundary } from "@/components/error-boundary";
 
 // Eagerly load critical path pages
@@ -372,6 +373,7 @@ function App() {
             <Toaster />
             <Router />
             <MobileNav />
+            <FloatingCart />
             <UpTendGuide />
             {/* <InstallBanner /> */}
             {/* <CookieConsent /> */}

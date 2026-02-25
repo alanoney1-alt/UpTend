@@ -23,7 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceBag } from "@/contexts/service-bag-context";
 import { ServiceBagSheet } from "@/components/service-bag";
-import { ShoppingBag, Check } from "lucide-react";
+import { ShoppingBag, Check, Plus } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { PaymentForm } from "@/components/payment-form";
 
@@ -500,12 +500,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
   if (step === 1) {
     return (
       <div className="w-full max-w-2xl mx-auto" data-testid="widget-florida-estimator" ref={wrapperRef}>
-        {/* Floating Service Bag — visible when items are in the bag */}
-        {serviceBag.itemCount > 0 && (
-          <div className="fixed bottom-24 right-4 z-[9990] md:bottom-6 md:right-6">
-            <ServiceBagSheet />
-          </div>
-        )}
+        {/* Service bag is now the global FloatingCart in App.tsx */}
         <div className="text-center mb-6">
           <h2 className={`text-2xl md:text-3xl font-bold mb-3 leading-tight ${variant === "dark" ? "text-white" : "text-slate-900 dark:text-white"}`} data-testid="text-explainer-headline">
             {t("estimator.explainer_headline")}
@@ -1483,30 +1478,32 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
                     className="flex-1"
                     size="lg"
                   >
-                    Book Now <ArrowRight className="ml-2 w-4 h-4" />
+                    Get Quote <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
-                  {serviceBag.isInBag(service.id) ? (
-                    <Button variant="outline" size="lg" disabled className="border-green-500 text-green-400">
-                      <Check className="w-4 h-4 mr-1" /> In Bag
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      onClick={(e) => {
-                        e.stopPropagation();
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (serviceBag.isInBag(service.id)) {
+                        serviceBag.removeItem(service.id);
+                      } else {
                         serviceBag.addItem({
                           serviceId: service.id,
                           serviceName: service.name,
                           price: service.price,
                           addedAt: new Date().toISOString(),
                         });
-                        toast({ title: `${service.name} added to bag` });
-                      }}
-                    >
-                      <ShoppingBag className="w-4 h-4 mr-1" /> Add to Bag
-                    </Button>
-                  )}
+                        toast({ title: `${service.name} added to cart` });
+                      }
+                    }}
+                    className={`w-11 h-11 rounded-xl flex items-center justify-center border transition-all shrink-0 ${
+                      serviceBag.isInBag(service.id)
+                        ? "bg-green-500/10 border-green-500 text-green-500"
+                        : "border-slate-300 dark:border-slate-600 text-slate-400 hover:border-[#F47C20] hover:text-[#F47C20]"
+                    }`}
+                    aria-label={serviceBag.isInBag(service.id) ? "Remove from cart" : "Add to cart"}
+                  >
+                    {serviceBag.isInBag(service.id) ? <Check className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  </button>
                 </div>
               </div>
             </div>
@@ -1552,30 +1549,31 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
                   <span className="text-xl md:text-2xl font-black" data-testid={`text-service-price-${service.id}`}>{service.price}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {serviceBag.isInBag(service.id) ? (
-                    <Button variant="outline" size="sm" disabled className="border-green-500 text-green-400 min-h-[44px]">
-                      <Check className="w-3 h-3 mr-1" /> In Bag
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="min-h-[44px]"
-                      onClick={(e) => {
-                        e.stopPropagation();
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (serviceBag.isInBag(service.id)) {
+                        serviceBag.removeItem(service.id);
+                      } else {
                         serviceBag.addItem({
                           serviceId: service.id,
                           serviceName: service.name,
                           price: service.price,
                           addedAt: new Date().toISOString(),
                         });
-                        toast({ title: `${service.name} added to bag` });
-                      }}
-                      data-testid={`button-add-bag-${service.id}`}
-                    >
-                      <ShoppingBag className="w-3 h-3 mr-1" /> Bag
-                    </Button>
-                  )}
+                        toast({ title: `${service.name} added to cart` });
+                      }
+                    }}
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center border transition-all shrink-0 ${
+                      serviceBag.isInBag(service.id)
+                        ? "bg-green-500/10 border-green-500 text-green-500"
+                        : "border-slate-300 dark:border-slate-600 text-slate-400 hover:border-[#F47C20] hover:text-[#F47C20]"
+                    }`}
+                    aria-label={serviceBag.isInBag(service.id) ? "Remove from cart" : "Add to cart"}
+                    data-testid={`button-add-bag-${service.id}`}
+                  >
+                    {serviceBag.isInBag(service.id) ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                  </button>
                   <Button
                     onClick={(e) => { e.stopPropagation(); handleServiceSelect(service.id); }}
                     size="sm"
