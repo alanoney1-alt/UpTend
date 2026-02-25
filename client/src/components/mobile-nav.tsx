@@ -14,6 +14,7 @@ const customerNavItems: NavItem[] = [
   { path: "/book", label: "Book", icon: Truck },
   { path: "/snap-quote", label: "Snap", icon: Camera },
   { path: "/my-jobs", label: "My Jobs", icon: Menu },
+  { path: "/gallery", label: "Gallery", icon: Image },
   { path: "/profile", label: "Profile", icon: User },
 ];
 
