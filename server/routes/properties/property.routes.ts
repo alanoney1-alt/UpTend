@@ -41,10 +41,18 @@ router.get("/my-properties", auth, async (req, res) => {
  */
 router.get("/", auth, async (req, res) => {
   try {
-    const properties = await getPropertiesByUserId((req.user as any).userId || (req.user as any).id);
-    res.json(properties);
-  } catch (error) {
-    console.error("Error fetching properties:", error);
+    const userId = (req.user as any).userId || (req.user as any).id;
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    const properties = await getPropertiesByUserId(userId);
+    res.json(properties || []);
+  } catch (error: any) {
+    console.error("Error fetching properties:", error?.message || error);
+    // Return empty array instead of 500 if table doesn't exist yet
+    if (error?.message?.includes("does not exist") || error?.code === "42P01") {
+      return res.json([]);
+    }
     res.status(500).json({ error: "Failed to fetch properties" });
   }
 });
