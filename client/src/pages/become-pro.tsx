@@ -66,6 +66,7 @@ export default function BecomePro() {
     <div className="min-h-screen bg-background" data-testid="page-become-pro">
       <Header />
 
+      <main id="main-content">
       <section className="bg-slate-950 pt-28 pb-24 px-4 md:px-6 text-center" data-testid="section-pro-hero">
         <h1 className="text-4xl md:text-6xl font-black text-white mb-6" data-testid="text-pro-headline">
           {t("become_pro.hero_line1")} <br />
@@ -216,6 +217,7 @@ export default function BecomePro() {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   );

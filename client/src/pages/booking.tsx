@@ -26,6 +26,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
     <div className="border-b border-slate-200 dark:border-slate-700">
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="w-full flex items-center justify-between py-4 text-left"
       >
         <span className="text-sm font-semibold text-slate-900 dark:text-white pr-4">
@@ -74,7 +75,7 @@ export default function BookingPage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-amber-50/30 to-white dark:from-zinc-950 dark:to-zinc-900">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-24 md:pt-28 md:pb-12">
+        <main id="main-content" className="container mx-auto px-4 pt-24 pb-24 md:pt-28 md:pb-12">
           <div className="w-full max-w-2xl mx-auto">
             <div className="text-center mb-6">
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
@@ -113,7 +114,7 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50/30 to-white dark:from-zinc-950 dark:to-zinc-900">
       <Header />
-      <main className="container mx-auto px-4 pt-24 pb-16 md:pt-28">
+      <main id="main-content" className="container mx-auto px-4 pt-24 pb-16 md:pt-28">
         {/* Hero */}
         <div className="text-center max-w-2xl mx-auto mb-8">
           <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-3">

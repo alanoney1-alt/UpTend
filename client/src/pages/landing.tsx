@@ -97,14 +97,14 @@ function HeroSection() {
         </Link>
 
         <div className="flex justify-center mt-6">
-          <div onClick={toggleLanguage} className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/5 transition-all">
+          <button onClick={toggleLanguage} aria-label={i18n.language === "en" ? "Switch to Spanish" : "Switch to English"} className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/5 transition-all">
             <Globe className="w-4 h-4 text-[#F47C20]" />
             {i18n.language === "en" ? (
               <span className="text-sm text-slate-400">¿Español? <span className="font-semibold text-[#F47C20]">Cambiar →</span></span>
             ) : (
               <span className="text-sm text-slate-400">English? <span className="font-semibold text-[#F47C20]">Switch →</span></span>
             )}
-          </div>
+          </button>
         </div>
 
         <p className="mt-6 text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
@@ -238,8 +238,12 @@ function ServicesStrip() {
           {services.map((svc) => (
             <div
               key={svc.key}
+              role="button"
+              tabIndex={0}
               onClick={() => setLocation(`/book?service=${svc.key}`)}
-              className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:border-[#F47C20]/50 cursor-pointer transition-all hover:shadow-lg text-center group"
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLocation(`/book?service=${svc.key}`); } }}
+              aria-label={`Book ${svc.label} - ${svc.price}`}
+              className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:border-[#F47C20]/50 cursor-pointer transition-all hover:shadow-lg text-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F47C20]"
             >
               <div className="w-12 h-12 rounded-xl bg-[#F47C20]/10 flex items-center justify-center group-hover:bg-[#F47C20]/20 transition-colors">
                 <svc.icon className="w-6 h-6 text-[#F47C20]" />

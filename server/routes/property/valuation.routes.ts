@@ -1,8 +1,29 @@
 import type { Express } from "express";
 
+const RENTCAST_API_KEY = process.env.RENTCAST_API_KEY || "";
+const RENTCAST_BASE = "https://api.rentcast.io/v1";
+
+// Simple cache to avoid burning RentCast free-tier calls
+const propertyCache = new Map<string, { data: any; ts: number }>();
+const CACHE_TTL = 30 * 60 * 1000; // 30 min
+
+function parseAddress(address: string): { street: string; city: string; state: string; zip: string } {
+  const parts = address.split(",").map(s => s.trim());
+  const street = parts[0] || "";
+  const city = parts[1] || "";
+  const stateZip = parts[2] || parts[1] || "";
+  const stateMatch = stateZip.match(/([A-Z]{2})\s*(\d{5})?/i);
+  return {
+    street,
+    city: parts.length >= 3 ? city : "",
+    state: stateMatch?.[1]?.toUpperCase() || "FL",
+    zip: stateMatch?.[2] || "",
+  };
+}
+
 /**
  * Property Valuation Routes
- * Uses Realty Mole API for accurate property data, with Census fallback
+ * Uses RentCast API for real property data, with Census fallback
  */
 export function registerPropertyValuationRoutes(app: Express) {
   app.get("/api/property/zillow", async (req, res) => {
@@ -12,7 +33,80 @@ export function registerPropertyValuationRoutes(app: Express) {
         return res.status(400).json({ error: "Address is required" });
       }
 
-      // === Try Your Home Value Estimator API first (if configured) ===
+      // Check cache first
+      const cacheKey = address.toLowerCase().trim();
+      const cached = propertyCache.get(cacheKey);
+      if (cached && Date.now() - cached.ts < CACHE_TTL) {
+        return res.json(cached.data);
+      }
+
+      // === Try RentCast API first ===
+      if (RENTCAST_API_KEY) {
+        try {
+          const parsed = parseAddress(address);
+          const params = new URLSearchParams({ address: parsed.street });
+          if (parsed.city) params.set("city", parsed.city);
+          if (parsed.state) params.set("state", parsed.state);
+          if (parsed.zip) params.set("zipCode", parsed.zip);
+
+          console.log(`[Property] Calling RentCast API for: ${address}`);
+          const rcRes = await fetch(`${RENTCAST_BASE}/properties?${params.toString()}`, {
+            headers: { "X-Api-Key": RENTCAST_API_KEY, Accept: "application/json" },
+          });
+
+          if (rcRes.ok) {
+            const rcData = await rcRes.json();
+            const prop = Array.isArray(rcData) ? rcData[0] : rcData;
+
+            if (prop && (prop.bedrooms || prop.squareFootage || prop.yearBuilt)) {
+              console.log(`[Property] RentCast found: ${prop.formattedAddress || address} — ${prop.bedrooms}bd/${prop.bathrooms}ba, ${prop.squareFootage}sqft, built ${prop.yearBuilt}`);
+              
+              const result = {
+                found: true,
+                property: {
+                  zpid: prop.id || null,
+                  address: prop.formattedAddress || address,
+                  zestimate: null, // No home values per Alan's directive
+                  rentZestimate: null,
+                  bedrooms: prop.bedrooms || null,
+                  bathrooms: prop.bathrooms || null,
+                  livingArea: prop.squareFootage || null,
+                  lotAreaValue: prop.lotSize || null,
+                  lotAreaUnit: "sqft",
+                  yearBuilt: prop.yearBuilt || null,
+                  homeType: prop.propertyType || "SINGLE_FAMILY",
+                  homeStatus: null,
+                  imgSrc: null,
+                  latitude: prop.latitude || null,
+                  longitude: prop.longitude || null,
+                  source: "rentcast",
+                  county: prop.county || null,
+                  state: prop.state || null,
+                  // Extra fields from RentCast
+                  roofType: prop.features?.roofType || null,
+                  exteriorType: prop.features?.exteriorType || null,
+                  cooling: prop.features?.coolingType || (prop.features?.cooling ? "Central" : null),
+                  heating: prop.features?.heatingType || (prop.features?.heating ? "Central" : null),
+                  pool: prop.features?.pool || false,
+                  garage: prop.features?.garage || false,
+                  garageType: prop.features?.garageType || null,
+                  stories: prop.features?.floorCount || null,
+                  lastSaleDate: prop.lastSaleDate || null,
+                  lastSalePrice: prop.lastSalePrice || null,
+                },
+              };
+              propertyCache.set(cacheKey, { data: result, ts: Date.now() });
+              return res.json(result);
+            }
+          } else {
+            console.error(`[Property] RentCast API error: ${rcRes.status}`);
+          }
+        } catch (rcErr: any) {
+          console.error("[Property] RentCast error, falling back:", rcErr.message);
+        }
+      }
+
+      // === Fallback: Try RapidAPI Zillow if configured ===
       const rapidApiKey = process.env.RAPIDAPI_KEY;
       if (rapidApiKey) {
         try {

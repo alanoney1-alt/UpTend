@@ -165,7 +165,7 @@ export default function AuthPage() {
     <div className="min-h-screen bg-background flex flex-col" data-testid="page-auth">
       <Header />
 
-      <main className="flex-1 flex items-center justify-center px-4 py-12 pb-28 md:pb-12">
+      <main id="main-content" className="flex-1 flex items-center justify-center px-4 py-12 pb-28 md:pb-12">
         <div className="w-full max-w-md space-y-6">
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full" data-testid="tabs-user-type">
             <TabsList className="grid w-full grid-cols-2">
@@ -251,6 +251,7 @@ export default function AuthPage() {
                             size="icon"
                             className="absolute right-0 top-0 h-full px-3"
                             onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
                             data-testid="button-toggle-password"
                           >
                             {showPassword ? (
