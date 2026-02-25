@@ -13,6 +13,7 @@ import {
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
+import { SocialProofTicker } from "@/components/landing/social-proof-ticker";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
@@ -22,6 +23,7 @@ export default function Landing() {
       <Header />
       <main id="main-content">
         <HeroSection />
+        <SocialProofTicker />
         <TrustBar />
         <SocialProofStats />
         <HowItWorks />

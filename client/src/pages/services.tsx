@@ -12,6 +12,7 @@ import {
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import { useTranslation } from "react-i18next";
+import { GeorgeInlineTip, openGeorge } from "@/components/george-inline-tip";
 
 const services = [
   // 1. Handyman
@@ -258,6 +259,13 @@ export default function Services() {
   return (
     <div className="min-h-screen bg-background" data-testid="page-services">
       <Header />
+      <div className="max-w-4xl mx-auto px-4 md:px-6">
+        <GeorgeInlineTip
+          pageKey="services"
+          message="Not sure which service? I can help you decide."
+          cta={{ text: "Ask George", action: openGeorge }}
+        />
+      </div>
 
       <section className="bg-slate-900 dark:bg-slate-950 pt-28 pb-20 px-4 md:px-6" data-testid="section-services-hero">
         <div className="max-w-4xl mx-auto text-center">

@@ -5,6 +5,7 @@ import { useSearch, useLocation } from "wouter";
 import { useEffect } from "react";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
+import { GeorgeInlineTip } from "@/components/george-inline-tip";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { NeighborhoodPriceContext } from "@/components/neighborhood-price-context";
 import { PaymentForm } from "@/components/payment-form";
@@ -115,6 +116,13 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50/30 to-white dark:from-zinc-950 dark:to-zinc-900">
       <Header />
+      <div className="container mx-auto px-4 pt-20">
+        <GeorgeInlineTip
+          pageKey="book"
+          message="Need a faster quote? Snap a photo instead."
+          cta={{ text: "Snap a Photo", action: () => window.location.href = "/snap-quote" }}
+        />
+      </div>
       <main id="main-content" className="container mx-auto px-4 pt-24 pb-16 md:pt-28">
         {/* Hero */}
         <div className="text-center max-w-2xl mx-auto mb-8">

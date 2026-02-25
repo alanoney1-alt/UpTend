@@ -194,11 +194,13 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
           {preview && (
             <img src={preview} alt="Analyzing" className="w-full max-h-56 rounded-xl object-cover" />
           )}
-          <div className="flex flex-col items-center gap-3 py-4">
-            <Loader2 className="w-10 h-10 text-amber-600 animate-spin" />
-            <p className="text-lg font-semibold text-slate-900">Analyzing your photo...</p>
-            <p className="text-sm text-slate-500">Finding the best pro near you</p>
+          <div className="w-full space-y-3 animate-pulse py-4">
+            <div className="h-5 bg-muted rounded w-3/4 mx-auto" />
+            <div className="h-4 bg-muted rounded w-1/2 mx-auto" />
+            <div className="h-16 bg-muted rounded-xl w-full" />
+            <div className="h-4 bg-muted rounded w-2/3 mx-auto" />
           </div>
+          <p className="text-sm text-slate-500">Analyzing your photo...</p>
         </div>
       )}
 

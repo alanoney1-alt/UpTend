@@ -11,6 +11,7 @@ import { CookieConsent } from "@/components/cookie-consent";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
 import { MobileNav } from "@/components/mobile-nav";
 import { FloatingCart } from "@/components/floating-cart";
+import { BookingProgressBar } from "@/components/booking-progress-bar";
 import { ErrorBoundary } from "@/components/error-boundary";
 
 // Eagerly load critical path pages
@@ -376,6 +377,7 @@ function App() {
           <ServiceBagProvider>
           <ThemeProvider>
             <Toaster />
+            <BookingProgressBar />
             <Router />
             <MobileNav />
             <FloatingCart />

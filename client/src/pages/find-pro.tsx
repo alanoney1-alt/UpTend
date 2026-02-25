@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
+import { GeorgeInlineTip, openGeorge } from "@/components/george-inline-tip";
 import {
   Star, Shield, CheckCircle, MapPin, ArrowRight, X,
   Search, SlidersHorizontal, Users,
 } from "lucide-react";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "@/lib/leaflet-fix";
@@ -98,6 +100,7 @@ function FindProPage() {
   const [sortBy, setSortBy] = useState("rating");
   const [selectedPro, setSelectedPro] = useState<ProProfile | null>(null);
   const [pros, setPros] = useState<ProProfile[]>([]);
+  const [prosLoading, setProsLoading] = useState(true);
 
   // Fetch from API (falls back to mock)
   useEffect(() => {
@@ -106,6 +109,7 @@ function FindProPage() {
     qs.set("sort", sortBy);
     qs.set("available", availabilityFilter);
 
+    setProsLoading(true);
     fetch(`/api/pros/browse?${qs}`)
       .then((r) => r.json())
       .then((data) => {
@@ -113,7 +117,8 @@ function FindProPage() {
       })
       .catch(() => {
         // API unavailable — empty state shown
-      });
+      })
+      .finally(() => setProsLoading(false));
   }, [serviceFilter, sortBy, availabilityFilter]);
 
   const filtered = useMemo(() => {
@@ -140,6 +145,13 @@ function FindProPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <div className="pt-20 px-4 max-w-7xl mx-auto">
+        <GeorgeInlineTip
+          pageKey="find-pro"
+          message="I already found the best match for your area."
+          cta={{ text: "See My Pick", action: openGeorge }}
+        />
+      </div>
       <div className="pt-24 pb-24 md:pb-16 px-4 max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-center mb-8">
@@ -217,7 +229,13 @@ function FindProPage() {
         </div>
 
         {/* Results */}
-        {filtered.length === 0 ? (
+        {prosLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <SkeletonCard key={i} avatar lines={4} />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           <Card className="p-12 text-center">
             <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-bold mb-2">{t("findpro.no_pros")}</h3>

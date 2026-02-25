@@ -17,6 +17,7 @@ import { CustomerConfirmation } from "@/components/verification/customer-confirm
 import { ReviewForm } from "@/components/reviews/review-form";
 import { CustomerClaimsSection } from "@/components/customer/claims-section";
 import type { ServiceRequest, HomeInventory } from "@shared/schema";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 import { useMemo } from "react";
 import {
   RefreshCw,
@@ -373,8 +374,10 @@ function HomeReportSection({ userId }: { userId: string }) {
         )}
 
         {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          <div className="space-y-3 py-4">
+            {[1, 2, 3].map((i) => (
+              <SkeletonCard key={i} lines={2} />
+            ))}
           </div>
         ) : filteredEvents.length > 0 ? (
           <div className="relative pl-6 space-y-4" data-testid="timeline-home-report">
@@ -729,8 +732,12 @@ export default function CustomerDashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-[#3B1D5A] flex items-center justify-center px-4">
+        <div className="w-full max-w-2xl space-y-4">
+          <SkeletonCard lines={2} />
+          <SkeletonCard avatar lines={4} />
+          <SkeletonCard lines={3} />
+        </div>
       </div>
     );
   }
@@ -867,8 +874,10 @@ export default function CustomerDashboard() {
           </CardHeader>
           <CardContent>
             {inventoryLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <SkeletonCard key={i} lines={2} />
+                ))}
               </div>
             ) : inventoryItems.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" data-testid="grid-inventory-items">
