@@ -8,18 +8,18 @@ import {
 } from "lucide-react";
 
 const BENEFITS = [
-  { icon: Zap, title: "Turn your team into a lead engine", desc: "AI-scoped, pre-qualified jobs delivered directly to your employees. No cold calling, no bidding wars." },
+  { icon: Zap, title: "Turn your team into a lead engine", desc: "Pre-qualified, scope-verified jobs delivered directly to your employees. No cold calling, no bidding wars." },
   { icon: DollarSign, title: "Your team keeps 85%. No lead fees.", desc: "One flat 15% platform fee. No per-lead charges, no subscriptions, no hidden costs." },
   { icon: Users, title: "One dashboard for your entire team", desc: "See who is online, track jobs in real-time, manage rates, and view revenue analytics in one place." },
   { icon: Shield, title: "Insurance verified once for all employees", desc: "Your company insurance covers every employee. No individual verification needed." },
-  { icon: TrendingUp, title: "Employees build their own reputation", desc: "Each employee gets their own profile, reviews, and rating. They can also work independently on their own time." },
-  { icon: BarChart3, title: "Revenue analytics and reporting", desc: "Track gross revenue, platform fees, and net payout by employee and service type." },
+  { icon: TrendingUp, title: "Your employees earn on your time AND their own", desc: "Each employee gets their own profile, reviews, and rating. They can also work independently on their own time." },
+  { icon: BarChart3, title: "QuickBooks. Gusto. Jobber. All synced.", desc: "Track gross revenue, platform fees, and net payout by employee and service type. Integrations coming soon." },
 ];
 
 const COMPARISON = [
   { feature: "Lead fees", uptend: "None", traditional: "$15-75 per lead" },
   { feature: "Guaranteed payment", uptend: "Yes, always", traditional: "No" },
-  { feature: "AI-scoped jobs", uptend: "Yes", traditional: "No" },
+  { feature: "Scope-verified jobs", uptend: "Yes", traditional: "No" },
   { feature: "Employee dashboards", uptend: "Included", traditional: "Extra cost" },
   { feature: "Insurance handling", uptend: "Verified once", traditional: "Per employee" },
   { feature: "Bidding required", uptend: "No", traditional: "Yes" },
@@ -38,7 +38,7 @@ export default function BusinessPartnersPage() {
             Partner With UpTend
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-8">
-            Load your entire team, set company rates, and let AI-scoped jobs flow directly to your employees. No lead fees. No bidding. Guaranteed payment.
+            Load your entire team, set company rates, and let verified jobs flow directly to your employees. No lead fees. No bidding. Guaranteed payment.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/business/signup">
@@ -76,7 +76,7 @@ export default function BusinessPartnersPage() {
             {[
               { step: "1", title: "Register Your Company", desc: "Sign up, verify insurance once, and add your team members." },
               { step: "2", title: "Set Rates and Go Online", desc: "Set company-wide rates or let employees set individual rates. Toggle online when ready." },
-              { step: "3", title: "Receive AI-Scoped Jobs", desc: "Jobs are matched to your team automatically. Track everything from one dashboard." },
+              { step: "3", title: "Receive Verified Jobs", desc: "Jobs are matched to your team automatically. Track everything from one dashboard." },
             ].map((s, i) => (
               <div key={i} className="text-center">
                 <div className="w-12 h-12 rounded-full bg-[#ea580c] text-white font-bold text-xl flex items-center justify-center mx-auto mb-4">
@@ -123,7 +123,7 @@ export default function BusinessPartnersPage() {
       <section className="py-16 px-4 bg-slate-900 text-white">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Grow Your Business?</h2>
-          <p className="text-slate-300 mb-8">Join UpTend as a Business Partner and start receiving AI-scoped jobs for your team today.</p>
+          <p className="text-slate-300 mb-8">Join UpTend as a Business Partner and start receiving verified jobs for your team today.</p>
           <Link href="/business/signup">
             <Button size="lg" className="bg-[#ea580c] hover:bg-[#c2410c] text-white text-lg px-8">
               Get Started <ArrowRight className="w-5 h-5 ml-2" />

@@ -132,7 +132,7 @@ export default function SmartBookingPage() {
           <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
             {step === "service" && "What do you need done?"}
             {step === "details" && "Tell us about the job"}
-            {step === "matching" && "George is finding your best match..."}
+            {step === "matching" && "Finding your best match..."}
             {step === "result" && "Your best match"}
             {step === "alternatives" && "All available matches"}
           </h1>
@@ -161,7 +161,7 @@ export default function SmartBookingPage() {
             </div>
             <div className="text-center mt-6">
               <p className="text-sm text-slate-500">
-                Or <a href="/snap-quote" className="text-[#ea580c] font-semibold hover:underline">snap a photo</a> and let George figure it out.
+                Or <a href="/snap-quote" className="text-[#ea580c] font-semibold hover:underline">snap a photo</a> and we'll scope the job for you.
               </p>
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function SmartBookingPage() {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="What needs to be done? Any details help George find the right pro."
+                placeholder="What needs to be done? Any details help us find the right pro."
                 rows={3}
                 className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#ea580c]/40 focus:border-[#ea580c] outline-none resize-none"
               />
@@ -226,7 +226,7 @@ export default function SmartBookingPage() {
               </div>
             </div>
             <p className="text-slate-600 dark:text-slate-300 text-sm">
-              Analyzing your job, checking pro availability, and calculating the best price...
+              Checking pro availability, verifying scope, and locking your price...
             </p>
           </div>
         )}

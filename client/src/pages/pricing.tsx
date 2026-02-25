@@ -192,7 +192,7 @@ export default function PublicPricing() {
       {/* Home DNA Scan Banner */}
       <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-4 px-4 text-center">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3">
-          <span className="font-bold text-sm md:text-base">Get your Home DNA Scan — the Carfax for your home. Completely free.</span>
+          <span className="font-bold text-sm md:text-base">Get your Home DNA Scan -- know your home inside and out. Completely free.</span>
           <a href="/home-dna-scan" className="inline-flex items-center gap-1 bg-white text-[#F47C20] font-bold text-sm px-4 py-1.5 rounded-full hover:bg-orange-50 transition-colors">
             Learn More <ArrowRight className="w-4 h-4" />
           </a>
@@ -287,9 +287,9 @@ export default function PublicPricing() {
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             {[
-              { step: "1", title: "George scopes your job", desc: "AI-powered assessment of exactly what you need" },
-              { step: "2", title: "We match you with the best pro", desc: "Rated by quality, not just price" },
-              { step: "3", title: "You see one price", desc: "That's what you pay. No surprises." },
+              { step: "1", title: "Describe your job", desc: "We verify the scope so your pro arrives prepared" },
+              { step: "2", title: "Get matched with the best pro", desc: "Matched by skills, ratings, and availability" },
+              { step: "3", title: "You see one price", desc: "That's what you pay. No bidding. No haggling." },
               { step: "4", title: "5% service fee included", desc: "Covers Price Protection, background checks, and our guarantee" },
             ].map((item) => (
               <div key={item.step} className="text-center">
@@ -303,7 +303,7 @@ export default function PublicPricing() {
           </div>
           <div className="mt-8 text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
             <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-              For Pros: Keep 85% of every job. Set your own rates.
+              For Pros: Set your own rates. Keep 85% of every job. No bidding wars.
             </p>
           </div>
         </div>
@@ -353,34 +353,33 @@ export default function PublicPricing() {
           
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl p-6 border border-blue-100">
-              <div className="text-blue-600 font-semibold mb-2">LLC Pros with Insurance</div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">Up to $25,000</div>
+              <div className="text-blue-600 font-semibold mb-2">Property Protection</div>
+              <div className="text-2xl font-bold text-gray-900 mb-2">Every Job Covered</div>
               <p className="text-sm text-gray-600">
-                Platform covers damages up to $25K per incident. Beyond that, the pro's own $1M+ liability policy takes over.
+                Every pro carries liability insurance. Platform protection covers property damage on every job.
               </p>
             </div>
             
             <div className="bg-white rounded-xl p-6 border border-blue-100">
-              <div className="text-blue-600 font-semibold mb-2">Standard Pros</div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">Up to $10,000</div>
+              <div className="text-blue-600 font-semibold mb-2">Background-Checked</div>
+              <div className="text-2xl font-bold text-gray-900 mb-2">Every Pro Verified</div>
               <p className="text-sm text-gray-600">
-                Platform provides blanket coverage up to $10K per incident for property damage and issues.
+                National criminal background screening, identity verification, and insurance validation before their first job.
               </p>
             </div>
             
             <div className="bg-white rounded-xl p-6 border border-blue-100">
-              <div className="text-blue-600 font-semibold mb-2">Bodily Injury</div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">$5,000 + Escalation</div>
+              <div className="text-blue-600 font-semibold mb-2">Dispute Resolution</div>
+              <div className="text-2xl font-bold text-gray-900 mb-2">Fair for Both Sides</div>
               <p className="text-sm text-gray-600">
-                Platform covers medical expenses up to $5K, then immediately escalates to the pro's insurance.
+                Photo documentation, scope change approval, and platform-mediated resolution. All claims reviewed within 48 hours.
               </p>
             </div>
           </div>
           
           <div className="mt-6 p-4 bg-blue-100 rounded-lg">
             <p className="text-sm text-blue-800 text-center">
-              <strong>Structural damage</strong> is immediately escalated to the pro's insurer while platform caps still apply.
-              All claims are reviewed within 48 hours.
+              Every job includes Price Protection, live tracking, and photo documentation. 5% service fee covers it all.
             </p>
           </div>
         </div>

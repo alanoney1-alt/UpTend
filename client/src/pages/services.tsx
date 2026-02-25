@@ -23,7 +23,7 @@ const services = [
     tagline: "No task too small.",
     description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
     price: "From $75/hr",
-    includes: ["$75/hr — 1-hour minimum", "Background-checked and insured", "Skilled repairs, minor installations & troubleshooting", "TV mounting & picture hanging", "Furniture assembly", "Drywall patching & touch-up painting", "Light fixture & ceiling fan installation", "Door adjustments & lock changes"],
+    includes: ["From $75/hr — 1-hour minimum", "Background-Checked and Price-Protected", "Skilled repairs, minor installations & troubleshooting", "TV mounting & picture hanging", "Furniture assembly", "Drywall patching & touch-up painting", "Light fixture & ceiling fan installation", "Door adjustments & lock changes"],
     esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
     link: "/services/handyman",
   },
@@ -74,12 +74,12 @@ const services = [
     icon: Users,
     tagline: "Your muscle on demand.",
     description: "Furniture moving, truck/pod unloading, or general labor — all $65/hr per mover. You pick the task, we supply the muscle, dollies, and shrink wrap.",
-    price: "$65/hr per mover",
+    price: "From $65/hr per mover",
     includes: [
-      "2 movers: $130/hr",
-      "3 movers: $195/hr",
-      "4 movers: $260/hr",
+      "From $65/hr per mover",
+      "Background-Checked and Price-Protected",
       "Dollies, hand trucks & shrink wrap included",
+      "Matched to you by skills, ratings, and availability",
     ],
     link: "/services/moving-labor",
   },
@@ -114,12 +114,12 @@ const services = [
     description: "Professional carpet cleaning with $100 minimum (2 rooms).",
     price: "From $50/room",
     includes: [
-      "Standard: $50/room",
-      "Deep clean: $75/room",
-      "Pet treatment: $89/room",
-      "$100 minimum (2 rooms)",
-      "3BR package: $129 | 4-5BR: $215",
-      "Scotchgard protection: $20/room add-on",
+      "From $50/room — final price based on your specific job",
+      "Background-Checked and Price-Protected",
+      "Deep clean and pet treatment options available",
+      "Package pricing for multi-room jobs",
+      "Scotchgard protection add-on available",
+      "Matched to you by skills, ratings, and availability",
     ],
     link: "/services/carpet-cleaning",
   },
@@ -220,33 +220,33 @@ const services = [
 const proStandards = [
   {
     icon: ShieldCheck,
-    title: "Fully Insured",
-    desc: "Every Pro carries $1M liability insurance. Your property is fully protected on every job.",
+    title: "Background-Checked",
+    desc: "Every pro passes a national criminal background screening before their first job. Know who's coming to your home.",
   },
   {
     icon: ShieldCheck,
-    title: "Background Checked",
-    desc: "Every Pro passes a national criminal background screening before their first job.",
+    title: "Insured",
+    desc: "Every pro carries liability insurance. Your property is fully protected on every job.",
   },
   {
-    icon: GraduationCap,
-    title: "Academy Trained",
-    desc: "Certified through the UpTend Academy covering safety, customer service, and disposal best practices.",
+    icon: DollarSign,
+    title: "Price-Protected",
+    desc: "Your price is locked at booking. Scope changes require your approval with photo documentation.",
   },
   {
     icon: Video,
-    title: "Video Verified",
-    desc: "Every job is documented with 360-degree video. Protects you and the Pro from disputes.",
+    title: "Photo Documented",
+    desc: "Every job is documented with photos. Before, during, and after. Protects you and the pro.",
   },
   {
     icon: Globe,
     title: "Bilingual Ready",
-    desc: "Many Pros speak English and Spanish. Our matching system pairs you with the right fit.",
+    desc: "Many pros speak English and Spanish. Our matching system pairs you with the right fit.",
   },
   {
     icon: DollarSign,
-    title: "Instant Payouts",
-    desc: "Pros are paid same-day. Happy Pros deliver better work. That's the UpTend difference.",
+    title: "Pros Keep 85%",
+    desc: "Your pro keeps 85% of every job. No lead fees. Happy pros deliver better work.",
   },
 ];
 
@@ -343,7 +343,7 @@ export default function Services() {
         {/* Snap Quote Banner */}
         <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
           <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-            See a problem? Snap a photo for an instant quote.
+            See a problem? Snap a photo and get a price-protected quote.
           </p>
           <Link href="/snap-quote" asChild>
             <Button variant="outline" size="sm" className="border-amber-400 text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-900/30 shrink-0">

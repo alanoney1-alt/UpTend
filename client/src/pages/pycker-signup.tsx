@@ -597,8 +597,8 @@ export default function PyckerSignup() {
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Become a Pro</h1>
-          <p className="text-muted-foreground">Join our verified network of Pros and start building your impact record</p>
+          <h1 className="text-3xl font-bold mb-2">Build Your Business on Your Terms</h1>
+          <p className="text-muted-foreground">Set your rates. We find the customers. Keep 85% of every job. No lead fees. Guaranteed payment.</p>
         </div>
 
         {/* Step indicator — scrollable on mobile */}
@@ -1503,10 +1503,10 @@ export default function PyckerSignup() {
                   <div className="flex items-start gap-3">
                     <DollarSign className="w-5 h-5 text-amber-600 mt-0.5" />
                     <div>
-                      <h3 className="font-medium text-amber-700 dark:text-amber-400">Insurance is Optional</h3>
+                      <h3 className="font-medium text-amber-700 dark:text-amber-400">Insurance is Optional but Recommended</h3>
                       <p className="text-sm text-amber-600 dark:text-amber-500 mt-1">
-                        You can skip the insurance section, but <strong>without insurance documentation, you'll have a 25% commission</strong> on each job. 
-                        Pros with verified insurance get a lower 20% commission rate.
+                        You can skip the insurance section. All pros pay a flat 15% platform fee and keep 85% of every job.
+                        Pros with verified insurance get priority matching and access to higher-value jobs.
                       </p>
                     </div>
                   </div>
@@ -1999,7 +1999,7 @@ export default function PyckerSignup() {
                     </div>
                     <div>
                       <span className="text-muted-foreground">GL Insurance:</span>{" "}
-                      {form.getValues("generalLiabilityProvider") ? `${form.getValues("generalLiabilityProvider")}` : "Not provided (25% commission)"}
+                      {form.getValues("generalLiabilityProvider") ? `${form.getValues("generalLiabilityProvider")}` : "Not provided"}
                     </div>
                     <div>
                       <span className="text-muted-foreground">Vehicle Insurance:</span>{" "}
@@ -2165,23 +2165,23 @@ export default function PyckerSignup() {
         <div className="mt-8 grid md:grid-cols-4 gap-4">
           <Card className="p-4 text-center">
             <DollarSign className="w-6 h-6 mx-auto mb-2 text-primary" />
-            <h3 className="font-medium">Keep 80% of Every Job</h3>
-            <p className="text-sm text-muted-foreground">Every pro. Every job. Plus 100% of tips.</p>
+            <h3 className="font-medium">Keep 85% of Every Job</h3>
+            <p className="text-sm text-muted-foreground">One flat 15% platform fee. Plus 100% of tips. No lead fees ever.</p>
           </Card>
           <Card className="p-4 text-center">
             <Shield className="w-6 h-6 mx-auto mb-2 text-primary" />
-            <h3 className="font-medium">We Cover Your Insurance</h3>
-            <p className="text-sm text-muted-foreground">No insurance? No problem. $10/job covers you up to $25K — unlocks every job on the platform.</p>
+            <h3 className="font-medium">Verified Customers</h3>
+            <p className="text-sm text-muted-foreground">Your customers are verified too. Payments guaranteed through the platform.</p>
           </Card>
           <Card className="p-4 text-center">
             <Clock className="w-6 h-6 mx-auto mb-2 text-primary" />
-            <h3 className="font-medium">Instant Payouts</h3>
-            <p className="text-sm text-muted-foreground">Get paid same day, every time.</p>
+            <h3 className="font-medium">Guaranteed Payment</h3>
+            <p className="text-sm text-muted-foreground">Every job is verified before you arrive. No surprises. Get paid same day.</p>
           </Card>
           <Card className="p-4 text-center">
             <TrendingUp className="w-6 h-6 mx-auto mb-2 text-primary" />
-            <h3 className="font-medium">We Pay for Marketing</h3>
-            <p className="text-sm text-muted-foreground">Zero lead fees. We bring you customers — you just show up and do great work.</p>
+            <h3 className="font-medium">New Pro Matching Boost</h3>
+            <p className="text-sm text-muted-foreground">New pros get a matching boost. Start earning from day one.</p>
           </Card>
         </div>
       </main>
