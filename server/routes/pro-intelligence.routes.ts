@@ -127,6 +127,17 @@ router.post("/api/pro/goals/:proId/milestones", async (req, res) => {
 });
 
 // ─── Route Optimization ─────────────────────────────────────────
+
+// Weekly summary MUST be before /:date to avoid "weekly" being parsed as a date
+router.get("/api/pro/route/:proId/weekly", async (req, res) => {
+  try {
+    const result = await getWeeklyRouteSummary(req.params.proId);
+    res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get("/api/pro/route/:proId/:date", async (req, res) => {
   try {
     const result = await getRouteForDay(req.params.proId, req.params.date);
@@ -151,15 +162,6 @@ router.post("/api/pro/route/:proId/add-job", async (req, res) => {
     const { date, jobId } = req.body;
     if (!date || !jobId) return res.status(400).json({ error: "date and jobId required" });
     const result = await addJobToRoute(req.params.proId, date, jobId);
-    res.json(result);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.get("/api/pro/route/:proId/weekly", async (req, res) => {
-  try {
-    const result = await getWeeklyRouteSummary(req.params.proId);
     res.json(result);
   } catch (err: any) {
     res.status(500).json({ error: err.message });

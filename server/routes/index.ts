@@ -230,6 +230,9 @@ import { registerContentRoutes } from "./content.routes.js";
 import { registerInviteCodeRoutes } from "./invite-codes/invite-codes.routes";
 import { registerAppDataRoutes } from "./app-data.routes";
 
+// Batch 2 fixes — aliases, spending tracker, appliances, warranties, inventory
+import { registerBatch2Routes } from "./batch2-aliases.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -485,6 +488,9 @@ export async function registerRoutes(
 
   // Register Invite Code routes
   registerInviteCodeRoutes(app);
+
+  // Register Batch 2 fixes (aliases, spending tracker, appliances, warranties, inventory)
+  registerBatch2Routes(app);
 
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
