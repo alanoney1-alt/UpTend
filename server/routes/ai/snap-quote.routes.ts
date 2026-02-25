@@ -294,8 +294,8 @@ For valid home service images, return JSON:
 
     const quote = buildQuote(analysis);
     const snapQuoteId = nanoid(12);
-    const user = req.user as any;
-    const customerId = user?.userId || user?.id || null;
+    const reqUser = req.user as any;
+    const customerId = reqUser?.userId || reqUser?.id || null;
 
     // Store in DB
     try {
