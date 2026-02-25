@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 import { MultiPhotoUpload } from "@/components/photo-upload";
 import { AIQuoteDisplay } from "./ai-quote-display";
 import { ManualQuoteForm } from "./manual-quote-form";
@@ -1376,6 +1377,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
         </div>
 
         {/* Property Details — auto-filled from public records or manual entry */}
+        {propertyLoading ? (
+          <SkeletonCard lines={4} className="mb-6" />
+        ) : (
         <Card className="mb-6" data-testid="card-property-details">
           <CardContent className="p-5">
             <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
@@ -1510,6 +1514,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
             )}
           </CardContent>
         </Card>
+        )}
 
         {/* Featured: Home DNA Scan */}
         {pricingServices.filter(s => s.featured).map((service) => (
