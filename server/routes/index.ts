@@ -535,25 +535,18 @@ export async function registerRoutes(
   // Register SMS Bot standalone routes
   registerSmsBotStandaloneRoutes(app);
 
-  // Register Pro Pricing + Smart Match routes
-  registerProPricingRoutes(app);
-  registerSmartMatchRoutes(app);
-
-  // Register Business Partner routes
-  registerBusinessPartnerRoutes(app);
-
-  // Register Insurance Tiered Requirement routes
-  registerInsuranceTieredRoutes(app);
-  registerThimbleWebhookRoute(app);
-
-  // Register Stripe Connect routes
-  registerStripeConnectRoutes(app);
-
-  // Register Tax Reporting routes
-  registerTaxReportingRoutes(app);
-
-  // Register Job Lifecycle routes
-  registerJobLifecycleRoutes(app);
+  // Register new marketplace routes (wrapped in try/catch for graceful degradation)
+  const safeRegister = (name: string, fn: (app: any) => void) => {
+    try { fn(app); } catch (e: any) { console.warn(`[Routes] Failed to register ${name}:`, e.message); }
+  };
+  safeRegister("ProPricing", registerProPricingRoutes);
+  safeRegister("SmartMatch", registerSmartMatchRoutes);
+  safeRegister("BusinessPartner", registerBusinessPartnerRoutes);
+  safeRegister("InsuranceTiered", registerInsuranceTieredRoutes);
+  safeRegister("ThimbleWebhook", registerThimbleWebhookRoute);
+  safeRegister("StripeConnect", registerStripeConnectRoutes);
+  safeRegister("TaxReporting", registerTaxReportingRoutes);
+  safeRegister("JobLifecycle", registerJobLifecycleRoutes);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
