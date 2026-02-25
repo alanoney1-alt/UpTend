@@ -2,8 +2,8 @@ import { cn } from "@/lib/utils";
 
 export function Logo({ className = "w-8 h-8", textClassName = "text-2xl" }: { className?: string, textClassName?: string }) {
   return (
-    <div className="flex items-center gap-2 group cursor-pointer">
-      <div className={cn("relative shrink-0", className)}>
+    <div className="flex items-center gap-3 group cursor-pointer">
+      <div className={cn("relative shrink-0 overflow-hidden", className)}>
         <div className="absolute inset-0 bg-primary rounded-full blur opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
         <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-md relative">
           <rect width="100" height="100" rx="20" fill="#3B1D5A" />

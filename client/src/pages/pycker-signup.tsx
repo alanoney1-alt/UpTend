@@ -601,36 +601,48 @@ export default function PyckerSignup() {
           <p className="text-muted-foreground">Set your rates. We find the customers. Keep 85% of every job. No lead fees. Guaranteed payment.</p>
         </div>
 
-        {/* Step indicator — scrollable on mobile */}
-        <div className="flex justify-center mb-8 overflow-x-auto pb-2">
-          <div className="flex items-center gap-1">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                <div
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg cursor-pointer transition-colors ${
-                    currentStep === step.id 
-                      ? "bg-primary text-primary-foreground" 
-                      : currentStep > step.id 
-                        ? "bg-green-500 text-white"
-                        : "bg-muted text-muted-foreground"
-                  }`}
-                  onClick={() => {
-                    // Allow going back to completed steps
-                    if (step.id < currentStep) setCurrentStep(step.id);
-                  }}
-                >
-                  {currentStep > step.id ? (
-                    <CheckCircle className="w-3.5 h-3.5" />
-                  ) : (
-                    <step.icon className="w-3.5 h-3.5" />
+        {/* Step indicator — progress bar on mobile, full tabs on desktop */}
+        <div className="mb-8">
+          {/* Mobile: compact progress indicator */}
+          <div className="flex sm:hidden items-center justify-center gap-3 mb-2">
+            <div className="flex items-center gap-2">
+              {(() => { const StepIcon = steps[currentStep - 1]?.icon || CheckCircle; return <StepIcon className="w-5 h-5 text-primary" />; })()}
+              <span className="text-sm font-semibold">Step {currentStep} of {steps.length}: {steps[currentStep - 1]?.title}</span>
+            </div>
+          </div>
+          <div className="flex sm:hidden w-full h-2 bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${(currentStep / steps.length) * 100}%` }} />
+          </div>
+          {/* Desktop: full step tabs */}
+          <div className="hidden sm:flex justify-center overflow-x-auto pb-2">
+            <div className="flex items-center gap-1">
+              {steps.map((step, index) => (
+                <div key={step.id} className="flex items-center">
+                  <div
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg cursor-pointer transition-colors ${
+                      currentStep === step.id 
+                        ? "bg-primary text-primary-foreground" 
+                        : currentStep > step.id 
+                          ? "bg-green-500 text-white"
+                          : "bg-muted text-muted-foreground"
+                    }`}
+                    onClick={() => {
+                      if (step.id < currentStep) setCurrentStep(step.id);
+                    }}
+                  >
+                    {currentStep > step.id ? (
+                      <CheckCircle className="w-3.5 h-3.5" />
+                    ) : (
+                      <step.icon className="w-3.5 h-3.5" />
+                    )}
+                    <span className="text-xs font-medium whitespace-nowrap">{step.title}</span>
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div className={`w-4 h-0.5 mx-0.5 ${currentStep > step.id ? "bg-green-500" : "bg-muted"}`} />
                   )}
-                  <span className="text-xs font-medium whitespace-nowrap hidden sm:inline">{step.title}</span>
                 </div>
-                {index < steps.length - 1 && (
-                  <div className={`w-4 h-0.5 mx-0.5 ${currentStep > step.id ? "bg-green-500" : "bg-muted"}`} />
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 

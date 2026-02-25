@@ -283,7 +283,7 @@ export function AiChatWidget() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 md:bottom-6 right-4 z-50 h-14 w-14 rounded-full bg-[#F47C20] text-white shadow-lg hover:bg-[#e06d15] transition-all hover:scale-105 flex items-center justify-center group"
+        className="fixed bottom-20 md:bottom-6 right-4 z-50 h-12 w-12 rounded-full bg-[#F47C20] text-white shadow-lg hover:bg-[#e06d15] transition-all hover:scale-105 flex items-center justify-center group"
         aria-label="Open AI Assistant"
       >
         <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />

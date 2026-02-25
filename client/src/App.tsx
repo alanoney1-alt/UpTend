@@ -273,6 +273,7 @@ function Router() {
       <Route path="/academy" component={PyckerAcademy} />
       <Route path="/job/:jobId/work" component={ActiveJob} />
       <Route path="/dashboard" component={CustomerDashboard} />
+      <Route path="/customer-dashboard" component={CustomerDashboard} />
       <Route path="/subscriptions" component={CustomerSubscriptions} />
       <Route path="/plans" component={SubscriptionPlans} />
       <Route path="/admin/pro-map" component={AdminProMap} />
