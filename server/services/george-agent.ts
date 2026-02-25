@@ -8,6 +8,7 @@
 import { anthropic } from "./ai/anthropic-client";
 import * as tools from "./george-tools";
 import { getHomeScanInfo } from "./george-scan-pitch";
+import { getRelevantKnowledge } from "./knowledge-loader";
 import {
  getDIYDisclaimerConsent,
  recordDIYDisclaimerAcknowledgment,
@@ -3663,6 +3664,17 @@ export async function chat(
  const adaptivePrompt = getAdaptivePrompt(audienceProfile);
  if (adaptivePrompt) {
  systemPrompt += "\n" + adaptivePrompt;
+ }
+
+ // Load relevant knowledge base content for business/trade questions
+ const lastMessage = conversationHistory.length > 0 
+   ? (typeof conversationHistory[conversationHistory.length - 1].content === 'string' 
+     ? conversationHistory[conversationHistory.length - 1].content 
+     : JSON.stringify(conversationHistory[conversationHistory.length - 1].content))
+   : "";
+ const knowledgeContext = getRelevantKnowledge(lastMessage as string);
+ if (knowledgeContext) {
+   systemPrompt += knowledgeContext;
  }
 
  // Build messages array for Claude
