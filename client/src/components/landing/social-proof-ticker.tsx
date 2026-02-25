@@ -26,7 +26,7 @@ export function SocialProofTicker() {
             key={i}
             className="inline-block px-6 text-xs text-muted-foreground whitespace-nowrap"
           >
-            ✓ {text}
+            {text}
           </span>
         ))}
       </div>

@@ -352,17 +352,17 @@ function TwoSides() {
             </Link>
           </div>
 
-          {/* For Pros */}
+          {/* Why Our Pros Are Better */}
           <div>
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
-              <Wrench className="w-5 h-5 text-[#F47C20]" /> {t("landing.for_pros", "For Pros")}
+              <Wrench className="w-5 h-5 text-[#F47C20]" /> {t("landing.why_pros_better", "Why Our Pros Are Better")}
             </h3>
             <div className="space-y-3">
               {[
-                { icon: Ban, title: t("landing.pro_1_title", "Keep 85% of every job"), desc: t("landing.pro_1_desc", "Our fair 15% platform fee. No lead fees. No bidding wars. No pay-per-lead scams.") },
-                { icon: DollarSign, title: t("landing.pro_2_title", "Guaranteed payment"), desc: t("landing.pro_2_desc", "Finish the job, get paid. Payments guaranteed through the platform. No chasing invoices.") },
-                { icon: TrendingUp, title: t("landing.pro_3_title", "Set your own rates"), desc: t("landing.pro_3_desc", "You choose your rate within the market range. We match you with customers who value quality, not just price.") },
-                { icon: ShieldCheck, title: t("landing.pro_4_title", "You're protected too"), desc: t("landing.pro_4_desc", "Liability coverage. Guaranteed payment. Dispute resolution that's fair.") },
+                { icon: Ban, title: t("landing.pro_1_title", "They keep 85% of what you pay"), desc: t("landing.pro_1_desc", "No lead fees draining their income. That means they show up motivated, do great work, and come back.") },
+                { icon: DollarSign, title: t("landing.pro_2_title", "Guaranteed to get paid"), desc: t("landing.pro_2_desc", "Our pros don't chase invoices. They focus on doing excellent work because the platform handles the rest.") },
+                { icon: TrendingUp, title: t("landing.pro_3_title", "They choose to be here"), desc: t("landing.pro_3_desc", "Our pros set their own rates and pick their jobs. Happy pros who want to be there do better work for you.") },
+                { icon: ShieldCheck, title: t("landing.pro_4_title", "Vetted and verified"), desc: t("landing.pro_4_desc", "Background-checked, insured, and rated by real customers. Every pro on the platform earned their spot.") },
               ].map((item) => (
                 <div key={item.title} className="p-4 flex gap-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[#F47C20]/30 transition-colors">
                   <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
@@ -377,7 +377,7 @@ function TwoSides() {
             </div>
             <Link href="/become-pro" asChild>
               <Button className="mt-6 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold">
-                {t("landing.join_as_pro", "Join as a Pro")} <ArrowRight className="ml-2 w-4 h-4" />
+                {t("landing.join_as_pro", "Are you a Pro? Join our network")} <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
           </div>

@@ -150,7 +150,7 @@ export const BUNDLES: Bundle[] = [
     services: ['polishup', 'bulksnap'],
     discountPct: 0.10,
     target: 'General cleanout',
-    description: 'PolishUp standard + BulkSnap removal',
+    description: 'Home Cleaning standard + Junk Removal',
   },
   {
     id: 'curb_appeal',
@@ -158,7 +158,7 @@ export const BUNDLES: Bundle[] = [
     services: ['freshwash', 'gutterflush'],
     discountPct: 0.10,
     target: 'Exterior refresh',
-    description: 'FreshWash + GutterFlush',
+    description: 'Pressure Washing + Gutter Cleaning',
   },
   {
     id: 'curb_appeal_plus',
@@ -166,7 +166,7 @@ export const BUNDLES: Bundle[] = [
     services: ['freshwash', 'gutterflush', 'freshcut'],
     discountPct: 0.12,
     target: 'Full exterior',
-    description: 'FreshWash + GutterFlush + FreshCut lawn mow',
+    description: 'Pressure Washing + Gutter Cleaning + Lawn Mow',
   },
   {
     id: 'move_out_plus',
@@ -174,7 +174,7 @@ export const BUNDLES: Bundle[] = [
     services: ['polishup', 'bulksnap', 'deepfiber'],
     discountPct: 0.15,
     target: 'Tenant turnover / PM',
-    description: 'PolishUp deep + BulkSnap 1/4 load + DeepFiber 3 rooms',
+    description: 'Home Cleaning deep + Junk Removal 1/4 load + Carpet Cleaning 3 rooms',
   },
   {
     id: 'full_reset_plus',
@@ -182,7 +182,7 @@ export const BUNDLES: Bundle[] = [
     services: ['polishup', 'bulksnap', 'freshwash', 'freshcut', 'deepfiber'],
     discountPct: 0.18,
     target: 'Complete PM turnover',
-    description: 'PolishUp deep + BulkSnap 1/2 + FreshWash + FreshCut + DeepFiber',
+    description: 'Home Cleaning deep + Junk Removal 1/2 load + Pressure Washing + Lawn Mow + Carpet Cleaning',
   },
   {
     id: 'splash_ready',
@@ -190,7 +190,7 @@ export const BUNDLES: Bundle[] = [
     services: ['poolspark', 'freshwash'],
     discountPct: 0.10,
     target: 'Pool owners',
-    description: 'PoolSpark deep clean + FreshWash patio',
+    description: 'Pool Cleaning deep + Pressure Washing patio',
   },
   {
     id: 'fresh_start',
@@ -198,7 +198,7 @@ export const BUNDLES: Bundle[] = [
     services: ['polishup', 'deepfiber'],
     discountPct: 0.10,
     target: 'New move-in',
-    description: 'PolishUp standard + DeepFiber 3 rooms',
+    description: 'Home Cleaning standard + Carpet Cleaning 3 rooms',
   },
   {
     id: 'hoa_blitz',
@@ -206,7 +206,7 @@ export const BUNDLES: Bundle[] = [
     services: ['freshcut', 'freshwash', 'gutterflush', 'home_scan'],
     discountPct: 0.15,
     target: 'HOA compliance',
-    description: 'FreshCut + FreshWash + GutterFlush + Home DNA Scan audit',
+    description: 'Lawn Mow + Pressure Washing + Gutter Cleaning + Home DNA Scan audit',
   },
   {
     id: 'seasonal_reset',
@@ -214,7 +214,7 @@ export const BUNDLES: Bundle[] = [
     services: ['freshcut', 'poolspark', 'freshwash'],
     discountPct: 0.12,
     target: 'Seasonal prep',
-    description: 'FreshCut premium + PoolSpark deep + FreshWash house',
+    description: 'Landscaping premium + Pool Cleaning deep + Pressure Washing house',
   },
 ];
 

@@ -37,12 +37,12 @@ export default function SnapQuotePage() {
       <section className="max-w-lg mx-auto px-4 pb-16">
         <div className="grid grid-cols-3 gap-4 text-center">
           {[
-            { emoji: "1", label: "Snap" },
-            { emoji: "2", label: "Price" },
-            { emoji: "3", label: "Booked" },
+            { step: "1", label: "Snap" },
+            { step: "2", label: "Price" },
+            { step: "3", label: "Booked" },
           ].map((s) => (
-            <div key={s.label}>
-              <div className="text-2xl mb-1">{s.emoji}</div>
+            <div key={s.label} className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-[#F47C20] text-white flex items-center justify-center text-lg font-bold mb-2">{s.step}</div>
               <p className="text-sm font-semibold text-slate-700">{s.label}</p>
             </div>
           ))}

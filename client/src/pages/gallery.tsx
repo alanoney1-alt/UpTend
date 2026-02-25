@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Share2, Star, Filter } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
+import { Header } from "@/components/landing/header";
 import { Link } from "wouter";
 import { Logo } from "@/components/ui/logo";
 
@@ -93,14 +94,7 @@ export default function Gallery() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/">
-            <Logo className="w-8 h-8" textClassName="text-xl" />
-          </Link>
-          <span className="text-lg font-bold text-slate-900 dark:text-white">Before & After Gallery</span>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-5xl mx-auto px-4 py-8">
         {/* Filters */}
