@@ -17,7 +17,11 @@ import { CustomerConfirmation } from "@/components/verification/customer-confirm
 import { ReviewForm } from "@/components/reviews/review-form";
 import { CustomerClaimsSection } from "@/components/customer/claims-section";
 import type { ServiceRequest, HomeInventory } from "@shared/schema";
+import { useMemo } from "react";
 import {
+  RefreshCw,
+  Star,
+  User,
   ArrowLeft,
   Home,
   Package,

@@ -64,6 +64,7 @@ const CustomerSubscriptions = lazy(() => import("@/pages/customer-subscriptions"
 const GodMode = lazy(() => import("@/pages/admin/god-mode"));
 const CarbonTracking = lazy(() => import("@/pages/admin/carbon-tracking"));
 const AdminProMap = lazy(() => import("@/pages/admin/pro-map"));
+const JobLiveTracker = lazy(() => import("@/pages/job-live-tracker"));
 const AdminAccounting = lazy(() => import("@/pages/admin/accounting"));
 const ProfileSettings = lazy(() => import("@/pages/profile-settings"));
 const EarningsPage = lazy(() => import("@/pages/hauler/earnings"));
@@ -333,6 +334,7 @@ function Router() {
       <Route path="/partners/register" component={PartnerRegister} />
       <Route path="/partners/dashboard" component={PartnerDashboard} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
+      <Route path="/jobs/:jobId/track" component={JobLiveTracker} />
       <Route path="/jobs/:jobId" component={JobDetail} />
       <Route path="/tax-center" component={TaxCenter} />
       <Route path="/blog" component={BlogIndex} />
