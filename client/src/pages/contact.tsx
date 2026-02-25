@@ -85,28 +85,37 @@ export default function Contact() {
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           <div className="space-y-6">
+            {/* Call George — Primary Contact */}
+            <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border-amber-200/60 dark:border-amber-700/30">
+              <div className="text-center space-y-3">
+                <div className="w-14 h-14 mx-auto rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+                  <Phone className="w-7 h-7 text-amber-600" />
+                </div>
+                <h2 className="text-2xl font-bold">Call George</h2>
+                <a 
+                  href="tel:+14073383342" 
+                  className="block text-3xl font-bold text-primary hover:text-primary/80 transition-colors"
+                  data-testid="link-call-george"
+                >
+                  (407) 338-3342
+                </a>
+                <p className="text-muted-foreground">
+                  Available 24/7. George answers every call.
+                </p>
+                <a
+                  href="tel:+14073383342"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-500 text-white font-semibold hover:bg-amber-600 transition-colors"
+                >
+                  <Phone className="w-4 h-4" />
+                  Tap to Call Now
+                </a>
+              </div>
+            </Card>
+
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4">{t("contact.get_in_touch")}</h2>
               
               <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">{t("contact.phone_support")}</h3>
-                    <a 
-                      href="tel:407-338-3342" 
-                      className="text-primary hover:underline text-lg font-semibold"
-                      data-testid="link-contact-phone"
-                    >
-                      (407) 338-3342
-                    </a>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {t("contact.tap_to_call")}
-                    </p>
-                  </div>
-                </div>
 
                 <div className="flex items-start gap-4">
                   <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary flex-shrink-0">

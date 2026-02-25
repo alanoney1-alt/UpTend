@@ -32,7 +32,7 @@ export function getTwilioPhoneNumber(): string {
 
 export const VoiceResponse = twilio.twiml.VoiceResponse;
 
-export const GEORGE_GREETING = "Hey there, this is Mr. George from UpTend! How can I help you with your home today?";
+export const GEORGE_GREETING = "Hi, I'm George from UpTend. How can I help with your home today?";
 
 export const BUD_FALLBACK = "I'm not sure I can help with that over the phone. Let me text you a link to the UpTend app where you can get that sorted out. Is that okay?";
 

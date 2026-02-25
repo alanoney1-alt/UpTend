@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { usePageContext } from "@/hooks/use-page-context";
 import {
   Send, X, Loader2, ChevronRight,
-  Mic, MicOff, Volume2, VolumeX, Camera,
+  Mic, MicOff, Volume2, VolumeX, Camera, Phone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VideoPlayer, extractAllVideoIds } from "./video-player";
@@ -328,6 +328,7 @@ export function UpTendGuide() {
   const [voiceOutputEnabled, setVoiceOutputEnabled] = useState(() => localStorage.getItem(LS_VOICE_OUT) === "true");
   const [isUploading, setIsUploading] = useState(false);
   const [shouldPulse, setShouldPulse] = useState(false);
+  const [showCallGeorge, setShowCallGeorge] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -784,6 +785,14 @@ export function UpTendGuide() {
             <button
               type="button"
               className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              onClick={() => setShowCallGeorge(true)}
+              title="Call George"
+            >
+              <Phone className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               onClick={() => fileInputRef.current?.click()}
               disabled={isLoading || isUploading}
               title="Send a photo"
@@ -835,6 +844,39 @@ export function UpTendGuide() {
             <span className="text-[9px] text-muted-foreground/40">powered by UpTend</span>
           </div>
         </div>
+
+        {/* Call George Modal Overlay */}
+        {showCallGeorge && (
+          <div className="absolute inset-0 z-10 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm rounded-2xl max-md:rounded-b-none max-md:rounded-t-2xl flex flex-col items-center justify-center p-6 text-center">
+            <button
+              onClick={() => setShowCallGeorge(false)}
+              className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
+              <Phone className="w-7 h-7 text-amber-600" />
+            </div>
+            <h3 className="text-lg font-bold mb-1">Call George</h3>
+            <a
+              href="tel:+14073383342"
+              className="text-2xl font-bold text-amber-600 hover:text-amber-700 transition-colors mb-3"
+            >
+              (407) 338-3342
+            </a>
+            <p className="text-sm text-muted-foreground mb-4">
+              Available 24/7. George answers every call.
+            </p>
+            <a
+              href="tel:+14073383342"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-500 text-white font-semibold hover:bg-amber-600 transition-colors"
+            >
+              <Phone className="w-4 h-4" />
+              Tap to Call
+            </a>
+          </div>
+        )}
       </div>
     </>
   );

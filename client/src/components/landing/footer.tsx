@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Logo } from "@/components/ui/logo";
-import { Mail, Phone, MapPin, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Mail, MessageCircle, MapPin, Instagram, Linkedin, Twitter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function Footer() {
@@ -22,8 +22,8 @@ export function Footer() {
             </p>
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
-                <Phone className="w-4 h-4 text-primary shrink-0" />
-                <a href="tel:407-338-3342" data-testid="link-footer-phone">(407) 338-3342</a>
+                <MessageCircle className="w-4 h-4 text-primary shrink-0" />
+                <button onClick={() => window.dispatchEvent(new CustomEvent("george:open"))} className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-chat">Chat with George</button>
               </div>
               <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
                 <Mail className="w-4 h-4 text-primary shrink-0" />
@@ -141,7 +141,7 @@ export function Footer() {
           <div>
             <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">{t("footer.footer_connect")}</h4>
             <p className="text-sm text-slate-400 mb-4">
-              Questions? Call us at <a href="tel:407-338-3342" className="text-white hover:text-primary transition-colors">(407) 338-3342</a>
+              Questions? <button onClick={() => window.dispatchEvent(new CustomEvent("george:open"))} className="text-white hover:text-primary transition-colors cursor-pointer">Chat with George</button>
             </p>
             <div className="flex gap-4 mb-4">
               <a href="https://facebook.com/UptendGeorge" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors" aria-label="Facebook">

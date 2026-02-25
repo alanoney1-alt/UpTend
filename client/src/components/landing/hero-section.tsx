@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Shield, Star, ArrowRight } from "lucide-react";
+import { Clock, Shield, Star, ArrowRight, Phone } from "lucide-react";
 import { Link } from "wouter";
 import heroImage from "@assets/generated_images/small_pickup_hauling_truck.png";
 
@@ -57,6 +57,15 @@ export function HeroSection() {
                 Get a Free Quote
               </Button>
             </Link>
+          </div>
+
+          <div className="flex items-center gap-2 mb-6 text-sm text-white/70">
+            <Phone className="w-4 h-4 text-primary" />
+            <span>Prefer to talk?{" "}
+              <a href="tel:+14073383342" className="text-primary hover:text-primary/80 underline underline-offset-2 font-medium">
+                Call George at (407) 338-3342
+              </a>
+            </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-6">

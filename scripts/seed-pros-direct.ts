@@ -13,18 +13,18 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 
 const pros = [
   {
-    firstName: "Carlos", lastName: "Rivera", email: "testpro1@uptend.app",
-    phone: "4075552001", company: "Rivera Hauling LLC",
+    firstName: "Marcus", lastName: "Williams", email: "testpro1@uptend.app",
+    phone: "4075552001", company: "Williams Hauling LLC",
     vehicle: "box_truck", services: ["junk_removal", "furniture_moving", "garage_cleanout", "moving_labor"],
   },
   {
-    firstName: "Derek", lastName: "Thompson", email: "testpro2@uptend.app",
-    phone: "4075552002", company: "Thompson Home Services",
+    firstName: "David", lastName: "Chen", email: "testpro2@uptend.app",
+    phone: "4075552002", company: "Chen Home Services",
     vehicle: "pickup_truck", services: ["pressure_washing", "gutter_cleaning", "light_demolition", "landscaping"],
   },
   {
-    firstName: "Aisha", lastName: "Johnson", email: "testpro3@uptend.app",
-    phone: "4075552003", company: "Sparkle Clean Orlando",
+    firstName: "Maria", lastName: "Santos", email: "testpro3@uptend.app",
+    phone: "4075552003", company: "Santos Clean Orlando",
     vehicle: "cargo_van", services: ["home_cleaning", "carpet_cleaning", "home_consultation"],
   },
 ];

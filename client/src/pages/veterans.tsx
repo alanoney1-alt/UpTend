@@ -197,7 +197,8 @@ export default function Veterans() {
       {/* Testimonials */}
       <section className="py-20 px-4 bg-slate-950">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Veteran Success Stories</h2>
+          <h2 className="text-3xl font-bold text-center mb-2">What Veteran Pros Can Expect</h2>
+          <p className="text-center text-xs text-slate-500 mb-12">*Based on projected Pro experience</p>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map(t => (
               <Card key={t.name} className="bg-slate-800/50 border-slate-700">
