@@ -1,5 +1,5 @@
 /**
- * Drone Scan ($249) Booking Routes
+ * Drone Scan (Free) Booking Routes
  *
  * POST /api/drone-scan/book                    — create booking
  * GET  /api/drone-scan/:id                     — get booking details

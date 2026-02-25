@@ -125,9 +125,9 @@ export function registerBatch1FixRoutes(app: Express) {
         },
         {
           id: "ai-home-scan",
-          name: "AI Home Scan Specialist",
+          name: "Home DNA Scan Specialist",
           slug: "ai-home-scan",
-          description: "Trained to perform comprehensive AI-assisted home health scans using UpTend's proprietary scanning technology.",
+          description: "Trained to perform comprehensive home health scans using UpTend's proprietary Home DNA Scan technology.",
           category: "specialty",
           requirements: ["Complete Home Scan training", "Demonstrate scan proficiency", "Device calibration test"],
           benefits: ["Home scan job access", "Premium scan pricing", "AI analysis tools"],

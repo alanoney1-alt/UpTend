@@ -13,7 +13,7 @@ export const PRICING_CONSTANTS = {
 
   DEMO_BASE_RATE: 19900, // $199 starting (Light Demolition)
 
-  CONSULTATION_FEE: 9900, // $99 (Home DNA Scan Standard)
+  CONSULTATION_FEE: 0, // Free (Home DNA Scan Standard — lead gen)
 
   // Pool Cleaning (PoolSpark) tiers
   POOL_BASIC: 9900,        // $99/mo — Weekly chemicals + skim surface + empty baskets

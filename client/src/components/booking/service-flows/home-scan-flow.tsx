@@ -105,7 +105,7 @@ export function HomeScanFlow({ onComplete, onBack }: ServiceFlowProps) {
 
       <div className="p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg text-center">
         <p className="text-sm font-medium text-green-800 dark:text-green-200">
-           Get a <strong>$49 credit</strong> toward your next UpTend service (valid 90 days)
+           Get a <strong>$25 credit</strong> toward your next booking (valid 90 days)
         </p>
       </div>
 
@@ -115,7 +115,7 @@ export function HomeScanFlow({ onComplete, onBack }: ServiceFlowProps) {
           lineItems={[{ label: tier.name, price: tier.price }]}
           onContinue={handleContinue}
           onBack={onBack}
-          note="$49 credit will be applied to your next booked service."
+          note="$25 credit will be applied to your next booking."
         />
       )}
     </div>

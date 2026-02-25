@@ -29,7 +29,7 @@ const SERVICES = [
   { id: "pool_cleaning", name: "Pool Cleaning", icon: Waves, price: "From $89", b2bDiscount: "10% bulk discount" },
   { id: "landscaping", name: "Landscaping", icon: Trees, price: "From $44", b2bDiscount: "10% bulk discount" },
   { id: "carpet_cleaning", name: "Carpet Cleaning", icon: Home, price: "From $45/room", b2bDiscount: "10% bulk discount" },
-  { id: "home_consultation", name: "AI Home Audit", icon: Search, price: "$89 / $224", b2bDiscount: "10% bulk discount" },
+  { id: "home_consultation", name: "Home DNA Scan", icon: Search, price: "Free", b2bDiscount: "10% bulk discount" },
 ];
 
 const RECURRING_OPTIONS = [

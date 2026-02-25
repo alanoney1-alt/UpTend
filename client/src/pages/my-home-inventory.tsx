@@ -156,7 +156,7 @@ export default function MyHomeInventory() {
                 <Scan className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                 <h3 className="text-lg font-semibold mb-2">No Items Yet</h3>
                 <p className="text-muted-foreground mb-4">
-                  Use the Video Scan tab to record a room, or book a $99 Home Assessment.
+                  Use the Video Scan tab to record a room, or book a free Home DNA Scan.
                 </p>
                 <div className="flex gap-3 justify-center flex-wrap">
                   <Link href="/book?service=home_consultation">

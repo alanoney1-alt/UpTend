@@ -4,16 +4,16 @@ export const SERVICES = {
     generic: 'Home DNA Scan',
     display: 'Home DNA Scan',
     slug: '/home-scan',
-    startingPrice: 99,
+    startingPrice: 0,
     priceUnit: 'flat',
     tagline: 'Know your home inside out.',
-    description: 'A complete walkthrough of what your home needs. Your personalized maintenance roadmap. Add drone aerial scan for $249.',
+    description: 'Free comprehensive home walkthrough. Complete yours and get a $25 credit toward your next booking.',
     tiers: {
       standard: {
         name: 'Home DNA Scan Standard',
-        price: 99,
-        proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers
-        description: 'Interior + exterior ground-level walkthrough with maintenance report',
+        price: 0,
+        proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers (paid by UpTend)
+        description: 'Free interior + exterior ground-level walkthrough with maintenance report',
         includes: [
           'Full interior room-by-room walkthrough with photos',
           'Exterior ground-level assessment (foundation, driveway, walkways, landscaping)',
@@ -28,9 +28,9 @@ export const SERVICES = {
       },
       aerial: {
         name: 'Home DNA Scan Aerial',
-        price: 249,
-        proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers
-        description: 'Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan',
+        price: 0,
+        proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers (paid by UpTend)
+        description: 'Free — everything in Standard plus drone-powered roof, gutter, and exterior aerial scan',
         includes: [
           'Everything in Home DNA Scan Standard',
           'FAA Part 107 certified drone flyover',
@@ -48,13 +48,13 @@ export const SERVICES = {
       },
     },
     credit: {
-      amount: 49,
+      amount: 25,
       appliesTo: 'next booked service',
       expiresInDays: 90,
       stacksWithDiscounts: true,
       appliedBeforePercentageDiscount: true,
       onePerDwellScan: true,
-      description: '$49 credit toward your next UpTend service',
+      description: '$25 credit toward your next booking',
     },
   },
   handyman: {

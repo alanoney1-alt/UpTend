@@ -87,7 +87,7 @@ const BASE_PRICES: Record<string, number> = {
   moving_labor: 260,
   garage_cleanout: 129,
   light_demolition: 199,
-  home_consultation: 99,
+  home_consultation: 0,
 };
 
 function buildQuote(analysis: VisionAnalysis) {

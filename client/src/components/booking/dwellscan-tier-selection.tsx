@@ -2,10 +2,10 @@
  * Home DNA Scan Tier Selection Component
  *
  * Allows customers to choose between:
- * - Home DNA Scan Standard ($99)
- * - Home DNA Scan Aerial ($249) - RECOMMENDED
+ * - Home DNA Scan Standard (Free)
+ * - Home DNA Scan Aerial (Free) - RECOMMENDED
  *
- * Both include $49 credit toward next service
+ * Both include $25 credit toward next booking
  */
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,7 +35,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold mb-2">Choose Your Home DNA Scan</h2>
         <p className="text-muted-foreground">
-          Both tiers include the same <strong>$49 credit</strong> toward any future UpTend service
+          Both tiers are completely free and include a <strong>$25 credit</strong> toward your next booking
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                 </div>
                 <div>
                   <CardTitle className="text-xl">Home DNA Scan Standard</CardTitle>
-                  <p className="text-2xl font-bold text-primary mt-1">$99</p>
+                  <p className="text-2xl font-bold text-primary mt-1">Free</p>
                 </div>
               </div>
               {selectedTier === 'standard' && (
@@ -121,7 +121,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
                 </div>
                 <div>
                   <CardTitle className="text-xl">Home DNA Scan Aerial</CardTitle>
-                  <p className="text-2xl font-bold text-primary mt-1">$249</p>
+                  <p className="text-2xl font-bold text-primary mt-1">Free</p>
                 </div>
               </div>
               {selectedTier === 'aerial' && (
@@ -138,7 +138,7 @@ export function DwellScanTierSelection({ onSelectTier, defaultTier = 'standard' 
             </p>
 
             <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg text-sm text-blue-900 dark:text-blue-100">
-               <strong>Value:</strong> Comparable drone inspections cost $290–$350 alone. <strong>$49 back on your next booking</strong>.
+               <strong>Value:</strong> Comparable drone inspections cost $290–$350 alone. Yours is free with a <strong>$25 credit</strong> toward your next booking.
             </div>
 
             <div className="space-y-2">

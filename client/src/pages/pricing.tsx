@@ -192,7 +192,7 @@ export default function PublicPricing() {
       {/* Home DNA Scan Banner */}
       <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-4 px-4 text-center">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3">
-          <span className="font-bold text-sm md:text-base">Get your Home DNA Scan — the Carfax for your home. Starting at $99.</span>
+          <span className="font-bold text-sm md:text-base">Get your Home DNA Scan — the Carfax for your home. Completely free.</span>
           <a href="/home-dna-scan" className="inline-flex items-center gap-1 bg-white text-[#F47C20] font-bold text-sm px-4 py-1.5 rounded-full hover:bg-orange-50 transition-colors">
             Learn More <ArrowRight className="w-4 h-4" />
           </a>

@@ -339,7 +339,7 @@ HOME SCAN SELLING (be natural, not pushy):
 - Key hook: it's FREE and they EARN $25 + $1 per appliance ($40-50 typical). Takes 15-20 minutes.
 - Call get_home_scan_info to get the full pitch and FAQ when discussing the scan in depth.
 - Don't force it. If they're here for a specific service, help them first. Mention the scan naturally when relevant: "By the way, have you done a Home DNA Scan yet? It's free and you'd earn credits toward this service."
-- Tiers: Self-serve (free), Pro Scan ($99, in-person), Drone Scan ($249, aerial).
+- Tiers: Self-serve (free), Pro Scan (free, in-person), Drone Scan (free, aerial). All tiers include a $25 credit toward the next booking.
 
 DAILY ENGAGEMENT:
 - When a customer opens the chat before 11 AM, offer a morning briefing: call get_morning_briefing and share: "Good morning! Here's your home update..." (weather, today's schedule, any alerts). Keep it short — 3-4 bullets max.
@@ -390,11 +390,11 @@ Home DNA is the Carfax for your home. Pitch it as a comprehensive digital profil
 
 When appropriate, weave in ONE of these Home DNA Scan pitches per session (max once):
 1. "Most homeowners miss $3,000-5,000 in preventable damage every year. A Home DNA Scan catches it early — it's like a Carfax report for your house."
-2. "Your home is your biggest investment. A Home DNA Scan gives you a complete health profile — every system scored, every risk identified. Starts at $99."
+2. "Your home is your biggest investment. A Home DNA Scan gives you a complete health profile — every system scored, every risk identified. Completely free."
 3. "Fun fact: homes with documented maintenance history sell for 3-5% more. Home DNA builds that proof over time."
 4. "Insurance companies process documented claims 3x faster. Your Home DNA gives you timestamped photo evidence of every system BEFORE something goes wrong."
 5. "I noticed you've been taking great care of your home. A Home DNA Scan would document all of it — condition scores, maintenance timeline, the works."
-6. "Before hurricane season, a Home DNA Scan identifies every vulnerable spot in your home. It's the smartest $99 you'll spend all year."
+6. "Before hurricane season, a Home DNA Scan identifies every vulnerable spot in your home. It's completely free and you get a $25 credit toward your next booking."
 7. "Our Home DNA Scan documents every appliance, every system — make, model, age, condition. It's a living record that gets smarter over time."
 
 ## Smart Home Integration Awareness
@@ -2076,7 +2076,7 @@ const TOOL_DEFINITIONS: any[] = [
  // ── Drone Scan ────────────────────────────────
  {
  name: "book_drone_scan",
- description: "Book an UpTend Drone Scan ($249) — aerial roof assessment, thermal imaging, 3D property model, interior scan.",
+ description: "Book a free UpTend Drone Scan — aerial roof assessment, thermal imaging, 3D property model, interior scan. Includes $25 credit toward next booking.",
  input_schema: {
  type: "object",
  properties: {

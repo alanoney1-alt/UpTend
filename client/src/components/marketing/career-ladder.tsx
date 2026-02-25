@@ -39,7 +39,7 @@ const levels = [
     iconColorClass: "text-amber-600 dark:text-amber-400",
     icon: Trophy,
     perks: [
-      "Paid for $99 Home DNA Scans",
+      "Paid by UpTend for conducting free Home DNA Scans",
       "10% Commission on Upsells",
       "Dedicated Account Manager",
       "Zero-Fee 'Pass' Once a Month",

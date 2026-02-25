@@ -6,7 +6,7 @@
  * 1. After Home DNA Scan Standard - upgrade to Aerial
  * 2. After any other service - book Home DNA Scan
  *
- * Highlights the $49 credit benefit
+ * Highlights the $25 credit benefit
  */
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,7 +61,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <p className="text-2xl font-bold text-primary">Just $150 more</p>
             </div>
             <p className="text-sm text-muted-foreground">
-              (Regular price $249 — upgrade for just $150 more since you already have Standard)
+              Both tiers are completely free — upgrade to Aerial for the full drone-powered assessment
             </p>
           </div>
 
@@ -145,7 +145,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <Home className="w-5 h-5 text-primary" />
               <div>
                 <p className="font-semibold">Home DNA Scan Standard</p>
-                <p className="text-2xl font-bold text-primary">$99</p>
+                <p className="text-2xl font-bold text-primary">Free</p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground mb-3">
@@ -170,7 +170,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <Plane className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="font-semibold">Home DNA Scan Aerial</p>
-                <p className="text-2xl font-bold text-blue-600">$249</p>
+                <p className="text-2xl font-bold text-blue-600">Free</p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground mb-3">
@@ -192,7 +192,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
             <Gift className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-green-900 dark:text-green-100 text-sm">
-                $49 Credit Included with Both Options
+                $25 Booking Credit Included
               </p>
               <p className="text-xs text-green-700 dark:text-green-300 mt-1">
                 Use toward your next UpTend service. Valid for 90 days.

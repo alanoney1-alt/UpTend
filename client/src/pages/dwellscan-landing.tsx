@@ -54,11 +54,11 @@ export default function DwellScanLanding() {
             report. Add drone aerial scan for roof & gutter inspection.
           </p>
           <p className="text-lg font-semibold mb-8">
-            Starting at just $99 • Includes $49 credit toward your next service
+            Completely free — includes $25 credit toward your next booking
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" onClick={() => handleBookTier('standard')}>
-              Book Standard ($99)
+              Book Free Standard Scan
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button
@@ -68,7 +68,7 @@ export default function DwellScanLanding() {
               onClick={() => handleBookTier('aerial')}
             >
               <Plane className="w-5 h-5 mr-2" />
-              Book Aerial ($249)
+              Book Free Aerial Scan
             </Button>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function DwellScanLanding() {
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Choose Your Home DNA Scan</h2>
             <p className="text-lg text-muted-foreground">
-              Both options include a $49 credit toward your next UpTend service
+              Both options are completely free and include a $25 credit toward your next booking
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export default function DwellScanLanding() {
                     <Home className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="text-2xl font-bold mb-2">Home DNA Scan Standard</h3>
-                  <p className="text-4xl font-black text-primary mb-2">$99</p>
+                  <p className="text-4xl font-black text-primary mb-2">Free</p>
                   <p className="text-sm text-muted-foreground">
                     {dwellScan.tiers.standard.description}
                   </p>
@@ -125,7 +125,7 @@ export default function DwellScanLanding() {
                   size="lg"
                   onClick={() => handleBookTier('standard')}
                 >
-                  Book Standard - $99
+                  Book Free Standard Scan
                 </Button>
               </CardContent>
             </Card>
@@ -141,7 +141,7 @@ export default function DwellScanLanding() {
                     <Plane className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold mb-2">Home DNA Scan Aerial</h3>
-                  <p className="text-4xl font-black text-blue-600 mb-2">$249</p>
+                  <p className="text-4xl font-black text-blue-600 mb-2">Free</p>
                   <p className="text-sm text-muted-foreground">
                     {dwellScan.tiers.aerial.description}
                   </p>
@@ -153,7 +153,7 @@ export default function DwellScanLanding() {
                   </p>
                   <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
                     Comparable drone roof inspections cost $290-$350 alone. You're getting it
-                    bundled with a full interior walkthrough for just $249.
+                    bundled free with a full interior walkthrough.
                   </p>
                 </div>
 
@@ -188,7 +188,7 @@ export default function DwellScanLanding() {
                   onClick={() => handleBookTier('aerial')}
                 >
                   <Plane className="w-5 h-5 mr-2" />
-                  Book Aerial - $249
+                  Book Free Aerial Scan
                 </Button>
               </CardContent>
             </Card>
@@ -200,13 +200,11 @@ export default function DwellScanLanding() {
               <Gift className="w-8 h-8 text-green-600 shrink-0" />
               <div>
                 <h3 className="text-xl font-bold text-green-900 dark:text-green-100 mb-2">
-                  $49 Credit Included with Both Options
+                  $25 Booking Credit Included
                 </h3>
                 <p className="text-green-800 dark:text-green-200">
-                  Use your $49 credit toward any UpTend service within 90 days. That means
-                  Home DNA Scan Standard is effectively just <strong>$50</strong> when you book a
-                  follow-up service, and Aerial is effectively just $200 for a drone inspection
-                  worth $290+.
+                  Complete your free Home DNA Scan and get a $25 credit toward your next booking.
+                  Use it on any UpTend service within 90 days.
                 </p>
               </div>
             </div>
@@ -279,8 +277,8 @@ export default function DwellScanLanding() {
               <p className="text-sm text-muted-foreground">Satisfaction Rate</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-primary mb-2">$49</p>
-              <p className="text-sm text-muted-foreground">Credit Included</p>
+              <p className="text-4xl font-bold text-primary mb-2">$25</p>
+              <p className="text-sm text-muted-foreground">Booking Credit</p>
             </div>
           </div>
 
@@ -306,7 +304,7 @@ export default function DwellScanLanding() {
               variant="secondary"
               onClick={() => handleBookTier('standard')}
             >
-              Book Standard - $99
+              Book Free Standard Scan
             </Button>
             <Button
               size="lg"
@@ -314,11 +312,11 @@ export default function DwellScanLanding() {
               onClick={() => handleBookTier('aerial')}
             >
               <Plane className="w-5 h-5 mr-2" />
-              Book Aerial - $249
+              Book Free Aerial Scan
             </Button>
           </div>
           <p className="text-sm mt-6 opacity-75">
-             Same-day or next-day appointments •  $49 credit included •  No hidden fees
+             Same-day or next-day appointments • Completely free • $25 booking credit included
           </p>
         </div>
       </section>
@@ -336,11 +334,11 @@ export default function DwellScanLanding() {
 
           <h3>What is included in Home DNA Scan Standard?</h3>
           <p>
-            Home DNA Scan Standard ($99) includes a complete interior and exterior ground-level
-            walkthrough of your property. Our verified Pro will photograph and document every room,
-            assess major systems (HVAC, water heater, electrical panel, plumbing), check your
-            foundation and exterior for visible issues, and provide a personalized maintenance
-            report with priority rankings.
+            Home DNA Scan Standard is completely free and includes a complete interior and exterior
+            ground-level walkthrough of your property. Our verified Pro will photograph and document
+            every room, assess major systems (HVAC, water heater, electrical panel, plumbing), check
+            your foundation and exterior for visible issues, and provide a personalized maintenance
+            report with priority rankings. You also get a $25 credit toward your next booking.
           </p>
 
           <h3>What makes Home DNA Scan Aerial different?</h3>
@@ -352,11 +350,11 @@ export default function DwellScanLanding() {
             value when bundled with our interior walkthrough.
           </p>
 
-          <h3>Do I really get a $49 credit?</h3>
+          <h3>How does the $25 credit work?</h3>
           <p>
-            Yes! Every Home DNA Scan (Standard or Aerial) includes a $49 credit toward any UpTend
-            service booked within 90 days. This means Home DNA Scan Standard is essentially free when
-            you book a follow-up service like junk removal, home cleaning, or pressure washing.
+            Every Home DNA Scan (Standard or Aerial) is completely free and includes a $25 credit
+            toward your next booking. The credit applies to any UpTend service within 90 days --
+            junk removal, home cleaning, pressure washing, and more.
           </p>
 
           <h3>Who performs the inspection?</h3>

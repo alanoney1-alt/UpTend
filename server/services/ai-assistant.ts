@@ -175,7 +175,7 @@ export const UPTEND_KNOWLEDGE = {
       tiers: [
         {
           name: "Home DNA Scan Standard",
-          price: "$99",
+          price: "Free",
           description: "Full interior and exterior ground-level walkthrough with maintenance report",
           features: [
             "Full interior walkthrough (room-by-room photos and notes)",
@@ -188,7 +188,7 @@ export const UPTEND_KNOWLEDGE = {
         },
         {
           name: "Home DNA Scan Aerial",
-          price: "$249",
+          price: "Free",
           description: "Everything in Standard plus drone-powered roof, gutter, and exterior aerial scan",
           features: [
             "Everything in Standard PLUS:",
@@ -203,11 +203,11 @@ export const UPTEND_KNOWLEDGE = {
             "Full before/after aerial photo set, timestamped and GPS-tagged",
           ],
           droneRequired: true,
-          valueComparison: "Comparable drone roof inspections cost $290-$350 elsewhere. You're getting it bundled for $249.",
+          valueComparison: "Comparable drone roof inspections cost $290-$350 elsewhere. Yours is completely free.",
           recommended: true,
         },
       ],
-      creditPolicy: "$49 credit toward any job you book through UpTend on either the $99 or $249 scan. It's risk-free.",
+      creditPolicy: "The Home DNA Scan is completely free. You also get a $25 credit toward your next booking.",
       when: "When customer asks about home inspection or audit, present both tier options and explain that Aerial includes drone scan that normally costs $290+ elsewhere.",
     },
   },

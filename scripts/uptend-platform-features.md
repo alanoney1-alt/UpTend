@@ -204,7 +204,7 @@
 
 - **B2B Property Management Certification** — Qualify for premium property management contracts
 - **B2B HOA Certification** — Certification for HOA community service contracts
-- **AI Home Scan Certification** — Training to conduct Home DNA Scans and earn scan fees
+- **Home DNA Scan Certification** — Training to conduct Home DNA Scans and earn scan fees
 - **Parts and Materials Certification** — Qualification for jobs requiring specialized materials handling
 - **Emergency Response Certification** — Priority access to emergency and storm-damage jobs
 - **Government Contract Certification** — Davis-Bacon compliance training for government-funded projects
@@ -373,7 +373,7 @@ What makes UpTend fundamentally different from Thumbtack, Angi, HomeAdvisor, and
 | Moving Labor | $65/hr per mover |
 | Garage Cleanout | from $129 |
 | Light Demolition | from $199 |
-| Home DNA Scan | $99 standard / $249 premium |
+| Home DNA Scan | Free (includes $25 credit toward next booking) |
 
 ---
 

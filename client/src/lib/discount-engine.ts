@@ -2,7 +2,7 @@
  * Multi-Service Discount Engine
  *
  * Handles all discount calculations with proper stacking rules:
- * 1. Home DNA Scan $49 credit (applied BEFORE percentage discounts)
+ * 1. Home DNA Scan $25 credit (applied BEFORE percentage discounts)
  * 2. Multi-service cart discounts (3+ services: 10%, 5+ services: 15%)
  * 3. Property Manager volume pricing tiers
  * 4. First-time customer discount
@@ -60,7 +60,7 @@ export function calculateDiscounts(context: DiscountContext): DiscountBreakdown 
 
   let runningTotal = subtotal;
 
-  // STEP 1: Apply Home DNA Scan $49 credit (if available)
+  // STEP 1: Apply Home DNA Scan $25 credit (if available)
   // This is applied BEFORE percentage discounts
   if (context.hasDwellScanCredit && context.dwellScanCreditAmount > 0) {
     const creditAmount = Math.min(context.dwellScanCreditAmount, runningTotal);
@@ -409,8 +409,8 @@ export function getUpsellSuggestions(context: {
   if (!hasDwellScan && context.services.length >= 1) {
     suggestions.push({
       suggestion: 'Add Home DNA Scan',
-      savings: 49,
-      description: 'Get $49 credit back toward your next service (pays for itself!)',
+      savings: 25,
+      description: 'Free scan with $25 credit toward your next booking',
     });
   }
 

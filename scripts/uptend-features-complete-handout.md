@@ -134,7 +134,7 @@ alan@uptend.app | (407) 338-3342 | uptendapp.com
 **Certification Programs (6)**
 - B2B Property Management — qualify for PM contracts
 - B2B HOA Operations — qualify for HOA community contracts
-- AI Home Scan Specialist — conduct Home DNA Scans
+- Home DNA Scan Specialist — conduct Home DNA Scans
 - Parts and Materials Handler — complex repair jobs
 - Emergency Response — priority access to urgent jobs
 - Government Contract Ready — Davis-Bacon compliance

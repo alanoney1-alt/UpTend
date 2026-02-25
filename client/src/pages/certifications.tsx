@@ -29,9 +29,9 @@ const certifications = [
   {
     id: "ai_home_scan",
     icon: Cpu,
-    name: "AI Home Scan Specialist",
+    name: "Home DNA Scan Specialist",
     description:
-      "Trains Pros to conduct AI-powered home health audits using the UpTend Home DNA Scan system. Covers interior walkthrough methodology, drone-assisted roof scans, and report generation.",
+      "Trains Pros to conduct comprehensive home health scans using the UpTend Home DNA Scan system. Covers interior walkthrough methodology, drone-assisted roof scans, and report generation.",
     status: "available" as const,
   },
   {

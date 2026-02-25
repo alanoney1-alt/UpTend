@@ -284,8 +284,8 @@ function PricingSection() {
                 <h3 className="text-xl font-bold text-gray-900 mb-1">Standard Home DNA Scan</h3>
                 <p className="text-gray-500 text-sm mb-6">Interior systems and appliances</p>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-5xl font-black text-gray-900">$99</span>
-                  <span className="text-gray-400 text-sm">flat rate</span>
+                  <span className="text-5xl font-black text-gray-900">Free</span>
+                  <span className="text-gray-400 text-sm"></span>
                 </div>
                 <Link href="/book?service=home_consultation&tier=standard">
                   <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-6 rounded-xl text-base">
@@ -301,7 +301,7 @@ function PricingSection() {
                   "Condition scoring for each system",
                   "AI-generated maintenance timeline",
                   "Digital report within 24 hours",
-                  "$49 cashback on your next UpTend booking",
+                  "$25 credit toward your next booking",
                 ].map((f) => (
                   <div key={f} className="flex items-start gap-3">
                     <CheckCircle className="w-4 h-4 text-[#F47C20] mt-0.5 flex-shrink-0" />
@@ -323,8 +323,8 @@ function PricingSection() {
                 <h3 className="text-xl font-bold text-gray-900 mb-1">Premium Home DNA Scan</h3>
                 <p className="text-gray-500 text-sm mb-6">Interior + exterior + aerial assessment</p>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-5xl font-black text-gray-900">$249</span>
-                  <span className="text-gray-400 text-sm">flat rate</span>
+                  <span className="text-5xl font-black text-gray-900">Free</span>
+                  <span className="text-gray-400 text-sm"></span>
                 </div>
                 <Link href="/book?service=home_consultation&tier=aerial">
                   <Button className="w-full bg-[#F47C20] hover:bg-[#e06910] text-white font-bold py-6 rounded-xl text-base">
@@ -340,7 +340,7 @@ function PricingSection() {
                   "Thermal imaging for hidden issues",
                   "Aerial property photography",
                   "Comprehensive risk analysis report",
-                  "$49 cashback on your next UpTend booking",
+                  "$25 credit toward your next booking",
                 ].map((f, i) => (
                   <div key={f} className="flex items-start gap-3">
                     <CheckCircle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${i === 0 ? "text-gray-400" : "text-[#F47C20]"}`} />
@@ -353,7 +353,7 @@ function PricingSection() {
         </div>
 
         <p className="text-center text-gray-400 text-sm mt-8">
-          Both tiers include $49 cashback toward your next UpTend service booking. No expiration.
+          Both tiers are completely free and include a $25 credit toward your next booking.
         </p>
       </div>
     </section>
@@ -495,8 +495,8 @@ function FAQSection() {
       a: "You receive a detailed digital report with condition scores for every system, a prioritized maintenance timeline, and specific recommendations. Your Home DNA profile then updates over time as you book services, report issues, or schedule follow-up scans. Mr. George, our AI assistant, uses your Home DNA data to provide personalized maintenance reminders and recommendations.",
     },
     {
-      q: "How does the $49 cashback work?",
-      a: "After completing any Home DNA Scan, you receive a $49 credit that applies automatically to your next UpTend service booking. There is no expiration date. The credit covers any service we offer, from handyman work to pressure washing.",
+      q: "How does the $25 credit work?",
+      a: "After completing your free Home DNA Scan, you receive a $25 credit that applies automatically to your next booking. There is no expiration date. The credit covers any service we offer, from handyman work to pressure washing.",
     },
     {
       q: "Can I do a scan myself?",
