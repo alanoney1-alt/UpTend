@@ -9,6 +9,11 @@ import { storage } from "../storage";
 import { pool } from "../db";
 
 export function registerPublicRoutes(app: Express) {
+  // GET /api/health - Simple health check
+  app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
   // GET /api/pros/browse - Browse available pros (public)
   app.get("/api/pros/browse", async (req, res) => {
     try {

@@ -79,8 +79,6 @@ const HomeHealthAudit = lazy(() => import("@/pages/home-health-audit"));
 const JunkRemoval = lazy(() => import("@/pages/junk-removal"));
 const ReferralLanding = lazy(() => import("@/pages/referral-landing"));
 const Marketplace = lazy(() => import("@/pages/marketplace"));
-const BookFreshCut = lazy(() => import("@/pages/book-freshcut"));
-const BookDeepFiber = lazy(() => import("@/pages/book-deepfiber"));
 const Properties = lazy(() => import("@/pages/properties"));
 const PropertyDashboard = lazy(() => import("@/pages/property-dashboard"));
 const AIFeaturesHub = lazy(() => import("@/pages/ai/index"));
@@ -299,8 +297,6 @@ function Router() {
       <Route path="/services/junk-removal" component={JunkRemoval} />
       <Route path="/services/material-recovery">{() => { window.location.replace("/services/junk-removal"); return null; }}</Route>
       <Route path="/services/junk" component={JunkRemoval} />
-      <Route path="/book/freshcut" component={BookFreshCut} />
-      <Route path="/book/deepfiber" component={BookDeepFiber} />
       <Route path="/cost-guides" component={CostGuidesHub} />
       <Route path="/cost-guides/:slug" component={CostGuide} />
       <Route path="/services/junk-removal-lake-nona" component={JunkRemovalLakeNona} />

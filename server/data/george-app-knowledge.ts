@@ -185,11 +185,11 @@ export const PRO_FLOWS = {
       "We bring you customers — no more marketing, Craigslist ads, or lead fees",
       "Mr. George handles scheduling, customer communication, and follow-ups",
       "Get paid fast — weekly payouts every Thursday",
-      "Platform fee is 20-25% (vs 30-40% for Thumbtack leads that may not even convert)",
+      "Flat 15% platform fee — you keep 85% of every job (customers pay a separate 5% service fee)",
       "Build your reputation — ratings follow you and grow your business",
       "No monthly fees, no lead fees — only pay when you actually earn",
       "Certifications unlock higher-paying B2B and government jobs",
-      "LLC pros pay 20% (vs 25% non-LLC) — Mr. George explains how to get one",
+      "Simple, transparent pricing — one flat rate for everyone, no LLC tricks needed",
     ],
   },
 
@@ -219,7 +219,7 @@ export const PRO_FLOWS = {
   certifications: {
     name: "Certification Academy",
     whyItMatters: [
-      "Each cert lowers your platform fee (25% → 23% → 21% → 20% for non-LLC)",
+      "Flat 15% platform fee — pros keep 85%, customers pay a 5% service fee",
       "Unlocks higher-paying job types (B2B, government, emergency)",
       "B2B jobs are worth 3x more than consumer jobs",
       "Government contracts are the highest payout tier",
@@ -246,9 +246,9 @@ export const PRO_FLOWS = {
       "Track all earnings in your Pro Dashboard",
     ],
     feeStructure: {
-      nonLLC: "25% → 23% (2+ certs) → 21% (4+ certs) → 20% (6+ certs)",
-      llc: "20% → 19% (2+ certs) → 18% (4+ certs)",
-      message: "Every certification lowers your fee. An LLC saves you 5% from day one.",
+      platform: "Flat 15% on every job — pros keep 85%",
+      customerFee: "Customers pay a 5% service fee on top of the job price",
+      message: "Simple, transparent pricing. One flat rate for everyone.",
     },
     topEarnerTips: [
       "Get 3+ certifications — unlocks B2B jobs worth 3x more",
@@ -403,7 +403,6 @@ export const SITE_PAGES = {
   "/ai/documents": "Upload a document → OCR extraction → organized info",
   "/marketplace": "Browse and search pros by service, rating, location",
   "/about": "Company story, mission, team",
-  "/services": "All services with pricing, trust signals, and booking",
   
   // Pro
   "/become-pro": "Pro signup landing page — earnings calculator, benefits",

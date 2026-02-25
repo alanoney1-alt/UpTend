@@ -6,13 +6,13 @@
  *
  * Example:
  * - Job price: $300
- * - Pro payout rate: 80% = $240
- * - Platform fee: 20% = $60
+ * - Pro payout rate: 85% = $255 (flat 15% platform fee)
+ * - Customer pays: $300 + 5% service fee = $315
  *
  * With $25 referral credit:
- * - Customer pays: $275 ($300 - $25)
- * - Pro gets: $240 (UNCHANGED - still 80% of original $300)
- * - Platform gets: $35 ($275 - $240, which is $60 - $25)
+ * - Customer pays: $290 ($315 - $25)
+ * - Pro gets: $255 (UNCHANGED - always 85% of job price)
+ * - Platform gets: $35 ($290 - $255)
  */
 
 export interface PricingCalculation {

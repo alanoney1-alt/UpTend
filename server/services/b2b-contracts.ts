@@ -18,7 +18,7 @@ const AGREEMENT_TEMPLATES: Record<string, any> = {
     scope: "Specific project deliverables as defined",
     payment_terms: "50% upfront, 50% on completion",
     insurance_requirements: "General liability $1M",
-    termination_clause: "Project cancellation fee of 25% of remaining value",
+    termination_clause: "Project cancellation fee of 15% of remaining value",
   },
   sla: {
     sla_targets: {
