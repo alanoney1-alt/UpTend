@@ -103,7 +103,7 @@ export function registerCalendarRoutes(app: Express): void {
       }
 
       const user = req.user as any;
-      const userId = user?.id;
+      const userId = user?.userId || user?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not found" });
       }

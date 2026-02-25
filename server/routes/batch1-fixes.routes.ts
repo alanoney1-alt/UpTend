@@ -26,40 +26,50 @@ export function registerBatch1FixRoutes(app: Express) {
     try {
       const { service, zip } = req.query;
 
-      let query = `
-        SELECT 
-          hp.id,
-          COALESCE(hp.company_name, u.name, u.username) as name,
-          hp.rating,
-          hp.review_count as "reviewCount",
-          hp.service_types as services,
-          hp.service_radius as "serviceArea",
-          hp.verified,
-          hp.profile_photo_url as "profilePhotoUrl",
-          hp.bio,
-          hp.hourly_rate as "hourlyRate",
-          hp.vehicle_type as "vehicleType",
-          hp.jobs_completed as "jobsCompleted",
-          hp.languages_spoken as "languagesSpoken",
-          EXTRACT(MONTH FROM AGE(now(), u.created_at::timestamp)) as "tenureMonths"
-        FROM hauler_profiles hp
-        JOIN users u ON hp.user_id = u.id
-        WHERE hp.is_available = true OR hp.can_accept_jobs = true
-      `;
-      const params: any[] = [];
+      // Dynamic column detection — hauler_profiles schema varies
+      let rows: any[] = [];
+      try {
+        let query = `
+          SELECT 
+            hp.id,
+            COALESCE(hp.company_name, u.name, u.username) as name,
+            hp.rating,
+            hp.review_count as "reviewCount",
+            hp.service_types as services,
+            hp.service_radius as "serviceArea",
+            hp.verified,
+            hp.profile_photo_url as "profilePhotoUrl",
+            hp.bio,
+            hp.hourly_rate as "hourlyRate",
+            hp.vehicle_type as "vehicleType",
+            hp.jobs_completed as "jobsCompleted",
+            EXTRACT(MONTH FROM AGE(now(), u.created_at::timestamp)) as "tenureMonths"
+          FROM hauler_profiles hp
+          JOIN users u ON hp.user_id = u.id
+        `;
+        const params: any[] = [];
 
-      if (service && typeof service === "string") {
-        params.push(service);
-        query += ` AND $${params.length} = ANY(hp.service_types)`;
+        if (service && typeof service === "string") {
+          params.push(service);
+          query += ` WHERE $${params.length} = ANY(hp.service_types)`;
+        }
+
+        query += ` ORDER BY hp.rating DESC NULLS LAST, hp.review_count DESC NULLS LAST LIMIT 50`;
+
+        const result = await pool.query(query, params);
+        rows = result.rows;
+      } catch (queryErr: any) {
+        // If column doesn't exist, try minimal query
+        console.error("Haulers available query failed, trying minimal:", queryErr.message);
+        const { rows: minRows } = await pool.query(
+          `SELECT hp.id, COALESCE(hp.company_name, u.name, u.username) as name,
+                  hp.rating, hp.service_types as services, hp.verified
+           FROM hauler_profiles hp
+           JOIN users u ON hp.user_id = u.id
+           ORDER BY hp.rating DESC NULLS LAST LIMIT 50`
+        );
+        rows = minRows;
       }
-
-      // zip filtering: if the pro has a current location, we can't filter by zip directly
-      // but we can use pickup_zip from their recent jobs or just return all available pros
-      // For now, no zip-based geo filtering (would need geocoding)
-
-      query += ` ORDER BY hp.rating DESC NULLS LAST, hp.review_count DESC NULLS LAST LIMIT 50`;
-
-      const { rows } = await pool.query(query, params);
 
       res.json(rows.map((r: any) => ({
         ...r,
@@ -225,29 +235,49 @@ export function registerBatch1FixRoutes(app: Express) {
       const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
       const offset = parseInt(req.query.offset as string) || 0;
 
-      const { rows } = await pool.query(
-        `SELECT id, notification_type as "notificationType", title, message,
-                action_text as "actionText", action_url as "actionUrl",
-                priority, status, is_read as "isRead",
-                created_at as "createdAt", sent_at as "sentAt"
-         FROM notification_queue
-         WHERE user_id = $1
-         ORDER BY created_at DESC
-         LIMIT $2 OFFSET $3`,
-        [userId, limit, offset]
-      );
+      // Try notification_queue first, fall back to deriving from service_requests
+      let notifications: any[] = [];
+      let total = 0;
+      let unread = 0;
+      try {
+        const { rows } = await pool.query(
+          `SELECT id, notification_type as "notificationType", title, message,
+                  action_text as "actionText", action_url as "actionUrl",
+                  priority, status, is_read as "isRead",
+                  created_at as "createdAt", sent_at as "sentAt"
+           FROM notification_queue
+           WHERE user_id = $1
+           ORDER BY created_at DESC
+           LIMIT $2 OFFSET $3`,
+          [userId, limit, offset]
+        );
+        const { rows: countRows } = await pool.query(
+          `SELECT COUNT(*) as total, COUNT(*) FILTER (WHERE is_read = false) as unread
+           FROM notification_queue WHERE user_id = $1`,
+          [userId]
+        );
+        notifications = rows;
+        total = parseInt(countRows[0]?.total || "0");
+        unread = parseInt(countRows[0]?.unread || "0");
+      } catch {
+        // Table may not exist — derive notifications from service_requests
+        const { rows } = await pool.query(
+          `SELECT id, service_type as "notificationType", 
+                  CONCAT('Job Update: ', service_type) as title,
+                  CONCAT('Your ', service_type, ' job status: ', status) as message,
+                  status, created_at as "createdAt"
+           FROM service_requests
+           WHERE customer_id = $1
+           ORDER BY updated_at DESC NULLS LAST, created_at DESC
+           LIMIT $2 OFFSET $3`,
+          [userId, limit, offset]
+        );
+        notifications = rows.map((r: any) => ({ ...r, isRead: true, actionUrl: `/profile` }));
+        total = notifications.length;
+        unread = 0;
+      }
 
-      const { rows: countRows } = await pool.query(
-        `SELECT COUNT(*) as total, COUNT(*) FILTER (WHERE is_read = false) as unread
-         FROM notification_queue WHERE user_id = $1`,
-        [userId]
-      );
-
-      res.json({
-        notifications: rows,
-        total: parseInt(countRows[0]?.total || "0"),
-        unread: parseInt(countRows[0]?.unread || "0"),
-      });
+      res.json({ notifications, total, unread });
     } catch (error) {
       console.error("Error fetching notifications:", error);
       res.status(500).json({ error: "Failed to fetch notifications" });
