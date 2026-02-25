@@ -140,42 +140,50 @@ export async function redeemReward(rewardId: string) {
 const TENURE_POINTS_PER_MONTH = 50;
 
 export async function calculateTenureBonus(userId: string): Promise<{ months: number; bonusPoints: number; memberSince: string | null }> {
-  // Try customers (users table) first, then hauler_profiles
-  let createdAt: string | null = null;
+  // Tenure = number of DISTINCT months where the customer actually used a service,
+  // NOT just how long their account has existed. A customer who signed up 12 months ago
+  // but only booked 3 times gets 3 months of tenure, not 12.
 
+  let memberSince: string | null = null;
+
+  // Get account creation date for "Member Since" display
   const { rows: userRows } = await pool.query(
     `SELECT created_at FROM users WHERE id = $1`,
     [userId]
   );
   if (userRows.length && userRows[0].created_at) {
-    createdAt = userRows[0].created_at;
+    memberSince = userRows[0].created_at;
   }
-
-  if (!createdAt) {
+  if (!memberSince) {
     const { rows: haulerRows } = await pool.query(
       `SELECT created_at FROM hauler_profiles WHERE user_id = $1`,
       [userId]
     );
     if (haulerRows.length && haulerRows[0].created_at) {
-      createdAt = haulerRows[0].created_at;
+      memberSince = haulerRows[0].created_at;
     }
   }
 
-  if (!createdAt) {
-    return { months: 0, bonusPoints: 0, memberSince: null };
+  // Count distinct months where the user had a completed or active service request
+  let activeMonths = 0;
+  try {
+    const { rows } = await pool.query(
+      `SELECT COUNT(DISTINCT TO_CHAR(created_at, 'YYYY-MM')) as active_months
+       FROM service_requests
+       WHERE (customer_id = $1 OR assigned_hauler_id = $1)
+         AND status IN ('completed', 'in_progress', 'started', 'accepted', 'matching')`,
+      [userId]
+    );
+    activeMonths = parseInt(rows[0]?.active_months || "0");
+  } catch {
+    // If service_requests query fails, fall back to 0
+    activeMonths = 0;
   }
 
-  const signupDate = new Date(createdAt);
-  const now = new Date();
-  const months = Math.max(0,
-    (now.getFullYear() - signupDate.getFullYear()) * 12 +
-    (now.getMonth() - signupDate.getMonth())
-  );
-
   return {
-    months,
-    bonusPoints: months * TENURE_POINTS_PER_MONTH,
-    memberSince: createdAt,
+    months: activeMonths,
+    bonusPoints: activeMonths * TENURE_POINTS_PER_MONTH,
+    memberSince,
   };
 }
 
