@@ -493,45 +493,41 @@ export function UpTendGuide() {
         reader.readAsDataURL(file);
       });
 
-      const analyzeRes = await fetch("/api/ai/guide/photo-analyze", {
+      // Use Snap & Book endpoint for instant AI vision quote
+      const base64 = dataUrl.split(",")[1];
+      const snapRes = await fetch("/api/snap-quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ photoUrl: dataUrl, sessionId: getSessionId(), serviceType: "junk_removal" }),
+        body: JSON.stringify({ imageBase64: base64 }),
       });
-      const analyzeData = await analyzeRes.json();
+      const snapData = await snapRes.json();
 
-      const chatRes = await fetch("/api/ai/guide/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          message: "I uploaded a photo for a quote.",
-          sessionId: getSessionId(),
-          photoAnalysis: analyzeData.analysis || {},
-          context: {
-            page: pageContext.page,
-            userRole: getDerivedUserRole(pageContext.page, pageContext.userRole),
-            userName: pageContext.userName,
-          },
-        }),
-      });
-      const chatData = await chatRes.json();
+      let replyContent: string;
+      let snapQuoteCard: any = undefined;
+      if (snapData.success) {
+        const a = snapData.analysis;
+        const q = snapData.quote;
+        snapQuoteCard = snapData;
+        if (snapData.confidence === "high") {
+          replyContent = `I see **${a.serviceLabel}** -- ${a.problemDescription}. Your guaranteed price is **${q.priceDisplay}**. ${q.guarantee}.`;
+        } else if (snapData.confidence === "medium") {
+          replyContent = `Looks like **${a.serviceLabel}** -- ${a.problemDescription}. Estimated price: **${q.priceDisplay}**. Want to refine this or book now?`;
+        } else {
+          replyContent = snapData.fallbackMessage || "I need a bit more info. Can you describe what you need help with?";
+        }
+      } else {
+        replyContent = "I had trouble analyzing that photo. Could you try again or describe the issue?";
+      }
 
       const msg: Message = {
         id: `ai-photo-${Date.now()}`,
         role: "assistant",
-        content: typeof chatData.reply === "string" ? chatData.reply : "I received your photo! Let me take a look.",
-        quickActions: chatData.quickActions,
+        content: replyContent,
+        quoteCard: snapQuoteCard,
       };
 
-      if (chatData.actions) {
-        for (const action of chatData.actions) {
-          if (action.type === "property_scan") msg.propertyData = action.data;
-          if (action.type === "lock_quote") msg.quoteCard = action.data;
-          if (action.type === "bundle") msg.bundleData = action.data;
-          if (action.type === "breakdown") msg.breakdown = action.data;
-        }
+      if (false) { // keep block for type-checking only
       }
 
       setMessages(prev => [...prev, msg]);

@@ -7527,3 +7527,22 @@ export const proCodeRedemptionsRelations = relations(proCodeRedemptions, ({ one 
 export type ProCodeRedemption = typeof proCodeRedemptions.$inferSelect;
 
 export type NeighborhoodInsight = typeof neighborhoodInsights.$inferSelect;
+
+// ==========================================
+// Snap Quotes (Snap & Book)
+// ==========================================
+export const snapQuotes = pgTable("snap_quotes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id"),
+  imageUrl: text("image_url"),
+  serviceType: text("service_type"),
+  confidence: text("confidence"),
+  analysis: text("analysis"),
+  quotedPrice: real("quoted_price"),
+  adjustments: text("adjustments"),
+  status: text("status").default("quoted"),
+  bookedServiceRequestId: varchar("booked_service_request_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type SnapQuote = typeof snapQuotes.$inferSelect;

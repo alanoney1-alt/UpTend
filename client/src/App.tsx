@@ -141,6 +141,7 @@ const HomeCleaningOrlando = lazy(() => import("@/pages/services/home-cleaning-or
 const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orlando"));
 
 // Blog
+const SnapQuotePage = lazy(() => import("@/pages/snap-quote"));
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
 const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
 const BlogPost = lazy(() => import("@/pages/blog/post"));
@@ -305,6 +306,7 @@ function Router() {
       <Route path="/insurance" component={Insurance} />
       <Route path="/ai" component={AIFeaturesHub} />
       <Route path="/ai/photo-quote" component={PhotoToQuote} />
+      <Route path="/snap-quote" component={SnapQuotePage} />
       <Route path="/ai/documents" component={DocumentScanner} />
       <Route path="/home-dna-scan" component={HomeScan} />
       <Route path="/ai/home-scan" component={HomeScan} />

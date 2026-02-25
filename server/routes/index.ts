@@ -82,6 +82,7 @@ import { registerAgenticRoutes } from "./ai/agentic.routes";
 import { registerChatbotRoutes } from "./ai/chatbot.routes";
 import { registerSmsBotRoutes } from "./ai/sms-bot.routes";
 import { registerAiCapabilityRoutes } from "./ai/index";
+import { registerSnapQuoteRoutes } from "./ai/snap-quote.routes";
 
 // Review routes
 import { registerReviewRoutes } from "./reviews/reviews.routes";
@@ -348,6 +349,7 @@ export async function registerRoutes(
   registerChatbotRoutes(app);
   registerSmsBotRoutes(app);
   registerAiCapabilityRoutes(app); // New AI capabilities
+  registerSnapQuoteRoutes(app); // Snap & Book
 
   // Register Review routes
   registerReviewRoutes(app);
