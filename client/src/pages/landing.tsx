@@ -67,7 +67,6 @@ function HeroSection() {
       <div className="max-w-5xl mx-auto px-4 relative z-10 text-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
           {t("hero.hero_headline_1")}<br />
-          {t("hero.hero_headline_3", "Without the headache.")}<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F47C20] to-orange-300">
             {t("hero.hero_headline_2")}
           </span>

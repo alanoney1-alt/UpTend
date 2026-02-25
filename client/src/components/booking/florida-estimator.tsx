@@ -506,10 +506,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming }: Flor
           </div>
         )}
         <div className="text-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3 leading-tight" data-testid="text-explainer-headline">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight" data-testid="text-explainer-headline">
             {t("estimator.explainer_headline")}
           </h2>
-          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed" data-testid="text-explainer-details">
+          <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed" data-testid="text-explainer-details">
             {t("estimator.explainer_details")}
           </p>
         </div>
