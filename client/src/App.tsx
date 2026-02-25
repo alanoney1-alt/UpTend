@@ -16,8 +16,13 @@ import { ErrorBoundary } from "@/components/error-boundary";
 
 // Eagerly load critical path pages
 import Landing from "@/pages/landing";
+import BusinessLanding from "@/pages/business-landing";
 import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
+
+// Detect if we're on the business domain
+const isBusinessDomain = typeof window !== 'undefined' && 
+  (window.location.hostname === 'uptendapp.business' || window.location.hostname === 'www.uptendapp.business');
 
 // Lazy load everything else
 const Booking = lazy(() => import("@/pages/booking"));
@@ -184,7 +189,7 @@ function Router() {
     <ScrollToTop />
     <Suspense fallback={<PageLoader />}>
     <Switch>
-      <Route path="/" component={Landing} />
+      <Route path="/" component={isBusinessDomain ? BusinessLanding : Landing} />
       <Route path="/smart-book" component={SmartBooking} />
       <Route path="/book" component={Booking} />
       <Route path="/booking-success" component={BookingSuccess} />
