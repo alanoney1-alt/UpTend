@@ -25,6 +25,7 @@ const BookingSuccess = lazy(() => import("@/pages/booking-success"));
 const Tracking = lazy(() => import("@/pages/tracking"));
 const TrackingLookup = lazy(() => import("@/pages/tracking-lookup"));
 const HaulerDashboard = lazy(() => import("@/pages/hauler-dashboard"));
+const ProBackgroundCheck = lazy(() => import("@/pages/pro-background-check"));
 const Haulers = lazy(() => import("@/pages/haulers"));
 const Drive = lazy(() => import("@/pages/drive"));
 const BusinessDashboard = lazy(() => import("@/pages/business-dashboard"));
@@ -197,6 +198,7 @@ function Router() {
       <Route path="/pro/dashboard" component={HaulerDashboard} />
       <Route path="/pro/earnings" component={EarningsPage} />
       <Route path="/pro/rates" component={HaulerDashboard} />
+      <Route path="/pro/background-check" component={ProBackgroundCheck} />
       <Route path="/career-dashboard" component={CareerDashboard} />
       {/* Legacy hauler routes for backward compatibility */}
       <Route path="/hauler/dashboard" component={HaulerDashboard} />

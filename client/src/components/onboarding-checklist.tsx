@@ -25,9 +25,9 @@ export function OnboardingChecklist({ user }: { user: OnboardingUser }) {
     {
       id: "checkr",
       label: "Background Check",
-      subtext: user.isVerified ? "Verified" : "We'll run this before your first job",
+      subtext: user.isVerified ? "Verified" : "Required before your first job",
       status: user.isVerified ? "done" : "action" as const,
-      link: "/settings",
+      link: "/pro/background-check",
     },
     {
       id: "academy",

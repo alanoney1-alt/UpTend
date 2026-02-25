@@ -20,6 +20,7 @@ import { registerProAcademyRoutes, registerAcademyRoutes } from "./hauler/academ
 import { registerAcademyCertificationRoutes, seedCertificationPrograms } from "./academy/index";
 import { registerCertificationGatingRoutes } from "./hauler/certification-gating.routes";
 import { registerFeeStatusRoutes } from "./hauler/fee-status.routes";
+import { registerBackgroundCheckRoutes } from "./hauler/background-check.routes";
 import { registerPayoutRoutes } from "./hauler/payouts.routes";
 import { registerProDashboardRoutes } from "./hauler/dashboard.routes";
 import { registerEarningsGoalRoutes } from "./hauler/earnings-goal.routes";
@@ -309,6 +310,7 @@ export async function registerRoutes(
   registerAcademyCertificationRoutes(app);
   registerCertificationGatingRoutes(app);
   registerFeeStatusRoutes(app);
+  registerBackgroundCheckRoutes(app);
   registerPayoutRoutes(app);
   registerProDashboardRoutes(app);
   registerEarningsGoalRoutes(app);
