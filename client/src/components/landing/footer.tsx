@@ -50,7 +50,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/services/material-recovery" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-junk-removal">
+                <Link href="/services/junk-removal" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-junk-removal">
                   {t("footer.footer_junk_removal")}
                 </Link>
               </li>

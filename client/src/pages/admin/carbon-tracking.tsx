@@ -250,7 +250,7 @@ export default function CarbonTrackingDashboard() {
             <div className="flex items-center gap-3">
               <Recycle className="h-10 w-10 text-purple-600" />
               <div>
-                <p className="text-sm text-muted-foreground">Material Recovery</p>
+                <p className="text-sm text-muted-foreground">Junk Removal</p>
                 <p className="text-2xl font-bold">
                   {((overview.totalRecycledLbs + overview.totalDonatedLbs) / 1000).toFixed(1)}
                 </p>

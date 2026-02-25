@@ -18,7 +18,7 @@ const impactStats = [
 
 const pillars = [
   {
-    title: "Verified Material Recovery",
+    title: "Responsible Junk Removal",
     icon: Recycle,
     description:
       "Every item removed from your property is tracked through our circular economy system. We sort for donation, recycling, and responsible disposal — then prove it with a verified Impact Report.",

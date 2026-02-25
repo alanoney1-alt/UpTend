@@ -66,7 +66,7 @@ export default function ProSustainabilityCert() {
         </Badge>
         <h1 className="text-2xl font-black text-center mb-2">Certification Complete</h1>
         <p className="text-muted-foreground text-center mb-8">
-          You now have access to Material Recovery jobs and can earn Sustainability Points toward your Enterprise-Ready Badge.
+          You now have access to junk removal jobs and can earn Sustainability Points toward your Enterprise-Ready Badge.
         </p>
 
         <Card className="w-full mb-6">
@@ -103,7 +103,7 @@ export default function ProSustainabilityCert() {
 
         <Link href="/pro/dashboard">
           <Button className="w-full" data-testid="button-unlock-jobs">
-            Unlock Material Recovery Jobs
+            Unlock Junk Removal Jobs
           </Button>
         </Link>
       </div>
@@ -132,7 +132,7 @@ export default function ProSustainabilityCert() {
           Sustainability Certification
         </h1>
         <p className="text-muted-foreground text-sm">
-          Unlock high-value Enterprise & Material Recovery jobs.
+          Unlock high-value Enterprise & junk removal jobs.
         </p>
       </div>
 

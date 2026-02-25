@@ -295,7 +295,8 @@ function Router() {
       <Route path="/dwellscan" component={HomeAudit} />{/* Legacy redirect */}
       <Route path="/home-health-audit" component={HomeHealthAudit} />
       <Route path="/audit" component={HomeHealthAudit} />
-      <Route path="/services/material-recovery" component={JunkRemoval} />
+      <Route path="/services/junk-removal" component={JunkRemoval} />
+      <Route path="/services/material-recovery">{() => { window.location.replace("/services/junk-removal"); return null; }}</Route>
       <Route path="/services/junk" component={JunkRemoval} />
       <Route path="/book/freshcut" component={BookFreshCut} />
       <Route path="/book/deepfiber" component={BookDeepFiber} />

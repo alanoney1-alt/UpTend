@@ -33,7 +33,7 @@ const services = [
     name: "Junk Removal",
     jumpToLabel: "Junk Removal",
     icon: Recycle,
-    tagline: "Space Rejuvenation. Verified Material Recovery.",
+    tagline: "Junk removal done responsibly. 92% diverted from landfills.",
     description: "Your unwanted items are resources. We recover your space, protect your property, and verify the environmental impact of every item through our circular economy system.",
     price: "From $99",
     includes: [
@@ -44,7 +44,7 @@ const services = [
       "Verified Impact Report",
       "Circular economy sorting",
     ],
-    link: "/services/material-recovery",
+    link: "/services/junk-removal",
     esgImpact: "Avg 600 lbs CO2 saved per job through recycling & donation",
   },
   // 4. Garage Cleanout

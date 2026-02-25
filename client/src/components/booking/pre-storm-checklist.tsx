@@ -18,7 +18,7 @@ interface PreStormChecklistProps {
 const checklistItems = [
   { service: "Home DNA Scan", task: "360° Home DNA Scan & Asset Log", status: "Missing" as const, priority: "High" as const },
   { service: "Gutter Care", task: "Clear debris & downspout flow test", status: "Unverified" as const, priority: "High" as const },
-  { service: "Material Recovery", task: "Remove potential wind-borne hazards", status: "Unverified" as const, priority: "Medium" as const },
+  { service: "Junk Removal", task: "Remove potential wind-borne hazards", status: "Unverified" as const, priority: "Medium" as const },
   { service: "Pressure Wash", task: "Seal check & surface heat reflection", status: "Unverified" as const, priority: "Low" as const },
   { service: "Moving Labor", task: "Furniture anchors & sandbag staging", status: "Planned" as const, priority: "Emergency Only" as const },
 ];

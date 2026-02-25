@@ -80,7 +80,7 @@ const serviceData: Record<string, ServiceData> = {
   "junk-removal": {
     name: "Junk Removal",
     serviceType: "junk_removal",
-    tagline: "Space Rejuvenation. Verified Material Recovery.",
+    tagline: "Junk removal done responsibly. 92% diverted from landfills.",
     icon: Recycle,
     heroGradient: "from-green-600 to-emerald-500",
     whatWeDo: [

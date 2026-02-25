@@ -58,7 +58,7 @@ interface HomeHealthAuditResult {
 }
 
 const SERVICE_LABELS: Record<string, string> = {
-  material_recovery: "Junk Removal / Material Recovery",
+  material_recovery: "Junk Removal",
   pressure_washing: "Pressure Washing",
   gutter_cleaning: "Gutter Cleaning",
 };
