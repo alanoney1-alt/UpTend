@@ -67,14 +67,13 @@ function HeroSection() {
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link href="/book?service=home_consultation">
-            <Button
-              size="lg"
-              className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-10 py-7 rounded-xl shadow-lg shadow-[#F47C20]/20 w-full sm:w-auto"
-            >
-              Scan Your Home <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
+          <Button
+            size="lg"
+            onClick={openGeorgeWithScan}
+            className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-10 py-7 rounded-xl shadow-lg shadow-[#F47C20]/20 w-full sm:w-auto"
+          >
+            Start Your Home Scan <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
           <a href="#how-it-works">
             <Button
               size="lg"
@@ -287,15 +286,13 @@ function PricingSection() {
                   <span className="text-5xl font-black text-gray-900">Free</span>
                   <span className="text-gray-400 text-sm"></span>
                 </div>
-                <Link href="/book?service=home_consultation&tier=standard">
-                  <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-6 rounded-xl text-base">
-                    Book Standard Scan
-                  </Button>
-                </Link>
+                <Button onClick={openGeorgeWithScan} className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-6 rounded-xl text-base">
+                  Start Free Scan
+                </Button>
               </div>
               <div className="border-t border-gray-100 p-8 pt-6 space-y-3">
                 {[
-                  "Certified inspector walkthrough",
+                  "George-guided room-by-room walkthrough",
                   "Every interior system documented",
                   "Appliance identification (make, model, age)",
                   "Condition scoring for each system",
@@ -326,21 +323,19 @@ function PricingSection() {
                   <span className="text-5xl font-black text-gray-900">Free</span>
                   <span className="text-gray-400 text-sm"></span>
                 </div>
-                <Link href="/book?service=home_consultation&tier=aerial">
-                  <Button className="w-full bg-[#F47C20] hover:bg-[#e06910] text-white font-bold py-6 rounded-xl text-base">
-                    Book Premium Scan
-                  </Button>
-                </Link>
+                <Button onClick={openGeorgeWithScan} className="w-full bg-[#F47C20] hover:bg-[#e06910] text-white font-bold py-6 rounded-xl text-base">
+                  Start Premium Scan
+                </Button>
               </div>
               <div className="border-t border-gray-100 p-8 pt-6 space-y-3">
                 {[
                   "Everything in Standard, plus:",
-                  "Full exterior and property perimeter scan",
-                  "Drone-powered roof and gutter assessment",
-                  "Thermal imaging for hidden issues",
-                  "Aerial property photography",
+                  "Full exterior and yard walkthrough",
+                  "Roof and gutter photo assessment",
+                  "Utility and HVAC system documentation",
+                  "Foundation and drainage evaluation",
                   "Comprehensive risk analysis report",
-                  "$25 credit toward your next booking",
+                  "$25 credit toward your first booking",
                 ].map((f, i) => (
                   <div key={f} className="flex items-start gap-3">
                     <CheckCircle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${i === 0 ? "text-gray-400" : "text-[#F47C20]"}`} />
@@ -448,24 +443,15 @@ function CTASection() {
         </h2>
         <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto">
           Your home is your largest investment. Give it the documentation it deserves.
-          Book your Home DNA Scan today.
+          Start your free Home DNA Scan now.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link href="/book?service=home_consultation">
-            <Button
-              size="lg"
-              className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-10 py-7 rounded-xl shadow-lg shadow-[#F47C20]/20 w-full sm:w-auto"
-            >
-              Scan Your Home <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
           <Button
             size="lg"
-            variant="outline"
-            className="border-white/20 text-white hover:bg-white/10 font-semibold text-lg px-8 py-7 rounded-xl w-full sm:w-auto"
             onClick={openGeorgeWithScan}
+            className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-10 py-7 rounded-xl shadow-lg shadow-[#F47C20]/20 w-full sm:w-auto"
           >
-            Talk to Mr. George
+            Start Your Home Scan <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </div>
       </div>
