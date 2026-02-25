@@ -196,6 +196,8 @@ function Router() {
       {/* Pro routes (new terminology) */}
       <Route path="/pro/dashboard" component={HaulerDashboard} />
       <Route path="/pro/earnings" component={EarningsPage} />
+      <Route path="/pro/rates" component={HaulerDashboard} />
+      <Route path="/career-dashboard" component={CareerDashboard} />
       {/* Legacy hauler routes for backward compatibility */}
       <Route path="/hauler/dashboard" component={HaulerDashboard} />
       <Route path="/hauler/earnings" component={EarningsPage} />
