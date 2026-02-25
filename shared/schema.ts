@@ -477,6 +477,10 @@ export const serviceRequests = pgTable("service_requests", {
   isUrgentReassign: boolean("is_urgent_reassign").default(false),
   originalProId: text("original_pro_id"),
   noShowAt: text("no_show_at"),
+  // Snap & Book fields
+  snapQuoteId: varchar("snap_quote_id"),
+  proArrivalPhotoUrl: text("pro_arrival_photo_url"),
+  scopeVerified: boolean("scope_verified").default(false),
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({

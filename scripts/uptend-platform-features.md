@@ -30,6 +30,7 @@
 - **Subscription Plans** — Multi-service recurring plans across all verticals with tiered pricing
 - **Landscaping Booking** — Dedicated landscaping booking flow with lot size, plan type, and add-on selection
 - **Carpet Cleaning Booking** — Specialized carpet cleaning flow with room count, method selection, and scotchgard options
+- **Snap & Book** — Take a photo of any home issue and get a guaranteed price in under 60 seconds. AI-powered scope analysis with confidence scoring and Price Protection Guarantee.
 - **Emergency Booking** — One-tap emergency service requests for urgent plumbing, electrical, or storm damage
 - **Flexible Scheduling** — Choose morning or afternoon time slots with 24-48 hour typical turnaround
 - **Cost Guides** — Transparent pricing guides for every service so you know what to expect before booking
@@ -197,6 +198,7 @@
 - **WhatsApp Integration** — Job notifications and customer communication via WhatsApp
 - **George AI for Pros** — Pro-specific AI tools for route planning, earnings optimization, and job guidance
 - **Pro Job Prompts** — AI-generated checklists and tips specific to each job type and property
+- **Photo Quote Context** — See the customer's original photo, AI scope analysis, equipment checklist, and estimated duration before accepting any job.
 
 ### Certification Programs
 
@@ -298,23 +300,25 @@ What makes UpTend fundamentally different from Thumbtack, Angi, HomeAdvisor, and
 
 1. **George AI (154+ Tools)** — A real AI assistant with 154+ functional tools that handles everything from photo diagnosis to booking to DIY coaching. Not a chatbot. Not a search bar. An agent that works.
 
-2. **Home DNA Scan** — "Carfax for your home." A proprietary room-by-room interior scan that creates a digital twin of your property. No competitor has interior condition data at this depth.
+2. **Snap & Book** — Photo to booked pro in 60 seconds with AI-powered pricing. No competitor offers instant binding quotes from photos.
 
-3. **Price Protection Guarantee** — The quoted price is the maximum price. Scope changes require photo documentation and explicit customer approval. No surprise charges, ever.
+3. **Home DNA Scan** — "Carfax for your home." A proprietary room-by-room interior scan that creates a digital twin of your property. No competitor has interior condition data at this depth.
 
-4. **80/20 Pro Revenue Split** — Pros keep 80 cents of every dollar. Thumbtack charges lead fees. Angi takes 15-20%. HomeAdvisor charges per lead whether the pro wins or not. UpTend pays pros more.
+4. **Price Protection Guarantee** — The quoted price is the maximum price. Scope changes require photo documentation and explicit customer approval. No surprise charges, ever.
 
-5. **Tenure-Based Loyalty** — Points multiplied by time on the platform equals real, compounding rewards. Four tiers that reward long-term relationships, not just transactions.
+5. **80/20 Pro Revenue Split** — Pros keep 80 cents of every dollar. Thumbtack charges lead fees. Angi takes 15-20%. HomeAdvisor charges per lead whether the pro wins or not. UpTend pays pros more.
 
-6. **7 Communication Channels** — Email, voice, WhatsApp, push notifications, SMS, GPS tracking, and calendar sync. Customers and pros stay informed through every channel they prefer.
+6. **Tenure-Based Loyalty** — Points multiplied by time on the platform equals real, compounding rewards. Four tiers that reward long-term relationships, not just transactions.
 
-7. **B2B Built From Day One** — HOA, property management, construction, and government modules are core platform features, not bolted-on afterthoughts. Complete with compliance tracking, Davis-Bacon reporting, and SAM.gov integration.
+7. **7 Communication Channels** — Email, voice, WhatsApp, push notifications, SMS, GPS tracking, and calendar sync. Customers and pros stay informed through every channel they prefer.
 
-8. **Certification Academy** — Six structured certification programs that allow pros to level up, earn more, and access premium job categories. No competitor invests in pro career development.
+8. **B2B Built From Day One** — HOA, property management, construction, and government modules are core platform features, not bolted-on afterthoughts. Complete with compliance tracking, Davis-Bacon reporting, and SAM.gov integration.
 
-9. **Workforce-as-a-Service** — AI cannot pressure wash a building. UpTend combines the intelligence of AI with the capability of real human labor, creating a new category in home services.
+9. **Certification Academy** — Six structured certification programs that allow pros to level up, earn more, and access premium job categories. No competitor invests in pro career development.
 
-10. **Zero Lead Fees** — Pros never pay to see, bid on, or receive a job. The platform earns only when the pro earns. Aligned incentives from the ground up.
+10. **Workforce-as-a-Service** — AI cannot pressure wash a building. UpTend combines the intelligence of AI with the capability of real human labor, creating a new category in home services.
+
+11. **Zero Lead Fees** — Pros never pay to see, bid on, or receive a job. The platform earns only when the pro earns. Aligned incentives from the ground up.
 
 ---
 

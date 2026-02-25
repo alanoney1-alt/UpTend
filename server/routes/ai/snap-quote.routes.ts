@@ -8,6 +8,9 @@ import { nanoid } from "nanoid";
 import { analyzeImages } from "../../services/ai/openai-vision-client";
 import { calculateServicePrice, getServiceLabel } from "../../services/pricing";
 import { pool } from "../../db";
+import { generateEquipmentChecklist } from "../../services/equipment-checklist";
+import { requireAuth, requireHauler } from "../../auth-middleware";
+import { storage } from "../../storage";
 
 const router = Router();
 
@@ -141,11 +144,20 @@ function buildQuote(analysis: VisionAnalysis) {
       break;
   }
 
+  // 15% pricing buffer: the customer sees a ceiling price that accounts for
+  // slight scope underestimates. The pro gets paid 80% of the base estimate,
+  // not the buffered ceiling. This protects against AI underpricing while
+  // keeping the customer's maximum transparent.
+  // Example: AI estimates $155 -> customer ceiling $179 -> pro earns $124-$143
+  const baseEstimate = total;
+  const bufferedTotal = Math.round(total * 1.15);
+
   return {
     basePrice: base,
     adjustments,
-    totalPrice: total,
-    priceDisplay: `$${total}`,
+    totalPrice: bufferedTotal,
+    baseEstimate, // unbuffered price for pro payout calculation
+    priceDisplay: `$${bufferedTotal}`,
     guarantee: "Price Protection Guarantee -- this is your maximum price",
   };
 }
@@ -303,11 +315,11 @@ router.post("/snap-quote/:id/book", async (req, res) => {
     const analysis = JSON.parse(snapQuote.analysis || "{}");
     const serviceRequestId = nanoid(12);
 
-    // Create service request with guaranteed ceiling
+    // Create service request with guaranteed ceiling and snap quote reference
     try {
       await pool.query(
-        `INSERT INTO service_requests (id, customer_id, service_type, status, price_estimate, guaranteed_ceiling, scheduled_for, description, created_at)
-         VALUES ($1, $2, $3, 'requested', $4, $4, $5, $6, NOW())`,
+        `INSERT INTO service_requests (id, customer_id, service_type, status, price_estimate, guaranteed_ceiling, scheduled_for, description, snap_quote_id, created_at)
+         VALUES ($1, $2, $3, 'requested', $4, $4, $5, $6, $7, NOW())`,
         [
           serviceRequestId,
           userId,
@@ -315,11 +327,32 @@ router.post("/snap-quote/:id/book", async (req, res) => {
           snapQuote.quoted_price,
           scheduledDate ? new Date(`${scheduledDate}T${scheduledTime || "09:00"}:00`) : new Date(Date.now() + 86400000),
           `Snap Quote: ${analysis.scopeDescription || analysis.serviceType}`,
+          id, // snap_quote_id reference back to the original quote
         ]
       );
     } catch (err: any) {
       console.error("[SnapQuote] Service request creation error:", err);
       return res.status(500).json({ success: false, error: "Failed to create booking" });
+    }
+
+    // Pro notification with snap quote context
+    try {
+      const notificationText = `New ${getServiceLabel(snapQuote.service_type)} job — photo quote attached. View details for scope and equipment list.`;
+      await pool.query(
+        `INSERT INTO notifications (id, user_id, type, title, message, data, created_at)
+         VALUES ($1, $2, 'snap_book_job', $3, $4, $5, NOW())
+         ON CONFLICT DO NOTHING`,
+        [
+          nanoid(12),
+          null, // will be filled when pro is matched/assigned
+          `New ${getServiceLabel(snapQuote.service_type)} Job`,
+          notificationText,
+          JSON.stringify({ snapQuoteId: id, serviceRequestId, serviceType: snapQuote.service_type }),
+        ]
+      );
+    } catch (err) {
+      // Notification failure is non-blocking
+      console.error("[SnapQuote] Notification save error:", err);
     }
 
     // Update snap quote status
@@ -343,6 +376,164 @@ router.post("/snap-quote/:id/book", async (req, res) => {
   } catch (error: any) {
     console.error("[SnapQuote] Book error:", error);
     return res.status(500).json({ success: false, error: "Failed to book service" });
+  }
+});
+
+// ─── GET /api/haulers/jobs/:jobId/snap-details ──────────────────────────────
+// Pro endpoint: full snap quote context for a job
+
+router.get("/haulers/jobs/:jobId/snap-details", requireAuth, requireHauler, async (req, res) => {
+  try {
+    await ensureTable();
+    const { jobId } = req.params;
+
+    // Load the service request
+    const jobResult = await pool.query(
+      "SELECT * FROM service_requests WHERE id = $1",
+      [jobId]
+    );
+    if (jobResult.rows.length === 0) {
+      return res.status(404).json({ success: false, error: "Job not found" });
+    }
+    const job = jobResult.rows[0];
+
+    if (!job.snap_quote_id) {
+      return res.status(404).json({ success: false, error: "This job was not created from a Snap Quote" });
+    }
+
+    // Load the snap quote
+    const quoteResult = await pool.query(
+      "SELECT * FROM snap_quotes WHERE id = $1",
+      [job.snap_quote_id]
+    );
+    if (quoteResult.rows.length === 0) {
+      return res.status(404).json({ success: false, error: "Snap quote record not found" });
+    }
+    const snapQuote = quoteResult.rows[0];
+    const analysis: VisionAnalysis = JSON.parse(snapQuote.analysis || "{}");
+    const adjustments = JSON.parse(snapQuote.adjustments || "[]");
+
+    const customerPrice = snapQuote.quoted_price;
+    // Pro payout is 80% of the base estimate (before the 15% buffer)
+    const baseEstimate = Math.round(customerPrice / 1.15);
+    const proPayout = Math.round(baseEstimate * 0.80 * 100) / 100;
+
+    const equipmentChecklist = generateEquipmentChecklist(
+      analysis.serviceType || snapQuote.service_type,
+      analysis.scopeDescription || ""
+    );
+
+    // Generate "What to expect" notes from the analysis
+    const whatToExpect: string[] = [];
+    whatToExpect.push(`Service type: ${getServiceLabel(analysis.serviceType || snapQuote.service_type)}`);
+    if (analysis.scopeDescription) {
+      whatToExpect.push(`Scope: ${analysis.scopeDescription}`);
+    }
+    if (analysis.estimatedHours) {
+      whatToExpect.push(`Estimated duration: ${analysis.estimatedHours} hour${analysis.estimatedHours !== 1 ? "s" : ""}`);
+    }
+    if (analysis.confidence) {
+      whatToExpect.push(`AI confidence: ${analysis.confidence}`);
+    }
+    if (analysis.details) {
+      const d = analysis.details;
+      if (d.storyCount && d.storyCount > 1) whatToExpect.push(`Property is ${d.storyCount}-story`);
+      if (d.volume) whatToExpect.push(`Volume estimate: ${d.volume}`);
+      if (d.heavyItems) whatToExpect.push("Heavy items present — bring appropriate equipment");
+      if (d.condition) whatToExpect.push(`Condition: ${d.condition}`);
+      if (d.area) whatToExpect.push(`Area: ${d.area}`);
+    }
+
+    return res.json({
+      success: true,
+      snapDetails: {
+        customerPhotoUrl: snapQuote.image_url,
+        proArrivalPhotoUrl: job.pro_arrival_photo_url || null,
+        analysis: {
+          serviceType: analysis.serviceType,
+          serviceLabel: getServiceLabel(analysis.serviceType || snapQuote.service_type),
+          scopeDescription: analysis.scopeDescription,
+          estimatedHours: analysis.estimatedHours,
+          confidence: analysis.confidence,
+          details: analysis.details,
+        },
+        pricing: {
+          customerPrice,
+          proPayout,
+          adjustments,
+        },
+        equipmentChecklist,
+        whatToExpect,
+        scopeVerified: job.scope_verified || false,
+      },
+    });
+  } catch (error: any) {
+    console.error("[SnapQuote] Snap details error:", error);
+    return res.status(500).json({ success: false, error: "Failed to load snap details" });
+  }
+});
+
+// ─── POST /api/jobs/:jobId/arrival-photo ─────────────────────────────────────
+// Pro uploads arrival photo for scope verification
+
+router.post("/jobs/:jobId/arrival-photo", requireAuth, requireHauler, async (req, res) => {
+  try {
+    await ensureTable();
+    const { jobId } = req.params;
+    const { photoUrl } = req.body;
+    const userId = (req.user as any)?.userId || (req.user as any)?.id;
+
+    if (!photoUrl) {
+      return res.status(400).json({ success: false, error: "photoUrl is required" });
+    }
+
+    // Load the job
+    const jobResult = await pool.query(
+      "SELECT * FROM service_requests WHERE id = $1",
+      [jobId]
+    );
+    if (jobResult.rows.length === 0) {
+      return res.status(404).json({ success: false, error: "Job not found" });
+    }
+    const job = jobResult.rows[0];
+
+    if (job.assigned_hauler_id !== userId) {
+      return res.status(403).json({ success: false, error: "Not assigned to this job" });
+    }
+
+    // Store the arrival photo
+    await pool.query(
+      "UPDATE service_requests SET pro_arrival_photo_url = $1 WHERE id = $2",
+      [photoUrl, jobId]
+    );
+
+    // Auto-approve scope if the snap quote had high confidence
+    let autoApproved = false;
+    if (job.snap_quote_id) {
+      const quoteResult = await pool.query(
+        "SELECT confidence FROM snap_quotes WHERE id = $1",
+        [job.snap_quote_id]
+      );
+      if (quoteResult.rows.length > 0 && quoteResult.rows[0].confidence === "high") {
+        await pool.query(
+          "UPDATE service_requests SET scope_verified = true WHERE id = $1",
+          [jobId]
+        );
+        autoApproved = true;
+      }
+    }
+
+    return res.json({
+      success: true,
+      arrivalPhotoUrl: photoUrl,
+      scopeVerified: autoApproved,
+      message: autoApproved
+        ? "Arrival photo saved. High-confidence quote — scope auto-verified. Ready to start."
+        : "Arrival photo saved. Awaiting scope verification before starting.",
+    });
+  } catch (error: any) {
+    console.error("[SnapQuote] Arrival photo error:", error);
+    return res.status(500).json({ success: false, error: "Failed to save arrival photo" });
   }
 });
 
