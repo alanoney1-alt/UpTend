@@ -1,7 +1,7 @@
 /**
- * MyRates — Pro Dashboard component for setting custom rates
- * 
- * Shows platform recommended rate, min/max range, and pro's current rate.
+ * MyRates -- Pro Dashboard component for setting custom rates
+ *
+ * Shows researched Orlando market range, recommended rate, and pro's current rate.
  * Displays "What you'll earn per job" (rate - 15% = payout).
  */
 
@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { DollarSign, Save, Loader2, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { SERVICE_PRICE_RANGES } from "@/constants/service-price-ranges";
 
 interface ServiceRate {
   serviceType: string;
@@ -123,14 +124,22 @@ export function MyRates() {
 
       {/* Rate Cards */}
       {rates.map((rate) => {
+        // Use researched ranges if available, otherwise fall back to API values
+        const research = SERVICE_PRICE_RANGES[rate.serviceType];
+        const floorRate = research ? research.floor : rate.minRate;
+        const ceilingRate = research ? research.ceiling : rate.maxRate;
+        const recommendedRate = research ? research.recommended : rate.recommendedRate;
         const currentValue = editedRates[rate.serviceType] ?? rate.currentRate;
         const payout = Math.max(50, Math.round(currentValue * 0.85 * 100) / 100);
         const isChanged = currentValue !== rate.currentRate;
 
+        // Skip home_scan (fixed pricing)
+        if (rate.serviceType === "home_scan") return null;
+
         return (
           <Card key={rate.serviceType} className={`${isChanged ? "border-[#ea580c]/30" : ""}`}>
             <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-1">
                 <div>
                   <span className="font-semibold text-sm">{rate.displayName}</span>
                   <span className="text-xs text-muted-foreground ml-2">/ {rate.unit}</span>
@@ -140,12 +149,19 @@ export function MyRates() {
                 )}
               </div>
 
+              {/* Market range info */}
+              {research && research.floor > 0 && (
+                <p className="text-[11px] text-muted-foreground mb-2">
+                  Orlando market range: ${floorRate} -- ${ceilingRate} | Recommended: ${recommendedRate}
+                </p>
+              )}
+
               {/* Slider */}
               <div className="mb-3">
                 <input
                   type="range"
-                  min={rate.minRate}
-                  max={rate.maxRate}
+                  min={floorRate}
+                  max={ceilingRate}
                   step={1}
                   value={currentValue}
                   onChange={(e) =>
@@ -157,11 +173,11 @@ export function MyRates() {
                   className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[#ea580c]"
                 />
                 <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
-                  <span>${rate.minRate}</span>
+                  <span>${floorRate}</span>
                   <span className="text-[#ea580c] font-semibold">
-                    Recommended: ${rate.recommendedRate}
+                    Recommended: ${recommendedRate}
                   </span>
-                  <span>${rate.maxRate}</span>
+                  <span>${ceilingRate}</span>
                 </div>
               </div>
 
@@ -174,12 +190,17 @@ export function MyRates() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-muted-foreground">You keep (85%)</span>
+                  <span className="text-xs text-muted-foreground">You earn (85%)</span>
                   <div className="text-lg font-bold text-green-600 dark:text-green-400">
                     ${payout.toFixed(2)}
                   </div>
                 </div>
               </div>
+
+              {/* Per-job earnings note */}
+              <p className="text-[10px] text-muted-foreground mt-2">
+                You'll earn: ${payout.toFixed(2)} {rate.unit} (after 15% platform fee)
+              </p>
             </CardContent>
           </Card>
         );

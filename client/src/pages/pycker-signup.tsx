@@ -40,6 +40,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { PhotoUpload, MultiPhotoUpload } from "@/components/photo-upload";
 import { ServicesSelector } from "@/components/services-selector";
 import { ICAAgreement, type ICAAcceptanceData } from "@/components/auth/ica-agreement";
+import { SERVICE_PRICE_RANGES } from "@/constants/service-price-ranges";
 
 const vehicleSchema = z.object({
   vehicleType: z.string().min(1, "Vehicle type required"),
@@ -222,6 +223,8 @@ export default function PyckerSignup() {
   const [customToolInputs, setCustomToolInputs] = useState<Record<string, string>>({});
   const [desiredHourlyRate, setDesiredHourlyRate] = useState("");
   const [licensesAndCerts, setLicensesAndCerts] = useState("");
+  // Pro rate selection per service (from researched ranges)
+  const [proRates, setProRates] = useState<Record<string, number>>({});
 
   // Email verification state
   const [emailVerified, setEmailVerified] = useState(false);
@@ -410,6 +413,10 @@ export default function PyckerSignup() {
         toolsEquipment,
         desiredHourlyRate: desiredHourlyRate ? parseInt(desiredHourlyRate) : null,
         licensesAndCerts: licensesAndCerts || null,
+        proRates: Object.entries(proRates).map(([serviceType, baseRate]) => ({
+          serviceType,
+          baseRate,
+        })),
         pricingFeedback: Object.entries(pricingFeedback)
           .filter(([_, v]) => v.low || v.high)
           .map(([serviceType, v]) => ({
@@ -1704,42 +1711,94 @@ export default function PyckerSignup() {
               <Card className="p-6" data-testid="card-step-pricing-feedback">
                 <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
                   <DollarSign className="w-5 h-5" />
-                  Pricing Input
+                  Set Your Rates
                 </h2>
                 <p className="text-sm text-muted-foreground mb-4">
-                  UpTend sets all service rates to ensure fair, competitive pricing for customers and pros.
-                  Your input helps us understand your experience level and market expectations.
+                  Set your rate for each service. These are based on real Orlando market data.
+                  You keep 85% of every job after the platform fee.
                 </p>
 
-                <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg mb-6">
-                  <p className="text-sm text-blue-700 dark:text-blue-400">
-                    <strong>Note:</strong> Final rates are set by UpTend based on market data, your experience, certifications, and customer demand.
-                    We'll take your preferences into consideration.
+                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg mb-6">
+                  <p className="text-sm text-green-700 dark:text-green-400 font-medium">
+                    You keep 85% of every job. If you don't set a rate, we'll default to the recommended market rate.
                   </p>
                 </div>
 
-                {/* Desired hourly rate */}
-                <div className="mb-6 p-4 border rounded-lg">
-                  <Label className="text-base font-medium mb-2 block">What hourly rate would you like to earn?</Label>
-                  <p className="text-xs text-muted-foreground mb-3">This is not a guarantee — it helps us understand your expectations.</p>
-                  <div className="flex items-center gap-2 max-w-xs">
-                    <span className="text-lg font-medium text-muted-foreground">$</span>
-                    <Input
-                      type="number"
-                      placeholder="e.g. 35"
-                      value={desiredHourlyRate}
-                      onChange={(e) => setDesiredHourlyRate(e.target.value)}
-                      data-testid="input-desired-hourly-rate"
-                    />
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">/ hour</span>
-                  </div>
+                {/* Per-service rate sliders */}
+                <div className="space-y-4 mb-6">
+                  {selectedServices.map((service) => {
+                    const range = SERVICE_PRICE_RANGES[service];
+                    if (!range || range.floor === 0) return null; // Skip home_scan (fixed pricing)
+                    const currentRate = proRates[service] ?? range.recommended;
+                    const payout = Math.max(50, Math.round(currentRate * 0.85 * 100) / 100);
+
+                    return (
+                      <div key={service} className="p-4 border rounded-lg bg-card">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="font-semibold text-sm">{range.displayName}</p>
+                          <span className="text-xs text-muted-foreground">{range.unit}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-3">
+                          Pros on UpTend charge: ${range.floor} -- ${range.ceiling}
+                        </p>
+
+                        {/* Rate slider */}
+                        <input
+                          type="range"
+                          min={range.floor}
+                          max={range.ceiling}
+                          step={1}
+                          value={currentRate}
+                          onChange={(e) =>
+                            setProRates((prev) => ({
+                              ...prev,
+                              [service]: Number(e.target.value),
+                            }))
+                          }
+                          className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[#ea580c]"
+                        />
+                        <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                          <span>${range.floor}</span>
+                          <span className="text-[#ea580c] font-semibold">
+                            Recommended: ${range.recommended}
+                          </span>
+                          <span>${range.ceiling}</span>
+                        </div>
+
+                        {/* Rate + Payout display */}
+                        <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 mt-3">
+                          <div>
+                            <span className="text-xs text-muted-foreground">Your rate</span>
+                            <div className="text-lg font-bold text-slate-900 dark:text-white">
+                              ${currentRate}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xs text-muted-foreground">You earn (85%)</span>
+                            <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                              ${payout.toFixed(2)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {selectedServices.includes("home_scan") && (
+                    <div className="p-4 border rounded-lg bg-card">
+                      <p className="font-semibold text-sm">Home DNA Scan</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Fixed pricing -- $99 standard, $249 premium. Pro payout is $50 flat per scan paid by UpTend.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                {/* Per-service experience & pricing preferences */}
+                {/* Experience feedback (condensed) */}
                 <div className="mb-6">
-                  <h3 className="font-medium mb-1">Experience & Pricing Preferences Per Service</h3>
+                  <h3 className="font-medium mb-1">Experience Per Service</h3>
                   <p className="text-xs text-muted-foreground mb-4">
-                    What have you typically charged in the past? This is feedback only — UpTend determines final pricing.
+                    Optional -- helps us understand your background.
                   </p>
                   <div className="space-y-4">
                     {selectedServices.map((service) => {

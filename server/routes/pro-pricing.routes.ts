@@ -12,6 +12,8 @@ import { eq, and, sql } from "drizzle-orm";
 
 // ── Platform Rate Ranges per Service ──
 // These are the recommended defaults and allowed ranges (in dollars)
+// Research-verified Orlando metro price ranges (2025)
+// Sources: Angi, Homeyou, HomeGuide, Homeblue, ProMatcher, MoveBuddha, YourGreenPal
 export const PLATFORM_SERVICE_RATES: Record<string, {
   displayName: string;
   recommendedRate: number;
@@ -21,17 +23,17 @@ export const PLATFORM_SERVICE_RATES: Record<string, {
   description: string;
 }> = {
   junk_removal: { displayName: "Junk Removal", recommendedRate: 279, minRate: 99, maxRate: 599, unit: "per job", description: "Volume-based pricing by truck load" },
-  pressure_washing: { displayName: "Pressure Washing", recommendedRate: 175, minRate: 120, maxRate: 400, unit: "per job", description: "Surface cleaning for driveways and walkways" },
-  gutter_cleaning: { displayName: "Gutter Cleaning", recommendedRate: 179, minRate: 129, maxRate: 350, unit: "per job", description: "Complete debris removal from gutters and downspouts" },
-  moving_labor: { displayName: "Moving Labor", recommendedRate: 65, minRate: 50, maxRate: 95, unit: "per hour", description: "Loading, unloading, rearranging" },
-  light_demolition: { displayName: "Light Demolition", recommendedRate: 250, minRate: 199, maxRate: 600, unit: "per job", description: "Sheds, decks, interior tear-outs" },
-  home_cleaning: { displayName: "Home Cleaning", recommendedRate: 149, minRate: 99, maxRate: 349, unit: "per job", description: "Professional home cleaning" },
-  carpet_cleaning: { displayName: "Carpet Cleaning", recommendedRate: 50, minRate: 35, maxRate: 89, unit: "per room", description: "Professional carpet deep cleaning" },
-  landscaping: { displayName: "Landscaping", recommendedRate: 99, minRate: 59, maxRate: 329, unit: "per visit", description: "Lawn care and maintenance" },
-  pool_cleaning: { displayName: "Pool Cleaning", recommendedRate: 165, minRate: 99, maxRate: 249, unit: "per month", description: "Weekly pool maintenance" },
-  handyman: { displayName: "Handyman Services", recommendedRate: 75, minRate: 60, maxRate: 125, unit: "per hour", description: "General repairs and installations" },
-  garage_cleanout: { displayName: "Garage Cleanout", recommendedRate: 299, minRate: 129, maxRate: 999, unit: "per job", description: "Full sort, organize, and haul-away" },
-  home_scan: { displayName: "Home DNA Scan", recommendedRate: 0, minRate: 0, maxRate: 0, unit: "flat", description: "Free home walkthrough assessment" },
+  pressure_washing: { displayName: "Pressure Washing", recommendedRate: 199, minRate: 120, maxRate: 450, unit: "per job", description: "Surface cleaning for driveways and walkways" },
+  gutter_cleaning: { displayName: "Gutter Cleaning", recommendedRate: 179, minRate: 119, maxRate: 399, unit: "per job", description: "Complete debris removal from gutters and downspouts" },
+  moving_labor: { displayName: "Moving Labor", recommendedRate: 55, minRate: 35, maxRate: 85, unit: "per mover/hr", description: "Loading, unloading, rearranging" },
+  light_demolition: { displayName: "Light Demolition", recommendedRate: 350, minRate: 199, maxRate: 799, unit: "per job", description: "Sheds, decks, interior tear-outs" },
+  home_cleaning: { displayName: "Home Cleaning", recommendedRate: 165, minRate: 99, maxRate: 349, unit: "per job", description: "Professional home cleaning" },
+  carpet_cleaning: { displayName: "Carpet Cleaning", recommendedRate: 55, minRate: 35, maxRate: 99, unit: "per room", description: "Professional carpet deep cleaning" },
+  landscaping: { displayName: "Landscaping", recommendedRate: 99, minRate: 45, maxRate: 249, unit: "per visit", description: "Lawn care and maintenance" },
+  pool_cleaning: { displayName: "Pool Cleaning", recommendedRate: 165, minRate: 85, maxRate: 275, unit: "per month", description: "Weekly pool maintenance" },
+  handyman: { displayName: "Handyman Services", recommendedRate: 75, minRate: 50, maxRate: 125, unit: "per hour", description: "General repairs and installations" },
+  garage_cleanout: { displayName: "Garage Cleanout", recommendedRate: 349, minRate: 199, maxRate: 799, unit: "per job", description: "Full sort, organize, and haul-away" },
+  home_scan: { displayName: "Home DNA Scan", recommendedRate: 0, minRate: 0, maxRate: 0, unit: "flat", description: "Fixed pricing -- not pro-set" },
 };
 
 // In-memory store for pro rates (would be a DB table in production)

@@ -6,7 +6,7 @@
  */
 
 import { db } from "../db";
-import { haulerProfiles, haulerReviews } from "../../shared/schema";
+import { haulerProfiles, haulerReviews, serviceRequests } from "../../shared/schema";
 import { eq, sql, and, inArray } from "drizzle-orm";
 import { getEffectiveRate, PLATFORM_SERVICE_RATES } from "../routes/pro-pricing.routes";
 import { calculateFees } from "./fee-calculator-v2";
@@ -49,7 +49,48 @@ export function getStoredMatch(matchId: string) {
  * - Price-to-value (20%): rate relative to quality score
  * - Proximity (15%): distance to job site (simulated)
  * - Experience (15%): total jobs completed + tenure on platform
+ *
+ * Adjustments applied after base score:
+ * - New Pro Boost: +15 to +0 for pros with 0-10 completed jobs (linear decay)
+ * - Busy Pro Cooldown: -10 for pros with 3+ jobs this week (only when 3+ pros available)
  */
+
+/**
+ * New Pro Boost: gives new pros visibility.
+ * +15 points at 0 jobs, linearly decreasing to +0 at 10 jobs.
+ */
+function calculateNewProBoost(completedJobs: number): number {
+  if (completedJobs >= 10) return 0;
+  return Math.round((15 * (10 - completedJobs)) / 10 * 100) / 100;
+}
+
+/**
+ * Query how many jobs a pro has been assigned this week.
+ */
+async function getWeeklyJobCount(proId: string): Promise<number> {
+  try {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0=Sun
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset);
+    const weekStartStr = weekStart.toISOString();
+
+    const result = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(serviceRequests)
+      .where(
+        and(
+          eq(serviceRequests.assignedHaulerId, proId),
+          sql`${serviceRequests.createdAt} >= ${weekStartStr}`,
+          sql`${serviceRequests.status} IN ('requested', 'accepted', 'in_progress', 'completed')`,
+        )
+      );
+    return result[0]?.count || 0;
+  } catch {
+    return 0;
+  }
+}
+
 function calculateValueScore(
   rating: number,
   completedJobs: number,
@@ -130,8 +171,18 @@ export async function matchProsForJob(
   const platformRate = PLATFORM_SERVICE_RATES[serviceType];
   const avgPrice = platformRate ? platformRate.recommendedRate : 150;
 
-  // Build scored list
+  // Build scored list with async adjustments (new pro boost + busy cooldown)
   const now = Date.now();
+  const totalProsForService = pros.length;
+
+  // Pre-fetch weekly job counts for all pros in parallel
+  const weeklyCountsMap: Record<string, number> = {};
+  await Promise.all(
+    pros.map(async (pro) => {
+      weeklyCountsMap[pro.userId] = await getWeeklyJobCount(pro.userId);
+    })
+  );
+
   const scoredPros: MatchedPro[] = pros.map((pro) => {
     const price = getEffectiveRate(pro.userId, serviceType);
     const createdAt = pro.createdAt as string;
@@ -142,7 +193,7 @@ export async function matchProsForJob(
     const verified = pro.verified || false;
     const insured = pro.hasInsurance || false;
 
-    const valueScore = calculateValueScore(
+    let valueScore = calculateValueScore(
       rating,
       completedJobs,
       tenureMonths,
@@ -150,6 +201,21 @@ export async function matchProsForJob(
       avgPrice,
       verified,
     );
+
+    // New Pro Boost: help new pros get discovered
+    const newProBoost = calculateNewProBoost(completedJobs);
+    valueScore += newProBoost;
+
+    // Busy Pro Cooldown: spread work across the pool
+    // Only applies when there are 3+ qualified pros for this service
+    const weeklyJobs = weeklyCountsMap[pro.userId] || 0;
+    if (weeklyJobs >= 3 && totalProsForService >= 3) {
+      valueScore -= 10;
+    }
+
+    // Clamp to reasonable range
+    valueScore = Math.max(0, Math.min(100, valueScore));
+    valueScore = Math.round(valueScore * 100) / 100;
 
     return {
       proId: pro.userId,
