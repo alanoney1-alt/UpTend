@@ -55,6 +55,7 @@ const Quote = lazy(() => import("@/pages/quote"));
 const AgenticBrain = lazy(() => import("@/pages/agentic-brain"));
 const ClaimProperty = lazy(() => import("@/pages/claim-property"));
 const MyHomeInventory = lazy(() => import("@/pages/my-home-inventory"));
+const MyProperties = lazy(() => import("@/pages/my-properties"));
 const CareerDashboard = lazy(() => import("@/pages/career-dashboard"));
 const HaulerLanding = lazy(() => import("@/pages/hauler-landing"));
 const PyckerAcademy = lazy(() => import("@/pages/hauler-onboarding/academy"));
@@ -90,6 +91,7 @@ const MyJobs = lazy(() => import("@/pages/my-jobs"));
 const ServiceDetail = lazy(() => import("@/pages/service-detail"));
 const Sustainability = lazy(() => import("@/pages/sustainability"));
 const Emergency = lazy(() => import("@/pages/emergency"));
+const EmergencySos = lazy(() => import("@/pages/emergency-sos"));
 const Neighborhood = lazy(() => import("@/pages/neighborhood"));
 const Insurance = lazy(() => import("@/pages/insurance"));
 const SubscriptionPlans = lazy(() => import("@/pages/subscription-plans"));
@@ -271,6 +273,7 @@ function Router() {
       <Route path="/quote" component={Quote} />
       <Route path="/claim/:token" component={ClaimProperty} />
       <Route path="/my-home" component={MyHomeInventory} />
+      <Route path="/my-properties" component={MyProperties} />
       <Route path="/career" component={CareerDashboard} />
       <Route path="/academy" component={PyckerAcademy} />
       <Route path="/job/:jobId/work" component={ActiveJob} />
@@ -319,6 +322,7 @@ function Router() {
       <Route path="/properties" component={Properties} />
       <Route path="/properties/:propertyId" component={PropertyDashboard} />
       <Route path="/emergency" component={Emergency} />
+      <Route path="/emergency-sos" component={EmergencySos} />
       <Route path="/neighborhood" component={Neighborhood} />
       <Route path="/insurance" component={Insurance} />
       <Route path="/ai" component={AIFeaturesHub} />

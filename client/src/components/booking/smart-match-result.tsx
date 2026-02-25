@@ -6,11 +6,11 @@
  * NEVER shows: last name, phone, email, business name.
  */
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, Star, Clock, CheckCircle, ChevronDown } from "lucide-react";
+import { ShieldCheck, Star, Clock, CheckCircle, ChevronDown, Play, Quote } from "lucide-react";
 
 interface MatchedPro {
   firstName: string;
@@ -18,6 +18,8 @@ interface MatchedPro {
   completedJobs: number;
   verified: boolean;
   tenureMonths: number;
+  videoIntroUrl?: string;
+  tagline?: string;
 }
 
 interface SmartMatchResultProps {
@@ -41,6 +43,9 @@ export function SmartMatchResult({
   onViewAlternatives,
   isBooking = false,
 }: SmartMatchResultProps) {
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   return (
     <div className="w-full max-w-md mx-auto">
       <Card className="border-2 border-amber-200 dark:border-amber-800 shadow-lg overflow-hidden">
@@ -80,6 +85,44 @@ export function SmartMatchResult({
               </div>
             </div>
           </div>
+
+          {/* Video Intro / Tagline */}
+          {pro.videoIntroUrl ? (
+            <div className="mb-4">
+              {!videoPlaying ? (
+                <button
+                  onClick={() => {
+                    setVideoPlaying(true);
+                    setTimeout(() => videoRef.current?.play(), 50);
+                  }}
+                  className="relative w-full aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden group"
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-[#ea580c]/90 flex items-center justify-center group-hover:bg-[#ea580c] transition-colors shadow-lg">
+                      <Play className="w-5 h-5 text-white ml-0.5" />
+                    </div>
+                  </div>
+                  <p className="absolute bottom-2 left-3 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    Meet {pro.firstName}
+                  </p>
+                </button>
+              ) : (
+                <video
+                  ref={videoRef}
+                  src={pro.videoIntroUrl}
+                  controls
+                  playsInline
+                  className="w-full aspect-video rounded-xl bg-black"
+                  onEnded={() => setVideoPlaying(false)}
+                />
+              )}
+            </div>
+          ) : pro.tagline ? (
+            <div className="mb-4 flex items-start gap-2 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+              <Quote className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+              <p className="text-sm text-slate-600 dark:text-slate-400 italic">{pro.tagline}</p>
+            </div>
+          ) : null}
 
           {/* Price */}
           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mb-6">

@@ -30,6 +30,7 @@ import { registerCustomerReferralRoutes } from "./customer/referrals.routes";
 import { registerCustomerImpactRoutes } from "./customer/impact.routes";
 import { registerDashboardWidgetRoutes } from "./customer/dashboard-widgets.routes";
 import { registerLoyaltyRoutes } from "./customer/loyalty.routes";
+import { registerCustomerPropertyRoutes } from "./customer/properties.routes";
 
 // Job routes
 import { registerServiceRequestRoutes } from "./jobs/service-requests.routes";
@@ -107,6 +108,7 @@ import { registerPropertyIntelligenceRoutes } from "./properties/index";
 
 // Emergency routes
 import { registerEmergencyRoutes } from "./emergency.routes";
+import { registerEmergencySosRoutes } from "./emergency-sos.routes";
 
 // Neighborhood routes
 import { registerNeighborhoodRoutes } from "./neighborhoods.routes";
@@ -317,6 +319,7 @@ export async function registerRoutes(
   registerCustomerImpactRoutes(app);
   registerDashboardWidgetRoutes(app);
   registerLoyaltyRoutes(app);
+  registerCustomerPropertyRoutes(app);
 
   // Register job routes
   registerServiceRequestRoutes(app);
@@ -394,6 +397,7 @@ export async function registerRoutes(
 
   // Register Emergency routes
   registerEmergencyRoutes(app);
+  registerEmergencySosRoutes(app);
 
   // Register Neighborhood routes
   registerNeighborhoodRoutes(app);

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
+import { NeighborhoodPriceContext } from "@/components/neighborhood-price-context";
 import { PaymentForm } from "@/components/payment-form";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -169,6 +170,13 @@ export default function BookingPage() {
           preselectedService={preselectedService ?? undefined}
           preselectedTiming={preselectedTiming ?? undefined}
         />
+
+        {/* Neighborhood Price Context */}
+        {preselectedService && (
+          <div className="max-w-2xl mx-auto mt-6">
+            <NeighborhoodPriceContext serviceType={preselectedService} />
+          </div>
+        )}
 
         {/* Trust line */}
         <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-10 mb-12 max-w-lg mx-auto">

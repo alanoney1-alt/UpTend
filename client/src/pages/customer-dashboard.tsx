@@ -49,6 +49,7 @@ import {
   FileBarChart,
   Share2,
   History,
+  Users,
 } from "lucide-react";
 
 const SERVICE_TYPE_LABELS: Record<string, string> = {
@@ -545,9 +546,16 @@ function MyHomeSection({ jobs, user }: { jobs: ServiceRequest[]; user: { firstNa
   return (
     <Card className="mb-6 overflow-hidden" data-testid="card-my-home">
       <CardHeader className="pb-2">
-        <div className="flex items-center gap-2">
-          <Home className="w-5 h-5 text-primary" />
-          <CardTitle className="text-base">My Home</CardTitle>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Home className="w-5 h-5 text-primary" />
+            <CardTitle className="text-base">My Home</CardTitle>
+          </div>
+          <Link href="/my-properties">
+            <span className="text-xs text-primary hover:underline cursor-pointer flex items-center gap-1">
+              <Users className="w-3 h-3" /> My Properties
+            </span>
+          </Link>
         </div>
         <p className="text-xs text-white/50 flex items-center gap-1 mt-1">
           <MapPin className="w-3 h-3" /> {address}

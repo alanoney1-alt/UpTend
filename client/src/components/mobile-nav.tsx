@@ -1,5 +1,5 @@
 import { useLocation, Link } from "wouter";
-import { Home, Truck, User, Menu, Camera, Image } from "lucide-react";
+import { Home, Truck, User, Menu, Camera, Image, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -55,6 +55,14 @@ export function MobileNav() {
       data-testid="mobile-nav"
     >
       <div className="flex items-center justify-around h-16">
+        {/* Emergency SOS Button */}
+        <Link
+          href="/emergency-sos"
+          className="absolute -top-3 right-4 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-[#DC2626] shadow-lg shadow-red-600/30 hover:bg-red-700 transition-colors"
+          data-testid="nav-emergency-sos"
+        >
+          <AlertCircle className="w-5 h-5 text-white" />
+        </Link>
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
