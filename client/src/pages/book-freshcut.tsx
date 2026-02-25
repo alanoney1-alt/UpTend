@@ -137,7 +137,7 @@ export default function BookFreshCut() {
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests"] });
       toast({
         title: "Booking created!",
-        description: "Your FreshCut service has been scheduled",
+        description: "Your lawn care service has been scheduled",
       });
       setLocation(`/track/${data.id}`);
     },

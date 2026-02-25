@@ -155,7 +155,7 @@ export default function BecomePro() {
             <p className="text-muted-foreground italic leading-relaxed mb-6" data-testid="text-alan-quote">
               &ldquo;I&rsquo;ve seen how hard it is for high-quality Pros to grow a business when apps keep squeezing them for fees.
               UpTend is about accountability and verified impact. We give you the tools to prove
-              you&rsquo;re the best, build your verified green track record, and make sure you get paid fairly for it.&rdquo;
+              you&rsquo;re the best, build your verified track record, and make sure you get paid fairly for it.&rdquo;
             </p>
             <p className="font-bold">&mdash; Alan, Founder of UpTend</p>
           </div>

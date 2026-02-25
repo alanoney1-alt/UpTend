@@ -43,7 +43,7 @@ const milestones = [
   { year: "2024", event: "UpTend founded in Orlando, Florida" },
   { year: "2024", event: "First 100 Verified Pros join the network" },
   { year: "2025", event: "Expanded to serve all of Central Florida" },
-  { year: "2025", event: "Launched AI-powered visual quoting" },
+  { year: "2025", event: "Launched instant visual quoting" },
   { year: "2025", event: "10,000+ jobs completed with full impact tracking" },
 ];
 

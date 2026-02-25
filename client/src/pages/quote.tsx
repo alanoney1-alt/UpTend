@@ -684,7 +684,7 @@ export default function Quote() {
                     <Sparkles className="w-8 h-8 text-amber-500" />
                   </div>
                   <Badge className="mb-2 bg-amber-500/10 text-amber-600 border-amber-500/30">
-                    AI-Powered
+                    Recommended
                   </Badge>
                   <h3 className="text-xl font-bold mb-2">Upload Photos</h3>
                   <p className="text-muted-foreground mb-4">
@@ -926,7 +926,7 @@ export default function Quote() {
                       ${aiEstimate.price}
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
-                      AI-powered estimate
+                      Instant estimate
                     </p>
                   </div>
 

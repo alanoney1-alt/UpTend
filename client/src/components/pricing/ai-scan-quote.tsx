@@ -262,7 +262,7 @@ export function AIScanQuote({ serviceType, onQuoteGenerated, onBack }: AIScanQuo
         <>
           <Card>
             <CardHeader>
-              <CardTitle>Get AI-Powered Quote</CardTitle>
+              <CardTitle>Get Instant Quote</CardTitle>
             </CardHeader>
             <CardContent>
               <Tabs value={uploadMethod} onValueChange={(value) => setUploadMethod(value as 'photo' | 'video')}>

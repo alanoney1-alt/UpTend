@@ -38,8 +38,8 @@ interface Certification {
 }
 
 const levelConfig = [
-  { level: 1, title: "Rookie", icon: Star, color: "text-primary", requiredJobs: 0, requiredStars: 0, payout: "75%" },
-  { level: 2, title: "Verified Pro", icon: ShieldCheck, color: "text-green-500", requiredJobs: 10, requiredStars: 0, payout: "80%" },
+  { level: 1, title: "Rookie", icon: Star, color: "text-primary", requiredJobs: 0, requiredStars: 0, payout: "85%" },
+  { level: 2, title: "Verified Pro", icon: ShieldCheck, color: "text-green-500", requiredJobs: 10, requiredStars: 0, payout: "85%" },
   { level: 3, title: "Master Consultant", icon: Award, color: "text-amber-500", requiredJobs: 50, requiredStars: 40, payout: "85% + Commissions" },
 ];
 

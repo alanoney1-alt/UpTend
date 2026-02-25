@@ -99,7 +99,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
       };
     }
     return {
-      welcome: `Welcome!  I'm Mr. George, UpTend's business solutions assistant.\n\nIf you manage properties, run an HOA, or oversee construction — I can walk you through how UpTend replaces your entire vendor network with one AI-powered platform.\n\n**What I can help with:**\n• Pricing for your portfolio size\n• How our dispatch and tracking works\n• Insurance and compliance requirements\n• Volume discounts and billing\n• Setting up a demo\n\nWhat would you like to know? `,
+      welcome: `Welcome!  I'm Mr. George, UpTend's business solutions assistant.\n\nIf you manage properties, run an HOA, or oversee construction — I can walk you through how UpTend replaces your entire vendor network with one platform.\n\n**What I can help with:**\n• Pricing for your portfolio size\n• How our dispatch and tracking works\n• Insurance and compliance requirements\n• Volume discounts and billing\n• Setting up a demo\n\nWhat would you like to know? `,
       quickActions: [],
     };
   }
@@ -631,7 +631,7 @@ export function UpTendGuide() {
         <button
           onClick={handleOpen}
           className={cn(
-            "fixed bottom-24 md:bottom-4 right-4 z-[9998] flex items-center gap-2 px-3 py-2",
+            "fixed bottom-28 md:bottom-4 right-4 z-[9998] flex items-center gap-2 px-3 py-2",
             "bg-amber-500/90 hover:bg-amber-500 text-white",
             "rounded-full shadow-lg hover:shadow-xl",
             "transition-all duration-300 ease-out",

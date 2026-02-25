@@ -107,7 +107,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void; onError: 
       <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex gap-3" data-testid="card-green-promise">
         <Shield className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
         <div>
-          <h4 className="font-bold text-green-900 dark:text-green-200 text-sm">The "Green Promise"</h4>
+          <h4 className="font-bold text-green-900 dark:text-green-200 text-sm">The UpTend Promise</h4>
           <p className="text-xs text-green-700 dark:text-green-400 mt-1">
             If you aren't 100% satisfied with the job, we will come back and fix it for free.
             If you still hate it, you don't pay.

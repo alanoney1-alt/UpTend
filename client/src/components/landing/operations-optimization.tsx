@@ -36,7 +36,7 @@ export function OperationsOptimization() {
         <div className="text-center mb-12">
           <Badge className="mb-4 bg-primary/10 text-primary border-primary/20" data-testid="badge-ai-advantage">
             <BrainCircuit className="w-3 h-3 mr-1" />
-            AI-Powered Operations
+            Smart Operations
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="heading-operations">
             We Run on AI. They Run on Guesswork.
@@ -77,7 +77,7 @@ export function OperationsOptimization() {
             </div>
             <div className="text-center md:text-left">
               <h3 className="text-xl md:text-2xl font-bold mb-2" data-testid="heading-ai-advantage">
-                UpTend is the AI-powered service. Competitors stay manual.
+                UpTend is the smarter service. Competitors stay manual.
               </h3>
               <p className="text-muted-foreground max-w-2xl" data-testid="text-ai-advantage">
                 While other services rely on phone calls, paper routes, and fixed pricing,

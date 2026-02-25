@@ -108,7 +108,7 @@ export default function Business() {
           </h1>
           <p className="text-slate-300 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
             Property managers, HOAs, and construction companies use UpTend to replace dozens of vendor relationships 
-            with one AI-powered platform. Fully insured pros, real-time tracking, weekly billing.
+            with one platform. Fully insured pros, real-time tracking, weekly billing.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/business/onboarding" asChild>
@@ -261,7 +261,7 @@ export default function Business() {
           <h2 className="text-3xl font-bold text-center mb-12">Everything You Need to Run Operations</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Bot, title: "AI-Powered Dispatch", desc: "Automatic pro matching based on skills, location, ratings, and availability" },
+              { icon: Bot, title: "Smart Dispatch", desc: "Automatic pro matching based on skills, location, ratings, and availability" },
               { icon: Shield, title: "Insurance Verified", desc: "Every pro's GL insurance verified. Expired = blocked from your jobs" },
               { icon: Eye, title: "Real-Time Tracking", desc: "GPS tracking, photo documentation, live status updates to your dashboard" },
               { icon: FileText, title: "Weekly Billing", desc: "Net Weekly invoices with line-item detail. No surprises, no chasing" },

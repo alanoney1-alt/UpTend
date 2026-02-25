@@ -56,7 +56,7 @@ const ALL_SERVICES: Service[] = [
     id: "junk_removal",
     label: "Junk Removal",
     icon: Trash2,
-    description: "Material recovery and junk removal",
+    description: "Responsible junk removal and hauling",
   },
   {
     id: "garage_cleanout",

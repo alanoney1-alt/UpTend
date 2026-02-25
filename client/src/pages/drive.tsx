@@ -110,7 +110,7 @@ export default function Drive() {
               <span className="text-primary">Start Building Impact.</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              No lead fees. No hidden cuts. Just real jobs, fair pay, and a verified green track record
+              No lead fees. No hidden cuts. Just real jobs, fair pay, and a verified track record
               that makes you the first choice for homeowners who care.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

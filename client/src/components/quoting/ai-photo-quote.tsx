@@ -277,7 +277,7 @@ export function AIPhotoQuote({
         <CardHeader>
           <div className="flex items-center gap-3">
             <Sparkles className="w-6 h-6 text-primary" />
-            <CardTitle>AI-Powered Quote from Photos or Video</CardTitle>
+            <CardTitle>Instant Quote from Photos or Video</CardTitle>
           </div>
           <p className="text-sm text-muted-foreground mt-2">
             Get an instant quote by uploading photos or a video walkthrough. Our AI will analyze

@@ -66,7 +66,7 @@ export default function AIFeaturesHub() {
               Powered by AI
             </div>
             <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
-              AI-Powered Home Services
+              Smart Home Services
             </h1>
             <p className="text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               From instant photo quotes to smart scheduling, our AI tools make

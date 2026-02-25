@@ -218,7 +218,7 @@ export default function HomeHealthAuditPage() {
           <Home className="w-16 h-16 text-green-600 mx-auto mb-4" />
           <h1 className="text-4xl font-bold mb-2">Home Health Audit</h1>
           <p className="text-muted-foreground text-lg">
-            Get a comprehensive AI-powered analysis of your property's condition
+            Get a comprehensive analysis of your property's condition
           </p>
         </div>
 
@@ -353,7 +353,7 @@ export default function HomeHealthAuditPage() {
                 <Calendar className="w-8 h-8 text-blue-600 mx-auto mb-2" />
                 <h3 className="font-semibold mb-1">Instant Results</h3>
                 <p className="text-sm text-muted-foreground">
-                  AI-powered analysis delivers results in under 2 minutes
+                  Analysis delivers results in under 2 minutes
                 </p>
               </div>
             </CardContent>

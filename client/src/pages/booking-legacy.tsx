@@ -1594,7 +1594,7 @@ export default function Booking() {
                           <div>
                             <p className="font-medium text-amber-700 dark:text-amber-400">Photo or Video Required for Accurate Quote</p>
                             <p className="text-sm text-amber-600/80 dark:text-amber-400/80 mt-1">
-                              Upload photos or record a video walkthrough of your junk for AI-powered load estimation. Videos provide the most accurate estimates.
+                              Upload photos or record a video walkthrough of your junk for accurate load estimation. Videos provide the most accurate estimates.
                             </p>
                           </div>
                         </div>

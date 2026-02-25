@@ -131,7 +131,7 @@ export default function PhotoToQuote() {
 
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-[#F47C20]/10 text-[#F47C20] rounded-full px-3 py-1 text-sm font-medium mb-3">
-            <Sparkles className="w-4 h-4" /> AI-Powered
+            <Sparkles className="w-4 h-4" /> Instant Quote
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Photo-to-Quote

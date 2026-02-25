@@ -11,7 +11,7 @@ import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 
 const included = [
-  { icon: Camera, text: "AI-powered room-by-room photo inventory" },
+  { icon: Camera, text: "Room-by-room photo inventory" },
   { icon: Video, text: "360\u00B0 video walkthrough with timestamp verification" },
   { icon: ClipboardCheck, text: "Exterior scan: roof, gutters, siding, foundation" },
   { icon: Shield, text: "Safety check: smoke detectors, CO monitors, vents" },

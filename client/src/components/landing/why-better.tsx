@@ -21,7 +21,7 @@ const valueProps = [
   {
     icon: Leaf,
     title: "Tax Write-Offs, Not Landfills",
-    label: "The Green Promise",
+    label: "The UpTend Promise",
     description: "We prioritize donation. You get the IRS tax receipt right in the app.",
     color: "text-emerald-600 dark:text-emerald-400",
     bgColor: "bg-emerald-500/10",

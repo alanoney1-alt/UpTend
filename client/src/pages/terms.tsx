@@ -117,9 +117,7 @@ export default function TermsPage() {
 
 <strong>For Pros:</strong> Pros pay a service fee on each completed job:
 <ul>
-<li><strong>LLC-Verified Pros:</strong> 20% of the job total</li>
-<li><strong>Independent (Non-LLC) Pros:</strong> 25% of the job total</li>
-<li><strong>Insurance Surcharge (Non-LLC Pros only):</strong> An additional \$10 per job to fund supplemental liability coverage</li>
+<li><strong>All Pros:</strong> 15% of the job total</li>
 </ul>
 <p>Pro fees are automatically deducted from payouts. Full fee details are available in the Pro Dashboard and the Independent Contractor Agreement.</p>
 

@@ -142,7 +142,7 @@ export function ImpactWidget() {
               <div>
                 <h3 className="text-lg font-black mb-1" data-testid="text-climate-champion-title">Climate Champion</h3>
                 <p className="text-sm opacity-60 leading-relaxed">
-                  Your residence has avoided {co2Saved.toFixed(0)}kg of CO2 emissions through verified material recovery and sustainable practices.
+                  Your residence has avoided {co2Saved.toFixed(0)}kg of CO2 emissions through verified recycling, donation, and sustainable practices.
                 </p>
               </div>
             </div>

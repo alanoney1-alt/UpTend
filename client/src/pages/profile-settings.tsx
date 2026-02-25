@@ -420,7 +420,7 @@ function ProSettings({ profile }: { profile: any }) {
               <div>
                 <p className="text-sm text-muted-foreground">Payout Rate</p>
                 <p className="text-2xl font-bold" data-testid="text-payout-rate">
-                  {profile?.payoutRate ? `${profile.payoutRate}%` : "80%"}
+                  {profile?.payoutRate ? `${profile.payoutRate}%` : "85%"}
                 </p>
               </div>
               <div>

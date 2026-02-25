@@ -87,8 +87,8 @@ export default function Sustainability() {
             We Track It.
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            UpTend builds sustainability into every service — from verified material recovery
-            and carbon tracking to eco-friendly operations and community recycling partnerships.
+            UpTend builds sustainability into every service — from verified recycling and donation tracking
+            to eco-friendly operations and community partnerships.
           </p>
         </div>
       </section>

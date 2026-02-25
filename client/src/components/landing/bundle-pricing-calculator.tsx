@@ -697,7 +697,7 @@ export function BundlePricingCalculator() {
             <p className="text-base md:text-lg text-white/80 mb-6 max-w-lg mx-auto">
               Instant quotes. Live tracking. Green disposal.
               <br />
-              Orlando's first AI-powered home services.
+              Orlando's smartest home services platform.
             </p>
             
             <p className="text-sm text-white/60 mb-8">

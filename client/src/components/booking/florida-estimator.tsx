@@ -671,7 +671,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
                   <h3 className="text-xl font-bold mb-2">AI Quote from Photos</h3>
                   <Badge className="mb-3">Recommended</Badge>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Upload photos or video and get an instant AI-powered quote with itemized breakdown
+                    Upload photos or video and get an instant quote with itemized breakdown
                   </p>
                   <ul className="text-xs text-left space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
@@ -932,7 +932,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
               ← Back to upload
             </Button>
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
-              Your AI-Powered Quote
+              Your Instant Quote
             </h2>
             <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
               Based on analysis of your photos
