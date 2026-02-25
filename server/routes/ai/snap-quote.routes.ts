@@ -14,6 +14,30 @@ import { storage } from "../../storage";
 
 const router = Router();
 
+// ─── Rate Limiting (in-memory) ───────────────────────────────────────────────
+
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(key: string, maxPerDay: number): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(key);
+  if (!entry || now >= entry.resetAt) {
+    rateLimitMap.set(key, { count: 1, resetAt: now + 86400000 });
+    return true;
+  }
+  if (entry.count >= maxPerDay) return false;
+  entry.count++;
+  return true;
+}
+
+// Clean up expired entries every hour
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of rateLimitMap) {
+    if (now >= entry.resetAt) rateLimitMap.delete(key);
+  }
+}, 3600000);
+
 // ─── DB Table Init ───────────────────────────────────────────────────────────
 
 let tableReady = false;
@@ -167,6 +191,20 @@ function buildQuote(analysis: VisionAnalysis) {
 router.post("/snap-quote", async (req, res) => {
   try {
     await ensureTable();
+
+    // ─── Rate Limiting ─────────────────────────────────────────────
+    const user = req.user as any;
+    const userId = user?.userId || user?.id;
+    const rateLimitKey = userId ? `user:${userId}` : `ip:${req.ip}`;
+    const maxPerDay = userId ? 10 : 5;
+
+    if (!checkRateLimit(rateLimitKey, maxPerDay)) {
+      return res.status(429).json({
+        success: false,
+        error: "You've reached the daily photo quote limit. Try again tomorrow, or describe your issue to George for help.",
+      });
+    }
+
     const { imageBase64, description, address } = req.body;
 
     if (!imageBase64) {
@@ -177,7 +215,7 @@ router.post("/snap-quote", async (req, res) => {
       ? imageBase64
       : `data:image/jpeg;base64,${imageBase64}`;
 
-    // Vision analysis
+    // Vision analysis with validation
     let analysis: VisionAnalysis;
     try {
       const visionPrompt = `Analyze this photo of a home service issue. Determine:
@@ -189,8 +227,15 @@ router.post("/snap-quote", async (req, res) => {
 ${description ? `Customer description: "${description}"` : ""}
 ${address ? `Property address: ${address}` : ""}
 
-Return JSON:
+IMPORTANT VALIDATION RULES:
+- If the image is NOT related to a home, property, yard, or building (e.g., selfie, pet, food, meme, screenshot, document, car), respond with: { "valid": false, "reason": "brief explanation of what you see instead" }
+- If the image shows a home-related issue but you cannot determine which service is needed, respond with: { "valid": true, "confidence": "low", "serviceType": "home_consultation", "scopeDescription": "what you see", "estimatedHours": 1, "details": {} }
+- If the image shows a vehicle or car issue, respond with: { "valid": false, "reason": "vehicle_service" }
+- Only return a full analysis if the image clearly shows a home/property service need
+
+For valid home service images, return JSON:
 {
+  "valid": true,
   "serviceType": "one_of_the_12_types",
   "scopeDescription": "what you see",
   "estimatedHours": number,
@@ -213,6 +258,20 @@ Return JSON:
           confidence: "low",
           details: {},
         };
+      } else if (result.valid === false) {
+        // Photo validation failed
+        if (result.reason === "vehicle_service") {
+          return res.json({
+            success: false,
+            rejected: true,
+            error: "George spotted a vehicle issue. Vehicle maintenance is coming soon — for now, try describing your home service need and George can help.",
+          });
+        }
+        return res.json({
+          success: false,
+          rejected: true,
+          error: "George couldn't identify a home service need in this photo. Try taking a closer photo of the area that needs work, or describe your issue instead.",
+        });
       } else {
         analysis = {
           serviceType: result.serviceType || "handyman",
@@ -535,6 +594,14 @@ router.post("/jobs/:jobId/arrival-photo", requireAuth, requireHauler, async (req
     console.error("[SnapQuote] Arrival photo error:", error);
     return res.status(500).json({ success: false, error: "Failed to save arrival photo" });
   }
+});
+
+// ─── GET /api/pro/training/snap-book ─────────────────────────────────────────
+
+import { SNAP_BOOK_PRO_TRAINING } from "../../data/snap-book-training";
+
+router.get("/pro/training/snap-book", (_req, res) => {
+  return res.json({ success: true, training: SNAP_BOOK_PRO_TRAINING });
 });
 
 export function registerSnapQuoteRoutes(app: Express) {

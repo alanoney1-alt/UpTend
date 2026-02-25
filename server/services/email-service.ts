@@ -458,6 +458,7 @@ export async function sendProTips(to: string, data: { proName: string }) {
     <li><strong>Send before/after photos</strong> — Customers love seeing the transformation. It also boosts your reviews.</li>
     <li><strong>Ask for reviews</strong> — A simple "If you were happy with the work, a review really helps me out" goes a long way.</li>
   </ol>
+  <p style="color:#555;line-height:1.6">New: Some jobs now come with Photo Quotes — you'll see the customer's photo, AI scope analysis, and equipment checklist. Review the details before heading out to arrive fully prepared.</p>
   <p style="color:#555;line-height:1.6">Keep doing great work. Your reputation is your business.</p>
   <div style="text-align:center;margin:24px 0">
     <a href="${APP_URL()}/career" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">View Your Dashboard</a>

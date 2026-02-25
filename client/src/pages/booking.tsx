@@ -17,6 +17,7 @@ import {
   MapPin,
   Calendar,
   ChevronDown,
+  Camera,
 } from "lucide-react";
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -159,6 +160,23 @@ export default function BookingPage() {
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Snap Quote Option */}
+        <div className="max-w-2xl mx-auto mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
+            <div className="text-center sm:text-left">
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Not sure what you need?</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Snap a photo and let George figure it out.</p>
+            </div>
+            <a
+              href="/snap-quote"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold transition-colors shrink-0"
+            >
+              <Camera className="w-4 h-4" />
+              Photo Quote
+            </a>
           </div>
         </div>
 

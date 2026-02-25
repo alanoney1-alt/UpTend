@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  ShieldCheck, ArrowRight, Globe, Heart, Zap,
+  ShieldCheck, ArrowRight, Globe, Heart, Zap, Camera,
   DollarSign, Clock, Ban, TrendingUp, Users, Star,
   CheckCircle, ChevronRight, Wrench, Waves, Truck,
   Package, Home, Trees, ArrowUpFromLine, Sparkles,
@@ -26,6 +26,7 @@ export default function Landing() {
         <TrustBar />
         <HowItWorks />
         <ServicesStrip />
+        <SnapQuoteCTA />
         <TwoSides />
         <Testimonials />
         <FinalCTA />
@@ -405,6 +406,27 @@ function Testimonials() {
             </Card>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── SNAP QUOTE CTA ─── */
+function SnapQuoteCTA() {
+  return (
+    <section className="py-16 bg-amber-50/50 dark:bg-amber-950/10">
+      <div className="max-w-2xl mx-auto px-4 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          Have a photo of the problem?
+        </h2>
+        <p className="text-slate-600 dark:text-slate-300 mb-6">
+          Skip the form. Snap a photo and get a guaranteed price in seconds.
+        </p>
+        <Link href="/snap-quote" asChild>
+          <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-semibold px-8 py-5 rounded-xl">
+            Get Instant Photo Quote <Camera className="ml-2 w-5 h-5" />
+          </Button>
+        </Link>
       </div>
     </section>
   );

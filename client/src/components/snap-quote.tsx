@@ -68,6 +68,8 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
         if (data.success) {
           setResult(data);
           onQuoteReceived?.(data);
+        } else if (resp.status === 429) {
+          setError(data.error || "Daily limit reached. Try again tomorrow.");
         } else {
           setError(data.error || "Failed to analyze photo");
         }
