@@ -37,9 +37,9 @@ export default function SnapQuotePage() {
       <section className="max-w-lg mx-auto px-4 pb-16">
         <div className="grid grid-cols-3 gap-4 text-center">
           {[
-            { emoji: "📸", label: "Snap" },
-            { emoji: "💰", label: "Price" },
-            { emoji: "✅", label: "Booked" },
+            { emoji: "1", label: "Snap" },
+            { emoji: "2", label: "Price" },
+            { emoji: "3", label: "Booked" },
           ].map((s) => (
             <div key={s.label}>
               <div className="text-2xl mb-1">{s.emoji}</div>

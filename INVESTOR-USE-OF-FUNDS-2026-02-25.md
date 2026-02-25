@@ -7,10 +7,8 @@
 
 **$100K confirmed (your investment) + $400K raise through your network = $500K total**
 
-Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
-- Your $100K = 10% equity (from insider pool at $1M valuation — early investor pricing)
-- Additional $400K at $5M pre-money = 8% combined for network investors
-- You become the lead investor with the best terms in the deal
+- Your $100K = 10% equity (early investor pricing)
+- Terms for the additional $400K to be determined together
 
 ---
 
@@ -18,7 +16,7 @@ Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
 
 **Goal: First paying customers, first revenue, first HOA contract**
 
-### App Build-Out & Launch — $35,000
+### App Build-Out & Launch — $31,150
 | Item | Cost | Timeline |
 |------|------|----------|
 | React Native app → App Store + Google Play | $8,000 | Month 1 |
@@ -30,7 +28,7 @@ Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
 | Third-party API costs (RentCast, SendGrid, Twilio, OpenAI, Anthropic) | $6,000 | Months 1-3 |
 | QA testing / bug bounties | $3,000 | Months 1-2 |
 | Professional UI/UX design pass (contract designer) | $8,000 | Month 1-2 |
-| Legal — Terms of Service, Privacy Policy, contractor agreements | $3,850 | Month 1 |
+| *(Legal broken out separately below)* | — | — |
 
 ### Marketing & Customer Acquisition — $40,000
 | Item | Cost | Timeline |
@@ -47,11 +45,22 @@ Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
 ### Pro Recruitment & Onboarding — $15,000
 | Item | Cost | Timeline |
 |------|------|----------|
-| Pro sign-up bonuses ($250 × 20 pros) | $5,000 | Months 1-2 |
+| Pro marketing & recruitment ads | $5,000 | Months 1-3 |
 | Background checks ($35 × 50 pros) | $1,750 | Months 1-3 |
 | Pro onboarding kits (branded shirts, car magnets) | $3,000 | Month 2 |
 | Insurance & bonding (platform coverage) | $4,000 | Month 1 |
 | Pro training materials / certification program | $1,250 | Month 1-2 |
+
+### Legal & Business Protection — $15,000
+| Item | Cost | Timeline |
+|------|------|----------|
+| Terms of Service + Privacy Policy (attorney-drafted) | $3,000 | Month 1 |
+| Independent contractor agreements (pro-side) | $2,000 | Month 1 |
+| Customer service agreements + liability waivers | $1,500 | Month 1 |
+| LLC operating agreement + corporate governance docs | $2,000 | Month 1 |
+| Investment documents (SAFE, subscription agreements) | $2,500 | Month 1 |
+| Trademark registration (UpTend, Home DNA Scan, George) | $2,500 | Month 1-2 |
+| Insurance — General liability + E&O for platform | $1,500 | Month 1 |
 
 ### Operating Reserve — $10,000
 | Item | Cost | Purpose |
@@ -66,7 +75,7 @@ Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
 - ✅ First 50-100 paying customers
 - ✅ First HOA contract signed (target: 100+ unit community)
 - ✅ $5K-15K monthly revenue run rate
-- ✅ Unit economics proven: $250 avg job × 27% platform fee = $67.50/job
+- ✅ Unit economics proven: $250 avg job × 20% platform fee (15% pro + 5% customer) = $50/job
 - ✅ Google Business Profile live with first reviews
 - ✅ George AI handling real customer conversations
 
@@ -115,19 +124,28 @@ Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
 ### Pro Network Expansion — $40,000
 | Item | Cost | Timeline |
 |------|------|----------|
-| Pro sign-up bonuses ($250 × 80 more pros) | $20,000 | Months 4-12 |
+| Referral program scaling — pro & customer | $20,000 | Months 4-12 |
 | Background checks ($35 × 100) | $3,500 | Months 4-12 |
 | Pro equipment/uniform program | $6,500 | Months 4-8 |
 | Pro training & certification expansion | $5,000 | Months 6-12 |
 | Insurance scaling (more coverage, more pros) | $5,000 | Months 4-12 |
 
-### Operations & Infrastructure — $40,000
+### Legal & Compliance — $25,000
+| Item | Cost | Timeline |
+|------|------|----------|
+| Startup attorney retainer (ongoing counsel) | $12,000 | Months 4-12 |
+| Contractor classification audit (labor attorney) | $3,500 | Month 4-5 |
+| Patent application — Home DNA Scan methodology | $4,000 | Month 5-8 |
+| FL regulatory compliance (licensing by vertical) | $2,500 | Month 4-6 |
+| Data privacy compliance (SSN, payment, home data) | $3,000 | Month 4-5 |
+
+### Operations & Infrastructure — $23,000
 | Item | Cost | Timeline |
 |------|------|----------|
 | Office space / co-working (Orlando) | $12,000 | Months 4-12 |
 | Cloud infrastructure at scale | $10,000 | Months 4-12 |
 | Customer support tooling (Intercom/Zendesk) | $5,000 | Months 4-12 |
-| Accounting / bookkeeping / legal | $8,000 | Months 4-12 |
+| Accounting / bookkeeping | $6,000 | Months 4-12 |
 | Business insurance (E&O, general liability) | $5,000 | Month 4 |
 
 ### Operating Reserve — $30,000
@@ -152,7 +170,7 @@ Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
 
 ### What's Already Built (normally costs $500K-1M)
 - **Full platform live at uptendapp.com** — not a mockup, not a prototype
-- **268 database tables**, 154 AI tools, 7 communication channels
+- **268 database tables**, 162 AI tools, 7 communication channels
 - **George AI** — the most advanced home services AI assistant ever built
 - **React Native app** scaffold ready for App Store
 - **B2B system** — HOA, PM, construction, government pricing & onboarding
@@ -167,7 +185,7 @@ Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
 
 ### The Math
 - Orlando metro: 1M+ households, $6.6B home services TAM
-- Average job: $250 × 27% platform fee = **$67.50 gross margin per job**
+- Average job: $250 × 20% platform fee (15% pro + 5% customer) = **$50 gross margin per job**
 - 1 HOA (200 units) = ~$5,000-15,000/month recurring across services
 - 5 HOAs + direct consumers = **$50K+/month by month 9**
 - Path to $1M ARR within 18 months of funding
@@ -196,11 +214,9 @@ Current valuation: **$5M pre-money** (50% Founder / 40% Insider Pool / 10% ESOP)
 
 # INVESTOR PROTECTIONS
 
-- **SAFE with warrant** — standard Y Combinator SAFE + keep-whole warrant
 - **Board seat** — lead investor gets board observer seat
 - **Quarterly reporting** — financial statements, KPIs, customer metrics
 - **Right of first refusal** on follow-on rounds
-- **Pro-rata rights** to maintain ownership percentage
 
 ---
 

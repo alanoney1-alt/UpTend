@@ -259,7 +259,7 @@ function ServicesStrip() {
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, badge: null, badgeColor: "" },
     { key: "handyman", label: "Handyman", price: "From $75/hr", icon: Wrench, badge: null, badgeColor: "" },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, badge: "Best Value", badgeColor: "bg-emerald-500 text-white" },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine, badge: "Seasonal", badgeColor: "bg-amber-500 text-white" },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: ArrowUpFromLine, badge: "Seasonal", badgeColor: "bg-amber-500 text-white" },
     { key: "landscaping", label: "Landscaping", price: "From $59", icon: Trees, badge: null, badgeColor: "" },
   ];
 

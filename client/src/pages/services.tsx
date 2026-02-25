@@ -151,10 +151,10 @@ const services = [
     icon: Home,
     tagline: "Prevent water damage before it starts.",
     description: "Complete debris removal from all gutters and downspouts. We flush every downspout and air-blow the roof line to prevent clogs from returning.",
-    price: "From $129",
+    price: "From $150",
     includes: [
-      "1-story: $129 | 1-story large: $179",
-      "2-story: $199 | 2-story large: $259",
+      "1-story: $150 | 1-story large: $200",
+      "2-story: $225 | 2-story large: $275",
       "3-story: $350+",
       "Downspout flush test",
       "Roof line air-blow",
