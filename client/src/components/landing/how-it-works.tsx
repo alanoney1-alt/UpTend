@@ -8,7 +8,7 @@ const steps = [
     pillar: "PROTECT",
     keyword: "Protect",
     title: "The Intelligence Phase",
-    description: "Our AI monitors your home value and tracks market shifts. Your journey starts with a 360\u00B0 Home Scan that creates a digital shield, protecting you during insurance claims and resale.",
+    description: "Our AI monitors your home value and tracks market shifts. Your journey starts with a 360\u00B0 Home DNA Scan that creates a digital shield, protecting you during insurance claims and resale.",
     icon: ShieldCheck,
     bullets: ["360° Home DNA Scan", "Insurance Claim Shield", "Market Value Monitoring"],
     color: "text-blue-600 dark:text-blue-400",

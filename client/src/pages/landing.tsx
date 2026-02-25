@@ -53,9 +53,31 @@ function HeroSection() {
           </span>
         </h1>
 
-        <p className="text-white/75 text-xl md:text-2xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+        <p className="text-white/75 text-xl md:text-2xl max-w-2xl mx-auto mb-8 leading-relaxed font-light">
           {t("hero.hero_subhead")}
         </p>
+
+        {/* Service category selector */}
+        <p className="text-white/50 text-sm font-semibold uppercase tracking-widest mb-4">What do you need?</p>
+        <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto mb-10">
+          {[
+            { key: "junk_removal", label: "Junk Removal", icon: Truck },
+            { key: "pressure_washing", label: "Pressure Washing", icon: Waves },
+            { key: "gutter_cleaning", label: "Gutter Cleaning", icon: ArrowUpFromLine },
+            { key: "home_cleaning", label: "Home Cleaning", icon: Sparkles },
+            { key: "handyman", label: "Handyman", icon: Wrench },
+            { key: "landscaping", label: "Landscaping", icon: Trees },
+          ].map((svc) => (
+            <Link
+              key={svc.key}
+              href={`/book?service=${svc.key}`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium hover:bg-[#F47C20] hover:border-[#F47C20] hover:text-white transition-all duration-200 hover:shadow-lg hover:shadow-[#F47C20]/20 hover:scale-[1.03]"
+            >
+              <svc.icon className="w-4 h-4" />
+              {svc.label}
+            </Link>
+          ))}
+        </div>
 
         <div className="flex justify-center mb-10">
           <Link href="/book" asChild>
