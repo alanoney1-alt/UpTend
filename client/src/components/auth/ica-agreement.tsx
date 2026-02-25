@@ -58,8 +58,8 @@ function ICAText({ contractorName }: { contractorName: string }) {
       <p>(a) <strong>Per-Job Compensation.</strong> Contractor is compensated on a per-job basis, not by hourly wage or salary. Payment amounts are determined by the job scope as agreed upon through the platform prior to job commencement.</p>
       <p>(b) <strong>Platform Fee Structure.</strong> Company retains a platform service fee from each completed job as follows:</p>
       <ul>
-        <li>Contractors who maintain a verified LLC or equivalent business entity and carry verified general liability insurance: <strong>20% platform fee</strong> (Contractor receives 80%).</li>
-        <li>Contractors without verified LLC status or without verified insurance documentation: <strong>25% platform fee</strong> (Contractor receives 75%).</li>
+        <li>Contractors who maintain a verified LLC or equivalent business entity and carry verified general liability insurance: <strong>15% platform fee</strong> (Contractor receives 85%).</li>
+        <li>Contractors without verified LLC status or without verified insurance documentation: <strong>15% platform fee</strong> (Contractor receives 85%).</li>
       </ul>
       <p>(c) <strong>Payment Processing.</strong> Payments are processed via Stripe and shall be disbursed within forty-eight (48) hours of confirmed job completion, subject to any applicable holds or dispute resolution processes.</p>
       <p>(d) <strong>Tax Reporting.</strong> Company will issue IRS Form 1099-NEC to Contractor for all earnings of six hundred dollars ($600.00) or more in any calendar year, in accordance with applicable IRS regulations.</p>

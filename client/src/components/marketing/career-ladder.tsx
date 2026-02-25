@@ -26,7 +26,7 @@ const levels = [
     icon: ShieldCheck,
     perks: [
       "Unlocks Pressure Washing & Gutters",
-      "LOWER Fees (Keep 80%)",
+      "Keep 85% of Every Job",
       "Priority Dispatch (See jobs first)",
       "Verified Badge on Profile",
     ],

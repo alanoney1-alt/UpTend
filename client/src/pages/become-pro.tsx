@@ -172,7 +172,7 @@ export default function BecomePro() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="p-6">
               <p className="text-muted-foreground italic leading-relaxed mb-4">
-                "I switched from Thumbtack. No more paying $40 per lead just to compete with 5 other guys. I keep 80% and get matched with real customers."
+                "I switched from Thumbtack. No more paying $40 per lead just to compete with 5 other guys. I keep 85% and get matched with real customers."
               </p>
               <p className="font-bold">Carlos M.</p>
               <p className="text-sm text-muted-foreground">Junk Removal Pro</p>
