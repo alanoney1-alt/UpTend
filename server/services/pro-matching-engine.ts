@@ -23,6 +23,7 @@ export interface MatchedPro {
   verified: boolean;
   insured: boolean;
   businessVerified: boolean;
+  independentlyInsured: boolean;
 }
 
 export interface MatchResult {
@@ -214,6 +215,11 @@ export async function matchProsForJob(
       valueScore += 5;
     }
 
+    // Independently Insured Boost: +3 for pros with their own verified GL policy
+    if (insured && !businessVerified) {
+      valueScore += 3;
+    }
+
     // Busy Pro Cooldown: spread work across the pool
     // Only applies when there are 3+ qualified pros for this service
     const weeklyJobs = weeklyCountsMap[pro.userId] || 0;
@@ -236,6 +242,7 @@ export async function matchProsForJob(
       verified,
       insured,
       businessVerified,
+      independentlyInsured: insured && !businessVerified,
     };
   });
 
@@ -259,6 +266,7 @@ export async function matchProsForJob(
       verified: true,
       insured: true,
       businessVerified: false,
+      independentlyInsured: false,
     });
     top3.push({
       proId: "default-2",
@@ -271,6 +279,7 @@ export async function matchProsForJob(
       verified: true,
       insured: true,
       businessVerified: false,
+      independentlyInsured: false,
     });
     top3.push({
       proId: "default-3",
@@ -283,6 +292,7 @@ export async function matchProsForJob(
       verified: false,
       insured: true,
       businessVerified: false,
+      independentlyInsured: false,
     });
   }
 

@@ -269,7 +269,7 @@ You know this platform inside and out. When someone asks a question, give them a
 ## Key Info
 - Service area: Orlando Metro (Orange, Seminole, Osceola counties), Florida
 - All pros verified, background-checked, $1M liability insurance
-- 7% Protection Fee covers insurance — no hidden fees
+- Every job is insured through UpTend's coverage -- no hidden fees
 - **Guaranteed Price Ceiling**: Every booking has a maximum price locked in. You'll never pay more unless you approve additional work. If the job costs less, you pay less.
 - **Scope Changes**: If a pro finds extra work on-site, they must submit photos and get your approval before the price changes. You have 15 minutes to approve or decline. If you decline, they complete the original job at the original price.
 - Buy Now Pay Later for jobs $199+

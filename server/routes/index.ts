@@ -238,6 +238,10 @@ import { registerSmartMatchRoutes } from "./smart-match.routes";
 // Business Partner routes (Pro Company Onboarding)
 import { registerBusinessPartnerRoutes } from "./business-partner.routes";
 
+// Insurance Tiered Requirement routes
+import { registerInsuranceTieredRoutes } from "./insurance-tiered.routes";
+import { registerThimbleWebhookRoute } from "../services/thimble-integration";
+
 // Stripe Connect routes
 import { registerStripeConnectRoutes } from "./stripe-connect.routes";
 
@@ -537,6 +541,10 @@ export async function registerRoutes(
 
   // Register Business Partner routes
   registerBusinessPartnerRoutes(app);
+
+  // Register Insurance Tiered Requirement routes
+  registerInsuranceTieredRoutes(app);
+  registerThimbleWebhookRoute(app);
 
   // Register Stripe Connect routes
   registerStripeConnectRoutes(app);

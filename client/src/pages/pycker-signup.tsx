@@ -1499,14 +1499,25 @@ export default function PyckerSignup() {
                 />
 
                 {/* Insurance Notice */}
-                <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
                   <div className="flex items-start gap-3">
-                    <DollarSign className="w-5 h-5 text-amber-600 mt-0.5" />
+                    <Shield className="w-5 h-5 text-green-600 mt-0.5" />
                     <div>
-                      <h3 className="font-medium text-amber-700 dark:text-amber-400">Insurance is Optional but Recommended</h3>
-                      <p className="text-sm text-amber-600 dark:text-amber-500 mt-1">
-                        You can skip the insurance section. All pros pay a flat 15% platform fee and keep 85% of every job.
-                        Pros with verified insurance get priority matching and access to higher-value jobs.
+                      <h3 className="font-medium text-green-700 dark:text-green-400">Start Earning Immediately -- No Insurance Required Upfront</h3>
+                      <p className="text-sm text-green-600 dark:text-green-500 mt-1">
+                        Every job is covered by UpTend's platform policy while you build your business.
+                        Already have insurance? Upload it now for a Verified badge and priority matching.
+                      </p>
+                      <p className="text-sm text-green-600 dark:text-green-500 mt-1">
+                        Don't have insurance yet? No problem. Get covered in 60 seconds when you're ready.{" "}
+                        <a
+                          href="https://www.thimble.com/get-a-quote?partner=uptend"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline font-medium"
+                        >
+                          Learn more
+                        </a>
                       </p>
                     </div>
                   </div>

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { MyRates } from "@/components/pro/my-rates";
+import { InsuranceStatusCard } from "@/components/pro/insurance-status";
 import { useState } from "react";
 
 interface CareerStats {
@@ -287,6 +288,9 @@ export default function CareerDashboard() {
             <ChevronDown className="w-4 h-4 text-muted-foreground -rotate-90 group-hover:text-[#ea580c]" />
           </Link>
         </Card>
+
+        {/* Insurance Status */}
+        <InsuranceStatusCard />
 
         {/* Business Partner Section */}
         <BusinessPartnerSection />

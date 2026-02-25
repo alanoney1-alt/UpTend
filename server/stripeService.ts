@@ -12,7 +12,8 @@ export type { FeeBreakdown };
 // Legacy constants (kept for backward compatibility)
 const LLC_PLATFORM_FEE_PERCENT = 20;
 const NON_LLC_PLATFORM_FEE_PERCENT = 25;
-const NON_LLC_INSURANCE_FEE = 10;
+// Insurance fee removed -- all pros covered by tiered insurance model
+const NON_LLC_INSURANCE_FEE = 0;
 
 export interface PayoutBreakdown {
   totalAmount: number;

@@ -537,7 +537,7 @@ function ProSettings({ profile }: { profile: any }) {
                 {!profile?.hasOwnLiabilityInsurance && (
                   <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-3">
                     <p className="text-xs font-medium text-yellow-800 dark:text-yellow-200">
-                      <strong>Note:</strong> $10 will be deducted from your payout per job to cover UpTend's $1M liability insurance
+                      <strong>Note:</strong> Every job is insured. New pros are covered by our platform policy. Upload your own insurance for priority matching.
                     </p>
                   </div>
                 )}

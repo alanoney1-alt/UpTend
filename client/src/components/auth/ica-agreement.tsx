@@ -66,7 +66,7 @@ function ICAText({ contractorName }: { contractorName: string }) {
 
       <h3 className="font-bold">7. INSURANCE</h3>
       <p>(a) Contractor is solely responsible for obtaining and maintaining adequate general liability insurance coverage for all services performed. Company strongly recommends a minimum of $1,000,000 in general liability coverage.</p>
-      <p>(b) Contractors who do not provide proof of their own liability insurance are subject to a <strong>$10.00 per-job platform insurance surcharge</strong>, which contributes to Company's contingency risk pool.</p>
+      <p>(b) Every job is insured. New Contractors are covered by Company's platform policy. As Contractors grow their earnings on the platform, they will transition to their own coverage through the tiered insurance model outlined in the platform dashboard.</p>
       <p>(c) Company maintains its own general liability insurance policy for the purpose of covering Company's obligations under business-to-business ("B2B") and government prime contracts. Company's insurance does not extend coverage to Contractor.</p>
 
       <h3 className="font-bold">8. INDEMNIFICATION</h3>

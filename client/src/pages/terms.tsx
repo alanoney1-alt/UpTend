@@ -153,7 +153,7 @@ export default function TermsPage() {
 
 <h3>5.3 Independent (Non-LLC) Pros</h3>
 
-<p>Pros who operate as sole proprietors without an LLC are designated as <strong>"Independent"</strong> Pros. Independent Pros are covered by UpTend's supplemental liability program (funded by the \$10 per job insurance surcharge) which provides limited coverage for property damage or bodily injury occurring during a job. This supplemental coverage is secondary to any insurance the Pro may carry individually and is subject to coverage limits, exclusions, and claims procedures established by UpTend's insurance provider.</p>
+<p>Pros who operate as sole proprietors without an LLC are designated as <strong>"Independent"</strong> Pros. All new Pros are covered by UpTend's platform liability policy at no additional cost while building their business on the platform. As Pros grow their earnings, they transition through a tiered insurance model: platform coverage (under $1,000 in earnings), per-job coverage recommended ($1,000-$5,000), and independent monthly GL policy required ($5,000+). This platform coverage is secondary to any insurance the Pro may carry individually and is subject to coverage limits, exclusions, and claims procedures established by UpTend's insurance provider.</p>
 
 <h3>5.4 Insurance Disclosure to Customers</h3>
 

@@ -221,7 +221,7 @@ export const UPTEND_KNOWLEDGE = {
     },
     proInsuranceSurcharge: {
       name: "Pro Insurance Surcharge",
-      description: "Pros without their own liability insurance pay $10/job (deducted from payout). Pros with verified COI waive this fee.",
+      description: "Every job is insured. New pros are covered by our platform policy. As pros grow, they transition to their own coverage through our tiered insurance model.",
       amount: "$10 per job",
       applies: "Only to Pros without own liability insurance",
     },
