@@ -7427,3 +7427,57 @@ export async function assess_water_damage(params: { description: string; photoUr
  message: ` **Water Damage Assessment**\n\n Likely source: ${source}\n Severity: ${severity.toUpperCase()}\n Mold risk: ${moldRisk.toUpperCase()} (can start in ${moldTimeline})\n${isSewage ? "\n **SEWAGE DETECTED — wear gloves, this is a biohazard**\n" : ""}\n**DO THIS NOW:**\n${["Stop water source", "Extract standing water", "Run fans + dehumidifier", "Document with photos for insurance"].map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\n Estimated repair: ${severity === "minor" ? "$200-500" : severity === "moderate" ? "$1,000-3,000" : "$3,000-10,000+"}\n\nWant me to dispatch a water mitigation pro? Time is critical — every hour matters for mold prevention.`,
  };
 }
+
+// ─────────────────────────────────────────────
+// SMART MATCH PRO — George calls this to find the best pro + price
+// ─────────────────────────────────────────────
+export async function smartMatchPro(args: {
+ serviceType: string;
+ address?: string;
+ scope?: any;
+ description?: string;
+}): Promise<object> {
+ try {
+ const { matchProsForJob } = await import("./pro-matching-engine");
+ const { calculateFees } = await import("./fee-calculator-v2");
+
+ const result = await matchProsForJob(
+ args.serviceType,
+ args.scope || {},
+ args.address || "Orlando, FL",
+ );
+
+ if (result.matches.length === 0) {
+ return {
+ error: "No pros available for this service right now",
+ suggestion: "Try booking through the website or check back soon",
+ };
+ }
+
+ const topMatch = result.matches[0];
+ const fees = calculateFees(topMatch.price);
+
+ return {
+ matchId: result.matchId,
+ pro: {
+ firstName: topMatch.firstName,
+ rating: topMatch.rating,
+ completedJobs: topMatch.completedJobs,
+ verified: topMatch.verified,
+ tenureMonths: topMatch.tenureMonths,
+ },
+ price: fees.customerTotal,
+ serviceFee: fees.serviceFee,
+ basePrice: fees.proPrice,
+ priceProtected: true,
+ hasAlternatives: result.matches.length > 1,
+ message: `Found ${topMatch.firstName}, a ${topMatch.verified ? "verified" : ""} pro with ${topMatch.rating} stars and ${topMatch.completedJobs} completed jobs. Total price: $${fees.customerTotal.toFixed(2)} (includes $${fees.serviceFee.toFixed(2)} service fee). Price Protected.`,
+ };
+ } catch (err: any) {
+ console.error("[George Tools] smartMatchPro error:", err);
+ return {
+ error: "Could not find a match right now",
+ suggestion: "Let me connect you with our booking team",
+ };
+ }
+}

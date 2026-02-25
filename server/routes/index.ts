@@ -231,6 +231,10 @@ import { registerContentRoutes } from "./content.routes.js";
 import { registerInviteCodeRoutes } from "./invite-codes/invite-codes.routes";
 import { registerAppDataRoutes } from "./app-data.routes";
 
+// Pro Pricing + Smart Match routes
+import { registerProPricingRoutes } from "./pro-pricing.routes";
+import { registerSmartMatchRoutes } from "./smart-match.routes";
+
 // Batch 1 API fixes (haulers/available, certifications, wallet, notifications, quality-score, jobs)
 import { registerBatch1FixRoutes } from "./batch1-fixes.routes";
 
@@ -514,6 +518,10 @@ export async function registerRoutes(
 
   // Register SMS Bot standalone routes
   registerSmsBotStandaloneRoutes(app);
+
+  // Register Pro Pricing + Smart Match routes
+  registerProPricingRoutes(app);
+  registerSmartMatchRoutes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);

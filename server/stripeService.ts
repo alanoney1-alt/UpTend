@@ -3,7 +3,13 @@ import { storage } from './storage';
 import { logError } from './utils/logger';
 
 import { getFeePercent } from './services/fee-calculator';
+import { calculateFees as calculateFeesV2, type FeeBreakdown } from './services/fee-calculator-v2';
 
+// V2 fee model: 5% customer fee + 15% pro fee
+export { calculateFeesV2 as calculateFees };
+export type { FeeBreakdown };
+
+// Legacy constants (kept for backward compatibility)
 const LLC_PLATFORM_FEE_PERCENT = 20;
 const NON_LLC_PLATFORM_FEE_PERCENT = 25;
 const NON_LLC_INSURANCE_FEE = 10;

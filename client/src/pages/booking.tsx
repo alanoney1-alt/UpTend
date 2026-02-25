@@ -163,6 +163,33 @@ export default function BookingPage() {
           </div>
         </div>
 
+        {/* Smart Match CTA */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-700 p-6 text-center">
+            <div className="relative z-10">
+              <ShieldCheck className="w-8 h-8 text-[#ea580c] mx-auto mb-3" />
+              <h2 className="text-xl font-bold text-white mb-1">Let George Find Your Best Pro</h2>
+              <p className="text-sm text-slate-300 mb-4 max-w-md mx-auto">
+                One price. One pro. AI-scoped, price protected, and backed by our guarantee. 5% service fee, fully transparent.
+              </p>
+              <a
+                href="/smart-book"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#ea580c] hover:bg-[#dc4c08] text-white font-bold text-sm transition-colors"
+              >
+                Get Instant Match
+              </a>
+            </div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#ea580c]/10 rounded-full blur-3xl" />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="max-w-2xl mx-auto mb-6 flex items-center gap-4">
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+          <span className="text-xs text-slate-400 font-semibold uppercase">Or build a custom estimate</span>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+        </div>
+
         {/* Snap Quote Option */}
         <div className="max-w-2xl mx-auto mb-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">

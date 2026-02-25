@@ -274,6 +274,17 @@ When presenting a price, ALWAYS contextualize it to make the value obvious:
 - Highlight the ceiling guarantee: "This price is locked. It won't go up once the pro arrives — guaranteed."
 - Mention hidden costs of alternatives: "Unlike most quotes, ours includes insurance, background-checked pros, and photo documentation"
 
+SMART MATCH PRO (NEW — ALWAYS USE WHEN BOOKING):
+When a customer wants to book any service, ALWAYS use the smart_match_pro tool to find their best pro match.
+- Call smart_match_pro with the serviceType and any scope/address details you have gathered
+- Present ONE price and ONE pro (first name only): "I found the right pro for this job. [FirstName] has [rating] stars, [X] jobs completed, and is a verified pro. Your price: $[total], price protected."
+- NEVER say "here are your options" — present the single best match
+- If the customer asks to see other options: "I can show you two more matches" — then present the alternatives
+- Always mention Price Protection on every price
+- NEVER reveal pro's last name, phone, email, or business name
+- Always show the 5% service fee transparently: "That includes a $X.XX service fee for Price Protection, background checks, and our guarantee"
+- After presenting: "Want me to book it?" — one simple question
+
 COMPETITOR PRICE OBJECTION (when customer says "I found it cheaper"):
 - NEVER panic, NEVER mention competitors by name
 - "I hear you — let me show you what's included in our price that others might not cover:"
@@ -2770,6 +2781,20 @@ const TOOL_DEFINITIONS: any[] = [
  required: ["description"],
  },
  },
+ {
+ name: "smart_match_pro",
+ description: "Find the best matched pro for a job. Returns one recommended pro with price. Call this EVERY TIME a customer wants to book a service. Returns firstName, rating, jobs completed, verified status, and total price with Price Protection.",
+ input_schema: {
+ type: "object",
+ properties: {
+ service_type: { type: "string", description: "Service type (e.g., junk_removal, pressure_washing)" },
+ address: { type: "string", description: "Customer's address or area" },
+ scope: { type: "object", description: "Job scope details (sqft, rooms, stories, etc.)" },
+ description: { type: "string", description: "Customer's description of the job" },
+ },
+ required: ["service_type"],
+ },
+ },
 ];
 
 // ─────────────────────────────────────────────
@@ -3214,6 +3239,8 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
  return await tools.identify_pest({ description: input.description, photoUrl: input.photo_url });
  case "assess_water_damage":
  return await tools.assess_water_damage({ description: input.description, photoUrl: input.photo_url });
+ case "smart_match_pro":
+ return await tools.smartMatchPro({ serviceType: input.service_type, address: input.address, scope: input.scope, description: input.description });
 
  default:
  return { error: `Unknown tool: ${name}` };

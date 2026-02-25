@@ -7,9 +7,11 @@ import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
 import {
   ArrowLeft, Truck, Star, Award, TrendingUp, Loader2,
-  Medal, ShieldCheck, Zap, Target, Lock
+  Medal, ShieldCheck, Zap, Target, Lock, ChevronDown, ChevronUp
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { MyRates } from "@/components/pro/my-rates";
+import { useState } from "react";
 
 interface CareerStats {
   level: number;
@@ -39,6 +41,29 @@ const levelConfig = [
   { level: 2, title: "Verified Pro", icon: ShieldCheck, color: "text-green-500", requiredJobs: 10, requiredStars: 0, payout: "80%" },
   { level: 3, title: "Master Consultant", icon: Award, color: "text-amber-500", requiredJobs: 50, requiredStars: 40, payout: "85% + Commissions" },
 ];
+
+function MyRatesSection() {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Card className="p-5" data-testid="card-my-rates">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between"
+      >
+        <h3 className="font-bold flex items-center gap-2">
+          <Target className="w-5 h-5 text-[#ea580c]" />
+          My Rates
+        </h3>
+        {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+      </button>
+      {isOpen && (
+        <div className="mt-4">
+          <MyRates />
+        </div>
+      )}
+    </Card>
+  );
+}
 
 export default function CareerDashboard() {
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
@@ -210,6 +235,9 @@ export default function CareerDashboard() {
             })}
           </div>
         </Card>
+
+        {/* My Rates Section */}
+        <MyRatesSection />
 
         {certifications.length > 0 && (
           <Card className="p-5" data-testid="card-certifications">

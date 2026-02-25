@@ -278,6 +278,36 @@ export default function PublicPricing() {
           ))}
         </div>
 
+        {/* How Pricing Works */}
+        <div className="max-w-4xl mx-auto mt-16 mb-8 bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-slate-800">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+              How Pricing Works
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-4 gap-6">
+            {[
+              { step: "1", title: "George scopes your job", desc: "AI-powered assessment of exactly what you need" },
+              { step: "2", title: "We match you with the best pro", desc: "Rated by quality, not just price" },
+              { step: "3", title: "You see one price", desc: "That's what you pay. No surprises." },
+              { step: "4", title: "5% service fee included", desc: "Covers Price Protection, background checks, and our guarantee" },
+            ].map((item) => (
+              <div key={item.step} className="text-center">
+                <div className="w-10 h-10 rounded-full bg-[#F47C20]/10 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-sm font-bold text-[#F47C20]">{item.step}</span>
+                </div>
+                <h4 className="font-bold text-sm mb-1 text-slate-900 dark:text-white">{item.title}</h4>
+                <p className="text-xs text-slate-500">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              For Pros: Keep 85% of every job. Set your own rates.
+            </p>
+          </div>
+        </div>
+
         {/* Price Protection Guarantee */}
         <div className="max-w-4xl mx-auto mt-16 mb-8 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl p-6 md:p-8 border border-[#F47C20]/20">
           <div className="text-center mb-4">

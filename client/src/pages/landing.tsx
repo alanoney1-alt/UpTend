@@ -26,6 +26,7 @@ export default function Landing() {
         <TrustBar />
         <HowItWorks />
         <ServicesStrip />
+        <SmartMatchCTA />
         <SnapQuoteCTA />
         <TwoSides />
         <Testimonials />
@@ -406,6 +407,31 @@ function Testimonials() {
             </Card>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── SMART MATCH CTA ─── */
+function SmartMatchCTA() {
+  return (
+    <section className="py-16 bg-gradient-to-br from-slate-900 to-slate-800">
+      <div className="max-w-3xl mx-auto px-4 text-center">
+        <ShieldCheck className="w-10 h-10 text-[#F47C20] mx-auto mb-4" />
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+          One price. One pro. George handles the rest.
+        </h2>
+        <p className="text-slate-300 mb-2 max-w-xl mx-auto">
+          Every job is scoped by AI. Every price is protected. Every pro is verified.
+        </p>
+        <p className="text-xs text-slate-400 mb-6">
+          5% service fee covers Price Protection, background checks, and our guarantee.
+        </p>
+        <Link href="/smart-book" asChild>
+          <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold px-8 py-5 rounded-xl">
+            Get Your Match <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
+        </Link>
       </div>
     </section>
   );

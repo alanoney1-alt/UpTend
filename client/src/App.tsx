@@ -141,6 +141,7 @@ const HomeCleaningOrlando = lazy(() => import("@/pages/services/home-cleaning-or
 const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orlando"));
 
 // Blog
+const SmartBooking = lazy(() => import("@/pages/smart-booking"));
 const SnapQuotePage = lazy(() => import("@/pages/snap-quote"));
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
 const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
@@ -169,6 +170,7 @@ function Router() {
     <Suspense fallback={<PageLoader />}>
     <Switch>
       <Route path="/" component={Landing} />
+      <Route path="/smart-book" component={SmartBooking} />
       <Route path="/book" component={Booking} />
       <Route path="/booking-success" component={BookingSuccess} />
       <Route path="/haulers" component={Haulers} />
