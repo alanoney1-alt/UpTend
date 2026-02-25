@@ -1,6 +1,6 @@
 # UpTend SEO Keyword Tracking
 
-*Last Updated: February 24, 2026*
+*Last Updated: February 25, 2026*
 
 ## Keyword Rankings Analysis
 
@@ -98,6 +98,98 @@
 
 ---
 
+### February 25, 2026 - Daily Competitive Analysis
+
+**Target Keywords & Top 3 Competitors:**
+
+#### 1. "handyman Lake Nona"
+**Top Competitors:**
+1. **Lake Nona Handyman** - lakenonahandyman.com (Position #1)
+   - Exact match domain, 30+ years experience
+   - Strong local authority, honey-do list specialty
+   
+2. **TJ Handyman Services LLC** - tjhandymanservicesllc.com (Position #2)
+   - Professional remodeling focus, licensed
+   - Lake Nona specific landing page
+   
+3. **Lake Nona Fix It LLC** - lakenonafixit.com (Position #3)
+   - One-stop shop positioning, plumbing/electrical
+   - Local area specialization
+
+**Trend**: Exact match domains still dominating local handyman searches
+
+#### 2. "junk removal Orlando" 
+**Top Competitors:**
+1. **1-800-GOT-JUNK?** - 1800gotjunk.com (Position #1)
+   - National franchise, same-day service
+   - Strong brand recognition
+   
+2. **Junk King Orlando** - junk-king.com (Position #2)
+   - Local franchise, eco-friendly positioning
+   - Professional debris removal focus
+   
+3. **Orlando Junk Removal** - orlando-junk-removal.com (Position #3)
+   - Local business, geographic domain
+   - Trash/debris/waste disposal combo
+
+**Trend**: National franchises maintaining top positions, local SEO important
+
+#### 3. "pressure washing Orlando"
+**Top Competitors:**
+1. **Orlando Pressure Washing Pros** - orlandopressurewashpros.com (Position #1)
+   - #1 rated positioning, Central Florida focus
+   - Soft washing specialty, professional branding
+   
+2. **Wash Rite** - washritecleaning.com (Position #2)
+   - Premier company, roof cleaning specialty
+   - Established since 2019, all surfaces
+   
+3. **Orlando Pressure Wash & More** - orlandopressurewashandmore.com (Position #3)
+   - Free estimates, commercial/residential
+   - No project too small/large messaging
+
+**Trend**: Professional positioning and specialization winning
+
+#### 4. "gutter cleaning Orlando"
+**Top Competitors:**
+1. **Orlando Roofs and Gutters LLC** - orlandoroofsandgutters.com (Position #1)
+   - Top rated, 100% satisfaction guaranteed
+   - Combined roof/gutter specialty
+   
+2. **Crystal Clear Services** - (from Yelp listings) (Position #2)
+   - High review volume on Yelp
+   - Local service provider
+   
+3. **Magic Bubbles** - magicbubbleswash.com (Position #3)
+   - Multi-service provider, free estimates
+   - Established brand presence
+
+**Trend**: Guarantee messaging and Yelp presence important
+
+#### 5. "home services lake nona"
+**Top Competitors:**
+1. **Lake Nona Fix It LLC** - lakenonafixit.com (Position #1)
+   - One-stop shop, comprehensive services
+   - Plumbing/electrical/handyman combo
+   
+2. **Lake Nona Handyman** - lakenonahandyman.com (Position #2)
+   - Central FL Handyman LLC, established presence
+   - Carpentry and baseboard specialty
+   
+3. **TJ Handyman Services LLC** - tjhandymanservicesllc.com (Position #3)
+   - Home maintenance focus, trusted brand
+   - Multiple Lake Nona service pages
+
+**Trend**: Local Lake Nona businesses dominating over general Orlando providers
+
+**Key Insights:**
+- Lake Nona market dominated by hyper-local businesses
+- "Fix It" and "Handyman" in business names performing well
+- Professional credentials and guarantees are differentiators
+- Multi-service providers have SEO advantage
+
+---
+
 ## Keyword Performance Trends
 
 ### High-Opportunity Keywords (Low Competition, High Intent)
@@ -142,4 +234,4 @@
 
 ---
 
-*Next update: February 25, 2026*
+*Next update: February 26, 2026*
