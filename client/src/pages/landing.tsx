@@ -40,7 +40,7 @@ export default function Landing() {
 /* ─── TIME-AWARE HELPERS ─── */
 function getTimeAwareSubtitle(): string {
   const hour = new Date().getHours();
-  if (hour >= 6 && hour <= 11) return "Start your day right. Book a pro in 60 seconds.";
+  if (hour >= 6 && hour <= 11) return "Start your day right. Book a pro before your coffee gets cold.";
   if (hour >= 12 && hour <= 17) return "Get it done today. Same-day pros available.";
   if (hour >= 18 && hour <= 22) return "Plan ahead. Book now, schedule anytime.";
   return "Can't sleep? Neither can we. Book for tomorrow.";

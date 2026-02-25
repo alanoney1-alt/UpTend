@@ -14,7 +14,7 @@ export default function SnapQuotePage() {
           Snap. Book. Done.
         </h1>
         <p className="mt-2 text-base text-slate-500 max-w-sm mx-auto">
-          Photo → Price → Pro at your door. Under 30 seconds.
+          Photo → Describe → Price → Pro at your door.
         </p>
       </section>
 

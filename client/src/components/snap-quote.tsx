@@ -62,12 +62,41 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
   const [result, setResult] = useState<SnapQuoteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [pendingBase64, setPendingBase64] = useState<string | null>(null);
+  const [description, setDescription] = useState("");
+  const [awaitingDescription, setAwaitingDescription] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const submitForAnalysis = useCallback(async (base64: string, desc: string) => {
+    setLoading(true);
+    setAwaitingDescription(false);
+    try {
+      const resp = await fetch("/api/snap-quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageBase64: base64, description: desc }),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        setResult(data);
+        onQuoteReceived?.(data);
+      } else if (resp.status === 429) {
+        setError(data.error || "Daily limit reached. Try again tomorrow.");
+      } else {
+        setError(data.error || "Failed to analyze photo");
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [onQuoteReceived]);
 
   const handleFile = useCallback(async (file: File) => {
     setError(null);
     setResult(null);
     setBooked(false);
+    setDescription("");
 
     const reader = new FileReader();
     reader.onload = () => setPreview(reader.result as string);
@@ -76,30 +105,18 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
     const base64Reader = new FileReader();
     base64Reader.onload = async () => {
       const base64 = (base64Reader.result as string).split(",")[1];
-      setLoading(true);
-      try {
-        const resp = await fetch("/api/snap-quote", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageBase64: base64 }),
-        });
-        const data = await resp.json();
-        if (data.success) {
-          setResult(data);
-          onQuoteReceived?.(data);
-        } else if (resp.status === 429) {
-          setError(data.error || "Daily limit reached. Try again tomorrow.");
-        } else {
-          setError(data.error || "Failed to analyze photo");
-        }
-      } catch {
-        setError("Network error. Please try again.");
-      } finally {
-        setLoading(false);
-      }
+      setPendingBase64(base64);
+      setAwaitingDescription(true);
     };
     base64Reader.readAsDataURL(file);
-  }, [onQuoteReceived]);
+  }, []);
+
+  // Legacy direct-submit path removed — now goes through description step
+  const handleSubmitWithDescription = useCallback(() => {
+    if (pendingBase64) {
+      submitForAnalysis(pendingBase64, description);
+    }
+  }, [pendingBase64, description, submitForAnalysis]);
 
   const handleBookNow = useCallback(async () => {
     if (!result) return;
@@ -159,8 +176,41 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
         }}
       />
 
+      {/* Description Step — after photo, before analysis */}
+      {awaitingDescription && preview && !loading && !result && (
+        <div className="w-full bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <img src={preview} alt="Your photo" className="w-full max-h-56 object-cover" />
+          <div className="p-5 space-y-4">
+            <h3 className="text-lg font-bold text-slate-900">What's the issue?</h3>
+            <p className="text-sm text-slate-500">Help George understand what you're seeing. A quick description makes the quote more accurate.</p>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="e.g., Faucet leaks when turned off, stain on ceiling won't go away, need this junk removed..."
+              className="w-full h-24 rounded-lg border border-slate-300 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
+              autoFocus
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={handleSubmitWithDescription}
+                className="flex-1 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold py-3 rounded-xl transition-colors"
+              >
+                Get My Quote
+              </button>
+              <button
+                onClick={() => { setAwaitingDescription(false); setPendingBase64(null); setPreview(null); }}
+                className="px-4 py-3 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors"
+              >
+                Retake
+              </button>
+            </div>
+            <p className="text-xs text-slate-400 text-center">George uses your photo + description to identify the service and estimate pricing</p>
+          </div>
+        </div>
+      )}
+
       {/* Upload Area */}
-      {!result && !loading && !booked && (
+      {!result && !loading && !booked && !awaitingDescription && (
         <button
           onClick={handleClick}
           className={cn(
