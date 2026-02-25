@@ -1,6 +1,6 @@
 import { getUncachableStripeClient } from './stripeClient';
 import { storage } from './storage';
-import { sendJobCompleted } from './services/email-service';
+import { sendJobCompleted, sendPaymentFailed } from './services/email-service';
 import { handleDisputeWithEvidence } from './routes/stripe-disputes';
 import { logDispute, logRefund } from './services/accounting-service';
 import Stripe from 'stripe';
@@ -171,12 +171,13 @@ export class WebhookHandlers {
       }
 
       if (email) {
-        // Use the generic send from email-service (import inline to avoid circular deps)
-        const { default: nodemailer } = await import('nodemailer');
-        // Re-use the same transport logic — but since sendJobCompleted doesn't fit,
-        // we'll log for now. In production, add a sendPaymentFailed email template.
-        console.log(`[WEBHOOK] Payment failed notification should be sent to ${email} for job ${jobId}`);
-        // TODO: Create sendPaymentFailed email template and call it here
+        await sendPaymentFailed(email, {
+          jobId,
+          serviceType: job.serviceType,
+          amount: job.finalPrice || job.livePrice || job.priceEstimate || 0,
+          failureCode: failureCode || undefined,
+          failureMessage: failureMessage || undefined,
+        });
       }
     } catch (emailErr: any) {
       console.error(`[WEBHOOK] Failed to process payment failure email for job ${jobId}:`, emailErr.message);

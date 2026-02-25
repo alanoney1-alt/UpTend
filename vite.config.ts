@@ -30,6 +30,15 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          recharts: ['recharts'],
+          leaflet: ['leaflet', 'react-leaflet'],
+          stripe: ['@stripe/stripe-js', '@stripe/react-stripe-js'],
+        },
+      },
+    },
   },
   server: {
     fs: {

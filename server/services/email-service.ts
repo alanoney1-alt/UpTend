@@ -467,3 +467,30 @@ export async function sendProTips(to: string, data: { proName: string }) {
   const text = `Hi ${data.proName}, here are 3 things top UpTend pros do: 1) Respond fast — accept jobs within 15 minutes. 2) Send before/after photos. 3) Ask for reviews. View your dashboard at ${APP_URL()}/career`;
   return send(to, "How top UpTend Pros earn more", html, text);
 }
+
+// ─── Payment Failed ────────────────────────────────────────────────
+
+export async function sendPaymentFailed(to: string, data: {
+  jobId: string;
+  serviceType: string;
+  amount: number;
+  failureCode?: string;
+  failureMessage?: string;
+}) {
+  const reasonText = data.failureMessage || data.failureCode || "Your payment method was declined";
+  const html = wrap("Payment Failed", `
+  <p style="color:#555;line-height:1.6">We were unable to process payment for your recent service.</p>
+  <table style="width:100%;border-collapse:collapse;margin:16px 0">
+    <tr><td style="padding:8px 0;color:#888;width:140px">Service</td><td style="padding:8px 0">${data.serviceType || "General"}</td></tr>
+    <tr><td style="padding:8px 0;color:#888">Amount</td><td style="padding:8px 0;font-weight:600;color:#c00">${money(data.amount)}</td></tr>
+    <tr><td style="padding:8px 0;color:#888">Reason</td><td style="padding:8px 0">${reasonText}</td></tr>
+  </table>
+  <p style="color:#555;line-height:1.6">Please update your payment method to avoid service interruptions.</p>
+  <div style="text-align:center;margin:24px 0">
+    <a href="${APP_URL()}/settings/billing" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">Update Payment Method</a>
+  </div>
+  <p style="color:#888;font-size:13px;margin-top:24px">Questions? Reply to this email or call us at (407) 338-3342</p>
+  `);
+  const text = `Payment of ${money(data.amount)} failed for your ${data.serviceType} service. Reason: ${reasonText}. Please update your payment method at ${APP_URL()}/settings/billing`;
+  return send(to, "Payment Failed — Action Required", html, text);
+}

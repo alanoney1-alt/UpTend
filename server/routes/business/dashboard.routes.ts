@@ -10,6 +10,11 @@ import { requireAuth } from "../../middleware/auth";
 
 const router = Router();
 
+// Helper: get business account for the authenticated user
+async function getBusinessForUser(userId: string) {
+  return storage.getBusinessAccountByUser(userId);
+}
+
 // GET /api/business/team - Get team for current user's business
 router.get("/team", requireAuth, async (req: any, res) => {
   try {
@@ -18,8 +23,12 @@ router.get("/team", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Find user's business and return team members
-    const teamMembers: any[] = [];
+    const business = await getBusinessForUser(userId);
+    if (!business) {
+      return res.json([]);
+    }
+
+    const teamMembers = await storage.getTeamMembersByBusiness(business.id);
     res.json(teamMembers);
   } catch (error) {
     console.error("Error fetching team:", error);
@@ -35,16 +44,40 @@ router.get("/billing", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Get billing overview
-    const billingData = {
-      currentBalance: 0,
-      upcomingCharges: 0,
-      paymentMethods: [],
-      recentTransactions: [],
-      billingPeriod: "monthly"
-    };
+    const business = await getBusinessForUser(userId);
+    if (!business) {
+      return res.json({
+        currentBalance: 0,
+        upcomingCharges: 0,
+        paymentMethods: [],
+        recentTransactions: [],
+        billingPeriod: "monthly"
+      });
+    }
 
-    res.json(billingData);
+    const jobs = await storage.getServiceRequestsByCustomer(userId);
+    const completedJobs = jobs.filter(j => j.status === "completed");
+    const recentTransactions = completedJobs
+      .sort((a, b) => (b.completedAt || "").localeCompare(a.completedAt || ""))
+      .slice(0, 10)
+      .map(j => ({
+        id: j.id,
+        serviceType: j.serviceType,
+        amount: j.finalPrice || j.livePrice || j.priceEstimate || 0,
+        date: j.completedAt || j.createdAt,
+        status: j.paymentStatus,
+      }));
+
+    const pendingJobs = jobs.filter(j => j.paymentStatus === "pending" && j.status !== "cancelled");
+    const upcomingCharges = pendingJobs.reduce((sum, j) => sum + (j.livePrice || j.priceEstimate || 0), 0);
+
+    res.json({
+      currentBalance: business.totalSpent || 0,
+      upcomingCharges,
+      paymentMethods: business.paymentMethodId ? [{ id: business.paymentMethodId, type: "card" }] : [],
+      recentTransactions,
+      billingPeriod: business.billingFrequency || "monthly",
+    });
   } catch (error) {
     console.error("Error fetching billing data:", error);
     res.status(500).json({ error: "Failed to fetch billing data" });
@@ -59,15 +92,32 @@ router.get("/booking", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Get booking overview
-    const bookingData = {
-      upcomingBookings: [],
-      recentBookings: [],
-      bookingSettings: {},
-      availableServices: []
-    };
+    const business = await getBusinessForUser(userId);
+    const jobs = await storage.getServiceRequestsByCustomer(userId);
 
-    res.json(bookingData);
+    const now = new Date().toISOString();
+    const upcomingBookings = jobs
+      .filter(j => j.scheduledFor > now && j.status !== "completed" && j.status !== "cancelled")
+      .sort((a, b) => a.scheduledFor.localeCompare(b.scheduledFor));
+
+    const recentBookings = jobs
+      .filter(j => j.status === "completed")
+      .sort((a, b) => (b.completedAt || "").localeCompare(a.completedAt || ""))
+      .slice(0, 10);
+
+    const recurringJobs = business
+      ? await storage.getRecurringJobsByBusinessAccount(business.id)
+      : [];
+
+    res.json({
+      upcomingBookings,
+      recentBookings,
+      bookingSettings: {
+        invoicingEnabled: business?.invoicingEnabled || false,
+        netPaymentTerms: business?.netPaymentTerms || 0,
+      },
+      availableServices: recurringJobs,
+    });
   } catch (error) {
     console.error("Error fetching booking data:", error);
     res.status(500).json({ error: "Failed to fetch booking data" });
@@ -82,24 +132,46 @@ router.get("/dashboard", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Implement business dashboard logic
-    const dashboardData = {
-      totalJobs: 0,
-      activeJobs: 0,
-      completedJobs: 0,
-      totalSpent: 0,
-      teamMembers: 0,
-      properties: 0,
-      upcomingJobs: [],
-      recentActivity: [],
-      esgMetrics: {
-        carbonSaved: 0,
-        wasteReduced: 0,
-        esgScore: 0
-      }
-    };
+    const business = await getBusinessForUser(userId);
+    const jobs = await storage.getServiceRequestsByCustomer(userId);
 
-    res.json(dashboardData);
+    const activeJobs = jobs.filter(j => ["accepted", "in_progress", "started", "en_route"].includes(j.status));
+    const completedJobs = jobs.filter(j => j.status === "completed");
+    const totalSpent = completedJobs.reduce((sum, j) => sum + (j.finalPrice || j.livePrice || 0), 0);
+
+    const teamMembers = business ? await storage.getTeamMembersByBusiness(business.id) : [];
+    const properties = business ? await storage.getHoaPropertiesByBusinessAccount(business.id) : [];
+
+    const upcomingJobs = jobs
+      .filter(j => j.scheduledFor > new Date().toISOString() && j.status !== "completed" && j.status !== "cancelled")
+      .sort((a, b) => a.scheduledFor.localeCompare(b.scheduledFor))
+      .slice(0, 5);
+
+    const recentActivity = jobs
+      .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""))
+      .slice(0, 10)
+      .map(j => ({
+        id: j.id,
+        type: j.status,
+        serviceType: j.serviceType,
+        date: j.completedAt || j.createdAt,
+      }));
+
+    res.json({
+      totalJobs: jobs.length,
+      activeJobs: activeJobs.length,
+      completedJobs: completedJobs.length,
+      totalSpent,
+      teamMembers: teamMembers.length,
+      properties: properties.length,
+      upcomingJobs,
+      recentActivity,
+      esgMetrics: {
+        carbonSaved: business?.carbonCreditsGenerated || 0,
+        wasteReduced: completedJobs.reduce((sum, j) => sum + (j.disposalRecycledPercent || 0) + (j.disposalDonatedPercent || 0), 0),
+        esgScore: business?.carbonCreditBalance || 0,
+      }
+    });
   } catch (error) {
     console.error("Error fetching business dashboard:", error);
     res.status(500).json({ error: "Failed to fetch dashboard data" });
@@ -114,8 +186,7 @@ router.get("/jobs", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Get business jobs
-    const jobs: any[] = [];
+    const jobs = await storage.getServiceRequestsByCustomer(userId);
     res.json(jobs);
   } catch (error) {
     console.error("Error fetching business jobs:", error);
@@ -131,17 +202,47 @@ router.get("/analytics", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Implement analytics
-    const analytics = {
-      totalSpending: 0,
-      averageJobCost: 0,
-      jobFrequency: 0,
-      preferredServices: [],
-      monthlyTrends: [],
-      costSavings: 0
-    };
+    const jobs = await storage.getServiceRequestsByCustomer(userId);
+    const completedJobs = jobs.filter(j => j.status === "completed");
+    const totalSpending = completedJobs.reduce((sum, j) => sum + (j.finalPrice || j.livePrice || 0), 0);
+    const averageJobCost = completedJobs.length > 0 ? totalSpending / completedJobs.length : 0;
 
-    res.json(analytics);
+    // Count jobs per month for frequency
+    const now = new Date();
+    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+    const recentJobs = completedJobs.filter(j => new Date(j.createdAt) >= sixMonthsAgo);
+    const jobFrequency = recentJobs.length > 0 ? recentJobs.length / 6 : 0;
+
+    // Service type breakdown
+    const serviceCount: Record<string, number> = {};
+    completedJobs.forEach(j => {
+      serviceCount[j.serviceType] = (serviceCount[j.serviceType] || 0) + 1;
+    });
+    const preferredServices = Object.entries(serviceCount)
+      .sort((a, b) => b[1] - a[1])
+      .map(([service, count]) => ({ service, count }));
+
+    // Monthly trends
+    const monthlyTrends: { month: string; spending: number; jobs: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthStr = d.toISOString().slice(0, 7);
+      const monthJobs = completedJobs.filter(j => (j.completedAt || j.createdAt).startsWith(monthStr));
+      monthlyTrends.push({
+        month: monthStr,
+        spending: monthJobs.reduce((s, j) => s + (j.finalPrice || j.livePrice || 0), 0),
+        jobs: monthJobs.length,
+      });
+    }
+
+    res.json({
+      totalSpending,
+      averageJobCost,
+      jobFrequency,
+      preferredServices,
+      monthlyTrends,
+      costSavings: completedJobs.reduce((sum, j) => sum + (j.promotionDiscountAmount || 0), 0),
+    });
   } catch (error) {
     console.error("Error fetching business analytics:", error);
     res.status(500).json({ error: "Failed to fetch analytics" });
@@ -156,8 +257,19 @@ router.get("/invoices", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Get business invoices
-    const invoices: any[] = [];
+    const jobs = await storage.getServiceRequestsByCustomer(userId);
+    const invoices = jobs
+      .filter(j => j.status === "completed" && j.paymentStatus)
+      .map(j => ({
+        id: j.id,
+        serviceType: j.serviceType,
+        amount: j.finalPrice || j.livePrice || j.priceEstimate || 0,
+        date: j.completedAt || j.createdAt,
+        paymentStatus: j.paymentStatus,
+        stripePaymentIntentId: j.stripePaymentIntentId,
+      }))
+      .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+
     res.json(invoices);
   } catch (error) {
     console.error("Error fetching business invoices:", error);
@@ -173,16 +285,39 @@ router.get("/esg", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Get ESG metrics for business
-    const esgData = {
-      carbonFootprint: 0,
-      wasteReduction: 0,
-      sustainabilityScore: 0,
-      greenCertifications: [],
-      impactMetrics: []
-    };
+    const business = await getBusinessForUser(userId);
+    if (!business) {
+      return res.json({
+        carbonFootprint: 0,
+        wasteReduction: 0,
+        sustainabilityScore: 0,
+        greenCertifications: [],
+        impactMetrics: [],
+      });
+    }
 
-    res.json(esgData);
+    const esgReports = await storage.getEsgReportsByBusiness(business.id);
+    const jobs = await storage.getServiceRequestsByCustomer(userId);
+    const completedJobs = jobs.filter(j => j.status === "completed");
+
+    const wasteReduction = completedJobs.reduce(
+      (sum, j) => sum + (j.disposalRecycledPercent || 0) + (j.disposalDonatedPercent || 0), 0
+    );
+
+    res.json({
+      carbonFootprint: business.carbonCreditsGenerated || 0,
+      wasteReduction,
+      sustainabilityScore: business.carbonCreditBalance || 0,
+      greenCertifications: esgReports,
+      impactMetrics: completedJobs
+        .filter(j => j.environmentalCertificateId)
+        .map(j => ({
+          jobId: j.id,
+          recycledPercent: j.disposalRecycledPercent || 0,
+          donatedPercent: j.disposalDonatedPercent || 0,
+          landfilledPercent: j.disposalLandfilledPercent || 0,
+        })),
+    });
   } catch (error) {
     console.error("Error fetching business ESG data:", error);
     res.status(500).json({ error: "Failed to fetch ESG data" });
@@ -197,8 +332,7 @@ router.get("/service-requests", requireAuth, async (req: any, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // TODO: Get business service requests
-    const requests: any[] = [];
+    const requests = await storage.getServiceRequestsByCustomer(userId);
     res.json(requests);
   } catch (error) {
     console.error("Error fetching business service requests:", error);
