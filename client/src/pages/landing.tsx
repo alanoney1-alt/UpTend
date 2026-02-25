@@ -20,9 +20,10 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />
-      <main>
+      <main id="main-content">
         <HeroSection />
         <TrustBar />
+        <SocialProofStats />
         <HowItWorks />
         <ServicesStrip />
         <TwoSides />
@@ -145,6 +146,34 @@ function TrustBar() {
           <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed text-center">
             {t("landing.ppg_desc", "Your price is locked at booking. If the Pro arrives and discovers the job is bigger than described, any scope changes require your approval with photo documentation. No surprises, ever.")}
           </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── SOCIAL PROOF STATS ─── */
+function SocialProofStats() {
+  const stats = [
+    { value: "12", label: "Service Categories" },
+    { value: "100%", label: "Background Checked" },
+    { value: "4.9", label: "Average Rating", hasStar: true },
+    { value: "$0", label: "Lead Fees for Pros" },
+  ];
+
+  return (
+    <section className="py-14 bg-slate-800">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <span className="text-4xl md:text-5xl font-black text-white">{stat.value}</span>
+                {stat.hasStar && <Star className="w-6 h-6 text-amber-400 fill-amber-400" />}
+              </div>
+              <p className="mt-2 text-sm text-slate-400 font-medium">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -345,6 +374,9 @@ function Testimonials() {
           </h2>
           <p className="text-slate-500 dark:text-slate-400 text-lg max-w-xl mx-auto">
             {t("landing.testimonials_sub", "Real reviews from real homeowners across the Orlando metro area.")}
+          </p>
+          <p className="mt-3 text-sm font-semibold text-[#F47C20]">
+            Join thousands of Orlando homeowners who trust UpTend
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
