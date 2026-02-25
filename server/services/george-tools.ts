@@ -7481,3 +7481,303 @@ export async function smartMatchPro(args: {
  };
  }
 }
+
+// ─────────────────────────────────────────────
+// Feature 1: Analyze photo in chat via GPT vision
+// ─────────────────────────────────────────────
+export async function analyzePhotoInChat(params: {
+ imageBase64: string;
+ conversationContext?: string;
+ customerId?: string;
+}): Promise<any> {
+ try {
+ const { analyzeForQuote } = await import("./ai/openai-vision-client");
+ // Build a data URL if raw base64
+ const dataUrl = params.imageBase64.startsWith("data:")
+ ? params.imageBase64
+ : `data:image/jpeg;base64,${params.imageBase64}`;
+ const analysis = await analyzeForQuote([dataUrl], "general");
+ return {
+ success: true,
+ analysis,
+ message: analysis?.scopeDescription || "Photo analyzed successfully.",
+ };
+ } catch (err: any) {
+ console.error("[George Tools] analyzePhotoInChat error:", err);
+ return { success: false, error: "Could not analyze the photo. Try again or describe the issue." };
+ }
+}
+
+// ─────────────────────────────────────────────
+// Feature 2: Get customer saved address
+// ─────────────────────────────────────────────
+export async function getCustomerAddress(params: {
+ customerId: string;
+}): Promise<any> {
+ try {
+ // Check home profiles first
+ const homeResult = await db.select().from(homeProfiles)
+ .where(eq(homeProfiles.userId, params.customerId))
+ .limit(1);
+ if (homeResult.length > 0 && (homeResult[0] as any).address) {
+ return {
+ found: true,
+ address: (homeResult[0] as any).address,
+ source: "home_profile",
+ };
+ }
+
+ // Fall back to most recent booking address
+ const jobResult = await db.select().from(serviceRequests)
+ .where(eq(serviceRequests.customerId, params.customerId))
+ .orderBy(desc(serviceRequests.createdAt))
+ .limit(1);
+ if (jobResult.length > 0 && (jobResult[0] as any).address) {
+ return {
+ found: true,
+ address: (jobResult[0] as any).address,
+ source: "previous_booking",
+ };
+ }
+
+ return { found: false, message: "No saved address found for this customer." };
+ } catch (err: any) {
+ console.error("[George Tools] getCustomerAddress error:", err);
+ return { found: false, error: "Could not look up address." };
+ }
+}
+
+// ─────────────────────────────────────────────
+// Feature 3: Check real-time pro availability
+// ─────────────────────────────────────────────
+export async function checkProAvailability(params: {
+ serviceType: string;
+ date?: string;
+ zip?: string;
+}): Promise<any> {
+ try {
+ // Query hauler_profiles for pros that offer this service and are available
+ const allPros = await db.select().from(haulerProfiles).limit(100);
+ const matching = allPros.filter((p: any) => {
+ if (!p.isAvailable) return false;
+ const services: string[] = p.serviceTypes || [];
+ if (!services.includes(params.serviceType)) return false;
+ if (params.zip && p.serviceArea) {
+ const areas: string[] = Array.isArray(p.serviceArea) ? p.serviceArea : [];
+ if (areas.length > 0 && !areas.includes(params.zip)) return false;
+ }
+ return true;
+ });
+
+ if (matching.length === 0) {
+ // Suggest alternative dates
+ return {
+ available: false,
+ proCount: 0,
+ message: `No pros are currently available for ${params.serviceType.replace(/_/g, " ")} in that area${params.date ? ` on ${params.date}` : ""}. Try a different date or I can put you on our waitlist.`,
+ suggestedAction: "Try a different date -- weekdays typically have more availability.",
+ };
+ }
+
+ return {
+ available: true,
+ proCount: matching.length,
+ message: `${matching.length} pro${matching.length > 1 ? "s" : ""} available for ${params.serviceType.replace(/_/g, " ")}${params.date ? ` on ${params.date}` : ""}.`,
+ };
+ } catch (err: any) {
+ console.error("[George Tools] checkProAvailability error:", err);
+ return { available: false, error: "Could not check availability right now." };
+ }
+}
+
+// ─────────────────────────────────────────────
+// Feature 4: Send booking confirmation (email + SMS)
+// ─────────────────────────────────────────────
+export async function sendBookingConfirmationTool(params: {
+ customerId: string;
+ bookingId: string;
+ serviceType: string;
+ address: string;
+ date: string;
+ timeSlot?: string;
+ price?: number;
+}): Promise<any> {
+ try {
+ const { sendBookingConfirmation } = await import("./email-service");
+ const { sendSMS } = await import("./sms-service");
+
+ // Look up customer info
+ const { storage } = await import("../storage");
+ const user = await storage.getUser(params.customerId).catch(() => null);
+ const email = (user as any)?.email;
+ const phone = (user as any)?.phone;
+
+ const bookingData = {
+ id: params.bookingId,
+ serviceType: params.serviceType,
+ address: params.address,
+ scheduledFor: params.date,
+ timeSlot: params.timeSlot || "TBD",
+ priceEstimate: params.price,
+ };
+
+ let emailSent = false;
+ let smsSent = false;
+
+ if (email) {
+ try {
+ await sendBookingConfirmation(email, bookingData);
+ emailSent = true;
+ } catch (e) { console.error("[George Tools] email send error:", e); }
+ }
+
+ if (phone) {
+ try {
+ const smsBody = `UpTend Booking Confirmed -- ${params.serviceType.replace(/_/g, " ")} at ${params.address} on ${params.date}. ${params.price ? "Est: $" + params.price : ""} Track your booking at uptendapp.com/dashboard`;
+ await sendSMS(phone, smsBody);
+ smsSent = true;
+ } catch (e) { console.error("[George Tools] sms send error:", e); }
+ }
+
+ return {
+ success: true,
+ emailSent,
+ smsSent,
+ message: `Confirmation sent${emailSent ? " via email" : ""}${emailSent && smsSent ? " and" : ""}${smsSent ? " via SMS" : ""}${!emailSent && !smsSent ? " (no contact info on file)" : ""}.`,
+ };
+ } catch (err: any) {
+ console.error("[George Tools] sendBookingConfirmation error:", err);
+ return { success: false, error: "Could not send confirmation." };
+ }
+}
+
+// ─────────────────────────────────────────────
+// Feature 5: Generate payment link via Stripe
+// ─────────────────────────────────────────────
+export async function generatePaymentLink(params: {
+ customerId: string;
+ bookingId: string;
+ amount: number;
+ serviceType: string;
+ description?: string;
+}): Promise<any> {
+ try {
+ const amountCents = Math.round(params.amount * 100);
+ // Try to create a Stripe PaymentIntent
+ try {
+ const { getUncachableStripeClient } = await import("../stripeClient");
+ const stripe = getUncachableStripeClient();
+ const pi = await stripe.paymentIntents.create({
+ amount: amountCents,
+ currency: "usd",
+ metadata: {
+ bookingId: params.bookingId,
+ customerId: params.customerId,
+ serviceType: params.serviceType,
+ },
+ description: params.description || `UpTend ${params.serviceType.replace(/_/g, " ")} booking`,
+ });
+ return {
+ success: true,
+ paymentUrl: `/payment?intent=${pi.id}`,
+ intentId: pi.id,
+ amount: params.amount,
+ message: `Here is your payment link for $${params.amount.toFixed(2)}.`,
+ };
+ } catch (stripeErr: any) {
+ // Stripe not configured -- return a fallback booking URL
+ return {
+ success: true,
+ paymentUrl: `/book?service=${params.serviceType}&amount=${params.amount}&booking=${params.bookingId}`,
+ amount: params.amount,
+ message: `Here is your checkout link for $${params.amount.toFixed(2)}.`,
+ fallback: true,
+ };
+ }
+ } catch (err: any) {
+ console.error("[George Tools] generatePaymentLink error:", err);
+ return { success: false, error: "Could not generate payment link." };
+ }
+}
+
+// ─────────────────────────────────────────────
+// Feature 7: Cancel booking
+// ─────────────────────────────────────────────
+export async function cancelBooking(params: {
+ customerId: string;
+ bookingId: string;
+}): Promise<any> {
+ try {
+ const [booking] = await db.select().from(serviceRequests)
+ .where(eq(serviceRequests.id, parseInt(params.bookingId)))
+ .limit(1);
+
+ if (!booking) {
+ return { success: false, error: "Booking not found." };
+ }
+ if ((booking as any).customerId !== params.customerId) {
+ return { success: false, error: "You can only cancel your own bookings." };
+ }
+ if ((booking as any).status === "completed") {
+ return { success: false, error: "This booking is already completed and cannot be cancelled." };
+ }
+ if ((booking as any).status === "cancelled") {
+ return { success: false, error: "This booking is already cancelled." };
+ }
+
+ await db.update(serviceRequests)
+ .set({ status: "cancelled" } as any)
+ .where(eq(serviceRequests.id, parseInt(params.bookingId)));
+
+ return {
+ success: true,
+ message: `Booking #${params.bookingId} has been cancelled.`,
+ };
+ } catch (err: any) {
+ console.error("[George Tools] cancelBooking error:", err);
+ return { success: false, error: "Could not cancel booking." };
+ }
+}
+
+// ─────────────────────────────────────────────
+// Feature 7: Reschedule booking
+// ─────────────────────────────────────────────
+export async function rescheduleBooking(params: {
+ customerId: string;
+ bookingId: string;
+ newDate: string;
+ newTimeSlot?: string;
+}): Promise<any> {
+ try {
+ const [booking] = await db.select().from(serviceRequests)
+ .where(eq(serviceRequests.id, parseInt(params.bookingId)))
+ .limit(1);
+
+ if (!booking) {
+ return { success: false, error: "Booking not found." };
+ }
+ if ((booking as any).customerId !== params.customerId) {
+ return { success: false, error: "You can only reschedule your own bookings." };
+ }
+ if ((booking as any).status === "completed" || (booking as any).status === "cancelled") {
+ return { success: false, error: "This booking cannot be rescheduled." };
+ }
+
+ const updateData: any = { scheduledFor: new Date(params.newDate) };
+ if (params.newTimeSlot) {
+ updateData.timeSlot = params.newTimeSlot;
+ }
+
+ await db.update(serviceRequests)
+ .set(updateData)
+ .where(eq(serviceRequests.id, parseInt(params.bookingId)));
+
+ return {
+ success: true,
+ message: `Booking #${params.bookingId} has been rescheduled to ${params.newDate}${params.newTimeSlot ? ` (${params.newTimeSlot})` : ""}.`,
+ };
+ } catch (err: any) {
+ console.error("[George Tools] rescheduleBooking error:", err);
+ return { success: false, error: "Could not reschedule booking." };
+ }
+}

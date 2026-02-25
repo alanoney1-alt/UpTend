@@ -494,42 +494,32 @@ export function UpTendGuide() {
         reader.readAsDataURL(file);
       });
 
-      // Use Snap & Book endpoint for instant AI vision quote
+      // Send photo through George chat flow for contextual analysis
       const base64 = dataUrl.split(",")[1];
-      const snapRes = await fetch("/api/snap-quote", {
+      const chatRes = await fetch("/api/ai/guide/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ imageBase64: base64 }),
+        body: JSON.stringify({
+          message: "I just sent a photo for you to analyze. Please look at it and tell me what you see, what service I might need, and a price estimate.",
+          sessionId: getSessionId(),
+          context: {
+            page: pageContext.page,
+            userRole: getDerivedUserRole(pageContext.page, pageContext.userRole),
+            userName: pageContext.userName,
+          },
+          photoBase64: base64,
+        }),
       });
-      const snapData = await snapRes.json();
-
-      let replyContent: string;
-      let snapQuoteCard: any = undefined;
-      if (snapData.success) {
-        const a = snapData.analysis;
-        const q = snapData.quote;
-        snapQuoteCard = snapData;
-        if (snapData.confidence === "high") {
-          replyContent = `I see **${a.serviceLabel}** -- ${a.problemDescription}. Your guaranteed price is **${q.priceDisplay}**. ${q.guarantee}.`;
-        } else if (snapData.confidence === "medium") {
-          replyContent = `Looks like **${a.serviceLabel}** -- ${a.problemDescription}. Estimated price: **${q.priceDisplay}**. Want to refine this or book now?`;
-        } else {
-          replyContent = snapData.fallbackMessage || "I need a bit more info. Can you describe what you need help with?";
-        }
-      } else {
-        replyContent = "I had trouble analyzing that photo. Could you try again or describe the issue?";
-      }
+      const chatData = await chatRes.json();
+      const replyText = typeof chatData.reply === "string" ? chatData.reply : chatData.reply?.content || "I had trouble analyzing that photo. Could you try again or describe the issue?";
 
       const msg: Message = {
         id: `ai-photo-${Date.now()}`,
         role: "assistant",
-        content: replyContent,
-        quoteCard: snapQuoteCard,
+        content: replyText,
+        quickActions: chatData.quickActions,
       };
-
-      if (false) { // keep block for type-checking only
-      }
 
       setMessages(prev => [...prev, msg]);
       if (voiceOutputEnabled && synth.isSupported) synth.speak(msg.content);

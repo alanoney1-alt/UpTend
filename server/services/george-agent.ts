@@ -558,6 +558,44 @@ SUBTLE PRO NUDGES (weave these in naturally, never pushy):
 - NEVER make them feel bad for choosing DIY over a pro. Mr. George respects self-reliance.
 - The goal: whether they book a pro or DIY it, they had the BEST experience and they come back to Mr. George for everything.
 
+BOOKING SUMMARY RECAP (MANDATORY -- Feature 6):
+Before EVER calling create_booking_draft, you MUST present a clean summary to the customer and get explicit confirmation ("yes", "sounds good", "book it", etc.). The summary must include:
+- Service type
+- Date and time slot
+- Address
+- Estimated price range (use "from" or "starting at" language)
+Format it cleanly, like:
+"Here is what I have:
+- Service: Pressure Washing
+- Date: Thursday, March 6 (morning)
+- Address: 123 Oak Lane, Orlando FL
+- Price: Starting at $149
+Does everything look right?"
+Do NOT proceed to create the booking until the customer explicitly confirms. If they correct anything, update and re-present.
+
+ADDRESS AUTO-DETECT (MANDATORY -- Feature 2):
+When a logged-in customer starts a booking conversation, IMMEDIATELY call get_customer_address with their user ID. If an address is found, ask: "Is this for [address]?" instead of making them type it. Only ask for a new address if they say no or have no saved address.
+
+PRO AVAILABILITY CHECK (MANDATORY -- Feature 3):
+Before telling a customer "I found you a pro" or presenting a match, call check_pro_availability with the service type, date, and area. If no pros are available, say so honestly and suggest trying a different date. Never promise availability you haven't verified.
+
+BOOKING CONFIRMATION (MANDATORY -- Feature 4):
+After a booking is successfully created through create_booking_draft, IMMEDIATELY call send_booking_confirmation with the booking details to fire off email and SMS to the customer.
+
+PAYMENT LINK IN CHAT (Feature 5):
+After a booking is confirmed, call generate_payment_link and present the direct payment URL in chat so the customer can tap to pay without leaving the conversation.
+
+CANCEL AND RESCHEDULE (Feature 7):
+When a customer asks to cancel or reschedule a booking, use cancel_booking or reschedule_booking. ALWAYS confirm the action with the customer before executing. For cancellation: "Are you sure you want to cancel booking #X?" For rescheduling: "I'll move your booking to [new date]. Sound good?"
+
+POST-BOOKING WALKTHROUGH (MANDATORY -- Feature 8):
+After every successful booking confirmation, explain what happens next in plain language:
+"Your pro will reach out within 2 hours to confirm the details. You can track the job live from your dashboard. If anything comes up, just message me here -- I am always available."
+This must happen EVERY time after a booking is finalized. Keep it brief and reassuring.
+
+PHOTO ANALYSIS IN CHAT (Feature 1):
+When a customer sends a photo mid-conversation (you will receive it as image data), use the analyze_photo_in_chat tool to get a GPT vision analysis. Use the analysis to scope the job, suggest the right service, and provide a price estimate. Encourage photo uploads: "Send me a photo and I can scope the job more accurately."
+
 PERSONALITY:
 - Friendly, conversational, like a helpful neighbor who happens to know everything about houses
 - Warm but not fake. Genuine, not scripted.
@@ -2859,12 +2897,114 @@ const TOOL_DEFINITIONS: any[] = [
  required: ["service_type"],
  },
  },
+ // ── Feature 1: Analyze photo in chat ──
+ {
+ name: "analyze_photo_in_chat",
+ description: "Analyze a photo the customer uploaded in the chat. Uses GPT vision to identify the issue, scope the job, and suggest services. Call this when the customer sends a photo mid-conversation.",
+ input_schema: {
+ type: "object",
+ properties: {
+ image_base64: { type: "string", description: "Base64-encoded image data or data URL" },
+ conversation_context: { type: "string", description: "Brief summary of what the customer has been discussing" },
+ customer_id: { type: "string", description: "Customer user ID if logged in" },
+ },
+ required: ["image_base64"],
+ },
+ },
+ // ── Feature 2: Get customer saved address ──
+ {
+ name: "get_customer_address",
+ description: "Look up a logged-in customer's saved address from their profile or previous bookings. Call this at the start of a booking conversation to pre-fill the address instead of making them type it.",
+ input_schema: {
+ type: "object",
+ properties: {
+ customer_id: { type: "string", description: "Customer user ID" },
+ },
+ required: ["customer_id"],
+ },
+ },
+ // ── Feature 3: Check real-time pro availability ──
+ {
+ name: "check_pro_availability",
+ description: "Check if any pros are available for a specific service type, date, and area. Call this BEFORE telling a customer you found a pro. If none available, suggest alternative dates honestly.",
+ input_schema: {
+ type: "object",
+ properties: {
+ service_type: { type: "string", description: "Service type (e.g., junk_removal, pressure_washing)" },
+ date: { type: "string", description: "Requested date (YYYY-MM-DD)" },
+ zip: { type: "string", description: "Customer's zip code" },
+ },
+ required: ["service_type"],
+ },
+ },
+ // ── Feature 4: Send booking confirmation ──
+ {
+ name: "send_booking_confirmation",
+ description: "Send a booking confirmation via email and SMS to the customer after a booking is created. Call this immediately after create_booking_draft succeeds.",
+ input_schema: {
+ type: "object",
+ properties: {
+ customer_id: { type: "string", description: "Customer user ID" },
+ booking_id: { type: "string", description: "Booking/service request ID" },
+ service_type: { type: "string", description: "Service type booked" },
+ address: { type: "string", description: "Service address" },
+ date: { type: "string", description: "Scheduled date" },
+ time_slot: { type: "string", description: "Time slot" },
+ price: { type: "number", description: "Estimated price" },
+ },
+ required: ["customer_id", "booking_id", "service_type", "address", "date"],
+ },
+ },
+ // ── Feature 5: Generate payment link ──
+ {
+ name: "generate_payment_link",
+ description: "Generate a direct payment link (Stripe PaymentIntent URL) for the customer to pay for their booking right in chat. Returns a tappable URL to /payment?intent=pi_xxx.",
+ input_schema: {
+ type: "object",
+ properties: {
+ customer_id: { type: "string", description: "Customer user ID" },
+ booking_id: { type: "string", description: "Booking ID" },
+ amount: { type: "number", description: "Total amount in dollars" },
+ service_type: { type: "string", description: "Service type" },
+ description: { type: "string", description: "Description for the payment" },
+ },
+ required: ["customer_id", "booking_id", "amount", "service_type"],
+ },
+ },
+ // ── Feature 7: Cancel booking ──
+ {
+ name: "cancel_booking",
+ description: "Cancel an existing booking. Customer must own the booking. ALWAYS confirm with the customer before calling this tool.",
+ input_schema: {
+ type: "object",
+ properties: {
+ customer_id: { type: "string", description: "Customer user ID (for ownership verification)" },
+ booking_id: { type: "string", description: "Booking/service request ID to cancel" },
+ },
+ required: ["customer_id", "booking_id"],
+ },
+ },
+ // ── Feature 7: Reschedule booking ──
+ {
+ name: "reschedule_booking",
+ description: "Reschedule an existing booking to a new date/time. Customer must own the booking. ALWAYS confirm the new date with the customer before calling this tool.",
+ input_schema: {
+ type: "object",
+ properties: {
+ customer_id: { type: "string", description: "Customer user ID (for ownership verification)" },
+ booking_id: { type: "string", description: "Booking/service request ID to reschedule" },
+ new_date: { type: "string", description: "New date (YYYY-MM-DD)" },
+ new_time_slot: { type: "string", description: "New time slot (morning/afternoon/evening)" },
+ },
+ required: ["customer_id", "booking_id", "new_date"],
+ },
+ },
 ];
 
 // ─────────────────────────────────────────────
 // Execute tool call
 // ─────────────────────────────────────────────
-async function executeTool(name: string, input: any, storage?: any): Promise<any> {
+async function executeTool(name: string, input: any, storage?: any, georgeCtx?: GeorgeContext): Promise<any> {
  switch (name) {
  // Existing consumer tools
  case "get_service_pricing":
@@ -3306,6 +3446,25 @@ async function executeTool(name: string, input: any, storage?: any): Promise<any
  case "smart_match_pro":
  return await tools.smartMatchPro({ serviceType: input.service_type, address: input.address, scope: input.scope, description: input.description });
 
+ // ── New booking flow tools (Features 1-7) ──
+ case "analyze_photo_in_chat": {
+ // Tool may not have the full base64 — fall back to context
+ const photoData = input.image_base64 || georgeCtx?.pendingPhotoBase64 || "";
+ return await tools.analyzePhotoInChat({ imageBase64: photoData, conversationContext: input.conversation_context, customerId: input.customer_id });
+ }
+ case "get_customer_address":
+ return await tools.getCustomerAddress({ customerId: input.customer_id });
+ case "check_pro_availability":
+ return await tools.checkProAvailability({ serviceType: input.service_type, date: input.date, zip: input.zip });
+ case "send_booking_confirmation":
+ return await tools.sendBookingConfirmationTool({ customerId: input.customer_id, bookingId: input.booking_id, serviceType: input.service_type, address: input.address, date: input.date, timeSlot: input.time_slot, price: input.price });
+ case "generate_payment_link":
+ return await tools.generatePaymentLink({ customerId: input.customer_id, bookingId: input.booking_id, amount: input.amount, serviceType: input.service_type, description: input.description });
+ case "cancel_booking":
+ return await tools.cancelBooking({ customerId: input.customer_id, bookingId: input.booking_id });
+ case "reschedule_booking":
+ return await tools.rescheduleBooking({ customerId: input.customer_id, bookingId: input.booking_id, newDate: input.new_date, newTimeSlot: input.new_time_slot });
+
  default:
  return { error: `Unknown tool: ${name}` };
  }
@@ -3458,6 +3617,7 @@ export interface GeorgeContext {
  isAuthenticated?: boolean;
  userRole?: "consumer" | "pro" | "business" | "admin";
  storage?: any;
+ pendingPhotoBase64?: string;
 }
 
 export interface GeorgeResponse {
@@ -3572,7 +3732,8 @@ export async function chat(
  const result = await executeTool(
  (toolBlock as any).name,
  (toolBlock as any).input,
- context?.storage
+ context?.storage,
+ context
  );
 
  // Track booking drafts

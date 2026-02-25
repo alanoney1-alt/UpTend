@@ -678,7 +678,7 @@ export default function createGuideRoutes(_storage: any) {
   router.post("/guide/chat", guideChatLimiter, async (req, res) => {
     try {
       await init();
-      const { message, sessionId, context, photoUrl, photoAnalysis } = req.body;
+      const { message, sessionId, context, photoUrl, photoAnalysis, photoBase64 } = req.body;
 
       if (!message && !photoUrl) {
         return res.status(400).json({ error: "Message or photo is required" });
@@ -743,6 +743,12 @@ export default function createGuideRoutes(_storage: any) {
       if (photoAnalysis) {
         userContent += `\n\n[Customer uploaded a photo. AI analysis: ${JSON.stringify(photoAnalysis)}]`;
       }
+      if (photoBase64) {
+        userContent += `\n\n[Customer uploaded a photo in chat. The photo is available as base64. Use the analyze_photo_in_chat tool with this image data to analyze it: ${photoBase64.substring(0, 100)}... (truncated, full data passed to tool)]`;
+        // Store the full base64 in session for tool access
+        const photoSession = getSession(sid);
+        (photoSession as any)._pendingPhotoBase64 = photoBase64;
+      }
 
       session.history.push({ role: "user", content: userContent });
       const trimmedHistory = session.history.slice(-20);
@@ -754,6 +760,7 @@ export default function createGuideRoutes(_storage: any) {
         userRole: user?.role === "hauler" ? "pro" : context?.userRole || "customer",
         isAuthenticated: !!user,
         userId: userId || undefined,
+        pendingPhotoBase64: photoBase64 || undefined,
       };
 
       // Pass trimmed history WITHOUT the last user message (georgeChat adds it)
