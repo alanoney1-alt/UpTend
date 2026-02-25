@@ -44,52 +44,71 @@ export function Header() {
         </div>
 
         {/* Center: Nav Links — clean, minimal */}
-        <div className="hidden lg:flex items-center justify-center gap-8 text-sm font-medium text-slate-300 flex-1">
+        <div className="hidden lg:flex items-center justify-center gap-6 text-sm font-medium text-slate-300 flex-1">
           <Link href="/services">
             <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-services">
-              {t("nav.services")}
-            </span>
-          </Link>
-          <Link href="/services">
-            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-pricing">
-              {t("nav.pricing")}
+              Services
             </span>
           </Link>
           <Link href="/about">
             <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-about">
-              {t("nav.about")}
+              About
             </span>
           </Link>
-          <Link href="/business">
-            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-business">
-              {t("nav.for_business", "For Business")}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <span className="hover:text-white transition-colors cursor-pointer flex items-center gap-1" data-testid="link-b2b">
+                For Business <ChevronDown className="w-3.5 h-3.5" />
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center">
+              <DropdownMenuItem asChild>
+                <Link href="/business/communities" className="cursor-pointer" data-testid="link-hoa">
+                  HOA Communities
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/business" className="cursor-pointer" data-testid="link-property-mgmt">
+                  Property Management
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/business/construction" className="cursor-pointer" data-testid="link-construction">
+                  Construction
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Link href="/business/partners">
+            <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-partner">
+              Partner With Us
             </span>
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <span className="hover:text-white transition-colors cursor-pointer flex items-center gap-1" data-testid="link-more">
-                {t("nav.more", "More")} <ChevronDown className="w-3.5 h-3.5" />
+                More <ChevronDown className="w-3.5 h-3.5" />
               </span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href="/business/partners" className="cursor-pointer" data-testid="link-business-partners">
-                  {t("nav.for_businesses", "For Businesses")}
+                <Link href="/become-pro" className="cursor-pointer" data-testid="link-become-pro">
+                  Become a Pro
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/blog" className="cursor-pointer" data-testid="link-blog">
-                  {t("nav.blog", "Blog")}
+                  Blog
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/faq" className="cursor-pointer" data-testid="link-faq">
-                  {t("nav.faq", "FAQ")}
+                  FAQ
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/contact" className="cursor-pointer" data-testid="link-contact">
-                  {t("nav.contact", "Contact")}
+                  Contact
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -207,25 +226,35 @@ export function Header() {
 
           <div className="flex flex-col gap-4 text-lg font-medium text-slate-300">
             <Link href="/services" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-services-mobile">{t("nav.services")}</span>
-            </Link>
-            <Link href="/services" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-pricing-mobile">{t("nav.pricing")}</span>
+              <span className="block p-2" data-testid="link-services-mobile">Services</span>
             </Link>
             <Link href="/about" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-about-mobile">{t("nav.about")}</span>
+              <span className="block p-2" data-testid="link-about-mobile">About</span>
+            </Link>
+            <p className="text-xs uppercase tracking-wider text-slate-500 px-2 pt-2">For Business</p>
+            <Link href="/business/communities" onClick={closeMenu}>
+              <span className="block p-2 pl-4" data-testid="link-hoa-mobile">HOA Communities</span>
             </Link>
             <Link href="/business" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-business-mobile">{t("nav.for_business", "For Business")}</span>
+              <span className="block p-2 pl-4" data-testid="link-pm-mobile">Property Management</span>
+            </Link>
+            <Link href="/business/construction" onClick={closeMenu}>
+              <span className="block p-2 pl-4" data-testid="link-construction-mobile">Construction</span>
+            </Link>
+            <Link href="/business/partners" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-partner-mobile">Partner With Us</span>
+            </Link>
+            <Link href="/become-pro" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-become-pro-mobile">Become a Pro</span>
             </Link>
             <Link href="/blog" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-blog-mobile">{t("nav.blog", "Blog")}</span>
+              <span className="block p-2" data-testid="link-blog-mobile">Blog</span>
             </Link>
             <Link href="/faq" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-faq-mobile">{t("nav.faq", "FAQ")}</span>
+              <span className="block p-2" data-testid="link-faq-mobile">FAQ</span>
             </Link>
             <Link href="/contact" onClick={closeMenu}>
-              <span className="block p-2" data-testid="link-contact-mobile">{t("nav.contact", "Contact")}</span>
+              <span className="block p-2" data-testid="link-contact-mobile">Contact</span>
             </Link>
             {isAuthenticated && (
               <Link href={user?.role === "hauler" ? "/pro/dashboard" : "/dashboard"} onClick={closeMenu}>
