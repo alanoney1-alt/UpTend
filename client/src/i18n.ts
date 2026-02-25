@@ -1155,7 +1155,6 @@ const resources = {
       "landing.cta_sub": "Whether you need a hand or you are one — there's a place for you here.",
       "landing.book_a_service": "Book a Service",
       "landing.become_a_pro": "Become a Pro",
-      "hero.hero_headline_3": "Without the headache.",
 
       // Trust Bar & Social Proof
       "landing.trust_headline": "Trusted by Orlando homeowners",
@@ -2098,7 +2097,6 @@ const resources = {
       "landing.cta_sub": "Ya sea que necesites ayuda o que seas la ayuda — hay un lugar para ti aquí.",
       "landing.book_a_service": "Reservar un Servicio",
       "landing.become_a_pro": "Conviértete en Pro",
-      "hero.hero_headline_3": "Sin dolores de cabeza.",
 
       // Trust Bar & Social Proof
       "landing.trust_headline": "Confianza de propietarios en Orlando",
