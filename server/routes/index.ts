@@ -236,6 +236,15 @@ import { registerBatch1FixRoutes } from "./batch1-fixes.routes";
 // Batch 2 fixes — aliases, spending tracker, appliances, warranties, inventory
 import { registerBatch2Routes } from "./batch2-aliases.routes";
 
+// Background Check routes
+import { registerBackgroundCheckRoutes } from "./background-check.routes";
+
+// Calendar Integration routes
+import { registerCalendarRoutes } from "./calendar.routes";
+
+// SMS Bot standalone routes (send, conversations)
+import { registerSmsBotStandaloneRoutes } from "./sms-bot.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -494,6 +503,15 @@ export async function registerRoutes(
 
   // Register Batch 2 fixes (aliases, spending tracker, appliances, warranties, inventory)
   registerBatch2Routes(app);
+
+  // Register Background Check routes
+  registerBackgroundCheckRoutes(app);
+
+  // Register Calendar Integration routes
+  registerCalendarRoutes(app);
+
+  // Register SMS Bot standalone routes
+  registerSmsBotStandaloneRoutes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
