@@ -140,7 +140,7 @@ function FindProPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="pt-24 pb-16 px-4 max-w-7xl mx-auto">
+      <div className="pt-24 pb-24 md:pb-16 px-4 max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{t("findpro.title")}</h1>
@@ -150,7 +150,7 @@ function FindProPage() {
         </div>
 
         {/* Map */}
-        <Card className="overflow-hidden rounded-2xl shadow-lg mb-8" style={{ height: "350px" }}>
+        <Card className="overflow-hidden rounded-2xl shadow-lg mb-8 h-[220px] md:h-[350px]">
           <MapContainer
             center={center}
             zoom={10}
@@ -183,14 +183,14 @@ function FindProPage() {
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-8 items-center">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
             <span className="text-sm font-medium text-muted-foreground">{t("findpro.filters")}:</span>
           </div>
           <select
             value={serviceFilter}
             onChange={(e) => setServiceFilter(e.target.value)}
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+            className="h-10 rounded-md border border-input bg-background px-3 text-sm flex-1 min-w-[140px]"
           >
             {SERVICE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -199,7 +199,7 @@ function FindProPage() {
           <select
             value={availabilityFilter}
             onChange={(e) => setAvailabilityFilter(e.target.value)}
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+            className="h-10 rounded-md border border-input bg-background px-3 text-sm flex-1 min-w-[120px]"
           >
             <option value="anytime">Anytime</option>
             <option value="today">Available Today</option>
@@ -208,7 +208,7 @@ function FindProPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+            className="h-10 rounded-md border border-input bg-background px-3 text-sm flex-1 min-w-[120px]"
           >
             <option value="rating">Sort: Rating</option>
             <option value="jobs">Sort: Jobs Completed</option>

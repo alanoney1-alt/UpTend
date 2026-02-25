@@ -8,7 +8,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-950 text-slate-400 border-t border-slate-900" data-testid="footer">
+    <footer className="bg-slate-950 text-slate-400 border-t border-slate-900 pb-20 md:pb-0" data-testid="footer">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
 
