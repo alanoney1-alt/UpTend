@@ -279,3 +279,63 @@ export async function handleConnectWebhookEvent(event: any) {
       console.log("[Stripe Connect] Unhandled event:", event.type);
   }
 }
+
+// ---- Aliases & stubs for pre-existing route files ----
+// These functions are imported by hauler/payouts.routes.ts and stripe-connect-webhooks.ts
+
+export const createConnectAccount = createConnectedAccount;
+
+export async function checkAccountStatus(accountId: string) {
+  return getAccountStatus(accountId);
+}
+
+export async function initiateInstantPayout(_proId: number, _amount: number) {
+  // Instant payouts require Stripe Connect Express with instant payout capability
+  return { success: false, message: "Instant payouts not yet enabled. Payouts are processed automatically." };
+}
+
+export async function getPayoutStats(proId: number) {
+  return {
+    totalEarnings: 0,
+    totalPayouts: 0,
+    pendingBalance: 0,
+    availableBalance: 0,
+    lastPayoutDate: null,
+    proId,
+  };
+}
+
+export async function createTransferForJob(_jobId: number, _amount: number, _connectedAccountId: string) {
+  // In the new model, transfers happen automatically via application_fee_amount
+  return { success: true, message: "Transfer handled automatically via Stripe Connect split." };
+}
+
+export async function updatePayoutByTransferId(_transferId: string, _data: any) {
+  console.log("[Stripe Connect] updatePayoutByTransferId stub:", _transferId);
+}
+
+export async function updatePayoutByStripePayoutId(_payoutId: string, _data: any) {
+  console.log("[Stripe Connect] updatePayoutByStripePayoutId stub:", _payoutId);
+}
+
+export async function updateAccountByStripeId(_stripeAccountId: string, _data: any) {
+  console.log("[Stripe Connect] updateAccountByStripeId stub:", _stripeAccountId);
+}
+
+export async function getPayoutAccountByStripeId(_stripeAccountId: string) {
+  return null;
+}
+
+export async function getPayoutByTransferId(_transferId: string) {
+  return null;
+}
+
+export async function getPayoutByStripePayoutId(_payoutId: string) {
+  return null;
+}
+
+export async function processJobCompletion(_jobId: number) {
+  // Job completion payment processing — captured via existing PaymentIntent flow
+  console.log("[Stripe Connect] processJobCompletion for job:", _jobId);
+  return { success: true };
+}
