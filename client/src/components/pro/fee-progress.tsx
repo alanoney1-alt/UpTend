@@ -57,7 +57,7 @@ export function FeeProgressWidget() {
     tiers,
   } = data;
 
-  const baselinePercent = isLlc ? 20 : 25;
+  const baselinePercent = 15;
   const hasDiscount = feePercent < baselinePercent;
   const isElite = tier === "Elite";
 

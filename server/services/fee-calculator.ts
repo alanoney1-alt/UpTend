@@ -21,10 +21,7 @@ export interface FeeTier {
 }
 
 export const FEE_TIERS: FeeTier[] = [
-  { name: "Standard",        minCerts: 0, nonLlcRate: 0.25, llcRate: 0.20 },
-  { name: "Certified",       minCerts: 2, nonLlcRate: 0.23, llcRate: 0.19 },
-  { name: "Advanced",        minCerts: 4, nonLlcRate: 0.21, llcRate: 0.18 },
-  { name: "Elite",           minCerts: 6, nonLlcRate: 0.20, llcRate: 0.18 },
+  { name: "Standard",        minCerts: 0, nonLlcRate: 0.15, llcRate: 0.15 },
 ];
 
 export const TOTAL_CERTIFICATIONS = 6;
@@ -38,7 +35,7 @@ export function getFeeRate(isLlc: boolean, activeCertCount: number): number {
       return isLlc ? FEE_TIERS[i].llcRate : FEE_TIERS[i].nonLlcRate;
     }
   }
-  return isLlc ? 0.20 : 0.25;
+  return 0.15;
 }
 
 export function getFeePercent(isLlc: boolean, activeCertCount: number): number {
@@ -152,8 +149,8 @@ export async function calculatePlatformFee(proId: string): Promise<FeeStatus> {
   `);
   const recentEarnings = Number((earningsResult.rows[0] as any)?.total || 0);
 
-  // Savings vs baseline (25% for non-LLC, 20% for LLC)
-  const baselineRate = isLlc ? 0.20 : 0.25;
+  // Flat 15% platform fee
+  const baselineRate = 0.15;
   const monthlySavings = Math.round(recentEarnings * (baselineRate - feeRate) * 100) / 100;
 
   // Projected savings at next tier

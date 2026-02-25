@@ -25,9 +25,9 @@ export function OnboardingChecklist({ user }: { user: OnboardingUser }) {
     {
       id: "checkr",
       label: "Background Check",
-      subtext: "Screening in progress (usually 24h)",
-      status: user.isVerified ? "done" : "pending" as const,
-      link: "#",
+      subtext: user.isVerified ? "Verified" : "We'll run this before your first job",
+      status: user.isVerified ? "done" : "action" as const,
+      link: "/settings",
     },
     {
       id: "academy",
