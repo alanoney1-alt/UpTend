@@ -99,7 +99,13 @@ export function registerSmartMatchRoutes(app: Express) {
 
       const stored = getStoredMatch(matchId);
       if (!stored) {
-        return res.status(404).json({ error: "Match not found or expired" });
+        return res.status(404).json({ error: "Match not found or expired (30 min TTL)" });
+      }
+
+      // Validate TTL: 30 minutes
+      const matchAge = Date.now() - new Date(stored.createdAt).getTime();
+      if (matchAge > 30 * 60 * 1000) {
+        return res.status(410).json({ error: "Match expired. Please search again." });
       }
 
       // Find the selected pro (default to top match)
@@ -113,7 +119,39 @@ export function registerSmartMatchRoutes(app: Express) {
 
       const fees = calculateFees(selectedPro.price);
 
-      // Create service request
+      // Enforce minimum $50 pro payout
+      if (fees.proPayout < 50) {
+        return res.status(400).json({ error: "Job does not meet minimum payout threshold" });
+      }
+
+      const isRealPro = !["default-1", "default-2", "default-3"].includes(selectedPro.proId);
+      const assignedProId = isRealPro ? selectedPro.proId : null;
+
+      // Check if pro has a connected Stripe account for payment splitting
+      let connectedAccountId: string | null = null;
+      let businessPartnerId: string | null = null;
+      let paymentResult: any = null;
+
+      if (isRealPro) {
+        const { haulerProfiles: hp } = await import("../../shared/schema");
+        const { eq: eqOp } = await import("drizzle-orm");
+        const [proProfile] = await db
+          .select({
+            stripeAccountId: hp.stripeAccountId,
+            stripeOnboardingComplete: hp.stripeOnboardingComplete,
+            businessPartnerId: hp.businessPartnerId,
+          })
+          .from(hp)
+          .where(eqOp(hp.userId, selectedPro.proId))
+          .limit(1);
+
+        if (proProfile?.stripeOnboardingComplete && proProfile.stripeAccountId) {
+          connectedAccountId = proProfile.stripeAccountId;
+        }
+        businessPartnerId = proProfile?.businessPartnerId || null;
+      }
+
+      // Create service request with pending_acceptance status
       const [request] = await db
         .insert(serviceRequests)
         .values({
@@ -125,16 +163,43 @@ export function registerSmartMatchRoutes(app: Express) {
           pickupZip: "32832",
           loadEstimate: "smart_match",
           scheduledFor: scheduledFor || new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+          estimatedPrice: selectedPro.price,
           priceEstimate: fees.customerTotal,
           guaranteedCeiling: fees.customerTotal,
-          assignedHaulerId: selectedPro.proId !== "default-1" && selectedPro.proId !== "default-2" && selectedPro.proId !== "default-3"
-            ? selectedPro.proId
-            : null,
+          assignedHaulerId: assignedProId,
+          businessPartnerId: businessPartnerId,
           description: description || `Smart Match booking - ${stored.serviceType}`,
           bookingSource: "smart_match",
           createdAt: new Date().toISOString(),
         })
         .returning();
+
+      // Send notification to pro
+      if (assignedProId) {
+        const { nanoid } = await import("nanoid");
+        const { pool: dbPool } = await import("../db");
+        try {
+          await dbPool.query(
+            `INSERT INTO notifications (id, user_id, type, title, message, data, created_at)
+             VALUES ($1, $2, 'smart_match_job', $3, $4, $5, NOW()) ON CONFLICT DO NOTHING`,
+            [
+              nanoid(12),
+              assignedProId,
+              `New ${stored.serviceType.replace(/_/g, " ")} Job`,
+              `New job available. You will earn $${fees.proPayout.toFixed(2)}. Accept or decline.`,
+              JSON.stringify({
+                jobId: request.id,
+                serviceType: stored.serviceType,
+                scheduledFor: request.scheduledFor,
+                proPayout: fees.proPayout,
+                matchId,
+              }),
+            ]
+          );
+        } catch (err) {
+          console.error("Notification error:", err);
+        }
+      }
 
       res.json({
         bookingId: request.id,
@@ -146,8 +211,10 @@ export function registerSmartMatchRoutes(app: Express) {
         },
         totalPrice: fees.customerTotal,
         serviceFee: fees.serviceFee,
+        proPayout: fees.proPayout,
         priceProtected: true,
         guaranteedCeiling: fees.customerTotal,
+        hasConnectedAccount: !!connectedAccountId,
       });
     } catch (error: any) {
       console.error("Smart match booking error:", error);

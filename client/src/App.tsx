@@ -100,6 +100,7 @@ const PartnerRegister = lazy(() => import("@/pages/partners/register"));
 const PartnerDashboard = lazy(() => import("@/pages/partners/dashboard"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
 const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
+const BpIntegrations = lazy(() => import("@/pages/bp-integrations"));
 const HomeProfilePage = lazy(() => import("@/pages/home-profile"));
 const BusinessCompliance = lazy(() => import("@/pages/business-compliance"));
 const BusinessGovernment = lazy(() => import("@/pages/business-government"));
@@ -212,6 +213,7 @@ function Router() {
       <Route path="/business/reports" component={BusinessReports} />
       <Route path="/business/invoices" component={BusinessInvoices} />
       <Route path="/business/integrations" component={BusinessIntegrations} />
+      <Route path="/business/bp-integrations" component={BpIntegrations} />
       <Route path="/business/onboarding" component={BusinessOnboarding} />
       <Route path="/business/booking" component={BusinessBooking} />
       <Route path="/business/billing" component={BusinessBilling} />

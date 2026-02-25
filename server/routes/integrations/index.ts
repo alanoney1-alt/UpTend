@@ -39,6 +39,11 @@ import { registerSamGovRoutes } from "./sam-gov";
 import { registerUsaSpendingRoutes } from "./usaspending";
 import { registerFemaRoutes } from "./fema";
 
+// Business Partner Accounting/Payroll Integrations
+import { registerQuickBooksRoutes } from "./quickbooks.routes";
+import { registerGustoRoutes } from "./gusto.routes";
+import { registerJobberBpRoutes } from "./jobber-bp.routes";
+
 export function registerIntegrationRoutes(app: Express) {
   // Register CRM routes
   registerSalesforceRoutes(app);
@@ -62,6 +67,11 @@ export function registerIntegrationRoutes(app: Express) {
   registerSamGovRoutes(app);
   registerUsaSpendingRoutes(app);
   registerFemaRoutes(app);
+
+  // Business Partner Accounting/Payroll
+  registerQuickBooksRoutes(app);
+  registerGustoRoutes(app);
+  registerJobberBpRoutes(app);
 
   // ===== Unified endpoints =====
 

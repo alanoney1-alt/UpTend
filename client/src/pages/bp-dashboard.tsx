@@ -17,7 +17,7 @@ import { Logo } from "@/components/ui/logo";
 import { SERVICE_PRICE_RANGES } from "@/constants/service-price-ranges";
 import {
   Building2, Users, DollarSign, TrendingUp, Star, Plus,
-  ArrowLeft, Loader2, Wifi, WifiOff, ChevronDown, ChevronUp, X, Settings,
+  ArrowLeft, Loader2, Wifi, WifiOff, ChevronDown, ChevronUp, X, Settings, Plug,
 } from "lucide-react";
 
 const SERVICE_LABELS: Record<string, string> = Object.fromEntries(
@@ -143,7 +143,12 @@ export default function BpDashboard() {
             <span className="text-slate-400">|</span>
             <span className="font-semibold">{dash?.companyName || "Business Dashboard"}</span>
           </div>
-          <Link href="/profile"><Button variant="ghost" className="text-slate-300">Account</Button></Link>
+          <div className="flex items-center gap-2">
+            <Link href="/business/bp-integrations">
+              <Button variant="ghost" className="text-slate-300"><Plug className="h-4 w-4 mr-1" /> Integrations</Button>
+            </Link>
+            <Link href="/profile"><Button variant="ghost" className="text-slate-300">Account</Button></Link>
+          </div>
         </div>
       </div>
 
