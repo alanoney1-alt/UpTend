@@ -35,6 +35,20 @@ export default function Landing() {
   );
 }
 
+/* ─── TIME-AWARE HELPERS ─── */
+function getTimeAwareSubtitle(): string {
+  const hour = new Date().getHours();
+  if (hour >= 6 && hour <= 11) return "Start your day right. Book a pro in 60 seconds.";
+  if (hour >= 12 && hour <= 17) return "Get it done today. Same-day pros available.";
+  if (hour >= 18 && hour <= 22) return "Plan ahead. Book now, schedule anytime.";
+  return "Can't sleep? Neither can we. Book for tomorrow.";
+}
+
+function isHurricaneSeason(): boolean {
+  const month = new Date().getMonth(); // 0-indexed
+  return month >= 5 && month <= 10; // Jun(5) - Nov(10)
+}
+
 /* ─── HERO ─── */
 function HeroSection() {
   const { t, i18n } = useTranslation();
@@ -55,8 +69,14 @@ function HeroSection() {
         </h1>
 
         <p className="text-white/75 text-xl md:text-2xl max-w-2xl mx-auto mb-8 leading-relaxed font-light">
-          {t("hero.hero_subhead")}
+          {getTimeAwareSubtitle()}
         </p>
+
+        {isHurricaneSeason() && (
+          <div className="max-w-xl mx-auto mb-6 px-4 py-2.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm font-medium">
+            🌀 Hurricane season is here. Get your home storm-ready.
+          </div>
+        )}
 
         {/* Service category selector */}
         <p className="text-white/50 text-sm font-semibold uppercase tracking-widest mb-4">What do you need?</p>
@@ -219,12 +239,12 @@ function ServicesStrip() {
 
   /* Top 6 most-booked services */
   const services = [
-    { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck },
-    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves },
-    { key: "handyman", label: "Handyman", price: "From $75/hr", icon: Wrench },
-    { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine },
-    { key: "landscaping", label: "Landscaping", price: "From $59", icon: Trees },
+    { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck, badge: "Most Popular", badgeColor: "bg-[#F47C20] text-white" },
+    { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, badge: null, badgeColor: "" },
+    { key: "handyman", label: "Handyman", price: "From $75/hr", icon: Wrench, badge: null, badgeColor: "" },
+    { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, badge: "Best Value", badgeColor: "bg-emerald-500 text-white" },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine, badge: "Seasonal", badgeColor: "bg-amber-500 text-white" },
+    { key: "landscaping", label: "Landscaping", price: "From $59", icon: Trees, badge: null, badgeColor: "" },
   ];
 
   return (
@@ -243,13 +263,19 @@ function ServicesStrip() {
               onClick={() => setLocation(`/book?service=${svc.key}`)}
               onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLocation(`/book?service=${svc.key}`); } }}
               aria-label={`Book ${svc.label} - ${svc.price}`}
-              className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:border-[#F47C20]/50 cursor-pointer transition-all hover:shadow-lg text-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F47C20]"
+              className="relative flex flex-col items-center gap-3 p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:border-[#F47C20]/50 cursor-pointer transition-all duration-200 ease-out hover:shadow-xl hover:-translate-y-1 text-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F47C20]"
             >
+              {svc.badge && (
+                <span className={`absolute -top-2.5 right-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${svc.badgeColor} shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200`}>
+                  {svc.badge}
+                </span>
+              )}
               <div className="w-12 h-12 rounded-xl bg-[#F47C20]/10 flex items-center justify-center group-hover:bg-[#F47C20]/20 transition-colors">
                 <svc.icon className="w-6 h-6 text-[#F47C20]" />
               </div>
               <span className="font-bold text-sm text-slate-900 dark:text-white">{svc.label}</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">{svc.price}</span>
+              {/* Price: always visible on mobile, fade-in on hover for desktop */}
+              <span className="text-xs font-semibold text-[#F47C20] md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">{svc.price}</span>
             </div>
           ))}
         </div>

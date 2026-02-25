@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -22,12 +22,33 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isLoading, isAuthenticated, logout } = useAuth();
   const { t } = useTranslation();
+  const [location] = useLocation();
+
+  const isLanding = location === "/";
+
+  // Scroll state
+  const [scrolled, setScrolled] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 80);
+      setPastHero(y > 500);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // initial check
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const userInitials = user
     ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() || "U"
     : "";
 
   const closeMenu = () => setMobileMenuOpen(false);
+
+  // Background: transparent on landing at top, solid otherwise
+  const showSolid = !isLanding || scrolled;
 
   return (
     <>
@@ -39,10 +60,17 @@ export function Header() {
       </a>
       <nav
         aria-label="Main navigation"
-        className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 text-white"
+        className={`fixed top-0 left-0 right-0 z-50 text-white transition-all duration-300 ease-out ${
+          showSolid
+            ? "bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-lg"
+            : "bg-transparent border-b border-transparent"
+        }`}
+        style={{ willChange: "transform, background-color, padding" }}
         data-testid="header"
       >
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 h-20 flex items-center relative">
+      <div className={`max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex items-center relative transition-all duration-300 ease-out ${
+        scrolled ? "h-16" : "h-20"
+      }`}>
 
         {/* Left: Logo */}
         <div className="flex-shrink-0">
@@ -51,7 +79,7 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Center: Nav Links — clean, minimal */}
+        {/* Center: Nav Links — hidden on mobile when scrolled for clean look */}
         <div className="hidden lg:flex items-center justify-center gap-6 text-sm font-medium text-slate-300 flex-1">
           <Link href="/services">
             <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-services">
@@ -152,7 +180,7 @@ export function Header() {
                   </Button>
                 </Link>
               )}
-              <Link href="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity" data-testid="link-profile">
+              <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity" data-testid="link-profile">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={user.profileImageUrl || undefined} />
                   <AvatarFallback className="bg-slate-700 text-slate-200 text-xs">{userInitials}</AvatarFallback>
@@ -204,11 +232,33 @@ export function Header() {
               </Link>
             </>
           )}
+
+          {/* Slide-in Book Now CTA — appears after scrolling past hero (landing only) */}
+          {isLanding && pastHero && !isAuthenticated && (
+            <Link href="/book" asChild>
+              <Button
+                className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold px-5 animate-in slide-in-from-right-4 duration-300"
+                data-testid="button-book-now-sticky"
+              >
+                {t("common.book_now")}
+              </Button>
+            </Link>
+          )}
         </div>
 
-        <div className="lg:hidden flex items-center gap-2">
-        </div>
-        <div className="lg:hidden flex items-center gap-1">
+        {/* Mobile right side: Book Now CTA (scrolled) + hamburger */}
+        <div className="lg:hidden flex items-center gap-2 ml-auto">
+          {/* Slide-in Book Now on mobile after hero */}
+          {pastHero && !isAuthenticated && (
+            <Link href="/book" onClick={closeMenu}>
+              <Button
+                className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-sm px-4 py-1.5 h-auto animate-in slide-in-from-right-4 duration-300"
+                data-testid="button-book-now-mobile-sticky"
+              >
+                {t("common.book_now")}
+              </Button>
+            </Link>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -223,7 +273,7 @@ export function Header() {
       </div>
 
       {mobileMenuOpen && (
-        <div role="menu" aria-label="Mobile navigation" className="lg:hidden bg-slate-900 border-t border-slate-800 absolute top-20 left-0 w-full p-6 flex flex-col gap-6 shadow-2xl z-50">
+        <div role="menu" aria-label="Mobile navigation" className={`lg:hidden bg-slate-950/95 backdrop-blur-md border-t border-slate-800 absolute ${scrolled ? "top-16" : "top-20"} left-0 w-full p-6 flex flex-col gap-6 shadow-2xl z-50 transition-all duration-300 ease-out`}>
 
           <div className="flex flex-col gap-4 text-lg font-medium text-slate-300">
             <Link href="/services" onClick={closeMenu}>
