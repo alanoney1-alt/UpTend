@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { Camera, Upload, Loader2, Shield, CheckCircle, AlertTriangle, MessageCircle } from "lucide-react";
+import { Camera, Loader2, Shield, CheckCircle, Star, Clock, User, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
 interface QuoteAdjustment {
   label: string;
@@ -36,9 +37,28 @@ interface SnapQuoteProps {
   className?: string;
 }
 
+// Simulated matched pro data (would come from smart-match API in production)
+const MATCHED_PROS: Record<string, { name: string; rating: number; reviews: number; arrivalMin: number }> = {
+  junk_removal: { name: "Marcus", rating: 4.9, reviews: 127, arrivalMin: 35 },
+  home_cleaning: { name: "Sofia", rating: 4.8, reviews: 203, arrivalMin: 45 },
+  carpet_cleaning: { name: "Derek", rating: 4.9, reviews: 89, arrivalMin: 40 },
+  pressure_washing: { name: "Jason", rating: 4.7, reviews: 156, arrivalMin: 50 },
+  landscaping: { name: "Carlos", rating: 4.8, reviews: 174, arrivalMin: 30 },
+  pool_cleaning: { name: "Tyler", rating: 4.9, reviews: 62, arrivalMin: 55 },
+  handyman: { name: "Mike", rating: 4.8, reviews: 231, arrivalMin: 40 },
+  gutter_cleaning: { name: "Trey", rating: 4.7, reviews: 98, arrivalMin: 45 },
+  moving_labor: { name: "Andre", rating: 4.9, reviews: 145, arrivalMin: 60 },
+  garage_cleanout: { name: "Marcus", rating: 4.9, reviews: 127, arrivalMin: 35 },
+  light_demolition: { name: "Jason", rating: 4.7, reviews: 156, arrivalMin: 50 },
+  home_consultation: { name: "George", rating: 5.0, reviews: 500, arrivalMin: 20 },
+};
+
 export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps) {
   const [, navigate] = useLocation();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const [booked, setBooked] = useState(false);
   const [result, setResult] = useState<SnapQuoteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -47,13 +67,12 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
   const handleFile = useCallback(async (file: File) => {
     setError(null);
     setResult(null);
+    setBooked(false);
 
-    // Preview
     const reader = new FileReader();
     reader.onload = () => setPreview(reader.result as string);
     reader.readAsDataURL(file);
 
-    // Convert to base64
     const base64Reader = new FileReader();
     base64Reader.onload = async () => {
       const base64 = (base64Reader.result as string).split(",")[1];
@@ -82,18 +101,47 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
     base64Reader.readAsDataURL(file);
   }, [onQuoteReceived]);
 
+  const handleBookNow = useCallback(async () => {
+    if (!result) return;
+
+    if (!user) {
+      navigate(`/customer-login?redirect=/snap-quote`);
+      return;
+    }
+
+    setBooking(true);
+    try {
+      const resp = await fetch(`/api/snap-quote/${result.snapQuoteId}/book`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        setBooked(true);
+      } else if (resp.status === 401) {
+        navigate(`/customer-login?redirect=/snap-quote`);
+      } else {
+        setError(data.error || "Booking failed. Please try again.");
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setBooking(false);
+    }
+  }, [result, user, navigate]);
+
   const handleClick = () => fileRef.current?.click();
 
-  const confidenceColor = {
-    high: "bg-green-100 text-green-800 border-green-300",
-    medium: "bg-amber-100 text-amber-800 border-amber-300",
-    low: "bg-red-100 text-red-800 border-red-300",
-  };
+  const matchedPro = result
+    ? MATCHED_PROS[result.analysis.serviceType] || MATCHED_PROS.handyman
+    : null;
 
-  const confidenceLabel = {
-    high: "High Confidence",
-    medium: "Medium Confidence",
-    low: "Low Confidence",
+  const reset = () => {
+    setResult(null);
+    setPreview(null);
+    setError(null);
+    setBooked(false);
   };
 
   return (
@@ -112,11 +160,11 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
       />
 
       {/* Upload Area */}
-      {!result && !loading && (
+      {!result && !loading && !booked && (
         <button
           onClick={handleClick}
           className={cn(
-            "w-full border-2 border-dashed border-slate-300 rounded-2xl transition-all hover:border-amber-400 hover:bg-amber-50/50 cursor-pointer flex flex-col items-center justify-center gap-3",
+            "w-full border-2 border-dashed border-slate-300 rounded-2xl transition-all hover:border-amber-400 hover:bg-amber-50/50 cursor-pointer flex flex-col items-center justify-center gap-3 bg-white",
             inline ? "p-6" : "p-12"
           )}
         >
@@ -124,15 +172,15 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
             <img src={preview} alt="Preview" className="max-h-48 rounded-lg object-cover" />
           ) : (
             <>
-              <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
-                <Camera className="w-8 h-8 text-amber-700" />
+              <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center">
+                <Camera className="w-10 h-10 text-amber-700" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-semibold text-slate-800">
-                  {inline ? "Upload a photo" : "Take or upload a photo"}
+                <p className="text-xl font-bold text-slate-900">
+                  {inline ? "Upload a photo" : "Snap a Photo"}
                 </p>
                 <p className="text-sm text-slate-500 mt-1">
-                  Snap a picture of any home issue
+                  Take a picture of any home issue
                 </p>
               </div>
             </>
@@ -142,22 +190,24 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
 
       {/* Loading */}
       {loading && (
-        <div className="flex flex-col items-center gap-4 py-8">
+        <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4">
           {preview && (
-            <img src={preview} alt="Analyzing" className="max-h-32 rounded-lg object-cover opacity-75" />
+            <img src={preview} alt="Analyzing" className="w-full max-h-56 rounded-xl object-cover" />
           )}
-          <Loader2 className="w-8 h-8 text-amber-600 animate-spin" />
-          <p className="text-slate-700 font-medium">George is analyzing your photo...</p>
-          <p className="text-sm text-slate-500">This takes just a few seconds</p>
+          <div className="flex flex-col items-center gap-3 py-4">
+            <Loader2 className="w-10 h-10 text-amber-600 animate-spin" />
+            <p className="text-lg font-semibold text-slate-900">Analyzing your photo...</p>
+            <p className="text-sm text-slate-500">Finding the best pro near you</p>
+          </div>
         </div>
       )}
 
       {/* Error */}
-      {error && (
+      {error && !result && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
           <p className="text-red-700">{error}</p>
           <button
-            onClick={handleClick}
+            onClick={() => { setError(null); handleClick(); }}
             className="mt-3 text-sm text-red-600 underline hover:text-red-800"
           >
             Try again
@@ -165,106 +215,128 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
         </div>
       )}
 
-      {/* Result Card */}
-      {result && (
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      {/* Booked Confirmation */}
+      {booked && result && matchedPro && (
+        <div className="bg-white rounded-2xl shadow-sm border border-green-200 overflow-hidden">
+          <div className="bg-green-50 p-6 text-center">
+            <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-3" />
+            <h3 className="text-2xl font-bold text-slate-900">You're Booked!</h3>
+            <p className="text-slate-600 mt-1">
+              {matchedPro.name} is on the way
+            </p>
+          </div>
+          <div className="p-5 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-slate-600">{result.analysis.serviceLabel}</span>
+              <span className="text-2xl font-bold text-slate-900">{result.quote.priceDisplay}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-500">
+              <Clock className="w-4 h-4" />
+              <span>Estimated arrival: ~{matchedPro.arrivalMin} min</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2">
+              <Shield className="w-4 h-4" />
+              <span>Price locked — you'll never pay more than {result.quote.priceDisplay}</span>
+            </div>
+            <button
+              onClick={() => navigate("/my-jobs")}
+              className="w-full py-3 bg-slate-900 text-white font-semibold rounded-xl mt-2"
+            >
+              View My Jobs
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Result Card — 1-Tap Book */}
+      {result && !booked && (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          {/* Photo preview */}
           {preview && (
-            <img src={preview} alt="Analyzed" className="w-full max-h-48 object-cover" />
+            <div className="relative">
+              <img src={preview} alt="Your photo" className="w-full max-h-56 object-cover" />
+              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-slate-700">
+                {result.analysis.serviceLabel}
+              </div>
+            </div>
           )}
 
           <div className="p-5 space-y-4">
-            {/* Service & Confidence */}
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-slate-900">
-                {result.analysis.serviceLabel}
-              </h3>
-              <span className={cn(
-                "text-xs font-medium px-2.5 py-1 rounded-full border",
-                confidenceColor[result.confidence]
-              )}>
-                {confidenceLabel[result.confidence]}
-              </span>
-            </div>
-
-            {/* Description */}
+            {/* Issue description */}
             <p className="text-slate-600 text-sm">{result.analysis.problemDescription}</p>
 
-            {/* Price Breakdown */}
-            <div className="bg-slate-50 rounded-xl p-4 space-y-2">
-              <div className="flex justify-between text-sm text-slate-600">
-                <span>Base price</span>
-                <span>${result.quote.basePrice}</span>
+            {/* Big price */}
+            <div className="text-center py-2">
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Guaranteed Maximum Price</p>
+              <p className="text-5xl font-bold text-slate-900 mt-1">{result.quote.priceDisplay}</p>
+              <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-amber-700">
+                <Shield className="w-4 h-4" />
+                <span>Price Protection — you'll never pay more</span>
               </div>
-              {result.quote.adjustments.map((adj, i) => (
-                <div key={i} className="flex justify-between text-sm text-slate-600">
-                  <span>{adj.label}</span>
-                  <span>{adj.amount >= 0 ? "+" : ""}${adj.amount}</span>
+            </div>
+
+            {/* Matched Pro Card */}
+            {matchedPro && (
+              <div className="bg-slate-50 rounded-xl p-4 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                  <User className="w-6 h-6 text-amber-700" />
                 </div>
-              ))}
-              <div className="border-t border-slate-200 pt-2 flex justify-between font-bold text-slate-900">
-                <span>Your price</span>
-                <span className="text-xl">{result.quote.priceDisplay}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-slate-900">{matchedPro.name}</span>
+                    <span className="inline-flex items-center gap-0.5 text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                      Available now
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-slate-500 mt-0.5">
+                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                    <span>{matchedPro.rating} ({matchedPro.reviews} reviews)</span>
+                    <span className="text-slate-300">·</span>
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>~{matchedPro.arrivalMin} min</span>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Guarantee Badge */}
-            <div className="flex items-center gap-2 text-sm text-slate-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-              <Shield className="w-4 h-4 text-amber-600 shrink-0" />
-              <span>{result.quote.guarantee}</span>
-            </div>
+            {/* Error display within result */}
+            {error && (
+              <p className="text-red-600 text-sm text-center">{error}</p>
+            )}
 
-            {/* CTA Buttons */}
-            <div className="space-y-2">
-              {result.confidence === "high" && (
-                <button
-                  onClick={() => navigate(result.bookingUrl)}
-                  className="w-full py-3 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
-                >
-                  <CheckCircle className="w-5 h-5" />
-                  Book Now — Price Locked at {result.quote.priceDisplay}
-                </button>
+            {/* Book Now Button */}
+            <button
+              onClick={handleBookNow}
+              disabled={booking}
+              className={cn(
+                "w-full py-4 px-4 bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25",
+                booking && "opacity-70 cursor-not-allowed"
               )}
-              {result.confidence === "medium" && (
+            >
+              {booking ? (
                 <>
-                  <button
-                    onClick={() => navigate(result.bookingUrl)}
-                    className="w-full py-3 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl transition-colors"
-                  >
-                    Book at {result.quote.priceDisplay}
-                  </button>
-                  <button
-                    onClick={() => navigate("/meet-george")}
-                    className="w-full py-2.5 px-4 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium rounded-xl transition-colors flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    Refine Quote with George
-                  </button>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Booking...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-5 h-5" />
+                  Book Now — {result.quote.priceDisplay}
                 </>
               )}
-              {result.confidence === "low" && (
-                <button
-                  onClick={() => navigate("/meet-george")}
-                  className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  Talk to George for a Custom Quote
-                </button>
-              )}
-            </div>
+            </button>
 
-            {result.fallbackMessage && (
+            {result.confidence === "low" && result.fallbackMessage && (
               <p className="text-sm text-slate-500 text-center">{result.fallbackMessage}</p>
             )}
 
-            {/* New Photo */}
+            {/* Try different photo */}
             <button
-              onClick={() => {
-                setResult(null);
-                setPreview(null);
-                setError(null);
-              }}
-              className="w-full text-sm text-slate-500 hover:text-slate-700 py-1"
+              onClick={reset}
+              className="w-full flex items-center justify-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 py-1"
             >
+              <RotateCcw className="w-3.5 h-3.5" />
               Try a different photo
             </button>
           </div>

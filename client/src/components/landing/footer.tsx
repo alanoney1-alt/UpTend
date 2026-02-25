@@ -198,6 +198,9 @@ export function Footer() {
             <Link href="/cost-guides" className="hover:text-white transition-colors cursor-pointer">
               Cost Guides
             </Link>
+            <Link href="/gallery" className="hover:text-white transition-colors cursor-pointer">
+              Gallery
+            </Link>
             {/* Admin link removed */}
           </div>
         </div>

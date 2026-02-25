@@ -436,6 +436,227 @@ function HomeReportSection({ userId }: { userId: string }) {
   );
 }
 
+// ─── Florida Seasonal Calendar (client-side mirror) ───
+const FL_MONTHLY_RECS: Record<number, { service: string; serviceType: string; reason: string }[]> = {
+  0: [{ service: "HVAC Inspection", serviceType: "hvac", reason: "Annual heating check before cold snaps" }],
+  1: [{ service: "Pressure Washing", serviceType: "pressure_washing", reason: "Remove winter mildew before spring" }],
+  2: [{ service: "AC Maintenance", serviceType: "hvac", reason: "Service AC before Florida heat kicks in" }],
+  3: [{ service: "Pool Cleaning", serviceType: "pool_cleaning", reason: "Pool season starting — get it swim-ready" }],
+  4: [{ service: "Gutter Cleaning", serviceType: "gutter_cleaning", reason: "Clear gutters before summer rainy season" }],
+  5: [{ service: "Hurricane Prep", serviceType: "handyman", reason: "Hurricane season — check shutters, trim trees" }],
+  6: [{ service: "Pest Control", serviceType: "pest_control", reason: "Summer pests at peak — quarterly treatment" }],
+  7: [{ service: "Hurricane Prep Check", serviceType: "handyman", reason: "Peak hurricane season — verify storm readiness" }],
+  8: [{ service: "Hurricane Prep", serviceType: "handyman", reason: "Peak hurricane month — final storm prep" }],
+  9: [{ service: "Gutter Cleaning", serviceType: "gutter_cleaning", reason: "Clear fall debris before winter rains" }],
+  10: [{ service: "Gutter Cleaning", serviceType: "gutter_cleaning", reason: "Final leaf cleanup before holidays" }],
+  11: [{ service: "Home Cleaning", serviceType: "home_cleaning", reason: "Holiday deep clean" }],
+};
+
+function getNextRecommendation(completedJobs: ServiceRequest[]): { service: string; reason: string } | null {
+  const now = new Date();
+  const recentTypes = new Set(
+    completedJobs
+      .filter((j) => {
+        const d = j.completedAt ? new Date(j.completedAt) : null;
+        return d && (now.getTime() - d.getTime()) < 60 * 24 * 60 * 60 * 1000;
+      })
+      .map((j) => j.serviceType)
+  );
+  for (let offset = 0; offset <= 2; offset++) {
+    const month = (now.getMonth() + offset) % 12;
+    const recs = FL_MONTHLY_RECS[month] || [];
+    for (const rec of recs) {
+      if (!recentTypes.has(rec.serviceType)) return rec;
+    }
+  }
+  return null;
+}
+
+function computeHealthScore(completedJobs: ServiceRequest[]): number {
+  if (completedJobs.length === 0) return 0;
+  const now = Date.now();
+  // Recency (0-40)
+  const sorted = [...completedJobs].sort(
+    (a, b) => new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime()
+  );
+  const lastDate = new Date(sorted[0].completedAt || sorted[0].createdAt).getTime();
+  const daysSince = (now - lastDate) / (1000 * 60 * 60 * 24);
+  let recency = daysSince <= 30 ? 40 : daysSince <= 60 ? 32 : daysSince <= 90 ? 24 : daysSince <= 120 ? 16 : daysSince <= 180 ? 8 : 0;
+  // Diversity (0-30)
+  const uniqueTypes = new Set(completedJobs.map((j) => j.serviceType)).size;
+  const diversity = Math.min(uniqueTypes * 5, 30);
+  // Seasonal (0-30) — how many upcoming months' recs are covered recently
+  const recentTypes = new Set(
+    completedJobs
+      .filter((j) => {
+        const d = j.completedAt ? new Date(j.completedAt) : null;
+        return d && (now - d.getTime()) < 90 * 24 * 60 * 60 * 1000;
+      })
+      .map((j) => j.serviceType)
+  );
+  const currentMonth = new Date().getMonth();
+  let totalRecs = 0;
+  let covered = 0;
+  for (let offset = 0; offset <= 2; offset++) {
+    const recs = FL_MONTHLY_RECS[(currentMonth + offset) % 12] || [];
+    for (const rec of recs) {
+      totalRecs++;
+      if (recentTypes.has(rec.serviceType)) covered++;
+    }
+  }
+  const seasonal = totalRecs > 0 ? Math.round((covered / totalRecs) * 30) : 0;
+  return Math.min(recency + diversity + seasonal, 100);
+}
+
+function HealthScoreRing({ score }: { score: number }) {
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (score / 100) * circumference;
+  const color = score > 75 ? "#22c55e" : score >= 50 ? "#f59e0b" : "#ef4444";
+  return (
+    <div className="relative w-24 h-24">
+      <svg className="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r={radius} fill="none" stroke="currentColor" className="text-muted/30" strokeWidth="8" />
+        <circle
+          cx="50" cy="50" r={radius} fill="none" stroke={color} strokeWidth="8"
+          strokeDasharray={circumference} strokeDashoffset={offset}
+          strokeLinecap="round" className="transition-all duration-700"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-2xl font-bold" style={{ color }}>{score}</span>
+      </div>
+    </div>
+  );
+}
+
+function MyHomeSection({ jobs, user }: { jobs: ServiceRequest[]; user: { firstName?: string | null; createdAt?: string } }) {
+  const completedJobs = useMemo(() => jobs.filter((j) => j.status === "completed"), [jobs]);
+  const score = useMemo(() => computeHealthScore(completedJobs), [completedJobs]);
+  const lastCompleted = useMemo(
+    () => [...completedJobs].sort((a, b) => new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime())[0],
+    [completedJobs]
+  );
+  const nextRec = useMemo(() => getNextRecommendation(completedJobs), [completedJobs]);
+  const totalSpent = useMemo(() => completedJobs.reduce((s, j) => s + (j.finalPrice || j.priceEstimate || 0), 0), [completedJobs]);
+  const address = lastCompleted?.pickupAddress || "No address on file";
+  const memberSince = user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "—";
+
+  return (
+    <Card className="mb-6 overflow-hidden" data-testid="card-my-home">
+      <CardHeader className="pb-2">
+        <div className="flex items-center gap-2">
+          <Home className="w-5 h-5 text-primary" />
+          <CardTitle className="text-base">My Home</CardTitle>
+        </div>
+        <p className="text-xs text-white/50 flex items-center gap-1 mt-1">
+          <MapPin className="w-3 h-3" /> {address}
+        </p>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-6 mb-4">
+          <HealthScoreRing score={score} />
+          <div className="flex-1 space-y-1.5">
+            <p className="text-xs text-white/50 uppercase tracking-wide">Home Health Score</p>
+            {lastCompleted && (
+              <p className="text-sm text-white/80">
+                Last: <span className="font-medium text-white">{SERVICE_TYPE_LABELS[lastCompleted.serviceType] || lastCompleted.serviceType}</span>
+                {" · "}{formatDate(lastCompleted.completedAt || lastCompleted.createdAt)}
+              </p>
+            )}
+            {nextRec && (
+              <p className="text-xs text-amber-400">
+                ⚡ {nextRec.service} — {nextRec.reason}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="text-center p-2 rounded-md bg-muted/30">
+            <p className="text-lg font-bold text-white">${totalSpent.toFixed(0)}</p>
+            <p className="text-[10px] text-white/50">Total Spent</p>
+          </div>
+          <div className="text-center p-2 rounded-md bg-muted/30">
+            <p className="text-lg font-bold text-white">{completedJobs.length}</p>
+            <p className="text-[10px] text-white/50">Jobs Done</p>
+          </div>
+          <div className="text-center p-2 rounded-md bg-muted/30">
+            <p className="text-lg font-bold text-white">{memberSince}</p>
+            <p className="text-[10px] text-white/50">Member Since</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function RebookCard({ job }: { job: ServiceRequest }) {
+  const { data: haulerProfile } = useQuery<HaulerProfileData>({
+    queryKey: [`/api/haulers/${job.assignedHaulerId}/profile`],
+    enabled: !!job.assignedHaulerId,
+  });
+  const serviceLabel = SERVICE_TYPE_LABELS[job.serviceType] || job.serviceType;
+  const price = job.finalPrice || job.priceEstimate;
+  const proName = haulerProfile?.companyName?.split(" ")[0] || "Your Pro";
+  const rating = haulerProfile?.rating || 5.0;
+
+  return (
+    <Card className="p-4 border-primary/20" data-testid={`card-rebook-${job.id}`}>
+      <p className="text-sm font-semibold mb-1">Rebook {serviceLabel}?</p>
+      <p className="text-xs text-white/60 mb-3">Same pro, same quality.</p>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+            <User className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <p className="text-sm font-medium">{proName}</p>
+            <div className="flex items-center gap-1">
+              <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+              <span className="text-xs text-white/70">{rating.toFixed(1)}</span>
+            </div>
+          </div>
+        </div>
+        {price && <p className="text-sm font-bold">${price.toFixed(0)}</p>}
+      </div>
+      <Link
+        href={`/book?service=${encodeURIComponent(job.serviceType)}&address=${encodeURIComponent(job.pickupAddress)}&rebook=1`}
+      >
+        <Button size="sm" className="w-full" data-testid={`button-rebook-${job.id}`}>
+          <RefreshCw className="w-3 h-3 mr-1" /> Rebook Now
+        </Button>
+      </Link>
+    </Card>
+  );
+}
+
+function RebookSection({ completedJobs }: { completedJobs: ServiceRequest[] }) {
+  // Show top 3 most recent completed jobs
+  const recentJobs = useMemo(
+    () =>
+      [...completedJobs]
+        .sort((a, b) => new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime())
+        .slice(0, 3),
+    [completedJobs]
+  );
+
+  if (recentJobs.length === 0) return null;
+
+  return (
+    <div className="mb-6" data-testid="section-rebook">
+      <div className="flex items-center gap-2 mb-3">
+        <RefreshCw className="w-5 h-5 text-primary" />
+        <h2 className="text-lg font-bold text-white">Quick Rebook</h2>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {recentJobs.map((job) => (
+          <RebookCard key={job.id} job={job} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ActiveJobWithWorker({ job }: { job: ServiceRequest }) {
   const { data: haulerProfile } = useQuery<HaulerProfileData>({
     queryKey: [`/api/haulers/${job.assignedHaulerId}/profile`],
@@ -534,6 +755,12 @@ export default function CustomerDashboard() {
             {t("dashboard.welcome_back", { name: user.firstName || t("dashboard.there") })}
           </p>
         </div>
+
+        {/* My Home Dashboard */}
+        <MyHomeSection jobs={allJobs} user={user} />
+
+        {/* One-Tap Rebooking */}
+        <RebookSection completedJobs={completedJobs} />
 
         <div className="mb-6" data-testid="card-home-score-section">
           <div className="flex items-center justify-between gap-2 mb-3">

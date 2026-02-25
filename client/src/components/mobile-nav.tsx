@@ -1,5 +1,5 @@
 import { useLocation, Link } from "wouter";
-import { Home, Truck, User, Menu } from "lucide-react";
+import { Home, Truck, User, Menu, Camera, Image } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -12,6 +12,7 @@ interface NavItem {
 const customerNavItems: NavItem[] = [
   { path: "/", label: "Home", icon: Home },
   { path: "/book", label: "Book", icon: Truck },
+  { path: "/snap-quote", label: "Snap", icon: Camera },
   { path: "/my-jobs", label: "My Jobs", icon: Menu },
   { path: "/profile", label: "Profile", icon: User },
 ];
@@ -56,6 +57,7 @@ export function MobileNav() {
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
+          const isSnap = item.label === "Snap";
           
           return (
             <Link
@@ -63,14 +65,30 @@ export function MobileNav() {
               href={item.path}
               className={cn(
                 "flex flex-col items-center justify-center flex-1 h-full px-2 transition-colors",
-                active 
-                  ? "text-primary" 
-                  : "text-muted-foreground hover:text-foreground"
+                isSnap
+                  ? "relative -mt-4"
+                  : active 
+                    ? "text-primary" 
+                    : "text-muted-foreground hover:text-foreground"
               )}
               data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
             >
-              <Icon className={cn("w-5 h-5", active && "text-primary")} />
-              <span className="text-[10px] mt-1 font-medium">{item.label}</span>
+              {isSnap ? (
+                <>
+                  <div className={cn(
+                    "w-12 h-12 rounded-full flex items-center justify-center shadow-lg",
+                    active ? "bg-amber-600" : "bg-amber-500"
+                  )}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <span className="text-[10px] mt-1 font-semibold text-amber-600">Snap</span>
+                </>
+              ) : (
+                <>
+                  <Icon className={cn("w-5 h-5", active && "text-primary")} />
+                  <span className="text-[10px] mt-1 font-medium">{item.label}</span>
+                </>
+              )}
             </Link>
           );
         })}

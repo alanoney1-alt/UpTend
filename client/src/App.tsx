@@ -153,6 +153,7 @@ const TaxCenter = lazy(() => import("@/pages/tax-center"));
 // Blog
 const SmartBooking = lazy(() => import("@/pages/smart-booking"));
 const SnapQuotePage = lazy(() => import("@/pages/snap-quote"));
+const Gallery = lazy(() => import("@/pages/gallery"));
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
 const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
 const BlogPost = lazy(() => import("@/pages/blog/post"));
@@ -337,6 +338,7 @@ function Router() {
       <Route path="/jobs/:jobId/track" component={JobLiveTracker} />
       <Route path="/jobs/:jobId" component={JobDetail} />
       <Route path="/tax-center" component={TaxCenter} />
+      <Route path="/gallery" component={Gallery} />
       <Route path="/blog" component={BlogIndex} />
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
       <Route path="/blog/:slug" component={BlogPost} />
