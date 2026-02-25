@@ -280,7 +280,7 @@ function Router() {
       <Route path="/admin/god-mode" component={GodMode} />
       <Route path="/admin/accounting" component={AdminAccounting} />
       <Route path="/settings" component={ProfileSettings} />
-      <Route path="/pricing" component={PublicPricing} />
+      <Route path="/pricing">{() => <Redirect to="/services" />}</Route>
       <Route path="/become-pro" component={BecomePro} />
       <Route path="/hauler-landing" component={HaulerLanding} />
       <Route path="/pro-signup">{() => <Redirect to="/login?tab=pro" />}</Route>

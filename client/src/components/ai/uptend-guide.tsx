@@ -134,7 +134,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (page === "/pricing") {
     return {
-      welcome: `Hey!  I'm Mr. George — thanks for checking us out!\n\nI see you're looking at pricing — great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works — I'm right here.\n\nNo pressure at all, just ask whatever's on your mind `,
+      welcome: `Hey!  I'm Mr. George — thanks for checking us out!\n\nI see you're looking at services and pricing — great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works — I'm right here.\n\nNo pressure at all, just ask whatever's on your mind `,
       quickActions: [],
     };
   }

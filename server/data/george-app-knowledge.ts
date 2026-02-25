@@ -403,7 +403,7 @@ export const SITE_PAGES = {
   "/ai/documents": "Upload a document → OCR extraction → organized info",
   "/marketplace": "Browse and search pros by service, rating, location",
   "/about": "Company story, mission, team",
-  "/pricing": "Full pricing breakdown by service with calculator",
+  "/services": "All services with pricing, trust signals, and booking",
   
   // Pro
   "/become-pro": "Pro signup landing page — earnings calculator, benefits",

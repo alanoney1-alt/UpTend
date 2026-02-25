@@ -203,9 +203,9 @@ export default function PublicPricing() {
         {/* Why Our Pricing Is Different */}
         <div className="max-w-4xl mx-auto px-6 mb-12">
           <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Why Our Pricing Is Different</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">How Pricing Works</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Other platforms hide fees, charge pros for leads, and give you a price range so wide it's meaningless. We show you exactly what you'll pay — and guarantee it won't go higher.
+              Every pro sets their own rate within a verified market range. We match you with the best pro for your job. You see one price. That's what you pay.
             </p>
           </div>
         </div>

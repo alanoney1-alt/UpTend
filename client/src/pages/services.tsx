@@ -276,6 +276,43 @@ export default function Services() {
         </div>
       </section>
 
+      {/* How Pricing Works */}
+      <section className="py-12 bg-background" data-testid="section-how-pricing-works">
+        <div className="max-w-4xl mx-auto px-4 md:px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">How Pricing Works</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-sm font-bold text-primary">1</span>
+              </div>
+              <h4 className="font-bold text-sm mb-1">Pros set their own rates</h4>
+              <p className="text-xs text-muted-foreground">Every pro on UpTend sets their own rate within a verified market range</p>
+            </div>
+            <div className="text-center">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-sm font-bold text-primary">2</span>
+              </div>
+              <h4 className="font-bold text-sm mb-1">One price, locked at booking</h4>
+              <p className="text-xs text-muted-foreground">We match you with the best pro for your job -- one price, locked at booking</p>
+            </div>
+            <div className="text-center">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-sm font-bold text-primary">3</span>
+              </div>
+              <h4 className="font-bold text-sm mb-1">5% service fee</h4>
+              <p className="text-xs text-muted-foreground">Covers background checks, live tracking, Price Protection, and our guarantee</p>
+            </div>
+          </div>
+          <div className="flex justify-center gap-4 flex-wrap text-xs text-muted-foreground">
+            <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-green-600" /> Price-Protected</span>
+            <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-green-600" /> Background-Checked</span>
+            <span className="flex items-center gap-1"><Star className="w-3.5 h-3.5 text-green-600" /> Insured Pros</span>
+          </div>
+        </div>
+      </section>
+
       {/* Quick Navigation */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3">
@@ -491,6 +528,26 @@ export default function Services() {
         </div>
       </section>
 
+      {/* For Pros + For Businesses Callouts */}
+      <section className="py-12 bg-background">
+        <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-8">
+          <div className="border rounded-xl p-6 text-center">
+            <h3 className="text-xl font-bold mb-2">For Pros</h3>
+            <p className="text-muted-foreground text-sm mb-4">Set your own rates. Keep 85%. No lead fees.</p>
+            <Link href="/become-pro" asChild>
+              <Button variant="outline">Become a Pro <ArrowRight className="w-4 h-4 ml-2" /></Button>
+            </Link>
+          </div>
+          <div className="border rounded-xl p-6 text-center">
+            <h3 className="text-xl font-bold mb-2">For Businesses</h3>
+            <p className="text-muted-foreground text-sm mb-4">Load your team. We bring the jobs.</p>
+            <Link href="/business/partners" asChild>
+              <Button variant="outline">Learn More <ArrowRight className="w-4 h-4 ml-2" /></Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 bg-background" data-testid="section-services-cta">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-4" data-testid="text-services-cta-headline">
@@ -505,9 +562,9 @@ export default function Services() {
                 Book a Service <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Link href="/pricing" asChild>
-              <Button size="lg" variant="outline" data-testid="button-services-pricing">
-                View Pricing
+            <Link href="/become-pro" asChild>
+              <Button size="lg" variant="outline" data-testid="button-services-become-pro">
+                Become a Pro
               </Button>
             </Link>
           </div>

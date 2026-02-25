@@ -29,7 +29,7 @@ export function usePageContext(): PageContext {
   let section = "general";
   if (location.startsWith("/book")) section = "booking";
   else if (location.startsWith("/services")) section = "services";
-  else if (location.startsWith("/pricing")) section = "pricing";
+  else if (location.startsWith("/pricing")) section = "services";
   else if (location.startsWith("/dashboard")) section = "customer-dashboard";
   else if (location.startsWith("/pro/dashboard") || location.startsWith("/hauler/dashboard")) section = "pro-dashboard";
   else if (location.startsWith("/ai")) section = "ai-tools";

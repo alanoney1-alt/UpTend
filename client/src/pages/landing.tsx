@@ -296,15 +296,15 @@ function ServicesStrip() {
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
   const services = [
-    { key: "handyman", label: "Handyman", price: "$75/hr", icon: Wrench },
+    { key: "handyman", label: "Handyman", price: "From $75/hr", icon: Wrench },
     { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck },
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves },
     { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $129", icon: ArrowUpFromLine },
     { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles },
     { key: "landscaping", label: "Landscaping", price: "From $59", icon: Trees },
     { key: "pool_cleaning", label: "Pool Cleaning", price: "From $99/mo", icon: Waves },
-    { key: "moving_labor", label: "Moving Labor", price: "$65/hr", icon: Package },
-    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "$50/room", icon: Home },
+    { key: "moving_labor", label: "Moving Labor", price: "From $65/hr", icon: Package },
+    { key: "carpet_cleaning", label: "Carpet Cleaning", price: "From $50/room", icon: Home },
     { key: "garage_cleanout", label: "Garage Cleanout", price: "From $129", icon: Home },
     { key: "light_demolition", label: "Light Demo", price: "From $199", icon: Truck },
   ];
@@ -370,7 +370,7 @@ function Testimonials() {
       name: "David R.",
       location: "Kissimmee, FL",
       service: "Handyman",
-      text: "I needed a ceiling fan installed, a leaky faucet fixed, and some drywall patched. I described everything to the George AI assistant and got a quote that turned out to be almost exactly what I paid. No one has ever given me an accurate estimate on handyman work before. The Pro knocked out all three tasks in one visit.",
+      text: "I needed a ceiling fan installed, a leaky faucet fixed, and some drywall patched. I described everything to George and got a quote that turned out to be almost exactly what I paid. No one has ever given me an accurate estimate on handyman work before. The Pro knocked out all three tasks in one visit.",
     },
     {
       name: "Linda M.",
@@ -419,17 +419,17 @@ function SmartMatchCTA() {
       <div className="max-w-3xl mx-auto px-4 text-center">
         <ShieldCheck className="w-10 h-10 text-[#F47C20] mx-auto mb-4" />
         <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-          One price. One pro. George handles the rest.
+          One price. One pro. Done.
         </h2>
         <p className="text-slate-300 mb-2 max-w-xl mx-auto">
-          Every job is scoped by AI. Every price is protected. Every pro is verified.
+          Background-checked. Insured. Price-Protected. Every pro, every job.
         </p>
         <p className="text-xs text-slate-400 mb-6">
           5% service fee covers Price Protection, background checks, and our guarantee.
         </p>
         <Link href="/smart-book" asChild>
           <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-bold px-8 py-5 rounded-xl">
-            Get Your Match <ArrowRight className="ml-2 w-5 h-5" />
+            Get Matched <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </Link>
       </div>
@@ -446,7 +446,7 @@ function SnapQuoteCTA() {
           Have a photo of the problem?
         </h2>
         <p className="text-slate-600 dark:text-slate-300 mb-6">
-          Skip the form. Snap a photo and get a guaranteed price in seconds.
+          Skip the form. Snap a photo and get a price-protected quote in seconds.
         </p>
         <Link href="/snap-quote" asChild>
           <Button size="lg" className="bg-[#F47C20] hover:bg-[#e06910] text-white font-semibold px-8 py-5 rounded-xl">

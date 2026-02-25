@@ -50,7 +50,7 @@ export function Header() {
               {t("nav.services")}
             </span>
           </Link>
-          <Link href="/pricing">
+          <Link href="/services">
             <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-pricing">
               {t("nav.pricing")}
             </span>
@@ -209,7 +209,7 @@ export function Header() {
             <Link href="/services" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-services-mobile">{t("nav.services")}</span>
             </Link>
-            <Link href="/pricing" onClick={closeMenu}>
+            <Link href="/services" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-pricing-mobile">{t("nav.pricing")}</span>
             </Link>
             <Link href="/about" onClick={closeMenu}>
