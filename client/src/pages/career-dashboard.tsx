@@ -274,6 +274,20 @@ export default function CareerDashboard() {
           </div>
         </Card>
 
+        {/* Tax Center Link */}
+        <Card className="p-5">
+          <Link href="/tax-center" className="flex items-center justify-between group">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="w-5 h-5 text-[#ea580c]" />
+              <div>
+                <h3 className="font-bold">Tax Center</h3>
+                <p className="text-xs text-muted-foreground">View earnings reports, download tax documents</p>
+              </div>
+            </div>
+            <ChevronDown className="w-4 h-4 text-muted-foreground -rotate-90 group-hover:text-[#ea580c]" />
+          </Link>
+        </Card>
+
         {/* Business Partner Section */}
         <BusinessPartnerSection />
 

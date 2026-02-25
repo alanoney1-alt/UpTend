@@ -238,6 +238,15 @@ import { registerSmartMatchRoutes } from "./smart-match.routes";
 // Business Partner routes (Pro Company Onboarding)
 import { registerBusinessPartnerRoutes } from "./business-partner.routes";
 
+// Stripe Connect routes
+import { registerStripeConnectRoutes } from "./stripe-connect.routes";
+
+// Tax Reporting routes
+import { registerTaxReportingRoutes } from "./tax-reporting.routes";
+
+// Job Lifecycle routes (Smart Match booking pipeline)
+import { registerJobLifecycleRoutes } from "./job-lifecycle.routes";
+
 // Batch 1 API fixes (haulers/available, certifications, wallet, notifications, quality-score, jobs)
 import { registerBatch1FixRoutes } from "./batch1-fixes.routes";
 
@@ -528,6 +537,15 @@ export async function registerRoutes(
 
   // Register Business Partner routes
   registerBusinessPartnerRoutes(app);
+
+  // Register Stripe Connect routes
+  registerStripeConnectRoutes(app);
+
+  // Register Tax Reporting routes
+  registerTaxReportingRoutes(app);
+
+  // Register Job Lifecycle routes
+  registerJobLifecycleRoutes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);

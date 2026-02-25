@@ -146,6 +146,10 @@ const HomeServicesLakeNona = lazy(() => import("@/pages/services/home-services-l
 const HomeCleaningOrlando = lazy(() => import("@/pages/services/home-cleaning-orlando"));
 const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orlando"));
 
+// Job Detail + Tax Center
+const JobDetail = lazy(() => import("@/pages/job-detail"));
+const TaxCenter = lazy(() => import("@/pages/tax-center"));
+
 // Blog
 const SmartBooking = lazy(() => import("@/pages/smart-booking"));
 const SnapQuotePage = lazy(() => import("@/pages/snap-quote"));
@@ -330,6 +334,8 @@ function Router() {
       <Route path="/partners/register" component={PartnerRegister} />
       <Route path="/partners/dashboard" component={PartnerDashboard} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
+      <Route path="/jobs/:jobId" component={JobDetail} />
+      <Route path="/tax-center" component={TaxCenter} />
       <Route path="/blog" component={BlogIndex} />
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
       <Route path="/blog/:slug" component={BlogPost} />
