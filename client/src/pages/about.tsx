@@ -187,12 +187,12 @@ export default function About() {
                 <p className="text-sm text-muted-foreground">Service Verticals</p>
               </div>
               <div data-testid="stat-support">
-                <div className="text-3xl font-bold text-primary mb-1">270+</div>
-                <p className="text-sm text-muted-foreground">Database Tables</p>
+                <div className="text-3xl font-bold text-primary mb-1">Orlando</div>
+                <p className="text-sm text-muted-foreground">Metro Coverage</p>
               </div>
               <div data-testid="stat-local">
-                <div className="text-3xl font-bold text-primary mb-1">155+</div>
-                <p className="text-sm text-muted-foreground">Platform Tools</p>
+                <div className="text-3xl font-bold text-primary mb-1">24/7</div>
+                <p className="text-sm text-muted-foreground">George Available</p>
               </div>
               <div data-testid="stat-pricing">
                 <div className="text-3xl font-bold text-primary mb-1">85%</div>

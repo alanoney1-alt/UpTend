@@ -1,11 +1,14 @@
 import { Camera, ArrowRight, Shield } from "lucide-react";
 import { SnapQuote } from "@/components/snap-quote";
+import { Header } from "@/components/landing/header";
+import { Footer } from "@/components/landing/footer";
 
 export default function SnapQuotePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-cream-50 to-white">
+      <Header />
       {/* Hero */}
-      <section className="max-w-2xl mx-auto px-4 pt-16 pb-8 text-center">
+      <section className="max-w-2xl mx-auto px-4 pt-28 pb-8 text-center">
         <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
           Snap a Photo.<br />Get a Price.<br />Book a Pro.
         </h1>
@@ -64,6 +67,7 @@ export default function SnapQuotePage() {
           </p>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

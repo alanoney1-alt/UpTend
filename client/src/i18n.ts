@@ -977,7 +977,7 @@ const resources = {
       "booking_page.faq_a4": "You can cancel or reschedule any booking up to 24 hours before the scheduled time at no charge.",
 
       // Meet George page
-      "george.badge": "AI-Powered Home Assistant",
+      "george.badge": "Your Home Expert",
       "george.hero_line1": "Meet George.",
       "george.hero_line2": "Your Home Expert.",
       "george.hero_desc": "George knows your home inside and out. He'll scope your job, find the right pro, and make sure the price is fair. All from one conversation.",
@@ -1019,9 +1019,9 @@ const resources = {
       "findpro.recent_reviews": "Recent Reviews",
 
       // Become Pro page
-      "become_pro.hero_line1": "Build a Verified",
-      "become_pro.hero_line2": "Green Track Record.",
-      "become_pro.hero_desc": "UpTend matches you with real jobs, pays you fairly, and automatically builds your verified green track record. Become the first choice for homeowners and property managers who care about sustainability.",
+      "become_pro.hero_line1": "Build Your Business",
+      "become_pro.hero_line2": "On Your Terms.",
+      "become_pro.hero_desc": "Set your own rates. Keep 85% of every job. We find the customers, handle payments, and pay for your marketing. No lead fees. No bidding wars. Just real jobs.",
       "become_pro.apply_join": "Apply to Join",
       "become_pro.view_credentials": "View Credentials Program",
       "become_pro.impact_title": "Your Verified Impact Portfolio",
@@ -1037,7 +1037,7 @@ const resources = {
       "become_pro.alan_quote_title": "I built this because the system was broken for you.",
       "become_pro.testimonials_title": "Hear From Our Pros",
       "become_pro.testimonials_desc": "Real professionals building real businesses on UpTend.",
-      "become_pro.steps_title": "How to become a Verified Green Pro",
+      "become_pro.steps_title": "How to Become a Verified Pro",
       "become_pro.apply_now": "Apply Now",
 
       // Emergency page
@@ -1961,9 +1961,9 @@ const resources = {
       "findpro.recent_reviews": "Reseñas Recientes",
 
       // Become Pro page
-      "become_pro.hero_line1": "Construya un Historial",
-      "become_pro.hero_line2": "Verde Verificado.",
-      "become_pro.hero_desc": "UpTend lo conecta con trabajos reales, le paga justamente y automáticamente construye su historial verde verificado. Conviértase en la primera opción para propietarios y administradores de propiedades que se preocupan por la sostenibilidad.",
+      "become_pro.hero_line1": "Construya Su Negocio",
+      "become_pro.hero_line2": "En Sus Términos.",
+      "become_pro.hero_desc": "Establezca sus propias tarifas. Quédese con el 85% de cada trabajo. Nosotros encontramos los clientes, manejamos los pagos y pagamos su marketing. Sin comisiones por referidos. Sin guerras de precios.",
       "become_pro.apply_join": "Solicitar Ingreso",
       "become_pro.view_credentials": "Ver Programa de Credenciales",
       "become_pro.impact_title": "Su Portafolio de Impacto Verificado",
@@ -1979,7 +1979,7 @@ const resources = {
       "become_pro.alan_quote_title": "Construí esto porque el sistema estaba roto para ustedes.",
       "become_pro.testimonials_title": "Escuche a Nuestros Pros",
       "become_pro.testimonials_desc": "Profesionales reales construyendo negocios reales en UpTend.",
-      "become_pro.steps_title": "Cómo convertirse en un Pro Verde Verificado",
+      "become_pro.steps_title": "Cómo Convertirse en un Pro Verificado",
       "become_pro.apply_now": "Solicitar Ahora",
 
       // Emergency page

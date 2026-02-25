@@ -448,7 +448,7 @@ function ProSettings({ profile }: { profile: any }) {
                 <div>
                   <p className="font-semibold text-sm">Have your own liability insurance?</p>
                   <p className="text-sm text-muted-foreground">
-                    Pros with their own insurance waive the $10/job surcharge
+                    Pros with their own insurance show your own coverage
                   </p>
                 </div>
                 <div className="flex items-center justify-between">
@@ -467,8 +467,8 @@ function ProSettings({ profile }: { profile: any }) {
                         toast({
                           title: checked ? "Insurance enabled" : "Insurance disabled",
                           description: checked
-                            ? "Upload your certificate to waive the $10/job surcharge"
-                            : "You'll be charged $10/job for UpTend's liability coverage",
+                            ? "Upload your certificate to show your own coverage"
+                            : "Platform coverage included at no cost while you get started",
                         });
                       } catch (error) {
                         toast({
@@ -508,7 +508,7 @@ function ProSettings({ profile }: { profile: any }) {
                             queryClient.invalidateQueries({ queryKey: ["/api/pro/profile"] });
                             toast({
                               title: "Certificate uploaded",
-                              description: "$10/job surcharge waived!",
+                              description: "Insurance verified!",
                             });
                           } catch (error) {
                             toast({

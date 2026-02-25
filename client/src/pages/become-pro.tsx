@@ -9,46 +9,46 @@ import { Footer } from "@/components/landing/footer";
 
 const pillars = [
   {
-    icon: Leaf,
-    iconBg: "bg-green-100 dark:bg-green-900/30",
-    iconColor: "text-green-600 dark:text-green-400",
-    title: "Verified Green Credentials",
-    desc: "Every job you complete on UpTend automatically builds your verified sustainability record. This opens doors to high-value enterprise and property management contracts that require documented environmental impact.",
+    icon: DollarSign,
+    iconBg: "bg-orange-100 dark:bg-orange-900/30",
+    iconColor: "text-orange-600 dark:text-orange-400",
+    title: "Keep 85% of Every Job",
+    desc: "One flat 15% platform fee. No exceptions, no tiers, no games. Plus 100% of tips. Same-day payouts.",
+  },
+  {
+    icon: TrendingUp,
+    iconBg: "bg-orange-100 dark:bg-orange-900/30",
+    iconColor: "text-orange-600 dark:text-orange-400",
+    title: "We Pay for Your Marketing",
+    desc: "Zero lead fees. We spend the money to bring customers to you. Your job is to show up, do great work, and build your reputation. We handle the rest.",
+  },
+  {
+    icon: Shield,
+    iconBg: "bg-blue-100 dark:bg-blue-900/30",
+    iconColor: "text-blue-600 dark:text-blue-400",
+    title: "Insurance? We've Got You.",
+    desc: "Start earning immediately with zero insurance costs. As you grow, we help you get affordable coverage through our insurance partners.",
   },
   {
     icon: Video,
     iconBg: "bg-blue-100 dark:bg-blue-900/30",
     iconColor: "text-blue-600 dark:text-blue-400",
-    title: "Video Evidence Protection",
-    desc: "Our 360\u00B0 video scan protects YOU. No more \"he-said-she-said.\" We document the exact state of the job so you're never held liable for pre-existing damage.",
+    title: "Photo Evidence Protection",
+    desc: "We document the exact state of every job so you're never held liable for pre-existing damage. No more \"he-said-she-said.\"",
   },
   {
     icon: Globe,
     iconBg: "bg-purple-100 dark:bg-purple-900/30",
     iconColor: "text-purple-600 dark:text-purple-400",
     title: "Bilingual by Design",
-    desc: "Whether you prefer English or Spanish, our app speaks your language. We believe the best Pros deserve an interface that respects their native tongue.",
+    desc: "English and Spanish. Our platform speaks your language. The best Pros deserve an interface that respects their native tongue.",
   },
   {
-    icon: DollarSign,
-    iconBg: "bg-orange-100 dark:bg-orange-900/30",
-    iconColor: "text-orange-600 dark:text-orange-400",
-    title: "Keep 80% of Every Job",
-    desc: "Every pro keeps 80%. No exceptions, no tiers, no games. Plus 100% of tips. Instant same-day payouts via Stripe.",
-  },
-  {
-    icon: Shield,
-    iconBg: "bg-orange-100 dark:bg-orange-900/30",
-    iconColor: "text-orange-600 dark:text-orange-400",
-    title: "Insurance? We've Got You.",
-    desc: "Don't have your own insurance? Just $10/job and you're covered up to $25K. It unlocks every job on the platform — no policy needed to get started.",
-  },
-  {
-    icon: TrendingUp,
-    iconBg: "bg-red-100 dark:bg-red-900/30",
-    iconColor: "text-red-600 dark:text-red-400",
-    title: "We Pay for Your Marketing",
-    desc: "Zero lead fees. We spend the money to bring customers to you. Your job is to show up, do great work, and build your reputation. We handle the rest.",
+    icon: Leaf,
+    iconBg: "bg-green-100 dark:bg-green-900/30",
+    iconColor: "text-green-600 dark:text-green-400",
+    title: "Verified Track Record",
+    desc: "Every completed job builds your verified record. This opens doors to high-value enterprise and property management contracts.",
   },
 ];
 
@@ -56,7 +56,7 @@ const steps = [
   { num: "01", title: "Sign Up", desc: "Takes 3 minutes. Pick your services, set your availability." },
   { num: "02", title: "Background Check", desc: "We cover the cost. Once cleared, you're verified on the platform." },
   { num: "03", title: "Set Up Your Profile", desc: "Add your experience, service areas, and certifications. Customers see this when they book." },
-  { num: "04", title: "Start Earning", desc: "Get matched with real, pre-paid jobs. Keep 80% of every dollar. Same-day payouts." },
+  { num: "04", title: "Start Earning", desc: "Get matched with real, pre-paid jobs. Keep 85% of every dollar. Same-day payouts." },
 ];
 
 export default function BecomePro() {
@@ -90,34 +90,34 @@ export default function BecomePro() {
         </div>
       </section>
 
-      <section className="py-16 bg-green-50 dark:bg-green-950/20" data-testid="section-green-hook">
+      <section className="py-16 bg-orange-50 dark:bg-orange-950/10" data-testid="section-earning-hook">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/40 rounded-2xl flex items-center justify-center">
-              <Award className="w-8 h-8 text-green-600 dark:text-green-400" />
+            <div className="w-16 h-16 bg-[#F47C20]/10 rounded-2xl flex items-center justify-center">
+              <DollarSign className="w-8 h-8 text-[#F47C20]" />
             </div>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4" data-testid="text-green-hook-title">
-            {t("become_pro.impact_title")}
+          <h2 className="text-2xl md:text-3xl font-bold mb-4" data-testid="text-earning-hook-title">
+            Your Earning Potential
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
-            {t("become_pro.impact_desc")}
+            Real numbers. Real pros. Real income.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
-            <Card className="p-6 text-center" data-testid="card-green-diversion">
-              <p className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">70%</p>
-              <p className="text-sm font-medium">{t("become_pro.avg_diversion")}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t("become_pro.verified_per_job")}</p>
+            <Card className="p-6 text-center">
+              <p className="text-3xl font-bold text-[#F47C20] mb-2">85%</p>
+              <p className="text-sm font-medium">You Keep Per Job</p>
+              <p className="text-xs text-muted-foreground mt-1">Flat 15% fee. No hidden costs.</p>
             </Card>
-            <Card className="p-6 text-center" data-testid="card-green-carbon">
-              <p className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">CO2</p>
-              <p className="text-sm font-medium">{t("become_pro.carbon_tracked")}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t("become_pro.route_optimization")}</p>
+            <Card className="p-6 text-center">
+              <p className="text-3xl font-bold text-[#F47C20] mb-2">$0</p>
+              <p className="text-sm font-medium">Lead Fees</p>
+              <p className="text-xs text-muted-foreground mt-1">We pay for your marketing.</p>
             </Card>
-            <Card className="p-6 text-center" data-testid="card-green-certs">
-              <p className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">ESG</p>
-              <p className="text-sm font-medium">{t("become_pro.credentials_earned")}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t("become_pro.shareable")}</p>
+            <Card className="p-6 text-center">
+              <p className="text-3xl font-bold text-[#F47C20] mb-2">Same Day</p>
+              <p className="text-sm font-medium">Payouts Available</p>
+              <p className="text-xs text-muted-foreground mt-1">Finish the job, get paid.</p>
             </Card>
           </div>
         </div>
