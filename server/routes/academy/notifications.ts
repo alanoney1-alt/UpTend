@@ -1,6 +1,12 @@
 import { db } from "../../db";
 import { eq, and, sql, gte, lte } from "drizzle-orm";
 import { storage } from "../../storage";
+import {
+  sendCertificationNudgeEmail,
+  sendCertExpiringEmail,
+  sendCertCompletionEmail,
+  sendFeeReductionEmail,
+} from "../../services/email-service";
 
 /**
  * Academy Notification Hooks
@@ -9,14 +15,10 @@ import { storage } from "../../storage";
  * Email sending is wired up via the email-service module.
  */
 
-// Lazy import to avoid circular deps
-async function getEmailService() {
-  return import("../../services/email-service");
-}
-
-async function getProEmail(proId: number): Promise<string | null> {
+async function getProEmailAndName(proId: number): Promise<{ email: string; name: string } | null> {
   const user = await storage.getUser(String(proId));
-  return user?.email || null;
+  if (!user?.email) return null;
+  return { email: user.email, name: user.firstName || user.email.split("@")[0] };
 }
 
 /**
@@ -28,8 +30,6 @@ export async function getWeeklyMissedJobsCount(proId: number): Promise<{
   missingCerts: string[];
 }> {
   try {
-    // For now, return an estimate based on whether the pro has B2B certs
-    // Once job-cert gating is fully wired, this will query actual filtered jobs
     const proCerts = await db.execute(sql`
       SELECT cp.slug FROM pro_certifications pc
       JOIN certification_programs cp ON cp.id = pc.certification_id
@@ -59,24 +59,18 @@ export async function getWeeklyMissedJobsCount(proId: number): Promise<{
 export async function sendCertificationNudge(proId: number): Promise<void> {
   try {
     const { count, missingCerts } = await getWeeklyMissedJobsCount(proId);
-
     if (count === 0) return;
 
     const certNames = missingCerts.map(s => s.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()));
-
     console.log(`[Academy Nudge] Pro ${proId}: Missed ~${count} premium jobs this week. Missing certs: ${certNames.join(", ")}`);
 
-    const proEmail = await getProEmail(proId);
-    if (proEmail) {
-      const { send } = await import("../../services/email-service") as any;
-      // Use the low-level send if exported, otherwise construct inline
-      // Since send is not exported, we use sendPaymentFailed pattern — but better to add a generic
-      // For now, use nodemailer directly via the service pattern
-      const emailService = await getEmailService();
-      // sendCertificationNudge doesn't have a dedicated template, so we'll use a direct approach
-      // by calling the wrap+send pattern. Since those aren't exported, we log + skip for non-exported helpers.
-      // Actually, let's just add the email inline using the same transporter.
-      console.log(`[Academy Nudge] Sending nudge email to ${proEmail}: You missed ${count} premium jobs this week. Get ${certNames[0]} certified to unlock them.`);
+    const pro = await getProEmailAndName(proId);
+    if (pro) {
+      await sendCertificationNudgeEmail(pro.email, {
+        proName: pro.name,
+        missedCount: count,
+        certNames,
+      });
     }
   } catch (error) {
     console.error("Error sending certification nudge:", error);
@@ -105,9 +99,13 @@ export async function sendExpiringCertReminders(): Promise<void> {
       const c = cert as any;
       console.log(`[Academy Renewal] Pro ${c.pro_id}: "${c.cert_name}" expires ${c.expires_at}`);
 
-      const proEmail = await getProEmail(c.pro_id);
-      if (proEmail) {
-        console.log(`[Academy Renewal] Sending renewal reminder to ${proEmail}: Your ${c.cert_name} certification expires soon. Renew before ${c.expires_at} to keep access to premium jobs.`);
+      const pro = await getProEmailAndName(c.pro_id);
+      if (pro) {
+        await sendCertExpiringEmail(pro.email, {
+          proName: pro.name,
+          certName: c.cert_name,
+          expiresAt: c.expires_at,
+        });
       }
     }
   } catch (error) {
@@ -122,9 +120,12 @@ export async function sendCertCompletionCongrats(proId: number, certName: string
   try {
     console.log(`[Academy Congrats] Pro ${proId}: Completed "${certName}"!`);
 
-    const proEmail = await getProEmail(proId);
-    if (proEmail) {
-      console.log(`[Academy Congrats] Sending congrats email to ${proEmail}: Congratulations! You're now ${certName} certified.`);
+    const pro = await getProEmailAndName(proId);
+    if (pro) {
+      await sendCertCompletionEmail(pro.email, {
+        proName: pro.name,
+        certName,
+      });
     }
   } catch (error) {
     console.error("Error sending cert completion congrats:", error);
@@ -133,7 +134,6 @@ export async function sendCertCompletionCongrats(proId: number, certName: string
 
 /**
  * Send fee tier upgrade notification when a pro crosses a tier threshold.
- * Called after certification completion in the quiz submission flow.
  */
 export async function sendFeeReductionCongrats(
   proId: number,
@@ -149,9 +149,14 @@ export async function sendFeeReductionCongrats(
       `Estimated monthly savings: $${monthlySavings.toFixed(2)}`
     );
 
-    const proEmail = await getProEmail(proId);
-    if (proEmail) {
-      console.log(`[Fee Reduction] Sending fee reduction email to ${proEmail}: Your platform fee just dropped from ${oldPercent}% to ${newPercent}%! Estimated monthly savings: $${monthlySavings.toFixed(2)}`);
+    const pro = await getProEmailAndName(proId);
+    if (pro) {
+      await sendFeeReductionEmail(pro.email, {
+        proName: pro.name,
+        oldPercent,
+        newPercent,
+        monthlySavings,
+      });
     }
   } catch (error) {
     console.error("Error sending fee reduction congrats:", error);

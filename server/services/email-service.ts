@@ -468,6 +468,81 @@ export async function sendProTips(to: string, data: { proName: string }) {
   return send(to, "How top UpTend Pros earn more", html, text);
 }
 
+// ─── Academy / Certification Emails ────────────────────────────────
+
+export async function sendCertificationNudgeEmail(to: string, data: {
+  proName: string;
+  missedCount: number;
+  certNames: string[];
+}) {
+  const certList = data.certNames.map(name => `<li style="color:#555">${name}</li>`).join("");
+  const html = wrap(`You missed ${data.missedCount} premium jobs this week`, `
+  <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
+  <p style="color:#555;line-height:1.6">This week, <strong>${data.missedCount} premium B2B jobs</strong> were available in your area — but you weren't eligible because you're missing these certifications:</p>
+  <ul style="line-height:2">${certList}</ul>
+  <p style="color:#555;line-height:1.6">Get certified to unlock higher-paying jobs from property managers and HOAs.</p>
+  <div style="text-align:center;margin:24px 0">
+    <a href="${APP_URL()}/academy" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">Start Certification</a>
+  </div>
+  `);
+  const text = `Hi ${data.proName}, you missed ${data.missedCount} premium jobs this week. Get ${data.certNames[0]} certified to unlock them. Visit ${APP_URL()}/academy`;
+  return send(to, `You missed ${data.missedCount} premium jobs this week`, html, text);
+}
+
+export async function sendCertExpiringEmail(to: string, data: {
+  proName: string;
+  certName: string;
+  expiresAt: string;
+}) {
+  const html = wrap(`Your ${data.certName} certification expires soon`, `
+  <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
+  <p style="color:#555;line-height:1.6">Your <strong>${data.certName}</strong> certification expires on <strong>${new Date(data.expiresAt).toLocaleDateString()}</strong>.</p>
+  <p style="color:#555;line-height:1.6">Renew now to keep access to premium B2B jobs.</p>
+  <div style="text-align:center;margin:24px 0">
+    <a href="${APP_URL()}/academy" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">Renew Certification</a>
+  </div>
+  `);
+  const text = `Hi ${data.proName}, your ${data.certName} certification expires on ${new Date(data.expiresAt).toLocaleDateString()}. Renew at ${APP_URL()}/academy`;
+  return send(to, `Your ${data.certName} certification expires soon`, html, text);
+}
+
+export async function sendCertCompletionEmail(to: string, data: {
+  proName: string;
+  certName: string;
+}) {
+  const html = wrap(`Congratulations! You're ${data.certName} certified`, `
+  <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
+  <p style="color:#555;line-height:1.6">You've completed the <strong>${data.certName}</strong> certification. You now have access to premium B2B jobs in your area.</p>
+  <div style="text-align:center;margin:24px 0">
+    <a href="${APP_URL()}/career" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">View Available Jobs</a>
+  </div>
+  `);
+  const text = `Congratulations ${data.proName}! You're now ${data.certName} certified. View premium jobs at ${APP_URL()}/career`;
+  return send(to, `Congratulations! You're ${data.certName} certified`, html, text);
+}
+
+export async function sendFeeReductionEmail(to: string, data: {
+  proName: string;
+  oldPercent: number;
+  newPercent: number;
+  monthlySavings: number;
+}) {
+  const html = wrap(`🎉 Your platform fee just dropped to ${data.newPercent}%!`, `
+  <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
+  <p style="color:#555;line-height:1.6">Great news — your platform fee just dropped from <strong>${data.oldPercent}%</strong> to <strong>${data.newPercent}%</strong>!</p>
+  <div style="text-align:center;margin:24px 0;padding:24px;background:#f9f9f9;border-radius:8px">
+    <div style="color:#888;font-size:13px;margin-bottom:4px">Estimated Monthly Savings</div>
+    <div style="font-size:36px;font-weight:700;color:#F47C20">${money(data.monthlySavings)}</div>
+  </div>
+  <p style="color:#555;line-height:1.6">Keep earning certifications to lower your fee even further.</p>
+  <div style="text-align:center;margin:24px 0">
+    <a href="${APP_URL()}/academy" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">View Certifications</a>
+  </div>
+  `);
+  const text = `Hi ${data.proName}, your platform fee dropped from ${data.oldPercent}% to ${data.newPercent}%! Estimated monthly savings: ${money(data.monthlySavings)}. View certifications at ${APP_URL()}/academy`;
+  return send(to, `🎉 Your platform fee just dropped to ${data.newPercent}%!`, html, text);
+}
+
 // ─── Payment Failed ────────────────────────────────────────────────
 
 export async function sendPaymentFailed(to: string, data: {
