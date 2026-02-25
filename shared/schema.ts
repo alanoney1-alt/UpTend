@@ -187,6 +187,8 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   currentStreakWeeks: integer("current_streak_weeks").default(0),
   longestStreakWeeks: integer("longest_streak_weeks").default(0),
   earningsLevel: text("earnings_level").default("starter"), // 'starter', 'rising', 'pro', 'elite', 'legend'
+  // Business Partner link
+  businessPartnerId: varchar("business_partner_id"),
 });
 
 export const haulerProfilesRelations = relations(haulerProfiles, ({ one, many }) => ({
@@ -481,6 +483,8 @@ export const serviceRequests = pgTable("service_requests", {
   snapQuoteId: varchar("snap_quote_id"),
   proArrivalPhotoUrl: text("pro_arrival_photo_url"),
   scopeVerified: boolean("scope_verified").default(false),
+  // Business Partner attribution
+  businessPartnerId: varchar("business_partner_id"),
 });
 
 export const serviceRequestsRelations = relations(serviceRequests, ({ one, many }) => ({
@@ -7550,3 +7554,77 @@ export const snapQuotes = pgTable("snap_quotes", {
 });
 
 export type SnapQuote = typeof snapQuotes.$inferSelect;
+
+// ==========================================
+// Business Partners (Pro Company Onboarding)
+// ==========================================
+export const businessPartners = pgTable("business_partners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(), // Owner's user account
+  companyName: text("company_name").notNull(),
+  ownerName: text("owner_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  ein: text("ein"),
+  insuranceProvider: text("insurance_provider"),
+  insurancePolicyNumber: text("insurance_policy_number"),
+  insuranceExpiration: text("insurance_expiration"),
+  yearsInBusiness: integer("years_in_business").default(1),
+  serviceTypes: text("service_types").array().default(sql`ARRAY[]::text[]`),
+  serviceArea: text("service_area"), // zip code or city
+  rateMode: text("rate_mode").default("company"), // 'company' or 'individual'
+  isActive: boolean("is_active").default(true),
+  createdAt: text("created_at").notNull().default(sql`NOW()`),
+  updatedAt: text("updated_at").notNull().default(sql`NOW()`),
+});
+
+export const businessPartnersRelations = relations(businessPartners, ({ one }) => ({
+  owner: one(users, {
+    fields: [businessPartners.userId],
+    references: [users.id],
+  }),
+}));
+
+export const insertBusinessPartnerSchema = createInsertSchema(businessPartners).omit({ id: true });
+export type InsertBusinessPartner = z.infer<typeof insertBusinessPartnerSchema>;
+export type BusinessPartner = typeof businessPartners.$inferSelect;
+
+// Business Partner Rates (company-wide rates per service)
+export const businessPartnerRates = pgTable("business_partner_rates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessPartnerId: varchar("business_partner_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  baseRate: real("base_rate").notNull(),
+  updatedAt: text("updated_at").notNull().default(sql`NOW()`),
+});
+
+export const businessPartnerRatesRelations = relations(businessPartnerRates, ({ one }) => ({
+  businessPartner: one(businessPartners, {
+    fields: [businessPartnerRates.businessPartnerId],
+    references: [businessPartners.id],
+  }),
+}));
+
+export type BusinessPartnerRate = typeof businessPartnerRates.$inferSelect;
+
+// Link table: hauler_profiles -> business_partners
+export const businessPartnerEmployees = pgTable("business_partner_employees", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessPartnerId: varchar("business_partner_id").notNull(),
+  proUserId: varchar("pro_user_id").notNull(), // The pro's user ID
+  addedAt: text("added_at").notNull().default(sql`NOW()`),
+  isActive: boolean("is_active").default(true),
+});
+
+export const businessPartnerEmployeesRelations = relations(businessPartnerEmployees, ({ one }) => ({
+  businessPartner: one(businessPartners, {
+    fields: [businessPartnerEmployees.businessPartnerId],
+    references: [businessPartners.id],
+  }),
+  pro: one(users, {
+    fields: [businessPartnerEmployees.proUserId],
+    references: [users.id],
+  }),
+}));
+
+export type BusinessPartnerEmployee = typeof businessPartnerEmployees.$inferSelect;

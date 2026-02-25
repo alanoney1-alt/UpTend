@@ -73,6 +73,11 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
+                <Link href="/business/partners" className="cursor-pointer" data-testid="link-business-partners">
+                  {t("nav.for_businesses", "For Businesses")}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link href="/blog" className="cursor-pointer" data-testid="link-blog">
                   {t("nav.blog", "Blog")}
                 </Link>

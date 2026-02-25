@@ -129,6 +129,11 @@ const CookiePolicy = lazy(() => import("@/pages/cookies"));
 const CommunicationsConsent = lazy(() => import("@/pages/communications-consent"));
 const AffiliateDisclosure = lazy(() => import("@/pages/affiliate-disclosure"));
 
+// Business Partner pages
+const BusinessPartnerSignup = lazy(() => import("@/pages/business-signup"));
+const BusinessPartnerDashboard = lazy(() => import("@/pages/bp-dashboard"));
+const BusinessPartnersLanding = lazy(() => import("@/pages/business-partners"));
+
 // SEO Landing Pages
 const JunkRemovalLakeNona = lazy(() => import("@/pages/services/junk-removal-lake-nona"));
 const PressureWashingOrlando = lazy(() => import("@/pages/services/pressure-washing-orlando"));
@@ -185,6 +190,9 @@ function Router() {
       {/* Legacy hauler routes for backward compatibility */}
       <Route path="/hauler/dashboard" component={HaulerDashboard} />
       <Route path="/hauler/earnings" component={EarningsPage} />
+      <Route path="/business/partners" component={BusinessPartnersLanding} />
+      <Route path="/business/signup" component={BusinessPartnerSignup} />
+      <Route path="/business/partner-dashboard" component={BusinessPartnerDashboard} />
       <Route path="/business" component={BusinessLanding} />
       <Route path="/business/login" component={BusinessLogin} />
       <Route path="/business/register" component={BusinessRegister} />

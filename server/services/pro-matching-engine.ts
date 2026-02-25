@@ -22,6 +22,7 @@ export interface MatchedPro {
   valueScore: number;
   verified: boolean;
   insured: boolean;
+  businessVerified: boolean;
 }
 
 export interface MatchResult {
@@ -146,6 +147,7 @@ export async function matchProsForJob(
       hasInsurance: haulerProfiles.hasInsurance,
       isAvailable: haulerProfiles.isAvailable,
       canAcceptJobs: haulerProfiles.canAcceptJobs,
+      businessPartnerId: haulerProfiles.businessPartnerId,
       createdAt: sql`(SELECT created_at FROM users WHERE id = ${haulerProfiles.userId})`,
     })
     .from(haulerProfiles)
@@ -192,6 +194,7 @@ export async function matchProsForJob(
     const completedJobs = pro.jobsCompleted || 0;
     const verified = pro.verified || false;
     const insured = pro.hasInsurance || false;
+    const businessVerified = !!(pro.businessPartnerId);
 
     let valueScore = calculateValueScore(
       rating,
@@ -205,6 +208,11 @@ export async function matchProsForJob(
     // New Pro Boost: help new pros get discovered
     const newProBoost = calculateNewProBoost(completedJobs);
     valueScore += newProBoost;
+
+    // Business Verified Boost: +5 for pros backed by insured companies
+    if (businessVerified) {
+      valueScore += 5;
+    }
 
     // Busy Pro Cooldown: spread work across the pool
     // Only applies when there are 3+ qualified pros for this service
@@ -227,6 +235,7 @@ export async function matchProsForJob(
       valueScore,
       verified,
       insured,
+      businessVerified,
     };
   });
 
@@ -249,6 +258,7 @@ export async function matchProsForJob(
       valueScore: 88.5,
       verified: true,
       insured: true,
+      businessVerified: false,
     });
     top3.push({
       proId: "default-2",
@@ -260,6 +270,7 @@ export async function matchProsForJob(
       valueScore: 82.3,
       verified: true,
       insured: true,
+      businessVerified: false,
     });
     top3.push({
       proId: "default-3",
@@ -271,6 +282,7 @@ export async function matchProsForJob(
       valueScore: 76.1,
       verified: false,
       insured: true,
+      businessVerified: false,
     });
   }
 

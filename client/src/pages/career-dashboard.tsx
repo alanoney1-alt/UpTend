@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
 import {
   ArrowLeft, Truck, Star, Award, TrendingUp, Loader2,
-  Medal, ShieldCheck, Zap, Target, Lock, ChevronDown, ChevronUp
+  Medal, ShieldCheck, Zap, Target, Lock, ChevronDown, ChevronUp, Building2
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { MyRates } from "@/components/pro/my-rates";
@@ -41,6 +41,44 @@ const levelConfig = [
   { level: 2, title: "Verified Pro", icon: ShieldCheck, color: "text-green-500", requiredJobs: 10, requiredStars: 0, payout: "80%" },
   { level: 3, title: "Master Consultant", icon: Award, color: "text-amber-500", requiredJobs: 50, requiredStars: 40, payout: "85% + Commissions" },
 ];
+
+function BusinessPartnerSection() {
+  const { data: bpCheck } = useQuery<any>({
+    queryKey: ["/api/business-partner/check"],
+  });
+
+  if (!bpCheck?.isBusinessPartner && !bpCheck?.isEmployee) return null;
+
+  const bp = bpCheck.businessPartner;
+  if (!bp) return null;
+
+  return (
+    <Card className="p-5 border-amber-200 bg-amber-50/50">
+      <div className="flex items-center gap-3">
+        <Building2 className="w-8 h-8 text-[#ea580c]" />
+        <div className="flex-1">
+          {bpCheck.isEmployee ? (
+            <>
+              <h3 className="font-bold">You are part of {bp.companyName}'s team</h3>
+              <p className="text-sm text-muted-foreground">
+                Business-routed jobs are managed by your company. Your independent jobs and reviews are always yours.
+              </p>
+            </>
+          ) : (
+            <>
+              <h3 className="font-bold">{bp.companyName} -- Business Partner</h3>
+              <p className="text-sm text-muted-foreground">
+                <Link href="/business/partner-dashboard" className="text-[#ea580c] hover:underline">
+                  Go to Business Dashboard
+                </Link>
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 function MyRatesSection() {
   const [isOpen, setIsOpen] = useState(false);
@@ -235,6 +273,9 @@ export default function CareerDashboard() {
             })}
           </div>
         </Card>
+
+        {/* Business Partner Section */}
+        <BusinessPartnerSection />
 
         {/* My Rates Section */}
         <MyRatesSection />

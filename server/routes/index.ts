@@ -235,6 +235,9 @@ import { registerAppDataRoutes } from "./app-data.routes";
 import { registerProPricingRoutes } from "./pro-pricing.routes";
 import { registerSmartMatchRoutes } from "./smart-match.routes";
 
+// Business Partner routes (Pro Company Onboarding)
+import { registerBusinessPartnerRoutes } from "./business-partner.routes";
+
 // Batch 1 API fixes (haulers/available, certifications, wallet, notifications, quality-score, jobs)
 import { registerBatch1FixRoutes } from "./batch1-fixes.routes";
 
@@ -522,6 +525,9 @@ export async function registerRoutes(
   // Register Pro Pricing + Smart Match routes
   registerProPricingRoutes(app);
   registerSmartMatchRoutes(app);
+
+  // Register Business Partner routes
+  registerBusinessPartnerRoutes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
