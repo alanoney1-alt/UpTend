@@ -77,7 +77,8 @@ export async function analyzeImages(options: VisionAnalysisOptions): Promise<any
         },
       ],
       ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
-      max_tokens: maxTokens,
+      // GPT-5.x uses max_completion_tokens; older models use max_tokens
+      ...(model.startsWith("gpt-5") ? { max_completion_tokens: maxTokens } : { max_tokens: maxTokens }),
     });
 
     const content = response.choices[0]?.message?.content || "";
