@@ -1,5 +1,5 @@
 /**
- * Emergency SOS Page — /emergency-sos
+ * Emergency SOS Page. /emergency-sos
  * 
  * Quick-select emergency service with guaranteed 2-hour response.
  * Clean, reassuring design with red accents. "We've got this."
@@ -125,7 +125,7 @@ export default function EmergencySosPage() {
                 What's the emergency?
               </h1>
               <p className="text-slate-500 dark:text-slate-400">
-                We'll match you with the nearest available pro — guaranteed response within 2 hours.
+                We'll match you with the nearest available pro. guaranteed response within 2 hours.
               </p>
             </div>
 

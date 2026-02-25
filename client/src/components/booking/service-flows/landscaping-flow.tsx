@@ -71,7 +71,7 @@ export function LandscapingFlow({ onComplete, onBack }: ServiceFlowProps) {
           return { label: opt.label, price: opt.price };
         })
       : tier
-      ? [{ label: `${tier.name} — ${lotSize === "quarter" ? "≤1/4 acre" : "≤1/2 acre"}`, price: tier.prices[lotSize] }]
+      ? [{ label: `${tier.name}: ${lotSize === "quarter" ? "≤1/4 acre" : "≤1/2 acre"}`, price: tier.prices[lotSize] }]
       : [];
 
   const handleContinue = () => {

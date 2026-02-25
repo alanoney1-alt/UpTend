@@ -247,7 +247,7 @@ export function AiChatWidget() {
     localStorage.removeItem("george_chat");
   };
 
-  // Determine greeting — Mr. George is available to EVERYONE (logged in or not)
+  // Determine greeting. Mr. George is available to EVERYONE (logged in or not)
   const isPro = isProPage(currentPage);
   const isB2B = currentPage?.startsWith("/business");
   const firstName = user?.firstName;
@@ -255,10 +255,10 @@ export function AiChatWidget() {
   const greetingText = isPro
     ? `Hey${firstName ? ` ${firstName}` : ""}!  Interested in earning with UpTend?`
     : isB2B
-    ? `Welcome${firstName ? `, ${firstName}` : ""}!  I'm Mr. George — let me show you how UpTend replaces your entire vendor network.`
+    ? `Welcome${firstName ? `, ${firstName}` : ""}!  I'm Mr. George. let me show you how UpTend replaces your entire vendor network.`
     : firstName
     ? `Hey ${firstName}!  What's going on at home today? Need a pro, or want to tackle something yourself?`
-    : `Hey!  I'm Mr. George — I know basically everything about home repair. Need a pro, or want to try fixing it yourself? I do both. `;
+    : `Hey!  I'm Mr. George. I know basically everything about home repair. Need a pro, or want to try fixing it yourself? I do both. `;
   
   const greetingButtons: QuickButton[] = isPro
     ? [

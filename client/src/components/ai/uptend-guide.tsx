@@ -60,7 +60,7 @@ function renderContent(text: string) {
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     // Italic
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    // Bare URLs (not already inside an href) — make clickable
+    // Bare URLs (not already inside an href). make clickable
     .replace(/(?<!href=")(https?:\/\/[^\s<>"]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-[#F47C20] underline break-all">$1</a>')
     .replace(/\n/g, "<br/>");
   return DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
@@ -89,82 +89,82 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 } {
   const name = userName ? `, ${userName}` : "";
 
-  // B2B pages — professional George
+  // B2B pages. professional George
   if (page === "/business" || page.startsWith("/business")) {
     // Don't show on authenticated dashboard pages (they have their own UI)
     if (page.startsWith("/business/dashboard") || page.startsWith("/business/billing") || page.startsWith("/business/compliance")) {
       return {
-        welcome: `Hey${name}!  I'm Mr. George — your UpTend business assistant. Need help with your dashboard, billing, team management, or anything else? Just ask.\n\nWhat can I help with? `,
+        welcome: `Hey${name}!  I'm Mr. George, your UpTend business assistant. Need help with your dashboard, billing, team management, or anything else? Just ask.\n\nWhat can I help with? `,
         quickActions: [],
       };
     }
     return {
-      welcome: `Welcome!  I'm Mr. George, UpTend's business solutions assistant.\n\nIf you manage properties, run an HOA, or oversee construction — I can walk you through how UpTend replaces your entire vendor network with one platform.\n\n**What I can help with:**\n• Pricing for your portfolio size\n• How our dispatch and tracking works\n• Insurance and compliance requirements\n• Volume discounts and billing\n• Setting up a demo\n\nWhat would you like to know? `,
+      welcome: `Welcome!  I'm Mr. George, UpTend's business solutions assistant.\n\nIf you manage properties, run an HOA, or oversee construction, I can walk you through how UpTend replaces your entire vendor network with one platform.\n\n**What I can help with:**\n• Pricing for your portfolio size\n• How our dispatch and tracking works\n• Insurance and compliance requirements\n• Volume discounts and billing\n• Setting up a demo\n\nWhat would you like to know? `,
       quickActions: [],
     };
   }
 
   if (PRO_SIGNUP_PAGES.some(p => page.startsWith(p))) {
     return {
-      welcome: `Hey there  I'm Mr. George. If you're thinking about joining UpTend as a Pro — you picked a good time. We don't charge lead fees. You keep what you earn. We handle the customers, the scheduling, the payments — you just do great work.\n\nI can answer anything — earnings, how jobs work, what makes this different from the other guys. Just type your question below `,
+      welcome: `Hey there  I'm Mr. George. If you're thinking about joining UpTend as a Pro, you picked a good time. We don't charge lead fees. You keep what you earn. We handle the customers, the scheduling, the payments, you just do great work.\n\nI can answer anything: earnings, how jobs work, what makes this different from the other guys. Just type your question below `,
       quickActions: [],
     };
   }
 
   if (page.startsWith("/pro/") || page.startsWith("/pro") || page === "/drive" || page.startsWith("/drive") || page === "/academy" || page.startsWith("/academy")) {
     return {
-      welcome: `Hey${name}!  I'm Mr. George. Looking for work opportunities or have questions about being an UpTend Pro? I'm here to help.\n\nWhether it's about earnings, how jobs work, route optimization, compliance, or growing your business — just ask!\n\nWhat can I help with? `,
+      welcome: `Hey${name}!  I'm Mr. George. Looking for work opportunities or have questions about being an UpTend Pro? I'm here to help.\n\nWhether it's about earnings, how jobs work, route optimization, compliance, or growing your business, just ask!\n\nWhat can I help with? `,
       quickActions: [],
     };
   }
 
   if (page === "/book" || page.startsWith("/book")) {
     return {
-      welcome: `Hey there!  I'm Mr. George — welcome!\n\nYou're looking at a specific service — awesome! I'd love to help you figure out if it's the right fit. All our pros are verified, background-checked, and genuinely good at what they do.\n\nGot any questions? I'm here — fire away! `,
+      welcome: `Hey there!  I'm Mr. George, welcome!\n\nYou're looking at a specific service, awesome! I'd love to help you figure out if it's the right fit. All our pros are verified, background-checked, and genuinely good at what they do.\n\nGot any questions? I'm here, fire away! `,
       quickActions: [],
     };
   }
 
   if (page === "/services" || page.startsWith("/services/")) {
     return {
-      welcome: `Hey!  I'm Mr. George — glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full Home DNA Scans — and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine — just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! `,
+      welcome: `Hey!  I'm Mr. George, glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full Home DNA Scans, and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine. Just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! `,
       quickActions: [],
     };
   }
 
   if (page === "/pricing") {
     return {
-      welcome: `Hey!  I'm Mr. George — thanks for checking us out!\n\nI see you're looking at services and pricing — great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works — I'm right here.\n\nNo pressure at all, just ask whatever's on your mind `,
+      welcome: `Hey!  I'm Mr. George, thanks for checking us out!\n\nI see you're looking at services and pricing, great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works. I'm right here.\n\nNo pressure at all, just ask whatever's on your mind `,
       quickActions: [],
     };
   }
 
   if (page === "/emergency") {
     return {
-      welcome: `I'm here — tell me what's happening and I'll get you help fast. Type below `,
+      welcome: `I'm here. Tell me what's happening and I'll get you help fast. Type below `,
       quickActions: [],
     };
   }
 
   if (userRole === "hauler" || userRole === "pro") {
     return {
-      welcome: `Hey${name}!  I'm Mr. George — your UpTend assistant. Need help with jobs, earnings, scheduling, or growing your business? I've got your back.\n\nJust tell me what you need `,
+      welcome: `Hey${name}!  I'm Mr. George, your UpTend assistant. Need help with jobs, earnings, scheduling, or growing your business? I've got your back.\n\nJust tell me what you need `,
       quickActions: [],
     };
   }
 
   if (userRole === "customer") {
     return {
-      welcome: `Hey${name}!  So good to see you!\n\nI'm here whenever you need me — whether it's a question about a service, checking on something, or just figuring out what you need next. Happy to help with anything!\n\nWhat's up? `,
+      welcome: `Hey${name}!  So good to see you!\n\nI'm here whenever you need me, whether it's a question about a service, checking on something, or just figuring out what you need next. Happy to help with anything!\n\nWhat's up? `,
       quickActions: [],
     };
   }
 
-  // Default — guest on any page
+  // Default. guest on any page
   const isFirstVisit = !localStorage.getItem(LS_GREETED);
   if (isFirstVisit) {
     return {
-      welcome: `Hey — I'm Mr. George. \n\nI know basically everything about home repair. Whether something's broken, you're trying to prevent a problem, or you just need a pro out there fast — I've got you.\n\nWhat's going on with your home?`,
+      welcome: `Hey, I'm Mr. George. \n\nI know basically everything about home repair. Whether something's broken, you're trying to prevent a problem, or you just need a pro out there fast. I've got you.\n\nWhat's going on with your home?`,
       quickActions: [
         { label: " Need a Pro Now", action: "message:I need to book a professional service" },
         { label: " Check My Home's Health", action: "message:I want to check on my home's health" },
@@ -175,7 +175,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   }
 
   return {
-    welcome: `Hey — glad you're back. \n\nSomething going on with your home? I'm ready to get it handled — whether that's booking a pro right now or walking you through it yourself.\n\nWhat do you need?`,
+    welcome: `Hey. Glad you're back. \n\nSomething going on with your home? I'm ready to get it handled, whether that's booking a pro right now or walking you through it yourself.\n\nWhat do you need?`,
     quickActions: [
       { label: " Book Your Home Service", action: "message:I need to book a professional service" },
       { label: " Home Health Check", action: "message:How's my home doing?" },
@@ -351,7 +351,7 @@ export function UpTendGuide() {
   // Should this page hide the widget entirely?
   const isHiddenPage = NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p));
 
-  // Mr. George auto-opens for ALL visitors, every visit — Alan's rule
+  // Mr. George auto-opens for ALL visitors, every visit. Alan's rule
   // Detect which "zone" the user is in so we can reset George when they switch
   const getZone = (page: string): string => {
     if (page.startsWith("/business")) return "business";
@@ -389,7 +389,7 @@ export function UpTendGuide() {
           }
         }
       } catch { /* corrupt data, fall through */ }
-      // No saved messages — show fresh greeting
+      // No saved messages. show fresh greeting
       const ctx = getPageContext(pageContext.page, pageContext.userRole, pageContext.userName);
       skipPersistRef.current = true;
       setMessages([{
@@ -466,7 +466,7 @@ export function UpTendGuide() {
       setInput(msg);
       setTimeout(() => sendMessageRef.current?.(msg), 100);
     } else if (action.startsWith("action:")) {
-      // Generic action passthrough — send as a message for George to handle
+      // Generic action passthrough. send as a message for George to handle
       sendMessageRef.current?.(action.replace("action:", ""));
     }
   }, [navigate]);
@@ -502,7 +502,7 @@ export function UpTendGuide() {
         URL.revokeObjectURL(videoUrl);
       } catch {
         // If frame extraction fails, show error
-        setMessages(prev => [...prev, { id: `err-video-${Date.now()}`, role: "assistant", content: "I couldn't process that video. Try sending a photo instead — snap a picture of the issue and I can analyze it." }]);
+        setMessages(prev => [...prev, { id: `err-video-${Date.now()}`, role: "assistant", content: "I couldn't process that video. Try sending a photo instead. Snap a picture of the issue and I can analyze it." }]);
         setIsUploading(false);
         return;
       }
@@ -689,7 +689,7 @@ export function UpTendGuide() {
             : "opacity-0 translate-y-3 pointer-events-none"
         )}
       >
-        {/* Header — minimal */}
+        {/* Header. minimal */}
         <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-black/5 dark:border-white/5 shrink-0">
           <span className="font-semibold text-sm">Mr. George </span>
           <button
@@ -759,7 +759,7 @@ export function UpTendGuide() {
             </div>
           ))}
 
-          {/* Typing indicator — subtle dots */}
+          {/* Typing indicator. subtle dots */}
           {(isLoading || isUploading) && (
             <div className="flex items-start">
               <div className="bg-black/[0.04] dark:bg-white/[0.06] rounded-2xl rounded-bl-md px-3 py-2">

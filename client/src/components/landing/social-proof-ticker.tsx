@@ -13,7 +13,7 @@ const PROOF_ENTRIES = [
 
 export function SocialProofTicker() {
   const items = PROOF_ENTRIES.map(
-    (e) => `${e.name} in ${e.neighborhood} booked ${e.service} — ${e.time}`
+    (e) => `${e.name} in ${e.neighborhood} booked ${e.service} | ${e.time}`
   );
   // Duplicate for seamless loop
   const all = [...items, ...items];

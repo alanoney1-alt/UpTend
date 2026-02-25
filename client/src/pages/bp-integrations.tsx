@@ -299,7 +299,7 @@ export default function BpIntegrations() {
                 </div>
                 <div>
                   <p className="font-medium text-sm text-slate-800">Connect your existing tools in one click</p>
-                  <p className="text-xs text-slate-500 mt-0.5">Secure OAuth — we never see your password</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Secure OAuth. we never see your password</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">

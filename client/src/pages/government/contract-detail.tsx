@@ -343,7 +343,7 @@ function WorkOrdersSection({ contractId, workOrders, milestones }: { contractId:
                   </Select>
                 </div>
               </div>
-              <div><Label>Internal Budget ($) — not shown to pros</Label><Input type="number" step="0.01" value={form.budgetAmount} onChange={e => setForm({ ...form, budgetAmount: e.target.value })} /></div>
+              <div><Label>Internal Budget ($). not shown to pros</Label><Input type="number" step="0.01" value={form.budgetAmount} onChange={e => setForm({ ...form, budgetAmount: e.target.value })} /></div>
               <div>
                 <Label>Status</Label>
                 <Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}>
@@ -468,7 +468,7 @@ function PayrollSection({ contractId, reports }: { contractId: string; reports: 
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-xs text-gray-400 mb-3 italic">Internal compliance reports only — generated from work order data for government reporting requirements.</p>
+        <p className="text-xs text-gray-400 mb-3 italic">Internal compliance reports only. generated from work order data for government reporting requirements.</p>
         {reports.length === 0 ? <p className="text-gray-500">No reports.</p> : (
           <div className="space-y-2">
             {reports.map((r: any) => (

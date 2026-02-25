@@ -6,7 +6,7 @@ export default function PrivacyPage() {
     <LegalPage title="Privacy Policy" icon={<Shield className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Privacy Policy</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Privacy Policy</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <p>This Privacy Policy describes how UPYCK, Inc. d/b/a UpTend ("UpTend," "we," "us," or "our") collects, uses, shares, and protects your personal information when you use our platform at uptendapp.com and our mobile applications (collectively, the "Platform"). By using the Platform, you agree to the practices described in this Privacy Policy.</p>
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
 </ul>
 <strong>Payment Information:</strong>
 <ul>
-<li>Credit/debit card details, bank account information (collected and processed by Stripe — UpTend does not store full payment card numbers)</li>
+<li>Credit/debit card details, bank account information (collected and processed by Stripe. UpTend does not store full payment card numbers)</li>
 <li>Billing address</li>
 <li>Transaction history, refund records</li>
 </ul>
@@ -42,7 +42,7 @@ export default function PrivacyPage() {
 <li>Photos and images submitted for Home DNA Scan analysis</li>
 <li>DIY Coaching queries and interaction history</li>
 <li>Home profile data passively gathered from your interactions with Mr. George (e.g., home age, known issues, maintenance history you've discussed)</li>
-<li>Mr. George's audience profiling signals (communication style preferences such as senior-friendly, Gen-Z casual, busy-professional concise, or detail-oriented — used solely to adapt Mr. George's communication style to your preferences)</li>
+<li>Mr. George's audience profiling signals (communication style preferences such as senior-friendly, Gen-Z casual, busy-professional concise, or detail-oriented. used solely to adapt Mr. George's communication style to your preferences)</li>
 </ul>
 <strong>Communications:</strong>
 <ul>
@@ -172,10 +172,10 @@ export default function PrivacyPage() {
 <p>We use cookies and similar technologies on the Platform. For full details, see our standalone Cookie Policy. Categories include:</p>
 
 <ul>
-<li><strong>Essential Cookies</strong> — Required for Platform functionality (authentication, session management, security)</li>
-<li><strong>Analytics Cookies</strong> — Help us understand usage patterns and improve the Platform</li>
-<li><strong>Marketing Cookies</strong> — Used to deliver relevant advertising and measure campaign effectiveness</li>
-<li><strong>Affiliate Cookies</strong> — Track purchases made through affiliate links (e.g., Amazon Associates) to attribute commissions</li>
+<li><strong>Essential Cookies</strong>. Required for Platform functionality (authentication, session management, security)</li>
+<li><strong>Analytics Cookies</strong>. Help us understand usage patterns and improve the Platform</li>
+<li><strong>Marketing Cookies</strong>. Used to deliver relevant advertising and measure campaign effectiveness</li>
+<li><strong>Affiliate Cookies</strong>. Track purchases made through affiliate links (e.g., Amazon Associates) to attribute commissions</li>
 </ul>
 <p>You can manage cookie preferences through the cookie consent mechanism on our Platform and through your browser settings.</p>
 

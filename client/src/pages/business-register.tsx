@@ -174,14 +174,14 @@ export default function BusinessRegister() {
                             <RadioGroupItem value="referral" id="referral" className="mt-0.5" />
                             <Label htmlFor="referral" className="font-normal cursor-pointer">
                               <span className="font-medium">Referral Partner</span>
-                              <span className="block text-sm text-muted-foreground">Earn 5% per job — your customers pay</span>
+                              <span className="block text-sm text-muted-foreground">Earn 5% per job. your customers pay</span>
                             </Label>
                           </div>
                           <div className="flex items-start space-x-3 rounded-md border p-3">
                             <RadioGroupItem value="direct" id="direct" className="mt-0.5" />
                             <Label htmlFor="direct" className="font-normal cursor-pointer">
                               <span className="font-medium">Direct Account</span>
-                              <span className="block text-sm text-muted-foreground">Volume discounts — you pay, consolidated invoicing</span>
+                              <span className="block text-sm text-muted-foreground">Volume discounts. you pay, consolidated invoicing</span>
                             </Label>
                           </div>
                         </RadioGroup>

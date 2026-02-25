@@ -65,7 +65,7 @@ const EMERGENCY_TYPES = [
       "Ensure everyone is out of the home and call 911 if the fire is active",
       "Do not re-enter the structure until cleared by fire department",
       "Document damage with photos from a safe distance",
-      "Do not turn on HVAC — it spreads soot and smoke damage",
+      "Do not turn on HVAC. It spreads soot and smoke damage",
     ],
   },
   {
@@ -77,7 +77,7 @@ const EMERGENCY_TYPES = [
     firstSteps: [
       "Turn off the main breaker at your electrical panel",
       "Do not touch any exposed wires or sparking outlets",
-      "If someone is being shocked, do NOT touch them — cut power first",
+      "If someone is being shocked, do NOT touch them. Cut power first",
       "Stay away from any standing water near electrical sources",
     ],
   },
@@ -89,7 +89,7 @@ const EMERGENCY_TYPES = [
     bgColor: "bg-yellow-500/10 border-yellow-500/30",
     firstSteps: [
       "Check all other doors and windows (safely) for an unlocked entry",
-      "Do not attempt to force or break locks — it causes expensive damage",
+      "Do not attempt to force or break locks. It causes expensive damage",
       "If you have a smart lock, check your phone app for remote unlock",
       "Stay in a safe, well-lit area while waiting for help",
     ],
@@ -343,7 +343,7 @@ export default function EmergencyPage() {
               <h2 className="text-3xl font-bold mb-2 text-green-400">{t("emergency.help_on_way")}</h2>
               <p className="text-slate-300">{t("emergency.in_good_hands")}</p>
               {proInfo && (
-                <p className="text-slate-300 text-lg mt-2">{proInfo.companyName} -- {proInfo.rating?.toFixed(1)} stars</p>
+                <p className="text-slate-300 text-lg mt-2">{proInfo.companyName}. {proInfo.rating?.toFixed(1)} stars</p>
               )}
             </div>
             {eta && (

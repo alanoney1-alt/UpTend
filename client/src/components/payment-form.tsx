@@ -70,7 +70,7 @@ function CheckoutForm({ onSuccess, onError }: { onSuccess: () => void; onError: 
           onSuccess();
           break;
         case "requires_action":
-          // 3D Secure or additional authentication — Stripe.js handles the redirect
+          // 3D Secure or additional authentication. Stripe.js handles the redirect
           // If we get here with redirect: "if_required", it means the action couldn't be handled
           onError("Additional authentication required. Please try again or use a different card.");
           setIsProcessing(false);

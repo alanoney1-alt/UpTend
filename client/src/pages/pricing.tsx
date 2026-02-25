@@ -14,7 +14,7 @@ const SERVICES = [
     price: "$75",
     unit: "per hour (1hr minimum)",
     description: "General repairs, installations, and fixes around the home. 1-hour minimum per visit.",
-    features: ["$75/hr — 1-hour minimum", "Background-checked and insured", "Drywall & painting", "Furniture assembly", "Minor plumbing & electrical"],
+    features: ["$75/hr. 1-hour minimum", "Background-checked and insured", "Drywall & painting", "Furniture assembly", "Minor plumbing & electrical"],
   },
   {
     id: "junk_removal",
@@ -95,9 +95,9 @@ const SERVICES = [
     unit: "per room",
     description: "Professional carpet cleaning. $100 minimum (covers up to 2 rooms standard).",
     features: [
-      "Standard Steam Clean: $50/room — extraction, pre-treatment, vacuum",
-      "Deep Clean: $75/room — + enzyme treatment, heavy soil agitation, slow dry pass",
-      "Pet Treatment: $89/room — + pet odor enzyme + sanitizer",
+      "Standard Steam Clean: $50/room: extraction, pre-treatment, vacuum",
+      "Deep Clean: $75/room: enzyme treatment, heavy soil agitation, slow dry pass",
+      "Pet Treatment: $89/room: pet odor enzyme + sanitizer",
       "Hallway: $25 each | Stairs: $25/flight",
       "Scotchgard/Protectant: $20/room add-on",
       "3BR/2BA Package: $129 | 4-5BR Package: $215 (all rooms + hallways)",
@@ -108,14 +108,14 @@ const SERVICES = [
     name: <>Landscaping</>,
     price: "$59",
     unit: "one-time mow",
-    description: "Professional lawn care — one-time or recurring monthly service.",
+    description: "Professional lawn care. One-time or recurring monthly service.",
     features: [
       "One-Time Mow: $59 (≤¼ acre) | $89 (≤½ acre)",
       "Yard Cleanup: $149–$299 (overgrown lot, debris, trimming)",
       "— Recurring Monthly (weekly service) —",
-      "Mow & Go: $99/mo (≤¼ acre) | $149/mo (≤½ acre) — mow + blow + edging",
-      "Full Service: $159/mo (≤¼ acre) | $219/mo (≤½ acre) — + trim, weed beds, hedge trim",
-      "Premium: $249/mo (≤¼ acre) | $329/mo (≤½ acre) — + seasonal flowers, mulch, irrigation",
+      "Mow & Go: $99/mo (≤¼ acre) | $149/mo (≤½ acre): mow + blow + edging",
+      "Full Service: $159/mo (≤¼ acre) | $219/mo (≤½ acre): trim, weed beds, hedge trim",
+      "Premium: $249/mo (≤¼ acre) | $329/mo (≤½ acre): seasonal flowers, mulch, irrigation",
     ],
   },
   {
@@ -155,10 +155,10 @@ const SERVICES = [
     unit: "per month",
     description: "Regular pool maintenance to keep your water crystal clear.",
     features: [
-      "Basic: $99/mo — Weekly chemicals, skim surface, empty baskets",
-      "Standard: $165/mo — + brush walls, vacuum, filter check",
-      "Full Service: $210/mo — + tile cleaning, equipment monitoring, filter cleaning",
-      "One-Time Deep Clean: $249 — Deep clean for neglected/green pools",
+      "Basic: $99/mo: Weekly chemicals, skim surface, empty baskets",
+      "Standard: $165/mo: brush walls, vacuum, filter check",
+      "Full Service: $210/mo: tile cleaning, equipment monitoring, filter cleaning",
+      "One-Time Deep Clean: $249: Deep clean for neglected/green pools",
     ],
   },
   {
@@ -192,7 +192,7 @@ export default function PublicPricing() {
       {/* Home DNA Scan Banner */}
       <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-4 px-4 text-center">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3">
-          <span className="font-bold text-sm md:text-base">Get your Home DNA Scan -- know your home inside and out. Completely free.</span>
+          <span className="font-bold text-sm md:text-base">Get your Home DNA Scan. know your home inside and out. Completely free.</span>
           <a href="/home-dna-scan" className="inline-flex items-center gap-1 bg-white text-[#F47C20] font-bold text-sm px-4 py-1.5 rounded-full hover:bg-orange-50 transition-colors">
             Learn More <ArrowRight className="w-4 h-4" />
           </a>

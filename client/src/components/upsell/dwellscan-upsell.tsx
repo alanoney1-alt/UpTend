@@ -61,7 +61,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
               <p className="text-2xl font-bold text-primary">Just $150 more</p>
             </div>
             <p className="text-sm text-muted-foreground">
-              Both tiers are completely free — upgrade to Aerial for the full drone-powered assessment
+              Both tiers are completely free. upgrade to Aerial for the full drone-powered assessment
             </p>
           </div>
 

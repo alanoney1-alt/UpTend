@@ -184,7 +184,7 @@ export function SupportWidget() {
             <a href="tel:407-338-3342" className="block">
               <Button className="w-full gap-2" variant="destructive" data-testid="button-call-dispatch">
                 <Phone className="w-4 h-4" />
-                Call Dispatch — (407) 338-3342
+                Call Dispatch. (407) 338-3342
               </Button>
             </a>
             <Button

@@ -916,7 +916,7 @@ export default function Profile() {
               </Button>
             </div>
 
-            {/* My Digital Home — inline */}
+            {/* My Digital Home. inline */}
             <Link href="/my-home">
               <Card className="p-3 mb-4 hover-elevate cursor-pointer" data-testid="link-my-home-inventory">
                 <div className="flex items-center gap-2">

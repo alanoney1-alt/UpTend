@@ -199,7 +199,7 @@ export default function MyProperties() {
             <Home className="w-12 h-12 mx-auto mb-3 text-white/30" />
             <h3 className="font-semibold mb-1">No properties yet</h3>
             <p className="text-sm text-white/50 mb-4">
-              Add your home and manage services for your family's properties — all from one account.
+              Add your home and manage services for your family's properties. all from one account.
             </p>
             <Button onClick={() => setShowForm(true)} className="gap-2">
               <Plus className="w-4 h-4" />

@@ -44,7 +44,7 @@ export function NoShowCheckin({ jobId, jobStatus }: NoShowCheckinProps) {
         });
         body = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       } catch {
-        // GPS unavailable — proceed without coordinates (manual check-in)
+        // GPS unavailable. proceed without coordinates (manual check-in)
       }
       return apiRequest("POST", `/api/jobs/${jobId}/check-in`, body);
     },
@@ -92,7 +92,7 @@ export function NoShowCheckin({ jobId, jobStatus }: NoShowCheckinProps) {
       {noShowStatus.delayReasonSent ? (
         <div className="flex items-center gap-2 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/30 rounded-lg p-3">
           <CheckCircle2 className="w-4 h-4" />
-          <span className="text-sm">Delay reason sent — job under review</span>
+          <span className="text-sm">Delay reason sent. job under review</span>
         </div>
       ) : (
         <div className="flex flex-col gap-2">

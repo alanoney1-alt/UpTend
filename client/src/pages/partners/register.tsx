@@ -63,7 +63,7 @@ export default function PartnerRegister() {
                 <div className="bg-muted p-4 rounded-lg text-left mb-6">
                   <p className="text-sm font-medium mb-1">Your API Key:</p>
                   <code className="text-xs break-all">{apiKey}</code>
-                  <p className="text-xs text-muted-foreground mt-2">Save this — you'll need it for API access once activated.</p>
+                  <p className="text-xs text-muted-foreground mt-2">Save this. you'll need it for API access once activated.</p>
                 </div>
               )}
               <Link href="/partners/dashboard">

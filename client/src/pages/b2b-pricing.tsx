@@ -84,7 +84,7 @@ function PlanCard({ plan, featured }: { plan: Plan; featured?: boolean }) {
 const faqs = [
   {
     q: "Is this a SaaS product?",
-    a: "No — UpTend is Workforce-as-a-Service (WaaS). Unlike traditional SaaS that just gives you software, UpTend provides the actual workforce, tools, compliance, and management layer. You get both the platform and the people to execute.",
+    a: "No. UpTend is Workforce-as-a-Service (WaaS). Unlike traditional SaaS that just gives you software, UpTend provides the actual workforce, tools, compliance, and management layer. You get both the platform and the people to execute.",
   },
   {
     q: "What's included in the transaction fee?",
@@ -124,11 +124,11 @@ export default function B2BPricing() {
           <span className="text-orange-500">for Every Segment</span>
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Not just software — a complete workforce management platform with real people, real compliance, and real results. Choose the plan that fits your portfolio.
+          Not just software. a complete workforce management platform with real people, real compliance, and real results. Choose the plan that fits your portfolio.
         </p>
       </div>
 
-      {/* Independent Tier — Free Entry Point */}
+      {/* Independent Tier. Free Entry Point */}
       <div className="max-w-4xl mx-auto px-4 pb-12">
         <Card className="border-2 border-orange-400 shadow-lg overflow-hidden">
           <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-3 flex items-center gap-2">
@@ -142,7 +142,7 @@ export default function B2BPricing() {
                 <h3 className="text-2xl font-bold text-gray-900">Independent</h3>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-4xl font-bold text-orange-500">$0</span>
-                  <span className="text-gray-500">/month — forever</span>
+                  <span className="text-gray-500">/month. forever</span>
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
                   Manage up to 10 properties with no subscription fees. Pay only a 7% transaction fee when you book a pro.

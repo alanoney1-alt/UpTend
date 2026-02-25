@@ -372,14 +372,14 @@ export default function PhotoToQuote() {
                 </div>
               )}
 
-              {/* Book Your Home Service CTA — always visible */}
+              {/* Book Your Home Service CTA. always visible */}
               <div className="flex gap-3">
                 <Button
                   className="flex-1 bg-[#F47C20] hover:bg-[#e06b10] text-white"
                   onClick={handleBookNow}
                 >
                   {result.diyScore && result.diyScore > 70
-                    ? <>Or Book Your Home Service — ${result.priceRange.min}+ <ArrowRight className="w-4 h-4 ml-2" /></>
+                    ? <>Or Book Your Home Service. ${result.priceRange.min}+ <ArrowRight className="w-4 h-4 ml-2" /></>
                     : <>Book Your Home Service <ArrowRight className="w-4 h-4 ml-2" /></>
                   }
                 </Button>

@@ -44,7 +44,7 @@ const segmentData: Record<Segment, {
   },
   hoa: {
     headline: "Your Entire Community. One Vendor.",
-    sub: "Common areas, unit turns, emergency repairs — all through one platform with full board reporting.",
+    sub: "Common areas, unit turns, emergency repairs. all through one platform with full board reporting.",
     tiers: [
       { name: "Starter", price: "$3", unit: "/unit/mo", features: ["Up to 100 units", "Common area services", "Board reports", "Resident portal"] },
       { name: "Pro", price: "$5", unit: "/unit/mo", features: ["Up to 500 units", "Priority dispatch", "ESG tracking", "Violation management"] },
@@ -321,7 +321,7 @@ export default function Business() {
                 <h3 className="text-2xl font-bold text-white mb-3">Veteran-Owned. Government-Certified.</h3>
                 <p className="text-slate-300 leading-relaxed">
                   UpTend's service subsidiary is veteran-owned and pursuing SDVOSB, MBE, SBA 8(a), and DBE certifications. 
-                  We're built for government contracts — prevailing wage compliance, full audit trails, FEMA emergency response capability.
+                  We're built for government contracts. prevailing wage compliance, full audit trails, FEMA emergency response capability.
                 </p>
               </div>
             </CardContent>

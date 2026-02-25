@@ -28,7 +28,7 @@ export default function CostGuidesHub() {
             How Much Do Home Services Cost in Orlando?
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Transparent pricing for every service we offer. No hidden fees, no surprises — just honest costs from verified Orlando pros.
+            Transparent pricing for every service we offer. No hidden fees, no surprises. just honest costs from verified Orlando pros.
           </p>
         </div>
 

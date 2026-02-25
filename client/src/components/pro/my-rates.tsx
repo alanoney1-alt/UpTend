@@ -1,5 +1,5 @@
 /**
- * MyRates -- Pro Dashboard component for setting custom rates
+ * MyRates. Pro Dashboard component for setting custom rates
  *
  * Shows researched Orlando market range, recommended rate, and pro's current rate.
  * Displays "What you'll earn per job" (rate - 15% = payout).
@@ -152,7 +152,7 @@ export function MyRates() {
               {/* Market range info */}
               {research && research.floor > 0 && (
                 <p className="text-[11px] text-muted-foreground mb-2">
-                  Orlando market range: ${floorRate} -- ${ceilingRate} | Recommended: ${recommendedRate}
+                  Orlando market range: ${floorRate}. ${ceilingRate} | Recommended: ${recommendedRate}
                 </p>
               )}
 

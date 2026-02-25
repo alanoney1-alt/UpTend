@@ -45,13 +45,13 @@ const MODULES: AcademyModule[] = [
     icon: ShieldCheck,
     iconColor: "text-primary",
     required: true,
-    description: "Required for all Pros. Learn professional standards, safety codes, customer interaction protocols, and how to use Mr. George — your AI co-pilot.",
+    description: "Required for all Pros. Learn professional standards, safety codes, customer interaction protocols, and how to use Mr. George. your AI co-pilot.",
     lessons: [
       "Always wear a collared shirt or UpTend gear. Introduce yourself by name.",
       "Display your Safety Code to the customer before starting any work.",
       "Never negotiate cash. All payments go through the app.",
       "Zero tolerance: No harassment, no illegal dumping, no sharing personal contact info.",
-      "Use the app's tracking and photo documentation features on every job — they protect you.",
+      "Use the app's tracking and photo documentation features on every job. they protect you.",
       "If the scope of work changes, always submit a scope adjustment through the app before proceeding.",
       "Mr. George is your AI co-pilot. Ask him pricing questions, job tips, or customer communication help anytime.",
       "Use Mr. George to generate professional messages to customers about delays, scope changes, or completion updates.",
@@ -62,7 +62,7 @@ const MODULES: AcademyModule[] = [
         question: "A customer opens the door. What is the correct professional greeting?",
         options: [
           "Where's the stuff?",
-          "Hi, I'm [Name] with UpTend. Here's my Safety Code — I'm here to help today.",
+          "Hi, I'm [Name] with UpTend. Here's my Safety Code. I'm here to help today.",
           "Hey, someone called about a job?",
           "Start working without introducing yourself to save time",
         ],
@@ -72,7 +72,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "The customer offers to pay you $200 cash directly to skip the platform fee. What do you do?",
         options: [
-          "Accept the cash — it's more money for you",
+          "Accept the cash. it's more money for you",
           "Accept but report it in the app later",
           "Politely decline and explain all payments must go through the app",
           "Ask them to Venmo you instead",
@@ -106,12 +106,12 @@ const MODULES: AcademyModule[] = [
         question: "What does the Green Guarantee badge mean for customers?",
         options: [
           "You only use green-colored equipment",
-          "You've verified sustainable disposal practices — documenting where items go for recycling, donation, or proper disposal",
+          "You've verified sustainable disposal practices. documenting where items go for recycling, donation, or proper disposal",
           "You plant a tree after every job",
           "You only work on eco-friendly properties",
         ],
         correct: 1,
-        explanation: "The Green Guarantee means you document the full disposal chain — what was recycled, donated, or properly disposed of. This builds customer trust and contributes to your ESG impact record.",
+        explanation: "The Green Guarantee means you document the full disposal chain. what was recycled, donated, or properly disposed of. This builds customer trust and contributes to your ESG impact record.",
       },
       {
         question: "You're on a job and the customer asks about adding pressure washing to their gutter cleaning booking. What do you do?",
@@ -133,9 +133,9 @@ const MODULES: AcademyModule[] = [
     icon: MessageCircle,
     iconColor: "text-cyan-600 dark:text-cyan-400",
     required: true,
-    description: "Required for all Pros. Learn how to use real-time tracking, SafeComms, photo documentation, scope changes, and Mr. George — your AI assistant.",
+    description: "Required for all Pros. Learn how to use real-time tracking, SafeComms, photo documentation, scope changes, and Mr. George. your AI assistant.",
     lessons: [
-      "How to use real-time GPS tracking — customers can see your location once you start a job by marking 'On My Way'.",
+      "How to use real-time GPS tracking. customers can see your location once you start a job by marking 'On My Way'.",
       "SafeComms chat: All messages go through the app. Phone numbers are auto-redacted for safety.",
       "Photo documentation: Take before/after photos on every job. This protects YOU from disputes.",
       "Scope changes: If the job is bigger than expected, use the app to send a scope adjustment. Customer must approve before you proceed.",
@@ -145,7 +145,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "How does the customer track your arrival to the job site?",
         options: [
-          "They can't — they just wait until you knock",
+          "They can't. they just wait until you knock",
           "GPS tracking starts automatically when you mark 'On My Way' in the app",
           "You text them your location manually",
           "The customer has to call you to ask where you are",
@@ -157,7 +157,7 @@ const MODULES: AcademyModule[] = [
         question: "You try to send your personal phone number to a customer through the app's chat. What happens?",
         options: [
           "The message sends normally",
-          "The message is auto-redacted by SafeComms — phone numbers are blocked for safety",
+          "The message is auto-redacted by SafeComms. phone numbers are blocked for safety",
           "Your account is immediately suspended",
           "The customer receives the number but gets a warning",
         ],
@@ -169,7 +169,7 @@ const MODULES: AcademyModule[] = [
         options: [
           "Only if the customer asks you to",
           "Only after the job is complete",
-          "Before AND after every job — documenting initial conditions and finished work",
+          "Before AND after every job. documenting initial conditions and finished work",
           "Only when there's visible damage",
         ],
         correct: 2,
@@ -191,7 +191,7 @@ const MODULES: AcademyModule[] = [
         options: [
           "Call the UpTend support hotline and ask for Mr. George",
           "Send an email to george@uptend.com",
-          "Click the Mr. George chat bubble — it's available on every page in the app",
+          "Click the Mr. George chat bubble. it's available on every page in the app",
           "You can only access Mr. George from a desktop computer",
         ],
         correct: 2,
@@ -202,11 +202,11 @@ const MODULES: AcademyModule[] = [
         options: [
           "You completed an environmental science degree",
           "You only accept jobs in eco-friendly neighborhoods",
-          "You practice verified sustainable disposal — documenting where every item goes",
+          "You practice verified sustainable disposal. documenting where every item goes",
           "You use only electric vehicles for transport",
         ],
         correct: 2,
-        explanation: "The Green Guarantee means you document the full disposal chain for every job — what was recycled, donated, or properly disposed of. This builds customer trust and differentiates you from competitors.",
+        explanation: "The Green Guarantee means you document the full disposal chain for every job. what was recycled, donated, or properly disposed of. This builds customer trust and differentiates you from competitors.",
       },
     ],
   },
@@ -221,15 +221,15 @@ const MODULES: AcademyModule[] = [
     lessons: [
       "Lift with your legs, not your back. Use a dolly for items over 50lbs.",
       "Sort items into categories: Donate, Recycle, E-Waste, or Landfill. Upload disposal receipts for ESG bonuses.",
-      "Check for hazardous materials (paint, batteries, chemicals, asbestos, fluorescent bulbs) before loading — these require special disposal.",
-      "Most trucks have a Gross Vehicle Weight Rating (GVWR). Never exceed it — overloaded trucks are illegal and dangerous.",
+      "Check for hazardous materials (paint, batteries, chemicals, asbestos, fluorescent bulbs) before loading. these require special disposal.",
+      "Most trucks have a Gross Vehicle Weight Rating (GVWR). Never exceed it. overloaded trucks are illegal and dangerous.",
       "Prohibited items include: medical waste, explosives, radioactive materials, and certain industrial chemicals. Refuse these and report in the app.",
     ],
     quiz: [
       {
         question: "You find 15 cans of old latex and oil-based paint during a garage cleanout. What do you do?",
         options: [
-          "Toss them in the truck with everything else — paint isn't that dangerous",
+          "Toss them in the truck with everything else. paint isn't that dangerous",
           "Set them aside as hazardous waste, document in the app, and arrange proper HazMat disposal",
           "Pour the paint out in the yard to lighten the load",
           "Only separate the oil-based paint; latex is fine in regular trash",
@@ -240,7 +240,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "You estimated 1/4 truck load but the actual job is closer to 3/4 truck. What's the correct process?",
         options: [
-          "Just do the extra work — the customer will be happy",
+          "Just do the extra work. the customer will be happy",
           "Refuse to take the extra items",
           "Submit a scope adjustment through the app with the updated load estimate, wait for customer approval, then proceed",
           "Take cash from the customer for the difference",
@@ -251,10 +251,10 @@ const MODULES: AcademyModule[] = [
       {
         question: "You find a box of fluorescent tubes, old batteries, and a container of antifreeze. How do you categorize these?",
         options: [
-          "Regular landfill waste — they're small items",
-          "Recyclables — they all contain reusable materials",
+          "Regular landfill waste. they're small items",
+          "Recyclables. they all contain reusable materials",
           "Hazardous waste / E-waste requiring separate, specialized disposal",
-          "Donation items — give them to a thrift store",
+          "Donation items. give them to a thrift store",
         ],
         correct: 2,
         explanation: "Fluorescent tubes contain mercury, batteries contain heavy metals, and antifreeze is toxic. All require specialized disposal channels. Never mix these with regular waste or recycling.",
@@ -262,13 +262,13 @@ const MODULES: AcademyModule[] = [
       {
         question: "A customer asks you to take a large amount of construction debris including drywall, nails, and broken concrete. Your truck's GVWR limit is close. What do you do?",
         options: [
-          "Pack it all in — a little over the weight limit won't matter",
+          "Pack it all in. a little over the weight limit won't matter",
           "Estimate the weight, and if it would exceed your GVWR, explain the limit, take what you safely can, and schedule a second trip via the app",
           "Refuse the entire job since it involves construction materials",
           "Remove other items from the truck to make room, even if those belong to another customer's job",
         ],
         correct: 1,
-        explanation: "Never exceed your GVWR — it's illegal, voids insurance, and is dangerous. Be transparent with the customer, take what you can safely carry, and use the app to schedule additional trips.",
+        explanation: "Never exceed your GVWR. it's illegal, voids insurance, and is dangerous. Be transparent with the customer, take what you can safely carry, and use the app to schedule additional trips.",
       },
       {
         question: "You arrive at a cleanout and find used syringes and medical waste bags. What's the correct action?",
@@ -284,7 +284,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "After completing a junk removal job, what disposal documentation is required?",
         options: [
-          "No documentation needed — just mark the job complete",
+          "No documentation needed. just mark the job complete",
           "A selfie at the dump",
           "Upload receipts/photos showing where each category of items went (landfill, recycling center, donation center) to maintain your Green Guarantee",
           "Just write a note saying 'disposed properly'",
@@ -308,14 +308,14 @@ const MODULES: AcademyModule[] = [
       "Use sodium hypochlorite (bleach solution) for mold/mildew. Use sodium hydroxide for heavy grease/oil. NEVER mix chemicals.",
       "Maintain 6-12 inches from the surface for most applications. Closer distance = more damage risk.",
       "Protect landscaping by pre-wetting plants and covering delicate areas before applying chemicals.",
-      "Manage water runoff — direct it away from storm drains when using chemicals. Know your local regulations.",
+      "Manage water runoff. direct it away from storm drains when using chemicals. Know your local regulations.",
     ],
     quiz: [
       {
         question: "A customer wants you to pressure wash their cedar wood deck. What PSI setting do you use?",
         options: [
           "3,000+ PSI to blast off years of grime quickly",
-          "1,300-1,600 PSI — same as vinyl siding",
+          "1,300-1,600 PSI. same as vinyl siding",
           "500-600 PSI with appropriate wood-safe detergent",
           "The highest PSI your machine can produce for the best results",
         ],
@@ -326,7 +326,7 @@ const MODULES: AcademyModule[] = [
         question: "You encounter heavy black mold on vinyl siding. Which chemical is appropriate?",
         options: [
           "Mix bleach and ammonia for maximum cleaning power",
-          "Sodium hydroxide (lye) — it's the strongest option",
+          "Sodium hydroxide (lye). it's the strongest option",
           "Sodium hypochlorite (bleach solution) at the correct dilution ratio",
           "Muriatic acid to dissolve the mold",
         ],
@@ -339,7 +339,7 @@ const MODULES: AcademyModule[] = [
           "As close as possible for maximum cleaning power",
           "6-12 inches from the surface",
           "3-4 feet away to be safe",
-          "It doesn't matter — pressure is pressure regardless of distance",
+          "It doesn't matter. pressure is pressure regardless of distance",
         ],
         correct: 1,
         explanation: "6-12 inches is the standard working distance for most surfaces. Too close causes etching, gouging, or paint removal. Too far reduces effectiveness. Always test first and adjust.",
@@ -347,7 +347,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "Before pressure washing a house, the flower beds and shrubs are directly below the work area. What should you do?",
         options: [
-          "Nothing — plants are resilient enough to handle it",
+          "Nothing. plants are resilient enough to handle it",
           "Pre-wet all plants with fresh water and cover delicate landscaping with tarps before applying any chemicals",
           "Skip those sections entirely to avoid the plants",
           "Just work faster so less chemical reaches the plants",
@@ -358,7 +358,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "You're washing a concrete driveway and chemical-laden water is flowing toward a storm drain. What do you do?",
         options: [
-          "Keep working — it'll dilute in the drain system",
+          "Keep working. it'll dilute in the drain system",
           "Use a berm or dam to redirect runoff away from the storm drain, and recover/contain chemical runoff per local regulations",
           "Switch to a higher PSI so you can skip chemicals entirely",
           "Finish quickly before anyone notices",
@@ -382,7 +382,7 @@ const MODULES: AcademyModule[] = [
       "For 2-story homes, use a ladder standoff and never lean more than arm's reach. Reposition the ladder instead.",
       "Check downspouts for clogs. Flush with a garden hose after clearing debris to confirm proper flow.",
       "Document and report any damage you find: cracked gutters, loose fascia, missing hangers, or roof damage. Take photos.",
-      "If a customer asks about gutter guards, you can recommend they book a consultation — but never upsell services not in your scope.",
+      "If a customer asks about gutter guards, you can recommend they book a consultation. but never upsell services not in your scope.",
     ],
     quiz: [
       {
@@ -400,7 +400,7 @@ const MODULES: AcademyModule[] = [
         question: "While on the ladder, you need to reach a section about 3 feet to your left. What do you do?",
         options: [
           "Lean over as far as you can while holding on with one hand",
-          "Shift your weight and stretch — it's only 3 feet",
+          "Shift your weight and stretch. it's only 3 feet",
           "Climb down, reposition the ladder to that section, then climb back up",
           "Ask the homeowner to push the ladder over while you're on it",
         ],
@@ -421,18 +421,18 @@ const MODULES: AcademyModule[] = [
       {
         question: "While cleaning gutters, you notice the fascia board behind the gutter is soft and rotting. What's the correct action?",
         options: [
-          "Ignore it — it's not part of your job scope",
+          "Ignore it. it's not part of your job scope",
           "Try to repair it yourself to impress the customer",
           "Document the damage with photos in the app and inform the customer, recommending they get it repaired",
           "Pull the gutter off to get a better look at the damage",
         ],
         correct: 2,
-        explanation: "Always document and report damage you discover — rotted fascia, loose hangers, cracked gutters, or roof issues. Take photos in the app and let the customer know. Never attempt repairs outside your scope.",
+        explanation: "Always document and report damage you discover. rotted fascia, loose hangers, cracked gutters, or roof issues. Take photos in the app and let the customer know. Never attempt repairs outside your scope.",
       },
       {
         question: "You arrive at a 3-story home but your equipment only safely reaches 2 stories. What do you do?",
         options: [
-          "Use your longest ladder and stretch to reach — the customer is expecting the job done",
+          "Use your longest ladder and stretch to reach. the customer is expecting the job done",
           "Stand on the roof to access the 3rd story gutters",
           "Inform the customer through the app that the job exceeds your safe working height, and that specialized equipment is needed",
           "Stack two ladders together for extra height",
@@ -484,7 +484,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "You notice a large scratch on a customer's antique dresser before you touch it. What do you do?",
         options: [
-          "Don't mention it — hopefully they won't blame you",
+          "Don't mention it. hopefully they won't blame you",
           "Photograph the scratch, document it in the app with a note, and point it out to the customer before moving it",
           "Try to buff it out before they notice",
           "Only mention it if the customer asks later",
@@ -495,7 +495,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "You need to move a 300lb upright piano through a narrow hallway. What's the correct approach?",
         options: [
-          "Drag it across the floor — it has wheels",
+          "Drag it across the floor. it has wheels",
           "Tip it on its side and carry it with one other person",
           "Use a heavy-duty dolly, keep it upright, protect the floor with furniture sliders/plywood, and have adequate help (3-4 people minimum)",
           "Tell the customer pianos aren't included in moving labor",
@@ -504,12 +504,12 @@ const MODULES: AcademyModule[] = [
         explanation: "Heavy items like pianos require proper equipment (heavy-duty dolly), floor protection, and adequate manpower. Never drag furniture or take shortcuts that risk injury or property damage.",
       },
       {
-        question: "A customer has a box labeled 'FRAGILE — crystal glasses.' How should you handle it during loading?",
+        question: "A customer has a box labeled 'FRAGILE. crystal glasses.' How should you handle it during loading?",
         options: [
           "Stack it at the bottom where it's most stable",
           "Toss it on top of the pile at the end",
           "Verify it's properly packed (double-wrapped), load it last so it goes on top of the stack, and ensure nothing can shift onto it",
-          "Refuse to move fragile items — they're the customer's responsibility",
+          "Refuse to move fragile items. they're the customer's responsibility",
         ],
         correct: 2,
         explanation: "Fragile items should be verified as properly packed, loaded last (so they're on top), and positioned where nothing can shift onto them. Handle with extra care and ensure they're the first items unloaded.",
@@ -517,7 +517,7 @@ const MODULES: AcademyModule[] = [
       {
         question: "You're moving a large sectional sofa through a doorway that's too narrow. What's the best approach?",
         options: [
-          "Force it through — a little pressure won't hurt",
+          "Force it through. a little pressure won't hurt",
           "Remove the door from its hinges, disassemble the sectional into its separate pieces, and move each piece through individually",
           "Leave it behind and tell the customer it won't fit",
           "Flip it upside down and shove it through",
@@ -539,7 +539,7 @@ const MODULES: AcademyModule[] = [
       "Always follow the cleaning checklist in the app. Complete ALL tasks marked for the service type (standard/deep/move-in-out).",
       "Take BEFORE photos when you arrive (every room, all surfaces). Take AFTER photos when done. Our AI verifies cleanliness quality.",
       "Work systematically: Start high (ceiling fans, light fixtures), then surfaces, then floors. Work from back of room toward the door.",
-      "NEVER mix bleach (sodium hypochlorite) with ammonia-based products — this creates toxic chloramine gas that can be fatal.",
+      "NEVER mix bleach (sodium hypochlorite) with ammonia-based products. this creates toxic chloramine gas that can be fatal.",
       "Deep clean includes inside appliances, baseboards, window tracks, and behind furniture. Standard clean does not. Know the difference.",
       "Handle customer belongings with care. Never move valuables without permission. If something breaks, document and report immediately.",
     ],
@@ -561,10 +561,10 @@ const MODULES: AcademyModule[] = [
           "Mix them together for a powerful all-purpose cleaner",
           "Use them at the same time on different surfaces to save time",
           "Use ONE product at a time, thoroughly rinse the surface between products, and ensure adequate ventilation",
-          "Use both but open a window — that's enough ventilation",
+          "Use both but open a window. that's enough ventilation",
         ],
         correct: 2,
-        explanation: "NEVER mix or simultaneously use bleach and ammonia-based products — even residue from one can react with the other, creating toxic chloramine gas. Use one, rinse completely, ventilate, then use the other if needed.",
+        explanation: "NEVER mix or simultaneously use bleach and ammonia-based products. even residue from one can react with the other, creating toxic chloramine gas. Use one, rinse completely, ventilate, then use the other if needed.",
       },
       {
         question: "What is the correct order for cleaning a room?",
@@ -608,7 +608,7 @@ const MODULES: AcademyModule[] = [
           "Replace it with a similar one from a store on your way home",
         ],
         correct: 2,
-        explanation: "Honesty and documentation are always the right call. Photograph the damage, report it in the app immediately, and tell the customer. The platform's insurance covers accidental damage — hiding it risks your entire account.",
+        explanation: "Honesty and documentation are always the right call. Photograph the damage, report it in the app immediately, and tell the customer. The platform's insurance covers accidental damage. hiding it risks your entire account.",
       },
     ],
   },

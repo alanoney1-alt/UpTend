@@ -6,7 +6,7 @@ export default function Communicationsconsent() {
     <LegalPage title="Electronic Communications Consent" icon={<MessageSquare className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Electronic Communications Consent</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Electronic Communications Consent</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <p>By creating an account on the UpTend Platform, you consent to receive electronic communications from UPYCK, Inc. d/b/a UpTend ("UpTend") as described below. This consent is provided in compliance with the Telephone Consumer Protection Act ("TCPA"), the CAN-SPAM Act, and applicable state laws.</p>
@@ -66,7 +66,7 @@ export default function Communicationsconsent() {
 
 <ul>
 <li><strong>Transactional emails</strong> are sent automatically and cannot be opted out while your account is active</li>
-<li><strong>Marketing emails</strong> include an <strong>unsubscribe link</strong> at the bottom of every message — click it to opt out</li>
+<li><strong>Marketing emails</strong> include an <strong>unsubscribe link</strong> at the bottom of every message. click it to opt out</li>
 <li>We honor unsubscribe requests within <strong>ten (10) business days</strong> as required by the CAN-SPAM Act</li>
 </ul>
 <h3>2.3 Push Notifications</h3>

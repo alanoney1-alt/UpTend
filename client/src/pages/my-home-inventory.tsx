@@ -275,7 +275,7 @@ export default function MyHomeInventory() {
                   <h3 className="font-bold text-lg" data-testid="text-video-scan-title">Video Inventory Scanner</h3>
                   <p className="text-sm text-muted-foreground mt-1">
                     Point your camera and slowly pan around the room. Our AI identifies every item,
-                    estimates cubic volume for truck sizing, and calculates resale value — all in seconds.
+                    estimates cubic volume for truck sizing, and calculates resale value. all in seconds.
                   </p>
                 </div>
               </div>

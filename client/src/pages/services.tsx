@@ -24,7 +24,7 @@ const services = [
     tagline: "No task too small.",
     description: "Professional handyman services for all your home repairs and odd jobs. Assembly, mounting, minor repairs, painting, installations, and more. 1-hour minimum, billed by the minute after. Same-day availability.",
     price: "From $75/hr",
-    includes: ["From $75/hr — 1-hour minimum", "Background-Checked and Price-Protected", "Skilled repairs, minor installations & troubleshooting", "TV mounting & picture hanging", "Furniture assembly", "Drywall patching & touch-up painting", "Light fixture & ceiling fan installation", "Door adjustments & lock changes"],
+    includes: ["From $75/hr. 1-hour minimum", "Background-Checked and Price-Protected", "Skilled repairs, minor installations & troubleshooting", "TV mounting & picture hanging", "Furniture assembly", "Drywall patching & touch-up painting", "Light fixture & ceiling fan installation", "Door adjustments & lock changes"],
     esgImpact: "Repair vs replace saves 100+ lbs CO2 per job",
     link: "/services/handyman",
   },
@@ -74,7 +74,7 @@ const services = [
     jumpToLabel: "Moving Labor",
     icon: Users,
     tagline: "Your muscle on demand.",
-    description: "Furniture moving, truck/pod unloading, or general labor — all $65/hr per mover. You pick the task, we supply the muscle, dollies, and shrink wrap.",
+    description: "Furniture moving, truck/pod unloading, or general labor. All $65/hr per mover. You pick the task, we supply the muscle, dollies, and shrink wrap.",
     price: "From $65/hr per mover",
     includes: [
       "From $65/hr per mover",
@@ -115,7 +115,7 @@ const services = [
     description: "Professional carpet cleaning with $100 minimum (2 rooms).",
     price: "From $50/room",
     includes: [
-      "From $50/room — final price based on your specific job",
+      "From $50/room. Final price based on your specific job",
       "Background-Checked and Price-Protected",
       "Deep clean and pet treatment options available",
       "Package pricing for multi-room jobs",
@@ -131,7 +131,7 @@ const services = [
     jumpToLabel: "Landscaping",
     icon: Leaf,
     tagline: "Professional lawn care. Your curb appeal, maintained.",
-    description: "Professional lawn care — one-time or recurring monthly plans for lots up to ½ acre.",
+    description: "Professional lawn care. One-time or recurring monthly plans for lots up to ½ acre.",
     price: "From $59",
     includes: [
       "One-time mow: $59 (≤¼ acre) | $89 (≤½ acre)",
@@ -191,9 +191,9 @@ const services = [
     description: "Professional pool maintenance and cleaning service. Weekly service includes skimming, vacuuming, brushing, chemical testing, and balancing. Keep your pool sparkling clean year-round.",
     price: "From $99/mo",
     includes: [
-      "Basic: $99/mo — chemicals + skim + baskets",
-      "Standard: $165/mo — + brush, vacuum, filter check",
-      "Full Service: $210/mo — + tile, equipment, filter cleaning",
+      "Basic: $99/mo: chemicals + skim + baskets",
+      "Standard: $165/mo: brush, vacuum, filter check",
+      "Full Service: $210/mo: tile, equipment, filter cleaning",
       "One-time deep clean: $249",
     ],
     esgImpact: "Chemical optimization saves water and reduces emissions",
@@ -209,7 +209,7 @@ const services = [
     description: "Cabinets, sheds, fencing, decks, and non-load-bearing walls. We demo it, clean it up, and haul the debris away in one visit.",
     price: "From $199",
     includes: [
-      "Starting at $199 — priced by scope",
+      "Starting at $199. Priced by scope",
       "Interior demo & shed removal",
       "Fence & deck tear-down",
       "Full debris haul-away",
@@ -303,7 +303,7 @@ export default function Services() {
                 <span className="text-sm font-bold text-primary">2</span>
               </div>
               <h4 className="font-bold text-sm mb-1">One price, locked at booking</h4>
-              <p className="text-xs text-muted-foreground">We match you with the best pro for your job -- one price, locked at booking</p>
+              <p className="text-xs text-muted-foreground">We match you with the best pro for your job. one price, locked at booking</p>
             </div>
             <div className="text-center">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
@@ -485,7 +485,7 @@ export default function Services() {
                 </div>
                 <div className="flex items-center gap-1.5 mb-4 px-2 py-1.5 rounded-md bg-[#F47C20]/5 border border-[#F47C20]/15">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#F47C20] shrink-0" />
-                  <span className="text-[10px] text-[#F47C20] font-semibold">{t("services_page.ppg_badge", "Price Protection Guarantee — your price is locked at booking")}</span>
+                  <span className="text-[10px] text-[#F47C20] font-semibold">{t("services_page.ppg_badge", "Price Protection Guarantee. your price is locked at booking")}</span>
                 </div>
 
                 <Button

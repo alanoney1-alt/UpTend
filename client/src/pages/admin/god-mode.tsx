@@ -318,7 +318,7 @@ export default function GodMode() {
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {job.customerName} — {job.haulerName || "Unassigned"}
+                            {job.customerName}. {job.haulerName || "Unassigned"}
                           </p>
                           <p className="text-xs text-muted-foreground">{job.pickupAddress}</p>
                         </div>

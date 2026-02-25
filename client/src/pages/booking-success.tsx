@@ -12,7 +12,7 @@ import { Link, useLocation } from "wouter";
 import { PolishUpCrossSell } from "@/components/cross-sell/polishup-prompt";
 import { GuaranteeBadge } from "@/components/guarantee-badge";
 
-// Simple confetti CSS animation — floating circles that fade out
+// Simple confetti CSS animation. floating circles that fade out
 function ConfettiCelebration() {
   const colors = ["#ea580c", "#22c55e", "#f59e0b", "#3b82f6", "#ec4899", "#8b5cf6"];
   const particles = Array.from({ length: 12 }, (_, i) => ({
@@ -68,7 +68,7 @@ export default function BookingSuccess() {
     | "moving_labor"
     | null;
 
-  // Mock data — in production, pull from booking context/API
+  // Mock data. in production, pull from booking context/API
   const bookingId = sessionStorage.getItem("lastBookingId") || "demo-123";
   const proData = {
     firstName: "Marcus",
@@ -210,7 +210,7 @@ export default function BookingSuccess() {
                   <GuaranteeBadge />
                 </div>
 
-                {/* Divider — mobile only */}
+                {/* Divider. mobile only */}
                 <div className="block md:hidden border-t border-slate-200 dark:border-slate-700" />
 
                 {/* RIGHT: Pro Card */}

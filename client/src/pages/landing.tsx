@@ -71,7 +71,7 @@ function HeroSection() {
         </h1>
 
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
-          Orlando's home services marketplace. Background-checked pros, upfront pricing, and George — your personal home expert — all in one place.
+          Orlando's home services marketplace. Background-checked pros, upfront pricing, and George , your personal home expert, all in one place.
         </p>
         <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
           {getTimeAwareSubtitle()}
@@ -436,7 +436,7 @@ function Testimonials() {
               <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1 mb-4">"{review.text}"</p>
               <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
                 <p className="font-bold text-sm text-slate-900 dark:text-white">{review.name}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{review.service} -- {review.location}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{review.service}. {review.location}</p>
               </div>
             </Card>
           ))}
@@ -456,7 +456,7 @@ function FinalCTA() {
           {t("landing.cta_title_1", "Ready to")} <span className="text-[#F47C20]">UpTend</span> {t("landing.cta_title_2", "your home?")}
         </h2>
         <p className="text-slate-400 text-lg mb-8 max-w-xl mx-auto">
-          {t("landing.cta_sub", "Whether you need a hand or you are one — there's a place for you here.")}
+          {t("landing.cta_sub", "Whether you need a hand or you are one, there's a place for you here.")}
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link href="/book" asChild>

@@ -15,7 +15,7 @@ function cents(amount: number | null | undefined) {
 /**
  * WH-347 Compliance Report Viewer
  *
- * INTERNAL ADMIN TOOL ONLY — This page is for government compliance reporting.
+ * INTERNAL ADMIN TOOL ONLY. This page is for government compliance reporting.
  * All figures shown here (including any rate-of-pay columns) are BACK-CALCULATED
  * from flat-rate work order quotes for WH-347 form compliance. They do NOT represent
  * the contractor's actual compensation structure. Contractors are paid flat-rate per job.
@@ -64,7 +64,7 @@ export default function PayrollReport() {
               <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                 <FileText className="h-6 w-6 text-amber-600" /> WH-347 Compliance Report
               </h1>
-              <p className="text-gray-500">Report #{report.reportNumber} — Week Ending {report.weekEndingDate}</p>
+              <p className="text-gray-500">Report #{report.reportNumber}. Week Ending {report.weekEndingDate}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ export default function PayrollReport() {
         <div className="bg-amber-50 border border-amber-300 rounded-lg p-3 flex items-start gap-2 print:hidden">
           <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-amber-800">
-            <strong>Internal Compliance Report</strong> — All rate and time figures below are back-calculated from
+            <strong>Internal Compliance Report</strong>. All rate and time figures below are back-calculated from
             flat-rate work order quotes to satisfy DOL WH-347 form requirements. They do not represent contractor
             compensation structure. Pros are paid flat-rate per job.
           </div>
@@ -124,7 +124,7 @@ export default function PayrollReport() {
             </div>
 
             {/* Worker Table */}
-            {/* INTERNAL COMPLIANCE CALCULATION ONLY — all rates are back-calculated from flat-rate quotes */}
+            {/* INTERNAL COMPLIANCE CALCULATION ONLY. all rates are back-calculated from flat-rate quotes */}
             <div className="overflow-x-auto">
               <table className="w-full text-xs border-collapse">
                 <thead>
@@ -171,7 +171,7 @@ export default function PayrollReport() {
                         <td className="border p-1 text-center">{entry.hoursFriday || ""}</td>
                         <td className="border p-1 text-center">{entry.hoursSaturday || ""}</td>
                         <td className="border p-1 text-center font-medium">{entry.totalHours}</td>
-                        {/* INTERNAL COMPLIANCE CALCULATION ONLY — back-calculated from flat-rate quote */}
+                        {/* INTERNAL COMPLIANCE CALCULATION ONLY. back-calculated from flat-rate quote */}
                         <td className="border p-1 text-right">{cents(entry.hourlyRate)}</td>
                         <td className="border p-1 text-right font-medium">{cents(entry.grossPay)}</td>
                         <td className="border p-1 text-right">{cents(fica)}</td>

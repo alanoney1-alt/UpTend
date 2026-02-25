@@ -197,7 +197,7 @@ function ProfitLossTab() {
       ) : d ? (
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="border-green-200/50">
-            <CardHeader><CardTitle className="text-green-600">Revenue — {formatCurrency(d.revenue?.total)}</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-green-600">Revenue. {formatCurrency(d.revenue?.total)}</CardTitle></CardHeader>
             <CardContent>
               {revenueItems.map((r: any) => (
                 <div key={r.name} className="flex justify-between py-1 border-b border-border/30">
@@ -208,7 +208,7 @@ function ProfitLossTab() {
             </CardContent>
           </Card>
           <Card className="border-red-200/50">
-            <CardHeader><CardTitle className="text-red-600">Expenses — {formatCurrency(d.expenses?.total)}</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-red-600">Expenses. {formatCurrency(d.expenses?.total)}</CardTitle></CardHeader>
             <CardContent>
               {expenseItems.map((e: any) => (
                 <div key={e.name} className="flex justify-between py-1 border-b border-border/30">
@@ -492,7 +492,7 @@ function TaxTab() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="font-semibold">1099 Summary — {year}</h3>
+          <h3 className="font-semibold">1099 Summary. {year}</h3>
           <p className="text-sm text-muted-foreground">
             {d?.needsFiling || 0} pros need 1099s (≥$600) · {d?.filed || 0} filed
           </p>

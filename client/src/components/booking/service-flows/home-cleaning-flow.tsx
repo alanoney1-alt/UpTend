@@ -14,7 +14,7 @@ const BASE_PRICES: Record<string, number> = {
 };
 
 const CLEAN_TYPES = [
-  { id: "standard", label: "Standard Clean", multiplier: 1, description: "Regular cleaning — dusting, vacuuming, mopping, bathrooms, kitchen" },
+  { id: "standard", label: "Standard Clean", multiplier: 1, description: "Regular cleaning. Dusting, vacuuming, mopping, bathrooms, kitchen" },
   { id: "deep", label: "Deep Clean", multiplier: 1.61, description: "Standard + baseboards, inside cabinets, appliances, detailed scrub", badge: "Popular" },
   { id: "move_out", label: "Move-In/Out Clean", multiplier: 2.01, description: "Top-to-bottom deep clean, inside every cabinet, oven, fridge, windows" },
 ];
@@ -78,7 +78,7 @@ export function HomeCleaningFlow({ onComplete, onBack, propertyData }: ServiceFl
   const total = beforeDiscount - discountAmt;
 
   const lineItems = [
-    { label: `${CLEAN_TYPES.find((t) => t.id === cleanType)!.label} — ${bedrooms}BR/${bathrooms}BA`, price },
+    { label: `${CLEAN_TYPES.find((t) => t.id === cleanType)!.label}: ${bedrooms}BR/${bathrooms}BA`, price },
     ...(storiesNum >= 2 ? [{ label: `${storiesNum}-story surcharge`, price: Math.round(basePrice * typeMultiplier * (storiesNum === 2 ? 0.15 : 0.25)) }] : []),
     ...(isBig ? [{ label: "3,000+ sqft surcharge (10%)", price: Math.round(basePrice * typeMultiplier * 0.1) }] : []),
     ...addonLineItems,

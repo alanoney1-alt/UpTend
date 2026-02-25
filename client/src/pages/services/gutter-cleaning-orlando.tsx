@@ -11,7 +11,7 @@ const data = {
   icon: CloudRain,
   serviceDescription: [
     "Orlando's heavy rainstorms and tree canopy mean clogged gutters are a constant threat to your home. UpTend's gutter cleaning service includes complete debris removal from all gutters and downspouts, full system flushing, and a visual inspection for damage, leaks, or sagging sections.",
-    "Our Pros work safely with proper equipment and leave your property spotless. We bag and remove all debris, check that water flows properly through every downspout, and alert you to any issues that need repair — before they become costly problems.",
+    "Our Pros work safely with proper equipment and leave your property spotless. We bag and remove all debris, check that water flows properly through every downspout, and alert you to any issues that need repair. before they become costly problems.",
   ],
   features: [
     "Complete gutter debris removal",
@@ -47,9 +47,9 @@ const data = {
     ],
   },
   faqs: [
-    { q: "How often should I clean gutters in Orlando?", a: "We recommend at least twice per year — once in late spring before hurricane season and once in late fall after oak leaves drop. Homes under heavy tree canopy may need quarterly cleaning." },
+    { q: "How often should I clean gutters in Orlando?", a: "We recommend at least twice per year. once in late spring before hurricane season and once in late fall after oak leaves drop. Homes under heavy tree canopy may need quarterly cleaning." },
     { q: "Do you repair gutters too?", a: "Our gutter cleaning service includes a visual inspection, and we'll flag any issues like leaks, sagging, or damage. For repairs, we can schedule a follow-up visit with a qualified Pro." },
-    { q: "Is it safe for my roof?", a: "Yes — our Pros use proper equipment and techniques that won't damage your roof or shingles. We stay off fragile roof areas and use gutter-safe tools." },
+    { q: "Is it safe for my roof?", a: "Yes. our Pros use proper equipment and techniques that won't damage your roof or shingles. We stay off fragile roof areas and use gutter-safe tools." },
     { q: "What happens if it rains on my scheduled day?", a: "We'll reschedule at no charge. Gutter cleaning requires dry conditions for safety and best results." },
   ],
   schemaService: {

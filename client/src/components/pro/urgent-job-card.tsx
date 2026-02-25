@@ -82,7 +82,7 @@ export function UrgentJobCard({ job, onAccepted, onDismissed }: UrgentJobCardPro
             Urgent Pickup
           </h3>
           <p className="text-xs text-red-500 dark:text-red-300">
-            Previous pro no-showed — customer waiting
+            Previous pro no-showed. customer waiting
           </p>
         </div>
         <div className="ml-auto text-right">

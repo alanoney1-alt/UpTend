@@ -141,7 +141,7 @@ export default function JunkRemoval() {
             </h2>
             <p className="text-slate-400 mb-8 text-lg">
               Most junk removal companies dump everything in a landfill and call it a day.
-              We sort, donate, and recycle — then give you the data to prove it.
+              We sort, donate, and recycle. then give you the data to prove it.
               Property managers get audit-ready compliance documentation.
             </p>
             <div className="grid grid-cols-2 gap-6">
@@ -201,7 +201,7 @@ export default function JunkRemoval() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { icon: Truck, text: "All heavy lifting included — we do the work" },
+              { icon: Truck, text: "All heavy lifting included. we do the work" },
               { icon: ShieldCheck, text: "$1M liability coverage on every job" },
               { icon: Recycle, text: "Items sorted for donation, recycling, or disposal" },
               { icon: Leaf, text: "Disposal report showing where everything went" },

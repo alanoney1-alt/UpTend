@@ -6,7 +6,7 @@ export default function CancellationpolicyPage() {
     <LegalPage title="Cancellation & Refund Policy" icon={<XCircle className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Cancellation & Refund Policy</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Cancellation & Refund Policy</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <p>This is the <strong>sole and definitive</strong> cancellation and refund policy for UpTend. In the event of any conflict with summaries or descriptions elsewhere on the Platform, this document controls.</p>
@@ -15,8 +15,8 @@ export default function CancellationpolicyPage() {
 
 <p>| When You Cancel | What You Pay |</p>
 <p>|---|---|</p>
-<p>| <strong>Before the Pro accepts</strong> your booking | Nothing — free cancellation |</p>
-<p>| <strong>After the Pro accepts</strong> but before the Pro is en route | Nothing — free cancellation |</p>
+<p>| <strong>Before the Pro accepts</strong> your booking | Nothing. free cancellation |</p>
+<p>| <strong>After the Pro accepts</strong> but before the Pro is en route | Nothing. free cancellation |</p>
 <p>| <strong>After the Pro is en route</strong> to your location | \$25 cancellation fee |</p>
 <p>| <strong>After the Pro arrives</strong> at your location | \$50 cancellation fee |</p>
 <p>| <strong>After work has begun</strong> | Full charge for the estimated service amount |</p>

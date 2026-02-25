@@ -20,7 +20,7 @@ import {
   Zap, Globe, Wrench, FileText, TrendingUp
 } from "lucide-react";
 
-// Business account ID — in production, derive from auth context
+// Business account ID. in production, derive from auth context
 const BUSINESS_ACCOUNT_ID = "demo-business-1";
 
 interface CrmIntegration {
@@ -37,7 +37,7 @@ interface CrmIntegration {
 const CRM_INTEGRATIONS: CrmIntegration[] = [
   {
     id: "salesforce", name: "Salesforce", platform: "salesforce",
-    description: "The #1 CRM — used by enterprise PM companies and government contractors. Sync contacts, accounts, opportunities.",
+    description: "The #1 CRM. used by enterprise PM companies and government contractors. Sync contacts, accounts, opportunities.",
     icon: <Globe className="h-8 w-8 text-blue-500" />,
     authType: "oauth2",
     fields: [

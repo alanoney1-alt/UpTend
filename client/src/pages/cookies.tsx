@@ -6,7 +6,7 @@ export default function Cookies() {
     <LegalPage title="Cookie Policy" icon={<Cookie className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Cookie Policy</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Cookie Policy</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <p>This Cookie Policy explains how UPYCK, Inc. d/b/a UpTend ("UpTend," "we," "us") uses cookies and similar technologies on our Platform at uptendapp.com and our mobile applications.</p>

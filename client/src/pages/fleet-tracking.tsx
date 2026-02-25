@@ -61,7 +61,7 @@ export default function FleetTracking() {
           </Card>
         )}
 
-        {/* Map placeholder — structure for easy Google Maps / Mapbox integration */}
+        {/* Map placeholder. structure for easy Google Maps / Mapbox integration */}
         {data && data.locations.length > 0 && (
           <>
             <Card className="mb-6">

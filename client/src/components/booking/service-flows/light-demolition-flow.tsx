@@ -58,14 +58,14 @@ export function LightDemolitionFlow({ onComplete, onBack }: ServiceFlowProps) {
 
   const handleContinue = () => {
     if (hasCustom && lineItems.length === 0) {
-      // Custom-only — send with $0 and flag for manual quote
+      // Custom-only. send with $0 and flag for manual quote
       const result: ServiceFlowResult = {
         quoteMethod: "manual",
         serviceType: "light_demolition",
         estimatedPrice: 0,
         userInputs: { selectedScopes, haulAway, needsCustomQuote: true },
         requiresHitlValidation: true,
-        lineItems: [{ label: "Custom scope — quote required", price: 0 }],
+        lineItems: [{ label: "Custom scope. Quote required", price: 0 }],
       };
       onComplete(result);
       return;
@@ -126,7 +126,7 @@ export function LightDemolitionFlow({ onComplete, onBack }: ServiceFlowProps) {
                         className="text-xs capitalize"
                         onClick={() => setSize(scope.id, s)}
                       >
-                        {s} — ${scope.prices[s]}
+                        {s}: ${scope.prices[s]}
                       </Button>
                     ))}
                   </div>
@@ -144,7 +144,7 @@ export function LightDemolitionFlow({ onComplete, onBack }: ServiceFlowProps) {
             <Checkbox checked={haulAway} onCheckedChange={(v) => setHaulAway(!!v)} />
             <div>
               <span className="text-sm font-medium">Include debris haul-away</span>
-              <p className="text-xs text-muted-foreground">Included in price — uncheck only if you'll handle disposal</p>
+              <p className="text-xs text-muted-foreground">Included in price. uncheck only if you'll handle disposal</p>
             </div>
           </div>
         </CardContent>

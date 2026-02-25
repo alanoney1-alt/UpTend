@@ -67,7 +67,7 @@ function BusinessPartnerSection() {
             </>
           ) : (
             <>
-              <h3 className="font-bold">{bp.companyName} -- Business Partner</h3>
+              <h3 className="font-bold">{bp.companyName}. Business Partner</h3>
               <p className="text-sm text-muted-foreground">
                 <Link href="/business/partner-dashboard" className="text-[#ea580c] hover:underline">
                   Go to Business Dashboard

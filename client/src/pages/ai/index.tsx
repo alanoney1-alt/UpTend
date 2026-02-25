@@ -17,7 +17,7 @@ const features = [
   {
     title: "Photo-to-Quote",
     description:
-      "Snap a photo of your junk or items. Our AI instantly estimates service type, scope, and price — no waiting for callbacks.",
+      "Snap a photo of your junk or items. Our AI instantly estimates service type, scope, and price. no waiting for callbacks.",
     icon: Camera,
     href: "/ai/photo-quote",
     badge: "Popular",

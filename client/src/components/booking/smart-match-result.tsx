@@ -1,5 +1,5 @@
 /**
- * SmartMatchResult — Split-screen pro preview for booking confirmation
+ * SmartMatchResult. Split-screen pro preview for booking confirmation
  * 
  * Desktop: two columns (job summary left, pro card right)
  * Mobile: stacked vertically with divider
@@ -149,7 +149,7 @@ export function SmartMatchResult({
               </div>
             </div>
 
-            {/* Divider — mobile only */}
+            {/* Divider. mobile only */}
             <div className="block md:hidden border-t border-slate-200 dark:border-slate-700" />
 
             {/* RIGHT: Pro Card */}
@@ -255,7 +255,7 @@ export function SmartMatchResult({
             </div>
           </div>
 
-          {/* Book Button — full width below both panels */}
+          {/* Book Button. full width below both panels */}
           <div className="mt-8 space-y-3">
             <Button
               onClick={() => onBook(matchId)}

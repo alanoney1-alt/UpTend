@@ -17,7 +17,7 @@ const PRO_OPTIONS = [
 const EXTRAS = [
   { id: "stairs", label: "Stairs (flights to navigate)", price: 25 },
   { id: "long_carry", label: "Long carry (50+ ft to truck)", price: 30 },
-  { id: "heavy_item", label: "Heavy item (300+ lbs — piano, safe, etc.)", price: 35 },
+  { id: "heavy_item", label: "Heavy item (300+ lbs: piano, safe, etc.)", price: 35 },
 ];
 
 const MOVE_ITEMS = [
@@ -34,8 +34,8 @@ const MOVE_ITEMS = [
   { id: "refrigerator", label: "Refrigerator" },
   { id: "washer", label: "Washer" },
   { id: "dryer", label: "Dryer" },
-  { id: "boxes_small", label: "Boxes — Small (per 10)" },
-  { id: "boxes_large", label: "Boxes — Large (per 5)" },
+  { id: "boxes_small", label: "Boxes, Small (per 10)" },
+  { id: "boxes_large", label: "Boxes, Large (per 5)" },
 ];
 
 export function MovingLaborFlow({ onComplete, onBack }: ServiceFlowProps) {
@@ -83,7 +83,7 @@ export function MovingLaborFlow({ onComplete, onBack }: ServiceFlowProps) {
           <h4 className="font-bold text-sm flex items-center gap-2">
             <Users className="w-4 h-4" /> Number of Pros
           </h4>
-          <p className="text-xs text-muted-foreground">$65/hr per mover — 2-mover minimum</p>
+          <p className="text-xs text-muted-foreground">$65/hr per mover. 2-mover minimum</p>
           <div className="grid grid-cols-3 gap-3">
             {PRO_OPTIONS.map((p) => (
               <Button

@@ -233,10 +233,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
           fetchPropertyValue(fullAddress);
         }
       })
-      .catch(() => {}); // silently fail — user can still type manually
+      .catch(() => {}); // silently fail. user can still type manually
   }, [isAuthenticated]);
 
-  // Scroll to top on step change — immediate jump, no smooth scroll
+  // Scroll to top on step change. immediate jump, no smooth scroll
   useEffect(() => {
     window.scrollTo(0, 0);
     // Also reset any scrollable containers
@@ -591,7 +591,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
               Let AI match you with the best available Pro
             </p>
             <p className="text-xs text-[#F47C20] font-medium">
-              Fastest option — book instantly
+              Fastest option. Book instantly
             </p>
           </div>
 
@@ -1376,7 +1376,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
           </Button>
         </div>
 
-        {/* Property Details — auto-filled from public records or manual entry */}
+        {/* Property Details. auto-filled from public records or manual entry */}
         {propertyLoading ? (
           <SkeletonCard lines={4} className="mb-6" />
         ) : (

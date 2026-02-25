@@ -209,12 +209,12 @@ export default function PyckerSignup() {
       }
     } catch {
       setInviteCodeStatus("invalid");
-      setInviteCodeMessage("Could not check code — try again");
+      setInviteCodeMessage("Could not check code. try again");
       setValidatedCode(null);
     }
   };
 
-  // Services selection state — default to empty, user must choose
+  // Services selection state. default to empty, user must choose
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [pricingFeedback, setPricingFeedback] = useState<Record<string, { low: string; high: string; years: string }>>({});
 
@@ -508,7 +508,7 @@ export default function PyckerSignup() {
     } else if (currentStep === 2) {
       fieldsToValidate = ["firstName", "lastName", "phone", "companyName", "streetAddress", "city", "state", "zipCode"];
     } else if (currentStep === 3) {
-      // Services step — must select at least one
+      // Services step. must select at least one
       if (selectedServices.length === 0) {
         toast({
           title: "Services Required",
@@ -518,7 +518,7 @@ export default function PyckerSignup() {
         return false;
       }
     } else if (currentStep === 4) {
-      // Tools step — no hard requirement, but encourage
+      // Tools step. no hard requirement, but encourage
       // Allow proceeding even with no tools selected
     } else if (currentStep === 5) {
       fieldsToValidate = ["vehicleType"];
@@ -551,7 +551,7 @@ export default function PyckerSignup() {
         return false;
       }
     } else if (currentStep === 8) {
-      // Agreement step — ICA must be signed
+      // Agreement step. ICA must be signed
       if (!icaData) {
         toast({
           title: "Agreement Required",
@@ -601,7 +601,7 @@ export default function PyckerSignup() {
           <p className="text-muted-foreground">Set your rates. We find the customers. Keep 85% of every job. No lead fees. Guaranteed payment.</p>
         </div>
 
-        {/* Step indicator — progress bar on mobile, full tabs on desktop */}
+        {/* Step indicator. progress bar on mobile, full tabs on desktop */}
         <div className="mb-8">
           {/* Mobile: compact progress indicator */}
           <div className="flex sm:hidden items-center justify-center gap-3 mb-2">
@@ -1515,7 +1515,7 @@ export default function PyckerSignup() {
                   <div className="flex items-start gap-3">
                     <Shield className="w-5 h-5 text-green-600 mt-0.5" />
                     <div>
-                      <h3 className="font-medium text-green-700 dark:text-green-400">Start Earning Immediately -- No Insurance Required Upfront</h3>
+                      <h3 className="font-medium text-green-700 dark:text-green-400">Start Earning Immediately. No Insurance Required Upfront</h3>
                       <p className="text-sm text-green-600 dark:text-green-500 mt-1">
                         Every job is covered by UpTend's platform policy while you build your business.
                         Already have insurance? Upload it now for a Verified badge and priority matching.
@@ -1762,7 +1762,7 @@ export default function PyckerSignup() {
                           <span className="text-xs text-muted-foreground">{range.unit}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mb-3">
-                          Pros on UpTend charge: ${range.floor} -- ${range.ceiling}
+                          Pros on UpTend charge: ${range.floor} to ${range.ceiling}
                         </p>
 
                         {/* Rate slider */}
@@ -1811,7 +1811,7 @@ export default function PyckerSignup() {
                     <div className="p-4 border rounded-lg bg-card">
                       <p className="font-semibold text-sm">Home DNA Scan</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Fixed pricing -- $99 standard, $249 premium. Pro payout is $50 flat per scan paid by UpTend.
+                        Fixed pricing to $99 standard, $249 premium. Pro payout is $50 flat per scan paid by UpTend.
                       </p>
                     </div>
                   )}
@@ -1821,7 +1821,7 @@ export default function PyckerSignup() {
                 <div className="mb-6">
                   <h3 className="font-medium mb-1">Experience Per Service</h3>
                   <p className="text-xs text-muted-foreground mb-4">
-                    Optional -- helps us understand your background.
+                    Optional. Helps us understand your background.
                   </p>
                   <div className="space-y-4">
                     {selectedServices.map((service) => {
@@ -1899,7 +1899,7 @@ export default function PyckerSignup() {
                   contractorName={`${form.getValues("firstName")} ${form.getValues("lastName")}`}
                   onAccept={(data) => {
                     setIcaData(data);
-                    // Don't submit here — just save ICA data and go to Review
+                    // Don't submit here. just save ICA data and go to Review
                     nextStep();
                   }}
                   onBack={prevStep}
@@ -2046,7 +2046,7 @@ export default function PyckerSignup() {
                         ICA signed by {icaData.signedName} on {new Date(icaData.acceptedAt).toLocaleDateString()}
                       </span>
                     ) : (
-                      <span className="text-red-600">Agreement not signed — go back to sign</span>
+                      <span className="text-red-600">Agreement not signed. go back to sign</span>
                     )}
                   </div>
                 </div>
@@ -2160,7 +2160,7 @@ export default function PyckerSignup() {
                 {/* Payout Setup CTA */}
                 <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-center max-w-md mx-auto">
                   <p className="font-semibold text-green-900 mb-1"> Set up your bank account to get paid</p>
-                  <p className="text-sm text-green-700 mb-3">Get paid automatically when jobs complete — takes 2 minutes</p>
+                  <p className="text-sm text-green-700 mb-3">Get paid automatically when jobs complete. takes 2 minutes</p>
                   <Link href="/pro/payouts/setup">
                     <Button className="bg-green-600 hover:bg-green-700">
                       Set Up Direct Deposit →

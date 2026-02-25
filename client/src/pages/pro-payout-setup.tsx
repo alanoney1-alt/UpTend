@@ -131,7 +131,7 @@ export default function ProPayoutSetup() {
               className="mt-4 text-muted-foreground"
               onClick={() => setLocation("/pro/dashboard")}
             >
-              Skip for now — I'll do this later
+              Skip for now. I'll do this later
             </Button>
           </Card>
         )}

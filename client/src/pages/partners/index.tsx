@@ -85,7 +85,7 @@ export default function PartnersLanding() {
             Join hundreds of property professionals already using UpTend to manage their home services.
           </p>
           <Link href="/partners/register">
-            <Button size="lg">Apply Now — It's Free</Button>
+            <Button size="lg">Apply Now. It's Free</Button>
           </Link>
         </div>
       </main>

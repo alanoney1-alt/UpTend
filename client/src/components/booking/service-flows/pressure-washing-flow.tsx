@@ -157,7 +157,7 @@ export function PressureWashingFlow({ onComplete, onBack }: ServiceFlowProps) {
                         className="text-xs min-h-[44px]"
                         onClick={() => setSize(surface.id, size.id)}
                       >
-                        {size.label} — ${size.price}
+                        {size.label}: ${size.price}
                       </Button>
                     ))}
                   </div>

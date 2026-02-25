@@ -170,7 +170,7 @@ export default function WorkOrders() {
                                 onChange={e => setQuoteForm({ ...quoteForm, estimatedDays: e.target.value })}
                                 placeholder="How many days to complete"
                               />
-                              <p className="text-xs text-gray-500 mt-1">For scheduling purposes only — you're paid your quoted price regardless.</p>
+                              <p className="text-xs text-gray-500 mt-1">For scheduling purposes only. you're paid your quoted price regardless.</p>
                             </div>
 
                             <div>

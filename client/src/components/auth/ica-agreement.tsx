@@ -27,7 +27,7 @@ function ICAText({ contractorName }: { contractorName: string }) {
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed">
       <h2 className="text-center text-lg font-bold mb-1">INDEPENDENT CONTRACTOR AGREEMENT</h2>
-      <p className="text-center text-xs text-muted-foreground mb-6">Version {ICA_VERSION} — Effective Date: Date of Electronic Acceptance</p>
+      <p className="text-center text-xs text-muted-foreground mb-6">Version {ICA_VERSION}. Effective Date: Date of Electronic Acceptance</p>
 
       <p>This Independent Contractor Agreement ("Agreement") is entered into as of the date of electronic acceptance below, by and between:</p>
 
@@ -165,7 +165,7 @@ export function ICAAgreement({ contractorName, onAccept, onBack, isSubmitting }:
         <div className="space-y-4">
           <div>
             <Label htmlFor="ica-signature" className="text-sm font-medium">
-              Electronic Signature — Type Your Full Legal Name
+              Electronic Signature. Type Your Full Legal Name
             </Label>
             <Input
               id="ica-signature"

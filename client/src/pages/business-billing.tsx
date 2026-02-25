@@ -147,7 +147,7 @@ export default function BusinessBilling() {
           <Card className="mb-6 border-amber-200">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg">
-                Billing Run — {formatWeek(runDetail.weekStartDate, runDetail.weekEndDate)}
+                Billing Run. {formatWeek(runDetail.weekStartDate, runDetail.weekEndDate)}
               </CardTitle>
               <div className="flex items-center gap-3">
                 {statusBadge(runDetail.status)}

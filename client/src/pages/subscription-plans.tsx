@@ -1,5 +1,5 @@
 /**
- * Subscription Plans Page — Browse available recurring service plans with pricing
+ * Subscription Plans Page. Browse available recurring service plans with pricing
  */
 
 import { useState } from "react";
@@ -120,7 +120,7 @@ export default function SubscriptionPlans() {
             Service Plans & Subscriptions
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Save time and money with recurring service plans. Set it and forget it — we'll handle the scheduling.
+            Save time and money with recurring service plans. Set it and forget it. we'll handle the scheduling.
           </p>
         </div>
 
@@ -325,7 +325,7 @@ export default function SubscriptionPlans() {
               <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-300">
-                    {selectedPlan.label} — {FREQUENCY_LABELS[frequency]}
+                    {selectedPlan.label}. {FREQUENCY_LABELS[frequency]}
                   </span>
                   <span className="text-lg font-bold text-[#F47C20]">
                     ${selectedPlan.pricing[frequency]}

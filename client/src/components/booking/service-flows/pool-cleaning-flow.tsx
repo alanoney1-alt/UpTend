@@ -91,7 +91,7 @@ export function PoolCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
             <h3 className="font-bold text-lg">One-Time Deep Clean</h3>
             <p className="text-2xl font-black text-primary">$249</p>
             <p className="text-sm text-muted-foreground">
-              Complete pool restoration — ideal for neglected or green pools.
+              Complete pool restoration. Ideal for neglected or green pools.
             </p>
             <ul className="space-y-1.5">
               {["Full chemical treatment & rebalancing", "Brush all surfaces", "Vacuum entire pool", "Clean filter system", "Tile & waterline scrub", "Equipment inspection"].map((item, i) => (

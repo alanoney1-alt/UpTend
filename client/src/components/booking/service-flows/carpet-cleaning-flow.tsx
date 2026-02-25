@@ -8,9 +8,9 @@ import { AiScanToggle } from "./ai-scan-toggle";
 import type { ServiceFlowProps, ServiceFlowResult } from "./types";
 
 const CLEAN_TYPES = [
-  { id: "standard", label: "Standard Clean", pricePerRoom: 50, description: "Hot water extraction — best for regular maintenance" },
-  { id: "deep", label: "Deep Clean", pricePerRoom: 75, description: "Pre-treatment + extraction — for heavy traffic or stains" },
-  { id: "pet", label: "Pet Treatment", pricePerRoom: 89, description: "Enzyme treatment + extraction — eliminates odors & stains" },
+  { id: "standard", label: "Standard Clean", pricePerRoom: 50, description: "Hot water extraction. Best for regular maintenance" },
+  { id: "deep", label: "Deep Clean", pricePerRoom: 75, description: "Pre-treatment + extraction. For heavy traffic or stains" },
+  { id: "pet", label: "Pet Treatment", pricePerRoom: 89, description: "Enzyme treatment + extraction. Eliminates odors & stains" },
 ];
 
 const WHOLE_HOUSE = [
@@ -91,7 +91,7 @@ export function CarpetCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
             ))}
           </div>
           {wholeHouse && (
-            <p className="text-xs text-muted-foreground">Package selected — or pick rooms individually below</p>
+            <p className="text-xs text-muted-foreground">Package selected. or pick rooms individually below</p>
           )}
         </CardContent>
       </Card>

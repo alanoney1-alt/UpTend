@@ -19,7 +19,7 @@ function openGeorgeWithScan() {
 }
 
 export default function HomeScanPage() {
-  usePageTitle("Home DNA Scan -- The Carfax Report for Your Home | UpTend");
+  usePageTitle("Home DNA Scan. The Carfax Report for Your Home | UpTend");
 
   return (
     <div className="min-h-screen bg-[#FAF8F4]">
@@ -107,7 +107,7 @@ function ProblemSection() {
           </h2>
           <p className="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             Your car has a Carfax. Your body gets an annual physical.
-            Your home -- the single largest investment you will ever make -- has nothing.
+            Your home. the single largest investment you will ever make. has nothing.
             Until now.
           </p>
         </div>
@@ -206,7 +206,7 @@ function HowItWorksSection() {
       num: "02",
       icon: Cpu,
       title: "Property Intelligence",
-      desc: "We pull public records -- square footage, year built, lot size, previous sales -- and cross-reference with your scan data.",
+      desc: "We pull public records. square footage, year built, lot size, previous sales. and cross-reference with your scan data.",
     },
     {
       num: "03",

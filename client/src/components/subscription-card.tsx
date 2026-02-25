@@ -1,5 +1,5 @@
 /**
- * Subscription Card — Manage an active subscription (pause/resume/cancel)
+ * Subscription Card. Manage an active subscription (pause/resume/cancel)
  */
 
 import { useState } from "react";

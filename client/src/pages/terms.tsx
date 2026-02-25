@@ -6,7 +6,7 @@ export default function TermsPage() {
     <LegalPage title="Terms of Service" icon={<FileText className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Terms of Service</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Terms of Service</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <p>PLEASE READ THESE TERMS OF SERVICE ("TERMS") CAREFULLY. BY ACCESSING OR USING THE UPTEND PLATFORM, YOU AGREE TO BE BOUND BY THESE TERMS. IF YOU DO NOT AGREE, DO NOT USE THE PLATFORM.</p>
@@ -23,19 +23,19 @@ export default function TermsPage() {
 
 <p>The Platform facilitates connections for the following service categories (collectively, "Services"):</p>
 
-<p>1. <strong>Junk Removal</strong> — Hauling and disposal of unwanted items, debris, and refuse</p>
-<p>2. <strong>Pressure Washing</strong> — Exterior cleaning of surfaces using pressurized water</p>
-<p>3. <strong>Gutter Cleaning</strong> — Cleaning, flushing, and minor repair of rain gutters and downspouts</p>
-<p>4. <strong>Moving Labor</strong> — Loading, unloading, and furniture rearrangement (not transportation between locations)</p>
-<p>5. <strong>Handyman Services</strong> — General home repairs, assembly, mounting, and minor maintenance</p>
-<p>6. <strong>Demolition</strong> — Interior demolition, structure removal, and site preparation</p>
-<p>7. <strong>Garage Cleanout</strong> — Organization, cleaning, and removal of unwanted items from garages</p>
-<p>8. <strong>Home Cleaning</strong> — Residential interior cleaning, deep cleaning, and move-in/move-out cleaning</p>
-<p>9. <strong>Pool Cleaning</strong> — Pool maintenance, chemical balancing, and equipment inspection</p>
-<p>10. <strong>Landscaping</strong> — Lawn care, garden maintenance, tree trimming, and landscape design</p>
-<p>11. <strong>Carpet Cleaning</strong> — Professional carpet, rug, and upholstery cleaning</p>
-<p>12. <strong>Home DNA Scan</strong> — AI-assisted visual analysis of home conditions using photographs or drone-captured imagery (see Section 7)</p>
-<p>13. <strong>General Home Consultation</strong> — Advisory consultations on home maintenance, improvement planning, and project scoping</p>
+<p>1. <strong>Junk Removal</strong>. Hauling and disposal of unwanted items, debris, and refuse</p>
+<p>2. <strong>Pressure Washing</strong>. Exterior cleaning of surfaces using pressurized water</p>
+<p>3. <strong>Gutter Cleaning</strong>. Cleaning, flushing, and minor repair of rain gutters and downspouts</p>
+<p>4. <strong>Moving Labor</strong>. Loading, unloading, and furniture rearrangement (not transportation between locations)</p>
+<p>5. <strong>Handyman Services</strong>. General home repairs, assembly, mounting, and minor maintenance</p>
+<p>6. <strong>Demolition</strong>. Interior demolition, structure removal, and site preparation</p>
+<p>7. <strong>Garage Cleanout</strong>. Organization, cleaning, and removal of unwanted items from garages</p>
+<p>8. <strong>Home Cleaning</strong>. Residential interior cleaning, deep cleaning, and move-in/move-out cleaning</p>
+<p>9. <strong>Pool Cleaning</strong>. Pool maintenance, chemical balancing, and equipment inspection</p>
+<p>10. <strong>Landscaping</strong>. Lawn care, garden maintenance, tree trimming, and landscape design</p>
+<p>11. <strong>Carpet Cleaning</strong>. Professional carpet, rug, and upholstery cleaning</p>
+<p>12. <strong>Home DNA Scan</strong>. AI-assisted visual analysis of home conditions using photographs or drone-captured imagery (see Section 7)</p>
+<p>13. <strong>General Home Consultation</strong>. Advisory consultations on home maintenance, improvement planning, and project scoping</p>
 
 <h3>1.3 Business-to-Business Services</h3>
 
@@ -56,9 +56,9 @@ export default function TermsPage() {
 <p>The Platform serves the following user types:</p>
 
 <ul>
-<li><strong>Customers</strong> — Individuals or households seeking home services</li>
-<li><strong>Pros</strong> — Independent service professionals offering their services through the Platform</li>
-<li><strong>Business Accounts</strong> — Organizations including HOAs, Property Management companies, Construction companies, and Government entities accessing B2B Services</li>
+<li><strong>Customers</strong>. Individuals or households seeking home services</li>
+<li><strong>Pros</strong>. Independent service professionals offering their services through the Platform</li>
+<li><strong>Business Accounts</strong>. Organizations including HOAs, Property Management companies, Construction companies, and Government entities accessing B2B Services</li>
 </ul>
 <h3>2.2 Eligibility</h3>
 
@@ -90,7 +90,7 @@ export default function TermsPage() {
 
 <h3>3.2 Estimates and Pricing</h3>
 
-<p>All prices displayed on the Platform are estimates unless otherwise stated. Estimates are generated based on information provided by the Customer, including property details, scope of work, photos, and AI analysis where applicable. <strong>The price shown includes all fees — no hidden charges.</strong> The displayed price is the total amount a Customer will pay, inclusive of all platform fees.</p>
+<p>All prices displayed on the Platform are estimates unless otherwise stated. Estimates are generated based on information provided by the Customer, including property details, scope of work, photos, and AI analysis where applicable. <strong>The price shown includes all fees. no hidden charges.</strong> The displayed price is the total amount a Customer will pay, inclusive of all platform fees.</p>
 
 <h3>3.3 Guaranteed Price Ceiling</h3>
 
@@ -165,7 +165,7 @@ export default function TermsPage() {
 
 <p>Pros who perform Home DNA Scan services using drones are independent contractors who hold current Federal Aviation Administration (FAA) Part 107 Remote Pilot Certificates. Drone operations are conducted in compliance with applicable FAA regulations. UpTend verifies Part 107 certification prior to authorizing drone-based scan services.</p>
 
-<h2>6. AI Features — Mr. George AI Assistant</h2>
+<h2>6. AI Features. Mr. George AI Assistant</h2>
 
 <h3>6.1 What Mr. George Is</h3>
 
@@ -194,7 +194,7 @@ export default function TermsPage() {
 
 <h3>6.3 DIY Coaching</h3>
 
-<p>Mr. George offers DIY coaching — educational guidance on home improvement and maintenance tasks that homeowners may choose to perform themselves. <strong>DIY Coaching is provided for educational and informational purposes only.</strong> By using DIY Coaching:</p>
+<p>Mr. George offers DIY coaching. educational guidance on home improvement and maintenance tasks that homeowners may choose to perform themselves. <strong>DIY Coaching is provided for educational and informational purposes only.</strong> By using DIY Coaching:</p>
 
 <p>(a) You acknowledge that you are solely responsible for determining whether a task is within your skill level;</p>
 <p>(b) You assume all risk of injury, property damage, or any other harm arising from your decision to perform work yourself;</p>
@@ -213,7 +213,7 @@ export default function TermsPage() {
 
 <h3>7.1 What Home DNA Scan Is</h3>
 
-<p>Home DNA Scan uses artificial intelligence (powered by OpenAI's vision models) to analyze photographs of your home — submitted by you or captured by a drone operator — to identify potential maintenance needs, damage, or improvement opportunities.</p>
+<p>Home DNA Scan uses artificial intelligence (powered by OpenAI's vision models) to analyze photographs of your home. submitted by you or captured by a drone operator. to identify potential maintenance needs, damage, or improvement opportunities.</p>
 
 <h3>7.2 What Home DNA Scan Is NOT</h3>
 
@@ -249,9 +249,9 @@ export default function TermsPage() {
 
 <p>By creating an account, you consent to receive electronic communications from UpTend, including:</p>
 
-<p>(a) <strong>Transactional messages</strong> — booking confirmations, payment receipts, service updates, Pro arrival notifications, and account security alerts;</p>
-<p>(b) <strong>Service communications</strong> — platform updates, policy changes, and feature announcements;</p>
-<p>(c) <strong>Marketing communications</strong> — promotions, offers, and recommendations (with opt-out).</p>
+<p>(a) <strong>Transactional messages</strong>. booking confirmations, payment receipts, service updates, Pro arrival notifications, and account security alerts;</p>
+<p>(b) <strong>Service communications</strong>. platform updates, policy changes, and feature announcements;</p>
+<p>(c) <strong>Marketing communications</strong>. promotions, offers, and recommendations (with opt-out).</p>
 
 <h3>9.2 SMS/Text Messages (TCPA Compliance)</h3>
 
@@ -296,8 +296,8 @@ export default function TermsPage() {
 
 <p>| Cancellation Timing | Fee |</p>
 <p>|---|---|</p>
-<p>| Before Pro accepts the booking | <strong>Free</strong> — no charge |</p>
-<p>| After Pro accepts but before Pro is en route | <strong>Free</strong> — no charge |</p>
+<p>| Before Pro accepts the booking | <strong>Free</strong>. no charge |</p>
+<p>| After Pro accepts but before Pro is en route | <strong>Free</strong>. no charge |</p>
 <p>| After Pro is en route to the job | <strong>\$25 cancellation fee</strong> |</p>
 <p>| After Pro arrives at the job site | <strong>\$50 cancellation fee</strong> |</p>
 <p>| After work has begun | <strong>Full charge</strong> for the estimated service amount |</p>
@@ -414,9 +414,9 @@ export default function TermsPage() {
 
 <p>Pros may be subject to the following consequences for policy violations:</p>
 
-<p>(a) <strong>Warning</strong> — For first-time minor infractions;</p>
-<p>(b) <strong>Temporary suspension</strong> — For repeated minor infractions or single serious violations;</p>
-<p>(c) <strong>Permanent removal</strong> — For egregious conduct, fraud, safety violations, or repeated serious violations.</p>
+<p>(a) <strong>Warning</strong>. For first-time minor infractions;</p>
+<p>(b) <strong>Temporary suspension</strong>. For repeated minor infractions or single serious violations;</p>
+<p>(c) <strong>Permanent removal</strong>. For egregious conduct, fraud, safety violations, or repeated serious violations.</p>
 
 <h2>14. Prohibited Items and Services</h2>
 
@@ -485,13 +485,13 @@ export default function TermsPage() {
 
 <p>The Platform integrates with the following third-party services:</p>
 
-<p>(a) <strong>Stripe</strong> — Payment processing, including BNPL (Klarna/Afterpay);</p>
-<p>(b) <strong>Twilio</strong> — SMS and voice communications;</p>
-<p>(c) <strong>SendGrid</strong> — Email delivery;</p>
-<p>(d) <strong>Anthropic</strong> — Claude AI models powering Mr. George;</p>
-<p>(e) <strong>OpenAI</strong> — GPT and vision models for photo analysis and Home DNA Scan;</p>
-<p>(f) <strong>Amazon Associates</strong> — Affiliate product links;</p>
-<p>(g) <strong>Checkr</strong> — Background check services (where applicable).</p>
+<p>(a) <strong>Stripe</strong>. Payment processing, including BNPL (Klarna/Afterpay);</p>
+<p>(b) <strong>Twilio</strong>. SMS and voice communications;</p>
+<p>(c) <strong>SendGrid</strong>. Email delivery;</p>
+<p>(d) <strong>Anthropic</strong>. Claude AI models powering Mr. George;</p>
+<p>(e) <strong>OpenAI</strong>. GPT and vision models for photo analysis and Home DNA Scan;</p>
+<p>(f) <strong>Amazon Associates</strong>. Affiliate product links;</p>
+<p>(g) <strong>Checkr</strong>. Background check services (where applicable).</p>
 
 <h3>18.2 Third-Party Terms</h3>
 

@@ -115,7 +115,7 @@ export default function AdminBilling() {
               <div className="space-y-1 text-sm">
                 {failedRuns.slice(0, 5).map((r) => (
                   <div key={r.id}>
-                    {r.businessName} — ${r.totalAmount.toFixed(2)} — {r.errorMessage}
+                    {r.businessName}. ${r.totalAmount.toFixed(2)}. {r.errorMessage}
                   </div>
                 ))}
               </div>

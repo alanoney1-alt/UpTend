@@ -180,7 +180,7 @@ export default function MarketplacePage() {
               </p>
               <p className="text-sm text-muted-foreground mb-4">
                 {!(searchQuery || (categoryFilter && categoryFilter !== "all") || (conditionFilter && conditionFilter !== "all"))
-                  && "Browse rescued items at great prices — and keep them out of the landfill. Listings go live when Pros start posting recovered items."}
+                  && "Browse rescued items at great prices. and keep them out of the landfill. Listings go live when Pros start posting recovered items."}
               </p>
               {(searchQuery || (categoryFilter && categoryFilter !== "all") || (conditionFilter && conditionFilter !== "all")) && (
                 <Button

@@ -36,7 +36,7 @@ const benefits = [
   { icon: Users, title: "Veteran Mentor Network", desc: "Connect with experienced veteran contractors who've built successful businesses on UpTend." },
   { icon: DollarSign, title: "Priority Government Contracts", desc: "Access VA, DoD, and federal contract opportunities with set-aside preferences." },
   { icon: Target, title: "MOS-to-Trade Mapping", desc: "Your military skills translate directly. We map your MOS to civilian trade certifications." },
-  { icon: Heart, title: "Military Spouse Program", desc: "Portable careers for military spouses — work from any base with UpTend's remote-friendly services." },
+  { icon: Heart, title: "Military Spouse Program", desc: "Portable careers for military spouses. work from any base with UpTend's remote-friendly services." },
   { icon: TrendingUp, title: "Business Growth Tools", desc: "Free business coaching, marketing support, and equipment financing partnerships." },
 ];
 
@@ -171,7 +171,7 @@ export default function Veterans() {
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(mosToTrade).map(([code, mapping]) => (
-                  <SelectItem key={code} value={code}>{code} — {mapping}</SelectItem>
+                  <SelectItem key={code} value={code}>{code}. {mapping}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

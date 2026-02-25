@@ -30,7 +30,7 @@ const services = [
   {
     id: "moving_labor",
     title: "Moving Labor",
-    description: `Furniture moving, truck unloading, or general labor — all $${HOURLY_RATE_PER_PRO}/hr per Pro. You pick the task.`,
+    description: `Furniture moving, truck unloading, or general labor. All $${HOURLY_RATE_PER_PRO}/hr per Pro. You pick the task.`,
     icon: Sofa,
     image: furnitureImage,
     startingPrice: SERVICE_STARTING_PRICES.moving_labor || 80,

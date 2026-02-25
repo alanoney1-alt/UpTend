@@ -6,7 +6,7 @@ export default function Affiliatedisclosure() {
     <LegalPage title="Affiliate Disclosure" icon={<Link2 className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Affiliate Disclosure</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Affiliate Disclosure</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <p>This disclosure is made in compliance with the Federal Trade Commission's Guides Concerning the Use of Endorsements and Testimonials in Advertising (16 CFR Part 255).</p>
@@ -18,7 +18,7 @@ export default function Affiliatedisclosure() {
 <h2>2. Current Affiliate Partners</h2>
 
 <ul>
-<li><strong>Amazon Associates Program</strong> — UpTend is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com. Our affiliate tag is <strong>uptend20-20</strong>.</li>
+<li><strong>Amazon Associates Program</strong>. UpTend is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com. Our affiliate tag is <strong>uptend20-20</strong>.</li>
 </ul>
 <p>We may add additional affiliate partners in the future (e.g., Walmart, Home Depot, Lowe's). This disclosure will be updated accordingly.</p>
 
@@ -27,9 +27,9 @@ export default function Affiliatedisclosure() {
 <p>Affiliate links may appear in the following places on the UpTend Platform:</p>
 
 <ul>
-<li><strong>Mr. George AI recommendations</strong> — When George suggests a product (tool, cleaning supply, home improvement item), the link may be an affiliate link</li>
-<li><strong>DIY Coaching guides</strong> — Product links in DIY instructions and guides</li>
-<li><strong>Service recommendation pages</strong> — Links to recommended products or materials</li>
+<li><strong>Mr. George AI recommendations</strong>. When George suggests a product (tool, cleaning supply, home improvement item), the link may be an affiliate link</li>
+<li><strong>DIY Coaching guides</strong>. Product links in DIY instructions and guides</li>
+<li><strong>Service recommendation pages</strong>. Links to recommended products or materials</li>
 <li><strong>Blog content and educational articles</strong></li>
 </ul>
 <p>Affiliate links are not visually distinguished from non-affiliate links in most cases, but this disclosure serves as notice that product links on our Platform may be affiliate links.</p>
@@ -45,7 +45,7 @@ export default function Affiliatedisclosure() {
 <ul>
 <li>Mr. George will never recommend an inferior or unsafe product because of an affiliate relationship</li>
 <li>Safety recommendations are never influenced by affiliate commissions</li>
-<li>We recommend products based on quality, value, suitability, and user reviews — not commission rates</li>
+<li>We recommend products based on quality, value, suitability, and user reviews. not commission rates</li>
 <li>We may recommend products from non-affiliate retailers when those products are superior for the user's needs</li>
 </ul>
 <h2>6. Your Choice</h2>

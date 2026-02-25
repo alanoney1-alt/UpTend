@@ -47,7 +47,7 @@ export function InsuranceGate({ job, onPolicyVerified }: InsuranceGateProps) {
         <div className="rounded-md bg-muted/50 p-3 space-y-1">
           <p className="text-sm font-medium">How it works</p>
           <ul className="text-sm text-muted-foreground space-y-1">
-            <li>Instant verification -- coverage active in minutes</li>
+            <li>Instant verification. coverage active in minutes</li>
             <li>2-hour policy covers the duration of this job</li>
             <li>Proof of coverage is sent directly to the platform</li>
           </ul>

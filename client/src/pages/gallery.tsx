@@ -48,7 +48,7 @@ function GalleryCard({ entry }: { entry: GalleryEntry }) {
     const url = `${window.location.origin}/gallery?highlight=${entry.id}`;
     if (navigator.share) {
       try {
-        await navigator.share({ title: `${entry.serviceLabel} — Before & After`, url });
+        await navigator.share({ title: `${entry.serviceLabel}. Before & After`, url });
       } catch {}
     } else {
       await navigator.clipboard.writeText(url);

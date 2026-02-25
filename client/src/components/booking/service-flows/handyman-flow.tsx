@@ -210,7 +210,7 @@ export function HandymanFlow({ onComplete, onBack }: ServiceFlowProps) {
             <div>
               <Label className="text-base font-bold">Estimated Hours</Label>
               <p className="text-xs text-muted-foreground mb-3">
-                ${HOURLY_RATE}/hr — 1-hour minimum, billed by the minute after
+                ${HOURLY_RATE}/hr. 1-hour minimum, billed by the minute after
               </p>
               <div className="flex items-center gap-3">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((h) => (

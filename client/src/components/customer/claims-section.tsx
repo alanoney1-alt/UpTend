@@ -167,9 +167,9 @@ export function CustomerClaimsSection({ customerId }: { customerId: string }) {
             <h3 className="font-semibold">How Claims Work</h3>
             <p className="text-sm text-muted-foreground mt-1">
               If something goes wrong during a service, UpTend helps resolve it:<br />
-              • <strong>File a claim</strong> — describe the issue with photos and we review within 48 hours<br />
-              • <strong>Pro's insurance</strong> — verified pros carry their own liability coverage. We coordinate directly with their insurer on your behalf.<br />
-              • <strong>Resolution support</strong> — we mediate between you and the pro to reach a fair outcome. If needed, claims are escalated to the pro's insurance carrier.
+              • <strong>File a claim</strong>. describe the issue with photos and we review within 48 hours<br />
+              • <strong>Pro's insurance</strong>. verified pros carry their own liability coverage. We coordinate directly with their insurer on your behalf.<br />
+              • <strong>Resolution support</strong>. we mediate between you and the pro to reach a fair outcome. If needed, claims are escalated to the pro's insurance carrier.
             </p>
           </div>
         </div>

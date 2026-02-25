@@ -1,5 +1,5 @@
 /**
- * Pro AI Dashboard — unified AI features view for hauler pros
+ * Pro AI Dashboard. unified AI features view for hauler pros
  * Route Optimization · Quality Score · Job Assessments
  */
 
@@ -75,7 +75,7 @@ function RouteOptimizationCard() {
           jobs: [], // empty → server returns no optimization
         }),
       });
-      // Will likely 400 with no jobs; that's fine — show placeholder
+      // Will likely 400 with no jobs; that's fine. show placeholder
       if (!res.ok) return null;
       return res.json();
     },

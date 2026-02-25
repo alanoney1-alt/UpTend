@@ -16,7 +16,7 @@ export function UpgradePrompt({ featureName, variant = "card" }: UpgradePromptPr
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-amber-500" />
           <span className="text-sm text-amber-800">
-            <span className="font-medium">Upgrade to unlock advanced features</span> — SLA management, reports, compliance, and more.
+            <span className="font-medium">Upgrade to unlock advanced features</span>. SLA management, reports, compliance, and more.
           </span>
         </div>
         <Link href="/b2b-pricing">
@@ -56,7 +56,7 @@ export function UpgradePrompt({ featureName, variant = "card" }: UpgradePromptPr
           </p>
         </div>
         <div className="bg-white rounded-lg border border-amber-200 p-4 max-w-sm mx-auto text-left">
-          <p className="text-sm font-medium text-gray-900 mb-2">Starter Plan — $3/door/mo</p>
+          <p className="text-sm font-medium text-gray-900 mb-2">Starter Plan. $3/door/mo</p>
           <ul className="text-xs text-gray-600 space-y-1">
             <li>• 11–50 properties</li>
             <li>• SLA management & compliance</li>

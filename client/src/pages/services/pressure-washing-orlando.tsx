@@ -6,12 +6,12 @@ const data = {
   h1: "Pressure Washing in Orlando",
   metaTitle: "Pressure Washing Orlando | Driveways, Homes & More | UpTend",
   metaDescription: "Professional pressure washing in Orlando, FL. Driveways, sidewalks, homes, and patios restored to like-new condition. Book online with UpTend.",
-  heroTagline: "Restore your home's curb appeal with professional pressure washing. Driveways, walkways, patios, siding, and more — sparkling clean, guaranteed.",
+  heroTagline: "Restore your home's curb appeal with professional pressure washing. Driveways, walkways, patios, siding, and more. sparkling clean, guaranteed.",
   heroGradient: "from-blue-600 to-cyan-500",
   icon: Droplets,
   serviceDescription: [
     "Orlando's heat and humidity mean mold, mildew, algae, and dirt build up fast on your home's exterior surfaces. UpTend's professional pressure washing service removes years of buildup from driveways, sidewalks, pool decks, patios, home siding, fences, and more.",
-    "Our Pros use commercial-grade equipment with adjustable pressure settings to safely clean every surface type — from delicate stucco and painted siding to tough concrete and pavers. We use eco-friendly cleaning solutions that are safe for your landscaping and pets.",
+    "Our Pros use commercial-grade equipment with adjustable pressure settings to safely clean every surface type. from delicate stucco and painted siding to tough concrete and pavers. We use eco-friendly cleaning solutions that are safe for your landscaping and pets.",
   ],
   features: [
     "Driveway & sidewalk cleaning",

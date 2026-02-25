@@ -117,7 +117,7 @@ export default function AuthPage() {
             if (schedulingDataParam) params.set("schedulingData", schedulingDataParam);
             setLocation(`/book?${params.toString()}`);
           } else {
-            // Generic redirect — go wherever it says
+            // Generic redirect. go wherever it says
             setLocation(redirectParam);
           }
         } else if (!data.hasPaymentMethod) {

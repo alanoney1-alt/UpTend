@@ -78,7 +78,7 @@ export default function WorkLogEntry() {
 
         {contract && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
-            <strong>{contract.contractNumber}</strong> — {contract.agencyName}
+            <strong>{contract.contractNumber}</strong>. {contract.agencyName}
           </div>
         )}
 

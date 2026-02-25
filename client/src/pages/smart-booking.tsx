@@ -1,5 +1,5 @@
 /**
- * Smart Booking Page — /smart-book
+ * Smart Booking Page. /smart-book
  * 
  * The NEW primary booking flow:
  * 1. Select service

@@ -131,7 +131,7 @@ export function InsuranceStatusCard() {
       >
         <h3 className="font-bold flex items-center gap-2">
           <Shield className="w-5 h-5 text-[#ea580c]" />
-          Insurance -- {cardTitle}
+          Insurance. {cardTitle}
         </h3>
         {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
       </button>

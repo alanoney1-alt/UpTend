@@ -15,7 +15,7 @@ export function FloatingCart() {
 
   return (
     <>
-      {/* Floating bag icon — bottom-left (George is bottom-right) */}
+      {/* Floating bag icon. bottom-left (George is bottom-right) */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-6 left-6 z-[9980] flex items-center justify-center w-14 h-14 rounded-full bg-[#F47C20] text-white shadow-lg shadow-[#F47C20]/30 hover:bg-[#e06910] transition-all hover:scale-105 active:scale-95"

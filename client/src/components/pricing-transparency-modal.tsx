@@ -37,7 +37,7 @@ export function PricingTransparencyModal() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="font-semibold text-foreground shrink-0">Access:</span>
-                <span>Stairs requiring carry -- $15 per flight</span>
+                <span>Stairs requiring carry. $15 per flight</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="font-semibold text-foreground shrink-0">Labor:</span>

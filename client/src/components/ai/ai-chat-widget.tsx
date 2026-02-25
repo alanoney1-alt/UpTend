@@ -1,7 +1,7 @@
 /**
  * AI Chat Widget Component (Secondary)
  *
- * Floating chat widget with Mr. George AI agent — quick replies, context, booking drafts.
+ * Floating chat widget with Mr. George AI agent. quick replies, context, booking drafts.
  * Used on pages where the primary chat-widget.tsx is not mounted.
  */
 

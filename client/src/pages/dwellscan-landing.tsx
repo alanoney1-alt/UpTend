@@ -54,7 +54,7 @@ export default function DwellScanLanding() {
             report. Add drone aerial scan for roof & gutter inspection.
           </p>
           <p className="text-lg font-semibold mb-8">
-            Completely free — includes $25 credit toward your next booking
+            Completely free. includes $25 credit toward your next booking
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" onClick={() => handleBookTier('standard')}>
@@ -362,7 +362,7 @@ export default function DwellScanLanding() {
             All Home DNA Scan Standard inspections are performed by UpTend's verified Pros who are
             background-checked and insured. Home DNA Scan Aerial inspections are performed by FAA Part
             107 certified drone pilots with additional walkthrough training. We do not subcontract
-            — all Pros are directly vetted by UpTend.
+           . all Pros are directly vetted by UpTend.
           </p>
 
           <h3>How is Home DNA Scan different from a traditional home inspection?</h3>

@@ -6,7 +6,7 @@ export default function B2bterms() {
     <LegalPage title="B2B Terms of Service" icon={<Building2 className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Business Terms of Service</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Business Terms of Service</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <p>These Business Terms of Service ("B2B Terms") supplement the general Terms of Service and govern the relationship between UPYCK, Inc. d/b/a UpTend ("UpTend," "we," "us") and business entities accessing our Platform for commercial purposes ("Business Client," "you"). In the event of conflict between these B2B Terms and the general Terms of Service, these B2B Terms control for Business Clients.</p>
@@ -18,10 +18,10 @@ export default function B2bterms() {
 <p>Business Accounts are available to:</p>
 
 <ul>
-<li><strong>Homeowners Associations (HOAs)</strong> — Community management organizations</li>
-<li><strong>Property Management Companies</strong> — Firms managing residential or commercial properties</li>
-<li><strong>Construction Companies</strong> — Licensed general contractors and construction firms</li>
-<li><strong>Government Entities</strong> — Municipal, county, state, and federal agencies</li>
+<li><strong>Homeowners Associations (HOAs)</strong>. Community management organizations</li>
+<li><strong>Property Management Companies</strong>. Firms managing residential or commercial properties</li>
+<li><strong>Construction Companies</strong>. Licensed general contractors and construction firms</li>
+<li><strong>Government Entities</strong>. Municipal, county, state, and federal agencies</li>
 </ul>
 <h3>1.2 Account Requirements</h3>
 

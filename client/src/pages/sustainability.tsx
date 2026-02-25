@@ -21,7 +21,7 @@ const pillars = [
     title: "Responsible Junk Removal",
     icon: Recycle,
     description:
-      "Every item removed from your property is tracked through our circular economy system. We sort for donation, recycling, and responsible disposal — then prove it with a verified Impact Report.",
+      "Every item removed from your property is tracked through our circular economy system. We sort for donation, recycling, and responsible disposal. then prove it with a verified Impact Report.",
     points: [
       "Full chain-of-custody tracking for every item",
       "Donation coordination with local charities",
@@ -45,7 +45,7 @@ const pillars = [
     title: "Eco-Friendly Operations",
     icon: Globe,
     description:
-      "From low-flow pressure washing equipment to eco-friendly cleaning solutions, sustainability is built into how we operate — not bolted on as an afterthought.",
+      "From low-flow pressure washing equipment to eco-friendly cleaning solutions, sustainability is built into how we operate. not bolted on as an afterthought.",
     points: [
       "Low-flow equipment reduces water consumption",
       "Eco-friendly chemical treatments and cleaning products",
@@ -87,7 +87,7 @@ export default function Sustainability() {
             We Track It.
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            UpTend builds sustainability into every service — from verified recycling and donation tracking
+            UpTend builds sustainability into every service. from verified recycling and donation tracking
             to eco-friendly operations and community partnerships.
           </p>
         </div>
@@ -141,7 +141,7 @@ export default function Sustainability() {
           <h2 className="text-2xl font-bold mb-4">See Sustainability in Action</h2>
           <p className="text-muted-foreground mb-8">
             Book any service and receive a verified Impact Report showing the environmental
-            footprint of your job — materials diverted, CO2 saved, and more.
+            footprint of your job. materials diverted, CO2 saved, and more.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/services">

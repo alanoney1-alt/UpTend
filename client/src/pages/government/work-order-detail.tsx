@@ -70,7 +70,7 @@ export default function WorkOrderDetail() {
     mutationFn: () => apiRequest("PUT", `/api/government/work-orders/${id}/complete`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/government/work-orders/${id}`] });
-      toast({ title: "Work order marked complete — pending verification" });
+      toast({ title: "Work order marked complete. pending verification" });
     },
   });
 
@@ -148,7 +148,7 @@ export default function WorkOrderDetail() {
         {wo.status === "completed" && (
           <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 text-center">
             <CheckCircle2 className="h-8 w-8 text-teal-600 mx-auto mb-2" />
-            <p className="font-medium text-teal-800">Work Complete — Pending Verification</p>
+            <p className="font-medium text-teal-800">Work Complete. Pending Verification</p>
             <p className="text-sm text-teal-600">Payment of {cents(wo.acceptedQuoteAmount)} will be processed after admin verification.</p>
           </div>
         )}
@@ -183,7 +183,7 @@ export default function WorkOrderDetail() {
                   <Input type="number" value={quoteForm.estimatedDays}
                     onChange={e => setQuoteForm({ ...quoteForm, estimatedDays: e.target.value })}
                     placeholder="Days to complete" />
-                  <p className="text-xs text-gray-500 mt-1">For scheduling only — your payment is your quoted price, not time-based.</p>
+                  <p className="text-xs text-gray-500 mt-1">For scheduling only. your payment is your quoted price, not time-based.</p>
                 </div>
                 <div>
                   <Label>Message</Label>

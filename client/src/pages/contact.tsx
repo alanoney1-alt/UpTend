@@ -85,7 +85,7 @@ export default function Contact() {
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           <div className="space-y-6">
-            {/* Call George — Primary Contact */}
+            {/* Call George. Primary Contact */}
             <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border-amber-200/60 dark:border-amber-700/30">
               <div className="text-center space-y-3">
                 <div className="w-14 h-14 mx-auto rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">

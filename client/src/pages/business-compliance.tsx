@@ -394,7 +394,7 @@ export default function BusinessCompliance() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold">Background Check Tracking</h2>
-                <p className="text-sm text-muted-foreground">Checkr integration — track status and expiration</p>
+                <p className="text-sm text-muted-foreground">Checkr integration. track status and expiration</p>
               </div>
               <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => initiateCheckMutation.mutate({ proName: "New Pro", provider: "Checkr" })} disabled={initiateCheckMutation.isPending}>
                 <Plus className="w-4 h-4 mr-2" /> {initiateCheckMutation.isPending ? "Initiating..." : "Initiate Check"}

@@ -869,7 +869,7 @@ export default function BusinessOnboarding() {
             <CardContent className="text-sm space-y-1">
               <p className="font-medium">{info.companyName}</p>
               <p className="text-muted-foreground">{SEGMENTS.find(s => s.key === segment)?.label}</p>
-              <p className="text-muted-foreground">{info.contactName} — {info.contactEmail}</p>
+              <p className="text-muted-foreground">{info.contactName}. {info.contactEmail}</p>
             </CardContent>
           </Card>
           <Card>
@@ -877,13 +877,13 @@ export default function BusinessOnboarding() {
             <CardContent className="text-sm space-y-1">
               {isIndependent ? (
                 <>
-                  <p className="font-medium">Independent — Free</p>
-                  <p className="text-muted-foreground">$0/month — Transaction fees only (7%)</p>
+                  <p className="font-medium">Independent. Free</p>
+                  <p className="text-muted-foreground">$0/month. Transaction fees only (7%)</p>
                   <p className="text-muted-foreground">Up to 10 properties</p>
                 </>
               ) : (
                 <>
-                  <p className="font-medium">{plan?.name} — {plan?.price}{plan?.priceNote}</p>
+                  <p className="font-medium">{plan?.name}. {plan?.price}{plan?.priceNote}</p>
                   {cost && <p className="text-muted-foreground">Est. monthly: ${cost.amount.toLocaleString()}</p>}
                   <p className="text-muted-foreground">{info.unitCount || totalUnits} {UNIT_LABELS[segment]?.toLowerCase() || "units"}</p>
                 </>
@@ -953,7 +953,7 @@ export default function BusinessOnboarding() {
         <Card className="max-w-md mx-auto border-green-200 bg-green-50">
           <CardContent className="p-4 text-sm">
             <p className="font-medium"> You're on the Independent plan (Free)</p>
-            <p className="text-muted-foreground">No monthly fees — you only pay a 7% fee when you book a pro. Upgrade anytime to unlock advanced features.</p>
+            <p className="text-muted-foreground">No monthly fees. you only pay a 7% fee when you book a pro. Upgrade anytime to unlock advanced features.</p>
           </CardContent>
         </Card>
       )}

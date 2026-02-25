@@ -105,10 +105,10 @@ export default function BlogIndex() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>UpTend Blog -- Home Services Tips & Guides | Orlando</title>
+        <title>UpTend Blog | Home Services Tips & Guides | Orlando</title>
         <meta
           name="description"
-          content="Expert tips, seasonal guides, and cost breakdowns for home services in Orlando. From UpTend -- your trusted local home services platform."
+          content="Expert tips, seasonal guides, and cost breakdowns for home services in Orlando. From UpTend, your trusted local home services platform."
         />
         <link rel="canonical" href="https://uptendapp.com/blog" />
       </Helmet>

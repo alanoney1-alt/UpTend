@@ -18,23 +18,23 @@ const posts: Record<string, BlogPostData> = {
     title: "5 Signs Your Water Heater Is About to Fail (and What to Do)",
     date: "February 24, 2026",
     author: "Mr. George",
-    content: `Your water heater is one of those appliances you never think about -- until it stops working. Most tank water heaters last 8 to 12 years, but Florida's hard water and high humidity can shorten that lifespan significantly. Here are the five warning signs every Orlando homeowner should watch for.
+    content: `Your water heater is one of those appliances you never think about. Until it stops working. Most tank water heaters last 8 to 12 years, but Florida's hard water and high humidity can shorten that lifespan significantly. Here are the five warning signs every Orlando homeowner should watch for.
 
 ## 1. Your Water Heater Is Over 10 Years Old
 
-Check the serial number on the manufacturer's label. The first two digits usually indicate the year of manufacture. If your unit is approaching or past the decade mark, it is living on borrowed time. Proactive replacement saves you from emergency failures -- which always seem to happen on a Sunday night.
+Check the serial number on the manufacturer's label. The first two digits usually indicate the year of manufacture. If your unit is approaching or past the decade mark, it is living on borrowed time. Proactive replacement saves you from emergency failures. Which always seem to happen on a Sunday night.
 
 ## 2. Rusty or Discolored Hot Water
 
 If your hot water comes out with a reddish or brownish tint, that typically means the interior of the tank is corroding. Once rust starts, it does not stop. This is especially common in Central Florida where the water mineral content accelerates corrosion.
 
-## 3. Strange Noises -- Rumbling, Popping, or Banging
+## 3. Strange Noises: Rumbling, Popping, or Banging
 
 Sediment builds up at the bottom of the tank over time. When the burner heats the water, it has to work through that layer of sediment, causing rumbling or popping sounds. This reduces efficiency and accelerates wear on the tank.
 
 ## 4. Water Pooling Around the Base
 
-Any moisture or puddles around the base of your water heater indicate a slow leak. Check the fittings and the temperature/pressure relief valve first, but if those are dry, the tank itself may be cracking. This is an urgent sign -- a full tank failure means 40 to 80 gallons of water on your floor.
+Any moisture or puddles around the base of your water heater indicate a slow leak. Check the fittings and the temperature/pressure relief valve first, but if those are dry, the tank itself may be cracking. This is an urgent sign. A full tank failure means 40 to 80 gallons of water on your floor.
 
 ## 5. Your Hot Water Runs Out Faster Than It Used To
 
@@ -42,14 +42,14 @@ If showers that used to stay hot are now going lukewarm after five minutes, sedi
 
 ## What to Do Next
 
-If you are seeing one or more of these signs, do not wait for a catastrophic failure. Get an instant quote through UpTend -- Mr. George can assess your situation in seconds and connect you with a licensed plumber if needed. Every job is backed by our price ceiling guarantee.`,
+If you are seeing one or more of these signs, do not wait for a catastrophic failure. Get an instant quote through UpTend. Mr. George can assess your situation in seconds and connect you with a licensed plumber if needed. Every job is backed by our price ceiling guarantee.`,
   },
   "pressure-washing-guide-orlando": {
     slug: "pressure-washing-guide-orlando",
     title: "Pressure Washing in Orlando: What Every Homeowner Should Know",
     date: "February 24, 2026",
     author: "Mr. George",
-    content: `Orlando's subtropical climate means your home's exterior takes a beating from humidity, rain, and algae growth year-round. Pressure washing is not just about curb appeal -- it protects your investment and keeps your HOA happy.
+    content: `Orlando's subtropical climate means your home's exterior takes a beating from humidity, rain, and algae growth year-round. Pressure washing is not just about curb appeal. It protects your investment and keeps your HOA happy.
 
 ## What Should You Pressure Wash?
 
@@ -61,7 +61,7 @@ If you are seeing one or more of these signs, do not wait for a catastrophic fai
 
 ## How Much Does It Cost?
 
-For a typical Orlando home, expect to pay $200 to $450 for a full exterior wash. Driveways run $100 to $200 depending on size. UpTend offers transparent pricing with no hidden fees -- ask Mr. George for an instant quote.
+For a typical Orlando home, expect to pay $200 to $450 for a full exterior wash. Driveways run $100 to $200 depending on size. UpTend offers transparent pricing with no hidden fees. Ask Mr. George for an instant quote.
 
 ## Common Mistakes to Avoid
 
@@ -79,7 +79,7 @@ If you have a two-story home, delicate surfaces, or you are not comfortable on a
     title: "Hurricane Season Home Prep: The Complete Orlando Checklist",
     date: "February 24, 2026",
     author: "Mr. George",
-    content: `Hurricane season runs June 1 through November 30 in Florida, and Central Orlando is not immune to major storms. Preparation is not optional -- it is the difference between minor inconvenience and major property damage.
+    content: `Hurricane season runs June 1 through November 30 in Florida, and Central Orlando is not immune to major storms. Preparation is not optional. It is the difference between minor inconvenience and major property damage.
 
 ## Before the Season (May)
 
@@ -120,7 +120,7 @@ Florida's combination of heavy rainfall (50+ inches annually), fast-growing vege
 
 ## Recommended Schedule
 
-- **Minimum**: Twice a year -- once in spring (before rainy season) and once in fall (after leaf drop).
+- **Minimum**: Twice a year (once in spring (before rainy season) and once in fall after leaf drop).
 - **If you have overhanging trees**: Three to four times per year.
 - **After any major storm**: Check and clear gutters within 48 hours.
 
@@ -134,7 +134,7 @@ Clogged gutters are not just an aesthetic problem. They cause:
 - **Roof leaks** when water backs up under shingles.
 - **Landscape erosion** from uncontrolled water overflow.
 
-In Florida, water damage from clogged gutters is one of the most common -- and most preventable -- home insurance claims.
+In Florida, water damage from clogged gutters is one of the most common, and most preventable, home insurance claims.
 
 ## What It Costs
 
@@ -142,7 +142,7 @@ For a typical Orlando home, gutter cleaning runs $129 to $250 depending on home 
 
 ## DIY or Pro?
 
-Single-story homes with accessible gutters can be DIY-friendly if you are comfortable on a ladder and have the right tools. Two-story homes should always be handled by a professional -- ladder falls are the number one cause of home maintenance injuries.
+Single-story homes with accessible gutters can be DIY-friendly if you are comfortable on a ladder and have the right tools. Two-story homes should always be handled by a professional. Ladder falls are the number one cause of home maintenance injuries.
 
 Book a gutter cleaning through UpTend and Mr. George will have a certified pro at your door within days. Every job includes downspout flushing and a post-clean photo report.`,
   },
@@ -151,7 +151,7 @@ Book a gutter cleaning through UpTend and Mr. George will have a certified pro a
     title: "7 Maintenance Mistakes First-Time Homeowners Make",
     date: "February 24, 2026",
     author: "Mr. George",
-    content: `Buying your first home is exciting. Maintaining it is where reality sets in. Here are the seven most common mistakes first-time Orlando homeowners make -- and how to avoid them.
+    content: `Buying your first home is exciting. Maintaining it is where reality sets in. Here are the seven most common mistakes first-time Orlando homeowners make. And how to avoid them.
 
 ## 1. Ignoring the HVAC Filter
 
@@ -159,7 +159,7 @@ Your AC runs nearly year-round in Florida. A clogged filter makes it work harder
 
 ## 2. Skipping Gutter Maintenance
 
-Out of sight, out of mind -- until water is pouring down your walls. Clean your gutters twice a year minimum in Florida. Neglected gutters cause fascia rot, foundation problems, and roof leaks.
+Out of sight, out of mind. Until water is pouring down your walls. Clean your gutters twice a year minimum in Florida. Neglected gutters cause fascia rot, foundation problems, and roof leaks.
 
 ## 3. Not Knowing Where the Water Shutoff Is
 
@@ -167,7 +167,7 @@ When a pipe bursts at 2 AM, you need to know where the main shutoff valve is. Fi
 
 ## 4. Deferring Small Repairs
 
-That small crack in the stucco, that slow drip under the sink, that toilet that runs for 30 seconds after flushing -- these are all cheap fixes now and expensive problems later. Fix small issues the week you notice them.
+That small crack in the stucco, that slow drip under the sink, that toilet that runs for 30 seconds after flushing. These are all cheap fixes now and expensive problems later. Fix small issues the week you notice them.
 
 ## 5. No Maintenance Calendar
 
@@ -179,7 +179,7 @@ The lowest bid is rarely the best value. Unlicensed, uninsured contractors cut c
 
 ## 7. Not Documenting Your Home
 
-Keep records of every repair, every appliance purchase, every service visit. This documentation is invaluable for insurance claims, home resale, and warranty coverage. UpTend's Home DNA feature does this automatically -- Mr. George tracks every service event and builds a living record of your home.
+Keep records of every repair, every appliance purchase, every service visit. This documentation is invaluable for insurance claims, home resale, and warranty coverage. UpTend's Home DNA feature does this automatically. Mr. George tracks every service event and builds a living record of your home.
 
 Start building good habits now and your home will thank you for decades.`,
   },
@@ -206,12 +206,12 @@ These are tasks most homeowners can handle with basic tools and a tutorial:
 
 These projects involve safety risks, licensing requirements, or expertise that justifies professional help:
 
-- **Electrical work beyond basic fixtures** -- Anything involving your breaker panel, new circuits, or 240V connections requires a licensed electrician.
-- **Plumbing beyond simple fixes** -- Water heater replacement, re-piping, and slab leak repair are not DIY territory.
-- **Roof work** -- Falls from roofs are a leading cause of homeowner injuries. Plus, improper repairs void warranties.
-- **HVAC repairs** -- Refrigerant handling requires EPA certification. DIY AC work often causes more damage.
-- **Structural modifications** -- Removing walls, adding windows, or modifying load-bearing elements requires engineering assessment.
-- **Tree removal** -- Anything taller than you can reach from the ground should be handled by a licensed arborist.
+- **Electrical work beyond basic fixtures**. Anything involving your breaker panel, new circuits, or 240V connections requires a licensed electrician.
+- **Plumbing beyond simple fixes**. Water heater replacement, re-piping, and slab leak repair are not DIY territory.
+- **Roof work**. Falls from roofs are a leading cause of homeowner injuries. Plus, improper repairs void warranties.
+- **HVAC repairs**. Refrigerant handling requires EPA certification. DIY AC work often causes more damage.
+- **Structural modifications**. Removing walls, adding windows, or modifying load-bearing elements requires engineering assessment.
+- **Tree removal**. Anything taller than you can reach from the ground should be handled by a licensed arborist.
 
 ## The Cost Calculation
 
@@ -219,7 +219,7 @@ Before going DIY, add up: tool costs, material costs, your time (value it honest
 
 ## When in Doubt, Ask George
 
-Not sure if your project is DIY-friendly? Send a photo to Mr. George. He will tell you whether it is a weekend project or a call-a-pro situation -- and if you need a pro, he will get you a quote in seconds.`,
+Not sure if your project is DIY-friendly? Send a photo to Mr. George. He will tell you whether it is a weekend project or a call-a-pro situation. and if you need a pro, he will get you a quote in seconds.`,
   },
   "pool-maintenance-basics-florida": {
     slug: "pool-maintenance-basics-florida",
@@ -240,7 +240,7 @@ Not sure if your project is DIY-friendly? Send a photo to Mr. George. He will te
 
 - **Shock the pool** with a higher dose of chlorine to kill bacteria and algae spores.
 - **Clean the filter** (backwash for sand/DE filters, rinse for cartridge).
-- **Check water level** -- Florida evaporation and rain can cause significant fluctuations.
+- **Check water level**. Florida evaporation and rain can cause significant fluctuations.
 - **Inspect equipment** for leaks, unusual noises, or reduced flow.
 
 ## Seasonal Considerations
@@ -248,7 +248,7 @@ Not sure if your project is DIY-friendly? Send a photo to Mr. George. He will te
 Florida pools run year-round, but summer demands more attention:
 
 - **Summer**: Heavier use means more frequent chemical adjustments. Test twice a week.
-- **Hurricane season**: Remove loose items from the pool area before storms. Never drain your pool for a hurricane -- the ground pressure can crack an empty shell.
+- **Hurricane season**: Remove loose items from the pool area before storms. Never drain your pool for a hurricane. the ground pressure can crack an empty shell.
 - **Winter**: Reduce pump run time since algae grows slower in cooler water.
 
 ## What It Costs
@@ -261,7 +261,7 @@ Florida pools run year-round, but summer demands more attention:
 
 If you have the time and discipline for weekly testing and cleaning, DIY pool maintenance is straightforward. If you travel frequently, have a busy schedule, or just want peace of mind, a monthly service plan is worth every dollar.
 
-Need a pool service recommendation? Ask Mr. George -- he will find a verified pro in your area and get you a quote instantly.`,
+Need a pool service recommendation? Ask Mr. George. he will find a verified pro in your area and get you a quote instantly.`,
   },
   "junk-removal-cost-orlando": {
     slug: "junk-removal-cost-orlando",
@@ -304,11 +304,11 @@ Need a pool service recommendation? Ask Mr. George -- he will find a verified pr
 - **Consolidate items** in one area before the crew arrives to minimize labor time.
 - **Separate recyclables and donations** yourself if you have time.
 - **Book during weekdays** when demand is lower.
-- **Bundle services** -- booking junk removal with pressure washing or cleaning often saves 10 to 15 percent.
+- **Bundle services**. booking junk removal with pressure washing or cleaning often saves 10 to 15 percent.
 
 ## Get an Instant Quote
 
-Skip the phone calls and waiting. Ask Mr. George for a junk removal quote -- he will price it in seconds based on your description or photos, and every price comes with our price ceiling guarantee.`,
+Skip the phone calls and waiting. Ask Mr. George for a junk removal quote. he will price it in seconds based on your description or photos, and every price comes with our price ceiling guarantee.`,
   },
 };
 

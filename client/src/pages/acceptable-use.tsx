@@ -6,7 +6,7 @@ export default function Acceptableuse() {
     <LegalPage title="Acceptable Use Policy" icon={<ShieldCheck className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Acceptable Use Policy</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Acceptable Use Policy</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <p>This Acceptable Use Policy ("AUP") applies to all users of the UpTend Platform, including Customers, Pros, and Business Account users. Violation of this AUP may result in warnings, suspension, or permanent termination of your account.</p>
@@ -129,7 +129,7 @@ export default function Acceptableuse() {
 <ul>
 <li>Emailing appeals@uptendapp.com within <strong>fifteen (15) days</strong> of the enforcement action</li>
 <li>Including your account email, a description of the situation, and any supporting evidence</li>
-<li>Using the subject line: "AUP Appeal — [Your Name]"</li>
+<li>Using the subject line: "AUP Appeal. [Your Name]"</li>
 </ul>
 <h3>10.2 Review Process</h3>
 

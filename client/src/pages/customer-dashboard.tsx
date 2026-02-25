@@ -290,7 +290,7 @@ function HomeReportSection({ userId }: { userId: string }) {
               <Badge variant="secondary" className="text-[10px]">{events.length} events</Badge>
             )}
           </div>
-          <p className="text-xs text-white/60 mt-1">Complete history of your home — like Carfax, but for houses.</p>
+          <p className="text-xs text-white/60 mt-1">Complete history of your home. like Carfax, but for houses.</p>
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <Button variant="ghost" size="sm" onClick={() => console.log("Download full home report")} data-testid="button-download-home-report">
@@ -445,12 +445,12 @@ const FL_MONTHLY_RECS: Record<number, { service: string; serviceType: string; re
   0: [{ service: "HVAC Inspection", serviceType: "hvac", reason: "Annual heating check before cold snaps" }],
   1: [{ service: "Pressure Washing", serviceType: "pressure_washing", reason: "Remove winter mildew before spring" }],
   2: [{ service: "AC Maintenance", serviceType: "hvac", reason: "Service AC before Florida heat kicks in" }],
-  3: [{ service: "Pool Cleaning", serviceType: "pool_cleaning", reason: "Pool season starting — get it swim-ready" }],
+  3: [{ service: "Pool Cleaning", serviceType: "pool_cleaning", reason: "Pool season starting. Get it swim-ready" }],
   4: [{ service: "Gutter Cleaning", serviceType: "gutter_cleaning", reason: "Clear gutters before summer rainy season" }],
-  5: [{ service: "Hurricane Prep", serviceType: "handyman", reason: "Hurricane season — check shutters, trim trees" }],
-  6: [{ service: "Pest Control", serviceType: "pest_control", reason: "Summer pests at peak — quarterly treatment" }],
-  7: [{ service: "Hurricane Prep Check", serviceType: "handyman", reason: "Peak hurricane season — verify storm readiness" }],
-  8: [{ service: "Hurricane Prep", serviceType: "handyman", reason: "Peak hurricane month — final storm prep" }],
+  5: [{ service: "Hurricane Prep", serviceType: "handyman", reason: "Hurricane season. Check shutters, trim trees" }],
+  6: [{ service: "Pest Control", serviceType: "pest_control", reason: "Summer pests at peak. Quarterly treatment" }],
+  7: [{ service: "Hurricane Prep Check", serviceType: "handyman", reason: "Peak hurricane season. Verify storm readiness" }],
+  8: [{ service: "Hurricane Prep", serviceType: "handyman", reason: "Peak hurricane month. Final storm prep" }],
   9: [{ service: "Gutter Cleaning", serviceType: "gutter_cleaning", reason: "Clear fall debris before winter rains" }],
   10: [{ service: "Gutter Cleaning", serviceType: "gutter_cleaning", reason: "Final leaf cleanup before holidays" }],
   11: [{ service: "Home Cleaning", serviceType: "home_cleaning", reason: "Holiday deep clean" }],
@@ -489,7 +489,7 @@ function computeHealthScore(completedJobs: ServiceRequest[]): number {
   // Diversity (0-30)
   const uniqueTypes = new Set(completedJobs.map((j) => j.serviceType)).size;
   const diversity = Math.min(uniqueTypes * 5, 30);
-  // Seasonal (0-30) — how many upcoming months' recs are covered recently
+  // Seasonal (0-30). how many upcoming months' recs are covered recently
   const recentTypes = new Set(
     completedJobs
       .filter((j) => {
@@ -577,7 +577,7 @@ function MyHomeSection({ jobs, user }: { jobs: ServiceRequest[]; user: { firstNa
             )}
             {nextRec && (
               <p className="text-xs text-amber-400">
-                ⚡ {nextRec.service} — {nextRec.reason}
+                {nextRec.service}: {nextRec.reason}
               </p>
             )}
           </div>
@@ -788,7 +788,7 @@ export default function CustomerDashboard() {
           <HomeDnaScoreWidget />
         </div>
 
-        {/* Home Report — Carfax for Homes */}
+        {/* Home Report. Carfax for Homes */}
         <HomeReportSection userId={user.id} />
 
         <div className="mb-6">

@@ -139,7 +139,7 @@ export default function ContractDashboard() {
               <div className="space-y-1">
                 {(expiringDocs as any[]).slice(0, 5).map((doc: any) => (
                   <p key={doc.id} className="text-sm text-red-700">
-                    {doc.docType.replace(/_/g, " ")} — {doc.fileName} — Expires: {doc.expirationDate}
+                    {doc.docType.replace(/_/g, " ")}. {doc.fileName}. Expires: {doc.expirationDate}
                   </p>
                 ))}
               </div>

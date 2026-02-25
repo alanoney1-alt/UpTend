@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { ProTierBadge } from "@/components/pycker-tier-badge";
 import { PricingTransparencyModal } from "@/components/pricing-transparency-modal";
-// ImpactMeter removed — "Estimated Protected Value" not useful for customers
+// ImpactMeter removed. "Estimated Protected Value" not useful for customers
 import { Header } from "@/components/landing/header";
 import {
   ArrowLeft, ArrowRight, Trash2, Sofa, Refrigerator, Home,
@@ -49,7 +49,7 @@ import { PolishUpBooking, type PolishUpBookingDetails } from "@/components/booki
 import pro1 from "@assets/stock_images/professional_male_wo_ae620e83.jpg";
 
 const serviceTypes = [
-  { id: "home_consultation", label: "Home DNA Scan", icon: ClipboardCheck, description: "Free — full home walkthrough with optional drone aerial scan. Includes $25 credit toward your next booking.", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
+  { id: "home_consultation", label: "Home DNA Scan", icon: ClipboardCheck, description: "Free. Full home walkthrough with optional drone aerial scan. Includes $25 credit toward your next booking.", startingPrice: SERVICE_STARTING_PRICES.home_consultation, featured: true },
   { id: "junk_removal", label: "Junk Removal", icon: Trash2, description: "Clear unwanted items and debris", startingPrice: SERVICE_STARTING_PRICES.junk_removal },
   { id: "garage_cleanout", label: "Garage Cleanout", icon: Home, description: "Complete garage cleanout service", startingPrice: SERVICE_STARTING_PRICES.garage_cleanout },
   { id: "pressure_washing", label: "Pressure Washing", icon: Droplets, description: "Driveways, patios, walkways, and siding", startingPrice: SERVICE_STARTING_PRICES.pressure_washing },
@@ -1101,7 +1101,7 @@ export default function Booking() {
 
   const handleNext = () => {
     if (step === 3) {
-      // Only create the booking at the final step — prompt login if needed
+      // Only create the booking at the final step. prompt login if needed
       if (!isAuthenticated) {
         const returnUrl = `/book?service=${formData.serviceType}`;
         navigate(`/customer-login?returnUrl=${encodeURIComponent(returnUrl)}`);

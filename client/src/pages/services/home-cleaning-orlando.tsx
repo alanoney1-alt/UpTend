@@ -6,7 +6,7 @@ const data = {
   h1: "Home Cleaning in Orlando",
   metaTitle: "Home Cleaning Orlando | Deep Clean & Recurring Service | UpTend",
   metaDescription: "Professional home cleaning in Orlando, FL. Standard, deep, and move-in/out cleans. Background-checked cleaners, eco-friendly products. Book with UpTend.",
-  heroTagline: "Spotless homes, every time. Professional cleaning for Orlando homes — standard, deep, and move-in/out cleans with eco-friendly products and trusted cleaners.",
+  heroTagline: "Spotless homes, every time. Professional cleaning for Orlando homes. standard, deep, and move-in/out cleans with eco-friendly products and trusted cleaners.",
   heroGradient: "from-pink-600 to-rose-500",
   icon: Sparkles,
   serviceDescription: [
@@ -36,19 +36,19 @@ const data = {
   ],
   localContent: {
     areaName: "Orlando",
-    areaDescription: "Orlando's active lifestyle — from theme park adventures to outdoor living — means homes need regular professional attention. Whether you're a busy professional in Downtown Orlando, a family in Baldwin Park, or managing a vacation rental in Dr. Phillips, UpTend connects you with reliable cleaners who deliver consistent, quality results.",
+    areaDescription: "Orlando's active lifestyle. from theme park adventures to outdoor living. means homes need regular professional attention. Whether you're a busy professional in Downtown Orlando, a family in Baldwin Park, or managing a vacation rental in Dr. Phillips, UpTend connects you with reliable cleaners who deliver consistent, quality results.",
     whyLocalsChoose: [
       "Background-checked, vetted cleaning professionals",
       "Eco-friendly products safe for kids and pets",
       "Customizable checklists for your specific needs",
       "Consistent recurring crews who know your home",
       "Flexible scheduling including evenings and weekends",
-      "Satisfaction guarantee — we'll re-clean if you're not happy",
+      "Satisfaction guarantee. we'll re-clean if you're not happy",
     ],
   },
   faqs: [
     { q: "What's included in a standard clean?", a: "Dusting all surfaces, vacuuming and mopping floors, kitchen counters and sink, bathroom cleaning and sanitization, making beds, and emptying trash. Deep clean adds inside appliances, baseboards, window sills, and more." },
-    { q: "Do I need to provide cleaning supplies?", a: "No — our Pros bring all supplies and equipment, including eco-friendly cleaning products. If you prefer specific products, just let us know and we'll use yours." },
+    { q: "Do I need to provide cleaning supplies?", a: "No. our Pros bring all supplies and equipment, including eco-friendly cleaning products. If you prefer specific products, just let us know and we'll use yours." },
     { q: "Can I get the same cleaner each time?", a: "Yes! With recurring service, we assign a consistent Pro or team to your home. They'll learn your preferences and deliver personalized service every visit." },
     { q: "Do you clean vacation rentals?", a: "Absolutely. We offer turnover cleaning for Orlando vacation rentals and Airbnbs, with fast turnaround between guests and checklist documentation for hosts." },
   ],

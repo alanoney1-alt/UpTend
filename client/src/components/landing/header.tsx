@@ -6,7 +6,7 @@ import {
   Menu, X, Leaf, ChevronDown,
   UserCircle, LogOut, ShieldCheck,
 } from "lucide-react";
-// ServiceBagSheet moved to booking flow — not in global header
+// ServiceBagSheet moved to booking flow. not in global header
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -79,7 +79,7 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Center: Nav Links — hidden on mobile when scrolled for clean look */}
+        {/* Center: Nav Links. hidden on mobile when scrolled for clean look */}
         <div className="hidden lg:flex items-center justify-center gap-6 text-sm font-medium text-slate-300 flex-1">
           <Link href="/services">
             <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-services">
@@ -233,7 +233,7 @@ export function Header() {
             </>
           )}
 
-          {/* Slide-in Book Now CTA — appears after scrolling past hero (landing only) */}
+          {/* Slide-in Book Now CTA. appears after scrolling past hero (landing only) */}
           {isLanding && pastHero && !isAuthenticated && (
             <Link href="/book" asChild>
               <Button

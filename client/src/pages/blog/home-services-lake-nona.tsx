@@ -40,7 +40,7 @@ export default function BlogHomeServicesLakeNona() {
         <h1>Home Services in Lake Nona: The Complete Guide for Homeowners</h1>
 
         <p>
-          Lake Nona is one of the fastest-growing communities in Central Florida — and with that growth comes a unique
+          Lake Nona is one of the fastest-growing communities in Central Florida. and with that growth comes a unique
           set of home maintenance challenges. Whether you just moved into a new build in Laureate Park or you've been
           in the area since before the Medical City boom, keeping your home in top shape requires knowing what needs
           attention, when, and who to trust.
@@ -60,7 +60,7 @@ export default function BlogHomeServicesLakeNona() {
         <ul>
           <li>
             <strong>New construction settling.</strong> Many homes in Lake Nona are under 10 years old. That means
-            drywall cracks, nail pops, and minor foundation settling are normal — but they still need to be addressed
+            drywall cracks, nail pops, and minor foundation settling are normal. but they still need to be addressed
             before they become bigger problems.
           </li>
           <li>
@@ -75,7 +75,7 @@ export default function BlogHomeServicesLakeNona() {
           </li>
           <li>
             <strong>Premium property values.</strong> With median home prices in Lake Nona well above the Orlando
-            average, maintaining your home isn't just about comfort — it's about protecting your investment.
+            average, maintaining your home isn't just about comfort. it's about protecting your investment.
           </li>
         </ul>
 
@@ -103,7 +103,7 @@ export default function BlogHomeServicesLakeNona() {
             its first fertilizer application around April.
           </li>
           <li>
-            <strong>Pool service check.</strong> If you have a pool — and many Lake Nona homes do — spring is the time
+            <strong>Pool service check.</strong> If you have a pool. and many Lake Nona homes do. spring is the time
             to ensure your pump, filter, and chemical balance are ready for heavy summer use.
           </li>
         </ul>
@@ -130,7 +130,7 @@ export default function BlogHomeServicesLakeNona() {
         <ul>
           <li>
             <strong>Deep home cleaning.</strong> After a summer of tracking sand, pool water, and Florida mud through
-            your house, fall is the ideal time for a deep clean — especially carpets and tile grout.
+            your house, fall is the ideal time for a deep clean. especially carpets and tile grout.
           </li>
           <li>
             <strong>Exterior inspection.</strong> Check for storm damage you may have missed: loose soffit panels,
@@ -151,7 +151,7 @@ export default function BlogHomeServicesLakeNona() {
             pros have more availability and sometimes better pricing.
           </li>
           <li>
-            <strong>Interior projects.</strong> Painting, cabinet touch-ups, fixture replacements — anything indoors is
+            <strong>Interior projects.</strong> Painting, cabinet touch-ups, fixture replacements. anything indoors is
             best tackled when you're not competing with Florida's outdoor maintenance demands.
           </li>
         </ul>
@@ -177,7 +177,7 @@ export default function BlogHomeServicesLakeNona() {
           </li>
           <li>
             <strong>Look for bundled services.</strong> Some platforms let you book multiple services through one
-            provider — junk removal, pressure washing, gutter cleaning, and more in one place. This saves time and
+            provider. junk removal, pressure washing, gutter cleaning, and more in one place. This saves time and
             often money compared to hiring separate companies for each task.
           </li>
         </ol>
@@ -201,14 +201,14 @@ export default function BlogHomeServicesLakeNona() {
 
         <h2>Keep Your Lake Nona Home in Top Shape</h2>
         <p>
-          The key to home maintenance isn't doing everything at once — it's having a plan and sticking to it. Set
+          The key to home maintenance isn't doing everything at once. it's having a plan and sticking to it. Set
           calendar reminders for seasonal tasks, build relationships with reliable pros, and don't let small problems
           become expensive ones.
         </p>
         <p>
           If you're looking for an easier way to find and book trusted home service professionals in the Lake Nona and
           Orlando area, <a href="https://uptendapp.com">UpTend</a> connects you with vetted local pros for everything
-          from junk removal to pool cleaning — with transparent pricing and no guesswork. It's built specifically for
+          from junk removal to pool cleaning. with transparent pricing and no guesswork. It's built specifically for
           homeowners who want to spend less time searching and more time enjoying their home.
         </p>
 
@@ -217,7 +217,7 @@ export default function BlogHomeServicesLakeNona() {
         <p className="text-sm text-gray-500">
           <em>
             Have questions about home maintenance in Lake Nona? Drop by{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and ask George, our AI home services assistant — he
+            <a href="https://uptendapp.com">uptendapp.com</a> and ask George, our AI home services assistant. he
             knows the area inside and out.
           </em>
         </p>

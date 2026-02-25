@@ -23,11 +23,11 @@ const demoPunchLists = [
 ];
 
 const demoPunchItems = [
-  { id: 1, listId: 1, description: "Touch up paint — lobby north wall", trade: "Painting", assignedPro: "ColorPro Painting", status: "completed", hasBefore: true, hasAfter: true },
-  { id: 2, listId: 1, description: "Adjust door closer — Suite 200", trade: "Carpentry", assignedPro: "WoodWorks Inc", status: "completed", hasBefore: true, hasAfter: true },
-  { id: 3, listId: 1, description: "Replace cracked floor tile — restroom", trade: "Tile", assignedPro: "TileMaster", status: "in_progress", hasBefore: true, hasAfter: false },
-  { id: 4, listId: 1, description: "Fix HVAC duct rattle — 3rd floor", trade: "HVAC", assignedPro: "CoolAir HVAC", status: "open", hasBefore: false, hasAfter: false },
-  { id: 5, listId: 1, description: "Caulk gap around window — Suite 301", trade: "General", assignedPro: null, status: "open", hasBefore: true, hasAfter: false },
+  { id: 1, listId: 1, description: "Touch up paint. lobby north wall", trade: "Painting", assignedPro: "ColorPro Painting", status: "completed", hasBefore: true, hasAfter: true },
+  { id: 2, listId: 1, description: "Adjust door closer. Suite 200", trade: "Carpentry", assignedPro: "WoodWorks Inc", status: "completed", hasBefore: true, hasAfter: true },
+  { id: 3, listId: 1, description: "Replace cracked floor tile. restroom", trade: "Tile", assignedPro: "TileMaster", status: "in_progress", hasBefore: true, hasAfter: false },
+  { id: 4, listId: 1, description: "Fix HVAC duct rattle. 3rd floor", trade: "HVAC", assignedPro: "CoolAir HVAC", status: "open", hasBefore: false, hasAfter: false },
+  { id: 5, listId: 1, description: "Caulk gap around window. Suite 301", trade: "General", assignedPro: null, status: "open", hasBefore: true, hasAfter: false },
 ];
 
 const demoLienWaivers = [

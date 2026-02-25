@@ -111,7 +111,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
     base64Reader.readAsDataURL(file);
   }, []);
 
-  // Legacy direct-submit path removed — now goes through description step
+  // Legacy direct-submit path removed. now goes through description step
   const handleSubmitWithDescription = useCallback(() => {
     if (pendingBase64) {
       submitForAnalysis(pendingBase64, description);
@@ -176,7 +176,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
         }}
       />
 
-      {/* Description Step — after photo, before analysis */}
+      {/* Description Step. after photo, before analysis */}
       {awaitingDescription && preview && !loading && !result && (
         <div className="w-full bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <img src={preview} alt="Your photo" className="w-full max-h-56 object-cover" />
@@ -288,7 +288,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
             </div>
             <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2">
               <Shield className="w-4 h-4" />
-              <span>Price locked — you'll never pay more than {result.quote.priceDisplay}</span>
+              <span>Price locked. you'll never pay more than {result.quote.priceDisplay}</span>
             </div>
             <button
               onClick={() => navigate("/my-jobs")}
@@ -300,7 +300,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
         </div>
       )}
 
-      {/* Result Card — 1-Tap Book */}
+      {/* Result Card. 1-Tap Book */}
       {result && !booked && (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           {/* Photo preview */}
@@ -323,7 +323,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
               <p className="text-5xl font-bold text-slate-900 mt-1">{result.quote.priceDisplay}</p>
               <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-amber-700">
                 <Shield className="w-4 h-4" />
-                <span>Price Protection — you'll never pay more</span>
+                <span>Price Protection. you'll never pay more</span>
               </div>
             </div>
 
@@ -374,7 +374,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
               ) : (
                 <>
                   <CheckCircle className="w-5 h-5" />
-                  Book Now — {result.quote.priceDisplay}
+                  Book Now. {result.quote.priceDisplay}
                 </>
               )}
             </button>

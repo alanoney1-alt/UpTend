@@ -129,7 +129,7 @@ export default function DocumentScanner() {
                     Upload a document
                   </p>
                   <p className="text-sm text-gray-400">
-                    PDF, JPG, PNG — warranties, receipts, insurance docs
+                    PDF, JPG, PNG. warranties, receipts, insurance docs
                   </p>
                 </div>
               ) : (

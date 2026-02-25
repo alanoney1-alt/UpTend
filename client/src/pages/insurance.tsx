@@ -97,7 +97,7 @@ export default function InsurancePage() {
                     {(partners || []).map((p: any) => (
                       <SelectItem key={p.id} value={p.id}>
                         {p.name} ({p.type.replace(/_/g, " ")})
-                        {p.discountPercent > 0 && ` — ${p.discountPercent}% off`}
+                        {p.discountPercent > 0 && `. ${p.discountPercent}% off`}
                       </SelectItem>
                     ))}
                   </SelectContent>

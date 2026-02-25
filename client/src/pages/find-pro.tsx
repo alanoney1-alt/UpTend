@@ -116,7 +116,7 @@ function FindProPage() {
         if (Array.isArray(data) && data.length > 0) setPros(data);
       })
       .catch(() => {
-        // API unavailable — empty state shown
+        // API unavailable. empty state shown
       })
       .finally(() => setProsLoading(false));
   }, [serviceFilter, sortBy, availabilityFilter]);
@@ -335,7 +335,7 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
           </div>
         </div>
 
-        {/* Verified badge — prominent */}
+        {/* Verified badge. prominent */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           {pro.isVerified && (
             <Badge className="bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/30 text-[11px] font-semibold gap-1">
@@ -398,7 +398,7 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
               <p className="text-[10px] font-medium text-muted-foreground mt-1">— {pro.reviews[0].customerName}</p>
             </>
           ) : (
-            <p className="text-[11px] text-muted-foreground italic">{t("findpro.no_reviews_yet", "New to UpTend — book to be their first reviewer!")}</p>
+            <p className="text-[11px] text-muted-foreground italic">{t("findpro.no_reviews_yet", "New to UpTend. book to be their first reviewer!")}</p>
           )}
         </div>
 
@@ -442,7 +442,7 @@ function ProProfileModal({ pro, onClose, onBook }: { pro: ProProfile; onClose: (
                 const since = new Date(pro.memberSince);
                 const now = new Date();
                 const months = Math.max(0, (now.getFullYear() - since.getFullYear()) * 12 + (now.getMonth() - since.getMonth()));
-                return months > 0 ? ` -- ${months} ${months === 1 ? "month" : "months"} on UpTend` : "";
+                return months > 0 ? ` | ${months} ${months === 1 ? "month" : "months"} on UpTend` : "";
               })()}
             </p>
           </div>

@@ -6,7 +6,7 @@ export default function Accessibility() {
     <LegalPage title="Accessibility Statement" icon={<PersonStanding className="w-12 h-12" />} lastUpdated="February 19, 2026">
       <div dangerouslySetInnerHTML={{ __html: `
 
-<strong>UPYCK, Inc. d/b/a UpTend — Accessibility Statement</strong>
+<strong>UPYCK, Inc. d/b/a UpTend. Accessibility Statement</strong>
 <strong>Effective Date: February 19, 2026</strong>
 
 <h2>1. Our Commitment</h2>
@@ -30,10 +30,10 @@ export default function Accessibility() {
 
 <p>While we strive for full WCAG 2.1 AA compliance, some areas of the Platform may have limitations:</p>
 
-<p>(a) <strong>AI-generated content</strong> — Responses from Mr. George and Home DNA Scan reports are dynamically generated and may not always meet all accessibility standards;</p>
-<p>(b) <strong>Third-party integrations</strong> — Payment forms (Stripe), maps, and other third-party components may have their own accessibility limitations outside our control;</p>
-<p>(c) <strong>User-submitted content</strong> — Photos, reviews, and other user-generated content may lack alternative text or other accessibility features;</p>
-<p>(d) <strong>Real-time features</strong> — Live location tracking and real-time notifications may present challenges for some assistive technologies.</p>
+<p>(a) <strong>AI-generated content</strong>. Responses from Mr. George and Home DNA Scan reports are dynamically generated and may not always meet all accessibility standards;</p>
+<p>(b) <strong>Third-party integrations</strong>. Payment forms (Stripe), maps, and other third-party components may have their own accessibility limitations outside our control;</p>
+<p>(c) <strong>User-submitted content</strong>. Photos, reviews, and other user-generated content may lack alternative text or other accessibility features;</p>
+<p>(d) <strong>Real-time features</strong>. Live location tracking and real-time notifications may present challenges for some assistive technologies.</p>
 
 <p>We are actively working to address these limitations.</p>
 
