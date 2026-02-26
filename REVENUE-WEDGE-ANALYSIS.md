@@ -411,28 +411,69 @@ Every new home built is a new homeowner who needs ongoing services:
 
 ### Method 1: Direct Recruitment (Without Business Partnership)
 
-**Acquisition Channels and Costs**
+**PAID Acquisition Channels**
 
 | Channel | Monthly Spend | Leads/Month | Conversion Rate | Pros Acquired/Month | Cost Per Pro |
 |---|---|---|---|---|---|
 | Indeed/ZipRecruiter job posts | $800 | 60 | 12% | 7 | $114 |
-| Facebook/Instagram ads | $600 | 45 | 8% | 4 | $150 |
+| Facebook/Instagram ads (geo-targeted Orlando) | $600 | 45 | 8% | 4 | $150 |
+| Google Ads (service keywords) | $400 | 30 | 10% | 3 | $133 |
 | Craigslist/local classifieds | $100 | 20 | 15% | 3 | $33 |
-| Field recruitment (job sites, supply stores) | $200 | 10 | 30% | 3 | $67 |
-| Pro referral program ($50 bonus) | $250 | 8 | 50% | 4 | $63 |
-| **Total** | **$1,950** | **143** | **15% avg** | **21** | **$93 avg** |
+| **Paid subtotal** | **$1,900** | **155** | **11% avg** | **17** | **$112 avg** |
 
-**Onboarding Costs Per Pro**
+**ORGANIC Acquisition Channels (Zero Ad Spend)**
+
+| Channel | Monthly Effort (hrs) | Leads/Month | Conversion Rate | Pros Acquired/Month | Effective Cost Per Pro |
+|---|---|---|---|---|---|
+| Nextdoor community posts | 2 hrs | 15 | 20% | 3 | $0 (time only) |
+| Facebook Groups (Orlando handyman, cleaning, etc.) | 3 hrs | 20 | 15% | 3 | $0 (time only) |
+| Field recruitment (Home Depot, Lowe's, job sites) | 8 hrs | 12 | 30% | 4 | $50 (gas, materials) |
+| Pro referral program ($25/verified pro) | 1 hr | 8 | 50% | 4 | $25 (referral bonus) |
+| George AI in-app recruitment (pros using site as customers) | 0 hrs | 5 | 25% | 1 | $0 (automated) |
+| Local trade school/vocational partnerships | 2 hrs | 6 | 35% | 2 | $0 (time only) |
+| Church/community org outreach | 2 hrs | 8 | 20% | 2 | $0 (time only) |
+| Existing customer "bring your pro" ($25 credit) | 0 hrs | 4 | 60% | 2 | $25 (credit) |
+| TikTok/IG organic content ("day in the life" pro content) | 3 hrs | 10 | 10% | 1 | $0 (time only) |
+| Word of mouth (active pros telling other pros) | 0 hrs | 6 | 40% | 2 | $0 (natural) |
+| **Organic subtotal** | **21 hrs** | **94** | **26% avg** | **24** | **$10 avg** |
+
+**BLENDED Channel Mix (Recommended: 60% Organic / 40% Paid)**
+
+| Mix | Pros/Month | Blended CAC (before onboarding) | Notes |
+|---|---|---|---|
+| 100% Paid | 17 | $112 | Scales fast, expensive, lower quality leads |
+| 100% Organic | 24 | $10 | Slow to scale, high quality, time-intensive |
+| 60/40 Organic/Paid (recommended) | 21 | $51 | Best balance of cost and scale |
+| 80/20 Organic/Paid (bootstrap mode) | 23 | $30 | Ideal for first 6 months, lean budget |
+
+**Onboarding Costs Per Pro (applies to all channels)**
 
 | Item | Cost |
 |---|---|
-| Background check | $35 |
+| Background check (Certn) | $35 |
 | Insurance verification | $15 |
-| Platform onboarding (staff time) | $50 |
-| Welcome kit / branded materials | $25 |
-| **Total onboarding** | **$125** |
+| Platform onboarding (staff time, 1 hr) | $25 |
+| Welcome kit / branded materials | $0 (digital only at launch) |
+| **Total onboarding** | **$75** |
 
-**Total Cost Per Pro (Direct): $218**
+**Total Cost Per Pro by Strategy**
+
+| Strategy | Acquisition | Onboarding | Total | Break-Even (jobs) |
+|---|---|---|---|---|
+| Paid only | $112 | $75 | $187 | 3.7 jobs |
+| Organic only | $10 | $75 | $85 | 1.7 jobs |
+| 60/40 blend (recommended) | $51 | $75 | $126 | 2.5 jobs |
+| 80/20 bootstrap | $30 | $75 | $105 | 2.1 jobs |
+| Business Partnership | $20 | $15 | $35 | 0.7 jobs |
+
+**Why Organic Channels Work for UpTend**
+
+1. **"Pros keep 85%"** is a viral message. Every pro who hears it tells other pros. Traditional platforms take 30-50%.
+2. **No lead fees** differentiates from Thumbtack/Angi. Pros actively search for alternatives and share in trade groups.
+3. **Nextdoor has highest intent** for local service pros. Orlando Nextdoor neighborhoods are active with service recommendations.
+4. **Field recruitment at supply stores** catches pros where they already are. A flyer at Home Depot Pro Desk or a conversation at the paint counter costs nothing.
+5. **"Bring your pro" program** turns every customer into a recruiter. Customer gets $25 credit, pro gets onboarded. Both sides win.
+6. **Trade school partnerships** create a pipeline of newly certified pros looking for their first clients. UpTend becomes their launch platform.
 
 **Time to First Job**
 
