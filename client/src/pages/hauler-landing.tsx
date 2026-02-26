@@ -58,7 +58,7 @@ export default function HaulerLanding() {
             </h1>
             <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-4" data-testid="text-pro-subheadline">
               UpTend matches you with real jobs, pays you fairly, and automatically builds your verified track record.
-              5 service verticals. One transparent platform.
+              11 service verticals. One transparent platform.
             </p>
             <p className="text-sm font-semibold text-orange-400 mb-10" data-testid="text-pro-hook">
               Avg. Orlando Pro Earns $1,200/Week.

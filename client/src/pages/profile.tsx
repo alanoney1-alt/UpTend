@@ -786,7 +786,7 @@ export default function Profile() {
 
       <main className="max-w-2xl mx-auto px-4 pb-12">
         <div className="flex justify-center mb-6">
-          <Logo className="w-10 h-10" textClassName="text-xl" />
+          <Logo className="w-10 h-10" textClassName="text-xl" variant="light" />
         </div>
 
         <h1 className="text-2xl font-bold text-white text-center mb-8">My Profile</h1>
