@@ -31,6 +31,7 @@ interface ServiceData {
   whyUpTend: string[];
   icon: React.ElementType;
   heroGradient: string;
+  heroImage?: string;
   esgImpact?: string;
 }
 
@@ -41,6 +42,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "No Task Too Small",
     icon: Wrench,
     heroGradient: "from-orange-600 to-red-500",
+    heroImage: "/images/site/service-handyman.webp",
     whatWeDo: [
       "Our handyman services cover all the small repairs and installations that keep your home functioning smoothly. From TV mounting and furniture assembly to drywall patching, light fixture installation, and door adjustments, we handle the tasks that most contractors consider too small, but that make a big difference in your daily life.",
       "Every job includes a thorough assessment before we start, professional-grade tools and materials, and before/after photo documentation. We work efficiently, respect your home, and clean up completely when we're done. Same-day availability means those nagging repairs get handled fast."
@@ -83,6 +85,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Junk removal done responsibly. 92% diverted from landfills.",
     icon: Recycle,
     heroGradient: "from-green-600 to-emerald-500",
+    heroImage: "/images/site/service-junk-removal.webp",
     whatWeDo: [
       "Your unwanted items are resources, not trash. UpTend's junk removal service recovers your space while protecting your property and the environment through our verified circular economy system. Before we touch anything, we conduct a 360° Home DNA Scan to document your property's condition, protecting you from any disputes.",
       "We don't just haul. We sort. Every item is evaluated for donation, recycling, or responsible disposal. You receive a verified Impact Report showing exactly where your items went and the environmental impact of diverting them from landfills. For property managers and commercial clients, we provide ESG compliance documentation that proves your commitment to sustainability."
@@ -123,6 +126,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Reclaim Your Space",
     icon: Warehouse,
     heroGradient: "from-teal-600 to-cyan-500",
+    heroImage: "/images/site/service-garage-cleanout.webp",
     whatWeDo: [
       "A full garage cleanout is more than just hauling. It's a complete transformation from cluttered to clean. Our Pros work with you to sort everything in your garage into keep, donate, recycle, or haul categories. We handle the heavy lifting, coordinate donations with local charities, and ensure recyclable materials are properly processed.",
       "After removal, we sweep the garage clean and provide a digital inventory of items you're keeping, making it easy to find what you need later. Whether you're preparing for a move, reclaiming space to actually park your car, or just tired of the clutter, we handle the entire process in a single visit."
@@ -164,6 +168,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Your Muscle on Demand",
     icon: Users,
     heroGradient: "from-violet-600 to-purple-500",
+    heroImage: "/images/site/service-moving-labor.webp",
     whatWeDo: [
       "Moving labor when you need it, how you need it. You rent the truck or pod. We supply the experienced manpower, dollies, hand trucks, and shrink wrap. Our Pros are trained in proper lifting techniques, furniture handling, and damage prevention, so your belongings stay safe and your back stays healthy.",
       "Whether you're loading a truck for a DIY move, unloading a storage pod, rearranging heavy furniture within your home, or need help with furniture assembly and disassembly, our hourly labor service gives you the muscle and expertise without the commitment of a full moving company. Perfect for students, downsizers, and anyone who wants to save money on the truck rental while getting professional help with the heavy lifting."
@@ -205,6 +210,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Spotless Homes. Verified Clean.",
     icon: Sparkles,
     heroGradient: "from-cyan-600 to-blue-500",
+    heroImage: "/images/site/service-home-cleaning.webp",
     whatWeDo: [
       "Professional home cleaning with room-by-room checklists and before/after photo verification. Our Pros tackle kitchens, bathrooms, bedrooms, and living areas with systematic attention to detail: dusting, vacuuming, mopping, sanitizing surfaces, and leaving your home spotless.",
       "Choose from standard cleaning for regular maintenance, deep cleaning for seasonal or move-in/move-out situations, or recurring plans where you get a dedicated Pro who learns your home and preferences. All cleaning supplies are included, and eco-friendly options are available for clients with sensitivities or environmental concerns."
@@ -247,6 +253,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Deep Clean Carpets. Certified Methods.",
     icon: SprayCan,
     heroGradient: "from-pink-600 to-fuchsia-500",
+    heroImage: "/images/site/service-carpet-cleaning.webp",
     whatWeDo: [
       "Professional carpet and upholstery cleaning using IICRC-certified methods. We use hot water extraction (steam cleaning) as our primary method, which deep-cleans fibers, removes embedded dirt and allergens, and sanitizes your carpets without harsh chemicals. For commercial spaces or low-moisture needs, we also offer encapsulation cleaning.",
       "Pet owners get specialized treatment options that eliminate odors at the source, not just masking smells, but breaking down the organic compounds that cause them. Scotchgard protection is available as an add-on to extend the life of your cleaning and make future spills easier to clean. We offer whole-house packages for 3-5 bedroom homes, making it affordable to refresh your entire space."
@@ -289,6 +296,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Professional Lawn Care. Your Curb Appeal, Maintained.",
     icon: Leaf,
     heroGradient: "from-lime-600 to-green-500",
+    heroImage: "/images/site/service-landscaping.webp",
     whatWeDo: [
       "Professional lawn care and landscaping services for Orlando-area properties up to ½ acre. We offer one-time mowing for quick curb appeal before a showing or event, as well as recurring monthly plans that keep your property looking sharp year-round. Our Mow & Go service includes mowing, edging, trimming, and blowing. The essentials that keep your lawn tidy.",
       "For clients who want more comprehensive care, our Full Service plan adds weed control, hedge trimming, and seasonal adjustments. The Premium plan includes everything plus flowers, mulch, and basic irrigation maintenance, transforming your landscape into a neighborhood showpiece. All plans include debris removal. We haul the clippings, you enjoy the results."
@@ -329,6 +337,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Prevent Water Damage Before It Starts",
     icon: CloudRain,
     heroGradient: "from-amber-600 to-yellow-500",
+    heroImage: "/images/site/service-gutter-cleaning.webp",
     whatWeDo: [
       "Complete gutter and downspout cleaning that prevents water damage before it starts. In Central Florida, debris from oak trees, pine needles, and seasonal storms can clog gutters fast, leading to overflow, foundation erosion, and costly water intrusion. Our Pros remove all debris from your gutters, flush every downspout to ensure proper flow, and air-blow your roof line to prevent immediate re-clogging.",
       "After cleaning, we bag and haul all debris, leaving your property spotless. We also inspect gutter guards (if installed) and provide recommendations for any repairs or improvements needed. Regular gutter maintenance is one of the most cost-effective ways to protect your home's foundation, siding, and landscaping from water damage."
@@ -369,6 +378,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Curb Appeal, Restored in Hours",
     icon: Droplets,
     heroGradient: "from-blue-600 to-cyan-500",
+    heroImage: "/images/site/service-pressure-washing.webp",
     whatWeDo: [
       "Industrial-grade pressure washing for driveways, patios, walkways, pool decks, and home exteriors. Central Florida's humidity and heat create the perfect environment for mold, mildew, algae, and dirt buildup that can make your property look neglected, even if it's well-maintained. Our Pros use professional equipment with adjustable pressure settings to safely clean each surface without damage.",
       "Every job includes chemical pre-treatment to break down organic growth before pressure washing, ensuring deep cleaning and longer-lasting results. We also offer surface sealing as an add-on to protect your investment and keep surfaces cleaner longer. Before/after photos document the transformation. You'll be amazed at how much brighter and cleaner your property looks."
@@ -409,6 +419,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Crystal Clear Pools, Maintained Weekly",
     icon: Waves,
     heroGradient: "from-sky-600 to-blue-500",
+    heroImage: "/images/site/service-pool-cleaning.webp",
     whatWeDo: [
       "Professional pool maintenance and cleaning service that keeps your pool sparkling clean and safe to swim in year-round. Our weekly service includes skimming the surface, vacuuming the floor, brushing walls and tile, chemical testing and balancing, filter cleaning, and pump basket cleaning. Your dedicated Pro learns your pool's specific needs (circulation patterns, problem areas, and seasonal adjustments), delivering consistent results.",
       "We provide monthly detailed service reports so you can track chemical levels, equipment health, and any issues that need attention. For new pool owners or those who've struggled with green pools in the past, our Pros bring the expertise to keep your water chemistry balanced and your equipment running efficiently."
@@ -450,6 +461,7 @@ const serviceData: Record<string, ServiceData> = {
     tagline: "Tear It Out. Haul It Off.",
     icon: Hammer,
     heroGradient: "from-red-600 to-rose-500",
+    heroImage: "/images/site/service-demolition.webp",
     whatWeDo: [
       "Light demolition services for residential renovation prep and structure removal. We handle cabinets, countertops, sheds, fencing, decks, and non-load-bearing walls, tearing out the old so you can build the new. Our Pros work carefully to protect surrounding structures while efficiently demolishing the targeted areas.",
       "All debris is hauled away in the same visit, and we sort materials for recycling wherever possible. Metal, wood, and concrete are diverted from landfills when feasible. Whether you're preparing for a kitchen remodel, clearing space for a new deck, or removing an old shed, we handle the demo, cleanup, and haul-away in one efficient visit."
@@ -505,8 +517,18 @@ export default function ServiceDetail() {
       <Header />
 
       {/* Hero */}
-      <section className="pt-28 pb-16 px-6 bg-muted/50 border-b border-border">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="relative pt-28 pb-16 px-6 border-b border-border overflow-hidden">
+        {service.heroImage ? (
+          <>
+            <div className="absolute inset-0">
+              <img src={service.heroImage} alt={service.name} className="w-full h-full object-cover" loading="eager" />
+              <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
+            </div>
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-muted/50" />
+        )}
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="flex justify-center mb-6">
             <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${service.heroGradient} flex items-center justify-center`}>
               <service.icon className="w-10 h-10 text-white" />

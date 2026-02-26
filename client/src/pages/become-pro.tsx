@@ -75,7 +75,12 @@ export default function BecomePro() {
       </div>
 
       <main id="main-content">
-      <section className="bg-slate-950 pt-28 pb-24 px-4 md:px-6 text-center" data-testid="section-pro-hero">
+      <section className="relative bg-slate-950 pt-28 pb-24 px-4 md:px-6 text-center overflow-hidden" data-testid="section-pro-hero">
+        <div className="absolute inset-0">
+          <img src="/images/site/become-pro-hero.webp" alt="" className="w-full h-full object-cover opacity-30" loading="eager" />
+          <div className="absolute inset-0 bg-slate-950/60" />
+        </div>
+        <div className="relative z-10">
         <h1 className="text-4xl md:text-6xl font-black text-white mb-6" data-testid="text-pro-headline">
           {t("become_pro.hero_line1")} <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400">
@@ -96,6 +101,7 @@ export default function BecomePro() {
               {t("become_pro.view_credentials")}
             </Button>
           </Link>
+        </div>
         </div>
       </section>
 
