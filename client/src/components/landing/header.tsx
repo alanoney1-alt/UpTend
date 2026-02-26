@@ -143,6 +143,11 @@ export function Header() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
+                <Link href="/veterans" className="cursor-pointer" data-testid="link-veterans">
+                  Veteran Pros
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link href="/contact" className="cursor-pointer" data-testid="link-contact">
                   Contact
                 </Link>
@@ -297,6 +302,9 @@ export function Header() {
             </Link>
             <Link href="/become-pro" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-become-pro-mobile">Become a Pro</span>
+            </Link>
+            <Link href="/veterans" onClick={closeMenu}>
+              <span className="block p-2" data-testid="link-veterans-mobile">Veteran Pros</span>
             </Link>
             <Link href="/blog" onClick={closeMenu}>
               <span className="block p-2" data-testid="link-blog-mobile">Blog</span>

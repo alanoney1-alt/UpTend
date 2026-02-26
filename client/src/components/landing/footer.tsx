@@ -126,6 +126,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/veterans" className="hover:text-primary transition-colors cursor-pointer text-emerald-400 font-medium" data-testid="link-footer-veterans">
+                  Veteran Pros
+                </Link>
+              </li>
+              <li>
                 <Link href="/home-dna-scan" className="hover:text-primary transition-colors cursor-pointer text-[#F47C20] font-medium" data-testid="link-footer-home-scan">
                   Home DNA Scan
                 </Link>
