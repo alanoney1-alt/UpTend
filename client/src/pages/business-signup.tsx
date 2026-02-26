@@ -154,12 +154,12 @@ export default function BusinessSignup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+    <div className="min-h-screen bg-slate-950 text-white">
       {/* Header */}
-      <div className="bg-slate-900 text-white py-4 px-6">
+      <div className="border-b border-slate-800 py-4 px-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/">
-            <Logo className="w-8 h-8" textClassName="text-xl" />
+            <Logo variant="light" className="w-8 h-8" textClassName="text-xl" />
           </Link>
           <span className="text-sm text-slate-400">Business Partner Signup</span>
         </div>
@@ -168,7 +168,7 @@ export default function BusinessSignup() {
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Progress */}
         <div className="mb-8">
-          <div className="flex justify-between text-xs text-slate-500 mb-2">
+          <div className="flex justify-between text-xs text-slate-400 mb-2">
             <span>Step {step + 1} of {STEPS.length}</span>
             <span>{STEPS[step]}</span>
           </div>
@@ -178,24 +178,24 @@ export default function BusinessSignup() {
         {/* Hero (step 0 only) */}
         {step === 0 && (
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-3">Grow Your Business with UpTend</h1>
-            <div className="grid grid-cols-2 gap-3 max-w-md mx-auto text-sm text-slate-600">
-              <div className="bg-white rounded-lg p-3 border">We bring you booked, AI-scoped jobs</div>
-              <div className="bg-white rounded-lg p-3 border">Your team keeps 85% of every job</div>
-              <div className="bg-white rounded-lg p-3 border">No lead fees. No bidding. Guaranteed payment.</div>
-              <div className="bg-white rounded-lg p-3 border">Employees can also work independently</div>
+            <h1 className="text-3xl font-bold text-white mb-3">Grow Your Business with UpTend</h1>
+            <div className="grid grid-cols-2 gap-3 max-w-md mx-auto text-sm text-slate-300">
+              <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">We bring you booked, AI-scoped jobs</div>
+              <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">Your team keeps 85% of every job</div>
+              <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">No lead fees. No bidding. Guaranteed payment.</div>
+              <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">Employees can also work independently</div>
             </div>
           </div>
         )}
 
-        <Card>
+        <Card className="bg-slate-900/50 border-slate-800">
           <CardContent className="p-6">
             {/* Step 0: Company Info */}
             {step === 0 && (
               <div className="space-y-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Building2 className="w-5 h-5 text-[#ea580c]" />
-                  <h2 className="text-lg font-bold">Company Information</h2>
+                  <h2 className="text-lg font-bold text-white">Company Information</h2>
                 </div>
                 <div>
                   <Label>Company Name</Label>
@@ -245,10 +245,10 @@ export default function BusinessSignup() {
                   <CheckCircle className="w-5 h-5 text-[#ea580c]" />
                   <h2 className="text-lg font-bold">Services You Offer</h2>
                 </div>
-                <p className="text-sm text-slate-500">Select all services your team can perform.</p>
+                <p className="text-sm text-slate-400">Select all services your team can perform.</p>
                 <div className="grid grid-cols-2 gap-3">
                   {SERVICE_OPTIONS.filter(s => s.key !== "home_scan").map(svc => (
-                    <label key={svc.key} className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition ${serviceTypes.includes(svc.key) ? "bg-orange-50 border-[#ea580c]" : "bg-white hover:bg-slate-50"}`}>
+                    <label key={svc.key} className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition ${serviceTypes.includes(svc.key) ? "bg-orange-500/10 border-orange-500" : "bg-slate-900/50 border-slate-700 hover:bg-slate-800"}`}>
                       <Checkbox checked={serviceTypes.includes(svc.key)} onCheckedChange={() => toggleService(svc.key)} />
                       <span className="text-sm">{svc.label}</span>
                     </label>
@@ -264,7 +264,7 @@ export default function BusinessSignup() {
                   <Shield className="w-5 h-5 text-[#ea580c]" />
                   <h2 className="text-lg font-bold">Insurance Verification</h2>
                 </div>
-                <p className="text-sm text-slate-500">Your insurance covers all employees. They are auto-verified when added.</p>
+                <p className="text-sm text-slate-400">Your insurance covers all employees. They are auto-verified when added.</p>
                 <div>
                   <Label>Insurance Provider</Label>
                   <Input value={insuranceProvider} onChange={e => setInsuranceProvider(e.target.value)} placeholder="State Farm, Allstate, etc." />
@@ -287,7 +287,7 @@ export default function BusinessSignup() {
                   <DollarSign className="w-5 h-5 text-[#ea580c]" />
                   <h2 className="text-lg font-bold">Set Company Rates</h2>
                 </div>
-                <p className="text-sm text-slate-500">Set rates for your selected services. Your team keeps 85%.</p>
+                <p className="text-sm text-slate-400">Set rates for your selected services. Your team keeps 85%.</p>
                 {serviceTypes.map(st => {
                   const range = SERVICE_PRICE_RANGES[st];
                   if (!range) return null;
@@ -322,7 +322,7 @@ export default function BusinessSignup() {
                   <Users className="w-5 h-5 text-[#ea580c]" />
                   <h2 className="text-lg font-bold">Add Your Team</h2>
                 </div>
-                <p className="text-sm text-slate-500">Add employees now or later from your dashboard. They will receive login credentials by email.</p>
+                <p className="text-sm text-slate-400">Add employees now or later from your dashboard. They will receive login credentials by email.</p>
                 {employees.map((emp, i) => (
                   <div key={i} className="p-4 border rounded-lg space-y-3 relative">
                     {employees.length > 1 && (
@@ -361,13 +361,13 @@ export default function BusinessSignup() {
             {/* Step 6: Confirmation */}
             {step === 6 && (
               <div className="space-y-4 text-center">
-                <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
+                <CheckCircle className="w-16 h-16 text-green-400 mx-auto" />
                 <h2 className="text-xl font-bold">Ready to Go</h2>
-                <p className="text-slate-600">
+                <p className="text-slate-300">
                   Your account for <strong>{companyName}</strong> is ready to be created with{" "}
                   {employees.filter(e => e.firstName && e.email).length} employee(s).
                 </p>
-                <div className="bg-amber-50 rounded-lg p-4 text-sm text-left space-y-2">
+                <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700 text-sm text-left space-y-2">
                   <p>-- Your employees will receive login credentials by email</p>
                   <p>-- They are auto-verified under your company insurance</p>
                   <p>-- You can manage rates, employees, and view analytics from your dashboard</p>
@@ -390,7 +390,7 @@ export default function BusinessSignup() {
                 <Button
                   onClick={() => setStep(step + 1)}
                   disabled={!canNext()}
-                  className="bg-[#ea580c] hover:bg-[#c2410c] text-white"
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
                 >
                   Next <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
@@ -398,7 +398,7 @@ export default function BusinessSignup() {
                 <Button
                   onClick={() => registerMutation.mutate()}
                   disabled={registerMutation.isPending}
-                  className="bg-[#ea580c] hover:bg-[#c2410c] text-white"
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
                 >
                   {registerMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                   Create Account

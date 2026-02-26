@@ -974,7 +974,7 @@ export default function BusinessOnboarding() {
   const stepRenderers = [renderStep0, renderStep1, renderStep2, renderStep3, renderStep4, renderStep5, renderStep6];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50/50 to-white dark:from-gray-950 dark:to-gray-900">
+    <div className="min-h-screen bg-slate-950 text-white">
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
