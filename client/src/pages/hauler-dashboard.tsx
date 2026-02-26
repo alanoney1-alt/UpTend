@@ -3888,8 +3888,8 @@ export default function ProDashboard() {
                   {currentPro?.profile?.companyName || "Pro"}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-status-online" />
-                  Online
+                  <span className={`w-2 h-2 rounded-full ${isAvailable ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
+                  {isAvailable ? "Online" : "Offline"}
                 </p>
               </div>
             </div>
