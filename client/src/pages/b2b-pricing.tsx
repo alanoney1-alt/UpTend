@@ -1,134 +1,137 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Check, Building2, Home, HardHat, Landmark, Star, ArrowRight, HelpCircle, X, Zap } from "lucide-react";
-
-type Plan = {
-  id: string;
-  name: string;
-  segment: string;
-  tier: string;
-  pricePerUnit: number;
-  unitType: string;
-  maxUnits: number | null;
-  features: string[];
-  transactionFeePct: number;
-};
+import { Check, Building2, Home, HardHat, Landmark, ArrowRight, HelpCircle, Phone, Calendar, Zap } from "lucide-react";
 
 const segmentConfig = {
-  hoa: { label: "HOA", icon: Home, unit: "unit", color: "bg-orange-500" },
-  pm: { label: "Property Management", icon: Building2, unit: "door", color: "bg-amber-500" },
-  construction: { label: "Construction", icon: HardHat, unit: "project", color: "bg-orange-600" },
-  government: { label: "Government", icon: Landmark, unit: "", color: "bg-amber-600" },
+  hoa: { label: "HOA", icon: Home, color: "bg-orange-500" },
+  pm: { label: "Property Management", icon: Building2, color: "bg-amber-500" },
+  construction: { label: "Construction", icon: HardHat, color: "bg-orange-600" },
+  government: { label: "Government", icon: Landmark, color: "bg-amber-600" },
 };
 
-function formatPrice(plan: Plan) {
-  if (plan.unitType === "flat_yearly") return `$${plan.pricePerUnit.toLocaleString()}/yr`;
-  if (plan.unitType === "flat_monthly") return `$${plan.pricePerUnit}/mo`;
-  return `$${plan.pricePerUnit}`;
-}
-
-function formatUnit(plan: Plan) {
-  if (plan.unitType === "flat_yearly" || plan.unitType === "flat_monthly") return "";
-  return `/${plan.unitType}/mo`;
-}
-
-function PlanCard({ plan, featured }: { plan: Plan; featured?: boolean }) {
-  return (
-    <Card className={`relative flex flex-col ${featured ? "border-orange-500 border-2 shadow-xl scale-105" : "border-gray-200"}`}>
-      {featured && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <Badge className="bg-orange-500 text-white"><Star className="w-3 h-3 mr-1" />Most Popular</Badge>
-        </div>
-      )}
-      <CardHeader className="text-center pb-2">
-        <CardDescription className="uppercase tracking-wide text-xs font-semibold text-orange-600">{plan.tier}</CardDescription>
-        <CardTitle className="text-3xl font-bold mt-2">
-          {formatPrice(plan)}
-          <span className="text-base font-normal text-gray-500">{formatUnit(plan)}</span>
-        </CardTitle>
-        <p className="text-sm text-gray-500 mt-1">
-          {plan.maxUnits ? `Up to ${plan.maxUnits.toLocaleString()} ${plan.unitType === "flat_monthly" ? "projects" : plan.unitType + "s"}` : "Unlimited"}
-        </p>
-      </CardHeader>
-      <CardContent className="flex-1">
-        <ul className="space-y-2">
-          {(plan.features as string[]).map((f, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm">
-              <Check className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
-              <span>{f}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="text-xs text-gray-400 mt-4">{plan.transactionFeePct}% transaction fee on booked services</p>
-      </CardContent>
-      <CardFooter className="flex flex-col gap-2">
-        <a href="/business/onboarding">
-          <Button className={`w-full ${featured ? "bg-orange-500 hover:bg-orange-600" : "bg-gray-900 hover:bg-gray-800"}`}>
-            Start Free Trial <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
-        </a>
-        {plan.tier === "enterprise" && (
-          <Button variant="outline" className="w-full border-orange-500 text-orange-600 hover:bg-orange-50">
-            Contact Sales
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
-  );
-}
+const segmentDetails: Record<string, { headline: string; description: string; features: string[]; cta: string }> = {
+  hoa: {
+    headline: "Custom Plans for HOA Communities",
+    description: "Every community is different. We build a pricing schedule based on your property count, service needs, and frequency. One conversation, one custom plan, complete workforce management.",
+    features: [
+      "AI-generated pricing schedules based on your exact needs",
+      "Violation-to-service pipeline: issue a notice, book a fix in one tap",
+      "Board-ready compliance reports and photo documentation",
+      "Community batch pricing with group discounts up to 10%",
+      "Emergency response protocols for weather events",
+      "Dedicated account manager for your community",
+      "Resident portal for individual service requests",
+      "Budget dashboard with monthly/quarterly breakdowns",
+    ],
+    cta: "Get Your Custom HOA Plan",
+  },
+  pm: {
+    headline: "Custom Plans for Property Managers",
+    description: "Whether you manage 10 doors or 10,000, we tailor pricing to your portfolio size, service mix, and maintenance schedules. No cookie-cutter plans.",
+    features: [
+      "Portfolio-wide service scheduling and tracking",
+      "Tenant request management through George AI",
+      "Vendor compliance and insurance verification",
+      "Automated maintenance reminders by property",
+      "Turnover coordination: cleaning, painting, repairs in one workflow",
+      "Integration with AppFolio, Buildium, Yardi, RentManager",
+      "Real-time job tracking with photo documentation",
+      "Monthly reporting for owners and investors",
+    ],
+    cta: "Get Your Custom PM Plan",
+  },
+  construction: {
+    headline: "Custom Plans for Construction Companies",
+    description: "Every project has different needs. We work with your team to build a workforce plan that scales with your jobs, whether you need 2 subs or 200.",
+    features: [
+      "Subcontractor sourcing and vetting",
+      "Project-based workforce allocation",
+      "Safety compliance and certification tracking",
+      "Parts and materials procurement workflow",
+      "Daily job logs with photo documentation",
+      "Integration with Jobber, ServiceTitan, Procore",
+      "Multi-site coordination and scheduling",
+      "Progress billing support and documentation",
+    ],
+    cta: "Get Your Custom Construction Plan",
+  },
+  government: {
+    headline: "Custom Plans for Government Agencies",
+    description: "We hold minority-owned and disabled veteran-owned certifications (SDVOSB). Pricing is structured per contract requirements. Let us respond to your RFP or build a custom scope.",
+    features: [
+      "SBA 8(a) and SDVOSB certified",
+      "GSA Schedule and SAM.gov registered",
+      "Prevailing wage and Davis-Bacon compliance",
+      "Security clearance management for sensitive sites",
+      "Detailed reporting for grant and contract auditing",
+      "Multi-agency coordination capabilities",
+      "Emergency response and disaster recovery teams",
+      "ADA compliance and accessibility services",
+    ],
+    cta: "Request a Government Proposal",
+  },
+};
 
 const faqs = [
+  {
+    q: "How does pricing work?",
+    a: "Every business is different. We build a custom pricing schedule based on your specific needs: property count, service types, frequency, and location. Schedule a call and we will have a proposal ready within 24 hours.",
+  },
   {
     q: "Is this a SaaS product?",
     a: "No. UpTend is Workforce-as-a-Service (WaaS). Unlike traditional SaaS that just gives you software, UpTend provides the actual workforce, tools, compliance, and management layer. You get both the platform and the people to execute.",
   },
   {
-    q: "What's included in the transaction fee?",
-    a: "The 5-8% transaction fee applies to services booked through the UpTend platform. It covers payment processing, insurance verification, quality assurance, and our service guarantee.",
+    q: "Is there a free option?",
+    a: "Yes. Our Independent tier is free forever for up to 10 properties with a 7% transaction fee on booked services. No credit card required.",
   },
   {
-    q: "Can I upgrade or downgrade my plan?",
-    a: "Absolutely. You can change plans at any time. Upgrades take effect immediately, and downgrades apply at the next billing cycle. Your data and history are always preserved.",
+    q: "What about transaction fees?",
+    a: "All plans include a small transaction fee on services booked through the platform. The exact rate depends on your plan and volume. We will walk you through everything on your consultation call.",
   },
   {
-    q: "Is there a free trial?",
-    a: "Yes! All plans come with a 14-day free trial. No credit card required to start. You'll have full access to all features in your selected tier.",
+    q: "Do you offer a pilot program?",
+    a: "Absolutely. We offer a 90-day free pilot so you can test the platform with zero risk. Full access, real results, no commitment until you are ready.",
   },
   {
     q: "Do you offer custom enterprise agreements?",
-    a: "Yes. For large organizations with unique requirements, we offer custom pricing, SLAs, and dedicated support. Contact our sales team to discuss your needs.",
+    a: "Yes. For large organizations with unique requirements, we offer custom pricing, SLAs, and dedicated support. Contact our team to discuss your needs.",
   },
 ];
 
 export default function B2BPricing() {
   const [activeTab, setActiveTab] = useState("hoa");
 
-  const { data: plans = [], isLoading } = useQuery<Plan[]>({
-    queryKey: ["/api/b2b-pricing/plans"],
-  });
-
-  const getSegmentPlans = (segment: string) =>
-    plans.filter((p) => p.segment === segment).sort((a, b) => a.pricePerUnit - b.pricePerUnit);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       {/* Hero */}
       <div className="text-center py-16 px-4">
-        <Badge className="bg-orange-100 text-orange-700 mb-4">B2B Plans</Badge>
+        <Badge className="bg-orange-100 text-orange-700 mb-4">B2B Solutions</Badge>
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
           Workforce-as-a-Service<br />
-          <span className="text-orange-500">for Every Segment</span>
+          <span className="text-orange-500">Built for Your Business</span>
         </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Not just software. a complete workforce management platform with real people, real compliance, and real results. Choose the plan that fits your portfolio.
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+          Not just software. A complete workforce management platform with real people, real compliance, and real results. Every plan is custom-built for your needs.
         </p>
+        <div className="flex gap-4 justify-center flex-wrap">
+          <a href="https://calendly.com" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-lg px-8">
+              <Calendar className="w-5 h-5 mr-2" /> Schedule a Consultation
+            </Button>
+          </a>
+          <a href="tel:4073383342">
+            <Button size="lg" variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50 text-lg px-8">
+              <Phone className="w-5 h-5 mr-2" /> (407) 338-3342
+            </Button>
+          </a>
+        </div>
       </div>
 
-      {/* Independent Tier. Free Entry Point */}
+      {/* Independent Tier: Free Entry Point */}
       <div className="max-w-4xl mx-auto px-4 pb-12">
         <Card className="border-2 border-orange-400 shadow-lg overflow-hidden">
           <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-3 flex items-center gap-2">
@@ -142,25 +145,18 @@ export default function B2BPricing() {
                 <h3 className="text-2xl font-bold text-gray-900">Independent</h3>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-4xl font-bold text-orange-500">$0</span>
-                  <span className="text-gray-500">/month. forever</span>
+                  <span className="text-gray-500">/month, forever</span>
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
                   Manage up to 10 properties with no subscription fees. Pay only a 7% transaction fee when you book a pro.
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {["Book vetted pros", "Track jobs in real-time", "Basic notifications", "Property list & management"].map((f, i) => (
+                {["Book vetted pros", "Track jobs in real-time", "Basic notifications", "Property list and management"].map((f, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm">
                     <Check className="h-4 w-4 text-orange-500 shrink-0" />
                     <span>{f}</span>
                   </div>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-2 pt-1">
-                {["SLA management", "Compliance", "Reports", "CSV import"].map((f, i) => (
-                  <span key={i} className="inline-flex items-center gap-1 text-xs text-gray-400">
-                    <X className="h-3 w-3" />{f}
-                  </span>
                 ))}
               </div>
             </div>
@@ -170,18 +166,18 @@ export default function B2BPricing() {
                   Get Started Free <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </a>
-              <p className="text-xs text-gray-500">1–10 properties • 7% per booking</p>
+              <p className="text-xs text-gray-500">1 to 10 properties, 7% per booking</p>
             </div>
           </div>
         </Card>
 
         <div className="text-center mt-8 mb-2">
-          <p className="text-gray-500 text-sm">Need more? Choose a paid plan below for advanced features and higher limits.</p>
+          <p className="text-gray-500 text-sm">Need more? Every plan above Independent is custom-built for your business.</p>
         </div>
       </div>
 
-      {/* Pricing Tabs */}
-      <div className="max-w-6xl mx-auto px-4 pb-16">
+      {/* Segment Tabs */}
+      <div className="max-w-5xl mx-auto px-4 pb-16">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full max-w-2xl mx-auto mb-10 bg-orange-100">
             {Object.entries(segmentConfig).map(([key, cfg]) => (
@@ -193,29 +189,57 @@ export default function B2BPricing() {
             ))}
           </TabsList>
 
-          {Object.keys(segmentConfig).map((segment) => (
+          {Object.entries(segmentDetails).map(([segment, info]) => (
             <TabsContent key={segment} value={segment}>
-              {isLoading ? (
-                <div className="text-center py-12 text-gray-500">Loading plans...</div>
-              ) : (
-                <div className="grid md:grid-cols-3 gap-6 items-start">
-                  {getSegmentPlans(segment).map((plan, i) => (
-                    <PlanCard key={plan.id} plan={plan} featured={i === 1} />
-                  ))}
-                </div>
-              )}
+              <Card className="border-gray-200 shadow-lg">
+                <CardContent className="p-8 md:p-12">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-4">{info.headline}</h2>
+                  <p className="text-gray-600 text-lg mb-8 max-w-3xl">{info.description}</p>
+
+                  <div className="grid md:grid-cols-2 gap-4 mb-10">
+                    {info.features.map((f, i) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">{f}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-8 text-center">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Ready to see what we can build for you?</h3>
+                    <p className="text-gray-600 mb-6">We will review your needs and deliver a custom pricing proposal within 24 hours.</p>
+                    <div className="flex gap-4 justify-center flex-wrap">
+                      <a href="https://calendly.com" target="_blank" rel="noopener noreferrer">
+                        <Button size="lg" className="bg-orange-500 hover:bg-orange-600">
+                          <Calendar className="w-5 h-5 mr-2" /> {info.cta}
+                        </Button>
+                      </a>
+                      <a href="tel:4073383342">
+                        <Button size="lg" variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50">
+                          <Phone className="w-5 h-5 mr-2" /> Call Us
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
           ))}
         </Tabs>
       </div>
 
-      {/* Transaction Fee Disclosure */}
+      {/* 90-Day Pilot Banner */}
       <div className="max-w-4xl mx-auto px-4 pb-12">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
-          <h3 className="font-semibold text-amber-800 mb-2">Transaction Fee Disclosure</h3>
-          <p className="text-sm text-amber-700">
-            All plans include a 5-8% transaction fee on services booked through the UpTend platform. This covers payment processing, insurance verification, quality assurance, and our service guarantee. Enterprise plans enjoy the lowest rates at 5%.
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-8 text-center">
+          <h3 className="text-xl font-semibold text-amber-800 mb-2">90-Day Free Pilot Program</h3>
+          <p className="text-amber-700 mb-4">
+            Not sure yet? Try UpTend for 90 days with zero risk. Full platform access, real results, no commitment until you are ready.
           </p>
+          <a href="https://calendly.com" target="_blank" rel="noopener noreferrer">
+            <Button className="bg-amber-600 hover:bg-amber-700">
+              Learn About the Pilot <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </a>
         </div>
       </div>
 
@@ -235,21 +259,23 @@ export default function B2BPricing() {
         </div>
       </div>
 
-      {/* CTA */}
+      {/* Bottom CTA */}
       <div className="bg-orange-500 text-white py-16 px-4 text-center">
         <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Operations?</h2>
         <p className="text-orange-100 mb-8 max-w-xl mx-auto">
-          Join hundreds of businesses using UpTend's Workforce-as-a-Service platform. Start your free trial today.
+          Join businesses across Central Florida using UpTend's Workforce-as-a-Service platform. Let us build your custom plan.
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <a href="/business/onboarding">
+          <a href="https://calendly.com" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50">
-              Start Free Trial
+              Schedule a Consultation
             </Button>
           </a>
-          <Button size="lg" variant="outline" className="border-white text-white hover:bg-orange-600">
-            Contact Sales
-          </Button>
+          <a href="tel:4073383342">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-orange-600">
+              (407) 338-3342
+            </Button>
+          </a>
         </div>
       </div>
     </div>

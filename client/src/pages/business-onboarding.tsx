@@ -127,25 +127,17 @@ const UNIT_LABELS: Record<Segment, string> = {
 
 const PLANS: Record<Segment, PlanOption[]> = {
   property_management: [
-    { tier: "independent", name: "Independent", price: "$0", priceNote: "/mo", highlight: true, features: ["1–10 properties", "Book vetted pros", "Track jobs", "Basic notifications", "7% transaction fee only"] },
-    { tier: "starter", name: "Starter", price: "$3", priceNote: "/door/mo", features: ["11–50 doors", "Basic work order management", "Email support", "Standard response times", "Monthly reporting"] },
-    { tier: "pro", name: "Pro", price: "$5", priceNote: "/door/mo", popular: true, features: ["51–200 doors", "Priority pro matching", "Phone & email support", "Custom SLAs", "Real-time tracking", "Weekly reporting", "API access"] },
-    { tier: "enterprise", name: "Enterprise", price: "$8", priceNote: "/door/mo", features: ["200+ doors", "Dedicated account manager", "24/7 priority support", "Custom SLAs & workflows", "Real-time tracking", "Custom reporting", "API access", "White-label options"] },
+    { tier: "independent", name: "Independent", price: "$0", priceNote: "/mo", highlight: true, features: ["1 to 10 properties", "Book vetted pros", "Track jobs", "Basic notifications", "7% transaction fee only"] },
+    { tier: "custom", name: "Custom Plan", price: "Custom", priceNote: "", popular: true, features: ["Tailored to your portfolio size", "Priority pro matching", "Dedicated account manager", "Custom SLAs and workflows", "Real-time tracking and reporting", "API access and integrations", "Schedule a call to get your plan"] },
   ],
   hoa: [
-    { tier: "starter", name: "Starter", price: "$3", priceNote: "/unit/mo", features: ["Up to 100 units", "Basic work order management", "Email support", "Community portal", "Monthly reporting"] },
-    { tier: "pro", name: "Pro", price: "$5", priceNote: "/unit/mo", popular: true, features: ["Up to 300 units", "Priority pro matching", "Phone & email support", "Violation tracking", "Real-time tracking", "Weekly reporting", "Resident portal"] },
-    { tier: "enterprise", name: "Enterprise", price: "$8", priceNote: "/unit/mo", features: ["Unlimited units", "Dedicated account manager", "24/7 priority support", "Custom workflows", "Board reporting dashboard", "API access", "White-label portal"] },
+    { tier: "custom", name: "Custom Plan", price: "Custom", priceNote: "", popular: true, features: ["Tailored to your community size", "Violation-to-service pipeline", "Board reporting dashboard", "Resident portal", "Real-time tracking", "Community batch pricing", "Schedule a call to get your plan"] },
   ],
   construction: [
-    { tier: "starter", name: "Starter", price: "$299", priceNote: "/mo", features: ["Up to 5 active projects", "Basic scheduling", "Email support", "Standard response times", "Monthly reporting"] },
-    { tier: "pro", name: "Pro", price: "$599", priceNote: "/mo", popular: true, features: ["Up to 20 active projects", "Priority scheduling", "Phone & email support", "Material tracking", "Real-time updates", "Weekly reporting"] },
-    { tier: "enterprise", name: "Enterprise", price: "$999", priceNote: "/mo", features: ["Unlimited projects", "Dedicated account manager", "24/7 support", "Full material tracking", "Custom integrations", "API access", "Compliance tools"] },
+    { tier: "custom", name: "Custom Plan", price: "Custom", priceNote: "", popular: true, features: ["Tailored to your project needs", "Subcontractor sourcing and vetting", "Material tracking and procurement", "Safety compliance tools", "Real-time project updates", "Multi-site coordination", "Schedule a call to get your plan"] },
   ],
   government: [
-    { tier: "starter", name: "Starter", price: "$15K", priceNote: "/yr", features: ["Up to 10 facilities", "Basic work management", "Email support", "Compliance tracking", "Quarterly reporting"] },
-    { tier: "pro", name: "Pro", price: "$35K", priceNote: "/yr", popular: true, features: ["Up to 50 facilities", "Priority response", "Phone & email support", "Full compliance suite", "Real-time tracking", "Monthly reporting", "Audit trail"] },
-    { tier: "enterprise", name: "Enterprise", price: "$75K", priceNote: "/yr", features: ["Unlimited facilities", "Dedicated team", "24/7 support", "Custom compliance", "Integrations", "API access", "On-site training"] },
+    { tier: "custom", name: "Custom Plan", price: "Custom", priceNote: "", popular: true, features: ["Tailored to contract requirements", "SDVOSB and 8(a) certified", "Prevailing wage compliance", "Full audit trail and reporting", "Security clearance management", "24/7 emergency response", "Request a proposal to get started"] },
   ],
 };
 
