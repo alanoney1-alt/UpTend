@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Header } from "@/components/landing/header";
+import { Badge } from "@/components/ui/badge";
 import {
   Building2, Users, DollarSign, Shield, TrendingUp,
   CheckCircle, ArrowRight, BarChart3, Clock, Zap,
@@ -28,21 +29,24 @@ const COMPARISON = [
 
 export default function BusinessPartnersPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+    <div className="min-h-screen bg-slate-950 text-white">
       <Header />
 
       {/* Hero */}
       <section className="pt-32 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+          <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-6 text-sm font-semibold">
+            Business Partners
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Partner With UpTend
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-8">
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
             Load your entire team, set company rates, and let verified jobs flow directly to your employees. No lead fees. No bidding. Guaranteed payment.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/business/signup">
-              <Button size="lg" className="bg-[#ea580c] hover:bg-[#c2410c] text-white text-lg px-8">
+              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8">
                 Get Started <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
@@ -53,14 +57,14 @@ export default function BusinessPartnersPage() {
       {/* Benefits */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-slate-900 mb-12">Why Partner With Us</h2>
+          <h2 className="text-3xl font-bold text-center text-white mb-12">Why Partner With Us</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {BENEFITS.map((b, i) => (
-              <Card key={i} className="border-0 shadow-md">
+              <Card key={i} className="border-slate-800 bg-slate-900/50 shadow-md">
                 <CardContent className="p-6">
-                  <b.icon className="w-10 h-10 text-[#ea580c] mb-4" />
-                  <h3 className="font-bold text-lg mb-2">{b.title}</h3>
-                  <p className="text-slate-600 text-sm">{b.desc}</p>
+                  <b.icon className="w-10 h-10 text-orange-500 mb-4" />
+                  <h3 className="font-bold text-lg mb-2 text-white">{b.title}</h3>
+                  <p className="text-slate-400 text-sm">{b.desc}</p>
                 </CardContent>
               </Card>
             ))}
@@ -69,9 +73,9 @@ export default function BusinessPartnersPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4 bg-slate-900/50">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-slate-900 mb-12">How It Works</h2>
+          <h2 className="text-3xl font-bold text-center text-white mb-12">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { step: "1", title: "Register Your Company", desc: "Sign up, verify insurance once, and add your team members." },
@@ -79,11 +83,11 @@ export default function BusinessPartnersPage() {
               { step: "3", title: "Receive Verified Jobs", desc: "Jobs are matched to your team automatically. Track everything from one dashboard." },
             ].map((s, i) => (
               <div key={i} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-[#ea580c] text-white font-bold text-xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 rounded-full bg-orange-500 text-white font-bold text-xl flex items-center justify-center mx-auto mb-4">
                   {s.step}
                 </div>
-                <h3 className="font-bold text-lg mb-2">{s.title}</h3>
-                <p className="text-slate-600 text-sm">{s.desc}</p>
+                <h3 className="font-bold text-lg mb-2 text-white">{s.title}</h3>
+                <p className="text-slate-400 text-sm">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -93,24 +97,24 @@ export default function BusinessPartnersPage() {
       {/* Comparison Table */}
       <section className="py-16 px-4">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-slate-900 mb-8">UpTend vs Traditional Lead Gen</h2>
-          <div className="overflow-x-auto">
+          <h2 className="text-3xl font-bold text-center text-white mb-8">UpTend vs Traditional Lead Gen</h2>
+          <div className="overflow-x-auto rounded-lg border border-slate-800">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b-2">
-                  <th className="text-left py-3 px-4 text-slate-600">Feature</th>
-                  <th className="text-center py-3 px-4 text-[#ea580c] font-bold">UpTend</th>
-                  <th className="text-center py-3 px-4 text-slate-400">Traditional</th>
+                <tr className="border-b border-slate-800 bg-slate-900/50">
+                  <th className="text-left py-3 px-4 text-slate-400">Feature</th>
+                  <th className="text-center py-3 px-4 text-orange-500 font-bold">UpTend</th>
+                  <th className="text-center py-3 px-4 text-slate-500">Traditional</th>
                 </tr>
               </thead>
               <tbody>
                 {COMPARISON.map((row, i) => (
-                  <tr key={i} className="border-b">
-                    <td className="py-3 px-4 text-sm font-medium">{row.feature}</td>
+                  <tr key={i} className="border-b border-slate-800">
+                    <td className="py-3 px-4 text-sm font-medium text-slate-300">{row.feature}</td>
                     <td className="py-3 px-4 text-center text-sm">
-                      <span className="text-green-600 font-medium">{row.uptend}</span>
+                      <span className="text-green-400 font-medium">{row.uptend}</span>
                     </td>
-                    <td className="py-3 px-4 text-center text-sm text-slate-400">{row.traditional}</td>
+                    <td className="py-3 px-4 text-center text-sm text-slate-500">{row.traditional}</td>
                   </tr>
                 ))}
               </tbody>
@@ -120,12 +124,12 @@ export default function BusinessPartnersPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-4 bg-slate-900 text-white">
+      <section className="py-16 px-4 bg-orange-500/10 border-t border-orange-500/20">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Grow Your Business?</h2>
+          <h2 className="text-3xl font-bold mb-4 text-white">Ready to Grow Your Business?</h2>
           <p className="text-slate-300 mb-8">Join UpTend as a Business Partner and start receiving verified jobs for your team today.</p>
           <Link href="/business/signup">
-            <Button size="lg" className="bg-[#ea580c] hover:bg-[#c2410c] text-white text-lg px-8">
+            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8">
               Get Started <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
