@@ -760,7 +760,7 @@ export default function CustomerDashboard() {
     <div className="min-h-screen bg-background" data-testid="page-customer-dashboard">
       <Header />
 
-      <main className="max-w-4xl mx-auto px-4 pb-24 pt-6">
+      <main className="max-w-5xl mx-auto px-4 pb-24 pt-6">
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-1">
             <Home className="w-5 h-5 text-primary" />
