@@ -40,7 +40,7 @@ export function Footer() {
             <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs" data-testid="text-footer-services">{t("footer.footer_essential_5")}</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/services/home-audit" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-home-audit">
+                <Link href="/home-dna-scan" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-home-audit">
                   {t("footer.footer_ai_home_scan")}
                 </Link>
               </li>
@@ -131,7 +131,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/emergency" className="hover:text-primary transition-colors cursor-pointer text-red-400" data-testid="link-footer-emergency">
+                <Link href="/emergency-sos" className="hover:text-primary transition-colors cursor-pointer text-red-400" data-testid="link-footer-emergency">
                   Emergency Services
                 </Link>
               </li>
