@@ -130,6 +130,10 @@ const BusinessInvoices = lazy(() => import("@/pages/business-invoices"));
 const BusinessOnboarding = lazy(() => import("@/pages/business-onboarding"));
 const BusinessBooking = lazy(() => import("@/pages/business-booking"));
 const BusinessBilling = lazy(() => import("@/pages/business-billing"));
+const BusinessViolations = lazy(() => import("@/pages/business-violations"));
+const BusinessCommunityHub = lazy(() => import("@/pages/business-community-hub"));
+const BusinessBoardReport = lazy(() => import("@/pages/business-board-report"));
+const BusinessEmergency = lazy(() => import("@/pages/business-emergency"));
 const AdminBilling = lazy(() => import("@/pages/admin/billing"));
 const FindPro = lazy(() => import("@/pages/find-pro"));
 const B2BTerms = lazy(() => import("@/pages/b2b-terms"));
@@ -233,6 +237,10 @@ function Router() {
       <Route path="/business/bp-integrations" component={BpIntegrations} />
       <Route path="/business/onboarding" component={BusinessOnboarding} />
       <Route path="/business/booking" component={BusinessBooking} />
+      <Route path="/business/violations" component={BusinessViolations} />
+      <Route path="/business/community" component={BusinessCommunityHub} />
+      <Route path="/business/board-report" component={BusinessBoardReport} />
+      <Route path="/business/emergency" component={BusinessEmergency} />
       <Route path="/business/billing" component={BusinessBilling} />
       <Route path="/admin/billing" component={AdminBilling} />
       <Route path="/veterans" component={VeteransPage} />
