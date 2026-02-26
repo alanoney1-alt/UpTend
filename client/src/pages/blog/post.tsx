@@ -330,7 +330,7 @@ export default function BlogPost() {
       if (currentParagraph.length > 0) {
         const text = currentParagraph.join(" ");
         elements.push(
-          <p key={elements.length} className="text-slate-700 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>").replace(/--/g, "&mdash;") }} />
+          <p key={elements.length} className="text-slate-700 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>") }} />
         );
         currentParagraph = [];
       }
@@ -341,7 +341,7 @@ export default function BlogPost() {
         elements.push(
           <ul key={elements.length} className="list-disc pl-6 mb-4 space-y-2">
             {listItems.map((item, i) => (
-              <li key={i} className="text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>").replace(/--/g, "&mdash;") }} />
+              <li key={i} className="text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>") }} />
             ))}
           </ul>
         );
@@ -354,7 +354,7 @@ export default function BlogPost() {
         elements.push(
           <ol key={elements.length} className="list-decimal pl-6 mb-4 space-y-2">
             {orderedItems.map((item, i) => (
-              <li key={i} className="text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>").replace(/--/g, "&mdash;") }} />
+              <li key={i} className="text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>") }} />
             ))}
           </ol>
         );

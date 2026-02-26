@@ -113,7 +113,7 @@ export default function AcademySyllabus() {
               UpTend badge, you are signaling to the homeowner (or the renter) that you are a professional they can trust.
               We document everything because we take pride in what we do.&rdquo;
             </p>
-            <p className="mt-4 font-bold text-white">&mdash; Alan, Founder</p>
+            <p className="mt-4 font-bold text-white">Alan, Founder</p>
           </div>
           <div className="shrink-0">
             <div className="w-32 h-32 border-4 border-dashed border-orange-400 rounded-full flex items-center justify-center">

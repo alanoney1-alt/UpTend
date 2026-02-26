@@ -192,7 +192,7 @@ export default function HomeAudit() {
             <h2 className="text-3xl font-black mb-6">Your Home&rsquo;s Maintenance Record. Verified.</h2>
             <p className="text-muted-foreground leading-relaxed">
               Every audit creates a permanent, transferable data point in your property&rsquo;s history.
-              When you sell, buyers see a verified maintenance record with full accountability &mdash; not a blank page.
+              When you sell, buyers see a verified maintenance record with full accountability, not a blank page.
               Your Home Score increases with every documented service, building equity through transparency.
             </p>
           </div>

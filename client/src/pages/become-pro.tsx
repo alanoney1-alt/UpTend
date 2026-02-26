@@ -166,7 +166,7 @@ export default function BecomePro() {
               UpTend is about accountability and verified impact. We give you the tools to prove
               you&rsquo;re the best, build your verified track record, and make sure you get paid fairly for it.&rdquo;
             </p>
-            <p className="font-bold">&mdash; Alan, Founder of UpTend</p>
+            <p className="font-bold">Alan, Founder of UpTend</p>
           </div>
         </div>
       </section>

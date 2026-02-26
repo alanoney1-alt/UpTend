@@ -92,7 +92,7 @@ export default function HaulerLanding() {
                   <span className="text-slate-400">Backed by Verified Data.</span>
                 </h2>
                 <p className="text-lg text-slate-300 mb-8 leading-relaxed">
-                  UpTend Pro is more than an app&mdash;it&rsquo;s a transparent system that handles your marketing, logistics, and back-office with full accountability.
+                  UpTend Pro is more than an app. It&rsquo;s a transparent system that handles your marketing, logistics, and back-office with full accountability.
                 </p>
 
                 <div className="space-y-6">

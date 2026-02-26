@@ -9,7 +9,7 @@ import { InstallBanner } from "@/components/pwa/install-banner";
 import { ServiceBagProvider } from "@/contexts/service-bag-context";
 import { CookieConsent } from "@/components/cookie-consent";
 import { UpTendGuide } from "@/components/ai/uptend-guide";
-import { MobileNav } from "@/components/mobile-nav";
+import { MobileNav, MobileNavSpacer } from "@/components/mobile-nav";
 import { FloatingCart } from "@/components/floating-cart";
 import { BookingProgressBar } from "@/components/booking-progress-bar";
 import { ErrorBoundary } from "@/components/error-boundary";
@@ -388,6 +388,7 @@ function App() {
             <Toaster />
             <BookingProgressBar />
             <Router />
+            <MobileNavSpacer />
             <MobileNav />
             <FloatingCart />
             <UpTendGuide />
