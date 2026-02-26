@@ -32,9 +32,9 @@ const segmentData: Record<Segment, {
     headline: "Manage Every Property. One Platform.",
     sub: "Replace 15 vendor relationships with one dashboard. AI-dispatched pros, real-time tracking, weekly invoicing.",
     tiers: [
-      { name: "Starter", price: "$4", unit: "/door/mo", features: ["Up to 50 doors", "AI dispatch", "Weekly invoicing", "Basic reporting"] },
-      { name: "Pro", price: "$6", unit: "/door/mo", features: ["Up to 200 doors", "Priority scheduling", "Compliance reports", "Dedicated account manager"] },
-      { name: "Enterprise", price: "$10", unit: "/door/mo", features: ["Unlimited doors", "White-label portal", "API access", "SLA guarantees", "Custom integrations"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Up to 50 doors", "AI dispatch", "Weekly invoicing", "Basic reporting"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Up to 200 doors", "Priority scheduling", "Compliance reports", "Dedicated account manager"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Unlimited doors", "White-label portal", "API access", "SLA guarantees", "Custom integrations"] },
     ],
     stats: [
       { value: "~375", label: "PM companies in Orlando" },
@@ -46,9 +46,9 @@ const segmentData: Record<Segment, {
     headline: "Your Entire Community. One Vendor.",
     sub: "Common areas, unit turns, emergency repairs. all through one platform with full board reporting.",
     tiers: [
-      { name: "Starter", price: "$3", unit: "/unit/mo", features: ["Up to 100 units", "Common area services", "Board reports", "Resident portal"] },
-      { name: "Pro", price: "$5", unit: "/unit/mo", features: ["Up to 500 units", "Priority dispatch", "ESG tracking", "Violation management"] },
-      { name: "Enterprise", price: "$8", unit: "/unit/mo", features: ["Unlimited units", "White-label portal", "Custom SLAs", "Dedicated team", "API access"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Up to 100 units", "Common area services", "Board reports", "Resident portal"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Up to 500 units", "Priority dispatch", "ESG tracking", "Violation management"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Unlimited units", "White-label portal", "Custom SLAs", "Dedicated team", "API access"] },
     ],
     stats: [
       { value: "7,500+", label: "HOAs in Orlando" },
@@ -60,9 +60,9 @@ const segmentData: Record<Segment, {
     headline: "Subcontractor Management. Simplified.",
     sub: "Certified pros for finish work, cleanup, and maintenance. Insurance verified. Compliance tracked.",
     tiers: [
-      { name: "Starter", price: "$299", unit: "/mo", features: ["Up to 5 active sites", "Pro dispatch", "Insurance verification", "Photo documentation"] },
-      { name: "Pro", price: "$599", unit: "/mo", features: ["Up to 20 sites", "Prevailing wage compliance", "Materials tracking", "Priority dispatch"] },
-      { name: "Enterprise", price: "$999", unit: "/mo", features: ["Unlimited sites", "Custom workflows", "API integration", "Dedicated PM", "SLA guarantees"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Up to 5 active sites", "Pro dispatch", "Insurance verification", "Photo documentation"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Up to 20 sites", "Prevailing wage compliance", "Materials tracking", "Priority dispatch"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Unlimited sites", "Custom workflows", "API integration", "Dedicated PM", "SLA guarantees"] },
     ],
     stats: [
       { value: "$12B", label: "FL construction market" },
@@ -74,9 +74,9 @@ const segmentData: Record<Segment, {
     headline: "Government-Ready. Veteran-Powered.",
     sub: "SDVOSB-certified subsidiary. Prevailing wage compliance. Full audit trails. FEMA-ready.",
     tiers: [
-      { name: "Municipal", price: "$15K", unit: "/yr", features: ["Up to 50 properties", "Prevailing wage", "Audit trails", "Quarterly reporting"] },
-      { name: "County", price: "$35K", unit: "/yr", features: ["Up to 200 properties", "FEMA response", "Bond compliance", "Dedicated team"] },
-      { name: "State", price: "$75K", unit: "/yr", features: ["Unlimited scope", "Multi-county ops", "Custom compliance", "Executive reporting", "Emergency response"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Up to 50 properties", "Prevailing wage", "Audit trails", "Quarterly reporting"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Up to 200 properties", "FEMA response", "Bond compliance", "Dedicated team"] },
+      { name: "Custom Plan", price: "Custom", unit: "", features: ["Unlimited scope", "Multi-county ops", "Custom compliance", "Executive reporting", "Emergency response"] },
     ],
     stats: [
       { value: "SDVOSB", label: "Certified subsidiary" },

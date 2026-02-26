@@ -81,21 +81,21 @@ export default function BusinessLanding() {
               {
                 icon: Building2, title: "Property Management",
                 desc: "Manage maintenance across your entire portfolio. AI dispatch, tenant portals, automated invoicing.",
-                price: "From $4/door/mo",
+                price: "Custom pricing",
                 href: "/business?segment=pm",
                 features: ["AI-prioritized dispatch", "Tenant request portal", "Weekly consolidated invoicing", "Compliance reporting"]
               },
               {
                 icon: Users, title: "HOA Communities",
                 desc: "Common areas, unit turns, seasonal maintenance. Full board reporting and ESG tracking.",
-                price: "From $3/unit/mo",
+                price: "Custom pricing",
                 href: "/business?segment=hoa",
                 features: ["Common area management", "Board-ready reports", "Violation tracking", "ESG sustainability metrics"]
               },
               {
                 icon: HardHat, title: "Construction",
                 desc: "Site cleanup, punch lists, post-construction services. Integrated with your project timeline.",
-                price: "From $299/mo",
+                price: "Custom pricing",
                 href: "/business?segment=construction",
                 features: ["Site cleanup crews", "Punch list management", "OSHA compliance", "Multi-site dashboard"]
               },
