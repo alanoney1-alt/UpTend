@@ -989,18 +989,7 @@ export default function CustomerDashboard() {
           )}
         </div>
 
-        {/* Claims Section */}
-        <div className="mb-6" data-testid="section-claims">
-          <div className="flex items-center gap-2 mb-3">
-            <Shield className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-bold text-white">{t("dashboard.liability_claims")}</h2>
-          </div>
-          <Card>
-            <CardContent className="p-0">
-              <CustomerClaimsSection customerId={user.id} />
-            </CardContent>
-          </Card>
-        </div>
+        {/* Claims removed — disputes handled via email */}
       </main>
     </div>
   );
