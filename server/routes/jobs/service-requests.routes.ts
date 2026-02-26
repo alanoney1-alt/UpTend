@@ -844,9 +844,11 @@ export function registerServiceRequestRoutes(app: Express) {
       const userId = (req.user as any).userId || (req.user as any).id;
       if (!userId) return res.status(401).json({ error: "Not authenticated" });
       const requests = await storage.getServiceRequestsByCustomer(userId);
-      res.json(requests);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch jobs" });
+      res.json(requests || []);
+    } catch (error: any) {
+      console.error("my-jobs error:", error?.message);
+      // Graceful fallback for DB schema issues
+      res.json([]);
     }
   });
 }

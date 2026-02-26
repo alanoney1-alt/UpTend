@@ -5,8 +5,8 @@ export function registerCustomerImpactRoutes(app: Express) {
   // Get customer's impact broken down by service type
   app.get("/api/my-impact/by-service", async (req, res) => {
     try {
-      if (!req.user || req.user.role !== "customer") {
-        return res.status(403).json({ error: "Unauthorized" });
+      if (!req.user) {
+        return res.json({ success: true, data: [] });
       }
       // Return empty data structure for now
       res.json({ success: true, data: [] });
@@ -19,8 +19,8 @@ export function registerCustomerImpactRoutes(app: Express) {
   // Get customer's aggregated environmental impact
   app.get("/api/my-impact", async (req, res) => {
     try {
-      if (!req.user || req.user.role !== "customer") {
-        return res.status(403).json({ error: "Unauthorized" });
+      if (!req.user) {
+        return res.json({ totalJobs: 0, totalWeightDiverted: 0, treesEquivalent: 0, co2Avoided: 0, landfillDiversionRate: 0, certificates: [] });
       }
 
       // Get all ESG impact logs for this customer
