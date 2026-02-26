@@ -439,4 +439,21 @@ export function registerCustomerAccountRoutes(app: Express) {
       res.status(500).json({ error: "Failed to set default payment method" });
     }
   });
+
+  // GET /api/customer/recent-services — last 5 completed services for claims section
+  app.get("/api/customer/recent-services", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      if (!userId) return res.status(401).json({ error: "Not authenticated" });
+      const jobs = await storage.getServiceRequestsByCustomer(userId);
+      const recent = jobs
+        .filter((j: any) => j.status === "completed")
+        .sort((a: any, b: any) => new Date(b.completedAt || b.updatedAt || 0).getTime() - new Date(a.completedAt || a.updatedAt || 0).getTime())
+        .slice(0, 5);
+      res.json(recent);
+    } catch (error) {
+      console.error("Recent services error:", error);
+      res.json([]);
+    }
+  });
 }

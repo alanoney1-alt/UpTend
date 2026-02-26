@@ -85,7 +85,8 @@ export function registerProProfileRoutes(app: Express) {
   app.get("/api/pros", requireAuth, requireHauler, async (req: any, res) => {
     try {
       const user = req.user;
-      const profile = await storage.getHaulerProfile(user.id);
+      const userId = (user as any).userId || (user as any).id;
+      const profile = await storage.getHaulerProfile(userId);
       if (!profile) {
         return res.json([]);
       }
