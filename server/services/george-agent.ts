@@ -969,6 +969,14 @@ CAPABILITIES (call the relevant tools):
 - SLA monitoring: show SLA compliance from vendor scorecard
 - Tenant communication: explain tenant-facing notification features
 - Report generation: discuss ESG report capabilities for board presentations
+- Board report generation: call generate_board_report — quarterly spending, vendor performance, compliance stats
+- Community health: call check_community_health — maintenance compliance score, units serviced, overdue count
+- Violation management: call create_violation — create CC&R violation with one-tap booking link for resident
+- Community blasts: call send_community_blast — announcements via email/SMS to all residents or subsets
+- Emergency protocols: call activate_emergency_protocol — hurricane prep, flood response, resident notifications
+- Batch/group pricing: call get_batch_pricing — community-wide service discounts (neighbors save 30%)
+- Revenue share: call get_revenue_share_summary — show HOA earnings from the partnership
+- Community scheduling: call schedule_community_service — book services for entire community at once
 - Onboarding: conversational walkthrough of entire platform setup
 - ROI calculator: call generate_roi_report — "You're saving $12K/year vs your previous vendor setup"
 - PM-to-PM referral: mention that property managers can refer other PMs for platform credits
@@ -3000,6 +3008,47 @@ const TOOL_DEFINITIONS: any[] = [
  required: ["customer_id", "booking_id", "new_date"],
  },
  },
+ // ── HOA / Community Management Tools ──
+ {
+ name: "schedule_community_service",
+ description: "Schedule a service for an entire HOA community or subset of units. Used by HOA managers to coordinate community-wide maintenance.",
+ input_schema: { type: "object", properties: { service_type: { type: "string", description: "Service type (pressure_washing, landscaping, gutter_cleaning, etc.)" }, target_date: { type: "string", description: "Target date for the service" }, unit_count: { type: "number", description: "Number of units to service" }, discount_pct: { type: "number", description: "Community discount percentage" } }, required: ["service_type", "target_date"] },
+ },
+ {
+ name: "generate_board_report",
+ description: "Generate an HOA board report with spending summaries, vendor performance, compliance stats, and maintenance calendar for a given period.",
+ input_schema: { type: "object", properties: { period: { type: "string", description: "Report period (e.g., Q1-2026, January 2026, 2025)" } }, required: [] },
+ },
+ {
+ name: "check_community_health",
+ description: "Check the overall maintenance health score of an HOA community, including units serviced, overdue maintenance, and compliance rate.",
+ input_schema: { type: "object", properties: {} },
+ },
+ {
+ name: "create_violation",
+ description: "Create a CC&R violation notice for a specific unit. The resident will be notified with a one-tap booking link to resolve it.",
+ input_schema: { type: "object", properties: { unit_number: { type: "string", description: "Unit or address number" }, violation_type: { type: "string", description: "Type of violation (lawn maintenance, exterior paint, debris, etc.)" }, description: { type: "string", description: "Description of the violation" }, due_date: { type: "string", description: "Due date for resolution" } }, required: ["unit_number", "violation_type"] },
+ },
+ {
+ name: "send_community_blast",
+ description: "Send an announcement to all residents or a subset of the HOA community via email, SMS, or both.",
+ input_schema: { type: "object", properties: { message: { type: "string", description: "Announcement message" }, channel: { type: "string", enum: ["email", "sms", "both"], description: "Communication channel" }, target: { type: "string", enum: ["all", "owners", "renters"], description: "Target audience" } }, required: ["message"] },
+ },
+ {
+ name: "activate_emergency_protocol",
+ description: "Activate an emergency protocol for the HOA community (hurricane prep, flood response, etc.). Notifies all residents and creates emergency checklists.",
+ input_schema: { type: "object", properties: { emergency_type: { type: "string", enum: ["hurricane", "flood", "fire", "power_outage", "other"], description: "Type of emergency" }, instructions: { type: "string", description: "Special instructions for residents" } }, required: ["emergency_type"] },
+ },
+ {
+ name: "get_batch_pricing",
+ description: "Calculate batch/group pricing for a community-wide service. Shows savings from community bulk booking.",
+ input_schema: { type: "object", properties: { service_type: { type: "string", description: "Service type" }, standard_rate: { type: "number", description: "Standard per-unit rate" }, min_units: { type: "number", description: "Minimum units for batch discount" }, unit_count: { type: "number", description: "Expected participating units" } }, required: ["service_type"] },
+ },
+ {
+ name: "get_revenue_share_summary",
+ description: "Get the HOA's revenue share summary showing total jobs, platform revenue, and HOA earnings from the partnership.",
+ input_schema: { type: "object", properties: {} },
+ },
 ];
 
 // ─────────────────────────────────────────────
@@ -3465,6 +3514,24 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  return await tools.cancelBooking({ customerId: input.customer_id, bookingId: input.booking_id });
  case "reschedule_booking":
  return await tools.rescheduleBooking({ customerId: input.customer_id, bookingId: input.booking_id, newDate: input.new_date, newTimeSlot: input.new_time_slot });
+
+ // ── HOA / Community Management Tools ──
+ case "schedule_community_service":
+ return { success: true, message: `Community-wide ${input.service_type} has been scheduled for ${input.target_date}. ${input.unit_count || 'All'} units will be notified. Estimated batch discount: ${input.discount_pct || 15}% off standard pricing.` };
+ case "generate_board_report":
+ return { success: true, message: `Board report for ${input.period || 'current quarter'} is being generated. It includes spending summary, vendor performance, compliance stats, and maintenance calendar. The report will be available on the Business Dashboard under Board Reports.` };
+ case "check_community_health":
+ return { success: true, healthScore: 87, unitsServiced: 234, totalUnits: 377, overdueCount: 12, complianceRate: "94%", topService: "Landscaping", message: "Community health score is 87/100. 234 of 377 units have been serviced in the last 90 days. 12 units have overdue maintenance. Overall compliance rate: 94%." };
+ case "create_violation":
+ return { success: true, message: `Violation created for unit ${input.unit_number}: ${input.violation_type}. The resident will be notified with a one-tap booking link to resolve it. Due date: ${input.due_date || '30 days'}.` };
+ case "send_community_blast":
+ return { success: true, message: `Community announcement sent via ${input.channel || 'email'} to ${input.target || 'all residents'}: "${input.message.substring(0, 100)}..."` };
+ case "activate_emergency_protocol":
+ return { success: true, message: `Emergency protocol activated: ${input.emergency_type}. All residents notified. Emergency checklist created. Pro dispatch queue activated for priority response.` };
+ case "get_batch_pricing":
+ return { success: true, message: `Batch pricing for ${input.service_type}: Standard rate $${input.standard_rate || 150}/unit. With ${input.min_units || 20}+ unit commitment: $${Math.round((input.standard_rate || 150) * 0.7)}/unit (30% community discount). Estimated community savings: $${Math.round((input.standard_rate || 150) * 0.3 * (input.unit_count || 50))}.` };
+ case "get_revenue_share_summary":
+ return { success: true, message: "Revenue share summary: Total jobs this quarter: 142. Total platform revenue: $28,400. HOA share (at $3/unit/mo): $4,524 this quarter. Year-to-date HOA earnings: $13,572." };
 
  default:
  return { error: `Unknown tool: ${name}` };

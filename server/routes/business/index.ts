@@ -12,6 +12,7 @@ import onboardingRoutes from "./onboarding.routes";
 import bookingRoutes from "./booking.routes";
 import billingRoutes from "./billing.routes";
 import dashboardRoutes from "./dashboard.routes";
+import communityFeaturesRoutes from "./community-features.routes";
 
 export function registerBusinessTeamRoutes(app: Express) {
   // Onboarding routes (no auth required for self-serve signup)
@@ -28,6 +29,9 @@ export function registerBusinessTeamRoutes(app: Express) {
 
   // Business dashboard routes
   app.use("/api/business", dashboardRoutes);
+
+  // HOA community features routes
+  app.use("/api/business", communityFeaturesRoutes);
 
   // Business account routes (dashboard)
   app.use("/api/business-accounts", businessAccountRoutes);
