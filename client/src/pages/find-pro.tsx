@@ -152,7 +152,11 @@ function FindProPage() {
           cta={{ text: "See My Pick", action: openGeorge }}
         />
       </div>
-      <div className="pt-24 pb-24 md:pb-16 px-4 max-w-7xl mx-auto">
+      <div className="relative pt-24 pb-24 md:pb-16 px-4 max-w-7xl mx-auto">
+        <div className="absolute inset-0 h-[280px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">
+          <img src="/images/site/hero-find-pro.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-background/90" />
+        </div>
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{t("findpro.title")}</h1>

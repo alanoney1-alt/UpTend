@@ -115,7 +115,11 @@ export default function BlogIndex() {
 
       <Header />
 
-      <div className="max-w-5xl mx-auto px-4 pt-28 pb-16">
+      <div className="relative max-w-5xl mx-auto px-4 pt-28 pb-16">
+        <div className="absolute inset-0 h-[350px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">
+          <img src="/images/site/hero-blog.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-background/90" />
+        </div>
         <h1 className="text-4xl font-bold mb-2">{t("blog.title")}</h1>
         <p className="text-muted-foreground mb-12 text-lg">
           {t("blog.subtitle")}

@@ -96,7 +96,11 @@ export default function Gallery() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
+      <main className="relative max-w-5xl mx-auto px-4 py-8">
+        <div className="absolute inset-0 h-[350px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">
+          <img src="/images/site/hero-gallery.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-background/90" />
+        </div>
         {/* Filters */}
         <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
           <Filter className="w-4 h-4 text-slate-400 shrink-0" />

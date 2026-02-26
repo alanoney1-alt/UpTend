@@ -56,8 +56,12 @@ export default function About() {
       <Header />
 
       {/* PERSONAL HERO SECTION */}
-      <section className="pt-28 pb-16 px-4 md:px-6" data-testid="section-about-hero">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative pt-28 pb-16 px-4 md:px-6 overflow-hidden" data-testid="section-about-hero">
+        <div className="absolute inset-0">
+          <img src="/images/site/hero-about.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-background/85" />
+        </div>
+        <div className="max-w-4xl mx-auto relative z-10">
           <span className="text-primary font-bold uppercase tracking-widest text-sm mb-4 block" data-testid="text-our-story-label">{t("about.our_story")}</span>
           <h1 className="text-4xl md:text-6xl font-black mb-8 leading-tight" data-testid="text-about-headline">
             {t("about.headline")} <br className="hidden md:block" />

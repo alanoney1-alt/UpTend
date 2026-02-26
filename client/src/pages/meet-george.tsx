@@ -36,7 +36,11 @@ export default function MeetGeorgePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 text-white">
       <Header />
-      <main className="pt-28 pb-20">
+      <main className="relative pt-28 pb-20 overflow-hidden">
+        <div className="absolute inset-0 h-[500px]">
+          <img src="/images/site/hero-meet-george.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-background/85" />
+        </div>
         {/* Hero */}
         <section className="max-w-4xl mx-auto px-4 text-center mb-20">
           <div className="inline-flex items-center gap-2 bg-[#F47C20]/20 text-[#F47C20] rounded-full px-4 py-1.5 text-sm font-medium mb-6">

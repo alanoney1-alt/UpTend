@@ -96,8 +96,12 @@ export default function Business() {
       <Header />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-4 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-        <div className="max-w-5xl mx-auto text-center">
+      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="/images/site/hero-business.webp" alt="" className="w-full h-full object-cover opacity-20" loading="eager" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/80 to-slate-950" />
+        </div>
+        <div className="max-w-5xl mx-auto text-center relative z-10">
           <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-6 text-sm font-semibold">
             UpTend for Business
           </Badge>

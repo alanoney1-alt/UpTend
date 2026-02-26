@@ -18,7 +18,11 @@ export default function CostGuidesHub() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main className="max-w-5xl mx-auto px-4 py-16">
+      <main className="relative max-w-5xl mx-auto px-4 py-16">
+        <div className="absolute inset-0 h-[350px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">
+          <img src="/images/site/hero-cost-guides.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-background/90" />
+        </div>
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
             <DollarSign className="w-4 h-4" />

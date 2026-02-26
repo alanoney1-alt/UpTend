@@ -39,8 +39,12 @@ export default function JunkRemoval() {
       <Header />
 
       {/* HERO */}
-      <section className="pt-28 pb-16 px-6 bg-muted/50 border-b border-border" data-testid="section-junk-hero">
-        <div className="max-w-5xl mx-auto text-center">
+      <section className="relative pt-28 pb-16 px-6 border-b border-border overflow-hidden" data-testid="section-junk-hero">
+        <div className="absolute inset-0">
+          <img src="/images/site/hero-junk-removal.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
+        </div>
+        <div className="max-w-5xl mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-black mb-6" data-testid="text-junk-headline">
             Junk Removal<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-[#F47C20]">

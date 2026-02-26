@@ -45,8 +45,11 @@ export default function HomeScanPage() {
 function HeroSection() {
   return (
     <section className="relative pt-32 md:pt-40 pb-24 md:pb-32 overflow-hidden">
-      {/* Warm gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a1a] via-[#2a1a0a] to-[#1a1a1a]" />
+      {/* Background image + gradient */}
+      <div className="absolute inset-0">
+        <img src="/images/site/hero-home-dna-scan.webp" alt="" className="w-full h-full object-cover opacity-30" loading="eager" />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a1a]/80 via-[#2a1a0a]/80 to-[#1a1a1a]" />
       <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-[#F47C20]/8 rounded-full blur-[200px]" />
       <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-[#F47C20]/5 rounded-full blur-[150px]" />
 
