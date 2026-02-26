@@ -79,11 +79,11 @@ const signupSchema = z.object({
   vehicleModel: z.string().optional(),
   licensePlate: z.string().optional(),
   driversLicense: z.string().min(5, "Driver's license required"),
-  // General Liability Insurance (optional - 25% commission without)
+  // General Liability Insurance (optional - 15% platform fee)
   generalLiabilityProvider: z.string().optional(),
   generalLiabilityPolicyNumber: z.string().optional(),
   generalLiabilityExpiration: z.string().optional(),
-  // Vehicle Insurance (optional - 25% commission without)
+  // Vehicle Insurance (optional - 15% platform fee)
   vehicleInsuranceProvider: z.string().optional(),
   vehicleInsurancePolicyNumber: z.string().optional(),
   vehicleInsuranceExpiration: z.string().optional(),

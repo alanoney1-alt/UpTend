@@ -7,7 +7,7 @@ export const SNAP_BOOK_PRO_TRAINING = {
     },
     {
       title: "What You See",
-      content: "For every Snap & Book job, you'll see: (1) The customer's original photo, (2) George's analysis of the issue, (3) Estimated scope and duration, (4) Equipment and supply checklist, (5) Your payout amount (80% of quoted price)."
+      content: "For every Snap & Book job, you'll see: (1) The customer's original photo, (2) George's analysis of the issue, (3) Estimated scope and duration, (4) Equipment and supply checklist, (5) Your payout amount (85% of quoted price)."
     },
     {
       title: "When You Arrive",
@@ -15,7 +15,7 @@ export const SNAP_BOOK_PRO_TRAINING = {
     },
     {
       title: "Price Protection",
-      content: "The customer's quoted price is their maximum (ceiling). You earn 80% of the final price. If the job is simpler than estimated, the customer pays less and you earn accordingly. If the scope is larger, the Scope Change process handles the adjustment fairly."
+      content: "The customer's quoted price is their maximum (ceiling). You earn 85% of the final price. If the job is simpler than estimated, the customer pays less and you earn accordingly. If the scope is larger, the Scope Change process handles the adjustment fairly."
     },
     {
       title: "Tips for Success",

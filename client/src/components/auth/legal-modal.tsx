@@ -64,8 +64,7 @@ export function LegalModal({ isOpen, onAccept }: LegalModalProps) {
             </p>
             <p>
               <strong>4. Payment Terms.</strong> You will be paid via Stripe
-              Connect. UpTend retains a platform fee as specified in your tier
-              agreement (Rookie: 25%, Verified Pro: 20%, Master: 15%). Payouts
+              Connect. UpTend retains a flat 15% platform fee. You keep 85%. Payouts
               are processed weekly on Fridays for the prior week&apos;s work.
             </p>
             <p>

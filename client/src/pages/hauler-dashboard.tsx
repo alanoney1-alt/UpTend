@@ -658,7 +658,7 @@ function ActiveJobCard({
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold">${job.priceEstimate}</p>
-            <p className="text-xs text-muted-foreground">Estimated earnings: ${Math.round(job.priceEstimate * 0.75)}</p>
+            <p className="text-xs text-muted-foreground">Estimated earnings: ${Math.round(job.priceEstimate * 0.85)}</p>
           </div>
         </div>
 
@@ -2382,7 +2382,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Payout Rate</span>
-                <span className="font-medium">{(currentPro?.profile?.payoutPercentage || 0.75) * 100}%</span>
+                <span className="font-medium">{(currentPro?.profile?.payoutPercentage || 0.85) * 100}%</span>
               </div>
             </div>
           </Card>
@@ -2586,7 +2586,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       queryKey: ["/api/pro/earnings"],
     });
 
-    const payoutPctEarnings = currentPro?.profile?.payoutPercentage || 0.75;
+    const payoutPctEarnings = currentPro?.profile?.payoutPercentage || 0.85;
     const todayEarnings = earningsData?.today ?? 0;
     const weekEarnings = earningsData?.weekly ?? 0;
     const monthEarnings = earningsData?.monthly ?? 0;
@@ -2779,7 +2779,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <Separator />
               <div>
                 <Label className="text-muted-foreground">Commission Rate</Label>
-                <p className="font-medium" data-testid="text-commission-rate">{(1 - (currentPro?.profile?.payoutPercentage || 0.75)) * 100}% platform fee</p>
+                <p className="font-medium" data-testid="text-commission-rate">{(1 - (currentPro?.profile?.payoutPercentage || 0.85)) * 100}% platform fee</p>
               </div>
             </div>
           </Card>
@@ -3052,8 +3052,8 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     return 1000;
   })();
   const xpProgress = Math.min(100, Math.round((xp / Math.max(nextLevelXp, 1)) * 100));
-  const payoutPct = (currentPro?.profile?.payoutPercentage || 0.75) * 100;
-  const nextPayout = activeJob ? Math.max(50, Math.round(((activeJob as any).livePrice || activeJob.priceEstimate || 0) * (currentPro?.profile?.payoutPercentage || 0.75))) : 0;
+  const payoutPct = (currentPro?.profile?.payoutPercentage || 0.85) * 100;
+  const nextPayout = activeJob ? Math.max(50, Math.round(((activeJob as any).livePrice || activeJob.priceEstimate || 0) * (currentPro?.profile?.payoutPercentage || 0.85))) : 0;
   const safetyCode = currentPro?.profile?.safetyCode;
 
   const proServiceTypes = currentPro?.profile?.serviceTypes || ["junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout"];
@@ -3309,7 +3309,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                       <div className="text-right">
                         <p className="text-2xl font-bold">${activeJob.priceEstimate}</p>
                         <p className="text-xs text-muted-foreground">
-                          Estimated earnings: ${Math.max(50, Math.round(activeJob.priceEstimate * (currentPro?.profile?.payoutPercentage || 0.75)))}
+                          Estimated earnings: ${Math.max(50, Math.round(activeJob.priceEstimate * (currentPro?.profile?.payoutPercentage || 0.85)))}
                         </p>
                       </div>
                     </div>
@@ -3888,8 +3888,8 @@ export default function ProDashboard() {
                   {currentPro?.profile?.companyName || "Pro"}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <span className={`w-2 h-2 rounded-full ${isAvailable ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
-                  {isAvailable ? "Online" : "Offline"}
+                  <span className={`w-2 h-2 rounded-full ${currentPro?.profile?.isAvailable ? "bg-green-500 animate-pulse" : "bg-muted-foreground"}`} />
+                  {currentPro?.profile?.isAvailable ? "Online" : "Offline"}
                 </p>
               </div>
             </div>
