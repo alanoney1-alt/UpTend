@@ -112,7 +112,7 @@ const SERVICES = [
     features: [
       "One-Time Mow: $59 (≤¼ acre) | $89 (≤½ acre)",
       "Yard Cleanup: $149–$299 (overgrown lot, debris, trimming)",
-      "— Recurring Monthly (weekly service) —",
+      "Recurring Monthly (weekly service)",
       "Mow & Go: $99/mo (≤¼ acre) | $149/mo (≤½ acre): mow + blow + edging",
       "Full Service: $159/mo (≤¼ acre) | $219/mo (≤½ acre): trim, weed beds, hedge trim",
       "Premium: $249/mo (≤¼ acre) | $329/mo (≤½ acre): seasonal flowers, mulch, irrigation",

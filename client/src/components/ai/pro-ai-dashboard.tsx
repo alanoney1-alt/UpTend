@@ -134,9 +134,9 @@ function RouteOptimizationCard() {
               <p className="text-xs text-muted-foreground">Accept jobs to see your optimized route</p>
             </div>
             <div className="grid grid-cols-3 gap-2 pt-2">
-              <Stat icon={Truck} label="Miles Saved" value="— mi" />
-              <Stat icon={Clock} label="Time Saved" value="— min" />
-              <Stat icon={Leaf} label="CO₂ Saved" value="— lbs" />
+              <Stat icon={Truck} label="Miles Saved" value="0 mi" />
+              <Stat icon={Clock} label="Time Saved" value="0 min" />
+              <Stat icon={Leaf} label="CO₂ Saved" value="0 lbs" />
             </div>
           </div>
         )}

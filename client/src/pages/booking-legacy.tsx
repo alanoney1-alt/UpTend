@@ -1266,7 +1266,7 @@ export default function Booking() {
                               )}
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {loyaltyQuery.data.account.currentPoints?.toLocaleString() || 0} points • Every job builds your rewards—and supports Pros you can trust
+                              {loyaltyQuery.data.account.currentPoints?.toLocaleString() || 0} points • Every job builds your rewards, and supports Pros you can trust
                             </p>
                           </div>
                         </div>

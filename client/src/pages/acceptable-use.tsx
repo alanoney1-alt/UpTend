@@ -70,7 +70,7 @@ export default function Acceptableuse() {
 <p>(e) Coercing or threatening users to leave or remove reviews;</p>
 <p>(f) Posting reviews designed to manipulate ratings rather than provide honest feedback</p>
 
-— are all prohibited.
+are all prohibited.
 
 <h2>7. Content Standards</h2>
 

@@ -922,7 +922,7 @@ export default function Profile() {
                 <div className="flex items-center gap-2">
                   <Package className="w-4 h-4 text-primary shrink-0" />
                   <span className="font-semibold text-sm">My Digital Home</span>
-                  <span className="text-xs text-muted-foreground">— AI-cataloged inventory</span>
+                  <span className="text-xs text-muted-foreground">, AI-cataloged inventory</span>
                 </div>
               </Card>
             </Link>

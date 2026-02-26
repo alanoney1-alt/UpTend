@@ -175,7 +175,7 @@ export function ImpactTracker() {
           </div>
           <h4 className="font-bold text-xl mb-2">Start Building Your Legacy</h4>
           <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-            Every job you book creates verified environmental impact. See exactly how much waste you've kept out of landfills—then share it with the world.
+            Every job you book creates verified environmental impact. See exactly how much waste you've kept out of landfills, then share it with the world.
           </p>
           <Button asChild size="lg" className="bg-green-600 hover:bg-green-700">
             <a href="/book">Book Your First Service</a>

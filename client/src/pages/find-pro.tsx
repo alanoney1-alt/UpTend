@@ -395,7 +395,7 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
           {pro.reviews && pro.reviews.length > 0 ? (
             <>
               <p className="text-[11px] text-muted-foreground italic line-clamp-2">"{pro.reviews[0].text}"</p>
-              <p className="text-[10px] font-medium text-muted-foreground mt-1">— {pro.reviews[0].customerName}</p>
+              <p className="text-[10px] font-medium text-muted-foreground mt-1">. {pro.reviews[0].customerName}</p>
             </>
           ) : (
             <p className="text-[11px] text-muted-foreground italic">{t("findpro.no_reviews_yet", "New to UpTend. book to be their first reviewer!")}</p>

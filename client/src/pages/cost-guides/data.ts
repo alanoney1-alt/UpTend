@@ -24,11 +24,11 @@ export const costGuides: CostGuide[] = [
     avgCostHigh: 549,
     costUnit: "per load",
     factors: [
-      "Volume of items (measured in truck loads — ¼, ½, ¾, or full)",
-      "Type of items — hazardous materials, appliances, and electronics may cost more",
-      "Accessibility — stairs, narrow hallways, or long carry distances add labor time",
-      "Location within Orlando metro — distance from disposal/recycling facilities",
-      "Urgency — same-day pickup typically has a premium",
+      "Volume of items (measured in truck loads: ¼, ½, ¾, or full)",
+      "Type of items: hazardous materials, appliances, and electronics may cost more",
+      "Accessibility: stairs, narrow hallways, or long carry distances add labor time",
+      "Location within Orlando metro: distance from disposal/recycling facilities",
+      "Urgency: same-day pickup typically has a premium",
     ],
     whatsIncluded: [
       "All labor for loading and hauling",
@@ -39,7 +39,7 @@ export const costGuides: CostGuide[] = [
     ],
     tips: [
       "Consolidate items in one area before the crew arrives to save time",
-      "Separate recyclables and donations — some may reduce your cost",
+      "Separate recyclables and donations: some may reduce your cost",
       "Book mid-week for better availability and sometimes lower rates",
       "Take photos of items beforehand for a more accurate instant quote",
     ],
@@ -56,10 +56,10 @@ export const costGuides: CostGuide[] = [
     costUnit: "per project",
     factors: [
       "Square footage of the area being cleaned",
-      "Surface type — concrete, pavers, vinyl siding, brick, or wood",
+      "Surface type: concrete, pavers, vinyl siding, brick, or wood",
       "Severity of stains, mold, or mildew buildup",
       "Height and accessibility (multi-story homes cost more)",
-      "Additional treatments — sealing, soft washing for delicate surfaces",
+      "Additional treatments: sealing, soft washing for delicate surfaces",
     ],
     whatsIncluded: [
       "Professional-grade pressure washing equipment",
@@ -69,7 +69,7 @@ export const costGuides: CostGuide[] = [
       "All labor and cleanup",
     ],
     tips: [
-      "Orlando's humidity means mold builds fast — schedule every 6–12 months",
+      "Orlando's humidity means mold builds fast: schedule every 6–12 months",
       "Bundle driveway + house exterior for a better rate",
       "Soft washing is safer for painted surfaces and roofs",
       "Best done before painting or selling your home for maximum curb appeal",
@@ -87,7 +87,7 @@ export const costGuides: CostGuide[] = [
     costUnit: "per service",
     factors: [
       "Linear feet of gutters",
-      "Home height — single vs. multi-story",
+      "Home height: single vs. multi-story",
       "Level of debris buildup (leaves, pine needles, roof granules)",
       "Gutter guard removal/reinstallation if applicable",
       "Downspout unclogging needs",
@@ -100,9 +100,9 @@ export const costGuides: CostGuide[] = [
       "Ground-level cleanup",
     ],
     tips: [
-      "Clean gutters twice a year in Orlando — before and after hurricane season",
+      "Clean gutters twice a year in Orlando: before and after hurricane season",
       "Oak trees and palms shed heavily; nearby trees mean more frequent cleaning",
-      "Clogged gutters can cause foundation damage — don't skip this maintenance",
+      "Clogged gutters can cause foundation damage: don't skip this maintenance",
       "Ask about gutter guard installation to reduce future cleaning frequency",
     ],
     description: "Orlando homeowners typically pay $75–$250 for professional gutter cleaning. Single-story ranch homes are on the lower end, while large two-story homes with lots of tree coverage cost more.",
@@ -118,7 +118,7 @@ export const costGuides: CostGuide[] = [
     costUnit: "per hour (2-person crew)",
     factors: [
       "Number of movers needed (2–4 person crews)",
-      "Duration of the move — most take 2–6 hours",
+      "Duration of the move: most take 2–6 hours",
       "Stairs, elevators, or long-carry distances",
       "Heavy or specialty items (pianos, safes, pool tables)",
       "Whether you need truck + movers or labor-only",
@@ -148,9 +148,9 @@ export const costGuides: CostGuide[] = [
     avgCostHigh: 125,
     costUnit: "per hour",
     factors: [
-      "Type of work — simple repairs vs. skilled installations",
+      "Type of work: simple repairs vs. skilled installations",
       "Materials needed (often billed separately)",
-      "Number of tasks — bundling multiple small jobs saves money",
+      "Number of tasks: bundling multiple small jobs saves money",
       "Accessibility and complexity of the repair",
       "Permit requirements for electrical or plumbing work",
     ],
@@ -163,7 +163,7 @@ export const costGuides: CostGuide[] = [
     ],
     tips: [
       "Make a list of all small repairs and bundle them into one visit",
-      "Some tasks require a licensed specialist — ask if unsure",
+      "Some tasks require a licensed specialist: ask if unsure",
       "Provide materials yourself to save on markup",
       "Take photos of the issue before booking for faster quoting",
     ],
@@ -179,7 +179,7 @@ export const costGuides: CostGuide[] = [
     avgCostHigh: 1500,
     costUnit: "per project",
     factors: [
-      "Scope — single room vs. multi-room demo",
+      "Scope: single room vs. multi-room demo",
       "Materials being demolished (drywall, tile, concrete, cabinets)",
       "Debris hauling and disposal requirements",
       "Presence of hazardous materials (asbestos, lead paint) requiring special handling",
@@ -225,7 +225,7 @@ export const costGuides: CostGuide[] = [
     ],
     tips: [
       "Pre-sort items you want to keep vs. remove to speed up the job",
-      "Orlando humidity damages stored items fast — cleanout regularly",
+      "Orlando humidity damages stored items fast: cleanout regularly",
       "Combine with pressure washing for a full garage refresh",
       "Good time to install shelving or storage systems afterward",
     ],
@@ -242,10 +242,10 @@ export const costGuides: CostGuide[] = [
     costUnit: "per visit",
     factors: [
       "Home size (square footage and number of bedrooms/bathrooms)",
-      "Cleaning type — standard, deep clean, or move-in/move-out",
-      "Frequency — one-time vs. recurring (weekly/biweekly discounts)",
+      "Cleaning type: standard, deep clean, or move-in/move-out",
+      "Frequency: one-time vs. recurring (weekly/biweekly discounts)",
       "Pet ownership (pet hair removal adds time)",
-      "Special requests — inside oven, inside fridge, windows",
+      "Special requests: inside oven, inside fridge, windows",
     ],
     whatsIncluded: [
       "Full kitchen cleaning (counters, appliances, sink, floors)",
@@ -258,7 +258,7 @@ export const costGuides: CostGuide[] = [
       "Recurring service (biweekly) is 15–20% cheaper per visit than one-time",
       "Deep cleans cost more but set a clean baseline for maintenance cleaning",
       "Declutter before the team arrives so they can focus on actual cleaning",
-      "Move-out cleans help secure your security deposit — worth the investment",
+      "Move-out cleans help secure your security deposit: worth the investment",
     ],
     description: "Standard home cleaning in Orlando ranges from $100–$180 for a 2-bed/2-bath to $200–$300 for a 4-bed/3-bath. Deep cleaning costs 1.5–2x more. Recurring biweekly service averages $120–$200/visit with built-in discounts.",
   },
@@ -273,7 +273,7 @@ export const costGuides: CostGuide[] = [
     costUnit: "per month",
     factors: [
       "Pool size and type (in-ground vs. above-ground)",
-      "Frequency — weekly vs. biweekly service",
+      "Frequency: weekly vs. biweekly service",
       "Chemical needs based on water chemistry",
       "Equipment condition (pump, filter, chlorinator)",
       "Whether pool has a screen enclosure (less debris = lower cost)",
@@ -289,7 +289,7 @@ export const costGuides: CostGuide[] = [
       "Weekly service keeps chemicals balanced and prevents costly algae blooms",
       "Orlando's heat and rain mean pools need more frequent attention than up north",
       "A screen enclosure dramatically reduces debris and maintenance costs",
-      "Ask about green pool recovery if your pool has turned — costs $200–$400 extra",
+      "Ask about green pool recovery if your pool has turned: costs $200–$400 extra",
     ],
     description: "Regular pool cleaning in Orlando runs $80–$200/month for weekly service. Most standard residential pools (10,000–20,000 gallons) fall in the $100–$150/month range. One-time cleanings for neglected pools cost $200–$500 depending on condition.",
   },
@@ -304,7 +304,7 @@ export const costGuides: CostGuide[] = [
     costUnit: "per visit (maintenance)",
     factors: [
       "Lot size and amount of turf/garden beds",
-      "Service type — mowing/maintenance vs. design/installation",
+      "Service type: mowing/maintenance vs. design/installation",
       "Plant and material costs for new installations",
       "Irrigation system needs",
       "Frequency of service (weekly during growing season)",
@@ -317,7 +317,7 @@ export const costGuides: CostGuide[] = [
       "Basic yard debris cleanup",
     ],
     tips: [
-      "Orlando lawns (St. Augustine) grow year-round — weekly mowing is standard",
+      "Orlando lawns (St. Augustine) grow year-round: weekly mowing is standard",
       "Use Florida-native plants to reduce water and maintenance costs",
       "Bundle mowing with pressure washing for curb appeal maintenance packages",
       "Mulch beds 2x/year to reduce weeds and retain moisture in sandy soil",
@@ -335,7 +335,7 @@ export const costGuides: CostGuide[] = [
     costUnit: "per home",
     factors: [
       "Number of rooms and total square footage",
-      "Cleaning tier — Standard ($50/room), Deep Clean ($75/room), or Pet Treatment ($89/room)",
+      "Cleaning tier: Standard ($50/room), Deep Clean ($75/room), or Pet Treatment ($89/room)",
       "Add-ons like Scotchgard protectant ($20/room)",
       "Hallways ($25 each) and stairs ($25/flight)",
       "Whole house packages available (3BR/2BA $149, 4-5BR $199)",
@@ -351,7 +351,7 @@ export const costGuides: CostGuide[] = [
       "Vacuum thoroughly before the appointment for better results",
       "Move small items and breakables off the floor beforehand",
       "Professional cleaning every 12–18 months extends carpet life significantly",
-      "Choose Pet Treatment ($89/room) if you have pets — standard cleaning won't fully eliminate odors",
+      "Choose Pet Treatment ($89/room) if you have pets: standard cleaning won't fully eliminate odors",
       "Whole house packages (3BR $129, 4-5BR $215) save vs. per-room pricing",
     ],
     description: "UpTend Carpet Cleaning: Standard Steam Clean $50/room, Deep Clean $75/room, Pet Treatment $89/room. Hallways $25 each, stairs $25/flight. Scotchgard protectant $20/room add-on. Whole house packages: 3BR/2BA $129, 4-5BR $215. $100 minimum charge (covers up to 2 rooms standard).",

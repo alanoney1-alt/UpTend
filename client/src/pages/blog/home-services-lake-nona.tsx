@@ -70,7 +70,7 @@ export default function BlogHomeServicesLakeNona() {
           </li>
           <li>
             <strong>HOA standards.</strong> Most Lake Nona communities have active HOAs with strict exterior maintenance
-            requirements. Falling behind on pressure washing, lawn care, or exterior paint can mean violation letters —
+            requirements. Falling behind on pressure washing, lawn care, or exterior paint can mean violation letters.
             and fines.
           </li>
           <li>

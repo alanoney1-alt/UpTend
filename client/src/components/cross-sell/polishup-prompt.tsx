@@ -26,7 +26,7 @@ const SERVICE_TO_PITCH = {
   garage_cleanout: {
     headline: "Garage reset. Home next?",
     description: "Your garage is pristine. Extend that clean feeling to your entire home.",
-    benefit: "Maintain the momentum—clean garage, clean house.",
+    benefit: "Maintain the momentum. Clean garage, clean house.",
   },
   moving_labor: {
     headline: "Moved in. Time to settle.",

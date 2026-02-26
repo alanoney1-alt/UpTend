@@ -58,7 +58,7 @@ function BookingDraftCard({ draft, onConfirm, onEdit }: { draft: any; onConfirm:
         <span className="font-semibold text-sm text-gray-900 dark:text-gray-100">Your Quote</span>
       </div>
       <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
-        {draft.serviceName} {q.breakdown?.[0]?.label ? `— ${q.breakdown[0].label}` : ""}
+        {draft.serviceName} {q.breakdown?.[0]?.label ? `: ${q.breakdown[0].label}` : ""}
       </p>
       {q.priceFormatted && (
         <p className="text-lg font-bold text-[#F47C20] mt-1">{q.priceFormatted}</p>
