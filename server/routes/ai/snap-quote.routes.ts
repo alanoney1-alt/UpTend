@@ -169,7 +169,7 @@ function buildQuote(analysis: VisionAnalysis) {
   }
 
   // 15% pricing buffer: the customer sees a ceiling price that accounts for
-  // slight scope underestimates. The pro gets paid 80% of the base estimate,
+  // slight scope underestimates. The pro gets paid 85% of the base estimate,
   // not the buffered ceiling. This protects against AI underpricing while
   // keeping the customer's maximum transparent.
   // Example: AI estimates $155 -> customer ceiling $179 -> pro earns $124-$143
@@ -473,9 +473,9 @@ router.get("/haulers/jobs/:jobId/snap-details", requireAuth, requireHauler, asyn
     const adjustments = JSON.parse(snapQuote.adjustments || "[]");
 
     const customerPrice = snapQuote.quoted_price;
-    // Pro payout is 80% of the base estimate (before the 15% buffer)
+    // Pro payout is 85% of the base estimate (before the 15% buffer)
     const baseEstimate = Math.round(customerPrice / 1.15);
-    const proPayout = Math.round(baseEstimate * 0.80 * 100) / 100;
+    const proPayout = Math.round(baseEstimate * 0.85 * 100) / 100;
 
     const equipmentChecklist = generateEquipmentChecklist(
       analysis.serviceType || snapQuote.service_type,

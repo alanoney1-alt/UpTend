@@ -261,8 +261,8 @@ export function calculateProPayout(
   // For multi-Pro jobs, Lead Pro gets $15 bonus
   const leadBonus = proRole === "lead" ? 15 : 0;
 
-  // Pro payout: 80% of base price (customer rate is $80/hr, Pro gets $64/hr = 80%)
-  const hourlyRate = 64; // $80/hr customer rate × 80% = $64/hr Pro payout
+  // Pro payout: 85% of base price (customer rate is $80/hr, Pro gets $68/hr = 85%)
+  const hourlyRate = 68; // $80/hr customer rate × 85% = $68/hr Pro payout
   const basePayout = hourlyRate * estimatedDurationHours;
 
   return basePayout + leadBonus;

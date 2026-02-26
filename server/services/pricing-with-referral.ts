@@ -18,10 +18,10 @@
 export interface PricingCalculation {
   jobPrice: number; // Original job price
   customerPays: number; // What customer actually pays (after credit)
-  proPayout: number; // What Pro receives (80% of original price)
+  proPayout: number; // What Pro receives (85% of original price)
   platformFee: number; // What UpTend keeps (reduced by referral)
   referralCreditApplied: number; // Amount of credit used
-  proPayoutPercentage: number; // Pro's payout rate (typically 0.80)
+  proPayoutPercentage: number; // Pro's payout rate (typically 0.85)
 }
 
 /**
@@ -30,7 +30,7 @@ export interface PricingCalculation {
 export function calculatePricingWithReferral(
   jobPrice: number,
   referralCredit: number,
-  proPayoutPercentage: number = 0.80 // Default: Pro gets 80%
+  proPayoutPercentage: number = 0.85 // Default: Pro gets 85%
 ): PricingCalculation {
   // Pro payout is ALWAYS based on the original job price, not discounted price
   const proPayout = Math.round(jobPrice * proPayoutPercentage);
@@ -95,15 +95,15 @@ export function verifyPricingCalculation(calc: PricingCalculation): {
 // Example usage and tests
 export const EXAMPLE_CALCULATIONS = {
   // Example 1: $300 job with $25 credit
-  example1: calculatePricingWithReferral(300, 25, 0.80),
+  example1: calculatePricingWithReferral(300, 25, 0.85),
   // Expected: Customer pays $275, Pro gets $240, Platform gets $35
 
   // Example 2: $100 job with $25 credit
-  example2: calculatePricingWithReferral(100, 25, 0.80),
+  example2: calculatePricingWithReferral(100, 25, 0.85),
   // Expected: Customer pays $75, Pro gets $80, Platform gets -$5 (we eat the loss)
 
   // Example 3: $50 job with $25 credit
-  example3: calculatePricingWithReferral(50, 25, 0.80),
+  example3: calculatePricingWithReferral(50, 25, 0.85),
   // Expected: Customer pays $25, Pro gets $40, Platform gets -$15 (we eat the loss)
 };
 

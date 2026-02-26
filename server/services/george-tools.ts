@@ -1032,9 +1032,9 @@ export async function getCertificationPrograms(proId?: string): Promise<object> 
  certsNeeded: completed >= 6 ? 0 : completed >= 4 ? 6 - completed : completed >= 2 ? 4 - completed : 2 - completed,
  },
  feeImpact: {
- currentFee: completed >= 4 ? "18-20%" : completed >= 2 ? "19-23%" : "20-25%",
- potentialFee: "18%",
- savings: "Every cert lowers your platform fee — more certs = more money in your pocket",
+ currentFee: "15%",
+ potentialFee: "15%",
+ savings: "Flat 15% platform fee — you keep 85% of every job",
  },
  };
 }

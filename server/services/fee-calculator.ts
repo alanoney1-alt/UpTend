@@ -2,8 +2,8 @@
  * Fee Calculator Service
  * 
  * Gamified fee reduction based on pro certifications.
- * Non-LLC pros start at 25%, LLC pros at 20%.
- * Earning certifications reduces the platform fee.
+ * Flat 15% platform fee for all pros.
+ * Pro keeps 85% of every job.
  */
 
 import { db } from "../db";

@@ -61,7 +61,7 @@ export async function checkPromotion(haulerId: string): Promise<{
         level: newLevel,
         isConsultantEligible: newLevel === 3,
         commissionRate: newLevel === 3 ? 10 : 0,
-        payoutPercentage: newLevel >= 2 ? 0.8 : 0.75,
+        payoutPercentage: 0.85,
       })
       .where(eq(haulerProfiles.id, haulerId));
 
@@ -91,7 +91,7 @@ export function getNextLevelRequirements(level: number) {
       nextLevel: 2,
       title: "Verified Pro",
       requirements: { jobs: 10, rating: 4.8 },
-      unlocks: ["20% Fee Cap", "Priority Jobs", "Bounty Jobs"],
+      unlocks: ["15% Platform Fee", "Priority Jobs", "Bounty Jobs"],
     };
   }
   if (level === 2) {

@@ -631,7 +631,7 @@ export function registerProProfileRoutes(app: Express) {
       const startOfWeek = startOfDay - now.getDay() * 86400000;
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
 
-      const payoutPct = profile.payoutPercentage || 0.75;
+      const payoutPct = profile.payoutPercentage || 0.85;
 
       let total = 0, weekly = 0, monthly = 0, today = 0, pending = 0, jobsThisWeek = 0;
       const history: any[] = [];

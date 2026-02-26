@@ -417,13 +417,13 @@ export async function sendProWelcomeVerified(to: string, data: { proName: string
     <li><strong>Set your availability</strong> — Let us know when you're ready to work.</li>
     <li><strong>Wait for your first match</strong> — We'll notify you instantly when a job fits your skills and area.</li>
   </ol>
-  <p style="color:#555;line-height:1.6">Remember: You keep 80% of every job. No lead fees. Same-day payouts via Stripe.</p>
+  <p style="color:#555;line-height:1.6">Remember: You keep 85% of every job. No lead fees. Same-day payouts via Stripe.</p>
   <div style="text-align:center;margin:24px 0">
     <a href="${APP_URL()}/profile" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">Complete Your Profile</a>
   </div>
   <p style="color:#888;font-size:13px;margin-top:24px">Questions? Call us at (407) 338-3342 or reply to this email.</p>
   `);
-  const text = `Hi ${data.proName}, your background check is complete and your profile is live on UpTend. Complete your profile, set your availability, and wait for your first match. You keep 80% of every job. No lead fees. Same-day payouts via Stripe. Complete your profile at ${APP_URL()}/profile`;
+  const text = `Hi ${data.proName}, your background check is complete and your profile is live on UpTend. Complete your profile, set your availability, and wait for your first match. You keep 85% of every job. No lead fees. Same-day payouts via Stripe. Complete your profile at ${APP_URL()}/profile`;
   return send(to, "You're verified — welcome to UpTend", html, text);
 }
 

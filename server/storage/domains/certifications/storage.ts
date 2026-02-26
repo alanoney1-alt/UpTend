@@ -52,7 +52,7 @@ export class CertificationsStorage {
       rating: profile?.rating || 5.0,
       isConsultantEligible: profile?.isConsultantEligible || false,
       commissionRate: profile?.commissionRate || 0,
-      payoutPercentage: profile?.payoutPercentage || 0.75,
+      payoutPercentage: profile?.payoutPercentage || 0.85,
       certifications: certs,
     };
   }
