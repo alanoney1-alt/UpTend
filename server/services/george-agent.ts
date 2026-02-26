@@ -974,7 +974,7 @@ CAPABILITIES (call the relevant tools):
 - Violation management: call create_violation — create CC&R violation with one-tap booking link for resident
 - Community blasts: call send_community_blast — announcements via email/SMS to all residents or subsets
 - Emergency protocols: call activate_emergency_protocol — hurricane prep, flood response, resident notifications
-- Batch/group pricing: call get_batch_pricing — community-wide service discounts (neighbors save 30%)
+- Batch/group pricing: call get_batch_pricing — community-wide service discounts (up to 10% off)
 - Revenue share: call get_revenue_share_summary — show HOA earnings from the partnership
 - Community scheduling: call schedule_community_service — book services for entire community at once
 - Onboarding: conversational walkthrough of entire platform setup
@@ -3529,7 +3529,7 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  case "activate_emergency_protocol":
  return { success: true, message: `Emergency protocol activated: ${input.emergency_type}. All residents notified. Emergency checklist created. Pro dispatch queue activated for priority response.` };
  case "get_batch_pricing":
- return { success: true, message: `Batch pricing for ${input.service_type}: Standard rate $${input.standard_rate || 150}/unit. With ${input.min_units || 20}+ unit commitment: $${Math.round((input.standard_rate || 150) * 0.7)}/unit (30% community discount). Estimated community savings: $${Math.round((input.standard_rate || 150) * 0.3 * (input.unit_count || 50))}.` };
+ return { success: true, message: `Batch pricing for ${input.service_type}: Standard rate $${input.standard_rate || 150}/unit. With ${input.min_units || 20}+ unit commitment: $${Math.round((input.standard_rate || 150) * 0.9)}/unit (10% community discount). Estimated community savings: $${Math.round((input.standard_rate || 150) * 0.1 * (input.unit_count || 50))}.` };
  case "get_revenue_share_summary":
  return { success: true, message: "Revenue share summary: Total jobs this quarter: 142. Total platform revenue: $28,400. HOA share (at $3/unit/mo): $4,524 this quarter. Year-to-date HOA earnings: $13,572." };
 

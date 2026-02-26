@@ -296,7 +296,7 @@ router.post("/batch-booking", requireAuth, async (req: Request, res: Response) =
     }
     const batch = {
       id: batchSeq++, business_id: businessId, service_type, target_date,
-      discount_pct: discount_pct || 10, min_units: min_units || 5,
+      discount_pct: Math.min(discount_pct || 10, 10), min_units: min_units || 5,
       status: "open", joined_units: [], created_at: new Date().toISOString(),
     };
     batchBookingsStore.push(batch);
