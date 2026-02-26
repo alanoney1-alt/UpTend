@@ -1,6 +1,8 @@
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
+import { Header } from "@/components/landing/header";
+import { Footer } from "@/components/landing/footer";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -776,20 +778,11 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-[#3B1D5A]" data-testid="page-profile">
-      <header className="p-4">
-        <Link href="/" className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors">
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Home</span>
-        </Link>
-      </header>
+    <div className="min-h-screen bg-background" data-testid="page-profile">
+      <Header />
 
-      <main className="max-w-2xl mx-auto px-4 pb-12">
-        <div className="flex justify-center mb-6">
-          <Logo className="w-10 h-10" textClassName="text-xl" variant="light" />
-        </div>
-
-        <h1 className="text-2xl font-bold text-white text-center mb-8">My Profile</h1>
+      <main className="max-w-2xl mx-auto px-4 py-12">
+        <h1 className="text-2xl font-bold text-center mb-8">My Profile</h1>
 
         <Card className="p-4 mb-4" data-testid="card-profile-info">
           <div className="flex items-start justify-between mb-4">

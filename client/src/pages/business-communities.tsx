@@ -178,6 +178,7 @@ export default function BusinessCommunities() {
             <div className="flex items-center gap-2">
               <Home className="w-6 h-6 text-orange-500" />
               <span className="text-xl font-bold">HOA Management</span>
+              <Badge variant="outline" className="ml-2 text-xs text-muted-foreground">Sample Data</Badge>
             </div>
           </div>
           <div className="flex items-center gap-2">

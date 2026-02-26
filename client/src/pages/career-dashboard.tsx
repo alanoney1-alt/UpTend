@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
+import { Header } from "@/components/landing/header";
+import { Footer } from "@/components/landing/footer";
 import {
   ArrowLeft, Truck, Star, Award, TrendingUp, Loader2,
   Medal, ShieldCheck, Zap, Target, Lock, ChevronDown, ChevronUp, Building2
@@ -148,19 +150,7 @@ export default function CareerDashboard() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-career-dashboard">
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-2 flex-wrap">
-          <Link href="/" className="flex items-center gap-2">
-            <Logo className="w-10 h-10" textClassName="text-xl" />
-          </Link>
-          <Link href="/profile">
-            <Button variant="ghost" size="sm" data-testid="button-back-profile">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-6">
         <Card className="p-6 text-center" data-testid="card-level-hero">

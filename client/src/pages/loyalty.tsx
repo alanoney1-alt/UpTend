@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Header } from "@/components/landing/header";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -103,23 +104,9 @@ export default function Loyalty() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
-          <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-1" />
-                  Back
-                </Button>
-              </Link>
-              <div className="flex items-center gap-2">
-                <Gift className="w-6 h-6 text-primary" />
-                <span className="text-xl font-bold">Rewards</span>
-              </div>
-            </div>
-          </div>
-        </header>
+        <Header />
         <main className="container mx-auto px-4 py-8">
+          <h1 className="text-2xl font-bold mb-6 flex items-center gap-2"><Gift className="w-6 h-6 text-primary" /> UpTend Rewards</h1>
           <Skeleton className="h-48 w-full mb-6" />
           <div className="grid md:grid-cols-3 gap-6">
             <Skeleton className="h-32" />
@@ -157,24 +144,10 @@ export default function Loyalty() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-loyalty">
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back
-              </Button>
-            </Link>
-            <div className="flex items-center gap-2">
-              <Gift className="w-6 h-6 text-primary" />
-              <span className="text-xl font-bold">UpTend Rewards</span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-6 flex items-center gap-2"><Gift className="w-6 h-6 text-primary" /> UpTend Rewards</h1>
         <Card className={`mb-8 overflow-hidden ${tierBgColors[currentTier]}`}>
           <div className="p-6">
             <div className="flex items-center justify-between flex-wrap gap-4">
