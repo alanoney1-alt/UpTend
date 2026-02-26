@@ -3726,7 +3726,7 @@ export async function chat(
  const textBlock = response.content.find((b: any) => b.type === "text");
  const rawText = textBlock && "text" in textBlock ? textBlock.text : "";
  // Strip any emojis that slip through despite system prompt instruction
- const noEmojiText = rawText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '');
+ const noEmojiText = rawText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '').replace(/\u2014/g, ',').replace(/\u2013/g, ',');
  const { cleanText, buttons } = parseButtons(noEmojiText);
 
  return {

@@ -749,7 +749,7 @@ export function BundlePricingCalculator() {
             </h3>
             {selectedService === "truck_unloading" && (
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Labor-only pricing: $160/hr for 2 Pros. We unload, you direct!
+                Labor-only pricing: $130/hr for 2 Pros. We unload, you direct!
               </p>
             )}
             {selectedService === "garage_cleanout" && (

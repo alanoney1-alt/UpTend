@@ -43,7 +43,7 @@ export function OperationsOptimization() {
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto" data-testid="text-operations-description">
             Every route, every price, every booking is optimized by AI in real-time.
-            Traditional haulers can't compete with that.
+            Traditional providers can't compete with that.
           </p>
         </div>
 

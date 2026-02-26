@@ -52,7 +52,7 @@ app.use(cors({
 // Rate limiting for API endpoints
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'production' ? 200 : 10000, // generous in dev
+  max: process.env.NODE_ENV === 'production' ? 1000 : 10000, // generous in dev
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => !req.path.startsWith('/api/'), // Only limit API routes
@@ -72,7 +72,8 @@ app.use('/api/haulers/login', authLimiter);
 app.use('/api/haulers/register', authLimiter);
 app.use('/api/pros/login', authLimiter);
 app.use('/api/pros/register', authLimiter);
-app.use('/api/auth/', authLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
 app.use('/api/admin/login', authLimiter);
 app.use('/api/business/login', authLimiter);
 app.use('/api/password-reset', authLimiter);

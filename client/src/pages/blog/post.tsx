@@ -138,7 +138,7 @@ In Florida, water damage from clogged gutters is one of the most common, and mos
 
 ## What It Costs
 
-For a typical Orlando home, gutter cleaning runs $129 to $250 depending on home size and gutter accessibility. Two-story homes cost more due to ladder work and safety requirements.
+For a typical Orlando home, gutter cleaning runs $150 to $250 depending on home size and gutter accessibility. Two-story homes cost more due to ladder work and safety requirements.
 
 ## DIY or Pro?
 
