@@ -75,7 +75,7 @@ export default function BookingPage() {
     const amount = parseFloat(directAmount);
     const customerId = (user as any)?.userId || (user as any)?.id || "";
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50/30 to-white dark:from-zinc-950 dark:to-zinc-900">
+      <div className="min-h-screen bg-background">
         <Header />
         <main id="main-content" className="container mx-auto px-4 pt-24 pb-24 md:pt-28 md:pb-12">
           <div className="w-full max-w-2xl mx-auto">
@@ -114,7 +114,7 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50/30 to-white dark:from-zinc-950 dark:to-zinc-900">
+    <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 pt-20">
         <GeorgeInlineTip
