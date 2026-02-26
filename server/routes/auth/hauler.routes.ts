@@ -52,6 +52,10 @@ const proRegistrationSchema = z.object({
   // Photo uploads
   profilePhotoUrl: z.string().url().optional(),
   driversLicensePhotoUrl: z.string().url().optional(),
+  // B2B Commercial Licensing
+  b2bLicensed: z.boolean().optional(),
+  licenseNumber: z.string().optional(),
+  b2bRates: z.record(z.string(), z.object({ min: z.number(), max: z.number() })).optional(),
 });
 
 /**
@@ -346,6 +350,9 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaAcceptedAt: req.body.icaAcceptedAt || null,
         icaSignedName: req.body.icaSignedName || null,
         icaVersion: req.body.icaVersion || null,
+        b2bLicensed: data.b2bLicensed || false,
+        licenseNumber: data.licenseNumber || null,
+        b2bRates: data.b2bRates || {},
       });
 
       // Update social profiles if provided
@@ -517,6 +524,9 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaAcceptedAt: req.body.icaAcceptedAt || null,
         icaSignedName: req.body.icaSignedName || null,
         icaVersion: req.body.icaVersion || null,
+        b2bLicensed: data.b2bLicensed || false,
+        licenseNumber: data.licenseNumber || null,
+        b2bRates: data.b2bRates || {},
       });
 
       // Update social profiles if provided

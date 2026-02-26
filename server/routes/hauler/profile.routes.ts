@@ -203,6 +203,9 @@ export function registerProProfileRoutes(app: Express) {
       if (req.body.hasOwnLiabilityInsurance !== undefined) allowedFields.hasOwnLiabilityInsurance = req.body.hasOwnLiabilityInsurance;
       if (req.body.liabilityInsuranceCertificateUrl !== undefined) allowedFields.liabilityInsuranceCertificateUrl = req.body.liabilityInsuranceCertificateUrl;
       if (req.body.liabilityInsuranceVerifiedAt !== undefined) allowedFields.liabilityInsuranceVerifiedAt = req.body.liabilityInsuranceVerifiedAt;
+      if (req.body.b2bLicensed !== undefined) allowedFields.b2bLicensed = req.body.b2bLicensed;
+      if (req.body.licenseNumber !== undefined) allowedFields.licenseNumber = req.body.licenseNumber;
+      if (req.body.b2bRates !== undefined) allowedFields.b2bRates = req.body.b2bRates;
 
       const updated = await storage.updateHaulerProfile(profile.id, allowedFields);
       res.json(updated);
@@ -244,6 +247,9 @@ export function registerProProfileRoutes(app: Express) {
       if (req.body.hasOwnLiabilityInsurance !== undefined) allowedFields.hasOwnLiabilityInsurance = req.body.hasOwnLiabilityInsurance;
       if (req.body.liabilityInsuranceCertificateUrl !== undefined) allowedFields.liabilityInsuranceCertificateUrl = req.body.liabilityInsuranceCertificateUrl;
       if (req.body.liabilityInsuranceVerifiedAt !== undefined) allowedFields.liabilityInsuranceVerifiedAt = req.body.liabilityInsuranceVerifiedAt;
+      if (req.body.b2bLicensed !== undefined) allowedFields.b2bLicensed = req.body.b2bLicensed;
+      if (req.body.licenseNumber !== undefined) allowedFields.licenseNumber = req.body.licenseNumber;
+      if (req.body.b2bRates !== undefined) allowedFields.b2bRates = req.body.b2bRates;
 
       const updated = await storage.updateHaulerProfile(profile.id, allowedFields);
       res.json(updated);

@@ -189,6 +189,10 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   earningsLevel: text("earnings_level").default("starter"), // 'starter', 'rising', 'pro', 'elite', 'legend'
   // Business Partner link
   businessPartnerId: varchar("business_partner_id"),
+  // B2B Commercial Licensing
+  b2bLicensed: boolean("b2b_licensed").default(false),
+  licenseNumber: text("license_number"),
+  b2bRates: jsonb("b2b_rates").$type<Record<string, { min: number; max: number }>>().default(sql`'{}'::jsonb`),
 });
 
 export const haulerProfilesRelations = relations(haulerProfiles, ({ one, many }) => ({
@@ -926,6 +930,10 @@ export const haulerProfileUpdateSchema = z.object({
   bio: z.string().optional(),
   languagesSpoken: z.array(z.string()).optional(),
   serviceTypes: z.array(z.string()).optional(),
+  supportedServices: z.array(z.string()).optional(),
+  b2bLicensed: z.boolean().optional(),
+  licenseNumber: z.string().optional(),
+  b2bRates: z.record(z.string(), z.object({ min: z.number(), max: z.number() })).optional(),
 });
 export type HaulerProfileUpdate = z.infer<typeof haulerProfileUpdateSchema>;
 

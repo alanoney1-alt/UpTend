@@ -69,6 +69,7 @@ import {
  homeAppliances,
  homeServiceHistory,
  referrals,
+ pricingRates,
 } from "../../shared/schema";
 import { eq, desc, and, inArray } from "drizzle-orm";
 
@@ -7780,4 +7781,186 @@ export async function rescheduleBooking(params: {
  console.error("[George Tools] rescheduleBooking error:", err);
  return { success: false, error: "Could not reschedule booking." };
  }
+}
+
+// -----------------------------------------------
+// HOA Pricing Schedule Generator
+// -----------------------------------------------
+
+interface HoaServiceRequest {
+  service_type: string;
+  frequency: string;
+  unit_count: number;
+}
+
+function getHoaGroupDiscount(unitCount: number): number {
+  if (unitCount >= 50) return 0.10;
+  if (unitCount >= 20) return 0.07;
+  if (unitCount >= 10) return 0.05;
+  if (unitCount >= 5) return 0.03;
+  return 0;
+}
+
+function getDefaultPerUnitPrice(serviceType: string): number {
+  // Prices in dollars, per unit, per service visit
+  switch (serviceType) {
+    case "pressure_washing": return 120;
+    case "gutter_cleaning": return 129;
+    case "landscaping": return 99;
+    case "pool_cleaning": return 99;
+    case "home_cleaning": return 89;
+    case "carpet_cleaning": return 129;
+    case "light_demolition": return 199;
+    case "handyman": return 75;
+    case "junk_removal": return 150;
+    case "home_consultation": return 0;
+    default: return 100;
+  }
+}
+
+function frequencyToAnnualMultiplier(freq: string): number {
+  const f = freq.toLowerCase().trim();
+  if (f === "monthly") return 12;
+  if (f === "weekly") return 52;
+  if (f === "biweekly" || f === "bi-weekly") return 26;
+  if (f === "quarterly") return 4;
+  if (f === "biannual" || f === "bi-annual" || f === "2x/year" || f === "twice yearly") return 2;
+  if (f === "annual" || f === "annually" || f === "1x/year" || f === "once yearly") return 1;
+  // Try to parse "Nx/year" pattern
+  const match = f.match(/^(\d+)x?\s*\/?\s*year$/i);
+  if (match) return parseInt(match[1], 10);
+  return 1;
+}
+
+export async function generateHoaPricingSchedule(params: {
+  services: HoaServiceRequest[];
+  location: string;
+}): Promise<object> {
+  try {
+    const results: Array<{
+      serviceType: string;
+      frequency: string;
+      unitCount: number;
+      perUnitCostBeforeDiscount: number;
+      discountPercent: number;
+      perUnitCostAfterDiscount: number;
+      totalPerVisit: number;
+      annualVisits: number;
+      annualTotal: number;
+      availableProsCount: number;
+      source: string;
+    }> = [];
+
+    let grandTotalAnnual = 0;
+
+    for (const svc of params.services) {
+      const serviceType = svc.service_type;
+      const unitCount = svc.unit_count || 1;
+      const frequency = svc.frequency || "annual";
+
+      // Query pro rates from the database
+      let perUnitCost: number;
+      let availableProsCount = 0;
+      let source = "platform_default";
+
+      try {
+        // Find pros that serve this service type and are available
+        const pros = await db.select({
+          hourlyRate: haulerProfiles.hourlyRate,
+        }).from(haulerProfiles)
+          .where(
+            and(
+              eq(haulerProfiles.isAvailable, true),
+            )
+          );
+
+        // Filter to pros whose serviceTypes array includes this service
+        const matchingPros = pros.filter((p) => true); // All pros queried; real filter below
+        // Re-query with raw SQL for array containment
+        const matchingRates: number[] = [];
+        const allPros = await db.select({
+          hourlyRate: haulerProfiles.hourlyRate,
+          serviceTypes: haulerProfiles.serviceTypes,
+        }).from(haulerProfiles)
+          .where(eq(haulerProfiles.isAvailable, true));
+
+        for (const pro of allPros) {
+          const types = pro.serviceTypes || [];
+          if (types.includes(serviceType)) {
+            matchingRates.push(pro.hourlyRate || 75);
+          }
+        }
+
+        availableProsCount = matchingRates.length;
+
+        if (matchingRates.length > 0) {
+          // Use median rate as the per-unit cost
+          matchingRates.sort((a, b) => a - b);
+          const mid = Math.floor(matchingRates.length / 2);
+          perUnitCost = matchingRates.length % 2 === 0
+            ? (matchingRates[mid - 1] + matchingRates[mid]) / 2
+            : matchingRates[mid];
+          source = "pro_rates";
+        } else {
+          // Check pricing_rates table
+          const rates = await db.select().from(pricingRates)
+            .where(
+              and(
+                eq(pricingRates.serviceType, serviceType),
+                eq(pricingRates.isActive, true),
+              )
+            );
+          if (rates.length > 0) {
+            perUnitCost = rates[0].baseRate;
+            source = "pricing_rates_table";
+          } else {
+            perUnitCost = getDefaultPerUnitPrice(serviceType);
+            source = "platform_default";
+          }
+        }
+      } catch {
+        perUnitCost = getDefaultPerUnitPrice(serviceType);
+        source = "platform_default";
+      }
+
+      const discountPercent = getHoaGroupDiscount(unitCount);
+      const perUnitAfterDiscount = Math.round(perUnitCost * (1 - discountPercent) * 100) / 100;
+      const totalPerVisit = Math.round(perUnitAfterDiscount * unitCount * 100) / 100;
+      const annualVisits = frequencyToAnnualMultiplier(frequency);
+      const annualTotal = Math.round(totalPerVisit * annualVisits * 100) / 100;
+
+      grandTotalAnnual += annualTotal;
+
+      results.push({
+        serviceType,
+        frequency,
+        unitCount,
+        perUnitCostBeforeDiscount: perUnitCost,
+        discountPercent: Math.round(discountPercent * 100),
+        perUnitCostAfterDiscount: perUnitAfterDiscount,
+        totalPerVisit,
+        annualVisits,
+        annualTotal,
+        availableProsCount,
+        source,
+      });
+    }
+
+    return {
+      success: true,
+      location: params.location,
+      schedule: results,
+      grandTotalAnnual: Math.round(grandTotalAnnual * 100) / 100,
+      discountTiers: [
+        { range: "5-9 units", discount: "3%" },
+        { range: "10-19 units", discount: "5%" },
+        { range: "20-49 units", discount: "7%" },
+        { range: "50+ units", discount: "10% (max)" },
+      ],
+      note: "Discount is applied per service line based on unit count. Maximum discount is 10%.",
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateHoaPricingSchedule error:", err);
+    return { success: false, error: "Could not generate HOA pricing schedule." };
+  }
 }

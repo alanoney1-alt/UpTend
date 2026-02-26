@@ -1627,6 +1627,30 @@ const TOOL_DEFINITIONS: any[] = [
  required: ["current_spend", "units"],
  },
  },
+ {
+ name: "generate_hoa_pricing_schedule",
+ description: "Generate a complete HOA/property management pricing schedule. Input an array of services needed with frequency and unit count, plus location. Returns per-unit cost, group discount, total cost, and available pro count per service.",
+ input_schema: {
+ type: "object",
+ properties: {
+ services: {
+ type: "array",
+ items: {
+ type: "object",
+ properties: {
+ service_type: { type: "string", description: "Service type (e.g. pressure_washing, gutter_cleaning, landscaping, pool_cleaning)" },
+ frequency: { type: "string", description: "How often (monthly, quarterly, 2x/year, annual, weekly, biweekly)" },
+ unit_count: { type: "number", description: "Number of units/properties needing this service" },
+ },
+ required: ["service_type", "frequency", "unit_count"],
+ },
+ description: "Array of services the HOA/PM needs",
+ },
+ location: { type: "string", description: "Location or ZIP code for the property" },
+ },
+ required: ["services", "location"],
+ },
+ },
 
  // ── Daily Engagement Tools (Phase 3) ─────────
  {
@@ -3187,6 +3211,11 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  return await tools.getComplianceStatus(input.business_id, storage);
  case "generate_roi_report":
  return tools.generateROIReport(input.current_spend || 0, input.units || 1);
+ case "generate_hoa_pricing_schedule":
+ return await tools.generateHoaPricingSchedule({
+ services: input.services || [],
+ location: input.location || "",
+ });
 
  // Daily Engagement Tools (Phase 3)
  case "get_morning_briefing":
