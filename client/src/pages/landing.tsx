@@ -128,8 +128,6 @@ function HeroSection() {
           </Link>
         </div>
 
-        <FloridaEstimator variant="dark" />
-
         {/* Snap a photo shortcut */}
         <Link href="/snap-quote" className="inline-flex items-center gap-2 mt-6 text-sm text-white/50 hover:text-white/80 transition-colors group">
           <Camera className="w-4 h-4" />
