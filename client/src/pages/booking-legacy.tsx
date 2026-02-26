@@ -3268,7 +3268,7 @@ export default function Booking() {
                                   </div>
                                   <div className="flex justify-between text-sm items-center">
                                     <div className="flex items-center gap-1">
-                                      <span>UpTend Protection Fee (7%)</span>
+                                      <span>UpTend Protection Fee (5%)</span>
                                       <div className="group relative">
                                         <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">

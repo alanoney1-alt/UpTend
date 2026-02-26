@@ -127,7 +127,7 @@ const UNIT_LABELS: Record<Segment, string> = {
 
 const PLANS: Record<Segment, PlanOption[]> = {
   property_management: [
-    { tier: "independent", name: "Independent", price: "$0", priceNote: "/mo", highlight: true, features: ["1 to 10 properties", "Book vetted pros", "Track jobs", "Basic notifications", "7% transaction fee only"] },
+    { tier: "independent", name: "Independent", price: "$0", priceNote: "/mo", highlight: true, features: ["1 to 10 properties", "Book vetted pros", "Track jobs", "Basic notifications", "5% transaction fee only"] },
     { tier: "custom", name: "Custom Plan", price: "Custom", priceNote: "", popular: true, features: ["Tailored to your portfolio size", "Priority pro matching", "Dedicated account manager", "Custom SLAs and workflows", "Real-time tracking and reporting", "API access and integrations", "Schedule a call to get your plan"] },
   ],
   hoa: [
@@ -870,7 +870,7 @@ export default function BusinessOnboarding() {
               {isIndependent ? (
                 <>
                   <p className="font-medium">Independent. Free</p>
-                  <p className="text-muted-foreground">$0/month. Transaction fees only (7%)</p>
+                  <p className="text-muted-foreground">$0/month. Transaction fees only (5%)</p>
                   <p className="text-muted-foreground">Up to 10 properties</p>
                 </>
               ) : (
@@ -902,7 +902,7 @@ export default function BusinessOnboarding() {
             <CardContent className="p-6 text-center">
               <p className="text-sm text-muted-foreground mb-1">Monthly Cost</p>
               <p className="text-3xl font-bold text-green-600">$0</p>
-              <p className="text-sm text-muted-foreground mt-1">7% transaction fee on booked services only</p>
+              <p className="text-sm text-muted-foreground mt-1">5% transaction fee on booked services only</p>
             </CardContent>
           </Card>
         ) : cost ? (
@@ -945,7 +945,7 @@ export default function BusinessOnboarding() {
         <Card className="max-w-md mx-auto border-green-200 bg-green-50">
           <CardContent className="p-4 text-sm">
             <p className="font-medium"> You're on the Independent plan (Free)</p>
-            <p className="text-muted-foreground">No monthly fees. you only pay a 7% fee when you book a pro. Upgrade anytime to unlock advanced features.</p>
+            <p className="text-muted-foreground">No monthly fees. you only pay a 5% fee when you book a pro. Upgrade anytime to unlock advanced features.</p>
           </CardContent>
         </Card>
       )}

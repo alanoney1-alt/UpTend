@@ -271,7 +271,7 @@ export function CartSummary({
           </Button>
 
           <p className="text-xs text-center text-muted-foreground">
-            7% UpTend Protection Fee included
+            5% UpTend Protection Fee included
           </p>
         </CardContent>
       </Card>

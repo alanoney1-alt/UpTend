@@ -7,7 +7,7 @@
  * - Percentage discounts
  * - Promo codes
  * - Subtotal calculations
- * - 7% UpTend Protection Fee
+ * - 5% UpTend Protection Fee
  * - Final total
  * - Payment method
  * - Booking details
@@ -40,7 +40,7 @@ interface CheckoutReceiptProps {
     brand: string;
     last4: string;
   };
-  protectionFeePercent: number; // Default 0.07 (7%)
+  protectionFeePercent: number; // Default 0.05 (5%)
 }
 
 export function CheckoutReceipt({
@@ -48,7 +48,7 @@ export function CheckoutReceipt({
   discountBreakdown,
   bookingDetails,
   paymentMethod,
-  protectionFeePercent = 0.07,
+  protectionFeePercent: 0.05,
 }: CheckoutReceiptProps) {
   const protectionFeeAmount = Math.round(discountBreakdown.finalTotal * protectionFeePercent);
   const grandTotal = discountBreakdown.finalTotal + protectionFeeAmount;

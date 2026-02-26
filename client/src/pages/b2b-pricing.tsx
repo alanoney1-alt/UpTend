@@ -86,7 +86,7 @@ const faqs = [
   },
   {
     q: "Is there a free option?",
-    a: "Yes. Our Independent tier is free forever for up to 10 properties with a 7% transaction fee on booked services. No credit card required.",
+    a: "Yes. Our Independent tier is free forever for up to 10 properties with a 5% transaction fee on booked services. No credit card required.",
   },
   {
     q: "What about transaction fees?",
@@ -148,7 +148,7 @@ export default function B2BPricing() {
                   <span className="text-gray-500">/month, forever</span>
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
-                  Manage up to 10 properties with no subscription fees. Pay only a 7% transaction fee when you book a pro.
+                  Manage up to 10 properties with no subscription fees. Pay only a 5% transaction fee when you book a pro.
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -166,7 +166,7 @@ export default function B2BPricing() {
                   Get Started Free <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </a>
-              <p className="text-xs text-gray-500">1 to 10 properties, 7% per booking</p>
+              <p className="text-xs text-gray-500">1 to 10 properties, 5% per booking</p>
             </div>
           </div>
         </Card>

@@ -214,7 +214,7 @@ export const UPTEND_KNOWLEDGE = {
 
   fees: {
     protectionFee: {
-      name: "7% Protection Fee",
+      name: "5% Protection Fee",
       description: "Covers $1M liability insurance, UpTend support, GPS tracking, and sustainability reporting. Charged to customer, NOT deducted from Pro payout.",
       calculation: "7% of base service price",
       example: "$229 job → $16.03 protection fee → $245.03 total to customer",
@@ -287,7 +287,7 @@ export const UPTEND_KNOWLEDGE = {
     },
     {
       q: "What's included in the price?",
-      a: "Everything! Labor, loading, transportation, disposal fees, post-job cleanup. The only extras are the 7% protection fee (insurance/tracking) and potential hazmat surcharge if applicable.",
+      a: "Everything! Labor, loading, transportation, disposal fees, post-job cleanup. The only extras are the 5% protection fee (insurance/tracking) and potential hazmat surcharge if applicable.",
     },
     {
       q: "Can I book multiple Pros for a big job?",
