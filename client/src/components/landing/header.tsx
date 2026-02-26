@@ -99,7 +99,7 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center">
               <DropdownMenuItem asChild>
-                <Link href="/business/communities" className="cursor-pointer" data-testid="link-hoa">
+                <Link href="/business" className="cursor-pointer" data-testid="link-hoa">
                   HOA Communities
                 </Link>
               </DropdownMenuItem>
@@ -109,7 +109,7 @@ export function Header() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/business/construction" className="cursor-pointer" data-testid="link-construction">
+                <Link href="/business" className="cursor-pointer" data-testid="link-construction">
                   Construction
                 </Link>
               </DropdownMenuItem>
@@ -288,13 +288,13 @@ export function Header() {
               <span className="block p-2" data-testid="link-about-mobile">About</span>
             </Link>
             <p className="text-xs uppercase tracking-wider text-slate-500 px-2 pt-2">For Business</p>
-            <Link href="/business/communities" onClick={closeMenu}>
+            <Link href="/business" onClick={closeMenu}>
               <span className="block p-2 pl-4" data-testid="link-hoa-mobile">HOA Communities</span>
             </Link>
             <Link href="/business" onClick={closeMenu}>
               <span className="block p-2 pl-4" data-testid="link-pm-mobile">Property Management</span>
             </Link>
-            <Link href="/business/construction" onClick={closeMenu}>
+            <Link href="/business" onClick={closeMenu}>
               <span className="block p-2 pl-4" data-testid="link-construction-mobile">Construction</span>
             </Link>
             <Link href="/business/partners" onClick={closeMenu}>
