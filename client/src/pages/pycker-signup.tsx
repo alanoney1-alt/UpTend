@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { Logo } from "@/components/ui/logo";
 import { GoogleLoginButton, GoogleDivider } from "@/components/auth/google-login-button";
@@ -226,6 +227,11 @@ export default function PyckerSignup() {
   // Pro rate selection per service (from researched ranges)
   const [proRates, setProRates] = useState<Record<string, number>>({});
 
+  // B2B Commercial Licensing
+  const [b2bLicensed, setB2bLicensed] = useState(false);
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [b2bRates, setB2bRates] = useState<Record<string, { min: number; max: number }>>({});
+
   // Email verification state
   const [emailVerified, setEmailVerified] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
@@ -428,6 +434,9 @@ export default function PyckerSignup() {
         icaSignedName: icaData?.signedName,
         icaAcceptedAt: icaData?.acceptedAt,
         icaVersion: icaData?.icaVersion,
+        b2bLicensed,
+        licenseNumber: b2bLicensed ? licenseNumber : undefined,
+        b2bRates: b2bLicensed ? b2bRates : undefined,
       };
       const response = await fetch("/api/pros/register", {
         method: "POST",
@@ -546,6 +555,16 @@ export default function PyckerSignup() {
         toast({
           title: "Photos Required",
           description: "Please upload both your selfie and government-issued ID photos",
+          variant: "destructive",
+        });
+        return false;
+      }
+    } else if (currentStep === 7) {
+      // Pricing step: validate B2B license if enabled
+      if (b2bLicensed && !licenseNumber.trim()) {
+        toast({
+          title: "License Required",
+          description: "Please enter your Florida contractor license number for B2B services",
           variant: "destructive",
         });
         return false;
@@ -1879,6 +1898,99 @@ export default function PyckerSignup() {
                     onChange={(e) => setLicensesAndCerts(e.target.value)}
                     data-testid="input-licenses-certs"
                   />
+                </div>
+
+                {/* B2B Commercial Licensing */}
+                <div className="mb-6 p-4 border rounded-lg">
+                  <h3 className="text-base font-medium mb-2 flex items-center gap-2">
+                    <Building2 className="w-4 h-4" />
+                    Commercial / B2B Services
+                  </h3>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Do you service commercial properties, HOAs, or property management companies?
+                  </p>
+                  <div className="flex items-center gap-3 mb-4">
+                    <Switch
+                      checked={b2bLicensed}
+                      onCheckedChange={(checked) => {
+                        setB2bLicensed(checked);
+                        if (!checked) {
+                          setLicenseNumber("");
+                          setB2bRates({});
+                        }
+                      }}
+                      data-testid="switch-b2b-licensed"
+                    />
+                    <span className="text-sm font-medium">{b2bLicensed ? "Yes" : "No"}</span>
+                  </div>
+
+                  {b2bLicensed && (
+                    <div className="space-y-4">
+                      <div>
+                        <Label>Florida Contractor License Number *</Label>
+                        <Input
+                          placeholder="e.g. CBC1234567"
+                          value={licenseNumber}
+                          onChange={(e) => setLicenseNumber(e.target.value)}
+                          data-testid="input-license-number"
+                        />
+                        {b2bLicensed && !licenseNumber && (
+                          <p className="text-xs text-destructive mt-1">License number is required for B2B services</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <h4 className="text-sm font-medium mb-2">Commercial / B2B Rates</h4>
+                        <p className="text-xs text-muted-foreground mb-3">
+                          Set your rate range for commercial, HOA, and property management jobs.
+                        </p>
+                        <div className="space-y-3">
+                          {selectedServices.map((service) => {
+                            const range = SERVICE_PRICE_RANGES[service];
+                            if (!range || range.floor === 0) return null;
+                            const b2b = b2bRates[service] || { min: range.floor, max: range.ceiling };
+                            return (
+                              <div key={service} className="p-3 border rounded-lg bg-card">
+                                <p className="font-medium text-sm mb-2">{range.displayName} (Commercial/B2B Rate)</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                  <div>
+                                    <label className="text-xs text-muted-foreground">Min ($)</label>
+                                    <Input
+                                      type="number"
+                                      placeholder={`${range.floor}`}
+                                      value={b2b.min}
+                                      onChange={(e) =>
+                                        setB2bRates((prev) => ({
+                                          ...prev,
+                                          [service]: { ...b2b, min: Number(e.target.value) },
+                                        }))
+                                      }
+                                      data-testid={`input-b2b-min-${service}`}
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-xs text-muted-foreground">Max ($)</label>
+                                    <Input
+                                      type="number"
+                                      placeholder={`${range.ceiling}`}
+                                      value={b2b.max}
+                                      onChange={(e) =>
+                                        setB2bRates((prev) => ({
+                                          ...prev,
+                                          [service]: { ...b2b, max: Number(e.target.value) },
+                                        }))
+                                      }
+                                      data-testid={`input-b2b-max-${service}`}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-between mt-6">

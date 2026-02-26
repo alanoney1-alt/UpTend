@@ -37,7 +37,7 @@ import {
   ExternalLink, Loader2, AlertCircle, Shield, UserCheck, CircleDollarSign,
   ClipboardCheck, Plus, Minus, Camera, AlertTriangle, Upload, Image, Flag,
   Eye, EyeOff, Flame, Lock, Leaf, KeyRound, Zap, TrendingUp, ChevronRight,
-  Award, Target, Droplets, Hammer, Users, Gift
+  Award, Target, Droplets, Hammer, Users, Gift, Building2
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldAuditForm } from "@/components/field-audit-form";
@@ -69,6 +69,7 @@ import { ServicesSelector } from "@/components/services-selector";
 import { ProAiDashboard } from "@/components/ai/pro-ai-dashboard";
 import { ServiceEsgBadge } from "@/components/esg/service-esg-badge";
 import { ProInsuranceSection } from "@/components/pro/insurance-section";
+import { SERVICE_PRICE_RANGES } from "@/constants/service-price-ranges";
 
 function maskPhone(phone: string): string {
   if (!phone || phone.length < 4) return "***-****";
@@ -2875,6 +2876,74 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               showEquipmentInfo={true}
             />
           </Card>
+
+          {/* Commercial / B2B Rates - only visible if b2b_licensed */}
+          {currentPro?.profile?.b2bLicensed && (
+            <Card className="p-5 lg:col-span-2" data-testid="card-b2b-rates">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <Building2 className="w-5 h-5" />
+                Commercial / B2B Rates
+              </h3>
+              <p className="text-sm text-muted-foreground mb-1">
+                These rates apply to HOA, property management, and commercial jobs
+              </p>
+              {currentPro?.profile?.licenseNumber && (
+                <p className="text-xs text-muted-foreground mb-4">
+                  License: {currentPro.profile.licenseNumber}
+                </p>
+              )}
+              <div className="space-y-3">
+                {(currentPro?.profile?.serviceTypes || []).map((service: string) => {
+                  const range = SERVICE_PRICE_RANGES[service];
+                  if (!range || range.floor === 0) return null;
+                  const b2b = (currentPro?.profile?.b2bRates as Record<string, { min: number; max: number }> | null)?.[service] || { min: range.floor, max: range.ceiling };
+                  return (
+                    <div key={service} className="p-3 border rounded-lg bg-card">
+                      <p className="font-medium text-sm mb-2">{range.displayName} (Commercial/B2B)</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Min ($)</Label>
+                          <Input
+                            type="number"
+                            value={b2b.min}
+                            onChange={async (e) => {
+                              const newRates = {
+                                ...((currentPro?.profile?.b2bRates as Record<string, { min: number; max: number }>) || {}),
+                                [service]: { ...b2b, min: Number(e.target.value) },
+                              };
+                              try {
+                                await apiRequest("PATCH", "/api/pro/profile", { b2bRates: newRates });
+                                queryClient.invalidateQueries({ queryKey: ["/api/pro/me"] });
+                              } catch {}
+                            }}
+                            data-testid={`input-b2b-min-${service}`}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Max ($)</Label>
+                          <Input
+                            type="number"
+                            value={b2b.max}
+                            onChange={async (e) => {
+                              const newRates = {
+                                ...((currentPro?.profile?.b2bRates as Record<string, { min: number; max: number }>) || {}),
+                                [service]: { ...b2b, max: Number(e.target.value) },
+                              };
+                              try {
+                                await apiRequest("PATCH", "/api/pro/profile", { b2bRates: newRates });
+                                queryClient.invalidateQueries({ queryKey: ["/api/pro/me"] });
+                              } catch {}
+                            }}
+                            data-testid={`input-b2b-max-${service}`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
 
           <Card className="p-5 lg:col-span-2" data-testid="card-account-security">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
