@@ -42,6 +42,37 @@ export default function JoinPage() {
           </div>
         </section>
 
+        {/* Comparison */}
+        <section className="py-20 px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-center mb-12">
+              Stop wasting time on platforms that don't work.
+            </h2>
+            <div className="grid md:grid-cols-2 gap-10">
+              <div className="space-y-4">
+                <h3 className="font-bold text-slate-400 text-sm uppercase tracking-wider">Thumbtack, Angi, TaskRabbit</h3>
+                <div className="space-y-3 text-sm text-slate-500">
+                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> You post a job and wait for 5 strangers to bid</p>
+                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> You compare quotes, read reviews, hope for the best</p>
+                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> Price changes when the pro shows up and "sees the job"</p>
+                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> Pro pays $15 to $50 per lead just to talk to you</p>
+                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> No one manages the job. You're on your own.</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-bold text-[#F47C20] text-sm uppercase tracking-wider">UpTend</h3>
+                <div className="space-y-3 text-sm text-slate-700">
+                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> George finds you one pro. The right one.</p>
+                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> One price, locked before they arrive. Guaranteed.</p>
+                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> Scope changes require your approval with photo proof</p>
+                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> Pros keep 85%. No lead fees. Better work.</p>
+                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> George manages everything. Booking to completion.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* The Problem */}
         <section className="py-20 px-4">
           <div className="max-w-4xl mx-auto">
@@ -150,37 +181,6 @@ export default function JoinPage() {
                     </div>
                   </div>
                 ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Comparison */}
-        <section className="py-20 px-4 bg-white">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-black text-center mb-12">
-              Stop wasting time on platforms that don't work.
-            </h2>
-            <div className="grid md:grid-cols-2 gap-10">
-              <div className="space-y-4">
-                <h3 className="font-bold text-slate-400 text-sm uppercase tracking-wider">Thumbtack, Angi, TaskRabbit</h3>
-                <div className="space-y-3 text-sm text-slate-500">
-                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> You post a job and wait for 5 strangers to bid</p>
-                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> You compare quotes, read reviews, hope for the best</p>
-                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> Price changes when the pro shows up and "sees the job"</p>
-                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> Pro pays $15 to $50 per lead just to talk to you</p>
-                  <p className="flex items-start gap-3"><span className="text-red-500 font-bold text-lg leading-none mt-0.5">x</span> No one manages the job. You're on your own.</p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <h3 className="font-bold text-[#F47C20] text-sm uppercase tracking-wider">UpTend</h3>
-                <div className="space-y-3 text-sm text-slate-700">
-                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> George finds you one pro. The right one.</p>
-                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> One price, locked before they arrive. Guaranteed.</p>
-                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> Scope changes require your approval with photo proof</p>
-                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> Pros keep 85%. No lead fees. Better work.</p>
-                  <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-600 mt-0.5 shrink-0" /> George manages everything. Booking to completion.</p>
-                </div>
               </div>
             </div>
           </div>
