@@ -286,11 +286,11 @@ function TheDifference() {
           <div className="space-y-4">
             <h3 className="font-bold text-[#F47C20] text-sm uppercase tracking-wider">UpTend</h3>
             <div className="space-y-3 text-sm text-slate-700 dark:text-slate-300">
-              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> George finds you one pro. The right one.</p>
+              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> We find you one pro. The right one.</p>
               <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> One price, locked before they arrive. Guaranteed.</p>
               <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> Scope changes require your approval with photo proof</p>
               <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> Pros keep 85%. No lead fees. Better work.</p>
-              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> George manages everything. Booking to completion.</p>
+              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> We manage everything. Booking to completion.</p>
             </div>
           </div>
         </div>
