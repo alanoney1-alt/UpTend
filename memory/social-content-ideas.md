@@ -1,6 +1,6 @@
 # Social Content Ideas - Ranked by Potential
 
-*Updated: February 25, 2026*
+*Updated: February 27, 2026*
 
 ## TOP 10 HIGH-OPPORTUNITY CONTENT IDEAS (Ranked)
 
@@ -89,5 +89,84 @@
 4. **Smart Home/Tech** (15% of content)
 5. **Cost-Saving Tips** (10% of content)
 
+## 🆕 NEW HIGH-PRIORITY IDEAS (February 27 Competitive Intel)
+
+### 🔥 #1 - "The 7-Minute Deep Clean That's Viral on TikTok (Home Health Edition)"
+- **Why it works**: Deep cleaning is EXPLODING on TikTok this week, perfect crossover to home health
+- **Format**: Fast-paced deep clean routine focused on health (air quality, allergens, mold spots)
+- **Keywords**: "deep cleaning," "home health," "viral cleaning," "tiktok cleaning"
+- **Platform**: TikTok lead + Instagram Reel + YouTube Short
+- **Trending Factor**: ⭐⭐⭐⭐⭐ (Massive trend RIGHT NOW)
+
+### 🔥 #2 - "Fix a Drafty Door in Under 5 Minutes (Winter Damage Edition)"
+- **Why it works**: "Fix Drafty Exterior Door FAST" video went viral 4 days ago, ride the wave
+- **Format**: Super quick fix tutorial, before/after thermal imagery if possible
+- **Keywords**: "drafty door," "fast fix," "winter damage," "door repair"
+- **Platform**: TikTok tutorial + YouTube Short + Instagram Reel
+- **Trending Factor**: ⭐⭐⭐⭐⭐ (Proven viral content this week)
+
+### 🔥 #3 - "7 Home Maintenance Tasks You're Forgetting (But Shouldn't)"
+- **Why it works**: "7 forgotten maintenance tasks" article trending this week across platforms
+- **Format**: Quick countdown video with quick visual of each task + consequences
+- **Keywords**: "forgotten maintenance," "home maintenance checklist," "seasonal maintenance"
+- **Platform**: TikTok countdown + Instagram carousel + YouTube listicle
+- **Trending Factor**: ⭐⭐⭐⭐ (Fresh trending topic)
+
+### 🔥 #4 - "Why I'm Fixing Instead of Buying (Home Economics 2026)"
+- **Why it works**: Furniture prices rising = repair investment trend (major economic shift)
+- **Format**: Before/after repair transformations with cost comparison to buying new
+- **Keywords**: "repair vs replace," "furniture prices," "save money," "home economics"
+- **Platform**: Instagram carousel + TikTok before/after + YouTube explainer
+- **Trending Factor**: ⭐⭐⭐⭐ (Economic trend, very relevant)
+
+### 🔥 #5 - "Winter Beat Up Your Home? Here's How to Tell"
+- **Why it works**: Bob Vila confirms this is PRIME timing for winter damage assessment
+- **Format**: Walk-around inspection showing winter damage signs + quick fixes
+- **Keywords**: "winter damage," "spring home inspection," "storm damage," "seasonal repair"
+- **Platform**: YouTube tutorial + TikTok series (room by room) + Instagram story guides
+- **Trending Factor**: ⭐⭐⭐⭐ (Perfect seasonal timing)
+
+### 🔥 #6 - "My Personal Home Philosophy (No Rules, Just Vibes)"
+- **Why it works**: 2026 interior trend = personal, flexible, layered spaces over rules
+- **Format**: Tour of flexible, personal spaces explaining the anti-rule philosophy
+- **Keywords**: "personal home," "flexible design," "no design rules," "layered spaces"
+- **Platform**: Instagram Reel + TikTok tour + YouTube home philosophy video
+- **Trending Factor**: ⭐⭐⭐ (Interior design trend, niche but engaged audience)
+
+### 🔥 #7 - "Garage Projects That ChrisFix Would Actually Approve Of"
+- **Why it works**: ChrisFix trending (1.6M followers), automotive/home repair crossover untapped
+- **Format**: Garage organization + car maintenance setup + home workshop integration
+- **Keywords**: "garage organization," "automotive home," "car maintenance," "garage workshop"
+- **Platform**: YouTube tutorial + TikTok garage tour + Instagram carousel tips
+- **Trending Factor**: ⭐⭐⭐ (Crossover content, unexplored niche)
+
+### 🔥 #8 - "Spring Prep Checklist: Do These 6 Things Before March"
+- **Why it works**: Multiple sources confirm late winter = prime spring prep window
+- **Format**: Checklist countdown with visual before/after for each task
+- **Keywords**: "spring prep," "march home maintenance," "seasonal preparation," "spring checklist"
+- **Platform**: TikTok checklist + Instagram story highlights + YouTube planning video
+- **Trending Factor**: ⭐⭐⭐⭐ (Seasonal timing perfect)
+
+### 🔥 #9 - "The Wood Grinder Trick Everyone's Trying (But Doing Wrong)"
+- **Why it works**: "Texturing Wood With a Grinder" YouTube Short trending this week
+- **Format**: Proper technique demonstration + safety tips + creative applications
+- **Keywords**: "wood grinder," "wood texturing," "woodworking hack," "grinder technique"
+- **Platform**: YouTube Short + TikTok tutorial + Instagram Reel demo
+- **Trending Factor**: ⭐⭐⭐ (Trending technique, educational angle)
+
+### 🔥 #10 - "Before & After: What $200 Can Actually Fix in Your Home"
+- **Why it works**: Economic focus + before/after transformations dominating social
+- **Format**: Real budget transformation with cost breakdown + prioritization tips
+- **Keywords**: "budget home repair," "before after," "$200 transformation," "affordable fixes"
+- **Platform**: Instagram before/after + TikTok transformation + YouTube budget guide
+- **Trending Factor**: ⭐⭐⭐⭐ (Budget content + transformations always perform)
+
+## 📊 TRENDING INTELLIGENCE SUMMARY:
+- **MEGA TREND**: Deep cleaning content (TikTok explosion happening NOW)
+- **SEASONAL GOLD**: Winter damage repair + spring prep (perfect timing window)
+- **ECONOMIC ANGLE**: Repair vs replace messaging (furniture prices driving this)
+- **FORMAT WINNERS**: Fast fixes, before/after, countdown lists, personal philosophy
+- **CROSSOVER OPPORTUNITY**: Automotive/home repair bridge content (untapped)
+
 ---
-*Next review: March 1, 2026*
+*Next review: March 3, 2026*

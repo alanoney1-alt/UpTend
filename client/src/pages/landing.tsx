@@ -74,8 +74,9 @@ function HeroSection() {
           </span>
         </h1>
 
+        <p className="text-white/50 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
-          Orlando's home services marketplace. Background-checked pros, upfront pricing, and George, your personal home expert, all in one place.
+          Background-checked pros, upfront pricing, and George, your personal home expert, all in one place.
         </p>
         <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
           {getTimeAwareSubtitle()}
