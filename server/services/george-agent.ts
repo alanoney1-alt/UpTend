@@ -7,6 +7,52 @@
 
 import { anthropic } from "./ai/anthropic-client";
 import * as tools from "./george-tools";
+
+// ─── Retry with exponential backoff ───
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  { maxRetries = 3, baseDelay = 1000, label = "operation" } = {}
+): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      const isTransient =
+        error?.status === 429 ||
+        error?.status === 502 ||
+        error?.status === 503 ||
+        error?.status === 504 ||
+        error?.code === "ECONNRESET" ||
+        error?.code === "ETIMEDOUT" ||
+        error?.message?.includes("overloaded");
+      if (!isTransient || attempt === maxRetries) throw error;
+      const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 500;
+      console.warn(`[George] ${label} attempt ${attempt + 1} failed (${error.status || error.code}), retrying in ${Math.round(delay)}ms...`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw new Error("Unreachable");
+}
+
+// ─── Safe tool execution wrapper (never deletes, catches per-tool errors) ───
+async function safeExecuteTool(
+  name: string, input: any, storage?: any, georgeCtx?: GeorgeContext
+): Promise<{ result: any; error?: string }> {
+  // Block any tool that would delete user data
+  if (/delete|remove|destroy|drop|truncate/i.test(name) && !/get|list|search|find/i.test(name)) {
+    return { result: null, error: `Tool "${name}" blocked: George never deletes data. Contact support for data removal requests.` };
+  }
+  try {
+    const result = await withRetry(
+      () => executeTool(name, input, storage, georgeCtx),
+      { maxRetries: 2, baseDelay: 500, label: `tool:${name}` }
+    );
+    return { result };
+  } catch (error: any) {
+    console.error(`[George] Tool "${name}" failed safely:`, error.message);
+    return { result: null, error: `Tool "${name}" encountered an issue: ${error.message}. I'll work around this.` };
+  }
+}
 import { getHomeScanInfo } from "./george-scan-pitch";
 import { getRelevantKnowledge } from "./knowledge-loader";
 import {
@@ -38,6 +84,11 @@ import {
 const GEORGE_SYSTEM_PROMPT = `CRITICAL FORMATTING RULE: NEVER use emojis, emoticons, or unicode symbols in ANY response. No exceptions. Use plain text, dashes, and asterisks for formatting only.
 
 You are George, UpTend's AI home expert. You help customers book home services, find DIY tutorials, shop for products, diagnose problems from photos, and manage their entire home — all in the Orlando metro area. In Spanish, you are Sr. Jorge.
+
+CRITICAL SAFETY RULES:
+- HUMAN-IN-THE-LOOP: If you are not confident about a recommendation (e.g. diagnosing a potentially dangerous issue like gas leaks, electrical, structural), STOP and tell the customer to consult a licensed professional. Never guess on safety-critical issues.
+- SAFE FAILURES: Never delete, overwrite, or remove any customer data. If a tool fails, explain what happened and offer an alternative path (call us, try again, etc).
+- When a tool returns an error, acknowledge it gracefully and work around it. Never show raw error messages to customers.
 
 WHAT YOU CAN DO (YOU HAVE ALL THESE TOOLS — USE THEM):
 IMPORTANT: Never use emojis in your responses. Use clean, professional text only.
@@ -3885,7 +3936,8 @@ export async function chat(
  // Force tool use on first iteration when the message clearly needs tools
  const toolChoice = (i === 0 && needsToolCall) ? { type: "any" as const } : undefined;
 
- const response = await anthropic.messages.create({
+ const response = await withRetry(
+ () => anthropic.messages.create({
  model: "claude-sonnet-4-20250514",
  max_tokens: 1024,
  temperature: 0.6,
@@ -3893,7 +3945,9 @@ export async function chat(
  tools: TOOL_DEFINITIONS,
  messages: currentMessages as any,
  ...(toolChoice ? { tool_choice: toolChoice } : {}),
- });
+ }),
+ { maxRetries: 3, baseDelay: 1000, label: "claude-api" }
+ );
 
  // Check if Claude wants to use tools
  const toolUseBlocks = response.content.filter((b: any) => b.type === "tool_use");
@@ -3918,7 +3972,7 @@ export async function chat(
  const toolResults: any[] = [];
 
  for (const toolBlock of toolUseBlocks) {
- const result = await executeTool(
+ const { result, error } = await safeExecuteTool(
  (toolBlock as any).name,
  (toolBlock as any).input,
  context?.storage,
@@ -3926,16 +3980,36 @@ export async function chat(
  );
 
  // Track booking drafts
- if ((toolBlock as any).name === "create_booking_draft") {
+ if ((toolBlock as any).name === "create_booking_draft" && result) {
  bookingDraft = result;
  }
 
  toolResults.push({
  type: "tool_result",
  tool_use_id: (toolBlock as any).id,
- content: JSON.stringify(result),
+ content: error ? JSON.stringify({ error }) : JSON.stringify(result),
+ ...(error ? { is_error: true } : {}),
  });
  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  currentMessages = [
  ...currentMessages,
