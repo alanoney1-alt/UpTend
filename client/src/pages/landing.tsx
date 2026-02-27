@@ -394,19 +394,12 @@ function TwoSides() {
 /* ─── TESTIMONIALS ─── */
 function Testimonials() {
   return (
-    <section className="py-20 bg-white dark:bg-slate-950">
+    <section className="py-16 bg-white dark:bg-slate-950">
       <div className="max-w-3xl mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-black mb-4 text-slate-900 dark:text-white">
-          Customer Reviews Coming Soon
+        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-slate-900 dark:text-white">
+          Customer Reviews
         </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-lg max-w-xl mx-auto mb-6">
-          We're onboarding our first customers now. Be one of the Founding 100 and your review could be right here.
-        </p>
-        <a href="#founding-100">
-          <Button variant="outline" className="border-[#F47C20] text-[#F47C20] hover:bg-[#F47C20]/10">
-            Claim Your Spot
-          </Button>
-        </a>
+        <p className="text-slate-400 text-lg">Coming Soon</p>
       </div>
     </section>
   );
