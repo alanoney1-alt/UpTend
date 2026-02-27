@@ -168,6 +168,7 @@ import { registerAccountingRoutes } from "./accounting/index";
 
 // Public routes
 import { registerPublicRoutes } from "./public.routes";
+import foundingMembersRouter from "./public/founding-members.routes";
 
 // George cron routes
 import { registerGeorgeCronRoutes } from "./george-cron.routes";
@@ -474,6 +475,9 @@ export async function registerRoutes(
 
   // Register Public routes (no auth required)
   registerPublicRoutes(app);
+
+  // Founding Members (public)
+  app.use("/api", foundingMembersRouter);
 
   // Register George cron routes
   registerGeorgeCronRoutes(app);

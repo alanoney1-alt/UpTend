@@ -14,6 +14,7 @@ import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { SocialProofTicker } from "@/components/landing/social-proof-ticker";
+import { Founding100 } from "@/components/landing/founding-100";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
@@ -32,6 +33,7 @@ export default function Landing() {
         <Testimonials />
         <FinalCTA />
       </main>
+      <Founding100 />
       <Footer />
     </div>
   );
