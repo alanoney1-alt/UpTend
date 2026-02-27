@@ -75,7 +75,7 @@ export function Header() {
         {/* Left: Logo */}
         <div className="flex-shrink-0">
           <Link href="/" onClick={closeMenu} data-testid="link-logo">
-            <Logo className="w-10 h-10" textClassName="text-2xl hidden lg:block" />
+            <Logo className="w-10 h-10" textClassName="text-2xl hidden lg:block" variant="light" />
           </Link>
         </div>
 
