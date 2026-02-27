@@ -1,7 +1,6 @@
 import { usePageTitle } from "@/hooks/use-page-title";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   ShieldCheck, CheckCircle, Zap, Users, ArrowRight,
   Wrench, Home, Star, MapPin, Smartphone, Heart, Clock, DollarSign,
@@ -16,7 +15,7 @@ export default function JoinPage() {
   usePageTitle("Join the Founding 100 | UpTend");
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-white text-slate-900">
       <Header />
       <main className="pt-[72px]">
 
@@ -47,7 +46,7 @@ export default function JoinPage() {
         <section className="py-20 px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-black text-center mb-4">Hiring a pro shouldn't feel like gambling.</h2>
-            <p className="text-muted-foreground text-lg text-center max-w-2xl mx-auto mb-14">
+            <p className="text-slate-600 text-lg text-center max-w-2xl mx-auto mb-14">
               You've been there. The endless quotes. The no-shows. The price that "changed" once they arrived. The stranger in your house you know nothing about. It's broken. We fixed it.
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -59,42 +58,40 @@ export default function JoinPage() {
                 { icon: Lock, title: "No more risk", desc: "Payments are held until the job is done to your satisfaction. Disputes are handled by our team. You're protected from start to finish." },
                 { icon: Phone, title: "No more phone tag", desc: "Everything happens on the platform. Booking, communication, scheduling, payment. No chasing contractors by text or calling five numbers." },
               ].map((item) => (
-                <Card key={item.title} className="border-slate-200">
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 rounded-xl bg-[#F47C20]/10 flex items-center justify-center mb-4">
-                      <item.icon className="w-6 h-6 text-[#F47C20]" />
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
-                  </CardContent>
-                </Card>
+                <div key={item.title} className="p-6 rounded-xl bg-white border border-slate-200">
+                  <div className="w-12 h-12 rounded-xl bg-[#F47C20]/10 flex items-center justify-center mb-4">
+                    <item.icon className="w-6 h-6 text-[#F47C20]" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed">{item.desc}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
         {/* What is UpTend */}
-        <section className="py-20 px-4 bg-slate-50 dark:bg-slate-900/50">
+        <section className="py-20 px-4 bg-white">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-black mb-4">So what exactly is UpTend?</h2>
-            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-14">
+            <p className="text-slate-600 text-lg max-w-3xl mx-auto mb-14">
               UpTend is a home services platform built around one idea: the customer should never have to do the hard part. We handle matching, pricing, scheduling, tracking, payment, and quality control. You just say what you need.
             </p>
             <div className="grid md:grid-cols-3 gap-8 text-left">
               <div className="p-6 rounded-2xl bg-white border border-slate-200">
                 <Home className="w-8 h-8 text-[#F47C20] mb-4" />
                 <h3 className="font-bold text-lg mb-2">11 Service Categories</h3>
-                <p className="text-muted-foreground text-sm">Junk Removal, Pressure Washing, Gutter Cleaning, Home Cleaning, Handyman, Landscaping, Moving Labor, Light Demolition, Garage Cleanout, Pool Cleaning, and Carpet Cleaning. One platform for everything.</p>
+                <p className="text-slate-600 text-sm">Junk Removal, Pressure Washing, Gutter Cleaning, Home Cleaning, Handyman, Landscaping, Moving Labor, Light Demolition, Garage Cleanout, Pool Cleaning, and Carpet Cleaning. One platform for everything.</p>
               </div>
               <div className="p-6 rounded-2xl bg-white border border-slate-200">
                 <ShieldCheck className="w-8 h-8 text-[#F47C20] mb-4" />
                 <h3 className="font-bold text-lg mb-2">Every Pro is Verified</h3>
-                <p className="text-muted-foreground text-sm">Background-checked, insured, and rated by real customers. You see their first name, rating, number of completed jobs, and how long they've been on the platform. No unknowns.</p>
+                <p className="text-slate-600 text-sm">Background-checked, insured, and rated by real customers. You see their first name, rating, number of completed jobs, and how long they've been on the platform. No unknowns.</p>
               </div>
               <div className="p-6 rounded-2xl bg-white border border-slate-200">
                 <DollarSign className="w-8 h-8 text-[#F47C20] mb-4" />
                 <h3 className="font-bold text-lg mb-2">Fair for Everyone</h3>
-                <p className="text-muted-foreground text-sm">Customers get one locked price. Pros keep 85% of every job with zero lead fees. When pros are paid fairly, they do better work. Everyone wins.</p>
+                <p className="text-slate-600 text-sm">Customers get one locked price. Pros keep 85% of every job with zero lead fees. When pros are paid fairly, they do better work. Everyone wins.</p>
               </div>
             </div>
           </div>
@@ -105,7 +102,7 @@ export default function JoinPage() {
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14">
               <h2 className="text-3xl md:text-4xl font-black mb-4">Meet George. Your home expert.</h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              <p className="text-slate-600 text-lg max-w-2xl mx-auto">
                 George is an AI assistant who actually knows homes. He's not a chatbot reading a script. He has real expertise in home maintenance, repair costs, Florida-specific issues, and how to get the right pro for the job.
               </p>
             </div>
@@ -127,7 +124,7 @@ export default function JoinPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-sm mb-1">{item.title}</h4>
-                      <p className="text-muted-foreground text-xs leading-relaxed">{item.desc}</p>
+                      <p className="text-slate-600 text-xs leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -149,7 +146,7 @@ export default function JoinPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-sm mb-1">{item.title}</h4>
-                      <p className="text-muted-foreground text-xs leading-relaxed">{item.desc}</p>
+                      <p className="text-slate-600 text-xs leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -159,7 +156,7 @@ export default function JoinPage() {
         </section>
 
         {/* Comparison */}
-        <section className="py-20 px-4 bg-slate-50 dark:bg-slate-900/50">
+        <section className="py-20 px-4 bg-white">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-black text-center mb-12">
               Stop wasting time on platforms that don't work.
@@ -205,7 +202,7 @@ export default function JoinPage() {
                     {item.step}
                   </div>
                   <h3 className="font-bold mb-2">{item.title}</h3>
-                  <p className="text-muted-foreground text-sm">{item.desc}</p>
+                  <p className="text-slate-600 text-sm">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -213,12 +210,12 @@ export default function JoinPage() {
         </section>
 
         {/* For Customers AND Pros */}
-        <section className="py-20 px-4 bg-slate-50 dark:bg-slate-900/50">
+        <section className="py-20 px-4 bg-white">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-black text-center mb-4">
               Fair for customers. Fair for pros.
             </h2>
-            <p className="text-muted-foreground text-lg text-center max-w-2xl mx-auto mb-14">
+            <p className="text-slate-600 text-lg text-center max-w-2xl mx-auto mb-14">
               When pros keep 85% of every job, they do better work. When customers get one locked price, they stop worrying. UpTend makes both sides win.
             </p>
             <div className="grid md:grid-cols-2 gap-10">
@@ -239,7 +236,7 @@ export default function JoinPage() {
                       </div>
                       <div>
                         <h4 className="font-bold text-sm mb-1">{item.title}</h4>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{item.desc}</p>
+                        <p className="text-slate-600 text-xs leading-relaxed">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -262,7 +259,7 @@ export default function JoinPage() {
                       </div>
                       <div>
                         <h4 className="font-bold text-sm mb-1">{item.title}</h4>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{item.desc}</p>
+                        <p className="text-slate-600 text-xs leading-relaxed">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -276,14 +273,14 @@ export default function JoinPage() {
         <section className="py-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-black mb-4">11 Services. One Platform.</h2>
-            <p className="text-muted-foreground mb-10">Serving the entire Orlando metro: Lake Nona, Winter Park, Dr. Phillips, Windermere, Celebration, and more.</p>
+            <p className="text-slate-600 mb-10">Serving the entire Orlando metro: Lake Nona, Winter Park, Dr. Phillips, Windermere, Celebration, and more.</p>
             <div className="flex flex-wrap justify-center gap-3">
               {[
                 "Junk Removal", "Pressure Washing", "Gutter Cleaning", "Home Cleaning",
                 "Handyman", "Landscaping", "Moving Labor", "Light Demolition",
                 "Garage Cleanout", "Pool Cleaning", "Carpet Cleaning"
               ].map((svc) => (
-                <span key={svc} className="px-4 py-2 rounded-full bg-slate-100 border border-slate-200 text-sm text-slate-700 font-medium">
+                <span key={svc} className="px-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-sm text-slate-700 font-medium">
                   {svc}
                 </span>
               ))}
