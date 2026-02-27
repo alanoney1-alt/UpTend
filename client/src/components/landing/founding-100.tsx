@@ -66,7 +66,7 @@ export function Founding100() {
 
   if (success) {
     return (
-      <section className="py-20 bg-slate-900 text-white" id="founding-100">
+      <section className="py-20 bg-slate-950 text-white" id="founding-100">
         <div className="max-w-2xl mx-auto px-4 text-center">
           <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-8 h-8 text-green-400" />
@@ -86,7 +86,7 @@ export function Founding100() {
   }
 
   return (
-    <section className="py-20 bg-slate-900 text-white" id="founding-100">
+    <section className="py-20 bg-slate-950 text-white" id="founding-100">
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-12">
           <Badge className="bg-[#F47C20]/20 text-[#F47C20] border-[#F47C20]/30 mb-4">

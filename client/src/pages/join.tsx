@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ShieldCheck, CheckCircle, Zap, Users, ArrowRight,
-  Wrench, Home, Star, MapPin, Smartphone,
+  Wrench, Home, Star, MapPin, Smartphone, Heart, Clock, DollarSign,
 } from "lucide-react";
 import { Founding100 } from "@/components/landing/founding-100";
 import { Logo } from "@/components/ui/logo";
@@ -162,6 +162,100 @@ export default function JoinPage() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Punchy Quote */}
+      <section className="py-20 px-4 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+              Fair for customers. Fair for Pros.<br />
+              <span className="text-[#F47C20]">That's the whole point.</span>
+            </h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+              When Pros keep 85% of every job, they do better work. When customers get one locked price, they stop worrying. UpTend makes both sides win.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
+                <Heart className="w-5 h-5 text-[#F47C20]" /> For Homeowners
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { icon: Zap, title: "One price, locked at booking", desc: "No haggling. No \"I'll get back to you.\" Your price is confirmed before they arrive." },
+                  { icon: ShieldCheck, title: "Background-checked and insured", desc: "Every pro is verified, insured, and rated by real customers. Know who's walking through your door." },
+                  { icon: Clock, title: "Live tracking and photo docs", desc: "Follow your pro in real time. Every job documented with photos. Transparent from start to finish." },
+                  { icon: DollarSign, title: "Price Protection Guarantee", desc: "The price you're quoted is the most you'll ever pay. Scope changes require your approval with photo evidence." },
+                ].map((item) => (
+                  <div key={item.title} className="p-4 flex gap-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
+                      <item.icon className="w-5 h-5 text-[#F47C20]" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white text-sm mb-1">{item.title}</h4>
+                      <p className="text-slate-400 text-xs leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
+                <Wrench className="w-5 h-5 text-[#F47C20]" /> Why Our Pros Are Better
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { icon: DollarSign, title: "Keep 85% of every job", desc: "Our 15% platform fee. No lead fees. No bidding wars. No pay-to-play." },
+                  { icon: ShieldCheck, title: "Guaranteed payment", desc: "Finish the job, get paid. Payments guaranteed through the platform." },
+                  { icon: MapPin, title: "Set your own rates", desc: "You choose your rate within the market range. We match you with customers who value quality." },
+                  { icon: Star, title: "You're protected too", desc: "Insurance, documentation, guaranteed payments. Dispute insurance that's actually fair." },
+                ].map((item) => (
+                  <div key={item.title} className="p-4 flex gap-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
+                      <item.icon className="w-5 h-5 text-[#F47C20]" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white text-sm mb-1">{item.title}</h4>
+                      <p className="text-slate-400 text-xs leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Grid */}
+      <section className="py-16 px-4 bg-slate-900/50 border-t border-white/5">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-black text-center mb-10 text-white">
+            Stop wasting time on other platforms.
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <h3 className="font-bold text-slate-500 text-sm uppercase tracking-wider">Thumbtack, Angi, TaskRabbit</h3>
+              <div className="space-y-3 text-sm text-slate-500">
+                <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> You post a job and wait for 5 strangers to bid</p>
+                <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> You compare quotes, read reviews, hope for the best</p>
+                <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> Price changes when the pro shows up and "sees the job"</p>
+                <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> Pro pays $15-50 per lead just to talk to you</p>
+                <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> No one manages the job. You're on your own.</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <h3 className="font-bold text-[#F47C20] text-sm uppercase tracking-wider">UpTend</h3>
+              <div className="space-y-3 text-sm text-slate-300">
+                <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> George finds you one pro. The right one.</p>
+                <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> One price, locked before they arrive. Guaranteed.</p>
+                <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> Scope changes require your approval with photo proof</p>
+                <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> Pros keep 85%. No lead fees. Better work.</p>
+                <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> George manages everything. Booking to completion.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
