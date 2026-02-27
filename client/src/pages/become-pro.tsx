@@ -177,37 +177,14 @@ export default function BecomePro() {
         </div>
       </section>
 
-      {/* Pro Testimonials */}
+      {/* Pro Testimonials - Coming Soon */}
       <section className="py-16 md:py-24 bg-slate-50 dark:bg-slate-900/50 px-4 md:px-6" data-testid="section-pro-testimonials">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">{t("become_pro.testimonials_title")}</h2>
-          <p className="text-center text-xs text-muted-foreground/60 mb-2">*Based on projected Pro experience</p>
-          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            {t("become_pro.testimonials_desc")}
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">{t("become_pro.testimonials_title")}</h2>
+          <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
+            Be one of our first Pros and your story could be featured here.
           </p>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-6">
-              <p className="text-muted-foreground italic leading-relaxed mb-4">
-                "I switched from Thumbtack. No more paying $40 per lead just to compete with 5 other guys. I keep 85% and get matched with real customers."
-              </p>
-              <p className="font-bold">Carlos M.</p>
-              <p className="text-sm text-muted-foreground">Junk Removal Pro</p>
-            </Card>
-            <Card className="p-6">
-              <p className="text-muted-foreground italic leading-relaxed mb-4">
-                "The certification program helped me stand out. My customers trust me before I even show up because they can verify my credentials."
-              </p>
-              <p className="font-bold">Maria R.</p>
-              <p className="text-sm text-muted-foreground">Home Cleaning Pro</p>
-            </Card>
-            <Card className="p-6">
-              <p className="text-muted-foreground italic leading-relaxed mb-4">
-                "I was doing everything through Craigslist. Now I have a real business profile, insurance coverage, and steady bookings."
-              </p>
-              <p className="font-bold">James W.</p>
-              <p className="text-sm text-muted-foreground">Pressure Washing Pro</p>
-            </Card>
-          </div>
+          <p className="text-sm text-muted-foreground/60">Coming Soon</p>
         </div>
       </section>
 

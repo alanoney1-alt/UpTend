@@ -40,11 +40,7 @@ const benefits = [
   { icon: TrendingUp, title: "Business Growth Tools", desc: "Free business coaching, marketing support, and equipment financing partnerships." },
 ];
 
-const testimonials = [
-  { name: "SGT Marcus Rivera (Ret.)", branch: "Army", mos: "12B", trade: "General Contractor", quote: "UpTend helped me turn 8 years of combat engineering into a thriving contracting business. The MOS mapping made licensing a breeze.", rating: 5 },
-  { name: "PO2 Jennifer Walsh (Ret.)", branch: "Navy", mos: "UT", trade: "Plumber", quote: "As a Navy Utilitiesman, plumbing was second nature. UpTend connected me with my first 20 clients in the first month.", rating: 5 },
-  { name: "SSG David Kim (Ret.)", branch: "Army", mos: "91C", trade: "HVAC Technician", quote: "The veteran mentor program matched me with a fellow vet who helped me get my SDVOSB cert and land government contracts.", rating: 5 },
-];
+const testimonials: { name: string; branch: string; mos: string; trade: string; quote: string; rating: number }[] = [];
 
 export default function Veterans() {
   const [selectedMos, setSelectedMos] = useState("");
@@ -197,27 +193,12 @@ export default function Veterans() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials - Coming Soon */}
       <section className="py-20 px-4 bg-slate-950">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-2">What Veteran Pros Can Expect</h2>
-          <p className="text-center text-xs text-slate-500 mb-12">*Based on projected Pro experience</p>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map(t => (
-              <Card key={t.name} className="bg-slate-800/50 border-slate-700">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-1 mb-3">
-                    {Array.from({ length: t.rating }).map((_, i) => <Star key={i} className="w-4 h-4 fill-orange-400 text-orange-400" />)}
-                  </div>
-                  <p className="text-slate-300 text-sm mb-4 italic">"{t.quote}"</p>
-                  <div className="border-t border-slate-700 pt-3">
-                    <p className="font-semibold text-white">{t.name}</p>
-                    <p className="text-sm text-slate-400">{t.branch} • MOS {t.mos} → {t.trade}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">What Veteran Pros Can Expect</h2>
+          <p className="text-slate-400">Be one of our first Veteran Pros and your story will be featured here.</p>
+          <p className="text-sm text-slate-500 mt-2">Coming Soon</p>
         </div>
       </section>
 

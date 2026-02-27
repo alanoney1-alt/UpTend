@@ -50,9 +50,11 @@ export function registerPublicRoutes(app: Express) {
         FROM hauler_profiles hp
         JOIN users u ON hp.user_id = u.id
         WHERE hp.can_accept_jobs = true
+        AND hp.id NOT LIKE 'demo-%'
         AND NOT (
           LOWER(u.email) LIKE '%test%'
-          AND (LOWER(hp.bio) LIKE '%qa%' OR LOWER(hp.bio) LIKE '%test%')
+          OR LOWER(u.email) LIKE '%capntest%'
+          OR LOWER(hp.bio) LIKE '%qa%' OR LOWER(hp.bio) LIKE '%test%'
         )
         ${serviceFilter}
         ORDER BY ${orderClause}
@@ -81,7 +83,7 @@ export function registerPublicRoutes(app: Express) {
         return res.json(results);
       }
 
-      // No pros in DB yet - show empty state instead of fake data
+      // No real pros in DB yet - show empty state
       res.json([]);
     } catch (error) {
       console.error("Error browsing pros:", error);

@@ -79,7 +79,7 @@ export function HeroSection() {
             </div>
             <div className="flex items-center gap-2 text-sm text-white/70">
               <Star className="w-4 h-4 text-primary" />
-              <span>4.9 average rating</span>
+              <span>Background-checked pros</span>
             </div>
           </div>
         </div>
