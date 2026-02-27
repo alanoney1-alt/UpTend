@@ -29,6 +29,7 @@ export default function Landing() {
         <SocialProofStats />
         <Founding100 />
         <HowItWorks />
+        <TheDifference />
         <ServicesStrip />
         <TwoSides />
         <Testimonials />
@@ -78,10 +79,10 @@ function HeroSection() {
 
         <p className="text-white/50 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
-          Background-checked pros, upfront pricing, and George, your personal home expert, all in one place.
+          No chasing leads. No comparing five quotes. No wondering if your pro is legit. You tell us what you need, George finds the right pro, and you get one price. That's it.
         </p>
         <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
-          {getTimeAwareSubtitle()}
+          Every pro is background-checked and insured. Every price is guaranteed.
         </p>
 
         {isHurricaneSeason() && (
@@ -247,6 +248,41 @@ function HowItWorks() {
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{step.desc}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── THE DIFFERENCE ─── */
+function TheDifference() {
+  return (
+    <section className="py-16 bg-white dark:bg-slate-950">
+      <div className="max-w-4xl mx-auto px-4">
+        <h2 className="text-2xl md:text-3xl font-black text-center mb-10 text-slate-900 dark:text-white">
+          Stop wasting time on other platforms.
+        </h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <h3 className="font-bold text-slate-400 text-sm uppercase tracking-wider">Thumbtack, Angi, TaskRabbit</h3>
+            <div className="space-y-3 text-sm text-slate-500">
+              <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> You post a job and wait for 5 strangers to bid</p>
+              <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> You compare quotes, read reviews, hope for the best</p>
+              <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> Price changes when the pro shows up and "sees the job"</p>
+              <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> Pro pays $15-50 per lead just to talk to you</p>
+              <p className="flex items-start gap-3"><span className="text-red-400 font-bold text-lg leading-none mt-0.5">x</span> No one manages the job. You're on your own.</p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <h3 className="font-bold text-[#F47C20] text-sm uppercase tracking-wider">UpTend</h3>
+            <div className="space-y-3 text-sm text-slate-700 dark:text-slate-300">
+              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> George finds you one pro. The right one.</p>
+              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> One price, locked before they arrive. Guaranteed.</p>
+              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> Scope changes require your approval with photo proof</p>
+              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> Pros keep 85%. No lead fees. Better work.</p>
+              <p className="flex items-start gap-3"><CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" /> George manages everything. Booking to completion.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
