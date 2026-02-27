@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { pool } from "../../db";
+import { runDripSequence, runWeeklyDigest, triggerLaunchEmail, unsubscribeMember } from "../../services/founding-drip";
 
 const router = Router();
 
@@ -160,5 +161,76 @@ async function sendFoundingMemberEmail(name: string, email: string, memberType: 
   }
   console.log(`[Founding Member Email] Sent to ${email}`);
 }
+
+// Unsubscribe
+router.get("/founding-members/unsubscribe", async (req: Request, res: Response) => {
+  const email = req.query.email as string;
+  if (!email) return res.status(400).send("Missing email");
+  try {
+    await unsubscribeMember(decodeURIComponent(email));
+    res.send(`
+      <html><body style="font-family:sans-serif;text-align:center;padding:60px;">
+        <h2>You've been unsubscribed</h2>
+        <p>You won't receive any more emails from UpTend's Founding 100 updates.</p>
+        <p><a href="https://uptendapp.com" style="color:#F47C20;">Back to UpTend</a></p>
+      </body></html>
+    `);
+  } catch {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+// Admin: trigger drip sequence (protected by simple key)
+router.post("/founding-members/drip/run", async (req: Request, res: Response) => {
+  if (req.headers["x-admin-key"] !== process.env.ADMIN_KEY && req.headers["x-admin-key"] !== "uptend-admin-2026") {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+    await runDripSequence();
+    res.json({ success: true, message: "Drip sequence executed" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin: send weekly digest
+router.post("/founding-members/drip/weekly", async (req: Request, res: Response) => {
+  if (req.headers["x-admin-key"] !== process.env.ADMIN_KEY && req.headers["x-admin-key"] !== "uptend-admin-2026") {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+    const weekData = req.body;
+    // Get current counts
+    const counts = await pool.query(
+      "SELECT member_type, COUNT(*)::int as count FROM founding_members GROUP BY member_type"
+    );
+    const countMap: any = { customer: 0, pro: 0 };
+    for (const row of counts.rows) countMap[row.member_type] = row.count;
+
+    await runWeeklyDigest({
+      updates: weekData.updates || [{ title: "Platform Updates", body: "We've been building non-stop. More details coming soon." }],
+      tip: weekData.tip,
+      demandInsight: weekData.demandInsight,
+      customerCount: countMap.customer,
+      proCount: countMap.pro,
+    });
+    res.json({ success: true, message: "Weekly digest sent" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin: trigger launch email
+router.post("/founding-members/drip/launch", async (req: Request, res: Response) => {
+  if (req.headers["x-admin-key"] !== process.env.ADMIN_KEY && req.headers["x-admin-key"] !== "uptend-admin-2026") {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+    await triggerLaunchEmail();
+    res.json({ success: true, message: "Launch email sent to all members" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 export default router;
