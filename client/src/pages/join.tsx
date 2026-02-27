@@ -74,7 +74,7 @@ export default function JoinPage() {
         </section>
 
         {/* What is UpTend */}
-        <section className="py-20 px-4 bg-slate-50">
+        <section className="py-20 px-4 bg-slate-50 dark:bg-slate-900/50">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-black mb-4">So what exactly is UpTend?</h2>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-14">
@@ -121,7 +121,7 @@ export default function JoinPage() {
                   { icon: Hammer, title: "DIY Walkthrough", desc: "For jobs you want to handle yourself, George walks you through step-by-step with video tutorials from trusted creators." },
                   { icon: Thermometer, title: "Seasonal Maintenance", desc: "George knows Florida. Hurricane prep in summer, AC tune-ups in spring, pool care year-round. He reminds you before problems happen." },
                 ].map((item) => (
-                  <div key={item.title} className="flex gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div key={item.title} className="flex gap-4 p-4 rounded-xl bg-white border border-slate-200">
                     <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
                       <item.icon className="w-5 h-5 text-[#F47C20]" />
                     </div>
@@ -143,7 +143,7 @@ export default function JoinPage() {
                   { icon: Star, title: "Product Recommendations", desc: "Need a specific part, tool, or product? George recommends exact items with real prices and links. No guessing." },
                   { icon: AlertTriangle, title: "Emergency Mode", desc: "Pipe burst? AC out in August? George fast-tracks emergency jobs and connects you with the nearest available pro immediately." },
                 ].map((item) => (
-                  <div key={item.title} className="flex gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div key={item.title} className="flex gap-4 p-4 rounded-xl bg-white border border-slate-200">
                     <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
                       <item.icon className="w-5 h-5 text-[#F47C20]" />
                     </div>
@@ -159,7 +159,7 @@ export default function JoinPage() {
         </section>
 
         {/* Comparison */}
-        <section className="py-20 px-4 bg-slate-50">
+        <section className="py-20 px-4 bg-slate-50 dark:bg-slate-900/50">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-black text-center mb-12">
               Stop wasting time on platforms that don't work.
@@ -213,7 +213,7 @@ export default function JoinPage() {
         </section>
 
         {/* For Customers AND Pros */}
-        <section className="py-20 px-4 bg-slate-50">
+        <section className="py-20 px-4 bg-slate-50 dark:bg-slate-900/50">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-black text-center mb-4">
               Fair for customers. Fair for pros.
