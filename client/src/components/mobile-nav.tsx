@@ -52,13 +52,7 @@ export function MobileNav() {
       data-testid="mobile-nav"
     >
       <div className="flex items-center justify-around h-16">
-        <Link
-          href="/emergency-sos"
-          className="absolute -top-3 right-4 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-[#DC2626] shadow-lg shadow-red-600/30 hover:bg-red-700 transition-colors"
-          data-testid="nav-emergency-sos"
-        >
-          <AlertCircle className="w-5 h-5 text-white" />
-        </Link>
+        {/* Emergency SOS accessible via footer and George */}
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
