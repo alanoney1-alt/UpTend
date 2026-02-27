@@ -27,13 +27,13 @@ export default function Landing() {
         <SocialProofTicker />
         <TrustBar />
         <SocialProofStats />
+        <Founding100 />
         <HowItWorks />
         <ServicesStrip />
         <TwoSides />
         <Testimonials />
         <FinalCTA />
       </main>
-      <Founding100 />
       <Footer />
     </div>
   );
