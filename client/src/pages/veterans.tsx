@@ -102,7 +102,10 @@ export default function Veterans() {
 
       {/* Hero */}
       <section className="pt-32 pb-20 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-orange-500/10 to-transparent" />
+        <div className="absolute inset-0">
+          <img src="/images/site/become-pro-hero.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-slate-900/80" />
+        </div>
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <div className="flex items-center justify-center gap-2 mb-6">
             <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-sm px-4 py-1">
