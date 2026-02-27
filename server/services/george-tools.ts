@@ -6236,7 +6236,7 @@ import { ALL_DIY_GUIDES, searchGuides, SYSTEM_LIFESPANS, type DIYGuide } from ".
 // ORLANDO MARKET RATES (30+ service types)
 // ─────────────────────────────────────────────
 const ORLANDO_MARKET_RATES: Record<string, { low: number; avg: number; high: number; unit: string; notes?: string }> = {
- // UpTend 12 verticals
+ // UpTend 11 verticals
  home_cleaning: { low: 120, avg: 175, high: 300, unit: "per visit", notes: "3bd/2ba standard clean" },
  carpet_cleaning: { low: 99, avg: 175, high: 350, unit: "per visit", notes: "3-4 rooms" },
  junk_removal: { low: 150, avg: 350, high: 600, unit: "per load", notes: "Half truck average" },

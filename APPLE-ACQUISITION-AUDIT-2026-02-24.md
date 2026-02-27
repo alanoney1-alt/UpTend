@@ -239,7 +239,7 @@ The tech? Probably. The two-sided marketplace with supply-side relationships? Ab
 
 **The values section** (Accountability First, Pro Empowerment, Honest Pricing, Sustainability as Action) maps to real product features. This isn't fluff.
 
-**"Proven Impact" stats:** 12 Service Verticals, 24/7 AI Support, Orlando Born and Built, 100% Guaranteed Pricing.
+**"Proven Impact" stats:** 11 Service Verticals, 24/7 AI Support, Orlando Born and Built, 100% Guaranteed Pricing.
 
 **Apple would change:**
 - The founder photo is good but could be more professional.

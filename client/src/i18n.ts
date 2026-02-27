@@ -413,7 +413,7 @@ const resources = {
       "about.story_p2": "Meanwhile, the pros doing the actual work were getting squeezed -- paying for leads that never called back, racing to the bottom on price, and barely keeping 60 cents on every dollar they earned.",
       "about.story_p3": "We built UpTend to fix all of that.",
       "about.story_p4": "One price, locked before the pro arrives. Background checks, insurance verification, and live GPS tracking on every job. Photo documentation so there are no surprises. And pros who keep 85% of what they earn, because when pros are treated right, customers get better work.",
-      "about.story_p5": "Serving 12 home service categories across Orlando. 5-star rated. Background-checked pros. Real-time tracking on every job. One mission: make home services work the way they should have from the start.",
+      "about.story_p5": "Serving 11 home service categories across Orlando. 5-star rated. Background-checked pros. Real-time tracking on every job. One mission: make home services work the way they should have from the start.",
       "about.story_p6": "One price. One pro. Full tracking. Guaranteed work. That's the whole idea.",
       "about.pillar_protect": "01. PROTECT",
       "about.pillar_protect_text": "Your home is probably your biggest investment. You should have proof of everything that's ever been done to it. That's why we built the <strong>360° Home DNA Scan</strong>,to give you an actual record. Not for us. For you. For your insurance company. For your next landlord or mortgage broker. Every job gets documented, timestamped, and verified. You never have to say \"trust me\" again. You have proof.",

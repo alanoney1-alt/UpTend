@@ -51,7 +51,7 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 | Component | Price | Notes |
 |-----------|-------|-------|
-| **Per-unit monthly fee** | $3/$5/$8 per unit/mo by tier | Competitive with AppFolio; includes all 12 services + 21 AI features |
+| **Per-unit monthly fee** | $3/$5/$8 per unit/mo by tier | Competitive with AppFolio; includes all 11 services + 21 AI features |
 | **Platform transaction fee** | 7% on services booked | Standard customer-side platform fee |
 | **Setup/onboarding fee** | $500 one-time | Waive for annual contracts (incentivize commitment) |
 | **Annual contract discount** | 15% off monthly rate | Standard SaaS practice |
@@ -60,7 +60,7 @@ Before diving into UpTend's pricing, here's what the market charges:
 ### Pricing Tiers
 
 **Starter — $3/unit/month**
-- Vendor marketplace access (all 12 services)
+- Vendor marketplace access (all 11 services)
 - Work order management
 - Resident request portal
 - Basic reporting
@@ -130,7 +130,7 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 **Core — $4.00/door/month**
 - Maintenance request portal
-- Vendor marketplace (all 12 services)
+- Vendor marketplace (all 11 services)
 - Work order tracking
 - Basic compliance (insurance verification)
 - 7% transaction fee
@@ -205,7 +205,7 @@ Before diving into UpTend's pricing, here's what the market charges:
 
 **Builder — $299/month**
 - Up to 5 active projects
-- Sub marketplace (all 12 service trades)
+- Sub marketplace (all 11 service trades)
 - Punch list management
 - Basic compliance vault
 - Lien waiver automation
@@ -758,7 +758,7 @@ We recommend a 30-day pilot with [subset of portfolio]:
   - No compliance vault with insurance verification
   - No turnover coordination
   - Can't dispatch a handyman at 2 AM — just coordinates scheduling
-- **How to position:** *"Property Meld is maintenance software — they coordinate between you and your vendors. But you still need the vendors. UpTend IS the vendor network AND the coordination platform. We don't just schedule your existing handyman — we provide 12 service categories of pre-vetted, insured professionals. If your regular vendor flakes, we have a backup dispatched in an hour. Property Meld can't do that."*
+- **How to position:** *"Property Meld is maintenance software — they coordinate between you and your vendors. But you still need the vendors. UpTend IS the vendor network AND the coordination platform. We don't just schedule your existing handyman — we provide 11 service categories of pre-vetted, insured professionals. If your regular vendor flakes, we have a backup dispatched in an hour. Property Meld can't do that."*
 
 ### Lula
 - **What they charge:** Per-work-order model with markup on vendor cost (~15-25%); self-service and full-service tiers
@@ -865,7 +865,7 @@ When asked "What makes UpTend different?" in ANY segment:
 **Section 1: Technical Approach**
 - Lead with the platform capabilities (compliance vault, vendor verification, AI-powered matching)
 - Emphasize audit-ready documentation
-- Detail the 12 service categories
+- Detail the 11 service categories
 - Describe the technology stack (AI capabilities, real-time tracking)
 - Include screenshots/mockups of the platform
 
@@ -877,7 +877,7 @@ When asked "What makes UpTend different?" in ANY segment:
 - Quality assurance process
 
 **Section 3: Past Performance**
-- Consumer platform metrics (uptendapp.com — 21 AI features, 205 database tables, 12 services)
+- Consumer platform metrics (uptendapp.com — 21 AI features, 205 database tables, 11 services)
 - Orlando metro service area coverage
 - Vendor network size and verification stats
 - Technology certifications and security measures
@@ -1191,7 +1191,7 @@ uptendapp.com | [Phone]
 - Customer demands free platform + reduced transaction fees
 - Customer wants exclusivity in exchange for "exposure"
 - Government contract requires insurance/bonding you can't obtain
-- Scope is outside your 12 service categories with no path to expansion
+- Scope is outside your 11 service categories with no path to expansion
 - Customer is abusive to your team or vendors
 
 ---
