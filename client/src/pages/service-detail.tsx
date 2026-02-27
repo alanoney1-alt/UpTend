@@ -522,7 +522,7 @@ export default function ServiceDetail() {
           <>
             <div className="absolute inset-0">
               <img src={service.heroImage} alt={service.name} className="w-full h-full object-cover" loading="eager" />
-              <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
+              <div className="absolute inset-0 bg-slate-900/80" />
             </div>
           </>
         ) : (

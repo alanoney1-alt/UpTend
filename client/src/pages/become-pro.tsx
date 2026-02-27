@@ -77,8 +77,8 @@ export default function BecomePro() {
       <main id="main-content">
       <section className="relative bg-slate-950 pt-28 pb-24 px-4 md:px-6 text-center overflow-hidden" data-testid="section-pro-hero">
         <div className="absolute inset-0">
-          <img src="/images/site/become-pro-hero.webp" alt="" className="w-full h-full object-cover opacity-30" loading="eager" />
-          <div className="absolute inset-0 bg-slate-950/60" />
+          <img src="/images/site/become-pro-hero.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-slate-900/80" />
         </div>
         <div className="relative z-10">
         <h1 className="text-4xl md:text-6xl font-black text-white mb-6" data-testid="text-pro-headline">

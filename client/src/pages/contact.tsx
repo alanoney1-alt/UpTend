@@ -77,7 +77,7 @@ export default function Contact() {
       <main className="relative max-w-6xl mx-auto px-4 py-12 pt-28">
         <div className="absolute inset-0 h-[400px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">
           <img src="/images/site/hero-contact.webp" alt="" className="w-full h-full object-cover" loading="eager" />
-          <div className="absolute inset-0 bg-slate-900/75" />
+          <div className="absolute inset-0 bg-slate-900/80" />
         </div>
         <div className="text-center mb-12 relative z-10">
           <MessageCircle className="w-12 h-12 mx-auto mb-4 text-[#F47C20]" />

@@ -39,7 +39,7 @@ export default function MeetGeorgePage() {
       <main className="relative pt-28 pb-20 overflow-hidden">
         <div className="absolute inset-0 h-[500px]">
           <img src="/images/site/hero-meet-george.webp" alt="" className="w-full h-full object-cover" loading="eager" />
-          <div className="absolute inset-0 bg-background/85" />
+          <div className="absolute inset-0 bg-slate-900/80" />
         </div>
         {/* Hero */}
         <section className="max-w-4xl mx-auto px-4 text-center mb-20">

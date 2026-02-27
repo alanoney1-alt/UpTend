@@ -36,7 +36,7 @@ export default function BusinessPartnersPage() {
       <section className="relative pt-32 pb-16 px-4 overflow-hidden">
         <div className="absolute inset-0">
           <img src="/images/site/hero-business.webp" alt="" className="w-full h-full object-cover" loading="eager" />
-          <div className="absolute inset-0 bg-slate-950/85" />
+          <div className="absolute inset-0 bg-slate-900/80" />
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-6 text-sm font-semibold">

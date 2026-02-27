@@ -115,7 +115,7 @@ export default function EmergencySosPage() {
       <main className="relative pt-24 pb-32 px-4 max-w-2xl mx-auto">
         <div className="absolute inset-0 h-[400px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">
           <img src="/images/site/hero-emergency.webp" alt="" className="w-full h-full object-cover" loading="eager" />
-          <div className="absolute inset-0 bg-background/85" />
+          <div className="absolute inset-0 bg-slate-900/80" />
         </div>
 
         {/* Step: Select Emergency Type */}

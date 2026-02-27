@@ -62,7 +62,7 @@ function HeroSection() {
     <section className="relative pt-24 pb-20 overflow-hidden bg-slate-900">
       <div className="absolute inset-0">
         <img src="/images/site/hero-home-service.webp" alt="" className="w-full h-full object-cover" loading="eager" />
-        <div className="absolute inset-0 bg-slate-900/75" />
+        <div className="absolute inset-0 bg-slate-900/80" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-[#3B1D5A]/30 to-slate-900/60" />
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#3B1D5A]/15 rounded-full blur-[120px]" />

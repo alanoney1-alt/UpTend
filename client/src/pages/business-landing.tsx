@@ -21,7 +21,8 @@ export default function BusinessLanding() {
       {/* Hero */}
       <section className="relative pt-24 pb-20 overflow-hidden">
         <div className="absolute inset-0">
-          <img src="/images/site/hero-business.webp" alt="" className="w-full h-full object-cover opacity-20" loading="eager" />
+          <img src="/images/site/hero-business.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-slate-900/80" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950/80 via-slate-900/80 to-orange-950/20" />
         <div className="relative max-w-6xl mx-auto px-4 text-center">
