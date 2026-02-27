@@ -197,7 +197,7 @@ function TrustBar() {
 /* ─── SOCIAL PROOF STATS ─── */
 function SocialProofStats() {
   const stats = [
-    { value: "12", label: "Service Categories" },
+    { value: "11", label: "Service Categories" },
     { value: "100%", label: "Background Checked" },
     { value: "12", label: "Orlando Neighborhoods" },
     { value: "$0", label: "Lead Fees for Pros" },

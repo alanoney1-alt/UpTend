@@ -60,7 +60,7 @@ export default function BusinessLanding() {
       <section className="border-y border-slate-800 bg-slate-900/50">
         <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { value: "12", label: "Service Verticals" },
+            { value: "11", label: "Service Verticals" },
             { value: "100%", label: "Background Checked" },
             { value: "< 2hr", label: "Average Dispatch" },
             { value: "15%", label: "Platform Fee, Flat" },
@@ -184,7 +184,7 @@ export default function BusinessLanding() {
               { icon: Clock, title: "Same-Day Dispatch", desc: "AI-optimized routing gets a pro to your property in under 2 hours on average." },
               { icon: DollarSign, title: "Transparent Pricing", desc: "Flat 15% platform fee. No hidden costs, no markups. Pros set competitive rates." },
               { icon: BarChart3, title: "Consolidated Reporting", desc: "Weekly invoicing, spend analytics, compliance reports, and board-ready summaries." },
-              { icon: Layers, title: "12 Service Verticals", desc: "Junk removal, cleaning, landscaping, pressure washing, handyman, pool, gutters, carpet, moving, demolition, and more." },
+              { icon: Layers, title: "11 Service Verticals", desc: "Junk removal, cleaning, landscaping, pressure washing, handyman, pool, gutters, carpet, moving, demolition, and more." },
               { icon: Globe, title: "API + Integrations", desc: "Connect to Jobber, ServiceTitan, QuickBooks, Gusto, AppFolio, Buildium, and more." },
               { icon: Lock, title: "Compliance Built In", desc: "Insurance verification, workers comp tracking, OSHA compliance, and ESG sustainability metrics." },
             ].map(cap => (

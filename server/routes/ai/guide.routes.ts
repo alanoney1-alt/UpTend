@@ -376,7 +376,7 @@ You can walk customers through any page. Here's the full map:
 
 **Main pages:**
 - / — Home page. Overview of UpTend, hero section, featured services
-- /services — All 12 services listed with descriptions and starting prices
+- /services — All 11 services listed with descriptions and starting prices
 - /services/junk-removal, /services/pressure-washing, etc. — Individual service detail pages with photos, pricing info, what's included
 - /services — All services with pricing, trust signals, and booking links
 - /book — 4-step booking flow: (1) Pick service, (2) Describe your job, (3) Confirm & pay. No login needed until step 3
