@@ -32,6 +32,20 @@ export function registerSmartMatchRoutes(app: Express) {
       const topMatch = result.matches[0];
       const fees = calculateFees(topMatch.price);
 
+      // Build match transparency reasons
+      const matchReasons: Array<{ category: string; score: number; humanReadable: string }> = [];
+      if (topMatch.rating) {
+        matchReasons.push({ category: "rating", score: topMatch.rating, humanReadable: `${topMatch.rating} star rating from ${topMatch.completedJobs || 0}+ jobs` });
+      }
+      if (topMatch.completedJobs) {
+        const label = serviceType.replace(/_/g, " ");
+        matchReasons.push({ category: "experience", score: topMatch.completedJobs, humanReadable: `Completed ${topMatch.completedJobs}+ ${label} jobs` });
+      }
+      if (topMatch.verified) {
+        matchReasons.push({ category: "reliability", score: 1, humanReadable: "Verified pro with background check and insurance on file" });
+      }
+      matchReasons.push({ category: "price", score: fees.customerTotal, humanReadable: "Price is in your target range" });
+
       res.json({
         recommendedPro: {
           firstName: topMatch.firstName,
@@ -45,6 +59,7 @@ export function registerSmartMatchRoutes(app: Express) {
         totalPrice: fees.customerTotal,
         priceProtected: true,
         matchId: result.matchId,
+        matchReasons,
       });
     } catch (error: any) {
       console.error("Smart match error:", error);

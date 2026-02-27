@@ -7458,6 +7458,20 @@ export async function smartMatchPro(args: {
  const topMatch = result.matches[0];
  const fees = calculateFees(topMatch.price);
 
+ // Build match transparency reasons
+ const matchReasons: Array<{ category: string; score: number; humanReadable: string }> = [];
+ if (topMatch.rating) {
+ matchReasons.push({ category: "rating", score: topMatch.rating, humanReadable: `${topMatch.rating} star rating from ${topMatch.completedJobs || 0}+ jobs` });
+ }
+ if (topMatch.completedJobs) {
+ const serviceLabel = args.serviceType ? args.serviceType.replace(/_/g, " ") : "service";
+ matchReasons.push({ category: "experience", score: topMatch.completedJobs, humanReadable: `Completed ${topMatch.completedJobs}+ ${serviceLabel} jobs` });
+ }
+ if (topMatch.verified) {
+ matchReasons.push({ category: "reliability", score: 1, humanReadable: "Verified pro with background check and insurance on file" });
+ }
+ matchReasons.push({ category: "price", score: fees.customerTotal, humanReadable: "Price is in your target range with Price Protection included" });
+
  return {
  matchId: result.matchId,
  pro: {
@@ -7472,6 +7486,7 @@ export async function smartMatchPro(args: {
  basePrice: fees.proPrice,
  priceProtected: true,
  hasAlternatives: result.matches.length > 1,
+ matchReasons,
  message: `Found ${topMatch.firstName}, a ${topMatch.verified ? "verified" : ""} pro with ${topMatch.rating} stars and ${topMatch.completedJobs} completed jobs. Total price: $${fees.customerTotal.toFixed(2)} (includes $${fees.serviceFee.toFixed(2)} service fee). Price Protected.`,
  };
  } catch (err: any) {

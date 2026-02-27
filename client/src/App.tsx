@@ -167,6 +167,11 @@ const TaxCenter = lazy(() => import("@/pages/tax-center"));
 const SmartBooking = lazy(() => import("@/pages/smart-booking"));
 const SnapQuotePage = lazy(() => import("@/pages/snap-quote"));
 const Gallery = lazy(() => import("@/pages/gallery"));
+// Warranty, Builder Handoff, Quality Reports
+const WarrantyManager = lazy(() => import("@/pages/warranty-manager"));
+const BuilderHandoff = lazy(() => import("@/pages/builder-handoff"));
+const QualityReports = lazy(() => import("@/pages/quality-reports"));
+
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
 const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
 const BlogPost = lazy(() => import("@/pages/blog/post"));
@@ -361,6 +366,9 @@ function Router() {
       <Route path="/jobs/:jobId" component={JobDetail} />
       <Route path="/tax-center" component={TaxCenter} />
       <Route path="/gallery" component={Gallery} />
+      <Route path="/warranty" component={WarrantyManager} />
+      <Route path="/builder/handoff" component={BuilderHandoff} />
+      <Route path="/quality-reports" component={QualityReports} />
       <Route path="/blog" component={BlogIndex} />
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
       <Route path="/blog/:slug" component={BlogPost} />

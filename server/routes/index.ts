@@ -269,6 +269,18 @@ import { registerCalendarRoutes } from "./calendar.routes";
 // SMS Bot standalone routes (send, conversations)
 import { registerSmsBotStandaloneRoutes } from "./sms-bot.routes";
 
+// Warranty Management routes
+import { registerWarrantyRoutes } from "./warranty.routes";
+
+// Builder Handoff routes
+import { registerBuilderHandoffRoutes } from "./builder-handoff.routes";
+
+// Appointment Batching routes
+import { registerScheduleBatchRoutes } from "./schedule-batch.routes";
+
+// Quality Inspection Reports routes
+import { registerQualityReportRoutes } from "./quality-reports.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -553,6 +565,18 @@ export async function registerRoutes(
   safeRegister("StripeConnect", registerStripeConnectRoutes);
   safeRegister("TaxReporting", registerTaxReportingRoutes);
   safeRegister("JobLifecycle", registerJobLifecycleRoutes);
+
+  // Register Warranty Management routes
+  registerWarrantyRoutes(app);
+
+  // Register Builder Handoff routes
+  registerBuilderHandoffRoutes(app);
+
+  // Register Appointment Batching routes
+  registerScheduleBatchRoutes(app);
+
+  // Register Quality Report routes
+  registerQualityReportRoutes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
