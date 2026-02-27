@@ -24,7 +24,9 @@ export default function Landing() {
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />
       <main id="main-content">
-        <AnnouncementTicker />
+        <div className="pt-[72px]">
+          <AnnouncementTicker />
+        </div>
         <HeroSection />
         <SocialProofTicker />
         <TrustBar />
@@ -62,7 +64,7 @@ function HeroSection() {
   const toggleLanguage = () => i18n.changeLanguage(i18n.language === "en" ? "es" : "en");
 
   return (
-    <section className="relative pt-24 pb-20 overflow-hidden bg-slate-900">
+    <section className="relative pt-12 pb-20 overflow-hidden bg-slate-900">
       <div className="absolute inset-0">
         <img src="/images/site/hero-home-service.webp" alt="" className="w-full h-full object-cover" loading="eager" />
         <div className="absolute inset-0 bg-slate-900/80" />
