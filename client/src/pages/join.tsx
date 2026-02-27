@@ -38,7 +38,7 @@ export default function JoinPage() {
             </p>
             <a href="#join">
               <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white text-lg px-10 h-14 rounded-xl shadow-lg shadow-[#F47C20]/25">
-                Join the Founding 100 <ArrowRight className="ml-2 w-5 h-5" />
+                Click Here to Join the Founding 100 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </a>
           </div>
