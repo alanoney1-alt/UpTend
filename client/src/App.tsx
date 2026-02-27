@@ -157,6 +157,13 @@ const GutterCleaningOrlando = lazy(() => import("@/pages/services/gutter-cleanin
 const PoolCleaningLakeNona = lazy(() => import("@/pages/services/pool-cleaning-lake-nona"));
 const HomeServicesLakeNona = lazy(() => import("@/pages/services/home-services-lake-nona"));
 const HomeCleaningOrlando = lazy(() => import("@/pages/services/home-cleaning-orlando"));
+
+// Neighborhood Landing Pages
+const LakeNonaLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.LakeNonaPage })));
+const WinterParkLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WinterParkPage })));
+const DrPhillipsLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.DrPhillipsPage })));
+const WindermereLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WindermerePage })));
+const CelebrationLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.CelebrationPage })));
 const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orlando"));
 
 // Job Detail + Tax Center
@@ -347,6 +354,11 @@ function Router() {
       <Route path="/emergency" component={Emergency} />
       <Route path="/emergency-sos" component={EmergencySos} />
       <Route path="/neighborhood" component={Neighborhood} />
+      <Route path="/lake-nona" component={LakeNonaLanding} />
+      <Route path="/winter-park" component={WinterParkLanding} />
+      <Route path="/dr-phillips" component={DrPhillipsLanding} />
+      <Route path="/windermere" component={WindermereLanding} />
+      <Route path="/celebration" component={CelebrationLanding} />
       <Route path="/insurance" component={Insurance} />
       <Route path="/ai" component={AIFeaturesHub} />
       <Route path="/ai/photo-quote" component={PhotoToQuote} />

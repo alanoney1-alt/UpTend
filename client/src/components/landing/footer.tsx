@@ -165,7 +165,19 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-900 mt-16 pt-8 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Service Areas */}
+        <div className="mt-12 pt-8 border-t border-slate-800">
+          <h4 className="text-white font-bold mb-4 uppercase tracking-widest text-xs">Service Areas</h4>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400">
+            <Link href="/lake-nona" className="hover:text-primary transition-colors">Lake Nona</Link>
+            <Link href="/winter-park" className="hover:text-primary transition-colors">Winter Park</Link>
+            <Link href="/dr-phillips" className="hover:text-primary transition-colors">Dr. Phillips</Link>
+            <Link href="/windermere" className="hover:text-primary transition-colors">Windermere</Link>
+            <Link href="/celebration" className="hover:text-primary transition-colors">Celebration</Link>
+          </div>
+        </div>
+
+        <div className="border-t border-slate-900 mt-8 pt-8 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <p data-testid="text-copyright">&copy; {currentYear} {t("footer.footer_copyright")}</p>
           </div>
