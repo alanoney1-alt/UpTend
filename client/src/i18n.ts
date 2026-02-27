@@ -732,7 +732,7 @@ const resources = {
 
       // B2B FAQ
       "faq.b2b.q1": "Do you offer property management accounts?",
-      "faq.b2b.a1": "Yes! We have dedicated accounts for property managers, landlords, and real estate investors. Features include: centralized billing across multiple properties, priority scheduling, dedicated account manager, volume pricing (15-30% off), custom reporting, and same-day emergency services. Contact us at business@uptend.app to set up.",
+      "faq.b2b.a1": "Yes! We have dedicated accounts for property managers, landlords, and real estate investors. Features include: centralized billing across multiple properties, priority scheduling, dedicated account manager, volume pricing (15-30% off), custom reporting, and same-day emergency services. Contact us at business@uptendapp.com to set up.",
       "faq.b2b.q2": "Can HOAs and community associations use UpTend?",
       "faq.b2b.a2": "Absolutely! We serve many HOAs for common area maintenance, bulk trash events, storm cleanup, and recurring landscaping. Benefits include: contract pricing, scheduled service days, weekly consolidated invoicing, board reporting, and dedicated Pro teams familiar with your community standards.",
       "faq.b2b.q3": "What business services do you offer?",
@@ -760,7 +760,7 @@ const resources = {
       "faq.b2b.q14": "Do you integrate with property management software?",
       "faq.b2b.a14": "We're building integrations with major PM platforms (Buildium, AppFolio, Rent Manager). Currently available: CSV export of all job data for import into your system, API access for custom integrations (contact us), and Zapier connections for automated workflows. Roadmap includes native integrations by Q3 2026.",
       "faq.b2b.q15": "What is your business account onboarding process?",
-      "faq.b2b.a15": "Quick and easy! 1) Request business account at business@uptend.app, 2) We'll schedule a 30-minute call to understand your needs, 3) Set up your multi-property account with custom settings, 4) Add users/managers with different permission levels, 5) Receive onboarding training for your team. Most accounts are live within 48 hours. First month receives 15% new client discount.",
+      "faq.b2b.a15": "Quick and easy! 1) Request business account at business@uptendapp.com, 2) We'll schedule a 30-minute call to understand your needs, 3) Set up your multi-property account with custom settings, 4) Add users/managers with different permission levels, 5) Receive onboarding training for your team. Most accounts are live within 48 hours. First month receives 15% new client discount.",
 
       // Pricing FAQ
       "faq.pricing.q1": "How is pricing calculated?",
@@ -840,7 +840,7 @@ const resources = {
       "faq.pros.q18": "How do I handle disposal and recycling?",
       "faq.pros.a18": "UpTend promotes sustainability! Sort items into: recycle (metal, wood, cardboard), donate (furniture, appliances, clothing), resell (valuable items), e-waste (electronics), and landfill (last resort). We partner with local recyclers, donation centers, and resale shops. The app shows nearby drop-off locations. Pros who maintain 70%+ diversion rate receive sustainability bonuses ($50-$200/month).",
       "faq.pros.q19": "What support is available for Pros?",
-      "faq.pros.a19": "Pro support available 7 days/week: In-app chat (instant), phone support (priority line), email (support@uptend.app), and community forum. Issues handled: customer disputes, app bugs, payment questions, insurance queries, safety concerns, job clarifications. Average response time: 15 minutes during business hours, 1 hour evenings/weekends.",
+      "faq.pros.a19": "Pro support available 7 days/week: In-app chat (instant), phone support (priority line), email (support@uptendapp.com), and community forum. Issues handled: customer disputes, app bugs, payment questions, insurance queries, safety concerns, job clarifications. Average response time: 15 minutes during business hours, 1 hour evenings/weekends.",
       "faq.pros.q20": "How do I get better ratings?",
       "faq.pros.a20": "Top-rated Pros follow these practices: arrive on-time (or communicate delays early), professional appearance, clear communication, document everything with photos, clean up work area, exceed expectations (take extra items for same price, spot clean while there), send thank-you message after job, follow up on satisfaction. Pros with 4.8+ ratings earn 30% more due to customer preference and platform priority.",
       "faq.pros.q21": "Can I bring a helper?",
