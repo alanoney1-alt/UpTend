@@ -89,7 +89,7 @@ function HeroSection() {
 
         <p className="text-white/50 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
-          No chasing leads. No comparing five quotes. No wondering if your pro is legit. You tell us what you need, George finds the right pro, and you get one price. That's it.
+          No chasing leads. No comparing five quotes. No wondering if your pro is legit. You tell us what you need, we find the right pro, and you get one price. That's it.
         </p>
         <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
           Every pro is background-checked and insured. Every price is guaranteed.
