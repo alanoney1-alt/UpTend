@@ -82,8 +82,8 @@ function HeroSection() {
         </h1>
 
         <Link href="/join">
-          <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white font-bold text-lg px-10 py-4 rounded-xl shadow-lg shadow-[#F47C20]/25 hover:shadow-xl hover:scale-[1.02] transition-all mb-8">
-            Click Here to Join the Founding 100 <ArrowRight className="ml-2 w-5 h-5" />
+          <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white font-bold text-sm sm:text-lg px-6 sm:px-10 py-4 rounded-xl shadow-lg shadow-[#F47C20]/25 hover:shadow-xl hover:scale-[1.02] transition-all mb-8 whitespace-normal max-w-[90vw]">
+            Join the Founding 100 <ArrowRight className="ml-2 w-5 h-5 shrink-0" />
           </Button>
         </Link>
 
@@ -338,7 +338,7 @@ function ServicesStrip() {
                 </span>
               )}
               <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-1">
-                <img src={svc.image} alt={svc.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                <img src={svc.image} alt={svc.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               </div>
               <span className="font-bold text-sm text-slate-900 dark:text-white">{svc.label}</span>
               <span className="text-xs font-semibold text-[#F47C20]">{svc.price}</span>
