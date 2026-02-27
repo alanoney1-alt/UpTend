@@ -81,6 +81,12 @@ function HeroSection() {
           </span>
         </h1>
 
+        <Link href="/join">
+          <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white font-bold text-lg px-10 py-4 rounded-xl shadow-lg shadow-[#F47C20]/25 hover:shadow-xl hover:scale-[1.02] transition-all mb-8">
+            Join the Founding 100 <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
+        </Link>
+
         <p className="text-white/50 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
           No chasing leads. No comparing five quotes. No wondering if your pro is legit. You tell us what you need, George finds the right pro, and you get one price. That's it.

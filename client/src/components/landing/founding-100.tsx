@@ -154,7 +154,7 @@ export function Founding100() {
               </h3>
               {activeTab === "customer" ? (
                 <ul className="space-y-2 text-slate-300 text-sm">
-                  <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> 10% off your first service</li>
+                  <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> 10% off your first 10 services</li>
                   <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Priority booking access</li>
                   <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> Direct line to George, your home expert</li>
                   <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-green-400 mt-0.5 shrink-0" /> "Founding Member" badge forever</li>
