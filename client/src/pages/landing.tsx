@@ -198,7 +198,7 @@ function SocialProofStats() {
   const stats = [
     { value: "12", label: "Service Categories" },
     { value: "100%", label: "Background Checked" },
-    { value: "4.9", label: "Average Rating", hasStar: true },
+    { value: "12", label: "Orlando Neighborhoods" },
     { value: "$0", label: "Lead Fees for Pros" },
   ];
 
@@ -393,58 +393,20 @@ function TwoSides() {
 
 /* ─── TESTIMONIALS ─── */
 function Testimonials() {
-  const { t } = useTranslation();
-  const testimonials = [
-    {
-      name: "Maria S.",
-      location: "Lake Nona, FL",
-      service: "Junk Removal",
-      text: "The crew showed up on time, loaded everything in under two hours, and the price was exactly what I was quoted. No surprises. I've used other services and always felt overcharged. Not here.",
-    },
-    {
-      name: "James T.",
-      location: "Winter Park, FL",
-      service: "Pressure Washing",
-      text: "My driveway hadn't been cleaned in five years. The difference was night and day. My neighbors asked if I had it repaved. The Pro was thorough and even hit the sidewalk edges I didn't ask about.",
-    },
-    {
-      name: "Patricia W.",
-      location: "Dr. Phillips, FL",
-      service: "Gutter Cleaning",
-      text: "The Pro showed me photos of the buildup before cleaning and the clear gutters after. Downspouts were tested and everything was bagged up. Professional from start to finish.",
-    },
-  ];
-
   return (
     <section className="py-20 bg-white dark:bg-slate-950">
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-black mb-4 text-slate-900 dark:text-white">
-            {t("landing.testimonials_title", "What Our Customers Are Saying")}
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-lg max-w-xl mx-auto">
-            {t("landing.testimonials_sub", "Real reviews from real homeowners across the Orlando metro area.")}
-          </p>
-          <p className="mt-3 text-sm font-semibold text-[#F47C20]">
-            Join thousands of Orlando homeowners who trust UpTend
-          </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((review) => (
-            <Card key={review.name} className="p-6 flex flex-col border-slate-200 dark:border-slate-700">
-              <div className="flex items-center gap-1 mb-4">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
-                ))}
-              </div>
-              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1 mb-4">"{review.text}"</p>
-              <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
-                <p className="font-bold text-sm text-slate-900 dark:text-white">{review.name}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{review.service}. {review.location}</p>
-              </div>
-            </Card>
-          ))}
-        </div>
+      <div className="max-w-3xl mx-auto px-4 text-center">
+        <h2 className="text-3xl md:text-4xl font-black mb-4 text-slate-900 dark:text-white">
+          Customer Reviews Coming Soon
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 text-lg max-w-xl mx-auto mb-6">
+          We're onboarding our first customers now. Be one of the Founding 100 and your review could be right here.
+        </p>
+        <a href="#founding-100">
+          <Button variant="outline" className="border-[#F47C20] text-[#F47C20] hover:bg-[#F47C20]/10">
+            Claim Your Spot
+          </Button>
+        </a>
       </div>
     </section>
   );

@@ -1,21 +1,12 @@
-const PROOF_ENTRIES = [
-  { name: "Sarah", neighborhood: "Lake Nona", service: "gutter cleaning", time: "2 hours ago" },
-  { name: "James", neighborhood: "Winter Park", service: "pressure washing", time: "3 hours ago" },
-  { name: "Maria", neighborhood: "Dr. Phillips", service: "junk removal", time: "4 hours ago" },
-  { name: "David", neighborhood: "Windermere", service: "pool cleaning", time: "5 hours ago" },
-  { name: "Ashley", neighborhood: "Baldwin Park", service: "home cleaning", time: "6 hours ago" },
-  { name: "Carlos", neighborhood: "Celebration", service: "landscaping", time: "7 hours ago" },
-  { name: "Emily", neighborhood: "Avalon Park", service: "carpet cleaning", time: "8 hours ago" },
-  { name: "Robert", neighborhood: "Horizon West", service: "handyman repair", time: "9 hours ago" },
-  { name: "Jessica", neighborhood: "Lake Nona", service: "moving labor", time: "10 hours ago" },
-  { name: "Michael", neighborhood: "Winter Park", service: "garage cleanout", time: "12 hours ago" },
-];
-
 export function SocialProofTicker() {
-  const items = PROOF_ENTRIES.map(
-    (e) => `${e.name} in ${e.neighborhood} booked ${e.service} | ${e.time}`
-  );
-  // Duplicate for seamless loop
+  const items = [
+    "Now accepting the first 100 customers and pros in Orlando",
+    "Serving Lake Nona, Winter Park, Dr. Phillips, Windermere, and 8 more neighborhoods",
+    "11 service categories available",
+    "All pros background-checked and insured",
+    "Founding Member spots filling up",
+    "Home Intelligence, powered by George",
+  ];
   const all = [...items, ...items];
 
   return (
