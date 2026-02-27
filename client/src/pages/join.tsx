@@ -10,6 +10,7 @@ import {
 import { Founding100 } from "@/components/landing/founding-100";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
+import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
 
 export default function JoinPage() {
   usePageTitle("Join the Founding 100 | UpTend");
@@ -18,6 +19,7 @@ export default function JoinPage() {
     <div className="min-h-screen bg-white text-slate-900">
       <Header />
       <main className="pt-[72px]">
+        <AnnouncementTicker />
 
         {/* Hero */}
         <section className="relative pt-16 pb-20 overflow-hidden bg-slate-900">
