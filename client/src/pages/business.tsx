@@ -171,7 +171,7 @@ export default function Business() {
       <section id="pricing" className="py-20 px-4 bg-slate-900/50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Pricing Built for Your Business</h2>
-          <p className="text-slate-400 text-center mb-8">Plus transaction fees on completed services. Volume discounts: 2.5% (10+ jobs) · 5% (25+) · 7.5% (50+)</p>
+          <p className="text-slate-400 text-center mb-8">Custom pricing for every business. Schedule a call to get started.</p>
 
           {/* Segment Tabs */}
           <div className="flex flex-wrap justify-center gap-2 mb-12">
