@@ -282,9 +282,135 @@ const CELEBRATION: NeighborhoodConfig = {
   heroImage: "/images/site/hero-home-service.webp",
 };
 
+const KISSIMMEE: NeighborhoodConfig = {
+  slug: "kissimmee",
+  name: "Kissimmee",
+  tagline: "Affordable, reliable home services for Kissimmee homeowners. Verified pros, upfront pricing, no surprises.",
+  description: "Kissimmee is one of Central Florida's most diverse and fast-growing communities. From vacation rentals near the parks to established family neighborhoods, UpTend serves every home with transparent pricing and background-checked pros.",
+  areas: ["Poinciana", "BVL", "St. Cloud border", "US-192 corridor", "Downtown Kissimmee", "Reunion Resort"],
+  highlights: [
+    "Vacation rental owners in Kissimmee need fast turnaround cleaning between guests. Our Home Cleaning pros handle same-day requests.",
+    "Florida's storms hit Kissimmee hard. Schedule gutter cleaning and yard debris removal before hurricane season starts in June.",
+    "Older homes near Downtown Kissimmee often need handyman work for aging fixtures, plumbing, and electrical. Starting at $75/hr.",
+    "Pool homes near Reunion and the US-192 corridor benefit from monthly maintenance plans. Keep your pool guest-ready year-round.",
+    "Moving into Poinciana? Our moving labor and garage cleanout services get you settled fast.",
+    "Pressure washing is essential in Kissimmee's humidity. Driveways, patios, and pool decks should be cleaned at least once a year.",
+  ],
+  heroImage: "/images/site/hero-home-service.webp",
+};
+
+const WINTER_GARDEN: NeighborhoodConfig = {
+  slug: "winter-garden",
+  name: "Winter Garden",
+  tagline: "Premium home services for Winter Garden families. Background-checked pros, guaranteed pricing, powered by George.",
+  description: "Winter Garden's booming communities like Horizon West and Hamlin bring thousands of new homeowners every year. UpTend is here with the services, pricing transparency, and quality your growing neighborhood deserves.",
+  areas: ["Horizon West", "Hamlin", "Waterleigh", "Oakland", "Fowler Groves", "Downtown Winter Garden"],
+  highlights: [
+    "New construction in Horizon West means post-build cleanup is in high demand. Pressure washing, landscaping setup, and junk removal.",
+    "The West Orange Trail brings outdoor living front and center. Keep your yard pristine with regular landscaping service.",
+    "Winter Garden's HOA communities have strict standards. Regular exterior maintenance keeps you compliant and your neighbors happy.",
+    "Large lots in Waterleigh and Hamlin need more landscaping attention. Our pros provide free estimates for any property size.",
+    "Garage cleanouts are popular before hurricane season. Free up space for vehicles and emergency supplies.",
+    "Pool homes in new developments benefit from our monthly pool plans starting at $120/month.",
+  ],
+  heroImage: "/images/site/hero-home-service.webp",
+};
+
+const ALTAMONTE_SPRINGS: NeighborhoodConfig = {
+  slug: "altamonte-springs",
+  name: "Altamonte Springs",
+  tagline: "Trusted home services for Altamonte Springs. Verified pros, transparent pricing, one platform.",
+  description: "Altamonte Springs sits at the heart of Seminole County with easy access to everywhere in Orlando. Whether you're in a lakefront home or a condo near the mall, UpTend has your home covered.",
+  areas: ["Uptown Altamonte", "Spring Oaks", "Lake Orienta", "Wekiva area", "Longwood border"],
+  highlights: [
+    "Mature trees in Altamonte Springs mean constant gutter debris. Quarterly cleaning prevents water damage and mold.",
+    "Older homes near Spring Oaks often need handyman attention for aging systems. Our pros handle everything from drywall to plumbing.",
+    "Condo owners near Uptown Altamonte benefit from carpet cleaning and interior maintenance services.",
+    "Lakefront properties need specialized landscaping to prevent erosion and maintain curb appeal.",
+    "Pressure washing is a must in Central Florida humidity. Sidewalks, driveways, and pool decks cleaned starting at $149.",
+    "Downsizing? Our junk removal team handles estate cleanouts with care. Starting at $99.",
+  ],
+  heroImage: "/images/site/hero-home-service.webp",
+};
+
+const OCOEE: NeighborhoodConfig = {
+  slug: "ocoee",
+  name: "Ocoee",
+  tagline: "Reliable home services for Ocoee homeowners. Background-checked pros, upfront pricing, zero hassle.",
+  description: "Ocoee's mix of established neighborhoods and new developments means diverse home service needs. UpTend matches you with verified local pros who know your area.",
+  areas: ["Westyn Bay", "Blackstone Creek", "Wesmere", "Downtown Ocoee", "Clarke Road corridor"],
+  highlights: [
+    "New communities like Westyn Bay need regular landscaping and pressure washing to maintain HOA standards.",
+    "Ocoee's proximity to West Orange means construction dust settles on homes. Annual pressure washing keeps exteriors clean.",
+    "Pool homes in Wesmere and Blackstone Creek benefit from consistent monthly pool maintenance plans.",
+    "Garage cleanouts are popular in Ocoee, especially in older neighborhoods with years of accumulated items.",
+    "Gutter cleaning is essential before Florida's rainy season. Two cleanings per year minimum for Ocoee homes.",
+    "Handyman services for Ocoee homes cover everything from ceiling fans to fence repairs. $75/hr.",
+  ],
+  heroImage: "/images/site/hero-home-service.webp",
+};
+
+const SANFORD: NeighborhoodConfig = {
+  slug: "sanford",
+  name: "Sanford",
+  tagline: "Home services for Sanford and the Lake Monroe area. Verified pros, fair pricing, real results.",
+  description: "Sanford's historic downtown charm meets modern lakefront living. From century-old bungalows to new riverfront condos, UpTend provides quality home services with complete transparency.",
+  areas: ["Historic Downtown Sanford", "Riverwalk", "Mayfair", "Lake Monroe", "Seminole Towne Center area"],
+  highlights: [
+    "Historic homes in Downtown Sanford need careful handyman work that respects original construction. Our pros are experienced.",
+    "Lakefront properties along Lake Monroe need specialized pressure washing and landscaping to handle moisture and algae.",
+    "Sanford's growing condo scene near Riverwalk benefits from interior cleaning and carpet services.",
+    "Mature oak trees throughout Sanford drop massive debris. Regular gutter cleaning and yard maintenance are essential.",
+    "New developments in the Seminole Towne area need post-construction cleanup and landscaping setup.",
+    "Junk removal is popular during Sanford's frequent community cleanups and estate sales.",
+  ],
+  heroImage: "/images/site/hero-home-service.webp",
+};
+
+const APOPKA: NeighborhoodConfig = {
+  slug: "apopka",
+  name: "Apopka",
+  tagline: "Affordable home services for Apopka families. Background-checked pros, honest pricing, real quality.",
+  description: "Apopka is one of Orlando's most affordable and family-friendly areas. UpTend brings professional-grade home services to your neighborhood without the premium price tag.",
+  areas: ["Rock Springs", "Wekiva Springs", "Piedmont Lakes", "Downtown Apopka", "Kelly Park area"],
+  highlights: [
+    "Apopka's rural-meets-suburban lots often need more landscaping work. Our pros handle properties of any size.",
+    "Homes near Wekiva Springs deal with sandy soil and unique drainage needs. Gutter maintenance is critical.",
+    "Larger properties in Apopka are perfect for our junk removal service. Clear out sheds, garages, and yards.",
+    "Pool homes benefit from regular maintenance, especially in Apopka's well-water areas where mineral buildup is common.",
+    "Pressure washing removes Florida's signature green algae from driveways and sidewalks. Starting at $149.",
+    "Moving into a new Apopka home? Bundle moving labor, cleaning, and pressure washing for a fresh start.",
+  ],
+  heroImage: "/images/site/hero-home-service.webp",
+};
+
+const CLERMONT: NeighborhoodConfig = {
+  slug: "clermont",
+  name: "Clermont",
+  tagline: "Home services for Clermont and South Lake County. Verified pros, upfront pricing, powered by George.",
+  description: "Clermont's rolling hills and lakefront communities make it one of Orlando's most desirable suburbs. UpTend provides Home Intelligence to keep your property in top shape year-round.",
+  areas: ["Legends", "Olympia", "Sawgrass Bay", "Minneola", "Groveland", "Downtown Clermont"],
+  highlights: [
+    "Clermont's hilly terrain means unique drainage challenges. Gutter cleaning and proper landscaping drainage are essential.",
+    "New construction in Legends and Olympia needs post-build cleanup. Pressure washing, landscaping, and junk hauling.",
+    "Lakefront homes along the Clermont Chain of Lakes need specialized exterior maintenance and dock-area cleanup.",
+    "Large lots are common in South Lake. Our landscaping pros handle everything from weekly mowing to full property makeovers.",
+    "Pool homes in Sawgrass Bay and surrounding communities benefit from our $120/month pool maintenance plans.",
+    "Clermont's distance from Orlando means local pros are key. All our Clermont-area pros are background-checked and nearby.",
+  ],
+  heroImage: "/images/site/hero-home-service.webp",
+};
+
 // Page components
 export function LakeNonaPage() { return <NeighborhoodLanding config={LAKE_NONA} />; }
 export function WinterParkPage() { return <NeighborhoodLanding config={WINTER_PARK} />; }
 export function DrPhillipsPage() { return <NeighborhoodLanding config={DR_PHILLIPS} />; }
 export function WindermerePage() { return <NeighborhoodLanding config={WINDERMERE} />; }
 export function CelebrationPage() { return <NeighborhoodLanding config={CELEBRATION} />; }
+export function KissimmeePage() { return <NeighborhoodLanding config={KISSIMMEE} />; }
+export function WinterGardenPage() { return <NeighborhoodLanding config={WINTER_GARDEN} />; }
+export function AltamontespringsPage() { return <NeighborhoodLanding config={ALTAMONTE_SPRINGS} />; }
+export function OcoeePage() { return <NeighborhoodLanding config={OCOEE} />; }
+export function SanfordPage() { return <NeighborhoodLanding config={SANFORD} />; }
+export function ApopkaPage() { return <NeighborhoodLanding config={APOPKA} />; }
+export function ClermontPage() { return <NeighborhoodLanding config={CLERMONT} />; }

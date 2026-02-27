@@ -174,6 +174,13 @@ export function Footer() {
             <Link href="/dr-phillips" className="hover:text-primary transition-colors">Dr. Phillips</Link>
             <Link href="/windermere" className="hover:text-primary transition-colors">Windermere</Link>
             <Link href="/celebration" className="hover:text-primary transition-colors">Celebration</Link>
+            <Link href="/kissimmee" className="hover:text-primary transition-colors">Kissimmee</Link>
+            <Link href="/winter-garden" className="hover:text-primary transition-colors">Winter Garden</Link>
+            <Link href="/altamonte-springs" className="hover:text-primary transition-colors">Altamonte Springs</Link>
+            <Link href="/ocoee" className="hover:text-primary transition-colors">Ocoee</Link>
+            <Link href="/sanford" className="hover:text-primary transition-colors">Sanford</Link>
+            <Link href="/apopka" className="hover:text-primary transition-colors">Apopka</Link>
+            <Link href="/clermont" className="hover:text-primary transition-colors">Clermont</Link>
           </div>
         </div>
 

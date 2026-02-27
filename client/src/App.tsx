@@ -164,6 +164,13 @@ const WinterParkLanding = lazy(() => import("@/pages/neighborhood-landing").then
 const DrPhillipsLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.DrPhillipsPage })));
 const WindermereLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WindermerePage })));
 const CelebrationLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.CelebrationPage })));
+const KissimmeeLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.KissimmeePage })));
+const WinterGardenLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WinterGardenPage })));
+const AltamonteSpringsLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.AltamontespringsPage })));
+const OcoeeLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.OcoeePage })));
+const SanfordLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.SanfordPage })));
+const ApopkaLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.ApopkaPage })));
+const ClermontLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.ClermontPage })));
 const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orlando"));
 
 // Job Detail + Tax Center
@@ -359,6 +366,13 @@ function Router() {
       <Route path="/dr-phillips" component={DrPhillipsLanding} />
       <Route path="/windermere" component={WindermereLanding} />
       <Route path="/celebration" component={CelebrationLanding} />
+      <Route path="/kissimmee" component={KissimmeeLanding} />
+      <Route path="/winter-garden" component={WinterGardenLanding} />
+      <Route path="/altamonte-springs" component={AltamonteSpringsLanding} />
+      <Route path="/ocoee" component={OcoeeLanding} />
+      <Route path="/sanford" component={SanfordLanding} />
+      <Route path="/apopka" component={ApopkaLanding} />
+      <Route path="/clermont" component={ClermontLanding} />
       <Route path="/insurance" component={Insurance} />
       <Route path="/ai" component={AIFeaturesHub} />
       <Route path="/ai/photo-quote" component={PhotoToQuote} />
