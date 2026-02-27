@@ -9,7 +9,7 @@ import { Users, Wrench, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
 export function Founding100() {
   const [counts, setCounts] = useState({ customer: 0, pro: 0 });
   const [activeTab, setActiveTab] = useState<"customer" | "pro">("customer");
-  const [form, setForm] = useState({ name: "", email: "", phone: "", zipCode: "", serviceType: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", zipCode: "", serviceType: "", businessName: "", hasLlc: false, yearsExperience: "" });
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<{ spotNumber: number; type: string } | null>(null);
   const [error, setError] = useState("");
@@ -37,6 +37,9 @@ export function Founding100() {
           zipCode: form.zipCode || undefined,
           memberType: activeTab,
           serviceType: activeTab === "pro" ? form.serviceType || undefined : undefined,
+          businessName: activeTab === "pro" ? form.businessName || undefined : undefined,
+          hasLlc: activeTab === "pro" ? form.hasLlc : undefined,
+          yearsExperience: activeTab === "pro" && form.yearsExperience ? parseInt(form.yearsExperience) : undefined,
         }),
       });
 
@@ -229,28 +232,65 @@ export function Founding100() {
               )}
             </div>
             {activeTab === "pro" && (
-              <div>
-                <Label htmlFor="service" className="text-slate-300">Primary Service</Label>
-                <select
-                  id="service"
-                  value={form.serviceType}
-                  onChange={e => setForm(f => ({ ...f, serviceType: e.target.value }))}
-                  className="w-full mt-1 rounded-md bg-white/10 border border-white/20 text-white px-3 py-2 text-sm"
-                >
-                  <option value="" className="bg-slate-800">Select your main service</option>
-                  <option value="junk_removal" className="bg-slate-800">Junk Removal</option>
-                  <option value="pressure_washing" className="bg-slate-800">Pressure Washing</option>
-                  <option value="gutter_cleaning" className="bg-slate-800">Gutter Cleaning</option>
-                  <option value="home_cleaning" className="bg-slate-800">Home Cleaning</option>
-                  <option value="handyman" className="bg-slate-800">Handyman</option>
-                  <option value="landscaping" className="bg-slate-800">Landscaping</option>
-                  <option value="moving_labor" className="bg-slate-800">Moving Labor</option>
-                  <option value="demolition" className="bg-slate-800">Light Demolition</option>
-                  <option value="garage_cleanout" className="bg-slate-800">Garage Cleanout</option>
-                  <option value="pool_cleaning" className="bg-slate-800">Pool Cleaning</option>
-                  <option value="carpet_cleaning" className="bg-slate-800">Carpet Cleaning</option>
-                </select>
-              </div>
+              <>
+                <div>
+                  <Label htmlFor="service" className="text-slate-300">Primary Service</Label>
+                  <select
+                    id="service"
+                    value={form.serviceType}
+                    onChange={e => setForm(f => ({ ...f, serviceType: e.target.value }))}
+                    className="w-full mt-1 rounded-md bg-white/10 border border-white/20 text-white px-3 py-2 text-sm"
+                  >
+                    <option value="" className="bg-slate-800">Select your main service</option>
+                    <option value="junk_removal" className="bg-slate-800">Junk Removal</option>
+                    <option value="pressure_washing" className="bg-slate-800">Pressure Washing</option>
+                    <option value="gutter_cleaning" className="bg-slate-800">Gutter Cleaning</option>
+                    <option value="home_cleaning" className="bg-slate-800">Home Cleaning</option>
+                    <option value="handyman" className="bg-slate-800">Handyman</option>
+                    <option value="landscaping" className="bg-slate-800">Landscaping</option>
+                    <option value="moving_labor" className="bg-slate-800">Moving Labor</option>
+                    <option value="demolition" className="bg-slate-800">Light Demolition</option>
+                    <option value="garage_cleanout" className="bg-slate-800">Garage Cleanout</option>
+                    <option value="pool_cleaning" className="bg-slate-800">Pool Cleaning</option>
+                    <option value="carpet_cleaning" className="bg-slate-800">Carpet Cleaning</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="bizName" className="text-slate-300">Business Name (optional)</Label>
+                  <Input
+                    id="bizName"
+                    value={form.businessName}
+                    onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+                    placeholder="Your company name"
+                    className="bg-white/10 border-white/20 text-white placeholder:text-slate-500 mt-1"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="years" className="text-slate-300">Years Experience</Label>
+                    <Input
+                      id="years"
+                      type="number"
+                      min="0"
+                      value={form.yearsExperience}
+                      onChange={e => setForm(f => ({ ...f, yearsExperience: e.target.value }))}
+                      placeholder="e.g. 5"
+                      className="bg-white/10 border-white/20 text-white placeholder:text-slate-500 mt-1"
+                    />
+                  </div>
+                  <div className="flex items-end pb-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={form.hasLlc}
+                        onChange={e => setForm(f => ({ ...f, hasLlc: e.target.checked }))}
+                        className="w-4 h-4 rounded border-white/20 bg-white/10 accent-[#F47C20]"
+                      />
+                      <span className="text-slate-300 text-sm">I have an LLC</span>
+                    </label>
+                  </div>
+                </div>
+              </>
             )}
 
             {error && (

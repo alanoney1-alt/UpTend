@@ -24,7 +24,7 @@ router.get("/founding-members/count", async (_req: Request, res: Response) => {
 // Sign up as founding member
 router.post("/founding-members", async (req: Request, res: Response) => {
   try {
-    const { name, email, phone, zipCode, memberType, serviceType } = req.body;
+    const { name, email, phone, zipCode, memberType, serviceType, businessName, hasLlc, yearsExperience } = req.body;
 
     if (!name || !email || !memberType) {
       return res.status(400).json({ error: "Name, email, and member type are required" });
@@ -54,9 +54,9 @@ router.post("/founding-members", async (req: Request, res: Response) => {
 
     // Insert
     const result = await pool.query(
-      `INSERT INTO founding_members (name, email, phone, zip_code, member_type, service_type)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, created_at`,
-      [name, email, phone || null, zipCode || null, memberType, serviceType || null]
+      `INSERT INTO founding_members (name, email, phone, zip_code, member_type, service_type, business_name, has_llc, years_experience)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, created_at`,
+      [name, email, phone || null, zipCode || null, memberType, serviceType || null, businessName || null, hasLlc || false, yearsExperience || null]
     );
 
     // Get new count for response
