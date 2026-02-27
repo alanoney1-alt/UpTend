@@ -36,7 +36,7 @@ export function getHomeScanPitch(): HomeScanPitch {
       {
         title: "Warranty Tracking",
         pitch:
-          "How many warranties have you lost track of? Most homeowners have thousands of dollars in active warranties they forget about. Once Mr. George knows your appliances, he tracks when warranties expire and alerts you before they do. No more losing $500 on a repair that was still covered.",
+          "How many warranties have you lost track of? Most homeowners have thousands of dollars in active warranties they forget about. Once George knows your appliances, he tracks when warranties expire and alerts you before they do. No more losing $500 on a repair that was still covered.",
       },
       {
         title: "Preventive Savings",
@@ -51,12 +51,12 @@ export function getHomeScanPitch(): HomeScanPitch {
       {
         title: "Smart Maintenance",
         pitch:
-          "Once Mr. George knows your home, he gets proactive. He'll tell you exactly when your HVAC filter needs changing, when your water heater is approaching end-of-life, when your roof needs attention — all based on YOUR actual equipment, not generic advice. It's like having a building superintendent who never sleeps.",
+          "Once George knows your home, he gets proactive. He'll tell you exactly when your HVAC filter needs changing, when your water heater is approaching end-of-life, when your roof needs attention — all based on YOUR actual equipment, not generic advice. It's like having a building superintendent who never sleeps.",
       },
       {
         title: "Emergency Readiness",
         pitch:
-          "If a pipe bursts at 2AM, you don't want to be Googling plumbers in a panic. Mr. George already knows your plumbing system, your shutoff valve locations, and which licensed pro to call. He'll even have your home layout ready so the pro knows what they're walking into.",
+          "If a pipe bursts at 2AM, you don't want to be Googling plumbers in a panic. George already knows your plumbing system, your shutoff valve locations, and which licensed pro to call. He'll even have your home layout ready so the pro knows what they're walking into.",
       },
       {
         title: "It's FREE + You Earn Credits",
@@ -66,7 +66,7 @@ export function getHomeScanPitch(): HomeScanPitch {
       {
         title: "Takes 15-20 Minutes",
         pitch:
-          "Walk room to room, snap photos of your systems and appliances, and Mr. George does the rest. He identifies everything, estimates ages and conditions, and builds your complete home profile. Most people finish in about 15 minutes — less time than a Netflix episode.",
+          "Walk room to room, snap photos of your systems and appliances, and George does the rest. He identifies everything, estimates ages and conditions, and builds your complete home profile. Most people finish in about 15 minutes — less time than a Netflix episode.",
       },
       {
         title: "Privacy-First",
@@ -88,7 +88,7 @@ export function getHomeScanFAQ(): HomeScanFAQItem[] {
     {
       question: "What exactly is a Home DNA Scan?",
       answer:
-        "It's a self-guided walkthrough of your home where you take photos of your major systems and appliances — HVAC, water heater, electrical panel, appliances, roof (from the ground), plumbing fixtures, etc. Mr. George's AI analyzes everything and builds a complete home health profile with estimated ages, conditions, and maintenance recommendations.",
+        "It's a self-guided walkthrough of your home where you take photos of your major systems and appliances — HVAC, water heater, electrical panel, appliances, roof (from the ground), plumbing fixtures, etc. George's AI analyzes everything and builds a complete home health profile with estimated ages, conditions, and maintenance recommendations.",
     },
     {
       question: "How much does it cost?",
@@ -98,7 +98,7 @@ export function getHomeScanFAQ(): HomeScanFAQItem[] {
     {
       question: "How long does it take?",
       answer:
-        "Most homeowners complete the self-serve scan in 15-20 minutes. Just walk room to room and follow Mr. George's prompts. He'll tell you exactly what to photograph in each area. The Pro Scan takes about 60-90 minutes, and the Drone Scan adds about 30 minutes on top of that.",
+        "Most homeowners complete the self-serve scan in 15-20 minutes. Just walk room to room and follow George's prompts. He'll tell you exactly what to photograph in each area. The Pro Scan takes about 60-90 minutes, and the Drone Scan adds about 30 minutes on top of that.",
     },
     {
       question: "How do the credits work?",
@@ -108,7 +108,7 @@ export function getHomeScanFAQ(): HomeScanFAQItem[] {
     {
       question: "How accurate is the AI analysis?",
       answer:
-        "Mr. George's AI is pretty good at identifying equipment and estimating ages and conditions from photos, but it's not perfect — and we're upfront about that. Think of it as a knowledgeable friend giving you their best assessment, not a certified inspection. For big decisions, we always recommend getting a professional evaluation.",
+        "George's AI is pretty good at identifying equipment and estimating ages and conditions from photos, but it's not perfect — and we're upfront about that. Think of it as a knowledgeable friend giving you their best assessment, not a certified inspection. For big decisions, we always recommend getting a professional evaluation.",
     },
     {
       question: "Is this a home inspection?",
@@ -128,18 +128,18 @@ export function getHomeScanFAQ(): HomeScanFAQItem[] {
     {
       question: "What if George gets something wrong?",
       answer:
-        "You can correct any of Mr. George's assessments directly in your home profile. If he misidentifies an appliance or gets the age wrong, just tap to edit. The more you correct, the smarter he gets — both for your home and for future scans. And remember, all AI estimates are approximate. For anything critical, we'll connect you with a pro.",
+        "You can correct any of George's assessments directly in your home profile. If he misidentifies an appliance or gets the age wrong, just tap to edit. The more you correct, the smarter he gets — both for your home and for future scans. And remember, all AI estimates are approximate. For anything critical, we'll connect you with a pro.",
     },
     {
       question: "Do I need to scan everything at once?",
       answer:
-        "Nope! You can start a scan, save your progress, and pick it back up whenever you want. Some people do the whole house in one go, others do a few rooms at a time over a couple of days. You'll earn your credits once you've completed the full scan. Mr. George will keep track of what you've covered and what's left.",
+        "Nope! You can start a scan, save your progress, and pick it back up whenever you want. Some people do the whole house in one go, others do a few rooms at a time over a couple of days. You'll earn your credits once you've completed the full scan. George will keep track of what you've covered and what's left.",
     },
   ];
 }
 
 /**
- * Combined pitch + FAQ for Mr. George's tool response.
+ * Combined pitch + FAQ for George's tool response.
  */
 export function getHomeScanInfo(): { pitch: HomeScanPitch; faq: HomeScanFAQItem[] } {
   return {

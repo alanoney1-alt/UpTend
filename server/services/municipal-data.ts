@@ -146,7 +146,7 @@ export function lookupWaterRestrictions(
       addressBased: true,
       notes: isEven !== null
         ? `Your address is ${isEven ? "even" : "odd"} — you can water on ${allowedDays.join(" and ")}, before 10AM or after 4PM.`
-        : "Provide your street number so Mr. George can tell you exactly which days you can water.",
+        : "Provide your street number so George can tell you exactly which days you can water.",
     };
   }
 
@@ -157,7 +157,7 @@ export function lookupWaterRestrictions(
     rule: "Varies by county and water management district",
     source: "Florida DEP",
     addressBased: false,
-    notes: "Mr. George doesn't have specific rules for your county yet. We'll look it up!",
+    notes: "George doesn't have specific rules for your county yet. We'll look it up!",
   };
 }
 

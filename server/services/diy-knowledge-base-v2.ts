@@ -1,5 +1,5 @@
 /**
- * DIY Knowledge Base V2 — Comprehensive repair guides for Mr. George
+ * DIY Knowledge Base V2 — Comprehensive repair guides for George
  * 
  * 90+ detailed guides across plumbing, electrical, HVAC, exterior, appliances, and interior.
  * Each guide includes: difficulty, time estimate, tools, materials, steps, safety warnings,

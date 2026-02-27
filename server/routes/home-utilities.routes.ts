@@ -24,7 +24,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
         [customerId]
       );
       if (result.rows.length === 0) {
-        return res.json({ profile: null, message: "No utility profile found. Mr. George can set this up for you!" });
+        return res.json({ profile: null, message: "No utility profile found. George can set this up for you!" });
       }
       const p = result.rows[0];
       res.json({
@@ -227,7 +227,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
          RETURNING id`,
         [data.customerId, data.reminderType, data.title, data.description || null, data.frequency, data.nextDueDate, data.time]
       );
-      res.json({ success: true, id: result.rows[0].id, message: "Reminder created! Mr. George will remind you." });
+      res.json({ success: true, id: result.rows[0].id, message: "Reminder created! George will remind you." });
     } catch (err: any) {
       console.error("[Home Utilities] POST reminders error:", err.message);
       res.status(500).json({ error: "Failed to create reminder" });

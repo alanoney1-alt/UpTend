@@ -1,5 +1,5 @@
 /**
- * DIY Brain — Mr. George's repair knowledge lookup service.
+ * DIY Brain — George's repair knowledge lookup service.
  * Fuzzy matches customer descriptions to the knowledge base.
  */
 

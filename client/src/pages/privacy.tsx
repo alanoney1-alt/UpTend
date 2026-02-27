@@ -38,11 +38,11 @@ export default function PrivacyPage() {
 </ul>
 <strong>AI Interaction Data:</strong>
 <ul>
-<li>Conversations with Mr. George AI Assistant, including questions, prompts, and descriptions</li>
+<li>Conversations with George AI Assistant, including questions, prompts, and descriptions</li>
 <li>Photos and images submitted for Home DNA Scan analysis</li>
 <li>DIY Coaching queries and interaction history</li>
-<li>Home profile data passively gathered from your interactions with Mr. George (e.g., home age, known issues, maintenance history you've discussed)</li>
-<li>Mr. George's audience profiling signals (communication style preferences such as senior-friendly, Gen-Z casual, busy-professional concise, or detail-oriented. used solely to adapt Mr. George's communication style to your preferences)</li>
+<li>Home profile data passively gathered from your interactions with George (e.g., home age, known issues, maintenance history you've discussed)</li>
+<li>George's audience profiling signals (communication style preferences such as senior-friendly, Gen-Z casual, busy-professional concise, or detail-oriented. used solely to adapt George's communication style to your preferences)</li>
 </ul>
 <strong>Communications:</strong>
 <ul>
@@ -94,15 +94,15 @@ export default function PrivacyPage() {
 </ul>
 <h3>2.2 AI Features</h3>
 <ul>
-<li>Powering Mr. George AI Assistant responses</li>
+<li>Powering George AI Assistant responses</li>
 <li>Performing Home DNA Scan analysis</li>
 <li>Providing DIY Coaching</li>
-<li>Adapting Mr. George's communication style to your preferences (audience profiling)</li>
+<li>Adapting George's communication style to your preferences (audience profiling)</li>
 <li>Building and maintaining your home profile for personalized recommendations</li>
 </ul>
 <h3>2.3 AI Training and Improvement</h3>
 <ul>
-<li>With your consent, using your AI interactions (conversations with Mr. George, submitted photos, queries) to improve our AI features, train models, and enhance accuracy of estimates and recommendations</li>
+<li>With your consent, using your AI interactions (conversations with George, submitted photos, queries) to improve our AI features, train models, and enhance accuracy of estimates and recommendations</li>
 <li>AI training data is anonymized and aggregated where possible</li>
 <li><strong>You may opt out of AI training data usage through your account settings without affecting your ability to use AI features</strong></li>
 </ul>
@@ -148,7 +148,7 @@ export default function PrivacyPage() {
 <p>| <strong>Stripe</strong> | Payment processing, BNPL | Payment details, transaction data |</p>
 <p>| <strong>Twilio</strong> | SMS/voice communications | Phone numbers, message content |</p>
 <p>| <strong>SendGrid</strong> | Email delivery | Email addresses, email content |</p>
-<p>| <strong>Anthropic (Claude)</strong> | Mr. George AI Assistant | Conversation content, user queries |</p>
+<p>| <strong>Anthropic (Claude)</strong> | George AI Assistant | Conversation content, user queries |</p>
 <p>| <strong>OpenAI (GPT-5.2)</strong> | Photo analysis, Home DNA Scan | Photos, image data, analysis queries |</p>
 <p>| <strong>Railway</strong> | Platform hosting | All platform data (encrypted in transit and at rest) |</p>
 <p>| <strong>Supabase</strong> | Database services | All platform data (encrypted at rest) |</p>

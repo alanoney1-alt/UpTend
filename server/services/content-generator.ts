@@ -18,7 +18,7 @@ export interface DIYReviewContent {
  };
 }
 
-const CTA = 'Too big for DIY? Mr. George can book a pro in 60 seconds → uptendapp.com';
+const CTA = 'Too big for DIY? George can book a pro in 60 seconds → uptendapp.com';
 
 interface TopicContent {
  hook: string;
@@ -161,7 +161,7 @@ export function generateDIYReview(videoTitle: string, category: string): DIYRevi
  ` DIY "${videoTitle}"? Let's talk about what the internet gets right — and what they miss.`,
  ` The basics are solid: most tutorials walk you through the standard approach. Good starting point for beginners.`,
  ` But here's what they skip: the edge cases, the "what if it doesn't work" scenarios, and the parts that need a trained eye.`,
- ` Mr. George's Pro Tip: When in doubt, take photos before you start, buy quality parts (not the cheapest option), and know your limits.`,
+ ` George's Pro Tip: When in doubt, take photos before you start, buy quality parts (not the cheapest option), and know your limits.`,
  ` ${CTA}\n\nSave this for later — your home will thank you. `,
  ],
  },
@@ -170,7 +170,7 @@ export function generateDIYReview(videoTitle: string, category: string): DIYRevi
  hashtags: ['#DIY', '#HomeRepair', '#UpTend', '#GeorgeKnows', `#${category}`],
  },
  youtubeShorts: {
- description: `${videoTitle} — Mr. George reviews the top DIY advice and shares what the pros actually do.\n\n${CTA}`,
+ description: `${videoTitle} — George reviews the top DIY advice and shares what the pros actually do.\n\n${CTA}`,
  },
  };
 }

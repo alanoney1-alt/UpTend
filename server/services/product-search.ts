@@ -185,7 +185,7 @@ export async function searchProduct(
  curatedRecommendation: curated[0],
  dangerWarning: dangerFlag ? " This involves potentially dangerous work. Consider hiring a pro." : undefined,
  accuracy: "HIGH — matched from curated product database",
- message: ` **Mr. George's Pick:** ${curated[0].name} (~${curated[0].typicalPrice})\n${curated[0].notes}\nTop brands: ${curated[0].topBrands.join(", ")}`,
+ message: ` **George's Pick:** ${curated[0].name} (~${curated[0].typicalPrice})\n${curated[0].notes}\nTop brands: ${curated[0].topBrands.join(", ")}`,
  };
  }
 

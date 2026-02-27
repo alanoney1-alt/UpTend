@@ -1,7 +1,7 @@
 /**
- * Mr. George's Complete App & Platform Knowledge Base
+ * George's Complete App & Platform Knowledge Base
  * 
- * Mr. George knows EVERY feature, flow, and screen of the UpTend platform.
+ * George knows EVERY feature, flow, and screen of the UpTend platform.
  * This is his living user manual — he can explain any feature to any user type.
  */
 
@@ -37,7 +37,7 @@ export const CUSTOMER_FLOWS = {
       "1. After service selection, George shows available pros in their area",
       "2. Each pro shows: name, photo, rating, reviews count, specialties, badges",
       "3. Customer can sort by: rating, price, distance, availability",
-      "4. Customer picks their preferred pro OR lets Mr. George auto-match (best available)",
+      "4. Customer picks their preferred pro OR lets George auto-match (best available)",
       "5. 'Quick Book' = George picks the best pro automatically for fastest service",
       "6. 'Browse Pros' = customer reviews profiles and picks",
     ],
@@ -50,7 +50,7 @@ export const CUSTOMER_FLOWS = {
       selfServe: {
         price: "FREE",
         payout: "$25 credit + $1/appliance to customer",
-        process: "Customer walks through their home taking photos guided by Mr. George",
+        process: "Customer walks through their home taking photos guided by George",
         duration: "15-20 minutes",
       },
       proScan: {
@@ -70,7 +70,7 @@ export const CUSTOMER_FLOWS = {
       "Complete home profile — every room, system, and appliance documented",
       "Home Health Score (0-100) — like a credit score for your house",
       "Appliance inventory with estimated ages and remaining lifespan",
-      "Maintenance calendar — Mr. George knows when everything needs attention",
+      "Maintenance calendar — George knows when everything needs attention",
       "Warranty tracking — never miss a warranty claim",
       "Insurance documentation — if disaster hits, you have proof of condition",
       "Resale value boost — documented, maintained homes sell for more",
@@ -79,7 +79,7 @@ export const CUSTOMER_FLOWS = {
       "It's FREE and you EARN $25-50 just for doing it",
       "Like a medical checkup for your home — catches problems before they're expensive",
       "Insurance companies love documented homes",
-      "Mr. George tracks warranty expirations so you never miss a free repair",
+      "George tracks warranty expirations so you never miss a free repair",
       "Your Home Health Score updates as you complete services — gamified improvement",
     ],
   },
@@ -104,7 +104,7 @@ export const CUSTOMER_FLOWS = {
       yellow: "Water heater, circuit breakers, 2nd story exterior → safety warning + consent required",
       green: "Toilet repairs, faucets, filters, caulking, paint, doorknobs → full coaching",
     },
-    whyItMatters: "Mr. George handles the small stuff pros don't want (under $75 jobs). This builds trust, keeps customers in the app, and generates affiliate revenue. Plus it feeds the DIY-to-Pro recruitment pipeline.",
+    whyItMatters: "George handles the small stuff pros don't want (under $75 jobs). This builds trust, keeps customers in the app, and generates affiliate revenue. Plus it feeds the DIY-to-Pro recruitment pipeline.",
   },
 
   shopping: {
@@ -173,7 +173,7 @@ export const PRO_FLOWS = {
       "2. Basic info: name, phone, email, service area",
       "3. Business info: LLC (yes/no — affects fee tier), insurance, vehicle",
       "4. Verification: background check (24hr), insurance cert upload, ID photo",
-      "5. Mr. George tracks progress: 'You're 3/5 done!'",
+      "5. George tracks progress: 'You're 3/5 done!'",
       "6. Once approved: profile goes live, start receiving jobs",
     ],
     earnings: {
@@ -183,7 +183,7 @@ export const PRO_FLOWS = {
     },
     whyJoinUpTend: [
       "We bring you customers — no more marketing, Craigslist ads, or lead fees",
-      "Mr. George handles scheduling, customer communication, and follow-ups",
+      "George handles scheduling, customer communication, and follow-ups",
       "Get paid fast — weekly payouts every Thursday",
       "Flat 15% platform fee — you keep 85% of every job (customers pay a separate 5% service fee)",
       "Build your reputation — ratings follow you and grow your business",
@@ -196,9 +196,9 @@ export const PRO_FLOWS = {
   jobFlow: {
     name: "Complete a Job",
     steps: [
-      "1. Job notification arrives — Mr. George shows: service type, address, customer name, payout",
+      "1. Job notification arrives — George shows: service type, address, customer name, payout",
       "2. Accept the job (customer chose you, or you were auto-matched)",
-      "3. Navigation to job site (Mr. George can provide directions)",
+      "3. Navigation to job site (George can provide directions)",
       "4. Arrive → check in via app (customer notified: 'Your pro Marcus has arrived')",
       "5. Take BEFORE photos (required for quality scoring)",
       "6. Complete the work",
@@ -274,7 +274,7 @@ export const PRO_FLOWS = {
 };
 
 // ─── CURATED PRODUCT DATABASE ───────────────
-// For the most common home repair items, Mr. George knows the EXACT products to recommend.
+// For the most common home repair items, George knows the EXACT products to recommend.
 // This ensures accuracy — no guessing, no wrong parts.
 export const CURATED_PRODUCTS: Record<string, {
   name: string;

@@ -799,7 +799,7 @@ export default function CustomerDashboard() {
           <ReferralWidget />
         </div>
 
-        {/* Mr. George Can Help */}
+        {/* George Can Help */}
         <div className="mb-6" data-testid="section-mr-george">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-primary" />

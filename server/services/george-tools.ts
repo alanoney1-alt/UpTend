@@ -1,5 +1,5 @@
 /**
- * Mr. George AI Agent — Tool Functions
+ * George AI Agent — Tool Functions
  *
  * Phase 1: All DB-backed tools now query real Supabase via Drizzle ORM.
  * New tables: maintenance_reminders, pro_goals, customer_loyalty,
@@ -1124,7 +1124,7 @@ CUSTOMER EXPERIENCE TIPS:
 • Explain what you're looking at: "I'm checking your water heater age and condition"
 • Never alarm them: "This looks fine for now, but worth monitoring" vs "This is about to fail!"
 • Mention the $25 credit: "You earned $25 just for doing this scan — you can use it on any service"
-• Mention upcoming maintenance: "Based on this scan, Mr. George will remind you when things need attention"
+• Mention upcoming maintenance: "Based on this scan, George will remind you when things need attention"
 
 PAYOUT:
 • $45 base per completed scan
@@ -4179,7 +4179,7 @@ export async function getSeasonalDemandForGeorge(params: {
 
 // ═══════════════════════════════════════════════
 // HOME UTILITIES — Home Operating System Tools
-// Mr. George knows EVERYTHING about their home.
+// George knows EVERYTHING about their home.
 // ═══════════════════════════════════════════════
 
 import {
@@ -4414,7 +4414,7 @@ export async function setHomeReminderForGeorge(params: {
  */
 // ═══════════════════════════════════════════════
 // PURCHASE TRACKING + WARRANTIES + APPLIANCE PROFILES
-// Mr. George tracks what customers buy and maintains their home.
+// George tracks what customers buy and maintains their home.
 // ═══════════════════════════════════════════════
 
 import { scanReceipt, processReceiptItems } from "./receipt-scanner.js";
@@ -4819,7 +4819,7 @@ export async function comparePricesForGeorge(params: {
 
 /**
  * findDIYTutorial — find YouTube tutorials from top creators for a task.
- * Mr. George knows 30+ top DIY creators and prioritizes trusted sources.
+ * George knows 30+ top DIY creators and prioritizes trusted sources.
  * Returns a top pick + alternatives. Customer can say "next video" to cycle.
  */
 export async function findDIYTutorialForGeorge(params: {
@@ -5049,7 +5049,7 @@ export async function tool_vehicle_parts_search(params: {
 /**
  * tool_vehicle_diy_start — start a vehicle DIY repair coaching session.
  * Safety-critical repairs (brake lines, fuel system, airbags, transmission internals, etc.)
- * are automatically escalated — Mr. George recommends a qualified independent contractor instead.
+ * are automatically escalated — George recommends a qualified independent contractor instead.
  */
 export async function tool_vehicle_diy_start(params: {
  customerId: string;
@@ -5836,7 +5836,7 @@ function buildBrandedEmailHtml(subject: string, bodyHtml: string): string {
  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;">
  <div style="background: linear-gradient(135deg, #F47C20 0%, #e06b15 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
  <h1 style="color: white; margin: 0; font-size: 28px;">UpTend</h1>
- <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0; font-size: 14px;"> From Mr. George, your AI home expert</p>
+ <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0; font-size: 14px;"> From George, your AI home expert</p>
  </div>
  <div style="padding: 30px; background: #ffffff; border: 1px solid #e5e7eb; border-top: none;">
  <h2 style="color: #1f2937; margin-top: 0;">${subject}</h2>
@@ -5845,7 +5845,7 @@ function buildBrandedEmailHtml(subject: string, bodyHtml: string): string {
  <div style="padding: 20px; background: #f9fafb; text-align: center; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb; border-top: none;">
  <p style="color: #9ca3af; font-size: 12px; margin: 0;">
  UpTend — Orlando Metro Area | (407) 338-3342<br>
- Sent by Mr. George 
+ Sent by George 
  </p>
  </div>
  </div>`;
@@ -6056,7 +6056,7 @@ export async function addToCalendar(customerId: string, bookingId: string): Prom
  const icsContent = [
  'BEGIN:VCALENDAR',
  'VERSION:2.0',
- 'PRODID:-//UpTend//Mr. George//EN',
+ 'PRODID:-//UpTend//George//EN',
  'BEGIN:VEVENT',
  `UID:${uid}`,
  `DTSTART:${formatIcsDate(scheduledDate)}`,
@@ -6065,7 +6065,7 @@ export async function addToCalendar(customerId: string, bookingId: string): Prom
  `DESCRIPTION:Your UpTend ${booking.service_type || 'service'} is scheduled. Job #${bookingId.slice(-6)}. Track your pro in the UpTend app!`,
  `LOCATION:${booking.pickup_address || 'Address on file'}`,
  'STATUS:CONFIRMED',
- `ORGANIZER;CN=Mr. George:mailto:alan@uptendapp.com`,
+ `ORGANIZER;CN=George:mailto:alan@uptendapp.com`,
  'END:VEVENT',
  'END:VCALENDAR',
  ].join('\r\n');
@@ -6091,7 +6091,7 @@ export async function addToCalendar(customerId: string, bookingId: string): Prom
  headers: { 'Authorization': `Bearer ${SENDGRID_API_KEY}`, 'Content-Type': 'application/json' },
  body: JSON.stringify({
  personalizations: [{ to: [{ email: contact.email }] }],
- from: { email: 'alan@uptendapp.com', name: 'Mr. George @ UpTend' },
+ from: { email: 'alan@uptendapp.com', name: 'George @ UpTend' },
  subject: `Calendar Invite: UpTend ${booking.service_type || 'Service'} Appointment`,
  content: [{ type: 'text/html', value: buildBrandedEmailHtml(
  'Your Appointment is on the Calendar! ',

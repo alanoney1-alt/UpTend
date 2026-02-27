@@ -123,7 +123,7 @@ export class CalendarService {
     if (event.notes) lines.push(`Notes: ${event.notes}`);
     lines.push("");
     lines.push("Manage your booking: https://uptendapp.com/dashboard");
-    lines.push("Questions? Chat with Mr. George in the app!");
+    lines.push("Questions? Chat with George in the app!");
     return lines.join("\n");
   }
 

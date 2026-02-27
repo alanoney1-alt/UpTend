@@ -94,47 +94,47 @@ function getPageContext(page: string, userRole: string, userName: string | null)
     // Don't show on authenticated dashboard pages (they have their own UI)
     if (page.startsWith("/business/dashboard") || page.startsWith("/business/billing") || page.startsWith("/business/compliance")) {
       return {
-        welcome: `Hey${name}!  I'm Mr. George, your UpTend business assistant. Need help with your dashboard, billing, team management, or anything else? Just ask.\n\nWhat can I help with? `,
+        welcome: `Hey${name}!  I'm George, your UpTend business assistant. Need help with your dashboard, billing, team management, or anything else? Just ask.\n\nWhat can I help with? `,
         quickActions: [],
       };
     }
     return {
-      welcome: `Welcome!  I'm Mr. George, UpTend's business solutions assistant.\n\nIf you manage properties, run an HOA, or oversee construction, I can walk you through how UpTend replaces your entire vendor network with one platform.\n\n**What I can help with:**\n• Pricing for your portfolio size\n• How our dispatch and tracking works\n• Insurance and compliance requirements\n• Volume discounts and billing\n• Setting up a demo\n\nWhat would you like to know? `,
+      welcome: `Welcome!  I'm George, UpTend's business solutions assistant.\n\nIf you manage properties, run an HOA, or oversee construction, I can walk you through how UpTend replaces your entire vendor network with one platform.\n\n**What I can help with:**\n• Pricing for your portfolio size\n• How our dispatch and tracking works\n• Insurance and compliance requirements\n• Volume discounts and billing\n• Setting up a demo\n\nWhat would you like to know? `,
       quickActions: [],
     };
   }
 
   if (PRO_SIGNUP_PAGES.some(p => page.startsWith(p))) {
     return {
-      welcome: `Hey there  I'm Mr. George. If you're thinking about joining UpTend as a Pro, you picked a good time. We don't charge lead fees. You keep what you earn. We handle the customers, the scheduling, the payments, you just do great work.\n\nI can answer anything: earnings, how jobs work, what makes this different from the other guys. Just type your question below `,
+      welcome: `Hey there  I'm George. If you're thinking about joining UpTend as a Pro, you picked a good time. We don't charge lead fees. You keep what you earn. We handle the customers, the scheduling, the payments, you just do great work.\n\nI can answer anything: earnings, how jobs work, what makes this different from the other guys. Just type your question below `,
       quickActions: [],
     };
   }
 
   if (page.startsWith("/pro/") || page.startsWith("/pro") || page === "/drive" || page.startsWith("/drive") || page === "/academy" || page.startsWith("/academy")) {
     return {
-      welcome: `Hey${name}!  I'm Mr. George. Looking for work opportunities or have questions about being an UpTend Pro? I'm here to help.\n\nWhether it's about earnings, how jobs work, route optimization, compliance, or growing your business, just ask!\n\nWhat can I help with? `,
+      welcome: `Hey${name}!  I'm George. Looking for work opportunities or have questions about being an UpTend Pro? I'm here to help.\n\nWhether it's about earnings, how jobs work, route optimization, compliance, or growing your business, just ask!\n\nWhat can I help with? `,
       quickActions: [],
     };
   }
 
   if (page === "/book" || page.startsWith("/book")) {
     return {
-      welcome: `Hey there!  I'm Mr. George, welcome!\n\nYou're looking at a specific service, awesome! I'd love to help you figure out if it's the right fit. All our pros are verified, background-checked, and genuinely good at what they do.\n\nGot any questions? I'm here, fire away! `,
+      welcome: `Hey there!  I'm George, welcome!\n\nYou're looking at a specific service, awesome! I'd love to help you figure out if it's the right fit. All our pros are verified, background-checked, and genuinely good at what they do.\n\nGot any questions? I'm here, fire away! `,
       quickActions: [],
     };
   }
 
   if (page === "/services" || page.startsWith("/services/")) {
     return {
-      welcome: `Hey!  I'm Mr. George, glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full Home DNA Scans, and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine. Just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! `,
+      welcome: `Hey!  I'm George, glad you're checking out our services!\n\nWe've got everything from junk removal to pressure washing to full Home DNA Scans, and every single one comes with verified, trusted pros. Not sure what you need? That's totally fine. Just tell me what's going on and I'll point you in the right direction.\n\nAsk me anything! `,
       quickActions: [],
     };
   }
 
   if (page === "/pricing") {
     return {
-      welcome: `Hey!  I'm Mr. George, thanks for checking us out!\n\nI see you're looking at services and pricing, great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works. I'm right here.\n\nNo pressure at all, just ask whatever's on your mind `,
+      welcome: `Hey!  I'm George, thanks for checking us out!\n\nI see you're looking at services and pricing, great place to start! If you have any questions about what's included, how we match you with the right pro, or how any of this works. I'm right here.\n\nNo pressure at all, just ask whatever's on your mind `,
       quickActions: [],
     };
   }
@@ -148,7 +148,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
 
   if (userRole === "hauler" || userRole === "pro") {
     return {
-      welcome: `Hey${name}!  I'm Mr. George, your UpTend assistant. Need help with jobs, earnings, scheduling, or growing your business? I've got your back.\n\nJust tell me what you need `,
+      welcome: `Hey${name}!  I'm George, your UpTend assistant. Need help with jobs, earnings, scheduling, or growing your business? I've got your back.\n\nJust tell me what you need `,
       quickActions: [],
     };
   }
@@ -164,7 +164,7 @@ function getPageContext(page: string, userRole: string, userName: string | null)
   const isFirstVisit = !localStorage.getItem(LS_GREETED);
   if (isFirstVisit) {
     return {
-      welcome: `Hey, I'm Mr. George. \n\nI know basically everything about home repair. Whether something's broken, you're trying to prevent a problem, or you just need a pro out there fast. I've got you.\n\nWhat's going on with your home?`,
+      welcome: `Hey, I'm George. \n\nI know basically everything about home repair. Whether something's broken, you're trying to prevent a problem, or you just need a pro out there fast. I've got you.\n\nWhat's going on with your home?`,
       quickActions: [
         { label: " Need a Pro Now", action: "message:I need to book a professional service" },
         { label: " Check My Home's Health", action: "message:I want to check on my home's health" },
@@ -351,7 +351,7 @@ export function UpTendGuide() {
   // Should this page hide the widget entirely?
   const isHiddenPage = NO_WIDGET_PAGES.some(p => pageContext.page.startsWith(p));
 
-  // Mr. George auto-opens for ALL visitors, every visit. Alan's rule
+  // George auto-opens for ALL visitors, every visit. Alan's rule
   // Detect which "zone" the user is in so we can reset George when they switch
   const getZone = (page: string): string => {
     if (page.startsWith("/business")) return "business";
@@ -663,10 +663,10 @@ export function UpTendGuide() {
             animation: shouldPulse ? "gentlePulse 2s ease-in-out" : "none",
             maxWidth: "180px",
           }}
-          aria-label="Chat with Mr. George"
+          aria-label="Chat with George"
         >
           <span className="text-sm leading-none"></span>
-          <span>Mr. George </span>
+          <span>George </span>
         </button>
       )}
 
@@ -691,7 +691,7 @@ export function UpTendGuide() {
       >
         {/* Header. minimal */}
         <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-black/5 dark:border-white/5 shrink-0">
-          <span className="font-semibold text-sm">Mr. George </span>
+          <span className="font-semibold text-sm">George </span>
           <button
             onClick={() => { setIsOpen(false); synth.cancel(); }}
             className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"

@@ -44,14 +44,14 @@ export const BUD_GOODBYE = "Thanks for calling UpTend! Have a great day, and rem
 export async function sendAppLink(toNumber: string): Promise<void> {
  const client = getTwilioClient();
  await client.messages.create({
- body: "Hey! Mr. George from UpTend here Here's your link to the app where you can book services, get quotes, and more: https://uptend.com",
+ body: "Hey! George from UpTend here Here's your link to the app where you can book services, get quotes, and more: https://uptend.com",
  from: getTwilioPhoneNumber(),
  to: toNumber,
  });
 }
 
 // ─────────────────────────────────────────────
-// Outbound Voice Calls (Mr. George calling customers)
+// Outbound Voice Calls (George calling customers)
 // ─────────────────────────────────────────────
 
 function escapeXml(str: string): string {

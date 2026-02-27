@@ -31,7 +31,7 @@ const posts: BlogPost[] = [
     title: "5 Signs Your Water Heater Is About to Fail (and What to Do)",
     date: "2026-02-14",
     excerpt:
-      "Learn the 5 warning signs your water heater is failing. Mr. George explains what Orlando homeowners should watch for and when to replace.",
+      "Learn the 5 warning signs your water heater is failing. George explains what Orlando homeowners should watch for and when to replace.",
     gradient: "from-orange-400 to-red-600",
     icon: Wrench,
   },
@@ -40,7 +40,7 @@ const posts: BlogPost[] = [
     title: "Pressure Washing in Orlando: What Every Homeowner Should Know",
     date: "2026-02-07",
     excerpt:
-      "Orlando pressure washing guide from Mr. George. Learn what to clean, how often, costs, and mistakes to avoid for your Central Florida home.",
+      "Orlando pressure washing guide from George. Learn what to clean, how often, costs, and mistakes to avoid for your Central Florida home.",
     gradient: "from-cyan-400 to-blue-600",
     icon: Droplets,
   },
@@ -49,7 +49,7 @@ const posts: BlogPost[] = [
     title: "Hurricane Season Home Prep: The Complete Orlando Checklist",
     date: "2026-01-28",
     excerpt:
-      "Complete hurricane preparation checklist for Orlando homeowners. Mr. George covers everything from roof inspections to yard cleanup.",
+      "Complete hurricane preparation checklist for Orlando homeowners. George covers everything from roof inspections to yard cleanup.",
     gradient: "from-slate-600 to-gray-900",
     icon: Wind,
   },
@@ -58,7 +58,7 @@ const posts: BlogPost[] = [
     title: "How Often Should You Clean Your Gutters in Florida?",
     date: "2026-01-21",
     excerpt:
-      "Find out how often Florida homeowners should clean their gutters. Mr. George explains the risks of neglect and what gutter cleaning costs.",
+      "Find out how often Florida homeowners should clean their gutters. George explains the risks of neglect and what gutter cleaning costs.",
     gradient: "from-emerald-400 to-teal-700",
     icon: Home,
   },
@@ -67,7 +67,7 @@ const posts: BlogPost[] = [
     title: "7 Maintenance Mistakes First-Time Homeowners Make",
     date: "2026-01-14",
     excerpt:
-      "First-time homeowner? Avoid these 7 costly maintenance mistakes. Mr. George shares what Orlando homeowners get wrong and how to fix it.",
+      "First-time homeowner? Avoid these 7 costly maintenance mistakes. George shares what Orlando homeowners get wrong and how to fix it.",
     gradient: "from-amber-400 to-orange-600",
     icon: AlertTriangle,
   },
@@ -76,7 +76,7 @@ const posts: BlogPost[] = [
     title: "DIY vs. Hiring a Pro: How to Know When It's Time to Call",
     date: "2026-01-07",
     excerpt:
-      "Not sure if you should DIY or hire a pro? Mr. George breaks down which home projects Orlando homeowners can handle and which need an expert.",
+      "Not sure if you should DIY or hire a pro? George breaks down which home projects Orlando homeowners can handle and which need an expert.",
     gradient: "from-indigo-400 to-blue-700",
     icon: Hammer,
   },
@@ -85,7 +85,7 @@ const posts: BlogPost[] = [
     title: "Pool Maintenance 101: A Florida Homeowner's Guide",
     date: "2025-12-30",
     excerpt:
-      "Essential pool maintenance guide for Florida homeowners. Mr. George covers chemicals, cleaning schedules, costs, and common mistakes.",
+      "Essential pool maintenance guide for Florida homeowners. George covers chemicals, cleaning schedules, costs, and common mistakes.",
     gradient: "from-sky-400 to-cyan-600",
     icon: Waves,
   },
@@ -94,7 +94,7 @@ const posts: BlogPost[] = [
     title: "How Much Does Junk Removal Cost in Orlando? (2026 Pricing Guide)",
     date: "2025-12-18",
     excerpt:
-      "2026 junk removal pricing for Orlando. Mr. George breaks down costs by load size, item type, and what affects your final price.",
+      "2026 junk removal pricing for Orlando. George breaks down costs by load size, item type, and what affects your final price.",
     gradient: "from-green-500 to-emerald-700",
     icon: Trash2,
   },

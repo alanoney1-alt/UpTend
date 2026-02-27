@@ -2,7 +2,7 @@
  * Voice AI Routes - George (Twilio Integration)
  *
  * Endpoints:
- * - POST /api/voice/incoming  — handles incoming call, greets with Mr. George's voice
+ * - POST /api/voice/incoming  — handles incoming call, greets with George's voice
  * - POST /api/voice/process   — receives speech transcription, generates AI response
  * - POST /api/voice/status    — call status callback
  */
@@ -22,7 +22,7 @@ export function registerVoiceRoutes(app: Express) {
     try {
       const twiml = new VoiceResponse();
 
-      // Greet the caller with Mr. George's voice
+      // Greet the caller with George's voice
       const gather = twiml.gather({
         input: ["speech"],
         action: "/api/voice/process",

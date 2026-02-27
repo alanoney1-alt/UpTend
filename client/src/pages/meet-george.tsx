@@ -25,7 +25,7 @@ function openChatWidget() {
 
 export default function MeetGeorgePage() {
   const { t } = useTranslation();
-  usePageTitle("Meet Mr. George | UpTend");
+  usePageTitle("Meet George | UpTend");
 
   const capabilities = capabilityKeys.map((c) => ({
     icon: c.icon,

@@ -17,7 +17,7 @@ const posts: Record<string, BlogPostData> = {
     slug: "when-to-replace-water-heater",
     title: "5 Signs Your Water Heater Is About to Fail (and What to Do)",
     date: "February 24, 2026",
-    author: "Mr. George",
+    author: "George",
     content: `Your water heater is one of those appliances you never think about. Until it stops working. Most tank water heaters last 8 to 12 years, but Florida's hard water and high humidity can shorten that lifespan significantly. Here are the five warning signs every Orlando homeowner should watch for.
 
 ## 1. Your Water Heater Is Over 10 Years Old
@@ -42,13 +42,13 @@ If showers that used to stay hot are now going lukewarm after five minutes, sedi
 
 ## What to Do Next
 
-If you are seeing one or more of these signs, do not wait for a catastrophic failure. Get an instant quote through UpTend. Mr. George can assess your situation in seconds and connect you with a licensed plumber if needed. Every job is backed by our price ceiling guarantee.`,
+If you are seeing one or more of these signs, do not wait for a catastrophic failure. Get an instant quote through UpTend. George can assess your situation in seconds and connect you with a licensed plumber if needed. Every job is backed by our price ceiling guarantee.`,
   },
   "pressure-washing-guide-orlando": {
     slug: "pressure-washing-guide-orlando",
     title: "Pressure Washing in Orlando: What Every Homeowner Should Know",
     date: "February 24, 2026",
-    author: "Mr. George",
+    author: "George",
     content: `Orlando's subtropical climate means your home's exterior takes a beating from humidity, rain, and algae growth year-round. Pressure washing is not just about curb appeal. It protects your investment and keeps your HOA happy.
 
 ## What Should You Pressure Wash?
@@ -61,7 +61,7 @@ If you are seeing one or more of these signs, do not wait for a catastrophic fai
 
 ## How Much Does It Cost?
 
-For a typical Orlando home, expect to pay $200 to $450 for a full exterior wash. Driveways run $100 to $200 depending on size. UpTend offers transparent pricing with no hidden fees. Ask Mr. George for an instant quote.
+For a typical Orlando home, expect to pay $200 to $450 for a full exterior wash. Driveways run $100 to $200 depending on size. UpTend offers transparent pricing with no hidden fees. Ask George for an instant quote.
 
 ## Common Mistakes to Avoid
 
@@ -78,7 +78,7 @@ If you have a two-story home, delicate surfaces, or you are not comfortable on a
     slug: "hurricane-prep-home-checklist",
     title: "Hurricane Season Home Prep: The Complete Orlando Checklist",
     date: "February 24, 2026",
-    author: "Mr. George",
+    author: "George",
     content: `Hurricane season runs June 1 through November 30 in Florida, and Central Orlando is not immune to major storms. Preparation is not optional. It is the difference between minor inconvenience and major property damage.
 
 ## Before the Season (May)
@@ -103,7 +103,7 @@ If you have a two-story home, delicate surfaces, or you are not comfortable on a
 - **Document all damage with photos and video before touching anything.** This is critical for insurance claims.
 - **Avoid downed power lines and standing water.**
 - **Contact your insurance company immediately.**
-- **Book cleanup and repair through UpTend.** Mr. George can help you assess damage and connect with verified pros for tree removal, roof tarping, and debris cleanup.
+- **Book cleanup and repair through UpTend.** George can help you assess damage and connect with verified pros for tree removal, roof tarping, and debris cleanup.
 
 Preparation costs a fraction of what recovery costs. Start early and do not wait until the first named storm.`,
   },
@@ -111,7 +111,7 @@ Preparation costs a fraction of what recovery costs. Start early and do not wait
     slug: "gutter-cleaning-frequency",
     title: "How Often Should You Clean Your Gutters in Florida?",
     date: "February 24, 2026",
-    author: "Mr. George",
+    author: "George",
     content: `The short answer: at least twice a year. The real answer depends on your property.
 
 ## The Florida Factor
@@ -144,13 +144,13 @@ For a typical Orlando home, gutter cleaning runs $150 to $250 depending on home 
 
 Single-story homes with accessible gutters can be DIY-friendly if you are comfortable on a ladder and have the right tools. Two-story homes should always be handled by a professional. Ladder falls are the number one cause of home maintenance injuries.
 
-Book a gutter cleaning through UpTend and Mr. George will have a certified pro at your door within days. Every job includes downspout flushing and a post-clean photo report.`,
+Book a gutter cleaning through UpTend and George will have a certified pro at your door within days. Every job includes downspout flushing and a post-clean photo report.`,
   },
   "first-time-homeowner-mistakes": {
     slug: "first-time-homeowner-mistakes",
     title: "7 Maintenance Mistakes First-Time Homeowners Make",
     date: "February 24, 2026",
-    author: "Mr. George",
+    author: "George",
     content: `Buying your first home is exciting. Maintaining it is where reality sets in. Here are the seven most common mistakes first-time Orlando homeowners make. And how to avoid them.
 
 ## 1. Ignoring the HVAC Filter
@@ -179,7 +179,7 @@ The lowest bid is rarely the best value. Unlicensed, uninsured contractors cut c
 
 ## 7. Not Documenting Your Home
 
-Keep records of every repair, every appliance purchase, every service visit. This documentation is invaluable for insurance claims, home resale, and warranty coverage. UpTend's Home DNA feature does this automatically. Mr. George tracks every service event and builds a living record of your home.
+Keep records of every repair, every appliance purchase, every service visit. This documentation is invaluable for insurance claims, home resale, and warranty coverage. UpTend's Home DNA feature does this automatically. George tracks every service event and builds a living record of your home.
 
 Start building good habits now and your home will thank you for decades.`,
   },
@@ -187,7 +187,7 @@ Start building good habits now and your home will thank you for decades.`,
     slug: "diy-vs-pro-when-to-call",
     title: "DIY vs. Hiring a Pro: How to Know When It's Time to Call",
     date: "February 24, 2026",
-    author: "Mr. George",
+    author: "George",
     content: `There is a time for YouTube tutorials and a time for picking up the phone. Knowing the difference saves you money, time, and potentially your safety.
 
 ## Good DIY Projects
@@ -219,13 +219,13 @@ Before going DIY, add up: tool costs, material costs, your time (value it honest
 
 ## When in Doubt, Ask George
 
-Not sure if your project is DIY-friendly? Send a photo to Mr. George. He will tell you whether it is a weekend project or a call-a-pro situation. and if you need a pro, he will get you a quote in seconds.`,
+Not sure if your project is DIY-friendly? Send a photo to George. He will tell you whether it is a weekend project or a call-a-pro situation. and if you need a pro, he will get you a quote in seconds.`,
   },
   "pool-maintenance-basics-florida": {
     slug: "pool-maintenance-basics-florida",
     title: "Pool Maintenance 101: A Florida Homeowner's Guide",
     date: "February 24, 2026",
-    author: "Mr. George",
+    author: "George",
     content: `Owning a pool in Florida is practically a lifestyle requirement. Maintaining one is where the work comes in. Here is what every Florida pool owner needs to know.
 
 ## Weekly Maintenance
@@ -261,13 +261,13 @@ Florida pools run year-round, but summer demands more attention:
 
 If you have the time and discipline for weekly testing and cleaning, DIY pool maintenance is straightforward. If you travel frequently, have a busy schedule, or just want peace of mind, a monthly service plan is worth every dollar.
 
-Need a pool service recommendation? Ask Mr. George. he will find a verified pro in your area and get you a quote instantly.`,
+Need a pool service recommendation? Ask George. he will find a verified pro in your area and get you a quote instantly.`,
   },
   "junk-removal-cost-orlando": {
     slug: "junk-removal-cost-orlando",
     title: "How Much Does Junk Removal Cost in Orlando? (2026 Pricing Guide)",
     date: "February 24, 2026",
-    author: "Mr. George",
+    author: "George",
     content: `Whether you are decluttering, moving, or dealing with a property cleanout, knowing what junk removal costs in Orlando helps you budget and avoid overpaying.
 
 ## Average Pricing (2026)
@@ -308,7 +308,7 @@ Need a pool service recommendation? Ask Mr. George. he will find a verified pro 
 
 ## Get an Instant Quote
 
-Skip the phone calls and waiting. Ask Mr. George for a junk removal quote. he will price it in seconds based on your description or photos, and every price comes with our price ceiling guarantee.`,
+Skip the phone calls and waiting. Ask George for a junk removal quote. he will price it in seconds based on your description or photos, and every price comes with our price ceiling guarantee.`,
   },
 };
 

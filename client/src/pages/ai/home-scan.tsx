@@ -481,7 +481,7 @@ function FAQSection() {
     },
     {
       q: "What happens after my scan?",
-      a: "You receive a detailed digital report with condition scores for every system, a prioritized maintenance timeline, and specific recommendations. Your Home DNA profile then updates over time as you book services, report issues, or schedule follow-up scans. Mr. George, our AI assistant, uses your Home DNA data to provide personalized maintenance reminders and recommendations.",
+      a: "You receive a detailed digital report with condition scores for every system, a prioritized maintenance timeline, and specific recommendations. Your Home DNA profile then updates over time as you book services, report issues, or schedule follow-up scans. George, our AI assistant, uses your Home DNA data to provide personalized maintenance reminders and recommendations.",
     },
     {
       q: "How does the $25 credit work?",
@@ -489,7 +489,7 @@ function FAQSection() {
     },
     {
       q: "Can I do a scan myself?",
-      a: "Yes. We offer a free self-serve scan through Mr. George, our AI assistant. You walk through your home taking photos, and our AI identifies and documents everything. You also earn credits for each item scanned. For the most thorough results, we recommend a professional scan.",
+      a: "Yes. We offer a free self-serve scan through George, our AI assistant. You walk through your home taking photos, and our AI identifies and documents everything. You also earn credits for each item scanned. For the most thorough results, we recommend a professional scan.",
     },
     {
       q: "Is my data secure?",

@@ -1,5 +1,5 @@
 /**
- * Mr. George Communication Tools
+ * George Communication Tools
  * Email, Voice, WhatsApp, Push Notifications, Calendar, GPS, Quotes
  */
 
@@ -38,7 +38,7 @@ function brandedEmailTemplate(title: string, bodyHtml: string, customerName?: st
 <body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
  <div style="max-width:600px;margin:0 auto;background:#fff;">
  <div style="background:linear-gradient(135deg,#f97316,#ea580c);padding:24px 32px;text-align:center;">
- <h1 style="color:#fff;margin:0;font-size:24px;"> Mr. George</h1>
+ <h1 style="color:#fff;margin:0;font-size:24px;"> George</h1>
  <p style="color:rgba(255,255,255,0.9);margin:4px 0 0;font-size:14px;">Your Home Expert from UpTend</p>
  </div>
  <div style="padding:32px;">
@@ -111,7 +111,7 @@ export async function sendEmailToCustomer(params: {
 
  const result = await sendEmail({
  to: customer.email,
- subject: `${params.subject} — Mr. George`,
+ subject: `${params.subject} — George`,
  html,
  });
 
@@ -143,7 +143,7 @@ export async function callCustomer(params: {
  try {
  const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
- <Say voice="Polly.Matthew" language="en-US">Hello${customer.first_name ? ', ' + customer.first_name : ''}. This is Mr. George from UpTend. ${params.message}. If you need anything, just open the UpTend app or call us back at 4 0 7, 3 3 8, 3 3 4 2. Have a great day!</Say>
+ <Say voice="Polly.Matthew" language="en-US">Hello${customer.first_name ? ', ' + customer.first_name : ''}. This is George from UpTend. ${params.message}. If you need anything, just open the UpTend app or call us back at 4 0 7, 3 3 8, 3 3 4 2. Have a great day!</Say>
 </Response>`;
 
  const call = await twilioClient.calls.create({
@@ -226,7 +226,7 @@ export async function sendQuoteEmail(params: {
 
  const result = await sendEmail({
  to: customer.email,
- subject: `Your ${params.serviceType} Quote: $${params.totalPrice.toFixed(2)} — Mr. George`,
+ subject: `Your ${params.serviceType} Quote: $${params.totalPrice.toFixed(2)} — George`,
  html,
  });
 
@@ -351,12 +351,12 @@ export async function addToCalendar(params: {
  const location = [booking.pickup_address, booking.pickup_city, booking.pickup_state, booking.pickup_zip]
  .filter(Boolean).join(', ');
 
- const description = `${booking.service_type} service by UpTend${booking.pro_name ? `\\nPro: ${booking.pro_name}` : ''}${booking.pro_phone ? `\\nPro Phone: ${booking.pro_phone}` : ''}\\n\\nManage your booking: https://uptendapp.com/dashboard\\nQuestions? Chat with Mr. George in the app!`;
+ const description = `${booking.service_type} service by UpTend${booking.pro_name ? `\\nPro: ${booking.pro_name}` : ''}${booking.pro_phone ? `\\nPro Phone: ${booking.pro_phone}` : ''}\\n\\nManage your booking: https://uptendapp.com/dashboard\\nQuestions? Chat with George in the app!`;
 
  const icsContent = [
  'BEGIN:VCALENDAR',
  'VERSION:2.0',
- 'PRODID:-//UpTend//Mr. George//EN',
+ 'PRODID:-//UpTend//George//EN',
  'BEGIN:VEVENT',
  `DTSTART:${formatICS(startDate)}`,
  `DTEND:${formatICS(endDate)}`,
@@ -439,7 +439,7 @@ export async function sendWhatsAppMessage(params: {
  try {
  // Try WhatsApp first
  const waResult = await twilioClient.messages.create({
- body: ` Mr. George from UpTend: ${params.message}`,
+ body: ` George from UpTend: ${params.message}`,
  to: `whatsapp:${customer.phone}`,
  from: `whatsapp:${TWILIO_PHONE_NUMBER}`,
  });
@@ -456,7 +456,7 @@ export async function sendWhatsAppMessage(params: {
  try {
  const smsResult = await sendSms({
  to: customer.phone,
- message: ` Mr. George from UpTend: ${params.message}`,
+ message: ` George from UpTend: ${params.message}`,
  });
 
  return {

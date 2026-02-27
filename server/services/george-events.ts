@@ -1,5 +1,5 @@
 /**
- * george-events.ts — Mr. George proactive outreach system
+ * george-events.ts — George proactive outreach system
  *
  * Event handlers that fire automatically on lifecycle events to make George
  * proactive. All SMS sends respect quiet hours (9 PM – 8 AM EST) and a
@@ -78,7 +78,7 @@ const SERVICE_NAMES: Record<string, string> = {
  carpet_cleaning: 'carpet cleaning',
 };
 
-// Intel questions keyed by service type — Mr. George asks exactly one per booking
+// Intel questions keyed by service type — George asks exactly one per booking
 const INTEL_QUESTIONS: Record<string, string> = {
  junk_removal: "Quick question — is your stuff inside the house or already outside? Helps us bring the right crew.",
  garage_cleanout: "Quick question — is there any large furniture or appliances in the garage? Helps us plan the right truck size.",
@@ -112,7 +112,7 @@ export async function onBookingConfirmed(
 
  const serviceName = SERVICE_NAMES[serviceType] || serviceType;
  const intelQ = INTEL_QUESTIONS[serviceType] || INTEL_QUESTIONS.default;
- const message = `Hey, you're all set for your ${serviceName}! ${intelQ} Just reply here. — Mr. George, UpTend AI`;
+ const message = `Hey, you're all set for your ${serviceName}! ${intelQ} Just reply here. — George, UpTend AI`;
 
  await sendGeorgeSms(user.phone, message, userId);
  } catch (err: any) {
@@ -162,7 +162,7 @@ export async function onProEnRoute(
  }
  }
 
- const message = `Your UpTend Pro ${proName} is heading your way${vehicleHint}! ETA ~15 min. They'll call if they need help finding you. — Mr. George, UpTend AI`;
+ const message = `Your UpTend Pro ${proName} is heading your way${vehicleHint}! ETA ~15 min. They'll call if they need help finding you. — George, UpTend AI`;
 
  // En-route is time-sensitive — send even if rate limit hit, but respect quiet hours
  const last = lastProactiveSms.get(customerId);
@@ -230,7 +230,7 @@ export async function onJobCompleted(
  const referralMsg = jobsCompleted >= 1
  ? ` Know anyone else who could use UpTend? Send them your code and you BOTH get $25 credit!`
  : '';
- const message = `${baseMsg}${referralMsg} — Mr. George, UpTend AI`;
+ const message = `${baseMsg}${referralMsg} — George, UpTend AI`;
 
  await sendGeorgeSms(customer.phone, message, customerId);
  } catch (err: any) {
@@ -377,7 +377,7 @@ export async function checkMaintenanceReminders(): Promise<{ sent: number; skipp
 
  const daysUntil = row.days_until ?? 7;
  const dayText = daysUntil <= 0 ? 'today' : daysUntil === 1 ? 'tomorrow' : `in ${daysUntil} days`;
- const message = `Hey! Your ${row.description || 'home maintenance'} is due ${dayText}. Want me to book a Pro to handle it? Just reply YES and I'll set it up. — Mr. George, UpTend AI`;
+ const message = `Hey! Your ${row.description || 'home maintenance'} is due ${dayText}. Want me to book a Pro to handle it? Just reply YES and I'll set it up. — George, UpTend AI`;
 
  await sendGeorgeSms(customer.phone, message, customer.id);
  sent++;
@@ -447,7 +447,7 @@ export async function handleEmergency(
  if (customer?.phone) {
  await sendSms({
  to: customer.phone,
- message: `URGENT UpTend Alert: We received your emergency request and are manually dispatching a Pro right now. Someone will call you within 5 minutes. Stay safe! — Mr. George, UpTend`,
+ message: `URGENT UpTend Alert: We received your emergency request and are manually dispatching a Pro right now. Someone will call you within 5 minutes. Stay safe! — George, UpTend`,
  });
  }
  console.log('[George] Emergency: no available pros — alerted customer, needs manual dispatch');
@@ -538,7 +538,7 @@ export async function sendPostServiceFollowUp(): Promise<{ sent: number; skipped
 
  const name = row.first_name || 'there';
  const service = SERVICE_NAMES[row.service_type] || row.service_type.replace(/_/g, ' ');
- const message = `Hey ${name}! Mr. George here How's everything looking after your ${service}? If anything needs attention, just reply and I'll take care of it.`;
+ const message = `Hey ${name}! George here How's everything looking after your ${service}? If anything needs attention, just reply and I'll take care of it.`;
 
  await sendGeorgeSms(row.phone, message, row.customer_id);
 
@@ -640,7 +640,7 @@ export async function sendWeatherHeadsUp(): Promise<{ sent: number; skipped: num
  for (const customer of customers.rows) {
  try {
  const name = customer.first_name || 'there';
- const message = `Hey ${name}, Mr. George here. ${eventName} headed our way. ${tip} Need help prepping? Just reply.`;
+ const message = `Hey ${name}, George here. ${eventName} headed our way. ${tip} Need help prepping? Just reply.`;
 
  await sendGeorgeSms(customer.phone, message, customer.id);
 
@@ -713,7 +713,7 @@ export async function sendMaintenanceNudge(): Promise<{ sent: number; skipped: n
  try {
  const name = row.first_name || 'there';
  const reminderType = (row.reminder_type || 'maintenance').replace(/_/g, ' ');
- const message = `Hey ${name}! Quick heads up from Mr. George — your ${reminderType} is due this week. Want me to book a pro, or I can walk you through doing it yourself?`;
+ const message = `Hey ${name}! Quick heads up from George — your ${reminderType} is due this week. Want me to book a pro, or I can walk you through doing it yourself?`;
 
  await sendGeorgeSms(row.phone, message, row.customer_id);
 
@@ -861,7 +861,7 @@ export async function sendSeasonalCampaign(): Promise<{ sent: number; skipped: n
  for (const customer of result.rows) {
  try {
  const name = customer.first_name ? ` ${customer.first_name}` : '';
- const message = `Hey${name}! ${tip.msg} Reply STOP to opt out. — Mr. George, UpTend AI`;
+ const message = `Hey${name}! ${tip.msg} Reply STOP to opt out. — George, UpTend AI`;
  await sendGeorgeSms(customer.phone, message, customer.id);
  sent++;
  } catch (rowErr: any) {
@@ -922,7 +922,7 @@ export async function onPaymentCaptured(
  if (newTier !== priorTier && TIER_MESSAGES[newTier]) {
  const customer = await storage.getUser(customerId);
  if (customer?.phone) {
- const message = `${TIER_MESSAGES[newTier]} — Mr. George, UpTend AI`;
+ const message = `${TIER_MESSAGES[newTier]} — George, UpTend AI`;
  await sendGeorgeSms(customer.phone, message, customerId);
  }
  console.log(`[George] Tier upgrade: customer ${customerId} ${priorTier} → ${newTier}`);
@@ -977,7 +977,7 @@ export async function onReferralCompleted(referralId: string): Promise<void> {
  const referred = await storage.getUser(referred_user_id);
  if (referrer?.phone) {
  const referredName = referred?.firstName || 'Your friend';
- const message = `${referredName} just completed their first UpTend booking! You both earned $25 in credit. Keep the referrals coming! — Mr. George, UpTend AI`;
+ const message = `${referredName} just completed their first UpTend booking! You both earned $25 in credit. Keep the referrals coming! — George, UpTend AI`;
  await sendGeorgeSms(referrer.phone, message, referrer_id);
  }
  } catch (err: any) {
@@ -990,20 +990,20 @@ type SmartHomeAlertData = Record<string, any>;
 
 const SMART_HOME_RESPONSES: Record<string, (data: SmartHomeAlertData) => string> = {
  water_leak: () =>
- `Water leak detected at your home! I'm searching for an available plumber right now. Reply YES to dispatch immediately, or call 911 if flooding is severe. — Mr. George, UpTend AI`,
+ `Water leak detected at your home! I'm searching for an available plumber right now. Reply YES to dispatch immediately, or call 911 if flooding is severe. — George, UpTend AI`,
  doorbell: () =>
- `Your doorbell rang! If you have a job scheduled today, that's likely your UpTend Pro arriving. Reply CONFIRM to let them in. — Mr. George, UpTend AI`,
+ `Your doorbell rang! If you have a job scheduled today, that's likely your UpTend Pro arriving. Reply CONFIRM to let them in. — George, UpTend AI`,
  ac_overrun: (data) =>
- `Your A/C has been running ${data.hours || 'many'} hours straight — that's unusual for Florida! This could mean it needs servicing. Want me to book an HVAC check? — Mr. George, UpTend AI`,
+ `Your A/C has been running ${data.hours || 'many'} hours straight — that's unusual for Florida! This could mean it needs servicing. Want me to book an HVAC check? — George, UpTend AI`,
  smoke: () =>
- `Smoke detected at your home! If this is an emergency, call 911 immediately. If it's a false alarm, reply DISMISS. Otherwise reply HELP to dispatch a Pro. — Mr. George, UpTend AI`,
+ `Smoke detected at your home! If this is an emergency, call 911 immediately. If it's a false alarm, reply DISMISS. Otherwise reply HELP to dispatch a Pro. — George, UpTend AI`,
  default: (data) =>
- `Smart home alert from your ${data.deviceType || 'device'}: ${data.message || 'check your home'}. Need UpTend assistance? Reply YES. — Mr. George, UpTend AI`,
+ `Smart home alert from your ${data.deviceType || 'device'}: ${data.message || 'check your home'}. Need UpTend assistance? Reply YES. — George, UpTend AI`,
 };
 
 /**
  * Triggered by a webhook from a connected smart home device.
- * Mr. George auto-responds based on alert type.
+ * George auto-responds based on alert type.
  */
 export async function onSmartHomeAlert(
  userId: string,
@@ -1119,7 +1119,7 @@ export async function scanGovernmentContracts(): Promise<{ found: number; emaile
  These contracts match UpTend's service categories (cleaning, maintenance, landscaping, debris removal) in Florida.
  Review and decide which ones to bid on through the SDVOSB subsidiary.
  </p>
- <p style="font-size:11px;color:#999;margin-top:12px">This is an automated scan from Mr. George. Runs daily at 7 AM EST.</p>
+ <p style="font-size:11px;color:#999;margin-top:12px">This is an automated scan from George. Runs daily at 7 AM EST.</p>
  </div>
  </div>
  `;

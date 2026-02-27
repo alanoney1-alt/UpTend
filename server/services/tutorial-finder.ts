@@ -1,13 +1,13 @@
 /**
  * YouTube Tutorial Service — finds how-to videos from top DIY creators,
  * generates DIY project plans, and suggests seasonal projects.
- * Mr. George knows the best creators and searches intelligently.
+ * George knows the best creators and searches intelligently.
  */
 
 import { pool } from "../db";
 
 // ─── TOP DIY CREATORS DATABASE ──────────────
-// Mr. George knows every major DIY/home repair creator and their specialties.
+// George knows every major DIY/home repair creator and their specialties.
 // When searching, we boost results from trusted creators for accuracy.
 
 interface CreatorProfile {
@@ -420,7 +420,7 @@ export async function findTutorial(
  ? `This video is from ${topPick.channel}${topPick.viewCount ? ` (${(topPick.viewCount / 1000).toFixed(0)}K views)` : ""}.`
  : "";
 
- // Mr. George's walkthrough digest — key info Mr. George can use to coach the customer
+ // George's walkthrough digest — key info George can use to coach the customer
  const georgeDigest = {
  task: taskDescription,
  topVideo: topPick ? { title: topPick.title, channel: topPick.channel, trusted: topPick.isTrustedCreator } : null,

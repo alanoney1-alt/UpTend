@@ -247,7 +247,7 @@ export function AiChatWidget() {
     localStorage.removeItem("george_chat");
   };
 
-  // Determine greeting. Mr. George is available to EVERYONE (logged in or not)
+  // Determine greeting. George is available to EVERYONE (logged in or not)
   const isPro = isProPage(currentPage);
   const isB2B = currentPage?.startsWith("/business");
   const firstName = user?.firstName;
@@ -255,10 +255,10 @@ export function AiChatWidget() {
   const greetingText = isPro
     ? `Hey${firstName ? ` ${firstName}` : ""}!  Interested in earning with UpTend?`
     : isB2B
-    ? `Welcome${firstName ? `, ${firstName}` : ""}!  I'm Mr. George. let me show you how UpTend replaces your entire vendor network.`
+    ? `Welcome${firstName ? `, ${firstName}` : ""}!  I'm George. let me show you how UpTend replaces your entire vendor network.`
     : firstName
     ? `Hey ${firstName}!  What's going on at home today? Need a pro, or want to tackle something yourself?`
-    : `Hey!  I'm Mr. George. I know basically everything about home repair. Need a pro, or want to try fixing it yourself? I do both. `;
+    : `Hey!  I'm George. I know basically everything about home repair. Need a pro, or want to try fixing it yourself? I do both. `;
   
   const greetingButtons: QuickButton[] = isPro
     ? [
@@ -301,7 +301,7 @@ export function AiChatWidget() {
             <Bot className="h-4.5 w-4.5 text-white" />
           </div>
           <div>
-            <h3 className="text-white font-semibold text-sm">Mr. George</h3>
+            <h3 className="text-white font-semibold text-sm">George</h3>
             <p className="text-white/70 text-[11px]">Your home helper</p>
           </div>
         </div>
@@ -370,7 +370,7 @@ export function AiChatWidget() {
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </form>
-        <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by Mr. George AI</p>
+        <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by George AI</p>
         <p className="text-[9px] text-gray-400 dark:text-gray-500 text-center mt-0.5">By continuing to chat, you agree to UpTend's <a href="/terms" className="underline hover:text-gray-600">Terms of Service</a>, <a href="/ai-terms" className="underline hover:text-gray-600">A.I. Terms</a>, and <a href="/privacy" className="underline hover:text-gray-600">Privacy Policy</a>.</p>
       </div>
     </div>

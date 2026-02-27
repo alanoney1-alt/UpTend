@@ -26,7 +26,7 @@ export function BookingChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{
     id: "initial",
-    text: " Hey! I'm Mr. George, your home helper. I can:\n\n• Get you an instant quote (even from a photo!)\n• Help you book a verified pro\n• Answer questions about pricing & services\n\nWhat do you need help with?",
+    text: " Hey! I'm George, your home helper. I can:\n\n• Get you an instant quote (even from a photo!)\n• Help you book a verified pro\n• Answer questions about pricing & services\n\nWhat do you need help with?",
     role: "assistant",
     timestamp: Date.now(),
   }]);
@@ -158,7 +158,7 @@ export function BookingChatbot() {
                   <MessageCircle className="w-4 h-4" />
                 </div>
                 <div>
-                  <span className="font-semibold">Mr. George</span>
+                  <span className="font-semibold">George</span>
                   <p className="text-xs text-primary-foreground/80">Powered by GPT-4</p>
                 </div>
               </div>
