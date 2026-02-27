@@ -267,8 +267,12 @@ export default function Services() {
         />
       </div>
 
-      <section className="bg-slate-900 dark:bg-slate-950 pt-28 pb-20 px-4 md:px-6" data-testid="section-services-hero">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="relative bg-slate-900 dark:bg-slate-950 pt-28 pb-20 px-4 md:px-6 overflow-hidden" data-testid="section-services-hero">
+        <div className="absolute inset-0">
+          <img src="/images/site/hero-home-service.webp" alt="" className="w-full h-full object-cover" loading="eager" />
+          <div className="absolute inset-0 bg-slate-900/80" />
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <Badge variant="secondary" className="mb-6" data-testid="badge-services-label">
             {t("services_page.badge")}
           </Badge>
