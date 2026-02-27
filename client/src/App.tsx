@@ -164,6 +164,7 @@ const WinterParkLanding = lazy(() => import("@/pages/neighborhood-landing").then
 const DrPhillipsLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.DrPhillipsPage })));
 const WindermereLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WindermerePage })));
 const CelebrationLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.CelebrationPage })));
+const JoinPage = lazy(() => import("@/pages/join"));
 const KissimmeeLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.KissimmeePage })));
 const WinterGardenLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WinterGardenPage })));
 const AltamonteSpringsLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.AltamontespringsPage })));
@@ -366,6 +367,7 @@ function Router() {
       <Route path="/dr-phillips" component={DrPhillipsLanding} />
       <Route path="/windermere" component={WindermereLanding} />
       <Route path="/celebration" component={CelebrationLanding} />
+      <Route path="/join" component={JoinPage} />
       <Route path="/kissimmee" component={KissimmeeLanding} />
       <Route path="/winter-garden" component={WinterGardenLanding} />
       <Route path="/altamonte-springs" component={AltamonteSpringsLanding} />
