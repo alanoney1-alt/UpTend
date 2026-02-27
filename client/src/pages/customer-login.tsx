@@ -87,7 +87,7 @@ export default function CustomerLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#3B1D5A] flex flex-col">
+    <div className="min-h-screen bg-[#0f172a] flex flex-col">
       <header className="p-4">
         <Link href="/" className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors">
           <ArrowLeft className="w-5 h-5" />

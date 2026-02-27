@@ -43,7 +43,7 @@ export class BackgroundCheckService {
         return await this.initiateCheckrCheck(params);
       }
 
-      // No API key — create record for manual review
+      // No API key - create record for manual review
       const [check] = await db.insert(backgroundChecks).values({
         proId: params.proId,
         status: "pending_manual_review",

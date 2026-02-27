@@ -64,7 +64,7 @@ export function registerDashboardWidgetRoutes(app: Express) {
   });
 
   app.post("/api/home-score/boost", requireAuth, async (_req, res) => {
-    // Boost is not yet implemented — return a no-op acknowledgment
+    // Boost is not yet implemented - return a no-op acknowledgment
     res.json({ message: "Score boost is not available yet." });
   });
 

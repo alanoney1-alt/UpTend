@@ -348,7 +348,7 @@ export function registerGovernmentContractRoutes(app: Express) {
   });
 
   // ==========================================
-  // Certified Payroll (WH-347 — INTERNAL compliance only)
+  // Certified Payroll (WH-347 - INTERNAL compliance only)
   // ==========================================
   app.post("/api/government/contracts/:id/payroll/generate", requireAuth, async (req, res) => {
     try {
@@ -398,7 +398,7 @@ export function registerGovernmentContractRoutes(app: Express) {
 
   app.get("/api/government/payroll/:id/wh347", requireAuth, async (req, res) => {
     try {
-      // INTERNAL COMPLIANCE REPORT — admin only, not pro-facing
+      // INTERNAL COMPLIANCE REPORT - admin only, not pro-facing
       const wh347 = await govService.formatWH347(req.params.id);
       res.json(wh347);
     } catch (error: any) {

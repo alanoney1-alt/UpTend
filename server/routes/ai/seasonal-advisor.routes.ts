@@ -14,7 +14,7 @@ import { sql } from "drizzle-orm";
 export function createSeasonalAdvisorRoutes(storage: DatabaseStorage) {
   const router = Router();
 
-  // GET /api/ai/seasonal/advisories — Get seasonal advisories for user
+  // GET /api/ai/seasonal/advisories - Get seasonal advisories for user
   router.get("/seasonal/advisories", requireAuth, async (req, res) => {
     try {
       const userId = ((req.user as any).userId || (req.user as any).id);
@@ -41,7 +41,7 @@ export function createSeasonalAdvisorRoutes(storage: DatabaseStorage) {
     }
   });
 
-  // GET /api/ai/seasonal/advisories/:zipCode — Get advisories by zip code
+  // GET /api/ai/seasonal/advisories/:zipCode - Get advisories by zip code
   router.get("/seasonal/advisories/:zipCode", async (req, res) => {
     try {
       const { zipCode } = req.params;
@@ -64,7 +64,7 @@ export function createSeasonalAdvisorRoutes(storage: DatabaseStorage) {
     }
   });
 
-  // POST /api/ai/seasonal/generate — Generate seasonal advisories for a zip code
+  // POST /api/ai/seasonal/generate - Generate seasonal advisories for a zip code
   const generateSchema = z.object({
     zipCode: z.string().regex(/^\d{5}$/),
     season: z.enum(["spring", "summer", "fall", "winter"]),

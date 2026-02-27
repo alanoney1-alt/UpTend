@@ -1,12 +1,12 @@
 /**
  * Invite Code Routes
  *
- * POST /api/invite-codes/validate  — validate without redeeming
- * POST /api/invite-codes/redeem    — redeem for a pro
- * GET  /api/invite-codes/status/:proId — active discount info
+ * POST /api/invite-codes/validate  - validate without redeeming
+ * POST /api/invite-codes/redeem    - redeem for a pro
+ * GET  /api/invite-codes/status/:proId - active discount info
  *
- * POST /api/admin/invite-codes     — create a new code  (admin)
- * GET  /api/admin/invite-codes     — list all codes     (admin)
+ * POST /api/admin/invite-codes     - create a new code  (admin)
+ * GET  /api/admin/invite-codes     - list all codes     (admin)
  */
 
 import type { Express, Request, Response } from "express";

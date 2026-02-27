@@ -97,7 +97,7 @@ export default function FleetTracking() {
                         <tr key={pro.userId} className="border-b last:border-0">
                           <td className="py-3 font-medium">{pro.companyName || pro.userId.slice(0, 8)}</td>
                           <td className="py-3">
-                            <Badge variant="outline">{pro.vehicleType?.replace("_", " ") || "—"}</Badge>
+                            <Badge variant="outline">{pro.vehicleType?.replace("_", " ") || "-"}</Badge>
                           </td>
                           <td className="py-3 font-mono text-xs">
                             {pro.lat.toFixed(5)}, {pro.lng.toFixed(5)}
@@ -108,7 +108,7 @@ export default function FleetTracking() {
                             </Badge>
                           </td>
                           <td className="py-3 text-muted-foreground">
-                            {pro.lastCheckedIn ? new Date(pro.lastCheckedIn).toLocaleTimeString() : "—"}
+                            {pro.lastCheckedIn ? new Date(pro.lastCheckedIn).toLocaleTimeString() : "-"}
                           </td>
                         </tr>
                       ))}

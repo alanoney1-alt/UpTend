@@ -27,7 +27,7 @@ async function sfApiFetch(instanceUrl: string, accessToken: string, path: string
 }
 
 export function registerSalesforceRoutes(app: Express) {
-  // POST /api/integrations/salesforce/connect — Start OAuth2 flow
+  // POST /api/integrations/salesforce/connect - Start OAuth2 flow
   app.post("/api/integrations/salesforce/connect", async (req, res) => {
     try {
       const { businessAccountId, clientId, clientSecret, redirectUri } = req.body;
@@ -51,7 +51,7 @@ export function registerSalesforceRoutes(app: Express) {
     }
   });
 
-  // POST /api/integrations/salesforce/callback — Exchange code for tokens
+  // POST /api/integrations/salesforce/callback - Exchange code for tokens
   app.post("/api/integrations/salesforce/callback", async (req, res) => {
     try {
       const { businessAccountId, code, clientId, clientSecret, redirectUri } = req.body;
@@ -217,7 +217,7 @@ export function registerSalesforceRoutes(app: Express) {
     }
   });
 
-  // POST /api/integrations/salesforce/webhook — Receive SF outbound messages
+  // POST /api/integrations/salesforce/webhook - Receive SF outbound messages
   app.post("/api/integrations/salesforce/webhook", async (req, res) => {
     try {
       console.log("[Salesforce] Webhook received:", JSON.stringify(req.body).slice(0, 500));

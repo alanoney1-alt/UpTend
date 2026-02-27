@@ -110,7 +110,7 @@ function RouteOptimizationCard() {
                   </span>
                   <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
                   <span className="truncate">{step.address || step.jobId}</span>
-                  <span className="ml-auto text-muted-foreground whitespace-nowrap">{step.distance || "—"}</span>
+                  <span className="ml-auto text-muted-foreground whitespace-nowrap">{step.distance || "-"}</span>
                 </div>
               ))}
             </div>

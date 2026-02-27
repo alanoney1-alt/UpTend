@@ -12,7 +12,7 @@ const reviewSchema = z.object({
 });
 
 export function registerReviewRoutes(app: Express) {
-  // POST /api/service-requests/:id/review — submit a review
+  // POST /api/service-requests/:id/review - submit a review
   app.post("/api/service-requests/:id/review", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user?.userId || req.user?.id;
@@ -84,7 +84,7 @@ export function registerReviewRoutes(app: Express) {
     }
   });
 
-  // GET /api/service-requests/:id/review — get review for a job
+  // GET /api/service-requests/:id/review - get review for a job
   app.get("/api/service-requests/:id/review", requireAuth, async (req: any, res) => {
     try {
       const [review] = await db.select().from(haulerReviews)
@@ -101,7 +101,7 @@ export function registerReviewRoutes(app: Express) {
 
   // NOTE: GET /api/pros/:proId/reviews is in hauler/profile.routes.ts
 
-  // POST /api/jobs/:id/photos — upload job photos
+  // POST /api/jobs/:id/photos - upload job photos
   app.post("/api/jobs/:id/photos", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user?.userId || req.user?.id;

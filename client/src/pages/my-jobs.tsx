@@ -76,7 +76,7 @@ export default function MyJobs() {
 
                       <div className="flex items-center gap-1 text-sm text-muted-foreground mb-1">
                         <MapPin className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate">{job.pickupAddress || `${job.pickupCity || ""} ${job.pickupZip || ""}`.trim() || "—"}</span>
+                        <span className="truncate">{job.pickupAddress || `${job.pickupCity || ""} ${job.pickupZip || ""}`.trim() || "-"}</span>
                       </div>
 
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">

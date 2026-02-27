@@ -21,12 +21,12 @@ const MONTHLY_RECOMMENDATIONS: Record<number, MaintenanceRecommendation[]> = {
     { service: "Pressure Washing", serviceType: "pressure_washing", reason: "Remove winter mildew before spring", priority: "medium" },
   ],
   2: [ // March
-    { service: "AC Maintenance", serviceType: "hvac", reason: "Service AC before Florida heat kicks in — avoid breakdowns", priority: "high" },
+    { service: "AC Maintenance", serviceType: "hvac", reason: "Service AC before Florida heat kicks in - avoid breakdowns", priority: "high" },
     { service: "Pressure Washing", serviceType: "pressure_washing", reason: "Spring cleaning for driveways, patios, and siding", priority: "medium" },
   ],
   3: [ // April
-    { service: "Pool Cleaning", serviceType: "pool_cleaning", reason: "Pool season starting — get it swim-ready", priority: "high" },
-    { service: "Pest Control", serviceType: "pest_control", reason: "Quarterly pest prevention — spring bugs are active", priority: "medium" },
+    { service: "Pool Cleaning", serviceType: "pool_cleaning", reason: "Pool season starting - get it swim-ready", priority: "high" },
+    { service: "Pest Control", serviceType: "pest_control", reason: "Quarterly pest prevention - spring bugs are active", priority: "medium" },
     { service: "Landscaping", serviceType: "landscaping", reason: "Spring planting season and lawn fertilization", priority: "medium" },
   ],
   4: [ // May
@@ -34,24 +34,24 @@ const MONTHLY_RECOMMENDATIONS: Record<number, MaintenanceRecommendation[]> = {
     { service: "Home Cleaning", serviceType: "home_cleaning", reason: "Deep spring cleaning", priority: "low" },
   ],
   5: [ // June - Hurricane season starts
-    { service: "Hurricane Prep", serviceType: "handyman", reason: "Hurricane season started — check shutters, trim trees, secure yard", priority: "high" },
-    { service: "AC Checkup", serviceType: "hvac", reason: "Peak heat — ensure AC is running efficiently", priority: "high" },
+    { service: "Hurricane Prep", serviceType: "handyman", reason: "Hurricane season started - check shutters, trim trees, secure yard", priority: "high" },
+    { service: "AC Checkup", serviceType: "hvac", reason: "Peak heat - ensure AC is running efficiently", priority: "high" },
   ],
   6: [ // July
-    { service: "Pest Control", serviceType: "pest_control", reason: "Quarterly treatment — summer pests at peak", priority: "medium" },
-    { service: "Pool Maintenance", serviceType: "pool_cleaning", reason: "Peak pool usage — check chemicals and equipment", priority: "medium" },
+    { service: "Pest Control", serviceType: "pest_control", reason: "Quarterly treatment - summer pests at peak", priority: "medium" },
+    { service: "Pool Maintenance", serviceType: "pool_cleaning", reason: "Peak pool usage - check chemicals and equipment", priority: "medium" },
   ],
   7: [ // August
-    { service: "Hurricane Prep Check", serviceType: "handyman", reason: "Peak hurricane season — verify storm readiness", priority: "high" },
+    { service: "Hurricane Prep Check", serviceType: "handyman", reason: "Peak hurricane season - verify storm readiness", priority: "high" },
     { service: "Roof Inspection", serviceType: "handyman", reason: "Check roof before peak storm months", priority: "high" },
   ],
   8: [ // September
-    { service: "Hurricane Prep", serviceType: "handyman", reason: "Peak hurricane month — final storm prep check", priority: "high" },
+    { service: "Hurricane Prep", serviceType: "handyman", reason: "Peak hurricane month - final storm prep check", priority: "high" },
     { service: "AC Filter Change", serviceType: "hvac", reason: "Replace filters after heavy summer use", priority: "medium" },
   ],
   9: [ // October
     { service: "Gutter Cleaning", serviceType: "gutter_cleaning", reason: "Clear fall debris and prep for winter rains", priority: "high" },
-    { service: "Pest Control", serviceType: "pest_control", reason: "Quarterly pest prevention — rodents seek shelter", priority: "medium" },
+    { service: "Pest Control", serviceType: "pest_control", reason: "Quarterly pest prevention - rodents seek shelter", priority: "medium" },
     { service: "Pressure Washing", serviceType: "pressure_washing", reason: "Remove summer algae and mildew buildup", priority: "medium" },
   ],
   10: [ // November

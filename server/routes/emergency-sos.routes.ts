@@ -1,5 +1,5 @@
 /**
- * Emergency SOS Routes — POST /api/emergency/request
+ * Emergency SOS Routes - POST /api/emergency/request
  * 
  * Accepts emergency service requests, matches with highest-availability pro,
  * returns estimated response time and emergency pricing.
@@ -18,7 +18,7 @@ const BASE_PRICES: Record<string, number> = {
   other: 125,
 };
 
-// Simulated pro pool — in production this queries the real pro availability index
+// Simulated pro pool - in production this queries the real pro availability index
 const PRO_POOL = [
   { id: 1, name: "Marcus Rivera", companyName: "Rivera Plumbing & Repair", rating: 4.9, completedJobs: 342, phone: "+14073001234", availabilityScore: 95, categories: ["burst_pipe", "roof_leak", "other"] },
   { id: 2, name: "James Chen", companyName: "CoolBreeze HVAC", rating: 4.8, completedJobs: 218, phone: "+14073005678", availabilityScore: 88, categories: ["ac_failed", "other"] },

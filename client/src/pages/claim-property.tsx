@@ -85,7 +85,7 @@ export default function ClaimProperty() {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4">
         <Card className="p-8 max-w-md w-full text-center">
           <h2 className="text-xl font-bold mb-2">Invalid Link</h2>
           <p className="text-muted-foreground">This claim link is invalid or expired.</p>
@@ -99,7 +99,7 @@ export default function ClaimProperty() {
 
   if (claimed) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4">
         <Card className="p-8 max-w-md w-full text-center">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">Property Claimed</h2>
@@ -123,7 +123,7 @@ export default function ClaimProperty() {
   }
 
   return (
-    <div className="min-h-screen bg-[#3B1D5A]" data-testid="page-claim-property">
+    <div className="min-h-screen bg-[#0f172a]" data-testid="page-claim-property">
       <header className="p-4">
         <Link href="/" className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors">
           <ArrowLeft className="w-5 h-5" />
@@ -195,7 +195,7 @@ export default function ClaimProperty() {
                         <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {event.date ? new Date(event.date).toLocaleDateString() : "—"}
+                            {event.date ? new Date(event.date).toLocaleDateString() : "-"}
                           </span>
                           <span>{event.verifiedBy}</span>
                         </div>

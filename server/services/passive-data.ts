@@ -109,18 +109,18 @@ export async function collectFromScan(
 export async function getNextQuestion(
   customerId: string
 ): Promise<{ question: string; dataKey: string; relatedService: string } | null> {
-  // Questions tied to bookable services — NEVER a survey
+  // Questions tied to bookable services - NEVER a survey
   const questionBank = [
     { key: "ac_age", dataType: "appliance", question: "By the way, do you know roughly how old your AC unit is? Older ones can spike your energy bill.", relatedService: "hvac_maintenance" },
     { key: "roof_age", dataType: "condition", question: "How long has your roof been up there? After 15 years, a quick inspection can catch problems before they get expensive.", relatedService: "roof_inspection" },
     { key: "gutter_last_cleaned", dataType: "condition", question: "When's the last time your gutters got some love? With Orlando's rain, clogged gutters can cause real damage.", relatedService: "gutter_cleaning" },
     { key: "pool_type", dataType: "appliance", question: "Do you have a pool? If so, is it chlorine or saltwater?", relatedService: "pool_maintenance" },
-    { key: "lawn_size", dataType: "room", question: "Roughly how big is your yard — small, medium, or large?", relatedService: "landscaping" },
+    { key: "lawn_size", dataType: "room", question: "Roughly how big is your yard - small, medium, or large?", relatedService: "landscaping" },
     { key: "water_heater_type", dataType: "appliance", question: "Is your water heater tank or tankless? Tankless ones need flushing every year or so.", relatedService: "plumbing" },
     { key: "pest_concerns", dataType: "condition", question: "Have you noticed any pest issues lately? Florida's pretty generous with bugs 🐜", relatedService: "pest_control" },
     { key: "exterior_paint_age", dataType: "condition", question: "How's your exterior paint holding up? Florida sun is brutal on paint.", relatedService: "pressure_washing" },
     { key: "garage_organization", dataType: "preference", question: "Is your garage more 'organized workshop' or 'can't park in there'? No judgment 😄", relatedService: "garage_cleanout" },
-    { key: "smart_home_devices", dataType: "appliance", question: "Got any smart home devices — thermostat, cameras, leak sensors? They can actually help me watch out for your home.", relatedService: "smart_home_setup" },
+    { key: "smart_home_devices", dataType: "appliance", question: "Got any smart home devices - thermostat, cameras, leak sensors? They can actually help me watch out for your home.", relatedService: "smart_home_setup" },
   ];
 
   // Check which data points we already have
@@ -205,7 +205,7 @@ function extractDataPoints(conversation: string): Array<{
   value: string;
   confidence: string;
 }> {
-  // Simple pattern matching — in production, use Claude for extraction
+  // Simple pattern matching - in production, use Claude for extraction
   const points: Array<{ dataType: string; key: string; value: string; confidence: string }> = [];
 
   const patterns: Array<{ regex: RegExp; key: string; dataType: string }> = [

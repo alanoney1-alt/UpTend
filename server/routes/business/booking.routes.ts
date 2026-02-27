@@ -27,7 +27,7 @@ async function getBusinessAccountForUser(userId: string) {
   return account || undefined;
 }
 
-// POST /api/business/bookings — create a single booking
+// POST /api/business/bookings - create a single booking
 router.post("/bookings", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -77,7 +77,7 @@ router.post("/bookings", requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/business/bookings — list all bookings for business account
+// GET /api/business/bookings - list all bookings for business account
 router.get("/bookings", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -99,7 +99,7 @@ router.get("/bookings", requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/business/bookings/:id — booking detail
+// GET /api/business/bookings/:id - booking detail
 router.get("/bookings/:id", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -129,7 +129,7 @@ router.get("/bookings/:id", requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/business/bookings/bulk — bulk create across multiple properties
+// POST /api/business/bookings/bulk - bulk create across multiple properties
 router.post("/bookings/bulk", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -198,7 +198,7 @@ router.post("/bookings/bulk", requireAuth, async (req, res) => {
   }
 });
 
-// PUT /api/business/bookings/:id/recurring — set up recurring schedule
+// PUT /api/business/bookings/:id/recurring - set up recurring schedule
 router.put("/bookings/:id/recurring", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -235,7 +235,7 @@ router.put("/bookings/:id/recurring", requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/business/preferred-pros — get preferred pros for business
+// GET /api/business/preferred-pros - get preferred pros for business
 router.get("/preferred-pros", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -256,7 +256,7 @@ router.get("/preferred-pros", requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/business/preferred-pros — add a preferred pro
+// POST /api/business/preferred-pros - add a preferred pro
 router.post("/preferred-pros", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -287,7 +287,7 @@ router.post("/preferred-pros", requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/business/properties — get properties for the business account
+// GET /api/business/properties - get properties for the business account
 router.get("/properties", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);

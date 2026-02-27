@@ -65,7 +65,7 @@ export async function validateInviteCode(rawCode: string): Promise<ValidateResul
 }
 
 /**
- * Redeem a code for a pro. Idempotent — silently succeeds if already redeemed.
+ * Redeem a code for a pro. Idempotent - silently succeeds if already redeemed.
  * Returns the discount info that was applied.
  */
 export async function redeemInviteCode(

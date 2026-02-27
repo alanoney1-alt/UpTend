@@ -2,7 +2,7 @@
  * Centralized Pricing Engine
  *
  * ALL prices come from the price_matrix table in Supabase.
- * George and all APIs call this — no hardcoded prices anywhere.
+ * George and all APIs call this - no hardcoded prices anywhere.
  */
 
 import { pool } from "../db.js";

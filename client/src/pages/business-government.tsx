@@ -258,7 +258,7 @@ export default function BusinessGovernment() {
                     <StatusBadge status={bid.status} />
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3" /> Due: {(() => { const d = new Date(bid.dueDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</span>
+                    <span className="text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3" /> Due: {(() => { const d = new Date(bid.dueDate); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</span>
                     <span className="font-semibold text-orange-600">${(bid.estimatedValue / 1000).toFixed(0)}K</span>
                   </div>
                   <div className="flex gap-2 mt-4">
@@ -301,7 +301,7 @@ export default function BusinessGovernment() {
                       <TableCell className="text-right">${w.wageRate.toFixed(2)}</TableCell>
                       <TableCell className="text-right">${w.fringe.toFixed(2)}</TableCell>
                       <TableCell className="text-right font-semibold">${(w.wageRate + w.fringe).toFixed(2)}</TableCell>
-                      <TableCell>{(() => { const d = new Date(w.effectiveDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(w.effectiveDate); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -332,7 +332,7 @@ export default function BusinessGovernment() {
                   {certifiedPayrolls.map((p: any) => (
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.contractName}</TableCell>
-                      <TableCell>{(() => { const d = new Date(p.weekEnding); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(p.weekEnding); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell className="text-right">{p.workers}</TableCell>
                       <TableCell className="text-right">{p.totalHours}</TableCell>
                       <TableCell className="text-right font-semibold">${p.totalWages.toLocaleString()}</TableCell>
@@ -358,7 +358,7 @@ export default function BusinessGovernment() {
                   <div className="flex justify-between"><span className="text-muted-foreground">CAGE Code</span><span className="font-mono font-medium">{samReg.cageCode}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">UEI</span><span className="font-mono font-medium">{samReg.uei}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Status</span><Badge variant="default">Active</Badge></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Renewal Date</span><span className="font-medium">{(() => { const d = new Date(samReg.expiry); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Renewal Date</span><span className="font-medium">{(() => { const d = new Date(samReg.expiry); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</span></div>
                 </div>
               </Card>
               <Card className="p-6">

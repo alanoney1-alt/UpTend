@@ -210,7 +210,7 @@ export async function countHiddenJobs(proId: string): Promise<{ count: number; m
     });
   }
 
-  // Estimate hidden jobs (simplified — count B2B jobs from segments the pro can't access)
+  // Estimate hidden jobs (simplified - count B2B jobs from segments the pro can't access)
   const missingCerts = Array.from(allRequired);
   if (missingCerts.length === 0) return { count: 0, missingCerts: [] };
 

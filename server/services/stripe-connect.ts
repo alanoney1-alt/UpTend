@@ -335,7 +335,7 @@ export async function getPayoutByStripePayoutId(_payoutId: string) {
 }
 
 export async function processJobCompletion(_jobId: number) {
-  // Job completion payment processing — captured via existing PaymentIntent flow
+  // Job completion payment processing - captured via existing PaymentIntent flow
   console.log("[Stripe Connect] processJobCompletion for job:", _jobId);
   return { success: true };
 }

@@ -25,7 +25,7 @@ import {
 import type { InsertPropertyAppliance, InsertPropertyHealthEvent, InsertNotificationQueue } from "../../shared/schema";
 
 // ==========================================
-// AI INTEGRATION — OpenAI GPT-5.2 Vision
+// AI INTEGRATION - OpenAI GPT-5.2 Vision
 // ==========================================
 
 import { scanAppliance } from "./ai/openai-vision-client";

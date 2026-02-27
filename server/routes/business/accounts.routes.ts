@@ -2,10 +2,10 @@
  * Business Account & Recurring Job Routes
  *
  * Endpoints consumed by client/src/pages/business-dashboard.tsx:
- *   GET    /api/business-accounts/:userId  — get account + recurring jobs by userId
- *   POST   /api/business-accounts          — create business account
- *   POST   /api/recurring-jobs             — create recurring job
- *   PATCH  /api/recurring-jobs/:id         — update recurring job (toggle active, etc.)
+ *   GET    /api/business-accounts/:userId  - get account + recurring jobs by userId
+ *   POST   /api/business-accounts          - create business account
+ *   POST   /api/recurring-jobs             - create recurring job
+ *   PATCH  /api/recurring-jobs/:id         - update recurring job (toggle active, etc.)
  */
 
 import { Router } from "express";
@@ -15,7 +15,7 @@ import { requireAuth } from "../../middleware/auth";
 const router = Router();
 const store = new BusinessAccountsStorage();
 
-// GET /api/business-accounts/:userId — dashboard initial load
+// GET /api/business-accounts/:userId - dashboard initial load
 router.get("/:userId", requireAuth, async (req, res) => {
   try {
     // Verify the authenticated user matches the requested userId
@@ -36,7 +36,7 @@ router.get("/:userId", requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/business-accounts — create new business account
+// POST /api/business-accounts - create new business account
 router.post("/", requireAuth, async (req, res) => {
   try {
     const account = await store.createBusinessAccount(req.body);

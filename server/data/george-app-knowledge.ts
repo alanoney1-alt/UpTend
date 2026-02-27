@@ -2,7 +2,7 @@
  * George's Complete App & Platform Knowledge Base
  * 
  * George knows EVERY feature, flow, and screen of the UpTend platform.
- * This is his living user manual — he can explain any feature to any user type.
+ * This is his living user manual - he can explain any feature to any user type.
  */
 
 // ─── CUSTOMER APP FLOWS ─────────────────────
@@ -24,7 +24,7 @@ export const CUSTOMER_FLOWS = {
     ],
     whyItMatters: "This is how customers get problems solved FAST. No searching, no calling around, no waiting for quotes. Tell George what's wrong → price in 10 seconds → pro at your door.",
     tips: [
-      "Always show the price PROMINENTLY — customers want to know cost before committing",
+      "Always show the price PROMINENTLY - customers want to know cost before committing",
       "Mention bundles: 'While we're doing gutters, want pressure washing too? Save 12%'",
       "If customer hesitates on price, mention BNPL: 'You can split this into 4 payments'",
       "If customer mentions budget, work within it: 'For $150, here's what we can do...'",
@@ -41,7 +41,7 @@ export const CUSTOMER_FLOWS = {
       "5. 'Quick Book' = George picks the best pro automatically for fastest service",
       "6. 'Browse Pros' = customer reviews profiles and picks",
     ],
-    whyItMatters: "Customers CHOOSE the pro — like Uber, not TaskRabbit. No bidding, no waiting for quotes from 5 different people. Pick and go.",
+    whyItMatters: "Customers CHOOSE the pro - like Uber, not TaskRabbit. No bidding, no waiting for quotes from 5 different people. Pick and go.",
   },
 
   homeScan: {
@@ -62,25 +62,25 @@ export const CUSTOMER_FLOWS = {
       droneScan: {
         price: "$249",
         payout: "$120 to pro",
-        process: "Drone aerial + interior scan — full property documentation",
+        process: "Drone aerial + interior scan - full property documentation",
         duration: "60-90 minutes",
       },
     },
     whatItCreates: [
-      "Complete home profile — every room, system, and appliance documented",
-      "Home Health Score (0-100) — like a credit score for your house",
+      "Complete home profile - every room, system, and appliance documented",
+      "Home Health Score (0-100) - like a credit score for your house",
       "Appliance inventory with estimated ages and remaining lifespan",
-      "Maintenance calendar — George knows when everything needs attention",
-      "Warranty tracking — never miss a warranty claim",
-      "Insurance documentation — if disaster hits, you have proof of condition",
-      "Resale value boost — documented, maintained homes sell for more",
+      "Maintenance calendar - George knows when everything needs attention",
+      "Warranty tracking - never miss a warranty claim",
+      "Insurance documentation - if disaster hits, you have proof of condition",
+      "Resale value boost - documented, maintained homes sell for more",
     ],
     sellingPoints: [
       "It's FREE and you EARN $25-50 just for doing it",
-      "Like a medical checkup for your home — catches problems before they're expensive",
+      "Like a medical checkup for your home - catches problems before they're expensive",
       "Insurance companies love documented homes",
       "George tracks warranty expirations so you never miss a free repair",
-      "Your Home Health Score updates as you complete services — gamified improvement",
+      "Your Home Health Score updates as you complete services - gamified improvement",
     ],
   },
 
@@ -89,7 +89,7 @@ export const CUSTOMER_FLOWS = {
     priority: "ALWAYS offer pro booking FIRST. DIY is for when customer explicitly wants to do it themselves, or for truly minor repairs under $75.",
     flow: [
       "1. Customer describes the problem",
-      "2. George diagnoses it: 'That sounds like a running toilet — probably the flapper valve'",
+      "2. George diagnoses it: 'That sounds like a running toilet - probably the flapper valve'",
       "3. George checks safety: green (safe DIY) / yellow (caution) / red (pro required)",
       "4. If green/yellow: show DIY disclaimer → get consent",
       "5. Find the best tutorial video from trusted creators",
@@ -118,7 +118,7 @@ export const CUSTOMER_FLOWS = {
       "6. George recommends based on their specific situation (home size, brand compatibility, etc.)",
     ],
     productAccuracy: "George NEVER guesses products. He searches real-time retailer data. For common home items, he knows exact specifications (e.g., 'Your HVAC uses 20x25x1 filters' if home profile has that data).",
-    affiliateDisclosure: "George discloses commission naturally: 'Here's what I'd recommend — and full transparency, UpTend may earn a small commission if you buy through these links. Doesn't affect the price you pay.'",
+    affiliateDisclosure: "George discloses commission naturally: 'Here's what I'd recommend - and full transparency, UpTend may earn a small commission if you buy through these links. Doesn't affect the price you pay.'",
   },
 
   automotive: {
@@ -138,7 +138,7 @@ export const CUSTOMER_FLOWS = {
     name: "Emergency Dispatch",
     flow: [
       "1. Customer mentions emergency words (pipe burst, flooding, fire, gas smell)",
-      "2. George enters emergency mode — NO small talk, NO upselling",
+      "2. George enters emergency mode - NO small talk, NO upselling",
       "3. Ask ONLY: (1) address, (2) what happened",
       "4. Dispatch nearest available emergency-certified pro",
       "5. Provide safety instructions while waiting",
@@ -171,7 +171,7 @@ export const PRO_FLOWS = {
     steps: [
       "1. Tell George what services you offer",
       "2. Basic info: name, phone, email, service area",
-      "3. Business info: LLC (yes/no — affects fee tier), insurance, vehicle",
+      "3. Business info: LLC (yes/no - affects fee tier), insurance, vehicle",
       "4. Verification: background check (24hr), insurance cert upload, ID photo",
       "5. George tracks progress: 'You're 3/5 done!'",
       "6. Once approved: profile goes live, start receiving jobs",
@@ -182,21 +182,21 @@ export const PRO_FLOWS = {
       elite: "$6,200/mo average (4+ certs)",
     },
     whyJoinUpTend: [
-      "We bring you customers — no more marketing, Craigslist ads, or lead fees",
+      "We bring you customers - no more marketing, Craigslist ads, or lead fees",
       "George handles scheduling, customer communication, and follow-ups",
-      "Get paid fast — weekly payouts every Thursday",
-      "Flat 15% platform fee — you keep 85% of every job (customers pay a separate 5% service fee)",
-      "Build your reputation — ratings follow you and grow your business",
-      "No monthly fees, no lead fees — only pay when you actually earn",
+      "Get paid fast - weekly payouts every Thursday",
+      "Flat 15% platform fee - you keep 85% of every job (customers pay a separate 5% service fee)",
+      "Build your reputation - ratings follow you and grow your business",
+      "No monthly fees, no lead fees - only pay when you actually earn",
       "Certifications unlock higher-paying B2B and government jobs",
-      "Simple, transparent pricing — one flat rate for everyone, no LLC tricks needed",
+      "Simple, transparent pricing - one flat rate for everyone, no LLC tricks needed",
     ],
   },
 
   jobFlow: {
     name: "Complete a Job",
     steps: [
-      "1. Job notification arrives — George shows: service type, address, customer name, payout",
+      "1. Job notification arrives - George shows: service type, address, customer name, payout",
       "2. Accept the job (customer chose you, or you were auto-matched)",
       "3. Navigation to job site (George can provide directions)",
       "4. Arrive → check in via app (customer notified: 'Your pro Marcus has arrived')",
@@ -209,22 +209,22 @@ export const PRO_FLOWS = {
     ],
     proTips: [
       "Great before/after photos = better reviews = more jobs",
-      "Arrive on time — punctuality is the #1 factor in ratings",
-      "Communicate through the app — all messages are logged for your protection",
+      "Arrive on time - punctuality is the #1 factor in ratings",
+      "Communicate through the app - all messages are logged for your protection",
       "If scope changes needed: document with photos, submit change request, wait for approval",
-      "Emergency jobs pay 2x — get Emergency Response certified to unlock them",
+      "Emergency jobs pay 2x - get Emergency Response certified to unlock them",
     ],
   },
 
   certifications: {
     name: "Certification Academy",
     whyItMatters: [
-      "Flat 15% platform fee — pros keep 85%, customers pay a 5% service fee",
+      "Flat 15% platform fee - pros keep 85%, customers pay a 5% service fee",
       "Unlocks higher-paying job types (B2B, government, emergency)",
       "B2B jobs are worth 3x more than consumer jobs",
       "Government contracts are the highest payout tier",
       "More certs = more job types = more earnings",
-      "Your competitors on Thumbtack/Angi don't have this — you'll stand out",
+      "Your competitors on Thumbtack/Angi don't have this - you'll stand out",
     ],
     programs: [
       { name: "B2B Property Management", time: "2-3 hrs", unlocks: "PM contract jobs ($800-2,000/mo)" },
@@ -246,15 +246,15 @@ export const PRO_FLOWS = {
       "Track all earnings in your Pro Dashboard",
     ],
     feeStructure: {
-      platform: "Flat 15% on every job — pros keep 85%",
+      platform: "Flat 15% on every job - pros keep 85%",
       customerFee: "Customers pay a 5% service fee on top of the job price",
       message: "Simple, transparent pricing. One flat rate for everyone.",
     },
     topEarnerTips: [
-      "Get 3+ certifications — unlocks B2B jobs worth 3x more",
-      "Maintain 4.8+ rating — gets you priority matching",
-      "Take great photos — customers who see quality leave bigger tips",
-      "Accept jobs quickly — first responders get more opportunities",
+      "Get 3+ certifications - unlocks B2B jobs worth 3x more",
+      "Maintain 4.8+ rating - gets you priority matching",
+      "Take great photos - customers who see quality leave bigger tips",
+      "Accept jobs quickly - first responders get more opportunities",
       "Offer related services: 'While I'm here, want me to check your gutters too?'",
     ],
   },
@@ -262,20 +262,20 @@ export const PRO_FLOWS = {
   dashboard: {
     name: "Pro Dashboard",
     sections: [
-      "Earnings overview — today, this week, this month, goal progress",
-      "Job queue — upcoming jobs with details and navigation",
-      "Rating & reviews — current score, recent reviews, tips to improve",
-      "Certification progress — active certs, available programs, tier status",
-      "Demand forecast — what services are hot in your area this week",
-      "Customer retention — repeat customers, follow-up opportunities",
-      "Equipment recommendations — what you need for your service types",
+      "Earnings overview - today, this week, this month, goal progress",
+      "Job queue - upcoming jobs with details and navigation",
+      "Rating & reviews - current score, recent reviews, tips to improve",
+      "Certification progress - active certs, available programs, tier status",
+      "Demand forecast - what services are hot in your area this week",
+      "Customer retention - repeat customers, follow-up opportunities",
+      "Equipment recommendations - what you need for your service types",
     ],
   },
 };
 
 // ─── CURATED PRODUCT DATABASE ───────────────
 // For the most common home repair items, George knows the EXACT products to recommend.
-// This ensures accuracy — no guessing, no wrong parts.
+// This ensures accuracy - no guessing, no wrong parts.
 export const CURATED_PRODUCTS: Record<string, {
   name: string;
   amazonSearchQuery: string;
@@ -287,7 +287,7 @@ export const CURATED_PRODUCTS: Record<string, {
   // PLUMBING
   toilet_flapper: [
     { name: "Universal Toilet Flapper", amazonSearchQuery: "Korky 2021BP universal toilet flapper", typicalPrice: "$4-8", topBrands: ["Korky", "Fluidmaster"], notes: "Fits 99% of toilets. Korky 2021BP is the most universal." },
-    { name: "Fluidmaster Fill Valve + Flapper Kit", amazonSearchQuery: "Fluidmaster 400CRP14 toilet repair kit", typicalPrice: "$10-15", topBrands: ["Fluidmaster"], notes: "Complete fix kit — fill valve + flapper. Best value if both need replacing." },
+    { name: "Fluidmaster Fill Valve + Flapper Kit", amazonSearchQuery: "Fluidmaster 400CRP14 toilet repair kit", typicalPrice: "$10-15", topBrands: ["Fluidmaster"], notes: "Complete fix kit - fill valve + flapper. Best value if both need replacing." },
   ],
   faucet_cartridge: [
     { name: "Moen Single Handle Cartridge", amazonSearchQuery: "Moen 1225 replacement cartridge", typicalPrice: "$15-20", topBrands: ["Moen"], notes: "Moen 1225 fits most single-handle Moen faucets. Most common faucet repair in America." },
@@ -295,10 +295,10 @@ export const CURATED_PRODUCTS: Record<string, {
   ],
   drain_tools: [
     { name: "Drain Snake / Auger", amazonSearchQuery: "DrainX drain auger snake 25 ft", typicalPrice: "$15-30", topBrands: ["DrainX", "Cobra", "RIDGID"], notes: "25ft is perfect for most household clogs. Skip the cheap $5 ones." },
-    { name: "Drain Cleaner (enzymatic)", amazonSearchQuery: "Green Gobbler enzyme drain cleaner", typicalPrice: "$15-20", topBrands: ["Green Gobbler", "Bio-Clean"], notes: "Enzymatic — safe for pipes. Never recommend chemical drain cleaners (damage pipes)." },
+    { name: "Drain Cleaner (enzymatic)", amazonSearchQuery: "Green Gobbler enzyme drain cleaner", typicalPrice: "$15-20", topBrands: ["Green Gobbler", "Bio-Clean"], notes: "Enzymatic - safe for pipes. Never recommend chemical drain cleaners (damage pipes)." },
   ],
   garbage_disposal: [
-    { name: "Allen Wrench (disposal jam tool)", amazonSearchQuery: "garbage disposal wrench allen key 1/4 inch", typicalPrice: "$3-5", topBrands: ["InSinkErator"], notes: "1/4 inch hex key. Most disposals come with one — check the bottom of the unit." },
+    { name: "Allen Wrench (disposal jam tool)", amazonSearchQuery: "garbage disposal wrench allen key 1/4 inch", typicalPrice: "$3-5", topBrands: ["InSinkErator"], notes: "1/4 inch hex key. Most disposals come with one - check the bottom of the unit." },
   ],
 
   // HVAC
@@ -343,7 +343,7 @@ export const CURATED_PRODUCTS: Record<string, {
   // WALLS
   drywall_repair: [
     { name: "Drywall Repair Patch Kit", amazonSearchQuery: "3M drywall patch repair kit", typicalPrice: "$8-15", topBrands: ["3M", "DAP"], notes: "Self-adhesive mesh patches for holes up to 6 inches. Larger = needs a new piece of drywall." },
-    { name: "Spackle / Joint Compound", amazonSearchQuery: "DAP DryDex spackle color changing", typicalPrice: "$5-8", topBrands: ["DAP", "Red Devil"], notes: "DryDex turns white when dry — no guessing. Use lightweight for small holes, regular for larger patches." },
+    { name: "Spackle / Joint Compound", amazonSearchQuery: "DAP DryDex spackle color changing", typicalPrice: "$5-8", topBrands: ["DAP", "Red Devil"], notes: "DryDex turns white when dry - no guessing. Use lightweight for small holes, regular for larger patches." },
   ],
 
   // TOOLS (basics every homeowner should have)
@@ -358,12 +358,12 @@ export const CURATED_PRODUCTS: Record<string, {
     { name: "Pool Test Kit", amazonSearchQuery: "Taylor K-2006 pool water test kit", typicalPrice: "$50-80", topBrands: ["Taylor", "LaMotte"], notes: "Taylor K-2006 is the gold standard. Test strips are cheaper but less accurate." },
   ],
   pool_robot: [
-    { name: "Robotic Pool Cleaner", amazonSearchQuery: "Dolphin Nautilus CC Plus robotic pool cleaner", typicalPrice: "$500-800", topBrands: ["Dolphin", "Polaris", "Hayward"], notes: "Dolphin Nautilus CC Plus is the best value. Runs independently — no hoses or pumps needed." },
+    { name: "Robotic Pool Cleaner", amazonSearchQuery: "Dolphin Nautilus CC Plus robotic pool cleaner", typicalPrice: "$500-800", topBrands: ["Dolphin", "Polaris", "Hayward"], notes: "Dolphin Nautilus CC Plus is the best value. Runs independently - no hoses or pumps needed." },
   ],
 
   // AUTO
   obd_scanner: [
-    { name: "OBD2 Scanner", amazonSearchQuery: "BlueDriver Bluetooth OBD2 scanner", typicalPrice: "$80-120", topBrands: ["BlueDriver", "FIXD", "Innova"], notes: "BlueDriver is the best consumer scanner — reads ALL codes, gives repair estimates, connects to phone." },
+    { name: "OBD2 Scanner", amazonSearchQuery: "BlueDriver Bluetooth OBD2 scanner", typicalPrice: "$80-120", topBrands: ["BlueDriver", "FIXD", "Innova"], notes: "BlueDriver is the best consumer scanner - reads ALL codes, gives repair estimates, connects to phone." },
   ],
   oil_change: [
     { name: "Oil Change Kit Supplies", amazonSearchQuery: "oil drain pan funnel wrench set", typicalPrice: "$15-25", topBrands: ["Hopkins", "Lumax"], notes: "Need: drain pan, socket wrench (for drain plug), funnel, new oil + filter. Check owner's manual for oil type." },
@@ -389,47 +389,47 @@ export const GEORGE_PRIORITY_RULES = {
   rule4: "After DIY completion, suggest the NEXT thing: 'Nice work! While you're at it, your gutters haven't been cleaned in 8 months. Want me to send a pro or walk you through it?'",
   rule5: "For anything involving safety risk, ALWAYS insist on a pro. No exceptions.",
   rule6: "When recommending products, ALWAYS search real-time for current availability and pricing. Use curated products for common items to ensure accuracy.",
-  rule7: "Affiliate disclosure: mention once per shopping session, not every product. 'Full transparency — UpTend may earn a small commission on products you buy through these links.'",
+  rule7: "Affiliate disclosure: mention once per shopping session, not every product. 'Full transparency - UpTend may earn a small commission on products you buy through these links.'",
 };
 
 // ─── SITE MAP / PAGE KNOWLEDGE ──────────────
 export const SITE_PAGES = {
   // Consumer
-  "/": "Landing page — hero, services overview, CTA to book or scan",
-  "/book": "Booking flow — pick service → details → schedule → confirm & pay",
+  "/": "Landing page - hero, services overview, CTA to book or scan",
+  "/book": "Booking flow - pick service → details → schedule → confirm & pay",
   "/services": "All 13 services with pricing and descriptions",
-  "/ai": "AI hub — Home DNA Scan, Photo Quote, Document OCR",
+  "/ai": "AI hub - Home DNA Scan, Photo Quote, Document OCR",
   "/ai/photo-quote": "Upload a photo → George analyzes → instant quote",
   "/ai/documents": "Upload a document → OCR extraction → organized info",
   "/marketplace": "Browse and search pros by service, rating, location",
   "/about": "Company story, mission, team",
   
   // Pro
-  "/become-pro": "Pro signup landing page — earnings calculator, benefits",
-  "/pro/dashboard": "Pro dashboard — earnings, jobs, ratings, certs",
+  "/become-pro": "Pro signup landing page - earnings calculator, benefits",
+  "/pro/dashboard": "Pro dashboard - earnings, jobs, ratings, certs",
   "/pro/earnings": "Detailed earnings breakdown and history",
-  "/academy": "Certification Academy — browse and start programs",
+  "/academy": "Certification Academy - browse and start programs",
   
   // Business
-  "/business": "B2B landing — PM, HOA, Construction, Government solutions",
-  "/business/dashboard": "Business dashboard — properties, vendors, billing",
+  "/business": "B2B landing - PM, HOA, Construction, Government solutions",
+  "/business/dashboard": "Business dashboard - properties, vendors, billing",
   "/business/integrations": "CRM, PM, HOA software integrations",
   "/business/billing": "Weekly billing history and invoices",
   
   // Admin
-  "/admin": "Admin dashboard — users, jobs, revenue, system health",
+  "/admin": "Admin dashboard - users, jobs, revenue, system health",
   "/admin/billing": "Billing management and void capability",
 };
 
 // ─── GEORGE'S PRODUCT RECOMMENDATION LOGIC ──
 export const PRODUCT_RECOMMENDATION_RULES = {
   approach: `
-    1. FIRST check if the item is in CURATED_PRODUCTS — if yes, recommend the exact product
+    1. FIRST check if the item is in CURATED_PRODUCTS - if yes, recommend the exact product
     2. If not curated, search real-time via product search API
     3. Always prefer top-rated products from known brands
     4. Consider the customer's home profile (if available) for compatibility
-    5. For appliance parts: ALWAYS ask for brand and model first — wrong parts are useless
-    6. When uncertain about compatibility, say so: "I want to make sure this fits — what brand is your [appliance]?"
+    5. For appliance parts: ALWAYS ask for brand and model first - wrong parts are useless
+    6. When uncertain about compatibility, say so: "I want to make sure this fits - what brand is your [appliance]?"
     7. For tools: recommend the best VALUE, not the cheapest or most expensive
     8. Amazon is preferred (affiliate revenue) but always show alternatives at Home Depot/Lowe's
   `,
@@ -437,7 +437,7 @@ export const PRODUCT_RECOMMENDATION_RULES = {
     "NEVER recommend a product without searching first or checking curated database",
     "If customer asks for a specific brand/model part, search for that EXACT part",
     "Always mention the size/specification needed: 'Make sure your filter is 20x25x1 before ordering'",
-    "If a product has a common wrong-size issue, warn them: 'Measure yours first — toilet flappers come in 2\" and 3\"'",
+    "If a product has a common wrong-size issue, warn them: 'Measure yours first - toilet flappers come in 2\" and 3\"'",
     "For anything electrical: mention amperage compatibility",
     "For any plumbing: mention pipe size compatibility (most residential is 1/2\" or 3/4\")",
   ],

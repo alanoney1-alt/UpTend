@@ -1406,7 +1406,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
                     <div className="text-xs text-muted-foreground">Sq Ft</div>
                   </div>
                   <div className="bg-muted/50 rounded-lg p-3 text-center">
-                    <div className="text-lg font-bold">{propertyData.stories || propertyData.yearBuilt || "—"}</div>
+                    <div className="text-lg font-bold">{propertyData.stories || propertyData.yearBuilt || "-"}</div>
                     <div className="text-xs text-muted-foreground">{propertyData.stories ? "Stories" : "Year Built"}</div>
                   </div>
                 </div>

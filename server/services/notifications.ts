@@ -54,7 +54,7 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
       });
       if (res.ok) {
         const data = await res.json();
-        console.log(`[Resend] Email sent to ${options.to} — id: ${data.id}`);
+        console.log(`[Resend] Email sent to ${options.to} - id: ${data.id}`);
         return { success: true };
       } else {
         const err = await res.text();

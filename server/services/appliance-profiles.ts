@@ -246,7 +246,7 @@ export async function getDIYPurchaseSuggestions(customerId: string): Promise<any
     if (monthsSince >= 3) {
       suggestions.push({
         category: "HVAC Maintenance",
-        item: "HVAC air filter (check your current size — common sizes: 20x25x1, 16x25x1, 20x20x1 MERV 13)",
+        item: "HVAC air filter (check your current size - common sizes: 20x25x1, 16x25x1, 20x20x1 MERV 13)",
         reason: `Last filter change was ${monthsSince} months ago. Replace every 1-3 months.`,
         estimatedCost: "$15-30",
         store: "home_depot",

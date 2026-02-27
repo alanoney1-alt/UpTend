@@ -1,5 +1,5 @@
 /**
- * Push Notification Service — Expo Push API
+ * Push Notification Service - Expo Push API
  */
 
 interface PushResult {
@@ -35,7 +35,7 @@ export async function sendPushNotification(
 
     const result = await res.json();
     if (result.data?.status === 'ok') {
-      console.log(`[Push] Sent to ${expoPushToken.slice(0, 30)}... — ticket: ${result.data.id}`);
+      console.log(`[Push] Sent to ${expoPushToken.slice(0, 30)}... - ticket: ${result.data.id}`);
       return { success: true, ticketId: result.data.id };
     } else {
       const errMsg = result.data?.message || result.errors?.[0]?.message || 'Unknown error';

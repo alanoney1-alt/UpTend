@@ -9,7 +9,7 @@ import { storage } from "../../storage";
 import { requireAuth, requireHauler } from "../../auth-middleware";
 
 export function registerProDashboardRoutes(app: Express) {
-  // GET /api/haulers/dashboard — alias for /api/pro/dashboard
+  // GET /api/haulers/dashboard - alias for /api/pro/dashboard
   app.get("/api/haulers/dashboard", requireAuth, requireHauler, async (req: any, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;

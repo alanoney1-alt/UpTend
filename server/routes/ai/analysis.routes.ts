@@ -319,7 +319,7 @@ export function registerAiAnalysisRoutes(app: Express) {
     }
   });
 
-  // POST /api/ai/documents/analyze — analyze a document (receipt, contract, etc.)
+  // POST /api/ai/documents/analyze - analyze a document (receipt, contract, etc.)
   app.post("/api/ai/documents/analyze", async (req, res) => {
     try {
       const { document_url, document_type, context } = req.body;

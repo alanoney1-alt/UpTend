@@ -81,7 +81,7 @@ export function registerPublicRoutes(app: Express) {
         return res.json(results);
       }
 
-      // No pros in DB yet — show empty state instead of fake data
+      // No pros in DB yet - show empty state instead of fake data
       res.json([]);
     } catch (error) {
       console.error("Error browsing pros:", error);

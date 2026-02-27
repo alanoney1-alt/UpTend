@@ -2,8 +2,8 @@
  * Same-Day Service Guarantee API Routes
  *
  * Endpoints:
- * - GET /api/same-day/available?serviceType=X&zip=Y — check same-day availability
- * - PATCH /api/same-day/opt-in — pro toggles same-day availability
+ * - GET /api/same-day/available?serviceType=X&zip=Y - check same-day availability
+ * - PATCH /api/same-day/opt-in - pro toggles same-day availability
  */
 
 import type { Express, Request, Response } from "express";
@@ -27,7 +27,7 @@ const optInSchema = z.object({
 });
 
 export function registerSameDayRoutes(app: Express) {
-  // GET /api/same-day/available — check if same-day pros exist for service+zip
+  // GET /api/same-day/available - check if same-day pros exist for service+zip
   app.get("/api/same-day/available", async (req: Request, res: Response) => {
     try {
       const validated = availabilityQuerySchema.parse(req.query);
@@ -73,7 +73,7 @@ export function registerSameDayRoutes(app: Express) {
     }
   });
 
-  // PATCH /api/same-day/opt-in — pro toggles same-day settings
+  // PATCH /api/same-day/opt-in - pro toggles same-day settings
   app.patch("/api/same-day/opt-in", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
@@ -107,7 +107,7 @@ export function registerSameDayRoutes(app: Express) {
     }
   });
 
-  // GET /api/same-day/multiplier — get premium pricing info
+  // GET /api/same-day/multiplier - get premium pricing info
   app.get("/api/same-day/multiplier", async (_req: Request, res: Response) => {
     res.json({
       success: true,

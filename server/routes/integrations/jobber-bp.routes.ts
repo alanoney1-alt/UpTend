@@ -1,5 +1,5 @@
 /**
- * Jobber Integration Routes (Business Partner — job sync)
+ * Jobber Integration Routes (Business Partner - job sync)
  * Separate from the CRM Jobber integration.
  */
 import type { Express, Request, Response } from "express";

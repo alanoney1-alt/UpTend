@@ -142,7 +142,7 @@ export async function optimizeRoute(proId: string, date: string): Promise<Optimi
     lat: parseFloat(j.pickup_lat) || 28.5383, // Orlando fallback
     lng: parseFloat(j.pickup_lng) || -81.3792,
     scheduledTime: j.scheduled_for || "",
-    estimatedDuration: 60, // default 1 hour — no duration column in service_requests
+    estimatedDuration: 60, // default 1 hour - no duration column in service_requests
   }));
 
   // Also check existing route plan for manually added jobs
@@ -205,7 +205,7 @@ export async function getRouteForDay(proId: string, date: string): Promise<Optim
     };
   }
 
-  // No existing plan — generate one
+  // No existing plan - generate one
   return optimizeRoute(proId, date);
 }
 

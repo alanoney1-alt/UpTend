@@ -1,7 +1,7 @@
 /**
  * Pro Intelligence Service
  * Demand forecasting, customer retention analysis, performance analytics, competitive positioning
- * Note: Pros are 1099 independent contractors — earnings/payouts only, never wages/salary
+ * Note: Pros are 1099 independent contractors - earnings/payouts only, never wages/salary
  */
 
 import { db, pool } from "../db.js";
@@ -289,10 +289,10 @@ export async function getPerformanceAnalytics(
 
  // Improvement areas
  const improvementAreas: string[] = [];
- if (avgRating > 0 && avgRating < 4.5) improvementAreas.push("Boost ratings — follow up after each job");
- if (completionRate < 90) improvementAreas.push("Improve completion rate — fewer cancellations");
- if (customerReturnRate < 20) improvementAreas.push("Build repeat clientele — offer returning customer discounts");
- if (totalJobs < 5 && period === "weekly") improvementAreas.push("Increase volume — expand service areas or types");
+ if (avgRating > 0 && avgRating < 4.5) improvementAreas.push("Boost ratings - follow up after each job");
+ if (completionRate < 90) improvementAreas.push("Improve completion rate - fewer cancellations");
+ if (customerReturnRate < 20) improvementAreas.push("Build repeat clientele - offer returning customer discounts");
+ if (totalJobs < 5 && period === "weekly") improvementAreas.push("Increase volume - expand service areas or types");
 
  // Store analytics
  await pool.query(
@@ -364,6 +364,6 @@ export async function getCompetitivePosition(proId: string, zip: string): Promis
  avgJobsPerPro: areaJobsPerPro,
  },
  ranking: rank,
- summary: `In ${zip}: ${areaPros} active pros. Your rating: ${myRating} (area avg: ${areaAvgRating}). You're "${rank}" — ${aboveAvgRating ? "great ratings!" : "focus on quality to climb."} ${aboveAvgVolume ? "Strong volume." : "Take on more jobs to grow."}`,
+ summary: `In ${zip}: ${areaPros} active pros. Your rating: ${myRating} (area avg: ${areaAvgRating}). You're "${rank}" - ${aboveAvgRating ? "great ratings!" : "focus on quality to climb."} ${aboveAvgVolume ? "Strong volume." : "Take on more jobs to grow."}`,
  };
 }

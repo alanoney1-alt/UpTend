@@ -100,7 +100,7 @@ export function registerTaxReportingRoutes(app: Express) {
     }
   });
 
-  // GET /api/tax/export/:year — downloadable CSV with all transactions
+  // GET /api/tax/export/:year - downloadable CSV with all transactions
   app.get("/api/tax/export/:year", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });

@@ -56,7 +56,7 @@ export function registerProAcademyRoutes(app: Express) {
         });
 
         // Also enable job acceptance in the profile
-        // updateHaulerProfile expects profileId, not userId — look up the profile first
+        // updateHaulerProfile expects profileId, not userId - look up the profile first
         const profile = await storage.getHaulerProfile(proId);
         if (profile) {
           await storage.updateHaulerProfile(profile.id, {

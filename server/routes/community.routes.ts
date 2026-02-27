@@ -4,7 +4,7 @@ import {
 } from "../services/community-engine.js";
 
 export function registerCommunityEngineRoutes(app: Express) {
-  // GET /api/community/feed — general community feed (no zip required)
+  // GET /api/community/feed - general community feed (no zip required)
   app.get("/api/community/feed", async (req, res) => {
     try {
       const zip = (req.query.zip as string) || "00000";

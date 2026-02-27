@@ -1,5 +1,5 @@
 /**
- * Email Sequences — in-memory scheduled email triggers
+ * Email Sequences - in-memory scheduled email triggers
  *
  * Customer post-job: review request (24h), home score (3d), seasonal (14d), referral (30d)
  * Pro onboarding: welcome (immediate), profile nudge (3d), tips (7d)

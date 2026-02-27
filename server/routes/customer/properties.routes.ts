@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 
-// In-memory store — TODO: migrate to DB using `properties` table from schema.ts
+// In-memory store - TODO: migrate to DB using `properties` table from schema.ts
 interface CustomerProperty {
   id: string;
   userId: string;

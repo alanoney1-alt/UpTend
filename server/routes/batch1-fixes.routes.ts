@@ -26,7 +26,7 @@ export function registerBatch1FixRoutes(app: Express) {
     try {
       const { service, zip } = req.query;
 
-      // Dynamic column detection — hauler_profiles schema varies
+      // Dynamic column detection - hauler_profiles schema varies
       let rows: any[] = [];
       try {
         let query = `
@@ -283,7 +283,7 @@ export function registerBatch1FixRoutes(app: Express) {
           notifications = rows.map((r: any) => ({ ...r, isRead: true, actionUrl: `/profile` }));
           total = notifications.length;
         } catch (_e2) {
-          // Both failed — return empty
+          // Both failed - return empty
           console.error("Notifications: both queries failed");
         }
       }

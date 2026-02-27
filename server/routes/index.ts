@@ -258,7 +258,7 @@ import { registerJobLifecycleRoutes } from "./job-lifecycle.routes";
 // Batch 1 API fixes (haulers/available, certifications, wallet, notifications, quality-score, jobs)
 import { registerBatch1FixRoutes } from "./batch1-fixes.routes";
 
-// Batch 2 fixes — aliases, spending tracker, appliances, warranties, inventory
+// Batch 2 fixes - aliases, spending tracker, appliances, warranties, inventory
 import { registerBatch2Routes } from "./batch2-aliases.routes";
 
 // Background Check routes

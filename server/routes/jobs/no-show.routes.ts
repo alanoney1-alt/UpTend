@@ -9,7 +9,7 @@ import {
 } from "../../services/no-show-protection";
 
 export function registerNoShowRoutes(app: Express) {
-  // POST /api/jobs/:id/check-in — Pro confirms arrival (manual "I'm Here" button)
+  // POST /api/jobs/:id/check-in - Pro confirms arrival (manual "I'm Here" button)
   app.post("/api/jobs/:id/check-in", requireAuth, requireHauler, async (req: any, res) => {
     try {
       const jobId = req.params.id;
@@ -40,8 +40,8 @@ export function registerNoShowRoutes(app: Express) {
 
       const success = proCheckedIn(jobId, proId);
       if (!success) {
-        // Timer may not be active — that's OK, the check-in still counts
-        console.log(`[NoShow] Check-in for job ${jobId} — no active timer (may have already expired or not started)`);
+        // Timer may not be active - that's OK, the check-in still counts
+        console.log(`[NoShow] Check-in for job ${jobId} - no active timer (may have already expired or not started)`);
       }
 
       res.json({ success: true, message: "Checked in successfully" });
@@ -51,7 +51,7 @@ export function registerNoShowRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:id/delay-reason — Pro sends delay explanation
+  // POST /api/jobs/:id/delay-reason - Pro sends delay explanation
   app.post("/api/jobs/:id/delay-reason", requireAuth, requireHauler, async (req: any, res) => {
     try {
       const jobId = req.params.id;
@@ -83,7 +83,7 @@ export function registerNoShowRoutes(app: Express) {
     }
   });
 
-  // GET /api/jobs/:id/no-show-status — Check timer status
+  // GET /api/jobs/:id/no-show-status - Check timer status
   app.get("/api/jobs/:id/no-show-status", requireAuth, async (req: any, res) => {
     try {
       const jobId = req.params.id;
@@ -95,7 +95,7 @@ export function registerNoShowRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:id/start-no-show-timer — Admin/system endpoint to manually trigger timer
+  // POST /api/jobs/:id/start-no-show-timer - Admin/system endpoint to manually trigger timer
   app.post("/api/jobs/:id/start-no-show-timer", requireAuth, async (req: any, res) => {
     try {
       const jobId = req.params.id;

@@ -1,5 +1,5 @@
 /**
- * Content Pipeline — Video Discovery for DIY content automation
+ * Content Pipeline - Video Discovery for DIY content automation
  * Searches YouTube for trending DIY home repair videos by category
  */
 
@@ -32,7 +32,7 @@ const CATEGORY_SEARCH_TERMS: Record<string, string[]> = {
 
 /**
  * Search YouTube for trending DIY videos via the public search page.
- * This is a lightweight approach that doesn't require an API key —
+ * This is a lightweight approach that doesn't require an API key -
  * it uses YouTube's oEmbed endpoint to validate and enrich video data.
  */
 export async function findTrendingDIYVideos(category: string): Promise<DIYVideo[]> {
@@ -124,7 +124,7 @@ export function getVideoRefForTopic(topic: string): DIYVideo {
   const fakeId = Buffer.from(topic).toString('base64url').slice(0, 11);
 
   return {
-    title: `How to ${topic} — DIY Home Repair`,
+    title: `How to ${topic} - DIY Home Repair`,
     videoId: fakeId,
     thumbnailUrl: `https://img.youtube.com/vi/${fakeId}/hqdefault.jpg`,
     viewCountEstimate: 100000 + Math.floor(Math.random() * 500000),

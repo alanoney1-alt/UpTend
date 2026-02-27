@@ -65,7 +65,7 @@ export function getAuthUrl(businessId: string): string {
 }
 
 /**
- * Handle OAuth callback — exchange code for tokens
+ * Handle OAuth callback - exchange code for tokens
  */
 export async function handleCallback(
   code: string,
@@ -154,7 +154,7 @@ export async function refreshToken(businessId: string): Promise<boolean> {
 }
 
 /**
- * Disconnect QuickBooks — revoke tokens
+ * Disconnect QuickBooks - revoke tokens
  */
 export async function disconnect(businessId: string): Promise<boolean> {
   const tokens = tokenStore[businessId];

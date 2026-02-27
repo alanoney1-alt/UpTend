@@ -75,7 +75,7 @@ export function registerIntegrationRoutes(app: Express) {
 
   // ===== Unified endpoints =====
 
-  // GET /api/integrations/status — All integrations status for a business account
+  // GET /api/integrations/status - All integrations status for a business account
   app.get("/api/integrations/status", async (req, res) => {
     try {
       const businessAccountId = req.query.businessAccountId as string;
@@ -124,7 +124,7 @@ export function registerIntegrationRoutes(app: Express) {
     }
   });
 
-  // POST /api/integrations/sync-all — Trigger sync for all connected integrations
+  // POST /api/integrations/sync-all - Trigger sync for all connected integrations
   app.post("/api/integrations/sync-all", async (req, res) => {
     try {
       const { businessAccountId } = req.body;
@@ -136,7 +136,7 @@ export function registerIntegrationRoutes(app: Express) {
     }
   });
 
-  // GET /api/integrations/sync-logs — Recent sync logs
+  // GET /api/integrations/sync-logs - Recent sync logs
   app.get("/api/integrations/sync-logs", async (req, res) => {
     try {
       const businessAccountId = req.query.businessAccountId as string;
@@ -159,7 +159,7 @@ export function registerIntegrationRoutes(app: Express) {
     }
   });
 
-  // POST /api/integrations/disconnect — Disconnect an integration
+  // POST /api/integrations/disconnect - Disconnect an integration
   app.post("/api/integrations/disconnect", async (req, res) => {
     try {
       const { businessAccountId, platform } = req.body;
@@ -175,7 +175,7 @@ export function registerIntegrationRoutes(app: Express) {
     }
   });
 
-  // POST /api/integrations/settings — Update sync frequency/auto-sync
+  // POST /api/integrations/settings - Update sync frequency/auto-sync
   app.post("/api/integrations/settings", async (req, res) => {
     try {
       const { businessAccountId, platform, syncFrequency, autoSync } = req.body;

@@ -1,5 +1,5 @@
 /**
- * Municipal Data Service — Home Operating System
+ * Municipal Data Service - Home Operating System
  *
  * Orlando/Orange County FL municipal data: trash schedules, water restrictions,
  * utility providers, sprinkler recommendations, and trash reminders.
@@ -49,7 +49,7 @@ const ZIP_TRASH_SCHEDULES: Record<string, { trashDay: string; trashDays2: string
 const DEFAULT_SCHEDULE = { trashDay: "Monday", trashDays2: "Thursday", recyclingDay: "Monday", yardWasteDay: "Wednesday", provider: "Orange County Solid Waste" };
 
 /**
- * lookupTrashSchedule — resolve trash/recycling schedule for an address
+ * lookupTrashSchedule - resolve trash/recycling schedule for an address
  * Strategy: 1) Check DB  2) ZIP lookup table  3) Fallback needs customer input
  */
 export async function lookupTrashSchedule(
@@ -115,7 +115,7 @@ export async function lookupTrashSchedule(
 }
 
 /**
- * lookupWaterRestrictions — St. Johns River Water Management District rules
+ * lookupWaterRestrictions - St. Johns River Water Management District rules
  * Orange County / Orlando area watering restrictions
  */
 export function lookupWaterRestrictions(
@@ -130,13 +130,13 @@ export function lookupWaterRestrictions(
   addressBased: boolean;
   notes: string;
 } {
-  // St. Johns River Water Management District — year-round irrigation rules
+  // St. Johns River Water Management District - year-round irrigation rules
   const isEven = addressNumber ? addressNumber % 2 === 0 : null;
 
   if (county.toLowerCase().includes("orange") || county.toLowerCase().includes("orlando")) {
     const allowedDays = isEven !== null
       ? (isEven ? ["Thursday", "Sunday"] : ["Wednesday", "Saturday"])
-      : ["Check based on address number — even: Thu/Sun, odd: Wed/Sat"];
+      : ["Check based on address number - even: Thu/Sun, odd: Wed/Sat"];
 
     return {
       allowedDays,
@@ -145,7 +145,7 @@ export function lookupWaterRestrictions(
       source: "St. Johns River Water Management District",
       addressBased: true,
       notes: isEven !== null
-        ? `Your address is ${isEven ? "even" : "odd"} — you can water on ${allowedDays.join(" and ")}, before 10AM or after 4PM.`
+        ? `Your address is ${isEven ? "even" : "odd"} - you can water on ${allowedDays.join(" and ")}, before 10AM or after 4PM.`
         : "Provide your street number so George can tell you exactly which days you can water.",
     };
   }
@@ -162,7 +162,7 @@ export function lookupWaterRestrictions(
 }
 
 /**
- * lookupUtilityProviders — likely utility providers for an Orlando-area address
+ * lookupUtilityProviders - likely utility providers for an Orlando-area address
  */
 export function lookupUtilityProviders(
   address: string,
@@ -208,12 +208,12 @@ export function lookupUtilityProviders(
       { name: "AT&T Fiber", phone: "800-288-2020", website: "https://www.att.com/fiber" },
       { name: "T-Mobile Home Internet", phone: "844-275-9310", website: "https://www.t-mobile.com/home-internet" },
     ],
-    source: "UpTend municipal data — verified for Orange County FL",
+    source: "UpTend municipal data - verified for Orange County FL",
   };
 }
 
 /**
- * getSeasonalSprinklerRecommendation — FL-specific irrigation advice
+ * getSeasonalSprinklerRecommendation - FL-specific irrigation advice
  */
 export function getSeasonalSprinklerRecommendation(
   month: number,
@@ -229,13 +229,13 @@ export function getSeasonalSprinklerRecommendation(
   if (month >= 6 && month <= 9) {
     return {
       season: "Summer (Rainy Season)",
-      recommendation: "Reduce irrigation — afternoon thunderstorms provide most of your water needs",
+      recommendation: "Reduce irrigation - afternoon thunderstorms provide most of your water needs",
       minutesPerZone: 15,
       frequencyPerWeek: 1,
       tips: [
         "Rain sensor should skip watering after storms",
         "If it rained 1\"+ in the last 48h, skip your cycle",
-        "Watch for fungus — overwatering in summer causes brown patch",
+        "Watch for fungus - overwatering in summer causes brown patch",
         "Water early morning (before 10 AM) to reduce evaporation",
       ],
     };
@@ -243,12 +243,12 @@ export function getSeasonalSprinklerRecommendation(
   if (month >= 10 && month <= 11) {
     return {
       season: "Fall (Dry Transition)",
-      recommendation: "Moderate watering — rainfall decreasing, temps cooling",
+      recommendation: "Moderate watering - rainfall decreasing, temps cooling",
       minutesPerZone: 20,
       frequencyPerWeek: 2,
       tips: [
         "Good time to overseed with winter rye if you want a green lawn year-round",
-        "Reduce fertilizer — last application before winter",
+        "Reduce fertilizer - last application before winter",
         "Check sprinkler heads for clogs before dry season",
       ],
     };
@@ -256,25 +256,25 @@ export function getSeasonalSprinklerRecommendation(
   if (month >= 12 || month <= 2) {
     return {
       season: "Winter (Dry Season)",
-      recommendation: "Regular watering needed — this is FL's driest period",
+      recommendation: "Regular watering needed - this is FL's driest period",
       minutesPerZone: 25,
       frequencyPerWeek: 2,
       tips: [
         "Water early morning to prevent freeze damage on cold nights",
         "If freeze warning: run sprinklers overnight to protect plants (counterintuitive but works)",
-        "St. Augustine grass goes semi-dormant — still needs water",
-        "Watch for dry spots — adjust heads if needed",
+        "St. Augustine grass goes semi-dormant - still needs water",
+        "Watch for dry spots - adjust heads if needed",
       ],
     };
   }
   // Spring (March-May)
   return {
     season: "Spring (Pre-Rainy)",
-    recommendation: "Increase watering as temps rise — rainy season hasn't started yet",
+    recommendation: "Increase watering as temps rise - rainy season hasn't started yet",
     minutesPerZone: 25,
     frequencyPerWeek: 2,
     tips: [
-      "Best time to fertilize — apply slow-release 15-0-15 or similar",
+      "Best time to fertilize - apply slow-release 15-0-15 or similar",
       "Check irrigation system for winter damage",
       "Adjust sprinkler timers as daylight increases",
       "Pre-emergent herbicide now prevents summer weeds",
@@ -283,7 +283,7 @@ export function getSeasonalSprinklerRecommendation(
 }
 
 /**
- * generateTrashReminder — contextual trash day reminder for a customer
+ * generateTrashReminder - contextual trash day reminder for a customer
  */
 export async function generateTrashReminder(customerId: string): Promise<{
   message: string;
@@ -347,7 +347,7 @@ export async function generateTrashReminder(customerId: string): Promise<{
 }
 
 /**
- * storeTrashSchedule — persist a trash schedule for a customer
+ * storeTrashSchedule - persist a trash schedule for a customer
  */
 export async function storeTrashSchedule(
   customerId: string,
@@ -369,7 +369,7 @@ export async function storeTrashSchedule(
 }
 
 /**
- * storeUtilityProfile — persist utility profile for a customer
+ * storeUtilityProfile - persist utility profile for a customer
  */
 export async function storeUtilityProfile(
   customerId: string,
@@ -389,7 +389,7 @@ export async function storeUtilityProfile(
 }
 
 /**
- * autoPopulateHomeData — called on signup or after HOA scrape
+ * autoPopulateHomeData - called on signup or after HOA scrape
  * Looks up and stores trash schedule, utility providers, and water restrictions
  */
 export async function autoPopulateHomeData(

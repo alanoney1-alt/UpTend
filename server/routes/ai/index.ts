@@ -28,7 +28,7 @@ import createGuideRoutes from "./guide.routes";
 export function createAiRoutes(storage: DatabaseStorage) {
   const router = Router();
 
-  // Home Score endpoint — alias for /api/home-score with userId param support
+  // Home Score endpoint - alias for /api/home-score with userId param support
   router.get("/ai/home-score/:userId?", async (req, res) => {
     try {
       const userId = req.params.userId || (req.user as any)?.userId || (req.user as any)?.id;

@@ -45,17 +45,17 @@ export function calculatePriceMatch(serviceKey: string, claimedPrice: number): P
   let explanation: string;
 
   if (claimedPrice >= rate.rate) {
-    // They're already paying more — easy match
+    // They're already paying more - easy match
     matchedPrice = rate.rate;
     explanation = `Great news! Our standard rate of $${rate.rate}/${rate.frequency} is already lower than what you're paying.`;
   } else if (isWithin15) {
-    // Within 15% — match their price
+    // Within 15% - match their price
     matchedPrice = claimedPrice;
     explanation = `We can match your current price of $${claimedPrice}/${rate.frequency}! That's a great deal.`;
   } else {
-    // More than 15% below — floor at 15% discount
+    // More than 15% below - floor at 15% discount
     matchedPrice = Math.round(floor);
-    explanation = `Our best offer is $${Math.round(floor)}/${rate.frequency} — that's 15% below our standard rate of $${rate.rate}. We can't go lower, but you're still getting a great deal!`;
+    explanation = `Our best offer is $${Math.round(floor)}/${rate.frequency} - that's 15% below our standard rate of $${rate.rate}. We can't go lower, but you're still getting a great deal!`;
   }
 
   const discountPercent = Math.round(((rate.rate - matchedPrice) / rate.rate) * 100);

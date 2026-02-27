@@ -1,9 +1,9 @@
 /**
  * Smart Match / Blind Bidding API
  * 
- * POST /api/smart-match — get best pro match for a job
- * GET /api/smart-match/:matchId/alternatives — see all 3 matches
- * POST /api/smart-match/:matchId/book — book a matched pro
+ * POST /api/smart-match - get best pro match for a job
+ * GET /api/smart-match/:matchId/alternatives - see all 3 matches
+ * POST /api/smart-match/:matchId/book - book a matched pro
  */
 
 import type { Express, Request, Response } from "express";
@@ -14,7 +14,7 @@ import { serviceRequests } from "../../shared/schema";
 import { sql } from "drizzle-orm";
 
 export function registerSmartMatchRoutes(app: Express) {
-  // POST /api/smart-match — find best pro match
+  // POST /api/smart-match - find best pro match
   app.post("/api/smart-match", async (req: Request, res: Response) => {
     try {
       const { serviceType, address, scope, photos, description } = req.body;
@@ -67,7 +67,7 @@ export function registerSmartMatchRoutes(app: Express) {
     }
   });
 
-  // GET /api/smart-match/:matchId/alternatives — view all matches
+  // GET /api/smart-match/:matchId/alternatives - view all matches
   app.get("/api/smart-match/:matchId/alternatives", async (req: Request, res: Response) => {
     try {
       const { matchId } = req.params;
@@ -101,7 +101,7 @@ export function registerSmartMatchRoutes(app: Express) {
     }
   });
 
-  // POST /api/smart-match/:matchId/book — book a matched pro
+  // POST /api/smart-match/:matchId/book - book a matched pro
   app.post("/api/smart-match/:matchId/book", async (req: Request, res: Response) => {
     if (!req.isAuthenticated?.() || !req.user) {
       return res.status(401).json({ error: "Authentication required" });

@@ -18,7 +18,7 @@ export function registerPropertyIntelligenceRoutes(app: Express): void {
   app.use("/api/documents", documentsRoutes);
   app.use("/api/health-events", healthEventsRoutes);
 
-  // GET /api/warranty/lookup — lookup warranties by query params
+  // GET /api/warranty/lookup - lookup warranties by query params
   app.get("/api/warranty/lookup", async (req, res) => {
     try {
       const { propertyId, itemName } = req.query;

@@ -1,12 +1,12 @@
 /**
  * B2B Onboarding Routes
  *
- * POST /api/business/onboard           — Full onboarding flow
- * POST /api/business/onboard/parse-file — Parse property CSV or Excel (.xlsx/.xls)
- * POST /api/business/onboard/parse-csv — Parse property CSV (legacy alias)
- * GET  /api/business/onboard/csv-template — Download CSV template
- * GET  /api/business/onboard/excel-template — Download Excel (.xlsx) template
- * POST /api/business/onboard/validate-integration — Test PM software connection
+ * POST /api/business/onboard           - Full onboarding flow
+ * POST /api/business/onboard/parse-file - Parse property CSV or Excel (.xlsx/.xls)
+ * POST /api/business/onboard/parse-csv - Parse property CSV (legacy alias)
+ * GET  /api/business/onboard/csv-template - Download CSV template
+ * GET  /api/business/onboard/excel-template - Download Excel (.xlsx) template
+ * POST /api/business/onboard/validate-integration - Test PM software connection
  */
 
 import { Router, type Request, type Response } from "express";
@@ -125,7 +125,7 @@ function validatePropertyRows(rawRows: Record<string, string>[], headers: string
   return { rows, errors };
 }
 
-// Unified endpoint — accepts CSV, XLS, XLSX
+// Unified endpoint - accepts CSV, XLS, XLSX
 router.post("/onboard/parse-file", upload.single("file"), async (req: Request, res: Response) => {
   try {
     const file = req.file;
@@ -177,7 +177,7 @@ router.post("/onboard/validate-integration", async (req: Request, res: Response)
     const { platform, apiKey } = req.body;
     if (!platform || !apiKey) return res.status(400).json({ error: "Platform and API key required" });
 
-    // Validation — in production this would hit the actual APIs
+    // Validation - in production this would hit the actual APIs
     const supported = ["appfolio", "buildium", "yardi"];
     if (!supported.includes(platform)) {
       return res.status(400).json({ error: `Unsupported platform: ${platform}` });
@@ -311,7 +311,7 @@ router.post("/onboard", async (req: Request, res: Response) => {
           // Create team member record
           await store.createTeamMember({
             businessAccountId: account.id,
-            userId: user.id, // Placeholder — will be updated when they accept invite
+            userId: user.id, // Placeholder - will be updated when they accept invite
             role: member.role || "coordinator",
             invitedEmail: member.email,
             invitedName: member.name,
@@ -333,7 +333,7 @@ router.post("/onboard", async (req: Request, res: Response) => {
     let subscriptionId: string | null = null;
     if (isIndependent) {
       // No Stripe setup needed for free tier
-      console.log("[ONBOARD] Independent tier — skipping Stripe setup");
+      console.log("[ONBOARD] Independent tier - skipping Stripe setup");
     } else try {
       let stripeCustomerId = (user as any).stripeCustomerId;
       if (!stripeCustomerId) {
@@ -349,12 +349,12 @@ router.post("/onboard", async (req: Request, res: Response) => {
       // Log the subscription intent (actual Stripe price creation happens via admin/webhook)
       await logSubscriptionPayment({
         id: `onboard-${account.id}`,
-        amount: 0, // Trial period — $0
+        amount: 0, // Trial period - $0
         businessAccountId: account.id,
       });
     } catch (stripeErr: any) {
       console.error("[ONBOARD] Stripe setup error:", stripeErr.message);
-      // Non-fatal — account is still created
+      // Non-fatal - account is still created
     }
 
     // 7. Send welcome email to primary contact

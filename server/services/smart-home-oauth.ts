@@ -2,7 +2,7 @@
  * Smart Home OAuth Service
  *
  * Framework for connecting smart home platforms via OAuth.
- * Placeholder client IDs — actual API keys added later.
+ * Placeholder client IDs - actual API keys added later.
  */
 
 import { pool } from "../db";

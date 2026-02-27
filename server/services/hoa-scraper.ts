@@ -34,7 +34,7 @@ interface HOAData {
 async function fetchRealtyAPI(address: string, city: string, state: string, zip: string): Promise<Partial<HOAData> | null> {
   const apiKey = process.env.RAPIDAPI_KEY;
   if (!apiKey) {
-    console.warn("[HOA] RAPIDAPI_KEY not set — skipping Realty-in-US");
+    console.warn("[HOA] RAPIDAPI_KEY not set - skipping Realty-in-US");
     return null;
   }
 

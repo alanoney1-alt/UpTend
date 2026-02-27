@@ -1,5 +1,5 @@
 /**
- * Snap & Book — Photo to Booked Pro in 60 seconds
+ * Snap & Book - Photo to Booked Pro in 60 seconds
  * AI vision quotes with Price Protection Guarantee
  */
 
@@ -264,7 +264,7 @@ For valid home service images, return JSON:
           return res.json({
             success: false,
             rejected: true,
-            error: "George spotted a vehicle issue. Vehicle maintenance is coming soon — for now, try describing your home service need and George can help.",
+            error: "George spotted a vehicle issue. Vehicle maintenance is coming soon - for now, try describing your home service need and George can help.",
           });
         }
         return res.json({
@@ -396,7 +396,7 @@ router.post("/snap-quote/:id/book", async (req, res) => {
 
     // Pro notification with snap quote context
     try {
-      const notificationText = `New ${getServiceLabel(snapQuote.service_type)} job — photo quote attached. View details for scope and equipment list.`;
+      const notificationText = `New ${getServiceLabel(snapQuote.service_type)} job - photo quote attached. View details for scope and equipment list.`;
       await pool.query(
         `INSERT INTO notifications (id, user_id, type, title, message, data, created_at)
          VALUES ($1, $2, 'snap_book_job', $3, $4, $5, NOW())
@@ -498,7 +498,7 @@ router.get("/haulers/jobs/:jobId/snap-details", requireAuth, requireHauler, asyn
       const d = analysis.details;
       if (d.storyCount && d.storyCount > 1) whatToExpect.push(`Property is ${d.storyCount}-story`);
       if (d.volume) whatToExpect.push(`Volume estimate: ${d.volume}`);
-      if (d.heavyItems) whatToExpect.push("Heavy items present — bring appropriate equipment");
+      if (d.heavyItems) whatToExpect.push("Heavy items present - bring appropriate equipment");
       if (d.condition) whatToExpect.push(`Condition: ${d.condition}`);
       if (d.area) whatToExpect.push(`Area: ${d.area}`);
     }
@@ -587,7 +587,7 @@ router.post("/jobs/:jobId/arrival-photo", requireAuth, requireHauler, async (req
       arrivalPhotoUrl: photoUrl,
       scopeVerified: autoApproved,
       message: autoApproved
-        ? "Arrival photo saved. High-confidence quote — scope auto-verified. Ready to start."
+        ? "Arrival photo saved. High-confidence quote - scope auto-verified. Ready to start."
         : "Arrival photo saved. Awaiting scope verification before starting.",
     });
   } catch (error: any) {

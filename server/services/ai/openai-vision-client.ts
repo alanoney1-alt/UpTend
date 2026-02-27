@@ -10,7 +10,7 @@
  * - Quality assessment of pro work photos
  *
  * Claude remains the conversational AI (George chat, text generation).
- * OpenAI handles the "eyes" — image analysis where accuracy matters most.
+ * OpenAI handles the "eyes" - image analysis where accuracy matters most.
  */
 
 import OpenAI from "openai";
@@ -52,10 +52,10 @@ export async function analyzeImages(options: VisionAnalysisOptions): Promise<any
   } = options;
 
   if (!OPENAI_API_KEY) {
-    console.warn("[OpenAI Vision] No API key — returning mock response");
+    console.warn("[OpenAI Vision] No API key - returning mock response");
     return {
       _mock: true,
-      analysis: "Mock vision analysis — set OPENAI_API_KEY for real results",
+      analysis: "Mock vision analysis - set OPENAI_API_KEY for real results",
     };
   }
 
@@ -229,7 +229,7 @@ Return JSON:
   "notes": "any observations about condition, potential issues, etc."
 }
 
-Be especially precise with model numbers and serial numbers — every character matters for warranty lookups.`,
+Be especially precise with model numbers and serial numbers - every character matters for warranty lookups.`,
     systemPrompt: "You are an expert appliance technician and home inspector. Read model plates and labels with extreme precision. If you can't read a character clearly, indicate uncertainty.",
     jsonMode: true,
   });

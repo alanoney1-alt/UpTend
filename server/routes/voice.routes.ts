@@ -2,9 +2,9 @@
  * Voice AI Routes - George (Twilio Integration)
  *
  * Endpoints:
- * - POST /api/voice/incoming  — handles incoming call, greets with George's voice
- * - POST /api/voice/process   — receives speech transcription, generates AI response
- * - POST /api/voice/status    — call status callback
+ * - POST /api/voice/incoming  - handles incoming call, greets with George's voice
+ * - POST /api/voice/process   - receives speech transcription, generates AI response
+ * - POST /api/voice/status    - call status callback
  */
 
 import { Router, type Express } from "express";
@@ -137,7 +137,7 @@ export function registerVoiceRoutes(app: Express) {
         aiResponse = sentences.slice(0, 3).join(". ") + ".";
       }
 
-      // Check if AI couldn't handle it — offer to text
+      // Check if AI couldn't handle it - offer to text
       const cantHandle = /I('m| am) (not able|unable)|I can't|beyond my|I don't have access/i.test(aiResponse);
 
       const twiml = new VoiceResponse();

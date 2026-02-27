@@ -53,7 +53,7 @@ export function startNoShowTimer(jobId: string, proId: string, scheduledFor: str
  }, WARNING_20_MS);
  warningTimers.push(warn20);
 
- // 30-minute final — handle no-show
+ // 30-minute final - handle no-show
  const finalTimer = setTimeout(async () => {
  const timer = activeTimers.get(jobId);
  if (!timer || timer.checkedIn) return;
@@ -202,7 +202,7 @@ async function flagForAdminReview(jobId: string, proId: string, reason: string):
  broadcastToJob(jobId, {
  type: "no_show_admin_review",
  jobId,
- message: "Pro communicated a delay — under admin review",
+ message: "Pro communicated a delay - under admin review",
  });
  } catch (error) {
  console.error(`[NoShowProtection] Error flagging job ${jobId} for admin review:`, error);
@@ -250,7 +250,7 @@ async function handleNoShow(jobId: string, proId: string): Promise<void> {
  if (job.customerPhone) {
  await sendSms({
  to: job.customerPhone,
- message: `UpTend Update: Your pro was reassigned — a new pro is on the way. We apologize for the delay. Job #${jobId.slice(-6)}`,
+ message: `UpTend Update: Your pro was reassigned - a new pro is on the way. We apologize for the delay. Job #${jobId.slice(-6)}`,
  });
  }
  if (job.customerEmail) {
@@ -278,7 +278,7 @@ async function handleNoShow(jobId: string, proId: string): Promise<void> {
  </p>
  </div>
  `,
- text: `Your UpTend pro was reassigned — a new pro is on the way. We apologize for the delay. Job #${jobId.slice(-6)}`,
+ text: `Your UpTend pro was reassigned - a new pro is on the way. We apologize for the delay. Job #${jobId.slice(-6)}`,
  });
  }
 
@@ -286,7 +286,7 @@ async function handleNoShow(jobId: string, proId: string): Promise<void> {
  broadcastToJob(jobId, {
  type: "pro_no_show",
  jobId,
- message: "Pro did not show up — job is being reassigned",
+ message: "Pro did not show up - job is being reassigned",
  });
 
  // 6. Broadcast as urgent available job (global broadcast to all WS connections)

@@ -2,10 +2,10 @@
  * Home CRM / Home Profile Routes
  *
  * Endpoints:
- * - CRUD /api/home/profiles        — home profiles
- * - CRUD /api/home/service-history  — service history records
- * - CRUD /api/home/appliances       — home appliances
- * - GET  /api/home/dashboard        — aggregated home dashboard
+ * - CRUD /api/home/profiles        - home profiles
+ * - CRUD /api/home/service-history  - service history records
+ * - CRUD /api/home/appliances       - home appliances
+ * - GET  /api/home/dashboard        - aggregated home dashboard
  */
 
 import { Router, type Express } from "express";
@@ -321,7 +321,7 @@ export function registerHomeProfileRoutes(app: Express) {
     }
   });
 
-  // GET /api/home-profile/:userId — return user's home profiles (alt path for tests)
+  // GET /api/home-profile/:userId - return user's home profiles (alt path for tests)
   app.get("/api/home-profile/:userId", requireAuth, async (req, res) => {
     try {
       const profiles = await db.select().from(homeProfiles)

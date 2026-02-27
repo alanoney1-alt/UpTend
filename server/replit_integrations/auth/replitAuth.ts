@@ -206,7 +206,7 @@ export async function setupAuth(app: Express) {
     });
   });
 
-  // POST /api/logout — used by the SPA's useAuth hook
+  // POST /api/logout - used by the SPA's useAuth hook
   app.post("/api/logout", (req, res) => {
     req.logout((err) => {
       if (err) {

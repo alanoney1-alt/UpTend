@@ -291,7 +291,7 @@ function JobRequestCard({ request, onAccept, onDecline, canAcceptJobs = false, i
               +${((request.bountyAmount || 0) / 100).toFixed(0)}
             </Badge>
           )}
-          <div className="font-bold text-lg">${request.priceEstimate || "—"}</div>
+          <div className="font-bold text-lg">${request.priceEstimate || "-"}</div>
         </div>
       </div>
 
@@ -1530,7 +1530,7 @@ function GreenGuaranteeSection({ proId, rebateBalance }: { proId: string; rebate
                   <div>
                     <p className="font-medium text-sm">{claim.facilityName || "Disposal Receipt"}</p>
                     <p className="text-xs text-muted-foreground">
-                      {claim.submittedAt ? new Date(claim.submittedAt).toLocaleDateString() : "—"}
+                      {claim.submittedAt ? new Date(claim.submittedAt).toLocaleDateString() : "-"}
                     </p>
                   </div>
                   <div className="text-right">
@@ -1691,7 +1691,7 @@ function ReferralEarningsCard({ proId }: { proId: string }) {
                     <div>
                       <p className="font-medium text-sm capitalize">{referral.category}</p>
                       <p className="text-xs text-muted-foreground">
-                        Service: ${referral.referralAmount} • {referral.completedAt ? new Date(referral.completedAt).toLocaleDateString() : "—"}
+                        Service: ${referral.referralAmount} • {referral.completedAt ? new Date(referral.completedAt).toLocaleDateString() : "-"}
                       </p>
                     </div>
                     <div className="text-right">
@@ -2681,7 +2681,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
                 <div key={tx.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-testid={`row-transaction-${tx.id}`}>
                   <div>
                     <p className="font-medium">{serviceLabelsEarnings[tx.serviceType] || tx.serviceType}</p>
-                    <p className="text-sm text-muted-foreground">{tx.address ? `${tx.address} · ` : ""}{tx.date ? new Date(tx.date).toLocaleDateString() : "—"}</p>
+                    <p className="text-sm text-muted-foreground">{tx.address ? `${tx.address} · ` : ""}{tx.date ? new Date(tx.date).toLocaleDateString() : "-"}</p>
                   </div>
                   <span className="font-semibold text-status-online">+${(tx.amount / 100).toFixed(0)}</span>
                 </div>

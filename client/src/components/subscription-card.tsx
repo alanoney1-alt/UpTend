@@ -125,7 +125,7 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
         <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
           <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
             <Calendar className="w-4 h-4" />
-            <span>Next: {subscription.nextServiceDate || "—"}</span>
+            <span>Next: {subscription.nextServiceDate || "-"}</span>
           </div>
           <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
             <Clock className="w-4 h-4" />

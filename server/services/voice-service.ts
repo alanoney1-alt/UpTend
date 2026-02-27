@@ -89,7 +89,7 @@ export async function makeOutboundCall(
  statusCallbackMethod: 'POST',
  });
 
- console.log(`[Voice] Outbound call to ${to} — SID: ${call.sid}`);
+ console.log(`[Voice] Outbound call to ${to} - SID: ${call.sid}`);
  return { success: true, callSid: call.sid };
  } catch (error: any) {
  console.error('[Voice] Outbound call error:', error.message);

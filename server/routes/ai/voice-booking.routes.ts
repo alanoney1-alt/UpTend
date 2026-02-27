@@ -1,7 +1,7 @@
 /**
  * AI Voice Booking API Routes (#24)
  *
- * Phone-based AI agent — speech-to-text + pricing engine + TTS.
+ * Phone-based AI agent - speech-to-text + pricing engine + TTS.
  *
  * Endpoints:
  * - POST /api/ai/voice/inbound - Webhook: incoming call handler
@@ -23,7 +23,7 @@ Services: Junk Removal ($99+), Pressure Washing ($120+), Gutter Cleaning ($150+)
 Pool Cleaning (Basic $120/mo, Standard $165/mo, Full Service $210/mo, One-Time Deep Clean $249), Home Cleaning ($99+), 
 Landscaping (one-time mow from $49, recurring from $99/mo), Handyman ($75/hr+), 
 Moving Labor ($80+), Carpet Cleaning (from $50/room, $100 minimum), Light Demolition ($199+), 
-Home DNA Scan (free — both Standard and Aerial. Includes $25 credit toward next booking).
+Home DNA Scan (free - both Standard and Aerial. Includes $25 credit toward next booking).
 
 Your job: collect service type, address, preferred time, and any special needs.
 Be warm, concise, and conversational. Ask one question at a time.
@@ -47,7 +47,7 @@ export function createVoiceBookingRoutes(storage: DatabaseStorage) {
     try {
       const validated = inboundSchema.parse(req.body);
 
-      // Look up user by phone (search through users — future: add phone index)
+      // Look up user by phone (search through users - future: add phone index)
       // TODO: add getUserByPhone to storage
       const user = null as ({ id: string } | null);
 

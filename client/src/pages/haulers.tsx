@@ -140,7 +140,7 @@ function ReviewsDialog({
                     <p className="text-sm text-muted-foreground">{review.comment}</p>
                   )}
                   <p className="text-xs text-muted-foreground mt-2">
-                    {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "—"}
+                    {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "-"}
                   </p>
                 </div>
               ))}

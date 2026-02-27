@@ -5,11 +5,11 @@
  * Eligible services: Home Cleaning, Pool Cleaning, Landscaping, Carpet Cleaning, Gutter Cleaning, Pressure Washing
  *
  * Endpoints:
- * - POST /api/subscriptions/plans — create subscription
- * - GET /api/subscriptions/plans — list my subscriptions
- * - PATCH /api/subscriptions/plans/:id — update/pause/cancel
- * - POST /api/subscriptions/plans/:id/resume — resume paused subscription
- * - GET /api/subscriptions/plans/catalog — browse available plans with pricing
+ * - POST /api/subscriptions/plans - create subscription
+ * - GET /api/subscriptions/plans - list my subscriptions
+ * - PATCH /api/subscriptions/plans/:id - update/pause/cancel
+ * - POST /api/subscriptions/plans/:id/resume - resume paused subscription
+ * - GET /api/subscriptions/plans/catalog - browse available plans with pricing
  */
 
 import type { Express, Request, Response } from "express";
@@ -118,7 +118,7 @@ const updateSchema = z.object({
 });
 
 export function registerSubscriptionPlansRoutes(app: Express) {
-  // GET /api/subscriptions/plans/catalog — browse available plans
+  // GET /api/subscriptions/plans/catalog - browse available plans
   app.get("/api/subscriptions/plans/catalog", async (_req: Request, res: Response) => {
     try {
       const catalog = ELIGIBLE_SERVICES.map((serviceType) => ({
@@ -138,7 +138,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
     }
   });
 
-  // POST /api/subscriptions/plans — create subscription
+  // POST /api/subscriptions/plans - create subscription
   app.post("/api/subscriptions/plans", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
@@ -230,7 +230,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
     }
   });
 
-  // GET /api/subscriptions/plans — list my subscriptions
+  // GET /api/subscriptions/plans - list my subscriptions
   app.get("/api/subscriptions/plans", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
@@ -258,7 +258,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
     }
   });
 
-  // PATCH /api/subscriptions/plans/:id — update/pause/cancel
+  // PATCH /api/subscriptions/plans/:id - update/pause/cancel
   app.patch("/api/subscriptions/plans/:id", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });
@@ -306,7 +306,7 @@ export function registerSubscriptionPlansRoutes(app: Express) {
     }
   });
 
-  // POST /api/subscriptions/plans/:id/resume — resume paused subscription
+  // POST /api/subscriptions/plans/:id/resume - resume paused subscription
   app.post("/api/subscriptions/plans/:id/resume", requireAuth, async (req: Request, res: Response) => {
     try {
       if (!req.user) return res.status(401).json({ error: "Authentication required" });

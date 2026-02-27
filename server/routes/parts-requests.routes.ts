@@ -3,7 +3,7 @@ import { pool } from "../db";
 import { requireAuth } from "../middleware/auth";
 
 export function registerPartsRequestRoutes(app: Express) {
-  // POST /api/jobs/:jobId/parts-request — Pro flags "needs parts"
+  // POST /api/jobs/:jobId/parts-request - Pro flags "needs parts"
   app.post("/api/jobs/:jobId/parts-request", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
@@ -87,7 +87,7 @@ export function registerPartsRequestRoutes(app: Express) {
     }
   });
 
-  // GET /api/jobs/:jobId/parts-requests — List parts requests for a job
+  // GET /api/jobs/:jobId/parts-requests - List parts requests for a job
   app.get("/api/jobs/:jobId/parts-requests", requireAuth, async (req, res) => {
     try {
       const { jobId } = req.params;
@@ -102,7 +102,7 @@ export function registerPartsRequestRoutes(app: Express) {
     }
   });
 
-  // PUT /api/parts-requests/:id/approve — PM/customer approves
+  // PUT /api/parts-requests/:id/approve - PM/customer approves
   app.put("/api/parts-requests/:id/approve", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
@@ -158,7 +158,7 @@ export function registerPartsRequestRoutes(app: Express) {
     }
   });
 
-  // PUT /api/parts-requests/:id/deny — PM/customer denies
+  // PUT /api/parts-requests/:id/deny - PM/customer denies
   app.put("/api/parts-requests/:id/deny", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
@@ -192,7 +192,7 @@ export function registerPartsRequestRoutes(app: Express) {
     }
   });
 
-  // PUT /api/parts-requests/:id/sourced — Pro marks parts obtained
+  // PUT /api/parts-requests/:id/sourced - Pro marks parts obtained
   app.put("/api/parts-requests/:id/sourced", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
@@ -245,7 +245,7 @@ export function registerPartsRequestRoutes(app: Express) {
     }
   });
 
-  // PUT /api/parts-requests/:id/installed — Pro marks installed, job resumes
+  // PUT /api/parts-requests/:id/installed - Pro marks installed, job resumes
   app.put("/api/parts-requests/:id/installed", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
@@ -296,7 +296,7 @@ export function registerPartsRequestRoutes(app: Express) {
             const { sendEmail } = await import("../services/notifications");
             sendEmail({
               to: cust.email,
-              subject: "UpTend: Parts Installed — Job Resumed",
+              subject: "UpTend: Parts Installed - Job Resumed",
               html: `<p>Parts have been installed and your job has resumed.</p>`,
             }).catch((err: any) => console.error("[EMAIL] Parts installed notification failed:", err.message));
           }
@@ -319,7 +319,7 @@ export function registerPartsRequestRoutes(app: Express) {
     }
   });
 
-  // GET /api/business/parts-requests — All parts requests for a business
+  // GET /api/business/parts-requests - All parts requests for a business
   app.get("/api/business/parts-requests", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
@@ -346,7 +346,7 @@ export function registerPartsRequestRoutes(app: Express) {
     }
   });
 
-  // POST /api/business/preferred-suppliers — Add preferred supplier
+  // POST /api/business/preferred-suppliers - Add preferred supplier
   app.post("/api/business/preferred-suppliers", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
@@ -380,7 +380,7 @@ export function registerPartsRequestRoutes(app: Express) {
     }
   });
 
-  // GET /api/business/preferred-suppliers — List preferred suppliers
+  // GET /api/business/preferred-suppliers - List preferred suppliers
   app.get("/api/business/preferred-suppliers", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;

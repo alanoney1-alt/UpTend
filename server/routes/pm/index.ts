@@ -105,7 +105,7 @@ async function checkPropertyLimit(req: Request, res: Response): Promise<boolean>
       }
     }
   } catch (_e) {
-    // Non-fatal — allow through
+    // Non-fatal - allow through
   }
   return true;
 }

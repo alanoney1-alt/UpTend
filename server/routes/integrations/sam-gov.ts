@@ -45,7 +45,7 @@ function requireAdmin(req: Request, res: Response, next: Function) {
 }
 
 export function registerSamGovRoutes(app: Express) {
-  // Search opportunities — ADMIN ONLY
+  // Search opportunities - ADMIN ONLY
   app.post("/api/integrations/sam/search-opportunities", requireAdmin, async (req: Request, res: Response) => {
     try {
       const params = searchSchema.parse(req.body);

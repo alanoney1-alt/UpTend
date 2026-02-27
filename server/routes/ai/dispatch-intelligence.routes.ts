@@ -1,5 +1,5 @@
 /**
- * Dispatch Intelligence — AI-powered job matching and dispatch optimization
+ * Dispatch Intelligence - AI-powered job matching and dispatch optimization
  */
 
 import { Router } from "express";
@@ -33,7 +33,7 @@ function scoreDistance(miles: number): number {
 export function createDispatchIntelligenceRoutes(storage: DatabaseStorage) {
   const router = Router();
 
-  // POST /api/ai/dispatch/match — find best pros for a service request
+  // POST /api/ai/dispatch/match - find best pros for a service request
   const matchSchema = z.object({ serviceRequestId: z.string() });
 
   router.post("/dispatch/match", requireAuth, async (req, res) => {
@@ -116,7 +116,7 @@ export function createDispatchIntelligenceRoutes(storage: DatabaseStorage) {
     }
   });
 
-  // POST /api/ai/dispatch/optimize — optimize daily schedule for a pro
+  // POST /api/ai/dispatch/optimize - optimize daily schedule for a pro
   const optimizeSchema = z.object({
     proId: z.string(),
     date: z.string(),
@@ -202,7 +202,7 @@ export function createDispatchIntelligenceRoutes(storage: DatabaseStorage) {
     }
   });
 
-  // GET /api/ai/dispatch/availability — pro availability heatmap by zip
+  // GET /api/ai/dispatch/availability - pro availability heatmap by zip
   router.get("/dispatch/availability", requireAuth, async (req, res) => {
     try {
       const zip = (req.query.zip as string) || "";
@@ -244,7 +244,7 @@ export function createDispatchIntelligenceRoutes(storage: DatabaseStorage) {
     }
   });
 
-  // POST /api/ai/dispatch/auto-assign — admin only, auto-assign best pro
+  // POST /api/ai/dispatch/auto-assign - admin only, auto-assign best pro
   const autoAssignSchema = z.object({ serviceRequestId: z.string() });
 
   router.post("/dispatch/auto-assign", requireAuth, async (req, res) => {

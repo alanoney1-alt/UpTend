@@ -1,5 +1,5 @@
 /**
- * YouTube Tutorial Service — finds how-to videos from top DIY creators,
+ * YouTube Tutorial Service - finds how-to videos from top DIY creators,
  * generates DIY project plans, and suggests seasonal projects.
  * George knows the best creators and searches intelligently.
  */
@@ -15,7 +15,7 @@ interface CreatorProfile {
  channelId?: string;
  specialties: string[];
  style: string; // beginner-friendly, technical, entertaining, etc.
- trustScore: number; // 1-10 — how reliable their advice is
+ trustScore: number; // 1-10 - how reliable their advice is
 }
 
 const TOP_DIY_CREATORS: CreatorProfile[] = [
@@ -348,7 +348,7 @@ function getDangerWarning(task: string): string | null {
  const lower = task.toLowerCase();
  for (const d of DANGEROUS_TASKS) {
  if (lower.includes(d)) {
- return ` I found a tutorial, but honestly? This one's dangerous to DIY. Let me get you a pro quote — it's worth the safety.`;
+ return ` I found a tutorial, but honestly? This one's dangerous to DIY. Let me get you a pro quote - it's worth the safety.`;
  }
  }
  return null;
@@ -359,11 +359,11 @@ function getDangerWarning(task: string): string | null {
 export async function findTutorial(
  taskDescription: string,
  difficulty?: string,
- skipVideoIds?: string[] // For "next video" — skip previously shown
+ skipVideoIds?: string[] // For "next video" - skip previously shown
 ): Promise<object> {
  const dangerWarning = getDangerWarning(taskDescription);
 
- // Smart query building — uses creator knowledge + refined searches
+ // Smart query building - uses creator knowledge + refined searches
  const queries = buildSmartQueries(taskDescription);
  const relevantCreators = findRelevantCreators(taskDescription);
 
@@ -420,7 +420,7 @@ export async function findTutorial(
  ? `This video is from ${topPick.channel}${topPick.viewCount ? ` (${(topPick.viewCount / 1000).toFixed(0)}K views)` : ""}.`
  : "";
 
- // George's walkthrough digest — key info George can use to coach the customer
+ // George's walkthrough digest - key info George can use to coach the customer
  const georgeDigest = {
  task: taskDescription,
  topVideo: topPick ? { title: topPick.title, channel: topPick.channel, trusted: topPick.isTrustedCreator } : null,
@@ -441,9 +441,9 @@ export async function findTutorial(
  dangerWarning,
  creatorContext,
  message: dangerWarning
- ? `${dangerWarning}\n\nBut here are tutorials if you want to learn more:\n${ranked.slice(0, 3).map((v, i) => `${i + 1}. ${v.title} (${v.channel}) — ${v.url}`).join("\n")}`
+ ? `${dangerWarning}\n\nBut here are tutorials if you want to learn more:\n${ranked.slice(0, 3).map((v, i) => `${i + 1}. ${v.title} (${v.channel}) - ${v.url}`).join("\n")}`
  : topPick?.videoId
- ? ` **Best match:** "${topPick.title}" by **${topPick.channel}**${topPick.isTrustedCreator ? " " : ""}${topPick.duration ? ` (${topPick.duration})` : ""}\n${creatorContext}\n\n${alternatives.length > 0 ? `Don't like this one? I have ${alternatives.length} more options — just say "next video" ` : ""}`
+ ? ` **Best match:** "${topPick.title}" by **${topPick.channel}**${topPick.isTrustedCreator ? " " : ""}${topPick.duration ? ` (${topPick.duration})` : ""}\n${creatorContext}\n\n${alternatives.length > 0 ? `Don't like this one? I have ${alternatives.length} more options - just say "next video" ` : ""}`
  : ` Top tutorials for "${taskDescription}":\n${ranked.slice(0, 3).map((v, i) => `${i + 1}. **${v.title}** by ${v.channel}${v.duration ? ` (${v.duration})` : ""}\n ${v.url}`).join("\n")}`,
  };
 }
@@ -489,7 +489,7 @@ export async function getDIYProjectPlan(projectDescription: string): Promise<obj
  dangerWarning,
  message: dangerWarning
  ? `${dangerWarning}\n\nProject plan for "${projectDescription}":\n${plan.steps.map((s: string, i: number) => `${i + 1}. ${s}`).join("\n")}`
- : ` DIY Project Plan: "${projectDescription}"\n\n**Difficulty:** ${plan.difficulty}\n**Est. Time:** ${plan.estimatedTime}\n**Est. Cost:** $${plan.estimatedCost}\n\n**Steps:**\n${plan.steps.map((s: string, i: number) => `${i + 1}. ${s}`).join("\n")}\n\n**Tools Needed:** ${plan.toolsNeeded.join(", ")}\n\n**Products to Buy:**\n${plan.productsToBuy.map((p: any) => `• ${p.name} (~$${p.estimatedCost})`).join("\n")}\n\n **Tutorials:**\n${tutorials.map((v, i) => `${i + 1}. ${v.title} — ${v.url}`).join("\n")}${plan.safetyWarnings.length ? `\n\n **Safety:** ${plan.safetyWarnings.join("; ")}` : ""}`,
+ : ` DIY Project Plan: "${projectDescription}"\n\n**Difficulty:** ${plan.difficulty}\n**Est. Time:** ${plan.estimatedTime}\n**Est. Cost:** $${plan.estimatedCost}\n\n**Steps:**\n${plan.steps.map((s: string, i: number) => `${i + 1}. ${s}`).join("\n")}\n\n**Tools Needed:** ${plan.toolsNeeded.join(", ")}\n\n**Products to Buy:**\n${plan.productsToBuy.map((p: any) => `• ${p.name} (~$${p.estimatedCost})`).join("\n")}\n\n **Tutorials:**\n${tutorials.map((v, i) => `${i + 1}. ${v.title} - ${v.url}`).join("\n")}${plan.safetyWarnings.length ? `\n\n **Safety:** ${plan.safetyWarnings.join("; ")}` : ""}`,
  };
 }
 
@@ -553,7 +553,7 @@ function generateProjectTemplate(description: string): {
  { name: "Water heater flush kit", estimatedCost: 15 },
  { name: "Replacement anode rod (check yours)", estimatedCost: 15 },
  ],
- safetyWarnings: ["Water will be very hot — use caution", "Never turn on heater with empty tank"],
+ safetyWarnings: ["Water will be very hot - use caution", "Never turn on heater with empty tank"],
  };
  }
 
@@ -651,7 +651,7 @@ export async function getSeasonalDIYProjects(
  month,
  monthName: new Date(2024, month - 1, 1).toLocaleString("en-US", { month: "long" }),
  projects,
- message: ` **${new Date(2024, month - 1, 1).toLocaleString("en-US", { month: "long" })} DIY Projects:**\n${projects.map((p, i) => `${i + 1}. **${p.project}** (${p.difficulty}) — ~${p.estimatedCost}\n _${p.reason}_`).join("\n")}`,
+ message: ` **${new Date(2024, month - 1, 1).toLocaleString("en-US", { month: "long" })} DIY Projects:**\n${projects.map((p, i) => `${i + 1}. **${p.project}** (${p.difficulty}) - ~${p.estimatedCost}\n _${p.reason}_`).join("\n")}`,
  };
 }
 
@@ -697,7 +697,7 @@ export async function findEmergencyTutorial(emergencyType: string): Promise<obje
  })),
  warning: " Watch these for reference ONLY after ensuring safety. If in immediate danger, call 911 first.",
  message: ranked.length > 0
- ? ` **Emergency tutorials for ${emergencyType}:**\n${ranked.slice(0, 3).map((v, i) => `${i + 1}. ${v.title} — ${v.url}`).join("\n")}\n\n Safety first — only watch after securing the area.`
+ ? ` **Emergency tutorials for ${emergencyType}:**\n${ranked.slice(0, 3).map((v, i) => `${i + 1}. ${v.title} - ${v.url}`).join("\n")}\n\n Safety first - only watch after securing the area.`
  : `No emergency tutorials found. Call UpTend Emergency: (407) 338-3342`,
  };
 }

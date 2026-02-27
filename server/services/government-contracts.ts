@@ -18,7 +18,7 @@ import {
 } from "@shared/schema";
 
 // ==========================================
-// Audit Trail — immutable, logs everything
+// Audit Trail - immutable, logs everything
 // ==========================================
 async function logAudit(
   contractId: string,
@@ -151,13 +151,13 @@ export async function postWorkOrder(contractId: string, data: any, userId: strin
   if (!contract) throw new Error("Contract not found");
 
   // Davis-Bacon prevailing wage pre-check (INTERNAL ONLY)
-  // INTERNAL COMPLIANCE CALCULATION ONLY — not shown to contractors, not used for payment
+  // INTERNAL COMPLIANCE CALCULATION ONLY - not shown to contractors, not used for payment
   // We check if the budget amount, when back-calculated against estimated scope,
   // would satisfy prevailing wage requirements. This happens BEFORE pros see the work order.
   let davisBaconWarning: string | null = null;
   if (contract.prevailingWageDetermination && data.budgetAmount && data.estimatedDaysForCheck) {
     // Back-calculate: budget ÷ estimated days ÷ 8 = implied hourly equivalent
-    // INTERNAL COMPLIANCE CALCULATION ONLY — not shown to contractors, not used for payment
+    // INTERNAL COMPLIANCE CALCULATION ONLY - not shown to contractors, not used for payment
     const impliedDailyRate = data.budgetAmount / data.estimatedDaysForCheck;
     const impliedHourlyEquivalent = impliedDailyRate / 8;
 
@@ -192,7 +192,7 @@ export async function getWorkOrdersByContract(contractId: string) {
 }
 
 export async function getAvailableWorkOrders(proId: string) {
-  // Get all posted work orders — in production, filter by pro's certs and location
+  // Get all posted work orders - in production, filter by pro's certs and location
   return db.select().from(contractWorkOrders)
     .where(eq(contractWorkOrders.status, "posted"))
     .orderBy(desc(contractWorkOrders.postedAt));
@@ -347,7 +347,7 @@ export async function approveWorkLog(logId: string, userId: string) {
 }
 
 // ==========================================
-// Prevailing Wage — INTERNAL reference data only
+// Prevailing Wage - INTERNAL reference data only
 // Pros never see this. Used only for Davis-Bacon compliance checks
 // and WH-347 government report generation.
 // ==========================================
@@ -375,7 +375,7 @@ export async function getPrevailingWageRatesByDecision(wageDecisionNumber: strin
 // ==========================================
 // WH-347 Compliance Report Generation
 // ==========================================
-// INTERNAL COMPLIANCE CALCULATION ONLY — not shown to contractors, not used for payment.
+// INTERNAL COMPLIANCE CALCULATION ONLY - not shown to contractors, not used for payment.
 // "Certified Payroll" is the government's term for DOL form WH-347.
 // We are NOT running payroll. We compile contractor work order completions and work logs
 // into the government-mandated compliance report format. All workers are
@@ -430,7 +430,7 @@ export async function generateWeeklyPayroll(contractId: string, weekEndingDate: 
   let totalNet = 0;
 
   for (const [proId, logs] of byPro) {
-    // INTERNAL COMPLIANCE CALCULATION ONLY — not shown to contractors, not used for payment
+    // INTERNAL COMPLIANCE CALCULATION ONLY - not shown to contractors, not used for payment
     // Back-calculate hourly equivalents from flat-rate quotes for WH-347 form fields
     const daysByDayOfWeek = [0, 0, 0, 0, 0, 0, 0]; // Sun-Sat: count of days worked
     for (const log of logs) {
@@ -443,7 +443,7 @@ export async function generateWeeklyPayroll(contractId: string, weekEndingDate: 
     const proWorkOrders = workOrders.filter(wo => wo.assignedProId === proId && (wo.status === "completed" || wo.status === "verified" || wo.status === "in_progress"));
     const totalFlatRate = proWorkOrders.reduce((sum, wo) => sum + (wo.acceptedQuoteAmount || 0), 0);
 
-    // INTERNAL COMPLIANCE CALCULATION ONLY — not shown to contractors, not used for payment
+    // INTERNAL COMPLIANCE CALCULATION ONLY - not shown to contractors, not used for payment
     // Back-calculate: flat quote ÷ total estimated days on contract = daily equivalent
     // Then ÷ 8 for hourly equivalent (government reporting standard 8-hour day)
     const totalEstimatedDays = proWorkOrders.reduce((sum, wo) => {
@@ -453,11 +453,11 @@ export async function generateWeeklyPayroll(contractId: string, weekEndingDate: 
     }, 0) || 1;
 
     const dailyEquivalent = totalFlatRate / totalEstimatedDays;
-    // INTERNAL COMPLIANCE CALCULATION ONLY — government reporting requirement, not compensation structure
+    // INTERNAL COMPLIANCE CALCULATION ONLY - government reporting requirement, not compensation structure
     const hourlyEquivalent = Math.round(dailyEquivalent / 8);
     const totalHoursEquivalent = totalDaysWorked * 8; // Standard 8-hour day for WH-347
 
-    // INTERNAL COMPLIANCE CALCULATION ONLY — not shown to contractors, not used for payment
+    // INTERNAL COMPLIANCE CALCULATION ONLY - not shown to contractors, not used for payment
     const grossPay = Math.round(totalHoursEquivalent * hourlyEquivalent);
     const fedTax = Math.round(grossPay * 0.22);
     const stateTax = Math.round(grossPay * 0.05);
@@ -466,13 +466,13 @@ export async function generateWeeklyPayroll(contractId: string, weekEndingDate: 
     const deductions = fedTax + stateTax + ss + med;
     const netPay = grossPay - deductions;
 
-    // INTERNAL COMPLIANCE CALCULATION ONLY — hourly fields required by WH-347 form spec
+    // INTERNAL COMPLIANCE CALCULATION ONLY - hourly fields required by WH-347 form spec
     await db.insert(certifiedPayrollEntries).values({
       payrollReportId: report.id,
       proId,
       proName: proId, // In production, lookup actual name
       jobClassification: proWorkOrders[0]?.serviceType || "General",
-      // INTERNAL COMPLIANCE CALCULATION ONLY — government reporting requirement, not compensation structure
+      // INTERNAL COMPLIANCE CALCULATION ONLY - government reporting requirement, not compensation structure
       hoursSunday: daysByDayOfWeek[0] * 8,
       hoursMonday: daysByDayOfWeek[1] * 8,
       hoursTuesday: daysByDayOfWeek[2] * 8,
@@ -481,7 +481,7 @@ export async function generateWeeklyPayroll(contractId: string, weekEndingDate: 
       hoursFriday: daysByDayOfWeek[5] * 8,
       hoursSaturday: daysByDayOfWeek[6] * 8,
       totalHours: totalHoursEquivalent,
-      // INTERNAL COMPLIANCE CALCULATION ONLY — back-calculated from flat-rate quote, not actual compensation rate
+      // INTERNAL COMPLIANCE CALCULATION ONLY - back-calculated from flat-rate quote, not actual compensation rate
       hourlyRate: hourlyEquivalent,
       grossPay,
       fringeBenefits: 0,
@@ -529,7 +529,7 @@ export async function generateWeeklyPayroll(contractId: string, weekEndingDate: 
   return { ...report, totalGrossWages: totalGross, totalFringeBenefits: totalFringe, totalDeductions, totalNetPay: totalNet };
 }
 
-// INTERNAL COMPLIANCE CALCULATION ONLY — not shown to contractors, not used for payment
+// INTERNAL COMPLIANCE CALCULATION ONLY - not shown to contractors, not used for payment
 export async function formatWH347(payrollReportId: string) {
   const [report] = await db.select().from(certifiedPayrollReports).where(eq(certifiedPayrollReports.id, payrollReportId));
   if (!report) throw new Error("Payroll report not found");
@@ -541,7 +541,7 @@ export async function formatWH347(payrollReportId: string) {
 
   return {
     form: "WH-347",
-    // INTERNAL COMPLIANCE CALCULATION ONLY — all hourly figures are back-calculated
+    // INTERNAL COMPLIANCE CALCULATION ONLY - all hourly figures are back-calculated
     // from flat-rate work order quotes. Contractors are paid flat-rate per job.
     header: {
       contractorOrSubcontractor: "UpTend LLC",
@@ -551,9 +551,9 @@ export async function formatWH347(payrollReportId: string) {
       projectAndLocation: contract?.performanceLocation || "",
       projectOrContractNo: contract?.contractNumber || "",
     },
-    // Note: "employees" is the DOL WH-347 form's field name — does NOT reflect employment relationship.
+    // Note: "employees" is the DOL WH-347 form's field name - does NOT reflect employment relationship.
     // All workers are independent contractors per ICA. This field name matches the government form spec.
-    // INTERNAL COMPLIANCE CALCULATION ONLY — hourly rates are back-calculated from flat-rate quotes.
+    // INTERNAL COMPLIANCE CALCULATION ONLY - hourly rates are back-calculated from flat-rate quotes.
     employees: entries.map((e, i) => ({
       lineNumber: i + 1,
       name: e.proName,
@@ -570,7 +570,7 @@ export async function formatWH347(payrollReportId: string) {
         sunday: e.hoursSunday,
         total: e.totalHours,
       },
-      // INTERNAL COMPLIANCE CALCULATION ONLY — back-calculated from flat-rate quote, not actual pay rate
+      // INTERNAL COMPLIANCE CALCULATION ONLY - back-calculated from flat-rate quote, not actual pay rate
       rateOfPay: e.hourlyRate,
       grossEarned: e.grossPay,
       deductions: {

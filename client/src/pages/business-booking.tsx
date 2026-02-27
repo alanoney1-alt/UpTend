@@ -689,7 +689,7 @@ export default function BusinessBookingPage() {
                   <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
                     <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Schedule</div>
                     <div className="font-medium">
-                      {scheduledDate ? new Date(scheduledDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "—"}
+                      {scheduledDate ? new Date(scheduledDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "-"}
                       {scheduledTime && ` at ${scheduledTime}`}
                     </div>
                     {recurringFrequency && (

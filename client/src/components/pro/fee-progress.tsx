@@ -190,7 +190,7 @@ export function FeeProgressWidget() {
       {/* LLC info */}
       {isLlc && (
         <p className="text-xs text-muted-foreground mt-2 text-center">
-          LLC + Insurance verified. Flat 15% platform fee — you keep 85%
+          LLC + Insurance verified. Flat 15% platform fee - you keep 85%
         </p>
       )}
     </Card>

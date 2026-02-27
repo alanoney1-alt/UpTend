@@ -271,7 +271,7 @@ export function lookupWarranty(
     };
   }
 
-  // No mfg date — return warranty info but flag as unknown
+  // No mfg date - return warranty info but flag as unknown
   const periods = entry?.warranties || CATEGORY_DEFAULTS[normalizedCat] || [{ component: "parts", years: 1 }];
 
   return {

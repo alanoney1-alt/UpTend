@@ -20,7 +20,7 @@ const recommendSchema = z.object({
 });
 
 export function registerNeighborhoodRoutes(app: Express) {
-  // GET /api/neighborhoods/mine — find neighborhood by user zip
+  // GET /api/neighborhoods/mine - find neighborhood by user zip
   app.get("/api/neighborhoods/mine", requireAuth, requireCustomer, async (req: any, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -96,7 +96,7 @@ export function registerNeighborhoodRoutes(app: Express) {
     }
   });
 
-  // GET /api/neighborhoods/:id/feed — recommendations + activity
+  // GET /api/neighborhoods/:id/feed - recommendations + activity
   app.get("/api/neighborhoods/:id/feed", requireAuth, async (req: any, res) => {
     try {
       const { id } = req.params;
@@ -182,7 +182,7 @@ export function registerNeighborhoodRoutes(app: Express) {
     }
   });
 
-  // GET /api/neighborhoods/:id/group-discount — check group discount
+  // GET /api/neighborhoods/:id/group-discount - check group discount
   app.get("/api/neighborhoods/:id/group-discount", requireAuth, async (req: any, res) => {
     try {
       const { id } = req.params;

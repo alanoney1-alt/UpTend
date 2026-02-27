@@ -79,7 +79,7 @@ export async function getWeatherBrief(zip: string): Promise<WeatherSummary> {
 
  const month = new Date().getMonth() + 1;
  if (month >= 6 && month <= 11) {
- alerts.push("Hurricane season active — June 1 through November 30");
+ alerts.push("Hurricane season active - June 1 through November 30");
  }
 
  const forecast3day = (weather || []).slice(0, 3).map((day: any, i: number) => {
@@ -116,7 +116,7 @@ export async function getWeatherBrief(zip: string): Promise<WeatherSummary> {
  windSpeed: 9,
  uvIndex: isHot ? 8 : 4,
  precipChance: isHot ? 40 : 10,
- alerts: month >= 6 && month <= 11 ? ["Hurricane season active — June 1 through November 30"] : [],
+ alerts: month >= 6 && month <= 11 ? ["Hurricane season active - June 1 through November 30"] : [],
  forecast3day: [
  { day: "Today", high: isHot ? 91 : 74, low: isHot ? 75 : 58, conditions: isHot ? "Partly Cloudy" : "Sunny" },
  { day: "Tomorrow", high: isHot ? 90 : 73, low: isHot ? 74 : 57, conditions: isHot ? "Chance of storms" : "Mostly Sunny" },
@@ -132,67 +132,67 @@ export async function getWeatherBrief(zip: string): Promise<WeatherSummary> {
 
 const DAILY_TIPS: Record<string, string[]> = {
  energy: [
- "Set your ceiling fans to counterclockwise in summer — saves ~10% on AC bills",
+ "Set your ceiling fans to counterclockwise in summer - saves ~10% on AC bills",
  "Close blinds and curtains during peak sun hours (10 AM–4 PM) to cut cooling costs",
- "Clean AC air filters every 30 days in summer — a dirty filter makes your AC work 15% harder",
- "Set your thermostat to 78°F when home, 82°F when away — ideal for Orlando summers",
- "LED bulbs use 75% less energy than incandescent — a quick swap pays off in months",
+ "Clean AC air filters every 30 days in summer - a dirty filter makes your AC work 15% harder",
+ "Set your thermostat to 78°F when home, 82°F when away - ideal for Orlando summers",
+ "LED bulbs use 75% less energy than incandescent - a quick swap pays off in months",
  ],
  pest: [
- "Pest control tip: Seal gaps around doors and windows with weatherstripping — keeps bugs AND humidity out",
+ "Pest control tip: Seal gaps around doors and windows with weatherstripping - keeps bugs AND humidity out",
  "Florida needs quarterly pest control. Skipping a treatment lets colonies rebuild fast.",
- "Standing water anywhere on your property is a mosquito breeding site — check after every rain",
- "Dryer vents and AC drain lines are common entry points for roaches — seal and inspect annually",
+ "Standing water anywhere on your property is a mosquito breeding site - check after every rain",
+ "Dryer vents and AC drain lines are common entry points for roaches - seal and inspect annually",
  "Ants follow water trails. Fix any leaking pipes or faucets to eliminate one of their top attractants",
  ],
  storm: [
- "Hurricane season runs June 1–November 30. Clean gutters now — clogged gutters flood foundations",
+ "Hurricane season runs June 1–November 30. Clean gutters now - clogged gutters flood foundations",
  "Take photos of every room before storm season for insurance documentation. Free and could save thousands.",
  "Keep 3 days of water (1 gallon/person/day) stored before any tropical storm warning",
- "Trim overhanging branches now — they become projectiles in 50+ mph winds",
+ "Trim overhanging branches now - they become projectiles in 50+ mph winds",
  "Test your generator before hurricane season, not during. Fuel stabilizer extends storage life.",
  ],
  diy: [
- "A running toilet can waste 200 gallons/day. Check for a flapper leak: put food coloring in the tank — if it appears in the bowl, it's leaking",
- "Drain 1–2 gallons from your water heater every 6 months to flush sediment — extends life 3–5 years",
- "Caulk around tubs, showers, and sinks annually. Mold starts in gaps — prevention is minutes, repair is hundreds",
+ "A running toilet can waste 200 gallons/day. Check for a flapper leak: put food coloring in the tank - if it appears in the bowl, it's leaking",
+ "Drain 1–2 gallons from your water heater every 6 months to flush sediment - extends life 3–5 years",
+ "Caulk around tubs, showers, and sinks annually. Mold starts in gaps - prevention is minutes, repair is hundreds",
  "Reset your GFCI outlets (the ones with test/reset buttons near water) monthly to make sure they're working",
- "Clean your refrigerator coils once a year — dirty coils make it work 30% harder",
+ "Clean your refrigerator coils once a year - dirty coils make it work 30% harder",
  ],
  seasonal: [
- "Spring cleaning tip: Pressure wash before the rainy season starts — algae sets in fast once humidity rises",
+ "Spring cleaning tip: Pressure wash before the rainy season starts - algae sets in fast once humidity rises",
  "Pre-hurricane season checklist: gutters, tree trimming, roof inspection, and exterior photos",
  "Post-storm: walk your roof line visually (never climb without pro equipment) before filing any claim",
- "Fall is the best time to seal your driveway — cooler temps help the sealer cure properly",
- "Pool season ends? Lower water level slightly, balance chemicals, and run the pump less — saves on electricity",
+ "Fall is the best time to seal your driveway - cooler temps help the sealer cure properly",
+ "Pool season ends? Lower water level slightly, balance chemicals, and run the pump less - saves on electricity",
  ],
  florida: [
- "Florida tip: Set your ceiling fans to counterclockwise in summer — saves ~10% on AC",
- "Florida homes need exterior paint touched up every 5–7 years — UV and humidity degrade it fast",
+ "Florida tip: Set your ceiling fans to counterclockwise in summer - saves ~10% on AC",
+ "Florida homes need exterior paint touched up every 5–7 years - UV and humidity degrade it fast",
  "Your water heater works harder in Florida's hard water. Flush it annually to extend its life 3–5 years",
  "Mold can grow on exterior surfaces within 48 hours of moisture. Annual pressure washing prevents it",
- "Florida's sandy soil causes settling — inspect your home's foundation perimeter yearly for cracks",
+ "Florida's sandy soil causes settling - inspect your home's foundation perimeter yearly for cracks",
  ],
  pool: [
  "Pool tip: Run your pump 8–10 hours/day in summer. Over-running wastes electricity; under-running causes algae",
- "Shock your pool after every heavy rain — rainfall dilutes chemicals and introduces contaminants",
- "Brush pool walls weekly to prevent algae from taking hold — takes 5 minutes and saves a full algae treatment",
+ "Shock your pool after every heavy rain - rainfall dilutes chemicals and introduces contaminants",
+ "Brush pool walls weekly to prevent algae from taking hold - takes 5 minutes and saves a full algae treatment",
  "Test pool water weekly in summer, bi-weekly in cooler months. pH should stay 7.2–7.6",
  "A pool cover can reduce evaporation by 95% and cut chemical usage by 35–60%",
  ],
  lawn: [
- "Water your lawn early morning (5–8 AM) — afternoon watering evaporates before soaking in; evening causes fungus",
- "Mow at 3–4 inches height in Florida — taller grass shades roots and needs less water",
- "Fertilize St. Augustine grass March, June, and October — the three key feeding windows for Orlando lawns",
+ "Water your lawn early morning (5–8 AM) - afternoon watering evaporates before soaking in; evening causes fungus",
+ "Mow at 3–4 inches height in Florida - taller grass shades roots and needs less water",
+ "Fertilize St. Augustine grass March, June, and October - the three key feeding windows for Orlando lawns",
  "Over-watering is the #1 lawn killer in Florida. Check soil moisture 2 inches deep before watering",
- "Edge your lawn every 2 weeks — overgrown edges let grass invade flower beds and walkways",
+ "Edge your lawn every 2 weeks - overgrown edges let grass invade flower beds and walkways",
  ],
  appliance: [
- "Clean your dryer lint trap after every load — lint buildup causes 15,000 house fires annually",
- "Run your dishwasher on 'eco' mode when not in a hurry — uses 20% less water and energy",
- "Deep clean your oven once a year — built-up grease causes uneven heating and can smoke heavily",
- "Refrigerator door seals (gaskets) should be replaced if you feel cold air leaking — costs $20 and cuts energy use significantly",
- "Run washing machine on cold water when possible — 90% of washer energy goes to heating water",
+ "Clean your dryer lint trap after every load - lint buildup causes 15,000 house fires annually",
+ "Run your dishwasher on 'eco' mode when not in a hurry - uses 20% less water and energy",
+ "Deep clean your oven once a year - built-up grease causes uneven heating and can smoke heavily",
+ "Refrigerator door seals (gaskets) should be replaced if you feel cold air leaking - costs $20 and cuts energy use significantly",
+ "Run washing machine on cold water when possible - 90% of washer energy goes to heating water",
  ],
 };
 
@@ -247,13 +247,13 @@ function getTrashSchedule(zip: string): {
  // Most of Lake Nona / Orange County: trash Mon & Thu, recycling Mon
  // Adjust based on zip if known
  const trashDays: Record<string, number[]> = {
- "32827": [1, 4], // Mon, Thu — Lake Nona
- "32832": [1, 4], // Mon, Thu — Lake Nona area
- "32824": [2, 5], // Tue, Fri — some areas
+ "32827": [1, 4], // Mon, Thu - Lake Nona
+ "32832": [1, 4], // Mon, Thu - Lake Nona area
+ "32824": [2, 5], // Tue, Fri - some areas
  "32836": [2, 5], // Dr. Phillips
  "32819": [1, 4], // Sand Lake
  "32789": [1, 4], // Winter Park
- "32765": [3, 6], // Oviedo — Wed, Sat
+ "32765": [3, 6], // Oviedo - Wed, Sat
  };
  const recyclingWeekdays: Record<string, number> = {
  "32827": 1, "32832": 1, "32824": 2, "32836": 2,
@@ -329,18 +329,18 @@ export function getSeasonalCountdown(): {
  }
  }
 
- // Readiness score based on proximity (mock — real would check completed services)
+ // Readiness score based on proximity (mock - real would check completed services)
  const readinessScore = closestDays < 30 ? 6 : closestDays < 60 ? 8 : 9;
  const readinessNote = readinessScore < 7
  ? "A few items need attention before the season"
  : readinessScore < 9
- ? "Mostly ready — a couple services would give you full coverage"
- : "Well prepared — keep up the maintenance!";
+ ? "Mostly ready - a couple services would give you full coverage"
+ : "Well prepared - keep up the maintenance!";
 
  const tip = closestEvent.name === "Hurricane Season"
  ? `${closestDays} days until hurricane season. Top prep: clean gutters, trim trees, document your home.`
  : closestEvent.name === "Spring Cleaning Season"
- ? `Spring is ${closestDays} days away — best time to book pressure washing before it fills up.`
+ ? `Spring is ${closestDays} days away - best time to book pressure washing before it fills up.`
  : `${closestEvent.name} is ${closestDays} days away.`;
 
  return {
@@ -441,22 +441,22 @@ export async function buildMorningBriefing(userId: string, storage?: any): Promi
  // Loyalty tier
  const tier = lifetimeSpend >= 5000 ? "Platinum" : lifetimeSpend >= 2000 ? "Gold" : lifetimeSpend >= 500 ? "Silver" : "Bronze";
  const tierMessages: Record<string, string> = {
- Bronze: "You're Bronze — book 3 more services to reach Silver and unlock priority scheduling",
- Silver: "You're Silver — $" + Math.max(0, 2000 - lifetimeSpend) + " more to reach Gold and get 5% off everything",
- Gold: "You're Gold — enjoy 5% off all services! $" + Math.max(0, 5000 - lifetimeSpend) + " to Platinum",
- Platinum: "You're Platinum — enjoy 10% off everything and a free annual home scan!",
+ Bronze: "You're Bronze - book 3 more services to reach Silver and unlock priority scheduling",
+ Silver: "You're Silver - $" + Math.max(0, 2000 - lifetimeSpend) + " more to reach Gold and get 5% off everything",
+ Gold: "You're Gold - enjoy 5% off all services! $" + Math.max(0, 5000 - lifetimeSpend) + " to Platinum",
+ Platinum: "You're Platinum - enjoy 10% off everything and a free annual home scan!",
  };
  const loyaltyUpdate = tierMessages[tier];
 
- // Neighborhood buzz (static for now — would pull from getNeighborhoodActivity)
+ // Neighborhood buzz (static for now - would pull from getNeighborhoodActivity)
  const buzzByMonth: Record<number, string> = {
- 3: "Neighbors are booking spring pressure washing — 15+ homes in your area this week",
- 4: "Pool cleaning season starting — 20+ pool service bookings nearby",
- 5: "Pre-hurricane prep underway — gutter cleaning trending in your neighborhood",
- 6: "Storm season is here — neighbors are getting gutters and trees done fast",
- 9: "Post-storm cleanups trending — junk removal and pressure washing in high demand nearby",
- 11: "Holiday prep season — home cleaning and garage cleanouts very popular right now",
- 12: "Year-end cleanouts — garage and junk removal trending this week",
+ 3: "Neighbors are booking spring pressure washing - 15+ homes in your area this week",
+ 4: "Pool cleaning season starting - 20+ pool service bookings nearby",
+ 5: "Pre-hurricane prep underway - gutter cleaning trending in your neighborhood",
+ 6: "Storm season is here - neighbors are getting gutters and trees done fast",
+ 9: "Post-storm cleanups trending - junk removal and pressure washing in high demand nearby",
+ 11: "Holiday prep season - home cleaning and garage cleanouts very popular right now",
+ 12: "Year-end cleanouts - garage and junk removal trending this week",
  };
  const neighborhoodBuzz = buzzByMonth[month] || "Home maintenance activity is steady in your neighborhood this week";
 
@@ -469,11 +469,11 @@ export async function buildMorningBriefing(userId: string, storage?: any): Promi
  // Energy report (simple summary)
  const energyReport: EnergyReport = {
  note: weather.temp > 85
- ? `It's ${weather.temp}°F — AC is working hard today`
- : `Nice ${weather.temp}°F day — good chance to run fans instead of AC`,
+ ? `It's ${weather.temp}°F - AC is working hard today`
+ : `Nice ${weather.temp}°F day - good chance to run fans instead of AC`,
  tip: weather.humidity > 70
- ? "High humidity today — your AC is working double duty. Check that your filter is clean."
- : "Lower humidity means easier cooling today — a good day to air out the house.",
+ ? "High humidity today - your AC is working double duty. Check that your filter is clean."
+ : "Lower humidity means easier cooling today - a good day to air out the house.",
  };
 
  return {

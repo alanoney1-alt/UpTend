@@ -104,15 +104,15 @@ function calculateValueScore(
   // Rating score (0-100, 30% weight)
   const ratingScore = (rating / 5) * 100;
 
-  // Reliability score (0-100, 20% weight) — proxy from rating + verified status
+  // Reliability score (0-100, 20% weight) - proxy from rating + verified status
   const reliabilityScore = Math.min(100, (rating / 5) * 80 + (verified ? 20 : 0));
 
-  // Price-to-value (0-100, 20% weight) — better value = higher score
+  // Price-to-value (0-100, 20% weight) - better value = higher score
   // A pro priced at or below average with high quality gets high score
   const priceRatio = avgPrice > 0 ? price / avgPrice : 1;
   const priceValueScore = Math.max(0, Math.min(100, (2 - priceRatio) * 50 + (ratingScore * 0.5)));
 
-  // Proximity score (0-100, 15% weight) — simulated (would use geocoding)
+  // Proximity score (0-100, 15% weight) - simulated (would use geocoding)
   const proximityScore = 70 + Math.random() * 30; // 70-100 range simulated
 
   // Experience score (0-100, 15% weight)

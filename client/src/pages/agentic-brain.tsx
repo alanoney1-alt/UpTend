@@ -198,7 +198,7 @@ export default function AgenticBrain() {
               <ArrowLeft />
             </Button>
           </Link>
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#F47C20] to-[#3B1D5A] flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#F47C20] to-[#0f172a] flex items-center justify-center">
             <Brain className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -252,7 +252,7 @@ export default function AgenticBrain() {
                 <p className="text-sm text-muted-foreground">Conflict Shields</p>
                 <p className="text-2xl font-bold" data-testid="text-shield-count">{summary.totalConflictShields}</p>
               </div>
-              <Shield className="w-8 h-8 text-[#3B1D5A]" />
+              <Shield className="w-8 h-8 text-[#0f172a]" />
             </div>
           </CardContent>
         </Card>
@@ -316,7 +316,7 @@ export default function AgenticBrain() {
 
             <Card data-testid="card-agent-shield">
               <CardHeader className="flex flex-row items-center gap-2 pb-2">
-                <Shield className="w-5 h-5 text-[#3B1D5A]" />
+                <Shield className="w-5 h-5 text-[#0f172a]" />
                 <CardTitle className="text-base">Conflict Shield</CardTitle>
               </CardHeader>
               <CardContent>
@@ -460,7 +460,7 @@ export default function AgenticBrain() {
 
                     <p className="text-xs text-muted-foreground mt-2">
                       <Clock className="w-3 h-3 inline mr-1" />
-                      {report.createdAt ? new Date(report.createdAt).toLocaleString() : "—"} - Confidence: {Math.round(report.confidence * 100)}%
+                      {report.createdAt ? new Date(report.createdAt).toLocaleString() : "-"} - Confidence: {Math.round(report.confidence * 100)}%
                     </p>
                   </CardContent>
                 </Card>
@@ -522,7 +522,7 @@ export default function AgenticBrain() {
                     <div className="flex items-center justify-between gap-2 mt-2 flex-wrap">
                       <p className="text-xs text-muted-foreground">
                         <Clock className="w-3 h-3 inline mr-1" />
-                        {flag.createdAt ? new Date(flag.createdAt).toLocaleString() : "—"}
+                        {flag.createdAt ? new Date(flag.createdAt).toLocaleString() : "-"}
                       </p>
                       {flag.status !== "resolved" && (
                         <Button
@@ -618,7 +618,7 @@ export default function AgenticBrain() {
 
                     <p className="text-xs text-muted-foreground">
                       <Clock className="w-3 h-3 inline mr-1" />
-                      {report.createdAt ? new Date(report.createdAt).toLocaleString() : "—"} - Confidence: {Math.round(report.confidence * 100)}%
+                      {report.createdAt ? new Date(report.createdAt).toLocaleString() : "-"} - Confidence: {Math.round(report.confidence * 100)}%
                     </p>
                   </CardContent>
                 </Card>

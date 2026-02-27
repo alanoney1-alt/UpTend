@@ -640,7 +640,7 @@ export default function ServiceDetail() {
               </Card>
             ))}
           </div>
-          {/* esgImpact removed — was duplicating whyUpTend content */}
+          {/* esgImpact removed - was duplicating whyUpTend content */}
         </div>
       </section>
 

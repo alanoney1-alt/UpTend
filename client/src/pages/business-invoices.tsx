@@ -241,8 +241,8 @@ export default function BusinessInvoices() {
                   <TableCell>{inv.items} items</TableCell>
                   <TableCell className="text-right font-semibold">${(inv.amount || 0).toLocaleString()}</TableCell>
                   <TableCell><Badge variant="outline">{inv.paymentTerms}</Badge></TableCell>
-                  <TableCell>{(() => { const d = new Date(inv.issuedDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
-                  <TableCell>{(() => { const d = new Date(inv.dueDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                  <TableCell>{(() => { const d = new Date(inv.issuedDate); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
+                  <TableCell>{(() => { const d = new Date(inv.dueDate); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
                   <TableCell><StatusBadge status={inv.status} /></TableCell>
                   <TableCell>
                     <div className="flex gap-1">

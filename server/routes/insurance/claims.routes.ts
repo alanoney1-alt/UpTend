@@ -137,7 +137,7 @@ export function registerClaimsRoutes(app: Express) {
       res.json({ claims: claims?.rows || [] });
     } catch (error: any) {
       console.error("Error fetching claims:", error?.message);
-      // Graceful fallback — table might not exist yet
+      // Graceful fallback - table might not exist yet
       res.json({ claims: [] });
     }
   });

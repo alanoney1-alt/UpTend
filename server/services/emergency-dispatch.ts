@@ -1,7 +1,7 @@
 /**
  * Emergency Dispatch Service
  * 
- * Handles urgent home emergencies — finds nearest qualified pro,
+ * Handles urgent home emergencies - finds nearest qualified pro,
  * dispatches them, and tracks response through resolution.
  */
 
@@ -69,7 +69,7 @@ export async function createEmergencyDispatch(
     pro: pro ? { id: pro.id, name: pro.name, phone: pro.phone, eta: "~30 min" } : null,
     message: pro
       ? `🚨 Emergency dispatch created! ${pro.name} has been alerted and is estimated to arrive in ~30 minutes.`
-      : `🚨 Emergency dispatch created. We're searching for an available pro in your area — you'll be notified as soon as one accepts.`,
+      : `🚨 Emergency dispatch created. We're searching for an available pro in your area - you'll be notified as soon as one accepts.`,
   };
 }
 

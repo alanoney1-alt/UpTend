@@ -84,7 +84,7 @@ export function registerAdminManagementRoutes(app: Express) {
   // PRO APPLICATION MANAGEMENT (Pyckers)
   // ==========================================
 
-  // GET /api/admin/pyckers/all — List all pro applications
+  // GET /api/admin/pyckers/all - List all pro applications
   app.get("/api/admin/pyckers/all", requireAuth, requireAdmin, async (_req, res) => {
     try {
       const haulers = await storage.getAllHaulers();
@@ -172,7 +172,7 @@ export function registerAdminManagementRoutes(app: Express) {
   // ACTIVE JOBS (Admin Supervision)
   // ==========================================
 
-  // GET /api/admin/jobs/active — Active jobs for admin dashboard
+  // GET /api/admin/jobs/active - Active jobs for admin dashboard
   app.get("/api/admin/jobs/active", requireAuth, requireAdmin, async (_req, res) => {
     try {
       const jobs = await storage.getAllJobsWithDetails();

@@ -4,7 +4,7 @@ import { requireAuth, requireAdmin } from "../middleware/auth";
 import { analyzeImageOpenAI as analyzeImage } from "../services/ai/openai-vision-client";
 
 export function registerScopeChangeRoutes(app: Express) {
-  // POST /api/scope-change/request — Pro submits a scope change
+  // POST /api/scope-change/request - Pro submits a scope change
   app.post("/api/scope-change/request", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
@@ -94,7 +94,7 @@ export function registerScopeChangeRoutes(app: Express) {
     }
   });
 
-  // POST /api/scope-change/:id/respond — Customer approves/declines
+  // POST /api/scope-change/:id/respond - Customer approves/declines
   app.post("/api/scope-change/:id/respond", requireAuth, async (req, res) => {
     try {
       const user = req.user as any;
@@ -164,7 +164,7 @@ export function registerScopeChangeRoutes(app: Express) {
     }
   });
 
-  // GET /api/scope-change/:serviceRequestId — Get all scope changes for a job
+  // GET /api/scope-change/:serviceRequestId - Get all scope changes for a job
   app.get("/api/scope-change/:serviceRequestId", async (req, res) => {
     try {
       const user = req.user as any;
@@ -183,7 +183,7 @@ export function registerScopeChangeRoutes(app: Express) {
     }
   });
 
-  // GET /api/admin/ceiling-analytics — Admin KPIs
+  // GET /api/admin/ceiling-analytics - Admin KPIs
   app.get("/api/admin/ceiling-analytics", requireAuth, requireAdmin, async (req, res) => {
     try {
 

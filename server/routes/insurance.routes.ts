@@ -25,7 +25,7 @@ const COVERAGE_MAP: Record<string, string[]> = {
 };
 
 export function registerInsuranceRoutes(app: Express) {
-  // GET /api/insurance/partners — list available insurance partners
+  // GET /api/insurance/partners - list available insurance partners
   app.get("/api/insurance/partners", async (_req, res) => {
     try {
       const partners = await db.select({
@@ -44,7 +44,7 @@ export function registerInsuranceRoutes(app: Express) {
     }
   });
 
-  // POST /api/insurance/link — customer links insurance
+  // POST /api/insurance/link - customer links insurance
   app.post("/api/insurance/link", requireAuth, requireCustomer, async (req: any, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -142,7 +142,7 @@ export function registerInsuranceRoutes(app: Express) {
     }
   });
 
-  // GET /api/insurance/my-policies — list customer's linked insurance
+  // GET /api/insurance/my-policies - list customer's linked insurance
   app.get("/api/insurance/my-policies", requireAuth, requireCustomer, async (req: any, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -172,7 +172,7 @@ export function registerInsuranceRoutes(app: Express) {
     }
   });
 
-  // DELETE /api/insurance/:id — unlink insurance
+  // DELETE /api/insurance/:id - unlink insurance
   app.delete("/api/insurance/:id", requireAuth, requireCustomer, async (req: any, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;

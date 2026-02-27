@@ -186,7 +186,7 @@ export function registerPaymentRoutes(app: Express) {
 
       // Verify job is actually completed before capturing payment
       if (job.status !== "completed") {
-        return res.status(400).json({ error: "Cannot capture payment — job is not completed", jobStatus: job.status });
+        return res.status(400).json({ error: "Cannot capture payment - job is not completed", jobStatus: job.status });
       }
 
       let haulerStripeAccountId = null;

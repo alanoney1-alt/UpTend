@@ -1,5 +1,5 @@
 /**
- * Product Search Service — searches retailers for home products,
+ * Product Search Service - searches retailers for home products,
  * generates affiliate links, and provides smart recommendations.
  */
 
@@ -184,7 +184,7 @@ export async function searchProduct(
  results: allResults,
  curatedRecommendation: curated[0],
  dangerWarning: dangerFlag ? " This involves potentially dangerous work. Consider hiring a pro." : undefined,
- accuracy: "HIGH — matched from curated product database",
+ accuracy: "HIGH - matched from curated product database",
  message: ` **George's Pick:** ${curated[0].name} (~${curated[0].typicalPrice})\n${curated[0].notes}\nTop brands: ${curated[0].topBrands.join(", ")}`,
  };
  }
@@ -214,7 +214,7 @@ export async function searchProduct(
  return {
  results: allResults,
  ...(dangerFlag ? {
- dangerWarning: ` "${dangerFlag}" is flagged as dangerous DIY. I found products, but honestly? This one's dangerous to DIY. Let me get you a pro quote — it's worth the safety.`,
+ dangerWarning: ` "${dangerFlag}" is flagged as dangerous DIY. I found products, but honestly? This one's dangerous to DIY. Let me get you a pro quote - it's worth the safety.`,
  } : {}),
  };
 }
@@ -301,15 +301,15 @@ export async function getProductRecommendation(
  searchQuery,
  products: searchResults.results,
  dangerWarning: dangerFlag
- ? ` This involves ${dangerFlag} — dangerous to DIY. Let me get you a pro quote instead.`
+ ? ` This involves ${dangerFlag} - dangerous to DIY. Let me get you a pro quote instead.`
  : searchResults.dangerWarning,
  message: dangerFlag
- ? `I found products for your ${brand} ${applianceType}, but honestly? This one's dangerous to DIY. Let me get you a pro quote — it's worth the safety.`
+ ? `I found products for your ${brand} ${applianceType}, but honestly? This one's dangerous to DIY. Let me get you a pro quote - it's worth the safety.`
  : `Based on your ${brand} ${model || applianceType}, here are the best options across retailers.`,
  };
  }
 
- // No matched appliance — generic search
+ // No matched appliance - generic search
  const searchResults = await searchProduct(applianceType);
  return {
  products: searchResults.results,
@@ -343,7 +343,7 @@ export async function compareProductPrices(
  dangerWarning: searchResults.dangerWarning,
  message: cheapest
  ? ` Best price for "${productName}": $${cheapest.price} at ${cheapest.retailer}. I found ${searchResults.results.length} options across ${Object.keys(byRetailer).length} retailers.`
- : `I found ${searchResults.results.length} results for "${productName}" across ${Object.keys(byRetailer).length} retailers. Prices may vary — check the links for current pricing.`,
+ : `I found ${searchResults.results.length} results for "${productName}" across ${Object.keys(byRetailer).length} retailers. Prices may vary - check the links for current pricing.`,
  };
 }
 
@@ -415,7 +415,7 @@ export async function getSmartRecommendations(customerId: string): Promise<objec
  recommendations,
  totalItems: recommendations.length,
  message: recommendations.length > 0
- ? ` I found ${recommendations.length} items you should pick up:\n${recommendations.map((r, i) => `${i + 1}. **${r.item}** — ${r.reason} (${r.priority}, ~${r.estimatedCost})`).join("\n")}`
+ ? ` I found ${recommendations.length} items you should pick up:\n${recommendations.map((r, i) => `${i + 1}. **${r.item}** - ${r.reason} (${r.priority}, ~${r.estimatedCost})`).join("\n")}`
  : "Your home looks well-stocked! I'll let you know when something comes up.",
  };
 }

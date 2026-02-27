@@ -1,5 +1,5 @@
 /**
- * Referral Engine — Codes, tracking, credits, group deals
+ * Referral Engine - Codes, tracking, credits, group deals
  */
 import { pool } from "../db.js";
 

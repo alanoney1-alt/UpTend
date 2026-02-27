@@ -1,5 +1,5 @@
 // Auto-generated from server/knowledge/*.md
-// Do not edit directly — edit the .md files and regenerate
+// Do not edit directly - edit the .md files and regenerate
 
 export const businessOps = `# Business Operations for Home Services
 

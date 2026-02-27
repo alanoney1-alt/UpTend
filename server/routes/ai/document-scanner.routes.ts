@@ -41,7 +41,7 @@ export function createDocumentScannerRoutes(storage: DatabaseStorage) {
     propertyId: z.string().optional(),
   });
 
-  // Shared handler — resolves documentUrl from uploaded file OR JSON body
+  // Shared handler - resolves documentUrl from uploaded file OR JSON body
   const handleDocumentScan = async (req: any, res: any) => {
     try {
       let documentUrl: string;
@@ -50,7 +50,7 @@ export function createDocumentScannerRoutes(storage: DatabaseStorage) {
       let propertyId: string | undefined;
 
       if (req.file) {
-        // File uploaded via FormData — convert buffer to base64 data URL
+        // File uploaded via FormData - convert buffer to base64 data URL
         const base64 = req.file.buffer.toString("base64");
         documentUrl = `data:${req.file.mimetype};base64,${base64}`;
         documentContentType = req.file.mimetype;
@@ -153,7 +153,7 @@ Return ONLY valid JSON:
 
         res.json({
           success: true,
-          scan: { id: scan.id, status: "failed", error: "AI processing failed — please try again or enter details manually" },
+          scan: { id: scan.id, status: "failed", error: "AI processing failed - please try again or enter details manually" },
         });
       }
     } catch (error: any) {

@@ -11,7 +11,7 @@ import { sql } from "drizzle-orm";
 // ─────────────────────────────────────────────
 // Conversational disclaimer George shows users
 // ─────────────────────────────────────────────
-const DIY_DISCLAIMER_TEXT = `Before we start — quick heads up: I'm an AI assistant sharing repair tips, not a licensed contractor. Think of me like a really helpful YouTube video that can answer your questions. 
+const DIY_DISCLAIMER_TEXT = `Before we start - quick heads up: I'm an AI assistant sharing repair tips, not a licensed contractor. Think of me like a really helpful YouTube video that can answer your questions. 
 
 You're choosing to do this yourself, and you're responsible for your safety. I'll warn you if something's dangerous and recommend a pro when needed.
 
@@ -58,7 +58,7 @@ export async function hasUserAcknowledgedDIYDisclaimer(
  );
  return (result as any).rows?.length > 0;
  } catch {
- // Table may not exist yet — return false to show disclaimer
+ // Table may not exist yet - return false to show disclaimer
  return false;
  }
 }
@@ -78,7 +78,7 @@ export async function recordDIYDisclaimerAcknowledgment(
  );
  } catch (error) {
  console.error("Failed to record DIY disclaimer acknowledgment:", error);
- // Non-blocking — don't prevent coaching if consent table isn't set up yet
+ // Non-blocking - don't prevent coaching if consent table isn't set up yet
  }
 }
 

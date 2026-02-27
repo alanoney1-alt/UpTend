@@ -373,7 +373,7 @@ export default function BusinessCompliance() {
                         </div>
                       </TableCell>
                       <TableCell>{doc.proName}</TableCell>
-                      <TableCell>{(() => { const d = new Date(doc.uploadedAt); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(doc.uploadedAt); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell>{(() => { if (!doc.expiry) return "N/A"; const d = new Date(doc.expiry); return isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell><StatusBadge status={doc.status} /></TableCell>
                       <TableCell>
@@ -421,10 +421,10 @@ export default function BusinessCompliance() {
                       <TableCell>
                         <Badge variant="outline">{check.provider}</Badge>
                       </TableCell>
-                      <TableCell>{(() => { const d = new Date(check.submittedAt); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
-                      <TableCell>{check.completedAt ? (() => { const d = new Date(check.completedAt); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })() : <Clock className="w-4 h-4 text-amber-500" />}</TableCell>
+                      <TableCell>{(() => { const d = new Date(check.submittedAt); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{check.completedAt ? (() => { const d = new Date(check.completedAt); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })() : <Clock className="w-4 h-4 text-amber-500" />}</TableCell>
                       <TableCell><StatusBadge status={check.result} /></TableCell>
-                      <TableCell>{check.expiry ? (() => { const d = new Date(check.expiry); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })() : "—"}</TableCell>
+                      <TableCell>{check.expiry ? (() => { const d = new Date(check.expiry); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })() : "-"}</TableCell>
                       <TableCell>
                         <Button variant="ghost" size="sm"><RefreshCw className="w-4 h-4" /></Button>
                       </TableCell>

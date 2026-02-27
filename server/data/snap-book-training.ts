@@ -11,7 +11,7 @@ export const SNAP_BOOK_PRO_TRAINING = {
     },
     {
       title: "When You Arrive",
-      content: "Take a photo of the current condition before starting work. This protects both you and the customer. If the actual scope matches the quote — start working. If the scope is significantly different from what was quoted, use the Scope Change process: take photos of the actual condition, submit a scope change request, and wait for customer approval before proceeding with additional work."
+      content: "Take a photo of the current condition before starting work. This protects both you and the customer. If the actual scope matches the quote - start working. If the scope is significantly different from what was quoted, use the Scope Change process: take photos of the actual condition, submit a scope change request, and wait for customer approval before proceeding with additional work."
     },
     {
       title: "Price Protection",
@@ -19,7 +19,7 @@ export const SNAP_BOOK_PRO_TRAINING = {
     },
     {
       title: "Tips for Success",
-      content: "Review the equipment checklist before heading out — being prepared saves time and impresses customers. Take clear before and after photos for every job. Communicate with the customer if anything looks different from the original photo."
+      content: "Review the equipment checklist before heading out - being prepared saves time and impresses customers. Take clear before and after photos for every job. Communicate with the customer if anything looks different from the original photo."
     }
   ],
   quiz: [
@@ -38,7 +38,7 @@ export const SNAP_BOOK_PRO_TRAINING = {
       options: [
         "An estimate that can change",
         "The minimum they'll pay",
-        "Their maximum price (ceiling) — guaranteed",
+        "Their maximum price (ceiling) - guaranteed",
         "A suggestion for the pro to follow"
       ],
       correctIndex: 2

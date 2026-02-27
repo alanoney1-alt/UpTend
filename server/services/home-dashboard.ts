@@ -1,7 +1,7 @@
 /**
- * Home Dashboard Service — Home Operating System
+ * Home Dashboard Service - Home Operating System
  *
- * George's "home at a glance" — everything a customer needs to know about
+ * George's "home at a glance" - everything a customer needs to know about
  * their home right now: reminders, weather, maintenance, utilities, schedule.
  */
 
@@ -9,7 +9,7 @@ import { pool } from "../db";
 import { generateTrashReminder, lookupWaterRestrictions, getSeasonalSprinklerRecommendation } from "./municipal-data";
 
 /**
- * getHomeDashboard — full "home at a glance" for George
+ * getHomeDashboard - full "home at a glance" for George
  */
 export async function getHomeDashboard(customerId: string): Promise<object> {
   const now = new Date();
@@ -103,7 +103,7 @@ export async function getHomeDashboard(customerId: string): Promise<object> {
 }
 
 /**
- * getWeeklyHomeView — 7-day view of all home events
+ * getWeeklyHomeView - 7-day view of all home events
  */
 export async function getWeeklyHomeView(customerId: string): Promise<object> {
   const now = new Date();
@@ -152,7 +152,7 @@ export async function getWeeklyHomeView(customerId: string): Promise<object> {
 }
 
 /**
- * getTonightChecklist — bedtime home checklist
+ * getTonightChecklist - bedtime home checklist
  */
 export async function getTonightChecklist(customerId: string): Promise<object> {
   const now = new Date();
@@ -179,7 +179,7 @@ export async function getTonightChecklist(customerId: string): Promise<object> {
     const wateringTomorrow = zones.some((z: any) => z.waterDays?.includes(tomorrowName));
 
     if (wateringTomorrow && sprinkler.system_type !== "smart") {
-      checklist.push({ item: "💧 Sprinklers scheduled for tomorrow — check rain forecast before they run", priority: "medium", done: false });
+      checklist.push({ item: "💧 Sprinklers scheduled for tomorrow - check rain forecast before they run", priority: "medium", done: false });
     }
   }
 
@@ -202,7 +202,7 @@ export async function getTonightChecklist(customerId: string): Promise<object> {
     customerId,
     date: today,
     title: "🌙 Tonight's Checklist",
-    subtitle: "Before bed — here's what George recommends:",
+    subtitle: "Before bed - here's what George recommends:",
     checklist,
   };
 }

@@ -1,5 +1,5 @@
 /**
- * Pro Pricing Dashboard — Backend Routes
+ * Pro Pricing Dashboard - Backend Routes
  * 
  * Allows pros to set custom rates per service type within platform min/max ranges.
  * If no custom rate is set, platform default pricing applies.
@@ -54,7 +54,7 @@ export function getEffectiveRate(proId: string, serviceType: string): number {
 }
 
 export function registerProPricingRoutes(app: Express) {
-  // GET /api/haulers/my-rates — get pro's current rates
+  // GET /api/haulers/my-rates - get pro's current rates
   app.get("/api/haulers/my-rates", async (req: Request, res: Response) => {
     if (!req.isAuthenticated?.() || !req.user) {
       return res.status(401).json({ error: "Authentication required" });
@@ -110,7 +110,7 @@ export function registerProPricingRoutes(app: Express) {
     }
   });
 
-  // POST /api/haulers/my-rates — set/update rates
+  // POST /api/haulers/my-rates - set/update rates
   app.post("/api/haulers/my-rates", async (req: Request, res: Response) => {
     if (!req.isAuthenticated?.() || !req.user) {
       return res.status(401).json({ error: "Authentication required" });

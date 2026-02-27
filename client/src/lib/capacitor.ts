@@ -15,7 +15,7 @@ export async function initializeCapacitor() {
 
   try {
     await StatusBar.setStyle({ style: Style.Dark });
-    await StatusBar.setBackgroundColor({ color: '#3B1D5A' });
+    await StatusBar.setBackgroundColor({ color: '#0f172a' });
   } catch (e) {
     console.log('StatusBar not available:', e);
   }
@@ -65,7 +65,7 @@ export async function requestPushPermissions(): Promise<boolean> {
       await PushNotifications.register();
       
       PushNotifications.addListener('registration', (token) => {
-        // Token registered — send to backend for push delivery
+        // Token registered - send to backend for push delivery
         // Do not log token value in production
       });
       

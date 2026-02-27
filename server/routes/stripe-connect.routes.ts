@@ -18,7 +18,7 @@ import { eq } from "drizzle-orm";
 import { users } from "../../shared/models/auth";
 
 export function registerStripeConnectRoutes(app: Express) {
-  // POST /api/stripe/connect/onboard — start Stripe Connect onboarding
+  // POST /api/stripe/connect/onboard - start Stripe Connect onboarding
   app.post("/api/stripe/connect/onboard", async (req: Request, res: Response) => {
     if (!req.isAuthenticated?.() || !req.user) {
       return res.status(401).json({ error: "Authentication required" });
@@ -66,7 +66,7 @@ export function registerStripeConnectRoutes(app: Express) {
     }
   });
 
-  // GET /api/stripe/connect/status — check onboarding status
+  // GET /api/stripe/connect/status - check onboarding status
   app.get("/api/stripe/connect/status", async (req: Request, res: Response) => {
     if (!req.isAuthenticated?.() || !req.user) {
       return res.status(401).json({ error: "Authentication required" });
@@ -107,7 +107,7 @@ export function registerStripeConnectRoutes(app: Express) {
     }
   });
 
-  // GET /api/stripe/connect/dashboard-link — Stripe Express dashboard
+  // GET /api/stripe/connect/dashboard-link - Stripe Express dashboard
   app.get("/api/stripe/connect/dashboard-link", async (req: Request, res: Response) => {
     if (!req.isAuthenticated?.() || !req.user) {
       return res.status(401).json({ error: "Authentication required" });
@@ -134,7 +134,7 @@ export function registerStripeConnectRoutes(app: Express) {
     }
   });
 
-  // GET /api/stripe/connect/payouts — payout history
+  // GET /api/stripe/connect/payouts - payout history
   app.get("/api/stripe/connect/payouts", async (req: Request, res: Response) => {
     if (!req.isAuthenticated?.() || !req.user) {
       return res.status(401).json({ error: "Authentication required" });
@@ -167,7 +167,7 @@ export function registerStripeConnectRoutes(app: Express) {
     }
   });
 
-  // POST /api/stripe/connect/webhook — Stripe Connect webhook
+  // POST /api/stripe/connect/webhook - Stripe Connect webhook
   app.post("/api/stripe/connect/webhook", async (req: Request, res: Response) => {
     try {
       // In production, verify webhook signature with stripe.webhooks.constructEvent

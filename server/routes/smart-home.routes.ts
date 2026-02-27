@@ -1,12 +1,12 @@
 /**
  * Smart Home OAuth Routes
  *
- * GET    /api/smart-home/platforms          — list available platforms
- * GET    /api/smart-home/auth/:platform     — get OAuth URL
- * GET    /api/smart-home/callback/:platform — OAuth callback
- * GET    /api/smart-home/devices            — list connected devices
- * DELETE /api/smart-home/:platform          — disconnect
- * GET    /api/smart-home/alerts             — recent alerts
+ * GET    /api/smart-home/platforms          - list available platforms
+ * GET    /api/smart-home/auth/:platform     - get OAuth URL
+ * GET    /api/smart-home/callback/:platform - OAuth callback
+ * GET    /api/smart-home/devices            - list connected devices
+ * DELETE /api/smart-home/:platform          - disconnect
+ * GET    /api/smart-home/alerts             - recent alerts
  */
 
 import { Router, type Express } from "express";

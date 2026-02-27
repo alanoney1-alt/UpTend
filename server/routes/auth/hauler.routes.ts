@@ -825,7 +825,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         );
       }
 
-      res.json({ success: true, message: "Thanks for the pricing insight — this helps us keep rates competitive for your market." });
+      res.json({ success: true, message: "Thanks for the pricing insight - this helps us keep rates competitive for your market." });
     } catch (error) {
       console.error("Pricing feedback error:", error);
       res.status(500).json({ error: "Failed to save pricing feedback" });

@@ -89,7 +89,7 @@ export function createConciergeRoutes(storage: DatabaseStorage) {
         } as any);
       }
 
-      // Build conversation history — prefer client-sent history, fall back to DB
+      // Build conversation history - prefer client-sent history, fall back to DB
       let conversationHistory: Array<{ role: "user" | "assistant"; content: string }>;
       if (validated.conversationHistory && validated.conversationHistory.length > 0) {
         conversationHistory = validated.conversationHistory as Array<{ role: "user" | "assistant"; content: string }>;

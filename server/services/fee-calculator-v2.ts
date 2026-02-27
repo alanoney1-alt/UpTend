@@ -1,5 +1,5 @@
 /**
- * Fee Calculator V2 — New Pro-Set Pricing Model
+ * Fee Calculator V2 - New Pro-Set Pricing Model
  * 
  * Customer service fee: 5% (added on top of pro's price)
  * Pro platform fee: 15% (deducted from pro's price)

@@ -351,7 +351,7 @@ function InvoicesTab() {
                     </Badge>
                   </td>
                   <td className="py-2 text-right font-mono">{formatCurrency(inv.total)}</td>
-                  <td className="py-2">{inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "—"}</td>
+                  <td className="py-2">{inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "-"}</td>
                   <td className="py-2">
                     {inv.status !== "paid" && inv.status !== "void" && (
                       <div className="flex gap-1">
@@ -451,8 +451,8 @@ function ExpensesTab() {
                 <tr key={e.id} className="border-b border-border/50">
                   <td className="py-2">{e.expenseDate ? new Date(e.expenseDate).toLocaleDateString() : ""}</td>
                   <td className="py-2"><Badge variant="outline">{e.category}</Badge></td>
-                  <td className="py-2">{e.vendor || "—"}</td>
-                  <td className="py-2 max-w-[200px] truncate">{e.description || "—"}</td>
+                  <td className="py-2">{e.vendor || "-"}</td>
+                  <td className="py-2 max-w-[200px] truncate">{e.description || "-"}</td>
                   <td className="py-2 text-right font-mono">{formatCurrency(e.amount)}</td>
                 </tr>
               ))}
@@ -521,7 +521,7 @@ function TaxTab() {
               {records.map((r: any) => (
                 <tr key={r.id} className={`border-b border-border/50 ${r.totalEarnings >= 600 && !r.form1099Filed ? "bg-amber-50/30" : ""}`}>
                   <td className="py-2 font-mono text-xs">{r.proId?.substring(0, 8)}...</td>
-                  <td className="py-2">{r.legalName || "—"}</td>
+                  <td className="py-2">{r.legalName || "-"}</td>
                   <td className="py-2 text-right font-mono">{formatCurrency(r.totalEarnings)}</td>
                   <td className="py-2 text-right">{r.totalJobs}</td>
                   <td className="py-2">{r.w9OnFile ? <Badge className="bg-green-500">Yes</Badge> : <Badge variant="outline">No</Badge>}</td>

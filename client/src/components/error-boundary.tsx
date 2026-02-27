@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "linear-gradient(135deg, #3B1D5A 0%, #2a1443 100%)",
+            background: "linear-gradient(135deg, #0f172a 0%, #0a0f1e 100%)",
             fontFamily: "system-ui, -apple-system, sans-serif",
             padding: "24px",
           }}
@@ -72,7 +72,7 @@ export class ErrorBoundary extends Component<Props, State> {
               style={{
                 fontSize: "24px",
                 fontWeight: 800,
-                color: "#3B1D5A",
+                color: "#0f172a",
                 marginBottom: "12px",
               }}
             >

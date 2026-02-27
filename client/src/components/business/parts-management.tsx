@@ -100,9 +100,9 @@ function PartsRequestsTable() {
             <tr key={pr.id} className="border-b hover:bg-gray-50">
               <td className="py-3 max-w-[200px] truncate">{pr.description}</td>
               <td className="py-3 text-gray-600 text-xs">{pr.pickup_address || pr.service_request_id.slice(0, 8)}</td>
-              <td className="py-3">{pr.estimated_cost ? `$${pr.estimated_cost.toFixed(2)}` : "—"}</td>
-              <td className="py-3">{pr.actual_cost ? `$${pr.actual_cost.toFixed(2)}` : "—"}</td>
-              <td className="py-3 text-xs">{pr.supplier_source || "—"}</td>
+              <td className="py-3">{pr.estimated_cost ? `$${pr.estimated_cost.toFixed(2)}` : "-"}</td>
+              <td className="py-3">{pr.actual_cost ? `$${pr.actual_cost.toFixed(2)}` : "-"}</td>
+              <td className="py-3 text-xs">{pr.supplier_source || "-"}</td>
               <td className="py-3">
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[pr.status] || "bg-gray-100"}`}>
                   {pr.status}

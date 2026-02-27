@@ -1,5 +1,5 @@
 /**
- * DIY Brain — George's repair knowledge lookup service.
+ * DIY Brain - George's repair knowledge lookup service.
  * Fuzzy matches customer descriptions to the knowledge base.
  */
 
@@ -90,7 +90,7 @@ export function getDifficultyAssessment(repairId: string): object | null {
     assessment.reasoning = `This repair involves ${repair.safetyWarnings[0] || "safety risks"}. I'd strongly recommend a professional for this one.`;
   } else if (repair.difficulty >= 4) {
     assessment.recommendation = "PRO RECOMMENDED";
-    assessment.reasoning = `This is a difficulty ${repair.difficulty}/5 repair that takes ${repair.estimatedTime}. Doable but challenging — a pro would be faster and more reliable.`;
+    assessment.reasoning = `This is a difficulty ${repair.difficulty}/5 repair that takes ${repair.estimatedTime}. Doable but challenging - a pro would be faster and more reliable.`;
   } else if (repair.safetyLevel === "yellow") {
     assessment.recommendation = "DIY WITH CAUTION";
     assessment.reasoning = `You can do this yourself, but be careful: ${repair.safetyWarnings[0] || "follow safety precautions"}. Cost to DIY: ~${repair.estimatedCost}.`;

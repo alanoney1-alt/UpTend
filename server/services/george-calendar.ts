@@ -84,7 +84,7 @@ export async function handleCalendarCallback(
 
     const tokens: any = await res.json();
 
-    // Store tokens — save to a calendar_tokens table or user profile
+    // Store tokens - save to a calendar_tokens table or user profile
     if (storage) {
       await storage.upsertCalendarTokens?.({
         userId,
@@ -203,7 +203,7 @@ export async function syncJobToCalendar(
         { method: "popup", minutes: 1440 }, // Day before
       ],
     },
-    colorId: "5", // Banana yellow — matches UpTend brand
+    colorId: "5", // Banana yellow - matches UpTend brand
   };
 
   try {
@@ -398,7 +398,7 @@ export async function suggestBestTime(
 
   const reasons: string[] = [];
   if (preferMorning && suggested.label.includes("morning")) {
-    reasons.push("morning is best for this service — cooler temperatures improve results");
+    reasons.push("morning is best for this service - cooler temperatures improve results");
   }
   if (weatherSensitive) {
     reasons.push("weather looks good for this time of year");
@@ -406,12 +406,12 @@ export async function suggestBestTime(
 
   // Service-specific advice
   const serviceNotes: Record<string, string> = {
-    pressure_washing: "Best done in the morning when surfaces are cooler — results last longer",
+    pressure_washing: "Best done in the morning when surfaces are cooler - results last longer",
     landscaping:      "Morning appointments avoid afternoon heat and thunderstorm risk",
     gutter_cleaning:  "Great to do before rainy season or after heavy storms",
-    pool_cleaning:    "Any time works — morning slots tend to fill up faster",
+    pool_cleaning:    "Any time works - morning slots tend to fill up faster",
     home_cleaning:    "Either morning or afternoon works well",
-    handyman:         "Afternoon slots often have less demand — easier to schedule",
+    handyman:         "Afternoon slots often have less demand - easier to schedule",
   };
 
   const reason = reasons.length > 0

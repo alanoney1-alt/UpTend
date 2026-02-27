@@ -1,7 +1,7 @@
 /**
  * Weekly B2B Billing Service
  * 
- * BULLETPROOF billing — only charges for verified completed work.
+ * BULLETPROOF billing - only charges for verified completed work.
  * Every job must pass ALL eligibility checks before billing.
  */
 
@@ -284,7 +284,7 @@ export async function generateBillingRun(
       })
       .returning();
 
-    // Create line items (only if not dry run — dry runs don't persist line items to prevent blocking future runs)
+    // Create line items (only if not dry run - dry runs don't persist line items to prevent blocking future runs)
     if (!dryRun) {
       for (const li of lineItemsData) {
         await tx.insert(billingLineItems).values({
@@ -392,7 +392,7 @@ export async function chargeBillingRun(billingRunId: string): Promise<{ success:
         payment_method: account.paymentMethodId,
         confirm: true,
         off_session: true,
-        description: `UpTend Weekly Invoice — Week of ${billingRun.weekStartDate} to ${billingRun.weekEndDate}`,
+        description: `UpTend Weekly Invoice - Week of ${billingRun.weekStartDate} to ${billingRun.weekEndDate}`,
         metadata: {
           billingRunId: billingRun.id,
           businessAccountId: billingRun.businessAccountId,
@@ -602,14 +602,14 @@ async function sendWeeklyInvoiceEmail(
       (li) =>
         `<tr><td style="padding:8px;border-bottom:1px solid #eee">${li.propertyAddress}</td>` +
         `<td style="padding:8px;border-bottom:1px solid #eee">${li.serviceType.replace(/_/g, " ")}</td>` +
-        `<td style="padding:8px;border-bottom:1px solid #eee">${li.proName || "—"}</td>` +
+        `<td style="padding:8px;border-bottom:1px solid #eee">${li.proName || "-"}</td>` +
         `<td style="padding:8px;border-bottom:1px solid #eee;text-align:right">$${li.totalCharge.toFixed(2)}</td></tr>`
     )
     .join("");
 
   await sendEmail({
     to: email,
-    subject: `Your UpTend Weekly Invoice — Week of ${weekLabel}`,
+    subject: `Your UpTend Weekly Invoice - Week of ${weekLabel}`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:#d97706">UpTend Weekly Invoice</h2>
@@ -650,7 +650,7 @@ async function sendBillingFailedEmail(
 
   await sendEmail({
     to: email,
-    subject: "UpTend — Payment Failed — Action Required",
+    subject: "UpTend - Payment Failed - Action Required",
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:#dc2626">Payment Failed</h2>
@@ -674,7 +674,7 @@ async function sendBillingVoidedEmail(
 
   await sendEmail({
     to: email,
-    subject: "UpTend — Invoice Voided — Refund Processed",
+    subject: "UpTend - Invoice Voided - Refund Processed",
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:#d97706">Invoice Voided</h2>

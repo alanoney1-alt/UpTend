@@ -88,7 +88,7 @@ export function createFraudDetectionRoutes(storage: DatabaseStorage) {
       }
 
       // Check 2: GPS mismatch (if pickup coordinates exist)
-      // Placeholder — would check hauler GPS vs job address
+      // Placeholder - would check hauler GPS vs job address
 
       // Check 3: Photo hash comparison - detect reused before/after photos
       if (job.photoUrls && job.photoUrls.length > 0) {

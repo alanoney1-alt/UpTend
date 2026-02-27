@@ -3,7 +3,7 @@ import { pool } from "../../db";
 import { requireAuth } from "../../middleware/auth";
 
 export function registerAdminProMapRoutes(app: Express) {
-  // GET /api/admin/pro-map — All pros with locations (admin only)
+  // GET /api/admin/pro-map - All pros with locations (admin only)
   app.get("/api/admin/pro-map", requireAuth, async (req: any, res) => {
     try {
       if (!req.user || req.user.role !== "admin") {

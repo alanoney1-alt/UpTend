@@ -8,7 +8,7 @@ import { db } from "../db.js";
 import { postBookingQuestions, proJobPrompts } from "@shared/schema";
 import { eq, and, isNull } from "drizzle-orm";
 
-// Question templates by service type — each returns a question + data extraction hints
+// Question templates by service type - each returns a question + data extraction hints
 const POST_BOOKING_TEMPLATES: Record<string, Array<{ question: string; dataKeys: string[] }>> = {
   gutter_cleaning: [
     { question: "How old is your roof? I can track when it'll need replacement.", dataKeys: ["roof_age", "roof_replacement_year"] },
@@ -114,7 +114,7 @@ export async function getPostBookingQuestion(customerId: string, jobId: string, 
 
   if (existing.length > 0) return existing[0];
 
-  // Determine service type — passed in or look it up
+  // Determine service type - passed in or look it up
   const svcType = serviceType || "handyman";
   const templates = POST_BOOKING_TEMPLATES[svcType] || POST_BOOKING_TEMPLATES.handyman!;
   const template = templates[Math.floor(Math.random() * templates.length)];

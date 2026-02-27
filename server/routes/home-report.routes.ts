@@ -9,7 +9,7 @@ function requireAuth(req: any, res: any, next: any) {
 }
 
 export function registerHomeReportRoutes(app: Express) {
-  // Unified home report — aggregates all home events into one Carfax-style timeline
+  // Unified home report - aggregates all home events into one Carfax-style timeline
   app.get("/api/home-report", requireAuth, async (req: any, res) => {
     try {
       const userId = (req.user as any)?.userId || (req.user as any)?.id;
@@ -70,7 +70,7 @@ export function registerHomeReportRoutes(app: Express) {
             id: w.id,
             date: w.created_at,
             title: `${w.brand || ""} ${w.product_name}`.trim(),
-            description: `${w.warranty_type || "Standard"} warranty — expires ${w.warranty_expires ? new Date(w.warranty_expires as string).toLocaleDateString() : "N/A"}`,
+            description: `${w.warranty_type || "Standard"} warranty - expires ${w.warranty_expires ? new Date(w.warranty_expires as string).toLocaleDateString() : "N/A"}`,
             warrantyExpiry: w.warranty_expires,
             icon: "shield",
           });
@@ -91,7 +91,7 @@ export function registerHomeReportRoutes(app: Express) {
             date: s.completed_at || s.started_at,
             title: "Home DNA Scan",
             description: s.status === "completed"
-              ? `Completed — earned ${s.total_credits_earned || 0} credits`
+              ? `Completed - earned ${s.total_credits_earned || 0} credits`
               : `Status: ${s.status}`,
             status: s.status,
             icon: "scan",
@@ -173,7 +173,7 @@ export function registerHomeReportRoutes(app: Express) {
             id: i.id,
             date: i.verified_at || i.created_at,
             title: i.item_name,
-            description: i.brand_detected ? `${i.brand_detected} — ${i.condition || "unverified"}` : (i.condition || "Item cataloged"),
+            description: i.brand_detected ? `${i.brand_detected} - ${i.condition || "unverified"}` : (i.condition || "Item cataloged"),
             value: i.estimated_value,
             icon: "package",
           });

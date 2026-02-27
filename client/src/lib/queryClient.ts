@@ -20,7 +20,7 @@ export async function apiRequest(
   let body: unknown | undefined;
 
   if (urlOrOptions === undefined) {
-    // apiRequest("/api/foo") — GET by default
+    // apiRequest("/api/foo") - GET by default
     method = "GET";
     url = methodOrUrl;
     body = undefined;

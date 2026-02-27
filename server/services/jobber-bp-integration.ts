@@ -1,5 +1,5 @@
 /**
- * Jobber Integration Service (Business Partner — job sync)
+ * Jobber Integration Service (Business Partner - job sync)
  * 
  * Syncs completed UpTend jobs to Jobber via GraphQL API.
  * Mock mode when JOBBER_BP_CLIENT_ID env var is missing.

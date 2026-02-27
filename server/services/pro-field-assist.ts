@@ -38,7 +38,7 @@ Return JSON:
   const aiResult = await analyzeImages({
     imageUrls: [photo],
     prompt,
-    systemPrompt: "You are a master tradesperson with 30+ years across plumbing, electrical, HVAC, and general contracting. Identify parts precisely — pros need exact part numbers, not generic descriptions.",
+    systemPrompt: "You are a master tradesperson with 30+ years across plumbing, electrical, HVAC, and general contracting. Identify parts precisely - pros need exact part numbers, not generic descriptions.",
     jsonMode: true,
   });
 
@@ -178,7 +178,7 @@ Return JSON:
     aiResult = await analyzeImages({
       imageUrls: [photo],
       prompt,
-      systemPrompt: "You are a master troubleshooter. Give practical, actionable diagnostic steps. Safety first — always warn about electrical, gas, or structural hazards.",
+      systemPrompt: "You are a master troubleshooter. Give practical, actionable diagnostic steps. Safety first - always warn about electrical, gas, or structural hazards.",
       jsonMode: true,
     });
   } else {
@@ -416,7 +416,7 @@ export async function logPartOrder(
     return {
       success: true,
       orderId: result.rows[0].id,
-      message: `Part "${orderData.partName}" logged. Update status when picked up or installed — it'll flow into customer billing.`,
+      message: `Part "${orderData.partName}" logged. Update status when picked up or installed - it'll flow into customer billing.`,
     };
   } catch (err: any) {
     return { success: false, error: err.message };

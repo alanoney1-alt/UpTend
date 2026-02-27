@@ -4,7 +4,7 @@
  * Customers who complete DIY repairs through George are natural pro candidates.
  * After milestones (3/5/10 completions), George recruits them to become UpTend pros.
  *
- * IMPORTANT: Pros are 1099 independent contractors — uses "earnings/payout/per job" language only.
+ * IMPORTANT: Pros are 1099 independent contractors - uses "earnings/payout/per job" language only.
  */
 
 import type { Express, Request, Response } from "express";
@@ -42,7 +42,7 @@ const ORLANDO_MONTHLY_EARNINGS: Record<string, { low: number; high: number; perJ
 
 export function registerDiyToProRoutes(app: Express) {
 
-  // POST /api/diy/complete — log a DIY completion
+  // POST /api/diy/complete - log a DIY completion
   app.post("/api/diy/complete", async (req: Request, res: Response) => {
     try {
       const { customer_id, repair_category, repair_title, difficulty, time_taken_minutes, self_rating } = req.body;
@@ -63,7 +63,7 @@ export function registerDiyToProRoutes(app: Express) {
     }
   });
 
-  // GET /api/diy/completions/:customerId — get all completions + count + skill summary
+  // GET /api/diy/completions/:customerId - get all completions + count + skill summary
   app.get("/api/diy/completions/:customerId", async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
@@ -104,7 +104,7 @@ export function registerDiyToProRoutes(app: Express) {
     }
   });
 
-  // GET /api/diy/pro-ready/:customerId — check if customer qualifies for pro pitch
+  // GET /api/diy/pro-ready/:customerId - check if customer qualifies for pro pitch
   app.get("/api/diy/pro-ready/:customerId", async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
@@ -155,7 +155,7 @@ export function registerDiyToProRoutes(app: Express) {
     }
   });
 
-  // POST /api/diy/pro-interest — customer expresses interest (or declines)
+  // POST /api/diy/pro-interest - customer expresses interest (or declines)
   app.post("/api/diy/pro-interest", async (req: Request, res: Response) => {
     try {
       const { customer_id, interested } = req.body;
@@ -188,7 +188,7 @@ export function registerDiyToProRoutes(app: Express) {
     }
   });
 
-  // GET /api/diy/earnings-preview/:customerId — earnings potential based on DIY skills
+  // GET /api/diy/earnings-preview/:customerId - earnings potential based on DIY skills
   app.get("/api/diy/earnings-preview/:customerId", async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
@@ -241,8 +241,8 @@ export function registerDiyToProRoutes(app: Express) {
           skills,
           totalMonthlyRange: `$${cappedLow.toLocaleString()}-$${cappedHigh.toLocaleString()}`,
           serviceBreakdown,
-          message: `You've already proven you can do ${skills.join(", ")} — that's $${cappedLow.toLocaleString()}-$${cappedHigh.toLocaleString()}/month potential as an UpTend pro in Orlando.`,
-          note: "Your DIY history counts toward certification — you're already ahead of most applicants.",
+          message: `You've already proven you can do ${skills.join(", ")} - that's $${cappedLow.toLocaleString()}-$${cappedHigh.toLocaleString()}/month potential as an UpTend pro in Orlando.`,
+          note: "Your DIY history counts toward certification - you're already ahead of most applicants.",
         },
       });
     } catch (err: any) {

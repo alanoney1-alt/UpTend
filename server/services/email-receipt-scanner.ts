@@ -2,7 +2,7 @@
  * Email Receipt Scanner Service
  *
  * Scans Gmail for receipts from known retailers.
- * OAuth keys to be added later — structure is ready.
+ * OAuth keys to be added later - structure is ready.
  */
 
 import { pool } from "../db.js";
@@ -40,11 +40,11 @@ export function getEmailAuthUrl(customerId: string, provider: string = "gmail"):
 }
 
 /**
- * Handle OAuth callback — exchange code for tokens, store connection
+ * Handle OAuth callback - exchange code for tokens, store connection
  */
 export async function handleEmailCallback(code: string, customerId: string): Promise<{ success: boolean; error?: string }> {
   if (!GMAIL_CLIENT_ID || !GMAIL_CLIENT_SECRET) {
-    console.warn("[Email Scanner] Gmail OAuth not configured — storing placeholder connection");
+    console.warn("[Email Scanner] Gmail OAuth not configured - storing placeholder connection");
     await pool.query(
       `INSERT INTO retailer_connections (customer_id, retailer, connection_type, status, account_email)
        VALUES ($1, 'amazon', 'email_scan', 'connected', 'pending-oauth-setup')
@@ -129,7 +129,7 @@ export async function scheduleSyncJob(customerId: string): Promise<{ scheduled: 
   const nextSync = new Date();
   nextSync.setDate(nextSync.getDate() + 7);
 
-  // For now, just log the intent — actual scheduling would use cron/job queue
+  // For now, just log the intent - actual scheduling would use cron/job queue
   console.log(`[Email Scanner] Scheduled weekly sync for customer ${customerId}, next: ${nextSync.toISOString()}`);
 
   return { scheduled: true, nextSync: nextSync.toISOString() };

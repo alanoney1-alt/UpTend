@@ -66,7 +66,7 @@ export function registerBackgroundCheckRoutes(app: Express): void {
 
   /**
    * POST /api/background-check/webhook
-   * Checkr webhook endpoint (public — no auth required)
+   * Checkr webhook endpoint (public - no auth required)
    */
   app.post("/api/background-check/webhook", async (req, res) => {
     try {

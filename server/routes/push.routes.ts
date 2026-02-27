@@ -1,5 +1,5 @@
 /**
- * Push Notification Routes — Expo push token registration
+ * Push Notification Routes - Expo push token registration
  */
 import type { Express, Request, Response } from 'express';
 import { pool } from '../db.js';

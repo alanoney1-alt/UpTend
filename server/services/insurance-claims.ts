@@ -1,7 +1,7 @@
 /**
  * Insurance Claims Documentation Service
  * 
- * Manages insurance claims lifecycle — from initial documentation through
+ * Manages insurance claims lifecycle - from initial documentation through
  * settlement. Pulls before-photos from home scan history for comparison.
  */
 
@@ -24,7 +24,7 @@ export async function startClaim(
 
   const beforePhotos = scanPhotos.map((p: any) => ({
     url: p.photo_url,
-    description: `${p.room_label || "Home"} — ${p.ai_analysis || "pre-incident photo"}`,
+    description: `${p.room_label || "Home"} - ${p.ai_analysis || "pre-incident photo"}`,
     timestamp: p.scanned_at,
   }));
 

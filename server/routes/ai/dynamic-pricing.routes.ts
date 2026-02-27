@@ -4,8 +4,8 @@
  * AI-powered pricing considering demand, time of day, season, weather, pro availability.
  *
  * Endpoints:
- * - POST /api/ai/pricing/calculate — AI-optimized price with breakdown
- * - GET  /api/ai/pricing/factors/:zipCode — Current pricing factors for a zip
+ * - POST /api/ai/pricing/calculate - AI-optimized price with breakdown
+ * - GET  /api/ai/pricing/factors/:zipCode - Current pricing factors for a zip
  */
 
 import { Router } from "express";

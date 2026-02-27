@@ -111,7 +111,7 @@ export async function seedCertificationPrograms() {
 
 ## Why Communication Matters
 
-Property Management companies are your primary point of contact — not the tenants, not the property owners. Understanding the chain of command is critical to maintaining professional relationships and repeat business.
+Property Management companies are your primary point of contact - not the tenants, not the property owners. Understanding the chain of command is critical to maintaining professional relationships and repeat business.
 
 ## Key Principles
 
@@ -174,7 +174,7 @@ A work order is your contract for each job. It defines exactly what you're autho
 ### 1. Receiving a Work Order
 When a work order comes in through UpTend:
 - Review the full scope before accepting
-- Note the **NTE (Not-to-Exceed)** amount — this is your budget ceiling
+- Note the **NTE (Not-to-Exceed)** amount - this is your budget ceiling
 - Check the property address and access instructions
 - Verify the scheduled date and time window
 - Identify any special instructions or tenant considerations
@@ -189,7 +189,7 @@ When a work order comes in through UpTend:
 - Follow the scope exactly as written
 - If additional work is needed, STOP and get approval
 - Document everything with time-stamped photos
-- Track your time accurately — start and end times matter
+- Track your time accurately - start and end times matter
 
 ### 4. Scope Change Protocol
 When you discover work beyond the original scope:
@@ -247,7 +247,7 @@ You're a service professional representing both UpTend and the PM company. Tenan
 - Introduce yourself: "Hi, I'm [Name] from UpTend, here for the scheduled [service]"
 - Be courteous but maintain professional distance
 - Don't accept food, drinks, or tips from tenants (company policy)
-- Don't share personal phone numbers — all communication through the platform
+- Don't share personal phone numbers - all communication through the platform
 
 ### 3. Privacy & Respect
 - Only access areas specified in the work order
@@ -302,7 +302,7 @@ PM properties use various access methods. Know them all:
 - Pick up from the PM office or designated location
 - Return keys the same day unless told otherwise
 - Never make copies of keys
-- If you lose a key, report immediately — this triggers a re-key at your expense
+- If you lose a key, report immediately - this triggers a re-key at your expense
 
 ### Tenant-Present Access
 - Arrive within the scheduled time window
@@ -311,7 +311,7 @@ PM properties use various access methods. Know them all:
 - Never enter without tenant permission when they're expected to be present
 
 ### Smart Lock / Electronic Access
-- Temporary codes may expire — verify before heading out
+- Temporary codes may expire - verify before heading out
 - Don't share electronic access with others
 - Report any access issues immediately
 
@@ -321,13 +321,13 @@ PM properties use various access methods. Know them all:
 1. Verify the address matches the work order
 2. Check for signs of unauthorized entry or damage
 3. Take exterior photos before entering
-4. Test locks and doors — note if anything is unsecured
+4. Test locks and doors - note if anything is unsecured
 
 ### During Work
 - Keep doors locked if working inside a vacant unit
 - Don't leave tools or equipment unattended in common areas
 - Secure the property if you step out (even briefly)
-- If you notice security cameras, work professionally — you're on film
+- If you notice security cameras, work professionally - you're on film
 
 ### Upon Departure
 1. Ensure all doors are locked
@@ -362,7 +362,7 @@ PM properties use various access methods. Know them all:
 
 ## What is an HOA?
 
-A Homeowners Association (HOA) is a governing body that manages a residential community. They enforce rules (CC&Rs — Covenants, Conditions & Restrictions) and maintain common areas.
+A Homeowners Association (HOA) is a governing body that manages a residential community. They enforce rules (CC&Rs - Covenants, Conditions & Restrictions) and maintain common areas.
 
 ## Why This Matters to You
 
@@ -378,17 +378,17 @@ As a service pro working with HOAs, you need to understand:
 - Volunteer homeowners elected by the community
 - They approve budgets, vendors, and major decisions
 - You may interact with board members during inspections
-- Always be professional — they're your client's client
+- Always be professional - they're your client's client
 
 ### HOA Management Company
-- Your direct client — they manage day-to-day operations
+- Your direct client - they manage day-to-day operations
 - They issue work orders, handle payments, and coordinate access
 - All communication goes through them unless directed otherwise
 
 ### Community Manager
 - Your primary point of contact
 - Handles scheduling, approvals, and scope changes
-- Treat them like a PM — responsive, professional communication
+- Treat them like a PM - responsive, professional communication
 
 ## Common HOA Service Categories
 - **Common Area Maintenance**: Pools, clubhouses, playgrounds, landscaping
@@ -398,10 +398,10 @@ As a service pro working with HOAs, you need to understand:
 - **Inspections**: Annual property assessments, code compliance checks
 
 ## Key Differences from Regular Jobs
-1. **Visibility**: You're working in shared spaces — residents are watching
+1. **Visibility**: You're working in shared spaces - residents are watching
 2. **Standards**: HOAs have specific aesthetic standards (colors, materials, methods)
 3. **Timing**: Work may be restricted to certain hours to minimize disruption
-4. **Documentation**: More thorough than residential — boards want detailed reports
+4. **Documentation**: More thorough than residential - boards want detailed reports
 5. **Recurring**: HOA work is often ongoing contracts, not one-off jobs`,
     },
     {
@@ -432,10 +432,10 @@ Common areas are shared spaces owned and maintained by the HOA:
 - Report graffiti, vandalism, or damage immediately
 
 ### Safety First
-- **Trip hazards**: Uneven pavement, raised roots, broken tiles — flag immediately
-- **Lighting**: Burned-out bulbs in common areas are a liability — replace or report
-- **Water hazards**: Standing water, broken sprinklers, pool issues — critical priority
-- **Structural**: Loose railings, broken fencing, damaged stairs — document and escalate
+- **Trip hazards**: Uneven pavement, raised roots, broken tiles - flag immediately
+- **Lighting**: Burned-out bulbs in common areas are a liability - replace or report
+- **Water hazards**: Standing water, broken sprinklers, pool issues - critical priority
+- **Structural**: Loose railings, broken fencing, damaged stairs - document and escalate
 
 ### Work Quality Standards
 When working in common areas:
@@ -484,10 +484,10 @@ Violations are breaches of the community's CC&Rs. Common examples:
 ## Documentation Standards
 
 ### Photography Requirements
-- **Clear, well-lit photos** — take multiple angles
+- **Clear, well-lit photos** - take multiple angles
 - **Include context**: Show the property address or unit number in frame
 - **Date/time stamped**: Use the UpTend app camera for automatic timestamps
-- **Objective framing**: Don't zoom in to exaggerate — capture the full picture
+- **Objective framing**: Don't zoom in to exaggerate - capture the full picture
 - **No people**: Never photograph residents in violation photos
 
 ### Written Documentation
@@ -516,7 +516,7 @@ Your reports may be used in legal proceedings. Keep them:
 - **Complete**: Don't skip properties because you know the homeowner
 
 ## Inspection Routes
-- Follow the assigned route — don't skip or reorder
+- Follow the assigned route - don't skip or reorder
 - Document EVERY property, even compliant ones (note "No violations observed")
 - Complete the full route in one session when possible
 - If weather prevents inspection, reschedule through the management company`,
@@ -544,7 +544,7 @@ Unlike PM work where you interact with individual tenants, HOA work puts you in 
 - Park in designated areas (not in resident spots)
 - Don't block driveways or fire lanes
 - Keep noise to a minimum
-- Clean as you go — residents notice mess
+- Clean as you go - residents notice mess
 
 ## Common Resident Interactions
 
@@ -552,7 +552,7 @@ Unlike PM work where you interact with individual tenants, HOA work puts you in 
 > "I'm with UpTend, contracted by [Management Company] for [general description]. If you have any questions, [Management Company] can help!"
 
 ### "Can you also do [personal request] at my house?"
-> "I appreciate the interest! My current contract is with the HOA for common areas. For personal service, you can book through UpTend at uptend.app — we'd love to help!"
+> "I appreciate the interest! My current contract is with the HOA for common areas. For personal service, you can book through UpTend at uptend.app - we'd love to help!"
 
 ### "I have a complaint about [issue]."
 > "I understand your concern. The best way to get that addressed is through your community manager at [Management Company]. They track all requests and can prioritize accordingly."
@@ -570,8 +570,8 @@ Occasionally you may be asked to attend a board meeting to:
 - Dress professionally
 - Prepare a brief, factual presentation
 - Bring before/after photos
-- Be ready for tough questions — boards are budget-conscious
-- Don't take criticism personally — it's business
+- Be ready for tough questions - boards are budget-conscious
+- Don't take criticism personally - it's business
 - Follow up with a written summary
 
 ## Social Media Policy
@@ -613,9 +613,9 @@ Systematically inspect and document:
 - Signs of water intrusion (staining on fascia)
 
 **Foundation & Structure**
-- Visible cracks (measure width with a reference — coin or ruler in photo)
+- Visible cracks (measure width with a reference - coin or ruler in photo)
 - Settlement or heaving
-- Grading — does water flow away from the foundation?
+- Grading - does water flow away from the foundation?
 - Crawl space vents (open/closed/blocked)
 
 **Exterior Surfaces**
@@ -652,11 +652,11 @@ Systematically inspect and document:
 
 ## Scoring
 Rate each area on a 1-5 scale:
-- **5**: Excellent — no action needed
-- **4**: Good — minor maintenance recommended within 12 months
-- **3**: Fair — maintenance needed within 6 months
-- **2**: Poor — repair needed within 3 months
-- **1**: Critical — immediate attention required`,
+- **5**: Excellent - no action needed
+- **4**: Good - minor maintenance recommended within 12 months
+- **3**: Fair - maintenance needed within 6 months
+- **2**: Poor - repair needed within 3 months
+- **1**: Critical - immediate attention required`,
     },
     {
       certificationId: aiCert.id,
@@ -680,7 +680,7 @@ Your photos feed the AI analysis engine. Better photos = better recommendations 
 
 ### Required Photo Set (Minimum 35-50 photos per assessment)
 
-**Exterior — Minimum 15 photos:**
+**Exterior - Minimum 15 photos:**
 - Front of home (full view)
 - Back of home (full view)
 - Each side of home
@@ -693,7 +693,7 @@ Your photos feed the AI analysis engine. Better photos = better recommendations 
 - HVAC exterior unit
 - Electrical meter area
 
-**Interior — Minimum 15 photos:**
+**Interior - Minimum 15 photos:**
 - Each room (wide shot showing overall condition)
 - Kitchen appliances (age stickers if visible)
 - Bathroom fixtures and caulk lines
@@ -704,7 +704,7 @@ Your photos feed the AI analysis engine. Better photos = better recommendations 
 - Attic access (if accessible)
 - Any visible damage or concerns
 
-**Issue Documentation — As needed:**
+**Issue Documentation - As needed:**
 - Wide shot showing location/context
 - Close-up showing the specific issue
 - Reference object for scale (coin, hand, ruler)
@@ -767,14 +767,14 @@ Before submitting your assessment:
 - ✅ Notes added for any rating of 3 or below
 - ✅ Safety hazards flagged with urgency
 - ✅ Contact info correct
-- ✅ No personal opinions — just professional observations
+- ✅ No personal opinions - just professional observations
 
 ## The Homeowner Experience
 
 Understanding what the homeowner sees helps you do better work:
 
 1. **Executive Summary**: Overall health score (A-F grade), top 3 priorities
-2. **Category Breakdown**: Roof, Foundation, Exterior, Interior, Systems — each scored
+2. **Category Breakdown**: Roof, Foundation, Exterior, Interior, Systems - each scored
 3. **Action Items**: Prioritized list with estimated costs and timelines
 4. **Photo Evidence**: Your photos organized by category
 5. **Maintenance Calendar**: AI-generated schedule based on findings
@@ -843,9 +843,9 @@ For every part purchase:
 - **Appliance**: Belts, elements, igniters, seals
 
 ## Pro Tips
-- Build relationships with local supply houses — pro pricing saves everyone money
+- Build relationships with local supply houses - pro pricing saves everyone money
 - Keep common parts in your vehicle (standard filters, faucet cartridges, outlet covers)
-- Know your limits — if a part requires a licensed trade to install, refer to the right pro`,
+- Know your limits - if a part requires a licensed trade to install, refer to the right pro`,
     },
     {
       certificationId: partsCert.id,
@@ -875,9 +875,9 @@ Proper receipt documentation ensures you get reimbursed quickly and protects aga
 4. **Add notes**: Which part is for what purpose
 
 ### Digital vs. Physical
-- Digital receipts (email) are acceptable — forward to your UpTend job file
+- Digital receipts (email) are acceptable - forward to your UpTend job file
 - If buying online, screenshot the order confirmation AND the shipping confirmation
-- Credit card statements alone are NOT sufficient — need itemized receipts
+- Credit card statements alone are NOT sufficient - need itemized receipts
 
 ## Reimbursement Process
 
@@ -982,7 +982,7 @@ If called back for a part you installed:
 2. Diagnose whether it's a part defect or installation issue
 3. If it's your installation: fix at no charge
 4. If it's a defective part: process warranty claim, replace
-5. Document everything — callbacks are tracked in your quality score`,
+5. Document everything - callbacks are tracked in your quality score`,
     },
   ]);
 
@@ -1008,7 +1008,7 @@ Emergency dispatch jobs have a 2-hour or less response window. They include:
 
 ### 1. Acknowledgment (Within 5 minutes)
 When you receive an emergency dispatch:
-- Accept or decline immediately — do not let it sit
+- Accept or decline immediately - do not let it sit
 - If you accept, confirm your ETA
 - If you decline, it goes to the next available pro instantly
 - False accepts (accepting then no-showing) result in certification suspension
@@ -1070,19 +1070,19 @@ Ask yourself:
 3. **Do I have the right PPE?** (personal protective equipment)
 4. **Is there a safe exit route?**
 
-### Red Flags — DO NOT ENTER
-- 🔴 Smell of gas (natural gas or propane) — call 911, move away
-- 🔴 Active fire or smoke — wait for fire department
+### Red Flags - DO NOT ENTER
+- 🔴 Smell of gas (natural gas or propane) - call 911, move away
+- 🔴 Active fire or smoke - wait for fire department
 - 🔴 Standing water with electrical components nearby
 - 🔴 Visible structural damage (sagging roof, leaning walls, cracked foundation)
 - 🔴 Downed power lines on or near the property
 - 🔴 Evidence of hazardous materials (chemical spills, asbestos debris)
 - 🔴 Aggressive animals or hostile individuals
 
-### Yellow Flags — Proceed with Extreme Caution
+### Yellow Flags - Proceed with Extreme Caution
 - ⚠️ Water damage with unknown depth
 - ⚠️ Storm damage with unstable debris
-- ⚠️ Old buildings (pre-1978 — potential lead/asbestos)
+- ⚠️ Old buildings (pre-1978 - potential lead/asbestos)
 - ⚠️ Confined spaces (crawl spaces, attics)
 - ⚠️ Working at heights (>6 feet)
 
@@ -1115,7 +1115,7 @@ If you're injured on-site:
 3. Call 911 if the injury is serious
 4. Notify UpTend dispatch
 5. Document the injury (photos, written account)
-6. Seek medical attention — even for "minor" injuries
+6. Seek medical attention - even for "minor" injuries
 7. File an incident report within 24 hours
 
 ## Refusing Unsafe Work
@@ -1123,7 +1123,7 @@ You have the absolute right to refuse unsafe work:
 - Document why you're refusing (photos of the hazard)
 - Notify dispatch immediately
 - Never let a customer or PM pressure you into an unsafe situation
-- UpTend backs your safety decisions — no penalties for refusing unsafe work`,
+- UpTend backs your safety decisions - no penalties for refusing unsafe work`,
     },
     {
       certificationId: emergCert.id,
@@ -1174,7 +1174,7 @@ Every 30 minutes (or when significant changes occur):
 - More detailed, technical communication
 - Include NTE impact
 - Flag if the scope exceeds original authorization
-- Document everything — PMs need it for insurance claims
+- Document everything - PMs need it for insurance claims
 
 ### UpTend Dispatch
 - Use the in-app communication channel
@@ -1184,7 +1184,7 @@ Every 30 minutes (or when significant changes occur):
 
 ### Insurance (if applicable)
 - Do NOT communicate directly with insurance companies
-- Document everything thoroughly — your photos and notes may be used in claims
+- Document everything thoroughly - your photos and notes may be used in claims
 - Note pre-existing vs. emergency-caused damage
 - Keep all receipts and time logs
 
@@ -1209,11 +1209,11 @@ Homeowners in emergencies are stressed. Practice:
 
 ## What is Prevailing Wage?
 
-Government contracts often require that workers are paid the "prevailing wage" — the standard wage rate for a particular type of work in a specific geographic area. This is set by the Department of Labor.
+Government contracts often require that workers are paid the "prevailing wage" - the standard wage rate for a particular type of work in a specific geographic area. This is set by the Department of Labor.
 
 ## Why It Matters
 
-- It's the law — violations carry heavy penalties
+- It's the law - violations carry heavy penalties
 - Underpaying on government jobs can result in debarment (banned from future contracts)
 - Both you and UpTend can be held liable
 
@@ -1242,7 +1242,7 @@ The prevailing wage includes:
 ### Certified Payroll
 Government contracts require certified payroll reports:
 - Weekly submission of hours worked, classifications, and wages paid
-- Must be accurate — falsifying certified payroll is a federal crime
+- Must be accurate - falsifying certified payroll is a federal crime
 - UpTend handles the payroll reporting, but you must submit accurate time records
 
 ## Your Responsibilities
@@ -1279,7 +1279,7 @@ The Davis-Bacon Act (1931) requires that workers on federally funded constructio
 ## Key Requirements
 
 ### For You (The Worker)
-1. **You must be paid weekly** — no bi-weekly or monthly pay on Davis-Bacon jobs
+1. **You must be paid weekly** - no bi-weekly or monthly pay on Davis-Bacon jobs
 2. **Overtime**: 1.5x rate for hours over 40/week on the project
 3. **Classification accuracy**: If you do multiple types of work, the highest-paying classification applies when tasks are mixed
 4. **Apprentice exception**: Lower rates only if enrolled in a registered apprenticeship program
@@ -1287,7 +1287,7 @@ The Davis-Bacon Act (1931) requires that workers on federally funded constructio
 ### Posting Requirements
 - Wage determinations must be posted at the job site
 - You should be able to see what rate applies to your classification
-- If they're not posted, ask — it's required by law
+- If they're not posted, ask - it's required by law
 
 ### Record Keeping
 Keep your own records:
@@ -1332,10 +1332,10 @@ Government contracts require more thorough documentation than private sector wor
 - [ ] Required licenses and certifications
 
 ### During Job
-- [ ] Daily time logs (start, breaks, stop — to the minute)
+- [ ] Daily time logs (start, breaks, stop - to the minute)
 - [ ] Daily progress photos (time-stamped)
 - [ ] Material/parts receipts (itemized)
-- [ ] Any change orders (scope changes) — approved IN WRITING before proceeding
+- [ ] Any change orders (scope changes) - approved IN WRITING before proceeding
 - [ ] Safety incident reports (if any, even minor)
 - [ ] Weather delay documentation (if applicable)
 
@@ -1353,7 +1353,7 @@ Change orders on government jobs are different:
 1. **Stop work** on the changed scope item
 2. **Document** the issue or change in writing with photos
 3. **Submit** through UpTend to the contracting officer
-4. **Wait** for written authorization — verbal approval is NOT sufficient
+4. **Wait** for written authorization - verbal approval is NOT sufficient
 5. **Track** additional time and materials separately
 6. **Never exceed the contract amount without written modification**
 
@@ -1376,7 +1376,7 @@ Government contracts may be audited. Be prepared for:
 - When in doubt, put it in writing
 - Save all communications (emails, texts, app messages)
 - Never backdate or alter records
-- Ask questions before you start — not after there's a problem`,
+- Ask questions before you start - not after there's a problem`,
     },
     {
       certificationId: govCert.id,
@@ -1444,7 +1444,7 @@ Some facilities may require:
 ### Don'ts
 - ❌ Never photograph classified or restricted areas
 - ❌ Don't discuss facility security measures with anyone
-- ❌ Don't bring prohibited items (varies by facility — check before you go)
+- ❌ Don't bring prohibited items (varies by facility - check before you go)
 - ❌ Don't leave tools or equipment unattended
 - ❌ Don't prop open secure doors
 - ❌ Don't allow tailgating (others following you through a secure door)
@@ -1486,14 +1486,14 @@ The Occupational Safety and Health Administration (OSHA) sets and enforces workp
 - Read Safety Data Sheets (SDS) before using any chemical product
 - Wear appropriate PPE for each chemical
 - Never mix chemicals unless you know it's safe
-- Store chemicals properly — no leaking containers in your vehicle
+- Store chemicals properly - no leaking containers in your vehicle
 
 ### Electrical Safety (29 CFR 1910 Subpart S)
 - De-energize equipment before working on it when possible
 - Use lockout/tagout procedures for energy isolation
 - Never work on live circuits unless trained and authorized
 - Use GFCI protection for all power tools in wet conditions
-- Inspect power cords before each use — replace damaged cords
+- Inspect power cords before each use - replace damaged cords
 
 ### PPE (29 CFR 1910 Subpart I)
 - Eye protection: Safety glasses or goggles when there's a flying debris risk
@@ -1516,11 +1516,11 @@ OSHA requires reporting:
 - All injuries should be documented, even minor ones
 
 ## Government Job Specifics
-- Government sites may have their own safety officer — introduce yourself
+- Government sites may have their own safety officer - introduce yourself
 - Follow site-specific safety plans (they override your general practices when stricter)
 - Attend any required safety briefings before starting work
 - Hard hats and high-vis vests are mandatory on most government construction sites
-- Maintain your own safety training records — government auditors may ask for them
+- Maintain your own safety training records - government auditors may ask for them
 
 ## Consequences of Non-Compliance
 - OSHA fines range from $15,625 per violation to $156,259 for willful violations
@@ -1565,7 +1565,7 @@ OSHA requires reporting:
       optionC: "Not-to-Exceed",
       optionD: "New Tenant Evaluation",
       correctOption: "c",
-      explanation: "NTE means Not-to-Exceed — it's the maximum budget for the job. You must get written approval before spending over this amount.",
+      explanation: "NTE means Not-to-Exceed - it's the maximum budget for the job. You must get written approval before spending over this amount.",
     },
     {
       certificationId: pmCert.id,
@@ -1582,7 +1582,7 @@ OSHA requires reporting:
       certificationId: pmCert.id,
       moduleNumber: 3,
       question: "A tenant invites you to stay for coffee after finishing a job. What's the appropriate response?",
-      optionA: "Accept — it's good customer relationship building",
+      optionA: "Accept - it's good customer relationship building",
       optionB: "Politely decline and maintain professional distance",
       optionC: "Accept only if the job took more than 4 hours",
       optionD: "Accept but don't bill for the time",
@@ -1605,7 +1605,7 @@ OSHA requires reporting:
       moduleNumber: 4,
       question: "Someone at the property claims to be the homeowner and asks you to let them in. What should you do?",
       optionA: "Let them in if they show ID",
-      optionB: "Let them in — they probably live there",
+      optionB: "Let them in - they probably live there",
       optionC: "Verify their identity through the property management company",
       optionD: "Give them the lockbox code so they can enter themselves",
       correctOption: "c",
@@ -1652,7 +1652,7 @@ OSHA requires reporting:
       certificationId: hoaCert.id,
       moduleNumber: 2,
       question: "You notice a trip hazard (raised sidewalk section) while working on an HOA property. What do you do?",
-      optionA: "Ignore it — it's not part of your job",
+      optionA: "Ignore it - it's not part of your job",
       optionB: "Fix it yourself and add it to the invoice",
       optionC: "Flag it immediately in your report as a safety concern and notify the management company",
       optionD: "Tell a nearby resident to be careful",
@@ -1685,7 +1685,7 @@ OSHA requires reporting:
       certificationId: hoaCert.id,
       moduleNumber: 4,
       question: "A resident asks you to do some personal work at their home while you're on-site for HOA work. What's the best response?",
-      optionA: "Do it — more revenue for you",
+      optionA: "Do it - more revenue for you",
       optionB: "Refer them to book through UpTend for personal service",
       optionC: "Do it after hours",
       optionD: "Give them your personal phone number",
@@ -1733,12 +1733,12 @@ OSHA requires reporting:
       certificationId: aiCert.id,
       moduleNumber: 1,
       question: "A condition rated '2' on the 1-5 scale means:",
-      optionA: "Excellent — no action needed",
-      optionB: "Poor — repair needed within 3 months",
-      optionC: "Fair — maintenance needed within 6 months",
-      optionD: "Critical — immediate attention required",
+      optionA: "Excellent - no action needed",
+      optionB: "Poor - repair needed within 3 months",
+      optionC: "Fair - maintenance needed within 6 months",
+      optionD: "Critical - immediate attention required",
       correctOption: "b",
-      explanation: "A rating of 2 means 'Poor — repair needed within 3 months.' Rating 1 is Critical (immediate), 3 is Fair (6 months), 4 is Good (12 months), 5 is Excellent.",
+      explanation: "A rating of 2 means 'Poor - repair needed within 3 months.' Rating 1 is Critical (immediate), 3 is Fair (6 months), 4 is Good (12 months), 5 is Excellent.",
     },
     {
       certificationId: aiCert.id,
@@ -1757,7 +1757,7 @@ OSHA requires reporting:
       question: "When photographing a foundation crack, what must you include for scale?",
       optionA: "Your thumb for comparison",
       optionB: "A reference object like a coin, hand, or ruler",
-      optionC: "Nothing — the AI can determine size from the photo",
+      optionC: "Nothing - the AI can determine size from the photo",
       optionD: "A tape measure extended to 6 feet",
       correctOption: "b",
       explanation: "Always include a reference object (coin, hand, or ruler) in close-up photos of damage to provide scale for accurate assessment.",
@@ -1825,10 +1825,10 @@ OSHA requires reporting:
       certificationId: partsCert.id,
       moduleNumber: 2,
       question: "A credit card statement showing a purchase amount is sufficient for reimbursement. True or false?",
-      optionA: "True — it shows the amount paid",
-      optionB: "False — an itemized receipt from the store is required",
-      optionC: "True — as long as the date matches",
-      optionD: "True — if combined with a photo of the part",
+      optionA: "True - it shows the amount paid",
+      optionB: "False - an itemized receipt from the store is required",
+      optionC: "True - as long as the date matches",
+      optionD: "True - if combined with a photo of the part",
       correctOption: "b",
       explanation: "Credit card statements are NOT sufficient. You need an itemized receipt showing store name, date, individual items, prices, and total.",
     },
@@ -1859,7 +1859,7 @@ OSHA requires reporting:
       moduleNumber: 3,
       question: "You installed a part and get a callback 2 weeks later. The part isn't working. What's your first step?",
       optionA: "Tell the customer to contact the manufacturer",
-      optionB: "Ignore it — it's been too long",
+      optionB: "Ignore it - it's been too long",
       optionC: "Respond within 24 hours and diagnose whether it's a defect or installation issue",
       optionD: "Charge for a new service call",
       correctOption: "c",
@@ -1884,12 +1884,12 @@ OSHA requires reporting:
       certificationId: emergCert.id,
       moduleNumber: 1,
       question: "What happens if you accept an emergency dispatch and then no-show?",
-      optionA: "Nothing — emergencies are unpredictable",
+      optionA: "Nothing - emergencies are unpredictable",
       optionB: "A warning on your first offense",
       optionC: "Your Emergency Response certification may be suspended",
       optionD: "A small fine",
       correctOption: "c",
-      explanation: "False accepts (accepting then no-showing) on emergency dispatches result in certification suspension. This is critical — someone is depending on you.",
+      explanation: "False accepts (accepting then no-showing) on emergency dispatches result in certification suspension. This is critical - someone is depending on you.",
     },
     {
       certificationId: emergCert.id,
@@ -1900,16 +1900,16 @@ OSHA requires reporting:
       optionC: "Turn off the HVAC system and continue working",
       optionD: "Call the property manager for instructions",
       correctOption: "b",
-      explanation: "Gas smell is a RED FLAG — do not enter, leave immediately if inside, move away from the property, and call 911. Never attempt to fix a gas leak yourself.",
+      explanation: "Gas smell is a RED FLAG - do not enter, leave immediately if inside, move away from the property, and call 911. Never attempt to fix a gas leak yourself.",
     },
     {
       certificationId: emergCert.id,
       moduleNumber: 2,
       question: "You have the right to refuse unsafe work. Will UpTend penalize you for refusing?",
-      optionA: "Yes — you should complete every job you accept",
-      optionB: "No — UpTend backs your safety decisions with no penalties",
+      optionA: "Yes - you should complete every job you accept",
+      optionB: "No - UpTend backs your safety decisions with no penalties",
       optionC: "Only if you refuse more than twice per month",
-      optionD: "Yes — but the penalty is reduced",
+      optionD: "Yes - but the penalty is reduced",
       correctOption: "b",
       explanation: "You have the absolute right to refuse unsafe work. UpTend backs your safety decisions with no penalties for refusing unsafe work.",
     },
@@ -1944,7 +1944,7 @@ OSHA requires reporting:
       optionC: "Generate the highest possible invoice",
       optionD: "Document everything and leave",
       correctOption: "b",
-      explanation: "Emergency mitigation means 'stopping the bleeding' — prevent further damage and stabilize. Full repairs come later.",
+      explanation: "Emergency mitigation means 'stopping the bleeding' - prevent further damage and stabilize. Full repairs come later.",
     },
   ]);
 
@@ -1998,10 +1998,10 @@ OSHA requires reporting:
       certificationId: govCert.id,
       moduleNumber: 3,
       question: "You discover a scope change on a government job. Verbal approval from the project manager is sufficient to proceed. True or false?",
-      optionA: "True — verbal approval is binding",
-      optionB: "False — you need written authorization before proceeding",
-      optionC: "True — as long as you document the conversation",
-      optionD: "True — for changes under $500",
+      optionA: "True - verbal approval is binding",
+      optionB: "False - you need written authorization before proceeding",
+      optionC: "True - as long as you document the conversation",
+      optionD: "True - for changes under $500",
       correctOption: "b",
       explanation: "On government jobs, verbal approval is NOT sufficient for scope changes. You must receive written authorization before proceeding.",
     },

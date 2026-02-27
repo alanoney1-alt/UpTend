@@ -8,7 +8,7 @@ export function registerEarningsPotentialRoutes(app: Express) {
    */
   app.get("/api/academy/earnings-potential", requireAuth, requireHauler, async (req: Request, res: Response) => {
     try {
-      // Hardcoded estimates for now — can be refined with real area/service data later
+      // Hardcoded estimates for now - can be refined with real area/service data later
       const earningsPotential = {
         tiers: {
           starter: {

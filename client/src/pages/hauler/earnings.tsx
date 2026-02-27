@@ -104,7 +104,7 @@ export default function EarningsPage() {
                     </p>
                     <p className="text-xs text-muted-foreground truncate">{job.address}</p>
                     <p className="text-xs text-muted-foreground">
-                      {job.date ? new Date(job.date).toLocaleDateString() : "—"}
+                      {job.date ? new Date(job.date).toLocaleDateString() : "-"}
                     </p>
                   </div>
                   <div className="text-right shrink-0">

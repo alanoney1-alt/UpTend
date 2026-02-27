@@ -1,5 +1,5 @@
 /**
- * Auto Services — Vehicle profiles, maintenance tracking, diagnosis, parts search, OBD codes, tutorials
+ * Auto Services - Vehicle profiles, maintenance tracking, diagnosis, parts search, OBD codes, tutorials
  *
  * Same model as home services: diagnose → coach → find parts → buy → or book a pro.
  */
@@ -355,16 +355,16 @@ const OBD_CODES: Record<string, { description: string; severity: string; common:
  P0135: { description: "O2 Sensor Heater Circuit Malfunction (Bank 1, Sensor 1)", severity: "moderate", common: "O2 sensor heater failure or wiring issue" },
  P0440: { description: "Evaporative Emission Control System Malfunction", severity: "low", common: "Gas cap loose, EVAP canister or purge valve issue" },
  P0455: { description: "Evaporative Emission Control System Leak Detected (Large Leak)", severity: "low", common: "Gas cap missing/damaged or major EVAP leak" },
- P0442: { description: "Evaporative Emission Control System Leak Detected (Small Leak)", severity: "low", common: "Small EVAP leak — gas cap, hose, or canister" },
- P0700: { description: "Transmission Control System Malfunction", severity: "high", common: "General transmission fault — check for additional trans codes" },
+ P0442: { description: "Evaporative Emission Control System Leak Detected (Small Leak)", severity: "low", common: "Small EVAP leak - gas cap, hose, or canister" },
+ P0700: { description: "Transmission Control System Malfunction", severity: "high", common: "General transmission fault - check for additional trans codes" },
  P0730: { description: "Incorrect Gear Ratio", severity: "high", common: "Transmission slipping, worn clutches, or low fluid" },
  P0740: { description: "Torque Converter Clutch Circuit Malfunction", severity: "high", common: "TCC solenoid, wiring, or torque converter issue" },
  P0750: { description: "Shift Solenoid A Malfunction", severity: "high", common: "Failed shift solenoid or wiring" },
  P0755: { description: "Shift Solenoid B Malfunction", severity: "high", common: "Failed shift solenoid or wiring" },
- P0217: { description: "Engine Overtemperature Condition", severity: "critical", common: "Cooling system failure — thermostat, water pump, or radiator" },
- P0128: { description: "Coolant Thermostat Below Thermostat Regulating Temperature", severity: "low", common: "Thermostat stuck open — engine running too cold" },
+ P0217: { description: "Engine Overtemperature Condition", severity: "critical", common: "Cooling system failure - thermostat, water pump, or radiator" },
+ P0128: { description: "Coolant Thermostat Below Thermostat Regulating Temperature", severity: "low", common: "Thermostat stuck open - engine running too cold" },
  P0325: { description: "Knock Sensor 1 Circuit Malfunction", severity: "moderate", common: "Bad knock sensor or wiring" },
- P0335: { description: "Crankshaft Position Sensor A Circuit Malfunction", severity: "high", common: "Failed crank sensor — can cause no-start" },
+ P0335: { description: "Crankshaft Position Sensor A Circuit Malfunction", severity: "high", common: "Failed crank sensor - can cause no-start" },
  P0230: { description: "Fuel Pump Primary Circuit Malfunction", severity: "high", common: "Fuel pump relay, wiring, or fuel pump failure" },
  P0507: { description: "Idle Control System RPM Higher Than Expected", severity: "low", common: "Vacuum leak, dirty throttle body, or bad IAC valve" },
  P0116: { description: "Engine Coolant Temperature Circuit Range/Performance", severity: "moderate", common: "Coolant temp sensor or thermostat issue" },
@@ -400,7 +400,7 @@ export async function getOBDCodeInfo(code: string) {
  return {
  code: upper,
  system: systems[prefix] || 'Unknown',
- description: `${systems[prefix] || 'Unknown'} code — consult a mechanic or OBD scanner for details`,
+ description: `${systems[prefix] || 'Unknown'} code - consult a mechanic or OBD scanner for details`,
  severity: 'unknown',
  common: 'Code not in our database. Try searching online or ask a mechanic.',
  relatedPatterns: patterns.rows.map(p => ({
@@ -469,7 +469,7 @@ export async function estimateRepairCost(
  },
  diy: {
  partsCostEstimate: { low: est.low * 0.4, high: est.high * 0.5 },
- note: "DIY saves on labor — parts only cost",
+ note: "DIY saves on labor - parts only cost",
  },
  disclaimer: "Estimates vary by location, vehicle, and shop. Get 2-3 quotes.",
  safetyWarning: isDangerousRepair(repairType)
@@ -525,7 +525,7 @@ export async function startVehicleDIYSession(customerId: string, vehicleId: stri
  return {
  session: result.rows[0],
  escalated: true,
- message: ` **Safety Stop** — This repair involves ${safety.warnings.join(', ')}, which is safety-critical work. I strongly recommend finding a trusted, certified mechanic for this job. Incorrect work on these systems can cause serious injury or death.\n\nWant me to help you find a qualified independent contractor near you instead?`,
+ message: ` **Safety Stop** - This repair involves ${safety.warnings.join(', ')}, which is safety-critical work. I strongly recommend finding a trusted, certified mechanic for this job. Incorrect work on these systems can cause serious injury or death.\n\nWant me to help you find a qualified independent contractor near you instead?`,
  safetyWarnings: safety.warnings,
  };
  }
@@ -554,7 +554,7 @@ function generateDIYSteps(issue: string): Array<{ step: number; title: string; d
  if (lower.includes('oil change') || lower.includes('oil')) {
  return [
  { step: 1, title: "Gather supplies", description: "You'll need: correct oil type/amount (check owner's manual), new oil filter, drain pan, socket wrench, funnel, jack & jack stands.", tools: ["socket wrench", "drain pan", "funnel", "jack", "jack stands"] },
- { step: 2, title: "Warm up engine", description: "Run the engine for 2-3 minutes. Warm oil drains faster and more completely.", safetyTip: "Don't run it too long — the oil will be HOT." },
+ { step: 2, title: "Warm up engine", description: "Run the engine for 2-3 minutes. Warm oil drains faster and more completely.", safetyTip: "Don't run it too long - the oil will be HOT." },
  { step: 3, title: "Lift and secure vehicle", description: "Jack up the front of the car and place it securely on jack stands. NEVER work under a car supported only by a jack.", safetyTip: "Always use jack stands. Double-check they're on solid, level ground." },
  { step: 4, title: "Drain old oil", description: "Place drain pan under the oil pan drain plug. Remove the plug with a socket wrench. Let all oil drain completely (5-10 min).", safetyTip: "Oil may be hot. Wear gloves." },
  { step: 5, title: "Replace oil filter", description: "Remove the old oil filter (may need an oil filter wrench). Apply a thin layer of new oil to the gasket of the new filter. Install hand-tight.", tools: ["oil filter wrench"] },
@@ -589,7 +589,7 @@ function generateDIYSteps(issue: string): Array<{ step: number; title: string; d
  return [
  { step: 1, title: "Locate the filter", description: "Engine air filter: usually in a black plastic box near the front of the engine. Cabin filter: usually behind the glove box or under the dashboard." },
  { step: 2, title: "Open housing", description: "Unlatch clips or remove screws holding the filter housing closed." },
- { step: 3, title: "Remove and inspect", description: "Pull out the old filter. Hold it up to light — if you can't see through it, it needs replacing." },
+ { step: 3, title: "Remove and inspect", description: "Pull out the old filter. Hold it up to light - if you can't see through it, it needs replacing." },
  { step: 4, title: "Install new filter", description: "Place the new filter in the same orientation as the old one (check for airflow arrows). Close and secure the housing." },
  ];
  }
@@ -652,7 +652,7 @@ export async function checkVehicleRecalls(vin: string, vehicleId?: string) {
 // ─── Maintenance History ────────────────────────────────────
 
 export async function getMaintenanceHistory(vehicleId: string) {
- // Check both tables — the existing vehicle_maintenance_log and new vehicle_maintenance_logs
+ // Check both tables - the existing vehicle_maintenance_log and new vehicle_maintenance_logs
  const result = await pool.query(
  `SELECT * FROM vehicle_maintenance_log WHERE vehicle_id = $1 ORDER BY created_at DESC`,
  [vehicleId]

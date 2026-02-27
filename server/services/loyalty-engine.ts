@@ -1,5 +1,5 @@
 /**
- * Loyalty Engine — Tier management, rewards, milestones, discounts
+ * Loyalty Engine - Tier management, rewards, milestones, discounts
  */
 import { pool } from "../db.js";
 
@@ -18,15 +18,15 @@ const TIER_BENEFITS: Record<string, string[]> = {
 };
 
 const MILESTONE_REWARDS: Record<string, { type: string; value: number; description: string }> = {
-  first_booking:  { type: "discount", value: 5, description: "5% off your next booking — welcome!" },
+  first_booking:  { type: "discount", value: 5, description: "5% off your next booking - welcome!" },
   fifth_booking:  { type: "discount", value: 10, description: "10% off for being a loyal customer" },
-  tenth_booking:  { type: "free_scan", value: 0, description: "Free home scan — on us!" },
+  tenth_booking:  { type: "free_scan", value: 0, description: "Free home scan - on us!" },
   first_referral: { type: "discount", value: 10, description: "10% off for your first referral" },
   full_scan:      { type: "discount", value: 15, description: "15% off next service after full home scan" },
   one_year_member:{ type: "free_service", value: 50, description: "$50 credit for 1 year of membership" },
-  spent_500:      { type: "discount", value: 5, description: "5% off — Silver tier unlocked!" },
-  spent_2000:     { type: "free_scan", value: 0, description: "Free annual home scan — Gold tier!" },
-  spent_5000:     { type: "discount", value: 15, description: "15% off next service — Platinum tier!" },
+  spent_500:      { type: "discount", value: 5, description: "5% off - Silver tier unlocked!" },
+  spent_2000:     { type: "free_scan", value: 0, description: "Free annual home scan - Gold tier!" },
+  spent_5000:     { type: "discount", value: 15, description: "15% off next service - Platinum tier!" },
 };
 
 function determineTier(lifetimeSpend: number): string {

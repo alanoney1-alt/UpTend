@@ -265,8 +265,8 @@ export default function BusinessCommunities() {
                   </div>
                   <p className="text-sm text-muted-foreground flex items-center gap-1 mb-3"><MapPin className="w-3 h-3" /> {c.address}</p>
                   <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div><span className="text-muted-foreground">Units:</span> <span className="font-medium">{c.units || c.unitsCount || "—"}</span></div>
-                    <div><span className="text-muted-foreground">Dues:</span> <span className="font-medium">{c.monthlyDues ? `$${c.monthlyDues}/mo` : "—"}</span></div>
+                    <div><span className="text-muted-foreground">Units:</span> <span className="font-medium">{c.units || c.unitsCount || "-"}</span></div>
+                    <div><span className="text-muted-foreground">Dues:</span> <span className="font-medium">{c.monthlyDues ? `$${c.monthlyDues}/mo` : "-"}</span></div>
                     <div className="col-span-2"><span className="text-muted-foreground">Board Contact:</span> <span className="font-medium">{c.boardContact}</span></div>
                   </div>
                   <div className="flex gap-2 mt-4">
@@ -303,7 +303,7 @@ export default function BusinessCommunities() {
                       <TableCell className="text-sm">{v.property}</TableCell>
                       <TableCell><Badge variant="outline">{v.type}</Badge></TableCell>
                       <TableCell className="max-w-[200px] truncate text-sm">{v.description}</TableCell>
-                      <TableCell>{(() => { const d = new Date(v.deadline); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(v.deadline); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell><StatusBadge status={v.status} /></TableCell>
                     </TableRow>
                   ))}
@@ -331,7 +331,7 @@ export default function BusinessCommunities() {
                   <div className="flex items-center gap-6 text-sm">
                     <span className="flex items-center gap-1"><ThumbsUp className="w-4 h-4 text-green-500" /> {a.votesFor} For</span>
                     <span className="flex items-center gap-1"><ThumbsDown className="w-4 h-4 text-red-500" /> {a.votesAgainst} Against</span>
-                    <span className="flex items-center gap-1"><Calendar className="w-4 h-4 text-muted-foreground" /> Deadline: {(() => { const d = new Date(a.deadline); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</span>
+                    <span className="flex items-center gap-1"><Calendar className="w-4 h-4 text-muted-foreground" /> Deadline: {(() => { const d = new Date(a.deadline); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</span>
                   </div>
                   {(a.status === "pending" || a.status === "voting") && (
                     <div className="flex gap-2 mt-4">
@@ -369,7 +369,7 @@ export default function BusinessCommunities() {
                       <TableCell className="font-medium">{s.community}</TableCell>
                       <TableCell>{s.serviceType}</TableCell>
                       <TableCell><Badge variant="outline">{s.frequency}</Badge></TableCell>
-                      <TableCell>{(() => { const d = new Date(s.nextDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(s.nextDate); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell>{s.assignedPro}</TableCell>
                       <TableCell><Button variant="ghost" size="sm"><Eye className="w-4 h-4" /></Button></TableCell>
                     </TableRow>

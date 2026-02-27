@@ -1,5 +1,5 @@
 /**
- * Batch 2 — Path aliases, spending tracker, appliances, warranties, home inventory
+ * Batch 2 - Path aliases, spending tracker, appliances, warranties, home inventory
  */
 
 import type { Express, Request, Response } from "express";
@@ -12,7 +12,7 @@ import { getCustomerVehicles } from "../services/auto-services.js";
 export function registerBatch2Routes(app: Express) {
 
   // ============================================================
-  // 1. GET /api/home-profile — aggregated home profile for authed user
+  // 1. GET /api/home-profile - aggregated home profile for authed user
   // ============================================================
   app.get("/api/home-profile", requireAuth, async (req: Request, res: Response) => {
     try {
@@ -50,7 +50,7 @@ export function registerBatch2Routes(app: Express) {
   });
 
   // ============================================================
-  // 3. GET /api/vehicles — alias using authed user's ID
+  // 3. GET /api/vehicles - alias using authed user's ID
   // ============================================================
   app.get("/api/vehicles", requireAuth, async (req: Request, res: Response) => {
     try {
@@ -63,7 +63,7 @@ export function registerBatch2Routes(app: Express) {
   });
 
   // ============================================================
-  // 4. GET /api/spending-tracker — aggregate spending from service_requests
+  // 4. GET /api/spending-tracker - aggregate spending from service_requests
   // ============================================================
   app.get("/api/spending-tracker", requireAuth, async (req: Request, res: Response) => {
     try {
@@ -123,7 +123,7 @@ export function registerBatch2Routes(app: Express) {
   });
 
   // ============================================================
-  // 5. /api/appliances — uses existing homeAppliances table via home-profile routes
+  // 5. /api/appliances - uses existing homeAppliances table via home-profile routes
   //    Add a direct alias for convenience
   // ============================================================
   app.get("/api/appliances", requireAuth, async (req: Request, res: Response) => {
@@ -158,7 +158,7 @@ export function registerBatch2Routes(app: Express) {
   });
 
   // ============================================================
-  // 6. GET /api/warranties — derive from homeAppliances warrantyExpiry
+  // 6. GET /api/warranties - derive from homeAppliances warrantyExpiry
   // ============================================================
   app.get("/api/warranties", requireAuth, async (req: Request, res: Response) => {
     try {
@@ -205,7 +205,7 @@ export function registerBatch2Routes(app: Express) {
   });
 
   // ============================================================
-  // 7. /api/home-inventory — uses existing homeInventory table
+  // 7. /api/home-inventory - uses existing homeInventory table
   // ============================================================
   app.get("/api/home-inventory", requireAuth, async (req: Request, res: Response) => {
     try {

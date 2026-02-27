@@ -16,7 +16,7 @@ if (process.env.SENDGRID_API_KEY) {
  auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
  });
 } else {
- // Dev fallback — log to console
+ // Dev fallback - log to console
  transporter = nodemailer.createTransport({ jsonTransport: true });
 }
 
@@ -38,7 +38,7 @@ function wrap(title: string, body: string): string {
  ${body}
 </td></tr>
 <tr><td style="padding:16px 32px;background:#fafafa;color:#999;font-size:12px;text-align:center">
- © ${new Date().getFullYear()} UpTend — Home services, simplified.
+ © ${new Date().getFullYear()} UpTend - Home services, simplified.
 </td></tr>
 </table></td></tr></table></body></html>`;
 }
@@ -79,7 +79,7 @@ export async function sendJobAccepted(to: string, booking: any, pro: any) {
  ? `<img src="${pro.profilePhoto}" style="width:60px;height:60px;border-radius:50%;margin-right:12px" alt="">`
  : "";
  const html = wrap("A Pro Accepted Your Job! ", `
- <p style="color:#555;line-height:1.6">Great news — a pro is on the way.</p>
+ <p style="color:#555;line-height:1.6">Great news - a pro is on the way.</p>
  <div style="display:flex;align-items:center;margin:16px 0;padding:16px;background:#f9f9f9;border-radius:8px">
  ${photoHtml}
  <div>
@@ -110,7 +110,7 @@ export async function sendJobCompleted(to: string, booking: any, receipt: any) {
  const platformFee = Number(receipt.platformFee || Math.round(serviceCost * 0.15));
  const total = serviceCost;
 
- const html = wrap("Job Complete — Receipt ", `
+ const html = wrap("Job Complete - Receipt ", `
  <p style="color:#555;line-height:1.6">Your job has been completed. Here's your receipt:</p>
  <table style="width:100%;border-collapse:collapse;margin:16px 0">
  <tr><td style="padding:8px 0;color:#888">Service</td><td style="padding:8px 0;text-align:right">${booking.serviceType || "General"}</td></tr>
@@ -158,18 +158,18 @@ export async function sendDisputeAlert(to: string, dispute: any, job: any, custo
  <p style="color:#555">Evidence has been automatically compiled and submitted to Stripe. Check your Stripe Dashboard for details.</p>
  `);
  const text = `DISPUTE ALERT: ${dispute.id} | Amount: ${amt} | Reason: ${dispute.reason} | Customer: ${customerName} | Job: ${job?.id}`;
- return send(to, " Chargeback Dispute — " + amt, html, text);
+ return send(to, " Chargeback Dispute - " + amt, html, text);
 }
 
 export async function sendWelcomeEmail(to: string, user: any) {
  const html = wrap("Welcome to UpTend! ", `
  <p style="color:#555;line-height:1.6">Hi ${user.firstName || "there"},</p>
- <p style="color:#555;line-height:1.6">Welcome to UpTend — home services, simplified. Here's how to get started:</p>
+ <p style="color:#555;line-height:1.6">Welcome to UpTend - home services, simplified. Here's how to get started:</p>
  <ol style="color:#555;line-height:2">
- <li><strong>Add a payment method</strong> — You won't be charged until you confirm a booking</li>
- <li><strong>Book a service</strong> — Junk removal, moving help, cleaning & more</li>
- <li><strong>Get matched</strong> — We'll connect you with a vetted local pro</li>
- <li><strong>Relax</strong> — Track your job in real-time</li>
+ <li><strong>Add a payment method</strong> - You won't be charged until you confirm a booking</li>
+ <li><strong>Book a service</strong> - Junk removal, moving help, cleaning & more</li>
+ <li><strong>Get matched</strong> - We'll connect you with a vetted local pro</li>
+ <li><strong>Relax</strong> - Track your job in real-time</li>
  </ol>
  <div style="text-align:center;margin:24px 0">
  <a href="${process.env.APP_URL || 'https://uptend.com'}" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">Book Your First Service</a>
@@ -256,7 +256,7 @@ export async function sendAdminNewSignup(to: string, user: any) {
  <tr><td style="padding:8px 0;color:#888">Role</td><td style="padding:8px 0">${user.role || "customer"}</td></tr>
  </table>
  `);
- const text = `New signup: ${user.firstName || ""} ${user.lastName || ""} (${user.email}) — ${user.role || "customer"}`;
+ const text = `New signup: ${user.firstName || ""} ${user.lastName || ""} (${user.email}) - ${user.role || "customer"}`;
  return send(to, "New UpTend Signup", html, text);
 }
 
@@ -270,8 +270,8 @@ export async function sendAdminHighValueBooking(to: string, booking: any) {
  <tr><td style="padding:8px 0;color:#888">Address</td><td style="padding:8px 0">${booking.pickupAddress || "On file"}</td></tr>
  </table>
  `);
- const text = `High-value booking: ${booking.serviceType} — ${money(booking.priceEstimate || booking.livePrice)} from ${booking.customerEmail}`;
- return send(to, " High-Value Booking — " + money(booking.priceEstimate || booking.livePrice), html, text);
+ const text = `High-value booking: ${booking.serviceType} - ${money(booking.priceEstimate || booking.livePrice)} from ${booking.customerEmail}`;
+ return send(to, " High-Value Booking - " + money(booking.priceEstimate || booking.livePrice), html, text);
 }
 
 export async function sendBackgroundCheckStatus(to: string, check: any) {
@@ -285,7 +285,7 @@ export async function sendBackgroundCheckStatus(to: string, check: any) {
  ${check.status === "clear" ? '<p style="color:#555">You\'re all set! You can now accept jobs on UpTend.</p>' : '<p style="color:#555">If you have questions, please contact our support team.</p>'}
  `);
  const text = `Background check update: ${label}. ${check.status === "clear" ? "You can now accept jobs." : "Contact support with questions."}`;
- return send(to, "Background Check Update — " + label, html, text);
+ return send(to, "Background Check Update - " + label, html, text);
 }
 
 export async function sendScopeChangeEmail(to: string, scopeChange: any, job: any) {
@@ -302,7 +302,7 @@ export async function sendScopeChangeEmail(to: string, scopeChange: any, job: an
  </div>
  `);
  const text = `Scope change requested: ${money(scopeChange.originalCeiling)} → ${money(scopeChange.proposedCeiling)}. Reason: ${scopeChange.reason}. Respond within 15 min in the app.`;
- return send(to, "Scope Change Request — Action Needed!", html, text);
+ return send(to, "Scope Change Request - Action Needed!", html, text);
 }
 
 export async function sendB2BWelcome(to: string, account: any) {
@@ -331,14 +331,14 @@ export async function sendReviewRequest(to: string, data: { customerName: string
   const html = wrap(`How did ${data.proFirstName} do?`, `
   <p style="color:#555;line-height:1.6">Hi ${data.customerName},</p>
   <p style="color:#555;line-height:1.6">Your ${data.serviceType} was completed yesterday by ${data.proName}. We hope everything looks great!</p>
-  <p style="color:#555;line-height:1.6">Your feedback helps other homeowners choose the right pro — and helps ${data.proName} grow their business.</p>
+  <p style="color:#555;line-height:1.6">Your feedback helps other homeowners choose the right pro - and helps ${data.proName} grow their business.</p>
   <div style="text-align:center;margin:24px 0">
     <a href="${APP_URL()}/review/${data.jobId}" style="background:#F47C20;color:#fff;padding:14px 36px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;font-size:16px">Leave a Review</a>
   </div>
   <p style="color:#555;line-height:1.6">Your honest review takes 30 seconds and makes a real difference.</p>
   <p style="color:#888;font-size:13px;margin-top:24px">Questions about your service? Reply to this email or call us at (407) 338-3342</p>
   `);
-  const text = `Hi ${data.customerName}, your ${data.serviceType} was completed yesterday by ${data.proName}. Leave a review at ${APP_URL()}/review/${data.jobId} — it takes 30 seconds and makes a real difference.`;
+  const text = `Hi ${data.customerName}, your ${data.serviceType} was completed yesterday by ${data.proName}. Leave a review at ${APP_URL()}/review/${data.jobId} - it takes 30 seconds and makes a real difference.`;
   return send(to, `How did ${data.proFirstName} do?`, html, text);
 }
 
@@ -351,7 +351,7 @@ export async function sendHomeScoreUpdate(to: string, data: { customerName: stri
     <div style="font-size:42px;font-weight:700;color:#F47C20">${data.totalScore}</div>
     <div style="color:#888;font-size:13px">/ 850</div>
   </div>
-  <p style="color:#555;line-height:1.6">Every completed service builds your home's verified maintenance history — like a Carfax for your home.</p>
+  <p style="color:#555;line-height:1.6">Every completed service builds your home's verified maintenance history - like a Carfax for your home.</p>
   <p style="color:#555;line-height:1.6">Want a complete picture? A Home DNA Scan maps out everything your home needs.</p>
   <div style="text-align:center;margin:24px 0">
     <a href="${APP_URL()}/profile" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">View Your Home Report</a>
@@ -378,7 +378,7 @@ export async function sendSeasonalRecommendation(to: string, data: { customerNam
   <table style="width:100%;border-collapse:collapse;margin:16px 0">
     ${serviceListHtml}
   </table>
-  <p style="color:#555;line-height:1.6">Your Price Protection Guarantee applies to every booking — your price is locked, guaranteed.</p>
+  <p style="color:#555;line-height:1.6">Your Price Protection Guarantee applies to every booking - your price is locked, guaranteed.</p>
   <div style="text-align:center;margin:24px 0">
     <a href="${APP_URL()}/book" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">Book Your Next Service</a>
   </div>
@@ -408,14 +408,14 @@ export async function sendReferralPrompt(to: string, data: { customerName: strin
 // ─── Pro Onboarding Sequence ───────────────────────────────────────
 
 export async function sendProWelcomeVerified(to: string, data: { proName: string }) {
-  const html = wrap("You're verified — welcome to UpTend", `
+  const html = wrap("You're verified - welcome to UpTend", `
   <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
   <p style="color:#555;line-height:1.6">Your background check is complete and your profile is live on UpTend.</p>
   <p style="color:#555;line-height:1.6">Here's how to start earning:</p>
   <ol style="color:#555;line-height:2">
-    <li><strong>Complete your profile</strong> — Add your photo, experience, and service areas. Complete profiles get 3x more bookings.</li>
-    <li><strong>Set your availability</strong> — Let us know when you're ready to work.</li>
-    <li><strong>Wait for your first match</strong> — We'll notify you instantly when a job fits your skills and area.</li>
+    <li><strong>Complete your profile</strong> - Add your photo, experience, and service areas. Complete profiles get 3x more bookings.</li>
+    <li><strong>Set your availability</strong> - Let us know when you're ready to work.</li>
+    <li><strong>Wait for your first match</strong> - We'll notify you instantly when a job fits your skills and area.</li>
   </ol>
   <p style="color:#555;line-height:1.6">Remember: You keep 85% of every job. No lead fees. Same-day payouts via Stripe.</p>
   <div style="text-align:center;margin:24px 0">
@@ -424,7 +424,7 @@ export async function sendProWelcomeVerified(to: string, data: { proName: string
   <p style="color:#888;font-size:13px;margin-top:24px">Questions? Call us at (407) 338-3342 or reply to this email.</p>
   `);
   const text = `Hi ${data.proName}, your background check is complete and your profile is live on UpTend. Complete your profile, set your availability, and wait for your first match. You keep 85% of every job. No lead fees. Same-day payouts via Stripe. Complete your profile at ${APP_URL()}/profile`;
-  return send(to, "You're verified — welcome to UpTend", html, text);
+  return send(to, "You're verified - welcome to UpTend", html, text);
 }
 
 export async function sendProProfileNudge(to: string, data: { proName: string; missingItems: string[] }) {
@@ -434,7 +434,7 @@ export async function sendProProfileNudge(to: string, data: { proName: string; m
     </td></tr>
   `).join("");
 
-  const html = wrap("Complete your profile — get matched faster", `
+  const html = wrap("Complete your profile - get matched faster", `
   <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
   <p style="color:#555;line-height:1.6">Pros with complete profiles get matched with 3x more jobs. Here's what's missing:</p>
   <table style="width:100%;border-collapse:collapse;margin:16px 0">
@@ -446,7 +446,7 @@ export async function sendProProfileNudge(to: string, data: { proName: string; m
   </div>
   `);
   const text = `Hi ${data.proName}, pros with complete profiles get 3x more jobs. Missing: ${data.missingItems.join(", ")}. Finish your profile at ${APP_URL()}/profile`;
-  return send(to, "Complete your profile — get matched faster", html, text);
+  return send(to, "Complete your profile - get matched faster", html, text);
 }
 
 export async function sendProTips(to: string, data: { proName: string }) {
@@ -454,17 +454,17 @@ export async function sendProTips(to: string, data: { proName: string }) {
   <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
   <p style="color:#555;line-height:1.6">Here are 3 things our highest-rated pros do:</p>
   <ol style="color:#555;line-height:2">
-    <li><strong>Respond fast</strong> — Pros who accept jobs within 15 minutes get priority matching.</li>
-    <li><strong>Send before/after photos</strong> — Customers love seeing the transformation. It also boosts your reviews.</li>
-    <li><strong>Ask for reviews</strong> — A simple "If you were happy with the work, a review really helps me out" goes a long way.</li>
+    <li><strong>Respond fast</strong> - Pros who accept jobs within 15 minutes get priority matching.</li>
+    <li><strong>Send before/after photos</strong> - Customers love seeing the transformation. It also boosts your reviews.</li>
+    <li><strong>Ask for reviews</strong> - A simple "If you were happy with the work, a review really helps me out" goes a long way.</li>
   </ol>
-  <p style="color:#555;line-height:1.6">New: Some jobs now come with Photo Quotes — you'll see the customer's photo, AI scope analysis, and equipment checklist. Review the details before heading out to arrive fully prepared.</p>
+  <p style="color:#555;line-height:1.6">New: Some jobs now come with Photo Quotes - you'll see the customer's photo, AI scope analysis, and equipment checklist. Review the details before heading out to arrive fully prepared.</p>
   <p style="color:#555;line-height:1.6">Keep doing great work. Your reputation is your business.</p>
   <div style="text-align:center;margin:24px 0">
     <a href="${APP_URL()}/career" style="background:#F47C20;color:#fff;padding:12px 32px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block">View Your Dashboard</a>
   </div>
   `);
-  const text = `Hi ${data.proName}, here are 3 things top UpTend pros do: 1) Respond fast — accept jobs within 15 minutes. 2) Send before/after photos. 3) Ask for reviews. View your dashboard at ${APP_URL()}/career`;
+  const text = `Hi ${data.proName}, here are 3 things top UpTend pros do: 1) Respond fast - accept jobs within 15 minutes. 2) Send before/after photos. 3) Ask for reviews. View your dashboard at ${APP_URL()}/career`;
   return send(to, "How top UpTend Pros earn more", html, text);
 }
 
@@ -478,7 +478,7 @@ export async function sendCertificationNudgeEmail(to: string, data: {
   const certList = data.certNames.map(name => `<li style="color:#555">${name}</li>`).join("");
   const html = wrap(`You missed ${data.missedCount} premium jobs this week`, `
   <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
-  <p style="color:#555;line-height:1.6">This week, <strong>${data.missedCount} premium B2B jobs</strong> were available in your area — but you weren't eligible because you're missing these certifications:</p>
+  <p style="color:#555;line-height:1.6">This week, <strong>${data.missedCount} premium B2B jobs</strong> were available in your area - but you weren't eligible because you're missing these certifications:</p>
   <ul style="line-height:2">${certList}</ul>
   <p style="color:#555;line-height:1.6">Get certified to unlock higher-paying jobs from property managers and HOAs.</p>
   <div style="text-align:center;margin:24px 0">
@@ -529,7 +529,7 @@ export async function sendFeeReductionEmail(to: string, data: {
 }) {
   const html = wrap(`🎉 Your platform fee just dropped to ${data.newPercent}%!`, `
   <p style="color:#555;line-height:1.6">Hi ${data.proName},</p>
-  <p style="color:#555;line-height:1.6">Great news — your platform fee just dropped from <strong>${data.oldPercent}%</strong> to <strong>${data.newPercent}%</strong>!</p>
+  <p style="color:#555;line-height:1.6">Great news - your platform fee just dropped from <strong>${data.oldPercent}%</strong> to <strong>${data.newPercent}%</strong>!</p>
   <div style="text-align:center;margin:24px 0;padding:24px;background:#f9f9f9;border-radius:8px">
     <div style="color:#888;font-size:13px;margin-bottom:4px">Estimated Monthly Savings</div>
     <div style="font-size:36px;font-weight:700;color:#F47C20">${money(data.monthlySavings)}</div>
@@ -567,5 +567,5 @@ export async function sendPaymentFailed(to: string, data: {
   <p style="color:#888;font-size:13px;margin-top:24px">Questions? Reply to this email or call us at (407) 338-3342</p>
   `);
   const text = `Payment of ${money(data.amount)} failed for your ${data.serviceType} service. Reason: ${reasonText}. Please update your payment method at ${APP_URL()}/settings/billing`;
-  return send(to, "Payment Failed — Action Required", html, text);
+  return send(to, "Payment Failed - Action Required", html, text);
 }

@@ -56,7 +56,7 @@ async function getBusinessAccountForUser(userId: string) {
   return null;
 }
 
-// GET /api/business/billing/runs — list billing runs
+// GET /api/business/billing/runs - list billing runs
 router.get("/billing/runs", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -76,7 +76,7 @@ router.get("/billing/runs", requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/business/billing/runs/:id — billing run detail
+// GET /api/business/billing/runs/:id - billing run detail
 router.get("/billing/runs/:id", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -108,7 +108,7 @@ router.get("/billing/runs/:id", requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/business/billing/preview — dry run preview for current week
+// GET /api/business/billing/preview - dry run preview for current week
 router.get("/billing/preview", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -153,7 +153,7 @@ router.get("/billing/preview", requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/business/billing/settings — get billing settings
+// GET /api/business/billing/settings - get billing settings
 router.get("/billing/settings", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -174,7 +174,7 @@ router.get("/billing/settings", requireAuth, async (req, res) => {
   }
 });
 
-// PUT /api/business/billing/settings — update billing settings
+// PUT /api/business/billing/settings - update billing settings
 router.put("/billing/settings", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -204,7 +204,7 @@ router.put("/billing/settings", requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/business/billing/payment-method — setup Stripe payment method
+// POST /api/business/billing/payment-method - setup Stripe payment method
 router.post("/billing/payment-method", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);
@@ -245,7 +245,7 @@ router.post("/billing/payment-method", requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/business/billing/confirm-payment-method — confirm after setup
+// POST /api/business/billing/confirm-payment-method - confirm after setup
 router.post("/billing/confirm-payment-method", requireAuth, async (req, res) => {
   try {
     const userId = ((req.user as any).userId || (req.user as any).id);

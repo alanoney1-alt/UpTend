@@ -140,7 +140,7 @@ export default function BusinessReports() {
                       <TableCell className="font-medium">{r.name}</TableCell>
                       <TableCell><Badge variant="outline" className="capitalize">{r.type}</Badge></TableCell>
                       <TableCell>{r.schedule}</TableCell>
-                      <TableCell>{(() => { const d = new Date(r.lastRun); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(r.lastRun); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell>
                         <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> {r.recipients}</span>
                       </TableCell>
@@ -312,7 +312,7 @@ export default function BusinessReports() {
                   <Card className="bg-muted/50 p-4">
                     <h4 className="font-medium mb-2">Report Preview</h4>
                     <div className="text-sm space-y-1">
-                      <p><span className="text-muted-foreground">Template:</span> {reportTemplates.find(t => t.id === selectedTemplate)?.name || "—"}</p>
+                      <p><span className="text-muted-foreground">Template:</span> {reportTemplates.find(t => t.id === selectedTemplate)?.name || "-"}</p>
                       <p><span className="text-muted-foreground">Columns:</span> {selectedColumns.join(", ")}</p>
                       <p><span className="text-muted-foreground">Date Range:</span> {dateRange.replace("_", " ")}</p>
                       <p><span className="text-muted-foreground">Schedule:</span> {schedule === "none" ? "Manual" : schedule}</p>

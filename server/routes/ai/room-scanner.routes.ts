@@ -1,5 +1,5 @@
 /**
- * Room Video Scanner — accepts a video upload, extracts frames,
+ * Room Video Scanner - accepts a video upload, extracts frames,
  * sends to GPT vision for inventory analysis.
  */
 import { Router, Request, Response } from "express";
@@ -37,7 +37,7 @@ router.post("/analyze-room", videoUpload.single("video"), async (req: Request, r
     // and extract a few representative frames.
     
     // Convert video buffer to base64 data URL for frame extraction
-    // For now, we'll send the first frame concept — but the real approach is
+    // For now, we'll send the first frame concept - but the real approach is
     // to have the client send individual frame snapshots instead of raw video.
     
     // Fallback: analyze video by sending frame snapshots

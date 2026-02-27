@@ -36,7 +36,7 @@ const EMERGENCY_CHECKLISTS: Record<string, string[]> = {
 
 // ─── 1. Violation-to-Service Pipeline ──────────────────────────────────────
 
-// POST /violations — create violation
+// POST /violations - create violation
 router.post("/violations", requireAuth, async (req: Request, res: Response) => {
   try {
     const businessId = getBusinessId(req);
@@ -67,7 +67,7 @@ router.post("/violations", requireAuth, async (req: Request, res: Response) => {
   }
 });
 
-// GET /violations — list violations
+// GET /violations - list violations
 router.get("/violations", requireAuth, async (req: Request, res: Response) => {
   try {
     const businessId = getBusinessId(req);
@@ -106,7 +106,7 @@ router.patch("/violations/:id/resolve", requireAuth, async (req: Request, res: R
   }
 });
 
-// POST /violations/:id/notify — send booking link to homeowner
+// POST /violations/:id/notify - send booking link to homeowner
 router.post("/violations/:id/notify", requireAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -192,7 +192,7 @@ router.get("/community/health-score", requireAuth, async (req: Request, res: Res
         maintenance_compliance_pct: "87.5",
         units_serviced_last_90_days: 42,
         overdue_maintenance_count: 3,
-        _note: "mock data — tables not yet created",
+        _note: "mock data - tables not yet created",
       });
     }
   } catch (err: any) {
@@ -228,7 +228,7 @@ router.get("/revenue-share", requireAuth, async (req: Request, res: Response) =>
           { month: "2026-02", jobs: 18, revenue: "9200.00", hoa_share: "920.00" },
           { month: "2026-01", jobs: 22, revenue: "11400.00", hoa_share: "1140.00" },
         ],
-        _note: "mock data — tables not yet created",
+        _note: "mock data - tables not yet created",
       });
     }
   } catch (err: any) {

@@ -1,11 +1,11 @@
 /**
  * Drone Scan (Free) Booking Routes
  *
- * POST /api/drone-scan/book                    — create booking
- * GET  /api/drone-scan/:id                     — get booking details
- * GET  /api/drone-scan/customer/:customerId    — list customer's scans
- * POST /api/drone-scan/:id/complete            — operator marks complete
- * GET  /api/drone-scan/:id/report              — get scan report
+ * POST /api/drone-scan/book                    - create booking
+ * GET  /api/drone-scan/:id                     - get booking details
+ * GET  /api/drone-scan/customer/:customerId    - list customer's scans
+ * POST /api/drone-scan/:id/complete            - operator marks complete
+ * GET  /api/drone-scan/:id/report              - get scan report
  */
 
 import { Router, type Express } from "express";
@@ -24,7 +24,7 @@ async function checkWeather(city: string, state: string, date: string): Promise<
   try {
     const location = encodeURIComponent(`${city}, ${state}`);
     const res = await fetch(`https://wttr.in/${location}?format=j1`);
-    if (!res.ok) return { suitable: true, summary: "Weather check unavailable — proceed with caution", details: {} };
+    if (!res.ok) return { suitable: true, summary: "Weather check unavailable - proceed with caution", details: {} };
     const data = await res.json() as any;
 
     const forecast = data.weather?.[0]; // today's forecast
@@ -36,7 +36,7 @@ async function checkWeather(city: string, state: string, date: string): Promise<
 
     const suitable = maxWind < 20 && chanceOfRain < 50;
     const summary = suitable
-      ? `Clear skies expected — perfect for your aerial scan! (Wind: ${maxWind}mph, Rain chance: ${chanceOfRain}%)`
+      ? `Clear skies expected - perfect for your aerial scan! (Wind: ${maxWind}mph, Rain chance: ${chanceOfRain}%)`
       : `⚠️ Weather concerns: Wind ${maxWind}mph, ${chanceOfRain}% rain chance. We may need to reschedule.`;
 
     return { suitable, summary, details: { maxWind, chanceOfRain, description } };

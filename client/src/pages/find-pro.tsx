@@ -301,7 +301,7 @@ function ProAvatar({ firstName, lastInitial }: { firstName: string; lastInitial:
   const initials = `${firstName.charAt(0)}${lastInitial.charAt(0)}`.toUpperCase();
   const colors = [
     "bg-[#F47C20]",
-    "bg-[#3B1D5A]",
+    "bg-[#0f172a]",
     "bg-emerald-600",
     "bg-sky-600",
     "bg-rose-600",

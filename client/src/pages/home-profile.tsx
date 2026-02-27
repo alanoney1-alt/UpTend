@@ -222,9 +222,9 @@ export default function HomeProfilePage() {
                         <div><p className="text-sm text-muted-foreground">Address</p><p className="font-medium">{activeProfile.address}</p></div>
                         <div><p className="text-sm text-muted-foreground">City / State / ZIP</p><p className="font-medium">{activeProfile.city}, {activeProfile.state} {activeProfile.zip}</p></div>
                         <div><p className="text-sm text-muted-foreground">Type</p><p className="font-medium capitalize">{activeProfile.homeType?.replace("_", " ")}</p></div>
-                        <div><p className="text-sm text-muted-foreground">Year Built</p><p className="font-medium">{activeProfile.yearBuilt || "—"}</p></div>
-                        <div><p className="text-sm text-muted-foreground">Square Footage</p><p className="font-medium">{activeProfile.squareFootage ? `${activeProfile.squareFootage} sq ft` : "—"}</p></div>
-                        <div><p className="text-sm text-muted-foreground">Bed / Bath</p><p className="font-medium">{activeProfile.bedrooms || "—"} bed / {activeProfile.bathrooms || "—"} bath</p></div>
+                        <div><p className="text-sm text-muted-foreground">Year Built</p><p className="font-medium">{activeProfile.yearBuilt || "-"}</p></div>
+                        <div><p className="text-sm text-muted-foreground">Square Footage</p><p className="font-medium">{activeProfile.squareFootage ? `${activeProfile.squareFootage} sq ft` : "-"}</p></div>
+                        <div><p className="text-sm text-muted-foreground">Bed / Bath</p><p className="font-medium">{activeProfile.bedrooms || "-"} bed / {activeProfile.bathrooms || "-"} bath</p></div>
                       </div>
                     </CardContent>
                   </Card>

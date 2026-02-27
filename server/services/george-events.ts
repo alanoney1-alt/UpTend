@@ -1,5 +1,5 @@
 /**
- * george-events.ts — George proactive outreach system
+ * george-events.ts - George proactive outreach system
  *
  * Event handlers that fire automatically on lifecycle events to make George
  * proactive. All SMS sends respect quiet hours (9 PM – 8 AM EST) and a
@@ -43,11 +43,11 @@ async function sendGeorgeSms(
  emergency = false
 ): Promise<void> {
  if (!emergency && isQuietHoursEst()) {
- console.log(`[George] Quiet hours — skipping SMS to ${to} (customerId: ${customerId})`);
+ console.log(`[George] Quiet hours - skipping SMS to ${to} (customerId: ${customerId})`);
  return;
  }
  if (!emergency && !canSendProactiveSms(customerId)) {
- console.log(`[George] Rate limit hit for customerId ${customerId} — skipping SMS`);
+ console.log(`[George] Rate limit hit for customerId ${customerId} - skipping SMS`);
  return;
  }
 
@@ -78,17 +78,17 @@ const SERVICE_NAMES: Record<string, string> = {
  carpet_cleaning: 'carpet cleaning',
 };
 
-// Intel questions keyed by service type — George asks exactly one per booking
+// Intel questions keyed by service type - George asks exactly one per booking
 const INTEL_QUESTIONS: Record<string, string> = {
- junk_removal: "Quick question — is your stuff inside the house or already outside? Helps us bring the right crew.",
- garage_cleanout: "Quick question — is there any large furniture or appliances in the garage? Helps us plan the right truck size.",
- gutter_cleaning: "Quick question — is your place one story or two? Helps us bring the right gear.",
- pressure_washing: "Quick question — is it just the driveway, or also the house exterior? Helps us bring the right equipment.",
- moving: "Quick question — how many flights of stairs, if any? Helps us send the right crew size.",
- truck_unloading: "Quick question — is there elevator access at the destination, or stairs only?",
- home_cleaning: "Quick question — do you have any pets? Helps us bring pet-safe products.",
- handyman: "Quick question — do you have the parts/materials already, or should we bring them?",
- default: "Quick question — any special access notes we should know before we arrive?",
+ junk_removal: "Quick question - is your stuff inside the house or already outside? Helps us bring the right crew.",
+ garage_cleanout: "Quick question - is there any large furniture or appliances in the garage? Helps us plan the right truck size.",
+ gutter_cleaning: "Quick question - is your place one story or two? Helps us bring the right gear.",
+ pressure_washing: "Quick question - is it just the driveway, or also the house exterior? Helps us bring the right equipment.",
+ moving: "Quick question - how many flights of stairs, if any? Helps us send the right crew size.",
+ truck_unloading: "Quick question - is there elevator access at the destination, or stairs only?",
+ home_cleaning: "Quick question - do you have any pets? Helps us bring pet-safe products.",
+ handyman: "Quick question - do you have the parts/materials already, or should we bring them?",
+ default: "Quick question - any special access notes we should know before we arrive?",
 };
 
 // ─── 1. POST-BOOKING FOLLOW-UP ────────────────────────────────────────────────
@@ -106,13 +106,13 @@ export async function onBookingConfirmed(
  try {
  const user = await storage.getUser(userId);
  if (!user?.phone) {
- console.log(`[George] No phone for user ${userId} — skipping booking follow-up`);
+ console.log(`[George] No phone for user ${userId} - skipping booking follow-up`);
  return;
  }
 
  const serviceName = SERVICE_NAMES[serviceType] || serviceType;
  const intelQ = INTEL_QUESTIONS[serviceType] || INTEL_QUESTIONS.default;
- const message = `Hey, you're all set for your ${serviceName}! ${intelQ} Just reply here. — George, UpTend AI`;
+ const message = `Hey, you're all set for your ${serviceName}! ${intelQ} Just reply here. - George, UpTend AI`;
 
  await sendGeorgeSms(user.phone, message, userId);
  } catch (err: any) {
@@ -140,7 +140,7 @@ export async function onProEnRoute(
  ]);
 
  if (!customer?.phone) {
- console.log(`[George] No phone for customer ${customerId} — skipping en-route SMS`);
+ console.log(`[George] No phone for customer ${customerId} - skipping en-route SMS`);
  return;
  }
 
@@ -158,18 +158,18 @@ export async function onProEnRoute(
  vehicleHint = ` in a ${bio.vehicleYear || ''} ${bio.vehicleMake} ${bio.vehicleModel}`.trim();
  }
  } catch {
- // bio is not JSON — skip
+ // bio is not JSON - skip
  }
  }
 
- const message = `Your UpTend Pro ${proName} is heading your way${vehicleHint}! ETA ~15 min. They'll call if they need help finding you. — George, UpTend AI`;
+ const message = `Your UpTend Pro ${proName} is heading your way${vehicleHint}! ETA ~15 min. They'll call if they need help finding you. - George, UpTend AI`;
 
- // En-route is time-sensitive — send even if rate limit hit, but respect quiet hours
+ // En-route is time-sensitive - send even if rate limit hit, but respect quiet hours
  const last = lastProactiveSms.get(customerId);
  const withinWindow = !last || Date.now() - last < 24 * 60 * 60 * 1000;
 
  if (isQuietHoursEst()) {
- console.log(`[George] Quiet hours — skipping en-route SMS for customer ${customerId}`);
+ console.log(`[George] Quiet hours - skipping en-route SMS for customer ${customerId}`);
  return;
  }
 
@@ -206,14 +206,14 @@ export async function onJobCompleted(
  customerId: string,
  serviceType: string
 ): Promise<void> {
- console.log(`[George] onJobCompleted: jobId=${jobId} customerId=${customerId} — scheduling 2hr follow-up`);
+ console.log(`[George] onJobCompleted: jobId=${jobId} customerId=${customerId} - scheduling 2hr follow-up`);
 
  // Schedule 2 hours later
  setTimeout(async () => {
  try {
  const customer = await storage.getUser(customerId);
  if (!customer?.phone) {
- console.log(`[George] No phone for customer ${customerId} — skipping follow-up`);
+ console.log(`[George] No phone for customer ${customerId} - skipping follow-up`);
  return;
  }
 
@@ -226,11 +226,11 @@ export async function onJobCompleted(
  ? Math.floor((loyalty.lifetimePoints / POINTS_PER_DOLLAR) / 100) // rough estimate
  : 0;
 
- const baseMsg = `Hey! How did your ${serviceName} go? Rate your experience in the UpTend app — it helps a lot. Also, ${upsell}`;
+ const baseMsg = `Hey! How did your ${serviceName} go? Rate your experience in the UpTend app - it helps a lot. Also, ${upsell}`;
  const referralMsg = jobsCompleted >= 1
  ? ` Know anyone else who could use UpTend? Send them your code and you BOTH get $25 credit!`
  : '';
- const message = `${baseMsg}${referralMsg} — George, UpTend AI`;
+ const message = `${baseMsg}${referralMsg} - George, UpTend AI`;
 
  await sendGeorgeSms(customer.phone, message, customerId);
  } catch (err: any) {
@@ -295,13 +295,13 @@ export async function getProLoginGreeting(proId: string): Promise<object> {
 
  const pct = monthlyGoal > 0 ? Math.round((monthlyEarnings / monthlyGoal) * 100) : 0;
  const remaining = Math.max(0, monthlyGoal - monthlyEarnings);
- // Average job payout ~$90 — estimate jobs needed
+ // Average job payout ~$90 - estimate jobs needed
  const avgJobPayout = 90;
  const jobsNeeded = remaining > 0 ? Math.ceil(remaining / avgJobPayout) : 0;
 
  let greetingMsg: string;
  if (pct >= 100) {
- greetingMsg = `Welcome back ${proName}! You hit your $${monthlyGoal.toLocaleString()} goal this month — amazing work!`;
+ greetingMsg = `Welcome back ${proName}! You hit your $${monthlyGoal.toLocaleString()} goal this month - amazing work!`;
  } else if (pct >= 75) {
  greetingMsg = `Welcome back ${proName}! You're at $${monthlyEarnings.toLocaleString()} / $${monthlyGoal.toLocaleString()} this month (${pct}%). Almost there!`;
  } else {
@@ -322,7 +322,7 @@ export async function getProLoginGreeting(proId: string): Promise<object> {
  };
  } catch (err: any) {
  console.error(`[George] getProLoginGreeting error: ${err.message}`);
- // Non-blocking — return a safe fallback
+ // Non-blocking - return a safe fallback
  return { greeting: 'Welcome back!', monthlyEarnings: 0, monthlyGoal: 0, progressPercent: 0 };
  }
 }
@@ -377,7 +377,7 @@ export async function checkMaintenanceReminders(): Promise<{ sent: number; skipp
 
  const daysUntil = row.days_until ?? 7;
  const dayText = daysUntil <= 0 ? 'today' : daysUntil === 1 ? 'tomorrow' : `in ${daysUntil} days`;
- const message = `Hey! Your ${row.description || 'home maintenance'} is due ${dayText}. Want me to book a Pro to handle it? Just reply YES and I'll set it up. — George, UpTend AI`;
+ const message = `Hey! Your ${row.description || 'home maintenance'} is due ${dayText}. Want me to book a Pro to handle it? Just reply YES and I'll set it up. - George, UpTend AI`;
 
  await sendGeorgeSms(customer.phone, message, customer.id);
  sent++;
@@ -412,7 +412,7 @@ export function isEmergencyMessage(message: string): boolean {
 
 /**
  * Triggered when George detects emergency keywords in chat.
- * Bypasses normal flow — immediately searches for available emergency pros
+ * Bypasses normal flow - immediately searches for available emergency pros
  * and texts both the nearest pro and the customer.
  */
 export async function handleEmergency(
@@ -443,14 +443,14 @@ export async function handleEmergency(
  ).catch(() => ({ rows: [] as any[] }));
 
  if (availableResult.rows.length === 0) {
- // No pros available — text customer that we're on it
+ // No pros available - text customer that we're on it
  if (customer?.phone) {
  await sendSms({
  to: customer.phone,
- message: `URGENT UpTend Alert: We received your emergency request and are manually dispatching a Pro right now. Someone will call you within 5 minutes. Stay safe! — George, UpTend`,
+ message: `URGENT UpTend Alert: We received your emergency request and are manually dispatching a Pro right now. Someone will call you within 5 minutes. Stay safe! - George, UpTend`,
  });
  }
- console.log('[George] Emergency: no available pros — alerted customer, needs manual dispatch');
+ console.log('[George] Emergency: no available pros - alerted customer, needs manual dispatch');
  return { dispatched: false };
  }
 
@@ -462,7 +462,7 @@ export async function handleEmergency(
  if (pro.phone) {
  await sendSms({
  to: pro.phone,
- message: `EMERGENCY JOB — UpTend: Customer near ${location.zip} needs urgent help: "${message.slice(0, 120)}". Estimated ETA 20 min. Open the app to accept immediately.`,
+ message: `EMERGENCY JOB - UpTend: Customer near ${location.zip} needs urgent help: "${message.slice(0, 120)}". Estimated ETA 20 min. Open the app to accept immediately.`,
  });
  }
 
@@ -470,7 +470,7 @@ export async function handleEmergency(
  if (customer?.phone) {
  await sendSms({
  to: customer.phone,
- message: `UpTend Emergency Response: We're dispatching ${proName} to you now! ETA ~${etaMinutes} minutes. They'll call you shortly. If life-threatening, call 911 first. — George`,
+ message: `UpTend Emergency Response: We're dispatching ${proName} to you now! ETA ~${etaMinutes} minutes. They'll call you shortly. If life-threatening, call 911 first. - George`,
  });
  }
 
@@ -494,7 +494,7 @@ export async function sendPostServiceFollowUp(): Promise<{ sent: number; skipped
 
  try {
  if (isQuietHoursEst()) {
- console.log('[George] Quiet hours — skipping post-service follow-up batch');
+ console.log('[George] Quiet hours - skipping post-service follow-up batch');
  return { sent, skipped };
  }
 
@@ -574,7 +574,7 @@ export async function sendWeatherHeadsUp(): Promise<{ sent: number; skipped: num
 
  try {
  if (isQuietHoursEst()) {
- console.log('[George] Quiet hours — skipping weather heads-up');
+ console.log('[George] Quiet hours - skipping weather heads-up');
  return { sent, skipped, alertCount: 0 };
  }
 
@@ -584,7 +584,7 @@ export async function sendWeatherHeadsUp(): Promise<{ sent: number; skipped: num
  }).then(r => r.json()).catch(() => null);
 
  if (!alertRes?.features?.length) {
- console.log('[George] No severe weather alerts — nothing to send');
+ console.log('[George] No severe weather alerts - nothing to send');
  return { sent, skipped, alertCount: 0 };
  }
 
@@ -676,7 +676,7 @@ export async function sendMaintenanceNudge(): Promise<{ sent: number; skipped: n
 
  try {
  if (isQuietHoursEst()) {
- console.log('[George] Quiet hours — skipping maintenance nudge');
+ console.log('[George] Quiet hours - skipping maintenance nudge');
  return { sent, skipped };
  }
 
@@ -713,7 +713,7 @@ export async function sendMaintenanceNudge(): Promise<{ sent: number; skipped: n
  try {
  const name = row.first_name || 'there';
  const reminderType = (row.reminder_type || 'maintenance').replace(/_/g, ' ');
- const message = `Hey ${name}! Quick heads up from George — your ${reminderType} is due this week. Want me to book a pro, or I can walk you through doing it yourself?`;
+ const message = `Hey ${name}! Quick heads up from George - your ${reminderType} is due this week. Want me to book a pro, or I can walk you through doing it yourself?`;
 
  await sendGeorgeSms(row.phone, message, row.customer_id);
 
@@ -748,7 +748,7 @@ export async function sendHomeScanPromo(): Promise<{ sent: number; skipped: numb
 
  try {
  if (isQuietHoursEst()) {
- console.log('[George] Quiet hours — skipping home scan promo');
+ console.log('[George] Quiet hours - skipping home scan promo');
  return { sent, skipped };
  }
 
@@ -808,16 +808,16 @@ export async function sendHomeScanPromo(): Promise<{ sent: number; skipped: numb
 // ─── 11. SEASONAL CAMPAIGN (CRON) ────────────────────────────────────────────
 // Florida-specific seasonal maintenance tips by month
 const SEASONAL_TIPS: Record<number, { service: string; msg: string }> = {
- 1: { service: 'pressure_washing', msg: "New year, fresh home! January is perfect for pressure washing — clean off the holiday grime. Book now →" },
+ 1: { service: 'pressure_washing', msg: "New year, fresh home! January is perfect for pressure washing - clean off the holiday grime. Book now →" },
  2: { service: 'pool_cleaning', msg: "Pool season is coming! February is the best time to get your pool prepped and sparkling before the heat hits. Book a pool opening →" },
  3: { service: 'home_cleaning', msg: "Spring cleaning time! Get a deep clean before the hot months arrive. Book a Pro →" },
- 4: { service: 'pressure_washing', msg: "April showers bring — dirty driveways! A pressure wash now keeps your home looking sharp. Book now →" },
+ 4: { service: 'pressure_washing', msg: "April showers bring - dirty driveways! A pressure wash now keeps your home looking sharp. Book now →" },
  5: { service: 'gutter_cleaning', msg: "Hurricane season starts June 1st. Clean gutters now = safer home in a storm. Book gutter cleaning →" },
  6: { service: 'handyman', msg: "Hurricane prep check: loose shutters, roof shingles, A/C filters? Our handymen handle it all. Book a Pro →" },
  7: { service: 'home_cleaning', msg: "Summer's in full swing! Beat the heat with a fresh, clean home. Book a deep clean →" },
  8: { service: 'pressure_washing', msg: "August storms leave a mess. Give your driveway and exterior a post-storm pressure wash. Book now →" },
  9: { service: 'home_cleaning', msg: "Back-to-school season = back-to-clean season. Get your home guest-ready for fall. Book now →" },
- 10: { service: 'gutter_cleaning', msg: "October leaves are falling — clean those gutters before the rainy season. Book gutter cleaning →" },
+ 10: { service: 'gutter_cleaning', msg: "October leaves are falling - clean those gutters before the rainy season. Book gutter cleaning →" },
  11: { service: 'home_cleaning', msg: "Company coming for the holidays? Get a deep clean before Thanksgiving. Book now →" },
  12: { service: 'junk_removal', msg: "Year-end cleanout time! Clear the clutter before the new year. Book a junk removal →" },
 };
@@ -861,7 +861,7 @@ export async function sendSeasonalCampaign(): Promise<{ sent: number; skipped: n
  for (const customer of result.rows) {
  try {
  const name = customer.first_name ? ` ${customer.first_name}` : '';
- const message = `Hey${name}! ${tip.msg} Reply STOP to opt out. — George, UpTend AI`;
+ const message = `Hey${name}! ${tip.msg} Reply STOP to opt out. - George, UpTend AI`;
  await sendGeorgeSms(customer.phone, message, customer.id);
  sent++;
  } catch (rowErr: any) {
@@ -890,7 +890,7 @@ const TIER_SPEND_THRESHOLDS: Record<string, number> = {
 const TIER_MESSAGES: Record<string, string> = {
  silver: "You just hit Silver tier! That means 5% off every service + priority scheduling. Thanks for being an UpTend regular!",
  gold: "You just hit Gold tier! That means 10% off every service + priority scheduling. You're a true UpTend VIP!",
- platinum: "You just hit Platinum tier — the highest level! 15% off everything + priority matching + our best Pros first. You're legendary!",
+ platinum: "You just hit Platinum tier - the highest level! 15% off everything + priority matching + our best Pros first. You're legendary!",
 };
 
 /**
@@ -922,7 +922,7 @@ export async function onPaymentCaptured(
  if (newTier !== priorTier && TIER_MESSAGES[newTier]) {
  const customer = await storage.getUser(customerId);
  if (customer?.phone) {
- const message = `${TIER_MESSAGES[newTier]} — George, UpTend AI`;
+ const message = `${TIER_MESSAGES[newTier]} - George, UpTend AI`;
  await sendGeorgeSms(customer.phone, message, customerId);
  }
  console.log(`[George] Tier upgrade: customer ${customerId} ${priorTier} → ${newTier}`);
@@ -959,11 +959,11 @@ export async function onReferralCompleted(referralId: string): Promise<void> {
 
  const { referrer_id, referred_user_id } = result.rows[0];
 
- // Credit both parties — $25 = 2500 cents = 250 points at 10pts/$
+ // Credit both parties - $25 = 2500 cents = 250 points at 10pts/$
  const creditPoints = 250;
  await Promise.all([
- storage.addLoyaltyPoints(referrer_id, creditPoints, `Referral bonus — friend completed first booking`),
- storage.addLoyaltyPoints(referred_user_id, creditPoints, `Welcome bonus — first booking complete`),
+ storage.addLoyaltyPoints(referrer_id, creditPoints, `Referral bonus - friend completed first booking`),
+ storage.addLoyaltyPoints(referred_user_id, creditPoints, `Welcome bonus - first booking complete`),
  ]).catch(err => console.error(`[George] Referral credit error: ${err.message}`));
 
  // Mark referral as completed in DB
@@ -977,7 +977,7 @@ export async function onReferralCompleted(referralId: string): Promise<void> {
  const referred = await storage.getUser(referred_user_id);
  if (referrer?.phone) {
  const referredName = referred?.firstName || 'Your friend';
- const message = `${referredName} just completed their first UpTend booking! You both earned $25 in credit. Keep the referrals coming! — George, UpTend AI`;
+ const message = `${referredName} just completed their first UpTend booking! You both earned $25 in credit. Keep the referrals coming! - George, UpTend AI`;
  await sendGeorgeSms(referrer.phone, message, referrer_id);
  }
  } catch (err: any) {
@@ -990,15 +990,15 @@ type SmartHomeAlertData = Record<string, any>;
 
 const SMART_HOME_RESPONSES: Record<string, (data: SmartHomeAlertData) => string> = {
  water_leak: () =>
- `Water leak detected at your home! I'm searching for an available plumber right now. Reply YES to dispatch immediately, or call 911 if flooding is severe. — George, UpTend AI`,
+ `Water leak detected at your home! I'm searching for an available plumber right now. Reply YES to dispatch immediately, or call 911 if flooding is severe. - George, UpTend AI`,
  doorbell: () =>
- `Your doorbell rang! If you have a job scheduled today, that's likely your UpTend Pro arriving. Reply CONFIRM to let them in. — George, UpTend AI`,
+ `Your doorbell rang! If you have a job scheduled today, that's likely your UpTend Pro arriving. Reply CONFIRM to let them in. - George, UpTend AI`,
  ac_overrun: (data) =>
- `Your A/C has been running ${data.hours || 'many'} hours straight — that's unusual for Florida! This could mean it needs servicing. Want me to book an HVAC check? — George, UpTend AI`,
+ `Your A/C has been running ${data.hours || 'many'} hours straight - that's unusual for Florida! This could mean it needs servicing. Want me to book an HVAC check? - George, UpTend AI`,
  smoke: () =>
- `Smoke detected at your home! If this is an emergency, call 911 immediately. If it's a false alarm, reply DISMISS. Otherwise reply HELP to dispatch a Pro. — George, UpTend AI`,
+ `Smoke detected at your home! If this is an emergency, call 911 immediately. If it's a false alarm, reply DISMISS. Otherwise reply HELP to dispatch a Pro. - George, UpTend AI`,
  default: (data) =>
- `Smart home alert from your ${data.deviceType || 'device'}: ${data.message || 'check your home'}. Need UpTend assistance? Reply YES. — George, UpTend AI`,
+ `Smart home alert from your ${data.deviceType || 'device'}: ${data.message || 'check your home'}. Need UpTend assistance? Reply YES. - George, UpTend AI`,
 };
 
 /**
@@ -1015,19 +1015,19 @@ export async function onSmartHomeAlert(
  try {
  const customer = await storage.getUser(userId);
  if (!customer?.phone) {
- console.log(`[George] No phone for user ${userId} — skipping smart home alert`);
+ console.log(`[George] No phone for user ${userId} - skipping smart home alert`);
  return { handled: false };
  }
 
  const responseFn = SMART_HOME_RESPONSES[deviceType] || SMART_HOME_RESPONSES.default;
  const message = responseFn({ ...alertData, deviceType });
 
- // Smart home alerts are semi-urgent — bypass rate limit but respect quiet hours
+ // Smart home alerts are semi-urgent - bypass rate limit but respect quiet hours
  // Water leaks and smoke are true emergencies
  const isUrgent = ['water_leak', 'smoke'].includes(deviceType);
 
  if (isUrgent) {
- // Emergency — bypass everything
+ // Emergency - bypass everything
  await sendSms({ to: customer.phone, message });
  console.log(`[George] Smart home URGENT alert sent to user ${userId}`);
  } else {
@@ -1142,7 +1142,7 @@ export async function scanGovernmentContracts(): Promise<{ found: number; emaile
  await transporter.sendMail({
  from: process.env.FROM_EMAIL || "UpTend <noreply@uptendapp.com>",
  to: adminEmail,
- subject: ` ${unique.length} Government Contract Opportunities — Florida`,
+ subject: ` ${unique.length} Government Contract Opportunities - Florida`,
  html,
  });
 

@@ -22,7 +22,7 @@ export async function registerConsentRoutes(app: Express): Promise<void> {
     try {
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       if (!uuidRegex.test(req.params.userId)) {
-        return res.status(400).json({ success: false, error: "Invalid userId format — expected UUID" });
+        return res.status(400).json({ success: false, error: "Invalid userId format - expected UUID" });
       }
       const consents = await getConsentStatus(req.params.userId);
       res.json({ success: true, consents });

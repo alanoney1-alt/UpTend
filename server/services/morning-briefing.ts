@@ -47,27 +47,27 @@ export async function getWeatherForZip(zip: string) {
 export function getDailyTip(month: number, homeProfile: any) {
  const tips: Record<string, string[]> = {
  winter: [
- "Check your heating filters — dirty filters increase energy bills by 15%.",
+ "Check your heating filters - dirty filters increase energy bills by 15%.",
  "Keep gutters clear of ice dams to prevent roof leaks.",
  "Reverse ceiling fans to clockwise to push warm air down.",
- "Test smoke and CO detectors — batteries weaken in cold weather.",
+ "Test smoke and CO detectors - batteries weaken in cold weather.",
  ],
  spring: [
- "Schedule your AC tune-up before summer rush — saves 20% on cooling costs.",
+ "Schedule your AC tune-up before summer rush - saves 20% on cooling costs.",
  "Power-wash your driveway and siding to prevent mold buildup.",
  "Check window seals for drafts from winter contraction.",
  "Inspect your roof for winter damage before spring rains.",
  ],
  summer: [
- "Clean dryer vents — #1 cause of home fires and easy to prevent.",
+ "Clean dryer vents - #1 cause of home fires and easy to prevent.",
  "Water your lawn early morning (6-8 AM) to reduce evaporation by 30%.",
- "Check your AC refrigerant — low levels mean higher bills and less cooling.",
+ "Check your AC refrigerant - low levels mean higher bills and less cooling.",
  "Inspect caulking around windows to keep cool air in.",
  ],
  fall: [
  "Clean gutters before leaf fall to prevent water damage.",
  "Seal driveway cracks before freeze-thaw cycles widen them.",
- "Flush your water heater to remove sediment — extends life 2-3 years.",
+ "Flush your water heater to remove sediment - extends life 2-3 years.",
  "Schedule a furnace inspection before the first cold snap.",
  ],
  };
@@ -145,13 +145,13 @@ export async function generateMorningBriefing(customerId: string) {
  const forecast = weather.forecast || [];
  for (const day of forecast) {
  if (parseInt(day.chanceOfRain) > 60) {
- suggestions.push(` Rain expected ${day.date} — consider gutter cleaning`);
+ suggestions.push(` Rain expected ${day.date} - consider gutter cleaning`);
  }
  if (parseInt(day.chanceOfSnow) > 40) {
- suggestions.push(` Snow expected ${day.date} — schedule driveway treatment`);
+ suggestions.push(` Snow expected ${day.date} - schedule driveway treatment`);
  }
  if (parseInt(day.maxTempF) > 95) {
- suggestions.push(` High heat ${day.date} — time for an AC check-up?`);
+ suggestions.push(` High heat ${day.date} - time for an AC check-up?`);
  }
  }
  }

@@ -122,7 +122,7 @@ export async function getSeasonalDemand(zip: string, month: number) {
     1: { highDemand: ["hvac", "plumbing", "handyman"], reason: "Post-holiday repairs, cold snaps, pipe insulation" },
     2: { highDemand: ["pressure_washing", "landscaping", "painting"], reason: "Pre-spring prep, Valentine's curb appeal" },
     3: { highDemand: ["pressure_washing", "landscaping", "gutter_cleaning"], reason: "Spring cleaning season begins" },
-    4: { highDemand: ["landscaping", "pest_control", "pressure_washing"], reason: "Peak spring — pollen, bugs, yard growth" },
+    4: { highDemand: ["landscaping", "pest_control", "pressure_washing"], reason: "Peak spring - pollen, bugs, yard growth" },
     5: { highDemand: ["hvac", "pest_control", "landscaping"], reason: "AC season starts, summer prep" },
     6: { highDemand: ["hvac", "pressure_washing", "pest_control"], reason: "Heat wave, hurricane prep season" },
     7: { highDemand: ["hvac", "plumbing", "junk_removal"], reason: "Peak AC demand, summer cleanouts" },

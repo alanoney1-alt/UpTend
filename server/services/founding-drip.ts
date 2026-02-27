@@ -2,10 +2,10 @@
  * Founding 100 Email Drip System
  * 
  * Sequence (both tracks):
- *   Email 1: Welcome (sent immediately on signup — already built in founding-members.routes.ts)
- *   Email 2: "Here's what's coming" — sent 2 days after signup
- *   Email 3: Weekly digest — sent every Tuesday
- *   Email 4: Launch announcement — triggered manually when we go live
+ *   Email 1: Welcome (sent immediately on signup - already built in founding-members.routes.ts)
+ *   Email 2: "Here's what's coming" - sent 2 days after signup
+ *   Email 3: Weekly digest - sent every Tuesday
+ *   Email 4: Launch announcement - triggered manually when we go live
  * 
  * Customer vs Pro tracks get different content.
  */
@@ -275,7 +275,7 @@ export async function runDripSequence() {
   // Ensure drip columns exist
   await ensureDripColumns();
 
-  // Email 2: "What's coming" — for members 2+ days old, still on step 1
+  // Email 2: "What's coming" - for members 2+ days old, still on step 1
   const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
   const step1Members = await pool.query(
     `SELECT name, email, member_type FROM founding_members 

@@ -389,7 +389,7 @@ export default function CarbonTrackingDashboard() {
                   <div>
                     <p className="text-sm font-medium mb-1">Last Updated</p>
                     <p className="text-sm text-muted-foreground">
-                      {overview.lastUpdatedAt ? new Date(overview.lastUpdatedAt).toLocaleString() : "—"}
+                      {overview.lastUpdatedAt ? new Date(overview.lastUpdatedAt).toLocaleString() : "-"}
                     </p>
                   </div>
 

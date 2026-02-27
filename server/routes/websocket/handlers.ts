@@ -123,7 +123,7 @@ export function registerWebSocketHandlers(server: Server, app: Express): Server 
         wss.handleUpgrade(request, socket, head, (ws) => {
           wss.emit("connection", ws, request);
         });
-        return true; // Swallow — don't propagate to Vite
+        return true; // Swallow - don't propagate to Vite
       }
     }
     return originalEmit(event, ...args);

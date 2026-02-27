@@ -429,19 +429,19 @@ function ProProfileSection() {
         ) : (
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 rounded-lg bg-muted">
-              <p className="text-2xl font-bold text-primary">{proData?.payoutRate ? `$${proData.payoutRate}` : '—'}</p>
+              <p className="text-2xl font-bold text-primary">{proData?.payoutRate ? `$${proData.payoutRate}` : '-'}</p>
               <p className="text-xs text-muted-foreground">Payout Rate</p>
             </div>
             <div className="text-center p-3 rounded-lg bg-muted">
-              <p className="text-2xl font-bold text-primary">{proData?.tier || proData?.level || '—'}</p>
+              <p className="text-2xl font-bold text-primary">{proData?.tier || proData?.level || '-'}</p>
               <p className="text-xs text-muted-foreground">Tier / Level</p>
             </div>
             <div className="text-center p-3 rounded-lg bg-muted">
-              <p className="text-2xl font-bold text-primary">{proData?.serviceRadius ? `${proData.serviceRadius} mi` : '—'}</p>
+              <p className="text-2xl font-bold text-primary">{proData?.serviceRadius ? `${proData.serviceRadius} mi` : '-'}</p>
               <p className="text-xs text-muted-foreground">Service Radius</p>
             </div>
             <div className="text-center p-3 rounded-lg bg-muted">
-              <p className="text-2xl font-bold text-primary">{proData?.jobsCompleted ?? proData?.completedJobs ?? '—'}</p>
+              <p className="text-2xl font-bold text-primary">{proData?.jobsCompleted ?? proData?.completedJobs ?? '-'}</p>
               <p className="text-xs text-muted-foreground">Jobs Completed</p>
             </div>
           </div>
@@ -757,7 +757,7 @@ export default function Profile() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -765,7 +765,7 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-[#0f172a] flex flex-col items-center justify-center px-4">
         <Card className="w-full max-w-md p-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Sign In Required</h1>
           <p className="text-muted-foreground mb-6">Please sign in to view your profile.</p>

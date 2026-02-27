@@ -197,7 +197,7 @@ export async function requireConsent(
     marketing_email:
       "I can send you seasonal maintenance reminders and exclusive offers by email. Want in?",
     push_notifications:
-      "Want me to ping you when there's something important — like a pro arriving or a deal expiring?",
+      "Want me to ping you when there's something important - like a pro arriving or a deal expiring?",
     smart_home_data:
       "If you connect your smart home devices, I can catch problems early and save you money. Cool to access that data?",
     calendar_access:

@@ -41,7 +41,7 @@ async function createNotification(userId: string | null, type: string, title: st
 }
 
 export function registerJobLifecycleRoutes(app: Express) {
-  // POST /api/jobs/:jobId/accept — pro accepts the job
+  // POST /api/jobs/:jobId/accept - pro accepts the job
   app.post("/api/jobs/:jobId/accept", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });
@@ -89,7 +89,7 @@ export function registerJobLifecycleRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:jobId/decline — pro declines the job
+  // POST /api/jobs/:jobId/decline - pro declines the job
   app.post("/api/jobs/:jobId/decline", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });
@@ -123,7 +123,7 @@ export function registerJobLifecycleRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:jobId/start — pro starts the job
+  // POST /api/jobs/:jobId/start - pro starts the job
   app.post("/api/jobs/:jobId/start", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });
@@ -167,7 +167,7 @@ export function registerJobLifecycleRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:jobId/complete — pro marks job complete
+  // POST /api/jobs/:jobId/complete - pro marks job complete
   app.post("/api/jobs/:jobId/complete", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });
@@ -237,7 +237,7 @@ export function registerJobLifecycleRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:jobId/scope-change — pro reports scope difference
+  // POST /api/jobs/:jobId/scope-change - pro reports scope difference
   app.post("/api/jobs/:jobId/scope-change", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });
@@ -285,7 +285,7 @@ export function registerJobLifecycleRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:jobId/approve-scope-change — customer approves
+  // POST /api/jobs/:jobId/approve-scope-change - customer approves
   app.post("/api/jobs/:jobId/approve-scope-change", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });
@@ -323,7 +323,7 @@ export function registerJobLifecycleRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:jobId/reject-scope-change — customer rejects
+  // POST /api/jobs/:jobId/reject-scope-change - customer rejects
   app.post("/api/jobs/:jobId/reject-scope-change", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });
@@ -358,7 +358,7 @@ export function registerJobLifecycleRoutes(app: Express) {
     }
   });
 
-  // POST /api/jobs/:jobId/cancel — customer cancels before job starts
+  // POST /api/jobs/:jobId/cancel - customer cancels before job starts
   app.post("/api/jobs/:jobId/cancel", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });
@@ -409,7 +409,7 @@ export function registerJobLifecycleRoutes(app: Express) {
     }
   });
 
-  // GET /api/jobs/:jobId/status — full job status + timeline
+  // GET /api/jobs/:jobId/status - full job status + timeline
   app.get("/api/jobs/:jobId/status", async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ error: "Authentication required" });

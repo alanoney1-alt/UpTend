@@ -32,7 +32,7 @@ export async function sendSMS(
   message: string
 ): Promise<{ success: boolean; messageSid?: string; error?: string }> {
   if (!twilioClient) {
-    console.warn("[SMS] Twilio not configured — message not sent to", to);
+    console.warn("[SMS] Twilio not configured - message not sent to", to);
     return { success: false, error: "Twilio credentials not configured" };
   }
 
@@ -58,7 +58,7 @@ export async function sendSMS(
 }
 
 /**
- * Handle an incoming SMS message — route to George AI and return response
+ * Handle an incoming SMS message - route to George AI and return response
  */
 export async function handleIncoming(
   from: string,

@@ -1,5 +1,5 @@
 export async function uploadToObjectStorage(file: File): Promise<string> {
-  // Placeholder — returns a local object URL for dev mode
+  // Placeholder - returns a local object URL for dev mode
   return URL.createObjectURL(file);
 }
 

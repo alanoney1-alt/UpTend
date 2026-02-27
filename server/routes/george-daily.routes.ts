@@ -99,7 +99,7 @@ export function registerGeorgeDailyRoutes(app: Express): void {
   // Google Calendar Integration
   // ─────────────────────────────────────────────
 
-  // GET /api/calendar/auth-url — returns Google OAuth URL
+  // GET /api/calendar/auth-url - returns Google OAuth URL
   app.get("/api/calendar/auth-url", isAuthenticated, (req: Request, res: Response) => {
     try {
       const userId = (req as any).user?.id || (req as any).user?.userId;
@@ -121,7 +121,7 @@ export function registerGeorgeDailyRoutes(app: Express): void {
     }
   });
 
-  // GET /api/calendar/callback — handles OAuth callback
+  // GET /api/calendar/callback - handles OAuth callback
   app.get("/api/calendar/callback", async (req: Request, res: Response) => {
     try {
       const { code, state: userId, error: oauthError } = req.query as Record<string, string>;
@@ -149,7 +149,7 @@ export function registerGeorgeDailyRoutes(app: Express): void {
     }
   });
 
-  // POST /api/calendar/sync-job/:jobId — syncs a job to customer's calendar
+  // POST /api/calendar/sync-job/:jobId - syncs a job to customer's calendar
   app.post("/api/calendar/sync-job/:jobId", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req as any).user?.id || (req as any).user?.userId;
@@ -180,7 +180,7 @@ export function registerGeorgeDailyRoutes(app: Express): void {
     }
   });
 
-  // GET /api/calendar/suggest/:serviceId — get best booking time suggestion
+  // GET /api/calendar/suggest/:serviceId - get best booking time suggestion
   app.get("/api/calendar/suggest/:serviceId", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req as any).user?.id || (req as any).user?.userId;

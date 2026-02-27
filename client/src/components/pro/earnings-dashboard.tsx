@@ -293,7 +293,7 @@ export function EarningsDashboard() {
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground truncate">
-                      {payout.jobAddress || "—"} •{" "}
+                      {payout.jobAddress || "-"} •{" "}
                       {new Date(payout.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",

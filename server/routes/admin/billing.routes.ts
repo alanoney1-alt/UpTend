@@ -31,7 +31,7 @@ function requireAdmin(req: any, res: any, next: any) {
   next();
 }
 
-// POST /api/admin/billing/process-all — trigger weekly billing for all accounts
+// POST /api/admin/billing/process-all - trigger weekly billing for all accounts
 router.post("/billing/process-all", requireAuth, requireAdmin, async (_req, res) => {
   try {
     const summary = await processWeeklyBilling();
@@ -42,7 +42,7 @@ router.post("/billing/process-all", requireAuth, requireAdmin, async (_req, res)
   }
 });
 
-// POST /api/admin/billing/process/:businessAccountId — trigger for one account
+// POST /api/admin/billing/process/:businessAccountId - trigger for one account
 router.post("/billing/process/:businessAccountId", requireAuth, requireAdmin, async (req, res) => {
   try {
     const { businessAccountId } = req.params;
@@ -76,7 +76,7 @@ router.post("/billing/process/:businessAccountId", requireAuth, requireAdmin, as
   }
 });
 
-// GET /api/admin/billing/runs — all billing runs
+// GET /api/admin/billing/runs - all billing runs
 router.get("/billing/runs", requireAuth, requireAdmin, async (req, res) => {
   try {
     const { status, businessAccountId, limit: limitStr } = req.query;
@@ -126,7 +126,7 @@ router.get("/billing/runs", requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// POST /api/admin/billing/void/:billingRunId — void a billing run
+// POST /api/admin/billing/void/:billingRunId - void a billing run
 router.post("/billing/void/:billingRunId", requireAuth, requireAdmin, async (req, res) => {
   try {
     const { billingRunId } = req.params;
@@ -144,7 +144,7 @@ router.post("/billing/void/:billingRunId", requireAuth, requireAdmin, async (req
   }
 });
 
-// GET /api/admin/billing/reconciliation — reconciliation report
+// GET /api/admin/billing/reconciliation - reconciliation report
 router.get("/billing/reconciliation", requireAuth, requireAdmin, async (req, res) => {
   try {
     const { startDate, endDate, businessAccountId, status } = req.query;

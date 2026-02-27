@@ -577,25 +577,25 @@ function ProSettings({ profile }: { profile: any }) {
                 <div>
                   <Label className="text-xs text-muted-foreground">Make</Label>
                   <p className="font-medium text-sm" data-testid="text-vehicle-make">
-                    {profile?.registrationData?.vehicleMake || "—"}
+                    {profile?.registrationData?.vehicleMake || "-"}
                   </p>
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">Model</Label>
                   <p className="font-medium text-sm" data-testid="text-vehicle-model">
-                    {profile?.registrationData?.vehicleModel || "—"}
+                    {profile?.registrationData?.vehicleModel || "-"}
                   </p>
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">Year</Label>
                   <p className="font-medium text-sm" data-testid="text-vehicle-year">
-                    {profile?.registrationData?.vehicleYear || "—"}
+                    {profile?.registrationData?.vehicleYear || "-"}
                   </p>
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">Plate</Label>
                   <p className="font-medium text-sm" data-testid="text-vehicle-plate">
-                    {profile?.registrationData?.licensePlate || "—"}
+                    {profile?.registrationData?.licensePlate || "-"}
                   </p>
                 </div>
               </div>

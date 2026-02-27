@@ -5,11 +5,11 @@
  * Customers earn credits for each appliance scanned.
  *
  * Endpoints:
- * - POST /api/home-scan/start           — create scan session
- * - POST /api/home-scan/scan-item       — upload photo → GPT-5.2 vision → award credit
- * - GET  /api/home-scan/progress/:customerId — scan progress, badges, credits
- * - POST /api/home-scan/complete        — finalize scan, award completion bonus
- * - GET  /api/wallet/:customerId        — wallet balance + transaction history
+ * - POST /api/home-scan/start           - create scan session
+ * - POST /api/home-scan/scan-item       - upload photo → GPT-5.2 vision → award credit
+ * - GET  /api/home-scan/progress/:customerId - scan progress, badges, credits
+ * - POST /api/home-scan/complete        - finalize scan, award completion bonus
+ * - GET  /api/wallet/:customerId        - wallet balance + transaction history
  */
 
 import { Router, type Express } from "express";
@@ -86,7 +86,7 @@ async function calculateStreakDays(customerId: string): Promise<number> {
 export function registerHomeScanRoutes(app: Express) {
   const router = Router();
 
-  // POST /api/home-scan/start — create scan session
+  // POST /api/home-scan/start - create scan session
   const startSchema = z.object({
     customerId: z.string().min(1),
   });
@@ -108,7 +108,7 @@ export function registerHomeScanRoutes(app: Express) {
     }
   });
 
-  // POST /api/home-scan/scan-item — upload photo + room → GPT-5.2 vision → store → award credit
+  // POST /api/home-scan/scan-item - upload photo + room → GPT-5.2 vision → store → award credit
   const scanItemSchema = z.object({
     customerId: z.string().min(1),
     scanSessionId: z.string().uuid(),
@@ -258,7 +258,7 @@ Return JSON:
     }
   });
 
-  // GET /api/home-scan/progress/:customerId — progress, rooms, credits, badges
+  // GET /api/home-scan/progress/:customerId - progress, rooms, credits, badges
   router.get("/progress/:customerId", async (req, res) => {
     try {
       const { customerId } = req.params;
@@ -320,7 +320,7 @@ Return JSON:
     }
   });
 
-  // POST /api/home-scan/complete — finalize scan, award completion bonus
+  // POST /api/home-scan/complete - finalize scan, award completion bonus
   const completeSchema = z.object({
     customerId: z.string().min(1),
     scanSessionId: z.string().uuid(),
@@ -386,7 +386,7 @@ Return JSON:
 
   const walletRouter = Router();
 
-  // GET /api/wallet/:customerId — balance + transaction history
+  // GET /api/wallet/:customerId - balance + transaction history
   walletRouter.get("/:customerId", async (req, res) => {
     try {
       const { customerId } = req.params;

@@ -2,7 +2,7 @@
  * george-cron.routes.ts
  *
  * HTTP endpoints for George's scheduled background jobs.
- * Protected by CRON_API_KEY env var — set this on Railway or your cron provider.
+ * Protected by CRON_API_KEY env var - set this on Railway or your cron provider.
  *
  * Routes:
  *   GET /api/cron/maintenance-reminders  → checkMaintenanceReminders()

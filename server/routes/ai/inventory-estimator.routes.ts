@@ -74,13 +74,13 @@ Return ONLY valid JSON:
           truckLoadsNeeded: 1,
           estimatedPriceLow: 199,
           estimatedPriceHigh: 399,
-          specialNotes: "Photo analysis unavailable — estimate is approximate. Pro will confirm on-site.",
+          specialNotes: "Photo analysis unavailable - estimate is approximate. Pro will confirm on-site.",
         };
       }
 
       const processingTime = Date.now() - startTime;
 
-      // Save to DB — map AI fields to actual schema columns
+      // Save to DB - map AI fields to actual schema columns
       const estimate = await storage.createInventoryEstimate({
         id: nanoid(),
         userId,
@@ -143,7 +143,7 @@ Return ONLY valid JSON:
       await storage.updateInventoryEstimate(estimate.id, { status: "booked" });
       res.json({
         success: true,
-        message: "Estimate linked to booking — proceed to service request creation",
+        message: "Estimate linked to booking - proceed to service request creation",
         estimateId: estimate.id,
       });
     } catch (error: any) {

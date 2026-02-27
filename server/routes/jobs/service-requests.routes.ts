@@ -102,7 +102,7 @@ export function registerServiceRequestRoutes(app: Express) {
       const user = await storage.getUser(userId);
       const isDevMode = process.env.NODE_ENV !== 'production' || !process.env.REPL_SLUG;
       
-      // Payment method check removed — service requests are created with status
+      // Payment method check removed - service requests are created with status
       // "pending_payment" and payment is collected after booking via PaymentForm.
       // The old check blocked new users who haven't added a payment method yet.
       if (false && !isDevMode) {
@@ -141,7 +141,7 @@ export function registerServiceRequestRoutes(app: Express) {
         customerId: req.body.customerId || userId, // Always use authenticated user if not provided
       });
 
-      // Override customerId with authenticated user — never trust client
+      // Override customerId with authenticated user - never trust client
       (validatedData as any).customerId = userId;
 
       // Require at least one photo for AI pricing validation (skip in dev mode)
@@ -201,7 +201,7 @@ export function registerServiceRequestRoutes(app: Express) {
         customerEmail: user?.email || validatedData.customerEmail,
         stripePaymentIntentId,
         paymentStatus,
-        // Guaranteed Price Ceiling — lock in the max price at booking time
+        // Guaranteed Price Ceiling - lock in the max price at booking time
         guaranteedCeiling: quote.totalPrice,
         ceilingLockedAt: new Date().toISOString(),
       });
@@ -638,7 +638,7 @@ export function registerServiceRequestRoutes(app: Express) {
     }
   });
 
-  // Job tracking data — serves the /track/:jobId page
+  // Job tracking data - serves the /track/:jobId page
   app.get("/api/jobs/:jobId/track", async (req, res) => {
     try {
       const job = await storage.getServiceRequest(req.params.jobId);

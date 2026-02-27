@@ -67,7 +67,7 @@ export function registerContactRoutes(app: Express) {
       try {
         await sendEmail({
           to: adminEmail,
-          subject: `[UpTend Contact] ${submission.subject} — from ${submission.name}`,
+          subject: `[UpTend Contact] ${submission.subject} - from ${submission.name}`,
           text: `New contact form submission:\n\nName: ${name}\nEmail: ${email}\nPhone: ${submission.phone}\nSubject: ${submission.subject}\n\nMessage:\n${message}\n\nSubmitted: ${submission.timestamp}`,
           html: `<h2>New Contact Form Submission</h2><p><strong>Name:</strong> ${submission.name}<br/><strong>Email:</strong> ${submission.email}<br/><strong>Phone:</strong> ${submission.phone}<br/><strong>Subject:</strong> ${submission.subject}</p><p><strong>Message:</strong><br/>${submission.message}</p><p style="color:#999;font-size:12px;">Submitted: ${submission.timestamp}</p>`,
         });

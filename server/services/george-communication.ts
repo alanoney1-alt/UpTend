@@ -4,7 +4,7 @@
  */
 
 import twilio from 'twilio';
-// @ts-ignore — twilio ESM compat
+// @ts-ignore - twilio ESM compat
 import { pool } from '../db.js';
 import { sendEmail, sendSms } from './notifications.js';
 
@@ -77,7 +77,7 @@ export async function sendEmailToCustomer(params: {
  bodyHtml = `<div style="background:#fffbeb;border-left:4px solid #f97316;padding:16px;margin:16px 0;border-radius:4px;">
  <p style="color:#92400e;font-size:18px;font-weight:700;margin:0;">${params.customMessage}</p>
  </div>
- <p style="color:#374151;font-size:15px;line-height:1.6;">This quote includes insured, background-checked pros with our Guaranteed Price Ceiling — the price won't go up once booked.</p>
+ <p style="color:#374151;font-size:15px;line-height:1.6;">This quote includes insured, background-checked pros with our Guaranteed Price Ceiling - the price won't go up once booked.</p>
  <div style="text-align:center;margin:24px 0;">
  <a href="https://uptendapp.com/book" style="background:#f97316;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:16px;">Book Now</a>
  </div>`;
@@ -111,7 +111,7 @@ export async function sendEmailToCustomer(params: {
 
  const result = await sendEmail({
  to: customer.email,
- subject: `${params.subject} — George`,
+ subject: `${params.subject} - George`,
  html,
  });
 
@@ -212,7 +212,7 @@ export async function sendQuoteEmail(params: {
  ${breakdownHtml}
  <div style="background:#f0fdf4;border-radius:8px;padding:16px;margin:16px 0;">
  <p style="color:#166534;margin:0;font-size:14px;"> Insured, background-checked pro</p>
- <p style="color:#166534;margin:4px 0;font-size:14px;"> Guaranteed Price Ceiling — won't go up</p>
+ <p style="color:#166534;margin:4px 0;font-size:14px;"> Guaranteed Price Ceiling - won't go up</p>
  <p style="color:#166534;margin:4px 0;font-size:14px;"> Satisfaction guarantee</p>
  <p style="color:#166534;margin:4px 0;font-size:14px;"> Before & after photo documentation</p>
  </div>
@@ -226,14 +226,14 @@ export async function sendQuoteEmail(params: {
 
  const result = await sendEmail({
  to: customer.email,
- subject: `Your ${params.serviceType} Quote: $${params.totalPrice.toFixed(2)} — George`,
+ subject: `Your ${params.serviceType} Quote: $${params.totalPrice.toFixed(2)} - George`,
  html,
  });
 
  return {
  success: result.success,
  message: result.success
- ? `Quote emailed to ${customer.email} — $${params.totalPrice.toFixed(2)} for ${params.serviceType}`
+ ? `Quote emailed to ${customer.email} - $${params.totalPrice.toFixed(2)} for ${params.serviceType}`
  : `Failed to send: ${result.error}`,
  };
 }
@@ -360,7 +360,7 @@ export async function addToCalendar(params: {
  'BEGIN:VEVENT',
  `DTSTART:${formatICS(startDate)}`,
  `DTEND:${formatICS(endDate)}`,
- `SUMMARY:${booking.service_type} — UpTend`,
+ `SUMMARY:${booking.service_type} - UpTend`,
  `DESCRIPTION:${description}`,
  `LOCATION:${location}`,
  `STATUS:CONFIRMED`,
@@ -371,7 +371,7 @@ export async function addToCalendar(params: {
  // Google Calendar link
  const gcalStart = startDate.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
  const gcalEnd = endDate.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
- const googleCalLink = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(booking.service_type + ' — UpTend')}&dates=${gcalStart}/${gcalEnd}&location=${encodeURIComponent(location)}&details=${encodeURIComponent(description.replace(/\\n/g, '\n'))}`;
+ const googleCalLink = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(booking.service_type + ' - UpTend')}&dates=${gcalStart}/${gcalEnd}&location=${encodeURIComponent(location)}&details=${encodeURIComponent(description.replace(/\\n/g, '\n'))}`;
 
  // Send .ics via email if customer has email
  if (customer?.email) {
@@ -396,7 +396,7 @@ export async function addToCalendar(params: {
  await mailer.send({
  to: customer.email,
  from: process.env.FROM_EMAIL || 'alan@uptendapp.com',
- subject: ` ${booking.service_type} Booked — Calendar Invite`,
+ subject: ` ${booking.service_type} Booked - Calendar Invite`,
  html,
  attachments: [{
  content: Buffer.from(icsContent).toString('base64'),

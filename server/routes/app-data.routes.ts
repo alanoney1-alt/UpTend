@@ -1,5 +1,5 @@
 /**
- * App Data Routes — endpoints needed by the React Native app screens.
+ * App Data Routes - endpoints needed by the React Native app screens.
  * All query real Supabase data.
  */
 import type { Express } from "express";
@@ -15,7 +15,7 @@ export function registerAppDataRoutes(app: Express) {
       if (!desc) return res.status(400).json({ error: "symptoms or issueDescription required" });
       res.json({
         diagnosis: desc,
-        message: "Let's look at that. Can you describe more details — what do you see, hear, or smell?",
+        message: "Let's look at that. Can you describe more details - what do you see, hear, or smell?",
         safetyLevel: "safe",
         recommendPro: false,
       });

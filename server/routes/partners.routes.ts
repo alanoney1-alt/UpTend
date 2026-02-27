@@ -2,10 +2,10 @@
  * B2B Partner Portal Routes
  *
  * Endpoints:
- * - POST /api/partners/register  — partner signup
- * - POST /api/partners/login     — partner login
- * - GET  /api/partners/dashboard — partner stats
- * - POST /api/partners/book      — create booking on behalf of client
+ * - POST /api/partners/register  - partner signup
+ * - POST /api/partners/login     - partner login
+ * - GET  /api/partners/dashboard - partner stats
+ * - POST /api/partners/book      - create booking on behalf of client
  */
 
 import { Router, type Express, type Request, type Response, type NextFunction } from "express";
@@ -150,7 +150,7 @@ export function registerPartnerRoutes(app: Express) {
 
   // ==========================================
   // GET /api/partners/dashboard
-  // Partner stats — requires API key auth
+  // Partner stats - requires API key auth
   // ==========================================
   router.get("/dashboard", requirePartnerAuth, async (req, res) => {
     try {

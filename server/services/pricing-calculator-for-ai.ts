@@ -334,7 +334,7 @@ export function calculateFixItPriceForAI(params: {
   const HOURLY_RATE = 65;
   const MINIMUM_HOURS = 1;
 
-  // FixIt Task Catalog — TaskRabbit-inspired
+  // FixIt Task Catalog - TaskRabbit-inspired
   const FIXIT_TASKS: Record<string, { name: string; price: number; duration: number; category: string }> = {
     // MOUNTING & INSTALLATION
     tv_mount: { name: 'TV Mounting', price: 89, duration: 45, category: 'mounting' },

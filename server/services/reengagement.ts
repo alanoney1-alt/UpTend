@@ -173,15 +173,15 @@ export async function updateActivity(
 function generateMessage(messageType: string, _sequenceDay: number): string {
   const templates: Record<string, string> = {
     weather_tip:
-      "Hey! 🌤️ Orlando's been hot lately — your AC filter might be overdue for a swap. Quick tip: changing it every 60 days can cut energy costs 5-15%. No strings attached, just looking out!",
+      "Hey! 🌤️ Orlando's been hot lately - your AC filter might be overdue for a swap. Quick tip: changing it every 60 days can cut energy costs 5-15%. No strings attached, just looking out!",
     seasonal_cta:
       "Fall's coming up and it's the perfect time for gutter cleaning before the rain hits. Want me to check availability in your area? We've got some great timing slots open.",
     social_proof:
-      "Your neighbor on your street just saved $200 by bundling pressure washing + gutter cleaning. I can put together a similar deal for you — want to see what it'd cost?",
+      "Your neighbor on your street just saved $200 by bundling pressure washing + gutter cleaning. I can put together a similar deal for you - want to see what it'd cost?",
     credit_winback:
-      "We miss you! 🎁 Here's a $25 credit toward any service — no minimum, no catch. It expires in 30 days. Want me to find something that'd be perfect for your home?",
+      "We miss you! 🎁 Here's a $25 credit toward any service - no minimum, no catch. It expires in 30 days. Want me to find something that'd be perfect for your home?",
     final_attempt:
-      "It's been a while! If you're still interested in home services, I'm here whenever you need me. If not, no worries — I'll stop reaching out. Just reply if you ever want to chat!",
+      "It's been a while! If you're still interested in home services, I'm here whenever you need me. If not, no worries - I'll stop reaching out. Just reply if you ever want to chat!",
   };
   return templates[messageType] ?? templates.weather_tip;
 }

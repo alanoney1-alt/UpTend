@@ -297,7 +297,7 @@ export default router;
 export function registerEarningsGoalRoutes(app: any) {
   app.use("/api/pro", router);
 
-  // GET /api/haulers/earnings — pro earnings summary (alias)
+  // GET /api/haulers/earnings - pro earnings summary (alias)
   app.get("/api/haulers/earnings", requireAuth, async (req: any, res: any) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;

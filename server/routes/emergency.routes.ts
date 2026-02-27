@@ -24,7 +24,7 @@ const createEmergencySchema = z.object({
 });
 
 export function registerEmergencyRoutes(app: Express) {
-  // POST /api/emergency/request — create emergency request
+  // POST /api/emergency/request - create emergency request
   app.post("/api/emergency/request", requireAuth, requireCustomer, async (req: any, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -53,7 +53,7 @@ export function registerEmergencyRoutes(app: Express) {
         pricingMultiplier: 2.0,
       }).returning();
 
-      // Set SLA deadline — 4 hours for emergency
+      // Set SLA deadline - 4 hours for emergency
       const slaDeadline = new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString();
 
       // Find available pros and attempt auto-assignment to nearest one
@@ -121,7 +121,7 @@ export function registerEmergencyRoutes(app: Express) {
     }
   });
 
-  // POST /api/emergency/:id/accept — pro accepts (race-condition safe)
+  // POST /api/emergency/:id/accept - pro accepts (race-condition safe)
   app.post("/api/emergency/:id/accept", requireAuth, async (req: any, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -166,7 +166,7 @@ export function registerEmergencyRoutes(app: Express) {
     }
   });
 
-  // GET /api/emergency/status/:id — real-time status
+  // GET /api/emergency/status/:id - real-time status
   app.get("/api/emergency/status/:id", requireAuth, async (req: any, res) => {
     try {
       const [emergency] = await db.select().from(emergencyRequests)
@@ -197,7 +197,7 @@ export function registerEmergencyRoutes(app: Express) {
     }
   });
 
-  // GET /api/emergency/types — list emergency service types
+  // GET /api/emergency/types - list emergency service types
   app.get("/api/emergency/types", (_req, res) => {
     res.json(EMERGENCY_TYPES.map(type => ({
       id: type,
@@ -205,7 +205,7 @@ export function registerEmergencyRoutes(app: Express) {
     })));
   });
 
-  // GET /api/emergency/services — alias for /api/emergency/types
+  // GET /api/emergency/services - alias for /api/emergency/types
   app.get("/api/emergency/services", (_req, res) => {
     res.json(EMERGENCY_TYPES.map(type => ({
       id: type,

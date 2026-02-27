@@ -18,7 +18,7 @@ import {
 } from "../services/pro-field-assist.js";
 
 export function registerProFieldAssistRoutes(app: Express) {
-  // POST /api/pro/field-assist/identify — photo → part identification
+  // POST /api/pro/field-assist/identify - photo → part identification
   app.post("/api/pro/field-assist/identify", async (req: Request, res: Response) => {
     try {
       const { proId, photo, description } = req.body;
@@ -30,7 +30,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // POST /api/pro/field-assist/find-part — search for replacement
+  // POST /api/pro/field-assist/find-part - search for replacement
   app.post("/api/pro/field-assist/find-part", async (req: Request, res: Response) => {
     try {
       const { partDescription, brand, model } = req.body;
@@ -42,7 +42,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // GET /api/pro/field-assist/reference/:category — quick reference
+  // GET /api/pro/field-assist/reference/:category - quick reference
   app.get("/api/pro/field-assist/reference/:category", async (req: Request, res: Response) => {
     try {
       const { category } = req.params;
@@ -54,7 +54,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // POST /api/pro/field-assist/troubleshoot — on-site troubleshooting
+  // POST /api/pro/field-assist/troubleshoot - on-site troubleshooting
   app.post("/api/pro/field-assist/troubleshoot", async (req: Request, res: Response) => {
     try {
       const { proId, jobId, issueDescription, photo } = req.body;
@@ -66,7 +66,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // GET /api/pro/field-assist/stores/:zip — nearest supply stores
+  // GET /api/pro/field-assist/stores/:zip - nearest supply stores
   app.get("/api/pro/field-assist/stores/:zip", async (req: Request, res: Response) => {
     try {
       const { zip } = req.params;
@@ -78,7 +78,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // POST /api/pro/field-assist/tutorial — find tutorial
+  // POST /api/pro/field-assist/tutorial - find tutorial
   app.post("/api/pro/field-assist/tutorial", async (req: Request, res: Response) => {
     try {
       const { task, experienceLevel } = req.body;
@@ -90,7 +90,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // GET /api/pro/field-assist/history/:proId — past assists
+  // GET /api/pro/field-assist/history/:proId - past assists
   app.get("/api/pro/field-assist/history/:proId", async (req: Request, res: Response) => {
     try {
       const { proId } = req.params;
@@ -101,7 +101,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // POST /api/pro/field-assist/knowledge — contribute to knowledge base
+  // POST /api/pro/field-assist/knowledge - contribute to knowledge base
   app.post("/api/pro/field-assist/knowledge", async (req: Request, res: Response) => {
     try {
       const { proId, entry } = req.body;
@@ -113,7 +113,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // GET /api/pro/field-assist/knowledge/:category — search knowledge base
+  // GET /api/pro/field-assist/knowledge/:category - search knowledge base
   app.get("/api/pro/field-assist/knowledge/:category", async (req: Request, res: Response) => {
     try {
       const { category } = req.params;
@@ -125,7 +125,7 @@ export function registerProFieldAssistRoutes(app: Express) {
     }
   });
 
-  // POST /api/pro/field-assist/order-part — log part order for job billing
+  // POST /api/pro/field-assist/order-part - log part order for job billing
   app.post("/api/pro/field-assist/order-part", async (req: Request, res: Response) => {
     try {
       const { proId, jobId, ...orderData } = req.body;

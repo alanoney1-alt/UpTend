@@ -57,7 +57,7 @@ export function createNeighborhoodIntelligenceRoutes(storage: DatabaseStorage) {
       }
 
       // Aggregate data from completed jobs in this zip code
-      // Aggregate job stats for this zip (simplified — future: full aggregation query)
+      // Aggregate job stats for this zip (simplified - future: full aggregation query)
       const jobStats = { totalProperties: 0, avgHealthScore: null, topServices: [], avgDiversionRate: null, totalCo2Saved: null, avgSpend: null };
 
       const now = new Date();

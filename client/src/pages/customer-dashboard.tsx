@@ -544,7 +544,7 @@ function MyHomeSection({ jobs, user }: { jobs: ServiceRequest[]; user: { firstNa
   const nextRec = useMemo(() => getNextRecommendation(completedJobs), [completedJobs]);
   const totalSpent = useMemo(() => completedJobs.reduce((s, j) => s + (j.finalPrice || j.priceEstimate || 0), 0), [completedJobs]);
   const address = lastCompleted?.pickupAddress || "No address on file";
-  const memberSince = user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "—";
+  const memberSince = user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "-";
 
   return (
     <Card className="mb-6 overflow-hidden" data-testid="card-my-home">
@@ -732,7 +732,7 @@ export default function CustomerDashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4">
         <div className="w-full max-w-2xl space-y-4">
           <SkeletonCard lines={2} />
           <SkeletonCard avatar lines={4} />
@@ -744,7 +744,7 @@ export default function CustomerDashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#3B1D5A] flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-[#0f172a] flex flex-col items-center justify-center px-4">
         <Card className="w-full max-w-md p-8 text-center">
           <h1 className="text-2xl font-bold mb-4">{t("dashboard.sign_in_required")}</h1>
           <p className="text-muted-foreground mb-6">{t("dashboard.sign_in_desc")}</p>
@@ -989,7 +989,7 @@ export default function CustomerDashboard() {
           )}
         </div>
 
-        {/* Claims removed — disputes handled via email */}
+        {/* Claims removed - disputes handled via email */}
       </main>
     </div>
   );

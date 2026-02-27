@@ -48,7 +48,7 @@ export function NeighborhoodLanding({ config }: { config: NeighborhoodConfig }) 
           <img src={config.heroImage} alt="" className="w-full h-full object-cover" loading="eager" />
           <div className="absolute inset-0 bg-slate-900/80" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-[#3B1D5A]/30 to-slate-900/60" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-[#0f172a]/30 to-slate-900/60" />
 
         <div className="max-w-5xl mx-auto px-4 relative z-10 text-center">
           <p className="text-white/50 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>

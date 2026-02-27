@@ -1,5 +1,5 @@
 /**
- * Home Utilities Routes — Home Operating System
+ * Home Utilities Routes - Home Operating System
  *
  * Endpoints for utility profiles, trash schedules, sprinkler settings,
  * home dashboard, and reminders.
@@ -15,7 +15,7 @@ import { lookupTrashSchedule, lookupUtilityProviders, lookupWaterRestrictions, g
 export function registerHomeUtilitiesRoutes(app: Express) {
   const router = Router();
 
-  // GET /api/home/utilities/:customerId — utility profile
+  // GET /api/home/utilities/:customerId - utility profile
   router.get("/utilities/:customerId", requireAuth, async (req, res) => {
     try {
       const { customerId } = req.params;
@@ -47,7 +47,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
     }
   });
 
-  // GET /api/home/trash-schedule/:customerId — trash/recycling schedule
+  // GET /api/home/trash-schedule/:customerId - trash/recycling schedule
   router.get("/trash-schedule/:customerId", requireAuth, async (req, res) => {
     try {
       const { customerId } = req.params;
@@ -82,7 +82,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
     }
   });
 
-  // GET /api/home/sprinklers/:customerId — sprinkler settings
+  // GET /api/home/sprinklers/:customerId - sprinkler settings
   router.get("/sprinklers/:customerId", requireAuth, async (req, res) => {
     try {
       const { customerId } = req.params;
@@ -113,7 +113,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
     }
   });
 
-  // POST /api/home/sprinklers/:customerId — update sprinkler settings
+  // POST /api/home/sprinklers/:customerId - update sprinkler settings
   const sprinklerUpdateSchema = z.object({
     systemType: z.enum(["manual", "timer", "smart"]).optional(),
     zones: z.array(z.object({
@@ -169,7 +169,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
     }
   });
 
-  // GET /api/home/dashboard/:customerId — full home dashboard
+  // GET /api/home/dashboard/:customerId - full home dashboard
   router.get("/dashboard/:customerId", requireAuth, async (req, res) => {
     try {
       const dashboard = await getHomeDashboard(req.params.customerId);
@@ -180,7 +180,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
     }
   });
 
-  // GET /api/home/reminders/:customerId — all reminders
+  // GET /api/home/reminders/:customerId - all reminders
   router.get("/reminders/:customerId", requireAuth, async (req, res) => {
     try {
       const result = await pool.query(
@@ -207,7 +207,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
     }
   });
 
-  // POST /api/home/reminders — create custom reminder
+  // POST /api/home/reminders - create custom reminder
   const reminderSchema = z.object({
     customerId: z.string(),
     reminderType: z.enum(["trash", "recycling", "yard_waste", "sprinkler_adjust", "filter_change", "bill_due", "bulk_pickup", "pest_control", "lawn_treatment"]),
@@ -234,7 +234,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
     }
   });
 
-  // PUT /api/home/reminders/:id — update reminder
+  // PUT /api/home/reminders/:id - update reminder
   router.put("/reminders/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
@@ -261,7 +261,7 @@ export function registerHomeUtilitiesRoutes(app: Express) {
     }
   });
 
-  // GET /api/home/tonight/:customerId — tonight's checklist
+  // GET /api/home/tonight/:customerId - tonight's checklist
   router.get("/tonight/:customerId", requireAuth, async (req, res) => {
     try {
       const checklist = await getTonightChecklist(req.params.customerId);

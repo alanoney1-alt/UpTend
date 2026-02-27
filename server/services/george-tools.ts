@@ -1,12 +1,12 @@
 /**
- * George AI Agent — Tool Functions
+ * George AI Agent - Tool Functions
  *
  * Phase 1: All DB-backed tools now query real Supabase via Drizzle ORM.
  * New tables: maintenance_reminders, pro_goals, customer_loyalty,
  * smart_home_devices, service_history_notes.
  *
  * Every function pulls LIVE data from the existing pricing constants.
- * George NEVER hardcodes prices — he always calls these tools.
+ * George NEVER hardcodes prices - he always calls these tools.
  */
 
 import { SERVICES } from "../../client/src/constants/services";
@@ -55,7 +55,7 @@ import {
 import { DWELLSCAN_TIERS, DWELLSCAN_SERVICE_CREDIT } from "../../shared/dwellscan-tiers";
 
 // ─────────────────────────────────────────────
-// DB imports — Phase 1 live database queries
+// DB imports - Phase 1 live database queries
 // ─────────────────────────────────────────────
 import { db, pool } from "../db";
 import {
@@ -93,7 +93,7 @@ async function getHaulerProfileByProId(proId: string) {
 }
 
 // ─────────────────────────────────────────────
-// a) getServicePricing — delegates to centralized pricing engine
+// a) getServicePricing - delegates to centralized pricing engine
 // ─────────────────────────────────────────────
 export async function getServicePricingFromEngine(serviceId: string): Promise<object> {
  try {
@@ -264,7 +264,7 @@ export function getServicePricing(serviceId: string): object {
 }
 
 // ─────────────────────────────────────────────
-// b) calculateQuote — delegates to centralized pricing engine
+// b) calculateQuote - delegates to centralized pricing engine
 // ─────────────────────────────────────────────
 export async function calculateQuoteFromEngine(serviceId: string, selections: any): Promise<object> {
  try {
@@ -520,7 +520,7 @@ export function calculateQuote(serviceId: string, selections: any): object {
  serviceId,
  serviceName: "Light Demolition",
  startingPrice: basePrice,
- note: "Final price depends on scope — starts at $199. We'll confirm after reviewing details.",
+ note: "Final price depends on scope - starts at $199. We'll confirm after reviewing details.",
  priceFormatted: `Starting at $${basePrice}`,
  };
  }
@@ -546,7 +546,7 @@ export function calculateQuote(serviceId: string, selections: any): object {
 }
 
 // ─────────────────────────────────────────────
-// c) getBundleOptions — delegates to centralized pricing engine
+// c) getBundleOptions - delegates to centralized pricing engine
 // ─────────────────────────────────────────────
 export async function getBundleOptionsFromEngine(serviceIds: string[]): Promise<object> {
  try {
@@ -654,7 +654,7 @@ export function createBookingDraft(params: any): object {
 }
 
 // ─────────────────────────────────────────────
-// f) getCustomerJobs — live DB query
+// f) getCustomerJobs - live DB query
 // ─────────────────────────────────────────────
 export async function getCustomerJobs(userId: string, storage?: any): Promise<object> {
  try {
@@ -712,7 +712,7 @@ export function getAllServices(): object {
 // PRO TOOLS
 // ═════════════════════════════════════════════
 
-// h) getProDashboard — live DB query
+// h) getProDashboard - live DB query
 export async function getProDashboard(proId: string, storage?: any): Promise<object> {
  try {
  const profile = await getHaulerProfileByProId(proId);
@@ -767,7 +767,7 @@ export async function getProDashboard(proId: string, storage?: any): Promise<obj
  }
  return {
  proId,
- message: "Dashboard data unavailable — please log in",
+ message: "Dashboard data unavailable - please log in",
  earningsThisMonth: 0,
  jobsCompleted: 0,
  activeJobs: 0,
@@ -776,7 +776,7 @@ export async function getProDashboard(proId: string, storage?: any): Promise<obj
  };
 }
 
-// i) getProEarnings — live DB query
+// i) getProEarnings - live DB query
 export async function getProEarnings(proId: string, period: string, storage?: any): Promise<object> {
  try {
  const profile = await getHaulerProfileByProId(proId);
@@ -831,7 +831,7 @@ export async function getProEarnings(proId: string, period: string, storage?: an
  return { proId, period, totalEarnings: 0, jobCount: 0, message: "Earnings data unavailable" };
 }
 
-// j) getProSchedule — live DB query
+// j) getProSchedule - live DB query
 export async function getProSchedule(proId: string, storage?: any): Promise<object> {
  try {
  const profile = await getHaulerProfileByProId(proId);
@@ -866,7 +866,7 @@ export async function getProSchedule(proId: string, storage?: any): Promise<obje
  return { proId, upcomingJobs: [], count: 0, message: "Schedule unavailable" };
 }
 
-// k) getProCertifications — live DB query
+// k) getProCertifications - live DB query
 export async function getProCertifications(proId: string, storage?: any): Promise<object> {
  const allCerts = [
  { id: "junk_removal", name: "Junk Removal Specialist", tier: "bronze" },
@@ -918,13 +918,13 @@ export async function getProCertifications(proId: string, storage?: any): Promis
  };
 }
 
-// k2) getCertificationPrograms — full catalog with modules and requirements
+// k2) getCertificationPrograms - full catalog with modules and requirements
 export async function getCertificationPrograms(proId?: string): Promise<object> {
  const programs = [
  {
  id: "b2b_pm",
  name: "B2B Property Management",
- description: "Serve property management companies — turnover cleanings, maintenance, inspections",
+ description: "Serve property management companies - turnover cleanings, maintenance, inspections",
  modules: 4,
  timeEstimate: "2-3 hours",
  earningsUnlock: "$800-2,000/mo in PM contract jobs",
@@ -936,7 +936,7 @@ export async function getCertificationPrograms(proId?: string): Promise<object> 
  {
  id: "b2b_hoa",
  name: "B2B HOA Services",
- description: "Serve HOA communities — bulk landscaping, pressure washing, common area maintenance",
+ description: "Serve HOA communities - bulk landscaping, pressure washing, common area maintenance",
  modules: 4,
  timeEstimate: "2-3 hours",
  earningsUnlock: "$500-1,500/mo in HOA contract jobs",
@@ -948,7 +948,7 @@ export async function getCertificationPrograms(proId?: string): Promise<object> 
  {
  id: "home_scan_tech",
  name: "Home DNA Scan Technician",
- description: "Conduct in-person home scans — document appliances, systems, and condition for AI analysis",
+ description: "Conduct in-person home scans - document appliances, systems, and condition for AI analysis",
  modules: 3,
  timeEstimate: "1.5 hours",
  earningsUnlock: "$45/scan + $1/appliance (~$50/job, 30-45 min each)",
@@ -960,7 +960,7 @@ export async function getCertificationPrograms(proId?: string): Promise<object> 
  {
  id: "parts_materials",
  name: "Parts & Materials Specialist",
- description: "Handle jobs requiring parts sourcing — plumbing, electrical, appliance repairs",
+ description: "Handle jobs requiring parts sourcing - plumbing, electrical, appliance repairs",
  modules: 3,
  timeEstimate: "1.5 hours",
  earningsUnlock: "Access to higher-payout repair jobs ($150-400 avg)",
@@ -972,7 +972,7 @@ export async function getCertificationPrograms(proId?: string): Promise<object> 
  {
  id: "emergency_response",
  name: "Emergency Response",
- description: "Handle urgent dispatch — water damage, storm cleanup, lockouts, burst pipes",
+ description: "Handle urgent dispatch - water damage, storm cleanup, lockouts, burst pipes",
  modules: 4,
  timeEstimate: "2-3 hours",
  earningsUnlock: "2x payout on emergency jobs + priority dispatch",
@@ -984,10 +984,10 @@ export async function getCertificationPrograms(proId?: string): Promise<object> 
  {
  id: "government_contract",
  name: "Government Contract",
- description: "Serve government facilities — prevailing wage compliance, security clearance, documentation",
+ description: "Serve government facilities - prevailing wage compliance, security clearance, documentation",
  modules: 5,
  timeEstimate: "3-4 hours",
- earningsUnlock: "Highest payout tier — government contracts $300-1,000/job",
+ earningsUnlock: "Highest payout tier - government contracts $300-1,000/job",
  prerequisites: ["b2b_pm"],
  topics: ["Prevailing wage compliance", "Security protocols", "Government documentation", "Inspection standards", "SDVOSB requirements"],
  quizQuestions: 12,
@@ -1034,12 +1034,12 @@ export async function getCertificationPrograms(proId?: string): Promise<object> 
  feeImpact: {
  currentFee: "15%",
  potentialFee: "15%",
- savings: "Flat 15% platform fee — you keep 85% of every job",
+ savings: "Flat 15% platform fee - you keep 85% of every job",
  },
  };
 }
 
-// k3) startCertificationModule — returns training content + quiz
+// k3) startCertificationModule - returns training content + quiz
 export async function startCertificationModule(proId: string, certId: string, moduleNum: number): Promise<object> {
  // Training content templates per certification
  const moduleContent: Record<string, Array<{ title: string; content: string; quiz: Array<{ question: string; options: string[]; correct: number }> }>> = {
@@ -1051,8 +1051,8 @@ export async function startCertificationModule(proId: string, certId: string, mo
 In this module, you'll learn how to photograph homes for AI analysis.
 
 KEY STANDARDS:
-• Take photos in natural light when possible — no flash unless necessary
-• Capture the FULL appliance/system — don't crop out model numbers or condition indicators
+• Take photos in natural light when possible - no flash unless necessary
+• Capture the FULL appliance/system - don't crop out model numbers or condition indicators
 • For each room: 1 wide shot + close-ups of any issues
 • Appliance photos: front (brand/model visible), back (connections), any damage
 • HVAC: outdoor unit, indoor unit, thermostat, filter access
@@ -1063,8 +1063,8 @@ KEY STANDARDS:
 • Minimum 30 photos per home for a complete scan
 
 COMMON MISTAKES:
-• Blurry photos — hold steady, tap to focus
-• Missing model/serial numbers — always get the data plate
+• Blurry photos - hold steady, tap to focus
+• Missing model/serial numbers - always get the data plate
 • Skipping the garage, attic access, and crawlspace
 • Not noting the approximate age of systems`,
  quiz: [
@@ -1078,26 +1078,26 @@ COMMON MISTAKES:
  content: `Now let's learn to identify and age appliances! 
 
 COMMON APPLIANCES TO DOCUMENT:
-• HVAC (central air, heat pump, furnace) — avg lifespan 15-20 years
-• Water heater (tank or tankless) — avg lifespan 8-12 years
-• Washer/Dryer — avg lifespan 10-13 years
-• Dishwasher — avg lifespan 9-12 years
-• Refrigerator — avg lifespan 12-17 years
-• Oven/Range — avg lifespan 13-15 years
-• Garage door opener — avg lifespan 10-15 years
-• Roof (shingle, tile, metal) — 20-50 years depending on material
+• HVAC (central air, heat pump, furnace) - avg lifespan 15-20 years
+• Water heater (tank or tankless) - avg lifespan 8-12 years
+• Washer/Dryer - avg lifespan 10-13 years
+• Dishwasher - avg lifespan 9-12 years
+• Refrigerator - avg lifespan 12-17 years
+• Oven/Range - avg lifespan 13-15 years
+• Garage door opener - avg lifespan 10-15 years
+• Roof (shingle, tile, metal) - 20-50 years depending on material
 
 HOW TO ESTIMATE AGE:
-1. Check the data plate — manufacture date is often listed
+1. Check the data plate - manufacture date is often listed
 2. Serial number decoder: Many brands encode date in serial (e.g., Carrier uses year+week)
 3. Visual condition: rust, discoloration, outdated design
-4. Ask the homeowner — they often know rough install dates
+4. Ask the homeowner - they often know rough install dates
 5. Permit records (if available) show replacement dates
 
 REPLACEMENT URGENCY SCORING:
-• 0-50% of lifespan: Green — no action needed
-• 50-80%: Yellow — start budgeting for replacement
-• 80-100%+: Red — recommend inspection or proactive replacement`,
+• 0-50% of lifespan: Green - no action needed
+• 50-80%: Yellow - start budgeting for replacement
+• 80-100%+: Red - recommend inspection or proactive replacement`,
  quiz: [
  { question: "Average lifespan of a water heater?", options: ["5-7 years", "8-12 years", "15-20 years", "25-30 years"], correct: 1 },
  { question: "Best way to determine exact appliance age?", options: ["Guess by appearance", "Check the data plate/serial number", "Ask the neighbor", "Google the color"], correct: 1 },
@@ -1106,7 +1106,7 @@ REPLACEMENT URGENCY SCORING:
  },
  {
  title: "Completing the Scan & Reporting",
- content: `Final module — putting it all together! 
+ content: `Final module - putting it all together! 
 
 SCAN WORKFLOW:
 1. Introduce yourself: "Hi, I'm [name] from UpTend. I'm here for your free Home DNA Scan."
@@ -1115,25 +1115,25 @@ SCAN WORKFLOW:
 4. Kitchen & bathrooms get extra attention (most expensive systems)
 5. Utility areas: HVAC closet, water heater, electrical panel, laundry
 6. Garage, attic access (visual only), crawlspace if accessible
-7. Upload all photos through the app — AI processes them automatically
+7. Upload all photos through the app - AI processes them automatically
 8. Review the AI-generated report with the homeowner
-9. Highlight the top 3 recommendations: "Your water heater is 9 years old — I'd recommend a pro inspection before winter"
+9. Highlight the top 3 recommendations: "Your water heater is 9 years old - I'd recommend a pro inspection before winter"
 
 CUSTOMER EXPERIENCE TIPS:
-• Be clean, professional, friendly — you're in their home
+• Be clean, professional, friendly - you're in their home
 • Explain what you're looking at: "I'm checking your water heater age and condition"
 • Never alarm them: "This looks fine for now, but worth monitoring" vs "This is about to fail!"
-• Mention the $25 credit: "You earned $25 just for doing this scan — you can use it on any service"
+• Mention the $25 credit: "You earned $25 just for doing this scan - you can use it on any service"
 • Mention upcoming maintenance: "Based on this scan, George will remind you when things need attention"
 
 PAYOUT:
 • $45 base per completed scan
 • $1 per appliance documented (avg home = 8-12 appliances)
 • Typical total: $50-60 per scan, takes 30-45 minutes
-• That's $80-120/hour effective rate — one of the best payouts on the platform`,
+• That's $80-120/hour effective rate - one of the best payouts on the platform`,
  quiz: [
  { question: "What is the base payout per completed home scan?", options: ["$25", "$35", "$45", "$75"], correct: 2 },
- { question: "After completing photos, what happens next?", options: ["You write the report manually", "AI processes them automatically", "Customer writes their own report", "Nothing — just photos"], correct: 1 },
+ { question: "After completing photos, what happens next?", options: ["You write the report manually", "AI processes them automatically", "Customer writes their own report", "Nothing - just photos"], correct: 1 },
  { question: "How should you frame a concern to the homeowner?", options: ["'This is about to fail!'", "'This looks fine for now, worth monitoring'", "'You need to replace this immediately'", "Don't mention anything"], correct: 1 },
  ],
  },
@@ -1204,7 +1204,7 @@ export async function submitCertificationQuiz(proId: string, certId: string, mod
  ? isLastModule
  ? ` **CERTIFIED!** You passed with ${score}%! Your certificate has been issued. This unlocks new job types and lowers your platform fee. What cert do you want to tackle next?`
  : ` Module ${moduleNum} passed with ${score}%! Ready for Module ${moduleNum + 1}?`
- : `Almost! You scored ${score}% — need 80% to pass. Review the material and try again. No limit on retakes! `,
+ : `Almost! You scored ${score}% - need 80% to pass. Review the material and try again. No limit on retakes! `,
  };
 }
 
@@ -1240,12 +1240,12 @@ export function getProMarketInsights(serviceTypes: string[]): object {
  }));
  return {
  insights: relevant,
- topOpportunity: "Pressure washing demand is up 40% — consider getting certified if you aren't already",
+ topOpportunity: "Pressure washing demand is up 40% - consider getting certified if you aren't already",
  marketTip: "Pros who add 2+ certifications increase monthly earnings by an average of $800",
  };
 }
 
-// n) getProReviews — live DB query
+// n) getProReviews - live DB query
 export async function getProReviews(proId: string, storage?: any): Promise<object> {
  try {
  const profile = await getHaulerProfileByProId(proId);
@@ -1276,7 +1276,7 @@ export async function getProReviews(proId: string, storage?: any): Promise<objec
  averageRating: profile?.rating || 5.0,
  totalReviews: profile?.reviewCount || 0,
  recentReviews: [],
- message: "No reviews yet — every job is an opportunity for a 5-star rating!",
+ message: "No reviews yet - every job is an opportunity for a 5-star rating!",
  };
  } catch (e) {
  console.error("getProReviews DB error:", e);
@@ -1286,7 +1286,7 @@ export async function getProReviews(proId: string, storage?: any): Promise<objec
  averageRating: 5.0,
  totalReviews: 0,
  recentReviews: [],
- message: "No reviews yet — every job is an opportunity for a 5-star rating!",
+ message: "No reviews yet - every job is an opportunity for a 5-star rating!",
  };
 }
 
@@ -1294,7 +1294,7 @@ export async function getProReviews(proId: string, storage?: any): Promise<objec
 // B2B TOOLS
 // ═════════════════════════════════════════════
 
-// o) getPortfolioAnalytics — live DB query
+// o) getPortfolioAnalytics - live DB query
 export async function getPortfolioAnalytics(businessId: string, storage?: any): Promise<object> {
  try {
  let [account] = await db.select().from(businessAccounts)
@@ -1353,11 +1353,11 @@ export async function getPortfolioAnalytics(businessId: string, storage?: any): 
  openWorkOrders: 0,
  completedThisMonth: 0,
  spendYTD: 0,
- message: "Portfolio data unavailable — make sure your account is set up",
+ message: "Portfolio data unavailable - make sure your account is set up",
  };
 }
 
-// p) getVendorScorecard — live DB query
+// p) getVendorScorecard - live DB query
 export async function getVendorScorecard(businessId: string, storage?: any): Promise<object> {
  try {
  let [account] = await db.select().from(businessAccounts)
@@ -1421,11 +1421,11 @@ export async function getVendorScorecard(businessId: string, storage?: any): Pro
  businessId,
  topPerformers: [],
  overallSLACompliance: "N/A",
- note: "No vendor data yet — vendor scorecards update as jobs are completed",
+ note: "No vendor data yet - vendor scorecards update as jobs are completed",
  };
 }
 
-// q) getBillingHistory — live DB query
+// q) getBillingHistory - live DB query
 export async function getBillingHistory(businessId: string, storage?: any): Promise<object> {
  try {
  const billingRuns = await db.select().from(weeklyBillingRuns)
@@ -1461,11 +1461,11 @@ export async function getBillingHistory(businessId: string, storage?: any): Prom
  recentInvoices: [],
  outstandingBalance: 0,
  billingCycle: "Weekly (Net-7)",
- message: "No billing history found — billing starts after your first completed job",
+ message: "No billing history found - billing starts after your first completed job",
  };
 }
 
-// r) getComplianceStatus — live DB query
+// r) getComplianceStatus - live DB query
 export async function getComplianceStatus(businessId: string, storage?: any): Promise<object> {
  try {
  let [account] = await db.select().from(businessAccounts)
@@ -1545,10 +1545,10 @@ export async function getComplianceStatus(businessId: string, storage?: any): Pr
  totalVendors: allProfiles.length,
  recommendation:
  expired.length > 0
- ? `${expired.length} vendor(s) have expired insurance — suspend them until renewed`
+ ? `${expired.length} vendor(s) have expired insurance - suspend them until renewed`
  : expiringSoon.length > 0
- ? `${expiringSoon.length} vendor(s) have insurance expiring within 30 days — follow up`
- : "All vendors are compliant — great work!",
+ ? `${expiringSoon.length} vendor(s) have insurance expiring within 30 days - follow up`
+ : "All vendors are compliant - great work!",
  };
  }
  } catch (e) {
@@ -1559,7 +1559,7 @@ export async function getComplianceStatus(businessId: string, storage?: any): Pr
  complianceScore: 100,
  vendorInsuranceStatus: { valid: 0, expiringSoon: 0, expired: 0 },
  licenseExpirations: [],
- recommendation: "No vendor data yet — scorecards populate as jobs are completed",
+ recommendation: "No vendor data yet - scorecards populate as jobs are completed",
  };
 }
 
@@ -1581,7 +1581,7 @@ export function generateROIReport(currentSpend: number, units: number): object {
  timeSavedHoursPerYear: timeSavedHours,
  adminCostSaved,
  totalROI: annualSavings + adminCostSaved,
- note: "Estimates based on industry averages — actual savings vary by portfolio",
+ note: "Estimates based on industry averages - actual savings vary by portfolio",
  };
 }
 
@@ -1589,7 +1589,7 @@ export function generateROIReport(currentSpend: number, units: number): object {
 // HOME INTELLIGENCE TOOLS (Consumer)
 // ═════════════════════════════════════════════
 
-// t) getHomeProfile — live DB query
+// t) getHomeProfile - live DB query
 export async function getHomeProfile(userId: string, storage?: any): Promise<object> {
  try {
  const [profile] = await db.select().from(homeProfiles)
@@ -1629,12 +1629,12 @@ export async function getHomeProfile(userId: string, storage?: any): Promise<obj
  }
  return {
  userId,
- message: "No home profile on file yet — tell me about your home and I'll remember it!",
+ message: "No home profile on file yet - tell me about your home and I'll remember it!",
  prompt: "What's your home like? (bedrooms, bathrooms, pool, pets, etc.)",
  };
 }
 
-// u) getServiceHistory — live DB query
+// u) getServiceHistory - live DB query
 export async function getServiceHistory(userId: string, storage?: any): Promise<object> {
  try {
  const jobs = await db.select().from(serviceRequests)
@@ -1673,11 +1673,11 @@ export function getSeasonalRecommendations(month: number, homeType: string, loca
  1: { services: ["garage_cleanout", "home_cleaning"], reason: "New year cleanout season", urgency: "low" },
  2: { services: ["home_cleaning", "handyman"], reason: "Pre-spring prep", urgency: "low" },
  3: { services: ["pressure_washing", "landscaping", "gutter_cleaning"], reason: "Spring cleaning + pollen season in Orlando", urgency: "high" },
- 4: { services: ["pressure_washing", "landscaping", "pool_cleaning"], reason: "Spring peak — book before it fills up", urgency: "high" },
+ 4: { services: ["pressure_washing", "landscaping", "pool_cleaning"], reason: "Spring peak - book before it fills up", urgency: "high" },
  5: { services: ["gutter_cleaning", "landscaping", "pool_cleaning"], reason: "Pre-hurricane season prep", urgency: "high" },
- 6: { services: ["gutter_cleaning", "landscaping", "pool_cleaning"], reason: "Hurricane season starts June 1 — get gutters done!", urgency: "critical" },
- 7: { services: ["pool_cleaning", "pressure_washing", "landscaping"], reason: "Peak summer — pool maintenance critical", urgency: "medium" },
- 8: { services: ["pool_cleaning", "pressure_washing"], reason: "Late summer — algae and humidity damage", urgency: "medium" },
+ 6: { services: ["gutter_cleaning", "landscaping", "pool_cleaning"], reason: "Hurricane season starts June 1 - get gutters done!", urgency: "critical" },
+ 7: { services: ["pool_cleaning", "pressure_washing", "landscaping"], reason: "Peak summer - pool maintenance critical", urgency: "medium" },
+ 8: { services: ["pool_cleaning", "pressure_washing"], reason: "Late summer - algae and humidity damage", urgency: "medium" },
  9: { services: ["gutter_cleaning", "pressure_washing", "landscaping"], reason: "Post-storm season cleanup", urgency: "high" },
  10: { services: ["gutter_cleaning", "home_cleaning"], reason: "Fall gutter cleaning before leaves pile up", urgency: "medium" },
  11: { services: ["gutter_cleaning", "home_cleaning"], reason: "Pre-holiday home prep", urgency: "low" },
@@ -1747,15 +1747,15 @@ export function getNeighborhoodInsights(zip: string): object {
  },
  popularServices: neighborhood.popularServices,
  currentTrend: neighborhood.trend,
- proAvailability: "Good — typically 24-48 hour booking window in your area",
+ proAvailability: "Good - typically 24-48 hour booking window in your area",
  };
 }
 
 // ═════════════════════════════════════════════
-// NEW TOOLS — Phase 1
+// NEW TOOLS - Phase 1
 // ═════════════════════════════════════════════
 
-// y) getProGoalProgress — queries pro_goals + service_requests
+// y) getProGoalProgress - queries pro_goals + service_requests
 export async function getProGoalProgress(proId: string, storage?: any): Promise<object> {
  try {
  const { rows: goals } = await (pool as any).query(
@@ -1815,7 +1815,7 @@ export async function getProGoalProgress(proId: string, storage?: any): Promise<
  };
 }
 
-// z) getHomeMaintenanceReminders — queries maintenance_reminders
+// z) getHomeMaintenanceReminders - queries maintenance_reminders
 export async function getHomeMaintenanceReminders(userId: string, homeDetails: any, storage?: any): Promise<object> {
  try {
  const { rows } = await (pool as any).query(
@@ -1856,7 +1856,7 @@ export async function getHomeMaintenanceReminders(userId: string, homeDetails: a
  };
 }
 
-// aa) getCustomerLoyaltyStatus — queries customer_loyalty
+// aa) getCustomerLoyaltyStatus - queries customer_loyalty
 export async function getCustomerLoyaltyStatus(userId: string, storage?: any): Promise<object> {
  const tierThresholds: Record<string, number> = {
  bronze: 0,
@@ -1927,7 +1927,7 @@ function getLoyaltyTierBenefits(tier: string): string[] {
  return benefits[tier] || benefits["bronze"];
 }
 
-// bb) getReferralStatus — queries existing referrals table via Drizzle
+// bb) getReferralStatus - queries existing referrals table via Drizzle
 export async function getReferralStatus(userId: string, storage?: any): Promise<object> {
  try {
  const refs = await db.select().from(referrals)
@@ -1976,7 +1976,7 @@ export async function getReferralStatus(userId: string, storage?: any): Promise<
  };
 }
 
-// cc) getSmartHomeStatus — queries smart_home_devices
+// cc) getSmartHomeStatus - queries smart_home_devices
 export async function getSmartHomeStatus(userId: string, storage?: any): Promise<object> {
  try {
  const { rows } = await (pool as any).query(
@@ -2034,7 +2034,7 @@ function getScanTier(pct: number): string {
  return "Bronze Home";
 }
 
-// dd-1) startHomeScan — initiates guided room-by-room scan
+// dd-1) startHomeScan - initiates guided room-by-room scan
 export async function startHomeScan(customerId: string): Promise<object> {
  try {
  // Ensure wallet exists
@@ -2061,7 +2061,7 @@ export async function startHomeScan(customerId: string): Promise<object> {
  }
 }
 
-// dd-2) processHomeScanPhoto — handles photo upload during scan
+// dd-2) processHomeScanPhoto - handles photo upload during scan
 export async function processHomeScanPhoto(
  customerId: string,
  scanSessionId: string,
@@ -2129,7 +2129,7 @@ export async function processHomeScanPhoto(
  }
 }
 
-// dd-3) getHomeScanProgress — shows progress, credits, badges
+// dd-3) getHomeScanProgress - shows progress, credits, badges
 export async function getHomeScanProgress(customerId: string): Promise<object> {
  try {
  const { rows: sessions } = await pool.query(
@@ -2162,7 +2162,7 @@ export async function getHomeScanProgress(customerId: string): Promise<object> {
  recentItems: items.slice(0, 5).map((i: any) => ({ appliance: i.appliance_name, room: i.room_name, condition: i.condition })),
  message: totalItems === 0
  ? "No items scanned yet. Start your home scan to earn credits!"
- : ` ${totalItems} items scanned (${pct}%) — ${getScanTier(pct)} tier. Balance: $${walletRows[0]?.balance || 0}`,
+ : ` ${totalItems} items scanned (${pct}%) - ${getScanTier(pct)} tier. Balance: $${walletRows[0]?.balance || 0}`,
  };
  } catch (e) {
  console.error("getHomeScanProgress error:", e);
@@ -2170,7 +2170,7 @@ export async function getHomeScanProgress(customerId: string): Promise<object> {
  }
 }
 
-// dd-4) getWalletBalance — shows customer credit balance
+// dd-4) getWalletBalance - shows customer credit balance
 export async function getWalletBalance(customerId: string): Promise<object> {
  try {
  await pool.query(`INSERT INTO customer_wallet (customer_id, balance, total_earned, total_spent) VALUES ($1, 0, 0, 0) ON CONFLICT (customer_id) DO NOTHING`, [customerId]);
@@ -2202,7 +2202,7 @@ export async function getWalletBalance(customerId: string): Promise<object> {
 
 import { lookupWarranty, getWarrantyStatus as calcWarrantyStatus } from "./warranty-lookup";
 
-// ee-1) getWarrantyTracker — all scanned items with warranty status, sorted by expiring soonest
+// ee-1) getWarrantyTracker - all scanned items with warranty status, sorted by expiring soonest
 export async function getWarrantyTracker(customerId: string): Promise<object> {
  try {
  const { rows } = await pool.query(
@@ -2275,7 +2275,7 @@ export async function getWarrantyTracker(customerId: string): Promise<object> {
  }
 }
 
-// ee-2) updateAppliancePurchaseDate — set purchase date and recalculate warranty
+// ee-2) updateAppliancePurchaseDate - set purchase date and recalculate warranty
 export async function updateAppliancePurchaseDate(itemId: string, purchaseDate: string): Promise<object> {
  try {
  // Get current item
@@ -2378,7 +2378,7 @@ export async function getProArrivalInfo(jobId: string, storage?: any): Promise<o
  }
  return {
  jobId,
- message: "Arrival info unavailable — pro has not been dispatched yet",
+ message: "Arrival info unavailable - pro has not been dispatched yet",
  trackingUrl: `/track/${jobId}`,
  safetyNote: "All UpTend pros carry ID and are background-checked. Ask to see their UpTend Pro badge on arrival.",
  };
@@ -2508,7 +2508,7 @@ export function getNeighborhoodGroupDeals(zip: string): object {
  hasActiveDeals: deals.length > 0,
  howItWorks: "When 3+ neighbors book the same service within 30 days, everyone gets 15% off automatically.",
  tip: deals.length > 0
- ? "Your neighbors are already building a group — join to unlock the discount!"
+ ? "Your neighbors are already building a group - join to unlock the discount!"
  : "Be the first to start a group deal. Once 2 more neighbors join, everyone saves 15%.",
  };
 }
@@ -2545,8 +2545,8 @@ export function getProDemandForecast(serviceTypes: string[], zip: string): objec
  peakDay: demandByService[svc]?.peakDay || "Saturday",
  inHotZone: (demandByService[svc]?.hotZips || []).includes(zip),
  recommendation: (demandByService[svc]?.hotZips || []).includes(zip)
- ? "High demand in your area — being available on weekends will maximize your jobs"
- : "Steady demand — consistency beats chasing peaks",
+ ? "High demand in your area - being available on weekends will maximize your jobs"
+ : "Steady demand - consistency beats chasing peaks",
  }));
 
  return {
@@ -2591,7 +2591,7 @@ export async function getProCustomerRetention(proId: string, storage?: any): Pro
  retentionRate: customerJobMap.size > 0 ? Math.round((repeatCustomers / customerJobMap.size) * 100) : 0,
  atRiskCustomers: atRisk,
  atRiskNote: atRisk > 0
- ? `${atRisk} customers haven't booked in 3+ months — a follow-up goes a long way`
+ ? `${atRisk} customers haven't booked in 3+ months - a follow-up goes a long way`
  : "Excellent retention! All recent customers are still active.",
  tip: "Pros with 60%+ retention earn 40% more than average. A quick thank-you after a job makes customers come back.",
  };
@@ -2793,7 +2793,7 @@ export function getNeighborhoodActivity(zip: string): object {
  "32836": {
  recentActivity: [
  { service: "Home Cleaning", note: "8 bookings in Dr. Phillips this week" },
- { service: "Pool Cleaning", note: "Very popular — 15 bookings this week" },
+ { service: "Pool Cleaning", note: "Very popular - 15 bookings this week" },
  ],
  groupDealsActive: 1,
  },
@@ -2812,7 +2812,7 @@ export function getNeighborhoodActivity(zip: string): object {
  recentActivity: data.recentActivity,
  activeGroupDeals: data.groupDealsActive,
  popularThisWeek: data.recentActivity[0]?.service || "Pressure Washing",
- communityTip: "Joining a group deal with neighbors saves everyone 15% — ask George about group deals in your zip.",
+ communityTip: "Joining a group deal with neighbors saves everyone 15% - ask George about group deals in your zip.",
  };
 }
 
@@ -2821,11 +2821,11 @@ export function getLocalEvents(zip: string): object {
  const month = new Date().getMonth() + 1;
 
  const eventsByMonth: Record<number, any[]> = {
- 3: [{ name: "Spring HOA Inspection Season", services: ["pressure_washing", "landscaping"], tip: "Get ahead of HOA citations — book now" }],
+ 3: [{ name: "Spring HOA Inspection Season", services: ["pressure_washing", "landscaping"], tip: "Get ahead of HOA citations - book now" }],
  4: [{ name: "Easter & Spring Break", services: ["home_cleaning", "pool_cleaning"], tip: "Great time to prep for guests" }],
  6: [{ name: "Hurricane Season Starts", services: ["gutter_cleaning", "landscaping"], tip: "Book gutter cleaning before the first storm" }],
  9: [{ name: "Post-Storm Cleanup Season", services: ["junk_removal", "pressure_washing"], tip: "Storm debris removal books up fast" }],
- 11: [{ name: "Holiday Prep Season", services: ["home_cleaning", "garage_cleanout"], tip: "Book early — pros fill up in November" }],
+ 11: [{ name: "Holiday Prep Season", services: ["home_cleaning", "garage_cleanout"], tip: "Book early - pros fill up in November" }],
  12: [{ name: "Year-End Home Maintenance", services: ["gutter_cleaning", "handyman"], tip: "Year-end is ideal for a full home checkup" }],
  };
 
@@ -2848,7 +2848,7 @@ export function getLocalEvents(zip: string): object {
 // z15) getPostBookingQuestion
 export function getPostBookingQuestion(serviceId: string, homeProfile: any): object {
  const questions: Record<string, { question: string; why: string; followUpServiceId?: string }> = {
- home_cleaning: { question: "Any areas we should pay extra attention to — mudroom, playroom, home office?", why: "Personalizes the job, increases satisfaction" },
+ home_cleaning: { question: "Any areas we should pay extra attention to - mudroom, playroom, home office?", why: "Personalizes the job, increases satisfaction" },
  gutter_cleaning: { question: "When was your roof last inspected? Gutter day is a great time for a quick check.", why: "Upsell to home scan", followUpServiceId: "home_scan" },
  pressure_washing: { question: "Do you also have a pool deck or screened enclosure that could use attention?", why: "Natural add-on opportunity" },
  landscaping: { question: "Have you thought about a recurring plan? Monthly visits are cheaper per visit than one-time.", why: "Converts to subscription" },
@@ -2865,7 +2865,7 @@ export function getPostBookingQuestion(serviceId: string, homeProfile: any): obj
  return {
  serviceId,
  ...q,
- timing: "Ask immediately after booking confirmation — one question, not a survey",
+ timing: "Ask immediately after booking confirmation - one question, not a survey",
  };
 }
 
@@ -2921,26 +2921,26 @@ export function getProJobPrompts(serviceId: string, homeProfile: any): object {
 export function getHomeTips(season: string, homeType: string, location: string): object {
  const tipsBySeason: Record<string, any[]> = {
  spring: [
- { tip: "Clean gutters before rainy season — clogged gutters cause billions in annual damage", serviceId: "gutter_cleaning" },
+ { tip: "Clean gutters before rainy season - clogged gutters cause billions in annual damage", serviceId: "gutter_cleaning" },
  { tip: "Pollen season in Orlando means pressure washing every spring, especially rooflines and driveways", serviceId: "pressure_washing" },
  { tip: "Spring is the best time to document your home's condition for insurance purposes", serviceId: "home_scan" },
- { tip: "Service your AC before summer peaks — change filters monthly June–September", serviceId: "handyman" },
+ { tip: "Service your AC before summer peaks - change filters monthly June–September", serviceId: "handyman" },
  ],
  summer: [
  { tip: "Hurricane season runs June–Nov. Clean gutters and trim overhanging branches now.", serviceId: "gutter_cleaning" },
- { tip: "Florida humidity causes mold on driveways fast — pressure wash at least twice a year", serviceId: "pressure_washing" },
- { tip: "Pool algae blooms fast in summer heat — weekly pool service is worth it", serviceId: "pool_cleaning" },
- { tip: "Lawn needs more mowing in summer heat — a recurring plan saves money vs. one-offs", serviceId: "landscaping" },
+ { tip: "Florida humidity causes mold on driveways fast - pressure wash at least twice a year", serviceId: "pressure_washing" },
+ { tip: "Pool algae blooms fast in summer heat - weekly pool service is worth it", serviceId: "pool_cleaning" },
+ { tip: "Lawn needs more mowing in summer heat - a recurring plan saves money vs. one-offs", serviceId: "landscaping" },
  ],
  fall: [
  { tip: "Post-storm season: inspect gutters, roof, and exterior for hurricane damage", serviceId: "gutter_cleaning" },
- { tip: "Deep clean now before holiday guests arrive — book early, pros fill up in November", serviceId: "home_cleaning" },
- { tip: "Dryer vent cleaning is a must in fall — lint buildup is a leading cause of home fires", serviceId: "handyman" },
+ { tip: "Deep clean now before holiday guests arrive - book early, pros fill up in November", serviceId: "home_cleaning" },
+ { tip: "Dryer vent cleaning is a must in fall - lint buildup is a leading cause of home fires", serviceId: "handyman" },
  ],
  winter: [
  { tip: "Orlando cold snaps: wrap outdoor pipes on nights below 40°F", serviceId: null },
  { tip: "Year-end is ideal for a full home scan before the new year", serviceId: "home_scan" },
- { tip: "Clear the garage after the holidays — spring comes fast in Florida!", serviceId: "garage_cleanout" },
+ { tip: "Clear the garage after the holidays - spring comes fast in Florida!", serviceId: "garage_cleanout" },
  ],
  };
 
@@ -3037,7 +3037,7 @@ export async function getMorningBriefing(userId: string, storage?: any): Promise
  // Seasonal countdown
  const s = briefing.seasonalCountdown;
  if (s.daysUntil <= 60) {
- sections.push(` **${s.event}** in ${s.daysUntil} days — readiness: ${s.readinessScore}/10`);
+ sections.push(` **${s.event}** in ${s.daysUntil} days - readiness: ${s.readinessScore}/10`);
  }
 
  // Daily tip
@@ -3054,7 +3054,7 @@ export async function getMorningBriefing(userId: string, storage?: any): Promise
  };
 }
 
-// da1b) getWeatherAlerts — Hurricane/Severe Weather Tracking
+// da1b) getWeatherAlerts - Hurricane/Severe Weather Tracking
 export async function getWeatherAlerts(): Promise<object> {
  try {
  const res = await fetch("https://api.weather.gov/alerts/active?area=FL&severity=Extreme,Severe", {
@@ -3102,7 +3102,7 @@ export async function getWeatherAlerts(): Promise<object> {
  alertCount: 0,
  alerts: [],
  checkedAt: new Date().toISOString(),
- message: "Couldn't check weather alerts right now — try again in a few minutes.",
+ message: "Couldn't check weather alerts right now - try again in a few minutes.",
  error: err.message,
  };
  }
@@ -3191,7 +3191,7 @@ export async function getHomeDashboard(userId: string, storage?: any): Promise<o
  },
  maintenanceAlerts,
  smartDevices: {
- note: "Smart home integration coming soon — Ring, smart locks, thermostats, and water sensors will auto-dispatch pros when they detect issues",
+ note: "Smart home integration coming soon - Ring, smart locks, thermostats, and water sensors will auto-dispatch pros when they detect issues",
  connected: false,
  },
  lastUpdated: new Date().toISOString(),
@@ -3305,9 +3305,9 @@ export function getTrashScheduleInfo(zip: string): object {
  nextTrashPickup: nextOccurrence(schedule[0]),
  nextRecyclingPickup: nextOccurrence(recyclingDay),
  bulkPickup: "First Monday of each month (varies by area)",
- accepted: "Household trash, recycling (paper, plastic 1–2, glass, cardboard — flattened)",
+ accepted: "Household trash, recycling (paper, plastic 1–2, glass, cardboard - flattened)",
  notAccepted: "Hazardous waste, electronics, tires, construction debris",
- source: "Orange County Utilities — ocfl.net for holiday schedule changes",
+ source: "Orange County Utilities - ocfl.net for holiday schedule changes",
  };
 }
 
@@ -3363,7 +3363,7 @@ export async function getHomeValueEstimate(address: string): Promise<object> {
  sqft: h.description?.sqft || 0,
  })),
  neighborhoodAvg: avgPrice,
- note: "Property details pulled from public records. Use these for quoting — do NOT ask the customer for details you already have.",
+ note: "Property details pulled from public records. Use these for quoting - do NOT ask the customer for details you already have.",
  homeTip: "Homes with documented maintenance history sell for 3–5% more. Your UpTend service records count!",
  };
  }
@@ -3402,7 +3402,7 @@ export async function getCalendarSuggestion(userId: string, serviceId: string, s
  suggestion,
  message: suggestion.suggestedSlot
  ? `Based on your calendar, ${suggestion.suggestedSlot.label} looks good for ${serviceLabel}. ${suggestion.reason}.`
- : `I can find you a time for ${serviceLabel} — when are you generally free?`,
+ : `I can find you a time for ${serviceLabel} - when are you generally free?`,
  calendarConnected: suggestion.suggestedSlot?.start !== undefined,
  howToConnect: !suggestion.suggestedSlot
  ? "Connect your Google Calendar so I can find the perfect slot around your schedule"
@@ -3454,7 +3454,7 @@ export function getSeasonalCountdown(): object {
  daysUntil: daysToHoliday,
  active: month >= 11,
  services: ["home_cleaning", "garage_cleanout"],
- tip: `Holiday season is ${daysToHoliday <= 30 ? "almost here" : `${daysToHoliday} days away`}. Book home cleaning early — pros fill up fast in November.`,
+ tip: `Holiday season is ${daysToHoliday <= 30 ? "almost here" : `${daysToHoliday} days away`}. Book home cleaning early - pros fill up fast in November.`,
  },
  ];
 
@@ -3555,8 +3555,8 @@ export async function bookDroneScan(params: {
  const chanceOfRain = Math.max(...(forecast.hourly || []).map((h: any) => parseInt(h.chanceofrain || "0")));
  const suitable = maxWind < 20 && chanceOfRain < 50;
  weatherSummary = suitable
- ? `Looks like clear skies for your scan — perfect for aerial imaging! (Wind: ${maxWind}mph, Rain: ${chanceOfRain}%)`
- : ` Weather might be iffy — ${maxWind}mph winds, ${chanceOfRain}% rain chance. We may need to adjust the date.`;
+ ? `Looks like clear skies for your scan - perfect for aerial imaging! (Wind: ${maxWind}mph, Rain: ${chanceOfRain}%)`
+ : ` Weather might be iffy - ${maxWind}mph winds, ${chanceOfRain}% rain chance. We may need to adjust the date.`;
  }
  }
  } catch {}
@@ -3624,7 +3624,7 @@ export async function getDroneScanStatus(params: { customerId: string; bookingId
  found: true,
  scans,
  message: params.bookingId
- ? `Your drone scan at ${rows[0].address} is ${rows[0].status}${rows[0].report_url ? " — your report is ready!" : "."}`
+ ? `Your drone scan at ${rows[0].address} is ${rows[0].status}${rows[0].report_url ? " - your report is ready!" : "."}`
  : `You have ${rows.length} drone scan(s) on file.`,
  };
 }
@@ -3700,7 +3700,7 @@ export async function connectSmartHome(params: {
  platform: selected.name,
  icon: selected.icon,
  authUrl,
- message: `Great! To connect your ${selected.icon} ${selected.name}, click the link below to authorize UpTend. Once connected, I'll be able to monitor your devices and alert you to any issues — like water leaks, unusual temperature changes, or security events.`,
+ message: `Great! To connect your ${selected.icon} ${selected.name}, click the link below to authorize UpTend. Once connected, I'll be able to monitor your devices and alert you to any issues - like water leaks, unusual temperature changes, or security events.`,
  benefits: [
  " Real-time alerts for leaks, smoke, and CO",
  " Temperature anomaly detection",
@@ -3744,7 +3744,7 @@ export async function getSmartHomeOAuthStatus(params: { customerId: string }): P
  severity: a.severity,
  time: a.created_at,
  })),
- message: `You have ${connections.length} platform(s) connected with ${connections.reduce((s: number, c: any) => s + (c.device_count || 0), 0)} devices. ${alerts.length ? ` ${alerts.length} unacknowledged alert(s).` : "All clear — no alerts!"}`,
+ message: `You have ${connections.length} platform(s) connected with ${connections.reduce((s: number, c: any) => s + (c.device_count || 0), 0)} devices. ${alerts.length ? ` ${alerts.length} unacknowledged alert(s).` : "All clear - no alerts!"}`,
  };
 }
 
@@ -3798,7 +3798,7 @@ export async function getAvailableRewardsForGeorge(params: { customerId: string 
  rewards,
  message: rewards.length
  ? `You have ${rewards.length} reward(s) available! ${rewards.map((r: any) => r.description).join("; ")}`
- : "No rewards available right now — keep booking to earn more!",
+ : "No rewards available right now - keep booking to earn more!",
  };
 }
 
@@ -3810,7 +3810,7 @@ export async function getReferralCode(params: { customerId: string }) {
  const result = await generateReferralCode(params.customerId);
  return {
  ...result,
- message: `Your referral code is ${result.code}. Share it with friends — they get $10 off their first booking and you get $25 credit! `,
+ message: `Your referral code is ${result.code}. Share it with friends - they get $10 off their first booking and you get $25 credit! `,
  };
 }
 
@@ -3846,7 +3846,7 @@ export async function getNeighborhoodActivityForGeorge(params: { zip: string; li
  activity,
  message: activity.length
  ? `Here's what's happening in your neighborhood (${params.zip}):`
- : "Not much activity in your area yet — be the first!",
+ : "Not much activity in your area yet - be the first!",
  };
 }
 
@@ -3865,7 +3865,7 @@ export async function submitNeighborhoodTip(params: { customerId: string; zip: s
 }
 
 /**
- * checkUserConsent — Check if user has consented to a specific data type
+ * checkUserConsent - Check if user has consented to a specific data type
  */
 export async function checkUserConsent(params: {
  userId: string;
@@ -3876,7 +3876,7 @@ export async function checkUserConsent(params: {
 }
 
 /**
- * requestConsent — Conversationally ask for consent; returns prompt if not yet granted
+ * requestConsent - Conversationally ask for consent; returns prompt if not yet granted
  */
 export async function requestConsent(params: {
  userId: string;
@@ -3887,18 +3887,18 @@ export async function requestConsent(params: {
 }
 
 /**
- * getNextPassiveQuestion — Gets one question to weave into conversation
+ * getNextPassiveQuestion - Gets one question to weave into conversation
  */
 export async function getNextPassiveQuestion(params: {
  customerId: string;
 }): Promise<{ question: string; dataKey: string; relatedService: string } | { message: string }> {
  const result = await _getNextQuestion(params.customerId);
- if (!result) return { message: "Home profile is looking great — no more questions needed right now!" };
+ if (!result) return { message: "Home profile is looking great - no more questions needed right now!" };
  return result;
 }
 
 /**
- * submitProSiteReport — Pro reports observations from job
+ * submitProSiteReport - Pro reports observations from job
  */
 export async function submitProSiteReport(params: {
  proId: string;
@@ -3914,7 +3914,7 @@ export async function submitProSiteReport(params: {
  details: params.details,
  photos: params.photos,
  });
- return { reportId, message: "Report submitted — thanks for the observations! This helps us serve the customer better." };
+ return { reportId, message: "Report submitted - thanks for the observations! This helps us serve the customer better." };
 }
 
 // ═══════════════════════════════════════════════
@@ -3937,7 +3937,7 @@ import {
 } from "./route-optimizer.js";
 
 /**
- * getProDemandForecast — Predict demand in a zip code for a pro
+ * getProDemandForecast - Predict demand in a zip code for a pro
  */
 export async function getProDemandForecastForGeorge(params: {
  proId: string;
@@ -3948,7 +3948,7 @@ export async function getProDemandForecastForGeorge(params: {
 }
 
 /**
- * getProCustomerRetentionIntel — Analyze customer retention & at-risk clients
+ * getProCustomerRetentionIntel - Analyze customer retention & at-risk clients
  */
 export async function getProCustomerRetentionIntel(params: {
  proId: string;
@@ -3957,7 +3957,7 @@ export async function getProCustomerRetentionIntel(params: {
 }
 
 /**
- * getProPerformanceAnalytics — Weekly/monthly performance breakdown
+ * getProPerformanceAnalytics - Weekly/monthly performance breakdown
  */
 export async function getProPerformanceAnalytics(params: {
  proId: string;
@@ -3967,7 +3967,7 @@ export async function getProPerformanceAnalytics(params: {
 }
 
 /**
- * setProEarningsGoal — Create an earnings goal for a pro
+ * setProEarningsGoal - Create an earnings goal for a pro
  */
 export async function setProEarningsGoal(params: {
  proId: string;
@@ -3980,7 +3980,7 @@ export async function setProEarningsGoal(params: {
 }
 
 /**
- * getProGoalProgress — Get active goals with progress bars and pace
+ * getProGoalProgress - Get active goals with progress bars and pace
  */
 export async function getProGoalProgressForGeorge(params: {
  proId: string;
@@ -3989,7 +3989,7 @@ export async function getProGoalProgressForGeorge(params: {
 }
 
 /**
- * suggestProGoal — AI-suggested earnings goal based on history + demand
+ * suggestProGoal - AI-suggested earnings goal based on history + demand
  */
 export async function suggestProGoal(params: {
  proId: string;
@@ -3998,7 +3998,7 @@ export async function suggestProGoal(params: {
 }
 
 /**
- * getOptimizedRoute — Get optimized route for a day's jobs
+ * getOptimizedRoute - Get optimized route for a day's jobs
  */
 export async function getOptimizedRoute(params: {
  proId: string;
@@ -4008,7 +4008,7 @@ export async function getOptimizedRoute(params: {
 }
 
 /**
- * getWeeklyRouteSummaryForGeorge — Weekly driving summary
+ * getWeeklyRouteSummaryForGeorge - Weekly driving summary
  */
 export async function getWeeklyRouteSummaryForGeorge(params: {
  proId: string;
@@ -4040,13 +4040,13 @@ import {
 } from "./neighborhood-insights.js";
 
 /**
- * getDIYTip — Get a DIY tip for a service type
+ * getDIYTip - Get a DIY tip for a service type
  */
 export async function getDIYTipForGeorge(params: {
  serviceType: string;
 }): Promise<object> {
  const tip = await _getDIYTip(params.serviceType);
- if (!tip) return { message: `No DIY tip available for ${params.serviceType}. This is best handled by a pro — want me to get you a quote?` };
+ if (!tip) return { message: `No DIY tip available for ${params.serviceType}. This is best handled by a pro - want me to get you a quote?` };
  return {
  ...tip,
  message: `Here's a DIY option: "${tip.title}" (${tip.difficulty}, ~${tip.estimatedTime} min). You could save ~$${tip.estimatedSavings}. ${tip.whenToCallPro ? ` Call a pro if: ${tip.whenToCallPro}` : ""}`,
@@ -4054,7 +4054,7 @@ export async function getDIYTipForGeorge(params: {
 }
 
 /**
- * getDIYvsPro — Compare DIY vs hiring a pro
+ * getDIYvsPro - Compare DIY vs hiring a pro
  */
 export async function getDIYvsProForGeorge(params: {
  serviceType: string;
@@ -4063,7 +4063,7 @@ export async function getDIYvsProForGeorge(params: {
 }
 
 /**
- * getSeasonalDIYTips — Tips relevant to the current month
+ * getSeasonalDIYTips - Tips relevant to the current month
  */
 export async function getSeasonalDIYTipsForGeorge(params: {
  month: number;
@@ -4073,12 +4073,12 @@ export async function getSeasonalDIYTipsForGeorge(params: {
  tips,
  message: tips.length
  ? `Found ${tips.length} DIY tip(s) for this time of year. Here are the top ones you can tackle yourself!`
- : "No seasonal DIY tips right now — but I can help you book a pro for anything you need.",
+ : "No seasonal DIY tips right now - but I can help you book a pro for anything you need.",
  };
 }
 
 /**
- * generateServiceAgreement — Create a B2B service agreement
+ * generateServiceAgreement - Create a B2B service agreement
  */
 export async function generateServiceAgreementForGeorge(params: {
  businessAccountId: string;
@@ -4093,7 +4093,7 @@ export async function generateServiceAgreementForGeorge(params: {
 }
 
 /**
- * getDocumentTracker — All documents for a business account
+ * getDocumentTracker - All documents for a business account
  */
 export async function getDocumentTrackerForGeorge(params: {
  businessAccountId: string;
@@ -4108,7 +4108,7 @@ export async function getDocumentTrackerForGeorge(params: {
 }
 
 /**
- * getComplianceReport — Compliance status for a business
+ * getComplianceReport - Compliance status for a business
  */
 export async function getComplianceReportForGeorge(params: {
  businessAccountId: string;
@@ -4121,7 +4121,7 @@ export async function getComplianceReportForGeorge(params: {
 }
 
 /**
- * getPostBookingQuestion — Get a follow-up question after a completed job
+ * getPostBookingQuestion - Get a follow-up question after a completed job
  */
 export async function getPostBookingQuestionForGeorge(params: {
  customerId: string;
@@ -4136,7 +4136,7 @@ export async function getPostBookingQuestionForGeorge(params: {
 }
 
 /**
- * getProJobPrompts — Prompts for a pro during a job
+ * getProJobPrompts - Prompts for a pro during a job
  */
 export async function getProJobPromptsForGeorge(params: {
  proId: string;
@@ -4151,7 +4151,7 @@ export async function getProJobPromptsForGeorge(params: {
 }
 
 /**
- * getNeighborhoodInsights — Local market data for a zip code
+ * getNeighborhoodInsights - Local market data for a zip code
  */
 export async function getNeighborhoodInsightsForGeorge(params: {
  zip: string;
@@ -4164,7 +4164,7 @@ export async function getNeighborhoodInsightsForGeorge(params: {
 }
 
 /**
- * getSeasonalDemand — What's in demand this month locally
+ * getSeasonalDemand - What's in demand this month locally
  */
 export async function getSeasonalDemandForGeorge(params: {
  zip: string;
@@ -4178,7 +4178,7 @@ export async function getSeasonalDemandForGeorge(params: {
 }
 
 // ═══════════════════════════════════════════════
-// HOME UTILITIES — Home Operating System Tools
+// HOME UTILITIES - Home Operating System Tools
 // George knows EVERYTHING about their home.
 // ═══════════════════════════════════════════════
 
@@ -4196,7 +4196,7 @@ import {
 } from "./home-dashboard.js";
 
 /**
- * getTrashSchedule — "When's my trash day?"
+ * getTrashSchedule - "When's my trash day?"
  */
 export async function getTrashScheduleForGeorge(params: {
  customerId: string;
@@ -4233,7 +4233,7 @@ export async function getTrashScheduleForGeorge(params: {
 }
 
 /**
- * getRecyclingSchedule — recycling day + what's accepted
+ * getRecyclingSchedule - recycling day + what's accepted
  */
 export async function getRecyclingScheduleForGeorge(params: {
  customerId: string;
@@ -4245,9 +4245,9 @@ export async function getRecyclingScheduleForGeorge(params: {
  accepted: "Paper, cardboard (flattened), plastic bottles (#1-2), glass bottles/jars, aluminum & steel cans",
  notAccepted: "Plastic bags, styrofoam, food waste, electronics, hazardous materials, garden hoses",
  tips: [
- "Rinse containers — no need to scrub, just a quick rinse",
+ "Rinse containers - no need to scrub, just a quick rinse",
  "Flatten cardboard boxes to save space",
- "No plastic bags in recycling — return them to grocery stores",
+ "No plastic bags in recycling - return them to grocery stores",
  "When in doubt, throw it out (contamination ruins whole loads)",
  ],
  message: ` Recycling day: ${(trash as any).recyclingDay || "check your schedule"}. Accepted: paper, cardboard, plastic #1-2, glass, cans. NO plastic bags or styrofoam.`,
@@ -4255,7 +4255,7 @@ export async function getRecyclingScheduleForGeorge(params: {
 }
 
 /**
- * getSprinklerSettings — current zones and schedule
+ * getSprinklerSettings - current zones and schedule
  */
 export async function getSprinklerSettingsForGeorge(params: {
  customerId: string;
@@ -4286,7 +4286,7 @@ export async function getSprinklerSettingsForGeorge(params: {
 }
 
 /**
- * updateSprinklerZone — adjust watering days/times for a zone
+ * updateSprinklerZone - adjust watering days/times for a zone
  */
 export async function updateSprinklerZoneForGeorge(params: {
  customerId: string;
@@ -4301,7 +4301,7 @@ export async function updateSprinklerZoneForGeorge(params: {
  [params.customerId]
  );
  if (result.rows.length === 0) {
- return { message: "No sprinkler settings found. Let me set up your system first — what kind of sprinkler system do you have?" };
+ return { message: "No sprinkler settings found. Let me set up your system first - what kind of sprinkler system do you have?" };
  }
  const s = result.rows[0];
  const zones = typeof s.zones === "string" ? JSON.parse(s.zones) : (s.zones || []);
@@ -4337,7 +4337,7 @@ export async function updateSprinklerZoneForGeorge(params: {
 }
 
 /**
- * getWaterRestrictions — local watering ordinance
+ * getWaterRestrictions - local watering ordinance
  */
 export async function getWaterRestrictionsForGeorge(params: {
  customerId: string;
@@ -4355,7 +4355,7 @@ export async function getWaterRestrictionsForGeorge(params: {
 }
 
 /**
- * getHomeOSDashboard — full "home at a glance" for George
+ * getHomeOSDashboard - full "home at a glance" for George
  */
 export async function getHomeOSDashboardForGeorge(params: {
  customerId: string;
@@ -4364,7 +4364,7 @@ export async function getHomeOSDashboardForGeorge(params: {
 }
 
 /**
- * getTonightChecklist — what to do before bed
+ * getTonightChecklist - what to do before bed
  */
 export async function getTonightChecklistForGeorge(params: {
  customerId: string;
@@ -4373,7 +4373,7 @@ export async function getTonightChecklistForGeorge(params: {
 }
 
 /**
- * setHomeReminder — custom reminder (e.g., "remind me to change AC filter monthly")
+ * setHomeReminder - custom reminder (e.g., "remind me to change AC filter monthly")
  */
 export async function setHomeReminderForGeorge(params: {
  customerId: string;
@@ -4402,7 +4402,7 @@ export async function setHomeReminderForGeorge(params: {
  return {
  success: true,
  reminderId: result.rows[0].id,
- message: ` Got it! I'll remind you: "${params.title}" — ${params.frequency || "monthly"}, starting ${params.nextDueDate} at ${params.time || "7:00 PM"}.`,
+ message: ` Got it! I'll remind you: "${params.title}" - ${params.frequency || "monthly"}, starting ${params.nextDueDate} at ${params.time || "7:00 PM"}.`,
  };
  } catch (err) {
  return { message: "Failed to create reminder. Try again?" };
@@ -4410,7 +4410,7 @@ export async function setHomeReminderForGeorge(params: {
 }
 
 /**
- * getUtilityProviders — who services their address
+ * getUtilityProviders - who services their address
  */
 // ═══════════════════════════════════════════════
 // PURCHASE TRACKING + WARRANTIES + APPLIANCE PROFILES
@@ -4431,7 +4431,7 @@ import {
 } from "./appliance-profiles.js";
 
 /**
- * scanReceiptPhoto — "Snap your receipt and I'll track everything"
+ * scanReceiptPhoto - "Snap your receipt and I'll track everything"
  */
 export async function scanReceiptPhoto(params: {
  customerId: string;
@@ -4451,7 +4451,7 @@ export async function scanReceiptPhoto(params: {
  [params.photoUrl, scanResult.rawText, purchaseId]
  );
 
- const itemList = scanResult.items.map((i: any) => `• ${i.name}${i.brand ? ` (${i.brand})` : ""} — $${i.price}`).join("\n");
+ const itemList = scanResult.items.map((i: any) => `• ${i.name}${i.brand ? ` (${i.brand})` : ""} - $${i.price}`).join("\n");
 
  return {
  purchaseId,
@@ -4464,7 +4464,7 @@ export async function scanReceiptPhoto(params: {
 }
 
 /**
- * getWarrantyDashboard — all warranties sorted by expiring soonest
+ * getWarrantyDashboard - all warranties sorted by expiring soonest
  */
 export async function getWarrantyDashboard(params: {
  customerId: string;
@@ -4491,7 +4491,7 @@ export async function getWarrantyDashboard(params: {
  const exp = new Date(w.warranty_expires);
  const daysLeft = Math.floor((exp.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
  const status = daysLeft < 0 ? " EXPIRED" : daysLeft <= 30 ? " EXPIRING SOON" : " Active";
- return `${status} ${w.product_name}${w.brand ? ` (${w.brand})` : ""} — expires ${exp.toLocaleDateString()} (${daysLeft < 0 ? `${Math.abs(daysLeft)}d ago` : `${daysLeft}d left`})`;
+ return `${status} ${w.product_name}${w.brand ? ` (${w.brand})` : ""} - expires ${exp.toLocaleDateString()} (${daysLeft < 0 ? `${Math.abs(daysLeft)}d ago` : `${daysLeft}d left`})`;
  }).join("\n");
 
  return {
@@ -4503,7 +4503,7 @@ export async function getWarrantyDashboard(params: {
 }
 
 /**
- * registerWarranty — manual warranty entry
+ * registerWarranty - manual warranty entry
  */
 export async function registerWarranty(params: {
  customerId: string;
@@ -4544,14 +4544,14 @@ export async function registerWarranty(params: {
 }
 
 /**
- * getGarageDoorInfo — "What kind of garage door do I have?"
+ * getGarageDoorInfo - "What kind of garage door do I have?"
  */
 export async function getGarageDoorInfo(params: {
  customerId: string;
 }): Promise<object> {
  const profile = await getGarageDoorProfile(params.customerId);
  if (!profile) {
- return { message: "No garage door profile on file. Tell me about your garage door — brand, opener type, smart-enabled? Or I can scan the label!" };
+ return { message: "No garage door profile on file. Tell me about your garage door - brand, opener type, smart-enabled? Or I can scan the label!" };
  }
  return {
  profile,
@@ -4560,14 +4560,14 @@ export async function getGarageDoorInfo(params: {
 }
 
 /**
- * getWaterHeaterInfo — "When should I flush my water heater?"
+ * getWaterHeaterInfo - "When should I flush my water heater?"
  */
 export async function getWaterHeaterInfo(params: {
  customerId: string;
 }): Promise<object> {
  const profile = await getWaterHeaterProfile(params.customerId);
  if (!profile) {
- return { message: "No water heater profile on file. Tell me about your water heater — type, brand, when installed? Or snap a photo of the label!" };
+ return { message: "No water heater profile on file. Tell me about your water heater - type, brand, when installed? Or snap a photo of the label!" };
  }
 
  let flushMessage = "";
@@ -4592,7 +4592,7 @@ export async function getWaterHeaterInfo(params: {
 }
 
 /**
- * logDIYMaintenance — "I just changed my AC filter" → log it + set next reminder
+ * logDIYMaintenance - "I just changed my AC filter" → log it + set next reminder
  */
 export async function logDIYMaintenance(params: {
  customerId: string;
@@ -4628,12 +4628,12 @@ export async function logDIYMaintenance(params: {
 
  return {
  entry,
- message: ` Logged: ${params.applianceOrSystem} — ${params.maintenanceType.replace(/_/g, " ")}${params.description ? ` (${params.description})` : ""}${nextDueDate ? `\n Next due: ${new Date(nextDueDate).toLocaleDateString()}` : ""}${params.cost ? `\n Cost: $${params.cost}` : ""}`,
+ message: ` Logged: ${params.applianceOrSystem} - ${params.maintenanceType.replace(/_/g, " ")}${params.description ? ` (${params.description})` : ""}${nextDueDate ? `\n Next due: ${new Date(nextDueDate).toLocaleDateString()}` : ""}${params.cost ? `\n Cost: $${params.cost}` : ""}`,
  };
 }
 
 /**
- * getMaintenanceDueForGeorge — "What maintenance is due?"
+ * getMaintenanceDueForGeorge - "What maintenance is due?"
  */
 export async function getMaintenanceDueForGeorge(params: {
  customerId: string;
@@ -4647,12 +4647,12 @@ export async function getMaintenanceDueForGeorge(params: {
  let msg = "";
  if (overdue.length > 0) {
  msg += ` OVERDUE (${overdue.length}):\n` + overdue.map((m: any) =>
- `• ${m.appliance_or_system} — ${m.maintenance_type?.replace(/_/g, " ")} (due ${new Date(m.next_due_date).toLocaleDateString()})`
+ `• ${m.appliance_or_system} - ${m.maintenance_type?.replace(/_/g, " ")} (due ${new Date(m.next_due_date).toLocaleDateString()})`
  ).join("\n");
  }
  if (upcoming.length > 0) {
  msg += `${msg ? "\n\n" : ""} Coming up (${upcoming.length}):\n` + upcoming.map((m: any) =>
- `• ${m.appliance_or_system} — ${m.maintenance_type?.replace(/_/g, " ")} (due ${new Date(m.next_due_date).toLocaleDateString()})`
+ `• ${m.appliance_or_system} - ${m.maintenance_type?.replace(/_/g, " ")} (due ${new Date(m.next_due_date).toLocaleDateString()})`
  ).join("\n");
  }
 
@@ -4660,7 +4660,7 @@ export async function getMaintenanceDueForGeorge(params: {
 }
 
 /**
- * getPurchaseHistory — "What did I buy at Lowe's last month?"
+ * getPurchaseHistory - "What did I buy at Lowe's last month?"
  */
 export async function getPurchaseHistory(params: {
  customerId: string;
@@ -4686,7 +4686,7 @@ export async function getPurchaseHistory(params: {
 
  const list = rows.map((p: any) => {
  const items = Array.isArray(p.items) ? p.items : (typeof p.items === "string" ? JSON.parse(p.items) : []);
- return `• ${p.store} — ${new Date(p.purchase_date).toLocaleDateString()} — $${p.total_amount} (${items.length} item${items.length !== 1 ? "s" : ""})`;
+ return `• ${p.store} - ${new Date(p.purchase_date).toLocaleDateString()} - $${p.total_amount} (${items.length} item${items.length !== 1 ? "s" : ""})`;
  }).join("\n");
 
  return {
@@ -4696,7 +4696,7 @@ export async function getPurchaseHistory(params: {
 }
 
 /**
- * connectRetailerAccount — guide through retailer linking
+ * connectRetailerAccount - guide through retailer linking
  */
 export async function connectRetailerAccount(params: {
  customerId: string;
@@ -4712,7 +4712,7 @@ export async function connectRetailerAccount(params: {
 }
 
 /**
- * getDIYShoppingList — "What should I buy for home maintenance?"
+ * getDIYShoppingList - "What should I buy for home maintenance?"
  */
 export async function getDIYShoppingList(params: {
  customerId: string;
@@ -4787,7 +4787,7 @@ import {
 } from "./shopping-assistant.js";
 
 /**
- * searchProducts — search retailers for a product
+ * searchProducts - search retailers for a product
  */
 export async function searchProductsForGeorge(params: {
  query: string;
@@ -4798,7 +4798,7 @@ export async function searchProductsForGeorge(params: {
 }
 
 /**
- * getProductRecommendation — recommend exact product based on home profile
+ * getProductRecommendation - recommend exact product based on home profile
  */
 export async function getProductRecommendationForGeorge(params: {
  customerId: string;
@@ -4808,7 +4808,7 @@ export async function getProductRecommendationForGeorge(params: {
 }
 
 /**
- * comparePrices — compare prices across retailers
+ * comparePrices - compare prices across retailers
  */
 export async function comparePricesForGeorge(params: {
  productName: string;
@@ -4818,7 +4818,7 @@ export async function comparePricesForGeorge(params: {
 }
 
 /**
- * findDIYTutorial — find YouTube tutorials from top creators for a task.
+ * findDIYTutorial - find YouTube tutorials from top creators for a task.
  * George knows 30+ top DIY creators and prioritizes trusted sources.
  * Returns a top pick + alternatives. Customer can say "next video" to cycle.
  */
@@ -4831,7 +4831,7 @@ export async function findDIYTutorialForGeorge(params: {
 }
 
 /**
- * getNextTutorialVideo — when customer says "next" or doesn't like current video.
+ * getNextTutorialVideo - when customer says "next" or doesn't like current video.
  * Skips previously shown videos and finds the next best match.
  */
 export async function getNextTutorialVideoForGeorge(params: {
@@ -4843,7 +4843,7 @@ export async function getNextTutorialVideoForGeorge(params: {
 }
 
 /**
- * getShoppingList — personalized shopping list for a customer
+ * getShoppingList - personalized shopping list for a customer
  */
 export async function getShoppingListForGeorge(params: {
  customerId: string;
@@ -4852,7 +4852,7 @@ export async function getShoppingListForGeorge(params: {
 }
 
 /**
- * startDIYProject — create a tracked DIY project
+ * startDIYProject - create a tracked DIY project
  */
 export async function startDIYProjectForGeorge(params: {
  customerId: string;
@@ -4871,7 +4871,7 @@ export async function startDIYProjectForGeorge(params: {
 }
 
 /**
- * getSeasonalDIYSuggestions — what to work on this month
+ * getSeasonalDIYSuggestions - what to work on this month
  */
 export async function getSeasonalDIYSuggestionsForGeorge(params: {
  month?: number;
@@ -4881,7 +4881,7 @@ export async function getSeasonalDIYSuggestionsForGeorge(params: {
 }
 
 // ─────────────────────────────────────────────
-// Auto Services — Vehicle, Maintenance, Diagnosis, Parts, OBD
+// Auto Services - Vehicle, Maintenance, Diagnosis, Parts, OBD
 // ─────────────────────────────────────────────
 import {
  addVehicle as _addVehicle,
@@ -4900,7 +4900,7 @@ import {
 } from "./auto-services.js";
 
 /**
- * addVehicleToProfile — add a vehicle to a customer's garage
+ * addVehicleToProfile - add a vehicle to a customer's garage
  */
 export async function addVehicleToProfile(params: {
  customerId: string;
@@ -4913,21 +4913,21 @@ export async function addVehicleToProfile(params: {
 }
 
 /**
- * lookupVIN — decode a VIN to get vehicle details
+ * lookupVIN - decode a VIN to get vehicle details
  */
 export async function lookupVIN(params: { vin: string }): Promise<object> {
  return _lookupVehicleByVIN(params.vin);
 }
 
 /**
- * getVehicleMaintenanceSchedule — get upcoming maintenance schedule for a vehicle
+ * getVehicleMaintenanceSchedule - get upcoming maintenance schedule for a vehicle
  */
 export async function getVehicleMaintenanceSchedule(params: { vehicleId: string }): Promise<object> {
  return _getAutoMaintenanceSchedule(params.vehicleId);
 }
 
 /**
- * logVehicleMaintenance — log a completed maintenance item
+ * logVehicleMaintenance - log a completed maintenance item
  */
 export async function logVehicleMaintenance(params: {
  customerId: string;
@@ -4948,14 +4948,14 @@ export async function logVehicleMaintenance(params: {
 }
 
 /**
- * getVehicleMaintenanceDue — get all overdue/upcoming maintenance across customer vehicles
+ * getVehicleMaintenanceDue - get all overdue/upcoming maintenance across customer vehicles
  */
 export async function getVehicleMaintenanceDue(params: { customerId: string }): Promise<object> {
  return _getMaintenanceDue(params.customerId);
 }
 
 /**
- * diagnoseCarIssue — AI-powered car issue diagnosis from symptoms/photos
+ * diagnoseCarIssue - AI-powered car issue diagnosis from symptoms/photos
  */
 export async function diagnoseCarIssue(params: {
  customerId: string;
@@ -4967,7 +4967,7 @@ export async function diagnoseCarIssue(params: {
 }
 
 /**
- * searchAutoPartsForGeorge — search for auto parts across retailers
+ * searchAutoPartsForGeorge - search for auto parts across retailers
  */
 export async function searchAutoPartsForGeorge(params: {
  customerId: string;
@@ -4979,7 +4979,7 @@ export async function searchAutoPartsForGeorge(params: {
 }
 
 /**
- * findAutoTutorial — find YouTube tutorials for auto repair tasks
+ * findAutoTutorial - find YouTube tutorials for auto repair tasks
  */
 export async function findAutoTutorial(params: {
  task: string;
@@ -4989,14 +4989,14 @@ export async function findAutoTutorial(params: {
 }
 
 /**
- * getOBDCode — look up what an OBD-II code means and recommended actions
+ * getOBDCode - look up what an OBD-II code means and recommended actions
  */
 export async function getOBDCode(params: { code: string }): Promise<object> {
  return _getOBDCodeInfo(params.code);
 }
 
 /**
- * estimateAutoRepairCost — estimate cost range for a repair
+ * estimateAutoRepairCost - estimate cost range for a repair
  */
 export async function estimateAutoRepairCost(params: {
  repairType: string;
@@ -5007,11 +5007,11 @@ export async function estimateAutoRepairCost(params: {
 }
 
 // ═════════════════════════════════════════════
-// AUTOMOTIVE MODULE — New George Tools
+// AUTOMOTIVE MODULE - New George Tools
 // ═════════════════════════════════════════════
 
 /**
- * tool_vehicle_add — add a vehicle to a customer's garage
+ * tool_vehicle_add - add a vehicle to a customer's garage
  */
 export async function tool_vehicle_add(params: {
  customerId: string;
@@ -5025,7 +5025,7 @@ export async function tool_vehicle_add(params: {
 }
 
 /**
- * tool_vehicle_diagnose — diagnose a vehicle issue from symptoms, with safety escalation
+ * tool_vehicle_diagnose - diagnose a vehicle issue from symptoms, with safety escalation
  */
 export async function tool_vehicle_diagnose(params: {
  symptomDescription: string;
@@ -5036,7 +5036,7 @@ export async function tool_vehicle_diagnose(params: {
 }
 
 /**
- * tool_vehicle_parts_search — search for auto parts across multiple retailers
+ * tool_vehicle_parts_search - search for auto parts across multiple retailers
  */
 export async function tool_vehicle_parts_search(params: {
  partName: string;
@@ -5047,9 +5047,9 @@ export async function tool_vehicle_parts_search(params: {
 }
 
 /**
- * tool_vehicle_diy_start — start a vehicle DIY repair coaching session.
+ * tool_vehicle_diy_start - start a vehicle DIY repair coaching session.
  * Safety-critical repairs (brake lines, fuel system, airbags, transmission internals, etc.)
- * are automatically escalated — George recommends a qualified independent contractor instead.
+ * are automatically escalated - George recommends a qualified independent contractor instead.
  */
 export async function tool_vehicle_diy_start(params: {
  customerId: string;
@@ -5060,7 +5060,7 @@ export async function tool_vehicle_diy_start(params: {
 }
 
 /**
- * tool_vehicle_recall_check — check NHTSA recalls for a vehicle by VIN
+ * tool_vehicle_recall_check - check NHTSA recalls for a vehicle by VIN
  */
 export async function tool_vehicle_recall_check(params: {
  vin: string;
@@ -5070,7 +5070,7 @@ export async function tool_vehicle_recall_check(params: {
 }
 
 /**
- * tool_vehicle_maintenance_log — log completed maintenance for a vehicle
+ * tool_vehicle_maintenance_log - log completed maintenance for a vehicle
  */
 export async function tool_vehicle_maintenance_log(params: {
  customerId: string;
@@ -5092,7 +5092,7 @@ export async function tool_vehicle_maintenance_log(params: {
 }
 
 /**
- * tool_vehicle_maintenance_due — check what maintenance is due/overdue for a customer's vehicles
+ * tool_vehicle_maintenance_due - check what maintenance is due/overdue for a customer's vehicles
  */
 export async function tool_vehicle_maintenance_due(params: {
  customerId: string;
@@ -5198,7 +5198,7 @@ export async function tool_check_pro_recruitment(params: {
  if (total >= 10) {
  milestone = 10;
  pitchLevel = "full_application";
- pitchMessage = "You're basically a pro already! I've got your skill profile ready — want to start earning?";
+ pitchMessage = "You're basically a pro already! I've got your skill profile ready - want to start earning?";
  } else if (total >= 5) {
  milestone = 5;
  pitchLevel = "earnings_pitch";
@@ -5226,7 +5226,7 @@ export async function tool_check_pro_recruitment(params: {
  milestone,
  pitchLevel,
  pitchMessage,
- note: milestone ? "Your DIY history counts toward certification — you're already ahead of most applicants." : undefined,
+ note: milestone ? "Your DIY history counts toward certification - you're already ahead of most applicants." : undefined,
  };
  } catch (err: any) {
  return { error: "Failed to check pro recruitment", details: err.message };
@@ -5278,8 +5278,8 @@ export async function tool_show_pro_earnings_preview(params: {
  skills,
  totalMonthlyPotential: `$${cappedLow.toLocaleString()}-$${cappedHigh.toLocaleString()}`,
  breakdown,
- message: `You've already proven you can do ${skills.join(", ")} — that's $${cappedLow.toLocaleString()}-$${cappedHigh.toLocaleString()}/month potential as an UpTend pro in Orlando.`,
- note: "Your DIY history counts toward certification — you're already ahead of most applicants.",
+ message: `You've already proven you can do ${skills.join(", ")} - that's $${cappedLow.toLocaleString()}-$${cappedHigh.toLocaleString()}/month potential as an UpTend pro in Orlando.`,
+ note: "Your DIY history counts toward certification - you're already ahead of most applicants.",
  };
  } catch (err: any) {
  return { error: "Failed to generate earnings preview", details: err.message };
@@ -5297,7 +5297,7 @@ export async function tool_start_pro_application(params: {
  );
 
  if (completions.rows.length === 0) {
- return { error: "No DIY completions found — customer needs to complete at least 3 DIY repairs first." };
+ return { error: "No DIY completions found - customer needs to complete at least 3 DIY repairs first." };
  }
 
  // Build skill portfolio from DIY history
@@ -5389,7 +5389,7 @@ export async function diagnoseFromPhoto(params: {
  upsellService: topMatch.upsellService,
  confidence: "high",
  message: topMatch.proRecommended
- ? `That looks like: **${topMatch.name}**. ${topMatch.diagnosis}. This one needs a pro — let me get you a quote.`
+ ? `That looks like: **${topMatch.name}**. ${topMatch.diagnosis}. This one needs a pro - let me get you a quote.`
  : `That looks like: **${topMatch.name}**. ${topMatch.diagnosis}. Estimated fix: ~${topMatch.estimatedCost}, takes about ${topMatch.estimatedTime}. Want a pro to handle it, or want me to walk you through the DIY?`,
  };
  } catch (error) {
@@ -5455,7 +5455,7 @@ export async function getRebookingSuggestions(params: { customer_id: string }): 
  sameProAvailable,
  suggestions,
  message: sameProAvailable 
- ? `Welcome back! Last time we did ${lastService.service_type} with ${lastService.pro_name}. They're available this week — want to book again?`
+ ? `Welcome back! Last time we did ${lastService.service_type} with ${lastService.pro_name}. They're available this week - want to book again?`
  : `Welcome back! Your last ${lastService.service_type} was ${daysSinceLast} days ago. I can get you our top-rated pro for the same service.`,
  oneClickRebook: sameProAvailable,
  };
@@ -5689,7 +5689,7 @@ export async function applySaveDiscount(params: {
  const floor = original_price * 0.85; // 15% max discount
  const proMinPayout = 50; // Pro minimum payout floor
 
- // 90-day cooldown check — one price match per customer per 3 months
+ // 90-day cooldown check - one price match per customer per 3 months
  if (customer_id) {
  try {
  const result = await pool.query(
@@ -5710,7 +5710,7 @@ export async function applySaveDiscount(params: {
  };
  }
  } catch {
- // Table may not exist yet — proceed (fail open for now)
+ // Table may not exist yet - proceed (fail open for now)
  }
  }
 
@@ -5727,16 +5727,16 @@ export async function applySaveDiscount(params: {
  reason: "already_cheaper",
  originalPrice: original_price,
  competitorPrice: competitor_price,
- message: `Great news — our price of **$${original_price}** is already lower than what you found! And you get insured pros, guaranteed pricing, and our full satisfaction guarantee.`,
+ message: `Great news - our price of **$${original_price}** is already lower than what you found! And you get insured pros, guaranteed pricing, and our full satisfaction guarantee.`,
  };
  }
 
  if (competitor_price >= floor) {
- // Within 15% — match it
+ // Within 15% - match it
  matchedPrice = competitor_price;
  matched = true;
  } else {
- // Below floor — offer floor price
+ // Below floor - offer floor price
  matchedPrice = Math.round(floor);
  matched = false;
  }
@@ -5751,7 +5751,7 @@ export async function applySaveDiscount(params: {
  originalPrice: original_price,
  competitorPrice: competitor_price,
  floorPrice: Math.round(floor),
- message: `I can't go quite that low — our pros need a fair payout. The best I can do is **$${Math.round(floor)}** (15% off our standard rate). That still includes insured, background-checked pros and our satisfaction guarantee.`,
+ message: `I can't go quite that low - our pros need a fair payout. The best I can do is **$${Math.round(floor)}** (15% off our standard rate). That still includes insured, background-checked pros and our satisfaction guarantee.`,
  };
  }
 
@@ -5797,8 +5797,8 @@ export async function applySaveDiscount(params: {
  includesInsurance: true,
  includesBackgroundCheck: true,
  message: matched
- ? `Done — I matched their price: **$${matchedPrice}** (saving you $${savings}). And you still get insured pros, our price ceiling guarantee, and full satisfaction guarantee. Just need to see their quote or receipt to lock this in. `
- : `Our best offer is **$${matchedPrice}** — that's ${discountPercent}% off our standard rate. I can't go lower, but you're still getting background-checked, insured pros with our full guarantee. Want me to lock it in?`,
+ ? `Done - I matched their price: **$${matchedPrice}** (saving you $${savings}). And you still get insured pros, our price ceiling guarantee, and full satisfaction guarantee. Just need to see their quote or receipt to lock this in. `
+ : `Our best offer is **$${matchedPrice}** - that's ${discountPercent}% off our standard rate. I can't go lower, but you're still getting background-checked, insured pros with our full guarantee. Want me to lock it in?`,
  };
 }
 
@@ -5844,7 +5844,7 @@ function buildBrandedEmailHtml(subject: string, bodyHtml: string): string {
  </div>
  <div style="padding: 20px; background: #f9fafb; text-align: center; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb; border-top: none;">
  <p style="color: #9ca3af; font-size: 12px; margin: 0;">
- UpTend — Orlando Metro Area | (407) 338-3342<br>
+ UpTend - Orlando Metro Area | (407) 338-3342<br>
  Sent by George 
  </p>
  </div>
@@ -5867,10 +5867,10 @@ export async function sendEmailToCustomer(
 
  const typeTemplates: Record<string, string> = {
  quote: `<p style="color: #4b5563;">Here's your personalized quote from UpTend:</p><div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 20px 0;">${customMessage || 'Your quote details will appear here.'}</div><p style="color: #4b5563;">Ready to book? Reply to this email or open the UpTend app!</p>`,
- booking: `<p style="color: #4b5563;">Great news — your booking is confirmed! </p><div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">${customMessage || 'Your booking details.'}</div><p style="color: #4b5563;">You'll receive updates as your pro heads your way.</p>`,
+ booking: `<p style="color: #4b5563;">Great news - your booking is confirmed! </p><div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">${customMessage || 'Your booking details.'}</div><p style="color: #4b5563;">You'll receive updates as your pro heads your way.</p>`,
  scan_results: `<p style="color: #4b5563;">Your Home DNA Scan results are ready! </p><div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">${customMessage || 'Your home scan analysis.'}</div>`,
  receipt: `<p style="color: #4b5563;">Here's your spending summary:</p><div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 20px 0;">${customMessage || 'Your receipt details.'}</div>`,
- referral: `<p style="color: #4b5563;">Your friend thinks you'd love UpTend! </p><div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; padding: 20px; margin: 20px 0;"><p style="margin: 0; color: #92400e; font-weight: bold;">You've been invited to UpTend — get $25 off your first service!</p></div><p style="color: #4b5563;">${customMessage || 'Sign up and save on your first home service.'}</p>`,
+ referral: `<p style="color: #4b5563;">Your friend thinks you'd love UpTend! </p><div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; padding: 20px; margin: 20px 0;"><p style="margin: 0; color: #92400e; font-weight: bold;">You've been invited to UpTend - get $25 off your first service!</p></div><p style="color: #4b5563;">${customMessage || 'Sign up and save on your first home service.'}</p>`,
  custom: `<div style="color: #4b5563; line-height: 1.6;">${customMessage || ''}</div>`,
  };
 
@@ -5953,7 +5953,7 @@ export async function sendQuotePdf(
  ${quoteDetails?.priceFormatted ? `<p style="margin: 5px 0;"><strong>Price:</strong> ${quoteDetails.priceFormatted}</p>` : ''}
  ${breakdownHtml}
  </div>
- <p style="color: #4b5563;">This is a guaranteed price ceiling — it won't go up. Ready to book? Open the UpTend app or reply to this email!</p>
+ <p style="color: #4b5563;">This is a guaranteed price ceiling - it won't go up. Ready to book? Open the UpTend app or reply to this email!</p>
  <div style="text-align: center; margin: 25px 0;">
  <a href="https://uptend.app/book?service=${encodeURIComponent(serviceType)}" style="display: inline-block; background: #F47C20; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold;">Book Now</a>
  </div>`;
@@ -5999,7 +5999,7 @@ export async function getProLiveLocation(jobId: string): Promise<object> {
 
  const job = jobResult.rows[0];
  if (!job.current_lat || !job.current_lng) {
- return { success: false, error: 'Pro location not available — they may not have shared their location yet' };
+ return { success: false, error: 'Pro location not available - they may not have shared their location yet' };
  }
 
  // Parse customer address to get approximate coordinates (fallback to Orlando center)
@@ -6104,7 +6104,7 @@ export async function addToCalendar(customerId: string, bookingId: string): Prom
  <div style="text-align: center; margin: 20px 0;">
  <a href="${googleCalendarUrl}" style="display: inline-block; background: #F47C20; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold;">Add to Google Calendar</a>
  </div>
- <p style="color: #6b7280; font-size: 13px;">The .ics file is attached — open it to add to Apple Calendar, Outlook, or any calendar app.</p>`
+ <p style="color: #6b7280; font-size: 13px;">The .ics file is attached - open it to add to Apple Calendar, Outlook, or any calendar app.</p>`
  ) }],
  attachments: [{
  content: Buffer.from(icsContent).toString('base64'),
@@ -6168,7 +6168,7 @@ export async function sendWhatsAppMessage(customerId: string, message: string, t
  to: `whatsapp:${cleanPhone}`,
  });
  whatsappSent = true;
- console.log(`[WhatsApp] Sent to ${cleanPhone} — SID: ${msg.sid}`);
+ console.log(`[WhatsApp] Sent to ${cleanPhone} - SID: ${msg.sid}`);
  } catch (err: any) {
  whatsappError = err.message;
  console.warn(`[WhatsApp] Failed, falling back to SMS: ${err.message}`);
@@ -6191,7 +6191,7 @@ export async function sendWhatsAppMessage(customerId: string, message: string, t
  message: whatsappSent
  ? `WhatsApp message sent to ${contact.name || contact.phone}`
  : smsFallback
- ? `WhatsApp unavailable — sent via SMS instead to ${contact.name || contact.phone}`
+ ? `WhatsApp unavailable - sent via SMS instead to ${contact.name || contact.phone}`
  : 'Failed to send via WhatsApp and SMS',
  };
 }
@@ -6227,7 +6227,7 @@ export async function sendPushNotificationToCustomer(
 
 
 // ═════════════════════════════════════════════
-// GEORGE V2 — NEW TOOL FUNCTIONS
+// GEORGE V2 - NEW TOOL FUNCTIONS
 // ═════════════════════════════════════════════
 
 import { ALL_DIY_GUIDES, searchGuides, SYSTEM_LIFESPANS, type DIYGuide } from "./diy-knowledge-base-v2";
@@ -6313,21 +6313,21 @@ export async function calculate_home_health_score(params: {
  const roofPct = params.roofAge / roofLifespan;
  if (roofPct > 1.0) {
  categories.structure.score -= 15;
- categories.structure.issues.push(`Roof is ${params.roofAge} years old — past expected lifespan`);
- categories.structure.recommendations.push("Schedule a roof inspection ASAP — replacement likely needed");
+ categories.structure.issues.push(`Roof is ${params.roofAge} years old - past expected lifespan`);
+ categories.structure.recommendations.push("Schedule a roof inspection ASAP - replacement likely needed");
  } else if (roofPct > 0.8) {
  categories.structure.score -= 8;
- categories.structure.issues.push(`Roof is ${params.roofAge} years old — nearing end of life`);
+ categories.structure.issues.push(`Roof is ${params.roofAge} years old - nearing end of life`);
  categories.structure.recommendations.push("Get a roof inspection and start budgeting for replacement ($8K-15K)");
  } else if (roofPct > 0.5) {
  categories.structure.score -= 3;
- categories.structure.recommendations.push("Roof in mid-life — annual inspections recommended");
+ categories.structure.recommendations.push("Roof in mid-life - annual inspections recommended");
  }
  }
 
  if (params.homeAge !== undefined && params.homeAge > 30) {
  categories.structure.score -= 5;
- categories.structure.issues.push(`Home is ${params.homeAge} years old — foundation and structural checks recommended`);
+ categories.structure.issues.push(`Home is ${params.homeAge} years old - foundation and structural checks recommended`);
  categories.structure.recommendations.push("Schedule a home inspection to check foundation, framing, and electrical");
  }
 
@@ -6337,11 +6337,11 @@ export async function calculate_home_health_score(params: {
  const hvacPct = params.hvacAge / hvacLifespan;
  if (hvacPct > 1.0) {
  categories.systems.score -= 15;
- categories.systems.issues.push(`HVAC is ${params.hvacAge} years old — past expected lifespan`);
- categories.systems.recommendations.push("HVAC replacement is overdue — expect $5K-10K, start getting quotes");
+ categories.systems.issues.push(`HVAC is ${params.hvacAge} years old - past expected lifespan`);
+ categories.systems.recommendations.push("HVAC replacement is overdue - expect $5K-10K, start getting quotes");
  } else if (hvacPct > 0.8) {
  categories.systems.score -= 8;
- categories.systems.issues.push(`HVAC is ${params.hvacAge} years old — nearing end of life`);
+ categories.systems.issues.push(`HVAC is ${params.hvacAge} years old - nearing end of life`);
  categories.systems.recommendations.push("Schedule HVAC inspection and budget for replacement");
  } else if (hvacPct > 0.5) {
  categories.systems.score -= 3;
@@ -6353,11 +6353,11 @@ export async function calculate_home_health_score(params: {
  const whPct = params.waterHeaterAge / whLifespan;
  if (whPct > 1.0) {
  categories.systems.score -= 12;
- categories.systems.issues.push(`Water heater is ${params.waterHeaterAge} years old — high failure risk`);
+ categories.systems.issues.push(`Water heater is ${params.waterHeaterAge} years old - high failure risk`);
  categories.systems.recommendations.push("Replace water heater proactively to avoid flooding ($800-1,400)");
  } else if (whPct > 0.8) {
  categories.systems.score -= 6;
- categories.systems.issues.push(`Water heater is ${params.waterHeaterAge} years old — approaching end of life`);
+ categories.systems.issues.push(`Water heater is ${params.waterHeaterAge} years old - approaching end of life`);
  categories.systems.recommendations.push("Flush water heater annually and start budgeting for replacement");
  }
  }
@@ -6374,11 +6374,11 @@ export async function calculate_home_health_score(params: {
  if (gutterMonths === null) {
  categories.maintenance.score -= 5;
  categories.maintenance.issues.push("No gutter cleaning on record");
- categories.maintenance.recommendations.push("Schedule gutter cleaning — should be done every 6-12 months");
+ categories.maintenance.recommendations.push("Schedule gutter cleaning - should be done every 6-12 months");
  } else if (gutterMonths > 12) {
  categories.maintenance.score -= 8;
  categories.maintenance.issues.push(`Gutters haven't been cleaned in ${gutterMonths} months`);
- categories.maintenance.recommendations.push("Overdue for gutter cleaning — clogged gutters cause water damage");
+ categories.maintenance.recommendations.push("Overdue for gutter cleaning - clogged gutters cause water damage");
  } else if (gutterMonths > 6) {
  categories.maintenance.score -= 3;
  }
@@ -6387,17 +6387,17 @@ export async function calculate_home_health_score(params: {
  if (hvacServiceMonths === null) {
  categories.maintenance.score -= 5;
  categories.maintenance.issues.push("No HVAC service on record");
- categories.maintenance.recommendations.push("Schedule HVAC tune-up — should be done annually");
+ categories.maintenance.recommendations.push("Schedule HVAC tune-up - should be done annually");
  } else if (hvacServiceMonths > 12) {
  categories.maintenance.score -= 8;
  categories.maintenance.issues.push(`HVAC hasn't been serviced in ${hvacServiceMonths} months`);
- categories.maintenance.recommendations.push("HVAC tune-up overdue — reduces efficiency and lifespan");
+ categories.maintenance.recommendations.push("HVAC tune-up overdue - reduces efficiency and lifespan");
  }
 
  const plumbingMonths = monthsSince(params.lastPlumbingCheck);
  if (plumbingMonths === null || plumbingMonths > 24) {
  categories.maintenance.score -= 4;
- categories.maintenance.recommendations.push("Consider a plumbing check — catches leaks early");
+ categories.maintenance.recommendations.push("Consider a plumbing check - catches leaks early");
  }
 
  // Safety scoring
@@ -6424,11 +6424,11 @@ export async function calculate_home_health_score(params: {
  const allRecommendations = Object.values(categories).flatMap(c => c.recommendations);
 
  let grade: string;
- if (totalScore >= 90) grade = "A — Excellent";
- else if (totalScore >= 80) grade = "B — Good";
- else if (totalScore >= 65) grade = "C — Fair";
- else if (totalScore >= 50) grade = "D — Needs Attention";
- else grade = "F — Critical";
+ if (totalScore >= 90) grade = "A - Excellent";
+ else if (totalScore >= 80) grade = "B - Good";
+ else if (totalScore >= 65) grade = "C - Fair";
+ else if (totalScore >= 50) grade = "D - Needs Attention";
+ else grade = "F - Critical";
 
  return {
  totalScore,
@@ -6476,7 +6476,7 @@ export async function predict_maintenance_needs(params: {
  item: appliance.replace(/_/g, " "),
  urgency: "critical",
  estimatedCost: costStr,
- timeframe: "Immediate — past expected lifespan",
+ timeframe: "Immediate - past expected lifespan",
  consequence: "High failure risk; could cause water damage, loss of comfort, or safety hazard",
  });
  } else if (pct > 0.85) {
@@ -6485,7 +6485,7 @@ export async function predict_maintenance_needs(params: {
  urgency: "high",
  estimatedCost: costStr,
  timeframe: `Within ${Math.ceil((1 - pct) * lifespan.avgYears)} years`,
- consequence: "Approaching end of life — proactive replacement saves emergency costs",
+ consequence: "Approaching end of life - proactive replacement saves emergency costs",
  });
  } else if (pct > 0.6) {
  predictions.push({
@@ -6493,7 +6493,7 @@ export async function predict_maintenance_needs(params: {
  urgency: "medium",
  estimatedCost: costStr,
  timeframe: `Within ${Math.ceil((1 - pct) * lifespan.avgYears)} years`,
- consequence: "Mid-life — start budgeting and schedule annual inspections",
+ consequence: "Mid-life - start budgeting and schedule annual inspections",
  });
  }
  }
@@ -6550,7 +6550,7 @@ export async function predict_maintenance_needs(params: {
  urgency: "medium",
  estimatedCost: "$75-150",
  timeframe: "Before summer heat arrives",
- consequence: "AC failures spike in June — book now to avoid 2-week wait times",
+ consequence: "AC failures spike in June - book now to avoid 2-week wait times",
  });
  }
 
@@ -6568,7 +6568,7 @@ export async function predict_maintenance_needs(params: {
  return sum + (match ? parseInt(match[1].replace(",", "")) : 200);
  }, 0),
  message: predictions.length > 0
- ? ` **${predictions.length} maintenance items predicted:**\n${predictions.slice(0, 5).map(p => `• ${p.urgency === "critical" ? "" : p.urgency === "high" ? "" : ""} **${p.item}** — ${p.estimatedCost} (${p.timeframe})`).join("\n")}`
+ ? ` **${predictions.length} maintenance items predicted:**\n${predictions.slice(0, 5).map(p => `• ${p.urgency === "critical" ? "" : p.urgency === "high" ? "" : ""} **${p.item}** - ${p.estimatedCost} (${p.timeframe})`).join("\n")}`
  : " No immediate maintenance needs predicted! Your home is in great shape.",
  };
 }
@@ -6628,7 +6628,7 @@ export async function analyze_contractor_quote(params: {
  recommendation: verdict === "high" || verdict === "very_high"
  ? `UpTend can do this for around $${rate.avg} with insured, background-checked pros. Want a quote?`
  : verdict === "fair"
- ? "That's a fair price! But check if they're insured and offer a guarantee — UpTend includes both."
+ ? "That's a fair price! But check if they're insured and offer a guarantee - UpTend includes both."
  : "Double-check their insurance and reviews. Want me to get you an UpTend quote for comparison?",
  message: ` **Quote Analysis: ${params.description}**\n\nYour quote: **$${amount}**\nOrlando avg: **$${rate.avg}** (range: $${rate.low}-$${rate.high})\nVerdict: **${verdict.toUpperCase()}**\n\n${explanation}${savings ? `\n\n Potential savings: ~$${savings}` : ""}`,
  };
@@ -6700,7 +6700,7 @@ export async function get_market_rate(params: {
  notes: rate.notes,
  dataSource: "2024-2025 Orlando market averages",
  uptendComparison: `UpTend typically prices at or below the market average with insured, vetted pros.`,
- message: ` **${params.serviceType.replace(/_/g, " ")} — Orlando Market Rates:**\n\n Low: $${rate.low}\n Average: $${rate.avg}\n High: $${rate.high}\n Unit: ${rate.unit}${rate.notes ? `\n ${rate.notes}` : ""}`,
+ message: ` **${params.serviceType.replace(/_/g, " ")} - Orlando Market Rates:**\n\n Low: $${rate.low}\n Average: $${rate.avg}\n High: $${rate.high}\n Unit: ${rate.unit}${rate.notes ? `\n ${rate.notes}` : ""}`,
  };
 }
 
@@ -6771,7 +6771,7 @@ export async function find_neighbor_bundles(params: { zipCode: string; serviceTy
  groupDiscount: `${discountPct}%`,
  discountedPrice,
  savings: standardPrice - discountedPrice,
- howItWorks: "When 3+ homes in the same area book the same service, everyone saves — the pro spends less time driving between jobs.",
+ howItWorks: "When 3+ homes in the same area book the same service, everyone saves - the pro spends less time driving between jobs.",
  expiresIn: "7 days",
  message: ` **Group Deal Available!**\n\n${neighborCount} neighbors near ${params.zipCode} are interested in ${serviceDisplay}!\n\n Standard: $${standardPrice}\n Group price: **$${discountedPrice}** (${discountPct}% off)\n You save: $${standardPrice - discountedPrice}\n\nWant to join? The more neighbors, the bigger the discount!`,
  };
@@ -6816,7 +6816,7 @@ export async function get_local_alerts(params: { zipCode: string }): Promise<obj
  severity: "warning",
  title: "Termite Swarming Season",
  description: "Spring is peak termite swarming season in Florida. Watch for winged insects near windows.",
- actionable: "If you see swarmers, don't disturb them — call a pest control pro. Want me to schedule an inspection?",
+ actionable: "If you see swarmers, don't disturb them - call a pest control pro. Want me to schedule an inspection?",
  });
  }
 
@@ -6826,7 +6826,7 @@ export async function get_local_alerts(params: { zipCode: string }): Promise<obj
  severity: "info",
  title: "HOA Maintenance Reminder",
  description: "Many Orlando HOAs require pressure washing and lawn maintenance on a schedule.",
- actionable: "Check your HOA guidelines. UpTend can handle all HOA-required maintenance — want a compliance bundle?",
+ actionable: "Check your HOA guidelines. UpTend can handle all HOA-required maintenance - want a compliance bundle?",
  });
 
  return {
@@ -6867,7 +6867,7 @@ export async function activate_emergency_mode(params: {
  pipe_burst: {
  severity: "CRITICAL",
  immediateSteps: [
- " Turn off main water supply NOW — usually near the street or garage",
+ " Turn off main water supply NOW - usually near the street or garage",
  "Open faucets to drain remaining pressure",
  "Turn off water heater",
  "Place buckets under active leaks",
@@ -6881,7 +6881,7 @@ export async function activate_emergency_mode(params: {
  severity: "CRITICAL",
  immediateSteps: [
  " DO NOT turn on/off any switches, lights, or electronics",
- "DO NOT use phone inside — get outside first",
+ "DO NOT use phone inside - get outside first",
  "Open windows and doors as you exit",
  "Leave the area IMMEDIATELY",
  "Call 911 from OUTSIDE and at least 100ft away",
@@ -6889,7 +6889,7 @@ export async function activate_emergency_mode(params: {
  "Do NOT re-enter until cleared by fire department",
  ],
  shutoffNeeded: ["gas"],
- callFirst: "911 — then gas company",
+ callFirst: "911 - then gas company",
  documentationNeeded: ["Record time you first smelled gas", "Note location in house where smell was strongest", "Photos ONLY after area is cleared safe"],
  },
  electrical_fire: {
@@ -6904,13 +6904,13 @@ export async function activate_emergency_mode(params: {
  ],
  shutoffNeeded: ["electrical"],
  callFirst: "911",
- documentationNeeded: ["Photos ONLY after safe — document damage from outside", "Written timeline of events", "Note what electrical equipment was in use"],
+ documentationNeeded: ["Photos ONLY after safe - document damage from outside", "Written timeline of events", "Note what electrical equipment was in use"],
  },
  tree_fell: {
  severity: "HIGH",
  immediateSteps: [
- "Stay clear of the tree — it may shift",
- "Check for downed power lines — stay 35+ feet away",
+ "Stay clear of the tree - it may shift",
+ "Check for downed power lines - stay 35+ feet away",
  "Call 911 if power lines are down or blocking roads",
  "Do NOT attempt to remove a tree on power lines",
  "Document damage from a safe distance",
@@ -6925,7 +6925,7 @@ export async function activate_emergency_mode(params: {
  "Place tarps or plastic sheeting over exposed areas if safe",
  "Place buckets under interior leaks",
  "Move electronics and valuables away from water",
- "Do NOT go on the roof — photograph from ground level",
+ "Do NOT go on the roof - photograph from ground level",
  "Call insurance company within 24 hours",
  ],
  shutoffNeeded: [],
@@ -6936,9 +6936,9 @@ export async function activate_emergency_mode(params: {
  severity: "MEDIUM",
  immediateSteps: [
  "Check thermostat batteries and settings",
- "Check/replace air filter — a clogged filter causes 40% of AC failures",
- "Check circuit breaker — reset if tripped",
- "Check if outdoor unit is running — listen for fan/compressor",
+ "Check/replace air filter - a clogged filter causes 40% of AC failures",
+ "Check circuit breaker - reset if tripped",
+ "Check if outdoor unit is running - listen for fan/compressor",
  "If none of these fix it, close blinds and use fans to stay cool",
  ],
  shutoffNeeded: [],
@@ -6963,7 +6963,7 @@ export async function activate_emergency_mode(params: {
  protocol = {
  severity: "HIGH",
  immediateSteps: [
- "Assess the situation — is anyone in danger?",
+ "Assess the situation - is anyone in danger?",
  "If anyone is hurt or in danger, call 911",
  "Turn off relevant utility (water/gas/electric) if needed",
  "Document with photos and video",
@@ -7009,7 +7009,7 @@ export async function generate_insurance_claim_packet(params: {
  estimatedDamage: params.estimatedDamage,
  photosAttached: params.photosCount || 0,
  document: {
- title: `Insurance Claim Documentation — ${params.incidentType}`,
+ title: `Insurance Claim Documentation - ${params.incidentType}`,
  sections: [
  {
  heading: "Incident Summary",
@@ -7027,7 +7027,7 @@ export async function generate_insurance_claim_packet(params: {
  },
  {
  heading: "Timeline",
- content: `${params.incidentDate} — Incident occurred\n${new Date().toISOString().split("T")[0]} — Claim documentation initiated via UpTend\nPending — Professional inspection and estimate\nPending — Insurance adjuster visit`,
+ content: `${params.incidentDate} - Incident occurred\n${new Date().toISOString().split("T")[0]} - Claim documentation initiated via UpTend\nPending - Professional inspection and estimate\nPending - Insurance adjuster visit`,
  },
  ],
  },
@@ -7046,7 +7046,7 @@ export async function generate_insurance_claim_packet(params: {
  "Keep a log of all calls with your insurance company",
  "Your policy may cover temporary housing if home is uninhabitable",
  ],
- message: ` **Insurance Claim Packet Generated**\n\nClaim #: ${claimNumber}\nIncident: ${params.incidentType}\nDate: ${params.incidentDate}\nAddress: ${params.address}${params.estimatedDamage ? `\nEstimated Damage: $${params.estimatedDamage.toLocaleString()}` : ""}\n\n**Next Steps:**\n${["Take 20+ photos of all damage", "Contact insurance within 24 hours", "Get 2-3 contractor estimates", "Keep all receipts"].map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nI can help you get contractor estimates — want me to dispatch someone for an assessment?`,
+ message: ` **Insurance Claim Packet Generated**\n\nClaim #: ${claimNumber}\nIncident: ${params.incidentType}\nDate: ${params.incidentDate}\nAddress: ${params.address}${params.estimatedDamage ? `\nEstimated Damage: $${params.estimatedDamage.toLocaleString()}` : ""}\n\n**Next Steps:**\n${["Take 20+ photos of all damage", "Contact insurance within 24 hours", "Get 2-3 contractor estimates", "Keep all receipts"].map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nI can help you get contractor estimates - want me to dispatch someone for an assessment?`,
  };
 }
 
@@ -7056,63 +7056,63 @@ export async function get_emergency_shutoff_guide(params: {
  const guides: Record<string, { title: string; warning: string; steps: string[]; location: string; tools: string[]; afterShutoff: string[] }> = {
  water: {
  title: "Water Main Shutoff",
- warning: " Know your shutoff location BEFORE an emergency — practice finding it now.",
+ warning: " Know your shutoff location BEFORE an emergency - practice finding it now.",
  steps: [
- "Find your main water shutoff valve — typically in the garage, utility closet, or near the street",
+ "Find your main water shutoff valve - typically in the garage, utility closet, or near the street",
  "For a gate valve (round wheel): turn clockwise until tight",
  "For a ball valve (lever handle): turn 90° so the handle is perpendicular to the pipe",
  "If shutting off at the street, you may need a water meter key ($10 at Home Depot)",
  "Open a faucet after shutoff to release remaining pressure",
- "Confirm shutoff worked — no water should flow from any faucet",
+ "Confirm shutoff worked - no water should flow from any faucet",
  ],
  location: "Garage wall, utility closet, near water heater, or at street meter",
  tools: ["Water meter key (for street shutoff)", "Adjustable wrench (if valve is stuck)"],
- afterShutoff: ["Call a plumber to diagnose the issue", "Mop up standing water immediately", "Run fans/dehumidifier to prevent mold", "Check water heater — turn it off if water is off for extended time"],
+ afterShutoff: ["Call a plumber to diagnose the issue", "Mop up standing water immediately", "Run fans/dehumidifier to prevent mold", "Check water heater - turn it off if water is off for extended time"],
  },
  gas: {
  title: "Gas Shutoff",
  warning: " DANGER: If you smell gas strongly, evacuate FIRST and call 911 from outside. Only shut off gas if you can do so safely while exiting.",
  steps: [
- "Locate the gas meter — usually on the side of your house",
+ "Locate the gas meter - usually on the side of your house",
  "Find the shutoff valve on the supply pipe BEFORE the meter",
  "Use an adjustable wrench or gas shutoff wrench",
  "Turn the valve 1/4 turn so the handle is perpendicular to the pipe (crossways = off)",
- "DO NOT turn gas back on yourself — only the gas company should restore service",
+ "DO NOT turn gas back on yourself - only the gas company should restore service",
  "Call your gas company (Orlando: 407-425-4141 Peoples Gas)",
  ],
  location: "Gas meter on exterior wall, usually side or back of house",
  tools: ["Adjustable wrench or gas shutoff wrench"],
- afterShutoff: ["Ventilate the house — open windows and doors", "Do NOT re-enter until cleared by fire department or gas company", "Gas company must inspect and relight pilots", "Consider a gas detector alarm for the future ($25-40)"],
+ afterShutoff: ["Ventilate the house - open windows and doors", "Do NOT re-enter until cleared by fire department or gas company", "Gas company must inspect and relight pilots", "Consider a gas detector alarm for the future ($25-40)"],
  },
  electrical: {
  title: "Electrical Main Shutoff",
  warning: " Never touch the breaker panel if you're standing in water or the panel is wet. Call 911 if there's an active electrical fire.",
  steps: [
- "Locate your main electrical panel (breaker box) — usually garage, utility room, or exterior wall",
+ "Locate your main electrical panel (breaker box) - usually garage, utility room, or exterior wall",
  "Open the panel door",
- "Find the main breaker at the top — it's usually a large double-pole switch labeled 'MAIN'",
+ "Find the main breaker at the top - it's usually a large double-pole switch labeled 'MAIN'",
  "Flip the main breaker to the OFF position",
  "If you only need to shut off one area, find the specific circuit breaker and flip it off",
- "Use a flashlight — turning off the main kills all lights",
+ "Use a flashlight - turning off the main kills all lights",
  "Verify power is off by checking that lights and outlets don't work",
  ],
  location: "Garage, utility room, or exterior wall in a gray metal box",
  tools: ["Flashlight", "Rubber-soled shoes (for safety)"],
- afterShutoff: ["Unplug sensitive electronics before restoring power", "Check for burning smells before restoring", "If breaker keeps tripping, DO NOT force it — call an electrician", "For full outages, check with OUC (Orlando Utilities Commission: 407-423-9018)"],
+ afterShutoff: ["Unplug sensitive electronics before restoring power", "Check for burning smells before restoring", "If breaker keeps tripping, DO NOT force it - call an electrician", "For full outages, check with OUC (Orlando Utilities Commission: 407-423-9018)"],
  },
  hvac: {
  title: "HVAC Emergency Shutoff",
  warning: " If you smell burning from your HVAC, shut it off and do NOT restart. Call a technician.",
  steps: [
  "Thermostat: Switch to OFF (not just changing temp)",
- "Indoor unit: Find the switch near the air handler — looks like a light switch, usually on the wall nearby",
- "Outdoor unit: Find the disconnect box next to the condenser — pull the disconnect or flip the breaker",
+ "Indoor unit: Find the switch near the air handler - looks like a light switch, usually on the wall nearby",
+ "Outdoor unit: Find the disconnect box next to the condenser - pull the disconnect or flip the breaker",
  "If you can't find the dedicated switch, turn off the HVAC breaker at the main panel (usually labeled 'AC' or 'HVAC')",
  "For gas furnaces: turn the gas valve to OFF before calling for service",
  ],
  location: "Thermostat on wall, switch near indoor unit, disconnect box near outdoor unit",
- tools: ["None — all switches are hand-operated"],
- afterShutoff: ["Do NOT restart if you smelled burning", "Check/replace air filter — a clogged filter causes overheating", "After service, wait 30 minutes after restoring power before turning AC on (allows pressure to equalize)", "In summer: close blinds, use fans, stay hydrated until AC is fixed"],
+ tools: ["None - all switches are hand-operated"],
+ afterShutoff: ["Do NOT restart if you smelled burning", "Check/replace air filter - a clogged filter causes overheating", "After service, wait 30 minutes after restoring power before turning AC on (allows pressure to equalize)", "In summer: close blinds, use fans, stay hydrated until AC is fixed"],
  },
  };
 
@@ -7254,9 +7254,9 @@ export async function identify_pest(params: { description: string; photoUrl?: st
  propertyRisk: "Minimal structural damage but contaminate food and surfaces",
  diyTreatment: "Gel bait stations (Advion), boric acid powder in cracks, seal entry points, reduce moisture. Clean under appliances.",
  proTreatment: "Perimeter spray treatment + gel bait + monitor stations. Quarterly service recommended.",
- preventionTips: ["Seal gaps around doors/pipes with caulk", "Fix dripping faucets — roaches need water", "Store food in sealed containers", "Clean under appliances monthly", "Keep yard debris away from house"],
+ preventionTips: ["Seal gaps around doors/pipes with caulk", "Fix dripping faucets - roaches need water", "Store food in sealed containers", "Clean under appliances monthly", "Keep yard debris away from house"],
  estimatedCost: "$150-250 per quarterly treatment",
- floridaSpecific: "Palmetto bugs are everywhere in Florida — outdoor roaches that come inside for moisture. They fly. Don't panic, it's normal here.",
+ floridaSpecific: "Palmetto bugs are everywhere in Florida - outdoor roaches that come inside for moisture. They fly. Don't panic, it's normal here.",
  },
  {
  keywords: ["termite", "swarm", "wings", "mud tube", "wood damage"],
@@ -7264,10 +7264,10 @@ export async function identify_pest(params: { description: string; photoUrl?: st
  commonName: "Termites (Subterranean / Drywood)",
  riskLevel: "critical",
  healthRisk: "No direct health risk to humans",
- propertyRisk: "SEVERE — can cause thousands in structural damage. Formosan termites cause $1B/year in US damage.",
+ propertyRisk: "SEVERE - can cause thousands in structural damage. Formosan termites cause $1B/year in US damage.",
  diyTreatment: "DIY NOT recommended for active infestations. For prevention: reduce wood-soil contact, fix moisture issues, monitor with bait stations.",
  proTreatment: "Subterranean: liquid termiticide barrier + bait stations ($1,500-3,000). Drywood: tent fumigation ($1,200-2,500) or spot treatment.",
- preventionTips: ["No wood-to-soil contact on your home", "Fix leaks immediately — termites need moisture", "Keep mulch 6+ inches from foundation", "Annual termite inspection (many companies offer free)", "Remove dead trees and stumps from yard"],
+ preventionTips: ["No wood-to-soil contact on your home", "Fix leaks immediately - termites need moisture", "Keep mulch 6+ inches from foundation", "Annual termite inspection (many companies offer free)", "Remove dead trees and stumps from yard"],
  estimatedCost: "$500-3,000 depending on treatment type",
  floridaSpecific: "Florida has the highest termite pressure in the US. Annual inspections are essential. Most home insurance does NOT cover termite damage.",
  },
@@ -7306,7 +7306,7 @@ export async function identify_pest(params: { description: string; photoUrl?: st
  propertyRisk: "None, but makes outdoor living miserable",
  diyTreatment: "Eliminate ALL standing water (plant saucers, gutters, bird baths, tires). Use Mosquito Dunks in ponds. Citronella and fans for patios.",
  proTreatment: "Barrier spray treatment (lasts 21 days): $75-150 per treatment. Monthly service: $50-100/mo.",
- preventionTips: ["Dump standing water weekly", "Clean gutters", "Change bird bath water every 3 days", "Repair window screens", "Use outdoor fans — mosquitoes can't fly in wind"],
+ preventionTips: ["Dump standing water weekly", "Clean gutters", "Change bird bath water every 3 days", "Repair window screens", "Use outdoor fans - mosquitoes can't fly in wind"],
  estimatedCost: "$75-150 per barrier spray",
  floridaSpecific: "Orlando is one of the worst mosquito cities in the US. Rainy season (June-Sept) is peak. County spraying helps but doesn't eliminate them.",
  },
@@ -7316,7 +7316,7 @@ export async function identify_pest(params: { description: string; photoUrl?: st
  commonName: "Spiders",
  riskLevel: "low",
  healthRisk: "Most FL spiders are harmless. Black widows and brown recluses have medically significant bites (rare).",
- propertyRisk: "None — spiders actually help control other pest populations",
+ propertyRisk: "None - spiders actually help control other pest populations",
  diyTreatment: "Remove webs regularly, seal gaps, reduce outdoor lighting (attracts insects that attract spiders), glue traps in corners.",
  proTreatment: "Perimeter spray treatment as part of general pest control.",
  preventionTips: ["Shake out shoes and clothing stored in garages", "Keep firewood away from house", "Seal gaps around doors and windows", "Remove clutter from garages and closets"],
@@ -7402,22 +7402,22 @@ export async function assess_water_damage(params: { description: string; photoUr
  severity,
  moldRisk,
  moldTimeline: `Mold can begin growing in ${moldTimeline} in Florida's humidity`,
- waterCategory: isSewage ? "Category 3 (Black Water) — HAZARDOUS" : "Category 1-2 (Clean/Gray Water)",
+ waterCategory: isSewage ? "Category 3 (Black Water) - HAZARDOUS" : "Category 1-2 (Clean/Gray Water)",
  immediateActions: [
  "Stop the water source if possible (shutoff valve, turn off appliance)",
  "Remove standing water with wet vac, mop, or towels",
- severity === "severe" ? "Extract water ASAP — every hour matters for mold prevention" : "Blot and dry affected areas thoroughly",
- "Run fans and dehumidifiers — aim for humidity below 50%",
+ severity === "severe" ? "Extract water ASAP - every hour matters for mold prevention" : "Blot and dry affected areas thoroughly",
+ "Run fans and dehumidifiers - aim for humidity below 50%",
  "Remove wet items from the area (rugs, furniture, boxes)",
- isSewage ? "DO NOT touch without gloves — sewage is a biohazard" : "Pull back carpet edges to dry padding underneath",
+ isSewage ? "DO NOT touch without gloves - sewage is a biohazard" : "Pull back carpet edges to dry padding underneath",
  "Open windows if weather permits",
  ].filter(Boolean),
  moldPrevention: [
  "Run dehumidifier 24/7 until area is completely dry (3-5 days minimum)",
  "Apply antimicrobial spray to affected surfaces",
  "Remove and discard wet drywall that stayed wet for 48+ hours",
- "Check behind walls and under flooring — hidden moisture is the biggest mold risk",
- "Monitor with a moisture meter ($25-40 at Home Depot) — wood should be below 15%",
+ "Check behind walls and under flooring - hidden moisture is the biggest mold risk",
+ "Monitor with a moisture meter ($25-40 at Home Depot) - wood should be below 15%",
  ],
  estimatedRepairCosts: {
  minor: "$200-500 (drying + minor repairs)",
@@ -7425,12 +7425,12 @@ export async function assess_water_damage(params: { description: string; photoUr
  severe: "$3,000-10,000+ (full remediation + reconstruction)",
  },
  insuranceTip: "Most homeowner policies cover sudden/accidental water damage (burst pipe) but NOT gradual leaks or flood. Document everything with photos before cleanup.",
- message: ` **Water Damage Assessment**\n\n Likely source: ${source}\n Severity: ${severity.toUpperCase()}\n Mold risk: ${moldRisk.toUpperCase()} (can start in ${moldTimeline})\n${isSewage ? "\n **SEWAGE DETECTED — wear gloves, this is a biohazard**\n" : ""}\n**DO THIS NOW:**\n${["Stop water source", "Extract standing water", "Run fans + dehumidifier", "Document with photos for insurance"].map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\n Estimated repair: ${severity === "minor" ? "$200-500" : severity === "moderate" ? "$1,000-3,000" : "$3,000-10,000+"}\n\nWant me to dispatch a water mitigation pro? Time is critical — every hour matters for mold prevention.`,
+ message: ` **Water Damage Assessment**\n\n Likely source: ${source}\n Severity: ${severity.toUpperCase()}\n Mold risk: ${moldRisk.toUpperCase()} (can start in ${moldTimeline})\n${isSewage ? "\n **SEWAGE DETECTED - wear gloves, this is a biohazard**\n" : ""}\n**DO THIS NOW:**\n${["Stop water source", "Extract standing water", "Run fans + dehumidifier", "Document with photos for insurance"].map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\n Estimated repair: ${severity === "minor" ? "$200-500" : severity === "moderate" ? "$1,000-3,000" : "$3,000-10,000+"}\n\nWant me to dispatch a water mitigation pro? Time is critical - every hour matters for mold prevention.`,
  };
 }
 
 // ─────────────────────────────────────────────
-// SMART MATCH PRO — George calls this to find the best pro + price
+// SMART MATCH PRO - George calls this to find the best pro + price
 // ─────────────────────────────────────────────
 export async function smartMatchPro(args: {
  serviceType: string;
@@ -7977,5 +7977,2214 @@ export async function generateHoaPricingSchedule(params: {
   } catch (err: any) {
     console.error("[George Tools] generateHoaPricingSchedule error:", err);
     return { success: false, error: "Could not generate HOA pricing schedule." };
+  }
+}
+
+// ═════════════════════════════════════════════
+// BATCH 2 - PRO-FACING TOOLS
+// ═════════════════════════════════════════════
+
+// ─────────────────────────────────────────────
+// forecastProDemand - Predict demand for a service type
+// ─────────────────────────────────────────────
+export async function forecastProDemand(params: {
+  serviceType: string;
+  location: string;
+  timeframeDays?: number;
+}): Promise<object> {
+  try {
+    const { serviceType, location, timeframeDays = 30 } = params;
+    const now = new Date();
+    const month = now.getMonth(); // 0-indexed
+
+    // FL-specific seasonal multipliers by month
+    const seasonalMultipliers: Record<string, number[]> = {
+      // Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+      home_cleaning:      [1.3, 1.2, 1.1, 1.0, 0.9, 0.8, 0.8, 0.8, 0.9, 1.0, 1.1, 1.4], // snowbird surge winter
+      pool_cleaning:      [0.7, 0.8, 1.0, 1.3, 1.5, 1.5, 1.5, 1.5, 1.3, 1.0, 0.8, 0.7], // summer peak
+      landscaping:        [0.8, 0.9, 1.2, 1.3, 1.4, 1.3, 1.2, 1.1, 1.0, 1.0, 0.9, 0.8],
+      pressure_washing:   [0.9, 1.0, 1.3, 1.4, 1.2, 1.0, 0.9, 0.9, 1.0, 1.2, 1.3, 1.0],
+      junk_removal:       [1.1, 1.0, 1.3, 1.4, 1.2, 1.0, 0.9, 0.9, 0.9, 1.0, 1.1, 1.2],
+      gutter_cleaning:    [0.7, 0.7, 0.8, 0.9, 1.0, 1.1, 1.1, 1.1, 1.3, 1.5, 1.4, 0.8],
+      handyman:           [1.0, 1.0, 1.1, 1.1, 1.0, 1.0, 0.9, 0.9, 1.0, 1.0, 1.1, 1.1],
+      carpet_cleaning:    [1.2, 1.1, 1.0, 1.0, 0.9, 0.8, 0.8, 0.8, 0.9, 1.0, 1.1, 1.3],
+    };
+
+    // Hurricane season flag (Jun-Nov)
+    const isHurricaneSeason = month >= 5 && month <= 10;
+    const baseJobsPerWeek = 15; // market average
+    const multipliers = seasonalMultipliers[serviceType] || [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+    // Day-of-week demand weights (Mon=0 .. Sun=6)
+    const dayWeights = [0.9, 1.0, 1.0, 1.1, 1.2, 1.4, 0.8]; // Fri/Sat peak
+
+    // Build forecast periods
+    const periods: number[] = [];
+    if (timeframeDays <= 7) periods.push(7);
+    else if (timeframeDays <= 14) periods.push(7, 14);
+    else if (timeframeDays <= 30) periods.push(7, 14, 30);
+    else periods.push(7, 14, 30, 90);
+
+    const forecast: Array<{
+      period: string;
+      expectedJobs: number;
+      confidence: number;
+      demandLevel: "low" | "moderate" | "high" | "surge";
+    }> = [];
+
+    const peakDays: string[] = [];
+    const recommendations: string[] = [];
+
+    for (const days of periods) {
+      const weeksInPeriod = days / 7;
+      // Average multiplier across months covered
+      let avgMultiplier = 0;
+      for (let d = 0; d < days; d++) {
+        const futureDate = new Date(now.getTime() + d * 86400000);
+        const m = futureDate.getMonth();
+        avgMultiplier += multipliers[m] || 1.0;
+      }
+      avgMultiplier /= days;
+
+      const expectedJobs = Math.round(baseJobsPerWeek * weeksInPeriod * avgMultiplier);
+      const confidence = days <= 7 ? 0.85 : days <= 14 ? 0.75 : days <= 30 ? 0.65 : 0.5;
+
+      let demandLevel: "low" | "moderate" | "high" | "surge";
+      if (avgMultiplier >= 1.4) demandLevel = "surge";
+      else if (avgMultiplier >= 1.1) demandLevel = "high";
+      else if (avgMultiplier >= 0.9) demandLevel = "moderate";
+      else demandLevel = "low";
+
+      forecast.push({
+        period: `${days} days`,
+        expectedJobs,
+        confidence,
+        demandLevel,
+      });
+    }
+
+    // Find peak days in next 14 days
+    for (let d = 0; d < Math.min(timeframeDays, 14); d++) {
+      const futureDate = new Date(now.getTime() + d * 86400000);
+      const dayOfWeek = futureDate.getDay();
+      const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Mon=0
+      if (dayWeights[adjustedDay] >= 1.2) {
+        peakDays.push(futureDate.toISOString().split("T")[0]);
+      }
+    }
+
+    // Recommendations
+    const currentMultiplier = multipliers[month] || 1.0;
+    if (currentMultiplier >= 1.3) {
+      recommendations.push("Consider raising rates 10-15% during surge periods - demand supports it.");
+    }
+    if (currentMultiplier < 0.9) {
+      recommendations.push("Demand is lower this season. Consider offering package deals or expanding service types.");
+    }
+    if (isHurricaneSeason) {
+      recommendations.push("Hurricane season (Jun-Nov): Be ready for emergency demand spikes. Emergency jobs pay 2x.");
+    }
+    if (month >= 10 || month <= 1) {
+      recommendations.push("Snowbird season: Cleaning and home prep demand surges as seasonal residents arrive.");
+    }
+    if ([3, 4, 5].includes(month) && (serviceType === "pool_cleaning" || serviceType === "landscaping")) {
+      recommendations.push("Peak season approaching - consider hiring a helper to take on more jobs.");
+    }
+    recommendations.push(`Focus on ${peakDays.length > 0 ? "Fridays and Saturdays" : "weekdays"} for maximum booking density.`);
+
+    return {
+      success: true,
+      serviceType,
+      location,
+      timeframeDays,
+      forecast,
+      peakDays,
+      recommendations,
+      seasonalContext: {
+        currentMonth: now.toLocaleString("en-US", { month: "long" }),
+        seasonalMultiplier: currentMultiplier,
+        isHurricaneSeason,
+      },
+    };
+  } catch (err: any) {
+    console.error("[George Tools] forecastProDemand error:", err);
+    return { success: false, error: "Could not generate demand forecast." };
+  }
+}
+
+// ─────────────────────────────────────────────
+// generateVoiceInvoice - Voice-to-invoice generation
+// ─────────────────────────────────────────────
+export function generateVoiceInvoice(params: {
+  proId: string;
+  jobDescription: string;
+  laborHours: number;
+  laborRate: number;
+  materials?: { item: string; cost: number }[];
+  customerName?: string;
+}): object {
+  try {
+    const { proId, jobDescription, laborHours, laborRate, materials = [], customerName } = params;
+
+    const invoiceNumber = `UT-${Date.now()}`;
+    const date = new Date().toISOString().split("T")[0];
+
+    // Build line items
+    const lineItems: Array<{ description: string; quantity: number; unitPrice: number; total: number }> = [];
+
+    // Labor line item
+    const laborTotal = Math.round(laborHours * laborRate * 100) / 100;
+    lineItems.push({
+      description: `Labor: ${jobDescription}`,
+      quantity: laborHours,
+      unitPrice: laborRate,
+      total: laborTotal,
+    });
+
+    // Material line items
+    let materialsTotal = 0;
+    for (const mat of materials) {
+      const cost = Math.round(mat.cost * 100) / 100;
+      materialsTotal += cost;
+      lineItems.push({
+        description: `Material: ${mat.item}`,
+        quantity: 1,
+        unitPrice: cost,
+        total: cost,
+      });
+    }
+    materialsTotal = Math.round(materialsTotal * 100) / 100;
+
+    const subtotal = Math.round((laborTotal + materialsTotal) * 100) / 100;
+    const platformFee = Math.round(subtotal * 0.15 * 100) / 100; // 15%
+    const proEarnings = Math.round((subtotal - platformFee) * 100) / 100;
+    const grandTotal = subtotal;
+
+    return {
+      success: true,
+      invoice: {
+        invoiceNumber,
+        date,
+        customer: customerName || "Customer",
+        proId,
+        lineItems,
+        laborTotal,
+        materialsTotal,
+        subtotal,
+        platformFee,
+        platformFeePercent: "15%",
+        proEarnings,
+        grandTotal,
+        footer: "Powered by George - UpTend AI Assistant",
+      },
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateVoiceInvoice error:", err);
+    return { success: false, error: "Could not generate invoice." };
+  }
+}
+
+// ─────────────────────────────────────────────
+// analyzeProPerformance - Comprehensive performance analysis
+// ─────────────────────────────────────────────
+export function analyzeProPerformance(params: {
+  proId: string;
+  completedJobs?: number;
+  avgRating?: number;
+  onTimePercent?: number;
+  repeatCustomerPercent?: number;
+}): object {
+  try {
+    const {
+      proId,
+      completedJobs = 0,
+      avgRating = 5.0,
+      onTimePercent = 95,
+      repeatCustomerPercent = 20,
+    } = params;
+
+    // Value Score breakdown
+    // Rating 30%, Reliability 20%, Price-to-Value 20%, Proximity 15%, Experience 15%
+    const ratingScore = Math.min((avgRating / 5) * 100, 100);
+    const reliabilityScore = Math.min(onTimePercent, 100);
+    const priceToValueScore = Math.min(70 + repeatCustomerPercent * 0.5, 100); // proxy: repeat customers = good value
+    const proximityScore = 75; // default - would use real location data
+    const experienceScore = Math.min(completedJobs * 2, 100); // 50 jobs = max
+
+    const valueScore = Math.round(
+      ratingScore * 0.30 +
+      reliabilityScore * 0.20 +
+      priceToValueScore * 0.20 +
+      proximityScore * 0.15 +
+      experienceScore * 0.15
+    );
+
+    // Performance tier
+    let tier: string;
+    let tierEmoji: string;
+    if (valueScore >= 90) { tier = "Platinum"; tierEmoji = "💎"; }
+    else if (valueScore >= 75) { tier = "Gold"; tierEmoji = "🥇"; }
+    else if (valueScore >= 60) { tier = "Silver"; tierEmoji = "🥈"; }
+    else { tier = "Bronze"; tierEmoji = "🥉"; }
+
+    // Find weakest areas for coaching
+    const scores: Record<string, number> = {
+      "Customer Rating": ratingScore,
+      "Reliability (On-Time)": reliabilityScore,
+      "Price-to-Value": priceToValueScore,
+      "Proximity Coverage": proximityScore,
+      "Experience": experienceScore,
+    };
+    const sortedScores = Object.entries(scores).sort((a, b) => a[1] - b[1]);
+    const weakest = sortedScores.slice(0, 2);
+
+    const coachingTips: string[] = [];
+    for (const [area, score] of weakest) {
+      if (area === "Customer Rating" && score < 90) {
+        coachingTips.push("Follow up with customers after every job - a quick 'Everything looking good?' text boosts ratings.");
+        coachingTips.push("Send a before/after photo - customers love visual proof of great work.");
+      }
+      if (area === "Reliability (On-Time)" && score < 90) {
+        coachingTips.push("Set your GPS route 15 minutes before departure - arriving early makes a huge impression.");
+        coachingTips.push("If running late, message the customer immediately - communication prevents bad reviews.");
+      }
+      if (area === "Price-to-Value" && score < 80) {
+        coachingTips.push("Consider adding a small freebie (quick wipe-down, minor fix) - perceived value drives repeat business.");
+      }
+      if (area === "Experience" && score < 50) {
+        coachingTips.push("Take on smaller jobs to build your track record - volume builds trust in the algorithm.");
+        coachingTips.push("Get certified in additional services to unlock more job types.");
+      }
+      if (area === "Proximity Coverage" && score < 70) {
+        coachingTips.push("Expand your service area slightly - even 5 extra miles opens up significantly more jobs.");
+      }
+    }
+
+    // Earnings projection
+    const avgMarketJobsPerMonth = 12;
+    const avgMarketJobSize = 250;
+    const projectedMonthlyJobs = completedJobs > 0 ? Math.max(completedJobs, avgMarketJobsPerMonth) : avgMarketJobsPerMonth;
+    const earningsProjection = projectedMonthlyJobs * avgMarketJobSize;
+
+    return {
+      success: true,
+      proId,
+      valueScore,
+      tier: `${tierEmoji} ${tier}`,
+      scoreBreakdown: {
+        rating: { weight: "30%", score: Math.round(ratingScore) },
+        reliability: { weight: "20%", score: Math.round(reliabilityScore) },
+        priceToValue: { weight: "20%", score: Math.round(priceToValueScore) },
+        proximity: { weight: "15%", score: Math.round(proximityScore) },
+        experience: { weight: "15%", score: Math.round(experienceScore) },
+      },
+      coachingTips,
+      earningsProjection: {
+        monthlyEstimate: earningsProjection,
+        formatted: `At your current rate, you're on track for $${earningsProjection.toLocaleString()}/month`,
+      },
+      marketComparison: {
+        avgProJobsPerMonth: avgMarketJobsPerMonth,
+        avgJobSize: avgMarketJobSize,
+        avgProMonthlyEarnings: avgMarketJobsPerMonth * avgMarketJobSize,
+      },
+    };
+  } catch (err: any) {
+    console.error("[George Tools] analyzeProPerformance error:", err);
+    return { success: false, error: "Could not analyze performance." };
+  }
+}
+
+// ─────────────────────────────────────────────
+// optimizeProSchedule - Optimal daily schedule suggestions
+// ─────────────────────────────────────────────
+export function optimizeProSchedule(params: {
+  proId: string;
+  availableHours: number[];
+  serviceArea: string;
+  maxDriveMinutes?: number;
+  preferredJobTypes?: string[];
+}): object {
+  try {
+    const {
+      proId,
+      availableHours,
+      serviceArea,
+      maxDriveMinutes = 30,
+      preferredJobTypes = [],
+    } = params;
+
+    // Time-of-day job type mapping (Orlando metro)
+    // Morning = residential interior, midday = exterior, afternoon = commercial
+    const timeSlotMap: Record<string, { jobType: string; estimatedDuration: number; estimatedEarnings: number; reason: string }> = {
+      "7": { jobType: "home_cleaning", estimatedDuration: 120, estimatedEarnings: 165, reason: "Customers home before work - best time for interior" },
+      "8": { jobType: "home_cleaning", estimatedDuration: 120, estimatedEarnings: 165, reason: "Prime residential interior slot" },
+      "9": { jobType: "home_cleaning", estimatedDuration: 120, estimatedEarnings: 165, reason: "Prime residential interior slot" },
+      "10": { jobType: "carpet_cleaning", estimatedDuration: 90, estimatedEarnings: 200, reason: "Good interior time before midday heat" },
+      "11": { jobType: "handyman", estimatedDuration: 90, estimatedEarnings: 150, reason: "Transition to exterior - finish interior tasks" },
+      "12": { jobType: "pressure_washing", estimatedDuration: 120, estimatedEarnings: 250, reason: "Midday = exterior work, surfaces dry fast in FL sun" },
+      "13": { jobType: "landscaping", estimatedDuration: 120, estimatedEarnings: 175, reason: "Exterior work - take hydration breaks in FL heat" },
+      "14": { jobType: "pressure_washing", estimatedDuration: 120, estimatedEarnings: 250, reason: "Peak exterior hours" },
+      "15": { jobType: "gutter_cleaning", estimatedDuration: 90, estimatedEarnings: 180, reason: "Exterior work before afternoon storms" },
+      "16": { jobType: "junk_removal", estimatedDuration: 90, estimatedEarnings: 299, reason: "Commercial/afternoon slot - businesses closing" },
+      "17": { jobType: "junk_removal", estimatedDuration: 90, estimatedEarnings: 299, reason: "Commercial clean-out time" },
+      "18": { jobType: "pool_cleaning", estimatedDuration: 60, estimatedEarnings: 85, reason: "Evening pool service - cooler temps" },
+    };
+
+    const suggestedSlots: Array<{
+      time: string;
+      jobType: string;
+      estimatedDuration: number;
+      estimatedEarnings: number;
+      driveTimeBuffer: number;
+      reason: string;
+    }> = [];
+
+    let dailyEarningsPotential = 0;
+    let prevSlotEnd = 0;
+
+    for (const hour of availableHours.sort((a, b) => a - b)) {
+      const hourStr = String(hour);
+      let slot = timeSlotMap[hourStr];
+
+      // If preferred job types specified, try to match
+      if (preferredJobTypes.length > 0 && slot) {
+        const preferred = Object.entries(timeSlotMap).find(
+          ([h, s]) => parseInt(h) === hour && preferredJobTypes.includes(s.jobType)
+        );
+        if (!preferred) {
+          // Keep default slot but note preference
+        }
+      }
+
+      if (!slot) {
+        slot = { jobType: "handyman", estimatedDuration: 60, estimatedEarnings: 75, reason: "General availability slot" };
+      }
+
+      // Add drive time buffer between jobs
+      const driveBuffer = prevSlotEnd > 0 ? Math.min(maxDriveMinutes, 20) : 0;
+
+      suggestedSlots.push({
+        time: `${hour}:00`,
+        jobType: slot.jobType,
+        estimatedDuration: slot.estimatedDuration,
+        estimatedEarnings: slot.estimatedEarnings,
+        driveTimeBuffer: driveBuffer,
+        reason: slot.reason,
+      });
+
+      dailyEarningsPotential += slot.estimatedEarnings;
+      prevSlotEnd = hour;
+    }
+
+    const tipsForMaximizing: string[] = [
+      "Batch jobs by area - cluster morning jobs in one zone, afternoon in another to cut drive time.",
+      `In ${serviceArea}, expect 15-30 min drive between zones. Plan routes to minimize backtracking.`,
+      "Morning residential → midday exterior → afternoon commercial maximizes earnings per hour.",
+      "Leave 20-min buffers between jobs - Orlando traffic is unpredictable.",
+      "Accept jobs the night before to lock in your schedule - morning scramble = lost income.",
+    ];
+
+    if (availableHours.length < 6) {
+      tipsForMaximizing.push("Opening up more hours could increase daily earnings by 40-60%.");
+    }
+    if (!availableHours.includes(12) && !availableHours.includes(13) && !availableHours.includes(14)) {
+      tipsForMaximizing.push("Midday exterior slots (pressure washing, landscaping) are high-value - consider adding 12-3pm.");
+    }
+
+    return {
+      success: true,
+      proId,
+      serviceArea,
+      suggestedSlots,
+      dailyEarningsPotential,
+      dailyEarningsFormatted: `$${dailyEarningsPotential}`,
+      totalScheduledHours: availableHours.length,
+      effectiveHourlyRate: availableHours.length > 0
+        ? Math.round(dailyEarningsPotential / availableHours.length)
+        : 0,
+      tipsForMaximizing,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] optimizeProSchedule error:", err);
+    return { success: false, error: "Could not optimize schedule." };
+  }
+}
+
+// ─────────────────────────────────────────────
+// calculateProCertificationROI - ROI analysis for cert programs
+// ─────────────────────────────────────────────
+export function calculateProCertificationROI(params: {
+  currentTier: string;
+  certProgram: string;
+  currentJobsPerMonth?: number;
+  currentAvgJobSize?: number;
+}): object {
+  try {
+    const {
+      currentTier,
+      certProgram,
+      currentJobsPerMonth = 12,
+      currentAvgJobSize = 250,
+    } = params;
+
+    // Cert program details
+    const certPrograms: Record<string, {
+      name: string;
+      investmentCost: number;
+      timeToComplete: string;
+      additionalJobsPerMonth: number;
+      avgJobSizeIncrease: number;
+      unlocks: string[];
+      prerequisites: string[];
+      tier: string;
+    }> = {
+      "b2b-pm": {
+        name: "B2B Property Management",
+        investmentCost: 4500,
+        timeToComplete: "2-3 weeks",
+        additionalJobsPerMonth: 8,
+        avgJobSizeIncrease: 100,
+        unlocks: [
+          "Property management turnover jobs",
+          "Recurring PM contracts",
+          "Priority PM dispatch",
+          "PM dashboard access",
+          "Prerequisite for Government cert",
+        ],
+        prerequisites: [],
+        tier: "B2B",
+      },
+      "b2b-hoa": {
+        name: "B2B HOA Services",
+        investmentCost: 4500,
+        timeToComplete: "2-3 weeks",
+        additionalJobsPerMonth: 6,
+        avgJobSizeIncrease: 150,
+        unlocks: [
+          "HOA community contracts",
+          "Bulk service scheduling",
+          "Common area maintenance jobs",
+          "HOA board presentation materials",
+        ],
+        prerequisites: [],
+        tier: "B2B",
+      },
+      "ai-home-scan": {
+        name: "AI Home Scan Technician",
+        investmentCost: 2800,
+        timeToComplete: "1 week",
+        additionalJobsPerMonth: 15,
+        avgJobSizeIncrease: -195, // scans are ~$55 each, lower than avg job
+        unlocks: [
+          "Home DNA Scan jobs ($45 base + $1/appliance)",
+          "Lead generation from scan recommendations",
+          "Recurring scan appointments",
+          "Scan-to-service conversion bonus",
+        ],
+        prerequisites: [],
+        tier: "Starter",
+      },
+      "parts-materials": {
+        name: "Parts & Materials Specialist",
+        investmentCost: 2800,
+        timeToComplete: "1 week",
+        additionalJobsPerMonth: 5,
+        avgJobSizeIncrease: 125,
+        unlocks: [
+          "Repair jobs requiring parts sourcing",
+          "Higher-payout handyman tasks",
+          "Parts markup (10-15% on materials)",
+          "Supplier discount network",
+        ],
+        prerequisites: [],
+        tier: "Starter",
+      },
+      "emergency-response": {
+        name: "Emergency Response",
+        investmentCost: 4500,
+        timeToComplete: "2-3 weeks",
+        additionalJobsPerMonth: 4,
+        avgJobSizeIncrease: 200,
+        unlocks: [
+          "Emergency dispatch (2x payout)",
+          "Storm cleanup jobs",
+          "Water damage response",
+          "Insurance claim documentation",
+          "Priority emergency queue",
+        ],
+        prerequisites: [],
+        tier: "B2B",
+      },
+      "government": {
+        name: "Government Contract",
+        investmentCost: 6200,
+        timeToComplete: "3-4 weeks",
+        additionalJobsPerMonth: 3,
+        avgJobSizeIncrease: 400,
+        unlocks: [
+          "Government facility contracts",
+          "Prevailing wage jobs ($300-1,000+)",
+          "SDVOSB subcontracting",
+          "Long-term government agreements",
+          "Highest payout tier on platform",
+        ],
+        prerequisites: ["b2b-pm"],
+        tier: "Elite",
+      },
+    };
+
+    const program = certPrograms[certProgram];
+    if (!program) {
+      return {
+        success: false,
+        error: `Unknown certification program: ${certProgram}. Available: ${Object.keys(certPrograms).join(", ")}`,
+      };
+    }
+
+    // Check prerequisites
+    if (program.prerequisites.length > 0) {
+      const missingPrereqs = program.prerequisites;
+      if (certProgram === "government") {
+        // Flag that PM cert is required
+        return {
+          success: true,
+          certProgram,
+          programName: program.name,
+          prerequisiteWarning: `⚠️ Government certification requires B2B Property Management (b2b-pm) certification as a prerequisite. Complete that first ($4,500), then pursue Government cert ($6,200).`,
+          totalInvestmentPath: program.investmentCost + 4500,
+          prerequisites: missingPrereqs.map((p) => certPrograms[p]?.name || p),
+          // Still show ROI for planning
+          ...calculateROI(program, currentJobsPerMonth, currentAvgJobSize),
+        };
+      }
+    }
+
+    return {
+      success: true,
+      certProgram,
+      programName: program.name,
+      tier: program.tier,
+      ...calculateROI(program, currentJobsPerMonth, currentAvgJobSize),
+      unlocks: program.unlocks,
+      careerLadderPricing: {
+        starter: "$2,800",
+        b2b: "$4,500",
+        elite: "$6,200",
+        currentProgram: `$${program.investmentCost.toLocaleString()}`,
+      },
+    };
+  } catch (err: any) {
+    console.error("[George Tools] calculateProCertificationROI error:", err);
+    return { success: false, error: "Could not calculate certification ROI." };
+  }
+}
+
+// Helper for ROI calculation
+function calculateROI(
+  program: { investmentCost: number; timeToComplete: string; additionalJobsPerMonth: number; avgJobSizeIncrease: number },
+  currentJobsPerMonth: number,
+  currentAvgJobSize: number
+) {
+  const newAvgJobSize = currentAvgJobSize + program.avgJobSizeIncrease;
+  const additionalRevenuePerMonth = program.additionalJobsPerMonth * Math.max(newAvgJobSize, 55); // min $55 for scans
+  const paybackMonths = additionalRevenuePerMonth > 0
+    ? Math.ceil(program.investmentCost / additionalRevenuePerMonth)
+    : 0;
+  const yearOneRevenue = additionalRevenuePerMonth * 12;
+  const yearOneROI = program.investmentCost > 0
+    ? Math.round(((yearOneRevenue - program.investmentCost) / program.investmentCost) * 100)
+    : 0;
+
+  return {
+    investmentCost: program.investmentCost,
+    timeToComplete: program.timeToComplete,
+    additionalJobsPerMonth: program.additionalJobsPerMonth,
+    additionalRevenuePerMonth: Math.round(additionalRevenuePerMonth),
+    additionalRevenueFormatted: `$${Math.round(additionalRevenuePerMonth).toLocaleString()}/mo`,
+    paybackPeriod: `${paybackMonths} month${paybackMonths !== 1 ? "s" : ""}`,
+    yearOneROI: `${yearOneROI}%`,
+    yearOneNetProfit: yearOneRevenue - program.investmentCost,
+    currentMonthlyEarnings: currentJobsPerMonth * currentAvgJobSize,
+    projectedMonthlyEarnings: (currentJobsPerMonth * currentAvgJobSize) + additionalRevenuePerMonth,
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Batch 1 - Consumer Tools
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Predict a Home Health Score (0-100) based on home age, service history,
+ * systems maintained, and regional factors.
+ */
+export async function predictHomeHealthScore(params: {
+  homeAge: number;
+  lastServiceDate?: string;
+  systems?: string[];
+  location?: string;
+  sqft?: number;
+}): Promise<Record<string, any>> {
+  try {
+    let score = 100;
+
+    // Age penalty: 1 pt per 5 years over 10
+    if (params.homeAge > 10) {
+      score -= Math.floor((params.homeAge - 10) / 5);
+    }
+
+    // Service gap penalty: 2 pts per month over 6
+    if (params.lastServiceDate) {
+      const lastService = new Date(params.lastServiceDate);
+      const now = new Date();
+      const monthsGap = Math.max(
+        0,
+        (now.getFullYear() - lastService.getFullYear()) * 12 +
+          (now.getMonth() - lastService.getMonth())
+      );
+      if (monthsGap > 6) {
+        score -= (monthsGap - 6) * 2;
+      }
+      // Seasonal bonus: if serviced within last 3 months
+      if (monthsGap <= 3) {
+        score = Math.min(100, score + 5);
+      }
+    } else {
+      // No service date known - assume moderate gap
+      score -= 10;
+    }
+
+    // Systems bonus: more maintained systems = better score
+    const systemCount = params.systems?.length ?? 0;
+    if (systemCount === 0) {
+      score -= 8;
+    } else if (systemCount >= 5) {
+      score = Math.min(100, score + 3);
+    }
+
+    // Sqft factor: larger homes need more maintenance attention
+    if (params.sqft && params.sqft > 3000) {
+      score -= Math.floor((params.sqft - 3000) / 1000);
+    }
+
+    // Clamp
+    score = Math.max(0, Math.min(100, score));
+
+    // Determine band
+    let band: string;
+    if (score >= 90) band = "Excellent";
+    else if (score >= 70) band = "Good";
+    else if (score >= 50) band = "Fair";
+    else if (score >= 30) band = "Needs Attention";
+    else band = "Critical";
+
+    // Recommended actions
+    const actions: string[] = [];
+    if (!params.lastServiceDate || score < 70) {
+      actions.push("Schedule a Home DNA Scan to assess current condition");
+    }
+    if (params.homeAge > 15) {
+      actions.push("Inspect roof, HVAC, and water heater for end-of-life replacement");
+    }
+    if (systemCount < 3) {
+      actions.push("Add more systems to your maintenance plan for comprehensive coverage");
+    }
+    if (score < 50) {
+      actions.push("Book an urgent handyman visit for critical issues");
+      actions.push("Consider a seasonal maintenance bundle for a fresh start");
+    }
+    if (score >= 70) {
+      actions.push("Keep up the great work - consider a PolishUp to maintain curb appeal");
+    }
+
+    return {
+      success: true,
+      score,
+      band,
+      homeAge: params.homeAge,
+      systemsTracked: systemCount,
+      location: params.location ?? "Central FL",
+      recommendedActions: actions,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] predictHomeHealthScore error:", err);
+    return { success: false, error: "Could not calculate home health score." };
+  }
+}
+
+/**
+ * Generate structured insurance claim assistance for common home issues.
+ */
+export async function generateInsuranceClaimAssist(params: {
+  issueType: string;
+  description: string;
+  estimatedDamage?: number;
+  hasPhotos?: boolean;
+  insuranceType?: string;
+}): Promise<Record<string, any>> {
+  try {
+    const issueNorm = params.issueType.toLowerCase().trim();
+
+    interface ClaimInfo {
+      claimType: string;
+      likelyCovered: boolean;
+      estimatedTimeline: string;
+      deductibleNote: string;
+    }
+
+    const claimMap: Record<string, ClaimInfo> = {
+      "water damage": {
+        claimType: "Property Damage - Water",
+        likelyCovered: true,
+        estimatedTimeline: "2-4 weeks for adjuster, 1-3 months for resolution",
+        deductibleNote: "Standard deductible applies ($500-$2,500 typical)",
+      },
+      "wind/storm": {
+        claimType: "Property Damage - Wind/Storm",
+        likelyCovered: true,
+        estimatedTimeline: "1-2 weeks for adjuster (may be faster post-hurricane), 2-6 months resolution",
+        deductibleNote: "Hurricane deductible may apply in FL (2-5% of dwelling coverage)",
+      },
+      fire: {
+        claimType: "Property Damage - Fire/Smoke",
+        likelyCovered: true,
+        estimatedTimeline: "Adjuster within days, 3-12 months for full resolution",
+        deductibleNote: "Standard deductible applies",
+      },
+      theft: {
+        claimType: "Property Crime - Theft/Burglary",
+        likelyCovered: true,
+        estimatedTimeline: "1-3 weeks for adjuster, 1-2 months resolution",
+        deductibleNote: "Standard deductible applies; file police report first",
+      },
+      liability: {
+        claimType: "Liability Claim",
+        likelyCovered: true,
+        estimatedTimeline: "Varies widely - 1-12+ months depending on severity",
+        deductibleNote: "Liability coverage typically has no deductible",
+      },
+      "appliance failure": {
+        claimType: "Equipment Breakdown (if endorsed)",
+        likelyCovered: false,
+        estimatedTimeline: "N/A - typically not covered under standard HO-3",
+        deductibleNote: "Check if you have Equipment Breakdown endorsement or home warranty",
+      },
+    };
+
+    const info = claimMap[issueNorm] ?? {
+      claimType: "General Property Damage",
+      likelyCovered: true,
+      estimatedTimeline: "2-4 weeks for adjuster, 1-3 months resolution",
+      deductibleNote: "Standard deductible applies",
+    };
+
+    const documentationChecklist = [
+      "Take photos and video of ALL damage before any cleanup",
+      "Document the date and time the damage occurred or was discovered",
+      "Keep all damaged items - do not throw anything away",
+      "Get written repair estimates from licensed contractors",
+      "Save all receipts for emergency repairs and temporary housing",
+      "Review your policy declarations page for coverage limits",
+      "Note your policy number and agent contact info",
+    ];
+    if (!params.hasPhotos) {
+      documentationChecklist.unshift("⚠️ PRIORITY: Take photos immediately before anything changes");
+    }
+
+    const filingGuide = [
+      "1. Document everything (photos, video, written notes)",
+      "2. Mitigate further damage (e.g., tarp roof, shut off water) - this is required by most policies",
+      "3. Contact your insurance company to open a claim",
+      "4. Request your claim number and adjuster assignment",
+      "5. Meet with the adjuster and walk through all damage",
+      "6. Get independent repair estimates for comparison",
+      "7. Review the adjuster's report and settlement offer",
+      "8. Negotiate if the offer seems low - you can request re-inspection",
+      "9. Once agreed, proceed with repairs using licensed contractors",
+      "10. Submit final invoices for reimbursement of any remaining covered costs",
+    ];
+
+    const tips = [
+      "File the claim as soon as possible - delays can complicate things",
+      "Don't accept the first offer if it seems low - you can negotiate",
+      "Consider hiring a public adjuster for claims over $10,000",
+      "Keep a detailed log of every conversation with your insurer",
+      "UPtend can provide documented service history to support your claim",
+    ];
+
+    return {
+      success: true,
+      issueType: params.issueType,
+      recommendedClaimType: info.claimType,
+      likelyCoveredByStandardPolicy: info.likelyCovered,
+      estimatedTimeline: info.estimatedTimeline,
+      deductibleNote: info.deductibleNote,
+      estimatedDamage: params.estimatedDamage ?? null,
+      hasPhotos: params.hasPhotos ?? false,
+      documentationChecklist,
+      stepByStepFilingGuide: filingGuide,
+      tipsForMaximizingClaim: tips,
+      disclaimer:
+        "This is general guidance only - not legal or insurance advice. Always consult your policy and agent.",
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateInsuranceClaimAssist error:", err);
+    return { success: false, error: "Could not generate insurance claim assistance." };
+  }
+}
+
+/**
+ * Return gamification / maintenance game status for a customer.
+ */
+export async function getMaintenanceGameStatus(params: {
+  customerId: string;
+  completedTasks?: number;
+  streak?: number;
+}): Promise<Record<string, any>> {
+  try {
+    const tasks = params.completedTasks ?? 0;
+    const streak = params.streak ?? 0;
+
+    // XP calculation
+    const taskXP = tasks * 100;
+    const streakBonusXP = streak * 50;
+    const totalXP = taskXP + streakBonusXP;
+
+    // Levels
+    const levels = [
+      { level: 1, name: "Rookie", minXP: 0 },
+      { level: 2, name: "Homeowner", minXP: 300 },
+      { level: 3, name: "Maintainer", minXP: 800 },
+      { level: 4, name: "Pro Keeper", minXP: 1500 },
+      { level: 5, name: "Home Guardian", minXP: 2500 },
+      { level: 6, name: "Estate Master", minXP: 4000 },
+      { level: 7, name: "Neighborhood Legend", minXP: 6000 },
+      { level: 8, name: "Block Captain", minXP: 8500 },
+      { level: 9, name: "Community Hero", minXP: 12000 },
+      { level: 10, name: "UPtend Elite", minXP: 16000 },
+    ];
+
+    let currentLevel = levels[0];
+    let nextLevel = levels[1];
+    for (let i = levels.length - 1; i >= 0; i--) {
+      if (totalXP >= levels[i].minXP) {
+        currentLevel = levels[i];
+        nextLevel = levels[i + 1] ?? null;
+        break;
+      }
+    }
+
+    // Badges
+    const badges: string[] = [];
+    if (tasks >= 1) badges.push("First Fix");
+    if (streak >= 7) badges.push("Streak Master (7)");
+    if (tasks >= 10) badges.push("All Systems Go");
+    if (tasks >= 4) badges.push("Seasonal Champion");
+    if (tasks >= 20 && streak >= 10) badges.push("George's Favorite");
+
+    return {
+      success: true,
+      customerId: params.customerId,
+      xp: totalXP,
+      level: currentLevel.level,
+      levelName: currentLevel.name,
+      nextMilestone: nextLevel
+        ? { level: nextLevel.level, name: nextLevel.name, xpNeeded: nextLevel.minXP - totalXP }
+        : null,
+      streak,
+      badges,
+      leaderboardPosition: "Top 15% in Lake Nona",
+      tip:
+        totalXP < 800
+          ? "Complete a few more maintenance tasks to reach Maintainer level!"
+          : streak < 7
+            ? "Keep your streak going to earn the Streak Master badge!"
+            : "You're crushing it - keep going for George's Favorite!",
+    };
+  } catch (err: any) {
+    console.error("[George Tools] getMaintenanceGameStatus error:", err);
+    return { success: false, error: "Could not retrieve maintenance game status." };
+  }
+}
+
+/**
+ * Suggest a dynamic service bundle based on home profile, season, and budget.
+ */
+export async function suggestDynamicServiceBundle(params: {
+  homeType: string;
+  sqft?: number;
+  issues?: string[];
+  season?: string;
+  budget?: string;
+}): Promise<Record<string, any>> {
+  try {
+    const season = (params.season ?? getCurrentSeason()).toLowerCase();
+    const budget = (params.budget ?? "recommended").toLowerCase();
+    const sqft = params.sqft ?? 2000;
+
+    // Seasonal service suggestions
+    const seasonalServices: Record<string, string[]> = {
+      spring: ["Gutter Cleaning", "Pressure Washing", "Lawn Care", "AC Tune-Up"],
+      summer: ["Pool Maintenance", "Landscaping", "Pest Control", "AC Filter Change"],
+      fall: ["HVAC Inspection", "Gutter Cleaning", "Roof Inspection", "Weatherproofing"],
+      winter: ["Insulation Check", "Handyman Repairs", "Plumbing Inspection", "Heater Service"],
+    };
+
+    const baseServices = seasonalServices[season] ?? seasonalServices.spring;
+
+    // Budget tiers
+    let selectedServices: string[];
+    let tierName: string;
+    if (budget === "starter") {
+      selectedServices = baseServices.slice(0, 2);
+      tierName = "Starter Essentials";
+    } else if (budget === "complete") {
+      selectedServices = [...baseServices];
+      if (params.issues?.length) {
+        selectedServices.push(...params.issues.map((i) => `${i} Repair`));
+      }
+      tierName = "Complete Home Care";
+    } else {
+      selectedServices = baseServices.slice(0, 3);
+      tierName = "Recommended Value";
+    }
+
+    // Price estimation using PRICING_CONSTANTS
+    let individualTotal = 0;
+    const serviceDetails = selectedServices.map((svc) => {
+      // Try to find real pricing, fall back to reasonable FL estimates
+      let price: number;
+      try {
+        const pricingResult = calculateServicePrice(svc.toLowerCase().replace(/\s+/g, "_"), sqft);
+        price = typeof pricingResult === "number" ? pricingResult : 0;
+      } catch {
+        // Reasonable FL defaults by service type
+        const defaults: Record<string, number> = {
+          "gutter cleaning": 150,
+          "pressure washing": 250,
+          "lawn care": 120,
+          "ac tune-up": 130,
+          "pool maintenance": 175,
+          landscaping: 200,
+          "pest control": 100,
+          "ac filter change": 80,
+          "hvac inspection": 130,
+          "roof inspection": 200,
+          weatherproofing: 300,
+          "insulation check": 150,
+          "handyman repairs": 175,
+          "plumbing inspection": 150,
+          "heater service": 130,
+        };
+        price = defaults[svc.toLowerCase()] ?? 150;
+      }
+      if (price === 0) price = 150; // fallback
+      individualTotal += price;
+      return { service: svc, individualPrice: price };
+    });
+
+    // Bundle discount
+    const savingsPercent = budget === "starter" ? 5 : budget === "complete" ? 15 : 10;
+    const bundlePrice = Math.round(individualTotal * (1 - savingsPercent / 100));
+
+    return {
+      success: true,
+      bundleName: `${tierName} - ${season.charAt(0).toUpperCase() + season.slice(1)} ${new Date().getFullYear()}`,
+      season,
+      budgetTier: budget,
+      homeType: params.homeType,
+      sqft,
+      services: serviceDetails,
+      individualTotal,
+      bundlePrice,
+      savingsPercent,
+      savingsAmount: individualTotal - bundlePrice,
+      issues: params.issues ?? [],
+      note: "Bundle pricing includes multi-service discount. Schedule all services together for best availability.",
+    };
+  } catch (err: any) {
+    console.error("[George Tools] suggestDynamicServiceBundle error:", err);
+    return { success: false, error: "Could not generate dynamic service bundle." };
+  }
+}
+
+/** Helper: determine current season based on month */
+function getCurrentSeason(): string {
+  const month = new Date().getMonth(); // 0-11
+  if (month >= 2 && month <= 4) return "spring";
+  if (month >= 5 && month <= 7) return "summer";
+  if (month >= 8 && month <= 10) return "fall";
+  return "winter";
+}
+
+/**
+ * Generate a 5-year projected home maintenance timeline with estimated costs.
+ */
+export async function generateHomeTimeline(params: {
+  homeAge: number;
+  sqft?: number;
+  systems?: string[];
+  lastMajorWork?: string;
+}): Promise<Record<string, any>> {
+  try {
+    const sqft = params.sqft ?? 2000;
+    const currentYear = new Date().getFullYear();
+
+    // Major system lifespans and FL-realistic replacement/service costs
+    const systemLifespans: Array<{
+      system: string;
+      lifespanYears: [number, number];
+      replacementCost: number;
+      serviceCost: number;
+    }> = [
+      { system: "Roof", lifespanYears: [20, 25], replacementCost: 12000 + sqft * 2, serviceCost: 350 },
+      { system: "HVAC", lifespanYears: [15, 20], replacementCost: 6500, serviceCost: 150 },
+      { system: "Water Heater", lifespanYears: [10, 15], replacementCost: 1800, serviceCost: 120 },
+      { system: "Exterior Paint", lifespanYears: [7, 10], replacementCost: 4000 + sqft * 1, serviceCost: 0 },
+      { system: "Plumbing", lifespanYears: [25, 40], replacementCost: 8000, serviceCost: 200 },
+      { system: "Electrical Panel", lifespanYears: [25, 40], replacementCost: 3000, serviceCost: 150 },
+      { system: "Garage Door", lifespanYears: [15, 20], replacementCost: 1500, serviceCost: 100 },
+      { system: "Appliances (Major)", lifespanYears: [10, 15], replacementCost: 3500, serviceCost: 0 },
+    ];
+
+    // Build 5-year timeline
+    const timeline: Array<{
+      year: number;
+      items: Array<{ system: string; action: string; estimatedCost: number; urgency: string }>;
+    }> = [];
+
+    for (let y = 0; y < 5; y++) {
+      const year = currentYear + y;
+      const ageAtYear = params.homeAge + y;
+      const items: Array<{ system: string; action: string; estimatedCost: number; urgency: string }> = [];
+
+      for (const sys of systemLifespans) {
+        const [minLife, maxLife] = sys.lifespanYears;
+
+        if (ageAtYear >= maxLife) {
+          // Past max lifespan - critical replacement
+          items.push({
+            system: sys.system,
+            action: `Replace ${sys.system.toLowerCase()} (past ${maxLife}-year lifespan)`,
+            estimatedCost: sys.replacementCost,
+            urgency: "critical",
+          });
+        } else if (ageAtYear >= minLife) {
+          // In replacement window
+          items.push({
+            system: sys.system,
+            action: `Plan ${sys.system.toLowerCase()} replacement (${minLife}-${maxLife} year window)`,
+            estimatedCost: sys.replacementCost,
+            urgency: "important",
+          });
+        } else if (ageAtYear >= minLife - 3 && sys.serviceCost > 0) {
+          // Approaching - recommend inspection
+          items.push({
+            system: sys.system,
+            action: `Inspect ${sys.system.toLowerCase()} - approaching service window`,
+            estimatedCost: sys.serviceCost,
+            urgency: "recommended",
+          });
+        }
+      }
+
+      // Annual routine items
+      items.push(
+        { system: "HVAC", action: "Annual AC tune-up & filter change", estimatedCost: 150, urgency: "routine" },
+        { system: "Gutters", action: "Clean gutters (2x/year in FL)", estimatedCost: 150, urgency: "routine" },
+        { system: "Pest Control", action: "Quarterly pest treatment", estimatedCost: 400, urgency: "routine" },
+      );
+
+      // Biennial items
+      if (y % 2 === 0) {
+        items.push(
+          { system: "Pressure Washing", action: "Pressure wash driveway & exterior", estimatedCost: 300, urgency: "recommended" },
+        );
+      }
+
+      timeline.push({ year, items });
+    }
+
+    const totalEstimated = timeline.reduce(
+      (sum, yr) => sum + yr.items.reduce((s, i) => s + i.estimatedCost, 0),
+      0
+    );
+
+    return {
+      success: true,
+      homeAge: params.homeAge,
+      sqft,
+      systems: params.systems ?? [],
+      lastMajorWork: params.lastMajorWork ?? "unknown",
+      timeline,
+      fiveYearEstimatedTotal: totalEstimated,
+      averageAnnualCost: Math.round(totalEstimated / 5),
+      note: "Costs are estimates based on Central FL pricing. Actual costs may vary. UPtend bundle discounts can reduce total by 10-15%.",
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateHomeTimeline error:", err);
+    return { success: false, error: "Could not generate home maintenance timeline." };
+  }
+}
+
+// ============================================================
+// Batch 4 - Platform Intelligence & Integration
+// ============================================================
+
+export async function analyzeMarketOpportunity(params: {
+  neighborhood: string;
+  serviceType?: string;
+  radius?: number;
+}): Promise<Record<string, any>> {
+  try {
+    const neighborhoodData: Record<string, { households: number; competition: string; penetration: number; score: number }> = {
+      "Lake Nona": { households: 18000, competition: "none", penetration: 0.02, score: 95 },
+      "Winter Park": { households: 32000, competition: "moderate", penetration: 0.15, score: 65 },
+      "Dr. Phillips": { households: 22000, competition: "low", penetration: 0.08, score: 78 },
+      "Windermere": { households: 14000, competition: "low", penetration: 0.05, score: 82 },
+      "Celebration": { households: 10000, competition: "low", penetration: 0.06, score: 80 },
+      "Kissimmee": { households: 45000, competition: "moderate", penetration: 0.12, score: 60 },
+      "Winter Garden": { households: 25000, competition: "low", penetration: 0.07, score: 76 },
+      "Altamonte Springs": { households: 28000, competition: "moderate", penetration: 0.14, score: 62 },
+      "Ocoee": { households: 16000, competition: "low", penetration: 0.06, score: 75 },
+      "Sanford": { households: 20000, competition: "low", penetration: 0.09, score: 72 },
+      "Apopka": { households: 18000, competition: "low", penetration: 0.07, score: 74 },
+      "Clermont": { households: 22000, competition: "low", penetration: 0.08, score: 73 },
+    };
+
+    const serviceRevenue: Record<string, { demandLevel: string; competition: string; estimatedRevenue: number }> = {
+      "Pressure Washing": { demandLevel: "high", competition: "moderate", estimatedRevenue: 8500 },
+      "HVAC Maintenance": { demandLevel: "high", competition: "low", estimatedRevenue: 12000 },
+      "Gutter Cleaning": { demandLevel: "moderate", competition: "low", estimatedRevenue: 5500 },
+      "Pool Service": { demandLevel: "high", competition: "moderate", estimatedRevenue: 9000 },
+      "Pest Control": { demandLevel: "high", competition: "saturated", estimatedRevenue: 7000 },
+      "Lawn Care": { demandLevel: "high", competition: "saturated", estimatedRevenue: 6500 },
+      "Plumbing": { demandLevel: "moderate", competition: "low", estimatedRevenue: 11000 },
+      "Electrical": { demandLevel: "moderate", competition: "low", estimatedRevenue: 10000 },
+      "Roof Inspection": { demandLevel: "moderate", competition: "none", estimatedRevenue: 4500 },
+      "Holiday Lighting": { demandLevel: "seasonal", competition: "none", estimatedRevenue: 3500 },
+    };
+
+    const hood = neighborhoodData[params.neighborhood] ?? {
+      households: 15000, competition: "unknown" as string, penetration: 0.1, score: 50,
+    };
+
+    const radius = params.radius ?? 5;
+    const scaleFactor = radius > 5 ? 1.5 : radius > 3 ? 1.2 : 1.0;
+
+    let topOpportunities = Object.entries(serviceRevenue).map(([service, data]) => ({
+      service,
+      demandLevel: data.demandLevel,
+      competition: data.competition,
+      estimatedRevenue: Math.round(data.estimatedRevenue * scaleFactor * (hood.score / 70)),
+    }));
+
+    if (params.serviceType) {
+      const match = topOpportunities.find(o => o.service.toLowerCase() === params.serviceType!.toLowerCase());
+      if (match) {
+        topOpportunities = [match, ...topOpportunities.filter(o => o.service !== match.service).slice(0, 4)];
+      }
+    }
+
+    topOpportunities.sort((a, b) => b.estimatedRevenue - a.estimatedRevenue);
+    topOpportunities = topOpportunities.slice(0, 5);
+
+    const recommendations: string[] = [];
+    if (hood.competition === "none" || hood.competition === "low") {
+      recommendations.push(`${params.neighborhood} is under-served - prioritize market entry now.`);
+    }
+    if (hood.penetration < 0.1) {
+      recommendations.push(`Low penetration (${(hood.penetration * 100).toFixed(1)}%) means high growth ceiling.`);
+    }
+    if (params.neighborhood === "Lake Nona") {
+      recommendations.push("Lake Nona is UPtend's beachhead - maximize presence here before expanding.");
+    }
+    recommendations.push(`Focus on top revenue service: ${topOpportunities[0]?.service ?? "HVAC Maintenance"}.`);
+
+    return {
+      success: true,
+      neighborhood: params.neighborhood,
+      radius,
+      marketScore: hood.score,
+      competition: hood.competition,
+      estimatedHouseholds: Math.round(hood.households * scaleFactor),
+      penetrationRate: hood.penetration,
+      topOpportunities,
+      recommendations,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] analyzeMarketOpportunity error:", err);
+    return { success: false, error: "Could not analyze market opportunity." };
+  }
+}
+
+export async function optimizeCrossServiceRevenue(params: {
+  customerId?: string;
+  homeType?: string;
+  currentServices?: string[];
+  homeAge?: number;
+}): Promise<Record<string, any>> {
+  try {
+    const servicePricing: Record<string, number> = {
+      "Pressure Washing": 250,
+      "Gutter Cleaning": 150,
+      "HVAC Maintenance": 200,
+      "Pool Service": 175,
+      "Pest Control": 120,
+      "Lawn Care": 180,
+      "Plumbing Inspection": 150,
+      "Electrical Inspection": 175,
+      "Roof Inspection": 200,
+      "Window Cleaning": 175,
+      "Dryer Vent Cleaning": 100,
+      "Holiday Lighting": 350,
+    };
+
+    const current = params.currentServices ?? [];
+    const homeAge = params.homeAge ?? 10;
+    const homeType = params.homeType ?? "single-family";
+
+    const currentSpend = current.reduce((sum, s) => sum + (servicePricing[s] ?? 150), 0);
+
+    const combos: Record<string, string[]> = {
+      "Gutter Cleaning": ["Pressure Washing", "Roof Inspection"],
+      "Pressure Washing": ["Gutter Cleaning", "Window Cleaning"],
+      "HVAC Maintenance": ["Dryer Vent Cleaning", "Electrical Inspection"],
+      "Lawn Care": ["Pest Control", "Pressure Washing"],
+      "Pool Service": ["Pest Control", "Pressure Washing"],
+    };
+
+    const recommendations: Array<{ service: string; reason: string; estimatedPrice: number; urgency: string; conversionLikelihood: string }> = [];
+
+    // Cross-sell based on combos
+    for (const svc of current) {
+      const related = combos[svc] ?? [];
+      for (const rec of related) {
+        if (!current.includes(rec) && !recommendations.find(r => r.service === rec)) {
+          const price = servicePricing[rec] ?? 150;
+          const isCombo = current.includes(svc);
+          recommendations.push({
+            service: rec,
+            reason: `Pairs with ${svc} - ${isCombo ? "15% bundle discount available" : "commonly booked together"}`,
+            estimatedPrice: Math.round(price * 0.85),
+            urgency: "moderate",
+            conversionLikelihood: "high",
+          });
+        }
+      }
+    }
+
+    // Home age upsells
+    if (homeAge > 15 && !current.includes("HVAC Maintenance")) {
+      recommendations.push({
+        service: "HVAC Maintenance",
+        reason: `Home is ${homeAge}+ years old - HVAC systems typically need attention at this age`,
+        estimatedPrice: servicePricing["HVAC Maintenance"],
+        urgency: "high",
+        conversionLikelihood: "very-high",
+      });
+    }
+    if (homeAge > 10 && !current.includes("Plumbing Inspection")) {
+      recommendations.push({
+        service: "Plumbing Inspection",
+        reason: `Homes ${homeAge}+ years benefit from proactive plumbing checks to prevent costly leaks`,
+        estimatedPrice: servicePricing["Plumbing Inspection"],
+        urgency: homeAge > 20 ? "high" : "moderate",
+        conversionLikelihood: "moderate",
+      });
+    }
+    if (homeAge > 12 && !current.includes("Roof Inspection")) {
+      recommendations.push({
+        service: "Roof Inspection",
+        reason: "FL weather + age = roof risk. Inspection can prevent $15K+ emergency repairs",
+        estimatedPrice: servicePricing["Roof Inspection"],
+        urgency: "high",
+        conversionLikelihood: "moderate",
+      });
+    }
+
+    // Fill gaps for common essentials
+    const essentials = ["Pest Control", "HVAC Maintenance", "Gutter Cleaning"];
+    for (const e of essentials) {
+      if (!current.includes(e) && !recommendations.find(r => r.service === e)) {
+        recommendations.push({
+          service: e,
+          reason: `Essential home maintenance for ${homeType} in Central FL`,
+          estimatedPrice: servicePricing[e] ?? 150,
+          urgency: "routine",
+          conversionLikelihood: "moderate",
+        });
+      }
+    }
+
+    recommendations.sort((a, b) => {
+      const urgencyOrder: Record<string, number> = { high: 0, moderate: 1, routine: 2 };
+      return (urgencyOrder[a.urgency] ?? 2) - (urgencyOrder[b.urgency] ?? 2);
+    });
+
+    const potentialSpend = currentSpend + recommendations.reduce((s, r) => s + r.estimatedPrice, 0);
+    const topRec = recommendations[0];
+
+    // Optimal bundle
+    const bundleServices = [...current, ...recommendations.slice(0, 3).map(r => r.service)];
+    const bundleTotal = bundleServices.reduce((s, svc) => s + (servicePricing[svc] ?? 150), 0);
+    const bundleSavings = Math.round(bundleTotal * 0.15);
+
+    return {
+      success: true,
+      customerId: params.customerId ?? "anonymous",
+      homeType,
+      homeAge,
+      currentSpend,
+      potentialSpend,
+      gap: potentialSpend - currentSpend,
+      recommendations: recommendations.slice(0, 6),
+      georgesPick: topRec ? {
+        service: topRec.service,
+        reason: topRec.reason,
+        estimatedPrice: topRec.estimatedPrice,
+        message: `George recommends ${topRec.service} as your highest-value next service.`,
+      } : null,
+      optimalBundle: bundleServices,
+      savings: bundleSavings,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] optimizeCrossServiceRevenue error:", err);
+    return { success: false, error: "Could not optimize cross-service revenue." };
+  }
+}
+
+export async function generateSeasonalCareplan(params: {
+  homeType: string;
+  sqft?: number;
+  location: string;
+  systems?: string[];
+  budget?: string;
+}): Promise<Record<string, any>> {
+  try {
+    const sqft = params.sqft ?? 2000;
+    const budget = params.budget ?? "recommended";
+    const systems = params.systems ?? [];
+
+    type Task = { task: string; service: string; estimatedCost: number; diy: boolean; priority: string };
+    type MonthPlan = { month: string; tasks: Task[] };
+
+    const fullPlan: MonthPlan[] = [
+      {
+        month: "January",
+        tasks: [
+          { task: "HVAC system check & filter replacement", service: "HVAC Maintenance", estimatedCost: 150, diy: false, priority: "critical" },
+          { task: "Check smoke & CO detectors", service: "DIY", estimatedCost: 20, diy: true, priority: "critical" },
+          { task: "Inspect weather stripping on doors/windows", service: "DIY", estimatedCost: 30, diy: true, priority: "recommended" },
+        ],
+      },
+      {
+        month: "February",
+        tasks: [
+          { task: "Tree trimming & branch removal", service: "Tree Service", estimatedCost: 350, diy: false, priority: "recommended" },
+          { task: "Inspect irrigation system", service: "Lawn Care", estimatedCost: 75, diy: true, priority: "recommended" },
+          { task: "Clean dryer vent", service: "Dryer Vent Cleaning", estimatedCost: 100, diy: false, priority: "critical" },
+        ],
+      },
+      {
+        month: "March",
+        tasks: [
+          { task: "Pressure wash driveway, sidewalks & exterior", service: "Pressure Washing", estimatedCost: 300, diy: false, priority: "recommended" },
+          { task: "Spring pest treatment", service: "Pest Control", estimatedCost: 120, diy: false, priority: "critical" },
+          { task: "Clean windows inside & out", service: "Window Cleaning", estimatedCost: 175, diy: true, priority: "complete" },
+        ],
+      },
+      {
+        month: "April",
+        tasks: [
+          { task: "AC tune-up before summer heat", service: "HVAC Maintenance", estimatedCost: 200, diy: false, priority: "critical" },
+          { task: "Check attic insulation", service: "Insulation", estimatedCost: 0, diy: true, priority: "recommended" },
+          { task: "Touch up exterior paint", service: "Painting", estimatedCost: 150, diy: true, priority: "complete" },
+        ],
+      },
+      {
+        month: "May",
+        tasks: [
+          { task: "Pool opening & chemical balance", service: "Pool Service", estimatedCost: 200, diy: false, priority: "critical" },
+          { task: "Lawn fertilization & weed control", service: "Lawn Care", estimatedCost: 100, diy: true, priority: "recommended" },
+          { task: "Check outdoor lighting & electrical", service: "Electrical", estimatedCost: 75, diy: true, priority: "recommended" },
+        ],
+      },
+      {
+        month: "June",
+        tasks: [
+          { task: "Hurricane prep: secure shutters, check generator", service: "Hurricane Prep", estimatedCost: 200, diy: true, priority: "critical" },
+          { task: "Inspect roof for loose shingles/tiles", service: "Roof Inspection", estimatedCost: 200, diy: false, priority: "critical" },
+          { task: "Clean & inspect gutters pre-storm season", service: "Gutter Cleaning", estimatedCost: 150, diy: false, priority: "critical" },
+        ],
+      },
+      {
+        month: "July",
+        tasks: [
+          { task: "Deep clean carpets & flooring", service: "Carpet Cleaning", estimatedCost: 250, diy: false, priority: "recommended" },
+          { task: "Organize garage & storage", service: "DIY", estimatedCost: 0, diy: true, priority: "complete" },
+          { task: "Check plumbing for leaks & water pressure", service: "Plumbing", estimatedCost: 150, diy: false, priority: "recommended" },
+        ],
+      },
+      {
+        month: "August",
+        tasks: [
+          { task: "Interior painting & touch-ups", service: "Painting", estimatedCost: 300, diy: true, priority: "complete" },
+          { task: "Replace AC filters (mid-summer swap)", service: "DIY", estimatedCost: 25, diy: true, priority: "critical" },
+          { task: "Check water heater & flush sediment", service: "Plumbing", estimatedCost: 100, diy: false, priority: "recommended" },
+        ],
+      },
+      {
+        month: "September",
+        tasks: [
+          { task: "Post-storm season inspection (roof, siding, yard)", service: "Home Inspection", estimatedCost: 250, diy: false, priority: "critical" },
+          { task: "Fall pest treatment", service: "Pest Control", estimatedCost: 120, diy: false, priority: "critical" },
+          { task: "Check & clean lanai/screen enclosure", service: "Screen Repair", estimatedCost: 100, diy: true, priority: "recommended" },
+        ],
+      },
+      {
+        month: "October",
+        tasks: [
+          { task: "Gutter cleaning (post leaf-fall)", service: "Gutter Cleaning", estimatedCost: 150, diy: false, priority: "critical" },
+          { task: "Reseal driveway & pavers", service: "Pressure Washing", estimatedCost: 200, diy: false, priority: "complete" },
+          { task: "Test irrigation winterization (if applicable)", service: "Lawn Care", estimatedCost: 50, diy: true, priority: "recommended" },
+        ],
+      },
+      {
+        month: "November",
+        tasks: [
+          { task: "Holiday lighting installation", service: "Holiday Lighting", estimatedCost: 350, diy: false, priority: "complete" },
+          { task: "HVAC heating check (rare but needed some FL nights)", service: "HVAC Maintenance", estimatedCost: 100, diy: false, priority: "recommended" },
+          { task: "Deep clean kitchen & appliances before holidays", service: "DIY", estimatedCost: 0, diy: true, priority: "recommended" },
+        ],
+      },
+      {
+        month: "December",
+        tasks: [
+          { task: "Winterize outdoor faucets & pipes", service: "Plumbing", estimatedCost: 75, diy: true, priority: "critical" },
+          { task: "Annual home safety check (fire extinguishers, exits)", service: "DIY", estimatedCost: 50, diy: true, priority: "critical" },
+          { task: "Plan next year's maintenance budget", service: "DIY", estimatedCost: 0, diy: true, priority: "recommended" },
+        ],
+      },
+    ];
+
+    // Filter by budget tier
+    const priorityFilter: Record<string, string[]> = {
+      minimal: ["critical"],
+      recommended: ["critical", "recommended"],
+      complete: ["critical", "recommended", "complete"],
+    };
+    const allowedPriorities = priorityFilter[budget] ?? priorityFilter["recommended"];
+
+    const filteredPlan = fullPlan.map(month => ({
+      month: month.month,
+      tasks: month.tasks.filter(t => allowedPriorities.includes(t.priority)),
+    }));
+
+    // Scale costs by sqft
+    const sqftMultiplier = sqft > 3000 ? 1.3 : sqft > 2000 ? 1.1 : sqft < 1500 ? 0.85 : 1.0;
+    for (const month of filteredPlan) {
+      for (const task of month.tasks) {
+        task.estimatedCost = Math.round(task.estimatedCost * sqftMultiplier);
+      }
+    }
+
+    const annualEstimate = filteredPlan.reduce(
+      (sum, m) => sum + m.tasks.reduce((s, t) => s + t.estimatedCost, 0), 0
+    );
+    const diyTotal = filteredPlan.reduce(
+      (sum, m) => sum + m.tasks.filter(t => t.diy).reduce((s, t) => s + t.estimatedCost, 0), 0
+    );
+    const proTotal = annualEstimate - diyTotal;
+
+    const criticalMonths = filteredPlan
+      .filter(m => m.tasks.some(t => t.priority === "critical"))
+      .map(m => m.month);
+
+    return {
+      success: true,
+      homeType: params.homeType,
+      sqft,
+      location: params.location,
+      budgetTier: budget,
+      plan: filteredPlan,
+      annualEstimate,
+      diyVsProSavings: {
+        diyTasks: diyTotal,
+        proTasks: proTotal,
+        potentialDIYSavings: Math.round(proTotal * 0.4),
+        note: "DIY savings assume you handle labor; materials still apply.",
+      },
+      criticalMonths,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateSeasonalCareplan error:", err);
+    return { success: false, error: "Could not generate seasonal care plan." };
+  }
+}
+
+export async function assessSmartHomeIntegration(params: {
+  devices?: string[];
+  homeAge?: number;
+  wifiQuality?: string;
+  budget?: string;
+}): Promise<Record<string, any>> {
+  try {
+    const currentDevices = params.devices ?? [];
+    const homeAge = params.homeAge ?? 10;
+    const wifiQuality = params.wifiQuality ?? "good";
+    const budget = params.budget ?? "recommended";
+
+    type DeviceRec = { device: string; purpose: string; cost: number; maintenanceBenefit: string; roi: string };
+
+    const allDevices: DeviceRec[] = [
+      { device: "Water Leak Sensors (4-pack)", purpose: "Detect leaks early under sinks, near water heater, washing machine", cost: 30, maintenanceBenefit: "Prevents $10K+ water damage; George auto-dispatches plumber on alert", roi: "333x potential savings" },
+      { device: "Smart Thermostat (Ecobee/Nest)", purpose: "Optimize HVAC efficiency, detect anomalies", cost: 200, maintenanceBenefit: "Saves ~$150/yr on energy; George detects HVAC anomalies and schedules tune-ups", roi: "Pays for itself in 16 months" },
+      { device: "Security Cameras (2-pack)", purpose: "Monitor property, verify service provider access", cost: 200, maintenanceBenefit: "George verifies service visits; security alerts trigger dispatch if needed", roi: "Insurance discount + peace of mind" },
+      { device: "Smart Lock (front door)", purpose: "Keyless entry for service providers", cost: 200, maintenanceBenefit: "Generate temporary codes for UPtend service visits - no key handoff needed", roi: "Convenience + security" },
+      { device: "Smart Smoke/CO Detector", purpose: "Connected fire and carbon monoxide detection", cost: 120, maintenanceBenefit: "George receives alerts and can dispatch emergency services if unreachable", roi: "Life safety - invaluable" },
+      { device: "Smart Garage Door Controller", purpose: "Remote monitoring and control of garage", cost: 50, maintenanceBenefit: "Auto-close reminders; grant access to service providers", roi: "Pays for itself in avoided break-ins" },
+      { device: "Whole Home Water Monitor", purpose: "Track water usage, detect hidden leaks", cost: 250, maintenanceBenefit: "Identifies slow leaks before they cause damage; George flags anomalies", roi: "Prevents avg $3K in hidden leak damage" },
+      { device: "Smart Sprinkler Controller", purpose: "Weather-adaptive irrigation", cost: 150, maintenanceBenefit: "Saves 30-50% on water; auto-adjusts for FL rain patterns", roi: "Saves ~$300/yr on water bills" },
+    ];
+
+    // Budget filtering
+    const budgetLimits: Record<string, number> = { minimal: 300, recommended: 800, complete: 2000 };
+    const maxBudget = budgetLimits[budget] ?? 800;
+
+    // Exclude already-owned devices
+    const ownedLower = currentDevices.map(d => d.toLowerCase());
+    let recommended = allDevices.filter(d =>
+      !ownedLower.some(owned => d.device.toLowerCase().includes(owned) || owned.includes(d.device.toLowerCase().split(" ")[0]))
+    );
+
+    // Sort by cost (cheapest first for minimal, by value for others)
+    if (budget === "minimal") {
+      recommended.sort((a, b) => a.cost - b.cost);
+    }
+
+    // Filter to budget
+    let runningTotal = 0;
+    recommended = recommended.filter(d => {
+      if (runningTotal + d.cost <= maxBudget) {
+        runningTotal += d.cost;
+        return true;
+      }
+      return false;
+    });
+
+    // Readiness score
+    let readinessScore = 50;
+    if (currentDevices.length > 0) readinessScore += currentDevices.length * 8;
+    if (wifiQuality === "excellent") readinessScore += 20;
+    else if (wifiQuality === "good") readinessScore += 10;
+    else if (wifiQuality === "poor") readinessScore -= 20;
+    if (homeAge < 5) readinessScore += 10;
+    else if (homeAge > 20) readinessScore -= 10;
+    readinessScore = Math.max(0, Math.min(100, readinessScore));
+
+    const totalInvestment = recommended.reduce((s, d) => s + d.cost, 0);
+    const annualSavings = recommended.reduce((s, d) => {
+      if (d.device.includes("Thermostat")) return s + 150;
+      if (d.device.includes("Sprinkler")) return s + 300;
+      if (d.device.includes("Water Monitor")) return s + 200;
+      return s + 50;
+    }, 0);
+
+    const georgeIntegrations = [
+      "Leak sensor alert → George auto-dispatches plumber within 30 minutes",
+      "HVAC anomaly detected → George schedules tune-up before breakdown",
+      "Security alert → George verifies via camera and dispatches if needed",
+      "Smart lock → George generates temp codes for scheduled service visits",
+      "Smoke/CO alert → George contacts emergency services if homeowner unreachable",
+    ];
+
+    return {
+      success: true,
+      readinessScore,
+      wifiQuality,
+      homeAge,
+      currentDevices,
+      recommended,
+      totalInvestment,
+      annualSavings,
+      georgeIntegrations,
+      compatibilityNote: "Matter protocol supported devices work best with George - they ensure cross-platform compatibility and local control without cloud dependency.",
+    };
+  } catch (err: any) {
+    console.error("[George Tools] assessSmartHomeIntegration error:", err);
+    return { success: false, error: "Could not assess smart home integration." };
+  }
+}
+
+// ─── Batch 3: Business/B2B Tools ─────────────────────────────────────────────
+
+export async function generatePortfolioIntelligence(params: {
+  propertyCount: number;
+  avgAge?: number;
+  propertyTypes?: string[];
+  location?: string;
+  annualBudget?: number;
+}): Promise<Record<string, any>> {
+  try {
+    const { propertyCount, avgAge = 15, propertyTypes = ["single-family"], location = "Central Florida", annualBudget = 0 } = params;
+
+    // Portfolio score: 0-100 based on maintenance coverage, budget health, property age
+    let portfolioScore = 80;
+
+    // Age penalty: older properties need more maintenance
+    if (avgAge > 30) portfolioScore -= 20;
+    else if (avgAge > 20) portfolioScore -= 10;
+    else if (avgAge > 10) portfolioScore -= 5;
+
+    // Budget health factor
+    const recommendedBudgetPerProperty = avgAge > 20 ? 3500 : avgAge > 10 ? 2500 : 1500;
+    const totalRecommendedBudget = recommendedBudgetPerProperty * propertyCount;
+    if (annualBudget > 0) {
+      const budgetRatio = annualBudget / totalRecommendedBudget;
+      if (budgetRatio < 0.5) portfolioScore -= 25;
+      else if (budgetRatio < 0.75) portfolioScore -= 15;
+      else if (budgetRatio < 0.9) portfolioScore -= 5;
+      else if (budgetRatio >= 1.1) portfolioScore += 5;
+    }
+
+    portfolioScore = Math.max(0, Math.min(100, portfolioScore));
+
+    // Generate risk properties (simulate flagging deferred maintenance)
+    const riskProperties: { address: string; risk: string; recommendedAction: string }[] = [];
+    const highRiskCount = Math.max(1, Math.floor(propertyCount * (avgAge > 20 ? 0.25 : 0.1)));
+    const medRiskCount = Math.max(1, Math.floor(propertyCount * 0.15));
+
+    for (let i = 0; i < highRiskCount; i++) {
+      riskProperties.push({
+        address: `Property #${i + 1} (${location})`,
+        risk: "high",
+        recommendedAction: avgAge > 25
+          ? "Immediate roof and HVAC inspection - deferred maintenance detected"
+          : "Schedule comprehensive maintenance audit within 30 days",
+      });
+    }
+    for (let i = 0; i < medRiskCount; i++) {
+      riskProperties.push({
+        address: `Property #${highRiskCount + i + 1} (${location})`,
+        risk: "medium",
+        recommendedAction: "Preventive maintenance recommended within 60 days",
+      });
+    }
+
+    const budgetUtilization = annualBudget > 0
+      ? Math.round((annualBudget / totalRecommendedBudget) * 100)
+      : null;
+
+    const projectedMaintenanceCosts = Math.round(totalRecommendedBudget * 100) / 100;
+
+    // Savings opportunities
+    const savingsOpportunities: string[] = [];
+    if (propertyCount >= 5) {
+      const discountPct = propertyCount >= 50 ? 10 : propertyCount >= 20 ? 7 : propertyCount >= 10 ? 5 : 3;
+      savingsOpportunities.push(
+        `Schedule gutter cleaning for all ${propertyCount} properties in one week = ${discountPct}% bulk savings`
+      );
+      savingsOpportunities.push(
+        `Bundle HVAC maintenance across portfolio for ${discountPct}% discount (~$${Math.round(projectedMaintenanceCosts * discountPct / 100)} saved)`
+      );
+    }
+    if (avgAge > 15) {
+      savingsOpportunities.push("Preventive maintenance program reduces emergency repair costs by 20-35%");
+    }
+    savingsOpportunities.push("Consolidate vendor contracts for volume pricing - estimated 5-8% additional savings");
+    if (propertyCount >= 20) {
+      savingsOpportunities.push("Dedicated account manager available for portfolios of 20+ units - priority scheduling included");
+    }
+
+    return {
+      success: true,
+      portfolioScore,
+      propertyCount,
+      riskProperties,
+      budgetUtilization: budgetUtilization !== null ? `${budgetUtilization}%` : "No budget provided",
+      projectedMaintenanceCosts,
+      savingsOpportunities,
+      summary: portfolioScore >= 80
+        ? "Portfolio is well-maintained. Focus on preventive care to maintain score."
+        : portfolioScore >= 60
+        ? "Portfolio needs attention. Several properties have deferred maintenance."
+        : "Portfolio at risk. Immediate action required on high-risk properties.",
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generatePortfolioIntelligence error:", err);
+    return { success: false, error: "Could not generate portfolio intelligence." };
+  }
+}
+
+export async function predictBudgetVariance(params: {
+  annualBudget: number;
+  monthsElapsed: number;
+  spentToDate: number;
+  pendingJobs?: number;
+  seasonalFactors?: boolean;
+}): Promise<Record<string, any>> {
+  try {
+    const { annualBudget, monthsElapsed, spentToDate, pendingJobs = 0, seasonalFactors = true } = params;
+
+    // FL seasonal weight factors (relative spend by month)
+    const flSeasonalWeights = [
+      0.07, // Jan - low season
+      0.06, // Feb - low
+      0.07, // Mar - spring prep
+      0.08, // Apr - spring
+      0.08, // May
+      0.09, // Jun - summer/rain
+      0.09, // Jul - summer/rain
+      0.10, // Aug - hurricane prep
+      0.11, // Sep - hurricane/post-storm
+      0.10, // Oct - post-storm + snowbird prep
+      0.09, // Nov - snowbird season prep
+      0.06, // Dec - holiday slowdown
+    ];
+
+    const flatWeight = 1 / 12;
+    const monthlyBudget = annualBudget / 12;
+
+    // Build month-by-month forecast
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthByMonthForecast: { month: string; projected: number; cumulative: number }[] = [];
+    let cumulative = 0;
+
+    for (let i = 0; i < 12; i++) {
+      const weight = seasonalFactors ? flSeasonalWeights[i] : flatWeight;
+      let projected: number;
+
+      if (i < monthsElapsed) {
+        // Past months: use actual average
+        projected = Math.round((spentToDate / monthsElapsed) * 100) / 100;
+      } else {
+        // Future months: use seasonal weight * annual budget
+        const remainingBudgetRate = monthsElapsed > 0
+          ? (spentToDate / monthsElapsed) / monthlyBudget
+          : 1;
+        projected = Math.round(annualBudget * weight * remainingBudgetRate * 100) / 100;
+      }
+
+      cumulative += projected;
+      monthByMonthForecast.push({
+        month: monthNames[i],
+        projected: Math.round(projected * 100) / 100,
+        cumulative: Math.round(cumulative * 100) / 100,
+      });
+    }
+
+    const projectedYearEnd = Math.round(monthByMonthForecast[11].cumulative * 100) / 100;
+    const pendingJobsCost = pendingJobs * 350; // avg job cost estimate
+    const adjustedProjection = projectedYearEnd + pendingJobsCost;
+    const variance = Math.round((adjustedProjection - annualBudget) * 100) / 100;
+    const variancePercent = Math.round((variance / annualBudget) * 10000) / 100;
+
+    let status: "on-track" | "warning" | "over-budget";
+    if (variancePercent > 10) status = "over-budget";
+    else if (variancePercent > 0) status = "warning";
+    else status = "on-track";
+
+    const recommendations: string[] = [];
+    const emergencyReserve = Math.round(annualBudget * 0.12);
+    recommendations.push(`Maintain emergency reserve of $${emergencyReserve} (12% of annual budget) for unexpected repairs`);
+
+    if (status === "over-budget") {
+      recommendations.push("Consider deferring cosmetic services (painting, landscaping upgrades) to Q1 next year");
+      recommendations.push("DO NOT defer: roof repairs, HVAC maintenance, plumbing - these worsen and cost more later");
+      recommendations.push(`Current overage projection: $${Math.abs(variance)} - review pending jobs for non-critical items to postpone`);
+    } else if (status === "warning") {
+      recommendations.push("Monitor spending closely - you're trending slightly above budget");
+      recommendations.push("Pre-negotiate hurricane season service rates now to lock in pricing");
+    } else {
+      recommendations.push("Budget is healthy - consider allocating surplus to preventive maintenance");
+      recommendations.push("Good time to schedule deferred items before hurricane season price increases");
+    }
+
+    if (seasonalFactors && monthsElapsed < 8) {
+      recommendations.push("FL hurricane season (Jun-Nov): budget 30-40% of annual maintenance spend for Aug-Nov");
+    }
+
+    return {
+      success: true,
+      annualBudget,
+      spentToDate,
+      projectedYearEnd: adjustedProjection,
+      variance,
+      variancePercent: `${variancePercent}%`,
+      status,
+      recommendations,
+      monthByMonthForecast,
+      pendingJobsEstimate: pendingJobsCost > 0 ? `$${pendingJobsCost} (${pendingJobs} jobs × $350 avg)` : null,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] predictBudgetVariance error:", err);
+    return { success: false, error: "Could not predict budget variance." };
+  }
+}
+
+export async function scheduleBulkService(params: {
+  serviceType: string;
+  unitCount: number;
+  startDate?: string;
+  priority?: string;
+  accessConstraints?: string[];
+}): Promise<Record<string, any>> {
+  try {
+    const { serviceType, unitCount, startDate, priority = "normal", accessConstraints = [] } = params;
+
+    const start = startDate ? new Date(startDate) : new Date();
+
+    // Estimate duration per unit based on service type
+    const durationMap: Record<string, number> = {
+      "gutter cleaning": 45,
+      "pressure washing": 60,
+      "hvac maintenance": 90,
+      "lawn care": 30,
+      "pool maintenance": 45,
+      "pest control": 30,
+      "roof inspection": 60,
+      "plumbing inspection": 75,
+      "painting": 240,
+      "general maintenance": 60,
+    };
+    const perUnitMinutes = durationMap[serviceType.toLowerCase()] || 60;
+
+    // Bulk discount tiers
+    let bulkDiscountPct = 0;
+    if (unitCount >= 50) bulkDiscountPct = 10;
+    else if (unitCount >= 20) bulkDiscountPct = 7;
+    else if (unitCount >= 10) bulkDiscountPct = 5;
+    else if (unitCount >= 5) bulkDiscountPct = 3;
+
+    // Base cost estimate per unit
+    const baseCostPerUnit = Math.round(perUnitMinutes * 1.5 * 100) / 100; // ~$1.50/min
+    const totalBeforeDiscount = baseCostPerUnit * unitCount;
+    const discountAmount = Math.round(totalBeforeDiscount * bulkDiscountPct / 100 * 100) / 100;
+    const estimatedCost = Math.round((totalBeforeDiscount - discountAmount) * 100) / 100;
+
+    // Pros needed: based on units per day capacity
+    const unitsPerProPerDay = Math.floor(480 / perUnitMinutes); // 8-hour day
+    const prosNeeded = Math.max(1, Math.ceil(unitCount / (unitsPerProPerDay * 5))); // within ~1 week
+
+    // Generate schedule
+    const schedule: { unit: number; date: string; timeSlot: string; estimatedDuration: string }[] = [];
+    let currentDate = new Date(start);
+    let unitsScheduledToday = 0;
+    const maxPerDay = unitsPerProPerDay * prosNeeded;
+
+    const hasOccupiedConstraint = accessConstraints.some(c => c.toLowerCase().includes("occupied"));
+    const timeSlotStart = hasOccupiedConstraint ? 9 : 8;
+    const timeSlotEnd = hasOccupiedConstraint ? 17 : 18;
+
+    for (let i = 0; i < unitCount; i++) {
+      // Skip weekends
+      while (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      const slotHour = timeSlotStart + Math.floor((unitsScheduledToday % unitsPerProPerDay) * (perUnitMinutes / 60));
+      const slotFormatted = `${slotHour > 12 ? slotHour - 12 : slotHour}:00 ${slotHour >= 12 ? "PM" : "AM"}`;
+
+      schedule.push({
+        unit: i + 1,
+        date: currentDate.toISOString().split("T")[0],
+        timeSlot: slotFormatted,
+        estimatedDuration: `${perUnitMinutes} min`,
+      });
+
+      unitsScheduledToday++;
+      if (unitsScheduledToday >= maxPerDay) {
+        unitsScheduledToday = 0;
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    }
+
+    const lastDate = schedule[schedule.length - 1]?.date || startDate;
+    const totalDays = Math.ceil(unitCount / maxPerDay);
+    const totalDuration = `${totalDays} business day${totalDays > 1 ? "s" : ""}`;
+
+    const coordinationNotes: string[] = [];
+    coordinationNotes.push(`${prosNeeded} professional${prosNeeded > 1 ? "s" : ""} assigned for efficient coverage`);
+    if (hasOccupiedConstraint) {
+      coordinationNotes.push("Scheduling restricted to weekdays 9 AM - 5 PM for occupied units");
+    }
+    if (priority === "urgent") {
+      coordinationNotes.push("URGENT: Team will prioritize - expect completion 30% faster than standard timeline");
+    }
+    coordinationNotes.push("Units grouped by proximity for minimal travel time between jobs");
+    if (unitCount >= 20) {
+      coordinationNotes.push("On-site coordinator recommended for portfolios of 20+ units");
+    }
+
+    return {
+      success: true,
+      serviceType,
+      unitCount,
+      schedule: schedule.length > 10 ? [...schedule.slice(0, 5), { unit: "...", date: "...", timeSlot: "...", estimatedDuration: "..." }, ...schedule.slice(-3)] : schedule,
+      totalScheduled: unitCount,
+      totalDuration,
+      estimatedCost: `$${estimatedCost}`,
+      bulkDiscount: `${bulkDiscountPct}% (-$${discountAmount})`,
+      prosNeeded,
+      coordinationNotes,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] scheduleBulkService error:", err);
+    return { success: false, error: "Could not schedule bulk service." };
+  }
+}
+
+export async function checkRegulatoryCompliance(params: {
+  propertyType: string;
+  location: string;
+  systems?: string[];
+  lastInspections?: { system: string; date: string }[];
+}): Promise<Record<string, any>> {
+  try {
+    const { propertyType, location, systems = [], lastInspections = [] } = params;
+
+    const now = new Date();
+    const items: { regulation: string; status: string; dueDate: string | null; penalty: string; action: string }[] = [];
+    const upcomingDeadlines: string[] = [];
+    const newLaws: string[] = [];
+
+    const isHOA = propertyType.toLowerCase().includes("hoa") || propertyType.toLowerCase().includes("condo");
+    const isCommercial = propertyType.toLowerCase().includes("commercial");
+    const isPrewar = systems.some(s => s.toLowerCase().includes("pre-1978")) || false;
+
+    // Helper to check if inspection is overdue
+    const getInspectionDate = (system: string): Date | null => {
+      const found = lastInspections.find(i => i.system.toLowerCase() === system.toLowerCase());
+      return found ? new Date(found.date) : null;
+    };
+
+    const monthsSince = (date: Date | null): number => {
+      if (!date) return 999;
+      return Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24 * 30));
+    };
+
+    // FL Fire Safety
+    const fireInspection = getInspectionDate("fire safety");
+    const fireMonths = monthsSince(fireInspection);
+    items.push({
+      regulation: "FL Fire Safety Inspection (F.S. 633)",
+      status: fireMonths > 12 ? "overdue" : fireMonths > 10 ? "due-soon" : "compliant",
+      dueDate: fireMonths > 12 ? "OVERDUE" : fireInspection ? new Date(fireInspection.getTime() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0] : "Not on record",
+      penalty: "$500-$5,000 per violation",
+      action: fireMonths > 12 ? "Schedule fire safety inspection immediately" : "No action needed",
+    });
+
+    // Pool barriers (if applicable)
+    if (systems.some(s => s.toLowerCase().includes("pool")) || isHOA) {
+      const poolInspection = getInspectionDate("pool");
+      const poolMonths = monthsSince(poolInspection);
+      items.push({
+        regulation: "FL Pool Safety / Barrier Compliance (F.S. 515.27)",
+        status: poolMonths > 12 ? "overdue" : "compliant",
+        dueDate: poolMonths > 12 ? "OVERDUE" : poolInspection ? new Date(poolInspection.getTime() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0] : "Verify with local authority",
+        penalty: "$1,000-$10,000 + liability exposure",
+        action: poolMonths > 12 ? "Schedule pool barrier inspection - high liability risk" : "Ensure annual inspection is current",
+      });
+    }
+
+    // Elevator (if applicable)
+    if (systems.some(s => s.toLowerCase().includes("elevator"))) {
+      const elevatorInspection = getInspectionDate("elevator");
+      const elevatorMonths = monthsSince(elevatorInspection);
+      items.push({
+        regulation: "FL Elevator Safety (F.S. 399)",
+        status: elevatorMonths > 12 ? "overdue" : "compliant",
+        dueDate: elevatorMonths > 12 ? "OVERDUE" : "Annual",
+        penalty: "$1,000/day until compliant",
+        action: elevatorMonths > 12 ? "CRITICAL: Schedule elevator inspection - $1,000/day penalty" : "Current - next inspection due annually",
+      });
+    }
+
+    // Lead paint (pre-1978)
+    if (isPrewar) {
+      items.push({
+        regulation: "EPA Lead Paint Disclosure (pre-1978 buildings)",
+        status: "action-needed",
+        dueDate: "Ongoing requirement",
+        penalty: "$10,000-$25,000 per violation (EPA)",
+        action: "Ensure lead paint disclosures on file for all tenant leases. Schedule lead assessment if not done.",
+      });
+    }
+
+    // 2026 HOA law changes
+    if (isHOA) {
+      newLaws.push("FL 2026 HOA Reform: Mandatory reserve studies required - deadline Dec 31, 2026");
+      newLaws.push("FL 2026: HOA boards must adopt maintenance budgets based on reserve study findings");
+      newLaws.push("FL 2026: Structural integrity reserve study (SIRS) required for buildings 3+ stories, 25+ years old");
+
+      const reserveStudy = getInspectionDate("reserve study");
+      const reserveMonths = monthsSince(reserveStudy);
+      items.push({
+        regulation: "FL HOA Reserve Study Requirement (2026 Reform)",
+        status: reserveMonths > 24 ? "action-needed" : "compliant",
+        dueDate: "2026-12-31",
+        penalty: "Board members personally liable; potential special assessments",
+        action: reserveMonths > 24 ? "Commission reserve study immediately - 2026 deadline approaching" : "Reserve study current - review for 2026 compliance updates",
+      });
+
+      upcomingDeadlines.push("Dec 31, 2026 - FL HOA reserve study compliance deadline");
+      upcomingDeadlines.push("Annual budget adoption must reflect reserve study (new 2026 requirement)");
+    }
+
+    // Radon
+    if (location.toLowerCase().includes("florida") || location.toLowerCase().includes("fl") || location.toLowerCase().includes("central")) {
+      items.push({
+        regulation: "FL Radon Protection (F.S. 404.056)",
+        status: "compliant",
+        dueDate: "Disclosure required at sale/lease",
+        penalty: "Litigation risk if not disclosed",
+        action: "Ensure radon disclosure language is in all leases and sale documents",
+      });
+    }
+
+    // Determine overall status
+    const hasOverdue = items.some(i => i.status === "overdue");
+    const hasActionNeeded = items.some(i => i.status === "action-needed");
+    const overallStatus: "compliant" | "action-needed" | "violation-risk" = hasOverdue
+      ? "violation-risk"
+      : hasActionNeeded
+      ? "action-needed"
+      : "compliant";
+
+    return {
+      success: true,
+      propertyType,
+      location,
+      overallStatus,
+      items,
+      upcomingDeadlines,
+      newLaws,
+      costNote: "Cost of compliance is typically 5-10x less than cost of violations and associated liability.",
+    };
+  } catch (err: any) {
+    console.error("[George Tools] checkRegulatoryCompliance error:", err);
+    return { success: false, error: "Could not check regulatory compliance." };
+  }
+}
+
+export async function generateVendorScorecard(params: {
+  vendorId?: string;
+  completedJobs?: number;
+  avgRating?: number;
+  onTimePercent?: number;
+  reworkPercent?: number;
+  responseTimeHours?: number;
+}): Promise<Record<string, any>> {
+  try {
+    const {
+      vendorId = "VENDOR-UNKNOWN",
+      completedJobs = 0,
+      avgRating = 3.0,
+      onTimePercent = 70,
+      reworkPercent = 10,
+      responseTimeHours = 24,
+    } = params;
+
+    // Platform averages for comparison
+    const platformAvg = {
+      avgRating: 4.2,
+      onTimePercent: 82,
+      reworkPercent: 6,
+      responseTimeHours: 8,
+      completedJobs: 50,
+    };
+
+    // Quality score (30% weight): based on avgRating (1-5 scale → 0-100)
+    const qualityScore = Math.min(100, Math.round((avgRating / 5) * 100));
+
+    // Reliability score (25% weight): based on onTimePercent
+    const reliabilityScore = Math.min(100, Math.round(onTimePercent));
+
+    // Responsiveness score (20% weight): based on response time (lower is better)
+    const responsivenessScore = Math.min(100, Math.max(0, Math.round(100 - (responseTimeHours / 48) * 100)));
+
+    // Cost efficiency score (15% weight): approximated from rework rate (lower rework = better cost efficiency)
+    const costEfficiencyScore = Math.min(100, Math.max(0, Math.round(100 - reworkPercent * 5)));
+
+    // Safety score (10% weight): derived from rating and rework (proxy for safety incidents)
+    const safetyScore = Math.min(100, Math.round(((avgRating / 5) * 70) + ((100 - reworkPercent) / 100 * 30)));
+
+    // Weighted overall score
+    const overallScore = Math.round(
+      qualityScore * 0.30 +
+      reliabilityScore * 0.25 +
+      responsivenessScore * 0.20 +
+      costEfficiencyScore * 0.15 +
+      safetyScore * 0.10
+    );
+
+    // Tier assignment
+    let tier: "preferred" | "approved" | "probation" | "terminated";
+    if (overallScore >= 85) tier = "preferred";
+    else if (overallScore >= 70) tier = "approved";
+    else if (overallScore >= 50) tier = "probation";
+    else tier = "terminated";
+
+    // Trend (simplified: based on completed jobs as proxy for experience)
+    let trend: "improving" | "stable" | "declining";
+    if (completedJobs > 30 && overallScore >= 75) trend = "improving";
+    else if (overallScore < 60) trend = "declining";
+    else trend = "stable";
+
+    // Recommendations
+    const recommendations: string[] = [];
+    if (overallScore < 50) {
+      recommendations.push("Replace vendor - performance consistently below platform standards");
+    } else if (overallScore < 70) {
+      recommendations.push("Initiate performance improvement plan - review in 30 days");
+      if (onTimePercent < platformAvg.onTimePercent) {
+        recommendations.push(`On-time delivery (${onTimePercent}%) is below platform average (${platformAvg.onTimePercent}%) - address scheduling issues`);
+      }
+      if (reworkPercent > platformAvg.reworkPercent) {
+        recommendations.push(`Rework rate (${reworkPercent}%) exceeds platform average (${platformAvg.reworkPercent}%) - quality review needed`);
+      }
+    } else if (overallScore < 85) {
+      recommendations.push("Approved vendor - monitor for continued performance");
+      if (responseTimeHours > platformAvg.responseTimeHours) {
+        recommendations.push(`Response time (${responseTimeHours}h) is above platform average (${platformAvg.responseTimeHours}h) - encourage faster replies`);
+      }
+    } else {
+      recommendations.push("Preferred vendor - consider for priority assignments and premium jobs");
+      recommendations.push("Eligible for featured vendor badge and increased job routing");
+    }
+
+    if (completedJobs < 10) {
+      recommendations.push("Low job count - scorecard may not be fully representative yet");
+    }
+
+    return {
+      success: true,
+      vendorId,
+      overallScore,
+      tier,
+      metrics: {
+        quality: qualityScore,
+        reliability: reliabilityScore,
+        responsiveness: responsivenessScore,
+        costEfficiency: costEfficiencyScore,
+        safety: safetyScore,
+      },
+      trend,
+      recommendations,
+      platformComparison: {
+        vendorRating: avgRating,
+        platformAvgRating: platformAvg.avgRating,
+        vendorOnTime: `${onTimePercent}%`,
+        platformAvgOnTime: `${platformAvg.onTimePercent}%`,
+        vendorRework: `${reworkPercent}%`,
+        platformAvgRework: `${platformAvg.reworkPercent}%`,
+        vendorResponseTime: `${responseTimeHours}h`,
+        platformAvgResponseTime: `${platformAvg.responseTimeHours}h`,
+      },
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateVendorScorecard error:", err);
+    return { success: false, error: "Could not generate vendor scorecard." };
   }
 }

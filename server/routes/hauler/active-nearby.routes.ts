@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { pool } from "../../db";
 
 export function registerActiveNearbyRoutes(app: Express) {
-  // GET /api/find-pro?service=lawn_mowing — find pros by service type
+  // GET /api/find-pro?service=lawn_mowing - find pros by service type
   app.get("/api/find-pro", async (req, res) => {
     try {
       const { service } = req.query;
@@ -41,7 +41,7 @@ export function registerActiveNearbyRoutes(app: Express) {
   });
 
   // GET /api/pros/active-nearby?lat=X&lng=Y&radius=30
-  // Public endpoint — returns active pros for the "Pros Near You" landing section
+  // Public endpoint - returns active pros for the "Pros Near You" landing section
   app.get("/api/pros/active-nearby", async (req, res) => {
     try {
       const result = await pool.query(`
@@ -79,7 +79,7 @@ export function registerActiveNearbyRoutes(app: Express) {
       });
     } catch (error) {
       console.error("Active nearby error:", error);
-      // Return empty on error — frontend will show placeholders
+      // Return empty on error - frontend will show placeholders
       return res.json({ pros: [], totalOnline: 0 });
     }
   });

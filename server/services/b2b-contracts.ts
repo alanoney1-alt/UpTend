@@ -51,7 +51,7 @@ export async function generateServiceAgreement(
       businessAccountId,
       agreementType,
       status: "draft",
-      title: terms.title || `${agreementType.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())} — ${new Date().toLocaleDateString()}`,
+      title: terms.title || `${agreementType.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())} - ${new Date().toLocaleDateString()}`,
       terms: mergedTerms,
       startDate: terms.startDate ? new Date(terms.startDate) : undefined,
       endDate: terms.endDate ? new Date(terms.endDate) : undefined,

@@ -1,5 +1,5 @@
 /**
- * Content Batch Generator — produces ready-to-post content batches
+ * Content Batch Generator - produces ready-to-post content batches
  */
 
 import { mkdir, writeFile, readdir, readFile } from 'node:fs/promises';

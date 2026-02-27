@@ -1,5 +1,5 @@
 /**
- * Pro Tier Engine — AI-powered gamification system
+ * Pro Tier Engine - AI-powered gamification system
  * Bronze → Silver → Gold → Platinum → Diamond
  */
 
@@ -91,7 +91,7 @@ function checkAchievements(stats: ProStats, points: number): string[] {
 export function createProTierEngineRoutes(storage: DatabaseStorage) {
   const router = Router();
 
-  // GET /api/ai/pro/tier — current tier status
+  // GET /api/ai/pro/tier - current tier status
   router.get("/pro/tier", requireAuth, async (req, res) => {
     try {
       if ((req.user as any).role !== "hauler") {
@@ -120,7 +120,7 @@ export function createProTierEngineRoutes(storage: DatabaseStorage) {
     }
   });
 
-  // POST /api/ai/pro/tier/evaluate — AI evaluates performance
+  // POST /api/ai/pro/tier/evaluate - AI evaluates performance
   router.post("/pro/tier/evaluate", requireAuth, async (req, res) => {
     try {
       if ((req.user as any).role !== "hauler") {
@@ -176,7 +176,7 @@ export function createProTierEngineRoutes(storage: DatabaseStorage) {
     }
   });
 
-  // GET /api/ai/pro/tier/leaderboard — top pros (anonymized)
+  // GET /api/ai/pro/tier/leaderboard - top pros (anonymized)
   router.get("/pro/tier/leaderboard", requireAuth, async (req, res) => {
     try {
       const result = await db.execute(sql`
@@ -212,7 +212,7 @@ export function createProTierEngineRoutes(storage: DatabaseStorage) {
     }
   });
 
-  // POST /api/ai/pro/tier/achievements — check & award new achievements
+  // POST /api/ai/pro/tier/achievements - check & award new achievements
   router.post("/pro/tier/achievements", requireAuth, async (req, res) => {
     try {
       if ((req.user as any).role !== "hauler") {
@@ -236,10 +236,10 @@ export function createProTierEngineRoutes(storage: DatabaseStorage) {
         try {
           descriptions = JSON.parse(aiResult.content);
         } catch {
-          // fallback — no descriptions
+          // fallback - no descriptions
         }
       } catch {
-        // AI unavailable — just return badges
+        // AI unavailable - just return badges
       }
 
       res.json({

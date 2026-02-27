@@ -18,7 +18,7 @@ export function formatServiceType(type: string): string {
  */
 export function safeFormatDate(
   dateStr: string | null | undefined,
-  fallback = "—",
+  fallback = "-",
   options?: Intl.DateTimeFormatOptions,
 ): string {
   if (!dateStr) return fallback;

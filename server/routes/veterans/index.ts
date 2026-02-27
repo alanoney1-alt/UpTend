@@ -109,7 +109,7 @@ export function registerVeteranRoutes(app: Express) {
   registerCrud(app, "/api/veterans/mentorships", veteranMentorships, "mentorship");
   registerCrud(app, "/api/veterans/military-spouses", militarySpouseProfiles, "military spouse profile", { ownerField: "userId" });
 
-  // POST /api/veterans/upload-dd214 — upload DD-214 document
+  // POST /api/veterans/upload-dd214 - upload DD-214 document
   app.post("/api/veterans/upload-dd214", requireAuth, dd214Upload.single("dd214"), async (req: any, res) => {
     try {
       if (!req.file) {

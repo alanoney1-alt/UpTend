@@ -85,7 +85,7 @@ Return JSON:
   "paymentMethod": "visa|mastercard|cash|debit|amex|discover" or null,
   "rawText": "raw receipt text if readable"
 }`,
-    systemPrompt: "You are an expert receipt reader. Extract every item with maximum accuracy. Normalize prices to numbers. If brand/model aren't visible, return null. Be precise with item names — use the exact text from the receipt.",
+    systemPrompt: "You are an expert receipt reader. Extract every item with maximum accuracy. Normalize prices to numbers. If brand/model aren't visible, return null. Be precise with item names - use the exact text from the receipt.",
     jsonMode: true,
   });
 

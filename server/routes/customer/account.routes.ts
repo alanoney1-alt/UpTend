@@ -440,7 +440,7 @@ export function registerCustomerAccountRoutes(app: Express) {
     }
   });
 
-  // GET /api/customer/recent-services — last 5 completed services for claims section
+  // GET /api/customer/recent-services - last 5 completed services for claims section
   app.get("/api/customer/recent-services", isAuthenticated, async (req: any, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;

@@ -64,13 +64,13 @@ export class WebhookHandlers {
           console.log(`Unhandled webhook event type: ${event.type}`);
       }
     } catch (err: any) {
-      // Webhook handlers should NEVER throw — Stripe retries on 500
+      // Webhook handlers should NEVER throw - Stripe retries on 500
       console.error(`[WEBHOOK ERROR] Failed to handle ${event.type}:`, err.message, err.stack);
     }
   }
 
   /**
-   * payment_intent.succeeded — Update job payment status and send confirmation.
+   * payment_intent.succeeded - Update job payment status and send confirmation.
    * Covers card payments, 3DS confirmations, and BNPL completions.
    */
   private static async handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent): Promise<void> {
@@ -78,7 +78,7 @@ export class WebhookHandlers {
     console.log(`PaymentIntent ${paymentIntent.id} succeeded (jobId: ${jobId || 'unknown'})`);
 
     if (!jobId) {
-      // Could be a tip or adjustment — not all PIs have a jobId
+      // Could be a tip or adjustment - not all PIs have a jobId
       console.log(`PaymentIntent ${paymentIntent.id} succeeded but has no jobId metadata, skipping job update.`);
       return;
     }
@@ -134,7 +134,7 @@ export class WebhookHandlers {
   }
 
   /**
-   * payment_intent.payment_failed — Mark job payment as failed, notify customer.
+   * payment_intent.payment_failed - Mark job payment as failed, notify customer.
    * Covers 3DS failures, card declines, and BNPL rejections.
    */
   private static async handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent): Promise<void> {
@@ -185,12 +185,12 @@ export class WebhookHandlers {
   }
 
   /**
-   * account.updated — Sync Connect onboarding status to hauler_profiles.
+   * account.updated - Sync Connect onboarding status to hauler_profiles.
    * Fires whenever a Connected account's status changes (onboarding, verification, etc.)
    */
   private static async handleAccountUpdated(account: Stripe.Account): Promise<void> {
     const haulerId = account.metadata?.haulerId;
-    console.log(`[WEBHOOK] Account ${account.id} updated (haulerId: ${haulerId || 'unknown'}) — charges: ${account.charges_enabled}, payouts: ${account.payouts_enabled}`);
+    console.log(`[WEBHOOK] Account ${account.id} updated (haulerId: ${haulerId || 'unknown'}) - charges: ${account.charges_enabled}, payouts: ${account.payouts_enabled}`);
 
     if (!haulerId) {
       console.log(`[WEBHOOK] Account ${account.id} has no haulerId metadata, skipping.`);
@@ -213,7 +213,7 @@ export class WebhookHandlers {
   }
 
   /**
-   * charge.dispute.created — Log dispute, compile evidence, submit to Stripe, alert admin.
+   * charge.dispute.created - Log dispute, compile evidence, submit to Stripe, alert admin.
    */
   private static async handleDisputeCreated(dispute: Stripe.Dispute): Promise<void> {
     const amount = dispute.amount / 100;

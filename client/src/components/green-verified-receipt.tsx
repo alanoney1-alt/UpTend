@@ -114,7 +114,7 @@ export function GreenVerifiedReceipt({ serviceRequestId }: GreenVerifiedReceiptP
 
   return (
     <Card className="overflow-hidden" data-testid="card-green-verified-receipt">
-      <div className="bg-gradient-to-r from-[#3B1D5A] to-[#2a1340] p-6 text-white">
+      <div className="bg-gradient-to-r from-[#0f172a] to-[#0a0f1e] p-6 text-white">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-[#F47C20]/20 rounded-full">

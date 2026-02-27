@@ -59,7 +59,7 @@ export function registerPropertyValuationRoutes(app: Express) {
             const prop = Array.isArray(rcData) ? rcData[0] : rcData;
 
             if (prop && (prop.bedrooms || prop.squareFootage || prop.yearBuilt)) {
-              console.log(`[Property] RentCast found: ${prop.formattedAddress || address} — ${prop.bedrooms}bd/${prop.bathrooms}ba, ${prop.squareFootage}sqft, built ${prop.yearBuilt}`);
+              console.log(`[Property] RentCast found: ${prop.formattedAddress || address} - ${prop.bedrooms}bd/${prop.bathrooms}ba, ${prop.squareFootage}sqft, built ${prop.yearBuilt}`);
               
               const result = {
                 found: true,
@@ -131,7 +131,7 @@ export function registerPropertyValuationRoutes(app: Express) {
             const searchData = await homeListingRes.json();
             console.log(`[Property] Search API response:`, JSON.stringify(searchData, null, 2));
 
-            // Step 1: Extract ZPID from search results — only use exact address matches
+            // Step 1: Extract ZPID from search results - only use exact address matches
             if (searchData.success && searchData.results && searchData.results.length > 0) {
               // Only use results that are actual addresses (not regions/cities/zips)
               const addressResult = searchData.results.find((r: any) => 
@@ -271,7 +271,7 @@ export function registerPropertyValuationRoutes(app: Express) {
             console.log(`[Property] ⚠️ Using Census fallback for: ${address}`);
             console.log(`[Property] County: ${countyName}, address matched: ${match.matchedAddress}`);
 
-            // Census only gives us location — we don't have real property details
+            // Census only gives us location - we don't have real property details
             // Return what we know honestly and let the frontend handle editable fields
             return res.json({
               found: true,

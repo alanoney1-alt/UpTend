@@ -213,7 +213,7 @@ export default function BusinessConstruction() {
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <h3 className="font-semibold text-lg">{pl.project || pl.projectName || (pl.id?.length > 8 ? `Project ${pl.id.slice(0,6).toUpperCase()}` : `Project #${pl.id}`)}</h3>
-                      <p className="text-sm text-muted-foreground">{pl.createdBy || "—"} • Due {(() => { const d = new Date(pl.dueDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</p>
+                      <p className="text-sm text-muted-foreground">{pl.createdBy || "-"} • Due {(() => { const d = new Date(pl.dueDate); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</p>
                     </div>
                     <div className="text-right">
                       <StatusBadge status={pl.status} />
@@ -285,7 +285,7 @@ export default function BusinessConstruction() {
                       <TableCell>
                         {w.signed ? <CheckCircle className="w-5 h-5 text-green-500" /> : <XCircle className="w-5 h-5 text-red-400" />}
                       </TableCell>
-                      <TableCell>{w.signedAt ? new Date(w.signedAt).toLocaleDateString() : "—"}</TableCell>
+                      <TableCell>{w.signedAt ? new Date(w.signedAt).toLocaleDateString() : "-"}</TableCell>
                       <TableCell>
                         {w.signed ? (
                           <Button variant="ghost" size="sm"><Download className="w-4 h-4" /></Button>
@@ -323,7 +323,7 @@ export default function BusinessConstruction() {
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.project}</TableCell>
                       <TableCell>{p.permitType}</TableCell>
-                      <TableCell>{(() => { const d = new Date(p.applicationDate); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</TableCell>
+                      <TableCell>{(() => { const d = new Date(p.applicationDate); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</TableCell>
                       <TableCell>{p.inspectionDate ? new Date(p.inspectionDate).toLocaleDateString() : "TBD"}</TableCell>
                       <TableCell><StatusBadge status={p.status} /></TableCell>
                       <TableCell><Button variant="ghost" size="sm"><Eye className="w-4 h-4" /></Button></TableCell>

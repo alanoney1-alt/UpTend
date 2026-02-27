@@ -320,7 +320,7 @@ export default function BusinessProperties() {
                       <TableCell className="max-w-[200px] truncate">{wo.description}</TableCell>
                       <TableCell><PriorityBadge priority={wo.priority} /></TableCell>
                       <TableCell>{wo.assignedPro || <span className="text-muted-foreground italic">Unassigned</span>}</TableCell>
-                      <TableCell className="text-sm">{(() => { const d = new Date(wo.slaDeadline); return isNaN(d.getTime()) ? "—" : d.toLocaleString(); })()}</TableCell>
+                      <TableCell className="text-sm">{(() => { const d = new Date(wo.slaDeadline); return isNaN(d.getTime()) ? "-" : d.toLocaleString(); })()}</TableCell>
                       <TableCell><StatusBadge status={wo.status} /></TableCell>
                     </TableRow>
                   ))}
@@ -343,8 +343,8 @@ export default function BusinessProperties() {
                     <StatusBadge status={t.status} />
                   </div>
                   <div className="space-y-2 text-sm mb-3">
-                    <div className="flex justify-between"><span className="text-muted-foreground">Move-out:</span><span>{(() => { const d = new Date(t.moveOut); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Target Ready:</span><span>{(() => { const d = new Date(t.targetReady); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString(); })()}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Move-out:</span><span>{(() => { const d = new Date(t.moveOut); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Target Ready:</span><span>{(() => { const d = new Date(t.targetReady); return isNaN(d.getTime()) ? "-" : d.toLocaleDateString(); })()}</span></div>
                   </div>
                   <div className="mb-2">
                     <div className="flex justify-between text-sm mb-1">

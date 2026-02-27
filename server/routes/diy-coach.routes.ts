@@ -1,8 +1,8 @@
 /**
  * DIY Coach Routes
  *
- * POST /api/diy-coach/diagnose — get DIY disclaimer + coaching consent
- * POST /api/diy-coach/acknowledge — record disclaimer acknowledgment
+ * POST /api/diy-coach/diagnose - get DIY disclaimer + coaching consent
+ * POST /api/diy-coach/acknowledge - record disclaimer acknowledgment
  */
 
 import type { Express } from "express";
@@ -15,7 +15,7 @@ import {
 } from "../services/diy-coach.js";
 
 export function registerDiyCoachRoutes(app: Express) {
-  // POST /api/diy/diagnose — alias for /api/diy-coach/diagnose
+  // POST /api/diy/diagnose - alias for /api/diy-coach/diagnose
   app.post("/api/diy/diagnose", async (req, res) => {
     try {
       const { userId, conversationId, issueDescription, symptoms } = req.body;
@@ -30,7 +30,7 @@ export function registerDiyCoachRoutes(app: Express) {
           return res.json({
             disclaimerAcknowledged: true,
             issueDescription: desc,
-            message: `Let's diagnose: "${desc}". Describe the symptoms in detail — what do you see, hear, or smell?`,
+            message: `Let's diagnose: "${desc}". Describe the symptoms in detail - what do you see, hear, or smell?`,
           });
         }
       }
@@ -47,7 +47,7 @@ export function registerDiyCoachRoutes(app: Express) {
     }
   });
 
-  // POST /api/diy-coach/diagnose — start a DIY coaching session
+  // POST /api/diy-coach/diagnose - start a DIY coaching session
   app.post("/api/diy-coach/diagnose", async (req, res) => {
     try {
       const { userId, conversationId, issueDescription } = req.body;
@@ -65,7 +65,7 @@ export function registerDiyCoachRoutes(app: Express) {
           return res.json({
             disclaimerAcknowledged: true,
             issueDescription,
-            message: `Let's diagnose: "${issueDescription}". Describe the symptoms in detail — what do you see, hear, or smell?`,
+            message: `Let's diagnose: "${issueDescription}". Describe the symptoms in detail - what do you see, hear, or smell?`,
           });
         }
       }
@@ -84,7 +84,7 @@ export function registerDiyCoachRoutes(app: Express) {
     }
   });
 
-  // POST /api/diy-coach/acknowledge — record disclaimer acknowledgment
+  // POST /api/diy-coach/acknowledge - record disclaimer acknowledgment
   app.post("/api/diy-coach/acknowledge", async (req, res) => {
     try {
       const { userId, conversationId, response } = req.body;
@@ -107,7 +107,7 @@ export function registerDiyCoachRoutes(app: Express) {
         return res.json({
           acknowledged: true,
           wantsPro: false,
-          message: "Great! Now describe the issue in detail — what do you see, hear, or smell?",
+          message: "Great! Now describe the issue in detail - what do you see, hear, or smell?",
         });
       }
 

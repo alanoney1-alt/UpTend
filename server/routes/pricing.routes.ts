@@ -1,11 +1,11 @@
 /**
  * Centralized Pricing API Routes
  *
- * GET  /api/pricing              — full price menu
- * GET  /api/pricing/quote        — get a quote (simple GET lookup)
- * GET  /api/pricing/:serviceType — specific service pricing
- * POST /api/pricing/quote        — get a quote with options
- * POST /api/pricing/bundle       — calculate bundle discount
+ * GET  /api/pricing              - full price menu
+ * GET  /api/pricing/quote        - get a quote (simple GET lookup)
+ * GET  /api/pricing/:serviceType - specific service pricing
+ * POST /api/pricing/quote        - get a quote with options
+ * POST /api/pricing/bundle       - calculate bundle discount
  */
 
 import type { Express, Request, Response } from "express";
@@ -18,7 +18,7 @@ import {
 } from "../services/pricing-engine.js";
 
 export function registerCentralizedPricingRoutes(app: Express) {
-  // Service catalog alias — /api/pricing/services returns same as /api/pricing
+  // Service catalog alias - /api/pricing/services returns same as /api/pricing
   app.get("/api/pricing/services", async (_req: Request, res: Response) => {
     try {
       const menu = await getAllPricing();
@@ -40,7 +40,7 @@ export function registerCentralizedPricingRoutes(app: Express) {
     }
   });
 
-  // Get a quote with options (GET for simple lookups — must be before /:serviceType)
+  // Get a quote with options (GET for simple lookups - must be before /:serviceType)
   app.get("/api/pricing/quote", async (req: Request, res: Response) => {
     try {
       const serviceType = (req.query.service || req.query.serviceType) as string;

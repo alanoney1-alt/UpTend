@@ -2,7 +2,7 @@
  * Retailer Connection Service
  *
  * Manages connections to retail loyalty accounts (Lowe's, Home Depot, etc.)
- * OAuth keys to be added later — structure ready.
+ * OAuth keys to be added later - structure ready.
  */
 
 import { pool } from "../db.js";
@@ -17,7 +17,7 @@ const RETAILER_INFO: Record<Retailer, { name: string; oauthAvailable: boolean; l
 };
 
 /**
- * Connect a retailer account — explains what connecting does, initiates flow
+ * Connect a retailer account - explains what connecting does, initiates flow
  */
 export async function connectRetailer(
   customerId: string,
@@ -28,7 +28,7 @@ export async function connectRetailer(
     return { success: false, message: `Unknown retailer: ${retailer}` };
   }
 
-  // For now, create a pending connection — OAuth to be implemented per retailer
+  // For now, create a pending connection - OAuth to be implemented per retailer
   await pool.query(
     `INSERT INTO retailer_connections (customer_id, retailer, connection_type, status)
      VALUES ($1, $2, 'loyalty_account', 'connected')

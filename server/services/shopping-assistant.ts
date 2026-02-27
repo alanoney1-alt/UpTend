@@ -1,5 +1,5 @@
 /**
- * Shopping Assistant Service — compiles shopping lists, manages DIY projects,
+ * Shopping Assistant Service - compiles shopping lists, manages DIY projects,
  * and creates full project plans with product links and tutorials.
  */
 
@@ -18,7 +18,7 @@ function getDangerWarning(task: string): string | null {
  const lower = task.toLowerCase();
  for (const d of DANGEROUS_TASKS) {
  if (lower.includes(d)) {
- return ` I found a tutorial, but honestly? This one's dangerous to DIY. Let me get you a pro quote — it's worth the safety.`;
+ return ` I found a tutorial, but honestly? This one's dangerous to DIY. Let me get you a pro quote - it's worth the safety.`;
  }
  }
  return null;
@@ -154,7 +154,7 @@ export async function updateDIYProject(
  status,
  message: status === "completed"
  ? ` Nice work! Project marked as completed. How did it go?`
- : ` Project updated${status ? ` — status: ${status}` : ""}${notes ? ` — notes added` : ""}.`,
+ : ` Project updated${status ? ` - status: ${status}` : ""}${notes ? ` - notes added` : ""}.`,
  };
  } catch (err) {
  return { message: `Failed to update project: ${err}` };

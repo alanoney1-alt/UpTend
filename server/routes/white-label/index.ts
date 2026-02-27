@@ -28,7 +28,7 @@ export function whiteLabelMiddleware() {
         };
       }
     } catch (err) {
-      // Non-fatal — proceed without branding
+      // Non-fatal - proceed without branding
       console.error("White-label middleware error:", err);
     }
     next();
@@ -36,7 +36,7 @@ export function whiteLabelMiddleware() {
 }
 
 export function registerWhiteLabelRoutes(app: Express) {
-  // GET /api/white-label/config/:clientId — returns white label config
+  // GET /api/white-label/config/:clientId - returns white label config
   app.get("/api/white-label/config/:clientId", async (req: Request, res: Response) => {
     try {
       const { clientId } = req.params;
@@ -54,7 +54,7 @@ export function registerWhiteLabelRoutes(app: Express) {
     }
   });
 
-  // GET /api/white-label/branding — returns current request's branding (from middleware)
+  // GET /api/white-label/branding - returns current request's branding (from middleware)
   app.get("/api/white-label/branding", (req: Request, res: Response) => {
     const branding = (req as any).whiteLabel || null;
     res.json({ branding });

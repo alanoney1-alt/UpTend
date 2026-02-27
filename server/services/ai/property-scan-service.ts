@@ -30,7 +30,7 @@ export interface PropertyData {
 const RENTCAST_API_KEY = process.env.RENTCAST_API_KEY || "";
 const RENTCAST_BASE = "https://api.rentcast.io/v1";
 
-// Simple in-memory cache (30 min TTL — RentCast has limited free calls)
+// Simple in-memory cache (30 min TTL - RentCast has limited free calls)
 const cache = new Map<string, { data: PropertyData; ts: number }>();
 const CACHE_TTL = 30 * 60 * 1000;
 
@@ -114,7 +114,7 @@ async function fetchFromRentCast(address: string): Promise<RentCastProperty | nu
 // ─── Main Export ─────────────────────────────────────────────────────────────
 
 /**
- * Get property data — tries RentCast first, falls back to estimation
+ * Get property data - tries RentCast first, falls back to estimation
  */
 export async function getPropertyDataAsync(address: string): Promise<PropertyData> {
   const cacheKey = address.toLowerCase().trim();
@@ -154,7 +154,7 @@ export async function getPropertyDataAsync(address: string): Promise<PropertyDat
     return result;
   }
 
-  // No match — return address-only and let George ask for details
+  // No match - return address-only and let George ask for details
   return {
     address,
     homeValueEstimate: 0,
@@ -175,7 +175,7 @@ export async function getPropertyDataAsync(address: string): Promise<PropertyDat
 }
 
 /**
- * Synchronous fallback — deterministic estimation based on address hash
+ * Synchronous fallback - deterministic estimation based on address hash
  */
 export function getPropertyData(address: string): PropertyData {
   return getPropertyDataFallback(address);

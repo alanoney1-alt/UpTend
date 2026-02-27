@@ -1,8 +1,8 @@
 /**
  * Fleet Tracking Routes
  * 
- * POST /api/fleet/location  — pro posts their lat/lng
- * GET  /api/fleet/locations — dispatcher gets all active pro locations
+ * POST /api/fleet/location  - pro posts their lat/lng
+ * GET  /api/fleet/locations - dispatcher gets all active pro locations
  */
 
 import type { Express } from "express";
@@ -22,7 +22,7 @@ const postLocationSchema = z.object({
 });
 
 export function registerFleetRoutes(app: Express) {
-  // POST /api/fleet/location — pro posts their current position
+  // POST /api/fleet/location - pro posts their current position
   app.post("/api/fleet/location", requireAuth, async (req, res) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;
@@ -54,7 +54,7 @@ export function registerFleetRoutes(app: Express) {
     }
   });
 
-  // GET /api/fleet/locations — get all active pro locations (last 30 min)
+  // GET /api/fleet/locations - get all active pro locations (last 30 min)
   app.get("/api/fleet/locations", requireAuth, async (req, res) => {
     try {
       const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();

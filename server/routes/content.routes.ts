@@ -1,5 +1,5 @@
 /**
- * Content Pipeline API Routes — admin-only
+ * Content Pipeline API Routes - admin-only
  */
 
 import { type Express, type Request, type Response } from 'express';
@@ -9,7 +9,7 @@ export function registerContentRoutes(app: Express) {
   // Admin-only: generate a content batch
   app.get('/api/content/generate-batch', async (req: Request, res: Response) => {
     try {
-      // Basic admin check — in production, use proper auth middleware
+      // Basic admin check - in production, use proper auth middleware
       if (!req.isAuthenticated?.() && !req.headers['x-admin-key']) {
         // Allow in development
         if (process.env.NODE_ENV === 'production') {

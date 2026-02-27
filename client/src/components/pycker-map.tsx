@@ -49,8 +49,8 @@ type PyckerMapProps = ProMapProps;
 
 const customerIcon = new L.Icon({
   iconUrl: "data:image/svg+xml;base64," + btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3B1D5A" width="32" height="32">
-      <circle cx="12" cy="12" r="10" fill="#3B1D5A" stroke="white" stroke-width="2"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0f172a" width="32" height="32">
+      <circle cx="12" cy="12" r="10" fill="#0f172a" stroke="white" stroke-width="2"/>
       <circle cx="12" cy="12" r="4" fill="white"/>
     </svg>
   `),
@@ -211,8 +211,8 @@ export function ProMap({
                 center={[customerLocation.lat, customerLocation.lng]}
                 radius={radiusMeters}
                 pathOptions={{
-                  color: "#3B1D5A",
-                  fillColor: "#3B1D5A",
+                  color: "#0f172a",
+                  fillColor: "#0f172a",
                   fillOpacity: 0.1,
                   weight: 2,
                   dashArray: "5, 5",

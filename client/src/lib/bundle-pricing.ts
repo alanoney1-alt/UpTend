@@ -13,8 +13,8 @@ export interface ServiceTypeConfig {
 
 // Starting prices: Junk Removal $99 (min load), Garage Cleanout $299 (small), Truck Unloading $80/hr per Pro, Moving Labor $80/hr per Pro
 export const SERVICE_STARTING_PRICES: Record<string, number> = {
-  home_consultation: 0, // Home DNA Scan Standard — FREE (lead gen)
-  home_consultation_aerial: 0, // Home DNA Scan Aerial — FREE (lead gen)
+  home_consultation: 0, // Home DNA Scan Standard - FREE (lead gen)
+  home_consultation_aerial: 0, // Home DNA Scan Aerial - FREE (lead gen)
   handyman: 75, // Handyman Services $75/hr, 1hr minimum
   junk_removal: 99,
   garage_cleanout: 299,
@@ -62,7 +62,7 @@ export const DWELLSCAN_TIERS: DwellScanTier[] = [
     name: "Aerial",
     brandedName: "Home DNA Scan Aerial",
     price: 0,
-    description: "Free premium scan — everything in Standard plus drone-powered roof, gutter, and exterior aerial scan. Includes $25 credit toward your next booking.",
+    description: "Free premium scan - everything in Standard plus drone-powered roof, gutter, and exterior aerial scan. Includes $25 credit toward your next booking.",
     features: [
       "Everything in Standard PLUS:",
       "FAA Part 107 certified drone pilot flyover",

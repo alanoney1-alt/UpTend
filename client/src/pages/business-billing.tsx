@@ -158,7 +158,7 @@ export default function BusinessBilling() {
               <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
                 <div><span className="text-gray-500">Jobs:</span> {runDetail.jobCount}</div>
                 <div><span className="text-gray-500">Total:</span> ${runDetail.totalAmount.toFixed(2)}</div>
-                <div><span className="text-gray-500">Processed:</span> {runDetail.processedAt ? formatDate(runDetail.processedAt) : "—"}</div>
+                <div><span className="text-gray-500">Processed:</span> {runDetail.processedAt ? formatDate(runDetail.processedAt) : "-"}</div>
               </div>
               {runDetail.errorMessage && (
                 <div className="bg-red-50 text-red-700 p-3 rounded mb-4 text-sm flex items-center gap-2">
@@ -181,7 +181,7 @@ export default function BusinessBilling() {
                     <tr key={li.id} className="border-b">
                       <td className="p-2">{li.propertyAddress}</td>
                       <td className="p-2">{formatServiceType(li.serviceType)}</td>
-                      <td className="p-2">{li.proName || "—"}</td>
+                      <td className="p-2">{li.proName || "-"}</td>
                       <td className="p-2">{formatDate(li.completedAt)}</td>
                       <td className="p-2">{li.customerSignoffAt ? " Signed" : " Auto"}</td>
                       <td className="p-2 text-right font-medium">${li.totalCharge.toFixed(2)}</td>
@@ -241,7 +241,7 @@ export default function BusinessBilling() {
                           <tr key={j.id} className="border-b">
                             <td className="p-2">{j.propertyAddress}</td>
                             <td className="p-2">{formatServiceType(j.serviceType)}</td>
-                            <td className="p-2">{j.proName || "—"}</td>
+                            <td className="p-2">{j.proName || "-"}</td>
                             <td className="p-2">{formatDate(j.completedAt)}</td>
                             <td className="p-2 text-right font-medium">${j.totalCharge.toFixed(2)}</td>
                           </tr>

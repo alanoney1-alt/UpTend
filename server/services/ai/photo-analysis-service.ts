@@ -7,7 +7,7 @@
  * - Quality Assessment (job photo documentation review)
  *
  * NOW POWERED BY OpenAI GPT-5.2 for maximum image analysis accuracy.
- * (Previously used Claude — switched for better object detection & counting)
+ * (Previously used Claude - switched for better object detection & counting)
  */
 
 import { analyzeForQuote, assessJobPhotos } from "./openai-vision-client";

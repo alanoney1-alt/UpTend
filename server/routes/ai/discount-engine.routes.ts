@@ -4,9 +4,9 @@
  * AI-powered service bundle suggestions and smart discount calculations.
  *
  * Endpoints:
- * - POST /api/ai/bundles/suggest — Suggest complementary service bundles
- * - POST /api/ai/bundles/calculate — Calculate bundle pricing
- * - GET  /api/ai/bundles/popular — Popular bundles
+ * - POST /api/ai/bundles/suggest - Suggest complementary service bundles
+ * - POST /api/ai/bundles/calculate - Calculate bundle pricing
+ * - GET  /api/ai/bundles/popular - Popular bundles
  */
 
 import { Router } from "express";

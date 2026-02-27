@@ -216,7 +216,7 @@ const CONTEXTUAL_ADDITIONS: Record<string, Array<{ keywords: string[]; items: st
     { keywords: ["wall", "drywall", "partition"], items: ["Drywall saw", "Stud finder", "Utility knife for scoring"] },
     { keywords: ["deck", "wood", "fence"], items: ["Circular saw", "Cat's paw nail puller", "Sawzall with wood blades"] },
     { keywords: ["concrete", "block", "masonry"], items: ["Rotary hammer drill", "Masonry chisel set", "Concrete saw or grinder"] },
-    { keywords: ["asbestos", "old", "pre-1980"], items: ["WARNING: Potential asbestos — professional abatement assessment required before demolition", "N100 respirator minimum", "Disposable coveralls"] },
+    { keywords: ["asbestos", "old", "pre-1980"], items: ["WARNING: Potential asbestos - professional abatement assessment required before demolition", "N100 respirator minimum", "Disposable coveralls"] },
   ],
 };
 

@@ -30,7 +30,7 @@ export const SERVICES = {
         name: 'Home DNA Scan Aerial',
         price: 0,
         proPayout: 50, // $50 FLAT payout for ALL Home DNA Scan tiers (paid by UpTend)
-        description: 'Free — everything in Standard plus drone-powered roof, gutter, and exterior aerial scan',
+        description: 'Free - everything in Standard plus drone-powered roof, gutter, and exterior aerial scan',
         includes: [
           'Everything in Home DNA Scan Standard',
           'FAA Part 107 certified drone flyover',
@@ -99,7 +99,7 @@ export const SERVICES = {
     subTypes: {
       furniture_moving: { name: 'Furniture Moving', price: 80, unit: 'per hour per Pro', description: 'In-home or local furniture moving with blankets & straps' },
       truck_unloading: { name: 'Truck/Pod Unloading', price: 80, unit: 'per hour per Pro', description: 'Unload your rental truck, pod, or trailer' },
-      general_labor: { name: 'General Labor', price: 80, unit: 'per hour per Pro', description: 'Loading, unloading, rearranging — flexible muscle on demand' },
+      general_labor: { name: 'General Labor', price: 80, unit: 'per hour per Pro', description: 'Loading, unloading, rearranging - flexible muscle on demand' },
     },
   },
   home_cleaning: {
@@ -111,7 +111,7 @@ export const SERVICES = {
     priceUnit: 'dynamic', // Flag that this uses the pricing engine
     pricingEngine: 'polishup_calculator',
     tagline: 'From chaos to calm.',
-    description: 'Professional home cleaning — standard, deep, or move-out. Price based on your home size and clean type.',
+    description: 'Professional home cleaning - standard, deep, or move-out. Price based on your home size and clean type.',
     cleanTypes: ['standard', 'deep', 'move_out'],
   },
   carpet_cleaning: {

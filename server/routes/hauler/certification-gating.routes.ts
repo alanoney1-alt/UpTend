@@ -54,7 +54,7 @@ export function registerCertificationGatingRoutes(app: Express) {
       for (const job of allJobs) {
         const required = getRequiredCerts(job.service_type, job.account_type);
         if (required.length === 0) {
-          // Consumer job — no cert needed
+          // Consumer job - no cert needed
           visibleJobs.push(job);
         } else {
           const missing = required.filter((r: string) => !proCerts.includes(r));

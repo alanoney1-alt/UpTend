@@ -5,7 +5,7 @@ import { calculateTenureBonus } from "../../services/loyalty-engine.js";
 import { LOYALTY_TIER_CONFIG } from "@shared/schema";
 
 export function registerLoyaltyRoutes(app: Express) {
-  // GET /api/loyalty/status — loyalty program info (must be before /:userId)
+  // GET /api/loyalty/status - loyalty program info (must be before /:userId)
   app.get("/api/loyalty/status", (_req, res) => {
     res.json({
       programName: "OpenClaw Rewards",

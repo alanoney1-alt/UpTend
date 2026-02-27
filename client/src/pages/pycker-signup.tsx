@@ -2130,7 +2130,7 @@ export default function PyckerSignup() {
                       {idPhotoUrl ? <span className="text-green-600"> Uploaded</span> : <span className="text-red-600">Missing</span>}
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Driver's License:</span> {form.getValues("driversLicense") || "—"}
+                      <span className="text-muted-foreground">Driver's License:</span> {form.getValues("driversLicense") || "-"}
                     </div>
                     <div>
                       <span className="text-muted-foreground">GL Insurance:</span>{" "}

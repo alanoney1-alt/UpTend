@@ -1,7 +1,7 @@
 /**
  * Pro Goal Tracker Service
  * Earnings goals, milestones, progress tracking, AI-suggested goals
- * Pros are 1099 independent contractors — earnings/payouts only
+ * Pros are 1099 independent contractors - earnings/payouts only
  */
 
 import { pool } from "../db.js";
@@ -107,7 +107,7 @@ export async function getGoalProgress(proId: string): Promise<object> {
  return {
  goals: results,
  message: results.map(g =>
- `${g.goalType}: $${g.currentAmount.toFixed(0)}/$${g.targetAmount.toFixed(0)} (${g.progressPercent}%) ${g.progressBar} — ${g.pace === "ahead" ? " Ahead of pace!" : g.pace === "behind" ? ` Need ~$${g.dailyNeeded}/day` : " On track"}`
+ `${g.goalType}: $${g.currentAmount.toFixed(0)}/$${g.targetAmount.toFixed(0)} (${g.progressPercent}%) ${g.progressBar} - ${g.pace === "ahead" ? " Ahead of pace!" : g.pace === "behind" ? ` Need ~$${g.dailyNeeded}/day` : " On track"}`
  ).join("\n"),
  };
 }
@@ -161,7 +161,7 @@ export async function checkMilestones(proId: string): Promise<object> {
  return {
  milestonesHit: notifications.length,
  notifications,
- message: notifications.length > 0 ? notifications.join("\n") : "No new milestones — keep grinding! ",
+ message: notifications.length > 0 ? notifications.join("\n") : "No new milestones - keep grinding! ",
  };
 }
 
@@ -182,7 +182,7 @@ export async function getGoalHistory(proId: string): Promise<object> {
  target: parseFloat(g.target_amount),
  actual: parseFloat(g.current_amount),
  status: g.status,
- period: `${g.start_date} — ${g.end_date}`,
+ period: `${g.start_date} - ${g.end_date}`,
  })),
  achieved,
  missed,

@@ -1,5 +1,5 @@
 /**
- * Community Engine — Neighborhood activity, events, tips, stats
+ * Community Engine - Neighborhood activity, events, tips, stats
  */
 import { pool } from "../db.js";
 

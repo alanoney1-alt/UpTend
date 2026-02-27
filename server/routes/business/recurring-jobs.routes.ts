@@ -2,8 +2,8 @@
  * Recurring Job Routes
  *
  * Endpoints consumed by client/src/pages/business-dashboard.tsx:
- *   POST   /api/recurring-jobs      — create recurring job
- *   PATCH  /api/recurring-jobs/:id  — update recurring job (toggle active, etc.)
+ *   POST   /api/recurring-jobs      - create recurring job
+ *   PATCH  /api/recurring-jobs/:id  - update recurring job (toggle active, etc.)
  */
 
 import { Router } from "express";
@@ -13,7 +13,7 @@ import { requireAuth } from "../../middleware/auth";
 const router = Router();
 const store = new BusinessAccountsStorage();
 
-// POST /api/recurring-jobs — create recurring job
+// POST /api/recurring-jobs - create recurring job
 router.post("/", requireAuth, async (req, res) => {
   try {
     const userId = (req.user as any)?.userId || (req.user as any)?.id;
@@ -37,7 +37,7 @@ router.post("/", requireAuth, async (req, res) => {
   }
 });
 
-// PATCH /api/recurring-jobs/:id — update recurring job
+// PATCH /api/recurring-jobs/:id - update recurring job
 router.patch("/:id", requireAuth, async (req, res) => {
   try {
     const userId = (req.user as any)?.userId || (req.user as any)?.id;
