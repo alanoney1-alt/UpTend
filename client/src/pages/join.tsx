@@ -7,6 +7,7 @@ import {
   Wrench, Home, Star, MapPin, Smartphone, Heart, Clock, DollarSign,
 } from "lucide-react";
 import { Founding100 } from "@/components/landing/founding-100";
+import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
 import { Logo } from "@/components/ui/logo";
 
 export default function JoinPage() {
@@ -28,8 +29,13 @@ export default function JoinPage() {
         </div>
       </header>
 
+      {/* Ticker */}
+      <div className="pt-16">
+        <AnnouncementTicker />
+      </div>
+
       {/* Hero */}
-      <section className="pt-28 pb-16 px-4">
+      <section className="pt-12 pb-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-[#F47C20] text-xs font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>
           <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">

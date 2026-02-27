@@ -15,6 +15,7 @@ import { Header } from "@/components/landing/header";
 import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { SocialProofTicker } from "@/components/landing/social-proof-ticker";
 import { Founding100 } from "@/components/landing/founding-100";
+import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
@@ -23,6 +24,7 @@ export default function Landing() {
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />
       <main id="main-content">
+        <AnnouncementTicker />
         <HeroSection />
         <SocialProofTicker />
         <TrustBar />
