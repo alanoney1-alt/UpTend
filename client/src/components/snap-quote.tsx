@@ -178,16 +178,16 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
 
       {/* Description Step. after photo, before analysis */}
       {awaitingDescription && preview && !loading && !result && (
-        <div className="w-full bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="w-full bg-slate-900/80 rounded-2xl border border-slate-700 overflow-hidden">
           <img src={preview} alt="Your photo" className="w-full max-h-56 object-cover" />
           <div className="p-5 space-y-4">
-            <h3 className="text-lg font-bold text-slate-900">What's the issue?</h3>
-            <p className="text-sm text-slate-500">Help George understand what you're seeing. A quick description makes the quote more accurate.</p>
+            <h3 className="text-lg font-bold text-white">What's the issue?</h3>
+            <p className="text-sm text-slate-400">Help George understand what you're seeing. A quick description makes the quote more accurate.</p>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g., Faucet leaks when turned off, stain on ceiling won't go away, need this junk removed..."
-              className="w-full h-24 rounded-lg border border-slate-300 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
+              className="w-full h-24 rounded-lg border border-slate-600 bg-slate-800 text-white placeholder-slate-500 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
               autoFocus
             />
             <div className="flex gap-3">
@@ -199,12 +199,12 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
               </button>
               <button
                 onClick={() => { setAwaitingDescription(false); setPendingBase64(null); setPreview(null); }}
-                className="px-4 py-3 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors"
+                className="px-4 py-3 rounded-xl border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors"
               >
                 Retake
               </button>
             </div>
-            <p className="text-xs text-slate-400 text-center">George uses your photo + description to identify the service and estimate pricing</p>
+            <p className="text-xs text-slate-500 text-center">George uses your photo + description to identify the service and estimate pricing</p>
           </div>
         </div>
       )}
@@ -214,7 +214,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
         <button
           onClick={handleClick}
           className={cn(
-            "w-full border-2 border-dashed border-slate-300 rounded-2xl transition-all hover:border-amber-400 hover:bg-amber-50/50 cursor-pointer flex flex-col items-center justify-center gap-3 bg-white",
+            "w-full border-2 border-dashed border-slate-600 rounded-2xl transition-all hover:border-amber-400 hover:bg-slate-800/50 cursor-pointer flex flex-col items-center justify-center gap-3 bg-slate-900/80",
             inline ? "p-6" : "p-12"
           )}
         >
@@ -222,14 +222,14 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
             <img src={preview} alt="Preview" className="max-h-48 rounded-lg object-cover" />
           ) : (
             <>
-              <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center">
-                <Camera className="w-10 h-10 text-amber-700" />
+              <div className="w-20 h-20 rounded-full bg-amber-900/40 flex items-center justify-center">
+                <Camera className="w-10 h-10 text-amber-500" />
               </div>
               <div className="text-center">
-                <p className="text-xl font-bold text-slate-900">
+                <p className="text-xl font-bold text-white">
                   {inline ? "Upload a photo" : "Snap a Photo"}
                 </p>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-400 mt-1">
                   Take a picture of any home issue
                 </p>
               </div>
@@ -240,7 +240,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
 
       {/* Loading */}
       {loading && (
-        <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4">
+        <div className="bg-slate-900/80 rounded-2xl p-8 flex flex-col items-center gap-4">
           {preview && (
             <img src={preview} alt="Analyzing" className="w-full max-h-56 rounded-xl object-cover" />
           )}
@@ -250,17 +250,17 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
             <div className="h-16 bg-muted rounded-xl w-full" />
             <div className="h-4 bg-muted rounded w-2/3 mx-auto" />
           </div>
-          <p className="text-sm text-slate-500">Analyzing your photo...</p>
+          <p className="text-sm text-slate-400">Analyzing your photo...</p>
         </div>
       )}
 
       {/* Error */}
       {error && !result && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
-          <p className="text-red-700">{error}</p>
+        <div className="bg-red-950/40 border border-red-800/40 rounded-xl p-4 text-center">
+          <p className="text-red-400">{error}</p>
           <button
             onClick={() => { setError(null); handleClick(); }}
-            className="mt-3 text-sm text-red-600 underline hover:text-red-800"
+            className="mt-3 text-sm text-red-400 underline hover:text-red-300"
           >
             Try again
           </button>
@@ -269,30 +269,30 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
 
       {/* Booked Confirmation */}
       {booked && result && matchedPro && (
-        <div className="bg-white rounded-2xl shadow-sm border border-green-200 overflow-hidden">
-          <div className="bg-green-50 p-6 text-center">
-            <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-3" />
-            <h3 className="text-2xl font-bold text-slate-900">You're Booked!</h3>
-            <p className="text-slate-600 mt-1">
+        <div className="bg-slate-900/80 rounded-2xl shadow-sm border border-green-800/40 overflow-hidden">
+          <div className="bg-green-950/40 p-6 text-center">
+            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-3" />
+            <h3 className="text-2xl font-bold text-white">You're Booked!</h3>
+            <p className="text-slate-300 mt-1">
               {matchedPro.name} is on the way
             </p>
           </div>
           <div className="p-5 space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-slate-600">{result.analysis.serviceLabel}</span>
-              <span className="text-2xl font-bold text-slate-900">{result.quote.priceDisplay}</span>
+              <span className="text-slate-400">{result.analysis.serviceLabel}</span>
+              <span className="text-2xl font-bold text-white">{result.quote.priceDisplay}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-500">
+            <div className="flex items-center gap-2 text-sm text-slate-400">
               <Clock className="w-4 h-4" />
               <span>Estimated arrival: ~{matchedPro.arrivalMin} min</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2">
+            <div className="flex items-center gap-2 text-sm text-green-400 bg-green-950/40 rounded-lg px-3 py-2">
               <Shield className="w-4 h-4" />
               <span>Price locked. you'll never pay more than {result.quote.priceDisplay}</span>
             </div>
             <button
               onClick={() => navigate("/my-jobs")}
-              className="w-full py-3 bg-slate-900 text-white font-semibold rounded-xl mt-2"
+              className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl mt-2"
             >
               View My Jobs
             </button>
@@ -302,12 +302,12 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
 
       {/* Result Card. 1-Tap Book */}
       {result && !booked && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-slate-900/80 rounded-2xl shadow-sm border border-slate-700 overflow-hidden">
           {/* Photo preview */}
           {preview && (
             <div className="relative">
               <img src={preview} alt="Your photo" className="w-full max-h-56 object-cover" />
-              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-slate-700">
+              <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-slate-200">
                 {result.analysis.serviceLabel}
               </div>
             </div>
@@ -315,13 +315,13 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
 
           <div className="p-5 space-y-4">
             {/* Issue description */}
-            <p className="text-slate-600 text-sm">{result.analysis.problemDescription}</p>
+            <p className="text-slate-400 text-sm">{result.analysis.problemDescription}</p>
 
             {/* Big price */}
             <div className="text-center py-2">
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Guaranteed Maximum Price</p>
-              <p className="text-5xl font-bold text-slate-900 mt-1">{result.quote.priceDisplay}</p>
-              <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-amber-700">
+              <p className="text-5xl font-bold text-white mt-1">{result.quote.priceDisplay}</p>
+              <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-amber-500">
                 <Shield className="w-4 h-4" />
                 <span>Price Protection. you'll never pay more</span>
               </div>
@@ -329,22 +329,22 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
 
             {/* Matched Pro Card */}
             {matchedPro && (
-              <div className="bg-slate-50 rounded-xl p-4 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                  <User className="w-6 h-6 text-amber-700" />
+              <div className="bg-slate-800/60 rounded-xl p-4 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-amber-900/40 flex items-center justify-center shrink-0">
+                  <User className="w-6 h-6 text-amber-500" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-slate-900">{matchedPro.name}</span>
-                    <span className="inline-flex items-center gap-0.5 text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
+                    <span className="font-semibold text-white">{matchedPro.name}</span>
+                    <span className="inline-flex items-center gap-0.5 text-xs font-medium text-green-400 bg-green-950/40 px-2 py-0.5 rounded-full">
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
                       Available now
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-500 mt-0.5">
+                  <div className="flex items-center gap-2 text-sm text-slate-400 mt-0.5">
                     <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                     <span>{matchedPro.rating} ({matchedPro.reviews} reviews)</span>
-                    <span className="text-slate-300">·</span>
+                    <span className="text-slate-600">·</span>
                     <Clock className="w-3.5 h-3.5" />
                     <span>~{matchedPro.arrivalMin} min</span>
                   </div>
@@ -354,7 +354,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
 
             {/* Error display within result */}
             {error && (
-              <p className="text-red-600 text-sm text-center">{error}</p>
+              <p className="text-red-400 text-sm text-center">{error}</p>
             )}
 
             {/* Book Now Button */}
@@ -380,13 +380,13 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
             </button>
 
             {result.confidence === "low" && result.fallbackMessage && (
-              <p className="text-sm text-slate-500 text-center">{result.fallbackMessage}</p>
+              <p className="text-sm text-slate-400 text-center">{result.fallbackMessage}</p>
             )}
 
             {/* Try different photo */}
             <button
               onClick={reset}
-              className="w-full flex items-center justify-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 py-1"
+              className="w-full flex items-center justify-center gap-1.5 text-sm text-slate-400 hover:text-slate-300 py-1"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Try a different photo
