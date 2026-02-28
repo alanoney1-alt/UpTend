@@ -269,6 +269,25 @@ ABSOLUTE GUARDRAILS (NEVER VIOLATE - THESE OVERRIDE EVERYTHING ELSE):
 12. CONVERSATION DRIFT DETECTION: If the conversation drifts more than 3 exchanges away from home/auto/property topics, pull it back: "I appreciate the conversation, but homes are my thing. Got anything around the house that needs attention?" Track drift and re-engage naturally.
 13. OFF-TOPIC HARD BOUNDARIES: Never engage with: politics, religion, dating advice, medical diagnosis, legal counsel, financial investment advice, homework/essays, creative writing unrelated to homes, coding/programming, celebrity gossip, conspiracy theories, or anything vulgar/explicit. For ALL of these, redirect with personality (see GEORGE'S PERSONALITY below).
 
+HOME MEMORY - YOUR SUPERPOWER:
+You remember EVERYTHING about a customer's home across every conversation. This is what makes you irreplaceable.
+
+RULES:
+1. At the START of every conversation with a logged-in customer, call get_home_memories to load what you know about them.
+2. EVERY TIME you learn something new about their home, call save_home_memory immediately. Don't wait. Don't batch.
+   - They mention their AC brand? Save it. ("appliance": "AC unit is a Trane XR15")
+   - They say they have a pool? Save it. ("home_detail": "Has a swimming pool")
+   - They mention 3 bedrooms? Save it. ("home_detail": "3 bedroom, 2 bathroom home")
+   - They did a DIY fix? Save it. ("diy": "Replaced toilet flapper themselves, July 2025")
+   - They prefer morning appointments? Save it. ("preference": "Prefers morning appointments")
+   - They had a gutter issue last fall? Save it. ("issue": "Gutters overflowing during heavy rain, Fall 2025")
+3. USE your memories naturally in conversation. Don't announce "I remember that..." robotically. Just weave it in:
+   - "Your Trane usually acts up when it's this humid. Same symptoms as last time?"
+   - "Since you've got a pool, I'd bundle that with the pressure washing for a better rate."
+   - "Last time we cleaned your gutters was about 6 months ago. You're probably due again."
+4. If you have memories, NEVER ask for info you already know. Don't ask "how many bedrooms?" if you already stored it.
+5. The more you remember, the more valuable you become. A customer who has 50 facts stored will NEVER switch to a competitor.
+
 DECIPHERING MESSY INPUT:
 People type fast, misspell things, use shorthand, mumble, and send half-sentences. You ALWAYS figure out what they mean. Never say "I don't understand" or ask them to rephrase. Examples:
 - "i ned smone to clen my guterz" = they need gutter cleaning
@@ -1461,6 +1480,31 @@ const TOOL_DEFINITIONS: any[] = [
  {
  name: "get_home_profile",
  description: "Get the customer's home profile: beds/baths, sqft, pool, pets, appliances, etc. Use to personalize recommendations.",
+ input_schema: {
+ type: "object",
+ properties: {
+ user_id: { type: "string", description: "Customer's user ID" },
+ },
+ required: ["user_id"],
+ },
+ },
+ {
+ name: "save_home_memory",
+ description: "Store a fact George learned about the customer's home from conversation. ALWAYS call this when you learn something new: appliance brands/models, home details (sqft, stories, pool, pets), past issues, preferences, DIY attempts, yard details, etc. Categories: appliance, preference, issue, service_history, diy, home_detail, note.",
+ input_schema: {
+ type: "object",
+ properties: {
+ user_id: { type: "string", description: "Customer's user ID" },
+ category: { type: "string", enum: ["appliance", "preference", "issue", "service_history", "diy", "home_detail", "note"], description: "Category of the fact" },
+ fact: { type: "string", description: "The fact to remember, e.g. 'AC unit is a Trane XR15, installed 2022' or 'Has a pool, says it turns green every summer' or 'Prefers morning appointments'" },
+ source: { type: "string", enum: ["conversation", "booking", "photo", "scan"], description: "How George learned this" },
+ },
+ required: ["user_id", "category", "fact"],
+ },
+ },
+ {
+ name: "get_home_memories",
+ description: "Retrieve everything George remembers about this customer's home. Call this at the START of conversations with returning customers to personalize the experience.",
  input_schema: {
  type: "object",
  properties: {
@@ -3496,6 +3540,10 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  // Home intelligence tools
  case "get_home_profile":
  return await tools.getHomeProfile(input.user_id, storage);
+ case "save_home_memory":
+ return await tools.saveHomeMemory(input.user_id, input.category, input.fact, input.source || "conversation", "confirmed");
+ case "get_home_memories":
+ return await tools.getHomeMemories(input.user_id);
  case "get_service_history":
  return await tools.getServiceHistory(input.user_id, storage);
  case "get_seasonal_recommendations":

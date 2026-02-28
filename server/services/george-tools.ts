@@ -68,6 +68,7 @@ import {
  homeProfiles,
  homeAppliances,
  homeServiceHistory,
+ homeMemories,
  referrals,
  pricingRates,
 } from "../../shared/schema";
@@ -1632,6 +1633,67 @@ export async function getHomeProfile(userId: string, storage?: any): Promise<obj
  message: "No home profile on file yet - tell me about your home and I'll remember it!",
  prompt: "What's your home like? (bedrooms, bathrooms, pool, pets, etc.)",
  };
+}
+
+// t2) saveHomeMemory - store a fact George learned about the customer's home
+export async function saveHomeMemory(userId: string, category: string, fact: string, source: string = "conversation", confidence: string = "confirmed"): Promise<object> {
+ try {
+  // Check for duplicate/similar fact to avoid storing the same thing twice
+  const existing = await db.select().from(homeMemories)
+   .where(and(eq(homeMemories.customerId, userId), eq(homeMemories.category, category)))
+   .orderBy(desc(homeMemories.createdAt));
+
+  // Simple dedup: if exact fact already exists, update timestamp
+  const dupe = existing.find(m => m.fact.toLowerCase() === fact.toLowerCase());
+  if (dupe) {
+   await pool.query("UPDATE home_memories SET updated_at = CURRENT_TIMESTAMP WHERE id = $1", [dupe.id]);
+   return { stored: true, updated: true, message: "Already knew that -- refreshed timestamp." };
+  }
+
+  await db.insert(homeMemories).values({
+   customerId: userId,
+   category,
+   fact,
+   source,
+   confidence,
+  });
+
+  return { stored: true, factCount: existing.length + 1, message: `Got it -- I'll remember that.` };
+ } catch (e) {
+  console.error("saveHomeMemory error:", e);
+  return { stored: false, error: "Could not save memory right now." };
+ }
+}
+
+// t3) getHomeMemories - retrieve everything George knows about a customer's home
+export async function getHomeMemories(userId: string): Promise<object> {
+ try {
+  const memories = await db.select().from(homeMemories)
+   .where(eq(homeMemories.customerId, userId))
+   .orderBy(desc(homeMemories.updatedAt));
+
+  if (memories.length === 0) {
+   return { userId, memories: [], message: "I don't have any home memories for this customer yet." };
+  }
+
+  // Group by category
+  const grouped: Record<string, string[]> = {};
+  for (const m of memories) {
+   if (!grouped[m.category]) grouped[m.category] = [];
+   grouped[m.category].push(m.fact);
+  }
+
+  return {
+   userId,
+   totalFacts: memories.length,
+   memories: grouped,
+   oldestMemory: memories[memories.length - 1].createdAt,
+   newestMemory: memories[0].updatedAt,
+  };
+ } catch (e) {
+  console.error("getHomeMemories error:", e);
+  return { userId, memories: [], error: "Could not load memories." };
+ }
 }
 
 // u) getServiceHistory - live DB query

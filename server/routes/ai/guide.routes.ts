@@ -11,6 +11,7 @@ import rateLimit from "express-rate-limit";
 import { createChatCompletion } from "../../services/ai/anthropic-client";
 import { analyzeImageOpenAI as analyzeImage } from "../../services/ai/openai-vision-client";
 import { chat as georgeChat, type GeorgeContext } from "../../services/george-agent";
+import { getHomeMemories } from "../../services/george-tools";
 
 const guideChatLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -715,6 +716,24 @@ export default function createGuideRoutes(_storage: any) {
       // Load learnings for this user
       if (userId) {
         systemPrompt += await loadLearnings(userId);
+      }
+
+      // Load home memories for logged-in customers
+      if (userId && user?.role !== "hauler") {
+        try {
+          const memories = await getHomeMemories(userId) as any;
+          if (memories.totalFacts > 0) {
+            systemPrompt += `\n\n## HOME MEMORY (${memories.totalFacts} facts stored)\nYou KNOW these things about this customer's home. Use them naturally. NEVER re-ask what you already know.\n`;
+            for (const [cat, facts] of Object.entries(memories.memories as Record<string, string[]>)) {
+              systemPrompt += `\n${cat.toUpperCase()}:\n`;
+              for (const f of facts) {
+                systemPrompt += `- ${f}\n`;
+              }
+            }
+          }
+        } catch (e) {
+          // Non-blocking - memories are a bonus, not required
+        }
       }
 
       // Add session state to system prompt

@@ -5134,6 +5134,23 @@ export const insertHomeApplianceSchema = createInsertSchema(homeAppliances).omit
 export type InsertHomeAppliance = z.infer<typeof insertHomeApplianceSchema>;
 export type HomeAppliance = typeof homeAppliances.$inferSelect;
 
+// Home Memory - George's freeform memory about a customer's home
+// Every conversation teaches George something. This is where he stores it.
+export const homeMemories = pgTable("home_memories", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerId: varchar("customer_id").notNull(),
+  category: text("category").notNull(), // appliance, preference, issue, service_history, diy, home_detail, note
+  fact: text("fact").notNull(), // "AC unit is a Trane XR15, installed 2022"
+  source: text("source").default("conversation"), // conversation, booking, photo, scan
+  confidence: text("confidence").default("confirmed"), // confirmed, inferred
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertHomeMemorySchema = createInsertSchema(homeMemories).omit({ id: true });
+export type InsertHomeMemory = z.infer<typeof insertHomeMemorySchema>;
+export type HomeMemory = typeof homeMemories.$inferSelect;
+
 // Scope Change Requests (Guaranteed Price Ceiling)
 export const scopeChangeRequests = pgTable("scope_change_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
