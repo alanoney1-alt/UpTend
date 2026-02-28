@@ -1,231 +1,626 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>UpTend — Investment Opportunity</title>
-  <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-  </style>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css" />
+<meta charset="UTF-8">
+<title>UpTend Pitch Deck v7</title>
+<style>
+@page { size: 11in 8.5in; margin: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #0f172a; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 11in; height: 8.5in; background: #0f172a; position: relative; overflow: hidden; page-break-after: always; padding: 0.5in 0.65in 0.5in; display: flex; flex-direction: column; }
+.page:last-child { page-break-after: auto; }
+h1 { font-size: 2.6rem; font-weight: 700; color: #fff; margin-bottom: 0.2em; letter-spacing: -0.02em; }
+h2 { font-size: 1.85rem; font-weight: 700; color: #fff; margin-bottom: 0.15em; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 0.12em; }
+h4 { font-size: 0.88rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.15em; }
+.g { color: #F47C20; font-weight: 700; }
+.accent { color: #F47C20; }
+.subtitle { color: #94a3b8; font-size: 1.05rem; margin-bottom: 0.3em; }
+.tag { display: inline-block; background: rgba(244,124,32,0.15); color: #F47C20; font-size: 0.75rem; font-weight: 600; padding: 0.18em 0.55em; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; }
+.card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.3in 0.28in; }
+.card-sm { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 0.18in 0.22in; }
+.stat { font-size: 2.2rem; font-weight: 800; color: #F47C20; line-height: 1.1; }
+.stat-sm { font-size: 1.4rem; font-weight: 800; color: #F47C20; line-height: 1.1; }
+.stat-label { font-size: 0.8rem; color: #94a3b8; margin-top: 0.1em; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25in; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.2in; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.18in; }
+.grid-5 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 0.15in; }
+.grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.12in; }
+.footer { position: absolute; bottom: 0.25in; left: 0.65in; right: 0.65in; display: flex; justify-content: space-between; font-size: 0.65rem; color: #475569; text-transform: uppercase; letter-spacing: 0.1em; }
+ul { padding-left: 1.1em; }
+ul li { margin-bottom: 0.1em; font-size: 0.9rem; color: #cbd5e1; }
+ul li::marker { color: #F47C20; }
+.divider { height: 1px; background: rgba(255,255,255,0.08); margin: 0.12in 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+table th { text-align: left; color: #94a3b8; font-weight: 600; padding: 0.18em 0.4em; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; }
+table td { padding: 0.18em 0.35em; color: #cbd5e1; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.highlight-row td { color: #F47C20; font-weight: 600; }
+.pill { display: inline-block; background: rgba(244,124,32,0.12); color: #F47C20; padding: 0.08em 0.45em; border-radius: 999px; font-size: 0.68rem; font-weight: 600; }
+.num-circle { display: inline-flex; align-items: center; justify-content: center; width: 1.3em; height: 1.3em; background: #F47C20; color: #0f172a; border-radius: 50%; font-weight: 800; font-size: 0.75rem; margin-right: 0.25em; flex-shrink: 0; }
+a { color: #F47C20; text-decoration: underline; text-decoration-color: rgba(244,124,32,0.4); }
+.source { font-size: 0.65rem; color: #475569; font-style: italic; }
+</style>
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">UpTend — Investment Opportunity</h1>
-</header>
-<h1
-id="uptend-the-investment-opportunity-you-cant-afford-to-miss">UpTend —
-The Investment Opportunity You Can’t Afford to Miss</h1>
-<p><strong>UPYCK, Inc. (Delaware C-Corp) d/b/a UpTend</strong></p>
-<hr />
-<h2 id="the-600-billion-problem-nobody-has-solved">The $600 Billion
-Problem Nobody Has Solved</h2>
-<p>The home services industry generates <strong>$600 billion
-annually</strong> in the United States. Every HOA, every property
-management company, every general contractor, every government agency —
-they all need vendors. Thousands of them. Every single day.</p>
-<p>And they’re still managing it with <strong>phone calls, spreadsheets,
-and prayer.</strong></p>
-<p>Thumbtack connects consumers to handymen. ServiceTitan sells software
-to plumbers. Nobody — <strong>absolutely nobody</strong> — has built the
-operating system that institutional buyers actually need:
-compliance-grade vendor management with real-time dispatch, government
-contract automation, and a vetted workforce at scale.</p>
-<p><strong>UpTend has. And it’s already live.</strong></p>
-<hr />
-<h2 id="what-we-built-while-everyone-else-was-talking">What We Built
-(While Everyone Else Was Talking)</h2>
-<p><strong>110+ production features.</strong> Not wireframes. Not pitch
-decks. Not “coming soon.” <strong>Live. Deployed. Demoable right
-now.</strong></p>
-<p>🤖 <strong>13 AI capabilities</strong> — real Claude AI powering
-instant estimates, photo quotes, document scanning, route optimization,
-and George, our AI concierge that guides every interaction.</p>
-<p>🏛️ <strong>Full government contract suite</strong> — Davis-Bacon
-prevailing wage automation, WH-347 certified payroll generation, SAM.gov
-integration, DBE/SDVOSB utilization tracking, FEMA rapid response
-activation. No home services company on Earth has this.</p>
-<p>🏘️ <strong>HOA &amp; Property Management OS</strong> —
-multi-community dashboards, board approval workflows, tenant work
-orders, make-ready turnover automation, SLA management. One PM company
-sale = hundreds of units = recurring revenue for years.</p>
-<p>🏗️ <strong>Construction sub management</strong> — punch lists, lien
-waiver automation, permit tracking, safety compliance. GCs are begging
-for this.</p>
-<p>🎖️ <strong>America’s veteran workforce platform</strong> — DD-214
-verification, MOS-to-trade mapping, SDVOSB certification tracking,
-disabled veteran accommodations, military spouse program. 200,000
-service members transition annually. We catch them.</p>
-<p>💳 <strong>Stripe payments, real-time WebSocket tracking, email
-notifications, review system, ESG impact scoring</strong> — the full
-stack, production-hardened, deployed on Railway.</p>
-<hr />
-<h2 id="the-numbers-that-matter">The Numbers That Matter</h2>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Total Addressable Market</strong></td>
-<td>$600B+ annually</td>
-</tr>
-<tr>
-<td><strong>B2B Institutional Market</strong></td>
-<td>$400B+ (HOAs, PMs, Construction, Government)</td>
-</tr>
-<tr>
-<td><strong>Federal SDVOSB Set-Asides</strong></td>
-<td>$4B+/year (sole source up to $5M — zero competition)</td>
-</tr>
-<tr>
-<td><strong>FEMA Disaster Contracts (FL alone)</strong></td>
-<td>$500M+ per hurricane season</td>
-</tr>
-<tr>
-<td><strong>Average Consumer Job</strong></td>
-<td>$150–$500 one-time</td>
-</tr>
-<tr>
-<td><strong>Average B2B Contract</strong></td>
-<td>$25K–$500K annually, recurring</td>
-</tr>
-<tr>
-<td><strong>Platform Fees</strong></td>
-<td>7% customer + 20-25% pro side</td>
-</tr>
-<tr>
-<td><strong>One 500-unit PM company</strong></td>
-<td>$84K–$300K/year in platform revenue</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="why-now">Why NOW</h2>
-<p><strong>Florida is ground zero.</strong> 40M+ tourists, explosive
-population growth, hurricane-driven demand spikes, and the largest
-concentration of HOAs in America. We’re launching in Orlando Metro — the
-perfect proving ground — then expanding statewide, then nationally.</p>
-<p><strong>The veteran angle is a strategic weapon.</strong> Our
-SDVOSB-certified subsidiary (51% minority veteran-owned) unlocks federal
-sole-source contracts up to $5M with <strong>zero competition</strong>.
-State and local contracts give preference points for veteran labor.
-Every veteran we recruit is simultaneously a skilled worker AND a
-compliance asset.</p>
-<p><strong>AI is our moat.</strong> While competitors bolt chatbots onto
-legacy platforms, we built AI into the foundation. George doesn’t just
-answer questions — he quotes jobs, books services, optimizes schedules,
-and manages the entire customer relationship. Our 13 AI capabilities
-aren’t features. They’re the product.</p>
-<hr />
-<h2 id="the-competitive-landscape-we-have-none">The Competitive
-Landscape (We Have None)</h2>
-<table>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
-</colgroup>
-<thead>
-<tr>
-<th>Competitor</th>
-<th>What They Do</th>
-<th>What They Don’t Do</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Thumbtack/Angi</strong></td>
-<td>Consumer lead gen</td>
-<td>Zero B2B, zero compliance, zero government</td>
-</tr>
-<tr>
-<td><strong>Jobber/Housecall Pro</strong></td>
-<td>Pro business tools</td>
-<td>No marketplace, no institutional buyers</td>
-</tr>
-<tr>
-<td><strong>ServiceTitan</strong></td>
-<td>Single-trade SaaS</td>
-<td>No multi-trade marketplace, $15K+/year per customer</td>
-</tr>
-<tr>
-<td><strong>Procore</strong></td>
-<td>Construction PM</td>
-<td>No vendor marketplace, no home services</td>
-</tr>
-<tr>
-<td><strong>UpTend</strong></td>
-<td><strong>ALL OF THE ABOVE</strong></td>
-<td>—</td>
-</tr>
-</tbody>
-</table>
-<p>We’re not competing. We’re creating a category.</p>
-<hr />
-<h2 id="the-flywheel-that-prints-money">The Flywheel That Prints
-Money</h2>
-<pre><code>More B2B contracts → More job volume → More veteran recruitment
-       ↑                                         ↓
-Higher retention ← Stable pro income ← Government set-asides
-       ↑                                         ↓
-More investors ← Proven recurring revenue ← More contracts won</code></pre>
-<p>Every B2B client we sign generates recurring revenue that funds more
-veteran recruitment, which unlocks more government contracts, which
-attracts more institutional buyers. <strong>This flywheel doesn’t slow
-down. It accelerates.</strong></p>
-<hr />
-<h2 id="what-100k-gets-you">What $100K Gets You</h2>
-<ul>
-<li><strong>10% equity</strong> at a $1M cap (pre-revenue SAFE)</li>
-<li>Ground floor of the <strong>only platform</strong> that serves
-institutional home services buyers</li>
-<li>Exposure to <strong>$4B+ in federal set-aside contracts</strong>
-through our SDVOSB certification</li>
-<li>A founding team that doesn’t just plan — <strong>we ship.</strong>
-110+ features, live site, deployed in weeks, not years</li>
-<li>First-mover advantage in a $600B market where the incumbents are
-asleep</li>
-</ul>
-<hr />
-<h2 id="the-bottom-line">The Bottom Line</h2>
-<p>You’re not investing in an idea. You’re investing in a <strong>live,
-deployed, 110-feature platform</strong> with a clear path to revenue
-through the most underserved, highest-value segment of home services:
-institutional buyers who write six-figure annual contracts.</p>
-<p>The technology is built. The veteran pipeline is ready. The
-government contracts are waiting. The only question is whether you want
-to be on the cap table when this thing takes off — or watching from the
-sidelines wishing you’d moved faster.</p>
-<p><strong>UpTend. Built Different. Built to Win.</strong></p>
-<hr />
-<p><em>Contact: Alan Oney | alan@uptend.app | (407) 338-3342 |
-uptendapp.com</em> <em>UPYCK, Inc. — Delaware C-Corp — Orlando,
-FL</em></p>
+
+<!-- SLIDE 1: TITLE -->
+<div class="page" style="justify-content: center; align-items: center; text-align: center;">
+  <div>
+    <p style="font-size: 0.8rem; color: #F47C20; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.12in;">HOME INTELLIGENCE</p>
+    <h1 style="font-size: 3.4rem; margin-bottom: 0.06em;"><span style="color: #F47C20;">Up</span><span style="color: #fff;">Tend</span></h1>
+    <div style="width: 1.5in; height: 3px; background: #F47C20; margin: 0 auto 0.25in;"></div>
+    <p style="font-size: 1.15rem; color: #fff; font-weight: 600; margin-bottom: 0.1in;">One Price. One Pro. Done.</p>
+    <p style="font-size: 0.95rem; color: #94a3b8; margin-bottom: 0.35in;">The AI-powered platform defining a new category in the $600B home services market.</p>
+    <p style="font-size: 1rem; color: #F47C20; font-weight: 600;">Three Milestones. One Category. Zero Competition.</p>
+    <p style="color: #64748b; font-size: 0.75rem; margin-top: 0.3in;">UPYCK Inc. &middot; Lake Nona, FL &middot; 2026</p>
+    <p style="color: #64748b; font-size: 0.7rem; margin-top: 0.06in;"><a href="https://uptendapp.com" style="color:#64748b;">uptendapp.com</a> &middot; <a href="mailto:alan@uptendapp.com" style="color:#64748b;">alan@uptendapp.com</a></p>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>1 / 12</span></div>
+</div>
+
+<!-- SLIDE 2: THE PROBLEM -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">The Problem</div>
+  <h2>A $600B Market Built on Blind Trust</h2>
+  <p class="subtitle">Homeowners spend more on home services than dining out, yet have less information about what they're buying.</p>
+  <div class="grid-3" style="margin-top: 0.2in; flex: 1;">
+    <div class="card">
+      <div class="stat">$600B</div>
+      <div class="stat-label" style="margin-bottom: 0.15in;">U.S. Home Services Market</div>
+      <ul>
+        <li>Largest offline consumer category still lacking digital trust infrastructure</li>
+        <li>Growing 4.2% annually with aging housing stock</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="stat">72%</div>
+      <div class="stat-label" style="margin-bottom: 0.15in;">Homeowners Overcharged</div>
+      <ul>
+        <li>No pricing benchmarks exist for consumers</li>
+        <li>Quotes vary 2-5x for identical work</li>
+        <li>Pros set prices knowing customers can't verify</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="stat">0</div>
+      <div class="stat-label" style="margin-bottom: 0.15in;">Platforms Solving Trust</div>
+      <ul>
+        <li>Angi, Thumbtack, HomeAdvisor sell leads</li>
+        <li>No one verifies pricing fairness</li>
+        <li>No one tracks job quality or completion</li>
+        <li>Pros pay $15-100/lead with no guarantee</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card-sm" style="text-align: center; margin-top: 0.12in;">
+    <p style="font-size: 0.9rem; color: #94a3b8;">The result: a market where <strong style="color: #fff;">trust is the scarcest resource</strong> and no platform has bothered to build it.</p>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>2 / 12</span></div>
+</div>
+
+<!-- SLIDE 3: THE SOLUTION -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">The Solution</div>
+  <h2>Meet <span class="g">George</span>: The World's First Home Service Agent</h2>
+  <p class="subtitle">Not a chatbot. Not a marketplace. An autonomous AI agent with 176 tools that manages your home.</p>
+  <div style="display: flex; gap: 0.12in; margin-top: 0.2in; align-items: stretch;">
+    <div style="text-align:center; display:flex;flex-direction:column;justify-content:center; background: rgba(244,124,32,0.08); border: 1px solid rgba(244,124,32,0.2); border-radius: 8px; padding: 0.18in 0.14in; flex: 1;">
+      <div class="stat-sm" style="font-size:1.8rem;">1</div>
+      <h4 style="margin-top:0.06in; color:#fff; text-transform:none; letter-spacing:0; font-size:0.9rem;">Describe</h4>
+      <p style="font-size:0.82rem;color:#94a3b8;">Tell George your problem in plain language or snap a photo.</p>
+    </div>
+    <div style="display:flex;align-items:center;color:#F47C20;font-size:1.3rem;">&#9654;</div>
+    <div style="text-align:center; display:flex;flex-direction:column;justify-content:center; background: rgba(244,124,32,0.08); border: 1px solid rgba(244,124,32,0.2); border-radius: 8px; padding: 0.18in 0.14in; flex: 1;">
+      <div class="stat-sm" style="font-size:1.8rem;">2</div>
+      <h4 style="margin-top:0.06in; color:#fff; text-transform:none; letter-spacing:0; font-size:0.9rem;">Price</h4>
+      <p style="font-size:0.82rem;color:#94a3b8;">Instant market-verified fair price. No guessing. No bidding.</p>
+    </div>
+    <div style="display:flex;align-items:center;color:#F47C20;font-size:1.3rem;">&#9654;</div>
+    <div style="text-align:center; display:flex;flex-direction:column;justify-content:center; background: rgba(244,124,32,0.08); border: 1px solid rgba(244,124,32,0.2); border-radius: 8px; padding: 0.18in 0.14in; flex: 1;">
+      <div class="stat-sm" style="font-size:1.8rem;">3</div>
+      <h4 style="margin-top:0.06in; color:#fff; text-transform:none; letter-spacing:0; font-size:0.9rem;">Match</h4>
+      <p style="font-size:0.82rem;color:#94a3b8;">One vetted pro matched by Value Score. No comparing strangers.</p>
+    </div>
+    <div style="display:flex;align-items:center;color:#F47C20;font-size:1.3rem;">&#9654;</div>
+    <div style="text-align:center; display:flex;flex-direction:column;justify-content:center; background: rgba(244,124,32,0.08); border: 1px solid rgba(244,124,32,0.2); border-radius: 8px; padding: 0.18in 0.14in; flex: 1;">
+      <div class="stat-sm" style="font-size:1.8rem;">4</div>
+      <h4 style="margin-top:0.06in; color:#fff; text-transform:none; letter-spacing:0; font-size:0.9rem;">Track</h4>
+      <p style="font-size:0.82rem;color:#94a3b8;">Real-time Uber-style tracking. Arrival to completion.</p>
+    </div>
+    <div style="display:flex;align-items:center;color:#F47C20;font-size:1.3rem;">&#9654;</div>
+    <div style="text-align:center; display:flex;flex-direction:column;justify-content:center; background: rgba(244,124,32,0.08); border: 1px solid rgba(244,124,32,0.2); border-radius: 8px; padding: 0.18in 0.14in; flex: 1;">
+      <div class="stat-sm" style="font-size:1.8rem;">5</div>
+      <h4 style="margin-top:0.06in; color:#fff; text-transform:none; letter-spacing:0; font-size:0.9rem;">Learn</h4>
+      <p style="font-size:0.82rem;color:#94a3b8;">Every job stored in your Home DNA. George gets smarter.</p>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-top: 0.2in; flex: 1;">
+    <div class="card">
+      <h3 style="color:#F47C20;">For Homeowners</h3>
+      <ul>
+        <li>Fair pricing verified by AI</li>
+        <li>One pro, pre-vetted, ready to go</li>
+        <li>Complete home maintenance history</li>
+        <li>Proactive: "Your gutters are due"</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20;">For Pros</h3>
+      <ul>
+        <li>Pre-qualified jobs, no quoting</li>
+        <li>Keep 85% of every job</li>
+        <li>Zero marketing or admin overhead</li>
+        <li>George handles scheduling + invoicing</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20;">For Business (HOA/PM)</h3>
+      <ul>
+        <li>Portfolio-wide maintenance intelligence</li>
+        <li>Vendor pricing benchmarks</li>
+        <li>Resident self-service via George</li>
+        <li>Full documentation, every job</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>3 / 12</span></div>
+</div>
+
+<!-- SLIDE 4: WHY NOW + MARKET -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">Market Opportunity</div>
+  <h2>$600B Market. Zero Intelligence. Perfect Timing.</h2>
+  <div class="grid-2" style="margin-top: 0.2in; flex: 1;">
+    <div class="card">
+      <h3 style="color:#F47C20;">Why Now</h3>
+      <div class="divider"></div>
+      <ul>
+        <li><strong>AI crossed the production threshold:</strong> LLMs and vision models can now handle complex multi-step workflows. UpTend was built AI-first from day one.</li>
+        <li><strong>Post-COVID trust deficit:</strong> Homeowners expect verified, transparent, trackable service. The infrastructure doesn't exist.</li>
+        <li><strong>"Home Intelligence" is unclaimed:</strong> Business Intelligence created Tableau ($30B+ market). No one owns the equivalent for homes.</li>
+        <li><strong>Incumbents can't pivot:</strong> Angi/Thumbtack's revenue depends on lead selling, which conflicts with transparent pricing. Structural disadvantage.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20;">The Orlando Beachhead</h3>
+      <div class="divider"></div>
+      <div class="grid-2" style="gap:0.12in; margin-bottom:0.12in;">
+        <div><div class="stat-sm">2.6M</div><div class="stat-label">Metro Population</div></div>
+        <div><div class="stat-sm">50,100</div><div class="stat-label">FL HOA Communities</div></div>
+        <div><div class="stat-sm">$450K+</div><div class="stat-label">Lake Nona Median Home</div></div>
+        <div><div class="stat-sm">74,500+</div><div class="stat-label">Orlando Rental Units</div></div>
+      </div>
+      <div class="divider"></div>
+      <ul>
+        <li>FL law (July 2025) requires 100% reserve funding for structural repairs</li>
+        <li>Orlando HOAs collect ~$270M/year in dues</li>
+        <li>61% of Orlando housing is renter-occupied</li>
+        <li>Founder lives in Lake Nona with direct HOA board relationships</li>
+      </ul>
+      <p class="source" style="margin-top:0.08in;">Sources: FL Statute 720.303(6), Point2Homes, Yardi Matrix Dec 2025</p>
+    </div>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>4 / 12</span></div>
+</div>
+
+<!-- SLIDE 5: GO-TO-MARKET (B2B-LED) -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">Go-to-Market</div>
+  <h2>B2B-Led Growth: HOAs and Property Managers Are the Channel</h2>
+  <p class="subtitle">One HOA partnership delivers hundreds of customers at near-zero acquisition cost.</p>
+  <div class="grid-2" style="margin-top: 0.15in; flex: 1;">
+    <div class="card">
+      <h3 style="color:#F47C20;">The B2B Playbook</h3>
+      <div class="divider"></div>
+      <div style="margin-bottom:0.12in;">
+        <div class="pill" style="margin-bottom:0.06in;">Step 1: HOA Boards</div>
+        <p style="font-size:0.88rem;color:#cbd5e1;">Board members face liability for contractor recommendations. UpTend becomes the official platform. Board endorsement = instant credibility + bulk customer access. Residents self-serve through George.</p>
+      </div>
+      <div style="margin-bottom:0.12in;">
+        <div class="pill" style="margin-bottom:0.06in;">Step 2: Property Managers</div>
+        <p style="font-size:0.88rem;color:#cbd5e1;">PMs manage 50-200+ properties with scattered vendors and no pricing benchmarks. UpTend gives them a single dashboard with AI-powered vendor management. Tenants request maintenance through George.</p>
+      </div>
+      <div>
+        <div class="pill" style="margin-bottom:0.06in;">Step 3: Home Service Businesses</div>
+        <p style="font-size:0.88rem;color:#cbd5e1;">Existing companies load employees as off-hours pros. Business earns revenue share. Workers earn side income. UpTend gets pre-vetted supply at zero recruiting cost.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20;">Why B2B First</h3>
+      <div class="divider"></div>
+      <ul style="margin-bottom:0.15in;">
+        <li><strong>Unit economics:</strong> One HOA deal = 200-500 households. CAC drops to near zero per customer.</li>
+        <li><strong>Trust transfer:</strong> Board endorsement > any ad campaign. Institutional credibility on day one.</li>
+        <li><strong>Recurring revenue:</strong> Monthly platform contracts + per-transaction fees. Predictable.</li>
+        <li><strong>Supply solves itself:</strong> Guaranteed customer volume attracts quality pros.</li>
+        <li><strong>Data density:</strong> Hundreds of homes in one community = pricing intelligence that compounds.</li>
+      </ul>
+      <div class="divider"></div>
+      <h3 style="color:#F47C20;">Expansion Path</h3>
+      <div style="display:flex; gap:0.06in; align-items:center; flex-wrap:wrap; margin-top:0.06in;">
+        <span class="pill">Lake Nona HOAs</span> <span class="accent" style="font-size:0.6rem;">&#9654;</span>
+        <span class="pill">Orlando Metro</span> <span class="accent" style="font-size:0.6rem;">&#9654;</span>
+        <span class="pill">FL HOA Communities</span> <span class="accent" style="font-size:0.6rem;">&#9654;</span>
+        <span class="pill">Sunbelt</span> <span class="accent" style="font-size:0.6rem;">&#9654;</span>
+        <span class="pill">National</span>
+      </div>
+      <div class="divider" style="margin-top:0.12in;"></div>
+      <div class="grid-2" style="gap:0.12in; text-align:center;">
+        <div><div class="stat-sm">14</div><div class="stat-label">Lake Nona HOAs (Target)</div></div>
+        <div><div class="stat-sm">50,100</div><div class="stat-label">FL HOA Communities (TAM)</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>5 / 12</span></div>
+</div>
+
+<!-- SLIDE 6: BUSINESS MODEL -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">Business Model</div>
+  <h2>20% Take Rate. Pros Keep 85%. Everyone Wins.</h2>
+  <div class="grid-2" style="margin-top: 0.2in; flex: 1;">
+    <div class="card">
+      <h3 style="color:#F47C20;">Fee Structure</h3>
+      <div class="divider"></div>
+      <table>
+        <tr><th>Fee</th><th>Rate</th><th>On $250 Job</th></tr>
+        <tr><td>Customer service fee</td><td class="accent">5%</td><td>$12.50</td></tr>
+        <tr><td>Pro platform fee</td><td class="accent">15%</td><td>$37.50</td></tr>
+        <tr class="highlight-row"><td>Total platform revenue</td><td>20%</td><td>$50.00</td></tr>
+        <tr><td><strong>Pro keeps</strong></td><td><strong>85%</strong></td><td><strong>$212.50</strong></td></tr>
+      </table>
+      <div class="divider"></div>
+      <h3 style="color:#F47C20;">vs. Competition</h3>
+      <table>
+        <tr><th>Platform</th><th>Model</th><th>Pro Cost</th></tr>
+        <tr><td>Thumbtack</td><td>Pay per lead</td><td>$15-50/lead, most don't convert</td></tr>
+        <tr><td>Angi</td><td>Leads + ads</td><td>$15-80/lead + monthly fees</td></tr>
+        <tr class="highlight-row"><td>UpTend</td><td>Pay on completion</td><td>15% of completed jobs only</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20;">Revenue Streams</h3>
+      <div class="divider"></div>
+      <div style="margin-bottom:0.1in;">
+        <div class="pill" style="margin-bottom:0.04in;">Now</div>
+        <p style="font-size:0.88rem;color:#cbd5e1;"><strong style="color:#fff;">Transaction fees</strong> (20% on every completed job) + <strong style="color:#fff;">B2B contracts</strong> (monthly HOA/PM platform access)</p>
+      </div>
+      <div style="margin-bottom:0.1in;">
+        <div class="pill" style="margin-bottom:0.04in;">Year 2</div>
+        <p style="font-size:0.88rem;color:#cbd5e1;"><strong style="color:#fff;">Pro subscriptions</strong> (premium tools, priority matching) + <strong style="color:#fff;">Home DNA Scan upsells</strong> (aerial, deep scan) + <strong style="color:#fff;">Sponsored product placement</strong> (brands pay for native AI recommendations)</p>
+      </div>
+      <div style="margin-bottom:0.1in;">
+        <div class="pill" style="margin-bottom:0.04in;">Year 3+</div>
+        <p style="font-size:0.88rem;color:#cbd5e1;"><strong style="color:#fff;">Data licensing</strong> (anonymized pricing intelligence) + <strong style="color:#fff;">Insurance/real estate partnerships</strong> + <strong style="color:#fff;">Brand partnership network</strong> (category-exclusive product placement at scale)</p>
+      </div>
+      <div class="divider"></div>
+      <h3 style="color:#F47C20;">Native AI Product Placement</h3>
+      <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">George recommends products in natural conversation. Brands pay for category-exclusive placement (air filters, paint, security cameras, tools). Not banner ads. Contextual, trusted recommendations from an AI agent customers already talk to. CPR (cost per recommendation) or monthly placement fees. A new ad format that only works inside a trusted AI relationship.</p>
+      <div class="divider"></div>
+      <h3 style="color:#F47C20;">Unit Economics</h3>
+      <div class="grid-4" style="gap:0.1in; text-align:center; margin-top:0.08in;">
+        <div><div class="stat-sm">$50</div><div class="stat-label">Rev / Job</div></div>
+        <div><div class="stat-sm">$490</div><div class="stat-label">LTV</div></div>
+        <div><div class="stat-sm">$99</div><div class="stat-label">Blended CAC</div></div>
+        <div><div class="stat-sm">~5:1</div><div class="stat-label">LTV:CAC</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>6 / 12</span></div>
+</div>
+
+<!-- SLIDE 7: TRACTION -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">Traction</div>
+  <h2>Not a Mockup. A Production Platform.</h2>
+  <p class="subtitle"><a href="https://uptendapp.com">uptendapp.com</a> is live. Built by one founder on minimal capital.</p>
+  <div class="grid-6" style="margin-top: 0.15in;">
+    <div class="card-sm" style="text-align:center; padding:0.15in 0.08in;"><div class="stat-sm">176</div><div class="stat-label">AI Tools Built</div></div>
+    <div class="card-sm" style="text-align:center; padding:0.15in 0.08in;"><div class="stat-sm">294</div><div class="stat-label">Database Tables</div></div>
+    <div class="card-sm" style="text-align:center; padding:0.15in 0.08in;"><div class="stat-sm">102</div><div class="stat-label">Pages Live</div></div>
+    <div class="card-sm" style="text-align:center; padding:0.15in 0.08in;"><div class="stat-sm">7</div><div class="stat-label">Comms Channels</div></div>
+    <div class="card-sm" style="text-align:center; padding:0.15in 0.08in;"><div class="stat-sm">$135K</div><div class="stat-label">Raised to Date</div></div>
+    <div class="card-sm" style="text-align:center; padding:0.15in 0.08in;"><div class="stat-sm">92%</div><div class="stat-label">Test Pass Rate</div></div>
+  </div>
+  <div class="grid-3" style="margin-top: 0.15in; flex: 1;">
+    <div class="card">
+      <h3 style="color:#F47C20;">George: Home Service Agent</h3>
+      <div class="divider"></div>
+      <ul>
+        <li>176 integrated tools in production</li>
+        <li>7 communication channels (SMS, email, voice, web, in-app, WhatsApp, push)</li>
+        <li>AI pricing verified on real market data</li>
+        <li>Photo analysis + automated quoting</li>
+        <li>Multi-agent coordination</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20;">Platform Infrastructure</h3>
+      <div class="divider"></div>
+      <ul>
+        <li>Full customer + pro apps live</li>
+        <li>Stripe payment processing integrated</li>
+        <li>Real-time WebSocket job tracking</li>
+        <li>B2B dashboard for HOA/PM</li>
+        <li>12 neighborhood SEO pages indexed</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20;">Go-to-Market Ready</h3>
+      <div class="divider"></div>
+      <ul>
+        <li>Founding 100 program launched</li>
+        <li>George social media persona active</li>
+        <li>AI video content pipeline built</li>
+        <li>Home DNA Scan: free + $25 credit</li>
+        <li>SDVOSB entity for government contracts</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>7 / 12</span></div>
+</div>
+
+<!-- SLIDE 8: GEORGE'S BRAIN (WOW SLIDE) -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">The Moat</div>
+  <h2><span class="g">George</span>: 176 Tools. Three Masters. One Agent.</h2>
+  <p class="subtitle">Not an LLM wrapper. A purpose-built multi-agent system that serves homeowners, pros, and businesses simultaneously.</p>
+  <div class="grid-2" style="margin-top: 0.15in; flex: 1;">
+    <div class="card" style="padding: 0.25in;">
+      <h3 style="color:#F47C20; font-size:1.05rem;">176 Integrated Capabilities</h3>
+      <div class="divider"></div>
+      <div class="grid-2" style="gap:0.12in;">
+        <div>
+          <h4 style="font-size:0.72rem;">Pricing Intelligence</h4>
+          <ul style="font-size:0.78rem;">
+            <li>Market-verified fair pricing</li>
+            <li>Photo-based scope definition</li>
+            <li>Material cost lookup</li>
+            <li>Local rate benchmarking</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:0.72rem;">Job Management</h4>
+          <ul style="font-size:0.78rem;">
+            <li>Value Score pro matching</li>
+            <li>Automated scheduling</li>
+            <li>Real-time GPS tracking</li>
+            <li>Quality verification</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:0.72rem;">Home Intelligence</h4>
+          <ul style="font-size:0.78rem;">
+            <li>Home DNA profile building</li>
+            <li>Predictive maintenance</li>
+            <li>Spending analytics</li>
+            <li>Seasonal recommendations</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:0.72rem;">Business Intelligence</h4>
+          <ul style="font-size:0.78rem;">
+            <li>HOA community portal</li>
+            <li>PM portfolio dashboard</li>
+            <li>Vendor analytics</li>
+            <li>Compliance tracking</li>
+          </ul>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <p style="font-size:0.78rem;color:#94a3b8;text-align:center;">10,190 lines of agent logic. Not vaporware.</p>
+    </div>
+    <div class="card" style="padding: 0.25in;">
+      <h3 style="color:#F47C20; font-size:1.05rem;">Why This Can't Be Copied Quickly</h3>
+      <div class="divider"></div>
+      <ul style="font-size:0.88rem;">
+        <li style="margin-bottom:0.1in;"><strong>176 tools are domain-specific.</strong> Each encodes home services logic: pricing rules, scheduling constraints, quality checks, local regulations. An LLM wrapper doesn't have this.</li>
+        <li style="margin-bottom:0.1in;"><strong>Three-sided agent.</strong> George serves homeowners, pros, AND businesses simultaneously. The coordination logic between these roles is the hard part.</li>
+        <li style="margin-bottom:0.1in;"><strong>Data flywheel.</strong> Every job trains George: better pricing, better matching, better predictions. Day one of a competitor is our day one of 2026.</li>
+        <li style="margin-bottom:0.1in;"><strong>7 channels, one brain.</strong> SMS, email, voice, web, in-app, WhatsApp, push. Same agent, consistent intelligence across every surface.</li>
+      </ul>
+      <div class="divider"></div>
+      <p style="font-size:0.78rem;color:#94a3b8;text-align:center;">George isn't a feature. George IS the platform.</p>
+    </div>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>8 / 12</span></div>
+</div>
+
+<!-- SLIDE 9: DEFENSIBILITY -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">Defensibility</div>
+  <h2>Seven Moats That Compound Over Time</h2>
+  <p class="subtitle">Each moat reinforces the others. Together, they create a position that gets stronger with every transaction.</p>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.2in; margin-top: 0.2in; flex: 1;">
+    <div>
+      <div class="card-sm" style="margin-bottom:0.12in;">
+        <div style="display:flex;align-items:start;gap:0.12in;">
+          <span class="num-circle" style="margin-top:0.04in;">1</span>
+          <div>
+            <strong style="font-size:0.95rem;">Home DNA Data Moat</strong>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">Every scan, every job, every photo builds a proprietary home condition database that no competitor has. This data powers pricing, predictions, and insurance partnerships.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-sm" style="margin-bottom:0.12in;">
+        <div style="display:flex;align-items:start;gap:0.12in;">
+          <span class="num-circle" style="margin-top:0.04in;">2</span>
+          <div>
+            <strong style="font-size:0.95rem;">B2B Institutional Lock-in</strong>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">HOA board votes take months. Once UpTend is the official platform, switching requires another board vote. Contract stickiness is structural.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-sm" style="margin-bottom:0.12in;">
+        <div style="display:flex;align-items:start;gap:0.12in;">
+          <span class="num-circle" style="margin-top:0.04in;">3</span>
+          <div>
+            <strong style="font-size:0.95rem;">AI-First Architecture</strong>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">176-tool agent system built from day one. Incumbents would need to rebuild their entire stack. Can't bolt this onto a lead-gen platform.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-sm">
+        <div style="display:flex;align-items:start;gap:0.12in;">
+          <span class="num-circle" style="margin-top:0.04in;">4</span>
+          <div>
+            <strong style="font-size:0.95rem;">Pricing Intelligence Flywheel</strong>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">Every completed job makes pricing more accurate. Better pricing = more trust = more jobs = better pricing. Self-reinforcing loop.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card-sm" style="margin-bottom:0.12in;">
+        <div style="display:flex;align-items:start;gap:0.12in;">
+          <span class="num-circle" style="margin-top:0.04in;">5</span>
+          <div>
+            <strong style="font-size:0.95rem;">Local Density Network Effects</strong>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">Deep saturation in one community > thin national spread. More neighbors using UpTend = faster pro response times = better experience for everyone.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-sm" style="margin-bottom:0.12in;">
+        <div style="display:flex;align-items:start;gap:0.12in;">
+          <span class="num-circle" style="margin-top:0.04in;">6</span>
+          <div>
+            <strong style="font-size:0.95rem;">Home History Switching Cost</strong>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">After 5 jobs, your home has a history. After 20, George knows your property better than you do. Leaving means starting from zero elsewhere.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-sm" style="margin-bottom:0.12in;">
+        <div style="display:flex;align-items:start;gap:0.12in;">
+          <span class="num-circle" style="margin-top:0.04in;">7</span>
+          <div>
+            <strong style="font-size:0.95rem;">Category Creation</strong>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">First mover in "Home Intelligence." Category creators define the rules. Salesforce defined CRM. Uber defined rideshare. UpTend defines Home Intelligence.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-sm">
+        <div style="display:flex;align-items:start;gap:0.12in;">
+          <div style="width:1.3em;flex-shrink:0;"></div>
+          <div>
+            <strong style="font-size:0.95rem; color:#F47C20;">Founder-Market Fit</strong>
+            <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.04in;">Home services operator + AI builder + community resident. This combination doesn't exist elsewhere.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>9 / 12</span></div>
+</div>
+
+<!-- SLIDE 10: THE FOUNDER -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">The Founder</div>
+  <h2>Alan Oney</h2>
+  <p class="subtitle">Builder. Operator. Home Services Insider.</p>
+  <div class="grid-2" style="margin-top: 0.25in; flex: 1;">
+    <div class="card">
+      <h3 style="color:#F47C20;">Background</h3>
+      <div class="divider"></div>
+      <ul style="font-size:0.92rem;">
+        <li style="margin-bottom:0.08in;"><strong>Founded and operated</strong> A Squared Junk Removal in Orlando. Learned home services from the inside.</li>
+        <li style="margin-bottom:0.08in;"><strong>Lives in Lake Nona.</strong> Embedded in the beachhead community with personal HOA board relationships.</li>
+        <li style="margin-bottom:0.08in;"><strong>Technical builder.</strong> Architected UpTend's full stack and George's 176-tool agent system. Solo.</li>
+        <li style="margin-bottom:0.08in;"><strong>Full-stack operator.</strong> Product, engineering, go-to-market, sales. Built the platform, the AI, and the business model.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20;">Why Alan Wins</h3>
+      <div class="divider"></div>
+      <ul style="font-size:0.92rem;">
+        <li style="margin-bottom:0.08in;"><strong>Operator-founder.</strong> Has done the work. Understands pro pain points firsthand.</li>
+        <li style="margin-bottom:0.08in;"><strong>AI-native builder.</strong> Didn't hire an AI team. Built the agent system himself.</li>
+        <li style="margin-bottom:0.08in;"><strong>Community embedded.</strong> Can't be replicated by a startup parachuting into Orlando.</li>
+        <li style="margin-bottom:0.08in;"><strong>Capital efficient.</strong> Built a production platform, AI agent, and go-to-market on $135K. Next round accelerates, not enables.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card-sm" style="margin-top: 0.15in; text-align:center;">
+    <p style="font-size:0.92rem; color:#94a3b8;"><strong style="color:#fff;">Corporate Structure:</strong> &nbsp;UPYCK Inc. (Delaware C-Corp) &middot; UpTend Services LLC (SDVOSB-eligible for government contracts)</p>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>10 / 12</span></div>
+</div>
+
+<!-- SLIDE 11: MILESTONES -->
+<div class="page">
+  <div class="tag" style="margin-bottom: 0.12in;">The Roadmap</div>
+  <h2>Three Milestones to Category Leadership</h2>
+  <p class="subtitle">Concrete, measurable goals. No vanity metrics.</p>
+  <div class="grid-3" style="margin-top: 0.25in; flex: 1;">
+    <div class="card">
+      <h3 style="color:#F47C20; text-align:center; font-size:1.2rem;">M1: Prove the Wedge</h3>
+      <div class="pill" style="display:block; text-align:center; margin:0.08in 0 0.12in;">0-6 Months</div>
+      <div class="divider"></div>
+      <ul style="font-size:0.92rem;">
+        <li>50 vetted pros on platform</li>
+        <li>200 active customers in Lake Nona</li>
+        <li>3 HOA partnerships signed</li>
+        <li>First 100 completed jobs</li>
+        <li>Home DNA Scan driving acquisition</li>
+        <li><strong class="accent">$5K+ MRR</strong></li>
+      </ul>
+      <div class="divider"></div>
+      <p style="font-size:0.88rem; color:#94a3b8; text-align:center;"><em>It works.</em></p>
+    </div>
+    <div class="card" style="border-color: rgba(244,124,32,0.3);">
+      <h3 style="color:#F47C20; text-align:center; font-size:1.2rem;">M2: Prove the Model</h3>
+      <div class="pill" style="display:block; text-align:center; margin:0.08in 0 0.12in;">6-12 Months</div>
+      <div class="divider"></div>
+      <ul style="font-size:0.92rem;">
+        <li>600 active customers across Orlando</li>
+        <li>15+ HOA/PM contracts</li>
+        <li>George handling 80%+ autonomously</li>
+        <li>First enterprise contract</li>
+        <li>CTO hired, team of 3-4</li>
+        <li><strong class="accent">$25K+ MRR</strong></li>
+      </ul>
+      <div class="divider"></div>
+      <p style="font-size:0.88rem; color:#94a3b8; text-align:center;"><em>It makes money.</em></p>
+    </div>
+    <div class="card">
+      <h3 style="color:#F47C20; text-align:center; font-size:1.2rem;">M3: Prove the Scale</h3>
+      <div class="pill" style="display:block; text-align:center; margin:0.08in 0 0.12in;">12-18 Months</div>
+      <div class="divider"></div>
+      <ul style="font-size:0.92rem;">
+        <li>Expand to 2-3 additional FL markets</li>
+        <li>2,000+ active customers</li>
+        <li>50+ B2B contracts</li>
+        <li>George as white-label product</li>
+        <li>Series A ready</li>
+        <li><strong class="accent">$100K+ MRR</strong></li>
+      </ul>
+      <div class="divider"></div>
+      <p style="font-size:0.88rem; color:#94a3b8; text-align:center;"><em>It scales.</em></p>
+    </div>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>11 / 12</span></div>
+</div>
+
+<!-- SLIDE 12: CLOSE -->
+<div class="page" style="justify-content: center; align-items: center; text-align: center;">
+  <div>
+    <p style="font-size: 0.8rem; color: #F47C20; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.12in;">HOME INTELLIGENCE</p>
+    <h1 style="font-size: 3.2rem; margin-bottom: 0.08em;"><span style="color: #F47C20;">Up</span><span style="color: #fff;">Tend</span></h1>
+    <div style="width: 1.5in; height: 3px; background: #F47C20; margin: 0 auto 0.3in;"></div>
+    <p style="font-size: 1.2rem; color: #fff; font-weight: 600; margin-bottom: 0.08in;">The AI platform defining Home Intelligence.</p>
+    <p style="font-size: 1rem; color: #94a3b8; margin-bottom: 0.4in;"><span class="g">George</span> is the Home Service Agent. Not an assistant. An agent.</p>
+
+    <div style="display:inline-block; text-align:left; margin-bottom:0.4in;">
+      <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 0.06in;"><strong style="color:#fff;">Alan Oney</strong> &middot; Founder &amp; CEO</p>
+      <p style="font-size: 0.88rem; color: #94a3b8;"><a href="mailto:alan@uptendapp.com">alan@uptendapp.com</a></p>
+      <p style="font-size: 0.88rem; color: #94a3b8;"><a href="https://uptendapp.com">uptendapp.com</a></p>
+      <p style="font-size: 0.88rem; color: #94a3b8;">(407) 338-3342</p>
+    </div>
+
+    <p style="font-size: 1.05rem; color: #F47C20; font-weight: 600;">Three Milestones. One Category. Zero Competition.</p>
+  </div>
+  <div class="footer"><span>UPTEND</span><span>12 / 12</span></div>
+</div>
+
 </body>
 </html>

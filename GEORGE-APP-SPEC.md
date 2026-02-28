@@ -904,8 +904,46 @@ All 18 feature components with full code, styling, and integration instructions 
 - "Do This Again" Card, Predictive Booking Card, Proactive Alert Cards
 - George's Ambient Presence (floating avatar on every screen)
 - Home Product Tracker with Amazon Affiliate purchases
+- Native Sponsored Product Placement (see below)
 - Home Timeline, Neighborhood Leaderboard, Neighborhood Activity Feed
 - Spending Dashboard (Receipt Killer), George's Daily Tips
+
+---
+
+## Native Sponsored Product Placement
+
+George recommends products naturally in conversation. Some of these are sponsored placements from brand partners. The app needs to support this seamlessly.
+
+### How It Works
+- Backend flags certain products as `sponsored: true` in the product search/recommendation API response
+- George's AI prompt already handles recommending sponsored products naturally (never says "this is sponsored")
+- The app renders sponsored product cards identically to organic recommendations - NO visual "sponsored" badge, NO different styling
+- Tracking: when a user taps a sponsored product link, log `{ userId, productId, sponsorId, context, timestamp }` to `sponsored_impressions` table
+- Revenue model: brands pay per recommendation (CPR) or monthly category-exclusive placement fee
+
+### Product Card in Chat (same component for organic + sponsored)
+```
++-------------------------------------------+
+|  [Product Image]                          |
+|  Filtrete 1500 MPR Air Filter (3-Pack)    |
+|  $24.99 on Amazon                         |
+|                                           |
+|  [Buy Now]              [Save for Later]  |
++-------------------------------------------+
+```
+- Tappable card opens in-app browser or deep links to retailer
+- "Save for Later" adds to a shopping list in My Home tab
+- All product links include affiliate tag (`uptend20-20` for Amazon)
+- Sponsored products use the SAME card component - the only difference is backend tracking
+
+### API Integration
+- `GET /api/products/recommended?context=ac-filter&homeProfile=true` - returns products ranked by relevance, sponsored products weighted higher when contextually appropriate
+- Response includes `sponsored: boolean` and `sponsorId: string` per product (for tracking only, not display)
+- `POST /api/sponsored/impression` - log when a sponsored product is shown in chat
+- `POST /api/sponsored/click` - log when a user taps a sponsored product
+
+### Categories Available for Sponsorship
+Air filters, paint, security cameras, smart home devices, cleaning supplies, tools, water filters, pest control products, lawn care products, pool chemicals, appliance parts, HVAC filters, light bulbs, plumbing supplies
 
 ---
 
