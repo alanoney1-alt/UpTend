@@ -645,78 +645,100 @@ export function UpTendGuide() {
 
   return (
     <>
-      <style>{pulseKeyframes}</style>
+      <style>{`
+        ${pulseKeyframes}
+        @keyframes chatSlideIn {
+          from { opacity: 0; transform: translateY(16px) scale(0.97); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes fabPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(244, 124, 32, 0.4); }
+          50% { box-shadow: 0 0 0 8px rgba(244, 124, 32, 0); }
+        }
+        @keyframes dotPulse {
+          0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+          40% { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
 
-      {/* ─── Floating Pill (closed state) ────────────────────────────── */}
+      {/* ─── Floating George Button (closed state) ───────────────────── */}
       {!isOpen && (
         <button
           onClick={handleOpen}
-          className={cn(
-            "fixed bottom-20 md:bottom-4 right-4 z-[60] flex items-center gap-2 px-3 py-2",
-            "bg-amber-500/90 hover:bg-amber-500 text-white",
-            "rounded-full shadow-lg hover:shadow-xl",
-            "transition-all duration-300 ease-out",
-            "backdrop-blur-sm",
-            "text-xs font-medium",
-          )}
-          style={{
-            animation: shouldPulse ? "gentlePulse 2s ease-in-out" : "none",
-            maxWidth: "180px",
-          }}
+          className="fixed bottom-20 md:bottom-4 right-4 z-[60] h-14 w-14 rounded-full overflow-hidden border-2 border-[#F47C20]/60 hover:border-[#F47C20] transition-all duration-300 hover:scale-110 cursor-pointer"
+          style={{ animation: shouldPulse ? "fabPulse 2s ease-in-out" : "fabPulse 3s ease-in-out infinite" }}
           aria-label="Chat with George"
         >
-          <span className="text-sm leading-none"></span>
-          <span>George </span>
+          <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" />
+          <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 bg-green-400 rounded-full border-2 border-slate-900" />
         </button>
       )}
 
-      {/* ─── Chat Card ───────────────────────────────────────────────── */}
+      {/* ─── Chat Card (Dark, George's Space) ─────────────────────────── */}
       <div
         className={cn(
-          "fixed z-[60] flex flex-col transition-all duration-300 ease-out",
-          // Glass effect
-          "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl",
-          "border border-white/40 dark:border-zinc-700/40",
-          "shadow-[0_8px_40px_rgba(0,0,0,0.08)]",
+          "fixed z-[60] flex flex-col overflow-hidden",
           // Desktop: compact card bottom-right
-          "bottom-4 right-4 w-[400px] max-w-[calc(100vw-2rem)] rounded-2xl",
-          "h-[min(560px,calc(100vh-2rem))]",
+          "bottom-4 right-4 w-[390px] max-w-[calc(100vw-2rem)] rounded-2xl",
+          "h-[min(540px,calc(100vh-2rem))]",
           // Mobile: bottom sheet
-          "max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-2xl max-md:h-[60vh]",
+          "max-md:left-0 max-md:right-0 max-md:bottom-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-2xl max-md:h-[65vh]",
           // Visibility
           isOpen
-            ? "opacity-100 translate-y-0 pointer-events-auto"
+            ? "pointer-events-auto"
             : "opacity-0 translate-y-3 pointer-events-none"
         )}
+        style={{
+          ...(isOpen ? { animation: "chatSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards" } : {}),
+          background: "linear-gradient(180deg, #0f172a 0%, #0a0e1a 100%)",
+          boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(244, 124, 32, 0.08)",
+          border: "1px solid rgba(244, 124, 32, 0.15)",
+        }}
       >
-        {/* Header. minimal */}
-        <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-black/5 dark:border-white/5 shrink-0">
-          <span className="font-semibold text-sm">George </span>
+        {/* Header — George's face + name + status */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="h-10 w-10 rounded-full overflow-hidden ring-2 ring-[#F47C20]/30">
+                <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" />
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-[#0f172a]" />
+            </div>
+            <div>
+              <h3 className="text-white font-semibold text-sm">George</h3>
+              <p className="text-green-400/80 text-[11px]">Online now</p>
+            </div>
+          </div>
           <button
             onClick={() => { setIsOpen(false); synth.cancel(); }}
-            className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+            className="h-8 w-8 rounded-full flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-all"
             aria-label="Close"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-2.5 space-y-2">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.1) transparent" }}>
           {messages.map((msg) => (
-            <div key={msg.id} className={cn("flex flex-col group", msg.role === "user" ? "items-end" : "items-start")}>
-              <div className={cn("max-w-[88%] space-y-1.5")}>
+            <div key={msg.id} className={cn("flex gap-2.5 group", msg.role === "user" ? "flex-row-reverse" : "flex-row")}>
+              {msg.role === "assistant" && (
+                <div className="h-7 w-7 rounded-full overflow-hidden shrink-0 mt-1">
+                  <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className={cn("max-w-[82%] space-y-1.5")}>
                 {msg.photoUrl && (
-                  <div className="rounded-xl overflow-hidden border border-black/5">
+                  <div className="rounded-xl overflow-hidden border border-white/[0.06]">
                     <img src={msg.photoUrl} alt="Uploaded" className="w-full max-h-32 object-cover" />
                   </div>
                 )}
                 <div
                   className={cn(
-                    "rounded-2xl px-3 py-2 text-[12px] leading-[1.5] break-words overflow-hidden",
+                    "rounded-2xl px-3.5 py-2.5 text-[13px] leading-[1.6] break-words overflow-hidden",
                     msg.role === "user"
-                      ? "bg-amber-500 text-white rounded-br-md"
-                      : "bg-black/[0.04] dark:bg-white/[0.06] rounded-bl-md"
+                      ? "bg-[#F47C20] text-white rounded-br-sm"
+                      : "bg-white/[0.06] text-slate-200 rounded-bl-sm border border-white/[0.04]"
                   )}
                   dangerouslySetInnerHTML={{ __html: renderContent(msg.content) }}
                 />
@@ -728,12 +750,14 @@ export function UpTendGuide() {
                 {msg.bundleData && <BundleCard data={msg.bundleData} />}
                 {msg.breakdown && <BreakdownCard data={msg.breakdown} />}
                 {msg.quickActions && msg.quickActions.length > 0 && (
-                  <div className="flex flex-wrap gap-1 pt-0.5">
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {msg.quickActions.map((qa, i) => (
                       <button
                         key={i}
                         onClick={() => handleAction(qa.action)}
-                        className="inline-flex items-center gap-0.5 px-2 py-1 rounded-full text-[11px] font-medium bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950/50 transition-colors border border-amber-200/40 dark:border-amber-700/30"
+                        className="inline-flex items-center gap-0.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200
+                          bg-white/[0.04] border border-[#F47C20]/20 text-slate-300
+                          hover:bg-[#F47C20]/10 hover:border-[#F47C20]/40 hover:text-white"
                       >
                         {qa.label}
                         <ChevronRight className="w-2.5 h-2.5 opacity-50" />
@@ -741,47 +765,50 @@ export function UpTendGuide() {
                     ))}
                   </div>
                 )}
-                {msg.role === "assistant" && msg.id !== "welcome" && (
+                {msg.role === "assistant" && msg.id !== "welcome" && !msg.id.startsWith("welcome-") && (
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => sendFeedback(msg.id, "helpful")}
-                      className="text-[11px] text-muted-foreground/50 hover:text-green-500 transition-colors p-0.5"
+                      className="text-[11px] text-slate-600 hover:text-green-400 transition-colors p-0.5"
                       title="Helpful"
-                    ></button>
+                    >👍</button>
                     <button
                       onClick={() => sendFeedback(msg.id, "not_helpful")}
-                      className="text-[11px] text-muted-foreground/50 hover:text-red-400 transition-colors p-0.5"
+                      className="text-[11px] text-slate-600 hover:text-red-400 transition-colors p-0.5"
                       title="Not helpful"
-                    ></button>
+                    >👎</button>
                   </div>
                 )}
               </div>
             </div>
           ))}
 
-          {/* Typing indicator. subtle dots */}
+          {/* George thinking — amber dots */}
           {(isLoading || isUploading) && (
-            <div className="flex items-start">
-              <div className="bg-black/[0.04] dark:bg-white/[0.06] rounded-2xl rounded-bl-md px-3 py-2">
-                <div className="flex items-center gap-1.5">
-                  <div className="flex gap-[3px]">
-                    <div className="w-[5px] h-[5px] rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: "0ms", animationDuration: "0.8s" }} />
-                    <div className="w-[5px] h-[5px] rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: "150ms", animationDuration: "0.8s" }} />
-                    <div className="w-[5px] h-[5px] rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: "300ms", animationDuration: "0.8s" }} />
+            <div className="flex gap-2.5">
+              <div className="h-7 w-7 rounded-full overflow-hidden shrink-0 mt-1">
+                <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" />
+              </div>
+              <div className="bg-white/[0.06] border border-white/[0.04] rounded-2xl rounded-bl-sm px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    <span className="h-2 w-2 bg-[#F47C20] rounded-full" style={{ animation: "dotPulse 1.4s ease-in-out infinite", animationDelay: "0ms" }} />
+                    <span className="h-2 w-2 bg-[#F47C20] rounded-full" style={{ animation: "dotPulse 1.4s ease-in-out infinite", animationDelay: "200ms" }} />
+                    <span className="h-2 w-2 bg-[#F47C20] rounded-full" style={{ animation: "dotPulse 1.4s ease-in-out infinite", animationDelay: "400ms" }} />
                   </div>
-                  {isUploading && <span className="text-[10px] text-muted-foreground ml-1">Analyzing photo…</span>}
+                  {isUploading && <span className="text-[10px] text-slate-500 ml-1">Analyzing photo...</span>}
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* Input */}
-        <div className="px-2.5 py-2 border-t border-black/5 dark:border-white/5 shrink-0">
+        {/* Input area */}
+        <div className="px-3 py-3 border-t border-white/[0.06] shrink-0">
           {speech.isListening && (
-            <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-amber-600 px-1">
+            <div className="flex items-center gap-1.5 mb-2 text-[11px] text-[#F47C20] px-1">
               <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-              Listening… {speech.transcript || "speak now"}
+              Listening... {speech.transcript || "speak now"}
             </div>
           )}
 
@@ -793,104 +820,76 @@ export function UpTendGuide() {
             onChange={(e) => { const file = e.target.files?.[0]; if (file) handlePhotoUpload(file); e.target.value = ""; }}
           />
 
-          <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex items-center gap-1">
-            <input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask anything…"
-              className="flex-1 bg-transparent text-[12px] h-7 px-2 rounded-full border border-black/10 dark:border-white/10 focus:outline-none focus:border-amber-400/50 transition-colors placeholder:text-muted-foreground/60"
-              disabled={isLoading || speech.isListening || isUploading}
-            />
+          <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex items-center gap-1.5">
             <button
               type="button"
-              className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-              onClick={() => setShowCallGeorge(true)}
-              title="Call George"
-            >
-              <Phone className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
               onClick={() => fileInputRef.current?.click()}
               disabled={isLoading || isUploading}
               title="Send a photo"
             >
-              {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5" />}
+              {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
             </button>
             {speech.isSupported && (
               <button
                 type="button"
                 className={cn(
-                  "shrink-0 w-7 h-7 flex items-center justify-center rounded-full transition-colors",
+                  "shrink-0 w-8 h-8 flex items-center justify-center rounded-full transition-colors",
                   speech.isListening
                     ? "bg-red-500 text-white"
-                    : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10"
+                    : "text-slate-500 hover:text-white hover:bg-white/10"
                 )}
                 onClick={speech.isListening ? speech.stopListening : speech.startListening}
                 disabled={isLoading || isUploading}
                 title={speech.isListening ? "Stop" : "Voice input"}
               >
-                {speech.isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+                {speech.isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
               </button>
             )}
-            {synth.isSupported && (
-              <button
-                type="button"
-                className={cn(
-                  "shrink-0 w-7 h-7 flex items-center justify-center rounded-full transition-colors",
-                  voiceOutputEnabled
-                    ? "text-amber-500"
-                    : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10"
-                )}
-                onClick={() => { const next = !voiceOutputEnabled; setVoiceOutputEnabled(next); localStorage.setItem(LS_VOICE_OUT, String(next)); if (!next) synth.cancel(); }}
-                title={voiceOutputEnabled ? "Mute voice" : "Enable voice"}
-              >
-                {voiceOutputEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
-              </button>
-            )}
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Message George..."
+              className="flex-1 h-10 px-4 rounded-full text-sm bg-white/[0.06] border border-white/[0.08] text-white placeholder:text-slate-500 outline-none focus:border-[#F47C20]/40 focus:bg-white/[0.08] transition-all"
+              disabled={isLoading || speech.isListening || isUploading}
+            />
             <button
               type="submit"
-              className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-amber-500 text-white hover:bg-amber-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="shrink-0 h-10 w-10 rounded-full bg-[#F47C20] hover:bg-[#E06910] flex items-center justify-center transition-all disabled:opacity-30"
               disabled={!input.trim() || isLoading || isUploading}
             >
-              {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+              {isLoading ? <Loader2 className="w-4 h-4 text-white animate-spin" /> : <Send className="w-4 h-4 text-white" />}
             </button>
           </form>
-
-          {/* Powered by */}
-          <div className="text-center mt-1">
-            <span className="text-[9px] text-muted-foreground/40">powered by UpTend</span>
-          </div>
         </div>
 
-        {/* Call George Modal Overlay */}
+        {/* Call George Modal */}
         {showCallGeorge && (
-          <div className="absolute inset-0 z-10 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm rounded-2xl max-md:rounded-b-none max-md:rounded-t-2xl flex flex-col items-center justify-center p-6 text-center">
+          <div className="absolute inset-0 z-10 backdrop-blur-sm rounded-2xl max-md:rounded-b-none max-md:rounded-t-2xl flex flex-col items-center justify-center p-6 text-center" style={{ background: "rgba(10, 14, 26, 0.95)" }}>
             <button
               onClick={() => setShowCallGeorge(false)}
-              className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              className="absolute top-3 right-3 h-8 w-8 flex items-center justify-center rounded-full text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
               aria-label="Close"
             >
               <X className="w-4 h-4" />
             </button>
-            <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
-              <Phone className="w-7 h-7 text-amber-600" />
+            <div className="w-16 h-16 rounded-full overflow-hidden ring-2 ring-[#F47C20]/30 mb-4">
+              <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" />
             </div>
-            <h3 className="text-lg font-bold mb-1">Call George</h3>
+            <h3 className="text-lg font-bold text-white mb-1">Call George</h3>
             <a
               href="tel:+14073383342"
-              className="text-2xl font-bold text-amber-600 hover:text-amber-700 transition-colors mb-3"
+              className="text-2xl font-bold text-[#F47C20] hover:text-[#FF8C34] transition-colors mb-3"
             >
               (407) 338-3342
             </a>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-slate-400 mb-4">
               Available 24/7. George answers every call.
             </p>
             <a
               href="tel:+14073383342"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-500 text-white font-semibold hover:bg-amber-600 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#F47C20] text-white font-semibold hover:bg-[#E06910] transition-colors"
             >
               <Phone className="w-4 h-4" />
               Tap to Call
