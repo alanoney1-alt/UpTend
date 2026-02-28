@@ -1635,9 +1635,32 @@ export async function getHomeProfile(userId: string, storage?: any): Promise<obj
  };
 }
 
-// t2) saveHomeMemory - store a fact George learned about the customer's home
+// t2) Home memories table auto-init
+let homeMemoriesTableReady = false;
+async function ensureHomeMemoriesTable() {
+ if (homeMemoriesTableReady) return;
+ try {
+  await pool.query(`
+   CREATE TABLE IF NOT EXISTS home_memories (
+    id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    customer_id VARCHAR NOT NULL,
+    category TEXT NOT NULL,
+    fact TEXT NOT NULL,
+    source TEXT DEFAULT 'conversation',
+    confidence TEXT DEFAULT 'confirmed',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+   )`);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_home_memories_customer ON home_memories(customer_id)`);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_home_memories_category ON home_memories(customer_id, category)`);
+  homeMemoriesTableReady = true;
+ } catch (e) { console.error("home_memories table init error:", e); }
+}
+
+// saveHomeMemory - store a fact George learned about the customer's home
 export async function saveHomeMemory(userId: string, category: string, fact: string, source: string = "conversation", confidence: string = "confirmed"): Promise<object> {
  try {
+  await ensureHomeMemoriesTable();
   // Check for duplicate/similar fact to avoid storing the same thing twice
   const existing = await db.select().from(homeMemories)
    .where(and(eq(homeMemories.customerId, userId), eq(homeMemories.category, category)))
@@ -1668,6 +1691,7 @@ export async function saveHomeMemory(userId: string, category: string, fact: str
 // t3) getHomeMemories - retrieve everything George knows about a customer's home
 export async function getHomeMemories(userId: string): Promise<object> {
  try {
+  await ensureHomeMemoriesTable();
   const memories = await db.select().from(homeMemories)
    .where(eq(homeMemories.customerId, userId))
    .orderBy(desc(homeMemories.updatedAt));
