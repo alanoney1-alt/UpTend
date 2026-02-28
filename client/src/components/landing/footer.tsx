@@ -185,6 +185,21 @@ export function Footer() {
             <Link href="/apopka" className="hover:text-primary transition-colors">Apopka</Link>
             <Link href="/clermont" className="hover:text-primary transition-colors">Clermont</Link>
           </div>
+          <h4 className="text-white font-bold mt-6 mb-3 uppercase tracking-widest text-xs">Popular Services by City</h4>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400">
+            <Link href="/services/junk-removal-lake-nona" className="hover:text-primary transition-colors">Junk Removal Lake Nona</Link>
+            <Link href="/services/pressure-washing-winter-park" className="hover:text-primary transition-colors">Pressure Washing Winter Park</Link>
+            <Link href="/services/pool-cleaning-dr-phillips" className="hover:text-primary transition-colors">Pool Cleaning Dr. Phillips</Link>
+            <Link href="/services/landscaping-windermere" className="hover:text-primary transition-colors">Landscaping Windermere</Link>
+            <Link href="/services/home-cleaning-celebration" className="hover:text-primary transition-colors">Home Cleaning Celebration</Link>
+            <Link href="/services/handyman-kissimmee" className="hover:text-primary transition-colors">Handyman Kissimmee</Link>
+            <Link href="/services/gutter-cleaning-winter-garden" className="hover:text-primary transition-colors">Gutter Cleaning Winter Garden</Link>
+            <Link href="/services/carpet-cleaning-altamonte-springs" className="hover:text-primary transition-colors">Carpet Cleaning Altamonte Springs</Link>
+            <Link href="/services/moving-labor-sanford" className="hover:text-primary transition-colors">Moving Labor Sanford</Link>
+            <Link href="/services/garage-cleanout-apopka" className="hover:text-primary transition-colors">Garage Cleanout Apopka</Link>
+            <Link href="/services/light-demolition-clermont" className="hover:text-primary transition-colors">Light Demolition Clermont</Link>
+            <Link href="/services/home-dna-scan-ocoee" className="hover:text-primary transition-colors">Home DNA Scan Ocoee</Link>
+          </div>
         </div>
 
         <div className="border-t border-slate-900 mt-8 pt-8 text-xs flex flex-col md:flex-row justify-between items-center gap-4">

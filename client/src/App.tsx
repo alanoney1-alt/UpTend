@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation, Redirect } from "wouter";
+import { Switch, Route, useLocation, useParams, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -174,6 +174,18 @@ const SanfordLanding = lazy(() => import("@/pages/neighborhood-landing").then(m 
 const ApopkaLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.ApopkaPage })));
 const ClermontLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.ClermontPage })));
 const MovingLaborOrlando = lazy(() => import("@/pages/services/moving-labor-orlando"));
+const SeoServiceCityPage = lazy(() => import("@/pages/services/seo-service-city-pages"));
+
+// Router that checks if a /services/:slug is one of the 144 SEO city pages, else falls back to ServiceDetail
+import { getSeoServiceCityPageData } from "@/pages/services/seo-service-city-pages";
+function ServiceSlugRouter() {
+  const params = useParams();
+  const slug = (params as any).slug as string;
+  if (slug && getSeoServiceCityPageData(slug)) {
+    return <Suspense fallback={<PageLoader />}><SeoServiceCityPage /></Suspense>;
+  }
+  return <Suspense fallback={<PageLoader />}><ServiceDetail /></Suspense>;
+}
 
 // Job Detail + Tax Center
 const JobDetail = lazy(() => import("@/pages/job-detail"));
@@ -353,7 +365,7 @@ function Router() {
       <Route path="/services/home-services-lake-nona" component={HomeServicesLakeNona} />
       <Route path="/services/home-cleaning-orlando" component={HomeCleaningOrlando} />
       <Route path="/services/moving-labor-orlando" component={MovingLaborOrlando} />
-      <Route path="/services/:slug" component={ServiceDetail} />
+      <Route path="/services/:slug" component={ServiceSlugRouter} />
       <Route path="/sustainability" component={Sustainability} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/pro/verify" component={ProVerification} />
