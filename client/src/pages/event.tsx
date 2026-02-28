@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Founding100 } from "@/components/landing/founding-100";
 import { Footer } from "@/components/landing/footer";
+import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
 import { Button } from "@/components/ui/button";
 
 export default function EventPage() {
@@ -30,6 +31,8 @@ export default function EventPage() {
       </header>
 
       <main className="pt-16">
+        <AnnouncementTicker />
+
         {/* Hero */}
         <section className="relative pt-16 pb-20 overflow-hidden bg-slate-900">
           <div className="absolute inset-0">
@@ -52,13 +55,13 @@ export default function EventPage() {
             {/* $25 Credit callout */}
             <div className="inline-block bg-[#F47C20]/15 border border-[#F47C20]/30 rounded-2xl px-8 py-4 mb-8">
               <p className="text-[#F47C20] font-black text-3xl mb-1">$25 Credit</p>
-              <p className="text-white/70 text-sm">On your first service + 10% off your first 10 jobs</p>
+              <p className="text-white/70 text-sm">Pre-register now to receive $25 credit on your first service + 10% off your first 10 jobs</p>
             </div>
 
             <div className="block">
               <a href="#join">
                 <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white text-sm sm:text-lg px-6 sm:px-10 h-14 rounded-xl shadow-lg shadow-[#F47C20]/25 whitespace-normal max-w-[90vw]">
-                  Claim Your $25 Credit <ArrowRight className="ml-2 w-5 h-5 shrink-0" />
+                  Click Here to Claim Your $25 Credit <ArrowRight className="ml-2 w-5 h-5 shrink-0" />
                 </Button>
               </a>
             </div>
