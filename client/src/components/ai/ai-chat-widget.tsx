@@ -188,13 +188,79 @@ export function AiChatWidget() {
         { text: "Learn About UpTend", action: "reply:Tell me about UpTend" },
       ];
 
+  // George greeting bar - slides up from bottom after 2s for first-time visitors
+  const [showGreeting, setShowGreeting] = useState(false);
+  const [greetingDismissed, setGreetingDismissed] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen && !greetingDismissed) {
+      const hasVisited = localStorage.getItem('george_dismissed');
+      if (!hasVisited) {
+        const timer = setTimeout(() => setShowGreeting(true), 2000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isOpen, greetingDismissed]);
+
+  const handleGreetingClick = () => {
+    setShowGreeting(false);
+    setIsOpen(true);
+  };
+
+  const handleGreetingDismiss = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowGreeting(false);
+    setGreetingDismissed(true);
+    localStorage.setItem('george_dismissed', 'true');
+  };
+
   return (
     <>
-      {/* Floating Button */}
-      {!isOpen && (
+      {/* George Greeting Bar - full-width bottom bar that slides up */}
+      {showGreeting && !isOpen && (
+        <div
+          onClick={handleGreetingClick}
+          className="fixed bottom-0 left-0 right-0 z-40 cursor-pointer"
+          style={{ animation: "slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}
+        >
+          <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 border-t border-[#F47C20]/30 backdrop-blur-md px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="h-11 w-11 rounded-full bg-gradient-to-br from-[#F47C20] to-[#E06010] flex items-center justify-center shadow-lg shadow-orange-500/20">
+                  <Bot className="h-5 w-5 text-white" />
+                </div>
+                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-slate-900" />
+              </div>
+              <div>
+                <p className="text-white font-semibold text-sm">George here. What's going on with your home?</p>
+                <p className="text-slate-400 text-xs mt-0.5">Your home service agent - tap to chat</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[#F47C20] text-sm font-medium hidden sm:block">Chat now</span>
+              <button
+                onClick={handleGreetingDismiss}
+                className="text-slate-500 hover:text-slate-300 transition-colors p-1"
+                aria-label="Dismiss"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+          <style>{`
+            @keyframes slideUp {
+              from { transform: translateY(100%); opacity: 0; }
+              to { transform: translateY(0); opacity: 1; }
+            }
+          `}</style>
+        </div>
+      )}
+
+      {/* Floating Button - shows after greeting dismissed or for returning visitors */}
+      {!isOpen && !showGreeting && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 md:bottom-8 right-6 h-14 w-14 rounded-full shadow-lg z-40 bg-[#F47C20] hover:bg-[#e06d15]"
+          className="fixed bottom-24 md:bottom-8 right-6 h-14 w-14 rounded-full shadow-lg shadow-orange-500/25 z-40 bg-gradient-to-br from-[#F47C20] to-[#E06010] hover:from-[#FF8C34] hover:to-[#F47C20] transition-all duration-300"
           size="icon"
         >
           <MessageCircle className="h-6 w-6" />
@@ -205,7 +271,7 @@ export function AiChatWidget() {
       {/* Chat Widget */}
       {isOpen && (
         <Card className="fixed bottom-[7.5rem] md:bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] h-[500px] max-h-[55vh] md:max-h-[500px] shadow-xl z-40 flex flex-col">
-          <CardHeader className="pb-3 border-b bg-[#F47C20] rounded-t-xl">
+          <CardHeader className="pb-3 border-b bg-gradient-to-r from-[#F47C20] to-[#E06010] rounded-t-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -213,7 +279,7 @@ export function AiChatWidget() {
                 </div>
                 <div>
                   <CardTitle className="text-base text-white">George</CardTitle>
-                  <p className="text-white/70 text-xs">Your home helper</p>
+                  <p className="text-white/70 text-xs">Your Home Service Agent</p>
                 </div>
               </div>
               <Button variant="ghost" size="icon" onClick={() => { setIsOpen(false); localStorage.setItem('george_dismissed', 'true'); }} className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20">
