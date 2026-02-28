@@ -10,7 +10,7 @@ import { z } from "zod";
 import { users } from "@shared/models/auth";
 
 const GROUP_DISCOUNT_THRESHOLD = 3;
-const GROUP_DISCOUNT_PERCENT = 15;
+const NEIGHBORHOOD_CREDIT_AMOUNT = 10; // flat $10 credit per booking
 
 const recommendSchema = z.object({
   haulerId: z.string().min(1),
@@ -129,7 +129,7 @@ export function registerNeighborhoodRoutes(app: Express) {
         .map((s: any) => ({
           serviceType: s.serviceType,
           neighborsBooked: Number(s.count),
-          discountPercent: GROUP_DISCOUNT_PERCENT,
+          creditAmount: NEIGHBORHOOD_CREDIT_AMOUNT,
         }));
 
       res.json({
@@ -205,7 +205,7 @@ export function registerNeighborhoodRoutes(app: Express) {
         serviceType,
         neighborsBooked,
         eligible,
-        discountPercent: eligible ? GROUP_DISCOUNT_PERCENT : 0,
+        creditAmount: eligible ? NEIGHBORHOOD_CREDIT_AMOUNT : 0,
       });
     } catch (error) {
       console.error("Error checking group discount:", error);

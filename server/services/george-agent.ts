@@ -195,7 +195,7 @@ You are not a simple chatbot. You function like a real person with real capabili
 
  NEIGHBORHOOD INTELLIGENCE:
 - Call get_neighborhood_insights_v2 for detailed zip code data (home values, common issues, popular services, HOA prevalence)
-- Call find_neighbor_bundles to show group discount opportunities (neighbors booking together)
+- Call find_neighbor_bundles to show neighborhood credit opportunities ($10 off when neighbors book together)
 - Call get_local_alerts for weather, HOA, utility, and pest alerts
 - Reference neighborhood data naturally: "Homes in Lake Nona average 8 years old - your HVAC should be fine for a while"
 
@@ -297,7 +297,7 @@ CAPABILITIES:
 - Trust & safety: call get_pro_arrival_info to give real-time "Your pro Marcus is 8 min away in a white Ford F-150" updates
 - Insurance claims: call get_storm_prep_checklist before storms, call generate_claim_documentation to compile job records into claim-ready format
 - Referrals: after positive experiences, proactively mention referral program - call get_referral_status to show credits earned
-- Group deals: call get_neighborhood_group_deals to check if neighbors are pooling for a discount
+- Group deals: call get_neighborhood_group_deals to check if neighbors are pooling for a $10 neighborhood credit
 - Loyalty tiers: call get_customer_loyalty_status to show tier (Bronze/Silver/Gold/Platinum) and what's unlocked; mention tier progress naturally ("This booking puts you at Gold - unlocks 5% off everything")
 - Milestones: call get_customer_milestones for birthday/anniversary/spending milestone celebrations
 - Community: call get_neighborhood_activity and get_local_events for neighborhood context
@@ -1025,7 +1025,7 @@ CAPABILITIES (call the relevant tools):
 - Violation management: call create_violation - create CC&R violation with one-tap booking link for resident
 - Community blasts: call send_community_blast - announcements via email/SMS to all residents or subsets
 - Emergency protocols: call activate_emergency_protocol - hurricane prep, flood response, resident notifications
-- Batch/group pricing: call get_batch_pricing - community-wide service discounts (up to 10% off)
+- Batch/group pricing: call get_batch_pricing - community-wide service pricing with $10 per-unit neighborhood credit
 - Revenue share: call get_revenue_share_summary - show HOA earnings from the partnership
 - Community scheduling: call schedule_community_service - book services for entire community at once
 - Onboarding: conversational walkthrough of entire platform setup
@@ -1394,7 +1394,7 @@ const TOOL_DEFINITIONS: any[] = [
  },
  {
  name: "get_neighborhood_group_deals",
- description: "Check if neighbors are pooling for a group discount on a service. Call when customer asks about group discounts or neighborhood deals.",
+ description: "Check if neighbors are pooling for a $10 neighborhood credit on a service. Call when customer asks about group discounts or neighborhood deals.",
  input_schema: {
  type: "object",
  properties: {
@@ -2891,7 +2891,7 @@ const TOOL_DEFINITIONS: any[] = [
  },
  {
  name: "find_neighbor_bundles",
- description: "Find group discount opportunities when neighbors book the same service.",
+ description: "Find $10 neighborhood credit opportunities when neighbors book the same service.",
  input_schema: { type: "object", properties: { zip_code: { type: "string" }, service_type: { type: "string" } }, required: ["zip_code", "service_type"] },
  },
  {
@@ -3647,7 +3647,7 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
 
  // ── HOA / Community Management Tools ──
  case "schedule_community_service":
- return { success: true, message: `Community-wide ${input.service_type} has been scheduled for ${input.target_date}. ${input.unit_count || 'All'} units will be notified. Estimated batch discount: ${input.discount_pct || 15}% off standard pricing.` };
+ return { success: true, message: `Community-wide ${input.service_type} has been scheduled for ${input.target_date}. ${input.unit_count || 'All'} units will be notified. Each unit gets a $10 neighborhood credit applied at booking.` };
  case "generate_board_report":
  return { success: true, message: `Board report for ${input.period || 'current quarter'} is being generated. It includes spending summary, vendor performance, compliance stats, and maintenance calendar. The report will be available on the Business Dashboard under Board Reports.` };
  case "check_community_health":
@@ -3659,7 +3659,7 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  case "activate_emergency_protocol":
  return { success: true, message: `Emergency protocol activated: ${input.emergency_type}. All residents notified. Emergency checklist created. Pro dispatch queue activated for priority response.` };
  case "get_batch_pricing":
- return { success: true, message: `Batch pricing for ${input.service_type}: Standard rate $${input.standard_rate || 150}/unit. With ${input.min_units || 20}+ unit commitment: $${Math.round((input.standard_rate || 150) * 0.9)}/unit (10% community discount). Estimated community savings: $${Math.round((input.standard_rate || 150) * 0.1 * (input.unit_count || 50))}.` };
+ return { success: true, message: `Batch pricing for ${input.service_type}: Standard rate $${input.standard_rate || 150}/unit. With ${input.min_units || 20}+ unit commitment: each unit receives a $10 neighborhood credit. Total community savings: $${10 * (input.unit_count || 50)} across ${input.unit_count || 50} units.` };
  case "get_revenue_share_summary":
  return { success: true, message: "Revenue share summary: Total jobs this quarter: 142. Total platform revenue: $28,400. HOA share (at $3/unit/mo): $4,524 this quarter. Year-to-date HOA earnings: $13,572." };
 
