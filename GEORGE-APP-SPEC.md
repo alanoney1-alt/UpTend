@@ -469,7 +469,7 @@ Every notification routes back to George chat with context:
 - **"Mike is 5 minutes away"** → Opens map
 - **"Your job is complete!"** → Opens George chat with before/after + rating card
 - **"George: Your gutters are due for cleaning"** → Opens George chat with booking card
-- **"New: 15% off for your neighborhood"** → Opens George chat with deal details
+- **"New: 5% off for your neighborhood"** → Opens George chat with deal details
 
 Rich notifications with:
 - Pro's photo on en-route notifications

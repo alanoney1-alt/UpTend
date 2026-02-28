@@ -935,7 +935,7 @@ const styles = StyleSheet.create({
 {
   type: "neighborhood",
   title: "Your neighbor just booked pressure washing",
-  message: "A pro is already coming to your street on March 12. Book the same day for 15% off.",
+  message: "A pro is already coming to your street on March 12. Book the same day for 5% off.",
   actionLabel: "Get Group Rate",
 }
 
@@ -1146,7 +1146,7 @@ export function NeighborhoodActivityCard({ jobs, onBookSame }: NeighborhoodActiv
               }}
               style={styles.discountButton}
             >
-              <Text style={styles.discountText}>15% off</Text>
+              <Text style={styles.discountText}>5% off</Text>
             </Pressable>
           ) : (
             <Pressable
@@ -1209,7 +1209,7 @@ const styles = StyleSheet.create({
 ```
 
 ### Integration
-George periodically checks for active/recent jobs near the customer's address. If a pro is already in the neighborhood, George shows this card with a group discount option. The 15% discount applies when a pro can do back-to-back jobs in the same area (reduced travel = savings passed to customer).
+George periodically checks for active/recent jobs near the customer's address. If a pro is already in the neighborhood, George shows this card with a group discount option. The 5% discount applies when a pro can do back-to-back jobs in the same area (reduced travel = savings passed to customer).
 
 ---
 
