@@ -76,7 +76,7 @@ export default function CancellationpolicyPage() {
 <li><strong>Natural disasters</strong> affecting the service area</li>
 <li><strong>Government-mandated restrictions</strong> (evacuation orders, stay-at-home orders)</li>
 </ul>
-<p>Contact support@uptendapp.com as soon as possible with any relevant documentation. Approval of fee waivers is not guaranteed.</p>
+<p>Contact george@uptendapp.com as soon as possible with any relevant documentation. Approval of fee waivers is not guaranteed.</p>
 
 <h2>8. Estimate Accuracy</h2>
 
@@ -122,7 +122,7 @@ export default function CancellationpolicyPage() {
 
 <p>For cancellations, refund inquiries, or special circumstances:</p>
 
-<strong>Email:</strong> support@uptendapp.com
+<strong>Email:</strong> george@uptendapp.com
 <strong>Phone:</strong> (407) 338-3342
 <strong>In-App:</strong> Use the Help & Support feature in the UpTend app
 ` }} />

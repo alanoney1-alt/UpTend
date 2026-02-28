@@ -68,7 +68,7 @@ export default function ServiceguaranteePage() {
 
 <h3>5.3 How to File a Property Damage Claim</h3>
 <p>1. Document the damage with photos and a written description</p>
-<p>2. Contact support@uptendapp.com within <strong>48 hours</strong> of the incident</p>
+<p>2. Contact george@uptendapp.com within <strong>48 hours</strong> of the incident</p>
 <p>3. Include your booking number and Pro name</p>
 <p>4. We will initiate the claims process and guide you through next steps</p>
 
@@ -100,7 +100,7 @@ export default function ServiceguaranteePage() {
 
 <p>To make a guarantee claim:</p>
 
-<strong>Email:</strong> support@uptendapp.com
+<strong>Email:</strong> george@uptendapp.com
 <strong>Phone:</strong> (407) 338-3342
 <strong>In-App:</strong> Use the Help & Support feature
 <strong>Response time:</strong> Within 2 business days

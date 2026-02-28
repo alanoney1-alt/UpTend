@@ -190,7 +190,7 @@ export default function BusinessBilling() {
                 </tbody>
               </table>
               <p className="text-xs text-gray-400 mt-4">
-                Something wrong? <a href="mailto:support@uptend.com" className="text-amber-600 underline">Dispute this charge</a>
+                Something wrong? <a href="mailto:george@uptendapp.com" className="text-amber-600 underline">Dispute this charge</a>
               </p>
             </CardContent>
           </Card>

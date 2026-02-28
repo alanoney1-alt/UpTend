@@ -27,7 +27,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
                 <Mail className="w-4 h-4 text-primary shrink-0" />
-                <a href="mailto:hello@uptendapp.com" data-testid="text-footer-email">hello@uptendapp.com</a>
+                <a href="mailto:george@uptendapp.com" data-testid="text-footer-email">george@uptendapp.com</a>
               </div>
               <div className="flex items-center gap-3 text-sm hover:text-white transition-colors">
                 <MapPin className="w-4 h-4 text-primary shrink-0" />

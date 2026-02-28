@@ -241,7 +241,7 @@ export default function FAQ() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button variant="outline" asChild>
-              <a href="mailto:support@uptendapp.com">{t("faq.email_support")}</a>
+              <a href="mailto:george@uptendapp.com">{t("faq.email_support")}</a>
             </Button>
             <Button asChild>
               <a href="tel:407-338-3342">{t("faq.call_support")}</a>

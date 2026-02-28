@@ -72,7 +72,7 @@ export default function TermsPage() {
 <p>(b) Maintain and promptly update your account information;</p>
 <p>(c) Maintain the security and confidentiality of your login credentials;</p>
 <p>(d) Accept responsibility for all activities that occur under your account;</p>
-<p>(e) Notify us immediately at support@uptendapp.com if you suspect unauthorized access.</p>
+<p>(e) Notify us immediately at george@uptendapp.com if you suspect unauthorized access.</p>
 
 <h3>2.4 Account Verification</h3>
 
@@ -127,7 +127,7 @@ export default function TermsPage() {
 
 <h3>3.8 Payment Disputes</h3>
 
-<p>If you believe a charge is incorrect, contact us at support@uptendapp.com within thirty (30) days of the charge. We will investigate and respond within ten (10) business days. Filing a chargeback with your bank or credit card company before contacting us may result in delays and may affect your account status.</p>
+<p>If you believe a charge is incorrect, contact us at george@uptendapp.com within thirty (30) days of the charge. We will investigate and respond within ten (10) business days. Filing a chargeback with your bank or credit card company before contacting us may result in delays and may affect your account status.</p>
 
 <h2>4. Price Match Policy</h2>
 
@@ -354,7 +354,7 @@ export default function TermsPage() {
 
 <h3>11.9 Special Circumstances</h3>
 
-<p>UpTend may waive cancellation fees in cases of documented emergencies, severe weather events, natural disasters, or other extraordinary circumstances at our sole discretion. Customers should contact support@uptendapp.com as soon as possible with any relevant documentation.</p>
+<p>UpTend may waive cancellation fees in cases of documented emergencies, severe weather events, natural disasters, or other extraordinary circumstances at our sole discretion. Customers should contact george@uptendapp.com as soon as possible with any relevant documentation.</p>
 
 <h3>11.10 Subscription Cancellation</h3>
 
@@ -388,14 +388,14 @@ export default function TermsPage() {
 
 <p>(a) <strong>LLC-Verified Pros</strong> carry their own commercial general liability insurance (minimum \$1,000,000 per occurrence) that covers property damage during jobs;</p>
 <p>(b) <strong>Independent Pros</strong> are covered by UpTend's supplemental liability program, which provides limited coverage for property damage during jobs;</p>
-<p>(c) Report damage within 48 hours with photos and documentation to support@uptendapp.com;</p>
+<p>(c) Report damage within 48 hours with photos and documentation to george@uptendapp.com;</p>
 <p>(d) UpTend will facilitate the claims process between you and the applicable insurance.</p>
 
 <h3>12.6 How to Make a Claim</h3>
 
 <p>To make a claim under any guarantee:</p>
 
-<p>(a) Contact support@uptendapp.com or use the in-app support feature within 48 hours of the incident;</p>
+<p>(a) Contact george@uptendapp.com or use the in-app support feature within 48 hours of the incident;</p>
 <p>(b) Provide your booking number, a description of the issue, and any supporting photos or documentation;</p>
 <p>(c) We will respond within two (2) business days with next steps;</p>
 <p>(d) Resolutions may include re-service, partial refund, full refund, UpTend credit, or insurance claim facilitation.</p>
@@ -619,7 +619,7 @@ export default function TermsPage() {
 
 <h3>27.1 Termination by You</h3>
 
-<p>You may terminate your account at any time by contacting support@uptendapp.com or through your account settings. Termination does not release you from obligations incurred prior to termination, including outstanding payments and pending disputes.</p>
+<p>You may terminate your account at any time by contacting george@uptendapp.com or through your account settings. Termination does not release you from obligations incurred prior to termination, including outstanding payments and pending disputes.</p>
 
 <h3>27.2 Termination by UpTend</h3>
 
@@ -638,7 +638,7 @@ export default function TermsPage() {
 <strong>UPYCK, Inc. d/b/a UpTend</strong>
 <p>Orlando, FL 32801</p>
 <p>Phone: (407) 338-3342</p>
-<p>General Support: support@uptendapp.com</p>
+<p>General Support: george@uptendapp.com</p>
 <p>Legal Inquiries: legal@uptendapp.com</p>
 <p>Privacy Inquiries: privacy@uptendapp.com</p>
 <p>Website: https://uptendapp.com</p>

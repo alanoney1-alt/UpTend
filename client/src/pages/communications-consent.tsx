@@ -57,7 +57,7 @@ export default function Communicationsconsent() {
 <li><strong>Message frequency:</strong> Varies. Transactional messages are sent as needed (typically 3–10 per booking). Marketing messages are limited to no more than 8 per month.</li>
 <li><strong>Message and data rates may apply.</strong> Contact your wireless carrier for details about your plan.</li>
 <li><strong>Text STOP</strong> to any message to opt out of marketing messages. You will receive a confirmation message. Transactional messages will continue.</li>
-<li><strong>Text HELP</strong> to any message for assistance, or contact support@uptendapp.com.</li>
+<li><strong>Text HELP</strong> to any message for assistance, or contact george@uptendapp.com.</li>
 <li><strong>Supported carriers:</strong> All major U.S. carriers are supported. UpTend is not responsible for delayed or undelivered messages caused by carrier issues.</li>
 </ul>
 <h3>2.2 Email</h3>
@@ -91,7 +91,7 @@ export default function Communicationsconsent() {
 <p>| <strong>Push Notifications</strong> | Disable in device settings | Disable in device settings (may affect service experience) |</p>
 <p>| <strong>In-App Messages</strong> | Not available | Not available |</p>
 
-<strong>To stop all communications:</strong> Close your account by contacting support@uptendapp.com. After account closure, you will receive no further messages except as required by law (e.g., tax documents).
+<strong>To stop all communications:</strong> Close your account by contacting george@uptendapp.com. After account closure, you will receive no further messages except as required by law (e.g., tax documents).
 
 <h2>4. Consent Withdrawal</h2>
 
@@ -101,7 +101,7 @@ export default function Communicationsconsent() {
 
 <p>For questions about electronic communications:</p>
 
-<strong>Email:</strong> support@uptendapp.com
+<strong>Email:</strong> george@uptendapp.com
 <strong>Phone:</strong> (407) 338-3342
 <strong>Text HELP</strong> for SMS assistance
 
