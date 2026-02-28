@@ -117,11 +117,6 @@ export default function BookingPage() {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 pt-20">
-        <GeorgeInlineTip
-          pageKey="book"
-          message="Need a faster quote? Snap a photo instead."
-          cta={{ text: "Snap a Photo", action: () => window.location.href = "/snap-quote" }}
-        />
       </div>
       <main id="main-content" className="container mx-auto px-4 pt-24 pb-16 md:pt-28">
         {/* Hero */}
