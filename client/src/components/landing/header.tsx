@@ -79,8 +79,8 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Center: Nav Links. hidden on mobile when scrolled for clean look */}
-        <div className="hidden lg:flex items-center justify-center gap-6 text-sm font-medium text-slate-300 absolute left-1/2 -translate-x-1/2">
+        {/* Center: Nav Links */}
+        <div className="hidden lg:flex items-center justify-center gap-6 text-sm font-medium text-slate-300 flex-1 ml-8">
           <Link href="/services">
             <span className="hover:text-white transition-colors cursor-pointer" data-testid="link-services">
               Services
