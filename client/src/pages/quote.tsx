@@ -505,18 +505,80 @@ export default function Quote() {
     return { price };
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length + uploadedImages.length > 5) {
+  // Extract frames from a video file (start, middle, end)
+  const extractVideoFrames = async (videoFile: File): Promise<File[]> => {
+    return new Promise((resolve) => {
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.muted = true;
+      video.src = URL.createObjectURL(videoFile);
+
+      video.onloadedmetadata = async () => {
+        const duration = video.duration;
+        // Grab 3 frames: 10%, 50%, 90% through the video
+        const times = [duration * 0.1, duration * 0.5, duration * 0.9].filter(t => t >= 0);
+        const frames: File[] = [];
+
+        for (const time of times) {
+          try {
+            video.currentTime = time;
+            await new Promise<void>((res) => { video.onseeked = () => res(); });
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext("2d")?.drawImage(video, 0, 0);
+            const blob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b!), "image/jpeg", 0.85));
+            frames.push(new File([blob], `video-frame-${Math.round(time)}s.jpg`, { type: "image/jpeg" }));
+          } catch { /* skip frame */ }
+        }
+
+        URL.revokeObjectURL(video.src);
+        resolve(frames.length > 0 ? frames : []);
+      };
+
+      video.onerror = () => {
+        URL.revokeObjectURL(video.src);
+        resolve([]);
+      };
+
+      video.load();
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawFiles = Array.from(e.target.files || []);
+    
+    // Separate images and videos
+    const imageFiles = rawFiles.filter(f => f.type.startsWith("image/"));
+    const videoFiles = rawFiles.filter(f => f.type.startsWith("video/"));
+
+    // Extract frames from any videos
+    let videoFrames: File[] = [];
+    if (videoFiles.length > 0) {
+      toast({ title: "Processing video...", description: "Extracting frames for analysis" });
+      for (const vf of videoFiles) {
+        const frames = await extractVideoFrames(vf);
+        videoFrames.push(...frames);
+      }
+      if (videoFrames.length === 0) {
+        const intervention = getGeorgeIntervention("upload_failed");
+        setGeorgeIntervention({ show: true, ...intervention });
+        return;
+      }
+    }
+
+    const allFiles = [...imageFiles, ...videoFrames];
+
+    if (allFiles.length + uploadedImages.length > 5) {
       toast({
         title: "Too many images",
-        description: "You can upload up to 5 images",
+        description: "You can upload up to 5 images (video frames count too)",
         variant: "destructive",
       });
       return;
     }
     
-    const newFiles = [...uploadedImages, ...files].slice(0, 5);
+    const newFiles = [...uploadedImages, ...allFiles].slice(0, 5);
     setUploadedImages(newFiles);
     
     const newUrls = newFiles.map(file => URL.createObjectURL(file));
@@ -841,16 +903,16 @@ export default function Quote() {
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     multiple
                     onChange={handleImageUpload}
                     className="hidden"
                     data-testid="input-file-upload"
                   />
                   <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="font-medium mb-1">Click to upload photos</p>
+                  <p className="font-medium mb-1">Upload photos or video</p>
                   <p className="text-sm text-muted-foreground">
-                    PNG, JPG up to 10MB each (max 5 photos)
+                    Photos, or scan the room with your camera. We'll grab the key frames.
                   </p>
                 </div>
 
