@@ -14,7 +14,7 @@ export function Footer() {
 
           <div className="space-y-6">
             <Link href="/" data-testid="link-footer-logo">
-              <Logo className="w-10 h-10" textClassName="text-2xl" />
+              <Logo className="w-10 h-10" textClassName="text-2xl" variant="light" />
             </Link>
             <h3 className="text-white font-bold text-lg" data-testid="text-footer-stewardship">{t("footer.footer_home_value_os")}</h3>
             <p className="text-sm leading-relaxed" data-testid="text-footer-mission">
