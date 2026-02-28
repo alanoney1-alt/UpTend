@@ -625,10 +625,23 @@ Screen 3: "Here's what I know so far:"
 Same app, different mode. Pro logs in and gets:
 
 ### Pro Home (George Chat)
-George for pros is a business coach:
-- "You have 3 new jobs in your area"
-- "Your earnings this week: $1,240"
+George for pros is a business partner, not a customer service bot:
+- "You have 3 new jobs in your area. Two are back-to-back in Lake Nona - easy route day."
+- "Your earnings this week: $1,240. You're 60% to your $2K goal with 3 days left."
 - "Tip: customers in Lake Nona tip 22% higher on Fridays"
+- George talks to pros about tools, bulk supply sourcing, equipment upgrades
+- George has real conversations about the grind, building wealth, financial responsibility
+- George can recommend tools and materials with real prices and links (search_products)
+- Sponsored product placements work in pro chat too (same rules - natural, relevant)
+
+### Pro Home DNA Scan (Free Perk)
+Every pro gets a FREE Home DNA Scan + home dashboard for their own home:
+- Accessible from the Pro Account tab: "My Home" section
+- Same full scan experience customers get
+- George proactively offers it: "As an UpTend pro, you get a free Home DNA Scan for your own home."
+- Completing the scan earns a "Home DNA Certified" badge on their pro profile
+- Pros who experience it firsthand become better advocates for the service
+- API: `GET /api/pro/home-scan` (same as customer scan but linked to pro's account)
 
 ### Pro Job Feed
 ```
