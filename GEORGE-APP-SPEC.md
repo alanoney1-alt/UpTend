@@ -1,5 +1,16 @@
 # George App — Complete Build Spec
 
+## CHANGELOG (Latest Updates — 2026-02-27 Night)
+- **Founding Member Discounts**: Payment card shows $25 credit + 10% off line items. API returns `foundingDiscount` object from `POST /api/payments/create-intent`. Account tab shows perks remaining via `GET /api/founding-status`.
+- **Sponsored Product Placement**: Full spec added — product cards in chat with tracking, API endpoints for impressions/clicks, 14 sponsorship categories. Same card component for organic + sponsored.
+- **B2B Experience**: New section — free Home DNA Scan for every HOA/PM/construction property. George onboards residents via chat. B2B dashboard features. Resident app experience.
+- **Pro Home DNA Scan**: Free scan perk for pros, accessible from Pro Account tab. "Home DNA Certified" badge.
+- **Pro Chat Expanded**: George talks tools, bulk buying, financial responsibility, the grind. Sponsored products in pro chat too.
+- **All emails from george@uptendapp.com** — this is the customer service identity.
+- **George personality fully defined in system prompt** (`server/services/george-agent.ts`) — backstory, voice style, humor, photo ID, adapts to audience, reads the room.
+
+---
+
 ## Vision
 George is not an app. George is an AI entity that lives in your phone and takes care of your home. Think: if Tesla built a home services robot, this is the app it would use to talk to you. The UI should feel like communicating with an intelligence — not browsing a marketplace.
 
