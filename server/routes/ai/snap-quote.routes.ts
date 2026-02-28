@@ -99,45 +99,14 @@ function buildQuote(analysis: VisionAnalysis) {
   };
 
   // Use canonical pricing engine (returns cents or null)
-  let priceCents = calculateServicePrice(analysis.serviceType, pricingData);
+  const priceCents = calculateServicePrice(analysis.serviceType, pricingData);
   let total: number;
 
   if (priceCents !== null) {
     total = Math.round(priceCents / 100);
   } else {
-    // Fallback for services not in calculateServicePrice (junk_removal, home_cleaning, handyman, garage_cleanout)
-    switch (analysis.serviceType) {
-      case "junk_removal": {
-        const vol = (d.volume || "").toLowerCase();
-        if (vol.includes("full")) { total = 299; adjustments.push({ label: "Full truck load", amount: 200 }); }
-        else if (vol.includes("half") || vol.includes("medium")) { total = 179; }
-        else { total = 99; }
-        if (d.heavyItems) { adjustments.push({ label: "Heavy items surcharge", amount: 50 }); total += 50; }
-        break;
-      }
-      case "home_cleaning": {
-        const beds = d.bedrooms || 2;
-        if (beds >= 4) { total = 199; adjustments.push({ label: "4+ bedroom home", amount: 100 }); }
-        else if (beds === 3) { total = 149; adjustments.push({ label: "3 bedroom home", amount: 50 }); }
-        else { total = 99; }
-        break;
-      }
-      case "handyman": {
-        const hours = Math.max(d.hours || analysis.estimatedHours || 1, 1);
-        total = hours * 75;
-        if (hours > 1) adjustments.push({ label: `${hours} hours estimated`, amount: (hours - 1) * 75 });
-        break;
-      }
-      case "garage_cleanout": {
-        const size = (d.size || "").toLowerCase();
-        if (size.includes("3") || size.includes("large")) { total = 199; adjustments.push({ label: "Large garage", amount: 70 }); }
-        else { total = 129; }
-        break;
-      }
-      default:
-        total = 99;
-        break;
-    }
+    // Unknown service type fallback
+    total = 99;
   }
 
   // Build adjustment descriptions for services that used calculateServicePrice

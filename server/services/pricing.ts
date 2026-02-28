@@ -136,7 +136,38 @@ export function calculateServicePrice(type: string, data: any): number | null {
       break;
     }
 
-    case "junk_removal":
+    case "junk_removal": {
+      const vol = (data.volume || "").toLowerCase();
+      if (vol.includes("full")) { price = 29900; }
+      else if (vol.includes("half") || vol.includes("medium")) { price = 17900; }
+      else if (vol.includes("quarter") || vol.includes("small")) { price = 9900; }
+      else { price = 9900; } // minimum / default
+      if (data.heavyItems) { price += 5000; }
+      break;
+    }
+
+    case "home_cleaning": {
+      const bedrooms = data.bedrooms || data.rooms || 2;
+      if (bedrooms >= 5) { price = 24900; }
+      else if (bedrooms >= 4) { price = 19900; }
+      else if (bedrooms === 3) { price = 14900; }
+      else { price = 9900; }
+      break;
+    }
+
+    case "handyman": {
+      const hours = Math.max(data.laborHours || data.hours || 1, 1);
+      price = hours * 7500; // $75/hr
+      break;
+    }
+
+    case "garage_cleanout": {
+      const size = (data.size || "").toLowerCase();
+      if (size.includes("3") || size.includes("large")) { price = 19900; }
+      else { price = 12900; }
+      break;
+    }
+
     default:
       return null;
   }
