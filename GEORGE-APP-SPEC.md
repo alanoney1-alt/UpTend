@@ -1,0 +1,895 @@
+# George App — Complete Build Spec
+
+## Vision
+George is not an app. George is an AI entity that lives in your phone and takes care of your home. Think: if Tesla built a home services robot, this is the app it would use to talk to you. The UI should feel like communicating with an intelligence — not browsing a marketplace.
+
+Every interaction should feel like the future. Apple-level haptics, Uber-level maps, Tesla-level ambition. This app makes every other home services app look like Craigslist.
+
+---
+
+## Tech Stack (already in project)
+- **Expo SDK 54** + React Native
+- **react-native-reanimated** — all animations (spring physics, shared element transitions)
+- **react-native-gesture-handler** — swipes, long-press, pan gestures
+- **react-native-maps** — live tracking, pro routing, job maps
+- **expo-haptics** — tactile feedback on every meaningful interaction
+- **expo-av** — voice input/output
+- **expo-camera** — photo-first service requests
+- **expo-linear-gradient** — depth and polish
+- **NativeWind / Tailwind** — styling
+- **WebSocket** — real-time job updates, pro location, George typing state
+
+### Additional packages needed:
+- **lottie-react-native** — George avatar animations, loading states, celebration moments
+- **expo-blur** — frosted glass overlays, modal backgrounds
+- **@gorhom/bottom-sheet** — buttery smooth bottom sheets for in-chat actions
+- **react-native-skia** — custom drawn elements, particle effects for celebrations
+- **expo-speech** — George can speak responses aloud
+- **expo-notifications** — push notifications that route back to George
+
+---
+
+## App Structure
+
+### Tab Bar (4 tabs, floating pill style)
+Floating translucent tab bar with blur background. No hard borders. Tabs have micro-animations on select.
+
+| Tab | Icon | Purpose |
+|-----|------|---------|
+| **George** | George's face (animated) | Chat home screen — where everything happens |
+| **My Home** | House icon | Home profile, DNA scan, maintenance timeline |
+| **Jobs** | Calendar/checkmark | Active jobs with live tracking, past jobs, receipts |
+| **Account** | Person icon | Payment, settings, referrals, rewards |
+
+**Tab bar specs:**
+- Floating 8px above bottom safe area
+- Blur background (expo-blur, intensity 80)
+- Active tab: icon scales up 1.15x with spring animation + haptic (ImpactFeedbackStyle.Light)
+- Inactive tabs: 50% opacity
+- Hide on scroll down in George chat, show on scroll up
+- When a job is live, Jobs tab pulses subtly with a green dot
+
+---
+
+## Screen 1: George Chat (Home Tab)
+
+This is THE screen. 80% of app time happens here.
+
+### Layout
+```
+┌─────────────────────────┐
+│  George          [···]  │  ← Header: George's name + status + menu
+│─────────────────────────│
+│                         │
+│  George's messages      │
+│  (left-aligned, dark    │
+│   bubbles with avatar)  │
+│                         │
+│      User messages      │
+│      (right-aligned,    │
+│       amber bubbles)    │
+│                         │
+│  ┌─── Action Card ───┐  │  ← Inline cards (scheduling, pricing, etc.)
+│  │                    │  │
+│  └────────────────────┘  │
+│                         │
+│─────────────────────────│
+│ [📷] [🎤] [  Message...  ] [→] │  ← Input bar
+└─────────────────────────┘
+```
+
+### George's Messages
+- **Appear with spring animation** — translateY from 20 to 0, opacity 0→1, spring config: damping 15, stiffness 150
+- **Avatar**: George's face (Lottie animated — subtle idle breathing, blinks occasionally)
+- **Bubble style**: Dark navy (#0f172a) with very subtle border, 16px padding, 20px border radius
+- **Text**: SF Pro, 16px, white, line height 24
+- **Haptic**: ImpactFeedbackStyle.Light on each new message arrival
+- **Long press**: Context menu (Copy, Share, Save to Home Profile) with haptic
+- **Links are tappable** with highlight animation
+
+### User's Messages
+- **Bubble style**: Amber/orange gradient (subtle, not garish), white text
+- **Send animation**: Slide up + scale from input bar position
+- **Haptic**: ImpactFeedbackStyle.Medium on send
+
+### Typing Indicator
+NOT three bouncing dots. George's avatar has a thinking animation — his eyes look up/around subtly (Lottie), with a soft pulsing glow around the avatar. Text below: "George is thinking..." in muted gray, italic.
+
+### Input Bar
+- Floating above keyboard with blur background
+- **Camera button** (left): Opens custom camera overlay
+- **Voice button** (left of text): Hold-to-talk with expanding ring animation + haptic pulse every 500ms while held
+- **Text input**: Expanding, multiline, auto-grows up to 4 lines
+- **Send button**: Appears only when text is present, animated scale-in, amber colored
+- **Haptic**: NotificationFeedbackType.Success on send
+
+### In-Chat Action Cards
+
+These are the magic. When George needs structured input, cards appear INSIDE the chat flow. They're not separate screens.
+
+#### Service Request Card
+Triggered when user describes a problem or sends a photo.
+```
+┌─────────────────────────────────┐
+│  🏠 Gutter Cleaning             │
+│                                 │
+│  Based on your 2,400 sq ft home │
+│  ┌─────────────────────────┐    │
+│  │ Standard Clean    $150  │    │
+│  │ Deep Clean        $225  │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  [ Book Now ]                   │
+│  George: "I'd go with standard, │
+│  your gutters were done 6mo ago"│
+└─────────────────────────────────┘
+```
+- Card slides in with spring animation
+- Options are tappable with haptic feedback
+- "Book Now" button has gradient + subtle pulse animation
+- Haptic: ImpactFeedbackStyle.Heavy on Book Now tap
+
+#### Scheduling Card
+```
+┌─────────────────────────────────┐
+│  📅 Pick a time                  │
+│                                 │
+│  ┌───┬───┬───┬───┬───┬───┬───┐ │
+│  │ M │ T │ W │ T │ F │ S │ S │ │
+│  ├───┼───┼───┼───┼───┼───┼───┤ │
+│  │   │   │ ● │   │ ● │ ● │   │ │  ← Dots = available
+│  └───┴───┴───┴───┴───┴───┴───┘ │
+│                                 │
+│  Morning ○  Afternoon ●  Eve ○  │
+│                                 │
+│  [ Confirm Wed, Mar 5 @ 2 PM ] │
+└─────────────────────────────────┘
+```
+- Calendar is swipeable with gesture handler
+- Available dates glow subtly
+- Time selection with haptic on each tap
+- Confirm button: success haptic + card collapses into a confirmed badge
+
+#### Payment Card
+```
+┌─────────────────────────────────┐
+│  💳 Confirm Payment              │
+│                                 │
+│  Gutter Cleaning        $150.00 │
+│  Platform fee             $7.50 │
+│  ─────────────────────────────  │
+│  Total                  $157.50 │
+│                                 │
+│  Visa ····4242         [Change] │
+│                                 │
+│  ████████████████ Pay $157.50   │  ← Full-width button
+│                                 │
+│  🔒 Guaranteed Price Ceiling     │
+└─────────────────────────────────┘
+```
+- Payment button with gradient animation (shimmering highlight sweeps across)
+- Success: confetti particle effect (react-native-skia) + heavy haptic + sound
+- Card transforms into a receipt badge in chat
+
+#### Photo Analysis Card
+When user sends a photo:
+```
+┌─────────────────────────────────┐
+│  ┌─────────────────────────┐    │
+│  │                         │    │
+│  │    [User's photo]       │    │
+│  │     with AI overlay     │    │
+│  │     highlighting issue  │    │
+│  │                         │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  George sees: Clogged gutters   │
+│  with leaf buildup, ~40ft of    │
+│  gutter affected. Recommend     │
+│  deep clean.                    │
+│                                 │
+│  Estimated: $225                │
+│  [ Book This ]  [ Get More Info ] │
+└─────────────────────────────────┘
+```
+
+#### Rating Card (after job completion)
+```
+┌─────────────────────────────────┐
+│  How'd Mike do?                 │
+│                                 │
+│  ★ ★ ★ ★ ★                     │  ← Stars animate on tap, haptic each
+│                                 │
+│  Quick tags:                    │
+│  [On Time] [Professional]       │
+│  [Great Work] [Friendly]        │
+│                                 │
+│  [ Add a comment... ]           │
+│                                 │
+│  [ Submit Review ]              │
+└─────────────────────────────────┘
+```
+- Stars fill with amber color + scale animation + haptic per star
+- Tags toggle with spring bounce
+
+---
+
+## Screen 2: Live Job Map (THE UBER MOMENT)
+
+This is the screen that makes people say "holy shit."
+
+### Trigger
+The MOMENT a job is booked and a pro accepts, the map AUTOMATICALLY rises from the bottom of the George chat as a full-screen takeover with a smooth shared-element transition. No button press needed. It just happens.
+
+### Layout
+```
+┌─────────────────────────────────┐
+│         [Full Map View]         │
+│                                 │
+│    🔵 ← Pro (moving)           │
+│     \                          │
+│      \  Route line             │
+│       \  (animated dots        │
+│        \  flowing toward       │
+│         \ destination)         │
+│          \                     │
+│           📍 ← Your home       │
+│                                 │
+│─────────────────────────────────│
+│  ┌─────────────────────────┐   │
+│  │ 👤 Mike R.    ★ 4.9     │   │  ← Pro card (bottom sheet)
+│  │ White Ford F-150        │   │
+│  │ 📍 8 min away           │   │
+│  │                         │   │
+│  │ [💬 Message] [📞 Call]  │   │
+│  └─────────────────────────┘   │
+│                                 │
+│  ─── Swipe up for details ───  │
+└─────────────────────────────────┘
+```
+
+### Map Specs
+- **Custom map style**: Dark mode map (matches app navy theme) — use custom MapView style JSON
+- **Pro marker**: Custom animated marker (pro's photo in a circle with pulsing ring)
+- **Home marker**: House icon with subtle glow
+- **Route line**: Animated — dots or dashes that flow along the route toward destination
+- **Camera**: Auto-frames to show both pro and home with padding
+- **Real-time**: Pro location updates via WebSocket, marker moves smoothly (animateToCoordinate)
+
+### Pro Card (Bottom Sheet)
+- **@gorhom/bottom-sheet** — three snap points: peek (pro name + ETA), half (full details), full (job details + breakdown)
+- Pro photo, name, rating, vehicle description
+- Live ETA updates ("8 min → 5 min → Arriving")
+- Message and Call buttons with haptics
+- **When pro arrives**: Map zooms to home, pro marker pulses, heavy haptic, banner: "Mike has arrived!"
+
+### Pro's View (Same Map, Different Perspective)
+When a pro gets assigned a job, their app does the same automatic map takeover:
+```
+┌─────────────────────────────────┐
+│         [Full Map View]         │
+│                                 │
+│    📍 ← Job location           │
+│                                 │
+│  Turn-by-turn style navigation  │
+│  overlay at top                 │
+│                                 │
+│─────────────────────────────────│
+│  ┌─────────────────────────┐   │
+│  │ Gutter Cleaning         │   │
+│  │ 1423 Oak Ln, Orlando    │   │
+│  │ $150 (you earn $127.50) │   │
+│  │                         │   │
+│  │ [Navigate] [📞 Customer]│   │
+│  │ [ Start Job ]           │   │
+│  └─────────────────────────┘   │
+└─────────────────────────────────┘
+```
+- "Navigate" opens Apple/Google Maps with destination pre-filled
+- "Start Job" triggers customer notification + starts job timer
+- Earnings shown prominently (what pro actually takes home)
+
+### Job Progress States (map transitions)
+1. **Booked** → Map appears, shows "Finding your pro..." with expanding radar animation
+2. **Pro Accepted** → Pro appears on map, route draws itself, ETA starts
+3. **Pro En Route** → Live tracking, flowing route animation
+4. **Pro Arrived** → Zoom in, arrival celebration, "Mark as Started" prompt to pro
+5. **In Progress** → Map minimizes to a floating pill ("Job in progress — 45min"), tappable to expand
+6. **Completed** → Before/after photo card + rating card slide in George chat
+
+---
+
+## Screen 3: My Home Tab
+
+Your home's brain. Everything George knows about your property.
+
+### Layout
+```
+┌─────────────────────────────────┐
+│  🏠 1423 Oak Lane               │
+│  Orlando, FL 32827              │
+│  2,400 sq ft · Built 2015      │
+│─────────────────────────────────│
+│                                 │
+│  Home Health Score    [87/100]  │  ← Animated ring chart
+│  ████████████░░  "Great"       │
+│                                 │
+│  ┌── Upcoming Maintenance ──┐  │
+│  │ 🍂 Gutter Clean  Mar 15  │  │
+│  │ 🌿 Landscaping   Apr 1   │  │
+│  │ 🎨 Exterior Paint Jun     │  │
+│  └──────────────────────────┘  │
+│                                 │
+│  ┌── Service History ───────┐  │
+│  │ ✅ Pressure Wash  Jan 20 │  │
+│  │ ✅ Gutter Clean   Oct 15 │  │
+│  │ ✅ Handyman       Sep 3  │  │
+│  └──────────────────────────┘  │
+│                                 │
+│  [ 📸 Scan My Home ]           │  ← Launches Home DNA Scan
+│                                 │
+└─────────────────────────────────┘
+```
+
+- Home Health Score: animated circle that fills on load (reanimated)
+- Maintenance items: swipeable, tap to book via George
+- Service history: expandable, shows receipt + photos + rating
+- "Scan My Home" button: launches camera for AI home scan (FREE + $25 credit)
+
+---
+
+## Screen 4: Jobs Tab
+
+### Active Jobs
+```
+┌─────────────────────────────────┐
+│  Active Jobs                    │
+│                                 │
+│  ┌─────────────────────────┐   │
+│  │ 🟢 Gutter Cleaning      │   │
+│  │ Mike R. · In Progress    │   │
+│  │ Started 25 min ago       │   │
+│  │ ████████████░░░  75%     │   │  ← Progress bar
+│  │ [ View Live ]            │   │  ← Opens map
+│  └─────────────────────────┘   │
+│                                 │
+│  Past Jobs                     │
+│  ┌─────────────────────────┐   │
+│  │ ✅ Pressure Wash        │   │
+│  │ Jan 20 · $180 · ★★★★★  │   │
+│  │ Before → After [photos] │   │
+│  └─────────────────────────┘   │
+└─────────────────────────────────┘
+```
+
+- Active job cards pulse with subtle glow
+- "View Live" opens the Uber-style map
+- Past jobs: expandable, show before/after photos side-by-side with slider
+- Pull to refresh with custom animation
+- Haptic on status changes (push notification + in-app)
+
+---
+
+## Screen 5: Account Tab
+
+Clean, minimal. Apple Settings energy.
+
+```
+┌─────────────────────────────────┐
+│  👤 Alan Oney                   │
+│  alan@uptendapp.com             │
+│  Founding Member #003           │  ← Badge with gold shimmer
+│─────────────────────────────────│
+│                                 │
+│  💳 Payment Methods       [>]  │
+│  🏠 My Addresses          [>]  │
+│  🔔 Notifications         [>]  │
+│  🎁 Refer a Friend        [>]  │
+│  📊 Savings Dashboard     [>]  │
+│  🌿 Impact Report         [>]  │
+│  ⚙️  Preferences           [>]  │
+│  📞 Support               [>]  │
+│                                 │
+│  ──────────────────────────────│
+│  Saved this year: $342         │
+│  Jobs completed: 8             │
+│  Carbon offset: 12 lbs         │
+│                                 │
+└─────────────────────────────────┘
+```
+
+- Founding Member badge: gold gradient with subtle shimmer animation
+- "Refer a Friend" → share sheet with unique link + George's pitch
+- Savings Dashboard shows money saved vs calling random contractors
+
+---
+
+## Camera Experience (Photo-First UX)
+
+When the camera button is tapped in George chat:
+
+```
+┌─────────────────────────────────┐
+│                                 │
+│        [Camera Viewfinder]      │
+│                                 │
+│   ┌─────────────────────────┐   │
+│   │  Center the problem     │   │  ← Floating guide text
+│   │  in the frame           │   │
+│   └─────────────────────────┘   │
+│                                 │
+│                                 │
+│         [ ◉ Capture ]          │
+│                                 │
+│  [Gallery]          [Flash]    │
+└─────────────────────────────────┘
+```
+
+- Custom camera overlay (not system picker)
+- After capture: photo appears in chat, George immediately analyzes
+- AI overlay highlights detected issues (bounding boxes with labels)
+- Multiple photos: "Add more" option before sending to George
+- Haptic on capture (ImpactFeedbackStyle.Heavy)
+
+---
+
+## Voice Input
+
+Hold the mic button in chat:
+
+```
+┌─────────────────────────────────┐
+│                                 │
+│                                 │
+│         ◉                      │
+│     Expanding ring             │
+│     animation while            │
+│     recording                  │
+│                                 │
+│   "Listening..."               │
+│                                 │
+│   Live waveform visualization  │
+│                                 │
+│   Release to send              │
+└─────────────────────────────────┘
+```
+
+- Ring expands/contracts with audio amplitude (reanimated)
+- Waveform shows live audio levels
+- Haptic pulse every 500ms while recording
+- Release → voice sent to server → transcribed → George responds
+- George can also SPEAK responses (toggle in settings)
+
+---
+
+## Push Notifications
+
+Every notification routes back to George chat with context:
+
+- **"Mike is 5 minutes away"** → Opens map
+- **"Your job is complete!"** → Opens George chat with before/after + rating card
+- **"George: Your gutters are due for cleaning"** → Opens George chat with booking card
+- **"New: 15% off for your neighborhood"** → Opens George chat with deal details
+
+Rich notifications with:
+- Pro's photo on en-route notifications
+- Before/after preview on completion
+- Action buttons ("View Map", "Rate Now")
+
+---
+
+## Design System
+
+### Colors
+- **Primary**: #F47C20 (amber/orange)
+- **Background**: #0A0E1A (deeper than navy — almost black, like Tesla app)
+- **Surface**: #111827 (cards, bubbles)
+- **Surface Elevated**: #1F2937 (raised elements)
+- **Text Primary**: #FFFFFF
+- **Text Secondary**: #9CA3AF
+- **Success**: #10B981
+- **Error**: #EF4444
+- **Border**: rgba(255,255,255,0.06)
+
+### Typography (SF Pro / System)
+- **Hero**: 34px, Bold, -0.4 tracking
+- **Title**: 28px, Bold, -0.3 tracking
+- **Headline**: 22px, Semibold
+- **Body**: 17px, Regular, 24px line height
+- **Caption**: 13px, Regular, #9CA3AF
+- **All text**: Dynamic Type support for accessibility
+
+### Haptic Map
+| Action | Haptic Type |
+|--------|-------------|
+| Tab switch | ImpactFeedbackStyle.Light |
+| Message received | ImpactFeedbackStyle.Light |
+| Send message | ImpactFeedbackStyle.Medium |
+| Button tap | ImpactFeedbackStyle.Medium |
+| Book Now / Pay | ImpactFeedbackStyle.Heavy |
+| Star rating tap | ImpactFeedbackStyle.Light |
+| Job status change | NotificationFeedbackType.Success |
+| Error / declined | NotificationFeedbackType.Error |
+| Pull to refresh | ImpactFeedbackStyle.Light |
+| Card expand | ImpactFeedbackStyle.Light |
+| Long press menu | ImpactFeedbackStyle.Medium |
+| Pro arrived | NotificationFeedbackType.Warning (3x pulse) |
+| Payment success | NotificationFeedbackType.Success + confetti |
+| Voice recording pulse | ImpactFeedbackStyle.Light (every 500ms) |
+
+### Animation Specs (react-native-reanimated)
+- **Spring default**: damping 15, stiffness 150, mass 1
+- **Quick spring**: damping 20, stiffness 200 (button responses)
+- **Slow spring**: damping 12, stiffness 100 (page transitions)
+- **Fade in**: 200ms ease-out
+- **Card expand**: 300ms spring with slight overshoot
+- **Map takeover**: 500ms shared element transition, map scales from card to fullscreen
+
+### Corner Radii
+- **Cards**: 20px
+- **Buttons**: 14px (small), 20px (large/full-width)
+- **Chat bubbles**: 20px (with 4px on the "tail" corner)
+- **Input fields**: 14px
+- **Bottom sheets**: 24px top corners
+- **Tab bar**: 30px (pill shape)
+
+### Shadows & Depth
+No traditional shadows on dark theme. Instead:
+- Subtle border (rgba white 6%)
+- Background elevation through color steps
+- Glow effects for active/focused elements (amber glow on primary actions)
+- Blur for overlays (expo-blur)
+
+---
+
+## Splash Screen (App Launch)
+
+Every time the app opens. Like Uber's splash. 1.5-2 seconds max.
+
+```
+┌─────────────────────────────────┐
+│                                 │
+│                                 │
+│                                 │
+│                                 │
+│         [House-Circuit Logo]    │  ← logo-icon.png, centered, ~120px
+│                                 │
+│          U p T e n d            │  ← Fades in letter by letter, amber+white
+│                                 │
+│       HOME INTELLIGENCE         │  ← Fades in below, muted gray, tracking wide
+│                                 │
+│                                 │
+│                                 │
+│                                 │
+└─────────────────────────────────┘
+```
+
+### Animation Sequence
+1. **0ms**: Black screen (#0A0E1A)
+2. **200ms**: Logo fades in + scales from 0.8→1.0 (spring)
+3. **500ms**: "UpTend" text shimmers in — each letter appears left-to-right with a glowing sweep (like a light passing across), "Up" in amber (#F47C20), "Tend" in white
+4. **900ms**: "HOME INTELLIGENCE" fades in below, subtle, wide letter-spacing, #9CA3AF
+5. **1200ms**: Entire logo pulses once with a soft amber glow
+6. **1500ms**: Everything fades up and out as George chat slides in from below
+- Haptic: ImpactFeedbackStyle.Medium on the pulse at 1200ms
+- Background: solid #0A0E1A, no gradients — let the logo breathe
+
+### Implementation
+- Use `expo-splash-screen` to hide native splash, then custom animated splash in React Native
+- Reanimated for all animations (withSequence, withDelay, withSpring)
+- Show on every cold start, skip on background→foreground resume
+
+---
+
+## Onboarding Flow (First Launch)
+
+Not a tutorial carousel. George introduces himself.
+
+```
+Screen 1: George's face fades in (Lottie animation — he smiles)
+          "Hey. I'm George."
+          (pause 1.5s)
+          "I take care of homes."
+          [Continue]
+
+Screen 2: "What's your address?"
+          [Address autocomplete input]
+          (Google Places API)
+          George: "Got it. Let me learn about your home."
+          (Loading animation — house being "scanned")
+
+Screen 3: "Here's what I know so far:"
+          [Home profile card with data from property API]
+          George: "I'll learn more over time. For now, what do you need?"
+          [Take me to George →]
+```
+
+- 3 screens max. Under 60 seconds.
+- Address entry is critical — powers everything (pricing, nearby pros, property data)
+- Skip option always available
+- Auth comes later (when they want to book)
+
+---
+
+## Pro App Experience
+
+Same app, different mode. Pro logs in and gets:
+
+### Pro Home (George Chat)
+George for pros is a business coach:
+- "You have 3 new jobs in your area"
+- "Your earnings this week: $1,240"
+- "Tip: customers in Lake Nona tip 22% higher on Fridays"
+
+### Pro Job Feed
+```
+┌─────────────────────────────────┐
+│  New Jobs Near You              │
+│                                 │
+│  ┌─────────────────────────┐   │
+│  │ Gutter Cleaning         │   │
+│  │ 📍 2.3 mi · Lake Nona  │   │
+│  │ 💰 $127.50 (your take) │   │
+│  │ 📅 Mar 5, 2-4 PM       │   │
+│  │                         │   │
+│  │ [Accept] [Pass]         │   │
+│  └─────────────────────────┘   │
+│                                 │
+│  ┌─────────────────────────┐   │
+│  │ Pressure Washing        │   │
+│  │ 📍 4.1 mi · Dr Phillips│   │
+│  │ 💰 $153.00 (your take) │   │
+│  │ 📅 Mar 6, 9-11 AM      │   │
+│  │                         │   │
+│  │ [Accept] [Pass]         │   │
+│  └─────────────────────────┘   │
+└─────────────────────────────────┘
+```
+
+- Jobs sorted by distance + earnings
+- Accept triggers map with navigation to job site
+- Swipe right to accept, left to pass (Tinder energy)
+- Heavy haptic on accept
+
+### Pro Active Job Flow
+1. **Navigate** → Apple/Google Maps
+2. **Arrive** → "I'm here" button, customer notified
+3. **Before Photos** → Camera captures before state
+4. **Work** → Timer running, can message customer via George
+5. **After Photos** → Camera captures completed work
+6. **Complete** → Job done, earnings added, customer prompted to review
+
+---
+
+## API Integration
+
+The app talks to the existing UpTend backend at `https://uptendapp.com/api/`:
+
+### Core Endpoints
+- `POST /api/ai/chat` — George conversation (send message, get response)
+- `POST /api/customers/login` — Customer auth
+- `POST /api/haulers/login` — Pro auth
+- `GET /api/service-requests` — Job list
+- `POST /api/service-requests` — Create booking
+- `POST /api/service-requests/:id/review` — Submit rating
+- `POST /api/push/register` — Register push token
+
+### WebSocket
+- Connect to `wss://uptendapp.com/ws`
+- Events: `job_update`, `pro_location`, `george_typing`, `message`
+- Auto-reconnect with exponential backoff
+
+### George Chat Protocol
+```json
+// Send
+{
+  "message": "My gutters are clogged",
+  "images": ["base64..."],  // optional photo
+  "audio": "base64...",     // optional voice
+  "context": {
+    "screen": "chat",
+    "homeId": "uuid",
+    "activeJobId": "uuid"   // if viewing a job
+  }
+}
+
+// Receive
+{
+  "message": "I can see the buildup...",
+  "cards": [                // optional action cards
+    {
+      "type": "service_quote",
+      "service": "Gutter Cleaning",
+      "options": [...],
+      "price": 150
+    }
+  ],
+  "haptic": "medium"        // optional haptic hint
+}
+```
+
+---
+
+## File Structure
+
+```
+src/
+├── components/
+│   ├── chat/
+│   │   ├── ChatBubble.tsx          # Message bubble with animations
+│   │   ├── GeorgeAvatar.tsx        # Animated Lottie avatar
+│   │   ├── TypingIndicator.tsx     # George thinking animation
+│   │   ├── InputBar.tsx            # Text + camera + voice input
+│   │   ├── VoiceRecorder.tsx       # Hold-to-talk with waveform
+│   │   └── cards/
+│   │       ├── ServiceQuoteCard.tsx
+│   │       ├── SchedulingCard.tsx
+│   │       ├── PaymentCard.tsx
+│   │       ├── PhotoAnalysisCard.tsx
+│   │       ├── RatingCard.tsx
+│   │       ├── JobStatusCard.tsx
+│   │       └── MapPreviewCard.tsx
+│   ├── map/
+│   │   ├── LiveTrackingMap.tsx      # Full Uber-style map
+│   │   ├── ProMarker.tsx           # Animated pro location pin
+│   │   ├── HomeMarker.tsx          # Home location pin
+│   │   ├── RouteOverlay.tsx        # Animated route line
+│   │   └── ProInfoSheet.tsx        # Bottom sheet with pro details
+│   ├── home/
+│   │   ├── HomeHealthScore.tsx     # Animated ring chart
+│   │   ├── MaintenanceTimeline.tsx
+│   │   ├── ServiceHistory.tsx
+│   │   └── HomeScanCTA.tsx
+│   ├── jobs/
+│   │   ├── ActiveJobCard.tsx
+│   │   ├── PastJobCard.tsx
+│   │   ├── BeforeAfterSlider.tsx
+│   │   └── JobProgressBar.tsx
+│   ├── pro/
+│   │   ├── JobFeedCard.tsx         # Swipeable job cards
+│   │   ├── EarningsSummary.tsx
+│   │   ├── ActiveJobControls.tsx   # Start/complete/photo buttons
+│   │   └── NavigateButton.tsx
+│   ├── ui/
+│   │   ├── HapticButton.tsx        # Button with built-in haptic
+│   │   ├── AnimatedCard.tsx        # Card with spring mount animation
+│   │   ├── BlurOverlay.tsx         # Frosted glass background
+│   │   ├── GlowBorder.tsx         # Ambient glow effect
+│   │   ├── ConfettiEffect.tsx     # Celebration particles (skia)
+│   │   └── PulsingDot.tsx         # Status indicator
+│   └── common/
+│       ├── FloatingTabBar.tsx      # Custom blur tab bar
+│       ├── Header.tsx
+│       └── SafeArea.tsx
+├── screens/
+│   ├── GeorgeChatScreen.tsx        # Main chat screen
+│   ├── LiveMapScreen.tsx           # Full-screen job tracking
+│   ├── MyHomeScreen.tsx            # Home profile
+│   ├── JobsScreen.tsx              # Active + past jobs
+│   ├── AccountScreen.tsx           # Settings + profile
+│   ├── CameraScreen.tsx            # Custom photo capture
+│   ├── OnboardingScreen.tsx        # George intro + address
+│   ├── PaymentMethodsScreen.tsx
+│   ├── NotificationSettingsScreen.tsx
+│   └── pro/
+│       ├── ProGeorgeChatScreen.tsx  # George for pros
+│       ├── ProJobFeedScreen.tsx     # Available jobs
+│       ├── ProActiveJobScreen.tsx   # In-progress job controls
+│       └── ProEarningsScreen.tsx
+├── services/
+│   ├── api.ts                      # API client (axios/fetch)
+│   ├── websocket.ts                # WebSocket connection manager
+│   ├── haptics.ts                  # Centralized haptic triggers
+│   ├── notifications.ts            # Push notification handler
+│   ├── location.ts                 # GPS tracking (for pros)
+│   └── storage.ts                  # AsyncStorage wrapper
+├── context/
+│   ├── AuthContext.tsx
+│   ├── GeorgeContext.tsx            # Chat state + WebSocket
+│   ├── JobContext.tsx               # Active job tracking
+│   └── HomeContext.tsx              # Home profile data
+├── hooks/
+│   ├── useHaptic.ts
+│   ├── useGeorgeChat.ts
+│   ├── useJobTracking.ts
+│   ├── useLiveLocation.ts
+│   └── useSpringAnimation.ts
+├── theme/
+│   ├── colors.ts
+│   ├── typography.ts
+│   ├── spacing.ts
+│   └── animations.ts               # Shared spring configs
+├── assets/
+│   ├── lottie/
+│   │   ├── george-idle.json         # George breathing/blinking
+│   │   ├── george-thinking.json     # George processing
+│   │   ├── george-happy.json        # Celebration
+│   │   ├── radar-scan.json          # Finding a pro
+│   │   └── confetti.json
+│   └── images/
+│       ├── logo-icon.png
+│       └── george-avatar.png
+└── navigation/
+    ├── AppNavigator.tsx             # Main tab + stack navigation
+    ├── AuthNavigator.tsx
+    └── OnboardingNavigator.tsx
+```
+
+---
+
+## Build Priority (What to Build First)
+
+### Phase 1: The Core Loop (Week 1)
+1. George Chat Screen — messages, input bar, basic cards
+2. API integration — talk to existing backend
+3. Auth flow — login/signup
+4. Haptics + animations on everything above
+
+### Phase 2: The "Holy Shit" Moment (Week 2)
+5. Live Job Map — Uber-style tracking
+6. WebSocket integration — real-time updates
+7. Photo capture + AI analysis
+8. Push notifications
+
+### Phase 3: Complete Experience (Week 3)
+9. My Home tab — profile, health score, history
+10. Jobs tab — active/past with before/after
+11. Pro experience — job feed, active job flow
+12. Voice input
+13. Onboarding flow
+
+### Phase 4: Polish (Week 4)
+14. Lottie animations for George avatar
+15. Confetti/celebration effects
+16. Sound design
+17. Dark mode map styling
+18. Performance optimization
+19. App Store submission prep
+
+---
+
+## Radical Innovations (Build These)
+
+### 1. AR Home Scanner
+Point camera at any room, George overlays what needs attention in real-time. Red highlights on water stains, yellow on aging grout, green checkmarks on healthy areas. Every scan saved as a time-lapse — "here's your bathroom in January vs now." Data feeds maintenance scheduling and insurance claims. Nobody in home services has this.
+
+### 2. Neighborhood Live Feed
+Real-time anonymized map of active jobs nearby. "A pressure washing job is happening 0.3 miles from you." Tap to see before/after when done, book the same pro at a group discount while they're in the area. Proximity = savings. Creates FOMO — you see neighbors getting houses done, you want in.
+
+### 3. George's Real Voice (Not TTS)
+George has a warm, specific voice (David Castlemore, ElevenLabs). Push notifications are spoken. Full duplex voice conversation — you're driving home, George calls: "Mike just finished your gutters. Before/after looks great. He found a fascia issue — want a quote while he's still there?" That's not an app. That's an employee.
+
+### 4. Split Screen Live Job View
+Pro's camera can one-way stream to customer during active jobs. Not a video call — a passive view. Customer opens app, watches their gutters being cleaned in real-time. Solves the #1 home services anxiety: "What are they doing at my house right now?" Trust through transparency.
+
+### 5. Home Value Ticker
+Persistent ticker on My Home tab showing estimated home value (property API). Every completed service shows impact: "Pressure wash completed: +$1,200 estimated curb appeal value." Reframes $180 spend as $1,200 investment. Changes the psychology of home maintenance from expense to asset protection.
+
+### 6. George Proactive Interrupts
+George watches weather, seasons, maintenance history, neighborhood patterns. Hurricane season approaching? George reaches out: "Storm system in 4 days. Gutters haven't been cleaned since October. Want someone out tomorrow?" Not a notification — someone who actually cares about your house.
+
+### 7. The Receipt Killer
+Every service, product recommendation, payment — George remembers everything. Tax time? "George, what did I spend on home maintenance this year?" Instant categorized breakdown, exportable to accountant. Homeowners lose track of this. George never forgets.
+
+### 8. Pro Reputation Layers
+Not just stars. Specialty heat map per pro — what they're best at by service type, neighborhood, time of day. "Mike has 4.97 on gutters in Lake Nona but 4.3 on handyman." Visual radar chart on profile. Algorithm matches right pro to right job.
+
+### 9. Predictive Booking
+George learns patterns. You got lawn done biweekly last summer. March hits: "Want me to set up biweekly landscaping again? Same pro, Mike. Available starting March 8." One tap. Done. Recurring revenue for platform, zero friction for customer.
+
+### 10. The "Just Fix It" Button
+One button. No details. No description. Just "Something's wrong." George asks one question, maybe two, handles everything. For the person who doesn't know what's broken and doesn't want to figure it out. That's the entire point of George.
+
+### George's Ambient Presence (Ties Everything Together)
+At the top of every screen, George's avatar sits in a small floating circle. It subtly reacts — looks at the map when tracking is active, looks at photos when you're in camera, closes his eyes late at night. Always there. Always aware. Not in your way, but present. Like a real person who lives in your phone. This single detail makes the app feel alive.
+
+---
+
+## Critical Rules
+- **NO web views.** Everything is native React Native components.
+- **Haptics on EVERY interaction.** If the user touches something, they feel it.
+- **Spring animations everywhere.** Nothing linear. Everything has bounce.
+- **George is always accessible.** From any screen, one tap back to George.
+- **Dark theme ONLY for v1.** No light mode yet. Nail the dark aesthetic.
+- **Offline graceful degradation.** Show cached data, queue messages for when online.
+- **60fps or bust.** No dropped frames. Use reanimated worklets, not JS-driven animations.
