@@ -185,6 +185,7 @@ import { registerConsentRoutes } from "./consent.routes";
 // Self-Serve Home DNA Scan routes
 import { registerHomeScanRoutes } from "./home-scan.routes";
 import roomScannerRoutes from "./ai/room-scanner.routes";
+import analyzeLoadRoutes from "./ai/analyze-load.routes";
 import { registerHomeReportRoutes } from "./home-report.routes";
 import { registerVoiceRoutes } from "./voice.routes";
 import { registerPushRoutes } from "./push.routes";
@@ -498,6 +499,7 @@ export async function registerRoutes(
 
   // Room video scanner (My Digital Home inventory)
   app.use("/api/ai", roomScannerRoutes);
+  app.use("/api/ai", analyzeLoadRoutes);
   registerHomeReportRoutes(app);
   registerVoiceRoutes(app);
   registerPushRoutes(app);

@@ -556,11 +556,22 @@ export default function Quote() {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to analyze images");
-      }
-
       const result = await response.json();
+
+      if (!response.ok) {
+        // Check if AI identified something non-home-related
+        if (result.error === "not_home_related") {
+          const msg = result.message || "I need photos of items you want hauled or the area that needs work.";
+          setGeorgeIntervention({
+            show: true,
+            message: msg,
+            suggestion: "Try snapping a picture of the actual items, the room, or the area that needs attention.",
+          });
+          setIsAnalyzing(false);
+          return;
+        }
+        throw new Error(result.error || "Failed to analyze images");
+      }
       // Use the suggested price from AI, or calculate average if range provided
       const aiPrice = result.suggestedPrice || Math.round((result.lowPrice + result.highPrice) / 2) || 149;
       setAiEstimate({
