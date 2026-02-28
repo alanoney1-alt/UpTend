@@ -20,6 +20,7 @@ import {
   X
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { GeorgeIntervention, getGeorgeIntervention } from "@/components/ai/george-intervention";
 
 const serviceLabels: Record<string, string> = {
   furniture_moving: "Furniture Moving",
@@ -458,6 +459,7 @@ export default function Quote() {
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiEstimate, setAiEstimate] = useState<{ price: number; items: string[] } | null>(null);
+  const [georgeIntervention, setGeorgeIntervention] = useState<{ show: boolean; message: string; suggestion: string }>({ show: false, message: "", suggestion: "" });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -571,15 +573,9 @@ export default function Quote() {
         description: "AI has estimated your load size and pricing",
       });
     } catch (error) {
-      toast({
-        title: "Analysis failed",
-        description: "We'll use standard pricing. You can still proceed with your quote.",
-        variant: "destructive",
-      });
-      setAiEstimate({
-        price: 149,
-        items: ["Items from uploaded photos"],
-      });
+      // George steps in instead of a cold error toast
+      const intervention = getGeorgeIntervention("photo_analysis_failed");
+      setGeorgeIntervention({ show: true, ...intervention });
     } finally {
       setIsAnalyzing(false);
     }
@@ -888,6 +884,25 @@ export default function Quote() {
                     )}
                   </Button>
                 )}
+
+                {/* George steps in when something goes wrong */}
+                <GeorgeIntervention
+                  show={georgeIntervention.show}
+                  message={georgeIntervention.message}
+                  suggestion={georgeIntervention.suggestion}
+                  onDismiss={() => setGeorgeIntervention({ show: false, message: "", suggestion: "" })}
+                  onRetry={() => {
+                    setGeorgeIntervention({ show: false, message: "", suggestion: "" });
+                    setUploadedImages([]);
+                    setImagePreviewUrls([]);
+                    fileInputRef.current?.click();
+                  }}
+                  retryLabel="Upload new photo"
+                  onTalkToGeorge={() => {
+                    setGeorgeIntervention({ show: false, message: "", suggestion: "" });
+                    window.dispatchEvent(new CustomEvent("george:open", { detail: { message: "I'm trying to get a photo quote but having trouble with my photos" } }));
+                  }}
+                />
 
                 <div className="mt-6">
                   <label className="text-sm font-medium mb-2 block">
