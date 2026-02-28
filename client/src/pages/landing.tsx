@@ -126,7 +126,7 @@ function HeroSection() {
             { key: "handyman", label: "Handyman", icon: Wrench },
             { key: "landscaping", label: "Landscaping", icon: Trees },
             { key: "moving-labor", label: "Moving Labor", icon: Package },
-            { key: "light-demolition", label: "Demolition", icon: Zap },
+            { key: "demolition", label: "Demolition", icon: Zap },
             { key: "garage-cleanout", label: "Garage Cleanout", icon: Home },
             { key: "pool-cleaning", label: "Pool Cleaning", icon: Waves },
             { key: "carpet-cleaning", label: "Carpet Cleaning", icon: Sparkles },
