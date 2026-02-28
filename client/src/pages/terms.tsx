@@ -181,7 +181,7 @@ export default function TermsPage() {
 </ul>
 <h3>6.2 Limitations and Disclaimers</h3>
 
-<strong>George is an AI assistant, not a licensed professional.</strong> George does not provide and should not be relied upon for:
+<strong>George is an AI-powered Home Service Agent, not a licensed professional.</strong> George does not provide and should not be relied upon for:
 
 <p>(a) Professional engineering, architectural, or structural advice;</p>
 <p>(b) Legal, financial, or tax advice;</p>
@@ -205,9 +205,21 @@ export default function TermsPage() {
 
 <p>George may recommend products and provide links to purchase them from third-party retailers. Some of these links are <strong>affiliate links</strong>, meaning UpTend earns a commission on qualifying purchases at no additional cost to you. See the Affiliate Disclosure (available on the Platform) for details. Affiliate relationships do not influence George's safety recommendations. George will never recommend an inferior or unsafe product because of an affiliate relationship.</p>
 
-<h3>6.5 AI Data Usage</h3>
+<h3>6.5 AI Data Usage and Privacy</h3>
 
-<p>Interactions with George, including questions, descriptions of home conditions, and photos submitted for analysis, may be used to improve the Platform's AI features, train our systems, and enhance the accuracy of estimates and recommendations. You may opt out of AI training data usage through your account settings. See our Privacy Policy for details.</p>
+<p><strong>Your data is yours. We will never sell it.</strong> UpTend does not sell, rent, license, or otherwise provide your personal information, home data, conversation history, photos, or Home DNA Scan results to any third party for their own commercial purposes. Period.</p>
+
+<p><strong>How we use your data:</strong> Your interactions with George, including questions, descriptions of home conditions, photos submitted for analysis, and Home DNA Scan results, are used solely to (a) provide and improve the services you requested, (b) generate accurate estimates and recommendations for your home, (c) power your Home Health Score, maintenance timeline, and personalized alerts, and (d) improve the accuracy and quality of George's recommendations across the Platform.</p>
+
+<p><strong>Third-party AI processors:</strong> To power George's capabilities, your conversations and photos are processed by our AI technology providers, currently Anthropic (Claude) for conversation and OpenAI (GPT) for photo/vision analysis. These providers process your data solely on our behalf to deliver the service to you. Under our agreements with these providers: (a) they do not use your data to train their general AI models, (b) they do not retain your data beyond what is necessary to process your request, and (c) they are contractually bound to keep your data confidential. We select AI providers that offer zero-data-retention or enterprise-grade data processing agreements. If we change AI providers, the same contractual protections will apply.</p>
+
+<p><strong>Aggregated and anonymized data:</strong> We may use anonymized, aggregated data (which cannot be used to identify you or your specific property) to generate market insights, pricing intelligence, and general home maintenance trends. For example, "the average HVAC system in Lake Nona is 7.3 years old" is aggregated data. Your specific home's HVAC age is personal data that is never shared.</p>
+
+<p><strong>Sponsored product recommendations:</strong> George may recommend products from brand partners who have a commercial relationship with UpTend. These recommendations are only made when the product is genuinely relevant to your home's needs. Sponsored relationships never compromise the accuracy or safety of George's recommendations. UpTend may earn revenue from these recommendations. No personal data is shared with sponsoring brands. they see only anonymized engagement metrics.</p>
+
+<p><strong>Home DNA Scan data specifically:</strong> Your Home DNA Scan results, including photos, system inventories, appliance data, and condition assessments, are stored securely and associated with your account. This data is never shared with other users, your HOA, your property manager, or any third party without your explicit consent. If your home is part of a B2B account (HOA or property management partnership), your property manager or HOA may see aggregated portfolio-level data (e.g., "42% of units need gutter cleaning") but cannot access your individual scan details without your permission.</p>
+
+<p><strong>Opt-out:</strong> You may request deletion of your Home DNA Scan data, conversation history, or entire account at any time by contacting george@uptendapp.com. Upon account deletion, we will delete your personal data within 30 days, except where retention is required by law or to resolve pending disputes.</p>
 
 <h2>7. Home DNA Scan</h2>
 
