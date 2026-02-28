@@ -8,7 +8,7 @@
 
 import { Router, Request, Response } from "express";
 import multer from "multer";
-import { analyzeImageOpenAI } from "../../services/ai/openai-vision-client";
+import { analyzeImages } from "../../services/ai/openai-vision-client";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -60,42 +60,30 @@ If the photos are NOT related to home services, respond with:
 Otherwise respond with JSON:
 {"identifiedItems": ["item1", "item2"], "suggestedPrice": 149, "confidence": "medium"}`;
 
-    const result = await analyzeImageOpenAI({
+    const result = await analyzeImages({
       imageUrls,
       prompt,
       systemPrompt: "You are a home services load estimation AI. Always respond with valid JSON only, no markdown.",
       maxTokens: 1024,
+      jsonMode: true,
     });
 
-    const text = result.analysis;
-
-    // Parse JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      const result = JSON.parse(jsonMatch[0]);
-
-      // If not home-related, return a special response the frontend can use
-      if (result.notHomeRelated) {
-        return res.status(422).json({
-          error: "not_home_related",
-          whatYouSee: result.whatYouSee || "something unrelated to home services",
-          message: `I see ${result.whatYouSee || "something"}, but I need photos of items you want hauled or the area that needs work.`,
-        });
-      }
-
-      return res.json({
-        identifiedItems: result.identifiedItems || [],
-        loadSize: result.loadSize,
-        suggestedPrice: result.suggestedPrice || 149,
-        confidence: result.confidence || "medium",
+    // analyzeImages with jsonMode returns parsed JSON directly
+    const parsed = typeof result === "string" ? JSON.parse(result) : result;
+    
+    if (parsed.notHomeRelated) {
+      return res.status(422).json({
+        error: "not_home_related",
+        whatYouSee: parsed.whatYouSee || "something unrelated to home services",
+        message: `I see ${parsed.whatYouSee || "something"}, but I need photos of items you want hauled or the area that needs work.`,
       });
     }
 
-    // Couldn't parse - return fallback
     return res.json({
-      identifiedItems: ["Items detected from photos"],
-      suggestedPrice: 149,
-      confidence: "low",
+      identifiedItems: parsed.identifiedItems || [],
+      loadSize: parsed.loadSize,
+      suggestedPrice: parsed.suggestedPrice || 149,
+      confidence: parsed.confidence || "medium",
     });
   } catch (error: any) {
     console.error("Analyze load error:", error?.message || error);
