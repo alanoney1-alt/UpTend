@@ -885,6 +885,21 @@ At the top of every screen, George's avatar sits in a small floating circle. It 
 
 ---
 
+## Feature Implementations
+
+All 18 feature components with full code, styling, and integration instructions are in **`GEORGE-APP-FEATURES.md`** in this same repo root. After the base build is complete, wire in those components. They include:
+
+- Reorder Bar, 60-Second Quote Timer, "Just Fix It" Button
+- Home Health Score + Streak + Trend Graph, Seasonal Care Calendar
+- Before/After Gallery, Savings Counter, Home Value Ticker
+- "Do This Again" Card, Predictive Booking Card, Proactive Alert Cards
+- George's Ambient Presence (floating avatar on every screen)
+- Home Product Tracker with Amazon Affiliate purchases
+- Home Timeline, Neighborhood Leaderboard, Neighborhood Activity Feed
+- Spending Dashboard (Receipt Killer), George's Daily Tips
+
+---
+
 ## Critical Rules
 - **NO web views.** Everything is native React Native components.
 - **Haptics on EVERY interaction.** If the user touches something, they feel it.
