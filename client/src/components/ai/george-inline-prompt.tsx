@@ -117,7 +117,7 @@ export function GeorgeInlinePrompt({ onSubmit, onTap }: GeorgeInlinePromptProps)
       <style>{glowStyles}</style>
       <form onSubmit={handleSubmit} className="relative">
         <div
-          className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-white/[0.07] backdrop-blur-sm border border-[#F47C20]/25 focus-within:border-[#F47C20]/50 transition-all duration-300"
+          className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-[#F47C20]/30 focus-within:border-[#F47C20]/60 transition-all duration-300"
           style={{ animation: "georgeBreath 3s ease-in-out infinite" }}
         >
           <div className="relative shrink-0">
