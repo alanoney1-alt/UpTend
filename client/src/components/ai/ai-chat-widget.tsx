@@ -7,7 +7,11 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { MessageCircle, X, Send, Loader2, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, User } from "lucide-react";
+
+function GeorgeAvatarSmall({ className = "h-full w-full" }: { className?: string }) {
+  return <img src="/george-avatar.png" alt="George" className={`${className} object-cover rounded-full`} />;
+}
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -215,10 +219,10 @@ export function AiChatWidget() {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 md:bottom-8 right-6 h-14 w-14 rounded-full shadow-lg shadow-orange-500/25 z-40 bg-gradient-to-br from-[#F47C20] to-[#E06010] hover:from-[#FF8C34] hover:to-[#F47C20] transition-all duration-300"
+          className="fixed bottom-24 md:bottom-8 right-6 h-14 w-14 rounded-full shadow-lg shadow-orange-500/25 z-40 bg-transparent hover:scale-105 transition-all duration-300 p-0 overflow-hidden border-2 border-[#F47C20]/50"
           size="icon"
         >
-          <MessageCircle className="h-6 w-6" />
+          <GeorgeAvatarSmall />
           <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-400 rounded-full border-2 border-white" />
         </Button>
       )}
@@ -229,8 +233,8 @@ export function AiChatWidget() {
           <CardHeader className="pb-3 border-b bg-gradient-to-r from-[#F47C20] to-[#E06010] rounded-t-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <Bot className="h-4 w-4 text-white" />
+                <div className="h-8 w-8 rounded-full overflow-hidden">
+                  <GeorgeAvatarSmall />
                 </div>
                 <div>
                   <CardTitle className="text-base text-white">George</CardTitle>
@@ -246,8 +250,8 @@ export function AiChatWidget() {
           <CardContent className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 ? (
               <div className="text-center py-8">
-                <div className="h-14 w-14 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-3">
-                  <Bot className="h-7 w-7 text-[#F47C20]" />
+                <div className="h-14 w-14 rounded-full overflow-hidden mx-auto mb-3">
+                  <GeorgeAvatarSmall />
                 </div>
                 <p className="font-semibold text-sm mb-1">
                   {isPro ? "Hey!  Interested in working with UpTend?" : "Hey!  What can I help with?"}
@@ -262,7 +266,7 @@ export function AiChatWidget() {
                 <div key={msg.id} className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
                   <Avatar className="h-7 w-7 shrink-0 mt-1">
                     <AvatarFallback className={msg.role === "user" ? "bg-gray-200 text-gray-600" : "bg-[#F47C20] text-white"}>
-                      {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
+                      {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <GeorgeAvatarSmall />}
                     </AvatarFallback>
                   </Avatar>
                   <div className="max-w-[80%]">
@@ -289,7 +293,7 @@ export function AiChatWidget() {
             {sendMessageMutation.isPending && (
               <div className="flex gap-2">
                 <Avatar className="h-7 w-7 shrink-0 mt-1">
-                  <AvatarFallback className="bg-[#F47C20] text-white"><Bot className="h-3.5 w-3.5" /></AvatarFallback>
+                  <AvatarFallback className="bg-transparent p-0"><GeorgeAvatarSmall /></AvatarFallback>
                 </Avatar>
                 <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
                   <div className="flex gap-1">

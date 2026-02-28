@@ -7,7 +7,15 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Bot, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+
+function GeorgeAvatar({ size = "h-9 w-9" }: { size?: string }) {
+  return (
+    <div className={`${size} rounded-full overflow-hidden shrink-0`}>
+      <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" />
+    </div>
+  );
+}
 
 interface GeorgeInlinePromptProps {
   onSubmit: (message: string) => void;
@@ -65,9 +73,7 @@ export function GeorgeInlinePrompt({ onSubmit, onTap }: GeorgeInlinePromptProps)
       >
         <div className="flex items-start gap-3 px-5 py-4 rounded-2xl bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] hover:border-[#F47C20]/30 hover:bg-white/[0.08] transition-all duration-300">
           <div className="relative shrink-0 mt-0.5">
-            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#F47C20] to-[#E06010] flex items-center justify-center">
-              <Bot className="h-4 w-4 text-white" />
-            </div>
+            <GeorgeAvatar />
             <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-green-400 rounded-full border-2 border-slate-900" />
           </div>
           <div className="flex-1 min-w-0">
@@ -96,9 +102,7 @@ export function GeorgeInlinePrompt({ onSubmit, onTap }: GeorgeInlinePromptProps)
       <form onSubmit={handleSubmit} className="relative">
         <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] focus-within:border-[#F47C20]/40 focus-within:bg-white/[0.08] transition-all duration-300">
           <div className="relative shrink-0">
-            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#F47C20] to-[#E06010] flex items-center justify-center">
-              <Bot className="h-4 w-4 text-white" />
-            </div>
+            <GeorgeAvatar />
             <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-green-400 rounded-full border-2 border-slate-900" />
           </div>
           <input
