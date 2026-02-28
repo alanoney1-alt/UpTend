@@ -1262,3 +1262,1187 @@ In the chat message renderer:
   return <CardComponent key={i} {...card.props} />;
 })}
 ```
+
+---
+
+## Feature 10: Reorder Bar (Top of Chat)
+
+Pin the customer's last 2-3 completed services at the top of the George chat screen. One tap to rebook.
+
+### Component: `src/components/chat/ReorderBar.tsx`
+
+```tsx
+import React from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
+import { colors } from "@/theme/colors";
+
+interface PastService {
+  id: string;
+  serviceName: string;
+  proName: string;
+  price: number;
+  lastDate: string;
+}
+
+interface ReorderBarProps {
+  services: PastService[];
+  onRebook: (service: PastService) => void;
+}
+
+export function ReorderBar({ services, onRebook }: ReorderBarProps) {
+  if (services.length === 0) return null;
+
+  return (
+    <Animated.View entering={FadeInDown.springify().damping(15)} style={styles.container}>
+      <Text style={styles.label}>REBOOK</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+        {services.slice(0, 3).map((svc) => (
+          <Pressable
+            key={svc.id}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              onRebook(svc);
+            }}
+            style={styles.chip}
+          >
+            <Text style={styles.chipService}>{svc.serviceName}</Text>
+            <Text style={styles.chipMeta}>{svc.proName} - ${svc.price}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.06)",
+  },
+  label: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: colors.textSecondary,
+    letterSpacing: 1.5,
+    marginBottom: 8,
+  },
+  scroll: { gap: 8 },
+  chip: {
+    backgroundColor: "rgba(244, 124, 32, 0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(244, 124, 32, 0.2)",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  chipService: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  chipMeta: {
+    color: colors.textSecondary,
+    fontSize: 11,
+    marginTop: 2,
+  },
+});
+```
+
+### Integration
+Place at the top of `GeorgeChatScreen.tsx`, above the message list. Fetch from `GET /api/service-requests?status=completed&limit=3&sort=completedAt:desc`. When tapped, send a message to George: "I want to rebook [service] with [pro]" and George handles scheduling.
+
+---
+
+## Feature 11: Home Health Score + Streak + Trend Graph
+
+Gamified home maintenance tracking with streak counter and trend visualization.
+
+### Component: `src/components/home/HomeHealthScore.tsx`
+
+```tsx
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import Animated, { FadeIn, useSharedValue, useAnimatedProps, withTiming } from "react-native-reanimated";
+import Svg, { Circle } from "react-native-svg";
+import { colors } from "@/theme/colors";
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+interface HomeHealthScoreProps {
+  score: number; // 0-100
+  previousScore?: number;
+  streak: number; // weeks maintained
+  trend: number[]; // last 12 weeks of scores
+}
+
+export function HomeHealthScore({ score, previousScore, streak, trend }: HomeHealthScoreProps) {
+  const progress = useSharedValue(0);
+  
+  React.useEffect(() => {
+    progress.value = withTiming(score / 100, { duration: 1200 });
+  }, [score]);
+
+  const circumference = 2 * Math.PI * 60;
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset: circumference * (1 - progress.value),
+  }));
+
+  const scoreColor = score >= 80 ? "#10B981" : score >= 60 ? "#F59E0B" : "#EF4444";
+  const scoreLabel = score >= 80 ? "Great" : score >= 60 ? "Fair" : "Needs Attention";
+  const delta = previousScore ? score - previousScore : 0;
+
+  return (
+    <View style={styles.container}>
+      {/* Score Ring */}
+      <View style={styles.ringContainer}>
+        <Svg width={140} height={140} viewBox="0 0 140 140">
+          <Circle cx="70" cy="70" r="60" stroke="rgba(255,255,255,0.06)" strokeWidth="8" fill="none" />
+          <AnimatedCircle
+            cx="70" cy="70" r="60"
+            stroke={scoreColor}
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            animatedProps={animatedProps}
+            transform="rotate(-90 70 70)"
+          />
+        </Svg>
+        <View style={styles.scoreCenter}>
+          <Text style={[styles.scoreNumber, { color: scoreColor }]}>{score}</Text>
+          <Text style={styles.scoreLabel}>{scoreLabel}</Text>
+        </View>
+      </View>
+
+      {/* Stats Row */}
+      <View style={styles.statsRow}>
+        <View style={styles.stat}>
+          <Text style={styles.statValue}>{streak}</Text>
+          <Text style={styles.statLabel}>Week Streak</Text>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.stat}>
+          <Text style={[styles.statValue, { color: delta >= 0 ? "#10B981" : "#EF4444" }]}>
+            {delta >= 0 ? "+" : ""}{delta}
+          </Text>
+          <Text style={styles.statLabel}>vs Last Month</Text>
+        </View>
+      </View>
+
+      {/* Mini Trend Graph */}
+      <View style={styles.trendContainer}>
+        <Text style={styles.trendLabel}>12-Week Trend</Text>
+        <View style={styles.trendBars}>
+          {trend.map((val, i) => (
+            <Animated.View
+              key={i}
+              entering={FadeIn.delay(i * 50)}
+              style={[
+                styles.trendBar,
+                {
+                  height: (val / 100) * 40,
+                  backgroundColor: val >= 80 ? "#10B981" : val >= 60 ? "#F59E0B" : "#EF4444",
+                  opacity: i === trend.length - 1 ? 1 : 0.5,
+                },
+              ]}
+            />
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  ringContainer: { position: "relative", width: 140, height: 140, marginBottom: 16 },
+  scoreCenter: {
+    position: "absolute",
+    top: 0, left: 0, right: 0, bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scoreNumber: { fontSize: 36, fontWeight: "800" },
+  scoreLabel: { fontSize: 12, color: colors.textSecondary, fontWeight: "600" },
+  statsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  stat: { alignItems: "center", paddingHorizontal: 20 },
+  statValue: { fontSize: 20, fontWeight: "800", color: "#fff" },
+  statLabel: { fontSize: 11, color: colors.textSecondary, marginTop: 2 },
+  statDivider: { width: 1, height: 30, backgroundColor: "rgba(255,255,255,0.08)" },
+  trendContainer: { width: "100%" },
+  trendLabel: { fontSize: 11, color: colors.textSecondary, fontWeight: "600", marginBottom: 8 },
+  trendBars: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    height: 40,
+  },
+  trendBar: {
+    width: 6,
+    borderRadius: 3,
+    minHeight: 4,
+  },
+});
+```
+
+### Score Calculation
+Score starts at 50 for new users. Adjustments:
+- Completed service: +5 to +15 depending on how overdue it was
+- On-time maintenance (before due date): +3 bonus
+- Overdue item: -2 per week overdue
+- Home DNA Scan completed: +10 (one-time)
+- Streak bonus: +1 per 4 consecutive weeks
+
+### Streak Rules
+- Streak increments each week the home has no RED (overdue) items
+- Streak resets to 0 when any maintenance item goes 2+ weeks overdue
+- George warns at 1 week overdue: "Your streak is at risk. Gutters are a week overdue."
+- Streak milestones (4, 12, 26, 52 weeks) trigger celebration animations + haptic
+
+---
+
+## Feature 12: Seasonal Care Calendar
+
+Visual month-by-month calendar showing what's due when, color-coded by status.
+
+### Component: `src/components/home/SeasonalCalendar.tsx`
+
+```tsx
+import React from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import * as Haptics from "expo-haptics";
+import { colors } from "@/theme/colors";
+
+interface MaintenanceItem {
+  service: string;
+  month: number; // 1-12
+  status: "done" | "upcoming" | "overdue";
+  dueDate?: string;
+}
+
+interface SeasonalCalendarProps {
+  items: MaintenanceItem[];
+  onBookItem: (item: MaintenanceItem) => void;
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+const STATUS_COLORS = {
+  done: "#10B981",
+  upcoming: "#F59E0B",
+  overdue: "#EF4444",
+};
+
+// Florida-specific default schedule
+const FL_DEFAULTS: MaintenanceItem[] = [
+  { service: "AC Service", month: 3, status: "upcoming" },
+  { service: "Pool Ramp-Up", month: 4, status: "upcoming" },
+  { service: "Hurricane Prep", month: 5, status: "upcoming" },
+  { service: "Gutter Clean", month: 6, status: "upcoming" },
+  { service: "Pressure Wash", month: 7, status: "upcoming" },
+  { service: "Roof Inspection", month: 9, status: "upcoming" },
+  { service: "Gutter Clean", month: 10, status: "upcoming" },
+  { service: "Landscaping Trim", month: 11, status: "upcoming" },
+  { service: "Holiday Lights", month: 12, status: "upcoming" },
+  { service: "Deep Home Clean", month: 1, status: "upcoming" },
+];
+
+export function SeasonalCalendar({ items, onBookItem }: SeasonalCalendarProps) {
+  const currentMonth = new Date().getMonth() + 1;
+  const allItems = items.length > 0 ? items : FL_DEFAULTS;
+
+  // Group by month
+  const byMonth: Record<number, MaintenanceItem[]> = {};
+  allItems.forEach((item) => {
+    if (!byMonth[item.month]) byMonth[item.month] = [];
+    byMonth[item.month].push(item);
+  });
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Seasonal Care Plan</Text>
+      <Text style={styles.subtitle}>Tap any item to book it</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+        {MONTHS.map((label, i) => {
+          const month = i + 1;
+          const monthItems = byMonth[month] || [];
+          const isCurrent = month === currentMonth;
+
+          return (
+            <View key={month} style={[styles.monthCol, isCurrent && styles.currentMonth]}>
+              <Text style={[styles.monthLabel, isCurrent && styles.currentMonthLabel]}>{label}</Text>
+              {monthItems.map((item, j) => (
+                <Pressable
+                  key={j}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onBookItem(item);
+                  }}
+                  style={[styles.itemChip, { borderLeftColor: STATUS_COLORS[item.status] }]}
+                >
+                  <Text style={styles.itemText}>{item.service}</Text>
+                  <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[item.status] }]} />
+                </Pressable>
+              ))}
+              {monthItems.length === 0 && <View style={styles.emptyMonth} />}
+            </View>
+          );
+        })}
+      </ScrollView>
+      <View style={styles.legend}>
+        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: "#10B981" }]} /><Text style={styles.legendText}>Done</Text></View>
+        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: "#F59E0B" }]} /><Text style={styles.legendText}>Upcoming</Text></View>
+        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: "#EF4444" }]} /><Text style={styles.legendText}>Overdue</Text></View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  title: { color: "#fff", fontSize: 17, fontWeight: "700", marginBottom: 4 },
+  subtitle: { color: colors.textSecondary, fontSize: 12, marginBottom: 16 },
+  scroll: { gap: 4, paddingBottom: 8 },
+  monthCol: {
+    width: 80,
+    alignItems: "center",
+    paddingVertical: 8,
+    borderRadius: 12,
+    gap: 6,
+  },
+  currentMonth: {
+    backgroundColor: "rgba(244, 124, 32, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(244, 124, 32, 0.2)",
+  },
+  monthLabel: { fontSize: 12, fontWeight: "700", color: colors.textSecondary, marginBottom: 4 },
+  currentMonthLabel: { color: colors.primary },
+  itemChip: {
+    width: "100%",
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 8,
+    borderLeftWidth: 3,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  itemText: { fontSize: 10, color: "#fff", fontWeight: "600", flex: 1 },
+  statusDot: { width: 6, height: 6, borderRadius: 3, marginLeft: 4 },
+  emptyMonth: { height: 30 },
+  legend: { flexDirection: "row", justifyContent: "center", gap: 16, marginTop: 12 },
+  legendItem: { flexDirection: "row", alignItems: "center", gap: 4 },
+  legendDot: { width: 8, height: 8, borderRadius: 4 },
+  legendText: { fontSize: 11, color: colors.textSecondary },
+});
+```
+
+### Integration
+Place in `MyHomeScreen.tsx` below the Home Health Score. Florida defaults are pre-populated for new users. As George gathers data about the home (appliances, roof age, pool, etc.), the calendar personalizes. Tapping any item sends the user to George chat with a pre-filled booking request.
+
+---
+
+## Feature 13: Before/After Gallery
+
+Scrollable gallery of all job photos organized by service.
+
+### Component: `src/components/home/BeforeAfterGallery.tsx`
+
+```tsx
+import React from "react";
+import { View, Text, StyleSheet, ScrollView, Image, Dimensions, Pressable } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { colors } from "@/theme/colors";
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const CARD_WIDTH = SCREEN_WIDTH - 64;
+
+interface JobPhotos {
+  id: string;
+  service: string;
+  date: string;
+  proName: string;
+  beforeUrl: string;
+  afterUrl: string;
+}
+
+interface BeforeAfterGalleryProps {
+  jobs: JobPhotos[];
+  onShare: (job: JobPhotos) => void;
+}
+
+export function BeforeAfterGallery({ jobs, onShare }: BeforeAfterGalleryProps) {
+  if (jobs.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyTitle}>No Photos Yet</Text>
+        <Text style={styles.emptyText}>After your first job, before and after photos will appear here.</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.headerRow}>
+        <Text style={styles.title}>Before and After</Text>
+        <Text style={styles.count}>{jobs.length} jobs</Text>
+      </View>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}
+        snapToInterval={CARD_WIDTH + 12}
+        decelerationRate="fast"
+      >
+        {jobs.map((job, i) => (
+          <Animated.View key={job.id} entering={FadeIn.delay(i * 100)} style={styles.card}>
+            <View style={styles.photoRow}>
+              <View style={styles.photoContainer}>
+                <Text style={styles.photoLabel}>BEFORE</Text>
+                <Image source={{ uri: job.beforeUrl }} style={styles.photo} />
+              </View>
+              <View style={styles.photoContainer}>
+                <Text style={styles.photoLabel}>AFTER</Text>
+                <Image source={{ uri: job.afterUrl }} style={styles.photo} />
+              </View>
+            </View>
+            <View style={styles.infoRow}>
+              <View>
+                <Text style={styles.serviceName}>{job.service}</Text>
+                <Text style={styles.jobMeta}>{job.date} with {job.proName}</Text>
+              </View>
+              <Pressable onPress={() => onShare(job)} style={styles.shareButton}>
+                <Text style={styles.shareText}>Share</Text>
+              </Pressable>
+            </View>
+          </Animated.View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { marginBottom: 12 },
+  emptyContainer: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 20,
+    padding: 24,
+    marginHorizontal: 16,
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  emptyTitle: { color: "#fff", fontSize: 15, fontWeight: "700", marginBottom: 4 },
+  emptyText: { color: colors.textSecondary, fontSize: 13, textAlign: "center" },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    marginBottom: 12,
+  },
+  title: { color: "#fff", fontSize: 17, fontWeight: "700" },
+  count: { color: colors.textSecondary, fontSize: 12 },
+  scroll: { paddingHorizontal: 16, gap: 12 },
+  card: {
+    width: CARD_WIDTH,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  photoRow: { flexDirection: "row" },
+  photoContainer: { flex: 1 },
+  photoLabel: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    zIndex: 1,
+    fontSize: 9,
+    fontWeight: "800",
+    color: "#fff",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    letterSpacing: 1,
+  },
+  photo: { width: "100%", aspectRatio: 1, backgroundColor: colors.surfaceElevated },
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 12,
+  },
+  serviceName: { color: "#fff", fontSize: 14, fontWeight: "700" },
+  jobMeta: { color: colors.textSecondary, fontSize: 11, marginTop: 2 },
+  shareButton: {
+    backgroundColor: "rgba(244, 124, 32, 0.12)",
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  shareText: { color: colors.primary, fontSize: 12, fontWeight: "700" },
+});
+```
+
+### Integration
+Place in `MyHomeScreen.tsx` or as a dedicated section in the Jobs tab. Photos come from the pro's before/after captures during job flow. Share button triggers the native share sheet with both images composited side-by-side.
+
+---
+
+## Feature 14: Savings Counter
+
+Persistent display showing how much George has saved the customer vs. market average prices.
+
+### Component: `src/components/common/SavingsCounter.tsx`
+
+```tsx
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, FadeIn } from "react-native-reanimated";
+import { colors } from "@/theme/colors";
+
+interface SavingsCounterProps {
+  totalSaved: number;
+  jobCount: number;
+  year: number;
+}
+
+export function SavingsCounter({ totalSaved, jobCount, year }: SavingsCounterProps) {
+  const displayValue = useSharedValue(0);
+
+  useEffect(() => {
+    displayValue.value = withTiming(totalSaved, { duration: 1500 });
+  }, [totalSaved]);
+
+  return (
+    <Animated.View entering={FadeIn.duration(400)} style={styles.container}>
+      <View style={styles.row}>
+        <Text style={styles.label}>Saved with George in {year}</Text>
+        <Text style={styles.amount}>${totalSaved.toLocaleString()}</Text>
+      </View>
+      <Text style={styles.sub}>Across {jobCount} services vs. market average pricing</Text>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "rgba(16, 185, 129, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(16, 185, 129, 0.15)",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  label: { color: "#10B981", fontSize: 12, fontWeight: "600" },
+  amount: { color: "#10B981", fontSize: 22, fontWeight: "800" },
+  sub: { color: colors.textSecondary, fontSize: 11, marginTop: 4 },
+});
+```
+
+### Integration
+Show on the George chat home screen below the reorder bar, or on My Home tab. Calculate savings by comparing George's price per service against average market rates from pricing intelligence data. Updates after each completed job.
+
+---
+
+## Feature 15: George's Daily Tip
+
+One contextual tip per day waiting in the chat when the user opens the app.
+
+### Component: `src/components/chat/DailyTip.tsx`
+
+```tsx
+import React from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
+import { colors } from "@/theme/colors";
+
+interface DailyTipProps {
+  tip: string;
+  category: string; // "energy", "maintenance", "seasonal", "savings"
+  actionLabel?: string;
+  onAction?: () => void;
+  onDismiss: () => void;
+}
+
+export function DailyTip({ tip, category, actionLabel, onAction, onDismiss }: DailyTipProps) {
+  return (
+    <Animated.View entering={FadeInUp.springify().damping(15)} style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.badge}>{category.toUpperCase()} TIP</Text>
+        <Pressable onPress={onDismiss}>
+          <Text style={styles.dismiss}>Got it</Text>
+        </Pressable>
+      </View>
+      <Text style={styles.tipText}>{tip}</Text>
+      {actionLabel && onAction && (
+        <Pressable onPress={onAction} style={styles.actionButton}>
+          <Text style={styles.actionText}>{actionLabel}</Text>
+        </Pressable>
+      )}
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "rgba(244, 124, 32, 0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(244, 124, 32, 0.12)",
+    borderRadius: 16,
+    padding: 16,
+    marginHorizontal: 16,
+    marginVertical: 8,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  badge: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: colors.primary,
+    letterSpacing: 1,
+  },
+  dismiss: { fontSize: 12, color: colors.textSecondary },
+  tipText: {
+    color: "#fff",
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  actionButton: {
+    marginTop: 12,
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(244, 124, 32, 0.15)",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  actionText: { color: colors.primary, fontSize: 13, fontWeight: "700" },
+});
+```
+
+### Example Tips (Florida-specific)
+```
+{ tip: "Florida humidity tip: check your AC filter this week. A clogged filter costs $15-30/month in wasted energy.", category: "energy", actionLabel: "Order a new filter", onAction: openAmazonFilter }
+{ tip: "After heavy rain, check your gutters for debris buildup. Standing water attracts mosquitoes and can damage fascia boards.", category: "seasonal", actionLabel: "Book gutter check", onAction: bookGutterClean }
+{ tip: "Pool pH should be 7.2-7.6. Testing weekly during summer prevents algae and saves on chemicals.", category: "maintenance" }
+{ tip: "Your smoke detector batteries should be replaced every 6 months. Set a reminder or let George handle it.", category: "maintenance", actionLabel: "Order batteries", onAction: openAmazonBatteries }
+```
+
+---
+
+## Feature 16: Home Product Tracker + Amazon Affiliate Purchases
+
+George learns about the products in your home (filters, bulbs, batteries, water filters, etc.), tracks replacement cycles, and offers to purchase replacements through Amazon affiliate links.
+
+### Component: `src/components/home/ProductTracker.tsx`
+
+```tsx
+import React from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable, Linking } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
+import { colors } from "@/theme/colors";
+
+interface TrackedProduct {
+  id: string;
+  name: string; // "AC Filter 20x25x1"
+  category: string; // "HVAC", "Water", "Lighting", "Safety", "Pool"
+  lastReplaced: string; // "2026-01-15"
+  replacementCycleDays: number; // 90
+  daysUntilDue: number; // calculated
+  amazonUrl: string; // with uptend20-20 affiliate tag
+  estimatedPrice: string; // "$12.99"
+}
+
+interface ProductTrackerProps {
+  products: TrackedProduct[];
+  onAddProduct: () => void;
+}
+
+export function ProductTracker({ products, onAddProduct }: ProductTrackerProps) {
+  const overdue = products.filter((p) => p.daysUntilDue <= 0);
+  const upcoming = products.filter((p) => p.daysUntilDue > 0 && p.daysUntilDue <= 14);
+  const healthy = products.filter((p) => p.daysUntilDue > 14);
+
+  const handleBuy = (product: TrackedProduct) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    Linking.openURL(product.amazonUrl);
+  };
+
+  const renderProduct = (product: TrackedProduct) => {
+    const isOverdue = product.daysUntilDue <= 0;
+    const isUpcoming = product.daysUntilDue > 0 && product.daysUntilDue <= 14;
+
+    return (
+      <View key={product.id} style={styles.productRow}>
+        <View style={styles.productInfo}>
+          <Text style={styles.productName}>{product.name}</Text>
+          <Text style={[
+            styles.productStatus,
+            isOverdue && { color: "#EF4444" },
+            isUpcoming && { color: "#F59E0B" },
+          ]}>
+            {isOverdue
+              ? `${Math.abs(product.daysUntilDue)} days overdue`
+              : `Due in ${product.daysUntilDue} days`}
+          </Text>
+        </View>
+        <Pressable onPress={() => handleBuy(product)} style={styles.buyButton}>
+          <Text style={styles.buyText}>Buy {product.estimatedPrice}</Text>
+        </Pressable>
+      </View>
+    );
+  };
+
+  return (
+    <Animated.View entering={FadeInUp.springify()} style={styles.container}>
+      <View style={styles.headerRow}>
+        <View>
+          <Text style={styles.title}>Home Products</Text>
+          <Text style={styles.subtitle}>George tracks what you need, when you need it</Text>
+        </View>
+        <Pressable onPress={onAddProduct} style={styles.addButton}>
+          <Text style={styles.addText}>+ Add</Text>
+        </Pressable>
+      </View>
+
+      {overdue.length > 0 && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionLabel, { color: "#EF4444" }]}>NEEDS REPLACEMENT</Text>
+          {overdue.map(renderProduct)}
+        </View>
+      )}
+
+      {upcoming.length > 0 && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionLabel, { color: "#F59E0B" }]}>COMING UP</Text>
+          {upcoming.map(renderProduct)}
+        </View>
+      )}
+
+      {healthy.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>ALL GOOD</Text>
+          {healthy.map(renderProduct)}
+        </View>
+      )}
+
+      {products.length === 0 && (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyTitle}>No products tracked yet</Text>
+          <Text style={styles.emptyText}>
+            Tell George about your AC filters, water filters, light bulbs, smoke detectors, 
+            pool chemicals, and other home products. He will track replacement schedules 
+            and help you buy them when it is time.
+          </Text>
+          <Pressable onPress={onAddProduct} style={styles.startButton}>
+            <Text style={styles.startText}>Tell George About Your Home</Text>
+          </Pressable>
+        </View>
+      )}
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 16,
+  },
+  title: { color: "#fff", fontSize: 17, fontWeight: "700" },
+  subtitle: { color: colors.textSecondary, fontSize: 12, marginTop: 2 },
+  addButton: {
+    backgroundColor: "rgba(244, 124, 32, 0.12)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  addText: { color: colors.primary, fontSize: 12, fontWeight: "700" },
+  section: { marginBottom: 12 },
+  sectionLabel: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: colors.textSecondary,
+    letterSpacing: 1.5,
+    marginBottom: 8,
+  },
+  productRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.04)",
+  },
+  productInfo: { flex: 1 },
+  productName: { color: "#fff", fontSize: 14, fontWeight: "600" },
+  productStatus: { color: "#10B981", fontSize: 12, marginTop: 2 },
+  buyButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+    marginLeft: 12,
+  },
+  buyText: { color: "#fff", fontSize: 12, fontWeight: "700" },
+  emptyState: { alignItems: "center", paddingVertical: 12 },
+  emptyTitle: { color: "#fff", fontSize: 15, fontWeight: "700", marginBottom: 8 },
+  emptyText: { color: colors.textSecondary, fontSize: 13, textAlign: "center", lineHeight: 19, marginBottom: 16 },
+  startButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 14,
+  },
+  startText: { color: "#fff", fontSize: 14, fontWeight: "700" },
+});
+```
+
+### George's Data Gathering Nudges
+George passively gathers product info one question at a time during conversations:
+
+```
+// After a home cleaning booking:
+"Quick question: do you know what size AC filter your home uses? I can track when it needs replacing and help you order it."
+
+// After a pool service:
+"What pool chemicals do you usually use? I can track when you are running low."
+
+// During a Home DNA Scan:
+"I noticed your water heater looks like a Rheem 50-gallon. Those need the anode rod checked every 3-5 years. Want me to track that?"
+
+// Casual check-in:
+"Do you have a whole-house water filter? If so, what brand? Most need the cartridge swapped every 6 months."
+```
+
+### Amazon Affiliate Integration
+- All product links include the `uptend20-20` affiliate tag (already configured)
+- George maintains a curated product database (already built: 50+ exact products in george-tools.ts)
+- When a replacement is due, George sends a chat card:
+
+```
+"Your AC filter is due for replacement (last changed 91 days ago). 
+Here is the exact one for your system:
+
+Filtrete 20x25x1 MPR 1500 - $12.99 on Amazon
+[Buy Now]  [Remind Me Later]  [Already Replaced]"
+```
+
+- "Buy Now" opens Amazon with affiliate link
+- "Already Replaced" resets the timer
+- "Remind Me Later" snoozes for 1 week
+
+### Product Categories to Track
+| Category | Products | Typical Cycle |
+|----------|----------|---------------|
+| HVAC | AC filters, UV bulbs | 30-90 days |
+| Water | Fridge filters, whole-house filters, softener salt | 3-6 months |
+| Safety | Smoke detector batteries, CO detector batteries, fire extinguisher | 6-12 months |
+| Pool | Chlorine, pH balancer, filter cartridges | 2-8 weeks |
+| Lighting | Smart bulbs, outdoor bulbs, landscape lighting | 1-3 years |
+| Appliance | Garbage disposal, dishwasher cleaner, dryer vent | 3-12 months |
+| Pest | Ant bait stations, mosquito dunks, termite monitoring | 3-6 months |
+
+---
+
+## Feature 17: Home Timeline
+
+Scrollable chronological record of everything done to the home.
+
+### Component: `src/components/home/HomeTimeline.tsx`
+
+```tsx
+import React from "react";
+import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import Animated, { FadeInLeft } from "react-native-reanimated";
+import { colors } from "@/theme/colors";
+
+interface TimelineEvent {
+  id: string;
+  date: string;
+  type: "service" | "scan" | "product" | "recommendation";
+  title: string;
+  description: string;
+  proName?: string;
+  cost?: number;
+  photoUrl?: string;
+}
+
+interface HomeTimelineProps {
+  events: TimelineEvent[];
+}
+
+const TYPE_COLORS = {
+  service: colors.primary,
+  scan: "#10B981",
+  product: "#8B5CF6",
+  recommendation: "#F59E0B",
+};
+
+export function HomeTimeline({ events }: HomeTimelineProps) {
+  const renderEvent = ({ item, index }: { item: TimelineEvent; index: number }) => (
+    <Animated.View entering={FadeInLeft.delay(index * 50).springify()} style={styles.eventRow}>
+      {/* Timeline line + dot */}
+      <View style={styles.lineContainer}>
+        <View style={[styles.dot, { backgroundColor: TYPE_COLORS[item.type] }]} />
+        {index < events.length - 1 && <View style={styles.line} />}
+      </View>
+
+      {/* Event content */}
+      <View style={styles.eventContent}>
+        <Text style={styles.eventDate}>{item.date}</Text>
+        <Text style={styles.eventTitle}>{item.title}</Text>
+        <Text style={styles.eventDesc}>{item.description}</Text>
+        {item.proName && <Text style={styles.eventMeta}>Pro: {item.proName}</Text>}
+        {item.cost && <Text style={styles.eventMeta}>Cost: ${item.cost}</Text>}
+        {item.photoUrl && (
+          <Image source={{ uri: item.photoUrl }} style={styles.eventPhoto} />
+        )}
+      </View>
+    </Animated.View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Home Timeline</Text>
+      <Text style={styles.subtitle}>Everything George knows about your home</Text>
+      <FlatList
+        data={events}
+        renderItem={renderEvent}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  title: { color: "#fff", fontSize: 22, fontWeight: "700", paddingHorizontal: 16, marginBottom: 4 },
+  subtitle: { color: colors.textSecondary, fontSize: 13, paddingHorizontal: 16, marginBottom: 16 },
+  list: { paddingHorizontal: 16 },
+  eventRow: { flexDirection: "row", marginBottom: 4 },
+  lineContainer: { width: 24, alignItems: "center" },
+  dot: { width: 10, height: 10, borderRadius: 5, marginTop: 6 },
+  line: { width: 2, flex: 1, backgroundColor: "rgba(255,255,255,0.08)", marginTop: 4 },
+  eventContent: {
+    flex: 1,
+    marginLeft: 12,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.04)",
+    marginBottom: 4,
+  },
+  eventDate: { fontSize: 11, color: colors.textSecondary, fontWeight: "600", marginBottom: 4 },
+  eventTitle: { fontSize: 15, color: "#fff", fontWeight: "700", marginBottom: 2 },
+  eventDesc: { fontSize: 13, color: colors.textSecondary, lineHeight: 18 },
+  eventMeta: { fontSize: 12, color: colors.textSecondary, marginTop: 4 },
+  eventPhoto: { width: "100%", height: 120, borderRadius: 10, marginTop: 8, backgroundColor: colors.surfaceElevated },
+});
+```
+
+### Integration
+Accessible from My Home tab as a scrollable view. Aggregates data from:
+- `service_requests` (completed jobs with photos)
+- `home_scans` (DNA scan results)
+- `product_replacements` (tracked products)
+- `george_recommendations` (tips that were acted on)
+
+This becomes the home's permanent record. The longer it gets, the harder it is to leave the platform.
+
+---
+
+## Feature 18: Neighborhood Leaderboard (Anonymous)
+
+Anonymous comparison of your home's maintenance score against your neighborhood.
+
+### Component: `src/components/home/NeighborhoodLeaderboard.tsx`
+
+```tsx
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { colors } from "@/theme/colors";
+
+interface NeighborhoodLeaderboardProps {
+  neighborhoodName: string;
+  neighborhoodAvgScore: number;
+  yourScore: number;
+  yourPercentile: number; // 0-100, e.g. 72 = top 28%
+  totalHomes: number;
+}
+
+export function NeighborhoodLeaderboard({
+  neighborhoodName,
+  neighborhoodAvgScore,
+  yourScore,
+  yourPercentile,
+  totalHomes,
+}: NeighborhoodLeaderboardProps) {
+  const percentileLabel = yourPercentile >= 75
+    ? "Top " + (100 - yourPercentile) + "%"
+    : yourPercentile >= 50
+    ? "Above Average"
+    : "Below Average";
+
+  const barWidth = `${yourPercentile}%`;
+
+  return (
+    <Animated.View entering={FadeIn.duration(400)} style={styles.container}>
+      <Text style={styles.title}>{neighborhoodName} Maintenance Score</Text>
+
+      <View style={styles.compareRow}>
+        <View style={styles.scoreBlock}>
+          <Text style={styles.scoreValue}>{yourScore}</Text>
+          <Text style={styles.scoreLabel}>Your Home</Text>
+        </View>
+        <View style={styles.vsBlock}>
+          <Text style={styles.vsText}>vs</Text>
+        </View>
+        <View style={styles.scoreBlock}>
+          <Text style={[styles.scoreValue, { color: colors.textSecondary }]}>{neighborhoodAvgScore}</Text>
+          <Text style={styles.scoreLabel}>Avg Score</Text>
+        </View>
+      </View>
+
+      {/* Percentile bar */}
+      <View style={styles.barContainer}>
+        <View style={[styles.barFill, { width: barWidth }]} />
+        <View style={styles.barMarker} />
+      </View>
+      <View style={styles.barLabels}>
+        <Text style={styles.barLabel}>Needs Work</Text>
+        <Text style={[styles.barLabel, { color: colors.primary, fontWeight: "700" }]}>{percentileLabel}</Text>
+        <Text style={styles.barLabel}>Top Maintained</Text>
+      </View>
+
+      <Text style={styles.footer}>Based on {totalHomes} homes in {neighborhoodName}</Text>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  title: { color: "#fff", fontSize: 15, fontWeight: "700", marginBottom: 16, textAlign: "center" },
+  compareRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 20 },
+  scoreBlock: { alignItems: "center", paddingHorizontal: 24 },
+  scoreValue: { fontSize: 32, fontWeight: "800", color: colors.primary },
+  scoreLabel: { fontSize: 11, color: colors.textSecondary, marginTop: 2 },
+  vsBlock: { paddingHorizontal: 12 },
+  vsText: { fontSize: 14, color: colors.textSecondary, fontWeight: "600" },
+  barContainer: {
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    overflow: "hidden",
+    position: "relative",
+    marginBottom: 8,
+  },
+  barFill: {
+    height: "100%",
+    borderRadius: 4,
+    backgroundColor: colors.primary,
+  },
+  barMarker: {
+    position: "absolute",
+    right: 0,
+    top: -2,
+    width: 4,
+    height: 12,
+    borderRadius: 2,
+    backgroundColor: "#fff",
+  },
+  barLabels: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  barLabel: { fontSize: 10, color: colors.textSecondary },
+  footer: { fontSize: 11, color: colors.textSecondary, textAlign: "center" },
+});
+```
+
+### Integration
+Place in `MyHomeScreen.tsx` below the Home Health Score. Data is anonymized and aggregated from all UpTend users in the same neighborhood/HOA. No names, no addresses. Just scores. This creates healthy competition and social pressure to maintain homes, which drives more bookings.
+
+---
+
+## Updated Card Type Registry
+
+Add to the existing registry in the chat renderer:
+
+```tsx
+const CARD_COMPONENTS: Record<string, React.ComponentType<any>> = {
+  // ... existing cards ...
+  do_this_again: DoThisAgainCard,
+  predictive_booking: PredictiveBookingCard,
+  proactive_alert: ProactiveAlertCard,
+  neighborhood_activity: NeighborhoodActivityCard,
+  quote_timer: QuoteTimer,
+  daily_tip: DailyTip,
+  product_reminder: ProductReminderCard, // Amazon affiliate reminder in chat
+};
+```
