@@ -161,7 +161,8 @@ function email4_launch(name: string, isPro: boolean): { subject: string; html: s
       As a Founding Member, here's what's waiting for you:
     </p>
     <ul style="padding-left:20px;color:#475569;">
-      <li style="margin-bottom:8px;"><strong>10% off your first service</strong> (applied automatically)</li>
+      <li style="margin-bottom:8px;"><strong>$25 credit on your first service</strong> (applied automatically)</li>
+      <li style="margin-bottom:8px;"><strong>10% off your first 10 services</strong> (stacks with the $25 credit on job 1)</li>
       <li style="margin-bottom:8px;"><strong>Priority booking</strong> over non-founding members</li>
       <li style="margin-bottom:8px;"><strong>"Founding Member" badge</strong> on your profile forever</li>
     </ul>

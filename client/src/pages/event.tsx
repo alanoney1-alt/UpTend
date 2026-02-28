@@ -60,7 +60,7 @@ export default function EventPage() {
             <p className="text-[#F47C20] text-lg font-bold mb-3">Founding Member #{spot}</p>
           )}
           <p className="text-slate-400 text-lg mb-6">
-            You've got a $25 credit waiting for your first service. We'll text you when we're live in your area.
+            You've got a $25 credit on your first service plus 10% off your first 10 services. We'll text you when we're live in your area.
           </p>
           <a href="/" className="text-[#F47C20] text-sm font-semibold hover:underline">
             Explore uptendapp.com
