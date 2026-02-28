@@ -6091,7 +6091,7 @@ export async function addToCalendar(customerId: string, bookingId: string): Prom
  headers: { 'Authorization': `Bearer ${SENDGRID_API_KEY}`, 'Content-Type': 'application/json' },
  body: JSON.stringify({
  personalizations: [{ to: [{ email: contact.email }] }],
- from: { email: 'alan@uptendapp.com', name: 'George @ UpTend' },
+ from: { email: 'george@uptendapp.com', name: 'George from UpTend' },
  subject: `Calendar Invite: UpTend ${booking.service_type || 'Service'} Appointment`,
  content: [{ type: 'text/html', value: buildBrandedEmailHtml(
  'Your Appointment is on the Calendar! ',

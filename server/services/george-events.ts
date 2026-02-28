@@ -1140,7 +1140,7 @@ export async function scanGovernmentContracts(): Promise<{ found: number; emaile
  }
 
  await transporter.sendMail({
- from: process.env.FROM_EMAIL || "UpTend <noreply@uptendapp.com>",
+ from: process.env.FROM_EMAIL || "George from UpTend <george@uptendapp.com>",
  to: adminEmail,
  subject: ` ${unique.length} Government Contract Opportunities - Florida`,
  html,

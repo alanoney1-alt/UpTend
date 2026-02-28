@@ -20,7 +20,7 @@ if (process.env.SENDGRID_API_KEY) {
  transporter = nodemailer.createTransport({ jsonTransport: true });
 }
 
-const FROM = process.env.FROM_EMAIL || "UpTend <noreply@uptendapp.com>";
+const FROM = process.env.FROM_EMAIL || "George from UpTend <george@uptendapp.com>";
 const isDev = !process.env.SENDGRID_API_KEY && !process.env.SMTP_HOST;
 
 // ─── Helpers ───────────────────────────────────────────────────────
