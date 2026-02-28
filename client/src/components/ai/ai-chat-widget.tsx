@@ -78,17 +78,28 @@ function BookingDraftCard({ draft, onAction }: { draft: any; onAction: (btn: Qui
 
 // ─── Main Widget ────────────────────────────
 export function AiChatWidget() {
-  const [isOpen, setIsOpen] = useState(() => {
-    // Auto-open for first-time visitors, then remember their choice
-    const hasVisited = localStorage.getItem('george_dismissed');
-    return !hasVisited;
-  });
+  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pendingMessageRef = useRef<string | null>(null);
 
   const currentPage = typeof window !== "undefined" ? window.location.pathname : "/";
+
+  // Listen for george:open events (from inline prompt, "Ask George" buttons, etc.)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setIsOpen(true);
+      if (detail?.message) {
+        // Queue the message to send after opening
+        pendingMessageRef.current = detail.message;
+      }
+    };
+    window.addEventListener("george:open", handler);
+    return () => window.removeEventListener("george:open", handler);
+  }, []);
 
   // Restore from localStorage
   useEffect(() => {
@@ -167,6 +178,16 @@ export function AiChatWidget() {
     }
   }, [handleSend]);
 
+  // Send pending message from inline prompt after widget opens
+  useEffect(() => {
+    if (isOpen && pendingMessageRef.current) {
+      const msg = pendingMessageRef.current;
+      pendingMessageRef.current = null;
+      // Small delay so the widget renders first
+      setTimeout(() => handleSend(msg), 100);
+    }
+  }, [isOpen, handleSend]);
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -188,76 +209,10 @@ export function AiChatWidget() {
         { text: "Learn About UpTend", action: "reply:Tell me about UpTend" },
       ];
 
-  // George greeting bar - slides up from bottom after 2s for first-time visitors
-  const [showGreeting, setShowGreeting] = useState(false);
-  const [greetingDismissed, setGreetingDismissed] = useState(false);
-
-  useEffect(() => {
-    if (!isOpen && !greetingDismissed) {
-      const hasVisited = localStorage.getItem('george_dismissed');
-      if (!hasVisited) {
-        const timer = setTimeout(() => setShowGreeting(true), 2000);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [isOpen, greetingDismissed]);
-
-  const handleGreetingClick = () => {
-    setShowGreeting(false);
-    setIsOpen(true);
-  };
-
-  const handleGreetingDismiss = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowGreeting(false);
-    setGreetingDismissed(true);
-    localStorage.setItem('george_dismissed', 'true');
-  };
-
   return (
     <>
-      {/* George Greeting Bar - full-width bottom bar that slides up */}
-      {showGreeting && !isOpen && (
-        <div
-          onClick={handleGreetingClick}
-          className="fixed bottom-0 left-0 right-0 z-40 cursor-pointer"
-          style={{ animation: "slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}
-        >
-          <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 border-t border-[#F47C20]/30 backdrop-blur-md px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="h-11 w-11 rounded-full bg-gradient-to-br from-[#F47C20] to-[#E06010] flex items-center justify-center shadow-lg shadow-orange-500/20">
-                  <Bot className="h-5 w-5 text-white" />
-                </div>
-                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-slate-900" />
-              </div>
-              <div>
-                <p className="text-white font-semibold text-sm">George here. What's going on with your home?</p>
-                <p className="text-slate-400 text-xs mt-0.5">Your home service agent - tap to chat</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[#F47C20] text-sm font-medium hidden sm:block">Chat now</span>
-              <button
-                onClick={handleGreetingDismiss}
-                className="text-slate-500 hover:text-slate-300 transition-colors p-1"
-                aria-label="Dismiss"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-          <style>{`
-            @keyframes slideUp {
-              from { transform: translateY(100%); opacity: 0; }
-              to { transform: translateY(0); opacity: 1; }
-            }
-          `}</style>
-        </div>
-      )}
-
-      {/* Floating Button - shows after greeting dismissed or for returning visitors */}
-      {!isOpen && !showGreeting && (
+      {/* Floating Button - always visible when chat is closed */}
+      {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
           className="fixed bottom-24 md:bottom-8 right-6 h-14 w-14 rounded-full shadow-lg shadow-orange-500/25 z-40 bg-gradient-to-br from-[#F47C20] to-[#E06010] hover:from-[#FF8C34] hover:to-[#F47C20] transition-all duration-300"

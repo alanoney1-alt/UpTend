@@ -16,6 +16,7 @@ import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { SocialProofTicker } from "@/components/landing/social-proof-ticker";
 import { Founding100 } from "@/components/landing/founding-100";
 import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
+import { GeorgeInlinePrompt } from "@/components/ai/george-inline-prompt";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
@@ -95,6 +96,18 @@ function HeroSection() {
         <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
           Every pro is background-checked and insured. Every price is locked before they arrive.
         </p>
+
+        {/* George inline chat prompt */}
+        <div className="mb-10">
+          <GeorgeInlinePrompt
+            onSubmit={(msg) => {
+              window.dispatchEvent(new CustomEvent("george:open", { detail: { message: msg } }));
+            }}
+            onTap={() => {
+              window.dispatchEvent(new CustomEvent("george:open"));
+            }}
+          />
+        </div>
 
         {isHurricaneSeason() && (
           <div className="max-w-xl mx-auto mb-6 px-4 py-2.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm font-medium">
