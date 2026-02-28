@@ -8,7 +8,7 @@
 
 import { Router, Request, Response } from "express";
 import multer from "multer";
-import Anthropic from "@anthropic-ai/sdk";
+import { analyzeImageOpenAI } from "../../services/ai/openai-vision-client";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -29,28 +29,10 @@ router.post("/analyze-load", upload.any(), async (req: Request, res: Response) =
 
     const serviceType = req.body.serviceType || "junk_removal";
 
-    // Convert images to base64 for Claude vision
-    const imageContents: any[] = files.slice(0, 5).map((file) => ({
-      type: "image" as const,
-      source: {
-        type: "base64" as const,
-        media_type: file.mimetype as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
-        data: file.buffer.toString("base64"),
-      },
-    }));
-
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
-    if (!anthropicKey) {
-      // No API key - return smart fallback
-      return res.json({
-        identifiedItems: ["Items detected from photos"],
-        suggestedPrice: 149,
-        confidence: "low",
-        note: "AI analysis unavailable. Using standard estimate.",
-      });
-    }
-
-    const client = new Anthropic({ apiKey: anthropicKey });
+    // Convert images to data URLs for OpenAI vision
+    const imageUrls = files.slice(0, 5).map((file) => 
+      `data:${file.mimetype};base64,${file.buffer.toString("base64")}`
+    );
 
     const prompt = serviceType === "junk_removal"
       ? `You are analyzing photos for a junk removal / hauling quote. Look at each photo carefully.
@@ -78,24 +60,14 @@ If the photos are NOT related to home services, respond with:
 Otherwise respond with JSON:
 {"identifiedItems": ["item1", "item2"], "suggestedPrice": 149, "confidence": "medium"}`;
 
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
-      messages: [
-        {
-          role: "user",
-          content: [
-            ...imageContents,
-            { type: "text" as const, text: prompt },
-          ],
-        },
-      ],
+    const result = await analyzeImageOpenAI({
+      imageUrls,
+      prompt,
+      systemPrompt: "You are a home services load estimation AI. Always respond with valid JSON only, no markdown.",
+      maxTokens: 1024,
     });
 
-    const text = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === "text")
-      .map((b) => b.text)
-      .join("");
+    const text = result.analysis;
 
     // Parse JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
