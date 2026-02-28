@@ -1118,6 +1118,399 @@ Air filters, paint, security cameras, smart home devices, cleaning supplies, too
 
 ---
 
+## George Mood System (The App IS George)
+
+This is the single biggest differentiator. George's emotional state doesn't just change his avatar -- it changes the ENTIRE app. Background colors, text energy, haptic patterns, sounds, animation speed, chat bubble styling. The user should feel like they're inside George's mind. When George is excited, the app feels electric. When George is calm, the app feels zen. When George is urgent, the app feels tense. No other app does this.
+
+### Mood States
+
+George has 8 core mood states. Each one transforms the app holistically:
+
+| Mood | Trigger | Avatar | BG Tint | Glow | Haptics | Text Style | Animation Speed | Sound |
+|------|---------|--------|---------|------|---------|------------|----------------|-------|
+| **Neutral** | Default state | Idle breathing, occasional blink | Base #0A0E1A | Soft amber, 3s pulse | Standard map | Normal 17px, regular | Default spring | Soft chime on messages |
+| **Excited** | Found a deal, pro accepted fast, savings calculated | Eyes wider, slight lean forward, faster breathing | Warm amber wash (+2% saturation) | Bright, expanded, faster 1.5s pulse | Slightly stronger taps | Slightly larger (18px), medium weight | 20% faster springs (stiffness +30) | Brighter, quicker chime |
+| **Focused** | Analyzing photo, running numbers, processing complex request | Eyes narrowed slightly, steady gaze | Cooler, sharper contrast | Tight, concentrated, no pulse (steady) | Precise single taps | Clean, 16px, slightly tighter line height | Tighter springs (more damping) | Minimal -- subtle processing hum |
+| **Protective** | Storm warning, overdue maintenance, safety issue found | Alert posture, direct eye contact | Deeper navy with amber warning undertone | Pulsing amber-red, 1s cycle | Stronger, more deliberate | Bold weight on key phrases | Sharper animations, quicker settle | Low alert tone |
+| **Proud** | Job completed well, customer saved money, milestone hit | Slight smile, relaxed posture | Warm, golden undertone | Wide warm glow, slow satisfied pulse | Celebration pattern (success + light + light) | Confident, regular weight, generous spacing | Slightly slower, more relaxed springs | Warm success tone |
+| **Concerned** | Maintenance way overdue, quote seems high, potential issue | Slight furrow, thoughtful tilt | Slightly desaturated, cooler | Tighter, slightly cooler amber | Soft warning pattern | Normal but George uses more direct language | Normal speed | Soft double-tap tone |
+| **Urgent** | Emergency repair, storm imminent, time-sensitive booking | Full alert, leaning in | High contrast, dark with amber accents | Fast pulse, bright, tight | Strong repeated pulses | Larger (19px), bold, shorter sentences | Fast, snappy animations | Sharp attention tone |
+| **Chill** | Late night, weekend morning, nothing pending, all maintenance current | Relaxed, half-smile, slow blinks | Warmer, slightly lighter base | Minimal glow, very slow 5s pulse | Lightest touch | Relaxed 17px, generous line height | Slowest springs, lazy feel | Quietest, ambient |
+
+### How Mood Is Determined
+
+Mood is computed SERVER-SIDE and returned with every George response. The AI already has context -- this just formalizes it as a data point the app can consume.
+
+```typescript
+// Added to POST /api/ai/chat response
+{
+  "message": "Storm system moving in Thursday...",
+  "mood": "protective",           // Current mood state
+  "moodIntensity": 0.8,          // 0-1, how strong the mood is
+  "moodReason": "hurricane_alert", // For debugging/analytics
+  "cards": [...],
+  "haptic": "medium"
+}
+```
+
+The app interpolates between moods smoothly. Mood changes are NEVER instant -- always a 1.5-2 second animated transition (color interpolation, glow shift, spring config update). If George goes from "chill" to "urgent," the user feels the shift like a gear change.
+
+### App-Wide Mood Manifestation
+
+#### 1. Background & Color System
+Every screen wraps in an `<AtmosphereProvider>` that layers a mood tint:
+
+```typescript
+// src/theme/mood.ts
+interface MoodTheme {
+  backgroundTint: string;       // Overlay color on base background
+  surfaceTint: string;          // Overlay on cards/surfaces
+  glowColor: string;            // George's ambient glow
+  glowIntensity: number;        // 0-1
+  glowPulseSpeed: number;       // ms per cycle (0 = no pulse, steady)
+  accentShift: string;          // Shifted primary color
+  textEmphasisWeight: string;   // "400" | "500" | "600" | "700"
+  borderGlow: string;           // Card border color (subtle mood hint)
+}
+
+const MOOD_THEMES: Record<string, MoodTheme> = {
+  neutral: {
+    backgroundTint: "rgba(244, 124, 32, 0.02)",
+    surfaceTint: "rgba(0, 0, 0, 0)",
+    glowColor: "#F47C20",
+    glowIntensity: 0.3,
+    glowPulseSpeed: 3000,
+    accentShift: "#F47C20",
+    textEmphasisWeight: "400",
+    borderGlow: "rgba(244, 124, 32, 0.06)",
+  },
+  excited: {
+    backgroundTint: "rgba(244, 124, 32, 0.05)",
+    surfaceTint: "rgba(244, 124, 32, 0.02)",
+    glowColor: "#FF8C34",
+    glowIntensity: 0.6,
+    glowPulseSpeed: 1500,
+    accentShift: "#FF8C34",
+    textEmphasisWeight: "500",
+    borderGlow: "rgba(244, 124, 32, 0.12)",
+  },
+  focused: {
+    backgroundTint: "rgba(100, 140, 200, 0.03)",
+    surfaceTint: "rgba(0, 0, 0, 0.02)",
+    glowColor: "#D4882A",
+    glowIntensity: 0.5,
+    glowPulseSpeed: 0, // steady, no pulse
+    accentShift: "#E8862A",
+    textEmphasisWeight: "500",
+    borderGlow: "rgba(200, 200, 255, 0.06)",
+  },
+  protective: {
+    backgroundTint: "rgba(220, 100, 30, 0.04)",
+    surfaceTint: "rgba(220, 100, 30, 0.02)",
+    glowColor: "#E8731C",
+    glowIntensity: 0.7,
+    glowPulseSpeed: 1000,
+    accentShift: "#E8731C",
+    textEmphasisWeight: "600",
+    borderGlow: "rgba(220, 100, 30, 0.10)",
+  },
+  proud: {
+    backgroundTint: "rgba(255, 200, 50, 0.03)",
+    surfaceTint: "rgba(255, 200, 50, 0.01)",
+    glowColor: "#FFB830",
+    glowIntensity: 0.5,
+    glowPulseSpeed: 4000,
+    accentShift: "#FFB830",
+    textEmphasisWeight: "500",
+    borderGlow: "rgba(255, 200, 50, 0.08)",
+  },
+  concerned: {
+    backgroundTint: "rgba(150, 120, 80, 0.03)",
+    surfaceTint: "rgba(0, 0, 0, 0.01)",
+    glowColor: "#C4862A",
+    glowIntensity: 0.4,
+    glowPulseSpeed: 2500,
+    accentShift: "#D49030",
+    textEmphasisWeight: "500",
+    borderGlow: "rgba(200, 160, 80, 0.08)",
+  },
+  urgent: {
+    backgroundTint: "rgba(239, 68, 68, 0.04)",
+    surfaceTint: "rgba(239, 68, 68, 0.02)",
+    glowColor: "#F4501C",
+    glowIntensity: 0.9,
+    glowPulseSpeed: 600,
+    accentShift: "#F4501C",
+    textEmphasisWeight: "700",
+    borderGlow: "rgba(239, 68, 68, 0.12)",
+  },
+  chill: {
+    backgroundTint: "rgba(100, 150, 200, 0.02)",
+    surfaceTint: "rgba(0, 0, 0, 0)",
+    glowColor: "#D4A040",
+    glowIntensity: 0.15,
+    glowPulseSpeed: 5000,
+    accentShift: "#D4A040",
+    textEmphasisWeight: "400",
+    borderGlow: "rgba(200, 200, 255, 0.04)",
+  },
+};
+```
+
+#### 2. Chat Bubble Styling Shifts
+George's message bubbles reflect his mood:
+
+- **Excited**: Bubbles have a barely visible warm border glow. Text is 1px larger. Slightly more padding.
+- **Urgent**: Bubbles get a sharper border. Key sentences auto-bold. Less padding (tighter, more direct).
+- **Chill**: Bubbles are softer, rounded more. Generous padding. Text breathes.
+- **Focused**: Clean sharp edges. Minimal decoration. Information-dense layout.
+- **Proud**: Golden shimmer on the bubble border when George is celebrating savings or job completion.
+
+```typescript
+// In ChatBubble.tsx
+function getMoodBubbleStyle(mood: string, intensity: number) {
+  const theme = MOOD_THEMES[mood];
+  return {
+    borderColor: theme.borderGlow,
+    borderWidth: intensity > 0.5 ? 1 : 0,
+    paddingHorizontal: mood === "chill" ? 20 : mood === "urgent" ? 14 : 16,
+    paddingVertical: mood === "chill" ? 14 : mood === "urgent" ? 10 : 12,
+    // Shimmer overlay for "proud" mood
+    shimmer: mood === "proud" && intensity > 0.6,
+  };
+}
+```
+
+#### 3. Animation Speed Scaling
+The entire app's animation timing shifts with mood:
+
+```typescript
+// src/theme/animations.ts
+function getMoodSpringConfig(mood: string) {
+  switch (mood) {
+    case "excited":
+      return { damping: 12, stiffness: 195, mass: 0.9 };  // Snappier
+    case "urgent":
+      return { damping: 18, stiffness: 220, mass: 0.8 };  // Quick, decisive
+    case "chill":
+      return { damping: 12, stiffness: 100, mass: 1.2 };  // Lazy, floaty
+    case "focused":
+      return { damping: 20, stiffness: 180, mass: 1.0 };  // Precise, no overshoot
+    case "proud":
+      return { damping: 10, stiffness: 130, mass: 1.0 };  // Bouncy, celebratory
+    default:
+      return { damping: 15, stiffness: 150, mass: 1.0 };  // Standard
+  }
+}
+```
+
+Cards, bubbles, tab transitions, bottom sheets -- everything uses this config. The whole app feels different.
+
+#### 4. Haptic Patterns Per Mood
+
+```typescript
+// src/services/haptics.ts
+async function moodHaptic(mood: string, action: "tap" | "message" | "alert" | "success") {
+  switch (mood) {
+    case "excited":
+      if (action === "message") {
+        await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+        await delay(80);
+        await Haptics.impactAsync(ImpactFeedbackStyle.Light); // Double tap feel
+      }
+      break;
+    case "urgent":
+      if (action === "alert") {
+        for (let i = 0; i < 3; i++) {
+          await Haptics.impactAsync(ImpactFeedbackStyle.Heavy);
+          await delay(100);
+        }
+      }
+      break;
+    case "proud":
+      if (action === "success") {
+        await Haptics.notificationAsync(NotificationFeedbackType.Success);
+        await delay(200);
+        await Haptics.impactAsync(ImpactFeedbackStyle.Light);
+        await delay(100);
+        await Haptics.impactAsync(ImpactFeedbackStyle.Light); // Celebratory triple
+      }
+      break;
+    case "chill":
+      if (action === "message") {
+        await Haptics.impactAsync(ImpactFeedbackStyle.Light); // Barely there
+      }
+      break;
+    // ... other moods
+  }
+}
+```
+
+#### 5. Typing Indicator Changes
+George's thinking animation shifts with mood:
+
+- **Neutral/Chill**: Slow, relaxed eye movement. Soft pulsing dots.
+- **Excited**: Faster movement, brighter dots, quicker pulse.
+- **Focused**: Eyes look down (reading/analyzing), steady dots, no bounce.
+- **Urgent**: Fast pulsing, dots are sharper, slight vibration feel.
+- **Proud**: Small smile during thinking, warm glow on dots.
+
+If using Lottie, ship 3-4 variants of the thinking animation and swap based on mood. If procedural, drive animation speed/style from mood config.
+
+#### 6. Notification Tones
+Different sounds for different moods (requires custom sound files):
+
+| Mood | Sound Character | File |
+|------|----------------|------|
+| Neutral | Clean, warm chime | `neutral-chime.mp3` |
+| Excited | Bright, upbeat ding | `excited-ding.mp3` |
+| Focused | Minimal, precise tap | `focused-tap.mp3` |
+| Protective | Low, attention-getting tone | `protective-alert.mp3` |
+| Proud | Warm, satisfying resolution chord | `proud-success.mp3` |
+| Concerned | Soft, questioning double-tone | `concerned-double.mp3` |
+| Urgent | Sharp, can't-miss alert | `urgent-alert.mp3` |
+| Chill | Whisper-quiet, ambient | `chill-ambient.mp3` |
+
+Play via `expo-av` on each new George message. Volume scales with `moodIntensity`.
+
+#### 7. Home Screen Widget (iOS)
+The iOS home screen widget shows George's face + a contextual one-liner. The widget appearance shifts with mood:
+
+- Background tint matches current mood
+- George's avatar matches mood state
+- One-liner reflects mood + home context:
+  - Chill: "All good at 1423 Oak Lane."
+  - Protective: "Storm Thursday. Gutters need attention."
+  - Excited: "Just saved you $340 on that pressure wash."
+  - Concerned: "AC filter is 3 months overdue."
+
+Widget updates via background fetch (every 30 min or on mood change push).
+
+#### 8. Ambient Particle Effects (Per Mood)
+Extremely subtle fullscreen particle overlay (react-native-skia):
+
+| Mood | Particles | Details |
+|------|-----------|---------|
+| Excited | Tiny warm sparks | 3-5 floating amber dots, slow drift upward, 8% opacity |
+| Focused | None | Clean screen, no distractions |
+| Protective | Subtle pulse waves | Concentric rings from George's position, very slow, 5% opacity |
+| Proud | Micro confetti | 5-8 tiny golden pieces, single burst on mood trigger, fade in 2s |
+| Urgent | None (clean is more urgent) | High contrast does the work |
+| Chill | Barely visible float | 2-3 soft circles, very slow drift, 3% opacity |
+
+Rule: if a user consciously notices the particles, they're too much. These are felt, not seen.
+
+#### 9. Input Bar Mood Response
+The message input area subtly shifts:
+
+- **Chill**: Placeholder text is casual -- "What's up?" or "Need anything?"
+- **Focused**: "Describe the issue..." (more functional)
+- **Urgent**: "Tell me what happened" (direct, ready to act)
+- **Excited**: "What else can I help with?" (eager)
+- **Protective**: "What do you need?" (ready, direct)
+
+The send button glow intensity matches George's mood glow.
+
+#### 10. Tab Bar Mood Tint
+The floating tab bar's blur tint shifts with mood:
+- The active tab indicator color interpolates toward the mood's accent color
+- The blur intensity increases slightly during urgent moods (more contrast)
+- During "proud" mood, the George tab icon gets a momentary golden ring
+
+### Mood + Weather + Time Layering
+Mood, weather, and time-of-day all compose together. Mood is the PRIMARY driver, weather is secondary, time is tertiary:
+
+```typescript
+function computeAtmosphere(
+  mood: MoodState,
+  weather: WeatherData,
+  timeOfDay: TimeSegment
+): FinalAtmosphere {
+  // Start with mood as base (70% weight)
+  const base = MOOD_THEMES[mood.state];
+  // Layer weather tint (20% weight)
+  const weatherTint = getWeatherTint(weather);
+  // Layer time shift (10% weight)
+  const timeShift = getTimeShift(timeOfDay);
+  
+  return blendAtmospheres(base, weatherTint, timeShift, {
+    moodWeight: 0.7,
+    weatherWeight: 0.2,
+    timeWeight: 0.1,
+  });
+}
+```
+
+This means on a rainy evening when George is excited about a deal, you get: excitement as the dominant feel (warm, snappy), but with a cooler undertone from rain and slightly deeper tones from evening. The combination is unique and alive.
+
+### Implementation Priority
+1. **Phase 1** (with base build): Add `mood` field to chat API response. Implement background tint + glow changes. These alone make it feel alive.
+2. **Phase 2**: Chat bubble styling, animation speed scaling, haptic patterns. This makes it feel intelligent.
+3. **Phase 3**: Sound design, particles, widget, input bar changes. This makes it feel magical.
+4. **Phase 4**: Weather + time + mood composition. Seasonal shifts. This makes it feel like it's breathing.
+
+### Context Provider
+
+```typescript
+// src/context/MoodContext.tsx
+import React, { createContext, useContext, useState, useEffect } from "react";
+import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+
+interface MoodState {
+  current: string;          // "neutral" | "excited" | etc.
+  intensity: number;        // 0-1
+  reason: string;           // why George feels this way
+  springConfig: SpringConfig;
+  theme: MoodTheme;
+}
+
+const MoodContext = createContext<MoodState>(defaultMood);
+
+export function MoodProvider({ children }: { children: React.ReactNode }) {
+  const [mood, setMood] = useState<MoodState>(defaultMood);
+  
+  // Animated values for smooth transitions
+  const bgTintOpacity = useSharedValue(0);
+  const glowIntensity = useSharedValue(0.3);
+  const glowPulseSpeed = useSharedValue(3000);
+  
+  // Called when chat API returns a mood
+  function updateMood(newMood: string, intensity: number, reason: string) {
+    const theme = MOOD_THEMES[newMood];
+    // Smooth transition -- never jarring
+    bgTintOpacity.value = withTiming(intensity * 0.1, { duration: 1500 });
+    glowIntensity.value = withTiming(theme.glowIntensity, { duration: 2000 });
+    glowPulseSpeed.value = withTiming(theme.glowPulseSpeed, { duration: 1500 });
+    
+    setMood({
+      current: newMood,
+      intensity,
+      reason,
+      springConfig: getMoodSpringConfig(newMood),
+      theme,
+    });
+  }
+  
+  return (
+    <MoodContext.Provider value={{ ...mood, updateMood }}>
+      <MoodBackgroundLayer tintOpacity={bgTintOpacity} tintColor={mood.theme.backgroundTint}>
+        {children}
+      </MoodBackgroundLayer>
+    </MoodContext.Provider>
+  );
+}
+
+export const useMood = () => useContext(MoodContext);
+```
+
+Every component in the app can call `useMood()` to get the current mood state and adapt. The `MoodBackgroundLayer` wraps the entire app with an animated tint overlay.
+
+### The Big Picture
+
+When a new user opens the app for the first time, George is neutral -- warm, welcoming, standard. As they have their first conversation and George gets excited about helping them, the whole app subtly shifts. The user doesn't know WHY the app feels different -- they just know it feels alive. By month 3, they've seen George protective during hurricane season, chill on Sunday mornings, excited when he finds them a deal, proud when a job goes perfectly. The app has MOODS. It has a PERSONALITY that you can FEEL. No home services app, no AI app, no app period does this. This is what makes George real.
+
+---
+
 ## Critical Rules
 - **NO web views.** Everything is native React Native components.
 - **Haptics on EVERY interaction.** If the user touches something, they feel it.

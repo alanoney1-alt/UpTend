@@ -2446,3 +2446,349 @@ const CARD_COMPONENTS: Record<string, React.ComponentType<any>> = {
   product_reminder: ProductReminderCard, // Amazon affiliate reminder in chat
 };
 ```
+
+---
+
+## Feature 19: George Mood System (App-Wide Emotional UI)
+
+George's mood transforms the entire app -- not just his avatar. Background tints, animation speeds, haptic patterns, chat bubble styling, sounds, particles. Full spec with all 8 mood states, theme configs, spring configs, haptic patterns, and the MoodProvider context is in **GEORGE-APP-SPEC.md** under "George Mood System."
+
+### Core Component: `src/context/MoodContext.tsx`
+
+```tsx
+import React, { createContext, useContext, useState, useCallback } from "react";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  interpolateColor,
+} from "react-native-reanimated";
+import { StyleSheet, View } from "react-native";
+
+type MoodName = "neutral" | "excited" | "focused" | "protective" | "proud" | "concerned" | "urgent" | "chill";
+
+interface MoodTheme {
+  backgroundTint: string;
+  surfaceTint: string;
+  glowColor: string;
+  glowIntensity: number;
+  glowPulseSpeed: number;
+  accentShift: string;
+  textEmphasisWeight: string;
+  borderGlow: string;
+}
+
+interface MoodState {
+  current: MoodName;
+  intensity: number;
+  reason: string;
+  theme: MoodTheme;
+}
+
+const MOOD_THEMES: Record<MoodName, MoodTheme> = {
+  neutral: {
+    backgroundTint: "rgba(244, 124, 32, 0.02)",
+    surfaceTint: "rgba(0, 0, 0, 0)",
+    glowColor: "#F47C20",
+    glowIntensity: 0.3,
+    glowPulseSpeed: 3000,
+    accentShift: "#F47C20",
+    textEmphasisWeight: "400",
+    borderGlow: "rgba(244, 124, 32, 0.06)",
+  },
+  excited: {
+    backgroundTint: "rgba(244, 124, 32, 0.05)",
+    surfaceTint: "rgba(244, 124, 32, 0.02)",
+    glowColor: "#FF8C34",
+    glowIntensity: 0.6,
+    glowPulseSpeed: 1500,
+    accentShift: "#FF8C34",
+    textEmphasisWeight: "500",
+    borderGlow: "rgba(244, 124, 32, 0.12)",
+  },
+  focused: {
+    backgroundTint: "rgba(100, 140, 200, 0.03)",
+    surfaceTint: "rgba(0, 0, 0, 0.02)",
+    glowColor: "#D4882A",
+    glowIntensity: 0.5,
+    glowPulseSpeed: 0,
+    accentShift: "#E8862A",
+    textEmphasisWeight: "500",
+    borderGlow: "rgba(200, 200, 255, 0.06)",
+  },
+  protective: {
+    backgroundTint: "rgba(220, 100, 30, 0.04)",
+    surfaceTint: "rgba(220, 100, 30, 0.02)",
+    glowColor: "#E8731C",
+    glowIntensity: 0.7,
+    glowPulseSpeed: 1000,
+    accentShift: "#E8731C",
+    textEmphasisWeight: "600",
+    borderGlow: "rgba(220, 100, 30, 0.10)",
+  },
+  proud: {
+    backgroundTint: "rgba(255, 200, 50, 0.03)",
+    surfaceTint: "rgba(255, 200, 50, 0.01)",
+    glowColor: "#FFB830",
+    glowIntensity: 0.5,
+    glowPulseSpeed: 4000,
+    accentShift: "#FFB830",
+    textEmphasisWeight: "500",
+    borderGlow: "rgba(255, 200, 50, 0.08)",
+  },
+  concerned: {
+    backgroundTint: "rgba(150, 120, 80, 0.03)",
+    surfaceTint: "rgba(0, 0, 0, 0.01)",
+    glowColor: "#C4862A",
+    glowIntensity: 0.4,
+    glowPulseSpeed: 2500,
+    accentShift: "#D49030",
+    textEmphasisWeight: "500",
+    borderGlow: "rgba(200, 160, 80, 0.08)",
+  },
+  urgent: {
+    backgroundTint: "rgba(239, 68, 68, 0.04)",
+    surfaceTint: "rgba(239, 68, 68, 0.02)",
+    glowColor: "#F4501C",
+    glowIntensity: 0.9,
+    glowPulseSpeed: 600,
+    accentShift: "#F4501C",
+    textEmphasisWeight: "700",
+    borderGlow: "rgba(239, 68, 68, 0.12)",
+  },
+  chill: {
+    backgroundTint: "rgba(100, 150, 200, 0.02)",
+    surfaceTint: "rgba(0, 0, 0, 0)",
+    glowColor: "#D4A040",
+    glowIntensity: 0.15,
+    glowPulseSpeed: 5000,
+    accentShift: "#D4A040",
+    textEmphasisWeight: "400",
+    borderGlow: "rgba(200, 200, 255, 0.04)",
+  },
+};
+
+const MOOD_SPRINGS: Record<MoodName, { damping: number; stiffness: number; mass: number }> = {
+  neutral:    { damping: 15, stiffness: 150, mass: 1.0 },
+  excited:    { damping: 12, stiffness: 195, mass: 0.9 },
+  focused:    { damping: 20, stiffness: 180, mass: 1.0 },
+  protective: { damping: 16, stiffness: 170, mass: 1.0 },
+  proud:      { damping: 10, stiffness: 130, mass: 1.0 },
+  concerned:  { damping: 15, stiffness: 150, mass: 1.0 },
+  urgent:     { damping: 18, stiffness: 220, mass: 0.8 },
+  chill:      { damping: 12, stiffness: 100, mass: 1.2 },
+};
+
+interface MoodContextValue extends MoodState {
+  springConfig: { damping: number; stiffness: number; mass: number };
+  updateMood: (mood: MoodName, intensity: number, reason: string) => void;
+}
+
+const MoodContext = createContext<MoodContextValue>({
+  current: "neutral",
+  intensity: 0.5,
+  reason: "default",
+  theme: MOOD_THEMES.neutral,
+  springConfig: MOOD_SPRINGS.neutral,
+  updateMood: () => {},
+});
+
+export function MoodProvider({ children }: { children: React.ReactNode }) {
+  const [state, setState] = useState<MoodState>({
+    current: "neutral",
+    intensity: 0.5,
+    reason: "default",
+    theme: MOOD_THEMES.neutral,
+  });
+
+  const tintOpacity = useSharedValue(0.02);
+
+  const updateMood = useCallback((mood: MoodName, intensity: number, reason: string) => {
+    const theme = MOOD_THEMES[mood];
+    tintOpacity.value = withTiming(intensity * 0.08, { duration: 1500 });
+    setState({ current: mood, intensity, reason, theme });
+  }, []);
+
+  const overlayStyle = useAnimatedStyle(() => ({
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: state.theme.backgroundTint,
+    opacity: tintOpacity.value,
+    pointerEvents: "none" as const,
+  }));
+
+  return (
+    <MoodContext.Provider
+      value={{
+        ...state,
+        springConfig: MOOD_SPRINGS[state.current],
+        updateMood,
+      }}
+    >
+      <View style={{ flex: 1 }}>
+        {children}
+        <Animated.View style={overlayStyle} />
+      </View>
+    </MoodContext.Provider>
+  );
+}
+
+export const useMood = () => useContext(MoodContext);
+```
+
+### Integration: Wire Into Chat API Response
+
+In `useGeorgeChat.ts`, after receiving a response from `POST /api/ai/chat`:
+
+```typescript
+import { useMood } from "@/context/MoodContext";
+
+// Inside the chat hook
+const { updateMood } = useMood();
+
+async function sendMessage(text: string, images?: string[]) {
+  const response = await api.post("/api/ai/chat", { message: text, images });
+  
+  // Update mood from George's response
+  if (response.data.mood) {
+    updateMood(
+      response.data.mood,
+      response.data.moodIntensity ?? 0.5,
+      response.data.moodReason ?? "chat"
+    );
+  }
+  
+  // ... handle message + cards as normal
+}
+```
+
+### Integration: Mood-Aware Haptics
+
+```typescript
+// src/services/moodHaptics.ts
+import * as Haptics from "expo-haptics";
+import { useMood } from "@/context/MoodContext";
+
+const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+export async function moodHaptic(
+  mood: string,
+  action: "tap" | "message" | "alert" | "success"
+) {
+  const { ImpactFeedbackStyle } = Haptics;
+  
+  switch (mood) {
+    case "excited":
+      if (action === "message") {
+        await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+        await delay(80);
+        await Haptics.impactAsync(ImpactFeedbackStyle.Light);
+      } else {
+        await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+      }
+      break;
+
+    case "urgent":
+      if (action === "alert") {
+        for (let i = 0; i < 3; i++) {
+          await Haptics.impactAsync(ImpactFeedbackStyle.Heavy);
+          await delay(100);
+        }
+      } else {
+        await Haptics.impactAsync(ImpactFeedbackStyle.Heavy);
+      }
+      break;
+
+    case "proud":
+      if (action === "success") {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        await delay(200);
+        await Haptics.impactAsync(ImpactFeedbackStyle.Light);
+        await delay(100);
+        await Haptics.impactAsync(ImpactFeedbackStyle.Light);
+      } else {
+        await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+      }
+      break;
+
+    case "chill":
+      await Haptics.impactAsync(ImpactFeedbackStyle.Light);
+      break;
+
+    case "protective":
+      await Haptics.impactAsync(ImpactFeedbackStyle.Heavy);
+      break;
+
+    case "focused":
+      await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+      break;
+
+    default:
+      await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+  }
+}
+```
+
+### Integration: Mood-Aware Input Placeholder
+
+```typescript
+// In InputBar.tsx
+import { useMood } from "@/context/MoodContext";
+
+function getPlaceholder(mood: string): string {
+  switch (mood) {
+    case "chill": return "What's up?";
+    case "focused": return "Describe the issue...";
+    case "urgent": return "Tell me what happened";
+    case "excited": return "What else can I help with?";
+    case "protective": return "What do you need?";
+    case "proud": return "Anything else today?";
+    case "concerned": return "What's going on?";
+    default: return "Message George...";
+  }
+}
+```
+
+### Integration: Wrap App Root
+
+In `App.tsx`, wrap the entire app:
+
+```tsx
+import { MoodProvider } from "@/context/MoodContext";
+
+export default function App() {
+  return (
+    <MoodProvider>
+      <AtmosphereProvider> {/* weather + time, composes with mood */}
+        <AuthProvider>
+          <AppNavigator />
+        </AuthProvider>
+      </AtmosphereProvider>
+    </MoodProvider>
+  );
+}
+```
+
+### Backend: Add Mood to Chat Response
+
+In `george-agent.ts`, add mood determination to the system prompt and parse it from the response. The AI already has full context -- add this instruction:
+
+```
+At the end of every response, include a mood tag on its own line:
+[MOOD:excited:0.7:found_savings]
+Format: [MOOD:state:intensity:reason]
+States: neutral, excited, focused, protective, proud, concerned, urgent, chill
+Intensity: 0.0-1.0
+This line will be stripped before showing to the user.
+```
+
+Parse in the chat route handler and include in the API response as `mood`, `moodIntensity`, `moodReason`.
+
+### Updated Card Registry
+
+```tsx
+const CARD_COMPONENTS: Record<string, React.ComponentType<any>> = {
+  // ... all existing cards ...
+  // No new card for mood -- mood is contextual, not a card type.
+  // But the MoodProvider wraps everything so all cards inherit mood styling.
+};
+```
