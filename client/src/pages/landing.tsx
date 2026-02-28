@@ -119,21 +119,21 @@ function HeroSection() {
         <p className="text-white/50 text-sm font-semibold uppercase tracking-widest mb-4">What do you need?</p>
         <div className="flex flex-wrap justify-center gap-2.5 max-w-3xl mx-auto mb-10">
           {[
-            { key: "junk_removal", label: "Junk Removal", icon: Truck },
-            { key: "pressure_washing", label: "Pressure Washing", icon: Waves },
-            { key: "gutter_cleaning", label: "Gutter Cleaning", icon: ArrowUpFromLine },
-            { key: "home_cleaning", label: "Home Cleaning", icon: Sparkles },
+            { key: "junk-removal", label: "Junk Removal", icon: Truck },
+            { key: "pressure-washing", label: "Pressure Washing", icon: Waves },
+            { key: "gutter-cleaning", label: "Gutter Cleaning", icon: ArrowUpFromLine },
+            { key: "home-cleaning", label: "Home Cleaning", icon: Sparkles },
             { key: "handyman", label: "Handyman", icon: Wrench },
             { key: "landscaping", label: "Landscaping", icon: Trees },
-            { key: "moving_labor", label: "Moving Labor", icon: Package },
-            { key: "light_demolition", label: "Demolition", icon: Zap },
-            { key: "garage_cleanout", label: "Garage Cleanout", icon: Home },
-            { key: "pool_cleaning", label: "Pool Cleaning", icon: Waves },
-            { key: "carpet_cleaning", label: "Carpet Cleaning", icon: Sparkles },
+            { key: "moving-labor", label: "Moving Labor", icon: Package },
+            { key: "light-demolition", label: "Demolition", icon: Zap },
+            { key: "garage-cleanout", label: "Garage Cleanout", icon: Home },
+            { key: "pool-cleaning", label: "Pool Cleaning", icon: Waves },
+            { key: "carpet-cleaning", label: "Carpet Cleaning", icon: Sparkles },
           ].map((svc) => (
             <Link
               key={svc.key}
-              href={`/book?service=${svc.key}`}
+              href={`/services/${svc.key}`}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium hover:bg-[#F47C20] hover:border-[#F47C20] hover:text-white transition-all duration-200 hover:shadow-lg hover:shadow-[#F47C20]/20 hover:scale-[1.03]"
             >
               <svc.icon className="w-3.5 h-3.5" />
