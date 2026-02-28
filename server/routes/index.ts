@@ -156,6 +156,9 @@ import { registerIntegrationRoutes } from "./integrations/index";
 // B2B Pricing routes
 import { registerB2bPricingRoutes } from "./b2b-pricing/index";
 
+// B2B Outreach routes
+import b2bOutreachRoutes from "./b2b-outreach.routes";
+
 // White-label routes
 import { registerWhiteLabelRoutes, whiteLabelMiddleware } from "./white-label/index";
 import { registerUploadRoutes } from "./upload.routes";
@@ -462,6 +465,7 @@ export async function registerRoutes(
 
   // Register B2B Pricing routes
   registerB2bPricingRoutes(app);
+  app.use("/api/b2b", b2bOutreachRoutes);
 
   // Register Stripe Dispute / Chargeback Protection routes
   registerStripeDisputeRoutes(app);
