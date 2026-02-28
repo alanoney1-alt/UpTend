@@ -19,6 +19,7 @@ interface NeighborhoodConfig {
   areas: string[];
   highlights: string[];
   heroImage: string;
+  comingSoon?: boolean;
 }
 
 const SERVICES = [
@@ -66,17 +67,31 @@ export function NeighborhoodLanding({ config }: { config: NeighborhoodConfig }) 
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/book">
-              <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white text-lg px-8 h-14 rounded-xl">
-                Book a Pro <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
+            {config.comingSoon ? (
+              <Link href="/join">
+                <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white text-lg px-8 h-14 rounded-xl">
+                  Join the Waitlist <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/book">
+                <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white text-lg px-8 h-14 rounded-xl">
+                  Book a Pro <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+            )}
             <Link href="/services">
               <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 text-lg px-8 h-14 rounded-xl">
                 View All Services
               </Button>
             </Link>
           </div>
+          {config.comingSoon && (
+            <div className="mt-6 inline-block px-6 py-3 rounded-xl bg-[#F47C20]/15 border border-[#F47C20]/30">
+              <p className="text-[#F47C20] font-bold text-sm uppercase tracking-wider">Coming Soon to {config.name}</p>
+              <p className="text-white/60 text-sm mt-1">Join the waitlist to be first when we launch in your area.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -215,6 +230,7 @@ const LAKE_NONA: NeighborhoodConfig = {
 };
 
 const WINTER_PARK: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "winter-park",
   name: "Winter Park",
   tagline: "Trusted home services for Winter Park's historic homes and modern neighborhoods. Background-checked pros, transparent pricing.",
@@ -232,6 +248,7 @@ const WINTER_PARK: NeighborhoodConfig = {
 };
 
 const DR_PHILLIPS: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "dr-phillips",
   name: "Dr. Phillips",
   tagline: "Premium home services for Dr. Phillips homeowners. Verified pros, guaranteed pricing, powered by George.",
@@ -249,6 +266,7 @@ const DR_PHILLIPS: NeighborhoodConfig = {
 };
 
 const WINDERMERE: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "windermere",
   name: "Windermere",
   tagline: "Home services built for Windermere's finest properties. Background-checked pros, upfront pricing, zero surprises.",
@@ -266,6 +284,7 @@ const WINDERMERE: NeighborhoodConfig = {
 };
 
 const CELEBRATION: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "celebration",
   name: "Celebration",
   tagline: "Reliable home services for Celebration, FL. Verified pros who know your community's standards.",
@@ -283,6 +302,7 @@ const CELEBRATION: NeighborhoodConfig = {
 };
 
 const KISSIMMEE: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "kissimmee",
   name: "Kissimmee",
   tagline: "Affordable, reliable home services for Kissimmee homeowners. Verified pros, upfront pricing, no surprises.",
@@ -300,6 +320,7 @@ const KISSIMMEE: NeighborhoodConfig = {
 };
 
 const WINTER_GARDEN: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "winter-garden",
   name: "Winter Garden",
   tagline: "Premium home services for Winter Garden families. Background-checked pros, guaranteed pricing, powered by George.",
@@ -317,6 +338,7 @@ const WINTER_GARDEN: NeighborhoodConfig = {
 };
 
 const ALTAMONTE_SPRINGS: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "altamonte-springs",
   name: "Altamonte Springs",
   tagline: "Trusted home services for Altamonte Springs. Verified pros, transparent pricing, one platform.",
@@ -334,6 +356,7 @@ const ALTAMONTE_SPRINGS: NeighborhoodConfig = {
 };
 
 const OCOEE: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "ocoee",
   name: "Ocoee",
   tagline: "Reliable home services for Ocoee homeowners. Background-checked pros, upfront pricing, zero hassle.",
@@ -351,6 +374,7 @@ const OCOEE: NeighborhoodConfig = {
 };
 
 const SANFORD: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "sanford",
   name: "Sanford",
   tagline: "Home services for Sanford and the Lake Monroe area. Verified pros, fair pricing, real results.",
@@ -368,6 +392,7 @@ const SANFORD: NeighborhoodConfig = {
 };
 
 const APOPKA: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "apopka",
   name: "Apopka",
   tagline: "Affordable home services for Apopka families. Background-checked pros, honest pricing, real quality.",
@@ -385,6 +410,7 @@ const APOPKA: NeighborhoodConfig = {
 };
 
 const CLERMONT: NeighborhoodConfig = {
+  comingSoon: true,
   slug: "clermont",
   name: "Clermont",
   tagline: "Home services for Clermont and South Lake County. Verified pros, upfront pricing, powered by George.",

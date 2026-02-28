@@ -35,6 +35,7 @@ export default function Landing() {
         <HowItWorks />
         <TheDifference />
         <ServicesStrip />
+        <RecurringServices />
         <TwoSides />
         <Testimonials />
         <FinalCTA />
@@ -89,10 +90,10 @@ function HeroSection() {
 
         <p className="text-white/50 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
-          No chasing leads. No comparing five quotes. No wondering if your pro is legit. You tell us what you need, we find the right pro, and you get one price. That's it.
+          Tell us what's wrong. Get a fair price in 60 seconds. One pro, matched and booked. That's it.
         </p>
         <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
-          Every pro is background-checked and insured. Every price is guaranteed.
+          Every pro is background-checked and insured. Every price is locked before they arrive.
         </p>
 
         {isHurricaneSeason() && (
@@ -179,6 +180,7 @@ function TrustBar() {
           {[
             { icon: ShieldCheck, label: t("landing.badge_bg_check", "Background-Checked") },
             { icon: DollarSign, label: t("landing.badge_price_protect", "Price-Protected") },
+            { icon: Zap, label: "60-Second Quotes" },
             { icon: MapPin, label: t("landing.badge_live_track", "Live Tracking") },
             { icon: CheckCircle, label: t("landing.badge_guaranteed", "Guaranteed") },
           ].map((b) => (
@@ -209,7 +211,7 @@ function SocialProofStats() {
   const stats = [
     { value: "11", label: "Service Categories" },
     { value: "100%", label: "Background Checked" },
-    { value: "12", label: "Orlando Neighborhoods" },
+    { value: "1", label: "Lake Nona Service Zone" },
     { value: "$0", label: "Lead Fees for Pros" },
   ];
 
@@ -236,7 +238,7 @@ function SocialProofStats() {
 function HowItWorks() {
   const { t } = useTranslation();
   const steps = [
-    { icon: MapPin, title: t("landing.hiw_step1_title", "Tell us what you need"), desc: t("landing.hiw_step1_desc", "Describe the job or snap a photo. We verify the details so your pro arrives prepared.") },
+    { icon: MapPin, title: t("landing.hiw_step1_title", "Tell us what you need"), desc: t("landing.hiw_step1_desc", "Describe the job or snap a photo. Get a verified fair price in under 60 seconds.") },
     { icon: Wrench, title: t("landing.hiw_step2_title", "Get matched"), desc: t("landing.hiw_step2_desc", "We find the best Pro for your job. One price. No bidding, no haggling.") },
     { icon: ShieldCheck, title: t("landing.hiw_step3_title", "Track, pay, done."), desc: t("landing.hiw_step3_desc", "Follow your Pro in real-time. Payment happens automatically. Rate your experience.") },
   ];
@@ -350,6 +352,41 @@ function ServicesStrip() {
             {t("landing.view_all_services", "View all 11 services")} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* --- RECURRING SERVICES --- */
+function RecurringServices() {
+  return (
+    <section className="py-16 bg-slate-900">
+      <div className="max-w-4xl mx-auto px-4 text-center">
+        <h2 className="text-2xl md:text-3xl font-black text-white mb-3">
+          Set It and Forget It
+        </h2>
+        <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-10">
+          Book once, schedule it to repeat. Same pro, same price, same quality. Your home stays maintained without you lifting a finger.
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: "Lawn Care", freq: "Every 2 weeks", price: "From $55/visit" },
+            { label: "Pool Cleaning", freq: "Monthly", price: "From $120/mo" },
+            { label: "Home Cleaning", freq: "Weekly", price: "From $99/visit" },
+            { label: "Gutter Check", freq: "Quarterly", price: "From $75" },
+          ].map((svc) => (
+            <div key={svc.label} className="p-5 rounded-xl bg-white/5 border border-white/10 text-left">
+              <h3 className="font-bold text-white text-sm mb-1">{svc.label}</h3>
+              <p className="text-[#F47C20] text-xs font-semibold mb-2">{svc.freq}</p>
+              <p className="text-slate-400 text-xs">{svc.price}</p>
+            </div>
+          ))}
+        </div>
+        <Link href="/book">
+          <Button size="lg" className="mt-8 bg-[#F47C20] hover:bg-[#e06910] text-white font-bold text-lg px-8 rounded-xl">
+            Start a Recurring Plan <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
+        </Link>
       </div>
     </section>
   );
