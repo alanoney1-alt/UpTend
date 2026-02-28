@@ -309,7 +309,7 @@ function Router() {
       <Route path="/admin/carbon-tracking" component={CarbonTracking} />
       <Route path="/admin-login" component={AdminLogin} />
       <Route path="/contact" component={Contact} />
-      <Route path="/quote" component={Quote} />
+      <Route path="/quote">{() => <Redirect to="/book" />}</Route>
       <Route path="/claim/:token" component={ClaimProperty} />
       <Route path="/my-home" component={MyHomeInventory} />
       <Route path="/my-properties" component={MyProperties} />
@@ -379,8 +379,8 @@ function Router() {
       <Route path="/clermont" component={ClermontLanding} />
       <Route path="/insurance" component={Insurance} />
       <Route path="/ai" component={AIFeaturesHub} />
-      <Route path="/ai/photo-quote" component={PhotoToQuote} />
-      <Route path="/snap-quote" component={SnapQuotePage} />
+      <Route path="/ai/photo-quote">{() => <Redirect to="/book" />}</Route>
+      <Route path="/snap-quote">{() => <Redirect to="/book" />}</Route>
       <Route path="/ai/documents" component={DocumentScanner} />
       <Route path="/home-dna-scan" component={HomeScan} />
       <Route path="/ai/home-scan" component={HomeScan} />

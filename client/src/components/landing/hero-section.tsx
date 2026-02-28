@@ -47,7 +47,7 @@ export function HeroSection() {
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
-            <Link href="/quote">
+            <Link href="/book">
               <Button
                 size="lg"
                 variant="outline"

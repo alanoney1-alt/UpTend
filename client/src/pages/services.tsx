@@ -357,7 +357,7 @@ export default function Services() {
           <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
             See a problem? Snap a photo and get a price-protected quote.
           </p>
-          <Link href="/snap-quote" asChild>
+          <Link href="/book" asChild>
             <Button variant="outline" size="sm" className="border-amber-400 text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-900/30 shrink-0">
               <Camera className="w-4 h-4 mr-1.5" />
               Try Photo Quote

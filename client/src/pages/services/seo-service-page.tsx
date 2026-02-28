@@ -130,7 +130,7 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
                 Book Now <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/quote">
+            <Link href="/book">
               <Button size="lg" variant="outline" className="text-lg px-8 py-6 font-bold border-white text-white hover:bg-white/10">
                 Get Free Quote
               </Button>

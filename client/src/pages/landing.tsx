@@ -157,7 +157,7 @@ function HeroSection() {
         </div>
 
         {/* Snap a photo shortcut */}
-        <Link href="/snap-quote" className="inline-flex items-center gap-2 mt-6 text-sm text-white/50 hover:text-white/80 transition-colors group">
+        <Link href="/book" className="inline-flex items-center gap-2 mt-6 text-sm text-white/50 hover:text-white/80 transition-colors group">
           <Camera className="w-4 h-4" />
           <span>Have a photo? <span className="text-[#F47C20] group-hover:underline">Get an instant photo quote</span></span>
         </Link>

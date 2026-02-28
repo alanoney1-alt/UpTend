@@ -161,7 +161,7 @@ export default function SmartBookingPage() {
             </div>
             <div className="text-center mt-6">
               <p className="text-sm text-slate-500">
-                Or <a href="/snap-quote" className="text-[#ea580c] font-semibold hover:underline">snap a photo</a> and we'll scope the job for you.
+                Or <a href="/book" className="text-[#ea580c] font-semibold hover:underline">snap a photo</a> and we'll scope the job for you.
               </p>
             </div>
           </div>
