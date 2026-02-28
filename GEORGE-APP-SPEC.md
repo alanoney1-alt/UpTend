@@ -683,6 +683,43 @@ Every pro gets a FREE Home DNA Scan + home dashboard for their own home:
 
 ---
 
+## B2B Experience (HOA, PM, Construction)
+
+B2B accounts access a management dashboard through the web (`uptendapp.com/business`), but residents/tenants interact through the George app. This is how B2B drives consumer adoption.
+
+### Free Home DNA Scan for Every Property
+Every unit/door/home under a B2B account gets a free Home DNA Scan. This is the primary onboarding hook.
+
+**Flow:**
+1. B2B account signs up (HOA board, PM company, construction firm)
+2. George reaches out to each resident/tenant via email or SMS invite
+3. Resident opens invite → lands in George chat → completes scan conversationally
+4. Scan data feeds into BOTH the resident's personal home profile AND the B2B portfolio dashboard
+5. George begins proactive relationship with each resident (maintenance reminders, seasonal alerts, service bookings)
+
+**B2B Dashboard Features (web, not app):**
+- Portfolio-wide Home Health Scores (average + per-unit breakdown)
+- Maintenance calendar across all properties
+- Vendor/pro performance scorecards
+- Compliance tracking and board reporting
+- Spending analytics and budget vs. actual
+- Resident engagement metrics (scan completion rate, George conversations, bookings)
+
+**Resident App Experience:**
+- Same George app as any consumer - they don't know they're "B2B"
+- George greets them referencing their community: "Hey! Your HOA at [Community Name] set you up with UpTend. You've got a free Home DNA Scan ready. Want to do it now? Takes about 10 minutes."
+- After scan: George becomes their ongoing home expert, same as any customer
+- They can book services, get DIY help, shop products - full George experience
+- Their bookings flow through the B2B account's dashboard for the manager/board to see
+
+**Why This Matters for Growth:**
+- 1 HOA deal = 200-500 new George users
+- Each resident becomes an individual UpTend customer organically
+- When they move out of the HOA, they take George with them
+- B2B is the acquisition channel, consumer is the retention model
+
+---
+
 ## API Integration
 
 The app talks to the existing UpTend backend at `https://uptendapp.com/api/`:
