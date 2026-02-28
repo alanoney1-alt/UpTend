@@ -146,11 +146,6 @@ function FindProPage() {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="pt-20 px-4 max-w-7xl mx-auto">
-        <GeorgeInlineTip
-          pageKey="find-pro"
-          message="I already found the best match for your area."
-          cta={{ text: "See My Pick", action: openGeorge }}
-        />
       </div>
       <div className="relative pt-24 pb-24 md:pb-16 px-4 max-w-7xl mx-auto">
         <div className="absolute inset-0 h-[280px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">
