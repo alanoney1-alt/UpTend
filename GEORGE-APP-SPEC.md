@@ -157,19 +157,23 @@ Triggered when user describes a problem or sends a photo.
 │                                 │
 │  Gutter Cleaning        $150.00 │
 │  Platform fee             $7.50 │
+│  Founding credit         -$25.00│  ← Only if founding member
+│  Founding 10% off        -$13.25│  ← Only if jobs 1-10
 │  ─────────────────────────────  │
-│  Total                  $157.50 │
+│  Total                  $119.25 │
 │                                 │
 │  Visa ····4242         [Change] │
 │                                 │
-│  ████████████████ Pay $157.50   │  ← Full-width button
+│  ████████████████ Pay $119.25   │  ← Full-width button
 │                                 │
 │  🔒 Guaranteed Price Ceiling     │
+│  🏅 Founding Member Savings!     │  ← Gold accent, only if discount applied
 └─────────────────────────────────┘
 ```
 - Payment button with gradient animation (shimmering highlight sweeps across)
 - Success: confetti particle effect (react-native-skia) + heavy haptic + sound
 - Card transforms into a receipt badge in chat
+- **Founding member discounts**: `POST /api/payments/create-intent` returns `foundingDiscount` object with `creditApplied`, `discountPercent`, `discountAmount`, `totalSavings`, `jobNumber`, `originalAmount`, `finalAmount`. Show line items when present. Discount is pre-calculated server-side.
 
 #### Photo Analysis Card
 When user sends a photo:
@@ -399,6 +403,11 @@ Clean, minimal. Apple Settings energy.
 ```
 
 - Founding Member badge: gold gradient with subtle shimmer animation
+- Founding Member perks display (if applicable):
+  - "$25 credit remaining" or "Credit used" 
+  - "X of 10 discounted jobs remaining" (10% off first 10 jobs)
+  - Stacking rule: Job 1 = $25 off + 10% off remainder. Jobs 2-10 = 10% off. Job 11+ = full price.
+  - API: `GET /api/founding-status` returns `{ isFoundingMember, creditRemaining, discountJobsRemaining, discountJobsUsed }`
 - "Refer a Friend" → share sheet with unique link + George's pitch
 - Savings Dashboard shows money saved vs calling random contractors
 
