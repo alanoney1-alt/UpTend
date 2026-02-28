@@ -6,7 +6,7 @@
 import { Router, type Express } from "express";
 import { nanoid } from "nanoid";
 import { analyzeImages } from "../../services/ai/openai-vision-client";
-import { calculateServicePrice, getServiceLabel } from "../../services/pricing";
+import { calculateServicePrice, getServiceLabel, PRICING_CONSTANTS } from "../../services/pricing";
 import { pool } from "../../db";
 import { generateEquipmentChecklist } from "../../services/equipment-checklist";
 import { requireAuth, requireHauler } from "../../auth-middleware";
@@ -75,112 +75,96 @@ interface VisionAnalysis {
   details: Record<string, any>;
 }
 
-const BASE_PRICES: Record<string, number> = {
-  junk_removal: 99,
-  home_cleaning: 99,
-  carpet_cleaning: 100,
-  pressure_washing: 120,
-  landscaping: 59,
-  pool_cleaning: 99,
-  handyman: 75,
-  gutter_cleaning: 129,
-  moving_labor: 260,
-  garage_cleanout: 129,
-  light_demolition: 199,
-  home_consultation: 0,
-};
-
+/**
+ * Build a quote using the CANONICAL pricing from pricing.ts (same source George uses).
+ * This ensures snap-quote and George chat always produce the same prices.
+ */
 function buildQuote(analysis: VisionAnalysis) {
-  const base = BASE_PRICES[analysis.serviceType] || 99;
-  const adjustments: Array<{ label: string; amount: number }> = [];
-  let total = base;
   const d = analysis.details || {};
+  const adjustments: Array<{ label: string; amount: number }> = [];
 
-  switch (analysis.serviceType) {
-    case "gutter_cleaning": {
-      const stories = d.storyCount || 1;
-      if (stories >= 3) { total = 350; }
-      else if (stories === 2) {
-        total = d.linearFeet > 150 ? 259 : 199;
-        adjustments.push({ label: "2-story surcharge", amount: total - 129 });
-      } else {
-        total = d.linearFeet > 150 ? 179 : 129;
+  // Map vision analysis details to the format calculateServicePrice expects
+  const pricingData: Record<string, any> = {
+    storyCount: d.storyCount || 1,
+    linearFeet: d.linearFeet || 150,
+    squareFootage: d.squareFootage || d.sqft || 0,
+    laborHours: d.hours || analysis.estimatedHours || 1,
+    laborCrewSize: d.movers || d.crew || 1,
+    rooms: d.rooms || 2,
+    tier: d.tier || "standard",
+    hallways: d.hallways || 0,
+    stairFlights: d.stairFlights || 0,
+    lotSize: d.lotSize || "quarter",
+    planType: d.planType || (d.scope?.toLowerCase().includes("cleanup") ? "cleanup" : "one_time_mow"),
+  };
+
+  // Use canonical pricing engine (returns cents or null)
+  let priceCents = calculateServicePrice(analysis.serviceType, pricingData);
+  let total: number;
+
+  if (priceCents !== null) {
+    total = Math.round(priceCents / 100);
+  } else {
+    // Fallback for services not in calculateServicePrice (junk_removal, home_cleaning, handyman, garage_cleanout)
+    switch (analysis.serviceType) {
+      case "junk_removal": {
+        const vol = (d.volume || "").toLowerCase();
+        if (vol.includes("full")) { total = 299; adjustments.push({ label: "Full truck load", amount: 200 }); }
+        else if (vol.includes("half") || vol.includes("medium")) { total = 179; }
+        else { total = 99; }
+        if (d.heavyItems) { adjustments.push({ label: "Heavy items surcharge", amount: 50 }); total += 50; }
+        break;
       }
-      break;
+      case "home_cleaning": {
+        const beds = d.bedrooms || 2;
+        if (beds >= 4) { total = 199; adjustments.push({ label: "4+ bedroom home", amount: 100 }); }
+        else if (beds === 3) { total = 149; adjustments.push({ label: "3 bedroom home", amount: 50 }); }
+        else { total = 99; }
+        break;
+      }
+      case "handyman": {
+        const hours = Math.max(d.hours || analysis.estimatedHours || 1, 1);
+        total = hours * 75;
+        if (hours > 1) adjustments.push({ label: `${hours} hours estimated`, amount: (hours - 1) * 75 });
+        break;
+      }
+      case "garage_cleanout": {
+        const size = (d.size || "").toLowerCase();
+        if (size.includes("3") || size.includes("large")) { total = 199; adjustments.push({ label: "Large garage", amount: 70 }); }
+        else { total = 129; }
+        break;
+      }
+      default:
+        total = 99;
+        break;
     }
-    case "junk_removal": {
-      const vol = (d.volume || "").toLowerCase();
-      if (vol.includes("full")) { total = 299; adjustments.push({ label: "Full truck load", amount: 200 }); }
-      else if (vol.includes("half") || vol.includes("medium")) { total = 99; }
-      if (d.heavyItems) { adjustments.push({ label: "Heavy items surcharge", amount: 50 }); total += 50; }
-      break;
-    }
-    case "home_cleaning": {
-      const beds = d.bedrooms || 2;
-      if (beds >= 4) { total = 199; adjustments.push({ label: "4+ bedroom home", amount: 100 }); }
-      else if (beds === 3) { total = 149; adjustments.push({ label: "3 bedroom home", amount: 50 }); }
-      break;
-    }
-    case "carpet_cleaning": {
-      const rooms = d.rooms || 2;
-      const tier = d.tier || "standard";
-      const perRoom = tier === "pet" ? 89 : tier === "deep" ? 75 : 50;
-      total = Math.max(rooms * perRoom, 100);
-      if (rooms > 1) adjustments.push({ label: `${rooms} rooms at $${perRoom}/room`, amount: total - perRoom });
-      break;
-    }
-    case "pressure_washing": {
-      const area = (d.area || "").toLowerCase();
-      if (area.includes("house")) { total = 250; adjustments.push({ label: "Full house exterior", amount: 130 }); }
-      else if (area.includes("deck")) { total = 150; adjustments.push({ label: "Deck surface", amount: 30 }); }
-      break;
-    }
-    case "landscaping": {
-      const scope = (d.scope || "").toLowerCase();
-      if (scope.includes("cleanup") || scope.includes("overgrown")) { total = 149; adjustments.push({ label: "Yard cleanup", amount: 90 }); }
-      else if (scope.includes("full")) { total = 149; adjustments.push({ label: "Full service", amount: 90 }); }
-      break;
-    }
-    case "moving_labor": {
-      const movers = d.movers || 2;
-      const hours = Math.max(d.hours || 2, 2);
-      total = movers * hours * 65;
-      adjustments.push({ label: `${movers} movers x ${hours} hrs at $65/hr`, amount: total - 260 });
-      break;
-    }
-    case "handyman": {
-      const hours = Math.max(d.hours || analysis.estimatedHours || 1, 1);
-      total = hours * 75;
-      if (hours > 1) adjustments.push({ label: `${hours} hours estimated`, amount: (hours - 1) * 75 });
-      break;
-    }
-    case "pool_cleaning": {
-      const condition = (d.condition || "").toLowerCase();
-      if (condition.includes("green") || condition.includes("neglect")) { total = 249; adjustments.push({ label: "Deep clean (neglected pool)", amount: 150 }); }
-      break;
-    }
-    case "garage_cleanout": {
-      const size = (d.size || "").toLowerCase();
-      if (size.includes("3") || size.includes("large")) { total = 199; adjustments.push({ label: "Large garage", amount: 70 }); }
-      break;
-    }
-    default:
-      break;
   }
 
-  // 15% pricing buffer: the customer sees a ceiling price that accounts for
-  // slight scope underestimates. The pro gets paid 85% of the base estimate,
-  // not the buffered ceiling. This protects against AI underpricing while
-  // keeping the customer's maximum transparent.
-  // Example: AI estimates $155 -> customer ceiling $179 -> pro earns $124-$143
+  // Build adjustment descriptions for services that used calculateServicePrice
+  if (priceCents !== null && adjustments.length === 0) {
+    const base = total;
+    // Add descriptive adjustments based on service type
+    if (analysis.serviceType === "gutter_cleaning" && d.storyCount > 1) {
+      adjustments.push({ label: `${d.storyCount}-story home`, amount: 0 });
+    }
+    if (analysis.serviceType === "carpet_cleaning" && d.rooms > 1) {
+      adjustments.push({ label: `${d.rooms} rooms`, amount: 0 });
+    }
+    if (analysis.serviceType === "moving_labor") {
+      adjustments.push({ label: `${pricingData.laborCrewSize} movers x ${pricingData.laborHours} hrs`, amount: 0 });
+    }
+  }
+
+  // 15% pricing buffer: customer sees a ceiling price that accounts for
+  // slight scope underestimates. Pro gets paid based on the base estimate.
   const baseEstimate = total;
   const bufferedTotal = Math.round(total * 1.15);
 
   return {
-    basePrice: base,
+    basePrice: total,
     adjustments,
     totalPrice: bufferedTotal,
-    baseEstimate, // unbuffered price for pro payout calculation
+    baseEstimate,
     priceDisplay: `$${bufferedTotal}`,
     guarantee: "Price Protection Guarantee -- this is your maximum price",
   };
