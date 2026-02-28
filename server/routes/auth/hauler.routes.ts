@@ -7,6 +7,7 @@ import passport from "passport";
 import { sendVerificationEmail, isEmailConfigured } from "../../services/notifications";
 import { getProLoginGreeting } from "../../services/george-events";
 import { pool } from "../../db";
+import { linkFoundingMember } from "../../services/founding-member-discounts";
 
 // Pro registration schema
 const proRegistrationSchema = z.object({
@@ -537,6 +538,9 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
           [req.body.facebookUrl || null, req.body.instagramUrl || null, req.body.linkedinUrl || null, req.body.tiktokUrl || null, req.body.nextdoorUrl || null, user.id]
         );
       }
+
+      // Fire-and-forget: link founding member perks if applicable
+      linkFoundingMember(user.id, data.email).catch(err => console.error("[Founding] Link failed:", err.message));
 
       // Create vehicles from registration data
       const vehicles = (req.body.vehicles as any[]) || [];

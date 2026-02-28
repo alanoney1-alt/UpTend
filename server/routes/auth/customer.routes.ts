@@ -3,6 +3,7 @@ import { storage } from "../../storage";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import crypto from "crypto";
+import { linkFoundingMember } from "../../services/founding-member-discounts";
 import { sendWelcomeEmail, sendAdminNewSignup } from "../../services/email-service";
 import { scrapeHOAForAddress, linkCustomerToHOA } from "../../services/hoa-scraper";
 
@@ -41,6 +42,9 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
         phone: phone || null,
         role: "customer",
       });
+
+      // Fire-and-forget: link founding member perks ($25 credit + 10% off first 10 jobs)
+      linkFoundingMember(user.id, email).catch(err => console.error('[Founding] Link failed:', err.message));
 
       // Fire-and-forget: welcome email + admin notification
       sendWelcomeEmail(email, { firstName, lastName }).catch(err => console.error('[EMAIL] Failed welcome:', err.message));

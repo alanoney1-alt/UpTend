@@ -5,6 +5,7 @@ import { stripeService } from "../../stripeService";
 import { db } from "../../db";
 import { sql } from "drizzle-orm";
 import { onPaymentCaptured } from "../../services/george-events";
+import { calculateFoundingDiscount, applyFoundingDiscount, getFoundingStatus } from "../../services/founding-member-discounts";
 
 async function getActiveCertCount(proId: string): Promise<number> {
   const now = new Date().toISOString();
@@ -83,8 +84,14 @@ export function registerPaymentRoutes(app: Express) {
         await storage.updateUser(user.id, { stripeCustomerId: customer.id });
       }
 
+      // Calculate founding member discount
+      const foundingDiscount = await calculateFoundingDiscount(user.id, Math.round(amount * 100));
+      const effectiveAmount = foundingDiscount.totalSavings > 0
+        ? foundingDiscount.finalAmount / 100 // convert cents back to dollars
+        : amount;
+
       const paymentIntent = await stripeService.createPaymentIntent(
-        amount,
+        effectiveAmount,
         stripeCustomerId,
         jobId
       );
@@ -92,13 +99,16 @@ export function registerPaymentRoutes(app: Express) {
       // Calculate base service price (before 5% UpTend Protection Fee)
       // Customer pays: basePrice * 1.05 (service + 5% protection fee)
       // Pro payout is calculated from baseServicePrice only
-      const baseServicePrice = amount / 1.07;
+      const baseServicePrice = effectiveAmount / 1.07;
 
       const updateData: Record<string, any> = {
         stripePaymentIntentId: paymentIntent.id,
         paymentStatus: "authorized",
-        livePrice: amount, // Total customer pays (includes protection fee)
+        livePrice: effectiveAmount, // Total customer pays (after founding discount, includes protection fee)
         baseServicePrice: baseServicePrice, // Base price for Pro payout calculation
+        originalPrice: amount, // Price before founding discount
+        foundingCreditApplied: foundingDiscount.creditApplied / 100, // dollars
+        foundingDiscountApplied: foundingDiscount.discountAmount / 100, // dollars
       };
 
       if (assignedHaulerId) {
@@ -138,6 +148,17 @@ export function registerPaymentRoutes(app: Express) {
       res.json({
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
+        ...(foundingDiscount.totalSavings > 0 && {
+          foundingDiscount: {
+            creditApplied: foundingDiscount.creditApplied / 100,
+            discountPercent: foundingDiscount.discountPercent,
+            discountAmount: foundingDiscount.discountAmount / 100,
+            totalSavings: foundingDiscount.totalSavings / 100,
+            jobNumber: foundingDiscount.jobNumber,
+            originalAmount: amount,
+            finalAmount: effectiveAmount,
+          },
+        }),
       });
     } catch (error) {
       console.error("Error creating payment intent:", error);
@@ -222,6 +243,12 @@ export function registerPaymentRoutes(app: Express) {
         haulerPayout: result.haulerPayout,
         paidAt: new Date().toISOString(),
       });
+
+      // Apply founding member discount (decrement credit, increment counter, log to ledger)
+      if (job.customerId && (job.foundingCreditApplied || job.foundingDiscountApplied)) {
+        const discount = await calculateFoundingDiscount(job.customerId, Math.round((job.originalPrice || totalAmount) * 100));
+        await applyFoundingDiscount(job.customerId, jobId, discount);
+      }
 
       // George: loyalty tier update after payment (fire-and-forget)
       if (job.customerId && job.livePrice) {
@@ -792,6 +819,22 @@ export function registerPaymentRoutes(app: Express) {
       }
 
       res.status(500).json({ error: "Failed to confirm tip" });
+    }
+  });
+}
+
+// Separate module: Founding member status endpoint (imported in index.ts)
+// GET /api/founding-status
+export function registerFoundingStatusRoute(app: any) {
+  const { requireAuth: auth } = require("../../auth-middleware");
+  app.get("/api/founding-status", auth, async (req: any, res: any) => {
+    try {
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const status = await getFoundingStatus(userId);
+      res.json(status);
+    } catch (err) {
+      console.error("Error getting founding status:", err);
+      res.status(500).json({ error: "Failed to get founding status" });
     }
   });
 }

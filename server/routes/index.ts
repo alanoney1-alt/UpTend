@@ -54,7 +54,7 @@ import { registerSameDayRoutes } from "./same-day.routes";
 
 // Commerce routes
 import { registerPricingRoutes } from "./commerce/pricing-quotes.routes";
-import { registerPaymentRoutes } from "./commerce/payments.routes";
+import { registerPaymentRoutes, registerFoundingStatusRoute } from "./commerce/payments.routes";
 
 // Marketplace routes
 import { registerFacilitiesRebatesRoutes } from "./marketplace/facilities-rebates.routes";
@@ -358,6 +358,7 @@ export async function registerRoutes(
   // Register commerce routes
   registerPricingRoutes(app);
   registerPaymentRoutes(app);
+  registerFoundingStatusRoute(app);
 
   // Register marketplace routes
   registerFacilitiesRebatesRoutes(app);
