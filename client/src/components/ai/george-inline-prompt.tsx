@@ -60,6 +60,17 @@ export function GeorgeInlinePrompt({ onSubmit, onTap }: GeorgeInlinePromptProps)
     text.length > max ? text.slice(0, max).trim() + "..." : text;
 
   // Returning visitor — show last conversation preview
+  const glowStyles = `
+    @keyframes georgeBreath {
+      0%, 100% { box-shadow: 0 0 15px rgba(244, 124, 32, 0.1), 0 0 30px rgba(244, 124, 32, 0.05), inset 0 0 15px rgba(244, 124, 32, 0.03); }
+      50% { box-shadow: 0 0 25px rgba(244, 124, 32, 0.25), 0 0 50px rgba(244, 124, 32, 0.1), inset 0 0 20px rgba(244, 124, 32, 0.05); }
+    }
+    @keyframes avatarPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(244, 124, 32, 0.3); }
+      50% { box-shadow: 0 0 0 6px rgba(244, 124, 32, 0); }
+    }
+  `;
+
   if (lastConvo) {
     return (
       <div
@@ -71,7 +82,11 @@ export function GeorgeInlinePrompt({ onSubmit, onTap }: GeorgeInlinePromptProps)
           transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
-        <div className="flex items-start gap-3 px-5 py-4 rounded-2xl bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] hover:border-[#F47C20]/30 hover:bg-white/[0.08] transition-all duration-300">
+        <style>{glowStyles}</style>
+        <div
+          className="flex items-start gap-3 px-5 py-4 rounded-2xl bg-white/[0.06] backdrop-blur-sm border border-[#F47C20]/20 hover:border-[#F47C20]/40 hover:bg-white/[0.08] transition-all duration-300"
+          style={{ animation: "georgeBreath 3s ease-in-out infinite" }}
+        >
           <div className="relative shrink-0 mt-0.5">
             <GeorgeAvatar />
             <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-green-400 rounded-full border-2 border-slate-900" />
@@ -99,10 +114,16 @@ export function GeorgeInlinePrompt({ onSubmit, onTap }: GeorgeInlinePromptProps)
         transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
       }}
     >
+      <style>{glowStyles}</style>
       <form onSubmit={handleSubmit} className="relative">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.06] backdrop-blur-sm border border-white/[0.08] focus-within:border-[#F47C20]/40 focus-within:bg-white/[0.08] transition-all duration-300">
+        <div
+          className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-white/[0.07] backdrop-blur-sm border border-[#F47C20]/25 focus-within:border-[#F47C20]/50 transition-all duration-300"
+          style={{ animation: "georgeBreath 3s ease-in-out infinite" }}
+        >
           <div className="relative shrink-0">
-            <GeorgeAvatar />
+            <div style={{ animation: "avatarPulse 3s ease-in-out infinite" }} className="rounded-full">
+              <GeorgeAvatar />
+            </div>
             <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-green-400 rounded-full border-2 border-slate-900" />
           </div>
           <input
@@ -110,7 +131,7 @@ export function GeorgeInlinePrompt({ onSubmit, onTap }: GeorgeInlinePromptProps)
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="What's going on with your home?"
+            placeholder="Need something done around the house?"
             className="flex-1 bg-transparent text-white text-sm placeholder:text-white/40 outline-none"
           />
           {message.trim() ? (
