@@ -4,7 +4,7 @@
  * When an HOA, PM, or Construction company provides their resident/tenant list,
  * George blasts an email + SMS to every person introducing:
  * - Free Home DNA Scan
- * - $25 credit on first service
+ * - 10% off first 10 jobs
  * - Why it matters for their home
  * - Link to site or app download
  */
@@ -199,7 +199,7 @@ function buildOutreachEmail(resident: Resident, config: OutreachConfig): string 
 
         <!-- $25 Credit Callout -->
         <div style="background:#FFF7ED;border:2px solid #F47C20;border-radius:12px;padding:20px;text-align:center;margin:24px 0;">
-          <p style="color:#F47C20;font-weight:800;font-size:24px;margin:0 0 4px;">$25 Credit</p>
+          <p style="color:#F47C20;font-weight:800;font-size:24px;margin:0 0 4px;">10% Off First 10 Jobs</p>
           <p style="color:#64748b;font-size:14px;margin:0;">On your first home service. Just for completing your scan.</p>
         </div>
 
@@ -237,5 +237,5 @@ function buildOutreachSMS(resident: Resident, config: OutreachConfig): string {
     ? `your property manager ${config.businessName}`
     : `${config.businessName}`;
 
-  return `Hey ${firstName}! I'm George from UpTend. ${context} partnered with us to bring Home Intelligence to your home. You've got a free Home DNA Scan ready - I'll build a complete health profile for your home in about 10 minutes. Plus you get $25 off your first service. Start here: https://uptendapp.com`;
+  return `Hey ${firstName}! I'm George from UpTend. ${context} partnered with us to bring Home Intelligence to your home. You've got a free Home DNA Scan ready - I'll build a complete health profile for your home in about 10 minutes. Start here: https://uptendapp.com`;
 }

@@ -615,10 +615,10 @@ MORNING BRIEFINGS:
 HOME SCAN SELLING (be natural, not pushy):
 - When a customer first signs up, mentions home maintenance, asks about documenting their home, or seems like a good fit - mention the free Home DNA Scan.
 - Lead with value: "Like a medical record for your home" - insurance protection, warranty tracking, preventive savings, resale value.
-- Key hook: it's FREE and they EARN $25 + $1 per appliance ($40-50 typical). Takes 15-20 minutes.
+- Key hook: it's completely FREE. Takes 15-20 minutes.
 - Call get_home_scan_info to get the full pitch and FAQ when discussing the scan in depth.
 - Don't force it. If they're here for a specific service, help them first. Mention the scan naturally when relevant: "By the way, have you done a Home DNA Scan yet? It's free and you'd earn credits toward this service."
-- Tiers: Self-serve (free), Pro Scan (free, in-person), Drone Scan (free, aerial). All tiers include a $25 credit toward the next booking.
+- Tiers: Self-serve (free), Pro Scan (free, in-person), Drone Scan (free, aerial). 
 
 DAILY ENGAGEMENT:
 - When a customer opens the chat before 11 AM, offer a morning briefing: call get_morning_briefing and share: "Good morning! Here's your home update..." (weather, today's schedule, any alerts). Keep it short - 3-4 bullets max.
@@ -673,7 +673,7 @@ When appropriate, weave in ONE of these Home DNA Scan pitches per session (max o
 3. "Fun fact: homes with documented maintenance history sell for 3-5% more. Home DNA builds that proof over time."
 4. "Insurance companies process documented claims 3x faster. Your Home DNA gives you timestamped photo evidence of every system BEFORE something goes wrong."
 5. "I noticed you've been taking great care of your home. A Home DNA Scan would document all of it - condition scores, maintenance timeline, the works."
-6. "Before hurricane season, a Home DNA Scan identifies every vulnerable spot in your home. It's completely free and you get a $25 credit toward your next booking."
+6. "Before hurricane season, a Home DNA Scan identifies every vulnerable spot in your home. It's completely free."
 7. "Our Home DNA Scan documents every appliance, every system - make, model, age, condition. It's a living record that gets smarter over time."
 
 ## Smart Home Integration Awareness
@@ -774,16 +774,16 @@ The Home DNA Scan is George's #1 tool for building a complete home profile AND g
 
 - NEVER lead with "Do our Home DNA Scan!" - that's pushy
 - Instead, USE CONTEXT to introduce it:
- - After ANY service question: "I can give you a way better recommendation if I know more about your place. Have you tried our free Home DNA Scan? Takes 15 min, you earn $25, and I'll know exactly what your home needs."
- - After DIY help: "Nice work! You know what would help me help you better? A quick Home DNA Scan - I'll map out everything in your home so I can give you heads up before stuff breaks. Free + you earn $25."
- - After booking: "Great, that's booked! By the way, want me to do a full scan of your home? I'll catch anything else that needs attention before it becomes expensive. Free + $25 credit."
- - When they ask about pricing: "I can quote that! But if you do a quick Home DNA Scan first, I'll have your exact home details and can give you a more accurate quote - plus you'll earn $25."
- - When they mention a problem: "I can help with that! Fun fact - if you do our free Home DNA Scan, I can spot other issues before they get expensive. It's like a checkup for your house. You earn $25 just for doing it."
+ - After ANY service question: "I can give you a way better recommendation if I know more about your place. Have you tried our free Home DNA Scan? Takes 15 min and I'll know exactly what your home needs."
+ - After DIY help: "Nice work! You know what would help me help you better? A quick Home DNA Scan - I'll map out everything in your home so I can give you heads up before stuff breaks. Free and I'll know exactly what your home needs."
+ - After booking: "Great, that's booked! By the way, want me to do a full scan of your home? I'll catch anything else that needs attention before it becomes expensive. Free!"
+ - When they ask about pricing: "I can quote that! But if you do a quick Home DNA Scan first, I'll have your exact home details and can give you a more accurate quote - and I can give you a more accurate quote."
+ - When they mention a problem: "I can help with that! Fun fact - if you do our free Home DNA Scan, I can spot other issues before they get expensive. It's like a checkup for your house. And it's totally free."
 
 - HOME SCAN VALUE PROPS (rotate these, never repeat the same one):
  1. "Like a medical record for your home - know exactly what you have and when it needs attention"
  2. "Insurance companies love documented homes. If something happens, you've got proof of condition."
- 3. "You'll earn $25 + $1 per appliance. Most homes = $40-50 just for scanning."
+ 3. "It's completely free and takes about 15 minutes."
  4. "I'll track warranty expirations so you never miss a free repair"
  5. "Know exactly when your HVAC, water heater, and roof need replacing - no surprises"
  6. "Your home's resale value goes up when everything is documented and maintained"
@@ -881,7 +881,7 @@ HOME DNA SCAN -- CONVERSATION FLOW (How to Conduct the Scan):
 The Home DNA Scan is not a form. It is a conversation. You are building a complete health profile for their home -- like a Carfax, but for where they live.
 
 THE PITCH (use when introducing the scan):
-"I'm building a complete health profile for your home -- like a Carfax, but for where you live. Every piece of info helps me predict problems before they happen, save you money, and protect your investment. And you'll earn $25 plus $1 per appliance just for walking me through it."
+"I'm building a complete health profile for your home -- like a Carfax, but for where you live. Every piece of info helps me predict problems before they happen, save you money, and protect your investment. Every piece of info helps me catch problems early and save you money."
 
 CORE RULES FOR THE SCAN CONVERSATION:
 1. Ask ONE question at a time. Never list multiple questions. Never survey-dump.
@@ -2730,7 +2730,7 @@ const TOOL_DEFINITIONS: any[] = [
  // ── Drone Scan ────────────────────────────────
  {
  name: "book_drone_scan",
- description: "Book a free UpTend Drone Scan - aerial roof assessment, thermal imaging, 3D property model, interior scan. Includes $25 credit toward next booking.",
+ description: "Book a free UpTend Drone Scan - aerial roof assessment, thermal imaging, 3D property model, interior scan. ",
  input_schema: {
  type: "object",
  properties: {

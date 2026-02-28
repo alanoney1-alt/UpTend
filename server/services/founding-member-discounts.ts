@@ -2,10 +2,7 @@
  * Founding Member Discount Service
  * 
  * Handles:
- * - $25 credit on first booking
  * - 10% off first 10 jobs
- * - Stacking: job 1 gets $25 off THEN 10% off remainder
- * - Jobs 2-10: 10% off
  * - Job 11+: full price
  * 
  * All amounts in CENTS internally, converted to dollars at API boundary.
@@ -14,7 +11,6 @@
 import { db } from "../db";
 import { sql } from "drizzle-orm";
 
-const FOUNDING_CREDIT_CENTS = 2500; // $25
 const FOUNDING_DISCOUNT_PERCENT = 10; // 10%
 const FOUNDING_DISCOUNT_MAX_JOBS = 10;
 
@@ -58,11 +54,10 @@ export async function calculateFoundingDiscount(
     const user = result.rows[0] as any;
     if (!user?.is_founding_member) return noDiscount;
 
-    const creditRemaining = Number(user.founding_credit_remaining || 0);
     const jobsUsed = Number(user.founding_discount_jobs_used || 0);
 
     // Past 10 jobs -- no more founding perks
-    if (jobsUsed >= FOUNDING_DISCOUNT_MAX_JOBS && creditRemaining <= 0) {
+    if (jobsUsed >= FOUNDING_DISCOUNT_MAX_JOBS) {
       return noDiscount;
     }
 
@@ -72,20 +67,14 @@ export async function calculateFoundingDiscount(
     let discountPercent = 0;
     let discountAmount = 0;
 
-    // Step 1: Apply $25 credit if available
-    if (creditRemaining > 0) {
-      creditApplied = Math.min(creditRemaining, runningAmount);
-      runningAmount -= creditApplied;
-    }
-
-    // Step 2: Apply 10% off remainder if within first 10 jobs
-    if (jobsUsed < FOUNDING_DISCOUNT_MAX_JOBS && runningAmount > 0) {
+    // Apply 10% off if within first 10 jobs
+    if (runningAmount > 0) {
       discountPercent = FOUNDING_DISCOUNT_PERCENT;
       discountAmount = Math.round(runningAmount * discountPercent / 100);
       runningAmount -= discountAmount;
     }
 
-    const totalSavings = creditApplied + discountAmount;
+    const totalSavings = discountAmount;
 
     return {
       isFoundingMember: true,
@@ -142,7 +131,7 @@ export async function applyFoundingDiscount(
 /**
  * Link a founding member signup to a user account.
  * Called during registration when email matches a founding_members entry.
- * Sets up their $25 credit and founding member flag.
+ * Sets up their founding member flag and 10% discount.
  */
 export async function linkFoundingMember(userId: string, email: string): Promise<boolean> {
   try {
@@ -157,12 +146,12 @@ export async function linkFoundingMember(userId: string, email: string): Promise
 
     const founding = result.rows[0] as any;
 
-    // Mark user as founding member with $25 credit
+    // Mark user as founding member with 10% off first 10 jobs
     await db.execute(sql`
       UPDATE users SET
         is_founding_member = true,
         founding_member_type = ${founding.member_type},
-        founding_credit_remaining = ${FOUNDING_CREDIT_CENTS},
+        founding_credit_remaining = 0,
         founding_discount_jobs_used = 0,
         founding_joined_at = NOW()
       WHERE id = ${userId}
@@ -173,7 +162,7 @@ export async function linkFoundingMember(userId: string, email: string): Promise
       UPDATE founding_members SET linked_user_id = ${userId} WHERE id = ${founding.id}
     `);
 
-    console.log(`[FoundingDiscount] Linked founding member ${email} (${founding.member_type}) to user ${userId}. $25 credit activated.`);
+    console.log(`[FoundingDiscount] Linked founding member ${email} (${founding.member_type}) to user ${userId}. 10% off first 10 jobs activated.`);
     return true;
   } catch (err) {
     console.error("[FoundingDiscount] Error linking founding member:", err);

@@ -113,8 +113,7 @@ async function sendFoundingMemberEmail(name: string, email: string, memberType: 
         <li style="margin-bottom:8px;">Direct input on platform features</li>
       </ul>`
     : `<ul style="padding-left:20px;color:#475569;">
-        <li style="margin-bottom:8px;">$25 credit applied to your first booking</li>
-        <li style="margin-bottom:8px;">10% off your first 10 jobs (stacks with the $25 credit on job 1)</li>
+        <li style="margin-bottom:8px;">10% off your first 10 jobs</li>
         <li style="margin-bottom:8px;">Priority booking access</li>
         <li style="margin-bottom:8px;">Direct line to George, your personal home expert</li>
         <li style="margin-bottom:8px;">"Founding Member" badge on your profile</li>

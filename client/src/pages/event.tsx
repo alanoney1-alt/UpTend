@@ -53,10 +53,10 @@ export default function EventPage() {
               UpTend is the first Home Intelligence platform. We match you with a single vetted pro, lock your price before they arrive, and manage every step from booking to completion.
             </p>
 
-            {/* $25 Credit callout */}
+            {/* Founding 100 callout */}
             <div className="inline-block bg-[#F47C20]/15 border border-[#F47C20]/30 rounded-2xl px-8 py-4 mb-8">
-              <p className="text-[#F47C20] font-black text-3xl mb-1">$25 Credit</p>
-              <p className="text-white/70 text-sm">Pre-register now to receive $25 credit on your first service + 10% off your first 10 jobs</p>
+              <p className="text-[#F47C20] font-black text-3xl mb-1">Founding 100</p>
+              <p className="text-white/70 text-sm">Join now and get 10% off your first 10 jobs</p>
             </div>
 
             {/* George inline chat prompt */}
@@ -74,7 +74,7 @@ export default function EventPage() {
             <div className="block">
               <a href="#join">
                 <Button size="lg" className="bg-[#F47C20] hover:bg-[#E06910] text-white text-sm sm:text-lg px-6 sm:px-10 h-14 rounded-xl shadow-lg shadow-[#F47C20]/25 whitespace-normal max-w-[90vw]">
-                  Click Here to Claim Your $25 Credit <ArrowRight className="ml-2 w-5 h-5 shrink-0" />
+                  Join the Founding 100 <ArrowRight className="ml-2 w-5 h-5 shrink-0" />
                 </Button>
               </a>
             </div>
