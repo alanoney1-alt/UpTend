@@ -9,7 +9,7 @@ const TWILIO_API_KEY_SID = process.env.TWILIO_API_KEY_SID;
 const TWILIO_API_KEY_SECRET = process.env.TWILIO_API_KEY_SECRET;
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
-const FROM_EMAIL = process.env.FROM_EMAIL || 'George from UpTend <george@uptendapp.com>';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'George from UpTend <alan@uptendapp.com>';
 
 // Prefer API Key auth (more secure), fall back to Account Auth Token
 const twilioClient = TWILIO_API_KEY_SID && TWILIO_API_KEY_SECRET && TWILIO_ACCOUNT_SID
@@ -77,7 +77,7 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
         },
         body: JSON.stringify({
           personalizations: [{ to: [{ email: options.to }] }],
-          from: { email: FROM_EMAIL.includes('<') ? FROM_EMAIL.match(/<(.+)>/)?.[1] || 'george@uptendapp.com' : FROM_EMAIL },
+          from: { email: FROM_EMAIL.includes('<') ? FROM_EMAIL.match(/<(.+)>/)?.[1] || 'alan@uptendapp.com' : FROM_EMAIL },
           subject: options.subject,
           content: [
             { type: 'text/plain', value: options.text || '' },

@@ -159,7 +159,7 @@ async function sendFoundingMemberEmail(name: string, email: string, memberType: 
     },
     body: JSON.stringify({
       personalizations: [{ to: [{ email, name }] }],
-      from: { email: "george@uptendapp.com", name: "George from UpTend" },
+      from: { email: "alan@uptendapp.com", name: "George from UpTend" },
       subject,
       content: [{ type: "text/html", value: html }],
     }),
@@ -212,7 +212,7 @@ async function sendAdminNotification(
     headers: { Authorization: `Bearer ${sgApiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       personalizations: [{ to: [{ email: "alan@uptendapp.com", name: "Alan" }] }],
-      from: { email: "george@uptendapp.com", name: "UpTend Alerts" },
+      from: { email: "alan@uptendapp.com", name: "UpTend Alerts" },
       subject,
       content: [{ type: "text/html", value: html }],
     }),

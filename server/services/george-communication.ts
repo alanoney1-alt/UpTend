@@ -395,7 +395,7 @@ export async function addToCalendar(params: {
  mailer.setApiKey(process.env.SENDGRID_API_KEY);
  await mailer.send({
  to: customer.email,
- from: process.env.FROM_EMAIL || 'george@uptendapp.com',
+ from: process.env.FROM_EMAIL || 'alan@uptendapp.com',
  subject: ` ${booking.service_type} Booked - Calendar Invite`,
  html,
  attachments: [{

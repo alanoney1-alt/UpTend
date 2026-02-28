@@ -13,7 +13,7 @@
 import { pool } from "../db";
 
 const SG_KEY = process.env.SENDGRID_API_KEY;
-const FROM = { email: "george@uptendapp.com", name: "George from UpTend" };
+const FROM = { email: "alan@uptendapp.com", name: "George from UpTend" };
 
 // ─── EMAIL TEMPLATES ───
 

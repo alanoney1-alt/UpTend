@@ -58,7 +58,7 @@ export async function sendResidentOutreachEmails(config: OutreachConfig): Promis
         headers: { Authorization: `Bearer ${sgApiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           personalizations: [{ to: [{ email: resident.email, name: resident.name }] }],
-          from: { email: "george@uptendapp.com", name: config.senderName || "George from UpTend" },
+          from: { email: "alan@uptendapp.com", name: config.senderName || "George from UpTend" },
           subject,
           content: [{ type: "text/html", value: html }],
         }),
