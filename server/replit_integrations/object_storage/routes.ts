@@ -1,60 +1,67 @@
 import type { Express } from "express";
-import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import { generatePresignedUploadUrl, uploadPhoto } from "../../services/cloud-storage-service";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { nanoid } from "nanoid";
+
+const STORAGE_PROVIDER = process.env.STORAGE_PROVIDER || "local";
+
+// Multer for local PUT-style uploads
+const localUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+});
 
 /**
  * Register object storage routes for file uploads.
  *
- * This provides example routes for the presigned URL upload flow:
- * 1. POST /api/uploads/request-url - Get a presigned URL for uploading
- * 2. The client then uploads directly to the presigned URL
+ * Supports two flows:
+ * 1. Presigned URL (R2/S3): client gets a signed PUT URL, uploads directly to cloud
+ * 2. Local fallback: client gets a local endpoint URL, uploads file there
  *
- * IMPORTANT: These are example routes. Customize based on your use case:
- * - Add authentication middleware for protected uploads
- * - Add file metadata storage (save to database after upload)
- * - Add ACL policies for access control
+ * Response shape matches what use-upload.ts expects:
+ *   { uploadURL, objectPath, metadata }
  */
 export function registerObjectStorageRoutes(app: Express): void {
-  const objectStorageService = new ObjectStorageService();
 
   /**
-   * Request a presigned URL for file upload.
-   *
-   * Request body (JSON):
-   * {
-   *   "name": "filename.jpg",
-   *   "size": 12345,
-   *   "contentType": "image/jpeg"
-   * }
-   *
-   * Response:
-   * {
-   *   "uploadURL": "https://storage.googleapis.com/...",
-   *   "objectPath": "/objects/uploads/uuid"
-   * }
-   *
-   * IMPORTANT: The client should NOT send the file to this endpoint.
-   * Send JSON metadata only, then upload the file directly to uploadURL.
+   * POST /api/uploads/request-url
+   * Returns an upload URL (presigned cloud URL or local endpoint)
    */
   app.post("/api/uploads/request-url", async (req, res) => {
     try {
       const { name, size, contentType } = req.body;
 
       if (!name) {
-        return res.status(400).json({
-          error: "Missing required field: name",
+        return res.status(400).json({ error: "Missing required field: name" });
+      }
+
+      const ct = contentType || "application/octet-stream";
+
+      // If cloud storage is configured, generate a real presigned URL
+      if (STORAGE_PROVIDER === "r2" || STORAGE_PROVIDER === "s3") {
+        const result = await generatePresignedUploadUrl({
+          filename: name,
+          contentType: ct,
+          folder: "uploads",
+        });
+
+        return res.json({
+          uploadURL: result.uploadUrl,
+          objectPath: result.publicUrl,
+          metadata: { name, size, contentType: ct },
         });
       }
 
-      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      // Local storage fallback: generate a unique key and return a local PUT endpoint
+      const ext = path.extname(name) || ".bin";
+      const key = `${nanoid()}${ext}`;
 
-      // Extract object path from the presigned URL for later reference
-      const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
-
-      res.json({
-        uploadURL,
-        objectPath,
-        // Echo back the metadata for client convenience
-        metadata: { name, size, contentType },
+      return res.json({
+        uploadURL: `/api/uploads/local/${key}`,
+        objectPath: `/uploads/objects/${key}`,
+        metadata: { name, size, contentType: ct },
       });
     } catch (error) {
       console.error("Error generating upload URL:", error);
@@ -63,24 +70,65 @@ export function registerObjectStorageRoutes(app: Express): void {
   });
 
   /**
-   * Serve uploaded objects.
-   *
-   * GET /objects/:objectPath(*)
-   *
-   * This serves files from object storage. For public files, no auth needed.
-   * For protected files, add authentication middleware and ACL checks.
+   * PUT /api/uploads/local/:key
+   * Accepts the raw file body (same as a presigned S3 PUT)
    */
-  app.get("/objects/:objectPath(*)", async (req, res) => {
+  app.put("/api/uploads/local/:key", async (req, res) => {
     try {
-      const objectFile = await objectStorageService.getObjectEntityFile(req.path);
-      await objectStorageService.downloadObject(objectFile, res);
-    } catch (error) {
-      console.error("Error serving object:", error);
-      if (error instanceof ObjectNotFoundError) {
-        return res.status(404).json({ error: "Object not found" });
+      const { key } = req.params;
+      const uploadDir = path.join(process.cwd(), "uploads", "objects");
+
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
       }
-      return res.status(500).json({ error: "Failed to serve object" });
+
+      const filePath = path.join(uploadDir, key);
+      const writeStream = fs.createWriteStream(filePath);
+
+      req.pipe(writeStream);
+
+      writeStream.on("finish", () => {
+        console.log(`📁 Local upload saved: uploads/objects/${key}`);
+        res.status(200).send("OK");
+      });
+
+      writeStream.on("error", (err) => {
+        console.error("Local upload write error:", err);
+        res.status(500).json({ error: "Failed to save file" });
+      });
+    } catch (error) {
+      console.error("Local upload error:", error);
+      res.status(500).json({ error: "Failed to save file" });
     }
   });
-}
 
+  /**
+   * GET /uploads/objects/:key
+   * Serve locally uploaded files
+   */
+  app.get("/uploads/objects/:key", (req, res) => {
+    const { key } = req.params;
+    const filePath = path.join(process.cwd(), "uploads", "objects", key);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    res.sendFile(filePath);
+  });
+
+  /**
+   * GET /objects/:objectPath(*)
+   * Serve files from local uploads (backward compatibility)
+   */
+  app.get("/objects/:objectPath(*)", (req, res) => {
+    const objectPath = req.params.objectPath || req.params[0];
+    const filePath = path.join(process.cwd(), "uploads", "objects", objectPath);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "Object not found" });
+    }
+
+    res.sendFile(filePath);
+  });
+}
