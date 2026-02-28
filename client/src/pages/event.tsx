@@ -9,6 +9,7 @@ import { Founding100 } from "@/components/landing/founding-100";
 import { Footer } from "@/components/landing/footer";
 import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
 import { Button } from "@/components/ui/button";
+import { GeorgeInlinePrompt } from "@/components/ai/george-inline-prompt";
 
 export default function EventPage() {
   usePageTitle("UpTend | World of Wellness 2026");
@@ -56,6 +57,18 @@ export default function EventPage() {
             <div className="inline-block bg-[#F47C20]/15 border border-[#F47C20]/30 rounded-2xl px-8 py-4 mb-8">
               <p className="text-[#F47C20] font-black text-3xl mb-1">$25 Credit</p>
               <p className="text-white/70 text-sm">Pre-register now to receive $25 credit on your first service + 10% off your first 10 jobs</p>
+            </div>
+
+            {/* George inline chat prompt */}
+            <div className="mb-8 max-w-xl mx-auto">
+              <GeorgeInlinePrompt
+                onSubmit={(msg) => {
+                  window.dispatchEvent(new CustomEvent("george:open", { detail: { message: msg } }));
+                }}
+                onTap={() => {
+                  window.dispatchEvent(new CustomEvent("george:open"));
+                }}
+              />
             </div>
 
             <div className="block">
