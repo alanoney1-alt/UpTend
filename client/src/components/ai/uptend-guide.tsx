@@ -588,6 +588,11 @@ export function UpTendGuide() {
             userRole: getDerivedUserRole(pageContext.page, pageContext.userRole),
             userName: pageContext.userName,
           },
+          // Send recent conversation history so backend can restore after server restart
+          clientHistory: messages
+            .filter(m => m.role === "user" || m.role === "assistant")
+            .slice(-18)
+            .map(m => ({ role: m.role, content: m.content })),
         }),
       });
 

@@ -678,7 +678,7 @@ export default function createGuideRoutes(_storage: any) {
   router.post("/guide/chat", guideChatLimiter, async (req, res) => {
     try {
       await init();
-      const { message, sessionId, context, photoUrl, photoAnalysis, photoBase64 } = req.body;
+      const { message, sessionId, context, photoUrl, photoAnalysis, photoBase64, clientHistory } = req.body;
 
       if (!message && !photoUrl) {
         return res.status(400).json({ error: "Message or photo is required" });
@@ -686,6 +686,16 @@ export default function createGuideRoutes(_storage: any) {
 
       const sid = sessionId || `anon-${Date.now()}`;
       const session = getSession(sid);
+
+      // Restore conversation history from client if server session was lost (e.g. after deploy/restart)
+      if (session.history.length === 0 && Array.isArray(clientHistory) && clientHistory.length > 0) {
+        for (const msg of clientHistory) {
+          if ((msg.role === "user" || msg.role === "assistant") && typeof msg.content === "string") {
+            session.history.push({ role: msg.role, content: msg.content });
+          }
+        }
+        console.log(`[Guide] Restored ${session.history.length} messages from client for session ${sid}`);
+      }
 
       let systemPrompt = BASE_SYSTEM_PROMPT;
       const user = req.user as any;
