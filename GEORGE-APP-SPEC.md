@@ -558,6 +558,116 @@ No traditional shadows on dark theme. Instead:
 - Subtle border (rgba white 6%)
 - Background elevation through color steps
 - Glow effects for active/focused elements (amber glow on primary actions)
+
+### Dynamic Atmosphere System (George IS the Environment)
+
+The entire app shifts its mood based on weather, time of day, season, and George's relationship stage with the user. The app should feel ALIVE — like George's personality is baked into the pixels.
+
+#### Weather-Driven Atmosphere
+Fetch weather from user's location. The app's visual tone shifts:
+
+| Weather | Background Tint | George's Glow | Accent Shift | Vibe |
+|---------|----------------|---------------|-------------|------|
+| Sunny / Clear | Warm undertone (#0A0E1A → slight warm wash) | Bright amber glow, expanded | Primary stays #F47C20 | Bright, energetic, George is upbeat |
+| Cloudy | Neutral, slightly muted | Softer glow, tighter | Slightly desaturated amber | Calm, steady, George is focused |
+| Rainy | Cool blue-grey undertone | Cooler glow, subtle | Shift toward #E8731C (deeper) | Direct, efficient, "let's get things done" |
+| Stormy / Hurricane | Dark, high contrast | Pulsing amber (alert mode) | Warning amber + red accents | Protective, urgent, George is on it |
+| Hot (95F+) | Warm gradient, slight heat shimmer | Intense warm glow | Brighter, more saturated orange | George is glowing, "stay hydrated" energy |
+| Cold front (<60F for FL) | Crisp, slightly cooler tones | Tighter, sharper glow | Shift toward warm gold | Cozy, protective, "check your pipes" |
+
+Implementation:
+```typescript
+// src/theme/atmosphere.ts
+interface Atmosphere {
+  backgroundTint: string;      // overlay color on base background
+  glowIntensity: number;       // 0-1, George's ambient glow
+  glowColor: string;           // glow color
+  accentColor: string;         // shifted primary color
+  particleEffect?: "none" | "rain-drops" | "heat-shimmer" | "leaves" | "snowflakes";
+  georgeGreetingMood: "bright" | "calm" | "focused" | "protective" | "cozy";
+}
+
+function getAtmosphere(weather: WeatherData, time: Date, season: string): Atmosphere {
+  // Weather is primary driver
+  // Time of day is secondary (warmer at golden hour, cooler at night)
+  // Season adds subtle long-term shifts
+}
+```
+
+#### Time-of-Day Shifts
+The app breathes with the day:
+
+| Time | Shift | George's Energy |
+|------|-------|----------------|
+| Morning (6-10 AM) | Warmer, sunrise amber tones | Fresh, energetic. "New day. What needs handling?" |
+| Midday (10-2 PM) | Brightest, most neutral | Peak George. Confident, direct. |
+| Afternoon (2-6 PM) | Slightly warmer, golden hour creep | Settled, productive. |
+| Evening (6-10 PM) | Cooler, deeper tones | Winding down. More reflective. "Got everything squared away?" |
+| Night (10 PM-6 AM) | Darkest, minimal glow | Quiet. "I'm here if you need me." Shorter responses. |
+
+These are SUBTLE shifts. Not jarring theme changes. Think how sunlight changes the feel of a room without you noticing.
+
+#### Seasonal Themes
+Background accents shift slowly over the calendar year:
+
+| Season | Accent | Particle Effect | George Context |
+|--------|--------|----------------|----------------|
+| Spring (Mar-May) | Fresh green undertones | Occasional subtle pollen/leaf | "Great time to get the yard in shape" |
+| Summer (Jun-Aug) | Warm, humid feel, heat shimmer | Very subtle heat wave overlay | Hurricane prep mode, AC focus |
+| Fall (Sep-Nov) | Warm amber/copper tones | Occasional falling leaf | Gutter season, roof checks |
+| Winter (Dec-Feb) | Crisp, cooler undertones | None (FL doesn't get snow) | Pipe protection, holiday hosting |
+
+#### Implementation Notes
+- Weather fetched on app open + every 30 min (use device location)
+- Atmosphere transitions use 2-second animated interpolation (never jarring)
+- All shifts are applied as OVERLAYS on the base dark theme — the core colors don't change, just the tint/mood
+- Particle effects are extremely subtle — think 5% opacity, slow drift. If a user notices the particles consciously, they're too strong.
+- George's greeting and tone in the system prompt already adapts (server-side). The app atmosphere is the visual companion to that.
+- Store weather data in app state, pass to theme provider
+- Accessibility: all atmosphere shifts must maintain WCAG contrast ratios. Tints are decorative only.
+
+#### George's Ambient Glow (The Heartbeat)
+The floating George avatar on every screen has a subtle ambient glow/pulse:
+- **Sunny day**: Wide, warm glow. Slow pulse (3s cycle). George is relaxed and present.
+- **Rainy day**: Tighter glow, slightly faster pulse (2s). George is alert.
+- **Storm approaching**: Pulsing amber warning glow. George is protective.
+- **Night**: Minimal glow, very slow (5s). George is resting but available.
+- **Active job in progress**: Bright, steady glow. No pulse. George is focused.
+- **Customer stressed (from relationship memory)**: Calm, steady blue-amber. Reassuring presence.
+
+This is the single most important visual element. George's glow IS his mood. Users will subconsciously associate the glow with George's state of mind.
+
+#### API
+- `GET /api/atmosphere?lat={lat}&lng={lng}` — returns current atmosphere config (weather + time + season)
+- Response: `{ weather, temp, condition, timeOfDay, season, atmosphere: { backgroundTint, glowIntensity, glowColor, accentColor, particleEffect, georgeGreetingMood } }`
+- App calls on launch, caches for 30 min
+
+### George's Relationship Memory (Server-Side)
+
+George remembers everything about each customer across conversations. This data is injected into George's system prompt each conversation.
+
+**What George Tracks:**
+- Communication style (verbose vs terse, humor, detail preference)
+- Price orientation (budget/mid/premium based on choices)
+- DIY vs pro preference
+- Family, pets, work, life events mentioned in conversation
+- Emotional patterns (money stress, repair anxiety, contractor frustration)
+- History callbacks ("your gutters are due", "how's that AC noise?")
+- George's own mistakes ("I recommended too weak a pressure washer last time")
+- Relationship stage (new → familiar → established)
+- Total savings George has delivered
+
+**Rules for Using Memory:**
+- GENTLE. One callback per conversation max. Never dump everything at once.
+- Reference things the way a friend would, never "according to my records"
+- Never be creepy. "How's your daughter?" is fine. "I noticed you mentioned your daughter Sarah who attends UF on February 14th" is not.
+- Admitting mistakes BUILDS trust. "I steered you wrong on that last one. Here's a better option."
+- Memory gets richer over time. Month 1 is generic. Month 12 is deeply personal.
+
+**API:**
+- Relationship context auto-injected into `POST /api/ai/chat` system prompt (server-side, no app work needed)
+- `GET /api/relationship/stats` — returns user-facing stats: "George has saved you $840", "14 conversations", "3 jobs completed"
+- Display stats in Account tab as "Your History with George" section
 - Blur for overlays (expo-blur)
 
 ---
