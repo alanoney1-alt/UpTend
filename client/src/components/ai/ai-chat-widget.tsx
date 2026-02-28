@@ -7,17 +7,12 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { MessageCircle, X, Send, Loader2, User } from "lucide-react";
+import { X, Send, Loader2 } from "lucide-react";
+import { VideoPlayer, extractAllVideoIds } from "./video-player";
 
 function GeorgeAvatarSmall({ className = "h-full w-full" }: { className?: string }) {
   return <img src="/george-avatar.png" alt="George" className={`${className} object-cover rounded-full`} />;
 }
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { VideoPlayer, extractAllVideoIds } from "./video-player";
 
 // ─── Types ──────────────────────────────────
 interface QuickButton {
@@ -215,65 +210,106 @@ export function AiChatWidget() {
 
   return (
     <>
-      {/* Floating Button - always visible when chat is closed */}
+      <style>{`
+        @keyframes chatSlideIn {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes fabPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(244, 124, 32, 0.4); }
+          50% { box-shadow: 0 0 0 8px rgba(244, 124, 32, 0); }
+        }
+        @keyframes dotPulse {
+          0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+          40% { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
+
+      {/* Floating George Button */}
       {!isOpen && (
-        <Button
+        <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 md:bottom-8 right-6 h-14 w-14 rounded-full shadow-lg shadow-orange-500/25 z-40 bg-transparent hover:scale-105 transition-all duration-300 p-0 overflow-hidden border-2 border-[#F47C20]/50"
-          size="icon"
+          className="fixed bottom-24 md:bottom-8 right-6 h-14 w-14 rounded-full z-40 p-0 overflow-hidden border-2 border-[#F47C20]/60 hover:border-[#F47C20] transition-all duration-300 hover:scale-110 cursor-pointer"
+          style={{ animation: "fabPulse 3s ease-in-out infinite" }}
         >
           <GeorgeAvatarSmall />
-          <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-400 rounded-full border-2 border-white" />
-        </Button>
+          <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 bg-green-400 rounded-full border-2 border-slate-900" />
+        </button>
       )}
 
-      {/* Chat Widget */}
+      {/* Chat Widget — dark, smooth, George's space */}
       {isOpen && (
-        <Card className="fixed bottom-[7.5rem] md:bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] h-[500px] max-h-[55vh] md:max-h-[500px] shadow-xl z-40 flex flex-col">
-          <CardHeader className="pb-3 border-b bg-gradient-to-r from-[#F47C20] to-[#E06010] rounded-t-xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full overflow-hidden">
+        <div
+          className="fixed bottom-[7.5rem] md:bottom-24 right-6 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[60vh] md:max-h-[520px] z-40 flex flex-col rounded-2xl overflow-hidden"
+          style={{
+            animation: "chatSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+            background: "linear-gradient(180deg, #0f172a 0%, #0a0e1a 100%)",
+            boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(244, 124, 32, 0.08)",
+            border: "1px solid rgba(244, 124, 32, 0.15)",
+          }}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="h-10 w-10 rounded-full overflow-hidden ring-2 ring-[#F47C20]/30">
                   <GeorgeAvatarSmall />
                 </div>
-                <div>
-                  <CardTitle className="text-base text-white">George</CardTitle>
-                  <p className="text-white/70 text-xs">Your Home Service Agent</p>
-                </div>
+                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-[#0f172a]" />
               </div>
-              <Button variant="ghost" size="icon" onClick={() => { setIsOpen(false); localStorage.setItem('george_dismissed', 'true'); }} className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/20">
-                <X className="h-4 w-4" />
-              </Button>
+              <div>
+                <h3 className="text-white font-semibold text-sm">George</h3>
+                <p className="text-green-400/80 text-[11px]">Online now</p>
+              </div>
             </div>
-          </CardHeader>
+            <button
+              onClick={() => { setIsOpen(false); localStorage.setItem('george_dismissed', 'true'); }}
+              className="h-8 w-8 rounded-full flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-all"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
 
-          <CardContent className="flex-1 overflow-y-auto p-4 space-y-3">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.1) transparent" }}>
             {messages.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="h-14 w-14 rounded-full overflow-hidden mx-auto mb-3">
+              <div className="flex flex-col items-center justify-center h-full text-center px-4">
+                <div className="h-16 w-16 rounded-full overflow-hidden ring-2 ring-[#F47C20]/20 mb-4">
                   <GeorgeAvatarSmall />
                 </div>
-                <p className="font-semibold text-sm mb-1">
-                  {isPro ? "Hey!  Interested in working with UpTend?" : "Hey!  What can I help with?"}
+                <p className="text-white font-semibold text-base mb-1">
+                  {isPro ? "Thinking about joining UpTend?" : "Need something done around the house?"}
                 </p>
-                <p className="text-xs text-muted-foreground mb-3">
-                  {isPro ? "Learn about earning with UpTend" : "Ask me anything about our services!"}
+                <p className="text-slate-400 text-xs mb-5 leading-relaxed max-w-[260px]">
+                  {isPro ? "I can walk you through everything." : "I'll get you a fair price and the right pro. Fast."}
                 </p>
-                <QuickButtons buttons={greetingButtons} onPress={handleQuickReply} />
+                <div className="flex flex-wrap justify-center gap-2">
+                  {greetingButtons.map((btn) => (
+                    <button
+                      key={btn.text}
+                      onClick={() => handleQuickReply(btn)}
+                      className="px-3.5 py-2 rounded-full text-xs font-medium border transition-all duration-200
+                        bg-white/[0.04] border-[#F47C20]/20 text-slate-300
+                        hover:bg-[#F47C20]/10 hover:border-[#F47C20]/40 hover:text-white"
+                    >
+                      {btn.text}
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : (
               messages.map((msg) => (
-                <div key={msg.id} className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-                  <Avatar className="h-7 w-7 shrink-0 mt-1">
-                    <AvatarFallback className={msg.role === "user" ? "bg-gray-200 text-gray-600" : "bg-[#F47C20] text-white"}>
-                      {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <GeorgeAvatarSmall />}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="max-w-[80%]">
-                    <div className={`rounded-2xl px-3.5 py-2.5 text-sm ${
+                <div key={msg.id} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                  {msg.role === "assistant" && (
+                    <div className="h-7 w-7 rounded-full overflow-hidden shrink-0 mt-1">
+                      <GeorgeAvatarSmall />
+                    </div>
+                  )}
+                  <div className={`max-w-[80%] ${msg.role === "user" ? "items-end" : "items-start"}`}>
+                    <div className={`rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-[#F47C20] text-white rounded-br-md"
-                        : "bg-muted rounded-bl-md"
+                        ? "bg-[#F47C20] text-white rounded-br-sm"
+                        : "bg-white/[0.06] text-slate-200 rounded-bl-sm border border-white/[0.04]"
                     }`}>
                       <p className="whitespace-pre-wrap">{msg.content}</p>
                     </div>
@@ -281,8 +317,22 @@ export function AiChatWidget() {
                       <VideoPlayer key={vid} videoId={vid} />
                     ))}
                     {msg.bookingDraft && <BookingDraftCard draft={msg.bookingDraft} onAction={handleQuickReply} />}
-                    {msg.buttons && msg.buttons.length > 0 && <QuickButtons buttons={msg.buttons} onPress={handleQuickReply} />}
-                    <p className={`text-[10px] text-gray-400 mt-0.5 px-1 ${msg.role === "user" ? "text-right" : "text-left"}`}>
+                    {msg.buttons && msg.buttons.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {msg.buttons.map((btn) => (
+                          <button
+                            key={btn.text}
+                            onClick={() => handleQuickReply(btn)}
+                            className="px-3 py-1.5 rounded-full text-xs font-medium border transition-all
+                              bg-white/[0.04] border-[#F47C20]/20 text-slate-300
+                              hover:bg-[#F47C20]/10 hover:border-[#F47C20]/40 hover:text-white"
+                          >
+                            {btn.text}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    <p className={`text-[10px] text-slate-600 mt-1 px-1 ${msg.role === "user" ? "text-right" : "text-left"}`}>
                       {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
@@ -290,46 +340,46 @@ export function AiChatWidget() {
               ))
             )}
 
+            {/* George thinking */}
             {sendMessageMutation.isPending && (
-              <div className="flex gap-2">
-                <Avatar className="h-7 w-7 shrink-0 mt-1">
-                  <AvatarFallback className="bg-transparent p-0"><GeorgeAvatarSmall /></AvatarFallback>
-                </Avatar>
-                <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
-                  <div className="flex gap-1">
-                    <span className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+              <div className="flex gap-2.5">
+                <div className="h-7 w-7 rounded-full overflow-hidden shrink-0 mt-1">
+                  <GeorgeAvatarSmall />
+                </div>
+                <div className="bg-white/[0.06] border border-white/[0.04] rounded-2xl rounded-bl-sm px-4 py-3">
+                  <div className="flex gap-1.5">
+                    <span className="h-2 w-2 bg-[#F47C20] rounded-full" style={{ animation: "dotPulse 1.4s ease-in-out infinite", animationDelay: "0ms" }} />
+                    <span className="h-2 w-2 bg-[#F47C20] rounded-full" style={{ animation: "dotPulse 1.4s ease-in-out infinite", animationDelay: "200ms" }} />
+                    <span className="h-2 w-2 bg-[#F47C20] rounded-full" style={{ animation: "dotPulse 1.4s ease-in-out infinite", animationDelay: "400ms" }} />
                   </div>
                 </div>
               </div>
             )}
 
             <div ref={messagesEndRef} />
-          </CardContent>
+          </div>
 
-          <div className="p-3 border-t">
-            <div className="flex gap-2">
-              <Input
+          {/* Input area */}
+          <div className="px-3 py-3 border-t border-white/[0.06]">
+            <div className="flex gap-2 items-center">
+              <input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask anything..."
+                placeholder="Message George..."
                 disabled={sendMessageMutation.isPending}
-                className="rounded-full text-sm h-10"
+                className="flex-1 h-10 px-4 rounded-full text-sm bg-white/[0.06] border border-white/[0.08] text-white placeholder:text-slate-500 outline-none focus:border-[#F47C20]/40 focus:bg-white/[0.08] transition-all"
               />
-              <Button
+              <button
                 onClick={() => handleSend()}
                 disabled={!message.trim() || sendMessageMutation.isPending}
-                size="icon"
-                className="h-10 w-10 rounded-full bg-[#F47C20] hover:bg-[#e06d15] shrink-0"
+                className="h-10 w-10 rounded-full bg-[#F47C20] hover:bg-[#E06910] flex items-center justify-center shrink-0 transition-all disabled:opacity-30 disabled:hover:bg-[#F47C20]"
               >
-                {sendMessageMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              </Button>
+                {sendMessageMutation.isPending ? <Loader2 className="h-4 w-4 text-white animate-spin" /> : <Send className="h-4 w-4 text-white" />}
+              </button>
             </div>
-            <p className="text-[10px] text-gray-400 text-center mt-1.5">Powered by George AI</p>
           </div>
-        </Card>
+        </div>
       )}
     </>
   );
