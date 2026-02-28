@@ -66,11 +66,20 @@ router.post("/founding-members", async (req: Request, res: Response) => {
       [memberType]
     );
 
-    // Send confirmation email
+    // Send confirmation email to member
     try {
       await sendFoundingMemberEmail(name, email, memberType, newCount.rows[0].count);
     } catch (emailErr) {
       console.error("Failed to send founding member email:", emailErr);
+    }
+
+    // Notify Alan of new signup
+    try {
+      await sendAdminNotification(name, email, phone, memberType, newCount.rows[0].count, {
+        zipCode, serviceType, businessName, hasLlc, yearsExperience
+      });
+    } catch (notifyErr) {
+      console.error("Failed to send admin notification:", notifyErr);
     }
 
     res.status(201).json({
@@ -161,6 +170,54 @@ async function sendFoundingMemberEmail(name: string, email: string, memberType: 
     throw new Error(`SendGrid ${response.status}: ${text}`);
   }
   console.log(`[Founding Member Email] Sent to ${email}`);
+}
+
+async function sendAdminNotification(
+  name: string, email: string, phone: string | null, memberType: string, spotNumber: number,
+  extra: { zipCode?: string; serviceType?: string; businessName?: string; hasLlc?: boolean; yearsExperience?: number }
+) {
+  const sgApiKey = process.env.SENDGRID_API_KEY;
+  if (!sgApiKey) {
+    console.log(`[Admin Notify] New ${memberType} signup: ${name} <${email}> (#${spotNumber})`);
+    return;
+  }
+
+  const isPro = memberType === "pro";
+  const subject = `Founding 100: New ${isPro ? "Pro" : "Customer"} Signup #${spotNumber} - ${name}`;
+
+  const details = [
+    `<strong>Name:</strong> ${name}`,
+    `<strong>Email:</strong> ${email}`,
+    phone ? `<strong>Phone:</strong> ${phone}` : null,
+    extra.zipCode ? `<strong>Zip:</strong> ${extra.zipCode}` : null,
+    `<strong>Type:</strong> ${memberType}`,
+    `<strong>Spot:</strong> #${spotNumber} of 100`,
+  ];
+  if (isPro) {
+    if (extra.serviceType) details.push(`<strong>Service:</strong> ${extra.serviceType}`);
+    if (extra.businessName) details.push(`<strong>Business:</strong> ${extra.businessName}`);
+    details.push(`<strong>LLC:</strong> ${extra.hasLlc ? "Yes" : "No"}`);
+    if (extra.yearsExperience) details.push(`<strong>Experience:</strong> ${extra.yearsExperience} years`);
+  }
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:500px;padding:20px;">
+      <h2 style="color:#F47C20;margin-top:0;">New Founding ${isPro ? "Pro" : "Member"} Signup</h2>
+      <p style="line-height:1.8;">${details.filter(Boolean).join("<br>")}</p>
+    </div>
+  `;
+
+  await fetch("https://api.sendgrid.com/v3/mail/send", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${sgApiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      personalizations: [{ to: [{ email: "alan@uptendapp.com", name: "Alan" }] }],
+      from: { email: "alan@uptendapp.com", name: "UpTend Alerts" },
+      subject,
+      content: [{ type: "text/html", value: html }],
+    }),
+  });
+  console.log(`[Admin Notify] Sent signup alert for ${name} to alan@uptendapp.com`);
 }
 
 // Unsubscribe
