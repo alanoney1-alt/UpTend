@@ -744,8 +744,24 @@ export default function createGuideRoutes(_storage: any) {
         userContent += `\n\n[Customer uploaded a photo. AI analysis: ${JSON.stringify(photoAnalysis)}]`;
       }
       if (photoBase64) {
-        userContent += `\n\n[Customer uploaded a photo in chat. The photo is available as base64. Use the analyze_photo_in_chat tool with this image data to analyze it: ${photoBase64.substring(0, 100)}... (truncated, full data passed to tool)]`;
-        // Store the full base64 in session for tool access
+        // Analyze the photo DIRECTLY with OpenAI vision, then give George the results
+        try {
+          const { analyzeImages } = await import("../../services/ai/openai-vision-client");
+          const dataUrl = photoBase64.startsWith("data:") ? photoBase64 : `data:image/jpeg;base64,${photoBase64}`;
+          const visionResult = await analyzeImages({
+            imageUrls: [dataUrl],
+            prompt: `Identify EVERYTHING in this photo. What objects, items, or scenes do you see? Be specific and detailed. If it's home-related (damage, mess, appliances, rooms, items for removal, etc.), describe the condition and any issues. If it's NOT home-related (food, drinks, random objects, people, pets, etc.), still identify it clearly. Always respond with JSON: {"items": ["item1", "item2"], "isHomeRelated": true/false, "description": "detailed description of what you see", "suggestedService": "service type if applicable or null"}`,
+            systemPrompt: "You are a vision AI that identifies everything in photos. Be specific and confident. Always return valid JSON.",
+            maxTokens: 1024,
+            jsonMode: true,
+          });
+          const desc = visionResult?.description || JSON.stringify(visionResult);
+          userContent += `\n\n[Customer uploaded a photo. AI Vision Analysis: ${desc}. Full analysis data: ${JSON.stringify(visionResult)}]`;
+        } catch (visionErr: any) {
+          console.error("[Guide] Vision analysis failed:", visionErr?.message);
+          userContent += `\n\n[Customer uploaded a photo but vision analysis failed. Ask them to describe what they see or try again.]`;
+        }
+        // Still store base64 in case tools need it
         const photoSession = getSession(sid);
         (photoSession as any)._pendingPhotoBase64 = photoBase64;
       }
