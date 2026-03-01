@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { storage } from "../../storage";
+import { sendProWelcomeEmail } from "../../services/pro-welcome-email";
 import { isAuthenticated } from "../../replit_integrations/auth";
 import bcrypt from "bcrypt";
 import { z } from "zod";
@@ -441,6 +442,10 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         createdVehicles.push(vehicle);
       }
 
+
+      // Send welcome email + admin notification
+      await sendProWelcomeEmail(data);
+
       res.json({
         success: true,
         message: "Registration successful. Background check pending.",
@@ -617,6 +622,10 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         });
         createdVehicles.push(vehicle);
       }
+
+
+      // Send welcome email + admin notification
+      await sendProWelcomeEmail(data);
 
       res.json({
         success: true,
