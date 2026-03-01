@@ -1,5 +1,5 @@
 export const PRICING_CONSTANTS = {
-  PRESSURE_WASH_SQFT: 25,
+  PRESSURE_WASH_SQFT: 35,
   PRESSURE_WASH_MIN: 12000, // $120 minimum (small job)
 
   GUTTER_1_STORY: 12900, // $129 - 1-Story (up to 150 linear ft)
@@ -82,11 +82,28 @@ export function calculateServicePrice(type: string, data: any): number | null {
       break;
 
     case "pool_cleaning": {
-      const tier = data.tier || "basic";
-      if (tier === "deep_clean") price = PRICING_CONSTANTS.POOL_DEEP_CLEAN;
-      else if (tier === "full_service") price = PRICING_CONSTANTS.POOL_FULL_SERVICE;
-      else if (tier === "standard") price = PRICING_CONSTANTS.POOL_STANDARD;
-      else price = PRICING_CONSTANTS.POOL_BASIC; // default to basic
+      const poolTier = data.tier || "basic";
+      const poolSizeMultiplier = data.poolSize === "large" ? 1.3 : data.poolSize === "small" ? 1 : 1.15;
+
+      if (poolTier === "deep_clean" || data.mode === "one_time") {
+        price = Math.round(24900 * poolSizeMultiplier);
+      } else if (poolTier === "full_service" || poolTier === "full") {
+        price = Math.round(PRICING_CONSTANTS.POOL_FULL_SERVICE * poolSizeMultiplier);
+      } else if (poolTier === "standard") {
+        price = Math.round(PRICING_CONSTANTS.POOL_STANDARD * poolSizeMultiplier);
+      } else {
+        price = Math.round(PRICING_CONSTANTS.POOL_BASIC * poolSizeMultiplier);
+      }
+
+      // Pool add-ons
+      if (data.screenEnclosure) price += 7500;
+      if (data.deckPressureWash) price += 9900;
+      if (data.filterReplacement) price += 4500;
+      if (data.saltCellClean) price += 3500;
+      if (data.lightRepair) price += 6500;
+      if (data.heaterCheck) price += 4900;
+      if (data.phosphateRemoval) price += 3500;
+      if (data.acidWash) price += 19900;
       break;
     }
 
@@ -118,11 +135,11 @@ export function calculateServicePrice(type: string, data: any): number | null {
     }
 
     case "landscaping": {
-      const lotSize = data.lotSize || "quarter"; // "quarter" or "half"
-      const planType = data.planType || "one_time_mow"; // one_time_mow, cleanup, mow_go, full_service, premium
+      const lotSize = data.lotSize || "quarter";
+      const planType = data.planType || "one_time_mow";
 
       if (planType === "cleanup") {
-        price = PRICING_CONSTANTS.LANDSCAPE_CLEANUP_MIN; // $149-$299, start at min
+        price = PRICING_CONSTANTS.LANDSCAPE_CLEANUP_MIN;
       } else if (planType === "mow_go") {
         price = lotSize === "half" ? PRICING_CONSTANTS.LANDSCAPE_MOW_GO_HALF : PRICING_CONSTANTS.LANDSCAPE_MOW_GO_QUARTER;
       } else if (planType === "full_service") {
@@ -130,15 +147,34 @@ export function calculateServicePrice(type: string, data: any): number | null {
       } else if (planType === "premium") {
         price = lotSize === "half" ? PRICING_CONSTANTS.LANDSCAPE_PREMIUM_HALF : PRICING_CONSTANTS.LANDSCAPE_PREMIUM_QUARTER;
       } else {
-        // one_time_mow default
         price = lotSize === "half" ? PRICING_CONSTANTS.LANDSCAPE_MOW_HALF : PRICING_CONSTANTS.LANDSCAPE_MOW_QUARTER;
       }
+
+      // One-time add-on services
+      if (data.hedgeTrimSmall) price += 8900;
+      if (data.hedgeTrimLarge) price += 14900;
+      if (data.mulchSmall) price += 19900;
+      if (data.mulchLarge) price += 34900;
+      if (data.sodSmall) price += 39900;
+      if (data.sodLarge) price += 69900;
+      if (data.treeTrims) price += (data.treeTrims || 0) * 14900;
+      if (data.treeTrimMedium) price += (data.treeTrimMedium || 0) * 29900;
+      if (data.treeTrimLarge) price += (data.treeTrimLarge || 0) * 49900;
+      if (data.palmTrims) price += (data.palmTrims || 0) * 7500;
+      if (data.stumpGrinding) price += (data.stumpGrinding || 0) * 14900;
+      if (data.flowerBedSmall) price += 19900;
+      if (data.flowerBedLarge) price += 39900;
+      if (data.irrigationRepair) price += 9900;
+      if (data.irrigationZones) price += (data.irrigationZones || 0) * 24900;
+      if (data.leafRemoval) price += 12900;
+      if (data.weedTreatment) price += 7900;
+      if (data.fertilization) price += 6900;
       break;
     }
 
     case "junk_removal": {
       const vol = (data.volume || "").toLowerCase();
-      if (vol.includes("full")) { price = 29900; }
+      if (vol.includes("full")) { price = 34900; }
       else if (vol.includes("half") || vol.includes("medium")) { price = 17900; }
       else if (vol.includes("quarter") || vol.includes("small")) { price = 9900; }
       else { price = 9900; } // minimum / default
