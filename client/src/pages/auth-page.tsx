@@ -42,8 +42,8 @@ const TAB_CONFIG: Record<UserType, {
     endpoint: "/api/customers/login",
   },
   pro: {
-    headline: "Mission Control.",
-    subtext: "Turn on availability, accept jobs, and get paid instantly.",
+    headline: "Pro Dashboard.",
+    subtext: "Manage your jobs, availability, and earnings.",
     icon: Truck,
     signupLink: "/pro-signup",
     signupLabel: "Apply to become a Pro",
