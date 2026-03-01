@@ -136,7 +136,7 @@ router.get("/budget-report/:businessId", requireAuth, async (req, res) => {
   } catch (e: any) { res.status(500).json({ error: e.message }); }
 });
 
-// Budget forecast
+// [Feature 7] Budget forecast with FL seasonal multipliers
 router.get("/budget-forecast/:businessId", requireAuth, async (req, res) => {
   try {
     const { businessId } = req.params;
