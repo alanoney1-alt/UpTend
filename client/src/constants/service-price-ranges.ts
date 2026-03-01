@@ -46,6 +46,11 @@ export const SERVICE_PRICE_RANGES: Record<string, {
     recommended: 199,
     ceiling: 450,
     notes: "Standard driveway 400-600 sqft",
+    variants: [
+      { name: "Driveway Only (up to 600 sqft)", floor: 99, recommended: 149, ceiling: 225, notes: "Standard 2-car driveway" },
+      { name: "House Wash (exterior walls)", floor: 199, recommended: 299, ceiling: 449, notes: "Single-story home exterior" },
+      { name: "Full Property (driveway + house + patio)", floor: 349, recommended: 449, ceiling: 699, notes: "Complete pressure wash package" },
+    ],
   },
   gutter_cleaning: {
     serviceType: "gutter_cleaning",
@@ -86,6 +91,11 @@ export const SERVICE_PRICE_RANGES: Record<string, {
     recommended: 350,
     ceiling: 799,
     notes: "Sheds, decks, interior tear-outs",
+    variants: [
+      { name: "Small (shed, fence section, single fixture)", floor: 149, recommended: 249, ceiling: 399, notes: "Half day job" },
+      { name: "Medium (deck, interior room, bathroom gut)", floor: 299, recommended: 449, ceiling: 649, notes: "Full day job" },
+      { name: "Large (multi-room, large structure)", floor: 499, recommended: 699, ceiling: 999, notes: "1-2 day job" },
+    ],
   },
   garage_cleanout: {
     serviceType: "garage_cleanout",
@@ -95,6 +105,11 @@ export const SERVICE_PRICE_RANGES: Record<string, {
     recommended: 349,
     ceiling: 799,
     notes: "Full sort, organize, and haul-away",
+    variants: [
+      { name: "1-Car Garage (light clutter)", floor: 149, recommended: 249, ceiling: 349, notes: "Sort, organize, haul small amount" },
+      { name: "2-Car Garage (moderate)", floor: 249, recommended: 399, ceiling: 549, notes: "Full cleanout, moderate junk" },
+      { name: "3-Car / Heavy Hoarder", floor: 399, recommended: 599, ceiling: 899, notes: "Major cleanout, heavy hauling" },
+    ],
   },
   home_cleaning: {
     serviceType: "home_cleaning",
@@ -133,6 +148,11 @@ export const SERVICE_PRICE_RANGES: Record<string, {
     recommended: 99,
     ceiling: 249,
     notes: "One-time mow for quarter-acre lot",
+    variants: [
+      { name: "Basic Mow (mow + blow)", floor: 35, recommended: 49, ceiling: 79, notes: "Standard quarter-acre lot" },
+      { name: "Full Service (mow + edge + trim + blow)", floor: 59, recommended: 89, ceiling: 139, notes: "Complete lawn maintenance" },
+      { name: "Major Project (mulch, planting, bed work)", floor: 149, recommended: 249, ceiling: 499, notes: "Landscape install or renovation" },
+    ],
   },
   carpet_cleaning: {
     serviceType: "carpet_cleaning",
