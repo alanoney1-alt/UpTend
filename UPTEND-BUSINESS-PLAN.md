@@ -2,8 +2,6 @@
 
 **"The Home Intelligence Company"**
 
-*Written through the lens of: Jeff Bezos (customer obsession, flywheel thinking), Travis Kalanick (city-by-city services scaling), Brian Scudamore (1-800-GOT-JUNK, employee-first home services), Keith Mercurio (Neighborly, $3.2B franchise exit)*
-
 ---
 
 ## Executive Summary
@@ -20,13 +18,7 @@ We are NOT a marketplace. We employ our service teams, control quality end-to-en
 
 ---
 
-## The Problem (Customer Lens — Bezos Style)
-
-Write the press release first. Work backwards.
-
-**THE FUTURE PRESS RELEASE:**
-
-> *"UpTend announced today that George, its AI home agent, now manages maintenance for over 1 million American homes. Customers report spending 90% less time thinking about home maintenance since adopting George. 'I literally forget I have a house to maintain,' said Orlando resident Maria Chen. 'George just handles it. He texted me last week that my gutters were due, had someone here the next morning, and sent me before-and-after photos while I was at work. I didn't do anything.' UpTend's hybrid model — AI dispatch powering company-employed service crews — has driven 96% customer retention and a Net Promoter Score of 82, the highest in the home services industry."*
+## The Problem
 
 **What's broken today:**
 
@@ -593,7 +585,5 @@ The first time a customer gets a text from George saying "Storm coming Thursday,
 That's not a feature. That's a relationship. And relationships are worth a billion dollars.
 
 ---
-
-*"Your margin is my opportunity."* — Jeff Bezos
 
 The home services industry has $600B in revenue and 0% customer satisfaction. George is the opportunity.
