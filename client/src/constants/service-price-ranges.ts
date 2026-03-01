@@ -104,6 +104,12 @@ export const SERVICE_PRICE_RANGES: Record<string, {
     recommended: 165,
     ceiling: 349,
     notes: "Standard cleaning for 3BR/2BA home",
+    variants: [
+      { name: "1-2 BR / Apartment", floor: 89, recommended: 99, ceiling: 149, notes: "Under 1,000 sqft" },
+      { name: "3 BR / Standard Home", floor: 129, recommended: 165, ceiling: 225, notes: "1,000-2,000 sqft" },
+      { name: "4+ BR / Large Home", floor: 199, recommended: 275, ceiling: 399, notes: "2,000+ sqft" },
+      { name: "Deep Clean (any size)", floor: 249, recommended: 349, ceiling: 499, notes: "Move-in/out, post-construction" },
+    ],
   },
   pool_cleaning: {
     serviceType: "pool_cleaning",
@@ -113,6 +119,11 @@ export const SERVICE_PRICE_RANGES: Record<string, {
     recommended: 165,
     ceiling: 275,
     notes: "Weekly maintenance billed monthly",
+    variants: [
+      { name: "Basic (chemicals + skim)", floor: 85, recommended: 120, ceiling: 150, notes: "Weekly chemical balance and surface skim" },
+      { name: "Standard (full maintenance)", floor: 130, recommended: 165, ceiling: 210, notes: "Chemicals, skim, vacuum, filter check" },
+      { name: "Premium (complete care)", floor: 175, recommended: 210, ceiling: 275, notes: "Full maintenance + equipment inspection + deck brushing" },
+    ],
   },
   landscaping: {
     serviceType: "landscaping",
@@ -131,6 +142,11 @@ export const SERVICE_PRICE_RANGES: Record<string, {
     recommended: 55,
     ceiling: 99,
     notes: "Standard steam clean per room",
+    variants: [
+      { name: "Standard Room (up to 200 sqft)", floor: 35, recommended: 50, ceiling: 75, notes: "Basic steam clean" },
+      { name: "Large Room (200-400 sqft)", floor: 55, recommended: 75, ceiling: 99, notes: "Larger areas" },
+      { name: "Deep Clean / Stain Treatment", floor: 70, recommended: 89, ceiling: 125, notes: "Heavy stains, pet odor, deep extraction" },
+    ],
   },
   home_scan: {
     serviceType: "home_scan",

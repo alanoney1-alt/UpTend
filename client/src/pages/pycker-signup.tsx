@@ -226,6 +226,7 @@ export default function PyckerSignup() {
   const [licensesAndCerts, setLicensesAndCerts] = useState("");
   // Pro rate selection per service (from researched ranges)
   const [proRates, setProRates] = useState<Record<string, number>>({});
+  const [proTierRates, setProTierRates] = useState<Record<string, Record<string, number>>>({});
 
   // B2B Commercial Licensing
   const [b2bLicensed, setB2bLicensed] = useState(false);
@@ -422,6 +423,10 @@ export default function PyckerSignup() {
         proRates: Object.entries(proRates).map(([serviceType, baseRate]) => ({
           serviceType,
           baseRate,
+        })),
+        proTierRates: Object.entries(proTierRates).map(([serviceType, tiers]) => ({
+          serviceType,
+          tiers: Object.entries(tiers).map(([tierName, rate]) => ({ tierName, rate })),
         })),
         pricingFeedback: Object.entries(pricingFeedback)
           .filter(([_, v]) => v.low || v.high)
@@ -1759,11 +1764,82 @@ export default function PyckerSignup() {
                   </p>
                 </div>
 
-                {/* Per-service rate sliders */}
+                {/* Per-service rate inputs — tiered when variants exist */}
                 <div className="space-y-4 mb-6">
                   {selectedServices.map((service) => {
                     const range = SERVICE_PRICE_RANGES[service];
                     if (!range || range.floor === 0) return null; // Skip home_scan (fixed pricing)
+
+                    // Tiered pricing for services with variants
+                    if (range.variants && range.variants.length > 0) {
+                      const tierRates = proTierRates[service] || {};
+                      return (
+                        <div key={service} className="p-4 border rounded-lg bg-card">
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="font-semibold text-sm">{range.displayName}</p>
+                            <span className="text-xs text-muted-foreground">{range.unit}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mb-4">
+                            Set your price for each tier. Defaults to recommended market rates.
+                          </p>
+
+                          <div className="space-y-3">
+                            {range.variants.map((variant, vi) => {
+                              const tierKey = variant.name;
+                              const currentRate = tierRates[tierKey] ?? variant.recommended;
+                              const payout = Math.max(50, Math.round(currentRate * 0.85 * 100) / 100);
+
+                              return (
+                                <div key={vi} className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <p className="text-sm font-medium">{variant.name}</p>
+                                    <span className="text-[10px] text-muted-foreground">{variant.notes}</span>
+                                  </div>
+
+                                  <input
+                                    type="range"
+                                    min={variant.floor}
+                                    max={variant.ceiling}
+                                    step={1}
+                                    value={currentRate}
+                                    onChange={(e) =>
+                                      setProTierRates((prev) => ({
+                                        ...prev,
+                                        [service]: {
+                                          ...(prev[service] || {}),
+                                          [tierKey]: Number(e.target.value),
+                                        },
+                                      }))
+                                    }
+                                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[#ea580c]"
+                                  />
+                                  <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                                    <span>${variant.floor}</span>
+                                    <span className="text-[#ea580c] font-semibold">
+                                      Recommended: ${variant.recommended}
+                                    </span>
+                                    <span>${variant.ceiling}</span>
+                                  </div>
+
+                                  <div className="flex items-center justify-between mt-2">
+                                    <div>
+                                      <span className="text-[10px] text-muted-foreground">Your rate</span>
+                                      <div className="text-base font-bold text-white">${currentRate}</div>
+                                    </div>
+                                    <div className="text-right">
+                                      <span className="text-[10px] text-muted-foreground">You earn (85%)</span>
+                                      <div className="text-base font-bold text-green-400">${payout.toFixed(2)}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    // Single slider for non-tiered services
                     const currentRate = proRates[service] ?? range.recommended;
                     const payout = Math.max(50, Math.round(currentRate * 0.85 * 100) / 100);
 
@@ -1777,7 +1853,6 @@ export default function PyckerSignup() {
                           Pros on UpTend charge: ${range.floor} to ${range.ceiling}
                         </p>
 
-                        {/* Rate slider */}
                         <input
                           type="range"
                           min={range.floor}
@@ -1800,7 +1875,6 @@ export default function PyckerSignup() {
                           <span>${range.ceiling}</span>
                         </div>
 
-                        {/* Rate + Payout display */}
                         <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 mt-3">
                           <div>
                             <span className="text-xs text-muted-foreground">Your rate</span>
