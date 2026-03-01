@@ -260,8 +260,8 @@ async function handleNoShow(jobId: string, proId: string): Promise<void> {
  html: `
  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
  <div style="text-align: center; margin-bottom: 30px;">
- <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
- <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+ <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+ <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
  </div>
  <h2 style="color: #333;">Your Pro Has Been Reassigned</h2>
  <p style="color: #666; font-size: 16px;">

@@ -136,8 +136,8 @@ export async function sendVerificationEmail(email: string, code: string): Promis
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
         </div>
         
         <h2 style="color: #333;">Verify Your Email</h2>
@@ -145,7 +145,7 @@ export async function sendVerificationEmail(email: string, code: string): Promis
           Welcome to UpTend! Use the verification code below to complete your Pro registration:
         </p>
         
-        <div style="background: linear-gradient(135deg, #3B1D5A 0%, #5a2d87 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
+        <div style="background: linear-gradient(135deg, #0B1120 0%, #1a2340 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
           <span style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #F47C20;">${code}</span>
         </div>
         
@@ -156,7 +156,7 @@ export async function sendVerificationEmail(email: string, code: string): Promis
         <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
         
         <p style="color: #999; font-size: 12px; text-align: center;">
-          UpTend - On-demand junk removal and moving services<br>
+          UpTend - Home Intelligence<br>
           Orlando Metro Area | (407) 338-3342
         </p>
       </div>
@@ -179,8 +179,8 @@ export async function sendPasswordResetEmail(email: string, resetLink: string): 
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
         </div>
         
         <h2 style="color: #333;">Reset Your Password</h2>
@@ -204,7 +204,7 @@ export async function sendPasswordResetEmail(email: string, resetLink: string): 
         <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
         
         <p style="color: #999; font-size: 12px; text-align: center;">
-          UpTend - On-demand junk removal and moving services<br>
+          UpTend - Home Intelligence<br>
           Orlando Metro Area | (407) 338-3342
         </p>
       </div>
@@ -264,8 +264,8 @@ export async function sendBookingConfirmation(
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+            <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
           </div>
           
           <h2 style="color: #333;">Booking Confirmed!</h2>
@@ -286,7 +286,7 @@ export async function sendBookingConfirmation(
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
           
           <p style="color: #999; font-size: 12px; text-align: center;">
-            UpTend - On-demand junk removal and moving services<br>
+            UpTend - Home Intelligence<br>
             Orlando Metro Area | (407) 338-3342
           </p>
         </div>
@@ -337,8 +337,8 @@ export async function sendJobCompleted(
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+            <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
           </div>
           
           <h2 style="color: #333;">Job Complete!</h2>
@@ -359,7 +359,7 @@ export async function sendJobCompleted(
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
           
           <p style="color: #999; font-size: 12px; text-align: center;">
-            UpTend - On-demand junk removal and moving services<br>
+            UpTend - Home Intelligence<br>
             Orlando Metro Area | (407) 338-3342
           </p>
         </div>
@@ -438,7 +438,7 @@ export async function sendManualMatchAlert(
             </p>
             
             <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0;">
-              <h3 style="color: #3B1D5A; margin-top: 0;">Job Details</h3>
+              <h3 style="color: #0B1120; margin-top: 0;">Job Details</h3>
               <table style="width: 100%; border-collapse: collapse;">
                 <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Job ID:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${jobDetails.jobId}</td></tr>
                 <tr><td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Service:</strong></td><td style="padding: 8px 0; border-bottom: 1px solid #eee;">${serviceName}</td></tr>
@@ -494,8 +494,8 @@ export async function sendManualMatchNotification(
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+            <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
           </div>
           
           <h2 style="color: #333;">We're Connecting You Personally</h2>
@@ -513,7 +513,7 @@ export async function sendManualMatchNotification(
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
           
           <p style="color: #999; font-size: 12px; text-align: center;">
-            UpTend - On-demand junk removal and moving services<br>
+            UpTend - Home Intelligence<br>
             Orlando Metro Area | (407) 338-3342
           </p>
         </div>
@@ -545,8 +545,8 @@ export async function sendPropertyTransferEmail(
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
         </div>
         
         <h2 style="color: #333;">Your New Home Has a Maintenance History</h2>
@@ -555,7 +555,7 @@ export async function sendPropertyTransferEmail(
           for <strong>${address}</strong> to you.
         </p>
         
-        <div style="background: linear-gradient(135deg, #3B1D5A 0%, #5a2d87 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
+        <div style="background: linear-gradient(135deg, #0B1120 0%, #1a2340 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
           <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin: 0 0 8px 0;">Maintenance Score</p>
           <span style="font-size: 48px; font-weight: bold; color: #F47C20;">${maintenanceScore}</span>
           <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 8px 0 0 0;">out of 100</p>
@@ -579,7 +579,7 @@ export async function sendPropertyTransferEmail(
         <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
         
         <p style="color: #999; font-size: 12px; text-align: center;">
-          UpTend - On-demand junk removal and moving services<br>
+          UpTend - Home Intelligence<br>
           Orlando Metro Area | (407) 338-3342
         </p>
       </div>
@@ -595,8 +595,8 @@ export async function sendLaunchNotificationConfirmation(email: string): Promise
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+          <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+          <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
         </div>
 
         <h2 style="color: #333;">You're on the List!</h2>
@@ -604,7 +604,7 @@ export async function sendLaunchNotificationConfirmation(email: string): Promise
           Thanks for signing up to be notified when UpTend launches in your area!
         </p>
 
-        <div style="background: linear-gradient(135deg, #3B1D5A 0%, #5a2d87 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
+        <div style="background: linear-gradient(135deg, #0B1120 0%, #1a2340 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
           <p style="color: white; font-size: 18px; margin: 0;">
             As an early subscriber, you'll get <strong style="color: #F47C20;">$25 OFF</strong> your first job!
           </p>
@@ -618,7 +618,7 @@ export async function sendLaunchNotificationConfirmation(email: string): Promise
         <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
 
         <p style="color: #999; font-size: 12px; text-align: center;">
-          UpTend - On-demand junk removal and moving services<br>
+          UpTend - Home Intelligence<br>
           Orlando Metro Area | (407) 338-3342
         </p>
       </div>
@@ -661,8 +661,8 @@ export async function sendPolishUpSubscriptionConfirmation(
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+            <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
           </div>
 
           <h2 style="color: #333;">🏠 Welcome to Home Cleaning!</h2>
@@ -699,7 +699,7 @@ export async function sendPolishUpSubscriptionConfirmation(
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
 
           <p style="color: #999; font-size: 12px; text-align: center;">
-            UpTend - On-demand junk removal and moving services<br>
+            UpTend - Home Intelligence<br>
             Orlando Metro Area | (407) 338-3342
           </p>
         </div>
@@ -742,8 +742,8 @@ export async function sendPolishUpReminder(
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+            <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
           </div>
 
           <h2 style="color: #333;">🧹 Cleaning Tomorrow!</h2>
@@ -771,7 +771,7 @@ export async function sendPolishUpReminder(
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
 
           <p style="color: #999; font-size: 12px; text-align: center;">
-            UpTend - On-demand junk removal and moving services<br>
+            UpTend - Home Intelligence<br>
             Orlando Metro Area | (407) 338-3342
           </p>
         </div>
@@ -830,8 +830,8 @@ export async function sendPolishUpCleaningComplete(
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #3B1D5A; margin: 0;">UpTend</h1>
-            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">You Pick. We Haul.</p>
+            <h1 style="color: #0B1120; margin: 0;">UpTend</h1>
+            <p style="color: #F47C20; font-weight: bold; margin: 5px 0;">One Price. One Pro. Done.</p>
           </div>
 
           <h2 style="color: #333;">✨ Your Home Sparkles!</h2>
@@ -871,7 +871,7 @@ export async function sendPolishUpCleaningComplete(
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
 
           <p style="color: #999; font-size: 12px; text-align: center;">
-            UpTend - On-demand junk removal and moving services<br>
+            UpTend - Home Intelligence<br>
             Orlando Metro Area | (407) 338-3342
           </p>
         </div>

@@ -14,7 +14,7 @@ import { openai } from "../openaiClient";
 export const UPTEND_KNOWLEDGE = {
   company: {
     name: "UpTend",
-    tagline: "You Pick. We Haul.",
+    tagline: "One Price. One Pro. Done.",
     description: "On-demand junk removal, moving labor, and home services in Orlando Metro Area",
     phone: "(407) 338-3342",
     serviceArea: "Orange, Seminole, and Osceola counties in Florida",
@@ -311,7 +311,7 @@ export const UPTEND_KNOWLEDGE = {
 /**
  * System prompt for AI assistant
  */
-const SYSTEM_PROMPT = `You are the UpTend AI Assistant, a friendly and knowledgeable customer service bot for UpTend (tagline: "You Pick. We Haul.").
+const SYSTEM_PROMPT = `You are the UpTend AI Assistant, a friendly and knowledgeable customer service bot for UpTend (tagline: "One Price. One Pro. Done.").
 
 **Your Role:**
 - Help customers understand UpTend's services, pricing, and booking process
