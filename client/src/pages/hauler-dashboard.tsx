@@ -2433,24 +2433,107 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
           <Card className="p-5 lg:col-span-2">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
               <Package className="w-5 h-5" />
-              Service Types
+              My Services & Pricing
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Jobs you're willing to accept. Contact support to update.
+              Toggle services on/off and set your rates per tier. Changes save automatically.
             </p>
             
-            <div className="flex flex-wrap gap-2">
-              {(currentPro?.profile?.serviceTypes || ["junk_removal", "furniture_moving", "garage_cleanout", "estate_cleanout"]).map((service) => (
-                <Badge key={service} variant="secondary" className="text-sm">
-                  {{
-                    junk_removal: "Junk Removal",
-                    furniture_moving: "Furniture Moving",
-                    garage_cleanout: "Garage Cleanout",
-                    estate_cleanout: "Estate Cleanout",
-                    truck_unloading: "U-Haul/Truck Unloading",
-                  }[service] || service}
-                </Badge>
-              ))}
+            {(() => {
+              const SERVICE_LABELS: Record<string, string> = {
+                junk_removal: "Junk Removal", pressure_washing: "Pressure Washing",
+                gutter_cleaning: "Gutter Cleaning", moving_labor: "Moving Labor",
+                handyman: "Handyman Services", light_demolition: "Light Demolition",
+                garage_cleanout: "Garage Cleanout", home_cleaning: "Home Cleaning",
+                pool_cleaning: "Pool Cleaning", landscaping: "Landscaping",
+                carpet_cleaning: "Carpet Cleaning", home_scan: "Home DNA Scan",
+              };
+              const ALL_SERVICES = Object.keys(SERVICE_LABELS);
+              const activeServices = currentPro?.profile?.serviceTypes || [];
+
+              return (
+                <div className="space-y-3">
+                  {ALL_SERVICES.map((svc) => {
+                    const isActive = activeServices.includes(svc);
+                    return (
+                      <div key={svc} className={`p-3 rounded-lg border transition-all ${isActive ? "border-primary/40 bg-primary/5" : "border-border/30 opacity-60"}`}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-sm">{SERVICE_LABELS[svc]}</span>
+                          <Switch
+                            checked={isActive}
+                            onCheckedChange={async (checked) => {
+                              const newServices = checked
+                                ? [...activeServices, svc]
+                                : activeServices.filter((s: string) => s !== svc);
+                              try {
+                                await apiRequest("PATCH", "/api/pro/profile", { serviceTypes: newServices });
+                                queryClient.invalidateQueries({ queryKey: ["/api/pro/me"] });
+                              } catch {}
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </Card>
+
+          <Card className="p-5 lg:col-span-2">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Company Info
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Update your business details anytime.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-xs text-muted-foreground">Company Name</Label>
+                <Input
+                  defaultValue={currentPro?.profile?.companyName || ""}
+                  onBlur={async (e) => {
+                    if (e.target.value !== currentPro?.profile?.companyName) {
+                      try {
+                        await apiRequest("PATCH", "/api/pro/profile", { companyName: e.target.value });
+                        queryClient.invalidateQueries({ queryKey: ["/api/pro/me"] });
+                      } catch {}
+                    }
+                  }}
+                  placeholder="Your business name"
+                />
+              </div>
+              <div>
+                <Label className="text-xs text-muted-foreground">Phone</Label>
+                <Input
+                  defaultValue={currentPro?.phone || ""}
+                  onBlur={async (e) => {
+                    if (e.target.value !== currentPro?.phone) {
+                      try {
+                        await apiRequest("PATCH", "/api/pro/profile", { phone: e.target.value });
+                        queryClient.invalidateQueries({ queryKey: ["/api/pro/me"] });
+                      } catch {}
+                    }
+                  }}
+                  placeholder="(407) 555-1234"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Label className="text-xs text-muted-foreground">Service Area (zip codes)</Label>
+                <Input
+                  defaultValue={currentPro?.profile?.serviceArea || ""}
+                  onBlur={async (e) => {
+                    if (e.target.value !== currentPro?.profile?.serviceArea) {
+                      try {
+                        await apiRequest("PATCH", "/api/pro/profile", { serviceArea: e.target.value });
+                        queryClient.invalidateQueries({ queryKey: ["/api/pro/me"] });
+                      } catch {}
+                    }
+                  }}
+                  placeholder="32827, 32832, 32837..."
+                />
+              </div>
             </div>
           </Card>
         </div>

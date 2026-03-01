@@ -196,6 +196,15 @@ export function registerProProfileRoutes(app: Express) {
           allowedFields.languagesSpoken.unshift("en");
         }
       }
+      if (req.body.serviceTypes && Array.isArray(req.body.serviceTypes)) {
+        const validServices = ["junk_removal","pressure_washing","gutter_cleaning","moving_labor","handyman","light_demolition","garage_cleanout","home_cleaning","pool_cleaning","landscaping","carpet_cleaning","home_scan"];
+        allowedFields.serviceTypes = req.body.serviceTypes.filter((s: string) => validServices.includes(s));
+      }
+      if (req.body.companyName !== undefined) allowedFields.companyName = req.body.companyName;
+      if (req.body.phone !== undefined) allowedFields.phone = req.body.phone;
+      if (req.body.serviceArea !== undefined) allowedFields.serviceArea = req.body.serviceArea;
+      if (req.body.proRates !== undefined) allowedFields.proRates = req.body.proRates;
+      if (req.body.proTierRates !== undefined) allowedFields.proTierRates = req.body.proTierRates;
       if (req.body.profilePhotoUrl !== undefined) allowedFields.profilePhotoUrl = req.body.profilePhotoUrl;
       if (req.body.bio !== undefined) allowedFields.bio = req.body.bio;
       if (req.body.funFact !== undefined) allowedFields.funFact = req.body.funFact;
