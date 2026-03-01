@@ -102,7 +102,7 @@ export function registerScheduleBatchRoutes(app: Express) {
     }
   });
 
-  // ─── Recurring Job Schedules ─────────────────────────────────────────────
+  // ─── [Feature 6] Recurring Job Schedules ─────────────────────────────────
 
   // POST /api/schedule/recurring - create recurring schedule
   app.post("/api/schedule/recurring", async (req: Request, res: Response) => {
