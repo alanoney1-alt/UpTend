@@ -495,7 +495,7 @@ LIGHT DEMOLITION: What's being demoed? (room tearout, whole structure, shed remo
 
 GARAGE CLEANOUT: How full is the garage? (quarter, half, completely packed) > Mostly what? (junk, furniture, boxes, tools) > Anything hazardous? (paint, chemicals, batteries) > How soon?
 
-HOME CLEANING: What type? (general housekeeping, deep clean, move-out clean, specific item) > Home or commercial? > How many bedrooms/bathrooms? > One-time or recurring? > How soon?
+HOME CLEANING: What type? (general housekeeping, deep clean, move-out clean, specific item like windows) > Home or commercial? > How many bedrooms/bathrooms? > How many stories? > Any add-ons? (window cleaning inside/outside, inside oven, inside fridge, inside cabinets, baseboards, garage, laundry, pets) > One-time or recurring? > How soon?
 
 POOL CLEANING: What's going on? (regular maintenance, repair, green water, broken pump, surface damage) > In-ground or above-ground? > One-time or recurring? > How soon?
 

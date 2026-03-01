@@ -20,11 +20,16 @@ const CLEAN_TYPES = [
 ];
 
 const ADDONS = [
+  { id: "windows_interior", label: "Interior window cleaning (per window)", price: 5, note: "up to 20 windows" },
+  { id: "windows_exterior", label: "Exterior window cleaning (per window)", price: 8, note: "up to 20 windows" },
   { id: "pets", label: "Pets in home (+pet hair treatment)", price: 15 },
   { id: "same_day", label: "Same-day service", price: 30 },
   { id: "not_cleaned", label: "Not cleaned in 6+ months (+20%)", pct: 0.2 },
   { id: "oven", label: "Inside oven deep clean", price: 35 },
   { id: "fridge", label: "Inside refrigerator", price: 35 },
+  { id: "cabinets", label: "Inside all cabinets", price: 45 },
+  { id: "baseboards", label: "Detailed baseboard cleaning", price: 25 },
+  { id: "garage", label: "Garage sweep and organize", price: 40 },
   { id: "laundry", label: "Laundry (wash/dry/fold, per load)", price: 25 },
 ];
 
