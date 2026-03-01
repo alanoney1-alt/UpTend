@@ -148,10 +148,46 @@ export function calculateServicePrice(type: string, data: any): number | null {
 
     case "home_cleaning": {
       const bedrooms = data.bedrooms || data.rooms || 2;
-      if (bedrooms >= 5) { price = 24900; }
-      else if (bedrooms >= 4) { price = 19900; }
-      else if (bedrooms === 3) { price = 14900; }
-      else { price = 9900; }
+      const bathrooms = data.bathrooms || Math.max(1, bedrooms - 1);
+      const cleanKey = `${bedrooms}-${Math.floor(bathrooms)}`;
+      const cleanBasePrices: Record<string, number> = {
+        "1-1": 9900, "2-1": 12900, "2-2": 14900, "3-2": 17900,
+        "3-3": 20900, "4-2": 22900, "4-3": 25900, "5-3": 29900, "5-4": 29900,
+      };
+      let cleanBase = cleanBasePrices[cleanKey] || 14900;
+
+      // Clean type multiplier
+      const cleanType = data.cleanType || "standard";
+      if (cleanType === "deep") cleanBase = Math.round(cleanBase * 1.61);
+      else if (cleanType === "move_out" || cleanType === "move_in") cleanBase = Math.round(cleanBase * 2.01);
+
+      // Stories surcharge
+      const stories = data.stories || 1;
+      if (stories === 2) cleanBase = Math.round(cleanBase * 1.15);
+      if (stories >= 3) cleanBase = Math.round(cleanBase * 1.25);
+
+      // Add-ons
+      let addons = 0;
+      if (data.windowsInterior) addons += (data.windowCount || 10) * 500; // $5/window
+      if (data.windowsExterior) addons += (data.windowCount || 10) * 800; // $8/window
+      if (data.pets) addons += 1500;
+      if (data.sameDay) addons += 3000;
+      if (data.notCleanedRecently) addons += Math.round(cleanBase * 0.2);
+      if (data.oven) addons += 3500;
+      if (data.fridge) addons += 3500;
+      if (data.cabinets) addons += 4500;
+      if (data.baseboards) addons += 2500;
+      if (data.garage) addons += 4000;
+      if (data.laundryLoads) addons += (data.laundryLoads || 1) * 2500;
+
+      price = cleanBase + addons;
+
+      // Recurring discount
+      const recurring = data.recurring || "none";
+      if (recurring === "weekly") price = Math.round(price * 0.85);
+      else if (recurring === "biweekly") price = Math.round(price * 0.88);
+      else if (recurring === "monthly") price = Math.round(price * 0.9);
+
       break;
     }
 
