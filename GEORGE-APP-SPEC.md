@@ -1539,3 +1539,518 @@ When a new user opens the app for the first time, George is neutral -- warm, wel
 - **Dark theme ONLY for v1.** No light mode yet. Nail the dark aesthetic.
 - **Offline graceful degradation.** Show cached data, queue messages for when online.
 - **60fps or bust.** No dropped frames. Use reanimated worklets, not JS-driven animations.
+
+---
+
+## Enhanced Scheduling System
+
+### Smart Availability Calendar
+When customer reaches the scheduling step (ASAP / Scheduled / Recurring), the app fetches real-time pro availability:
+
+```
+┌─────────────────────────────────┐
+│  When do you need this?         │
+│                                 │
+│  ⚡ ASAP (1-4 hours)           │  ← Pulsing orange badge
+│     "3 pros available now"      │
+│                                 │
+│  📅 Pick a Date                │
+│  ┌─────────────────────────┐   │
+│  │ Mar 2026                │   │
+│  │ Mo Tu We Th Fr Sa Su    │   │
+│  │  3  4  5  6  7  8  9   │   │
+│  │ 🟢 🟢 🟡 🟢 🟢 🟡 ⚫  │   │  ← Green=many, Yellow=limited, Grey=none
+│  │ 10 11 12 13 14 15 16   │   │
+│  │ 🟢 🟢 🟢 🟡 🟢 🟢 ⚫  │   │
+│  └─────────────────────────┘   │
+│                                 │
+│  🔄 Set It and Forget It      │  ← Recurring toggle
+│     Weekly · Bi-weekly · Monthly│
+│     Quarterly                   │
+└─────────────────────────────────┘
+```
+
+**Availability API**: `GET /api/scheduling/availability?service=X&date=YYYY-MM-DD&zip=XXXXX`
+Returns: `{ slots: [{ time: "morning", proCount: 3, available: true }, ...] }`
+
+Color logic:
+- Green (3+ pros): "Great availability"
+- Yellow (1-2 pros): "Limited spots"
+- Grey (0 pros): "No pros available"
+
+### Smart Scheduling Features
+
+#### Neighborhood Batching
+When a pro is already scheduled nearby:
+```
+┌─────────────────────────────────┐
+│  💡 Save $10                    │
+│                                 │
+│  A pro is already in Lake Nona  │
+│  on Thursday afternoon.         │
+│                                 │
+│  Book that slot and save $10    │
+│  on your service.               │
+│                                 │
+│  [ Book Thursday · Save $10 ]   │
+│  [ Pick another time ]          │
+└─────────────────────────────────┘
+```
+
+API: `GET /api/scheduling/neighborhood-batch?zip=XXXXX`
+Triggers the flat $10 neighborhood credit automatically.
+
+#### Weather-Aware Scheduling
+For outdoor services (pressure washing, landscaping, gutter cleaning, pool cleaning):
+```
+┌─────────────────────────────────┐
+│  🌧 Weather Advisory            │
+│                                 │
+│  Rain expected Thursday.        │
+│  We recommend Friday instead    │
+│  for best pressure washing      │
+│  results.                       │
+│                                 │
+│  [ Switch to Friday ]           │
+│  [ Keep Thursday ]              │
+└─────────────────────────────────┘
+```
+
+API: `GET /api/scheduling/weather-check?date=YYYY-MM-DD&zip=XXXXX`
+Auto-reschedule option with one tap confirm.
+
+#### Pro Preference Memory
+For returning customers:
+```
+┌─────────────────────────────────┐
+│  ⭐ Your preferred pro          │
+│                                 │
+│  Mike R. · ★4.9 · 3 past jobs  │
+│  Available Thursday afternoon   │
+│                                 │
+│  [ Book with Mike ]             │
+│  [ Any available pro ]          │
+└─────────────────────────────────┘
+```
+
+System remembers rated pros (4+ stars) and prioritizes them. Stored in `scheduling_preferences.preferred_pros`.
+
+#### Multi-Service Stacking
+When booking a handyman or similar flexible service:
+```
+┌─────────────────────────────────┐
+│  While the handyman is there... │
+│                                 │
+│  Add another task and save time │
+│  (same visit, no extra trip)    │
+│                                 │
+│  [ ] Fix leaky faucet           │
+│  [ ] Install shelf              │
+│  [ ] Replace light fixture      │
+│  [ + Add custom task ]          │
+│                                 │
+│  Estimated total: 2-3 hours     │
+└─────────────────────────────────┘
+```
+
+#### Set It and Forget It (Recurring)
+```
+┌─────────────────────────────────┐
+│  🔄 Recurring Service           │
+│                                 │
+│  Pool Cleaning · Monthly        │
+│  Same pro: Mike R.              │
+│  Next: Mar 15 · Morning         │
+│                                 │
+│  ┌─────────┐ ┌──────┐ ┌─────┐ │
+│  │ Skip    │ │ Pause│ │ Edit│ │
+│  │ Next    │ │      │ │     │ │
+│  └─────────┘ └──────┘ └─────┘ │
+│                                 │
+│  Discount: 5% off (monthly)    │
+│  Saved this year: $47          │
+└─────────────────────────────────┘
+```
+
+Frequency discounts:
+- Weekly: 15% off
+- Bi-weekly: 10% off
+- Monthly: 5% off
+- Quarterly: 0% (but priority scheduling)
+
+George auto-books based on schedule. Customer gets 48h reminder with one-tap confirm or reschedule.
+
+---
+
+## Full Job Tracking Lifecycle
+
+### Pre-Job Communication Timeline
+
+From booking to job day, UpTend maintains constant, helpful communication:
+
+| Timing | Event | Customer Notification | Pro Notification |
+|--------|-------|----------------------|------------------|
+| Booking | Job created | "Booked! Finding your pro..." | (matching in progress) |
+| Pro matched | Pro assigned | "Mike R. is your pro! ★4.9" | "New job: Gutter Cleaning, $150" |
+| 48h before | Reminder | "Mike is coming Thursday AM" | "Reminder: Gutter job Thursday AM" |
+| 24h before | Pro confirms | "Mike confirmed for tomorrow ✓" | "Please confirm tomorrow's job" |
+| Morning of | Route update | "Mike starts his route at 8am. You're stop #2. ETA ~9:30" | Route/schedule for the day |
+| 30 min before | Live tracking | "Mike is heading your way!" + map activates | Navigation starts |
+| 5 min before | Almost there | "Mike is almost there!" + haptic | Geofence alert |
+| Arrival | Pro arrives | "Mike has arrived!" + map zooms | "Mark as arrived" prompt |
+| Job start | Work begins | "Mike started working" + timer begins | Timer starts |
+| During job | Photo updates | Photos appear in feed | "Send progress photo" prompts |
+| Completion | Job done | Rating card + receipt + before/after | Earnings summary |
+
+### Real-Time Map Tracking (Enhanced)
+
+#### Customer View (En Route)
+```
+┌─────────────────────────────────┐
+│  ┌──────────────────────────┐   │
+│  │   Matched → En Route →   │   │  ← Status stepper
+│  │   Arrived → Working →    │   │
+│  │   Complete              │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │                          │   │
+│  │      [FULL MAP]          │   │
+│  │                          │   │
+│  │  🚐 ─ ─ ─ ─ → 🏠       │   │  ← Animated route
+│  │                          │   │
+│  │   ┌──────────────┐      │   │
+│  │   │ ETA: 12 min  │      │   │  ← Floating pill
+│  │   └──────────────┘      │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │  Mike R. · ★4.9          │   │
+│  │  127 jobs completed      │   │
+│  │  White Ford F-150        │   │
+│  │                          │   │
+│  │  [💬 Message] [📞 Call]  │   │
+│  └──────────────────────────┘   │
+└─────────────────────────────────┘
+```
+
+- WebSocket GPS updates every 5 seconds
+- Animated flowing dots along route line
+- ETA recalculates with traffic
+- Geofence: 500ft radius triggers "Almost there!" push + haptic
+- Map auto-zooms as pro approaches
+
+#### Customer View (During Job)
+```
+┌─────────────────────────────────┐
+│  ┌──────────────────────────┐   │
+│  │ 🟢 Gutter Cleaning       │   │  ← Floating pill (minimized map)
+│  │ In Progress · 35 min     │   │
+│  │ [Tap to expand]          │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  Photo Feed from Mike:          │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │ [📸 Photo: Gutters full] │   │
+│  │ "Found a lot of debris   │   │
+│  │  in the east side"       │   │
+│  │ 2:15 PM                  │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │ [📸 Photo: Cleared]     │   │
+│  │ "East side done,         │   │
+│  │  moving to back"         │   │
+│  │ 2:35 PM                  │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  [💬 Message Mike]              │
+└─────────────────────────────────┘
+```
+
+Live photo feed builds trust and gives customer visibility. Pro gets gentle prompts: "Your customer would love to see progress. Send a photo?"
+
+#### Pro View (During Job)
+```
+┌─────────────────────────────────┐
+│  🟢 In Progress · 35 min        │
+│  Gutter Cleaning                │
+│  1423 Oak Ln, Orlando           │
+│                                 │
+│  You'll earn: $127.50           │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │ [ 📸 Send Photo Update ] │   │
+│  │ [ ⚠️ Report Issue ]     │   │
+│  │ [ ✅ Mark Complete ]     │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  Timer: 00:35:12                │
+└─────────────────────────────────┘
+```
+
+#### Completion View
+```
+┌─────────────────────────────────┐
+│  ✅ Job Complete!                │
+│                                 │
+│  Gutter Cleaning                │
+│  Mike R. · 47 minutes           │
+│                                 │
+│  ┌── Before ──┐ ┌── After ──┐  │
+│  │            │ │           │  │
+│  │  [Photo]   │ │  [Photo]  │  │
+│  │            │ │           │  │
+│  └────────────┘ └───────────┘  │
+│                                 │
+│  How was Mike?                  │
+│  ★ ★ ★ ★ ★                     │
+│  [Add a comment...]            │
+│                                 │
+│  ┌── Receipt ───────────────┐  │
+│  │ Service:        $150.00  │  │
+│  │ Platform fee:    $7.50   │  │
+│  │ Founding disc:  -$15.75  │  │
+│  │ Total:          $141.75  │  │
+│  └──────────────────────────┘  │
+│                                 │
+│  George: "Your gutters are     │
+│  done. Mike noticed some       │
+│  fascia wear on the east side. │
+│  Want me to get a handyman     │
+│  to check it out?"             │
+│                                 │
+│  [ Yes, schedule it ]          │
+│  [ Not now ]                   │
+└─────────────────────────────────┘
+```
+
+Post-job, George proactively upsells based on pro's real observations. This is NOT generic upselling; the pro literally saw something and reported it.
+
+### Jobs Dashboard (App)
+
+```
+┌─────────────────────────────────┐
+│  Jobs                    [+]    │
+│                                 │
+│  ┌── Recurring Services ────┐   │
+│  │ 🔄 Pool · Monthly        │   │
+│  │    Next: Mar 15 · Mike R. │   │
+│  │    [Skip] [Pause] [Edit]  │   │
+│  │                           │   │
+│  │ 🔄 Landscaping · Bi-wkly │   │
+│  │    Next: Mar 8 · Sarah K. │   │
+│  │    [Skip] [Pause] [Edit]  │   │
+│  └───────────────────────────┘   │
+│                                 │
+│  Active                         │
+│  ┌──────────────────────────┐   │
+│  │ 🟢 Gutter Cleaning       │   │
+│  │ Mike R. · In Progress     │   │
+│  │ ████████░░░  75%          │   │
+│  │ [ View Live ]             │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  Upcoming                       │
+│  ┌──────────────────────────┐   │
+│  │ Pressure Washing          │   │
+│  │ Friday, Mar 7 · Morning   │   │
+│  │ Pro: TBD                  │   │
+│  │ ─●───────── (confirmed)   │   │
+│  │ [Reschedule] [Cancel]     │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  Past                           │
+│  ┌──────────────────────────┐   │
+│  │ ✅ Pressure Wash          │   │
+│  │ Jan 20 · $180 · ★★★★★    │   │
+│  │ [Before] [After] [Rebook] │   │
+│  └──────────────────────────┘   │
+└─────────────────────────────────┘
+```
+
+---
+
+## ESG Compliance System (B2B)
+
+UpTend auto-generates ESG compliance for every property managed through the platform. This is the sales pitch for HOAs and property managers: "Your vendor roster becomes ESG compliant automatically."
+
+### What We Track
+
+**Environmental**
+- Local pro usage: % of jobs done by pros within 15 miles (reduced carbon from travel)
+- Waste diversion: lbs recycled vs landfill (junk removal jobs)
+- Donation tracking: items donated vs trashed
+- Water efficiency: gallons used in pressure washing vs industry average
+- Sustainable product usage: eco-friendly cleaning products flag
+
+**Social**
+- Veteran-owned business usage %
+- Minority-owned business usage %
+- Small business support: % of spend going to businesses under 10 employees
+- Fair pay verification: UpTend pros keep 85% (vs industry 50-60%)
+- Customer satisfaction: average rating across all jobs
+- Worker safety: zero incidents tracked, insurance compliance %
+
+**Governance**
+- Insurance verification: % of pros with current insurance on file
+- Background check compliance: % of pros background-checked
+- License validation: % of pros with valid state licenses
+- Transparent pricing: 100% (every quote shows exact breakdown)
+- Complaint resolution: average time to resolve, % resolved satisfactorily
+- Data security: customer data handling compliance
+
+### ESG Dashboard (Property Manager View)
+```
+┌─────────────────────────────────┐
+│  ESG Compliance Dashboard       │
+│  Sunset Palms HOA               │
+│                                 │
+│  Overall Score: 87/100          │
+│  ████████████████░░ "Excellent" │
+│                                 │
+│  ┌─────┐ ┌─────┐ ┌─────┐      │
+│  │ 🌿  │ │ 🤝  │ │ 📋  │      │
+│  │ ENV  │ │ SOC  │ │ GOV  │      │
+│  │ 82   │ │ 91   │ │ 88   │      │
+│  └─────┘ └─────┘ └─────┘      │
+│                                 │
+│  Vendor Scorecards              │
+│  ┌──────────────────────────┐   │
+│  │ Mike R. · Gutters         │   │
+│  │ ESG: 92 · Local · Insured│   │
+│  │ 12 jobs · ★4.9 · 0 issues│   │
+│  └──────────────────────────┘   │
+│                                 │
+│  [ Export PDF Report ]          │
+│  [ Share with Board ]           │
+└─────────────────────────────────┘
+```
+
+### Vendor Scorecard
+Auto-generated for each pro:
+- Insurance status (current/expired/none)
+- Background check (passed/pending/none)
+- License validation (verified/unverified)
+- Customer satisfaction (average stars)
+- On-time rate %
+- Complaint count + resolution rate
+- Environmental practices score
+- Total jobs completed through UpTend
+
+### Audit-Ready Reports
+One-click PDF export containing:
+- Property ESG score + breakdown
+- All vendor scorecards
+- Job history with compliance data
+- Waste diversion metrics
+- Spending breakdown (local vs non-local, small business vs large)
+- Year-over-year improvement tracking
+
+This report can go straight to an HOA board meeting or PM review. No manual work required.
+
+---
+
+## Home Health Score + Maintenance Calendar
+
+### Score Algorithm
+Start at 100. Deduct for overdue maintenance based on Orlando FL seasonal needs:
+
+| Service | Recommended Frequency | Deduction per Period Overdue |
+|---------|----------------------|----------------------------|
+| Gutter Cleaning | Quarterly (Jan, Apr, Jul, Oct) | -5 per quarter |
+| Pressure Washing | Bi-annually (Mar, Sep) | -3 per 6 months |
+| Pool Cleaning | Monthly | -8 per month |
+| HVAC Filter | Monthly | -2 per month |
+| Landscaping | Bi-weekly (warm) / Monthly (cold) | -4 per period |
+| Carpet Cleaning | Annually | -2 per year |
+| Home Cleaning | Per customer preference | -1 per missed period |
+
+Bonuses:
+- +5 for 3+ consecutive on-time services
+- +3 for completing Home DNA Scan
+- +2 for setting up recurring service
+
+Score ranges:
+- 90-100: "Excellent" (green, George is proud)
+- 70-89: "Good" (green-yellow, George is encouraging)
+- 50-69: "Needs Attention" (yellow, George is concerned)
+- 0-49: "At Risk" (red, George is protective/urgent)
+
+George's mood syncs with Home Health Score:
+- Score drops below 70 → George shifts to "concerned" mood
+- Score hits 90+ → George shifts to "proud" mood
+- Emergency overdue (pool 3+ months, gutters during storm season) → "protective" mood
+
+### Maintenance Calendar (My Home Tab)
+```
+┌─────────────────────────────────┐
+│  🏠 1423 Oak Lane               │
+│  Home Health: 87/100            │
+│  ████████████████░ "Good"       │
+│                                 │
+│  ┌── This Month ────────────┐   │
+│  │ Mar 3  · 🔄 Pool Clean   │   │
+│  │          Monthly · Mike R. │   │
+│  │          [Auto-booked ✓]  │   │
+│  │                           │   │
+│  │ Mar 8  · 🌿 Landscaping  │   │
+│  │          Bi-weekly · Auto │   │
+│  │          [Auto-booked ✓]  │   │
+│  │                           │   │
+│  │ Mar 15 · 💧 Pressure Wash│   │
+│  │          ⚠️ Overdue 2 wks │   │
+│  │          [ Book Now ]     │   │
+│  └───────────────────────────┘   │
+│                                 │
+│  ┌── Upcoming ──────────────┐   │
+│  │ Apr · Gutter Cleaning     │   │
+│  │ Apr · HVAC Filter         │   │
+│  │ Jun · Exterior Paint      │   │
+│  └───────────────────────────┘   │
+│                                 │
+│  This Year's Savings: $342      │
+│  Jobs Completed: 8              │
+│  Home Memory Items: 47          │
+└─────────────────────────────────┘
+```
+
+### Proactive George Notifications
+George uses the maintenance calendar to reach out:
+
+- **"Hurricane season starts June 1. Your gutters haven't been cleaned since January. Let me get that scheduled before the storms hit."**
+- **"It hit 95 today. Your AC filter is 2 months overdue. Here's a good one on Amazon, or I can send a handyman for a full check."** (affiliate link)
+- **"Your neighbor just got their lawn done. Want me to grab that same pro while they're in the area? Save $10."**
+- **"Your Home Health Score dropped to 72. Two overdue items are pulling it down. Want me to knock those out this week?"**
+
+### Savings Tracker
+Show cumulative value of using UpTend:
+- Money saved vs average contractor prices (we track market rates)
+- Time saved (no searching, no calling, no negotiating)
+- Preventive maintenance value (catching issues early saves $X)
+- Recurring service discounts accumulated
+
+---
+
+## Stickiness Flywheel
+
+The full retention system creates a compound effect:
+
+1. **Home Memory** grows with every interaction → George knows the home better than the owner
+2. **Maintenance Calendar** auto-populates → customer doesn't have to remember anything
+3. **Home Health Score** gamifies upkeep → nobody wants their score to drop
+4. **Pro Relationships** build trust → "my handyman Mike" not "some random contractor"
+5. **Recurring Services** auto-book → zero friction repeat business
+6. **Savings Tracker** shows value → hard to justify switching
+7. **Neighborhood Effects** → more neighbors = cheaper service for everyone
+8. **ESG Compliance** (B2B) → property managers locked in by reporting requirements
+
+Each job makes the next one easier, cheaper, and more personalized. After 6 months, leaving UpTend means:
+- Losing all home intelligence
+- Losing your preferred pro relationships
+- Losing recurring service discounts
+- Losing your Home Health Score history
+- Going back to searching, calling, and hoping
+
+That's the moat.

@@ -259,6 +259,12 @@ import { registerTaxReportingRoutes } from "./tax-reporting.routes";
 // Job Lifecycle routes (Smart Match booking pipeline)
 import { registerJobLifecycleRoutes } from "./job-lifecycle.routes";
 
+// Scheduling + Timeline + ESG Compliance + Home Health routes
+import { registerSchedulingRoutes } from "./scheduling.routes";
+import { registerJobTimelineRoutes } from "./job-timeline.routes";
+import { registerEsgComplianceRoutes } from "./esg-compliance.routes";
+import { registerHomeHealthRoutes } from "./home-health.routes";
+
 // Batch 1 API fixes (haulers/available, certifications, wallet, notifications, quality-score, jobs)
 import { registerBatch1FixRoutes } from "./batch1-fixes.routes";
 
@@ -588,6 +594,12 @@ export async function registerRoutes(
 
   // Register Quality Report routes
   registerQualityReportRoutes(app);
+
+  // Register Scheduling + Timeline + ESG Compliance + Home Health routes
+  safeRegister("Scheduling", registerSchedulingRoutes);
+  safeRegister("JobTimeline", registerJobTimelineRoutes);
+  safeRegister("EsgCompliance", registerEsgComplianceRoutes);
+  safeRegister("HomeHealth", registerHomeHealthRoutes);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);

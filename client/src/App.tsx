@@ -200,6 +200,8 @@ const WarrantyManager = lazy(() => import("@/pages/warranty-manager"));
 const BuilderHandoff = lazy(() => import("@/pages/builder-handoff"));
 const QualityReports = lazy(() => import("@/pages/quality-reports"));
 
+const EsgDashboard = lazy(() => import("@/pages/esg-dashboard"));
+const HomeHealth = lazy(() => import("@/pages/home-health"));
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
 const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
 const BlogPost = lazy(() => import("@/pages/blog/post"));
@@ -411,6 +413,8 @@ function Router() {
       <Route path="/warranty" component={WarrantyManager} />
       <Route path="/builder/handoff" component={BuilderHandoff} />
       <Route path="/quality-reports" component={QualityReports} />
+      <Route path="/esg-dashboard" component={EsgDashboard} />
+      <Route path="/home-health" component={HomeHealth} />
       <Route path="/blog" component={BlogIndex} />
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
       <Route path="/blog/:slug" component={BlogPost} />
