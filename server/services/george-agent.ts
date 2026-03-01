@@ -4316,6 +4316,13 @@ export async function chat(
  ? GEORGE_B2B_SYSTEM_PROMPT
  : GEORGE_SYSTEM_PROMPT;
 
+ // Always inject current date/time so George knows what day it is
+ const now = new Date();
+ const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+ const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York' });
+ systemPrompt += `\n\nCURRENT DATE/TIME: ${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()} at ${timeStr} EST. Use this for scheduling - NEVER guess what day it is. Tomorrow means the next calendar day from today.`;
+
  if (context) {
  systemPrompt += "\n\nCURRENT CONTEXT:";
  if (context.userName) systemPrompt += `\n- Contact name: ${context.userName}`;
