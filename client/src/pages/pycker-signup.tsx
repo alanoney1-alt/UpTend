@@ -73,7 +73,7 @@ const signupSchema = z.object({
   city: z.string().min(2, "City required"),
   state: z.string().min(2, "State required"),
   zipCode: z.string().min(5, "ZIP code required"),
-  vehicleType: z.string().min(1, "Primary vehicle type required"),
+  vehicleType: z.string().optional().default(""),
   vehicleYear: z.string().optional(),
   vehicleMake: z.string().optional(),
   vehicleModel: z.string().optional(),
@@ -406,9 +406,11 @@ export default function PyckerSignup() {
   // Profile is ONLY created on final submit (step 9 Review)
   const signupMutation = useMutation({
     mutationFn: async (data: SignupForm) => {
+      const filteredVehicles = vehicles.filter(v => v.vehicleType);
       const payload = {
         ...data,
-        vehicles: vehicles.filter(v => v.vehicleType),
+        vehicleType: data.vehicleType || filteredVehicles[0]?.vehicleType || "other",
+        vehicles: filteredVehicles,
         profilePhotoUrl: profilePhotoUrl || undefined,
         driversLicensePhotoUrl: driversLicensePhotoUrl || undefined,
         selfiePhotoUrl: selfiePhotoUrl || undefined,

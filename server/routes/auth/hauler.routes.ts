@@ -25,7 +25,7 @@ const proRegistrationSchema = z.object({
   city: z.string().min(2),
   state: z.string().min(2),
   zipCode: z.string().min(5),
-  vehicleType: z.string().min(1),
+  vehicleType: z.string().optional().default("other"),
   vehicleYear: z.string().optional(),
   vehicleMake: z.string().optional(),
   vehicleModel: z.string().optional(),
