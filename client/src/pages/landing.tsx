@@ -156,11 +156,7 @@ function HeroSection() {
           </Link>
         </div>
 
-        {/* Snap a photo shortcut */}
-        <Link href="/book" className="inline-flex items-center gap-2 mt-6 text-sm text-white/50 hover:text-white/80 transition-colors group">
-          <Camera className="w-4 h-4" />
-          <span>Have a photo? <span className="text-[#F47C20] group-hover:underline">Get an instant photo quote</span></span>
-        </Link>
+        {/* Photo quote link removed — only George chat and /book */}
 
         <div className="flex justify-center mt-6">
           <button onClick={toggleLanguage} aria-label={i18n.language === "en" ? "Switch to Spanish" : "Switch to English"} className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/5 transition-all">

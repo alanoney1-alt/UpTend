@@ -352,18 +352,7 @@ export default function Services() {
       </div>
 
       <section className="py-12 md:py-20 max-w-7xl mx-auto px-4 md:px-6" data-testid="section-services-grid">
-        {/* Snap Quote Banner */}
-        <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-            See a problem? Snap a photo and get a price-protected quote.
-          </p>
-          <Link href="/book" asChild>
-            <Button variant="outline" size="sm" className="border-amber-400 text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-900/30 shrink-0">
-              <Camera className="w-4 h-4 mr-1.5" />
-              Try Photo Quote
-            </Button>
-          </Link>
-        </div>
+        {/* Photo quote banner removed — only George chat and /book */}
 
         {/* Featured: Home DNA Scan */}
         {services.filter(s => s.featured).map((svc) => (
