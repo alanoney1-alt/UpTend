@@ -118,6 +118,26 @@ NOT three bouncing dots. George's avatar has a thinking animation — his eyes l
 
 These are the magic. When George needs structured input, cards appear INSIDE the chat flow. They're not separate screens.
 
+#### Service Diagnostic Flow (Conversational Intake)
+Before quoting, George asks smart diagnostic questions one at a time. Quick-reply chips appear below each question so the customer can tap instead of type. Each service has its own question tree (see Feature 20 in GEORGE-APP-FEATURES.md).
+
+Flow: Customer mentions a service > George asks 2-4 scoping questions via chips > Offers photo upload when relevant (not for gutters/roofs) > George has structured data > Calls calculate_quote > Shows price card with one-tap booking.
+
+```
+┌─────────────────────────────────┐
+│  George: "What areas need       │
+│  pressure washing?"             │
+│                                 │
+│  [Driveway] [House exterior]    │
+│  [Patio/deck] [Pool deck]       │
+│  [Sidewalk] [Fence]             │
+│                                 │
+│  (tap multiple, then "Done")    │
+└─────────────────────────────────┘
+```
+
+Chips are mood-aware (accent color matches George's mood state). Haptic feedback on every tap. Multi-select shows a "Done" chip when 1+ selected. After all questions answered, George presents a locked quote.
+
 #### Service Request Card
 Triggered when user describes a problem or sends a photo.
 ```

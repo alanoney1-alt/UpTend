@@ -2792,3 +2792,659 @@ const CARD_COMPONENTS: Record<string, React.ComponentType<any>> = {
   // But the MoodProvider wraps everything so all cards inherit mood styling.
 };
 ```
+
+## Feature 20: Service Diagnostic Flows (Conversational Intake)
+
+George asks smart diagnostic questions before quoting, one at a time, adapting to what the customer already said. This replaces traditional form-based booking flows (like Angi/Thumbtack) with natural conversation.
+
+### Component: `src/components/chat/ServiceDiagnosticEngine.tsx`
+
+```tsx
+import React, { useCallback } from 'react';
+import { Haptics, ImpactFeedbackStyle } from 'expo-haptics';
+
+// Each service has a diagnostic tree: ordered questions with branching logic
+interface DiagnosticQuestion {
+  id: string;
+  question: string;
+  type: 'single' | 'multi' | 'text' | 'photo' | 'number';
+  options?: string[];
+  skipIf?: (answers: Record<string, any>) => boolean;
+  followUp?: (answer: any) => string | null; // dynamic follow-up based on answer
+}
+
+interface ServiceDiagnostic {
+  serviceSlug: string;
+  serviceName: string;
+  questions: DiagnosticQuestion[];
+  photoEligible: boolean; // whether to offer photo upload
+  photoPrompt?: string;
+}
+
+const SERVICE_DIAGNOSTICS: Record<string, ServiceDiagnostic> = {
+  'junk-removal': {
+    serviceSlug: 'junk-removal',
+    serviceName: 'Junk Removal',
+    photoEligible: true,
+    photoPrompt: 'Got a photo of the stuff? Helps me give you a more accurate price.',
+    questions: [
+      {
+        id: 'junk_type',
+        question: "What kind of stuff do you need removed?",
+        type: 'single',
+        options: [
+          'Furniture & appliances',
+          'Yard waste',
+          'Construction debris',
+          'General junk & boxes',
+          'Hazardous materials',
+          'Mix of everything',
+        ],
+      },
+      {
+        id: 'junk_volume',
+        question: "Roughly how much are we talking?",
+        type: 'single',
+        options: ['A few items', 'Half a truck', 'Full truck load', 'Multiple loads'],
+      },
+      {
+        id: 'junk_floor',
+        question: "What floor is most of the stuff on?",
+        type: 'single',
+        options: ['Ground floor / outside', 'Second floor', 'Garage', 'Basement'],
+      },
+      {
+        id: 'junk_access',
+        question: "Any access issues I should know about? Narrow hallways, gated community, stairs?",
+        type: 'text',
+      },
+      {
+        id: 'timeline',
+        question: "How soon do you need this done?",
+        type: 'single',
+        options: ['ASAP (1-2 days)', 'Within 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'pressure-washing': {
+    serviceSlug: 'pressure-washing',
+    serviceName: 'Pressure Washing',
+    photoEligible: true,
+    photoPrompt: 'Got a photo of the area? I can see exactly what we are working with.',
+    questions: [
+      {
+        id: 'pw_areas',
+        question: "What areas need washing?",
+        type: 'multi',
+        options: ['Driveway', 'House exterior', 'Patio / deck', 'Pool deck', 'Sidewalk', 'Fence', 'Roof'],
+      },
+      {
+        id: 'pw_reason',
+        question: "What's the main reason?",
+        type: 'single',
+        options: ['Mold or moss buildup', 'Stains', 'Prep for painting', 'General maintenance', 'Selling the house'],
+      },
+      {
+        id: 'pw_property',
+        question: "Home or business?",
+        type: 'single',
+        options: ['Home', 'Business'],
+      },
+      {
+        id: 'timeline',
+        question: "How soon do you need this done?",
+        type: 'single',
+        options: ['ASAP (1-2 days)', 'Within 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'gutter-cleaning': {
+    serviceSlug: 'gutter-cleaning',
+    serviceName: 'Gutter Cleaning',
+    photoEligible: false, // can't photograph gutters from ground
+    questions: [
+      {
+        id: 'gutter_issue',
+        question: "What's going on with your gutters?",
+        type: 'multi',
+        options: ['Clogged', 'Overflowing', 'Not draining', 'Regular maintenance', 'Need repair'],
+      },
+      {
+        id: 'gutter_stories',
+        question: "How many stories is your house?",
+        type: 'single',
+        options: ['One story', 'Two stories', 'Three or more'],
+      },
+      {
+        id: 'timeline',
+        question: "How urgent? Water damage happening right now?",
+        type: 'single',
+        options: ['Urgent - water damage now', 'Within 2 weeks', 'Just maintenance - no rush'],
+      },
+    ],
+  },
+
+  'moving-labor': {
+    serviceSlug: 'moving-labor',
+    serviceName: 'Moving Labor',
+    photoEligible: false,
+    questions: [
+      {
+        id: 'move_type',
+        question: "What kind of help do you need?",
+        type: 'single',
+        options: ['Loading / unloading a truck', 'Full packing + loading', 'Moving heavy items (piano, safe, etc.)', 'Rearranging furniture'],
+      },
+      {
+        id: 'move_size',
+        question: "How big is the place?",
+        type: 'single',
+        options: ['Studio / 1 bedroom', '2-3 bedrooms', '4+ bedrooms', 'Just a few items'],
+      },
+      {
+        id: 'move_stairs',
+        question: "Any stairs involved?",
+        type: 'single',
+        options: ['No stairs', 'One flight', 'Multiple flights', 'Elevator available'],
+      },
+      {
+        id: 'move_date',
+        question: "When is the move?",
+        type: 'text',
+      },
+    ],
+  },
+
+  'handyman': {
+    serviceSlug: 'handyman',
+    serviceName: 'Handyman',
+    photoEligible: true,
+    photoPrompt: 'Got a photo of what needs fixing? Helps me scope it right.',
+    questions: [
+      {
+        id: 'handy_tasks',
+        question: "What needs doing?",
+        type: 'multi',
+        options: [
+          'Hanging / mounting (TV, shelves, art)',
+          'Carpentry',
+          'Door, hinge, or lock repair',
+          'Small electrical',
+          'Small plumbing',
+          'Painting / drywall',
+          'Appliance install',
+          'Furniture assembly',
+          'Other',
+        ],
+      },
+      {
+        id: 'handy_count',
+        question: "How many separate tasks?",
+        type: 'single',
+        options: ['Just one thing', '2-3 things', '4+ things (handyman day)'],
+        followUp: (answer) =>
+          answer === '4+ things (handyman day)'
+            ? "Nice, a handyman day. List out everything and I will bundle it for you."
+            : null,
+      },
+      {
+        id: 'timeline',
+        question: "How urgent?",
+        type: 'single',
+        options: ['Urgent (1-2 days)', 'Within 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'demolition': {
+    serviceSlug: 'demolition',
+    serviceName: 'Light Demolition',
+    photoEligible: true,
+    photoPrompt: 'Photo of the area to be demolished? Helps me estimate the scope.',
+    questions: [
+      {
+        id: 'demo_type',
+        question: "What kind of demo?",
+        type: 'single',
+        options: [
+          'Room / interior tearout',
+          'Shed or small structure removal',
+          'Deck or patio removal',
+          'Debris / rubble clearing',
+          'Pool demolition',
+          'Other',
+        ],
+      },
+      {
+        id: 'demo_size',
+        question: "Roughly how big is the area?",
+        type: 'text',
+      },
+      {
+        id: 'demo_hazard',
+        question: "Any chance of hazardous materials? Asbestos, lead paint, chemicals?",
+        type: 'single',
+        options: ['No', 'Possibly', 'Yes', 'Not sure'],
+      },
+      {
+        id: 'timeline',
+        question: "How soon?",
+        type: 'single',
+        options: ['Within 2 weeks', 'More than 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'garage-cleanout': {
+    serviceSlug: 'garage-cleanout',
+    serviceName: 'Garage Cleanout',
+    photoEligible: true,
+    photoPrompt: 'Send me a photo of the garage and I will give you a tighter price.',
+    questions: [
+      {
+        id: 'garage_fullness',
+        question: "How full is the garage?",
+        type: 'single',
+        options: ['Quarter full', 'Half full', 'Mostly full', 'Completely packed'],
+      },
+      {
+        id: 'garage_contents',
+        question: "Mostly what kind of stuff?",
+        type: 'multi',
+        options: ['General junk & boxes', 'Furniture', 'Tools & equipment', 'Appliances', 'Yard stuff', 'Mix of everything'],
+      },
+      {
+        id: 'garage_hazard',
+        question: "Any hazardous stuff? Paint, chemicals, old batteries?",
+        type: 'single',
+        options: ['No', 'Yes', 'Not sure'],
+      },
+      {
+        id: 'timeline',
+        question: "How soon do you need it cleared out?",
+        type: 'single',
+        options: ['ASAP (1-2 days)', 'Within 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'home-cleaning': {
+    serviceSlug: 'home-cleaning',
+    serviceName: 'Home Cleaning',
+    photoEligible: false,
+    questions: [
+      {
+        id: 'clean_type',
+        question: "What kind of cleaning?",
+        type: 'single',
+        options: ['General housekeeping', 'Deep clean', 'Move-out clean', 'Move-in clean', 'Post-construction clean', 'Specific room or item'],
+      },
+      {
+        id: 'clean_size',
+        question: "How many bedrooms and bathrooms?",
+        type: 'text',
+      },
+      {
+        id: 'clean_recurring',
+        question: "One-time or recurring?",
+        type: 'single',
+        options: ['One-time', 'Weekly', 'Bi-weekly', 'Monthly'],
+      },
+      {
+        id: 'clean_pets',
+        question: "Any pets in the home?",
+        type: 'single',
+        options: ['No pets', 'Dogs', 'Cats', 'Both', 'Other'],
+      },
+      {
+        id: 'timeline',
+        question: "How soon do you need this?",
+        type: 'single',
+        options: ['ASAP (1-2 days)', 'Within 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'pool-cleaning': {
+    serviceSlug: 'pool-cleaning',
+    serviceName: 'Pool Cleaning',
+    photoEligible: false,
+    questions: [
+      {
+        id: 'pool_need',
+        question: "What's going on with your pool?",
+        type: 'single',
+        options: ['Regular maintenance', 'Green / cloudy water', 'Broken pump or filter', 'Surface damage', 'Opening / closing for season', 'Other repair'],
+      },
+      {
+        id: 'pool_type',
+        question: "In-ground or above-ground?",
+        type: 'single',
+        options: ['In-ground', 'Above-ground'],
+      },
+      {
+        id: 'pool_recurring',
+        question: "One-time service or ongoing maintenance?",
+        type: 'single',
+        options: ['One-time', 'Weekly', 'Bi-weekly', 'Monthly'],
+      },
+      {
+        id: 'timeline',
+        question: "How soon?",
+        type: 'single',
+        options: ['Urgent', 'Within 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'landscaping': {
+    serviceSlug: 'landscaping',
+    serviceName: 'Landscaping',
+    photoEligible: true,
+    photoPrompt: 'Photo of the yard? Helps me see what we are working with.',
+    questions: [
+      {
+        id: 'land_type',
+        question: "What kind of landscaping help?",
+        type: 'single',
+        options: ['New design & planting', 'Regular maintenance', 'Lawn care (mowing, fertilizing)', 'Tree or shrub work', 'Hardscaping (pavers, walls)', 'Irrigation / sprinklers'],
+      },
+      {
+        id: 'land_area',
+        question: "Front yard, backyard, or both?",
+        type: 'single',
+        options: ['Front yard', 'Backyard', 'Both', 'Side yard / other'],
+      },
+      {
+        id: 'land_recurring',
+        question: "One-time or recurring?",
+        type: 'single',
+        options: ['One-time', 'Weekly', 'Bi-weekly', 'Monthly'],
+      },
+      {
+        id: 'timeline',
+        question: "How soon?",
+        type: 'single',
+        options: ['Within 2 weeks', 'More than 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'carpet-cleaning': {
+    serviceSlug: 'carpet-cleaning',
+    serviceName: 'Carpet Cleaning',
+    photoEligible: true,
+    photoPrompt: 'Photo of the carpet or stain? Helps me recommend the right treatment.',
+    questions: [
+      {
+        id: 'carpet_what',
+        question: "What needs cleaning?",
+        type: 'multi',
+        options: ['Wall-to-wall carpet', 'Area rugs', 'Upholstery / furniture', 'Stairs'],
+      },
+      {
+        id: 'carpet_rooms',
+        question: "How many rooms?",
+        type: 'single',
+        options: ['1-2 rooms', '3-4 rooms', '5+ rooms', 'Whole house'],
+      },
+      {
+        id: 'carpet_issues',
+        question: "Any specific issues?",
+        type: 'multi',
+        options: ['Pet stains', 'Heavy traffic areas', 'Food / drink spills', 'Allergies / deep clean needed', 'General refresh'],
+      },
+      {
+        id: 'timeline',
+        question: "How soon?",
+        type: 'single',
+        options: ['Urgent (1-2 days)', 'Within 2 weeks', 'Still planning'],
+      },
+    ],
+  },
+
+  'home-dna-scan': {
+    serviceSlug: 'home-dna-scan',
+    serviceName: 'Home DNA Scan',
+    photoEligible: false,
+    questions: [
+      {
+        id: 'scan_reason',
+        question: "What brings you in for a home scan?",
+        type: 'single',
+        options: ['Just want to know my home health', 'Buying a new home', 'Selling my home', 'Specific concern (roof, foundation, etc.)'],
+      },
+      {
+        id: 'scan_property',
+        question: "What type of property?",
+        type: 'single',
+        options: ['Single-family house', 'Condo / townhouse', 'Multi-family'],
+      },
+      {
+        id: 'scan_age',
+        question: "Roughly how old is the home?",
+        type: 'single',
+        options: ['Less than 5 years', '5-15 years', '15-30 years', '30+ years', 'Not sure'],
+      },
+      {
+        id: 'scan_concerns',
+        question: "Any specific concerns?",
+        type: 'multi',
+        options: ['Roof', 'Foundation', 'Plumbing', 'Electrical', 'HVAC', 'Mold', 'Pests', 'No specific concerns'],
+      },
+    ],
+  },
+};
+
+// Diagnostic engine: manages question flow in chat
+interface DiagnosticState {
+  serviceSlug: string;
+  currentIndex: number;
+  answers: Record<string, any>;
+  complete: boolean;
+  photoOffered: boolean;
+}
+
+export function useDiagnosticEngine() {
+  const [state, setState] = React.useState<DiagnosticState | null>(null);
+
+  const startDiagnostic = useCallback((serviceSlug: string) => {
+    const diagnostic = SERVICE_DIAGNOSTICS[serviceSlug];
+    if (!diagnostic) return null;
+
+    Haptics.impactAsync(ImpactFeedbackStyle.Light);
+    setState({
+      serviceSlug,
+      currentIndex: 0,
+      answers: {},
+      complete: false,
+      photoOffered: false,
+    });
+    return diagnostic.questions[0];
+  }, []);
+
+  const answerQuestion = useCallback((questionId: string, answer: any) => {
+    if (!state) return null;
+    const diagnostic = SERVICE_DIAGNOSTICS[state.serviceSlug];
+
+    const newAnswers = { ...state.answers, [questionId]: answer };
+    let nextIndex = state.currentIndex + 1;
+
+    // Skip questions whose skipIf returns true
+    while (nextIndex < diagnostic.questions.length) {
+      const nextQ = diagnostic.questions[nextIndex];
+      if (nextQ.skipIf && nextQ.skipIf(newAnswers)) {
+        nextIndex++;
+      } else {
+        break;
+      }
+    }
+
+    // Check for follow-up
+    const currentQ = diagnostic.questions[state.currentIndex];
+    const followUp = currentQ.followUp ? currentQ.followUp(answer) : null;
+
+    // Offer photo if eligible and haven't yet
+    const shouldOfferPhoto = !state.photoOffered && diagnostic.photoEligible && nextIndex >= 2;
+
+    if (nextIndex >= diagnostic.questions.length) {
+      Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+      setState({ ...state, answers: newAnswers, complete: true, currentIndex: nextIndex });
+      return { complete: true, answers: newAnswers, followUp };
+    }
+
+    Haptics.impactAsync(ImpactFeedbackStyle.Light);
+    setState({
+      ...state,
+      currentIndex: nextIndex,
+      answers: newAnswers,
+      photoOffered: state.photoOffered || shouldOfferPhoto,
+    });
+
+    return {
+      complete: false,
+      nextQuestion: diagnostic.questions[nextIndex],
+      followUp,
+      offerPhoto: shouldOfferPhoto ? diagnostic.photoPrompt : null,
+    };
+  }, [state]);
+
+  const reset = useCallback(() => setState(null), []);
+
+  return { state, startDiagnostic, answerQuestion, reset, diagnostics: SERVICE_DIAGNOSTICS };
+}
+```
+
+### Quick-Reply Chips Component: `src/components/chat/DiagnosticChips.tsx`
+
+```tsx
+import React from 'react';
+import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Haptics, ImpactFeedbackStyle } from 'expo-haptics';
+
+interface DiagnosticChipsProps {
+  options: string[];
+  multiSelect?: boolean;
+  selected?: string[];
+  onSelect: (option: string) => void;
+  onSubmitMulti?: (selected: string[]) => void;
+  mood?: string;
+}
+
+export const DiagnosticChips: React.FC<DiagnosticChipsProps> = ({
+  options,
+  multiSelect = false,
+  selected = [],
+  onSelect,
+  onSubmitMulti,
+  mood = 'focused',
+}) => {
+  const moodColors: Record<string, string> = {
+    focused: '#F47C20',
+    chill: '#4CAF50',
+    urgent: '#EF4444',
+    proud: '#F47C20',
+    curious: '#3B82F6',
+    concerned: '#F59E0B',
+    playful: '#A855F7',
+    determined: '#F47C20',
+  };
+
+  const accentColor = moodColors[mood] || '#F47C20';
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.container}
+    >
+      {options.map((option) => {
+        const isSelected = selected.includes(option);
+        return (
+          <TouchableOpacity
+            key={option}
+            style={[
+              styles.chip,
+              isSelected && { backgroundColor: accentColor, borderColor: accentColor },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(ImpactFeedbackStyle.Light);
+              onSelect(option);
+            }}
+          >
+            <Text style={[styles.chipText, isSelected && styles.chipTextSelected]}>
+              {option}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+      {multiSelect && selected.length > 0 && onSubmitMulti && (
+        <TouchableOpacity
+          style={[styles.chip, { backgroundColor: accentColor, borderColor: accentColor }]}
+          onPress={() => {
+            Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+            onSubmitMulti(selected);
+          }}
+        >
+          <Text style={[styles.chipText, styles.chipTextSelected]}>Done</Text>
+        </TouchableOpacity>
+      )}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    marginRight: 8,
+  },
+  chipText: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  chipTextSelected: {
+    color: '#FFFFFF',
+  },
+});
+```
+
+### Integration
+
+1. **Chat screen** detects when George asks a diagnostic question and renders `DiagnosticChips` as quick-reply buttons below the message
+2. **Single-select** chips: tap one, it sends that answer as a message
+3. **Multi-select** chips: tap multiple, hit "Done" to send all selected
+4. **Photo prompt**: when `offerPhoto` fires, show a camera button inline
+5. **Haptics**: light tap on each chip, medium on completion
+6. **Mood-aware**: chip accent color matches George's current mood
+7. **After diagnostic completes**: George has all the data to call `calculate_quote` and present a locked price with one-tap booking
+
+### API Contract
+The diagnostic answers get sent to the backend as structured data alongside the chat message:
+```json
+{
+  "message": "Done",
+  "diagnosticAnswers": {
+    "serviceSlug": "pressure-washing",
+    "answers": {
+      "pw_areas": ["Driveway", "Patio / deck"],
+      "pw_reason": "Mold or moss buildup",
+      "pw_property": "Home",
+      "timeline": "Within 2 weeks"
+    }
+  }
+}
+```
+George's backend uses these structured answers to call `calculate_quote` with precise parameters instead of parsing free text.
