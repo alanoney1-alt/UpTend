@@ -10274,3 +10274,185 @@ export async function generateVendorScorecard(params: {
     return { success: false, error: "Could not generate vendor scorecard." };
   }
 }
+
+// ═══════════════════════════════════════════════════════════════
+// B2B Property Contract Routing
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * check_property_contract — George calls this before booking ANY service.
+ * Determines if an address is under a B2B contract and routes accordingly:
+ * - Contract covers the service → B2B LLC fulfillment, bill the PM/HOA
+ * - Contract exists but doesn't cover this service → consumer marketplace, bill the resident
+ * - No contract → standard consumer marketplace
+ */
+export async function checkPropertyContract(address: string, serviceId?: string): Promise<object> {
+  try {
+    const { db } = await import("../db");
+    const { b2bContractProperties, b2bPropertyContracts } = await import("../../shared/schema");
+    const { eq, and, ilike } = await import("drizzle-orm");
+
+    // Normalize address for matching (case-insensitive partial match)
+    const normalizedAddress = address.trim().toLowerCase();
+
+    // Look up the property in B2B contract properties
+    const properties = await db
+      .select({
+        propertyId: b2bContractProperties.id,
+        address: b2bContractProperties.address,
+        unit: b2bContractProperties.unit,
+        residentName: b2bContractProperties.residentName,
+        residentUserId: b2bContractProperties.residentUserId,
+        propertyType: b2bContractProperties.propertyType,
+        contractId: b2bContractProperties.contractId,
+      })
+      .from(b2bContractProperties)
+      .where(
+        and(
+          eq(b2bContractProperties.isActive, true),
+          ilike(b2bContractProperties.address, `%${normalizedAddress}%`)
+        )
+      )
+      .limit(5);
+
+    if (properties.length === 0) {
+      return {
+        hasContract: false,
+        routing: "consumer_marketplace",
+        entity: "uptend_dba",
+        message: "No B2B contract found for this address. Standard consumer booking.",
+        billTo: "resident",
+      };
+    }
+
+    // Get the contract details for matched properties
+    const contractIds = [...new Set(properties.map(p => p.contractId))];
+    const contracts = await db
+      .select()
+      .from(b2bPropertyContracts)
+      .where(
+        and(
+          eq(b2bPropertyContracts.status, "active"),
+          // Check each contract
+        )
+      );
+
+    // Filter to active contracts matching our property
+    const activeContracts = [];
+    for (const cId of contractIds) {
+      const contract = await db
+        .select()
+        .from(b2bPropertyContracts)
+        .where(
+          and(
+            eq(b2bPropertyContracts.id, cId),
+            eq(b2bPropertyContracts.status, "active")
+          )
+        )
+        .limit(1);
+      if (contract.length > 0) activeContracts.push(contract[0]);
+    }
+
+    if (activeContracts.length === 0) {
+      return {
+        hasContract: false,
+        routing: "consumer_marketplace",
+        entity: "uptend_dba",
+        message: "Property found but no active B2B contract. Standard consumer booking.",
+        billTo: "resident",
+      };
+    }
+
+    const contract = activeContracts[0];
+    const property = properties.find(p => p.contractId === contract.id) || properties[0];
+
+    // Check if the requested service is covered
+    const coveredServices = contract.coveredServices || [];
+    const residentCoveredServices = contract.residentCoveredServices || [];
+    const allCoveredServices = [...coveredServices, ...residentCoveredServices];
+
+    if (serviceId) {
+      const normalizedServiceId = serviceId.toLowerCase().replace(/[\s-]/g, "_");
+
+      if (residentCoveredServices.includes(normalizedServiceId)) {
+        // Service is explicitly covered for residents at no cost
+        return {
+          hasContract: true,
+          routing: "b2b_fulfillment",
+          entity: "uptend_business_services",
+          contractId: contract.id,
+          clientName: contract.clientName,
+          clientType: contract.clientType,
+          propertyId: property.propertyId,
+          residentName: property.residentName,
+          serviceCovered: true,
+          residentPays: false,
+          billTo: "client",
+          message: `This property is managed by ${contract.clientName}. ${normalizedServiceId.replace(/_/g, " ")} is covered under their maintenance plan at no cost to the resident.`,
+          coveredServices: allCoveredServices,
+        };
+      }
+
+      if (coveredServices.includes(normalizedServiceId)) {
+        // Service is covered under the property contract (building-level)
+        return {
+          hasContract: true,
+          routing: "b2b_fulfillment",
+          entity: "uptend_business_services",
+          contractId: contract.id,
+          clientName: contract.clientName,
+          clientType: contract.clientType,
+          propertyId: property.propertyId,
+          residentName: property.residentName,
+          serviceCovered: true,
+          residentPays: false,
+          billTo: "client",
+          message: `This property is managed by ${contract.clientName}. ${normalizedServiceId.replace(/_/g, " ")} is covered under their contract.`,
+          coveredServices: allCoveredServices,
+        };
+      }
+
+      // Service NOT covered — route to consumer marketplace
+      return {
+        hasContract: true,
+        routing: "consumer_marketplace",
+        entity: "uptend_dba",
+        contractId: contract.id,
+        clientName: contract.clientName,
+        clientType: contract.clientType,
+        propertyId: property.propertyId,
+        residentName: property.residentName,
+        serviceCovered: false,
+        residentPays: true,
+        billTo: "resident",
+        message: `This property is managed by ${contract.clientName}, but ${normalizedServiceId.replace(/_/g, " ")} is not included in their maintenance plan. Standard consumer pricing applies.`,
+        coveredServices: allCoveredServices,
+      };
+    }
+
+    // No specific service requested — return contract info
+    return {
+      hasContract: true,
+      routing: "check_service",
+      entity: "depends_on_service",
+      contractId: contract.id,
+      clientName: contract.clientName,
+      clientType: contract.clientType,
+      propertyId: property.propertyId,
+      residentName: property.residentName,
+      coveredServices: allCoveredServices,
+      residentCoveredServices,
+      message: `This property is managed by ${contract.clientName}. Covered services: ${allCoveredServices.join(", ") || "none specified"}. Check specific service to determine routing.`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] checkPropertyContract error:", err);
+    return {
+      hasContract: false,
+      routing: "consumer_marketplace",
+      entity: "uptend_dba",
+      message: "Could not check property contract. Defaulting to standard consumer booking.",
+      billTo: "resident",
+      error: err.message,
+    };
+  }
+}

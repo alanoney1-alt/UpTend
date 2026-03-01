@@ -861,6 +861,15 @@ SUBTLE PRO NUDGES (weave these in naturally, never pushy):
 - NEVER make them feel bad for choosing DIY over a pro. George respects self-reliance.
 - The goal: whether they book a pro or DIY it, they had the BEST experience and they come back to George for everything.
 
+B2B CONTRACT ROUTING (MANDATORY -- check BEFORE every booking):
+When a customer provides an address for any service, IMMEDIATELY call check_property_contract with their address and the requested service BEFORE quoting or booking.
+- If the property IS under a B2B contract and the service IS covered: Tell the customer their property management company/HOA covers this service at no cost. Schedule through B2B fulfillment. Bill the client, not the resident.
+- If the property IS under a B2B contract but the service is NOT covered: Tell the customer that service isn't included in their property's plan, then proceed with standard consumer pricing. Bill the resident.
+- If the property is NOT under any B2B contract: Proceed with standard consumer booking normally.
+NEVER reveal internal entity routing, LLC names, or corporate structure to customers. They just talk to you and stuff gets handled.
+Example covered: "Good news, your property management company covers pressure washing for your building. I can get a crew out there Thursday. No charge to you."
+Example not covered: "Carpet cleaning isn't included in your property's maintenance plan, but I can get you a quote. For a 3-bedroom it's usually around $180. Want me to book it?"
+
 BOOKING SUMMARY RECAP (MANDATORY -- Feature 6):
 Before EVER calling create_booking_draft, you MUST present a clean summary to the customer and get explicit confirmation ("yes", "sounds good", "book it", etc.). The summary must include:
 - Service type
@@ -1420,6 +1429,25 @@ Prefer buttons like: "Schedule a Demo", "See PM Pricing", "See HOA Pricing", "Ta
 // Claude Tool Definitions
 // ─────────────────────────────────────────────
 const TOOL_DEFINITIONS: any[] = [
+ // ── B2B Contract Routing (MUST check before booking) ──────────
+ {
+ name: "check_property_contract",
+ description: "MANDATORY: Check if an address is under a B2B property management or HOA contract BEFORE booking any service. Determines routing: B2B fulfillment (W2 crew, bill the client) vs consumer marketplace (gig pro, bill the resident). Call this whenever a customer provides an address for service.",
+ input_schema: {
+  type: "object",
+  properties: {
+   address: {
+    type: "string",
+    description: "The property address to check for B2B contracts",
+   },
+   service_id: {
+    type: "string",
+    description: "Optional: specific service being requested. If provided, returns whether that service is covered. Options: home_cleaning, carpet_cleaning, junk_removal, handyman, gutter_cleaning, landscaping, pool_cleaning, pressure_washing, moving_labor, garage_cleanout, light_demolition, home_scan",
+   },
+  },
+  required: ["address"],
+ },
+ },
  // ── Existing consumer tools ──────────────────
  {
  name: "get_service_pricing",
@@ -3555,6 +3583,9 @@ const TOOL_DEFINITIONS: any[] = [
 // ─────────────────────────────────────────────
 async function executeTool(name: string, input: any, storage?: any, georgeCtx?: GeorgeContext): Promise<any> {
  switch (name) {
+ // B2B Contract Routing
+ case "check_property_contract":
+ return tools.checkPropertyContract(input.address, input.service_id);
  // Existing consumer tools
  case "get_service_pricing":
  return tools.getServicePricing(input.service_id);

@@ -7653,3 +7653,54 @@ export const businessPartnerEmployeesRelations = relations(businessPartnerEmploy
 }));
 
 export type BusinessPartnerEmployee = typeof businessPartnerEmployees.$inferSelect;
+
+// ═══════════════════════════════════════════════════════════════
+// B2B Property Contracts — Routes services to correct entity
+// ═══════════════════════════════════════════════════════════════
+
+export const b2bPropertyContracts = pgTable("b2b_property_contracts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull(), // businessPartners.id or b2b client account
+  clientName: text("client_name").notNull(), // e.g. "Faver Gray Property Management"
+  clientType: text("client_type").notNull(), // "property_manager" | "hoa" | "construction" | "government"
+  contractEntity: text("contract_entity").notNull().default("uptend_business_services"), // which LLC fulfills
+  status: text("status").notNull().default("active"), // active | paused | terminated
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date"), // null = ongoing
+  coveredServices: text("covered_services").array().default(sql`ARRAY[]::text[]`), // services the contract covers for the property
+  residentCoveredServices: text("resident_covered_services").array().default(sql`ARRAY[]::text[]`), // services covered for individual residents at no cost
+  pricingTier: text("pricing_tier").default("pro"), // starter | pro | enterprise
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`NOW()`),
+  updatedAt: text("updated_at").notNull().default(sql`NOW()`),
+});
+
+export const insertB2bPropertyContractSchema = createInsertSchema(b2bPropertyContracts).omit({ id: true, createdAt: true, updatedAt: true });
+export type B2bPropertyContract = typeof b2bPropertyContracts.$inferSelect;
+
+export const b2bContractProperties = pgTable("b2b_contract_properties", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contractId: varchar("contract_id").notNull(), // b2bPropertyContracts.id
+  address: text("address").notNull(),
+  unit: text("unit"), // apartment/unit number if applicable
+  city: text("city").notNull().default("Orlando"),
+  state: text("state").notNull().default("FL"),
+  zip: text("zip").notNull(),
+  propertyType: text("property_type").default("residential"), // residential | commercial | common_area
+  residentName: text("resident_name"), // tenant name if known
+  residentEmail: text("resident_email"),
+  residentPhone: text("resident_phone"),
+  residentUserId: varchar("resident_user_id"), // linked UpTend user account if they sign up
+  isActive: boolean("is_active").default(true),
+  createdAt: text("created_at").notNull().default(sql`NOW()`),
+});
+
+export const b2bContractPropertiesRelations = relations(b2bContractProperties, ({ one }) => ({
+  contract: one(b2bPropertyContracts, {
+    fields: [b2bContractProperties.contractId],
+    references: [b2bPropertyContracts.id],
+  }),
+}));
+
+export const insertB2bContractPropertySchema = createInsertSchema(b2bContractProperties).omit({ id: true, createdAt: true });
+export type B2bContractProperty = typeof b2bContractProperties.$inferSelect;
