@@ -16,7 +16,7 @@ import { ErrorBoundary } from "@/components/error-boundary";
 
 // Eagerly load critical path pages
 import Landing from "@/pages/landing";
-import BusinessLanding from "@/pages/business-landing";
+import BusinessLandingPage from "@/pages/business-landing";
 import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
 
@@ -34,12 +34,12 @@ const ProBackgroundCheck = lazy(() => import("@/pages/pro-background-check"));
 const Haulers = lazy(() => import("@/pages/haulers"));
 const Drive = lazy(() => import("@/pages/drive"));
 const BusinessDashboard = lazy(() => import("@/pages/business-dashboard"));
-const BusinessLanding = lazy(() => import("@/pages/business"));
+const BusinessPage = lazy(() => import("@/pages/business"));
 const BusinessLogin = lazy(() => import("@/pages/business-login"));
 const BusinessRegister = lazy(() => import("@/pages/business-register"));
 const Loyalty = lazy(() => import("@/pages/loyalty"));
 const PyckerSignup = lazy(() => import("@/pages/pycker-signup"));
-const PyckerLogin = lazy(() => import("@/pages/pycker-login"));
+// PyckerLogin removed — all pycker login routes use AuthPage
 const CustomerSignup = lazy(() => import("@/pages/customer-signup"));
 const CustomerLogin = lazy(() => import("@/pages/customer-login"));
 const PaymentSetup = lazy(() => import("@/pages/payment-setup"));
@@ -76,7 +76,7 @@ const JobLiveTracker = lazy(() => import("@/pages/job-live-tracker"));
 const AdminAccounting = lazy(() => import("@/pages/admin/accounting"));
 const ProfileSettings = lazy(() => import("@/pages/profile-settings"));
 const EarningsPage = lazy(() => import("@/pages/hauler/earnings"));
-const PublicPricing = lazy(() => import("@/pages/pricing"));
+// PublicPricing removed — /pricing redirects to /services
 const BecomePro = lazy(() => import("@/pages/become-pro"));
 const AcademySyllabus = lazy(() => import("@/pages/academy-syllabus"));
 const ProVerification = lazy(() => import("@/pages/pro-verification"));
@@ -226,7 +226,7 @@ function Router() {
     <ScrollToTop />
     <Suspense fallback={<PageLoader />}>
     <Switch>
-      <Route path="/" component={isBusinessDomain ? BusinessLanding : Landing} />
+      <Route path="/" component={isBusinessDomain ? BusinessLandingPage : Landing} />
       <Route path="/smart-book" component={SmartBooking} />
       <Route path="/book" component={Booking} />
       <Route path="/booking-success" component={BookingSuccess} />
@@ -248,7 +248,7 @@ function Router() {
       <Route path="/business/partners" component={BusinessPartnersLanding} />
       <Route path="/business/signup" component={BusinessPartnerSignup} />
       <Route path="/business/partner-dashboard" component={BusinessPartnerDashboard} />
-      <Route path="/business" component={BusinessLanding} />
+      <Route path="/business" component={BusinessPage} />
       <Route path="/business/login" component={BusinessLogin} />
       <Route path="/business/register" component={BusinessRegister} />
       <Route path="/business/dashboard" component={BusinessDashboard} />
