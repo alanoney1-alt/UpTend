@@ -826,8 +826,7 @@ export function registerPaymentRoutes(app: Express) {
 // Separate module: Founding member status endpoint (imported in index.ts)
 // GET /api/founding-status
 export function registerFoundingStatusRoute(app: any) {
-  const { requireAuth: auth } = require("../../auth-middleware");
-  app.get("/api/founding-status", auth, async (req: any, res: any) => {
+  app.get("/api/founding-status", requireAuth, async (req: any, res: any) => {
     try {
       const userId = (req.user as any).userId || (req.user as any).id;
       const status = await getFoundingStatus(userId);
