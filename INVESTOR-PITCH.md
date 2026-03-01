@@ -1,111 +1,141 @@
-# UpTend — The Investment Opportunity You Can't Afford to Miss
+# UpTend Investor Pitch
 
 **UPYCK, Inc. (Delaware C-Corp) d/b/a UpTend**
 
 ---
 
-## The $600 Billion Problem Nobody Has Solved
+## The $600B Problem
 
-The home services industry generates **$600 billion annually** in the United States. Every HOA, every property management company, every general contractor, every government agency — they all need vendors. Thousands of them. Every single day.
+Home services = $600B/year in the US. Every HOA, property manager, general contractor, and government agency needs vendors. They manage it with phone calls, spreadsheets, and a rolodex of "guys."
 
-And they're still managing it with **phone calls, spreadsheets, and prayer.**
+Nobody has built the AI-powered operating system that institutional buyers need: compliance-grade vendor management, real-time dispatch, government contract automation, and a vetted workforce at scale.
 
-Thumbtack connects consumers to handymen. ServiceTitan sells software to plumbers. Nobody — **absolutely nobody** — has built the operating system that institutional buyers actually need: compliance-grade vendor management with real-time dispatch, government contract automation, and a vetted workforce at scale.
-
-**UpTend has. And it's already live.**
+**UpTend has. And it's live.**
 
 ---
 
-## What We Built (While Everyone Else Was Talking)
+## What We Built
 
-**130+ production features.** Not wireframes. Not pitch decks. Not "coming soon." **Live. Deployed. Demoable right now.**
+**148 client routes. 131 server routes. Live at uptendapp.com.**
 
-🤖 **21 AI capabilities** — real Claude AI powering instant estimates, photo quotes, document scanning, route optimization, and George, our AI concierge that guides every interaction.
-
-🏛️ **Full government contract suite** — Davis-Bacon prevailing wage automation, WH-347 certified payroll generation, SAM.gov integration, DBE/SDVOSB utilization tracking, FEMA rapid response activation. No home services company on Earth has this.
-
-🏘️ **HOA & Property Management OS** — multi-community dashboards, board approval workflows, tenant work orders, make-ready turnover automation, SLA management. One PM company sale = hundreds of units = recurring revenue for years.
-
-🏗️ **Construction sub management** — punch lists, lien waiver automation, permit tracking, safety compliance. GCs are begging for this.
-
-🎖️ **America's veteran workforce platform** — DD-214 verification, MOS-to-trade mapping, SDVOSB certification tracking, disabled veteran accommodations, military spouse program. 200,000 service members transition annually. We catch them.
-
-💳 **Stripe payments, real-time WebSocket tracking, email notifications, review system, ESG impact scoring** — the full stack, production-hardened, deployed on Railway.
+- **George**: AI Home Service Agent with 176 tools. Quotes jobs, books services, remembers every home, routes to the right fulfillment entity automatically.
+- **B2B Dashboard**: Portfolio analytics, property health scores, ESG compliance, vendor scorecards, spending analytics, board reports.
+- **Government Suite**: SDVOSB set-asides, Davis-Bacon automation, WH-347 payroll, SAM.gov integration.
+- **Consumer Marketplace**: 12 service verticals, instant quoting, diagnostic intake, Home DNA Scan, Home Memory.
 
 ---
 
-## The Numbers That Matter
+## Three Revenue Channels, One Tech Stack
 
-| Metric | Value |
-|---|---|
-| **Total Addressable Market** | $600B+ annually |
-| **B2B Institutional Market** | $400B+ (HOAs, PMs, Construction, Government) |
-| **Federal SDVOSB Set-Asides** | $4B+/year (sole source up to $5M — zero competition) |
-| **FEMA Disaster Contracts (FL alone)** | $500M+ per hurricane season |
-| **Average Consumer Job** | $150–$500 one-time |
-| **Average B2B Contract** | $25K–$500K annually, recurring |
-| **Platform Fees** | 7% customer + 20-25% pro side |
-| **One 500-unit PM company** | $84K–$300K/year in platform revenue |
+### Channel 1: Consumer Marketplace (UpTend DBA)
+1099 gig pros. 20% platform fee (5% customer + 15% pro). Think Uber for home services, but with an AI agent that actually knows your home.
+
+### Channel 2: B2B Services (UpTend Business Services LLC)
+W2 employees servicing HOAs, property managers, and construction companies. Premium pricing. Recurring contracts.
+
+**The B2B pitch is three wins in one contract:**
+
+**Win 1 — Their residents get George.** Every resident gets a 24/7 AI concierge. Texts George, gets instant service. Covered repairs at zero cost. Not-covered services get transparent quotes. Resident satisfaction goes up, lease renewals go up, complaints at board meetings disappear.
+
+**Win 2 — Their office gets a dashboard.** Live job tracking, property health scores, ESG compliance reports, spending analytics, vendor scorecards. "Your current vendor sends you an invoice. We send you intelligence."
+
+**Win 3 — Trained W2 crews.** 12 verticals, one contract. Background checked, insured, branded. Same crew every time. Recurring schedules on autopilot. Emergency response 24/7.
+
+**The close:** "Every PM and HOA has maintenance vendors. None of them have an AI agent that knows every unit, a dashboard that tracks every dollar, and a trained crew that handles every service."
+
+### Channel 3: Government (UpTend Services LLC — SDVOSB)
+Federal sole-source contracts up to $5M with zero competition. State/local preference points. SDVOSB certification is a strategic weapon.
+
+---
+
+## Corporate Structure
+
+```
+               UPYCK, Inc. (C-Corp)
+              Owns all IP. Investor entity.
+             /          |            \
+      UpTend (DBA)    B2B LLC     Services LLC
+      Consumer Gig    W2 B2B      Government
+      1099 Pros       HOAs/PMs    SDVOSB
+      20% take        35% fees    55% fees
+           \            |            /
+            All flow up to UPYCK Inc
+```
+
+UPYCK captures 35-55% of every dollar flowing through the LLCs via licensing fees (technology, marketing, brand, operations). One tech stack powers three revenue channels.
+
+---
+
+## How George Routes It All
+
+When a resident requests service, George automatically checks:
+
+1. Is this property under a B2B contract?
+2. Is this service covered?
+3. Route accordingly:
+   - **Covered** → W2 crew, bill the PM/HOA, no cost to resident
+   - **Not covered** → Consumer marketplace, transparent pricing
+   - **No contract** → Standard gig pro booking
+
+One property generates revenue through both channels simultaneously. The resident never sees the corporate structure. They just talk to George.
+
+---
+
+## 5-Year Outlook (Moderate Traction)
+
+_Orlando Years 1-2. Jacksonville + Tampa Year 3._
+
+| Year | Consumer | B2B | Government | Combined | UPYCK Books |
+|---|---|---|---|---|---|
+| 2026 | $14K | $120K | $0 | $134K | $56K |
+| 2027 | $54K | $480K | $200K | $734K | $332K |
+| 2028 | $252K | $1.92M | $700K | $2.87M | $1.31M |
+| 2029 | $648K | $4.08M | $1.8M | $6.53M | $3.07M |
+| 2030 | $1.3M | $6.72M | $3.5M | $11.52M | $5.58M |
+
+**Year 5 UPYCK run rate: $5.58M. At 6-10x multiple = $33-56M valuation.**
+
+---
+
+## Sponsored Product Placement (Year 2-3 Revenue)
+
+George recommends products during natural conversation: "Your AC filter is 6 months overdue. Here's the exact one for your unit" with an affiliate link. Never disclosed as ads. Always genuinely relevant. Credibility first.
+
+At scale, this becomes a high-margin revenue stream with zero fulfillment cost.
 
 ---
 
 ## Why NOW
 
-**Florida is ground zero.** 40M+ tourists, explosive population growth, hurricane-driven demand spikes, and the largest concentration of HOAs in America. We're launching in Orlando Metro — the perfect proving ground — then expanding statewide, then nationally.
-
-**The veteran angle is a strategic weapon.** Our SDVOSB-certified subsidiary (51% minority veteran-owned) unlocks federal sole-source contracts up to $5M with **zero competition**. State and local contracts give preference points for veteran labor. Every veteran we recruit is simultaneously a skilled worker AND a compliance asset.
-
-**AI is our moat.** While competitors bolt chatbots onto legacy platforms, we built AI into the foundation. George doesn't just answer questions — he quotes jobs, books services, optimizes schedules, and manages the entire customer relationship. Our 21 AI capabilities aren't features. They're the product.
+- **Orlando**: 2.7M metro, highest HOA density in America, year-round demand, hurricane-driven spikes
+- **SDVOSB**: Federal sole-source up to $5M. State/local preference points. 200K veterans transition annually.
+- **AI moat**: Competitors bolt chatbots onto legacy platforms. We built AI into the foundation. George IS the product.
 
 ---
 
-## The Competitive Landscape (We Have None)
+## Milestones
 
-| Competitor | What They Do | What They Don't Do |
-|---|---|---|
-| **Thumbtack/Angi** | Consumer lead gen | Zero B2B, zero compliance, zero government |
-| **Jobber/Housecall Pro** | Pro business tools | No marketplace, no institutional buyers |
-| **ServiceTitan** | Single-trade SaaS | No multi-trade marketplace, $15K+/year per customer |
-| **Procore** | Construction PM | No vendor marketplace, no home services |
-| **UpTend** | **ALL OF THE ABOVE** | — |
+**M1 (Now → 6 months):** First B2B contract. First 10 marketplace jobs. George live on SMS.
 
-We're not competing. We're creating a category.
+**M2 (6-12 months):** 5+ B2B accounts. First government contract. George app launches. Jacksonville/Tampa expansion.
+
+**M3 (12-24 months):** 20+ B2B accounts. Multiple government contracts. Sponsored product revenue. $1M+ run rate.
 
 ---
 
-## The Flywheel That Prints Money
+## The Team
 
-```
-More B2B contracts → More job volume → More veteran recruitment
-       ↑                                         ↓
-Higher retention ← Stable pro income ← Government set-asides
-       ↑                                         ↓
-More investors ← Proven recurring revenue ← More contracts won
-```
-
-Every B2B client we sign generates recurring revenue that funds more veteran recruitment, which unlocks more government contracts, which attracts more institutional buyers. **This flywheel doesn't slow down. It accelerates.**
+- **Alan Oney** — Founder/CEO. Built the entire platform. 148 pages, 131 API endpoints, George AI agent. Ships faster than funded teams of 10.
+- **SDVOSB subsidiary** with veteran workforce pipeline (SkillBridge, Patrick SFB, MacDill, NAS Jacksonville)
+- **$135K raised** from angels. Building, not burning.
 
 ---
 
-## What $100K Gets You
+## The Ask
 
-- **10% equity** at a $1M cap (pre-revenue SAFE)
-- Ground floor of the **only platform** that serves institutional home services buyers
-- Exposure to **$4B+ in federal set-aside contracts** through our SDVOSB certification
-- A founding team that doesn't just plan — **we ship.** 130+ features, live site, deployed in weeks, not years
-- First-mover advantage in a $600B market where the incumbents are asleep
+SAFE at $3M cap. Use of funds: first W2 hires, B2B sales, Jacksonville/Tampa expansion.
 
 ---
 
-## The Bottom Line
-
-You're not investing in an idea. You're investing in a **live, deployed, 130+ feature platform** with a clear path to revenue through the most underserved, highest-value segment of home services: institutional buyers who write six-figure annual contracts.
-
-The technology is built. The veteran pipeline is ready. The government contracts are waiting. The only question is whether you want to be on the cap table when this thing takes off — or watching from the sidelines wishing you'd moved faster.
-
-**UpTend. Built Different. Built to Win.**
-
----
-
-*Contact: Alan Oney | alan@uptend.app | (407) 338-3342 | uptendapp.com*
+*Alan Oney | alan@uptendapp.com | (407) 338-3342 | uptendapp.com*
 *UPYCK, Inc. — Delaware C-Corp — Orlando, FL*
