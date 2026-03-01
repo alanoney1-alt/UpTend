@@ -259,11 +259,6 @@ import { registerTaxReportingRoutes } from "./tax-reporting.routes";
 // Job Lifecycle routes (Smart Match booking pipeline)
 import { registerJobLifecycleRoutes } from "./job-lifecycle.routes";
 
-// Scheduling + ESG Compliance + Home Health routes
-import { registerSchedulingRoutes } from "./scheduling.routes";
-import { registerEsgComplianceRoutes } from "./esg-compliance.routes";
-import { registerHomeHealthRoutes } from "./home-health.routes";
-
 // Batch 1 API fixes (haulers/available, certifications, wallet, notifications, quality-score, jobs)
 import { registerBatch1FixRoutes } from "./batch1-fixes.routes";
 
@@ -285,7 +280,8 @@ import { registerWarrantyRoutes } from "./warranty.routes";
 // Builder Handoff routes
 import { registerBuilderHandoffRoutes } from "./builder-handoff.routes";
 
-// Appointment Batching now merged into scheduling.routes.ts
+// Appointment Batching routes
+import { registerScheduleBatchRoutes } from "./schedule-batch.routes";
 
 // Quality Inspection Reports routes
 import { registerQualityReportRoutes } from "./quality-reports.routes";
@@ -587,13 +583,11 @@ export async function registerRoutes(
   // Register Builder Handoff routes
   registerBuilderHandoffRoutes(app);
 
+  // Register Appointment Batching routes
+  registerScheduleBatchRoutes(app);
+
   // Register Quality Report routes
   registerQualityReportRoutes(app);
-
-  // Register Scheduling + Timeline + ESG Compliance + Home Health routes
-  safeRegister("Scheduling", registerSchedulingRoutes);
-  safeRegister("EsgCompliance", registerEsgComplianceRoutes);
-  safeRegister("HomeHealth", registerHomeHealthRoutes);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
