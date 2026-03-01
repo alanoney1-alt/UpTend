@@ -81,7 +81,7 @@ export default function BlogNewToLakeNona() {
         <p>
           Orange County enforces year round irrigation restrictions. You can only water on specific days based on
           your address (even addresses water on certain days, odd on others), and never between 10 AM and 4 PM.
-          Violations carry fines, and your neighbors in Lake Nona will absolutely notice if your sprinklers are
+          Violations carry fines, and your neighbors in Lake Nona will definitely notice if your sprinklers are
           running on the wrong day. Set your irrigation timer correctly from day one.
         </p>
 

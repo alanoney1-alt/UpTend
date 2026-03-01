@@ -85,11 +85,11 @@ export default function BlogHomeServicesLakeNona() {
           calendar.
         </p>
 
-        <h3>Spring (March–May): Prep for Hurricane Season</h3>
+        <h3>Spring (March to May): Prep for Hurricane Season</h3>
         <ul>
           <li>
             <strong>Gutter cleaning and inspection.</strong> Florida's rainy season starts in June, and clogged gutters
-            cause more water damage than most homeowners realize. For a typical Lake Nona home, expect to pay $150–$250
+            cause more water damage than most homeowners realize. For a typical Lake Nona home, expect to pay $150 to $250
             for a thorough cleaning. Do this twice a year minimum.
           </li>
           <li>
@@ -108,7 +108,7 @@ export default function BlogHomeServicesLakeNona() {
           </li>
         </ul>
 
-        <h3>Summer (June–August): Storm Season Maintenance</h3>
+        <h3>Summer (June to August): Storm Season Maintenance</h3>
         <ul>
           <li>
             <strong>Regular lawn care.</strong> Grass grows aggressively in Florida summer. Weekly mowing is
@@ -126,7 +126,7 @@ export default function BlogHomeServicesLakeNona() {
           </li>
         </ul>
 
-        <h3>Fall (September–November): Recovery and Deep Clean</h3>
+        <h3>Fall (September to November): Recovery and Deep Clean</h3>
         <ul>
           <li>
             <strong>Deep home cleaning.</strong> After a summer of tracking sand, pool water, and Florida mud through
@@ -143,7 +143,7 @@ export default function BlogHomeServicesLakeNona() {
           </li>
         </ul>
 
-        <h3>Winter (December–February): Planning Season</h3>
+        <h3>Winter (December to February): Planning Season</h3>
         <ul>
           <li>
             <strong>Home audit.</strong> Winter is the best time to walk your property with a critical eye. What needs
@@ -185,14 +185,14 @@ export default function BlogHomeServicesLakeNona() {
         <h2>What Lake Nona Home Services Typically Cost</h2>
         <p>Here's a rough guide to help you budget (prices as of early 2026, Orlando metro area):</p>
         <ul>
-          <li><strong>Lawn care (weekly mowing):</strong> $30–$60/visit</li>
-          <li><strong>Pressure washing (full exterior):</strong> $200–$450</li>
-          <li><strong>Gutter cleaning:</strong> $129–$250</li>
-          <li><strong>Pool cleaning (monthly service):</strong> $99–$210/month</li>
-          <li><strong>Junk removal (single load):</strong> $99–$400</li>
-          <li><strong>Handyman (general repairs):</strong> $75–$125/hour</li>
-          <li><strong>Deep home cleaning:</strong> $200–$400</li>
-          <li><strong>Landscaping (design + install):</strong> $1,500–$5,000+</li>
+          <li><strong>Lawn care (weekly mowing):</strong> $30 to $60/visit</li>
+          <li><strong>Pressure washing (full exterior):</strong> $200 to $450</li>
+          <li><strong>Gutter cleaning:</strong> $129 to $250</li>
+          <li><strong>Pool cleaning (monthly service):</strong> $99 to $210/month</li>
+          <li><strong>Junk removal (single load):</strong> $99 to $400</li>
+          <li><strong>Handyman (general repairs):</strong> $75 to $125/hour</li>
+          <li><strong>Deep home cleaning:</strong> $200 to $400</li>
+          <li><strong>Landscaping (design + install):</strong> $1,500 to $5,000+</li>
         </ul>
         <p>
           Prices tend to be slightly higher in Lake Nona compared to other Orlando neighborhoods due to the area's

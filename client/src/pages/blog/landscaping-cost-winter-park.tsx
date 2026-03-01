@@ -86,7 +86,7 @@ export default function BlogLandscapingCostWinterPark() {
 
         <h2>DIY vs. Hiring a Pro</h2>
         <p>
-          You can absolutely mow your own lawn. But in Winter Park, the question isn't whether you can. it's whether you want to spend every Saturday doing it from March through October in 95 degree heat. Most homeowners who start out doing their own landscaping hire a service within the first year.
+          You can definitely mow your own lawn. But in Winter Park, the question isn't whether you can. it's whether you want to spend every Saturday doing it from March through October in 95 degree heat. Most homeowners who start out doing their own landscaping hire a service within the first year.
         </p>
         <p>
           Beyond mowing, tasks like proper fertilization, pest treatment (termites (especially in older wood-frame homes) are a real problem here), and irrigation management require knowledge of Florida's specific conditions. A good landscaping crew handles all of this.
