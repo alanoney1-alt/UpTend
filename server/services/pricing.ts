@@ -26,7 +26,7 @@ export const PRICING_CONSTANTS = {
   CARPET_DEEP: 7500,        // $75/room - Standard + enzyme treatment, heavy soil agitation, slow dry pass
   CARPET_PET: 8900,         // $89/room - Deep clean + pet odor enzyme + sanitizer
   CARPET_HALLWAY: 2500,     // $25 each
-  CARPET_STAIRS: 0, // stairs fee removed      // $25 per flight
+  CARPET_STAIRS: 0, // stairs count as rooms (same sqft rate) - no separate fee
   CARPET_SCOTCHGARD: 2000,  // $20/room add-on
   CARPET_PKG_3BR: 12900,    // $129 - 3BR/2BA standard package (all rooms + hallway)
   CARPET_PKG_4_5BR: 21500,  // $215 - 4-5BR standard package (all rooms + hallways)
@@ -123,9 +123,8 @@ export function calculateServicePrice(type: string, data: any): number | null {
         const perRoom = carpetTier === "pet" ? PRICING_CONSTANTS.CARPET_PET
           : carpetTier === "deep" ? PRICING_CONSTANTS.CARPET_DEEP
           : PRICING_CONSTANTS.CARPET_STANDARD;
-        price = rooms * perRoom;
+        price = (rooms + stairFlights) * perRoom;
         price += hallways * PRICING_CONSTANTS.CARPET_HALLWAY;
-        price += stairFlights * PRICING_CONSTANTS.CARPET_STAIRS;
       }
       price += scotchgardRooms * PRICING_CONSTANTS.CARPET_SCOTCHGARD;
 
