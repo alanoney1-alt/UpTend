@@ -222,6 +222,20 @@ export default function PyckerSignup() {
   // Tools & Equipment state: service -> selected tools
   const [toolsEquipment, setToolsEquipment] = useState<Record<string, string[]>>({});
   const [customToolInputs, setCustomToolInputs] = useState<Record<string, string>>({});
+
+  // Weekly availability schedule
+  const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
+  const DAY_LABELS: Record<string, string> = { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun" };
+  const [weeklyAvailability, setWeeklyAvailability] = useState<Record<string, { start: string; end: string; enabled: boolean }>>({
+    mon: { start: "08:00", end: "17:00", enabled: true },
+    tue: { start: "08:00", end: "17:00", enabled: true },
+    wed: { start: "08:00", end: "17:00", enabled: true },
+    thu: { start: "08:00", end: "17:00", enabled: true },
+    fri: { start: "08:00", end: "17:00", enabled: true },
+    sat: { start: "09:00", end: "14:00", enabled: false },
+    sun: { start: "09:00", end: "14:00", enabled: false },
+  });
+  const [sameDayAvailable, setSameDayAvailable] = useState(true);
   const [desiredHourlyRate, setDesiredHourlyRate] = useState("");
   const [licensesAndCerts, setLicensesAndCerts] = useState("");
   // Pro rate selection per service (from researched ranges)
@@ -444,6 +458,15 @@ export default function PyckerSignup() {
         b2bLicensed,
         licenseNumber: b2bLicensed ? licenseNumber : undefined,
         b2bRates: b2bLicensed ? b2bRates : undefined,
+        sameDayAvailable,
+        weeklyAvailability: JSON.stringify(
+          Object.fromEntries(
+            DAYS.filter((d) => weeklyAvailability[d].enabled).map((d) => [
+              d,
+              [`${weeklyAvailability[d].start}-${weeklyAvailability[d].end}`],
+            ])
+          )
+        ),
       };
       const response = await fetch("/api/pros/register", {
         method: "POST",
@@ -1004,6 +1027,78 @@ export default function PyckerSignup() {
                       </FormItem>
                     )}
                   />
+                </div>
+
+                {/* Weekly Availability */}
+                <div className="mt-8 mb-6">
+                  <h3 className="text-lg font-semibold mb-2">Your Availability</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    When are you typically available for jobs? This helps us match you with customers even when you're not online.
+                  </p>
+
+                  <div className="space-y-3">
+                    {DAYS.map((day) => (
+                      <div key={day} className="flex items-center gap-3">
+                        <label className="flex items-center gap-2 w-16 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={weeklyAvailability[day].enabled}
+                            onChange={(e) =>
+                              setWeeklyAvailability((prev) => ({
+                                ...prev,
+                                [day]: { ...prev[day], enabled: e.target.checked },
+                              }))
+                            }
+                            className="rounded"
+                          />
+                          <span className="text-sm font-medium">{DAY_LABELS[day]}</span>
+                        </label>
+                        {weeklyAvailability[day].enabled && (
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="time"
+                              value={weeklyAvailability[day].start}
+                              onChange={(e) =>
+                                setWeeklyAvailability((prev) => ({
+                                  ...prev,
+                                  [day]: { ...prev[day], start: e.target.value },
+                                }))
+                              }
+                              className="w-32"
+                            />
+                            <span className="text-sm text-muted-foreground">to</span>
+                            <Input
+                              type="time"
+                              value={weeklyAvailability[day].end}
+                              onChange={(e) =>
+                                setWeeklyAvailability((prev) => ({
+                                  ...prev,
+                                  [day]: { ...prev[day], end: e.target.value },
+                                }))
+                              }
+                              className="w-32"
+                            />
+                          </div>
+                        )}
+                        {!weeklyAvailability[day].enabled && (
+                          <span className="text-sm text-muted-foreground">Off</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <label className="flex items-center gap-2 mt-4 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={sameDayAvailable}
+                      onChange={(e) => setSameDayAvailable(e.target.checked)}
+                      className="rounded"
+                    />
+                    <span className="text-sm font-medium">Available for same-day / on-demand jobs</span>
+                  </label>
+                  <p className="text-xs text-muted-foreground ml-6">
+                    We'll ping you when a customer needs help ASAP in your area
+                  </p>
                 </div>
 
                 <div className="flex justify-between mt-8">

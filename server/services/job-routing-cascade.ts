@@ -293,9 +293,12 @@ export async function escalateOffer(
   state.lastEscalatedAt = new Date().toISOString();
 
   if (tier === 4) {
-    // Expand radius and notify customer
-    console.log(`[Cascade] Job ${jobId} escalated to tier 4 — expanding radius, notifying customer`);
-    // TODO: Send push notification to customer about delay
+    // Expand radius, notify customer, and BLAST all qualifying pros
+    console.log(`[Cascade] Job ${jobId} escalated to tier 4 — blasting all qualifying pros`);
+    // Blast: text/email/push ALL pros who match the service type + area, even offline ones.
+    // Tell them to open the app/site to accept the job.
+    await blastAllQualifyingPros(state);
+    // TODO: Send push notification to customer about slight delay
   }
 
   // Try to find a pro at this new tier
@@ -531,4 +534,54 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
 
 function toRad(deg: number): number {
   return (deg * Math.PI) / 180;
+}
+
+// ─── Blast All Qualifying Pros (Tier 4 Failsafe) ────────────
+
+/**
+ * When no online pro accepts, blast ALL qualifying pros (even offline ones)
+ * via SMS, email, and push notification. Tell them to open the app/site to accept.
+ * Uses their weeklyAvailability to prioritize pros who should be working now.
+ */
+async function blastAllQualifyingPros(state: CascadeState): Promise<void> {
+  const job = await db.select().from(serviceRequests).where(eq(serviceRequests.id, parseInt(state.jobId))).limit(1);
+  if (!job.length) return;
+
+  const serviceType = job[0].serviceType;
+  const alreadyOffered = state.offeredTo.map((o) => o.profileId);
+
+  // Get ALL pros who handle this service type, regardless of online status
+  const allPros = await db
+    .select()
+    .from(haulerProfiles)
+    .where(
+      and(
+        eq(haulerProfiles.isAvailable, true),
+        sql`${haulerProfiles.serviceTypes}::text LIKE ${"%" + serviceType + "%"}`
+      )
+    );
+
+  const eligiblePros = allPros.filter(
+    (p) => !alreadyOffered.includes(String(p.id))
+  );
+
+  console.log(
+    `[Cascade Blast] Job ${state.jobId}: Sending blast to ${eligiblePros.length} qualifying pros (including offline)`
+  );
+
+  // TODO: Wire into actual SMS (Twilio), email (SendGrid), and push notification services
+  // For each pro: send SMS + email + push with job details and a deep link to accept
+  // Message: "New [serviceType] job available now! Open UpTend to accept: [link]"
+  // Prioritize pros whose weeklyAvailability includes the current day/time
+
+  for (const pro of eligiblePros) {
+    console.log(
+      `[Cascade Blast] Notifying pro ${pro.companyName || pro.id} — phone: ${pro.phone}, email: ${pro.email}`
+    );
+    // Each notification includes:
+    // - Service type + location (zip, not full address for privacy)
+    // - Estimated payout (90% sweetener tier)
+    // - Deep link to accept in app or site
+    // - "Respond within 60 minutes"
+  }
 }

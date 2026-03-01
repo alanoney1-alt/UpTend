@@ -183,6 +183,8 @@ export const haulerProfiles = pgTable("hauler_profiles", {
   // Earnings Goal System
   annualIncomeGoal: real("annual_income_goal").default(0),
   availableHoursPerWeek: integer("available_hours_per_week").default(40),
+  // Weekly availability schedule — JSON: { "mon": ["8:00-17:00"], "tue": ["8:00-17:00"], ... }
+  weeklyAvailability: text("weekly_availability"), // JSON string of day→time-slot arrays
   careerTotalEarnings: real("career_total_earnings").default(0),
   currentStreakWeeks: integer("current_streak_weeks").default(0),
   longestStreakWeeks: integer("longest_streak_weeks").default(0),

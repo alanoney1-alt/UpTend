@@ -385,6 +385,8 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         b2bLicensed: data.b2bLicensed || false,
         licenseNumber: data.licenseNumber || null,
         b2bRates: data.b2bRates || {},
+        sameDayAvailable: data.sameDayAvailable ?? true,
+        weeklyAvailability: data.weeklyAvailability || null,
       });
 
       // Update social profiles if provided
@@ -560,6 +562,8 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         b2bLicensed: data.b2bLicensed || false,
         licenseNumber: data.licenseNumber || null,
         b2bRates: data.b2bRates || {},
+        sameDayAvailable: data.sameDayAvailable ?? true,
+        weeklyAvailability: data.weeklyAvailability || null,
       });
 
       // Update social profiles if provided
