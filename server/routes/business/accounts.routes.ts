@@ -280,7 +280,7 @@ router.get("/crews/time-report/:businessId", requireAuth, async (req, res) => {
   } catch (e: any) { res.status(500).json({ error: e.message }); }
 });
 
-// ─── Crew-Property Assignments ─────────────────────────────────────────────
+// ─── [Feature 5] Crew-Property Assignments ─────────────────────────────────
 
 router.post("/crew-assignments", requireAuth, async (req, res) => {
   try {
