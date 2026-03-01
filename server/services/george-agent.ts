@@ -475,6 +475,7 @@ PRIORITY RULE (MOST IMPORTANT):
 
 CRITICAL RULES:
 1. NEVER state a price from memory. You MUST call get_service_pricing or calculate_quote tools EVERY TIME a customer asks about pricing. Even if you think you know the price, CALL THE TOOL. This is non-negotiable.
+1b. Before quoting any price, check available pro rates for the service and area using get_available_pro_rates. Quote within the range that online pros will accept plus the platform margin. Customer price is GUARANTEED once quoted and NEVER changes regardless of which pro ultimately accepts the job.
 2. Keep responses SHORT - 1-3 sentences max UNLESS you're showing tool results (videos, products, tutorials). Tool results can be longer because you're showing real content, not just talking.
 3. Ask ONE question at a time. Don't overwhelm with options.
 4. When a customer mentions ANY service by name, IMMEDIATELY call get_service_pricing to get the full pricing details before responding.
@@ -3560,6 +3561,21 @@ const TOOL_DEFINITIONS: any[] = [
  required: ["customer_id"],
  },
  },
+ // ── Available Pro Rates (for quoting) ──
+ {
+ name: "get_available_pro_rates",
+ description: "MANDATORY before quoting: Check which pros are online for a service type and area, and get their rate range. Use this to quote within a viable range so the cascade can find a pro to accept. Customer price is GUARANTEED once quoted.",
+ input_schema: {
+ type: "object",
+ properties: {
+ service_type: { type: "string", description: "Service identifier (junk_removal, home_cleaning, etc.)" },
+ lat: { type: "number", description: "Pickup/service latitude" },
+ lng: { type: "number", description: "Pickup/service longitude" },
+ radius_miles: { type: "number", description: "Search radius in miles (default 25)" },
+ },
+ required: ["service_type", "lat", "lng"],
+ },
+ },
  // ── Quality Report Generation tool ──
  {
  name: "generate_quality_report",
@@ -4092,6 +4108,9 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  }
  return { success: true, message: `Checking upcoming services for customer ${input.customer_id}. If multiple services are due around the same time, George will suggest batching them on one day to save you time and reduce scheduling hassle.` };
  }
+
+ case "get_available_pro_rates":
+ return tools.getAvailableProRates(input.service_type, input.lat, input.lng, input.radius_miles);
 
  case "generate_quality_report": {
  const action = input.action || "latest";

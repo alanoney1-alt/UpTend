@@ -73,6 +73,7 @@ import {
  pricingRates,
 } from "../../shared/schema";
 import { eq, desc, and, inArray } from "drizzle-orm";
+import { getAvailableProRates as _getAvailableProRates } from "./job-routing-cascade";
 
 // ─────────────────────────────────────────────
 // Helper: resolve hauler profile by userId or profile id
@@ -10602,5 +10603,31 @@ export async function checkPropertyContract(address: string, serviceId?: string)
       billTo: "resident",
       error: err.message,
     };
+  }
+}
+
+/**
+ * Get available pro rates for a service type and area.
+ * George calls this BEFORE quoting to ensure price is within a viable range.
+ */
+export async function getAvailableProRates(serviceType: string, lat: number, lng: number, radiusMiles?: number) {
+  try {
+    const result = await _getAvailableProRates(serviceType, lat, lng, radiusMiles);
+    if (result.prosOnline === 0) {
+      return {
+        prosOnline: 0,
+        message: `No pros currently online for ${serviceType} in this area. Use standard pricing — the cascade will find someone.`,
+        rateRange: null,
+        recommendedMargin: 0.15,
+      };
+    }
+    return {
+      ...result,
+      recommendedMargin: 0.15, // 15% platform margin
+      message: `${result.prosOnline} pro(s) online. Rate range: $${result.rateRange?.min}-$${result.rateRange?.max}/hr (median $${result.rateRange?.median}). Quote customer at pro rate + 15% margin. Price is GUARANTEED once quoted.`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] getAvailableProRates error:", err);
+    return { prosOnline: 0, rateRange: null, message: "Could not check pro rates. Use standard pricing.", error: err.message };
   }
 }

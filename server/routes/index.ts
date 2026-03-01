@@ -36,6 +36,7 @@ import { registerCustomerPropertyRoutes } from "./customer/properties.routes";
 // Job routes
 import { registerServiceRequestRoutes } from "./jobs/service-requests.routes";
 import { registerJobManagementRoutes } from "./jobs/job-management.routes";
+import { registerJobRoutingRoutes } from "./job-routing.routes";
 import { registerJobVerificationRoutes } from "./jobs/verification.routes";
 import { registerPriceVerificationRoutes } from "./jobs/price-verification.routes";
 import { registerNoShowRoutes } from "./jobs/no-show.routes";
@@ -576,6 +577,7 @@ export async function registerRoutes(
   safeRegister("StripeConnect", registerStripeConnectRoutes);
   safeRegister("TaxReporting", registerTaxReportingRoutes);
   safeRegister("JobLifecycle", registerJobLifecycleRoutes);
+  safeRegister("JobRouting", registerJobRoutingRoutes);
 
   // Register Warranty Management routes
   registerWarrantyRoutes(app);
