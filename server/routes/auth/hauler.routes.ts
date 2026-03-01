@@ -57,7 +57,40 @@ const proRegistrationSchema = z.object({
   b2bLicensed: z.boolean().optional(),
   licenseNumber: z.string().optional(),
   b2bRates: z.record(z.string(), z.object({ min: z.number(), max: z.number() })).optional(),
-});
+  // Pro pricing (per-service and per-tier)
+  proRates: z.array(z.object({
+    serviceType: z.string(),
+    baseRate: z.number(),
+  })).optional(),
+  proTierRates: z.array(z.object({
+    serviceType: z.string(),
+    tiers: z.array(z.object({
+      tierName: z.string(),
+      rate: z.number(),
+    })),
+  })).optional(),
+  // Vehicle photos (optional while upload infra migrating)
+  vehicles: z.array(z.object({
+    vehicleType: z.string().optional(),
+    vehicleYear: z.string().optional(),
+    vehicleMake: z.string().optional(),
+    vehicleModel: z.string().optional(),
+    licensePlate: z.string().optional(),
+    description: z.string().optional(),
+    photoUrls: z.array(z.string()).optional(),
+  })).optional(),
+  // Pricing feedback
+  pricingFeedback: z.array(z.object({
+    serviceType: z.string(),
+    chargeLow: z.number().nullable().optional(),
+    chargeHigh: z.number().nullable().optional(),
+    yearsExperience: z.number().nullable().optional(),
+  })).optional(),
+  // Tools
+  toolsEquipment: z.array(z.string()).optional(),
+  desiredHourlyRate: z.number().nullable().optional(),
+  licensesAndCerts: z.string().nullable().optional(),
+}).passthrough();
 
 /**
  * Pro Authentication Routes
