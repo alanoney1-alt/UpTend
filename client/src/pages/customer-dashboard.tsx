@@ -51,6 +51,8 @@ import {
   Share2,
   History,
   Users,
+  Droplets,
+  Trees,
 } from "lucide-react";
 
 const SERVICE_TYPE_LABELS: Record<string, string> = {
@@ -601,6 +603,71 @@ function MyHomeSection({ jobs, user }: { jobs: ServiceRequest[]; user: { firstNa
   );
 }
 
+/* ─── Maintenance Due Section: "Fix This" pre-filled booking ─── */
+const MAINTENANCE_SCHEDULE: { service: string; label: string; intervalDays: number; icon: typeof Wrench }[] = [
+  { service: "gutter_cleaning", label: "Gutter Cleaning", intervalDays: 90, icon: ArrowLeft },
+  { service: "pressure_washing", label: "Pressure Washing", intervalDays: 180, icon: Droplets },
+  { service: "pool_cleaning", label: "Pool Cleaning", intervalDays: 30, icon: Droplets },
+  { service: "landscaping", label: "Landscaping", intervalDays: 14, icon: Trees },
+  { service: "home_cleaning", label: "Home Cleaning", intervalDays: 30, icon: Sparkles },
+  { service: "carpet_cleaning", label: "Carpet Cleaning", intervalDays: 365, icon: Sparkles },
+];
+
+function MaintenanceDueSection({ address, completedJobs }: { address?: string; completedJobs: ServiceRequest[] }) {
+  const overdueItems = useMemo(() => {
+    const now = Date.now();
+    return MAINTENANCE_SCHEDULE.map((sched) => {
+      const lastJob = completedJobs
+        .filter((j) => j.serviceType === sched.service)
+        .sort((a, b) => new Date(b.completedAt || b.createdAt).getTime() - new Date(a.completedAt || a.createdAt).getTime())[0];
+      if (!lastJob) return null;
+      const lastDate = new Date(lastJob.completedAt || lastJob.createdAt).getTime();
+      const daysSince = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
+      if (daysSince < sched.intervalDays) return null;
+      const daysOverdue = daysSince - sched.intervalDays;
+      return { ...sched, lastJob, daysSince, daysOverdue };
+    }).filter(Boolean) as Array<typeof MAINTENANCE_SCHEDULE[0] & { lastJob: ServiceRequest; daysSince: number; daysOverdue: number }>;
+  }, [completedJobs]);
+
+  if (overdueItems.length === 0) return null;
+
+  return (
+    <div className="mb-6" data-testid="section-maintenance-due">
+      <div className="flex items-center gap-2 mb-3">
+        <AlertCircle className="w-5 h-5 text-amber-500" />
+        <h2 className="text-lg font-bold text-white">Maintenance Due</h2>
+      </div>
+      <div className="space-y-2">
+        {overdueItems.map((item) => {
+          const bookUrl = `/book?service=${encodeURIComponent(item.service)}${address ? `&address=${encodeURIComponent(address)}` : ""}`;
+          return (
+            <Card key={item.service} className="p-3 border-amber-500/20 bg-amber-500/5">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
+                    <Timer className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white truncate">{item.label}</p>
+                    <p className="text-xs text-white/50">
+                      {item.daysOverdue > 0 ? `${item.daysOverdue} days overdue` : "Due now"} · Last done {item.daysSince} days ago
+                    </p>
+                  </div>
+                </div>
+                <Link href={bookUrl}>
+                  <Button size="sm" variant="outline" className="shrink-0 border-amber-500/50 text-amber-500 hover:bg-amber-500/10">
+                    Fix This
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function RebookCard({ job }: { job: ServiceRequest }) {
   const { data: haulerProfile } = useQuery<HaulerProfileData>({
     queryKey: [`/api/haulers/${job.assignedHaulerId}/profile`],
@@ -787,6 +854,9 @@ export default function CustomerDashboard() {
           </div>
           <HomeDnaScoreWidget />
         </div>
+
+        {/* Maintenance Due — "Fix This" pre-filled booking */}
+        <MaintenanceDueSection address={allJobs[0]?.pickupAddress} completedJobs={completedJobs} />
 
         {/* Home Report. Carfax for Homes */}
         <HomeReportSection userId={user.id} />
