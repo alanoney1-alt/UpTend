@@ -38,6 +38,7 @@ export interface SeoServicePageData {
     description: string;
     areaServed: string;
   };
+  isLive?: boolean;
 }
 
 export function SeoServicePage({ data }: { data: SeoServicePageData }) {
@@ -56,12 +57,14 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
 
   const Icon = data.icon;
 
+  const isLive = data.isLive ?? false;
+
   const schemaData = {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
     name: "UpTend",
     url: "https://uptendapp.com",
-    telephone: "+1-407-000-0000",
+    telephone: "+1-407-338-3342",
     address: {
       "@type": "PostalAddress",
       addressLocality: data.schemaService.areaServed.includes("Lake Nona") ? "Lake Nona" : "Orlando",
@@ -96,11 +99,6 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
       ],
     },
     priceRange: data.pricing.startingAt,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "312",
-    },
   };
 
   return (
@@ -111,12 +109,20 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
       />
 
+      {/* Coming Soon Banner */}
+      {!isLive && (
+        <div className="bg-[#F47C20] text-white text-center py-3 px-4 font-bold text-sm md:text-base">
+          Coming Soon to {data.localContent.areaName}! We're currently in beta in Lake Nona. Join the waitlist to be first in line.
+        </div>
+      )}
+
       {/* Hero */}
-      <section className={`pt-28 pb-16 px-4 md:px-6 bg-gradient-to-br ${data.heroGradient} text-white`}>
+      <section className={`${isLive ? 'pt-28' : 'pt-20'} pb-16 px-4 md:px-6 bg-gradient-to-br ${data.heroGradient} text-white`}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <MapPin className="h-5 w-5" />
             <span className="text-white/90 font-medium">{data.localContent.areaName}</span>
+            {!isLive && <Badge className="bg-white/20 text-white border-white/30 text-xs">Beta</Badge>}
           </div>
           <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
             {data.h1}
@@ -125,21 +131,31 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
             {data.heroTagline}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/book">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-6 font-bold">
-                Book Now <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/book">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 font-bold border-white text-white hover:bg-white/10">
-                Get Free Quote
-              </Button>
-            </Link>
+            {isLive ? (
+              <>
+                <Link href="/book">
+                  <Button size="lg" variant="secondary" className="text-lg px-8 py-6 font-bold">
+                    Book Now <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="/book">
+                  <Button size="lg" variant="outline" className="text-lg px-8 py-6 font-bold border-white text-white hover:bg-white/10">
+                    Get Free Quote
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <Link href="/join">
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-6 font-bold">
+                  Join the Waitlist <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            )}
           </div>
           <div className="flex flex-wrap gap-6 mt-8 text-sm text-white/80">
             <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> Licensed & Insured</span>
-            <span className="flex items-center gap-2"><Star className="h-4 w-4" /> 4.9 Average Rating</span>
-            <span className="flex items-center gap-2"><Clock className="h-4 w-4" /> Same-Day Available</span>
+            {isLive && <span className="flex items-center gap-2"><Star className="h-4 w-4" /> Serving {data.localContent.areaName}</span>}
+            <span className="flex items-center gap-2"><Clock className="h-4 w-4" /> {isLive ? 'Same-Day Available' : 'Launching Soon'}</span>
           </div>
         </div>
       </section>
@@ -177,12 +193,12 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground">{data.pricing.details}</p>
-                  <Link href="/book">
+                  <Link href={isLive ? "/book" : "/join"}>
                     <Button className="w-full py-6 text-lg font-bold">
-                      Book Now <ArrowRight className="ml-2 h-5 w-5" />
+                      {isLive ? "Book Now" : "Join the Waitlist"} <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
-                  <p className="text-xs text-center text-muted-foreground">No hidden fees · Free cancellation</p>
+                  <p className="text-xs text-center text-muted-foreground">{isLive ? "No hidden fees · Free cancellation" : "Be first in line when we launch"}</p>
                 </CardContent>
               </Card>
             </div>
@@ -240,14 +256,17 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
       <section className={`py-16 px-4 md:px-6 bg-gradient-to-br ${data.heroGradient} text-white`}>
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-black mb-4">
-            Ready to Get Started?
+            {isLive ? "Ready to Get Started?" : `Coming Soon to ${data.localContent.areaName}`}
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Book your {data.schemaService.serviceType.toLowerCase().replace(/\s*services?\s*$/i, '')} today. Same-day availability in {data.localContent.areaName}.
+            {isLive
+              ? `Book your ${data.schemaService.serviceType.toLowerCase().replace(/\s*services?\s*$/i, '')} today. Same-day availability in ${data.localContent.areaName}.`
+              : `We're expanding across Orlando. Join the waitlist and be the first to book when we launch in ${data.localContent.areaName}.`
+            }
           </p>
-          <Link href="/book">
+          <Link href={isLive ? "/book" : "/join"}>
             <Button size="lg" variant="secondary" className="text-lg px-10 py-6 font-bold">
-              Book Now <ArrowRight className="ml-2 h-5 w-5" />
+              {isLive ? "Book Now" : "Join the Waitlist"} <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </div>

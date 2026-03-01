@@ -20,12 +20,14 @@ interface CityInfo {
   homeTypes: string[];
   description: string;
   whyLocals: string[];
+  isLive?: boolean;
 }
 
 const CITIES: CityInfo[] = [
   {
     name: "Lake Nona",
     slug: "lake-nona",
+    isLive: true,
     landmarks: ["Lake Nona Town Center", "USTA National Campus", "Laureate Park", "Lake Nona Medical City", "Boxi Park"],
     neighborhoods: ["Laureate Park", "Village Walk", "Northlake Park", "Moss Park", "Eagle Creek", "Randal Park", "Storey Park", "Sunbridge", "Tavistock", "Lake Nona Golf & Country Club"],
     homeTypes: ["modern smart homes", "new-construction townhomes", "lakefront estates", "master-planned community homes"],
@@ -450,6 +452,7 @@ function generatePageData(service: ServiceInfo, city: CityInfo): SeoServicePageD
       description: `Professional ${service.name.toLowerCase()} service in ${city.name}, FL. ${service.pricingDetails}`,
       areaServed: `${city.name}, FL`,
     },
+    isLive: city.isLive ?? false,
   };
 }
 
