@@ -301,7 +301,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
     try {
       const parsed = proRegistrationSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ error: "Invalid registration data", details: parsed.error.issues });
+        const fieldErrors = parsed.error.issues.map(i => `${i.path.join(".")}: ${i.message}`).join(", "); console.error("Pro registration validation failed:", fieldErrors); return res.status(400).json({ error: `Missing or invalid fields: ${fieldErrors}`, details: parsed.error.issues });
       }
 
       const data = parsed.data;
@@ -480,7 +480,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
     try {
       const parsed = proRegistrationSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ error: "Invalid registration data", details: parsed.error.issues });
+        const fieldErrors = parsed.error.issues.map(i => `${i.path.join(".")}: ${i.message}`).join(", "); console.error("Pro registration validation failed:", fieldErrors); return res.status(400).json({ error: `Missing or invalid fields: ${fieldErrors}`, details: parsed.error.issues });
       }
 
       const data = parsed.data;
