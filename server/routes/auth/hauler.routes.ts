@@ -52,8 +52,8 @@ const proRegistrationSchema = z.object({
   agreeTerms: z.boolean(),
   agreeBackgroundCheck: z.boolean(),
   // Photo uploads
-  profilePhotoUrl: z.string().url().optional(),
-  driversLicensePhotoUrl: z.string().url().optional(),
+  profilePhotoUrl: z.string().optional(),
+  driversLicensePhotoUrl: z.string().optional(),
   // B2B Commercial Licensing
   b2bLicensed: z.boolean().optional(),
   licenseNumber: z.string().optional(),
@@ -88,7 +88,7 @@ const proRegistrationSchema = z.object({
     yearsExperience: z.number().nullable().optional(),
   })).optional(),
   // Tools
-  toolsEquipment: z.array(z.string()).optional(),
+  toolsEquipment: z.union([z.array(z.string()), z.record(z.string(), z.array(z.string()))]).optional(),
   desiredHourlyRate: z.number().nullable().optional(),
   licensesAndCerts: z.string().nullable().optional(),
 }).passthrough();
