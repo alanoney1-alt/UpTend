@@ -500,6 +500,45 @@ Hold the mic button in chat:
 - Release → voice sent to server → transcribed → George responds
 - George can also SPEAK responses (toggle in settings)
 
+### Voice Booking (Full Flow)
+Voice isn't just input. It's a complete booking path:
+
+1. Customer holds mic: "Hey George, my gutters are clogged"
+2. George transcribes → pulls Home Memory (2,400 sqft, 2-story, last cleaned October)
+3. George responds (text + optional speech): "Your gutters are overdue. $189 for a full clean. Mike did them last time and he's available Thursday morning. Want me to book it?"
+4. Customer says "yeah" → transcribed → booking created
+5. Confirmation card appears in chat + push notification
+
+The entire booking happens without touching the screen. Voice in, voice out, one confirmation.
+
+Implementation:
+- expo-speech for George's spoken responses
+- expo-av for recording customer voice
+- Whisper API for transcription
+- Same George agent backend processes the transcribed text
+- Haptic on booking confirmation (ImpactFeedbackStyle.Heavy)
+
+---
+
+## iOS Share Sheet Integration (Share-a-Photo)
+
+Customer doesn't need to open the app to start a job:
+
+1. Customer takes a photo of a problem (leaky pipe, messy garage, overgrown yard)
+2. Opens iOS share sheet → taps "Send to George"
+3. Photo uploads to UpTend server, George analyzes it
+4. Push notification: "Looks like a junk removal job. About $129. Tap to book."
+5. Tapping the notification opens George chat with the photo and quote pre-loaded
+
+Implementation:
+- iOS Share Extension (Expo config plugin)
+- Extension sends photo to `/api/uploads/share-extension` endpoint
+- Server queues George analysis
+- Push notification with deep link back to George chat
+- Photo appears in chat history with George's assessment
+
+This turns every photo on the customer's phone into a potential booking. Zero friction entry point.
+
 ---
 
 ## Push Notifications
