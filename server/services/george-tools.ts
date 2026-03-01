@@ -1333,7 +1333,7 @@ export async function getPortfolioAnalytics(businessId: string, storage?: any): 
  .filter((j) => new Date(j.completedAt || j.createdAt).getTime() >= yearStart)
  .reduce((s, j) => s + (j.finalPrice || j.priceEstimate || 0), 0);
 
- // Maintenance predictions based on Florida seasonal patterns
+ // [Feature 3] Maintenance predictions based on Florida seasonal patterns
  const MAINTENANCE_SCHEDULE: Record<string, { intervalMonths: number; avgCost: number }> = {
    gutter_cleaning: { intervalMonths: 6, avgCost: 150 },
    pressure_washing: { intervalMonths: 6, avgCost: 200 },
