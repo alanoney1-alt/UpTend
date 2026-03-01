@@ -416,6 +416,9 @@ function Router() {
       <Route path="/quality-reports" component={QualityReports} />
       <Route path="/blog" component={BlogIndex} />
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
+      <Route path="/blog/lake-nona-home-maintenance-schedule" component={BlogLakeNonaHomeMaintenance} />
+      <Route path="/blog/pressure-washing-cost-orlando-2026" component={BlogPressureWashingCostOrlando} />
+      <Route path="/blog/new-to-lake-nona-home-checklist" component={BlogNewToLakeNona} />
       <Route path="/blog/:slug" component={BlogPost} />
       <Route component={NotFound} />
     </Switch>
