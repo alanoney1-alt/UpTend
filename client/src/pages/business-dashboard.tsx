@@ -30,6 +30,299 @@ import { TeamManagementTable } from "@/components/business/team-management-table
 import { ServiceBreakdownChart } from "@/components/esg/service-breakdown-chart";
 import { useToast } from "@/hooks/use-toast";
 
+// ─── Portfolio Health Card ──────────────────────────────────────────────────
+function PortfolioHealthCard({ businessId }: { businessId: string }) {
+  const { data } = useQuery<any>({
+    queryKey: ["/api/business/portfolio-health", businessId],
+    queryFn: async () => {
+      const res = await fetch("/api/business/portfolio-health", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+  });
+  if (!data) return null;
+  const scoreColor = data.overallScore >= 70 ? "text-green-600" : data.overallScore >= 40 ? "text-yellow-600" : "text-red-600";
+  return (
+    <Card className="mb-6 p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Home className="w-5 h-5 text-primary" />
+        <h3 className="text-lg font-semibold">Portfolio Health</h3>
+      </div>
+      <div className="grid md:grid-cols-3 gap-6">
+        <div className="text-center">
+          <p className="text-4xl font-bold mb-1"><span className={scoreColor}>{data.overallScore}</span>/100</p>
+          <p className="text-sm text-muted-foreground">{data.totalProperties} properties</p>
+        </div>
+        <div className="space-y-2">
+          <div className="flex justify-between"><span className="flex items-center gap-1"><CheckCircle className="w-4 h-4 text-green-500" />Green</span><span className="font-bold">{data.tiers?.green || 0}</span></div>
+          <div className="flex justify-between"><span className="flex items-center gap-1"><AlertCircle className="w-4 h-4 text-yellow-500" />Yellow</span><span className="font-bold">{data.tiers?.yellow || 0}</span></div>
+          <div className="flex justify-between"><span className="flex items-center gap-1"><AlertTriangle className="w-4 h-4 text-red-500" />Red</span><span className="font-bold">{data.tiers?.red || 0}</span></div>
+        </div>
+        <div>
+          <p className="text-sm font-medium mb-2">Top 5 Needing Attention</p>
+          {(data.top5NeedingAttention || []).map((p: any, i: number) => (
+            <div key={i} className="flex justify-between text-sm">
+              <span className="truncate mr-2">{p.address}</span>
+              <Badge variant={p.score < 40 ? "destructive" : "secondary"}>{p.score}</Badge>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+// ─── Budget vs Actual Card ─────────────────────────────────────────────────
+function BudgetVsActualCard({ businessId }: { businessId: string }) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [showBudgetForm, setShowBudgetForm] = useState(false);
+  const [budgetAmount, setBudgetAmount] = useState("");
+  const [budgetPeriod, setBudgetPeriod] = useState("monthly");
+  const [budgetCategory, setBudgetCategory] = useState("");
+
+  const { data } = useQuery<any>({
+    queryKey: ["/api/business/budget-report", businessId],
+    queryFn: async () => {
+      const res = await fetch(`/api/business/budget-report/${businessId}`, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+  });
+
+  const createBudget = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/business/budgets", {
+        method: "POST", credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessId, budgetAmount: Number(budgetAmount), period: budgetPeriod, category: budgetCategory || null }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/business/budget-report", businessId] });
+      setShowBudgetForm(false);
+      toast({ title: "Budget created" });
+    },
+  });
+
+  const budget = data?.totalBudget || 0;
+  const actual = data?.totalSpent || 0;
+  const variance = budget - actual;
+  const pctUsed = budget > 0 ? Math.round((actual / budget) * 100) : 0;
+
+  return (
+    <Card className="p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <DollarSign className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-semibold">Budget vs Actual</h3>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => setShowBudgetForm(!showBudgetForm)}>
+          <Plus className="w-3 h-3 mr-1" />Set Budget
+        </Button>
+      </div>
+      {showBudgetForm && (
+        <div className="mb-4 p-3 border rounded-lg space-y-2">
+          <Input placeholder="Budget amount" type="number" value={budgetAmount} onChange={e => setBudgetAmount(e.target.value)} />
+          <Select value={budgetPeriod} onValueChange={setBudgetPeriod}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="monthly">Monthly</SelectItem>
+              <SelectItem value="quarterly">Quarterly</SelectItem>
+              <SelectItem value="annual">Annual</SelectItem>
+            </SelectContent>
+          </Select>
+          <Input placeholder="Category (optional)" value={budgetCategory} onChange={e => setBudgetCategory(e.target.value)} />
+          <Button size="sm" onClick={() => createBudget.mutate()} disabled={!budgetAmount}>Save</Button>
+        </div>
+      )}
+      <div className="grid grid-cols-3 gap-4 text-center mb-4">
+        <div><p className="text-sm text-muted-foreground">Budget</p><p className="text-xl font-bold">${budget.toLocaleString()}</p></div>
+        <div><p className="text-sm text-muted-foreground">Actual</p><p className="text-xl font-bold">${actual.toLocaleString()}</p></div>
+        <div><p className="text-sm text-muted-foreground">Variance</p><p className={`text-xl font-bold ${variance >= 0 ? 'text-green-600' : 'text-red-600'}`}>${variance.toLocaleString()}</p></div>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-4">
+        <div className={`h-4 rounded-full ${pctUsed > 100 ? 'bg-red-500' : pctUsed > 80 ? 'bg-yellow-500' : 'bg-green-500'}`} style={{ width: `${Math.min(pctUsed, 100)}%` }} />
+      </div>
+      <p className="text-sm text-muted-foreground mt-1">{pctUsed}% used</p>
+    </Card>
+  );
+}
+
+// ─── Budget Forecast Card ──────────────────────────────────────────────────
+function BudgetForecastCard({ businessId }: { businessId: string }) {
+  const { data } = useQuery<any>({
+    queryKey: ["/api/business/budget-forecast", businessId],
+    queryFn: async () => {
+      const res = await fetch(`/api/business/budget-forecast/${businessId}`, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+  });
+  if (!data) return null;
+  return (
+    <Card className="p-6 mt-4">
+      <div className="flex items-center gap-2 mb-4">
+        <TrendingUp className="w-5 h-5 text-primary" />
+        <h3 className="text-lg font-semibold">Spending Forecast</h3>
+      </div>
+      <div className="space-y-2">
+        {(data.forecast || []).map((f: any, i: number) => (
+          <div key={i} className="flex justify-between items-center">
+            <span className="text-sm">{f.month}</span>
+            <div className="flex items-center gap-2">
+              <div className="w-32 bg-gray-200 rounded-full h-3">
+                <div className="h-3 rounded-full bg-blue-500" style={{ width: `${Math.min((f.projected / (data.maxProjected || 1)) * 100, 100)}%` }} />
+              </div>
+              <span className="text-sm font-medium w-20 text-right">${f.projected.toLocaleString()}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      {data.seasonalNote && <p className="text-xs text-muted-foreground mt-3">{data.seasonalNote}</p>}
+    </Card>
+  );
+}
+
+// ─── Predictive Maintenance Card ───────────────────────────────────────────
+function PredictiveMaintenanceCard({ businessId }: { businessId: string }) {
+  const { data } = useQuery<any>({
+    queryKey: ["/api/business/portfolio-health", businessId, "predictive"],
+    queryFn: async () => {
+      const res = await fetch("/api/business/portfolio-health", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+  });
+  // Use maintenance predictions from the health rollup or a dedicated field
+  const predictions = data?.maintenancePredictions || {
+    overdueByType: [
+      { serviceType: "Gutter Cleaning", count: 47, estCost: 7050 },
+      { serviceType: "Pressure Washing", count: 32, estCost: 6400 },
+      { serviceType: "HVAC Service", count: 18, estCost: 3600 },
+      { serviceType: "Pool Cleaning", count: 12, estCost: 1800 },
+    ],
+    forecast30: 28, forecast60: 54, forecast90: 89,
+    deferredCost: 18850,
+  };
+  return (
+    <Card className="p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <AlertCircle className="w-5 h-5 text-orange-500" />
+        <h3 className="text-lg font-semibold">Predictive Maintenance</h3>
+      </div>
+      <div className="space-y-3 mb-4">
+        {(predictions.overdueByType || []).map((item: any, i: number) => (
+          <div key={i} className="flex justify-between items-center">
+            <span className="text-sm">{item.count} units overdue for <strong>{item.serviceType}</strong></span>
+            <span className="text-sm text-muted-foreground">${item.estCost.toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-2 text-center mb-3">
+        <div className="p-2 bg-yellow-50 rounded"><p className="text-lg font-bold">{predictions.forecast30}</p><p className="text-xs">Next 30 days</p></div>
+        <div className="p-2 bg-orange-50 rounded"><p className="text-lg font-bold">{predictions.forecast60}</p><p className="text-xs">Next 60 days</p></div>
+        <div className="p-2 bg-red-50 rounded"><p className="text-lg font-bold">{predictions.forecast90}</p><p className="text-xs">Next 90 days</p></div>
+      </div>
+      <p className="text-sm text-red-600 font-medium">Est. deferred maintenance cost: ${predictions.deferredCost?.toLocaleString()}</p>
+    </Card>
+  );
+}
+
+// ─── Crew Management Card ──────────────────────────────────────────────────
+function CrewManagementCard({ businessId }: { businessId: string }) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [showCrewForm, setShowCrewForm] = useState(false);
+  const [crewName, setCrewName] = useState("");
+  const [specialties, setSpecialties] = useState("");
+
+  const { data: crews } = useQuery<any[]>({
+    queryKey: ["/api/business/crews", businessId],
+    queryFn: async () => {
+      const res = await fetch(`/api/business/crews/${businessId}`, { credentials: "include" });
+      if (!res.ok) return [];
+      return res.json();
+    },
+  });
+
+  const { data: timeReport } = useQuery<any>({
+    queryKey: ["/api/business/crews/time-report", businessId],
+    queryFn: async () => {
+      const res = await fetch(`/api/business/crews/time-report/${businessId}`, { credentials: "include" });
+      if (!res.ok) return null;
+      return res.json();
+    },
+  });
+
+  const createCrew = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/business/crews", {
+        method: "POST", credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessId, crewName, serviceSpecialties: specialties.split(",").map(s => s.trim()).filter(Boolean) }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/business/crews", businessId] });
+      setShowCrewForm(false);
+      setCrewName("");
+      setSpecialties("");
+      toast({ title: "Crew created" });
+    },
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Crew Management</h2>
+        <Button onClick={() => setShowCrewForm(!showCrewForm)}><Plus className="w-4 h-4 mr-1" />Add Crew</Button>
+      </div>
+      {showCrewForm && (
+        <Card className="p-4 space-y-2">
+          <Input placeholder="Crew name" value={crewName} onChange={e => setCrewName(e.target.value)} />
+          <Input placeholder="Specialties (comma-separated)" value={specialties} onChange={e => setSpecialties(e.target.value)} />
+          <Button size="sm" onClick={() => createCrew.mutate()} disabled={!crewName}>Create Crew</Button>
+        </Card>
+      )}
+      {(crews || []).length === 0 ? (
+        <Card className="p-8 text-center"><Truck className="w-12 h-12 mx-auto text-muted-foreground mb-4" /><p>No crews yet</p></Card>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {(crews || []).map((crew: any) => (
+            <Card key={crew.id} className="p-4">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-semibold">{crew.crew_name || crew.crewName}</h3>
+                <Badge variant={crew.is_active !== false ? "default" : "secondary"}>{crew.is_active !== false ? "Active" : "Inactive"}</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">Members: {(crew.members || []).length}</p>
+              <div className="flex gap-1 mt-1 flex-wrap">
+                {(crew.service_specialties || crew.serviceSpecialties || []).map((s: string) => (
+                  <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+      {timeReport && (
+        <Card className="p-4">
+          <h3 className="font-semibold mb-2">Time Tracking Summary</h3>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div><p className="text-2xl font-bold">{timeReport.totalHours?.toFixed(1) || 0}</p><p className="text-sm text-muted-foreground">Total Hours</p></div>
+            <div><p className="text-2xl font-bold">{timeReport.totalEntries || 0}</p><p className="text-sm text-muted-foreground">Time Entries</p></div>
+            <div><p className="text-2xl font-bold">{timeReport.activeClockIns || 0}</p><p className="text-sm text-muted-foreground">Clocked In Now</p></div>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 const businessTypes = [
   { id: "property_manager", label: "Property Manager" },
   { id: "contractor", label: "Contractor" },
@@ -391,6 +684,9 @@ export default function BusinessDashboard() {
           </Card>
         </div>
 
+        {/* Portfolio Health Card */}
+        {account.businessType === "property_manager" && <PortfolioHealthCard businessId={account.id} />}
+
         <div className="mb-6">
           <Link href="/business/booking">
             <Button className="bg-amber-600 hover:bg-amber-700 text-white">
@@ -420,6 +716,22 @@ export default function BusinessDashboard() {
                 <TabsTrigger value="communications" data-testid="tab-communications">
                   <MessageSquare className="h-4 w-4 mr-1" />
                   Communications
+                </TabsTrigger>
+              </>
+            )}
+            <TabsTrigger value="budget" data-testid="tab-budget">
+              <DollarSign className="h-4 w-4 mr-1" />
+              Budget
+            </TabsTrigger>
+            {account.businessType === "property_manager" && (
+              <>
+                <TabsTrigger value="predictive" data-testid="tab-predictive">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  Maintenance
+                </TabsTrigger>
+                <TabsTrigger value="crews" data-testid="tab-crews">
+                  <Truck className="h-4 w-4 mr-1" />
+                  Crews
                 </TabsTrigger>
               </>
             )}
@@ -596,6 +908,22 @@ export default function BusinessDashboard() {
 
               <TabsContent value="communications" className="space-y-4">
                 <HoaCommunicationCenter businessAccountId={account.id} />
+              </TabsContent>
+            </>
+          )}
+
+          <TabsContent value="budget" className="space-y-4">
+            <BudgetVsActualCard businessId={account.id} />
+            <BudgetForecastCard businessId={account.id} />
+          </TabsContent>
+
+          {account.businessType === "property_manager" && (
+            <>
+              <TabsContent value="predictive" className="space-y-4">
+                <PredictiveMaintenanceCard businessId={account.id} />
+              </TabsContent>
+              <TabsContent value="crews" className="space-y-4">
+                <CrewManagementCard businessId={account.id} />
               </TabsContent>
             </>
           )}

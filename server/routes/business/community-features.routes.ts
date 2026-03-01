@@ -386,4 +386,17 @@ router.patch("/emergency/checklist/:itemId", requireAuth, async (req: Request, r
   }
 });
 
+// ─── 8. Portfolio Health Rollup ─────────────────────────────────────────────
+
+router.get("/portfolio-health", requireAuth, async (req: Request, res: Response) => {
+  try {
+    const businessId = getBusinessId(req);
+    const { getPortfolioHealthRollup } = await import("../../services/george-tools");
+    const result = await getPortfolioHealthRollup(businessId);
+    return res.json(result);
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
