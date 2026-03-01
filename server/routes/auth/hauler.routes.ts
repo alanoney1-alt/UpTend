@@ -132,7 +132,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
       }
 
       const code = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+      const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
 
       await storage.createEmailVerificationCode(email, code, expiresAt);
       console.log(`[EMAIL VERIFICATION] Code sent to ${email}`);
@@ -185,7 +185,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
       }
 
       const code = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+      const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
 
       await storage.createEmailVerificationCode(email, code, expiresAt);
       console.log(`[EMAIL VERIFICATION] Code sent to ${email}`);
@@ -312,11 +312,8 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         return res.status(400).json({ error: "Please verify your email before registering" });
       }
 
-      if (new Date() > storedVerification.expiresAt) {
-        await storage.deleteEmailVerificationCode(data.email);
-        return res.status(400).json({ error: "Email verification expired. Please verify your email again." });
-      }
 
+      // Email verified — skip expiration re-check (signup takes time)
       // Check for existing email
       const existingEmail = await storage.getUserByEmail(data.email);
       if (existingEmail) {
@@ -491,11 +488,8 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         return res.status(400).json({ error: "Please verify your email before registering" });
       }
 
-      if (new Date() > storedVerification.expiresAt) {
-        await storage.deleteEmailVerificationCode(data.email);
-        return res.status(400).json({ error: "Email verification expired. Please verify your email again." });
-      }
 
+      // Email verified — skip expiration re-check (signup takes time)
       // Check for existing email
       const existingEmail = await storage.getUserByEmail(data.email);
       if (existingEmail) {
