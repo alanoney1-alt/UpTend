@@ -142,4 +142,33 @@ export function registerBuildiumRoutes(app: Express) {
     if (!conn) return res.json({ connected: false });
     res.json({ connected: conn.status === "active", status: conn.status, lastSyncAt: conn.lastSyncAt, lastSyncResult: conn.lastSyncResult });
   });
+
+  // POST /api/integrations/buildium/sync-work-orders
+  app.post("/api/integrations/buildium/sync-work-orders", async (req: Request, res: Response) => {
+    try {
+      const { businessAccountId, workOrders: incoming } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      const mapped = (incoming || []).map((wo: any) => ({
+        externalId: wo.Id || wo.id, description: wo.Title || wo.description,
+        priority: wo.Priority?.toLowerCase() || "normal", status: wo.Status || "open",
+        unitAddress: wo.PropertyAddress || wo.address, createdAt: wo.CreatedDateTime || new Date().toISOString(),
+      }));
+      res.json({ success: true, platform: "buildium", workOrdersProcessed: mapped.length, workOrders: mapped });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
+
+  // POST /api/integrations/buildium/sync-properties
+  app.post("/api/integrations/buildium/sync-properties", async (req: Request, res: Response) => {
+    try {
+      const { businessAccountId, properties: incoming } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      const mapped = (incoming || []).map((p: any) => ({
+        externalId: p.Id || p.id, address: p.Address?.AddressLine1 || p.address,
+        city: p.Address?.City || p.city, state: p.Address?.State || p.state,
+        zip: p.Address?.PostalCode || p.zip, units: p.NumberOfUnits || 1,
+        type: p.Type || "residential", mappedTo: "b2b_contract_properties",
+      }));
+      res.json({ success: true, platform: "buildium", propertiesProcessed: mapped.length, properties: mapped });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
 }

@@ -116,4 +116,33 @@ export function registerRentManagerRoutes(app: Express) {
     if (!conn) return res.json({ connected: false });
     res.json({ connected: conn.status === "active", status: conn.status, lastSyncAt: conn.lastSyncAt, lastSyncResult: conn.lastSyncResult });
   });
+
+  // POST /api/integrations/rentmanager/sync-work-orders
+  app.post("/api/integrations/rentmanager/sync-work-orders", async (req: Request, res: Response) => {
+    try {
+      const { businessAccountId, workOrders: incoming } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      const mapped = (incoming || []).map((wo: any) => ({
+        externalId: wo.ServiceManagerID || wo.id, description: wo.Comment || wo.description,
+        priority: wo.Priority?.toLowerCase() || "normal", status: wo.Status || "open",
+        unitAddress: wo.PropertyAddress || wo.address, createdAt: wo.DateCreated || new Date().toISOString(),
+      }));
+      res.json({ success: true, platform: "rentmanager", workOrdersProcessed: mapped.length, workOrders: mapped });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
+
+  // POST /api/integrations/rentmanager/sync-properties
+  app.post("/api/integrations/rentmanager/sync-properties", async (req: Request, res: Response) => {
+    try {
+      const { businessAccountId, properties: incoming } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      const mapped = (incoming || []).map((p: any) => ({
+        externalId: p.PropertyID || p.id, address: p.Address || p.address,
+        city: p.City || p.city, state: p.State || p.state,
+        zip: p.Zip || p.zip, units: p.UnitCount || 1,
+        type: p.PropertyType || "residential", mappedTo: "b2b_contract_properties",
+      }));
+      res.json({ success: true, platform: "rentmanager", propertiesProcessed: mapped.length, properties: mapped });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
 }

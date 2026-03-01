@@ -7704,3 +7704,72 @@ export const b2bContractPropertiesRelations = relations(b2bContractProperties, (
 
 export const insertB2bContractPropertySchema = createInsertSchema(b2bContractProperties).omit({ id: true, createdAt: true });
 export type B2bContractProperty = typeof b2bContractProperties.$inferSelect;
+
+// ─── B2B Budgets ───────────────────────────────────────────────────────────
+export const b2bBudgets = pgTable("b2b_budgets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessId: varchar("business_id").notNull(),
+  period: text("period").notNull().default("monthly"), // monthly | quarterly | annual
+  budgetAmount: real("budget_amount").notNull(),
+  category: text("category"), // optional service type filter
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export type B2bBudget = typeof b2bBudgets.$inferSelect;
+
+// ─── W2 Crews ──────────────────────────────────────────────────────────────
+export const w2Crews = pgTable("w2_crews", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessId: varchar("business_id").notNull(),
+  crewName: text("crew_name").notNull(),
+  crewLeadUserId: varchar("crew_lead_user_id"),
+  members: jsonb("members").default([]),
+  serviceSpecialties: text("service_specialties").array(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export type W2Crew = typeof w2Crews.$inferSelect;
+
+// ─── W2 Time Entries ───────────────────────────────────────────────────────
+export const w2TimeEntries = pgTable("w2_time_entries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  crewId: varchar("crew_id").notNull(),
+  memberUserId: varchar("member_user_id"),
+  jobId: varchar("job_id"),
+  clockIn: timestamp("clock_in").defaultNow(),
+  clockOut: timestamp("clock_out"),
+  hoursWorked: real("hours_worked"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export type W2TimeEntry = typeof w2TimeEntries.$inferSelect;
+
+// ─── Crew-Property Assignments ─────────────────────────────────────────────
+export const crewPropertyAssignments = pgTable("crew_property_assignments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  crewId: varchar("crew_id").notNull(),
+  propertyId: varchar("property_id").notNull(), // references b2b_contract_properties
+  assignmentType: text("assignment_type").default("primary"), // primary | backup
+  assignedDate: timestamp("assigned_date").defaultNow(),
+  notes: text("notes"),
+  isActive: boolean("is_active").default(true),
+});
+export type CrewPropertyAssignment = typeof crewPropertyAssignments.$inferSelect;
+
+// ─── Recurring Job Schedules ───────────────────────────────────────────────
+export const recurringJobSchedules = pgTable("recurring_job_schedules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessId: varchar("business_id").notNull(),
+  contractId: varchar("contract_id"),
+  propertyId: varchar("property_id"),
+  serviceType: text("service_type").notNull(),
+  frequency: text("frequency").notNull().default("monthly"), // weekly | biweekly | monthly | quarterly
+  dayOfWeek: integer("day_of_week"), // 0=Sun..6=Sat
+  weekOfMonth: integer("week_of_month"), // 1-4
+  nextRunDate: text("next_run_date"),
+  lastRunDate: text("last_run_date"),
+  autoDispatch: boolean("auto_dispatch").default(false),
+  assignedCrewId: varchar("assigned_crew_id"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export type RecurringJobSchedule = typeof recurringJobSchedules.$inferSelect;

@@ -188,4 +188,42 @@ export function registerYardiRoutes(app: Express) {
     if (!conn) return res.json({ connected: false });
     res.json({ connected: conn.status === "active", status: conn.status, lastSyncAt: conn.lastSyncAt, lastSyncResult: conn.lastSyncResult });
   });
+
+  // POST /api/integrations/yardi/webhook
+  app.post("/api/integrations/yardi/webhook", async (req: Request, res: Response) => {
+    try {
+      const payload = req.body;
+      console.log(`[Yardi Webhook] ${payload.EventType || "unknown"}`, payload);
+      res.json({ received: true, platform: "yardi", eventType: payload.EventType });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
+
+  // POST /api/integrations/yardi/sync-work-orders
+  app.post("/api/integrations/yardi/sync-work-orders", async (req: Request, res: Response) => {
+    try {
+      const { businessAccountId, workOrders: incoming } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      const mapped = (incoming || []).map((wo: any) => ({
+        externalId: wo.WorkOrderId || wo.id, description: wo.Description || wo.summary,
+        priority: wo.Priority?.toLowerCase() || "normal", status: wo.Status || "open",
+        unitAddress: wo.UnitAddress || wo.address, createdAt: wo.DateCreated || new Date().toISOString(),
+      }));
+      res.json({ success: true, platform: "yardi", workOrdersProcessed: mapped.length, workOrders: mapped });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
+
+  // POST /api/integrations/yardi/sync-properties
+  app.post("/api/integrations/yardi/sync-properties", async (req: Request, res: Response) => {
+    try {
+      const { businessAccountId, properties: incoming } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      const mapped = (incoming || []).map((p: any) => ({
+        externalId: p.PropertyId || p.id, address: p.Address || p.address,
+        city: p.City || p.city, state: p.State || p.state,
+        zip: p.Zip || p.zip, units: p.UnitCount || 1,
+        type: p.PropertyType || "residential", mappedTo: "b2b_contract_properties",
+      }));
+      res.json({ success: true, platform: "yardi", propertiesProcessed: mapped.length, properties: mapped });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
 }

@@ -37,8 +37,9 @@ export function registerBusinessTeamRoutes(app: Express) {
   // HOA pricing schedule routes
   app.use("/api/business", hoaPricingRoutes);
 
-  // Business account routes (dashboard)
+  // Business account routes (dashboard + budgets + crews)
   app.use("/api/business-accounts", businessAccountRoutes);
+  app.use("/api/business", businessAccountRoutes); // budget/crew endpoints under /api/business/
 
   // Recurring job routes (dashboard)
   app.use("/api/recurring-jobs", recurringJobRoutes);

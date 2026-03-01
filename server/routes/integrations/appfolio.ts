@@ -292,6 +292,43 @@ export function registerAppfolioRoutes(app: Express) {
       res.status(500).json({ error: "Webhook processing failed" });
     }
   });
+
+  // POST /api/integrations/appfolio/sync-work-orders
+  app.post("/api/integrations/appfolio/sync-work-orders", async (req: Request, res: Response) => {
+    try {
+      const { businessAccountId, workOrders: incomingWOs } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      // Accept external work orders and map them
+      const mapped = (incomingWOs || []).map((wo: any) => ({
+        externalId: wo.id || wo.externalId,
+        description: wo.description || wo.summary,
+        priority: mapAppfolioPriority(wo.priority),
+        status: wo.status || "open",
+        unitAddress: wo.unit_address || wo.address,
+        createdAt: wo.created_at || new Date().toISOString(),
+      }));
+      res.json({ success: true, platform: "appfolio", workOrdersProcessed: mapped.length, workOrders: mapped });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
+
+  // POST /api/integrations/appfolio/sync-properties
+  app.post("/api/integrations/appfolio/sync-properties", async (req: Request, res: Response) => {
+    try {
+      const { businessAccountId, properties: incomingProps } = req.body;
+      if (!businessAccountId) return res.status(400).json({ error: "Missing businessAccountId" });
+      const mapped = (incomingProps || []).map((p: any) => ({
+        externalId: p.id || p.externalId,
+        address: p.address || p.street_address,
+        city: p.city,
+        state: p.state,
+        zip: p.zip || p.postal_code,
+        units: p.unit_count || 1,
+        type: p.property_type || "residential",
+        mappedTo: "b2b_contract_properties",
+      }));
+      res.json({ success: true, platform: "appfolio", propertiesProcessed: mapped.length, properties: mapped });
+    } catch (error: any) { res.status(500).json({ error: error.message }); }
+  });
 }
 
 function mapAppfolioPriority(raw?: string): "emergency" | "urgent" | "normal" | "low" {
