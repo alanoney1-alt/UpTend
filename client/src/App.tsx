@@ -202,6 +202,9 @@ const QualityReports = lazy(() => import("@/pages/quality-reports"));
 
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
 const BlogHomeServicesLakeNona = lazy(() => import("@/pages/blog/home-services-lake-nona"));
+const BlogLakeNonaHomeMaintenance = lazy(() => import("@/pages/blog/lake-nona-home-maintenance"));
+const BlogPressureWashingCostOrlando = lazy(() => import("@/pages/blog/pressure-washing-cost-orlando"));
+const BlogNewToLakeNona = lazy(() => import("@/pages/blog/new-to-lake-nona"));
 const BlogPost = lazy(() => import("@/pages/blog/post"));
 
 function ScrollToTop() {

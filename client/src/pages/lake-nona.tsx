@@ -24,7 +24,7 @@ const SERVICES = [
   { label: "Garage Cleanout", icon: Home },
   { label: "Pool Cleaning", icon: Waves },
   { label: "Carpet Cleaning", icon: Sparkles },
-  { label: "Painting", icon: Paintbrush },
+  { label: "Home DNA Scan", icon: Shield },
 ];
 
 export default function LakeNonaPage() {
@@ -107,6 +107,7 @@ export default function LakeNonaPage() {
             <Badge className="bg-[#F47C20]/20 text-[#F47C20] border-[#F47C20]/30 mb-6">
               Meet George
             </Badge>
+            <img src="/george-avatar.png" alt="George" className="w-24 h-24 rounded-full mx-auto mb-6 ring-4 ring-[#F47C20]/30" />
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
               Your home already knows what it needs.
             </h2>
