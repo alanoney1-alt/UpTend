@@ -772,7 +772,7 @@ const resources = {
       "faq.pricing.q4": "Can I tip my Pro?",
       "faq.pricing.a4": "Absolutely! Tips are optional but appreciated. 100% of tips go directly to your Pro, we don't take any cut. You can add a tip through the app after the job is completed.",
       "faq.pricing.q5": "Do you charge extra for stairs or difficult access?",
-      "faq.pricing.a5": "Standard pricing includes up to 3 flights of stairs and normal access. For extreme situations (4+ flights, no elevator, narrow doorways, long carries 100+ feet), a small surcharge ($25-$50) may apply. Your Pro will assess on arrival and you must approve before work begins.",
+      "faq.pricing.a5": "No. The price George quotes you is the price you pay. We don't charge extra for stairs, multiple floors, or access. It's all included.",
       "faq.pricing.q6": "Are there discounts for seniors or military?",
       "faq.pricing.a6": "Yes! We offer 10% off all services for seniors (65+), active military, veterans, teachers, healthcare workers, and first responders. Verify your status in the app settings to automatically apply discounts to all future bookings. Not combinable with other promotional offers.",
       "faq.pricing.q7": "What is your pricing for the Home DNA Scan?",

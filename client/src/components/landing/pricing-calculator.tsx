@@ -43,7 +43,7 @@ const movingItems = [
 ];
 
 const extraOptions = [
-  { id: "stairs", label: "Stairs", price: STAIRS_FLAT_FEE, description: `Flat $${STAIRS_FLAT_FEE} fee for any stairs` },
+  // stairs fee removed — no extra charge for stairs
   { id: "heavy_item", label: "Heavy item (>100 lbs)", price: 35, description: "Piano, safe, pool table, etc." },
   { id: "refrigerant", label: "Refrigerant disposal", price: 25, description: "AC units, refrigerators with freon" },
   { id: "mattress_disposal", label: "Mattress disposal fee", price: 15, description: "Required for mattress disposal" },

@@ -38,9 +38,9 @@ export function CarpetCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
 
   let roomsCost = whPkg ? whPkg.price : rooms * ct.pricePerRoom;
   const hallwayCost = hallways * 25;
-  const stairCost = stairFlights * 25;
+  const stairCost = 0; // stairs fee removed — no extra charge
   const scotchgardCost = scotchgard ? (whPkg ? whPkg.rooms : rooms) * 20 : 0;
-  const subtotal = roomsCost + hallwayCost + stairCost + scotchgardCost;
+  const subtotal = roomsCost + hallwayCost + scotchgardCost;
   const total = Math.max(subtotal, subtotal > 0 ? 100 : 0);
 
   const lineItems = [

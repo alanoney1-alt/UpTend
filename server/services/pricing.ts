@@ -26,7 +26,7 @@ export const PRICING_CONSTANTS = {
   CARPET_DEEP: 7500,        // $75/room - Standard + enzyme treatment, heavy soil agitation, slow dry pass
   CARPET_PET: 8900,         // $89/room - Deep clean + pet odor enzyme + sanitizer
   CARPET_HALLWAY: 2500,     // $25 each
-  CARPET_STAIRS: 2500,      // $25 per flight
+  CARPET_STAIRS: 0, // stairs fee removed      // $25 per flight
   CARPET_SCOTCHGARD: 2000,  // $20/room add-on
   CARPET_PKG_3BR: 12900,    // $129 - 3BR/2BA standard package (all rooms + hallway)
   CARPET_PKG_4_5BR: 21500,  // $215 - 4-5BR standard package (all rooms + hallways)

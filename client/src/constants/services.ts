@@ -129,7 +129,7 @@ export const SERVICES = {
       deep_clean: { name: 'Deep Clean', price: 75, unit: 'per room', description: 'Standard + enzyme treatment, heavy soil agitation, slow dry pass' },
       pet_treatment: { name: 'Pet Treatment', price: 89, unit: 'per room', description: 'Deep clean + pet odor enzyme + sanitizer' },
       hallway: { name: 'Hallway', price: 25, unit: 'each', description: 'Hallway cleaning' },
-      stairs: { name: 'Stairs (per flight)', price: 25, unit: 'per flight', description: 'Stairway cleaning per flight' },
+      // stairs fee removed — no extra charge for stairs
       scotchgard: { name: 'Scotchgard/Protectant', price: 20, unit: 'per room', description: 'Stain protection add-on' },
       package_3br: { name: '3BR/2BA Standard Package', price: 129, unit: 'flat', description: 'All rooms + hallway' },
       package_4_5br: { name: '4-5BR Standard Package', price: 215, unit: 'flat', description: 'All rooms + hallways' },
