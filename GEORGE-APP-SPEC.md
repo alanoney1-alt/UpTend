@@ -1,12 +1,25 @@
 # George App — Complete Build Spec
 
-## CHANGELOG (Latest Updates — 2026-02-27 Night)
+## CHANGELOG
+
+### 2026-03-01
+- **Corporate Structure Simplified**: 2 entities (was 4). UPYCK Inc (DBA UpTend) + UpTend Services LLC (SDVOSB). B2B LLC eliminated — all consumer + B2B runs through DBA with service company partnerships, no W2 employees. W2 only for government contracts via UpTend Services LLC.
+- **Service Company Partnership Model**: Partners are existing small service companies (not individual 1099 pros). 3 tiers: Standard (15% fee, 85% to partner), Verified (13%), Certified (12%). Partners get steady volume, automated scheduling, instant payments, zero marketing spend.
+- **Job Routing Cascade**: George checks online pro rates via `getAvailableProRates` before quoting. Customer price GUARANTEED once quoted. 4-tier cascade: primary match (10min) → next pro (30min) → sweetener 90% payout (60min) → expand radius + notify customer. Pro matching: proximity > rating > tier pricing > specialty. Endpoints: POST /api/jobs/:jobId/offer, /respond, GET /offer-status.
+- **Tiered Pro Pricing**: 9 of 12 services have tier-by-tier pricing variants. Junk (4 tiers), Pressure Washing (3), Gutters (2), Demo (3), Garage (3), Cleaning (4), Pool (3), Landscaping (3), Carpet (3). Moving Labor + Handyman = single hourly rate. Pro sets price per tier during signup AND can edit anytime in dashboard. Data in `client/src/constants/service-price-ranges.ts`.
+- **Pro Dashboard Editable Profile**: Pros toggle services on/off, edit company name, phone, service area. Auto-save via PATCH /api/pro/profile. Fields: serviceTypes, companyName, phone, serviceArea, proRates, proTierRates.
+- **Pro Welcome Email**: Full onboarding guide on registration. 4 steps: Set Up Payout → Review Pricing → Go Online → Accept & Complete Jobs. Meet George section, Quick Reference table. Admin notification to alan@uptendapp.com.
+- **Email sender changed**: alan@uptendapp.com (was george@, still not verified). Tagline: "One Price. One Pro. Done." (was "You Pick. We Haul."). Dark navy branding (was purple #3B1D5A).
+- **Upload Infrastructure**: R2 cloud storage (STORAGE_PROVIDER=r2). Presigned URL flow: client gets signed PUT URL, uploads directly to Cloudflare R2. Public URL via R2_PUBLIC_URL env var.
+- **Brand Updates**: Logo "Up" in #F47C20 + "Tend" in white, default variant "light" (dark theme). Favicon: orange house-circuit on dark navy. Photo quote removed from site — only George chat and /book page.
+
+### 2026-02-27 Night
 - **Founding Member Discounts**: Payment card shows $25 credit + 10% off line items. API returns `foundingDiscount` object from `POST /api/payments/create-intent`. Account tab shows perks remaining via `GET /api/founding-status`.
 - **Sponsored Product Placement**: Full spec added — product cards in chat with tracking, API endpoints for impressions/clicks, 14 sponsorship categories. Same card component for organic + sponsored.
 - **B2B Experience**: New section — free Home DNA Scan for every HOA/PM/construction property. George onboards residents via chat. B2B dashboard features. Resident app experience.
 - **Pro Home DNA Scan**: Free scan perk for pros, accessible from Pro Account tab. "Home DNA Certified" badge.
 - **Pro Chat Expanded**: George talks tools, bulk buying, financial responsibility, the grind. Sponsored products in pro chat too.
-- **All emails from george@uptendapp.com** — this is the customer service identity.
+- **All emails from alan@uptendapp.com** — this is the customer service identity.
 - **George personality fully defined in system prompt** (`server/services/george-agent.ts`) — backstory, voice style, humor, photo ID, adapts to audience, reads the room.
 
 ---
@@ -860,6 +873,116 @@ Every pro gets a FREE Home DNA Scan + home dashboard for their own home:
 4. **Work** → Timer running, can message customer via George
 5. **After Photos** → Camera captures completed work
 6. **Complete** → Job done, earnings added, customer prompted to review
+
+---
+
+## Corporate Structure (Updated 2026-03-01)
+
+**2 entities** (simplified from 4):
+1. **UPYCK Inc (DBA UpTend)** — The platform. All consumer + B2B operations run through here. Service company partnerships, no W2 employees.
+2. **UpTend Services LLC (SDVOSB)** — Government contracts only. W2 employees only for gov work.
+
+B2B LLC has been eliminated. All B2B (HOA, PM, construction) runs through the UpTend DBA with service company partnerships.
+
+---
+
+## Service Company Partnership Model
+
+Partners are **existing small service companies** — not individual 1099 pros. They bring their own crews, insurance, and equipment. UpTend provides the customer pipeline, scheduling, and payments.
+
+### Why It Works
+- Partners keep **80-85%** of every job, get steady volume, automated scheduling, instant payments, zero marketing spend
+- Can't cut UpTend out because **George owns both sides of the relationship** (customer relationship + scheduling/payments)
+- Partners focus on what they do best (the work), UpTend handles everything else
+
+### Partner Tiers
+| Tier | Platform Fee | Partner Keeps | Requirements |
+|------|-------------|---------------|--------------|
+| **Standard** | 15% | 85% | Active, insured, background checked |
+| **Verified** | 13% | 87% | 50+ jobs, 4.5+ rating, verified reviews |
+| **Certified** | 12% | 88% | 100+ jobs, 4.8+ rating, UpTend trained |
+
+---
+
+## Job Routing Cascade
+
+When a customer gets a quote from George, the price is **GUARANTEED** — it never changes regardless of which pro gets assigned.
+
+### How George Quotes
+1. George checks online pro rates via `getAvailableProRates` before generating a quote
+2. Customer sees a single locked price based on available pro pricing
+3. Once quoted, the price is locked — customer confidence is paramount
+
+### 4-Tier Cascade (after booking)
+| Tier | Timeframe | Action |
+|------|-----------|--------|
+| **1. Primary Match** | 0-10 min | Best-fit pro gets the offer. Matching: proximity > rating > tier pricing > specialty |
+| **2. Next Pro** | 10-30 min | Offer moves to next best pro in the area |
+| **3. Sweetener** | 30-60 min | Offer at 90% payout to attract pros |
+| **4. Expand + Notify** | 60+ min | Expand search radius + notify customer of delay |
+
+### API Endpoints
+- `POST /api/jobs/:jobId/offer` — Send job offer to a pro
+- `POST /api/jobs/:jobId/respond` — Pro accepts/declines offer
+- `GET /api/jobs/:jobId/offer-status` — Check current offer state
+
+---
+
+## Tiered Pro Pricing
+
+9 of 12 services have **tier-by-tier pricing variants**. Pros set their own prices per tier during signup and can edit anytime in their dashboard Profile.
+
+### Service Tiers
+| Service | Tiers | Description |
+|---------|-------|-------------|
+| Junk Removal | 4 | By load size (few items → multiple loads) |
+| Pressure Washing | 3 | By scope (driveway → full house) |
+| Gutters | 2 | Standard clean vs deep clean |
+| Demolition | 3 | By scope (small → large) |
+| Garage Cleanout | 3 | By fullness (partial → packed) |
+| Home Cleaning | 4 | By type (standard → deep → move-out → post-construction) |
+| Pool Cleaning | 3 | By service (maintenance → green recovery → repair) |
+| Landscaping | 3 | By scope (basic → full service) |
+| Carpet Cleaning | 3 | By room count / scope |
+| Moving Labor | — | Single hourly rate |
+| Handyman | — | Single hourly rate |
+
+**Data source:** `client/src/constants/service-price-ranges.ts`
+
+---
+
+## Pro Dashboard Editable Profile
+
+Pros can manage their profile at any time from their dashboard:
+- **Toggle services on/off** — only receive jobs for active services
+- **Edit company name, phone, service area**
+- **Set/edit pricing per tier** for each active service
+- **Auto-save** via `PATCH /api/pro/profile`
+- **Fields accepted:** serviceTypes, companyName, phone, serviceArea, proRates, proTierRates
+
+---
+
+## Pro Welcome Email
+
+Full onboarding guide sent automatically on pro registration:
+
+**4 Steps:**
+1. **Set Up Payout** — Connect Stripe for instant payments
+2. **Review Pricing** — Set your rates per service tier
+3. **Go Online** — Toggle availability to start receiving jobs
+4. **Accept & Complete Jobs** — How the job flow works
+
+Includes a "Meet George" section explaining the AI assistant, and a Quick Reference table.
+Admin notification sent to alan@uptendapp.com on every new pro registration.
+
+---
+
+## Upload Infrastructure
+
+- **Storage:** Cloudflare R2 (STORAGE_PROVIDER=r2)
+- **Flow:** Client requests presigned PUT URL from server → uploads directly to R2 → gets public URL back
+- **Public URLs:** Served via R2_PUBLIC_URL env var
+- Used for: before/after photos, home scan images, profile photos, job documentation
 
 ---
 

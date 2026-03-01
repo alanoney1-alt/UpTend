@@ -3448,3 +3448,216 @@ The diagnostic answers get sent to the backend as structured data alongside the 
 }
 ```
 George's backend uses these structured answers to call `calculate_quote` with precise parameters instead of parsing free text.
+
+---
+
+## Feature 21: Job Routing Cascade (Backend + Pro App)
+
+The job routing cascade ensures every booked job gets matched to a pro reliably. Customer price is GUARANTEED once quoted — never changes.
+
+### How It Works
+
+1. **Pre-Quote**: George calls `getAvailableProRates` to check online pro pricing before generating a customer quote
+2. **Post-Booking**: 4-tier cascade assigns a pro
+
+### Cascade Logic
+
+```typescript
+// server/services/job-routing.ts
+interface CascadeState {
+  jobId: string;
+  tier: 1 | 2 | 3 | 4;
+  startedAt: Date;
+  currentProId: string | null;
+  offeredPros: string[]; // already-offered pro IDs
+  payoutPercent: number; // starts at 85%, tier 3 = 90%
+}
+
+// Tier 1 (0-10 min): Best-fit pro
+// Match by: proximity > rating > tier pricing > specialty
+// Tier 2 (10-30 min): Next best pro
+// Tier 3 (30-60 min): Sweetener — offer at 90% payout
+// Tier 4 (60+ min): Expand radius + notify customer of delay
+```
+
+### API Endpoints
+- `POST /api/jobs/:jobId/offer` — Send job offer to a pro
+- `POST /api/jobs/:jobId/respond` — Pro accepts (`{ accepted: true }`) or declines
+- `GET /api/jobs/:jobId/offer-status` — Check cascade state (tier, current pro, time remaining)
+
+### Pro App: Job Offer Card
+
+When a pro receives an offer, it appears as a full-screen takeover in the Pro app:
+
+```
+┌─────────────────────────────────┐
+│  NEW JOB OFFER                  │
+│  ⏱ Expires in 9:45              │
+│                                 │
+│  Gutter Cleaning                │
+│  📍 2.3 mi · Lake Nona          │
+│  💰 $127.50 (your take)         │
+│  📅 Mar 5, 2-4 PM               │
+│                                 │
+│  ████████████ Accept ████████████│
+│                                 │
+│  [ Decline ]                    │
+└─────────────────────────────────┘
+```
+
+- Countdown timer shows time remaining before offer moves to next pro
+- Heavy haptic + push notification on offer arrival
+- Accept triggers instant assignment + customer notification
+- Decline moves to next cascade tier
+
+### Customer Notification During Cascade
+
+- Tier 1-2: No notification (seamless)
+- Tier 3: No notification (still working)
+- Tier 4: "We're finding the best pro for your job. Hang tight — we'll have someone confirmed shortly."
+
+---
+
+## Feature 22: Tiered Pro Pricing Configuration
+
+### Pro Signup: Price Setting
+
+During pro registration, after selecting services, pros set their price for each tier:
+
+```
+┌─────────────────────────────────┐
+│  Set Your Prices                │
+│                                 │
+│  Junk Removal                   │
+│  ┌─────────────────────────┐   │
+│  │ Tier 1: Few items       │   │
+│  │ Market range: $89-$149  │   │
+│  │ Your price: [  $___  ]  │   │
+│  ├─────────────────────────┤   │
+│  │ Tier 2: Half truck      │   │
+│  │ Market range: $179-$299 │   │
+│  │ Your price: [  $___  ]  │   │
+│  ├─────────────────────────┤   │
+│  │ Tier 3: Full truck      │   │
+│  │ Market range: $299-$449 │   │
+│  │ Your price: [  $___  ]  │   │
+│  ├─────────────────────────┤   │
+│  │ Tier 4: Multiple loads  │   │
+│  │ Market range: $449-$699 │   │
+│  │ Your price: [  $___  ]  │   │
+│  └─────────────────────────┘   │
+│                                 │
+│  Moving Labor (hourly)          │
+│  Your rate: [  $/hr  ]          │
+│                                 │
+└─────────────────────────────────┘
+```
+
+### Pro Dashboard: Edit Prices Anytime
+
+In the Pro Profile section, pros can edit their tier pricing at any time. Changes auto-save via `PATCH /api/pro/profile` with `proTierRates` field.
+
+### Data Source
+All tier definitions and market price ranges live in `client/src/constants/service-price-ranges.ts`.
+
+### Service Tier Breakdown
+| Service | Tiers |
+|---------|-------|
+| Junk Removal | 4 (few items, half truck, full truck, multiple loads) |
+| Pressure Washing | 3 (driveway, partial house, full house) |
+| Gutters | 2 (standard clean, deep clean) |
+| Demolition | 3 (small, medium, large) |
+| Garage Cleanout | 3 (partial, half, full) |
+| Home Cleaning | 4 (standard, deep, move-out, post-construction) |
+| Pool Cleaning | 3 (maintenance, green recovery, repair) |
+| Landscaping | 3 (basic, standard, full service) |
+| Carpet Cleaning | 3 (1-2 rooms, 3-4 rooms, whole house) |
+| Moving Labor | Single hourly rate |
+| Handyman | Single hourly rate |
+
+---
+
+## Feature 23: Pro Dashboard Editable Profile
+
+### Component: Pro Profile Settings
+
+Pros can manage their entire profile from the dashboard:
+
+```
+┌─────────────────────────────────┐
+│  My Profile                     │
+│                                 │
+│  Company: [  Green Clean LLC  ] │
+│  Phone:   [  407-555-1234     ] │
+│  Service Area: [ 25 ] miles     │
+│                                 │
+│  ─── Active Services ──────── │
+│  ✅ Junk Removal     [Edit $]  │
+│  ✅ Pressure Washing [Edit $]  │
+│  ☐  Gutters                    │
+│  ✅ Demolition       [Edit $]  │
+│  ☐  Garage Cleanout            │
+│  ☐  Home Cleaning              │
+│  ...                            │
+│                                 │
+│  Auto-saved ✓                   │
+└─────────────────────────────────┘
+```
+
+### API
+- `PATCH /api/pro/profile` — Auto-save on any field change
+- Accepted fields: `serviceTypes`, `companyName`, `phone`, `serviceArea`, `proRates`, `proTierRates`
+- Toggle a service off → pro stops receiving those job types immediately
+- Toggle on → pro can set pricing, then starts receiving offers
+
+---
+
+## Feature 24: Pro Welcome Email
+
+Sent automatically on pro registration. Dark navy branding with orange accents.
+
+### Email Content Structure
+
+```
+Subject: Welcome to UpTend — Let's Get You Earning
+
+From: alan@uptendapp.com
+Tagline: One Price. One Pro. Done.
+
+[UpTend Logo — "Up" in #F47C20, "Tend" in white]
+
+Hey [Pro Name],
+
+Welcome to UpTend. Here's how to start earning:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1: Set Up Your Payout
+Connect your bank via Stripe for instant payments.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2: Review Your Pricing
+Set your rates for each service tier. You can change them anytime.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3: Go Online
+Toggle your status to start receiving job offers in your area.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4: Accept & Complete Jobs
+Accept offers, navigate to the job, complete the work, get paid.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🤖 MEET GEORGE
+George is our AI that handles customers, quoting, and scheduling.
+He'll send you job offers matched to your services, location, and rates.
+You focus on the work — George handles the rest.
+
+┌─────────────────────────────┐
+│ QUICK REFERENCE              │
+├─────────────────────────────┤
+│ Payout:     85% (Standard)  │
+│ Pay timing: Instant/weekly  │
+│ Job offers: Push + in-app   │
+│ Support:    alan@uptendapp  │
+└─────────────────────────────┘
+```
+
+### Admin Notification
+On every new pro registration, an admin notification email is sent to alan@uptendapp.com with the pro's name, services, and location.
