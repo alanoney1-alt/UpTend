@@ -163,7 +163,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
   const [tosAccepted, setTosAccepted] = useState(false);
   const [tosAcceptedAt, setTosAcceptedAt] = useState<string | null>(null);
   const [address, setAddress] = useState("");
-  const [step, setStep] = useState<1 | 2 | "choose-pro" | 3 | 4 | 5 | 6 | 7>(1);
+  const [step, setStep] = useState<1 | 2 | "diagnostic" | "choose-pro" | 3 | 4 | 5 | 6 | 7>(1);
   const [createdJobId, setCreatedJobId] = useState<string | null>(null);
   const [bookingAmount, setBookingAmount] = useState<number>(0);
   const [propertyData, setPropertyData] = useState<ZillowProperty | null>(null);
@@ -291,7 +291,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId);
     window.scrollTo(0, 0);
-    setStep("choose-pro");
+    setStep("diagnostic");
   };
 
   const handleQuickBook = () => {
@@ -559,6 +559,57 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
     );
   }
 
+  // Step "diagnostic": Service-specific questions before quoting
+  if (step === "diagnostic") {
+    const serviceName = pricingServices.find(s => s.id === selectedService)?.name || "Service";
+    return (
+      <div className="w-full max-w-2xl mx-auto" data-testid="widget-service-diagnostic">
+        <div className="text-center mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setStep(2)}
+            className="mb-4"
+          >
+            ← Back to services
+          </Button>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            Tell us about your {serviceName} job
+          </h2>
+          <p className="text-base text-muted-foreground">
+            A few quick questions so we can give you an accurate price
+          </p>
+        </div>
+
+        <ServiceFlowRouter
+          serviceId={selectedService || ""}
+          propertyData={{
+            bedrooms: bedrooms ? (bedrooms === '5+' ? 5 : Number(bedrooms)) : propertyData?.bedrooms ?? null,
+            bathrooms: bathrooms ? (bathrooms === '4+' ? 4 : Number(bathrooms)) : propertyData?.bathrooms ?? null,
+            livingArea: sqft ? null : propertyData?.livingArea ?? null,
+            sqftRange: sqft || undefined,
+            stories: stories || undefined,
+          }}
+          onComplete={(result: ServiceFlowResult) => {
+            setManualEstimate({
+              quoteMethod: "manual",
+              serviceType: selectedService,
+              estimatedPrice: result.estimatedPrice,
+              monthlyPrice: result.monthlyPrice,
+              isRecurring: result.isRecurring,
+              userInputs: result.userInputs,
+              lineItems: result.lineItems,
+              discounts: result.discounts,
+              requiresHitlValidation: result.requiresHitlValidation,
+            });
+            setStep(3);
+          }}
+          onBack={() => setStep(2)}
+        />
+      </div>
+    );
+  }
+
   // Step "choose-pro": Quick Book vs Choose My Pro
   if (step === "choose-pro") {
     return (
@@ -625,9 +676,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
         defaultTiming={preselectedTiming}
         onComplete={(data) => {
           setSchedulingData(data);
-          setStep(4);
+          setStep(6);
         }}
-        onBack={() => setStep(2)}
+        onBack={() => setStep("diagnostic")}
       />
     );
   }
