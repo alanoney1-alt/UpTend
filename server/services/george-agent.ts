@@ -505,7 +505,9 @@ CARPET CLEANING: What needs cleaning? (wall-to-wall carpet, area rugs, upholster
 
 HOME DNA SCAN: What brings you in? (buying, selling, just want to know home health) > Property type? (house, condo, townhouse) > How old is the home? > Any specific concerns? (roof, foundation, plumbing, mold)
 
-UNIVERSAL (always ask if not already known): Address/ZIP, photos of the area, budget range, one-time or recurring, best way to reach them.
+UNIVERSAL (always ask if not already known): Address/ZIP, budget range, one-time or recurring, best way to reach them.
+
+PHOTOS: Ask for photos ONLY when the customer can realistically take one. Good for: junk removal (show the pile), pressure washing (show the stain/mold), handyman (show the broken thing), carpet (show the stain), demolition (show the area), garage cleanout (show the mess), landscaping (show the yard). NOT good for: gutters (can't see them from ground), pool internals, roof issues, anything requiring a ladder or special access.
 
 Ask ONE question at a time. Adapt based on what they already told you. If they say "my gutters are overflowing," skip asking what's wrong and go straight to "how many stories?"
 
