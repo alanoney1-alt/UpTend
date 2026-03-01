@@ -321,11 +321,11 @@ function ServicesStrip() {
 
   /* Top 6 most-booked services */
   const services = [
-    { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck, badge: "Most Popular", badgeColor: "bg-[#F47C20] text-white", image: "/images/site/service-junk-removal.webp" },
+    { key: "junk_removal", label: "Junk Removal", price: "From $99", icon: Truck, badge: null, badgeColor: "", image: "/images/site/service-junk-removal.webp" },
     { key: "pressure_washing", label: "Pressure Washing", price: "From $120", icon: Waves, badge: null, badgeColor: "", image: "/images/site/service-pressure-washing.webp" },
     { key: "handyman", label: "Handyman", price: "From $75/hr", icon: Wrench, badge: null, badgeColor: "", image: "/images/site/service-handyman.webp" },
-    { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, badge: "Best Value", badgeColor: "bg-emerald-500 text-white", image: "/images/site/service-home-cleaning.webp" },
-    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: ArrowUpFromLine, badge: "Seasonal", badgeColor: "bg-amber-500 text-white", image: "/images/site/service-gutter-cleaning.webp" },
+    { key: "home_cleaning", label: "Home Cleaning", price: "From $99", icon: Sparkles, badge: null, badgeColor: "", image: "/images/site/service-home-cleaning.webp" },
+    { key: "gutter_cleaning", label: "Gutter Cleaning", price: "From $150", icon: ArrowUpFromLine, badge: null, badgeColor: "", image: "/images/site/service-gutter-cleaning.webp" },
     { key: "landscaping", label: "Landscaping", price: "From $59", icon: Trees, badge: null, badgeColor: "", image: "/images/site/service-landscaping.webp" },
   ];
 
