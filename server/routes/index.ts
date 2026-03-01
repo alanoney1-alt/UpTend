@@ -259,9 +259,8 @@ import { registerTaxReportingRoutes } from "./tax-reporting.routes";
 // Job Lifecycle routes (Smart Match booking pipeline)
 import { registerJobLifecycleRoutes } from "./job-lifecycle.routes";
 
-// Scheduling + Timeline + ESG Compliance + Home Health routes
+// Scheduling + ESG Compliance + Home Health routes
 import { registerSchedulingRoutes } from "./scheduling.routes";
-import { registerJobTimelineRoutes } from "./job-timeline.routes";
 import { registerEsgComplianceRoutes } from "./esg-compliance.routes";
 import { registerHomeHealthRoutes } from "./home-health.routes";
 
@@ -286,8 +285,7 @@ import { registerWarrantyRoutes } from "./warranty.routes";
 // Builder Handoff routes
 import { registerBuilderHandoffRoutes } from "./builder-handoff.routes";
 
-// Appointment Batching routes
-import { registerScheduleBatchRoutes } from "./schedule-batch.routes";
+// Appointment Batching now merged into scheduling.routes.ts
 
 // Quality Inspection Reports routes
 import { registerQualityReportRoutes } from "./quality-reports.routes";
@@ -589,15 +587,11 @@ export async function registerRoutes(
   // Register Builder Handoff routes
   registerBuilderHandoffRoutes(app);
 
-  // Register Appointment Batching routes
-  registerScheduleBatchRoutes(app);
-
   // Register Quality Report routes
   registerQualityReportRoutes(app);
 
   // Register Scheduling + Timeline + ESG Compliance + Home Health routes
   safeRegister("Scheduling", registerSchedulingRoutes);
-  safeRegister("JobTimeline", registerJobTimelineRoutes);
   safeRegister("EsgCompliance", registerEsgComplianceRoutes);
   safeRegister("HomeHealth", registerHomeHealthRoutes);
 

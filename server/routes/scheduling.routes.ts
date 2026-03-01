@@ -13,6 +13,14 @@ function getUserId(req: Request): string | null {
 
 async function initTables() {
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS scheduled_batches (
+      id SERIAL PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      batch_date TEXT NOT NULL,
+      services JSONB NOT NULL DEFAULT '[]',
+      status TEXT DEFAULT 'pending',
+      created_at TIMESTAMP DEFAULT NOW()
+    );
     CREATE TABLE IF NOT EXISTS recurring_services (
       id TEXT PRIMARY KEY,
       customer_id TEXT NOT NULL,
@@ -241,6 +249,63 @@ export function registerSchedulingRoutes(app: Express) {
     }));
 
     res.json({ suggestions: filtered, season: isWarm ? "warm" : "cool", month: month + 1 });
+  });
+
+  // ── Appointment Batching (merged from schedule-batch.routes.ts) ──
+
+  // POST /api/schedule/batch - create batch of services for same date
+  app.post("/api/schedule/batch", async (req: Request, res: Response) => {
+    const userId = getUserId(req);
+    if (!userId) return res.status(401).json({ error: "Not authenticated" });
+
+    const { batchDate, services } = req.body;
+    if (!batchDate || !services || !Array.isArray(services) || services.length === 0) {
+      return res.status(400).json({ error: "batchDate and services array are required" });
+    }
+
+    try {
+      const { rows } = await pool.query(
+        `INSERT INTO scheduled_batches (user_id, batch_date, services)
+         VALUES ($1, $2, $3) RETURNING *`,
+        [userId, batchDate, JSON.stringify(services)]
+      );
+      res.json({ success: true, batch: rows[0] });
+    } catch (err: any) {
+      res.status(500).json({ error: "Failed to create batch" });
+    }
+  });
+
+  // GET /api/schedule/upcoming - upcoming scheduled services with batching suggestions
+  app.get("/api/schedule/upcoming", async (req: Request, res: Response) => {
+    const userId = getUserId(req);
+    if (!userId) return res.status(401).json({ error: "Not authenticated" });
+
+    try {
+      const { rows: batches } = await pool.query(
+        `SELECT * FROM scheduled_batches WHERE user_id = $1 AND batch_date >= CURRENT_DATE::text ORDER BY batch_date ASC`,
+        [userId]
+      );
+
+      const { rows: dueRows } = await pool.query(
+        `SELECT service_type, preferred_date FROM service_requests
+         WHERE customer_id = $1 AND status IN ('pending', 'scheduled')
+           AND preferred_date >= CURRENT_DATE::text
+         ORDER BY preferred_date ASC LIMIT 20`,
+        [userId]
+      ).catch(() => ({ rows: [] as any[] }));
+
+      const suggestions: string[] = [];
+      if (dueRows.length >= 2) {
+        const unique = [...new Set(dueRows.map((r: any) => r.service_type).filter(Boolean))];
+        if (unique.length >= 2) {
+          suggestions.push(`Your ${unique.slice(0, 3).join(" and ")} services are both coming up. Want to schedule them on the same day to save time?`);
+        }
+      }
+
+      res.json({ batches, suggestions, upcomingServices: dueRows });
+    } catch (err: any) {
+      res.status(500).json({ error: "Failed to fetch upcoming schedule" });
+    }
   });
 }
 
