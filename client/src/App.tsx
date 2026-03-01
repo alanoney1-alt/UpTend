@@ -159,7 +159,7 @@ const HomeServicesLakeNona = lazy(() => import("@/pages/services/home-services-l
 const HomeCleaningOrlando = lazy(() => import("@/pages/services/home-cleaning-orlando"));
 
 // Neighborhood Landing Pages
-const LakeNonaLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.LakeNonaPage })));
+const LakeNonaLanding = lazy(() => import("@/pages/lake-nona"));
 const WinterParkLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WinterParkPage })));
 const DrPhillipsLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.DrPhillipsPage })));
 const WindermereLanding = lazy(() => import("@/pages/neighborhood-landing").then(m => ({ default: m.WindermerePage })));
