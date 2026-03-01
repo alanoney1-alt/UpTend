@@ -200,7 +200,7 @@ router.get("/budget-forecast/:businessId", requireAuth, async (req, res) => {
   } catch (e: any) { res.status(500).json({ error: e.message }); }
 });
 
-// ─── Crew Management Endpoints ─────────────────────────────────────────────
+// ─── [Feature 4] Crew Management Endpoints ─────────────────────────────────
 
 router.post("/crews", requireAuth, async (req, res) => {
   try {
