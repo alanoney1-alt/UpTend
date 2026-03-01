@@ -76,7 +76,7 @@ export function PressureWashingFlow({ onComplete, onBack }: ServiceFlowProps) {
   const [selections, setSelections] = useState<Record<string, string>>({});
 
   if (quoteMode === "ai") {
-    window.location.href = `/ai/photo-quote?service=pressure_washing`;
+    window.location.href = `/book?service=pressure_washing`;
     return null;
   }
 

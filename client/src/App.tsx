@@ -58,7 +58,7 @@ const AdminLogin = lazy(() => import("@/pages/admin-login"));
 const ForgotPassword = lazy(() => import("@/pages/forgot-password"));
 const ResetPassword = lazy(() => import("@/pages/reset-password"));
 const Contact = lazy(() => import("@/pages/contact"));
-const Quote = lazy(() => import("@/pages/quote"));
+// quote page removed — only /book and George chat exist
 const AgenticBrain = lazy(() => import("@/pages/agentic-brain"));
 const ClaimProperty = lazy(() => import("@/pages/claim-property"));
 const MyHomeInventory = lazy(() => import("@/pages/my-home-inventory"));
@@ -91,7 +91,7 @@ const Marketplace = lazy(() => import("@/pages/marketplace"));
 const Properties = lazy(() => import("@/pages/properties"));
 const PropertyDashboard = lazy(() => import("@/pages/property-dashboard"));
 const AIFeaturesHub = lazy(() => import("@/pages/ai/index"));
-const PhotoToQuote = lazy(() => import("@/pages/ai/photo-quote"));
+// photo-quote removed — only /book and George chat exist
 const DocumentScanner = lazy(() => import("@/pages/ai/document-scanner"));
 const HomeScan = lazy(() => import("@/pages/ai/home-scan"));
 const MyJobs = lazy(() => import("@/pages/my-jobs"));
@@ -193,7 +193,7 @@ const TaxCenter = lazy(() => import("@/pages/tax-center"));
 
 // Blog
 const SmartBooking = lazy(() => import("@/pages/smart-booking"));
-const SnapQuotePage = lazy(() => import("@/pages/snap-quote"));
+// snap-quote removed — only /book and George chat exist
 const Gallery = lazy(() => import("@/pages/gallery"));
 // Warranty, Builder Handoff, Quality Reports
 const WarrantyManager = lazy(() => import("@/pages/warranty-manager"));

@@ -29,7 +29,7 @@ export function CarpetCleaningFlow({ onComplete, onBack }: ServiceFlowProps) {
 
   if (quoteMode === "ai") {
     // Redirect to AI photo quote
-    window.location.href = `/ai/photo-quote?service=carpet_cleaning`;
+    window.location.href = `/book?service=carpet_cleaning`;
     return null;
   }
 

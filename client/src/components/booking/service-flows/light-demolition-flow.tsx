@@ -25,7 +25,7 @@ export function LightDemolitionFlow({ onComplete, onBack }: ServiceFlowProps) {
   const [haulAway, setHaulAway] = useState(true);
 
   if (quoteMode === "ai") {
-    window.location.href = `/ai/photo-quote?service=light_demolition`;
+    window.location.href = `/book?service=light_demolition`;
     return null;
   }
 
