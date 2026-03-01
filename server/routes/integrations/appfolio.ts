@@ -293,7 +293,7 @@ export function registerAppfolioRoutes(app: Express) {
     }
   });
 
-  // POST /api/integrations/appfolio/sync-work-orders
+  // [Feature 8] POST /api/integrations/appfolio/sync-work-orders
   app.post("/api/integrations/appfolio/sync-work-orders", async (req: Request, res: Response) => {
     try {
       const { businessAccountId, workOrders: incomingWOs } = req.body;
