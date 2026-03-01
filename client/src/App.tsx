@@ -206,6 +206,33 @@ const BlogLakeNonaHomeMaintenance = lazy(() => import("@/pages/blog/lake-nona-ho
 const BlogPressureWashingCostOrlando = lazy(() => import("@/pages/blog/pressure-washing-cost-orlando"));
 const BlogNewToLakeNona = lazy(() => import("@/pages/blog/new-to-lake-nona"));
 const BlogPost = lazy(() => import("@/pages/blog/post"));
+const BlogWinterParkHomeMaintenance = lazy(() => import("@/pages/blog/winter-park-home-maintenance"));
+const BlogNewToWinterPark = lazy(() => import("@/pages/blog/new-to-winter-park-home-checklist"));
+const BlogLandscapingCostWinterPark = lazy(() => import("@/pages/blog/landscaping-cost-winter-park"));
+const BlogDrPhillipsHomeMaintenance = lazy(() => import("@/pages/blog/dr-phillips-home-maintenance"));
+const BlogNewToDrPhillips = lazy(() => import("@/pages/blog/new-to-dr-phillips-home-checklist"));
+const BlogPoolCleaningCostDrPhillips = lazy(() => import("@/pages/blog/pool-cleaning-cost-dr-phillips"));
+const BlogWindermereHomeMaintenance = lazy(() => import("@/pages/blog/windermere-home-maintenance"));
+const BlogNewToWindermere = lazy(() => import("@/pages/blog/new-to-windermere-home-checklist"));
+const BlogLandscapingCostWindermere = lazy(() => import("@/pages/blog/landscaping-cost-windermere"));
+const BlogCelebrationHomeMaintenance = lazy(() => import("@/pages/blog/celebration-home-maintenance"));
+const BlogNewToCelebration = lazy(() => import("@/pages/blog/new-to-celebration-home-checklist"));
+const BlogKissimmeeHomeMaintenance = lazy(() => import("@/pages/blog/kissimmee-home-maintenance"));
+const BlogNewToKissimmee = lazy(() => import("@/pages/blog/new-to-kissimmee-home-checklist"));
+const BlogPoolCleaningCostKissimmee = lazy(() => import("@/pages/blog/pool-cleaning-cost-kissimmee"));
+const BlogWinterGardenHomeMaintenance = lazy(() => import("@/pages/blog/winter-garden-home-maintenance"));
+const BlogNewToWinterGarden = lazy(() => import("@/pages/blog/new-to-winter-garden-home-checklist"));
+const BlogAltamonteSpringsHomeMaintenance = lazy(() => import("@/pages/blog/altamonte-springs-home-maintenance"));
+const BlogNewToAltamonteSprings = lazy(() => import("@/pages/blog/new-to-altamonte-springs-home-checklist"));
+const BlogOcoeeHomeMaintenance = lazy(() => import("@/pages/blog/ocoee-home-maintenance"));
+const BlogNewToOcoee = lazy(() => import("@/pages/blog/new-to-ocoee-home-checklist"));
+const BlogSanfordHomeMaintenance = lazy(() => import("@/pages/blog/sanford-home-maintenance"));
+const BlogNewToSanford = lazy(() => import("@/pages/blog/new-to-sanford-home-checklist"));
+const BlogApopkaHomeMaintenance = lazy(() => import("@/pages/blog/apopka-home-maintenance"));
+const BlogNewToApopka = lazy(() => import("@/pages/blog/new-to-apopka-home-checklist"));
+const BlogClermontHomeMaintenance = lazy(() => import("@/pages/blog/clermont-home-maintenance"));
+const BlogNewToClermont = lazy(() => import("@/pages/blog/new-to-clermont-home-checklist"));
+const BlogPressureWashingCostClermont = lazy(() => import("@/pages/blog/pressure-washing-cost-clermont"));
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -419,6 +446,33 @@ function Router() {
       <Route path="/blog/lake-nona-home-maintenance-schedule" component={BlogLakeNonaHomeMaintenance} />
       <Route path="/blog/pressure-washing-cost-orlando-2026" component={BlogPressureWashingCostOrlando} />
       <Route path="/blog/new-to-lake-nona-home-checklist" component={BlogNewToLakeNona} />
+      <Route path="/blog/winter-park-home-maintenance-schedule" component={BlogWinterParkHomeMaintenance} />
+      <Route path="/blog/new-to-winter-park-home-checklist" component={BlogNewToWinterPark} />
+      <Route path="/blog/landscaping-cost-winter-park-2026" component={BlogLandscapingCostWinterPark} />
+      <Route path="/blog/dr-phillips-home-maintenance-schedule" component={BlogDrPhillipsHomeMaintenance} />
+      <Route path="/blog/new-to-dr-phillips-home-checklist" component={BlogNewToDrPhillips} />
+      <Route path="/blog/pool-cleaning-cost-dr-phillips-2026" component={BlogPoolCleaningCostDrPhillips} />
+      <Route path="/blog/windermere-home-maintenance-schedule" component={BlogWindermereHomeMaintenance} />
+      <Route path="/blog/new-to-windermere-home-checklist" component={BlogNewToWindermere} />
+      <Route path="/blog/landscaping-cost-windermere-2026" component={BlogLandscapingCostWindermere} />
+      <Route path="/blog/celebration-home-maintenance-schedule" component={BlogCelebrationHomeMaintenance} />
+      <Route path="/blog/new-to-celebration-home-checklist" component={BlogNewToCelebration} />
+      <Route path="/blog/kissimmee-home-maintenance-schedule" component={BlogKissimmeeHomeMaintenance} />
+      <Route path="/blog/new-to-kissimmee-home-checklist" component={BlogNewToKissimmee} />
+      <Route path="/blog/pool-cleaning-cost-kissimmee-2026" component={BlogPoolCleaningCostKissimmee} />
+      <Route path="/blog/winter-garden-home-maintenance-schedule" component={BlogWinterGardenHomeMaintenance} />
+      <Route path="/blog/new-to-winter-garden-home-checklist" component={BlogNewToWinterGarden} />
+      <Route path="/blog/altamonte-springs-home-maintenance-schedule" component={BlogAltamonteSpringsHomeMaintenance} />
+      <Route path="/blog/new-to-altamonte-springs-home-checklist" component={BlogNewToAltamonteSprings} />
+      <Route path="/blog/ocoee-home-maintenance-schedule" component={BlogOcoeeHomeMaintenance} />
+      <Route path="/blog/new-to-ocoee-home-checklist" component={BlogNewToOcoee} />
+      <Route path="/blog/sanford-home-maintenance-schedule" component={BlogSanfordHomeMaintenance} />
+      <Route path="/blog/new-to-sanford-home-checklist" component={BlogNewToSanford} />
+      <Route path="/blog/apopka-home-maintenance-schedule" component={BlogApopkaHomeMaintenance} />
+      <Route path="/blog/new-to-apopka-home-checklist" component={BlogNewToApopka} />
+      <Route path="/blog/clermont-home-maintenance-schedule" component={BlogClermontHomeMaintenance} />
+      <Route path="/blog/new-to-clermont-home-checklist" component={BlogNewToClermont} />
+      <Route path="/blog/pressure-washing-cost-clermont-2026" component={BlogPressureWashingCostClermont} />
       <Route path="/blog/:slug" component={BlogPost} />
       <Route component={NotFound} />
     </Switch>
