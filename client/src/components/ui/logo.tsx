@@ -8,7 +8,7 @@ export function Logo({ className = "w-8 h-8", textClassName = "text-2xl", varian
       </div>
       <div className={cn("font-bold tracking-tight", textClassName)}>
         <span className="text-[#FF9231]" style={{ textShadow: variant === "light" ? "0 0 12px rgba(244,124,32,0.4)" : "none" }}>Up</span>
-        <span className={variant === "light" ? "text-white font-extrabold" : "text-slate-900 font-extrabold"}>Tend</span>
+        <span className={variant === "light" ? "text-white font-extrabold" : "text-white font-extrabold"}>Tend</span>
       </div>
     </div>
   );
