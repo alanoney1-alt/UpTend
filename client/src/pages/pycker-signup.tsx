@@ -626,7 +626,7 @@ export default function PyckerSignup() {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
-            <Logo className="w-8 h-8" textClassName="text-xl" />
+            <Logo className="w-8 h-8" textClassName="text-xl" variant="dark" />
           </Link>
           <Link href="/">
             <Button variant="ghost" size="sm">
