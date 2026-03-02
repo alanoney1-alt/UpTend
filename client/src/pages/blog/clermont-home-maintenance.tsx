@@ -28,97 +28,81 @@ export default function BlogClermontHomeMaintenance() {
         <h1>The Clermont Homeowner's Maintenance Schedule for 2026</h1>
 
         <p>
-          Owning a home in Clermont is great until Florida reminds you that it doesn't care about your weekend plans. Between the humidity, the storms, and the year round growing season, there's always something that needs attention. The trick is staying ahead of it instead of reacting to it.
+          Clermont has something most of Central Florida doesn't: hills. And those hills create maintenance challenges that flat-land Orlando homeowners never think about. Drainage patterns change with elevation. Erosion hits sloped yards harder. Pools on elevated lots lose water levels faster when it's dry and overflow when it rains. If you're maintaining your Clermont home the same way you would in Kissimmee or Lake Nona, you're already behind.
         </p>
         <p>
-          Clermont has its own personality when it comes to home maintenance. hilltop homes with elevation views and 55+ active adult communities are common here, and each comes with its own set of quirks. Active HOAs in most communities, especially 55+ neighborhoods like Kings Ridge and Summit Greens which have additional age-related community rules and amenity standards.
-        </p>
-        <p>
-          Here's a month by month schedule built specifically for Clermont homeowners. Not generic advice you could find anywhere. This is tuned to the homes, the soil, and the community standards right here.
+          We see a wide range of homes here — from the hilltop properties with elevation views to the 55+ active adult communities like Kings Ridge and Summit Greens. Each one has different needs, but the calendar pressure is the same. Florida doesn't give you a break, and if you're not a month ahead, you're a month behind.
         </p>
 
         <h2>January and February: The Planning Months</h2>
         <p>
-          Florida winters are mild enough that you can actually get things done outside without melting. Walk your property with fresh eyes. Look for stucco cracks, faded paint, and landscaping that didn't make it through the cooler months. Schedule your annual termite inspection now. Clermont's older homes and hilly terrain with sandy soil, unique drainage challenges due to elevation changes make termite prevention especially important here.
+          Use the mild winter to inspect your property. Look for stucco cracks, peeling paint, and dead landscaping. In Clermont specifically, pay attention to your slopes. The sandy, hilly terrain creates unique drainage challenges — water runs off fast during storms but also erodes soil and shifts mulch downhill. Check your retaining walls and any graded areas for settling or washout from the last rainy season.
         </p>
         <p>
-          Check your irrigation system. Watering restrictions shift seasonally in this part of Central Florida, and getting your zones right before spring saves water and avoids fines. If your home is near Clermont Waterfront Park, you know how quickly things dry out once the rain stops.
+          Schedule your termite inspection now. The sandy soil up on Clermont's hills drains well, which termites actually like — they prefer soil that doesn't stay waterlogged. Older homes near the historic downtown area are particularly vulnerable. Get your irrigation system checked too. Watering restrictions shift seasonally, and on hillside properties, uneven irrigation coverage is one of the most common problems we see.
         </p>
 
         <h2>March and April: Spring Reset</h2>
         <p>
-          This is when Clermont starts heating up and everything grows aggressively. Get your St. Augustine, some Bermuda on slopes grass its first fertilizer application by mid April. Lay fresh mulch in your beds. If you've been putting off pressure washing your driveway and walkways, now is the time. Algae and mold have been building all winter, and your HOA's spring walkthrough is probably right around the corner.
+          March is when Clermont heats up fast. St. Augustine grass dominates most subdivision lawns, though you'll find Bermuda on slopes where it handles the grade better. Get your first fertilizer down by mid-April. Mulch your beds — on sloped properties, you may need to use heavier mulch or install borders to keep it from washing downhill during the first big rain.
         </p>
         <p>
-          Schedule your first gutter cleaning of the year. You want clean gutters before the daily afternoon thunderstorms start in late May. Olympus and Hartwood Reserve residents, this applies double if you have mature oaks overhead.
+          Pressure wash your driveway and walkways. Algae grows everywhere in Florida, but Clermont's elevation means your driveway often has standing water at the base of slopes, which accelerates the buildup. If you're in Olympus or Hartwood Reserve, the HOA spring inspection is coming — a clean exterior saves you a headache.
+        </p>
+        <p>
+          First gutter cleaning of the year. If you have mature oaks overhead, do this in March and plan to do it again in June. Clean gutters before storm season is the single most cost-effective maintenance task in Florida.
         </p>
 
         <h2>May and June: Hurricane Prep Window</h2>
         <p>
-          Hurricane season officially starts June 1, but smart Clermont homeowners start in May. Trim any tree branches within 10 feet of your roof. Check your storm shutters or impact windows for damage. Make sure your pool pump and exterior equipment are secured.
+          Start prep in May. Trim branches within 10 feet of your roof. On Clermont's elevated properties, wind hits harder than in the valley neighborhoods — your trees take more stress, and overhanging branches are a bigger liability. Check storm shutters or impact windows for damage. Secure pool equipment and outdoor furniture.
         </p>
         <p>
-          Pools are common and often on elevated lots, which affects drainage and water level management. If you're not already on a weekly pool service schedule, June is when you'll wish you were. Rising temperatures and afternoon rain change water chemistry fast.
+          Clermont pools on elevated lots have their own quirks. Water levels drop faster in dry weather because of the drainage, and during heavy rain the overflow can erode the surrounding deck area. If you're not on weekly pool service by June, you're going to spend a lot of weekends fighting algae. The afternoon rain plus 95-degree heat means your water chemistry changes daily.
         </p>
 
         <h2>July and August: Storm Season Maintenance</h2>
         <p>
-          Weekly lawn mowing is non negotiable during Florida summer. Your St. Augustine, some Bermuda on slopes is growing inches per week, and a single missed mowing can trigger an HOA violation in communities like Olympus and Hartwood Reserve. Keep your mower blade sharp and mow high. Cutting too short in summer heat will damage your lawn.
+          Weekly mowing is mandatory. Both St. Augustine and Bermuda are growing inches per week. Communities like Olympus and Hartwood Reserve will flag you for an overgrown lawn faster than you'd expect. Keep your mower blade sharp, mow high (3.5 inches minimum for St. Augustine), and never cut more than a third of the blade height at once.
         </p>
         <p>
-          After any significant storm, do a quick property walkthrough. Check for lifted roof shingles, damaged screen enclosures, and clogged downspouts. Document everything with photos. This matters for insurance claims if something bigger happens later in the season.
+          After every significant storm, walk your property. On hillside homes, also check for erosion — heavy rain can wash out landscaping, expose root systems, and shift the soil around your foundation. Take photos of everything for insurance documentation. Check downspouts to make sure they're directing water away from your foundation, not pooling against it.
         </p>
 
-        <h2>September and October: Post Storm Recovery</h2>
+        <h2>September and October: Post-Storm Recovery</h2>
         <p>
-          The worst of hurricane season wraps up by mid October. Even if Clermont dodged a direct hit, months of heavy rain take a toll. Check for standing water around your foundation, mold on exterior walls, and any soft spots in your fascia or soffit boards.
+          By mid-October the worst is over, but the cumulative effect of months of rain shows. Check for mold on exterior walls, soft spots in fascia and soffit, and standing water near your foundation. On hillside properties, check retaining walls and slopes for erosion damage that might have happened gradually and wasn't obvious during the storms.
         </p>
         <p>
-          Schedule your second gutter cleaning of the year. Clermont's trees drop leaves heavily in fall, and one good rain with clogged gutters can push water into your walls. This is also a good time to have your roof inspected, especially if your home is more than 10 years old.
+          Get your gutters cleaned again. This is also the best time for a roof inspection — especially if your home is more than 10 years old. Clermont's elevation means your roof gets more direct wind exposure than homes in lower-lying areas, which accelerates shingle wear.
         </p>
 
         <h2>November and December: Deep Clean and Protect</h2>
         <p>
-          Florida's dry season starts in November, making it the ideal time for exterior projects. Schedule a full house pressure wash to remove the summer's buildup of mold and dirt. Touch up exterior paint that's fading. If your driveway sealer is more than two years old, now is the time to reapply.
+          Dry season arrives in November and it's your best window for exterior projects. Full house pressure wash, paint touch-ups, driveway resealing. Clermont homes near the old Florida Citrus Tower area tend to show more sun fading on south-facing walls — check those first.
         </p>
         <p>
-          Inside, consider a deep clean of carpets, tile grout, and air ducts. Your AC has been running nonstop for six months and your ductwork is full of whatever Florida's air carried in. Clermont homes near Florida Citrus Tower know this feeling well.
+          Inside, clean your air ducts and have carpets deep-cleaned. Your AC worked hard all summer. A duct cleaning runs $300 to $500 and is worth it, especially in the 55+ communities where indoor air quality directly impacts health.
         </p>
 
         <h2>What Catches Clermont Homeowners Off Guard</h2>
         <p>
-          A few things specific to this area: Hilly terrain with sandy soil, unique drainage challenges due to elevation changes. That affects everything from foundation settling to how your pavers shift over time. Check walkways annually and relevel as needed.
+          Fire ants are relentless here. After every rain, new mounds pop up. Mole crickets tear up lawns — you'll see the damage as irregular brown patches that feel spongy when you walk on them. Professional pest treatment quarterly is the only thing that keeps both under control.
         </p>
         <p>
-          Fire ants, mole crickets, termites in older structures are the main pest concerns here. Regular pest control isn't optional. it's essential. And if you're in a newer Clermont home, remember that most builder warranties on cosmetic items like drywall cracks and grout separation expire after one or two years. Don't sit on those.
-        </p>
-
-        <h2>A Better Way to Stay on Top of It</h2>
-        <p>
-          We're building something different in Orlando. At <Link href="/">UpTend</Link>, we're putting together a platform that helps Clermont homeowners stay ahead of maintenance instead of reacting to problems. We're still in early access, but we're already helping homeowners in the area get connected with trusted local pros and build real maintenance plans for their homes.
+          The hilly terrain also means your pavers and walkways shift more than you'd expect. Sandy soil plus elevation changes plus Florida rain equals movement. Check your walkways and patio annually and relevel as needed. It's a $200 to $500 job — much cheaper than someone tripping and you dealing with a liability issue.
         </p>
         <p>
-          If you want to see where your home stands, start with a{" "}
-          <Link href="/join"><strong>free Home DNA Scan</strong></Link>. It takes a few minutes, costs nothing, and gives you a clear picture of what your home needs and when.
+          If you're in a newer Clermont home, remember that builder warranties on cosmetic issues expire after one to two years. Drywall cracks, grout separation, nail pops — submit them all before the warranty runs out.
         </p>
 
-        <hr />
-
-        <p className="text-sm text-muted-foreground">
-          <em>
-            Have questions about maintaining your Clermont home? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Clermont inside and out.
-          </em>
+        <h2>Ready to Get This Handled?</h2>
+        <p>
+          Talk to George — he'll give you a guaranteed price in 60 seconds. Whether it's drainage work on a hillside lot or routine maintenance in Kings Ridge, we know Clermont and we'll get it right.
         </p>
-
-        <section className="not-prose mt-12 pt-8 border-t border-border">
-          <h2 className="text-xl font-bold mb-4">Related Services</h2>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/services/home-cleaning-clermont" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Clermont</Link>
-            <Link href="/services/landscaping-clermont" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Clermont</Link>
-            <Link href="/services/pressure-washing-clermont" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Pressure Washing Clermont</Link>
-          </div>
-        </section>
+        <p>
+          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
+        </p>
       </article>
       <Footer />
     </div>

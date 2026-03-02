@@ -304,6 +304,28 @@ export default function JunkRemoval() {
         </div>
       </section>
 
+      {/* City Service Pages */}
+      <section className="py-12 px-6 bg-muted/50">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl font-bold mb-4">Junk Removal Available Across Orlando</h2>
+          <p className="text-muted-foreground mb-6">We provide junk removal services in these neighborhoods:</p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/services/junk-removal-lake-nona" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Lake Nona</Link>
+            <Link href="/services/junk-removal-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Winter Park</Link>
+            <Link href="/services/junk-removal-dr-phillips" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Dr. Phillips</Link>
+            <Link href="/services/junk-removal-windermere" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Windermere</Link>
+            <Link href="/services/junk-removal-celebration" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Celebration</Link>
+            <Link href="/services/junk-removal-kissimmee" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Kissimmee</Link>
+            <Link href="/services/junk-removal-winter-garden" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Winter Garden</Link>
+            <Link href="/services/junk-removal-altamonte-springs" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Altamonte Springs</Link>
+            <Link href="/services/junk-removal-ocoee" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Ocoee</Link>
+            <Link href="/services/junk-removal-sanford" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Sanford</Link>
+            <Link href="/services/junk-removal-apopka" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Apopka</Link>
+            <Link href="/services/junk-removal-clermont" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Clermont</Link>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );
