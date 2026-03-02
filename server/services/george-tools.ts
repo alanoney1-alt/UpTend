@@ -10631,3 +10631,573 @@ export async function getAvailableProRates(serviceType: string, lat: number, lng
     return { prosOnline: 0, rateRange: null, message: "Could not check pro rates. Use standard pricing.", error: err.message };
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// B2B CONVERSATIONAL DASHBOARD TOOLS
+// George becomes the PM/HOA board's command line — ask him anything
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Look up a specific property by address (partial match).
+ * Returns full details: contract info, resident, service history, health score, assigned crew.
+ */
+export async function lookupProperty(params: {
+  businessId: string;
+  address: string;
+}): Promise<object> {
+  try {
+    const result = await pool.query(`
+      SELECT cp.id, cp.address, cp.unit, cp.city, cp.state, cp.zip,
+             cp.property_type, cp.resident_name, cp.resident_email, cp.resident_phone,
+             cp.resident_user_id, cp.is_active,
+             c.client_name, c.client_type, c.status as contract_status,
+             c.covered_services, c.resident_covered_services, c.pricing_tier,
+             c.start_date, c.end_date
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1)
+        AND LOWER(cp.address) LIKE $2
+        AND cp.is_active = true
+      LIMIT 10
+    `, [params.businessId, `%${params.address.trim().toLowerCase()}%`]);
+
+    if (!result.rows.length) {
+      return { found: false, message: `No property matching "${params.address}" found in your portfolio.` };
+    }
+
+    // Get service history for each property
+    const properties = await Promise.all(result.rows.map(async (p: any) => {
+      // Get recent jobs
+      const jobs = await pool.query(`
+        SELECT id, service_type, status, created_at, total_price, scheduled_date
+        FROM service_requests
+        WHERE LOWER(address) LIKE $1
+        ORDER BY created_at DESC LIMIT 5
+      `, [`%${p.address.trim().toLowerCase()}%`]);
+
+      // Get assigned crew
+      const crew = await pool.query(`
+        SELECT w.crew_name, w.service_specialties
+        FROM crew_property_assignments cpa
+        JOIN w2_crews w ON cpa.crew_id = w.id
+        WHERE cpa.property_id = $1 AND cpa.is_active = true
+      `, [p.id]);
+
+      // Get recurring schedules
+      const recurring = await pool.query(`
+        SELECT service_type, frequency, next_run_date, last_run_date
+        FROM recurring_job_schedules
+        WHERE property_id = $1 AND is_active = true
+      `, [p.id]);
+
+      return {
+        address: `${p.address}${p.unit ? ` ${p.unit}` : ''}, ${p.city}, ${p.state} ${p.zip}`,
+        propertyType: p.property_type,
+        resident: p.resident_name ? {
+          name: p.resident_name,
+          email: p.resident_email,
+          phone: p.resident_phone,
+          hasAccount: !!p.resident_user_id,
+        } : null,
+        contract: {
+          clientName: p.client_name,
+          type: p.client_type,
+          status: p.contract_status,
+          tier: p.pricing_tier,
+          coveredServices: p.covered_services || [],
+          residentCoveredServices: p.resident_covered_services || [],
+          startDate: p.start_date,
+          endDate: p.end_date,
+        },
+        recentJobs: (jobs.rows || []).map((j: any) => ({
+          service: j.service_type,
+          status: j.status,
+          date: j.scheduled_date || j.created_at,
+          price: j.total_price,
+        })),
+        assignedCrew: crew.rows.length ? crew.rows.map((c: any) => ({
+          name: c.crew_name,
+          specialties: c.service_specialties,
+        })) : null,
+        recurringServices: recurring.rows.map((r: any) => ({
+          service: r.service_type,
+          frequency: r.frequency,
+          nextRun: r.next_run_date,
+          lastRun: r.last_run_date,
+        })),
+      };
+    }));
+
+    return {
+      found: true,
+      count: properties.length,
+      properties,
+      message: properties.length === 1
+        ? `Found property: ${properties[0].address}`
+        : `Found ${properties.length} properties matching "${params.address}"`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] lookupProperty error:", err);
+    return { found: false, error: err.message, message: "Could not look up that property right now." };
+  }
+}
+
+/**
+ * Search for a resident/homeowner by name across the entire portfolio.
+ */
+export async function lookupResident(params: {
+  businessId: string;
+  name: string;
+}): Promise<object> {
+  try {
+    const result = await pool.query(`
+      SELECT cp.id, cp.address, cp.unit, cp.city, cp.zip, cp.property_type,
+             cp.resident_name, cp.resident_email, cp.resident_phone, cp.resident_user_id,
+             c.client_name, c.covered_services
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1)
+        AND LOWER(cp.resident_name) LIKE $2
+        AND cp.is_active = true
+      LIMIT 20
+    `, [params.businessId, `%${params.name.trim().toLowerCase()}%`]);
+
+    if (!result.rows.length) {
+      return { found: false, message: `No resident named "${params.name}" found in your portfolio.` };
+    }
+
+    const residents = result.rows.map((r: any) => ({
+      name: r.resident_name,
+      address: `${r.address}${r.unit ? ` ${r.unit}` : ''}, ${r.city} ${r.zip}`,
+      email: r.resident_email,
+      phone: r.resident_phone,
+      hasUpTendAccount: !!r.resident_user_id,
+      propertyType: r.property_type,
+      managedBy: r.client_name,
+      coveredServices: r.covered_services || [],
+    }));
+
+    return {
+      found: true,
+      count: residents.length,
+      residents,
+      message: `Found ${residents.length} resident(s) matching "${params.name}"`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] lookupResident error:", err);
+    return { found: false, error: err.message, message: "Could not search residents right now." };
+  }
+}
+
+/**
+ * List all properties in a B2B portfolio with optional filters.
+ */
+export async function listPortfolioProperties(params: {
+  businessId: string;
+  city?: string;
+  propertyType?: string;
+  hasOverdueMaintenance?: boolean;
+  limit?: number;
+}): Promise<object> {
+  try {
+    let query = `
+      SELECT cp.id, cp.address, cp.unit, cp.city, cp.zip, cp.property_type,
+             cp.resident_name, cp.is_active,
+             c.client_name, c.client_type, c.covered_services
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1)
+        AND cp.is_active = true AND c.status = 'active'
+    `;
+    const queryParams: any[] = [params.businessId];
+    let paramIdx = 2;
+
+    if (params.city) {
+      query += ` AND LOWER(cp.city) LIKE $${paramIdx}`;
+      queryParams.push(`%${params.city.trim().toLowerCase()}%`);
+      paramIdx++;
+    }
+    if (params.propertyType) {
+      query += ` AND cp.property_type = $${paramIdx}`;
+      queryParams.push(params.propertyType);
+      paramIdx++;
+    }
+
+    query += ` ORDER BY cp.city, cp.address LIMIT $${paramIdx}`;
+    queryParams.push(params.limit || 50);
+
+    const result = await pool.query(query, queryParams);
+
+    const properties = result.rows.map((p: any) => ({
+      address: `${p.address}${p.unit ? ` ${p.unit}` : ''}`,
+      city: p.city,
+      zip: p.zip,
+      type: p.property_type,
+      resident: p.resident_name || "No resident on file",
+      managedBy: p.client_name,
+      coveredServices: p.covered_services || [],
+    }));
+
+    // Get summary stats
+    const statsResult = await pool.query(`
+      SELECT 
+        COUNT(*) as total,
+        COUNT(DISTINCT cp.city) as cities,
+        COUNT(CASE WHEN cp.property_type = 'residential' THEN 1 END) as residential,
+        COUNT(CASE WHEN cp.property_type = 'commercial' THEN 1 END) as commercial,
+        COUNT(CASE WHEN cp.property_type = 'common_area' THEN 1 END) as common_areas
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true AND c.status = 'active'
+    `, [params.businessId]);
+
+    const stats = statsResult.rows[0] || {};
+
+    return {
+      properties,
+      count: properties.length,
+      totalInPortfolio: parseInt(stats.total) || 0,
+      summary: {
+        totalProperties: parseInt(stats.total) || 0,
+        cities: parseInt(stats.cities) || 0,
+        residential: parseInt(stats.residential) || 0,
+        commercial: parseInt(stats.commercial) || 0,
+        commonAreas: parseInt(stats.common_areas) || 0,
+      },
+      filtered: !!(params.city || params.propertyType),
+      message: `Showing ${properties.length} of ${stats.total || 0} total properties${params.city ? ` in ${params.city}` : ''}`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] listPortfolioProperties error:", err);
+    return { properties: [], count: 0, error: err.message, message: "Could not list properties right now." };
+  }
+}
+
+/**
+ * Get work orders / service requests across the portfolio with filters.
+ */
+export async function getPortfolioWorkOrders(params: {
+  businessId: string;
+  status?: string; // open | completed | all
+  serviceType?: string;
+  address?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  limit?: number;
+}): Promise<object> {
+  try {
+    // Get all property addresses under this business
+    const propsResult = await pool.query(`
+      SELECT cp.address, cp.city, cp.resident_name
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true
+    `, [params.businessId]);
+
+    if (!propsResult.rows.length) {
+      return { workOrders: [], count: 0, message: "No properties found in your portfolio." };
+    }
+
+    const addresses = propsResult.rows.map((p: any) => p.address.trim().toLowerCase());
+
+    // Build the service_requests query
+    let query = `
+      SELECT sr.id, sr.service_type, sr.status, sr.address, sr.scheduled_date,
+             sr.created_at, sr.total_price, sr.notes
+      FROM service_requests sr
+      WHERE LOWER(sr.address) = ANY($1)
+    `;
+    const queryParams: any[] = [addresses];
+    let paramIdx = 2;
+
+    if (params.status && params.status !== 'all') {
+      if (params.status === 'open') {
+        query += ` AND sr.status IN ('pending', 'accepted', 'in_progress', 'scheduled')`;
+      } else if (params.status === 'completed') {
+        query += ` AND sr.status = 'completed'`;
+      }
+    }
+    if (params.serviceType) {
+      query += ` AND sr.service_type = $${paramIdx}`;
+      queryParams.push(params.serviceType);
+      paramIdx++;
+    }
+    if (params.address) {
+      query += ` AND LOWER(sr.address) LIKE $${paramIdx}`;
+      queryParams.push(`%${params.address.trim().toLowerCase()}%`);
+      paramIdx++;
+    }
+
+    query += ` ORDER BY sr.created_at DESC LIMIT $${paramIdx}`;
+    queryParams.push(params.limit || 25);
+
+    const result = await pool.query(query, queryParams);
+
+    // Map resident names
+    const addrToResident: Record<string, string> = {};
+    propsResult.rows.forEach((p: any) => {
+      addrToResident[p.address.trim().toLowerCase()] = p.resident_name || "Unknown";
+    });
+
+    const workOrders = result.rows.map((wo: any) => ({
+      id: wo.id,
+      service: wo.service_type,
+      status: wo.status,
+      address: wo.address,
+      resident: addrToResident[wo.address?.trim().toLowerCase()] || "Unknown",
+      scheduledDate: wo.scheduled_date,
+      createdAt: wo.created_at,
+      price: wo.total_price,
+      notes: wo.notes,
+    }));
+
+    // Summary stats
+    const openCount = workOrders.filter((wo: any) => ['pending', 'accepted', 'in_progress', 'scheduled'].includes(wo.status)).length;
+    const completedCount = workOrders.filter((wo: any) => wo.status === 'completed').length;
+    const totalSpend = workOrders.reduce((sum: number, wo: any) => sum + (parseFloat(wo.price) || 0), 0);
+
+    return {
+      workOrders,
+      count: workOrders.length,
+      summary: {
+        open: openCount,
+        completed: completedCount,
+        totalSpend: Math.round(totalSpend * 100) / 100,
+      },
+      message: `Found ${workOrders.length} work orders. ${openCount} open, ${completedCount} completed. Total spend: $${totalSpend.toFixed(2)}`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] getPortfolioWorkOrders error:", err);
+    return { workOrders: [], count: 0, error: err.message, message: "Could not retrieve work orders right now." };
+  }
+}
+
+/**
+ * Generate a spend report for the portfolio broken down by service type, property, or time period.
+ */
+export async function generateSpendReport(params: {
+  businessId: string;
+  groupBy?: string; // "service" | "property" | "month"
+  dateFrom?: string;
+  dateTo?: string;
+}): Promise<object> {
+  try {
+    // Get portfolio addresses
+    const propsResult = await pool.query(`
+      SELECT cp.address, cp.city, cp.resident_name
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true
+    `, [params.businessId]);
+
+    const addresses = propsResult.rows.map((p: any) => p.address.trim().toLowerCase());
+    if (!addresses.length) {
+      return { report: null, message: "No properties in portfolio." };
+    }
+
+    // Get all completed jobs for these properties
+    let dateFilter = '';
+    const queryParams: any[] = [addresses];
+    let paramIdx = 2;
+    if (params.dateFrom) {
+      dateFilter += ` AND sr.created_at >= $${paramIdx}`;
+      queryParams.push(params.dateFrom);
+      paramIdx++;
+    }
+    if (params.dateTo) {
+      dateFilter += ` AND sr.created_at <= $${paramIdx}`;
+      queryParams.push(params.dateTo);
+      paramIdx++;
+    }
+
+    const result = await pool.query(`
+      SELECT sr.service_type, sr.address, sr.total_price, sr.created_at, sr.status
+      FROM service_requests sr
+      WHERE LOWER(sr.address) = ANY($1)
+        AND sr.status = 'completed'
+        ${dateFilter}
+      ORDER BY sr.created_at DESC
+    `, queryParams);
+
+    const jobs = result.rows;
+    const totalSpend = jobs.reduce((sum: number, j: any) => sum + (parseFloat(j.total_price) || 0), 0);
+
+    const groupBy = params.groupBy || 'service';
+    const breakdown: Record<string, { count: number; spend: number }> = {};
+
+    jobs.forEach((j: any) => {
+      let key: string;
+      if (groupBy === 'property') {
+        key = j.address || 'Unknown';
+      } else if (groupBy === 'month') {
+        const d = new Date(j.created_at);
+        key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      } else {
+        key = j.service_type || 'Unknown';
+      }
+      if (!breakdown[key]) breakdown[key] = { count: 0, spend: 0 };
+      breakdown[key].count++;
+      breakdown[key].spend += parseFloat(j.total_price) || 0;
+    });
+
+    // Sort by spend descending
+    const sortedBreakdown = Object.entries(breakdown)
+      .map(([key, val]) => ({ category: key, jobs: val.count, spend: Math.round(val.spend * 100) / 100 }))
+      .sort((a, b) => b.spend - a.spend);
+
+    return {
+      totalJobs: jobs.length,
+      totalSpend: Math.round(totalSpend * 100) / 100,
+      avgJobCost: jobs.length ? Math.round((totalSpend / jobs.length) * 100) / 100 : 0,
+      groupedBy: groupBy,
+      breakdown: sortedBreakdown,
+      period: {
+        from: params.dateFrom || "all time",
+        to: params.dateTo || "now",
+      },
+      portfolioSize: addresses.length,
+      message: `Spend report (${groupBy}): ${jobs.length} completed jobs, $${totalSpend.toFixed(2)} total spend across ${addresses.length} properties.`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateSpendReport error:", err);
+    return { report: null, error: err.message, message: "Could not generate spend report right now." };
+  }
+}
+
+/**
+ * Get full service history for a specific property address.
+ */
+export async function getPropertyServiceHistory(params: {
+  address: string;
+  limit?: number;
+}): Promise<object> {
+  try {
+    const result = await pool.query(`
+      SELECT sr.id, sr.service_type, sr.status, sr.scheduled_date, sr.created_at,
+             sr.total_price, sr.notes, sr.address
+      FROM service_requests sr
+      WHERE LOWER(sr.address) LIKE $1
+      ORDER BY sr.created_at DESC
+      LIMIT $2
+    `, [`%${params.address.trim().toLowerCase()}%`, params.limit || 20]);
+
+    const history = result.rows.map((j: any) => ({
+      id: j.id,
+      service: j.service_type,
+      status: j.status,
+      date: j.scheduled_date || j.created_at,
+      price: j.total_price,
+      notes: j.notes,
+    }));
+
+    const totalSpend = history.reduce((sum: number, j: any) => sum + (parseFloat(j.price) || 0), 0);
+    const services = [...new Set(history.map((j: any) => j.service))];
+
+    return {
+      address: params.address,
+      history,
+      count: history.length,
+      totalSpend: Math.round(totalSpend * 100) / 100,
+      servicesUsed: services,
+      message: history.length
+        ? `${history.length} service records for ${params.address}. Total spend: $${totalSpend.toFixed(2)}. Services: ${services.join(', ')}`
+        : `No service history found for ${params.address}.`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] getPropertyServiceHistory error:", err);
+    return { history: [], error: err.message, message: "Could not retrieve service history." };
+  }
+}
+
+/**
+ * Get properties that need attention: overdue maintenance, no recent service, low health scores.
+ */
+export async function getPropertiesNeedingAttention(params: {
+  businessId: string;
+  daysSinceLastService?: number;
+}): Promise<object> {
+  try {
+    const threshold = params.daysSinceLastService || 90;
+
+    // Get all portfolio properties
+    const propsResult = await pool.query(`
+      SELECT cp.id, cp.address, cp.city, cp.zip, cp.resident_name, cp.property_type
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true AND c.status = 'active'
+    `, [params.businessId]);
+
+    if (!propsResult.rows.length) {
+      return { properties: [], message: "No properties in portfolio." };
+    }
+
+    const needsAttention: any[] = [];
+
+    for (const prop of propsResult.rows) {
+      // Check last service date
+      const lastJob = await pool.query(`
+        SELECT MAX(created_at) as last_service
+        FROM service_requests
+        WHERE LOWER(address) LIKE $1 AND status = 'completed'
+      `, [`%${prop.address.trim().toLowerCase()}%`]);
+
+      const lastServiceDate = lastJob.rows[0]?.last_service;
+      const daysSince = lastServiceDate
+        ? Math.floor((Date.now() - new Date(lastServiceDate).getTime()) / (1000 * 60 * 60 * 24))
+        : 999;
+
+      // Check overdue recurring schedules
+      const overdueRecurring = await pool.query(`
+        SELECT service_type, next_run_date
+        FROM recurring_job_schedules
+        WHERE property_id = $1 AND is_active = true
+          AND next_run_date < NOW()
+      `, [prop.id]);
+
+      if (daysSince >= threshold || overdueRecurring.rows.length > 0) {
+        needsAttention.push({
+          address: `${prop.address}, ${prop.city} ${prop.zip}`,
+          resident: prop.resident_name || "No resident on file",
+          propertyType: prop.property_type,
+          daysSinceLastService: daysSince === 999 ? "Never serviced" : daysSince,
+          overdueServices: overdueRecurring.rows.map((r: any) => ({
+            service: r.service_type,
+            dueDate: r.next_run_date,
+          })),
+          reason: daysSince === 999
+            ? "Never been serviced"
+            : overdueRecurring.rows.length > 0
+            ? `${overdueRecurring.rows.length} overdue recurring service(s)`
+            : `No service in ${daysSince} days`,
+        });
+      }
+    }
+
+    // Sort by urgency (never serviced first, then most overdue)
+    needsAttention.sort((a, b) => {
+      const aDays = typeof a.daysSinceLastService === 'number' ? a.daysSinceLastService : 9999;
+      const bDays = typeof b.daysSinceLastService === 'number' ? b.daysSinceLastService : 9999;
+      return bDays - aDays;
+    });
+
+    return {
+      properties: needsAttention,
+      count: needsAttention.length,
+      totalInPortfolio: propsResult.rows.length,
+      thresholdDays: threshold,
+      message: needsAttention.length
+        ? `${needsAttention.length} of ${propsResult.rows.length} properties need attention (no service in ${threshold}+ days or overdue recurring)`
+        : `All ${propsResult.rows.length} properties are up to date!`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] getPropertiesNeedingAttention error:", err);
+    return { properties: [], error: err.message, message: "Could not check properties right now." };
+  }
+}

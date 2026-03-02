@@ -1404,31 +1404,46 @@ CRITICAL RULES:
 5. Emphasize: one platform, one invoice, one dashboard - replaces 15+ vendor relationships.
 6. When they ask about analytics, portfolio, vendors, or billing - CALL the relevant B2B tools.
 
-CAPABILITIES (call the relevant tools):
-- Portfolio analytics: call get_portfolio_analytics - "Your 200 units cost an average of $47/unit/month for maintenance"
-- Vendor scorecards: call get_vendor_scorecard - "Pro Marcus completes jobs 2 hours faster than average"
+YOU ARE THE PM/HOA BOARD'S COMMAND LINE. They should never need to click through dashboards - they just ask you.
+
+CONVERSATIONAL DASHBOARD (these are your PRIMARY tools - use them proactively):
+- "Show me 123 Oak St" or "pull up [address]" → call lookup_property - full property profile, resident info, recent jobs, assigned crew, recurring services
+- "Find [person name]" or "who lives at..." → call lookup_resident - search residents by name across the entire portfolio
+- "Show me all my properties" or "how many units in [city]?" → call list_portfolio_properties - full list with filters by city, type
+- "Any open work orders?" or "what's pending?" → call get_portfolio_work_orders with status="open"
+- "What jobs were done last month?" → call get_portfolio_work_orders with date range
+- "Run a spend report" or "how much on landscaping?" → call generate_spend_report - group by service, property, or month
+- "What work has been done at [address]?" → call get_property_service_history
+- "Which properties need attention?" or "anything overdue?" → call get_properties_needing_attention
+- "Pull up multiple houses" → call lookup_property or list_portfolio_properties multiple times in one conversation
+
+MULTI-PROPERTY CONVERSATIONS:
+When a PM asks about multiple properties in one conversation, keep context across turns. If they say "now show me 456 Elm too", look that one up without losing context from the previous property. Compare properties side by side when asked.
+
+REPORT GENERATION:
+- "Run a report for the board" → call generate_board_report
+- "Spend breakdown by month" → call generate_spend_report with group_by="month"
+- "Compare Q1 vs Q2" → call generate_spend_report twice with date ranges
+- "Which properties cost the most?" → call generate_spend_report with group_by="property"
+
+ADDITIONAL CAPABILITIES:
+- Portfolio analytics: call get_portfolio_analytics - aggregate stats
+- Vendor scorecards: call get_vendor_scorecard
 - Budget forecasting: use portfolio data to project seasonal spend
-- Compliance audit: call get_compliance_status - "3 of your vendors have expired insurance"
-- Auto-fill work orders: discuss how AI dispatch matches pros to open work orders automatically
-- Billing walkthrough: call get_billing_history - "Your weekly invoice covers X completed jobs"
-- Contracts & documents: call generate_service_agreement to draft MSA, SOW, or custom agreements; call get_document_status to track W-9s, COIs, lien waivers
-- Team management: help add/remove team members, set permissions
-- Integration setup: walk through AppFolio/Buildium/Yardi connection
-- SLA monitoring: show SLA compliance from vendor scorecard
-- Tenant communication: explain tenant-facing notification features
-- Report generation: discuss ESG report capabilities for board presentations
-- Board report generation: call generate_board_report - quarterly spending, vendor performance, compliance stats
-- Community health: call check_community_health - maintenance compliance score, units serviced, overdue count
-- Violation management: call create_violation - create CC&R violation with one-tap booking link for resident
-- Community blasts: call send_community_blast - announcements via email/SMS to all residents or subsets
-- Emergency protocols: call activate_emergency_protocol - hurricane prep, flood response, resident notifications
-- Batch/group pricing: call get_batch_pricing - community-wide service pricing with $10 per-unit neighborhood credit
-- Revenue share: call get_revenue_share_summary - show HOA earnings from the partnership
-- Community scheduling: call schedule_community_service - book services for entire community at once
-- Onboarding: conversational walkthrough of entire platform setup
-- ROI calculator: call generate_roi_report - "You're saving $12K/year vs your previous vendor setup"
-- PM-to-PM referral: mention that property managers can refer other PMs for platform credits
-- Accessibility: if team member mentions voice or accessibility needs, note voice mode is coming soon
+- Compliance audit: call get_compliance_status
+- Billing walkthrough: call get_billing_history
+- Contracts & documents: call generate_service_agreement / get_document_status
+- Board report generation: call generate_board_report
+- Community health: call check_community_health
+- Violation management: call create_violation
+- Community blasts: call send_community_blast
+- Emergency protocols: call activate_emergency_protocol
+- Batch/group pricing: call get_batch_pricing with $10 per-unit neighborhood credit
+- Revenue share: call get_revenue_share_summary
+- Community scheduling: call schedule_community_service
+- ROI calculator: call generate_roi_report
+
+IMPORTANT: When calling any tool that requires business_id, use the userId from context. The tools accept both business account ID and user ID.
 
 PRICING TIERS (reference only - suggest demo for exact fit):
 - Property Management: $4/$6/$10 per door/mo (Starter/Pro/Enterprise)
@@ -3601,6 +3616,93 @@ const TOOL_DEFINITIONS: any[] = [
  },
  // ── Available Pro Rates (for quoting) ──
  {
+ // ── B2B Conversational Dashboard ──
+ name: "lookup_property",
+ description: "Look up a specific property by address in the B2B portfolio. Returns full details: contract info, resident, recent jobs, assigned crew, recurring services. Use when a PM/HOA asks about a specific address.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID (auto-filled from context)" },
+   address: { type: "string", description: "Full or partial property address to search" },
+  },
+  required: ["business_id", "address"],
+ },
+ }, {
+ name: "lookup_resident",
+ description: "Search for a resident/homeowner by name across the entire B2B portfolio. Returns matching residents with their property and contact info.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   name: { type: "string", description: "Resident name (partial match supported)" },
+  },
+  required: ["business_id", "name"],
+ },
+ }, {
+ name: "list_portfolio_properties",
+ description: "List all properties in the B2B portfolio with optional filters by city, property type, etc. Returns summary stats. Use when PM asks 'show me all my properties' or 'how many units in Lake Nona'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   city: { type: "string", description: "Filter by city name (optional)" },
+   property_type: { type: "string", description: "Filter: residential, commercial, common_area (optional)" },
+   limit: { type: "number", description: "Max results (default 50)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "get_portfolio_work_orders",
+ description: "Get work orders/service requests across the portfolio. Filter by status (open/completed/all), service type, address, date range. Use when PM asks 'any open work orders?' or 'what jobs were done last month?'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   status: { type: "string", description: "Filter: open, completed, all (default all)" },
+   service_type: { type: "string", description: "Filter by service type (optional)" },
+   address: { type: "string", description: "Filter by address (optional)" },
+   date_from: { type: "string", description: "Start date filter (optional)" },
+   date_to: { type: "string", description: "End date filter (optional)" },
+   limit: { type: "number", description: "Max results (default 25)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "generate_spend_report",
+ description: "Generate a spend report for the portfolio. Group by service type, property, or month. Optionally filter by date range. Use when PM asks 'run a spend report' or 'how much did we spend on landscaping?'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   group_by: { type: "string", description: "Group results by: service, property, or month (default service)" },
+   date_from: { type: "string", description: "Start date (optional)" },
+   date_to: { type: "string", description: "End date (optional)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "get_property_service_history",
+ description: "Get the full service history for a specific property address. Shows all jobs, total spend, services used. Use when PM asks 'what work has been done at 123 Oak St?'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   address: { type: "string", description: "Property address to look up" },
+   limit: { type: "number", description: "Max records (default 20)" },
+  },
+  required: ["address"],
+ },
+ }, {
+ name: "get_properties_needing_attention",
+ description: "Find properties that need attention: no recent service, overdue recurring maintenance, or never been serviced. Use when PM asks 'which properties need attention?' or 'anything overdue?'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   days_threshold: { type: "number", description: "Days since last service to flag as needing attention (default 90)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
  name: "get_available_pro_rates",
  description: "MANDATORY before quoting: Check which pros are online for a service type and area, and get their rate range. Use this to quote within a viable range so the cascade can find a pro to accept. Customer price is GUARANTEED once quoted.",
  input_schema: {
@@ -4150,6 +4252,34 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  case "get_available_pro_rates":
  return tools.getAvailableProRates(input.service_type, input.lat, input.lng, input.radius_miles);
 
+ // ── B2B Conversational Dashboard Tools ──
+ case "lookup_property":
+ return await tools.lookupProperty({ businessId: input.business_id, address: input.address });
+ case "lookup_resident":
+ return await tools.lookupResident({ businessId: input.business_id, name: input.name });
+ case "list_portfolio_properties":
+ return await tools.listPortfolioProperties({
+  businessId: input.business_id, city: input.city,
+  propertyType: input.property_type, limit: input.limit,
+ });
+ case "get_portfolio_work_orders":
+ return await tools.getPortfolioWorkOrders({
+  businessId: input.business_id, status: input.status,
+  serviceType: input.service_type, address: input.address,
+  dateFrom: input.date_from, dateTo: input.date_to, limit: input.limit,
+ });
+ case "generate_spend_report":
+ return await tools.generateSpendReport({
+  businessId: input.business_id, groupBy: input.group_by,
+  dateFrom: input.date_from, dateTo: input.date_to,
+ });
+ case "get_property_service_history":
+ return await tools.getPropertyServiceHistory({ address: input.address, limit: input.limit });
+ case "get_properties_needing_attention":
+ return await tools.getPropertiesNeedingAttention({
+  businessId: input.business_id, daysSinceLastService: input.days_threshold,
+ });
+
  case "generate_quality_report": {
  const action = input.action || "latest";
  if (action === "generate") {
@@ -4358,6 +4488,7 @@ export async function chat(
  if (context.isAuthenticated) systemPrompt += `\n- User is logged in`;
  else systemPrompt += `\n- User is NOT logged in (prospective)`;
  if (context.userId) systemPrompt += `\n- User ID: ${context.userId}`;
+ if (context.userRole === 'business') systemPrompt += `\n- Business Account ID (use as business_id in all B2B tools): ${context.userId}`;
  }
 
  // Audience adaptive profiling - analyze conversation to adapt style

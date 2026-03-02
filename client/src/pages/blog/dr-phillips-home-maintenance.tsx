@@ -28,97 +28,78 @@ export default function BlogDrPhillipsHomeMaintenance() {
         <h1>The Dr. Phillips Homeowner's Maintenance Schedule for 2026</h1>
 
         <p>
-          Owning a home in Dr. Phillips is great until Florida reminds you that it doesn't care about your weekend plans. Between the humidity, the storms, and the year round growing season, there's always something that needs attention. The trick is staying ahead of it instead of reacting to it.
+          Dr. Phillips homes don't maintain themselves, and the HOAs here aren't going to wait around while you figure that out. Between Bay Hill's gated estates and the luxury pool homes throughout the area, the standards are high and the maintenance costs match. But here's the thing — most of those costs are predictable if you plan ahead. It's the surprises that break budgets.
         </p>
         <p>
-          Dr. Phillips has its own personality when it comes to home maintenance. luxury pool homes and gated community estates are common here, and each comes with its own set of quirks. Most Dr. Phillips communities have active HOAs, especially in Bay Hill and gated sections. Expect architectural review for exterior changes, strict landscaping standards, and regular compliance inspections.
-        </p>
-        <p>
-          Here's a month by month schedule built specifically for Dr. Phillips homeowners. Not generic advice you could find anywhere. This is tuned to the homes, the soil, and the community standards right here.
+          We work with a lot of Dr. Phillips homeowners, and the pattern is always the same: someone who's been reactive for years calls us after their pool equipment fails, their AC dies, and their HOA sends three letters in the same month. Don't be that person. Here's how to stay ahead of it.
         </p>
 
         <h2>January and February: The Planning Months</h2>
         <p>
-          Florida winters are mild enough that you can actually get things done outside without melting. Walk your property with fresh eyes. Look for stucco cracks, faded paint, and landscaping that didn't make it through the cooler months. Schedule your annual termite inspection now. Florida's subterranean termites don't take winters off, and sandy soil with good drainage, but large lots mean more irrigation coverage needed is exactly what they like.
+          Take advantage of mild winter weather to walk your property. Look for stucco cracks, paint fading, and landscaping that needs attention. Dr. Phillips soil is sandy with good drainage, which sounds like a positive until you realize it means your irrigation needs to work harder to keep things green. Large lots here need more irrigation coverage, and zones that were set correctly two years ago may need adjusting as landscaping matures.
         </p>
         <p>
-          Check your irrigation system. Watering restrictions shift seasonally in this part of Central Florida, and getting your zones right before spring saves water and avoids fines. If your home is near Restaurant Row, you know how quickly things dry out once the rain stops.
+          Schedule your annual termite inspection. Subterranean termites don't take winters off in Florida, and the sandy soil here gives them easy access to your foundation. If your home is in Bay Hill or any of the older gated sections, the mature tree canopy creates conditions termites love — shade, moisture, and root systems that create pathways.
         </p>
 
         <h2>March and April: Spring Reset</h2>
         <p>
-          This is when Dr. Phillips starts heating up and everything grows aggressively. Get your St. Augustine, Bermuda on golf course lots grass its first fertilizer application by mid April. Lay fresh mulch in your beds. If you've been putting off pressure washing your driveway and walkways, now is the time. Algae and mold have been building all winter, and your HOA's spring walkthrough is probably right around the corner.
+          By March, the St. Augustine is growing fast. Homes on golf course lots often have Bermuda that needs a different care approach — lower mowing height, different fertilizer timing. Get your first fertilizer application down by mid-April regardless of grass type. Mulch your beds. Pressure wash the driveway — in Dr. Phillips, a dirty driveway in April means a violation letter in May.
         </p>
         <p>
-          Schedule your first gutter cleaning of the year. You want clean gutters before the daily afternoon thunderstorms start in late May. Bay Hill and Cypress Point residents, this applies double if you have mature oaks overhead.
+          First gutter cleaning of the year. Bay Hill and Cypress Point residents with mature oaks — you need this done before the daily afternoon storms start in late May. Clogged gutters in this area don't just cause water damage; they cause staining on your stucco that costs more to fix than the gutter cleaning.
         </p>
 
         <h2>May and June: Hurricane Prep Window</h2>
         <p>
-          Hurricane season officially starts June 1, but smart Dr. Phillips homeowners start in May. Trim any tree branches within 10 feet of your roof. Check your storm shutters or impact windows for damage. Make sure your pool pump and exterior equipment are secured.
+          Prep starts in May. Trim tree branches within 10 feet of your roof. Check storm shutters and impact windows. Secure pool equipment — and in Dr. Phillips, that often means checking resort-style pool setups with water features, spas, and automation systems. A single failed valve on a water feature during a hurricane can drain your pool and damage equipment worth thousands.
         </p>
         <p>
-          Nearly every home here has a pool. Resort-style setups are common. Weekly service is non-negotiable in this climate. If you're not already on a weekly pool service schedule, June is when you'll wish you were. Rising temperatures and afternoon rain change water chemistry fast.
+          Nearly every home in Dr. Phillips has a pool, and most of them are larger and more complex than the average Orlando pool. Weekly professional service isn't optional here — it's the baseline. If you've been handling it yourself and getting away with it during the cooler months, June is when the chemistry becomes a daily battle. Hire someone who knows what they're doing.
         </p>
 
         <h2>July and August: Storm Season Maintenance</h2>
         <p>
-          Weekly lawn mowing is non negotiable during Florida summer. Your St. Augustine, Bermuda on golf course lots is growing inches per week, and a single missed mowing can trigger an HOA violation in communities like Bay Hill and Cypress Point. Keep your mower blade sharp and mow high. Cutting too short in summer heat will damage your lawn.
+          Weekly mowing is non-negotiable. St. Augustine grows inches per week, and the HOAs in Bay Hill and Cypress Point notice fast. Mow high — at least 3.5 inches — and keep your blade sharp. Brown patches from a dull blade or too-short cut are visible from the street and will get you a letter.
         </p>
         <p>
-          After any significant storm, do a quick property walkthrough. Check for lifted roof shingles, damaged screen enclosures, and clogged downspouts. Document everything with photos. This matters for insurance claims if something bigger happens later in the season.
+          Walk your property after every storm. Lifted shingles, damaged screens, clogged downspouts — photograph everything. Dr. Phillips homes tend to have large roof footprints, and even minor wind damage can be hard to spot from ground level. Consider having a roofer do a mid-season check if your home is more than 10 years old.
+        </p>
+        <p>
+          Change your AC filter monthly. The units in Dr. Phillips homes are often larger, multi-zone systems that cost $8,000 to $15,000 to replace. A $15 filter change every month is the cheapest insurance you'll ever buy.
         </p>
 
-        <h2>September and October: Post Storm Recovery</h2>
+        <h2>September and October: Post-Storm Recovery</h2>
         <p>
-          The worst of hurricane season wraps up by mid October. Even if Dr. Phillips dodged a direct hit, months of heavy rain take a toll. Check for standing water around your foundation, mold on exterior walls, and any soft spots in your fascia or soffit boards.
+          Months of heavy rain show their effects now. Check for standing water near your foundation, mold on exterior walls (especially north-facing), and soft spots in your fascia. In Dr. Phillips, the large lots mean more roof area and more gutter footage — get your second cleaning done now before fall leaf drop makes things worse.
         </p>
         <p>
-          Schedule your second gutter cleaning of the year. Dr. Phillips's trees drop leaves heavily in fall, and one good rain with clogged gutters can push water into your walls. This is also a good time to have your roof inspected, especially if your home is more than 10 years old.
+          If you're near Turkey Lake, mosquito and rat activity typically peaks in October. Roof rats love the mature tree canopy in this area and they'll use overhanging branches to access your attic. Trim back any branches touching your roofline.
         </p>
 
         <h2>November and December: Deep Clean and Protect</h2>
         <p>
-          Florida's dry season starts in November, making it the ideal time for exterior projects. Schedule a full house pressure wash to remove the summer's buildup of mold and dirt. Touch up exterior paint that's fading. If your driveway sealer is more than two years old, now is the time to reapply.
+          Dry season means it's time for exterior projects. Full pressure wash, paint touch-ups, driveway resealing. Dr. Phillips homes tend to have more exterior surface area, so budget accordingly — a full house pressure wash for a larger home here runs $400 to $700 compared to $200 to $350 for a typical Orlando home.
         </p>
         <p>
-          Inside, consider a deep clean of carpets, tile grout, and air ducts. Your AC has been running nonstop for six months and your ductwork is full of whatever Florida's air carried in. Dr. Phillips homes near Dr. Phillips Center for the Performing Arts know this feeling well.
+          Inside, clean your ducts and deep-clean floors. Have your HVAC system professionally serviced before the spring cooling season starts. With larger homes and multi-zone systems, an annual HVAC tune-up here runs $150 to $300 but can catch problems before they become emergencies.
         </p>
 
         <h2>What Catches Dr. Phillips Homeowners Off Guard</h2>
         <p>
-          A few things specific to this area: Sandy soil with good drainage, but large lots mean more irrigation coverage needed. That affects everything from foundation settling to how your pavers shift over time. Check walkways annually and relevel as needed.
+          The cost of scale. Everything is bigger here — bigger lots, bigger pools, bigger homes — and that means maintenance costs are proportionally higher. A lawn service that costs $120 a month in Ocoee might cost $200 to $300 in Dr. Phillips because there's simply more ground to cover. Pool service is the same story. Budget for the reality of your property, not the Orlando average.
         </p>
         <p>
-          Chinch bugs in large lawns, mosquitoes near Turkey Lake, rats in older attic spaces are the main pest concerns here. Regular pest control isn't optional. it's essential. And if you're in a newer Dr. Phillips home, remember that most builder warranties on cosmetic items like drywall cracks and grout separation expire after one or two years. Don't sit on those.
+          Chinch bugs are the lawn killer in this area. They love large, sunny St. Augustine lawns, and they can destroy a section of your yard in two weeks during summer. If you see irregular yellow patches that don't respond to watering, get a pest inspection immediately. Early treatment costs $100 to $200. Replacing dead sod costs $500 to $1,500.
         </p>
 
-        <h2>A Better Way to Stay on Top of It</h2>
+        <h2>Ready to Get This Handled?</h2>
         <p>
-          We're building something different in Orlando. At <Link href="/">UpTend</Link>, we're putting together a platform that helps Dr. Phillips homeowners stay ahead of maintenance instead of reacting to problems. We're still in early access, but we're already helping homeowners in the area get connected with trusted local pros and build real maintenance plans for their homes.
+          Talk to George — he'll give you a guaranteed price in 60 seconds. Whether it's pool maintenance, lawn care, or a full property maintenance plan for your Dr. Phillips home, we make it straightforward.
         </p>
         <p>
-          If you want to see where your home stands, start with a{" "}
-          <Link href="/join"><strong>free Home DNA Scan</strong></Link>. It takes a few minutes, costs nothing, and gives you a clear picture of what your home needs and when.
+          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
         </p>
-
-        <hr />
-
-        <p className="text-sm text-muted-foreground">
-          <em>
-            Have questions about maintaining your Dr. Phillips home? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Dr. Phillips inside and out.
-          </em>
-        </p>
-
-        <section className="not-prose mt-12 pt-8 border-t border-border">
-          <h2 className="text-xl font-bold mb-4">Related Services</h2>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/services/home-cleaning-dr-phillips" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Dr. Phillips</Link>
-            <Link href="/services/landscaping-dr-phillips" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Dr. Phillips</Link>
-            <Link href="/services/pool-cleaning-dr-phillips" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Pool Cleaning Dr. Phillips</Link>
-          </div>
-        </section>
       </article>
       <Footer />
     </div>

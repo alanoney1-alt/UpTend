@@ -1,6 +1,6 @@
 # UpTend SEO Keyword Tracking
 
-*Last Updated: February 25, 2026*
+*Last Updated: March 2, 2026*
 
 ## Keyword Rankings Analysis
 
@@ -761,4 +761,82 @@
 
 **SEO Opportunity**: Emergency services keywords show less competition but high intent - opportunity for UpTend to establish authority in crisis response market segment.
 
-*Next update: March 2, 2026*
+---
+
+### March 2, 2026 - Daily Competitive Research
+
+**Target Keywords & Current Rankings:**
+
+#### 1. "handyman Lake Nona Orlando Florida"
+**Top Competitors:**
+1. **Yelp** (Position #1) - Aggregator with Knight's Restoration, Carcani & Sons featured
+2. **TJ Handyman Services LLC** (Position #2) - Still strong local presence, Lake Nona-specific page
+3. **Lake Nona Handyman** (Position #3) - Exact match domain maintains position
+4. **Ace Handyman Services** (Position #4) - Franchise with East Orlando focus
+5. **Ace Handyman (Directory)** (Position #5) - Directory listing
+
+**Status:** TJ Handyman maintains strong position, Yelp now outranking them
+
+---
+
+#### 2. "junk removal Orlando Florida"
+**Top Competitors:**
+1. **Junk King Orlando** (Position #1) - National franchise, maintains dominance
+2. **Reddit r/orlando** (Position #2) - Community discussion gaining search visibility
+3. **1-800-GOT-JUNK?** (Position #3) - Major national brand
+4. **Junk Shot** (Position #4) - App-based local service
+5. **JDog Junk Removal** (Position #5) - Veteran-owned franchise
+
+**Status:** Reddit discussion now ranking #2, interesting content opportunity
+
+---
+
+#### 3. "pressure washing Orlando Florida"
+**Top Competitors:**
+1. **Orlando Pressure Wash Pros** (Position #1) - Maintains strong local position
+2. **Orlando Pressure Wash & More** (Position #2) - Strong local competitor
+3. **Yelp** (Position #3) - Aggregator with Buddy's Pressure Washing featured
+4. **Magic Bubbles Wash** (Position #4) - Multi-location franchise
+5. **Hotsy Orlando** (Position #5) - Equipment sales/service (different intent)
+
+**Status:** Stable rankings, strong local competition
+
+---
+
+#### 4. "gutter cleaning Orlando Florida"
+**Top Competitors:**
+1. **Yelp** (Position #1) - Aggregator dominance with multiple providers
+2. **TJ Handyman Services LLC** (Position #2) - Cross-service ranking success
+3. **Magic Bubbles Wash** (Position #3) - Multi-service provider
+4. **Gutter Masters of Central Florida** (Position #4) - Specialist
+5. **Elite Gutter Services** (Position #5) - Local specialist
+
+**Status:** TJ Handyman expanding service visibility, good cross-selling example
+
+---
+
+#### 5. "home services Lake Nona Orlando Florida"
+**Top Competitors:**
+1. **TJ Handyman Services LLC** (Position #1) - Dominates with home maintenance page
+2. **Lake Nona Official** (Position #2) - Community homes page (different intent)
+3. **Ace Handyman (HomeAdvisor)** (Position #3) - Directory listing
+4. **Nona Cleaning Services** (Position #4) - Specialist local service
+5. **Ace Handyman Services** (Position #5) - Direct company page
+
+**Status:** TJ Handyman has strong Lake Nona presence across multiple keywords
+
+---
+
+**Key Insights March 2, 2026:**
+- TJ Handyman showing cross-keyword strength in Lake Nona market
+- Yelp gaining prominence as aggregator in multiple verticals
+- Reddit content ranking well for junk removal (community discussion value)
+- Opportunity exists in home services aggregation space
+- Local specialists maintaining good positions against national brands
+
+**Content Opportunities:**
+- "How to choose" comparison guides (Reddit ranks well)
+- Lake Nona-specific service guides (TJ Handyman model working)
+- Cross-service content (gutter + pressure washing combinations)
+
+*Next update: March 3, 2026*

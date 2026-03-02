@@ -28,97 +28,84 @@ export default function BlogWinterParkHomeMaintenance() {
         <h1>The Winter Park Homeowner's Maintenance Schedule for 2026</h1>
 
         <p>
-          Owning a home in Winter Park is great until Florida reminds you that it doesn't care about your weekend plans. Between the humidity, the storms, and the year round growing season, there's always something that needs attention. The trick is staying ahead of it instead of reacting to it.
+          Winter Park doesn't have traditional HOAs in every neighborhood, but don't let that fool you into thinking nobody cares what your house looks like. The city itself acts like an HOA — exterior paint colors, fence heights, tree removal permits, signage — it's all regulated. Add in the 1920s Mediterranean Revival estates along the chain of lakes, the historic bungalows near Rollins College, and the newer builds in Baldwin Park, and you've got a maintenance landscape as diverse as the architecture.
         </p>
         <p>
-          Winter Park has its own personality when it comes to home maintenance. 1920s Mediterranean Revival estates and historic bungalows are common here, and each comes with its own set of quirks. Winter Park has strict code enforcement. Not traditional HOAs in every neighborhood, but the city itself acts like one. Exterior paint colors, fence heights, tree removal permits, signage. all regulated.
-        </p>
-        <p>
-          Here's a month by month schedule built specifically for Winter Park homeowners. Not generic advice you could find anywhere. This is tuned to the homes, the soil, and the community standards right here.
+          Here's what we tell Winter Park homeowners: your house is probably worth more than you think, and deferred maintenance erodes that value faster than market fluctuations. A $15,000 kitchen renovation adds value. A $15,000 repair bill from ignored roof damage doesn't. Stay ahead of it.
         </p>
 
         <h2>January and February: The Planning Months</h2>
         <p>
-          Florida winters are mild enough that you can actually get things done outside without melting. Walk your property with fresh eyes. Look for stucco cracks, faded paint, and landscaping that didn't make it through the cooler months. Schedule your annual termite inspection now. Winter Park's older homes and sandy florida soil with mature oak root systems that affect plumbing and foundations make termite prevention especially important here.
+          Winter Park's mild winters are the time to inspect everything. On historic homes, focus on the details that Florida's climate attacks hardest — wood window frames, decorative trim, original stucco, and anything that sits close to the ground where moisture accumulates. The sandy soil here is laced with massive oak root systems that affect plumbing, foundations, and everything in between.
         </p>
         <p>
-          Check your irrigation system. Watering restrictions shift seasonally in this part of Central Florida, and getting your zones right before spring saves water and avoids fines. If your home is near Park Avenue, you know how quickly things dry out once the rain stops.
+          Termite inspection is critical, especially for older wood-frame homes. The combination of sandy soil, mature trees, and the moisture from the chain of lakes makes this area prime territory for subterranean termites. We've seen homes near Rollins where termite damage was hiding behind what looked like perfectly fine original trim for years. Annual inspection isn't optional.
+        </p>
+        <p>
+          Check your irrigation system. Winter Park's water restrictions are enforced, and the mature tree canopy means some zones get less water than they need while others get too much because the root systems redirect flow. Dial in your zones before the spring growth explodes.
         </p>
 
         <h2>March and April: Spring Reset</h2>
         <p>
-          This is when Winter Park starts heating up and everything grows aggressively. Get your St. Augustine and Zoysia grass its first fertilizer application by mid April. Lay fresh mulch in your beds. If you've been putting off pressure washing your driveway and walkways, now is the time. Algae and mold have been building all winter, and your HOA's spring walkthrough is probably right around the corner.
+          St. Augustine and Zoysia are the dominant grasses in Winter Park. Both need their first fertilizer by mid-April. Mulch your beds, pressure wash your hardscaping, and get everything cleaned up. Park Avenue might be the prettiest street in Central Florida, and the residential streets around it maintain that standard. A dingy driveway stands out.
         </p>
         <p>
-          Schedule your first gutter cleaning of the year. You want clean gutters before the daily afternoon thunderstorms start in late May. Baldwin Park and College Park residents, this applies double if you have mature oaks overhead.
+          First gutter cleaning. Winter Park is famous for its oak canopy, and that canopy dumps an extraordinary amount of debris into your gutters. Baldwin Park and College Park residents with mature oaks — clean your gutters in March and plan to do it again before June thunderstorms. The leaf and pollen volume here is genuinely more than most people expect.
+        </p>
+        <p>
+          For historic homes: spring is when you should inspect all exterior wood. Push on sills, trim, and fascia boards. If your thumb goes in, you've got rot that needs attention before the wet season accelerates it.
         </p>
 
         <h2>May and June: Hurricane Prep Window</h2>
         <p>
-          Hurricane season officially starts June 1, but smart Winter Park homeowners start in May. Trim any tree branches within 10 feet of your roof. Check your storm shutters or impact windows for damage. Make sure your pool pump and exterior equipment are secured.
+          Start prep in May. Trim branches near your roof — on mature Winter Park oaks, this often means hiring an arborist rather than doing it yourself. The city requires a permit to remove certain trees, so plan ahead. Check your storm protection. Many older Winter Park homes have been retrofitted with pools and screen enclosures that weren't part of the original design — these are often the most vulnerable elements during a storm.
         </p>
         <p>
-          Many older homes have been retrofitted with pools. Screened enclosures on historic homes need extra care. If you're not already on a weekly pool service schedule, June is when you'll wish you were. Rising temperatures and afternoon rain change water chemistry fast.
+          Pools on historic homes need extra care. The plumbing and equipment may be running through original structures in ways that create unique maintenance challenges. Weekly professional service is the standard from May through October. If you've been handling it yourself, June is typically the month where chemistry becomes a daily battle.
         </p>
 
         <h2>July and August: Storm Season Maintenance</h2>
         <p>
-          Weekly lawn mowing is non negotiable during Florida summer. Your St. Augustine and Zoysia is growing inches per week, and a single missed mowing can trigger an HOA violation in communities like Baldwin Park and College Park. Keep your mower blade sharp and mow high. Cutting too short in summer heat will damage your lawn.
+          Weekly mowing. St. Augustine and Zoysia grow fast in this heat. The city's code enforcement is active in summer, and Baldwin Park and College Park both have community standards that get enforced. Mow high — 3.5 to 4 inches for St. Augustine — and keep your edges clean.
         </p>
         <p>
-          After any significant storm, do a quick property walkthrough. Check for lifted roof shingles, damaged screen enclosures, and clogged downspouts. Document everything with photos. This matters for insurance claims if something bigger happens later in the season.
+          Post-storm walkthroughs matter more here than in newer neighborhoods. Historic roof structures, original windows, and older construction details are all more vulnerable to wind and water. Document everything. On older homes, check the interior of closets and storage areas for water stains on walls and ceilings — these are often the first signs of roof leaks that aren't visible from outside.
+        </p>
+        <p>
+          AC maintenance: monthly filter changes during summer. Older Winter Park homes sometimes have undersized or aging HVAC systems that struggle with Florida's peak heat. If your system is more than 12 years old and your electric bill keeps climbing, a professional assessment now costs $100 to $200 and might save you from an emergency replacement in August.
         </p>
 
-        <h2>September and October: Post Storm Recovery</h2>
+        <h2>September and October: Post-Storm Recovery</h2>
         <p>
-          The worst of hurricane season wraps up by mid October. Even if Winter Park dodged a direct hit, months of heavy rain take a toll. Check for standing water around your foundation, mold on exterior walls, and any soft spots in your fascia or soffit boards.
+          Check for all the cumulative rain damage. Mold on walls, soft spots in trim, standing water near foundations. Near the chain of lakes, higher water tables during the rainy season can push moisture up through slabs and into homes in ways that aren't obvious until you see efflorescence (white mineral deposits) on concrete or tile.
         </p>
         <p>
-          Schedule your second gutter cleaning of the year. Winter Park's trees drop leaves heavily in fall, and one good rain with clogged gutters can push water into your walls. This is also a good time to have your roof inspected, especially if your home is more than 10 years old.
+          Second gutter cleaning. Get a professional roof inspection — on older homes, this should be annual regardless of whether a storm hit. The oak debris combined with Florida's UV and rain creates conditions that degrade roofing materials faster than in sun-only climates.
         </p>
 
         <h2>November and December: Deep Clean and Protect</h2>
         <p>
-          Florida's dry season starts in November, making it the ideal time for exterior projects. Schedule a full house pressure wash to remove the summer's buildup of mold and dirt. Touch up exterior paint that's fading. If your driveway sealer is more than two years old, now is the time to reapply.
+          Dry season projects: full house pressure wash (soft wash for older stucco and painted surfaces), paint touch-ups, driveway resealing. Winter Park homes near Rollins and the chain of lakes tend to show mold staining on north-facing walls more than average — address this in November when conditions are dry.
         </p>
         <p>
-          Inside, consider a deep clean of carpets, tile grout, and air ducts. Your AC has been running nonstop for six months and your ductwork is full of whatever Florida's air carried in. Winter Park homes near Rollins College know this feeling well.
+          Inside, duct cleaning and deep carpet cleaning. On older homes with less airtight construction, the ducts collect more ambient moisture and biological growth than modern sealed systems. A professional cleaning runs $300 to $500 and noticeably improves air quality.
         </p>
 
         <h2>What Catches Winter Park Homeowners Off Guard</h2>
         <p>
-          A few things specific to this area: Sandy Florida soil with mature oak root systems that affect plumbing and foundations. That affects everything from foundation settling to how your pavers shift over time. Check walkways annually and relevel as needed.
+          The oak root systems. They crack plumbing lines, lift pavers, push against foundations, and create pathways for pests. We've talked to homeowners who spent $5,000 on plumbing repairs because oak roots invaded their sewer lateral. If you have mature oaks within 20 feet of your home, periodic sewer camera inspections ($150 to $300) can catch root intrusion before it becomes a crisis.
         </p>
         <p>
-          Termites (especially in older wood-frame homes), palmetto bugs, mosquitoes near the chain of lakes are the main pest concerns here. Regular pest control isn't optional. it's essential. And if you're in a newer Winter Park home, remember that most builder warranties on cosmetic items like drywall cracks and grout separation expire after one or two years. Don't sit on those.
+          Palmetto bugs — the giant outdoor roaches that Florida politely gave a different name — are a fact of life near the lakes. Regular quarterly pest control keeps them outside where they belong. Termites are the silent killer in older homes. Mosquitoes near the chain of lakes make outdoor spaces miserable from May through October without professional treatment.
         </p>
 
-        <h2>A Better Way to Stay on Top of It</h2>
+        <h2>Ready to Get This Handled?</h2>
         <p>
-          We're building something different in Orlando. At <Link href="/">UpTend</Link>, we're putting together a platform that helps Winter Park homeowners stay ahead of maintenance instead of reacting to problems. We're still in early access, but we're already helping homeowners in the area get connected with trusted local pros and build real maintenance plans for their homes.
+          Talk to George — he'll give you a guaranteed price in 60 seconds. Whether it's maintaining a 1920s estate or keeping a Baldwin Park home in shape, we know Winter Park.
         </p>
         <p>
-          If you want to see where your home stands, start with a{" "}
-          <Link href="/join"><strong>free Home DNA Scan</strong></Link>. It takes a few minutes, costs nothing, and gives you a clear picture of what your home needs and when.
+          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
         </p>
-
-        <hr />
-
-        <p className="text-sm text-muted-foreground">
-          <em>
-            Have questions about maintaining your Winter Park home? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Winter Park inside and out.
-          </em>
-        </p>
-
-        <section className="not-prose mt-12 pt-8 border-t border-border">
-          <h2 className="text-xl font-bold mb-4">Related Services</h2>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/services/home-cleaning-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Winter Park</Link>
-            <Link href="/services/landscaping-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Winter Park</Link>
-            <Link href="/services/pressure-washing-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Pressure Washing Winter Park</Link>
-          </div>
-        </section>
       </article>
       <Footer />
     </div>
