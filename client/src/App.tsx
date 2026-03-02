@@ -108,6 +108,7 @@ const PartnersLanding = lazy(() => import("@/pages/partners/index"));
 const PartnerRegister = lazy(() => import("@/pages/partners/register"));
 const PartnerDashboard = lazy(() => import("@/pages/partners/dashboard"));
 const BrandedPartnerLanding = lazy(() => import("@/pages/partners/branded-landing"));
+const PartnerSEODemo = lazy(() => import("@/pages/partners/seo-demo"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
 const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
 const BpIntegrations = lazy(() => import("@/pages/bp-integrations"));
@@ -436,6 +437,7 @@ function Router() {
       <Route path="/partners" component={PartnersLanding} />
       <Route path="/partners/register" component={PartnerRegister} />
       <Route path="/partners/dashboard" component={PartnerDashboard} />
+      <Route path="/partners/:slug/seo-demo" component={PartnerSEODemo} />
       <Route path="/partners/:slug" component={BrandedPartnerLanding} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
       <Route path="/jobs/:jobId/track" component={JobLiveTracker} />

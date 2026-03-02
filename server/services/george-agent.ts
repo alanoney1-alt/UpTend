@@ -3902,6 +3902,47 @@ const TOOL_DEFINITIONS: any[] = [
   required: ["business_id"],
  },
  }, {
+ // ── Partner Procurement ──
+ name: "search_parts_pricing",
+ description: "Search for parts/materials pricing across suppliers (SupplyHouse, Home Depot, Ferguson, Grainger, Amazon). Use when a partner tech needs to find parts for a job.",
+ input_schema: {
+  type: "object",
+  properties: {
+   query: { type: "string", description: "Part name or description" },
+   category: { type: "string", description: "hvac, plumbing, electrical, or general" },
+   brand: { type: "string", description: "Part brand (optional)" },
+   model_number: { type: "string", description: "Model/part number (optional)" },
+   zip_code: { type: "string", description: "ZIP for local availability (optional)" },
+  },
+  required: ["query"],
+ },
+ }, {
+ name: "build_parts_list",
+ description: "Build a complete parts list for a job type. Shows all parts needed, quantities, estimated costs, and supplier links. Use when scoping a job for a partner.",
+ input_schema: {
+  type: "object",
+  properties: {
+   job_type: { type: "string", description: "Job type: ac_repair, ac_install, ac_maintenance, duct_cleaning" },
+   unit_brand: { type: "string", description: "HVAC unit brand (optional)" },
+   unit_model: { type: "string", description: "Unit model number (optional)" },
+   issue: { type: "string", description: "Description of the issue (optional)" },
+  },
+  required: ["job_type"],
+ },
+ }, {
+ name: "get_vendor_quotes",
+ description: "Get local vendor contacts and quote request templates for a specific part. Includes call scripts, email templates, and supplier search links. Use when partner needs to buy parts.",
+ input_schema: {
+  type: "object",
+  properties: {
+   part: { type: "string", description: "Part description" },
+   quantity: { type: "number", description: "How many needed" },
+   zip_code: { type: "string", description: "ZIP code for local vendors" },
+   urgent: { type: "boolean", description: "Need same-day?" },
+  },
+  required: ["part", "quantity"],
+ },
+ }, {
  name: "get_available_pro_rates",
  description: "MANDATORY before quoting: Check which pros are online for a service type and area, and get their rate range. Use this to quote within a viable range so the cascade can find a pro to accept. Customer price is GUARANTEED once quoted.",
  input_schema: {
@@ -4510,6 +4551,14 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  return await pmsIntegration.syncProperties({ businessId: input.business_id, platform: input.platform });
  case "get_vote_results":
  return await pmsIntegration.getVoteResults({ businessId: input.business_id, campaignId: input.campaign_id });
+
+ // ── Partner Procurement Tools ──
+ case "search_parts_pricing":
+ return await tools.searchPartsPricing({ query: input.query, category: input.category, brand: input.brand, modelNumber: input.model_number, zipCode: input.zip_code });
+ case "build_parts_list":
+ return await tools.buildPartsListForJob({ jobType: input.job_type, unitBrand: input.unit_brand, unitModel: input.unit_model, issueDescription: input.issue, scope: input.scope });
+ case "get_vendor_quotes":
+ return await tools.getVendorQuotes({ partDescription: input.part, quantity: input.quantity, zipCode: input.zip_code, urgent: input.urgent });
 
  case "generate_quality_report": {
  const action = input.action || "latest";

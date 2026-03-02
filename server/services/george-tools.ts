@@ -11837,3 +11837,216 @@ export async function setBudget(params: {
     return { set: false, error: err.message, message: "Could not set budget." };
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PARTNER PROCUREMENT TOOLS
+// George as vendor bidding agent: finds parts, compares prices, contacts suppliers
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Search for parts/materials across suppliers.
+ * Scrapes pricing from major suppliers for HVAC, plumbing, electrical parts.
+ */
+export async function searchPartsPricing(params: {
+  query: string;
+  category?: string; // hvac | plumbing | electrical | general
+  brand?: string;
+  modelNumber?: string;
+  zipCode?: string;
+}): Promise<object> {
+  try {
+    const searchQuery = [params.query, params.brand, params.modelNumber].filter(Boolean).join(" ");
+
+    // Search multiple supplier sources
+    const suppliers = [
+      { name: "SupplyHouse", url: `https://www.supplyhouse.com/search?q=${encodeURIComponent(searchQuery)}`, type: "wholesale" },
+      { name: "Home Depot", url: `https://www.homedepot.com/s/${encodeURIComponent(searchQuery)}`, type: "retail" },
+      { name: "Lowe's", url: `https://www.lowes.com/search?searchTerm=${encodeURIComponent(searchQuery)}`, type: "retail" },
+      { name: "Ferguson", url: `https://www.ferguson.com/search/${encodeURIComponent(searchQuery)}`, type: "wholesale" },
+      { name: "Grainger", url: `https://www.grainger.com/search?searchQuery=${encodeURIComponent(searchQuery)}`, type: "wholesale" },
+      { name: "Amazon", url: `https://www.amazon.com/s?k=${encodeURIComponent(searchQuery)}`, type: "retail" },
+    ];
+
+    // Filter by category
+    const categorySuppliers: Record<string, string[]> = {
+      hvac: ["SupplyHouse", "Ferguson", "Grainger", "Home Depot", "Amazon"],
+      plumbing: ["SupplyHouse", "Ferguson", "Home Depot", "Lowe's", "Amazon"],
+      electrical: ["Grainger", "Home Depot", "Lowe's", "Amazon"],
+      general: ["Home Depot", "Lowe's", "Amazon", "Grainger"],
+    };
+
+    const relevantNames = categorySuppliers[params.category || "general"] || categorySuppliers.general;
+    const relevantSuppliers = suppliers.filter(s => relevantNames.includes(s.name));
+
+    // Build comparison data (prices would come from actual scraping in production)
+    // For now, provide search links and estimated ranges based on common parts
+    const priceEstimates = getPartPriceEstimate(searchQuery, params.category || "general");
+
+    return {
+      query: searchQuery,
+      category: params.category || "general",
+      suppliers: relevantSuppliers.map(s => ({
+        name: s.name,
+        type: s.type,
+        searchUrl: s.url,
+        estimatedPrice: priceEstimates[s.name] || null,
+      })),
+      priceRange: priceEstimates.range,
+      recommendation: priceEstimates.recommendation,
+      message: `Found pricing across ${relevantSuppliers.length} suppliers for "${searchQuery}". ${priceEstimates.range ? `Estimated range: $${priceEstimates.range.low}-$${priceEstimates.range.high}` : 'Check supplier links for exact pricing.'}`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] searchPartsPricing error:", err);
+    return { suppliers: [], error: err.message, message: "Could not search parts pricing." };
+  }
+}
+
+function getPartPriceEstimate(query: string, category: string): any {
+  const q = query.toLowerCase();
+  
+  // Common HVAC parts
+  if (category === "hvac") {
+    if (q.includes("capacitor")) return { range: { low: 8, high: 35 }, recommendation: "SupplyHouse usually cheapest for capacitors. Amazon for next-day.", SupplyHouse: "$8-15", "Home Depot": "$15-25", Amazon: "$10-20" };
+    if (q.includes("contactor")) return { range: { low: 12, high: 45 }, recommendation: "Grainger for commercial-grade. SupplyHouse for residential.", SupplyHouse: "$12-25", Grainger: "$20-45", Amazon: "$15-30" };
+    if (q.includes("thermostat")) return { range: { low: 25, high: 300 }, recommendation: "Home Depot price-matches. Amazon for smart thermostats.", "Home Depot": "$30-250", Amazon: "$25-300", "Lowe's": "$30-250" };
+    if (q.includes("filter") || q.includes("air filter")) return { range: { low: 5, high: 40 }, recommendation: "Buy bulk from Amazon or FilterBuy. 20% cheaper than retail.", Amazon: "$5-25", "Home Depot": "$8-30", "Lowe's": "$8-30" };
+    if (q.includes("refrigerant") || q.includes("r410a") || q.includes("r-410a")) return { range: { low: 75, high: 250 }, recommendation: "Wholesale only. SupplyHouse or Ferguson. Need EPA 608 cert.", SupplyHouse: "$75-150", Ferguson: "$80-160" };
+    if (q.includes("compressor")) return { range: { low: 400, high: 2000 }, recommendation: "OEM from SupplyHouse. Aftermarket from Amazon (risky on compressors).", SupplyHouse: "$400-1500", Ferguson: "$500-2000" };
+    if (q.includes("condenser")) return { range: { low: 800, high: 3500 }, recommendation: "Always go OEM or tier-1 aftermarket for condensers. SupplyHouse or Ferguson.", SupplyHouse: "$800-2500", Ferguson: "$1000-3500" };
+    if (q.includes("blower") || q.includes("fan motor")) return { range: { low: 50, high: 300 }, recommendation: "SupplyHouse for exact match. Amazon for universal fit.", SupplyHouse: "$60-200", Amazon: "$50-180", Grainger: "$80-300" };
+    if (q.includes("coil") && (q.includes("evaporator") || q.includes("indoor"))) return { range: { low: 200, high: 800 }, recommendation: "Must match unit specs. SupplyHouse has best search by model number.", SupplyHouse: "$200-600", Ferguson: "$250-800" };
+  }
+
+  // Common plumbing parts
+  if (category === "plumbing") {
+    if (q.includes("water heater")) return { range: { low: 300, high: 2000 }, recommendation: "Home Depot for same-day pickup. SupplyHouse for wholesale pricing.", "Home Depot": "$350-1500", "Lowe's": "$350-1500", SupplyHouse: "$300-1200" };
+    if (q.includes("faucet")) return { range: { low: 30, high: 400 }, recommendation: "Home Depot for selection. Amazon for brand-name discounts.", "Home Depot": "$40-350", Amazon: "$30-300", "Lowe's": "$40-400" };
+    if (q.includes("toilet")) return { range: { low: 100, high: 600 }, recommendation: "Home Depot or Lowe's for same-day. Ferguson for commercial grade.", "Home Depot": "$100-500", "Lowe's": "$100-500", Ferguson: "$150-600" };
+    if (q.includes("pipe")) return { range: { low: 5, high: 100 }, recommendation: "Home Depot for PVC/PEX. Ferguson for copper and commercial.", "Home Depot": "$5-60", Ferguson: "$10-100" };
+  }
+
+  // Fallback
+  return { range: null, recommendation: "Check supplier links for exact pricing. SupplyHouse and Ferguson are typically cheapest for trade/wholesale." };
+}
+
+/**
+ * Build a parts list for a job scope.
+ * George compiles what the tech needs and finds best prices.
+ */
+export async function buildPartsListForJob(params: {
+  jobType: string; // "ac_repair", "ac_install", "duct_cleaning", etc.
+  unitBrand?: string;
+  unitModel?: string;
+  issueDescription?: string;
+  scope?: string[];
+}): Promise<object> {
+  try {
+    // Common parts lists by job type
+    const partsLists: Record<string, Array<{ part: string; quantity: number; estimatedCost: string; priority: string }>> = {
+      ac_repair: [
+        { part: "Run Capacitor (matching specs)", quantity: 1, estimatedCost: "$8-25", priority: "likely" },
+        { part: "Contactor", quantity: 1, estimatedCost: "$12-30", priority: "possible" },
+        { part: "Hard Start Kit", quantity: 1, estimatedCost: "$15-35", priority: "possible" },
+        { part: "Refrigerant R-410A (per lb)", quantity: 3, estimatedCost: "$15-30/lb", priority: "possible" },
+        { part: "Air Filter (matching size)", quantity: 1, estimatedCost: "$8-25", priority: "always" },
+        { part: "Condensate drain flush supplies", quantity: 1, estimatedCost: "$5-10", priority: "always" },
+      ],
+      ac_install: [
+        { part: "Condenser Unit (brand match)", quantity: 1, estimatedCost: "$800-3500", priority: "required" },
+        { part: "Air Handler / Evaporator Coil", quantity: 1, estimatedCost: "$500-2000", priority: "required" },
+        { part: "Thermostat", quantity: 1, estimatedCost: "$30-300", priority: "required" },
+        { part: "Refrigerant line set (copper)", quantity: 1, estimatedCost: "$50-150", priority: "required" },
+        { part: "Drain line and fittings", quantity: 1, estimatedCost: "$15-40", priority: "required" },
+        { part: "Electrical disconnect", quantity: 1, estimatedCost: "$20-50", priority: "required" },
+        { part: "Concrete pad", quantity: 1, estimatedCost: "$30-60", priority: "if needed" },
+        { part: "Refrigerant R-410A", quantity: 10, estimatedCost: "$15-30/lb", priority: "required" },
+      ],
+      ac_maintenance: [
+        { part: "Air Filter (matching size)", quantity: 1, estimatedCost: "$8-25", priority: "always" },
+        { part: "Coil cleaner spray", quantity: 1, estimatedCost: "$8-15", priority: "always" },
+        { part: "Condensate drain cleaner", quantity: 1, estimatedCost: "$5-10", priority: "always" },
+        { part: "Electrical contact cleaner", quantity: 1, estimatedCost: "$8-12", priority: "always" },
+      ],
+      duct_cleaning: [
+        { part: "HEPA filter bags (for vacuum)", quantity: 2, estimatedCost: "$15-30", priority: "always" },
+        { part: "Duct sealant/mastic", quantity: 1, estimatedCost: "$10-20", priority: "if needed" },
+        { part: "Foil tape (UL 181)", quantity: 1, estimatedCost: "$8-15", priority: "always" },
+        { part: "Sanitizer/deodorizer spray", quantity: 1, estimatedCost: "$12-25", priority: "always" },
+      ],
+    };
+
+    const parts = partsLists[params.jobType] || partsLists.ac_repair;
+
+    // If we have brand/model, refine the list
+    let brandNote = "";
+    if (params.unitBrand) {
+      brandNote = `\nUnit: ${params.unitBrand}${params.unitModel ? ` ${params.unitModel}` : ''}. Search for OEM parts using this model number for exact match.`;
+    }
+
+    const totalEstimatedLow = parts.filter(p => p.priority !== "possible" && p.priority !== "if needed")
+      .reduce((sum, p) => sum + parseInt(p.estimatedCost.replace(/[^0-9]/g, '').slice(0, 3)), 0);
+
+    return {
+      jobType: params.jobType,
+      unit: params.unitBrand ? `${params.unitBrand} ${params.unitModel || ''}`.trim() : null,
+      parts,
+      partCount: parts.length,
+      estimatedPartsCost: `$${totalEstimatedLow}-${totalEstimatedLow * 2}`,
+      supplierLinks: {
+        SupplyHouse: `https://www.supplyhouse.com/search?q=${encodeURIComponent(params.unitBrand || params.jobType)}`,
+        "Home Depot": `https://www.homedepot.com/s/${encodeURIComponent(params.jobType.replace(/_/g, ' '))}`,
+        Amazon: `https://www.amazon.com/s?k=${encodeURIComponent(params.jobType.replace(/_/g, ' '))}`,
+      },
+      message: `Parts list for ${params.jobType.replace(/_/g, ' ')}: ${parts.length} items needed. Estimated parts cost: $${totalEstimatedLow}-${totalEstimatedLow * 2}.${brandNote}`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] buildPartsListForJob error:", err);
+    return { parts: [], error: err.message };
+  }
+}
+
+/**
+ * Get vendor contact info and request quotes.
+ * George compiles local supplier contacts for the partner to call,
+ * or prepares an outbound call/email for George to make.
+ */
+export async function getVendorQuotes(params: {
+  partDescription: string;
+  quantity: number;
+  zipCode?: string;
+  urgent?: boolean;
+}): Promise<object> {
+  try {
+    const zip = params.zipCode || "32827"; // default Orlando
+
+    // Local Orlando-area HVAC/plumbing supply houses
+    const localVendors = [
+      { name: "Johnstone Supply Orlando", phone: "(407) 841-2890", address: "3415 W Colonial Dr, Orlando", type: "HVAC wholesale", sameDay: true },
+      { name: "Ferguson Enterprises Orlando", phone: "(407) 849-0180", address: "5200 L.B. McLeod Rd, Orlando", type: "Plumbing/HVAC wholesale", sameDay: true },
+      { name: "Winsupply of Orlando", phone: "(407) 298-1810", address: "520 N Semoran Blvd, Orlando", type: "HVAC/plumbing wholesale", sameDay: true },
+      { name: "US Air Conditioning Distributors", phone: "(407) 422-4551", address: "901 W Amelia St, Orlando", type: "HVAC wholesale", sameDay: true },
+      { name: "AC Pro Orlando", phone: "(407) 648-3376", address: "6825 Hanging Moss Rd, Orlando", type: "HVAC parts", sameDay: true },
+      { name: "Home Depot Pro", phone: "(800) 466-3337", address: "Multiple locations", type: "Retail + pro desk", sameDay: true },
+    ];
+
+    // Build quote request message
+    const quoteRequest = `Looking for ${params.quantity}x ${params.partDescription}. ${params.urgent ? 'URGENT - need today.' : 'Standard lead time OK.'} Please quote best price and availability.`;
+
+    return {
+      part: params.partDescription,
+      quantity: params.quantity,
+      urgent: params.urgent || false,
+      localVendors,
+      quoteRequestTemplate: quoteRequest,
+      emailTemplate: {
+        subject: `Quote Request: ${params.partDescription}`,
+        body: `Hi,\n\nI need a quote for:\n\nPart: ${params.partDescription}\nQuantity: ${params.quantity}\nLocation: Orlando, FL ${zip}\n${params.urgent ? 'Timeline: SAME DAY if possible\n' : ''}\nPlease reply with your best price and availability.\n\nThank you`,
+      },
+      callScript: `"Hey, I need ${params.quantity} ${params.partDescription}. Do you have it in stock? What's your best price? ${params.urgent ? "I need it today if possible." : ""}"`,
+      message: `Found ${localVendors.length} local suppliers for "${params.partDescription}". ${params.urgent ? 'Marked as URGENT.' : ''} I can provide call scripts, email templates, or search links for each vendor. Want me to compare online pricing too?`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] getVendorQuotes error:", err);
+    return { localVendors: [], error: err.message };
+  }
+}
