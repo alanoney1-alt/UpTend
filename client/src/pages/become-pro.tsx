@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import { Shield, Leaf, Heart, Globe, Video, DollarSign, Award, TrendingUp } from "lucide-react";
@@ -62,7 +62,11 @@ const steps = [
 
 export default function BecomePro() {
   const { t } = useTranslation();
-  usePageTitle("Become a Pro | UpTend");
+  useSEO({
+    title: "Become a Pro | UpTend",
+    description: "Join UpTend as a service professional in Orlando. Earn more with fair pay, flexible scheduling, instant payouts & a steady stream of home service jobs.",
+    path: "/become-pro",
+  });
   return (
     <div className="min-h-screen bg-background" data-testid="page-become-pro">
       <Header />

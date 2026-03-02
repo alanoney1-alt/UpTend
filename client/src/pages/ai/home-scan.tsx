@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,7 +19,11 @@ function openGeorgeWithScan() {
 }
 
 export default function HomeScanPage() {
-  usePageTitle("Home DNA Scan. The Carfax Report for Your Home | UpTend");
+  useSEO({
+    title: "Home DNA Scan — The Carfax Report for Your Home | UpTend",
+    description: "Get your home's complete health report with UpTend's AI-powered Home DNA Scan. Identify maintenance needs, hidden issues & get instant fix-it quotes in Orlando.",
+    path: "/home-dna-scan",
+  });
 
   return (
     <div className="min-h-screen bg-[#FAF8F4]">

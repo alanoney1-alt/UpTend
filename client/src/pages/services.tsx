@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -252,7 +252,11 @@ const proStandards = [
 ];
 
 export default function Services() {
-  usePageTitle("All Home Services | UpTend Orlando");
+  useSEO({
+    title: "All Home Services | UpTend Orlando",
+    description: "Browse all UpTend home services in Orlando — cleaning, landscaping, pressure washing, pool care, junk removal, handyman & more. Book online with instant pricing.",
+    path: "/services",
+  });
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
 

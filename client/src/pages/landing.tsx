@@ -24,6 +24,62 @@ export default function Landing() {
   });
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            name: "UpTend",
+            description: "Orlando's trusted home services platform. Book vetted pros for cleaning, lawn care, junk removal, pressure washing & more.",
+            url: "https://uptendapp.com",
+            logo: "https://uptendapp.com/og-image.png",
+            image: "https://uptendapp.com/og-image.png",
+            telephone: "+1-407-476-4372",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "1800 Pembrook Dr Suite 300",
+              addressLocality: "Orlando",
+              addressRegion: "FL",
+              postalCode: "32810",
+              addressCountry: "US",
+            },
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: 28.5383,
+              longitude: -81.3792,
+            },
+            areaServed: {
+              "@type": "City",
+              name: "Orlando",
+              sameAs: "https://en.wikipedia.org/wiki/Orlando,_Florida",
+            },
+            serviceType: [
+              "Home Cleaning",
+              "Lawn Care & Landscaping",
+              "Pressure Washing",
+              "Pool Cleaning",
+              "Junk Removal",
+              "Handyman Services",
+              "Gutter Cleaning",
+              "Carpet Cleaning",
+              "Moving Labor",
+            ],
+            priceRange: "$$",
+            openingHoursSpecification: {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+              opens: "07:00",
+              closes: "20:00",
+            },
+            sameAs: [
+              "https://www.facebook.com/UptendGeorge",
+              "https://www.instagram.com/uptendgeorge",
+              "https://www.tiktok.com/@uptendgeorge",
+            ],
+          }),
+        }}
+      />
       <Header />
       <main id="main-content">
         <div className="pt-[72px]">

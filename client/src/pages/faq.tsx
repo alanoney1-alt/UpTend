@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -112,7 +112,11 @@ function useFaqs(): FAQ[] {
 }
 
 export default function FAQ() {
-  usePageTitle("FAQ | UpTend");
+  useSEO({
+    title: "FAQ | UpTend",
+    description: "Frequently asked questions about UpTend home services in Orlando. Learn about pricing, booking, service areas, pro vetting, guarantees & how it all works.",
+    path: "/faq",
+  });
   const { t } = useTranslation();
   const faqs = useFaqs();
   const [searchQuery, setSearchQuery] = useState("");

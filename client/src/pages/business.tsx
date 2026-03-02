@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { Header } from "@/components/landing/header";
 import { Footer } from "@/components/landing/footer";
 import { Button } from "@/components/ui/button";
@@ -87,7 +87,11 @@ const segmentData: Record<Segment, {
 };
 
 export default function Business() {
-  usePageTitle("UpTend for Business | Property Services Platform");
+  useSEO({
+    title: "UpTend for Business | Property Services Platform",
+    description: "Streamline property maintenance for your Orlando business. HOA, property management & commercial solutions — one platform for all home and building services.",
+    path: "/business",
+  });
   const [activeSegment, setActiveSegment] = useState<Segment>("pm");
   const data = segmentData[activeSegment];
 

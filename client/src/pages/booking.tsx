@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { useSearch, useLocation } from "wouter";
 import { useEffect } from "react";
 import { Header } from "@/components/landing/header";
@@ -50,7 +50,11 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 export default function BookingPage() {
   const { t } = useTranslation();
-  usePageTitle("Book a Service | UpTend");
+  useSEO({
+    title: "Book a Service | UpTend",
+    description: "Book trusted Orlando home services in minutes. Instant quotes for cleaning, lawn care, pressure washing, junk removal & more. Vetted pros, satisfaction guaranteed.",
+    path: "/book",
+  });
   const searchString = useSearch();
   const [, navigate] = useLocation();
   const { user } = useAuth();
@@ -100,8 +104,8 @@ export default function BookingPage() {
               }}
               onError={(error) => {
                 toast({
-                  title: "Payment failed",
-                  description: error,
+                  title: "Payment didn't go through",
+                  description: error || "Check your card details and give it another shot.",
                   variant: "destructive",
                 });
               }}

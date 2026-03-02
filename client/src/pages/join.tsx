@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +13,11 @@ import { Footer } from "@/components/landing/footer";
 import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
 
 export default function JoinPage() {
-  usePageTitle("Join the Founding 100 | UpTend");
+  useSEO({
+    title: "Join the Founding 100 | UpTend",
+    description: "Be one of UpTend's first 100 members in Orlando. Get lifetime perks, priority booking, and exclusive rates on home cleaning, lawn care & maintenance services.",
+    path: "/join",
+  });
 
   return (
     <div className="min-h-screen bg-white text-slate-900">

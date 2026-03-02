@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,11 @@ const milestones = [
 ];
 
 export default function About() {
-  usePageTitle("About UpTend | Smarter Home Services");
+  useSEO({
+    title: "About UpTend | Smarter Home Services",
+    description: "Meet the team behind UpTend — Orlando's AI-powered home services platform. Our mission: make home maintenance easy, transparent, and affordable for every homeowner.",
+    path: "/about",
+  });
   const { t } = useTranslation();
   const values = useValues();
   return (

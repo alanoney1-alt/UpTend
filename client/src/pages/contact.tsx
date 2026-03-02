@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,11 @@ import { Footer } from "@/components/landing/footer";
 import { useTranslation } from "react-i18next";
 
 export default function Contact() {
-  usePageTitle("Contact Us | UpTend");
+  useSEO({
+    title: "Contact Us | UpTend",
+    description: "Get in touch with UpTend — Orlando's home services platform. Questions about booking, partnerships, or becoming a pro? We're here to help.",
+    path: "/contact",
+  });
   const [formState, setFormState] = useState({
     name: "",
     email: "",
