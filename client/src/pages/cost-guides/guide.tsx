@@ -38,14 +38,14 @@ export default function CostGuide() {
   const nextGuide = currentIndex < costGuides.length - 1 ? costGuides[currentIndex + 1] : null;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <main className="max-w-4xl mx-auto px-4 py-12">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-slate-500 mb-8">
           <Link href="/cost-guides" className="hover:text-primary transition-colors">Cost Guides</Link>
           <span>/</span>
-          <span className="text-slate-900">{guide.title}</span>
+          <span className="text-foreground">{guide.title}</span>
         </div>
 
         {/* Hero */}
@@ -63,7 +63,7 @@ export default function CostGuide() {
         </div>
 
         {/* Factors */}
-        <Card className="mb-8 border-slate-200">
+        <Card className="mb-8 border-border">
           <CardContent className="p-6">
             <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
               <TrendingUp className="w-5 h-5 text-primary" />
@@ -81,7 +81,7 @@ export default function CostGuide() {
         </Card>
 
         {/* What's Included */}
-        <Card className="mb-8 border-slate-200">
+        <Card className="mb-8 border-border">
           <CardContent className="p-6">
             <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
               <List className="w-5 h-5 text-emerald-600" />

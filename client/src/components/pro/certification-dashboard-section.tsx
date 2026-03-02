@@ -168,7 +168,7 @@ export function CertificationDashboardSection() {
                 </div>
                 {cert.expires_at && (
                   <div className={`flex items-center gap-1 text-xs ${
-                    expiringSoon.some((e: any) => e.id === cert.id) ? "text-orange-600 font-medium" : "text-gray-500"
+                    expiringSoon.some((e: any) => e.id === cert.id) ? "text-orange-600 font-medium" : "text-muted-foreground"
                   }`}>
                     <Clock className="h-3 w-3" />
                     {expiringSoon.some((e: any) => e.id === cert.id) ? " " : ""}

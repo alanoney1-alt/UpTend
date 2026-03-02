@@ -140,7 +140,7 @@ function ProblemSection() {
             <div key={item.stat} className="text-center">
               <p className="text-4xl md:text-5xl font-black text-[#F47C20] mb-3">{item.stat}</p>
               <p className="font-semibold text-foreground mb-2">{item.label}</p>
-              <p className="text-sm text-gray-500">{item.sub}</p>
+              <p className="text-sm text-muted-foreground">{item.sub}</p>
             </div>
           ))}
         </div>
@@ -290,7 +290,7 @@ function PricingSection() {
                 <h3 className="text-xl font-bold text-foreground mb-1">Standard Home DNA Scan</h3>
                 <p className="text-muted-foreground text-sm mb-6">Interior systems and appliances</p>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-5xl font-black text-gray-900">Free</span>
+                  <span className="text-5xl font-black text-foreground">Free</span>
                   <span className="text-gray-400 text-sm"></span>
                 </div>
                 <Button onClick={openGeorgeWithScan} className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-6 rounded-xl text-base">
@@ -309,7 +309,7 @@ function PricingSection() {
                 ].map((f) => (
                   <div key={f} className="flex items-start gap-3">
                     <CheckCircle className="w-4 h-4 text-[#F47C20] mt-0.5 flex-shrink-0" />
-                    <span className="text-sm text-gray-600">{f}</span>
+                    <span className="text-sm text-muted-foreground">{f}</span>
                   </div>
                 ))}
               </div>
@@ -327,7 +327,7 @@ function PricingSection() {
                 <h3 className="text-xl font-bold text-foreground mb-1">Premium Home DNA Scan</h3>
                 <p className="text-muted-foreground text-sm mb-6">Interior + exterior + aerial assessment</p>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-5xl font-black text-gray-900">Free</span>
+                  <span className="text-5xl font-black text-foreground">Free</span>
                   <span className="text-gray-400 text-sm"></span>
                 </div>
                 <Button onClick={openGeorgeWithScan} className="w-full bg-[#F47C20] hover:bg-[#e06910] text-white font-bold py-6 rounded-xl text-base">
@@ -346,7 +346,7 @@ function PricingSection() {
                 ].map((f, i) => (
                   <div key={f} className="flex items-start gap-3">
                     <CheckCircle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${i === 0 ? "text-gray-400" : "text-[#F47C20]"}`} />
-                    <span className={`text-sm ${i === 0 ? "font-semibold text-gray-900" : "text-gray-600"}`}>{f}</span>
+                    <span className={`text-sm ${i === 0 ? "font-semibold text-foreground" : "text-muted-foreground"}`}>{f}</span>
                   </div>
                 ))}
               </div>
@@ -426,8 +426,8 @@ function SampleReportSection() {
 
               {/* Bottom bar */}
               <div className="bg-[#F47C20]/5 border-t border-[#F47C20]/10 p-4 text-center">
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold text-gray-900">14 systems documented</span> with 47 photos and AI analysis
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">14 systems documented</span> with 47 photos and AI analysis
                 </p>
               </div>
             </CardContent>

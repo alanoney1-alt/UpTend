@@ -260,7 +260,7 @@ export default function PhotoToQuote() {
                   <h2 className="font-semibold text-foreground dark:text-white">
                     AI Estimate Ready
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {Math.round(result.confidence * 100)}% confidence
                   </p>
                 </div>

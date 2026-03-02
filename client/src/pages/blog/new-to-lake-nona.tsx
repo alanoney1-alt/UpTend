@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogNewToLakeNona() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>New to Lake Nona? Your Home's First 90 Days Checklist | UpTend</title>
@@ -184,7 +184,7 @@ export default function BlogNewToLakeNona() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Questions about settling into Lake Nona? Visit{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and chat with George. he's helped hundreds of

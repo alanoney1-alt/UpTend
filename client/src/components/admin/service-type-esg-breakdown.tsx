@@ -108,7 +108,7 @@ export function ServiceTypeEsgBreakdown() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Jobs</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Jobs</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{totalJobs.toLocaleString()}</div>
@@ -118,7 +118,7 @@ export function ServiceTypeEsgBreakdown() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">CO₂ Saved</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">CO₂ Saved</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(totalCo2).toLocaleString()}</div>
@@ -128,7 +128,7 @@ export function ServiceTypeEsgBreakdown() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Water Saved</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Water Saved</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(totalWater).toLocaleString()}</div>
@@ -195,7 +195,7 @@ export function ServiceTypeEsgBreakdown() {
                 {aggregateData
                   .sort((a, b) => b.totalCo2SavedLbs - a.totalCo2SavedLbs)
                   .map((service, index) => (
-                    <tr key={service.name} className="border-b hover:bg-gray-50">
+                    <tr key={service.name} className="border-b hover:bg-muted/50">
                       <td className="p-2">{index + 1}</td>
                       <td className="p-2 font-medium">{service.name}</td>
                       <td className="text-right p-2">{service.totalJobs.toLocaleString()}</td>

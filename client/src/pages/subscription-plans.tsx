@@ -176,7 +176,7 @@ export default function SubscriptionPlans() {
                           <span className="text-3xl font-bold text-foreground dark:text-white">
                             ${price}
                           </span>
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-muted-foreground">
                             /{frequency === "weekly" ? "wk" : frequency === "biweekly" ? "2wk" : "mo"}
                           </span>
                         </div>
@@ -223,7 +223,7 @@ export default function SubscriptionPlans() {
                 })()}
                 <div>
                   <h2 className="text-xl font-bold text-foreground dark:text-white">{selectedPlan.label}</h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     ${selectedPlan.pricing[frequency]}/{frequency === "weekly" ? "wk" : frequency === "biweekly" ? "2wk" : "mo"}
                   </p>
                 </div>

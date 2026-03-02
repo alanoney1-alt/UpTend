@@ -50,7 +50,7 @@ export default function Properties() {
   }
 
   function getHealthScoreColor(score?: number) {
-    if (!score) return "text-gray-500";
+    if (!score) return "text-muted-foreground";
     if (score >= 90) return "text-green-600";
     if (score >= 75) return "text-blue-600";
     if (score >= 60) return "text-yellow-600";

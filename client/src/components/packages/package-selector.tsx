@@ -205,7 +205,7 @@ export function PackageSelector({ onSelectPackage }: PackageSelectorProps) {
                       className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all ${
                         isSelected
                           ? 'border-primary bg-primary/5'
-                          : 'border-gray-200'
+                          : 'border-border'
                       } ${isRequired ? 'opacity-100' : 'cursor-pointer hover:border-gray-300'}`}
                       onClick={() => !isRequired && toggleService(service.serviceType)}
                     >

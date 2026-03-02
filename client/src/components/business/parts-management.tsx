@@ -62,7 +62,7 @@ function PartsRequestsTable() {
 
   const requests = data?.partsRequests || [];
 
-  if (isLoading) return <p className="text-sm text-gray-500">Loading...</p>;
+  if (isLoading) return <p className="text-sm text-muted-foreground">Loading...</p>;
 
   if (!requests.length) {
     return (
@@ -78,14 +78,14 @@ function PartsRequestsTable() {
     approved: "bg-green-100 text-green-800",
     denied: "bg-red-100 text-red-800",
     sourced: "bg-blue-100 text-blue-800",
-    installed: "bg-muted/50 text-gray-600",
+    installed: "bg-muted/50 text-muted-foreground",
   };
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b text-left text-gray-500">
+          <tr className="border-b text-left text-muted-foreground">
             <th className="pb-2 font-medium">Description</th>
             <th className="pb-2 font-medium">Job / Address</th>
             <th className="pb-2 font-medium">Est. Cost</th>
@@ -97,18 +97,18 @@ function PartsRequestsTable() {
         </thead>
         <tbody>
           {requests.map((pr) => (
-            <tr key={pr.id} className="border-b hover:bg-gray-50">
+            <tr key={pr.id} className="border-b hover:bg-muted/50">
               <td className="py-3 max-w-[200px] truncate">{pr.description}</td>
               <td className="py-3 text-muted-foreground text-xs">{pr.pickup_address || pr.service_request_id.slice(0, 8)}</td>
               <td className="py-3">{pr.estimated_cost ? `$${pr.estimated_cost.toFixed(2)}` : "-"}</td>
               <td className="py-3">{pr.actual_cost ? `$${pr.actual_cost.toFixed(2)}` : "-"}</td>
               <td className="py-3 text-xs">{pr.supplier_source || "-"}</td>
               <td className="py-3">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[pr.status] || "bg-gray-100"}`}>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[pr.status] || "bg-muted/50"}`}>
                   {pr.status}
                 </span>
               </td>
-              <td className="py-3 text-xs text-gray-500">{new Date(pr.created_at).toLocaleDateString()}</td>
+              <td className="py-3 text-xs text-muted-foreground">{new Date(pr.created_at).toLocaleDateString()}</td>
             </tr>
           ))}
         </tbody>
@@ -210,7 +210,7 @@ function SuppliersSection() {
             className="w-full border rounded-lg p-2 text-sm resize-none h-16"
           />
           <div className="flex gap-2 justify-end">
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 border rounded-lg text-sm text-gray-600">
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 border rounded-lg text-sm text-muted-foreground">
               Cancel
             </button>
             <button
@@ -224,7 +224,7 @@ function SuppliersSection() {
         </div>
       )}
 
-      {isLoading && <p className="text-sm text-gray-500">Loading...</p>}
+      {isLoading && <p className="text-sm text-muted-foreground">Loading...</p>}
 
       {!isLoading && !suppliers.length && (
         <div className="text-center py-8 text-gray-400">
@@ -235,11 +235,11 @@ function SuppliersSection() {
       {suppliers.map((s) => (
         <div key={s.id} className="border rounded-lg p-4 flex items-center justify-between">
           <div>
-            <p className="font-medium text-gray-900">{s.supplier_name}</p>
-            <p className="text-xs text-gray-500">
+            <p className="font-medium text-foreground">{s.supplier_name}</p>
+            <p className="text-xs text-muted-foreground">
               {s.supplier_type} {s.account_number ? `• Acct: ${s.account_number}` : ""}
             </p>
-            {s.contact_info && <p className="text-xs text-gray-500">{s.contact_info}</p>}
+            {s.contact_info && <p className="text-xs text-muted-foreground">{s.contact_info}</p>}
             {s.notes && <p className="text-xs text-gray-400 mt-1">{s.notes}</p>}
           </div>
           <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full capitalize">

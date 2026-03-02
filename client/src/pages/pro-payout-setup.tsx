@@ -66,7 +66,7 @@ export default function ProPayoutSetup() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-muted/50">
         <Loader2 className="w-8 h-8 animate-spin text-amber-600" />
       </div>
     );
@@ -92,7 +92,7 @@ export default function ProPayoutSetup() {
               <div key={label} className="flex items-center gap-2">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    isActive ? "bg-amber-600 text-white" : "bg-gray-200 text-gray-500"
+                    isActive ? "bg-amber-600 text-white" : "bg-gray-200 text-muted-foreground"
                   }`}
                 >
                   {i < stepIdx ? <CheckCircle className="w-4 h-4" /> : i + 1}

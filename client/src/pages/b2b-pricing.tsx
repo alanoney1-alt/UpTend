@@ -142,10 +142,10 @@ export default function B2BPricing() {
           <div className="p-8 flex flex-col md:flex-row gap-8 items-center">
             <div className="flex-1 space-y-4">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">Independent</h3>
+                <h3 className="text-2xl font-bold text-foreground">Independent</h3>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-4xl font-bold text-orange-500">$0</span>
-                  <span className="text-gray-500">/month, forever</span>
+                  <span className="text-muted-foreground">/month, forever</span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">
                   Manage up to 10 properties with no subscription fees. Pay only a 5% transaction fee when you book a pro.
@@ -166,7 +166,7 @@ export default function B2BPricing() {
                   Get Started Free <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </a>
-              <p className="text-xs text-gray-500">1 to 10 properties, 5% per booking</p>
+              <p className="text-xs text-muted-foreground">1 to 10 properties, 5% per booking</p>
             </div>
           </div>
         </Card>
@@ -245,7 +245,7 @@ export default function B2BPricing() {
 
       {/* FAQ Section */}
       <div className="max-w-3xl mx-auto px-4 pb-20">
-        <h2 className="text-3xl font-bold text-center mb-10 text-gray-900">
+        <h2 className="text-3xl font-bold text-center mb-10 text-foreground">
           <HelpCircle className="inline w-8 h-8 text-orange-500 mr-2" />
           Frequently Asked Questions
         </h2>

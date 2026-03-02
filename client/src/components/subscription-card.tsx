@@ -112,7 +112,7 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
               <h3 className="font-semibold text-foreground dark:text-white">
                 {subscription.serviceLabel}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 {FREQUENCY_LABELS[subscription.frequency] || subscription.frequency}
               </p>
             </div>
@@ -146,7 +146,7 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
 
           {confirming ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 {confirming === "cancel" ? "Cancel?" : "Pause?"}
               </span>
               <Button

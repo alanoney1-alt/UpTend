@@ -82,7 +82,7 @@ export function JobPhotos({ jobId, type, onUploaded }: JobPhotosProps) {
         {previews.length > 0 && (
           <div className="grid grid-cols-3 gap-2">
             {previews.map((src, i) => (
-              <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+              <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-muted/50">
                 <img src={src} alt={`${type} photo ${i + 1}`} className="w-full h-full object-cover" />
                 <button
                   onClick={() => removePreview(i)}

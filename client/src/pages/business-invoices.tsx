@@ -189,7 +189,7 @@ export default function BusinessInvoices() {
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gray-500/10 rounded-lg"><FileText className="w-5 h-5 text-gray-500" /></div>
+              <div className="p-2 bg-gray-500/10 rounded-lg"><FileText className="w-5 h-5 text-muted-foreground" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Drafts</p>
                 <p className="text-2xl font-bold">${(draftAmount / 1000).toFixed(1)}K</p>

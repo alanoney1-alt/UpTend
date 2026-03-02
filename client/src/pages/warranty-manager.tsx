@@ -93,7 +93,7 @@ export default function WarrantyManager() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Warranty Manager</h1>
+            <h1 className="text-3xl font-bold text-foreground">Warranty Manager</h1>
             <p className="text-muted-foreground mt-1">Track and manage all your home warranties in one place.</p>
           </div>
           <Button onClick={() => setShowForm(!showForm)} className="bg-amber-600 hover:bg-amber-700">
@@ -192,7 +192,7 @@ export default function WarrantyManager() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h3 className="font-semibold text-lg">{w.appliance_name}</h3>
-                        {w.brand && <p className="text-sm text-gray-500">{w.brand} {w.model ? `/ ${w.model}` : ""}</p>}
+                        {w.brand && <p className="text-sm text-muted-foreground">{w.brand} {w.model ? `/ ${w.model}` : ""}</p>}
                       </div>
                       <Badge variant={status.variant}>{status.label}</Badge>
                     </div>

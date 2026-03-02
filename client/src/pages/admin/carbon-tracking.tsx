@@ -531,7 +531,7 @@ export default function CarbonTrackingDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gray-50">
+                <Card className="bg-muted/50">
                   <CardContent className="pt-6">
                     <p className="text-sm text-muted-foreground mb-1">Needs Improvement</p>
                     <p className="text-2xl font-bold text-gray-700">&lt;60%</p>

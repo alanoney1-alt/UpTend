@@ -154,7 +154,7 @@ export function DisposalTracking({ jobId, onComplete, onCancel }: DisposalTracki
     { value: "recycle", label: "Recycle", icon: Recycle, color: "text-green-600" },
     { value: "donate", label: "Donate", icon: Heart, color: "text-pink-600" },
     { value: "resale", label: "Resale", icon: ShoppingBag, color: "text-blue-600" },
-    { value: "landfill", label: "Landfill", icon: Trash2, color: "text-gray-600" },
+    { value: "landfill", label: "Landfill", icon: Trash2, color: "text-muted-foreground" },
     { value: "specialty", label: "Specialty (E-waste/Hazmat)", icon: Zap, color: "text-yellow-600" },
   ];
 

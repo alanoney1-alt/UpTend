@@ -122,12 +122,12 @@ export default function FloatDashboard() {
   const maxThreshold = settings?.maxFloatExposure || 50000000;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/50">
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Float Dashboard</h1>
+            <h1 className="text-2xl font-bold text-foreground">Float Dashboard</h1>
             <p className="text-muted-foreground text-sm">Government contract cash flow management</p>
           </div>
           <div className="flex gap-2">
@@ -249,22 +249,22 @@ export default function FloatDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Total Cash Committed</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Cash Committed</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-gray-900">{formatDollars(exposure?.totalCommitted || 0)}</div>
+              <div className="text-2xl font-bold text-foreground">{formatDollars(exposure?.totalCommitted || 0)}</div>
               <p className="text-xs text-muted-foreground mt-1">Active work order quotes</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Total Cash Paid Out</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Cash Paid Out</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
                 <ArrowUpRight className="w-5 h-5 text-red-500" />
-                <span className="text-2xl font-bold text-gray-900">{formatDollars(exposure?.totalPaidOut || 0)}</span>
+                <span className="text-2xl font-bold text-foreground">{formatDollars(exposure?.totalPaidOut || 0)}</span>
               </div>
               <p className="text-xs text-muted-foreground mt-1">Upfront + completion transfers</p>
             </CardContent>
@@ -272,12 +272,12 @@ export default function FloatDashboard() {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Government Payments Received</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Government Payments Received</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
                 <ArrowDownLeft className="w-5 h-5 text-green-500" />
-                <span className="text-2xl font-bold text-gray-900">{formatDollars(exposure?.totalReceived || 0)}</span>
+                <span className="text-2xl font-bold text-foreground">{formatDollars(exposure?.totalReceived || 0)}</span>
               </div>
               <p className="text-xs text-muted-foreground mt-1">Checks/EFT received</p>
             </CardContent>
@@ -285,16 +285,16 @@ export default function FloatDashboard() {
 
           <Card className={`border-2 ${getExposureBg(exposure?.currentExposure || 0, maxThreshold)}`}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Current Float Exposure</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Current Float Exposure</CardTitle>
             </CardHeader>
             <CardContent>
               <div className={`text-3xl font-bold ${getExposureColor(exposure?.currentExposure || 0, maxThreshold)}`}>
                 {formatDollars(exposure?.currentExposure || 0)}
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs text-gray-500">{exposure?.activeWorkOrders || 0} active WOs</span>
+                <span className="text-xs text-muted-foreground">{exposure?.activeWorkOrders || 0} active WOs</span>
                 <span className="text-xs text-gray-400">•</span>
-                <span className="text-xs text-gray-500">{exposure?.pendingInvoices || 0} pending invoices</span>
+                <span className="text-xs text-muted-foreground">{exposure?.pendingInvoices || 0} pending invoices</span>
               </div>
             </CardContent>
           </Card>
@@ -321,7 +321,7 @@ export default function FloatDashboard() {
                   );
                 })}
               </div>
-              <div className="flex justify-between mt-2 text-xs text-gray-500">
+              <div className="flex justify-between mt-2 text-xs text-muted-foreground">
                 <span>Today</span>
                 <span>+30 days</span>
               </div>
@@ -344,7 +344,7 @@ export default function FloatDashboard() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b text-left text-gray-500">
+                      <tr className="border-b text-left text-muted-foreground">
                         <th className="pb-2 pr-4">Date</th>
                         <th className="pb-2 pr-4">Type</th>
                         <th className="pb-2 pr-4 text-right">Amount</th>

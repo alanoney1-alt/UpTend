@@ -139,7 +139,7 @@ export default function DocumentScanner() {
                     <p className="font-medium text-foreground dark:text-white truncate">
                       {file.name}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {(file.size / 1024).toFixed(0)} KB
                     </p>
                   </div>
@@ -195,7 +195,7 @@ export default function DocumentScanner() {
                           <p className="font-medium text-foreground dark:text-white truncate">
                             {doc.fileName}
                           </p>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Badge variant="secondary" className="text-xs">
                               {doc.documentType}
                             </Badge>

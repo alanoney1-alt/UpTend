@@ -65,7 +65,7 @@ export default function WorkOrders() {
     });
   };
 
-  if (isLoading) return <div className="p-6 text-gray-500">Loading available work orders...</div>;
+  if (isLoading) return <div className="p-6 text-muted-foreground">Loading available work orders...</div>;
 
   return (
     <div className="min-h-screen bg-muted/50 p-6">
@@ -79,7 +79,7 @@ export default function WorkOrders() {
 
         {(workOrders as any[]).length === 0 ? (
           <Card>
-            <CardContent className="pt-6 text-center text-gray-500">
+            <CardContent className="pt-6 text-center text-muted-foreground">
               No work orders available right now. Check back soon!
             </CardContent>
           </Card>
@@ -100,14 +100,14 @@ export default function WorkOrders() {
                       {wo.scopeOfWork && (
                         <div className="mb-3">
                           <p className="text-sm font-medium text-gray-700">Scope of Work:</p>
-                          <p className="text-sm text-gray-600">{wo.scopeOfWork}</p>
+                          <p className="text-sm text-muted-foreground">{wo.scopeOfWork}</p>
                         </div>
                       )}
 
                       {wo.deliverables && (
                         <div className="mb-3">
                           <p className="text-sm font-medium text-gray-700">Deliverables:</p>
-                          <p className="text-sm text-gray-600">{wo.deliverables}</p>
+                          <p className="text-sm text-muted-foreground">{wo.deliverables}</p>
                         </div>
                       )}
 

@@ -117,14 +117,14 @@ export function ContractSigning({ contract, userRole, onSigned }: ContractSignin
   };
 
   return (
-    <Card className="border-slate-200">
+    <Card className="border-border">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <FileText className="w-5 h-5 text-primary" />
             Pre-Work Authorization
           </CardTitle>
-          <Badge className={statusColor[contract.status] || "bg-slate-100"}>
+          <Badge className={statusColor[contract.status] || "bg-muted/50"}>
             {contract.status.replace("_", " ").toUpperCase()}
           </Badge>
         </div>
@@ -142,7 +142,7 @@ export function ContractSigning({ contract, userRole, onSigned }: ContractSignin
 
         {/* Signature status */}
         <div className="grid grid-cols-2 gap-3">
-          <div className={`p-3 rounded-lg border ${contract.customerSignature ? "bg-emerald-50 border-emerald-200" : "bg-muted/50 border-slate-200"}`}>
+          <div className={`p-3 rounded-lg border ${contract.customerSignature ? "bg-emerald-50 border-emerald-200" : "bg-muted/50 border-border"}`}>
             <div className="flex items-center gap-2 text-sm font-medium mb-1">
               {contract.customerSignature ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <AlertCircle className="w-4 h-4 text-slate-400" />}
               Customer
@@ -151,7 +151,7 @@ export function ContractSigning({ contract, userRole, onSigned }: ContractSignin
               {contract.customerSignedAt ? `Signed ${new Date(contract.customerSignedAt).toLocaleDateString()}` : "Awaiting signature"}
             </p>
           </div>
-          <div className={`p-3 rounded-lg border ${contract.proSignature ? "bg-emerald-50 border-emerald-200" : "bg-muted/50 border-slate-200"}`}>
+          <div className={`p-3 rounded-lg border ${contract.proSignature ? "bg-emerald-50 border-emerald-200" : "bg-muted/50 border-border"}`}>
             <div className="flex items-center gap-2 text-sm font-medium mb-1">
               {contract.proSignature ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <AlertCircle className="w-4 h-4 text-slate-400" />}
               Pro

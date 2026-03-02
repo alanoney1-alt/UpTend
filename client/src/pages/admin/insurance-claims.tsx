@@ -175,16 +175,16 @@ export default function AdminInsuranceClaims() {
       case "theft":
         return <Shield className="text-purple-600" size={20} />;
       default:
-        return <FileText className="text-gray-600" size={20} />;
+        return <FileText className="text-muted-foreground" size={20} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/50">
       <Header />
       <div className="max-w-7xl mx-auto p-6 mt-20">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Insurance & Claims Management</h1>
+          <h1 className="text-3xl font-bold text-foreground">Insurance & Claims Management</h1>
           <p className="text-muted-foreground mt-2">Manage liability claims and insurance policies</p>
         </div>
 
@@ -228,7 +228,7 @@ export default function AdminInsuranceClaims() {
                 <Card className="p-8 text-center">
                   <Shield className="mx-auto mb-4 text-gray-400" size={48} />
                   <h3 className="text-lg font-medium mb-2">No Claims Found</h3>
-                  <p className="text-gray-600">
+                  <p className="text-muted-foreground">
                     {claimFilter !== "all" ? `No ${claimFilter} claims found.` : "No liability claims have been filed yet."}
                   </p>
                 </Card>
@@ -259,7 +259,7 @@ export default function AdminInsuranceClaims() {
                             Estimated: ${claim.estimated_damage.toLocaleString()}
                           </p>
                         )}
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           Cap: ${claim.platform_liability_cap.toLocaleString()}
                         </p>
                         <Button
@@ -310,7 +310,7 @@ export default function AdminInsuranceClaims() {
 
             {claimsData && claimsData.total > claimsData.claims.length && (
               <div className="text-center py-4">
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Showing {claimsData.claims.length} of {claimsData.total} claims
                 </p>
               </div>
@@ -332,7 +332,7 @@ export default function AdminInsuranceClaims() {
                 <Card className="p-8 text-center">
                   <CheckCircle className="mx-auto mb-4 text-green-400" size={48} />
                   <h3 className="text-lg font-medium mb-2">No Expiring Policies</h3>
-                  <p className="text-gray-600">All insurance policies are current.</p>
+                  <p className="text-muted-foreground">All insurance policies are current.</p>
                 </Card>
               ) : (
                 <div className="space-y-4">
@@ -368,7 +368,7 @@ export default function AdminInsuranceClaims() {
                               {format(new Date(policy.expiry_date), "MMM dd, yyyy")}
                             </div>
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             <User size={14} className="inline mr-1" />
                             {policy.pro_email}
                           </div>

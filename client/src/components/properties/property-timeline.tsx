@@ -113,7 +113,7 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
 
     switch (category) {
       case "roof":
-        return "text-gray-700 bg-muted/50 border-gray-200";
+        return "text-gray-700 bg-muted/50 border-border";
       case "hvac":
         return "text-blue-700 bg-blue-50 border-blue-200";
       case "electrical":
@@ -125,7 +125,7 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
       case "landscape":
         return "text-green-700 bg-green-50 border-green-200";
       default:
-        return "text-gray-700 bg-muted/50 border-gray-200";
+        return "text-gray-700 bg-muted/50 border-border";
     }
   }
 

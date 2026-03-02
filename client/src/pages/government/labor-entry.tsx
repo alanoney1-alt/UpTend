@@ -85,7 +85,7 @@ export default function WorkLogEntry() {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Log Work Performed</CardTitle>
-            <p className="text-sm text-gray-500">Document what work was performed today. This is for project records and compliance documentation.</p>
+            <p className="text-sm text-muted-foreground">Document what work was performed today. This is for project records and compliance documentation.</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">

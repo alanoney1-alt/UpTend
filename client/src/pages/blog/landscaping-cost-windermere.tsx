@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogLandscapingCostWindermere() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>Landscaping Cost Windermere 2026 | Real Pricing Guide | UpTend</title>
@@ -108,7 +108,7 @@ export default function BlogLandscapingCostWindermere() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Got a landscaping question about Windermere? Visit{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and ask George. He'll give you a straight answer.

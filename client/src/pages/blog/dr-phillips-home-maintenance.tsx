@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogDrPhillipsHomeMaintenance() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>Dr. Phillips Home Maintenance Schedule 2026 | Month by Month Guide | UpTend</title>
@@ -104,7 +104,7 @@ export default function BlogDrPhillipsHomeMaintenance() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Have questions about maintaining your Dr. Phillips home? Visit{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Dr. Phillips inside and out.

@@ -63,7 +63,7 @@ export default function ContractDetail() {
   const { data: modifications = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/modifications`] });
   const { data: auditTrail = [] } = useQuery({ queryKey: [`/api/government/contracts/${id}/audit-trail`] });
 
-  if (isLoading) return <div className="p-6 text-gray-500">Loading contract...</div>;
+  if (isLoading) return <div className="p-6 text-muted-foreground">Loading contract...</div>;
   if (!dashboard) return <div className="p-6 text-red-500">Contract not found</div>;
 
   const contract = (dashboard as any).contract;
@@ -79,33 +79,33 @@ export default function ContractDetail() {
             <ArrowLeft className="h-4 w-4 mr-2" /> Back
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gray-900">{contract.contractNumber}</h1>
-            <p className="text-gray-500">{contract.agencyName} • {contract.contractType?.replace(/_/g, " ")}</p>
+            <h1 className="text-2xl font-bold text-foreground">{contract.contractNumber}</h1>
+            <p className="text-muted-foreground">{contract.agencyName} • {contract.contractType?.replace(/_/g, " ")}</p>
           </div>
-          <Badge className={STATUS_COLORS[contract.status] || "bg-gray-100"}>{contract.status}</Badge>
+          <Badge className={STATUS_COLORS[contract.status] || "bg-muted/50"}>{contract.status}</Badge>
           {contract.sdvosbSetAside && <Badge className="bg-amber-100 text-amber-800">SDVOSB</Badge>}
         </div>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <Card><CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Total Value</p>
+            <p className="text-xs text-muted-foreground">Total Value</p>
             <p className="text-lg font-bold text-amber-700">{cents(contract.totalValue)}</p>
           </CardContent></Card>
           <Card><CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Funded</p>
+            <p className="text-xs text-muted-foreground">Funded</p>
             <p className="text-lg font-bold text-blue-700">{cents(contract.fundedAmount)}</p>
           </CardContent></Card>
           <Card><CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Work Orders</p>
+            <p className="text-xs text-muted-foreground">Work Orders</p>
             <p className="text-lg font-bold text-green-700">{summary?.workOrdersCompleted || 0}/{summary?.workOrdersTotal || 0}</p>
           </CardContent></Card>
           <Card><CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Burn Rate</p>
+            <p className="text-xs text-muted-foreground">Burn Rate</p>
             <p className="text-lg font-bold text-orange-700">{summary?.burnRate || 0}%</p>
           </CardContent></Card>
           <Card><CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Compliance</p>
+            <p className="text-xs text-muted-foreground">Compliance</p>
             <p className={`text-lg font-bold ${summary?.complianceIssues ? "text-red-700" : "text-green-700"}`}>
               {summary?.complianceIssues ? `${summary.complianceIssues} issues` : " OK"}
             </p>
@@ -132,17 +132,17 @@ export default function ContractDetail() {
           <TabsContent value="overview">
             <Card>
               <CardContent className="pt-6 grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-gray-500">Contract #:</span> <strong>{contract.contractNumber}</strong></div>
-                <div><span className="text-gray-500">Agency:</span> <strong>{contract.agencyName}</strong> ({contract.agencyCode})</div>
-                <div><span className="text-gray-500">Type:</span> <strong>{contract.contractType?.replace(/_/g, " ")}</strong></div>
-                <div><span className="text-gray-500">NAICS:</span> <strong>{contract.naicsCode || "N/A"}</strong></div>
-                <div><span className="text-gray-500">Start:</span> <strong>{contract.startDate || "TBD"}</strong></div>
-                <div><span className="text-gray-500">End:</span> <strong>{contract.endDate || "TBD"}</strong></div>
-                <div><span className="text-gray-500">Location:</span> <strong>{contract.performanceLocation || "N/A"}</strong></div>
-                <div><span className="text-gray-500">CO:</span> <strong>{contract.contractingOfficer || "N/A"}</strong></div>
-                <div><span className="text-gray-500">CO Email:</span> <strong>{contract.contractingOfficerEmail || "N/A"}</strong></div>
-                <div><span className="text-gray-500">Bond Required:</span> <strong>{contract.bondRequired ? `Yes (${cents(contract.bondAmount)})` : "No"}</strong></div>
-                <div><span className="text-gray-500">Security Clearance:</span> <strong>{contract.securityClearanceRequired ? "Yes" : "No"}</strong></div>
+                <div><span className="text-muted-foreground">Contract #:</span> <strong>{contract.contractNumber}</strong></div>
+                <div><span className="text-muted-foreground">Agency:</span> <strong>{contract.agencyName}</strong> ({contract.agencyCode})</div>
+                <div><span className="text-muted-foreground">Type:</span> <strong>{contract.contractType?.replace(/_/g, " ")}</strong></div>
+                <div><span className="text-muted-foreground">NAICS:</span> <strong>{contract.naicsCode || "N/A"}</strong></div>
+                <div><span className="text-muted-foreground">Start:</span> <strong>{contract.startDate || "TBD"}</strong></div>
+                <div><span className="text-muted-foreground">End:</span> <strong>{contract.endDate || "TBD"}</strong></div>
+                <div><span className="text-muted-foreground">Location:</span> <strong>{contract.performanceLocation || "N/A"}</strong></div>
+                <div><span className="text-muted-foreground">CO:</span> <strong>{contract.contractingOfficer || "N/A"}</strong></div>
+                <div><span className="text-muted-foreground">CO Email:</span> <strong>{contract.contractingOfficerEmail || "N/A"}</strong></div>
+                <div><span className="text-muted-foreground">Bond Required:</span> <strong>{contract.bondRequired ? `Yes (${cents(contract.bondAmount)})` : "No"}</strong></div>
+                <div><span className="text-muted-foreground">Security Clearance:</span> <strong>{contract.securityClearanceRequired ? "Yes" : "No"}</strong></div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -155,10 +155,10 @@ export default function ContractDetail() {
                 {fin ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="p-3 border rounded"><p className="text-xs text-gray-500">Budget</p><p className="text-lg font-bold">{cents(fin.budget)}</p></div>
-                      <div className="p-3 border rounded"><p className="text-xs text-gray-500">Funded</p><p className="text-lg font-bold">{cents(fin.funded)}</p></div>
-                      <div className="p-3 border rounded"><p className="text-xs text-gray-500">Invoiced</p><p className="text-lg font-bold">{cents(fin.totalInvoiced)}</p></div>
-                      <div className="p-3 border rounded"><p className="text-xs text-gray-500">Remaining</p><p className="text-lg font-bold text-green-700">{cents(fin.remaining)}</p></div>
+                      <div className="p-3 border rounded"><p className="text-xs text-muted-foreground">Budget</p><p className="text-lg font-bold">{cents(fin.budget)}</p></div>
+                      <div className="p-3 border rounded"><p className="text-xs text-muted-foreground">Funded</p><p className="text-lg font-bold">{cents(fin.funded)}</p></div>
+                      <div className="p-3 border rounded"><p className="text-xs text-muted-foreground">Invoiced</p><p className="text-lg font-bold">{cents(fin.totalInvoiced)}</p></div>
+                      <div className="p-3 border rounded"><p className="text-xs text-muted-foreground">Remaining</p><p className="text-lg font-bold text-green-700">{cents(fin.remaining)}</p></div>
                     </div>
                     <div className="space-y-2">
                       <h4 className="font-medium">Spending by Category</h4>
@@ -173,9 +173,9 @@ export default function ContractDetail() {
                         </div>
                       ))}
                     </div>
-                    <p className="text-sm text-gray-500">Daily burn rate: {cents(fin.dailyBurnRate)} • {fin.percentComplete}% complete</p>
+                    <p className="text-sm text-muted-foreground">Daily burn rate: {cents(fin.dailyBurnRate)} • {fin.percentComplete}% complete</p>
                   </div>
-                ) : <p className="text-gray-500">Loading financials...</p>}
+                ) : <p className="text-muted-foreground">Loading financials...</p>}
               </CardContent>
             </Card>
           </TabsContent>
@@ -193,14 +193,14 @@ export default function ContractDetail() {
             <Card>
               <CardHeader><CardTitle className="flex items-center gap-2"><History className="h-5 w-5 text-amber-600" /> Audit Trail (Immutable)</CardTitle></CardHeader>
               <CardContent>
-                {(auditTrail as any[]).length === 0 ? <p className="text-gray-500">No audit entries yet.</p> : (
+                {(auditTrail as any[]).length === 0 ? <p className="text-muted-foreground">No audit entries yet.</p> : (
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {(auditTrail as any[]).map((log: any) => (
                       <div key={log.id} className="flex items-start gap-3 p-2 border-b text-sm">
                         <Clock className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
                         <div>
                           <span className="font-medium">{log.action}</span>
-                          <span className="text-gray-500"> on {log.entityType}</span>
+                          <span className="text-muted-foreground"> on {log.entityType}</span>
                           {log.userId && <span className="text-gray-400"> by {log.userId.slice(0, 8)}...</span>}
                           <p className="text-xs text-gray-400">{new Date(log.createdAt).toLocaleString()}</p>
                           {log.details && <pre className="text-xs text-muted-foreground mt-1">{JSON.stringify(log.details, null, 2)}</pre>}
@@ -255,7 +255,7 @@ function MilestonesSection({ contractId, milestones }: { contractId: string; mil
         </Dialog>
       </CardHeader>
       <CardContent>
-        {milestones.length === 0 ? <p className="text-gray-500">No milestones.</p> : (
+        {milestones.length === 0 ? <p className="text-muted-foreground">No milestones.</p> : (
           <div className="space-y-3">
             {milestones.map((m: any) => (
               <div key={m.id} className="flex items-center justify-between p-3 border rounded-lg">
@@ -265,7 +265,7 @@ function MilestonesSection({ contractId, milestones }: { contractId: string; mil
                     <Badge className={STATUS_COLORS[m.status]}>{m.status}</Badge>
                     <Badge className={STATUS_COLORS[m.paymentStatus]}>{m.paymentStatus}</Badge>
                   </div>
-                  <p className="text-sm text-gray-500">{m.description || ""} {m.dueDate && `• Due: ${m.dueDate}`}</p>
+                  <p className="text-sm text-muted-foreground">{m.description || ""} {m.dueDate && `• Due: ${m.dueDate}`}</p>
                 </div>
                 <span className="font-semibold text-amber-700">{cents(m.paymentAmount)}</span>
               </div>
@@ -361,11 +361,11 @@ function WorkOrdersSection({ contractId, workOrders, milestones }: { contractId:
       </CardHeader>
       <CardContent>
         <div className="flex gap-4 mb-4 text-sm">
-          <span className="text-gray-500">Total: <strong>{workOrders.length}</strong></span>
-          <span className="text-gray-500">Accepted Quotes: <strong>{cents(totalQuoted)}</strong></span>
-          <span className="text-gray-500">Verified: <strong>{workOrders.filter(wo => wo.status === "verified").length}</strong></span>
+          <span className="text-muted-foreground">Total: <strong>{workOrders.length}</strong></span>
+          <span className="text-muted-foreground">Accepted Quotes: <strong>{cents(totalQuoted)}</strong></span>
+          <span className="text-muted-foreground">Verified: <strong>{workOrders.filter(wo => wo.status === "verified").length}</strong></span>
         </div>
-        {workOrders.length === 0 ? <p className="text-gray-500">No work orders.</p> : (
+        {workOrders.length === 0 ? <p className="text-muted-foreground">No work orders.</p> : (
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {workOrders.map((wo: any) => (
               <div key={wo.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">
@@ -417,10 +417,10 @@ function WorkLogsSection({ contractId, logs }: { contractId: string; logs: any[]
       </CardHeader>
       <CardContent>
         <div className="flex gap-4 mb-4 text-sm">
-          <span className="text-gray-500">Total Logs: <strong>{logs.length}</strong></span>
-          <span className="text-gray-500">Approved: <strong>{logs.filter(l => l.status === "approved").length}</strong></span>
+          <span className="text-muted-foreground">Total Logs: <strong>{logs.length}</strong></span>
+          <span className="text-muted-foreground">Approved: <strong>{logs.filter(l => l.status === "approved").length}</strong></span>
         </div>
-        {logs.length === 0 ? <p className="text-gray-500">No work logs.</p> : (
+        {logs.length === 0 ? <p className="text-muted-foreground">No work logs.</p> : (
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {logs.map((log: any) => (
               <div key={log.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">
@@ -429,7 +429,7 @@ function WorkLogsSection({ contractId, logs }: { contractId: string; logs: any[]
                     <span className="font-medium">{log.workDate}</span>
                     <Badge className={STATUS_COLORS[log.status]}>{log.status}</Badge>
                   </div>
-                  <p className="text-xs text-gray-500">{log.description}</p>
+                  <p className="text-xs text-muted-foreground">{log.description}</p>
                 </div>
                 {log.status === "pending" && (
                   <Button size="sm" variant="outline" onClick={() => approveMutation.mutate(log.id)}>
@@ -469,7 +469,7 @@ function PayrollSection({ contractId, reports }: { contractId: string; reports: 
       </CardHeader>
       <CardContent>
         <p className="text-xs text-gray-400 mb-3 italic">Internal compliance reports only. generated from work order data for government reporting requirements.</p>
-        {reports.length === 0 ? <p className="text-gray-500">No reports.</p> : (
+        {reports.length === 0 ? <p className="text-muted-foreground">No reports.</p> : (
           <div className="space-y-2">
             {reports.map((r: any) => (
               <div key={r.id} className="flex items-center justify-between p-3 border rounded-lg text-sm cursor-pointer hover:bg-amber-50"
@@ -517,7 +517,7 @@ function InvoicesSection({ contractId, invoices }: { contractId: string; invoice
         </Dialog>
       </CardHeader>
       <CardContent>
-        {invoices.length === 0 ? <p className="text-gray-500">No invoices.</p> : (
+        {invoices.length === 0 ? <p className="text-muted-foreground">No invoices.</p> : (
           <div className="space-y-2">
             {invoices.map((inv: any) => (
               <div key={inv.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">
@@ -596,7 +596,7 @@ function ComplianceSection({ contractId, compliance }: { contractId: string; com
         </Dialog>
       </CardHeader>
       <CardContent>
-        {!compliance ? <p className="text-gray-500">Loading...</p> : (
+        {!compliance ? <p className="text-muted-foreground">Loading...</p> : (
           <div className="space-y-2">
             {compliance.checklist?.map((item: any) => (
               <div key={item.docType} className="flex items-center justify-between p-3 border rounded-lg">
@@ -652,14 +652,14 @@ function DailyLogsSection({ contractId, logs }: { contractId: string; logs: any[
         </Dialog>
       </CardHeader>
       <CardContent>
-        {logs.length === 0 ? <p className="text-gray-500">No daily logs.</p> : (
+        {logs.length === 0 ? <p className="text-muted-foreground">No daily logs.</p> : (
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {logs.map((log: any) => (
               <div key={log.id} className="p-3 border rounded-lg text-sm">
                 <div className="flex items-center gap-2 mb-1">
                   <Calendar className="h-4 w-4 text-amber-600" />
                   <span className="font-medium">{log.logDate}</span>
-                  {log.weather && <span className="text-gray-500">{log.weather} {log.temperature}</span>}
+                  {log.weather && <span className="text-muted-foreground">{log.weather} {log.temperature}</span>}
                 </div>
                 {log.workPerformed && <p className="text-gray-700">{log.workPerformed}</p>}
                 {log.safetyIncidents && <p className="text-red-600 text-xs mt-1"> Safety: {log.safetyIncidents}</p>}
@@ -721,7 +721,7 @@ function ModificationsSection({ contractId, modifications }: { contractId: strin
         </Dialog>
       </CardHeader>
       <CardContent>
-        {modifications.length === 0 ? <p className="text-gray-500">No modifications.</p> : (
+        {modifications.length === 0 ? <p className="text-muted-foreground">No modifications.</p> : (
           <div className="space-y-2">
             {modifications.map((m: any) => (
               <div key={m.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">

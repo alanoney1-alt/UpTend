@@ -396,7 +396,7 @@ export default function BlogPost() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Helmet>
         <title>{post.title} | UpTend Blog</title>
         <meta name="description" content={post.content.slice(0, 160)} />
@@ -410,7 +410,7 @@ export default function BlogPost() {
           <Link href="/blog" className="hover:text-orange-600">&larr; Back to Blog</Link>
         </nav>
 
-        <time className="text-sm text-gray-500">{post.date}</time>
+        <time className="text-sm text-muted-foreground">{post.date}</time>
         <p className="text-sm text-muted-foreground mb-2">By {post.author}</p>
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-8">{post.title}</h1>
 

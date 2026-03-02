@@ -138,7 +138,7 @@ export default function InsurancePage() {
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <ShieldCheck className={`w-8 h-8 ${policy.isExpired ? "text-slate-600" : "text-green-400"}`} />
+                    <ShieldCheck className={`w-8 h-8 ${policy.isExpired ? "text-muted-foreground" : "text-green-400"}`} />
                     <div>
                       <p className="font-semibold text-white">{policy.partnerName}</p>
                       <p className="text-sm text-slate-400 capitalize">{policy.partnerType?.replace(/_/g, " ")} • {policy.coverageType}</p>

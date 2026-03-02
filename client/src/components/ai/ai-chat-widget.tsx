@@ -62,7 +62,7 @@ function BookingDraftCard({ draft, onAction }: { draft: any; onAction: (btn: Qui
       </div>
       <p className="text-sm font-medium">{draft.serviceName}</p>
       {q.priceFormatted && <p className="text-lg font-bold text-orange-600 mt-1">{q.priceFormatted}</p>}
-      {draft.preferredDate && <p className="text-xs text-gray-500"> {draft.preferredDate}</p>}
+      {draft.preferredDate && <p className="text-xs text-muted-foreground"> {draft.preferredDate}</p>}
       <div className="flex gap-2 mt-2">
         <button onClick={() => onAction({ text: "Confirm & Book", action: "action:confirmBooking" })} className="flex-1 px-3 py-1.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 transition">
           Confirm & Book

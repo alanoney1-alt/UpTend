@@ -139,13 +139,13 @@ export default function JobDetailPage() {
               <p className="text-muted-foreground">{job.description}</p>
             )}
             {job.address && (
-              <div className="flex items-center gap-2 text-slate-600">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <MapPin className="w-4 h-4 text-[#ea580c] shrink-0" />
                 <span>{job.address}</span>
               </div>
             )}
             {job.scheduledFor && (
-              <div className="flex items-center gap-2 text-slate-600">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="w-4 h-4 text-[#ea580c] shrink-0" />
                 <span>{formatDate(job.scheduledFor)}</span>
               </div>

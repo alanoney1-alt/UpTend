@@ -16,7 +16,7 @@ export default function CostGuidesHub() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <main className="relative max-w-5xl mx-auto px-4 py-16">
         <div className="absolute inset-0 h-[350px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">

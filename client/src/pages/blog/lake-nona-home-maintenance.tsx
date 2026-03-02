@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogLakeNonaHomeMaintenance() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>Lake Nona Home Maintenance Schedule | Month by Month Guide | UpTend</title>
@@ -152,7 +152,7 @@ export default function BlogLakeNonaHomeMaintenance() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Have questions about maintaining your Lake Nona home? Visit{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. he's our AI home assistant and

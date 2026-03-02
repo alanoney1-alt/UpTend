@@ -42,7 +42,7 @@ export function ServiceEsgAdminView() {
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <div className="text-center py-12 text-gray-500">Loading service ESG data...</div>
+        <div className="text-center py-12 text-muted-foreground">Loading service ESG data...</div>
       </div>
     );
   }
@@ -118,7 +118,7 @@ export function ServiceEsgAdminView() {
       ) : (
         <Card>
           <CardContent className="pt-6">
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-muted-foreground">
               No service ESG data available yet. Data will appear as services are completed.
             </div>
           </CardContent>
@@ -146,7 +146,7 @@ export function ServiceEsgAdminView() {
                 {serviceData
                   .sort((a, b) => b.co2SavedLbs - a.co2SavedLbs)
                   .map((service) => (
-                    <tr key={service.serviceType} className="border-b hover:bg-gray-50">
+                    <tr key={service.serviceType} className="border-b hover:bg-muted/50">
                       <td className="py-2 px-4 font-medium capitalize">
                         {service.serviceType.replace(/_/g, " ")}
                       </td>

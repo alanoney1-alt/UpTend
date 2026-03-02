@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogPressureWashingCostClermont() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>Pressure Washing Cost Clermont 2026 | Real Pricing Guide | UpTend</title>
@@ -95,7 +95,7 @@ export default function BlogPressureWashingCostClermont() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Got a pressure washing question about Clermont? Visit{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and ask George. He'll give you a straight answer.

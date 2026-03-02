@@ -70,13 +70,13 @@ export function PartsRequestForm({ jobId }: { jobId: string }) {
     approved: "bg-green-100 text-green-800",
     denied: "bg-red-100 text-red-800",
     sourced: "bg-blue-100 text-blue-800",
-    installed: "bg-muted/50 text-gray-600",
+    installed: "bg-muted/50 text-muted-foreground",
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Parts & Materials</h3>
+        <h3 className="text-lg font-semibold text-foreground">Parts & Materials</h3>
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
@@ -114,7 +114,7 @@ export function PartsRequestForm({ jobId }: { jobId: string }) {
           <div className="flex gap-2 justify-end">
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-muted-foreground hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-muted-foreground hover:bg-muted/50"
             >
               Cancel
             </button>
@@ -129,7 +129,7 @@ export function PartsRequestForm({ jobId }: { jobId: string }) {
         </div>
       )}
 
-      {isLoading && <p className="text-sm text-gray-500">Loading requests...</p>}
+      {isLoading && <p className="text-sm text-muted-foreground">Loading requests...</p>}
 
       {requests.length === 0 && !isLoading && (
         <p className="text-sm text-gray-400 italic">No parts requests yet.</p>
@@ -138,13 +138,13 @@ export function PartsRequestForm({ jobId }: { jobId: string }) {
       {requests.map((pr) => (
         <div key={pr.id} className="border rounded-lg p-4 space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-900">{pr.description}</p>
-            <span className={`text-xs px-2 py-1 rounded-full font-medium ${statusColors[pr.status] || "bg-gray-100"}`}>
+            <p className="text-sm font-medium text-foreground">{pr.description}</p>
+            <span className={`text-xs px-2 py-1 rounded-full font-medium ${statusColors[pr.status] || "bg-muted/50"}`}>
               {pr.status}
             </span>
           </div>
           {pr.estimated_cost && (
-            <p className="text-sm text-gray-600">Est. cost: ${pr.estimated_cost.toFixed(2)}</p>
+            <p className="text-sm text-muted-foreground">Est. cost: ${pr.estimated_cost.toFixed(2)}</p>
           )}
           {pr.photo_url && (
             <img src={pr.photo_url} alt="Parts photo" className="w-32 h-32 object-cover rounded-lg" />

@@ -131,17 +131,17 @@ export function ServiceEsgSummary({ proId }: { proId: string }) {
       <div className="text-center p-4 bg-blue-50 rounded-lg">
         <div className="text-3xl mb-1"></div>
         <div className="text-2xl font-bold">{stats.gallonsSaved.toLocaleString()}</div>
-        <div className="text-sm text-gray-600">Gallons Saved</div>
+        <div className="text-sm text-muted-foreground">Gallons Saved</div>
       </div>
       <div className="text-center p-4 bg-green-50 rounded-lg">
         <div className="text-3xl mb-1"></div>
         <div className="text-2xl font-bold">{stats.co2Saved.toLocaleString()}</div>
-        <div className="text-sm text-gray-600">lbs CO₂ Saved</div>
+        <div className="text-sm text-muted-foreground">lbs CO₂ Saved</div>
       </div>
       <div className="text-center p-4 bg-purple-50 rounded-lg">
         <div className="text-3xl mb-1"></div>
         <div className="text-2xl font-bold">{stats.avgEsgScore}</div>
-        <div className="text-sm text-gray-600">Avg ESG Score</div>
+        <div className="text-sm text-muted-foreground">Avg ESG Score</div>
       </div>
     </div>
   );

@@ -232,7 +232,7 @@ export function InsuranceHub({ propertyId }: InsuranceHubProps) {
                           {policy.lastClaimDate && (
                             <div>
                               <p className="text-xs text-muted-foreground">Last Claim</p>
-                              <p className="font-bold text-gray-600">
+                              <p className="font-bold text-muted-foreground">
                                 {new Date(policy.lastClaimDate).toLocaleDateString()}
                               </p>
                             </div>

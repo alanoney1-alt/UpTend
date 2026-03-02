@@ -45,7 +45,7 @@ const CERT_CONFIG: Record<string, { label: string; icon: typeof Building2; color
     label: "Gov. Certified",
     icon: Star,
     color: "text-navy-600",
-    bgColor: "bg-muted/50 border-slate-300 hover:bg-slate-100",
+    bgColor: "bg-muted/50 border-slate-300 hover:bg-muted/50",
   },
 };
 
@@ -128,7 +128,7 @@ export function CertificationIcons({ certSlugs, size = "sm" }: CertificationBadg
     <TooltipProvider>
       <div className="flex gap-0.5 items-center">
         {certSlugs.map((slug) => {
-          const config = CERT_CONFIG[slug] || { label: slug, icon: ShieldCheck, color: "text-gray-500" };
+          const config = CERT_CONFIG[slug] || { label: slug, icon: ShieldCheck, color: "text-muted-foreground" };
           const Icon = config.icon;
           return (
             <Tooltip key={slug}>

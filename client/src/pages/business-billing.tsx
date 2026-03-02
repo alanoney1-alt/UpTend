@@ -137,8 +137,8 @@ export default function BusinessBilling() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Billing</h1>
-            <p className="text-gray-500">Weekly billing for completed jobs</p>
+            <h1 className="text-2xl font-bold text-foreground">Billing</h1>
+            <p className="text-muted-foreground">Weekly billing for completed jobs</p>
           </div>
         </div>
 
@@ -156,9 +156,9 @@ export default function BusinessBilling() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
-                <div><span className="text-gray-500">Jobs:</span> {runDetail.jobCount}</div>
-                <div><span className="text-gray-500">Total:</span> ${runDetail.totalAmount.toFixed(2)}</div>
-                <div><span className="text-gray-500">Processed:</span> {runDetail.processedAt ? formatDate(runDetail.processedAt) : "-"}</div>
+                <div><span className="text-muted-foreground">Jobs:</span> {runDetail.jobCount}</div>
+                <div><span className="text-muted-foreground">Total:</span> ${runDetail.totalAmount.toFixed(2)}</div>
+                <div><span className="text-muted-foreground">Processed:</span> {runDetail.processedAt ? formatDate(runDetail.processedAt) : "-"}</div>
               </div>
               {runDetail.errorMessage && (
                 <div className="bg-red-50 text-red-700 p-3 rounded mb-4 text-sm flex items-center gap-2">
@@ -215,11 +215,11 @@ export default function BusinessBilling() {
               </CardHeader>
               <CardContent>
                 {previewLoading ? (
-                  <div className="flex items-center gap-2 text-gray-500">
+                  <div className="flex items-center gap-2 text-muted-foreground">
                     <Loader2 className="w-4 h-4 animate-spin" /> Loading preview...
                   </div>
                 ) : !preview || preview.jobCount === 0 ? (
-                  <p className="text-gray-500">No eligible jobs for billing this week.</p>
+                  <p className="text-muted-foreground">No eligible jobs for billing this week.</p>
                 ) : (
                   <>
                     <div className="mb-4 p-3 bg-amber-50 rounded-lg">
@@ -262,11 +262,11 @@ export default function BusinessBilling() {
               </CardHeader>
               <CardContent>
                 {runsLoading ? (
-                  <div className="flex items-center gap-2 text-gray-500">
+                  <div className="flex items-center gap-2 text-muted-foreground">
                     <Loader2 className="w-4 h-4 animate-spin" /> Loading...
                   </div>
                 ) : !runs || runs.length === 0 ? (
-                  <p className="text-gray-500">No billing history yet.</p>
+                  <p className="text-muted-foreground">No billing history yet.</p>
                 ) : (
                   <div className="space-y-3">
                     {runs.filter((r) => !r.dryRun).map((run) => (
@@ -277,7 +277,7 @@ export default function BusinessBilling() {
                       >
                         <div>
                           <div className="font-medium">{formatWeek(run.weekStartDate, run.weekEndDate)}</div>
-                          <div className="text-sm text-gray-500">{run.jobCount} job{run.jobCount !== 1 ? "s" : ""}</div>
+                          <div className="text-sm text-muted-foreground">{run.jobCount} job{run.jobCount !== 1 ? "s" : ""}</div>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="font-semibold">${run.totalAmount.toFixed(2)}</span>
@@ -303,7 +303,7 @@ export default function BusinessBilling() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Label className="text-base">Auto-Billing</Label>
-                        <p className="text-sm text-gray-500">Automatically charge for completed jobs every week</p>
+                        <p className="text-sm text-muted-foreground">Automatically charge for completed jobs every week</p>
                       </div>
                       <Switch
                         checked={settings.autoBillingEnabled}

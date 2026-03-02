@@ -87,7 +87,7 @@ export function ServiceBagSheet() {
 
         {itemCount === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center px-4 gap-3">
-            <ShoppingBag className="w-12 h-12 text-slate-600" />
+            <ShoppingBag className="w-12 h-12 text-muted-foreground" />
             <p className="text-slate-400">Your service bag is empty.</p>
             <p className="text-slate-500 text-sm">Browse services to get started.</p>
           </div>

@@ -54,7 +54,7 @@ export default function BusinessCommunityHub() {
             <Button variant="ghost" size="icon"><ArrowLeft className="h-5 w-5" /></Button>
           </Link>
           <div>
-            <h1 className="text-lg font-bold text-slate-900">Community Hub</h1>
+            <h1 className="text-lg font-bold text-foreground">Community Hub</h1>
             <p className="text-sm text-slate-500">Manage communications and community health</p>
           </div>
         </div>
@@ -75,7 +75,7 @@ export default function BusinessCommunityHub() {
               </div>
               <div className="flex-1 grid grid-cols-2 gap-4 sm:ml-8">
                 <div className="text-center p-3 bg-background rounded-lg border">
-                  <p className="text-2xl font-bold text-slate-900">142</p>
+                  <p className="text-2xl font-bold text-foreground">142</p>
                   <p className="text-xs text-slate-500">Units Serviced</p>
                 </div>
                 <div className="text-center p-3 bg-background rounded-lg border">
@@ -137,7 +137,7 @@ export default function BusinessCommunityHub() {
             <CardContent>
               <div className="space-y-3">
                 {demoActivityFeed.map((item) => (
-                  <div key={item.id} className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
+                  <div key={item.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
                     <div className="w-2 h-2 rounded-full bg-amber-500 mt-2 shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm text-slate-700">{item.text}</p>
@@ -187,7 +187,7 @@ export default function BusinessCommunityHub() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {demoBatchDeals.map((deal) => (
                 <div key={deal.id} className="p-4 border rounded-lg">
-                  <h4 className="font-semibold text-slate-900">{deal.service}</h4>
+                  <h4 className="font-semibold text-foreground">{deal.service}</h4>
                   <div className="flex items-baseline gap-2 mt-1">
                     <span className="text-2xl font-bold text-amber-700">${deal.pricePerUnit}</span>
                     <span className="text-sm text-slate-400 line-through">${deal.regularPrice}</span>

@@ -278,7 +278,7 @@ export function AIQuoteDisplay({
                   <span className="text-blue-600">
                      {quote.sustainability.donatedLbs}lbs donated
                   </span>
-                  <span className="text-gray-600">
+                  <span className="text-muted-foreground">
                      {quote.sustainability.landfilledLbs}lbs landfilled
                   </span>
                 </div>

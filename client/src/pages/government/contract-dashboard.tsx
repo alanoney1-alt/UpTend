@@ -86,7 +86,7 @@ export default function ContractDashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Active Contracts</p>
+                  <p className="text-sm text-muted-foreground">Active Contracts</p>
                   <p className="text-2xl font-bold text-amber-600">{activeContracts.length}</p>
                 </div>
                 <FileText className="h-8 w-8 text-amber-200" />
@@ -97,7 +97,7 @@ export default function ContractDashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Total Value</p>
+                  <p className="text-sm text-muted-foreground">Total Value</p>
                   <p className="text-2xl font-bold text-green-600">{cents(totalValue)}</p>
                 </div>
                 <DollarSign className="h-8 w-8 text-green-200" />
@@ -108,7 +108,7 @@ export default function ContractDashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Total Funded</p>
+                  <p className="text-sm text-muted-foreground">Total Funded</p>
                   <p className="text-2xl font-bold text-blue-600">{cents(totalFunded)}</p>
                 </div>
                 <TrendingUp className="h-8 w-8 text-blue-200" />
@@ -119,7 +119,7 @@ export default function ContractDashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Expiring Docs</p>
+                  <p className="text-sm text-muted-foreground">Expiring Docs</p>
                   <p className="text-2xl font-bold text-red-600">{(expiringDocs as any[]).length}</p>
                 </div>
                 <AlertTriangle className="h-8 w-8 text-red-200" />
@@ -157,9 +157,9 @@ export default function ContractDashboard() {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <p className="text-gray-500">Loading contracts...</p>
+              <p className="text-muted-foreground">Loading contracts...</p>
             ) : (contracts as any[]).length === 0 ? (
-              <p className="text-gray-500">No contracts yet. Create your first government contract.</p>
+              <p className="text-muted-foreground">No contracts yet. Create your first government contract.</p>
             ) : (
               <div className="space-y-3">
                 {(contracts as any[]).map((contract: any) => (
@@ -170,11 +170,11 @@ export default function ContractDashboard() {
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-3">
-                        <span className="font-semibold text-gray-900">{contract.contractNumber}</span>
-                        <Badge className={STATUS_COLORS[contract.status] || "bg-gray-100"}>{contract.status}</Badge>
+                        <span className="font-semibold text-foreground">{contract.contractNumber}</span>
+                        <Badge className={STATUS_COLORS[contract.status] || "bg-muted/50"}>{contract.status}</Badge>
                         {contract.sdvosbSetAside && <Badge className="bg-amber-100 text-amber-800">SDVOSB</Badge>}
                       </div>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         {contract.agencyName} • {contract.contractType?.replace(/_/g, " ")} • NAICS {contract.naicsCode || "N/A"}
                       </p>
                       <p className="text-xs text-gray-400">
@@ -183,7 +183,7 @@ export default function ContractDashboard() {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-lg text-amber-700">{cents(contract.totalValue)}</p>
-                      <p className="text-sm text-gray-500">Funded: {cents(contract.fundedAmount)}</p>
+                      <p className="text-sm text-muted-foreground">Funded: {cents(contract.fundedAmount)}</p>
                     </div>
                   </div>
                 ))}

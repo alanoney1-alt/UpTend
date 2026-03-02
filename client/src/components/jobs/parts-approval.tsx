@@ -42,7 +42,7 @@ export function PartsApproval({ jobId }: { jobId: string }) {
   const pendingRequests = (data?.partsRequests || []).filter((pr) => pr.status === "pending");
   const otherRequests = (data?.partsRequests || []).filter((pr) => pr.status !== "pending");
 
-  if (isLoading) return <p className="text-sm text-gray-500">Loading...</p>;
+  if (isLoading) return <p className="text-sm text-muted-foreground">Loading...</p>;
   if (!data?.partsRequests?.length) return null;
 
   return (
@@ -59,19 +59,19 @@ export function PartsApproval({ jobId }: { jobId: string }) {
 
       {otherRequests.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-gray-500">Previous Requests</h4>
+          <h4 className="text-sm font-medium text-muted-foreground">Previous Requests</h4>
           {otherRequests.map((pr) => (
             <div key={pr.id} className="border rounded-lg p-3 flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-900">{pr.description}</p>
-                {pr.estimated_cost && <p className="text-xs text-gray-500">${pr.estimated_cost.toFixed(2)}</p>}
+                <p className="text-sm text-foreground">{pr.description}</p>
+                {pr.estimated_cost && <p className="text-xs text-muted-foreground">${pr.estimated_cost.toFixed(2)}</p>}
               </div>
               <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                 pr.status === "approved" ? "bg-green-100 text-green-800" :
                 pr.status === "denied" ? "bg-red-100 text-red-800" :
                 pr.status === "sourced" ? "bg-blue-100 text-blue-800" :
-                pr.status === "installed" ? "bg-muted/50 text-gray-600" :
-                "bg-muted/50 text-gray-600"
+                pr.status === "installed" ? "bg-muted/50 text-muted-foreground" :
+                "bg-muted/50 text-muted-foreground"
               }`}>
                 {pr.status}
               </span>
@@ -105,7 +105,7 @@ function PendingCard({
           </svg>
         </div>
         <div className="flex-1">
-          <h4 className="font-semibold text-gray-900">Parts/Materials Requested</h4>
+          <h4 className="font-semibold text-foreground">Parts/Materials Requested</h4>
           <p className="text-sm text-gray-700 mt-1">{request.description}</p>
           {request.estimated_cost && (
             <p className="text-sm font-medium text-amber-700 mt-1">

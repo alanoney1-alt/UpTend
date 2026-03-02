@@ -106,7 +106,7 @@ export default function BusinessViolations() {
               <Button variant="ghost" size="icon"><ArrowLeft className="h-5 w-5" /></Button>
             </Link>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">Violation Management</h1>
+              <h1 className="text-lg font-bold text-foreground">Violation Management</h1>
               <p className="text-sm text-slate-500">Track and manage community violations</p>
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function BusinessViolations() {
             <CardContent className="pt-6 flex items-center gap-3">
               <div className="p-2 rounded-full bg-red-100"><AlertTriangle className="h-5 w-5 text-red-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{violations.filter((v) => v.status === "open").length}</p>
+                <p className="text-2xl font-bold text-foreground">{violations.filter((v) => v.status === "open").length}</p>
                 <p className="text-sm text-slate-500">Open Violations</p>
               </div>
             </CardContent>
@@ -169,7 +169,7 @@ export default function BusinessViolations() {
             <CardContent className="pt-6 flex items-center gap-3">
               <div className="p-2 rounded-full bg-yellow-100"><Clock className="h-5 w-5 text-yellow-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{violations.filter((v) => v.status === "notified").length}</p>
+                <p className="text-2xl font-bold text-foreground">{violations.filter((v) => v.status === "notified").length}</p>
                 <p className="text-sm text-slate-500">Notified</p>
               </div>
             </CardContent>
@@ -178,7 +178,7 @@ export default function BusinessViolations() {
             <CardContent className="pt-6 flex items-center gap-3">
               <div className="p-2 rounded-full bg-green-100"><CheckCircle className="h-5 w-5 text-green-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{violations.filter((v) => v.status === "resolved").length}</p>
+                <p className="text-2xl font-bold text-foreground">{violations.filter((v) => v.status === "resolved").length}</p>
                 <p className="text-sm text-slate-500">Resolved</p>
               </div>
             </CardContent>

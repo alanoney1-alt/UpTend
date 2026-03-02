@@ -134,7 +134,7 @@ export function TeamInviteForm({ businessAccountId, onSuccess }: TeamInviteFormP
             <SelectItem value="member">Member</SelectItem>
           </SelectContent>
         </Select>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted-foreground">
           {role === "admin"
             ? "Full access to manage team, financials, and operations"
             : "Can create jobs and access ESG reports"}

@@ -64,7 +64,7 @@ export default function BusinessBoardReport() {
               <Button variant="ghost" size="icon"><ArrowLeft className="h-5 w-5" /></Button>
             </Link>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">Board Report Generator</h1>
+              <h1 className="text-lg font-bold text-foreground">Board Report Generator</h1>
               <p className="text-sm text-slate-500">Generate quarterly reports for the board</p>
             </div>
           </div>
@@ -148,7 +148,7 @@ export default function BusinessBoardReport() {
               {demoVendors.map((vendor) => (
                 <div key={vendor.name} className="p-4 border rounded-lg">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold text-slate-900">{vendor.name}</h4>
+                    <h4 className="font-semibold text-foreground">{vendor.name}</h4>
                     <Badge variant="outline">{vendor.service}</Badge>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center">
@@ -157,11 +157,11 @@ export default function BusinessBoardReport() {
                       <p className="text-xs text-slate-500">Rating</p>
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-slate-900">{vendor.onTime}%</p>
+                      <p className="text-lg font-bold text-foreground">{vendor.onTime}%</p>
                       <p className="text-xs text-slate-500">On Time</p>
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-slate-900">{vendor.jobs}</p>
+                      <p className="text-lg font-bold text-foreground">{vendor.jobs}</p>
                       <p className="text-xs text-slate-500">Jobs</p>
                     </div>
                   </div>
@@ -207,7 +207,7 @@ export default function BusinessBoardReport() {
           <CardContent>
             <div className="space-y-3">
               {demoCalendar.map((item, i) => (
-                <div key={i} className="flex items-center gap-4 p-3 rounded-lg bg-slate-50">
+                <div key={i} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
                   <div className="w-16 text-center">
                     <p className="text-sm font-semibold text-amber-700">{item.date}</p>
                   </div>

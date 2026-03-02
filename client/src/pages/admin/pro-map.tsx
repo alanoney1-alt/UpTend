@@ -230,7 +230,7 @@ export default function AdminProMap() {
                 <Popup>
                   <div className="text-sm min-w-[200px]">
                     <p className="font-bold text-base">{pro.firstName} {pro.lastName}</p>
-                    {pro.companyName && <p className="text-gray-500">{pro.companyName}</p>}
+                    {pro.companyName && <p className="text-muted-foreground">{pro.companyName}</p>}
                     <div className="mt-2 space-y-1">
                       <p> {pro.rating.toFixed(1)} · {pro.jobsCompleted} jobs completed</p>
                       <p>
@@ -238,7 +238,7 @@ export default function AdminProMap() {
                         <span className={
                           pro.status === "online" ? "text-green-600 font-medium" :
                           pro.status === "on_job" ? "text-orange-600 font-medium" :
-                          "text-gray-500"
+                          "text-muted-foreground"
                         }>
                           {getStatusLabel(pro.status)}
                         </span>

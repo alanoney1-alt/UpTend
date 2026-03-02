@@ -273,7 +273,7 @@ export default function BpIntegrations() {
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* Title */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Integrations Hub</h1>
+          <h1 className="text-3xl font-bold text-foreground">Integrations Hub</h1>
           <p className="text-muted-foreground mt-1">
             Connect your accounting, payroll, and job management tools
           </p>
@@ -287,7 +287,7 @@ export default function BpIntegrations() {
         </div>
 
         {/* How It Works */}
-        <Card className="bg-muted/50 border-slate-200">
+        <Card className="bg-muted/50 border-border">
           <CardHeader>
             <CardTitle className="text-lg text-slate-800">How Integrations Work</CardTitle>
           </CardHeader>

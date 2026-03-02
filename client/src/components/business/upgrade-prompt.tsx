@@ -47,7 +47,7 @@ export function UpgradePrompt({ featureName, variant = "card" }: UpgradePromptPr
           <Lock className="h-7 w-7 text-amber-600" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-foreground">
             Unlock {featureName}
           </h3>
           <p className="text-sm text-muted-foreground mt-1">

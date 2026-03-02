@@ -144,7 +144,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Insurance & Claims</h1>
+          <h1 className="text-2xl font-bold text-foreground">Insurance & Claims</h1>
           <p className="text-muted-foreground mt-1">
             Manage your insurance policies and liability protection
           </p>
@@ -206,7 +206,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
                         <h3 className="font-semibold">{policy.carrier_name}</h3>
                         {getStatusBadge(policy)}
                       </div>
-                      <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                      <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
                         <div>
                           <span className="font-medium">Policy Number:</span> {policy.policy_number}
                         </div>
@@ -260,7 +260,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
             <Card className="p-8 text-center">
               <Shield className="mx-auto mb-4 text-gray-400" size={48} />
               <h3 className="text-lg font-medium mb-2">No Liability Claims</h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 All liability claims filed against you will appear here.
               </p>
             </Card>
@@ -275,7 +275,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
                       </h3>
                       {getClaimStatusBadge(claim.status)}
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       Filed by {claim.customer_name} on{" "}
                       {format(new Date(claim.created_at), "MMM dd, yyyy")}
                     </p>
@@ -286,7 +286,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
                         Estimated: ${claim.estimated_damage.toLocaleString()}
                       </p>
                     )}
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       Cap: ${claim.platform_liability_cap.toLocaleString()}
                     </p>
                   </div>

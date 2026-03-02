@@ -70,11 +70,11 @@ export function ApplianceRegistry({ propertyId }: ApplianceRegistryProps) {
   }
 
   function getWarrantyStatusColor(status?: string) {
-    if (!status) return "text-gray-500";
+    if (!status) return "text-muted-foreground";
     if (status === "active") return "text-green-600";
     if (status === "expiring_soon") return "text-orange-600";
     if (status === "expired") return "text-red-600";
-    return "text-gray-500";
+    return "text-muted-foreground";
   }
 
   if (loading) {

@@ -40,7 +40,7 @@ export default function QualityReports() {
       <Header />
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Quality Inspection Reports</h1>
+          <h1 className="text-3xl font-bold text-foreground">Quality Inspection Reports</h1>
           <p className="text-muted-foreground mt-1">Review quality assessments from completed jobs at your property.</p>
         </div>
 
@@ -62,7 +62,7 @@ export default function QualityReports() {
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <h3 className="font-semibold text-lg">{r.service_type || "Service"}</h3>
-                      {r.pro_name && <p className="text-sm text-gray-500">Completed by {r.pro_name}</p>}
+                      {r.pro_name && <p className="text-sm text-muted-foreground">Completed by {r.pro_name}</p>}
                       <p className="text-sm text-gray-400">{new Date(r.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${scoreColor(r.quality_score)}`}>
@@ -73,13 +73,13 @@ export default function QualityReports() {
                   {r.findings && (
                     <div className="mb-3">
                       <p className="text-sm font-medium text-gray-700 mb-1">Findings</p>
-                      <p className="text-sm text-gray-600">{r.findings}</p>
+                      <p className="text-sm text-muted-foreground">{r.findings}</p>
                     </div>
                   )}
                   {r.recommendations && (
                     <div>
                       <p className="text-sm font-medium text-gray-700 mb-1">Recommendations</p>
-                      <p className="text-sm text-gray-600">{r.recommendations}</p>
+                      <p className="text-sm text-muted-foreground">{r.recommendations}</p>
                     </div>
                   )}
                   {r.photos && r.photos.length > 0 && (

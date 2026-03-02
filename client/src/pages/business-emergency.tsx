@@ -185,7 +185,7 @@ export default function BusinessEmergency() {
                   {checklist.map(item => (
                     <div
                       key={item.id}
-                      className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${item.completed ? "bg-green-50 border-green-200" : "hover:bg-gray-50"}`}
+                      className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${item.completed ? "bg-green-50 border-green-200" : "hover:bg-muted/50"}`}
                       onClick={() => toggleItem(item.id)}
                     >
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${item.completed ? "bg-green-500 border-green-500" : "border-gray-300"}`}>

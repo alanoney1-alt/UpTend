@@ -344,7 +344,7 @@ export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps
                   <div className="flex items-center gap-2 text-sm text-slate-400 mt-0.5">
                     <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                     <span>{matchedPro.rating} ({matchedPro.reviews} reviews)</span>
-                    <span className="text-slate-600">·</span>
+                    <span className="text-muted-foreground">·</span>
                     <Clock className="w-3.5 h-3.5" />
                     <span>~{matchedPro.arrivalMin} min</span>
                   </div>

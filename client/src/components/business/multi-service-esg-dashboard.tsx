@@ -143,7 +143,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Jobs</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Jobs</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{totalJobs}</div>
@@ -153,7 +153,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">CO₂ Saved</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">CO₂ Saved</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(totalCo2Saved).toLocaleString()}</div>
@@ -163,7 +163,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Water Saved</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Water Saved</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(totalWaterSaved).toLocaleString()}</div>
@@ -173,7 +173,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Avg ESG Score</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Avg ESG Score</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(avgEsgScore)}</div>
@@ -239,7 +239,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
               </thead>
               <tbody>
                 {chartData.map((row) => (
-                  <tr key={row.name} className="border-b hover:bg-gray-50">
+                  <tr key={row.name} className="border-b hover:bg-muted/50">
                     <td className="p-2 font-medium">{row.name}</td>
                     <td className="text-right p-2">{row.jobs}</td>
                     <td className="text-right p-2">{row.co2Saved.toLocaleString()}</td>

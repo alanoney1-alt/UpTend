@@ -32,7 +32,7 @@ interface Suggestion {
 
 const weatherIcon = (condition: string) => {
   if (condition.includes("rain")) return <CloudRain className="w-4 h-4 text-blue-500" />;
-  if (condition.includes("cloud")) return <Cloud className="w-4 h-4 text-gray-500" />;
+  if (condition.includes("cloud")) return <Cloud className="w-4 h-4 text-muted-foreground" />;
   return <Sun className="w-4 h-4 text-yellow-500" />;
 };
 
@@ -80,7 +80,7 @@ export function SmartScheduler({ serviceType }: { serviceType?: string }) {
           <h3 className="font-semibold text-foreground dark:text-white text-sm">
             Smart Scheduling
           </h3>
-          <p className="text-xs text-gray-500">AI-optimized timing</p>
+          <p className="text-xs text-muted-foreground">AI-optimized timing</p>
         </div>
         <Sparkles className="w-4 h-4 text-purple-400 ml-auto" />
       </div>
@@ -92,7 +92,7 @@ export function SmartScheduler({ serviceType }: { serviceType?: string }) {
           ))}
         </div>
       ) : !suggestions?.length ? (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-muted-foreground">
           <CalendarClock className="w-8 h-8 mx-auto mb-2 opacity-40" />
           <p className="text-sm">No scheduling suggestions yet</p>
           <p className="text-xs mt-1">Book a service to get AI-optimized times</p>
@@ -156,7 +156,7 @@ export function SmartScheduler({ serviceType }: { serviceType?: string }) {
                 <Button size="sm" variant="outline" className="h-8 text-xs px-3">
                   <Pencil className="w-3 h-3 mr-1" /> Modify
                 </Button>
-                <Button size="sm" variant="ghost" className="h-8 text-xs px-3 text-gray-500">
+                <Button size="sm" variant="ghost" className="h-8 text-xs px-3 text-muted-foreground">
                   <X className="w-3 h-3" />
                 </Button>
               </div>

@@ -200,7 +200,7 @@ export default function HomeHealthAuditPage() {
       case "poor":
         return "text-red-600";
       default:
-        return "text-gray-600";
+        return "text-muted-foreground";
     }
   };
 
@@ -684,7 +684,7 @@ export default function HomeHealthAuditPage() {
       </Tabs>
 
       {/* Confidence Score Footer */}
-      <Card className="mt-8 bg-gray-50">
+      <Card className="mt-8 bg-muted/50">
         <CardContent className="pt-6">
           <div className="text-center">
             <p className="text-sm text-muted-foreground mb-1">AI Analysis Confidence</p>

@@ -55,7 +55,7 @@ export function SeasonalAdvisor({ zipCode = "32801" }: { zipCode?: string }) {
             <h3 className="font-semibold text-foreground dark:text-white text-sm">
               Seasonal Advisor
             </h3>
-            <div className="flex items-center gap-1 text-xs text-gray-500">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <MapPin className="w-3 h-3" /> {isLoading ? "..." : data?.location}
             </div>
           </div>
@@ -75,7 +75,7 @@ export function SeasonalAdvisor({ zipCode = "32801" }: { zipCode?: string }) {
           ))}
         </div>
       ) : !data?.advisories?.length ? (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-muted-foreground">
           <Leaf className="w-8 h-8 mx-auto mb-2 opacity-40" />
           <p className="text-sm">No seasonal tips right now. You're all set!</p>
         </div>

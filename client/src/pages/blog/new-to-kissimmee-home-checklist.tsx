@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogNewToKissimmee() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>New to Kissimmee? First 90 Days Home Checklist | UpTend</title>
@@ -122,7 +122,7 @@ export default function BlogNewToKissimmee() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Questions about your new Kissimmee home? Visit{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and ask George. He knows the area and he'll give you a straight answer.

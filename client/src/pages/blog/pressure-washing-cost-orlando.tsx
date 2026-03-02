@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogPressureWashingCostOrlando() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>Pressure Washing Cost Orlando 2026 | Real Pricing Guide | UpTend</title>
@@ -166,7 +166,7 @@ export default function BlogPressureWashingCostOrlando() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Got a pressure washing question? Visit{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and ask George. he'll give you a straight answer.

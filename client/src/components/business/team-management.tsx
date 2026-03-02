@@ -174,7 +174,7 @@ export function TeamManagement({ businessAccountId, currentUserRole }: TeamManag
               </thead>
               <tbody>
                 {teamMembers.map((member) => (
-                  <tr key={member.id} className="border-b hover:bg-gray-50">
+                  <tr key={member.id} className="border-b hover:bg-muted/50">
                     <td className="p-3">
                       {member.user
                         ? `${member.user.firstName} ${member.user.lastName}`
@@ -255,19 +255,19 @@ export function TeamManagement({ businessAccountId, currentUserRole }: TeamManag
           <div className="space-y-4">
             <div>
               <h4 className="font-semibold mb-2">Owner</h4>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Full access to all features. Can manage team members, financials, and all business operations.
               </p>
             </div>
             <div>
               <h4 className="font-semibold mb-2">Admin</h4>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Can manage team members, create jobs, approve payments, and access financial reports.
               </p>
             </div>
             <div>
               <h4 className="font-semibold mb-2">Member</h4>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Can create jobs and access ESG reports. Limited access to financial information.
               </p>
             </div>

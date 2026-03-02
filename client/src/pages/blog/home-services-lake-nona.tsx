@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogHomeServicesLakeNona() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>Home Services Lake Nona FL | Find Trusted Local Pros | 2026 Guide</title>
@@ -214,7 +214,7 @@ export default function BlogHomeServicesLakeNona() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Have questions about home maintenance in Lake Nona? Drop by{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and ask George, our AI home services assistant. he

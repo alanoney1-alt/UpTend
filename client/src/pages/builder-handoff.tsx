@@ -75,7 +75,7 @@ export default function BuilderHandoff() {
       <Header />
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Builder Handoff</h1>
+          <h1 className="text-3xl font-bold text-foreground">Builder Handoff</h1>
           <p className="text-muted-foreground mt-1">Register a new home closing and let George take over warranty management for the homeowner.</p>
         </div>
 
@@ -150,7 +150,7 @@ export default function BuilderHandoff() {
                   <CardContent className="p-4 flex justify-between items-center">
                     <div>
                       <p className="font-medium">{h.address}</p>
-                      <p className="text-sm text-gray-500">{h.homeowner_name || h.homeowner_email} / {h.closing_date || "No date"}</p>
+                      <p className="text-sm text-muted-foreground">{h.homeowner_name || h.homeowner_email} / {h.closing_date || "No date"}</p>
                     </div>
                     <Badge variant="secondary">{h.status}</Badge>
                   </CardContent>

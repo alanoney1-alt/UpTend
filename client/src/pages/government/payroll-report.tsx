@@ -44,7 +44,7 @@ export default function PayrollReport() {
     },
   });
 
-  if (isLoading) return <div className="p-6 text-gray-500">Loading compliance report...</div>;
+  if (isLoading) return <div className="p-6 text-muted-foreground">Loading compliance report...</div>;
   if (!payrollData) return <div className="p-6 text-red-500">Report not found</div>;
 
   const report = (payrollData as any).report;
@@ -64,7 +64,7 @@ export default function PayrollReport() {
               <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
                 <FileText className="h-6 w-6 text-amber-600" /> WH-347 Compliance Report
               </h1>
-              <p className="text-gray-500">Report #{report.reportNumber}. Week Ending {report.weekEndingDate}</p>
+              <p className="text-muted-foreground">Report #{report.reportNumber}. Week Ending {report.weekEndingDate}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function PayrollReport() {
               <h2 className="text-lg font-bold">U.S. DEPARTMENT OF LABOR</h2>
               <h3 className="text-sm font-semibold">WAGE AND HOUR DIVISION</h3>
               <h3 className="text-xl font-bold mt-2">PAYROLL</h3>
-              <p className="text-xs text-gray-500">(For Contractor's Optional Use; See Instructions at Form WH-347 Instructions)</p>
+              <p className="text-xs text-muted-foreground">(For Contractor's Optional Use; See Instructions at Form WH-347 Instructions)</p>
             </div>
 
             {/* Form Info */}
@@ -128,7 +128,7 @@ export default function PayrollReport() {
             <div className="overflow-x-auto">
               <table className="w-full text-xs border-collapse">
                 <thead>
-                  <tr className="bg-gray-100">
+                  <tr className="bg-muted/50">
                     <th className="border p-1 text-left">#</th>
                     <th className="border p-1 text-left">Name / Address / SSN Last 4</th>
                     <th className="border p-1 text-left">Work Classification</th>
@@ -196,7 +196,7 @@ export default function PayrollReport() {
             </div>
 
             {/* Rate footnote */}
-            <p className="text-xs text-gray-400 mt-2 italic print:text-black">
+            <p className="text-xs text-gray-400 mt-2 italic print:text-foreground">
               * Rate column: Back-calculated equivalent from flat-rate work order quotes for WH-347 compliance. Not actual compensation rate.
             </p>
 
@@ -237,7 +237,7 @@ export default function PayrollReport() {
               <div className="mt-4 grid grid-cols-2 gap-8 text-sm">
                 <div>
                   <p className="border-b border-black pb-1 mb-1">Signature: ____________________________</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     {wh347?.statementOfCompliance?.isCertified ? " Certified" : "Not yet certified"}
                   </p>
                 </div>

@@ -5,7 +5,7 @@ import { Footer } from "@/components/landing/footer";
 
 export default function BlogNewToSanford() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <Helmet>
         <title>New to Sanford? First 90 Days Home Checklist | UpTend</title>
@@ -122,7 +122,7 @@ export default function BlogNewToSanford() {
 
         <hr />
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           <em>
             Questions about your new Sanford home? Visit{" "}
             <a href="https://uptendapp.com">uptendapp.com</a> and ask George. He knows the area and he'll give you a straight answer.

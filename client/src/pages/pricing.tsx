@@ -343,7 +343,7 @@ export default function PublicPricing() {
             <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl mb-4">
               <ShieldCheck className="w-6 h-6 text-blue-600" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-foreground">
               Comprehensive Liability Protection
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -355,7 +355,7 @@ export default function PublicPricing() {
             <div className="bg-background rounded-xl p-6 border border-blue-100">
               <div className="text-blue-600 font-semibold mb-2">Property Protection</div>
               <div className="text-2xl font-bold text-foreground mb-2">Every Job Covered</div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Every pro carries liability insurance. Platform protection covers property damage on every job.
               </p>
             </div>
@@ -363,7 +363,7 @@ export default function PublicPricing() {
             <div className="bg-background rounded-xl p-6 border border-blue-100">
               <div className="text-blue-600 font-semibold mb-2">Background-Checked</div>
               <div className="text-2xl font-bold text-foreground mb-2">Every Pro Verified</div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 National criminal background screening, identity verification, and insurance validation before their first job.
               </p>
             </div>
@@ -371,7 +371,7 @@ export default function PublicPricing() {
             <div className="bg-background rounded-xl p-6 border border-blue-100">
               <div className="text-blue-600 font-semibold mb-2">Dispute Resolution</div>
               <div className="text-2xl font-bold text-foreground mb-2">Fair for Both Sides</div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Photo documentation, scope change approval, and platform-mediated resolution. All claims reviewed within 48 hours.
               </p>
             </div>

@@ -66,7 +66,7 @@ export function FeeProgressWidget() {
     ? "text-green-600"
     : hasDiscount
     ? "text-amber-600"
-    : "text-gray-600";
+    : "text-muted-foreground";
 
   const rateBg = isElite
     ? "bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-800"
@@ -117,7 +117,7 @@ export function FeeProgressWidget() {
                   </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                    <Lock className="h-3 w-3 text-gray-500" />
+                    <Lock className="h-3 w-3 text-muted-foreground" />
                   </div>
                 )}
                 <span className={`text-sm font-medium ${isActive ? "text-amber-900 dark:text-amber-200" : ""}`}>
@@ -127,7 +127,7 @@ export function FeeProgressWidget() {
                   {t.minCerts === 0 ? "Default" : `${t.minCerts}+ certs`}
                 </span>
               </div>
-              <span className={`text-sm font-bold ${isActive ? rateColor : "text-gray-500"}`}>
+              <span className={`text-sm font-bold ${isActive ? rateColor : "text-muted-foreground"}`}>
                 {t.percent}%
               </span>
             </div>

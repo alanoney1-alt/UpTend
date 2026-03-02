@@ -68,7 +68,7 @@ export function DocumentVault({ propertyId }: DocumentVaultProps) {
     if (fileType.includes("pdf")) return <FileText className="h-5 w-5 text-red-500" />;
     if (fileType.includes("image")) return <FileImage className="h-5 w-5 text-blue-500" />;
     if (fileType.includes("video")) return <FileCode className="h-5 w-5 text-purple-500" />;
-    return <File className="h-5 w-5 text-gray-500" />;
+    return <File className="h-5 w-5 text-muted-foreground" />;
   }
 
   function formatFileSize(bytes?: number) {

@@ -74,7 +74,7 @@ export default function WorkOrderDetail() {
     },
   });
 
-  if (isLoading) return <div className="p-6 text-gray-500">Loading...</div>;
+  if (isLoading) return <div className="p-6 text-muted-foreground">Loading...</div>;
   if (!wo) return <div className="p-6 text-red-500">Work order not found</div>;
 
   const isAssigned = wo.status === "assigned" || wo.status === "in_progress" || wo.status === "completed";
@@ -87,12 +87,12 @@ export default function WorkOrderDetail() {
             <ArrowLeft className="h-4 w-4 mr-2" /> Back
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gray-900">{wo.title}</h1>
-            <Badge className={STATUS_COLORS[wo.status] || "bg-gray-100"}>{wo.status}</Badge>
+            <h1 className="text-2xl font-bold text-foreground">{wo.title}</h1>
+            <Badge className={STATUS_COLORS[wo.status] || "bg-muted/50"}>{wo.status}</Badge>
           </div>
           {wo.acceptedQuoteAmount > 0 && (
             <div className="text-right">
-              <p className="text-xs text-gray-500">Job Price</p>
+              <p className="text-xs text-muted-foreground">Job Price</p>
               <p className="text-xl font-bold text-amber-700">{cents(wo.acceptedQuoteAmount)}</p>
             </div>
           )}
@@ -101,11 +101,11 @@ export default function WorkOrderDetail() {
         {/* Work Order Details */}
         <Card>
           <CardContent className="pt-6 space-y-4">
-            {wo.description && <div><p className="text-sm font-medium text-gray-700">Description</p><p className="text-gray-600">{wo.description}</p></div>}
-            {wo.scopeOfWork && <div><p className="text-sm font-medium text-gray-700">Scope of Work</p><p className="text-gray-600">{wo.scopeOfWork}</p></div>}
-            {wo.deliverables && <div><p className="text-sm font-medium text-gray-700">Deliverables (what defines "done")</p><p className="text-gray-600">{wo.deliverables}</p></div>}
+            {wo.description && <div><p className="text-sm font-medium text-gray-700">Description</p><p className="text-muted-foreground">{wo.description}</p></div>}
+            {wo.scopeOfWork && <div><p className="text-sm font-medium text-gray-700">Scope of Work</p><p className="text-muted-foreground">{wo.scopeOfWork}</p></div>}
+            {wo.deliverables && <div><p className="text-sm font-medium text-gray-700">Deliverables (what defines "done")</p><p className="text-muted-foreground">{wo.deliverables}</p></div>}
 
-            <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               {wo.location && <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {wo.location}</span>}
               {wo.deadline && <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> Due: {wo.deadline}</span>}
               {wo.serviceType && <span className="flex items-center gap-1"><Briefcase className="h-4 w-4" /> {wo.serviceType}</span>}
@@ -237,7 +237,7 @@ export default function WorkOrderDetail() {
                   ))}
                 </div>
               )}
-              <p className="text-xs text-gray-500">Work logs document progress for project records. They don't affect your payment.</p>
+              <p className="text-xs text-muted-foreground">Work logs document progress for project records. They don't affect your payment.</p>
             </CardContent>
           </Card>
         )}

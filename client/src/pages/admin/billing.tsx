@@ -92,8 +92,8 @@ export default function AdminBilling() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">B2B Billing Admin</h1>
-            <p className="text-gray-500">Weekly billing oversight & management</p>
+            <h1 className="text-2xl font-bold text-foreground">B2B Billing Admin</h1>
+            <p className="text-muted-foreground">Weekly billing oversight & management</p>
           </div>
           <Button
             onClick={() => processAll.mutate()}
@@ -176,7 +176,7 @@ export default function AdminBilling() {
                     </thead>
                     <tbody>
                       {runs.map((run) => (
-                        <tr key={run.id} className="border-b hover:bg-gray-50">
+                        <tr key={run.id} className="border-b hover:bg-muted/50">
                           <td className="p-2 font-medium">{run.businessName}</td>
                           <td className="p-2">{formatWeek(run.weekStartDate, run.weekEndDate)}</td>
                           <td className="p-2">{run.jobCount}</td>
@@ -240,9 +240,9 @@ export default function AdminBilling() {
               </CardHeader>
               <CardContent>
                 {!reconciliation ? (
-                  <p className="text-gray-500">Loading reconciliation data...</p>
+                  <p className="text-muted-foreground">Loading reconciliation data...</p>
                 ) : reconciliation.length === 0 ? (
-                  <p className="text-gray-500">No data to reconcile.</p>
+                  <p className="text-muted-foreground">No data to reconcile.</p>
                 ) : (
                   <div className="space-y-4">
                     {reconciliation.map((run: any) => (
@@ -260,7 +260,7 @@ export default function AdminBilling() {
                         {run.lineItems?.length > 0 && (
                           <table className="w-full text-xs mt-2">
                             <thead>
-                              <tr className="text-left text-gray-500">
+                              <tr className="text-left text-muted-foreground">
                                 <th className="p-1">Job ID</th>
                                 <th className="p-1">Property</th>
                                 <th className="p-1">Service</th>
