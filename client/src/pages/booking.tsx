@@ -19,7 +19,6 @@ import {
   MapPin,
   Calendar,
   ChevronDown,
-  Camera,
 } from "lucide-react";
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
