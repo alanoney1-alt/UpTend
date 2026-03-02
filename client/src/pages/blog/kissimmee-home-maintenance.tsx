@@ -110,6 +110,15 @@ export default function BlogKissimmeeHomeMaintenance() {
             <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Kissimmee inside and out.
           </em>
         </p>
+
+        <section className="not-prose mt-12 pt-8 border-t border-border">
+          <h2 className="text-xl font-bold mb-4">Related Services</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/services/home-cleaning-kissimmee" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Kissimmee</Link>
+            <Link href="/services/landscaping-kissimmee" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Kissimmee</Link>
+            <Link href="/services/handyman-kissimmee" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Handyman Kissimmee</Link>
+          </div>
+        </section>
       </article>
       <Footer />
     </div>

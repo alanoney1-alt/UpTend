@@ -110,6 +110,15 @@ export default function BlogClermontHomeMaintenance() {
             <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Clermont inside and out.
           </em>
         </p>
+
+        <section className="not-prose mt-12 pt-8 border-t border-border">
+          <h2 className="text-xl font-bold mb-4">Related Services</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/services/home-cleaning-clermont" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Clermont</Link>
+            <Link href="/services/landscaping-clermont" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Clermont</Link>
+            <Link href="/services/pressure-washing-clermont" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Pressure Washing Clermont</Link>
+          </div>
+        </section>
       </article>
       <Footer />
     </div>

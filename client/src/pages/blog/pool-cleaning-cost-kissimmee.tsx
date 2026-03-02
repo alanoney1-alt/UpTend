@@ -112,6 +112,15 @@ export default function BlogPoolCleaningCostKissimmee() {
             <a href="https://uptendapp.com">uptendapp.com</a> and ask George. He'll give you a straight answer.
           </em>
         </p>
+
+        <section className="not-prose mt-12 pt-8 border-t border-border">
+          <h2 className="text-xl font-bold mb-4">Related Services</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/services/pool-cleaning-kissimmee" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Pool Cleaning Kissimmee</Link>
+            <Link href="/services/pool-cleaning" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Pool Cleaning Orlando</Link>
+            <Link href="/services/home-cleaning-kissimmee" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Kissimmee</Link>
+          </div>
+        </section>
       </article>
       <Footer />
     </div>

@@ -110,6 +110,15 @@ export default function BlogSanfordHomeMaintenance() {
             <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Sanford inside and out.
           </em>
         </p>
+
+        <section className="not-prose mt-12 pt-8 border-t border-border">
+          <h2 className="text-xl font-bold mb-4">Related Services</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/services/home-cleaning-sanford" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Sanford</Link>
+            <Link href="/services/landscaping-sanford" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Sanford</Link>
+            <Link href="/services/gutter-cleaning-sanford" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Gutter Cleaning Sanford</Link>
+          </div>
+        </section>
       </article>
       <Footer />
     </div>

@@ -202,6 +202,18 @@ export function Footer() {
           </div>
         </div>
 
+        <div className="mt-8">
+          <h4 className="text-white font-bold mb-4 uppercase tracking-widest text-xs">Resources</h4>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400">
+            <Link href="/blog" className="hover:text-primary transition-colors">Blog</Link>
+            <Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link>
+            <Link href="/about" className="hover:text-primary transition-colors">About</Link>
+            <Link href="/home-dna-scan" className="hover:text-primary transition-colors">Home DNA Scan</Link>
+            <Link href="/cost-guides" className="hover:text-primary transition-colors">Cost Guides</Link>
+            <Link href="/gallery" className="hover:text-primary transition-colors">Gallery</Link>
+          </div>
+        </div>
+
         <div className="border-t border-slate-900 mt-8 pt-8 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <p data-testid="text-copyright">&copy; {currentYear} {t("footer.footer_copyright")}</p>

@@ -41,6 +41,123 @@ export interface SeoServicePageData {
   isLive?: boolean;
 }
 
+
+// Internal linking: map SEO page slugs to related blog posts & parent services
+function getRelatedLinks(slug: string): { href: string; label: string; description: string }[] {
+  const links: { href: string; label: string; description: string }[] = [];
+
+  // Extract service and city from slug (e.g., "junk-removal-lake-nona" → service="junk-removal", city="lake-nona")
+  const cities = ["lake-nona","winter-park","dr-phillips","windermere","celebration","kissimmee","winter-garden","altamonte-springs","ocoee","sanford","apopka","clermont"];
+  const city = cities.find(c => slug.endsWith(c));
+  const service = city ? slug.replace(`-${city}`, '') : slug;
+
+  // Link to parent service page
+  if (city) {
+    links.push({ href: `/services/${service}`, label: `${service.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} Orlando`, description: "See our main service page with pricing and details." });
+  }
+
+  // City-specific blog posts
+  const cityBlogMap: Record<string, { href: string; label: string; description: string }[]> = {
+    "lake-nona": [
+      { href: "/blog/lake-nona-home-maintenance-schedule", label: "Lake Nona Home Maintenance Schedule", description: "Month-by-month guide for Lake Nona homeowners." },
+      { href: "/blog/new-to-lake-nona-home-checklist", label: "New to Lake Nona? 90-Day Checklist", description: "Everything new Lake Nona residents need to know." },
+      { href: "/blog/home-services-lake-nona", label: "Home Services in Lake Nona", description: "Complete guide to home services in Lake Nona." },
+    ],
+    "winter-park": [
+      { href: "/blog/winter-park-home-maintenance-schedule", label: "Winter Park Home Maintenance Guide", description: "Maintenance tips for Winter Park homeowners." },
+      { href: "/blog/new-to-winter-park-home-checklist", label: "New to Winter Park? Home Checklist", description: "Your first 90 days in Winter Park." },
+      { href: "/blog/landscaping-cost-winter-park", label: "Landscaping Cost Winter Park", description: "Real pricing for landscaping in Winter Park." },
+    ],
+    "dr-phillips": [
+      { href: "/blog/dr-phillips-home-maintenance-schedule", label: "Dr. Phillips Home Maintenance Guide", description: "Maintenance tips for Dr. Phillips homeowners." },
+      { href: "/blog/new-to-dr-phillips-home-checklist", label: "New to Dr. Phillips? Home Checklist", description: "Your first 90 days in Dr. Phillips." },
+      { href: "/blog/pool-cleaning-cost-dr-phillips", label: "Pool Cleaning Cost Dr. Phillips", description: "Real pricing for pool cleaning in Dr. Phillips." },
+    ],
+    "windermere": [
+      { href: "/blog/windermere-home-maintenance-schedule", label: "Windermere Home Maintenance Guide", description: "Maintenance tips for Windermere homeowners." },
+      { href: "/blog/new-to-windermere-home-checklist", label: "New to Windermere? Home Checklist", description: "Your first 90 days in Windermere." },
+      { href: "/blog/landscaping-cost-windermere", label: "Landscaping Cost Windermere", description: "Real pricing for landscaping in Windermere." },
+    ],
+    "celebration": [
+      { href: "/blog/celebration-home-maintenance-schedule", label: "Celebration Home Maintenance Guide", description: "Maintenance tips for Celebration homeowners." },
+      { href: "/blog/new-to-celebration-home-checklist", label: "New to Celebration? Home Checklist", description: "Your first 90 days in Celebration." },
+    ],
+    "kissimmee": [
+      { href: "/blog/kissimmee-home-maintenance-schedule", label: "Kissimmee Home Maintenance Guide", description: "Maintenance tips for Kissimmee homeowners." },
+      { href: "/blog/new-to-kissimmee-home-checklist", label: "New to Kissimmee? Home Checklist", description: "Your first 90 days in Kissimmee." },
+      { href: "/blog/pool-cleaning-cost-kissimmee", label: "Pool Cleaning Cost Kissimmee", description: "Real pricing for pool cleaning in Kissimmee." },
+    ],
+    "winter-garden": [
+      { href: "/blog/winter-garden-home-maintenance-schedule", label: "Winter Garden Home Maintenance Guide", description: "Maintenance tips for Winter Garden homeowners." },
+      { href: "/blog/new-to-winter-garden-home-checklist", label: "New to Winter Garden? Home Checklist", description: "Your first 90 days in Winter Garden." },
+    ],
+    "altamonte-springs": [
+      { href: "/blog/altamonte-springs-home-maintenance-schedule", label: "Altamonte Springs Maintenance Guide", description: "Maintenance tips for Altamonte Springs homeowners." },
+      { href: "/blog/new-to-altamonte-springs-home-checklist", label: "New to Altamonte Springs? Checklist", description: "Your first 90 days in Altamonte Springs." },
+    ],
+    "ocoee": [
+      { href: "/blog/ocoee-home-maintenance-schedule", label: "Ocoee Home Maintenance Guide", description: "Maintenance tips for Ocoee homeowners." },
+      { href: "/blog/new-to-ocoee-home-checklist", label: "New to Ocoee? Home Checklist", description: "Your first 90 days in Ocoee." },
+    ],
+    "sanford": [
+      { href: "/blog/sanford-home-maintenance-schedule", label: "Sanford Home Maintenance Guide", description: "Maintenance tips for Sanford homeowners." },
+      { href: "/blog/new-to-sanford-home-checklist", label: "New to Sanford? Home Checklist", description: "Your first 90 days in Sanford." },
+    ],
+    "apopka": [
+      { href: "/blog/apopka-home-maintenance-schedule", label: "Apopka Home Maintenance Guide", description: "Maintenance tips for Apopka homeowners." },
+      { href: "/blog/new-to-apopka-home-checklist", label: "New to Apopka? Home Checklist", description: "Your first 90 days in Apopka." },
+    ],
+    "clermont": [
+      { href: "/blog/clermont-home-maintenance-schedule", label: "Clermont Home Maintenance Guide", description: "Maintenance tips for Clermont homeowners." },
+      { href: "/blog/new-to-clermont-home-checklist", label: "New to Clermont? Home Checklist", description: "Your first 90 days in Clermont." },
+      { href: "/blog/pressure-washing-cost-clermont", label: "Pressure Washing Cost Clermont", description: "Real pricing for pressure washing in Clermont." },
+    ],
+  };
+
+  // Service-specific blog links
+  const serviceBlogMap: Record<string, { href: string; label: string; description: string }[]> = {
+    "pressure-washing": [
+      { href: "/blog/pressure-washing-cost-orlando-2026", label: "Pressure Washing Cost Orlando (2026)", description: "Real pricing guide for Orlando pressure washing." },
+      { href: "/blog/pressure-washing-cost-clermont", label: "Pressure Washing Cost Clermont", description: "What Clermont homeowners pay for pressure washing." },
+    ],
+    "pool-cleaning": [
+      { href: "/blog/pool-cleaning-cost-dr-phillips", label: "Pool Cleaning Cost Dr. Phillips", description: "Real pricing for pool cleaning in Dr. Phillips." },
+      { href: "/blog/pool-cleaning-cost-kissimmee", label: "Pool Cleaning Cost Kissimmee", description: "What Kissimmee homeowners pay for pool cleaning." },
+    ],
+    "landscaping": [
+      { href: "/blog/landscaping-cost-winter-park", label: "Landscaping Cost Winter Park", description: "Real pricing for landscaping in Winter Park." },
+      { href: "/blog/landscaping-cost-windermere", label: "Landscaping Cost Windermere", description: "What Windermere homeowners pay for landscaping." },
+    ],
+  };
+
+  if (city && cityBlogMap[city]) {
+    links.push(...cityBlogMap[city].slice(0, 2));
+  }
+
+  if (serviceBlogMap[service]) {
+    // Add service-specific blogs not already included
+    for (const link of serviceBlogMap[service]) {
+      if (!links.find(l => l.href === link.href)) {
+        links.push(link);
+        if (links.length >= 4) break;
+      }
+    }
+  }
+
+  // Also link to other city variants of same service
+  if (city) {
+    const otherCities = cities.filter(c => c !== city).slice(0, 2);
+    for (const oc of otherCities) {
+      const cityName = oc.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      const serviceName = service.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      links.push({ href: `/services/${service}-${oc}`, label: `${serviceName} ${cityName}`, description: `${serviceName} services in ${cityName}.` });
+    }
+  }
+
+  return links.slice(0, 5);
+}
+
+
 export function SeoServicePage({ data }: { data: SeoServicePageData }) {
   useEffect(() => {
     document.title = data.metaTitle;
@@ -101,6 +218,41 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
     priceRange: data.pricing.startingAt,
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://uptendapp.com" },
+      { "@type": "ListItem", position: 2, name: "Services", item: "https://uptendapp.com/services" },
+      { "@type": "ListItem", position: 3, name: data.h1, item: `https://uptendapp.com/services/${data.slug}` },
+    ],
+  };
+
+  const faqSchema = data.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: data.faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  } : null;
+
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: data.schemaService.serviceType,
+    description: data.schemaService.description,
+    provider: {
+      "@type": "LocalBusiness",
+      name: "UpTend",
+      address: { "@type": "PostalAddress", addressLocality: "Orlando", addressRegion: "FL" },
+      telephone: "(407) 338-3342",
+      url: "https://uptendapp.com",
+    },
+    areaServed: { "@type": "City", name: data.schemaService.areaServed },
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -108,6 +260,20 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
 
       {/* Coming Soon Banner */}
       {!isLive && (
@@ -247,6 +413,22 @@ export function SeoServicePage({ data }: { data: SeoServicePageData }) {
                 <h3 className="text-lg font-bold mb-2">{faq.q}</h3>
                 <p className="text-muted-foreground">{faq.a}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+      {/* Related Resources */}
+      <section className="py-16 px-4 md:px-6">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6">Related Resources</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {getRelatedLinks(data.slug).map((link, i) => (
+              <Link key={i} href={link.href} className="p-4 rounded-lg border border-border hover:border-primary/50 transition-colors group">
+                <p className="font-medium text-primary group-hover:underline">{link.label}</p>
+                <p className="text-sm text-muted-foreground mt-1">{link.description}</p>
+              </Link>
             ))}
           </div>
         </div>

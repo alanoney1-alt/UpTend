@@ -114,6 +114,15 @@ export default function BlogLandscapingCostWinterPark() {
             <a href="https://uptendapp.com">uptendapp.com</a> and ask George. He'll give you a straight answer.
           </em>
         </p>
+
+        <section className="not-prose mt-12 pt-8 border-t border-border">
+          <h2 className="text-xl font-bold mb-4">Related Services</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/services/landscaping-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Winter Park</Link>
+            <Link href="/services/landscaping" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Orlando</Link>
+            <Link href="/services/gutter-cleaning-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Gutter Cleaning Winter Park</Link>
+          </div>
+        </section>
       </article>
       <Footer />
     </div>

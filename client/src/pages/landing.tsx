@@ -54,17 +54,23 @@ export default function Landing() {
               name: "Orlando",
               sameAs: "https://en.wikipedia.org/wiki/Orlando,_Florida",
             },
-            serviceType: [
-              "Home Cleaning",
-              "Lawn Care & Landscaping",
-              "Pressure Washing",
-              "Pool Cleaning",
-              "Junk Removal",
-              "Handyman Services",
-              "Gutter Cleaning",
-              "Carpet Cleaning",
-              "Moving Labor",
-            ],
+            hasOfferCatalog: {
+              "@type": "OfferCatalog",
+              name: "UpTend Home Services",
+              itemListElement: [
+                "Junk Removal", "Pressure Washing", "Gutter Cleaning",
+                "Home Cleaning", "Handyman", "Landscaping",
+                "Moving Labor", "Light Demolition", "Garage Cleanout",
+                "Pool Cleaning", "Carpet Cleaning", "Home DNA Scan",
+              ].map((s) => ({
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: s,
+                  provider: { "@type": "LocalBusiness", name: "UpTend" },
+                },
+              })),
+            },
             priceRange: "$$",
             openingHoursSpecification: {
               "@type": "OpeningHoursSpecification",
@@ -73,6 +79,7 @@ export default function Landing() {
               closes: "20:00",
             },
             sameAs: [
+              "https://twitter.com/uptendgeorge",
               "https://www.facebook.com/UptendGeorge",
               "https://www.instagram.com/uptendgeorge",
               "https://www.tiktok.com/@uptendgeorge",

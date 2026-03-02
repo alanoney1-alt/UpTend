@@ -191,6 +191,15 @@ export default function BlogNewToLakeNona() {
             Lake Nona homeowners figure out exactly what their homes need.
           </em>
         </p>
+
+        <section className="not-prose mt-12 pt-8 border-t border-border">
+          <h2 className="text-xl font-bold mb-4">Related Services</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/home-dna-scan" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Free Home DNA Scan</Link>
+            <Link href="/services/home-cleaning-lake-nona" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Lake Nona</Link>
+            <Link href="/services/junk-removal-lake-nona" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Junk Removal Lake Nona</Link>
+          </div>
+        </section>
       </article>
       <Footer />
     </div>

@@ -34,8 +34,46 @@ const faqs = [
 ];
 
 export default function JunkRemoval() {
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: "Junk Removal",
+    description: "We clear your space, protect your property, and track where every item goes. 92% of what we haul stays out of landfills.",
+    provider: {
+      "@type": "LocalBusiness",
+      name: "UpTend",
+      address: { "@type": "PostalAddress", addressLocality: "Orlando", addressRegion: "FL" },
+      telephone: "(407) 338-3342",
+      url: "https://uptendapp.com",
+    },
+    areaServed: { "@type": "City", name: "Orlando" },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://uptendapp.com" },
+      { "@type": "ListItem", position: 2, name: "Services", item: "https://uptendapp.com/services" },
+      { "@type": "ListItem", position: 3, name: "Junk Removal", item: "https://uptendapp.com/services/junk-removal" },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="page-junk-removal">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Header />
 
       {/* HERO */}

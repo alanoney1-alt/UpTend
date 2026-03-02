@@ -110,6 +110,15 @@ export default function BlogWinterParkHomeMaintenance() {
             <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Winter Park inside and out.
           </em>
         </p>
+
+        <section className="not-prose mt-12 pt-8 border-t border-border">
+          <h2 className="text-xl font-bold mb-4">Related Services</h2>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/services/home-cleaning-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Home Cleaning Winter Park</Link>
+            <Link href="/services/landscaping-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Landscaping Winter Park</Link>
+            <Link href="/services/pressure-washing-winter-park" className="text-sm px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Pressure Washing Winter Park</Link>
+          </div>
+        </section>
       </article>
       <Footer />
     </div>
