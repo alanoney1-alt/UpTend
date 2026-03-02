@@ -106,10 +106,11 @@ UPTEND SERVICE VERTICALS (THE ONLY SERVICES WE PROVIDE):
 - Pool Cleaning
 - Landscaping
 - Carpet Cleaning
+- Painting (Interior & Exterior)
 - AI Home DNA Scan
 
 CRITICAL RULE - SERVICE BOUNDARIES:
-You can ONLY book, dispatch, or send UpTend pros for the services listed above. These are OUR verticals. For ANYTHING outside this list (plumbing, electrical, HVAC, roofing, painting, pest control, tree removal, etc.):
+You can ONLY book, dispatch, or send UpTend pros for the services listed above. These are OUR verticals. For ANYTHING outside this list (plumbing, electrical, HVAC, roofing, pest control, tree removal, etc.):
 - NEVER say "I can send someone" or "I can have a plumber there" or "let me book that" - we do NOT have those pros.
 - NEVER recommend a specific outside company or contractor by name. You do NOT refer off-platform. Ever.
 - DO say: "That's outside what we handle directly, but I can help point you toward finding a licensed [plumber/electrician/etc.] in your area."
@@ -504,11 +505,13 @@ LANDSCAPING: What type? (new design, maintenance, lawn care, tree work, hardscap
 
 CARPET CLEANING: What needs cleaning? (wall-to-wall carpet, area rugs, upholstery) > How many rooms? > Any specific issues? (pet stains, heavy traffic, allergies) > How soon?
 
+PAINTING: Interior or exterior (or both)? > If interior: how many rooms? Which rooms? (bedrooms, living room, kitchen, bathroom, cabinets) > If exterior: home size roughly? (sqft or small/medium/large) > One or two stories? > Any prep needed? (wallpaper removal, drywall patches, texture repair) > Current color to new color? (dark to light needs more coats) > Any trim/baseboards/ceiling included? > HOA color requirements? > How soon?
+
 HOME DNA SCAN: What brings you in? (buying, selling, just want to know home health) > Property type? (house, condo, townhouse) > How old is the home? > Any specific concerns? (roof, foundation, plumbing, mold)
 
 UNIVERSAL (always ask if not already known): Address/ZIP, budget range, one-time or recurring, best way to reach them.
 
-PHOTOS: Ask for photos ONLY when the customer can realistically take one. Good for: junk removal (show the pile), pressure washing (show the stain/mold), handyman (show the broken thing), carpet (show the stain), demolition (show the area), garage cleanout (show the mess), landscaping (show the yard). NOT good for: gutters (can't see them from ground), pool internals, roof issues, anything requiring a ladder or special access.
+PHOTOS: Ask for photos ONLY when the customer can realistically take one. Good for: junk removal (show the pile), pressure washing (show the stain/mold), handyman (show the broken thing), carpet (show the stain), demolition (show the area), garage cleanout (show the mess), landscaping (show the yard), painting (show the walls/exterior, current condition, peeling paint, color). NOT good for: gutters (can't see them from ground), pool internals, roof issues, anything requiring a ladder or special access.
 
 Ask ONE question at a time. Adapt based on what they already told you. If they say "my gutters are overflowing," skip asking what's wrong and go straight to "how many stories?"
 
@@ -1510,7 +1513,7 @@ const TOOL_DEFINITIONS: any[] = [
    },
    service_id: {
     type: "string",
-    description: "Optional: specific service being requested. If provided, returns whether that service is covered. Options: home_cleaning, carpet_cleaning, junk_removal, handyman, gutter_cleaning, landscaping, pool_cleaning, pressure_washing, moving_labor, garage_cleanout, light_demolition, home_scan",
+    description: "Optional: specific service being requested. If provided, returns whether that service is covered. Options: home_cleaning, carpet_cleaning, junk_removal, handyman, gutter_cleaning, landscaping, pool_cleaning, pressure_washing, moving_labor, garage_cleanout, light_demolition, painting, home_scan",
    },
   },
   required: ["address"],
@@ -1525,7 +1528,7 @@ const TOOL_DEFINITIONS: any[] = [
  properties: {
  service_id: {
  type: "string",
- description: "Service identifier: home_cleaning, carpet_cleaning, junk_removal, handyman, gutter_cleaning, landscaping, pool_cleaning, pressure_washing, moving_labor, garage_cleanout, light_demolition, home_scan",
+ description: "Service identifier: home_cleaning, carpet_cleaning, junk_removal, handyman, gutter_cleaning, landscaping, pool_cleaning, pressure_washing, moving_labor, garage_cleanout, light_demolition, painting, home_scan",
  },
  },
  required: ["service_id"],
@@ -1543,7 +1546,7 @@ const TOOL_DEFINITIONS: any[] = [
  },
  selections: {
  type: "object",
- description: "Service-specific selections. home_cleaning: {bedrooms, bathrooms, stories, cleanType, addOns[]}. carpet_cleaning: {rooms, cleanType, hallways, stairs, scotchgard, package}. junk_removal: {items[{id,quantity}] or loadSize}. handyman: {tasks[{taskId,variables}] or hours}. gutter_cleaning: {stories, linearFeet}. landscaping: {lotSize, planType/tier}. pool_cleaning: {tier}. pressure_washing: {squareFootage}. moving_labor: {hours, numPros}. garage_cleanout: {size}. light_demolition: {scope}. home_scan: {tier}.",
+ description: "Service-specific selections. home_cleaning: {bedrooms, bathrooms, stories, cleanType, addOns[]}. carpet_cleaning: {rooms, cleanType, hallways, stairs, scotchgard, package}. junk_removal: {items[{id,quantity}] or loadSize}. handyman: {tasks[{taskId,variables}] or hours}. gutter_cleaning: {stories, linearFeet}. landscaping: {lotSize, planType/tier}. pool_cleaning: {tier}. pressure_washing: {squareFootage}. moving_labor: {hours, numPros}. garage_cleanout: {size}. light_demolition: {scope}. painting: {tier, wallpaperRemoval, wallpaperSqft, textureRepair, patches, ceilingPainting, ceilingRooms, trimPainting, trimLinearFt}. home_scan: {tier}.",
  },
  },
  required: ["service_id", "selections"],

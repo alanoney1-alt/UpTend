@@ -99,6 +99,11 @@ export function Footer() {
                   {t("footer.footer_light_demolition")}
                 </Link>
               </li>
+              <li>
+                <Link href="/services/painting" className="hover:text-primary transition-colors cursor-pointer" data-testid="link-footer-painting">
+                  {t("footer.footer_painting")}
+                </Link>
+              </li>
             </ul>
           </div>
 

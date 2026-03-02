@@ -11587,6 +11587,8 @@ export async function generateMaintenanceForecast(params: {
       home_cleaning: { frequency: "quarterly", months: [1,4,7,10], avgCost: 200 },
       carpet_cleaning: { frequency: "annually", months: [1], avgCost: 250 },
       handyman: { frequency: "as needed", months: [5, 11], avgCost: 200 }, // pre-hurricane + pre-holiday
+      painting_exterior: { frequency: "every 5-7 years", months: [10], avgCost: 3500 }, // fall = best painting weather in FL
+      painting_interior_turnover: { frequency: "per turnover", months: [1,4,7,10], avgCost: 1200 }, // quarterly estimate for portfolio turnover repaints
       home_scan: { frequency: "annually", months: [1], avgCost: 0 }, // FREE
     };
 
@@ -11775,7 +11777,7 @@ export async function manageTurnover(params: {
       const steps = [
         { order: 1, service: "home_cleaning", label: "Deep Clean", daysAfterMoveOut: 1, estimatedCost: 250 },
         { order: 2, service: "carpet_cleaning", label: "Carpet Cleaning", daysAfterMoveOut: 2, estimatedCost: 200 },
-        { order: 3, service: "handyman", label: "Paint Touch-up & Repairs", daysAfterMoveOut: 3, estimatedCost: 300 },
+        { order: 3, service: "painting", label: "Interior Repaint", daysAfterMoveOut: 3, estimatedCost: 1200 },
         { order: 4, service: "pressure_washing", label: "Exterior Pressure Wash", daysAfterMoveOut: 4, estimatedCost: 250 },
         { order: 5, service: "landscaping", label: "Curb Appeal Refresh", daysAfterMoveOut: 5, estimatedCost: 150 },
       ].map(step => ({

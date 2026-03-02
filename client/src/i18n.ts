@@ -1218,6 +1218,10 @@ const resources = {
       "svc.pool_cleaning_tagline": "Crystal clear pools, maintained weekly.",
       "svc.light_demolition_name": "Light Demolition",
       "svc.light_demolition_tagline": "Tear it out. Haul it off.",
+      "svc.painting_name": "Painting",
+      "svc.painting_tagline": "Fresh coat. Fresh start.",
+      "svc.painting_desc": "Interior and exterior painting. Walls, trim, ceilings, cabinets, accent walls, full house repaints. Color consultation included. One room or the whole house.",
+      "footer.footer_painting": "Painting",
     },
   },
   es: {
@@ -2160,6 +2164,9 @@ const resources = {
       "svc.pool_cleaning_tagline": "Piscinas cristalinas, mantenidas semanalmente.",
       "svc.light_demolition_name": "Demolición Ligera",
       "svc.light_demolition_tagline": "Derriba. Retira.",
+      "svc.painting_name": "Pintura",
+      "svc.painting_tagline": "Nueva capa. Nuevo comienzo.",
+      "footer.footer_painting": "Pintura",
     },
   },
 };

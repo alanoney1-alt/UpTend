@@ -9,7 +9,7 @@ import {
   CheckCircle, ArrowRight, ShieldCheck, MapPin, Recycle,
   Droplets, Users, Hammer, Warehouse, Wrench, Waves,
   Sparkles, Leaf, Clock, Calendar, CalendarCheck, Repeat,
-  CloudRain, SprayCan,
+  CloudRain, SprayCan, Paintbrush,
 } from "lucide-react";
 import NotFound from "@/pages/not-found";
 import { GuaranteeBadge } from "@/components/guarantee-badge";
@@ -495,6 +495,48 @@ const serviceData: Record<string, ServiceData> = {
       "Clean site guaranteed. We leave your property ready for the next step"
     ],
     esgImpact: "Materials sorted for recycling, avg 60% diverted from landfills"
+  },
+  "painting": {
+    name: "Painting",
+    serviceType: "painting",
+    tagline: "Fresh Coat. Fresh Start.",
+    icon: Paintbrush,
+    heroGradient: "from-amber-600 to-orange-500",
+    heroImage: "/images/site/service-painting.webp",
+    whatWeDo: [
+      "Professional interior and exterior painting for homes and HOA properties across Orlando Metro. From a single accent wall to a full house repaint, our vetted painting Pros deliver clean lines, smooth finishes, and lasting results. Every job includes thorough prep: patching, sanding, taping, priming, and cleanup.",
+      "We handle residential interiors (bedrooms, living rooms, kitchens, bathrooms, cabinets), full exterior repaints (siding, trim, fascia, doors, shutters), and HOA/commercial common areas. Color consultation is free with every booking. Whether you're refreshing a turnover unit or transforming your home's curb appeal, we make it easy."
+    ],
+    howItImproves: [
+      "Transforms the look and feel of any room or exterior instantly",
+      "Increases home value. Fresh paint is the highest ROI home improvement",
+      "Protects exterior surfaces from Florida sun, humidity, and storm damage",
+      "Keeps HOA properties compliant and looking sharp for residents and buyers"
+    ],
+    availability: {
+      sameDay: false,
+      nextDay: true,
+      scheduled: true,
+    },
+    whatsIncluded: [
+      "Interior: accent walls, single rooms, full house repaints",
+      "Exterior: siding, trim, fascia, soffits, shutters, doors",
+      "Cabinet painting (kitchen and bathroom)",
+      "Free color consultation with every job",
+      "Full prep: patching, sanding, taping, priming",
+      "Wallpaper removal available as add-on",
+      "Drywall/texture repair available as add-on",
+      "Premium paint (Sherwin-Williams, Benjamin Moore)",
+      "Drop cloths and furniture protection",
+      "Full cleanup after every job"
+    ],
+    whyUpTend: [
+      "Free color consultation included. No guesswork.",
+      "Guaranteed pricing. The quote George gives you is the price. Period.",
+      "HOA-experienced Pros who know community color standards",
+      "Full prep included. No surprise charges for patching or priming."
+    ],
+    esgImpact: "Low-VOC paint options available, proper disposal of paint waste"
   },
 };
 

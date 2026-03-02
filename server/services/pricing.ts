@@ -77,6 +77,33 @@ export function calculateServicePrice(type: string, data: any): number | null {
       price = PRICING_CONSTANTS.DEMO_BASE_RATE;
       break;
 
+    case "painting": {
+      const paintTier = data.tier || "single_room";
+      const paintingPrices: Record<string, number> = {
+        accent_wall: 19900,
+        single_room: 35000,
+        single_room_large: 50000,
+        interior_2br: 120000,
+        interior_3br: 180000,
+        interior_4br: 250000,
+        cabinet_painting: 80000,
+        exterior_small: 200000,
+        exterior_medium: 350000,
+        exterior_large: 500000,
+        exterior_trim_only: 80000,
+        hoa_common_area: 150000,
+        hoa_building_exterior: 60000,
+      };
+      price = paintingPrices[paintTier] || 35000;
+
+      // Add-ons
+      if (data.wallpaperRemoval) price += (data.wallpaperSqft || 100) * 300;
+      if (data.textureRepair) price += (data.patches || 1) * 7500;
+      if (data.ceilingPainting) price += (data.ceilingRooms || 1) * 15000;
+      if (data.trimPainting) price += (data.trimLinearFt || 50) * 200;
+      break;
+    }
+
     case "home_consultation":
       price = PRICING_CONSTANTS.CONSULTATION_FEE;
       break;
@@ -259,6 +286,7 @@ export function getServiceLabel(type: string): string {
     pressure_washing: "Pressure Washing",
     gutter_cleaning: "Gutter Cleaning",
     light_demolition: "Light Demolition",
+    painting: "Painting",
     home_consultation: "Home DNA Scan",
     pool_cleaning: "Pool Cleaning",
     landscaping: "Landscaping",

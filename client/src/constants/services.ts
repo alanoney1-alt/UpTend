@@ -216,6 +216,41 @@ export const SERVICES = {
     tagline: 'Out with the old.',
     description: 'Sheds, decks, interior tear-outs. Permitted, tracked, disposed properly.',
   },
+  painting: {
+    branded: 'Painting',
+    generic: 'Painting',
+    display: 'Painting',
+    slug: '/painting',
+    startingPrice: 199,
+    priceUnit: 'flat',
+    tagline: 'Fresh coat. Fresh start.',
+    description: 'Interior and exterior painting. Walls, trim, ceilings, cabinets, accent walls, full house repaints. Color consultation included.',
+    tiers: {
+      // Interior
+      accent_wall: { name: 'Accent Wall (1 wall)', price: 199, unit: 'flat', description: 'Single wall paint or repaint, prep included' },
+      single_room: { name: 'Single Room', price: 350, unit: 'flat', description: 'Walls + ceiling for one standard room (up to 12x12)' },
+      single_room_large: { name: 'Large Room', price: 500, unit: 'flat', description: 'Walls + ceiling for one large room (up to 16x16)' },
+      interior_2br: { name: 'Interior 2BR/1BA', price: 1200, unit: 'flat', description: 'Full interior paint: 2 bedrooms, 1 bath, common areas, trim' },
+      interior_3br: { name: 'Interior 3BR/2BA', price: 1800, unit: 'flat', description: 'Full interior paint: 3 bedrooms, 2 baths, common areas, trim' },
+      interior_4br: { name: 'Interior 4BR/2BA+', price: 2500, unit: 'flat', description: 'Full interior paint: 4+ bedrooms, 2+ baths, common areas, trim' },
+      cabinet_painting: { name: 'Cabinet Painting', price: 800, unit: 'flat', description: 'Kitchen or bathroom cabinet painting, prep + primer + 2 coats' },
+      // Exterior
+      exterior_small: { name: 'Exterior Small Home (<1500 sqft)', price: 2000, unit: 'flat', description: 'Full exterior paint, pressure wash prep included' },
+      exterior_medium: { name: 'Exterior Medium Home (1500-2500 sqft)', price: 3500, unit: 'flat', description: 'Full exterior paint, pressure wash prep included' },
+      exterior_large: { name: 'Exterior Large Home (2500+ sqft)', price: 5000, unit: 'flat', description: 'Full exterior paint, pressure wash prep, 2-story' },
+      exterior_trim_only: { name: 'Exterior Trim Only', price: 800, unit: 'flat', description: 'Trim, fascia, soffits, shutters, doors' },
+      // HOA/Commercial
+      hoa_common_area: { name: 'HOA Common Area', price: 1500, unit: 'flat', description: 'Clubhouse, fitness center, hallways, lobbies' },
+      hoa_building_exterior: { name: 'Building Exterior (per unit)', price: 600, unit: 'per unit', description: 'Multi-unit building exterior, volume pricing' },
+    },
+    addOns: {
+      color_consultation: { name: 'Color Consultation', price: 0, description: 'Free color consultation with every job' },
+      wallpaper_removal: { name: 'Wallpaper Removal', price: 3, unit: 'per sqft', description: 'Remove existing wallpaper before painting' },
+      texture_repair: { name: 'Texture/Drywall Repair', price: 75, unit: 'per patch', description: 'Patch holes, skim coat, match texture' },
+      ceiling_painting: { name: 'Ceiling Add-on', price: 150, unit: 'per room', description: 'Add ceiling painting to any room' },
+      trim_painting: { name: 'Trim/Baseboards', price: 2, unit: 'per linear ft', description: 'Baseboards, crown molding, door frames' },
+    },
+  },
   // truck_unloading consolidated into moving_labor as a sub-type
 } as const;
 

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Recycle, Droplets, Home, Users, Hammer,
+  Recycle, Droplets, Home, Users, Hammer, Paintbrush,
   Sofa, Truck, CheckCircle, ArrowRight, ShieldCheck, Star,
   Video, Globe, DollarSign, ChevronRight,
   Leaf, Sparkles, Waves, Wrench,
@@ -215,6 +215,24 @@ const services = [
       "Full debris haul-away",
     ],
     link: "/services/demolition",
+  },
+  // 13. Painting
+  {
+    id: "painting",
+    name: "Painting",
+    jumpToLabel: "Painting",
+    icon: Paintbrush,
+    tagline: "Fresh coat. Fresh start.",
+    description: "Interior and exterior painting for homes and HOA properties. Accent walls to full repaints. Color consultation included with every job.",
+    price: "From $199",
+    includes: [
+      "Interior: accent walls, rooms, full house",
+      "Exterior: trim, siding, full house",
+      "Cabinet painting available",
+      "Free color consultation",
+      "Prep included (patching, taping, priming)",
+    ],
+    link: "/services/painting",
   },
 ];
 

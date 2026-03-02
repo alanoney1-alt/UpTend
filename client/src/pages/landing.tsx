@@ -6,7 +6,7 @@ import {
   DollarSign, Clock, Ban, TrendingUp,
   CheckCircle, ChevronRight, Wrench, Waves, Truck,
   Package, Home, Trees, ArrowUpFromLine, Sparkles,
-  MapPin,
+  MapPin, Paintbrush,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
@@ -194,6 +194,7 @@ function HeroSection() {
             { key: "garage-cleanout", label: "Garage Cleanout", icon: Home },
             { key: "pool-cleaning", label: "Pool Cleaning", icon: Waves },
             { key: "carpet-cleaning", label: "Carpet Cleaning", icon: Sparkles },
+            { key: "painting", label: "Painting", icon: Paintbrush },
           ].map((svc) => (
             <Link
               key={svc.key}
