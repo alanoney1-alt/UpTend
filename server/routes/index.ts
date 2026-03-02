@@ -99,6 +99,10 @@ import { registerContractRoutes } from "./contracts.routes";
 // Contact routes
 import { registerContactRoutes } from "./contact.routes";
 
+// Pro Performance + Photo Pipeline
+import { registerProPerformanceRoutes } from "./pro-performance.routes";
+import { registerPhotoPipelineRoutes } from "./photo-pipeline.routes";
+
 // Google API routes
 import { registerGoogleApiRoutes } from "./google-api.routes";
 
@@ -578,6 +582,8 @@ export async function registerRoutes(
   safeRegister("TaxReporting", registerTaxReportingRoutes);
   safeRegister("JobLifecycle", registerJobLifecycleRoutes);
   safeRegister("JobRouting", registerJobRoutingRoutes);
+  safeRegister("ProPerformance", registerProPerformanceRoutes);
+  safeRegister("PhotoPipeline", registerPhotoPipelineRoutes);
 
   // Register Warranty Management routes
   registerWarrantyRoutes(app);

@@ -28,87 +28,88 @@ export default function BlogApopkaHomeMaintenance() {
         <h1>The Apopka Homeowner's Maintenance Schedule for 2026</h1>
 
         <p>
-          Owning a home in Apopka is great until Florida reminds you that it doesn't care about your weekend plans. Between the humidity, the storms, and the year round growing season, there's always something that needs attention. The trick is staying ahead of it instead of reacting to it.
+          Apopka is a different animal from the rest of the Orlando metro. You've got suburban family homes on big lots right next to Wekiva-area nature properties, and the maintenance needs for each are wildly different. What doesn't change is Florida's humidity, its storms, and its talent for making small problems expensive fast.
         </p>
         <p>
-          Apopka has its own personality when it comes to home maintenance. suburban family homes on large lots and Wekiva-area nature properties are common here, and each comes with its own set of quirks. HOAs in Apopka range from strict in newer subdivisions like The Reserve to minimal in rural and unincorporated areas. Errol Estate has its own community standards.
-        </p>
-        <p>
-          Here's a month by month schedule built specifically for Apopka homeowners. Not generic advice you could find anywhere. This is tuned to the homes, the soil, and the community standards right here.
+          We've worked with homeowners all across Apopka — from the newer subdivisions in The Reserve (where the HOA notices everything) to the rural, unincorporated lots where you're more worried about well water and septic than curb appeal. Errol Estate has its own community standards that sit somewhere in between. The point is, there's no one-size-fits-all approach, but there IS a schedule that works if you adapt it to your property.
         </p>
 
         <h2>January and February: The Planning Months</h2>
         <p>
-          Florida winters are mild enough that you can actually get things done outside without melting. Walk your property with fresh eyes. Look for stucco cracks, faded paint, and landscaping that didn't make it through the cooler months. Schedule your annual termite inspection now. Apopka's older homes and sandy with significant well water and septic system considerations in rural areas make termite prevention especially important here.
+          Use Florida's mild winter to actually look at your house. Walk the perimeter. Check for stucco cracks, peeling paint, and landscaping that didn't survive the cool spell. Schedule your annual termite inspection — this matters more in Apopka than people realize. The sandy soil out here, combined with the well water and septic systems common on rural lots, creates conditions subterranean termites love.
         </p>
         <p>
-          Check your irrigation system. Watering restrictions shift seasonally in this part of Central Florida, and getting your zones right before spring saves water and avoids fines. If your home is near Wekiwa Springs State Park, you know how quickly things dry out once the rain stops.
+          If you're on well water, January is a good time to get your water tested. Sulfur buildup, iron content, and pH can all shift over the year, and you want a baseline before the heavy rains hit. Check your irrigation system too — if your home is out near Wekiwa Springs, you know how fast things dry out once the winter rain stops.
+        </p>
+        <p>
+          Here's something we see go wrong constantly: homeowners with septic systems ignore their drain field until it's too late. If you haven't had your septic pumped in three to five years, schedule it now. A pump-out costs $300 to $500. A new drain field costs $10,000 or more.
         </p>
 
         <h2>March and April: Spring Reset</h2>
         <p>
-          This is when Apopka starts heating up and everything grows aggressively. Get your Bahia in larger rural lots, St. Augustine in subdivisions grass its first fertilizer application by mid April. Lay fresh mulch in your beds. If you've been putting off pressure washing your driveway and walkways, now is the time. Algae and mold have been building all winter, and your HOA's spring walkthrough is probably right around the corner.
+          Everything grows fast in Apopka come March. If you've got Bahia grass on a larger rural lot, it needs its first mowing as soon as it greens up. Subdivision yards with St. Augustine need their first fertilizer application by mid-April. Lay two to three inches of fresh mulch in your beds. Pressure wash your driveway and walkways — the algae that built up over winter makes concrete dangerously slick, and if your HOA does spring inspections, a green driveway is an easy violation.
         </p>
         <p>
-          Schedule your first gutter cleaning of the year. You want clean gutters before the daily afternoon thunderstorms start in late May. Errol Estate and Piedmont Lakes residents, this applies double if you have mature oaks overhead.
+          Gutter cleaning is critical right now. You want clean gutters before the afternoon thunderstorms start pounding in late May. If you're in Errol Estate or Piedmont Lakes with mature oaks overhead, plan on cleaning them twice — once in March and again in June.
         </p>
 
         <h2>May and June: Hurricane Prep Window</h2>
         <p>
-          Hurricane season officially starts June 1, but smart Apopka homeowners start in May. Trim any tree branches within 10 feet of your roof. Check your storm shutters or impact windows for damage. Make sure your pool pump and exterior equipment are secured.
+          Hurricane season starts June 1, but you should be prepping in May. Trim back tree branches within 10 feet of your roof. Check storm shutters for damage and missing hardware. Secure pool pumps and any outdoor equipment that could become a projectile in high wind.
         </p>
         <p>
-          Fewer pools per capita than other Orlando suburbs, but those that exist often use well water which affects chemistry. If you're not already on a weekly pool service schedule, June is when you'll wish you were. Rising temperatures and afternoon rain change water chemistry fast.
+          Apopka has fewer pools per capita than some of the flashier Orlando suburbs, but the pools that do exist often use well water for filling, which affects chemistry significantly. If your pool runs on well water, you're dealing with higher metals and different pH levels than city water pools. A good pool tech who understands well water chemistry is worth their weight in gold out here. If you're not on weekly service by June, you're already behind.
         </p>
 
         <h2>July and August: Storm Season Maintenance</h2>
         <p>
-          Weekly lawn mowing is non negotiable during Florida summer. Your Bahia in larger rural lots, St. Augustine in subdivisions is growing inches per week, and a single missed mowing can trigger an HOA violation in communities like Errol Estate and Piedmont Lakes. Keep your mower blade sharp and mow high. Cutting too short in summer heat will damage your lawn.
+          Mow weekly. Period. Bahia on larger lots and St. Augustine in the subdivisions both grow inches per week in July and August heat. Missing a single mow in communities like Errol Estate or Piedmont Lakes can trigger an HOA letter. Keep your blade sharp and mow high — at least 3.5 inches for St. Augustine, 3 inches for Bahia. Cutting too short in this heat scorches the roots.
         </p>
         <p>
-          After any significant storm, do a quick property walkthrough. Check for lifted roof shingles, damaged screen enclosures, and clogged downspouts. Document everything with photos. This matters for insurance claims if something bigger happens later in the season.
+          After every major storm, do a walkthrough. Look for lifted shingles, damaged screens, and clogged downspouts. Take photos of everything — even if it looks minor. Insurance adjusters want documentation, and "I think it happened during that storm in July" doesn't cut it when you file a claim in October.
+        </p>
+        <p>
+          Don't forget your AC. Change the filter monthly during summer. Clean around the exterior condenser unit — if vegetation has grown up around it (and in Apopka, it will), your system is working harder than it needs to.
         </p>
 
-        <h2>September and October: Post Storm Recovery</h2>
+        <h2>September and October: Post-Storm Recovery</h2>
         <p>
-          The worst of hurricane season wraps up by mid October. Even if Apopka dodged a direct hit, months of heavy rain take a toll. Check for standing water around your foundation, mold on exterior walls, and any soft spots in your fascia or soffit boards.
+          Even if no hurricane hits directly, months of heavy rain leave marks. Check for standing water near your foundation, mold on exterior walls, and soft spots in fascia or soffit boards. On rural Apopka lots, check your drain field for soggy spots or unusual odors — heavy rain season is when stressed septic systems show their weaknesses.
         </p>
         <p>
-          Schedule your second gutter cleaning of the year. Apopka's trees drop leaves heavily in fall, and one good rain with clogged gutters can push water into your walls. This is also a good time to have your roof inspected, especially if your home is more than 10 years old.
+          Get your gutters cleaned again. Fall leaf drop is heavy, and clogged gutters during a late-season storm can push water straight into your walls. If your roof is more than 10 years old, get it inspected now.
         </p>
 
         <h2>November and December: Deep Clean and Protect</h2>
         <p>
-          Florida's dry season starts in November, making it the ideal time for exterior projects. Schedule a full house pressure wash to remove the summer's buildup of mold and dirt. Touch up exterior paint that's fading. If your driveway sealer is more than two years old, now is the time to reapply.
+          Dry season starts in November and it's the best time for exterior work. Pressure wash the whole house. Touch up fading paint, especially on south and west-facing walls that take the most sun. Reseal your driveway if it's been more than two years.
         </p>
         <p>
-          Inside, consider a deep clean of carpets, tile grout, and air ducts. Your AC has been running nonstop for six months and your ductwork is full of whatever Florida's air carried in. Apopka homes near Rock Springs Run know this feeling well.
+          Inside, get your air ducts cleaned. Six months of nonstop AC means your ductwork is full of dust, mold spores, and whatever else Florida's air decided to carry in. A duct cleaning runs $300 to $500 and makes a noticeable difference, especially if anyone in your household has allergies.
         </p>
 
         <h2>What Catches Apopka Homeowners Off Guard</h2>
         <p>
-          A few things specific to this area: Sandy with significant well water and septic system considerations in rural areas. That affects everything from foundation settling to how your pavers shift over time. Check walkways annually and relevel as needed.
+          Wildlife. If your property backs up to the Wekiwa preserve or any conservation land, you're going to deal with more than just bugs. Raccoons in attics, armadillos tearing up yards, and the occasional snake in the garage are just part of life out here. Regular pest control is essential, not optional.
         </p>
         <p>
-          Wildlife intrusion from Wekiwa preserve, termites, fire ants in large yards, mosquitoes are the main pest concerns here. Regular pest control isn't optional. it's essential. And if you're in a newer Apopka home, remember that most builder warranties on cosmetic items like drywall cracks and grout separation expire after one or two years. Don't sit on those.
-        </p>
-
-        <h2>A Better Way to Stay on Top of It</h2>
-        <p>
-          We're building something different in Orlando. At <Link href="/">UpTend</Link>, we're putting together a platform that helps Apopka homeowners stay ahead of maintenance instead of reacting to problems. We're still in early access, but we're already helping homeowners in the area get connected with trusted local pros and build real maintenance plans for their homes.
+          The other big surprise is fire ants. On larger Apopka lots, fire ant mounds can pop up overnight after rain. They're aggressive, they're everywhere, and over-the-counter treatments barely make a dent. A professional pest service that treats your whole yard quarterly is the only reliable solution.
         </p>
         <p>
-          If you want to see where your home stands, start with a{" "}
-          <Link href="/join"><strong>free Home DNA Scan</strong></Link>. It takes a few minutes, costs nothing, and gives you a clear picture of what your home needs and when.
+          And for anyone in a newer home: your builder warranty on cosmetic items like drywall cracks, nail pops, and grout separation typically expires after one to two years. Do a detailed walkthrough before that deadline and submit every issue. Builders expect it — don't feel bad about being thorough.
         </p>
 
-        <hr />
+        <h2>What to Ask Before Hiring Any Pro</h2>
+        <p>
+          Three questions that will save you headaches. First: are you licensed and insured in Florida? Not "bonded" — insured. If they can't show you proof, walk away. Second: do you have references in Apopka specifically? Someone who does great work in downtown Orlando might not understand well water, septic systems, or the larger lot sizes out here. Third: what exactly is included in the price? "Lawn service" can mean a lot of different things, and you want it in writing before anyone shows up.
+        </p>
 
-        <p className="text-sm text-muted-foreground">
-          <em>
-            Have questions about maintaining your Apopka home? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Apopka inside and out.
-          </em>
+        <h2>Ready to Get This Handled?</h2>
+        <p>
+          Talk to George — he'll give you a guaranteed price in 60 seconds. Whether it's a one-off repair or a full maintenance plan for your Apopka property, we keep it simple and honest.
+        </p>
+        <p>
+          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
         </p>
 
         <section className="not-prose mt-12 pt-8 border-t border-border">

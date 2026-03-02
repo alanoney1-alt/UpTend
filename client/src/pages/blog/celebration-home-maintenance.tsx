@@ -28,87 +28,88 @@ export default function BlogCelebrationHomeMaintenance() {
         <h1>The Celebration Homeowner's Maintenance Schedule for 2026</h1>
 
         <p>
-          Owning a home in Celebration is great until Florida reminds you that it doesn't care about your weekend plans. Between the humidity, the storms, and the year round growing season, there's always something that needs attention. The trick is staying ahead of it instead of reacting to it.
+          Living in Celebration is different from living anywhere else in the Orlando area, and your maintenance schedule should reflect that. The neo-traditional architecture, the Victorian-style townhomes, the Disney-established design standards that cover everything from your paint color to your window treatments — it all means that maintenance here isn't just about keeping your home running. It's about keeping it compliant.
         </p>
         <p>
-          Celebration has its own personality when it comes to home maintenance. neo-traditional homes and Victorian-style townhomes are common here, and each comes with its own set of quirks. Celebration's architectural review board is legendary. Originally established by Disney, the standards cover paint colors, landscaping, holiday decorations, mailboxes, and even window treatments visible from the street.
-        </p>
-        <p>
-          Here's a month by month schedule built specifically for Celebration homeowners. Not generic advice you could find anywhere. This is tuned to the homes, the soil, and the community standards right here.
+          We've worked with Celebration homeowners who got fined for things they didn't even know were regulated. A mailbox that was the wrong shade of black. Holiday decorations left up two days past the allowed date. Landscaping that technically met city code but didn't meet the architectural review board's standard. The bar is high here, and staying ahead of maintenance is the only way to avoid surprises.
         </p>
 
         <h2>January and February: The Planning Months</h2>
         <p>
-          Florida winters are mild enough that you can actually get things done outside without melting. Walk your property with fresh eyes. Look for stucco cracks, faded paint, and landscaping that didn't make it through the cooler months. Schedule your annual termite inspection now. Florida's subterranean termites don't take winters off, and low-lying former marshland, prone to standing water after heavy rains is exactly what they like.
+          This is your window to actually enjoy being outside while you inspect your property. Walk the perimeter and look for stucco cracks, fading paint, and any landscaping damage from the cooler months. Celebration sits on low-lying former marshland, which means the soil holds water differently than the rest of Central Florida. After a wet winter, check for erosion around your foundation, shifting pavers, and any spots where water seems to pool.
         </p>
         <p>
-          Check your irrigation system. Watering restrictions shift seasonally in this part of Central Florida, and getting your zones right before spring saves water and avoids fines. If your home is near Celebration Town Center, you know how quickly things dry out once the rain stops.
+          Schedule your annual termite inspection. The ground conditions here — that marshy, moisture-heavy soil — are exactly what subterranean termites love. We've seen Celebration homes where termites entered through tiny cracks in the slab that nobody noticed because the exterior looked perfect. Don't skip this.
+        </p>
+        <p>
+          Check your irrigation system and make sure it's set to the current water restriction schedule. Getting caught running sprinklers on the wrong day will get you a fine from the county, and your neighbors will notice before the county does.
         </p>
 
         <h2>March and April: Spring Reset</h2>
         <p>
-          This is when Celebration starts heating up and everything grows aggressively. Get your St. Augustine with strict HOA height and appearance requirements grass its first fertilizer application by mid April. Lay fresh mulch in your beds. If you've been putting off pressure washing your driveway and walkways, now is the time. Algae and mold have been building all winter, and curb appeal matters when neighbors are doing the same.
+          By March, the St. Augustine grass is pushing hard. Get your first fertilizer down by mid-April. Here's the thing about Celebration — the HOA has strict standards for lawn height and appearance, and "it's only been a week" won't get you out of a violation. Most homeowners here need weekly mowing from March through October, no exceptions.
         </p>
         <p>
-          Schedule your first gutter cleaning of the year. You want clean gutters before the daily afternoon thunderstorms start in late May. North Village and South Village residents, this applies double if you have mature oaks overhead.
+          Lay fresh mulch in your beds and pressure wash your driveway and walkways. The mold and algae buildup from winter is worse in Celebration than in most Orlando neighborhoods because of the higher ground moisture. A green, slimy driveway stands out fast in a community where everyone else's looks pristine. Curb appeal isn't vanity here — it's survival.
+        </p>
+        <p>
+          Get your gutters cleaned before storm season. North Village and South Village residents with mature oaks — this means you especially. Clogged gutters during afternoon thunderstorms don't just cause water damage; they cause staining on your exterior walls that the review board will definitely flag.
         </p>
 
         <h2>May and June: Hurricane Prep Window</h2>
         <p>
-          Hurricane season officially starts June 1, but smart Celebration homeowners start in May. Trim any tree branches within 10 feet of your roof. Check your storm shutters or impact windows for damage. Make sure your pool pump and exterior equipment are secured.
+          Start hurricane prep in May. Trim any branches within 10 feet of your roof. Check your storm shutters or verify your impact window ratings — most Celebration homes have a mix of impact-rated and non-rated windows, and you need to know which is which before a storm is bearing down. Secure pool equipment and any outdoor furniture or decorations.
         </p>
         <p>
-          Pools vary by village. Screened enclosures are standard. Community pools supplement many homes. If you're not already on a weekly pool service schedule, June is when you'll wish you were. Rising temperatures and afternoon rain change water chemistry fast.
+          Pool care ramps up now. Screened enclosures are standard in Celebration, which helps with debris, but the heat and daily afternoon rain still wreck your water chemistry. If you've been managing your pool yourself, this is the month where most DIY pool owners give up and call a professional. The honest answer? It's usually worth it. Weekly professional service runs $100 to $200 a month and saves you several hours a week plus the cost of chemicals you'd buy anyway.
         </p>
 
         <h2>July and August: Storm Season Maintenance</h2>
         <p>
-          Weekly lawn mowing is non negotiable during Florida summer. Your St. Augustine with strict HOA height and appearance requirements is growing inches per week, and a single missed mowing can trigger complaints from neighbors in communities like North Village and South Village. Keep your mower blade sharp and mow high. Cutting too short in summer heat will damage your lawn.
+          Mow weekly. Keep your mower blade sharp and set it to 3.5 to 4 inches for St. Augustine. Cutting too short in the summer heat will burn the grass, and a brown lawn in Celebration gets noticed immediately. Your neighbors in North Village and South Village are all on the same schedule — there's no hiding.
         </p>
         <p>
-          After any significant storm, do a quick property walkthrough. Check for lifted roof shingles, damaged screen enclosures, and clogged downspouts. Document everything with photos. This matters for insurance claims if something bigger happens later in the season.
+          After any significant storm, walk your property. Check for lifted shingles, damaged screen panels, and clogged downspouts. Document everything with photos, even if the damage looks minor. Insurance claims need documentation, and "I think that happened during the storm" doesn't hold up without photos and dates.
+        </p>
+        <p>
+          Change your AC filter monthly during summer. Not quarterly — monthly. Your system is running 14 to 16 hours a day in July, and a dirty filter makes it work harder, drives up your bill, and shortens the compressor's life.
         </p>
 
-        <h2>September and October: Post Storm Recovery</h2>
+        <h2>September and October: Post-Storm Recovery</h2>
         <p>
-          The worst of hurricane season wraps up by mid October. Even if Celebration dodged a direct hit, months of heavy rain take a toll. Check for standing water around your foundation, mold on exterior walls, and any soft spots in your fascia or soffit boards.
+          Hurricane season winds down by mid-October, but the damage from months of heavy rain doesn't fix itself. Check for standing water near your foundation — Celebration's low-lying terrain means water can pool in places it didn't two years ago, especially as soil settles. Look for mold on exterior walls, soft spots in fascia and soffit boards, and any warping in wooden trim.
         </p>
         <p>
-          Schedule your second gutter cleaning of the year. Celebration's trees drop leaves heavily in fall, and one good rain with clogged gutters can push water into your walls. This is also a good time to have your roof inspected, especially if your home is more than 10 years old.
+          Second gutter cleaning of the year. Fall leaf drop combined with accumulated storm debris means your gutters are probably full. Clean them before the late-season rains push water where it shouldn't go.
         </p>
 
         <h2>November and December: Deep Clean and Protect</h2>
         <p>
-          Florida's dry season starts in November, making it the ideal time for exterior projects. Schedule a full house pressure wash to remove the summer's buildup of mold and dirt. Touch up exterior paint that's fading. If your driveway sealer is more than two years old, now is the time to reapply.
+          Dry season starts in November, and this is when you tackle the exterior projects. Full house pressure wash, paint touch-ups, driveway resealing. These all work better when you're not fighting daily rain. Inside, get your air ducts cleaned and have your carpets deep-cleaned. Six months of nonstop AC means your ductwork is carrying more than you want to breathe.
         </p>
         <p>
-          Inside, consider a deep clean of carpets, tile grout, and air ducts. Your AC has been running nonstop for six months and your ductwork is full of whatever Florida's air carried in. Celebration homes near Celebration Golf Club know this feeling well.
+          One thing specific to Celebration: the holiday decoration rules. The architectural review board has specific guidelines about what you can put up, when you can put it up, and when it needs to come down. Get a copy of the current rules before you decorate. We've literally seen people get fined for the wrong type of string lights.
         </p>
 
         <h2>What Catches Celebration Homeowners Off Guard</h2>
         <p>
-          A few things specific to this area: Low-lying former marshland, prone to standing water after heavy rains. That affects everything from foundation settling to how your pavers shift over time. Check walkways annually and relevel as needed.
+          Mosquitoes are the big one. Celebration's low elevation and proximity to wetlands make it one of the mosquito capitals of the Orlando area. A quarterly pest service is essential — not just for comfort but because mosquito-borne illnesses are a real concern in Florida. Fire ants are the other constant battle, especially in yards that border common areas.
         </p>
         <p>
-          Mosquitoes (low elevation near wetlands), love bugs seasonally, fire ants are the main pest concerns here. Regular pest control isn't optional. it's essential. And if you're in a newer Celebration home, remember that most builder warranties on cosmetic items like drywall cracks and grout separation expire after one or two years. Don't sit on those.
+          The soil is the other surprise. That former marshland settles and shifts in ways that newer homeowners don't expect. Pavers lift. Walkways crack. Driveways develop low spots that collect water. Check your hardscaping annually and relevel as needed — it's cheaper to fix early than to replace later.
         </p>
 
-        <h2>A Better Way to Stay on Top of It</h2>
+        <h2>Seasonal Timing Tips for Celebration</h2>
         <p>
-          We're building something different in Orlando. At <Link href="/">UpTend</Link>, we're putting together a platform that helps Celebration homeowners stay ahead of maintenance instead of reacting to problems. We're still in early access, but we're already helping homeowners in the area get connected with trusted local pros and build real maintenance plans for their homes.
+          Book exterior painting and pressure washing in November or December — contractors are less busy and prices are lower. Schedule roof inspections in October after storm season. Lock in your lawn service by February before the good crews fill up. And if you need anything from the architectural review board, submit your requests at least 30 days before you want to start work. They move slowly.
+        </p>
+
+        <h2>Ready to Get This Handled?</h2>
+        <p>
+          Talk to George — he'll give you a guaranteed price in 60 seconds. Whether it's a one-off project or a full maintenance plan for your Celebration home, we'll handle it right.
         </p>
         <p>
-          If you want to see where your home stands, start with a{" "}
-          <Link href="/join"><strong>free Home DNA Scan</strong></Link>. It takes a few minutes, costs nothing, and gives you a clear picture of what your home needs and when.
-        </p>
-
-        <hr />
-
-        <p className="text-sm text-muted-foreground">
-          <em>
-            Have questions about maintaining your Celebration home? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. He's our AI home assistant and he knows Celebration inside and out.
-          </em>
+          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
         </p>
 
         <section className="not-prose mt-12 pt-8 border-t border-border">
