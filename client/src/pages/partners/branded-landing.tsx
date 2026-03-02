@@ -323,6 +323,32 @@ export default function BrandedPartnerLanding() {
               </div>
             </div>
 
+            {/* More UpTend Services */}
+            <div className="mb-12">
+              <h2 className="text-xl font-bold text-center mb-2">Need More Than {config.serviceType}?</h2>
+              <p className="text-center text-muted-foreground mb-6">
+                UpTend handles 13 home services. One app, one AI, every service your home needs.
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  "Junk Removal", "Pressure Washing", "Gutter Cleaning", "Moving Labor",
+                  "Handyman", "Light Demolition", "Garage Cleanout", "Home Cleaning",
+                  "Pool Cleaning", "Landscaping", "Carpet Cleaning", "Painting",
+                ].map(s => (
+                  <a key={s} href={`/services/${s.toLowerCase().replace(/ /g, '-')}`}
+                    className="flex items-center gap-2 p-3 bg-card rounded-lg border border-border hover:border-primary/50 transition-colors">
+                    <ArrowRight className="w-3 h-3 text-primary flex-shrink-0" />
+                    <span className="text-sm">{s}</span>
+                  </a>
+                ))}
+              </div>
+              <div className="text-center mt-4">
+                <a href="/services" className="text-sm text-primary hover:underline">
+                  View all services →
+                </a>
+              </div>
+            </div>
+
             {/* Powered by */}
             <div className="text-center text-sm text-muted-foreground">
               <p>Powered by <span className="font-semibold text-foreground">UpTend</span> — AI-powered home service intelligence</p>
@@ -446,9 +472,18 @@ export default function BrandedPartnerLanding() {
             <p className="text-muted-foreground mb-6">
               {config.companyName} has your scope of work, photos, and contact info. They'll reach out with a quote shortly.
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mb-8">
               Questions? Call {config.phone || "us"} directly.
             </p>
+            <div className="bg-card border border-border rounded-xl p-6 text-left">
+              <p className="font-semibold mb-2">While you're here...</p>
+              <p className="text-sm text-muted-foreground mb-3">
+                UpTend handles 13 home services beyond {config.serviceType}. Need junk removed, gutters cleaned, house painted, or pool maintained? George handles all of it.
+              </p>
+              <a href="/services">
+                <Button variant="outline" size="sm">Explore All Services <ArrowRight className="w-3 h-3 ml-2" /></Button>
+              </a>
+            </div>
           </div>
         )}
       </main>
