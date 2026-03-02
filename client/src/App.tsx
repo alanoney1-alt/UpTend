@@ -16,9 +16,9 @@ import { ErrorBoundary } from "@/components/error-boundary";
 
 // Eagerly load critical path pages
 import Landing from "@/pages/landing";
-import BusinessLandingPage from "@/pages/business-landing";
 import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
+const BusinessLandingPage = lazy(() => import("@/pages/business-landing"));
 
 // Detect if we're on the business domain
 const isBusinessDomain = typeof window !== 'undefined' && 
