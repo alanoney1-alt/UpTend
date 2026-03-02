@@ -147,7 +147,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{totalJobs}</div>
-            <p className="text-xs text-gray-500 mt-1">Across {metrics.length} services</p>
+            <p className="text-xs text-muted-foreground mt-1">Across {metrics.length} services</p>
           </CardContent>
         </Card>
 
@@ -157,7 +157,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(totalCo2Saved).toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">lbs CO₂ equivalent</p>
+            <p className="text-xs text-muted-foreground mt-1">lbs CO₂ equivalent</p>
           </CardContent>
         </Card>
 
@@ -167,7 +167,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(totalWaterSaved).toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">gallons</p>
+            <p className="text-xs text-muted-foreground mt-1">gallons</p>
           </CardContent>
         </Card>
 
@@ -177,7 +177,7 @@ export function MultiServiceEsgDashboard({ businessAccountId }: MultiServiceEsgD
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(avgEsgScore)}</div>
-            <p className="text-xs text-gray-500 mt-1">out of 100</p>
+            <p className="text-xs text-muted-foreground mt-1">out of 100</p>
           </CardContent>
         </Card>
       </div>

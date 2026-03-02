@@ -65,13 +65,13 @@ export default function WorkLogEntry() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" onClick={() => navigate(`/government/contracts/${contractId}`)}>
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Contract
           </Button>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <ClipboardList className="h-6 w-6 text-amber-600" /> Work Log
           </h1>
         </div>
@@ -136,7 +136,7 @@ export default function WorkLogEntry() {
                   <div key={log.id} className="p-3 border rounded-lg text-sm">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium">{log.workDate}</span>
-                      <Badge className={log.status === "approved" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                      <Badge className={log.status === "approved" ? "bg-green-100 text-green-800" : "bg-muted/50 text-gray-800"}>
                         {log.status}
                       </Badge>
                     </div>

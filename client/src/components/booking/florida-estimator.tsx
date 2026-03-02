@@ -503,16 +503,16 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
       <div className="w-full max-w-2xl mx-auto" data-testid="widget-florida-estimator" ref={wrapperRef}>
         {/* Service bag is now the global FloatingCart in App.tsx */}
         <div className="text-center mb-6">
-          <h2 className={`text-2xl md:text-3xl font-bold mb-3 leading-tight ${variant === "dark" ? "text-white" : "text-slate-900 dark:text-white"}`} data-testid="text-explainer-headline">
+          <h2 className={`text-2xl md:text-3xl font-bold mb-3 leading-tight ${variant === "dark" ? "text-white" : "text-foreground dark:text-white"}`} data-testid="text-explainer-headline">
             {t("estimator.explainer_headline")}
           </h2>
-          <p className={`text-base md:text-lg max-w-2xl mx-auto leading-relaxed ${variant === "dark" ? "text-slate-300" : "text-slate-600 dark:text-slate-300"}`} data-testid="text-explainer-details">
+          <p className={`text-base md:text-lg max-w-2xl mx-auto leading-relaxed ${variant === "dark" ? "text-slate-300" : "text-muted-foreground dark:text-slate-300"}`} data-testid="text-explainer-details">
             {t("estimator.explainer_details")}
           </p>
         </div>
 
         <div
-          className="bg-white dark:bg-slate-800 p-2 rounded-md shadow-2xl flex flex-col sm:flex-row items-center gap-2 border border-slate-200 dark:border-slate-700"
+          className="bg-background dark:bg-slate-800 p-2 rounded-md shadow-2xl flex flex-col sm:flex-row items-center gap-2 border border-border dark:border-slate-700"
           data-testid="form-address-input"
         >
           <div className="flex-1 w-full">
@@ -573,7 +573,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
           >
             ← Back to services
           </Button>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
             Tell us about your {serviceName} job
           </h2>
           <p className="text-base text-muted-foreground">
@@ -623,7 +623,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
           >
             ← Back to services
           </Button>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
             How would you like to be matched?
           </h2>
           <p className="text-muted-foreground">Choose your booking style</p>
@@ -696,10 +696,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
           >
             ← Back to scheduling
           </Button>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
             How would you like your quote?
           </h2>
-          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
+          <p className="text-base md:text-lg text-muted-foreground dark:text-slate-300">
             Choose the method that works best for you
           </p>
         </div>
@@ -800,10 +800,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
             >
               ← Back to quote method
             </Button>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
               Upload Photos or Video
             </h2>
-            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
+            <p className="text-base md:text-lg text-muted-foreground dark:text-slate-300">
               Show us what needs to be removed and our AI will analyze it instantly
             </p>
           </div>
@@ -983,10 +983,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
             >
               ← Back to upload
             </Button>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
               Your Instant Quote
             </h2>
-            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
+            <p className="text-base md:text-lg text-muted-foreground dark:text-slate-300">
               Based on analysis of your photos
             </p>
           </div>
@@ -1013,7 +1013,7 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
             >
               ← Back to quote method
             </Button>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
               Build Your {serviceName} Quote
             </h2>
           </div>
@@ -1219,15 +1219,15 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
               variant="ghost"
               size="sm"
               onClick={() => setStep(5)}
-              className="mb-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+              className="mb-4 text-muted-foreground dark:text-slate-300 hover:text-foreground dark:hover:text-white"
               data-testid="button-back-edit-selections"
             >
               ← {t("booking.edit_selections")}
             </Button>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
               {t("booking.confirm_book")}
             </h2>
-            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
+            <p className="text-base md:text-lg text-muted-foreground dark:text-slate-300">
               Review your details and confirm your booking
             </p>
           </div>
@@ -1315,15 +1315,15 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
             variant="ghost"
             size="sm"
             onClick={() => setStep(5)}
-            className="mb-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            className="mb-4 text-muted-foreground dark:text-slate-300 hover:text-foreground dark:hover:text-white"
             data-testid="button-back-edit-selections"
           >
             ← {t("booking.edit_selections")}
           </Button>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
             Ready to Book Your Service
           </h2>
-          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
+          <p className="text-base md:text-lg text-muted-foreground dark:text-slate-300">
             Create an account to book your verified UpTend Pro
           </p>
         </div>
@@ -1368,14 +1368,14 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
             variant="ghost"
             size="sm"
             onClick={() => setStep(6)}
-            className="mb-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            className="mb-4 text-muted-foreground dark:text-slate-300 hover:text-foreground dark:hover:text-white"
           >
             ← Back to Booking Details
           </Button>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
             Complete Payment
           </h2>
-          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300">
+          <p className="text-base md:text-lg text-muted-foreground dark:text-slate-300">
             Authorize payment to confirm your booking
           </p>
         </div>

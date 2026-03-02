@@ -22,7 +22,7 @@ export function FloatingCart() {
         aria-label={`View cart (${itemCount} items)`}
       >
         <ShoppingBag className="w-6 h-6" />
-        <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-white text-[#F47C20] text-xs font-black flex items-center justify-center shadow-sm">
+        <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-background text-[#F47C20] text-xs font-black flex items-center justify-center shadow-sm">
           {itemCount}
         </span>
       </button>
@@ -37,7 +37,7 @@ export function FloatingCart() {
           />
 
           {/* Panel */}
-          <div className="fixed bottom-24 left-6 z-[9990] w-[340px] max-h-[70vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-200">
+          <div className="fixed bottom-24 left-6 z-[9990] w-[340px] max-h-[70vh] bg-background dark:bg-slate-900 rounded-2xl shadow-2xl border border-border dark:border-slate-700 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-200">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2">
@@ -46,7 +46,7 @@ export function FloatingCart() {
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                className="text-slate-400 hover:text-muted-foreground dark:hover:text-slate-200 p-1"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -57,7 +57,7 @@ export function FloatingCart() {
               {items.map((item) => (
                 <div
                   key={item.serviceId}
-                  className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700"
+                  className="flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-sm truncate">{item.serviceName}</p>

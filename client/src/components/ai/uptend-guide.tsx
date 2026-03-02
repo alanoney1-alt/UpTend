@@ -774,12 +774,12 @@ export function UpTendGuide() {
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => sendFeedback(msg.id, "helpful")}
-                      className="text-[11px] text-slate-600 hover:text-green-400 transition-colors p-0.5"
+                      className="text-[11px] text-muted-foreground hover:text-green-400 transition-colors p-0.5"
                       title="Helpful"
                     >👍</button>
                     <button
                       onClick={() => sendFeedback(msg.id, "not_helpful")}
-                      className="text-[11px] text-slate-600 hover:text-red-400 transition-colors p-0.5"
+                      className="text-[11px] text-muted-foreground hover:text-red-400 transition-colors p-0.5"
                       title="Not helpful"
                     >👎</button>
                   </div>

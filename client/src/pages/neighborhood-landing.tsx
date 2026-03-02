@@ -138,7 +138,7 @@ export function NeighborhoodLanding({ config }: { config: NeighborhoodConfig }) 
       </section>
 
       {/* Services Grid */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
+      <section className="py-16 bg-muted/50 dark:bg-slate-900/50">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             Services Available in {config.name}

@@ -290,7 +290,7 @@ export default function BusinessBookingPage() {
                         type="text"
                         value={customAddress.address}
                         onChange={e => setCustomAddress(prev => ({ ...prev, address: e.target.value }))}
-                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                         placeholder="123 Main St"
                       />
                     </div>
@@ -300,7 +300,7 @@ export default function BusinessBookingPage() {
                         type="text"
                         value={customAddress.city}
                         onChange={e => setCustomAddress(prev => ({ ...prev, city: e.target.value }))}
-                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                         placeholder="Orlando"
                       />
                     </div>
@@ -310,7 +310,7 @@ export default function BusinessBookingPage() {
                         type="text"
                         value={customAddress.state}
                         onChange={e => setCustomAddress(prev => ({ ...prev, state: e.target.value }))}
-                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                         placeholder="FL"
                       />
                     </div>
@@ -320,7 +320,7 @@ export default function BusinessBookingPage() {
                         type="text"
                         value={customAddress.zipCode}
                         onChange={e => setCustomAddress(prev => ({ ...prev, zipCode: e.target.value }))}
-                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                         placeholder="32801"
                       />
                     </div>
@@ -334,7 +334,7 @@ export default function BusinessBookingPage() {
                         value={propertySearch}
                         onChange={e => setPropertySearch(e.target.value)}
                         placeholder="Search properties..."
-                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 pl-9 pr-3 py-2 text-sm"
+                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 pl-9 pr-3 py-2 text-sm"
                       />
                     </div>
 
@@ -417,7 +417,7 @@ export default function BusinessBookingPage() {
                       value={scheduledDate}
                       onChange={e => setScheduledDate(e.target.value)}
                       min={new Date().toISOString().split("T")[0]}
-                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                     />
                   </div>
                   <div>
@@ -425,7 +425,7 @@ export default function BusinessBookingPage() {
                     <select
                       value={scheduledTime}
                       onChange={e => setScheduledTime(e.target.value)}
-                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                     >
                       <option value="">Flexible</option>
                       {TIME_SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
@@ -436,7 +436,7 @@ export default function BusinessBookingPage() {
                     <select
                       value={recurringFrequency}
                       onChange={e => setRecurringFrequency(e.target.value)}
-                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                     >
                       {RECURRING_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
@@ -449,7 +449,7 @@ export default function BusinessBookingPage() {
                         value={recurringEndDate}
                         onChange={e => setRecurringEndDate(e.target.value)}
                         min={scheduledDate || new Date().toISOString().split("T")[0]}
-                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                       />
                     </div>
                   )}
@@ -605,7 +605,7 @@ export default function BusinessBookingPage() {
                       type="text"
                       value={gateCode}
                       onChange={e => setGateCode(e.target.value)}
-                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                       placeholder="e.g., #1234"
                     />
                   </div>
@@ -615,7 +615,7 @@ export default function BusinessBookingPage() {
                       value={accessNotes}
                       onChange={e => setAccessNotes(e.target.value)}
                       rows={2}
-                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                       placeholder="How to access the property..."
                     />
                   </div>
@@ -625,7 +625,7 @@ export default function BusinessBookingPage() {
                       value={specialInstructions}
                       onChange={e => setSpecialInstructions(e.target.value)}
                       rows={2}
-                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                       placeholder="Any special requirements..."
                     />
                   </div>
@@ -635,7 +635,7 @@ export default function BusinessBookingPage() {
                       value={unitNotes}
                       onChange={e => setUnitNotes(e.target.value)}
                       rows={2}
-                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm"
+                      className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-background dark:bg-zinc-900 px-3 py-2 text-sm"
                       placeholder="Notes specific to this unit..."
                     />
                   </div>

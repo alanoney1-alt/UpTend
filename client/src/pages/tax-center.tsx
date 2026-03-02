@@ -188,7 +188,7 @@ export default function TaxCenter() {
           <h3 className="font-bold text-slate-800 mb-4">Quarterly Summaries</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {annual?.quarters?.map((q) => (
-              <div key={q.quarter} className="p-3 bg-slate-50 rounded-lg text-center">
+              <div key={q.quarter} className="p-3 bg-muted/50 rounded-lg text-center">
                 <p className="font-bold text-sm text-slate-700">Q{q.quarter}</p>
                 <p className="text-lg font-bold text-slate-800">${q.totalNet.toFixed(0)}</p>
                 <p className="text-xs text-muted-foreground">{q.totalJobs} jobs</p>
@@ -204,11 +204,11 @@ export default function TaxCenter() {
             <div>
               <h3 className="font-bold text-slate-800">1099-K Tax Form</h3>
               {data1099?.threshold1099 ? (
-                <p className="text-sm text-slate-600 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Your {currentYear} gross earnings exceed $600. A 1099-K form will be available by January 31 of the following year.
                 </p>
               ) : (
-                <p className="text-sm text-slate-600 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Your {currentYear} gross earnings are below the $600 threshold. No 1099-K will be issued.
                 </p>
               )}

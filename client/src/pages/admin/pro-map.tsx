@@ -251,7 +251,7 @@ export default function AdminProMap() {
                         </p>
                       )}
                       {pro.serviceTypes.length > 0 && (
-                        <p className="text-xs text-gray-500 mt-1">{pro.serviceTypes.join(", ")}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{pro.serviceTypes.join(", ")}</p>
                       )}
                     </div>
                   </div>

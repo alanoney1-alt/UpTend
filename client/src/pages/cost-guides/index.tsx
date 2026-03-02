@@ -28,10 +28,10 @@ export default function CostGuidesHub() {
             <DollarSign className="w-4 h-4" />
             Orlando Pricing Guides
           </div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-4">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
             How Much Do Home Services Cost in Orlando?
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Transparent pricing for every service we offer. No hidden fees, no surprises. just honest costs from verified Orlando pros.
           </p>
         </div>
@@ -39,16 +39,16 @@ export default function CostGuidesHub() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {costGuides.map((guide) => (
             <Link key={guide.slug} href={`/cost-guides/${guide.slug}`}>
-              <Card className="h-full hover:shadow-lg transition-all cursor-pointer border-slate-200 hover:border-primary/30 group">
+              <Card className="h-full hover:shadow-lg transition-all cursor-pointer border-border hover:border-primary/30 group">
                 <CardContent className="p-6">
-                  <h2 className="font-semibold text-slate-900 text-lg mb-2 group-hover:text-primary transition-colors">
+                  <h2 className="font-semibold text-foreground text-lg mb-2 group-hover:text-primary transition-colors">
                     {guide.title}
                   </h2>
                   <div className="text-2xl font-bold text-primary mb-3">
                     ${guide.avgCostLow}–${guide.avgCostHigh}
                     <span className="text-sm font-normal text-slate-500 ml-1">{guide.costUnit}</span>
                   </div>
-                  <p className="text-sm text-slate-600 line-clamp-2 mb-4">{guide.description}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{guide.description}</p>
                   <div className="flex items-center text-sm text-primary font-medium group-hover:gap-2 transition-all">
                     View Full Guide <ArrowRight className="w-4 h-4 ml-1" />
                   </div>

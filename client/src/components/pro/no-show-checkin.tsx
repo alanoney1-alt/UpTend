@@ -125,7 +125,7 @@ export function NoShowCheckin({ jobId, jobStatus }: NoShowCheckinProps) {
                 value={delayReason}
                 onChange={(e) => setDelayReason(e.target.value)}
                 placeholder="What's causing the delay? (e.g., traffic, flat tire, previous job ran over)"
-                className="w-full p-3 border border-amber-200 dark:border-amber-700 rounded-lg text-sm resize-none bg-white dark:bg-gray-900"
+                className="w-full p-3 border border-amber-200 dark:border-amber-700 rounded-lg text-sm resize-none bg-background dark:bg-gray-900"
                 rows={3}
                 autoFocus
               />
@@ -147,7 +147,7 @@ export function NoShowCheckin({ jobId, jobStatus }: NoShowCheckinProps) {
                     setShowDelayInput(false);
                     setDelayReason("");
                   }}
-                  className="py-2 px-4 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg"
+                  className="py-2 px-4 bg-muted/50 dark:bg-gray-800 text-muted-foreground dark:text-gray-300 rounded-lg"
                 >
                   Cancel
                 </button>

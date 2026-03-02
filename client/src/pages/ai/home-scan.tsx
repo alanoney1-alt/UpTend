@@ -93,7 +93,7 @@ function HeroSection() {
         </div>
 
         {/* Social proof line */}
-        <p className="text-gray-500 text-sm mt-10">
+        <p className="text-muted-foreground text-sm mt-10">
           Trusted by homeowners across Central Florida. $1M liability coverage on every scan.
         </p>
       </div>
@@ -106,13 +106,13 @@ function HeroSection() {
    ================================================================ */
 function ProblemSection() {
   return (
-    <section className="py-24 bg-white border-b border-gray-100">
+    <section className="py-24 bg-background border-b border-gray-100">
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-6 leading-tight">
+          <h2 className="text-3xl md:text-5xl font-black text-foreground mb-6 leading-tight">
             You know more about your car's history<br className="hidden md:block" /> than your home's health.
           </h2>
-          <p className="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             Your car has a Carfax. Your body gets an annual physical.
             Your home. the single largest investment you will ever make. has nothing.
             Until now.
@@ -139,7 +139,7 @@ function ProblemSection() {
           ].map((item) => (
             <div key={item.stat} className="text-center">
               <p className="text-4xl md:text-5xl font-black text-[#F47C20] mb-3">{item.stat}</p>
-              <p className="font-semibold text-gray-900 mb-2">{item.label}</p>
+              <p className="font-semibold text-foreground mb-2">{item.label}</p>
               <p className="text-sm text-gray-500">{item.sub}</p>
             </div>
           ))}
@@ -171,10 +171,10 @@ function WhatsIncludedSection() {
           <p className="text-[#F47C20] font-semibold tracking-widest uppercase text-sm mb-4">
             What Gets Scanned
           </p>
-          <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-6">
+          <h2 className="text-3xl md:text-5xl font-black text-foreground mb-6">
             Every system. Every component.<br className="hidden md:block" /> Nothing overlooked.
           </h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Your Home DNA documents the complete anatomy of your property,
             from the roof down to the foundation.
           </p>
@@ -182,13 +182,13 @@ function WhatsIncludedSection() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {systems.map((s) => (
-            <Card key={s.name} className="bg-white border-gray-200 hover:border-[#F47C20]/40 transition-all hover:shadow-md group">
+            <Card key={s.name} className="bg-background border-border hover:border-[#F47C20]/40 transition-all hover:shadow-md group">
               <CardContent className="p-6">
                 <div className="w-11 h-11 rounded-lg bg-[#F47C20]/10 flex items-center justify-center mb-4 group-hover:bg-[#F47C20]/20 transition-colors">
                   <s.icon className="w-5 h-5 text-[#F47C20]" />
                 </div>
-                <h3 className="font-bold text-gray-900 mb-1">{s.name}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
+                <h3 className="font-bold text-foreground mb-1">{s.name}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
               </CardContent>
             </Card>
           ))}
@@ -230,13 +230,13 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section id="how-it-works" className="py-24 bg-white border-b border-gray-100">
+    <section id="how-it-works" className="py-24 bg-background border-b border-gray-100">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
           <p className="text-[#F47C20] font-semibold tracking-widest uppercase text-sm mb-4">
             How It Works
           </p>
-          <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-6">
+          <h2 className="text-3xl md:text-5xl font-black text-foreground mb-6">
             Four steps to knowing<br className="hidden md:block" /> everything about your home.
           </h2>
         </div>
@@ -251,8 +251,8 @@ function HowItWorksSection() {
               </div>
               <div className="flex-1">
                 <p className="text-[#F47C20] font-bold text-sm mb-2">{s.num}</p>
-                <h3 className="text-2xl font-black text-gray-900 mb-3">{s.title}</h3>
-                <p className="text-gray-500 text-lg leading-relaxed max-w-lg">{s.desc}</p>
+                <h3 className="text-2xl font-black text-foreground mb-3">{s.title}</h3>
+                <p className="text-muted-foreground text-lg leading-relaxed max-w-lg">{s.desc}</p>
               </div>
             </div>
           ))}
@@ -273,10 +273,10 @@ function PricingSection() {
           <p className="text-[#F47C20] font-semibold tracking-widest uppercase text-sm mb-4">
             Pricing
           </p>
-          <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-6">
+          <h2 className="text-3xl md:text-5xl font-black text-foreground mb-6">
             Simple pricing. No surprises.
           </h2>
-          <p className="text-gray-500 text-lg max-w-xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             Choose the level of detail your home deserves.
             Both include a full digital report within 24 hours.
           </p>
@@ -284,11 +284,11 @@ function PricingSection() {
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Standard */}
-          <Card className="bg-white border-gray-200 hover:border-[#F47C20]/40 transition-all hover:shadow-lg overflow-hidden">
+          <Card className="bg-background border-border hover:border-[#F47C20]/40 transition-all hover:shadow-lg overflow-hidden">
             <CardContent className="p-0">
               <div className="p-8 pb-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-1">Standard Home DNA Scan</h3>
-                <p className="text-gray-500 text-sm mb-6">Interior systems and appliances</p>
+                <h3 className="text-xl font-bold text-foreground mb-1">Standard Home DNA Scan</h3>
+                <p className="text-muted-foreground text-sm mb-6">Interior systems and appliances</p>
                 <div className="flex items-baseline gap-1 mb-6">
                   <span className="text-5xl font-black text-gray-900">Free</span>
                   <span className="text-gray-400 text-sm"></span>
@@ -317,15 +317,15 @@ function PricingSection() {
           </Card>
 
           {/* Premium */}
-          <Card className="bg-white border-[#F47C20] ring-2 ring-[#F47C20]/20 hover:shadow-lg transition-all overflow-hidden relative">
+          <Card className="bg-background border-[#F47C20] ring-2 ring-[#F47C20]/20 hover:shadow-lg transition-all overflow-hidden relative">
             <div className="absolute top-0 left-0 right-0 h-1 bg-[#F47C20]" />
             <CardContent className="p-0">
               <div className="p-8 pb-6">
                 <Badge className="bg-[#F47C20] text-white border-0 mb-3 text-xs font-bold tracking-wide">
                   RECOMMENDED
                 </Badge>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">Premium Home DNA Scan</h3>
-                <p className="text-gray-500 text-sm mb-6">Interior + exterior + aerial assessment</p>
+                <h3 className="text-xl font-bold text-foreground mb-1">Premium Home DNA Scan</h3>
+                <p className="text-muted-foreground text-sm mb-6">Interior + exterior + aerial assessment</p>
                 <div className="flex items-baseline gap-1 mb-6">
                   <span className="text-5xl font-black text-gray-900">Free</span>
                   <span className="text-gray-400 text-sm"></span>
@@ -367,16 +367,16 @@ function PricingSection() {
    ================================================================ */
 function SampleReportSection() {
   return (
-    <section className="py-24 bg-white border-b border-gray-100">
+    <section className="py-24 bg-background border-b border-gray-100">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
           <p className="text-[#F47C20] font-semibold tracking-widest uppercase text-sm mb-4">
             What You'll Get
           </p>
-          <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-6">
+          <h2 className="text-3xl md:text-5xl font-black text-foreground mb-6">
             A living record of your home.
           </h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Your Home DNA report is not a static PDF. It is a living digital profile
             that updates with every scan, every service visit, every change.
           </p>
@@ -384,7 +384,7 @@ function SampleReportSection() {
 
         {/* Report preview mockup */}
         <div className="max-w-3xl mx-auto">
-          <Card className="bg-gray-50 border-gray-200 overflow-hidden">
+          <Card className="bg-muted/50 border-border overflow-hidden">
             <CardContent className="p-0">
               {/* Report header */}
               <div className="bg-gray-900 p-6 md:p-8">
@@ -411,15 +411,15 @@ function SampleReportSection() {
                   { name: "Electrical Panel", score: "Excellent", age: "6 years", color: "text-green-600 bg-green-50", next: "No action needed" },
                   { name: "Plumbing", score: "Critical", age: "22 years", color: "text-red-600 bg-red-50", next: "Polybutylene pipes detected. Replacement recommended." },
                 ].map((sys) => (
-                  <div key={sys.name} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-white border border-gray-100">
+                  <div key={sys.name} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-background border border-gray-100">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
-                        <h4 className="font-bold text-gray-900 text-sm">{sys.name}</h4>
+                        <h4 className="font-bold text-foreground text-sm">{sys.name}</h4>
                         <Badge className={`${sys.color} border-0 text-xs font-semibold`}>{sys.score}</Badge>
                       </div>
                       <p className="text-xs text-gray-400">Age: {sys.age}</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2 sm:mt-0 sm:text-right max-w-xs">{sys.next}</p>
+                    <p className="text-xs text-muted-foreground mt-2 sm:mt-0 sm:text-right max-w-xs">{sys.next}</p>
                   </div>
                 ))}
               </div>
@@ -509,7 +509,7 @@ function FAQSection() {
     <section className="py-24 bg-[#FAF8F4]">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
             Frequently Asked Questions
           </h2>
         </div>
@@ -528,17 +528,17 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
+    <div className="border border-border rounded-xl bg-background overflow-hidden">
       <button
         className="w-full flex items-center justify-between p-5 text-left"
         onClick={() => setOpen(!open)}
       >
-        <span className="font-semibold text-gray-900 pr-4">{question}</span>
+        <span className="font-semibold text-foreground pr-4">{question}</span>
         <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
         <div className="px-5 pb-5 pt-0">
-          <p className="text-gray-500 text-sm leading-relaxed">{answer}</p>
+          <p className="text-muted-foreground text-sm leading-relaxed">{answer}</p>
         </div>
       )}
     </div>

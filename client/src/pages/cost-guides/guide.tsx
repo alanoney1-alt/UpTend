@@ -50,7 +50,7 @@ export default function CostGuide() {
 
         {/* Hero */}
         <div className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{guide.title}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{guide.title}</h1>
           <div className="flex flex-wrap items-center gap-4 mb-6">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-lg font-bold">
               <DollarSign className="w-5 h-5" />
@@ -59,13 +59,13 @@ export default function CostGuide() {
             </div>
             <GuaranteeBadge compact />
           </div>
-          <p className="text-lg text-slate-600 leading-relaxed">{guide.description}</p>
+          <p className="text-lg text-muted-foreground leading-relaxed">{guide.description}</p>
         </div>
 
         {/* Factors */}
         <Card className="mb-8 border-slate-200">
           <CardContent className="p-6">
-            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-900 mb-4">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
               <TrendingUp className="w-5 h-5 text-primary" />
               Factors That Affect Cost
             </h2>
@@ -83,7 +83,7 @@ export default function CostGuide() {
         {/* What's Included */}
         <Card className="mb-8 border-slate-200">
           <CardContent className="p-6">
-            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-900 mb-4">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
               <List className="w-5 h-5 text-emerald-600" />
               What's Included
             </h2>
@@ -101,7 +101,7 @@ export default function CostGuide() {
         {/* Tips */}
         <Card className="mb-8 border-amber-200 bg-amber-50/50">
           <CardContent className="p-6">
-            <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-900 mb-4">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
               <Lightbulb className="w-5 h-5 text-amber-500" />
               Money-Saving Tips
             </h2>
@@ -120,8 +120,8 @@ export default function CostGuide() {
         <Card className="mb-10 border-primary/20 bg-gradient-to-r from-primary/5 to-emerald-50">
           <CardContent className="p-8 text-center">
             <ShieldCheck className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Ready to Book?</h2>
-            <p className="text-slate-600 mb-6 max-w-md mx-auto">
+            <h2 className="text-2xl font-bold text-foreground mb-2">Ready to Book?</h2>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Get an instant quote from verified Orlando pros. Every job backed by our $500 Satisfaction Guarantee.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -140,14 +140,14 @@ export default function CostGuide() {
         </Card>
 
         {/* Prev/Next navigation */}
-        <div className="flex justify-between items-center border-t border-slate-200 pt-6">
+        <div className="flex justify-between items-center border-t border-border pt-6">
           {prevGuide ? (
-            <Link href={`/cost-guides/${prevGuide.slug}`} className="flex items-center gap-2 text-sm text-slate-600 hover:text-primary transition-colors">
+            <Link href={`/cost-guides/${prevGuide.slug}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
               <ArrowLeft className="w-4 h-4" /> {prevGuide.title}
             </Link>
           ) : <div />}
           {nextGuide ? (
-            <Link href={`/cost-guides/${nextGuide.slug}`} className="flex items-center gap-2 text-sm text-slate-600 hover:text-primary transition-colors">
+            <Link href={`/cost-guides/${nextGuide.slug}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
               {nextGuide.title} <ArrowRight className="w-4 h-4" />
             </Link>
           ) : <div />}

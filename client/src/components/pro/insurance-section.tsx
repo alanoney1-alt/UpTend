@@ -130,11 +130,11 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
       approved: "bg-green-100 text-green-800",
       denied: "bg-red-100 text-red-800",
       escalated: "bg-purple-100 text-purple-800",
-      resolved: "bg-gray-100 text-gray-800",
+      resolved: "bg-muted/50 text-gray-800",
     };
 
     return (
-      <Badge className={statusStyles[status] || "bg-gray-100 text-gray-800"}>
+      <Badge className={statusStyles[status] || "bg-muted/50 text-gray-800"}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     );
@@ -145,7 +145,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Insurance & Claims</h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Manage your insurance policies and liability protection
           </p>
         </div>
@@ -190,7 +190,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
               <Card className="p-8 text-center">
                 <FileText className="mx-auto mb-4 text-gray-400" size={48} />
                 <h3 className="text-lg font-medium mb-2">No Insurance Policies</h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Upload your General Liability insurance policy to increase your liability coverage cap.
                 </p>
                 <Button onClick={() => setShowUploadDialog(true)}>
@@ -317,7 +317,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
                 )}
                 
                 {claim.resolution_notes && (
-                  <div className="bg-gray-50 border rounded p-3">
+                  <div className="bg-muted/50 border rounded p-3">
                     <h4 className="text-sm font-medium mb-1">Resolution Notes:</h4>
                     <p className="text-sm text-gray-700">{claim.resolution_notes}</p>
                   </div>
@@ -359,7 +359,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
                 defaultValue="1000000"
                 required 
               />
-              <p className="text-xs text-gray-500 mt-1">Minimum $1,000,000 required</p>
+              <p className="text-xs text-muted-foreground mt-1">Minimum $1,000,000 required</p>
             </div>
             
             <div>
@@ -376,7 +376,7 @@ export function ProInsuranceSection({ proId }: { proId: string }) {
                 placeholder="https://example.com/policy.pdf"
                 required 
               />
-              <p className="text-xs text-gray-500 mt-1">Upload your policy document and paste the URL here</p>
+              <p className="text-xs text-muted-foreground mt-1">Upload your policy document and paste the URL here</p>
             </div>
             
             <input type="hidden" name="policy_type" value="gl" />

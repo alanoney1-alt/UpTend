@@ -52,7 +52,7 @@ export default function PayrollReport() {
   const wh347 = wh347Data as any;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -61,14 +61,14 @@ export default function PayrollReport() {
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
                 <FileText className="h-6 w-6 text-amber-600" /> WH-347 Compliance Report
               </h1>
               <p className="text-gray-500">Report #{report.reportNumber}. Week Ending {report.weekEndingDate}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge className={report.status === "submitted" ? "bg-blue-100 text-blue-800" : report.status === "accepted" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+            <Badge className={report.status === "submitted" ? "bg-blue-100 text-blue-800" : report.status === "accepted" ? "bg-green-100 text-green-800" : "bg-muted/50 text-gray-800"}>
               {report.status}
             </Badge>
             <Button variant="outline" onClick={() => window.print()}>
@@ -184,7 +184,7 @@ export default function PayrollReport() {
                   })}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-gray-100 font-bold">
+                  <tr className="bg-muted/50 font-bold">
                     <td colSpan={12} className="border p-1 text-right">TOTALS:</td>
                     <td className="border p-1 text-right">{cents(report.totalGrossWages)}</td>
                     <td colSpan={3} className="border p-1"></td>

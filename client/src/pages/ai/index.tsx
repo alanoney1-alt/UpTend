@@ -55,7 +55,7 @@ const features = [
 export default function AIFeaturesHub() {
   usePageTitle("AI Home Tools | UpTend");
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-muted/50 dark:bg-gray-950">
       <Header />
       <main className="flex-1">
         {/* Hero */}
@@ -65,10 +65,10 @@ export default function AIFeaturesHub() {
               <Sparkles className="w-3.5 h-3.5" />
               Powered by AI
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-foreground dark:text-white mb-2">
               Smart Home Services
             </h1>
-            <p className="text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-base text-muted-foreground dark:text-gray-300 max-w-2xl mx-auto">
               From instant photo quotes to smart scheduling, our AI tools make
               managing your home effortless.
             </p>
@@ -83,7 +83,7 @@ export default function AIFeaturesHub() {
               const wrapperProps = f.href ? { href: f.href } : {};
               return (
               <Wrapper key={f.title} {...(wrapperProps as any)}>
-                <Card className={`group p-6 transition-all duration-200 border-gray-200 dark:border-gray-800 h-full ${f.href ? "hover:shadow-lg cursor-pointer" : "opacity-80"}`}>
+                <Card className={`group p-6 transition-all duration-200 border-border dark:border-gray-800 h-full ${f.href ? "hover:shadow-lg cursor-pointer" : "opacity-80"}`}>
                   <div className="flex items-start gap-4">
                     <div
                       className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${f.color}`}
@@ -92,7 +92,7 @@ export default function AIFeaturesHub() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                        <h3 className="font-semibold text-foreground dark:text-white">
                           {f.title}
                         </h3>
                         {f.badge && (
@@ -104,7 +104,7 @@ export default function AIFeaturesHub() {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                      <p className="text-sm text-muted-foreground dark:text-gray-300 leading-relaxed">
                         {f.description}
                       </p>
                     </div>

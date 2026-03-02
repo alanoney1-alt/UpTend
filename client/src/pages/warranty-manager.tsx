@@ -94,7 +94,7 @@ export default function WarrantyManager() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Warranty Manager</h1>
-            <p className="text-gray-600 mt-1">Track and manage all your home warranties in one place.</p>
+            <p className="text-muted-foreground mt-1">Track and manage all your home warranties in one place.</p>
           </div>
           <Button onClick={() => setShowForm(!showForm)} className="bg-amber-600 hover:bg-amber-700">
             <Plus className="w-4 h-4 mr-2" /> Add Warranty
@@ -112,7 +112,7 @@ export default function WarrantyManager() {
             <CardContent>
               <div className="space-y-2">
                 {expiring.map((w) => (
-                  <div key={w.id} className="flex justify-between items-center p-2 bg-white rounded border border-amber-200">
+                  <div key={w.id} className="flex justify-between items-center p-2 bg-background rounded border border-amber-200">
                     <span className="font-medium">{w.appliance_name} {w.brand ? `(${w.brand})` : ""}</span>
                     <span className="text-sm text-amber-700">Expires {w.expiration_date}</span>
                   </div>
@@ -179,7 +179,7 @@ export default function WarrantyManager() {
             <CardContent>
               <ShieldCheck className="w-12 h-12 mx-auto text-gray-400 mb-4" />
               <h3 className="text-lg font-semibold text-gray-700">No warranties tracked yet</h3>
-              <p className="text-gray-500 mt-1">Add your first warranty to start tracking coverage and expiration dates.</p>
+              <p className="text-muted-foreground mt-1">Add your first warranty to start tracking coverage and expiration dates.</p>
             </CardContent>
           </Card>
         ) : (
@@ -196,10 +196,10 @@ export default function WarrantyManager() {
                       </div>
                       <Badge variant={status.variant}>{status.label}</Badge>
                     </div>
-                    {w.expiration_date && <p className="text-sm text-gray-600 mb-1">Expires: {w.expiration_date}</p>}
-                    {w.warranty_provider && <p className="text-sm text-gray-600 mb-1">Provider: {w.warranty_provider}</p>}
-                    {w.policy_number && <p className="text-sm text-gray-600 mb-1">Policy: {w.policy_number}</p>}
-                    {w.coverage_details && <p className="text-sm text-gray-500 mt-2">{w.coverage_details}</p>}
+                    {w.expiration_date && <p className="text-sm text-muted-foreground mb-1">Expires: {w.expiration_date}</p>}
+                    {w.warranty_provider && <p className="text-sm text-muted-foreground mb-1">Provider: {w.warranty_provider}</p>}
+                    {w.policy_number && <p className="text-sm text-muted-foreground mb-1">Policy: {w.policy_number}</p>}
+                    {w.coverage_details && <p className="text-sm text-muted-foreground mt-2">{w.coverage_details}</p>}
 
                     <div className="flex gap-2 mt-4">
                       <Button size="sm" variant="outline" onClick={() => setClaimWarrantyId(claimWarrantyId === w.id ? null : w.id)}>
@@ -211,7 +211,7 @@ export default function WarrantyManager() {
                     </div>
 
                     {claimWarrantyId === w.id && (
-                      <div className="mt-3 p-3 bg-gray-50 rounded">
+                      <div className="mt-3 p-3 bg-muted/50 rounded">
                         <Label>Describe the issue</Label>
                         <Textarea value={claimDescription} onChange={(e) => setClaimDescription(e.target.value)} placeholder="What happened?" className="mt-1" />
                         <Button size="sm" className="mt-2 bg-amber-600 hover:bg-amber-700" onClick={() => claimMutation.mutate(w.id)} disabled={!claimDescription || claimMutation.isPending}>

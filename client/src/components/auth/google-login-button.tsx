@@ -11,7 +11,7 @@ export function GoogleLoginButton({ role, className }: GoogleLoginButtonProps) {
       <Button
         type="button"
         variant="outline"
-        className="w-full bg-white hover:bg-gray-50 text-gray-700 border-gray-300 font-medium"
+        className="w-full bg-background hover:bg-muted/50 text-gray-700 border-gray-300 font-medium"
       >
         <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
           <path
@@ -44,7 +44,7 @@ export function GoogleDivider() {
         <span className="w-full border-t border-gray-300" />
       </div>
       <div className="relative flex justify-center text-xs uppercase">
-        <span className="bg-white dark:bg-card px-2 text-muted-foreground">or</span>
+        <span className="bg-background dark:bg-card px-2 text-muted-foreground">or</span>
       </div>
     </div>
   );

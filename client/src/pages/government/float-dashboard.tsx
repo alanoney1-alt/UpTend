@@ -113,7 +113,7 @@ export default function FloatDashboard() {
 
   if (exposureLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-muted/50 flex items-center justify-center">
         <RefreshCw className="w-8 h-8 animate-spin text-amber-600" />
       </div>
     );
@@ -128,7 +128,7 @@ export default function FloatDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Float Dashboard</h1>
-            <p className="text-gray-500 text-sm">Government contract cash flow management</p>
+            <p className="text-muted-foreground text-sm">Government contract cash flow management</p>
           </div>
           <div className="flex gap-2">
             <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
@@ -200,12 +200,12 @@ export default function FloatDashboard() {
                   <div>
                     <Label>Alert Threshold ($)</Label>
                     <Input type="number" step="1" value={settingsForm.maxFloatExposure} onChange={e => setSettingsForm(p => ({ ...p, maxFloatExposure: e.target.value }))} />
-                    <p className="text-xs text-gray-500 mt-1">Send alert when float exposure exceeds this amount</p>
+                    <p className="text-xs text-muted-foreground mt-1">Send alert when float exposure exceeds this amount</p>
                   </div>
                   <div>
                     <Label>Auto-Hold Threshold ($)</Label>
                     <Input type="number" step="1" value={settingsForm.autoHoldThreshold} onChange={e => setSettingsForm(p => ({ ...p, autoHoldThreshold: e.target.value }))} />
-                    <p className="text-xs text-gray-500 mt-1">Stop posting new work orders above this amount</p>
+                    <p className="text-xs text-muted-foreground mt-1">Stop posting new work orders above this amount</p>
                   </div>
                   <div>
                     <Label>Alert Email</Label>
@@ -253,7 +253,7 @@ export default function FloatDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gray-900">{formatDollars(exposure?.totalCommitted || 0)}</div>
-              <p className="text-xs text-gray-500 mt-1">Active work order quotes</p>
+              <p className="text-xs text-muted-foreground mt-1">Active work order quotes</p>
             </CardContent>
           </Card>
 
@@ -266,7 +266,7 @@ export default function FloatDashboard() {
                 <ArrowUpRight className="w-5 h-5 text-red-500" />
                 <span className="text-2xl font-bold text-gray-900">{formatDollars(exposure?.totalPaidOut || 0)}</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">Upfront + completion transfers</p>
+              <p className="text-xs text-muted-foreground mt-1">Upfront + completion transfers</p>
             </CardContent>
           </Card>
 
@@ -279,7 +279,7 @@ export default function FloatDashboard() {
                 <ArrowDownLeft className="w-5 h-5 text-green-500" />
                 <span className="text-2xl font-bold text-gray-900">{formatDollars(exposure?.totalReceived || 0)}</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">Checks/EFT received</p>
+              <p className="text-xs text-muted-foreground mt-1">Checks/EFT received</p>
             </CardContent>
           </Card>
 
@@ -355,7 +355,7 @@ export default function FloatDashboard() {
                     <tbody>
                       {ledger.entries.map((entry: any) => (
                         <tr key={entry.id} className="border-b border-gray-100">
-                          <td className="py-2 pr-4 text-gray-600 whitespace-nowrap">
+                          <td className="py-2 pr-4 text-muted-foreground whitespace-nowrap">
                             {new Date(entry.createdAt).toLocaleDateString()}
                           </td>
                           <td className="py-2 pr-4">
@@ -369,7 +369,7 @@ export default function FloatDashboard() {
                           <td className="py-2 pr-4 text-right font-mono text-gray-700">
                             {formatDollars(entry.balanceAfter)}
                           </td>
-                          <td className="py-2 text-gray-600 truncate max-w-xs" title={entry.description}>
+                          <td className="py-2 text-muted-foreground truncate max-w-xs" title={entry.description}>
                             {entry.description}
                           </td>
                         </tr>
@@ -381,7 +381,7 @@ export default function FloatDashboard() {
                 {ledger.totalPages > 1 && (
                   <div className="flex justify-center gap-2 mt-4">
                     <Button variant="outline" size="sm" disabled={ledgerPage <= 1} onClick={() => setLedgerPage(p => p - 1)}>Previous</Button>
-                    <span className="text-sm text-gray-500 self-center">Page {ledger.page} of {ledger.totalPages}</span>
+                    <span className="text-sm text-muted-foreground self-center">Page {ledger.page} of {ledger.totalPages}</span>
                     <Button variant="outline" size="sm" disabled={ledgerPage >= ledger.totalPages} onClick={() => setLedgerPage(p => p + 1)}>Next</Button>
                   </div>
                 )}

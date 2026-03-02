@@ -207,7 +207,7 @@ export function SustainabilityReport({ jobId, onComplete, onCancel }: Sustainabi
             {report.breakdown.recycled > 0 && (
               <div className="flex items-center justify-between p-3 border rounded-lg bg-green-50 dark:bg-green-950">
                 <span className="text-sm font-medium"> Recycled</span>
-                <Badge variant="outline" className="bg-white dark:bg-background">
+                <Badge variant="outline" className="bg-background dark:bg-background">
                   {report.breakdown.recycled.toFixed(0)} lbs
                 </Badge>
               </div>
@@ -215,7 +215,7 @@ export function SustainabilityReport({ jobId, onComplete, onCancel }: Sustainabi
             {report.breakdown.donated > 0 && (
               <div className="flex items-center justify-between p-3 border rounded-lg bg-pink-50 dark:bg-pink-950">
                 <span className="text-sm font-medium"> Donated</span>
-                <Badge variant="outline" className="bg-white dark:bg-background">
+                <Badge variant="outline" className="bg-background dark:bg-background">
                   {report.breakdown.donated.toFixed(0)} lbs
                 </Badge>
               </div>
@@ -223,15 +223,15 @@ export function SustainabilityReport({ jobId, onComplete, onCancel }: Sustainabi
             {report.breakdown.resold > 0 && (
               <div className="flex items-center justify-between p-3 border rounded-lg bg-blue-50 dark:bg-blue-950">
                 <span className="text-sm font-medium"> Resold</span>
-                <Badge variant="outline" className="bg-white dark:bg-background">
+                <Badge variant="outline" className="bg-background dark:bg-background">
                   {report.breakdown.resold.toFixed(0)} lbs
                 </Badge>
               </div>
             )}
             {report.breakdown.landfilled > 0 && (
-              <div className="flex items-center justify-between p-3 border rounded-lg bg-gray-50 dark:bg-gray-950">
+              <div className="flex items-center justify-between p-3 border rounded-lg bg-muted/50 dark:bg-gray-950">
                 <span className="text-sm font-medium"> Landfilled</span>
-                <Badge variant="outline" className="bg-white dark:bg-background">
+                <Badge variant="outline" className="bg-background dark:bg-background">
                   {report.breakdown.landfilled.toFixed(0)} lbs
                 </Badge>
               </div>
@@ -239,7 +239,7 @@ export function SustainabilityReport({ jobId, onComplete, onCancel }: Sustainabi
             {report.breakdown.specialty > 0 && (
               <div className="flex items-center justify-between p-3 border rounded-lg bg-yellow-50 dark:bg-yellow-950">
                 <span className="text-sm font-medium"> Specialty</span>
-                <Badge variant="outline" className="bg-white dark:bg-background">
+                <Badge variant="outline" className="bg-background dark:bg-background">
                   {report.breakdown.specialty.toFixed(0)} lbs
                 </Badge>
               </div>

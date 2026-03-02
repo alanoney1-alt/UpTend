@@ -38,7 +38,7 @@ export function PartsManagement() {
             className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${
               activeTab === tab
                 ? "border-amber-500 text-amber-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-muted-foreground hover:text-gray-700"
             }`}
           >
             {tab === "requests" ? "Parts Requests" : "Preferred Suppliers"}
@@ -78,7 +78,7 @@ function PartsRequestsTable() {
     approved: "bg-green-100 text-green-800",
     denied: "bg-red-100 text-red-800",
     sourced: "bg-blue-100 text-blue-800",
-    installed: "bg-gray-100 text-gray-600",
+    installed: "bg-muted/50 text-gray-600",
   };
 
   return (
@@ -99,7 +99,7 @@ function PartsRequestsTable() {
           {requests.map((pr) => (
             <tr key={pr.id} className="border-b hover:bg-gray-50">
               <td className="py-3 max-w-[200px] truncate">{pr.description}</td>
-              <td className="py-3 text-gray-600 text-xs">{pr.pickup_address || pr.service_request_id.slice(0, 8)}</td>
+              <td className="py-3 text-muted-foreground text-xs">{pr.pickup_address || pr.service_request_id.slice(0, 8)}</td>
               <td className="py-3">{pr.estimated_cost ? `$${pr.estimated_cost.toFixed(2)}` : "-"}</td>
               <td className="py-3">{pr.actual_cost ? `$${pr.actual_cost.toFixed(2)}` : "-"}</td>
               <td className="py-3 text-xs">{pr.supplier_source || "-"}</td>

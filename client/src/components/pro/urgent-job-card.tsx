@@ -100,12 +100,12 @@ export function UrgentJobCard({ job, onAccepted, onDismissed }: UrgentJobCardPro
             {SERVICE_NAMES[job.serviceType] || job.serviceType}
           </span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-gray-400">
           <MapPin className="w-4 h-4" />
           <span>{job.pickupAddress}</span>
         </div>
         {job.priceEstimate && (
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-gray-400">
             <DollarSign className="w-4 h-4" />
             <span className="font-semibold">${job.priceEstimate.toFixed(2)}</span>
           </div>
@@ -128,7 +128,7 @@ export function UrgentJobCard({ job, onAccepted, onDismissed }: UrgentJobCardPro
         </button>
         <button
           onClick={() => onDismissed?.()}
-          className="py-3 px-4 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-lg"
+          className="py-3 px-4 bg-muted/50 dark:bg-gray-800 text-muted-foreground rounded-lg"
         >
           Skip
         </button>

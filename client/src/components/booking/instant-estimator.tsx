@@ -55,7 +55,7 @@ export function InstantEstimator() {
   if (step === 1) {
     return (
       <div
-        className="w-full max-w-2xl mx-auto bg-white dark:bg-slate-800 p-2 rounded-md shadow-2xl flex flex-col sm:flex-row items-center gap-2 border border-slate-200 dark:border-slate-700"
+        className="w-full max-w-2xl mx-auto bg-background dark:bg-slate-800 p-2 rounded-md shadow-2xl flex flex-col sm:flex-row items-center gap-2 border border-border dark:border-slate-700"
         data-testid="widget-instant-estimator"
       >
         <div className="flex-1 w-full">

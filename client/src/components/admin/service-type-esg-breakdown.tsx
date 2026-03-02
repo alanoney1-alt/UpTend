@@ -112,7 +112,7 @@ export function ServiceTypeEsgBreakdown() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{totalJobs.toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">{aggregateData.length} active services</p>
+            <p className="text-xs text-muted-foreground mt-1">{aggregateData.length} active services</p>
           </CardContent>
         </Card>
 
@@ -122,7 +122,7 @@ export function ServiceTypeEsgBreakdown() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(totalCo2).toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">lbs CO₂ equivalent</p>
+            <p className="text-xs text-muted-foreground mt-1">lbs CO₂ equivalent</p>
           </CardContent>
         </Card>
 
@@ -132,7 +132,7 @@ export function ServiceTypeEsgBreakdown() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{Math.round(totalWater).toLocaleString()}</div>
-            <p className="text-xs text-gray-500 mt-1">gallons</p>
+            <p className="text-xs text-muted-foreground mt-1">gallons</p>
           </CardContent>
         </Card>
       </div>

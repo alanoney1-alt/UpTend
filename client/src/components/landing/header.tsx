@@ -229,7 +229,7 @@ export function Header() {
 
               <Link href="/book" asChild>
                 <Button
-                  className="bg-white text-slate-900 font-bold px-6"
+                  className="bg-background text-foreground font-bold px-6"
                   data-testid="button-book-now"
                 >
                   {t("common.book_now")}

@@ -72,7 +72,7 @@ function statusBadge(status: string) {
     case "failed":
       return <Badge className="bg-red-100 text-red-800"><XCircle className="w-3 h-3 mr-1" /> Failed</Badge>;
     case "void":
-      return <Badge className="bg-gray-100 text-gray-800"><Ban className="w-3 h-3 mr-1" /> Void</Badge>;
+      return <Badge className="bg-muted/50 text-gray-800"><Ban className="w-3 h-3 mr-1" /> Void</Badge>;
     case "pending":
       return <Badge className="bg-amber-100 text-amber-800"><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Pending</Badge>;
     case "draft":
@@ -129,7 +129,7 @@ export default function BusinessBilling() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -228,7 +228,7 @@ export default function BusinessBilling() {
                     </div>
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-gray-50 text-left">
+                        <tr className="bg-muted/50 text-left">
                           <th className="p-2">Property</th>
                           <th className="p-2">Service</th>
                           <th className="p-2">Pro</th>
@@ -272,7 +272,7 @@ export default function BusinessBilling() {
                     {runs.filter((r) => !r.dryRun).map((run) => (
                       <div
                         key={run.id}
-                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer"
                         onClick={() => setSelectedRun(run.id)}
                       >
                         <div>

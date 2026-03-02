@@ -92,7 +92,7 @@ export function SmartMatchResult({
       <p className="text-center text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-2 tracking-wide uppercase">
         Match Found
       </p>
-      <h2 className="text-center text-xl font-bold text-slate-900 dark:text-white mb-6">
+      <h2 className="text-center text-xl font-bold text-foreground dark:text-white mb-6">
         We found the perfect pro for you
       </h2>
 
@@ -115,33 +115,33 @@ export function SmartMatchResult({
                   <div className="flex items-start gap-3">
                     <Briefcase className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white">{job.serviceType}</p>
+                      <p className="text-sm font-semibold text-foreground dark:text-white">{job.serviceType}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <MapPin className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
-                    <p className="text-sm text-slate-600 dark:text-slate-300">{job.address}</p>
+                    <p className="text-sm text-muted-foreground dark:text-slate-300">{job.address}</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <Calendar className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
-                    <p className="text-sm text-slate-600 dark:text-slate-300">{job.dateTime}</p>
+                    <p className="text-sm text-muted-foreground dark:text-slate-300">{job.dateTime}</p>
                   </div>
                 </div>
               )}
 
               {/* Price Breakdown */}
-              <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 space-y-2">
+              <div className="bg-muted/50 dark:bg-slate-800/50 rounded-xl p-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500 dark:text-slate-400">Service</span>
-                  <span className="font-medium text-slate-900 dark:text-white">${price.toFixed(2)}</span>
+                  <span className="font-medium text-foreground dark:text-white">${price.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500 dark:text-slate-400">Service fee</span>
-                  <span className="font-medium text-slate-900 dark:text-white">${serviceFee.toFixed(2)}</span>
+                  <span className="font-medium text-foreground dark:text-white">${serviceFee.toFixed(2)}</span>
                 </div>
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex justify-between">
-                  <span className="font-bold text-slate-900 dark:text-white">Total</span>
-                  <span className="text-2xl font-black text-slate-900 dark:text-white">${totalPrice.toFixed(2)}</span>
+                <div className="border-t border-border dark:border-slate-700 pt-2 flex justify-between">
+                  <span className="font-bold text-foreground dark:text-white">Total</span>
+                  <span className="text-2xl font-black text-foreground dark:text-white">${totalPrice.toFixed(2)}</span>
                 </div>
                 <p className="text-[11px] text-slate-400 dark:text-slate-500">
                   Includes Price Protection, background checks, and our guarantee
@@ -150,7 +150,7 @@ export function SmartMatchResult({
             </div>
 
             {/* Divider. mobile only */}
-            <div className="block md:hidden border-t border-slate-200 dark:border-slate-700" />
+            <div className="block md:hidden border-t border-border dark:border-slate-700" />
 
             {/* RIGHT: Pro Card */}
             <div className="space-y-4">
@@ -165,7 +165,7 @@ export function SmartMatchResult({
                 </Avatar>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">{pro.firstName}</h4>
+                    <h4 className="text-lg font-bold text-foreground dark:text-white">{pro.firstName}</h4>
                     {pro.verified && (
                       <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] px-1.5 py-0">
                         <CheckCircle className="w-3 h-3 mr-0.5" />
@@ -175,7 +175,7 @@ export function SmartMatchResult({
                   </div>
                   <div className="flex items-center gap-1 mt-0.5">
                     <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                    <span className="font-semibold text-sm text-slate-900 dark:text-white">{pro.rating}</span>
+                    <span className="font-semibold text-sm text-foreground dark:text-white">{pro.rating}</span>
                     {pro.reviewCount && (
                       <span className="text-xs text-slate-400">({pro.reviewCount} reviews)</span>
                     )}
@@ -185,19 +185,19 @@ export function SmartMatchResult({
 
               {/* Stats grid */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">{yearsExperience}</p>
+                <div className="bg-muted/50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
+                  <p className="text-lg font-bold text-foreground dark:text-white">{yearsExperience}</p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">Experience</p>
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">{pro.completedJobs}</p>
+                <div className="bg-muted/50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
+                  <p className="text-lg font-bold text-foreground dark:text-white">{pro.completedJobs}</p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">Jobs Completed</p>
                 </div>
                 {pro.responseTimeMin && (
-                  <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center col-span-2">
+                  <div className="bg-muted/50 dark:bg-slate-800/50 rounded-lg p-3 text-center col-span-2">
                     <div className="flex items-center justify-center gap-1">
                       <Zap className="w-4 h-4 text-amber-500" />
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">{pro.responseTimeMin} min</p>
+                      <p className="text-lg font-bold text-foreground dark:text-white">{pro.responseTimeMin} min</p>
                     </div>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400">Avg. Response Time</p>
                   </div>
@@ -208,7 +208,7 @@ export function SmartMatchResult({
               {pro.specialties && pro.specialties.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {pro.specialties.map((s) => (
-                    <Badge key={s} variant="outline" className="text-[11px] font-medium text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600">
+                    <Badge key={s} variant="outline" className="text-[11px] font-medium text-muted-foreground dark:text-slate-300 border-border dark:border-slate-600">
                       {s}
                     </Badge>
                   ))}
@@ -224,7 +224,7 @@ export function SmartMatchResult({
                         setVideoPlaying(true);
                         setTimeout(() => videoRef.current?.play(), 50);
                       }}
-                      className="relative w-full aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden group"
+                      className="relative w-full aspect-video bg-muted/50 dark:bg-slate-800 rounded-xl overflow-hidden group"
                     >
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-12 h-12 rounded-full bg-[#ea580c]/90 flex items-center justify-center group-hover:bg-[#ea580c] transition-colors shadow-lg">
@@ -247,9 +247,9 @@ export function SmartMatchResult({
                   )}
                 </div>
               ) : pro.tagline ? (
-                <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-muted/50 dark:bg-slate-800/50">
                   <Quote className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
-                  <p className="text-sm text-slate-600 dark:text-slate-400 italic">{pro.tagline}</p>
+                  <p className="text-sm text-muted-foreground dark:text-slate-400 italic">{pro.tagline}</p>
                 </div>
               ) : null}
             </div>
@@ -289,11 +289,11 @@ interface AlternativeProCardProps {
 
 export function AlternativeProCard({ pro, isTopMatch, onSelect }: AlternativeProCardProps) {
   return (
-    <Card className={`border ${isTopMatch ? "border-[#ea580c]/50 bg-orange-50/30 dark:bg-orange-950/10" : "border-slate-200 dark:border-slate-700"}`}>
+    <Card className={`border ${isTopMatch ? "border-[#ea580c]/50 bg-orange-50/30 dark:bg-orange-950/10" : "border-border dark:border-slate-700"}`}>
       <CardContent className="p-4 flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-bold text-sm text-slate-900 dark:text-white">{pro.firstName}</span>
+            <span className="font-bold text-sm text-foreground dark:text-white">{pro.firstName}</span>
             {pro.verified && (
               <Badge variant="secondary" className="bg-green-100 text-green-700 text-[10px] px-1 py-0">
                 Verified
@@ -314,7 +314,7 @@ export function AlternativeProCard({ pro, isTopMatch, onSelect }: AlternativePro
           </div>
         </div>
         <div className="text-right">
-          <div className="text-lg font-bold text-slate-900 dark:text-white">${pro.totalPrice.toFixed(2)}</div>
+          <div className="text-lg font-bold text-foreground dark:text-white">${pro.totalPrice.toFixed(2)}</div>
           <button
             onClick={() => onSelect(pro.proId)}
             className="text-xs font-semibold text-[#ea580c] hover:underline"

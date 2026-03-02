@@ -161,7 +161,7 @@ export function CertificationDashboardSection() {
           </div>
           <div className="space-y-2">
             {active.map((cert: any) => (
-              <div key={cert.id} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+              <div key={cert.id} className="flex items-center justify-between p-2 bg-muted/50 dark:bg-gray-900/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <CertificationBadges certSlugs={[cert.slug]} size="md" />
                   <span className="text-sm font-medium">{cert.name}</span>
@@ -229,7 +229,7 @@ export function CertificationDashboardSection() {
               <div key={cert.id} className="flex items-center justify-between py-1">
                 <div>
                   <span className="text-sm">{cert.name}</span>
-                  <span className="text-xs text-gray-500 ml-2">~{cert.estimated_minutes}min</span>
+                  <span className="text-xs text-muted-foreground ml-2">~{cert.estimated_minutes}min</span>
                 </div>
                 <Badge variant="outline" className="text-[10px] bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50">
                   {cert.category}

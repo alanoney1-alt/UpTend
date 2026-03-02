@@ -223,7 +223,7 @@ export function InsuranceHub({ propertyId }: InsuranceHubProps) {
 
                     {/* Claims History */}
                     {policy.totalClaimsMade && policy.totalClaimsMade > 0 && (
-                      <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                      <div className="mt-4 p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-xs text-muted-foreground">Claims Made</p>

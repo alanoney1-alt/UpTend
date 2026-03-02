@@ -52,10 +52,10 @@ function isProPage(path: string) {
 function BookingDraftCard({ draft, onConfirm, onEdit }: { draft: any; onConfirm: () => void; onEdit: () => void }) {
   const q = draft.quote || {};
   return (
-    <div className="bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-800 rounded-xl p-3.5 mt-2 shadow-sm">
+    <div className="bg-background dark:bg-gray-800 border border-orange-200 dark:border-orange-800 rounded-xl p-3.5 mt-2 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-lg"></span>
-        <span className="font-semibold text-sm text-gray-900 dark:text-gray-100">Your Quote</span>
+        <span className="font-semibold text-sm text-foreground dark:text-gray-100">Your Quote</span>
       </div>
       <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
         {draft.serviceName} {q.breakdown?.[0]?.label ? `: ${q.breakdown[0].label}` : ""}
@@ -64,13 +64,13 @@ function BookingDraftCard({ draft, onConfirm, onEdit }: { draft: any; onConfirm:
         <p className="text-lg font-bold text-[#F47C20] mt-1">{q.priceFormatted}</p>
       )}
       {draft.preferredDate && (
-        <p className="text-xs text-gray-500 mt-0.5"> {draft.preferredDate}</p>
+        <p className="text-xs text-muted-foreground mt-0.5"> {draft.preferredDate}</p>
       )}
       <div className="flex gap-2 mt-3">
         <button onClick={onConfirm} className="flex-1 px-3 py-2 rounded-lg bg-[#F47C20] text-white text-sm font-medium hover:bg-[#e06d15] transition">
           Confirm & Book
         </button>
-        <button onClick={onEdit} className="flex-1 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+        <button onClick={onEdit} className="flex-1 px-3 py-2 rounded-lg bg-muted/50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition">
           Edit Details
         </button>
       </div>
@@ -111,7 +111,7 @@ function MessageBubble({ msg, onButtonPress }: { msg: ChatMessage; onButtonPress
           className={`rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
             isUser
               ? "bg-[#F47C20] text-white rounded-br-md"
-              : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-bl-md"
+              : "bg-muted/50 dark:bg-gray-800 text-foreground dark:text-gray-100 rounded-bl-md"
           }`}
           dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }}
         />
@@ -293,7 +293,7 @@ export function AiChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-[7.5rem] md:bottom-6 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] h-[340px] max-h-[50vh] md:h-[440px] md:max-h-[600px] flex flex-col bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-[7.5rem] md:bottom-6 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] h-[340px] max-h-[50vh] md:h-[440px] md:max-h-[600px] flex flex-col bg-background dark:bg-gray-900 rounded-2xl shadow-2xl border border-border dark:border-gray-700 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
       {/* Header */}
       <div className="bg-[#F47C20] px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
@@ -322,10 +322,10 @@ export function AiChatWidget() {
             <div className="h-16 w-16 rounded-full bg-[#F47C20]/10 flex items-center justify-center mb-4">
               <Bot className="h-8 w-8 text-[#F47C20]" />
             </div>
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+            <h4 className="font-semibold text-foreground dark:text-gray-100 mb-1">
               {greetingText}
             </h4>
-            <p className="text-sm text-gray-500 dark:text-gray-300 max-w-[260px] mb-1">
+            <p className="text-sm text-muted-foreground dark:text-gray-300 max-w-[260px] mb-1">
               {isPro ? "Learn about earning with UpTend" : "I'm just here to help! Need a pro for your home? Just ask."}
             </p>
             <p className="text-xs text-gray-400 dark:text-gray-400 max-w-[260px] mb-4">
@@ -344,7 +344,7 @@ export function AiChatWidget() {
                 <Bot className="h-3.5 w-3.5" />
               </AvatarFallback>
             </Avatar>
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-bl-md px-4 py-3">
+            <div className="bg-muted/50 dark:bg-gray-800 rounded-2xl rounded-bl-md px-4 py-3">
               <div className="flex gap-1">
                 <span className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                 <span className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -356,7 +356,7 @@ export function AiChatWidget() {
       </ScrollArea>
 
       {/* Input */}
-      <div className="border-t border-gray-200 dark:border-gray-700 px-3 py-2.5 shrink-0">
+      <div className="border-t border-border dark:border-gray-700 px-3 py-2.5 shrink-0">
         <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
           <Input
             ref={inputRef}

@@ -184,7 +184,7 @@ function FindProPage() {
                   <div className="text-sm">
                     <p className="font-semibold">{pro.firstName} {pro.lastInitial}.</p>
                     <p className="text-amber-600"> {pro.rating} · {pro.jobsCompleted} jobs</p>
-                    <p className="text-xs text-gray-500 mt-1">{pro.services.map((s) => SERVICE_LABELS[s] || s).join(", ")}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{pro.services.map((s) => SERVICE_LABELS[s] || s).join(", ")}</p>
                   </div>
                 </Popup>
               </Marker>
@@ -373,7 +373,7 @@ function ProCard({ pro, onViewProfile, onBook }: { pro: ProProfile; onViewProfil
           {pro.services.map((svc) => (
             <span
               key={svc}
-              className="inline-block px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-medium text-slate-600 dark:text-slate-300"
+              className="inline-block px-2 py-0.5 rounded-full bg-muted/50 dark:bg-slate-800 text-[10px] font-medium text-muted-foreground dark:text-slate-300"
             >
               {SERVICE_LABELS[svc] || svc}
             </span>

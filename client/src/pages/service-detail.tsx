@@ -595,7 +595,7 @@ export default function ServiceDetail() {
             )}
             {service.availability.scheduled && (
               <Link href={`${bookUrl}&timing=scheduled`}>
-                <Badge variant="secondary" className="text-base py-2 px-4 bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                <Badge variant="secondary" className="text-base py-2 px-4 bg-muted/50 text-slate-800 dark:bg-slate-800 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                   <CalendarCheck className="w-4 h-4 mr-2" /> {t("service_detail.scheduled")}
                 </Badge>
               </Link>

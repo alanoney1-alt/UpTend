@@ -41,7 +41,7 @@ export default function QualityReports() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Quality Inspection Reports</h1>
-          <p className="text-gray-600 mt-1">Review quality assessments from completed jobs at your property.</p>
+          <p className="text-muted-foreground mt-1">Review quality assessments from completed jobs at your property.</p>
         </div>
 
         {isLoading ? (
@@ -51,7 +51,7 @@ export default function QualityReports() {
             <CardContent>
               <ClipboardCheck className="w-12 h-12 mx-auto text-gray-400 mb-4" />
               <h3 className="text-lg font-semibold text-gray-700">No reports yet</h3>
-              <p className="text-gray-500 mt-1">Quality inspection reports will appear here after completed jobs are reviewed.</p>
+              <p className="text-muted-foreground mt-1">Quality inspection reports will appear here after completed jobs are reviewed.</p>
             </CardContent>
           </Card>
         ) : (

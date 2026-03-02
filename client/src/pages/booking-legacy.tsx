@@ -2276,7 +2276,7 @@ export default function Booking() {
                           className={`p-6 rounded-lg border-2 text-left transition-all ${
                             (formData.dwellscanTier || "standard") === "standard"
                               ? "border-primary bg-primary/5"
-                              : "border-gray-200 hover:border-gray-300"
+                              : "border-border hover:border-gray-300"
                           }`}
                         >
                           <div className="flex items-start justify-between mb-3">
@@ -2306,7 +2306,7 @@ export default function Booking() {
                           className={`p-6 rounded-lg border-2 text-left transition-all relative ${
                             formData.dwellscanTier === "aerial"
                               ? "border-primary bg-primary/5"
-                              : "border-gray-200 hover:border-gray-300"
+                              : "border-border hover:border-gray-300"
                           }`}
                         >
                           <Badge className="absolute top-3 right-3 bg-orange-500 text-white">Best Value</Badge>

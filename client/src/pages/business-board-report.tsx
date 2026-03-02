@@ -126,7 +126,7 @@ export default function BusinessBoardReport() {
                     <span className="text-slate-700">{item.category}</span>
                     <span className="text-slate-500">${item.amount.toLocaleString()} / ${item.budget.toLocaleString()}</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2.5">
+                  <div className="w-full bg-muted/50 rounded-full h-2.5">
                     <div
                       className={`h-2.5 rounded-full ${item.amount / item.budget > 0.9 ? "bg-red-500" : "bg-amber-500"}`}
                       style={{ width: `${Math.min((item.amount / item.budget) * 100, 100)}%` }}

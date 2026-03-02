@@ -74,11 +74,11 @@ export default function BusinessCommunityHub() {
                 <span className="text-sm font-medium">+3 from last month</span>
               </div>
               <div className="flex-1 grid grid-cols-2 gap-4 sm:ml-8">
-                <div className="text-center p-3 bg-white rounded-lg border">
+                <div className="text-center p-3 bg-background rounded-lg border">
                   <p className="text-2xl font-bold text-slate-900">142</p>
                   <p className="text-xs text-slate-500">Units Serviced</p>
                 </div>
-                <div className="text-center p-3 bg-white rounded-lg border">
+                <div className="text-center p-3 bg-background rounded-lg border">
                   <p className="text-2xl font-bold text-red-600">7</p>
                   <p className="text-xs text-slate-500">Overdue Items</p>
                 </div>
@@ -200,7 +200,7 @@ export default function BusinessCommunityHub() {
                       <span>{deal.enrolled} of {deal.capacity} enrolled</span>
                       <span>Deadline: {deal.deadline}</span>
                     </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2">
+                    <div className="w-full bg-muted/50 rounded-full h-2">
                       <div className="bg-amber-500 h-2 rounded-full" style={{ width: `${(deal.enrolled / deal.capacity) * 100}%` }} />
                     </div>
                   </div>

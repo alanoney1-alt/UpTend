@@ -149,7 +149,7 @@ export function InsuranceStatusCard() {
                       ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
                       : alert.urgency === "medium"
                       ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-                      : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      : "bg-muted/50 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
                   }`}
                 >
                   <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
@@ -224,7 +224,7 @@ export function InsuranceStatusCard() {
           {/* Tier 3: Required */}
           {requirement.tier === 3 && status.hasInsurance && (
             <div>
-              <div className="p-3 rounded-lg bg-white dark:bg-slate-800 border">
+              <div className="p-3 rounded-lg bg-background dark:bg-slate-800 border">
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
                     <span className="text-muted-foreground">Provider:</span>{" "}
@@ -343,7 +343,7 @@ export function InsuranceStatusCard() {
               Why Insurance Matters
             </button>
             {showWhySection && (
-              <div className="mt-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-sm text-muted-foreground space-y-1">
+              <div className="mt-2 p-3 rounded-lg bg-muted/50 dark:bg-slate-800/50 text-sm text-muted-foreground space-y-1">
                 <p className="flex items-start gap-2">
                   <CheckCircle className="w-4 h-4 mt-0.5 text-green-500 flex-shrink-0" />
                   Protects you from liability claims on the job

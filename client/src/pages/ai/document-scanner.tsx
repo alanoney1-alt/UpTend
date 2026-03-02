@@ -94,12 +94,12 @@ export default function DocumentScanner() {
     editedFields[field.key] ?? field.value;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-muted/50 dark:bg-gray-950">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8 max-w-2xl">
         <button
           onClick={() => navigate("/ai")}
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#F47C20] mb-6 transition-colors"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-[#F47C20] mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> AI Features
         </button>
@@ -108,10 +108,10 @@ export default function DocumentScanner() {
           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-600 rounded-full px-3 py-1 text-sm font-medium mb-3">
             <FileSearch className="w-4 h-4" /> Document AI
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground dark:text-white mb-2">
             Document Scanner
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-muted-foreground dark:text-gray-300">
             Upload warranties, receipts, or insurance docs for instant AI extraction
           </p>
         </div>
@@ -125,7 +125,7 @@ export default function DocumentScanner() {
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">
+                  <p className="text-muted-foreground dark:text-gray-300 font-medium mb-1">
                     Upload a document
                   </p>
                   <p className="text-sm text-gray-400">
@@ -133,10 +133,10 @@ export default function DocumentScanner() {
                   </p>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <div className="flex items-center gap-3 p-4 bg-muted/50 dark:bg-gray-900 rounded-lg">
                   <FileText className="w-8 h-8 text-blue-500" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 dark:text-white truncate">
+                    <p className="font-medium text-foreground dark:text-white truncate">
                       {file.name}
                     </p>
                     <p className="text-sm text-gray-500">
@@ -179,7 +179,7 @@ export default function DocumentScanner() {
             {/* History */}
             {history && history.length > 0 && (
               <div className="mt-10">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <h2 className="text-lg font-semibold text-foreground dark:text-white mb-4">
                   Previous Scans
                 </h2>
                 <div className="space-y-3">
@@ -192,7 +192,7 @@ export default function DocumentScanner() {
                       <div className="flex items-center gap-3">
                         <FileText className="w-5 h-5 text-blue-500" />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-900 dark:text-white truncate">
+                          <p className="font-medium text-foreground dark:text-white truncate">
                             {doc.fileName}
                           </p>
                           <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -219,14 +219,14 @@ export default function DocumentScanner() {
                   <CheckCircle className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-gray-900 dark:text-white">
+                  <h2 className="font-semibold text-foreground dark:text-white">
                     Extracted Data
                   </h2>
                   <Badge variant="secondary">{result.documentType}</Badge>
                 </div>
               </div>
 
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <p className="text-sm text-muted-foreground dark:text-gray-300 mb-6 p-3 bg-muted/50 dark:bg-gray-900 rounded-lg">
                 {result.summary}
               </p>
 
@@ -234,11 +234,11 @@ export default function DocumentScanner() {
                 {result.fields.map((field) => (
                   <div
                     key={field.key}
-                    className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-800"
+                    className="flex items-center gap-3 p-3 rounded-lg border border-border dark:border-gray-800"
                   >
                     <div className="text-gray-400">{fieldIcon(field.type)}</div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider">
                         {field.label}
                       </p>
                       {editingField === field.key ? (
@@ -254,7 +254,7 @@ export default function DocumentScanner() {
                           autoFocus
                         />
                       ) : (
-                        <p className="font-medium text-gray-900 dark:text-white">
+                        <p className="font-medium text-foreground dark:text-white">
                           {getFieldValue(field)}
                         </p>
                       )}

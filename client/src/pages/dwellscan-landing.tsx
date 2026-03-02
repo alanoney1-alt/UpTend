@@ -147,7 +147,7 @@ export default function DwellScanLanding() {
                   </p>
                 </div>
 
-                <div className="p-3 bg-white dark:bg-gray-900 rounded-lg border border-blue-200 mb-4">
+                <div className="p-3 bg-background dark:bg-gray-900 rounded-lg border border-blue-200 mb-4">
                   <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">
                      Incredible Value
                   </p>

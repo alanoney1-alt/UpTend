@@ -199,7 +199,7 @@ export default function Properties() {
 
                   {/* Property Health Score */}
                   {property.propertyHealthScore !== null && (
-                    <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="mb-4 p-4 bg-muted/50 rounded-lg">
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-xs text-muted-foreground mb-1">Property Health Score</p>

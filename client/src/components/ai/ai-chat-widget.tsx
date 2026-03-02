@@ -55,7 +55,7 @@ function QuickButtons({ buttons, onPress }: { buttons: QuickButton[]; onPress: (
 function BookingDraftCard({ draft, onAction }: { draft: any; onAction: (btn: QuickButton) => void }) {
   const q = draft.quote || {};
   return (
-    <div className="bg-white border border-orange-200 rounded-xl p-3 mt-2 shadow-sm">
+    <div className="bg-background border border-orange-200 rounded-xl p-3 mt-2 shadow-sm">
       <div className="flex items-center gap-2 mb-1.5">
         <span className="text-base"></span>
         <span className="font-semibold text-sm">Your Quote</span>
@@ -67,7 +67,7 @@ function BookingDraftCard({ draft, onAction }: { draft: any; onAction: (btn: Qui
         <button onClick={() => onAction({ text: "Confirm & Book", action: "action:confirmBooking" })} className="flex-1 px-3 py-1.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 transition">
           Confirm & Book
         </button>
-        <button onClick={() => onAction({ text: "Edit", action: "reply:I'd like to change some details" })} className="flex-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition">
+        <button onClick={() => onAction({ text: "Edit", action: "reply:I'd like to change some details" })} className="flex-1 px-3 py-1.5 rounded-lg bg-muted/50 text-gray-700 text-sm font-medium hover:bg-gray-200 transition">
           Edit Details
         </button>
       </div>
@@ -332,7 +332,7 @@ export function AiChatWidget() {
                         ))}
                       </div>
                     )}
-                    <p className={`text-[10px] text-slate-600 mt-1 px-1 ${msg.role === "user" ? "text-right" : "text-left"}`}>
+                    <p className={`text-[10px] text-muted-foreground mt-1 px-1 ${msg.role === "user" ? "text-right" : "text-left"}`}>
                       {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>

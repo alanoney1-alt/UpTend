@@ -27,10 +27,10 @@ const STATUS_COLORS: Record<string, string> = {
   expiring_soon: "bg-yellow-100 text-yellow-800",
   expired: "bg-red-100 text-red-800",
   missing: "bg-red-100 text-red-800",
-  pending: "bg-gray-100 text-gray-800",
+  pending: "bg-muted/50 text-gray-800",
   approved: "bg-green-100 text-green-800",
   disputed: "bg-red-100 text-red-800",
-  draft: "bg-gray-100 text-gray-800",
+  draft: "bg-muted/50 text-gray-800",
   submitted: "bg-blue-100 text-blue-800",
   accepted: "bg-green-100 text-green-800",
   paid: "bg-green-100 text-green-800",
@@ -42,7 +42,7 @@ const STATUS_COLORS: Record<string, string> = {
   completed: "bg-teal-100 text-teal-800",
   verified: "bg-green-100 text-green-800",
   declined: "bg-red-100 text-red-800",
-  withdrawn: "bg-gray-100 text-gray-800",
+  withdrawn: "bg-muted/50 text-gray-800",
 };
 
 export default function ContractDetail() {
@@ -71,7 +71,7 @@ export default function ContractDetail() {
   const fin = financials as any;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -114,7 +114,7 @@ export default function ContractDetail() {
 
         {/* Tabs */}
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="bg-white border">
+          <TabsList className="bg-background border">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="budget">Budget</TabsTrigger>
             <TabsTrigger value="milestones">Milestones</TabsTrigger>
@@ -164,7 +164,7 @@ export default function ContractDetail() {
                       <h4 className="font-medium">Spending by Category</h4>
                       {["workOrders", "materials", "equipment", "subcontractor"].map(cat => (
                         <div key={cat} className="flex items-center gap-4">
-                          <span className="w-28 text-sm text-gray-500 capitalize">{cat === "workOrders" ? "Work Orders" : cat}</span>
+                          <span className="w-28 text-sm text-muted-foreground capitalize">{cat === "workOrders" ? "Work Orders" : cat}</span>
                           <div className="flex-1 bg-gray-200 rounded-full h-4">
                             <div className="bg-amber-500 rounded-full h-4"
                               style={{ width: `${fin.budget > 0 ? Math.min(100, ((fin.spent[cat] || 0) / fin.budget) * 100) : 0}%` }} />
@@ -203,7 +203,7 @@ export default function ContractDetail() {
                           <span className="text-gray-500"> on {log.entityType}</span>
                           {log.userId && <span className="text-gray-400"> by {log.userId.slice(0, 8)}...</span>}
                           <p className="text-xs text-gray-400">{new Date(log.createdAt).toLocaleString()}</p>
-                          {log.details && <pre className="text-xs text-gray-500 mt-1">{JSON.stringify(log.details, null, 2)}</pre>}
+                          {log.details && <pre className="text-xs text-muted-foreground mt-1">{JSON.stringify(log.details, null, 2)}</pre>}
                         </div>
                       </div>
                     ))}
@@ -476,7 +476,7 @@ function PayrollSection({ contractId, reports }: { contractId: string; reports: 
                 onClick={() => navigate(`/government/contracts/${contractId}/payroll/${r.id}`)}>
                 <div>
                   <span className="font-medium">Report #{r.reportNumber}</span>
-                  <span className="text-gray-500 ml-2">Week ending: {r.weekEndingDate}</span>
+                  <span className="text-muted-foreground ml-2">Week ending: {r.weekEndingDate}</span>
                   <Badge className={`ml-2 ${STATUS_COLORS[r.status]}`}>{r.status}</Badge>
                 </div>
                 <span className="font-medium">{cents(r.totalGrossWages)}</span>
@@ -524,7 +524,7 @@ function InvoicesSection({ contractId, invoices }: { contractId: string; invoice
                 <div>
                   <span className="font-medium">{inv.invoiceNumber}</span>
                   <Badge className={`ml-2 ${STATUS_COLORS[inv.status]}`}>{inv.status}</Badge>
-                  <span className="text-gray-500 ml-2">{inv.invoicePeriodStart} → {inv.invoicePeriodEnd}</span>
+                  <span className="text-muted-foreground ml-2">{inv.invoicePeriodStart} → {inv.invoicePeriodEnd}</span>
                 </div>
                 <div className="text-right">
                   <p className="font-medium">{cents(inv.totalAmount)}</p>
@@ -729,7 +729,7 @@ function ModificationsSection({ contractId, modifications }: { contractId: strin
                   <span className="font-medium">Mod {m.modNumber}</span>
                   <Badge className="ml-2">{m.modType?.replace(/_/g, " ")}</Badge>
                   <Badge className={`ml-2 ${STATUS_COLORS[m.status]}`}>{m.status}</Badge>
-                  <p className="text-gray-500 text-xs mt-1">{m.description}</p>
+                  <p className="text-muted-foreground text-xs mt-1">{m.description}</p>
                 </div>
                 {m.newValue && <span className="font-medium">{cents(m.newValue)}</span>}
               </div>

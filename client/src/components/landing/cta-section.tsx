@@ -42,7 +42,7 @@ export function CTASection() {
                 <Button 
                   size="lg" 
                   variant="secondary"
-                  className="bg-white text-primary hover:bg-white/90"
+                  className="bg-background text-primary hover:bg-white/90"
                   data-testid="button-cta-book"
                 >
                   Book a Pickup

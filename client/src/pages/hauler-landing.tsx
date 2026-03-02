@@ -67,7 +67,7 @@ export default function HaulerLanding() {
               <Link href="/pro/signup">
                 <Button
                   size="lg"
-                  className="gap-2 text-lg bg-green-500 border-green-500 text-slate-900 font-bold"
+                  className="gap-2 text-lg bg-green-500 border-green-500 text-foreground font-bold"
                   data-testid="button-pro-apply"
                 >
                   Start Earning (Apply) <ArrowRight className="w-5 h-5" />
@@ -119,7 +119,7 @@ export default function HaulerLanding() {
                 <div className="mt-10">
                   <Link href="/pro/signup">
                     <Button
-                      className="bg-white border-white text-slate-900 font-bold gap-2"
+                      className="bg-background border-white text-foreground font-bold gap-2"
                       size="lg"
                       data-testid="button-copilot-apply"
                     >

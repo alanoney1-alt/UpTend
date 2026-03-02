@@ -264,7 +264,7 @@ export function AIQuoteDisplay({
 
             <div className="space-y-4">
               {/* Diversion Rate */}
-              <div className="text-center p-4 bg-white dark:bg-slate-900 rounded-lg">
+              <div className="text-center p-4 bg-background dark:bg-slate-900 rounded-lg">
                 <p className="text-3xl font-black text-green-600">
                   {Math.round(quote.sustainability.diversionRate * 100)}%
                 </p>
@@ -286,7 +286,7 @@ export function AIQuoteDisplay({
 
               {/* Environmental Metrics */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="text-center p-3 bg-white dark:bg-slate-900 rounded-lg">
+                <div className="text-center p-3 bg-background dark:bg-slate-900 rounded-lg">
                   <TreePine className="w-6 h-6 text-green-600 mx-auto mb-2" />
                   <p className="text-lg font-bold">
                     {quote.sustainability.treesEquivalent.toFixed(1)}
@@ -296,7 +296,7 @@ export function AIQuoteDisplay({
                   </p>
                 </div>
 
-                <div className="text-center p-3 bg-white dark:bg-slate-900 rounded-lg">
+                <div className="text-center p-3 bg-background dark:bg-slate-900 rounded-lg">
                   <Leaf className="w-6 h-6 text-green-600 mx-auto mb-2" />
                   <p className="text-lg font-bold">
                     {quote.sustainability.co2AvoidedLbs.toFixed(0)} lbs
@@ -305,7 +305,7 @@ export function AIQuoteDisplay({
                 </div>
 
                 {quote.sustainability.waterSavedGallons !== undefined && (
-                  <div className="text-center p-3 bg-white dark:bg-slate-900 rounded-lg">
+                  <div className="text-center p-3 bg-background dark:bg-slate-900 rounded-lg">
                     <Droplets className="w-6 h-6 text-blue-600 mx-auto mb-2" />
                     <p className="text-lg font-bold">
                       {quote.sustainability.waterSavedGallons.toFixed(0)} gal

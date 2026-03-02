@@ -72,7 +72,7 @@ export function FeeProgressWidget() {
     ? "bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-800"
     : hasDiscount
     ? "bg-amber-50 border-amber-200 dark:bg-amber-950/30 dark:border-amber-800"
-    : "bg-gray-50 border-gray-200 dark:bg-gray-900/50 dark:border-gray-700";
+    : "bg-muted/50 border-border dark:bg-gray-900/50 dark:border-gray-700";
 
   return (
     <Card className={`p-5 ${rateBg}`}>
@@ -102,7 +102,7 @@ export function FeeProgressWidget() {
               key={t.name}
               className={`flex items-center justify-between p-2.5 rounded-lg transition-all ${
                 isActive
-                  ? "bg-white dark:bg-gray-800 shadow-sm border border-amber-300 dark:border-amber-700"
+                  ? "bg-background dark:bg-gray-800 shadow-sm border border-amber-300 dark:border-amber-700"
                   : unlocked
                   ? "bg-white/50 dark:bg-gray-800/50"
                   : "opacity-50"

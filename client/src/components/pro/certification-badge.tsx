@@ -45,7 +45,7 @@ const CERT_CONFIG: Record<string, { label: string; icon: typeof Building2; color
     label: "Gov. Certified",
     icon: Star,
     color: "text-navy-600",
-    bgColor: "bg-slate-50 border-slate-300 hover:bg-slate-100",
+    bgColor: "bg-muted/50 border-slate-300 hover:bg-slate-100",
   },
 };
 

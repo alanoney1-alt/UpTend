@@ -115,7 +115,7 @@ export function ManualQuoteForm({ serviceType, onQuoteGenerated }: ManualQuoteFo
                   className={`flex items-start space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                     formData.cleanType === type
                       ? 'border-primary bg-primary/5'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-border hover:border-gray-300'
                   }`}
                 >
                   <RadioGroupItem value={type} id={type} className="mt-1" />

@@ -126,9 +126,9 @@ export default function InsurancePage() {
           {myPolicies?.length === 0 && !isLoading && (
             <Card className="bg-slate-800/30 border-slate-700 border-dashed">
               <CardContent className="p-8 text-center">
-                <FileText className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
                 <p className="text-slate-500">No insurance or warranty linked yet.</p>
-                <p className="text-slate-600 text-sm mt-1">Link your policy to unlock coverage badges and discounts.</p>
+                <p className="text-muted-foreground text-sm mt-1">Link your policy to unlock coverage badges and discounts.</p>
               </CardContent>
             </Card>
           )}

@@ -50,7 +50,7 @@ export function NeighborhoodPriceContext({ serviceType, zipCode }: NeighborhoodP
       <TrendingUp className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
       <p className="text-sm text-slate-700 dark:text-slate-300">
         Homeowners in <span className="font-semibold">{area}</span> paid an average of{" "}
-        <span className="font-bold text-slate-900 dark:text-white">${avgPrice}</span> for{" "}
+        <span className="font-bold text-foreground dark:text-white">${avgPrice}</span> for{" "}
         <span className="font-semibold">{displayName}</span> this month.
       </p>
     </div>

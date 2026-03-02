@@ -95,7 +95,7 @@ export function TeamManagement({ businessAccountId, currentUserRole }: TeamManag
     const colors: Record<string, string> = {
       owner: "bg-purple-100 text-purple-800",
       admin: "bg-blue-100 text-blue-800",
-      member: "bg-gray-100 text-gray-800",
+      member: "bg-muted/50 text-gray-800",
     };
 
     return (

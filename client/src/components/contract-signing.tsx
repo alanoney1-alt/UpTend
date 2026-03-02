@@ -109,7 +109,7 @@ export function ContractSigning({ contract, userRole, onSigned }: ContractSignin
   };
 
   const statusColor: Record<string, string> = {
-    draft: "bg-slate-100 text-slate-700",
+    draft: "bg-muted/50 text-slate-700",
     pending_customer: "bg-yellow-100 text-yellow-700",
     pending_pro: "bg-blue-100 text-blue-700",
     signed: "bg-emerald-100 text-emerald-700",
@@ -132,17 +132,17 @@ export function ContractSigning({ contract, userRole, onSigned }: ContractSignin
       <CardContent className="space-y-4">
         <div>
           <h4 className="text-sm font-semibold text-slate-700 mb-1">Scope of Work</h4>
-          <p className="text-sm text-slate-600 bg-slate-50 rounded-lg p-3">{contract.scopeOfWork}</p>
+          <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">{contract.scopeOfWork}</p>
         </div>
 
-        <div className="flex items-center justify-between bg-slate-50 rounded-lg p-3">
+        <div className="flex items-center justify-between bg-muted/50 rounded-lg p-3">
           <span className="text-sm font-medium text-slate-700">Agreed Price</span>
           <span className="text-lg font-bold text-primary">${contract.agreedPrice.toFixed(2)}</span>
         </div>
 
         {/* Signature status */}
         <div className="grid grid-cols-2 gap-3">
-          <div className={`p-3 rounded-lg border ${contract.customerSignature ? "bg-emerald-50 border-emerald-200" : "bg-slate-50 border-slate-200"}`}>
+          <div className={`p-3 rounded-lg border ${contract.customerSignature ? "bg-emerald-50 border-emerald-200" : "bg-muted/50 border-slate-200"}`}>
             <div className="flex items-center gap-2 text-sm font-medium mb-1">
               {contract.customerSignature ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <AlertCircle className="w-4 h-4 text-slate-400" />}
               Customer
@@ -151,7 +151,7 @@ export function ContractSigning({ contract, userRole, onSigned }: ContractSignin
               {contract.customerSignedAt ? `Signed ${new Date(contract.customerSignedAt).toLocaleDateString()}` : "Awaiting signature"}
             </p>
           </div>
-          <div className={`p-3 rounded-lg border ${contract.proSignature ? "bg-emerald-50 border-emerald-200" : "bg-slate-50 border-slate-200"}`}>
+          <div className={`p-3 rounded-lg border ${contract.proSignature ? "bg-emerald-50 border-emerald-200" : "bg-muted/50 border-slate-200"}`}>
             <div className="flex items-center gap-2 text-sm font-medium mb-1">
               {contract.proSignature ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <AlertCircle className="w-4 h-4 text-slate-400" />}
               Pro
@@ -173,7 +173,7 @@ export function ContractSigning({ contract, userRole, onSigned }: ContractSignin
               ref={canvasRef}
               width={400}
               height={150}
-              className="w-full border-2 border-dashed border-slate-300 rounded-lg bg-white cursor-crosshair touch-none"
+              className="w-full border-2 border-dashed border-slate-300 rounded-lg bg-background cursor-crosshair touch-none"
               onMouseDown={startDraw}
               onMouseMove={draw}
               onMouseUp={endDraw}

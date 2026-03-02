@@ -70,7 +70,7 @@ export function PartsRequestForm({ jobId }: { jobId: string }) {
     approved: "bg-green-100 text-green-800",
     denied: "bg-red-100 text-red-800",
     sourced: "bg-blue-100 text-blue-800",
-    installed: "bg-gray-100 text-gray-600",
+    installed: "bg-muted/50 text-gray-600",
   };
 
   return (
@@ -114,7 +114,7 @@ export function PartsRequestForm({ jobId }: { jobId: string }) {
           <div className="flex gap-2 justify-end">
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-muted-foreground hover:bg-gray-50"
             >
               Cancel
             </button>

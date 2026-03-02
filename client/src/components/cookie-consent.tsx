@@ -112,7 +112,7 @@ export function CookieConsent() {
                     analytics ? "bg-primary justify-end" : "bg-gray-300 dark:bg-gray-600 justify-start"
                   }`}
                 >
-                  <div className="w-4 h-4 rounded-full bg-white shadow" />
+                  <div className="w-4 h-4 rounded-full bg-background shadow" />
                 </button>
               </div>
 
@@ -131,7 +131,7 @@ export function CookieConsent() {
                     marketing ? "bg-primary justify-end" : "bg-gray-300 dark:bg-gray-600 justify-start"
                   }`}
                 >
-                  <div className="w-4 h-4 rounded-full bg-white shadow" />
+                  <div className="w-4 h-4 rounded-full bg-background shadow" />
                 </button>
               </div>
             </div>

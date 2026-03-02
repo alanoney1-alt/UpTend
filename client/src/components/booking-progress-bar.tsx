@@ -46,7 +46,7 @@ export function BookingProgressBar() {
   if (!engaged || current < 0) return null;
 
   return (
-    <div className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-2 px-4 z-40">
+    <div className="w-full bg-background dark:bg-gray-900 border-b border-border dark:border-gray-800 py-2 px-4 z-40">
       <div className="max-w-3xl mx-auto flex items-center justify-between gap-1">
         {STEPS.map((step, i) => {
           const completed = i < current;

@@ -61,7 +61,7 @@ export default function CarbonCreditCalculator() {
 
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
           {/* Calculator Inputs */}
-          <Card className="p-8 bg-white dark:bg-card">
+          <Card className="p-8 bg-background dark:bg-card">
             <div className="flex items-center gap-2 mb-6">
               <Building2 className="w-6 h-6 text-green-600" />
               <h2 className="text-2xl font-bold">Your Community</h2>

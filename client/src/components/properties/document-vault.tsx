@@ -248,7 +248,7 @@ export function DocumentVault({ propertyId }: DocumentVaultProps) {
                   {docs.map((doc) => (
                     <div
                       key={doc.id}
-                      className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg border"
+                      className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-lg border"
                     >
                       <div className="flex items-center gap-3 flex-1">
                         {getFileIcon(doc.fileType || undefined)}

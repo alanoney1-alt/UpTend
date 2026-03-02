@@ -110,11 +110,11 @@ export default function B2BPricing() {
       {/* Hero */}
       <div className="text-center py-16 px-4">
         <Badge className="bg-orange-100 text-orange-700 mb-4">B2B Solutions</Badge>
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
           Workforce-as-a-Service<br />
           <span className="text-orange-500">Built for Your Business</span>
         </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
           Not just software. A complete workforce management platform with real people, real compliance, and real results. Every plan is custom-built for your needs.
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
@@ -147,7 +147,7 @@ export default function B2BPricing() {
                   <span className="text-4xl font-bold text-orange-500">$0</span>
                   <span className="text-gray-500">/month, forever</span>
                 </div>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-muted-foreground mt-2">
                   Manage up to 10 properties with no subscription fees. Pay only a 5% transaction fee when you book a pro.
                 </p>
               </div>
@@ -172,7 +172,7 @@ export default function B2BPricing() {
         </Card>
 
         <div className="text-center mt-8 mb-2">
-          <p className="text-gray-500 text-sm">Need more? Every plan above Independent is custom-built for your business.</p>
+          <p className="text-muted-foreground text-sm">Need more? Every plan above Independent is custom-built for your business.</p>
         </div>
       </div>
 
@@ -191,10 +191,10 @@ export default function B2BPricing() {
 
           {Object.entries(segmentDetails).map(([segment, info]) => (
             <TabsContent key={segment} value={segment}>
-              <Card className="border-gray-200 shadow-lg">
+              <Card className="border-border shadow-lg">
                 <CardContent className="p-8 md:p-12">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-4">{info.headline}</h2>
-                  <p className="text-gray-600 text-lg mb-8 max-w-3xl">{info.description}</p>
+                  <h2 className="text-3xl font-bold text-foreground mb-4">{info.headline}</h2>
+                  <p className="text-muted-foreground text-lg mb-8 max-w-3xl">{info.description}</p>
 
                   <div className="grid md:grid-cols-2 gap-4 mb-10">
                     {info.features.map((f, i) => (
@@ -206,8 +206,8 @@ export default function B2BPricing() {
                   </div>
 
                   <div className="bg-orange-50 border border-orange-200 rounded-xl p-8 text-center">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Ready to see what we can build for you?</h3>
-                    <p className="text-gray-600 mb-6">We will review your needs and deliver a custom pricing proposal within 24 hours.</p>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">Ready to see what we can build for you?</h3>
+                    <p className="text-muted-foreground mb-6">We will review your needs and deliver a custom pricing proposal within 24 hours.</p>
                     <div className="flex gap-4 justify-center flex-wrap">
                       <a href="https://calendly.com" target="_blank" rel="noopener noreferrer">
                         <Button size="lg" className="bg-orange-500 hover:bg-orange-600">
@@ -251,9 +251,9 @@ export default function B2BPricing() {
         </h2>
         <div className="space-y-4">
           {faqs.map((faq, i) => (
-            <div key={i} className="bg-white border border-gray-200 rounded-xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">{faq.q}</h3>
-              <p className="text-gray-600 text-sm">{faq.a}</p>
+            <div key={i} className="bg-background border border-border rounded-xl p-6">
+              <h3 className="font-semibold text-foreground mb-2">{faq.q}</h3>
+              <p className="text-muted-foreground text-sm">{faq.a}</p>
             </div>
           ))}
         </div>
@@ -267,7 +267,7 @@ export default function B2BPricing() {
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
           <a href="https://calendly.com" target="_blank" rel="noopener noreferrer">
-            <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50">
+            <Button size="lg" className="bg-background text-orange-600 hover:bg-orange-50">
               Schedule a Consultation
             </Button>
           </a>

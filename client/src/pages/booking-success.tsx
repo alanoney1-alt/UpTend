@@ -171,7 +171,7 @@ export default function BookingSuccess() {
 
         {/* Split layout: booking details left, pro card right */}
         <div className={`transition-opacity duration-700 ${showContent ? "opacity-100" : "opacity-0"}`}>
-          <Card className="border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden">
+          <Card className="border border-border dark:border-slate-700 shadow-lg overflow-hidden">
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 {/* LEFT: Booking Confirmation Details */}
@@ -179,15 +179,15 @@ export default function BookingSuccess() {
                   <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Booking Confirmed</h3>
 
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-slate-300">
                       <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                       <span>Booking ID: <span className="font-mono font-semibold">{bookingId}</span></span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-slate-300">
                       <Clock className="w-4 h-4 text-amber-500 shrink-0" />
-                      <span>Estimated arrival: <span className="font-bold text-slate-900 dark:text-white">{estimatedArrival}</span></span>
+                      <span>Estimated arrival: <span className="font-bold text-foreground dark:text-white">{estimatedArrival}</span></span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-slate-300">
                       <ShieldCheck className="w-4 h-4 text-[#ea580c] shrink-0" />
                       <span>Price Protection active</span>
                     </div>
@@ -211,7 +211,7 @@ export default function BookingSuccess() {
                 </div>
 
                 {/* Divider. mobile only */}
-                <div className="block md:hidden border-t border-slate-200 dark:border-slate-700" />
+                <div className="block md:hidden border-t border-border dark:border-slate-700" />
 
                 {/* RIGHT: Pro Card */}
                 <div className="space-y-4">
@@ -226,7 +226,7 @@ export default function BookingSuccess() {
                     </Avatar>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="text-lg font-bold text-slate-900 dark:text-white">{proData.firstName}</h4>
+                        <h4 className="text-lg font-bold text-foreground dark:text-white">{proData.firstName}</h4>
                         {proData.verified && (
                           <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] px-1.5 py-0">
                             <CheckCircle className="w-3 h-3 mr-0.5" />
@@ -236,19 +236,19 @@ export default function BookingSuccess() {
                       </div>
                       <div className="flex items-center gap-1 mt-0.5">
                         <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                        <span className="font-semibold text-sm text-slate-900 dark:text-white">{proData.rating}</span>
+                        <span className="font-semibold text-sm text-foreground dark:text-white">{proData.rating}</span>
                         <span className="text-xs text-slate-400">({proData.reviewCount} reviews)</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">{Math.floor(proData.tenureMonths / 12)}+ yr</p>
+                    <div className="bg-muted/50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
+                      <p className="text-lg font-bold text-foreground dark:text-white">{Math.floor(proData.tenureMonths / 12)}+ yr</p>
                       <p className="text-[11px] text-slate-500">Experience</p>
                     </div>
-                    <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">{proData.completedJobs}</p>
+                    <div className="bg-muted/50 dark:bg-slate-800/50 rounded-lg p-3 text-center">
+                      <p className="text-lg font-bold text-foreground dark:text-white">{proData.completedJobs}</p>
                       <p className="text-[11px] text-slate-500">Jobs Done</p>
                     </div>
                   </div>

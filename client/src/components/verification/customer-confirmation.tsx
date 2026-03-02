@@ -240,28 +240,28 @@ export function CustomerConfirmation({ jobId }: CustomerConfirmationProps) {
           <CardContent className="space-y-6">
             {/* Summary Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-3 bg-white dark:bg-background border rounded-lg">
+              <div className="text-center p-3 bg-background dark:bg-background border rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Total Weight</p>
                 <p className="text-xl font-bold">{verificationData.totalWeightLbs.toFixed(0)} lbs</p>
               </div>
-              <div className="text-center p-3 bg-white dark:bg-background border rounded-lg">
+              <div className="text-center p-3 bg-background dark:bg-background border rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Diversion Rate</p>
                 <p className="text-xl font-bold text-green-600">
                   {((verificationData.diversionRate || 0) * 100).toFixed(0)}%
                 </p>
               </div>
-              <div className="text-center p-3 bg-white dark:bg-background border rounded-lg">
+              <div className="text-center p-3 bg-background dark:bg-background border rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Carbon Offset</p>
                 <p className="text-xl font-bold">{(verificationData.carbonOffsetTons || 0).toFixed(2)} tons</p>
               </div>
-              <div className="text-center p-3 bg-white dark:bg-background border rounded-lg">
+              <div className="text-center p-3 bg-background dark:bg-background border rounded-lg">
                 <TreePine className="w-6 h-6 text-green-600 mx-auto mb-1" />
                 <p className="text-xl font-bold">{((verificationData.carbonOffsetTons || 0) * 16.5).toFixed(1)}</p>
                 <p className="text-xs text-muted-foreground">Trees Worth</p>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-background border rounded-lg p-4">
+            <div className="bg-background dark:bg-background border rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <Leaf className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
                 <div>

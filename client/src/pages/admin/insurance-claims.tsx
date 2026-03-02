@@ -154,11 +154,11 @@ export default function AdminInsuranceClaims() {
       approved: "bg-green-100 text-green-800",
       denied: "bg-red-100 text-red-800",
       escalated: "bg-purple-100 text-purple-800",
-      resolved: "bg-gray-100 text-gray-800",
+      resolved: "bg-muted/50 text-gray-800",
     };
 
     return (
-      <Badge className={statusStyles[status] || "bg-gray-100 text-gray-800"}>
+      <Badge className={statusStyles[status] || "bg-muted/50 text-gray-800"}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     );
@@ -185,7 +185,7 @@ export default function AdminInsuranceClaims() {
       <div className="max-w-7xl mx-auto p-6 mt-20">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Insurance & Claims Management</h1>
-          <p className="text-gray-600 mt-2">Manage liability claims and insurance policies</p>
+          <p className="text-muted-foreground mt-2">Manage liability claims and insurance policies</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -245,7 +245,7 @@ export default function AdminInsuranceClaims() {
                             </h3>
                             {getClaimStatusBadge(claim.status)}
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">
+                          <p className="text-sm text-muted-foreground mb-2">
                             Filed by {claim.customer_name} against {claim.pro_name}
                             {claim.company_name && ` (${claim.company_name})`}
                             • {format(new Date(claim.created_at), "MMM dd, yyyy")}
@@ -298,7 +298,7 @@ export default function AdminInsuranceClaims() {
                     )}
 
                     {claim.resolution_notes && (
-                      <div className="bg-gray-50 border rounded p-3">
+                      <div className="bg-muted/50 border rounded p-3">
                         <h4 className="text-sm font-medium mb-1">Resolution Notes:</h4>
                         <p className="text-sm text-gray-700">{claim.resolution_notes}</p>
                       </div>
@@ -352,7 +352,7 @@ export default function AdminInsuranceClaims() {
                               {new Date(policy.expiry_date) < new Date() ? "Expired" : "Expires Soon"}
                             </Badge>
                           </div>
-                          <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-2">
+                          <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground mb-2">
                             <div>
                               <span className="font-medium">Carrier:</span> {policy.carrier_name}
                             </div>
@@ -417,7 +417,7 @@ export default function AdminInsuranceClaims() {
 
             {selectedClaim && (
               <div className="space-y-4">
-                <div className="bg-gray-50 rounded p-4">
+                <div className="bg-muted/50 rounded p-4">
                   <h4 className="font-medium mb-2">Claim Details</h4>
                   <div className="text-sm space-y-1">
                     <div><strong>Type:</strong> {selectedClaim.claim_type.replace("_", " ")}</div>
@@ -462,7 +462,7 @@ export default function AdminInsuranceClaims() {
                       defaultValue={selectedClaim.platform_payout || ""}
                       step="0.01"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Maximum: ${selectedClaim.platform_liability_cap.toLocaleString()}
                     </p>
                   </div>

@@ -52,7 +52,7 @@ export function SeasonalAdvisor({ zipCode = "32801" }: { zipCode?: string }) {
             <Leaf className="w-5 h-5 text-green-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white text-sm">
+            <h3 className="font-semibold text-foreground dark:text-white text-sm">
               Seasonal Advisor
             </h3>
             <div className="flex items-center gap-1 text-xs text-gray-500">
@@ -84,7 +84,7 @@ export function SeasonalAdvisor({ zipCode = "32801" }: { zipCode?: string }) {
           {data.advisories.slice(0, 4).map((item) => (
             <div
               key={item.id}
-              className="p-3 rounded-lg border border-gray-200 dark:border-gray-800"
+              className="p-3 rounded-lg border border-border dark:border-gray-800"
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex-1">
@@ -92,11 +92,11 @@ export function SeasonalAdvisor({ zipCode = "32801" }: { zipCode?: string }) {
                     {item.priority === "high" && (
                       <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
                     )}
-                    <span className="font-medium text-sm text-gray-900 dark:text-white">
+                    <span className="font-medium text-sm text-foreground dark:text-white">
                       {item.title}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 leading-relaxed">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     {item.description}
                   </p>
                 </div>
@@ -105,7 +105,7 @@ export function SeasonalAdvisor({ zipCode = "32801" }: { zipCode?: string }) {
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500 flex items-center gap-1">
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <DollarSign className="w-3 h-3" />
                   ${item.estimatedCost.min}–${item.estimatedCost.max}
                 </span>

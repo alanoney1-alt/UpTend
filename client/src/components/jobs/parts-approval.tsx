@@ -70,8 +70,8 @@ export function PartsApproval({ jobId }: { jobId: string }) {
                 pr.status === "approved" ? "bg-green-100 text-green-800" :
                 pr.status === "denied" ? "bg-red-100 text-red-800" :
                 pr.status === "sourced" ? "bg-blue-100 text-blue-800" :
-                pr.status === "installed" ? "bg-gray-100 text-gray-600" :
-                "bg-gray-100 text-gray-600"
+                pr.status === "installed" ? "bg-muted/50 text-gray-600" :
+                "bg-muted/50 text-gray-600"
               }`}>
                 {pr.status}
               </span>

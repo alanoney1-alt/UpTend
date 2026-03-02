@@ -127,7 +127,7 @@ export function MaintenanceCalendar({ propertyId }: MaintenanceCalendarProps) {
                 "text-center p-4 rounded-lg border-2 cursor-pointer transition-all",
                 view === "overdue"
                   ? "bg-red-50 border-red-300"
-                  : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                  : "bg-muted/50 border-border hover:border-gray-300"
               )}
               onClick={() => setView("overdue")}
             >
@@ -139,7 +139,7 @@ export function MaintenanceCalendar({ propertyId }: MaintenanceCalendarProps) {
                 "text-center p-4 rounded-lg border-2 cursor-pointer transition-all",
                 view === "upcoming"
                   ? "bg-blue-50 border-blue-300"
-                  : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                  : "bg-muted/50 border-border hover:border-gray-300"
               )}
               onClick={() => setView("upcoming")}
             >
@@ -151,7 +151,7 @@ export function MaintenanceCalendar({ propertyId }: MaintenanceCalendarProps) {
                 "text-center p-4 rounded-lg border-2 cursor-pointer transition-all",
                 view === "completed"
                   ? "bg-green-50 border-green-300"
-                  : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                  : "bg-muted/50 border-border hover:border-gray-300"
               )}
               onClick={() => setView("completed")}
             >

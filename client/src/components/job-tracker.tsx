@@ -137,7 +137,7 @@ export function JobTracker({
                       ? "bg-[#ea580c] text-white"
                       : active
                         ? "bg-amber-100 text-[#ea580c] border-2 border-[#ea580c]"
-                        : "bg-slate-100 text-slate-400"
+                        : "bg-muted/50 text-slate-400"
                   }`}
                 >
                   {done ? <Check className="w-4 h-4" /> : active ? <Loader2 className="w-4 h-4 animate-spin" /> : i + 1}

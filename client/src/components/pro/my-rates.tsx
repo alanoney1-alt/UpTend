@@ -182,10 +182,10 @@ export function MyRates() {
               </div>
 
               {/* Rate + Payout */}
-              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg px-3 py-2">
+              <div className="flex items-center justify-between bg-muted/50 dark:bg-slate-800/50 rounded-lg px-3 py-2">
                 <div>
                   <span className="text-xs text-muted-foreground">Your rate</span>
-                  <div className="text-lg font-bold text-slate-900 dark:text-white">
+                  <div className="text-lg font-bold text-foreground dark:text-white">
                     ${currentValue}
                   </div>
                 </div>
@@ -209,7 +209,7 @@ export function MyRates() {
       {/* Info Note */}
       <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
         <Info className="w-4 h-4 text-[#ea580c] mt-0.5 shrink-0" />
-        <p className="text-xs text-slate-600 dark:text-slate-400">
+        <p className="text-xs text-muted-foreground dark:text-slate-400">
           15% platform fee covers payment processing, insurance verification, customer support, and marketing. Minimum payout per job: $50.
         </p>
       </div>

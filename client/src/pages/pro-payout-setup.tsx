@@ -73,7 +73,7 @@ export default function ProPayoutSetup() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="min-h-screen bg-muted/50 py-12 px-4">
       <div className="max-w-lg mx-auto">
         <div className="text-center mb-8">
           <CreditCard className="w-12 h-12 mx-auto mb-4 text-amber-600" />

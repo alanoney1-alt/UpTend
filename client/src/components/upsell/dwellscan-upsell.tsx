@@ -140,7 +140,7 @@ export function DwellScanUpsell({ variant, onDismiss }: DwellScanUpsellProps) {
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           {/* Standard Option */}
-          <div className="p-4 bg-white dark:bg-gray-900 rounded-lg border">
+          <div className="p-4 bg-background dark:bg-gray-900 rounded-lg border">
             <div className="flex items-center gap-2 mb-2">
               <Home className="w-5 h-5 text-primary" />
               <div>

@@ -28,7 +28,7 @@ const STATUS_COLORS: Record<string, string> = {
   submitted: "bg-blue-100 text-blue-800",
   accepted: "bg-green-100 text-green-800",
   declined: "bg-red-100 text-red-800",
-  withdrawn: "bg-gray-100 text-gray-800",
+  withdrawn: "bg-muted/50 text-gray-800",
 };
 
 export default function WorkOrderDetail() {
@@ -80,7 +80,7 @@ export default function WorkOrderDetail() {
   const isAssigned = wo.status === "assigned" || wo.status === "in_progress" || wo.status === "completed";
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" onClick={() => navigate("/government/work-orders")}>
@@ -126,7 +126,7 @@ export default function WorkOrderDetail() {
         {wo.status === "assigned" && (
           <Card>
             <CardContent className="pt-6 text-center">
-              <p className="text-gray-600 mb-4">You've been assigned this job at <strong>{cents(wo.acceptedQuoteAmount)}</strong>. Ready to begin?</p>
+              <p className="text-muted-foreground mb-4">You've been assigned this job at <strong>{cents(wo.acceptedQuoteAmount)}</strong>. Ready to begin?</p>
               <Button className="bg-amber-600 hover:bg-amber-700" onClick={() => startMutation.mutate()}>
                 <Play className="h-4 w-4 mr-2" /> Start Work
               </Button>
@@ -137,7 +137,7 @@ export default function WorkOrderDetail() {
         {wo.status === "in_progress" && (
           <Card>
             <CardContent className="pt-6 text-center">
-              <p className="text-gray-600 mb-4">When all deliverables are complete, mark this job as done.</p>
+              <p className="text-muted-foreground mb-4">When all deliverables are complete, mark this job as done.</p>
               <Button className="bg-green-600 hover:bg-green-700" onClick={() => completeMutation.mutate()}>
                 <CheckCircle2 className="h-4 w-4 mr-2" /> Mark Complete
               </Button>
@@ -176,14 +176,14 @@ export default function WorkOrderDetail() {
                   <Input type="number" step="0.01" value={quoteForm.quoteAmount}
                     onChange={e => setQuoteForm({ ...quoteForm, quoteAmount: e.target.value })}
                     placeholder="Total flat-rate price" required />
-                  <p className="text-xs text-gray-500 mt-1">Enter your total price to complete all deliverables. You'll be paid this exact amount on completion.</p>
+                  <p className="text-xs text-muted-foreground mt-1">Enter your total price to complete all deliverables. You'll be paid this exact amount on completion.</p>
                 </div>
                 <div>
                   <Label>Estimated Timeline (days)</Label>
                   <Input type="number" value={quoteForm.estimatedDays}
                     onChange={e => setQuoteForm({ ...quoteForm, estimatedDays: e.target.value })}
                     placeholder="Days to complete" />
-                  <p className="text-xs text-gray-500 mt-1">For scheduling only. your payment is your quoted price, not time-based.</p>
+                  <p className="text-xs text-muted-foreground mt-1">For scheduling only. your payment is your quoted price, not time-based.</p>
                 </div>
                 <div>
                   <Label>Message</Label>
@@ -208,7 +208,7 @@ export default function WorkOrderDetail() {
                   <div key={q.id} className="flex items-center justify-between p-3 border rounded-lg text-sm">
                     <div>
                       <span className="font-medium">{cents(q.quoteAmount)}</span>
-                      {q.estimatedDays && <span className="text-gray-500 ml-2">• {q.estimatedDays} days</span>}
+                      {q.estimatedDays && <span className="text-muted-foreground ml-2">• {q.estimatedDays} days</span>}
                       <Badge className={`ml-2 ${STATUS_COLORS[q.status]}`}>{q.status}</Badge>
                     </div>
                     <span className="text-xs text-gray-400">{new Date(q.submittedAt).toLocaleDateString()}</span>
@@ -230,9 +230,9 @@ export default function WorkOrderDetail() {
                     <div key={log.id} className="p-3 border rounded-lg text-sm">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{log.workDate}</span>
-                        <Badge className={log.status === "approved" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>{log.status}</Badge>
+                        <Badge className={log.status === "approved" ? "bg-green-100 text-green-800" : "bg-muted/50 text-gray-800"}>{log.status}</Badge>
                       </div>
-                      <p className="text-gray-600 mt-1">{log.description}</p>
+                      <p className="text-muted-foreground mt-1">{log.description}</p>
                     </div>
                   ))}
                 </div>

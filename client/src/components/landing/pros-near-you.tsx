@@ -118,7 +118,7 @@ export function ProsNearYou() {
                     <div className="text-sm">
                       <p className="font-semibold">{pro.firstName} {pro.lastName.charAt(0)}.</p>
                       <p className="text-amber-600"> {pro.rating} · {pro.jobsCompleted} jobs</p>
-                      <p className="text-xs text-gray-500 mt-1">{pro.serviceTypes.join(", ")}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{pro.serviceTypes.join(", ")}</p>
                     </div>
                   </Popup>
                 </Marker>

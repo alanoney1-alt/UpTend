@@ -129,7 +129,7 @@ export default function SmartBookingPage() {
       <main className="container mx-auto px-4 pt-24 pb-16 md:pt-28">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
+          <h1 className="text-3xl md:text-4xl font-black text-foreground dark:text-white tracking-tight mb-2">
             {step === "service" && "What do you need done?"}
             {step === "details" && "Tell us about the job"}
             {step === "matching" && "Finding your best match..."}
@@ -152,10 +152,10 @@ export default function SmartBookingPage() {
                 <button
                   key={svc.id}
                   onClick={() => handleSelectService(svc.id)}
-                  className="flex flex-col items-center gap-2 p-5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[#ea580c]/50 hover:shadow-md transition-all text-center"
+                  className="flex flex-col items-center gap-2 p-5 rounded-xl bg-background dark:bg-slate-800 border border-border dark:border-slate-700 hover:border-[#ea580c]/50 hover:shadow-md transition-all text-center"
                 >
                   <svc.icon className="w-6 h-6 text-[#ea580c]" />
-                  <span className="font-semibold text-sm text-slate-900 dark:text-white">{svc.label}</span>
+                  <span className="font-semibold text-sm text-foreground dark:text-white">{svc.label}</span>
                 </button>
               ))}
             </div>
@@ -180,7 +180,7 @@ export default function SmartBookingPage() {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="123 Main St, Orlando, FL 32832"
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#ea580c]/40 focus:border-[#ea580c] outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-background dark:bg-slate-800 text-foreground dark:text-white focus:ring-2 focus:ring-[#ea580c]/40 focus:border-[#ea580c] outline-none"
               />
             </div>
             <div>
@@ -193,7 +193,7 @@ export default function SmartBookingPage() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="What needs to be done? Any details help us find the right pro."
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#ea580c]/40 focus:border-[#ea580c] outline-none resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-background dark:bg-slate-800 text-foreground dark:text-white focus:ring-2 focus:ring-[#ea580c]/40 focus:border-[#ea580c] outline-none resize-none"
               />
             </div>
             <div className="flex gap-3">
@@ -225,7 +225,7 @@ export default function SmartBookingPage() {
                 <Loader2 className="w-8 h-8 text-[#ea580c] animate-spin" />
               </div>
             </div>
-            <p className="text-slate-600 dark:text-slate-300 text-sm">
+            <p className="text-muted-foreground dark:text-slate-300 text-sm">
               Checking pro availability, verifying scope, and locking your price...
             </p>
           </div>

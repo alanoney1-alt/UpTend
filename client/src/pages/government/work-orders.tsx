@@ -68,13 +68,13 @@ export default function WorkOrders() {
   if (isLoading) return <div className="p-6 text-gray-500">Loading available work orders...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Briefcase className="h-6 w-6 text-amber-600" /> Government Work Orders
           </h1>
-          <p className="text-gray-500 mt-1">Browse available work orders and submit your flat-rate quote for jobs you're qualified for.</p>
+          <p className="text-muted-foreground mt-1">Browse available work orders and submit your flat-rate quote for jobs you're qualified for.</p>
         </div>
 
         {(workOrders as any[]).length === 0 ? (
@@ -92,10 +92,10 @@ export default function WorkOrders() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="text-lg font-semibold">{wo.title}</h3>
-                        <Badge className={STATUS_COLORS[wo.status] || "bg-gray-100 text-gray-800"}>{wo.status}</Badge>
+                        <Badge className={STATUS_COLORS[wo.status] || "bg-muted/50 text-gray-800"}>{wo.status}</Badge>
                       </div>
 
-                      {wo.description && <p className="text-gray-600 mb-3">{wo.description}</p>}
+                      {wo.description && <p className="text-muted-foreground mb-3">{wo.description}</p>}
 
                       {wo.scopeOfWork && (
                         <div className="mb-3">
@@ -111,7 +111,7 @@ export default function WorkOrders() {
                         </div>
                       )}
 
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-500 mt-3">
+                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mt-3">
                         {wo.location && (
                           <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {wo.location}</span>
                         )}
@@ -159,7 +159,7 @@ export default function WorkOrders() {
                                 placeholder="Flat rate for the complete job"
                                 required
                               />
-                              <p className="text-xs text-gray-500 mt-1">Enter your total flat-rate price to complete all deliverables.</p>
+                              <p className="text-xs text-muted-foreground mt-1">Enter your total flat-rate price to complete all deliverables.</p>
                             </div>
 
                             <div>
@@ -170,7 +170,7 @@ export default function WorkOrders() {
                                 onChange={e => setQuoteForm({ ...quoteForm, estimatedDays: e.target.value })}
                                 placeholder="How many days to complete"
                               />
-                              <p className="text-xs text-gray-500 mt-1">For scheduling purposes only. you're paid your quoted price regardless.</p>
+                              <p className="text-xs text-muted-foreground mt-1">For scheduling purposes only. you're paid your quoted price regardless.</p>
                             </div>
 
                             <div>

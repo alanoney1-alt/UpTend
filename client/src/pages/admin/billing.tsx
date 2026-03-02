@@ -29,7 +29,7 @@ function statusBadge(status: string) {
     case "failed":
       return <Badge className="bg-red-100 text-red-800"><XCircle className="w-3 h-3 mr-1" /> Failed</Badge>;
     case "void":
-      return <Badge className="bg-gray-100 text-gray-800"><Ban className="w-3 h-3 mr-1" /> Void</Badge>;
+      return <Badge className="bg-muted/50 text-gray-800"><Ban className="w-3 h-3 mr-1" /> Void</Badge>;
     case "pending":
       return <Badge className="bg-amber-100 text-amber-800"><Loader2 className="w-3 h-3 mr-1" /> Pending</Badge>;
     default:
@@ -88,7 +88,7 @@ export default function AdminBilling() {
   const failedRuns = runs?.filter((r) => r.status === "failed") || [];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -157,15 +157,15 @@ export default function AdminBilling() {
               </CardHeader>
               <CardContent>
                 {isLoading ? (
-                  <div className="flex items-center gap-2 text-gray-500 p-4">
+                  <div className="flex items-center gap-2 text-muted-foreground p-4">
                     <Loader2 className="w-4 h-4 animate-spin" /> Loading...
                   </div>
                 ) : !runs || runs.length === 0 ? (
-                  <p className="text-gray-500 p-4">No billing runs found.</p>
+                  <p className="text-muted-foreground p-4">No billing runs found.</p>
                 ) : (
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-gray-50 text-left">
+                      <tr className="bg-muted/50 text-left">
                         <th className="p-2">Business</th>
                         <th className="p-2">Week</th>
                         <th className="p-2">Jobs</th>
@@ -250,7 +250,7 @@ export default function AdminBilling() {
                         <div className="flex justify-between items-center mb-2">
                           <div>
                             <span className="font-medium">{run.businessName}</span>
-                            <span className="text-gray-500 ml-2">{formatWeek(run.weekStartDate, run.weekEndDate)}</span>
+                            <span className="text-muted-foreground ml-2">{formatWeek(run.weekStartDate, run.weekEndDate)}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="font-semibold">${run.totalAmount.toFixed(2)}</span>

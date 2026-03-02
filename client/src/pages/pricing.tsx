@@ -193,7 +193,7 @@ export default function PublicPricing() {
       <div className="mt-20 bg-gradient-to-r from-[#F47C20] to-orange-500 text-white py-4 px-4 text-center">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3">
           <span className="font-bold text-sm md:text-base">Get your Home DNA Scan. know your home inside and out. Completely free.</span>
-          <a href="/home-dna-scan" className="inline-flex items-center gap-1 bg-white text-[#F47C20] font-bold text-sm px-4 py-1.5 rounded-full hover:bg-orange-50 transition-colors">
+          <a href="/home-dna-scan" className="inline-flex items-center gap-1 bg-background text-[#F47C20] font-bold text-sm px-4 py-1.5 rounded-full hover:bg-orange-50 transition-colors">
             Learn More <ArrowRight className="w-4 h-4" />
           </a>
         </div>
@@ -202,7 +202,7 @@ export default function PublicPricing() {
       <div className="pt-8 pb-16">
         {/* Why Our Pricing Is Different */}
         <div className="max-w-4xl mx-auto px-6 mb-12">
-          <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center">
+          <div className="bg-muted/50 dark:bg-slate-900/50 border border-border dark:border-slate-800 rounded-2xl p-8 text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">How Pricing Works</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Every pro sets their own rate within a verified market range. We match you with the best pro for your job. You see one price. That's what you pay.
@@ -279,9 +279,9 @@ export default function PublicPricing() {
         </div>
 
         {/* How Pricing Works */}
-        <div className="max-w-4xl mx-auto mt-16 mb-8 bg-white dark:bg-slate-900 rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-slate-800">
+        <div className="max-w-4xl mx-auto mt-16 mb-8 bg-background dark:bg-slate-900 rounded-2xl p-6 md:p-8 border border-border dark:border-slate-800">
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 text-foreground dark:text-white">
               How Pricing Works
             </h2>
           </div>
@@ -296,12 +296,12 @@ export default function PublicPricing() {
                 <div className="w-10 h-10 rounded-full bg-[#F47C20]/10 flex items-center justify-center mx-auto mb-3">
                   <span className="text-sm font-bold text-[#F47C20]">{item.step}</span>
                 </div>
-                <h4 className="font-bold text-sm mb-1 text-slate-900 dark:text-white">{item.title}</h4>
+                <h4 className="font-bold text-sm mb-1 text-foreground dark:text-white">{item.title}</h4>
                 <p className="text-xs text-slate-500">{item.desc}</p>
               </div>
             ))}
           </div>
-          <div className="mt-8 text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+          <div className="mt-8 text-center p-4 bg-muted/50 dark:bg-slate-800/50 rounded-xl">
             <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
               For Pros: Set your own rates. Keep 85% of every job. No bidding wars.
             </p>
@@ -314,25 +314,25 @@ export default function PublicPricing() {
             <div className="inline-flex items-center justify-center w-12 h-12 bg-[#F47C20]/10 rounded-xl mb-4">
               <ShieldCheck className="w-6 h-6 text-[#F47C20]" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 text-foreground dark:text-white">
               {t("pricing.ppg_title", "Price Protection Guarantee")}
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 text-base max-w-2xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground dark:text-gray-300 text-base max-w-2xl mx-auto leading-relaxed">
               {t("pricing.ppg_desc", "Your price is locked at booking. If your pro finds the scope is different than described, any changes require your approval with photo documentation. No surprises, ever.")}
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
             <div className="text-center p-4">
               <div className="font-bold text-[#F47C20] mb-1">{t("pricing.ppg_locked_title", "Locked Price")}</div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{t("pricing.ppg_locked_desc", "The quote you see is the most you'll pay")}</p>
+              <p className="text-sm text-muted-foreground dark:text-gray-400">{t("pricing.ppg_locked_desc", "The quote you see is the most you'll pay")}</p>
             </div>
             <div className="text-center p-4">
               <div className="font-bold text-[#F47C20] mb-1">{t("pricing.ppg_approval_title", "Your Approval Required")}</div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{t("pricing.ppg_approval_desc", "Scope changes need your OK with photo proof")}</p>
+              <p className="text-sm text-muted-foreground dark:text-gray-400">{t("pricing.ppg_approval_desc", "Scope changes need your OK with photo proof")}</p>
             </div>
             <div className="text-center p-4">
               <div className="font-bold text-[#F47C20] mb-1">{t("pricing.ppg_nosurprises_title", "No Surprises")}</div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{t("pricing.ppg_nosurprises_desc", "No hidden fees, no after-the-fact charges")}</p>
+              <p className="text-sm text-muted-foreground dark:text-gray-400">{t("pricing.ppg_nosurprises_desc", "No hidden fees, no after-the-fact charges")}</p>
             </div>
           </div>
         </div>
@@ -346,31 +346,31 @@ export default function PublicPricing() {
             <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
               Comprehensive Liability Protection
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Every service is backed by our multi-tier protection system, giving you peace of mind.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl p-6 border border-blue-100">
+            <div className="bg-background rounded-xl p-6 border border-blue-100">
               <div className="text-blue-600 font-semibold mb-2">Property Protection</div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">Every Job Covered</div>
+              <div className="text-2xl font-bold text-foreground mb-2">Every Job Covered</div>
               <p className="text-sm text-gray-600">
                 Every pro carries liability insurance. Platform protection covers property damage on every job.
               </p>
             </div>
             
-            <div className="bg-white rounded-xl p-6 border border-blue-100">
+            <div className="bg-background rounded-xl p-6 border border-blue-100">
               <div className="text-blue-600 font-semibold mb-2">Background-Checked</div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">Every Pro Verified</div>
+              <div className="text-2xl font-bold text-foreground mb-2">Every Pro Verified</div>
               <p className="text-sm text-gray-600">
                 National criminal background screening, identity verification, and insurance validation before their first job.
               </p>
             </div>
             
-            <div className="bg-white rounded-xl p-6 border border-blue-100">
+            <div className="bg-background rounded-xl p-6 border border-blue-100">
               <div className="text-blue-600 font-semibold mb-2">Dispute Resolution</div>
-              <div className="text-2xl font-bold text-gray-900 mb-2">Fair for Both Sides</div>
+              <div className="text-2xl font-bold text-foreground mb-2">Fair for Both Sides</div>
               <p className="text-sm text-gray-600">
                 Photo documentation, scope change approval, and platform-mediated resolution. All claims reviewed within 48 hours.
               </p>

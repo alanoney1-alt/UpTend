@@ -113,7 +113,7 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
 
     switch (category) {
       case "roof":
-        return "text-gray-700 bg-gray-50 border-gray-200";
+        return "text-gray-700 bg-muted/50 border-gray-200";
       case "hvac":
         return "text-blue-700 bg-blue-50 border-blue-200";
       case "electrical":
@@ -125,7 +125,7 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
       case "landscape":
         return "text-green-700 bg-green-50 border-green-200";
       default:
-        return "text-gray-700 bg-gray-50 border-gray-200";
+        return "text-gray-700 bg-muted/50 border-gray-200";
     }
   }
 
@@ -232,7 +232,7 @@ export function PropertyTimeline({ propertyId, limit }: PropertyTimelineProps) {
                 {/* Timeline Dot */}
                 <div
                   className={cn(
-                    "absolute left-6 top-6 w-5 h-5 rounded-full border-2 bg-white flex items-center justify-center",
+                    "absolute left-6 top-6 w-5 h-5 rounded-full border-2 bg-background flex items-center justify-center",
                     getEventColor(event.categoryImpacted || undefined, computeSeverity(event))
                   )}
                 >

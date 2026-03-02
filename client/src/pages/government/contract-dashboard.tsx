@@ -25,7 +25,7 @@ const STATUS_COLORS: Record<string, string> = {
   suspended: "bg-red-100 text-red-800",
   completed: "bg-amber-100 text-amber-800",
   closeout: "bg-purple-100 text-purple-800",
-  closed: "bg-gray-100 text-gray-800",
+  closed: "bg-muted/50 text-gray-800",
 };
 
 export default function ContractDashboard() {
@@ -56,16 +56,16 @@ export default function ContractDashboard() {
   const totalFunded = (contracts as any[]).reduce((s: number, c: any) => s + (c.fundedAmount || 0), 0);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted/50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
               <Building2 className="h-8 w-8 text-amber-600" />
               Government Contracts
             </h1>
-            <p className="text-gray-500 mt-1">Contract management, compliance & audit-ready documentation</p>
+            <p className="text-muted-foreground mt-1">Contract management, compliance & audit-ready documentation</p>
           </div>
           <Dialog open={showCreate} onOpenChange={setShowCreate}>
             <DialogTrigger asChild>

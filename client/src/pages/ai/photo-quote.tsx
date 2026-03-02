@@ -118,13 +118,13 @@ export default function PhotoToQuote() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-muted/50 dark:bg-gray-950">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8 max-w-2xl">
         {/* Back nav */}
         <button
           onClick={() => navigate("/ai")}
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#F47C20] mb-6 transition-colors"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-[#F47C20] mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> AI Features
         </button>
@@ -133,10 +133,10 @@ export default function PhotoToQuote() {
           <div className="inline-flex items-center gap-2 bg-[#F47C20]/10 text-[#F47C20] rounded-full px-3 py-1 text-sm font-medium mb-3">
             <Sparkles className="w-4 h-4" /> Instant Quote
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground dark:text-white mb-2">
             Photo-to-Quote
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-muted-foreground dark:text-gray-300">
             Snap photos of items and get an instant AI estimate
           </p>
         </div>
@@ -151,7 +151,7 @@ export default function PhotoToQuote() {
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">
+                  <p className="text-muted-foreground dark:text-gray-300 font-medium mb-1">
                     Drop photos here or click to upload
                   </p>
                   <p className="text-sm text-gray-400">
@@ -257,7 +257,7 @@ export default function PhotoToQuote() {
                   <Sparkles className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-gray-900 dark:text-white">
+                  <h2 className="font-semibold text-foreground dark:text-white">
                     AI Estimate Ready
                   </h2>
                   <p className="text-sm text-gray-500">
@@ -267,47 +267,47 @@ export default function PhotoToQuote() {
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <div className="bg-muted/50 dark:bg-gray-900 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                     <Truck className="w-4 h-4" /> Service
                   </div>
-                  <p className="font-semibold text-gray-900 dark:text-white">
+                  <p className="font-semibold text-foreground dark:text-white">
                     {result.serviceType}
                   </p>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <div className="bg-muted/50 dark:bg-gray-900 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                     <DollarSign className="w-4 h-4" /> Price Range
                   </div>
                   <p className="font-semibold text-[#F47C20]">
                     ${result.priceRange.min} – ${result.priceRange.max}
                   </p>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <div className="bg-muted/50 dark:bg-gray-900 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                     <Clock className="w-4 h-4" /> Duration
                   </div>
-                  <p className="font-semibold text-gray-900 dark:text-white">
+                  <p className="font-semibold text-foreground dark:text-white">
                     {result.estimatedDuration}
                   </p>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <div className="bg-muted/50 dark:bg-gray-900 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                     Scope
                   </div>
-                  <p className="font-semibold text-gray-900 dark:text-white">
+                  <p className="font-semibold text-foreground dark:text-white">
                     {result.scope}
                   </p>
                 </div>
               </div>
 
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+              <p className="text-sm text-muted-foreground dark:text-gray-300 mb-4">
                 {result.details}
               </p>
 
               {/* DIY Triage Section */}
               {typeof result.diyScore === "number" && (
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
+                <div className="bg-muted/50 dark:bg-gray-900 rounded-lg p-4 mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       DIY Feasibility
@@ -343,20 +343,20 @@ export default function PhotoToQuote() {
 
                   {/* DIY Steps (show when score >= 40) */}
                   {result.diyScore >= 40 && result.diyGuide?.steps && result.diyGuide.steps.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Quick DIY Steps</p>
+                    <div className="mt-3 pt-3 border-t border-border dark:border-gray-700">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Quick DIY Steps</p>
                       <ol className="list-decimal list-inside space-y-1">
                         {result.diyGuide.steps.map((step, i) => (
-                          <li key={i} className="text-sm text-gray-600 dark:text-gray-300">{step}</li>
+                          <li key={i} className="text-sm text-muted-foreground dark:text-gray-300">{step}</li>
                         ))}
                       </ol>
                       {result.diyGuide.toolsNeeded && result.diyGuide.toolsNeeded.length > 0 && (
-                        <p className="text-xs text-gray-500 mt-2">
+                        <p className="text-xs text-muted-foreground mt-2">
                            Tools: {result.diyGuide.toolsNeeded.join(", ")}
                         </p>
                       )}
                       {result.diyGuide.estimatedTime && (
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                            Estimated time: {result.diyGuide.estimatedTime}
                         </p>
                       )}

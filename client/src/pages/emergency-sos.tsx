@@ -110,7 +110,7 @@ export default function EmergencySosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="min-h-screen bg-background dark:bg-slate-950">
       <Header />
       <main className="relative pt-24 pb-32 px-4 max-w-2xl mx-auto">
         <div className="absolute inset-0 h-[400px] -mx-[50vw] left-1/2 right-1/2 w-screen overflow-hidden -z-10">
@@ -125,7 +125,7 @@ export default function EmergencySosPage() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
                 <ShieldCheck className="w-8 h-8 text-[#DC2626]" />
               </div>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+              <h1 className="text-3xl font-bold text-foreground dark:text-white mb-2">
                 What's the emergency?
               </h1>
               <p className="text-slate-500 dark:text-slate-400">
@@ -140,12 +140,12 @@ export default function EmergencySosPage() {
                   <button
                     key={cat.id}
                     onClick={() => handleCategorySelect(cat.id)}
-                    className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-[#DC2626] hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 active:scale-[0.97]"
+                    className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-border dark:border-slate-700 bg-background dark:bg-slate-900 hover:border-[#DC2626] hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 active:scale-[0.97]"
                   >
                     <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
                       <Icon className="w-6 h-6 text-[#DC2626]" />
                     </div>
-                    <span className="font-semibold text-slate-900 dark:text-white text-sm">{cat.label}</span>
+                    <span className="font-semibold text-foreground dark:text-white text-sm">{cat.label}</span>
                   </button>
                 );
               })}
@@ -172,12 +172,12 @@ export default function EmergencySosPage() {
                 <selected.icon className="w-6 h-6 text-[#DC2626]" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{selected.label}</h2>
+                <h2 className="text-2xl font-bold text-foreground dark:text-white">{selected.label}</h2>
                 <p className="text-sm text-slate-500">Tell us where and what's happening</p>
               </div>
             </div>
 
-            <Card className="border-slate-200 dark:border-slate-700">
+            <Card className="border-border dark:border-slate-700">
               <CardContent className="p-6 space-y-4">
                 <div>
                   <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 block">Your address</label>
@@ -199,18 +199,18 @@ export default function EmergencySosPage() {
               </CardContent>
             </Card>
 
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+            <div className="bg-muted/50 dark:bg-slate-800/50 rounded-xl p-4 border border-border dark:border-slate-700">
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-slate-600 dark:text-slate-400">Service estimate</span>
-                <span className="text-slate-900 dark:text-white font-medium">${selected.basePrice}</span>
+                <span className="text-muted-foreground dark:text-slate-400">Service estimate</span>
+                <span className="text-foreground dark:text-white font-medium">${selected.basePrice}</span>
               </div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-slate-600 dark:text-slate-400">Emergency rush fee</span>
+                <span className="text-muted-foreground dark:text-slate-400">Emergency rush fee</span>
                 <span className="text-[#DC2626] font-medium">+${EMERGENCY_FEE}</span>
               </div>
-              <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex justify-between font-bold">
-                <span className="text-slate-900 dark:text-white">Estimated total</span>
-                <span className="text-slate-900 dark:text-white">${selected.basePrice + EMERGENCY_FEE}</span>
+              <div className="border-t border-border dark:border-slate-700 pt-2 flex justify-between font-bold">
+                <span className="text-foreground dark:text-white">Estimated total</span>
+                <span className="text-foreground dark:text-white">${selected.basePrice + EMERGENCY_FEE}</span>
               </div>
             </div>
 
@@ -232,7 +232,7 @@ export default function EmergencySosPage() {
               </div>
             </div>
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Finding nearest available pro...</h2>
+              <h2 className="text-2xl font-bold text-foreground dark:text-white mb-2">Finding nearest available pro...</h2>
               <p className="text-slate-500 dark:text-slate-400">Checking availability in your area. This usually takes a few seconds.</p>
             </div>
           </div>
@@ -245,7 +245,7 @@ export default function EmergencySosPage() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
                 <ShieldCheck className="w-8 h-8 text-green-600" />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">We've got this.</h2>
+              <h2 className="text-2xl font-bold text-foreground dark:text-white">We've got this.</h2>
               <p className="text-slate-500 dark:text-slate-400 mt-1">Here's your matched pro</p>
             </div>
 
@@ -253,11 +253,11 @@ export default function EmergencySosPage() {
             <Card className="border-2 border-green-200 dark:border-green-800/50 overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-14 h-14 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xl font-bold text-slate-600 dark:text-slate-300">
+                  <div className="w-14 h-14 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xl font-bold text-muted-foreground dark:text-slate-300">
                     {matchResult.pro.name.charAt(0)}
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">{matchResult.pro.name}</h3>
+                    <h3 className="text-lg font-bold text-foreground dark:text-white">{matchResult.pro.name}</h3>
                     <p className="text-sm text-slate-500">{matchResult.pro.companyName}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
@@ -278,16 +278,16 @@ export default function EmergencySosPage() {
                 {/* Pricing breakdown */}
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-slate-600 dark:text-slate-400">Service price</span>
-                    <span className="text-slate-900 dark:text-white">${matchResult.basePrice}</span>
+                    <span className="text-muted-foreground dark:text-slate-400">Service price</span>
+                    <span className="text-foreground dark:text-white">${matchResult.basePrice}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-600 dark:text-slate-400">Emergency rush fee</span>
+                    <span className="text-muted-foreground dark:text-slate-400">Emergency rush fee</span>
                     <span className="text-[#DC2626]">+${matchResult.emergencyFee}</span>
                   </div>
-                  <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex justify-between font-bold text-base">
-                    <span className="text-slate-900 dark:text-white">Total</span>
-                    <span className="text-slate-900 dark:text-white">${matchResult.totalPrice}</span>
+                  <div className="border-t border-border dark:border-slate-700 pt-2 flex justify-between font-bold text-base">
+                    <span className="text-foreground dark:text-white">Total</span>
+                    <span className="text-foreground dark:text-white">${matchResult.totalPrice}</span>
                   </div>
                 </div>
               </CardContent>

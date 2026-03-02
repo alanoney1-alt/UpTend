@@ -65,7 +65,7 @@ export function WarrantyTracker({ propertyId }: WarrantyTrackerProps) {
     if (status === "active") return "bg-green-100 text-green-800 border-green-300";
     if (status === "expiring_soon") return "bg-orange-100 text-orange-800 border-orange-300";
     if (status === "expired") return "bg-red-100 text-red-800 border-red-300";
-    return "bg-gray-100 text-gray-800 border-gray-300";
+    return "bg-muted/50 text-gray-800 border-gray-300";
   }
 
   // Compute days until expiration for each warranty
@@ -142,7 +142,7 @@ export function WarrantyTracker({ propertyId }: WarrantyTrackerProps) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
+            <div className="text-center p-3 bg-muted/50 rounded-lg">
               <p className="text-2xl font-bold">{stats.total}</p>
               <p className="text-sm text-muted-foreground">Total</p>
             </div>
@@ -272,7 +272,7 @@ export function WarrantyTracker({ propertyId }: WarrantyTrackerProps) {
                     </div>
 
                     {(warranty.description || warranty.notes) && (
-                      <div className="mt-4 p-3 bg-gray-50 rounded">
+                      <div className="mt-4 p-3 bg-muted/50 rounded">
                         <p className="text-xs text-muted-foreground mb-1">Coverage Details</p>
                         <p className="text-sm">{warranty.description || warranty.notes}</p>
                       </div>

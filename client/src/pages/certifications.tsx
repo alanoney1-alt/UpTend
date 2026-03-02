@@ -63,7 +63,7 @@ const certifications = [
 const statusConfig = {
   available: { label: "Enrolling Now", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100", icon: CheckCircle },
   coming_soon: { label: "Coming Soon", color: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100", icon: Clock },
-  locked: { label: "Locked", color: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400", icon: Lock },
+  locked: { label: "Locked", color: "bg-muted/50 text-muted-foreground dark:bg-slate-800 dark:text-slate-400", icon: Lock },
 };
 
 export default function Certifications() {

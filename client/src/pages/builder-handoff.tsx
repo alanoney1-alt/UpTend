@@ -55,11 +55,11 @@ export default function BuilderHandoff() {
         <Header />
         <div className="max-w-2xl mx-auto px-4 py-16 text-center">
           <CheckCircle2 className="w-16 h-16 mx-auto text-green-600 mb-6" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">George will take it from here.</h1>
-          <p className="text-gray-600 mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-3">George will take it from here.</h1>
+          <p className="text-muted-foreground mb-2">
             The homeowner has been registered and all warranty information has been loaded into their account.
           </p>
-          <p className="text-gray-500 mb-8">
+          <p className="text-muted-foreground mb-8">
             George will reach out to {formData.homeownerName || "the homeowner"} to introduce himself and walk them through their new home coverage.
           </p>
           <Button onClick={() => { setSubmitted(false); setFormData({ address: "", homeownerEmail: "", homeownerName: "", closingDate: "", builderCompany: "" }); setWarranties([]); }} className="bg-amber-600 hover:bg-amber-700">
@@ -76,7 +76,7 @@ export default function BuilderHandoff() {
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Builder Handoff</h1>
-          <p className="text-gray-600 mt-1">Register a new home closing and let George take over warranty management for the homeowner.</p>
+          <p className="text-muted-foreground mt-1">Register a new home closing and let George take over warranty management for the homeowner.</p>
         </div>
 
         <Card className="mb-6">
@@ -113,7 +113,7 @@ export default function BuilderHandoff() {
             {warranties.length > 0 && (
               <div className="space-y-2 mb-4">
                 {warranties.map((w, i) => (
-                  <div key={i} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <div key={i} className="flex justify-between items-center p-2 bg-muted/50 rounded">
                     <span>{w.applianceName} {w.brand ? `(${w.brand})` : ""}</span>
                     <Button size="sm" variant="ghost" onClick={() => setWarranties(warranties.filter((_, idx) => idx !== i))}>
                       <Trash2 className="w-3 h-3" />

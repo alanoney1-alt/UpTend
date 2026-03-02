@@ -50,14 +50,14 @@ export function UpgradePrompt({ featureName, variant = "card" }: UpgradePromptPr
           <h3 className="text-lg font-semibold text-gray-900">
             Unlock {featureName}
           </h3>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             You're on the <Badge variant="outline" className="mx-1 border-amber-300 text-amber-700">Independent (Free)</Badge> plan.
             Upgrade to Starter to access {featureName.toLowerCase()}.
           </p>
         </div>
-        <div className="bg-white rounded-lg border border-amber-200 p-4 max-w-sm mx-auto text-left">
-          <p className="text-sm font-medium text-gray-900 mb-2">Starter Plan. $3/door/mo</p>
-          <ul className="text-xs text-gray-600 space-y-1">
+        <div className="bg-background rounded-lg border border-amber-200 p-4 max-w-sm mx-auto text-left">
+          <p className="text-sm font-medium text-foreground mb-2">Starter Plan. $3/door/mo</p>
+          <ul className="text-xs text-muted-foreground space-y-1">
             <li>• 11–50 properties</li>
             <li>• SLA management & compliance</li>
             <li>• Reports & CSV import</li>
