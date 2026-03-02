@@ -425,6 +425,8 @@ function Router() {
       <Route path="/snap-quote">{() => <Redirect to="/book" />}</Route>
       <Route path="/ai/documents" component={DocumentScanner} />
       <Route path="/home-dna-scan" component={HomeScan} />
+      <Route path="/services/home-dna-scan">{() => <Redirect to="/home-dna-scan" />}</Route>
+      <Route path="/services/light-demolition">{() => <Redirect to="/services/demolition" />}</Route>
       <Route path="/ai/home-scan" component={HomeScan} />
       <Route path="/find-pro" component={FindPro} />
       <Route path="/certifications" component={Certifications} />

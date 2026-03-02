@@ -7,7 +7,7 @@ export const SERVICES = {
     startingPrice: 0,
     priceUnit: 'flat',
     tagline: 'Know your home inside out.',
-    description: 'Free comprehensive home walkthrough. Complete yours and get a $25 credit toward your next booking.',
+    description: 'Free comprehensive home walkthrough with a personalized maintenance plan for your home.',
     tiers: {
       standard: {
         name: 'Home DNA Scan Standard',
@@ -54,7 +54,7 @@ export const SERVICES = {
       stacksWithDiscounts: true,
       appliedBeforePercentageDiscount: true,
       onePerDwellScan: true,
-      description: '$25 credit toward your next booking',
+      description: 'Priority pricing on services from your scan report',
     },
   },
   handyman: {
