@@ -102,7 +102,7 @@ export default function CustomerSubscriptions() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/subscriptions/customer/${user?.id}`] });
     },
-    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
+    onError: (err: Error) => { toast({ title: "Couldn't update subscription", description: err.message || "Try again in a moment.", variant: "destructive" }); },
   });
 
   // Resume subscription

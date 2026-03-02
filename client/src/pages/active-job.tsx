@@ -41,7 +41,7 @@ export default function ActiveJob() {
       queryClient.invalidateQueries({ queryKey: ["/api/haulers", "active-jobs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/service-requests/pending"] });
     },
-    onError: (err: Error) => { toast({ title: "Error", description: err.message, variant: "destructive" }); },
+    onError: (err: Error) => { toast({ title: "Something went wrong", description: err.message || "Give it another try.", variant: "destructive" }); },
   });
 
   if (isLoading) {
