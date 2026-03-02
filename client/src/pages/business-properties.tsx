@@ -22,26 +22,11 @@ import {
 
 const demoPortfolio = { name: "Central FL Portfolio", totalProperties: 12, totalUnits: 847, occupancyRate: 94.2, monthlyRevenue: 1245000 };
 
-const demoProperties = [
-  { id: 1, name: "Sunview Apartments", address: "2400 E Colonial Dr, Orlando, FL", units: 120, type: "Multi-Family", occupancy: 96, monthlyRent: 156000 },
-  { id: 2, name: "Oak Ridge Townhomes", address: "1800 Oak Ridge Rd, Orlando, FL", units: 48, type: "Townhome", occupancy: 92, monthlyRent: 72000 },
-  { id: 3, name: "Lake Nona Residences", address: "9500 Narcoossee Rd, Orlando, FL", units: 200, type: "Multi-Family", occupancy: 98, monthlyRent: 340000 },
-  { id: 4, name: "Winter Park Commons", address: "450 N Orlando Ave, Winter Park, FL", units: 36, type: "Mixed-Use", occupancy: 89, monthlyRent: 64800 },
-];
+const demoProperties: { id: number; name: string; address: string; units: number; type: string; occupancy: number; monthlyRent: number }[] = [];
 
-const demoWorkOrders = [
-  { id: "WO-1001", unit: "Sunview #204", tenant: "John Smith", description: "AC not cooling properly", priority: "urgent", status: "in_progress", created: "2025-02-13", slaDeadline: "2025-02-14 18:00", assignedPro: "CoolAir HVAC" },
-  { id: "WO-1002", unit: "Oak Ridge #12B", tenant: "Maria Garcia", description: "Leaking kitchen faucet", priority: "normal", status: "assigned", created: "2025-02-14", slaDeadline: "2025-02-17 18:00", assignedPro: "QuickFix Plumbing" },
-  { id: "WO-1003", unit: "Lake Nona #415", tenant: "David Lee", description: "Broken window blind", priority: "low", status: "open", created: "2025-02-14", slaDeadline: "2025-02-21 18:00", assignedPro: null },
-  { id: "WO-1004", unit: "Sunview #118", tenant: "Ashley Brown", description: "Smoke detector beeping", priority: "urgent", status: "completed", created: "2025-02-12", slaDeadline: "2025-02-13 18:00", assignedPro: "SafeHome Electric" },
-  { id: "WO-1005", unit: "Winter Park #8A", tenant: "James Wilson", description: "Garbage disposal jammed", priority: "normal", status: "in_progress", created: "2025-02-13", slaDeadline: "2025-02-16 18:00", assignedPro: "QuickFix Plumbing" },
-];
+const demoWorkOrders: { id: string; unit: string; tenant: string; description: string; priority: string; status: string; created: string; slaDeadline: string; assignedPro: string | null }[] = [];
 
-const demoTurnovers = [
-  { id: 1, unit: "Sunview #307", moveOut: "2025-02-28", targetReady: "2025-03-10", tasks: 12, completed: 3, status: "in_progress" },
-  { id: 2, unit: "Oak Ridge #5A", moveOut: "2025-03-15", targetReady: "2025-03-25", tasks: 10, completed: 0, status: "scheduled" },
-  { id: 3, unit: "Lake Nona #102", moveOut: "2025-02-01", targetReady: "2025-02-12", tasks: 14, completed: 14, status: "completed" },
-];
+const demoTurnovers: { id: number; unit: string; moveOut: string; targetReady: string; tasks: number; completed: number; status: string }[] = [];
 
 const demoSlaConfigs = [
   { id: 1, priority: "Emergency", responseHours: 1, resolutionHours: 4, currentCompliance: 98 },
