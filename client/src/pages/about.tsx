@@ -41,10 +41,9 @@ function useValues() {
 
 const milestones = [
   { year: "2024", event: "UpTend founded in Orlando, Florida" },
-  { year: "2024", event: "First 100 Verified Pros join the network" },
-  { year: "2025", event: "Expanded to serve all of Central Florida" },
-  { year: "2025", event: "Launched instant visual quoting" },
-  { year: "2025", event: "10,000+ jobs completed with full impact tracking" },
+  { year: "2025", event: "George AI Home Service Agent goes live" },
+  { year: "2025", event: "Home DNA Scan launches for Orlando homeowners" },
+  { year: "2026", event: "Lake Nona pilot launch and Founding 100 program" },
 ];
 
 export default function About() {
@@ -69,7 +68,7 @@ export default function About() {
           <span className="text-primary font-bold uppercase tracking-widest text-sm mb-4 block" data-testid="text-our-story-label">{t("about.our_story")}</span>
           <h1 className="text-4xl md:text-6xl font-black mb-8 leading-tight" data-testid="text-about-headline">
             {t("about.headline")} <br className="hidden md:block" />
-            <span className="text-muted-foreground underline decoration-primary decoration-4 underline-offset-8 italic">{t("about.headline_highlight")}</span>
+            <span className="text-slate-300 underline decoration-primary decoration-4 underline-offset-8 italic">{t("about.headline_highlight")}</span>
           </h1>
 
           <div className="flex flex-col md:flex-row gap-12 items-start mt-12">
@@ -82,12 +81,12 @@ export default function About() {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <p className="mt-6 text-center font-bold" data-testid="text-founder-name">{t("about.founder_name")}</p>
-                <p className="text-center text-xs text-muted-foreground uppercase tracking-widest" data-testid="text-founder-title">{t("about.founder_title")}</p>
+                <p className="mt-6 text-center font-bold text-white" data-testid="text-founder-name">{t("about.founder_name")}</p>
+                <p className="text-center text-xs text-slate-400 uppercase tracking-widest" data-testid="text-founder-title">{t("about.founder_title")}</p>
               </div>
             </div>
 
-            <div className="flex-1 space-y-6 text-lg text-muted-foreground leading-relaxed text-left">
+            <div className="flex-1 space-y-6 text-lg text-slate-300 leading-relaxed text-left">
               <p>{t("about.story_p1")}</p>
               <p>{t("about.story_p2")}</p>
               <p>
