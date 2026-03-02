@@ -155,10 +155,10 @@ function HeroSection() {
 
         <p className="text-white/50 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-4">Home Intelligence</p>
         <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 leading-relaxed">
-          Tell us what's wrong. Get a fair price in 60 seconds. One pro, matched and booked. That's it.
+          Stop calling around for your home service needs. Just tell George. He figures out exactly what you need, gives you a locked price in 60 seconds, and sends a vetted pro to your door.
         </p>
         <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed font-light">
-          Every pro is background-checked and insured. Every price is locked before they arrive.
+          Background-checked. Insured. No surprises. No haggling. Just done.
         </p>
 
         {/* George inline chat prompt */}
