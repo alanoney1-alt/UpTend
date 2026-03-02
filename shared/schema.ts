@@ -7775,3 +7775,16 @@ export const recurringJobSchedules = pgTable("recurring_job_schedules", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 export type RecurringJobSchedule = typeof recurringJobSchedules.$inferSelect;
+
+// ─── Tenant Satisfaction Scores ────────────────────────────────────────────
+export const tenantSatisfactionScores = pgTable("tenant_satisfaction_scores", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  address: text("address").notNull(),
+  residentName: text("resident_name"),
+  serviceType: text("service_type").notNull(),
+  rating: integer("rating").notNull(), // 1-5
+  feedback: text("feedback"),
+  jobId: varchar("job_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export type TenantSatisfactionScore = typeof tenantSatisfactionScores.$inferSelect;

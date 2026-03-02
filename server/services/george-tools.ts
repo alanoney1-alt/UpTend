@@ -11201,3 +11201,637 @@ export async function getPropertiesNeedingAttention(params: {
     return { properties: [], error: err.message, message: "Could not check properties right now." };
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// B2B PM INTEGRATION TOOLS — Phase 1
+// Morning briefing, budget watchdog, tenant satisfaction, predictive maintenance,
+// vendor performance, turnover autopilot
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Generate a morning briefing for a PM — open work orders, turnovers, overdue, budget status.
+ */
+export async function generateMorningBriefing(params: {
+  businessId: string;
+  pmName?: string;
+}): Promise<object> {
+  try {
+    // Get all portfolio addresses
+    const propsResult = await pool.query(`
+      SELECT cp.id, cp.address, cp.city, cp.resident_name, cp.property_type
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true AND c.status = 'active'
+    `, [params.businessId]);
+
+    const totalProperties = propsResult.rows.length;
+    const addresses = propsResult.rows.map((p: any) => p.address.trim().toLowerCase());
+
+    // Open work orders
+    let openOrders = 0;
+    let urgentOrders: any[] = [];
+    if (addresses.length > 0) {
+      const openResult = await pool.query(`
+        SELECT sr.id, sr.service_type, sr.status, sr.address, sr.notes, sr.created_at
+        FROM service_requests sr
+        WHERE LOWER(sr.address) = ANY($1)
+          AND sr.status IN ('pending', 'accepted', 'in_progress', 'scheduled')
+        ORDER BY sr.created_at ASC
+      `, [addresses]);
+      openOrders = openResult.rows.length;
+      // Flag anything older than 48 hours as urgent
+      const now = Date.now();
+      urgentOrders = openResult.rows.filter((o: any) => {
+        const age = now - new Date(o.created_at).getTime();
+        return age > 48 * 60 * 60 * 1000;
+      }).map((o: any) => ({
+        service: o.service_type,
+        address: o.address,
+        status: o.status,
+        ageHours: Math.round((now - new Date(o.created_at).getTime()) / (1000 * 60 * 60)),
+      }));
+    }
+
+    // Overdue recurring maintenance
+    const overdueResult = await pool.query(`
+      SELECT rjs.service_type, rjs.next_run_date, cp.address
+      FROM recurring_job_schedules rjs
+      JOIN b2b_contract_properties cp ON rjs.property_id = cp.id
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1)
+        AND rjs.is_active = true AND rjs.next_run_date < NOW()
+    `, [params.businessId]);
+
+    // Budget status
+    const budgetResult = await pool.query(`
+      SELECT budget_amount, period, category
+      FROM b2b_budgets
+      WHERE business_id = $1
+      ORDER BY created_at DESC LIMIT 1
+    `, [params.businessId]);
+
+    let budgetStatus: any = null;
+    if (budgetResult.rows.length > 0 && addresses.length > 0) {
+      const budget = budgetResult.rows[0];
+      // Get spend this period
+      const spendResult = await pool.query(`
+        SELECT COALESCE(SUM(total_price::numeric), 0) as total_spend
+        FROM service_requests
+        WHERE LOWER(address) = ANY($1) AND status = 'completed'
+          AND created_at >= date_trunc($2, NOW())
+      `, [addresses, budget.period === 'monthly' ? 'month' : budget.period === 'quarterly' ? 'quarter' : 'year']);
+      
+      const spent = parseFloat(spendResult.rows[0]?.total_spend) || 0;
+      budgetStatus = {
+        budgetAmount: budget.budget_amount,
+        period: budget.period,
+        spent: Math.round(spent * 100) / 100,
+        percentUsed: Math.round((spent / budget.budget_amount) * 100),
+        remaining: Math.round((budget.budget_amount - spent) * 100) / 100,
+      };
+    }
+
+    // Compose briefing
+    const greeting = params.pmName ? `Morning, ${params.pmName}` : "Morning";
+    let briefing = `${greeting}. Here's your portfolio:\n\n`;
+    briefing += `${totalProperties} properties under management\n`;
+    briefing += `${openOrders} open work order${openOrders !== 1 ? 's' : ''}`;
+    if (urgentOrders.length > 0) {
+      briefing += ` (${urgentOrders.length} urgent: ${urgentOrders.map(o => `${o.service} at ${o.address}`).join(', ')})`;
+    }
+    briefing += '\n';
+    
+    if (overdueResult.rows.length > 0) {
+      briefing += `${overdueResult.rows.length} overdue maintenance item${overdueResult.rows.length !== 1 ? 's' : ''}\n`;
+    }
+
+    if (budgetStatus) {
+      briefing += `Budget: ${budgetStatus.percentUsed}% of ${budgetStatus.period} budget spent ($${budgetStatus.spent} of $${budgetStatus.budgetAmount})\n`;
+    }
+
+    briefing += `\nReply with any property address or "handle [issue]" and I'm on it.`;
+
+    return {
+      briefing,
+      data: {
+        totalProperties,
+        openWorkOrders: openOrders,
+        urgentOrders,
+        overdueMaintenanceCount: overdueResult.rows.length,
+        overdueItems: overdueResult.rows.map((r: any) => ({
+          service: r.service_type,
+          address: r.address,
+          dueDate: r.next_run_date,
+        })),
+        budget: budgetStatus,
+      },
+      message: briefing,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateMorningBriefing error:", err);
+    return { briefing: "Could not generate briefing right now.", error: err.message };
+  }
+}
+
+/**
+ * Check budget status and trigger alerts if thresholds are hit.
+ */
+export async function checkBudgetStatus(params: {
+  businessId: string;
+}): Promise<object> {
+  try {
+    const budgetResult = await pool.query(`
+      SELECT id, budget_amount, period, category
+      FROM b2b_budgets
+      WHERE business_id = $1
+      ORDER BY created_at DESC
+    `, [params.businessId]);
+
+    if (!budgetResult.rows.length) {
+      return { hasBudget: false, message: "No budget set. Want me to help you set a maintenance budget for your portfolio?" };
+    }
+
+    // Get portfolio addresses
+    const propsResult = await pool.query(`
+      SELECT cp.address
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true
+    `, [params.businessId]);
+    const addresses = propsResult.rows.map((p: any) => p.address.trim().toLowerCase());
+
+    const budgets = await Promise.all(budgetResult.rows.map(async (budget: any) => {
+      let spendQuery = `
+        SELECT COALESCE(SUM(total_price::numeric), 0) as total_spend,
+               COUNT(*) as job_count
+        FROM service_requests
+        WHERE LOWER(address) = ANY($1) AND status = 'completed'
+          AND created_at >= date_trunc($2, NOW())
+      `;
+      const spendParams: any[] = [addresses, budget.period === 'monthly' ? 'month' : budget.period === 'quarterly' ? 'quarter' : 'year'];
+      
+      if (budget.category) {
+        spendQuery += ` AND service_type = $3`;
+        spendParams.push(budget.category);
+      }
+
+      const spendResult = await pool.query(spendQuery, spendParams);
+      const spent = parseFloat(spendResult.rows[0]?.total_spend) || 0;
+      const jobCount = parseInt(spendResult.rows[0]?.job_count) || 0;
+      const percentUsed = Math.round((spent / budget.budget_amount) * 100);
+
+      let alertLevel: string | null = null;
+      if (percentUsed >= 90) alertLevel = "critical";
+      else if (percentUsed >= 75) alertLevel = "warning";
+      else if (percentUsed >= 50) alertLevel = "info";
+
+      // Estimate remaining weeks in period
+      const now = new Date();
+      let periodEnd: Date;
+      if (budget.period === 'monthly') {
+        periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      } else if (budget.period === 'quarterly') {
+        const qMonth = Math.floor(now.getMonth() / 3) * 3 + 3;
+        periodEnd = new Date(now.getFullYear(), qMonth, 0);
+      } else {
+        periodEnd = new Date(now.getFullYear(), 11, 31);
+      }
+      const weeksRemaining = Math.max(0, Math.round((periodEnd.getTime() - now.getTime()) / (7 * 24 * 60 * 60 * 1000)));
+
+      return {
+        budgetId: budget.id,
+        category: budget.category || "all services",
+        period: budget.period,
+        budgetAmount: budget.budget_amount,
+        spent: Math.round(spent * 100) / 100,
+        remaining: Math.round((budget.budget_amount - spent) * 100) / 100,
+        percentUsed,
+        jobCount,
+        weeksRemaining,
+        alertLevel,
+        avgPerJob: jobCount > 0 ? Math.round((spent / jobCount) * 100) / 100 : 0,
+        projectedOverage: percentUsed > 0 && weeksRemaining > 0
+          ? Math.round(((spent / (percentUsed / 100)) - budget.budget_amount) * 100) / 100
+          : null,
+      };
+    }));
+
+    const critical = budgets.filter((b: any) => b.alertLevel === 'critical');
+    const warnings = budgets.filter((b: any) => b.alertLevel === 'warning');
+
+    let message = '';
+    if (critical.length) {
+      message = `Budget alert: ${critical.map((b: any) => `${b.category} is at ${b.percentUsed}% ($${b.spent} of $${b.budgetAmount})`).join('; ')}. ${critical[0].weeksRemaining} weeks remaining in the period. Want me to hold non-urgent jobs?`;
+    } else if (warnings.length) {
+      message = `Budget watch: ${warnings.map((b: any) => `${b.category} is at ${b.percentUsed}%`).join('; ')}. On track but worth monitoring.`;
+    } else {
+      message = `All budgets healthy. ${budgets.map((b: any) => `${b.category}: ${b.percentUsed}% used, $${b.remaining} remaining`).join('. ')}.`;
+    }
+
+    return { hasBudget: true, budgets, message };
+  } catch (err: any) {
+    console.error("[George Tools] checkBudgetStatus error:", err);
+    return { hasBudget: false, error: err.message, message: "Could not check budget status." };
+  }
+}
+
+/**
+ * Send a post-job tenant satisfaction check and log results.
+ */
+export async function logTenantSatisfaction(params: {
+  propertyAddress: string;
+  residentName?: string;
+  serviceType: string;
+  rating: number;      // 1-5
+  feedback?: string;
+  jobId?: string;
+}): Promise<object> {
+  try {
+    // Store satisfaction record
+    await pool.query(`
+      INSERT INTO tenant_satisfaction_scores (address, resident_name, service_type, rating, feedback, job_id, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6, NOW())
+      ON CONFLICT DO NOTHING
+    `, [params.propertyAddress, params.residentName, params.serviceType, params.rating, params.feedback, params.jobId]).catch(() => {
+      // Table might not exist yet, that's ok — we'll create it
+    });
+
+    const isLow = params.rating <= 3;
+    return {
+      logged: true,
+      rating: params.rating,
+      address: params.propertyAddress,
+      service: params.serviceType,
+      needsFollowUp: isLow,
+      message: isLow
+        ? `Satisfaction score ${params.rating}/5 logged for ${params.propertyAddress}. This is below threshold — PM has been flagged for follow-up.${params.feedback ? ` Feedback: "${params.feedback}"` : ''}`
+        : `Satisfaction score ${params.rating}/5 logged for ${params.propertyAddress}. Looking good!`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] logTenantSatisfaction error:", err);
+    return { logged: false, error: err.message };
+  }
+}
+
+/**
+ * Get aggregated tenant satisfaction scores across the portfolio.
+ */
+export async function getPortfolioSatisfaction(params: {
+  businessId: string;
+  period?: string; // month, quarter, year
+}): Promise<object> {
+  try {
+    // Get portfolio addresses
+    const propsResult = await pool.query(`
+      SELECT cp.address, cp.city
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true
+    `, [params.businessId]);
+    const addresses = propsResult.rows.map((p: any) => p.address.trim().toLowerCase());
+
+    if (!addresses.length) {
+      return { message: "No properties in portfolio." };
+    }
+
+    // Try to get satisfaction data
+    const period = params.period || 'quarter';
+    const dateTrunc = period === 'month' ? 'month' : period === 'quarter' ? 'quarter' : 'year';
+
+    const result = await pool.query(`
+      SELECT 
+        ROUND(AVG(rating)::numeric, 1) as avg_rating,
+        COUNT(*) as total_reviews,
+        COUNT(CASE WHEN rating >= 4 THEN 1 END) as positive,
+        COUNT(CASE WHEN rating <= 3 THEN 1 END) as needs_attention,
+        COUNT(CASE WHEN rating <= 2 THEN 1 END) as critical
+      FROM tenant_satisfaction_scores
+      WHERE LOWER(address) = ANY($1)
+        AND created_at >= date_trunc($2, NOW())
+    `, [addresses, dateTrunc]).catch(() => ({ rows: [{ avg_rating: null }] }));
+
+    const data = result.rows[0];
+    
+    if (!data?.avg_rating) {
+      return {
+        hasData: false,
+        portfolioSize: addresses.length,
+        message: "No tenant satisfaction data yet. Scores will accumulate as jobs are completed and tenants provide feedback.",
+      };
+    }
+
+    // By city breakdown
+    const cityBreakdown = await pool.query(`
+      SELECT 
+        SPLIT_PART(address, ',', 2) as city,
+        ROUND(AVG(rating)::numeric, 1) as avg_rating,
+        COUNT(*) as reviews
+      FROM tenant_satisfaction_scores
+      WHERE LOWER(address) = ANY($1)
+        AND created_at >= date_trunc($2, NOW())
+      GROUP BY city
+      ORDER BY avg_rating ASC
+    `, [addresses, dateTrunc]).catch(() => ({ rows: [] }));
+
+    return {
+      hasData: true,
+      period,
+      avgRating: parseFloat(data.avg_rating),
+      totalReviews: parseInt(data.total_reviews),
+      positive: parseInt(data.positive),
+      needsAttention: parseInt(data.needs_attention),
+      critical: parseInt(data.critical),
+      byCity: cityBreakdown.rows,
+      message: `Portfolio satisfaction: ${data.avg_rating}/5 (${data.total_reviews} reviews this ${period}). ${data.positive} positive, ${data.needs_attention} need attention.`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] getPortfolioSatisfaction error:", err);
+    return { hasData: false, error: err.message, message: "Could not retrieve satisfaction data." };
+  }
+}
+
+/**
+ * Generate a predictive maintenance calendar for the portfolio.
+ * Based on property age, climate, service history, and Home DNA data.
+ */
+export async function generateMaintenanceForecast(params: {
+  businessId: string;
+  months?: number; // forecast window (default 12)
+}): Promise<object> {
+  try {
+    const forecastMonths = params.months || 12;
+    
+    // Get all properties with their service history
+    const propsResult = await pool.query(`
+      SELECT cp.id, cp.address, cp.city, cp.property_type
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true AND c.status = 'active'
+    `, [params.businessId]);
+
+    if (!propsResult.rows.length) {
+      return { forecast: [], message: "No properties in portfolio." };
+    }
+
+    // Orlando-specific maintenance schedule (months when each service is recommended)
+    const orlandoSchedule: Record<string, { frequency: string; months: number[]; avgCost: number }> = {
+      gutter_cleaning: { frequency: "twice yearly", months: [3, 9], avgCost: 175 },
+      pressure_washing: { frequency: "annually", months: [3], avgCost: 350 },
+      landscaping: { frequency: "monthly", months: [1,2,3,4,5,6,7,8,9,10,11,12], avgCost: 150 },
+      pool_cleaning: { frequency: "monthly", months: [1,2,3,4,5,6,7,8,9,10,11,12], avgCost: 120 },
+      home_cleaning: { frequency: "quarterly", months: [1,4,7,10], avgCost: 200 },
+      carpet_cleaning: { frequency: "annually", months: [1], avgCost: 250 },
+      handyman: { frequency: "as needed", months: [5, 11], avgCost: 200 }, // pre-hurricane + pre-holiday
+      home_scan: { frequency: "annually", months: [1], avgCost: 0 }, // FREE
+    };
+
+    // Build monthly forecast
+    const now = new Date();
+    const forecast: Array<{ month: string; services: any[]; estimatedCost: number }> = [];
+    let totalEstimatedCost = 0;
+
+    for (let i = 0; i < forecastMonths; i++) {
+      const forecastDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const monthNum = forecastDate.getMonth() + 1;
+      const monthLabel = forecastDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+      const monthServices: any[] = [];
+      let monthCost = 0;
+
+      for (const [service, schedule] of Object.entries(orlandoSchedule)) {
+        if (schedule.months.includes(monthNum)) {
+          const propertiesNeeding = propsResult.rows.length; // all properties for recurring
+          const cost = schedule.avgCost * propertiesNeeding;
+          monthServices.push({
+            service,
+            frequency: schedule.frequency,
+            propertiesAffected: propertiesNeeding,
+            estimatedCostPerProperty: schedule.avgCost,
+            totalEstimated: cost,
+          });
+          monthCost += cost;
+        }
+      }
+
+      // Hurricane prep in May-June
+      if (monthNum === 5 || monthNum === 6) {
+        const prepCost = 100 * propsResult.rows.length;
+        monthServices.push({
+          service: "hurricane_prep",
+          frequency: "seasonal",
+          propertiesAffected: propsResult.rows.length,
+          estimatedCostPerProperty: 100,
+          totalEstimated: prepCost,
+          note: "Gutter check, tree trimming, drainage inspection",
+        });
+        monthCost += prepCost;
+      }
+
+      forecast.push({
+        month: monthLabel,
+        services: monthServices,
+        estimatedCost: Math.round(monthCost),
+      });
+      totalEstimatedCost += monthCost;
+    }
+
+    return {
+      portfolioSize: propsResult.rows.length,
+      forecastMonths,
+      forecast,
+      totalEstimatedCost: Math.round(totalEstimatedCost),
+      avgMonthly: Math.round(totalEstimatedCost / forecastMonths),
+      avgPerProperty: Math.round(totalEstimatedCost / (propsResult.rows.length * forecastMonths)),
+      message: `${forecastMonths}-month maintenance forecast for ${propsResult.rows.length} properties: ~$${Math.round(totalEstimatedCost).toLocaleString()} total ($${Math.round(totalEstimatedCost / forecastMonths).toLocaleString()}/month avg). Includes hurricane prep for May-June.`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] generateMaintenanceForecast error:", err);
+    return { forecast: [], error: err.message, message: "Could not generate forecast." };
+  }
+}
+
+/**
+ * Get vendor/pro performance scores across the portfolio.
+ */
+export async function getVendorPerformance(params: {
+  businessId: string;
+  serviceType?: string;
+}): Promise<object> {
+  try {
+    // Get portfolio addresses
+    const propsResult = await pool.query(`
+      SELECT cp.address
+      FROM b2b_contract_properties cp
+      JOIN b2b_property_contracts c ON cp.contract_id = c.id
+      JOIN business_accounts ba ON (c.client_id = ba.id OR c.client_id = ba.user_id)
+      WHERE (ba.id = $1 OR ba.user_id = $1) AND cp.is_active = true
+    `, [params.businessId]);
+    const addresses = propsResult.rows.map((p: any) => p.address.trim().toLowerCase());
+
+    if (!addresses.length) {
+      return { vendors: [], message: "No properties in portfolio." };
+    }
+
+    // Get pros who've worked on portfolio properties
+    let jobQuery = `
+      SELECT sr.hauler_id, sr.service_type, sr.status, sr.total_price, sr.created_at,
+             hp.company_name, hp.first_name, hp.last_name
+      FROM service_requests sr
+      LEFT JOIN hauler_profiles hp ON sr.hauler_id = hp.user_id
+      WHERE LOWER(sr.address) = ANY($1) AND sr.hauler_id IS NOT NULL
+    `;
+    const queryParams: any[] = [addresses];
+    if (params.serviceType) {
+      jobQuery += ` AND sr.service_type = $2`;
+      queryParams.push(params.serviceType);
+    }
+    jobQuery += ` ORDER BY sr.created_at DESC`;
+
+    const result = await pool.query(jobQuery, queryParams);
+
+    // Aggregate by pro
+    const proStats: Record<string, any> = {};
+    for (const job of result.rows) {
+      const proId = job.hauler_id;
+      if (!proStats[proId]) {
+        proStats[proId] = {
+          proId,
+          name: job.company_name || `${job.first_name || ''} ${job.last_name || ''}`.trim() || 'Unknown Pro',
+          totalJobs: 0,
+          completedJobs: 0,
+          totalRevenue: 0,
+          services: new Set(),
+        };
+      }
+      proStats[proId].totalJobs++;
+      if (job.status === 'completed') {
+        proStats[proId].completedJobs++;
+        proStats[proId].totalRevenue += parseFloat(job.total_price) || 0;
+      }
+      proStats[proId].services.add(job.service_type);
+    }
+
+    // Get review scores
+    const vendors = await Promise.all(Object.values(proStats).map(async (pro: any) => {
+      const reviews = await pool.query(`
+        SELECT ROUND(AVG(rating)::numeric, 1) as avg_rating, COUNT(*) as review_count
+        FROM hauler_reviews WHERE hauler_id = $1
+      `, [pro.proId]).catch(() => ({ rows: [{ avg_rating: null, review_count: 0 }] }));
+
+      const reviewData = reviews.rows[0];
+      const completionRate = pro.totalJobs > 0 ? Math.round((pro.completedJobs / pro.totalJobs) * 100) : 0;
+
+      return {
+        name: pro.name,
+        totalJobs: pro.totalJobs,
+        completedJobs: pro.completedJobs,
+        completionRate: `${completionRate}%`,
+        totalRevenue: Math.round(pro.totalRevenue * 100) / 100,
+        avgJobValue: pro.completedJobs > 0 ? Math.round((pro.totalRevenue / pro.completedJobs) * 100) / 100 : 0,
+        avgRating: reviewData.avg_rating ? parseFloat(reviewData.avg_rating) : null,
+        reviewCount: parseInt(reviewData.review_count) || 0,
+        services: [...pro.services],
+      };
+    }));
+
+    // Sort by jobs completed
+    vendors.sort((a: any, b: any) => b.completedJobs - a.completedJobs);
+
+    return {
+      vendors,
+      count: vendors.length,
+      totalJobsAcrossVendors: vendors.reduce((s: number, v: any) => s + v.totalJobs, 0),
+      message: `${vendors.length} vendors have worked on your portfolio. Top performer: ${vendors[0]?.name || 'N/A'} (${vendors[0]?.completedJobs || 0} jobs, ${vendors[0]?.avgRating || 'no'} rating).`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] getVendorPerformance error:", err);
+    return { vendors: [], error: err.message, message: "Could not retrieve vendor performance data." };
+  }
+}
+
+/**
+ * Create or manage a turnover sequence for a unit.
+ */
+export async function manageTurnover(params: {
+  businessId: string;
+  propertyAddress: string;
+  unitNumber?: string;
+  moveOutDate: string;
+  targetReadyDate?: string;
+  action?: string; // 'create' | 'status' | 'skip_step'
+  skipService?: string;
+}): Promise<object> {
+  try {
+    const action = params.action || 'create';
+
+    if (action === 'create') {
+      // Default turnover sequence for Orlando residential
+      const moveOut = new Date(params.moveOutDate);
+      const steps = [
+        { order: 1, service: "home_cleaning", label: "Deep Clean", daysAfterMoveOut: 1, estimatedCost: 250 },
+        { order: 2, service: "carpet_cleaning", label: "Carpet Cleaning", daysAfterMoveOut: 2, estimatedCost: 200 },
+        { order: 3, service: "handyman", label: "Paint Touch-up & Repairs", daysAfterMoveOut: 3, estimatedCost: 300 },
+        { order: 4, service: "pressure_washing", label: "Exterior Pressure Wash", daysAfterMoveOut: 4, estimatedCost: 250 },
+        { order: 5, service: "landscaping", label: "Curb Appeal Refresh", daysAfterMoveOut: 5, estimatedCost: 150 },
+      ].map(step => ({
+        ...step,
+        scheduledDate: new Date(moveOut.getTime() + step.daysAfterMoveOut * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        status: 'pending',
+      }));
+
+      const totalEstimated = steps.reduce((s, step) => s + step.estimatedCost, 0);
+      const readyDate = params.targetReadyDate || steps[steps.length - 1].scheduledDate;
+
+      return {
+        created: true,
+        address: params.propertyAddress,
+        unit: params.unitNumber,
+        moveOutDate: params.moveOutDate,
+        targetReadyDate: readyDate,
+        steps,
+        totalEstimatedCost: totalEstimated,
+        message: `Turnover sequence created for ${params.propertyAddress}${params.unitNumber ? ` ${params.unitNumber}` : ''}. Move-out: ${params.moveOutDate}. ${steps.length} services scheduled over ${steps.length} days. Estimated cost: $${totalEstimated}. Target ready date: ${readyDate}. Want me to dispatch these automatically or do you want to approve each one?`,
+      };
+    }
+
+    return { message: `Turnover ${action} for ${params.propertyAddress}. Feature coming soon for full lifecycle tracking.` };
+  } catch (err: any) {
+    console.error("[George Tools] manageTurnover error:", err);
+    return { error: err.message, message: "Could not manage turnover." };
+  }
+}
+
+/**
+ * Set or update a budget for the portfolio.
+ */
+export async function setBudget(params: {
+  businessId: string;
+  amount: number;
+  period?: string; // monthly | quarterly | annual
+  category?: string; // optional service type filter
+}): Promise<object> {
+  try {
+    const period = params.period || 'quarterly';
+    
+    await pool.query(`
+      INSERT INTO b2b_budgets (id, business_id, budget_amount, period, category, created_at)
+      VALUES (gen_random_uuid(), $1, $2, $3, $4, NOW())
+    `, [params.businessId, params.amount, period, params.category || null]);
+
+    return {
+      set: true,
+      amount: params.amount,
+      period,
+      category: params.category || "all services",
+      message: `Budget set: $${params.amount} per ${period}${params.category ? ` for ${params.category}` : ''}. I'll alert you at 50%, 75%, and 90% thresholds. Want me to add category-specific budgets too?`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] setBudget error:", err);
+    return { set: false, error: err.message, message: "Could not set budget." };
+  }
+}

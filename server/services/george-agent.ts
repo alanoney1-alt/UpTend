@@ -1426,10 +1426,17 @@ REPORT GENERATION:
 - "Compare Q1 vs Q2" → call generate_spend_report twice with date ranges
 - "Which properties cost the most?" → call generate_spend_report with group_by="property"
 
+PM DAILY OPERATIONS:
+- "Give me a rundown" or "what's going on?" → call generate_morning_briefing — open orders, urgent items, overdue, budget
+- "How's my budget?" → call check_budget_status — spend vs allocation, alerts, projections
+- "Set my budget to $50K/quarter" → call set_budget
+- "How are tenants feeling?" → call get_portfolio_satisfaction — aggregated satisfaction scores
+- "Who's my best pro?" or "vendor performance" → call get_vendor_performance — completion rates, ratings, revenue
+- "Generate a maintenance forecast" → call generate_maintenance_forecast — 12-month predictive calendar with costs
+- "Unit 4B lease ends March 15" → call manage_turnover — auto-schedule full turnover sequence (deep clean, carpet, paint, pressure wash, landscaping)
+
 ADDITIONAL CAPABILITIES:
-- Portfolio analytics: call get_portfolio_analytics - aggregate stats
-- Vendor scorecards: call get_vendor_scorecard
-- Budget forecasting: use portfolio data to project seasonal spend
+- Portfolio analytics: call get_portfolio_analytics
 - Compliance audit: call get_compliance_status
 - Billing walkthrough: call get_billing_history
 - Contracts & documents: call generate_service_agreement / get_document_status
@@ -1442,6 +1449,13 @@ ADDITIONAL CAPABILITIES:
 - Revenue share: call get_revenue_share_summary
 - Community scheduling: call schedule_community_service
 - ROI calculator: call generate_roi_report
+
+CRM INTEGRATION (mention when relevant):
+- George can sync with AppFolio, Buildium, Yardi, RentManager
+- Work orders flow in from CRM → George dispatches → results flow back
+- Inspection reports auto-populate in their CRM
+- Turnover sequences trigger from lease-end dates
+- "We integrate with your existing CRM so you don't change your workflow — George just makes it work."
 
 IMPORTANT: When calling any tool that requires business_id, use the userId from context. The tools accept both business account ID and user ID.
 
@@ -3703,6 +3717,104 @@ const TOOL_DEFINITIONS: any[] = [
   required: ["business_id"],
  },
  }, {
+ name: "generate_morning_briefing",
+ description: "Generate a morning briefing for the PM: open work orders, urgent items, overdue maintenance, budget status. Use when PM asks 'what's going on today?' or 'give me a rundown'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   pm_name: { type: "string", description: "PM's name for personalized greeting (optional)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "check_budget_status",
+ description: "Check budget status vs actual spend. Shows thresholds, alerts, projected overage. Use when PM asks 'how's my budget?' or 'am I on track?'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "set_budget",
+ description: "Set a maintenance budget for the portfolio. George will monitor and alert at 50/75/90% thresholds. Use when PM says 'set my budget to $X'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   amount: { type: "number", description: "Budget amount in dollars" },
+   period: { type: "string", description: "Budget period: monthly, quarterly, or annual (default quarterly)" },
+   category: { type: "string", description: "Optional: limit budget to a specific service type" },
+  },
+  required: ["business_id", "amount"],
+ },
+ }, {
+ name: "log_tenant_satisfaction",
+ description: "Log a tenant satisfaction rating after a completed job. Use when processing tenant feedback.",
+ input_schema: {
+  type: "object",
+  properties: {
+   address: { type: "string", description: "Property address" },
+   resident_name: { type: "string", description: "Tenant name (optional)" },
+   service_type: { type: "string", description: "Service that was performed" },
+   rating: { type: "number", description: "Satisfaction rating 1-5" },
+   feedback: { type: "string", description: "Optional feedback text" },
+   job_id: { type: "string", description: "Job/service request ID (optional)" },
+  },
+  required: ["address", "service_type", "rating"],
+ },
+ }, {
+ name: "get_portfolio_satisfaction",
+ description: "Get aggregated tenant satisfaction scores across the portfolio. Use when PM asks 'how are tenants feeling?' or 'satisfaction scores'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   period: { type: "string", description: "Time period: month, quarter, year (default quarter)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "generate_maintenance_forecast",
+ description: "Generate a predictive maintenance calendar for the portfolio. Shows estimated costs per month, seasonal needs, hurricane prep. Use when PM asks 'what maintenance is coming up?' or 'forecast for the board'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   months: { type: "number", description: "Forecast window in months (default 12)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "get_vendor_performance",
+ description: "Get vendor/pro performance scores across the portfolio. Completion rates, ratings, revenue per pro. Use when PM asks 'who's my best pro?' or 'vendor performance'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   service_type: { type: "string", description: "Filter by service type (optional)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "manage_turnover",
+ description: "Create or manage a turnover sequence for a unit. Auto-schedules deep clean, carpet, paint, pressure wash, landscaping. Use when PM says 'unit 4B lease ends March 15' or 'set up a turnover'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   address: { type: "string", description: "Property address" },
+   unit: { type: "string", description: "Unit number (optional)" },
+   move_out_date: { type: "string", description: "Move-out date (YYYY-MM-DD)" },
+   target_ready_date: { type: "string", description: "Target ready date (optional, auto-calculated)" },
+   action: { type: "string", description: "create, status, or skip_step (default create)" },
+   skip_service: { type: "string", description: "Service to skip in the sequence (optional)" },
+  },
+  required: ["business_id", "address", "move_out_date"],
+ },
+ }, {
  name: "get_available_pro_rates",
  description: "MANDATORY before quoting: Check which pros are online for a service type and area, and get their rate range. Use this to quote within a viable range so the cascade can find a pro to accept. Customer price is GUARANTEED once quoted.",
  input_schema: {
@@ -4279,6 +4391,22 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  return await tools.getPropertiesNeedingAttention({
   businessId: input.business_id, daysSinceLastService: input.days_threshold,
  });
+ case "generate_morning_briefing":
+ return await tools.generateMorningBriefing({ businessId: input.business_id, pmName: input.pm_name });
+ case "check_budget_status":
+ return await tools.checkBudgetStatus({ businessId: input.business_id });
+ case "set_budget":
+ return await tools.setBudget({ businessId: input.business_id, amount: input.amount, period: input.period, category: input.category });
+ case "log_tenant_satisfaction":
+ return await tools.logTenantSatisfaction({ propertyAddress: input.address, residentName: input.resident_name, serviceType: input.service_type, rating: input.rating, feedback: input.feedback, jobId: input.job_id });
+ case "get_portfolio_satisfaction":
+ return await tools.getPortfolioSatisfaction({ businessId: input.business_id, period: input.period });
+ case "generate_maintenance_forecast":
+ return await tools.generateMaintenanceForecast({ businessId: input.business_id, months: input.months });
+ case "get_vendor_performance":
+ return await tools.getVendorPerformance({ businessId: input.business_id, serviceType: input.service_type });
+ case "manage_turnover":
+ return await tools.manageTurnover({ businessId: input.business_id, propertyAddress: input.address, unitNumber: input.unit, moveOutDate: input.move_out_date, targetReadyDate: input.target_ready_date, action: input.action, skipService: input.skip_service });
 
  case "generate_quality_report": {
  const action = input.action || "latest";
