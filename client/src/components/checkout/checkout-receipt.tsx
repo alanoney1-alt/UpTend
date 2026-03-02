@@ -48,7 +48,7 @@ export function CheckoutReceipt({
   discountBreakdown,
   bookingDetails,
   paymentMethod,
-  protectionFeePercent: 0.05,
+  protectionFeePercent = 0.05,
 }: CheckoutReceiptProps) {
   const protectionFeeAmount = Math.round(discountBreakdown.finalTotal * protectionFeePercent);
   const grandTotal = discountBreakdown.finalTotal + protectionFeeAmount;
