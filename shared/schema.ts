@@ -7788,3 +7788,36 @@ export const tenantSatisfactionScores = pgTable("tenant_satisfaction_scores", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 export type TenantSatisfactionScore = typeof tenantSatisfactionScores.$inferSelect;
+
+// ─── PMS (Property Management Software) Connections ────────────────────────
+export const pmsConnections = pgTable("pms_connections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessAccountId: varchar("business_account_id").notNull(),
+  platform: text("platform").notNull(), // appfolio | buildium | yardi | getquorum | condo_control | cinc | custom_webhook
+  apiKey: text("api_key"),
+  apiSecret: text("api_secret"),
+  webhookUrl: text("webhook_url"),
+  callbackUrl: text("callback_url"),
+  syncEnabled: boolean("sync_enabled").default(true),
+  syncDirection: text("sync_direction").default("bidirectional"), // inbound | outbound | bidirectional
+  lastSyncAt: timestamp("last_sync_at"),
+  fieldMappings: jsonb("field_mappings").default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+export type PmsConnection = typeof pmsConnections.$inferSelect;
+
+// ─── PMS Sync Log ──────────────────────────────────────────────────────────
+export const pmsSyncLog = pgTable("pms_sync_log", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  connectionId: varchar("connection_id").notNull(),
+  direction: text("direction").notNull(), // inbound | outbound
+  entityType: text("entity_type").notNull(), // work_order | property | violation | vote | invoice
+  externalId: varchar("external_id"),
+  internalId: varchar("internal_id"),
+  status: text("status").default("success"),
+  payload: jsonb("payload"),
+  error: text("error"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export type PmsSyncLog = typeof pmsSyncLog.$inferSelect;

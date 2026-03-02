@@ -89,6 +89,31 @@ Volume discounts: 2.5% at 10+ jobs, 5% at 25+, 7.5% at 50+
 
 ---
 
+## Plugs Into What You Already Use
+
+George doesn't replace your CRM. He makes it actually work.
+
+**Direct Integrations (Live & In Development):**
+| Platform | Type | What Syncs |
+|----------|------|------------|
+| AppFolio | Two-way API | Work orders, properties, bills, violations, attachments |
+| Buildium | Two-way API | Work orders, tenants, properties, maintenance requests |
+| Yardi | Enterprise API | Full portfolio sync for large PMs |
+| GetQuorum | Voting API | Vote results → George auto-acts on approved items |
+| Condo Control | Partnership | 40+ module integration (coming soon) |
+| CINC Systems | Partnership | Large HOA management company integration (coming soon) |
+
+**How it works:**
+1. Maintenance request created in your CRM → George picks it up
+2. George runs diagnostics with the tenant (text/email), gets photos
+3. George dispatches the right pro at the right price
+4. Job completes → inspection report + photos written back to your CRM
+5. Invoice synced, tenant satisfaction logged, budget updated
+
+**You change nothing about your workflow. George just makes it work.**
+
+---
+
 ## The Close
 
 "Every property management company and HOA has maintenance vendors. None of them have an AI agent that knows every unit, a dashboard that tracks every dollar, and a trained crew that handles every service. That's what UpTend is. And your residents will think you're a genius for finding us."
