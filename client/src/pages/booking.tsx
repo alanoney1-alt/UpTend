@@ -24,13 +24,13 @@ import {
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-slate-200 dark:border-slate-700">
+    <div className="border-b border-border dark:border-slate-700">
       <button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         className="w-full flex items-center justify-between py-4 text-left"
       >
-        <span className="text-sm font-semibold text-slate-900 dark:text-white pr-4">
+        <span className="text-sm font-semibold text-foreground dark:text-white pr-4">
           {question}
         </span>
         <ChevronDown
@@ -40,7 +40,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         />
       </button>
       {open && (
-        <p className="pb-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+        <p className="pb-4 text-sm text-muted-foreground dark:text-slate-300 leading-relaxed">
           {answer}
         </p>
       )}
@@ -83,10 +83,10 @@ export default function BookingPage() {
         <main id="main-content" className="container mx-auto px-4 pt-24 pb-24 md:pt-28 md:pb-12">
           <div className="w-full max-w-2xl mx-auto">
             <div className="text-center mb-6">
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground dark:text-white mb-3">
                 {t("booking_page.complete_payment")}
               </h2>
-              <p className="text-base text-slate-600 dark:text-slate-300">
+              <p className="text-base text-muted-foreground dark:text-slate-300">
                 {t("booking_page.authorize_payment")}
               </p>
             </div>
@@ -124,10 +124,10 @@ export default function BookingPage() {
       <main id="main-content" className="container mx-auto px-4 pt-24 pb-16 md:pt-28">
         {/* Hero */}
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-3">
+          <h1 className="text-3xl md:text-5xl font-black text-foreground dark:text-white tracking-tight mb-3">
             {t("booking_page.hero_title")}
           </h1>
-          <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 mb-6">
+          <p className="text-base md:text-lg text-muted-foreground dark:text-slate-300 mb-6">
             {t("booking_page.hero_subtitle")}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
@@ -163,7 +163,7 @@ export default function BookingPage() {
                   </div>
                   <item.icon className="w-3.5 h-3.5 text-primary absolute -bottom-0.5 -right-0.5" />
                 </div>
-                <span className="text-xs text-slate-600 dark:text-slate-400 leading-tight font-medium">
+                <span className="text-xs text-muted-foreground dark:text-slate-400 leading-tight font-medium">
                   {item.text}
                 </span>
               </div>
@@ -191,7 +191,7 @@ export default function BookingPage() {
 
         {/* FAQ */}
         <div className="max-w-xl mx-auto mb-8">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 text-center">
+          <h2 className="text-lg font-bold text-foreground dark:text-white mb-4 text-center">
             {t("booking_page.faq_title")}
           </h2>
           <FAQItem

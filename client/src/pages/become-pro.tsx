@@ -182,7 +182,7 @@ export default function BecomePro() {
       </section>
 
       {/* Pro Testimonials - Coming Soon */}
-      <section className="py-16 md:py-24 bg-slate-50 dark:bg-slate-900/50 px-4 md:px-6" data-testid="section-pro-testimonials">
+      <section className="py-16 md:py-24 bg-muted/50 dark:bg-slate-900/50 px-4 md:px-6" data-testid="section-pro-testimonials">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">{t("become_pro.testimonials_title")}</h2>
           <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">

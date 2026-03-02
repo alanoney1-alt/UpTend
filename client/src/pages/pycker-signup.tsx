@@ -1887,7 +1887,7 @@ export default function PyckerSignup() {
                               const payout = Math.max(50, Math.round(currentRate * 0.85 * 100) / 100);
 
                               return (
-                                <div key={vi} className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                                <div key={vi} className="p-3 bg-muted/50 dark:bg-slate-800/50 rounded-lg">
                                   <div className="flex items-center justify-between mb-1">
                                     <p className="text-sm font-medium">{variant.name}</p>
                                     <span className="text-[10px] text-muted-foreground">{variant.notes}</span>
@@ -1972,10 +1972,10 @@ export default function PyckerSignup() {
                           <span>${range.ceiling}</span>
                         </div>
 
-                        <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 mt-3">
+                        <div className="flex items-center justify-between bg-muted/50 dark:bg-slate-800/50 rounded-lg px-3 py-2 mt-3">
                           <div>
                             <span className="text-xs text-muted-foreground">Your rate</span>
-                            <div className="text-lg font-bold text-slate-900 dark:text-white">
+                            <div className="text-lg font-bold text-foreground dark:text-white">
                               ${currentRate}
                             </div>
                           </div>

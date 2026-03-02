@@ -20,11 +20,11 @@ export default function BlogNewToWinterGarden() {
       </Helmet>
 
       <article className="max-w-3xl mx-auto px-4 pt-28 pb-16 prose prose-lg prose-orange">
-        <nav className="text-sm text-gray-500 mb-8 not-prose">
+        <nav className="text-sm text-muted-foreground mb-8 not-prose">
           <Link href="/blog" className="hover:text-orange-600">{"←"} Back to Blog</Link>
         </nav>
 
-        <time className="text-sm text-gray-500 not-prose">March 1, 2026</time>
+        <time className="text-sm text-muted-foreground not-prose">March 1, 2026</time>
         <h1>New to Winter Garden? Your First 90 Days Home Checklist</h1>
 
         <p>

@@ -239,7 +239,7 @@ function TrustBar() {
   const { t } = useTranslation();
 
   return (
-    <section className="py-10 bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800">
+    <section className="py-10 bg-background dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800">
       <div className="max-w-4xl mx-auto px-4">
         {/* Trust badges */}
         <div className="flex flex-wrap justify-center gap-6 md:gap-10 mb-8">
@@ -258,10 +258,10 @@ function TrustBar() {
         </div>
 
         {/* Price Protection Guarantee */}
-        <div className="max-w-2xl mx-auto p-5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+        <div className="max-w-2xl mx-auto p-5 rounded-xl bg-muted/50 dark:bg-slate-800/50 border border-border dark:border-slate-700">
           <div className="flex items-center justify-center gap-2 mb-2">
             <ShieldCheck className="w-5 h-5 text-[#F47C20]" />
-            <span className="font-bold text-sm text-slate-900 dark:text-white">{t("landing.ppg_title", "Price Protection Guarantee")}</span>
+            <span className="font-bold text-sm text-foreground dark:text-white">{t("landing.ppg_title", "Price Protection Guarantee")}</span>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed text-center">
             {t("landing.ppg_desc", "Your price is locked at booking. If the Pro arrives and discovers the job is bigger than described, any scope changes require your approval with photo documentation. No surprises, ever.")}
@@ -310,9 +310,9 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-20 bg-slate-50 dark:bg-slate-900/50">
+    <section className="py-20 bg-muted/50 dark:bg-slate-900/50">
       <div className="max-w-4xl mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-black text-center mb-12 text-slate-900 dark:text-white">
+        <h2 className="text-2xl md:text-3xl font-black text-center mb-12 text-foreground dark:text-white">
           {t("landing.hiw_headline", "How It Works")}
         </h2>
         <div className="grid md:grid-cols-3 gap-10">
@@ -322,7 +322,7 @@ function HowItWorks() {
                 <step.icon className="w-7 h-7 text-white" />
               </div>
               <span className="text-xs font-bold text-[#F47C20] uppercase tracking-wider">{t("landing.hiw_step_label", "Step")} {i + 1}</span>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{step.title}</h3>
+              <h3 className="text-lg font-bold text-foreground dark:text-white">{step.title}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{step.desc}</p>
             </div>
           ))}
@@ -335,9 +335,9 @@ function HowItWorks() {
 /* ─── THE DIFFERENCE ─── */
 function TheDifference() {
   return (
-    <section className="py-16 bg-white dark:bg-slate-950">
+    <section className="py-16 bg-background dark:bg-slate-950">
       <div className="max-w-4xl mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-black text-center mb-10 text-slate-900 dark:text-white">
+        <h2 className="text-2xl md:text-3xl font-black text-center mb-10 text-foreground dark:text-white">
           Stop wasting time on other platforms.
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
@@ -383,9 +383,9 @@ function ServicesStrip() {
   ];
 
   return (
-    <section className="py-20 bg-white dark:bg-slate-950">
+    <section className="py-20 bg-background dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-black text-center mb-3 text-slate-900 dark:text-white">
+        <h2 className="text-2xl md:text-3xl font-black text-center mb-3 text-foreground dark:text-white">
           {t("landing.strip_h2_1", "Our Services")}
         </h2>
         <p className="text-center text-slate-500 dark:text-slate-400 mb-10">{t("landing.strip_sub", "Transparent pricing. Verified pros. Tap to get started.")}</p>
@@ -398,7 +398,7 @@ function ServicesStrip() {
               onClick={() => setLocation(`/book?service=${svc.key}`)}
               onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLocation(`/book?service=${svc.key}`); } }}
               aria-label={`Book ${svc.label} - ${svc.price}`}
-              className="relative flex flex-col items-center gap-3 p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:border-[#F47C20]/50 cursor-pointer transition-all duration-200 ease-out hover:shadow-xl hover:-translate-y-1 text-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F47C20]"
+              className="relative flex flex-col items-center gap-3 p-6 rounded-2xl bg-muted/50 dark:bg-slate-800/50 border border-border dark:border-slate-700 hover:border-[#F47C20]/50 cursor-pointer transition-all duration-200 ease-out hover:shadow-xl hover:-translate-y-1 text-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F47C20]"
             >
               {svc.badge && (
                 <span className={`absolute -top-2.5 right-3 z-10 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${svc.badgeColor} shadow-sm`}>
@@ -408,7 +408,7 @@ function ServicesStrip() {
               <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-1">
                 <img src={svc.image} alt={svc.label} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               </div>
-              <span className="font-bold text-sm text-slate-900 dark:text-white">{svc.label}</span>
+              <span className="font-bold text-sm text-foreground dark:text-white">{svc.label}</span>
               <span className="text-xs font-semibold text-[#F47C20]">{svc.price}</span>
             </div>
           ))}
@@ -462,10 +462,10 @@ function RecurringServices() {
 function TwoSides() {
   const { t } = useTranslation();
   return (
-    <section className="py-20 bg-slate-50 dark:bg-slate-900/50">
+    <section className="py-20 bg-muted/50 dark:bg-slate-900/50">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-foreground dark:text-white mb-4">
             {t("landing.twosides_h2_1", "Fair for customers.")}{" "}{t("landing.twosides_h2_2", "Fair for Pros.")}<br />
             <span className="text-[#F47C20]">{t("landing.twosides_h2_3", "That's the whole point.")}</span>
           </h2>
@@ -477,7 +477,7 @@ function TwoSides() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* For Customers */}
           <div>
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-foreground dark:text-white">
               <Heart className="w-5 h-5 text-[#F47C20]" /> {t("landing.for_homeowners", "For Homeowners")}
             </h3>
             <div className="space-y-3">
@@ -487,12 +487,12 @@ function TwoSides() {
                 { icon: Clock, title: t("landing.cust_3_title", "Live tracking and photo docs"), desc: t("landing.cust_3_desc", "Follow your pro in real time. Every job documented with photos. Transparent from start to finish.") },
                 { icon: DollarSign, title: t("landing.cust_4_title", "Price Protection Guarantee"), desc: t("landing.cust_4_desc", "The price you're quoted is the most you'll ever pay. Scope changes require your approval with photo evidence.") },
               ].map((item) => (
-                <div key={item.title} className="p-4 flex gap-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[#F47C20]/30 transition-colors">
+                <div key={item.title} className="p-4 flex gap-4 rounded-xl bg-background dark:bg-slate-800 border border-border dark:border-slate-700 hover:border-[#F47C20]/30 transition-colors">
                   <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
                     <item.icon className="w-5 h-5 text-[#F47C20]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm mb-1 text-slate-900 dark:text-white">{item.title}</h4>
+                    <h4 className="font-bold text-sm mb-1 text-foreground dark:text-white">{item.title}</h4>
                     <p className="text-sm text-slate-500 dark:text-slate-400">{item.desc}</p>
                   </div>
                 </div>
@@ -507,7 +507,7 @@ function TwoSides() {
 
           {/* Why Our Pros Are Better */}
           <div>
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-foreground dark:text-white">
               <Wrench className="w-5 h-5 text-[#F47C20]" /> {t("landing.why_pros_better", "Why Our Pros Are Better")}
             </h3>
             <div className="space-y-3">
@@ -517,12 +517,12 @@ function TwoSides() {
                 { icon: TrendingUp, title: t("landing.pro_3_title", "They choose to be here"), desc: t("landing.pro_3_desc", "Our pros set their own rates and pick their jobs. Happy pros who want to be there do better work for you.") },
                 { icon: ShieldCheck, title: t("landing.pro_4_title", "Vetted and verified"), desc: t("landing.pro_4_desc", "Background-checked, insured, and rated by real customers. Every pro on the platform earned their spot.") },
               ].map((item) => (
-                <div key={item.title} className="p-4 flex gap-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[#F47C20]/30 transition-colors">
+                <div key={item.title} className="p-4 flex gap-4 rounded-xl bg-background dark:bg-slate-800 border border-border dark:border-slate-700 hover:border-[#F47C20]/30 transition-colors">
                   <div className="w-10 h-10 rounded-lg bg-[#F47C20]/10 flex items-center justify-center shrink-0">
                     <item.icon className="w-5 h-5 text-[#F47C20]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm mb-1 text-slate-900 dark:text-white">{item.title}</h4>
+                    <h4 className="font-bold text-sm mb-1 text-foreground dark:text-white">{item.title}</h4>
                     <p className="text-sm text-slate-500 dark:text-slate-400">{item.desc}</p>
                   </div>
                 </div>
@@ -543,9 +543,9 @@ function TwoSides() {
 /* ─── TESTIMONIALS ─── */
 function Testimonials() {
   return (
-    <section className="py-16 bg-white dark:bg-slate-950">
+    <section className="py-16 bg-background dark:bg-slate-950">
       <div className="max-w-3xl mx-auto px-4 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-slate-900 dark:text-white">
+        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-foreground dark:text-white">
           Customer Reviews
         </h2>
         <p className="text-slate-400 text-lg">Coming Soon</p>

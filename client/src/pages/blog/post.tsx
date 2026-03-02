@@ -368,7 +368,7 @@ export default function BlogPost() {
         flushList();
         flushOrdered();
         elements.push(
-          <h2 key={elements.length} className="text-2xl font-bold text-slate-900 mt-8 mb-4">{line.slice(3)}</h2>
+          <h2 key={elements.length} className="text-2xl font-bold text-foreground mt-8 mb-4">{line.slice(3)}</h2>
         );
       } else if (line.startsWith("- **") || line.startsWith("- ")) {
         flushParagraph();
@@ -406,18 +406,18 @@ export default function BlogPost() {
       <Header />
 
       <article className="max-w-3xl mx-auto px-4 pt-28 pb-16">
-        <nav className="text-sm text-gray-500 mb-8">
+        <nav className="text-sm text-muted-foreground mb-8">
           <Link href="/blog" className="hover:text-orange-600">&larr; Back to Blog</Link>
         </nav>
 
         <time className="text-sm text-gray-500">{post.date}</time>
-        <p className="text-sm text-gray-500 mb-2">By {post.author}</p>
-        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8">{post.title}</h1>
+        <p className="text-sm text-muted-foreground mb-2">By {post.author}</p>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-8">{post.title}</h1>
 
         {renderContent(post.content)}
 
         <hr className="my-8" />
-        <p className="text-sm text-gray-500 italic">
+        <p className="text-sm text-muted-foreground italic">
           Have questions about home maintenance in Orlando? Visit{" "}
           <a href="https://uptendapp.com" className="text-orange-600 hover:underline">uptendapp.com</a> and ask George,
           our AI home services assistant.
