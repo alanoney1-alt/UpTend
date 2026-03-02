@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import {
   ShieldCheck, CheckCircle, Zap, Users, ArrowRight,
   Wrench, Home, Star, MapPin, Smartphone, Heart, Clock, DollarSign,
@@ -12,7 +12,11 @@ import { Button } from "@/components/ui/button";
 import { GeorgeInlinePrompt } from "@/components/ai/george-inline-prompt";
 
 export default function EventPage() {
-  usePageTitle("UpTend | World of Wellness 2026");
+  useSEO({
+    title: "UpTend | World of Wellness 2026",
+    description: "Visit UpTend at World of Wellness 2026 in Orlando. Discover AI-powered home health scans, meet our team & get exclusive event-only deals on home services.",
+    path: "/event",
+  });
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
@@ -20,7 +24,7 @@ export default function EventPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3">
-            <img src="/logo-icon.png" alt="UpTend" className="w-8 h-8 rounded-lg" />
+            <img src="/logo-icon.png" alt="UpTend" className="w-8 h-8 rounded-lg" loading="lazy" />
             <span className="text-xl font-black text-white">
               <span className="text-[#F47C20]">Up</span>Tend
             </span>

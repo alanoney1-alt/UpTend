@@ -12,7 +12,7 @@ import { ArrowRight } from "lucide-react";
 function GeorgeAvatar({ size = "h-9 w-9" }: { size?: string }) {
   return (
     <div className={`${size} rounded-full overflow-hidden shrink-0`}>
-      <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" />
+      <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" loading="lazy" />
     </div>
   );
 }

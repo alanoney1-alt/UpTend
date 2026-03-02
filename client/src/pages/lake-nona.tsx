@@ -62,7 +62,7 @@ export default function LakeNonaPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f172a]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3">
-            <img src="/logo-icon.png" alt="UpTend" className="w-8 h-8 rounded-lg" />
+            <img src="/logo-icon.png" alt="UpTend" className="w-8 h-8 rounded-lg" loading="lazy" />
             <span className="text-xl font-black text-white">
               <span className="text-[#F47C20]">Up</span>Tend
             </span>
@@ -107,7 +107,7 @@ export default function LakeNonaPage() {
             <Badge className="bg-[#F47C20]/20 text-[#F47C20] border-[#F47C20]/30 mb-6">
               Meet George
             </Badge>
-            <img src="/george-avatar.png" alt="George" className="w-24 h-24 rounded-full mx-auto mb-6 ring-4 ring-[#F47C20]/30" />
+            <img src="/george-avatar.png" alt="George" className="w-24 h-24 rounded-full mx-auto mb-6 ring-4 ring-[#F47C20]/30" loading="lazy" />
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
               Your home already knows what it needs.
             </h2>
