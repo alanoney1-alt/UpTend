@@ -7,6 +7,7 @@
 
 import { anthropic } from "./ai/anthropic-client";
 import * as tools from "./george-tools";
+import * as pmsIntegration from "./pms-integration";
 
 // ─── Retry with exponential backoff ───
 async function withRetry<T>(
@@ -3818,6 +3819,89 @@ const TOOL_DEFINITIONS: any[] = [
   required: ["business_id", "address", "move_out_date"],
  },
  }, {
+ // ── CRM/PMS Integration Tools ──
+ name: "connect_crm",
+ description: "Connect a CRM/PMS platform (Buildium, AppFolio, Yardi, GetQuorum). PM provides API credentials and George wires it up. Use when PM says 'connect my Buildium' or 'integrate with AppFolio'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   platform: { type: "string", description: "Platform: buildium, appfolio, yardi, getquorum" },
+   api_key: { type: "string", description: "API client ID or key" },
+   api_secret: { type: "string", description: "API client secret (optional for some platforms)" },
+   base_url: { type: "string", description: "Custom API base URL (optional, for AppFolio customer-specific URLs)" },
+  },
+  required: ["business_id", "platform", "api_key"],
+ },
+ }, {
+ name: "disconnect_crm",
+ description: "Disconnect a CRM/PMS integration.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   platform: { type: "string", description: "Platform to disconnect" },
+  },
+  required: ["business_id", "platform"],
+ },
+ }, {
+ name: "get_crm_connections",
+ description: "List all connected CRM/PMS integrations for this business. Use when PM asks 'what's connected?' or 'show my integrations'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+  },
+  required: ["business_id"],
+ },
+ }, {
+ name: "sync_crm_work_orders",
+ description: "Pull new work orders from a connected CRM. Use when PM says 'check Buildium for new requests' or 'sync work orders'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   platform: { type: "string", description: "Platform to sync from" },
+  },
+  required: ["business_id", "platform"],
+ },
+ }, {
+ name: "push_job_report_to_crm",
+ description: "Push a completed job report back to the CRM. Updates work order status, attaches notes. Use after a job is completed to sync back.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   platform: { type: "string", description: "Platform to push to" },
+   external_id: { type: "string", description: "External work order ID in the CRM" },
+   status: { type: "string", description: "New status (e.g., Completed, InProgress)" },
+   notes: { type: "string", description: "Job completion notes/report" },
+  },
+  required: ["business_id", "platform", "external_id", "status"],
+ },
+ }, {
+ name: "sync_crm_properties",
+ description: "Import properties from a connected CRM into the portfolio. Use when PM says 'import my Buildium properties' or 'sync properties'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   platform: { type: "string", description: "Platform to sync from" },
+  },
+  required: ["business_id", "platform"],
+ },
+ }, {
+ name: "get_vote_results",
+ description: "Pull voting/election results from GetQuorum. Use when PM asks 'any vote results?' or 'what did the board approve?'.",
+ input_schema: {
+  type: "object",
+  properties: {
+   business_id: { type: "string", description: "The business account ID" },
+   campaign_id: { type: "string", description: "Specific campaign/vote ID (optional, lists all if omitted)" },
+  },
+  required: ["business_id"],
+ },
+ }, {
  name: "get_available_pro_rates",
  description: "MANDATORY before quoting: Check which pros are online for a service type and area, and get their rate range. Use this to quote within a viable range so the cascade can find a pro to accept. Customer price is GUARANTEED once quoted.",
  input_schema: {
@@ -4410,6 +4494,22 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  return await tools.getVendorPerformance({ businessId: input.business_id, serviceType: input.service_type });
  case "manage_turnover":
  return await tools.manageTurnover({ businessId: input.business_id, propertyAddress: input.address, unitNumber: input.unit, moveOutDate: input.move_out_date, targetReadyDate: input.target_ready_date, action: input.action, skipService: input.skip_service });
+
+ // ── CRM/PMS Integration Tools ──
+ case "connect_crm":
+ return await pmsIntegration.connectPMS({ businessId: input.business_id, platform: input.platform, apiKey: input.api_key, apiSecret: input.api_secret, baseUrl: input.base_url });
+ case "disconnect_crm":
+ return await pmsIntegration.disconnectPMS({ businessId: input.business_id, platform: input.platform });
+ case "get_crm_connections":
+ return await pmsIntegration.getPMSConnections(input.business_id);
+ case "sync_crm_work_orders":
+ return await pmsIntegration.syncWorkOrders({ businessId: input.business_id, platform: input.platform });
+ case "push_job_report_to_crm":
+ return await pmsIntegration.pushJobReport({ businessId: input.business_id, platform: input.platform, externalWorkOrderId: input.external_id, status: input.status, notes: input.notes });
+ case "sync_crm_properties":
+ return await pmsIntegration.syncProperties({ businessId: input.business_id, platform: input.platform });
+ case "get_vote_results":
+ return await pmsIntegration.getVoteResults({ businessId: input.business_id, campaignId: input.campaign_id });
 
  case "generate_quality_report": {
  const action = input.action || "latest";

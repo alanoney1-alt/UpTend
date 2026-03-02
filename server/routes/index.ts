@@ -600,6 +600,17 @@ export async function registerRoutes(
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
 
+  // PMS/CRM webhook endpoint for inbound events
+  app.post("/api/webhooks/pms/:platform", async (req, res) => {
+    try {
+      const { handlePMSWebhook } = await import("../services/pms-integration");
+      const result = await handlePMSWebhook(req.params.platform, req.body);
+      res.json(result);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // Register WebSocket handlers
   return registerWebSocketHandlers(httpServer, app);
 }
