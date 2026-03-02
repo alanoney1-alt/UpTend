@@ -68,16 +68,16 @@ export default function BookingSuccess() {
     | "moving_labor"
     | null;
 
-  // Mock data. in production, pull from booking context/API
-  const bookingId = sessionStorage.getItem("lastBookingId") || "demo-123";
+  // Placeholder until real booking context/API is wired
+  const bookingId = sessionStorage.getItem("lastBookingId") || "";
   const proData = {
-    firstName: "Marcus",
+    firstName: "Your pro",
     avatarUrl: "",
-    rating: 4.9,
-    reviewCount: 127,
+    rating: 0,
+    reviewCount: 0,
     verified: true,
-    completedJobs: 342,
-    tenureMonths: 36,
+    completedJobs: 0,
+    tenureMonths: 0,
   };
   const estimatedArrival = "45 min";
 

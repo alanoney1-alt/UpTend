@@ -23,10 +23,10 @@ const demoSpending = [
 ];
 
 const demoVendors = [
-  { name: "GreenScape Pros", service: "Landscaping", rating: 4.8, onTime: 96, jobs: 24 },
-  { name: "AquaClear Pool Co", service: "Pool Maintenance", rating: 4.5, onTime: 92, jobs: 12 },
-  { name: "PestShield LLC", service: "Pest Control", rating: 4.9, onTime: 100, jobs: 4 },
-  { name: "FixIt General", service: "Repairs", rating: 4.2, onTime: 85, jobs: 18 },
+  { name: "Sample Landscaping Co", service: "Landscaping", rating: 0, onTime: 0, jobs: 0 },
+  { name: "Sample Pool Co", service: "Pool Maintenance", rating: 0, onTime: 0, jobs: 0 },
+  { name: "Sample Pest Control", service: "Pest Control", rating: 0, onTime: 0, jobs: 0 },
+  { name: "Sample Repairs Co", service: "Repairs", rating: 0, onTime: 0, jobs: 0 },
 ];
 
 const demoCompliance = {

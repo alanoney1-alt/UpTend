@@ -41,11 +41,11 @@ const MOCK_JOB: MockJob = {
   customerLocation: [28.4195, -81.2419],
   proStartLocation: [28.4450, -81.2700],
   pro: {
-    firstName: "Marcus",
-    initials: "MJ",
-    avatarColor: "#6366f1",
-    rating: 4.9,
-    vehicle: "White Ford F-150 · Tag: HLP 4821",
+    firstName: "Your pro",
+    initials: "UP",
+    avatarColor: "#F47C20",
+    rating: 0,
+    vehicle: "",
   },
 };
 

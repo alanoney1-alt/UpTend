@@ -37,20 +37,20 @@ interface SnapQuoteProps {
   className?: string;
 }
 
-// Simulated matched pro data (would come from smart-match API in production)
+// Pro placeholder data (replaced with real matched pro from API once routing is live)
 const MATCHED_PROS: Record<string, { name: string; rating: number; reviews: number; arrivalMin: number }> = {
-  junk_removal: { name: "Marcus", rating: 4.9, reviews: 127, arrivalMin: 35 },
-  home_cleaning: { name: "Sofia", rating: 4.8, reviews: 203, arrivalMin: 45 },
-  carpet_cleaning: { name: "Derek", rating: 4.9, reviews: 89, arrivalMin: 40 },
-  pressure_washing: { name: "Jason", rating: 4.7, reviews: 156, arrivalMin: 50 },
-  landscaping: { name: "Carlos", rating: 4.8, reviews: 174, arrivalMin: 30 },
-  pool_cleaning: { name: "Tyler", rating: 4.9, reviews: 62, arrivalMin: 55 },
-  handyman: { name: "Mike", rating: 4.8, reviews: 231, arrivalMin: 40 },
-  gutter_cleaning: { name: "Trey", rating: 4.7, reviews: 98, arrivalMin: 45 },
-  moving_labor: { name: "Andre", rating: 4.9, reviews: 145, arrivalMin: 60 },
-  garage_cleanout: { name: "Marcus", rating: 4.9, reviews: 127, arrivalMin: 35 },
-  light_demolition: { name: "Jason", rating: 4.7, reviews: 156, arrivalMin: 50 },
-  home_consultation: { name: "George", rating: 5.0, reviews: 500, arrivalMin: 20 },
+  junk_removal: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 35 },
+  home_cleaning: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 45 },
+  carpet_cleaning: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 40 },
+  pressure_washing: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 50 },
+  landscaping: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 30 },
+  pool_cleaning: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 55 },
+  handyman: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 40 },
+  gutter_cleaning: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 45 },
+  moving_labor: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 60 },
+  garage_cleanout: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 35 },
+  light_demolition: { name: "Your pro", rating: 0, reviews: 0, arrivalMin: 50 },
+  home_consultation: { name: "George", rating: 0, reviews: 0, arrivalMin: 20 },
 };
 
 export function SnapQuote({ inline, onQuoteReceived, className }: SnapQuoteProps) {

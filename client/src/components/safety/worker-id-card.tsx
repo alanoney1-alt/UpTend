@@ -38,15 +38,15 @@ export function WorkerIdCard({ worker }: WorkerIdCardProps) {
   );
 
   const pycker = worker || {
-    name: "Mike Rodriguez",
+    name: "Your Pro",
     image: undefined,
-    rating: 4.9,
-    jobs: 142,
+    rating: 0,
+    jobs: 0,
     bio: null,
     funFact: null,
     videoIntroUrl: null,
-    backgroundCheckDate: "Jan 2026",
-    safetyCode: "84-BLUE",
+    backgroundCheckDate: "",
+    safetyCode: "",
   };
 
   const initials = pycker.name
