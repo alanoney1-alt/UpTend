@@ -1198,8 +1198,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
         setStep(7);
       } catch (error: any) {
         toast({
-          title: "Booking failed",
-          description: error?.message || "Something went wrong. Please try again.",
+          title: "Couldn't create that booking",
+          description: error?.message?.includes("500") || error?.message?.includes("Internal")
+            ? "Something tripped up on our end. Give it one more try."
+            : (error?.message || "Something went wrong. Try again and I'll sort it out."),
           variant: "destructive",
         });
       } finally {
@@ -1391,8 +1393,8 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
           }}
           onError={(error) => {
             toast({
-              title: "Payment failed",
-              description: error,
+              title: "Payment didn't go through",
+              description: error || "Check your card details and try again.",
               variant: "destructive",
             });
           }}
