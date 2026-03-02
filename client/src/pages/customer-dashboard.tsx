@@ -428,8 +428,8 @@ function HomeReportSection({ userId }: { userId: string }) {
         ) : (
           <div className="text-center py-6" data-testid="empty-home-report">
             <History className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground mb-1">Your home report is empty</p>
-            <p className="text-xs text-muted-foreground mb-4">Book a service, register an appliance, or run an Home DNA Scan to start building your home&apos;s history.</p>
+            <p className="text-sm text-muted-foreground mb-1">Your home report is a blank slate</p>
+            <p className="text-xs text-muted-foreground mb-4">Book a service, register an appliance, or run a Home DNA Scan. I'll start building your home's story from there.</p>
             <Link href="/book">
               <Button size="sm" data-testid="button-book-first-service">
                 <Plus className="w-3 h-3 mr-1" /> Book a Service

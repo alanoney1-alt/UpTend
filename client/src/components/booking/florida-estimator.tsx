@@ -413,10 +413,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
       setAiQuote(quoteData); // Backend returns ID for video too
     } catch (error) {
       console.error("AI video analysis error:", error);
-      setAnalysisError("Failed to analyze video. Please try again or use photos instead.");
+      setAnalysisError("Couldn't read that video. Try again or upload some photos instead.");
       toast({
-        title: "Analysis failed",
-        description: "Unable to analyze video. Please try photos or manual entry.",
+        title: "Video analysis didn't work",
+        description: "No worries — try uploading photos or use manual entry instead.",
         variant: "destructive",
       });
     } finally {
@@ -455,10 +455,10 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
       setAiQuote(quoteData); // Use backend-generated ID, don't overwrite it
     } catch (error) {
       console.error("AI analysis error:", error);
-      setAnalysisError("Failed to analyze photos. Please try again or use manual entry.");
+      setAnalysisError("Couldn't process those photos. Give it another shot or try manual entry.");
       toast({
-        title: "Analysis failed",
-        description: "Unable to analyze photos. Please try again or choose manual entry.",
+        title: "Photo analysis didn't work",
+        description: "Try again or switch to manual entry. Either way, I'll get you a quote.",
         variant: "destructive",
       });
     } finally {

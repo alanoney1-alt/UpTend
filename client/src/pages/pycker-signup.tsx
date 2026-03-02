@@ -367,8 +367,8 @@ export default function PyckerSignup() {
       }
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to send verification code",
+        title: "Couldn't send the code",
+        description: error.message || "Something went wrong on our end. Try again in a moment.",
         variant: "destructive",
       });
     } finally {
@@ -381,8 +381,8 @@ export default function PyckerSignup() {
     const email = form.getValues("email");
     if (!verificationCode || verificationCode.length !== 6) {
       toast({
-        title: "Invalid Code",
-        description: "Please enter the 6-digit verification code",
+        title: "Need the full code",
+        description: "Enter the 6-digit code from your email.",
         variant: "destructive",
       });
       return;
@@ -408,8 +408,8 @@ export default function PyckerSignup() {
       });
     } catch (error: any) {
       toast({
-        title: "Verification Failed",
-        description: error.message || "Invalid or expired verification code",
+        title: "That code didn't work",
+        description: error.message || "Double-check the code or request a new one.",
         variant: "destructive",
       });
     } finally {
@@ -505,8 +505,8 @@ export default function PyckerSignup() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to submit application",
+        title: "Couldn't submit your application",
+        description: error.message || "Something went wrong. Give it another try — your info is still here.",
         variant: "destructive",
       });
     },

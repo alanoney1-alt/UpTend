@@ -212,7 +212,7 @@ export function AiChatWidget() {
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, something went wrong. Please try again.", createdAt: new Date().toISOString() },
+        { role: "assistant", content: "Looks like I lost connection for a second. Give it another shot — I'm not going anywhere.", createdAt: new Date().toISOString() },
       ]);
     } finally {
       setIsLoading(false);

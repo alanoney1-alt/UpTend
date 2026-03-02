@@ -80,9 +80,13 @@ export default function CustomerSignup() {
       }
     },
     onError: (error: any) => {
+      const msg = error.message || "";
+      const isTechnical = msg.includes("500") || msg.includes("Internal") || msg.includes("ECONNREFUSED");
       toast({
-        title: "Registration Failed",
-        description: error.message || "Could not create your account. Please try again.",
+        title: "Couldn't create your account",
+        description: isTechnical
+          ? "Something went wrong on our end. Give it another try in a moment."
+          : (msg || "Something went wrong. Please try again."),
         variant: "destructive",
       });
     },

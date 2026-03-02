@@ -1075,8 +1075,8 @@ const resources = {
       "blog.read_more": "Read more",
 
       // Not Found
-      "not_found.title": "Page Not Found",
-      "not_found.message": "Sorry, we couldn't find the page you're looking for. It may have been moved or no longer exists.",
+      "not_found.title": "Wrong turn.",
+      "not_found.message": "This page doesn't exist — but your home still needs help. Let me point you in the right direction.",
       "not_found.go_home": "Go Home",
       "not_found.browse_services": "Browse Services",
 
@@ -1101,14 +1101,14 @@ const resources = {
       "dashboard.manage_plans": "Manage your recurring cleaning plans",
       "dashboard.view_subscriptions": "View All Subscriptions",
       "dashboard.digital_inventory": "Digital Inventory",
-      "dashboard.no_items": "No items scanned yet",
-      "dashboard.items_auto": "Items are auto-cataloged during service visits",
+      "dashboard.no_items": "Nothing scanned yet",
+      "dashboard.items_auto": "Your items get cataloged automatically when a Pro visits. One less thing to think about.",
       "dashboard.active_jobs": "Active Jobs",
       "dashboard.job_history": "Job History",
-      "dashboard.no_jobs": "No jobs yet",
-      "dashboard.no_active": "No active jobs",
-      "dashboard.no_completed": "No completed jobs",
-      "dashboard.book_first": "Book your first service to get started",
+      "dashboard.no_jobs": "No jobs yet — let's change that.",
+      "dashboard.no_active": "Nothing in progress right now. Your home's holding steady.",
+      "dashboard.no_completed": "No completed jobs yet. The first one's the best one.",
+      "dashboard.book_first": "Book your first service and I'll handle the rest.",
       "dashboard.liability_claims": "Liability Claims",
 
       // Landing page
@@ -2017,8 +2017,8 @@ const resources = {
       "blog.read_more": "Leer más",
 
       // Not Found
-      "not_found.title": "Página No Encontrada",
-      "not_found.message": "Lo sentimos, no pudimos encontrar la página que busca. Es posible que haya sido movida o ya no exista.",
+      "not_found.title": "Giro equivocado.",
+      "not_found.message": "Esta pagina no existe — pero tu hogar todavia necesita ayuda. Dejame apuntarte en la direccion correcta.",
       "not_found.go_home": "Ir al Inicio",
       "not_found.browse_services": "Ver Servicios",
 
@@ -2043,14 +2043,14 @@ const resources = {
       "dashboard.manage_plans": "Administre sus planes de limpieza recurrentes",
       "dashboard.view_subscriptions": "Ver Todas las Suscripciones",
       "dashboard.digital_inventory": "Inventario Digital",
-      "dashboard.no_items": "Aún no hay artículos escaneados",
-      "dashboard.items_auto": "Los artículos se catalogan automáticamente durante las visitas de servicio",
+      "dashboard.no_items": "Nada escaneado todavia",
+      "dashboard.items_auto": "Tus articulos se catalogan automaticamente cuando un Pro te visita. Una cosa menos en que pensar.",
       "dashboard.active_jobs": "Trabajos Activos",
       "dashboard.job_history": "Historial de Trabajos",
-      "dashboard.no_jobs": "Aún no hay trabajos",
-      "dashboard.no_active": "No hay trabajos activos",
-      "dashboard.no_completed": "No hay trabajos completados",
-      "dashboard.book_first": "Reserve su primer servicio para comenzar",
+      "dashboard.no_jobs": "Sin trabajos todavia — vamos a cambiar eso.",
+      "dashboard.no_active": "Nada en progreso ahora mismo. Tu hogar esta en orden.",
+      "dashboard.no_completed": "Sin trabajos completados todavia. El primero es el mejor.",
+      "dashboard.book_first": "Reserva tu primer servicio y yo me encargo del resto.",
       "dashboard.liability_claims": "Reclamos de Responsabilidad",
 
       // Landing page

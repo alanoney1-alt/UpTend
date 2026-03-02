@@ -2622,7 +2622,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               ) : (
                 <div className="text-center py-8" data-testid="empty-schedule">
                   <Calendar className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">No scheduled jobs</p>
+                  <p className="text-muted-foreground">No scheduled jobs yet. Your calendar's wide open — let's fill it up.</p>
                   <Button variant="outline" className="mt-4" onClick={() => setActiveTab("requests")} data-testid="button-browse-requests">
                     Browse Job Requests
                   </Button>
@@ -3106,7 +3106,7 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <ClipboardList className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
               <h3 className="font-semibold mb-2">No job requests right now</h3>
               <p className="text-muted-foreground">
-                New requests will appear here. Make sure you're set to available!
+                New requests show up here as they come in. Make sure you're set to available and I'll send them your way.
               </p>
             </Card>
           )}
@@ -3500,8 +3500,8 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
       {!activeJobsLoading && !activeJob && (
         <Card className="p-6 mb-8 border-dashed text-center" data-testid="card-no-active-job">
           <Truck className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
-          <h3 className="font-semibold mb-1">No Active Mission</h3>
-          <p className="text-sm text-muted-foreground mb-4">Accept a job below to start earning</p>
+          <h3 className="font-semibold mb-1">No active mission right now</h3>
+          <p className="text-sm text-muted-foreground mb-4">Grab a job below and let's get to work.</p>
           {safetyCode && (
             <p className="text-sm text-muted-foreground">
               Your Safety Code: <span className="font-mono font-bold text-primary" data-testid="text-safety-code-idle">{safetyCode}</span>
@@ -3552,8 +3552,8 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <h3 className="font-semibold mb-1">No matching jobs right now</h3>
               <p className="text-sm text-muted-foreground">
                 {(pendingRequests?.length || 0) > 0
-                  ? `${pendingRequests?.length} jobs available but don't match your skills/equipment`
-                  : "New requests will appear here when available"}
+                  ? `${pendingRequests?.length} jobs are out there but don't match your current skills or equipment. Update your profile to unlock more.`
+                  : "Hang tight — new requests show up here as they come in."}
               </p>
               {!isAvailable && (
                 <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">Go online to start receiving jobs</p>

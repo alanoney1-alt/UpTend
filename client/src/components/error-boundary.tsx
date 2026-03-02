@@ -76,7 +76,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 marginBottom: "12px",
               }}
             >
-              Something went wrong
+              Hit a snag. My bad.
             </h1>
             <p
               style={{
@@ -86,7 +86,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 lineHeight: 1.5,
               }}
             >
-              Something went wrong. Please refresh the page.
+              Something tripped up on our end. A quick refresh usually does the trick.
             </p>
             <button
               onClick={this.handleRefresh}

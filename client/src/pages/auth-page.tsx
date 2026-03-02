@@ -130,20 +130,22 @@ export default function AuthPage() {
       }
     },
     onError: (error: any) => {
-      let errorMessage = "Invalid email or password";
+      let errorMessage = "Wrong email or password. Double-check and try again.";
       if (error?.message) {
         try {
           const jsonMatch = error.message.match(/\{.*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
-            errorMessage = parsed.error || errorMessage;
+            if (parsed.error && !parsed.error.includes("500") && !parsed.error.includes("Internal")) {
+              errorMessage = parsed.error;
+            }
           }
         } catch {
-          errorMessage = error.message;
+          // Don't surface raw error strings to users
         }
       }
       toast({
-        title: "Login Failed",
+        title: "Couldn't sign you in",
         description: errorMessage,
         variant: "destructive",
         duration: 6000,
