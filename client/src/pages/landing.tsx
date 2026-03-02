@@ -1,18 +1,15 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
-  ShieldCheck, ArrowRight, Globe, Heart, Zap, Camera,
-  DollarSign, Clock, Ban, TrendingUp, Users, Star,
+  ShieldCheck, ArrowRight, Globe, Heart, Zap,
+  DollarSign, Clock, Ban, TrendingUp,
   CheckCircle, ChevronRight, Wrench, Waves, Truck,
   Package, Home, Trees, ArrowUpFromLine, Sparkles,
   MapPin,
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
-import { FloridaEstimator } from "@/components/booking/florida-estimator";
 import { SocialProofTicker } from "@/components/landing/social-proof-ticker";
 import { Founding100 } from "@/components/landing/founding-100";
 import { AnnouncementTicker } from "@/components/landing/announcement-ticker";
@@ -20,7 +17,11 @@ import { GeorgeInlinePrompt } from "@/components/ai/george-inline-prompt";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
-  usePageTitle("UpTend | Home Services, Finally Done Right");
+  useSEO({
+    title: "UpTend | Home Services, Finally Done Right",
+    description: "Orlando's trusted home services platform. Book vetted pros for cleaning, lawn care, junk removal, pressure washing & more. Instant quotes, real-time tracking.",
+    path: "/",
+  });
   return (
     <div className="min-h-screen bg-background" data-testid="page-landing">
       <Header />
@@ -349,7 +350,7 @@ function ServicesStrip() {
                 </span>
               )}
               <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-1">
-                <img src={svc.image} alt={svc.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <img src={svc.image} alt={svc.label} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               </div>
               <span className="font-bold text-sm text-slate-900 dark:text-white">{svc.label}</span>
               <span className="text-xs font-semibold text-[#F47C20]">{svc.price}</span>
