@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Recycle, Droplets, Home, Users, Hammer, ClipboardCheck, Camera,
+  Recycle, Droplets, Home, Users, Hammer,
   Sofa, Truck, CheckCircle, ArrowRight, ShieldCheck, Star,
-  GraduationCap, Video, Globe, DollarSign, ChevronRight,
+  Video, Globe, DollarSign, ChevronRight,
   Leaf, Sparkles, Waves, Wrench,
 } from "lucide-react";
 import { Header } from "@/components/landing/header";
