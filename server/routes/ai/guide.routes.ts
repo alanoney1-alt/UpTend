@@ -1320,7 +1320,7 @@ function updatePhaseFromResponse(session: GuideSession, response: string): void 
     session.topicsCovered.push("home_intelligence");
   }
 
-  // Track questions George asked
+  // Track questions George asked — consumer
   if (/what('s| is) your address|where.*located|what.*address/i.test(resp)) {
     ci.questionsAsked.push("address");
   }
@@ -1329,6 +1329,53 @@ function updatePhaseFromResponse(session: GuideSession, response: string): void 
   }
   if (/how big|how much.*space|square (feet|footage)/i.test(resp)) {
     ci.questionsAsked.push("scope_size");
+  }
+
+  // Track questions George asked — B2B discovery
+  if (/company.*(name|called)|what.*business|what.*type.*service|what.*kind.*work/i.test(resp)) {
+    ci.questionsAsked.push("company_name_type");
+  }
+  if (/how (long|many years)|years.*business/i.test(resp)) {
+    ci.questionsAsked.push("years_in_business");
+  }
+  if (/how many.*(tech|crew|guys|employees|people|team)|team size|staff/i.test(resp)) {
+    ci.questionsAsked.push("team_size");
+  }
+  if (/service area|how far|where.*serve|what area/i.test(resp)) {
+    ci.questionsAsked.push("service_area");
+  }
+  if (/average.*ticket|typical.*job|average.*job/i.test(resp)) {
+    ci.questionsAsked.push("average_ticket");
+  }
+  if (/where.*leads|how.*find.*customers|lead.*source|where.*customers.*come/i.test(resp)) {
+    ci.questionsAsked.push("lead_sources");
+  }
+  if (/spend.*month|monthly.*spend|paying.*for|cost.*marketing|marketing.*budget/i.test(resp)) {
+    ci.questionsAsked.push("monthly_spend");
+  }
+  if (/after.?hours|weekends|when.*closed|missed.*calls/i.test(resp)) {
+    ci.questionsAsked.push("after_hours");
+  }
+  if (/review|google.*rating|star/i.test(resp)) {
+    ci.questionsAsked.push("reviews");
+  }
+  if (/social.*media|facebook|instagram|tiktok/i.test(resp)) {
+    ci.questionsAsked.push("social_media");
+  }
+  if (/website|url|online.*presence/i.test(resp)) {
+    ci.questionsAsked.push("website");
+  }
+  if (/what.*tool|what.*software|crm|scheduling|invoic|quickbooks|accounting/i.test(resp)) {
+    ci.questionsAsked.push("tools_software");
+  }
+  if (/biggest.*challenge|pain.*point|what.*holding|biggest.*problem|fix.*tomorrow/i.test(resp)) {
+    ci.questionsAsked.push("pain_points_goals");
+  }
+  if (/residential.*commercial|commercial.*residential|what.*type.*work.*resi/i.test(resp)) {
+    ci.questionsAsked.push("resi_vs_commercial");
+  }
+  if (/seasonal|slow.*months|busy.*season/i.test(resp)) {
+    ci.questionsAsked.push("seasonality");
   }
 
   // Track if George quoted a price
