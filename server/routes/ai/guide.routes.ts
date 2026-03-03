@@ -12,6 +12,7 @@ import { createChatCompletion } from "../../services/ai/anthropic-client";
 import { analyzeImageOpenAI as analyzeImage } from "../../services/ai/openai-vision-client";
 import { chat as georgeChat, type GeorgeContext } from "../../services/george-agent";
 import { getHomeMemories } from "../../services/george-tools";
+import { textToSpeechBase64, isVoiceEnabled } from "../../services/partner-voice-george";
 
 const guideChatLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -36,6 +37,17 @@ import { nanoid } from "nanoid";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+type ConversationPhase = "greeting" | "discovery" | "scoping" | "quoting" | "booking" | "followup" | "diy" | "general";
+
+interface CollectedInfo {
+  address?: string;
+  serviceType?: string;
+  urgency?: string;
+  hasPhoto?: boolean;
+  quotedPrice?: number;
+  questionsAsked: string[];
+}
+
 interface GuideSession {
   history: Array<{ role: "user" | "assistant"; content: string }>;
   propertyData?: PropertyData;
@@ -46,6 +58,9 @@ interface GuideSession {
   lockedQuotes?: Array<{ id: string; service: string; price: number; validUntil: string; address: string }>;
   priceMatches?: PriceMatchResult[];
   pendingBooking?: any;
+  conversationPhase: ConversationPhase;
+  collectedInfo: CollectedInfo;
+  topicsCovered: string[];
 }
 
 // ─── Session Store ───────────────────────────────────────────────────────────
@@ -67,7 +82,13 @@ setInterval(() => {
 
 function getSession(sid: string): GuideSession {
   if (!sessions.has(sid)) {
-    sessions.set(sid, { history: [], _lastAccess: Date.now() } as any);
+    sessions.set(sid, {
+      history: [],
+      conversationPhase: "greeting" as ConversationPhase,
+      collectedInfo: { questionsAsked: [] },
+      topicsCovered: [],
+      _lastAccess: Date.now(),
+    } as any);
   }
   const session = sessions.get(sid)!;
   (session as any)._lastAccess = Date.now();
@@ -808,11 +829,16 @@ export default function createGuideRoutes(_storage: any) {
         pendingPhotoBase64: photoBase64 || undefined,
       };
 
+      // Conversation phase tracking — detect phase and inject state
+      updateConversationPhase(session, userContent);
+      georgeContext.conversationState = buildConversationStatePrompt(session);
+
       // Pass trimmed history WITHOUT the last user message (georgeChat adds it)
       const historyForGeorge = trimmedHistory.slice(0, -1);
       const georgeResult = await georgeChat(userContent, historyForGeorge, georgeContext);
 
       const cleanText = georgeResult.response;
+      updatePhaseFromResponse(session, cleanText);
       session.history.push({ role: "assistant", content: cleanText });
       if (session.history.length > 20) session.history = session.history.slice(-20);
 
@@ -1197,7 +1223,173 @@ Return ONLY valid JSON.`,
     }
   });
 
+  // ─── Text-to-Speech Endpoint (ElevenLabs) ──────────────────────────────
+
+  router.post("/guide/tts", guideAiLimiter, async (req, res) => {
+    try {
+      const { text } = req.body;
+      if (!text || typeof text !== "string") {
+        return res.status(400).json({ error: "text is required" });
+      }
+      if (!isVoiceEnabled()) {
+        return res.status(503).json({ error: "Voice not configured" });
+      }
+
+      // Strip markdown for cleaner speech
+      const cleanText = text
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+        .replace(/#{1,6}\s/g, "")
+        .replace(/```[\s\S]*?```/g, "")
+        .replace(/`([^`]+)`/g, "$1")
+        .replace(/\n{2,}/g, ". ")
+        .replace(/[-*]\s/g, "")
+        .trim()
+        .slice(0, 5000);
+
+      const audioBase64 = await textToSpeechBase64(cleanText);
+      if (!audioBase64) {
+        return res.status(500).json({ error: "TTS generation failed" });
+      }
+      return res.json({ audio: audioBase64, contentType: "audio/mpeg" });
+    } catch (error: any) {
+      console.error("TTS error:", error);
+      return res.status(500).json({ error: "TTS failed" });
+    }
+  });
+
+  router.get("/guide/voice-status", (_req, res) => {
+    return res.json({ enabled: isVoiceEnabled() });
+  });
+
   return router;
+}
+
+// ─── Conversation Phase Engine ───────────────────────────────────────────────
+
+function updateConversationPhase(session: GuideSession, userMessage: string): void {
+  const msg = userMessage.toLowerCase();
+  const ci = session.collectedInfo || { questionsAsked: [] };
+  session.collectedInfo = ci;
+  if (!session.topicsCovered) session.topicsCovered = [];
+  const exchangeCount = session.history.filter(m => m.role === "user").length;
+
+  // Detect info from user message
+  if (/\d{4,5}\s+\w/.test(userMessage) || /\b(street|ave|blvd|dr|road|lane|ct|way)\b/i.test(msg)) {
+    ci.address = userMessage;
+  }
+  const serviceMatch = msg.match(/\b(junk removal|pressure wash\w*|gutter clean\w*|moving|handyman|demolition|garage clean\w*|home clean\w*|pool clean\w*|landscap\w*|carpet clean\w*|paint\w*)\b/i);
+  if (serviceMatch) ci.serviceType = serviceMatch[1];
+  if (/\b(urgent|asap|emergency|today|right now|immediately)\b/i.test(msg)) ci.urgency = "urgent";
+  if (/photo|image|picture|snap/i.test(msg)) ci.hasPhoto = true;
+
+  // Determine phase
+  if (exchangeCount === 0) {
+    session.conversationPhase = "greeting";
+  } else if (/\b(book|schedule|send someone|dispatch)\b/i.test(msg)) {
+    session.conversationPhase = "booking";
+  } else if (/\b(how much|price|cost|quote|estimate)\b/i.test(msg)) {
+    session.conversationPhase = "quoting";
+  } else if (/\b(diy|fix it myself|how do i|tutorial|video|step.?by.?step)\b/i.test(msg)) {
+    session.conversationPhase = "diy";
+  } else if (ci.serviceType && !ci.address && exchangeCount > 1) {
+    session.conversationPhase = "scoping";
+  } else if (exchangeCount <= 3 && !ci.serviceType) {
+    session.conversationPhase = "discovery";
+  }
+}
+
+function updatePhaseFromResponse(session: GuideSession, response: string): void {
+  const resp = response.toLowerCase();
+  if (!session.topicsCovered) session.topicsCovered = [];
+  const ci = session.collectedInfo || { questionsAsked: [] };
+  session.collectedInfo = ci;
+
+  // Track topics covered so George doesn't repeat pitches
+  if (/home dna scan|home scan|free scan/i.test(resp) && !session.topicsCovered.includes("home_dna_scan")) {
+    session.topicsCovered.push("home_dna_scan");
+  }
+  if (/bundle|discount.*multiple/i.test(resp) && !session.topicsCovered.includes("bundle_pitch")) {
+    session.topicsCovered.push("bundle_pitch");
+  }
+  if (/founding.*member|founding.*100/i.test(resp) && !session.topicsCovered.includes("founding_member")) {
+    session.topicsCovered.push("founding_member");
+  }
+  if (/home.*report|home.*intelligence|property.*scan|scan.*property/i.test(resp) && !session.topicsCovered.includes("home_intelligence")) {
+    session.topicsCovered.push("home_intelligence");
+  }
+
+  // Track questions George asked
+  if (/what('s| is) your address|where.*located|what.*address/i.test(resp)) {
+    ci.questionsAsked.push("address");
+  }
+  if (/what.*service|what.*help|what.*need/i.test(resp)) {
+    ci.questionsAsked.push("service_type");
+  }
+  if (/how big|how much.*space|square (feet|footage)/i.test(resp)) {
+    ci.questionsAsked.push("scope_size");
+  }
+
+  // Track if George quoted a price
+  if (/\$\d+/.test(resp)) {
+    const match = resp.match(/\$(\d[\d,]*)/);
+    if (match) ci.quotedPrice = parseFloat(match[1].replace(/,/g, ""));
+  }
+}
+
+function buildConversationStatePrompt(session: GuideSession): string {
+  const ci = session.collectedInfo || { questionsAsked: [] };
+  const parts: string[] = [];
+
+  parts.push(`\nCONVERSATION PHASE: ${session.conversationPhase || "general"}`);
+  parts.push(`Exchange count: ${session.history.filter(m => m.role === "user").length}`);
+
+  const known: string[] = [];
+  if (ci.address) known.push(`Address: ${ci.address}`);
+  if (ci.serviceType) known.push(`Service: ${ci.serviceType}`);
+  if (ci.urgency) known.push(`Urgency: ${ci.urgency}`);
+  if (ci.hasPhoto) known.push("Has sent photo");
+  if (ci.quotedPrice) known.push(`Quoted: $${ci.quotedPrice}`);
+  if (known.length > 0) {
+    parts.push(`ALREADY COLLECTED (do NOT re-ask): ${known.join(", ")}`);
+  }
+
+  if (ci.questionsAsked.length > 0) {
+    parts.push(`QUESTIONS ALREADY ASKED (do NOT repeat): ${[...new Set(ci.questionsAsked)].join(", ")}`);
+  }
+
+  if (session.topicsCovered && session.topicsCovered.length > 0) {
+    parts.push(`TOPICS ALREADY MENTIONED (do NOT pitch again): ${session.topicsCovered.join(", ")}`);
+  }
+
+  switch (session.conversationPhase) {
+    case "greeting":
+      parts.push("GOAL: Warmly greet, identify what they need. One question max.");
+      break;
+    case "discovery":
+      parts.push("GOAL: Understand their need. Ask ONE focused question. Do NOT pitch yet.");
+      break;
+    case "scoping":
+      parts.push("GOAL: Gather missing details (address, size, photos) for accurate quote. Ask ONE thing at a time.");
+      break;
+    case "quoting":
+      parts.push("GOAL: Provide clear pricing via tools. After quoting, ask if they want to book.");
+      break;
+    case "booking":
+      parts.push("GOAL: Complete the booking. Confirm details and schedule.");
+      break;
+    case "diy":
+      parts.push("GOAL: Help them fix it. Find tutorials, give step-by-step. Offer pro backup if stuck.");
+      break;
+    case "followup":
+      parts.push("GOAL: Check satisfaction, suggest next service.");
+      break;
+  }
+
+  parts.push("CRITICAL: Progress the conversation forward. Never re-ask what you already know. Never re-pitch what you already mentioned. Each response should move toward resolution.");
+
+  return parts.join("\n");
 }
 
 // ─── Action Processor ────────────────────────────────────────────────────────

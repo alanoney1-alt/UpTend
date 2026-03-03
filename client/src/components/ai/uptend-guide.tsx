@@ -39,7 +39,7 @@ const LS_GREETED = "uptend-guide-greeted";
 const SS_MESSAGES_PREFIX = "uptend-guide-msgs-"; // per-zone sessionStorage key
 
 const PRO_SIGNUP_PAGES = ["/pro/signup", "/pycker/signup", "/become-pro", "/pycker-signup", "/become-a-pycker"];
-const NO_WIDGET_PAGES = ["/login", "/customer-login", "/customer-signup", "/pro-login", "/pro-signup", "/pro/login", "/pro/signup", "/pycker/login", "/pycker/signup", "/pycker-login", "/pycker-signup", "/register", "/admin", "/admin-login", "/forgot-password", "/book"];
+const NO_WIDGET_PAGES = ["/login", "/customer-login", "/customer-signup", "/pro-login", "/pro-signup", "/pro/login", "/pro/signup", "/pycker/login", "/pycker/signup", "/pycker-login", "/pycker-signup", "/register", "/admin", "/admin-login", "/forgot-password", "/book", "/discovery"];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -224,25 +224,69 @@ function useSpeechRecognition() {
 
 function useSpeechSynthesis() {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const isSupported = typeof window !== "undefined" && "speechSynthesis" in window;
+  const [useElevenLabs, setUseElevenLabs] = useState(true);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isSupported = true; // Always true — ElevenLabs primary, browser fallback
 
-  const speak = useCallback((text: string) => {
-    if (!isSupported) return;
-    window.speechSynthesis.cancel();
-    const clean = text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1");
-    const utterance = new SpeechSynthesisUtterance(clean);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    const voices = window.speechSynthesis.getVoices();
-    const preferred = voices.find(v => v.name.includes("Samantha")) || voices.find(v => v.lang === "en-US" && v.localService) || voices[0];
-    if (preferred) utterance.voice = preferred;
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    setIsSpeaking(true);
-    window.speechSynthesis.speak(utterance);
-  }, [isSupported]);
+  // Check ElevenLabs availability on mount
+  useEffect(() => {
+    fetch("/api/guide/voice-status")
+      .then(r => r.json())
+      .then(d => setUseElevenLabs(d.enabled))
+      .catch(() => setUseElevenLabs(false));
+  }, []);
 
-  const cancel = useCallback(() => { window.speechSynthesis?.cancel(); setIsSpeaking(false); }, []);
+  const speak = useCallback(async (text: string) => {
+    // Stop any current playback
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    window.speechSynthesis?.cancel();
+
+    if (useElevenLabs) {
+      try {
+        setIsSpeaking(true);
+        const res = await fetch("/api/guide/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+        if (!res.ok) throw new Error("TTS request failed");
+        const data = await res.json();
+        if (data.audio) {
+          const audio = new Audio(`data:audio/mpeg;base64,${data.audio}`);
+          audioRef.current = audio;
+          audio.onended = () => { setIsSpeaking(false); audioRef.current = null; };
+          audio.onerror = () => { setIsSpeaking(false); audioRef.current = null; };
+          await audio.play();
+          return;
+        }
+      } catch (err) {
+        console.warn("[George Voice] ElevenLabs failed, falling back to browser:", err);
+      }
+    }
+
+    // Browser fallback
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      const clean = text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1");
+      const utterance = new SpeechSynthesisUtterance(clean);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v => v.name.includes("Samantha")) || voices.find(v => v.lang === "en-US" && v.localService) || voices[0];
+      if (preferred) utterance.voice = preferred;
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      setIsSpeaking(true);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      setIsSpeaking(false);
+    }
+  }, [useElevenLabs]);
+
+  const cancel = useCallback(() => {
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    window.speechSynthesis?.cancel();
+    setIsSpeaking(false);
+  }, []);
 
   return { isSpeaking, isSupported, speak, cancel };
 }

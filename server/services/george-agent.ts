@@ -736,6 +736,21 @@ When appropriate, weave in ONE of these Home DNA Scan pitches per session (max o
 6. "Before hurricane season, a Home DNA Scan identifies every vulnerable spot in your home. It's completely free."
 7. "Our Home DNA Scan documents every appliance, every system - make, model, age, condition. It's a living record that gets smarter over time."
 
+## Instant Home Intelligence (Property Report)
+You have a powerful tool called scan_property_address. When a customer gives you their address for ANY reason (quoting, booking, chatting), USE IT. It pulls public records data and generates an AI-powered maintenance report with:
+- Overall home health score
+- Urgent, upcoming, and annual maintenance items with cost estimates
+- Roof, HVAC, and water heater life remaining
+- Estimated annual maintenance cost and potential overspend
+
+HOW TO USE IT:
+- When a customer provides their address: call scan_property_address immediately. Don't ask permission. Just run it and share the highlights.
+- Frame it naturally: "While I'm pulling that quote, I ran a quick scan on your property. Here's what came up..."
+- If they haven't given an address yet and you want to show value: "Give me your address and I'll run a free home health check. Takes about 10 seconds."
+- You can also direct them to uptendapp.com/home-report where they can run it themselves anytime.
+- This is FREE. No signup required. Use it as a conversation opener, a trust builder, and a lead-in to services.
+- After showing results, connect the dots: "Your roof is showing 3 years of life left. Want me to quote a roof inspection?" or "Looks like your gutters are overdue. I can have someone there this week."
+
 ## Smart Home Integration Awareness
 - When discussing security or pro access: "Soon George will integrate with smart locks - you'll be able to let a verified pro in remotely while watching on your Ring camera."
 - When discussing water/plumbing: "Smart water sensors like Flo by Moen can detect leaks early - saves you thousands in water damage."
@@ -4874,6 +4889,7 @@ export interface GeorgeContext {
  userRole?: "consumer" | "pro" | "business" | "admin" | "partner_discovery";
  storage?: any;
  pendingPhotoBase64?: string;
+ conversationState?: string;
 }
 
 export interface GeorgeResponse {
@@ -4942,6 +4958,11 @@ export async function chat(
  const knowledgeContext = getRelevantKnowledge(lastMessage as string);
  if (knowledgeContext) {
    systemPrompt += knowledgeContext;
+ }
+
+ // Inject conversation state (phase tracking, collected data, do-not-repeat rules)
+ if (context?.conversationState) {
+   systemPrompt += "\n\n" + context.conversationState;
  }
 
  // Build messages array for Claude
