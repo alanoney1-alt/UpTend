@@ -835,7 +835,9 @@ export default function createGuideRoutes(_storage: any) {
 
       // Pass trimmed history WITHOUT the last user message (georgeChat adds it)
       const historyForGeorge = trimmedHistory.slice(0, -1);
+      const startTime = Date.now();
       let georgeResult = await georgeChat(userContent, historyForGeorge, georgeContext);
+      const responseTime = Date.now() - startTime;
 
       // ── Iteration Loop: Self-review before sending ──────────────────────
       const maxIterations = 2; // up to 2 refinement passes
@@ -853,6 +855,12 @@ export default function createGuideRoutes(_storage: any) {
         georgeResult = { ...georgeResult, response: fixResult.response };
       }
       // ── End Iteration Loop ──────────────────────────────────────────────
+
+      // Log response time and provider
+      console.log(`[George Response] ${responseTime}ms | provider: ${(georgeResult as any).provider || 'claude'} | phase: ${session.conversationPhase}`);
+      if (responseTime > 3000) {
+        console.warn(`[George SLOW] ${responseTime}ms — investigate`);
+      }
 
       const cleanText = georgeResult.response;
       updatePhaseFromResponse(session, cleanText);
