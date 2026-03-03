@@ -226,13 +226,39 @@ export default function DiscoveryPage() {
     }
   }, [messages, auditStarted]);
 
-  // Voice: speak George's message
-  const speak = useCallback((text: string) => {
-    if (!voiceMode || !window.speechSynthesis) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.95;
-    u.pitch = 0.9;
-    window.speechSynthesis.speak(u);
+  // Voice: speak George's message via ElevenLabs Adam voice
+  const speak = useCallback(async (text: string) => {
+    if (!voiceMode) return;
+    try {
+      const resp = await fetch("/api/partners/voice/speak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.audioBase64) {
+          const audio = new Audio(`data:audio/mpeg;base64,${data.audioBase64}`);
+          audio.play().catch(() => {});
+        }
+      } else {
+        // Fallback to browser TTS if ElevenLabs fails
+        if (window.speechSynthesis) {
+          const u = new SpeechSynthesisUtterance(text);
+          u.rate = 0.95;
+          u.pitch = 0.9;
+          window.speechSynthesis.speak(u);
+        }
+      }
+    } catch {
+      // Fallback to browser TTS
+      if (window.speechSynthesis) {
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 0.95;
+        u.pitch = 0.9;
+        window.speechSynthesis.speak(u);
+      }
+    }
   }, [voiceMode]);
 
   // Voice: listen
