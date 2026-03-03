@@ -267,18 +267,17 @@ export default function BrandedPartnerLanding() {
     <div className="min-h-screen bg-background">
       {/* Partner Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo variant="default" className="h-8" />
-            <span className="text-muted-foreground">×</span>
-            <div>
-              <span className="font-bold text-lg">{config.companyName}</span>
-            </div>
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <Logo variant="icon" className="h-7 flex-shrink-0" />
+            <span className="text-muted-foreground flex-shrink-0">×</span>
+            <span className="font-bold text-sm md:text-lg truncate">{config.companyName}</span>
           </div>
           {config.phone && (
-            <a href={`tel:${config.phone.replace(/\D/g, '')}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-              <Phone className="w-4 h-4" />
-              {config.phone}
+            <a href={`tel:${config.phone.replace(/\D/g, '')}`} className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground hover:text-foreground flex-shrink-0">
+              <Phone className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">{config.phone}</span>
+              <span className="sm:hidden">Call</span>
             </a>
           )}
         </div>
@@ -327,6 +326,23 @@ export default function BrandedPartnerLanding() {
                   </Card>
                 );
               })}
+            </div>
+
+            {/* SEO Demo + Partner Tools */}
+            <div className="grid md:grid-cols-2 gap-4 mb-12">
+              <a href={`/partners/${slug}/seo-demo`} className="block p-6 bg-card border border-border rounded-2xl hover:border-primary/50 transition-colors">
+                <h3 className="font-bold text-lg mb-2">📈 See Your SEO Potential</h3>
+                <p className="text-sm text-muted-foreground mb-3">See how UpTend builds search visibility for your brand across every Orlando neighborhood.</p>
+                <span className="text-sm text-primary font-semibold">View SEO Demo →</span>
+              </a>
+              <div className="p-6 bg-card border border-border rounded-2xl">
+                <h3 className="font-bold text-lg mb-2">🤖 George, Your AI Front Desk</h3>
+                <p className="text-sm text-muted-foreground mb-3">George handles customer intake 24/7. He scopes jobs, collects photos, and routes leads straight to you.</p>
+                <Button size="sm" className="gap-2" onClick={startChat}>
+                  <MessageCircle className="w-4 h-4" />
+                  Try George Now
+                </Button>
+              </div>
             </div>
 
             {/* How It Works */}
