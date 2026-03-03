@@ -4988,22 +4988,55 @@ export async function chat(
  let currentMessages = [...messages];
  let bookingDraft: any = null;
 
- // Detect if the user message needs tool calls (DIY, video, product queries)
+ // Discovery mode: minimal tools, no forced tool use, higher token limit
+ const isDiscoveryMode = context?.userRole === "partner_discovery" || context?.currentPage === "/discovery";
+
+ const DISCOVERY_TOOL_NAMES = [
+   // Core sales process
+   "save_partner_onboarding",
+   "get_partner_social_audit",
+   "get_partner_onboarding_progress",
+   "save_partner_lead",
+   // Wow moments — show them what the platform can do
+   "diagnose_from_photo",        // They send a photo, George diagnoses it live
+   "analyze_photo_in_chat",      // Photo analysis
+   "scan_property_address",      // Scan their business address, show property intel
+   "get_service_pricing",        // Show them real pricing
+   "calculate_quote",            // Generate a quote on the spot
+   "get_neighborhood_insights",  // Show local market data
+   "get_weather_alerts",         // Contextual — show proactive capability
+   "get_home_value_estimate",    // Property value data
+   // B2B tools they'd use as partners
+   "generate_hoa_pricing_schedule",
+   "get_kpi_dashboard",
+   "create_estimate",
+   "create_invoice",
+   "get_pipeline_view",
+   "create_deal",
+   // Communication demo
+   "send_email_to_customer",
+   "call_customer",
+ ];
+ const activeTools = isDiscoveryMode
+   ? TOOL_DEFINITIONS.filter((t: any) => DISCOVERY_TOOL_NAMES.includes(t.name))
+   : TOOL_DEFINITIONS;
+
+ // Detect if the user message needs tool calls (DIY, video, product queries) — consumer only
  const lastUserMsg = (currentMessages.filter((m: any) => m.role === "user").pop() as any)?.content || "";
  const msgText = typeof lastUserMsg === "string" ? lastUserMsg.toLowerCase() : JSON.stringify(lastUserMsg).toLowerCase();
- const needsToolCall = /\b(fix|repair|how to|diy|video|show me|tutorial|watch|youtube|buy|product|price|cost|quote|book|schedule|amazon|home depot|lowe|walmart|parts|tools needed|what do i need)\b/.test(msgText);
+ const needsToolCall = !isDiscoveryMode && /\b(fix|repair|how to|diy|video|show me|tutorial|watch|youtube|buy|product|price|cost|quote|book|schedule|amazon|home depot|lowe|walmart|parts|tools needed|what do i need)\b/.test(msgText);
 
  for (let i = 0; i < 5; i++) {
- // Force tool use on first iteration when the message clearly needs tools
+ // Force tool use on first iteration when the message clearly needs tools (consumer only)
  const toolChoice = (i === 0 && needsToolCall) ? { type: "any" as const } : undefined;
 
  const response = await withRetry(
  () => anthropic.messages.create({
  model: "claude-sonnet-4-20250514",
- max_tokens: 1024,
+ max_tokens: isDiscoveryMode ? 2048 : 1024,
  temperature: 0.6,
  system: systemPrompt,
- tools: TOOL_DEFINITIONS,
+ tools: activeTools,
  messages: currentMessages as any,
  ...(toolChoice ? { tool_choice: toolChoice } : {}),
  }),
@@ -5017,8 +5050,11 @@ export async function chat(
  // Final text response
  const textBlock = response.content.find((b: any) => b.type === "text");
  let rawText = textBlock && "text" in textBlock ? textBlock.text : "";
- // If empty response after tool calls, continue loop to get a real reply
- if (!rawText.trim() && i < 4) continue;
+ // If empty response after tool calls, nudge Claude to respond
+ if (!rawText.trim() && i < 4) {
+   currentMessages = [...currentMessages, { role: "assistant", content: response.content }, { role: "user", content: "[System: Please provide your response to the customer based on the tool results above.]" }];
+   continue;
+ }
  // Strip any emojis that slip through despite system prompt instruction
  const noEmojiText = rawText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '').replace(/\u2014/g, ',').replace(/\u2013/g, ',');
  const { cleanText, buttons } = parseButtons(noEmojiText);
