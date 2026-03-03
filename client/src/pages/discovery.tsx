@@ -241,8 +241,23 @@ export default function DiscoveryPage() {
       if (resp.ok) {
         const data = await resp.json();
         if (data.audioBase64) {
-          const audio = new Audio(`data:audio/mpeg;base64,${data.audioBase64}`);
-          audio.play().catch(() => {});
+          const byteString = atob(data.audioBase64);
+          const ab = new ArrayBuffer(byteString.length);
+          const ia = new Uint8Array(ab);
+          for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+          const blob = new Blob([ab], { type: "audio/mpeg" });
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          audio.play().catch(() => {
+            // Mobile autoplay blocked - try browser TTS fallback
+            if (window.speechSynthesis) {
+              const u = new SpeechSynthesisUtterance(text);
+              u.rate = 0.95;
+              u.pitch = 0.9;
+              window.speechSynthesis.speak(u);
+            }
+          });
         }
       } else {
         // Fallback to browser TTS if ElevenLabs fails
@@ -418,8 +433,8 @@ export default function DiscoveryPage() {
     setVoiceMode(voice);
     setPhase("chat");
     const greeting = params.slug
-      ? `Hey there! I see you're coming from ${params.slug.replace(/-/g, " ")}. I'm George, your AI business advisor. Tell me a little about your company. What kind of services do you offer?`
-      : "Hey there! I'm George, your AI business advisor. I'm going to learn about your business and put together a custom growth package for you. Let's start simple: what's your company name and what kind of services do you offer?";
+      ? `I'm George. I work with ${params.slug.replace(/-/g, " ")} and a bunch of other service companies in the Orlando area. I'd love to learn a bit about your business so I can show you what we can do for you. What's your company name and what kind of work do you guys do?`
+      : "I'm George. I work with home service companies all over Orlando, helping them get more jobs and run tighter operations. I'd love to learn about your business. What's your company name and what kind of services do you offer?";
     setMessages([{ role: "george", content: greeting }]);
     if (voice) speak(greeting);
   }, [params.slug, speak]);
