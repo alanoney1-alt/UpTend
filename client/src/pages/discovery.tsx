@@ -7,14 +7,52 @@ interface Message {
 }
 
 interface CollectedData {
+  // Phase 1: Their World
   companyName?: string;
   serviceType?: string;
   teamSize?: string;
   yearsInBusiness?: string;
+  serviceArea?: string;
+  seasonalPatterns?: string;
+  avgTicket?: string;
+  // Phase 2: How Customers Find Them
   leadSources?: string;
   monthlySpend?: string;
   leadVolume?: string;
+  websiteStatus?: string;
+  seoRanking?: string;
+  competitorAwareness?: string;
+  targetNeighborhoods?: string;
+  // Phase 3: What Happens When a Lead Comes In
+  afterHoursHandling?: string;
+  responseTime?: string;
+  followUpProcess?: string;
+  estimateConversion?: string;
+  truckRollWaste?: string;
+  schedulingMethod?: string;
+  customerPortal?: string;
+  // Phase 4: After the Job
+  reviewProcess?: string;
+  customerRetention?: string;
+  repeatRevenue?: string;
+  crossSellRequests?: string;
+  financingOffered?: string;
+  // Phase 5: Marketing & Visibility
+  socialMediaPresence?: string;
+  postingFrequency?: string;
+  videoContent?: string;
+  gbpStatus?: string;
+  roiTracking?: string;
+  // Phase 6: Tools & Spend
   currentTools?: string;
+  totalToolSpend?: string;
+  toolSatisfaction?: string;
+  // Phase 7: Goals
+  topPainPoint?: string;
+  oneThingToFix?: string;
+  twelveMonthGoal?: string;
+  growthBlockers?: string;
+  // Derived
   painPoints: string[];
   goals?: string;
 }
@@ -33,28 +71,78 @@ type Phase = "hero" | "chat" | "building" | "proposal";
 function extractData(messages: Message[]): CollectedData {
   const all = messages.map(m => m.content).join(" ");
   const userMsgs = messages.filter(m => m.role === "user").map(m => m.content).join(" ");
+  const lower = userMsgs.toLowerCase();
   const data: CollectedData = { painPoints: [] };
 
-  // Company name: look for patterns like "I own X" or "company is X" or "called X"
+  // Phase 1: Their World
   const nameMatch = userMsgs.match(/(?:called|named?|company is|own|run|I'm with)\s+([A-Z][A-Za-z0-9&' ]{2,30})/i);
   if (nameMatch) data.companyName = nameMatch[1].trim();
 
-  // Service type keywords
-  const services = ["plumbing","hvac","electrical","landscaping","roofing","cleaning","painting","pest control","pressure washing","junk removal","lawn care","pool","fencing","flooring","remodeling","handyman","tree","moving","garage door","gutter"];
+  const services = ["plumbing","hvac","electrical","landscaping","roofing","cleaning","painting","pest control","pressure washing","junk removal","lawn care","pool","fencing","flooring","remodeling","handyman","tree","moving","garage door","gutter","solar","locksmith","foundation","insulation","irrigation","sprinkler","septic","chimney","home security","alarm","water treatment","water softener","cabinet","countertop","concrete","masonry","siding","drywall","window cleaning","mold","water damage","fire damage","generator","carpet","appliance repair"];
   for (const s of services) {
-    if (userMsgs.toLowerCase().includes(s)) { data.serviceType = s.charAt(0).toUpperCase() + s.slice(1); break; }
+    if (lower.includes(s)) { data.serviceType = s.charAt(0).toUpperCase() + s.slice(1); break; }
   }
 
-  // Team size
-  const teamMatch = userMsgs.match(/(\d+)\s*(?:guys|people|employees|techs|technicians|trucks|crews|team|staff)/i);
+  const teamMatch = userMsgs.match(/(\d+)\s*(?:guys|people|employees|techs|technicians|trucks|crews|team|staff|members)/i);
   if (teamMatch) data.teamSize = teamMatch[1];
 
-  // Monthly spend
+  const yearsMatch = userMsgs.match(/(\d+)\s*(?:years|yrs)/i);
+  if (yearsMatch) data.yearsInBusiness = yearsMatch[1];
+
+  const ticketMatch = userMsgs.match(/(?:average|avg|typical)\s*(?:ticket|job|invoice).*?\$?\s*(\d[\d,]*)/i) || userMsgs.match(/\$?\s*(\d[\d,]*)\s*(?:average|avg|per job|a job)/i);
+  if (ticketMatch) data.avgTicket = ticketMatch[1].replace(/,/g, "");
+
+  // Phase 2: How Customers Find Them
   const spendMatch = userMsgs.match(/\$?\s*(\d[\d,]*)\s*(?:a month|monthly|per month|\/month)/i);
   if (spendMatch) data.monthlySpend = spendMatch[1].replace(/,/g, "");
 
-  // Pain points
-  const painKeywords = ["after hours","missed calls","no reviews","bad reviews","no leads","slow season","no website","no seo","no social media","too expensive","wasting money","can't find","don't know"];
+  if (lower.includes("referral")) data.leadSources = (data.leadSources || "") + "referrals, ";
+  if (lower.includes("angi") || lower.includes("homeadvisor")) data.leadSources = (data.leadSources || "") + "Angi, ";
+  if (lower.includes("thumbtack")) data.leadSources = (data.leadSources || "") + "Thumbtack, ";
+  if (lower.includes("google ads") || lower.includes("ppc")) data.leadSources = (data.leadSources || "") + "Google Ads, ";
+  if (lower.includes("facebook ads") || lower.includes("meta ads")) data.leadSources = (data.leadSources || "") + "Facebook Ads, ";
+
+  if (lower.match(/website.*(outdated|old|never|don't have|no website)/)) data.websiteStatus = "outdated or missing";
+  if (lower.match(/(don't rank|not on google|can't find us|page 2|not showing up)/)) data.seoRanking = "poor";
+  if (lower.match(/competitor|competition/)) data.competitorAwareness = "mentioned";
+  if (lower.match(/neighborhood|area|zip|part of town/)) data.targetNeighborhoods = "mentioned";
+
+  // Phase 3: What Happens When a Lead Comes In
+  if (lower.match(/(voicemail|miss|don't answer|after hours|no one picks up|goes to vm)/)) data.afterHoursHandling = "gaps identified";
+  if (lower.match(/(slow to respond|hours later|next day|don't respond fast)/)) data.responseTime = "slow";
+  if (lower.match(/(no follow.?up|don't follow|nobody follows|fall through)/)) data.followUpProcess = "none or manual";
+  if (lower.match(/(estimate|quote|truck roll|drive out|wasted trip|don't convert)/)) data.estimateConversion = "issue identified";
+  if (lower.match(/(spreadsheet|paper|whiteboard|text|group chat|in my head)/i)) data.schedulingMethod = "informal";
+  if (lower.match(/(can't pay online|no portal|no customer login)/)) data.customerPortal = "none";
+
+  // Phase 4: After the Job
+  if (lower.match(/(no review|don't ask|few reviews|bad review)/)) data.reviewProcess = "weak";
+  if (lower.match(/(one.?time|never come back|don't retain|no repeat)/)) data.customerRetention = "low";
+  if (lower.match(/(repeat|maintenance|recurring|come back)/)) data.repeatRevenue = "mentioned";
+  if (lower.match(/(ask for.*don't (do|offer)|request.*other service|outside my)/)) data.crossSellRequests = "yes";
+  if (lower.match(/(sticker shock|too expensive|can't afford|payment plan|financing)/)) data.financingOffered = "issue identified";
+
+  // Phase 5: Marketing & Visibility
+  if (lower.match(/(no social|don't post|no facebook|no instagram|no tiktok)/)) data.socialMediaPresence = "none";
+  if (lower.match(/(post.*sometimes|rarely post|once a month|don't post often)/)) data.postingFrequency = "infrequent";
+  if (lower.match(/(no video|don't do video|never tried video)/)) data.videoContent = "none";
+  if (lower.match(/(google business|gbp|google listing|google profile).*(outdated|never|don't)/)) data.gbpStatus = "neglected";
+  if (lower.match(/(don't track|no idea what.?s working|can't measure|no analytics)/)) data.roiTracking = "none";
+
+  // Phase 6: Tools & Spend
+  const toolNames = ["servicetitan","housecall pro","jobber","quickbooks","square","calendly","mailchimp","constant contact","hootsuite","yelp","nextdoor"];
+  const foundTools = toolNames.filter(t => lower.includes(t));
+  if (foundTools.length > 0) data.currentTools = foundTools.join(", ");
+  const totalSpendMatch = userMsgs.match(/(?:total|all together|combined|adds up to).*?\$?\s*(\d[\d,]*)/i);
+  if (totalSpendMatch) data.totalToolSpend = totalSpendMatch[1].replace(/,/g, "");
+
+  // Phase 7: Goals
+  const revenueGoalMatch = userMsgs.match(/(?:goal|want to|get to|hit|reach).*?\$?\s*(\d[\d,]*(?:k|K|m|M)?)/);
+  if (revenueGoalMatch) data.twelveMonthGoal = revenueGoalMatch[1];
+  if (lower.match(/(holding.*back|blocker|obstacle|challenge|struggle|can't grow)/)) data.growthBlockers = "mentioned";
+
+  // Pain points (expanded)
+  const painKeywords = ["after hours","missed calls","no reviews","bad reviews","no leads","slow season","dead months","no website","no seo","no social media","too expensive","wasting money","can't find","don't know","truck rolls","don't convert","no follow up","sticker shock","no financing","competitors","can't track","no analytics","no video","google listing","past customers","forget about me"];
   for (const p of painKeywords) {
     if (all.toLowerCase().includes(p)) data.painPoints.push(p);
   }
@@ -171,6 +259,88 @@ export default function DiscoveryPage() {
             userRole: "partner_discovery",
             discoveryMode: true,
             collectedData: collected,
+            discoveryPhases: {
+              phase1_their_world: {
+                label: "Their World",
+                questions: [
+                  "What's your company name, and what services do you offer?",
+                  "How long have you been in business?",
+                  "How many techs or crew members do you have?",
+                  "What's your service area? How far do you go?",
+                  "What's your average ticket size?",
+                  "Do you have seasonal patterns? Busy months vs. slow months?",
+                  "How many calls or leads do you get per week?"
+                ],
+                dataKeys: ["companyName","serviceType","teamSize","yearsInBusiness","serviceArea","seasonalPatterns","avgTicket"]
+              },
+              phase2_how_customers_find_them: {
+                label: "How Customers Find Them",
+                questions: [
+                  "Where do most of your leads come from right now?",
+                  "What are you currently spending on lead sources per month?",
+                  "How many leads do you lose because nobody picked up or responded in time?",
+                  "Does your website show up when someone Googles your service + your city?",
+                  "When was the last time your website was updated?",
+                  "Do you know what your competitors are charging?",
+                  "Are there specific neighborhoods where you want more work?"
+                ],
+                dataKeys: ["leadSources","monthlySpend","leadVolume","websiteStatus","seoRanking","competitorAwareness","targetNeighborhoods"]
+              },
+              phase3_when_lead_comes_in: {
+                label: "What Happens When a Lead Comes In",
+                questions: [
+                  "How do you handle after hours calls and weekend inquiries?",
+                  "How fast do you respond to online inquiries?",
+                  "Who follows up if they don't book on the first call?",
+                  "How many estimates do you do that don't convert? How many truck rolls just for quotes?",
+                  "How do you assign jobs to your crew right now?",
+                  "What software do you use for scheduling and dispatch?",
+                  "Can your customers check job status or pay online?"
+                ],
+                dataKeys: ["afterHoursHandling","responseTime","followUpProcess","estimateConversion","truckRollWaste","schedulingMethod","customerPortal"]
+              },
+              phase4_after_the_job: {
+                label: "After the Job",
+                questions: [
+                  "How do you get Google reviews from customers?",
+                  "Do you email or text past customers?",
+                  "What percentage of your revenue is repeat/maintenance business?",
+                  "Do your customers ever ask for services you don't offer?",
+                  "Do you lose big jobs because of sticker shock? Do you offer payment options?"
+                ],
+                dataKeys: ["reviewProcess","customerRetention","repeatRevenue","crossSellRequests","financingOffered"]
+              },
+              phase5_marketing_visibility: {
+                label: "Marketing & Visibility",
+                questions: [
+                  "Who manages your social media, if anyone?",
+                  "How often do you post on social media?",
+                  "Have you tried video content? Before and afters?",
+                  "When was the last time you updated your Google Business Profile?",
+                  "How do you track your marketing ROI?"
+                ],
+                dataKeys: ["socialMediaPresence","postingFrequency","videoContent","gbpStatus","roiTracking"]
+              },
+              phase6_tools_spend: {
+                label: "Tools & Spend",
+                questions: [
+                  "Walk me through every tool you're paying for monthly.",
+                  "If you added it all up, what's the total?",
+                  "What's working and what's not?"
+                ],
+                dataKeys: ["currentTools","totalToolSpend","toolSatisfaction"]
+              },
+              phase7_goals: {
+                label: "Goals",
+                questions: [
+                  "What's your single biggest pain point right now?",
+                  "If you could fix one thing about your business tomorrow, what would it be?",
+                  "Where do you want to be in 12 months? Revenue? Team size?",
+                  "What's holding you back from getting there?"
+                ],
+                dataKeys: ["topPainPoint","oneThingToFix","twelveMonthGoal","growthBlockers"]
+              }
+            },
           },
         }),
       });
