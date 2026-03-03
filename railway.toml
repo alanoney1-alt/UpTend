@@ -1,8 +1,10 @@
 [build]
-dockerfilePath = "Dockerfile"
+builder = "NIXPACKS"
+buildCommand = "rm -rf dist && npm run build"
 
 [deploy]
 healthcheckPath = "/health"
 healthcheckTimeout = 300
+startCommand = "node dist/index.cjs"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 5
