@@ -338,12 +338,12 @@ export default function BrandedPartnerLanding() {
             {/* SEO Demo + Partner Tools */}
             <div className="grid md:grid-cols-2 gap-4 mb-12">
               <a href={`/partners/${slug}/seo-demo`} className="block p-6 bg-card border border-border rounded-2xl hover:border-primary/50 transition-colors">
-                <h3 className="font-bold text-lg mb-2">📈 See Your SEO Potential</h3>
+                <h3 className="font-bold text-lg mb-2">See Your SEO Potential</h3>
                 <p className="text-sm text-muted-foreground mb-3">See how UpTend builds search visibility for your brand across every Orlando neighborhood.</p>
                 <span className="text-sm text-primary font-semibold">View SEO Demo →</span>
               </a>
               <a href={`/partners/${slug}/george`} className="block p-6 bg-card border border-border rounded-2xl hover:border-primary/50 transition-colors">
-                <h3 className="font-bold text-lg mb-2">🤖 George, Your AI Front Desk</h3>
+                <h3 className="font-bold text-lg mb-2">George, Your AI Front Desk</h3>
                 <p className="text-sm text-muted-foreground mb-3">George handles customer intake 24/7. He scopes jobs, collects photos, and routes leads straight to you.</p>
                 <span className="text-sm text-primary font-semibold">See What George Can Do →</span>
               </a>
@@ -420,15 +420,15 @@ export default function BrandedPartnerLanding() {
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                   {[
-                    { emoji: "📱", title: "Daily HVAC Tips", desc: "Fresh, branded tips posted to your Facebook and Instagram every day. Zero effort from you." },
-                    { emoji: "📸", title: "Before/After Showcases", desc: "Upload job photos. We turn them into scroll stopping posts that build trust." },
-                    { emoji: "🎬", title: "Video Content", desc: "Professional talking head and street interview videos featuring your company. 2 to 3 per week." },
-                    { emoji: "⭐", title: "Customer Spotlights", desc: "5 star Google reviews automatically become beautiful social posts." },
-                    { emoji: "🌡️", title: "Seasonal Campaigns", desc: "Hurricane prep, summer surge, winter maintenance — timely content that drives bookings." },
+                    { emoji: "", title: "Daily HVAC Tips", desc: "Fresh, branded tips posted to your Facebook and Instagram every day. Zero effort from you." },
+                    { emoji: "", title: "Before/After Showcases", desc: "Upload job photos. We turn them into scroll stopping posts that build trust." },
+                    { emoji: "", title: "Video Content", desc: "Professional talking head and street interview videos featuring your company. 2 to 3 per week." },
+                    { emoji: "", title: "Customer Spotlights", desc: "5 star Google reviews automatically become beautiful social posts." },
+                    { emoji: "", title: "Seasonal Campaigns", desc: "Hurricane prep, summer surge, winter maintenance. Timely content that drives bookings." },
                   ].map((item) => (
                     <Card key={item.title} className="hover:border-primary/50 transition-colors">
                       <CardContent className="pt-6">
-                        <div className="text-2xl mb-2">{item.emoji}</div>
+                        {item.emoji && <div className="text-2xl mb-2">{item.emoji}</div>}
                         <h3 className="font-semibold mb-1">{item.title}</h3>
                         <p className="text-sm text-muted-foreground">{item.desc}</p>
                       </CardContent>
@@ -467,7 +467,7 @@ export default function BrandedPartnerLanding() {
 
             {/* Powered by */}
             <div className="text-center text-sm text-muted-foreground">
-              <p>Powered by <span className="font-semibold text-foreground">UpTend</span> — AI-powered home service intelligence</p>
+              <p>Powered by <span className="font-semibold text-foreground">UpTend</span>. AI powered home service intelligence.</p>
             </div>
           </>
         )}

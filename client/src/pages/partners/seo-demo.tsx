@@ -65,7 +65,7 @@ const SEO_DEMO_DATA: Record<string, any> = {
 SEO_DEMO_DATA["comfort-solutions-tech"] = {
   ...SEO_DEMO_DATA["demo-hvac"],
   companyName: "Comfort Solutions Tech LLC",
-  domain: "comfortsoltech.uptendapp.com",
+  domain: "uptendapp.com/partners/comfort-solutions-tech",
   pages: SEO_DEMO_DATA["demo-hvac"].pages.map((p: any) => ({
     ...p,
     title: p.title.replace("Orlando Air Pro", "Comfort Solutions Tech"),
@@ -104,6 +104,9 @@ export default function PartnerSEODemo() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Your SEO Performance</h1>
           <p className="text-muted-foreground">Here's what UpTend builds and manages for {data.companyName}.</p>
+          <div className="mt-3 inline-block bg-blue-500/10 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full">
+            PROJECTED — Based on typical results for {data.serviceType} partners in Orlando
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

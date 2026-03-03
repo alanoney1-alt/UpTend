@@ -92,8 +92,8 @@ export default function GeorgeShowcase() {
   const stats = [
     { value: "< 5 sec", label: "Average response time" },
     { value: "24/7", label: "Availability" },
-    { value: "13", label: "Home services covered" },
-    { value: "0", label: "Missed leads" },
+    { value: "8", label: "HVAC services covered" },
+    { value: "Zero", label: "Missed leads" },
   ];
 
   return (
