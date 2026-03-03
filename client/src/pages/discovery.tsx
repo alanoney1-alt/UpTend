@@ -671,9 +671,7 @@ export default function DiscoveryPage() {
     <div className="h-[100dvh] bg-[#0a0a0f] text-white flex flex-col">
       <header className="flex items-center justify-between p-3 border-b border-white/5">
         <img src="/logo-white.png" alt="UpTend" className="h-5 opacity-70" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-        {voiceMode && (
-          <button onClick={() => setVoiceMode(false)} className="text-xs text-gray-400 hover:text-white">Switch to text only</button>
-        )}
+        <span className="text-xs text-gray-400">{voiceMode ? "🔊 Voice on" : ""}</span>
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
@@ -711,14 +709,34 @@ export default function DiscoveryPage() {
 
       <div className="p-3 border-t border-white/5">
         <div className="flex gap-2 max-w-2xl mx-auto">
-          {voiceMode && (
-            <button
-              onClick={isListening ? stopListening : startListening}
-              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isListening ? "bg-red-500 animate-pulse" : "bg-white/10 hover:bg-white/20"}`}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-            </button>
-          )}
+          {/* Speaker toggle — hear George */}
+          <button
+            onClick={() => {
+              const next = !voiceMode;
+              setVoiceMode(next);
+              if (next) {
+                const lastGeorge = [...messages].reverse().find(m => m.role === "george");
+                if (lastGeorge?.content) speak(lastGeorge.content, true);
+              }
+            }}
+            className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${voiceMode ? "bg-blue-600" : "bg-white/10 hover:bg-white/20"}`}
+            title={voiceMode ? "Turn off George's voice" : "Hear George speak"}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {voiceMode
+                ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z" />
+                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+              }
+            </svg>
+          </button>
+          {/* Mic button — talk to George */}
+          <button
+            onClick={isListening ? stopListening : startListening}
+            className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isListening ? "bg-red-500 animate-pulse" : "bg-white/10 hover:bg-white/20"}`}
+            title={isListening ? "Stop listening" : "Talk to George"}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+          </button>
           <input
             ref={inputRef}
             value={input}
