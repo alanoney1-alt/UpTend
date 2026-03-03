@@ -118,7 +118,6 @@ const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
 const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
 const BpIntegrations = lazy(() => import("@/pages/bp-integrations"));
 const HomeProfilePage = lazy(() => import("@/pages/home-profile"));
-const HomeIntelligence = lazy(() => import("@/pages/home-intelligence"));
 const BusinessCompliance = lazy(() => import("@/pages/business-compliance"));
 const BusinessGovernment = lazy(() => import("@/pages/business-government"));
 const GovernmentContractDashboard = lazy(() => import("@/pages/government/contract-dashboard"));
@@ -451,7 +450,6 @@ function Router() {
       <Route path="/partners/:slug/seo-demo" component={PartnerSEODemo} />
       <Route path="/partners/:slug" component={BrandedPartnerLanding} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
-      <Route path="/home-report" component={HomeIntelligence} />
       <Route path="/jobs/:jobId/track" component={JobLiveTracker} />
       <Route path="/jobs/:jobId" component={JobDetail} />
       <Route path="/tax-center" component={TaxCenter} />
