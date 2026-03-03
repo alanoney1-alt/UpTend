@@ -879,6 +879,35 @@ export function UpTendGuide() {
             >
               {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
             </button>
+            {/* Speaker toggle — voice output */}
+            {synth.isSupported && (
+              <button
+                type="button"
+                className={cn(
+                  "shrink-0 w-8 h-8 flex items-center justify-center rounded-full transition-colors",
+                  voiceOutputEnabled
+                    ? "bg-[#F47C20] text-white"
+                    : "text-slate-500 hover:text-white hover:bg-white/10"
+                )}
+                onClick={() => {
+                  const next = !voiceOutputEnabled;
+                  setVoiceOutputEnabled(next);
+                  localStorage.setItem(LS_VOICE_OUT, String(next));
+                  if (next) {
+                    // Immediately speak the last assistant message
+                    const lastAssistant = [...messages].reverse().find(m => m.role === "assistant");
+                    if (lastAssistant?.content) synth.speak(lastAssistant.content);
+                  } else {
+                    synth.cancel();
+                  }
+                }}
+                disabled={isLoading}
+                title={voiceOutputEnabled ? "Turn off voice" : "Listen to George"}
+              >
+                {voiceOutputEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </button>
+            )}
+            {/* Mic — voice input */}
             {speech.isSupported && (
               <button
                 type="button"
