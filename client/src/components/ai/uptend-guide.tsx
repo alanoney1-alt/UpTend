@@ -230,7 +230,7 @@ function useSpeechSynthesis() {
 
   // Check ElevenLabs availability on mount
   useEffect(() => {
-    fetch("/api/guide/voice-status")
+    fetch("/api/ai/guide/voice-status")
       .then(r => r.json())
       .then(d => setUseElevenLabs(d.enabled))
       .catch(() => setUseElevenLabs(false));
@@ -244,7 +244,7 @@ function useSpeechSynthesis() {
     if (useElevenLabs) {
       try {
         setIsSpeaking(true);
-        const res = await fetch("/api/guide/tts", {
+        const res = await fetch("/api/ai/guide/tts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text }),

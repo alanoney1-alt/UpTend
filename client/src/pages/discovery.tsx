@@ -233,7 +233,7 @@ export default function DiscoveryPage() {
   const speak = useCallback(async (text: string, force?: boolean) => {
     if (!voiceMode && !force) return;
     try {
-      const resp = await fetch("/api/guide/tts", {
+      const resp = await fetch("/api/ai/guide/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
