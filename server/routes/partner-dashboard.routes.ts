@@ -16,6 +16,14 @@ import { generateTieredQuote } from "../services/partner-tiered-quoting";
 import { getPartnerReminders, processReminders, scheduleMaintenanceReminder } from "../services/partner-maintenance-reminders";
 import { queueReviewRequest } from "../services/partner-review-requests";
 import { runPartnerAuditSafe } from "../services/partner-live-audit";
+import {
+  registerPartner,
+  getPartnerNetworkStats,
+  getNetworkPartners,
+  findCrossSellOpportunities,
+  createReferral,
+  completeReferral,
+} from "../services/partner-referral-network";
 
 export function registerPartnerDashboardRoutes(app: Express) {
   const router = Router();
@@ -197,6 +205,81 @@ export function registerPartnerDashboardRoutes(app: Express) {
         return res.status(400).json({ error: "Invalid request", details: err.errors });
       }
       res.status(500).json({ error: "Audit failed" });
+    }
+  });
+
+  // ============================================================
+  // Partner Referral Network Endpoints
+  // ============================================================
+
+  // Register a partner in the network
+  router.post("/network/register", async (req, res) => {
+    try {
+      const { slug, companyName, serviceTypes, ownerName, email, phone } = req.body;
+      if (!slug || !companyName) {
+        return res.status(400).json({ error: "slug and companyName required" });
+      }
+      await registerPartner(slug, companyName, serviceTypes || [], ownerName, email, phone);
+      res.json({ ok: true, message: `${companyName} registered in the partner network` });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Get network stats for a partner
+  router.get("/:slug/network-stats", async (req, res) => {
+    try {
+      const stats = await getPartnerNetworkStats(req.params.slug);
+      res.json(stats);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Get all partners in the network
+  router.get("/network/members", async (_req, res) => {
+    try {
+      const partners = await getNetworkPartners();
+      res.json({ partners, count: partners.length });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Find cross-sell opportunities for a customer
+  router.get("/:slug/cross-sell/:customerId", async (req, res) => {
+    try {
+      const opportunities = await findCrossSellOpportunities(
+        req.params.customerId,
+        req.params.slug
+      );
+      res.json({ opportunities, count: opportunities.length });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Create a referral
+  router.post("/referrals", async (req, res) => {
+    try {
+      const { referringPartnerSlug, receivingPartnerSlug, customerId, customerName, serviceType, jobId, jobAmount } = req.body;
+      const referral = await createReferral(
+        referringPartnerSlug, receivingPartnerSlug, customerId,
+        customerName, serviceType, jobId, jobAmount
+      );
+      res.json(referral);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Complete a referral (job done)
+  router.post("/referrals/:id/complete", async (req, res) => {
+    try {
+      await completeReferral(parseInt(req.params.id));
+      res.json({ ok: true });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
     }
   });
 

@@ -116,7 +116,7 @@ export default function GeorgeShowcase() {
         {/* Hero */}
         <div className="text-center mb-12">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary">
-            <img src="/george-face.png" alt="George" className="w-full h-full object-cover" />
+            <img src="/george-avatar.png" alt="George" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             Meet George

@@ -430,7 +430,7 @@ export default function DiscoveryPage() {
           <img src="/logo-white.png" alt="UpTend" className="h-6 opacity-70" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
         </header>
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-lg mx-auto">
-          <img src="/george-face.png" alt="George" className="w-32 h-32 rounded-full mb-6 shadow-2xl shadow-blue-500/20 border-2 border-blue-500/30" />
+          <img src="/george-avatar.png" alt="George" className="w-32 h-32 rounded-full mb-6 shadow-2xl shadow-blue-500/20 border-2 border-blue-500/30" />
           <h1 className="text-4xl font-bold mb-3">Meet George</h1>
           <p className="text-gray-400 text-lg mb-8 leading-relaxed">
             Your AI business advisor. Tell George about your company and he'll build you a custom growth package in minutes.
@@ -643,7 +643,7 @@ export default function DiscoveryPage() {
         {messages.map((msg, i) => (
           <div key={i} className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "george" && (
-              <img src="/george-face.png" alt="" className="w-8 h-8 rounded-full flex-shrink-0 mt-1" />
+              <img src="/george-avatar.png" alt="" className="w-8 h-8 rounded-full flex-shrink-0 mt-1" />
             )}
             <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === "user" ? "bg-blue-600 text-white" : "bg-white/10 text-gray-200"}`}>
               {msg.content}
@@ -652,7 +652,7 @@ export default function DiscoveryPage() {
         ))}
         {isLoading && (
           <div className="flex gap-3">
-            <img src="/george-face.png" alt="" className="w-8 h-8 rounded-full flex-shrink-0 mt-1" />
+            <img src="/george-avatar.png" alt="" className="w-8 h-8 rounded-full flex-shrink-0 mt-1" />
             <div className="bg-white/10 rounded-2xl px-4 py-3">
               <div className="flex gap-1">
                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />

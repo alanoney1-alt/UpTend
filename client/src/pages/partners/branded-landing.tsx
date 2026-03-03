@@ -144,7 +144,7 @@ function ChatBubble({ role, content }: { role: "user" | "george"; content: strin
       >
         {role === "george" && (
           <div className="flex items-center gap-2 mb-1">
-            <img src="/george-face.png" alt="George" className="w-5 h-5 rounded-full" />
+            <img src="/george-avatar.png" alt="George" className="w-5 h-5 rounded-full" />
             <span className="text-xs font-semibold text-primary">George</span>
           </div>
         )}
