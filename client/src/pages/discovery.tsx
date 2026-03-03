@@ -191,6 +191,8 @@ export default function DiscoveryPage() {
   const [leadName, setLeadName] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const [readyPromptShown, setReadyPromptShown] = useState(false);
+  const [auditData, setAuditData] = useState<any>(null);
+  const [auditStarted, setAuditStarted] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -200,6 +202,29 @@ export default function DiscoveryPage() {
   }, []);
 
   useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom]);
+
+  // When we have enough data, trigger the live audit
+  const collectedRef = useRef<CollectedData | null>(null);
+  useEffect(() => {
+    if (messages.length < 2) return;
+    const collected = extractData(messages);
+    collectedRef.current = collected;
+    if (collected.companyName && collected.serviceType && !auditStarted) {
+      setAuditStarted(true);
+      fetch("/api/partners/audit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyName: collected.companyName,
+          serviceType: collected.serviceType,
+          city: collected.serviceArea || "Orlando",
+        }),
+      })
+        .then(r => r.json())
+        .then(data => { if (data && !data.error) setAuditData(data); })
+        .catch(() => {}); // Silent fail — audit is bonus
+    }
+  }, [messages, auditStarted]);
 
   // Voice: speak George's message
   const speak = useCallback((text: string) => {
@@ -259,6 +284,7 @@ export default function DiscoveryPage() {
             userRole: "partner_discovery",
             discoveryMode: true,
             collectedData: collected,
+            liveAudit: auditData,
             discoveryPhases: {
               phase1_their_world: {
                 label: "Their World",
@@ -474,6 +500,73 @@ export default function DiscoveryPage() {
               ))}
             </ul>
           </section>
+
+          {/* Online Presence Audit */}
+          {auditData && (
+            <section className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-4">Online Presence Audit</h3>
+              <div className="space-y-4">
+                {/* Google Rating */}
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Google Rating</span>
+                  <span className="text-white font-semibold">
+                    {auditData.company?.rating ? `${auditData.company.rating} ★` : "Not found"}{" "}
+                    {auditData.company?.reviewCount ? `(${auditData.company.reviewCount} reviews)` : ""}
+                  </span>
+                </div>
+                {/* Search Ranking */}
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Search Ranking for "{auditData.searchRanking?.query}"</span>
+                  <span className={`font-semibold ${auditData.searchRanking?.position ? (auditData.searchRanking.position <= 5 ? "text-green-400" : "text-yellow-400") : "text-red-400"}`}>
+                    {auditData.searchRanking?.position ? `#${auditData.searchRanking.position}` : "Not in top 20"}
+                  </span>
+                </div>
+                {/* Top Competitors */}
+                {auditData.competitors && auditData.competitors.length > 0 && (
+                  <div>
+                    <p className="text-gray-400 text-sm mb-2">Top Competitors</p>
+                    <div className="space-y-2">
+                      {auditData.competitors.slice(0, 3).map((comp: any, i: number) => (
+                        <div key={i} className="bg-white/5 rounded-lg px-3 py-2 flex items-center justify-between">
+                          <div>
+                            <span className="text-white text-sm font-medium">#{comp.position} {comp.name}</span>
+                          </div>
+                          <span className="text-gray-400 text-sm">
+                            {comp.rating ? `${comp.rating} ★` : ""} {comp.reviewCount ? `(${comp.reviewCount})` : ""}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Website Status */}
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Website</span>
+                  <span className={`font-semibold ${auditData.website?.loadedSuccessfully ? "text-green-400" : "text-red-400"}`}>
+                    {auditData.website?.exists
+                      ? (auditData.website.loadedSuccessfully ? `Live${auditData.website.hasSSL ? " & Secure" : " (No SSL)"}` : "Found but not loading")
+                      : "Not found"}
+                  </span>
+                </div>
+                {/* Social Media */}
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Facebook</span>
+                  <span className={`font-semibold ${auditData.socialMedia?.facebook?.found ? "text-green-400" : "text-red-400"}`}>
+                    {auditData.socialMedia?.facebook?.found ? "Found" : "Not found"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">Instagram</span>
+                  <span className={`font-semibold ${auditData.socialMedia?.instagram?.found ? "text-green-400" : "text-red-400"}`}>
+                    {auditData.socialMedia?.instagram?.found ? "Found" : "Not found"}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <p className="text-xs text-gray-500">Audit confidence: {auditData.totalConfidence}% · Audited at {new Date(auditData.auditedAt).toLocaleString()}</p>
+              </div>
+            </section>
+          )}
 
           {/* Package */}
           <section className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl p-6 border border-blue-500/30">

@@ -15,6 +15,7 @@ import { z } from "zod";
 import { generateTieredQuote } from "../services/partner-tiered-quoting";
 import { getPartnerReminders, processReminders, scheduleMaintenanceReminder } from "../services/partner-maintenance-reminders";
 import { queueReviewRequest } from "../services/partner-review-requests";
+import { runPartnerAuditSafe } from "../services/partner-live-audit";
 
 export function registerPartnerDashboardRoutes(app: Express) {
   const router = Router();
@@ -156,6 +157,46 @@ export function registerPartnerDashboardRoutes(app: Express) {
         return res.status(400).json({ error: "Invalid request", details: err.errors });
       }
       res.status(500).json({ error: "Failed to schedule reminder" });
+    }
+  });
+
+  // ==========================================
+  // POST /api/partners/audit — Live Competitive Audit
+  // ==========================================
+  const auditSchema = z.object({
+    companyName: z.string().min(1),
+    serviceType: z.string().min(1),
+    city: z.string().min(1),
+    state: z.string().optional(),
+  });
+
+  // Simple in-memory rate limit: 10 per hour per IP
+  const auditRateLimit = new Map<string, number[]>();
+
+  router.post("/audit", async (req, res) => {
+    // Rate limit check
+    const ip = req.ip || "unknown";
+    const now = Date.now();
+    const hourAgo = now - 3600000;
+    const timestamps = (auditRateLimit.get(ip) || []).filter(t => t > hourAgo);
+    if (timestamps.length >= 10) {
+      return res.status(429).json({ error: "Rate limit exceeded. Max 10 audits per hour." });
+    }
+    timestamps.push(now);
+    auditRateLimit.set(ip, timestamps);
+
+    try {
+      const validated = auditSchema.parse(req.body);
+      const result = await runPartnerAuditSafe(validated);
+      if (!result) {
+        return res.status(503).json({ error: "Audit service temporarily unavailable" });
+      }
+      res.json(result);
+    } catch (err: any) {
+      if (err.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid request", details: err.errors });
+      }
+      res.status(500).json({ error: "Audit failed" });
     }
   });
 
