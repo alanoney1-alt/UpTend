@@ -80,16 +80,34 @@ setInterval(() => {
   }
 }, 30 * 60 * 1000);
 
-function getSession(sid: string): GuideSession {
+function getSession(sid: string, userId?: string): GuideSession {
   if (!sessions.has(sid)) {
-    sessions.set(sid, {
+    // Create default session first
+    const defaultSession: GuideSession = {
       history: [],
       conversationPhase: "greeting" as ConversationPhase,
       collectedInfo: { questionsAsked: [] },
       topicsCovered: [],
       _lastAccess: Date.now(),
-    } as any);
+    } as any;
+    
+    sessions.set(sid, defaultSession);
+    
+    // If user is authenticated, try to load existing conversation asynchronously
+    if (userId) {
+      loadConversation(userId, sid).then(savedSession => {
+        if (savedSession && sessions.has(sid)) {
+          // Merge saved data with current session, preserving access time
+          const currentSession = sessions.get(sid)!;
+          Object.assign(currentSession, savedSession, { _lastAccess: Date.now() });
+          console.log(`[Guide] Loaded conversation for user ${userId}, session ${sid} with ${savedSession.history.length} messages`);
+        }
+      }).catch(err => {
+        console.error(`[Guide] Failed to load conversation for user ${userId}:`, err);
+      });
+    }
   }
+  
   const session = sessions.get(sid)!;
   (session as any)._lastAccess = Date.now();
   return session;
@@ -707,7 +725,7 @@ export default function createGuideRoutes(_storage: any) {
       }
 
       const sid = sessionId || `anon-${Date.now()}`;
-      const session = getSession(sid);
+      const session = getSession(sid, userId);
 
       // Restore conversation history from client if server session was lost (e.g. after deploy/restart)
       if (session.history.length === 0 && Array.isArray(clientHistory) && clientHistory.length > 0) {
@@ -1671,6 +1689,35 @@ async function processAction(action: any, session: GuideSession, userId: string 
 }
 
 // ─── Conversation Persistence ────────────────────────────────────────────────
+
+async function loadConversation(userId: string, sessionId: string): Promise<GuideSession | null> {
+  try {
+    const result = await pool.query(
+      "SELECT messages, property_data, recurring_services, photo_estimates, locked_quotes, price_matches FROM guide_conversations WHERE user_id = $1 AND session_id = $2",
+      [userId, sessionId]
+    );
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    const row = result.rows[0];
+    return {
+      history: row.messages || [],
+      propertyData: row.property_data ? JSON.parse(row.property_data) : undefined,
+      recurringServices: row.recurring_services ? JSON.parse(row.recurring_services) : undefined,
+      photoEstimates: row.photo_estimates ? JSON.parse(row.photo_estimates) : undefined,
+      lockedQuotes: row.locked_quotes ? JSON.parse(row.locked_quotes) : undefined,
+      priceMatches: row.price_matches ? JSON.parse(row.price_matches) : undefined,
+      conversationPhase: "greeting" as ConversationPhase, // Reset phase on reload
+      collectedInfo: { questionsAsked: [] }, // Reset collected info on reload
+      topicsCovered: [], // Reset topics on reload
+    };
+  } catch (error: any) {
+    console.error("[Guide] Error loading conversation:", error);
+    return null;
+  }
+}
 
 async function saveConversation(userId: string, sessionId: string, session: GuideSession) {
   try {
