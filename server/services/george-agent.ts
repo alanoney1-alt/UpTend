@@ -116,7 +116,7 @@ async function fallbackChat(
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
+        model: "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
         messages: openaiMessages,
         max_tokens: maxTokens,
         temperature: 0.6
