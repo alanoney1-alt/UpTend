@@ -437,7 +437,7 @@ export default function BrandedPartnerLanding() {
                 </div>
                 <div className="text-center bg-card border border-border rounded-xl p-4">
                   <p className="text-sm text-muted-foreground">
-                    Add social media management to any plan for <span className="font-semibold text-foreground">$500 to $800/month</span>. That's less than half what agencies charge.
+                    Add social media management to any plan for <span className="font-semibold text-foreground">$500/month</span>. That's less than half what agencies charge.
                   </p>
                 </div>
               </div>
