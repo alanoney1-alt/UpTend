@@ -306,7 +306,7 @@ export default function BrandedPartnerLanding() {
 
             {/* Services */}
             <div className="mb-12">
-              <h2 className="text-xl font-bold text-center mb-6">What We Handle</h2>
+              <h2 className="text-xl font-bold text-center mb-6">{config.companyName} Services</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {config.services.map(s => (
                   <div key={s} className="flex items-center gap-2 p-3 bg-card rounded-lg border border-border">
@@ -369,28 +369,42 @@ export default function BrandedPartnerLanding() {
               </div>
             </div>
 
-            {/* More UpTend Services */}
-            <div className="mb-12">
-              <h2 className="text-xl font-bold text-center mb-2">Need More Than {config.serviceType}?</h2>
-              <p className="text-center text-muted-foreground mb-6">
-                UpTend handles 13 home services. One app, one AI, every service your home needs.
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* UpTend Partner Network Services */}
+            <div className="mb-12 bg-card border border-border rounded-2xl p-8">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold px-3">In Partnership With</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+              <div className="text-center mb-6">
+                <Logo className="h-8 mx-auto mb-3" />
+                <h2 className="text-xl font-bold mb-2">Your Home Needs More Than {config.serviceType}</h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto text-sm">
+                  {config.companyName} is a proud partner in the UpTend network. That means as their customer, 
+                  you get access to 12 additional vetted home services from other trusted local companies in our network. 
+                  Same quality guarantee. Same transparent pricing. Different specialists for every job.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                 {[
                   "Junk Removal", "Pressure Washing", "Gutter Cleaning", "Moving Labor",
                   "Handyman", "Light Demolition", "Garage Cleanout", "Home Cleaning",
                   "Pool Cleaning", "Landscaping", "Carpet Cleaning", "Painting",
                 ].map(s => (
                   <a key={s} href={`/services/${s.toLowerCase().replace(/ /g, '-')}`}
-                    className="flex items-center gap-2 p-3 bg-card rounded-lg border border-border hover:border-primary/50 transition-colors">
+                    className="flex items-center gap-2 p-3 bg-background rounded-lg border border-border/50 hover:border-primary/50 transition-colors">
                     <ArrowRight className="w-3 h-3 text-primary flex-shrink-0" />
                     <span className="text-sm">{s}</span>
                   </a>
                 ))}
               </div>
-              <div className="text-center mt-4">
-                <a href="/services" className="text-sm text-primary hover:underline">
-                  View all services →
+              <div className="text-center pt-2 border-t border-border/50">
+                <p className="text-xs text-muted-foreground mt-3">
+                  These services are provided by other vetted companies in the UpTend network, not by {config.companyName}. 
+                  George coordinates everything so you never have to search for another contractor again.
+                </p>
+                <a href="/services" className="text-sm text-primary hover:underline inline-block mt-2">
+                  Learn more about UpTend services →
                 </a>
               </div>
             </div>
