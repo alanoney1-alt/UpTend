@@ -61,6 +61,17 @@ const SEO_DEMO_DATA: Record<string, any> = {
   },
 };
 
+// Alias real partners to demo data with their branding
+SEO_DEMO_DATA["comfort-solutions-tech"] = {
+  ...SEO_DEMO_DATA["demo-hvac"],
+  companyName: "Comfort Solutions Tech LLC",
+  domain: "comfortsoltech.uptendapp.com",
+  pages: SEO_DEMO_DATA["demo-hvac"].pages.map((p: any) => ({
+    ...p,
+    title: p.title.replace("Orlando Air Pro", "Comfort Solutions Tech"),
+  })),
+};
+
 export default function PartnerSEODemo() {
   const params = useParams();
   const slug = (params as any).slug || "demo-hvac";
