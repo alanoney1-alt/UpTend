@@ -212,7 +212,7 @@ export default function BrandedPartnerLanding() {
 
     // Call George API with partner context
     try {
-      const res = await fetch("/api/ai/guide", {
+      const res = await fetch("/api/ai/guide/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -231,7 +231,7 @@ export default function BrandedPartnerLanding() {
         }),
       });
       const data = await res.json();
-      setMessages(prev => [...prev, { role: "george", content: data.response || "Let me think about that..." }]);
+      setMessages(prev => [...prev, { role: "george", content: data.response || data.message || "Let me think about that..." }]);
     } catch {
       setMessages(prev => [...prev, { role: "george", content: "Having a connection issue. Try again in a sec." }]);
     }
