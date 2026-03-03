@@ -443,6 +443,7 @@ export async function registerRoutes(
   registerPartnerRoutes(app);
   registerPartnerDashboardRoutes(app);
   registerPartnerFeaturesRoutes(app);
+  registerPartnerOperationsRoutes(app);
 
   // Register Home CRM routes
   registerHomeProfileRoutes(app);
