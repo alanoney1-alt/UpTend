@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Copy source and build
+# Copy source and build (cache bust: 2026-03-03-0910)
 COPY . .
 RUN npm run build
 
