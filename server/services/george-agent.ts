@@ -8,6 +8,14 @@
 import { anthropic } from "./ai/anthropic-client";
 import * as tools from "./george-tools";
 import * as pmsIntegration from "./pms-integration";
+import * as invoicing from "./invoicing-system";
+import * as estimates from "./estimate-followup";
+import * as memberships from "./membership-management";
+import * as dispatch from "./on-my-way-notifications";
+import * as timesheets from "./timesheet-tracking";
+import * as jobCosts from "./job-costing";
+import * as pipeline from "./customer-tags";
+import * as reporting from "./partner-reporting";
 
 // ─── Retry with exponential backoff ───
 async function withRetry<T>(
@@ -86,7 +94,7 @@ const GEORGE_SYSTEM_PROMPT = `CRITICAL FORMATTING RULE: NEVER use emojis, emotic
 
 You are George, the most capable Home Service Agent ever built. You are UpTend's one-of-a-kind Home Intelligence engine. You don't "assist" - you handle it. You diagnose problems from photos, quote prices in seconds, book vetted pros, coach DIY repairs with real videos, track jobs in real time, and manage every system in a customer's home. You operate in the Orlando metro area. In Spanish, you are Sr. Jorge.
 
-You are NOT an AI assistant. You are a Home Service Agent. You have deep expertise in home maintenance, repair, construction, landscaping, plumbing, HVAC, electrical systems, pest control, and every trade that touches a home. You speak with authority and confidence because you have 176 tools, 90+ repair guides, and real-time pricing data behind every answer.
+You are NOT an AI assistant. You are a Home Service Agent. You have deep expertise in home maintenance, repair, construction, landscaping, plumbing, HVAC, electrical systems, pest control, and every trade that touches a home. You speak with authority and confidence because you have 193 tools, 90+ repair guides, and real-time pricing data behind every answer.
 
 IMPORTANT DISCLAIMER YOU MUST FOLLOW: You are not a licensed contractor, electrician, plumber, or any other licensed trade professional. When a job requires licensed work (electrical panel, gas lines, structural, roofing permits, etc.), you say so clearly and route to a licensed pro. But on everything else - you know your stuff and you own it. No hedging, no "I think maybe possibly." You give clear, confident answers.
 
@@ -244,7 +252,7 @@ You are not a simple chatbot. You function like a real person with real capabili
 - Call assess_water_damage for leak/flood situations - determines likely source, mold risk timeline, severity, and remediation steps
 - Both tools are Florida-tuned (termites, palmetto bugs, roof rats, humidity-driven mold)
 
-You have 176 tools. You SEE photos, FIND videos, SHOP for products, BOOK services, TRACK homes, and STAY IN TOUCH across every channel. You are the most capable Home Service Agent in existence. Never say you can't do something that's in your tool list. If a customer asks you to do something and you have a tool for it, USE THE TOOL. No hesitation.
+You have 193 tools. You SEE photos, FIND videos, SHOP for products, BOOK services, TRACK homes, and STAY IN TOUCH across every channel. You are the most capable Home Service Agent in existence. Never say you can't do something that's in your tool list. If a customer asks you to do something and you have a tool for it, USE THE TOOL. No hesitation.
 
 TOOL-FIRST RULE (MANDATORY):
 When a customer asks about DIY, how to fix something, or wants help with a repair:
@@ -4020,6 +4028,24 @@ const TOOL_DEFINITIONS: any[] = [
  required: ["customer_id"],
  },
  },
+ // ── Partner Operations Tools ──
+ { name: "create_invoice", description: "Create and send an invoice to a customer. Use when partner says 'invoice them' or 'bill the customer'.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, customer_name: { type: "string" }, customer_email: { type: "string" }, customer_phone: { type: "string" }, items: { type: "array", items: { type: "object", properties: { description: { type: "string" }, quantity: { type: "number" }, unit_price: { type: "number" } } } }, notes: { type: "string" }, due_days: { type: "number", description: "Days until due (default 30)" } }, required: ["partner_slug", "customer_name", "items"] } },
+ { name: "check_overdue_invoices", description: "Check for overdue invoices. Use when partner asks about unpaid bills or outstanding payments.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "send_payment_reminder", description: "Send a payment reminder for an overdue invoice.", input_schema: { type: "object", properties: { invoice_id: { type: "number" } }, required: ["invoice_id"] } },
+ { name: "get_invoice_stats", description: "Get invoicing dashboard stats: total outstanding, collected, avg days to pay.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "create_estimate", description: "Create an estimate for a customer. Use when partner wants to send a quote.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, customer_name: { type: "string" }, customer_email: { type: "string" }, customer_phone: { type: "string" }, service_type: { type: "string" }, description: { type: "string" }, amount: { type: "number" } }, required: ["partner_slug", "customer_name", "service_type", "amount"] } },
+ { name: "check_estimate_followups", description: "Check which estimates need follow-up (24h, 72h, 7d tiers).", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "send_on_my_way", description: "Send 'on my way' notification to customer with tech ETA.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, job_id: { type: "string" }, tech_name: { type: "string" }, tech_phone: { type: "string" }, customer_name: { type: "string" }, customer_phone: { type: "string" }, customer_email: { type: "string" }, eta_minutes: { type: "number" } }, required: ["partner_slug", "tech_name", "customer_name", "customer_phone", "eta_minutes"] } },
+ { name: "create_membership_plan", description: "Create a service membership/maintenance plan.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, name: { type: "string" }, description: { type: "string" }, price_monthly: { type: "number" }, price_annual: { type: "number" }, services_included: { type: "array", items: { type: "string" } }, visits_per_year: { type: "number" }, discount_percent: { type: "number" } }, required: ["partner_slug", "name", "price_monthly"] } },
+ { name: "check_membership_renewals", description: "Check memberships due for renewal in the next 7 days.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "get_membership_stats", description: "Get membership stats: active count, monthly recurring revenue, churn rate.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "clock_in_tech", description: "Clock in a technician for the day.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, tech_name: { type: "string" }, notes: { type: "string" } }, required: ["partner_slug", "tech_name"] } },
+ { name: "clock_out_tech", description: "Clock out a technician.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, tech_name: { type: "string" }, notes: { type: "string" } }, required: ["partner_slug", "tech_name"] } },
+ { name: "get_weekly_hours", description: "Get weekly hours for technicians.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, tech_name: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "record_job_cost", description: "Record costs for a completed job to track profitability.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, job_id: { type: "string" }, service_type: { type: "string" }, customer_name: { type: "string" }, revenue: { type: "number" }, labor_cost: { type: "number" }, material_cost: { type: "number" }, travel_cost: { type: "number" }, tech_name: { type: "string" }, hours_worked: { type: "number" } }, required: ["partner_slug", "job_id", "revenue"] } },
+ { name: "get_pipeline_view", description: "View the sales pipeline with all stages and deals.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "create_deal", description: "Create a new deal in the sales pipeline.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, customer_name: { type: "string" }, customer_email: { type: "string" }, customer_phone: { type: "string" }, stage_id: { type: "number" }, value: { type: "number" }, service_type: { type: "string" }, notes: { type: "string" } }, required: ["partner_slug", "customer_name", "value"] } },
+ { name: "get_kpi_dashboard", description: "Get all KPI metrics: revenue, jobs, avg ticket, conversion rate, outstanding invoices, active memberships.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
 ];
 
 // ─────────────────────────────────────────────
@@ -4617,6 +4643,44 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
  }
  return { success: true, message: `Latest quality report for customer ${input.customer_id}: Score 92/100. Work completed to standard. George recommends scheduling next routine maintenance per your home care plan.` };
  }
+
+ // ── Partner Operations Tools ──
+ case "create_invoice": {
+  const dueDate = new Date(); dueDate.setDate(dueDate.getDate() + (input.due_days || 30));
+  return await invoicing.createInvoice(input.partner_slug, { name: input.customer_name, email: input.customer_email, phone: input.customer_phone }, input.items.map((i: any) => ({ description: i.description, quantity: i.quantity, unitPrice: i.unit_price })), input.notes, dueDate.toISOString());
+ }
+ case "check_overdue_invoices":
+  return await invoicing.getOverdueInvoices(input.partner_slug);
+ case "send_payment_reminder":
+  return await invoicing.sendPaymentReminder(input.invoice_id);
+ case "get_invoice_stats":
+  return await invoicing.getInvoiceStats(input.partner_slug);
+ case "create_estimate":
+  return await estimates.createEstimate(input.partner_slug, { name: input.customer_name, email: input.customer_email, phone: input.customer_phone }, input.service_type, input.description || "", input.amount);
+ case "check_estimate_followups":
+  return await estimates.getEstimatesDueForFollowUp(input.partner_slug);
+ case "send_on_my_way":
+  return await dispatch.sendOnMyWay(input.partner_slug, input.job_id || "", input.tech_name, input.tech_phone || "", input.customer_name, input.customer_phone, input.customer_email || "", input.eta_minutes);
+ case "create_membership_plan":
+  return await memberships.createPlan(input.partner_slug, input.name, input.description || "", input.price_monthly, input.price_annual || input.price_monthly * 10, input.services_included || [], input.visits_per_year || 2, true, input.discount_percent || 0);
+ case "check_membership_renewals":
+  return await memberships.getMembershipsNeedingRenewal(input.partner_slug);
+ case "get_membership_stats":
+  return await memberships.getMembershipStats(input.partner_slug);
+ case "clock_in_tech":
+  return await timesheets.clockIn(input.partner_slug, input.tech_name, input.notes);
+ case "clock_out_tech":
+  return await timesheets.clockOut(input.partner_slug, input.tech_name, input.notes);
+ case "get_weekly_hours":
+  return await timesheets.getWeeklyHours(input.partner_slug, input.tech_name);
+ case "record_job_cost":
+  return await jobCosts.recordJobCost(input.partner_slug, { jobId: input.job_id, serviceType: input.service_type || "", customerName: input.customer_name || "", revenue: input.revenue, laborCost: input.labor_cost || 0, materialCost: input.material_cost || 0, travelCost: input.travel_cost || 0, otherCost: 0, techName: input.tech_name || "", hoursWorked: input.hours_worked || 0 });
+ case "get_pipeline_view":
+  return await pipeline.getPipelineView(input.partner_slug);
+ case "create_deal":
+  return await pipeline.createDeal(input.partner_slug, { customerName: input.customer_name, customerEmail: input.customer_email || "", customerPhone: input.customer_phone || "", stageId: input.stage_id || 1, value: input.value, serviceType: input.service_type || "", notes: input.notes || "", assignedTo: "", expectedCloseDate: "" });
+ case "get_kpi_dashboard":
+  return await reporting.getKPIDashboard(input.partner_slug);
 
  default:
  return { error: `Unknown tool: ${name}` };
