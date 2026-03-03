@@ -180,13 +180,17 @@ Hyper-local content that builds relevance in specific areas.
 
 ## Pricing Model
 
-**$500 to $800/month add-on**, available on any UpTend partner tier.
+**$500/month flat add-on**, available on any UpTend partner tier. One price, full package.
 
-| Tier | Monthly Price | Includes |
-|---|---|---|
-| Starter Social | $500/mo | Daily tips, testimonial graphics, seasonal content. Facebook + Instagram. |
-| Growth Social | $650/mo | Everything in Starter + before/after formatting, neighborhood targeting, engagement monitoring. |
-| Premium Social | $800/mo | Everything in Growth + MakeUGC videos (2/mo), HeyGen videos (8/mo), monthly analytics report. |
+Includes:
+- Daily AI-generated posts across Facebook + Instagram (+ Twitter if desired)
+- Branded image generation via Gemini Premium (Imagen 3 / Nano Banana Pro)
+- HeyGen talking head videos 2-3x/week (Mr. George or partner's face)
+- Before/after content formatting
+- Neighborhood targeting
+- Seasonal content calendar
+- Engagement monitoring via n8n
+- Monthly analytics report
 
 **Why this pricing works:**
 - Typical social media agencies charge $1,500 to $3,000/mo for a single platform

@@ -134,7 +134,7 @@ export async function registerPartner(
   await ensureReferralTables();
   await db.execute(sql`
     INSERT INTO partner_network_members (partner_slug, company_name, service_types, owner_name, email, phone)
-    VALUES (${slug}, ${companyName}, ${serviceTypes}, ${ownerName || ""}, ${email || ""}, ${phone || ""})
+    VALUES (${slug}, ${companyName}, ${`{${serviceTypes.join(",")}}`}, ${ownerName || ""}, ${email || ""}, ${phone || ""})
     ON CONFLICT (partner_slug) DO UPDATE SET
       company_name = EXCLUDED.company_name,
       service_types = EXCLUDED.service_types,
@@ -161,7 +161,7 @@ export async function registerCustomer(
   
   await db.execute(sql`
     INSERT INTO partner_customer_registry (partner_slug, customer_id, customer_name, customer_phone, customer_address, services_used, last_service_date)
-    VALUES (${partnerSlug}, ${customerId}, ${customerName}, ${customerPhone || ""}, ${customerAddress || ""}, ${servicesArray}, NOW())
+    VALUES (${partnerSlug}, ${customerId}, ${customerName}, ${customerPhone || ""}, ${customerAddress || ""}, ${`{${servicesArray.join(",")}}`}, NOW())
     ON CONFLICT (partner_slug, customer_id) DO UPDATE SET
       customer_name = EXCLUDED.customer_name,
       services_used = partner_customer_registry.services_used || EXCLUDED.services_used,

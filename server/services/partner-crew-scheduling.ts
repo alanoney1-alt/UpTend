@@ -105,7 +105,7 @@ export async function addCrewMember(member: Omit<CrewMember, "id">): Promise<num
   await ensureSchedulingTables();
   const result = await db.execute(sql`
     INSERT INTO partner_crew_members (partner_slug, name, phone, email, role, skills, is_active, max_jobs_per_day)
-    VALUES (${member.partnerSlug}, ${member.name}, ${member.phone}, ${member.email}, ${member.role}, ${member.skills}, ${member.isActive}, ${member.maxJobsPerDay})
+    VALUES (${member.partnerSlug}, ${member.name}, ${member.phone}, ${member.email}, ${member.role}, ${`{${member.skills.join(",")}}`}, ${member.isActive}, ${member.maxJobsPerDay})
     RETURNING id
   `);
   return (result.rows[0] as any)?.id || 0;
