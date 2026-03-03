@@ -723,6 +723,12 @@ export default function createGuideRoutes(_storage: any) {
         return res.status(400).json({ error: "Message or photo is required" });
       }
 
+      const user = req.user as any;
+      let userId: string | null = null;
+      if (user) {
+        userId = user.userId || user.id || null;
+      }
+
       const sid = sessionId || `anon-${Date.now()}`;
       const session = getSession(sid, userId);
 
@@ -737,11 +743,8 @@ export default function createGuideRoutes(_storage: any) {
       }
 
       let systemPrompt = BASE_SYSTEM_PROMPT;
-      const user = req.user as any;
-      let userId: string | null = null;
 
       if (user) {
-        userId = user.userId || user.id || null;
         if (userId) {
           if (user.role === "hauler") {
             systemPrompt += await buildProDataSection(userId, user);
