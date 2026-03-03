@@ -267,14 +267,12 @@ export default function BrandedPartnerLanding() {
     <div className="min-h-screen bg-background">
       {/* Partner Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-14 flex items-center justify-center relative">
-          <div className="flex items-center gap-2">
-            <Logo variant="icon" className="h-5 flex-shrink-0" />
-            <span className="font-semibold text-sm">{config.companyName}</span>
-          </div>
+        <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+          <span className="font-bold text-base">{config.companyName}</span>
           {config.phone && (
-            <a href={`tel:${config.phone.replace(/\D/g, '')}`} className="absolute right-4 text-muted-foreground hover:text-foreground">
+            <a href={`tel:${config.phone.replace(/\D/g, '')}`} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
               <Phone className="w-4 h-4" />
+              <span className="hidden sm:inline">{config.phone}</span>
             </a>
           )}
         </div>
