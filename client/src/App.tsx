@@ -110,6 +110,8 @@ const PartnerDashboard = lazy(() => import("@/pages/partners/dashboard"));
 const BrandedPartnerLanding = lazy(() => import("@/pages/partners/branded-landing"));
 const PartnerSEODemo = lazy(() => import("@/pages/partners/seo-demo"));
 const GeorgeShowcase = lazy(() => import("@/pages/partners/george-showcase"));
+const PartnerSlugDashboard = lazy(() => import("@/pages/partners/partner-dashboard"));
+const TieredQuoteCard = lazy(() => import("@/pages/partners/tiered-quote-card"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
 const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
 const BpIntegrations = lazy(() => import("@/pages/bp-integrations"));
@@ -439,6 +441,7 @@ function Router() {
       <Route path="/partners/register" component={PartnerRegister} />
       <Route path="/partners/dashboard" component={PartnerDashboard} />
       <Route path="/partners/:slug/george" component={GeorgeShowcase} />
+      <Route path="/partners/:slug/dashboard" component={PartnerSlugDashboard} />
       <Route path="/partners/:slug/seo-demo" component={PartnerSEODemo} />
       <Route path="/partners/:slug" component={BrandedPartnerLanding} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
