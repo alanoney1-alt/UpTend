@@ -131,6 +131,7 @@ import { registerLaunchNotificationRoutes } from "./launch-notifications.routes"
 import { registerPartnerRoutes } from "./partners.routes";
 import { registerPartnerDashboardRoutes } from "./partner-dashboard.routes";
 import { registerPartnerFeaturesRoutes } from "./partner-features.routes";
+import { registerPartnerOperationsRoutes } from "./partner-operations.routes";
 
 // Home CRM routes
 import { registerHomeProfileRoutes } from "./home-profile.routes";
@@ -292,6 +293,9 @@ import { registerScheduleBatchRoutes } from "./schedule-batch.routes";
 
 // Quality Inspection Reports routes
 import { registerQualityReportRoutes } from "./quality-reports.routes";
+
+// Partner Operations 2 routes (dispatch, signatures, reporting)
+import { registerPartnerOperations2Routes } from "./partner-operations2.routes";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -600,6 +604,9 @@ export async function registerRoutes(
 
   // Register Quality Report routes
   registerQualityReportRoutes(app);
+
+  // Register Partner Operations 2 routes (dispatch, signatures, reporting)
+  registerPartnerOperations2Routes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
