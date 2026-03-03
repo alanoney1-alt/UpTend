@@ -112,6 +112,7 @@ const PartnerSEODemo = lazy(() => import("@/pages/partners/seo-demo"));
 const GeorgeShowcase = lazy(() => import("@/pages/partners/george-showcase"));
 const PartnerSlugDashboard = lazy(() => import("@/pages/partners/partner-dashboard"));
 const TieredQuoteCard = lazy(() => import("@/pages/partners/tiered-quote-card"));
+const Discovery = lazy(() => import("@/pages/discovery"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
 const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
 const BpIntegrations = lazy(() => import("@/pages/bp-integrations"));
@@ -438,6 +439,8 @@ function Router() {
       <Route path="/b2b-pricing" component={B2BPricing} />
       <Route path="/fleet-tracking" component={FleetTracking} />
       <Route path="/partners" component={PartnersLanding} />
+      <Route path="/discovery/:slug" component={Discovery} />
+      <Route path="/discovery" component={Discovery} />
       <Route path="/partners/register" component={PartnerRegister} />
       <Route path="/partners/dashboard" component={PartnerDashboard} />
       <Route path="/partners/:slug/george" component={GeorgeShowcase} />
