@@ -835,7 +835,24 @@ export default function createGuideRoutes(_storage: any) {
 
       // Pass trimmed history WITHOUT the last user message (georgeChat adds it)
       const historyForGeorge = trimmedHistory.slice(0, -1);
-      const georgeResult = await georgeChat(userContent, historyForGeorge, georgeContext);
+      let georgeResult = await georgeChat(userContent, historyForGeorge, georgeContext);
+
+      // ── Iteration Loop: Self-review before sending ──────────────────────
+      const maxIterations = 2; // up to 2 refinement passes
+      for (let i = 0; i < maxIterations; i++) {
+        const issues = reviewGeorgeResponse(georgeResult.response, session, georgeContext);
+        if (issues.length === 0) break; // response is clean, send it
+
+        console.log(`[George Iteration ${i + 1}] Issues found: ${issues.join(", ")}`);
+
+        // Ask George to fix his own response
+        const fixPrompt = `SELF-REVIEW FAILED. Fix these issues in your last response and try again. Return ONLY the corrected response, nothing else.\n\nISSUES:\n${issues.map((iss, idx) => `${idx + 1}. ${iss}`).join("\n")}\n\nYOUR ORIGINAL RESPONSE:\n${georgeResult.response}`;
+
+        const fixHistory = [...historyForGeorge, { role: "user" as const, content: userContent }, { role: "assistant" as const, content: georgeResult.response }];
+        const fixResult = await georgeChat(fixPrompt, fixHistory, { ...georgeContext, conversationState: georgeContext.conversationState + "\n\nSELF-REVIEW MODE: You are correcting your own response. Fix the issues listed. Keep it short. ONE question max." });
+        georgeResult = { ...georgeResult, response: fixResult.response };
+      }
+      // ── End Iteration Loop ──────────────────────────────────────────────
 
       const cleanText = georgeResult.response;
       updatePhaseFromResponse(session, cleanText);
@@ -1264,6 +1281,101 @@ Return ONLY valid JSON.`,
   });
 
   return router;
+}
+
+// ─── Iteration Loop: Response Reviewer ───────────────────────────────────────
+
+function reviewGeorgeResponse(response: string, session: GuideSession, context: any): string[] {
+  const issues: string[] = [];
+  const resp = response.trim();
+  const ci = session.collectedInfo || { questionsAsked: [] };
+
+  // 1. Check for multiple questions (sentences ending with ?)
+  const questions = resp.match(/[^.!?\n]*\?/g) || [];
+  if (questions.length > 1) {
+    issues.push(`Contains ${questions.length} questions — must ask only ONE question per message. Remove all but the most important question.`);
+  }
+
+  // 2. Check for repeated questions (things already asked)
+  if (ci.questionsAsked.length > 0) {
+    const asked = ci.questionsAsked;
+    if (asked.includes("company_name_type") && /company.*(name|called)|what.*business|what.*type.*service/i.test(resp)) {
+      issues.push("Re-asking about company name/type — already asked this.");
+    }
+    if (asked.includes("team_size") && /how many.*(tech|crew|guys|employees|people|team)|team size/i.test(resp)) {
+      issues.push("Re-asking about team size — already asked this.");
+    }
+    if (asked.includes("service_area") && /service area|how far|where.*serve/i.test(resp)) {
+      issues.push("Re-asking about service area — already asked this.");
+    }
+    if (asked.includes("lead_sources") && /where.*leads|how.*find.*customers|lead.*source/i.test(resp)) {
+      issues.push("Re-asking about lead sources — already asked this.");
+    }
+    if (asked.includes("monthly_spend") && /spend.*month|monthly.*spend|paying.*for/i.test(resp)) {
+      issues.push("Re-asking about monthly spend — already asked this.");
+    }
+    if (asked.includes("after_hours") && /after.?hours|weekends|when.*closed/i.test(resp)) {
+      issues.push("Re-asking about after-hours handling — already asked this.");
+    }
+    if (asked.includes("reviews") && /review|google.*rating|star/i.test(resp)) {
+      issues.push("Re-asking about reviews — already asked this.");
+    }
+    if (asked.includes("social_media") && /social.*media|facebook|instagram/i.test(resp)) {
+      issues.push("Re-asking about social media — already asked this.");
+    }
+    if (asked.includes("website") && /website|url|online.*presence/i.test(resp)) {
+      issues.push("Re-asking about website — already asked this.");
+    }
+    if (asked.includes("tools_software") && /what.*tool|what.*software|crm|scheduling/i.test(resp)) {
+      issues.push("Re-asking about tools/software — already asked this.");
+    }
+    if (asked.includes("average_ticket") && /average.*ticket|typical.*job/i.test(resp)) {
+      issues.push("Re-asking about average ticket — already asked this.");
+    }
+    if (asked.includes("years_in_business") && /how (long|many years)|years.*business/i.test(resp)) {
+      issues.push("Re-asking about years in business — already asked this.");
+    }
+    if (asked.includes("address") && /what('s| is) your address|where.*located/i.test(resp)) {
+      issues.push("Re-asking for address — already asked this.");
+    }
+    if (asked.includes("service_type") && /what.*service|what.*help|what.*need/i.test(resp)) {
+      issues.push("Re-asking about service type — already asked this.");
+    }
+  }
+
+  // 3. Check for re-introduction after first exchange
+  const exchangeCount = session.history.filter(m => m.role === "user").length;
+  if (exchangeCount > 1 && /^(hey there|hi there|hello|hey!)/i.test(resp)) {
+    issues.push("Re-greeting/re-introducing after conversation already started. Stay in flow.");
+  }
+
+  // 4. Check for emojis (discovery mode)
+  const isDiscovery = context?.userRole === "partner_discovery" || context?.currentPage === "/discovery";
+  if (isDiscovery && /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2702}-\u{27B0}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}]/u.test(resp)) {
+    issues.push("Contains emojis — discovery mode requires plain text only.");
+  }
+
+  // 5. Check for empty or too-short response
+  if (resp.length < 10) {
+    issues.push("Response is too short or empty. Provide a meaningful response.");
+  }
+
+  // 6. Check for wall of text (discovery should be short)
+  if (isDiscovery && resp.length > 600) {
+    issues.push("Response is too long for discovery mode. Keep it to 2-3 sentences max — acknowledge their answer, then ask ONE question.");
+  }
+
+  // 7. Check topics already pitched aren't being re-pitched
+  if (session.topicsCovered) {
+    if (session.topicsCovered.includes("home_dna_scan") && /home dna scan|free scan|home scan/i.test(resp)) {
+      issues.push("Already pitched Home DNA Scan — don't pitch it again.");
+    }
+    if (session.topicsCovered.includes("bundle_pitch") && /bundle|discount.*multiple/i.test(resp)) {
+      issues.push("Already pitched bundles — don't pitch again.");
+    }
+  }
+
+  return issues;
 }
 
 // ─── Conversation Phase Engine ───────────────────────────────────────────────
