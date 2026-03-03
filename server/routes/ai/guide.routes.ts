@@ -1306,6 +1306,61 @@ Return ONLY valid JSON.`,
     return res.json({ enabled: isVoiceEnabled() });
   });
 
+  // ─── Streaming TTS Endpoint ──────────────────────────────────────────────
+
+  router.post("/guide/tts-stream", guideAiLimiter, async (req, res) => {
+    try {
+      const { text, voice, model } = req.body;
+
+      if (!text || typeof text !== "string") {
+        return res.status(400).json({ error: "Text is required" });
+      }
+
+      if (text.length > 2000) {
+        return res.status(400).json({ error: "Text too long (max 2000 characters)" });
+      }
+
+      const { textToSpeechStream } = await import("../../services/partner-voice-george");
+      const audioStream = await textToSpeechStream(text, { voice, model });
+
+      if (!audioStream) {
+        return res.status(500).json({ error: "TTS stream failed" });
+      }
+
+      // Set appropriate headers for streaming audio
+      res.set({
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Transfer-Encoding': 'chunked'
+      });
+
+      // Pipe the stream directly to the response
+      const reader = audioStream.getReader();
+      
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          res.write(value);
+        }
+        res.end();
+      } catch (streamError) {
+        console.error("[TTS Stream] Streaming error:", streamError);
+        if (!res.headersSent) {
+          res.status(500).json({ error: "Stream interrupted" });
+        }
+      } finally {
+        reader.releaseLock();
+      }
+    } catch (error: any) {
+      console.error("[TTS Stream] Error:", error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "TTS streaming failed" });
+      }
+    }
+  });
+
   return router;
 }
 
