@@ -177,6 +177,9 @@ import { registerStripeDisputeRoutes } from "./stripe-disputes";
 // Accounting / Ledger routes
 import { registerAccountingRoutes } from "./accounting/index";
 
+// Property Intelligence routes (public, no auth)
+import { registerPropertyIntelligenceRoutes as registerPublicPropertyIntelligenceRoutes } from "./property-intelligence.routes";
+
 // Public routes
 import { registerPublicRoutes } from "./public.routes";
 import foundingMembersRouter from "./public/founding-members.routes";
@@ -503,6 +506,9 @@ export async function registerRoutes(
 
   // Register Public routes (no auth required)
   registerPublicRoutes(app);
+
+  // Register Public Property Intelligence routes (no auth, rate limited)
+  registerPublicPropertyIntelligenceRoutes(app);
 
   // Founding Members (public)
   app.use("/api", foundingMembersRouter);

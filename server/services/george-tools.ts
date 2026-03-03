@@ -12050,3 +12050,23 @@ export async function getVendorQuotes(params: {
     return { localVendors: [], error: err.message };
   }
 }
+
+// ── Property Intelligence Scan ──────────────────────────────────────────────
+export async function scanPropertyAddress(address: string): Promise<object> {
+  try {
+    const { getPropertyDataAsync } = await import("./ai/property-scan-service");
+    const { generateHomeIntelligenceReport } = await import("./home-intelligence");
+
+    const property = await getPropertyDataAsync(address);
+    const report = await generateHomeIntelligenceReport(property);
+
+    return {
+      property,
+      report,
+      summary: `Health Score: ${report.overallHealthScore}/100 | Built: ${report.yearBuilt} (${report.homeAge} yrs old) | Urgent items: ${report.urgentItems.length} | Upcoming: ${report.upcomingItems.length} | Est. annual maintenance: $${report.estimatedAnnualMaintenanceCost} | Roof life: ${report.roofLifeRemaining} | HVAC life: ${report.hvacLifeRemaining} | Water heater: ${report.waterHeaterLifeRemaining}`,
+    };
+  } catch (err: any) {
+    console.error("[George Tools] scanPropertyAddress error:", err);
+    return { error: err.message };
+  }
+}

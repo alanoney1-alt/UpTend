@@ -113,6 +113,7 @@ const GeorgeShowcase = lazy(() => import("@/pages/partners/george-showcase"));
 const PartnerSlugDashboard = lazy(() => import("@/pages/partners/partner-dashboard"));
 const TieredQuoteCard = lazy(() => import("@/pages/partners/tiered-quote-card"));
 const Discovery = lazy(() => import("@/pages/discovery"));
+const HomeIntelligence = lazy(() => import("@/pages/home-intelligence"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
 const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
 const BpIntegrations = lazy(() => import("@/pages/bp-integrations"));
@@ -439,6 +440,7 @@ function Router() {
       <Route path="/b2b-pricing" component={B2BPricing} />
       <Route path="/fleet-tracking" component={FleetTracking} />
       <Route path="/partners" component={PartnersLanding} />
+      <Route path="/home-report" component={HomeIntelligence} />
       <Route path="/discovery/:slug" component={Discovery} />
       <Route path="/discovery" component={Discovery} />
       <Route path="/partners/register" component={PartnerRegister} />

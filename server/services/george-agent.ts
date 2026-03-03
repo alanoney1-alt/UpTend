@@ -4066,6 +4066,7 @@ const TOOL_DEFINITIONS: any[] = [
  { name: "save_partner_onboarding", description: "Save partner onboarding data. Use during discovery/intake to store business info, social accounts, website, tools, lead sources, branding, etc. Call this incrementally as you learn new info. Fields: company_name, owner_name, owner_email, owner_phone, business_address, business_city, business_state, business_zip, service_area_miles, years_in_business, num_technicians, num_office_staff, annual_revenue, services_offered (array), primary_service, commercial_or_residential, website_url, website_provider, facebook_url, instagram_handle, google_business_profile_url, yelp_url, nextdoor_url, tiktok_handle, youtube_url, linkedin_url, current_crm, current_scheduling_tool, current_invoicing_tool, current_accounting_tool, current_marketing_tool, lead_sources (array), avg_monthly_leads, avg_ticket_size, biggest_lead_source, pain_points (array), wants_social_package, brand_voice_notes, logo_url, tagline, target_keywords (array), target_neighborhoods (array), competitors (array)", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, data: { type: "object", description: "Key-value pairs of onboarding fields to save" } }, required: ["partner_slug", "data"] } },
  { name: "get_partner_social_audit", description: "Get a social media audit for a partner. Shows which platforms they're on, which they're missing, and recommends the social package. Use when discussing social media or the $500/month add-on.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
  { name: "get_partner_onboarding_progress", description: "Check how much onboarding data we have for a partner. Shows completion percentage and what sections are still missing.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "scan_property_address", description: "Scan a property address to generate an AI-powered home maintenance intelligence report. Returns health score, urgent/upcoming/annual maintenance items, system life estimates, and cost projections. Use when a customer gives you their address and wants to know about their home's maintenance needs.", input_schema: { type: "object", properties: { address: { type: "string", description: "Full property address to scan" } }, required: ["address"] } },
 ];
 
 // ─────────────────────────────────────────────
@@ -4716,6 +4717,9 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
   return await onboarding.getSocialAudit(input.partner_slug);
  case "get_partner_onboarding_progress":
   return await onboarding.getOnboardingProgress(input.partner_slug);
+
+ case "scan_property_address":
+  return await tools.scanPropertyAddress(input.address);
 
  default:
  return { error: `Unknown tool: ${name}` };
