@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Link } from "wouter";
 
 interface MaintenanceItem {
   system: string;
@@ -27,36 +28,106 @@ interface HomeIntelligenceReport {
 
 interface PropertyData {
   address: string;
-  homeValueEstimate: number;
   sqFootage: number;
-  lotSizeAcres: number;
-  hasPool: boolean | "uncertain";
   yearBuilt: number;
   bedrooms: number;
   bathrooms: number;
+  stories: number;
   roofType: string;
+  exteriorType: string;
+  hasPool: boolean | "uncertain";
   hasGarage: boolean;
   garageSize: string;
-  stories: number;
-  exteriorType: string;
+  lotSizeAcres: number;
   propertyType: string;
+  dataSource: string;
+}
+
+function ScoreCircle({ score }: { score: number }) {
+  const color = score >= 80 ? "#22c55e" : score >= 60 ? "#F47C20" : "#ef4444";
+  const circumference = 2 * Math.PI * 54;
+  const offset = circumference - (score / 100) * circumference;
+
+  return (
+    <div className="relative w-36 h-36 mx-auto">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="54" fill="none" stroke="#1a2940" strokeWidth="10" />
+        <circle
+          cx="60" cy="60" r="54" fill="none" stroke={color} strokeWidth="10"
+          strokeDasharray={circumference} strokeDashoffset={offset}
+          strokeLinecap="round" style={{ transition: "stroke-dashoffset 1.5s ease" }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-3xl font-bold text-white">{score}</span>
+        <span className="text-xs text-gray-400">/ 100</span>
+      </div>
+    </div>
+  );
+}
+
+function LifeBar({ label, value }: { label: string; value: string }) {
+  const years = parseInt(value.replace(/[^0-9]/g, "")) || 0;
+  const maxYears = 30;
+  const pct = Math.min(100, (years / maxYears) * 100);
+  const color = pct > 50 ? "#22c55e" : pct > 25 ? "#F47C20" : "#ef4444";
+
+  return (
+    <div className="mb-3">
+      <div className="flex justify-between text-sm mb-1">
+        <span className="text-gray-300">{label}</span>
+        <span className="text-white font-medium">{value}</span>
+      </div>
+      <div className="h-2 bg-[#1a2940] rounded-full overflow-hidden">
+        <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${pct}%`, backgroundColor: color }} />
+      </div>
+    </div>
+  );
+}
+
+function ItemCard({ item }: { item: MaintenanceItem }) {
+  const colors = {
+    urgent: { bg: "bg-red-500/10", border: "border-red-500/30", badge: "bg-red-500", text: "text-red-400" },
+    soon: { bg: "bg-[#F47C20]/10", border: "border-[#F47C20]/30", badge: "bg-[#F47C20]", text: "text-[#F47C20]" },
+    routine: { bg: "bg-green-500/10", border: "border-green-500/30", badge: "bg-green-500", text: "text-green-400" },
+  };
+  const c = colors[item.urgency];
+
+  return (
+    <div className={`${c.bg} border ${c.border} rounded-xl p-4 mb-3`}>
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <div>
+          <span className={`text-xs font-semibold ${c.text} uppercase`}>{item.system}</span>
+          <h4 className="text-white font-medium mt-0.5">{item.task}</h4>
+        </div>
+        <span className="text-white font-semibold text-sm whitespace-nowrap">{item.estimatedCost}</span>
+      </div>
+      <p className="text-gray-400 text-sm leading-relaxed">{item.reasoning}</p>
+      {item.canUpTendHelp && item.upTendService && (
+        <Link href="/book" className="inline-block mt-2 text-xs font-medium text-[#F47C20] hover:underline">
+          Book {item.upTendService} with UpTend →
+        </Link>
+      )}
+    </div>
+  );
 }
 
 export default function HomeIntelligence() {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [report, setReport] = useState<HomeIntelligenceReport | null>(null);
   const [property, setProperty] = useState<PropertyData | null>(null);
-  const reportRef = useRef<HTMLDivElement>(null);
+  const [report, setReport] = useState<HomeIntelligenceReport | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
-  const handleScan = async (e: React.FormEvent) => {
+  async function handleScan(e: React.FormEvent) {
     e.preventDefault();
-    if (!address.trim() || loading) return;
+    if (!address.trim() || address.trim().length < 5) return;
+
     setLoading(true);
     setError("");
-    setReport(null);
     setProperty(null);
+    setReport(null);
 
     try {
       const res = await fetch("/api/property-intelligence/scan", {
@@ -64,238 +135,190 @@ export default function HomeIntelligence() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address: address.trim() }),
       });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Something went wrong. Try again.");
+      }
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to scan");
-      setReport(data.report);
       setProperty(data.property);
-      setTimeout(() => reportRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+      setReport(data.report);
+
+      setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth" }), 200);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Failed to scan property.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const scoreColor = (score: number) =>
-    score >= 80 ? "#22c55e" : score >= 60 ? "#eab308" : "#ef4444";
-
-  const urgencyStyle = (urgency: string) => {
-    if (urgency === "urgent") return { bg: "rgba(239,68,68,0.15)", border: "#ef4444", label: "Urgent" };
-    if (urgency === "soon") return { bg: "rgba(234,179,8,0.15)", border: "#eab308", label: "Upcoming" };
-    return { bg: "rgba(34,197,94,0.12)", border: "#22c55e", label: "Routine" };
-  };
+  }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0a1628", color: "#e2e8f0", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <div className="min-h-screen bg-[#0a1628]">
       {/* Hero */}
-      <div style={{ maxWidth: 800, margin: "0 auto", padding: "80px 20px 40px", textAlign: "center" }}>
-        <h1 style={{ fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 800, color: "#fff", marginBottom: 16, lineHeight: 1.15 }}>
-          Know Your Home in 30 Seconds
-        </h1>
-        <p style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)", color: "#94a3b8", marginBottom: 40, maxWidth: 600, margin: "0 auto 40px" }}>
-          Type your address. George pulls public records and tells you exactly what your home needs.
-        </p>
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F47C20]/5 to-transparent" />
+        <div className="max-w-3xl mx-auto px-4 pt-20 pb-16 text-center relative z-10">
+          <img src="/george-avatar.png" alt="George" className="w-16 h-16 rounded-full mx-auto mb-6 ring-2 ring-[#F47C20]/40" />
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Know Your Home in 30 Seconds</h1>
+          <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto">
+            Type your address. George pulls public records and tells you exactly what your home needs.
+          </p>
 
-        <form onSubmit={handleScan} style={{ display: "flex", gap: 12, maxWidth: 600, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="123 Main St, Orlando, FL 32801"
-            style={{
-              flex: 1, minWidth: 250, padding: "16px 20px", fontSize: 16, borderRadius: 12,
-              border: "2px solid #1a2940", background: "#0f1d32", color: "#fff",
-              outline: "none", transition: "border-color 0.2s",
-            }}
-            onFocus={(e) => (e.target.style.borderColor = "#F47C20")}
-            onBlur={(e) => (e.target.style.borderColor = "#1a2940")}
-          />
-          <button
-            type="submit"
-            disabled={loading || !address.trim()}
-            style={{
-              padding: "16px 32px", fontSize: 16, fontWeight: 700, borderRadius: 12,
-              border: "none", background: loading ? "#94a3b8" : "#F47C20", color: "#fff",
-              cursor: loading ? "wait" : "pointer", transition: "background 0.2s",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {loading ? "Scanning..." : "Scan My Home"}
-          </button>
-        </form>
+          <form onSubmit={handleScan} className="max-w-xl mx-auto">
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Enter your home address..."
+                className="flex-1 px-5 py-4 rounded-xl bg-[#0f1d32] border border-[#1a2940] text-white placeholder-gray-500 text-lg focus:outline-none focus:border-[#F47C20]/60 transition"
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                disabled={loading || address.trim().length < 5}
+                className="px-8 py-4 rounded-xl bg-[#F47C20] text-white font-semibold text-lg hover:bg-[#e06b15] disabled:opacity-50 disabled:cursor-not-allowed transition whitespace-nowrap"
+              >
+                {loading ? "Scanning..." : "Scan"}
+              </button>
+            </div>
+            <p className="text-gray-500 text-xs mt-3">Free. No signup. Uses public property records.</p>
+          </form>
 
-        {error && (
-          <p style={{ color: "#ef4444", marginTop: 16 }}>{error}</p>
-        )}
+          {error && <p className="text-red-400 mt-4">{error}</p>}
+        </div>
       </div>
 
       {/* Loading State */}
       {loading && (
-        <div style={{ textAlign: "center", padding: "60px 20px" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 16, background: "#0f1d32", padding: "24px 32px", borderRadius: 16, border: "1px solid #1a2940" }}>
-            <img src="/george-avatar.png" alt="George" style={{ width: 48, height: 48, borderRadius: "50%" }} onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-            <div style={{ textAlign: "left" }}>
-              <p style={{ fontWeight: 600, color: "#F47C20", margin: 0 }}>George is scanning public records...</p>
-              <p style={{ color: "#94a3b8", fontSize: 14, margin: "4px 0 0" }}>Pulling property data and running maintenance analysis</p>
+        <div className="max-w-3xl mx-auto px-4 py-16 text-center">
+          <div className="animate-pulse">
+            <img src="/george-avatar.png" alt="George" className="w-20 h-20 rounded-full mx-auto mb-4 ring-2 ring-[#F47C20]/60" />
+            <p className="text-white text-lg font-medium">George is scanning public records...</p>
+            <p className="text-gray-500 mt-2">Pulling property data and analyzing maintenance needs</p>
+            <div className="mt-6 flex justify-center gap-1">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="w-2 h-2 rounded-full bg-[#F47C20] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+              ))}
             </div>
-            <div style={{ width: 24, height: 24, border: "3px solid #1a2940", borderTop: "3px solid #F47C20", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
           </div>
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
       )}
 
-      {/* Report */}
+      {/* Results */}
       {report && property && (
-        <div ref={reportRef} style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 80px" }}>
-          {/* Health Score + Property Details */}
-          <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 24, marginBottom: 32, alignItems: "start" }}>
-            {/* Score Circle */}
-            <div style={{ textAlign: "center" }}>
-              <div style={{
-                width: 140, height: 140, borderRadius: "50%",
-                border: `6px solid ${scoreColor(report.overallHealthScore)}`,
-                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                background: "#0f1d32",
-              }}>
-                <span style={{ fontSize: 42, fontWeight: 800, color: scoreColor(report.overallHealthScore) }}>
-                  {report.overallHealthScore}
-                </span>
-                <span style={{ fontSize: 12, color: "#94a3b8", marginTop: -4 }}>HEALTH SCORE</span>
-              </div>
+        <div ref={resultsRef} className="max-w-4xl mx-auto px-4 pb-20">
+          {/* Health Score + Property Overview */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-[#0f1d32] border border-[#1a2940] rounded-2xl p-6 text-center">
+              <h2 className="text-gray-400 text-sm uppercase tracking-wider mb-4">Home Health Score</h2>
+              <ScoreCircle score={report.overallHealthScore} />
+              <p className="text-gray-400 text-sm mt-3">
+                {report.overallHealthScore >= 80
+                  ? "Your home is in great shape"
+                  : report.overallHealthScore >= 60
+                    ? "Some systems need attention soon"
+                    : "Multiple items need urgent attention"}
+              </p>
             </div>
 
-            {/* Property Card */}
-            <div style={{ background: "#0f1d32", borderRadius: 16, padding: 24, border: "1px solid #1a2940" }}>
-              <h3 style={{ color: "#fff", fontSize: 18, marginTop: 0, marginBottom: 12 }}>{property.address}</h3>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 12 }}>
-                {[
-                  { label: "Year Built", value: report.yearBuilt },
-                  { label: "Home Age", value: `${report.homeAge} yrs` },
-                  { label: "Beds / Baths", value: `${property.bedrooms} / ${property.bathrooms}` },
-                  { label: "Sq Ft", value: property.sqFootage?.toLocaleString() || "N/A" },
-                  { label: "Lot", value: property.lotSizeAcres ? `${property.lotSizeAcres} acres` : "N/A" },
-                  { label: "Pool", value: property.hasPool === true ? "Yes" : property.hasPool === "uncertain" ? "Unknown" : "No" },
-                ].map((item) => (
-                  <div key={item.label}>
-                    <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: 1 }}>{item.label}</div>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: "#e2e8f0" }}>{item.value}</div>
-                  </div>
-                ))}
+            <div className="bg-[#0f1d32] border border-[#1a2940] rounded-2xl p-6">
+              <h2 className="text-gray-400 text-sm uppercase tracking-wider mb-4">Property Details</h2>
+              <p className="text-white font-medium mb-3">{property.address}</p>
+              <div className="grid grid-cols-2 gap-y-2 text-sm">
+                {property.yearBuilt > 0 && <Detail label="Built" value={`${property.yearBuilt} (${report.homeAge} yrs)`} />}
+                {property.sqFootage > 0 && <Detail label="Size" value={`${property.sqFootage.toLocaleString()} sqft`} />}
+                {property.bedrooms > 0 && <Detail label="Beds / Baths" value={`${property.bedrooms} / ${property.bathrooms}`} />}
+                <Detail label="Stories" value={String(property.stories || 1)} />
+                {property.roofType !== "Unknown" && <Detail label="Roof" value={property.roofType} />}
+                {property.exteriorType !== "Unknown" && <Detail label="Exterior" value={property.exteriorType} />}
+                <Detail label="Pool" value={property.hasPool === true ? "Yes" : property.hasPool === "uncertain" ? "Unknown" : "No"} />
+                <Detail label="Garage" value={property.hasGarage ? property.garageSize || "Yes" : "No"} />
               </div>
+              {property.dataSource === "estimated" && (
+                <p className="text-yellow-500/70 text-xs mt-3">* Estimated from address. For a more accurate report, talk to George.</p>
+              )}
             </div>
           </div>
 
           {/* System Life Remaining */}
-          <div style={{ background: "#0f1d32", borderRadius: 16, padding: 24, border: "1px solid #1a2940", marginBottom: 24 }}>
-            <h3 style={{ color: "#fff", fontSize: 16, marginTop: 0, marginBottom: 16 }}>System Life Remaining</h3>
-            {[
-              { label: "Roof", value: report.roofLifeRemaining },
-              { label: "HVAC", value: report.hvacLifeRemaining },
-              { label: "Water Heater", value: report.waterHeaterLifeRemaining },
-            ].map((sys) => {
-              const years = parseInt(sys.value.replace(/[^0-9]/g, "")) || 0;
-              const maxYears = sys.label === "Roof" ? 30 : sys.label === "HVAC" ? 20 : 15;
-              const pct = Math.min(100, Math.max(5, (years / maxYears) * 100));
-              const color = pct > 50 ? "#22c55e" : pct > 25 ? "#eab308" : "#ef4444";
-              return (
-                <div key={sys.label} style={{ marginBottom: 12 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                    <span style={{ fontSize: 14, color: "#94a3b8" }}>{sys.label}</span>
-                    <span style={{ fontSize: 14, fontWeight: 600, color }}>{sys.value}</span>
-                  </div>
-                  <div style={{ height: 8, background: "#1a2940", borderRadius: 4 }}>
-                    <div style={{ height: "100%", width: `${pct}%`, background: color, borderRadius: 4, transition: "width 0.5s" }} />
-                  </div>
-                </div>
-              );
-            })}
+          <div className="bg-[#0f1d32] border border-[#1a2940] rounded-2xl p-6 mb-8">
+            <h2 className="text-gray-400 text-sm uppercase tracking-wider mb-4">System Life Remaining</h2>
+            <LifeBar label="Roof" value={report.roofLifeRemaining} />
+            <LifeBar label="HVAC System" value={report.hvacLifeRemaining} />
+            <LifeBar label="Water Heater" value={report.waterHeaterLifeRemaining} />
           </div>
 
           {/* Cost Summary */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
-            <div style={{ background: "#0f1d32", borderRadius: 16, padding: 24, border: "1px solid #1a2940", textAlign: "center" }}>
-              <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Est. Annual Maintenance</div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "#F47C20" }}>
-                ${report.estimatedAnnualMaintenanceCost?.toLocaleString() || "0"}
-              </div>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-[#0f1d32] border border-[#1a2940] rounded-2xl p-6 text-center">
+              <p className="text-gray-400 text-sm">Estimated Annual Maintenance</p>
+              <p className="text-3xl font-bold text-white mt-2">${report.estimatedAnnualMaintenanceCost.toLocaleString()}</p>
+              <p className="text-gray-500 text-xs mt-1">proactive maintenance cost</p>
             </div>
-            <div style={{ background: "#0f1d32", borderRadius: 16, padding: 24, border: "1px solid #1a2940", textAlign: "center" }}>
-              <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Potential Overspend</div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "#ef4444" }}>
-                ${report.estimatedCurrentOverspend?.toLocaleString() || "0"}
-              </div>
-              <div style={{ fontSize: 12, color: "#94a3b8" }}>vs proactive maintenance</div>
+            <div className="bg-[#0f1d32] border border-[#1a2940] rounded-2xl p-6 text-center">
+              <p className="text-gray-400 text-sm">You're Probably Overspending</p>
+              <p className="text-3xl font-bold text-red-400 mt-2">${report.estimatedCurrentOverspend.toLocaleString()}</p>
+              <p className="text-gray-500 text-xs mt-1">per year vs proactive approach</p>
             </div>
           </div>
 
-          {/* Maintenance Items */}
-          {[
-            { title: "Needs Attention Now", items: report.urgentItems, urgency: "urgent" as const },
-            { title: "Coming Up (6-12 Months)", items: report.upcomingItems, urgency: "soon" as const },
-            { title: "Annual Maintenance", items: report.annualItems, urgency: "routine" as const },
-          ].filter(g => g.items?.length > 0).map((group) => (
-            <div key={group.title} style={{ marginBottom: 24 }}>
-              <h3 style={{ color: "#fff", fontSize: 16, marginBottom: 12 }}>{group.title}</h3>
-              <div style={{ display: "grid", gap: 12 }}>
-                {group.items.map((item, i) => {
-                  const s = urgencyStyle(item.urgency);
-                  return (
-                    <div key={i} style={{ background: s.bg, borderRadius: 12, padding: 20, borderLeft: `4px solid ${s.border}` }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", flexWrap: "wrap", gap: 8 }}>
-                        <div>
-                          <span style={{ fontSize: 11, color: s.border, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>{item.system}</span>
-                          <h4 style={{ color: "#fff", margin: "4px 0 8px", fontSize: 15 }}>{item.task}</h4>
-                        </div>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: "#F47C20", whiteSpace: "nowrap" }}>{item.estimatedCost}</span>
-                      </div>
-                      <p style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.5, margin: 0 }}>{item.reasoning}</p>
-                      {item.canUpTendHelp && item.upTendService && (
-                        <div style={{ marginTop: 8, fontSize: 12, color: "#F47C20" }}>
-                          UpTend can help: {item.upTendService}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+          {/* Urgent Items */}
+          {report.urgentItems.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-red-400 font-semibold text-lg mb-4">Needs Attention Now ({report.urgentItems.length})</h2>
+              {report.urgentItems.map((item, i) => <ItemCard key={i} item={item} />)}
             </div>
-          ))}
+          )}
+
+          {/* Upcoming Items */}
+          {report.upcomingItems.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-[#F47C20] font-semibold text-lg mb-4">Coming Up (Next 6-12 Months)</h2>
+              {report.upcomingItems.map((item, i) => <ItemCard key={i} item={item} />)}
+            </div>
+          )}
+
+          {/* Annual Maintenance */}
+          {report.annualItems.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-green-400 font-semibold text-lg mb-4">Annual Maintenance</h2>
+              {report.annualItems.map((item, i) => <ItemCard key={i} item={item} />)}
+            </div>
+          )}
 
           {/* George's Insight */}
-          <div style={{ background: "#0f1d32", borderRadius: 16, padding: 24, border: "1px solid #F47C20", marginBottom: 32, display: "flex", gap: 16, alignItems: "start" }}>
-            <img src="/george-avatar.png" alt="George" style={{ width: 48, height: 48, borderRadius: "50%", flexShrink: 0 }} onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-            <div>
-              <div style={{ fontSize: 13, color: "#F47C20", fontWeight: 700, marginBottom: 6 }}>George says:</div>
-              <p style={{ color: "#e2e8f0", fontSize: 15, lineHeight: 1.6, margin: 0 }}>{report.georgeInsight}</p>
+          <div className="bg-[#0f1d32] border border-[#F47C20]/30 rounded-2xl p-6 mb-8">
+            <div className="flex items-start gap-4">
+              <img src="/george-avatar.png" alt="George" className="w-12 h-12 rounded-full ring-2 ring-[#F47C20]/40 flex-shrink-0" />
+              <div>
+                <p className="text-[#F47C20] font-semibold text-sm mb-2">George's Take</p>
+                <p className="text-gray-300 leading-relaxed">{report.georgeInsight}</p>
+              </div>
             </div>
           </div>
 
           {/* CTAs */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <a
-              href="/guide"
-              style={{
-                display: "block", textAlign: "center", padding: "16px 24px",
-                background: "#F47C20", color: "#fff", borderRadius: 12,
-                fontWeight: 700, fontSize: 15, textDecoration: "none",
-              }}
-            >
-              Want George to handle this? Start a conversation
-            </a>
-            <a
-              href="/discovery"
-              style={{
-                display: "block", textAlign: "center", padding: "16px 24px",
-                background: "transparent", color: "#F47C20", borderRadius: 12,
-                fontWeight: 700, fontSize: 15, textDecoration: "none",
-                border: "2px solid #F47C20",
-              }}
-            >
+          <div className="grid md:grid-cols-2 gap-4">
+            <Link href="/book" className="block bg-[#F47C20] text-white text-center font-semibold py-4 rounded-xl hover:bg-[#e06b15] transition">
+              Want George to handle this? Book a service
+            </Link>
+            <Link href="/discovery" className="block bg-[#0f1d32] border border-[#1a2940] text-white text-center font-semibold py-4 rounded-xl hover:border-[#F47C20]/40 transition">
               Get this report for your whole neighborhood
-            </a>
+            </Link>
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <>
+      <span className="text-gray-500">{label}</span>
+      <span className="text-white">{value}</span>
+    </>
   );
 }
