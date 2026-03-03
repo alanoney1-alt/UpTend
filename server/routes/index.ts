@@ -296,6 +296,7 @@ import { registerQualityReportRoutes } from "./quality-reports.routes";
 
 // Partner Operations 2 routes (dispatch, signatures, reporting)
 import { registerPartnerOperations2Routes } from "./partner-operations2.routes";
+import { registerPartnerOperations3Routes } from "./partner-operations3.routes";
 
 // Partner Operations 4 routes (job costing, digital forms, customer tags/pipeline)
 import { registerPartnerOperations4Routes } from "./partner-operations4.routes";
@@ -614,6 +615,9 @@ export async function registerRoutes(
 
   // Register Partner Operations 2 routes (dispatch, signatures, reporting)
   registerPartnerOperations2Routes(app);
+
+  // Register Partner Operations 3 routes (QuickBooks, Calendar, Timesheets)
+  registerPartnerOperations3Routes(app);
 
   // Register Partner Operations 4 routes (job costing, digital forms, customer tags/pipeline)
   registerPartnerOperations4Routes(app);
