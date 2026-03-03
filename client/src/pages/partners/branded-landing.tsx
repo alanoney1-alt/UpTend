@@ -36,6 +36,11 @@ interface PartnerConfig {
   services: string[];
   georgeGreeting: string;
   features: Array<{ icon: string; title: string; desc: string }>;
+  socialMedia?: {
+    enabled: boolean;
+    platforms: string[];
+    contentTypes: string[];
+  };
 }
 
 // Demo partner configs (will come from DB in production)
@@ -91,6 +96,11 @@ const PARTNER_CONFIGS: Record<string, PartnerConfig> = {
       { icon: "shield", title: "Transparent Pricing", desc: "Know what you're paying before anyone shows up. No surprise charges." },
       { icon: "star", title: "Licensed & Insured", desc: "Every technician is background-checked, licensed, and insured." },
     ],
+    socialMedia: {
+      enabled: true,
+      platforms: ["Facebook", "Instagram"],
+      contentTypes: ["Daily HVAC Tips", "Before/After Photos", "Video Content", "Customer Spotlights", "Seasonal Alerts"],
+    },
   },
   "demo-plumbing": {
     slug: "demo-plumbing",
@@ -382,6 +392,40 @@ export default function BrandedPartnerLanding() {
                 </a>
               </div>
             </div>
+
+            {/* Social Media Section */}
+            {config.socialMedia?.enabled && (
+              <div className="mb-12">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-bold mb-2">We Run Your Socials Too</h2>
+                  <p className="text-muted-foreground max-w-2xl mx-auto">
+                    George doesn't just handle your phones. We manage your entire social media presence with AI powered content.
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  {[
+                    { emoji: "📱", title: "Daily HVAC Tips", desc: "Fresh, branded tips posted to your Facebook and Instagram every day. Zero effort from you." },
+                    { emoji: "📸", title: "Before/After Showcases", desc: "Upload job photos. We turn them into scroll stopping posts that build trust." },
+                    { emoji: "🎬", title: "Video Content", desc: "Professional talking head and street interview videos featuring your company. 2 to 3 per week." },
+                    { emoji: "⭐", title: "Customer Spotlights", desc: "5 star Google reviews automatically become beautiful social posts." },
+                    { emoji: "🌡️", title: "Seasonal Campaigns", desc: "Hurricane prep, summer surge, winter maintenance — timely content that drives bookings." },
+                  ].map((item) => (
+                    <Card key={item.title} className="hover:border-primary/50 transition-colors">
+                      <CardContent className="pt-6">
+                        <div className="text-2xl mb-2">{item.emoji}</div>
+                        <h3 className="font-semibold mb-1">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                <div className="text-center bg-card border border-border rounded-xl p-4">
+                  <p className="text-sm text-muted-foreground">
+                    Add social media management to any plan for <span className="font-semibold text-foreground">$500 to $800/month</span>. That's less than half what agencies charge.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Partner Demo Links */}
             <div className="bg-card border border-border rounded-2xl p-6 mb-12">
