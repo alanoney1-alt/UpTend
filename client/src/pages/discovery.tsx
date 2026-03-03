@@ -230,8 +230,8 @@ export default function DiscoveryPage() {
   }, [messages, auditStarted]);
 
   // Voice: speak George's message via ElevenLabs Adam voice
-  const speak = useCallback(async (text: string) => {
-    if (!voiceMode) return;
+  const speak = useCallback(async (text: string, force?: boolean) => {
+    if (!voiceMode && !force) return;
     try {
       const resp = await fetch("/api/partners/voice/speak", {
         method: "POST",
@@ -436,7 +436,7 @@ export default function DiscoveryPage() {
       ? `I'm George. I work with ${params.slug.replace(/-/g, " ")} and a bunch of other service companies in the Orlando area. I'd love to learn a bit about your business so I can show you what we can do for you. What's your company name and what kind of work do you guys do?`
       : "I'm George. I work with home service companies all over Orlando, helping them get more jobs and run tighter operations. I'd love to learn about your business. What's your company name and what kind of services do you offer?";
     setMessages([{ role: "george", content: greeting }]);
-    if (voice) speak(greeting);
+    if (voice) speak(greeting, true);
   }, [params.slug, speak]);
 
   const buildProposal = useCallback(() => {
