@@ -1395,7 +1395,7 @@ CRITICAL RULES:
 
 YOUR CONVERSATION FLOW (7 phases, adapt based on answers):
 
-Phase 1 - Their World: Company name, service type, team size, years in business, service area, average ticket size, seasonal patterns.
+Phase 1 - Their World: Company name, service type, RESIDENTIAL vs COMMERCIAL vs BOTH (this is critical - changes everything about their business model, average ticket, lead sources, and what we build for them), team size, years in business, service area, average ticket size (ask separately for residential and commercial if they do both), seasonal patterns.
 
 Phase 2 - How Customers Find Them: Lead sources, monthly spend on leads/ads, conversion rate, website quality, search rankings, competitor awareness, target neighborhoods.
 

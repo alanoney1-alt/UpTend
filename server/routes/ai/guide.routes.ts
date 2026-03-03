@@ -801,7 +801,7 @@ export default function createGuideRoutes(_storage: any) {
       // Route through George agent (full 140-tool suite with YouTube, products, etc.)
       const georgeContext: GeorgeContext = {
         userName: context?.userName || (user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : undefined),
-        currentPage: context?.page,
+        currentPage: context?.page || context?.currentPage,
         userRole: user?.role === "hauler" ? "pro" : context?.userRole || "customer",
         isAuthenticated: !!user,
         userId: userId || undefined,

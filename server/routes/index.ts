@@ -130,6 +130,7 @@ import { registerLaunchNotificationRoutes } from "./launch-notifications.routes"
 // Partner Portal routes
 import { registerPartnerRoutes } from "./partners.routes";
 import { registerPartnerDashboardRoutes } from "./partner-dashboard.routes";
+import { registerPartnerFeaturesRoutes } from "./partner-features.routes";
 
 // Home CRM routes
 import { registerHomeProfileRoutes } from "./home-profile.routes";
@@ -437,6 +438,7 @@ export async function registerRoutes(
   // Register Partner Portal routes
   registerPartnerRoutes(app);
   registerPartnerDashboardRoutes(app);
+  registerPartnerFeaturesRoutes(app);
 
   // Register Home CRM routes
   registerHomeProfileRoutes(app);
