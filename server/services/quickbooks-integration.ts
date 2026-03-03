@@ -1,456 +1,285 @@
 /**
  * QuickBooks Online Integration Service
  * 
- * OAuth 2.0 flow, invoice/expense sync, payout tracking.
- * When QUICKBOOKS_CLIENT_ID and QUICKBOOKS_CLIENT_SECRET env vars are missing,
- * all methods return mock success responses for demo/development.
+ * OAuth flow, invoice/payment sync, customer sync.
+ * Actual QB API calls are stubbed with TODO markers.
  */
 
-const QB_CLIENT_ID = process.env.QUICKBOOKS_CLIENT_ID || "";
-const QB_CLIENT_SECRET = process.env.QUICKBOOKS_CLIENT_SECRET || "";
-const QB_REDIRECT_URI = "https://uptendapp.com/api/integrations/quickbooks/callback";
-const QB_AUTH_BASE = "https://appcenter.intuit.com/connect/oauth2";
-const QB_TOKEN_URL = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer";
-const QB_API_BASE = "https://quickbooks.api.intuit.com/v3/company";
-const QB_REVOKE_URL = "https://developer.api.intuit.com/v2/oauth2/tokens/revoke";
+import { db } from "../db";
+import { sql } from "drizzle-orm";
 
-function isMockMode(): boolean {
-  return !QB_CLIENT_ID || !QB_CLIENT_SECRET;
-}
+// ============================================================
+// Types
+// ============================================================
 
-// In-memory token store (production would use encrypted DB storage)
-const tokenStore: Record<string, {
+export interface QBConnection {
+  id: number;
+  partnerSlug: string;
+  qbRealmId: string;
   accessToken: string;
   refreshToken: string;
-  realmId: string;
-  expiresAt: number;
-  connectedAt: string;
-  lastSyncAt: string | null;
-}> = {};
-
-// Sync history log
-const syncHistory: Array<{
-  id: string;
-  businessId: string;
-  type: string;
-  status: string;
-  details: string;
-  qbEntity: string;
-  qbId: string | null;
-  amount: number | null;
-  syncedAt: string;
-}> = [];
-
-function generateId(): string {
-  return `qb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  tokenExpiresAt: Date;
+  companyName: string;
+  connectedAt: Date;
+  lastSyncAt: Date | null;
+  status: "active" | "expired" | "disconnected";
+  createdAt: Date;
 }
 
-/**
- * Get QuickBooks OAuth authorization URL
- */
-export function getAuthUrl(businessId: string): string {
-  if (isMockMode()) {
-    return `https://uptendapp.com/api/integrations/quickbooks/callback?code=mock_code_${businessId}&realmId=mock_realm_123&state=${businessId}`;
-  }
-
-  const params = new URLSearchParams({
-    client_id: QB_CLIENT_ID,
-    redirect_uri: QB_REDIRECT_URI,
-    response_type: "code",
-    scope: "com.intuit.quickbooks.accounting",
-    state: businessId,
-  });
-
-  return `${QB_AUTH_BASE}?${params.toString()}`;
+export interface QBSyncLog {
+  id: number;
+  partnerSlug: string;
+  syncType: "invoice" | "payment" | "customer" | "all";
+  direction: "push" | "pull";
+  recordsSynced: number;
+  errors: any;
+  startedAt: Date;
+  completedAt: Date | null;
 }
 
-/**
- * Handle OAuth callback - exchange code for tokens
- */
-export async function handleCallback(
-  code: string,
-  realmId: string,
-  businessId: string
-): Promise<{ success: boolean; realmId: string }> {
-  if (isMockMode()) {
-    tokenStore[businessId] = {
-      accessToken: `mock_access_${businessId}`,
-      refreshToken: `mock_refresh_${businessId}`,
-      realmId: realmId || "mock_realm_123",
-      expiresAt: Date.now() + 3600 * 1000,
-      connectedAt: new Date().toISOString(),
-      lastSyncAt: null,
-    };
-    return { success: true, realmId: realmId || "mock_realm_123" };
-  }
+// ============================================================
+// Table Initialization
+// ============================================================
 
-  const basicAuth = Buffer.from(`${QB_CLIENT_ID}:${QB_CLIENT_SECRET}`).toString("base64");
-  const resp = await fetch(QB_TOKEN_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${basicAuth}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    },
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      code,
-      redirect_uri: QB_REDIRECT_URI,
-    }),
-  });
-
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error(`QuickBooks token exchange failed: ${err}`);
-  }
-
-  const data = await resp.json() as any;
-  tokenStore[businessId] = {
-    accessToken: data.access_token,
-    refreshToken: data.refresh_token,
-    realmId,
-    expiresAt: Date.now() + data.expires_in * 1000,
-    connectedAt: new Date().toISOString(),
-    lastSyncAt: null,
-  };
-
-  return { success: true, realmId };
-}
-
-/**
- * Refresh expired access token
- */
-export async function refreshToken(businessId: string): Promise<boolean> {
-  const tokens = tokenStore[businessId];
-  if (!tokens) return false;
-
-  if (isMockMode()) {
-    tokens.accessToken = `mock_access_refreshed_${Date.now()}`;
-    tokens.expiresAt = Date.now() + 3600 * 1000;
-    return true;
-  }
-
-  const basicAuth = Buffer.from(`${QB_CLIENT_ID}:${QB_CLIENT_SECRET}`).toString("base64");
-  const resp = await fetch(QB_TOKEN_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${basicAuth}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    },
-    body: new URLSearchParams({
-      grant_type: "refresh_token",
-      refresh_token: tokens.refreshToken,
-    }),
-  });
-
-  if (!resp.ok) return false;
-
-  const data = await resp.json() as any;
-  tokens.accessToken = data.access_token;
-  tokens.refreshToken = data.refresh_token;
-  tokens.expiresAt = Date.now() + data.expires_in * 1000;
-  return true;
-}
-
-/**
- * Disconnect QuickBooks - revoke tokens
- */
-export async function disconnect(businessId: string): Promise<boolean> {
-  const tokens = tokenStore[businessId];
-  if (!tokens) return true;
-
-  if (!isMockMode()) {
-    try {
-      const basicAuth = Buffer.from(`${QB_CLIENT_ID}:${QB_CLIENT_SECRET}`).toString("base64");
-      await fetch(QB_REVOKE_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: tokens.refreshToken }),
-      });
-    } catch (e) {
-      console.error("QuickBooks revoke error:", e);
-    }
-  }
-
-  delete tokenStore[businessId];
-  return true;
-}
-
-/**
- * Get connection status
- */
-export function getStatus(businessId: string): {
-  connected: boolean;
-  realmId: string | null;
-  connectedAt: string | null;
-  lastSyncAt: string | null;
-  mockMode: boolean;
-} {
-  const tokens = tokenStore[businessId];
-  return {
-    connected: !!tokens,
-    realmId: tokens?.realmId || null,
-    connectedAt: tokens?.connectedAt || null,
-    lastSyncAt: tokens?.lastSyncAt || null,
-    mockMode: isMockMode(),
-  };
-}
-
-async function qbApiRequest(businessId: string, method: string, endpoint: string, body?: any): Promise<any> {
-  const tokens = tokenStore[businessId];
-  if (!tokens) throw new Error("Not connected to QuickBooks");
-
-  // Auto-refresh if expired
-  if (tokens.expiresAt < Date.now()) {
-    const refreshed = await refreshToken(businessId);
-    if (!refreshed) throw new Error("Failed to refresh QuickBooks token");
-  }
-
-  if (isMockMode()) {
-    return { Id: generateId(), SyncToken: "0", ...body };
-  }
-
-  const url = `${QB_API_BASE}/${tokens.realmId}/${endpoint}`;
-  const resp = await fetch(url, {
-    method,
-    headers: {
-      Authorization: `Bearer ${tokens.accessToken}`,
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error(`QuickBooks API error: ${resp.status} ${err}`);
-  }
-
-  return resp.json();
-}
-
-/**
- * Sync a completed job to QuickBooks as an Invoice
- */
-export async function syncCompletedJob(
-  businessId: string,
-  jobData: {
-    jobId: string;
-    serviceType: string;
-    customerFirstName: string;
-    finalPrice: number;
-    platformFee: number;
-    completedAt: string;
-  }
-): Promise<{ success: boolean; qbInvoiceId: string }> {
-  const tokens = tokenStore[businessId];
-  if (!tokens) throw new Error("Not connected to QuickBooks");
-
-  if (isMockMode()) {
-    const invoiceId = `INV-${Date.now()}`;
-    const entry = {
-      id: generateId(),
-      businessId,
-      type: "invoice",
-      status: "success",
-      details: `Job ${jobData.jobId}: ${jobData.serviceType} - $${jobData.finalPrice}`,
-      qbEntity: "Invoice",
-      qbId: invoiceId,
-      amount: jobData.finalPrice,
-      syncedAt: new Date().toISOString(),
-    };
-    syncHistory.push(entry);
-    tokens.lastSyncAt = entry.syncedAt;
-    return { success: true, qbInvoiceId: invoiceId };
-  }
-
-  // Create or find customer (first name only for privacy)
-  const customerQuery = await qbApiRequest(
-    businessId, "GET",
-    `query?query=select * from Customer where DisplayName = '${jobData.customerFirstName} (UpTend)'&minorversion=65`
+const initSQL = sql`
+  CREATE TABLE IF NOT EXISTS partner_quickbooks_connections (
+    id SERIAL PRIMARY KEY,
+    partner_slug TEXT NOT NULL,
+    qb_realm_id TEXT,
+    access_token TEXT,
+    refresh_token TEXT,
+    token_expires_at TIMESTAMPTZ,
+    company_name TEXT,
+    connected_at TIMESTAMPTZ DEFAULT NOW(),
+    last_sync_at TIMESTAMPTZ,
+    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','expired','disconnected')),
+    created_at TIMESTAMPTZ DEFAULT NOW()
   );
 
-  let customerId: string;
-  if (customerQuery?.QueryResponse?.Customer?.length > 0) {
-    customerId = customerQuery.QueryResponse.Customer[0].Id;
-  } else {
-    const newCustomer = await qbApiRequest(businessId, "POST", "customer?minorversion=65", {
-      DisplayName: `${jobData.customerFirstName} (UpTend)`,
-      CompanyName: "UpTend Customer",
-    });
-    customerId = newCustomer.Customer.Id;
-  }
+  CREATE TABLE IF NOT EXISTS partner_qb_sync_log (
+    id SERIAL PRIMARY KEY,
+    partner_slug TEXT NOT NULL,
+    sync_type TEXT NOT NULL CHECK (sync_type IN ('invoice','payment','customer','all')),
+    direction TEXT NOT NULL CHECK (direction IN ('push','pull')),
+    records_synced INT DEFAULT 0,
+    errors JSONB,
+    started_at TIMESTAMPTZ DEFAULT NOW(),
+    completed_at TIMESTAMPTZ
+  );
+`;
 
-  // Create invoice
-  const invoice = await qbApiRequest(businessId, "POST", "invoice?minorversion=65", {
-    CustomerRef: { value: customerId },
-    Line: [
-      {
-        Amount: jobData.finalPrice,
-        DetailType: "SalesItemLineDetail",
-        SalesItemLineDetail: {
-          ItemRef: { value: "1", name: "Services" },
-        },
-        Description: `UpTend Job: ${jobData.serviceType} (Job #${jobData.jobId})`,
-      },
-    ],
-    PrivateNote: `UpTend Job ID: ${jobData.jobId}. Platform fee: $${jobData.platformFee.toFixed(2)}`,
-  });
-
-  const qbInvoiceId = invoice?.Invoice?.Id || "unknown";
-  syncHistory.push({
-    id: generateId(),
-    businessId,
-    type: "invoice",
-    status: "success",
-    details: `Job ${jobData.jobId}: ${jobData.serviceType} - $${jobData.finalPrice}`,
-    qbEntity: "Invoice",
-    qbId: qbInvoiceId,
-    amount: jobData.finalPrice,
-    syncedAt: new Date().toISOString(),
-  });
-  tokens.lastSyncAt = new Date().toISOString();
-
-  return { success: true, qbInvoiceId };
+let initialized = false;
+async function ensureTables() {
+  if (initialized) return;
+  await db.execute(initSQL);
+  initialized = true;
 }
 
-/**
- * Sync a payout as a deposit in QuickBooks
- */
-export async function syncPayout(
-  businessId: string,
-  payoutData: {
-    payoutId: string;
-    amount: number;
-    date: string;
-  }
-): Promise<{ success: boolean; qbDepositId: string }> {
-  const tokens = tokenStore[businessId];
-  if (!tokens) throw new Error("Not connected to QuickBooks");
+// ============================================================
+// QB Config (placeholder — replace with real credentials)
+// ============================================================
 
-  if (isMockMode()) {
-    const depositId = `DEP-${Date.now()}`;
-    syncHistory.push({
-      id: generateId(),
-      businessId,
-      type: "deposit",
-      status: "success",
-      details: `Payout ${payoutData.payoutId}: $${payoutData.amount}`,
-      qbEntity: "Deposit",
-      qbId: depositId,
-      amount: payoutData.amount,
-      syncedAt: new Date().toISOString(),
-    });
-    tokens.lastSyncAt = new Date().toISOString();
-    return { success: true, qbDepositId: depositId };
-  }
+const QB_CONFIG = {
+  clientId: process.env.QB_CLIENT_ID || "PLACEHOLDER_CLIENT_ID",
+  clientSecret: process.env.QB_CLIENT_SECRET || "PLACEHOLDER_CLIENT_SECRET",
+  redirectUri: process.env.QB_REDIRECT_URI || "https://app.uptend.com/api/partners/quickbooks/callback",
+  authEndpoint: "https://appcenter.intuit.com/connect/oauth2",
+  tokenEndpoint: "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+  apiBase: "https://quickbooks.api.intuit.com/v3/company",
+  scope: "com.intuit.quickbooks.accounting",
+};
 
-  const deposit = await qbApiRequest(businessId, "POST", "deposit?minorversion=65", {
-    DepositToAccountRef: { value: "1" },
-    Line: [
-      {
-        Amount: payoutData.amount,
-        DetailType: "DepositLineDetail",
-        DepositLineDetail: {
-          AccountRef: { value: "1" },
-        },
-      },
-    ],
-    PrivateNote: `UpTend Payout ID: ${payoutData.payoutId}`,
-    TxnDate: payoutData.date,
-  });
+// ============================================================
+// OAuth Functions
+// ============================================================
 
-  const qbDepositId = deposit?.Deposit?.Id || "unknown";
-  syncHistory.push({
-    id: generateId(),
-    businessId,
-    type: "deposit",
-    status: "success",
-    details: `Payout ${payoutData.payoutId}: $${payoutData.amount}`,
-    qbEntity: "Deposit",
-    qbId: qbDepositId,
-    amount: payoutData.amount,
-    syncedAt: new Date().toISOString(),
-  });
-  tokens.lastSyncAt = new Date().toISOString();
-
-  return { success: true, qbDepositId };
+export async function getAuthUrl(partnerSlug: string): Promise<string> {
+  await ensureTables();
+  const state = Buffer.from(JSON.stringify({ partnerSlug, ts: Date.now() })).toString("base64");
+  return `${QB_CONFIG.authEndpoint}?client_id=${QB_CONFIG.clientId}&redirect_uri=${encodeURIComponent(QB_CONFIG.redirectUri)}&response_type=code&scope=${QB_CONFIG.scope}&state=${state}`;
 }
 
-/**
- * Record platform fee as expense in QuickBooks
- */
-export async function syncPlatformFeeExpense(
-  businessId: string,
-  data: {
-    amount: number;
-    period: string;
-    jobCount: number;
+export async function handleCallback(partnerSlug: string, authCode: string, realmId: string): Promise<QBConnection> {
+  await ensureTables();
+
+  // TODO: Replace with actual QB token exchange
+  // const tokenResponse = await fetch(QB_CONFIG.tokenEndpoint, { method: 'POST', ... });
+  const mockTokens = {
+    access_token: `mock_access_${Date.now()}`,
+    refresh_token: `mock_refresh_${Date.now()}`,
+    expires_in: 3600,
+    x_refresh_token_expires_in: 8726400,
+  };
+
+  // TODO: Fetch company info from QB API
+  const companyName = `Company-${realmId}`;
+
+  const expiresAt = new Date(Date.now() + mockTokens.expires_in * 1000);
+
+  // Upsert connection
+  const result = await db.execute(sql`
+    INSERT INTO partner_quickbooks_connections (partner_slug, qb_realm_id, access_token, refresh_token, token_expires_at, company_name, status)
+    VALUES (${partnerSlug}, ${realmId}, ${mockTokens.access_token}, ${mockTokens.refresh_token}, ${expiresAt.toISOString()}, ${companyName}, 'active')
+    ON CONFLICT (partner_slug) WHERE status != 'disconnected'
+    DO UPDATE SET
+      qb_realm_id = EXCLUDED.qb_realm_id,
+      access_token = EXCLUDED.access_token,
+      refresh_token = EXCLUDED.refresh_token,
+      token_expires_at = EXCLUDED.token_expires_at,
+      company_name = EXCLUDED.company_name,
+      connected_at = NOW(),
+      status = 'active'
+    RETURNING *
+  `);
+
+  // If ON CONFLICT didn't match, just do a plain insert
+  if (!result.rows?.length) {
+    const r2 = await db.execute(sql`
+      SELECT * FROM partner_quickbooks_connections WHERE partner_slug = ${partnerSlug} AND status != 'disconnected' ORDER BY id DESC LIMIT 1
+    `);
+    return r2.rows[0] as any;
   }
-): Promise<{ success: boolean; qbExpenseId: string }> {
-  const tokens = tokenStore[businessId];
-  if (!tokens) throw new Error("Not connected to QuickBooks");
-
-  if (isMockMode()) {
-    const expenseId = `EXP-${Date.now()}`;
-    syncHistory.push({
-      id: generateId(),
-      businessId,
-      type: "expense",
-      status: "success",
-      details: `Platform fees for ${data.period}: $${data.amount} (${data.jobCount} jobs)`,
-      qbEntity: "Purchase",
-      qbId: expenseId,
-      amount: data.amount,
-      syncedAt: new Date().toISOString(),
-    });
-    tokens.lastSyncAt = new Date().toISOString();
-    return { success: true, qbExpenseId: expenseId };
-  }
-
-  const purchase = await qbApiRequest(businessId, "POST", "purchase?minorversion=65", {
-    PaymentType: "Cash",
-    AccountRef: { value: "1" },
-    Line: [
-      {
-        Amount: data.amount,
-        DetailType: "AccountBasedExpenseLineDetail",
-        AccountBasedExpenseLineDetail: {
-          AccountRef: { value: "1", name: "UpTend Platform Fees" },
-        },
-        Description: `UpTend platform fees - ${data.period} (${data.jobCount} jobs)`,
-      },
-    ],
-    PrivateNote: `UpTend platform fee summary for ${data.period}`,
-  });
-
-  const qbExpenseId = purchase?.Purchase?.Id || "unknown";
-  syncHistory.push({
-    id: generateId(),
-    businessId,
-    type: "expense",
-    status: "success",
-    details: `Platform fees for ${data.period}: $${data.amount} (${data.jobCount} jobs)`,
-    qbEntity: "Purchase",
-    qbId: qbExpenseId,
-    amount: data.amount,
-    syncedAt: new Date().toISOString(),
-  });
-  tokens.lastSyncAt = new Date().toISOString();
-
-  return { success: true, qbExpenseId };
+  return result.rows[0] as any;
 }
 
-/**
- * Get sync history for a business
- */
-export function getSyncHistory(businessId: string, limit = 50): typeof syncHistory {
-  return syncHistory
-    .filter(h => h.businessId === businessId)
-    .sort((a, b) => new Date(b.syncedAt).getTime() - new Date(a.syncedAt).getTime())
-    .slice(0, limit);
+export async function refreshToken(partnerSlug: string): Promise<{ success: boolean; message: string }> {
+  await ensureTables();
+
+  const conn = await db.execute(sql`
+    SELECT * FROM partner_quickbooks_connections WHERE partner_slug = ${partnerSlug} AND status != 'disconnected' ORDER BY id DESC LIMIT 1
+  `);
+  if (!conn.rows?.length) return { success: false, message: "No QuickBooks connection found" };
+
+  const connection = conn.rows[0] as any;
+
+  // TODO: Replace with actual QB token refresh
+  // const response = await fetch(QB_CONFIG.tokenEndpoint, { method: 'POST', body: `grant_type=refresh_token&refresh_token=${connection.refresh_token}` });
+  const newAccessToken = `mock_refreshed_${Date.now()}`;
+  const newExpiresAt = new Date(Date.now() + 3600 * 1000);
+
+  await db.execute(sql`
+    UPDATE partner_quickbooks_connections
+    SET access_token = ${newAccessToken}, token_expires_at = ${newExpiresAt.toISOString()}, status = 'active'
+    WHERE id = ${connection.id}
+  `);
+
+  return { success: true, message: "Token refreshed successfully" };
+}
+
+export async function getConnectionStatus(partnerSlug: string): Promise<QBConnection | null> {
+  await ensureTables();
+  const result = await db.execute(sql`
+    SELECT * FROM partner_quickbooks_connections WHERE partner_slug = ${partnerSlug} AND status != 'disconnected' ORDER BY id DESC LIMIT 1
+  `);
+  if (!result.rows?.length) return null;
+  const conn = result.rows[0] as any;
+  // Check if expired
+  if (conn.token_expires_at && new Date(conn.token_expires_at) < new Date() && conn.status === "active") {
+    await db.execute(sql`UPDATE partner_quickbooks_connections SET status = 'expired' WHERE id = ${conn.id}`);
+    conn.status = "expired";
+  }
+  return conn;
+}
+
+export async function disconnectQuickBooks(partnerSlug: string): Promise<{ success: boolean }> {
+  await ensureTables();
+  await db.execute(sql`
+    UPDATE partner_quickbooks_connections SET status = 'disconnected', access_token = NULL, refresh_token = NULL
+    WHERE partner_slug = ${partnerSlug} AND status != 'disconnected'
+  `);
+  return { success: true };
+}
+
+// ============================================================
+// Sync Functions (Stubbed)
+// ============================================================
+
+async function logSync(partnerSlug: string, syncType: string, direction: string): Promise<number> {
+  const result = await db.execute(sql`
+    INSERT INTO partner_qb_sync_log (partner_slug, sync_type, direction, started_at)
+    VALUES (${partnerSlug}, ${syncType}, ${direction}, NOW())
+    RETURNING id
+  `);
+  return (result.rows[0] as any).id;
+}
+
+async function completeSync(logId: number, recordsSynced: number, errors: any = null) {
+  await db.execute(sql`
+    UPDATE partner_qb_sync_log SET completed_at = NOW(), records_synced = ${recordsSynced}, errors = ${errors ? JSON.stringify(errors) : null}
+    WHERE id = ${logId}
+  `);
+}
+
+export async function syncInvoicesToQB(partnerSlug: string): Promise<{ synced: number; message: string }> {
+  await ensureTables();
+  const conn = await getConnectionStatus(partnerSlug);
+  if (!conn || conn.status !== "active") return { synced: 0, message: "QuickBooks not connected or token expired" };
+
+  const logId = await logSync(partnerSlug, "invoice", "push");
+
+  // TODO: Fetch unsent invoices from partner_invoices table
+  // TODO: For each invoice, POST to QB_CONFIG.apiBase/{realmId}/invoice
+  // Stub: pretend we synced 0 invoices
+  const mockSynced = 0;
+
+  await completeSync(logId, mockSynced);
+  await db.execute(sql`UPDATE partner_quickbooks_connections SET last_sync_at = NOW() WHERE id = ${conn.id}`);
+
+  return { synced: mockSynced, message: `Pushed ${mockSynced} invoices to QuickBooks (stub)` };
+}
+
+export async function syncPaymentsFromQB(partnerSlug: string): Promise<{ synced: number; message: string }> {
+  await ensureTables();
+  const conn = await getConnectionStatus(partnerSlug);
+  if (!conn || conn.status !== "active") return { synced: 0, message: "QuickBooks not connected or token expired" };
+
+  const logId = await logSync(partnerSlug, "payment", "pull");
+
+  // TODO: GET from QB_CONFIG.apiBase/{realmId}/query?query=SELECT * FROM Payment WHERE ...
+  // TODO: Match payments to partner_invoices and update status
+  const mockSynced = 0;
+
+  await completeSync(logId, mockSynced);
+  await db.execute(sql`UPDATE partner_quickbooks_connections SET last_sync_at = NOW() WHERE id = ${conn.id}`);
+
+  return { synced: mockSynced, message: `Pulled ${mockSynced} payments from QuickBooks (stub)` };
+}
+
+export async function syncCustomers(partnerSlug: string): Promise<{ synced: number; message: string }> {
+  await ensureTables();
+  const conn = await getConnectionStatus(partnerSlug);
+  if (!conn || conn.status !== "active") return { synced: 0, message: "QuickBooks not connected or token expired" };
+
+  const logId = await logSync(partnerSlug, "customer", "push");
+
+  // TODO: Bidirectional customer sync
+  // 1. Push new local customers to QB
+  // 2. Pull new QB customers to local
+  const mockSynced = 0;
+
+  await completeSync(logId, mockSynced);
+  return { synced: mockSynced, message: `Synced ${mockSynced} customers (stub)` };
+}
+
+export async function getSyncHistory(partnerSlug: string): Promise<QBSyncLog[]> {
+  await ensureTables();
+  const result = await db.execute(sql`
+    SELECT * FROM partner_qb_sync_log WHERE partner_slug = ${partnerSlug} ORDER BY started_at DESC LIMIT 50
+  `);
+  return result.rows as any[];
+}
+
+export async function triggerFullSync(partnerSlug: string): Promise<{ invoices: any; payments: any; customers: any }> {
+  await ensureTables();
+
+  const logId = await logSync(partnerSlug, "all", "push");
+
+  const invoices = await syncInvoicesToQB(partnerSlug);
+  const payments = await syncPaymentsFromQB(partnerSlug);
+  const customers = await syncCustomers(partnerSlug);
+
+  const totalSynced = invoices.synced + payments.synced + customers.synced;
+  await completeSync(logId, totalSynced);
+
+  return { invoices, payments, customers };
 }

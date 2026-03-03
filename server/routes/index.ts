@@ -297,6 +297,9 @@ import { registerQualityReportRoutes } from "./quality-reports.routes";
 // Partner Operations 2 routes (dispatch, signatures, reporting)
 import { registerPartnerOperations2Routes } from "./partner-operations2.routes";
 
+// Partner Operations 3 routes (QuickBooks, Google Calendar, timesheets)
+import { registerPartnerOperations3Routes } from "./partner-operations3.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -608,6 +611,9 @@ export async function registerRoutes(
 
   // Register Partner Operations 2 routes (dispatch, signatures, reporting)
   registerPartnerOperations2Routes(app);
+
+  // Register Partner Operations 3 routes (QuickBooks, Google Calendar, timesheets)
+  registerPartnerOperations3Routes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
