@@ -95,16 +95,15 @@ function getSession(sid: string, userId?: string): GuideSession {
     
     // If user is authenticated, try to load existing conversation asynchronously
     if (userId) {
-      loadConversation(userId, sid).then(savedSession => {
-        if (savedSession && sessions.has(sid)) {
-          // Merge saved data with current session, preserving access time
-          const currentSession = sessions.get(sid)!;
-          Object.assign(currentSession, savedSession, { _lastAccess: Date.now() });
-          console.log(`[Guide] Loaded conversation for user ${userId}, session ${sid} with ${savedSession.history.length} messages`);
-        }
-      }).catch(err => {
-        console.error(`[Guide] Failed to load conversation for user ${userId}:`, err);
-      });
+      try {
+        loadConversation(userId, sid).then(savedSession => {
+          if (savedSession && sessions.has(sid)) {
+            const currentSession = sessions.get(sid)!;
+            Object.assign(currentSession, savedSession, { _lastAccess: Date.now() });
+            console.log(`[Guide] Loaded conversation for user ${userId}, session ${sid} with ${savedSession.history.length} messages`);
+          }
+        }).catch(() => { /* silently ignore load failures */ });
+      } catch { /* silently ignore */ }
     }
   }
   
@@ -858,19 +857,29 @@ export default function createGuideRoutes(_storage: any) {
       const responseTime = Date.now() - startTime;
 
       // ── Iteration Loop: Self-review before sending ──────────────────────
-      const maxIterations = 2; // up to 2 refinement passes
-      for (let i = 0; i < maxIterations; i++) {
-        const issues = reviewGeorgeResponse(georgeResult.response, session, georgeContext);
-        if (issues.length === 0) break; // response is clean, send it
+      try {
+        if (georgeResult?.response) {
+          const maxIterations = 2;
+          for (let i = 0; i < maxIterations; i++) {
+            const issues = reviewGeorgeResponse(georgeResult.response, session, georgeContext);
+            if (issues.length === 0) break;
 
-        console.log(`[George Iteration ${i + 1}] Issues found: ${issues.join(", ")}`);
+            console.log(`[George Iteration ${i + 1}] Issues found: ${issues.join(", ")}`);
 
-        // Ask George to fix his own response
-        const fixPrompt = `SELF-REVIEW FAILED. Fix these issues in your last response and try again. Return ONLY the corrected response, nothing else.\n\nISSUES:\n${issues.map((iss, idx) => `${idx + 1}. ${iss}`).join("\n")}\n\nYOUR ORIGINAL RESPONSE:\n${georgeResult.response}`;
+            const fixPrompt = `SELF-REVIEW FAILED. Fix these issues in your last response and try again. Return ONLY the corrected response, nothing else.\n\nISSUES:\n${issues.map((iss, idx) => `${idx + 1}. ${iss}`).join("\n")}\n\nYOUR ORIGINAL RESPONSE:\n${georgeResult.response}`;
 
-        const fixHistory = [...historyForGeorge, { role: "user" as const, content: userContent }, { role: "assistant" as const, content: georgeResult.response }];
-        const fixResult = await georgeChat(fixPrompt, fixHistory, { ...georgeContext, conversationState: georgeContext.conversationState + "\n\nSELF-REVIEW MODE: You are correcting your own response. Fix the issues listed. Keep it short. ONE question max." });
-        georgeResult = { ...georgeResult, response: fixResult.response };
+            const fixHistory = [...historyForGeorge, { role: "user" as const, content: userContent }, { role: "assistant" as const, content: georgeResult.response }];
+            try {
+              const fixResult = await georgeChat(fixPrompt, fixHistory, { ...georgeContext, conversationState: (georgeContext.conversationState || "") + "\n\nSELF-REVIEW MODE: You are correcting your own response. Fix the issues listed. Keep it short. ONE question max." });
+              georgeResult = { ...georgeResult, response: fixResult.response };
+            } catch (iterErr) {
+              console.error(`[George Iteration ${i + 1}] Fix call failed, using original:`, iterErr);
+              break;
+            }
+          }
+        }
+      } catch (reviewErr) {
+        console.error("[George] Iteration loop error, using original response:", reviewErr);
       }
       // ── End Iteration Loop ──────────────────────────────────────────────
 
