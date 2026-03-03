@@ -229,26 +229,19 @@ export default function DiscoveryPage() {
     }
   }, [messages, auditStarted]);
 
-  // Voice: speak George's message via ElevenLabs Adam voice
+  // Voice: speak George's message via ElevenLabs
   const speak = useCallback(async (text: string, force?: boolean) => {
     if (!voiceMode && !force) return;
     try {
-      const resp = await fetch("/api/partners/voice/speak", {
+      const resp = await fetch("/api/guide/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
       if (resp.ok) {
         const data = await resp.json();
-        if (data.audioBase64) {
-          const byteString = atob(data.audioBase64);
-          const ab = new ArrayBuffer(byteString.length);
-          const ia = new Uint8Array(ab);
-          for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
-          const blob = new Blob([ab], { type: "audio/mpeg" });
-          const url = URL.createObjectURL(blob);
-          const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
+        if (data.audio) {
+          const audio = new Audio(`data:audio/mpeg;base64,${data.audio}`);
           audio.play().catch(() => {
             // Mobile autoplay blocked - try browser TTS fallback
             if (window.speechSynthesis) {
