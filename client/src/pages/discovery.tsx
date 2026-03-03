@@ -102,6 +102,8 @@ function extractData(messages: Message[]): CollectedData {
   if (lower.includes("google ads") || lower.includes("ppc")) data.leadSources = (data.leadSources || "") + "Google Ads, ";
   if (lower.includes("facebook ads") || lower.includes("meta ads")) data.leadSources = (data.leadSources || "") + "Facebook Ads, ";
 
+  const urlMatch = userMsgs.match(/(https?:\/\/[^\s]+|(?:www\.)[^\s]+|[a-zA-Z0-9-]+\.(?:com|net|org|io|co|biz)(?:\/[^\s]*)?)/i);
+  if (urlMatch) data.websiteUrl = urlMatch[1].startsWith("http") ? urlMatch[1] : `https://${urlMatch[1]}`;
   if (lower.match(/website.*(outdated|old|never|don't have|no website)/)) data.websiteStatus = "outdated or missing";
   if (lower.match(/(don't rank|not on google|can't find us|page 2|not showing up)/)) data.seoRanking = "poor";
   if (lower.match(/competitor|competition/)) data.competitorAwareness = "mentioned";
@@ -218,6 +220,7 @@ export default function DiscoveryPage() {
           companyName: collected.companyName,
           serviceType: collected.serviceType,
           city: collected.serviceArea || "Orlando",
+          websiteUrl: collected.websiteUrl,
         }),
       })
         .then(r => r.json())

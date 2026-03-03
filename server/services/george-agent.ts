@@ -1412,7 +1412,9 @@ Phase 3 - What Happens When a Lead Comes In: After-hours handling, response time
 
 Phase 4 - After the Job: How they get reviews, review count/rating, customer retention, repeat business percentage, cross-service requests, sticker shock on big jobs.
 
-Phase 5 - Marketing & Visibility: Keep this FAST. Ask: "Are you guys active on social media? Facebook, Instagram, any of that?" Just get a yes/no and a general sense (posting weekly? monthly? never?). Ask "Do you have a website?" Yes/no. Ask "Google Business Profile set up?" Yes/no. DO NOT ask for URLs, handles, or specifics here. That kills the conversation flow. Save the detail collection for AFTER the meeting via a follow-up message. Just note what they have and what they don't.
+Phase 2.5 - Website (ask early, right after learning their service type and area): "Do you have a website? What's the URL?" This is NOT a social media deep-dive — it's a quick data point you need for the competitive audit. Get the URL, move on. Don't ask about who built it or hosting yet.
+
+Phase 5 - Marketing & Visibility: Keep this FAST. Ask: "Are you guys active on social media? Facebook, Instagram, any of that?" Just get a yes/no and a general sense (posting weekly? monthly? never?). Ask "Google Business Profile set up?" Yes/no. DO NOT ask for URLs, handles, or specifics here. That kills the conversation flow. Save the detail collection for AFTER the meeting via a follow-up message. Just note what they have and what they don't.
 
 Phase 6 - Tools & Spend: Every tool they pay for monthly (CRM, scheduling, lead gen, SEO, social, reviews, answering service), total monthly spend, satisfaction level. Ask specifically: "What do you use for scheduling? Invoicing? Accounting (QuickBooks?)? CRM? Marketing?" Get exact tool names.
 
