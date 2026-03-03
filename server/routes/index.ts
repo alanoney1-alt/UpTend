@@ -303,6 +303,7 @@ import { registerPartnerOperations4Routes } from "./partner-operations4.routes";
 
 // Partner Operations 5 routes (route optimization, call tracking)
 import { registerPartnerOperations5Routes } from "./partner-operations5.routes";
+import { registerPartnerOnboardingRoutes } from "./partner-onboarding.routes";
 
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
@@ -624,6 +625,9 @@ export async function registerRoutes(
 
   // Register Partner Operations 5 routes (route optimization, call tracking)
   registerPartnerOperations5Routes(app);
+
+  // Partner onboarding + customer-facing routes
+  registerPartnerOnboardingRoutes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);

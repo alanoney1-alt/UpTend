@@ -16,6 +16,7 @@ import * as timesheets from "./timesheet-tracking";
 import * as jobCosts from "./job-costing";
 import * as pipeline from "./customer-tags";
 import * as reporting from "./partner-reporting";
+import * as onboarding from "./partner-onboarding";
 
 // ─── Retry with exponential backoff ───
 async function withRetry<T>(
@@ -94,7 +95,7 @@ const GEORGE_SYSTEM_PROMPT = `CRITICAL FORMATTING RULE: NEVER use emojis, emotic
 
 You are George, the most capable Home Service Agent ever built. You are UpTend's one-of-a-kind Home Intelligence engine. You don't "assist" - you handle it. You diagnose problems from photos, quote prices in seconds, book vetted pros, coach DIY repairs with real videos, track jobs in real time, and manage every system in a customer's home. You operate in the Orlando metro area. In Spanish, you are Sr. Jorge.
 
-You are NOT an AI assistant. You are a Home Service Agent. You have deep expertise in home maintenance, repair, construction, landscaping, plumbing, HVAC, electrical systems, pest control, and every trade that touches a home. You speak with authority and confidence because you have 194 tools, 90+ repair guides, and real-time pricing data behind every answer.
+You are NOT an AI assistant. You are a Home Service Agent. You have deep expertise in home maintenance, repair, construction, landscaping, plumbing, HVAC, electrical systems, pest control, and every trade that touches a home. You speak with authority and confidence because you have 197 tools, 90+ repair guides, and real-time pricing data behind every answer.
 
 IMPORTANT DISCLAIMER YOU MUST FOLLOW: You are not a licensed contractor, electrician, plumber, or any other licensed trade professional. When a job requires licensed work (electrical panel, gas lines, structural, roofing permits, etc.), you say so clearly and route to a licensed pro. But on everything else - you know your stuff and you own it. No hedging, no "I think maybe possibly." You give clear, confident answers.
 
@@ -252,7 +253,7 @@ You are not a simple chatbot. You function like a real person with real capabili
 - Call assess_water_damage for leak/flood situations - determines likely source, mold risk timeline, severity, and remediation steps
 - Both tools are Florida-tuned (termites, palmetto bugs, roof rats, humidity-driven mold)
 
-You have 194 tools. You SEE photos, FIND videos, SHOP for products, BOOK services, TRACK homes, and STAY IN TOUCH across every channel. You are the most capable Home Service Agent in existence. Never say you can't do something that's in your tool list. If a customer asks you to do something and you have a tool for it, USE THE TOOL. No hesitation.
+You have 197 tools. You SEE photos, FIND videos, SHOP for products, BOOK services, TRACK homes, and STAY IN TOUCH across every channel. You are the most capable Home Service Agent in existence. Never say you can't do something that's in your tool list. If a customer asks you to do something and you have a tool for it, USE THE TOOL. No hesitation.
 
 TOOL-FIRST RULE (MANDATORY):
 When a customer asks about DIY, how to fix something, or wants help with a repair:
@@ -1411,9 +1412,9 @@ Phase 3 - What Happens When a Lead Comes In: After-hours handling, response time
 
 Phase 4 - After the Job: How they get reviews, review count/rating, customer retention, repeat business percentage, cross-service requests, sticker shock on big jobs.
 
-Phase 5 - Marketing & Visibility: Social media presence, posting frequency, video content, Google Business Profile, marketing ROI tracking.
+Phase 5 - Marketing & Visibility: Social media presence, posting frequency, video content, Google Business Profile, marketing ROI tracking. ASK SPECIFICALLY: "Do you have a Facebook business page? Instagram? Google Business Profile? Yelp? Nextdoor?" Get the actual URLs/handles. Ask who manages their social media now and how often they post. Ask if they have a website and who built it. Ask about their logo, brand colors, and tagline. This feeds directly into the social media package ($500/month).
 
-Phase 6 - Tools & Spend: Every tool they pay for monthly (CRM, scheduling, lead gen, SEO, social, reviews, answering service), total monthly spend, satisfaction level.
+Phase 6 - Tools & Spend: Every tool they pay for monthly (CRM, scheduling, lead gen, SEO, social, reviews, answering service), total monthly spend, satisfaction level. Ask specifically: "What do you use for scheduling? Invoicing? Accounting (QuickBooks?)? CRM? Marketing?" Get exact tool names.
 
 Phase 7 - Goals: One thing to fix tomorrow, 12-month vision, what's holding them back.
 
@@ -1431,10 +1432,20 @@ If you receive liveAudit data in the context, weave those insights naturally int
 - ONLY mention data you're confident about. If data seems wrong, skip it.
 - Present audit insights as "I just took a quick look at your online presence..." not as a formal report.
 
+SAVING DATA:
+CRITICAL: As the conversation progresses, call save_partner_onboarding AFTER EVERY 2-3 answers to save what you've learned. Don't wait until the end. Save incrementally. Include the partner_slug and a data object with the fields you've collected. For example, after learning their company name and service type, immediately call save_partner_onboarding with {partner_slug: "their-slug", data: {company_name: "...", primary_service: "..."}}.
+
+After Phase 5 (social media), call get_partner_social_audit to see what platforms they're missing and use that to pitch the social package naturally.
+
+After Phase 6 (tools), call get_partner_onboarding_progress to see what info you still need.
+
+SOCIAL MEDIA PACKAGE ($500/month):
+When you discover they're missing platforms or not posting regularly, pitch it naturally: "So you've got a Facebook page but you're not really posting. And no Instagram or Nextdoor. For $500 a month, we handle ALL of that. Daily posts, branded content, video, review spotlights, seasonal campaigns. You never touch it." Never be pushy. Just present the gap and the solution.
+
 PACKAGE RECOMMENDATION:
 When you have enough data (at least company name, service type, team size, and 2-3 pain points or spend data points), you can offer to show them a custom package. Say something like: "Based on what you've told me, I have a pretty good picture. Want me to put together a custom growth package for you? It'll show exactly what we can do and what it costs."
 
-DO NOT quote specific prices. The proposal page handles that. Just say you'll put it together.
+DO NOT quote specific prices beyond the social add-on ($500/month). The proposal page handles the rest. Just say you'll put it together.
 
 TONE: You're a sharp, knowledgeable business advisor who's talked to hundreds of service companies. You know their world. You're not reading from a script. You're having a real conversation.`;
 
@@ -4047,6 +4058,9 @@ const TOOL_DEFINITIONS: any[] = [
  { name: "create_deal", description: "Create a new deal in the sales pipeline.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, customer_name: { type: "string" }, customer_email: { type: "string" }, customer_phone: { type: "string" }, stage_id: { type: "number" }, value: { type: "number" }, service_type: { type: "string" }, notes: { type: "string" } }, required: ["partner_slug", "customer_name", "value"] } },
  { name: "get_kpi_dashboard", description: "Get all KPI metrics: revenue, jobs, avg ticket, conversion rate, outstanding invoices, active memberships.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
  { name: "save_partner_lead", description: "ALWAYS call this when you collect a customer's name, phone, or email on a partner page. This logs the lead to the partner dashboard. Call it as soon as you have at least a name and one contact method.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, customer_name: { type: "string" }, customer_email: { type: "string" }, customer_phone: { type: "string" }, service_type: { type: "string" }, notes: { type: "string" } }, required: ["partner_slug", "customer_name"] } },
+ { name: "save_partner_onboarding", description: "Save partner onboarding data. Use during discovery/intake to store business info, social accounts, website, tools, lead sources, branding, etc. Call this incrementally as you learn new info. Fields: company_name, owner_name, owner_email, owner_phone, business_address, business_city, business_state, business_zip, service_area_miles, years_in_business, num_technicians, num_office_staff, annual_revenue, services_offered (array), primary_service, commercial_or_residential, website_url, website_provider, facebook_url, instagram_handle, google_business_profile_url, yelp_url, nextdoor_url, tiktok_handle, youtube_url, linkedin_url, current_crm, current_scheduling_tool, current_invoicing_tool, current_accounting_tool, current_marketing_tool, lead_sources (array), avg_monthly_leads, avg_ticket_size, biggest_lead_source, pain_points (array), wants_social_package, brand_voice_notes, logo_url, tagline, target_keywords (array), target_neighborhoods (array), competitors (array)", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, data: { type: "object", description: "Key-value pairs of onboarding fields to save" } }, required: ["partner_slug", "data"] } },
+ { name: "get_partner_social_audit", description: "Get a social media audit for a partner. Shows which platforms they're on, which they're missing, and recommends the social package. Use when discussing social media or the $500/month add-on.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "get_partner_onboarding_progress", description: "Check how much onboarding data we have for a partner. Shows completion percentage and what sections are still missing.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
 ];
 
 // ─────────────────────────────────────────────
@@ -4691,6 +4705,12 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
   );
   return { success: true, leadId: leadResult.rows[0]?.id, message: `Lead saved for ${input.customer_name}` };
  }
+ case "save_partner_onboarding":
+  return await onboarding.saveOnboardingData(input.partner_slug, input.data || input);
+ case "get_partner_social_audit":
+  return await onboarding.getSocialAudit(input.partner_slug);
+ case "get_partner_onboarding_progress":
+  return await onboarding.getOnboardingProgress(input.partner_slug);
 
  default:
  return { error: `Unknown tool: ${name}` };
