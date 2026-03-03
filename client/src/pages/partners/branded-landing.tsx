@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Camera, Send, MessageCircle, Shield, Clock, Star,
-  Phone, CheckCircle, Upload, Loader2, ArrowRight,
+  Phone, CheckCircle, Upload, Loader2, ArrowRight, TrendingUp,
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 
@@ -383,6 +383,28 @@ export default function BrandedPartnerLanding() {
                 <a href="/services" className="text-sm text-primary hover:underline">
                   View all services →
                 </a>
+              </div>
+            </div>
+
+            {/* Partner Demo Links */}
+            <div className="bg-card border border-border rounded-2xl p-6 mb-12">
+              <h2 className="text-lg font-bold text-center mb-4">See What UpTend Brings to {config.companyName}</h2>
+              <div className="grid md:grid-cols-3 gap-3">
+                <a href={`/partners/${slug}/george`} className="block p-4 bg-background border border-border rounded-xl hover:border-primary/50 transition-colors text-center">
+                  <MessageCircle className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <h3 className="font-semibold text-sm mb-1">Meet George</h3>
+                  <p className="text-xs text-muted-foreground">Your AI front desk, service advisor & lead machine</p>
+                </a>
+                <a href={`/partners/${slug}/seo-demo`} className="block p-4 bg-background border border-border rounded-xl hover:border-primary/50 transition-colors text-center">
+                  <TrendingUp className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <h3 className="font-semibold text-sm mb-1">SEO Demo</h3>
+                  <p className="text-xs text-muted-foreground">See your search visibility across Orlando neighborhoods</p>
+                </a>
+                <div className="p-4 bg-background border border-border rounded-xl text-center cursor-pointer" onClick={startChat}>
+                  <Send className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <h3 className="font-semibold text-sm mb-1">Try George Live</h3>
+                  <p className="text-xs text-muted-foreground">Chat with George right now and see him in action</p>
+                </div>
               </div>
             </div>
 
