@@ -12,10 +12,15 @@
 
 import { Router, type Express } from "express";
 import { z } from "zod";
+import { pool } from "../db";
 import { generateTieredQuote } from "../services/partner-tiered-quoting";
 import { getPartnerReminders, processReminders, scheduleMaintenanceReminder } from "../services/partner-maintenance-reminders";
 import { queueReviewRequest } from "../services/partner-review-requests";
 import { runPartnerAuditSafe } from "../services/partner-live-audit";
+import { getInvoiceStats } from "../services/invoicing-system";
+import { getEstimateConversionRate } from "../services/estimate-followup";
+import { getMembershipStats } from "../services/membership-management";
+import { getKPIDashboard } from "../services/partner-reporting";
 import {
   registerPartner,
   getPartnerNetworkStats,
@@ -24,6 +29,53 @@ import {
   createReferral,
   completeReferral,
 } from "../services/partner-referral-network";
+
+// Ensure partner_leads and partner_jobs tables exist for tracking
+async function ensureDashboardTables() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS partner_leads (
+      id SERIAL PRIMARY KEY,
+      partner_slug TEXT NOT NULL,
+      customer_name TEXT,
+      customer_email TEXT,
+      customer_phone TEXT,
+      service_type TEXT,
+      source TEXT DEFAULT 'george',
+      status TEXT DEFAULT 'new',
+      notes TEXT,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS partner_jobs (
+      id SERIAL PRIMARY KEY,
+      partner_slug TEXT NOT NULL,
+      lead_id INT,
+      customer_name TEXT,
+      service_type TEXT,
+      status TEXT DEFAULT 'scheduled',
+      tech_name TEXT,
+      amount NUMERIC DEFAULT 0,
+      scheduled_at TIMESTAMP,
+      completed_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS partner_reviews (
+      id SERIAL PRIMARY KEY,
+      partner_slug TEXT NOT NULL,
+      customer_name TEXT,
+      rating INT,
+      review_text TEXT,
+      source TEXT DEFAULT 'google',
+      request_sent_at TIMESTAMP,
+      received_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+}
+ensureDashboardTables().catch(console.error);
 
 export function registerPartnerDashboardRoutes(app: Express) {
   const router = Router();
@@ -34,22 +86,71 @@ export function registerPartnerDashboardRoutes(app: Express) {
   router.get("/:slug/stats", async (req, res) => {
     const { slug } = req.params;
     
-    // Demo data - structured to wire to real DB queries later
-    res.json({
-      success: true,
-      stats: {
-        totalLeads: 0,
-        activeJobs: 0,
-        revenueThisMonth: 0,
-        averageRating: 0,
-        completedJobsThisMonth: 0,
-        reviewRequestsSent: 0,
-        reviewsReceived: 0,
-        maintenanceRemindersDue: 0,
-      },
-      period: "current_month",
-      partnerSlug: slug,
-    });
+    try {
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+      // Leads this month
+      const leadsResult = await pool.query(
+        `SELECT COUNT(*) as count FROM partner_leads WHERE partner_slug = $1 AND created_at >= $2`,
+        [slug, monthStart]
+      );
+
+      // Active jobs
+      const activeJobsResult = await pool.query(
+        `SELECT COUNT(*) as count FROM partner_jobs WHERE partner_slug = $1 AND status IN ('scheduled', 'in_progress')`,
+        [slug]
+      );
+
+      // Revenue this month (from paid invoices)
+      const revenueResult = await pool.query(
+        `SELECT COALESCE(SUM(total), 0) as revenue FROM partner_invoices WHERE partner_slug = $1 AND status = 'paid' AND paid_at >= $2`,
+        [slug, monthStart]
+      ).catch(() => ({ rows: [{ revenue: 0 }] }));
+
+      // Completed jobs this month
+      const completedResult = await pool.query(
+        `SELECT COUNT(*) as count FROM partner_jobs WHERE partner_slug = $1 AND status = 'completed' AND completed_at >= $2`,
+        [slug, monthStart]
+      );
+
+      // Reviews
+      const reviewsResult = await pool.query(
+        `SELECT 
+          COALESCE(AVG(rating), 0) as avg_rating,
+          COUNT(CASE WHEN request_sent_at IS NOT NULL THEN 1 END) as requests_sent,
+          COUNT(CASE WHEN received_at IS NOT NULL THEN 1 END) as reviews_received
+         FROM partner_reviews WHERE partner_slug = $1`,
+        [slug]
+      );
+
+      res.json({
+        success: true,
+        stats: {
+          totalLeads: parseInt(leadsResult.rows[0]?.count || "0"),
+          activeJobs: parseInt(activeJobsResult.rows[0]?.count || "0"),
+          revenueThisMonth: parseFloat(revenueResult.rows[0]?.revenue || "0"),
+          averageRating: parseFloat(parseFloat(reviewsResult.rows[0]?.avg_rating || "0").toFixed(1)),
+          completedJobsThisMonth: parseInt(completedResult.rows[0]?.count || "0"),
+          reviewRequestsSent: parseInt(reviewsResult.rows[0]?.requests_sent || "0"),
+          reviewsReceived: parseInt(reviewsResult.rows[0]?.reviews_received || "0"),
+        },
+        period: "current_month",
+        partnerSlug: slug,
+      });
+    } catch (err: any) {
+      console.error("Dashboard stats error:", err.message);
+      // Graceful fallback — return zeros if tables don't exist yet
+      res.json({
+        success: true,
+        stats: {
+          totalLeads: 0, activeJobs: 0, revenueThisMonth: 0, averageRating: 0,
+          completedJobsThisMonth: 0, reviewRequestsSent: 0, reviewsReceived: 0,
+        },
+        period: "current_month",
+        partnerSlug: slug,
+      });
+    }
   });
 
   // ==========================================
@@ -58,12 +159,15 @@ export function registerPartnerDashboardRoutes(app: Express) {
   router.get("/:slug/leads", async (req, res) => {
     const { slug } = req.params;
     
-    // Real data — empty until partner has actual leads
-    res.json({
-      success: true,
-      leads: [],
-      partnerSlug: slug,
-    });
+    try {
+      const result = await pool.query(
+        `SELECT * FROM partner_leads WHERE partner_slug = $1 ORDER BY created_at DESC LIMIT 50`,
+        [slug]
+      );
+      res.json({ success: true, leads: result.rows, partnerSlug: slug });
+    } catch {
+      res.json({ success: true, leads: [], partnerSlug: slug });
+    }
   });
 
   // ==========================================
@@ -72,12 +176,15 @@ export function registerPartnerDashboardRoutes(app: Express) {
   router.get("/:slug/jobs", async (req, res) => {
     const { slug } = req.params;
     
-    // Real data — empty until partner has actual jobs
-    res.json({
-      success: true,
-      jobs: [],
-      partnerSlug: slug,
-    });
+    try {
+      const result = await pool.query(
+        `SELECT * FROM partner_jobs WHERE partner_slug = $1 ORDER BY created_at DESC LIMIT 50`,
+        [slug]
+      );
+      res.json({ success: true, jobs: result.rows, partnerSlug: slug });
+    } catch {
+      res.json({ success: true, jobs: [], partnerSlug: slug });
+    }
   });
 
   // ==========================================

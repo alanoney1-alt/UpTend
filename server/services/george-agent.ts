@@ -94,7 +94,7 @@ const GEORGE_SYSTEM_PROMPT = `CRITICAL FORMATTING RULE: NEVER use emojis, emotic
 
 You are George, the most capable Home Service Agent ever built. You are UpTend's one-of-a-kind Home Intelligence engine. You don't "assist" - you handle it. You diagnose problems from photos, quote prices in seconds, book vetted pros, coach DIY repairs with real videos, track jobs in real time, and manage every system in a customer's home. You operate in the Orlando metro area. In Spanish, you are Sr. Jorge.
 
-You are NOT an AI assistant. You are a Home Service Agent. You have deep expertise in home maintenance, repair, construction, landscaping, plumbing, HVAC, electrical systems, pest control, and every trade that touches a home. You speak with authority and confidence because you have 193 tools, 90+ repair guides, and real-time pricing data behind every answer.
+You are NOT an AI assistant. You are a Home Service Agent. You have deep expertise in home maintenance, repair, construction, landscaping, plumbing, HVAC, electrical systems, pest control, and every trade that touches a home. You speak with authority and confidence because you have 194 tools, 90+ repair guides, and real-time pricing data behind every answer.
 
 IMPORTANT DISCLAIMER YOU MUST FOLLOW: You are not a licensed contractor, electrician, plumber, or any other licensed trade professional. When a job requires licensed work (electrical panel, gas lines, structural, roofing permits, etc.), you say so clearly and route to a licensed pro. But on everything else - you know your stuff and you own it. No hedging, no "I think maybe possibly." You give clear, confident answers.
 
@@ -252,7 +252,7 @@ You are not a simple chatbot. You function like a real person with real capabili
 - Call assess_water_damage for leak/flood situations - determines likely source, mold risk timeline, severity, and remediation steps
 - Both tools are Florida-tuned (termites, palmetto bugs, roof rats, humidity-driven mold)
 
-You have 193 tools. You SEE photos, FIND videos, SHOP for products, BOOK services, TRACK homes, and STAY IN TOUCH across every channel. You are the most capable Home Service Agent in existence. Never say you can't do something that's in your tool list. If a customer asks you to do something and you have a tool for it, USE THE TOOL. No hesitation.
+You have 194 tools. You SEE photos, FIND videos, SHOP for products, BOOK services, TRACK homes, and STAY IN TOUCH across every channel. You are the most capable Home Service Agent in existence. Never say you can't do something that's in your tool list. If a customer asks you to do something and you have a tool for it, USE THE TOOL. No hesitation.
 
 TOOL-FIRST RULE (MANDATORY):
 When a customer asks about DIY, how to fix something, or wants help with a repair:
@@ -4046,6 +4046,7 @@ const TOOL_DEFINITIONS: any[] = [
  { name: "get_pipeline_view", description: "View the sales pipeline with all stages and deals.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
  { name: "create_deal", description: "Create a new deal in the sales pipeline.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, customer_name: { type: "string" }, customer_email: { type: "string" }, customer_phone: { type: "string" }, stage_id: { type: "number" }, value: { type: "number" }, service_type: { type: "string" }, notes: { type: "string" } }, required: ["partner_slug", "customer_name", "value"] } },
  { name: "get_kpi_dashboard", description: "Get all KPI metrics: revenue, jobs, avg ticket, conversion rate, outstanding invoices, active memberships.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
+ { name: "save_partner_lead", description: "ALWAYS call this when you collect a customer's name, phone, or email on a partner page. This logs the lead to the partner dashboard. Call it as soon as you have at least a name and one contact method.", input_schema: { type: "object", properties: { partner_slug: { type: "string" }, customer_name: { type: "string" }, customer_email: { type: "string" }, customer_phone: { type: "string" }, service_type: { type: "string" }, notes: { type: "string" } }, required: ["partner_slug", "customer_name"] } },
 ];
 
 // ─────────────────────────────────────────────
@@ -4681,6 +4682,15 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
   return await pipeline.createDeal(input.partner_slug, { customerName: input.customer_name, customerEmail: input.customer_email || "", customerPhone: input.customer_phone || "", stageId: input.stage_id || 1, value: input.value, serviceType: input.service_type || "", notes: input.notes || "", assignedTo: "", expectedCloseDate: "" });
  case "get_kpi_dashboard":
   return await reporting.getKPIDashboard(input.partner_slug);
+ case "save_partner_lead": {
+  const { pool: dbPool } = await import("../db");
+  const leadResult = await dbPool.query(
+   `INSERT INTO partner_leads (partner_slug, customer_name, customer_email, customer_phone, service_type, notes, source)
+    VALUES ($1, $2, $3, $4, $5, $6, 'george') RETURNING id`,
+   [input.partner_slug, input.customer_name, input.customer_email || null, input.customer_phone || null, input.service_type || null, input.notes || null]
+  );
+  return { success: true, leadId: leadResult.rows[0]?.id, message: `Lead saved for ${input.customer_name}` };
+ }
 
  default:
  return { error: `Unknown tool: ${name}` };
