@@ -105,7 +105,7 @@ export default function PartnerSEODemo() {
           <h1 className="text-3xl font-bold mb-2">Your SEO Performance</h1>
           <p className="text-muted-foreground">Here's what UpTend builds and manages for {data.companyName}.</p>
           <div className="mt-3 inline-block bg-blue-500/10 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full">
-            PROJECTED — Based on typical results for {data.serviceType} partners in Orlando
+            PROJECTED // Based on typical results for {data.serviceType} partners in Orlando
           </div>
         </div>
 

@@ -498,7 +498,8 @@ function Router() {
 function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const stored = localStorage.getItem("theme");
-    if (stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    // Default to dark theme unless user explicitly chose light
+    if (stored !== "light") {
       document.documentElement.classList.add("dark");
     }
   }, []);

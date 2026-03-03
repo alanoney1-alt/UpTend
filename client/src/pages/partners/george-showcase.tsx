@@ -1,7 +1,7 @@
 /**
  * George AI Capability Showcase for Partners
  * 
- * /partners/:slug/george — shows the partner owner what George does
+ * /partners/:slug/george - shows the partner owner what George does
  * This is a sales page, not a demo. It explains George's value.
  */
 
@@ -42,7 +42,7 @@ export default function GeorgeShowcase() {
     {
       icon: Brain,
       title: "Smart Scoping",
-      desc: "George builds a scope of work based on the conversation and photos. He knows HVAC — compressor issues, refrigerant, ductwork, thermostat problems. Your team reviews and approves, not builds from scratch.",
+      desc: "George builds a scope of work based on the conversation and photos. He knows HVAC. compressor issues, refrigerant, ductwork, thermostat problems. Your team reviews and approves, not builds from scratch.",
       highlight: "Scopes in minutes, not hours",
     },
     {
@@ -60,13 +60,13 @@ export default function GeorgeShowcase() {
     {
       icon: Users,
       title: "Lead Routing",
-      desc: "Every conversation George has becomes a qualified lead with name, phone, address, issue description, and photos — routed directly to your team via email, text, or dashboard.",
+      desc: "Every conversation George has becomes a qualified lead with name, phone, address, issue description, and photos. routed directly to your team via email, text, or dashboard.",
       highlight: "Qualified leads, not tire kickers",
     },
     {
       icon: TrendingUp,
       title: "SEO Power",
-      desc: "UpTend builds search-optimized pages for your brand across every Orlando neighborhood. When someone Googles 'AC repair Lake Nona,' your name shows up — powered by our SEO engine.",
+      desc: "UpTend builds search-optimized pages for your brand across every Orlando neighborhood. When someone Googles 'AC repair Lake Nona,' your name shows up. powered by our SEO engine.",
       highlight: "Show up where customers are searching",
     },
     {
@@ -78,13 +78,13 @@ export default function GeorgeShowcase() {
     {
       icon: Shield,
       title: "Brand Trust",
-      desc: "George represents your company by name. Customers see your brand, your services, your phone number. UpTend powers the tech — you own the relationship.",
+      desc: "George represents your company by name. Customers see your brand, your services, your phone number. UpTend powers the tech. you own the relationship.",
       highlight: "Your brand, our intelligence",
     },
     {
       icon: BarChart3,
       title: "Analytics Dashboard",
-      desc: "See how many conversations George is handling, conversion rates, common issues, peak times, and customer satisfaction — all in one dashboard.",
+      desc: "See how many conversations George is handling, conversion rates, common issues, peak times, and customer satisfaction. all in one dashboard.",
       highlight: "Data-driven decisions",
     },
   ];
@@ -125,7 +125,7 @@ export default function GeorgeShowcase() {
             Your AI Front Desk, Service Advisor & Lead Machine
           </p>
           <p className="text-base text-muted-foreground max-w-2xl mx-auto">
-            George handles customer conversations, diagnoses HVAC issues from photos, builds scopes of work, and routes qualified leads to {companyName} — all before you lift a finger.
+            George handles customer conversations, diagnoses HVAC issues from photos, builds scopes of work, and routes qualified leads to {companyName}. all before you lift a finger.
           </p>
         </div>
 
@@ -173,7 +173,7 @@ export default function GeorgeShowcase() {
             {[
               { step: "1", title: "We Build Your Page", desc: `${companyName} gets a branded landing page with George embedded. Your name, your services, your phone number.` },
               { step: "2", title: "George Handles Intake", desc: "Customers land on your page (from Google, ads, referrals, or your existing site). George talks to them, collects details, and scopes the job." },
-              { step: "3", title: "You Get Qualified Leads", desc: "Every conversation becomes a clean lead with name, phone, address, issue details, photos, and a preliminary scope — sent straight to you." },
+              { step: "3", title: "You Get Qualified Leads", desc: "Every conversation becomes a clean lead with name, phone, address, issue details, photos, and a preliminary scope. sent straight to you." },
               { step: "4", title: "You Close & Service", desc: "Your team reviews the scope, confirms with the customer, and dispatches. The customer already trusts you because George handled them right." },
               { step: "5", title: "George Follows Up", desc: "After the job, George checks in with the customer, handles reviews, and schedules the next maintenance. Recurring revenue built in." },
             ].map(s => (
@@ -194,7 +194,7 @@ export default function GeorgeShowcase() {
         <div className="bg-card border border-border rounded-2xl p-8 mb-12">
           <h2 className="text-xl font-bold text-center mb-4">Beyond HVAC</h2>
           <p className="text-center text-muted-foreground mb-6">
-            When your customers need services outside HVAC, George doesn't send them away — he connects them with UpTend's network. You stay the trusted source, and every referral builds loyalty.
+            When your customers need services outside HVAC, George doesn't send them away. he connects them with UpTend's network. You stay the trusted source, and every referral builds loyalty.
           </p>
           <div className="grid grid-cols-3 md:grid-cols-4 gap-2 text-center">
             {[
@@ -231,7 +231,7 @@ export default function GeorgeShowcase() {
 
         {/* Footer */}
         <div className="text-center text-sm text-muted-foreground">
-          <p>Powered by <span className="font-semibold text-foreground">UpTend</span> — AI-powered home service intelligence</p>
+          <p>Powered by <span className="font-semibold text-foreground">UpTend</span>. AI-powered home service intelligence</p>
         </div>
       </main>
     </div>
