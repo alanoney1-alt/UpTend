@@ -30,6 +30,7 @@ interface PartnerConfig {
   serviceType: string;
   tagline: string;
   phone?: string;
+  ownerName?: string;
   logo?: string;
   accentColor?: string;
   heroText: string;
@@ -77,6 +78,7 @@ const PARTNER_CONFIGS: Record<string, PartnerConfig> = {
     serviceType: "HVAC",
     tagline: "Your Comfort, Our Mission",
     phone: "(407) 860-8842",
+    ownerName: "Alex",
     accentColor: "#2563EB",
     heroText: "Need AC service in Orlando? Skip the runaround. Tell George what's going on and get a scope in minutes, not days.",
     services: [
@@ -89,7 +91,7 @@ const PARTNER_CONFIGS: Record<string, PartnerConfig> = {
       "Air Quality Assessment",
       "Heat Pump Service",
     ],
-    georgeGreeting: "Hey! I'm George, the AI service assistant for Comfort Solutions Tech. Tell me what's going on with your AC or heating and I'll scope it out. Photos help a ton if you can snap one of the unit.",
+    georgeGreeting: "Hey! I'm George, the AI service assistant for Alex's team at Comfort Solutions Tech. Tell me what's going on with your AC or heating and I'll scope it out. Alex and the crew handle everything from repairs to full installs. Photos help a ton if you can snap one of the unit.",
     features: [
       { icon: "camera", title: "Photo Scoping", desc: "Snap a photo of your unit. George identifies the brand, model, and visible issues instantly." },
       { icon: "clock", title: "Minutes, Not Days", desc: "Get a scope of work in minutes. No waiting days for an in-home estimate." },
