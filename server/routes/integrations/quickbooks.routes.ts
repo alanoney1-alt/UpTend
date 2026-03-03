@@ -44,7 +44,7 @@ export function registerQuickBooksRoutes(app: Express) {
     const businessId = getBusinessId(req) || (req.query.businessId as string);
     if (!businessId) return res.status(401).json({ error: "Authentication required" });
 
-    res.json(qb.getStatus(businessId));
+    res.json(qb.getConnectionStatus(businessId));
   });
 
   // Manual sync trigger
@@ -53,13 +53,13 @@ export function registerQuickBooksRoutes(app: Express) {
       const businessId = getBusinessId(req);
       if (!businessId) return res.status(401).json({ error: "Authentication required" });
 
-      const status = qb.getStatus(businessId);
+      const status = qb.getConnectionStatus(businessId);
       if (!status.connected) {
         return res.status(400).json({ error: "Not connected to QuickBooks" });
       }
 
       // Sync a sample completed job (in production, this would pull from DB)
-      const result = await qb.syncCompletedJob(businessId, {
+      const result = await qb.triggerFullSync(businessId, {
         jobId: `manual-sync-${Date.now()}`,
         serviceType: "Manual Sync",
         customerFirstName: "Demo",
@@ -81,7 +81,7 @@ export function registerQuickBooksRoutes(app: Express) {
       const businessId = getBusinessId(req);
       if (!businessId) return res.status(401).json({ error: "Authentication required" });
 
-      await qb.disconnect(businessId);
+      await qb.disconnectQuickBooks(businessId);
       res.json({ success: true, message: "QuickBooks disconnected" });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
