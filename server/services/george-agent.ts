@@ -63,6 +63,83 @@ async function safeExecuteTool(
     return { result: null, error: `Tool "${name}" encountered an issue: ${error.message}. I'll work around this.` };
   }
 }
+
+// ─── Fallback Chat Function (OpenAI -> Together.ai) ───
+async function fallbackChat(
+  systemPrompt: string,
+  currentMessages: any[],
+  maxTokens: number
+): Promise<{ response: string; provider: string }> {
+  // Convert messages to OpenAI format
+  const openaiMessages = [
+    { role: "system", content: systemPrompt },
+    ...currentMessages.map((msg: any) => ({
+      role: msg.role,
+      content: typeof msg.content === "string" ? msg.content : JSON.stringify(msg.content)
+    }))
+  ];
+
+  // Try OpenAI GPT-4o first
+  try {
+    console.log("[George] Trying OpenAI fallback...");
+    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        messages: openaiMessages,
+        max_tokens: maxTokens,
+        temperature: 0.6
+      })
+    });
+
+    if (openaiResponse.ok) {
+      const result = await openaiResponse.json();
+      const response = result.choices?.[0]?.message?.content || "I apologize, but I'm having technical difficulties. Please try again.";
+      console.log("[George] OpenAI fallback successful");
+      return { response, provider: "openai" };
+    }
+  } catch (error: any) {
+    console.error("[George] OpenAI fallback failed:", error.message);
+  }
+
+  // Try Together.ai Llama 3.1 70B as final fallback
+  try {
+    console.log("[George] Trying Together.ai fallback...");
+    const togetherResponse = await fetch("https://api.together.xyz/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.TOGETHER_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
+        messages: openaiMessages,
+        max_tokens: maxTokens,
+        temperature: 0.6
+      })
+    });
+
+    if (togetherResponse.ok) {
+      const result = await togetherResponse.json();
+      const response = result.choices?.[0]?.message?.content || "I apologize, but I'm having technical difficulties. Please try again.";
+      console.log("[George] Together.ai fallback successful");
+      return { response, provider: "together" };
+    }
+  } catch (error: any) {
+    console.error("[George] Together.ai fallback failed:", error.message);
+  }
+
+  // All providers failed
+  console.error("[George] All AI providers failed");
+  return { 
+    response: "I'm experiencing technical difficulties across all my systems. Please try again in a moment or contact support if this persists.", 
+    provider: "fallback-error" 
+  };
+}
 import { getHomeScanInfo } from "./george-scan-pitch";
 import { getRelevantKnowledge } from "./knowledge-loader";
 import {
@@ -5212,22 +5289,47 @@ export async function chat(
  const msgText = typeof lastUserMsg === "string" ? lastUserMsg.toLowerCase() : JSON.stringify(lastUserMsg).toLowerCase();
  const needsToolCall = !isDiscoveryMode && /\b(fix|repair|how to|diy|video|show me|tutorial|watch|youtube|buy|product|price|cost|quote|book|schedule|amazon|home depot|lowe|walmart|parts|tools needed|what do i need)\b/.test(msgText);
 
+ let usedProvider = "claude";
+ 
  for (let i = 0; i < 5; i++) {
  // Force tool use on first iteration when the message clearly needs tools (consumer only)
  const toolChoice = (i === 0 && needsToolCall) ? { type: "any" as const } : undefined;
 
- const response = await withRetry(
- () => anthropic.messages.create({
- model: "claude-sonnet-4-20250514",
- max_tokens: isDiscoveryMode ? 2048 : 1024,
- temperature: 0.6,
- system: systemPrompt,
- tools: activeTools,
- messages: currentMessages as any,
- ...(toolChoice ? { tool_choice: toolChoice } : {}),
- }),
- { maxRetries: 3, baseDelay: 1000, label: "claude-api" }
- );
+ let response: any;
+ 
+ // Try Claude first, fall back to other providers if needed
+ try {
+   response = await withRetry(
+   () => anthropic.messages.create({
+   model: "claude-sonnet-4-20250514",
+   max_tokens: isDiscoveryMode ? 2048 : 1024,
+   temperature: 0.6,
+   system: systemPrompt,
+   tools: activeTools,
+   messages: currentMessages as any,
+   ...(toolChoice ? { tool_choice: toolChoice } : {}),
+   }),
+   { maxRetries: 3, baseDelay: 1000, label: "claude-api" }
+   );
+   console.log(`[George] Claude API successful`);
+ } catch (claudeError: any) {
+   console.error(`[George] Claude API failed after retries:`, claudeError.message);
+   
+   // Use fallback providers - skip tool calling, just get text response
+   const fallbackResult = await fallbackChat(systemPrompt, currentMessages, isDiscoveryMode ? 2048 : 1024);
+   usedProvider = fallbackResult.provider;
+   
+   console.log(`[George] Using provider: ${usedProvider}`);
+   
+   // Return immediate text response from fallback (no tool calling)
+   const { cleanText, buttons } = parseButtons(fallbackResult.response);
+   return {
+     response: cleanText,
+     buttons,
+     bookingDraft,
+     provider: usedProvider
+   };
+ }
 
  // Check if Claude wants to use tools
  const toolUseBlocks = response.content.filter((b: any) => b.type === "tool_use");
@@ -5249,6 +5351,7 @@ export async function chat(
  response: cleanText,
  buttons,
  bookingDraft,
+ provider: usedProvider,
  };
  }
 
