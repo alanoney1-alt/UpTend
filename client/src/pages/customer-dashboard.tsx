@@ -225,7 +225,7 @@ function JobHistoryRow({ job }: { job: ServiceRequest }) {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `upyck-receipt-${job.id.slice(0, 8)}.txt`;
+                a.download = `uptend-receipt-${job.id.slice(0, 8)}.txt`;
                 a.click();
                 URL.revokeObjectURL(url);
               }}

@@ -283,7 +283,7 @@ function TrustBar() {
 /* ─── SOCIAL PROOF STATS ─── */
 function SocialProofStats() {
   const stats = [
-    { value: "11", label: "Service Categories" },
+    { value: "12", label: "Service Categories" },
     { value: "100%", label: "Background Checked" },
     { value: "1", label: "Lake Nona Service Zone" },
     { value: "$0", label: "Lead Fees for Pros" },
@@ -297,7 +297,6 @@ function SocialProofStats() {
             <div key={stat.label} className="text-center">
               <div className="flex items-center justify-center gap-1.5">
                 <span className="text-4xl md:text-5xl font-black text-white">{stat.value}</span>
-                {stat.hasStar && <Star className="w-6 h-6 text-amber-400 fill-amber-400" />}
               </div>
               <p className="mt-2 text-sm text-slate-400 font-medium">{stat.label}</p>
             </div>
@@ -423,7 +422,7 @@ function ServicesStrip() {
         </div>
         <div className="text-center mt-8">
           <Link href="/services" className="text-sm text-[#F47C20] hover:underline font-semibold inline-flex items-center gap-1">
-            {t("landing.view_all_services", "View all 11 services")} <ArrowRight className="w-4 h-4" />
+            {t("landing.view_all_services", "View all services")} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -550,16 +549,7 @@ function TwoSides() {
 
 /* ─── TESTIMONIALS ─── */
 function Testimonials() {
-  return (
-    <section className="py-16 bg-background dark:bg-slate-950">
-      <div className="max-w-3xl mx-auto px-4 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-foreground dark:text-white">
-          Customer Reviews
-        </h2>
-        <p className="text-slate-400 text-lg">Coming Soon</p>
-      </div>
-    </section>
-  );
+  return null; // Hidden until real customer reviews are collected
 }
 
 /* ─── FINAL CTA ─── */

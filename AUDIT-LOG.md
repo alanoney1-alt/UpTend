@@ -524,3 +524,177 @@ export const discoveryLeads = pgTable("discovery_leads", {
 - 6 files changed across 2 commits
 - Key wins: paginated APIs, trimmed list responses, proper error UI, canonical URLs, SEO on all public pages
 - No breaking changes
+
+---
+
+## ROUND 5: USER EXPERIENCE DEEP AUDIT — 2026-03-03
+
+### 1. Homepage — First Impression
+
+**Value Prop:** ✅ Clear. "Home Services, Finally Done Right" + "locked price in 60 seconds" + "vetted pro to your door." Solid within 3 seconds.
+
+**CTA Above the Fold:** ✅ Two CTAs: "Join the Founding 100" button + "Get Your Free Quote" button. George inline chat prompt is front and center.
+
+**Navigation:** ✅ Header has Services, About, For Business dropdown, Partner With Us, More dropdown. Mobile hamburger menu present. Login dropdown splits Customer/Pro. All links resolve to real routes.
+
+**ISSUES FOUND:**
+
+1. **🔴 "Customer Reviews" section says "Coming Soon"** (landing.tsx line 559) — This is visible to all visitors and looks unfinished. A home services site with no reviews looks untrustworthy. **FIX: Remove the Testimonials section entirely until real reviews exist, or add seed testimonials.**
+
+2. **🟡 `hasStar` property referenced but never set** (landing.tsx line 300) — `SocialProofStats` references `stat.hasStar` but none of the stats objects have that property. TypeScript won't catch it because it's dynamic. Dead code, harmless but sloppy.
+
+3. **🟡 Hero has TWO "Book" CTAs** — "Join the Founding 100" at the top AND "Get Your Free Quote" at the bottom of the hero, plus service category pills. The double CTA could confuse users about what to click first. The Founding 100 CTA vs booking CTA serve different purposes — consider which is primary.
+
+4. **🟡 Services Strip says "View all 11 services"** but the services page lists 12 non-featured services (no featured service currently). Count mismatch — should be 12 or 13 depending on how you count painting.
+
+### 2. Service Pages — Can a Customer Book?
+
+**All 12 services on /services page:** Handyman, Junk Removal, Garage Cleanout, Moving Labor, Home Cleaning, Carpet Cleaning, Landscaping, Gutter Cleaning, Pressure Washing, Pool Cleaning, Light Demolition, Painting. ✅ Each has: description, pricing, includes list, "Book Now" CTA linking to `/book?service=X`.
+
+**Service Detail Pages (/services/:slug):** ✅ Rich content pages exist for each service with What We Do, How It Improves, What's Included, availability info, and booking CTA.
+
+**George Chat:** ✅ GeorgeInlineTip component on /services page. UpTendGuide widget rendered globally in App.tsx.
+
+**ISSUES FOUND:**
+
+5. **🟢 No "featured" service currently** — The services page has code to render featured services (`services.filter(s => s.featured)`) but none of the 12 services have `featured: true`. The "Featured" section renders nothing. Not broken, just unused.
+
+6. **🟡 Pricing section says "5% service fee"** but the landing page says "Pros keep 85%" (implying 15% platform take). Inconsistent messaging — 5% to customer + X% from pro? Needs clarification for transparency.
+
+### 3. Customer Dashboard — After Login
+
+**Dashboard (/dashboard):** ✅ Comprehensive. Shows:
+- My Home section with Health Score ring, address, total spent, jobs done, member since
+- Quick Rebook section for recently completed jobs
+- Home DNA Score widget
+- Maintenance Due alerts with "Fix This" pre-filled booking links
+- Home Report timeline (Carfax for homes)
+- Impact Tracker
+- Referral Widget
+- George helper cards (DIY, Photo Quote, Home Scan, etc.)
+- Subscriptions section
+- Digital Inventory
+- Active Jobs with worker ID cards
+- Job History with filter tabs and receipt download
+
+**Re-booking:** ✅ Prominent RebookSection with same-pro rebooking.
+
+**Profile editing:** ✅ /profile and /settings routes exist.
+
+**ISSUES FOUND:**
+
+7. **🔴 Receipt download filename uses old brand: `upyck-receipt-`** (customer-dashboard.tsx line 228). Should be `uptend-receipt-`. Customers see this filename when downloading.
+
+8. **🟡 Receipt is plain text** — The receipt is a .txt file with basic formatting. For a platform charging a service fee, this should be a proper PDF receipt. Not blocking but unprofessional.
+
+### 4. Pro Dashboard — After Login
+
+**Dashboard (/pro/dashboard):** ✅ Full sidebar navigation with: Dashboard, Job Requests, Route Optimizer, Schedule, Earnings, Marketplace, AI Insights, Green Guarantee, Tax & Compliance, Insurance & Claims, Profile, Settings.
+
+**Onboarding:** ✅ OnboardingChecklist, VerificationWorkflow, ICA Agreement, NDA modal all present.
+
+**Earnings:** ✅ Dedicated EarningsDashboard component, FeeProgressWidget.
+
+**ISSUES FOUND:**
+
+9. **🟡 Legacy "pycker" and "hauler" terminology persists in code** — File names like `hauler-dashboard.tsx`, `pycker-signup.tsx`, references to `pyckerTier` in tracking.tsx, `pyckerPayouts` in god-mode.tsx. User-facing instances in tracking page (`PyckerTierBadge`). These are internal component names mostly, but tracking page shows "Pycker" tier info to customers.
+
+### 5. Partner Pages
+
+**Business Partners Landing (/business/partners):** ✅ Well-designed page with hero, benefits grid, comparison table, how-it-works steps, and "Get Started" CTA linking to /business/signup.
+
+**Business Signup (/business/signup):** ✅ Route exists, component lazy-loaded.
+
+**Partner Dashboard (/business/partner-dashboard):** ✅ Route exists.
+
+**ISSUES FOUND:**
+
+10. **🟢 All partner routes resolve.** /business/partners, /business/signup, /business/partner-dashboard, /partners, /partners/register, /partners/dashboard, /partners/:slug — all have components.
+
+### 6. Navigation & Information Architecture
+
+**Consistent Header:** ✅ `<Header />` component used across landing, services, customer dashboard, and other pages.
+
+**Role-based Dashboard Links:** ✅ Header shows correct dashboard link based on user role (customer → /dashboard, hauler → /pro/dashboard, admin → /admin).
+
+**Mobile Nav:** ✅ Hamburger menu with full navigation, login/book CTAs, language toggle.
+
+**Footer:** ✅ Comprehensive with all services listed, neighborhoods, resources, legal links, social links.
+
+**ISSUES FOUND:**
+
+11. **🟡 Three "For Business" links in header all go to the same /business page** — HOA Communities, Property Management, and Construction all link to `/business`. Either make distinct pages or combine into one link.
+
+12. **🟡 No breadcrumbs** on service detail pages or deep pages. Users on `/services/handyman` have no visual trail back. Not critical since Header has nav, but nice to have.
+
+### 7. Forms & Input Validation
+
+**Auth forms:** ✅ /login, /signup, /forgot-password, /reset-password routes all exist with dedicated components.
+
+**Booking form:** Has error handling (`onError` callback visible in booking.tsx).
+
+**ISSUES FOUND:**
+
+13. **🟡 Could not fully verify form validation depth** without running the app. The booking page has minimal visible validation code in the grep (only 2 lines with error handling). Need to verify in-browser that required fields show proper errors.
+
+### 8. Content & Copy
+
+**ISSUES FOUND:**
+
+14. **🔴 "Coming Soon" visible on homepage** — Testimonials section (landing.tsx:559). Remove or populate.
+
+15. **🟡 Old brand in receipt filename** — `upyck-receipt-` (see #7 above).
+
+16. **🟡 Legal pages correctly use "UPYCK, Inc. d/b/a UpTend"** — This is the legal entity name, so it's appropriate in terms/privacy/cookies pages. Not a branding issue.
+
+17. **🟡 "11 Service Categories" in SocialProofStats** but there are 12-13 services listed. Count is stale.
+
+### 9. Payment Flows
+
+**Stripe Integration:** ✅ Dedicated routes in `commerce/payments.routes.ts`, `stripe-connect-webhooks.ts`, `business/billing.routes.ts`.
+
+**Invoice Payment:** ✅ `/pay/invoice/:id` renders invoice with payment link, marks as viewed on load. Success page at `/pay/invoice/:id/success`.
+
+**Pro Payouts:** ✅ Stripe Connect onboarding at `/pro/payouts/setup` with complete/refresh routes.
+
+**ISSUES FOUND:**
+
+18. **🟡 Invoice footer says "10125 Peebles St, Orlando, FL 32827"** but landing page schema says "1800 Pembrook Dr Suite 300, Orlando, FL 32810". Address inconsistency.
+
+### 10. Notifications & Communications
+
+**Email:** ✅ SendGrid integration across multiple services: contact routes, founding member drip, partner outreach, notification engine, george-communication, email-service. Professional infrastructure.
+
+**SMS:** George communication service exists (george-communication.ts).
+
+**ISSUES FOUND:**
+
+19. **🟡 Cannot verify email template quality without running the server** and triggering actual sends. The infrastructure is in place but template content needs visual review.
+
+---
+
+### Summary — Round 5
+
+**Critical (🔴) — Fix now:**
+1. Remove "Coming Soon" from Testimonials section on homepage (landing.tsx:555-560)
+2. Fix receipt filename from `upyck-receipt-` to `uptend-receipt-` (customer-dashboard.tsx:228)
+
+**Important (🟡) — Fix soon:**
+3. Service count mismatch: "11 services" in stats vs 12+ actual (landing.tsx ~line 290)
+4. "View all 11 services" link text should be "View all services" or correct count
+5. 5% service fee vs 85% pro take messaging inconsistency on services page
+6. Three "For Business" nav links all go to same page
+7. Address inconsistency between invoice footer and homepage schema
+8. Legacy `hasStar` dead code in SocialProofStats
+9. `PyckerTierBadge` shown on tracking page (customer-facing old branding)
+
+**Nice-to-have (🟢):**
+10. PDF receipts instead of plain text
+11. Breadcrumbs on deep pages
+12. No featured service currently active
+
+**Needs Alan's Input:**
+- Which address is correct? 10125 Peebles St or 1800 Pembrook Dr?
+- Is the 5% service fee messaging intentional alongside "Pros keep 85%"? (5% customer fee + 10% platform fee from pro = 15% total take?)
+- Should the "Join the Founding 100" CTA remain as primary hero CTA or switch to direct booking?
+- Seed testimonials — does Alan have any real customer quotes to use?
