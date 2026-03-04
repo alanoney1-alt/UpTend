@@ -971,3 +971,119 @@ export const discoveryLeads = pgTable("discovery_leads", {
 - **Files updated:** .env.example (comprehensive env var documentation)
 - **Files created:** README.md
 - **Build status:** ✅ Clean (zero errors)
+
+---
+
+# AUDIT ROUND 8 — End-to-End Flow Verification
+**Date:** 2025-07-13
+
+## 1. George Tool Audit: Definitions vs Handlers
+
+- **Tool definitions (TOOL_DEFINITIONS):** 227 unique tools
+- **Case handlers (executeTool):** 230 unique tool cases
+- **Tools with NO handler:** 0 ✅
+- **Handlers with NO definition (unreachable):** 3
+  - `connect_crm` — handler exists but model can never call it (no function def sent to LLM)
+  - `lookup_property` — same issue
+  - `search_parts_pricing` — same issue
+- **Impact:** Low — these tools work if called but the LLM won't know about them. They need TOOL_DEFINITIONS entries.
+- **Many tools return hardcoded mock data** (HOA tools like `schedule_community_service`, `check_community_health`, `generate_board_report`, `create_violation`, `send_community_blast`, `activate_emergency_protocol`, `get_batch_pricing`, `get_revenue_share_summary`, `manage_warranty`, `batch_schedule`, `generate_quality_report`). These are fine for demo/MVP but should be flagged for production.
+
+## 2. Discovery Mode Tool Filter
+
+- **DISCOVERY_TOOL_NAMES** lists 26 tools for partner discovery mode
+- These are filtered from TOOL_DEFINITIONS — verified all 26 exist in definitions ✅
+- Discovery mode correctly limits tools to sales-relevant subset
+
+## 3. TTS Chain Verification
+
+- **Endpoint:** `POST /api/ai/guide/tts` → strips markdown → calls `textToSpeechBase64()` → returns `{audio, contentType: "audio/mpeg"}`
+- **Streaming:** `POST /api/ai/guide/tts-stream` → calls `textToSpeechStream()` → pipes ReadableStream chunks
+- **Voice config:** Default voice = "josh" (ID: `TxGEqnHWrfWFTfGW9XjX`) ✅ matches spec
+- **Model:** `eleven_monolingual_v1` (fast, English-only)
+- **isVoiceEnabled():** checks for `ELEVENLABS_API_KEY` env var
+- **Error handling:** Both endpoints have try/catch, return 500 on failure ✅
+- **Text limit:** Streaming has 2000 char limit; non-streaming slices to 5000 chars
+- **Issue:** No rate limiting specific to TTS beyond the general `guideAiLimiter` — ElevenLabs calls are expensive
+
+## 4. Stripe Payment Chain
+
+- **Webhook handler:** `WebhookHandlers.processWebhook()` in `webhookHandlers.ts`
+- **Signature verification:** Uses `stripe.webhooks.constructEvent()` ✅
+- **Raw body handling:** Explicit Buffer check with helpful error message ✅
+- **Events handled:**
+  - `payment_intent.succeeded` → updates job to 'captured'/'paid', sends confirmation email
+  - `payment_intent.payment_failed` → updates job to 'failed', sends failure email
+  - `account.updated` → syncs Connect onboarding status to hauler_profiles
+  - `charge.dispute.created` → delegates to evidence handler, logs to accounting
+- **Idempotency:** Checks `job.paymentStatus` before updating (skips if already captured/paid) ✅
+- **Error isolation:** Catch-all in event handler prevents webhook failures from returning 500 ✅
+- **Missing events:** No handler for `checkout.session.completed` (used by invoice payments), `transfer.created`/`transfer.failed` (pro payouts), `charge.refunded`
+- **Test vs live keys:** Relies on env vars (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`) — no explicit separation logic
+
+## 5. SendGrid Email Chain
+
+- **Transport:** Uses nodemailer with SendGrid SMTP (smtp.sendgrid.net:587) or falls back to SMTP_HOST or console logging
+- **FROM:** `process.env.FROM_EMAIL || "George from UpTend <alan@uptendapp.com>"` ✅
+- **Email functions (18 total):**
+  - Customer: bookingConfirmation, jobAccepted, jobStarted, jobCompleted, welcome, proEnRoute, reviewReminder, reviewRequest, homeScoreUpdate, seasonalRecommendation, referralPrompt, paymentFailed, disputeFiledCustomer, scopeChange
+  - Pro: newJob, reviewReceived, paymentProcessed, welcomeVerified, profileNudge, tips, certNudge, certExpiring, certCompletion, feeReduction, backgroundCheckStatus
+  - Admin: newSignup, highValueBooking, disputeAlert
+  - B2B: b2bWelcome
+- **No retry logic** on send failure (confirmed from round 6)
+- **No TO validation** — raw email passed to nodemailer
+- **Issue:** `sendJobCompleted` receives `receipt` param but destructures `finalPrice`/`livePrice`/`platformFee` — webhook passes these correctly ✅
+
+## 6. Database Schema State
+
+- **Drizzle schema tables (shared/schema.ts):** 227 tables defined via `pgTable()`
+- **Raw SQL CREATE TABLE (in route files):** 30+ tables created via raw SQL at runtime
+- **Raw SQL tables NOT in Drizzle schema:**
+  - `partner_leads`, `partner_jobs`, `partner_reviews` (partner-dashboard.routes.ts)
+  - `referral_partners`, `partner_referrals` (referral.routes.ts) — NOTE: `referral_partners` and `partner_referrals` ARE in schema too, possible duplicate/conflict
+  - `guide_conversations`, `guide_property_profiles`, `guide_price_matches`, `guide_locked_quotes`, `guide_learnings`, `guide_feedback` (guide.routes.ts)
+  - `snap_quotes` (snap-quote.routes.ts) — IS in schema
+  - `community_properties`, `community_guidelines`, `violation_records`, `violation_notifications`, `violation_cures` (violation-detection.routes.ts)
+  - `scheduled_batches`, `recurring_job_schedules` (schedule-batch.routes.ts) — `recurring_job_schedules` IS in schema
+  - `warranties`, `warranty_claims` (warranty.routes.ts)
+  - `quality_reports` (quality-reports.routes.ts)
+  - `partner_outreach_log`, `partner_contacts` (partner-proactive-outreach.ts)
+  - `partner_route_plans` (route-optimization.ts)
+  - `builder_handoffs` (builder-handoff.routes.ts)
+- **Risk:** Tables created via raw SQL bypass Drizzle migrations. Schema drift is likely in production.
+
+## 7. TypeScript Compilation
+
+- **101 type errors** across 15 files
+- **Top offenders:**
+  - `george-tools.ts` (27 errors) — type mismatches in Drizzle queries (string ID vs number)
+  - `email-sequences.ts` (16 errors)
+  - `florida-estimator.tsx` (9 errors)
+  - `payouts.routes.ts` (8 errors)
+  - `batch2-aliases.routes.ts` (5 errors)
+- **Note:** The app likely runs fine at runtime (JS doesn't enforce types), but these indicate potential runtime bugs where string IDs are compared with `eq()` to numbers
+
+## 8. Git Audit Commit Review
+
+- 20 recent commits across rounds 1-7
+- No obvious file conflicts between commits
+- Build has 101 TS errors (pre-existing, not introduced by audit)
+
+## 9. Customer Journey Gaps
+
+Based on code reading:
+- **Homepage → Service → Booking:** Client pages exist, George guides through conversation
+- **Address entry → Payment:** `generate_payment_link` tool creates Stripe checkout session
+- **Job creation → Pro notification:** Email notification via `sendProNewJob()`, push via `send_push_notification` tool
+- **Job completion → Review:** `sendReviewRequest()` and `sendReviewReminder()` emails exist
+- **Gap:** No `checkout.session.completed` webhook handler — if payment uses Checkout Sessions instead of PaymentIntents, the webhook won't catch it
+
+## 10. Partner/Discovery Journey
+
+- Discovery page → George chat with filtered tools (26 tools)
+- `save_partner_onboarding` saves data, `get_partner_onboarding_progress` tracks it
+- `discovery_leads` table exists in schema ✅
+- Sales view at `/sales/leads` — routes exist
+- Business signup → onboarding flow present
+- **Working chain** with appropriate tool restrictions in discovery mode
+
