@@ -251,6 +251,9 @@ export function Footer() {
             <Link href="/b2b-terms" className="hover:text-white transition-colors cursor-pointer">
               B2B Terms
             </Link>
+            <Link href="/legal/partner-terms" className="hover:text-white transition-colors cursor-pointer">
+              Partner Terms
+            </Link>
             <Link href="/acceptable-use" className="hover:text-white transition-colors cursor-pointer">
               Acceptable Use
             </Link>

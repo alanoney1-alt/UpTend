@@ -52,6 +52,7 @@ export function LegalPage({ title, icon, lastUpdated, children }: LegalPageProps
             <Link href="/cancellation-policy" className="hover:text-foreground">Cancellations</Link>
             <Link href="/service-guarantee" className="hover:text-foreground">Guarantee</Link>
             <Link href="/b2b-terms" className="hover:text-foreground">B2B Terms</Link>
+            <Link href="/legal/partner-terms" className="hover:text-foreground">Partner Terms</Link>
             <Link href="/acceptable-use" className="hover:text-foreground">Acceptable Use</Link>
             <Link href="/accessibility" className="hover:text-foreground">Accessibility</Link>
             <Link href="/cookies" className="hover:text-foreground">Cookies</Link>

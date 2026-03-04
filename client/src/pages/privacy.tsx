@@ -302,11 +302,44 @@ export default function PrivacyPage() {
 </ul>
 <p>We will update this Privacy Policy before launching these features to provide specific details on data collection, use, and sharing.</p>
 
-<h2>12. Changes to This Privacy Policy</h2>
+<h2>12. Business Discovery Data (B2B Partners)</h2>
+
+<h3>12.1 What We Collect During Discovery</h3>
+
+<p>When a business owner uses our discovery chat or engages with UpTend's partner services team, we collect business information including:</p>
+
+<ul>
+<li>Company name, address, and contact information</li>
+<li>Business type, service area, and years in operation</li>
+<li>Revenue range and growth goals</li>
+<li>Current marketing spend, tools, and strategies</li>
+<li>Team size and operational details</li>
+<li>Competitor awareness and market positioning</li>
+<li>Pain points and business challenges</li>
+<li>Website URL and social media presence</li>
+</ul>
+
+<h3>12.2 How It's Stored</h3>
+
+<p>Discovery data is stored in our encrypted database infrastructure (Supabase) with encryption at rest and in transit (TLS 1.2+). Access is restricted to authorized UpTend team members only.</p>
+
+<h3>12.3 Who Has Access</h3>
+
+<p>Discovery and partner business data is accessible to the UpTend sales, strategy, and account management team. It is not shared with third parties for their own commercial purposes.</p>
+
+<h3>12.4 Retention Period</h3>
+
+<p>Business data collected during discovery is retained for the duration of an active partnership plus <strong>two (2) years</strong> after the partnership ends. If a discovery conversation does not result in a partnership, data is retained for two (2) years from the date of the conversation.</p>
+
+<h3>12.5 Deletion Requests</h3>
+
+<p>Partners and prospective partners may request deletion of their business data at any time by contacting <a href="mailto:privacy@uptendapp.com">privacy@uptendapp.com</a>. We will process deletion requests within thirty (30) days, except where retention is required by law.</p>
+
+<h2>13. Changes to This Privacy Policy</h2>
 
 <p>We may update this Privacy Policy from time to time. We will notify you of material changes via email or in-app notification at least thirty (30) days before the changes take effect. The updated policy will be posted on the Platform with the revised effective date. Your continued use after the effective date constitutes acceptance.</p>
 
-<h2>13. Contact Us</h2>
+<h2>14. Contact Us</h2>
 
 <strong>Privacy Inquiries:</strong>
 <p>UPYCK, Inc. d/b/a UpTend</p>

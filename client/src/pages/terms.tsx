@@ -645,7 +645,23 @@ export default function TermsPage() {
 
 <p>By using the Platform, you consent to the use of cookies and similar technologies as described in our Cookie Policy. You can manage your cookie preferences through the cookie settings on our Platform.</p>
 
-<h2>29. Contact Information</h2>
+<h2>29. Discovery Process & Partner Data Collection</h2>
+
+<h3>29.1 Discovery Chat</h3>
+
+<p>UpTend offers an AI-powered discovery chat experience where business owners can share information about their company, marketing challenges, and growth goals. By using the discovery chat, you acknowledge and consent to the following:</p>
+
+<p>(a) <strong>Data collection:</strong> Information you share during the discovery conversation — including company name, revenue, marketing spend, service area, tools used, team size, and growth goals — is collected and stored by UpTend.</p>
+
+<p>(b) <strong>Proposal generation:</strong> The data you provide is used to build a tailored service proposal for your business. This proposal may include recommended service tiers, projected ROI, and a suggested marketing strategy.</p>
+
+<p>(c) <strong>Human review:</strong> Discovery conversation data may be reviewed by the UpTend sales and strategy team to prepare your proposal, follow up on your inquiry, and improve our service offerings.</p>
+
+<p>(d) <strong>No obligation:</strong> Participating in the discovery process does not obligate you to purchase any services. You may discontinue the conversation at any time.</p>
+
+<p>(e) <strong>Data handling:</strong> Business data collected during discovery is governed by our <a href="/privacy">Privacy Policy</a> and, if you become a partner, our <a href="/legal/partner-terms">Partner Services Agreement</a>.</p>
+
+<h2>30. Contact Information</h2>
 
 <strong>UPYCK, Inc. d/b/a UpTend</strong>
 <p>Orlando, FL 32801</p>

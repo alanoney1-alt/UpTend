@@ -790,6 +790,13 @@ export default function DiscoveryPage() {
         <div ref={chatEndRef} />
       </div>
 
+      <div className="text-center px-4 pt-2">
+        <p className="text-[10px] text-gray-600">
+          By continuing this conversation, you agree to our{" "}
+          <a href="/legal/partner-terms" className="underline hover:text-gray-400">Partner Terms</a> and{" "}
+          <a href="/privacy" className="underline hover:text-gray-400">Privacy Policy</a>.
+        </p>
+      </div>
       <div className="p-3 border-t border-white/5">
         {/* Conversation mode: big center button */}
         {conversationMode ? (

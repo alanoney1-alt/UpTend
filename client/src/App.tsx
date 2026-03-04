@@ -149,6 +149,7 @@ const BusinessEmergency = lazy(() => import("@/pages/business-emergency"));
 const AdminBilling = lazy(() => import("@/pages/admin/billing"));
 const FindPro = lazy(() => import("@/pages/find-pro"));
 const B2BTerms = lazy(() => import("@/pages/b2b-terms"));
+const PartnerTerms = lazy(() => import("@/pages/legal/partner-terms"));
 const AcceptableUse = lazy(() => import("@/pages/acceptable-use"));
 const AccessibilityPage = lazy(() => import("@/pages/accessibility"));
 const CookiePolicy = lazy(() => import("@/pages/cookies"));
@@ -355,6 +356,7 @@ function Router() {
       <Route path="/cancellation-policy" component={CancellationPolicy} />
       <Route path="/service-guarantee" component={ServiceGuarantee} />
       <Route path="/b2b-terms" component={B2BTerms} />
+      <Route path="/legal/partner-terms" component={PartnerTerms} />
       <Route path="/acceptable-use" component={AcceptableUse} />
       <Route path="/accessibility" component={AccessibilityPage} />
       <Route path="/cookies" component={CookiePolicy} />
