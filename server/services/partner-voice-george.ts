@@ -21,12 +21,13 @@
 
 // ElevenLabs voice IDs
 const VOICES = {
+  josh: "TxGEqnHWrfWFTfGW9XjX", // Young, deep, American male
   adam: "pNInz6obpgDQGcFmaJgB", // Deep, smooth, American male
   marcus: "CYw49ThSYFQiqnBGMMfB", // Warm baritone (backup)
   clyde: "2EiwWnXFnvU5JabPnv8n", // Deep, gravelly (backup)
 };
 
-const DEFAULT_VOICE = "adam";
+const DEFAULT_VOICE = "josh";
 const DEFAULT_MODEL = "eleven_monolingual_v1"; // Fast, English-only
 const STABILITY = 0.5;
 const SIMILARITY_BOOST = 0.75;
