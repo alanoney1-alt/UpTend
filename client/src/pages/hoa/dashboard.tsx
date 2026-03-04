@@ -5,7 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 
 // ─── Types ──────────────────────────────────────────────────────────
 interface Violation {
-  id: number;
+  id: string;
   propertyAddress: string;
   communityId: number;
   communityName?: string;
@@ -45,7 +45,7 @@ interface TimelineEntry {
 }
 
 interface Community {
-  id: number;
+  id: string;
   name: string;
 }
 
@@ -72,7 +72,7 @@ const ALL_STATUSES = ["draft", "pending", "notified", "cured", "escalated", "dis
 const ALL_SEVERITIES = ["warning", "minor", "moderate", "major", "critical"] as const;
 
 // ─── API helpers ────────────────────────────────────────────────────
-async function fetchViolations(communityId?: number, status?: string): Promise<Violation[]> {
+async function fetchViolations(communityId?: string, status?: string): Promise<Violation[]> {
   const params = new URLSearchParams();
   if (status && status !== "all") params.set("status", status);
   if (communityId) {
@@ -86,7 +86,7 @@ async function fetchViolations(communityId?: number, status?: string): Promise<V
   return res.json();
 }
 
-async function fetchViolationDetail(id: number): Promise<Violation> {
+async function fetchViolationDetail(id: string): Promise<Violation> {
   const res = await fetch(`/api/violations/${id}`);
   if (!res.ok) throw new Error("Failed to fetch violation");
   return res.json();
@@ -98,14 +98,14 @@ export default function HOADashboard() {
   const queryClient = useQueryClient();
 
   // Filters
-  const [communityFilter, setCommunityFilter] = useState<number | undefined>();
+  const [communityFilter, setCommunityFilter] = useState<string | undefined>();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [severityFilter, setSeverityFilter] = useState<string>("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
   // Detail panel
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [showCureReview, setShowCureReview] = useState(false);
 
@@ -125,7 +125,7 @@ export default function HOADashboard() {
 
   // Approve mutation
   const approveMutation = useMutation({
-    mutationFn: (id: number) => apiRequest("POST", `/api/violations/${id}/approve`),
+    mutationFn: (id: string) => apiRequest("POST", `/api/violations/${id}/approve`),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["hoa-violations"] }); },
   });
 
@@ -152,7 +152,7 @@ export default function HOADashboard() {
   const runAutoEscalation = async () => {
     setEscalationLoading(true);
     try {
-      await apiRequest("POST", "/api/violations/auto-escalate");
+      await fetch("/api/violations/auto-escalate");
       refetch();
     } catch {
       alert("Auto-escalation failed");
@@ -184,7 +184,7 @@ export default function HOADashboard() {
 
   const isOverdue = (v: Violation) => v.cureDeadline && new Date(v.cureDeadline) < new Date() && v.status !== "cured";
 
-  const openDetail = (id: number) => { setSelectedId(id); setShowDetail(true); setShowCureReview(false); };
+  const openDetail = (id: string) => { setSelectedId(id); setShowDetail(true); setShowCureReview(false); };
   const closeDetail = () => { setShowDetail(false); setSelectedId(null); };
 
   return (
@@ -241,7 +241,7 @@ export default function HOADashboard() {
         <div className="flex flex-wrap gap-3 items-center bg-gray-900 border border-gray-800 rounded-lg p-3">
           <select
             value={communityFilter ?? ""}
-            onChange={e => setCommunityFilter(e.target.value ? Number(e.target.value) : undefined)}
+            onChange={e => setCommunityFilter(e.target.value || undefined)}
             className="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm"
           >
             <option value="">All Communities</option>

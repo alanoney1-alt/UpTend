@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 
 interface Violation {
-  id: number;
+  id: string;
   address: string;
   violationType: string;
   severity: string;
@@ -12,7 +12,7 @@ interface Violation {
 }
 
 interface DetectionResult {
-  id: number;
+  id: string;
   address: string;
   violation_type: string;
   severity: string;
@@ -83,8 +83,8 @@ export default function HoaInspections() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             photo: base64,
-            latitude: gps?.lat,
-            longitude: gps?.lng,
+            lat: gps?.lat,
+            lng: gps?.lng,
             communityId: community,
           }),
         });
@@ -122,7 +122,7 @@ export default function HoaInspections() {
     try {
       await fetch(`/api/violations/${violation.id}/approve`, { method: "POST" });
       setCurrentResult(null);
-      setRecentInspections((prev) => [{ ...violation, status: "approved" }, ...prev].slice(0, 10));
+      setRecentInspections((prev) => [{ ...violation, status: "approved" as const }, ...prev].slice(0, 10));
       setBatchQueue((q) => q.filter((v) => v.id !== violation.id));
     } catch {
       setError("Failed to send notice.");

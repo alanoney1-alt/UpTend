@@ -51,7 +51,8 @@ const photoDetectSchema = z.object({
 });
 
 const cureSchema = z.object({
-  curePhotoUrl: z.string().url(),
+  curePhotoUrl: z.string().min(1), // Accepts URLs or base64 data URLs
+  note: z.string().optional(),
 });
 
 const disputeSchema = z.object({
@@ -624,6 +625,20 @@ Analyze whether the violation appears to be resolved. Return JSON:
         `SELECT * FROM violation_records WHERE status IN ('draft', 'pending') ORDER BY created_at DESC`,
       );
       res.json({ violations: result.rows, count: result.rows.length });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ── GET /api/violations/recent ─────────────────────────────────────────
+  app.get("/api/violations/recent", async (req, res) => {
+    try {
+      const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
+      const result = await pool.query(
+        `SELECT * FROM violation_records WHERE created_at >= NOW() - INTERVAL '24 hours' ORDER BY created_at DESC LIMIT $1`,
+        [limit],
+      );
+      res.json(result.rows);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
