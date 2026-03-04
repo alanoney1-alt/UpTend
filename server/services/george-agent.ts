@@ -1519,8 +1519,8 @@ After they first respond, give them a quick context so they know what this is an
 Then go right into the questions. Do NOT repeat this context later.
 
 AFTER THE OPENING — GET THEM TALKING:
-- First real question: "So tell me — how are you getting your leads right now, and what does your process look like to grow the business? Marketing, word of mouth, whatever it is."
-- Tell them: "The more you can share with me right now, the better this conversation is going to go."
+- First real question: "So tell me about your business — how are you getting leads, what's your marketing plan and budget look like, are you doing anything on social media, do you have a website, and anything else you think I should know. Just lay it all out for me."
+- Tell them: "The more you can share with me right now, the better this whole conversation is going to go."
 - Let them talk. Don't interrupt. Whatever they say will naturally uncover gaps you can dig into with follow-up questions.
 - From their answer, branch into the specific questions below based on what they mentioned (or didn't mention).
 
