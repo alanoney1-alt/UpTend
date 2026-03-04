@@ -265,6 +265,39 @@ export default function DiscoveryPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
 
+  // Sentence-level TTS queue for stream-to-speech
+  const ttsQueueRef = useRef<string[]>([]);
+  const ttsPlayingRef = useRef(false);
+  const ttsBufRef = useRef("");
+
+  const processTTSQueue = useCallback(async () => {
+    if (ttsPlayingRef.current || ttsQueueRef.current.length === 0) return;
+    ttsPlayingRef.current = true;
+    while (ttsQueueRef.current.length > 0) {
+      const sentence = ttsQueueRef.current.shift()!;
+      if (sentence.trim()) await speak(sentence.trim());
+    }
+    ttsPlayingRef.current = false;
+  }, [speak]);
+
+  const feedTTSToken = useCallback((token: string) => {
+    ttsBufRef.current += token;
+    const parts = ttsBufRef.current.split(/(?<=[.!?])\s+/);
+    if (parts.length > 1) {
+      for (let i = 0; i < parts.length - 1; i++) ttsQueueRef.current.push(parts[i]);
+      ttsBufRef.current = parts[parts.length - 1];
+      processTTSQueue();
+    }
+  }, [processTTSQueue]);
+
+  const flushTTS = useCallback(() => {
+    if (ttsBufRef.current.trim()) {
+      ttsQueueRef.current.push(ttsBufRef.current.trim());
+      ttsBufRef.current = "";
+      processTTSQueue();
+    }
+  }, [processTTSQueue]);
+
   const scrollToBottom = useCallback(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
@@ -463,6 +496,8 @@ export default function DiscoveryPage() {
       if (streamRes.ok && streamRes.body) {
         // Add empty message and stream into it
         setMessages(prev => [...prev, { role: "george", content: "" }]);
+        ttsBufRef.current = "";
+        ttsQueueRef.current = [];
         const reader = streamRes.body.getReader();
         const decoder = new TextDecoder();
 
@@ -484,10 +519,12 @@ export default function DiscoveryPage() {
                   }
                   return updated;
                 });
+                if (voiceMode) feedTTSToken(data.token);
               }
             } catch {}
           }
         }
+        if (voiceMode) flushTTS();
       } else {
         // Fallback to non-streaming
         const fallbackRes = await fetch("/api/ai/guide/chat", {
@@ -513,14 +550,25 @@ export default function DiscoveryPage() {
         setMessages(prev => [...prev, { role: "george", content: reply }]);
       }
 
-      // Speak, then auto-listen if in conversation mode
-      speak(reply).then(() => {
-        if (conversationModeRef.current) {
-          setTimeout(() => {
-            if (conversationModeRef.current) startListening();
-          }, 400);
-        }
-      });
+      // If we streamed with TTS, just wait for queue to drain then auto-listen
+      // If non-streaming fallback, speak the whole thing
+      if (!(streamRes.ok && streamRes.body)) {
+        speak(reply).then(() => {
+          if (conversationModeRef.current) {
+            setTimeout(() => { if (conversationModeRef.current) startListening(); }, 400);
+          }
+        });
+      } else {
+        // For streamed TTS, wait a bit for queue to finish then auto-listen
+        const waitForTTS = () => {
+          if (ttsPlayingRef.current || ttsQueueRef.current.length > 0) {
+            setTimeout(waitForTTS, 200);
+          } else if (conversationModeRef.current) {
+            setTimeout(() => { if (conversationModeRef.current) startListening(); }, 400);
+          }
+        };
+        waitForTTS();
+      }
 
       // Auto-generate proposal silently when George wraps up the conversation
       // Detect hand-off phrases (George collecting contact info = conversation is ending)

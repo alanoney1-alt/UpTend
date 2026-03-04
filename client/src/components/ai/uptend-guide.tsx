@@ -222,6 +222,54 @@ function useSpeechRecognition() {
   return { isListening, transcript, isSupported, startListening, stopListening };
 }
 
+// ─── Sentence Stream TTS Queue ───────────────────────────────────────────
+
+function useSentenceStreamTTS(speak: (text: string) => Promise<void> | void) {
+  const queueRef = useRef<string[]>([]);
+  const playingRef = useRef(false);
+  const bufferRef = useRef("");
+
+  const processQueue = useCallback(async () => {
+    if (playingRef.current || queueRef.current.length === 0) return;
+    playingRef.current = true;
+    while (queueRef.current.length > 0) {
+      const sentence = queueRef.current.shift()!;
+      if (sentence.trim()) await speak(sentence.trim());
+    }
+    playingRef.current = false;
+  }, [speak]);
+
+  const feedToken = useCallback((token: string) => {
+    bufferRef.current += token;
+    // Split on sentence boundaries
+    const parts = bufferRef.current.split(/(?<=[.!?])\s+/);
+    if (parts.length > 1) {
+      // All but the last part are complete sentences
+      for (let i = 0; i < parts.length - 1; i++) {
+        queueRef.current.push(parts[i]);
+      }
+      bufferRef.current = parts[parts.length - 1];
+      processQueue();
+    }
+  }, [processQueue]);
+
+  const flush = useCallback(() => {
+    if (bufferRef.current.trim()) {
+      queueRef.current.push(bufferRef.current.trim());
+      bufferRef.current = "";
+      processQueue();
+    }
+  }, [processQueue]);
+
+  const reset = useCallback(() => {
+    queueRef.current = [];
+    bufferRef.current = "";
+    playingRef.current = false;
+  }, []);
+
+  return { feedToken, flush, reset };
+}
+
 function useSpeechSynthesis() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [useElevenLabs, setUseElevenLabs] = useState(true);
@@ -429,6 +477,7 @@ export function UpTendGuide() {
 
   const speech = useSpeechRecognition();
   const synth = useSpeechSynthesis();
+  const sentenceTTS = useSentenceStreamTTS(synth.speak);
 
   const sendFeedback = useCallback(async (messageId: string, feedbackType: string) => {
     try {
@@ -696,6 +745,7 @@ export function UpTendGuide() {
       // Add empty assistant message that we'll fill progressively
       setMessages(prev => [...prev, { id: aiMsgId, role: "assistant", content: "" }]);
       setIsLoading(false);
+      if (voiceOutputEnabled) sentenceTTS.reset();
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -713,6 +763,7 @@ export function UpTendGuide() {
             if (data.token) {
               fullText += data.token;
               setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, content: fullText } : m));
+              if (voiceOutputEnabled && synth.isSupported) sentenceTTS.feedToken(data.token);
             }
             if (data.done) {
               buttons = data.buttons;
@@ -725,12 +776,13 @@ export function UpTendGuide() {
         }
       }
 
+      // Flush remaining sentence buffer for TTS
+      if (voiceOutputEnabled && synth.isSupported) sentenceTTS.flush();
+
       // Update final message with buttons if any
       if (buttons) {
         setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, quickActions: buttons?.map((b: any) => ({ label: b.text, action: `message:${b.action}` })) } : m));
       }
-
-      if (voiceOutputEnabled && synth.isSupported && fullText) synth.speak(fullText);
     } catch {
       // Fallback to non-streaming endpoint
       try {
