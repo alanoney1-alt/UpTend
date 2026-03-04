@@ -450,3 +450,77 @@ export const discoveryLeads = pgTable("discovery_leads", {
 - Build passes ✅
 - George agent changes (opening questions, greeting style) don't affect tool definitions or consumer mode.
 
+
+---
+
+## Round 4 — Production Hardening (2026-03-03)
+
+### 1. Error Handling Sweep
+- **FIXED:** `b2b-outreach.routes.ts` — outreach handler was missing try/catch, wrapped it
+- **VERIFIED:** All major route files (sales-leads, partner-invoicing, job-management, service-requests) already have proper try/catch blocks
+- **VERIFIED:** JSON.parse calls in routes are inside existing try/catch blocks
+- **VERIFIED:** `.then()` chains without `.catch()` in auth routes are fire-and-forget background tasks (george greetings, home auto-populate) — acceptable pattern
+- **NOTE:** 88 console.log/debug statements in server routes — logger.ts exists but not universally adopted. Low priority.
+
+### 2. Pagination Added
+- **FIXED:** `GET /api/sales/leads` — now supports `?page=1&limit=20` with total count in response
+- **FIXED:** `GET /api/partners/:slug/invoices` — now passes limit/offset to service (service already supported it)
+- **VERIFIED:** Service requests endpoint uses storage layer which handles its own scoping
+- Response format: `{ leads: [...], pagination: { page, limit, total, totalPages } }`
+
+### 3. Sales Leads Dashboard Improvements
+- **FIXED:** Error state with retry button (was `catch { // ignore }`)
+- **FIXED:** Empty state: "No leads yet — Leads will appear here after discovery conversations with Mr. George"
+- **FIXED:** Loading spinner animation instead of plain "Loading..." text
+- **FIXED:** Status update now checks response.ok and shows errors
+- **FIXED:** Status update refreshes selected lead from API response
+- **FIXED:** Pagination controls (prev/next) with page count display
+- **FIXED:** Total count shown in header from API pagination
+
+### 4. Large JSON Blob Responses
+- **FIXED:** Sales leads list API now returns only summary fields (id, companyName, serviceType, contactName, contactEmail, contactPhone, status, createdAt, updatedAt)
+- **FIXED:** Proposal trimmed to just suggestedPackage, painPoints, businessSummary in list view
+- **FIXED:** messages, collectedData, auditData excluded from list — only returned in detail view (GET /api/sales/leads/:id)
+
+### 5. Loading States
+- **VERIFIED:** Sales leads dashboard — ✅ spinner added (round 4)
+- **VERIFIED:** Partner invoices — ✅ already has Loader2 spinner
+- **VERIFIED:** HOA dashboard — ✅ already has spinning border loader
+- **VERIFIED:** Home profile page — ✅ already has Loader2 spinner
+
+### 6. 404 Page
+- **VERIFIED:** Catch-all `<Route component={NotFound} />` exists in App.tsx (line 507)
+- **FIXED:** Redesigned 404 page — dark theme (#0a0a0f bg), large 404 text, "Go Home" and "Browse Services" buttons, consistent with app styling
+
+### 7. Meta Tags & SEO
+- **VERIFIED:** Homepage has full SEO via useSEO hook (title, description, OG tags, Twitter cards, structured data)
+- **FIXED:** Added canonical URL support to useSEO hook — auto-sets `<link rel="canonical">` on all pages using it
+- **FIXED:** SEO service pages (seo-service-page.tsx) now use useSEO hook instead of manual meta tags — gets OG tags, Twitter cards, and canonical URLs
+- **FIXED:** Neighborhood landing pages now use useSEO hook instead of just usePageTitle — gets description, OG, Twitter, canonical
+
+### 8. Accessibility Basics
+- **VERIFIED:** Form components use radix-ui Label, Input, Select with proper labeling
+- **VERIFIED:** Buttons in landing/CTA have descriptive text content
+- **VERIFIED:** Chat widget uses aria-labels on close/send buttons
+- **NOTE:** Some icon-only buttons could benefit from aria-labels — low priority, not blocking
+
+### 9. Mobile Responsive Check
+- **VERIFIED:** Chat widget uses `max-w-[calc(100vw-2rem)]` — won't overflow on mobile
+- **VERIFIED:** Landing page uses responsive grid classes (grid-cols-1 md:grid-cols-2 lg:grid-cols-3)
+- **VERIFIED:** Sales leads dashboard uses flex-wrap and responsive max-widths
+- **VERIFIED:** Discovery page — NOT MODIFIED per instructions
+- **VERIFIED:** No hardcoded pixel widths that would break mobile layout
+
+### 10. Environment & Deployment Health
+- **VERIFIED:** Dockerfile uses node:20-alpine, npm ci, npm run build, npm prune --production, healthcheck
+- **VERIFIED:** Build: vite outputs to dist/public, esbuild outputs to dist/index.cjs
+- **VERIFIED:** Static serving: __dirname + '/public' = dist/public — correct
+- **VERIFIED:** CMD uses node dist/index.cjs — correct
+- **VERIFIED:** NODE_ENV=production set in Dockerfile
+- **NOTE:** 88 console.log statements in routes — not ideal but most are console.error in catch blocks (appropriate). Logger utility exists at server/utils/logger.ts but isn't universally adopted.
+- **NOTE:** Replit-specific vite plugins are conditionally loaded only when REPL_ID is set — won't affect production
+
+### Summary
+- 6 files changed across 2 commits
+- Key wins: paginated APIs, trimmed list responses, proper error UI, canonical URLs, SEO on all public pages
+- No breaking changes

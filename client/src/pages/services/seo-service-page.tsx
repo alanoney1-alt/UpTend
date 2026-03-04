@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { Link } from "wouter";
+import { useSEO } from "@/hooks/use-seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -159,18 +159,11 @@ function getRelatedLinks(slug: string): { href: string; label: string; descripti
 
 
 export function SeoServicePage({ data }: { data: SeoServicePageData }) {
-  useEffect(() => {
-    document.title = data.metaTitle;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", data.metaDescription);
-    } else {
-      const meta = document.createElement("meta");
-      meta.name = "description";
-      meta.content = data.metaDescription;
-      document.head.appendChild(meta);
-    }
-  }, [data.metaTitle, data.metaDescription]);
+  useSEO({
+    title: data.metaTitle,
+    description: data.metaDescription,
+    path: `/services/${data.slug}`,
+  });
 
   const Icon = data.icon;
 

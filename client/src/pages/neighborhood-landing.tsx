@@ -1,4 +1,4 @@
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useSEO } from "@/hooks/use-seo";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,7 +37,11 @@ const SERVICES = [
 ];
 
 export function NeighborhoodLanding({ config }: { config: NeighborhoodConfig }) {
-  usePageTitle(`${config.name} Home Services | UpTend`);
+  useSEO({
+    title: `${config.name} Home Services | UpTend`,
+    description: `${config.description} Book vetted pros for cleaning, lawn care, junk removal & more in ${config.name}.`,
+    path: `/neighborhoods/${config.slug}`,
+  });
 
   return (
     <div className="min-h-screen bg-background">
