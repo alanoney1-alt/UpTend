@@ -74,6 +74,8 @@ app.use('/api/pros/login', authLimiter);
 app.use('/api/pros/register', authLimiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
 app.use('/api/admin/login', authLimiter);
 app.use('/api/business/login', authLimiter);
 app.use('/api/password-reset', authLimiter);

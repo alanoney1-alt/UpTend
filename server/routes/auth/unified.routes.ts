@@ -25,6 +25,10 @@ export function registerUnifiedAuthRoutes(app: Express) {
         return res.status(400).json({ error: "Email and password are required" });
       }
 
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: "Invalid email format" });
+      }
+
       // Look up user by email
       const user = await storage.getUserByEmail(email);
       if (!user || !user.password) {
@@ -73,6 +77,10 @@ export function registerUnifiedAuthRoutes(app: Express) {
 
       if (!email || !password) {
         return res.status(400).json({ error: "Email and password are required" });
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: "Invalid email format" });
       }
 
       if (password.length < 6) {

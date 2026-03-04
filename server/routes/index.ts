@@ -132,6 +132,7 @@ import { registerLaunchNotificationRoutes } from "./launch-notifications.routes"
 import { registerPartnerRoutes } from "./partners.routes";
 import { registerSalesLeadsRoutes } from "./sales-leads.routes";
 import { registerPartnerDashboardRoutes } from "./partner-dashboard.routes";
+import { registerPartnerInvoicingRoutes } from "./partner-invoicing.routes";
 import { registerPartnerFeaturesRoutes } from "./partner-features.routes";
 import { registerPartnerOperationsRoutes } from "./partner-operations.routes";
 
@@ -460,6 +461,7 @@ export async function registerRoutes(
   registerPartnerRoutes(app);
   registerSalesLeadsRoutes(app);
   registerPartnerDashboardRoutes(app);
+  registerPartnerInvoicingRoutes(app);
   registerPartnerFeaturesRoutes(app);
   registerPartnerOperationsRoutes(app);
 
