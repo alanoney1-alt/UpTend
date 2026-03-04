@@ -29,9 +29,10 @@ const VOICES = {
 
 const DEFAULT_VOICE = "josh";
 const DEFAULT_MODEL = "eleven_monolingual_v1"; // Fast, English-only
-const STABILITY = 0.5;
+const STABILITY = 0.4;
 const SIMILARITY_BOOST = 0.75;
 const STYLE = 0.3;
+const SPEED = 1.15;
 
 // ============================================================
 // Types
@@ -86,6 +87,7 @@ export async function textToSpeech(text: string, options: VoiceOptions = {}): Pr
           similarity_boost: options.similarityBoost ?? SIMILARITY_BOOST,
           style: options.style ?? STYLE,
           use_speaker_boost: true,
+          speed: SPEED,
         },
       }),
     });
@@ -157,6 +159,7 @@ export async function textToSpeechStream(
           similarity_boost: options.similarityBoost ?? SIMILARITY_BOOST,
           style: options.style ?? STYLE,
           use_speaker_boost: true,
+          speed: SPEED,
         },
       }),
     });
