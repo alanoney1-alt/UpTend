@@ -12,6 +12,14 @@ const passwordResetAttempts = new Map<string, { count: number; resetAt: number }
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_RESET_ATTEMPTS = 3; // Max 3 attempts per 15 minutes
 
+// Evict expired entries every 15 minutes to prevent memory leak
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of passwordResetAttempts) {
+    if (now > entry.resetAt) passwordResetAttempts.delete(key);
+  }
+}, RATE_LIMIT_WINDOW);
+
 function checkPasswordResetRateLimit(identifier: string): boolean {
   const now = Date.now();
   const entry = passwordResetAttempts.get(identifier);

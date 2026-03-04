@@ -6,6 +6,13 @@ const RENTCAST_BASE = "https://api.rentcast.io/v1";
 // Simple cache to avoid burning RentCast free-tier calls
 const propertyCache = new Map<string, { data: any; ts: number }>();
 const CACHE_TTL = 30 * 60 * 1000; // 30 min
+// Evict expired cache entries every 30 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of propertyCache) {
+    if (now - entry.ts > CACHE_TTL) propertyCache.delete(key);
+  }
+}, CACHE_TTL);
 
 function parseAddress(address: string): { street: string; city: string; state: string; zip: string } {
   const parts = address.split(",").map(s => s.trim());

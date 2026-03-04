@@ -15,10 +15,14 @@ export function registerLoyaltyRoutes(app: Express) {
     });
   });
 
-  // Get user's loyalty account status
-  app.get("/api/loyalty/:userId", async (req, res) => {
+  // Get user's loyalty account status (IDOR-safe: user can only see own data)
+  app.get("/api/loyalty/:userId", isAuthenticated, async (req, res) => {
     try {
       const { userId } = req.params;
+      const authUser = req.user as any;
+      if (authUser?.role !== "admin" && authUser?.id !== userId) {
+        return res.status(403).json({ error: "Access denied" });
+      }
 
       if (!userId || userId === "undefined") {
         return res.status(400).json({ error: "Valid user ID is required" });

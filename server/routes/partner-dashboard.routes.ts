@@ -274,6 +274,15 @@ export function registerPartnerDashboardRoutes(app: Express) {
 
   // Simple in-memory rate limit: 10 per hour per IP
   const auditRateLimit = new Map<string, number[]>();
+  // Evict stale entries every hour
+  setInterval(() => {
+    const hourAgo = Date.now() - 3600000;
+    for (const [key, timestamps] of auditRateLimit) {
+      const fresh = timestamps.filter(t => t > hourAgo);
+      if (fresh.length === 0) auditRateLimit.delete(key);
+      else auditRateLimit.set(key, fresh);
+    }
+  }, 3600000);
 
   router.post("/audit", async (req, res) => {
     // Rate limit check

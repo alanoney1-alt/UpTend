@@ -317,6 +317,9 @@ import { registerPartnerOnboardingRoutes } from "./partner-onboarding.routes";
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
+// Health check
+import { registerHealthRoutes } from "./api-health.routes";
+
 /**
  * Main routes registration function
  * Sets up authentication, middleware, and all feature routes
@@ -646,6 +649,9 @@ export async function registerRoutes(
 
   // Partner onboarding + customer-facing routes
   registerPartnerOnboardingRoutes(app);
+
+  // Register Health check routes
+  registerHealthRoutes(app);
 
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);

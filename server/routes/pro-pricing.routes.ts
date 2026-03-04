@@ -40,6 +40,14 @@ export const PLATFORM_SERVICE_RATES: Record<string, {
 // Key: `${proId}:${serviceType}`
 const proRatesStore: Map<string, { baseRate: number; updatedAt: string }> = new Map();
 
+// Evict stale entries every 30 minutes (prevent unbounded growth)
+setInterval(() => {
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  for (const [key, val] of proRatesStore) {
+    if (val.updatedAt < oneDayAgo) proRatesStore.delete(key);
+  }
+}, 30 * 60 * 1000);
+
 export function getProRate(proId: string, serviceType: string): number | null {
   const key = `${proId}:${serviceType}`;
   const stored = proRatesStore.get(key);

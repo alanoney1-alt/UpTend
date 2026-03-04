@@ -176,6 +176,12 @@ export function registerCustomerReferralRoutes(app: Express) {
         return res.status(404).json({ error: "Referral not found" });
       }
 
+      // IDOR protection: only the referrer or referred user can complete
+      const userId = (req.user as any).id;
+      if (referral.referrerId !== userId && referral.referredId !== userId) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
       // Update referral status
       await storage.updateReferral(req.params.id, {
         status: "completed",
