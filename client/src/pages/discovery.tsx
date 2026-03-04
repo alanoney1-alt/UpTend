@@ -237,6 +237,8 @@ export default function DiscoveryPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [voiceMode, setVoiceMode] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [conversationMode, setConversationMode] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [visibleSections, setVisibleSections] = useState(0);
   const [email, setEmail] = useState("");
@@ -297,21 +299,65 @@ export default function DiscoveryPage() {
   }, []);
 
   // Voice: speak George's message via ElevenLabs with browser fallback
-  const speak = useCallback(async (text: string, force?: boolean) => {
+  // Returns a promise that resolves when speech finishes (for conversation loop)
+  const speak = useCallback(async (text: string, force?: boolean): Promise<void> => {
     if (!voiceMode && !force) return;
+    setIsSpeaking(true);
 
-    const browserFallback = (t: string) => {
-      try {
-        if (window.speechSynthesis) {
-          const clean = t.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1");
-          const u = new SpeechSynthesisUtterance(clean);
-          u.rate = 0.95;
-          u.pitch = 0.9;
-          window.speechSynthesis.speak(u);
+    const browserFallback = (t: string): Promise<void> => {
+      return new Promise((resolve) => {
+        try {
+          if (window.speechSynthesis) {
+            const clean = t.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1");
+            const u = new SpeechSynthesisUtterance(clean);
+            u.rate = 0.95;
+            u.pitch = 0.9;
+            u.onend = () => { setIsSpeaking(false); resolve(); };
+            u.onerror = () => { setIsSpeaking(false); resolve(); };
+            window.speechSynthesis.speak(u);
+          } else {
+            setIsSpeaking(false);
+            resolve();
+          }
+        } catch {
+          setIsSpeaking(false);
+          resolve();
         }
-      } catch {
-        console.warn("[Discovery Voice] Browser TTS also failed");
-      }
+      });
+    };
+
+    // Play audio through AudioContext (works on Safari/iOS after user gesture unlock)
+    const playViaAudioContext = (base64: string): Promise<void> => {
+      return new Promise(async (resolve) => {
+        try {
+          if (!audioCtxRef.current) {
+            const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+            if (AudioCtx) audioCtxRef.current = new AudioCtx();
+          }
+          const ctx = audioCtxRef.current;
+          if (!ctx) { setIsSpeaking(false); resolve(); return; }
+          if (ctx.state === "suspended") await ctx.resume();
+          const binary = atob(base64);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+          const buffer = await ctx.decodeAudioData(bytes.buffer);
+          const source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(ctx.destination);
+          source.onended = () => { setIsSpeaking(false); resolve(); };
+          source.start(0);
+        } catch {
+          // AudioContext decode failed — try HTML5 Audio, then browser TTS
+          try {
+            const audio = new Audio(`data:audio/mpeg;base64,${base64}`);
+            audio.onended = () => { setIsSpeaking(false); resolve(); };
+            audio.onerror = () => browserFallback(text).then(resolve);
+            await audio.play();
+          } catch {
+            browserFallback(text).then(resolve);
+          }
+        }
+      });
     };
 
     try {
@@ -323,27 +369,36 @@ export default function DiscoveryPage() {
       if (resp.ok) {
         const data = await resp.json();
         if (data.audio) {
-          const audio = new Audio(`data:audio/mpeg;base64,${data.audio}`);
-          audio.play().catch(() => browserFallback(text));
+          await playViaAudioContext(data.audio);
           return;
         }
       }
-      browserFallback(text);
+      await browserFallback(text);
     } catch {
-      browserFallback(text);
+      await browserFallback(text);
     }
   }, [voiceMode]);
 
-  // Voice: listen
+  // Voice: listen — in conversation mode, auto-sends when user stops talking
+  const sendMessageRef = useRef<((text?: string) => Promise<void>) | null>(null);
+  const conversationModeRef = useRef(false);
+  useEffect(() => { conversationModeRef.current = conversationMode; }, [conversationMode]);
+
   const startListening = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) return;
     const rec = new SR();
     rec.continuous = false;
     rec.interimResults = false;
+    rec.lang = "en-US";
     rec.onresult = (e: any) => {
       const text = e.results[0][0].transcript;
-      setInput(text);
+      if (conversationModeRef.current && sendMessageRef.current) {
+        // In conversation mode: auto-send immediately, no typing needed
+        sendMessageRef.current(text);
+      } else {
+        setInput(text);
+      }
       setIsListening(false);
     };
     rec.onerror = () => setIsListening(false);
@@ -390,7 +445,15 @@ export default function DiscoveryPage() {
       const data = await res.json();
       const reply = data.reply || data.response || data.message || "Let me think on that for a second...";
       setMessages(prev => [...prev, { role: "george", content: reply }]);
-      speak(reply);
+      // Speak, then auto-listen if in conversation mode
+      speak(reply).then(() => {
+        if (conversationModeRef.current) {
+          // Small delay to avoid catching George's audio tail
+          setTimeout(() => {
+            if (conversationModeRef.current) startListening();
+          }, 400);
+        }
+      });
 
       // Check if ready for proposal
       if (!readyPromptShown && collected.companyName && collected.serviceType && (collected.painPoints.length >= 2 || collected.monthlySpend)) {
@@ -400,7 +463,30 @@ export default function DiscoveryPage() {
       setMessages(prev => [...prev, { role: "george", content: "Having a connection issue. Give it another shot." }]);
     }
     setIsLoading(false);
-  }, [input, messages, isLoading, speak, readyPromptShown]);
+  }, [input, messages, isLoading, speak, readyPromptShown, startListening]);
+
+  // Keep ref in sync for conversation mode auto-send
+  useEffect(() => { sendMessageRef.current = sendMessage; }, [sendMessage]);
+
+  // Start/stop conversation mode
+  const toggleConversationMode = useCallback(() => {
+    const next = !conversationMode;
+    setConversationMode(next);
+    setVoiceMode(next); // voice must be on for conversation mode
+    unlockAudio(); // unlock Safari audio on this user gesture
+    if (next) {
+      // If no messages yet, send the greeting which triggers George to speak + auto-listen
+      if (messages.length === 0) {
+        sendMessage("Hey");
+      } else {
+        // Already in convo — start listening for next input
+        startListening();
+      }
+    } else {
+      // Exiting conversation mode — stop listening if active
+      stopListening();
+    }
+  }, [conversationMode, messages, sendMessage, startListening, stopListening, unlockAudio]);
 
   const startChat = useCallback((voice: boolean) => {
     setVoiceMode(voice);
@@ -651,7 +737,9 @@ export default function DiscoveryPage() {
     <div className="h-[100dvh] bg-[#0a0a0f] text-white flex flex-col">
       <header className="flex items-center justify-between p-3 border-b border-white/5">
         <img src="/logo-white.png" alt="UpTend" className="h-5 opacity-70" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-        <span className="text-xs text-gray-400">{voiceMode ? "🔊 Voice on" : ""}</span>
+        <span className="text-xs text-gray-400">
+          {conversationMode ? (isSpeaking ? "George is talking..." : isListening ? "Listening..." : isLoading ? "Thinking..." : "Conversation mode") : voiceMode ? "Voice on" : ""}
+        </span>
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
@@ -688,47 +776,94 @@ export default function DiscoveryPage() {
       </div>
 
       <div className="p-3 border-t border-white/5">
-        <div className="flex gap-2 max-w-2xl mx-auto">
-          {/* Speaker toggle — hear George */}
-          <button
-            onClick={() => {
-              const next = !voiceMode;
-              setVoiceMode(next);
-              if (next) {
-                const lastGeorge = [...messages].reverse().find(m => m.role === "george");
-                if (lastGeorge?.content) speak(lastGeorge.content, true);
-              }
-            }}
-            className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${voiceMode ? "bg-blue-600" : "bg-white/10 hover:bg-white/20"}`}
-            title={voiceMode ? "Turn off George's voice" : "Hear George speak"}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {voiceMode
-                ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z" />
-                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-              }
-            </svg>
-          </button>
-          {/* Mic button — talk to George */}
-          <button
-            onClick={isListening ? stopListening : startListening}
-            className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isListening ? "bg-red-500 animate-pulse" : "bg-white/10 hover:bg-white/20"}`}
-            title={isListening ? "Stop listening" : "Talk to George"}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-          </button>
-          <input
-            ref={inputRef}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === "Enter") { unlockAudio(); sendMessage(); } }}
-            placeholder="Type your message..."
-            className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
-          />
-          <button onClick={() => { unlockAudio(); sendMessage(); }} disabled={isLoading || !input.trim()} className="bg-blue-600 hover:bg-blue-500 disabled:opacity-30 px-4 rounded-xl transition-all">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
-          </button>
-        </div>
+        {/* Conversation mode: big center button */}
+        {conversationMode ? (
+          <div className="flex flex-col items-center gap-3 max-w-2xl mx-auto">
+            <button
+              onClick={toggleConversationMode}
+              className="w-20 h-20 rounded-full bg-red-500 hover:bg-red-400 flex items-center justify-center transition-all shadow-lg shadow-red-500/30"
+              title="End conversation"
+            >
+              {isSpeaking ? (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z" /></svg>
+              ) : isListening ? (
+                <svg className="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+              ) : (
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+              )}
+            </button>
+            <p className="text-xs text-gray-500">
+              {isSpeaking ? "George is talking..." : isListening ? "Listening to you..." : isLoading ? "Thinking..." : "Tap to end conversation"}
+            </p>
+            {/* Fallback text input in conversation mode */}
+            <div className="flex gap-2 w-full">
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") sendMessage(); }}
+                placeholder="Or type here..."
+                className="flex-1 bg-white/5 border border-white/5 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50"
+              />
+              <button onClick={() => sendMessage()} disabled={isLoading || !input.trim()} className="bg-blue-600 hover:bg-blue-500 disabled:opacity-30 px-3 rounded-xl transition-all">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex gap-2 max-w-2xl mx-auto">
+            {/* Start Conversation button — enters continuous voice mode */}
+            <button
+              onClick={toggleConversationMode}
+              className="w-12 h-12 rounded-full bg-green-600 hover:bg-green-500 flex items-center justify-center flex-shrink-0 transition-all"
+              title="Start voice conversation with George"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </button>
+            {/* Speaker toggle */}
+            <button
+              onClick={() => {
+                const next = !voiceMode;
+                setVoiceMode(next);
+                unlockAudio();
+                if (next) {
+                  const lastGeorge = [...messages].reverse().find(m => m.role === "george");
+                  if (lastGeorge?.content) speak(lastGeorge.content, true);
+                }
+              }}
+              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${voiceMode ? "bg-blue-600" : "bg-white/10 hover:bg-white/20"}`}
+              title={voiceMode ? "Turn off George's voice" : "Hear George speak"}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {voiceMode
+                  ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z" />
+                  : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                }
+              </svg>
+            </button>
+            {/* Mic button */}
+            <button
+              onClick={isListening ? stopListening : startListening}
+              className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isListening ? "bg-red-500 animate-pulse" : "bg-white/10 hover:bg-white/20"}`}
+              title={isListening ? "Stop listening" : "Talk to George"}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+            </button>
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter") { unlockAudio(); sendMessage(); } }}
+              placeholder="Type your message..."
+              className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
+            />
+            <button onClick={() => { unlockAudio(); sendMessage(); }} disabled={isLoading || !input.trim()} className="bg-blue-600 hover:bg-blue-500 disabled:opacity-30 px-4 rounded-xl transition-all">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

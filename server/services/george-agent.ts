@@ -1540,6 +1540,8 @@ THE GOAL: Map their entire operation — who they are, how they get work, how th
 - Are they turning down work? Could they handle 20 more jobs/month if the leads were there?
 - Is it just them making decisions, or is there a partner/spouse involved?
 - Are they fully licensed and insured?
+- What do they do better than their competitors? What are they most proud of?
+- Walk me through a typical day — from when they wake up to when they stop working. (This reveals inefficiencies they don't even realize they have.)
 
 ── HOW THEY GET CUSTOMERS ──
 - Where do most customers come from right now? (referrals, Google, Angi, Thumbtack, yard signs, door knocking, etc.)
@@ -1562,6 +1564,7 @@ THE GOAL: Map their entire operation — who they are, how they get work, how th
 - How many quotes turn into actual jobs? What's the close rate?
 - How many hours a week are wasted on estimates that don't convert?
 - Do they offer financing or payment plans for bigger jobs?
+- How do they handle payments? Cash, check, card? Do they invoice or collect on-site? What's their invoicing process like?
 - What would they love to have as a tool to feel more in control of their leads and pipeline?
 
 ── CUSTOMER COMMUNICATION ──
@@ -1602,6 +1605,47 @@ THE GOAL: Map their entire operation — who they are, how they get work, how th
 - Where do they want to be in 12 months — revenue, team size, lifestyle?
 - What's holding them back from getting there?
 - What does "success" look like for them personally?
+
+── WHY THEY DO THIS (emotional stakes — this is what makes the proposal land) ──
+- Why did they start this business? What were they doing before?
+- Who depends on this working — family, employees, partners?
+- What happens to their life if the business stays exactly where it is for the next 2 years?
+
+── COST OF DOING NOTHING (quantify the bleeding) ──
+- How many leads do they think they lost last month to slow response or no follow-up?
+- If they had to guess — how much money walked out the door this year from missed calls, bad follow-up, or jobs they couldn't get to?
+- What happens in 6 months if nothing changes?
+
+── HOW THEY MAKE DECISIONS ──
+- What was the last business tool or service they said yes to? What made them pull the trigger?
+- What was the last thing they looked at and said no to? Why?
+- When evaluating something new, what matters most — price, proof it works, or how fast they see results?
+- Is there a number where they'd say "if it costs more than X/month, I'm out regardless"?
+- If they saw something today they liked, can they make that call or do they need to talk it over with someone? What would that person need to hear?
+
+── THE MAGIC NUMBER ──
+- What monthly revenue would change their life? Not "nice to have" — actually change things.
+- What's the gap between where they are and that number? What's in the way?
+- If I could put 20 qualified leads on their phone next month, what would they close? At what average ticket?
+
+── COMPETITIVE INTEL ──
+- Are they talking to anyone else right now about marketing or lead gen?
+- Have they seen demos of ServiceTitan, Housecall Pro, Jobber, anything like that?
+- What did they like or not like about what they saw?
+
+── TRUST & RISK ──
+- Who do they go to for business advice? Mentor, accountant, buddy in the trades?
+- What would make them trust a new platform enough to actually use it?
+- What's their biggest fear about signing up for something like this and it not working?
+
+── PAIN QUANTIFICATION (makes the ROI undeniable) ──
+- How many hours a week do they spend on stuff that isn't actually doing the work — quoting, scheduling, chasing payments, posting on social media, answering the phone?
+- What's their time worth per hour when they're on a job?
+- (George: do the math live — "So that's roughly $X/week you're losing to admin work.")
+
+── URGENCY CHECK ──
+- On a scale of 1-10, how urgent is fixing [their biggest pain point] right now?
+- What would make it a 10?
 
 ── VERTICAL-SPECIFIC (pick 2-3 once you know their trade) ──
 HVAC: Maintenance agreements vs emergency vs installs? Seasonal surge? Financing? Close rate on replacements? Good/Better/Best quoting?
