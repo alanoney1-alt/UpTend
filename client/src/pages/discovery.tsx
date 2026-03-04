@@ -228,17 +228,17 @@ function generateProposal(data: CollectedData, messages: Message[]): Proposal {
   const jobsToBreakeven = Math.ceil(monthlyPrice / avgTicket) + 1; // +1 for 5% job fee
 
   return {
-    companySummary: `${name} is a ${service.toLowerCase()} company${data.teamSize ? ` with ${data.teamSize} team members` : ""}${data.yearsInBusiness ? `, ${data.yearsInBusiness} years in the business` : ""}. Based on our conversation, here's what we put together.`,
+    companySummary: `${name} — ${service.toLowerCase()}${data.teamSize ? `, ${data.teamSize} team members` : ""}${data.yearsInBusiness ? `, ${data.yearsInBusiness} years in business` : ""}${data.serviceArea ? `, covers ${data.serviceArea}` : ""}${data.monthlySpend ? `. Currently spending ~$${data.monthlySpend}/mo on marketing` : ""}.`,
     painPoints: data.painPoints.length > 0 ? data.painPoints : ["Inconsistent lead flow", "Limited online presence", "Missing after hours calls"],
     packageName,
     packagePrice: `${price} + ${setupFee}`,
     roiNumbers: `At ${price}, you need ${jobsToBreakeven} extra jobs per month to cover the entire cost. Based on similar ${service.toLowerCase()} companies, we typically see a ${roi} return within 90 days. That's ${roi} back for every dollar in.`,
     timeline: [
-      "Week 1: Onboarding call, George AI configured for your business",
-      "Week 2: SEO pages live, lead capture active",
-      "Week 3: Review automation + social posting launched",
-      "Week 4: First performance report + strategy session",
-      "Month 2: Optimization based on real data, scaling what works",
+      "Step 1: Sales reviews this summary and preps for consultation call",
+      "Step 2: Consultation call — walk through findings, recommend package",
+      "Step 3: If they're in — onboarding call, George AI configured",
+      "Step 4: SEO pages live, lead capture + review automation launched",
+      "Step 5: First performance report + optimization",
     ],
   };
 }
@@ -469,23 +469,16 @@ export default function DiscoveryPage() {
         }
       });
 
-      // Check if ready for proposal
-      // Require at least 8 data points before showing proposal button
-      let dataPoints = 0;
-      if (collected.companyName) dataPoints++;
-      if (collected.serviceType) dataPoints++;
-      if (collected.teamSize) dataPoints++;
-      if (collected.serviceArea) dataPoints++;
-      if (collected.leadSources) dataPoints++;
-      if (collected.monthlySpend) dataPoints++;
-      if (collected.websiteUrl || collected.hasWebsite) dataPoints++;
-      if (collected.avgTicket) dataPoints++;
-      if (collected.painPoints.length >= 1) dataPoints++;
-      if (collected.yearsInBusiness) dataPoints++;
-      if (collected.reviewCount || collected.googleRating) dataPoints++;
-      if (collected.twelveMonthGoal || collected.goals) dataPoints++;
-      if (!readyPromptShown && dataPoints >= 8) {
+      // Auto-generate proposal silently when George wraps up the conversation
+      // Detect hand-off phrases (George collecting contact info = conversation is ending)
+      const lowerReply = reply.toLowerCase();
+      const isWrappingUp = /that's everything i need|get this to the team|set up a.*(consultation|call)|reach out to you|we'll be in touch|best (phone|email|number|way to reach)/i.test(reply);
+      if (isWrappingUp && !readyPromptShown) {
         setReadyPromptShown(true);
+        // Wait for George to finish speaking, then silently show proposal for salesperson
+        setTimeout(() => {
+          buildProposal();
+        }, 3000);
       }
     } catch {
       setMessages(prev => [...prev, { role: "george", content: "Having a connection issue. Give it another shot." }]);
@@ -609,19 +602,19 @@ export default function DiscoveryPage() {
         </header>
         <div className="max-w-2xl mx-auto px-6 py-8 space-y-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Your Custom Growth Package</h1>
-            <p className="text-gray-400">Prepared by George, just for you</p>
+            <h1 className="text-3xl font-bold mb-2">Discovery Summary</h1>
+            <p className="text-gray-400">Internal — for sales review</p>
           </div>
 
           {/* Company Summary */}
           <section className="bg-white/5 rounded-2xl p-6 border border-white/10">
-            <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-3">What We Heard</h3>
+            <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-3">Business Summary</h3>
             <p className="text-gray-300 leading-relaxed">{proposal.companySummary}</p>
           </section>
 
           {/* Pain Points */}
           <section className="bg-white/5 rounded-2xl p-6 border border-white/10">
-            <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-3">Challenges We Can Solve</h3>
+            <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-3">Pain Points Identified</h3>
             <ul className="space-y-2">
               {proposal.painPoints.map((p, i) => (
                 <li key={i} className="flex items-start gap-2 text-gray-300">
@@ -701,7 +694,7 @@ export default function DiscoveryPage() {
 
           {/* Package */}
           <section className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl p-6 border border-blue-500/30">
-            <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-3">Recommended Package</h3>
+            <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-3">Suggested Package</h3>
             <div className="flex items-end justify-between mb-4">
               <span className="text-2xl font-bold">{proposal.packageName}</span>
               <span className="text-3xl font-bold text-blue-400">{proposal.packagePrice}</span>
@@ -723,7 +716,7 @@ export default function DiscoveryPage() {
 
           {/* Timeline */}
           <section className="bg-white/5 rounded-2xl p-6 border border-white/10">
-            <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-3">What Happens Next</h3>
+            <h3 className="text-blue-400 text-sm font-semibold uppercase tracking-wider mb-3">Next Steps</h3>
             <ol className="space-y-3">
               {proposal.timeline.map((step, i) => (
                 <li key={i} className="flex items-start gap-3 text-gray-300">
@@ -737,11 +730,11 @@ export default function DiscoveryPage() {
           {/* Email capture */}
           {!emailSent ? (
             <section className="bg-white/5 rounded-2xl p-6 border border-white/10">
-              <h3 className="text-lg font-semibold mb-4">Where should we send your proposal?</h3>
+              <h3 className="text-lg font-semibold mb-4">Send proposal to prospect</h3>
               <div className="space-y-3">
                 <input value={leadName} onChange={e => setLeadName(e.target.value)} placeholder="Your name" className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
                 <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Your email" type="email" className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
-                <button onClick={submitEmail} className="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-semibold transition-all">Send This Proposal to My Email</button>
+                <button onClick={submitEmail} className="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-semibold transition-all">Send Proposal</button>
               </div>
             </section>
           ) : (
@@ -793,13 +786,7 @@ export default function DiscoveryPage() {
             </div>
           </div>
         )}
-        {readyPromptShown && !isLoading && messages.length > 5 && (
-          <div className="flex justify-center">
-            <button onClick={buildProposal} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 px-6 py-2.5 rounded-full text-sm font-semibold transition-all animate-pulse">
-              ✨ Ready to see your package?
-            </button>
-          </div>
-        )}
+        {/* Proposal button removed — proposal auto-generates silently after conversation ends */}
         <div ref={chatEndRef} />
       </div>
 
