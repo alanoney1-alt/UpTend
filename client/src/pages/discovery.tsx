@@ -513,8 +513,8 @@ export default function DiscoveryPage() {
     setVoiceMode(voice);
     setPhase("chat");
     const greeting = params.slug
-      ? `Hey, I'm George with UpTend. We work with ${params.slug.replace(/-/g, " ")} and a bunch of other service companies in the area. What kind of work do you do?`
-      : "Hey, I'm George with UpTend. We work with home service companies all over Orlando. What kind of work do you do?";
+      ? `Hey, I'm George with UpTend. We work with ${params.slug.replace(/-/g, " ")} and a bunch of other service companies in the area. What's the name of your business and what type of home service do you do?`
+      : "Hey, I'm George with UpTend. We work with home service companies all over Orlando. What's the name of your business and what type of home service do you do?";
     setMessages([{ role: "george", content: greeting }]);
     if (voice) speak(greeting, true);
   }, [params.slug, speak]);
