@@ -7821,3 +7821,21 @@ export const pmsSyncLog = pgTable("pms_sync_log", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 export type PmsSyncLog = typeof pmsSyncLog.$inferSelect;
+
+// Discovery Leads (from George discovery conversations)
+export const discoveryLeads = pgTable("discovery_leads", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyName: text("company_name"),
+  serviceType: text("service_type"),
+  contactName: text("contact_name"),
+  contactEmail: text("contact_email"),
+  contactPhone: text("contact_phone"),
+  collectedData: jsonb("collected_data"),
+  proposal: jsonb("proposal"),
+  messages: jsonb("messages"),
+  auditData: jsonb("audit_data"),
+  status: text("status").default("new").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+export type DiscoveryLead = typeof discoveryLeads.$inferSelect;

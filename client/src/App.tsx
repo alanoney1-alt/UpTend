@@ -117,6 +117,7 @@ const PartnerInvoices = lazy(() => import("@/pages/partners/invoices"));
 const InvoicePayPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePayPage })));
 const InvoicePaySuccessPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePaySuccessPage })));
 const Discovery = lazy(() => import("@/pages/discovery"));
+const SalesLeads = lazy(() => import("@/pages/sales/leads"));
 const HomeIntelligence = lazy(() => import("@/pages/home-intelligence"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
 const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
@@ -448,6 +449,7 @@ function Router() {
       <Route path="/fleet-tracking" component={FleetTracking} />
       <Route path="/partners" component={PartnersLanding} />
       <Route path="/home-report" component={HomeIntelligence} />
+      <Route path="/sales/leads" component={SalesLeads} />
       <Route path="/discovery/:slug" component={Discovery} />
       <Route path="/discovery" component={Discovery} />
       <Route path="/partners/register" component={PartnerRegister} />
