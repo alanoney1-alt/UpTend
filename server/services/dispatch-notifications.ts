@@ -7,23 +7,58 @@
 
 import { pool } from "../db";
 import { canAccessFeature } from "./tier-gates";
+import { sendSMS } from "./sms-service";
+import nodemailer from "nodemailer";
 
-// Mock email/SMS service - replace with actual implementation
+// Email service setup using SendGrid
+let transporter: nodemailer.Transporter;
+
+if (process.env.SENDGRID_API_KEY) {
+  transporter = nodemailer.createTransport({
+    host: "smtp.sendgrid.net",
+    port: 587,
+    auth: { user: "apikey", pass: process.env.SENDGRID_API_KEY },
+  });
+} else {
+  // Dev fallback - log to console
+  transporter = nodemailer.createTransport({ jsonTransport: true });
+}
+
+const FROM_EMAIL = process.env.FROM_EMAIL || "UpTend <alan@uptendapp.com>";
+
+// Real notification service using Twilio and SendGrid
 interface NotificationService {
   sendSMS: (to: string, message: string) => Promise<void>;
   sendEmail: (to: string, subject: string, body: string) => Promise<void>;
 }
 
-// This would be your actual Twilio/SendGrid implementation
 const notifications: NotificationService = {
   async sendSMS(to: string, message: string) {
-    console.log(`[SMS] To: ${to} | Message: ${message}`);
-    // TODO: Implement actual SMS sending
+    try {
+      const result = await sendSMS(to, message);
+      if (result.success) {
+        console.log(`[SMS] Sent to ${to}: ${message}`);
+      } else {
+        console.error(`[SMS] Failed to send to ${to}: ${result.error}`);
+      }
+    } catch (error: any) {
+      console.error(`[SMS] Error sending to ${to}:`, error.message);
+    }
   },
   
   async sendEmail(to: string, subject: string, body: string) {
-    console.log(`[EMAIL] To: ${to} | Subject: ${subject} | Body: ${body}`);
-    // TODO: Implement actual email sending
+    try {
+      const info = await transporter.sendMail({
+        from: FROM_EMAIL,
+        to,
+        subject,
+        html: body,
+        text: body.replace(/<[^>]*>/g, ''), // Strip HTML for text version
+      });
+      console.log(`[EMAIL] Sent to ${to}: ${subject}`);
+    } catch (error: any) {
+      console.error(`[EMAIL] Error sending to ${to}:`, error.message);
+    }
   }
 };
 

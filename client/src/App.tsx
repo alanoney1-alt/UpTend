@@ -68,6 +68,7 @@ const CareerDashboard = lazy(() => import("@/pages/career-dashboard"));
 const HaulerLanding = lazy(() => import("@/pages/hauler-landing"));
 const PyckerAcademy = lazy(() => import("@/pages/hauler-onboarding/academy"));
 const ActiveJob = lazy(() => import("@/pages/active-job"));
+const ReviewJob = lazy(() => import("@/pages/review-job"));
 const CustomerDashboard = lazy(() => import("@/pages/customer-dashboard"));
 const CustomerSubscriptions = lazy(() => import("@/pages/customer-subscriptions"));
 const GodMode = lazy(() => import("@/pages/admin/god-mode"));
@@ -120,6 +121,7 @@ const DispatchBoard = lazy(() => import("@/pages/partners/dispatch-board"));
 const JobScheduler = lazy(() => import("@/pages/partners/job-scheduler"));
 const PartnerAnalytics = lazy(() => import("@/pages/partners/partner-analytics"));
 const PartnerReviews = lazy(() => import("@/pages/partners/partner-reviews"));
+const PartnerSEOPage = lazy(() => import("@/pages/partners/partner-seo-page"));
 const InvoicePayPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePayPage })));
 const InvoicePaySuccessPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePaySuccessPage })));
 const CustomerJobTrack = lazy(() => import("@/pages/customer-job-track"));
@@ -303,6 +305,7 @@ function Router() {
       <Route path="/tracking" component={TrackingLookup} />
       <Route path="/track/:jobId" component={Tracking} />
       <Route path="/track/job/:jobId" component={CustomerJobTrack} />
+      <Route path="/review/:jobId" component={ReviewJob} />
       <Route path="/my-jobs" component={MyJobs} />
       {/* Pro routes (new terminology) */}
       <Route path="/pro/dashboard" component={ProDashboard} />
@@ -500,6 +503,7 @@ function Router() {
       <Route path="/partners/:slug/qr-stickers" component={PartnerQrStickers} />
       <Route path="/partners/:slug/winback" component={PartnerWinback} />
       <Route path="/partners/:slug/phone" component={PartnerPhone} />
+      <Route path="/partners/:slug/:neighborhood" component={PartnerSEOPage} />
       <Route path="/partners/:slug" component={BrandedPartnerLanding} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
       <Route path="/my-membership" component={MyMembership} />

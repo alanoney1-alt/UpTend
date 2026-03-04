@@ -18,6 +18,13 @@ import { getPartnerReminders, processReminders, scheduleMaintenanceReminder } fr
 import { queueReviewRequest } from "../services/partner-review-requests";
 import { runPartnerAuditSafe } from "../services/partner-live-audit";
 import { getInvoiceStats } from "../services/invoicing-system";
+import QRCode from "qrcode";
+import { 
+  generatePartnerSEOPages, 
+  generateAllPartnerSEOPages,
+  getPartnerSEOPages, 
+  getSEOPageContent 
+} from "../services/partner-seo-generator";
 import { getEstimateConversionRate } from "../services/estimate-followup";
 import { getMembershipStats } from "../services/membership-management";
 import { getKPIDashboard } from "../services/partner-reporting";
@@ -398,7 +405,7 @@ export function registerPartnerDashboardRoutes(app: Express) {
     try {
       // Get job details for equipment info
       const jobResult = await pool.query(
-        `SELECT * FROM partner_jobs WHERE id = $1 AND partner_slug = $2`,
+        `SELECT * FROM dispatch_jobs WHERE id = $1 AND partner_slug = $2`,
         [jobId, slug]
       );
       
@@ -407,23 +414,45 @@ export function registerPartnerDashboardRoutes(app: Express) {
       }
       
       const job = jobResult.rows[0];
-      const equipmentId = job.equipment_id || 'general';
       
       // Generate QR code URL
-      const qrUrl = `https://uptendapp.com/home-start?partner=${slug}&job=${jobId}&unit=${equipmentId}`;
+      const qrUrl = `https://uptendapp.com/home-start?partner=${slug}&job=${jobId}`;
       
-      // In a real implementation, you would use a QR code library like 'qrcode'
-      // For now, we'll return the URL and let the frontend generate the QR code
-      res.json({
-        success: true,
-        qr_url: qrUrl,
-        job_id: jobId,
-        partner_slug: slug,
-        equipment_id: equipmentId,
-        customer_name: job.customer_name,
-        service_type: job.service_type,
-        qr_data: qrUrl
-      });
+      // Generate actual QR code
+      const qrOptions = {
+        width: parseInt(size as string),
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      };
+
+      if (format === 'svg') {
+        // Return SVG format
+        const qrSvg = await QRCode.toString(qrUrl, { ...qrOptions, type: 'svg' });
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.send(qrSvg);
+      } else if (format === 'png' || format === 'image') {
+        // Return PNG format
+        const qrBuffer = await QRCode.toBuffer(qrUrl, qrOptions);
+        res.setHeader('Content-Type', 'image/png');
+        res.send(qrBuffer);
+      } else {
+        // Return JSON with base64 encoded QR code
+        const qrDataUrl = await QRCode.toDataURL(qrUrl, qrOptions);
+        
+        res.json({
+          success: true,
+          qr_url: qrUrl,
+          qr_code: qrDataUrl,
+          job_id: jobId,
+          partner_slug: slug,
+          customer_name: job.customer_name,
+          service_type: job.service_type,
+          qr_data: qrUrl
+        });
+      }
     } catch (err: any) {
       console.error("Error generating QR code:", err);
       res.status(500).json({ error: "Failed to generate QR code" });
@@ -451,20 +480,35 @@ export function registerPartnerDashboardRoutes(app: Express) {
       
       const jobsResult = await pool.query(jobsQuery, params);
       
-      const qrCodes = jobsResult.rows.map(job => {
-        const equipmentId = job.equipment_id || 'general';
-        const qrUrl = `https://uptendapp.com/home-start?partner=${slug}&job=${job.id}&unit=${equipmentId}`;
+      const qrCodes = await Promise.all(jobsResult.rows.map(async (job) => {
+        const qrUrl = `https://uptendapp.com/home-start?partner=${slug}&job=${job.id}`;
+        
+        // Generate QR code data URL for each job
+        let qrCode = null;
+        try {
+          qrCode = await QRCode.toDataURL(qrUrl, {
+            type: 'image/png' as const,
+            width: 256,
+            margin: 2,
+            color: {
+              dark: '#000000',
+              light: '#FFFFFF'
+            }
+          });
+        } catch (qrError) {
+          console.error(`Error generating QR code for job ${job.id}:`, qrError);
+        }
         
         return {
           job_id: job.id,
           customer_name: job.customer_name,
           service_type: job.service_type,
-          equipment_id: equipmentId,
           qr_url: qrUrl,
+          qr_code: qrCode,
           qr_data: qrUrl,
           completed_at: job.completed_at
         };
-      });
+      }));
       
       res.json({
         success: true,
@@ -476,6 +520,81 @@ export function registerPartnerDashboardRoutes(app: Express) {
     } catch (err: any) {
       console.error("Error generating batch QR codes:", err);
       res.status(500).json({ error: "Failed to generate batch QR codes" });
+    }
+  });
+
+  // ==========================================
+  // SEO PAGE GENERATION
+  // ==========================================
+
+  // GET /api/partners/:slug/seo-pages - List all SEO pages
+  router.get("/:slug/seo-pages", async (req, res) => {
+    const { slug } = req.params;
+    
+    try {
+      const pages = await getPartnerSEOPages(slug);
+      res.json({
+        success: true,
+        pages,
+        count: pages.length,
+        partner_slug: slug
+      });
+    } catch (err: any) {
+      console.error("Error fetching SEO pages:", err);
+      res.status(500).json({ error: "Failed to fetch SEO pages" });
+    }
+  });
+
+  // POST /api/partners/:slug/seo-pages/generate - Generate SEO pages
+  router.post("/:slug/seo-pages/generate", async (req, res) => {
+    const { slug } = req.params;
+    const { neighborhoods, generate_all = false } = req.body;
+    
+    try {
+      let result;
+      
+      if (generate_all) {
+        result = await generateAllPartnerSEOPages(slug);
+      } else if (neighborhoods && Array.isArray(neighborhoods)) {
+        result = await generatePartnerSEOPages(slug, neighborhoods);
+      } else {
+        return res.status(400).json({ 
+          error: "Either 'neighborhoods' array or 'generate_all: true' required" 
+        });
+      }
+      
+      res.json({
+        success: result.success,
+        generated: result.generated,
+        errors: result.errors,
+        partner_slug: slug
+      });
+    } catch (err: any) {
+      console.error("Error generating SEO pages:", err);
+      res.status(500).json({ error: "Failed to generate SEO pages" });
+    }
+  });
+
+  // GET /api/partners/:slug/seo-pages/:neighborhood - Get specific page content
+  router.get("/:slug/seo-pages/:neighborhood", async (req, res) => {
+    const { slug, neighborhood } = req.params;
+    
+    try {
+      const page = await getSEOPageContent(slug, neighborhood);
+      
+      if (!page) {
+        return res.status(404).json({ error: "SEO page not found" });
+      }
+      
+      res.json({
+        success: true,
+        page,
+        partner_slug: slug,
+        neighborhood
+      });
+    } catch (err: any) {
+      console.error("Error fetching SEO page content:", err);
+      res.status(500).json({ error: "Failed to fetch SEO page content" });
     }
   });
 

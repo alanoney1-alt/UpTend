@@ -20,6 +20,7 @@
 import { Router, type Express } from "express";
 import { z } from "zod";
 import { pool } from "../db";
+import { sendCampaign, getDormantCustomers, sendWinBackCampaign } from "../services/campaign-sender";
 
 export function registerCampaignsRoutes(app: Express) {
   const router = Router();
@@ -225,66 +226,23 @@ export function registerCampaignsRoutes(app: Express) {
         return res.status(400).json({ error: "Campaign cannot be launched in current status" });
       }
       
-      let targetCustomers = [];
+      // Use campaign sender service to actually send the messages
+      const sendResult = await sendCampaign(id, slug, test_mode, test_customer_id);
       
-      if (test_mode && test_customer_id) {
-        // Test mode - send to single customer
-        targetCustomers = [{ id: test_customer_id }];
-      } else {
-        // Build customer query based on target audience
-        const audience = campaign.target_audience || {};
-        let customerQuery = `SELECT DISTINCT customer_id as id FROM partner_jobs WHERE partner_slug = $1`;
-        const queryParams = [slug];
-        
-        if (audience.inactive_days) {
-          customerQuery += ` AND customer_id NOT IN (
-            SELECT customer_id FROM partner_jobs 
-            WHERE partner_slug = $1 AND completed_at >= NOW() - INTERVAL '${audience.inactive_days} days'
-          )`;
-        }
-        
-        const customerResult = await pool.query(customerQuery, queryParams);
-        targetCustomers = customerResult.rows;
+      if (!sendResult.success) {
+        return res.status(500).json({ 
+          error: "Failed to send campaign",
+          details: sendResult.errors
+        });
       }
-      
-      // Create campaign sends
-      const sends = [];
-      for (const customer of targetCustomers) {
-        // Email send
-        if (campaign.email_template) {
-          const emailResult = await pool.query(
-            `INSERT INTO campaign_sends (campaign_id, customer_id, channel, sent_at)
-             VALUES ($1, $2, 'email', NOW())
-             RETURNING *`,
-            [id, customer.id]
-          );
-          sends.push(emailResult.rows[0]);
-        }
-        
-        // SMS send
-        if (campaign.sms_template) {
-          const smsResult = await pool.query(
-            `INSERT INTO campaign_sends (campaign_id, customer_id, channel, sent_at)
-             VALUES ($1, $2, 'sms', NOW())
-             RETURNING *`,
-            [id, customer.id]
-          );
-          sends.push(smsResult.rows[0]);
-        }
-      }
-      
-      // Update campaign status
-      await pool.query(
-        `UPDATE seasonal_campaigns SET status = 'active', updated_at = NOW() WHERE id = $1`,
-        [id]
-      );
       
       res.json({
         success: true,
         launched: true,
         test_mode,
-        sends: sends.length,
-        target_customers: targetCustomers.length
+        emails_sent: sendResult.emailsSent,
+        sms_sent: sendResult.smsSent,
+        errors: sendResult.errors.length > 0 ? sendResult.errors : undefined
       });
     } catch (err: any) {
       console.error("Error launching campaign:", err);
@@ -620,28 +578,15 @@ Book before November 1st for best availability.
     const { days = "180", limit = "50" } = req.query;
     
     try {
-      const result = await pool.query(
-        `SELECT 
-           customer_name,
-           customer_id,
-           MAX(completed_at) as last_service,
-           COUNT(*) as total_jobs,
-           EXTRACT(DAYS FROM NOW() - MAX(completed_at)) as days_since_last_service
-         FROM partner_jobs
-         WHERE partner_slug = $1
-         AND status = 'completed'
-         AND completed_at IS NOT NULL
-         GROUP BY customer_id, customer_name
-         HAVING MAX(completed_at) < NOW() - INTERVAL '${parseInt(days.toString())} days'
-         ORDER BY days_since_last_service DESC
-         LIMIT $2`,
-        [slug, limit]
-      );
+      const dormantCustomers = await getDormantCustomers(slug, parseInt(days.toString()));
+      
+      // Limit results
+      const limitedCustomers = dormantCustomers.slice(0, parseInt(limit.toString()));
       
       res.json({
         success: true,
-        dormantCustomers: result.rows,
-        count: result.rows.length,
+        dormantCustomers: limitedCustomers,
+        count: limitedCustomers.length,
         criteria: {
           inactiveDays: parseInt(days.toString())
         }
@@ -674,55 +619,30 @@ Book before November 1st for best availability.
         return res.status(400).json({ error: "Sequence is not active" });
       }
       
-      let targetCustomers = customer_ids || [];
+      // Prepare template for win-back campaign
+      const template = {
+        subject: `We miss you at ${sequence.name}!`,
+        email_body: sequence.email_template,
+        sms_body: sequence.sms_template
+      };
       
-      // If no specific customers provided, find dormant customers
-      if (!customer_ids || customer_ids.length === 0) {
-        const dormantResult = await pool.query(
-          `SELECT DISTINCT customer_id
-           FROM partner_jobs
-           WHERE partner_slug = $1
-           AND status = 'completed'
-           AND completed_at IS NOT NULL
-           GROUP BY customer_id
-           HAVING MAX(completed_at) < NOW() - INTERVAL '${sequence.days_inactive_trigger} days'`,
-          [slug]
-        );
-        targetCustomers = dormantResult.rows.map(row => row.customer_id);
-      }
+      // Use campaign sender service
+      const sendResult = await sendWinBackCampaign(slug, template, customer_ids);
       
-      // Create winback sends
-      const sends = [];
-      for (const customerId of targetCustomers) {
-        // Email send
-        if (sequence.email_template) {
-          const emailResult = await pool.query(
-            `INSERT INTO winback_sends (sequence_id, customer_id, channel, sent_at)
-             VALUES ($1, $2, 'email', NOW())
-             RETURNING *`,
-            [id, customerId]
-          );
-          sends.push(emailResult.rows[0]);
-        }
-        
-        // SMS send
-        if (sequence.sms_template) {
-          const smsResult = await pool.query(
-            `INSERT INTO winback_sends (sequence_id, customer_id, channel, sent_at)
-             VALUES ($1, $2, 'sms', NOW())
-             RETURNING *`,
-            [id, customerId]
-          );
-          sends.push(smsResult.rows[0]);
-        }
+      if (!sendResult.success) {
+        return res.status(500).json({ 
+          error: "Failed to send win-back campaign",
+          details: sendResult.errors
+        });
       }
       
       res.json({
         success: true,
         triggered: true,
         test_mode,
-        sends: sends.length,
-        target_customers: targetCustomers.length
+        emails_sent: sendResult.emailsSent,
+        sms_sent: sendResult.smsSent,
+        errors: sendResult.errors.length > 0 ? sendResult.errors : undefined
       });
     } catch (err: any) {
       console.error("Error triggering winback sequence:", err);
