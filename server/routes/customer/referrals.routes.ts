@@ -16,8 +16,8 @@ export function registerCustomerReferralRoutes(app: Express) {
   // Get or create referral code for current user
   app.get("/api/referrals/my-code", requireAuth, async (req, res) => {
     try {
-      if (!req.user || req.user.role !== "customer") {
-        return res.status(403).json({ error: "Unauthorized" });
+      if (!req.user) {
+        return res.status(401).json({ error: "Authentication required" });
       }
 
       // Check if user already has a referral code
@@ -48,8 +48,8 @@ export function registerCustomerReferralRoutes(app: Express) {
   // Get referral stats for current user
   app.get("/api/referrals/my-stats", requireAuth, async (req, res) => {
     try {
-      if (!req.user || req.user.role !== "customer") {
-        return res.status(403).json({ error: "Unauthorized" });
+      if (!req.user) {
+        return res.status(401).json({ error: "Authentication required" });
       }
 
       const referrals = await storage.getReferralsByReferrer((req.user as any).userId || (req.user as any).id);

@@ -24,10 +24,11 @@ export function registerCustomerImpactRoutes(app: Express) {
       }
 
       // Get all ESG impact logs for this customer
-      const impactLogs = await storage.getEsgImpactLogsByCustomer((req.user as any).userId || (req.user as any).id);
+      const userId = (req.user as any).userId || (req.user as any).id;
+      const impactLogs = await storage.getEsgImpactLogsByCustomer(userId).catch(() => []);
 
       // Get all environmental certificates
-      const serviceRequests = await storage.getServiceRequestsByCustomer((req.user as any).userId || (req.user as any).id);
+      const serviceRequests = await storage.getServiceRequestsByCustomer(userId).catch(() => []);
       const completedJobs = serviceRequests.filter(r => r.status === "completed");
 
       // Aggregate data
