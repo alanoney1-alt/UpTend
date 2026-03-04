@@ -13,6 +13,7 @@ import { z } from "zod";
 import { nanoid } from "nanoid";
 import { pool } from "../../db";
 import { analyzeImages } from "../../services/ai/openai-vision-client";
+import { sendEmail, sendSms } from "../../services/notifications";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 

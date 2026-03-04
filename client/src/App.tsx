@@ -62,6 +62,7 @@ const Contact = lazy(() => import("@/pages/contact"));
 const AgenticBrain = lazy(() => import("@/pages/agentic-brain"));
 const ClaimProperty = lazy(() => import("@/pages/claim-property"));
 const MyHomeInventory = lazy(() => import("@/pages/my-home-inventory"));
+const MyHomeViolations = lazy(() => import("@/pages/my-home/violations"));
 const MyProperties = lazy(() => import("@/pages/my-properties"));
 const CareerDashboard = lazy(() => import("@/pages/career-dashboard"));
 const HaulerLanding = lazy(() => import("@/pages/hauler-landing"));
@@ -206,6 +207,7 @@ const Gallery = lazy(() => import("@/pages/gallery"));
 const WarrantyManager = lazy(() => import("@/pages/warranty-manager"));
 const BuilderHandoff = lazy(() => import("@/pages/builder-handoff"));
 const QualityReports = lazy(() => import("@/pages/quality-reports"));
+const HOADashboard = lazy(() => import("@/pages/hoa/dashboard"));
 const HoaInspections = lazy(() => import("@/pages/hoa/inspections"));
 
 const BlogIndex = lazy(() => import("@/pages/blog/index"));
@@ -362,6 +364,7 @@ function Router() {
       <Route path="/quote">{() => <Redirect to="/book" />}</Route>
       <Route path="/claim/:token" component={ClaimProperty} />
       <Route path="/my-home" component={MyHomeInventory} />
+      <Route path="/my-home/violations" component={MyHomeViolations} />
       <Route path="/my-properties" component={MyProperties} />
       <Route path="/career" component={CareerDashboard} />
       <Route path="/academy" component={PyckerAcademy} />
@@ -458,6 +461,7 @@ function Router() {
       <Route path="/warranty" component={WarrantyManager} />
       <Route path="/builder/handoff" component={BuilderHandoff} />
       <Route path="/quality-reports" component={QualityReports} />
+      <Route path="/hoa/dashboard" component={HOADashboard} />
       <Route path="/hoa/inspections" component={HoaInspections} />
       <Route path="/blog" component={BlogIndex} />
       <Route path="/blog/home-services-lake-nona" component={BlogHomeServicesLakeNona} />
