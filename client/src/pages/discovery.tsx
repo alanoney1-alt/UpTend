@@ -261,10 +261,9 @@ export default function DiscoveryPage() {
     if (messages.length < 2) return;
     const collected = extractData(messages);
     collectedRef.current = collected;
-    // Wait for company name + service type + at least 4 exchanges before auditing
-    // This gives time to capture website URL for better audit accuracy
-    const userMsgCount = messages.filter(m => m.role === "user").length;
-    if (collected.companyName && collected.serviceType && !auditStarted && userMsgCount >= 4) {
+    // Fire audit as soon as we know company name + service type (usually by exchange 2-3)
+    // Audit runs in background while George keeps asking questions
+    if (collected.companyName && collected.serviceType && !auditStarted) {
       setAuditStarted(true);
       fetch("/api/partners/audit", {
         method: "POST",

@@ -812,6 +812,37 @@ export default function createGuideRoutes(_storage: any) {
       if (context) {
         systemPrompt += `\n\n## CURRENT CONTEXT\nPage: ${context.page}\nRole: ${context.userRole}`;
         if (context.userName) systemPrompt += `\nName: ${context.userName}`;
+
+        // Inject live audit data so George can reference real competitive intel
+        if (context.liveAudit) {
+          const a = context.liveAudit;
+          systemPrompt += `\n\n## LIVE COMPETITIVE AUDIT (real data — use naturally when relevant)`;
+          if (a.company) {
+            systemPrompt += `\nTheir Google Business: ${a.company.found ? "Found" : "NOT found"}`;
+            if (a.company.rating) systemPrompt += ` | Rating: ${a.company.rating} stars`;
+            if (a.company.reviewCount) systemPrompt += ` | ${a.company.reviewCount} reviews`;
+            if (a.company.website) systemPrompt += ` | Website: ${a.company.website}`;
+          }
+          if (a.searchRanking) {
+            systemPrompt += `\nSearch ranking for "${a.searchRanking.query}": ${a.searchRanking.position ? `#${a.searchRanking.position}` : "Not in top 20"}`;
+          }
+          if (a.competitors && a.competitors.length > 0) {
+            systemPrompt += `\nTop competitors:`;
+            for (const c of a.competitors.slice(0, 3)) {
+              systemPrompt += `\n  - ${c.name}: ${c.rating || "?"} stars, ${c.reviewCount || "?"} reviews`;
+            }
+          }
+          if (a.socialMedia) {
+            systemPrompt += `\nFacebook: ${a.socialMedia.facebook?.found ? a.socialMedia.facebook.url || "Found" : "NOT found"}`;
+            systemPrompt += `\nInstagram: ${a.socialMedia.instagram?.found ? a.socialMedia.instagram.url || "Found" : "NOT found"}`;
+          }
+          if (a.summary?.weaknesses?.length) {
+            systemPrompt += `\nWeaknesses spotted: ${a.summary.weaknesses.join("; ")}`;
+          }
+          if (a.summary?.georgeInsights?.length) {
+            systemPrompt += `\nInsights to weave in: ${a.summary.georgeInsights.join("; ")}`;
+          }
+        }
       }
 
       // Build user message content
