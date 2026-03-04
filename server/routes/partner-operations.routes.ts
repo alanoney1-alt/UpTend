@@ -10,6 +10,7 @@ import {
   recordPayment, voidInvoice, getOverdueInvoices,
   sendPaymentReminder, getInvoiceStats
 } from "../services/invoicing-system";
+import { generateInvoicePdf } from "./accounting/invoicing.routes";
 import {
   createEstimate, getEstimatesDueForFollowUp, markFollowUpSent,
   acceptEstimate, declineEstimate, getEstimateConversionRate, listEstimates
@@ -113,6 +114,40 @@ export function registerPartnerOperationsRoutes(app: Express) {
     try {
       const result = await sendPaymentReminder(parseInt(req.params.id));
       res.json(result);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  router.get("/:slug/invoices/:id/pdf", async (req, res) => {
+    try {
+      const invoice = await getInvoice(parseInt(req.params.id));
+      if (!invoice) return res.status(404).json({ error: "Invoice not found" });
+      // Verify invoice belongs to this partner
+      if (invoice.partnerSlug !== req.params.slug) return res.status(403).json({ error: "Forbidden" });
+
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", `inline; filename="invoice-${invoice.id}.pdf"`);
+
+      generateInvoicePdf({
+        id: String(invoice.id),
+        invoiceNumber: invoice.id,
+        customerName: invoice.customerName,
+        customerEmail: invoice.customerEmail,
+        lineItems: invoice.items.map((i) => ({
+          description: i.description,
+          quantity: i.quantity,
+          unitPrice: i.unitPrice,
+          amount: i.quantity * i.unitPrice,
+        })),
+        subtotal: invoice.subtotal,
+        taxAmount: invoice.taxAmount,
+        total: invoice.total,
+        status: invoice.status,
+        dueDate: invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString("en-US") : null,
+        createdAt: new Date(invoice.createdAt).toLocaleDateString("en-US"),
+        notes: invoice.notes,
+      }, res);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }

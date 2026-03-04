@@ -53,6 +53,10 @@ interface CollectedData {
   oneThingToFix?: string;
   twelveMonthGoal?: string;
   growthBlockers?: string;
+  // Extra
+  hasWebsite?: boolean;
+  reviewCount?: string;
+  googleRating?: string;
   // Derived
   painPoints: string[];
   goals?: string;
@@ -175,6 +179,16 @@ function extractData(messages: Message[]): CollectedData {
   for (const p of painKeywords) {
     if (all.toLowerCase().includes(p)) data.painPoints.push(p);
   }
+
+  // Website detection
+  if (/\.(com|net|org|io|co)\b/i.test(userMsgs) || /website|site|domain/i.test(lower)) data.hasWebsite = true;
+  if (/no website|don't have a (website|site)|no site/i.test(lower)) data.hasWebsite = false;
+
+  // Review count / rating
+  const reviewMatch = userMsgs.match(/(\d+)\s*(?:reviews?|stars?|rating)/i);
+  if (reviewMatch) data.reviewCount = reviewMatch[1];
+  const ratingMatch = userMsgs.match(/(\d\.?\d?)\s*(?:stars?|rating|out of)/i);
+  if (ratingMatch) data.googleRating = ratingMatch[1];
 
   return data;
 }
@@ -456,7 +470,21 @@ export default function DiscoveryPage() {
       });
 
       // Check if ready for proposal
-      if (!readyPromptShown && collected.companyName && collected.serviceType && (collected.painPoints.length >= 2 || collected.monthlySpend)) {
+      // Require at least 8 data points before showing proposal button
+      let dataPoints = 0;
+      if (collected.companyName) dataPoints++;
+      if (collected.serviceType) dataPoints++;
+      if (collected.teamSize) dataPoints++;
+      if (collected.serviceArea) dataPoints++;
+      if (collected.leadSources) dataPoints++;
+      if (collected.monthlySpend) dataPoints++;
+      if (collected.websiteUrl || collected.hasWebsite) dataPoints++;
+      if (collected.avgTicket) dataPoints++;
+      if (collected.painPoints.length >= 1) dataPoints++;
+      if (collected.yearsInBusiness) dataPoints++;
+      if (collected.reviewCount || collected.googleRating) dataPoints++;
+      if (collected.twelveMonthGoal || collected.goals) dataPoints++;
+      if (!readyPromptShown && dataPoints >= 8) {
         setReadyPromptShown(true);
       }
     } catch {

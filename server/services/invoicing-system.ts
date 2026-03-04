@@ -1,11 +1,14 @@
 /**
  * Partner Invoicing System
- * 
+ *
  * Full invoicing for partners: create, send, track payments, stats.
+ * Integrates Stripe Checkout for online payments and SendGrid for email delivery.
  */
 
 import { db } from "../db";
 import { sql } from "drizzle-orm";
+import Stripe from "stripe";
+import sgMail from "@sendgrid/mail";
 
 // ============================================================
 // Types
@@ -52,6 +55,25 @@ export interface PaymentRecord {
   stripePaymentId: string | null;
   recordedAt: string;
 }
+
+// ============================================================
+// Stripe + SendGrid init (lazy — only when keys are present)
+// ============================================================
+
+function getStripe(): Stripe | null {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) return null;
+  return new Stripe(key, { apiVersion: "2025-01-27.acacia" });
+}
+
+function initSendGrid() {
+  const key = process.env.SENDGRID_API_KEY;
+  if (key) sgMail.setApiKey(key);
+}
+initSendGrid();
+
+const APP_BASE_URL = process.env.APP_URL || "https://uptendapp.com";
+const FROM_EMAIL = process.env.FROM_EMAIL || "alan@uptendapp.com";
 
 // ============================================================
 // Database Setup
@@ -135,6 +157,144 @@ function mapInvoiceRow(r: any): Invoice {
   };
 }
 
+function buildInvoiceEmailHtml(invoice: Invoice, paymentLink: string): string {
+  const dueDateStr = invoice.dueDate
+    ? new Date(invoice.dueDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : null;
+
+  const lineItemsHtml = invoice.items
+    .map(
+      (item) => `
+      <tr>
+        <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;">${item.description}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:center;">${item.quantity}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:right;">$${item.unitPrice.toFixed(2)}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:right;">$${(item.quantity * item.unitPrice).toFixed(2)}</td>
+      </tr>`
+    )
+    .join("");
+
+  const absoluteLink = paymentLink.startsWith("http")
+    ? paymentLink
+    : `${APP_BASE_URL}${paymentLink}`;
+
+  return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">
+  <div style="max-width:600px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+
+    <!-- Header -->
+    <div style="background:#0a0a0f;padding:32px 40px;">
+      <p style="margin:0;font-size:22px;font-weight:700;color:#ffffff;">UpTend</p>
+      <p style="margin:4px 0 0;font-size:13px;color:#9ca3af;">UPYCK, Inc. d/b/a UpTend · Orlando, FL</p>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:32px 40px;">
+      <h2 style="margin:0 0 4px;font-size:24px;color:#111827;">Invoice #${invoice.id}</h2>
+      <p style="margin:0 0 24px;color:#6b7280;font-size:14px;">
+        For: <strong>${invoice.customerName}</strong>
+        ${dueDateStr ? `&nbsp;·&nbsp; Due: <strong>${dueDateStr}</strong>` : ""}
+      </p>
+
+      <!-- Line Items Table -->
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px;font-size:14px;">
+        <thead>
+          <tr style="background:#f3f4f6;">
+            <th style="padding:10px 12px;text-align:left;color:#374151;font-weight:600;">Description</th>
+            <th style="padding:10px 12px;text-align:center;color:#374151;font-weight:600;">Qty</th>
+            <th style="padding:10px 12px;text-align:right;color:#374151;font-weight:600;">Unit Price</th>
+            <th style="padding:10px 12px;text-align:right;color:#374151;font-weight:600;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lineItemsHtml}
+        </tbody>
+      </table>
+
+      <!-- Totals -->
+      <table style="width:240px;margin-left:auto;font-size:14px;border-collapse:collapse;">
+        <tr>
+          <td style="padding:4px 12px;color:#6b7280;">Subtotal</td>
+          <td style="padding:4px 12px;text-align:right;color:#374151;">$${invoice.subtotal.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 12px;color:#6b7280;">Tax (${(invoice.taxRate * 100).toFixed(1)}%)</td>
+          <td style="padding:4px 12px;text-align:right;color:#374151;">$${invoice.taxAmount.toFixed(2)}</td>
+        </tr>
+        <tr style="border-top:2px solid #e5e7eb;">
+          <td style="padding:10px 12px;font-weight:700;font-size:16px;color:#111827;">Total</td>
+          <td style="padding:10px 12px;font-weight:700;font-size:16px;color:#111827;text-align:right;">$${invoice.total.toFixed(2)}</td>
+        </tr>
+      </table>
+
+      ${invoice.notes ? `<p style="margin:24px 0 0;padding:16px;background:#f9fafb;border-radius:8px;font-size:13px;color:#6b7280;">${invoice.notes}</p>` : ""}
+
+      <!-- CTA Button -->
+      <div style="text-align:center;margin:32px 0 0;">
+        <a href="${absoluteLink}"
+           style="display:inline-block;background:#2563eb;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">
+          Pay Now — $${invoice.total.toFixed(2)}
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e5e7eb;text-align:center;">
+      <p style="margin:0;font-size:12px;color:#9ca3af;">
+        UPYCK, Inc. d/b/a UpTend · 10125 Peebles St, Orlando, FL 32827<br>
+        Questions? Reply to this email or contact your service provider.
+      </p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+function buildReminderEmailHtml(invoice: Invoice, paymentLink: string): string {
+  const dueDateStr = invoice.dueDate
+    ? new Date(invoice.dueDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : null;
+
+  const absoluteLink = paymentLink.startsWith("http")
+    ? paymentLink
+    : `${APP_BASE_URL}${paymentLink}`;
+
+  return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">
+  <div style="max-width:600px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#dc2626;padding:24px 40px;">
+      <p style="margin:0;font-size:18px;font-weight:700;color:#ffffff;">Payment Reminder</p>
+    </div>
+    <div style="padding:32px 40px;">
+      <p style="margin:0 0 16px;color:#374151;">Hi ${invoice.customerName},</p>
+      <p style="margin:0 0 16px;color:#374151;">
+        This is a friendly reminder that Invoice #${invoice.id} for
+        <strong>$${invoice.total.toFixed(2)}</strong>${dueDateStr ? ` is due on <strong>${dueDateStr}</strong>` : " is outstanding"}.
+      </p>
+      <div style="text-align:center;margin:32px 0;">
+        <a href="${absoluteLink}"
+           style="display:inline-block;background:#2563eb;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">
+          Pay Now — $${invoice.total.toFixed(2)}
+        </a>
+      </div>
+      <p style="margin:0;color:#6b7280;font-size:13px;">
+        If you have already paid or have questions, please contact your service provider.
+      </p>
+    </div>
+    <div style="padding:20px 40px;background:#f9fafb;border-top:1px solid #e5e7eb;text-align:center;">
+      <p style="margin:0;font-size:12px;color:#9ca3af;">UPYCK, Inc. d/b/a UpTend · 10125 Peebles St, Orlando, FL 32827</p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
 // ============================================================
 // Functions
 // ============================================================
@@ -182,17 +342,85 @@ export async function createInvoice(
 }
 
 /**
- * Mark invoice as sent and generate a payment link URL.
+ * Mark invoice as sent, create Stripe Checkout Session, email customer.
  */
 export async function sendInvoice(invoiceId: number): Promise<{ paymentLink: string }> {
   await ensureInvoicingTables();
   try {
-    const paymentLink = `/pay/invoice/${invoiceId}`;
+    const invoice = await getInvoice(invoiceId);
+    if (!invoice) throw new Error("Invoice not found");
+
+    // Build Stripe Checkout or fallback to simple link
+    let paymentLink = `${APP_BASE_URL}/pay/invoice/${invoiceId}`;
+    let stripeCheckoutUrl: string | null = null;
+
+    const stripe = getStripe();
+    if (stripe && invoice.total > 0) {
+      try {
+        const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = invoice.items.map((item) => ({
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: item.description || "Service",
+            },
+            unit_amount: Math.round(item.unitPrice * 100),
+          },
+          quantity: item.quantity,
+        }));
+
+        // Add tax as a separate line if present
+        if (invoice.taxAmount > 0) {
+          lineItems.push({
+            price_data: {
+              currency: "usd",
+              product_data: { name: `Tax (${(invoice.taxRate * 100).toFixed(1)}%)` },
+              unit_amount: Math.round(invoice.taxAmount * 100),
+            },
+            quantity: 1,
+          });
+        }
+
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: lineItems,
+          mode: "payment",
+          customer_email: invoice.customerEmail || undefined,
+          success_url: `${APP_BASE_URL}/pay/invoice/${invoiceId}/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${APP_BASE_URL}/pay/invoice/${invoiceId}`,
+          metadata: {
+            invoiceId: String(invoiceId),
+            partnerSlug: invoice.partnerSlug,
+          },
+        });
+
+        stripeCheckoutUrl = session.url;
+        if (stripeCheckoutUrl) paymentLink = stripeCheckoutUrl;
+      } catch (stripeErr: any) {
+        console.warn("[Invoicing] Stripe session creation failed, using fallback link:", stripeErr.message);
+      }
+    }
+
     await db.execute(sql`
       UPDATE partner_invoices
       SET status = 'sent', sent_at = NOW(), payment_link = ${paymentLink}, updated_at = NOW()
       WHERE id = ${invoiceId} AND status = 'draft'
     `);
+
+    // Send email via SendGrid
+    if (invoice.customerEmail && process.env.SENDGRID_API_KEY) {
+      try {
+        await sgMail.send({
+          to: invoice.customerEmail,
+          from: FROM_EMAIL,
+          subject: `Invoice #${invoiceId} from UpTend — $${invoice.total.toFixed(2)}`,
+          html: buildInvoiceEmailHtml(invoice, paymentLink),
+        });
+        console.log(`[Invoicing] Email sent to ${invoice.customerEmail} for invoice #${invoiceId}`);
+      } catch (emailErr: any) {
+        console.warn("[Invoicing] Email send failed:", emailErr.message);
+      }
+    }
+
     return { paymentLink };
   } catch (err: any) {
     console.error("[Invoicing] sendInvoice error:", err);
@@ -237,29 +465,6 @@ export async function listInvoices(
 ): Promise<Invoice[]> {
   await ensureInvoicingTables();
   try {
-    let query = `SELECT * FROM partner_invoices WHERE partner_slug = $1`;
-    const params: any[] = [partnerSlug];
-    let idx = 2;
-
-    if (filters.status) {
-      query += ` AND status = $${idx++}`;
-      params.push(filters.status);
-    }
-    if (filters.startDate) {
-      query += ` AND created_at >= $${idx++}`;
-      params.push(filters.startDate);
-    }
-    if (filters.endDate) {
-      query += ` AND created_at <= $${idx++}`;
-      params.push(filters.endDate);
-    }
-    query += ` ORDER BY created_at DESC LIMIT $${idx++} OFFSET $${idx++}`;
-    params.push(filters.limit || 50, filters.offset || 0);
-
-    const result = await db.execute(sql.raw(query));
-    // Use raw query via db.execute with sql template
-    // Actually, drizzle's sql.raw doesn't support params this way. Let's use conditional sql.
-    // Fallback: build with sql tagged template
     const r = await db.execute(sql`
       SELECT * FROM partner_invoices
       WHERE partner_slug = ${partnerSlug}
@@ -362,7 +567,7 @@ export async function getOverdueInvoices(partnerSlug: string): Promise<Invoice[]
 }
 
 /**
- * Generate a payment reminder message for an invoice.
+ * Send a payment reminder email to the customer.
  */
 export async function sendPaymentReminder(invoiceId: number): Promise<{ reminderText: string }> {
   await ensureInvoicingTables();
@@ -370,7 +575,23 @@ export async function sendPaymentReminder(invoiceId: number): Promise<{ reminder
     const invoice = await getInvoice(invoiceId);
     if (!invoice) throw new Error("Invoice not found");
 
-    const reminderText = `Payment Reminder: Invoice #${invoice.id} for $${invoice.total.toFixed(2)} is due${invoice.dueDate ? ` on ${new Date(invoice.dueDate).toLocaleDateString()}` : ""}. Please submit payment at your earliest convenience.${invoice.paymentLink ? ` Pay here: ${invoice.paymentLink}` : ""}`;
+    const paymentLink = invoice.paymentLink || `/pay/invoice/${invoiceId}`;
+    const reminderText = `Payment Reminder: Invoice #${invoice.id} for $${invoice.total.toFixed(2)} is due${invoice.dueDate ? ` on ${new Date(invoice.dueDate).toLocaleDateString()}` : ""}. Please submit payment at your earliest convenience.${paymentLink ? ` Pay here: ${paymentLink}` : ""}`;
+
+    // Send reminder email via SendGrid
+    if (invoice.customerEmail && process.env.SENDGRID_API_KEY) {
+      try {
+        await sgMail.send({
+          to: invoice.customerEmail,
+          from: FROM_EMAIL,
+          subject: `Payment Reminder: Invoice #${invoiceId} — $${invoice.total.toFixed(2)} Due`,
+          html: buildReminderEmailHtml(invoice, paymentLink),
+        });
+        console.log(`[Invoicing] Reminder email sent to ${invoice.customerEmail} for invoice #${invoiceId}`);
+      } catch (emailErr: any) {
+        console.warn("[Invoicing] Reminder email failed:", emailErr.message);
+      }
+    }
 
     return { reminderText };
   } catch (err: any) {
