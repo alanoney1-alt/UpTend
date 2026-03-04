@@ -1833,16 +1833,18 @@ async function loadConversation(userId: string, sessionId: string): Promise<Guid
     }
 
     const row = result.rows[0];
+    // Restore full session state including phase/collectedInfo/topicsCovered from property_data metadata
+    const metadata = row.property_data ? (typeof row.property_data === 'string' ? JSON.parse(row.property_data) : row.property_data) : {};
     return {
       history: row.messages || [],
-      propertyData: row.property_data ? JSON.parse(row.property_data) : undefined,
-      recurringServices: row.recurring_services ? JSON.parse(row.recurring_services) : undefined,
-      photoEstimates: row.photo_estimates ? JSON.parse(row.photo_estimates) : undefined,
-      lockedQuotes: row.locked_quotes ? JSON.parse(row.locked_quotes) : undefined,
-      priceMatches: row.price_matches ? JSON.parse(row.price_matches) : undefined,
-      conversationPhase: "greeting" as ConversationPhase, // Reset phase on reload
-      collectedInfo: { questionsAsked: [] }, // Reset collected info on reload
-      topicsCovered: [], // Reset topics on reload
+      propertyData: metadata._sessionMeta ? metadata.propertyData : (row.property_data ? (typeof row.property_data === 'string' ? JSON.parse(row.property_data) : row.property_data) : undefined),
+      recurringServices: row.recurring_services ? (typeof row.recurring_services === 'string' ? JSON.parse(row.recurring_services) : row.recurring_services) : undefined,
+      photoEstimates: row.photo_estimates ? (typeof row.photo_estimates === 'string' ? JSON.parse(row.photo_estimates) : row.photo_estimates) : undefined,
+      lockedQuotes: row.locked_quotes ? (typeof row.locked_quotes === 'string' ? JSON.parse(row.locked_quotes) : row.locked_quotes) : undefined,
+      priceMatches: row.price_matches ? (typeof row.price_matches === 'string' ? JSON.parse(row.price_matches) : row.price_matches) : undefined,
+      conversationPhase: (metadata._sessionMeta?.conversationPhase || "greeting") as ConversationPhase,
+      collectedInfo: metadata._sessionMeta?.collectedInfo || { questionsAsked: [] },
+      topicsCovered: metadata._sessionMeta?.topicsCovered || [],
     };
   } catch (error: any) {
     console.error("[Guide] Error loading conversation:", error);
@@ -1852,6 +1854,17 @@ async function loadConversation(userId: string, sessionId: string): Promise<Guid
 
 async function saveConversation(userId: string, sessionId: string, session: GuideSession) {
   try {
+    // Bundle session metadata (phase, collectedInfo, topicsCovered) into property_data
+    const propertyDataWithMeta = JSON.stringify({
+      ...(session.propertyData || {}),
+      _sessionMeta: {
+        conversationPhase: session.conversationPhase,
+        collectedInfo: session.collectedInfo,
+        topicsCovered: session.topicsCovered,
+      },
+      propertyData: session.propertyData, // preserve original separately
+    });
+
     const existing = await pool.query(
       "SELECT id FROM guide_conversations WHERE user_id = $1 AND session_id = $2",
       [userId, sessionId]
@@ -1863,7 +1876,7 @@ async function saveConversation(userId: string, sessionId: string, session: Guid
          WHERE id = $7`,
         [
           JSON.stringify(session.history),
-          session.propertyData ? JSON.stringify(session.propertyData) : null,
+          propertyDataWithMeta,
           session.recurringServices ? JSON.stringify(session.recurringServices) : null,
           session.photoEstimates ? JSON.stringify(session.photoEstimates) : null,
           session.lockedQuotes ? JSON.stringify(session.lockedQuotes) : null,
@@ -1880,7 +1893,7 @@ async function saveConversation(userId: string, sessionId: string, session: Guid
           userId,
           sessionId,
           JSON.stringify(session.history),
-          session.propertyData ? JSON.stringify(session.propertyData) : null,
+          propertyDataWithMeta,
           session.recurringServices ? JSON.stringify(session.recurringServices) : null,
           session.photoEstimates ? JSON.stringify(session.photoEstimates) : null,
           session.lockedQuotes ? JSON.stringify(session.lockedQuotes) : null,
