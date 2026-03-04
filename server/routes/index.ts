@@ -185,6 +185,9 @@ import { registerPropertyIntelligenceRoutes as registerPublicPropertyIntelligenc
 import { registerPublicRoutes } from "./public.routes";
 import foundingMembersRouter from "./public/founding-members.routes";
 
+// Stripe Invoice Webhook + public invoice routes
+import { registerStripeInvoiceWebhook } from "./stripe-invoice-webhook";
+
 // George cron routes
 import { registerGeorgeCronRoutes } from "./george-cron.routes";
 
@@ -514,6 +517,9 @@ export async function registerRoutes(
 
   // Founding Members (public)
   app.use("/api", foundingMembersRouter);
+
+  // Register Stripe Invoice Webhook + public invoice routes
+  registerStripeInvoiceWebhook(app);
 
   // Register George cron routes
   registerGeorgeCronRoutes(app);

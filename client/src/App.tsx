@@ -114,6 +114,8 @@ const GeorgeShowcase = lazy(() => import("@/pages/partners/george-showcase"));
 const PartnerSlugDashboard = lazy(() => import("@/pages/partners/partner-dashboard"));
 const TieredQuoteCard = lazy(() => import("@/pages/partners/tiered-quote-card"));
 const PartnerInvoices = lazy(() => import("@/pages/partners/invoices"));
+const InvoicePayPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePayPage })));
+const InvoicePaySuccessPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePaySuccessPage })));
 const Discovery = lazy(() => import("@/pages/discovery"));
 const HomeIntelligence = lazy(() => import("@/pages/home-intelligence"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
@@ -451,6 +453,8 @@ function Router() {
       <Route path="/partners/register" component={PartnerRegister} />
       <Route path="/partners/dashboard" component={PartnerDashboard} />
       <Route path="/partners/:slug/invoices" component={PartnerInvoices} />
+      <Route path="/pay/invoice/:id/success" component={InvoicePaySuccessPage} />
+      <Route path="/pay/invoice/:id" component={InvoicePayPage} />
       <Route path="/partners/:slug/george" component={GeorgeShowcase} />
       <Route path="/partners/:slug/dashboard" component={PartnerSlugDashboard} />
       <Route path="/partners/:slug/seo-demo" component={PartnerSEODemo} />
