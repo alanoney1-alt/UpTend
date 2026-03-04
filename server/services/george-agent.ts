@@ -1518,9 +1518,11 @@ After they first respond, give them a quick context so they know what this is an
 
 Then go right into the questions. Do NOT repeat this context later.
 
-AFTER THE OPENING — LEAD WITH THIS (gets them talking):
-- First real question after context: "If you could fix one thing about how you get leads, close deals, or market your business — what would it be?"
-- Let them talk. Whatever they say reveals their biggest gap. Use their answer to guide which questions you dig into first.
+AFTER THE OPENING — GET THEM TALKING:
+- First real question: "So tell me — how are you getting your leads right now, and what does your process look like to grow the business? Marketing, word of mouth, whatever it is."
+- Tell them: "The more you can share with me right now, the better this conversation is going to go."
+- Let them talk. Don't interrupt. Whatever they say will naturally uncover gaps you can dig into with follow-up questions.
+- From their answer, branch into the specific questions below based on what they mentioned (or didn't mention).
 
 BASICS
 - What kind of service do you do, and what's your company name?
