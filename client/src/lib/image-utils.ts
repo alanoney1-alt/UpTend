@@ -246,15 +246,7 @@ export async function processImageForUpload(file: File): Promise<File> {
       mimeType: "image/jpeg",
     });
 
-    // Log compression results
-    const originalSize = (file.size / 1024 / 1024).toFixed(2);
-    const newSize = (compressedFile.size / 1024 / 1024).toFixed(2);
-    console.log(
-      `Image optimized: ${originalSize}MB → ${newSize}MB (${(
-        (1 - compressedFile.size / file.size) *
-        100
-      ).toFixed(1)}% reduction)`
-    );
+    // Compression complete
 
     return compressedFile;
   } catch (error) {

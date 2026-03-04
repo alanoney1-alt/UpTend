@@ -187,7 +187,7 @@ export default function BlogNewToLakeNona() {
         <p className="text-sm text-muted-foreground">
           <em>
             Questions about settling into Lake Nona? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and chat with George. he's helped hundreds of
+            <a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">uptendapp.com</a> and chat with George. he's helped hundreds of
             Lake Nona homeowners figure out exactly what their homes need.
           </em>
         </p>

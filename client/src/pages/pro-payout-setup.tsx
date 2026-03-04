@@ -92,7 +92,7 @@ export default function ProPayoutSetup() {
               <div key={label} className="flex items-center gap-2">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    isActive ? "bg-amber-600 text-white" : "bg-gray-200 text-muted-foreground"
+                    isActive ? "bg-amber-600 text-white" : "bg-gray-700 text-muted-foreground"
                   }`}
                 >
                   {i < stepIdx ? <CheckCircle className="w-4 h-4" /> : i + 1}
@@ -100,7 +100,7 @@ export default function ProPayoutSetup() {
                 <span className={`text-sm ${isActive ? "text-amber-800 font-medium" : "text-gray-400"}`}>
                   {label}
                 </span>
-                {i < 2 && <div className={`w-8 h-px ${isActive ? "bg-amber-400" : "bg-gray-200"}`} />}
+                {i < 2 && <div className={`w-8 h-px ${isActive ? "bg-amber-400" : "bg-gray-700"}`} />}
               </div>
             );
           })}

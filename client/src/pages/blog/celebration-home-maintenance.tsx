@@ -109,7 +109,7 @@ export default function BlogCelebrationHomeMaintenance() {
           Talk to George — he'll give you a guaranteed price in 60 seconds. Whether it's a one-off project or a full maintenance plan for your Celebration home, we'll handle it right.
         </p>
         <p>
-          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
+          <strong><a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">Get your price at uptendapp.com →</a></strong>
         </p>
 
         <section className="not-prose mt-12 pt-8 border-t border-border">

@@ -295,10 +295,10 @@ function HomeReportSection({ userId }: { userId: string }) {
           <p className="text-xs text-white/60 mt-1">Complete history of your home. like Carfax, but for houses.</p>
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <Button variant="ghost" size="sm" onClick={() => console.log("Download full home report")} data-testid="button-download-home-report">
+          <Button variant="ghost" size="sm" onClick={() => {}} data-testid="button-download-home-report">
             <Download className="w-4 h-4 mr-1" /> Download
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => console.log("Share home report")} data-testid="button-share-home-report">
+          <Button variant="ghost" size="sm" onClick={() => {}} data-testid="button-share-home-report">
             <Share2 className="w-4 h-4 mr-1" /> Share
           </Button>
         </div>

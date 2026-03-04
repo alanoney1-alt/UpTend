@@ -207,7 +207,7 @@ export default function BlogHomeServicesLakeNona() {
         </p>
         <p>
           If you're looking for an easier way to find and book trusted home service professionals in the Lake Nona and
-          Orlando area, <a href="https://uptendapp.com">UpTend</a> connects you with vetted local pros for everything
+          Orlando area, <a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">UpTend</a> connects you with vetted local pros for everything
           from junk removal to pool cleaning. with transparent pricing and no guesswork. It's built specifically for
           homeowners who want to spend less time searching and more time enjoying their home.
         </p>
@@ -217,7 +217,7 @@ export default function BlogHomeServicesLakeNona() {
         <p className="text-sm text-muted-foreground">
           <em>
             Have questions about home maintenance in Lake Nona? Drop by{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and ask George, our AI home services assistant. he
+            <a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">uptendapp.com</a> and ask George, our AI home services assistant. he
             knows the area inside and out.
           </em>
         </p>

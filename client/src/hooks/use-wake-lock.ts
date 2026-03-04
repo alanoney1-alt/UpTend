@@ -7,7 +7,7 @@ export function useWakeLock() {
     try {
       if ("wakeLock" in navigator) {
         wakeLock.current = await navigator.wakeLock.request("screen");
-        console.log("Screen Wake Lock Active");
+        
       }
     } catch (err: unknown) {
       const error = err as Error;

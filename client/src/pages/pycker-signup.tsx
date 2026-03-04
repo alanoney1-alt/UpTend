@@ -574,13 +574,11 @@ export default function PyckerSignup() {
       // Upload infrastructure being migrated — photos can be added later
       const hasVehiclePhotos = vehicles.some(v => v.photoUrls && v.photoUrls.length > 0);
       if (!hasVehiclePhotos) {
-        console.log("No vehicle photos uploaded yet — allowing registration to proceed");
       }
     } else if (currentStep === 6) {
       fieldsToValidate = ["driversLicense", "agreeTerms", "agreeBackgroundCheck"];
       if (!selfiePhotoUrl || !idPhotoUrl) {
         // Photo uploads may fail on current hosting — allow registration to proceed
-        console.log("Selfie/ID photos not uploaded — allowing registration to continue");
       }
     } else if (currentStep === 7) {
       // Pricing step: validate B2B license if enabled

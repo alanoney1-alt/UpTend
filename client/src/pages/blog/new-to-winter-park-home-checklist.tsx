@@ -125,7 +125,7 @@ export default function BlogNewToWinterPark() {
         <p className="text-sm text-muted-foreground">
           <em>
             Questions about your new Winter Park home? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and ask George. He knows the area and he'll give you a straight answer.
+            <a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">uptendapp.com</a> and ask George. He knows the area and he'll give you a straight answer.
           </em>
         </p>
 

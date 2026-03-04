@@ -54,7 +54,6 @@ export function ReferralWidget() {
         });
       } catch (err) {
         // User cancelled or error occurred
-        console.log("Share cancelled");
       }
     } else {
       // Fallback to copy

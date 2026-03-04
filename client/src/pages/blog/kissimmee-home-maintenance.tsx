@@ -101,7 +101,7 @@ export default function BlogKissimmeeHomeMaintenance() {
           Talk to George — he'll give you a guaranteed price in 60 seconds. Whether you're managing a vacation rental in Reunion or maintaining your family home in Buena Ventura Lakes, we'll keep it simple.
         </p>
         <p>
-          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
+          <strong><a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">Get your price at uptendapp.com →</a></strong>
         </p>
       </article>
       <Footer />

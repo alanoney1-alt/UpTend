@@ -169,7 +169,7 @@ export default function BlogPressureWashingCostOrlando() {
         <p className="text-sm text-muted-foreground">
           <em>
             Got a pressure washing question? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and ask George. he'll give you a straight answer.
+            <a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">uptendapp.com</a> and ask George. he'll give you a straight answer.
           </em>
         </p>
 

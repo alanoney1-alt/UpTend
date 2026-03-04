@@ -98,7 +98,7 @@ export default function BlogDrPhillipsHomeMaintenance() {
           Talk to George — he'll give you a guaranteed price in 60 seconds. Whether it's pool maintenance, lawn care, or a full property maintenance plan for your Dr. Phillips home, we make it straightforward.
         </p>
         <p>
-          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
+          <strong><a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">Get your price at uptendapp.com →</a></strong>
         </p>
       </article>
       <Footer />

@@ -98,7 +98,7 @@ export default function BlogOcoeeHomeMaintenance() {
           Talk to George — he'll give you a guaranteed price in 60 seconds. Routine maintenance, one-off repairs, or a full plan for your Ocoee home — we'll handle it.
         </p>
         <p>
-          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
+          <strong><a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">Get your price at uptendapp.com →</a></strong>
         </p>
       </article>
       <Footer />

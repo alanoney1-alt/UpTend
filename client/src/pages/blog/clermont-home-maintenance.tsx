@@ -101,7 +101,7 @@ export default function BlogClermontHomeMaintenance() {
           Talk to George — he'll give you a guaranteed price in 60 seconds. Whether it's drainage work on a hillside lot or routine maintenance in Kings Ridge, we know Clermont and we'll get it right.
         </p>
         <p>
-          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
+          <strong><a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">Get your price at uptendapp.com →</a></strong>
         </p>
       </article>
       <Footer />

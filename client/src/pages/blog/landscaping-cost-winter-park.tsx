@@ -111,7 +111,7 @@ export default function BlogLandscapingCostWinterPark() {
         <p className="text-sm text-muted-foreground">
           <em>
             Got a landscaping question about Winter Park? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and ask George. He'll give you a straight answer.
+            <a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">uptendapp.com</a> and ask George. He'll give you a straight answer.
           </em>
         </p>
 

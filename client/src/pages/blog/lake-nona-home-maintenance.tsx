@@ -155,7 +155,7 @@ export default function BlogLakeNonaHomeMaintenance() {
         <p className="text-sm text-muted-foreground">
           <em>
             Have questions about maintaining your Lake Nona home? Visit{" "}
-            <a href="https://uptendapp.com">uptendapp.com</a> and talk to George. he's our AI home assistant and
+            <a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">uptendapp.com</a> and talk to George. he's our AI home assistant and
             he knows Lake Nona inside and out.
           </em>
         </p>

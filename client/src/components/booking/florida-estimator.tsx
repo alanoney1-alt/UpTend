@@ -1276,9 +1276,9 @@ export function FloridaEstimator({ preselectedService, preselectedTiming, varian
                 />
                 <label htmlFor="tos-acceptance" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
                   I agree to the{" "}
-                  <a href="/terms" target="_blank" className="text-primary underline hover:text-primary/80">Terms of Service</a>
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">Terms of Service</a>
                   {" "}and{" "}
-                  <a href="/cancellation-policy" target="_blank" className="text-primary underline hover:text-primary/80">Cancellation Policy</a>.
+                  <a href="/cancellation-policy" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">Cancellation Policy</a>.
                   {" "}I understand that cancelling after a Pro has been dispatched may result in charges for work completed.
                 </label>
               </div>

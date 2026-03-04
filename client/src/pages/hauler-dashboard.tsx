@@ -1983,7 +1983,6 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("Pro location WebSocket connected");
     };
 
     ws.onerror = (error) => {
@@ -1991,7 +1990,6 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
     };
 
     ws.onclose = () => {
-      console.log("Pro location WebSocket disconnected");
     };
 
     return () => {

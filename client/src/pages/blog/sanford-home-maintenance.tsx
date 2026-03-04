@@ -98,7 +98,7 @@ export default function BlogSanfordHomeMaintenance() {
           Talk to George — he'll give you a guaranteed price in 60 seconds. Historic home or new build, lakefront or inland — we know Sanford and we'll take care of it.
         </p>
         <p>
-          <strong><a href="https://uptendapp.com">Get your price at uptendapp.com →</a></strong>
+          <strong><a href="https://uptendapp.com" target="_blank" rel="noopener noreferrer">Get your price at uptendapp.com →</a></strong>
         </p>
       </article>
       <Footer />

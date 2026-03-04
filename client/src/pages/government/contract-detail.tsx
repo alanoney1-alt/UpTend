@@ -165,7 +165,7 @@ export default function ContractDetail() {
                       {["workOrders", "materials", "equipment", "subcontractor"].map(cat => (
                         <div key={cat} className="flex items-center gap-4">
                           <span className="w-28 text-sm text-muted-foreground capitalize">{cat === "workOrders" ? "Work Orders" : cat}</span>
-                          <div className="flex-1 bg-gray-200 rounded-full h-4">
+                          <div className="flex-1 bg-gray-700 rounded-full h-4">
                             <div className="bg-amber-500 rounded-full h-4"
                               style={{ width: `${fin.budget > 0 ? Math.min(100, ((fin.spent[cat] || 0) / fin.budget) * 100) : 0}%` }} />
                           </div>
