@@ -254,6 +254,27 @@ function validateEnvironment() {
     console.info('INFO: Optional environment variables not set:', missingOptional.join(', '));
   }
 
+  // Stripe test vs live key guard
+  const stripeSecret = process.env.STRIPE_SECRET_KEY || '';
+  const stripePub = process.env.STRIPE_PUBLISHABLE_KEY || '';
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  if (isProduction) {
+    if (stripeSecret && !stripeSecret.startsWith('sk_live_')) {
+      console.warn('⚠️  WARNING: NODE_ENV=production but STRIPE_SECRET_KEY is a TEST key! Payments will NOT work in production.');
+    }
+    if (stripePub && !stripePub.startsWith('pk_live_')) {
+      console.warn('⚠️  WARNING: NODE_ENV=production but STRIPE_PUBLISHABLE_KEY is a TEST key! Payments will NOT work in production.');
+    }
+  } else {
+    if (stripeSecret && stripeSecret.startsWith('sk_live_')) {
+      console.warn('⚠️  WARNING: NODE_ENV is not production but STRIPE_SECRET_KEY is a LIVE key! You may be charging real cards in development.');
+    }
+    if (stripePub && stripePub.startsWith('pk_live_')) {
+      console.warn('⚠️  WARNING: NODE_ENV is not production but STRIPE_PUBLISHABLE_KEY is a LIVE key!');
+    }
+  }
+
   console.log('Environment validation complete');
 }
 

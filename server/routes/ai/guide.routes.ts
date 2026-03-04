@@ -29,6 +29,15 @@ const guideAiLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: "Too many requests, please try again later" },
 });
+
+// Dedicated TTS rate limiter — ElevenLabs calls are expensive
+const ttsRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 20, // 20 requests per minute per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "TTS rate limit exceeded. Please wait before requesting more audio." },
+});
 import { storage } from "../../storage";
 import { pool } from "../../db";
 import { getPropertyData, getPropertyDataAsync, formatPropertySummary, type PropertyData } from "../../services/ai/property-scan-service";
@@ -1330,7 +1339,7 @@ Return ONLY valid JSON.`,
 
   // ─── Text-to-Speech Endpoint (ElevenLabs) ──────────────────────────────
 
-  router.post("/guide/tts", guideAiLimiter, async (req, res) => {
+  router.post("/guide/tts", guideAiLimiter, ttsRateLimiter, async (req, res) => {
     try {
       const { text } = req.body;
       if (!text || typeof text !== "string") {
@@ -1370,7 +1379,7 @@ Return ONLY valid JSON.`,
 
   // ─── Streaming TTS Endpoint ──────────────────────────────────────────────
 
-  router.post("/guide/tts-stream", guideAiLimiter, async (req, res) => {
+  router.post("/guide/tts-stream", guideAiLimiter, ttsRateLimiter, async (req, res) => {
     try {
       const { text, voice, model } = req.body;
 

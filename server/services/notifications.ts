@@ -11,6 +11,30 @@ const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
 const FROM_EMAIL = process.env.FROM_EMAIL || 'George from UpTend <alan@uptendapp.com>';
 
+// Retry wrapper for email sending with exponential backoff
+async function withEmailRetry<T>(
+  fn: () => Promise<T>,
+  context: { to: string; subject: string },
+  maxAttempts = 3,
+  backoffMs = [1000, 3000, 9000]
+): Promise<T> {
+  let lastError: any;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      lastError = error;
+      if (attempt < maxAttempts) {
+        const delay = backoffMs[attempt - 1] || backoffMs[backoffMs.length - 1];
+        console.warn(`[Email Retry] Attempt ${attempt}/${maxAttempts} failed for "${context.subject}" to ${context.to}: ${error.message}. Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  console.error(`[Email Retry] All ${maxAttempts} attempts failed for "${context.subject}" to ${context.to}. Last error: ${lastError?.message}`);
+  throw lastError;
+}
+
 // Prefer API Key auth (more secure), fall back to Account Auth Token
 const twilioClient = TWILIO_API_KEY_SID && TWILIO_API_KEY_SECRET && TWILIO_ACCOUNT_SID
   ? twilio(TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, { accountSid: TWILIO_ACCOUNT_SID })
@@ -42,66 +66,70 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
     return { success: false, error: `Invalid email address: ${options.to}` };
   }
 
+  const retryContext = { to: options.to, subject: options.subject };
+
   // Try Resend first, then SendGrid fallback
   if (RESEND_API_KEY) {
     try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: FROM_EMAIL,
-          to: [options.to],
-          subject: options.subject,
-          html: options.html || undefined,
-          text: options.text || undefined,
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        console.log(`[Resend] Email sent to ${options.to} - id: ${data.id}`);
-        return { success: true };
-      } else {
-        const err = await res.text();
-        console.error(`[Resend] Error ${res.status}: ${err}`);
-        return { success: false, error: `Resend ${res.status}: ${err}` };
-      }
+      return await withEmailRetry(async () => {
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: FROM_EMAIL,
+            to: [options.to],
+            subject: options.subject,
+            html: options.html || undefined,
+            text: options.text || undefined,
+          }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          console.log(`[Resend] Email sent to ${options.to} - id: ${data.id}`);
+          return { success: true };
+        } else {
+          const err = await res.text();
+          throw new Error(`Resend ${res.status}: ${err}`);
+        }
+      }, retryContext);
     } catch (error: any) {
-      console.error('[Resend] Error:', error.message);
+      console.error('[Resend] All retries failed:', error.message);
       return { success: false, error: error.message };
     }
   }
 
   if (SENDGRID_API_KEY) {
     try {
-      const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${SENDGRID_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          personalizations: [{ to: [{ email: options.to }] }],
-          from: { email: FROM_EMAIL.includes('<') ? FROM_EMAIL.match(/<(.+)>/)?.[1] || 'alan@uptendapp.com' : FROM_EMAIL },
-          subject: options.subject,
-          content: [
-            { type: 'text/plain', value: options.text || '' },
-            ...(options.html ? [{ type: 'text/html', value: options.html }] : []),
-          ],
-        }),
-      });
-      if (res.ok || res.status === 202) {
-        console.log(`[SendGrid] Email sent to ${options.to}`);
-        return { success: true };
-      } else {
-        const err = await res.text();
-        console.error(`[SendGrid] Error ${res.status}: ${err}`);
-        return { success: false, error: `SendGrid ${res.status}: ${err}` };
-      }
+      return await withEmailRetry(async () => {
+        const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${SENDGRID_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            personalizations: [{ to: [{ email: options.to }] }],
+            from: { email: FROM_EMAIL.includes('<') ? FROM_EMAIL.match(/<(.+)>/)?.[1] || 'alan@uptendapp.com' : FROM_EMAIL },
+            subject: options.subject,
+            content: [
+              { type: 'text/plain', value: options.text || '' },
+              ...(options.html ? [{ type: 'text/html', value: options.html }] : []),
+            ],
+          }),
+        });
+        if (res.ok || res.status === 202) {
+          console.log(`[SendGrid] Email sent to ${options.to}`);
+          return { success: true };
+        } else {
+          const err = await res.text();
+          throw new Error(`SendGrid ${res.status}: ${err}`);
+        }
+      }, retryContext);
     } catch (error: any) {
-      console.error('[SendGrid] Error:', error.message);
+      console.error('[SendGrid] All retries failed:', error.message);
       return { success: false, error: error.message };
     }
   }
