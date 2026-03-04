@@ -41,13 +41,16 @@ export function registerPartnerInvoicingRoutes(app: Express): void {
     }
   });
 
-  // GET /api/partners/:slug/invoices
+  // GET /api/partners/:slug/invoices (paginated)
   app.get("/api/partners/:slug/invoices", async (req: Request, res: Response) => {
     try {
       await ensureTables();
       const status = req.query.status as string | undefined;
-      const invoices = await listInvoices(req.params.slug, status);
-      res.json(invoices);
+      const page = Math.max(1, parseInt(req.query.page as string) || 1);
+      const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+      const offset = (page - 1) * limit;
+      const invoices = await listInvoices(req.params.slug, { status, limit, offset });
+      res.json({ invoices, pagination: { page, limit } });
     } catch (error: any) {
       console.error("[Partner Invoicing] List error:", error.message);
       res.status(500).json({ error: "Failed to fetch invoices" });

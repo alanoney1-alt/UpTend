@@ -55,37 +55,58 @@ function timeAgo(dateStr: string): string {
 export default function SalesLeads() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   const fetchLeads = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
       const params = new URLSearchParams();
       if (statusFilter !== "all") params.set("status", statusFilter);
       if (search.trim()) params.set("search", search.trim());
+      params.set("page", String(page));
+      params.set("limit", "20");
       const res = await fetch(`/api/sales/leads?${params}`);
+      if (!res.ok) throw new Error(`Failed to load leads (${res.status})`);
       const data = await res.json();
       setLeads(data.leads || []);
-    } catch {
-      // ignore
+      if (data.pagination) {
+        setTotalPages(data.pagination.totalPages || 1);
+        setTotalCount(data.pagination.total || 0);
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to load leads");
+      setLeads([]);
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, search]);
+  }, [statusFilter, search, page]);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
+  useEffect(() => { setPage(1); }, [statusFilter, search]);
 
   const updateStatus = async (id: string, status: string) => {
-    await fetch(`/api/sales/leads/${id}/status`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    if (selectedLead?.id === id) {
-      setSelectedLead({ ...selectedLead, status });
+    try {
+      const res = await fetch(`/api/sales/leads/${id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error("Failed to update status");
+      const data = await res.json();
+      if (selectedLead?.id === id) {
+        setSelectedLead(data.lead || { ...selectedLead, status });
+      }
+      fetchLeads();
+    } catch (err: any) {
+      setError(err.message || "Failed to update lead status");
     }
-    fetchLeads();
   };
 
   if (selectedLead) {
@@ -98,7 +119,7 @@ export default function SalesLeads() {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">
             Sales Leads{" "}
-            <span className="text-gray-500 text-lg font-normal">({leads.length})</span>
+            <span className="text-gray-500 text-lg font-normal">({totalCount})</span>
           </h1>
         </div>
 
@@ -121,16 +142,55 @@ export default function SalesLeads() {
           />
         </div>
 
-        {loading ? (
-          <div className="text-gray-500 text-center py-20">Loading...</div>
-        ) : leads.length === 0 ? (
-          <div className="text-gray-500 text-center py-20">No leads found</div>
-        ) : (
-          <div className="grid gap-3">
-            {leads.map((lead) => (
-              <LeadCard key={lead.id} lead={lead} onClick={() => setSelectedLead(lead)} />
-            ))}
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-4 text-red-400 text-sm flex items-center justify-between">
+            <span>{error}</span>
+            <button onClick={() => { setError(null); fetchLeads(); }} className="text-red-300 hover:text-white text-xs underline ml-4">Retry</button>
           </div>
+        )}
+
+        {loading ? (
+          <div className="text-gray-500 text-center py-20">
+            <div className="inline-block w-6 h-6 border-2 border-gray-600 border-t-blue-400 rounded-full animate-spin mb-3" />
+            <p>Loading leads...</p>
+          </div>
+        ) : leads.length === 0 && !error ? (
+          <div className="text-center py-20">
+            <div className="text-4xl mb-3">📋</div>
+            <h3 className="text-lg font-medium text-gray-300 mb-2">No leads yet</h3>
+            <p className="text-gray-500 text-sm max-w-md mx-auto">
+              Leads will appear here after discovery conversations with Mr. George. Share your discovery link to start generating leads.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="grid gap-3">
+              {leads.map((lead) => (
+                <LeadCard key={lead.id} lead={lead} onClick={() => setSelectedLead(lead)} />
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3 mt-6">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="px-3 py-1.5 text-sm bg-[#12121a] border border-gray-700 rounded-lg disabled:opacity-30 hover:border-gray-500"
+                >
+                  ← Prev
+                </button>
+                <span className="text-sm text-gray-400">
+                  Page {page} of {totalPages} ({totalCount} total)
+                </span>
+                <button
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="px-3 py-1.5 text-sm bg-[#12121a] border border-gray-700 rounded-lg disabled:opacity-30 hover:border-gray-500"
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

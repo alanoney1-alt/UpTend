@@ -28,27 +28,32 @@ router.post("/outreach", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "businessType must be hoa, pm, or construction" });
   }
 
-  const config = { businessName, businessType, communityName, residents };
-  const results: any = {};
+  try {
+    const config = { businessName, businessType, communityName, residents };
+    const results: any = {};
 
-  const sendEmail = !channels || channels.includes("email");
-  const sendSMS = !channels || channels.includes("sms");
+    const sendEmail = !channels || channels.includes("email");
+    const sendSMS = !channels || channels.includes("sms");
 
-  if (sendEmail) {
-    results.email = await sendResidentOutreachEmails(config);
+    if (sendEmail) {
+      results.email = await sendResidentOutreachEmails(config);
+    }
+
+    if (sendSMS) {
+      results.sms = await sendResidentOutreachSMS(config);
+    }
+
+    res.json({
+      success: true,
+      businessName,
+      businessType,
+      totalResidents: residents.length,
+      results,
+    });
+  } catch (error: any) {
+    console.error("[B2B Outreach] Error:", error.message);
+    res.status(500).json({ error: "Failed to send outreach" });
   }
-
-  if (sendSMS) {
-    results.sms = await sendResidentOutreachSMS(config);
-  }
-
-  res.json({
-    success: true,
-    businessName,
-    businessType,
-    totalResidents: residents.length,
-    results,
-  });
 });
 
 // POST /api/b2b/outreach/preview - Preview email HTML without sending

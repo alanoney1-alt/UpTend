@@ -42,5 +42,14 @@ export function useSEO({ title, description, path, image = "/og-image.png" }: SE
     setMetaTag("twitter:title", title, true);
     setMetaTag("twitter:description", description, true);
     setMetaTag("twitter:image", imageUrl, true);
+
+    // Canonical URL
+    let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement("link");
+      link.setAttribute("rel", "canonical");
+      document.head.appendChild(link);
+    }
+    link.setAttribute("href", fullUrl);
   }, [title, description, path, image]);
 }

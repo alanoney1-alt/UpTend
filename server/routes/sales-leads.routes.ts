@@ -33,10 +33,13 @@ export function registerSalesLeadsRoutes(app: Express) {
     }
   });
 
-  // GET /api/sales/leads — list leads
+  // GET /api/sales/leads — list leads (paginated, trimmed)
   router.get("/", async (req, res) => {
     try {
       const { status, search } = req.query;
+      const page = Math.max(1, parseInt(req.query.page as string) || 1);
+      const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+      const offset = (page - 1) * limit;
       const conditions: any[] = [];
 
       if (status && status !== "all") {
@@ -50,11 +53,50 @@ export function registerSalesLeadsRoutes(app: Express) {
         );
       }
 
-      const leads = await db.select().from(discoveryLeads)
-        .where(conditions.length > 0 ? and(...conditions) : undefined)
-        .orderBy(desc(discoveryLeads.createdAt));
+      const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-      res.json({ leads });
+      // Get total count
+      const [{ count: totalCount }] = await db.select({ count: sql<number>`count(*)` })
+        .from(discoveryLeads)
+        .where(whereClause);
+
+      // Get paginated results — only summary fields for list view
+      const leads = await db.select({
+        id: discoveryLeads.id,
+        companyName: discoveryLeads.companyName,
+        serviceType: discoveryLeads.serviceType,
+        contactName: discoveryLeads.contactName,
+        contactEmail: discoveryLeads.contactEmail,
+        contactPhone: discoveryLeads.contactPhone,
+        status: discoveryLeads.status,
+        proposal: discoveryLeads.proposal,
+        createdAt: discoveryLeads.createdAt,
+        updatedAt: discoveryLeads.updatedAt,
+      }).from(discoveryLeads)
+        .where(whereClause)
+        .orderBy(desc(discoveryLeads.createdAt))
+        .limit(limit)
+        .offset(offset);
+
+      // Trim proposal to just package/painPoints summary for list view
+      const trimmedLeads = leads.map(l => ({
+        ...l,
+        proposal: l.proposal ? {
+          suggestedPackage: (l.proposal as any).suggestedPackage || (l.proposal as any).package || (l.proposal as any).recommendedPackage,
+          painPoints: (l.proposal as any).painPoints || (l.proposal as any).challenges,
+          businessSummary: (l.proposal as any).businessSummary || (l.proposal as any).summary,
+        } : null,
+      }));
+
+      res.json({
+        leads: trimmedLeads,
+        pagination: {
+          page,
+          limit,
+          total: Number(totalCount),
+          totalPages: Math.ceil(Number(totalCount) / limit),
+        },
+      });
     } catch (error: any) {
       console.error("Sales leads list error:", error);
       res.status(500).json({ error: "Failed to fetch leads" });
