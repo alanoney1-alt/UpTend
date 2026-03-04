@@ -1087,3 +1087,78 @@ Based on code reading:
 - Business signup → onboarding flow present
 - **Working chain** with appropriate tool restrictions in discovery mode
 
+
+---
+
+## Round 9 — Deep Audit (2026-03-03)
+
+### Priority 1: TypeScript Build Errors — ✅ FIXED (101 → 0)
+
+All 101 TypeScript errors resolved across 27 files:
+
+**Client-side (15 errors):**
+- `florida-estimator.tsx` (9): Added missing `source`, `stories`, `roofType`, `pool` fields to `ZillowProperty` interface
+- `business-onboarding.tsx` (4): Added `"custom"` to tier type and plan state type
+- `customer-dashboard.tsx` (1): Fixed `createdAt` type in `MyHomeSection` to accept `Date | null`
+- `hauler-dashboard.tsx` (2): Cast `serviceArea` property access on hauler profile
+- `george-showcase.tsx` (1): Fixed Logo variant from `"icon"` to `"light"`
+- `seo-demo.tsx` (1): Fixed Logo variant from `"default"` to `"light"`
+- `services.tsx` (3): Used `'featured' in svc` operator for narrowing union type
+
+**Server-side (86 errors):**
+- `george-tools.ts` (27): Fixed import name conflicts (`generateMorningBriefing`, `scanReceipt`), `daysSince` scope bug, `extractedItems` typing, `await` missing on stripe client, `homeProfiles.customerId` (was `.userId`), `parseInt` → string for varchar ID columns
+- `email-sequences.ts` (16): Changed function signatures to accept `string | number`, cast hauler profile property access for `profilePhoto`/`serviceAreas`/`availability`/`certifications`
+- `payouts.routes.ts` (8): Fixed function call signatures to match `stripe-connect` service (arg counts, types)
+- `batch2-aliases.routes.ts` (5): Cast `app.handle()` calls
+- `business-partner.routes.ts` (2): Added `as any` to user insert values
+- `quickbooks.routes.ts` (3): Made handlers async, fixed `getConnectionStatus` await, fixed `triggerFullSync`/`getSyncHistory` arg counts
+- `index.ts` (2): Removed duplicate `registerBackgroundCheckRoutes` import
+- `hauler.routes.ts` (2): Fixed `b2bRates` cast type
+- Various routes (22): Fixed string/number mismatches in `eq()` calls, function arg mismatches, `QueryResult` destructuring
+
+### Priority 2: P0 Items — ✅ FIXED (4 of 6 open items)
+
+| # | Item | Action |
+|---|------|--------|
+| 2 | Missing `checkout.session.completed` for jobs | ✅ Added handler — updates `payment_status`, `paid_at`, `live_price` on `service_requests` |
+| 3 | 101 TypeScript errors | ✅ Fixed — clean build |
+| 4 | Missing `charge.refunded` handler | ✅ Added handler — updates `payment_status` to `refunded`/`partially_refunded` with amount |
+| 5 | Raw SQL tables outside Drizzle | ❌ Deferred (P3 architecture task) |
+| 6 | No email TO validation | ✅ Added regex validation in `sendEmail()` — rejects malformed addresses |
+| 7 | In-memory session store | ❌ Deferred (P3 — needs Redis/DB migration) |
+
+### Priority 3: P1 Items — ✅ VERIFIED
+
+| # | Item | Action |
+|---|------|--------|
+| 12 | 3 unreachable tool handlers | ✅ Already wired — `connect_crm`, `lookup_property`, `search_parts_pricing` are in `TOOL_DEFINITIONS`, just excluded from discovery mode (by design). Available for authenticated B2B users. |
+| 13 | TTS rate limiting | ❌ Deferred — ElevenLabs calls protected by general `guideAiLimiter` |
+
+### Priority 4: TTS Text Length — ✅ FIXED
+
+Standardized from inconsistent 2000/5000 to **5000 characters** across both endpoints:
+- Non-streaming (`/guide/tts`): was silently truncating to 5000 — unchanged
+- Streaming (`/guide/tts-stream`): was rejecting at 2000 — **changed to 5000**
+
+### Priority 5: Unreachable Tool Handlers — ✅ VERIFIED (No action needed)
+
+All three tools (`connect_crm`, `lookup_property`, `search_parts_pricing`) already have definitions in `TOOL_DEFINITIONS` array. They are intentionally excluded from `DISCOVERY_TOOL_NAMES` (sales/demo mode) and available for authenticated B2B partner sessions.
+
+### Priority 6: Missing Stripe Webhook Handlers — ✅ VERIFIED
+
+All four handlers already exist in `stripe-connect-webhooks.ts`:
+- `transfer.created` → updates payout status to "processing"
+- `transfer.failed` → updates payout status to "failed" + admin email notification
+- `transfer.paid` → updates payout to "paid"
+- `transfer.reversed` → updates payout to "reversed" + admin email
+
+Additionally added to main webhook (`stripe-invoice-webhook.ts`):
+- `checkout.session.completed` → handles job payments (was only handling invoice payments)
+- `charge.refunded` → syncs refund status to `service_requests` table
+
+### Build Status: ✅ CLEAN (0 errors)
+
+```
+$ npx tsc --noEmit
+(no output — clean build)
+```

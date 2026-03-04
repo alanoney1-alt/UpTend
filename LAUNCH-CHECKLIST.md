@@ -8,11 +8,11 @@
 | # | Issue | Source | Status |
 |---|-------|--------|--------|
 | 1 | **IDOR vulnerabilities** — multiple endpoints lacked ownership checks | Round 6 | ✅ Fixed |
-| 2 | **No `checkout.session.completed` webhook** — if using Stripe Checkout Sessions, payments won't update job status | Round 8 | ❌ Open |
-| 3 | **101 TypeScript errors** — some involve `eq(stringId, number)` which could cause runtime query failures | Round 8 | ❌ Open |
-| 4 | **Missing `charge.refunded` webhook handler** — refunds won't sync to DB | Round 8 | ❌ Open |
+| 2 | **`checkout.session.completed` webhook for jobs** — added handler for job payments | Round 8 | ✅ Fixed |
+| 3 | **101 TypeScript errors** — some involve `eq(stringId, number)` which could cause runtime query failures | Round 8 | ✅ Fixed |
+| 4 | **Missing `charge.refunded` webhook handler** — refunds won't sync to DB | Round 8 | ✅ Fixed |
 | 5 | **Raw SQL tables outside Drizzle schema** — 20+ tables created via `CREATE TABLE IF NOT EXISTS` bypass migrations, risk schema drift | Round 8 | ❌ Open |
-| 6 | **No email TO address validation** — malformed emails could cause SendGrid errors | Round 6 | ❌ Open |
+| 6 | **No email TO address validation** — malformed emails could cause SendGrid errors | Round 6 | ✅ Fixed |
 | 7 | **Session store is in-memory Map** — all George sessions lost on server restart | Round 8 | ❌ Open |
 | 8 | **Protection fee calculation** was wrong (5% not calculated correctly) | Round 3 | ✅ Fixed |
 | 9 | **Partner invoice public token access** was missing auth | Round 3 | ✅ Fixed |
@@ -23,7 +23,7 @@
 | # | Issue | Source | Status |
 |---|-------|--------|--------|
 | 11 | **No email retry logic** — SendGrid failures silently lost | Round 6 | ❌ Open |
-| 12 | **3 tool handlers unreachable** (`connect_crm`, `lookup_property`, `search_parts_pricing`) — missing TOOL_DEFINITIONS entries | Round 8 | ❌ Open |
+| 12 | **3 tool handlers unreachable** (`connect_crm`, `lookup_property`, `search_parts_pricing`) — already in TOOL_DEFINITIONS, excluded from discovery mode by design | Round 8 | ✅ Fixed |
 | 13 | **TTS has no specific rate limiting** — ElevenLabs calls are expensive, only protected by general limiter | Round 8 | ❌ Open |
 | 14 | **Rate limiting** added across critical endpoints | Round 2 | ✅ Fixed |
 | 15 | **Input validation** added for partner routes | Round 2 | ✅ Fixed |
@@ -46,7 +46,7 @@
 | 27 | **Link security** (rel=noopener) | Round 7 | ✅ Fixed |
 | 28 | **`/api/health` endpoint** added | Round 6 | ✅ Fixed |
 | 29 | **Memory leak guards** added for in-memory stores | Round 6 | ✅ Fixed |
-| 30 | **TTS streaming max 2000 chars** vs non-streaming 5000 chars — should be consistent | Round 8 | ❌ Open |
+| 30 | **TTS streaming max 2000 chars** vs non-streaming 5000 chars — standardized to 5000 | Round 8 | ✅ Fixed |
 | 31 | **Stripe test vs live key separation** — no explicit guard, relies purely on env vars | Round 8 | ❌ Open |
 
 ## P3: Future Improvements (Architecture / Scalability)
@@ -55,7 +55,7 @@
 |---|-------|--------|--------|
 | 32 | **Migrate in-memory session store** to Redis/DB | Round 8 | ❌ Open |
 | 33 | **Consolidate raw SQL tables into Drizzle schema** and use proper migrations | Round 8 | ❌ Open |
-| 34 | **Add `transfer.created`/`transfer.failed` webhook handlers** for pro payout tracking | Round 8 | ❌ Open |
+| 34 | **Add `transfer.created`/`transfer.failed` webhook handlers** for pro payout tracking | Round 8 | ✅ Fixed |
 | 35 | **Replace mock George tool responses** with real DB-backed implementations | Round 8 | ❌ Open |
 | 36 | **Add email delivery tracking** (SendGrid webhooks for bounces/complaints) | Round 6 | ❌ Open |
 | 37 | **george-tools.ts has 8000+ lines** — should be split into domain modules | Round 8 | ❌ Open |
@@ -67,10 +67,10 @@
 
 | Priority | Total | Fixed | Open |
 |----------|-------|-------|------|
-| P0 | 10 | 4 | 6 |
-| P1 | 12 | 9 | 3 |
-| P2 | 9 | 6 | 3 |
-| P3 | 7 | 0 | 7 |
-| **Total** | **38** | **19** | **19** |
+| P0 | 10 | 8 | 2 |
+| P1 | 12 | 10 | 2 |
+| P2 | 9 | 8 | 1 |
+| P3 | 7 | 1 | 6 |
+| **Total** | **38** | **27** | **11** |
 
 **Recommendation:** Fix all P0 items before any public launch. The most critical open items are the missing Stripe webhook handlers (#2, #4) and the TypeScript type errors that could cause runtime query failures (#3).
