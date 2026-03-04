@@ -69,6 +69,7 @@ import { registerHoaEsgMetricsRoutes } from "./hoa/esg-metrics.routes";
 import { registerHoaReferralPaymentRoutes } from "./hoa/referral-payments.routes";
 import { registerHoaCommunicationRoutes } from "./hoa/communications.routes";
 import { registerHoaScraperRoutes } from "./hoa/scraper.routes";
+import { registerViolationDetectionRoutes } from "./hoa/violation-detection.routes";
 
 // ESG routes
 import { registerEsgRoutes } from "./esg/index";
@@ -398,6 +399,7 @@ export async function registerRoutes(
   registerHoaReferralPaymentRoutes(app);
   registerHoaCommunicationRoutes(app);
   registerHoaScraperRoutes(app);
+  registerViolationDetectionRoutes(app);
 
   // Register ESG routes
   registerEsgRoutes(app);

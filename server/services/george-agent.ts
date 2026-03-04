@@ -4346,6 +4346,13 @@ const TOOL_DEFINITIONS: any[] = [
  { name: "get_partner_social_audit", description: "Get a social media audit for a partner. Shows which platforms they're on, which they're missing, and recommends the social package. Use when discussing social media or the $500/month add-on.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
  { name: "get_partner_onboarding_progress", description: "Check how much onboarding data we have for a partner. Shows completion percentage and what sections are still missing.", input_schema: { type: "object", properties: { partner_slug: { type: "string" } }, required: ["partner_slug"] } },
  { name: "scan_property_address", description: "Scan a property address to generate an AI-powered home maintenance intelligence report. Returns health score, urgent/upcoming/annual maintenance items, system life estimates, and cost projections. Use when a customer gives you their address and wants to know about their home's maintenance needs.", input_schema: { type: "object", properties: { address: { type: "string", description: "Full property address to scan" } }, required: ["address"] } },
+
+ // ── HOA Auto-Violation Detection Tools ──────────────────────────────────
+ { name: "detect_violation_from_photo", description: "Detect HOA violations from a photo + GPS coordinates. Runs the full pipeline: reverse geocode → match property → AI photo analysis → lookup CC&Rs → generate violation draft. Returns a violation draft for one-tap approval.", input_schema: { type: "object", properties: { photo: { type: "string", description: "Photo as base64 string or URL" }, lat: { type: "number", description: "GPS latitude" }, lng: { type: "number", description: "GPS longitude" }, community_id: { type: "string", description: "Optional community ID to scope the search" } }, required: ["photo", "lat", "lng"] } },
+ { name: "list_community_violations", description: "List all violations for a community, optionally filtered by status and date range.", input_schema: { type: "object", properties: { community_id: { type: "string", description: "Community ID" }, status: { type: "string", description: "Filter by status: draft, pending, notified, cured, escalated, closed, disputed" }, start_date: { type: "string", description: "Start date (ISO format)" }, end_date: { type: "string", description: "End date (ISO format)" } }, required: ["community_id"] } },
+ { name: "get_violation_details", description: "Get full details on a specific violation including notifications and cure submissions.", input_schema: { type: "object", properties: { violation_id: { type: "string", description: "Violation record ID" } }, required: ["violation_id"] } },
+ { name: "approve_violation_notice", description: "Approve a draft violation and trigger notification to the homeowner.", input_schema: { type: "object", properties: { violation_id: { type: "string", description: "Violation record ID to approve" }, notify_channel: { type: "string", description: "Notification channel: email, sms, push, in_app. Default: email" } }, required: ["violation_id"] } },
+ { name: "generate_violation_report", description: "Generate a summary violation report for board meetings. Includes totals by status, type, and severity.", input_schema: { type: "object", properties: { community_id: { type: "string", description: "Community ID" }, start_date: { type: "string", description: "Report start date (ISO)" }, end_date: { type: "string", description: "Report end date (ISO)" } }, required: ["community_id"] } },
 ];
 
 // ─────────────────────────────────────────────
@@ -4999,6 +5006,46 @@ async function executeTool(name: string, input: any, storage?: any, georgeCtx?: 
 
  case "scan_property_address":
   return await tools.scanPropertyAddress(input.address);
+
+ // ── HOA Violation Detection Tools ──────────────────────────────────
+ case "detect_violation_from_photo": {
+  const resp = await fetch(`${process.env.BASE_URL || "http://localhost:5000"}/api/violations/photo-detect`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ photo: input.photo, lat: input.lat, lng: input.lng, communityId: input.community_id }),
+  });
+  return await resp.json();
+ }
+ case "list_community_violations": {
+  const params = new URLSearchParams();
+  if (input.status) params.set("status", input.status);
+  if (input.start_date) params.set("startDate", input.start_date);
+  if (input.end_date) params.set("endDate", input.end_date);
+  const resp = await fetch(`${process.env.BASE_URL || "http://localhost:5000"}/api/violations/community/${input.community_id}?${params}`);
+  return await resp.json();
+ }
+ case "get_violation_details": {
+  const resp = await fetch(`${process.env.BASE_URL || "http://localhost:5000"}/api/violations/${input.violation_id}`);
+  return await resp.json();
+ }
+ case "approve_violation_notice": {
+  // Approve first
+  await fetch(`${process.env.BASE_URL || "http://localhost:5000"}/api/violations/${input.violation_id}/approve`, { method: "POST" });
+  // Then notify
+  const resp = await fetch(`${process.env.BASE_URL || "http://localhost:5000"}/api/violations/${input.violation_id}/notify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ channel: input.notify_channel || "email" }),
+  });
+  return await resp.json();
+ }
+ case "generate_violation_report": {
+  const params = new URLSearchParams();
+  if (input.start_date) params.set("startDate", input.start_date);
+  if (input.end_date) params.set("endDate", input.end_date);
+  const resp = await fetch(`${process.env.BASE_URL || "http://localhost:5000"}/api/violations/report/${input.community_id}?${params}`);
+  return await resp.json();
+ }
 
  default:
  return { error: `Unknown tool: ${name}` };
