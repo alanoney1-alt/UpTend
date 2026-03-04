@@ -298,6 +298,11 @@ export default function DiscoveryPage() {
     }
   }, [processTTSQueue]);
 
+  // Pre-warm server connection on mount
+  useEffect(() => {
+    fetch("/api/ai/guide/voice-status").catch(() => {});
+  }, []);
+
   const scrollToBottom = useCallback(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);

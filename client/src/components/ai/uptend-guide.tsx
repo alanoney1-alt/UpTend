@@ -277,7 +277,7 @@ function useSpeechSynthesis() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const isSupported = true; // Always true — ElevenLabs primary, browser fallback
 
-  // Check ElevenLabs availability on mount
+  // Check ElevenLabs availability on mount (also pre-warms the server connection)
   useEffect(() => {
     fetch("/api/ai/guide/voice-status")
       .then(r => r.json())
