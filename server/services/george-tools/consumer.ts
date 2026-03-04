@@ -107,9 +107,6 @@ export {
   identify_pest,
   assess_water_damage,
 
-  // Price matching
-  priceMatchHistory,
-
   // Seasonal
   getSeasonalRecommendations,
   getSeasonalCountdown,
