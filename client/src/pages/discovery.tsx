@@ -513,8 +513,8 @@ export default function DiscoveryPage() {
     setVoiceMode(voice);
     setPhase("chat");
     const greeting = params.slug
-      ? `I'm George. I work with ${params.slug.replace(/-/g, " ")} and a bunch of other service companies in the Orlando area. I'd love to learn a bit about your business and see how we might help you grow. What type of home service business do you run?`
-      : "I'm George. I work with home service companies all over Orlando, helping them get more jobs and run tighter operations. What type of home service business do you run?";
+      ? `Hey, I'm George with UpTend. We work with ${params.slug.replace(/-/g, " ")} and a bunch of other service companies in the area. What kind of work do you do?`
+      : "Hey, I'm George with UpTend. We work with home service companies all over Orlando. What kind of work do you do?";
     setMessages([{ role: "george", content: greeting }]);
     if (voice) speak(greeting, true);
   }, [params.slug, speak]);
