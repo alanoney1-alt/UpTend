@@ -655,6 +655,10 @@ export async function registerRoutes(
   // Register Batch 1 API fix routes
   registerBatch1FixRoutes(app);
 
+  // SendGrid Event Webhook (email delivery tracking)
+  const sendgridWebhookRouter = (await import("./sendgrid-webhook.routes")).default;
+  app.use("/api/webhooks/sendgrid", sendgridWebhookRouter);
+
   // PMS/CRM webhook endpoint for inbound events
   app.post("/api/webhooks/pms/:platform", async (req, res) => {
     try {

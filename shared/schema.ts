@@ -7839,3 +7839,910 @@ export const discoveryLeads = pgTable("discovery_leads", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 export type DiscoveryLead = typeof discoveryLeads.$inferSelect;
+
+// Email Events (SendGrid webhook delivery tracking)
+export const emailEvents = pgTable("email_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull(),
+  eventType: text("event_type").notNull(), // delivered, bounced, complained, dropped
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+export type EmailEvent = typeof emailEvents.$inferSelect;
+
+// ============================================================
+// Raw SQL tables consolidated into Drizzle schema
+// (Items #5 + #33 from launch checklist)
+// ============================================================
+
+// Guide tables
+export const guideConversations = pgTable("guide_conversations", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  sessionId: text("session_id").notNull(),
+  messages: jsonb("messages").notNull().default([]),
+  propertyData: jsonb("property_data"),
+  recurringServices: jsonb("recurring_services"),
+  photoEstimates: jsonb("photo_estimates"),
+  lockedQuotes: jsonb("locked_quotes"),
+  priceMatches: jsonb("price_matches"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const guidePropertyProfiles = pgTable("guide_property_profiles", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  address: text("address").notNull(),
+  propertyData: jsonb("property_data").notNull(),
+  poolConfirmed: boolean("pool_confirmed"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const guidePriceMatches = pgTable("guide_price_matches", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  serviceKey: text("service_key").notNull(),
+  claimedPrice: real("claimed_price"),
+  matchedPrice: real("matched_price"),
+  standardRate: real("standard_rate"),
+  receiptUrl: text("receipt_url"),
+  receiptVerified: boolean("receipt_verified").default(false),
+  providerName: text("provider_name"),
+  providerContact: text("provider_contact"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const guideLockedQuotes = pgTable("guide_locked_quotes", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  serviceType: text("service_type").notNull(),
+  price: real("price").notNull(),
+  address: text("address"),
+  details: jsonb("details"),
+  validUntil: timestamp("valid_until").notNull(),
+  status: text("status").default("active"),
+  shareToken: text("share_token"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const guideLearnings = pgTable("guide_learnings", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: text("user_id"),
+  category: text("category").notNull(),
+  key: text("key").notNull(),
+  value: text("value").notNull(),
+  source: text("source").default("conversation"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const guideFeedback = pgTable("guide_feedback", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: text("user_id"),
+  sessionId: text("session_id"),
+  messageId: text("message_id"),
+  feedbackType: text("feedback_type").notNull(),
+  content: text("content"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner dashboard tables
+export const partnerLeads = pgTable("partner_leads", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  customerName: text("customer_name"),
+  customerEmail: text("customer_email"),
+  customerPhone: text("customer_phone"),
+  serviceType: text("service_type"),
+  source: text("source").default("george"),
+  status: text("status").default("new"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerJobs = pgTable("partner_jobs", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  leadId: integer("lead_id"),
+  customerName: text("customer_name"),
+  serviceType: text("service_type"),
+  status: text("status").default("scheduled"),
+  techName: text("tech_name"),
+  amount: real("amount").default(0),
+  scheduledAt: timestamp("scheduled_at"),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerReviews = pgTable("partner_reviews", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  customerName: text("customer_name"),
+  rating: integer("rating"),
+  reviewText: text("review_text"),
+  source: text("source").default("google"),
+  requestSentAt: timestamp("request_sent_at"),
+  receivedAt: timestamp("received_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner invoicing
+export const partnerInvoices = pgTable("partner_invoices", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").default(""),
+  customerPhone: text("customer_phone").default(""),
+  items: jsonb("items").default([]),
+  subtotal: real("subtotal").default(0),
+  taxRate: real("tax_rate").default(0.07),
+  taxAmount: real("tax_amount").default(0),
+  total: real("total").default(0),
+  status: text("status").default("draft"),
+  paymentLink: text("payment_link").default(""),
+  notes: text("notes").default(""),
+  dueDate: timestamp("due_date"),
+  sentAt: timestamp("sent_at"),
+  paidAt: timestamp("paid_at"),
+  publicToken: text("public_token"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const partnerInvoiceItems = pgTable("partner_invoice_items", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  invoiceId: integer("invoice_id"),
+  description: text("description").notNull(),
+  quantity: real("quantity").default(1),
+  unitPrice: real("unit_price").default(0),
+  total: real("total").default(0),
+});
+
+export const partnerPaymentRecords = pgTable("partner_payment_records", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  invoiceId: integer("invoice_id"),
+  amount: real("amount").notNull(),
+  method: text("method").default("card"),
+  stripePaymentId: text("stripe_payment_id").default(""),
+  recordedAt: timestamp("recorded_at").defaultNow(),
+});
+
+// HOA violation detection
+export const communityGuidelines = pgTable("community_guidelines", {
+  id: text("id").primaryKey(),
+  communityId: text("community_id").notNull(),
+  violationType: text("violation_type").notNull(),
+  ccrSection: text("ccr_section").notNull(),
+  description: text("description"),
+  cureDays: integer("cure_days").default(14),
+  fineAmount: real("fine_amount").default(0),
+  severityDefault: text("severity_default").default("minor"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const violationRecords = pgTable("violation_records", {
+  id: text("id").primaryKey(),
+  communityId: text("community_id"),
+  propertyId: text("property_id"),
+  photoUrl: text("photo_url"),
+  photoAnalysis: jsonb("photo_analysis"),
+  violationType: text("violation_type"),
+  ccrSection: text("ccr_section"),
+  severity: text("severity").default("minor"),
+  description: text("description"),
+  status: text("status").default("draft"),
+  cureDeadline: timestamp("cure_deadline"),
+  address: text("address"),
+  ownerName: text("owner_name"),
+  ownerEmail: text("owner_email"),
+  createdBy: text("created_by"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const violationNotifications = pgTable("violation_notifications", {
+  id: text("id").primaryKey(),
+  violationId: text("violation_id").notNull(),
+  channel: text("channel").notNull(),
+  sentAt: timestamp("sent_at").defaultNow(),
+  status: text("status").default("sent"),
+});
+
+export const violationCures = pgTable("violation_cures", {
+  id: text("id").primaryKey(),
+  violationId: text("violation_id").notNull(),
+  curePhotoUrl: text("cure_photo_url"),
+  curePhotoAnalysis: jsonb("cure_photo_analysis"),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  reviewedAt: timestamp("reviewed_at"),
+  approved: boolean("approved"),
+});
+
+// Builder handoffs
+export const builderHandoffs = pgTable("builder_handoffs", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  builderUserId: text("builder_user_id").notNull(),
+  builderCompany: text("builder_company"),
+  homeownerEmail: text("homeowner_email").notNull(),
+  homeownerName: text("homeowner_name"),
+  address: text("address").notNull(),
+  closingDate: text("closing_date"),
+  warranties: jsonb("warranties").default([]),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Warranty management
+export const warranties = pgTable("warranties", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: text("user_id").notNull(),
+  applianceName: text("appliance_name").notNull(),
+  brand: text("brand"),
+  model: text("model"),
+  purchaseDate: text("purchase_date"),
+  expirationDate: text("expiration_date"),
+  warrantyProvider: text("warranty_provider"),
+  policyNumber: text("policy_number"),
+  coverageDetails: text("coverage_details"),
+  receiptUrl: text("receipt_url"),
+  deleted: boolean("deleted").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const warrantyClaims = pgTable("warranty_claims", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  warrantyId: integer("warranty_id").notNull(),
+  userId: text("user_id").notNull(),
+  description: text("description").notNull(),
+  photos: text("photos").array(),
+  status: text("status").default("submitted"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Quality reports
+export const qualityReports = pgTable("quality_reports", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  customerId: text("customer_id").notNull(),
+  jobId: integer("job_id"),
+  serviceType: text("service_type"),
+  proName: text("pro_name"),
+  qualityScore: integer("quality_score").default(0),
+  findings: text("findings"),
+  recommendations: text("recommendations"),
+  photos: text("photos").array(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Schedule batching
+export const scheduledBatches = pgTable("scheduled_batches", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  userId: text("user_id").notNull(),
+  batchDate: text("batch_date").notNull(),
+  services: jsonb("services").notNull().default([]),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Job photos
+export const jobPhotos = pgTable("job_photos", {
+  id: text("id").primaryKey(),
+  jobId: text("job_id").notNull(),
+  proId: text("pro_id"),
+  customerId: text("customer_id"),
+  serviceType: text("service_type"),
+  photoUrl: text("photo_url").notNull(),
+  photoType: text("photo_type").default("completion"),
+  tags: jsonb("tags").default([]),
+  aiAnalysis: jsonb("ai_analysis"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Pro performance scores
+export const proPerformanceScores = pgTable("pro_performance_scores", {
+  id: text("id").primaryKey(),
+  proId: text("pro_id").notNull(),
+  responseTimeAvg: real("response_time_avg").default(0),
+  acceptanceRate: real("acceptance_rate").default(0),
+  completionRate: real("completion_rate").default(0),
+  onTimeRate: real("on_time_rate").default(0),
+  scopeChangeRate: real("scope_change_rate").default(0),
+  customerRatingAvg: real("customer_rating_avg").default(0),
+  rebookRate: real("rebook_rate").default(0),
+  cancellationRate: real("cancellation_rate").default(0),
+  overallScore: real("overall_score").default(0),
+  totalJobs: integer("total_jobs").default(0),
+  calculatedAt: timestamp("calculated_at").defaultNow(),
+});
+
+// Price match history
+export const priceMatchHistory = pgTable("price_match_history", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  customerId: text("customer_id").notNull(),
+  serviceType: text("service_type"),
+  originalPrice: real("original_price"),
+  competitorPrice: real("competitor_price"),
+  matchedPrice: real("matched_price"),
+  discountPercent: integer("discount_percent"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner crew scheduling
+export const partnerCrewMembers = pgTable("partner_crew_members", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  name: text("name").notNull(),
+  phone: text("phone").default(""),
+  email: text("email").default(""),
+  role: text("role").default("tech"),
+  skills: text("skills").array().default(sql`'{}'::text[]`),
+  isActive: boolean("is_active").default(true),
+  maxJobsPerDay: integer("max_jobs_per_day").default(4),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerCrewSchedule = pgTable("partner_crew_schedule", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  crewMemberId: integer("crew_member_id"),
+  crewMemberName: text("crew_member_name").default(""),
+  customerName: text("customer_name").default(""),
+  customerPhone: text("customer_phone").default(""),
+  customerAddress: text("customer_address").default(""),
+  serviceType: text("service_type").default(""),
+  scheduledDate: text("scheduled_date").notNull(),
+  scheduledTime: text("scheduled_time").default("09:00"),
+  estimatedDurationHours: real("estimated_duration_hours").default(2),
+  status: text("status").default("scheduled"),
+  notes: text("notes").default(""),
+  jobId: text("job_id").default(""),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner dispatch
+export const partnerDispatchNotifications = pgTable("partner_dispatch_notifications", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  jobId: text("job_id").notNull(),
+  techName: text("tech_name").notNull(),
+  techPhone: text("tech_phone").default(""),
+  customerName: text("customer_name").notNull(),
+  customerPhone: text("customer_phone").default(""),
+  customerEmail: text("customer_email").default(""),
+  etaMinutes: integer("eta_minutes").notNull().default(30),
+  status: text("status").default("pending"),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner estimates
+export const partnerEstimates = pgTable("partner_estimates", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").default(""),
+  customerPhone: text("customer_phone").default(""),
+  serviceType: text("service_type").default(""),
+  description: text("description").default(""),
+  amount: real("amount").default(0),
+  status: text("status").default("sent"),
+  followUpCount: integer("follow_up_count").default(0),
+  lastFollowUpAt: timestamp("last_follow_up_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  expiresAt: timestamp("expires_at"),
+});
+
+// Partner digital forms
+export const partnerFormTemplates = pgTable("partner_form_templates", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  formType: text("form_type").notNull().default("checklist"),
+  fields: jsonb("fields").notNull().default([]),
+  requiredBefore: text("required_before").default("none"),
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const partnerFormSubmissions = pgTable("partner_form_submissions", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  templateId: integer("template_id").notNull(),
+  partnerSlug: text("partner_slug").notNull(),
+  jobId: text("job_id"),
+  techName: text("tech_name"),
+  customerName: text("customer_name"),
+  responses: jsonb("responses").notNull().default({}),
+  photos: jsonb("photos").default([]),
+  signatureId: text("signature_id"),
+  status: text("status").default("draft"),
+  submittedAt: timestamp("submitted_at"),
+  reviewedBy: text("reviewed_by"),
+  reviewedAt: timestamp("reviewed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner job costing
+export const partnerJobCosts = pgTable("partner_job_costs", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  jobId: text("job_id").notNull(),
+  serviceType: text("service_type"),
+  customerName: text("customer_name"),
+  revenue: real("revenue").default(0),
+  laborCost: real("labor_cost").default(0),
+  materialCost: real("material_cost").default(0),
+  travelCost: real("travel_cost").default(0),
+  otherCost: real("other_cost").default(0),
+  totalCost: real("total_cost").default(0),
+  profit: real("profit").default(0),
+  profitMargin: real("profit_margin").default(0),
+  techName: text("tech_name"),
+  hoursWorked: real("hours_worked").default(0),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerMaterialCosts = pgTable("partner_material_costs", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  jobCostId: integer("job_cost_id").notNull(),
+  itemName: text("item_name").notNull(),
+  quantity: integer("quantity").default(1),
+  unitCost: real("unit_cost").default(0),
+  totalCost: real("total_cost").default(0),
+  supplier: text("supplier"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner digital signatures
+export const partnerSignatures = pgTable("partner_signatures", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  documentType: text("document_type").notNull(),
+  documentId: text("document_id").notNull(),
+  signerName: text("signer_name").notNull(),
+  signerEmail: text("signer_email").default(""),
+  signatureData: text("signature_data").default(""),
+  signingToken: text("signing_token"),
+  ipAddress: text("ip_address").default(""),
+  userAgent: text("user_agent").default(""),
+  signedAt: timestamp("signed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner tech performance / reporting
+export const partnerTechPerformance = pgTable("partner_tech_performance", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  techName: text("tech_name").notNull(),
+  jobsCompleted: integer("jobs_completed").default(0),
+  revenueGenerated: real("revenue_generated").default(0),
+  avgRating: real("avg_rating"),
+  onTimePercentage: real("on_time_percentage"),
+  periodStart: text("period_start").notNull(),
+  periodEnd: text("period_end").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner route optimization
+export const partnerRoutePlans = pgTable("partner_route_plans", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  date: text("date").notNull(),
+  techName: text("tech_name").notNull(),
+  jobs: jsonb("jobs").notNull().default([]),
+  optimizedOrder: jsonb("optimized_order").notNull().default([]),
+  totalDistanceMiles: real("total_distance_miles").default(0),
+  totalDriveMinutes: integer("total_drive_minutes").default(0),
+  estimatedSavingsMinutes: integer("estimated_savings_minutes").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner proactive outreach
+export const partnerOutreachLog = pgTable("partner_outreach_log", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  channel: text("channel").notNull(),
+  messageType: text("message_type").notNull(),
+  subject: text("subject"),
+  body: text("body").notNull(),
+  status: text("status").default("queued"),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerContacts = pgTable("partner_contacts", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  companyName: text("company_name").notNull(),
+  ownerName: text("owner_name").default(""),
+  phone: text("phone").default(""),
+  email: text("email").default(""),
+  preferredChannel: text("preferred_channel").default("both"),
+  optedIn: boolean("opted_in").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner onboarding
+export const partnerOnboarding = pgTable("partner_onboarding", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  status: text("status").default("in_progress"),
+  companyName: text("company_name"),
+  ownerName: text("owner_name"),
+  ownerEmail: text("owner_email"),
+  ownerPhone: text("owner_phone"),
+  businessAddress: text("business_address"),
+  businessCity: text("business_city"),
+  businessState: text("business_state"),
+  businessZip: text("business_zip"),
+  serviceAreaMiles: integer("service_area_miles").default(25),
+  yearsInBusiness: integer("years_in_business"),
+  numTechnicians: integer("num_technicians"),
+  numOfficeStaff: integer("num_office_staff"),
+  annualRevenue: text("annual_revenue"),
+  licenseNumber: text("license_number"),
+  insuranceProvider: text("insurance_provider"),
+  servicesOffered: jsonb("services_offered").default([]),
+  primaryService: text("primary_service"),
+  commercialOrResidential: text("commercial_or_residential").default("residential"),
+  websiteUrl: text("website_url"),
+  websiteProvider: text("website_provider"),
+  hasOnlineBooking: boolean("has_online_booking").default(false),
+  domainOwner: text("domain_owner"),
+  facebookUrl: text("facebook_url"),
+  facebookPageId: text("facebook_page_id"),
+  instagramHandle: text("instagram_handle"),
+  instagramConnected: boolean("instagram_connected").default(false),
+  googleBusinessProfileUrl: text("google_business_profile_url"),
+  googleBusinessClaimed: boolean("google_business_claimed").default(false),
+  yelpUrl: text("yelp_url"),
+  nextdoorUrl: text("nextdoor_url"),
+  tiktokHandle: text("tiktok_handle"),
+  youtubeUrl: text("youtube_url"),
+  linkedinUrl: text("linkedin_url"),
+  twitterHandle: text("twitter_handle"),
+  otherSocial: jsonb("other_social").default({}),
+  currentCrm: text("current_crm"),
+  currentSchedulingTool: text("current_scheduling_tool"),
+  currentInvoicingTool: text("current_invoicing_tool"),
+  currentAccountingTool: text("current_accounting_tool"),
+  currentMarketingTool: text("current_marketing_tool"),
+  currentPhoneSystem: text("current_phone_system"),
+  currentReviewPlatform: text("current_review_platform"),
+  otherTools: jsonb("other_tools").default([]),
+  monthlySoftwareSpend: real("monthly_software_spend"),
+  leadSources: jsonb("lead_sources").default([]),
+  avgMonthlyLeads: integer("avg_monthly_leads"),
+  avgTicketSize: real("avg_ticket_size"),
+  currentCloseRate: real("current_close_rate"),
+  biggestLeadSource: text("biggest_lead_source"),
+  painPoints: jsonb("pain_points").default([]),
+  wantsSocialPackage: boolean("wants_social_package").default(false),
+  socialContentPreferences: jsonb("social_content_preferences").default({}),
+  brandVoiceNotes: text("brand_voice_notes"),
+  logoUrl: text("logo_url"),
+  brandColors: jsonb("brand_colors").default([]),
+  tagline: text("tagline"),
+  targetKeywords: jsonb("target_keywords").default([]),
+  targetNeighborhoods: jsonb("target_neighborhoods").default([]),
+  competitors: jsonb("competitors").default([]),
+  stepsCompleted: jsonb("steps_completed").default([]),
+  onboardedBy: text("onboarded_by").default("george"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Partner revenue attribution
+export const partnerLeadAttribution = pgTable("partner_lead_attribution", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  customerId: text("customer_id").default(""),
+  customerName: text("customer_name").default(""),
+  customerPhone: text("customer_phone").default(""),
+  source: text("source").notNull().default("unknown"),
+  sourceDetail: text("source_detail").default(""),
+  landingPage: text("landing_page").default(""),
+  serviceRequested: text("service_requested").default(""),
+  estimatedValue: real("estimated_value").default(0),
+  status: text("status").default("new"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerMonthlySpend = pgTable("partner_monthly_spend", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  month: text("month").notNull(),
+  channel: text("channel").notNull(),
+  spend: real("spend").default(0),
+  notes: text("notes").default(""),
+});
+
+// Partner referral network
+export const partnerNetworkMembers = pgTable("partner_network_members", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  companyName: text("company_name").notNull(),
+  serviceTypes: text("service_types").array().default(sql`'{}'::text[]`),
+  serviceArea: text("service_area").default("Orlando Metro"),
+  ownerName: text("owner_name").default(""),
+  email: text("email").default(""),
+  phone: text("phone").default(""),
+  referralBonusPct: real("referral_bonus_pct").default(2.0),
+  totalReferralsSent: integer("total_referrals_sent").default(0),
+  totalReferralsReceived: integer("total_referrals_received").default(0),
+  totalBonusEarned: real("total_bonus_earned").default(0),
+  joinedAt: timestamp("joined_at").defaultNow(),
+  active: boolean("active").default(true),
+});
+
+export const partnerNetworkIntros = pgTable("partner_network_intros", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  referringPartnerSlug: text("referring_partner_slug").notNull(),
+  receivingPartnerSlug: text("receiving_partner_slug").notNull(),
+  customerId: text("customer_id").default(""),
+  customerName: text("customer_name").default(""),
+  customerPhone: text("customer_phone").default(""),
+  serviceNeeded: text("service_needed").notNull(),
+  introMessage: text("intro_message").default(""),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerCustomerRegistry = pgTable("partner_customer_registry", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  customerId: text("customer_id").notNull(),
+  customerName: text("customer_name").default(""),
+  customerPhone: text("customer_phone").default(""),
+  customerAddress: text("customer_address").default(""),
+  servicesUsed: text("services_used").array().default(sql`'{}'::text[]`),
+  lastServiceDate: timestamp("last_service_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner customer tags & pipeline
+export const partnerCustomerTags = pgTable("partner_customer_tags", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  tagName: text("tag_name").notNull(),
+  tagColor: text("tag_color").default("#3B82F6"),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerCustomerTagAssignments = pgTable("partner_customer_tag_assignments", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  customerId: text("customer_id").notNull(),
+  customerName: text("customer_name"),
+  customerEmail: text("customer_email"),
+  tagId: integer("tag_id").notNull(),
+  assignedAt: timestamp("assigned_at").defaultNow(),
+});
+
+export const partnerPipelineStages = pgTable("partner_pipeline_stages", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  name: text("name").notNull(),
+  position: integer("position").notNull().default(0),
+  color: text("color").default("#6366F1"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerPipelineDeals = pgTable("partner_pipeline_deals", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  customerName: text("customer_name"),
+  customerEmail: text("customer_email"),
+  customerPhone: text("customer_phone"),
+  stageId: integer("stage_id").notNull(),
+  value: real("value").default(0),
+  serviceType: text("service_type"),
+  notes: text("notes"),
+  assignedTo: text("assigned_to"),
+  expectedCloseDate: text("expected_close_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Partner membership management
+export const partnerMembershipPlans = pgTable("partner_membership_plans", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  name: text("name").notNull(),
+  description: text("description").default(""),
+  priceMonthly: real("price_monthly").default(0),
+  priceAnnual: real("price_annual").default(0),
+  servicesIncluded: jsonb("services_included").default([]),
+  visitsPerYear: integer("visits_per_year").default(0),
+  priorityScheduling: boolean("priority_scheduling").default(false),
+  discountPercent: real("discount_percent").default(0),
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerMemberships = pgTable("partner_memberships", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  planId: integer("plan_id"),
+  partnerSlug: text("partner_slug").notNull(),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").default(""),
+  customerPhone: text("customer_phone").default(""),
+  customerAddress: text("customer_address").default(""),
+  status: text("status").default("active"),
+  billingCycle: text("billing_cycle").default("monthly"),
+  nextBillingDate: timestamp("next_billing_date"),
+  visitsUsed: integer("visits_used").default(0),
+  visitsRemaining: integer("visits_remaining").default(0),
+  startedAt: timestamp("started_at").defaultNow(),
+  cancelledAt: timestamp("cancelled_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerMembershipVisits = pgTable("partner_membership_visits", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  membershipId: integer("membership_id"),
+  serviceType: text("service_type").default(""),
+  notes: text("notes").default(""),
+  visitedAt: timestamp("visited_at").defaultNow(),
+});
+
+// Partner QuickBooks integration
+export const partnerQuickbooksConnections = pgTable("partner_quickbooks_connections", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  qbRealmId: text("qb_realm_id"),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  tokenExpiresAt: timestamp("token_expires_at"),
+  companyName: text("company_name"),
+  connectedAt: timestamp("connected_at").defaultNow(),
+  status: text("status").default("active"),
+});
+
+export const partnerQbSyncLog = pgTable("partner_qb_sync_log", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  syncType: text("sync_type").notNull(),
+  direction: text("direction").notNull(),
+  recordsSynced: integer("records_synced").default(0),
+  errors: jsonb("errors"),
+  startedAt: timestamp("started_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+// Partner calendar
+export const partnerCalendarConnections = pgTable("partner_calendar_connections", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  googleEmail: text("google_email"),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  tokenExpiresAt: timestamp("token_expires_at"),
+  calendarId: text("calendar_id"),
+  status: text("status").notNull().default("active"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerCalendarEvents = pgTable("partner_calendar_events", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  jobId: text("job_id"),
+  googleEventId: text("google_event_id"),
+  title: text("title"),
+  description: text("description"),
+  startTime: timestamp("start_time"),
+  endTime: timestamp("end_time"),
+  location: text("location"),
+  attendees: jsonb("attendees"),
+  syncedAt: timestamp("synced_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner timesheets
+export const partnerTimesheets = pgTable("partner_timesheets", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  techName: text("tech_name").notNull(),
+  date: text("date").notNull(),
+  clockIn: timestamp("clock_in"),
+  clockOut: timestamp("clock_out"),
+  breakMinutes: integer("break_minutes").default(0),
+  totalHours: real("total_hours"),
+  status: text("status").notNull().default("active"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerTimeEntries = pgTable("partner_time_entries", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  timesheetId: integer("timesheet_id"),
+  partnerSlug: text("partner_slug").notNull(),
+  jobId: text("job_id"),
+  activity: text("activity"),
+  startTime: timestamp("start_time"),
+  endTime: timestamp("end_time"),
+  durationMinutes: integer("duration_minutes"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner maintenance reminders
+export const partnerMaintenanceSchedule = pgTable("partner_maintenance_schedule", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  partnerSlug: varchar("partner_slug").notNull(),
+  customerId: varchar("customer_id").notNull(),
+  customerName: text("customer_name"),
+  customerPhone: text("customer_phone"),
+  serviceType: text("service_type").notNull(),
+  lastServiceDate: timestamp("last_service_date").notNull(),
+  nextReminderDate: timestamp("next_reminder_date").notNull(),
+  reminderSent: boolean("reminder_sent").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Partner call tracking
+export const partnerTrackingNumbers = pgTable("partner_tracking_numbers", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  source: text("source").notNull(),
+  campaign: text("campaign"),
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const partnerCallLogs = pgTable("partner_call_logs", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  trackingNumberId: integer("tracking_number_id"),
+  callerPhone: text("caller_phone"),
+  callerName: text("caller_name"),
+  durationSeconds: integer("duration_seconds").default(0),
+  recordingUrl: text("recording_url"),
+  source: text("source"),
+  campaign: text("campaign"),
+  converted: boolean("converted").default(false),
+  notes: text("notes"),
+  calledAt: timestamp("called_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Partner competitor watchdog
+export const partnerTrackedKeywords = pgTable("partner_tracked_keywords", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  keyword: text("keyword").notNull(),
+  city: text("city").default("Orlando"),
+  isPrimary: boolean("is_primary").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const competitorSnapshots = pgTable("competitor_snapshots", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  competitorName: text("competitor_name").notNull(),
+  keyword: text("keyword").notNull(),
+  googleRank: integer("google_rank"),
+  reviewCount: integer("review_count"),
+  avgRating: real("avg_rating"),
+  hasGoogleAds: boolean("has_google_ads").default(false),
+  websiteUrl: text("website_url"),
+  snapshotDate: text("snapshot_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const competitorAlerts = pgTable("competitor_alerts", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  partnerSlug: text("partner_slug").notNull(),
+  alertType: text("alert_type").notNull(),
+  keyword: text("keyword"),
+  details: text("details").notNull(),
+  severity: text("severity").default("info"),
+  acknowledged: boolean("acknowledged").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
