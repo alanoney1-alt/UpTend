@@ -226,6 +226,7 @@ function useSpeechSynthesis() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [useElevenLabs, setUseElevenLabs] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
   const isSupported = true; // Always true — ElevenLabs primary, browser fallback
 
   // Check ElevenLabs availability on mount
@@ -236,10 +237,35 @@ function useSpeechSynthesis() {
       .catch(() => setUseElevenLabs(false));
   }, []);
 
+  // Unlock audio on Safari/iOS — must be called from a user gesture (click/tap)
+  const unlockAudio = useCallback(() => {
+    if (!audioCtxRef.current) {
+      const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (AudioCtx) {
+        audioCtxRef.current = new AudioCtx();
+      }
+    }
+    // Resume if suspended (Safari requires this on user gesture)
+    if (audioCtxRef.current?.state === "suspended") {
+      audioCtxRef.current.resume();
+    }
+    // Also play a silent audio element to fully unlock HTML5 Audio on iOS Safari
+    try {
+      const silent = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYZt");
+      silent.volume = 0.01;
+      silent.play().then(() => silent.pause()).catch(() => {});
+    } catch {}
+  }, []);
+
   const speak = useCallback(async (text: string) => {
     // Stop any current playback
     if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
     window.speechSynthesis?.cancel();
+
+    // Ensure audio context is unlocked
+    if (audioCtxRef.current?.state === "suspended") {
+      audioCtxRef.current.resume().catch(() => {});
+    }
 
     if (useElevenLabs) {
       try {
@@ -255,16 +281,32 @@ function useSpeechSynthesis() {
           const audio = new Audio(`data:audio/mpeg;base64,${data.audio}`);
           audioRef.current = audio;
           audio.onended = () => { setIsSpeaking(false); audioRef.current = null; };
-          audio.onerror = () => { setIsSpeaking(false); audioRef.current = null; };
-          await audio.play();
-          return;
+          audio.onerror = () => {
+            setIsSpeaking(false);
+            audioRef.current = null;
+            console.warn("[George Voice] Audio playback error, trying browser fallback");
+            // Fall through to browser TTS
+            speakBrowser(text);
+          };
+          try {
+            await audio.play();
+            return;
+          } catch (playErr) {
+            console.warn("[George Voice] audio.play() blocked (autoplay policy), trying browser fallback:", playErr);
+            audioRef.current = null;
+            // Fall through to browser TTS
+          }
         }
       } catch (err) {
         console.warn("[George Voice] ElevenLabs failed, falling back to browser:", err);
       }
     }
 
-    // Browser fallback
+    speakBrowser(text);
+  }, [useElevenLabs]);
+
+  // Browser speech synthesis fallback
+  const speakBrowser = useCallback((text: string) => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       const clean = text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1");
       const utterance = new SpeechSynthesisUtterance(clean);
@@ -287,7 +329,7 @@ function useSpeechSynthesis() {
     } else {
       setIsSpeaking(false);
     }
-  }, [useElevenLabs]);
+  }, []);
 
   const cancel = useCallback(() => {
     if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
@@ -295,7 +337,7 @@ function useSpeechSynthesis() {
     setIsSpeaking(false);
   }, []);
 
-  return { isSpeaking, isSupported, speak, cancel };
+  return { isSpeaking, isSupported, speak, cancel, unlockAudio };
 }
 
 // ─── Rich Card Components ────────────────────────────────────────────────────
@@ -876,7 +918,7 @@ export function UpTendGuide() {
             onChange={(e) => { const file = e.target.files?.[0]; if (file) handlePhotoUpload(file); e.target.value = ""; }}
           />
 
-          <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex items-center gap-1.5">
+          <form onSubmit={(e) => { e.preventDefault(); synth.unlockAudio(); sendMessage(); }} className="flex items-center gap-1.5">
             <button
               type="button"
               className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
@@ -897,6 +939,8 @@ export function UpTendGuide() {
                     : "text-slate-500 hover:text-white hover:bg-white/10"
                 )}
                 onClick={() => {
+                  // Unlock audio on user gesture (required by Safari/iOS)
+                  synth.unlockAudio();
                   const next = !voiceOutputEnabled;
                   setVoiceOutputEnabled(next);
                   localStorage.setItem(LS_VOICE_OUT, String(next));
