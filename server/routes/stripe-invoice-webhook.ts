@@ -91,17 +91,60 @@ export function registerStripeInvoiceWebhook(app: Express): void {
       }
 
       try {
-        if (event.type === "checkout.session.completed") {
-          const session = event.data.object as Stripe.Checkout.Session;
-          const invoiceId = session.metadata?.invoiceId
-            ? parseInt(session.metadata.invoiceId)
-            : null;
+        switch (event.type) {
+          case "checkout.session.completed": {
+            const session = event.data.object as Stripe.Checkout.Session;
 
-          if (invoiceId && session.payment_status === "paid") {
-            const amountTotal = (session.amount_total || 0) / 100;
-            await recordPayment(invoiceId, amountTotal, "card", session.payment_intent as string || "");
-            console.log(`[Stripe Webhook] Invoice #${invoiceId} marked as paid via Stripe checkout`);
+            // Handle invoice payments
+            const invoiceId = session.metadata?.invoiceId
+              ? parseInt(session.metadata.invoiceId)
+              : null;
+
+            if (invoiceId && session.payment_status === "paid") {
+              const amountTotal = (session.amount_total || 0) / 100;
+              await recordPayment(invoiceId, amountTotal, "card", session.payment_intent as string || "");
+              console.log(`[Stripe Webhook] Invoice #${invoiceId} marked as paid via Stripe checkout`);
+            }
+
+            // Handle job/booking payments
+            const jobId = session.metadata?.jobId || session.metadata?.serviceRequestId;
+            if (jobId && session.payment_status === "paid") {
+              const amountTotal = (session.amount_total || 0) / 100;
+              await db.execute(sql`
+                UPDATE service_requests
+                SET payment_status = 'paid',
+                    stripe_payment_intent_id = ${session.payment_intent as string || null},
+                    paid_at = NOW(),
+                    live_price = ${amountTotal}
+                WHERE id = ${jobId} AND payment_status != 'paid'
+              `);
+              console.log(`[Stripe Webhook] Job ${jobId} marked as paid via checkout session. Amount: $${amountTotal}`);
+            }
+            break;
           }
+
+          case "charge.refunded": {
+            const charge = event.data.object as Stripe.Charge;
+            const paymentIntentId = charge.payment_intent as string;
+            const refundAmount = (charge.amount_refunded || 0) / 100;
+            const isFullRefund = charge.refunded;
+
+            if (paymentIntentId) {
+              await db.execute(sql`
+                UPDATE service_requests
+                SET payment_status = ${isFullRefund ? "refunded" : "partially_refunded"},
+                    refund_amount = ${refundAmount},
+                    refunded_at = NOW()
+                WHERE stripe_payment_intent_id = ${paymentIntentId}
+              `);
+              console.log(`[Stripe Webhook] Refund processed for PI ${paymentIntentId}: $${refundAmount} (${isFullRefund ? "full" : "partial"})`);
+            }
+            break;
+          }
+
+          default:
+            // Unhandled event types are fine — just log at debug level
+            break;
         }
       } catch (err: any) {
         console.error("[Stripe Webhook] Handler error:", err.message);

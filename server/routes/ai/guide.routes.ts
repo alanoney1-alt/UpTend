@@ -1378,8 +1378,8 @@ Return ONLY valid JSON.`,
         return res.status(400).json({ error: "Text is required" });
       }
 
-      if (text.length > 2000) {
-        return res.status(400).json({ error: "Text too long (max 2000 characters)" });
+      if (text.length > 5000) {
+        return res.status(400).json({ error: "Text too long (max 5000 characters)" });
       }
 
       const { textToSpeechStream } = await import("../../services/partner-voice-george");

@@ -35,6 +35,13 @@ interface SmsOptions {
 }
 
 export async function sendEmail(options: EmailOptions): Promise<{ success: boolean; error?: string }> {
+  // Validate email address format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!options.to || !emailRegex.test(options.to)) {
+    console.error(`[Email] Invalid recipient email: "${options.to}"`);
+    return { success: false, error: `Invalid email address: ${options.to}` };
+  }
+
   // Try Resend first, then SendGrid fallback
   if (RESEND_API_KEY) {
     try {
