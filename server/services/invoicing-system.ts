@@ -39,6 +39,7 @@ export interface Invoice {
   total: number;
   status: "draft" | "sent" | "viewed" | "paid" | "overdue" | "void";
   paymentLink: string | null;
+  publicToken: string;
   notes: string;
   dueDate: string | null;
   sentAt: string | null;
@@ -99,9 +100,28 @@ export async function ensureInvoicingTables(): Promise<void> {
         due_date TIMESTAMPTZ,
         sent_at TIMESTAMPTZ,
         paid_at TIMESTAMPTZ,
+        public_token TEXT DEFAULT gen_random_uuid()::text,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
       )
+    `);
+
+    // Add public_token column if it doesn't exist (for existing tables)
+    await db.execute(sql`
+      DO $$ BEGIN
+        ALTER TABLE partner_invoices ADD COLUMN IF NOT EXISTS public_token TEXT DEFAULT gen_random_uuid()::text;
+      EXCEPTION WHEN OTHERS THEN NULL;
+      END $$;
+    `);
+
+    // Backfill any null public_tokens
+    await db.execute(sql`
+      UPDATE partner_invoices SET public_token = gen_random_uuid()::text WHERE public_token IS NULL
+    `);
+
+    // Create unique index on public_token
+    await db.execute(sql`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_partner_invoices_public_token ON partner_invoices(public_token)
     `);
 
     await db.execute(sql`
@@ -148,6 +168,7 @@ function mapInvoiceRow(r: any): Invoice {
     total: parseFloat(r.total) || 0,
     status: r.status,
     paymentLink: r.payment_link || null,
+    publicToken: r.public_token || "",
     notes: r.notes || "",
     dueDate: r.due_date || null,
     sentAt: r.sent_at || null,
@@ -351,7 +372,8 @@ export async function sendInvoice(invoiceId: number): Promise<{ paymentLink: str
     if (!invoice) throw new Error("Invoice not found");
 
     // Build Stripe Checkout or fallback to simple link
-    let paymentLink = `${APP_BASE_URL}/pay/invoice/${invoiceId}`;
+    const token = invoice.publicToken;
+    let paymentLink = `${APP_BASE_URL}/pay/invoice/${token}`;
     let stripeCheckoutUrl: string | null = null;
 
     const stripe = getStripe();
@@ -385,8 +407,8 @@ export async function sendInvoice(invoiceId: number): Promise<{ paymentLink: str
           line_items: lineItems,
           mode: "payment",
           customer_email: invoice.customerEmail || undefined,
-          success_url: `${APP_BASE_URL}/pay/invoice/${invoiceId}/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${APP_BASE_URL}/pay/invoice/${invoiceId}`,
+          success_url: `${APP_BASE_URL}/pay/invoice/${token}/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${APP_BASE_URL}/pay/invoice/${token}`,
           metadata: {
             invoiceId: String(invoiceId),
             partnerSlug: invoice.partnerSlug,
@@ -453,6 +475,34 @@ export async function getInvoice(invoiceId: number): Promise<Invoice | null> {
   } catch (err: any) {
     console.error("[Invoicing] getInvoice error:", err);
     throw new Error("Failed to get invoice: " + err.message);
+  }
+}
+
+/**
+ * Get an invoice by its public token (for unauthenticated payment pages).
+ */
+export async function getInvoiceByToken(token: string): Promise<Invoice | null> {
+  await ensureInvoicingTables();
+  try {
+    const result = await db.execute(sql`
+      SELECT * FROM partner_invoices WHERE public_token = ${token}
+    `);
+    if (!result.rows.length) return null;
+    const invoice = mapInvoiceRow((result.rows as any[])[0]);
+
+    const itemsResult = await db.execute(sql`
+      SELECT * FROM partner_invoice_items WHERE invoice_id = ${invoice.id} ORDER BY id
+    `);
+    invoice.items = (itemsResult.rows as any[]).map(r => ({
+      description: r.description,
+      quantity: parseFloat(r.quantity),
+      unitPrice: parseFloat(r.unit_price),
+    }));
+
+    return invoice;
+  } catch (err: any) {
+    console.error("[Invoicing] getInvoiceByToken error:", err);
+    throw new Error("Failed to get invoice by token: " + err.message);
   }
 }
 
@@ -575,7 +625,7 @@ export async function sendPaymentReminder(invoiceId: number): Promise<{ reminder
     const invoice = await getInvoice(invoiceId);
     if (!invoice) throw new Error("Invoice not found");
 
-    const paymentLink = invoice.paymentLink || `/pay/invoice/${invoiceId}`;
+    const paymentLink = invoice.paymentLink || `/pay/invoice/${invoice.publicToken}`;
     const reminderText = `Payment Reminder: Invoice #${invoice.id} for $${invoice.total.toFixed(2)} is due${invoice.dueDate ? ` on ${new Date(invoice.dueDate).toLocaleDateString()}` : ""}. Please submit payment at your earliest convenience.${paymentLink ? ` Pay here: ${paymentLink}` : ""}`;
 
     // Send reminder email via SendGrid

@@ -33,6 +33,9 @@ export const users = pgTable("users", {
   googleId: text("google_id"),
   stripeCustomerId: text("stripe_customer_id"),
   totalJobsCompleted: real("total_jobs_completed").default(0),
+  // Email verification
+  emailVerified: boolean("email_verified").default(false),
+  emailVerificationToken: text("email_verification_token"),
   // Chargeback/Dispute Risk Fields
   disputeCount: integer("dispute_count").default(0),
   riskLevel: text("risk_level").default("normal"), // 'normal' | 'elevated' | 'high'

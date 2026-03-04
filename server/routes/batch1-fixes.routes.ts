@@ -15,7 +15,6 @@ import {
   proCertifications,
   certificationPrograms,
   notificationQueue,
-  reviews,
 } from "@shared/schema";
 import { eq, and, or, sql, desc, ilike, inArray } from "drizzle-orm";
 

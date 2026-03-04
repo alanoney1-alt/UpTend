@@ -1,9 +1,10 @@
 /**
  * UpTend Protection Fee
- * 7% customer-facing fee at checkout (separate from Pro's 20% platform fee)
+ * 5% customer-facing fee at checkout (separate from Pro's 20% platform fee)
+ * Total platform take: 5% customer protection fee + 15% pro platform fee = 20%
  */
 
-export const PROTECTION_FEE_PERCENT = 7; // 7% of base price
+export const PROTECTION_FEE_PERCENT = 5; // 5% of base price
 
 export interface ProtectionFeeBreakdown {
   basePrice: number;

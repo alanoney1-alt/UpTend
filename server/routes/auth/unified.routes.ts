@@ -122,4 +122,31 @@ export function registerUnifiedAuthRoutes(app: Express) {
       res.status(500).json({ error: "Registration failed" });
     }
   });
+
+  /**
+   * GET /api/auth/me
+   * Returns the currently authenticated user from the session, or 401.
+   */
+  app.get("/api/auth/me", (req: Request, res: Response) => {
+    const user = req.user as any;
+    if (!user) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    // Return safe user fields (no password hash)
+    const { password, ...safeUser } = user;
+    res.json({ user: safeUser });
+  });
+
+  /**
+   * POST /api/auth/logout
+   * Logs out the current session.
+   */
+  app.post("/api/auth/logout", (req: Request, res: Response) => {
+    req.logout((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Logout failed" });
+      }
+      res.json({ success: true });
+    });
+  });
 }

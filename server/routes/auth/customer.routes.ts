@@ -41,6 +41,7 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
+      const emailVerificationToken = crypto.randomUUID();
       const user = await storage.createUser({
         id: crypto.randomUUID(),
         username: email,
@@ -50,6 +51,8 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
         lastName: lastName || null,
         phone: phone || null,
         role: "customer",
+        emailVerified: false,
+        emailVerificationToken,
       });
 
       // Fire-and-forget: link founding member perks ($25 credit + 10% off first 10 jobs)
@@ -175,5 +178,31 @@ export async function registerCustomerAuthRoutes(app: Express): Promise<void> {
       }
       res.json({ success: true, message: "Logged out successfully" });
     });
+  });
+
+  // Email verification endpoint
+  app.get("/api/auth/verify-email", async (req, res) => {
+    try {
+      const { token } = req.query;
+      if (!token || typeof token !== "string") {
+        return res.status(400).json({ error: "Verification token is required" });
+      }
+
+      // Look up user by verification token
+      const { db } = await import("../../db");
+      const { sql } = await import("drizzle-orm");
+      const result = await db.execute(
+        sql`UPDATE users SET email_verified = true, email_verification_token = NULL WHERE email_verification_token = ${token} RETURNING id, email`
+      );
+
+      if (!result.rows.length) {
+        return res.status(400).json({ error: "Invalid or expired verification token" });
+      }
+
+      res.json({ success: true, message: "Email verified successfully" });
+    } catch (error: any) {
+      console.error("[Email Verify] Error:", error.message);
+      res.status(500).json({ error: "Verification failed" });
+    }
   });
 }

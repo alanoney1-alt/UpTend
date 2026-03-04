@@ -10,6 +10,7 @@ import {
   createInvoice,
   sendInvoice,
   getInvoice,
+  getInvoiceByToken,
   listInvoices,
   recordPayment,
   voidInvoice,
@@ -159,6 +160,33 @@ export function registerPartnerInvoicingRoutes(app: Express): void {
     } catch (error: any) {
       console.error("[Partner Invoicing] PDF error:", error.message);
       res.status(500).json({ error: "Failed to generate PDF" });
+    }
+  });
+
+  // PUBLIC: GET /api/invoices/pay/:token — get invoice by public token (no auth required)
+  app.get("/api/invoices/pay/:token", async (req: Request, res: Response) => {
+    try {
+      await ensureTables();
+      const invoice = await getInvoiceByToken(req.params.token);
+      if (!invoice) return res.status(404).json({ error: "Invoice not found" });
+      // Return limited info for public payment page (no partner internals)
+      res.json({
+        id: invoice.id,
+        publicToken: invoice.publicToken,
+        customerName: invoice.customerName,
+        items: invoice.items,
+        subtotal: invoice.subtotal,
+        taxRate: invoice.taxRate,
+        taxAmount: invoice.taxAmount,
+        total: invoice.total,
+        status: invoice.status,
+        paymentLink: invoice.paymentLink,
+        notes: invoice.notes,
+        dueDate: invoice.dueDate,
+      });
+    } catch (error: any) {
+      console.error("[Partner Invoicing] Public get error:", error.message);
+      res.status(500).json({ error: "Failed to fetch invoice" });
     }
   });
 }

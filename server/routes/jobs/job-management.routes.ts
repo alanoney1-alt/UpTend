@@ -397,7 +397,7 @@ export function registerJobManagementRoutes(app: Express) {
 
       // Calculate base service price for Pro payout (excludes 5% UpTend Protection Fee)
       // Pro gets 85% of baseServicePrice, not the total customer payment
-      const baseServicePrice = job.baseServicePrice || (baseAmount / 1.07);
+      const baseServicePrice = job.baseServicePrice || (baseAmount / 1.05);
       const baseServicePriceWithAdjustments = baseServicePrice + adjustmentsTotal;
 
       // Update completion record

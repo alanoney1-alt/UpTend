@@ -401,7 +401,7 @@ export function registerServiceRequestRoutes(app: Express) {
 
       const totalAmount = req.body.finalPrice || existingRequest.livePrice || existingRequest.priceEstimate || 0;
       // Use base service price (excluding 5% UpTend Protection Fee) for payout calculation
-      const baseServicePrice = (existingRequest as any).baseServicePrice || (totalAmount / 1.07);
+      const baseServicePrice = (existingRequest as any).baseServicePrice || (totalAmount / 1.05);
       let paymentResult = null;
       let paymentStatus = existingRequest.paymentStatus || "pending";
       let capturedPayment = false;

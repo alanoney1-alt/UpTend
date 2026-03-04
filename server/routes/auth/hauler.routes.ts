@@ -384,9 +384,9 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaVersion: req.body.icaVersion || null,
         b2bLicensed: data.b2bLicensed || false,
         licenseNumber: data.licenseNumber || null,
-        b2bRates: data.b2bRates || {},
-        sameDayAvailable: data.sameDayAvailable ?? true,
-        weeklyAvailability: data.weeklyAvailability || null,
+        b2bRates: (data.b2bRates || {}) as Record<string, unknown>,
+        sameDayAvailable: (data.sameDayAvailable ?? true) as boolean,
+        weeklyAvailability: (data.weeklyAvailability || null) as string | null,
       });
 
       // Update social profiles if provided
@@ -561,9 +561,9 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaVersion: req.body.icaVersion || null,
         b2bLicensed: data.b2bLicensed || false,
         licenseNumber: data.licenseNumber || null,
-        b2bRates: data.b2bRates || {},
-        sameDayAvailable: data.sameDayAvailable ?? true,
-        weeklyAvailability: data.weeklyAvailability || null,
+        b2bRates: (data.b2bRates || {}) as Record<string, unknown>,
+        sameDayAvailable: (data.sameDayAvailable ?? true) as boolean,
+        weeklyAvailability: (data.weeklyAvailability || null) as string | null,
       });
 
       // Update social profiles if provided

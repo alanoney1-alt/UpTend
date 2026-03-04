@@ -99,7 +99,7 @@ export function registerPaymentRoutes(app: Express) {
       // Calculate base service price (before 5% UpTend Protection Fee)
       // Customer pays: basePrice * 1.05 (service + 5% protection fee)
       // Pro payout is calculated from baseServicePrice only
-      const baseServicePrice = effectiveAmount / 1.07;
+      const baseServicePrice = effectiveAmount / 1.05;
 
       const updateData: Record<string, any> = {
         stripePaymentIntentId: paymentIntent.id,
@@ -225,7 +225,7 @@ export function registerPaymentRoutes(app: Express) {
       const totalAmount = job.livePrice || 0;
       // Use base service price (excluding 5% customer protection fee) for payout calculation
       // If baseServicePrice was stored at create-intent time, use it; otherwise derive it
-      const baseServicePrice = job.baseServicePrice || (totalAmount / 1.07);
+      const baseServicePrice = job.baseServicePrice || (totalAmount / 1.05);
       const activeCertCount = job.assignedHaulerId ? await getActiveCertCount(job.assignedHaulerId) : 0;
       const result = await stripeService.capturePaymentAndPayHauler(
         job.stripePaymentIntentId,
@@ -682,7 +682,7 @@ export function registerPaymentRoutes(app: Express) {
 
       const totalAmount = job.livePrice || 0;
       // Use base service price (excluding 5% customer protection fee) for payout calculation
-      const baseServicePrice = job.baseServicePrice || (totalAmount / 1.07);
+      const baseServicePrice = job.baseServicePrice || (totalAmount / 1.05);
       // Use calculatePayoutBreakdown for consistency with actual capture logic
       const activeCertCount = job.assignedHaulerId ? await getActiveCertCount(job.assignedHaulerId) : 0;
       const breakdown = stripeService.calculatePayoutBreakdown(baseServicePrice, pyckerTier, isVerifiedLlc, job.serviceType, activeCertCount);
