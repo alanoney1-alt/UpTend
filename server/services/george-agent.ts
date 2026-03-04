@@ -5193,7 +5193,91 @@ export async function chat(
  const needsToolCall = !isDiscoveryMode && /\b(fix|repair|how to|diy|video|show me|tutorial|watch|youtube|buy|product|price|cost|quote|book|schedule|amazon|home depot|lowe|walmart|parts|tools needed|what do i need)\b/.test(msgText);
 
  let usedProvider = "claude";
- 
+
+ // ─── Discovery Mode: Use GPT-4o-mini for speed (no complex tool calling needed) ───
+ if (isDiscoveryMode) {
+   const openaiMessages = [
+     { role: "system" as const, content: systemPrompt },
+     ...currentMessages.map((msg: any) => ({
+       role: msg.role as "user" | "assistant",
+       content: typeof msg.content === "string" ? msg.content : JSON.stringify(msg.content)
+     }))
+   ];
+
+   // Try GPT-4o-mini first → Claude fallback → Together.ai fallback
+   let discoveryResponse: string | null = null;
+
+   try {
+     console.log("[George Discovery] Trying GPT-4o-mini...");
+     const openaiRes = await withRetry(
+       async () => {
+         const r = await fetch("https://api.openai.com/v1/chat/completions", {
+           method: "POST",
+           headers: {
+             "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+             "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+             model: "gpt-4o-mini",
+             messages: openaiMessages,
+             max_tokens: 2048,
+             temperature: 0.6
+           })
+         });
+         if (!r.ok) throw Object.assign(new Error(`OpenAI ${r.status}`), { status: r.status });
+         return r;
+       },
+       { maxRetries: 2, baseDelay: 500, label: "gpt-4o-mini" }
+     );
+     const result = await openaiRes.json();
+     discoveryResponse = result.choices?.[0]?.message?.content;
+     usedProvider = "gpt-4o-mini";
+     console.log("[George Discovery] GPT-4o-mini successful");
+   } catch (err: any) {
+     console.warn("[George Discovery] GPT-4o-mini failed:", err.message);
+   }
+
+   // Fallback to Claude if GPT-4o-mini failed
+   if (!discoveryResponse) {
+     try {
+       console.log("[George Discovery] Falling back to Claude...");
+       const claudeRes = await withRetry(
+         () => anthropic.messages.create({
+           model: "claude-sonnet-4-20250514",
+           max_tokens: 2048,
+           temperature: 0.6,
+           system: systemPrompt,
+           tools: activeTools,
+           messages: currentMessages as any,
+         }),
+         { maxRetries: 2, baseDelay: 1000, label: "claude-discovery-fallback" }
+       );
+       const textBlock = claudeRes.content.find((b: any) => b.type === "text");
+       discoveryResponse = textBlock && "text" in textBlock ? (textBlock as any).text : null;
+       usedProvider = "claude";
+     } catch (claudeErr: any) {
+       console.warn("[George Discovery] Claude fallback failed:", claudeErr.message);
+     }
+   }
+
+   // Final fallback to Together.ai
+   if (!discoveryResponse) {
+     const fallbackResult = await fallbackChat(systemPrompt, currentMessages, 2048);
+     discoveryResponse = fallbackResult.response;
+     usedProvider = fallbackResult.provider;
+   }
+
+   // Strip emojis
+   const noEmojiText = (discoveryResponse || "Let me try that again. What were you saying?")
+     .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}]/gu, '')
+     .replace(/\u200D/g, '')
+     .replace(/\s{2,}/g, ' ');
+   const { cleanText, buttons } = parseButtons(noEmojiText);
+   console.log(`[George Discovery] Response via ${usedProvider}`);
+   return { response: cleanText, buttons, bookingDraft: null, provider: usedProvider };
+ }
+
+ // ─── Consumer/Pro/B2B Mode: Use Claude with full tool calling ───
  for (let i = 0; i < 5; i++) {
  // Force tool use on first iteration when the message clearly needs tools (consumer only)
  const toolChoice = (i === 0 && needsToolCall) ? { type: "any" as const } : undefined;
@@ -5205,7 +5289,7 @@ export async function chat(
    response = await withRetry(
    () => anthropic.messages.create({
    model: "claude-sonnet-4-20250514",
-   max_tokens: isDiscoveryMode ? 2048 : 1024,
+   max_tokens: 1024,
    temperature: 0.6,
    system: systemPrompt,
    tools: activeTools,
@@ -5219,7 +5303,7 @@ export async function chat(
    console.error(`[George] Claude API failed after retries:`, claudeError.message);
    
    // Use fallback providers - skip tool calling, just get text response
-   const fallbackResult = await fallbackChat(systemPrompt, currentMessages, isDiscoveryMode ? 2048 : 1024);
+   const fallbackResult = await fallbackChat(systemPrompt, currentMessages, 1024);
    usedProvider = fallbackResult.provider;
    
    console.log(`[George] Using provider: ${usedProvider}`);
