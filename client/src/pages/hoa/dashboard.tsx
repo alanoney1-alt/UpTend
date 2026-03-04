@@ -78,12 +78,14 @@ async function fetchViolations(communityId?: string, status?: string): Promise<V
   if (communityId) {
     const res = await fetch(`/api/violations/community/${communityId}?${params}`);
     if (!res.ok) return [];
-    return res.json();
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
   }
   // If no community filter, get pending (drafts) + all statuses
   const res = await fetch(`/api/violations/pending?${params}`);
   if (!res.ok) return [];
-  return res.json();
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
 }
 
 async function fetchViolationDetail(id: string): Promise<Violation> {
@@ -163,7 +165,7 @@ export default function HOADashboard() {
 
   // Filtered + sorted violations
   const filtered = useMemo(() => {
-    let list = [...violations];
+    let list = Array.isArray(violations) ? [...violations] : [];
     if (severityFilter !== "all") list = list.filter(v => v.severity === severityFilter);
     if (dateFrom) list = list.filter(v => v.createdAt >= dateFrom);
     if (dateTo) list = list.filter(v => v.createdAt <= dateTo + "T23:59:59");
