@@ -407,8 +407,62 @@ export function registerViolationDetectionRoutes(app: Express) {
         [notifId, id, channel],
       );
 
-      // TODO: Actually send SMS/email/push via existing notification services
-      // e.g., twilio for SMS, sendgrid for email, firebase for push
+      const v = violation.rows[0];
+      const appUrl = process.env.APP_URL || "https://uptendapp.com";
+      const violationsLink = `${appUrl}/my-home/violations`;
+      const friendlyType = (v.violation_type || "").replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
+      const communityName = v.community_id || "Your Community";
+      const cureDeadline = v.cure_deadline ? new Date(v.cure_deadline).toLocaleDateString() : "N/A";
+
+      // ── Email notification ──────────────────────────────────────────────
+      if ((channel === "email" || channel === "all") && v.owner_email) {
+        const photoHtml = v.photo_url ? `<img src="${v.photo_url}" alt="Property photo" style="max-width:100%;border-radius:8px;margin:12px 0;" />` : "";
+        await sendEmail({
+          to: v.owner_email,
+          subject: `Property Notice from ${communityName}`,
+          html: `
+            <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+              <h2 style="color:#1a1a1a;">Property Notice: ${friendlyType}</h2>
+              ${photoHtml}
+              <p style="color:#555;">${v.description || ""}</p>
+              <p style="color:#555;"><strong>Community Guidelines:</strong> ${v.ccr_section || "General Standards"}</p>
+              <p style="color:#555;"><strong>Please resolve by:</strong> ${cureDeadline}</p>
+              <a href="${violationsLink}" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">
+                View Details &amp; Respond
+              </a>
+              <p style="color:#999;font-size:12px;margin-top:24px;">
+                You're receiving this because you are a homeowner in ${communityName}.
+              </p>
+            </div>
+          `,
+          text: `Property Notice: ${friendlyType}\n\n${v.description || ""}\n\nGuidelines: ${v.ccr_section || "General Standards"}\nResolve by: ${cureDeadline}\n\nView details: ${violationsLink}`,
+        }).catch((err) => console.error("[ViolationNotify] Email error:", err));
+
+        // Record email notification
+        await pool.query(
+          `INSERT INTO violation_notifications (id, violation_id, channel, status) VALUES ($1, $2, 'email', 'sent')`,
+          [nanoid(), id],
+        );
+      }
+
+      // ── SMS notification ────────────────────────────────────────────────
+      if ((channel === "sms" || channel === "all") && v.owner_phone) {
+        await sendSms({
+          to: v.owner_phone,
+          message: `You have a new property notice for ${v.address || "your property"}: ${friendlyType}. Resolve by ${cureDeadline}. View details: ${violationsLink}`,
+        }).catch((err) => console.error("[ViolationNotify] SMS error:", err));
+
+        await pool.query(
+          `INSERT INTO violation_notifications (id, violation_id, channel, status) VALUES ($1, $2, 'sms', 'sent')`,
+          [nanoid(), id],
+        );
+      }
+
+      // ── In-app notification (always) ────────────────────────────────────
+      await pool.query(
+        `INSERT INTO violation_notifications (id, violation_id, channel, status) VALUES ($1, $2, 'in_app', 'sent')`,
+        [nanoid(), id],
+      );
 
       res.json({
         success: true,
@@ -659,6 +713,32 @@ Analyze whether the violation appears to be resolved. Return JSON:
         bySeverity: bySeverity.rows,
         dateRange: { startDate: startDate || null, endDate: endDate || null },
       });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ── GET /api/community-properties/by-user/:userId ───────────────────────
+  // Look up a homeowner's property by their user ID (email match)
+  app.get("/api/community-properties/by-user/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      // Try matching by owner_email from the users table
+      const userResult = await pool.query(
+        `SELECT email, phone FROM users WHERE id = $1 LIMIT 1`,
+        [userId],
+      );
+      const user = userResult.rows[0];
+      if (!user) return res.status(404).json({ error: "User not found" });
+
+      const propResult = await pool.query(
+        `SELECT * FROM community_properties WHERE owner_email = $1 LIMIT 1`,
+        [user.email],
+      );
+      if (!propResult.rows[0]) {
+        return res.status(404).json({ error: "No property found for this user" });
+      }
+      res.json(propResult.rows[0]);
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
