@@ -386,5 +386,98 @@ export function registerPartnerDashboardRoutes(app: Express) {
     }
   });
 
+  // ==========================================
+  // QR CODE JOB STICKERS
+  // ==========================================
+
+  // GET /api/partners/:slug/qr/:jobId
+  router.get("/:slug/qr/:jobId", async (req, res) => {
+    const { slug, jobId } = req.params;
+    const { format = "png", size = "256" } = req.query;
+    
+    try {
+      // Get job details for equipment info
+      const jobResult = await pool.query(
+        `SELECT * FROM partner_jobs WHERE id = $1 AND partner_slug = $2`,
+        [jobId, slug]
+      );
+      
+      if (jobResult.rows.length === 0) {
+        return res.status(404).json({ error: "Job not found" });
+      }
+      
+      const job = jobResult.rows[0];
+      const equipmentId = job.equipment_id || 'general';
+      
+      // Generate QR code URL
+      const qrUrl = `https://uptendapp.com/home-start?partner=${slug}&job=${jobId}&unit=${equipmentId}`;
+      
+      // In a real implementation, you would use a QR code library like 'qrcode'
+      // For now, we'll return the URL and let the frontend generate the QR code
+      res.json({
+        success: true,
+        qr_url: qrUrl,
+        job_id: jobId,
+        partner_slug: slug,
+        equipment_id: equipmentId,
+        customer_name: job.customer_name,
+        service_type: job.service_type,
+        qr_data: qrUrl
+      });
+    } catch (err: any) {
+      console.error("Error generating QR code:", err);
+      res.status(500).json({ error: "Failed to generate QR code" });
+    }
+  });
+
+  // GET /api/partners/:slug/qr/batch
+  router.get("/:slug/qr/batch", async (req, res) => {
+    const { slug } = req.params;
+    const { job_ids, limit = "20" } = req.query;
+    
+    try {
+      let jobsQuery = `SELECT * FROM partner_jobs WHERE partner_slug = $1`;
+      const params = [slug];
+      
+      if (job_ids && typeof job_ids === 'string') {
+        const jobIdArray = job_ids.split(',').map(id => parseInt(id.trim()));
+        jobsQuery += ` AND id = ANY($2)`;
+        params.push(jobIdArray as any);
+      } else {
+        // Get recent completed jobs
+        jobsQuery += ` AND status = 'completed' ORDER BY completed_at DESC LIMIT $2`;
+        params.push(limit as string);
+      }
+      
+      const jobsResult = await pool.query(jobsQuery, params);
+      
+      const qrCodes = jobsResult.rows.map(job => {
+        const equipmentId = job.equipment_id || 'general';
+        const qrUrl = `https://uptendapp.com/home-start?partner=${slug}&job=${job.id}&unit=${equipmentId}`;
+        
+        return {
+          job_id: job.id,
+          customer_name: job.customer_name,
+          service_type: job.service_type,
+          equipment_id: equipmentId,
+          qr_url: qrUrl,
+          qr_data: qrUrl,
+          completed_at: job.completed_at
+        };
+      });
+      
+      res.json({
+        success: true,
+        qr_codes: qrCodes,
+        count: qrCodes.length,
+        batch_size: qrCodes.length,
+        partner_slug: slug
+      });
+    } catch (err: any) {
+      console.error("Error generating batch QR codes:", err);
+      res.status(500).json({ error: "Failed to generate batch QR codes" });
+    }
+  });
+
   app.use("/api/partners", router);
 }

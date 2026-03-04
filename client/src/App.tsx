@@ -79,6 +79,8 @@ const ProfileSettings = lazy(() => import("@/pages/profile-settings"));
 const EarningsPage = lazy(() => import("@/pages/hauler/earnings"));
 // PublicPricing removed — /pricing redirects to /services
 const BecomePro = lazy(() => import("@/pages/become-pro"));
+const ProDashboard = lazy(() => import("@/pages/pro/pro-dashboard"));
+const ProJobDetail = lazy(() => import("@/pages/pro/pro-job-detail"));
 const AcademySyllabus = lazy(() => import("@/pages/academy-syllabus"));
 const ProVerification = lazy(() => import("@/pages/pro-verification"));
 const ProSustainabilityCert = lazy(() => import("@/pages/pro-sustainability-cert"));
@@ -114,12 +116,32 @@ const GeorgeShowcase = lazy(() => import("@/pages/partners/george-showcase"));
 const PartnerSlugDashboard = lazy(() => import("@/pages/partners/partner-dashboard"));
 const TieredQuoteCard = lazy(() => import("@/pages/partners/tiered-quote-card"));
 const PartnerInvoices = lazy(() => import("@/pages/partners/invoices"));
+const DispatchBoard = lazy(() => import("@/pages/partners/dispatch-board"));
+const JobScheduler = lazy(() => import("@/pages/partners/job-scheduler"));
+const PartnerAnalytics = lazy(() => import("@/pages/partners/partner-analytics"));
+const PartnerReviews = lazy(() => import("@/pages/partners/partner-reviews"));
 const InvoicePayPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePayPage })));
 const InvoicePaySuccessPage = lazy(() => import("@/pages/pay/invoice").then(m => ({ default: m.InvoicePaySuccessPage })));
+const CustomerJobTrack = lazy(() => import("@/pages/customer-job-track"));
 const Discovery = lazy(() => import("@/pages/discovery"));
 const SalesLeads = lazy(() => import("@/pages/sales/leads"));
 const HomeIntelligence = lazy(() => import("@/pages/home-intelligence"));
 const FleetTracking = lazy(() => import("@/pages/fleet-tracking"));
+
+// New Partner Service Pages
+const PartnerMemberships = lazy(() => import("@/pages/partners/partner-memberships"));
+const PartnerCallTracking = lazy(() => import("@/pages/partners/partner-call-tracking"));
+const PartnerCompetitors = lazy(() => import("@/pages/partners/partner-competitors"));
+const PartnerFinancing = lazy(() => import("@/pages/partners/partner-financing"));
+const PartnerCampaigns = lazy(() => import("@/pages/partners/partner-campaigns"));
+const PartnerInventory = lazy(() => import("@/pages/partners/partner-inventory"));
+const PartnerQrStickers = lazy(() => import("@/pages/partners/partner-qr-stickers"));
+const PartnerWinback = lazy(() => import("@/pages/partners/partner-winback"));
+const PartnerPhone = lazy(() => import("@/pages/partners/partner-phone"));
+
+// Customer Membership Page
+const MyMembership = lazy(() => import("@/pages/my-membership"));
+const HomeStart = lazy(() => import("@/pages/home-start"));
 const BusinessIntegrations = lazy(() => import("@/pages/business-integrations"));
 const BpIntegrations = lazy(() => import("@/pages/bp-integrations"));
 const HomeProfilePage = lazy(() => import("@/pages/home-profile"));
@@ -280,9 +302,11 @@ function Router() {
       <Route path="/pros" component={HaulerLanding} />
       <Route path="/tracking" component={TrackingLookup} />
       <Route path="/track/:jobId" component={Tracking} />
+      <Route path="/track/job/:jobId" component={CustomerJobTrack} />
       <Route path="/my-jobs" component={MyJobs} />
       {/* Pro routes (new terminology) */}
-      <Route path="/pro/dashboard" component={HaulerDashboard} />
+      <Route path="/pro/dashboard" component={ProDashboard} />
+      <Route path="/pro/jobs/:jobId" component={ProJobDetail} />
       <Route path="/pro/earnings" component={EarningsPage} />
       <Route path="/pro/rates" component={HaulerDashboard} />
       <Route path="/pro/background-check" component={ProBackgroundCheck} />
@@ -461,9 +485,25 @@ function Router() {
       <Route path="/pay/invoice/:id" component={InvoicePayPage} />
       <Route path="/partners/:slug/george" component={GeorgeShowcase} />
       <Route path="/partners/:slug/dashboard" component={PartnerSlugDashboard} />
+      <Route path="/partners/:slug/dispatch" component={DispatchBoard} />
+      <Route path="/partners/:slug/schedule" component={JobScheduler} />
+      <Route path="/partners/:slug/analytics" component={PartnerAnalytics} />
+      <Route path="/partners/:slug/reviews" component={PartnerReviews} />
       <Route path="/partners/:slug/seo-demo" component={PartnerSEODemo} />
+      {/* New Partner Service Routes */}
+      <Route path="/partners/:slug/memberships" component={PartnerMemberships} />
+      <Route path="/partners/:slug/call-tracking" component={PartnerCallTracking} />
+      <Route path="/partners/:slug/competitors" component={PartnerCompetitors} />
+      <Route path="/partners/:slug/financing" component={PartnerFinancing} />
+      <Route path="/partners/:slug/campaigns" component={PartnerCampaigns} />
+      <Route path="/partners/:slug/inventory" component={PartnerInventory} />
+      <Route path="/partners/:slug/qr-stickers" component={PartnerQrStickers} />
+      <Route path="/partners/:slug/winback" component={PartnerWinback} />
+      <Route path="/partners/:slug/phone" component={PartnerPhone} />
       <Route path="/partners/:slug" component={BrandedPartnerLanding} />
       <Route path="/my-home-profile" component={HomeProfilePage} />
+      <Route path="/my-membership" component={MyMembership} />
+      <Route path="/home-start" component={HomeStart} />
       <Route path="/jobs/:jobId/track" component={JobLiveTracker} />
       <Route path="/jobs/:jobId" component={JobDetail} />
       <Route path="/tax-center" component={TaxCenter} />

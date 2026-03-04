@@ -1,0 +1,249 @@
+/**
+ * Twilio-ElevenLabs Integration Service
+ * 
+ * Handles Option A: Twilio <Play> with ElevenLabs audio
+ * - George generates text response
+ * - Convert to ElevenLabs audio (Josh voice)
+ * - Serve audio URL for Twilio <Play>
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import { nanoid } from 'nanoid';
+
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
+const JOSH_VOICE_ID = 'TxGEqnHWrfWFTfGW9XjX';
+
+// Audio cache for common phrases
+const audioCache = new Map<string, string>();
+
+// Ensure audio directory exists
+const AUDIO_DIR = path.join(process.cwd(), 'public', 'audio', 'voice');
+if (!fs.existsSync(AUDIO_DIR)) {
+  fs.mkdirSync(AUDIO_DIR, { recursive: true });
+}
+
+export interface TTSOptions {
+  voice?: string;
+  model?: string;
+  speed?: number;
+  stability?: number;
+}
+
+/**
+ * Generate audio from text using ElevenLabs
+ */
+export async function generateVoiceAudio(
+  text: string,
+  options: TTSOptions = {}
+): Promise<{ audioUrl: string; filename: string } | null> {
+  if (!ELEVENLABS_API_KEY) {
+    console.error('[ElevenLabs] API key not configured');
+    return null;
+  }
+
+  // Clean text for voice
+  const cleanText = cleanTextForVoice(text);
+  if (cleanText.length === 0) {
+    console.warn('[ElevenLabs] Empty text after cleaning');
+    return null;
+  }
+
+  // Check cache first
+  const cacheKey = `${cleanText}-${options.voice || JOSH_VOICE_ID}-${options.speed || 1.15}`;
+  if (audioCache.has(cacheKey)) {
+    const filename = audioCache.get(cacheKey)!;
+    return {
+      audioUrl: `${process.env.BASE_URL || 'http://localhost:5000'}/audio/voice/${filename}`,
+      filename
+    };
+  }
+
+  try {
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${options.voice || JOSH_VOICE_ID}`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'audio/mpeg',
+        'Content-Type': 'application/json',
+        'xi-api-key': ELEVENLABS_API_KEY
+      },
+      body: JSON.stringify({
+        text: cleanText,
+        model_id: options.model || 'eleven_turbo_v2_5',
+        voice_settings: {
+          stability: options.stability || 0.4,
+          similarity_boost: 0.75,
+          style: 0.0,
+          use_speaker_boost: true,
+          speaking_rate: options.speed || 1.15
+        },
+        output_format: 'ulaw_8000' // Twilio's preferred format
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[ElevenLabs] API error:', response.status, errorText);
+      return null;
+    }
+
+    // Save audio file
+    const filename = `${nanoid(12)}.wav`; // ulaw_8000 format, .wav extension
+    const filePath = path.join(AUDIO_DIR, filename);
+    const audioBuffer = await response.arrayBuffer();
+    fs.writeFileSync(filePath, Buffer.from(audioBuffer));
+
+    // Cache the result
+    audioCache.set(cacheKey, filename);
+
+    const audioUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/audio/voice/${filename}`;
+    
+    console.log(`[ElevenLabs] Generated audio: ${filename} (${audioBuffer.byteLength} bytes)`);
+    
+    return { audioUrl, filename };
+  } catch (error: any) {
+    console.error('[ElevenLabs] Error generating audio:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Pre-cache common phrases for faster response
+ */
+export async function preloadCommonPhrases() {
+  const commonPhrases = [
+    "Hello, this is George. How can I help you today?",
+    "Thanks for calling. Let me help you with that.",
+    "Could you repeat that please?",
+    "I understand. Let me get that scheduled for you.",
+    "Thank you for calling. Have a great day!",
+    "I'm sorry, I didn't catch that. Could you say it again?",
+    "Let me look that up for you.",
+    "Perfect! I'll get that taken care of."
+  ];
+
+  console.log('[ElevenLabs] Pre-loading common phrases...');
+  const promises = commonPhrases.map(phrase => generateVoiceAudio(phrase));
+  await Promise.allSettled(promises);
+  console.log(`[ElevenLabs] Cached ${audioCache.size} common phrases`);
+}
+
+/**
+ * Clean text for voice synthesis
+ */
+function cleanTextForVoice(text: string): string {
+  return text
+    // Remove markdown formatting
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/#{1,6}\s/g, '')
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    
+    // Remove special characters that don't speak well
+    .replace(/[{}[\]]/g, '')
+    .replace(/\|/g, '')
+    .replace(/~/g, '')
+    .replace(/@/g, 'at')
+    .replace(/&/g, 'and')
+    .replace(/%/g, 'percent')
+    .replace(/\$/g, 'dollar ')
+    .replace(/#/g, 'number ')
+    
+    // Clean up spacing and punctuation
+    .replace(/\n{2,}/g, '. ')
+    .replace(/\n/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\.{2,}/g, '.')
+    .replace(/\?{2,}/g, '?')
+    .replace(/!{2,}/g, '!')
+    
+    // Ensure proper sentence endings
+    .replace(/([a-z])([.!?])([A-Z])/g, '$1$2 $3')
+    
+    .trim()
+    .slice(0, 5000); // ElevenLabs limit
+}
+
+/**
+ * Generate TwiML response with audio
+ */
+export function generateTwiMLWithAudio(audioUrl: string, nextAction?: string): string {
+  const nextActionXml = nextAction ? `<Redirect>${nextAction}</Redirect>` : '<Gather input="speech" timeout="5" speechTimeout="2"><Say>Please continue.</Say></Gather>';
+  
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Play>${audioUrl}</Play>
+  ${nextActionXml}
+</Response>`;
+}
+
+/**
+ * Generate TwiML for speech gathering
+ */
+export function generateTwiMLGather(
+  prompt: string,
+  actionUrl: string,
+  timeout = 5,
+  speechTimeout = 2
+): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Gather input="speech" action="${actionUrl}" timeout="${timeout}" speechTimeout="${speechTimeout}" language="en-US">
+    <Say voice="alice">${cleanTextForVoice(prompt)}</Say>
+  </Gather>
+  <Redirect>${actionUrl}</Redirect>
+</Response>`;
+}
+
+/**
+ * Generate TwiML to end call
+ */
+export function generateTwiMLHangup(message?: string): string {
+  const sayXml = message ? `<Say voice="alice">${cleanTextForVoice(message)}</Say>` : '';
+  
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  ${sayXml}
+  <Hangup/>
+</Response>`;
+}
+
+/**
+ * Check if voice service is properly configured
+ */
+export function isVoiceConfigured(): boolean {
+  return !!(ELEVENLABS_API_KEY && process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN);
+}
+
+/**
+ * Clean up old audio files (run periodically)
+ */
+export function cleanupOldAudioFiles(maxAgeHours = 24) {
+  try {
+    const files = fs.readdirSync(AUDIO_DIR);
+    const cutoffTime = Date.now() - (maxAgeHours * 60 * 60 * 1000);
+    
+    let deletedCount = 0;
+    for (const file of files) {
+      const filePath = path.join(AUDIO_DIR, file);
+      const stats = fs.statSync(filePath);
+      
+      if (stats.mtime.getTime() < cutoffTime) {
+        fs.unlinkSync(filePath);
+        deletedCount++;
+      }
+    }
+    
+    console.log(`[ElevenLabs] Cleaned up ${deletedCount} old audio files`);
+  } catch (error: any) {
+    console.error('[ElevenLabs] Error cleaning up audio files:', error.message);
+  }
+}
+
+// Clean up old files every hour
+setInterval(() => cleanupOldAudioFiles(), 60 * 60 * 1000);
+
+// Pre-load common phrases on startup
+setTimeout(() => preloadCommonPhrases(), 5000);

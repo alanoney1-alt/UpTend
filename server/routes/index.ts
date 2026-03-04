@@ -136,6 +136,9 @@ import { registerPartnerInvoicingRoutes } from "./partner-invoicing.routes";
 import { registerPartnerFeaturesRoutes } from "./partner-features.routes";
 import { registerPartnerOperationsRoutes } from "./partner-operations.routes";
 
+// Dispatch & Live Tracking routes
+import { registerDispatchRoutes } from "./dispatch.routes";
+
 // Home CRM routes
 import { registerHomeProfileRoutes } from "./home-profile.routes";
 
@@ -314,6 +317,14 @@ import { registerPartnerOperations4Routes } from "./partner-operations4.routes";
 import { registerPartnerOperations5Routes } from "./partner-operations5.routes";
 import { registerPartnerOnboardingRoutes } from "./partner-onboarding.routes";
 
+// Partner Services routes (membership, call tracking, competitors, financing, campaigns, inventory)
+import { registerMembershipRoutes } from "./membership.routes";
+import { registerCallTrackingRoutes } from "./call-tracking.routes";
+import { registerCompetitorMonitoringRoutes } from "./competitor-monitoring.routes";
+import { registerFinancingRoutes } from "./financing.routes";
+import { registerCampaignsRoutes } from "./campaigns.routes";
+import { registerPartnerInventoryRoutes } from "./partner-inventory.routes";
+
 // WebSocket handlers
 import { registerWebSocketHandlers } from "./websocket/handlers";
 
@@ -467,6 +478,9 @@ export async function registerRoutes(
   registerPartnerInvoicingRoutes(app);
   registerPartnerFeaturesRoutes(app);
   registerPartnerOperationsRoutes(app);
+
+  // Register Dispatch & Live Tracking routes
+  registerDispatchRoutes(app);
 
   // Register Home CRM routes
   registerHomeProfileRoutes(app);
@@ -646,8 +660,20 @@ export async function registerRoutes(
   // Register Partner Operations 5 routes (route optimization, call tracking)
   registerPartnerOperations5Routes(app);
 
+  // Partner Voice routes (Twilio + ElevenLabs + George AI)
+  const partnerVoiceRouter = (await import("./partner-voice.routes")).default;
+  app.use("/api", partnerVoiceRouter);
+
   // Partner onboarding + customer-facing routes
   registerPartnerOnboardingRoutes(app);
+
+  // Partner Services routes (membership, call tracking, competitors, financing, campaigns, inventory)
+  registerMembershipRoutes(app);
+  registerCallTrackingRoutes(app);
+  registerCompetitorMonitoringRoutes(app);
+  registerFinancingRoutes(app);
+  registerCampaignsRoutes(app);
+  registerPartnerInventoryRoutes(app);
 
   // Register Health check routes
   registerHealthRoutes(app);

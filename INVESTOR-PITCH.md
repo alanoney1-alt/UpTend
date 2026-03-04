@@ -1,184 +1,386 @@
-# UpTend Investor Pitch
+# UpTend — Investor Pitch Deck v11
 
-**UPYCK, Inc. (Delaware C-Corp) d/b/a UpTend**
+**HOME INTELLIGENCE**
 
----
+## UpTend
+**One Price. One Pro. Done.**
 
-## The $600B Problem
+The AI-powered platform defining a new category in the $600B home services market.
 
-Home services is a $600B/year industry in the US. Every homeowner, HOA, property manager, and government agency needs vendors. They manage it with phone calls, spreadsheets, and a rolodex of "guys."
+**Three Channels. One Platform. Zero Competition.**
 
-Nobody has built the AI-powered operating system that handles both sides: an agent that knows your home and a platform that runs the business.
-
-**UpTend has. And it's live.**
-
----
-
-## What We Built
-
-**148 client routes. 131 server routes. Live at uptendapp.com.**
-
-- **George**: AI Home Service Agent with 176 tools. Diagnoses problems, quotes jobs, books services, remembers every home, tracks maintenance history.
-- **B2B Dashboard**: Portfolio analytics, property health scores, budget tracking, recurring job scheduling, crew management, ESG compliance.
-- **Consumer Platform**: 12 service verticals, diagnostic intake flows, instant quoting, Home DNA Scan, Home Memory system.
-- **Government Suite**: SDVOSB set-aside contracts, compliance documentation, veteran workforce management.
+UPYCK Inc. · Lake Nona, FL · 2026
+uptendapp.com · alan@uptendapp.com
 
 ---
 
-## Two Entities, Three Revenue Channels
+## The Problem: A $600B Market Built on Blind Trust
 
-### UPYCK, Inc. (DBA "UpTend") -- The Platform
+Homeowners spend more on home services than dining out, yet have less information about what they're buying.
 
-**Channel 1: Consumer Marketplace**
-Service company partners and 1099 pros fulfill jobs. 20% platform fee (5% customer + 15% pro). George owns the customer relationship, handles all communication, and remembers every home. Partners get steady volume, automated scheduling, instant payments, and zero marketing spend.
+### $600B - U.S. Home Services Market
+- Largest offline category
+- Growing 4.2% annually
 
-**Channel 2: B2B Platform (HOAs, Property Managers, Construction)**
-Same partnership model, bigger contracts. SaaS subscription per unit/door plus per-job transaction fees.
+### $2K-$12K - Monthly HVAC Marketing Spend  
+- Cobbled together vendors
+- Overpaying for underperformance
+- No integrated solution exists
 
-**The B2B pitch:**
-- **Residents get George.** 24/7 AI concierge for any home service need. Covered repairs at zero cost, transparent quotes for everything else.
-- **The office gets a dashboard.** Live job tracking, property health scores, budget vs. actual spending, vendor scorecards.
-- **One contract covers all 12 verticals.** No more juggling 8 vendors with 8 invoices.
+### 0 - Platforms Solving Both Sides
+- Angi/Thumbtack sell leads
+- No one runs the business for pros  
+- No home intelligence layer
+- Pros pay $15-100/lead with no guarantee
 
-"Your current vendor sends you an invoice. We send you intelligence."
+**The result: a market where trust is the scarcest resource and no platform has bothered to build it.**
 
-### UpTend Services LLC -- Government (SDVOSB)
+---
 
-**Channel 3: Government Contracts**
-SDVOSB certified (Dennis 51% / Alan 49%). Federal sole-source contracts up to $5M. W2 veteran employees for self-performance requirements, service company partners for overflow and specialty work. 55% of LLC revenue flows to UPYCK as licensing/management fees.
+## The Solution: Attack HVAC First. The Rest of the Bucket Fills.
+
+UpTend is a home services platform powered by George AI. We start with HVAC companies as strategic partners, solve their entire digital operation, and use that wedge to fill the platform.
+
+**5-Step Strategy:**
+
+1. **Partner** — Sign HVAC companies. Not vendors. Partners.
+2. **Automate** — George runs their front office: intake, SEO, social, quotes.
+3. **Convert** — Their customers download UpTend. Now they're ours too.
+4. **Expand** — Their techs become Pros. Solving problems beyond HVAC.
+5. **Flywheel** — HVAC partners service OTHER platform customers.
+
+### For HVAC Partners:
+- Replace 4-6 vendors
+- AI photo quotes  
+- Neighborhood SEO
+- Social media
+- George never misses a call
+
+### For Homeowners:
+- Free DNA Home Scan
+- George knows your home
+- Instant photo quotes
+- Proactive maintenance alerts
+
+### For HOAs/PMs:
+- Violation automation
+- ARC process
+- Community-wide coordination
+- Full audit trail
+
+---
+
+## Partner Pricing: Replace 4-6 Vendors With One Platform
+
+Every partnership is consultative. Our HVAC partner tiers provide clear structure:
+
+| | **STARTER** | **GROWTH** | **SCALE** |
+|---|---|---|---|
+| **Monthly** | $499/mo | $899/mo | $1,499/mo |
+| **Setup** | $1,500 | $2,500 | $5,000 |
+| **Best For** | Solo, 1-3 techs | 4-10 techs | 10+ techs, multi-location |
+| **George AI** | Phone/chat/text | Phone/chat/text | Phone/chat/text |
+| **Landing Pages** | 1 branded | 3 branded | Unlimited |
+| **SEO Pages** | 4 neighborhood | 12 neighborhood | Unlimited |
+| **CRM** | Basic + routing | Advanced + scoring | Advanced + scoring |
+| **Procurement** | View-only | Full tools | Full tools |
+| **Account Manager** | — | — | Dedicated |
+| **Platform Job Fee** | 5% | 5% | Negotiable |
+| **Equivalent Elsewhere** | $850-$1,900/mo | $2,200-$4,500/mo | $5,000-$12,000/mo |
+| **Partner Savings** | 50-75% | 60-80% | 70-85% |
+
+---
+
+## Market Opportunity: Florida: The Perfect Beachhead
+
+### Florida HVAC Market
+- **10,264** HVAC Businesses
+- **$9.6B** Industry Size  
+- **~1,000** Orlando Metro
+- **$3K-$8K** Monthly Marketing Spend
+
+FL has 2nd most HVAC companies in US, year-round demand (no off-season), highly fragmented market
+
+### Florida HOA Market
+- **49,800** HOA Communities
+- **3.9M** Homes in HOAs
+- **~3,500** Orlando Metro HOAs
+- **45%** of FL Housing Stock
+
+Highest HOA density in America, FL law requires 100% reserve funding, 9.5M residents in HOA communities
+
+**Our beachhead: Orlando metro. ~1,000 HVAC companies. ~3,500 HOA communities. Conservative Y1 targets: 4% HVAC conversion, 0.5% HOA conversion.**
+
+---
+
+## HOA Channel: The Violation Revolution: Making Office Managers' Lives Easy
+
+HOAs are our second acquisition channel and the key to platform scale. We partner with Homeowners Associations to completely modernize their violation management process — transforming the most painful part of community management into streamlined automation.
+
+### The Complete HOA Revolution
+
+**Traditional Process: 10-15 Hours/Week of Hell**
+- Office manager drives through community manually looking for violations
+- Takes notes on paper or phone
+- Manually looks up addresses and CC&R sections
+- Types up violation notices one by one
+- Prints, stuffs envelopes, mails letters
+- Tracks responses manually in spreadsheets
+
+**UpTend + George AI: One-Tap Automation**
+1. **Photo Capture**: Office manager takes PHOTOS during drive-throughs
+2. **AI Analysis**: George identifies address (GPS), violation type, specific CC&R section
+3. **One-Tap Notice**: Single tap sends violation notice to homeowner  
+4. **Multi-Channel**: SMS, email, and in-app notifications
+5. **Full Lifecycle**: Cure period tracking → dispute workflow → auto-escalation → complete audit trail
+
+### Beyond Violations: Complete Community Management
+
+**ARC (Architectural Review Committee) Process**
+Homeowner submits request through app → George validates completeness → routes to committee → approval/denial notification → tracks compliance. No more email chains or lost paperwork.
+
+**Community-Wide Service Coordination**
+When one home gets HVAC service, George proactively reaches out to neighbors: "Your neighbor just had their AC serviced. Your unit is the same age — want a checkup?" This creates organic service demand across the community.
+
+**Platform Operations**
+- Amenity management and reservations
+- Emergency broadcasts for the entire community
+- Community event coordination and RSVP management
+- Maintenance reporting for common areas
+
+### The Platform Effect Math
+18 HOAs × 200 homes avg = 3,600 homeowners on the platform. Each homeowner averages $2,000/yr in home services. 3,600 × $2,000 × 20% platform fee = **$1.44M/yr from HOA channel alone at maturity.**
+
+---
+
+## Competitive Landscape
+
+| | **Angi/HomeAdvisor** | **Thumbtack** | **ServiceTitan** | **Housecall Pro/Jobber** | **UpTend** |
+|---|---|---|---|---|---|
+| **Business Model** | Per-lead ($15-100) | Per-lead ($15-100) | Enterprise SaaS | Scheduling SaaS | Platform + partner revenue |
+| **AI Integration** | None | None | Basic automation | None | 230-tool AI platform |
+| **Home Memory** | No | No | No | No | Complete home history |
+| **Partner Relationships** | Lead aggregator | Lead aggregator | Software vendor | Software vendor | Strategic partners |
+| **B2B Channel** | No | No | Enterprise only | Small-mid market | HVAC wedge strategy |
+| **Consumer Acquisition** | Paid ads | Paid ads | None | None | HOAs + DNA scans |
+| **Setup Cost** | Free (pay per lead) | Free (pay per lead) | $5K-50K | $50-300/mo | $1,500-5,000 setup |
+| **Value Proposition** | Lead generation | Lead generation | Operations software | Scheduling tools | Full-stack platform |
+| **Data Moat** | None | None | Siloed per company | None | Cross-platform intelligence |
+| **Marketplace Depth** | Shallow listings | Shallow listings | None | None | Vertical integration |
+
+**UpTend wins on:** Full stack. AI-powered. Both sides of marketplace. Multiple acquisition channels. Compounding data moat.
+
+---
+
+## Strategic Partnership: Ohana Brands
+
+**chooseohana.com** — "A family of companies dedicated to protecting, building, and beautifying homes."
+
+Ohana Brands is a general contractor business covering pest control, construction, and landscaping. This is a strategic partnership, not a vendor relationship.
+
+- HOA bids that aren't HVAC flow to Ohana
+- Ohana's companies become Pros on the UpTend platform  
+- We fill the non-HVAC service gap without building those verticals ourselves
+- Revenue share structured per engagement
+
+**HVAC is our wedge. Ohana fills the rest.**
+
+---
+
+## Consumer Entry Point: DNA Home Scan
+
+The **DNA Home Scan** is the free consumer entry point that gets homeowners onto the platform.
+
+1. Homeowner downloads UpTend and runs a **free scan** of their home
+2. The scan captures data about systems, age, condition, and maintenance history
+3. George now knows what that home needs — today and in the future
+4. Proactive recommendations drive service requests to our partner Pros
+
+**Free scan breaks into the home. Data keeps them on the platform.** George gets smarter with every scan, building a Home Memory that no competitor can replicate.
+
+---
+
+## 3-Year Vision Timeline
+
+### Year 1: HVAC Wedge + HOA Foundation
+- HVAC wedge strategy in Orlando
+- HOA violation automation pilots
+- Build supply and demand foundation
+- 40 HVAC partners, 18 HOA communities
+- Platform foundation with 4,000+ customers
+
+### Year 2: B2C Marketplace Launch  
+- Open full B2C marketplace (12+ verticals)
+- Expand to Jacksonville + Tampa
+- 100+ HVAC partners across Florida
+- Government contract pipeline active
+- Smart Traffic AI development begins
+
+### Year 3: Florida Domination + National Prep
+- 500+ partners across Florida
+- Full marketplace with all verticals
+- Smart Traffic AI division operational  
+- National expansion planning and pilot markets
+- $5M+ ARR, acquisition-ready or IPO track
+
+---
+
+## Total Addressable Market (TAM)
+
+### Florida HVAC Market
+- **10,264 HVAC businesses** in Florida (IBISWorld 2026)
+- **$9.6B industry** in Florida alone
+- **Orlando metro: ~800-1,000 HVAC companies**
+- Average HVAC company spends **$3,000-8,000/mo** on marketing stack
+
+### Florida HOA Market  
+- **49,800-50,100 community associations** in Florida
+- **3.9 million homes** in HOA communities (45% of FL housing stock)
+- **9.5 million Florida residents** in HOA communities
+- **Orlando metro: ~3,000-4,000 HOA communities**
+
+### Our Serviceable Market (Orlando Metro to Start)
+- **~1,000 HVAC companies** in Orlando metro  
+- **~3,500 HOA communities** in Orlando metro
+
+---
+
+## Government Channel — SDVOSB Advantage
+
+**UpTend Services LLC** is a Service-Disabled Veteran-Owned Small Business (SDVOSB), qualifying for federal set-aside contracts.
+
+- Government facilities need the same home services platform — maintenance, HVAC, inspections
+- George AI's architecture applies directly to facility management and compliance
+- **Smart Traffic AI** — future expansion applying George's AI to traffic management systems  
+- 55% of LLC revenue flows back to UPYCK Inc. as licensing fees
+
+The government channel is a parallel revenue stream that leverages the same platform at federal scale.
+
+---
+
+## Revenue Projections — Multi-Channel Model
+
+### Partner Subscription Revenue
+Recurring SaaS revenue from partner subscriptions (blended average ~$900/mo):
+
+| Partners | Monthly Revenue | Annual Revenue |
+|---|---|---|
+| 5 | $7,000 | $84,000 |
+| 10 | $14,000 | $168,000 |
+| 25 | $35,000 | $420,000 |
+| 50 | $70,000 | $840,000 |
+| 100 | $140,000 | $1,680,000 |
+
+### Platform Transaction Revenue  
+5% fee on completed jobs through platform:
+
+| Monthly Platform Volume | 5% Platform Revenue | Annual Revenue |
+|---|---|---|  
+| $100,000 | $5,000 | $60,000 |
+| $500,000 | $25,000 | $300,000 |
+| $1,000,000 | $50,000 | $600,000 |
+| $2,000,000 | $100,000 | $1,200,000 |
+
+### Setup Fee Revenue
+One-time setup fees: $50K-250K annually at 25-50 partner growth rate.
+
+**Total Year 2 Projection: $2.2M+ ARR** from 100 partners + platform transactions + setup fees.
+
+---
+
+## Matt Marvel — HVAC Partnership Director
+
+Matt Marvel is our closer. 20+ year HVAC sales veteran in Orlando. He knows every shop owner, every distributor, every pain point.
+
+**His playbook:** Walk into HVAC shops with George running on a tablet. Demo live. Close the deal.
+
+**Compensation:**
+- 20% of setup fees  
+- 10% of monthly revenue in year 1
+- 5% ongoing after year 1
+- 2% of platform job fees
+
+**Conservative target: 20 partners in 6 months.**
+
+At blended pricing, that's $18K/mo in recurring revenue plus $50K+ in setup fees — from one sales rep in one market.
+
+---
+
+## Team
+
+**Alan Oney — Founder & CEO**
+Builder. Veteran. Built the entire UpTend platform and George AI. Direct, no-nonsense operator who ships product and closes deals.
+
+**Chelsea Skidmore — Chief Marketing Officer (First Hire)**  
+CMO at RipIt, now joining UPYCK Inc. as the first true hire. Marketing genius. Runs account management and marketing execution for HVAC partners — SEO, social, lead gen, the works. Every partner gets a real strategist, not a chatbot.
+
+**Daryn Oney — CFO**
+Financial strategy, fundraising, and fiscal operations for UPYCK Inc.
+
+**Matt Marvel — HVAC Partnership Director**
+20+ years in HVAC sales and installation, still in the field today. Orlando market expert. Walks into HVAC shops with George on a tablet, walks out with a signed partner. Handles sales and account management to get companies on the platform.
+
+**Dennis Ross — Military Liaison / UpTend Services LLC**
+Military connection for the SDVOSB government channel. Key to veteran workforce pipeline and federal contract positioning through UpTend Services LLC.
 
 ---
 
 ## Corporate Structure
 
 ```
-           UPYCK, Inc. (C-Corp)
-          Owns all IP. All investor equity.
-          Operates UpTend (DBA).
-         /                          \
-  Consumer + B2B               UpTend Services LLC
-  (via UpTend DBA)             (SDVOSB Government)
-  1099 pros + service          W2 vets + service
-  company partnerships         company partnerships
-  20% platform fee             55% licensing to UPYCK
+UPYCK Inc. (Delaware C-Corp)
+├── UpTend Platform + George AI (IP holder)
+├── Consumer app + partner platform  
+└── UpTend Services LLC (Florida LLC)
+    ├── SDVOSB-certified
+    ├── Government contracts channel
+    └── 55% of revenue → UPYCK as licensing fees
 ```
 
-Two entities. Clean. Simple. UPYCK captures platform fees directly on consumer/B2B and 55% of every government dollar through licensing fees (technology, marketing, brand, admin, operations management).
+---
+
+## Year 1 Quarterly Roadmap (Conservative)
+
+### Q1 (Months 1-3)
+- **HVAC Partners**: 5 signed (Matt selling)
+- **HOA Communities**: 2 pilot partnerships
+- **Platform Customers**: 200  
+- **Monthly Recurring Revenue**: $4,500
+- **One-time Setup Revenue**: $10,000
+
+### Q2 (Months 4-6)
+- **HVAC Partners**: 15 total (10 new)
+- **HOA Communities**: 5 total
+- **Platform Customers**: 800
+- **Monthly Recurring Revenue**: $13,500  
+- **Cumulative Setup Revenue**: $30,000
+
+### Q3 (Months 7-9)
+- **HVAC Partners**: 25 total
+- **HOA Communities**: 10 total
+- **Platform Customers**: 2,000
+- **Monthly Recurring Revenue**: $25,000
+- **Ohana partnership generating GC referrals**
+
+### Q4 (Months 10-12)
+- **HVAC Partners**: 40 total
+- **HOA Communities**: 18 total  
+- **Platform Customers**: 4,000
+- **Monthly Recurring Revenue**: $42,000
+- **Platform job fees adding ~$8,000/mo**
+- **Year 1 Total Revenue**: ~$350K
 
 ---
 
-## The Service Company Partnership Model
+## Conversion Assumptions (Conservative)
 
-This is the engine. Instead of hiring W2 employees for consumer and B2B work, UpTend partners with existing small service companies.
-
-**What partners get:**
-- Consistent job volume (consumer + B2B contracts they'd never land alone)
-- Automated scheduling, invoicing, customer communication, payments
-- A brand customers trust (zero marketing spend for partners)
-- Next-day Stripe deposits
-
-**What UpTend gets:**
-- Skilled labor without W2 overhead (no payroll tax, workers comp, benefits)
-- Scalable capacity (add partners as demand grows, zero fixed costs)
-- Insurance, trucks, tools, and equipment partners already own
-
-**Why partners can't cut us out:**
-- George owns the customer relationship on both sides
-- Partners never get customer contact info directly
-- B2B contracts are with UpTend, not the service company
-- Platform (scheduling, payments, tracking, reviews) is stickier than a phone number
-- Volume is distributed. No single partner has leverage to walk.
-
-**Example:** A pressure washing LLC doing 8 jobs/week averaging $300. Spends $240/week on Angi leads. Nets $2,160. With UpTend: 12 jobs/week, $300 avg, minus 15% = $3,060 net. Makes $900/week more and spends $0 on marketing.
+- **Orlando HVAC**: 1,000 companies → target 40 in Y1 = **4% conversion**
+- **Orlando HOAs**: 3,500 communities → target 18 in Y1 = **0.5% conversion**  
+- **Each HOA averages 200 homes** → 18 HOAs = 3,600 potential customers
+- **Each HVAC partner brings ~50 existing customers** to platform in Y1
 
 ---
 
-## The Moat
-
-### 1. George Gets Smarter
-Every conversation, job, photo, and review compounds George's intelligence. After 1,000 Orlando jobs, George knows which services every neighborhood needs, which partners perform best, and what to ask before the homeowner describes the problem. A competitor starting from scratch has zero data.
-
-### 2. Home Memory is Irreplaceable
-Once a homeowner's property is in the system (appliances, maintenance history, past jobs, pro observations), switching means losing everything. Their home's entire history lives in UpTend.
-
-### 3. Two-Sided Network Effects
-More homeowners = more jobs for partners. More partners = faster service for homeowners. More B2B contracts = more partner volume. Each side makes the other more valuable. This flywheel can't be shortcut.
-
----
-
-## How George Routes Everything
-
-When a resident requests service, George automatically checks:
-
-1. Is this address under a B2B contract?
-2. Is this service covered?
-3. Route accordingly:
-   - **Covered** --> Assign partner, bill the PM/HOA, no cost to resident
-   - **Not covered** --> Consumer marketplace, transparent pricing to resident
-   - **No contract** --> Standard consumer booking
-
-One property generates revenue through multiple channels. The resident just talks to George.
-
----
-
-## 5-Year Outlook (Moderate Traction)
-
-_Orlando Years 1-2. Jacksonville + Tampa Year 3._
-
-| Year | Consumer | B2B | Government | Total UPYCK Revenue |
-|---|---|---|---|---|
-| 2026 | $15K | $34K | $0 | $49K |
-| 2027 | $110K | $260K | $82.5K | $467.5K |
-| 2028 | $580K | $1.39M | $330K | $2.36M |
-| 2029 | $1.8M | $4.08M | $825K | $6.86M |
-| 2030 | $4.34M | $8.56M | $1.65M | $14.85M |
-
-**Year 5 at 6-10x revenue multiple = $89-149M valuation.**
-
-No W2 overhead on consumer/B2B means margins stay high. Partnership model scales without proportional cost increases.
-
----
-
-## Sponsored Product Placement (Year 2+)
-
-George recommends products during natural conversation: "Your AC filter is 6 months overdue. Here's the exact one for your unit." Native recommendations, never disclosed as ads, always genuinely relevant. High-margin revenue with zero fulfillment cost.
-
----
-
-## Why NOW
-
-- **Orlando**: 2.7M metro, highest HOA density in America, year-round demand, zero competition for "home services Lake Nona" SEO
-- **AI is ready**: George couldn't exist 2 years ago. Tool use, conversational memory, and vision analysis are production grade now.
-- **SDVOSB**: Federal sole-source up to $5M. 200K veterans transition annually. SkillBridge = DoD pays their salary while they train with us.
-- **Service companies want this**: Small operators are drowning in Angi fees. A platform that gives them steady work and handles the business side? They'll line up.
-
----
-
-## Milestones
-
-**M1 (Months 1-3):** 5 service company partners. 10 paying customers. 5 completed jobs. 1 B2B contract.
-
-**M2 (Months 3-6):** 20+ partners. 100+ customers. CTO hired. George on SMS. 3-5 B2B contracts.
-
-**M3 (Months 6-12):** George mobile app. 50+ partners. 500+ customers. First government contract bid. Revenue run rate $20K+/month.
-
-**M4 (Year 2):** Jacksonville/Tampa expansion. First W2 veteran hires. 1,000+ customers. Revenue run rate $40K+/month.
-
----
-
-## The Team
-
-- **Alan Oney** -- Founder/CEO. Built the entire platform. 148 pages, 131 API endpoints, George AI agent. Ships faster than funded teams of 10.
-- **Veteran workforce pipeline** via SkillBridge (Patrick SFB, MacDill, NAS Jacksonville, Mayport)
-- **$135K raised** from angels. Building, not burning.
-
----
-
-## The Ask
-
-SAFE at $3M cap. Use of funds: CTO hire, partner acquisition, B2B sales, Jacksonville/Tampa expansion.
-
----
-
-*Alan Oney | alan@uptendapp.com | (407) 338-3342 | uptendapp.com*
-*UPYCK, Inc. -- Delaware C-Corp -- Orlando, FL*
+**Alan Oney, Founder & CEO**  
+alan@uptendapp.com | (407) 338-3342  
+uptendapp.com

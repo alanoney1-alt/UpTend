@@ -49,6 +49,11 @@
       "date": "2026-03-02",
       "topic": "hvac-filter-change",
       "platform": "fb+ig"
+    },
+    {
+      "date": "2026-03-04",
+      "topic": "plumbing-leak-detection",
+      "platform": "fb+ig"
     }
   ],
   "topicPool": [

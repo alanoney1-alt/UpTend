@@ -270,86 +270,6 @@ export default function DiscoveryPage() {
   const ttsPlayingRef = useRef(false);
   const ttsBufRef = useRef("");
 
-  const processTTSQueue = useCallback(async () => {
-    if (ttsPlayingRef.current || ttsQueueRef.current.length === 0) return;
-    ttsPlayingRef.current = true;
-    while (ttsQueueRef.current.length > 0) {
-      const sentence = ttsQueueRef.current.shift()!;
-      if (sentence.trim()) await speak(sentence.trim());
-    }
-    ttsPlayingRef.current = false;
-  }, [speak]);
-
-  const feedTTSToken = useCallback((token: string) => {
-    ttsBufRef.current += token;
-    const parts = ttsBufRef.current.split(/(?<=[.!?])\s+/);
-    if (parts.length > 1) {
-      for (let i = 0; i < parts.length - 1; i++) ttsQueueRef.current.push(parts[i]);
-      ttsBufRef.current = parts[parts.length - 1];
-      processTTSQueue();
-    }
-  }, [processTTSQueue]);
-
-  const flushTTS = useCallback(() => {
-    if (ttsBufRef.current.trim()) {
-      ttsQueueRef.current.push(ttsBufRef.current.trim());
-      ttsBufRef.current = "";
-      processTTSQueue();
-    }
-  }, [processTTSQueue]);
-
-  // Pre-warm server connection on mount
-  useEffect(() => {
-    fetch("/api/ai/guide/voice-status").catch(() => {});
-  }, []);
-
-  const scrollToBottom = useCallback(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom]);
-
-  // When we have enough data, trigger the live audit
-  const collectedRef = useRef<CollectedData | null>(null);
-  useEffect(() => {
-    if (messages.length < 2) return;
-    const collected = extractData(messages);
-    collectedRef.current = collected;
-    // Fire audit as soon as we know company name + service type (usually by exchange 2-3)
-    // Audit runs in background while George keeps asking questions
-    if (collected.companyName && collected.serviceType && !auditStarted) {
-      setAuditStarted(true);
-      fetch("/api/partners/audit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          companyName: collected.companyName,
-          serviceType: collected.serviceType,
-          city: collected.serviceArea || "Orlando",
-          websiteUrl: collected.websiteUrl,
-        }),
-      })
-        .then(r => r.json())
-        .then(data => { if (data && !data.error) setAuditData(data); })
-        .catch(() => {}); // Silent fail — audit is bonus
-    }
-  }, [messages, auditStarted]);
-
-  // Unlock audio for Safari/iOS — call on any user gesture before playing
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const unlockAudio = useCallback(() => {
-    if (!audioCtxRef.current) {
-      const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
-      if (AudioCtx) audioCtxRef.current = new AudioCtx();
-    }
-    if (audioCtxRef.current?.state === "suspended") audioCtxRef.current.resume();
-    try {
-      const s = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYZt");
-      s.volume = 0.01;
-      s.play().then(() => s.pause()).catch(() => {});
-    } catch {}
-  }, []);
-
   // Voice: speak George's message via ElevenLabs with browser fallback
   // Returns a promise that resolves when speech finishes (for conversation loop)
   const speak = useCallback(async (text: string, force?: boolean): Promise<void> => {
@@ -430,6 +350,88 @@ export default function DiscoveryPage() {
       await browserFallback(text);
     }
   }, [voiceMode]);
+
+  const processTTSQueue = useCallback(async () => {
+    if (ttsPlayingRef.current || ttsQueueRef.current.length === 0) return;
+    ttsPlayingRef.current = true;
+    while (ttsQueueRef.current.length > 0) {
+      const sentence = ttsQueueRef.current.shift()!;
+      if (sentence.trim()) await speak(sentence.trim());
+    }
+    ttsPlayingRef.current = false;
+  }, [speak]);
+
+  const feedTTSToken = useCallback((token: string) => {
+    ttsBufRef.current += token;
+    const parts = ttsBufRef.current.split(/(?<=[.!?])\s+/);
+    if (parts.length > 1) {
+      for (let i = 0; i < parts.length - 1; i++) ttsQueueRef.current.push(parts[i]);
+      ttsBufRef.current = parts[parts.length - 1];
+      processTTSQueue();
+    }
+  }, [processTTSQueue]);
+
+  const flushTTS = useCallback(() => {
+    if (ttsBufRef.current.trim()) {
+      ttsQueueRef.current.push(ttsBufRef.current.trim());
+      ttsBufRef.current = "";
+      processTTSQueue();
+    }
+  }, [processTTSQueue]);
+
+  // Pre-warm server connection on mount
+  useEffect(() => {
+    fetch("/api/ai/guide/voice-status").catch(() => {});
+  }, []);
+
+  const scrollToBottom = useCallback(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom]);
+
+  // When we have enough data, trigger the live audit
+  const collectedRef = useRef<CollectedData | null>(null);
+  useEffect(() => {
+    if (messages.length < 2) return;
+    const collected = extractData(messages);
+    collectedRef.current = collected;
+    // Fire audit as soon as we know company name + service type (usually by exchange 2-3)
+    // Audit runs in background while George keeps asking questions
+    if (collected.companyName && collected.serviceType && !auditStarted) {
+      setAuditStarted(true);
+      fetch("/api/partners/audit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyName: collected.companyName,
+          serviceType: collected.serviceType,
+          city: collected.serviceArea || "Orlando",
+          websiteUrl: collected.websiteUrl,
+        }),
+      })
+        .then(r => r.json())
+        .then(data => { if (data && !data.error) setAuditData(data); })
+        .catch(() => {}); // Silent fail — audit is bonus
+    }
+  }, [messages, auditStarted]);
+
+  // Unlock audio for Safari/iOS — call on any user gesture before playing
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const unlockAudio = useCallback(() => {
+    if (!audioCtxRef.current) {
+      const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (AudioCtx) audioCtxRef.current = new AudioCtx();
+    }
+    if (audioCtxRef.current?.state === "suspended") audioCtxRef.current.resume();
+    try {
+      const s = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYZt");
+      s.volume = 0.01;
+      s.play().then(() => s.pause()).catch(() => {});
+    } catch {}
+  }, []);
+
+
 
   // Voice: listen — in conversation mode, auto-sends when user stops talking
   const sendMessageRef = useRef<((text?: string) => Promise<void>) | null>(null);
