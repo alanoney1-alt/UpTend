@@ -438,7 +438,8 @@ export default function DiscoveryPage() {
     const collected = extractData(newMessages);
 
     try {
-      const res = await fetch("/api/ai/guide/chat", {
+      // Use streaming endpoint for faster first-token display
+      const streamRes = await fetch("/api/ai/guide/chat-stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -448,6 +449,7 @@ export default function DiscoveryPage() {
             content: m.content,
           })),
           context: {
+            page: "/discovery",
             currentPage: "/discovery",
             userRole: "partner_discovery",
             discoveryMode: true,
@@ -456,13 +458,64 @@ export default function DiscoveryPage() {
           },
         }),
       });
-      const data = await res.json();
-      const reply = data.reply || data.response || data.message || "Let me think on that for a second...";
-      setMessages(prev => [...prev, { role: "george", content: reply }]);
+
+      let reply = "";
+      if (streamRes.ok && streamRes.body) {
+        // Add empty message and stream into it
+        setMessages(prev => [...prev, { role: "george", content: "" }]);
+        const reader = streamRes.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n").filter(l => l.startsWith("data: "));
+          for (const line of lines) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.token) {
+                reply += data.token;
+                const currentReply = reply;
+                setMessages(prev => {
+                  const updated = [...prev];
+                  if (updated.length > 0 && updated[updated.length - 1].role === "george") {
+                    updated[updated.length - 1] = { ...updated[updated.length - 1], content: currentReply };
+                  }
+                  return updated;
+                });
+              }
+            } catch {}
+          }
+        }
+      } else {
+        // Fallback to non-streaming
+        const fallbackRes = await fetch("/api/ai/guide/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: msg,
+            conversationHistory: newMessages.map(m => ({
+              role: m.role === "george" ? "assistant" : "user",
+              content: m.content,
+            })),
+            context: {
+              currentPage: "/discovery",
+              userRole: "partner_discovery",
+              discoveryMode: true,
+              collectedData: collected,
+              liveAudit: auditData,
+            },
+          }),
+        });
+        const data = await fallbackRes.json();
+        reply = data.reply || data.response || data.message || "Let me think on that for a second...";
+        setMessages(prev => [...prev, { role: "george", content: reply }]);
+      }
+
       // Speak, then auto-listen if in conversation mode
       speak(reply).then(() => {
         if (conversationModeRef.current) {
-          // Small delay to avoid catching George's audio tail
           setTimeout(() => {
             if (conversationModeRef.current) startListening();
           }, 400);

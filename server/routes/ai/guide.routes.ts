@@ -1377,6 +1377,174 @@ Return ONLY valid JSON.`,
     return res.json({ enabled: isVoiceEnabled() });
   });
 
+  // ─── Streaming Chat Endpoint (SSE) ──────────────────────────────────────
+
+  router.post("/guide/chat-stream", guideChatLimiter, async (req, res) => {
+    try {
+      await init();
+      const { message, sessionId, context, clientHistory, conversationHistory } = req.body;
+      const restoreHistory = clientHistory || conversationHistory;
+
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      const user = req.user as any;
+      let userId: string | null = null;
+      if (user) userId = user.userId || user.id || null;
+
+      const sid = sessionId || `anon-${Date.now()}`;
+      const session = await getSession(sid, userId || undefined);
+
+      // Restore history from client if needed
+      if (session.history.length === 0 && Array.isArray(restoreHistory) && restoreHistory.length > 0) {
+        for (const msg of restoreHistory) {
+          if ((msg.role === "user" || msg.role === "assistant") && typeof msg.content === "string") {
+            session.history.push({ role: msg.role, content: msg.content });
+          }
+        }
+        for (const msg of session.history) {
+          if (msg.role === "user") updateConversationPhase(session, msg.content);
+          if (msg.role === "assistant") updatePhaseFromResponse(session, msg.content);
+        }
+      }
+
+      let systemPrompt = BASE_SYSTEM_PROMPT;
+      if (user) {
+        if (userId) {
+          if (user.role === "hauler") systemPrompt += await buildProDataSection(userId, user);
+          else systemPrompt += await buildCustomerDataSection(userId, user);
+        }
+      }
+      if (userId) systemPrompt += await loadLearnings(userId);
+      if (userId && user?.role !== "hauler") {
+        try {
+          const memories = await getHomeMemories(userId) as any;
+          if (memories.totalFacts > 0) {
+            systemPrompt += `\n\n## HOME MEMORY (${memories.totalFacts} facts stored)\n`;
+            for (const [cat, facts] of Object.entries(memories.memories as Record<string, string[]>)) {
+              systemPrompt += `\n${cat.toUpperCase()}:\n`;
+              for (const f of facts) systemPrompt += `- ${f}\n`;
+            }
+          }
+        } catch {}
+      }
+      if (session.propertyData) systemPrompt += `\n\n## CURRENT SESSION - PROPERTY\n${formatPropertySummary(session.propertyData)}`;
+      if (context) {
+        systemPrompt += `\n\n## CURRENT CONTEXT\nPage: ${context.page}\nRole: ${context.userRole}`;
+        if (context.userName) systemPrompt += `\nName: ${context.userName}`;
+      }
+
+      session.history.push({ role: "user", content: message });
+      const trimmedHistory = session.history.slice(-20);
+      updateConversationPhase(session, message);
+
+      const georgeContext: GeorgeContext = {
+        userName: context?.userName || (user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : undefined),
+        currentPage: context?.page || context?.currentPage,
+        userRole: user?.role === "hauler" ? "pro" : context?.userRole || "customer",
+        isAuthenticated: !!user,
+        userId: userId || undefined,
+      };
+      georgeContext.conversationState = buildConversationStatePrompt(session);
+
+      // Set SSE headers
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+      res.flushHeaders();
+
+      // Determine if this is discovery mode (uses OpenAI streaming)
+      const isDiscovery = context?.userRole === "partner_discovery" || context?.page === "/discovery";
+
+      if (isDiscovery) {
+        // Stream from GPT-4o-mini
+        const openaiMessages = [
+          { role: "system" as const, content: systemPrompt },
+          ...trimmedHistory.map((m: any) => ({ role: m.role, content: m.content }))
+        ];
+
+        try {
+          const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model: "gpt-4o-mini",
+              messages: openaiMessages,
+              max_tokens: 2048,
+              temperature: 0.6,
+              stream: true
+            })
+          });
+
+          if (!openaiRes.ok || !openaiRes.body) throw new Error(`OpenAI ${openaiRes.status}`);
+
+          const reader = openaiRes.body.getReader();
+          const decoder = new TextDecoder();
+          let fullText = "";
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\n").filter(l => l.startsWith("data: "));
+            for (const line of lines) {
+              const data = line.slice(6);
+              if (data === "[DONE]") break;
+              try {
+                const parsed = JSON.parse(data);
+                const delta = parsed.choices?.[0]?.delta?.content;
+                if (delta) {
+                  fullText += delta;
+                  res.write(`data: ${JSON.stringify({ token: delta })}\n\n`);
+                }
+              } catch {}
+            }
+          }
+
+          session.history.push({ role: "assistant", content: fullText });
+          if (userId) saveConversation(userId, sid, session).catch(() => {});
+          res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+          res.end();
+          return;
+        } catch (err: any) {
+          console.error("[Stream] GPT-4o-mini stream failed:", err.message);
+          // Fall through to non-streaming fallback
+        }
+      }
+
+      // Consumer/Pro/B2B: Use George agent (non-streaming, send full response)
+      const historyForGeorge = trimmedHistory.slice(0, -1);
+      const georgeResult = await georgeChat(message, historyForGeorge, georgeContext);
+      const cleanText = georgeResult.response;
+
+      // Send as chunked tokens for consistent frontend handling
+      const words = cleanText.split(/(\s+)/);
+      for (let i = 0; i < words.length; i += 3) {
+        const chunk = words.slice(i, i + 3).join("");
+        res.write(`data: ${JSON.stringify({ token: chunk })}\n\n`);
+      }
+
+      updatePhaseFromResponse(session, cleanText);
+      session.history.push({ role: "assistant", content: cleanText });
+      if (session.history.length > 20) session.history = session.history.slice(-20);
+      if (userId) saveConversation(userId, sid, session).catch(() => {});
+
+      res.write(`data: ${JSON.stringify({ done: true, buttons: georgeResult.buttons })}\n\n`);
+      res.end();
+    } catch (error: any) {
+      console.error("Stream chat error:", error);
+      if (!res.headersSent) {
+        return res.status(500).json({ error: "Failed to process message" });
+      }
+      res.write(`data: ${JSON.stringify({ error: "Something went wrong" })}\n\n`);
+      res.end();
+    }
+  });
+
   // ─── Streaming TTS Endpoint ──────────────────────────────────────────────
 
   router.post("/guide/tts-stream", guideAiLimiter, ttsRateLimiter, async (req, res) => {

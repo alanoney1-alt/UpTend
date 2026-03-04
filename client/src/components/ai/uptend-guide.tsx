@@ -668,8 +668,11 @@ export function UpTendGuide() {
     setIsLoading(true);
     hasInitRef.current = true;
 
+    const aiMsgId = `ai-${Date.now()}`;
+
     try {
-      const res = await fetch("/api/ai/guide/chat", {
+      // Try streaming endpoint first
+      const res = await fetch("/api/ai/guide/chat-stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -681,7 +684,6 @@ export function UpTendGuide() {
             userRole: getDerivedUserRole(pageContext.page, pageContext.userRole),
             userName: pageContext.userName,
           },
-          // Send recent conversation history so backend can restore after server restart
           clientHistory: messages
             .filter(m => m.role === "user" || m.role === "assistant")
             .slice(-18)
@@ -689,37 +691,86 @@ export function UpTendGuide() {
         }),
       });
 
-      const data = await res.json();
-      const replyText = typeof data.reply === "string" ? data.reply : data.reply?.content || "Sorry, something went wrong!";
+      if (!res.ok || !res.body) throw new Error("Stream failed");
 
-      const aiMsg: Message = {
-        id: `ai-${Date.now()}`,
-        role: "assistant",
-        content: replyText,
-        quickActions: data.quickActions,
-      };
+      // Add empty assistant message that we'll fill progressively
+      setMessages(prev => [...prev, { id: aiMsgId, role: "assistant", content: "" }]);
+      setIsLoading(false);
 
-      if (data.actions) {
-        for (const action of data.actions) {
-          if (action.type === "property_scan") aiMsg.propertyData = action.data;
-          if (action.type === "lock_quote") aiMsg.quoteCard = action.data;
-          if (action.type === "bundle") aiMsg.bundleData = action.data;
-          if (action.type === "breakdown") aiMsg.breakdown = action.data;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+      let buttons: any[] | undefined;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n").filter(l => l.startsWith("data: "));
+        for (const line of lines) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.token) {
+              fullText += data.token;
+              setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, content: fullText } : m));
+            }
+            if (data.done) {
+              buttons = data.buttons;
+            }
+            if (data.error) {
+              fullText = data.error;
+              setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, content: fullText } : m));
+            }
+          } catch {}
         }
       }
 
-      setMessages(prev => [...prev, aiMsg]);
-      if (voiceOutputEnabled && synth.isSupported) synth.speak(replyText);
+      // Update final message with buttons if any
+      if (buttons) {
+        setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, quickActions: buttons?.map((b: any) => ({ label: b.text, action: `message:${b.action}` })) } : m));
+      }
+
+      if (voiceOutputEnabled && synth.isSupported && fullText) synth.speak(fullText);
     } catch {
-      setMessages(prev => [...prev, {
-        id: `err-${Date.now()}`,
-        role: "assistant",
-        content: "Hmm, I couldn't connect. Check your internet and try again! ",
-      }]);
+      // Fallback to non-streaming endpoint
+      try {
+        const res = await fetch("/api/ai/guide/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            message: msg,
+            sessionId: getSessionId(),
+            context: {
+              page: pageContext.page,
+              userRole: getDerivedUserRole(pageContext.page, pageContext.userRole),
+              userName: pageContext.userName,
+            },
+            clientHistory: messages
+              .filter(m => m.role === "user" || m.role === "assistant")
+              .slice(-18)
+              .map(m => ({ role: m.role, content: m.content })),
+          }),
+        });
+        const data = await res.json();
+        const replyText = typeof data.reply === "string" ? data.reply : data.reply?.content || "Sorry, something went wrong!";
+        setMessages(prev => {
+          // Remove the empty streaming message if it exists
+          const filtered = prev.filter(m => m.id !== aiMsgId);
+          return [...filtered, { id: aiMsgId, role: "assistant", content: replyText, quickActions: data.quickActions }];
+        });
+        if (voiceOutputEnabled && synth.isSupported) synth.speak(replyText);
+      } catch {
+        setMessages(prev => [...prev.filter(m => m.id !== aiMsgId), {
+          id: `err-${Date.now()}`,
+          role: "assistant",
+          content: "Hmm, I couldn't connect. Check your internet and try again! ",
+        }]);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, pageContext, voiceOutputEnabled, synth]);
+  }, [input, isLoading, pageContext, voiceOutputEnabled, synth, messages]);
 
   // Keep ref in sync for voice auto-send
   useEffect(() => { sendMessageRef.current = sendMessage; }, [sendMessage]);
