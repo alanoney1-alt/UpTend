@@ -49,7 +49,7 @@ export function registerStripeConnectRoutes(app: Express) {
       let accountId = profile?.stripeAccountId;
 
       if (!accountId) {
-        const account = await createConnectedAccount(userId, user.email, type || "pro");
+        const account = await createConnectedAccount(userId, user.email || "", type || "pro");
         accountId = account.id;
       }
 

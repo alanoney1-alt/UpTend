@@ -360,7 +360,7 @@ export default function Services() {
                   element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
-                  svc.featured
+                  ('featured' in svc && svc.featured)
                     ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                     : 'hover:bg-muted'
                 }`}
@@ -377,7 +377,7 @@ export default function Services() {
         {/* Photo quote banner removed — only George chat and /book */}
 
         {/* Featured: Home DNA Scan */}
-        {services.filter(s => s.featured).map((svc) => (
+        {services.filter(s => 'featured' in s && s.featured).map((svc) => (
           <div key={svc.id} id={`service-${svc.id}`} className="mb-8">
             <Card
               className="shadow-xl border-2 border-primary overflow-visible"
@@ -453,7 +453,7 @@ export default function Services() {
 
         {/* All Other Services */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {services.filter(s => !s.featured).map((svc) => (
+          {services.filter(s => !('featured' in s && s.featured)).map((svc) => (
             <Card
               key={svc.id}
               id={`service-${svc.id}`}

@@ -1,4 +1,5 @@
 import type { Express, Request, Response } from "express";
+// @ts-ignore - uuid types
 import { v4 as uuidv4 } from "uuid";
 
 // In-memory store - TODO: migrate to DB using `properties` table from schema.ts

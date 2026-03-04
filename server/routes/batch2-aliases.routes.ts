@@ -20,7 +20,7 @@ export function registerBatch2Routes(app: Express) {
       // Redirect to existing dashboard endpoint logic
       // Forward internally
       req.url = "/api/home/dashboard";
-      app.handle(req, res);
+      (app as any).handle(req, res);
     } catch (error: any) {
       res.status(500).json({ error: "Failed to fetch home profile" });
     }
@@ -31,22 +31,22 @@ export function registerBatch2Routes(app: Express) {
   // ============================================================
   app.post("/api/home-dna/scans", (req, res) => {
     req.url = "/api/home-scan/start";
-    app.handle(req, res);
+    (app as any).handle(req, res);
   });
 
   app.post("/api/home-dna/scan-item", (req, res) => {
     req.url = "/api/home-scan/scan-item";
-    app.handle(req, res);
+    (app as any).handle(req, res);
   });
 
   app.get("/api/home-dna/progress/:customerId", (req, res) => {
     req.url = `/api/home-scan/progress/${req.params.customerId}`;
-    app.handle(req, res);
+    (app as any).handle(req, res);
   });
 
   app.post("/api/home-dna/complete", (req, res) => {
     req.url = "/api/home-scan/complete";
-    app.handle(req, res);
+    (app as any).handle(req, res);
   });
 
   // ============================================================

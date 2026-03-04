@@ -81,13 +81,14 @@ export function registerPartnerInvoicingRoutes(app: Express): void {
         return res.status(400).json({ error: "customerName, customerEmail, and items are required" });
       }
 
-      const invoice = await createInvoice(req.params.slug, {
-        customer: { name: customerName, email: customerEmail, phone: customerPhone || "" },
+      const invoice = await createInvoice(
+        req.params.slug,
+        { name: customerName, email: customerEmail, phone: customerPhone || "" },
         items,
-        notes: notes || "",
-        dueDate: dueDate || null,
-        taxRate: taxRate ?? 0,
-      });
+        notes || "",
+        dueDate || null,
+        taxRate ?? 0,
+      );
 
       res.json(invoice);
     } catch (error: any) {

@@ -282,8 +282,8 @@ import { registerBatch1FixRoutes } from "./batch1-fixes.routes";
 // Batch 2 fixes - aliases, spending tracker, appliances, warranties, inventory
 import { registerBatch2Routes } from "./batch2-aliases.routes";
 
-// Background Check routes
-import { registerBackgroundCheckRoutes } from "./background-check.routes";
+// Background Check routes (already imported above from hauler/)
+// import { registerBackgroundCheckRoutes } from "./background-check.routes";
 
 // Calendar Integration routes
 import { registerCalendarRoutes } from "./calendar.routes";
@@ -598,8 +598,7 @@ export async function registerRoutes(
   // Register Batch 2 fixes (aliases, spending tracker, appliances, warranties, inventory)
   registerBatch2Routes(app);
 
-  // Register Background Check routes
-  registerBackgroundCheckRoutes(app);
+  // Background Check routes already registered above
 
   // Register Calendar Integration routes
   registerCalendarRoutes(app);

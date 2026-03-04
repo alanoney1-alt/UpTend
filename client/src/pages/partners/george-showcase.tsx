@@ -102,7 +102,7 @@ export default function GeorgeShowcase() {
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Logo variant="icon" className="h-6" />
+            <Logo variant="light" className="h-6" />
             <span className="text-sm text-muted-foreground">×</span>
             <span className="font-semibold text-sm">{companyName}</span>
           </div>

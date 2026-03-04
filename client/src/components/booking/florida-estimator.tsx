@@ -146,6 +146,10 @@ interface ZillowProperty {
   imgSrc: string | null;
   latitude: number | null;
   longitude: number | null;
+  source?: string;
+  stories?: number | null;
+  roofType?: string | null;
+  pool?: boolean;
 }
 
 interface FloridaEstimatorProps {

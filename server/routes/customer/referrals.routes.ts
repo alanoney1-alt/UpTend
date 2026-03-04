@@ -178,7 +178,7 @@ export function registerCustomerReferralRoutes(app: Express) {
 
       // IDOR protection: only the referrer or referred user can complete
       const userId = (req.user as any).id;
-      if (referral.referrerId !== userId && referral.referredId !== userId) {
+      if (referral.referrerId !== userId && (referral as any).referredId !== userId) {
         return res.status(403).json({ error: "Access denied" });
       }
 

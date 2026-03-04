@@ -2520,9 +2520,9 @@ function DashboardContent({ activeTab, setActiveTab }: { activeTab: string; setA
               <div className="sm:col-span-2">
                 <Label className="text-xs text-muted-foreground">Service Area (zip codes)</Label>
                 <Input
-                  defaultValue={currentPro?.profile?.serviceArea || ""}
+                  defaultValue={(currentPro?.profile as any)?.serviceArea || ""}
                   onBlur={async (e) => {
-                    if (e.target.value !== currentPro?.profile?.serviceArea) {
+                    if (e.target.value !== (currentPro?.profile as any)?.serviceArea) {
                       try {
                         await apiRequest("PATCH", "/api/pro/profile", { serviceArea: e.target.value });
                         queryClient.invalidateQueries({ queryKey: ["/api/pro/me"] });

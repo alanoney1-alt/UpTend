@@ -85,8 +85,8 @@ function getSeasonalServices(season: string): { name: string; description: strin
 // ─── Customer Post-Job Sequence ────────────────────────────────────
 
 export function schedulePostJobSequence(
-  customerId: number,
-  jobId: number,
+  customerId: string | number,
+  jobId: string | number,
   proName: string,
   proFirstName: string,
   serviceType: string,
@@ -96,7 +96,7 @@ export function schedulePostJobSequence(
 
   // Email 1: Review Request (+24 hours)
   scheduleTimer(key, 24 * HOUR, async () => {
-    const customer = await storage.getUser(customerId);
+    const customer = await storage.getUser(String(customerId));
     if (!customer?.email) return;
 
     // Check if already reviewed
@@ -115,7 +115,7 @@ export function schedulePostJobSequence(
 
   // Email 2: Home Score Update (+3 days)
   scheduleTimer(key, 3 * DAY, async () => {
-    const customer = await storage.getUser(customerId);
+    const customer = await storage.getUser(String(customerId));
     if (!customer?.email) return;
 
     // Try to get actual score; fallback to estimate
@@ -139,7 +139,7 @@ export function schedulePostJobSequence(
 
   // Email 3: Seasonal Recommendation (+14 days)
   scheduleTimer(key, 14 * DAY, async () => {
-    const customer = await storage.getUser(customerId);
+    const customer = await storage.getUser(String(customerId));
     if (!customer?.email) return;
 
     const season = getSeason();
@@ -156,7 +156,7 @@ export function schedulePostJobSequence(
 
   // Email 4: Referral Prompt (+30 days)
   scheduleTimer(key, 30 * DAY, async () => {
-    const customer = await storage.getUser(customerId);
+    const customer = await storage.getUser(String(customerId));
     if (!customer?.email) return;
 
     const referralCode = (customer as any).referralCode || `UPTEND-${customerId}`;
@@ -173,13 +173,13 @@ export function schedulePostJobSequence(
 
 // ─── Pro Onboarding Sequence ───────────────────────────────────────
 
-export function scheduleProWelcomeSequence(profileId: number, userId: number) {
+export function scheduleProWelcomeSequence(profileId: string | number, userId: string | number) {
   const key = `pro-welcome-${profileId}`;
   cancelTimers(key);
 
   // Email 1: Welcome (immediate)
   scheduleTimer(key, 0, async () => {
-    const user = await storage.getUser(userId);
+    const user = await storage.getUser(String(userId));
     if (!user?.email) return;
 
     await sendProWelcomeVerified(user.email, {
@@ -190,17 +190,18 @@ export function scheduleProWelcomeSequence(profileId: number, userId: number) {
 
   // Email 2: Profile Completion Nudge (+3 days if incomplete)
   scheduleTimer(key, 3 * DAY, async () => {
-    const user = await storage.getUser(userId);
+    const user = await storage.getUser(String(userId));
     if (!user?.email) return;
 
-    const profile = await storage.getHaulerProfile(profileId);
+    const profile = await storage.getHaulerProfile(String(profileId));
     if (!profile) return;
 
     const missingItems: string[] = [];
-    if (!profile.profilePhoto) missingItems.push("Profile photo");
-    if (!profile.serviceAreas || (Array.isArray(profile.serviceAreas) && profile.serviceAreas.length === 0)) missingItems.push("Service areas");
-    if (!profile.availability) missingItems.push("Availability");
-    if (!profile.certifications || (Array.isArray(profile.certifications) && profile.certifications.length === 0)) missingItems.push("Certifications");
+    const p = profile as any;
+    if (!p.profilePhotoUrl && !p.profilePhoto) missingItems.push("Profile photo");
+    if (!p.serviceAreas || (Array.isArray(p.serviceAreas) && p.serviceAreas.length === 0)) missingItems.push("Service areas");
+    if (!p.availability) missingItems.push("Availability");
+    if (!p.certifications || (Array.isArray(p.certifications) && p.certifications.length === 0)) missingItems.push("Certifications");
 
     // Only send if profile is actually incomplete
     if (missingItems.length === 0) return;
@@ -214,7 +215,7 @@ export function scheduleProWelcomeSequence(profileId: number, userId: number) {
 
   // Email 3: Pro Tips (+7 days)
   scheduleTimer(key, 7 * DAY, async () => {
-    const user = await storage.getUser(userId);
+    const user = await storage.getUser(String(userId));
     if (!user?.email) return;
 
     await sendProTips(user.email, {

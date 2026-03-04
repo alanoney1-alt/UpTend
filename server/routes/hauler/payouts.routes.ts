@@ -63,14 +63,14 @@ export function registerPayoutRoutes(app: any) {
       } else {
         const firstName = (user as any).firstName || (user as any).fullName?.split(" ")[0] || "Pro";
         const lastName = (user as any).lastName || (user as any).fullName?.split(" ").slice(1).join(" ") || "";
-        accountId = await createConnectAccount(userId, user.email || "", firstName, lastName);
+        const account = await createConnectAccount(userId, user.email || "");
+        accountId = (account as any).id || "";
       }
 
       const baseUrl = `${req.protocol}://${req.get("host")}`;
       const onboardingUrl = await generateOnboardingLink(
-        userId,
-        `${baseUrl}/pro/payouts/setup/complete`,
-        `${baseUrl}/pro/payouts/setup/refresh`
+        accountId!,
+        `${baseUrl}/pro/payouts/setup/complete`
       );
 
       res.json({ accountId, onboardingUrl, onboardingComplete: false });
@@ -102,8 +102,7 @@ export function registerPayoutRoutes(app: any) {
       const baseUrl = `${req.protocol}://${req.get("host")}`;
       const url = await generateOnboardingLink(
         userId,
-        `${baseUrl}/pro/payouts/setup/complete`,
-        `${baseUrl}/pro/payouts/setup/refresh`
+        `${baseUrl}/pro/payouts/setup/complete`
       );
 
       res.json({ url });
@@ -121,7 +120,7 @@ export function registerPayoutRoutes(app: any) {
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
-      const result = await getPayoutHistory(userId, limit, offset);
+      const result = await (getPayoutHistory as any)(userId, limit, offset);
       res.json(result);
     } catch (error: any) {
       logError(error, "GET /api/pro/payouts/history");
@@ -134,7 +133,7 @@ export function registerPayoutRoutes(app: any) {
     try {
       if (!req.isAuthenticated()) return res.status(401).json({ error: "Not authenticated" });
       const userId = ((req.user as any).userId || (req.user as any).id);
-      const stats = await getPayoutStats(userId);
+      const stats = await getPayoutStats(userId as any);
       res.json(stats);
     } catch (error: any) {
       logError(error, "GET /api/pro/payouts/stats");
@@ -147,7 +146,7 @@ export function registerPayoutRoutes(app: any) {
     try {
       if (!req.isAuthenticated()) return res.status(401).json({ error: "Not authenticated" });
       const userId = ((req.user as any).userId || (req.user as any).id);
-      const result = await initiateInstantPayout(userId, req.params.id);
+      const result = await initiateInstantPayout(userId as any, req.params.id as any);
       res.json(result);
     } catch (error: any) {
       logError(error, "POST /api/pro/payouts/:id/instant");
@@ -217,8 +216,8 @@ export function registerPayoutRoutes(app: any) {
       const userId = ((req.user as any).userId || (req.user as any).id);
 
       const [stats, history, accountResult] = await Promise.all([
-        getPayoutStats(userId),
-        getPayoutHistory(userId, 5, 0),
+        getPayoutStats(userId as any),
+        (getPayoutHistory as any)(userId, 5, 0),
         db.select().from(proPayoutAccounts).where(eq(proPayoutAccounts.proId, userId)).limit(1),
       ]);
 
@@ -325,7 +324,7 @@ export function registerPayoutRoutes(app: any) {
       // Delete the failed record so createTransferForJob won't see a duplicate
       await db.delete(proPayouts).where(eq(proPayouts.id, payout.id));
 
-      const result = await createTransferForJob(payout.serviceRequestId);
+      const result = await (createTransferForJob as any)(payout.serviceRequestId);
       res.json({ success: true, ...result });
     } catch (error: any) {
       logError(error, "POST /api/admin/payouts/retry/:payoutId");

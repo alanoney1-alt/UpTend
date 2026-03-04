@@ -490,7 +490,7 @@ export function registerServiceRequestRoutes(app: Express) {
 
       // Fire-and-forget: Stripe Connect payout transfer
       if (capturedPayment && request?.assignedHaulerId) {
-        processJobCompletion(req.params.id).catch(err =>
+        processJobCompletion(req.params.id as any).catch(err =>
           console.error('[PAYOUT] processJobCompletion failed:', err.message)
         );
       }

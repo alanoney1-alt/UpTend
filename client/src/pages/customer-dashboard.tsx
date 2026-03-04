@@ -536,7 +536,7 @@ function HealthScoreRing({ score }: { score: number }) {
   );
 }
 
-function MyHomeSection({ jobs, user }: { jobs: ServiceRequest[]; user: { firstName?: string | null; createdAt?: string } }) {
+function MyHomeSection({ jobs, user }: { jobs: ServiceRequest[]; user: { firstName?: string | null; createdAt?: string | Date | null } }) {
   const completedJobs = useMemo(() => jobs.filter((j) => j.status === "completed"), [jobs]);
   const score = useMemo(() => computeHealthScore(completedJobs), [completedJobs]);
   const lastCompleted = useMemo(

@@ -544,7 +544,7 @@ function toRad(deg: number): number {
  * Uses their weeklyAvailability to prioritize pros who should be working now.
  */
 async function blastAllQualifyingPros(state: CascadeState): Promise<void> {
-  const job = await db.select().from(serviceRequests).where(eq(serviceRequests.id, parseInt(state.jobId))).limit(1);
+  const job = await db.select().from(serviceRequests).where(eq(serviceRequests.id, state.jobId)).limit(1);
   if (!job.length) return;
 
   const serviceType = job[0].serviceType;
@@ -576,7 +576,7 @@ async function blastAllQualifyingPros(state: CascadeState): Promise<void> {
 
   for (const pro of eligiblePros) {
     console.log(
-      `[Cascade Blast] Notifying pro ${pro.companyName || pro.id} — phone: ${pro.phone}, email: ${pro.email}`
+      `[Cascade Blast] Notifying pro ${pro.companyName || pro.id} — phone: ${pro.phone}, userId: ${pro.userId}`
     );
     // Each notification includes:
     // - Service type + location (zip, not full address for privacy)

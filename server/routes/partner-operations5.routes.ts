@@ -48,7 +48,7 @@ router.get("/:slug/routes/savings", async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
     const { startDate, endDate } = req.query;
-    const result = await routeOpt.getRouteSavingsReport(slug, startDate as string, endDate as string);
+    const result = await routeOpt.getRouteSavingsReport(slug, startDate && endDate ? { start: startDate as string, end: endDate as string } : undefined);
     res.json({ success: true, report: result });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });

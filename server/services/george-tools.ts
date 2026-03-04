@@ -3861,7 +3861,7 @@ export async function getDroneScanStatus(params: { customerId: string; bookingId
 
 import { startClaim, getStormPrepChecklist as _getStormPrepChecklist } from "./insurance-claims";
 import { createEmergencyDispatch } from "./emergency-dispatch";
-import { generateMorningBriefing, getWeatherForZip } from "./morning-briefing";
+import { generateMorningBriefing as _generateMorningBriefing, getWeatherForZip } from "./morning-briefing";
 
 export async function startInsuranceClaim(params: {
  customerId: string;
@@ -3890,7 +3890,7 @@ export async function createEmergencyDispatchTool(params: {
 export async function getMorningBriefingTool(params: {
  customerId: string;
 }): Promise<object> {
- return generateMorningBriefing(params.customerId);
+ return _generateMorningBriefing(params.customerId);
 }
 
 export async function getWeather(params: { zip: string }): Promise<object> {
@@ -4645,7 +4645,7 @@ export async function setHomeReminderForGeorge(params: {
 // George tracks what customers buy and maintains their home.
 // ═══════════════════════════════════════════════
 
-import { scanReceipt, processReceiptItems } from "./receipt-scanner.js";
+import { scanReceipt as _scanReceipt, processReceiptItems } from "./receipt-scanner.js";
 import { getConnectedRetailers, connectRetailer, syncPurchaseHistory } from "./retailer-connect.js";
 import {
  getGarageDoorProfile,
@@ -4665,7 +4665,7 @@ export async function scanReceiptPhoto(params: {
  customerId: string;
  photoUrl: string;
 }): Promise<object> {
- const scanResult = await scanReceipt(params.photoUrl);
+ const scanResult: any = await _scanReceipt(params.photoUrl);
  const { purchaseId, warrantiesCreated } = await processReceiptItems(
  params.customerId,
  scanResult.items,
@@ -5661,15 +5661,18 @@ export async function getRebookingSuggestions(params: { customer_id: string }): 
  // Simulate same pro availability
  const sameProAvailable = Math.random() > 0.3; // 70% chance available
  
- const suggestions = pastBookings.rows.map(booking => ({
+ const suggestions = pastBookings.rows.map(booking => {
+ const bookingDaysSince = Math.floor((Date.now() - new Date(booking.completed_at).getTime()) / (1000 * 60 * 60 * 24));
+ return {
  serviceType: booking.service_type,
  lastCompleted: booking.completed_at,
- daysSince: Math.floor((Date.now() - new Date(booking.completed_at).getTime()) / (1000 * 60 * 60 * 24)),
+ daysSince: bookingDaysSince,
  lastCost: booking.total_cost,
  proName: booking.pro_name,
  proAvailable: Math.random() > 0.4, // 60% chance available
- suggestedRebooking: daysSince > 90, // Suggest if more than 3 months
- }));
+ suggestedRebooking: bookingDaysSince > 90, // Suggest if more than 3 months
+ };
+ });
 
  return {
  hasHistory: true,
@@ -5754,7 +5757,7 @@ export async function scanReceipt(params: {
  const receiptText = params.receipt_text.toLowerCase();
  
  // Extract common home maintenance items
- const extractedItems = [];
+ const extractedItems: Array<{ item: string; category: string; estimatedPrice: string; warranty: string; taxDeductible: boolean }> = [];
  const commonItems = [
  { term: "filter", category: "HVAC", warranty: "6 months", tax_deductible: false },
  { term: "toilet", category: "plumbing", warranty: "1 year", tax_deductible: false },
@@ -5836,7 +5839,7 @@ export async function getMultiProQuotes(params: {
  const zipCode = params.zip_code || "32801";
  
  // Get base pricing for the service
- const basePricing = await getServicePricing(serviceType);
+ const basePricing: any = await getServicePricing(serviceType);
  const basePrice = basePricing.tiers?.[0]?.price || 150;
  
  // Generate 3 different pro options with different value propositions
@@ -7761,7 +7764,7 @@ export async function getCustomerAddress(params: {
  try {
  // Check home profiles first
  const homeResult = await db.select().from(homeProfiles)
- .where(eq(homeProfiles.userId, params.customerId))
+ .where(eq(homeProfiles.customerId, params.customerId))
  .limit(1);
  if (homeResult.length > 0 && (homeResult[0] as any).address) {
  return {
@@ -7910,7 +7913,7 @@ export async function generatePaymentLink(params: {
  // Try to create a Stripe PaymentIntent
  try {
  const { getUncachableStripeClient } = await import("../stripeClient");
- const stripe = getUncachableStripeClient();
+ const stripe = await getUncachableStripeClient();
  const pi = await stripe.paymentIntents.create({
  amount: amountCents,
  currency: "usd",
@@ -7953,7 +7956,7 @@ export async function cancelBooking(params: {
 }): Promise<any> {
  try {
  const [booking] = await db.select().from(serviceRequests)
- .where(eq(serviceRequests.id, parseInt(params.bookingId)))
+ .where(eq(serviceRequests.id, params.bookingId))
  .limit(1);
 
  if (!booking) {
@@ -7971,7 +7974,7 @@ export async function cancelBooking(params: {
 
  await db.update(serviceRequests)
  .set({ status: "cancelled" } as any)
- .where(eq(serviceRequests.id, parseInt(params.bookingId)));
+ .where(eq(serviceRequests.id, params.bookingId));
 
  return {
  success: true,
@@ -7994,7 +7997,7 @@ export async function rescheduleBooking(params: {
 }): Promise<any> {
  try {
  const [booking] = await db.select().from(serviceRequests)
- .where(eq(serviceRequests.id, parseInt(params.bookingId)))
+ .where(eq(serviceRequests.id, params.bookingId))
  .limit(1);
 
  if (!booking) {
@@ -8014,7 +8017,7 @@ export async function rescheduleBooking(params: {
 
  await db.update(serviceRequests)
  .set(updateData)
- .where(eq(serviceRequests.id, parseInt(params.bookingId)));
+ .where(eq(serviceRequests.id, params.bookingId));
 
  return {
  success: true,

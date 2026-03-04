@@ -137,9 +137,11 @@ export function registerAdminManagementRoutes(app: Express) {
       // Schedule pro onboarding email sequence
       if (updated.userId) {
         const { scheduleProWelcomeSequence } = await import("../../services/email-sequences");
-        scheduleProWelcomeSequence(Number(profileId), updated.userId).catch((err: any) =>
-          console.error('[EmailSeq] Pro welcome sequence error:', err.message)
-        );
+        try {
+          scheduleProWelcomeSequence(Number(profileId), Number(updated.userId));
+        } catch (err: any) {
+          console.error('[EmailSeq] Pro welcome sequence error:', err.message);
+        }
       }
 
       res.json({ success: true, profile: updated });

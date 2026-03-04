@@ -384,7 +384,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaVersion: req.body.icaVersion || null,
         b2bLicensed: data.b2bLicensed || false,
         licenseNumber: data.licenseNumber || null,
-        b2bRates: (data.b2bRates || {}) as Record<string, unknown>,
+        b2bRates: (data.b2bRates || {}) as Record<string, { min: number; max: number }>,
         sameDayAvailable: (data.sameDayAvailable ?? true) as boolean,
         weeklyAvailability: (data.weeklyAvailability || null) as string | null,
       });
@@ -561,7 +561,7 @@ export async function registerProAuthRoutes(app: Express): Promise<void> {
         icaVersion: req.body.icaVersion || null,
         b2bLicensed: data.b2bLicensed || false,
         licenseNumber: data.licenseNumber || null,
-        b2bRates: (data.b2bRates || {}) as Record<string, unknown>,
+        b2bRates: (data.b2bRates || {}) as Record<string, { min: number; max: number }>,
         sameDayAvailable: (data.sameDayAvailable ?? true) as boolean,
         weeklyAvailability: (data.weeklyAvailability || null) as string | null,
       });

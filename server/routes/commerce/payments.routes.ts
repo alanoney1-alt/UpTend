@@ -245,8 +245,8 @@ export function registerPaymentRoutes(app: Express) {
       });
 
       // Apply founding member discount (decrement credit, increment counter, log to ledger)
-      if (job.customerId && (job.foundingCreditApplied || job.foundingDiscountApplied)) {
-        const discount = await calculateFoundingDiscount(job.customerId, Math.round((job.originalPrice || totalAmount) * 100));
+      if (job.customerId && ((job as any).foundingCreditApplied || (job as any).foundingDiscountApplied)) {
+        const discount = await calculateFoundingDiscount(job.customerId, Math.round(((job as any).originalPrice || totalAmount) * 100));
         await applyFoundingDiscount(job.customerId, jobId, discount);
       }
 

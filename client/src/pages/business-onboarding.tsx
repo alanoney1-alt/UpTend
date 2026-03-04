@@ -63,7 +63,7 @@ interface BusinessInfo {
 }
 
 interface PlanOption {
-  tier: "independent" | "starter" | "pro" | "enterprise";
+  tier: "independent" | "starter" | "pro" | "enterprise" | "custom";
   name: string;
   price: string;
   priceNote: string;
@@ -203,7 +203,7 @@ export default function BusinessOnboarding() {
 
   // Step 2
   const urlPlan = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("plan") : null;
-  const [selectedPlan, setSelectedPlan] = useState<"independent" | "starter" | "pro" | "enterprise" | "">(
+  const [selectedPlan, setSelectedPlan] = useState<"independent" | "starter" | "pro" | "enterprise" | "custom" | "">(
     urlPlan === "independent" ? "independent" : ""
   );
 

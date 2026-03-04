@@ -78,9 +78,9 @@ export function registerBusinessPartnerRoutes(app: Express) {
             lastName: ownerName.split(" ").slice(1).join(" ") || "",
             phone,
             role: "business_user",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          })
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          } as any)
           .returning({ id: users.id });
         userId = newUser.id;
       }
@@ -196,9 +196,9 @@ export function registerBusinessPartnerRoutes(app: Express) {
             lastName,
             phone: phone || "",
             role: "hauler",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          })
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          } as any)
           .returning({ id: users.id });
         proUserId = newUser.id;
 

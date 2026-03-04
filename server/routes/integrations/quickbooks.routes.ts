@@ -40,11 +40,11 @@ export function registerQuickBooksRoutes(app: Express) {
   });
 
   // Connection status
-  app.get("/api/integrations/quickbooks/status", (req: Request, res: Response) => {
+  app.get("/api/integrations/quickbooks/status", async (req: Request, res: Response) => {
     const businessId = getBusinessId(req) || (req.query.businessId as string);
     if (!businessId) return res.status(401).json({ error: "Authentication required" });
 
-    res.json(qb.getConnectionStatus(businessId));
+    res.json(await qb.getConnectionStatus(businessId));
   });
 
   // Manual sync trigger
@@ -53,20 +53,13 @@ export function registerQuickBooksRoutes(app: Express) {
       const businessId = getBusinessId(req);
       if (!businessId) return res.status(401).json({ error: "Authentication required" });
 
-      const status = qb.getConnectionStatus(businessId);
-      if (!status.connected) {
+      const qbStatus = await qb.getConnectionStatus(businessId);
+      if (!qbStatus || qbStatus.status !== "active") {
         return res.status(400).json({ error: "Not connected to QuickBooks" });
       }
 
       // Sync a sample completed job (in production, this would pull from DB)
-      const result = await qb.triggerFullSync(businessId, {
-        jobId: `manual-sync-${Date.now()}`,
-        serviceType: "Manual Sync",
-        customerFirstName: "Demo",
-        finalPrice: 0,
-        platformFee: 0,
-        completedAt: new Date().toISOString(),
-      });
+      const result = await qb.triggerFullSync(businessId);
 
       res.json({ success: true, message: "Sync triggered", result });
     } catch (error: any) {
@@ -89,11 +82,10 @@ export function registerQuickBooksRoutes(app: Express) {
   });
 
   // Sync history
-  app.get("/api/integrations/quickbooks/sync-history", (req: Request, res: Response) => {
+  app.get("/api/integrations/quickbooks/sync-history", async (req: Request, res: Response) => {
     const businessId = getBusinessId(req) || (req.query.businessId as string);
     if (!businessId) return res.status(401).json({ error: "Authentication required" });
 
-    const limit = parseInt(req.query.limit as string) || 50;
-    res.json({ history: qb.getSyncHistory(businessId, limit) });
+    res.json({ history: await qb.getSyncHistory(businessId) });
   });
 }
