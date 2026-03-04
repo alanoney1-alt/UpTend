@@ -80,7 +80,7 @@ setInterval(() => {
   }
 }, 30 * 60 * 1000);
 
-function getSession(sid: string, userId?: string): GuideSession {
+async function getSession(sid: string, userId?: string): Promise<GuideSession> {
   if (!sessions.has(sid)) {
     // Create default session first
     const defaultSession: GuideSession = {
@@ -93,17 +93,16 @@ function getSession(sid: string, userId?: string): GuideSession {
     
     sessions.set(sid, defaultSession);
     
-    // If user is authenticated, try to load existing conversation asynchronously
+    // If user is authenticated, await DB load before returning
     if (userId) {
       try {
-        loadConversation(userId, sid).then(savedSession => {
-          if (savedSession && sessions.has(sid)) {
-            const currentSession = sessions.get(sid)!;
-            Object.assign(currentSession, savedSession, { _lastAccess: Date.now() });
-            console.log(`[Guide] Loaded conversation for user ${userId}, session ${sid} with ${savedSession.history.length} messages`);
-          }
-        }).catch(() => { /* silently ignore load failures */ });
-      } catch { /* silently ignore */ }
+        const savedSession = await loadConversation(userId, sid);
+        if (savedSession && sessions.has(sid)) {
+          const currentSession = sessions.get(sid)!;
+          Object.assign(currentSession, savedSession, { _lastAccess: Date.now() });
+          console.log(`[Guide] Loaded conversation for user ${userId}, session ${sid} with ${savedSession.history.length} messages`);
+        }
+      } catch { /* silently ignore load failures — start fresh */ }
     }
   }
   
@@ -717,7 +716,9 @@ export default function createGuideRoutes(_storage: any) {
   router.post("/guide/chat", guideChatLimiter, async (req, res) => {
     try {
       await init();
-      const { message, sessionId, context, photoUrl, photoAnalysis, photoBase64, clientHistory } = req.body;
+      const { message, sessionId, context, photoUrl, photoAnalysis, photoBase64, clientHistory, conversationHistory } = req.body;
+      // Accept either clientHistory or conversationHistory from the client
+      const restoreHistory = clientHistory || conversationHistory;
 
       if (!message && !photoUrl) {
         return res.status(400).json({ error: "Message or photo is required" });
@@ -730,16 +731,21 @@ export default function createGuideRoutes(_storage: any) {
       }
 
       const sid = sessionId || `anon-${Date.now()}`;
-      const session = getSession(sid, userId);
+      const session = await getSession(sid, userId || undefined);
 
       // Restore conversation history from client if server session was lost (e.g. after deploy/restart)
-      if (session.history.length === 0 && Array.isArray(clientHistory) && clientHistory.length > 0) {
-        for (const msg of clientHistory) {
+      if (session.history.length === 0 && Array.isArray(restoreHistory) && restoreHistory.length > 0) {
+        for (const msg of restoreHistory) {
           if ((msg.role === "user" || msg.role === "assistant") && typeof msg.content === "string") {
             session.history.push({ role: msg.role, content: msg.content });
           }
         }
         console.log(`[Guide] Restored ${session.history.length} messages from client for session ${sid}`);
+        // Rebuild phase state from restored history
+        for (const msg of session.history) {
+          if (msg.role === "user") updateConversationPhase(session, msg.content);
+          if (msg.role === "assistant") updatePhaseFromResponse(session, msg.content);
+        }
       }
 
       let systemPrompt = BASE_SYSTEM_PROMPT;
@@ -832,8 +838,8 @@ export default function createGuideRoutes(_storage: any) {
           userContent += `\n\n[Customer uploaded a photo but vision analysis failed. Ask them to describe what they see or try again.]`;
         }
         // Still store base64 in case tools need it
-        const photoSession = getSession(sid);
-        (photoSession as any)._pendingPhotoBase64 = photoBase64;
+        // session already loaded above — just attach pending photo
+        (session as any)._pendingPhotoBase64 = photoBase64;
       }
 
       session.history.push({ role: "user", content: userContent });
@@ -873,8 +879,21 @@ export default function createGuideRoutes(_storage: any) {
 
             const fixHistory = [...historyForGeorge, { role: "user" as const, content: userContent }, { role: "assistant" as const, content: georgeResult.response }];
             try {
-              const fixResult = await georgeChat(fixPrompt, fixHistory, { ...georgeContext, conversationState: (georgeContext.conversationState || "") + "\n\nSELF-REVIEW MODE: You are correcting your own response. Fix the issues listed. Keep it short. ONE question max." });
-              georgeResult = { ...georgeResult, response: fixResult.response };
+              // Lightweight text-only fix — no tools, lower tokens, no full agent loop
+              const { createChatCompletion: quickChat } = await import("../../services/ai/anthropic-client");
+              const fixResult = await quickChat({
+                messages: [
+                  ...fixHistory.map((m: any) => ({ role: m.role as "user" | "assistant", content: typeof m.content === "string" ? m.content : JSON.stringify(m.content) })),
+                  { role: "user" as "user", content: fixPrompt },
+                ],
+                systemPrompt: "You are George, fixing your own response. Return ONLY the corrected text. No explanations. ONE question max. Keep it short (2-3 sentences).",
+                maxTokens: 512,
+                temperature: 0.4,
+              });
+              const fixText = fixResult?.content;
+              if (fixText && fixText.trim().length > 10) {
+                georgeResult = { ...georgeResult, response: fixText.trim() };
+              }
             } catch (iterErr) {
               console.error(`[George Iteration ${i + 1}] Fix call failed, using original:`, iterErr);
               break;
@@ -960,7 +979,7 @@ Return ONLY valid JSON:
 
       // Store in session
       if (sessionId) {
-        const session = getSession(sessionId);
+        const session = await getSession(sessionId);
         if (!session.photoEstimates) session.photoEstimates = [];
         session.photoEstimates.push({
           photoUrl,
@@ -1021,7 +1040,7 @@ Return ONLY valid JSON.`,
 
         // Store in session
         if (sessionId) {
-          const session = getSession(sessionId);
+          const session = await getSession(sessionId);
           if (!session.priceMatches) session.priceMatches = [];
           if (priceMatchResult) session.priceMatches.push(priceMatchResult);
         }
@@ -1068,7 +1087,7 @@ Return ONLY valid JSON.`,
 
       // Store in session
       if (sessionId) {
-        const session = getSession(sessionId);
+        const session = await getSession(sessionId);
         session.propertyData = propertyData;
         session.onboardingState = propertyData.hasPool === "uncertain" ? "pool_check" : "property_confirmed";
       }
@@ -1109,7 +1128,7 @@ Return ONLY valid JSON.`,
 
       // Store in session
       if (sessionId) {
-        const session = getSession(sessionId);
+        const session = await getSession(sessionId);
         if (!session.lockedQuotes) session.lockedQuotes = [];
         session.lockedQuotes.push(quote);
       }
@@ -1229,7 +1248,7 @@ Return ONLY valid JSON.`,
       const user = req.user as any;
 
       if (sessionId) {
-        const session = getSession(sessionId);
+        const session = await getSession(sessionId);
         if (session.propertyData) {
           session.propertyData.hasPool = hasPool;
           session.onboardingState = "property_confirmed";
@@ -1525,62 +1544,67 @@ function updatePhaseFromResponse(session: GuideSession, response: string): void 
     session.topicsCovered.push("home_intelligence");
   }
 
+  // Helper: add to questionsAsked only if not already tracked
+  function trackQuestion(key: string) {
+    if (!ci.questionsAsked.includes(key)) ci.questionsAsked.push(key);
+  }
+
   // Track questions George asked — consumer
   if (/what('s| is) your address|where.*located|what.*address/i.test(resp)) {
-    ci.questionsAsked.push("address");
+    trackQuestion("address");
   }
   if (/what.*service|what.*help|what.*need/i.test(resp)) {
-    ci.questionsAsked.push("service_type");
+    trackQuestion("service_type");
   }
   if (/how big|how much.*space|square (feet|footage)/i.test(resp)) {
-    ci.questionsAsked.push("scope_size");
+    trackQuestion("scope_size");
   }
 
   // Track questions George asked — B2B discovery
   if (/company.*(name|called)|what.*business|what.*type.*service|what.*kind.*work/i.test(resp)) {
-    ci.questionsAsked.push("company_name_type");
+    trackQuestion("company_name_type");
   }
   if (/how (long|many years)|years.*business/i.test(resp)) {
-    ci.questionsAsked.push("years_in_business");
+    trackQuestion("years_in_business");
   }
   if (/how many.*(tech|crew|guys|employees|people|team)|team size|staff/i.test(resp)) {
-    ci.questionsAsked.push("team_size");
+    trackQuestion("team_size");
   }
   if (/service area|how far|where.*serve|what area/i.test(resp)) {
-    ci.questionsAsked.push("service_area");
+    trackQuestion("service_area");
   }
   if (/average.*ticket|typical.*job|average.*job/i.test(resp)) {
-    ci.questionsAsked.push("average_ticket");
+    trackQuestion("average_ticket");
   }
   if (/where.*leads|how.*find.*customers|lead.*source|where.*customers.*come/i.test(resp)) {
-    ci.questionsAsked.push("lead_sources");
+    trackQuestion("lead_sources");
   }
   if (/spend.*month|monthly.*spend|paying.*for|cost.*marketing|marketing.*budget/i.test(resp)) {
-    ci.questionsAsked.push("monthly_spend");
+    trackQuestion("monthly_spend");
   }
   if (/after.?hours|weekends|when.*closed|missed.*calls/i.test(resp)) {
-    ci.questionsAsked.push("after_hours");
+    trackQuestion("after_hours");
   }
   if (/review|google.*rating|star/i.test(resp)) {
-    ci.questionsAsked.push("reviews");
+    trackQuestion("reviews");
   }
   if (/social.*media|facebook|instagram|tiktok/i.test(resp)) {
-    ci.questionsAsked.push("social_media");
+    trackQuestion("social_media");
   }
   if (/website|url|online.*presence/i.test(resp)) {
-    ci.questionsAsked.push("website");
+    trackQuestion("website");
   }
   if (/what.*tool|what.*software|crm|scheduling|invoic|quickbooks|accounting/i.test(resp)) {
-    ci.questionsAsked.push("tools_software");
+    trackQuestion("tools_software");
   }
   if (/biggest.*challenge|pain.*point|what.*holding|biggest.*problem|fix.*tomorrow/i.test(resp)) {
-    ci.questionsAsked.push("pain_points_goals");
+    trackQuestion("pain_points_goals");
   }
   if (/residential.*commercial|commercial.*residential|what.*type.*work.*resi/i.test(resp)) {
-    ci.questionsAsked.push("resi_vs_commercial");
+    trackQuestion("resi_vs_commercial");
   }
   if (/seasonal|slow.*months|busy.*season/i.test(resp)) {
-    ci.questionsAsked.push("seasonality");
+    trackQuestion("seasonality");
   }
 
   // Track if George quoted a price

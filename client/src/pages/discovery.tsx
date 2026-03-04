@@ -15,6 +15,7 @@ interface CollectedData {
   serviceArea?: string;
   seasonalPatterns?: string;
   avgTicket?: string;
+  websiteUrl?: string;
   // Phase 2: How Customers Find Them
   leadSources?: string;
   monthlySpend?: string;
@@ -75,21 +76,40 @@ function extractData(messages: Message[]): CollectedData {
   const data: CollectedData = { painPoints: [] };
 
   // Phase 1: Their World
-  const nameMatch = userMsgs.match(/(?:called|named?|company is|own|run|I'm with)\s+([A-Z][A-Za-z0-9&' ]{2,30})/i);
-  if (nameMatch) data.companyName = nameMatch[1].trim();
+  // Company name — multiple patterns to catch natural phrasing
+  const namePatterns = [
+    /(?:called|named?|company is|own|run|I'm with|we're|we are|it's|business is)\s+([A-Z][A-Za-z0-9&'. -]{2,35})/i,
+    /^([A-Z][A-Za-z0-9&'. -]{2,35})(?:\s*[-—,]\s*we|\.\s*We)/m,
+  ];
+  for (const pat of namePatterns) {
+    const m = userMsgs.match(pat);
+    if (m) { data.companyName = m[1].trim().replace(/[.,]+$/, ""); break; }
+  }
 
   const services = ["plumbing","hvac","electrical","landscaping","roofing","cleaning","painting","pest control","pressure washing","junk removal","lawn care","pool","fencing","flooring","remodeling","handyman","tree","moving","garage door","gutter","solar","locksmith","foundation","insulation","irrigation","sprinkler","septic","chimney","home security","alarm","water treatment","water softener","cabinet","countertop","concrete","masonry","siding","drywall","window cleaning","mold","water damage","fire damage","generator","carpet","appliance repair"];
   for (const s of services) {
     if (lower.includes(s)) { data.serviceType = s.charAt(0).toUpperCase() + s.slice(1); break; }
   }
 
-  const teamMatch = userMsgs.match(/(\d+)\s*(?:guys|people|employees|techs|technicians|trucks|crews|team|staff|members)/i);
+  // Team size — handles "I have 4 guys", "about 12 techs", "crew of 8", "just me" etc.
+  const teamMatch = userMsgs.match(/(\d+)\s*(?:guys|people|employees|techs|technicians|trucks|crews?|team|staff|members|workers|men|installers|painters|plumbers)/i)
+    || userMsgs.match(/(?:crew|team|staff)\s*(?:of|is)\s*(?:about\s*)?(\d+)/i)
+    || userMsgs.match(/(?:have|got|run)\s*(?:about\s*)?(\d+)\s*(?:guys|people|techs|crew|employees)/i);
   if (teamMatch) data.teamSize = teamMatch[1];
+  if (!data.teamSize && /\b(just me|solo|one man|one-man|by myself|only me)\b/i.test(lower)) data.teamSize = "1";
 
+  // Years in business — handles "been doing this 15 years", "started in 2018", etc.
   const yearsMatch = userMsgs.match(/(\d+)\s*(?:years|yrs)/i);
   if (yearsMatch) data.yearsInBusiness = yearsMatch[1];
+  if (!data.yearsInBusiness) {
+    const startedMatch = userMsgs.match(/(?:started|been|since|est\.?)\s*(?:in\s*)?(\d{4})/i);
+    if (startedMatch) data.yearsInBusiness = String(new Date().getFullYear() - parseInt(startedMatch[1]));
+  }
 
-  const ticketMatch = userMsgs.match(/(?:average|avg|typical)\s*(?:ticket|job|invoice).*?\$?\s*(\d[\d,]*)/i) || userMsgs.match(/\$?\s*(\d[\d,]*)\s*(?:average|avg|per job|a job)/i);
+  // Average ticket — handles "$350 a job", "about three hundred", "average ticket is 500"
+  const ticketMatch = userMsgs.match(/(?:average|avg|typical)\s*(?:ticket|job|invoice).*?\$?\s*(\d[\d,]*)/i)
+    || userMsgs.match(/\$?\s*(\d[\d,]*)\s*(?:average|avg|per job|a job|typical)/i)
+    || userMsgs.match(/(?:charge|bill|get paid|make)\s*(?:about|around|roughly)?\s*\$?\s*(\d[\d,]*)\s*(?:per|a|each)/i);
   if (ticketMatch) data.avgTicket = ticketMatch[1].replace(/,/g, "");
 
   // Phase 2: How Customers Find Them
@@ -102,8 +122,15 @@ function extractData(messages: Message[]): CollectedData {
   if (lower.includes("google ads") || lower.includes("ppc")) data.leadSources = (data.leadSources || "") + "Google Ads, ";
   if (lower.includes("facebook ads") || lower.includes("meta ads")) data.leadSources = (data.leadSources || "") + "Facebook Ads, ";
 
+  // Website URL — avoid false positives from tool names like "quickbooks.com" or "angi.com"
+  const toolDomains = ["quickbooks.com","servicetitan.com","housecallpro.com","jobber.com","angi.com","thumbtack.com","homeadvisor.com","yelp.com","nextdoor.com","facebook.com","instagram.com","google.com","square.com","calendly.com","mailchimp.com","hootsuite.com"];
   const urlMatch = userMsgs.match(/(https?:\/\/[^\s]+|(?:www\.)[^\s]+|[a-zA-Z0-9-]+\.(?:com|net|org|io|co|biz)(?:\/[^\s]*)?)/i);
-  if (urlMatch) data.websiteUrl = urlMatch[1].startsWith("http") ? urlMatch[1] : `https://${urlMatch[1]}`;
+  if (urlMatch) {
+    const candidate = urlMatch[1].toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "");
+    if (!toolDomains.some(d => candidate.startsWith(d))) {
+      data.websiteUrl = urlMatch[1].startsWith("http") ? urlMatch[1] : `https://${urlMatch[1]}`;
+    }
+  }
   if (lower.match(/website.*(outdated|old|never|don't have|no website)/)) data.websiteStatus = "outdated or missing";
   if (lower.match(/(don't rank|not on google|can't find us|page 2|not showing up)/)) data.seoRanking = "poor";
   if (lower.match(/competitor|competition/)) data.competitorAwareness = "mentioned";
@@ -158,23 +185,46 @@ function generateProposal(data: CollectedData, messages: Message[]): Proposal {
   const team = data.teamSize ? parseInt(data.teamSize) : 5;
   const spend = data.monthlySpend ? parseInt(data.monthlySpend) : 2000;
 
-  const isLarge = team > 10 || spend > 3000;
-  const packageName = isLarge ? "Growth Accelerator" : "Growth Starter";
-  const price = isLarge ? "$1,497/mo" : "$797/mo";
-  const roi = isLarge ? "3x to 5x" : "2x to 4x";
+  // Match actual UpTend partner packages: Starter $297, Growth $597, Dominate $997
+  let packageName: string;
+  let price: string;
+  let roi: string;
+  let setupFee: string;
+
+  if (team > 10 || spend > 3000) {
+    packageName = "Dominate";
+    price = "$997/mo";
+    setupFee = "$5,000 setup";
+    roi = "4x to 7x";
+  } else if (team > 3 || spend > 1000) {
+    packageName = "Growth";
+    price = "$597/mo";
+    setupFee = "$2,500 setup";
+    roi = "3x to 5x";
+  } else {
+    packageName = "Starter";
+    price = "$297/mo";
+    setupFee = "$1,500 setup";
+    roi = "2x to 4x";
+  }
+
+  // Calculate breakeven based on vertical
+  const avgTicket = data.avgTicket ? parseInt(data.avgTicket) : 350;
+  const monthlyPrice = parseInt(price.replace(/[^0-9]/g, ""));
+  const jobsToBreakeven = Math.ceil(monthlyPrice / avgTicket) + 1; // +1 for 5% job fee
 
   return {
     companySummary: `${name} is a ${service.toLowerCase()} company${data.teamSize ? ` with ${data.teamSize} team members` : ""}${data.yearsInBusiness ? `, ${data.yearsInBusiness} years in the business` : ""}. Based on our conversation, here's what we put together.`,
     painPoints: data.painPoints.length > 0 ? data.painPoints : ["Inconsistent lead flow", "Limited online presence", "Missing after hours calls"],
     packageName,
-    packagePrice: price,
-    roiNumbers: `Based on similar ${service.toLowerCase()} companies, we typically see a ${roi} return within 90 days. That means for every dollar you invest, you could be pulling in ${roi} back in new revenue.`,
+    packagePrice: `${price} + ${setupFee}`,
+    roiNumbers: `At ${price}, you need ${jobsToBreakeven} extra jobs per month to cover the entire cost. Based on similar ${service.toLowerCase()} companies, we typically see a ${roi} return within 90 days. That's ${roi} back for every dollar in.`,
     timeline: [
-      "Week 1: Onboarding call + set up your AI receptionist",
-      "Week 2: Launch your lead generation campaigns",
-      "Week 3: Reviews and reputation engine goes live",
-      "Week 4: First performance report + optimization",
-      "Month 2+: Scale what's working, cut what's not",
+      "Week 1: Onboarding call, George AI configured for your business",
+      "Week 2: SEO pages live, lead capture active",
+      "Week 3: Review automation + social posting launched",
+      "Week 4: First performance report + strategy session",
+      "Month 2: Optimization based on real data, scaling what works",
     ],
   };
 }
@@ -211,7 +261,10 @@ export default function DiscoveryPage() {
     if (messages.length < 2) return;
     const collected = extractData(messages);
     collectedRef.current = collected;
-    if (collected.companyName && collected.serviceType && !auditStarted) {
+    // Wait for company name + service type + at least 4 exchanges before auditing
+    // This gives time to capture website URL for better audit accuracy
+    const userMsgCount = messages.filter(m => m.role === "user").length;
+    if (collected.companyName && collected.serviceType && !auditStarted && userMsgCount >= 4) {
       setAuditStarted(true);
       fetch("/api/partners/audit", {
         method: "POST",
@@ -229,9 +282,24 @@ export default function DiscoveryPage() {
     }
   }, [messages, auditStarted]);
 
-  // Voice: speak George's message via ElevenLabs
+  // Voice: speak George's message via ElevenLabs with browser fallback
   const speak = useCallback(async (text: string, force?: boolean) => {
     if (!voiceMode && !force) return;
+
+    const browserFallback = (t: string) => {
+      try {
+        if (window.speechSynthesis) {
+          const clean = t.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1");
+          const u = new SpeechSynthesisUtterance(clean);
+          u.rate = 0.95;
+          u.pitch = 0.9;
+          window.speechSynthesis.speak(u);
+        }
+      } catch {
+        console.warn("[Discovery Voice] Browser TTS also failed");
+      }
+    };
+
     try {
       const resp = await fetch("/api/ai/guide/tts", {
         method: "POST",
@@ -242,33 +310,13 @@ export default function DiscoveryPage() {
         const data = await resp.json();
         if (data.audio) {
           const audio = new Audio(`data:audio/mpeg;base64,${data.audio}`);
-          audio.play().catch(() => {
-            // Mobile autoplay blocked - try browser TTS fallback
-            if (window.speechSynthesis) {
-              const u = new SpeechSynthesisUtterance(text);
-              u.rate = 0.95;
-              u.pitch = 0.9;
-              window.speechSynthesis.speak(u);
-            }
-          });
-        }
-      } else {
-        // Fallback to browser TTS if ElevenLabs fails
-        if (window.speechSynthesis) {
-          const u = new SpeechSynthesisUtterance(text);
-          u.rate = 0.95;
-          u.pitch = 0.9;
-          window.speechSynthesis.speak(u);
+          audio.play().catch(() => browserFallback(text));
+          return;
         }
       }
+      browserFallback(text);
     } catch {
-      // Fallback to browser TTS
-      if (window.speechSynthesis) {
-        const u = new SpeechSynthesisUtterance(text);
-        u.rate = 0.95;
-        u.pitch = 0.9;
-        window.speechSynthesis.speak(u);
-      }
+      browserFallback(text);
     }
   }, [voiceMode]);
 
@@ -322,88 +370,6 @@ export default function DiscoveryPage() {
             discoveryMode: true,
             collectedData: collected,
             liveAudit: auditData,
-            discoveryPhases: {
-              phase1_their_world: {
-                label: "Their World",
-                questions: [
-                  "What's your company name, and what services do you offer?",
-                  "How long have you been in business?",
-                  "How many techs or crew members do you have?",
-                  "What's your service area? How far do you go?",
-                  "What's your average ticket size?",
-                  "Do you have seasonal patterns? Busy months vs. slow months?",
-                  "How many calls or leads do you get per week?"
-                ],
-                dataKeys: ["companyName","serviceType","teamSize","yearsInBusiness","serviceArea","seasonalPatterns","avgTicket"]
-              },
-              phase2_how_customers_find_them: {
-                label: "How Customers Find Them",
-                questions: [
-                  "Where do most of your leads come from right now?",
-                  "What are you currently spending on lead sources per month?",
-                  "How many leads do you lose because nobody picked up or responded in time?",
-                  "Does your website show up when someone Googles your service + your city?",
-                  "When was the last time your website was updated?",
-                  "Do you know what your competitors are charging?",
-                  "Are there specific neighborhoods where you want more work?"
-                ],
-                dataKeys: ["leadSources","monthlySpend","leadVolume","websiteStatus","seoRanking","competitorAwareness","targetNeighborhoods"]
-              },
-              phase3_when_lead_comes_in: {
-                label: "What Happens When a Lead Comes In",
-                questions: [
-                  "How do you handle after hours calls and weekend inquiries?",
-                  "How fast do you respond to online inquiries?",
-                  "Who follows up if they don't book on the first call?",
-                  "How many estimates do you do that don't convert? How many truck rolls just for quotes?",
-                  "How do you assign jobs to your crew right now?",
-                  "What software do you use for scheduling and dispatch?",
-                  "Can your customers check job status or pay online?"
-                ],
-                dataKeys: ["afterHoursHandling","responseTime","followUpProcess","estimateConversion","truckRollWaste","schedulingMethod","customerPortal"]
-              },
-              phase4_after_the_job: {
-                label: "After the Job",
-                questions: [
-                  "How do you get Google reviews from customers?",
-                  "Do you email or text past customers?",
-                  "What percentage of your revenue is repeat/maintenance business?",
-                  "Do your customers ever ask for services you don't offer?",
-                  "Do you lose big jobs because of sticker shock? Do you offer payment options?"
-                ],
-                dataKeys: ["reviewProcess","customerRetention","repeatRevenue","crossSellRequests","financingOffered"]
-              },
-              phase5_marketing_visibility: {
-                label: "Marketing & Visibility",
-                questions: [
-                  "Who manages your social media, if anyone?",
-                  "How often do you post on social media?",
-                  "Have you tried video content? Before and afters?",
-                  "When was the last time you updated your Google Business Profile?",
-                  "How do you track your marketing ROI?"
-                ],
-                dataKeys: ["socialMediaPresence","postingFrequency","videoContent","gbpStatus","roiTracking"]
-              },
-              phase6_tools_spend: {
-                label: "Tools & Spend",
-                questions: [
-                  "Walk me through every tool you're paying for monthly.",
-                  "If you added it all up, what's the total?",
-                  "What's working and what's not?"
-                ],
-                dataKeys: ["currentTools","totalToolSpend","toolSatisfaction"]
-              },
-              phase7_goals: {
-                label: "Goals",
-                questions: [
-                  "What's your single biggest pain point right now?",
-                  "If you could fix one thing about your business tomorrow, what would it be?",
-                  "Where do you want to be in 12 months? Revenue? Team size?",
-                  "What's holding you back from getting there?"
-                ],
-                dataKeys: ["topPainPoint","oneThingToFix","twelveMonthGoal","growthBlockers"]
-              }
-            },
           },
         }),
       });

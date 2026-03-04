@@ -274,9 +274,16 @@ function useSpeechSynthesis() {
       const preferred = voices.find(v => v.name.includes("Samantha")) || voices.find(v => v.lang === "en-US" && v.localService) || voices[0];
       if (preferred) utterance.voice = preferred;
       utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        console.warn("[George Voice] Browser speech also failed");
+      };
       setIsSpeaking(true);
-      window.speechSynthesis.speak(utterance);
+      try {
+        window.speechSynthesis.speak(utterance);
+      } catch {
+        setIsSpeaking(false);
+      }
     } else {
       setIsSpeaking(false);
     }
